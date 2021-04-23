@@ -2,119 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB92368D3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB84368D42
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236807AbhDWGj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:39:58 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:56124 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhDWGj5 (ORCPT
+        id S230317AbhDWGo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhDWGoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:39:57 -0400
-Received: by mail-il1-f197.google.com with SMTP id v1-20020a92d2410000b02901533f3ed5dbso20728381ilg.22
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:39:19 -0700 (PDT)
+        Fri, 23 Apr 2021 02:44:54 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:44:18 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso673808pjg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iuJ/jDz+88XCecNJVyqSdZXQOTPOW4XdkZb16DAQ+5Y=;
+        b=TWuI+ABEUPqLstLhLgqZ+hJ0Zi6A2tLOdU4VNel4elknqn0OOWMAScdXEEsKa4exTN
+         PwSgRT4yyiqVvD3q/3e/TP32SK9dl1Ztiko73kbyVTPZmNuBMG0VKwPBslmp52jyA9/w
+         A36LlxJ6w7/Rsbg14IRy9uvxt9870adgKOcQXyBC+0ylYxKglpbeFULDmwh2EyzkM6kt
+         kFJiCnMyrZwNiI29DoPQkeKZZuMH3ssj3iVolClnGAhdFCbETbhjlkEoqtpPpbhnU2hD
+         j/oG0ZNIeTGkj+X3rZHg3iMLuBY4iNz8dSU9RlUe5tFsfAF4mzA9r+Xc9/vx9XxWWJQT
+         92aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mz6YscuvZogBNVtCM3+B/kPlahbgXIU6kxtAJ38URss=;
-        b=QLi/RqIlnBQkAF/2B+yqh6VOldcL4rmcT2zm8yWReZuYbl0O7XRIkkPh3E4qBbu3t2
-         NW+IiWDCpxUWz9aNMFL3bdN4pgwMnx6mLfUX4ySA7KapnlX2Z6vg9QvqAwgo9fxUUjeT
-         6Ck2nIQ1loU9hwcTD6FRnz8rryiiqTWm8A3y9/ttLosbBH4NwqjtPSuKhwjTX7aNOgxz
-         Drw3iCPYZsXwt4ekCiKr4L1ArVt3ETZLm6pkV5lTv+izM8tGNJhk0kW1Ey0xIVJyYkXp
-         aVBMoBQ1kI30uANHY2VBiNkZ0mr5ofQ+Y56Ci56dJ3bXlQc1MJHbUD/1eJFhfa2d6S3R
-         QdSQ==
-X-Gm-Message-State: AOAM533f1GjIKqn/cewzIRM9i82svxLBDay7EG3FC7gwHHfgd6qTsKtq
-        X0+QC0ccxZl7gSo6qfM/m8AL0WmJBSw9q3Gyyoz4mqxg+hO1
-X-Google-Smtp-Source: ABdhPJx5rVdBAWR6yLoY6VS2F6GSO1mNHqq/d0GsQrzl6UBCH65Jgfp7PUakW2CmpeMeqZ/hWaLTDe13ZTnq27h8fMBEuNQ02WIa
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:154d:: with SMTP id j13mr1694340ilu.46.1619159959603;
- Thu, 22 Apr 2021 23:39:19 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 23:39:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003a11a005c09e0e6e@google.com>
-Subject: [syzbot] general protection fault in qca_power_shutdown
-From:   syzbot <syzbot+adafc67b05ed63665d5e@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=iuJ/jDz+88XCecNJVyqSdZXQOTPOW4XdkZb16DAQ+5Y=;
+        b=J0L0jU12i5UMBnxCZnChYhfO9yoDpS0Q1hfqWp/qDoN7/yE1bypcY0lpZfzqeAvBn7
+         iQN7NpM2xLJoBF+VS7UXRL/Dy/Q7Obai+gASyYrBGM+H/iAOdW0WEG6VrZ0ejWiCE+wc
+         amMMwM5QmsZsha8lNdWNa6HDp4xS2p61Aw5DamV+3d2PNFQ0v3qPBWSdLufI1w6T7Zra
+         LQoFKEzDDxcSYKEGxz+fX48tRRWliCuWKoPBz3/RlUxAd+O60pF0HdMZ++puGQ631Vyi
+         4bQVzz7xb5d2Wx/CAp68FyK8eqBtB6eEJagv5CCcVlPFHcVZRBSNeRkhywgi7U+qguyi
+         yq1Q==
+X-Gm-Message-State: AOAM533FGzh4e+6tkM5szQkw8WpYjs+nkkXrFJBusQuaHDwParANYM4m
+        31ugQN0XE3PjU03nVXLDb53Fcg==
+X-Google-Smtp-Source: ABdhPJwFM9zVbcPyHvxfFikIZ/J5QKuR3Wj3T8kwBZMNx1goBqoHB2G4JTXO9Bm11hDWevln3MG6rA==
+X-Received: by 2002:a17:90a:5511:: with SMTP id b17mr4034877pji.41.1619160257885;
+        Thu, 22 Apr 2021 23:44:17 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x3sm3937889pfj.95.2021.04.22.23.44.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 23:44:17 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 23:44:17 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 23:44:13 PDT (-0700)
+Subject:     Re: [RFC][PATCH] locking: Generic ticket-lock
+In-Reply-To: <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+CC:     guoren@kernel.org, christophm30@gmail.com, anup@brainfault.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guoren@linux.alibaba.com, catalin.marinas@arm.com,
+        will.deacon@arm.com, Arnd Bergmann <arnd@arndb.de>,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     peterz@infradead.org
+Message-ID: <mhng-a6b7bb9b-805c-4580-8279-8e7cad76cecf@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 14 Apr 2021 03:16:38 PDT (-0700), peterz@infradead.org wrote:
+> On Wed, Apr 14, 2021 at 11:05:24AM +0200, Peter Zijlstra wrote:
+>
+>> That made me look at the qspinlock code, and queued_spin_*lock() uses
+>> atomic_try_cmpxchg_acquire(), which means any arch that uses qspinlock
+>> and has RCpc atomics will give us massive pain.
+>>
+>> Current archs using qspinlock are: x86, arm64, power, sparc64, mips and
+>> openrisc (WTF?!).
 
-syzbot found the following issue on:
+We'd been talking about moving to qspinlock on RISC-V as well.  Not sure 
+if that's where this thread came from or if there was another one, but 
+we did talk about RISC-V qspinlock a bit on IRC (and it looks a bit like 
+the prototype I posted there) so I figured it's best to write something 
+down here -- at least that way I won't forgot what was going on next 
+time qspinlock comes around:
 
-HEAD commit:    c98ff1d0 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d44341d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=339c2ecce8fdd1d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=adafc67b05ed63665d5e
+It seems premature to move RISC-V to qspinlock.  In the RISC-V qspinlock 
+thread (and my first crack at this) I'd opened the door for supporting 
+both, but at the time I wasn't really aware of how complicated the 
+requirements imposed by qspinlock on the architecture is.  We're 
+definately not there yet on RISC-V, so I don't really see any reason to 
+allow flipping on qspinlock yet -- essentially be allowing users to flip 
+it on we'd be giving them some indication that it may work, which would 
+couple ourselves to that flavor of lock continuing to work in the 
+future.  I don't want to do that until we have something we can point to 
+that says qspinlocks will function properly, moving over before that 
+just opens a huge can of worms.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Patch sets to move RISC-V over to qspinlock have shown up a handful of 
+times over the years.  I'd always considered this just a performance 
+thing so I'd been worried about moving over without any benchmarks.  We 
+still don't have any locking benchmarks, but I'm happy moving over to 
+ticket locks: they're not meaningfully more expensive in the 
+non-contended case, having fair locks is a huge win, and it gets code of 
+out arch/riscv/ (that's probably the most important one on my end :)).  
+IIUC qrwlock should be fine (when backed by a ticket lock like this), 
+which will let us get rid of all our lock code.  We will pay a small 
+price on the existing microarchitectures (it's a few extra cycles for 
+the half-word non-atomic RMW than the AMO, oddly enough) but that seems 
+like a small price to pay for fairness.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+adafc67b05ed63665d5e@syzkaller.appspotmail.com
+Regardless, I'm not going to flip RISC-V over for the upcoming merge 
+window -- it's just too late in the cycle for this sort of change, and I 
+do want to at least look at the generated code first.  This is a pretty 
+invasive change and I want to at least get it a full round of 
+linux-next.
 
-Bluetooth: hci7: Reading QCA version information failed (-110)
-Bluetooth: hci7: Retry BT power ON:0
-general protection fault, probably for non-canonical address 0xdffffc000000000f: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000078-0x000000000000007f]
-CPU: 1 PID: 6293 Comm: kworker/u5:5 Not tainted 5.12.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci7 hci_power_on
-RIP: 0010:dev_get_drvdata include/linux/device.h:666 [inline]
-RIP: 0010:serdev_device_get_drvdata include/linux/serdev.h:117 [inline]
-RIP: 0010:qca_soc_type drivers/bluetooth/hci_qca.c:240 [inline]
-RIP: 0010:qca_power_shutdown+0x77/0x3b0 drivers/bluetooth/hci_qca.c:1821
-Code: 4c 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e8 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 75 08 49 8d 7e 78 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ae 02 00 00 4d 85 f6 4d 8b 6e 78 41 bc 01 00 00
-RSP: 0018:ffffc9000193f978 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffff888024c82000 RCX: 0000000000000000
-RDX: 000000000000000f RSI: ffffffff864835a6 RDI: 0000000000000078
-RBP: ffff88802818b800 R08: 0000000000000024 R09: 0000000000000000
-R10: ffffffff815bdabe R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88802818b800 R14: 0000000000000000 R15: ffff88802818b808
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004e4a61 CR3: 000000007172f000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- qca_setup+0x912/0x2070 drivers/bluetooth/hci_qca.c:1740
- hci_uart_setup+0x1b1/0x480 drivers/bluetooth/hci_ldisc.c:423
- hci_dev_do_open+0x3e1/0x1a00 net/bluetooth/hci_core.c:1499
- hci_power_on+0x133/0x650 net/bluetooth/hci_core.c:2247
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace d4921a9b71de1581 ]---
-RIP: 0010:dev_get_drvdata include/linux/device.h:666 [inline]
-RIP: 0010:serdev_device_get_drvdata include/linux/serdev.h:117 [inline]
-RIP: 0010:qca_soc_type drivers/bluetooth/hci_qca.c:240 [inline]
-RIP: 0010:qca_power_shutdown+0x77/0x3b0 drivers/bluetooth/hci_qca.c:1821
-Code: 4c 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e8 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 75 08 49 8d 7e 78 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ae 02 00 00 4d 85 f6 4d 8b 6e 78 41 bc 01 00 00
-RSP: 0018:ffffc9000193f978 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffff888024c82000 RCX: 0000000000000000
-RDX: 000000000000000f RSI: ffffffff864835a6 RDI: 0000000000000078
-RBP: ffff88802818b800 R08: 0000000000000024 R09: 0000000000000000
-R10: ffffffff815bdabe R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88802818b800 R14: 0000000000000000 R15: ffff88802818b808
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004e4a61 CR3: 000000007172f000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Anyway, thanks for doing this -- it's certainly way cleaner that what I 
+was coming up with.  I'm assuming you're going to eventually send out a 
+non-RFC for this?
 
+>> Of those, x86 and sparc are TSO archs with SC atomics, arm64 has RCsc
+>> atomics, power has RCtso atomics (and is the arch we all hate for having
+>> RCtso locks).
+>>
+>> Now MIPS has all sorts of ill specified barriers, but last time looked
+>> at it it didn't actually use any of that and stuck to using smp_mb(), so
+>> it will have RCsc atomics.
+>>
+>> /me goes look at wth openrisc is..  doesn't even appear to have
+>> asm/barrier.h :-/ Looking at wikipedia it also doesn't appear to
+>> actually have hardware ...
+>
+> FWIW this is broken, anything SMP *MUST* define mb(), at the very least.
+>
+>> I'm thinking openrisc is a prime candidate for this ticket_lock.h we're
+>> all talking about.
+>
+> How's this then? Compile tested only on openrisc/simple_smp_defconfig.
+>
+> ---
+>  arch/openrisc/Kconfig                      |  1 -
+>  arch/openrisc/include/asm/Kbuild           |  5 +-
+>  arch/openrisc/include/asm/spinlock.h       |  3 +-
+>  arch/openrisc/include/asm/spinlock_types.h |  2 +-
+>  include/asm-generic/qspinlock.h            | 30 +++++++++++
+>  include/asm-generic/ticket-lock-types.h    | 11 ++++
+>  include/asm-generic/ticket-lock.h          | 86 ++++++++++++++++++++++++++++++
+>  7 files changed, 131 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+> index 591acc5990dc..1858cf309f1f 100644
+> --- a/arch/openrisc/Kconfig
+> +++ b/arch/openrisc/Kconfig
+> @@ -32,7 +32,6 @@ config OPENRISC
+>  	select HAVE_DEBUG_STACKOVERFLOW
+>  	select OR1K_PIC
+>  	select CPU_NO_EFFICIENT_FFS if !OPENRISC_HAVE_INST_FF1
+> -	select ARCH_USE_QUEUED_SPINLOCKS
+>  	select ARCH_USE_QUEUED_RWLOCKS
+>  	select OMPIC if SMP
+>  	select ARCH_WANT_FRAME_POINTERS
+> diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
+> index ca5987e11053..cb260e7d73db 100644
+> --- a/arch/openrisc/include/asm/Kbuild
+> +++ b/arch/openrisc/include/asm/Kbuild
+> @@ -1,9 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  generic-y += extable.h
+>  generic-y += kvm_para.h
+> -generic-y += mcs_spinlock.h
+> -generic-y += qspinlock_types.h
+> -generic-y += qspinlock.h
+> +generic-y += ticket-lock.h
+> +generic-y += ticket-lock-types.h
+>  generic-y += qrwlock_types.h
+>  generic-y += qrwlock.h
+>  generic-y += user.h
+> diff --git a/arch/openrisc/include/asm/spinlock.h b/arch/openrisc/include/asm/spinlock.h
+> index a8940bdfcb7e..0b839ed1f3a0 100644
+> --- a/arch/openrisc/include/asm/spinlock.h
+> +++ b/arch/openrisc/include/asm/spinlock.h
+> @@ -15,8 +15,7 @@
+>  #ifndef __ASM_OPENRISC_SPINLOCK_H
+>  #define __ASM_OPENRISC_SPINLOCK_H
+>
+> -#include <asm/qspinlock.h>
+> -
+> +#include <asm/ticket-lock.h>
+>  #include <asm/qrwlock.h>
+>
+>  #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
+> diff --git a/arch/openrisc/include/asm/spinlock_types.h b/arch/openrisc/include/asm/spinlock_types.h
+> index 7c6fb1208c88..58ea31fa65ce 100644
+> --- a/arch/openrisc/include/asm/spinlock_types.h
+> +++ b/arch/openrisc/include/asm/spinlock_types.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_OPENRISC_SPINLOCK_TYPES_H
+>  #define _ASM_OPENRISC_SPINLOCK_TYPES_H
+>
+> -#include <asm/qspinlock_types.h>
+> +#include <asm/ticket-lock-types.h>
+>  #include <asm/qrwlock_types.h>
+>
+>  #endif /* _ASM_OPENRISC_SPINLOCK_TYPES_H */
+> diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
+> index d74b13825501..a7a1296b0b4d 100644
+> --- a/include/asm-generic/qspinlock.h
+> +++ b/include/asm-generic/qspinlock.h
+> @@ -2,6 +2,36 @@
+>  /*
+>   * Queued spinlock
+>   *
+> + * A 'generic' spinlock implementation that is based on MCS locks. An
+> + * architecture that's looking for a 'generic' spinlock, please first consider
+> + * ticket-lock.h and only come looking here when you've considered all the
+> + * constraints below and can show your hardware does actually perform better
+> + * with qspinlock.
+> + *
+> + *
+> + * It relies on atomic_*_release()/atomic_*_acquire() to be RCsc (or no weaker
+> + * than RCtso if you're power), where regular code only expects atomic_t to be
+> + * RCpc.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks for writing this up.  We likely would have made a mess out of it 
+without this.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> + *
+> + * It relies on a far greater (compared to ticket-lock.h) set of atomic
+> + * operations to behave well together, please audit them carefully to ensure
+> + * they all have forward progress. Many atomic operations may default to
+> + * cmpxchg() loops which will not have good forward progress properties on
+> + * LL/SC architectures.
+> + *
+> + * One notable example is atomic_fetch_or_acquire(), which x86 cannot (cheaply)
+> + * do. Carefully read the patches that introduced queued_fetch_set_pending_acquire().
+> + *
+> + * It also heavily relies on mixed size atomic operations, in specific it
+> + * requires architectures to have xchg16; something which many LL/SC
+> + * architectures need to implement as a 32bit and+or in order to satisfy the
+> + * forward progress guarantees mentioned above.
+> + *
+> + * Further reading on mixed size atomics that might be relevant:
+> + *
+> + *   http://www.cl.cam.ac.uk/~pes20/popl17/mixed-size.pdf
+> + *
+> + *
+>   * (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
+>   * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
+>   *
+> diff --git a/include/asm-generic/ticket-lock-types.h b/include/asm-generic/ticket-lock-types.h
+> new file mode 100644
+> index 000000000000..829759aedda8
+> --- /dev/null
+> +++ b/include/asm-generic/ticket-lock-types.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __ASM_GENERIC_TICKET_LOCK_TYPES_H
+> +#define __ASM_GENERIC_TICKET_LOCK_TYPES_H
+> +
+> +#include <linux/types.h>
+> +typedef atomic_t arch_spinlock_t;
+> +
+> +#define __ARCH_SPIN_LOCK_UNLOCKED	ATOMIC_INIT(0)
+> +
+> +#endif /* __ASM_GENERIC_TICKET_LOCK_TYPES_H */
+> diff --git a/include/asm-generic/ticket-lock.h b/include/asm-generic/ticket-lock.h
+> new file mode 100644
+> index 000000000000..3f0d53e21a37
+> --- /dev/null
+> +++ b/include/asm-generic/ticket-lock.h
+> @@ -0,0 +1,86 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +/*
+> + * 'Generic' ticket-lock implementation.
+> + *
+> + * It relies on atomic_fetch_add() having well defined forward progress
+> + * guarantees under contention. If your architecture cannot provide this, stick
+> + * to a test-and-set lock.
+> + *
+> + * It also relies on atomic_fetch_add() being safe vs smp_store_release() on a
+> + * sub-word of the value. This is generally true for anything LL/SC although
+> + * you'd be hard pressed to find anything useful in architecture specifications
+> + * about this. If your architecture cannot do this you might be better off with
+> + * a test-and-set.
+> + *
+> + * It further assumes atomic_*_release() + atomic_*_acquire() is RCpc and hence
+> + * uses atomic_fetch_add() which is SC to create an RCsc lock.
+> + *
+> + * The implementation uses smp_cond_load_acquire() to spin, so if the
+> + * architecture has WFE like instructions to sleep instead of poll for word
+> + * modifications be sure to implement that (see ARM64 for example).
+
+That's really neat: I'd missed the "lose a load reservation" in the WFE 
+triggers and assumed I had to do some explicit event.  IIUC this should 
+all just work on arm64 as-is, and be essentially just as efficient as 
+the bespoke ticket lock removed by c11090474d70 ("arm64: locking: 
+Replace ticket lock implementation with qspinlock").
+
+> + *
+> + */
+> +
+> +#ifndef __ASM_GENERIC_TICKET_LOCK_H
+> +#define __ASM_GENERIC_TICKET_LOCK_H
+> +
+> +#include <linux/atomic.h>
+> +#include <asm/ticket-lock-types.h>
+> +
+> +static __always_inline void ticket_lock(arch_spinlock_t *lock)
+> +{
+> +	u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
+> +	u16 ticket = val >> 16;
+> +
+> +	if (ticket == (u16)val)
+> +		return;
+> +
+> +	atomic_cond_read_acquire(lock, ticket == (u16)VAL);
+> +}
+> +
+> +static __always_inline bool ticket_trylock(arch_spinlock_t *lock)
+> +{
+> +	u32 old = atomic_read(lock);
+> +
+> +	if ((old >> 16) != (old & 0xffff))
+> +		return false;
+> +
+> +	return atomic_try_cmpxchg(lock, &old, old + (1<<16)); /* SC, for RCsc */
+> +}
+> +
+> +static __always_inline void ticket_unlock(arch_spinlock_t *lock)
+> +{
+> +	u16 *ptr = (u16 *)lock + __is_defined(__BIG_ENDIAN);
+> +	u32 val = atomic_read(lock);
+> +
+> +	smp_store_release(ptr, (u16)val + 1);
+> +}
+> +
+> +static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
+> +{
+> +	u32 val = atomic_read(lock);
+> +
+> +	return ((val >> 16) != (val & 0xffff));
+> +}
+> +
+> +static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
+> +{
+> +	u32 val = atomic_read(lock);
+> +
+> +	return (s16)((val >> 16) - (val & 0xffff)) > 1;
+> +}
+> +
+> +static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
+> +{
+> +	return !ticket_is_locked(&lock);
+> +}
+> +
+> +#define arch_spin_lock(l)		ticket_lock(l)
+> +#define arch_spin_trylock(l)		ticket_trylock(l)
+> +#define arch_spin_unlock(l)		ticket_unlock(l)
+> +#define arch_spin_is_locked(l)		ticket_is_locked(l)
+> +#define arch_spin_is_contended(l)	ticket_is_contended(l)
+> +#define arch_spin_value_unlocked(l)	ticket_value_unlocked(l)
+> +
+> +#endif /* __ASM_GENERIC_TICKET_LOCK_H */
