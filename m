@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C39368EB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74486368EB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241314AbhDWIQy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 04:16:54 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:40916 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWIQn (ORCPT
+        id S241290AbhDWIRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWIRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:16:43 -0400
-Received: by mail-ua1-f43.google.com with SMTP id 33so14992487uaa.7;
-        Fri, 23 Apr 2021 01:16:07 -0700 (PDT)
+        Fri, 23 Apr 2021 04:17:18 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F36CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:16:41 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id u187so6014139wmb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L/r5EpnXaI5U7tlqfGBGqY3r9Ngvu2wCkl5+7uVuv3U=;
+        b=PxTDZenHzMATHanoKADuLSrDnSMt4Z5DK0T1jiS4yfilAWdmuKo81Gf+AKflpDtJML
+         R1dOos36ph+rNa/VFedWmAyqxLq6sJLLyIv277Co8szT8bg1FGS86UWypyqBpGlP7SKB
+         5pg+NqSbHu/GQkA0PlDZY8LOvgWFmdA2FFFPzQz4I1ivclYLefDJK32lYkXmuQIeWCJp
+         ZvBxm/Fm7UbQRvhrM7uPqNR45zsXToIXHtR7rnGyBTihmuu/PX2+cCRKQoald0j26qtJ
+         r91zJn0czFPaOVeis2h6T+NH7D3sMxIbn3X9EpP1cwfp7YgoDiiW38wMayxxWm3ZwWgy
+         UlIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=em5cBkyIOctbiBIb5XOHeNIoZhZ0Au6He4zk5hvtim0=;
-        b=ZE2+dqiahsK5K3oJo/94WYdBSojK6e8rIK4gA+DJBwQKYbLYVcdudeysRoosK3XJkh
-         gdIMNCOIDGHDejRH4j+a3aFsNlledXSrWy2XYS/k5BJDkdRWKjgTNXMspvp9Y2X+4dh7
-         IkNlRBbnxt0LEnnoUwQAfYXU+yCd+KHpxSmTT2/fICjweVAItq4DDC41AGukNWn5RXHr
-         6SuLEg396d7g5IZfRk+4GWj95vZXgHdNVyj3z0eSmo42wl98a7RTXbBHXEreZ9MFc1G0
-         BTCGySMaM5TVAKx/k24E4qNuE26952OxPGz1JPvH+uCrDBIw1FNzsiP+pjLN0bCtPRA/
-         834g==
-X-Gm-Message-State: AOAM5309TCYd7DNf09nz9pHb+ZgTAZ7I+3jUW2jnjdVnZrO8yO6xzjPx
-        SxQyzIAsZHN/afVlEJb/dbG/MMaFKhRJLZA/+ng=
-X-Google-Smtp-Source: ABdhPJzs7QQ9wDVIOqECoab5U4QfcaGoOvpaRh485U6lD/Rn12Wu8XQlF6Eq19fXg6cwpPDX0gyfdAuxSqblikx+7Ek=
-X-Received: by 2002:ab0:2c16:: with SMTP id l22mr2051057uar.100.1619165766905;
- Fri, 23 Apr 2021 01:16:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L/r5EpnXaI5U7tlqfGBGqY3r9Ngvu2wCkl5+7uVuv3U=;
+        b=oslplVkinZIl17/8+ngfLA83nFDTzoJjNi+AI+BfIgruAW3R1sqtaboZZ5azKJl/w9
+         myb3QUp/OiJqdvjKaWWSv0a0Gy7I/4YGmHXMdgvzVxce1TNrp/OkKCEAApCBiiCfthAO
+         VWZkzEdjSE1I2ficuNBlQBMEaYczh508XhyPrXwslv+B2fciDFE30h6qZxNWacJYm3JW
+         voiOVR6hZtD3QuyGVu1OSm3tTU6pbP7l9PykqMYbdkYO9OSY4cWa+2no2aNS9PAotinv
+         pIK8gyFDoYLz10HiouDsGqyglQL0t8aOumyyjXzXou2byQiXD0FC4sORBnEg2MKpJdsP
+         tSzA==
+X-Gm-Message-State: AOAM531JSwgVgMTKS2vbU4Q8o0LZazyId+lUY7geztEqrwe6sQHj0tU/
+        kq7mWiKM/7TzOUV899NaaCFGH9tp0a0F1Q==
+X-Google-Smtp-Source: ABdhPJzYXQrI+mNN2pnnY30L1/7Yk2xVdUuGRGuUcrA5EsX1qDCHZgHLi6RSe6Z15tA5egG8v8KJAw==
+X-Received: by 2002:a7b:cbc1:: with SMTP id n1mr4270492wmi.50.1619165800032;
+        Fri, 23 Apr 2021 01:16:40 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
+        by smtp.gmail.com with ESMTPSA id b15sm9665302wmj.46.2021.04.23.01.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 01:16:39 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.12
+Date:   Fri, 23 Apr 2021 10:16:38 +0200
+Message-Id: <20210423081638.16925-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210415073338.22287-1-dinghao.liu@zju.edu.cn>
- <CAMuHMdVgtZkO3FfLOph41cXXJbSuc16UX1Z+fD0_iNN7nM-GtA@mail.gmail.com> <2fd8490f.73bcd.178fdc55590.Coremail.dinghao.liu@zju.edu.cn>
-In-Reply-To: <2fd8490f.73bcd.178fdc55590.Coremail.dinghao.liu@zju.edu.cn>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 23 Apr 2021 10:15:55 +0200
-Message-ID: <CAMuHMdUdDYo9CYWCgJvYLibBef-4NvM5aHHWbB2NP6ie22U=SA@mail.gmail.com>
-Subject: Re: Re: [PATCH] [v3] clk: renesas: rcar-usb2-clock-sel: Fix error
- handling in rcar_usb2_clock_sel_probe
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Kangjie Lu <kjlu@umn.edu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinghao,
+Hi Linus,
 
-On Fri, Apr 23, 2021 at 10:08 AM <dinghao.liu@zju.edu.cn> wrote:
-> > On Thu, Apr 15, 2021 at 9:33 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
-> > > The error handling paths after pm_runtime_get_sync() has no
-> > > refcount decrement, which leads to refcount leak.
-> > >
-> > > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> > > ---
-> > >
-> > > Changelog:
-> > >
-> > > v2: - Move the position of pm_runtime_enable,_get_sync().
-> > >       Use devm_clk_register() to simplify error handling.
-> >
-> > Thanks for the update!
-> >
-> > > --- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
-> > > +++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
-> > > @@ -131,7 +131,6 @@ static int rcar_usb2_clock_sel_remove(struct platform_device *pdev)
-> > >         struct usb2_clock_sel_priv *priv = platform_get_drvdata(pdev);
-> >
-> >     warning: unused variable ‘priv’ [-Wunused-variable]
-> >
-> > Have you compiled this?
-> >
->
-> This is my carelessness, thanks for pointing out this. When we use
-> devm_clk_hw_register(), we will not need to unregister priv->hw in
-> rcar_usb2_clock_sel_remove(). So I think it's okay to remove
-> platform_get_drvdata() in it to eliminate this warning.
->
-> Do you need a new version of patch to fix this warning?
+This is the last fix for this release-cycle. It addresses a power-management
+issue in gpio-omap.
 
-I'll remove that line while applying, so no need to fix and resend.
+Please pull!
 
-Gr{oetje,eeting}s,
+Bartosz
 
-                        Geert
+The following changes since commit 23cf00ddd2e1aacf1873e43f5e0c519c120daf7a:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+  gpio: sysfs: Obey valid_mask (2021-03-31 20:32:38 +0200)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12
+
+for you to fetch changes up to ddd8d94ca31e768c76cf8bfe34ba7b10136b3694:
+
+  gpio: omap: Save and restore sysconfig (2021-04-21 16:43:51 +0200)
+
+----------------------------------------------------------------
+gpio fixes for v5.12
+
+- save and restore the sysconfig register in gpio-omap
+
+----------------------------------------------------------------
+Tony Lindgren (1):
+      gpio: omap: Save and restore sysconfig
+
+ drivers/gpio/gpio-omap.c                | 9 +++++++++
+ include/linux/platform_data/gpio-omap.h | 3 +++
+ 2 files changed, 12 insertions(+)
