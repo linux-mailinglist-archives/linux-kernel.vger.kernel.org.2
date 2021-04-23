@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FD0368A13
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB01368A1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhDWAzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 20:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
+        id S236031AbhDWA7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 20:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhDWAzC (ORCPT
+        with ESMTP id S230367AbhDWA7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 20:55:02 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2524BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:54:26 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id v123so40543453ioe.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:54:26 -0700 (PDT)
+        Thu, 22 Apr 2021 20:59:33 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5DDC061574;
+        Thu, 22 Apr 2021 17:58:57 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id m7so43166569ljp.10;
+        Thu, 22 Apr 2021 17:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EsRGHADRe1bBPp1jvPhK9op/n2B30dQYA9YS40rYISw=;
-        b=dQOQ9GDTt365qQAFRODcnSQlqUZYq2h3tiO5Y9N5+hruwghg3M6favMmdexJEyVITm
-         WgGGVeim2qWMF7Vj9PITZlEpZ9i6M0/5O876gTib5T6ECTlLpewmUwbedxDni2yFUn2g
-         eXyzRgZpuso53fhZC2bAyhFGXNUq/wb52/xRs=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N+jXaR0SB+8fxvvMVeDeNfESYRDFwrHiFdNeachsM6Q=;
+        b=pYJyKgcMm7jhXAw5yMF2RJTsBTmNftz7BoC6GSRljtvEGlST/ngMHac1C3rDYDmlU2
+         DOC8RM6zDBLQwuzOBjqErj+9DEPsf4WjQnthj3xjdeE2LgoZ6uiWfi0dSrLpJiY5yq+6
+         OZCXUB0opoMUtqo9Hw/fJpnPzILw6j+tw7d/T3ePlrmZQnZPwEWjl85/+1xGDt3aELtB
+         FTC5D0oJWbtd7K0owLKKNYNb1cfwvX2Nofg/NtgZXoutgyj6Vny3WX3tcCQlo2b/5zhu
+         UNMjR8Bk892Y2v1da3uIgugWZUhrK4mZw0cIjxNmLYObVXvRON5ix87Avp8shyVzu8zf
+         DDIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EsRGHADRe1bBPp1jvPhK9op/n2B30dQYA9YS40rYISw=;
-        b=D9THYDHRA3tExtCJgsLeBMciNcBVtnxwsbZxZ7dbRcG47uq/w3zpc/bsS0AH8qjEgY
-         FJeAGy7zdMoi1rS2gyelByR5UflAgfSZ+nbgq9gb4KGBPVBkh/glgANdCPnlU+qGL2Wz
-         8B/d3/I1ocBn6Rp7ryU9cRArSHMuMYwUd6oL05ZdZ9oeO9IGPu4z27dMdSRgXe9TaaZ6
-         N8A25SHSYLYceY+HOSUahLuNX4SJPejHIoHqINx44baer3j+9enFKNzKr07MRzzh7w66
-         FyY1s82PL+ttOtntKVqt0ZqSiQVoqwTwAfSJ/2qbbP1K3ISeAMz5B2LBKZANfq+GWDze
-         ezJQ==
-X-Gm-Message-State: AOAM5303RTkjIvoT+Gu6OCmCc47k7jPgqAbHbNqnXJd2PJFd3xN4dPwB
-        1caj9nEAoaR0x9GWRu7mlnpvrNqqTFW6IA==
-X-Google-Smtp-Source: ABdhPJyjX6RrbO26k7NMgyFcWXzu19xGXwfPz9p5VH/n75XN0+5Yxgl5l4IvIzClvVstgpeB2xQsBw==
-X-Received: by 2002:a05:6638:35a2:: with SMTP id v34mr1426437jal.94.1619139265344;
-        Thu, 22 Apr 2021 17:54:25 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id z4sm2048471ioi.37.2021.04.22.17.54.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 17:54:24 -0700 (PDT)
-Subject: Re: [PATCH net-next v4 0/3] net: qualcomm: rmnet: Enable Mapv5
-To:     subashab@codeaurora.org
-Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
-        davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        cpratapa@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1619121731-17782-1-git-send-email-sharathv@codeaurora.org>
- <ed00501e-d558-a47f-5444-b1a5a895d6db@ieee.org>
- <8ada4250d370acfb995cfa68b72de091@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <8c975b46-a5bf-f4c2-6738-1d81579b96a0@ieee.org>
-Date:   Thu, 22 Apr 2021 19:54:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N+jXaR0SB+8fxvvMVeDeNfESYRDFwrHiFdNeachsM6Q=;
+        b=c0+cHymFLm1GqDFJLkoxwLUY2tcUVnLsqETEDy/MeNreDgiVnIi3HMQFxXxAxqUF1a
+         FVicFZajJ/6x4QhWtB5nS/6FLGmp5a27Ef1OrTvBByQ2PvOfPCE4pkjzcAv+f+80EiJf
+         02Xw3Lmqi0TCdAXBbtJV64dRM9UAGLII0O3P5j12WK6nTUcaTazHKIMdaE9T74yCPKB1
+         YOTXi7rNEdptdQussoUHcyTCgTiT2ER8SjuDzCNpVGg4m3tJ5abd6KNwXIKgFyBiTA82
+         n/87NhS3ADwHoJjX+F3W5FAzBC8QATbKrRqYw9uKp1io6omYeAM0KuZepTUjEpShpuDp
+         q9mQ==
+X-Gm-Message-State: AOAM532m8zxiPyNQaXcdfP8aigWbMDxmUq/7LSYQDEaxeIcmzOVtXMKz
+        SJM+frvVrU6p9pehbhIpwrJTcB9FQVbSx0hIUWjeOif1
+X-Google-Smtp-Source: ABdhPJz5Sq2Kl8285SJaqMSuRC+6FB8sKME1fMLn2LVa8SctzGoFZqjKCE5hJjtd4qYhXcU1sB5mCy0wwuI/TPqkV2E=
+X-Received: by 2002:a05:651c:10f:: with SMTP id a15mr1038547ljb.153.1619139529165;
+ Thu, 22 Apr 2021 17:58:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8ada4250d370acfb995cfa68b72de091@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1616945059-8718-1-git-send-email-u0084500@gmail.com>
+ <CADiBU3-d3_L8RTeYCirnfjJdG=ea6UVenAi8O8GO_LvOaB7OdA@mail.gmail.com>
+ <20210419072229.GA4869@dell> <20210419072317.GB4869@dell> <20210419072403.GC4869@dell>
+ <CADiBU38bMuH00Bcx5hJas2=yAon00ffcGokT4u89vX-LJYuxNA@mail.gmail.com>
+In-Reply-To: <CADiBU38bMuH00Bcx5hJas2=yAon00ffcGokT4u89vX-LJYuxNA@mail.gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Fri, 23 Apr 2021 08:58:37 +0800
+Message-ID: <CADiBU39F4nHC5U+G+fJJemAJgeYxDimi0cXYkm25+YC8qO5yDA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] mfd: rt4831: Adds support for Richtek RT4831
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 6:14 PM, subashab@codeaurora.org wrote:
-> On 2021-04-22 14:14, Alex Elder wrote:
->> On 4/22/21 3:02 PM, Sharath Chandra Vurukala wrote:
->>> This series introduces the MAPv5 packet format.
->>>
->>>    Patch 0 documents the MAPv4/v5.
->>>    Patch 1 introduces the MAPv5 and the Inline checksum offload for 
->>> RX/Ingress.
->>>    Patch 2 introduces the MAPv5 and the Inline checksum offload for 
->>> TX/Egress.
->>
->> Was this supposed to be version 5?
->>
->> I already reviewed version 4.
->>
->> Please post version 5.  I am going to ignore this series.
->>
->>                     -Alex
->>
-> 
-> What are you talking about?
-> 
-> Patchwork shows that Sharath has posted upto v3 so far.
+Hi, Lee:
 
-Sorry about that.  Sharath posted a series version 4 last week, which
-I reviewed.  I mistakenly thought he had posted it for upstream review
-and didn't realize he sent it to me (and others) privately.
+ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=8819=E6=
+=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=885:55=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Lee Jones <lee.jones@linaro.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=8819=E6=
+=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:24=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > On Mon, 19 Apr 2021, Lee Jones wrote:
+> >
+> > > On Mon, 19 Apr 2021, Lee Jones wrote:
+> > >
+> > > > On Mon, 19 Apr 2021, ChiYuan Huang wrote:
+> > > >
+> > > > > Hi, Linux mfd reviewers:
+> > > > >    It's been three weeks not to get any response from you.
+> > > > > Is there something wrong about this mfd patch?
+> > > > > If yes, please feel free to let me know.
+> > > >
+> > > > Couple of things:
+> > > >
+> > > > First, if you think a patch had fallen through the gaps, which does
+> > > > happen sometimes, it is generally considered acceptable to submit a
+> > > > [RESEND] ~2 weeks after the initial submission.  FYI: This was such=
+ a
+> > > > patch.  It was not on, or had fallen off of my radar for some reaso=
+n.
+> > > >
+> > > > Secondly, we are really late in the release cycle.  -rc8 has just b=
+een
+> > > > released.  Quite a few maintainers slow down at ~-rc6.  Particularl=
+y
+> > > > for new drivers.
+> > > >
+> > > > No need to resubmit this driver this time.  It is now on my to-revi=
+ew
+> > > > list and I will tend to it shortly.
+> > > >
+> > > > Thanks for your patience.
+> > >
+> > > Also you are missing a DT review on patch 4.
+> >
+> > ... looks like you forgot to Cc them!
+> >
+> Yap, really. I''ll resend patch 4 and cc them. Thx.
 
-Still, I said he should tag the second patch "Acked-by:" me and
-he did not, so I assumed it was a repost of the same code.
-
-I'll review this after all.
-
-					-Alex
-
-> 
-> https://patchwork.kernel.org/project/netdevbpf/list/?submitter=197703&state=%2A&archive=both 
-> 
-
+Should I resend the patch and loop DT reviewers?
+> > --
+> > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> > Senior Technical Lead - Developer Services
+> > Linaro.org =E2=94=82 Open source software for Arm SoCs
+> > Follow Linaro: Facebook | Twitter | Blog
