@@ -2,100 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AC9369B21
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CD1369B24
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243891AbhDWUJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhDWUJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:09:37 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0CDC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:09:00 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id s5so42076500qkj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=aK8iz3zm04xOuoxeCmMxLwgvro5ZujIcNZdrYiQYSqw=;
-        b=CA/6bq0RQgR39iQYo3JaGJ3rhlMNTFg6Kp52Q9HfsiTEIksa18HN+fGFPH4Vpl9Lih
-         VHl3FWjZ5xDxzUyrFLH7zB1fnKywzv5TKjJr3DeKTfyzYo9N6wxpIVpbFGvamk2mNH9l
-         bNtBr5OD9aHHaEBZxo3Qsv4zXEQLTXvX0mHYageo00UQXDp3d/abDfjJmMuhHQOx0vIv
-         EcUqYxQO7vq78dVd5OlBG0o7MP4T952lErPJut9Kl9OMTHpWUOtdazSW4RyOj2VdlJQn
-         k63IbKsCqXPO0f9r8jT4f8/1fPqiCx7GydKYLn9fftipvTZ+EZY3Ftic4v0D3dsQvbEW
-         KnWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=aK8iz3zm04xOuoxeCmMxLwgvro5ZujIcNZdrYiQYSqw=;
-        b=XYyMks0dlrwcty9zBMJ4iprTabo/NL3r15ErHAmbxcIagKUj38udDtRd+s6sR3o3z4
-         jM6qz7XhN7kA/Lqzf47omkZYEkQW16FZDa+oMPtifh5kDrwMOzhTGi9kLD4Q+Z9pvCTX
-         xEoBsYWQzTTJlY26oNI9tn0kCzj2MPDllCp9ryPxIm79kec/FYCH+6Ctl6uy3FG59wEm
-         hT9qYms2F36PRWPiTEzKy0HB1TgmMc9fAywsl0UUF8Dk6TI0u8GrAAZ3Ng6Kdiegig6K
-         XTpNc5Jd70Afwmfnc5a2vttWveg7yWhuwHX0W/gHdvAqU2sdvPse4C8Wuk15QU5REpSr
-         g3oA==
-X-Gm-Message-State: AOAM532A5T1AIvqZGXZ2f6WJrUZtYo0oXKkFDP3d8s2Lqel6wyUTJT2J
-        iIqdD2/X/x0/xWApfl/ZRE2GiA==
-X-Google-Smtp-Source: ABdhPJyh9pNSKDLnATFK2Hm5RgriFDYoCipfaWR58npPvwxnUU+kGd/Y/FkZNtq7A1mgkBx15YVUmg==
-X-Received: by 2002:a05:620a:1350:: with SMTP id c16mr5839252qkl.105.1619208539641;
-        Fri, 23 Apr 2021 13:08:59 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i127sm5091592qke.71.2021.04.23.13.08.58
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 23 Apr 2021 13:08:59 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 13:08:43 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2 2/2] mm/filemap: fix mapping_seek_hole_data on THP &
- 32-bit
-In-Reply-To: <20210423122940.26829dc784a4b6546349dac5@linux-foundation.org>
-Message-ID: <alpine.LSU.2.11.2104231302530.19649@eggly.anvils>
-References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils> <alpine.LSU.2.11.2104211737410.3299@eggly.anvils> <20210422011631.GL3596236@casper.infradead.org> <alpine.LSU.2.11.2104212253000.4412@eggly.anvils> <alpine.LSU.2.11.2104221338410.1170@eggly.anvils>
- <alpine.LSU.2.11.2104221347240.1170@eggly.anvils> <20210422160410.e9014b38b843d7a6ec06a9bb@linux-foundation.org> <alpine.LSU.2.11.2104231009520.18646@eggly.anvils> <20210423122940.26829dc784a4b6546349dac5@linux-foundation.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S230028AbhDWULG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:11:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhDWULF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 16:11:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3279361452;
+        Fri, 23 Apr 2021 20:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619208628;
+        bh=UWmAWC2tPQK+/jLuSr28NYJrUsePoE9Ilbuq5V7dFiw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oCeZjZETPlV++Wu7U6VGVroHOG5velueGx6I1FpF71W+s/XQjWbDB3zyoAWWy7otr
+         x4N2FIn8FDswg2HWB82V48rMRsPJOcTsayOaF6nHQcXgqzDeiAMmv/OZKCw4O1oYbX
+         FQ2xfpWxJlnqsrk3QQVl4SUM3IaUZibxZpA8h3cCU5GUehWmaLHnj4MHyrppFrjJiO
+         n4TB/5CRjOKspdF1nORZ5PEGVJD4KgFBZ6J9Ql4tYxtxSgiJinTm2RK6cOKWOyvauQ
+         7EZ0f3A/uhvgUWTzcmg7H3tRDH+i4AJRNhcQF3ZwFRodHnlsgWELDKH4CEqQctxcVK
+         Qo3H0eWLSDplg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 27D3A60976;
+        Fri, 23 Apr 2021 20:10:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] openvswitch: meter: remove rate from the bucket size
+ calculation
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161920862815.30338.13572609304102929067.git-patchwork-notify@kernel.org>
+Date:   Fri, 23 Apr 2021 20:10:28 +0000
+References: <20210421135747.312095-1-i.maximets@ovn.org>
+In-Reply-To: <20210421135747.312095-1-i.maximets@ovn.org>
+To:     Ilya Maximets <i.maximets@ovn.org>
+Cc:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
+        azhou@ovn.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dev@openvswitch.org,
+        xiangxia.m.yue@gmail.com, u9012063@gmail.com,
+        jean.tourrilhes@hpe.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021, Andrew Morton wrote:
-> On Fri, 23 Apr 2021 10:22:51 -0700 (PDT) Hugh Dickins <hughd@google.com> wrote:
-> > On Thu, 22 Apr 2021, Andrew Morton wrote:
-> > > On Thu, 22 Apr 2021 13:48:57 -0700 (PDT) Hugh Dickins <hughd@google.com> wrote:
-> > > 
-> > > > Andrew, I'd have just sent a -fix.patch to remove the unnecessary u64s,
-> > > > but need to reword the commit message: so please replace yesterday's
-> > > > mm-filemap-fix-mapping_seek_hole_data-on-thp-32-bit.patch
-> > > > by this one - thanks.
-> > > 
-> > > Actually, I routinely update the base patch's changelog when queueing a -fix.
-> > 
-> > And thank you for that, but if there's time, I think we would still
-> > prefer the final commit message to include corrections where Matthew
-> > enlightened me (that "sign-extension" claim came from my confusion):
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed, 21 Apr 2021 15:57:47 +0200 you wrote:
+> Implementation of meters supposed to be a classic token bucket with 2
+> typical parameters: rate and burst size.
 > 
-> That's my point.  When I merge a -v2 as a -fix, I replace the v1
-> patch's changelog with v2's changelog so everything works out after
-> folding.
+> Burst size in this schema is the maximum number of bytes/packets that
+> could pass without being rate limited.
+> 
+> Recent changes to userspace datapath made meter implementation to be
+> in line with the kernel one, and this uncovered several issues.
+> 
+> [...]
 
-Oh, great, thanks: that was not clear to me, I feared you meant adding
-"v2: remove unneeded u64 casts" to v1 when merging.
+Here is the summary with links:
+  - [net] openvswitch: meter: remove rate from the bucket size calculation
+    https://git.kernel.org/netdev/net/c/7d742b509dd7
 
-Hugh
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
