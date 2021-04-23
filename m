@@ -2,113 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3F2368DA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B7D368DA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240968AbhDWHKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:10:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36383 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhDWHKA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:10:00 -0400
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lZpwJ-0003Qf-Rb
-        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 07:09:23 +0000
-Received: by mail-wr1-f70.google.com with SMTP id f15-20020adffccf0000b02901028c7339ccso14746224wrs.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:09:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=16r9DssXKUC9HdkrZg3Sm4SlbqGPCpv9BtQcvqu4Nqs=;
-        b=B2+ZVljCeXb91NPEdpX83K9Yi/Hy0TI9az9L7Nh62W50doV7wq9do1uJTBhGGa+x1x
-         2j3UyiusQWi3hRovEpUTazbpOlEs32a3llCHqNsnT+Dfstmg2rC5Lm4eJZN5KumqDDIL
-         zest9ntjQ0wtZHOF3lQ1MNzH8JKGl2hsE6/9h3V2FbxeZ1t0DI78e6RF5WNkjC21BCk1
-         leJtExR8qpN5Eh0rJ9SqVxsGK0AXMvVxpul99bSiaMNjlobHtK75sI7WXb8kP4/5Y5sI
-         lvPG0bchGKN7eBezIBusiNhJ+XT5lqDWfjJPiIK/XbNpvWojXcbS/DurQQe/tLhyIJTR
-         eEJg==
-X-Gm-Message-State: AOAM532PvTymL6fQ/aAOBIH2L8Xe2hBp9CYpXWKSng51093K/FmVTeYs
-        UXcfmnAd67SBD98NJH7YjcrDBPu36agzvtJfa0oZ7qWA+J9JDEF6T4yx8YmpxdF0iTyu0YtThaK
-        SM0z0efUrgYa53AHSdHQULOZmrDauLctXfgGMNl2cpA==
-X-Received: by 2002:adf:d1c9:: with SMTP id b9mr2830891wrd.352.1619161763187;
-        Fri, 23 Apr 2021 00:09:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx7iVYsXTmbfyE3WjIA68KJwkWL2BOCwMNDEHHo8nMg4UhT+jmgh4htXnxkoNXG2W6OYDtUTA==
-X-Received: by 2002:adf:d1c9:: with SMTP id b9mr2830875wrd.352.1619161763000;
-        Fri, 23 Apr 2021 00:09:23 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id h9sm6756062wmb.35.2021.04.23.00.09.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 00:09:22 -0700 (PDT)
-Subject: Re: [PATCH 054/190] Revert "clk: samsung: Remove redundant check in
- samsung_cmu_register_one"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-55-gregkh@linuxfoundation.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <05bd90cf-e761-9ade-388c-7b78a0ed716a@canonical.com>
-Date:   Fri, 23 Apr 2021 09:09:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-55-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+        id S240977AbhDWHKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:10:34 -0400
+Received: from mail-eopbgr770100.outbound.protection.outlook.com ([40.107.77.100]:35123
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229945AbhDWHKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:10:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IVHKOGIsHCGnCUV4Yo4B0XRioUwGjYCMhmtyl1BQcGUtamj6eXo3dvs8/0sAGutrVAHCnuQomIafhGMLUIpZXQoVS/dlQt5AbdD/pSQ0LiXhb0O4LLvBeEjATHqIqDqLRk8TJgsVfquj/irhehfSLYZkE+6h21hx6LmWbq7Xhjc1b1ztKkRc6VYbAxwRuZGbGdXG1+x1mHKknyQlZMt0SkRq4UY3+36zdwB/qqY4iJ6katI0AIhoggPjSIzndeWdyH0KcXCPjV4Nz7oS8EY9uRSBjOpAr6DBHDGYGpnyZpdkS2msBkumspvBglqhr23xt3uDLe0lokc3OpNSVjrCzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zuPIC0sRHwa5Iz0QwQzLLyQ3S3RgYymNAdUz6GwveP8=;
+ b=jos/UhVBp2nUKmMSasaoCAYg/8y8fsmsFh8zQGLq9ehCTEHJ3Bvrp4ZuBQjs0hCGTnstL84CcXQ4M/9HpTNCdpGUYLqPcTlnvUKurt9Byr9R/Kyc378OdimsVtAOhgJ385dEpWkZX4sYxZPCAl1Ra8TZYNfYiVgddsaPLmc/26W9rk0VhvpjadceeBu4cbn51Txqsjz95h3411ltdsY4zJhoZr+KrhsgpqVBdQlTr9Wkz/Z9qV45N+C9MMCz6uSEU6bdNxIwf8wnc3kGxCZ+pxwPffcsntRb/Mj7/ZJH67hA9WobbnMrCoWFyxq8rWb6otdJgrQMsTeNbOT0GcIwWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zuPIC0sRHwa5Iz0QwQzLLyQ3S3RgYymNAdUz6GwveP8=;
+ b=HZL0eyDxluxIbvkFF9OLtrhIPclLtdHWSCdh/evvMOzfRh4Ruz1c582iEynYFOW7jqN4xi4M0IRFoCTXUK80p5LvP8sDDityA5WbzV3THFjzpo6E8MVlgKPljC1+R+iPkqNRxCbjY3wS90kRi21X852gJ7brg/yVmAWzw0PfZGE=
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ (2603:10b6:302:10::24) by MW4PR21MB1892.namprd21.prod.outlook.com
+ (2603:10b6:303:78::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.3; Fri, 23 Apr
+ 2021 07:09:54 +0000
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4065.008; Fri, 23 Apr 2021
+ 07:09:54 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Long Li <longli@microsoft.com>
+Subject: RE: [Patch v2 1/2] PCI: hv: Fix a race condition when removing the
+ device
+Thread-Topic: [Patch v2 1/2] PCI: hv: Fix a race condition when removing the
+ device
+Thread-Index: AQHXNzrEqHm1W7VddEiGdCJpDqqWbKrBrccw
+Date:   Fri, 23 Apr 2021 07:09:54 +0000
+Message-ID: <MW2PR2101MB0892A9A0972199A2FF6D68B0BF459@MW2PR2101MB0892.namprd21.prod.outlook.com>
+References: <1619070346-21557-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <1619070346-21557-1-git-send-email-longli@linuxonhyperv.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=825368ff-303b-448a-ba43-6f3872c68267;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-23T06:58:52Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: linuxonhyperv.com; dkim=none (message not signed)
+ header.d=none;linuxonhyperv.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2601:600:8b00:6b90:753d:cc43:efdd:9f99]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1a8d188c-7683-48bc-4159-08d90626cbbd
+x-ms-traffictypediagnostic: MW4PR21MB1892:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW4PR21MB1892B2F866DC7AE6F1B4B0D9BF459@MW4PR21MB1892.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QsVyujXq0mYCHhlMu/+TszeQP7wlDIoLV19x4nPJiSzPKXrN1Qu0pogUYMzYVU0Xg4xahH1RHRSn4y3dEyn6ZfHXRxYNJWRfO1SCNw7b/EAo7awZOETo4dw+0tlvVUmFK6X0cDQ5Adhz3Pk6MDJg5POvHW1PL1u+wnEcRzB3no7ON847np05u7VMobi6CC7iktSozcCfOmgdaIi+c/QPhd8ywvjXzfDcpaY3cm5pGu9d/DDCKxTdLqIUbLM85Kefb6DRpxTCzX6yZuqCI0kUbLLodVHlJmFWb2/Y5+eqsUa5Y80ZXfqgKcAJXVuf0y50iI7VNktB4GHks7APD0zvJVGBcy8U7x2gctnlC1si8FEqc/C9OvgFBdlpkKtpg4y+m6N7S5McHWPI5tQx/XCEkAv/MycEM+IAu5KZyWp49PuERTb5SCsdnebzSw1TUmLKI6og7y6/SxV/Jz7RAEQL7HRaC+qEqtStHsiutuesu377gBjNOddrmnaqkJWHYMSvL/aFDWxuEiOinDRAm6tZ4zWdip8Zyz0cWdqEC0vx6aOrDyy4QRrV0bnGhMoYEKZy5xX1+DCC3/Ey5OMJEtY+kJ6crmQ25mRpSrpYrTbrDYlBV+Y9yrEQOkarynVOpuwXDXfRWXGddfsp9fMFvQtOrA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(64756008)(66556008)(66476007)(186003)(38100700002)(5660300002)(66946007)(478600001)(122000001)(7696005)(8676002)(2906002)(6506007)(82960400001)(82950400001)(4326008)(55016002)(83380400001)(66446008)(8936002)(110136005)(52536014)(10290500003)(8990500004)(71200400001)(86362001)(921005)(107886003)(33656002)(9686003)(316002)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ValJQfdflSToH9r+oGEpJX9aPgi8HzD8IdhWaihYCnuq/OtBkr4QVWVVkpoi?=
+ =?us-ascii?Q?9ctSfobnLV4Ml+w4w/R9j7OIeys1+Sj5kRapMYEGIdWi9Q6RI9PsL8CczIau?=
+ =?us-ascii?Q?VJV30qbkdQiqka6Xh694xuiBAwpqiQSamog0wpVVJOoSdZCVF2Hj8cxQeO6E?=
+ =?us-ascii?Q?JmjFFPwwhn4B7CCCQocUTGKDv94AiFYietEIL/L8R16zwrnpBEcH/FAcib89?=
+ =?us-ascii?Q?vasVoXODqXSmoefD0LiGKthrekj6ghPO482ogcxXqtnb/gAsOrnzH7O+PyiF?=
+ =?us-ascii?Q?eu5V7m9WD2429eVpX9v8S17u12OeWJGhrsd8/HVm2HEK6HfhgclDKVoKxS0n?=
+ =?us-ascii?Q?r9HFQwRV+/GhcXjlZCWIvXLH7WnNokOYQpIeHJ5sV/ONwxl7YGtzUs2nZUmc?=
+ =?us-ascii?Q?CXWffaxs6la3dXe0z64MW9aBrtd0AYjbn/y7DQHVV58/p0plNfyMd4VblldV?=
+ =?us-ascii?Q?+DmFhf1qry2bsmp0N3MThiDCj6a8X+MQOmXsA43P1/CtQRwNCAEjdL4LRM/v?=
+ =?us-ascii?Q?jlOWsRG4bx4NTU1cgP2UfIJndJt6IXfNde9bO3gUTIFuW/vb13aX6S3r0mOJ?=
+ =?us-ascii?Q?jmHVNv1QRM6rxaVpTslQ2ZmmFsx8NpGQfy/Q95+b6A8k9F3zU9tP/VlVprjb?=
+ =?us-ascii?Q?4vNTDwuy2t+BheIW3bPkt/I7dVO/mXCT32HDZ8mJz1SqQnORUMJlCczc+h8u?=
+ =?us-ascii?Q?suYW2mL07+je7CRCAe3KZ4pHnF2I5lhn1zdOaYDwLmqRbiJ5YUTM0qesI0gE?=
+ =?us-ascii?Q?KSlhtXsfWSqZOtPTVs/vco3NRWF1uaaPFblCxPYIJpvjRSJKstMEtThaPtGV?=
+ =?us-ascii?Q?RLUrfotuoMIYBqgJG207ogf/wlhUc7MaXqeBSLRCg/cCqGjW9wRMpn3Aci68?=
+ =?us-ascii?Q?m+ogqlDkOp0zsTQkC/l1c6y4Sbp9RHqf0N4jN9Qxln+zcEIsii8CCU/gbnyv?=
+ =?us-ascii?Q?y5A5N35AFrg75+QvFlNGNKShaxEu0hSBTt2CK1PHzZTLDbrx/b6Ch9UtR5NX?=
+ =?us-ascii?Q?jZEy8vs2skoIvAmKDV6UlWQtaAq4dmhgmroTR7uVoug3UPemcXfGkKMH8SwB?=
+ =?us-ascii?Q?PGZIxgMlpQZHmTmYxUH5kdTCMryEC0XSdRifYmUAxD+6QiKJrjHnCzCvM0Dv?=
+ =?us-ascii?Q?UBRV1BiBqwe0WMgFBTB6R7FgQ2zfUIYEc3LuPZAGLWqeL2hLO00QPWs639ON?=
+ =?us-ascii?Q?C/kcuNVZndsiH4/qsWun4s1hpX3EvLNg87GGwS8W+wC93PhvfknnQe6nGi8b?=
+ =?us-ascii?Q?1tVEmdhtjOyBfTmcCzfichCLacc32H5p80Cvma71FEUiZLNeTi8yXMtEoBuF?=
+ =?us-ascii?Q?PtA5SDLKbBxs9CLjypzQoCNb+UqUXbqdMTh5gw+BEp2PR+VsDcvLFbnrdNMa?=
+ =?us-ascii?Q?ClkcurCB1FBbeKWIuUKCkfNcUo5K?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a8d188c-7683-48bc-4159-08d90626cbbd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 07:09:54.4158
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1JvAzwKcKNEVMNZJJae5DB1vMaFf4ZBLkJlhX7n+Yuk2W8Zir4a7lFQIPSVQeSBUFJ0vs8Ul9QRyUfRyRqB7LA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1892
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
-> This reverts commit 8d7a577d04e8ce24b1b81ee44ec8cd1dda2a9cd9.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: https
-> Cc: Chanwoo Choi <cw00.choi@samsung.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/clk/samsung/clk.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
-> index 1949ae7851b2..dad31308c071 100644
-> --- a/drivers/clk/samsung/clk.c
-> +++ b/drivers/clk/samsung/clk.c
-> @@ -356,6 +356,10 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
->  	}
->  
->  	ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
-> +	if (!ctx) {
-> +		panic("%s: unable to allocate ctx\n", __func__);
-> +		return ctx;
-> +	}
+> From: longli@linuxonhyperv.com <longli@linuxonhyperv.com>
+> Sent: Wednesday, April 21, 2021 10:46 PM
+> ...
+> diff --git a/drivers/pci/controller/pci-hyperv.c
+> b/drivers/pci/controller/pci-hyperv.c
+> index 27a17a1e4a7c..fc948a2ed703 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -444,7 +444,6 @@ enum hv_pcibus_state {
+>  	hv_pcibus_probed,
+>  	hv_pcibus_installed,
+>  	hv_pcibus_removing,
+> -	hv_pcibus_removed,
+>  	hv_pcibus_maximum
+>  };
+>=20
+> @@ -3305,13 +3304,22 @@ static int hv_pci_remove(struct hv_device *hdev)
+>=20
+>  	hbus =3D hv_get_drvdata(hdev);
+>  	if (hbus->state =3D=3D hv_pcibus_installed) {
+> +		tasklet_disable(&hdev->channel->callback_event);
+> +		hbus->state =3D hv_pcibus_removing;
+> +		tasklet_enable(&hdev->channel->callback_event);
+> +		destroy_workqueue(hbus->wq);
 
-Hi Greg,
+If we test "rmmod pci-hyperv", I suspect the warning will be printed:
+hv_pci_remove() -> hv_pci_bus_exit() -> hv_pci_start_relations_work():
 
-The commit was fine here, so please keep it. NAK for the revert.
+        if (hbus->state =3D=3D hv_pcibus_removing) {
+                dev_info(&hbus->hdev->device,
+                         "PCI VMBus BUS_RELATIONS: ignored\n");
+                return -ENOENT;
+        }
 
-Best regards,
-Krzysztof
+Ideally we'd like to avoid the warning in the driver unloading case.
+
+BTW, can you please add "hbus->wq =3D NULL;" after the line
+"destroy_workqueue(hbus->wq);"? In case some other function could
+still try to use hbus->wq by accident in the future, the error would be
+easier to be understood.
