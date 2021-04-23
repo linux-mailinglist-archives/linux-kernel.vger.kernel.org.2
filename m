@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F683369B66
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E44369B70
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243889AbhDWUjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        id S244001AbhDWUmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbhDWUjg (ORCPT
+        with ESMTP id S232636AbhDWUmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:39:36 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BC9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:38:58 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id g17so58136287edm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:38:58 -0700 (PDT)
+        Fri, 23 Apr 2021 16:42:17 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570C5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:41:38 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id i4so19555948ybe.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:41:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dfQYJoLyB6h5ZbM4eg6Kr44fOO/ylFVrCnfKWSRlupI=;
-        b=XIrgS7eZvzhqFQGzaCw99zsTJou6Zmn6+qlQS+jLXwjE4/FMmqnjZuwoAcS2cOq9MJ
-         YwLvedQjp6Xc7eib13/t2RHH1CRhgf4pLfr2ZnEmQ2s94gOCMX2a7ccCO4BrwX8ELRNz
-         pratDifm/U3Qz0LPqF5zfi5UiRmLchv91hKIKYZ7Tcw1b1ngICuDWkuFMKnVbs+PI+lF
-         Qx6B6YkP9fV1dUeP+TLUmymxhUAQdBr8fal4P+zCvMljDKJ2AR6ye99CxLvf1/n4xrTq
-         ImhgPSL3EFPtqiQITgBoMcFVvYbf3yVITE8jWKMGK2GZw/bT+aB9l6F5n9ZAlNFWYzuE
-         W3Eg==
+        bh=auJU3BRtz8kLnSrkdZgLf2c5wwbEssldt+ZbJ4Y83DY=;
+        b=V4e94mJarnBEEIzbTmeknPQb4WEQU9nbwxE46iVepOvs7S5EBupaX0AJOIo4y8DXCa
+         S5pCjGa6dmpzFPoP5FFGiBM38e8RAiMsmx3gOwDetea2Vk0yEDkkHoN0KUPFrqG8OYfp
+         fmOUPAuQxpin12R7ajv5hzfSeCE4STpYf+/Edsnxn19P0zYHn6eQwGsGUtcW/MlIYCcQ
+         j2SvC2tgwe/KEA2996W5fxcE/FAcVCiB7rLxT4yED3pOZBb410NE1clT60yLSLfasaf1
+         4deSGCXZ+cFLmjNhY86mTRESl3jG9CcYOjDp72yt9XIuq4GRxLyeKZacLNgsZ34No8LG
+         Pkbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dfQYJoLyB6h5ZbM4eg6Kr44fOO/ylFVrCnfKWSRlupI=;
-        b=scetHlPlKny8LFTpPQs1bfFUbF2Oj1TDz/TK5o/aCPJaOG9NCV6wnHB/eUnlDImx9i
-         OB3KXB3sURlU/hemT5SL2s+oW40lw1O3obaX1iCCMK0PnFjDRNxhv5Ul+QxIFAVQCXEr
-         qg4GPOM5fAN4yrmYb7dxDzdOdv17UkpDZcqD02DYMc9MhNcH7PC3gaeaj1lS6OMDIFzQ
-         q069loHqtk5wk5mM4/r96cvItQCyP9lZPAOYA5xAxhUe32DOihv7uof6OaO6McIDIZTW
-         laseKQNnxGthbS+qw5wOi+oCfPmcmJOElWwdFMD8m7VF76O83TT5Qtt20CigRoN4mVFN
-         +FJg==
-X-Gm-Message-State: AOAM533FpslfAO8KKPFgdy5KZuYd8SchkZbOjwnnRhntXcyW4Bz4xQLm
-        iuRoVdnUmCbOp549pvxprOpW0mf7AtHHmM1zzAxHpA==
-X-Google-Smtp-Source: ABdhPJyNoSkdooYSFcOxpyxKQDuiru1CJwem5bBb2pWMDB82inZWG0N72kKzPu9nUXH1iLB8MmvByOyiMsdyQh3mpBM=
-X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr6565480edd.348.1619210337492;
- Fri, 23 Apr 2021 13:38:57 -0700 (PDT)
+        bh=auJU3BRtz8kLnSrkdZgLf2c5wwbEssldt+ZbJ4Y83DY=;
+        b=glp3shzriyGk/V8ff9eol9bnXyYClYrriU5VOgze2XTFouMRrlHuXI6HzLyEZUBdk6
+         gXesdjdCXtBV+JmOOZ0Yra4WWA4Lb029GWv90y1s4eogfTmolS9H8F4wS5byvwtaeF1F
+         Qg68QKDESbUVg6fM8i0fs4W5+KDPNx5zDsw7a7dc9GUyT4u4JV4wHGXN4rD7Mv2gsuYx
+         PW8c8fgpWEtVZLXcFOPy+m6c9a2ZOVXbJ9NX4lq7FkFoz28YcS7wlDXRC0iN8wt1uKat
+         DjtTRPxDUTAab7jvbRPUmyShhri3qNTH4hGbZGGkgTUyWDBmzz3hu9m9WjfmlmGsd3fa
+         GfFg==
+X-Gm-Message-State: AOAM531/mkKck4G5pclku3eItF+MNtGGNt1KEnjpQBJVx1j1luqrg8Kz
+        M6wOHzIuHFGvOGxMyB7Rx98NxHdO0ijLtU6S8oqI7Q==
+X-Google-Smtp-Source: ABdhPJyBfGhsBB9FRsWEcCk5aBWchkNLQ3kIla3VhXZl/IDTn5cdSQFvFWFK5sRrGTzUs/EI8DxxZ65rJmeIVOoyZ7Q=
+X-Received: by 2002:a25:1905:: with SMTP id 5mr8390620ybz.302.1619210497639;
+ Fri, 23 Apr 2021 13:41:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423130723.1673919-1-vgoyal@redhat.com>
-In-Reply-To: <20210423130723.1673919-1-vgoyal@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 23 Apr 2021 13:38:51 -0700
-Message-ID: <CAPcyv4hz=nHYQ89-m-7yVJWpEP4gZBYTY6E4POAms9mYDb_N+g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] dax: Fix missed wakeup in put_unlocked_entry()
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sergio Lopez <slp@redhat.com>, Greg Kurz <groug@kaod.org>
+References: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 23 Apr 2021 22:41:26 +0200
+Message-ID: <CAMpxmJU+K6C_xbQPT=9QKtLLTnajJQbgJH0A2QqbGjCV+b9Z_g@mail.gmail.com>
+Subject: Re: [RFT, PATCH v1 0/5] gpio: xilinx: convert to use bitmap API
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 6:07 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+On Thu, Apr 8, 2021 at 4:55 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> Hi,
+> The change in the series has been inspired by [1], which, I think,
+> can be improved. Here I present the view how it can be done.
 >
-> This is V4 of the patches. Posted V3 here.
+> The series marked as RFT since I have no hardware and I perform
+> compile test only.
 >
-> https://lore.kernel.org/linux-fsdevel/20210419213636.1514816-1-vgoyal@redhat.com/
+> The patches 1 and 2 can be (independently) applied for v5.13, but I'm not in
+> hurry with the series, due to above (lack of real testing). So I'm flexible in
+> a way how it can be proceed.
 >
-> Changes since V3 are.
+> [1]: cover.1617380819.git.syednwaris@gmail.com
 >
-> - Renamed "enum dax_entry_wake_mode" to "enum dax_wake_mode" (Matthew Wilcox)
-> - Changed description of WAKE_NEXT and WAKE_ALL (Jan Kara)
-> - Got rid of a comment (Greg Kurz)
+> Andy Shevchenko (5):
+>   bitmap: Make bitmap_remap() and bitmap_bitremap() available to users
+>   gpio: xilinx: Correct kernel doc for xgpio_probe()
+>   gpio: xilinx: Introduce xgpio_read_chan() / xgpio_write_chan()
+>   gpio: xilinx: Switch to use bitmap APIs
+>   gpio: xilinx: No need to disable IRQs in the handler
+>
+>  drivers/gpio/gpio-xilinx.c | 377 ++++++++++++++++++-------------------
+>  lib/bitmap.c               |   5 +-
+>  2 files changed, 190 insertions(+), 192 deletions(-)
+>
+> --
+> 2.30.2
+>
 
-Looks good Vivek, thanks for the resend.
+I usually trust Andy with his work but is there any chance we can get
+a Tested-by before the merge window?
+
+Bart
