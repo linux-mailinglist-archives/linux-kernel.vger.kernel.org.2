@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFE5368CB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B154368CB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240536AbhDWFhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 01:37:23 -0400
+        id S240575AbhDWFh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 01:37:26 -0400
 Received: from mga18.intel.com ([134.134.136.126]:9279 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235684AbhDWFhT (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 01:37:19 -0400
-IronPort-SDR: oDnaJ8u6YqC3aX2frmYKpduhCuTqBDqrMAB1fSKUazeQc1g/h5Ab5d6HffCAvdFvmaJ48vWOiz
- fiWFcKtvPcbw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501772"
+        id S240420AbhDWFhU (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 01:37:20 -0400
+IronPort-SDR: ER7mvz/fXFi+YL0dsz9OQTh3ZMTAeJas0PZ8ZtN1rJuvhvdNmznDmK+HBGQ0q90YA/xV9Wv8h9
+ 384Z9JBrMFMA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501774"
 X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="183501772"
+   d="scan'208";a="183501774"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:36:42 -0700
-IronPort-SDR: aaHvhrndfAGjd8s3Is2is+C0we8/U4wCA/g1WPcmGKaNehHdknIWLqQ7tJ5A//wcVqaoPqaumf
- wf1wZVvRpiKQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:36:44 -0700
+IronPort-SDR: +yb4NceJTOLFxmZ2EbP6lPSxsI5+ZgSQ7UmQf7b3Csi0A1fQ7jEP3ApUnNrismBcU8DHGLbm70
+ HJEaIOQ4IUog==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="386293519"
+   d="scan'208";a="386293534"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:36:39 -0700
+  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:36:42 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v5 02/26] perf jevents: Support unit value "cpu_core" and "cpu_atom"
-Date:   Fri, 23 Apr 2021 13:35:17 +0800
-Message-Id: <20210423053541.12521-3-yao.jin@linux.intel.com>
+Subject: [PATCH v5 03/26] perf pmu: Simplify arguments of __perf_pmu__new_alias
+Date:   Fri, 23 Apr 2021 13:35:18 +0800
+Message-Id: <20210423053541.12521-4-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210423053541.12521-1-yao.jin@linux.intel.com>
 References: <20210423053541.12521-1-yao.jin@linux.intel.com>
@@ -41,68 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some Intel platforms, such as Alderlake, which is a hybrid platform
-and it consists of atom cpu and core cpu. Each cpu has dedicated event
-list. Part of events are available on core cpu, part of events are
-available on atom cpu.
-
-The kernel exports new cpu pmus: cpu_core and cpu_atom. The event in
-json is added with a new field "Unit" to indicate which pmu the event
-is available on.
-
-For example, one event in cache.json,
-
-    {
-        "BriefDescription": "Counts the number of load ops retired that",
-        "CollectPEBSRecord": "2",
-        "Counter": "0,1,2,3",
-        "EventCode": "0xd2",
-        "EventName": "MEM_LOAD_UOPS_RETIRED_MISC.MMIO",
-        "PEBScounters": "0,1,2,3",
-        "SampleAfterValue": "1000003",
-        "UMask": "0x80",
-        "Unit": "cpu_atom"
-    },
-
-The unit "cpu_atom" indicates this event is only available on "cpu_atom".
-
-In generated pmu-events.c, we can see:
-
-{
-        .name = "mem_load_uops_retired_misc.mmio",
-        .event = "period=1000003,umask=0x80,event=0xd2",
-        .desc = "Counts the number of load ops retired that. Unit: cpu_atom ",
-        .topic = "cache",
-        .pmu = "cpu_atom",
-},
-
-But if without this patch, the "uncore_" prefix is added before "cpu_atom",
-such as:
-        .pmu = "uncore_cpu_atom"
-
-That would be a wrong pmu.
+Simplify the arguments of __perf_pmu__new_alias() by passing
+the whole 'struct pme_event' pointer.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
 v5:
  - No change.
 
- tools/perf/pmu-events/jevents.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/util/pmu.c | 36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
 
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 33aa3c885eaf..ed4f0bd72e5a 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -285,6 +285,8 @@ static struct map {
- 	{ "imx8_ddr", "imx8_ddr" },
- 	{ "L3PMC", "amd_l3" },
- 	{ "DFPMC", "amd_df" },
-+	{ "cpu_core", "cpu_core" },
-+	{ "cpu_atom", "cpu_atom" },
- 	{}
- };
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 286d5e415bdc..8214def7b0f0 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -306,18 +306,25 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
+ }
  
+ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+-				 char *desc, char *val,
+-				 char *long_desc, char *topic,
+-				 char *unit, char *perpkg,
+-				 char *metric_expr,
+-				 char *metric_name,
+-				 char *deprecated)
++				 char *desc, char *val, struct pmu_event *pe)
+ {
+ 	struct parse_events_term *term;
+ 	struct perf_pmu_alias *alias;
+ 	int ret;
+ 	int num;
+ 	char newval[256];
++	char *long_desc = NULL, *topic = NULL, *unit = NULL, *perpkg = NULL,
++	     *metric_expr = NULL, *metric_name = NULL, *deprecated = NULL;
++
++	if (pe) {
++		long_desc = (char *)pe->long_desc;
++		topic = (char *)pe->topic;
++		unit = (char *)pe->unit;
++		perpkg = (char *)pe->perpkg;
++		metric_expr = (char *)pe->metric_expr;
++		metric_name = (char *)pe->metric_name;
++		deprecated = (char *)pe->deprecated;
++	}
+ 
+ 	alias = malloc(sizeof(*alias));
+ 	if (!alias)
+@@ -406,8 +413,7 @@ static int perf_pmu__new_alias(struct list_head *list, char *dir, char *name, FI
+ 	/* Remove trailing newline from sysfs file */
+ 	strim(buf);
+ 
+-	return __perf_pmu__new_alias(list, dir, name, NULL, buf, NULL, NULL, NULL,
+-				     NULL, NULL, NULL, NULL);
++	return __perf_pmu__new_alias(list, dir, name, NULL, buf, NULL);
+ }
+ 
+ static inline bool pmu_alias_info_file(char *name)
+@@ -798,11 +804,7 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
+ 		/* need type casts to override 'const' */
+ 		__perf_pmu__new_alias(head, NULL, (char *)pe->name,
+ 				(char *)pe->desc, (char *)pe->event,
+-				(char *)pe->long_desc, (char *)pe->topic,
+-				(char *)pe->unit, (char *)pe->perpkg,
+-				(char *)pe->metric_expr,
+-				(char *)pe->metric_name,
+-				(char *)pe->deprecated);
++				pe);
+ 	}
+ }
+ 
+@@ -869,13 +871,7 @@ static int pmu_add_sys_aliases_iter_fn(struct pmu_event *pe, void *data)
+ 				      (char *)pe->name,
+ 				      (char *)pe->desc,
+ 				      (char *)pe->event,
+-				      (char *)pe->long_desc,
+-				      (char *)pe->topic,
+-				      (char *)pe->unit,
+-				      (char *)pe->perpkg,
+-				      (char *)pe->metric_expr,
+-				      (char *)pe->metric_name,
+-				      (char *)pe->deprecated);
++				      pe);
+ 	}
+ 
+ 	return 0;
 -- 
 2.17.1
 
