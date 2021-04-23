@@ -2,92 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB3F369482
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70890369487
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhDWOVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        id S237126AbhDWOXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhDWOVF (ORCPT
+        with ESMTP id S229549AbhDWOXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:21:05 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787C7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:20:29 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id b17so35297699pgh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:20:29 -0700 (PDT)
+        Fri, 23 Apr 2021 10:23:32 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21C1C061574;
+        Fri, 23 Apr 2021 07:22:55 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id r128so50814669lff.4;
+        Fri, 23 Apr 2021 07:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0xghm4OXD8c/QLiiGnWTz+eX5J3vFTUT6uMEKutl3hs=;
-        b=Ye8U9iMLDZV2fucp4kn601q9lppSMINsKKEwNooGz2vucLufcoXK8aUsogzRVUgJDl
-         1wpCqbgv7vVSbSHFIRBB7yaRQqkjHNdTbmDF+YsvcDgsLEGPMYqe29Q9xKfRXWiXHYKu
-         hUoepEi6yOUboJXa5YvAg2Mlt2dCBPMcG7htg4j8XX6IY3LjBJDRbR12Reo1tJhD9z46
-         yHCja3hOrPFDlZcPnjlhwIeZNgS+V1nWxKNUiAFFIXcdb2Ncm2xaMA4pbXfTrkhevWn/
-         F7emJZQMK/ixiunFM+cLOQjrxFR3rl/0p27ZfwTquWYCBfheKvdFk4sRkC2rxbFt1nFN
-         ru0Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qa960KFNtDJWzfAsJHjaJz591q3u8hYXWUc5bQSIFZQ=;
+        b=E5Q5fzOYxKb7vTg6Z0Fd03DNJhEsqQliuJ/wNn88ZidkxiT97Ho9ZcT9r1RVj71++b
+         6ansjU/yJFnR0kwb3WMrDSktUkw/1NyeuVHaf6VRurcOEDJ62JUrBWAb0bTs9kfud8t4
+         29Owr5AcXlebNyD6nw5BfKpAMgHYFU/naT1nBnm8wdRoWzdwPDBbu8WzJiWRxhkxzgjY
+         vap+1+a7HjNwjerEchtfNfmAuCBSiR1H42fr41xQCTUG3z4VgTrtZMa/uXStHpWuG5cd
+         3XnnJxMbvwAriHG64TXI9828OSMcvrpaA4iTlRFImuhq1dogayUYOlsZBci4xlpYi7Ad
+         aeOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0xghm4OXD8c/QLiiGnWTz+eX5J3vFTUT6uMEKutl3hs=;
-        b=Lyag4OBGouKIHR4a1rWbw/aBuDVxiD0+XpE8F7M5jcHQzQp0kMwK5ri8hHzdiBWkzT
-         IY3vJtl/6E5p127sHTz4n4kJSY6KOPKBCNtze4seYe77JvjX0AgUfoz8y/yRr8SPyJr6
-         MYfUnO/DULd/nvFguy14rszn/iRaKLJcDCYlO4Pq0A3qvB0KBa4VZtjnJ5hij7ZpJZ1n
-         kRzrLQcDOp9xuDQgjbs5pju4LhpZ6HMf27X2EbLF4iNv6YGhUQT83tazt8vLDhMhTTxA
-         KMLZnZae8QTsQk+kLegp+eVy+LcYPxO1vSeSPJhgtw7zFWhx4jzX1zdrIwoypKU5FeWV
-         l8Yg==
-X-Gm-Message-State: AOAM533SK+pG6iABIaWiHASbsBNGd8ppEv8AQhH3bavm+BX31HW8KbLX
-        vaYfMq+n4gtQwFK2CqfpqsKtfMxsFI0EyZVO
-X-Google-Smtp-Source: ABdhPJy2+amVauYpcugTFnQ+Oi/lsJTU11+p37KXaElfiq9cTMZ6LTfgj/M8vKyB9idx/KBcDXDUMg==
-X-Received: by 2002:a05:6a00:170c:b029:225:8851:5b3c with SMTP id h12-20020a056a00170cb029022588515b3cmr4126113pfc.0.1619187628882;
-        Fri, 23 Apr 2021 07:20:28 -0700 (PDT)
-Received: from ?IPv6:2600:380:497c:70df:6bb6:caf7:996c:9229? ([2600:380:497c:70df:6bb6:caf7:996c:9229])
-        by smtp.gmail.com with ESMTPSA id a20sm4918907pfi.138.2021.04.23.07.20.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 07:20:28 -0700 (PDT)
-Subject: Re: [PATCH 167/190] Revert "gdrom: fix a memory leak bug"
-To:     Peter Rosin <peda@axentia.se>, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, wang6495@umn.edu
-References: <20210421130105.1226686-168-gregkh@linuxfoundation.org>
- <23ffd3c5-0095-6a95-8c30-2b6f67377ce7@axentia.se>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <14bdfbee-b8b9-d8ac-de34-b6d852d1485b@kernel.dk>
-Date:   Fri, 23 Apr 2021 08:20:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qa960KFNtDJWzfAsJHjaJz591q3u8hYXWUc5bQSIFZQ=;
+        b=o7hvgFw/s8YcVUFP82l1Y2CozIrJWZGifqn3UQ5cBB7Ee4GUeXop7sjd9Jjm5bwLJE
+         v/k+HeUvKLij0dW9CWrMPFRu07snl0e5A1HlYBAMOjesiqs8NAfey/IOEIRmxQq0BM+2
+         bxD3ge2HkzRtCUjX1hNiWXQVSjO6UQsFEeQDB0wGLpjiqw+f3X+y4OMC5PFo1FvqsdBF
+         0meJyV76lOR94l1s84msR11G1pff8KUj9s6IUPjN8rTh8ai6ji95KtfTr0Co+McjNPvP
+         iDakxdhx+KoOM4GfWFdeOOzMfjXiaV5w3D26wePMHXQ6ORz1Odpur+QzmxjPQCTOSlt/
+         nLNA==
+X-Gm-Message-State: AOAM5320JpGcPYh9kEbWcgM3GrMTXZ1fPt7zO3VPryf+FbwMabQg3/9Z
+        Zyic9lZtVNRVt4o3tezLWbQ9Gp/6vna7Tz8BO2AuZFEX
+X-Google-Smtp-Source: ABdhPJw3QpXCLbuutv29r/KI5zf4kroTRX9E1xa5uWDI96RtTPOqa8A16tvHlawGP3l1hrHeyhipL8Br05agVBFZiGY=
+X-Received: by 2002:a05:6512:4ca:: with SMTP id w10mr2923982lfq.322.1619187774064;
+ Fri, 23 Apr 2021 07:22:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <23ffd3c5-0095-6a95-8c30-2b6f67377ce7@axentia.se>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210421171446.785507-1-omosnace@redhat.com> <20210421171446.785507-3-omosnace@redhat.com>
+ <CAEjxPJ5ksqrafO8uaf3jR=cjU5JnyQYmn_57skp=WXz7-RcbVQ@mail.gmail.com> <CAFqZXNv4gKFN5FV_Z8U82cOzauBggaqPE0WZZUdnNRxCQ3PVPw@mail.gmail.com>
+In-Reply-To: <CAFqZXNv4gKFN5FV_Z8U82cOzauBggaqPE0WZZUdnNRxCQ3PVPw@mail.gmail.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Fri, 23 Apr 2021 10:22:42 -0400
+Message-ID: <CAEjxPJ5iWjcQGzfJy-5CLa+e95C+OmeQ_GAU44s+8ripuMJg9g@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] selinux: add capability to map anon inode types
+ to separate classes
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lokesh Gidra <lokeshgidra@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 3:29 PM, Peter Rosin wrote:
->> This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
-> 
-> The reverted patch looks fishy.
-> 
-> gc.cd_info is kzalloc:ed on probe. In case probe fails after this allocation, the
-> memory is kfree:d but the variable is NOT zeroed out.
-> 
-> AFAICT, the above leads to a double-free on exit by the added line.
-> 
-> I believe gd.cd_info should be kfree:d on remove instead.
-> 
-> However, might not gc.toc also be kfree:d twice for similar reasons?
-> 
-> I could easily be mistaken.
+On Fri, Apr 23, 2021 at 9:41 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>
+> On Thu, Apr 22, 2021 at 3:21 PM Stephen Smalley
+> <stephen.smalley.work@gmail.com> wrote:
+> > On Wed, Apr 21, 2021 at 1:14 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > >
+> > > Unfortunately, the approach chosen in commit 29cd6591ab6f ("selinux:
+> > > teach SELinux about anonymous inodes") to use a single class for all
+> > > anon inodes and let the policy distinguish between them using named
+> > > transitions turned out to have a rather unfortunate drawback.
+> > >
+> > > For example, suppose we have two types of anon inodes, "A" and "B", and
+> > > we want to allow a set of domains (represented by an attribute "attr_x")
+> > > certain set of permissions on anon inodes of type "A" that were created
+> > > by the same domain, but at the same time disallow this set to access
+> > > anon inodes of type "B" entirely. Since all inodes share the same class
+> > > and we want to distinguish both the inode types and the domains that
+> > > created them, we have no choice than to create separate types for the
+> > > cartesian product of (domains that belong to attr_x) x ("A", "B") and
+> > > add all the necessary allow and transition rules for each domain
+> > > individually.
+> > >
+> > > This makes it very impractical to write sane policies for anon inodes in
+> > > the future, as more anon inode types are added. Therefore, this patch
+> > > implements an alternative approach that assigns a separate class to each
+> > > type of anon inode. This allows the example above to be implemented
+> > > without any transition rules and with just a single allow rule:
+> > >
+> > > allow attr_x self:A { ... };
+> > >
+> > > In order to not break possible existing users of the already merged
+> > > original approach, this patch also adds a new policy capability
+> > > "extended_anon_inode_class" that needs to be set by the policy to enable
+> > > the new behavior.
+> > >
+> > > I decided to keep the named transition mechanism in the new variant,
+> > > since there might eventually be some extra information in the anon inode
+> > > name that could be used in transitions.
+> > >
+> > > One minor annoyance is that the kernel still expects the policy to
+> > > provide both classes (anon_inode and userfaultfd) regardless of the
+> > > capability setting and if one of them is not defined in the policy, the
+> > > kernel will print a warning when loading the policy. However, it doesn't
+> > > seem worth to work around that in the kernel, as the policy can provide
+> > > just the definition of the unused class(es) (and permissions) to avoid
+> > > this warning. Keeping the legacy anon_inode class with some fallback
+> > > rules may also be desirable to keep the policy compatible with kernels
+> > > that only support anon_inode.
+> > >
+> > > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> >
+> > NAK.  We do not want to introduce a new security class for every user
+> > of anon inodes - that isn't what security classes are for.
+> > For things like kvm device inodes, those should ultimately use the
+> > inherited context from the related inode (the /dev/kvm inode itself).
+> > That was the original intent of supporting the related inode.
+>
+> Hmm, so are you implying that anon inodes should be thought of the
+> same as control /dev nodes? I.e. that even though there may be many
+> one-time actual inodes created by different processes, they should be
+> thought of as a single "static interface" to the respective kernel
+> functionality? That would justify having a common type/label for all
+> of them, but I'm not sure if it doesn't open some gap due to the
+> possibility to pass the associated file descriptors between processes
+> (as AFAIK, these can hold some context)...
 
-From taking a quick look the other day, that's my conclusion too. I
-don't think the patch is correct, but I don't think the surrounding code
-is correct right now either.
+That was the original design (and the original patchset that we posted
+in parallel with Google's independently developed one). We even had
+example policy/controls for /dev/kvm ioctls.
+Imagine trying to write policy over /dev/kvm ioctls where you have to
+deal with N different classes and/or types and remember which ioctl
+commands are exercised on which class or type even though from the
+users' perspective they all occurred through the /dev/kvm interface.
+It seemed super fragile and difficult to maintain/analyze that way.
+Versus writing a single allow rule for all /dev/kvm ioctls.
 
--- 
-Jens Axboe
+I guess we could discuss the alternatives but please have a look at
+those original patches and examples.  If we go down this road, we need
+some way to deal with scaling because we only have a limited number of
+discrete classes available to us and potentially unbounded set of
+distinct anon inode users (although hopefully in practice only a few
+that we care about distinguishing).
 
+> I thought this was supposed to resemble more the way BPF, perf_event,
+> etc. support was implemented - the BPF and perf_event fds are also
+> anon inodes under the hood, BTW - where each file descriptor is
+> considered a separate object that inherits the label of its creator
+> and there is some class separation (e.g. bpf vs. perf_event).
