@@ -2,311 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ACE3693CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29C83693CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243052AbhDWNhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:37:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38116 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243035AbhDWNfo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:35:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619184907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PBmQWKrBnOttTvNtffWuyztSDQ4t8ZgEwDDCGcqHdIE=;
-        b=B69eksT5j2Mb+3pC5kZrOipXQjQhvT0+wmsOtIfNV1jhbj6o2D9Ux2y1yfzJrEjBNgeXc3
-        jbOt2vhqOvkEf4sABxpJrQ6aIN1EFWAQJK+nOIaMZFSz6hHFqiOLySPHpTCanDdD8fEblz
-        tLA4eyr1nYJXm4kQBpns9njotPQ8LqM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-M86raN7mNKOZecy7jfDNgw-1; Fri, 23 Apr 2021 09:35:04 -0400
-X-MC-Unique: M86raN7mNKOZecy7jfDNgw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52A9910054F6;
-        Fri, 23 Apr 2021 13:35:01 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0BE05C1BB;
-        Fri, 23 Apr 2021 13:34:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v7 31/31] afs: Use the netfs_write_begin() helper
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        dhowells@redhat.com,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Fri, 23 Apr 2021 14:34:55 +0100
-Message-ID: <161918489504.3145707.5655048601094961805.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
-References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S242710AbhDWNhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:37:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:35024 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235502AbhDWNgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:36:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FD1113A1;
+        Fri, 23 Apr 2021 06:35:42 -0700 (PDT)
+Received: from [10.57.62.63] (unknown [10.57.62.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 492D03F73B;
+        Fri, 23 Apr 2021 06:35:34 -0700 (PDT)
+Subject: Re: [PATCH v5 16/16] of: Add plumbing for restricted DMA pool
+To:     Claire Chang <tientzu@chromium.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+References: <20210422081508.3942748-1-tientzu@chromium.org>
+ <20210422081508.3942748-17-tientzu@chromium.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <03c5bc8a-3965-bf1d-01a4-97d074dfbe2b@arm.com>
+Date:   Fri, 23 Apr 2021 14:35:32 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210422081508.3942748-17-tientzu@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make AFS use the new netfs_write_begin() helper to do the pre-reading
-required before the write.  If successful, the helper returns with the
-required page filled in and locked.  It may read more than just one page,
-expanding the read to meet cache granularity requirements as necessary.
+On 2021-04-22 09:15, Claire Chang wrote:
+> If a device is not behind an IOMMU, we look up the device node and set
+> up the restricted DMA when the restricted-dma-pool is presented.
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>   drivers/of/address.c    | 25 +++++++++++++++++++++++++
+>   drivers/of/device.c     |  3 +++
+>   drivers/of/of_private.h |  5 +++++
+>   3 files changed, 33 insertions(+)
+> 
+> diff --git a/drivers/of/address.c b/drivers/of/address.c
+> index 54f221dde267..fff3adfe4986 100644
+> --- a/drivers/of/address.c
+> +++ b/drivers/of/address.c
+> @@ -8,6 +8,7 @@
+>   #include <linux/logic_pio.h>
+>   #include <linux/module.h>
+>   #include <linux/of_address.h>
+> +#include <linux/of_reserved_mem.h>
+>   #include <linux/pci.h>
+>   #include <linux/pci_regs.h>
+>   #include <linux/sizes.h>
+> @@ -1109,6 +1110,30 @@ bool of_dma_is_coherent(struct device_node *np)
+>   }
+>   EXPORT_SYMBOL_GPL(of_dma_is_coherent);
+>   
+> +int of_dma_set_restricted_buffer(struct device *dev)
+> +{
+> +	struct device_node *node;
+> +	int count, i;
+> +
+> +	if (!dev->of_node)
+> +		return 0;
+> +
+> +	count = of_property_count_elems_of_size(dev->of_node, "memory-region",
+> +						sizeof(phandle));
+> +	for (i = 0; i < count; i++) {
+> +		node = of_parse_phandle(dev->of_node, "memory-region", i);
+> +		/* There might be multiple memory regions, but only one
+> +		 * restriced-dma-pool region is allowed.
+> +		 */
 
-Note: A more advanced version of this could be made that does
-generic_perform_write() for a whole cache granule.  This would make it
-easier to avoid doing the download/read for the data to be overwritten.
+What's the use-case for having multiple regions if the restricted pool 
+is by definition the only one accessible?
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-By: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588546422.3465195.1546354372589291098.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161539563244.286939.16537296241609909980.stgit@warthog.procyon.org.uk/ # v4
-Link: https://lore.kernel.org/r/161653819291.2770958.406013201547420544.stgit@warthog.procyon.org.uk/ # v5
-Link: https://lore.kernel.org/r/161789102743.6155.17396591236631761195.stgit@warthog.procyon.org.uk/ # v6
----
+Robin.
 
- fs/afs/file.c     |   19 +++++++++
- fs/afs/internal.h |    1 
- fs/afs/write.c    |  108 ++++++-----------------------------------------------
- 3 files changed, 31 insertions(+), 97 deletions(-)
-
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 10c6eaaac2cc..db035ae2a134 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -333,6 +333,13 @@ static void afs_init_rreq(struct netfs_read_request *rreq, struct file *file)
- 	rreq->netfs_priv = key_get(afs_file_key(file));
- }
- 
-+static bool afs_is_cache_enabled(struct inode *inode)
-+{
-+	struct fscache_cookie *cookie = afs_vnode_cache(AFS_FS_I(inode));
-+
-+	return fscache_cookie_enabled(cookie) && !hlist_empty(&cookie->backing_objects);
-+}
-+
- static int afs_begin_cache_operation(struct netfs_read_request *rreq)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(rreq->inode);
-@@ -340,14 +347,24 @@ static int afs_begin_cache_operation(struct netfs_read_request *rreq)
- 	return fscache_begin_read_operation(rreq, afs_vnode_cache(vnode));
- }
- 
-+static int afs_check_write_begin(struct file *file, loff_t pos, unsigned len,
-+				 struct page *page, void **_fsdata)
-+{
-+	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
-+
-+	return test_bit(AFS_VNODE_DELETED, &vnode->flags) ? -ESTALE : 0;
-+}
-+
- static void afs_priv_cleanup(struct address_space *mapping, void *netfs_priv)
- {
- 	key_put(netfs_priv);
- }
- 
--static const struct netfs_read_request_ops afs_req_ops = {
-+const struct netfs_read_request_ops afs_req_ops = {
- 	.init_rreq		= afs_init_rreq,
-+	.is_cache_enabled	= afs_is_cache_enabled,
- 	.begin_cache_operation	= afs_begin_cache_operation,
-+	.check_write_begin	= afs_check_write_begin,
- 	.issue_op		= afs_req_issue_op,
- 	.cleanup		= afs_priv_cleanup,
- };
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index f9a692fc08f4..52157a05796a 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1045,6 +1045,7 @@ extern void afs_dynroot_depopulate(struct super_block *);
- extern const struct address_space_operations afs_fs_aops;
- extern const struct inode_operations afs_file_inode_operations;
- extern const struct file_operations afs_file_operations;
-+extern const struct netfs_read_request_ops afs_req_ops;
- 
- extern int afs_cache_wb_key(struct afs_vnode *, struct afs_file *);
- extern void afs_put_wb_key(struct afs_wb_key *);
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index bc84c771b0fd..dc66ff15dd16 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -11,6 +11,8 @@
- #include <linux/pagemap.h>
- #include <linux/writeback.h>
- #include <linux/pagevec.h>
-+#include <linux/netfs.h>
-+#include <linux/fscache.h>
- #include "internal.h"
- 
- /*
-@@ -22,68 +24,6 @@ int afs_set_page_dirty(struct page *page)
- 	return __set_page_dirty_nobuffers(page);
- }
- 
--/*
-- * Handle completion of a read operation to fill a page.
-- */
--static void afs_fill_hole(struct afs_read *req)
--{
--	if (iov_iter_count(req->iter) > 0)
--		/* The read was short - clear the excess buffer. */
--		iov_iter_zero(iov_iter_count(req->iter), req->iter);
--}
--
--/*
-- * partly or wholly fill a page that's under preparation for writing
-- */
--static int afs_fill_page(struct file *file,
--			 loff_t pos, unsigned int len, struct page *page)
--{
--	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
--	struct afs_read *req;
--	size_t p;
--	void *data;
--	int ret;
--
--	_enter(",,%llu", (unsigned long long)pos);
--
--	if (pos >= vnode->vfs_inode.i_size) {
--		p = pos & ~PAGE_MASK;
--		ASSERTCMP(p + len, <=, PAGE_SIZE);
--		data = kmap(page);
--		memset(data + p, 0, len);
--		kunmap(page);
--		return 0;
--	}
--
--	req = kzalloc(sizeof(struct afs_read), GFP_KERNEL);
--	if (!req)
--		return -ENOMEM;
--
--	refcount_set(&req->usage, 1);
--	req->vnode	= vnode;
--	req->done	= afs_fill_hole;
--	req->key	= key_get(afs_file_key(file));
--	req->pos	= pos;
--	req->len	= len;
--	req->nr_pages	= 1;
--	req->iter	= &req->def_iter;
--	iov_iter_xarray(&req->def_iter, READ, &file->f_mapping->i_pages, pos, len);
--
--	ret = afs_fetch_data(vnode, req);
--	afs_put_read(req);
--	if (ret < 0) {
--		if (ret == -ENOENT) {
--			_debug("got NOENT from server"
--			       " - marking file deleted and stale");
--			set_bit(AFS_VNODE_DELETED, &vnode->flags);
--			ret = -ESTALE;
--		}
--	}
--
--	_leave(" = %d", ret);
--	return ret;
--}
--
- /*
-  * prepare to perform part of a write to a page
-  */
-@@ -102,24 +42,14 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	_enter("{%llx:%llu},%llx,%x",
- 	       vnode->fid.vid, vnode->fid.vnode, pos, len);
- 
--	page = grab_cache_page_write_begin(mapping, pos / PAGE_SIZE, flags);
--	if (!page)
--		return -ENOMEM;
--
--	if (!PageUptodate(page) && len != PAGE_SIZE) {
--		ret = afs_fill_page(file, pos & PAGE_MASK, PAGE_SIZE, page);
--		if (ret < 0) {
--			unlock_page(page);
--			put_page(page);
--			_leave(" = %d [prep]", ret);
--			return ret;
--		}
--		SetPageUptodate(page);
--	}
--
--#ifdef CONFIG_AFS_FSCACHE
--	wait_on_page_fscache(page);
--#endif
-+	/* Prefetch area to be written into the cache if we're caching this
-+	 * file.  We need to do this before we get a lock on the page in case
-+	 * there's more than one writer competing for the same cache block.
-+	 */
-+	ret = netfs_write_begin(file, mapping, pos, len, flags, &page, fsdata,
-+				&afs_req_ops, NULL);
-+	if (ret < 0)
-+		return ret;
- 
- 	index = page->index;
- 	from = pos - index * PAGE_SIZE;
-@@ -184,7 +114,6 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 	unsigned int f, from = pos & (thp_size(page) - 1);
- 	unsigned int t, to = from + copied;
- 	loff_t i_size, maybe_i_size;
--	int ret = 0;
- 
- 	_enter("{%llx:%llu},{%lx}",
- 	       vnode->fid.vid, vnode->fid.vnode, page->index);
-@@ -203,19 +132,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 		write_sequnlock(&vnode->cb_lock);
- 	}
- 
--	if (!PageUptodate(page)) {
--		if (copied < len) {
--			/* Try and load any missing data from the server.  The
--			 * unmarshalling routine will take care of clearing any
--			 * bits that are beyond the EOF.
--			 */
--			ret = afs_fill_page(file, pos + copied,
--					    len - copied, page);
--			if (ret < 0)
--				goto out;
--		}
--		SetPageUptodate(page);
--	}
-+	ASSERT(PageUptodate(page));
- 
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
-@@ -236,12 +153,11 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 
- 	if (set_page_dirty(page))
- 		_debug("dirtied %lx", page->index);
--	ret = copied;
- 
- out:
- 	unlock_page(page);
- 	put_page(page);
--	return ret;
-+	return copied;
- }
- 
- /*
-
-
+> +		if (of_device_is_compatible(node, "restricted-dma-pool") &&
+> +		    of_device_is_available(node))
+> +			return of_reserved_mem_device_init_by_idx(
+> +				dev, dev->of_node, i);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * of_mmio_is_nonposted - Check if device uses non-posted MMIO
+>    * @np:	device node
+> diff --git a/drivers/of/device.c b/drivers/of/device.c
+> index c5a9473a5fb1..d8d865223e51 100644
+> --- a/drivers/of/device.c
+> +++ b/drivers/of/device.c
+> @@ -165,6 +165,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>   
+>   	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+>   
+> +	if (!iommu)
+> +		return of_dma_set_restricted_buffer(dev);
+> +
+>   	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(of_dma_configure_id);
+> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+> index d717efbd637d..e9237f5eff48 100644
+> --- a/drivers/of/of_private.h
+> +++ b/drivers/of/of_private.h
+> @@ -163,12 +163,17 @@ struct bus_dma_region;
+>   #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
+>   int of_dma_get_range(struct device_node *np,
+>   		const struct bus_dma_region **map);
+> +int of_dma_set_restricted_buffer(struct device *dev);
+>   #else
+>   static inline int of_dma_get_range(struct device_node *np,
+>   		const struct bus_dma_region **map)
+>   {
+>   	return -ENODEV;
+>   }
+> +static inline int of_dma_get_restricted_buffer(struct device *dev)
+> +{
+> +	return -ENODEV;
+> +}
+>   #endif
+>   
+>   #endif /* _LINUX_OF_PRIVATE_H */
+> 
