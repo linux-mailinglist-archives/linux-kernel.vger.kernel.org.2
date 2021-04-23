@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C33369B49
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17485369B50
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243935AbhDWU3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:29:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46191 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232200AbhDWU27 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:28:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619209701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QfiDtCynhiYl7sLFfmuAReEItnr+/jDE3k1aIjHx0Kg=;
-        b=bR3yU5Z9m/Fx9WXh6N/a2sdX7Qry+yvB49+pH/xGZ3Dy2FsDNff6N6c9g2LeegKexfSC1c
-        XB4wg0sQXe6oKj+4ZFwslIW8c+DN6vTM2+1NVyY7HsJt72ekmrDbwJqlyvkSHxq3sG9HP6
-        VDAAIxl+dt/aU5XGWFS778xCCJGsKtc=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-dKrsvlRLOUaR-zvihxC35w-1; Fri, 23 Apr 2021 16:28:20 -0400
-X-MC-Unique: dKrsvlRLOUaR-zvihxC35w-1
-Received: by mail-ed1-f72.google.com with SMTP id l7-20020aa7c3070000b029038502ffe9f2so13386270edq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:28:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QfiDtCynhiYl7sLFfmuAReEItnr+/jDE3k1aIjHx0Kg=;
-        b=lNTGX/K9VTkKfuFlpLgOzDYOhi82HAiCqNAMhPqA4jkVAlsYNvMdp54hVpNFHRrmjA
-         lqi/brogKvPqRrlxwkq75NS8EvrsPMDcs/9DzK7xvbuLwjxQ7wgxGOmHZAw4MBjP6EYV
-         8lrjF8VGiLBKryr+zOIZNS2ls+qPN2Zti5J5RDMCY9yh7045J+3wHoyNpMBo6QvGqg1w
-         LY6Klya0SsC95XjttTdfOcCv+QCwFEt3SE+1dWYTm9+xAnAY9j8JIiL3o2KZcmZhRuFv
-         um9ovWkGY/n49YiZ3Ey73nNnDcYfp85mGK+2qP5m/KxxGS0x/FHslZgU0q16TWFncTDD
-         IDsA==
-X-Gm-Message-State: AOAM5314WXGMvgvNqRYFxkl5LkNnYqa+oIarE/qSBu9p/RfHLY46iUyU
-        M5B/40rV3vp0E6DT2GcdxT8McGvcz79xYQHDrTRRVE3IBhAyIp1ThO8ix6Oyz25tT/9Zzv+hP2p
-        iSAiHWJEDB5U4POMJtZfTaYso
-X-Received: by 2002:a17:907:9607:: with SMTP id gb7mr5870703ejc.380.1619209698708;
-        Fri, 23 Apr 2021 13:28:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfrbFBGT1MEbJHG6L0yjyl+q1DlTQm8NpqoE5d2Bcyzx+sjlqc8nfo+myUowMaXqpyvRQssA==
-X-Received: by 2002:a17:907:9607:: with SMTP id gb7mr5870697ejc.380.1619209698580;
-        Fri, 23 Apr 2021 13:28:18 -0700 (PDT)
-Received: from redhat.com (212.116.168.114.static.012.net.il. [212.116.168.114])
-        by smtp.gmail.com with ESMTPSA id m10sm4794033ejc.32.2021.04.23.13.28.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 13:28:18 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 16:28:15 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Martin =?iso-8859-1?Q?=C5gren?= <martin.agren@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH] uio/uio_pci_generic: fix return value changed in
- refactoring
-Message-ID: <20210423162757-mutt-send-email-mst@kernel.org>
-References: <20210422192240.1136373-1-martin.agren@gmail.com>
+        id S243957AbhDWUau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229691AbhDWUaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 16:30:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 517CF60FE6;
+        Fri, 23 Apr 2021 20:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619209809;
+        bh=8mMevMnIpN6L9ppNytiHiaF8PJqmIVCSVKr/0HU7o8s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=HEJBOs5U5OpQSkXWQmOM3mXBg39jBu7OxG7At3s9+D2eJUKiBp1AjLeV5fTQRKWo/
+         fOEhAOfnKk5t2zquCO+Bu3UCKVdWOyL7ttxg3VDN+0I8+43N907NATNATr0spmBlvL
+         C+LQTQNQLbJyXXY7wBZU4jXTdERxoDdFpLo36rZMqXtqR53dAPQxZmA4mXaEw39M3N
+         HcRTKY2EDXhwIwFW0Nj1YCRWzHq7ywlAgJYOi1WRwY6PmFEFCsIYLrqI4eiPTtPZLp
+         JsW1kRjhc2/E1b+YyZflqi/vsMOHnhlzbFQ8hBsGFEqIeXALmtjw10fnKmNdYVrFZ9
+         s9j9vJB3md6lQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 490A760976;
+        Fri, 23 Apr 2021 20:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422192240.1136373-1-martin.agren@gmail.com>
+Subject: Re: [PATCH v2] net: geneve: modify IP header check in geneve6_xmit_skb
+ and geneve_xmit_skb
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161920980929.7001.16835676253305880901.git-patchwork-notify@kernel.org>
+Date:   Fri, 23 Apr 2021 20:30:09 +0000
+References: <20210422234945.1190-1-phil@philpotter.co.uk>
+In-Reply-To: <20210422234945.1190-1-phil@philpotter.co.uk>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sd@queasysnail.net,
+        edumazet@google.com, fw@strlen.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:22:40PM +0200, Martin Ågren wrote:
-> Commit ef84928cff58 ("uio/uio_pci_generic: use device-managed function
-> equivalents") was able to simplify various error paths thanks to no
-> longer having to clean up on the way out. Some error paths were dropped,
-> others were simplified. In one of those simplifications, the return
-> value was accidentally changed from -ENODEV to -ENOMEM. Restore the old
-> return value.
-> 
-> Fixes: ef84928cff58 ("uio/uio_pci_generic: use device-managed function equivalents")
-> Signed-off-by: Martin Ågren <martin.agren@gmail.com>
+Hello:
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+This patch was applied to netdev/net.git (refs/heads/master):
 
-> ---
->  This is my first contribution to the Linux kernel. Hints, suggestions,
->  corrections and any other feedback welcome.
+On Fri, 23 Apr 2021 00:49:45 +0100 you wrote:
+> Modify the header size check in geneve6_xmit_skb and geneve_xmit_skb
+> to use pskb_inet_may_pull rather than pskb_network_may_pull. This fixes
+> two kernel selftest failures introduced by the commit introducing the
+> checks:
+> IPv4 over geneve6: PMTU exceptions
+> IPv4 over geneve6: PMTU exceptions - nexthop objects
 > 
->  drivers/uio/uio_pci_generic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
-> index c7d681fef198..3bb0b0075467 100644
-> --- a/drivers/uio/uio_pci_generic.c
-> +++ b/drivers/uio/uio_pci_generic.c
-> @@ -81,9 +81,9 @@ static int probe(struct pci_dev *pdev,
->  		return err;
->  	}
->  
->  	if (pdev->irq && !pci_intx_mask_supported(pdev))
-> -		return -ENOMEM;
-> +		return -ENODEV;
->  
->  	gdev = devm_kzalloc(&pdev->dev, sizeof(struct uio_pci_generic_dev), GFP_KERNEL);
->  	if (!gdev)
->  		return -ENOMEM;
-> -- 
-> 2.31.1.527.g47e6f16901
+> [...]
+
+Here is the summary with links:
+  - [v2] net: geneve: modify IP header check in geneve6_xmit_skb and geneve_xmit_skb
+    https://git.kernel.org/netdev/net/c/d13f048dd40e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
