@@ -2,129 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0878368A0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FD0368A13
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbhDWAxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 20:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S229865AbhDWAzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 20:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhDWAxq (ORCPT
+        with ESMTP id S229888AbhDWAzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 20:53:46 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA7EC061574;
-        Thu, 22 Apr 2021 17:53:10 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id bx20so54479140edb.12;
-        Thu, 22 Apr 2021 17:53:10 -0700 (PDT)
+        Thu, 22 Apr 2021 20:55:02 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2524BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:54:26 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id v123so40543453ioe.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ks1uW4TsJ3ZwYPwFK3x+RKWO8sV8NPeu0lKhg7RGxMc=;
-        b=KROsPbra7Y/3zLz6xWLefkQcjCRO3c8jNbQeaNQqk9GtopNlmlYMKqG9qddT6GrEhO
-         TB8/IhH5IRXRGoOiduHvcwXaQqLLG6a5zUsA9RamAO63Qd55Q4uNZ8uf5opuafzSJ3wU
-         4EoSA51mdiUpeJOiEB3DyDi/7BuofwVGQxkZEOV6A41akp0f+ZQbYiLwVyMXFascI5hX
-         5jc7KuhbiRsr6Pni301JCPTLhg7vYqgUwEpTA8gdaMNs4hef4oaB547nF9xAmxHrLS4S
-         jOm/Z0HtnAZT8RHzTdWyU9h897sJO7KhGdB2W1YUZtHUMTjnQrFieynpYMiNRPRArOu2
-         QuYQ==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EsRGHADRe1bBPp1jvPhK9op/n2B30dQYA9YS40rYISw=;
+        b=dQOQ9GDTt365qQAFRODcnSQlqUZYq2h3tiO5Y9N5+hruwghg3M6favMmdexJEyVITm
+         WgGGVeim2qWMF7Vj9PITZlEpZ9i6M0/5O876gTib5T6ECTlLpewmUwbedxDni2yFUn2g
+         eXyzRgZpuso53fhZC2bAyhFGXNUq/wb52/xRs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ks1uW4TsJ3ZwYPwFK3x+RKWO8sV8NPeu0lKhg7RGxMc=;
-        b=jpDflzqhhippzd8SQ/91ccRZQY6i3UFYsO+zxfv2t7U9nDpvkY28/Va/rzizCfq/iv
-         IyaTOFghfhX427HBJ2tbx7hem30qtgQurZ+mVLT4lr+Hk30kFkyXQeed9PdkVQcKUm03
-         3nBzjHsyPbSx8fFOyyw+MK3v6Tl/kBLwQbaSr7HbwyezZ7D6toGc4FIQvhjwaER7DI8/
-         o1IXWdc/YU8l317ozMiLCQmaJA/EBI2RKH5HPr+q90Akw8Ve7EKugwz0epBrTtPMY7Dr
-         hVoYtlPozcVdYSn5iBUVhEKcbxguACa9kk1UVJvSOE3jj04E7BnTQoRQghWtDTmfO2DA
-         3D4A==
-X-Gm-Message-State: AOAM531M47fBpVINTHbMJ/oQckb6RPRXCPI5f8Sa/LTv6fKItQxyx1LD
-        IIAmWUVt2yxxjIW0BvfPwMg=
-X-Google-Smtp-Source: ABdhPJx7jLShVmGoeYKwf2yxHLO3Fyxxi8sd+xsztnxHS670UXmGsB6P9TFiuCk8zyonxIAxU4jvpg==
-X-Received: by 2002:aa7:d78a:: with SMTP id s10mr1375841edq.310.1619139189674;
-        Thu, 22 Apr 2021 17:53:09 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id s5sm2807574ejq.52.2021.04.22.17.53.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 17:53:09 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 03:53:08 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     "Ismail, Mohammad Athari" <mohammad.athari.ismail@intel.com>
-Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Voon, Weifeng" <weifeng.voon@intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 net-next] net: pcs: Enable pre-emption packet for
- 10/100Mbps
-Message-ID: <20210423005308.wnhpxryw6emgohaa@skbuf>
-References: <20210422230645.23736-1-mohammad.athari.ismail@intel.com>
- <20210422235317.erltirtrxnva5o2d@skbuf>
- <CO1PR11MB4771A73442ECD81BEC2F1F04D5459@CO1PR11MB4771.namprd11.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EsRGHADRe1bBPp1jvPhK9op/n2B30dQYA9YS40rYISw=;
+        b=D9THYDHRA3tExtCJgsLeBMciNcBVtnxwsbZxZ7dbRcG47uq/w3zpc/bsS0AH8qjEgY
+         FJeAGy7zdMoi1rS2gyelByR5UflAgfSZ+nbgq9gb4KGBPVBkh/glgANdCPnlU+qGL2Wz
+         8B/d3/I1ocBn6Rp7ryU9cRArSHMuMYwUd6oL05ZdZ9oeO9IGPu4z27dMdSRgXe9TaaZ6
+         N8A25SHSYLYceY+HOSUahLuNX4SJPejHIoHqINx44baer3j+9enFKNzKr07MRzzh7w66
+         FyY1s82PL+ttOtntKVqt0ZqSiQVoqwTwAfSJ/2qbbP1K3ISeAMz5B2LBKZANfq+GWDze
+         ezJQ==
+X-Gm-Message-State: AOAM5303RTkjIvoT+Gu6OCmCc47k7jPgqAbHbNqnXJd2PJFd3xN4dPwB
+        1caj9nEAoaR0x9GWRu7mlnpvrNqqTFW6IA==
+X-Google-Smtp-Source: ABdhPJyjX6RrbO26k7NMgyFcWXzu19xGXwfPz9p5VH/n75XN0+5Yxgl5l4IvIzClvVstgpeB2xQsBw==
+X-Received: by 2002:a05:6638:35a2:: with SMTP id v34mr1426437jal.94.1619139265344;
+        Thu, 22 Apr 2021 17:54:25 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id z4sm2048471ioi.37.2021.04.22.17.54.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 17:54:24 -0700 (PDT)
+Subject: Re: [PATCH net-next v4 0/3] net: qualcomm: rmnet: Enable Mapv5
+To:     subashab@codeaurora.org
+Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
+        davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        cpratapa@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1619121731-17782-1-git-send-email-sharathv@codeaurora.org>
+ <ed00501e-d558-a47f-5444-b1a5a895d6db@ieee.org>
+ <8ada4250d370acfb995cfa68b72de091@codeaurora.org>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <8c975b46-a5bf-f4c2-6738-1d81579b96a0@ieee.org>
+Date:   Thu, 22 Apr 2021 19:54:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO1PR11MB4771A73442ECD81BEC2F1F04D5459@CO1PR11MB4771.namprd11.prod.outlook.com>
+In-Reply-To: <8ada4250d370acfb995cfa68b72de091@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:45:25AM +0000, Ismail, Mohammad Athari wrote:
-> Hi Vladimir,
+On 4/22/21 6:14 PM, subashab@codeaurora.org wrote:
+> On 2021-04-22 14:14, Alex Elder wrote:
+>> On 4/22/21 3:02 PM, Sharath Chandra Vurukala wrote:
+>>> This series introduces the MAPv5 packet format.
+>>>
+>>>    Patch 0 documents the MAPv4/v5.
+>>>    Patch 1 introduces the MAPv5 and the Inline checksum offload for 
+>>> RX/Ingress.
+>>>    Patch 2 introduces the MAPv5 and the Inline checksum offload for 
+>>> TX/Egress.
+>>
+>> Was this supposed to be version 5?
+>>
+>> I already reviewed version 4.
+>>
+>> Please post version 5.  I am going to ignore this series.
+>>
+>>                     -Alex
+>>
 > 
-> > -----Original Message-----
-> > From: Vladimir Oltean <olteanv@gmail.com>
-> > Sent: Friday, April 23, 2021 7:53 AM
-> > To: Ismail, Mohammad Athari <mohammad.athari.ismail@intel.com>
-> > Cc: Alexandre Torgue <alexandre.torgue@st.com>; Jose Abreu
-> > <joabreu@synopsys.com>; David S . Miller <davem@davemloft.net>; Jakub
-> > Kicinski <kuba@kernel.org>; Andrew Lunn <andrew@lunn.ch>; Heiner Kallweit
-> > <hkallweit1@gmail.com>; Russell King <linux@armlinux.org.uk>; Ong, Boon
-> > Leong <boon.leong.ong@intel.com>; Voon, Weifeng
-> > <weifeng.voon@intel.com>; Wong, Vee Khee <vee.khee.wong@intel.com>;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH v2 net-next] net: pcs: Enable pre-emption packet for
-> > 10/100Mbps
-> > 
-> > Hi Mohammad,
-> > 
-> > On Fri, Apr 23, 2021 at 07:06:45AM +0800, mohammad.athari.ismail@intel.com
-> > wrote:
-> > > From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
-> > >
-> > > Set VR_MII_DIG_CTRL1 bit-6(PRE_EMP) to enable pre-emption packet for
-> > > 10/100Mbps by default. This setting doesn`t impact pre-emption
-> > > capability for other speeds.
-> > >
-> > > Signed-off-by: Mohammad Athari Bin Ismail
-> > > <mohammad.athari.ismail@intel.com>
-> > > ---
-> > 
-> > What is a "pre-emption packet"?
+> What are you talking about?
 > 
-> In IEEE 802.1 Qbu (Frame Preemption), pre-emption packet is used to
-> differentiate between MAC Frame packet, Express Packet, Non-fragmented
-> Normal Frame Packet, First Fragment of Preemptable Packet,
-> Intermediate Fragment of Preemptable Packet and Last Fragment of
-> Preemptable Packet. 
+> Patchwork shows that Sharath has posted upto v3 so far.
 
-Citation needed, which clause are you referring to?
+Sorry about that.  Sharath posted a series version 4 last week, which
+I reviewed.  I mistakenly thought he had posted it for upstream review
+and didn't realize he sent it to me (and others) privately.
+
+Still, I said he should tag the second patch "Acked-by:" me and
+he did not, so I assumed it was a repost of the same code.
+
+I'll review this after all.
+
+					-Alex
 
 > 
-> This bit "VR_MII_DIG_CTRL1 bit-6(PRE_EMP)" defined in DesignWare Cores
-> Ethernet PCS Databook is to allow the IP to properly receive/transmit
-> pre-emption packets in SGMII 10M/100M Modes.
+> https://patchwork.kernel.org/project/netdevbpf/list/?submitter=197703&state=%2A&archive=both 
+> 
 
-Shouldn't everything be handled at the MAC merge sublayer? What business
-does the PCS have in frame preemption?
-
-Also, I know it's easy to forget, but Vinicius' patch series for
-supporting frame preemption via ethtool wasn't accepted yet. How are you
-testing this?
