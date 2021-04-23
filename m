@@ -2,146 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8BE369829
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BD0369832
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243337AbhDWRTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:19:19 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:25786 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231684AbhDWRTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:19:18 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FRgx91x1wz9ttRv;
-        Fri, 23 Apr 2021 19:18:37 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id ALw1zRGnK-kI; Fri, 23 Apr 2021 19:18:37 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FRgx916p8z9ttRt;
-        Fri, 23 Apr 2021 19:18:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D15C8B886;
-        Fri, 23 Apr 2021 19:18:39 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id HOCbVO0OVlWb; Fri, 23 Apr 2021 19:18:39 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CB56D8B765;
-        Fri, 23 Apr 2021 19:18:38 +0200 (CEST)
-Subject: Re: [PATCH 1/2] powerpc/vdso64: link vdso64 with linker
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Fangrui Song <maskray@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20200901222523.1941988-1-ndesaulniers@google.com>
- <20200901222523.1941988-2-ndesaulniers@google.com>
- <87blio1ilu.fsf@mpe.ellerman.id.au>
- <CAKwvOd=ZeJU+vLUk2P7FpX35haj7AC50B9Yps4pyoGCpd7ueTw@mail.gmail.com>
- <3d837a36-a186-6789-7924-eaa97f056b68@csgroup.eu>
- <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <bfa4fa45-9887-d7d4-21a7-ac48835b10c1@csgroup.eu>
-Date:   Fri, 23 Apr 2021 19:18:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S243310AbhDWRVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243237AbhDWRVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:21:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BF0C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:21:00 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lZzTz-0003V5-B3; Fri, 23 Apr 2021 19:20:47 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lZzTw-00010E-If; Fri, 23 Apr 2021 19:20:44 +0200
+Date:   Fri, 23 Apr 2021 19:20:41 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+Message-ID: <20210423172041.jwmrrbnv76irmzxz@pengutronix.de>
+References: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <YIL+Xwjbk1EE04Sm@orome.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="obtpyakzbdh7csmz"
+Content-Disposition: inline
+In-Reply-To: <YIL+Xwjbk1EE04Sm@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--obtpyakzbdh7csmz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Le 23/04/2021 à 00:44, Nick Desaulniers a écrit :
-> On Wed, Sep 2, 2020 at 11:02 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 02/09/2020 à 19:41, Nick Desaulniers a écrit :
->>> On Wed, Sep 2, 2020 at 5:14 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->>>>
->>>> Nick Desaulniers <ndesaulniers@google.com> writes:
->>>>> Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for orphan sections")
->>>>
->>>> I think I'll just revert that for v5.9 ?
->>>
->>> SGTM; you'll probably still want these changes with some modifications
->>> at some point; vdso32 did have at least one orphaned section, and will
->>> be important for hermetic builds.  Seeing crashes in supported
->>> versions of the tools ties our hands at the moment.
->>>
->>
->> Keeping the tool problem aside with binutils 2.26, do you have a way to
->> really link an elf32ppc object when  building vdso32 for PPC64 ?
-> 
-> Sorry, I'm doing a bug scrub and found
-> https://github.com/ClangBuiltLinux/linux/issues/774 still open (and my
-> reply to this thread still in Drafts; never sent). With my patches
-> rebased:
-> $ file arch/powerpc/kernel/vdso32/vdso32.so
-> arch/powerpc/kernel/vdso32/vdso32.so: ELF 32-bit MSB shared object,
-> PowerPC or cisco 4500, version 1 (SYSV), dynamically linked, stripped
-> 
-> Are you still using 2.26?
-> 
-> I'm not able to repro Nathan's reported issue from
-> https://lore.kernel.org/lkml/20200902052123.GA2687902@ubuntu-n2-xlarge-x86/,
-> so I'm curious if I should resend the rebased patches as v2?
+On Fri, Apr 23, 2021 at 07:05:35PM +0200, Thierry Reding wrote:
+> On Mon, Apr 19, 2021 at 09:00:05AM +0900, Nobuhiro Iwamatsu wrote:
+> > Hi,
+> >=20
+> > This series is the PWM driver for Toshiba's ARM SoC, Visconti[0].
+> > This provides DT binding documentation and device driver.
+> >=20
+> > [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/im=
+age-recognition-processors-visconti.html
+> >=20
+> > Updates:
+> >=20
+> >   dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
+> >     v5 -> v6:
+> >       - No update.
+> >     v4 -> v5:
+> >       - No update.
+> >     v3 -> v4:
+> >       - No update.
+> >     v2 -> v3:
+> >       - Change compatible to toshiba,visconti-pwm
+> >       - Change filename to toshiba,visconti-pwm.yaml.
+> >       - Add Reviewed-by tag from Rob.
+> >     v1 -> v2:
+> >       - Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause.
+> >       - Set compatible toshiba,pwm-visconti only.
+> >       - Drop unnecessary comments.
+> >=20
+> >   pwm: visconti: Add Toshiba Visconti SoC PWM support
+> >     v5 -> v6:
+> >      - Update year in copyright.
+> >      - Update limitations.
+> >      - Fix coding style, used braces for both branches.
+> >     v4 -> v5:
+> >       - Droped checking PIPGM_PCSR from visconti_pwm_get_state.
+> >       - Changed from to_visconti_chip to visconti_pwm_from_chip.
+> >       - Removed pwmchip_remove return value management.
+> >       - Add limitations of this device.
+> >       - Add 'state->enabled =3D true' to visconti_pwm_get_state().
+> >     v3 -> v4:
+> >       - Sorted alphabetically include files.
+> >       - Changed container_of to using static inline functions.
+> >       - Dropped unnecessary dev_dbg().
+> >       - Drop Initialization of chip.base.
+> >       - Drop commnet "period too small".
+> >       - Rebased for-next.=20
+> >     v2 -> v3:
+> >       - Change compatible to toshiba,visconti-pwm.
+> >       - Fix MODULE_ALIAS to platform:pwm-visconti, again.
+> >       - Align continuation line to the opening parenthesis.
+> >       - Rewrite the contents of visconti_pwm_apply() based on the conte=
+nts suggested by Uwe.
+> >     v1 -> v2:
+> >       - Change SPDX-License-Identifier to GPL-2.0-only.
+> >       - Add prefix for the register defines.
+> >       - Drop struct device from struct visconti_pwm_chip.
+> >       - Use '>>' instead of '/'.
+> >       - Drop error message by devm_platform_ioremap_resource().
+> >       - Use dev_err_probe instead of dev_err.
+> >       - Change dev_info to dev_dbg.
+> >       - Remove some empty lines.
+> >       - Fix MODULE_ALIAS to platform:pwm-visconti.
+> >       - Add .get_state() function.
+> >       - Use the author name and email address to MODULE_AUTHOR.
+> >       - Add more comment to function of the hardware.
+> >       - Support .get_status() function.
+> >       - Use NSEC_PER_USEC instead of 1000.
+> >       - Alphabetically sorted for Makefile and Kconfig.
+> >       - Added check for set value in visconti_pwm_apply().
+> >=20
+> > Nobuhiro Iwamatsu (2):
+> >   dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
+> >   pwm: visconti: Add Toshiba Visconti SoC PWM support
+> >=20
+> >  .../bindings/pwm/toshiba,pwm-visconti.yaml    |  43 ++++
+> >  drivers/pwm/Kconfig                           |   9 +
+> >  drivers/pwm/Makefile                          |   1 +
+> >  drivers/pwm/pwm-visconti.c                    | 189 ++++++++++++++++++
+> >  4 files changed, 242 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pwm/toshiba,pwm-v=
+isconti.yaml
+> >  create mode 100644 drivers/pwm/pwm-visconti.c
+>=20
+> Both patches applied, thanks.
+>=20
+> checkpatch did complain when I applied:
+>=20
+> > WARNING: please write a paragraph that describes the config symbol fully
+> > #9: FILE: drivers/pwm/Kconfig:604:
+> > +config PWM_VISCONTI
+>=20
+> That seems a bit excessive. The paragraph is perhaps not a poster child
+> for Kconfig, but there are others that aren't better, so I think that's
+> fine.
+>=20
+> > WARNING: added, moved or deleted file(s), does MAINTAINERS need updatin=
+g?
+> > #32:=20
+> > new file mode 100644
+>=20
+> Fine, too.
+>=20
+> > WARNING: 'loosing' may be misspelled - perhaps 'losing'?
+> > #112: FILE: drivers/pwm/pwm-visconti.c:76:
+> >  +	 * NSEC_PER_SEC / CLKFREQ =3D 1000 without loosing precision.
+> >   	                                         ^^^^^^^
+>=20
+> I've fixed that up while applying.
+>=20
+> > WARNING: Avoid crashing the kernel - try using WARN_ON & recovery code =
+rather than BUG() or BUG_ON()
+> > #127: FILE: drivers/pwm/pwm-visconti.c:91:
+> > +		BUG_ON(pwmc0 > 3);
+>=20
+> I think that one is legit. I've turned that into:
+>=20
+> 	if (WARN_ON(pwmc0 > 3))
+> 		return -EINVAL;
 
-One comment on your rebased patch:
+>=20
+> so that requests for too big period will be rejected rather than crash
+> the system.
 
- > diff --git a/arch/powerpc/include/asm/vdso.h b/arch/powerpc/include/asm/vdso.h
- > index 8542e9bbeead..0bd06ec06aaa 100644
- > --- a/arch/powerpc/include/asm/vdso.h
- > +++ b/arch/powerpc/include/asm/vdso.h
- > @@ -25,19 +25,7 @@ int vdso_getcpu_init(void);
- >
- >   #else /* __ASSEMBLY__ */
- >
- > -#ifdef __VDSO64__
- > -#define V_FUNCTION_BEGIN(name)		\
- > -	.globl name;			\
- > -	name:				\
- > -
- > -#define V_FUNCTION_END(name)		\
- > -	.size name,.-name;
- > -
- > -#define V_LOCAL_FUNC(name) (name)
- > -#endif /* __VDSO64__ */
- > -
- > -#ifdef __VDSO32__
- > -
- > +#if defined(__VDSO32__) || defined (__VDSO64__)
+If this BUG_ON (or your if) triggers we have a compiler or memory
+problem. The relevant parts of the code are:
 
-You always have either __VDSO32__ or __VDSO64__ so this #if is pointless
+	if (state->period > (0xffff << 3) * 1000)
+		period =3D (0xffff << 3) * 1000;
+	else
+		period =3D state->period;
 
- >   #define V_FUNCTION_BEGIN(name)		\
- >   	.globl name;			\
- >   	.type name,@function; 		\
- > @@ -47,8 +35,7 @@ int vdso_getcpu_init(void);
- >   	.size name,.-name;
- >
- >   #define V_LOCAL_FUNC(name) (name)
- > -
- > -#endif /* __VDSO32__ */
- > +#endif /* __VDSO{32|64}__ */
- >
- >   #endif /* __ASSEMBLY__ */
- >
+	period /=3D 1000;
 
+	if (period > 0xffff) {
+		pwmc0 =3D ilog2(period >> 16);
+		BUG_ON(pwmc0 > 3);
 
-Christophe
+Given that period is never bigger than 0xffff << 3 when it is used to
+calculate the argument to ilog2, pwmc0 <=3D ilog2(7) =3D 2.
+
+Hmm, I wonder if the formula is wrong given that pwmc0 never becomes 3?!
+Should this better be
+
+	pwmc0 =3D fls(period >> 16);
+
+?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--obtpyakzbdh7csmz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCDAeYACgkQwfwUeK3K
+7AnE6wf/VLcp2U0NslNg0ihUaTnXfjF2QFwJu5Z4uXMYtV4FxNluPuIDMrDD25Mx
+rHh+B9HtUwv8AnDza99HcfBnAq3evh9G+FaXptprl1nHpRNykrcFz3aF0ESz6sDS
+oUXO8Ph0qssoheljPBsqBoNlP9tN5ws15eh5Hio0KcrtbmDpBBmKlKB+q43llwIe
+132D/rbKTHT1gnozP8lCdAunthT4fscw+RoZTZ8XrOIQkX5ZinYLsGqbh8LquSqe
+JblXOthvAQ/ptvFo3eS6JQ4ky3BD6IruGOrHOTUTHf+EkdyMtxi6Fq7Y5tyiclk/
+jLNdfWim6WZ+vwlETt12L1Emq+3PpA==
+=8DwE
+-----END PGP SIGNATURE-----
+
+--obtpyakzbdh7csmz--
