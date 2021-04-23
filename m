@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7460536920F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3636A369216
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242452AbhDWM0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:26:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242382AbhDWM0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6972161459;
-        Fri, 23 Apr 2021 12:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619180746;
-        bh=aM+Sojr2k7UDRMAnNY+H+VELI6N8SH3ptsc1gWn2L6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n/mn5gkz+niJiikHOTeliDrRa5c217CJaBrMkhu+8eGuDiSMgSZIube0S1US3TZtm
-         Kjgcjlbk1k27z15Px4ZgFvBZTbJENgUidlUEKT5fY25h8txfA1+tLY0w6rRlXwzvnm
-         VFQ6DjSQ+FSxq9mxY8ORzCkUlr8ymsjzJAy6cunTm2/6e3tPzS1mkt9Qv9Ia+MA5NI
-         cXY7Yb56ssJ7znWSro3cvS3gh1JzFAzigj31YY/P6X4uNE94vBTjZzkOLVoqBVx6kr
-         aY7424CocbN/tROFuSz+xmguJEzE8rQg0+D1SrbgjKF+CiJqudJ+DgFSP7KZfEHUPo
-         T+IYaEhVmHnDg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lZusb-0002me-Vn; Fri, 23 Apr 2021 14:25:54 +0200
-Date:   Fri, 23 Apr 2021 14:25:53 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     tu pham <thanhtung1909@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hung.Nguyen@silabs.com,
-        Tung.Pham@silabs.com, Pho Tran <pho.tran@silabs.com>
-Subject: Re: [PATCH v10] USB: serial: cp210x: Add support for GPIOs on CP2108
-Message-ID: <YIK80foYxTKpGsNc@hovoldconsulting.com>
-References: <20210423121645.16790-1-tupham@silabs.com>
+        id S242433AbhDWM2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:28:00 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:33476 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhDWM1y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:27:54 -0400
+Received: by mail-wm1-f51.google.com with SMTP id q123-20020a1c43810000b029012c7d852459so5730780wma.0;
+        Fri, 23 Apr 2021 05:27:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JPSEBMBxuY2qxFd9Jq40HNvNekQAZ7IBtDRxyp+3gRo=;
+        b=De913AcaOV3DDD5NuMzvaEYOOxVWi6LcAC7oB22LQI9jpWwD/Fj0NVTcDloVRPcREE
+         0+LPqOdsJrQoWRxxl1CkGNMJP8YpI3vbsnFxmnrmWK6cL9xeCgIx+IOMysk3kL7fwFOL
+         LqVPELCAN/dnfj1URNkkukKmvfHeuRh7nIe+ttUdkiWfvhIyBnZ/wM4RnRGQlEcMOtCU
+         vx+ki0iat5TX052v85B5ZPbSa3lHpynAzFfI4UNY/FSdM3ieROfwlNU6BkG6zE6xC2hK
+         GvaDJmL/Dl3JChOzsElrngb/3ydK8/VoQgxC4eZf9eIcRYoOYi+64YFrdsOgFcw7LcO6
+         29LQ==
+X-Gm-Message-State: AOAM532gpswfqVNfA94zlFr5Iz8OwGQGHAmsWdr748jZMbgC0OnwyWdO
+        GdoE6ekMGiNh6DnLIjJv/rrYv1LNtf2z6y7ZGjI=
+X-Google-Smtp-Source: ABdhPJyg+2UaV9jbnBUgS2M/YrT69lv88hjYkJzn8sPUQXoMf/etRwvl7sAIVHfZ1dPhMpZSYdg+syUkZlKqXQwYsiU=
+X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr4032368wmh.184.1619180836688;
+ Fri, 23 Apr 2021 05:27:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423121645.16790-1-tupham@silabs.com>
+References: <1619123448-10138-1-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <1619123448-10138-1-git-send-email-skomatineni@nvidia.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Apr 2021 14:27:05 +0200
+Message-ID: <CAJZ5v0hivxQjA2AZpPxVadzaM7gB+L3BRnoNyeD7hyvr-3Fh4g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] Support for passing runtime state idle time to TF-A
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>, ksitaraman@nvidia.com,
+        sanjayc@nvidia.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 07:16:45PM +0700, tu pham wrote:
-> From: Pho Tran <pho.tran@silabs.com>
-> 
-> Similar to other CP210x devices, GPIO interfaces (gpiochip) should be
-> supported for CP2108.
-> 
-> CP2108 has 4 serial interfaces but only 1 set of GPIO pins are shared
-> to all of those interfaces. So, just need to initialize GPIOs of CP2108
-> with only one interface (I use interface 0). It means just only 1 gpiochip
-> device file will be created for CP2108.
-> 
-> CP2108 has 16 GPIOs, So data types of several variables need to be is u16
-> instead of u8(in struct cp210x_serial_private). This doesn't affect other
-> CP210x devices.
-> 
-> Because CP2108 has 16 GPIO pins, the parameter passed by cp210x functions
-> will be different from other CP210x devices. So need to check part number
-> of the device to use correct data format  before sending commands to
-> devices.
-> 
-> Like CP2104, CP2108 have GPIO pins with configurable options. Therefore,
-> should be mask all pins which are not in GPIO mode in cp2108_gpio_init()
-> function.
-> 
-> Signed-off-by: Pho Tran <pho.tran@silabs.com>
+On Thu, Apr 22, 2021 at 10:31 PM Sowjanya Komatineni
+<skomatineni@nvidia.com> wrote:
+>
+> Tegra194 and Tegra186 platforms use separate MCE firmware for CPUs which is
+> in charge of deciding on state transition based on target state, state idle
+> time, and some other Tegra CPU core cluster states information.
+>
+> Current PSCI specification don't have function defined for passing runtime
+> state idle time predicted by governor (based on next events and state target
+> residency) to ARM trusted firmware.
 
-When you forward a patch from someone else you need to sign-off on it as
-well. If you also worked on the patch you can use the Co-Developed-by
-tag as well. More info here:
+Presumably that's because this is not a good idea.
 
-	Documentation/process/submitting-patches.rst
-
-Johan
+A basic design principle of cpuidle is that it should be possible to
+use every governor with every driver and the changes in this series
+make the platforms in question only work with menu AFAICS.
