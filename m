@@ -2,156 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8632369A8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDED3369A93
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243329AbhDWTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:00:17 -0400
-Received: from mx0d-0054df01.pphosted.com ([67.231.150.19]:9292 "EHLO
-        mx0d-0054df01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229691AbhDWTAQ (ORCPT
+        id S243573AbhDWTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhDWTAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:00:16 -0400
-Received: from pps.filterd (m0209000.ppops.net [127.0.0.1])
-        by mx0c-0054df01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13NIw2xx004721;
-        Fri, 23 Apr 2021 14:59:26 -0400
-Received: from can01-to1-obe.outbound.protection.outlook.com (mail-to1can01lp2054.outbound.protection.outlook.com [104.47.61.54])
-        by mx0c-0054df01.pphosted.com with ESMTP id 3834jxgqvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Apr 2021 14:59:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JjEXChzMuvOLQxUxt3JFsNUc/IQ1R/N8k59ApDf4v/dUetbh8QQ5sizbbjyKF8KZFHpqTXBtpDH/mV5kQ3eolla15BjrHlypIgPWVl5XGKoFlq0021XYVL/I2I0YeTOZm+76z8U0FByikwsRT5hd93fwP29H5lg9b9lco+71I9vOQSlr61rt62ACzGZHlge4PyNOhASRSZewgbH9fmFSztV5P1YE0Zc3lYSQAYkHh2WzOD8CI8FM7NUHJIpFv7aJiX8J8xLDxpu2p1ylnuCMNcHuZm7z5pz5Nc0ML0mEe5iy+3vI/iJFxIHdbkn1UzTf9z0sXvjcbFT8kf242Uvf0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ys9RHRedlllb8OuRZZuSDhj/RpPOcy+7OaAq4dH1BRA=;
- b=mG5wD5+5g4aEqSSBpPJaxZM1P50uXbrw7UgNvahhC3VV6SmA40+58Kv/9BsuXuuEh17d37gEoZZDJ3m6Tgv0eeXD+kzPldy49TmG9Ip8wruo/EkueIsYPZCzXu+p3vUpGrI0l511MQoX2EZ3AE0GgpQbJPCy10i1AnK+N54UrY9f8lu2LIUgQsxjCAbX+FXhGWdWaU4eRivUStn9qMEgXSI+j3NUkH0yM/Z0ae/y8XRYMI/0NKsoYXKzh6I7HVOsqupMHQTY5LcGP/d0TleVGBoXQMXZqDeZ/5iF7DPZtpYpbMSZsT5OGD0grBknsjnWJF+d6ICgaEuf3LgAcc4f3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=calian.com; dmarc=pass action=none header.from=calian.com;
- dkim=pass header.d=calian.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=calian.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ys9RHRedlllb8OuRZZuSDhj/RpPOcy+7OaAq4dH1BRA=;
- b=Hp3nAZr0liFaanmTIEb+y9dz1O7sTOAuzO2MoVpdrYSFrVbTS7qSHuAFi1IZTONsPjs63btY05944PLzALDfh3mRrb8YcYqq0NzhaUP/erK8zKfDBVZEPJCg+ExWFfiIxA9hWdHn236w1dptLWFZOBVl9Z7IWR3YVC0MOybJBJE=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=calian.com;
-Received: from YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:f::20)
- by YT1PR01MB3705.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:c::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Fri, 23 Apr
- 2021 18:59:25 +0000
-Received: from YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::90d4:4d5b:b4c2:fdeb]) by YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::90d4:4d5b:b4c2:fdeb%7]) with mapi id 15.20.3999.038; Fri, 23 Apr 2021
- 18:59:25 +0000
-From:   Robert Hancock <robert.hancock@calian.com>
-To:     tglx@linutronix.de, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
-        anirudh@xilinx.com, Robert Hancock <robert.hancock@calian.com>
-Subject: [PATCH v3] irqchip/xilinx: Expose Kconfig option for Zynq/ZynqMP
-Date:   Fri, 23 Apr 2021 12:58:53 -0600
-Message-Id: <20210423185853.2556087-1-robert.hancock@calian.com>
-X-Mailer: git-send-email 2.27.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [204.83.154.189]
-X-ClientProxiedBy: MW2PR16CA0026.namprd16.prod.outlook.com (2603:10b6:907::39)
- To YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:f::20)
+        Fri, 23 Apr 2021 15:00:43 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC63C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:00:06 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id y14-20020a056830208eb02902a1c9fa4c64so9682305otq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0o8YsKPbK9n+ndRN2Vz6EJYEmhROyvarHJTuZPEflmo=;
+        b=TUoGQ2idbkgeKBd7H6e+7VnfvpIWJcmUBsuoFOpZY0GxgsTthuJ+Yyl3AwaEvVv5r6
+         tbvfAdBGAJk7QS0Nqr2sXSJLYeSPtBxz6ReyyQzGr58fZvgqc2SJMqq3ZT0ypKf+l38p
+         5pLB2spdVUbTb/mjJALfnsMbekDSU+3IdIlSTUL3ksn7CWreJUomMKrwx/SAsAKU7Zri
+         iVtKjmpvt6KnmJaJpQWCRsCkBRLM6Mv79yc60bUE49T1yFNTj5f1ZC+0hNtff7RPVhxL
+         dyDgnPb8P2lnhrJ9GZm8sqwjYw0F14pxwxhVFp+A++oYwmB7S5/9gJHlFNG7XZ8O7B9x
+         BBAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0o8YsKPbK9n+ndRN2Vz6EJYEmhROyvarHJTuZPEflmo=;
+        b=CxfJ3JMqQ1s9/EaghNxAIEbougsIGWpuk28GXGsnMgCKNzghY4XWgP21AOxsl0FS+o
+         r1MhhuMvPBBqQj10B4M3d+CJYUo9scGYVjxdh2eHVmYVwHfFbeSniHtkv1Aom3BuhJPF
+         epffoKXSyXeVxURQJuJjmTm+RpRkjTYli4I2oBCMayOZqYMZput7tKZ0bvm/oSVOTovw
+         CddQsapnndAvGuzc0ikrDSe7EurTawixR3tUhYLnSbRq8jccPTw8s/O1V2b7l6oGqxsb
+         rWAWFPaZR3eAgCYg9FEKkI7BiMfS+Utg4ZzFqz0Bsgp4vXAol0yIeAZ4ssp1byYWr34Z
+         C4Fw==
+X-Gm-Message-State: AOAM530pMva2Biv2pKbEyM4xnFbORT/LboPxEkmTLN4D3yTL3A/vGcke
+        g5TwdLTL1eDLRBH66980Z9ONejTZCXqRQvbcI7I=
+X-Google-Smtp-Source: ABdhPJwvqBI0PCB1jdyspoom0AX+75lO37FZqUwSZpYvy2a3NQEgRCZHdLB1PSFUjjgOB/tOgFmxGEXE+L0ZB50WJXI=
+X-Received: by 2002:a05:6830:15d3:: with SMTP id j19mr4621881otr.23.1619204405457;
+ Fri, 23 Apr 2021 12:00:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (204.83.154.189) by MW2PR16CA0026.namprd16.prod.outlook.com (2603:10b6:907::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Fri, 23 Apr 2021 18:59:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f9e8fec-d6d9-4d09-9f50-08d90689e9c1
-X-MS-TrafficTypeDiagnostic: YT1PR01MB3705:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <YT1PR01MB37058D425D656DDBC08C65C9EC459@YT1PR01MB3705.CANPRD01.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WbDRLg6Y8gOvhyWwOziwmCqp4UMjNhHAaA7y5wdbqKtY/FpnaF7Oj4WbazQHtRrR9p2lW8ivwG7n34GoOwjJoMLizIxjRDG8a3i/DXgrrUBqPAiscLePYSJRaN2ywLJkX/LFkKKhfrqhT8ZR/oIzdDtbNA1H9Ox078vCKQ+hRA0/VeX2drVvOmFAb4Mp4ie2YAFW7TA3Az56YorxvU/XvrQFlFj3oBjpLV9dDbMqiqUcou4om/qIieLPDABSyzpBJdgxwgC4VNZ9q2pEWd8goqPn0mfJglzvJpRu1Gk6AB5k8NkzBpIVlkHDfHBlGjGHFTDxo4eFd/6+YKuiQqsNTLHvfc4v621B7hfHd2XaRXWgOllg684X2WlEAhd6B1E0jiHvZJxMFX4Xr3FtwbvY8CDZBdIbYgzymDywLuLkRAQNfx5y+yVbSwFsxZbzN/Jel0DNVyHGPwk3lD7S3gud5I0MFd9N0PCFuYbS6hKbR7OvIdDcESE7zssu1lJpNzpxaRoythO9i+iudglFJGjHLHH9fPHSWeKcGn7InhWTISL2pr+3EK0bztpIM/iGWwfN9nbjys1rOxaNfl+3vdmjO3JQCx7CIbqiN3BmmvpEa5BHN8Dg5a0StQQFDAms+eLFUh+DY71r6x+fTlmF3s0xjpPbRgjAQPhfOF/wghiUDKX+6NRNH+gQtQvtJwSqhwlq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(376002)(39850400004)(186003)(6506007)(16526019)(6512007)(316002)(107886003)(4326008)(1076003)(52116002)(26005)(86362001)(6486002)(5660300002)(956004)(44832011)(2616005)(6666004)(2906002)(38350700002)(38100700002)(66946007)(36756003)(8936002)(8676002)(66476007)(66556008)(478600001)(83380400001)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?03NlJ62kuz6vkZmSsg4s0LO4lTpcgpWK0veDrtJ75rcTd2gqeZg2YZXMugMs?=
- =?us-ascii?Q?k3sZmIymBopOo4jWr3ZMmpwLgVKHohCSwmS31c403IoS2LNqCLVtP8hia/Iz?=
- =?us-ascii?Q?fPfwf3FqI56AARl3q6VZthKCNI118NaJRks3h1x3nrzl/kuTe9zu9tMcayfq?=
- =?us-ascii?Q?Pt+WWpvuB1uxtUsXFrQTN3eGRLTlo+UQ39UE0SjbjXXlHeAEKGsGskho6fg0?=
- =?us-ascii?Q?hyCrRVvgO5R1fMFSneSmsvSU75fOVVpMjNIr9752vejr1Fz+LXwKQFQNimQx?=
- =?us-ascii?Q?usPStu1QC/KQ+q3abF6Cv0i0jYs74e7WkDzSToVucCZUsa6Y5t4CWOmBY2rw?=
- =?us-ascii?Q?sB2spj/tW3esw/PVrlSpQnmBl69Wa4go2bS3ZTDDy4vH+A/bkP3h8U54kif0?=
- =?us-ascii?Q?VvymzsC027JwYcD/dFQMv+rHnYbVaFN9cqnUlK7Zl1rPNKmLo1ejc7uRVkwg?=
- =?us-ascii?Q?Oz7XdI7A1IeZH7LGkGpJkEVI8rbnax7EDu7h4aVQZq/YwJIPrR9TIZrCZmOe?=
- =?us-ascii?Q?UxSo3qJ/fD2q/7/hhgxSXMAm9qwmxY+DztMbnU6OcTzGzwoODwHxy+oFE8F6?=
- =?us-ascii?Q?dY3LujzO3v8zf6MJhd1zBwmcQSRa0zlUItfWqex/LFsJIVbHJ5Rnx+mx7dLL?=
- =?us-ascii?Q?67i+RubOOZDFihxjbpIP4fD2eLq41G2pvuZqR1en7sRED/iL9q/olHbjCQPA?=
- =?us-ascii?Q?wgWNGJnGU4G29kbnC2NSENSgBurOh+bDy+zs6iK7ETjNrOBFRwp35ugy9zZN?=
- =?us-ascii?Q?YYZveSePaixMyyfVIpylSxNhbaVV5jItaSP6OujlDRlxIaNqPTkX72kfvzN4?=
- =?us-ascii?Q?aoru1CoJuilukusUFyntQuvOfr3yEXuvBLGOPZERis+Ej7PP3M4O+Np3TJNW?=
- =?us-ascii?Q?HC+cwKJbq1PVsGF0M0uz1ywkRGvNbUeanrMN+nE2QIqpEDe2hVmQaD7lGt+q?=
- =?us-ascii?Q?+w7OsjkziKTtTR43ZZySETXRVLGQN4ovoqrkeAJCNnzMbifCc8K9CqH0PLpr?=
- =?us-ascii?Q?t6uFSAwV8S2vb9OMj1dw60Wu1qrDrXsTnstmNev8XxPJYuOxOKNGcrrK5DHR?=
- =?us-ascii?Q?/P43UyW/XP+Nd02DlZuv5APxbL6LEyREOLB6r/keEHHFCsHgxwihq4nwP4IS?=
- =?us-ascii?Q?Q62t4t7b3MIfFr+Y15OW4nCgQxGuI+MmJLVWUWX5IA6vO3K7aS7V/Cg8gWhH?=
- =?us-ascii?Q?dd2vduKo7ciZivFBLFCl0uP3JiTLgEMy9ZvoVP4ZGymizsACawdUioZXuzrm?=
- =?us-ascii?Q?81d31oYOOrjL7Npgs//3MIrVcil6AE0ldWH19ZX/fbhSeic+mDaoEv3LRFCc?=
- =?us-ascii?Q?KZ2hzT37Ze26FdtRZZwuFHGR?=
-X-OriginatorOrg: calian.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f9e8fec-d6d9-4d09-9f50-08d90689e9c1
-X-MS-Exchange-CrossTenant-AuthSource: YT1PR01MB3546.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 18:59:25.4031
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 23b57807-562f-49ad-92c4-3bb0f07a1fdf
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p5Cr/cxCkp77nh9zSYfZEpN4hTQYQQhX/+23Dp5zS1VkA7VTL5Q8UuK/j0XVPBzWq4BmB/iR8yvZzgXAnkkqFn7u4oYKtLSXAigTwaFtVJI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT1PR01MB3705
-X-Proofpoint-ORIG-GUID: xick86VO3CSnn9EDvt6vxLu6Wk2YAhKM
-X-Proofpoint-GUID: xick86VO3CSnn9EDvt6vxLu6Wk2YAhKM
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-23_07:2021-04-23,2021-04-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- bulkscore=0 priorityscore=1501 phishscore=0 mlxlogscore=483 mlxscore=0
- impostorscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104230122
+References: <20210421174248.97506-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210421174248.97506-1-kai.heng.feng@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 23 Apr 2021 14:59:54 -0400
+Message-ID: <CADnq5_NcoKD8rfxUkVsRo7TVpoqp-3KK+EiaxtYj_iN8a0LPyQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Register VGA clients after init can no longer fail
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, Huang Rui <ray.huang@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Evan Quan <evan.quan@amd.com>, Dennis Li <Dennis.Li@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously the XILINX_INTC config option was hidden and only
-auto-selected on the MicroBlaze platform. However, this IP can also be
-used on the Zynq and ZynqMP platforms as a secondary cascaded
-controller. Allow this option to be user-enabled on those platforms.
+On Wed, Apr 21, 2021 at 1:43 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> When an amdgpu device fails to init, it makes another VGA device cause
+> kernel splat:
+> kernel: amdgpu 0000:08:00.0: amdgpu: amdgpu_device_ip_init failed
+> kernel: amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
+> kernel: amdgpu: probe of 0000:08:00.0 failed with error -110
+> ...
+> kernel: amdgpu 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=3Dio=
++mem,decodes=3Dnone:owns=3Dnone
+> kernel: BUG: kernel NULL pointer dereference, address: 0000000000000018
+> kernel: #PF: supervisor read access in kernel mode
+> kernel: #PF: error_code(0x0000) - not-present page
+> kernel: PGD 0 P4D 0
+> kernel: Oops: 0000 [#1] SMP NOPTI
+> kernel: CPU: 6 PID: 1080 Comm: Xorg Tainted: G        W         5.12.0-rc=
+8+ #12
+> kernel: Hardware name: HP HP EliteDesk 805 G6/872B, BIOS S09 Ver. 02.02.0=
+0 12/30/2020
+> kernel: RIP: 0010:amdgpu_device_vga_set_decode+0x13/0x30 [amdgpu]
+> kernel: Code: 06 31 c0 c3 b8 ea ff ff ff 5d c3 66 2e 0f 1f 84 00 00 00 00=
+ 00 66 90 0f 1f 44 00 00 55 48 8b 87 90 06 00 00 48 89 e5 53 89 f3 <48> 8b =
+40 18 40 0f b6 f6 e8 40 58 39 fd 80 fb 01 5b 5d 19 c0 83 e0
+> kernel: RSP: 0018:ffffae3c0246bd68 EFLAGS: 00010002
+> kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> kernel: RDX: ffff8dd1af5a8560 RSI: 0000000000000000 RDI: ffff8dce8c160000
+> kernel: RBP: ffffae3c0246bd70 R08: ffff8dd1af5985c0 R09: ffffae3c0246ba38
+> kernel: R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000246
+> kernel: R13: 0000000000000000 R14: 0000000000000003 R15: ffff8dce81490000
+> kernel: FS:  00007f9303d8fa40(0000) GS:ffff8dd1af580000(0000) knlGS:00000=
+00000000000
+> kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> kernel: CR2: 0000000000000018 CR3: 0000000103cfa000 CR4: 0000000000350ee0
+> kernel: Call Trace:
+> kernel:  vga_arbiter_notify_clients.part.0+0x4a/0x80
+> kernel:  vga_get+0x17f/0x1c0
+> kernel:  vga_arb_write+0x121/0x6a0
+> kernel:  ? apparmor_file_permission+0x1c/0x20
+> kernel:  ? security_file_permission+0x30/0x180
+> kernel:  vfs_write+0xca/0x280
+> kernel:  ksys_write+0x67/0xe0
+> kernel:  __x64_sys_write+0x1a/0x20
+> kernel:  do_syscall_64+0x38/0x90
+> kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> kernel: RIP: 0033:0x7f93041e02f7
+> kernel: Code: 75 05 48 83 c4 58 c3 e8 f7 33 ff ff 0f 1f 80 00 00 00 00 f3=
+ 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d =
+00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+> kernel: RSP: 002b:00007fff60e49b28 EFLAGS: 00000246 ORIG_RAX: 00000000000=
+00001
+> kernel: RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f93041e02f7
+> kernel: RDX: 000000000000000b RSI: 00007fff60e49b40 RDI: 000000000000000f
+> kernel: RBP: 00007fff60e49b40 R08: 00000000ffffffff R09: 00007fff60e499d0
+> kernel: R10: 00007f93049350b5 R11: 0000000000000246 R12: 000056111d45e808
+> kernel: R13: 0000000000000000 R14: 000056111d45e7f8 R15: 000056111d46c980
+> kernel: Modules linked in: nls_iso8859_1 snd_hda_codec_realtek snd_hda_co=
+dec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg=
+ snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_seq input_leds snd_seq_de=
+vice snd_timer snd soundcore joydev kvm_amd serio_raw k10temp mac_hid hp_wm=
+i ccp kvm sparse_keymap wmi_bmof ucsi_acpi efi_pstore typec_ucsi rapl typec=
+ video wmi sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables auto=
+fs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov as=
+ync_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 m=
+ultipath linear dm_mirror dm_region_hash dm_log hid_generic usbhid hid amdg=
+pu drm_ttm_helper ttm iommu_v2 gpu_sched i2c_algo_bit drm_kms_helper syscop=
+yarea sysfillrect crct10dif_pclmul sysimgblt crc32_pclmul fb_sys_fops ghash=
+_clmulni_intel cec rc_core aesni_intel crypto_simd psmouse cryptd r8169 i2c=
+_piix4 drm ahci xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_g=
+eneric
+> kernel: CR2: 0000000000000018
+> kernel: ---[ end trace 76d04313d4214c51 ]---
+>
+> Commit 4192f7b57689 ("drm/amdgpu: unmap register bar on device init
+> failure") makes amdgpu_driver_unload_kms() skips amdgpu_device_fini(),
+> so the VGA clients remain registered. So when
+> vga_arbiter_notify_clients() iterates over registered clients, it causes
+> NULL pointer dereference.
+>
+> Since there's no reason to register VGA clients that early, so solve
+> the issue by putting them after all the goto cleanups.
+>
+> Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failu=
+re")
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 26 +++++++++++-----------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_device.c
+> index b4ad1c055c70..115a7699e11e 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -3410,19 +3410,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+>         /* doorbell bar mapping and doorbell index init*/
+>         amdgpu_device_doorbell_init(adev);
+>
+> -       /* if we have > 1 VGA cards, then disable the amdgpu VGA resource=
+s */
+> -       /* this will fail for cards that aren't VGA class devices, just
+> -        * ignore it */
+> -       if ((adev->pdev->class >> 8) =3D=3D PCI_CLASS_DISPLAY_VGA)
+> -               vga_client_register(adev->pdev, adev, NULL, amdgpu_device=
+_vga_set_decode);
+> -
+> -       if (amdgpu_device_supports_px(ddev)) {
+> -               px =3D true;
+> -               vga_switcheroo_register_client(adev->pdev,
+> -                                              &amdgpu_switcheroo_ops, px=
+);
+> -               vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_p=
+m_domain);
+> -       }
+> -
+>         if (amdgpu_emu_mode =3D=3D 1) {
+>                 /* post the asic on emulation mode */
+>                 emu_soc_asic_init(adev);
+> @@ -3619,6 +3606,19 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+>         if (amdgpu_device_cache_pci_state(adev->pdev))
+>                 pci_restore_state(pdev);
+>
+> +       /* if we have > 1 VGA cards, then disable the amdgpu VGA resource=
+s */
+> +       /* this will fail for cards that aren't VGA class devices, just
+> +        * ignore it */
+> +       if ((adev->pdev->class >> 8) =3D=3D PCI_CLASS_DISPLAY_VGA)
+> +               vga_client_register(adev->pdev, adev, NULL, amdgpu_device=
+_vga_set_decode);
+> +
+> +       if (amdgpu_device_supports_px(ddev)) {
+> +               px =3D true;
+> +               vga_switcheroo_register_client(adev->pdev,
+> +                                              &amdgpu_switcheroo_ops, px=
+);
+> +               vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_p=
+m_domain);
+> +       }
+> +
 
-Signed-off-by: Robert Hancock <robert.hancock@calian.com>
----
+If we move vga_switcheroo_init_domain_pm_ops() here, I think we can
+remove the vga_switcheroo cleanup in the failed: label.
 
-Changes since v2: Removed COMPILE_TEST dependency
+Alex
 
-Changes since v1: Allow only Zynq/ZynqMP platforms
 
- drivers/irqchip/Kconfig | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 15536e321df5..53f81a0d161e 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -279,8 +279,13 @@ config XTENSA_MX
- 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 
- config XILINX_INTC
--	bool
-+	bool "Xilinx Interrupt Controller IP"
-+	depends on MICROBLAZE || ARCH_ZYNQ || ARCH_ZYNQMP
- 	select IRQ_DOMAIN
-+	help
-+	  Support for the Xilinx Interrupt Controller IP core.
-+	  This is used as a primary controller with MicroBlaze and can also
-+	  be used as a secondary chained controller on other platforms.
- 
- config IRQ_CROSSBAR
- 	bool
--- 
-2.27.0
-
+>         if (adev->gmc.xgmi.pending_reset)
+>                 queue_delayed_work(system_wq, &mgpu_info.delayed_reset_wo=
+rk,
+>                                    msecs_to_jiffies(AMDGPU_RESUME_MS));
+> --
+> 2.30.2
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
