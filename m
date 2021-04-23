@@ -2,129 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783553696CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B613696A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhDWQWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWQWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:22:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B27F61076;
-        Fri, 23 Apr 2021 16:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619194884;
-        bh=Du6lrJKXMMsCR3cPrKGmwGJJyqUjppjm0rJTM8RTBNY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dJ+B6KFU3EgpUaiVBMfLcmSLWayGiNKRvoBe9kA+AsY6DJtOHZwxDXB+db0JX3nOq
-         x/TZqUsuUT/Wzf3OUrTJe/3vUijBLpbbpRoROsQRXjeHS040Zv4GPJGHdEjFTXasZN
-         K/tmTF+aiMeIgEXbNEanY7LY51bIT8jPYLmxEEx9UTgrar5wUeeL2tFDVPdCCfgBXO
-         kZ0PosAhYfaZ/QUF67sHJqxnULhCQiHNyHarAjqPAy5H29ZMidmJN5D9/rMMb9UW9x
-         mPx+nV9K6LUEm8VaODtcnn91IsahmEwVi+4k5V4HUwf7mdV9JY7DHgReHbWDQVls4l
-         bubgH+WXZ8Ujw==
-Date:   Fri, 23 Apr 2021 17:20:55 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Joe Burmeister <joe.burmeister@devtank.co.uk>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nsaenz@kernel.org
-Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
- beyond limit.
-Message-ID: <20210423162055.GE5507@sirena.org.uk>
-References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
- <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
- <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
- <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
- <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
- <20210423115724.GB5507@sirena.org.uk>
- <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
+        id S243101AbhDWQIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:08:07 -0400
+Received: from mail-bn8nam12on2052.outbound.protection.outlook.com ([40.107.237.52]:43137
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231858AbhDWQID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 12:08:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SAinTsOADH97i8ogZJfoG7FkEMebf8EluYoATY1ixujvDPOU8XLuDoHMXklfSgaU5HYxRLHDaDSS6IRKMPczhVOb9XK3OZbIUdsTN8CSH1vKXqehDs1L4PwT/rAVhTtooucNATNmtdoJF6WT6q+PwBiLclFws1wGBZ10EkBN+3/LnaJidBfAFG0Uf+TLMkyU0O7NzyiKNScavhhqQEcQuahR2Bgmi6NMd4ZaJPUWUVZ6Ys22raRYN4nYyKfIrVw5EXf1yZj+U/3eNo2XmMebjva2wmHY0/i0h5EFHhl4SfxZL7Kdva6WM0LvSzHJ/j2vChHe95yRg6QL9cQzoo4zMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iFTcr2aiTLgrRRHdw3Z+UomMzShRUS+6TzGJ1RQauJc=;
+ b=kiv7cKlzXyTl/Od4FpjbrUOJq1ZGtl2TfvbbPShPIQHqRf3NvDozyPRPicBZv7Wwt4PIIvnFTcmw68ZaajaDFqhk8euDDFM6eDGjjskIX6jTwRbMvgJ23X7vCnyoNzazlKGP3cvzMulW3+yK1S6RThSAeq9fK9rSDs+VTQv13ZMgvohNxjwnA0W+qTz+IJJvKWNCysq5jwjIbPc5cEXA6bGKYTH00U1R3Ee4tSn6/rqrYiY7OvpZCrxBpH71DFd7SECH5a9aITuSd3/yLULqGjk4F91EA60yWuWzQZGKlHbB3MrpSRl8VIGfoBc2XfN8tdtAy4ieTydo8VpYBhZZEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iFTcr2aiTLgrRRHdw3Z+UomMzShRUS+6TzGJ1RQauJc=;
+ b=lh6sp0ADi9W01EwpiBZhhG/y7kS13vue/1q94XrUvq+Rn64gqWmwmEhFRf/k7woua8dHy3vyT/qQUB/X4EKKcyP8KI7wJ4D+XdT/kXRIBHHEHQa6vzisyRcAKYnHVPmuAFJtMxM4Uj/X2PHAMFbSkjQPUPOpu95RndkOBfARNzA=
+Received: from BN0PR04CA0089.namprd04.prod.outlook.com (2603:10b6:408:ea::34)
+ by BL0PR12MB4675.namprd12.prod.outlook.com (2603:10b6:207:35::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 23 Apr
+ 2021 16:07:24 +0000
+Received: from BN8NAM11FT025.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:ea:cafe::b) by BN0PR04CA0089.outlook.office365.com
+ (2603:10b6:408:ea::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
+ Transport; Fri, 23 Apr 2021 16:07:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN8NAM11FT025.mail.protection.outlook.com (10.13.177.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4065.21 via Frontend Transport; Fri, 23 Apr 2021 16:07:24 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 23 Apr
+ 2021 11:07:23 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 23 Apr
+ 2021 11:07:23 -0500
+Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 23 Apr 2021 11:07:19 -0500
+From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <amistry@google.com>, <nartemiev@google.com>,
+        <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
+        <Sunil-kumar.Dommati@amd.com>,
+        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Ranjani Sridharan" <ranjani.sridharan@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN to dwc driver
+Date:   Fri, 23 Apr 2021 21:54:38 +0530
+Message-ID: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MIdTMoZhcV1D07fI"
-Content-Disposition: inline
-In-Reply-To: <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
-X-Cookie: This is now.  Later is later.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 407aa401-a8f1-4c2c-8b2c-08d90671e1ec
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4675:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB4675C059F9E23EEF2600512C97459@BL0PR12MB4675.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:901;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mge8opFeGfCZQfg6em36yl3g5BZM5shKnf3EFOtpq5gQll9fPIlvb9qCurWzFrNhW/iVrKqZLNv6FM6R4P5q2osxqqB9XUzf0ZP5yo+jwK+41MCqcazWlP1uce0LlUVfN5vgjfNKVKsTHdvnHYZfQG737/tdZ1NKeasDcoHu44aDtlc3yM9x5lWIiafGUyOE3ySW7WQl7gu3KsdwDLsZS3yLj/nD4BbkBZKO6z1IezCQJstfvvPHcMNBCEcbcGSkVRE3pG4bjVBYEJsMOCZvhX9ewJRXvIl+Wkp36cEeg26zXJZJ0FznxQx5isByaDawXBrBFVQZZ49UCcVqFOkj7gKPuk2m46uJu/J0toBFFL6dI5/04XECqb67dknFyuBOHHJi//Y/eyhYD1r4cF1rIn686RbMyZDV8siceUPG+Y2ICbGsSWAby5eIVcOBYk639b2WCBZbQD5jc3tKFATZvUUOpWjw4V42RXKUMazliGElo6iNjdaiKJJwwyIqfbjfZ3XuRJGyj61qHQgeaRkAsmfHuQxGDq4fSVySp9fL56v7NQPuLGyu1FUg79UhD1KI+ZsdUywo1hcmDg++l2o3Y1EULwweFSHQxJ8H7KayCwkMntyQ1dnwZMm+RW3KiTh+FOwp53tGzu6UI2X9UFwRbg+DhgZoX0LKNjv3VE1mscNkKSbFDrcM0j6L9SDka4mipJwvMg9vSr0ud61X/6lmZFkuoKQgPtCxAZURd7gk4YA=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(36840700001)(46966006)(82740400003)(7416002)(86362001)(2906002)(478600001)(7696005)(4326008)(8936002)(8676002)(336012)(82310400003)(6666004)(2616005)(426003)(26005)(186003)(36756003)(356005)(36860700001)(54906003)(316002)(81166007)(110136005)(47076005)(70586007)(70206006)(83380400001)(5660300002)(70780200001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 16:07:24.0652
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 407aa401-a8f1-4c2c-8b2c-08d90671e1ec
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT025.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4675
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For CZ/StoneyRidge platforms, ACP DMA between ACP SRAM and
+I2S FIFO should be stopped before stopping I2S Controller DMA.
 
---MIdTMoZhcV1D07fI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+When DMA is progressing and stop request received, while DMA transfer
+ongoing between ACP SRAM and I2S FIFO, Stopping I2S DMA prior to ACP DMA
+stop resulting DMA Channel stop failure.
 
-On Fri, Apr 23, 2021 at 03:12:11PM +0100, Joe Burmeister wrote:
-> On 23/04/2021 12:57, Mark Brown wrote:
+This issue can't be fixed in ACP DMA driver due to design constraint.
 
-> > I wouldn't expect any controller to be OK with that?  Drivers can store
-> > per-client data in spi_device->controller_data which doesn't need
-> > scaling (but is also not so helpful if you need to look at clients other
-> > than the one you're currently controlling).
+Add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN in dwc driver to fix DMA stop
+failure by invoking i2s_stop() sequence in shutdown() callback.
 
-> I can see a number which certainly wouldn't. Though I don't want to
-> assume that all don't.
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ include/sound/designware_i2s.h | 1 +
+ sound/soc/dwc/dwc-i2s.c        | 7 ++++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-Yeah, some won't - some do also rely on system specific assumptions
-about what's possible but there's not really mechanisms for declaring
-that.
+diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
+index 80d275b..a700d20 100644
+--- a/include/sound/designware_i2s.h
++++ b/include/sound/designware_i2s.h
+@@ -34,6 +34,7 @@ struct i2s_platform_data {
+ 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
+ 	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
+ 	#define DW_I2S_QUIRK_16BIT_IDX_OVERRIDE (1 << 2)
++	#define DW_I2S_QUIRK_STOP_ON_SHUTDOWN   (1 << 3)
+ 	unsigned int quirks;
+ 	unsigned int i2s_reg_comp1;
+ 	unsigned int i2s_reg_comp2;
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index fd41602..f3a681f 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -308,6 +308,10 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
+ static void dw_i2s_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
++	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++
++	if (dev->quirks & DW_I2S_QUIRK_STOP_ON_SHUTDOWN)
++		i2s_stop(dev, substream);
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ }
+ 
+@@ -342,7 +346,8 @@ static int dw_i2s_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		dev->active--;
+-		i2s_stop(dev, substream);
++		if (!(dev->quirks & DW_I2S_QUIRK_STOP_ON_SHUTDOWN))
++			i2s_stop(dev, substream);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+-- 
+2.7.4
 
-> If we are happy just not letting the core expand num_chipselect that
-> does stop the condition on everything.
-
-> Any controller that can go higher without issue could them have their
-> num_chipselect set to what their real limit is if this enforcement
-> causes an issue.
-
-Part of the issue here is that there has been some variation in how
-num_chipselect is interpreted with regard to GPIO based chip selects
-over time.  It *should* be redundant, I'm not clear why it's in the
-generic bindings at all but that's lost to history AFAICT.
-
-> >>> Not sure I follow you, if we have the overlay before
-> >>> spi_register_controller() is called, how can the check there not
-> >>> trigger? And if we load the overlay later when the SPI controller is
-> >>> already registered, why does not spi_add_device()'s check work?
-
-> >> I think it might be a RPI thing. I think it is merging in the overlay
-> >> and giving Linux one already merged.
-
-> > If the overlay is handled by the bootloader then from the point of view
-> > of Linux there is no overlay - sounds like there's an issue in the
-> > overlay, it should be overriding something that it doesn't?
-
-> Does it matter if the final device tree was compiled like that in the
-> first place or merge into that by the bootloader?
-
-It matters in the context of a discussion of ordering between loading
-the overlay and spi_register_controller() - it's clearly not loaded
-afterwards.
-
-> Of course we could just raise BCM2835_SPI_NUM_CS to 8 or more if that is
-> preferred. Does seams like the dynamic solution is less favoured.
-
-The best thing would be to have it not have a single array of chip
-select specific data and instead store everything in the controller_data
-that's there per-device.
-
---MIdTMoZhcV1D07fI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCC8+YACgkQJNaLcl1U
-h9DEEAf9GQ05ZPI/yujR/34Ofd3FvuiVwve/4suxGMcw1afbBIcgShZfQjwoPCwz
-AX+qTV1PjwlCpUUlPOjfRPEfcuV5Bcw4WzG7bQkKrYyqQLSJ02LTxMVTtLuxgCHL
-vPLgBJu8ZMlFvOPXtzsYFhK5qCbemC9AAqKbQXjsGVcQR7G7rZd4TLoP1x73idr7
-UgbPlXBX0RhXi1CDLPmb3tEP0tJNbECRYDTqUk64FwHrNW9k5cGBv7p7Rcoib3dn
-eiTCBZZC4tb9IFRhqXifjJbNuWSIf40ij0TAHSnEzldLrTl8o00YsJbfDJRG2NcD
-90l+UobbZtvVX4pSU2dmVEE1/PIpZw==
-=bjuX
------END PGP SIGNATURE-----
-
---MIdTMoZhcV1D07fI--
