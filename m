@@ -2,119 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08763696E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D4436970B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhDWQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbhDWQb4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:31:56 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888C5C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:31:18 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id e25so19752436oii.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U2EXIvMnjtnhRUtBtSIOAaq4PzYyW6aIEs/mWjl+wGc=;
-        b=mLDTOowF7V5GRwuBLTnc9OCTmJbvNzDDORiSx6GCBRlkZyLY57vHXAfAqC2TyMUBhF
-         /BkFiE7MJ/7vYAedb3/vsKpBRkyEUdOxQQ+WH0fH21zvaDz/y+pO9hxuVHiI0V95jM+/
-         e5i16Ft6BXJCYMQXjpS/43PdYDWs+g9+bh3QcLPgNbuyr4P5CkPjuHibHvNHAbu0sGdi
-         /XhTh8VL6Zf9RFRkttCxBa0LlqpnGyAJwOG7zmU9xLPcPxnwAJMnhvXR8kPxTgy4kWom
-         3iqWfUR+6WpcZWxlbpigL8IJ7Drfd0zxVjtKKUU1Aqnuu3AMLMZ8QPOwIATtwYSZ23hq
-         2ZPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U2EXIvMnjtnhRUtBtSIOAaq4PzYyW6aIEs/mWjl+wGc=;
-        b=Hps4ub7PeDY1uJUpAPs8hptZgMfGtKbfzdB8LCKMyi+sG1saTBwYJ5ujsAzN+Foo45
-         wGURgssqEd6c9XNK49uJpwiUgEBNVd/cotk08M3xQP1zLPlpsNgIWSkqPjGO5aU36g+u
-         Zg0As7MLZmr+1JYvy1hJdI6adByl5JGpp7Drbij8T5PbOTfI2AwXPHjw7EG7URKJhDAe
-         tC1onEiM0wy6BWYzEqtIJyJXhPWVnRTwv1C78dxAQibnW0x5hoK6GYOHQJXIZLMpuuhy
-         vP41x0lUSIjUBaxhKEhdRTYUw4IhYBv+KZGiZ22KSyitPQDb36JhAGMKHPw2E/g86QU4
-         8vow==
-X-Gm-Message-State: AOAM532h/9SszC80eL54iy57v7VqMyn6sUYYoBTfu7In58QhgSo5uosb
-        VU3epwmdF6nGq8VnF7HUleYbCm/g5U/0aGBnYT5SnA==
-X-Google-Smtp-Source: ABdhPJzLiUJkZg3Yh+AZMlqLEQ4kXy5Lgt3F3JyzdsTtw/M09nnRP+YyZ17L5abh81xiSIra4buqcRBgZjsuQGkfmMM=
-X-Received: by 2002:aca:408b:: with SMTP id n133mr4631502oia.13.1619195477655;
- Fri, 23 Apr 2021 09:31:17 -0700 (PDT)
+        id S243018AbhDWQfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:35:22 -0400
+Received: from mga11.intel.com ([192.55.52.93]:16700 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235830AbhDWQfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 12:35:20 -0400
+IronPort-SDR: q3PY6Z80m2UJzGgpE4hsdmOf+ouzutBhf2k4qpjL43Y1+/6lFZlYz/hG+H6dJ7u4LodIUBrnNs
+ OasVCTXqyXLQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="192910024"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
+   d="scan'208";a="192910024"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 09:34:42 -0700
+IronPort-SDR: A/GALelAqh8nmKhWf/4sYqd6s38qWEG8d4+DpCxmpFYcWce04Ax8rQd23x0+KRiW80i0WAjElK
+ gZ4Q8dIDcA3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
+   d="scan'208";a="535590595"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 23 Apr 2021 09:34:34 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B304611E; Fri, 23 Apr 2021 19:34:51 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v1 01/14] spi: pxa2xx: Use one point of return when ->probe() fails
+Date:   Fri, 23 Apr 2021 19:34:24 +0300
+Message-Id: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <cover.1619193043.git.ashish.kalra@amd.com> <76ad1a3f7ce817e8d269a6d58293fc128678affc.1619193043.git.ashish.kalra@amd.com>
-In-Reply-To: <76ad1a3f7ce817e8d269a6d58293fc128678affc.1619193043.git.ashish.kalra@amd.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 23 Apr 2021 09:31:07 -0700
-Message-ID: <CALMp9eTTC0kFbRt8TBC3x8N4mDism-xg3xEFSCPGiGc20pZ3ZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] KVM: x86: invert KVM_HYPERCALL to default to VMMCALL
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        venu.busireddy@oracle.com, Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 9:00 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> KVM hypercall framework relies on alternative framework to patch the
-> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
-> apply_alternative() is called then it defaults to VMCALL. The approach
-> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
-> will be able to decode the instruction and do the right things. But
-> when SEV is active, guest memory is encrypted with guest key and
-> hypervisor will not be able to decode the instruction bytes.
->
-> So invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
-> and opt into VMCALL.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/include/asm/kvm_para.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-> index 338119852512..fda2fe0d1b10 100644
-> --- a/arch/x86/include/asm/kvm_para.h
-> +++ b/arch/x86/include/asm/kvm_para.h
-> @@ -19,7 +19,7 @@ static inline bool kvm_check_and_clear_guest_paused(void)
->  #endif /* CONFIG_KVM_GUEST */
->
->  #define KVM_HYPERCALL \
-> -        ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
-> +       ALTERNATIVE("vmmcall", "vmcall", X86_FEATURE_VMCALL)
->
->  /* For KVM hypercalls, a three-byte sequence of either the vmcall or the vmmcall
->   * instruction.  The hypervisor may replace it with something else but only the
-> --
-> 2.17.1
->
+When we can't allocate SPI controller, jump to the error path rather than
+return locally.
 
-Won't this result in the same problem when Intel implements full VM encryption?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi-pxa2xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 0cc767283674..0ef22045b006 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1701,8 +1701,8 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
+ 
+ 	if (!controller) {
+ 		dev_err(&pdev->dev, "cannot alloc spi_controller\n");
+-		pxa_ssp_free(ssp);
+-		return -ENOMEM;
++		status = -ENOMEM;
++		goto out_error_controller_alloc;
+ 	}
+ 	drv_data = spi_controller_get_devdata(controller);
+ 	drv_data->controller = controller;
+-- 
+2.30.2
+
