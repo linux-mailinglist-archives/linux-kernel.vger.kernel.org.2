@@ -2,109 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23000368A78
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A09E368A6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236869AbhDWBml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:42:41 -0400
-Received: from regular1.263xmail.com ([211.150.70.197]:36946 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWBmi (ORCPT
+        id S237101AbhDWBf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhDWBf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:42:38 -0400
-X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 21:42:37 EDT
-Received: from localhost (unknown [192.168.167.16])
-        by regular1.263xmail.com (Postfix) with ESMTP id 3DA061BC6;
-        Fri, 23 Apr 2021 09:34:33 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.64] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31917T139684229392128S1619141672038806_;
-        Fri, 23 Apr 2021 09:34:33 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5da22906554fc2752021756c18299c38>
-X-RL-SENDER: shawn.lin@rock-chips.com
-X-SENDER: lintao@rock-chips.com
-X-LOGIN-NAME: shawn.lin@rock-chips.com
-X-FST-TO: ulf.hansson@linaro.org
-X-RCPT-COUNT: 8
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Message-ID: <35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
-Date:   Fri, 23 Apr 2021 09:34:32 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101
- Thunderbird/86.0
-Cc:     shawn.lin@rock-chips.com, "pali@kernel.org" <pali@kernel.org>,
-        "huyue2@yulong.com" <huyue2@yulong.com>,
-        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_mmc=3a_enable_UHS_voltage_switch_for_SD?=
- =?UTF-8?B?U0MgaWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1j?=
- =?UTF-8?B?LW93bmVyQHZnZXIua2VybmVsLm9yZ+S7o+WPkeOAkQ==?=
-To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>
-References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-From:   Shawn Lin <shawn.lin@rock-chips.com>
-In-Reply-To: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Thu, 22 Apr 2021 21:35:27 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DFEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:34:51 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so380345pja.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2u9IVBbrQtK5nxCkY5Ql7e2S1s+pJgrMEaI8rlOVi1A=;
+        b=kTIabuH9XG8EpGNkxN0ttB2TSmNE1UXivJVL/O3iBhAmQtRpUGW6mdNngm3gaVyfHk
+         mZd9igv/ZBylu7j0rFkbzyVbfgP+ZKtnZIFUq1iqZQmxygpodGL8feHFwTGP6bxSDycC
+         aS/dcIescNWiXHRyi86Y8JX+grwyam5ml+aVSu0fu1iKHlX2FNXST0o08A+dKXWyewrs
+         Kh2wSpw3Z38NA32RLIlAhlUrXsT3V8u9XqihnCW3TDKfRab7JiRIMyde0fJAEMOA6t0x
+         dHExxcIpGTZcYxxvXbTeDJKIXOlCaRLkaiKneXlRbAMT21PyRBSE/QeEK7EInSAU7Ulk
+         lR/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=2u9IVBbrQtK5nxCkY5Ql7e2S1s+pJgrMEaI8rlOVi1A=;
+        b=IqR+OlrBP1Mn1y/QEC3jI/KNasJqIAFXqrTJ5fx7lfWJFvTngjK9gG6oRXElHiVLxn
+         odX66wwf3Pha65KCFsNY9uo6vu/uJ9d9HpV51Jd9fhN6YP3HW/rJjEUP1N/g9rSYV9JB
+         kA0AkzuRhnNIRQLDtuXpf39s9swI7kfZZVRe/q+dPpT9upoH4ezHyvu32syyKgH6h39+
+         0VZ8tARwShZjP2zdvCHvpe1Agd5F6pYYIZIboj4nG3r4EolCG7G+sq8N1H4C6b2ZDlzv
+         faOvuEjplcUSu/d9pkxYDgA2OnPcCoFJfA4GJGISs41OguuRRkUwJG16zHRcEUdK6avX
+         ZKFA==
+X-Gm-Message-State: AOAM530eGsFdSw5z3RGjU5Lr9QF7XwGy0fwyQPsbT5TrLg3QO/ODCYrE
+        ZMLlg9dnWvY675w3L9O9pOPM/Q==
+X-Google-Smtp-Source: ABdhPJyPGTWn9ZwTGF0D0ZB3bx8F9D7skQtSMEe+BuiaPPW01VWIa1OOFmwPEC3wIJMBb5FDn5+xdg==
+X-Received: by 2002:a17:90b:950:: with SMTP id dw16mr3058402pjb.68.1619141690659;
+        Thu, 22 Apr 2021 18:34:50 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w140sm3106903pfc.176.2021.04.22.18.34.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 18:34:50 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 18:34:50 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 18:34:48 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Protect kernel linear mapping only if CONFIG_STRICT_KERNEL_RWX is set
+In-Reply-To: <72130961-0419-9b1f-e88e-aa1e933f2942@ghiti.fr>
+CC:     anup@brainfault.org, corbet@lwn.net,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
+        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-45fde203-6fd8-408c-b911-3efbb83d9cf3@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/22 21:18, Christian Löhle wrote:
-> Ignore the reported capacity if the card otherwise reports UHS support.
-> 
-> Currently SDSC cards reporting UHS support except for the CCS do not run
-> through the voltage switch.
-> While strictly speaking a SDSC card cannot support UHS in compliance
-> with the standard, there is no good reason to throttle them that way.
-> Especially for pSLCs in practice such cards benefit greatly by this patch,
+On Sat, 17 Apr 2021 10:26:36 PDT (-0700), alex@ghiti.fr wrote:
+> Le 4/16/21 à 12:33 PM, Palmer Dabbelt a écrit :
+>> On Fri, 16 Apr 2021 03:47:19 PDT (-0700), alex@ghiti.fr wrote:
+>>> Hi Anup,
+>>>
+>>> Le 4/16/21 à 6:41 AM, Anup Patel a écrit :
+>>>> On Thu, Apr 15, 2021 at 4:34 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>>>>
+>>>>> If CONFIG_STRICT_KERNEL_RWX is not set, we cannot set different
+>>>>> permissions
+>>>>> to the kernel data and text sections, so make sure it is defined before
+>>>>> trying to protect the kernel linear mapping.
+>>>>>
+>>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>>>>
+>>>> Maybe you should add "Fixes:" tag in commit tag ?
+>>>
+>>> Yes you're right I should have done that. Maybe Palmer will squash it as
+>>> it just entered for-next?
+>>
+>> Ya, I'll do it.  My testing box was just tied up last night for the rc8
+>> PR, so I threw this on for-next to get the buildbots to take a look.
+>> It's a bit too late to take something for this week, as I try to be
+>> pretty conservative this late in the cycle.  There's another kprobes fix
+>> on the list so if we end up with an rc8 I might send this along with
+>> that, otherwise this'll just go onto for-next before the linear map
+>> changes that exercise the bug.
+>>
+>> You're more than welcome to just dig up the fixes tag and reply, my
+>> scripts pull all tags from replies (just like Revieweb-by).  Otherwise
+>> I'll do it myself, most people don't really post Fixes tags that
+>> accurately so I go through it for pretty much everything anyway.
+>
+> Here it is:
+>
+> Fixes: 4b67f48da707 ("riscv: Move kernel mapping outside of linear mapping")
 
-Cduld you provide some more infomation about the SDSC cards which ones 
-are labeled as UHS, e.g brand, webpage....
+Thanks.  I just squashed it, though, as I had to rewrite this anyway.
 
-> as they can be new and UHS supporting, but must not lie about their CCS.
-> The behaviour of linux-mmc for SDSC is deviating from the standard anyway
-> in such a case, as the card is treated as UHS card not supporting the
-> voltage switch in general.
-> Such a card will come up as
-> mmc0: new ultra high speed SDR25 SD card at address 0001.
-> Thus the subsystem will support CMD23 and others to the card.
-> But if we deviate from the standard anyway, then we might as well
-> not throttle SDSC to 25MB/s.
-> 
-> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-> ---
->   drivers/mmc/core/sd.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-> index 6fa51a6ed058..281ca2da8e0b 100644
-> --- a/drivers/mmc/core/sd.c
-> +++ b/drivers/mmc/core/sd.c
-> @@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
->   		return err;
->   
->   	/*
-> -	 * In case CCS and S18A in the response is set, start Signal Voltage
-> -	 * Switch procedure. SPI mode doesn't support CMD11.
-> +	 * In case S18A in the response is set, start Signal Voltage Switch
-> +	 * procedure. SPI mode doesn't support CMD11.
->   	 */
-> -	if (!mmc_host_is_spi(host) && rocr &&
-> -	   ((*rocr & 0x41000000) == 0x41000000)) {
-> +	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
->   		err = mmc_set_uhs_voltage(host, pocr);
->   		if (err == -EAGAIN) {
->   			retries--;
-> 
-
-
+>
+> Thanks,
+>
+>>
+>> Thanks for sorting this out so quickly!
+>>
+>>>
+>>>>
+>>>> Otherwise it looks good.
+>>>>
+>>>> Reviewed-by: Anup Patel <anup@brainfault.org>
+>>>
+>>> Thank you!
+>>>
+>>> Alex
+>>>
+>>>>
+>>>> Regards,
+>>>> Anup
+>>>>
+>>>>> ---
+>>>>>   arch/riscv/kernel/setup.c | 8 ++++----
+>>>>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+>>>>> index 626003bb5fca..ab394d173cd4 100644
+>>>>> --- a/arch/riscv/kernel/setup.c
+>>>>> +++ b/arch/riscv/kernel/setup.c
+>>>>> @@ -264,12 +264,12 @@ void __init setup_arch(char **cmdline_p)
+>>>>>
+>>>>>          sbi_init();
+>>>>>
+>>>>> -       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
+>>>>> +       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
+>>>>>                  protect_kernel_text_data();
+>>>>> -
+>>>>> -#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
+>>>>> -       protect_kernel_linear_mapping_text_rodata();
+>>>>> +#ifdef CONFIG_64BIT
+>>>>> +               protect_kernel_linear_mapping_text_rodata();
+>>>>>   #endif
+>>>>> +       }
+>>>>>
+>>>>>   #ifdef CONFIG_SWIOTLB
+>>>>>          swiotlb_init(1);
+>>>>> --
+>>>>> 2.20.1
+>>>>>
+>>>>
+>>>> _______________________________________________
+>>>> linux-riscv mailing list
+>>>> linux-riscv@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
