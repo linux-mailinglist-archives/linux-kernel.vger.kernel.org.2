@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D326368B51
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1BB368B53
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhDWC45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        id S237108AbhDWC6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDWC45 (ORCPT
+        with ESMTP id S229868AbhDWC6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:56:57 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2DDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:56:20 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so469199pja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:56:20 -0700 (PDT)
+        Thu, 22 Apr 2021 22:58:03 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0503C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:57:23 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id z16so34235872pga.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:57:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=UtQhf0AMGUbWT9+v2yf9kUp3nmfSVtohRhb6bLrpe3w=;
-        b=g//+B6F+TXQhW76hcLtZtiPnhUoG4OKOoeXsITq/NnITlSIoZ/PSEkyiJBwjx1pzOJ
-         b/bru8FIC5SXz4K1SStTS1wrvbNgZ9GOW48lVyUxKaO+1SVehz0ICVVFzTklw331xhjG
-         SYZVHe9vBOMA2SzGyusWqV5V0DOepdOP26d3+HgKF1B371z9qMc5+XH2CI/ISZW9rJhO
-         LcUJnRg5wcq4VBdUDV/WkD8UDrOWLLvUBHOVOmY55jzheZBUoqDnqhxj87IJ3d3H14QU
-         oD8WIYr7Ch8+u757kgjJ9rVTih+G9Y98n+xTjNje/DpNFrFV1FvtKilSaqX+Nf1sBZG+
-         os/g==
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=arsdj8vKnkIONLNBcA7aqij2gyfUw/1l6TswIRx/eE4=;
+        b=eXQfRFQnN2l37Rz03yVVNKTfVVWaEtnmnCBueTkCJYLwVSfwlr004PJ6fCbfI0cwtE
+         dBsCscUZJdU2+UwOP0gRfKGO14+WjaToJlGk41YLfdasQvfmY3VbL1LvpKE4rBYNhxZh
+         mpPP/78fHZw3MKVGAjLEZbeA/ol8zp/LO+oRGWxMbOeVPraD8VzMgI117jJW2jsQHiwz
+         0nOzRqej7s5U2DAjBPFp1qw9t++5bOgiHRvkOqsiRJu7eFRYAMkuIPt4VLQHluU7RKPU
+         Ip1ZclGanO2CLGZyAqSrPbFm9FrtftttqFwgpu9u75yuFGL5GuGkh4TNiUyFgI8ReH5K
+         aZhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=UtQhf0AMGUbWT9+v2yf9kUp3nmfSVtohRhb6bLrpe3w=;
-        b=Q17MamDEB7NpnYTYRQSJiFMPVhyWyKNGPVPUYI4FYQCDOyfLGcJuJmAyAlTNWEn3ft
-         MIG90F1N0R6+xcPlPPhdaiiVShxrKVcx3h2ClgKNSGHE12c4YjrhgOL9E/iIhZNYySHl
-         iGNIKI6a6xBoZi8+TE7+JjzNR5FEgksweqtgE7nO3c4hv9hS9nxlgQEUbqfhdk3d0Ian
-         ppBpKciOUoW0DcYHCdpARLENqmg5YHtM4Qfs49unqkPNNHt/oMb+7saGoiN+3wjpuvW+
-         Rv1uYwy0VTKblEOsVt3kes4qdQRtZKqnaTk9UE5kFxuUXZh+Vxtgjow719ZPIajw3w6K
-         VMuQ==
-X-Gm-Message-State: AOAM531pa5Jeq3xVLL3onuAkxl6BS593ZaSGf4MkuqIUYrtPN5msBW8l
-        wYy+jsgvkYsdrZ1EB3Y1n0fnLw==
-X-Google-Smtp-Source: ABdhPJwUbOVgaL9jeXHuyFS1nq5rKBtjrsM1C9sCYcWtBQPflZeSEQ9adYi/u2sQZXINu1KuHSZoBA==
-X-Received: by 2002:a17:90a:9a85:: with SMTP id e5mr3107773pjp.201.1619146579609;
-        Thu, 22 Apr 2021 19:56:19 -0700 (PDT)
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=arsdj8vKnkIONLNBcA7aqij2gyfUw/1l6TswIRx/eE4=;
+        b=L6vCGQUjHLiBfOM+l8Ut4JWApUN1hB9US1Su3ssse3CkBqUhI5AFVdEgu32hAu1ypL
+         BxHec4CjZ7g/Nzjl0mbbjJZTgya28693f0XJCHa4N8H2AW03OHj+UHoJVOxkWAaxSEs5
+         IvNhx/y9cfZEkDymMjuDJjeR7i2uujBoQXHJEUGKu4oxIDRW2zI7szBZRbnfCNn4/xEE
+         sFRqgylXpw9neMxT0hIO0ng4R8u54Q3GrNc41zKs8X5CGP8ogr2HhqYkHN82t7vYK8Nt
+         QLJ5f3a7HzBpG4ZT9WqL9NqR8LNioESi2b93FA2FlteQl7SHlHJvcOmQ+ChGv1DYhPUt
+         BMvw==
+X-Gm-Message-State: AOAM530dJCg1C8iFRRyuMNvDUsEBEQ/AGbrieiB0BC7V7HgoWpIXTa7n
+        hugql3pSjoRc8vdm5v+reUGcPA==
+X-Google-Smtp-Source: ABdhPJzD1/uApxHDzfK9xvzlqGuD4OZV/7g8PoNIwhou7rOFWia/5lQuW5JSlqS+QRA4LREGC9ONkA==
+X-Received: by 2002:a65:5888:: with SMTP id d8mr1634494pgu.23.1619146643509;
+        Thu, 22 Apr 2021 19:57:23 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a4sm3217271pff.140.2021.04.22.19.56.18
+        by smtp.gmail.com with ESMTPSA id d4sm5796664pjz.49.2021.04.22.19.57.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 19:56:19 -0700 (PDT)
-Subject: [PATCH] asm-generic: Remove asm/setup.h from the UABI.
-Date:   Thu, 22 Apr 2021 19:55:45 -0700
-Message-Id: <20210423025545.313965-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+        Thu, 22 Apr 2021 19:57:22 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 19:57:22 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 19:57:21 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Bump COMMAND_LINE_SIZE value to 1024
+In-Reply-To: <alpine.DEB.2.21.2104022022300.18977@angie.orcam.me.uk>
+CC:     david.abdurachmanov@gmail.com, dvyukov@google.com, alex@ghiti.fr,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-api@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Arnd Bergmann <arnd@arndb.de>
+To:     macro@orcam.me.uk
+Message-ID: <mhng-9e6b4607-6bea-411c-b843-916c1e0798ee@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+On Fri, 02 Apr 2021 11:33:30 PDT (-0700), macro@orcam.me.uk wrote:
+> On Fri, 2 Apr 2021, David Abdurachmanov wrote:
+>
+>> > > >  This macro is exported as a part of the user API so it must not depend on
+>> > > > Kconfig.  Also changing it (rather than say adding COMMAND_LINE_SIZE_V2 or
+>> > > > switching to an entirely new data object that has its dimension set in a
+>> > > > different way) requires careful evaluation as external binaries have and
+>> > > > will have the value it expands to compiled in, so it's a part of the ABI
+>> > > > too.
+>> > >
+>> > > Thanks, I didn't realize this was part of the user BI.  In that case we
+>> > > really can't chage it, so we'll have to sort out some other way do fix
+>> > > whatever is going on.
+>> > >
+>> > > I've dropped this from fixes.
+>> >
+>> > Does increasing COMMAND_LINE_SIZE break user-space binaries? I would
+>> > expect it to work the same way as adding new enum values, or adding
+>> > fields at the end of versioned structs, etc.
+>> > I would assume the old bootloaders/etc will only support up to the
+>> > old, smaller max command line size, while the kernel will support
+>> > larger command line size, which is fine.
+>> > However, if something copies /proc/cmdline into a fixed-size buffer
+>> > and expects that to work, that will break... that's quite unfortunate
+>> > user-space code... is it what we afraid of?
+>> >
+>> > Alternatively, could expose the same COMMAND_LINE_SIZE, but internally
+>> > support a larger command line?
+>>
+>> Looking at kernel commit history I see PowerPC switched from 512 to
+>> 2048, and I don't see complaints about the ABI on the mailing list.
+>>
+>> If COMMAND_LINE_SIZE is used by user space applications and we
+>> increase it there shouldn't be problems. I would expect things to
+>> work, but just get truncated boot args? That is the application will
+>> continue only to look at the initial 512 chars.
+>
+>  The macro is in an include/uapi header, so it's exported to the userland
+> and a part of the user API.  I don't know what the consequences are for
+> the RISC-V port specifically, but it has raised my attention, and I think
+> it has to be investigated.
+>
+>  Perhaps it's OK to change it after all, but you'd have to go through
+> known/potential users of this macro.  I guess there shouldn't be that many
+> of them.
+>
+>  In any case it cannot depend on Kconfig, because the userland won't have
+> access to the configuration, and then presumably wants to handle any and
+> all.
 
-I honestly have no idea if this is sane.
+It kind of feels to me like COMMAND_LINE_SIZE shouldn't have been part 
+of the UABI to begin with.  I sent a patch to remove it from the 
+asm-generic UABI, let's see if anyone knows of a reason it should be 
+UABI:
 
-This all came up in the context of increasing COMMAND_LINE_SIZE in the
-RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
-maximum length of /proc/cmdline and userspace could staticly rely on
-that to be correct.
-
-Usually I wouldn't mess around with changing this sort of thing, but
-PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
-to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
-increasing, but they're from before the UAPI split so I'm not quite sure
-what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
-asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
-boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
-and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
-asm-generic/setup.h.").
-
-It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
-part of the UABI to begin with, and userspace should be able to handle
-/proc/cmdline of whatever length it turns out to be.  I don't see any
-references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
-search, but that's not really enough to consider it unused on my end.
-
-I couldn't think of a better way to ask about this then just sending the
-patch.
-
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- include/{uapi => }/asm-generic/setup.h | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
- rename include/{uapi => }/asm-generic/setup.h (100%)
-
-diff --git a/include/uapi/asm-generic/setup.h b/include/asm-generic/setup.h
-similarity index 100%
-rename from include/uapi/asm-generic/setup.h
-rename to include/asm-generic/setup.h
--- 
-2.31.1.498.g6c1eba8ee3d-goog
-
+https://lore.kernel.org/linux-arch/20210423025545.313965-1-palmer@dabbelt.com/T/#u
