@@ -2,256 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4D7369649
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C98036964B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242953AbhDWPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242623AbhDWPif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:38:35 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7FFC06174A;
-        Fri, 23 Apr 2021 08:37:58 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so4653313pjb.1;
-        Fri, 23 Apr 2021 08:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e6LvPN5k/e6aeDrQflzhvIspluilkhQHg67ojXCyOBs=;
-        b=Tk3OglU8G2AJv4SGZhCyFCJjt8fgdTjSTqcMopPgywdvcv13dBwJCXoIW3bWqIRbQ1
-         wRlRnUrUw+avpWjLlwHgPFM/Ey8AhILNMmdrPrBcA1P5wGDcIQPgJtJHoKvnM2WTv0SF
-         xhEoGKaFpCa4pS+6Iv1YFcxCIDyOXes/n0CjKoB38qQA28Rh0i+v1V3fgaDzRzLllX8Q
-         xP43XXMaV50fn1GoCbd1JG+SBD7dE1kJ7j3eeP6el2R6ma28LoSxxrV4RpqPD470G3go
-         uPFUaQVaHfwrR5yunBlVCWFrOHyLzNP1fpMRjClvRAzmjQnklZ8J5Y/iX4KtC6u85mtv
-         SgZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e6LvPN5k/e6aeDrQflzhvIspluilkhQHg67ojXCyOBs=;
-        b=Wpi/AbayBATn6RKi6g4IGEC5QWr9d/x62PWXaQNttLqudkImo9kZLzNRAltELRTMgK
-         bdzUSeooFq4NrK/RwFY5jnIHkDNEg0p63DdiOZN6tosJO0Ci5LZgdQDO7OL2kCxAVXEB
-         G5Jfj8KSU6X1YwjnGSm5haZDK148tV9BSrSO4lOhjwLbk0xNHJ4Zoh3v/W+cX0bzFl3s
-         r7jADm32xvJ2ajZfEgwH19Bw5NVvg9LH5bjzrcigJG0wf56bnlY1tKVoA2VpSQLjepnx
-         HNYpEuSPNRn/aN2LM+/X1leI1pZe52c/3INO3De+YQPUQAPUPNavjCnJIDuASDNw73XB
-         lfkQ==
-X-Gm-Message-State: AOAM531SOtLbjvQUDR5abxlsoP/Um8eSDjLtKJ9t2bRySw70P1SoFKng
-        hzhdicXSVJHLyE1XPnqUG5QxRRRzCDm7Y6IfeiQ=
-X-Google-Smtp-Source: ABdhPJzTza+5jyGlQ2j+ywWd9ns17382C+/TZwys5DJ6aS783eNyYPuvy6ta8sD/mKk4RVE6ZofvLiB08h7zeJijrec=
-X-Received: by 2002:a17:90b:1c0f:: with SMTP id oc15mr5263860pjb.228.1619192277759;
- Fri, 23 Apr 2021 08:37:57 -0700 (PDT)
+        id S242976AbhDWPiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:38:55 -0400
+Received: from mga04.intel.com ([192.55.52.120]:46575 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231437AbhDWPiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:38:50 -0400
+IronPort-SDR: BCIuvbWxEFgUV4bjIFDiFbc5bHvPct+aCkPeWNOu96+wf4z/dUB6GErT3Qp6aa2te2GEoC/sUq
+ 8JrLIVT9pQYg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="193970046"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
+   d="scan'208";a="193970046"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 08:38:12 -0700
+IronPort-SDR: aH4akTIP2teA/UjFL9N/7tOnMKBK0JgtC5Q2nwl/rVNAiWUaBIfBqeSRdp58Gu6Es0yMZhrrhD
+ ASnKQuOVr3kQ==
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
+   d="scan'208";a="385123549"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 08:38:12 -0700
+Date:   Fri, 23 Apr 2021 08:38:10 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper
+ functions
+Message-ID: <20210423153810.GL1401198@tassilo.jf.intel.com>
+References: <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com>
+ <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
+ <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
+ <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
+ <d99941db-6ee6-267e-dece-6220af0ea305@intel.com>
+ <9161efc0-fd25-d239-32b7-5d2c726579b0@linux.intel.com>
+ <4ac4ed35-212b-f7ad-55f4-937946ffec1a@intel.com>
+ <20210423013546.GK1401198@tassilo.jf.intel.com>
+ <YILkl3C4YjGPM5Jr@google.com>
+ <CAPcyv4gwDeLzG98CegHQs8AAAdctD4vLrAzncu=ciVMyBSDxAQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210422152055.85544-1-tsbogend@alpha.franken.de>
-In-Reply-To: <20210422152055.85544-1-tsbogend@alpha.franken.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 23 Apr 2021 18:37:41 +0300
-Message-ID: <CAHp75Ve6PEr5TFGRgALPCbi-T5Y5yNPV+-fJHC7C2mU+ms30uw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4gwDeLzG98CegHQs8AAAdctD4vLrAzncu=ciVMyBSDxAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 6:21 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> IDT 79RC3243x SoCs integrated a gpio controller, which handles up
-> to 32 gpios. All gpios could be used as interrupt source.
-
-as an interrupt
-
-Thanks for an update, my comments below (minus that you already figured out).
-
-...
-
-> +config GPIO_IDT3243X
-> +       tristate "IDT 79RC3243X GPIO support"
-> +       depends on MIKROTIK_RB532 || COMPILE_TEST
-
-Right.
-
-But if MikroTik is dependent on this you may return default in a form of
-
-  default MIKROTIK_RB532
-
-Up to you. (What I meant previously is the unnecessary ' y if' part).
-
-> +       select GPIO_GENERIC
-> +       select GPIOLIB_IRQCHIP
-> +       help
-> +         Select this option to enable GPIO driver for
-> +         IDT 79RC3243X SoC devices.
-
-Seems like you may elaborate a bit more here, what kind of the
-devices, list one or couple of examples, etc.
-
-> +         To compile this driver as a module, choose M here: the module will
-> +         be called gpio-idt3243x.
-
-...
-
-> +/*
-> + * Driver for IDT/Renesas 79RC3243x Interrupt Controller.
-> + */
-
-One line?
-
-...
-
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-
-Why is this?
-
-...
-
-> +#include <linux/gpio/driver.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-
-> +#include <linux/irqchip.h>
-> +#include <linux/irqchip/chained_irq.h>
-
-Aren't those guaranteed to be included by irq.h?
-
-> +#include <linux/irqdomain.h>
-
-Missed mod_devicetable.h
-module.h
-
-> +#include <linux/of_address.h>
-> +#include <linux/of_irq.h>
-
-Do you use them anyhow? (See below as well)
-
-Missed types.h
-
-...
-
-> +static void idt_gpio_dispatch(struct irq_desc *desc)
-> +{
-> +       struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-> +       struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
-> +       struct irq_chip *host_chip = irq_desc_get_chip(desc);
-> +       unsigned int bit, virq;
-> +       unsigned long pending;
-> +
-> +       chained_irq_enter(host_chip, desc);
-> +
-> +       pending = readl(ctrl->pic + IDT_PIC_IRQ_PEND);
-> +       pending &= ~ctrl->mask_cache;
-> +       for_each_set_bit(bit, &pending, gc->ngpio) {
-
-> +               virq = irq_linear_revmap(gc->irq.domain, bit);
-
-Is it guaranteed to be linear always?
-
-> +               if (virq)
-> +                       generic_handle_irq(virq);
-> +       }
-> +
-> +       chained_irq_exit(host_chip, desc);
-> +}
-
-...
-
-> +       if (sense & ~(IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
-
-There is a _BOTH variant.
-
-> +               return -EINVAL;
-
-> +       ilevel = readl(ctrl->gpio + IDT_GPIO_ILEVEL);
-> +       if (sense & IRQ_TYPE_LEVEL_HIGH)
-> +               ilevel |= BIT(d->hwirq);
-> +       else if (sense & IRQ_TYPE_LEVEL_LOW)
-> +               ilevel &= ~BIT(d->hwirq);
-
-> +       else
-> +               return -EINVAL;
-
-Is it a double check of the above?
-
-...
-
-> +       ctrl->gc.parent = dev;
-
-Wondering if it's already done by GPIO library.
-
-...
-
-> +       ctrl->gc.ngpio = ngpios;
-
-Shouldn't you do this before calling for bgpio_init()?
-
-...
-
-> +       parent_irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
-
-platform_get_irq() ?..
-
-> +       if (!parent_irq) {
-
-> +               dev_err(&pdev->dev, "Failed to map parent IRQ!\n");
-
-...and drop this, since it will be taken care of.
-
-> +               return -EINVAL;
-> +       }
-
-...
-
-> +       /* Mask interrupts. */
-> +       ctrl->mask_cache = 0xffffffff;
-> +       writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
-
-What about using ->init_hw() call back?
-
-...
-
-> +       girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
-
-1 -> girq->num_parents
-
-> +                                    GFP_KERNEL);
-> +       if (!girq->parents) {
-> +               ret = -ENOMEM;
-> +               goto out_unmap_irq;
-> +       }
-
-...
-
-> +       girq->handler = handle_level_irq;
-
-handle_bad_irq()
-
-...
-
-> +       ret = devm_gpiochip_add_data(&pdev->dev, &ctrl->gc, ctrl);
-> +       if (ret)
-> +               goto out_unmap_irq;
-> +
-> +       return 0;
-
-return devm_...;
-
-...
-
-> +out_unmap_irq:
-> +       irq_dispose_mapping(parent_irq);
-> +       return ret;
-> +}
-
-No need.
-
--- 
-With Best Regards,
-Andy Shevchenko
+On Fri, Apr 23, 2021 at 08:28:45AM -0700, Dan Williams wrote:
+> On Fri, Apr 23, 2021 at 8:15 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Thu, Apr 22, 2021, Andi Kleen wrote:
+> > > On Thu, Apr 22, 2021 at 06:21:07PM -0700, Dave Hansen wrote:
+> > > > On 4/22/21 6:09 PM, Kuppuswamy, Sathyanarayanan wrote:
+> > > > > But let me try to explain it here. What I meant by complication is,
+> > > > > for in/out instruction, we use alternative_io() to substitute in/out
+> > > > > instructions with tdg_in()/tdg_out() assembly calls. So we have to ensure
+> > > > > that we don't corrupt registers or stack from the substituted instructions
+> > > > >
+> > > > > If you check the implementation of tdg_in()/tdg_out(), you will notice
+> > > > > that we have added code to preserve the caller registers. So, if we use
+> > > > > C wrapper for this use case, there is a chance that it might mess
+> > > > > the caller registers or stack.
+> > > > >
+> > > > >     alternative_io("in" #bwl " %w2, %" #bw "0",            \
+> > > > >             "call tdg_in" #bwl, X86_FEATURE_TDX_GUEST,    \
+> >
+> > Has Intel "officially" switched to "tdg" as the acronym for TDX guest?  As much
+> > as I dislike having to juggle "TDX host" vs "TDX guest" concepts, tdx_ vs tdg_
+> > isn't any better IMO.  The latter looks an awful lot like a typo, grepping for
+> > "tdx" to find relevant code will get fail (sometimes), and confusion seems
+> > inevitable as keeping "TDX" out of guest code/comments/documentation will be
+> > nigh impossible.
+> >
+> > If we do decide to go with "tdg" for the guest stuff, then _all_ of the guest
+> > stuff, file names included, should use tdg.  Maybe X86_FEATURE_TDX_GUEST could
+> > be left as a breadcrumb for translating TDX->TDG.
+> >
+> > > > >             "=a"(value), "d"(port))
+> > > >
+> > > > Are you saying that calling C functions from inline assembly might
+> > > > corrupt the stack or registers?  Are you suggesting that you simply
+> > >
+> > > It's possible, but you would need to mark a lot more registers clobbered
+> > > (the x86-64 ABI allows to clobber many registers)
+> > >
+> > > I don't think the stack would be messed up, but there might be problems
+> > > with writing the correct unwind information (which tends to be tricky)
+> > >
+> > > Usually it's better to avoid it.
+> >
+> > For me, the more important justification is that, if calling from alternative_io,
+> > the input parameters will be in the wrong registers.  The OUT wrapper would be
+> > especially gross as RAX (the value to write) isn't an input param, i.e. shifting
+> > via "ignored" params wouldn't work.
+> >
+> > But to Dave's point, that justfication needs to be in the changelog.
+> 
+> It's not clear to me that in()/out() need to be inline asm with an
+> alternative vs out-of-line function calls with a static branch?
+
+I doubt it matters at all on a modern machine (the cost of a IO port
+access is many orders of magnitudes greater than a call), but it might
+have mattered on really old systems, like 486 class. Maybe if someone
+is still running those moving it out of line could be a problem.
+
+But likely it's fine.
+
+I think actually for the main kernel we could just rely on #VE here
+and drop it all.
+Doing it without #VE only really matters for the old boot code, where
+performance doesn't really matter.
+
+-Andi
