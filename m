@@ -2,110 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37AA368FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B556D368FC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241901AbhDWJuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:50:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40378 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241852AbhDWJus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:50:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619171412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lttXllC96pjl9peZRGjvJaERkDX34Sq4PB6MZIKq8Dw=;
-        b=h8C7ozPilbk0UFkf8ysHgKSjkQmKxARlYoRhujeoBgqZg8x5nbdYRY5oFif9re4j9pvOxN
-        zWPX3v4Nw5R5wBbnkSvWB5nEiI8bXPfDuKHACsoB6oohYQoPxXrikA9wpvoAK56Pptz0w/
-        wySiPQM+nzKCzdXVkKNahtUUuFdzMK0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-2aMAfHaYPFaCtZSADwr6eg-1; Fri, 23 Apr 2021 05:50:10 -0400
-X-MC-Unique: 2aMAfHaYPFaCtZSADwr6eg-1
-Received: by mail-ed1-f70.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so16560582eds.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:50:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lttXllC96pjl9peZRGjvJaERkDX34Sq4PB6MZIKq8Dw=;
-        b=OiP0sw5gKhntIe+jBN6gdGnhZnDIPHMVyXpSwHIOjNPuuFaNQTJR011gKYv01J+mfv
-         cgDe8D573Epf06ufMyx27XU0J/EfPOMD62nVXHfvxiU77R6nMDb2U0mMi9pturFjFM4A
-         sV5RyE8OOoQ3Nnp9FSM/lrX9V7OTYVar2Q6i7FdwROcxr3k42VElEqZBBtXXBgqRrJxV
-         DywgKplVNKS8HspGBWo3AiNXB/oFjpGBoHvNbYsWl9guv0cJnvLP5TRB/iQUNmRhxECB
-         Dr4VIvKP5JtI3HAD4H1+zsk4AzyMyqqqufaS6fQ6L9faE0d8WbbahOoDsNl7jbgtfalS
-         eCHw==
-X-Gm-Message-State: AOAM532jaJ+SAoRfYLza+WfivQ7sfq+XU0hsJOLRJzpWe3WPO1uSnKs9
-        +mcihFQaTzgjeK9prjiGP7IxfLj3KB1JjOxy09oIULanixBBKkueOmVhO7Q2uZ457inJbWGGw86
-        FxnTqpax0GViZ8y6AQckuVlQleytJ30FymHovCzKM2kovWqBtjHenKroYRRefIozByLhjUTcZMn
-        r5
-X-Received: by 2002:a05:6402:254f:: with SMTP id l15mr3443793edb.189.1619171409222;
-        Fri, 23 Apr 2021 02:50:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/VCmHTB70961btADlTz5e8A3q9643nHV4cnCUH4ChbCa8x0wJgKu3xOGY/OZrFDWx6sb1Zg==
-X-Received: by 2002:a05:6402:254f:: with SMTP id l15mr3443755edb.189.1619171408919;
-        Fri, 23 Apr 2021 02:50:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x7sm4260299eds.67.2021.04.23.02.50.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 02:50:08 -0700 (PDT)
-Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
-To:     Alexander Graf <graf@amazon.com>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Evgeny Iakovlev <eyakovl@amazon.de>, Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210423090333.21910-1-sidcha@amazon.de>
- <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <213887af-78b8-03ad-b3f9-c2194cb27b13@redhat.com>
-Date:   Fri, 23 Apr 2021 11:50:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S241793AbhDWJwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:52:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:60682 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230246AbhDWJwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:52:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F65C11D4;
+        Fri, 23 Apr 2021 02:51:58 -0700 (PDT)
+Received: from usa.arm.com (a074945.blr.arm.com [10.162.16.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7E1DD3F774;
+        Fri, 23 Apr 2021 02:51:54 -0700 (PDT)
+From:   Vivek Gautam <vivek.gautam@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org
+Cc:     joro@8bytes.org, will.deacon@arm.com, mst@redhat.com,
+        robin.murphy@arm.com, jean-philippe@linaro.org,
+        eric.auger@redhat.com, kevin.tian@intel.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
+Subject: [PATCH RFC v1 00/11] iommu/virtio: vSVA support with Arm
+Date:   Fri, 23 Apr 2021 15:21:36 +0530
+Message-Id: <20210423095147.27922-1-vivek.gautam@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/21 11:24, Alexander Graf wrote:
-> I can see how that may get interesting for other overlay pages later, 
-> but this one in particular is just an MSR write, no? Is there any reason 
-> we can't just use the user space MSR handling logic instead?
-> 
-> What's missing then is a way to pull the hcall page contents from KVM. 
-> But even there I'm not convinced that KVM should be the reference point 
-> for its contents. Isn't user space in an as good position to assemble it?
+This patch series aims at enabling vSVA (Shared virtual addressing)
+support in virtio-iommu driver for devices assigned to the guest
+kernel using pci-passthrough technique (also called as Device
+assignment). The changes are proposed to make virtio-iommu driver
+become intelligent to support Shared virtual addressing.
 
-In theory userspace doesn't know how KVM wishes to implement the 
-hypercall page, especially if Xen hypercalls are enabled as well.
+The virtio-iommu device serves as the para-virtualized iommu for
+IO devices running in the guest. This work is done for PCI devices
+that are able to generate Address Translation Service (ATS) and
+Page Request Interface (PRI) requests.
 
-But userspace has two plausible ways to get the page contents:
+With vSVA support now devices running in guest can start using process
+address space (Guest virtual address, GVA) for DMA. The below diagram
+shows a simple system layout using iommus in guest and host.
 
-1) add a ioctl to write the hypercall page contents to an arbitrary 
-userspace address
+                 ------------------
+		 |  virtio-iommu  |
+		 |    driver      |
+		 |  (front-end)   |
+		 |________________|
+                                               Guest kernel
+          --------------------------------------------------
 
-2) after userspace updates the memslots to add the overlay page at the 
-right place, use KVM_SET_MSR from userspace (which won't be filtered 
-because it's host initiated)
+                 ------------------
+		 |  virtio-iommu  |
+		 |    driver      |
+		 |  (back-end)    |
+		 |________________|
+                                                    kvmtool
+          --------------------------------------------------
 
-The second has the advantage of not needing any new code at all, but 
-it's a bit more ugly.
+                  -----------------
+		 |  arm-smmu-v3   |
+		 |    driver      |
+		 |________________|
+                                                Host kernel
+          --------------------------------------------------
 
-Paolo
+                  -----------------
+		 |  arm-smmu-v3   |
+		 |    hardware    |
+		 |________________|
+                                                   Hardware
+          --------------------------------------------------
+
+The flow of various messages/requests looks like below:
+a) The stage-1 page tables are prepared by virtio-iommu driver using
+   CPU page table info. This page table data then flow from guest kernel
+   to host kernel using VFIO uapi changes [1]. The stage-1 page tables
+   are then programmed into the hardware by the arm-smmu-v3 driver.
+b) The device can then start initiating DMA transactions using ATS
+   request.
+c) When using GVA, SMMU encounters a translation fault and responds
+   to the device with ATS success - translation failure.
+d) The device can then send a PRI request that eventually populates
+   the PRIQ of arm-smmu-v3.
+e) The page fault info is captured from PRIQ, and sent to the guest
+   kernel using VFIO dma fault region as added in [1].
+f) The page fault is received on the virt-queue by virtio-iommu driver
+   and is then passed to io-page-fault handler. The io page fault
+   handler talks to mm fault handling engine in guest kernel and gets
+   the CPU page tables updated.
+g) Virtio-iommu driver then sends page_response backend virtio-iommu
+   in vmm. From there this page_response info is passed to host kernel.
+h) The arm-smmu-v3 driver running in the host will then use this page
+   repsonse info and send a response to the requesting device.
+
+The series use nested page table support [2] as the base to build vSVA
+solution.
+
+The changes are inspired from the SVA support in arm-smmu-v3 and are
+making use of io-page-fault changes added by Jean Philippe [3].
+
+The changes include:
+- The mmu notifier structure, and allocation and freeing up of shared
+  context descriptors are moved to arm-smmu-v3-cd-lib library driver,
+  and changes have been made to arm-smmu-v3-sva driver to use these
+  shared cd alloc/free helpers.
+- In virtio-iommu driver:
+  - changes have been added to add various iommu_ops to enable/disable
+    feature, and to perform sva_bind/unbind. 
+  - A iopf queue has been added that accepts incoming page faults, and
+    work with mm fault handler to get the page resident.
+  - Incoming page fault information from vmm is parsed using a work-queue
+    and passed to the iopf fault handler.
+  - A new virt-queue request has been added to send page response back
+    to the vmm back-end driver. The page response is populated from the
+    mm fault handler response, and includes information on Page Request
+    pasid, group-id, and response code, etc.
+
+[1] https://lore.kernel.org/linux-iommu/20210411114659.15051-1-eric.auger@redhat.com/
+    https://lore.kernel.org/linux-iommu/20210411111228.14386-1-eric.auger@redhat.com/
+[2] https://lore.kernel.org/linux-iommu/20210115121342.15093-1-vivek.gautam@arm.com/
+[3] https://www.spinics.net/lists/arm-kernel/msg886518.html
+
+Vivek Gautam (11):
+  uapi/virtio-iommu: Add page request grp-id and flags information
+  iommu/virtio: Maintain a list of endpoints served by viommu_dev
+  iommu/virtio: Handle incoming page faults
+  iommu/virtio: Add a io page fault queue
+  iommu/virtio: Add SVA feature and related enable/disable callbacks
+  iommu/pasid-table: Add pasid table ops for shared context management
+  iommu/arm-smmu-v3: Move shared context descriptor code to cd-lib
+  iommu/arm-smmu-v3: Implement shared context alloc and free ops
+  iommu/virtio: Implement sva bind/unbind calls
+  uapi/virtio-iommu: Add a new request type to send page response
+  iommu/virtio: Add support to send page response
+
+ .../arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c      | 165 ++++-
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 230 +------
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |   1 -
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |   2 -
+ drivers/iommu/iommu-pasid-table.h             |  43 ++
+ drivers/iommu/virtio-iommu.c                  | 634 +++++++++++++++++-
+ include/uapi/linux/virtio_iommu.h             |  35 +
+ 7 files changed, 904 insertions(+), 206 deletions(-)
+
+-- 
+2.17.1
 
