@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A247F3691B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B7E3691BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242293AbhDWMDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:03:42 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34262 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242259AbhDWMDk (ORCPT
+        id S242267AbhDWMGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:06:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2912 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhDWMGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:03:40 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13NC24LM015246;
-        Fri, 23 Apr 2021 14:02:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=WD96ZYftirjps1b7STHm3D8G2o7VrvWXKlGU+slnDzA=;
- b=QWSIQn0rA70SBTvEpG87q+vOwzUeAmH0wACwXjBG3/R2Ea0L/S54z06W3ZrQE0GlJCtS
- uqJWHodePUjdqSpzSc5/0t67nZ7z8s7QCbF18/ckwlqbPnOkGDlIHxrl0W0eYeov4sSR
- pUMUHufdMwNomVUk9LoimzsgObDivNC+RLBEs2JNi0J8xHc5CRRajqQ7FcgFMqfRnIBk
- k7QCXQI/VufY5LZCZKc58r1ujSXOPoZzepuaWmD/6trAwoUm8er4L+ZHMHz8rKQ5HQbP
- /aBJKbujf2Bt9TqoH/V2+0FuMUvNVZsRMvn67HF0OB8exABPzj9kTrMGuYwvYWsHNJdt nA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3836fcqekv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Apr 2021 14:02:43 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5FD7A10002A;
-        Fri, 23 Apr 2021 14:02:40 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3E926229DBC;
-        Fri, 23 Apr 2021 14:02:40 +0200 (CEST)
-Received: from [10.48.0.224] (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
- 2021 14:02:39 +0200
-Subject: Re: [Linux-stm32] [PATCH 1/2] memory: stm32-fmc2-ebi: add missing
- of_node_put for loop iteration
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Christophe Kerello <christophe.kerello@st.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210423101815.119341-1-krzysztof.kozlowski@canonical.com>
-From:   Christophe Kerello <christophe.kerello@foss.st.com>
-Message-ID: <86a216db-b9b7-da45-ab74-a32538da6e00@foss.st.com>
-Date:   Fri, 23 Apr 2021 14:02:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Fri, 23 Apr 2021 08:06:18 -0400
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FRXm842BZz689Dm;
+        Fri, 23 Apr 2021 19:55:20 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 23 Apr 2021 14:05:40 +0200
+Received: from [10.47.95.78] (10.47.95.78) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 23 Apr
+ 2021 13:05:39 +0100
+Subject: Re: Question on threaded handlers for managed interrupts
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Marc Zyngier" <maz@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Ingo Molnar" <mingo@kernel.org>
+References: <b8c4be8c-1d67-c16c-570e-d3c883c77ea2@huawei.com>
+ <874kfxw9zv.ffs@nanos.tec.linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c297d618-1378-f51b-45db-605a3fc15336@huawei.com>
+Date:   Fri, 23 Apr 2021 13:02:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210423101815.119341-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <874kfxw9zv.ffs@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-23_04:2021-04-23,2021-04-23 signatures=0
+X-Originating-IP: [10.47.95.78]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On 23/04/2021 11:50, Thomas Gleixner wrote:
 
-On 4/23/21 12:18 PM, Krzysztof Kozlowski wrote:
-> Early exits from for_each_available_child_of_node() should decrement the
-> node reference counter.  Reported by Coccinelle:
+Hi Thomas,
+
+>> The multi-queue storage controller (see [1] for memory refresh, but
+>> note that I can also trigger on PCI device host controller as well) is
+>> using managed interrupts and threaded handlers. Since the threaded
+>> handler uses SCHED_FIFO, aren't we always vulnerable to this situation
+>> with the managed interrupt and threaded handler combo? Would the
+>> advice be to just use irq polling here?
+> This is a really good question. Most interrupt handlers are not running
+> exceedingly long or come in with high frequency, but of course this
+> problem exists.
 > 
->    drivers/memory/stm32-fmc2-ebi.c:1046:1-33: WARNING:
->      Function "for_each_available_child_of_node" should have of_node_put() before return around line 1051.
+> The network people have solved it with NAPI which disables the interrupt
+> in the device and polls it from softirq context (which might be then
+> delegated to ksoftirqd) until it's drained.
 > 
-> Fixes: 66b8173a197f ("memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->   drivers/memory/stm32-fmc2-ebi.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> I'm not familiar with the block/multiqueue layer to be able to tell
+> whether such a concept exists there as well.
 > 
-> diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
-> index 4d5758c419c5..ffec26a99313 100644
-> --- a/drivers/memory/stm32-fmc2-ebi.c
-> +++ b/drivers/memory/stm32-fmc2-ebi.c
-> @@ -1048,16 +1048,19 @@ static int stm32_fmc2_ebi_parse_dt(struct stm32_fmc2_ebi *ebi)
->   		if (ret) {
->   			dev_err(dev, "could not retrieve reg property: %d\n",
->   				ret);
-> +			of_node_put(child);
->   			return ret;
->   		}
->   
->   		if (bank >= FMC2_MAX_BANKS) {
->   			dev_err(dev, "invalid reg value: %d\n", bank);
-> +			of_node_put(child);
->   			return -EINVAL;
->   		}
->   
->   		if (ebi->bank_assigned & BIT(bank)) {
->   			dev_err(dev, "bank already assigned: %d\n", bank);
-> +			of_node_put(child);
->   			return -EINVAL;
->   		}
->   
-> @@ -1066,6 +1069,7 @@ static int stm32_fmc2_ebi_parse_dt(struct stm32_fmc2_ebi *ebi)
->   			if (ret) {
->   				dev_err(dev, "setup chip select %d failed: %d\n",
->   					bank, ret);
-> +				of_node_put(child);
->   				return ret;
->   			}
->   		}
+
+Other MQ SCSI drivers have had similar problems. They were handling all 
+completion interrupts in hard irq context, the handlers would not exit 
+for high throughput scenarios, and they were then getting lockups.
+
+Their solution was to switch over to using irq_poll for when per-queue 
+completions got above a certain rate.
+
+> OTOH, the way how you splitted the handling into hard/thread context
+> provides already the base for this.
 >
 
-Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Right, so I could switch to a similar scheme, above, but just think that 
+what I have in using a threaded handler would already suffice.
 
-Regards,
-Christophe Kerello.
+> The missing piece is infrastructure at the irq/scheduler core level to
+> handle this transparently.
+> 
+> I have some horrible ideas how to solve that, but I'm sure the scheduler
+> wizards can come up with a reasonable and generic solution.
 
+That would be great.
+
+Thanks,
+John
