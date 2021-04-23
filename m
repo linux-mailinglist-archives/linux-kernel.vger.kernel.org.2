@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC15F368B59
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BFD368B54
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbhDWDAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhDWDAQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:00:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0B6C061574;
-        Thu, 22 Apr 2021 19:59:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=HBOB9+1dQZ8HFU8hecdF0SodpayfgYp4Mp4najr3kSE=; b=oqKeppikN9fTMjnZzq/QQSTrf6
-        Z4pGMfDHMCuabnPTp3IZg9IBXBZzuPVbEjeJmfbhWi3/J72wwvGyk8XMaByqYC27wguHrh3wiUxj0
-        x75yfjxnc3FlYdGd01WeK+1mglxBMcHoQJIio+fAJEQNC0uKbsKqJR9HzKd1wkyGp3rAgT27M6a6x
-        4USbHXwTFJMp1IBk8feE8bvliGs+w1/JXrk8mJr6BAWNwmONEkQsHMNG+/hLbZAQKFi3iU2itW0AI
-        I5T9BXSjPLa21V0jzyeO1NBqOouVpX7z8PP6nujB1nHNqXMUqdMPWspAb2sIYtc0uk6QzDXQx15S/
-        qpMbfOow==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZm0k-000Piv-2k; Fri, 23 Apr 2021 02:58:17 +0000
-Subject: Re: [PATCH] ima: ensure IMA_APPRAISE_MODSIG has necessary
- dependencies
-To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        keyrings@vger.kernel.org
-Cc:     linux-security-module@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20210423011602.138946-1-nayna@linux.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <24feb895-eae1-5b9e-47d8-9ee9851710cc@infradead.org>
-Date:   Thu, 22 Apr 2021 19:57:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S237196AbhDWC6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:58:44 -0400
+Received: from mga01.intel.com ([192.55.52.88]:65015 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229868AbhDWC6m (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 22:58:42 -0400
+IronPort-SDR: FchXFjnPG9un4o2j6OVwKwN+rLDeaggGfzzOlR05u0pT/aDGjVdxkKcmlgW+MmED2gJhdh5KPf
+ ho2Cb/f8be0w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="216689937"
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="216689937"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:58:06 -0700
+IronPort-SDR: eyIglBZi6UrJuHyhRPjUggCWVVKw/2VYUgEncaDDfAbphVXbXu7S9JBmWaW/Z1mZ/7a6SvUhGA
+ td2c8L8h8zog==
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="428215227"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:58:04 -0700
+Subject: Re: [PATCH] perf vendor events: Add missing model numbers
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210329070903.8894-1-yao.jin@linux.intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <67f05194-0eb4-becd-c8bb-7dc944ac6ca8@linux.intel.com>
+Date:   Fri, 23 Apr 2021 10:58:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210423011602.138946-1-nayna@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210329070903.8894-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 6:16 PM, Nayna Jain wrote:
-> IMA_APPRAISE_MODSIG is used for verifying the integrity of both kernel
-> and modules. Enabling IMA_APPRAISE_MODSIG without MODULES causes a build
-> break.
+Hi Andi, Arnaldo, Jiri,
+
+Can this patch be accepted?
+
+Thanks
+Jin Yao
+
+On 3/29/2021 3:09 PM, Jin Yao wrote:
+> Kernel has supported COMETLAKE/COMETLAKE_L to use the SKYLAKE
+> events and supported TIGERLAKE_L/TIGERLAKE/ROCKETLAKE to use
+> the ICELAKE events. But pmu-events mapfile.csv is missing
+> these model numbers.
 > 
-> Ensure the build time kernel signing key is only generated if both
-> IMA_APPRAISE_MODSIG and MODULES are enabled.
+> Now add the missing model numbers to mapfile.csv.
 > 
-> Fixes: 0165f4ca223b ("ima: enable signing of modules with build time generated key") 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-
-Works For Me. Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 > ---
->  certs/Kconfig               | 2 +-
->  certs/Makefile              | 2 ++
->  certs/system_certificates.S | 3 ++-
->  3 files changed, 5 insertions(+), 2 deletions(-)
+>   tools/perf/pmu-events/arch/x86/mapfile.csv | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/certs/Kconfig b/certs/Kconfig
-> index 48675ad319db..e4d00348fd73 100644
-> --- a/certs/Kconfig
-> +++ b/certs/Kconfig
-> @@ -4,7 +4,7 @@ menu "Certificates for signature checking"
->  config MODULE_SIG_KEY
->  	string "File name or PKCS#11 URI of module signing key"
->  	default "certs/signing_key.pem"
-> -	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-> +	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
->  	help
->           Provide the file name of a private key/certificate in PEM format,
->           or a PKCS#11 URI according to RFC7512. The file should contain, or
-> diff --git a/certs/Makefile b/certs/Makefile
-> index e3185c57fbd8..2f369d6aa494 100644
-> --- a/certs/Makefile
-> +++ b/certs/Makefile
-> @@ -36,8 +36,10 @@ ifeq ($(CONFIG_MODULE_SIG),y)
->  endif
->  
->  ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
-> +ifeq ($(CONFIG_MODULES),y)
->  	SIGN_KEY = y
->  endif
-> +endif
->  
->  ifdef SIGN_KEY
->  ###############################################################################
-> diff --git a/certs/system_certificates.S b/certs/system_certificates.S
-> index dcad27ea8527..e1645e6f4d97 100644
-> --- a/certs/system_certificates.S
-> +++ b/certs/system_certificates.S
-> @@ -9,7 +9,8 @@
->  system_certificate_list:
->  __cert_list_start:
->  __module_cert_start:
-> -#if defined(CONFIG_MODULE_SIG) || defined(CONFIG_IMA_APPRAISE_MODSIG)
-> +#if defined(CONFIG_MODULE_SIG) || (defined(CONFIG_IMA_APPRAISE_MODSIG) \
-> +			       && defined(CONFIG_MODULES))
->  	.incbin "certs/signing_key.x509"
->  #endif
->  __module_cert_end:
+> diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> index 2f2a209e87e1..6455f06f35d3 100644
+> --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
+> +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> @@ -24,6 +24,7 @@ GenuineIntel-6-1F,v2,nehalemep,core
+>   GenuineIntel-6-1A,v2,nehalemep,core
+>   GenuineIntel-6-2E,v2,nehalemex,core
+>   GenuineIntel-6-[4589]E,v24,skylake,core
+> +GenuineIntel-6-A[56],v24,skylake,core
+>   GenuineIntel-6-37,v13,silvermont,core
+>   GenuineIntel-6-4D,v13,silvermont,core
+>   GenuineIntel-6-4C,v13,silvermont,core
+> @@ -35,6 +36,8 @@ GenuineIntel-6-55-[01234],v1,skylakex,core
+>   GenuineIntel-6-55-[56789ABCDEF],v1,cascadelakex,core
+>   GenuineIntel-6-7D,v1,icelake,core
+>   GenuineIntel-6-7E,v1,icelake,core
+> +GenuineIntel-6-8[CD],v1,icelake,core
+> +GenuineIntel-6-A7,v1,icelake,core
+>   GenuineIntel-6-86,v1,tremontx,core
+>   AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
+>   AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
 > 
-
-
--- 
-~Randy
-
