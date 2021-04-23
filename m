@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF77368E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4BA368E69
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241084AbhDWIAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbhDWIAj (ORCPT
+        id S241372AbhDWIFL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 04:05:11 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:56637 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241340AbhDWIFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:00:39 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E40C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:00:01 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id w24so292351vsq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pmtAlemk9SkQiMZDpYGCeEcDtc4HAQA190oHucpZ6SI=;
-        b=GxfOAh/M/OMPoZSX6vx3Y/rchiyiDt/hPaZ5VKds+a9vdawKMk+Hmy5u/asG8VI3LO
-         we3/vg/JR9S0cIilK4a4sOuOE6wjMP/nDaQJkB1m/icFjhCxVvOcUd5ch0mrAEIMbpZz
-         vtoZdDvHo5JeD6bmQT03VXdw4A+iSH4q5BRQWzPEtSy79W2Sixw4baXFX/jHtnoGdrit
-         G+y8ubozgRrzmU7v22jIkAqlNIVmnfXrWvQf+AkAEX/YjqjPtnhvaXQLK163f8NG8i1j
-         50EqzRglaKnOArkqsYhHouaDe48OxH4koVEZadnoa7fPuGnOj1S3C6NUq8i4gy7I0x30
-         SS8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pmtAlemk9SkQiMZDpYGCeEcDtc4HAQA190oHucpZ6SI=;
-        b=h6HiR77nJgQRritvIjIV/U015X4FfJ/EH/d4CHA9lucV2qEG/wCj4ixfNcrAqyRct3
-         r41GX36NcPuL0ruGlxouI/FfIJbdNZm3x5TkLTy6dv7v48EF1aNYWy6TGS+lr+jhQC4/
-         wbX/OA65fTdrUOdrSIDvvOW5Nkg8SMETuHnT0kcbcYooJcXq6wg93NCNbxSczXgCo1EO
-         pmHiLWCzH0cS5xpQmpeB9fzXsj97XlVPGA3O0Pli4bZ7e1RHTtKOUluw46u4FYZ3kEmX
-         Z1z+yPVXHGYM06AnQ+7dsDbJdfI3DKD/9YVANkVbl1RuwFc8PQolwG7e/5bTm5cytDou
-         UztQ==
-X-Gm-Message-State: AOAM533pLJm0AYyQ/HwwIM0G+nZFbcwiaAVj4tHfwjMgF8IkyPr1N0VM
-        MkLmpBd6Bsn8hb09UGrUaaHL9ulj7tlTwbt+cKO4bg==
-X-Google-Smtp-Source: ABdhPJw1eb9lAuquyTjGTAeDhOqfXxVOUgDPREXGno3kNAY+lV6q3CImbRpUTYs6UqoM7kV4bUn3Ho8EuYgbNwIiYy8=
-X-Received: by 2002:a67:e902:: with SMTP id c2mr2022417vso.42.1619164800544;
- Fri, 23 Apr 2021 01:00:00 -0700 (PDT)
+        Fri, 23 Apr 2021 04:05:09 -0400
+X-Greylist: delayed 584 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Apr 2021 04:05:08 EDT
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="40413722"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 23 Apr 2021 15:54:46 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(9037:0:AUTH_RELAY)
+        (envelope-from <johnny.chuang@emc.com.tw>); Fri, 23 Apr 2021 15:54:44 +0800 (CST)
+Received: from 192.168.55.71
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2473:0:AUTH_LOGIN)
+        (envelope-from <johnny.chuang@emc.com.tw>); Fri, 23 Apr 2021 15:54:41 +0800 (CST)
+From:   "Johnny.Chuang" <johnny.chuang@emc.com.tw>
+To:     "'Doug Anderson'" <dianders@chromium.org>,
+        "'Johnny Chuang'" <johnny.chuang.emc@gmail.com>
+Cc:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>,
+        "'Benjamin Tissoires'" <benjamin.tissoires@redhat.com>,
+        "'Peter Hutterer'" <peter.hutterer@who-t.net>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'open list:HID CORE LAYER'" <linux-input@vger.kernel.org>,
+        "'Harry Cutts'" <hcutts@chromium.org>,
+        "'James Chen'" <james.chen@emc.com.tw>,
+        "'Jennifer Tsai'" <jennifer.tsai@emc.com.tw>,
+        "'Paul Liang'" <paul.liang@emc.com.tw>,
+        "'Jeff Chuang'" <jeff.chuang@emc.com.tw>,
+        "'Jingle'" <jingle.wu@emc.com.tw>
+References: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com> <CAD=FV=VvrWKKbLExpFaDLTDGTam3rbwd7CwTLVFdCY=_c7-eag@mail.gmail.com>
+In-Reply-To: <CAD=FV=VvrWKKbLExpFaDLTDGTam3rbwd7CwTLVFdCY=_c7-eag@mail.gmail.com>
+Subject: RE: [PATCH v3] HID: i2c-hid: Skip ELAN power-on command after reset
+Date:   Fri, 23 Apr 2021 15:54:42 +0800
+Message-ID: <011101d73815$eb73ea30$c25bbe90$@emc.com.tw>
 MIME-Version: 1.0
-References: <20210421135215.3414589-1-arnd@kernel.org>
-In-Reply-To: <20210421135215.3414589-1-arnd@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 23 Apr 2021 09:59:24 +0200
-Message-ID: <CAPDyKFqy_yqYNjBykv7L3Cbs_bRh78O4tQdf-8+W08yRzyFNOA@mail.gmail.com>
-Subject: Re: [PATCH] memstick: r592: ignore kfifo_out() return code again
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQG7a3HnjRYiIwf6YyXjsXt955W0TQGCv5oKqu063NA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDUwMTBcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0yOGNiZDgyZi1hNDA5LTExZWItODY2Mi03YzVjZjg3NDk0NzhcYW1lLXRlc3RcMjhjYmQ4MzEtYTQwOS0xMWViLTg2NjItN2M1Y2Y4NzQ5NDc4Ym9keS50eHQiIHN6PSIxMzkyIiB0PSIxMzI2MzYzODA4MjE0NjA4NTciIGg9ImtuU2s2SVJmTTdBeXZ3ZEt4UDBWNkVML1ZtQT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 at 15:52, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> A minor cleanup to address a clang warning removed an assigned
-> but unused local variable, but this now caused a gcc warning as
-> kfifo_out() is annotated to require checking its return code:
->
-> In file included from drivers/memstick/host/r592.h:13,
->                  from drivers/memstick/host/r592.c:21:
-> drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
-> include/linux/kfifo.h:588:1: error: ignoring return value of '__kfifo_uint_must_check_helper' declared with attribute 'warn_unused_result' [-Werror=unused-result]
->   588 | __kfifo_uint_must_check_helper( \
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   589 | ({ \
->       | ~~~~
->   590 |         typeof((fifo) + 1) __tmp = (fifo); \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   591 |         typeof(__tmp->ptr) __buf = (buf); \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   592 |         unsigned long __n = (n); \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~
->   593 |         const size_t __recsize = sizeof(*__tmp->rectype); \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   594 |         struct __kfifo *__kfifo = &__tmp->kfifo; \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   595 |         (__recsize) ?\
->       |         ~~~~~~~~~~~~~~
->   596 |         __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   597 |         __kfifo_out(__kfifo, __buf, __n); \
->       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   598 | }) \
->       | ~~~~
->   599 | )
->       | ~
-> drivers/memstick/host/r592.c:367:9: note: in expansion of macro 'kfifo_out'
->   367 |         kfifo_out(&dev->pio_fifo, buffer, 4);
->       |         ^~~~~~~~~
->
-> The value was never checked here, and the purpose of the function
-> is only to flush the contents, so restore the old behavior but
-> add a cast to void and a comment, which hopefully warns with neither
-> gcc nor clang now.
->
-> If anyone has an idea for how to fix it without ignoring the return
-> code, that is probably better.
+> Hi,
+> 
+> On Mon, Apr 12, 2021 at 6:20 PM Johnny Chuang
+> <johnny.chuang.emc@gmail.com> wrote:
+> >
+> > Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
+> 
+> Note that the "Fixes" tag actually belongs down at the end. It also shouldn't
+> have a "." at the end. Presumably the maintainer can adjust this when landing?
+> 
 
-Perhaps, if you can't do anything with return value, why is kfifo_out
-declared like this?
+Hi Dmitry,
+Could you help to review this patch and give an advice?
 
->
-> Fixes: 4b00ed3c5072 ("memstick: r592: remove unused variable")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> > For ELAN touchscreen, we found our boot code of IC was not flexible
+> > enough to receive and handle this command.
+> > Once the FW main code of our controller is crashed for some reason,
+> > the controller could not be enumerated successfully to be recognized
+> > by the system host. therefore, it lost touch functionality.
+> >
+> > Add quirk for skip send power-on command after reset.
+> > It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
+> >
+> > Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+> 
+> This patch looks fine to me, thus:
+> 
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> 
+> I can confirm that after applying this patch I can recovery my borked
+> touchscreen (which got borked by a failed firmware update ages ago):
+> 
+> Tested-by: Douglas Anderson <dianders@chromium.org>
 
-Kind regards
-Uffe
-
-> ---
->  drivers/memstick/host/r592.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
-> index 026fadaa1d5d..615a83782e55 100644
-> --- a/drivers/memstick/host/r592.c
-> +++ b/drivers/memstick/host/r592.c
-> @@ -359,12 +359,15 @@ static void r592_write_fifo_pio(struct r592_device *dev,
->  /* Flushes the temporary FIFO used to make aligned DWORD writes */
->  static void r592_flush_fifo_write(struct r592_device *dev)
->  {
-> +       int ret;
->         u8 buffer[4] = { 0 };
->
->         if (kfifo_is_empty(&dev->pio_fifo))
->                 return;
->
-> -       kfifo_out(&dev->pio_fifo, buffer, 4);
-> +       ret = kfifo_out(&dev->pio_fifo, buffer, 4);
-> +       /* intentionally ignore __must_check return code */
-> +       (void)ret;
->         r592_write_reg_raw_be(dev, R592_FIFO_PIO, *(u32 *)buffer);
->  }
->
-> --
-> 2.29.2
->
