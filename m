@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF64369846
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC93369848
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243391AbhDWR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58308 "EHLO mail.kernel.org"
+        id S243421AbhDWR0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:26:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231684AbhDWR0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231966AbhDWR0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Apr 2021 13:26:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BA175613DB;
-        Fri, 23 Apr 2021 17:26:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0852F613D5;
+        Fri, 23 Apr 2021 17:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619198763;
-        bh=wfz6N5xeBn+UX47MzlcTSUCbXmUZo0AJF7GcXr9pukc=;
+        s=k20201202; t=1619198764;
+        bh=6zMoHw/VBY/e8RJbI71N7/NWOr/2/DETkGuRnIBCHGw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=J4ITZHEUYv7gtJTfoBG/+mdqnEHYKQXrB1V8Tg/kMx+cEvdiZRuGIdiI15sNAtl/D
-         3KS70OPFloHejFqkdbIU3Z2wVCWXZEB58c8c97Ba4liF7+NJP52WUwnVEgsp/GACQX
-         GTo4y8k2J7YWI4L8ZzifqvY3jNWsvBd3yTxwR4n/FcOV2i+bOUD17djD+YFpoxsYvJ
-         6lknmDbkkUDM3zs3CyrIstjiXlM9NkLLjuthB4Np+k0ekBwDsL2D+AEjzi6NLOc8c1
-         ScE0zQfGxTbuFwlVly6p/GthPIEsrhN+k+Mjc6LJ7Oc/0nrw7ri1LQbaZXJgjeaQZC
-         Zlge5HhABZGwg==
+        b=QMXSl6LmbZW6/RHClQgaTkbPJg9eeYOfEe4e/xLY3c4NCLdYAvPBb7Fs5iNCcAkl+
+         +oiuqLdlRao/N2XUv3y9OKQdZz/iak900FRxmSlgrbDdS6hbKvmWZy8MOQF1I4OvyP
+         t+fHDdqJ1t0oJXtP9SEdz2k34R0RYIjLhDfhgv7Q5n+8+MeMpfeAA2er/fBH5v5QDN
+         6v013qZ2YSi0w3UmF3lxfgxNXDC4Ai29g08vWDN4i4dbC5B6lCEJmlCvKsPH3kolrV
+         2kyOrZCf/Ms0fP61MfLKD5O2jwKd0PWaBfQNWOHPPtHWCvZWmGDirMs46E5BNyswVe
+         uA/J++YWRXjJw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B0AE8608FB;
-        Fri, 23 Apr 2021 17:26:03 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.12 final
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 02B12608FB;
+        Fri, 23 Apr 2021 17:26:04 +0000 (UTC)
+Subject: Re: [GIT PULL] gpio: fixes for v5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tyKdGHyiRLDooKrMf=02GtNn8U4YfF4dJtXdabnVAGdXQ@mail.gmail.com>
-References: <CAPM=9tyKdGHyiRLDooKrMf=02GtNn8U4YfF4dJtXdabnVAGdXQ@mail.gmail.com>
+In-Reply-To: <20210423081638.16925-1-brgl@bgdev.pl>
+References: <20210423081638.16925-1-brgl@bgdev.pl>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9tyKdGHyiRLDooKrMf=02GtNn8U4YfF4dJtXdabnVAGdXQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-23
-X-PR-Tracked-Commit-Id: aca38735ae624b93c71c055b68d5802b8f356ea5
+X-PR-Tracked-Message-Id: <20210423081638.16925-1-brgl@bgdev.pl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12
+X-PR-Tracked-Commit-Id: ddd8d94ca31e768c76cf8bfe34ba7b10136b3694
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5bfc75d92efd494db37f5c4c173d3639d4772966
-Message-Id: <161919876366.26356.3681344564819322556.pr-tracker-bot@kernel.org>
-Date:   Fri, 23 Apr 2021 17:26:03 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: 22c4e5bcd3cd7a798f1c6b4df646f75587813e72
+Message-Id: <161919876400.26356.3180382453638492872.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Apr 2021 17:26:04 +0000
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Apr 2021 13:52:29 +1000:
+The pull request you sent on Fri, 23 Apr 2021 10:16:38 +0200:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-23
+> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5bfc75d92efd494db37f5c4c173d3639d4772966
+https://git.kernel.org/torvalds/c/22c4e5bcd3cd7a798f1c6b4df646f75587813e72
 
 Thank you!
 
