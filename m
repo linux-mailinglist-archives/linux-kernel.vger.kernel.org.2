@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB38368FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AC1368FE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242096AbhDWJx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:53:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:60968 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242067AbhDWJxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:53:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94D261684;
-        Fri, 23 Apr 2021 02:52:49 -0700 (PDT)
-Received: from usa.arm.com (a074945.blr.arm.com [10.162.16.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6D48D3F774;
-        Fri, 23 Apr 2021 02:52:45 -0700 (PDT)
-From:   Vivek Gautam <vivek.gautam@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org
-Cc:     joro@8bytes.org, will.deacon@arm.com, mst@redhat.com,
-        robin.murphy@arm.com, jean-philippe@linaro.org,
-        eric.auger@redhat.com, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com,
-        Vivek Gautam <vivek.gautam@arm.com>
-Subject: [PATCH RFC v1 11/11] iommu/virtio: Add support to send page response
-Date:   Fri, 23 Apr 2021 15:21:47 +0530
-Message-Id: <20210423095147.27922-12-vivek.gautam@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210423095147.27922-1-vivek.gautam@arm.com>
-References: <20210423095147.27922-1-vivek.gautam@arm.com>
+        id S242111AbhDWJxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:53:46 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45950 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230246AbhDWJxn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:53:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UWUyULS_1619171545;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWUyULS_1619171545)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 23 Apr 2021 17:53:05 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     ayush.sawal@chelsio.com
+Cc:     vinay.yadav@chelsio.com, rohitm@chelsio.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ch_ktls: Remove redundant variable result
+Date:   Fri, 23 Apr 2021 17:52:23 +0800
+Message-Id: <1619171543-117550-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add page_response iommu ops callback to send page response to
-the device that generated io page fault.
+Variable result is being assigned a value from a calculation
+however the variable is never read, so this redundant variable
+can be removed.
 
-Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+Cleans up the following clang-analyzer warning:
+
+drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c:1488:2:
+warning: Value stored to 'pos' is never read
+[clang-analyzer-deadcode.DeadStores].
+
+drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c:876:3:
+warning: Value stored to 'pos' is never read
+[clang-analyzer-deadcode.DeadStores].
+
+drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c:36:3:
+warning: Value stored to 'start' is never read
+[clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/iommu/virtio-iommu.c | 47 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 08f1294baeab..6d62d9eae452 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -1778,6 +1778,52 @@ static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
- 	return iommu_fwspec_add_ids(dev, args->args, 1);
- }
+diff --git a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+index a3f5b80..ef3f1e9 100644
+--- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+@@ -33,7 +33,6 @@ static int chcr_get_nfrags_to_send(struct sk_buff *skb, u32 start, u32 len)
  
-+static int viommu_page_response(struct device *dev,
-+				struct iommu_fault_event *evt,
-+				struct iommu_page_response *resp)
-+{
-+	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
-+	struct viommu_domain *vdomain = to_viommu_domain(domain);
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-+	struct viommu_endpoint *vdev = dev_iommu_priv_get(dev);
-+	struct viommu_dev *viommu = vdev->viommu;
-+	bool pasid_valid = resp->flags & IOMMU_PAGE_RESP_PASID_VALID;
-+	struct virtio_iommu_req_page_resp req = {
-+		.head.type	= VIRTIO_IOMMU_T_PAGE_RESP,
-+		.domain		= cpu_to_le32(vdomain->id),
-+		.endpoint	= cpu_to_le32(fwspec->ids[0]),
-+	};
-+
-+	if (vdev->pri_supported) {
-+		bool needs_pasid = (evt->fault.prm.flags &
-+				    IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID);
-+
-+		req.pasid_valid	= needs_pasid && pasid_valid;
-+		req.flags	= cpu_to_le32((needs_pasid && pasid_valid) ?
-+				   VIRTIO_IOMMU_PAGE_RESP_PASID_VALID : 0);
-+		req.pasid	= cpu_to_le32(resp->pasid);
-+		req.grpid	= cpu_to_le32(resp->grpid);
-+
-+		switch (resp->code) {
-+		case IOMMU_PAGE_RESP_FAILURE:
-+			req.resp_code = cpu_to_le16(VIRTIO_IOMMU_PAGE_RESP_FAILURE);
-+			break;
-+		case IOMMU_PAGE_RESP_INVALID:
-+			req.resp_code = cpu_to_le16(VIRTIO_IOMMU_PAGE_RESP_INVALID);
-+			break;
-+		case IOMMU_PAGE_RESP_SUCCESS:
-+			req.resp_code = cpu_to_le16(VIRTIO_IOMMU_PAGE_RESP_SUCCESS);
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	} else {
-+		return -ENODEV;
-+	}
-+
-+	return viommu_send_req_sync(viommu, &req, sizeof(req));
-+}
-+
- static u32 viommu_sva_get_pasid(struct iommu_sva *handle)
- {
- 	struct viommu_sva_bond *bond = sva_to_viommu_bond(handle);
-@@ -2155,6 +2201,7 @@ static struct iommu_ops viommu_ops = {
- 	.sva_bind		= viommu_sva_bind,
- 	.sva_unbind		= viommu_sva_unbind,
- 	.sva_get_pasid		= viommu_sva_get_pasid,
-+	.page_response		= viommu_page_response,
- };
+ 	if (unlikely(start < skb_linear_data_len)) {
+ 		frag_size = min(len, skb_linear_data_len - start);
+-		start = 0;
+ 	} else {
+ 		start -= skb_linear_data_len;
  
- static int viommu_init_vqs(struct viommu_dev *viommu)
+@@ -873,10 +872,10 @@ static int chcr_ktls_xmit_tcb_cpls(struct chcr_ktls_info *tx_info,
+ 	}
+ 	/* update receive window */
+ 	if (first_wr || tx_info->prev_win != tcp_win) {
+-		pos = chcr_write_cpl_set_tcb_ulp(tx_info, q, tx_info->tid, pos,
+-						 TCB_RCV_WND_W,
+-						 TCB_RCV_WND_V(TCB_RCV_WND_M),
+-						 TCB_RCV_WND_V(tcp_win), 0);
++		chcr_write_cpl_set_tcb_ulp(tx_info, q, tx_info->tid, pos,
++					   TCB_RCV_WND_W,
++					   TCB_RCV_WND_V(TCB_RCV_WND_M),
++					   TCB_RCV_WND_V(tcp_win), 0);
+ 		tx_info->prev_win = tcp_win;
+ 		cpl++;
+ 	}
+@@ -1485,7 +1484,6 @@ static int chcr_ktls_tx_plaintxt(struct chcr_ktls_info *tx_info,
+ 	wr->op_to_compl = htonl(FW_WR_OP_V(FW_ULPTX_WR));
+ 	wr->flowid_len16 = htonl(wr_mid | FW_WR_LEN16_V(len16));
+ 	wr->cookie = 0;
+-	pos += sizeof(*wr);
+ 	/* ULP_TXPKT */
+ 	ulptx = (struct ulp_txpkt *)(wr + 1);
+ 	ulptx->cmd_dest = htonl(ULPTX_CMD_V(ULP_TX_PKT) |
 -- 
-2.17.1
+1.8.3.1
 
