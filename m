@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC48369BB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 23:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740E5369BBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 23:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244035AbhDWVAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 17:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55790 "EHLO mail.kernel.org"
+        id S244127AbhDWVBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 17:01:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243797AbhDWVAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243960AbhDWVAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Apr 2021 17:00:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 321E66144E;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3A87E61450;
         Fri, 23 Apr 2021 21:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619211613;
-        bh=qcnWhsG+IuHq4y2rRfmfmfF8Z9Aj2JAVCwOhPjy8g14=;
+        bh=Wwj722kpypRTw1VSKLLy2oLoQxs5Jj6sh0GOzqUplxY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EFT8Wyk/V1LL6Z7jEhG8NHusjEBjeFvkxQGuJHGHLlRaSWp23pSpzYsC5Ioi8jG+y
-         R+iW/2pxr4eFtEg6BpE8d/M/fHgRfoF5kneann+UGytYAPMD/MMqjVetzjdwg53hxU
-         2wJz7VnhgAC6UQXyr9f522tdiDf3ek/E3c8In2PNXqV9r6L+H+/23kUxp70piq78vs
-         xUEOhZSsBK7+6dgS/LNy/oVFzHD5I4YwnDWd4jaz9246F5G+tXO6t8lOPhPl667Oae
-         fUgMtstFXIv3PAlgkSBOlnz4vfE6PXxGCXCtoXq2jjij3u/YIk1pPPTxmCINyXpGG4
-         Hho8zOG/uLglQ==
+        b=AjuAyaexcYL8bUAZmGS90I9HKOWXU8n9js0yELoRDdy5xmzkDLlM6a34MyZ7AgfKl
+         2GqR91SuQm7p4vH2Wzaps68MFrv8jiDCY1DjmWINh8Bu19JGs6GV26JbfxsSWIANae
+         iH2BeMZ2VrwnzpHtwE+/r5nSDb9kiXe6m+/zccVe+619HWrAbRAGATpe/rcxqM6fI2
+         BgZVpVyO9kIZTXL37yMp1QXxKs+zBUWMKIWQD/qhqtenDuRGwiZgm1fIyb48DMLXRm
+         7tPlbeiwa/Q/JaZhNlhnA1jvXTlQ+yV6JPyZhGMaj4YtBUuBRP4VsVfBCZt079ZCTm
+         icTyBT6gmsydA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 24D4D60C08;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2E57260A53;
         Fri, 23 Apr 2021 21:00:13 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 00/15] mtk_eth_soc: fixes and performance
- improvements
+Subject: Re: [PATCH net-next 0/2] r8152: adjust REALTEK_USB_DEVICE
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161921161314.19917.14237701035571279323.git-patchwork-notify@kernel.org>
+Message-Id: <161921161318.19917.10661114469230346337.git-patchwork-notify@kernel.org>
 Date:   Fri, 23 Apr 2021 21:00:13 +0000
-References: <20210423052108.423853-1-ilya.lipnitskiy@gmail.com>
-In-Reply-To: <20210423052108.423853-1-ilya.lipnitskiy@gmail.com>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     nbd@nbd.name, john@phrozen.org, sean.wang@mediatek.com,
-        Mark-MC.Lee@mediatek.com, davem@davemloft.net, kuba@kernel.org,
-        matthias.bgg@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
+References: <1394712342-15778-359-Taiwan-albertk@realtek.com>
+In-Reply-To: <1394712342-15778-359-Taiwan-albertk@realtek.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,47 +47,21 @@ Hello:
 
 This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 22 Apr 2021 22:20:53 -0700 you wrote:
-> Most of these changes come from OpenWrt where they have been present and
-> tested for months.
+On Fri, 23 Apr 2021 17:44:53 +0800 you wrote:
+> Modify REALTEK_USB_DEVICE macro.
 > 
-> First three patches are bug fixes. The rest are performance
-> improvements. The last patch is a cleanup to use the iopoll.h macro for
-> busy-waiting instead of a custom loop.
+> Hayes Wang (2):
+>   r8152: remove NCM mode from REALTEK_USB_DEVICE macro
+>   r8152: redefine REALTEK_USB_DEVICE macro
 > 
-> [...]
+>  drivers/net/usb/r8152.c | 71 ++++++++++++++++-------------------------
+>  1 file changed, 27 insertions(+), 44 deletions(-)
 
 Here is the summary with links:
-  - [net-next,v2,01/15] net: ethernet: mtk_eth_soc: fix RX VLAN offload
-    https://git.kernel.org/netdev/net-next/c/3f57d8c40fea
-  - [net-next,v2,02/15] net: ethernet: mtk_eth_soc: unmap RX data before calling build_skb
-    https://git.kernel.org/netdev/net-next/c/5196c4178549
-  - [net-next,v2,03/15] net: ethernet: mtk_eth_soc: fix build_skb cleanup
-    https://git.kernel.org/netdev/net-next/c/787082ab9f7b
-  - [net-next,v2,04/15] net: ethernet: mtk_eth_soc: use napi_consume_skb
-    https://git.kernel.org/netdev/net-next/c/c30c4a827390
-  - [net-next,v2,05/15] net: ethernet: mtk_eth_soc: reduce MDIO bus access latency
-    https://git.kernel.org/netdev/net-next/c/3630d519d7c3
-  - [net-next,v2,06/15] net: ethernet: mtk_eth_soc: remove unnecessary TX queue stops
-    https://git.kernel.org/netdev/net-next/c/16ef670789b2
-  - [net-next,v2,07/15] net: ethernet: mtk_eth_soc: use larger burst size for QDMA TX
-    https://git.kernel.org/netdev/net-next/c/59555a8d0dd3
-  - [net-next,v2,08/15] net: ethernet: mtk_eth_soc: increase DMA ring sizes
-    https://git.kernel.org/netdev/net-next/c/6b4423b258b9
-  - [net-next,v2,09/15] net: ethernet: mtk_eth_soc: implement dynamic interrupt moderation
-    https://git.kernel.org/netdev/net-next/c/e9229ffd550b
-  - [net-next,v2,10/15] net: ethernet: mtk_eth_soc: cache HW pointer of last freed TX descriptor
-    https://git.kernel.org/netdev/net-next/c/4e6bf609569c
-  - [net-next,v2,11/15] net: ethernet: mtk_eth_soc: only read the full RX descriptor if DMA is done
-    https://git.kernel.org/netdev/net-next/c/816ac3e6e67b
-  - [net-next,v2,12/15] net: ethernet: mtk_eth_soc: reduce unnecessary interrupts
-    https://git.kernel.org/netdev/net-next/c/16769a8923fa
-  - [net-next,v2,13/15] net: ethernet: mtk_eth_soc: rework NAPI callbacks
-    https://git.kernel.org/netdev/net-next/c/db2c7b353db3
-  - [net-next,v2,14/15] net: ethernet: mtk_eth_soc: set PPE flow hash as skb hash if present
-    https://git.kernel.org/netdev/net-next/c/fa817272c37e
-  - [net-next,v2,15/15] net: ethernet: mtk_eth_soc: use iopoll.h macro for DMA init
-    https://git.kernel.org/netdev/net-next/c/3bc8e0aff23b
+  - [net-next,1/2] r8152: remove NCM mode from REALTEK_USB_DEVICE macro
+    https://git.kernel.org/netdev/net-next/c/e7865ea51b0b
+  - [net-next,2/2] r8152: redefine REALTEK_USB_DEVICE macro
+    https://git.kernel.org/netdev/net-next/c/55319eeb5bbc
 
 You are awesome, thank you!
 --
