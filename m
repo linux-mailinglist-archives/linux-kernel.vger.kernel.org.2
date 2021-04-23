@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993DA369647
+	by mail.lfdr.de (Postfix) with ESMTP id 2D73E369645
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242896AbhDWPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:37:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46739 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242623AbhDWPhp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:37:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619192228;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QE00ekCvz72op1kqPnrabeAOzDQ62cHgXJniiHHMFJ8=;
-        b=N+4f7GJ4kLa5I3oIpLNwCgn4JO87HH6Cs7GqCn3WSsuFiuz7RVzh2lYjFbHUPfaU9BMUsZ
-        Igh1h9zTYHiquS77ajP6uXAKYRJUO1VFG3aY5ZYWY0L5vMSSOxxeD9aD7Wl0J1M75INrHT
-        9brLxci/PKCPi3c1K91Q6d4ZuNcnK74=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-2thQh4izMbe4Ge3gmIpgBA-1; Fri, 23 Apr 2021 11:37:04 -0400
-X-MC-Unique: 2thQh4izMbe4Ge3gmIpgBA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 990C6652;
-        Fri, 23 Apr 2021 15:37:02 +0000 (UTC)
-Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 297A719704;
-        Fri, 23 Apr 2021 15:37:02 +0000 (UTC)
-Date:   Fri, 23 Apr 2021 09:37:01 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Sinan Kaya <okaya@kernel.org>
-Cc:     Shanker Donthineni <sdonthineni@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vikram Sethi <vsethi@nvidia.com>
-Subject: Re: [PATCH 1/1] PCI: Add pci reset quirk for Nvidia GPUs
-Message-ID: <20210423093701.594efd86@redhat.com>
-In-Reply-To: <ff4812ba-ec1d-9462-0cbd-029635af3267@kernel.org>
-References: <20210423145402.14559-1-sdonthineni@nvidia.com>
-        <ff4812ba-ec1d-9462-0cbd-029635af3267@kernel.org>
+        id S231981AbhDWPhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230294AbhDWPhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:37:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8F86611AE;
+        Fri, 23 Apr 2021 15:37:04 +0000 (UTC)
+Date:   Fri, 23 Apr 2021 16:37:02 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Kai Shen <shenkai8@huawei.com>
+Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, xuwei5@hisilicon.com,
+        hewenliang4@huawei.com, wuxu.wu@huawei.com
+Subject: Re: [PATCH] arm64:align function __arch_clear_user
+Message-ID: <20210423153701.GP18757@arm.com>
+References: <58fecb22-f932-cb6e-d996-ca75fe26a75d@huawei.com>
+ <20210414104144.GB8320@arm.com>
+ <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 11:12:05 -0400
-Sinan Kaya <okaya@kernel.org> wrote:
+On Mon, Apr 19, 2021 at 10:05:16AM +0800, Kai Shen wrote:
+> On 2021/4/14 18:41, Catalin Marinas wrote:
+> > On Wed, Apr 14, 2021 at 05:25:43PM +0800, Kai Shen wrote:
+> > > Performance decreases happen in __arch_clear_user when this
+> > > function is not correctly aligned on HISI-HIP08 arm64 SOC which
+> > > fetches 32 bytes (8 instructions) from icache with a 32-bytes
+> > > aligned end address. As a result, if the hot loop is not 32-bytes
+> > > aligned, it may take more icache fetches which leads to decrease
+> > > in performance.
+> > > Dump of assembler code for function __arch_clear_user:
+> > >         0xffff0000809e3f10 :    nop
+> > >         0xffff0000809e3f14 :    mov x2, x1
+> > >         0xffff0000809e3f18 :    subs x1, x1, #0x8
+> > >         0xffff0000809e3f1c :    b.mi 0xffff0000809e3f30 <__arch_clear_user+3
+> > > -----  0xffff0000809e3f20 :    str    xzr, [x0],#8
+> > > hot    0xffff0000809e3f24 :    nop
+> > > loop   0xffff0000809e3f28 :    subs x1, x1, #0x8
+> > > -----  0xffff0000809e3f2c :    b.pl  0xffff0000809e3f20 <__arch_clear_user+1
+> > > The hot loop above takes one icache fetch as the code is in one
+> > > 32-bytes aligned area and the loop takes one more icache fetch
+> > > when it is not aligned like below.
+> > >         0xffff0000809e4178 :   str    xzr, [x0],#8
+> > >         0xffff0000809e417c :   nop
+> > >         0xffff0000809e4180 :   subs x1, x1, #0x8
+> > >         0xffff0000809e4184 :   b.pl  0xffff0000809e4178 <__arch_clear_user+
+> > > Data collected by perf:
+> > >                           aligned   not aligned
+> > >            instructions   57733790     57739065
+> > >         L1-dcache-store   14938070     13718242
+> > > L1-dcache-store-misses     349280       349869
+> > >         L1-icache-loads   15380895     28500665
+> > > As we can see, L1-icache-loads almost double when the loop is not
+> > > aligned.
+> > > This problem is found in linux 4.19 on HISI-HIP08 arm64 SOC.
+> > > Not sure what the case is on other arm64 SOC, but it should do
+> > > no harm.
+> > > Signed-off-by: Kai Shen <shenkai8@huawei.com>
+> > 
+> > Do you have a real world workload that's affected by this function?
+> > 
+> > I'm against adding alignments and nops for specific hardware
+> > implementations. What about lots of other loops that the compiler may
+> > generate or that we wrote in asm?
+>
+> The benchmark we used which suffer performance decrease:
+>     https://github.com/redhat-performance/libMicro
+>     pread $OPTS -N "pread_z1k"    -s 1k    -I 300  -f /dev/zero
+>     pread $OPTS -N "pread_z10k"    -s 10k    -I 1000 -f /dev/zero
+>     pread $OPTS -N "pread_z100k"    -s 100k    -I 2000 -f /dev/zero
 
-> +Alex,
-> 
-> On 4/23/2021 10:54 AM, Shanker Donthineni wrote:
-> > +static int reset_nvidia_gpu_quirk(struct pci_dev *dev, int probe)
-> > +{
-> > +#ifdef CONFIG_ACPI
-> > +	acpi_handle handle = ACPI_HANDLE(&dev->dev);
-> > +
-> > +	/*
-> > +	 * Check for the affected devices' ID range. If device is not in
-> > +	 * the affected range, return -ENOTTY indicating no device
-> > +	 * specific reset method is available.
-> > +	 */
-> > +	if ((dev->device & 0xffc0) != 0x2340)
-> > +		return -ENOTTY;
-> > +
-> > +	/*
-> > +	 * Return -ENOTTY indicating no device-specific reset method if _RST
-> > +	 * method is not defined
-> > +	 */
-> > +	if (!handle || !acpi_has_method(handle, "_RST"))
-> > +		return -ENOTTY;
-> > +
-> > +	/* Return 0 for probe phase indicating that we can reset this device */
-> > +	if (probe)
-> > +		return 0;
-> > +
-> > +	/* Invoke _RST() method to perform the device-specific reset */
-> > +	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
-> > +		pci_warn(dev, "Failed to reset the device\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	return 0;
-> > +#else
-> > +	return -ENOTTY;
-> > +#endif
-> > +}  
-> 
-> Interesting, some pieces of this function (especially the ACPI _RST)
-> could be generalized.
+Is there any real world use-case that would benefit from this
+optimisation? Reading /dev/zero in a loop hardly counts as a practical
+workload.
 
-Agreed, we should add a new function level reset method for this rather
-than a device specific reset.  At that point the extent of the device
-specific quirk could be to restrict SBR.  It'd be useful to know what
-these devices are (not in pciids yet), why we expect to only see them in
-specific platforms (embedded device?), and the failure mode of the SBR.
-Thanks,
-
-Alex
-
+-- 
+Catalin
