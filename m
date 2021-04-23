@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F855368D16
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437B7368D18
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235684AbhDWGX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:23:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230113AbhDWGX4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:23:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619159000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i04pIjxo3caTqanxSGddCRT34Sd+t2sowO3Lx1kBprA=;
-        b=JrI1SrV3LdELlX6qX9YjCcckAuNn8AmPrZbN8JyZ9tWEa+IB/O77mjsEuODd0hkJBazlIG
-        PrJmm2J+MlOKEoBzezHkNDaYr9dMNmJhHHbG/k6f/0G7YSDiGdf3VbydFvTTwaYOqi1DOs
-        0fpUbEXaeebUSezDWPDX4Wyq+lUmAvk=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-7vpFuOHLOVujdCskhA3XpQ-1; Fri, 23 Apr 2021 02:23:18 -0400
-X-MC-Unique: 7vpFuOHLOVujdCskhA3XpQ-1
-Received: by mail-ej1-f71.google.com with SMTP id z6-20020a17090665c6b02903700252d1ccso7976685ejn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:23:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=i04pIjxo3caTqanxSGddCRT34Sd+t2sowO3Lx1kBprA=;
-        b=kwsnBbY2yc/s0pdv8Kayimew20FrztMza0zwJg4kKLnD0iwxSabc6S4A/axKHthWPx
-         vhZYi6leP5SWLblQMIUt7MtyeF6Y/S6HepFBJhZzBzpb+4wXIlUsz6XLJP/eKDHycYvj
-         ianLCkQu3pbLx5vIwKXwm5nzSptHHbZwVYFtL+jLERXpXa5cbBZoMcG99Lf/lgfn85mu
-         CvVtLHizKAby6ipRaSEFvFZluu36K2L+nm4fJ6akQuGROJktnSuvBkaPQQPaGoVMk7CT
-         v+HR7MNopkcieWpr4j9nlhhmKMjQpMJWNlQTkqMufOXvT36vJE92ya698VHst7MavBKh
-         D05g==
-X-Gm-Message-State: AOAM5318xdTwroxVYdEoexf32K0KEx/sW/p0Jz5NqMqCYbwJuSrt3G4K
-        cL9Yz9fcI5IL+huStCJ/SAWffBdNzsz/+4MhCak05DL8BuCbeS6hsyYckvVWrsKiq4Fj9qmHdAe
-        oRPNIKsEQLPcJjojIlaBH/ttD
-X-Received: by 2002:a17:906:49c1:: with SMTP id w1mr2577069ejv.178.1619158997529;
-        Thu, 22 Apr 2021 23:23:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrErPQXlsGRXqqTFc3nZhFmRd6UymB8vfJtXB5oSSJcCHPAEAZ38BB4GOh6RFAlctlcaLtnQ==
-X-Received: by 2002:a17:906:49c1:: with SMTP id w1mr2577058ejv.178.1619158997393;
-        Thu, 22 Apr 2021 23:23:17 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id gt33sm3194927ejc.89.2021.04.22.23.23.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 23:23:17 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, xudong.hao@intel.com
-Subject: Re: [KVM]  4fc096a99e:
- kernel-selftests.kvm.set_memory_region_test.fail
-In-Reply-To: <20210423032514.GB13944@xsang-OptiPlex-9020>
-References: <20210423032514.GB13944@xsang-OptiPlex-9020>
-Date:   Fri, 23 Apr 2021 08:23:16 +0200
-Message-ID: <871rb1h63v.fsf@vitty.brq.redhat.com>
+        id S236802AbhDWGZR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 02:25:17 -0400
+Received: from mail.rusoil.net ([188.128.114.25]:33351 "EHLO mail.rusoil.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhDWGZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 02:25:16 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.rusoil.net (Postfix) with ESMTP id 6503E40718;
+        Fri, 23 Apr 2021 11:25:23 +0500 (YEKT)
+Received: from mail.rusoil.net ([127.0.0.1])
+        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id HbdBRYdI4vx9; Fri, 23 Apr 2021 11:25:23 +0500 (YEKT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.rusoil.net (Postfix) with ESMTP id 00AF14071E;
+        Fri, 23 Apr 2021 11:25:22 +0500 (YEKT)
+X-Virus-Scanned: amavisd-new at mail.rusoil.net
+Received: from mail.rusoil.net ([127.0.0.1])
+        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id m3jTESGb1-Tf; Fri, 23 Apr 2021 11:25:22 +0500 (YEKT)
+Received: from [91.224.92.185] (unknown [91.224.92.185])
+        by mail.rusoil.net (Postfix) with ESMTPSA id CEBD040718;
+        Fri, 23 Apr 2021 11:25:21 +0500 (YEKT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Werden Sie unser Agent
+To:     Recipients <Blue@mail.rusoil.net>
+From:   Blue@mail.rusoil.net, Oak@mail.rusoil.net,
+        Mortgage@mail.rusoil.net, and@mail.rusoil.net,
+        Loans@mail.rusoil.net, "<Sharono@rusoil.net>"@mail.rusoil.net
+Date:   Thu, 22 Apr 2021 23:24:34 -0700
+Reply-To: info@bluelmtg.net
+Message-Id: <20210423062521.CEBD040718@mail.rusoil.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <oliver.sang@intel.com> writes:
+Ich leite den Betrieb bei Blue Oak Mortagage and Loans, einem Unternehmen für digitale Handelsfinanzierung mit Sitz in Istanbul, Türkei. Nach der erfolgreichen Finanzierung grenzüberschreitender Transaktionen in Höhe von über 1 Milliarde US-Dollar haben wir jetzt ein Partnerschaftsprogramm gestartet.
+ 
+Hier ein kurzer Überblick über unsere Angebote:
 
-> Greeting,
->
-> FYI, we noticed the following commit (built with gcc-9):
->
-> commit: 4fc096a99e01dd06dc55bef76ade7f8d76653245 ("KVM: Raise the
-> maximum number of user memslots")
+Wir rekrutieren derzeit Agenten, die unsere Dienstleistungen vor Ort erweitern werden.
 
-...
+Die Gehaltsstruktur basiert auf Provisionen. Gebühr von 1,5% für Kreditanträge unter 500.000 USD, 1,25% für 500.000 bis 1.000.000 USD und 1% für über 1.000.000 USD.
 
-> # selftests: kvm: set_memory_region_test
-> # Testing KVM_RUN with zero added memory regions
-> # Allowed number of memory slots: 32764
-> # Adding slots 0..32763, each memory region with 2048K size
-> #
-> not ok 32 selftests: kvm: set_memory_region_test # TIMEOUT 120 seconds
+Bitte klicken Sie auf den Link unten und füllen Sie das Formular aus. Unser Team wird sich mit Ihnen in Verbindung setzen, um weitere Informationen zu erhalten.
 
-This is a timeout, it can be raised in
-'tools/testing/selftests/kvm/settings'. I assume the test is running in
-a VM?
+https://www.bluelmtg.net/become-an-agent
 
--- 
-Vitaly
-
+Thomas Michael
+tmichael@bluelmtg.net
+Personalabteilung
+Blue Oak Hypothek und Kredite
