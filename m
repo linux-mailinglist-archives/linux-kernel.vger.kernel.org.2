@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3021F368CB3
+	by mail.lfdr.de (Postfix) with ESMTP id CDFE5368CB5
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240419AbhDWFhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 01:37:20 -0400
+        id S240536AbhDWFhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 01:37:23 -0400
 Received: from mga18.intel.com ([134.134.136.126]:9279 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWFhT (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        id S235684AbhDWFhT (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
         Fri, 23 Apr 2021 01:37:19 -0400
-IronPort-SDR: w/RNXvokZpy6CaEJri7MTHzfpqJqdAYvzfQn+nK2FA6q9OJlBi3lzIwXGdhEpVT85yR/dIqNHt
- 23nwqH08T+4w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501770"
+IronPort-SDR: oDnaJ8u6YqC3aX2frmYKpduhCuTqBDqrMAB1fSKUazeQc1g/h5Ab5d6HffCAvdFvmaJ48vWOiz
+ fiWFcKtvPcbw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501772"
 X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="183501770"
+   d="scan'208";a="183501772"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:36:39 -0700
-IronPort-SDR: l1Kea8KK0GFpZDISDm4rIAUZIuFOKC4mxV7EvMZcFtMgbObtNcCg2EUL5LELQRqF9uo5II17Z6
- o1kkrbNi+Ygw==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:36:42 -0700
+IronPort-SDR: aaHvhrndfAGjd8s3Is2is+C0we8/U4wCA/g1WPcmGKaNehHdknIWLqQ7tJ5A//wcVqaoPqaumf
+ wf1wZVvRpiKQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="386293509"
+   d="scan'208";a="386293519"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:36:37 -0700
+  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:36:39 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v5 01/26] tools headers uapi: Update tools's copy of linux/perf_event.h
-Date:   Fri, 23 Apr 2021 13:35:16 +0800
-Message-Id: <20210423053541.12521-2-yao.jin@linux.intel.com>
+Subject: [PATCH v5 02/26] perf jevents: Support unit value "cpu_core" and "cpu_atom"
+Date:   Fri, 23 Apr 2021 13:35:17 +0800
+Message-Id: <20210423053541.12521-3-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210423053541.12521-1-yao.jin@linux.intel.com>
 References: <20210423053541.12521-1-yao.jin@linux.intel.com>
@@ -41,84 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To get the changes in:
+For some Intel platforms, such as Alderlake, which is a hybrid platform
+and it consists of atom cpu and core cpu. Each cpu has dedicated event
+list. Part of events are available on core cpu, part of events are
+available on atom cpu.
 
-Liang Kan's patch
-[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
+The kernel exports new cpu pmus: cpu_core and cpu_atom. The event in
+json is added with a new field "Unit" to indicate which pmu the event
+is available on.
 
-Kan's patch is upstreamed yet but perf/core branch doesn't have it
-at this moment. But next perf tool patches need this interface for
-hybrid support.
+For example, one event in cache.json,
 
-This patch can be removed after Kan's patch is merged in perf/core
-branch.
+    {
+        "BriefDescription": "Counts the number of load ops retired that",
+        "CollectPEBSRecord": "2",
+        "Counter": "0,1,2,3",
+        "EventCode": "0xd2",
+        "EventName": "MEM_LOAD_UOPS_RETIRED_MISC.MMIO",
+        "PEBScounters": "0,1,2,3",
+        "SampleAfterValue": "1000003",
+        "UMask": "0x80",
+        "Unit": "cpu_atom"
+    },
+
+The unit "cpu_atom" indicates this event is only available on "cpu_atom".
+
+In generated pmu-events.c, we can see:
+
+{
+        .name = "mem_load_uops_retired_misc.mmio",
+        .event = "period=1000003,umask=0x80,event=0xd2",
+        .desc = "Counts the number of load ops retired that. Unit: cpu_atom ",
+        .topic = "cache",
+        .pmu = "cpu_atom",
+},
+
+But if without this patch, the "uncore_" prefix is added before "cpu_atom",
+such as:
+        .pmu = "uncore_cpu_atom"
+
+That would be a wrong pmu.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
 v5:
- - Update the commit message to mention that Kan's patch is
-   upstreamed but not merged in perf/core branch.
+ - No change.
 
-v4:
- - Updated by Kan's latest patch,
-   '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE'
+ tools/perf/pmu-events/jevents.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- include/uapi/linux/perf_event.h       | 15 +++++++++++++++
- tools/include/uapi/linux/perf_event.h | 15 +++++++++++++++
- 2 files changed, 30 insertions(+)
-
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index ad15e40d7f5d..14332f4cf816 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -37,6 +37,21 @@ enum perf_type_id {
- 	PERF_TYPE_MAX,				/* non-ABI */
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index 33aa3c885eaf..ed4f0bd72e5a 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -285,6 +285,8 @@ static struct map {
+ 	{ "imx8_ddr", "imx8_ddr" },
+ 	{ "L3PMC", "amd_l3" },
+ 	{ "DFPMC", "amd_df" },
++	{ "cpu_core", "cpu_core" },
++	{ "cpu_atom", "cpu_atom" },
+ 	{}
  };
  
-+/*
-+ * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-+ * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
-+ *					AA: hardware event ID
-+ *					EEEEEEEE: PMU type ID
-+ * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
-+ *					BB: hardware cache ID
-+ *					CC: hardware cache op ID
-+ *					DD: hardware cache op result ID
-+ *					EEEEEEEE: PMU type ID
-+ * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
-+ */
-+#define PERF_PMU_TYPE_SHIFT		32
-+#define PERF_HW_EVENT_MASK		0xffffffff
-+
- /*
-  * Generalized performance event event_id types, used by the
-  * attr.event_id parameter of the sys_perf_event_open()
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index ad15e40d7f5d..14332f4cf816 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -37,6 +37,21 @@ enum perf_type_id {
- 	PERF_TYPE_MAX,				/* non-ABI */
- };
- 
-+/*
-+ * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-+ * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
-+ *					AA: hardware event ID
-+ *					EEEEEEEE: PMU type ID
-+ * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
-+ *					BB: hardware cache ID
-+ *					CC: hardware cache op ID
-+ *					DD: hardware cache op result ID
-+ *					EEEEEEEE: PMU type ID
-+ * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
-+ */
-+#define PERF_PMU_TYPE_SHIFT		32
-+#define PERF_HW_EVENT_MASK		0xffffffff
-+
- /*
-  * Generalized performance event event_id types, used by the
-  * attr.event_id parameter of the sys_perf_event_open()
 -- 
 2.17.1
 
