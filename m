@@ -2,267 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26ECF368F78
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF0F368F85
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241734AbhDWJhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:37:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230006AbhDWJhJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:37:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619170592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p9J8d+DcmrmU5bpl7D7O/0XVrwseyB5JAxCq6IfLR4U=;
-        b=ehYVX298psUNDVr11YijCqmIna8pJBqreNx2WP5Cf/TKLZbCePSIbZSNQyg81hG20Jk/jf
-        CsD6AFLeHzcHubKEKB7nzRFzvwC5aetdBsku5scAzo3kh0B/8FJyb2nBqj4AC21Q5rgyGw
-        R/WD9abDhS5A/dkwE3OoRAgYGz8o0KM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-igUTptAKN2yQK9mwcl1ffA-1; Fri, 23 Apr 2021 05:36:30 -0400
-X-MC-Unique: igUTptAKN2yQK9mwcl1ffA-1
-Received: by mail-ed1-f70.google.com with SMTP id i18-20020aa7c7120000b02903853032ef71so9385102edq.22
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:36:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=p9J8d+DcmrmU5bpl7D7O/0XVrwseyB5JAxCq6IfLR4U=;
-        b=PDNA+ZKt10lazcVuQj563kYD1RRJX3O6+F/mpsvxXEDNrN3dOvHAMBCTCu38n6LLi/
-         7EwF3jppjQj44fOaDQrxQWMPO8Wvg9KUCcCTTQP9NthPSIyRK/k5zlR4dV6GH9r9dBbY
-         Dfs5rKmH5AdlFa2UvKHIIQ2Hbw6pwDDiL+fzYu/Dvhy8ZCTNuele6aKJQBKeNOOS+36I
-         WJAnQMDp9b3U8Xijhq4dZKenKqB2doFtQpw4lXW11GxUlpZ+kNhkYnI+RN6UEuYysrpR
-         B6u8o7IW7d6TeWCdiwtcDUgZ5+5jAU1SkpQ6jJxdItsVGhjZWrUCJar6VcEKV3nuNs5O
-         1bvQ==
-X-Gm-Message-State: AOAM531+rnTjIXrMSIU015zCEmXGjfM5ETEI3hl+L2OAJaCv6pCUid0t
-        a+YiaGWch6hgcNe+awZthu4yLMQHiVonts2KjQFxPJO5ieVrSYtPwcPEVmOkF2j4xTnTsBMABqr
-        ZIy3tte236OYUCfMKBG9z516h
-X-Received: by 2002:a50:f395:: with SMTP id g21mr3455726edm.238.1619170588605;
-        Fri, 23 Apr 2021 02:36:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPvQeASMPZ9Nlq9ueh1HJgNqcWr2ObOsJP+voJ0+O8Gy6PfYnk5Y07l9nhaCt4WEIeyB/9KA==
-X-Received: by 2002:a50:f395:: with SMTP id g21mr3455708edm.238.1619170588342;
-        Fri, 23 Apr 2021 02:36:28 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c13sm4252594edw.88.2021.04.23.02.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 02:36:28 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
-In-Reply-To: <20210423090333.21910-1-sidcha@amazon.de>
-References: <20210423090333.21910-1-sidcha@amazon.de>
-Date:   Fri, 23 Apr 2021 11:36:27 +0200
-Message-ID: <87y2d9filg.fsf@vitty.brq.redhat.com>
+        id S241753AbhDWJkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:40:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:60516 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230006AbhDWJj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:39:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9640111D4;
+        Fri, 23 Apr 2021 02:39:22 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29A73F774;
+        Fri, 23 Apr 2021 02:39:19 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 10:39:15 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, jh80.chung@samsung.com,
+        Zong Li <zong.li@sifive.com>, robh+dt@kernel.org,
+        vidyas@nvidia.com, alex.dewar90@gmail.com,
+        Erik Danie <erik.danie@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Stephen Boyd <sboyd@kernel.org>,
+        hayashi.kunihiko@socionext.com, hes@sifive.com,
+        khilman@baylibre.com, Philipp Zabel <p.zabel@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, devicetree@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver
+ support
+Message-ID: <20210423093915.GA7784@lpieralisi>
+References: <mhng-f3dd2202-8d2b-4e17-9067-c4521aac8125@palmerdabbelt-glaptop>
+ <mhng-41850660-4a95-462a-9b1e-33dfc67815a4@palmerdabbelt-glaptop>
+ <CAHCEehJHZGEUy2TO6fPg1WyAbQCoVee=AcRrkZE4Zhw+ibYKqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHCEehJHZGEUy2TO6fPg1WyAbQCoVee=AcRrkZE4Zhw+ibYKqQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+On Fri, Apr 23, 2021 at 02:00:46PM +0800, Greentime Hu wrote:
+> Palmer Dabbelt <palmer@dabbelt.com> 於 2021年4月23日 週五 下午1:10寫道：
+> >
+> > On Thu, 22 Apr 2021 21:43:03 PDT (-0700), Palmer Dabbelt wrote:
+> > > On Sun, 11 Apr 2021 19:37:50 PDT (-0700), greentime.hu@sifive.com wrote:
+> > >> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> 於 2021年4月9日 週五 下午4:54寫道：
+> > >>>
+> > >>> On Tue, 6 Apr 2021 17:26:28 +0800, Greentime Hu wrote:
+> > >>> > This patchset includes SiFive FU740 PCIe host controller driver. We also
+> > >>> > add pcie_aux clock and pcie_power_on_reset controller to prci driver for
+> > >>> > PCIe driver to use it.
+> > >>> >
+> > >>> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
+> > >>> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
+> > >>> > v5.11 Linux kernel.
+> > >>> >
+> > >>> > [...]
+> > >>>
+> > >>> Applied to pci/dwc [dropped patch 6], thanks!
+> > >>>
+> > >>> [1/6] clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+> > >>>       https://git.kernel.org/lpieralisi/pci/c/f3ce593b1a
+> > >>> [2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
+> > >>>       https://git.kernel.org/lpieralisi/pci/c/0a78fcfd3d
+> > >>> [3/6] MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+> > >>>       https://git.kernel.org/lpieralisi/pci/c/8bb1c66a90
+> > >>> [4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+> > >>>       https://git.kernel.org/lpieralisi/pci/c/b86d55c107
+> > >>> [5/6] PCI: fu740: Add SiFive FU740 PCIe host controller driver
+> > >>>       https://git.kernel.org/lpieralisi/pci/c/327c333a79
+> > >>>
+> > >>> Thanks,
+> > >>> Lorenzo
+> > >>
+> > >> Hi Palmer,
+> > >>
+> > >> Since the PCIE driver has been applied, would you please pick patch 6
+> > >> to RISC-V for-next tree?
+> > >> Thank you. :)
+> > >
+> > > Sorry, I got this confused between the Linux patch set and the u-boot
+> > > patch set so I thought more versions of this had kept comming.  The DT
+> > > is on for-next now.
+> >
+> > I spoke too soon: this actually dosn't even build for me.  It's the
+> > "clocks = <&prci PRCI_CLK_PCIE_AUX>;" line
+> >
+> >     Error: arch/riscv/boot/dts/sifive/fu740-c000.dtsi:319.20-21 syntax error
+> >     FATAL ERROR: Unable to parse input tree
+> >     make[2]: *** [scripts/Makefile.lib:336: arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dtb] Error 1
+> >     make[1]: *** [scripts/Makefile.build:514: arch/riscv/boot/dts/sifive] Error 2
+> >     make: *** [Makefile:1388: dtbs] Error 2
+> >     make: *** Waiting for unfinished jobs....
+> >
+> > I'm not sure what the issue is, I see an anchor for "prci".  Do you mind
+> > sending along a new version that compiles on top of for-next?  If I need
+> > the definiton of PRCI_CLK_PCIE_AUX from a PCIe tree then it's probably
+> > best to just keep the DTS along with the rest of the patches.  IIRC I
+> > alredy Acked it, but just to be clear
+> >
+> > Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> >
+> > Thanks!
+> 
+> Thank you, Palmer.
+> It is defined in the first commit of this patchset. "clk: sifive: Add
+> pcie_aux clock in prci driver for PCIe driver"
+> You can select these whole 6 patches to make sure it can be built.
+> 
+> Hi Lorenzo,
+> Would you mind to pick the 6th patch along with the other 5 patches?
+> Thank you.
 
-> Hypercall code page is specified in the Hyper-V TLFS to be an overlay
-> page, ie., guest chooses a GPA and the host _places_ a page at that
-> location, making it visible to the guest and the existing page becomes
-> inaccessible. Similarly when disabled, the host should _remove_ the
-> overlay and the old page should become visible to the guest.
->
-> Currently KVM directly patches the hypercall code into the guest chosen
-> GPA. Since the guest seldom moves the hypercall code page around, it
-> doesn't see any problems even though we are corrupting the exiting data
-> in that GPA.
->
-> VSM API introduces more complex overlay workflows during VTL switches
-> where the guest starts to expect that the existing page is intact. This
-> means we need a more generic approach to handling overlay pages: add a
-> new exit reason KVM_EXIT_HYPERV_OVERLAY that exits to userspace with the
-> expectation that a page gets overlaid there.
->
-> In the interest of maintaing userspace exposed behaviour, add a new KVM
-> capability to allow the VMMs to enable this if they can handle the
-> hypercall page in userspace.
->
-> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
->
-> CR: https://code.amazon.com/reviews/CR-49011379
+Done, on my pci/dwc branch.
 
-This line wasn't supposed to go to the upstream patch, was it? :-)
-
-> ---
->  arch/x86/include/asm/kvm_host.h |  4 ++++
->  arch/x86/kvm/hyperv.c           | 25 ++++++++++++++++++++++---
->  arch/x86/kvm/x86.c              |  5 +++++
->  include/uapi/linux/kvm.h        | 10 ++++++++++
->  4 files changed, 41 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3768819693e5..2b560e77f8bc 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -925,6 +925,10 @@ struct kvm_hv {
->  
->  	struct hv_partition_assist_pg *hv_pa_pg;
->  	struct kvm_hv_syndbg hv_syndbg;
-> +
-> +	struct {
-> +		u64 overlay_hcall_page:1;
-> +	} flags;
-
-Do you plan to add more flags here? If not, I'd suggest we use a simple
-boolean instead of the whole 'flags' structure.
-
->  };
->  
->  struct msr_bitmap_range {
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index f98370a39936..e7d9d3bb39dc 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -191,6 +191,21 @@ static void kvm_hv_notify_acked_sint(struct kvm_vcpu *vcpu, u32 sint)
->  	srcu_read_unlock(&kvm->irq_srcu, idx);
->  }
->  
-> +static void overlay_exit(struct kvm_vcpu *vcpu, u32 msr, u64 gpa,
-> +			 u32 data_len, const u8 *data)
-> +{
-> +	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
-> +
-> +	hv_vcpu->exit.type = KVM_EXIT_HYPERV_OVERLAY;
-> +	hv_vcpu->exit.u.overlay.msr = msr;
-> +	hv_vcpu->exit.u.overlay.gpa = gpa;
-> +	hv_vcpu->exit.u.overlay.data_len = data_len;
-> +	if (data_len)
-> +		memcpy(hv_vcpu->exit.u.overlay.data, data, data_len);
-
-It seems this exit to userspace has double meaning:
-1) Please put an overlay page at GPA ... (are we sure we will never need
-more than one page?)
-2) Do something else depending on the MSR which triggered the write (are
-we sure all such exits are going to be triggered by an MSR write?)
-
-and I'm wondering if it would be possible to actually limit
-KVM_EXIT_HYPERV_OVERLAY to 'put an overlay page' and do the rest somehow
-differently.
-
-In particularly, I think we can still do hypercall page patching
-directly from KVM after overlay page setup. With VTL, when the logic is
-more complex, do you expect it to be implemented primarily in userspace?
-
-> +
-> +	kvm_make_request(KVM_REQ_HV_EXIT, vcpu);
-> +}
-> +
->  static void synic_exit(struct kvm_vcpu_hv_synic *synic, u32 msr)
->  {
->  	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
-> @@ -1246,9 +1261,13 @@ static int kvm_hv_set_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 data,
->  		/* ret */
->  		((unsigned char *)instructions)[i++] = 0xc3;
->  
-> -		addr = data & HV_X64_MSR_HYPERCALL_PAGE_ADDRESS_MASK;
-> -		if (kvm_vcpu_write_guest(vcpu, addr, instructions, i))
-> -			return 1;
-> +		if (kvm->arch.hyperv.flags.overlay_hcall_page) {
-> +			overlay_exit(vcpu, msr, data, (u32)i, instructions);
-> +		} else {
-> +			addr = data & HV_X64_MSR_HYPERCALL_PAGE_ADDRESS_MASK;
-> +			if (kvm_vcpu_write_guest(vcpu, addr, instructions, i))
-> +				return 1;
-> +		}
->  		hv->hv_hypercall = data;
->  		break;
->  	}
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index eca63625aee4..b3e497343e5c 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3745,6 +3745,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  	case KVM_CAP_HYPERV_TLBFLUSH:
->  	case KVM_CAP_HYPERV_SEND_IPI:
->  	case KVM_CAP_HYPERV_CPUID:
-> +	case KVM_CAP_HYPERV_OVERLAY_HCALL_PAGE:
->  	case KVM_CAP_SYS_HYPERV_CPUID:
->  	case KVM_CAP_PCI_SEGMENT:
->  	case KVM_CAP_DEBUGREGS:
-> @@ -5357,6 +5358,10 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  			kvm->arch.bus_lock_detection_enabled = true;
->  		r = 0;
->  		break;
-> +	case KVM_CAP_HYPERV_OVERLAY_HCALL_PAGE:
-> +		kvm->arch.hyperv.flags.overlay_hcall_page = true;
-> +		r = 0;
-> +		break;
->  	default:
->  		r = -EINVAL;
->  		break;
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index f6afee209620..37b0715da4fd 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -185,10 +185,13 @@ struct kvm_s390_cmma_log {
->  	__u64 values;
->  };
->  
-> +#define KVM_EXIT_HV_OVERLAY_DATA_SIZE  64
-
-Could you please elaborate on why you think 64 bytes is going to be
-enough? (like what structures we'll be passing here for VTL)
-
-> +
->  struct kvm_hyperv_exit {
->  #define KVM_EXIT_HYPERV_SYNIC          1
->  #define KVM_EXIT_HYPERV_HCALL          2
->  #define KVM_EXIT_HYPERV_SYNDBG         3
-> +#define KVM_EXIT_HYPERV_OVERLAY        4
-
-Please document this in Documentation/virt/kvm/api.rst
-
->  	__u32 type;
->  	__u32 pad1;
->  	union {
-> @@ -213,6 +216,12 @@ struct kvm_hyperv_exit {
->  			__u64 recv_page;
->  			__u64 pending_page;
->  		} syndbg;
-> +		struct {
-> +			__u32 msr;
-> +			__u32 data_len;
-> +			__u64 gpa;
-> +			__u8 data[KVM_EXIT_HV_OVERLAY_DATA_SIZE];
-
-... in partucular, please document the meaning of 'data' (in case it
-needs to be here).
-
-> +		} overlay;
->  	} u;
->  };
->  
-> @@ -1078,6 +1087,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_DIRTY_LOG_RING 192
->  #define KVM_CAP_X86_BUS_LOCK_EXIT 193
->  #define KVM_CAP_PPC_DAWR1 194
-> +#define KVM_CAP_HYPERV_OVERLAY_HCALL_PAGE 195
->  
->  #ifdef KVM_CAP_IRQ_ROUTING
-
--- 
-Vitaly
-
+Thanks,
+Lorenzo
