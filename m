@@ -2,118 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BE4369B01
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD10369B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbhDWTsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
+        id S243699AbhDWTtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWTsR (ORCPT
+        with ESMTP id S243874AbhDWTtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:48:17 -0400
-Received: from smtp-good-out-4.t-2.net (smtp-good-out-4.t-2.net [IPv6:2a01:260:1:4::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5F5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:47:40 -0700 (PDT)
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [84.255.208.30])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FRlF63sCbz1FxZ;
-        Fri, 23 Apr 2021 21:47:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1619207258;
-        bh=3yGHUd8Z+HJ9p1kGXM3dg0c8vffZFIHtV0TYAfwi9e4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=KTstc+Nr4YLkP6QCNDayPMBFRcswz2s1+ovlVsqhsu47ApeEXO4so+61GUeksxUyH
-         ahQCWGdy/uNxTAKyoUqBBUGw/UdKMS7NCvXhLlriMfev06V93eZxWD/v06BfioHD8b
-         NvYOSWP5IizphvRjRjoMt1Oap8DL0PNO1CnHUJvk=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FRlF63j3BzTpmmn;
-        Fri, 23 Apr 2021 21:47:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id swBwA3IceKnf; Fri, 23 Apr 2021 21:47:38 +0200 (CEST)
-Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Fri, 23 Apr 2021 21:47:02 +0200 (CEST)
-Message-ID: <07c3c9015491ca9b42362098d5e90ca7480cf5ed.camel@t-2.net>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Fri, 23 Apr 2021 21:47:01 +0200
-In-Reply-To: <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <YGx59PEq2Y015YdK@alley>
-         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
-         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
-         <YG24F9Kx+tjxhh8G@kroah.com>
-         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-         <YHQkeZVs3pmyie9e@kroah.com>
-         <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
-         <YHQ3Zy9gRdZsu77w@kroah.com>
-         <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
-         <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
-         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
-         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-         <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
-         <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 23 Apr 2021 15:49:09 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0CBC061574;
+        Fri, 23 Apr 2021 12:48:32 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id lr7so7501821pjb.2;
+        Fri, 23 Apr 2021 12:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RblyejMO0ehdI3884/nZF+v9qcRYrKv3C89X2315cxc=;
+        b=qMCaatxx/bSEsCo0Gf7FUukHolKiLQl3+D3e8B95J36vEEhdGD3cwJh1rj3BZjPCOE
+         CfSuEeJuJ+jIHpQwcEbNVvVzo+PpJVyyCwzPZAzK4mlQQj/922MHGeUXxdLYpTyLJxxD
+         ZzXPbnKNIlWfZHg3ZIJhhBHN6D+0p37t1b2YTmrsT06ilkuedJzUVpqv7GL7cUDouCgA
+         ZO+w+4pfOz7o52H6FGrcAaY2+4bxjqhyno5tBE4ETe7kMd/bezDsbIfyR06U9k0d3Wtr
+         qcuZ3kc+tvcAuaU0L3UewiVtKEH5NFGV+iq2atwyv686bAxlFpW7xC3gasn7OP1Rg/O2
+         qouA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RblyejMO0ehdI3884/nZF+v9qcRYrKv3C89X2315cxc=;
+        b=beJqlNVFLtezCUmlshZtl/EFqtG6l1cefHBQ0PA5TcBhYl5tvopgBpTl8z/R8YnTWW
+         qNXPC+JoIn0MC7e3ptfL19Ci9IfApV9PNXff19kDeQwkEjtjdUXvTfM7oxEPgRBb3aqw
+         thQzcl5QiOG2Kzstb5c2TD1pxXgeyB69WfRgGWXz0IA7nXW+lNa1Rpj5h3/3ZG3bdqRZ
+         q4IdzY/C4MQ0UaYkqHlfY9rrytM1k6KkzXndXp5Kqg+9Z4vGvpZftZv2xYGf+Wq/OqgT
+         HQbTLuGXpUiiuThYN+5qZXRGGTN5F/IWX7RmgBm5KhIwVYnBuKC6r4w0aaefNvme8hbl
+         iybg==
+X-Gm-Message-State: AOAM531wQ3eBx5V4x2GwHn2Ah6Ft0MRw12LzWlFvEN9KCxFEhqRANhKh
+        FXBOeW0gBU7HqLRJ+4G68T+9xHizR4w=
+X-Google-Smtp-Source: ABdhPJy+8xqXrxU5UjY1FTpnTR1T+0SZzmmE95sBP5vfvc1R4Cvna4Hyx/wnSME5qMVv6wz/1KjmZg==
+X-Received: by 2002:a17:90a:8592:: with SMTP id m18mr7212464pjn.165.1619207311621;
+        Fri, 23 Apr 2021 12:48:31 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b20sm8163779pju.17.2021.04.23.12.48.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 12:48:31 -0700 (PDT)
+Subject: Re: [PATCH] serial: 8250: of: Check for CONFIG_SERIAL_8250_BCM7271
+To:     Alan Cooper <alcooperx@gmail.com>,
+        ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+References: <20210423191920.42940-1-alcooperx@gmail.com>
+ <CAOGqxeVokFqOQMpTrpyg1GPRk6YCw=GF0-ShBtiKz_3_0RU2XQ@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d48a47cf-2dff-cc94-6b6b-f498ab94fe57@gmail.com>
+Date:   Fri, 23 Apr 2021 12:48:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAOGqxeVokFqOQMpTrpyg1GPRk6YCw=GF0-ShBtiKz_3_0RU2XQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 23.04.2021 (pet) ob 19:12 +0900 je Tetsuo Handa napisal(a):
-> On 2021/04/23 18:55, Samo Pogačnik wrote:
-> > > > Using the supplied test code, i've tested the patch on my desktop
-> > > > running
-> > > > the
-> > > > 5.4 kernel. After applying the patch, the kernel warnings like
-> > > > "ttyprintk:
-> > > > tty_port_close_start: tty->count = 1 port count = 11" do not appear any
-> > > > more,
-> > > > when the test code is run.
-> > > > I think the patch is ok.
-> > > 
-> > > I wonder if the buffer shouldn't be flushed in hangup too? Or better, 
-> > > the flush moved from tty_ops->close to tty_port->ops->shutdown?
-> > > 
-> > > thanks,
-> > 
-> > Good point. I tried the following additional change, which seems to do the
-> > trick. What do you think?
-> > 
-> 
-> Shouldn't the tpk_printk buffer be per a "struct file" (i.e. allocated upon
-> open() and released upon close() in order to allow multiple users) ?
 
-Final destination of the ttyprintk is printk(), which is a single destination.
-The tpk_printk buffer is a common representation of what is yet to be printk-ed
-depending on the formatting conditions within the buffer.
 
-At any point the tpk_buffer is potentially multiplexed/interleaved by parts of
-required output of any concurrent user, as buffs are being delivered by the
-scheduled writes.
+On 4/23/2021 12:25 PM, Alan Cooper wrote:
+> Please ignore this patch, it was already submitted by Florian about an hour ago.
 
-As per user buffers look promising with output formatting, the FDs passing
-between tasks lead to the same single buffer (Greg already mentioned that). The
-other thing which is important to me is the console redirection to ttyprintk,
-which automatically brings all concurrent console users to the single open of
-ttyprintk.
-
-best regards, Samo
-
+Sorry for the lack of coordination, was about to ask you if you wanted
+to send it.
+-- 
+Florian
