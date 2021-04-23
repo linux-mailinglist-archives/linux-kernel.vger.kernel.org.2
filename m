@@ -2,182 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29554369726
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A88369730
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243392AbhDWQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:35:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:32278 "EHLO mga01.intel.com"
+        id S231437AbhDWQhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231504AbhDWQf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:35:26 -0400
-IronPort-SDR: LEbJDbCM5TRNqe9YHNnq9EefY024uthkyK0DSNyFVuljC3SuWrhkVeTD8CrmThdiyGsixZDDaR
- u4WUUAxlRikw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="216782558"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="216782558"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 09:34:48 -0700
-IronPort-SDR: ZfNVxrOLgu95YdAIHQN5YDKnzDgAu+eRebKmZAfdwpq0Q/vM9f60nBp2doWFT8LrSnx1HEGvl0
- z3AAXHeuU0gw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="424290615"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 23 Apr 2021 09:34:44 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 45F3717E; Fri, 23 Apr 2021 19:35:00 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 14/14] spi: pxa2xx: Introduce special type for Merrifield SPIs
-Date:   Fri, 23 Apr 2021 19:34:37 +0300
-Message-Id: <20210423163437.89306-14-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
-References: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
+        id S229957AbhDWQhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 12:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4448D6147D;
+        Fri, 23 Apr 2021 16:37:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619195828;
+        bh=9IS9zneuy8LMByWB8zTbcL7UU0JhQG+Ou0Dnf6+9DWI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mVgcggccvzb5Q58UbDiH1LkySMqv79Q0ezFdDHa9YV7pgIsYnxGZqfsUJcRJc6QZV
+         ZYSvR6/2IFozhh+DXQhOUmILYWpfvzt4R8iyF0yZhyhulaNj6dFjiKsV8Ndd/qXLmj
+         GW/zvOnb7aOdEj2ES9uE7ITO4X3CmF8RvhaVMgBShq8F4kFHln8tWv861rOgmlvt4Z
+         D2Oi1UzAr1GrTcH3dR3MSQg43Qcm6PFPXoFkffi3cT9tsvVu3W36tckpvHlMHjL4se
+         QV5iCqII5/U1Z/OH7pqiU7b4YNdhJm5Grt1Znz4Y1xKyi4U3GYj+xibZ95aulFox9+
+         oJ9bLrvt7by5g==
+Received: by mail-ej1-f41.google.com with SMTP id w3so74818008ejc.4;
+        Fri, 23 Apr 2021 09:37:08 -0700 (PDT)
+X-Gm-Message-State: AOAM530O961q6oIfPZzBTExEFkX1oJWLZ3GFZBTfSUHxM9kj5+tKTM+n
+        ZtxxACI49NjnNZohBCZ/fkay5cd8Wgl8SHVStQ==
+X-Google-Smtp-Source: ABdhPJyNr2Rj271SQjBJ1jzoPOY6Dqp88cO1kkQkphXe731CRxVMAIBAK4M/UFgprXi5ElqtV9WjSX3y7vxRK5ErxHg=
+X-Received: by 2002:a17:906:2c4a:: with SMTP id f10mr5235234ejh.63.1619195826695;
+ Fri, 23 Apr 2021 09:37:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210420132614.150242-1-jitao.shi@mediatek.com> <20210420132614.150242-3-jitao.shi@mediatek.com>
+In-Reply-To: <20210420132614.150242-3-jitao.shi@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 24 Apr 2021 00:36:55 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-SKcX+4U5hKOgRaip-vk+ofEWe_g4VNUxFjN7LCprq1w@mail.gmail.com>
+Message-ID: <CAAOTY_-SKcX+4U5hKOgRaip-vk+ofEWe_g4VNUxFjN7LCprq1w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] drm/mediatek: fine tune the dsi panel's power sequence
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        huijuan.xie@mediatek.com, stonea168@163.com,
+        Cawa Cheng <cawa.cheng@mediatek.com>,
+        Rex-BC Chen <rex-bc.chen@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, yingjoe.chen@mediatek.com,
+        eddie.huang@mediatek.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Merrifield SPI is actually more closer to PXA3xx. It has extended FIFO
-(32 bytes) and additional registers to get or set FIFO thresholds.
+Hi, Jitao:
 
-Introduce new type for Intel Merrifield SPI host controllers and handle bigger
-FIFO size.
+Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=8820=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=889:26=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Add the drm_panel_prepare_power and drm_panel_unprepare_power control.
+> Turn on panel power(drm_panel_prepare_power) and control before dsi
+> enable. And then dsi enable, send dcs cmd in drm_panel_prepare, last
+> turn on backlight.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-pxa2xx-pci.c   |  2 +-
- drivers/spi/spi-pxa2xx.c       | 32 +++++++++++++++++++++++++++++---
- include/linux/spi/pxa2xx_ssp.h | 16 ++++++++++++++++
- 3 files changed, 46 insertions(+), 4 deletions(-)
+Please describe WHY do you need this patch? Fix any bug?
 
-diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index 5af0a3fbc1b0..5df6e11b345d 100644
---- a/drivers/spi/spi-pxa2xx-pci.c
-+++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -179,7 +179,7 @@ static struct pxa_spi_info spi_info_configs[] = {
- 		.rx_param = &bsw2_rx_param,
- 	},
- 	[PORT_MRFLD] = {
--		.type = PXA27x_SSP,
-+		.type = MRFLD_SSP,
- 		.max_clk_rate = 25000000,
- 		.setup = mrfld_spi_setup,
- 	},
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 5a4f808eefde..313095bfa7dd 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -200,6 +200,11 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
- 	return drv_data->ssp_type == MMP2_SSP;
- }
- 
-+static bool is_mrfld_ssp(const struct driver_data *drv_data)
-+{
-+	return drv_data->ssp_type == MRFLD_SSP;
-+}
-+
- static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
- {
- 	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
-@@ -1087,6 +1092,15 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
- 	}
- 
-+	if (is_mrfld_ssp(drv_data)) {
-+		u32 thresh = 0;
-+
-+		thresh |= SFIFOTT_RxThresh(chip->lpss_rx_threshold);
-+		thresh |= SFIFOTT_TxThresh(chip->lpss_tx_threshold);
-+
-+		pxa2xx_spi_update(drv_data, SFIFOTT, 0xffffffff, thresh);
-+	}
-+
- 	if (is_quark_x1000_ssp(drv_data))
- 		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
- 
-@@ -1253,6 +1267,11 @@ static int setup(struct spi_device *spi)
- 		tx_hi_thres = 0;
- 		rx_thres = RX_THRESH_QUARK_X1000_DFLT;
- 		break;
-+	case MRFLD_SSP:
-+		tx_thres = TX_THRESH_MRFLD_DFLT;
-+		tx_hi_thres = 0;
-+		rx_thres = RX_THRESH_MRFLD_DFLT;
-+		break;
- 	case CE4100_SSP:
- 		tx_thres = TX_THRESH_CE4100_DFLT;
- 		tx_hi_thres = 0;
-@@ -1328,9 +1347,16 @@ static int setup(struct spi_device *spi)
- 		chip->cr1 |= SSCR1_SPH;
- 	}
- 
--	chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
--	chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres)
--				| SSITF_TxHiThresh(tx_hi_thres);
-+	if (is_lpss_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
-+		chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres) |
-+					  SSITF_TxHiThresh(tx_hi_thres);
-+	}
-+
-+	if (is_mrfld_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = rx_thres;
-+		chip->lpss_tx_threshold = tx_thres;
-+	}
- 
- 	/* set dma burst and threshold outside of chip_info path so that if
- 	 * chip_info goes away after setting chip->enable_dma, the
-diff --git a/include/linux/spi/pxa2xx_ssp.h b/include/linux/spi/pxa2xx_ssp.h
-index fdfbe17e15f4..2b21bc1f3c73 100644
---- a/include/linux/spi/pxa2xx_ssp.h
-+++ b/include/linux/spi/pxa2xx_ssp.h
-@@ -183,6 +183,21 @@ struct device_node;
- #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
- #define SSACD_SCDX8		BIT(7)		/* SYSCLK division ratio select */
- 
-+/* Intel Merrifield SSP */
-+#define SFIFOL			0x68		/* FIFO level */
-+#define SFIFOTT			0x6c		/* FIFO trigger threshold */
-+
-+#define RX_THRESH_MRFLD_DFLT	16
-+#define TX_THRESH_MRFLD_DFLT	16
-+
-+#define SFIFOL_TFL_MASK		GENMASK(15, 0)	/* Transmit FIFO Level mask */
-+#define SFIFOL_RFL_MASK		GENMASK(31, 16)	/* Receive FIFO Level mask */
-+
-+#define SFIFOTT_TFT		GENMASK(15, 0)	/* Transmit FIFO Threshold (mask) */
-+#define SFIFOTT_TxThresh(x)	(((x) - 1) << 0)	/* TX FIFO trigger threshold / level */
-+#define SFIFOTT_RFT		GENMASK(31, 16)	/* Receive FIFO Threshold (mask) */
-+#define SFIFOTT_RxThresh(x)	(((x) - 1) << 16)	/* RX FIFO trigger threshold / level */
-+
- /* LPSS SSP */
- #define SSITF			0x44		/* TX FIFO trigger level */
- #define SSITF_TxHiThresh(x)	(((x) - 1) << 0)
-@@ -205,6 +220,7 @@ enum pxa_ssp_type {
- 	MMP2_SSP,
- 	PXA910_SSP,
- 	CE4100_SSP,
-+	MRFLD_SSP,
- 	QUARK_X1000_SSP,
- 	LPSS_LPT_SSP, /* Keep LPSS types sorted with lpss_platforms[] */
- 	LPSS_BYT_SSP,
--- 
-2.30.2
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index a1ff152ef468..455fe582c6b5 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -615,10 +615,13 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
+>         dsi->data_rate =3D DIV_ROUND_UP_ULL(dsi->vm.pixelclock * bit_per_=
+pixel,
+>                                           dsi->lanes);
+>
+> +       if (panel_bridge_prepare_power(dsi->next_bridge))
 
+ret =3D panel_bridge_prepare_power(dsi->next_bridge);
+if (ret)
+
+> +               DRM_INFO("can't prepare power the panel\n");
+
+I think you should goto err_refcount;
+
+> +
+>         ret =3D clk_set_rate(dsi->hs_clk, dsi->data_rate);
+>         if (ret < 0) {
+>                 dev_err(dev, "Failed to set data rate: %d\n", ret);
+> -               goto err_refcount;
+> +               goto err_prepare_power;
+>         }
+>
+>         phy_power_on(dsi->phy);
+> @@ -661,7 +664,9 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
+>         clk_disable_unprepare(dsi->engine_clk);
+>  err_phy_power_off:
+>         phy_power_off(dsi->phy);
+> -err_refcount:
+> +err_prepare_power:
+> +       if (panel_bridge_unprepare_power(dsi->next_bridge))
+
+ret =3D panel_bridge_unprepare_power(dsi->next_bridge);
+
+> +               DRM_INFO("Can't unprepare power the panel\n");
+>         dsi->refcount--;
+>         return ret;
+>  }
+> @@ -694,6 +699,9 @@ static void mtk_dsi_poweroff(struct mtk_dsi *dsi)
+>         clk_disable_unprepare(dsi->digital_clk);
+>
+>         phy_power_off(dsi->phy);
+> +
+> +       if (panel_bridge_unprepare_power(dsi->next_bridge))
+
+ret =3D panel_bridge_unprepare_power(dsi->next_bridge);
+
+> +               DRM_INFO("Can't unprepare power the panel\n");
+>  }
+>
+>  static void mtk_output_dsi_enable(struct mtk_dsi *dsi)
+> --
+> 2.25.1
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
