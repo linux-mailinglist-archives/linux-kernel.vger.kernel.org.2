@@ -2,123 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508B2368BDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0C0368BC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhDWENR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:13:17 -0400
-Received: from mga11.intel.com ([192.55.52.93]:25764 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhDWENQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:13:16 -0400
-IronPort-SDR: YhDqkqU0VRxfvlMhC3QkLjCvbb21EtwcXf7uJ7n+usRkXrId8DS35OmV9op3SvZ4S/f3cYhj5m
- 4l6vxJxJZr2A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="192826021"
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="asc'?scan'208";a="192826021"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 21:12:40 -0700
-IronPort-SDR: nrk9t95tZ919uGBWhrlRupDvA67xEP9m+oDuc5Q6fst6eWRn+o8XlB4GQW2/9983TMqV2KZNxI
- wPuZdhh+XM1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="asc'?scan'208";a="453469907"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 22 Apr 2021 21:12:35 -0700
-Date:   Fri, 23 Apr 2021 11:54:26 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV
-Message-ID: <20210423035426.GG1551@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210422133547.1861063-1-arnd@kernel.org>
- <20210422135810.GG2047089@ziepe.ca>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="7WMexqIhC8AwFtpM"
-Content-Disposition: inline
-In-Reply-To: <20210422135810.GG2047089@ziepe.ca>
+        id S230364AbhDWEDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 00:03:03 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:44525 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229454AbhDWEDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 00:03:00 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2AA9F5C00BA;
+        Fri, 23 Apr 2021 00:02:24 -0400 (EDT)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Fri, 23 Apr 2021 00:02:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm2; bh=03/g2
+        xB/0xYGPh0ut2C+Web+4rsnUfIFZ7I++jHdcLU=; b=ri0ZrUL+Xmgf47+zY/kEv
+        8AWobWZff9EKRomXOpV+CE4nK5h4Dbxe5ztuV2+AQy+F5zAmT1bLMdRQ9HvK7D2/
+        eZZ/LpvoRGIWmHvJEIB4IjtoFxnpd/G+tYM7tpgnzxLMF3MP2gUqPccDHGecZdrY
+        48Sz/ANQZIG33emg3/MlU/ewVJoZFMJYrV/vAmDCTDWqYu5TAcqFesfn3rE6Qsrw
+        HdDRWDVgqUNCbihaICi8eispkIpTA6HX7BVgGaRwWGc70PME4GpyyMZxUCeHuODC
+        772KrJpWEmXr9+qfbFLF+XMc5G3EalZYOnk/zGlWu3RTcIAAE62BejYzxClV5I5j
+        Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=03/g2xB/0xYGPh0ut2C+Web+4rsnUfIFZ7I++jHdc
+        LU=; b=C8U0eC7iTodc6ivFPRSZVIvQcXPUXdXt4NAP9QI6CfTYJ/gujtbfLKBvx
+        TGxEqBgEbG095UWdezP7qiXu826FNqmCbCzyH/0aLwuTXwu6GS6L+IPDaPPQkhIY
+        8d363t0ua7QFXXtKYzGuxAgnRaCUU452tEbHHxONdHOCY2laR2bUlpgRg9TfVU1t
+        5pffrgcLFctJsL40AgL0k2jotm2Yowq19RX4CLfuXZW+IlzRF4KFw7bqO2z5k3sy
+        /ODl2HBZd3Qts8xbdh7dmvzbeTUbAyOM0nqg8T85Hv003Q9hJ96hAWI7BSd47baE
+        92qWM0prMZ6cAN3yCw7SpsFbJ0/iw==
+X-ME-Sender: <xms:zkaCYOIZPxSlBgK850lYIVrKyPLdYv7NAoqoVvlqjm87UAHZJzKUVw>
+    <xme:zkaCYGItbXBhyT7e5DCXCRqk7G6M1dfp3YQUX_BZX-6WyK45GCQ7oQgowf2QJshPF
+    RmRWFOji3NvY1pa1ik>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduuddgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
+    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+    eqnecuggftrfgrthhtvghrnheptedtjedvvddthffgheeujedttddtgfektdeghfeltdek
+    leefhffhleelvdejkeffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigr
+    nhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:zkaCYOu2-r7BVvj1-_2sRPBY0DSIhqmO1lLou_1h8nNE4IcBLzCB2A>
+    <xmx:zkaCYDZwnkCCnCY4m0UKcAZo7y1nT_62q0j9iCWu-IA8fENgnIWPcA>
+    <xmx:zkaCYFYPUl6nvkakOLecgkZSZGiSTgJdIJ192myLsV_sBgC3lmv_pg>
+    <xmx:0EaCYIzL5m6u3iZHEY5J1VjiETi9p3cNVRJ7my2uWmvbZP9M5MKUAw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id AB7A7130005F; Fri, 23 Apr 2021 00:02:22 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
+Mime-Version: 1.0
+Message-Id: <6abcefbe-0e49-4e68-abc1-b9535d5467ea@www.fastmail.com>
+In-Reply-To: <tencent_A816CB57EADAD19FD3FFC04C3598E81B5608@qq.com>
+References: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
+ <1053fddf-479a-6014-ca2c-110c19574f84@loongson.cn>
+ <tencent_A816CB57EADAD19FD3FFC04C3598E81B5608@qq.com>
+Date:   Fri, 23 Apr 2021 12:02:01 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     maoxiaochuan <maoxiaochuan-gz@loongson.cn>,
+        "Qing Zhang" <zhangqing@loongson.cn>,
+        "xiaochuan mao" <maoxiaochuan@loongson.cn>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_=E5=9B=9E=E5=A4=8D=EF=BC=9A_[PATCH]_MIPS:DTS:Fix_label_nam?=
+ =?UTF-8?Q?e_and_interrupt_number_of_ohci_for_Loongson-2K?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7WMexqIhC8AwFtpM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On 2021.04.22 10:58:10 -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 22, 2021 at 03:35:33PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >=20
-> > The Kconfig dependency is incomplete since DRM_I915_GVT is a 'bool'
-> > symbol that depends on the 'tristate' VFIO_MDEV. This allows a
-> > configuration with VFIO_MDEV=3Dm, DRM_I915_GVT=3Dy and DRM_I915=3Dy that
-> > causes a link failure:
-> >=20
-> > x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `available=
-_instances_show':
-> > gvt.c:(.text+0x67a): undefined reference to `mtype_get_parent_dev'
-> > x86_64-linux-ld: gvt.c:(.text+0x6a5): undefined reference to `mtype_get=
-_type_group_id'
-> > x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `descripti=
-on_show':
-> > gvt.c:(.text+0x76e): undefined reference to `mtype_get_parent_dev'
-> > x86_64-linux-ld: gvt.c:(.text+0x799): undefined reference to `mtype_get=
-_type_group_id'
-> >=20
-> > Clarify the dependency by specifically disallowing the broken
-> > configuration. If VFIO_MDEV is built-in, it will work, but if
-> > VFIO_MDEV=3Dm, the i915 driver cannot be built-in here.
-> >=20
-> > Fixes: 07e543f4f9d1 ("vfio/gvt: Make DRM_I915_GVT depend on VFIO_MDEV")
-> > Fixes: 9169cff168ff ("vfio/mdev: Correct the function signatures for th=
-e mdev_type_attributes")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  drivers/gpu/drm/i915/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Apr 23, 2021, at 10:47 AM, maoxiaochuan wrote:
+> Ok, I will send a another patch for it.
+
+Please correct your email client setup.
+
+
+https://www.kernel.org/doc/html/latest/process/email-clients.html
+
+> =20
+> =E7=A5=9D=E5=A5=BD
+> =20
 >=20
-> Oh kconfig stuff like this makes my head hurt, thanks for finding it
 >=20
-> I also can't see an alternative to this ugly thing, besides having the
-> i915 guys properly modularize this code someday
+> ------------------ =E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6 --------------=
+----
+> *=E5=8F=91=E4=BB=B6=E4=BA=BA:* "zhangqing"<zhangqing@loongson.cn>;=20
+> *=E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4:* 2021=E5=B9=B44=E6=9C=8823=E6=97=
+=A5(=E6=98=9F=E6=9C=9F=E4=BA=94) =E4=B8=8A=E5=8D=8810:37
+> *=E6=94=B6=E4=BB=B6=E4=BA=BA:* "xiaochuan mao"<maoxiaochuan@loongson.c=
+n>; "Rob=20
+> Herring"<robh+dt@kernel.org>; "Thomas=20
+> Bogendoerfer"<tsbogend@alpha.franken.de>; "Jiaxun=20
+> Yang"<jiaxun.yang@flygoat.com>;=20
+> *=E6=8A=84=E9=80=81:* "devicetree"<devicetree@vger.kernel.org>;=20
+> "linux-mips"<linux-mips@vger.kernel.org>;=20
+> "linux-kernel"<linux-kernel@vger.kernel.org>;=20
+> *=E4=B8=BB=E9=A2=98:* Re: [PATCH] MIPS:DTS:Fix label name and interrup=
+t number of ohci=20
+> for Loongson-2K
 >=20
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 >=20
+> On 04/23/2021 09:52 AM, xiaochuan mao wrote:
+> > from Loongson-2K1000 user manual know that under pci bus
+> > the device num is 4, function number is 2 and register is 0x2200
+> > is ohci. the ohci interrupt number is 51. because Loongson-2K1000 ha=
+s
+> > 64 interrupt sources, 0-31 correspond to the device tree liointc0 de=
+vice
+> >   node, and the other correspond to liointc1 node. so it should be
+> > number 19 correspon to liointc1.
+> >
+> > Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
+> >
+> Hi, xiaozhuan
+>=20
+>=20
+> Thanks for the patch, this is my mistake.
+>=20
+> Can you correct the GPL-3.0 of this file to GPL-2.0 by the way?
+>=20
+> Thanks
+>=20
+> -Qing
 
-I don't really want this mess to propagate further. We should move
-mdev related stuff to kvmgt module instead, so not pretend any more to
-possibly use that for other hypervisor..
 
-Sorry that I didn't realize this issue when Jason proposed this. Let
-me do the left cleanup.
-
-Thanks
-
---7WMexqIhC8AwFtpM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYIJE6gAKCRCxBBozTXgY
-J6G0AJ9jV+OfoH7vCSMZp4Y4fN0maPlC3gCaAwHGakKPCeQIPyHkDjbi9KCA64o=
-=i7Nt
------END PGP SIGNATURE-----
-
---7WMexqIhC8AwFtpM--
+--=20
+- Jiaxun
