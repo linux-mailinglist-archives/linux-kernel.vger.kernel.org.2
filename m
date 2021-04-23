@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E510F36907D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 12:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4166369083
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 12:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbhDWKn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 06:43:26 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49539 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229794AbhDWKnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 06:43:25 -0400
-IronPort-SDR: lZPDlstW9UZOR0qMxPLptDf37Gi33fpuc0VM4StxtItN788/UytitEVigyRlzwjQTvZL8Gvfon
- cbNOQipQjScw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="176171134"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="176171134"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 03:42:49 -0700
-IronPort-SDR: OFvfsEuRHTPydfmUcqvE5J8CtjeZ5m+DI0+d83IXL+oSepixEHVJfrp2r+/n7kbANnF2OPj4r5
- WUydTKqGd6Dw==
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="421721849"
-Received: from gbocanex-mobl.ger.corp.intel.com (HELO [10.252.49.5]) ([10.252.49.5])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 03:42:47 -0700
-Subject: Re: [PATCH] drm/i915: Fix docbook descriptions for i915_cmd_parser
-To:     intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210421120353.544518-1-maarten.lankhorst@linux.intel.com>
- <CAKMK7uFpoY7YMEMbftjq+P5XHR6L+F0KwFtbK7CtuUFy7HsLkQ@mail.gmail.com>
- <9ae96fa1-6c91-4ec1-422d-8e0a95251bb7@linux.intel.com>
- <YIExRAHQvZmgL5S+@phenom.ffwll.local>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Message-ID: <20c93c9a-9aca-0057-23bf-463e7946e1c8@linux.intel.com>
-Date:   Fri, 23 Apr 2021 12:42:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S241832AbhDWKqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 06:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhDWKqU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 06:46:20 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C19C061574;
+        Fri, 23 Apr 2021 03:45:44 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 4so16970043lfp.11;
+        Fri, 23 Apr 2021 03:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=TgFjxtYsOVaP6v4PMZp8irtY/yFk5woDCqAeiCFqABA=;
+        b=dPWtMidHtJu/eQ7X+GMrm8eY6cIAu28zOaBEA0d3WhtJ630XTxz/F1si9qzLMJHyG/
+         hWZjePMhtoigzpcf55ecqAtJmDbEQUIGFZm4CZYbpRJvR6ehddDWWL9cvB7Y2osTZyVs
+         1d3GIe/jyMetbl3liuB/IDuGoHaaM1ncGwjQEED08omLCh0S9wA785smoM5hmFfON8jq
+         kM/Dhaqq5HJFosb4yvo4F7pOAtlz8ZwEjW94C5a2IYyOAdoB9N8jprhABxW8X2mVl2lg
+         HJc0/A5nX1i+7MWdHiPNth6Nohuk1csOl/wAD1XaqIPxaLYpp7m+aKemnGq+Mdruix67
+         rGbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=TgFjxtYsOVaP6v4PMZp8irtY/yFk5woDCqAeiCFqABA=;
+        b=NnkIfdifIn/GeG8fw5mRJDj7B4c6WfjUA74kxjkj8AS8/iiN2zeXtfgxIWf60oM+IS
+         Im2FfJ/mo7Mid1m3GMyeE3XqY4nAmiEo8y2C3LX7CPb9OELs1VyXYe7dTajHssLqJMh3
+         /ZxEtVXHZXnjJV98VBcQEwO07fkJQYD4wD5X3kc4MXht4vcUp9MOTiMF+J8tkfLOtRZ4
+         oGXqazJa+zy1KB9nMnOmqHgTzJ+2s/58Hx+wJUydtZhqGm2dFNNQwLFbHgUWWVo8y2xr
+         t6knmknwxtZApYi7m2+DD7QK5mbbiRgnDL/IcjE8HkmL705FLmd6xbvlrkpBccias5CE
+         bjpw==
+X-Gm-Message-State: AOAM531bhQ6AX7rQFrFgSTNojnvUS5kpLbA+0nxbZ4GWnFsA0sZci2z5
+        40swAQREoyyo+L5InVyi4HnGgBLF/6A=
+X-Google-Smtp-Source: ABdhPJx4pt/zKtSwBTkr28o85OGy0iMHjelM1jfbr/K3643b8l/4aWyywGt6IMkkyHH0FRidibW/TQ==
+X-Received: by 2002:ac2:5682:: with SMTP id 2mr2287134lfr.524.1619174742625;
+        Fri, 23 Apr 2021 03:45:42 -0700 (PDT)
+Received: from osv.localdomain ([89.175.180.246])
+        by smtp.gmail.com with ESMTPSA id y8sm514938lfe.259.2021.04.23.03.45.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 03:45:41 -0700 (PDT)
+From:   Sergey Organov <sorganov@gmail.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Dan Carpenter' <dan.carpenter@oracle.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        "John Wang" <wangzhiqiang.bj@bytedance.com>,
+        Brad Bishop <bradleyb@fuzziesquirrel.com>,
+        Patrick Venture <venture@google.com>,
+        "Benjamin Fair" <benjaminfair@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Lippert <rlippert@google.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] soc: aspeed: fix a ternary sign expansion bug
+References: <YIE90PSXsMTa2Y8n@mwanda>
+        <59596244622c4a15ac8cc0747332d0be@AcuMS.aculab.com>
+Date:   Fri, 23 Apr 2021 13:45:40 +0300
+In-Reply-To: <59596244622c4a15ac8cc0747332d0be@AcuMS.aculab.com> (David
+        Laight's message of "Thu, 22 Apr 2021 16:21:40 +0000")
+Message-ID: <877dktuvmz.fsf@osv.gnss.ru>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YIExRAHQvZmgL5S+@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Op 22-04-2021 om 10:18 schreef Daniel Vetter:
-> On Wed, Apr 21, 2021 at 04:39:10PM +0200, Maarten Lankhorst wrote:
->> Op 21-04-2021 om 16:32 schreef Daniel Vetter:
->>> On Wed, Apr 21, 2021 at 2:03 PM Maarten Lankhorst
->>> <maarten.lankhorst@linux.intel.com> wrote:
->>>> Fixes the following htmldocs warnings:
->>>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Excess function parameter 'trampoline' description in 'intel_engine_cmd_parser'
->>>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'jump_whitelist' not described in 'intel_engine_cmd_parser'
->>>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'shadow_map' not described in 'intel_engine_cmd_parser'
->>>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'batch_map' not described in 'intel_engine_cmd_parser'
->>>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Excess function parameter 'trampoline' description in 'intel_engine_cmd_parser'
->>>>
->>>> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
->>>> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
->>>> ---
->>>>  drivers/gpu/drm/i915/i915_cmd_parser.c | 16 +++++++++++++++-
->>>>  1 file changed, 15 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/i915/i915_cmd_parser.c b/drivers/gpu/drm/i915/i915_cmd_parser.c
->>>> index e6f1e93abbbb..afb9b7516999 100644
->>>> --- a/drivers/gpu/drm/i915/i915_cmd_parser.c
->>>> +++ b/drivers/gpu/drm/i915/i915_cmd_parser.c
->>>> @@ -1369,6 +1369,18 @@ static int check_bbstart(u32 *cmd, u32 offset, u32 length,
->>>>         return 0;
->>>>  }
->>>>
->>>> +/**
->>>> + * intel_engine_cmd_parser_alloc_jump_whitelist() - preallocate jump whitelist for intel_engine_cmd_parser()
->>>> + * @batch_length: length of the commands in batch_obj
->>>> + * @trampoline: Whether jump trampolines are used.
->>>> + *
->>>> + * Preallocates a jump whitelist for parsing the cmd buffer in intel_engine_cmd_parser().
->>>> + * This has to be preallocated, because the command parser runs in signaling context,
->>>> + * and may not allocate any memory.
->>>> + *
->>>> + * Return: NULL or pointer to a jump whitelist, or ERR_PTR() on failure. Use
->>>> + * IS_ERR() to check for errors. Must bre freed() with kfree().
->>> IS_ERR_OR_NULL or needs an actual bugfix in the code since we're not
->>> consistent. Also s/bre/be/
->> We're sort of consistent, NULL is a valid return code. IS_ERR is only on faliure. :)
-> Maybe explain that and then Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->
-> Cheers, Daniel
->
->>> -Daniel
->>>
->>>> + */
->>>>  unsigned long *intel_engine_cmd_parser_alloc_jump_whitelist(u32 batch_length,
->>>>                                                             bool trampoline)
->>>>  {
->>>> @@ -1401,7 +1413,9 @@ unsigned long *intel_engine_cmd_parser_alloc_jump_whitelist(u32 batch_length,
->>>>   * @batch_offset: byte offset in the batch at which execution starts
->>>>   * @batch_length: length of the commands in batch_obj
->>>>   * @shadow: validated copy of the batch buffer in question
->>>> - * @trampoline: whether to emit a conditional trampoline at the end of the batch
->>>> + * @jump_whitelist: buffer preallocated with intel_engine_cmd_parser_alloc_jump_whitelist()
->>>> + * @shadow_map: mapping to @shadow vma
->>>> + * @batch_map: mapping to @batch vma
->>>>   *
->>>>   * Parses the specified batch buffer looking for privilege violations as
->>>>   * described in the overview.
->>>> --
->>>> 2.31.0
->>>>
-Updated and pushed both, thanks. :)
+David Laight <David.Laight@ACULAB.COM> writes:
 
+> From: Dan Carpenter
+>> Sent: 22 April 2021 10:12
+>> 
+>> The intent here was to return negative error codes but it actually
+>> returns positive values.  The problem is that type promotion with
+>> ternary operations is quite complicated.
+>> 
+>> "ret" is an int.  "copied" is a u32.  And the snoop_file_read() function
+>> returns long.  What happens is that "ret" is cast to u32 and becomes
+>> positive then it's cast to long and it's still positive.
+>> 
+>> Fix this by removing the ternary so that "ret" is type promoted directly
+>> to long.
+>> 
+>> Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> ---
+>>  drivers/soc/aspeed/aspeed-lpc-snoop.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+>> index 210455efb321..eceeaf8dfbeb 100644
+>> --- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
+>> +++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+>> @@ -94,8 +94,10 @@ static ssize_t snoop_file_read(struct file *file, char __user *buffer,
+>>  			return -EINTR;
+>>  	}
+>>  	ret = kfifo_to_user(&chan->fifo, buffer, count, &copied);
+>> +	if (ret)
+>> +		return ret;
+>> 
+>> -	return ret ? ret : copied;
+>> +	return copied;
+>
+> I wonder if changing it to:
+> 	return ret ? ret + 0L : copied;
+>
+> Might make people think in the future and not convert it back
+> as an 'optimisation'.
+
+It rather made me think: "what the heck is going on here?!"
+
+Shouldn't it better be:
+
+ 	return ret ? ret : (long)copied;
+
+or even:
+
+        return ret ?: (long)copied;
+
+?
+
+-- Sergey Organov
