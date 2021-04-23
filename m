@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97D7368E29
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D79368E2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241287AbhDWHyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:54:05 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17030 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241227AbhDWHyC (ORCPT
+        id S241163AbhDWH5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:57:25 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:11038 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhDWH5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:54:02 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FRRKP1P3zzPtWR;
-        Fri, 23 Apr 2021 15:50:17 +0800 (CST)
-Received: from vm-Yoda-Ubuntu1804.huawei.com (10.67.174.59) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 23 Apr 2021 15:53:09 +0800
-From:   Xu Yihang <xuyihang@huawei.com>
-To:     <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-        <hpa@zytor.com>, <dwmw@amazon.co.uk>,
-        <linux-kernel@vger.kernel.org>
-CC:     <xuyihang@huawei.com>
-Subject: [PATCH -next] x86/apic: Force logial APIC ID in range from 0 to 8
-Date:   Fri, 23 Apr 2021 15:53:24 +0800
-Message-ID: <20210423075324.133463-1-xuyihang@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.59]
-X-CFilter-Loop: Reflected
+        Fri, 23 Apr 2021 03:57:23 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 41DA8E04BA;
+        Fri, 23 Apr 2021 15:56:44 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        zhouchuangao <zhouchuangao@vivo.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/notifier: Use BUG_ON instead of if condition followed by BUG
+Date:   Fri, 23 Apr 2021 00:56:34 -0700
+Message-Id: <1619164597-69309-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGRgfTlYYGh9DTR5DHUlJHklVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NEk6OSo5Tz8WFg0dQ1EBM1EV
+        LT8aFBZVSlVKTUpCSk1PTUtPTEpNVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlLT003Bg++
+X-HM-Tid: 0a78fdbb27d42c17kusn41da8e04ba
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Intel 64 and IA-32 Architectures Software Developer’s Manuals
-Vol. 3A 10.6.2.2, Logical APIC ID locates on bit 24 to 31, can only
-support up to 8 local APIC under flat mode. Also C99 says left shift exceeding
-maximum value representable in the result type is undefined behavior. But
-under x86 architecture, it seems doesn't do any actual damage.
+BUG_ON uses unlikely in if(). Through disassembly, we can see that
+brk #0x800 is compiled to the end of the function.
+As you can see below:
+    ......
+    ffffff8008660bec:   d65f03c0    ret
+    ffffff8008660bf0:   d4210000    brk #0x800
 
-There is KASAN warning on a 80 cores machine after booting #64 CPU.
-```
-[    1.681097] UBSAN: Undefined behaviour in arch/x86/kernel/apic/apic_flat_64.c:51:11
-[    1.688739] shift exponent 64 is too large for 64-bit type 'long unsigned int'
-```
+Usually, the condition in if () is not satisfied. For the
+multi-stage pipeline, we do not need to perform fetch decode
+and excute operation on brk instruction.
 
-Signed-off-by: Xu Yihang <xuyihang@huawei.com>
+In my opinion, this can improve the efficiency of the
+multi-stage pipeline.
+
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
 ---
- arch/x86/include/asm/apicdef.h      | 1 +
- arch/x86/kernel/apic/apic_flat_64.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ kernel/notifier.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/apicdef.h b/arch/x86/include/asm/apicdef.h
-index 5716f22f81ac..150a5e831368 100644
---- a/arch/x86/include/asm/apicdef.h
-+++ b/arch/x86/include/asm/apicdef.h
-@@ -42,6 +42,7 @@
- #define	APIC_RRR	0xC0
- #define	APIC_LDR	0xD0
- #define		APIC_LDR_MASK		(0xFFu << 24)
-+#define		APIC_LOGICAL_ID_MAX	8
- #define		GET_APIC_LOGICAL_ID(x)	(((x) >> 24) & 0xFFu)
- #define		SET_APIC_LOGICAL_ID(x)	(((x) << 24))
- #define		APIC_ALL_CPUS		0xFFu
-diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
-index 8f72b4351c9f..7bf91cadee21 100644
---- a/arch/x86/kernel/apic/apic_flat_64.c
-+++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -41,7 +41,7 @@ void flat_init_apic_ldr(void)
- 	unsigned long num, id;
- 
- 	num = smp_processor_id();
--	id = 1UL << num;
-+	id = 1UL << (num % APIC_LOGICAL_ID_MAX);
- 	apic_write(APIC_DFR, APIC_DFR_FLAT);
- 	val = apic_read(APIC_LDR) & ~APIC_LDR_MASK;
- 	val |= SET_APIC_LOGICAL_ID(id);
+diff --git a/kernel/notifier.c b/kernel/notifier.c
+index 1b019cb..2b0ed7d 100644
+--- a/kernel/notifier.c
++++ b/kernel/notifier.c
+@@ -522,8 +522,7 @@ EXPORT_SYMBOL_GPL(srcu_notifier_call_chain);
+ void srcu_init_notifier_head(struct srcu_notifier_head *nh)
+ {
+ 	mutex_init(&nh->mutex);
+-	if (init_srcu_struct(&nh->srcu) < 0)
+-		BUG();
++	BUG_ON(init_srcu_struct(&nh->srcu) < 0);
+ 	nh->head = NULL;
+ }
+ EXPORT_SYMBOL_GPL(srcu_init_notifier_head);
 -- 
-2.17.1
+2.7.4
 
