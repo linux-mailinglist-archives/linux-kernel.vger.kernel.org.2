@@ -2,39 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFD8369B30
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE41369B37
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243926AbhDWURp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:17:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:38832 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232200AbhDWURl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:17:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A89711D4;
-        Fri, 23 Apr 2021 13:17:03 -0700 (PDT)
-Received: from [10.57.2.99] (unknown [10.57.2.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DB0B3F73B;
-        Fri, 23 Apr 2021 13:16:59 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/4] Support for passing runtime state idle time to
- TF-A
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     sudeep.holla@arm.com, souvik.chakravarty@arm.com,
-        thierry.reding@gmail.com, mark.rutland@arm.com,
-        lorenzo.pieralisi@arm.com, daniel.lezcano@linaro.org,
-        robh+dt@kernel.org, jonathanh@nvidia.com, ksitaraman@nvidia.com,
-        sanjayc@nvidia.com, linux-arm-kernel@lists.infradead.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
-References: <1619123448-10138-1-git-send-email-skomatineni@nvidia.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <064341f7-dce3-5ad4-e69b-9568115035c1@arm.com>
-Date:   Fri, 23 Apr 2021 21:16:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S243901AbhDWUUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231721AbhDWUT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 16:19:56 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8778C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:19:17 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so41249476otf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J1NPesUHck/PXytWUMZaL5H3tigSX17N3XIw4EegWTo=;
+        b=h/zj34eMbFVxnsOvC1DnFfdHinWG50GkumzwQGZ3MZu0ke7Lr1+JaFtFTDV5XOMqgb
+         YRBq6VuCEXA8EBgdPhBKdI8oQ+W1EfSjN+mznToiU1mQ0PHbX7CJj/DLoXjr/0DPhu53
+         nqx6oFLPXP+PI2JuGA23gyWv8SY61CY5Ie7jE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J1NPesUHck/PXytWUMZaL5H3tigSX17N3XIw4EegWTo=;
+        b=HiuSz9tPcadPyfEfeVcedziwOgAFpcD6zEbMvBOC9Ke0oKfWis7xrMSlmLZgFGAEze
+         8P5/PTbUVqKbTQ+yfVXn89vueZdzGCevlKGIEztULU9r9P5aG308eDBBVYFd9p70/HfM
+         wYT83HNWxMDxfD/NLZJ4VYtrFMoYZMzcnz33EfiBWJId4hyj5ZP0bCpY/9p2Z/6hw5qw
+         gqewZfmrpjcCAvfWXv1k+BJ3F/wSiDiNwLf++Q1S3ZGREXU9/Jep+mo5GUrXHJFdfH/t
+         ZEeOkpBS72tQL9fkn612fvGy4WuXIohrG3ncHj5wqVvdCV6RGx41Px38WyMgRFzfAKDt
+         Gqmw==
+X-Gm-Message-State: AOAM533jNVj7mEHuqd8XuVF4be9XmJy8XUafNxwI2XWRk1iPcCICngur
+        bMTPnVlzyqXLRRKDB8twO//HUA==
+X-Google-Smtp-Source: ABdhPJxveYdA31BMuoApMGii8ccA7nrQElJ5ZWPWnXUmpT+f0qLEMUCiESWam2UcuOfjVW+ktXgpRA==
+X-Received: by 2002:a9d:6483:: with SMTP id g3mr4825315otl.332.1619209157176;
+        Fri, 23 Apr 2021 13:19:17 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o20sm1364829oos.19.2021.04.23.13.19.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 13:19:16 -0700 (PDT)
+Subject: Re: [PATCH] media: gspca: stv06xx: Fix memleak in stv06xx subdrivers
+To:     Pavel Skripkin <paskripkin@gmail.com>,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Cc:     syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        mchehab@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-media@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210422160742.7166-1-atulgopinathan@gmail.com>
+ <20210422215511.01489adb@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <36f126fc-6a5e-a078-4cf0-c73d6795a111@linuxfoundation.org>
+Date:   Fri, 23 Apr 2021 14:19:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <1619123448-10138-1-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <20210422215511.01489adb@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -42,46 +69,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sowjanya,
-
-On 4/22/21 9:30 PM, Sowjanya Komatineni wrote:
-> Tegra194 and Tegra186 platforms use separate MCE firmware for CPUs which is
-> in charge of deciding on state transition based on target state, state idle
-> time, and some other Tegra CPU core cluster states information.
+On 4/22/21 12:55 PM, Pavel Skripkin wrote:
+> Hi!
 > 
-> Current PSCI specification don't have function defined for passing runtime
-> state idle time predicted by governor (based on next events and state target
-> residency) to ARM trusted firmware.
+> On Thu, 22 Apr 2021 21:37:42 +0530
+> Atul Gopinathan <atulgopinathan@gmail.com> wrote:
+>> During probing phase of a gspca driver in "gspca_dev_probe2()", the
+>> stv06xx subdrivers have certain sensor variants (namely, hdcs_1x00,
+>> hdcs_1020 and pb_0100) that allocate memory for their respective
+>> sensor which is passed to the "sd->sensor_priv" field. During the
+>> same probe routine, after "sensor_priv" allocation, there are chances
+>> of later functions invoked to fail which result in the probing
+>> routine to end immediately via "goto out" path. While doing so, the
+>> memory allocated earlier for the sensor isn't taken care of resulting
+>> in memory leak.
+>>
+>> Fix this by adding operations to the gspca, stv06xx and down to the
+>> sensor levels to free this allocated memory during gspca probe
+>> failure.
+>>
+>> -
+>> The current level of hierarchy looks something like this:
+>>
+>> 	gspca (main driver) represented by struct gspca_dev
+>> 	   |
+>> ___________|_____________________________________
+>> |	|	|	|	|		| (subdrivers)
+>> 			|			  represented
+>>   			stv06xx			  by "struct
+>> sd" |
+>>   	 _______________|_______________
+>>   	 |	|	|	|	|  (sensors)
+>> 	 	|			|
+>>   		hdcs_1x00/1020		pb01000
+>> 			|_________________|
+>> 				|
+>> 			These three sensor variants
+>> 			allocate memory for
+>> 			"sd->sensor_priv" field.
+>>
+>> Here, "struct gspca_dev" is the representation used in the top level.
+>> In the sub-driver levels, "gspca_dev" pointer is cast to "struct sd*",
+>> something like this:
+>>
+>> 	struct sd *sd = (struct sd *)gspca_dev;
+>>
+>> This is possible because the first field of "struct sd" is
+>> "gspca_dev":
+>>
+>> 	struct sd {
+>> 		struct gspca_dev;
+>> 		.
+>> 		.
+>> 	}
+>>
+>> Therefore, to deallocate the "sd->sensor_priv" fields from
+>> "gspca_dev_probe2()" which is at the top level, the patch creates
+>> operations for the subdrivers and sensors to be invoked from the gspca
+>> driver levels. These operations essentially free the "sd->sensor_priv"
+>> which were allocated by the "config" and "init_controls" operations in
+>> the case of stv06xx sub-drivers and the sensor levels.
+>>
+>> This patch doesn't affect other sub-drivers or even sensors who never
+>> allocate memory to "sensor_priv". It has also been tested by syzbot
+>> and it returned an "OK" result.
+>>
+>> https://syzkaller.appspot.com/bug?id=ab69427f2911374e5f0b347d0d7795bfe384016c
+>> -
+>>
+>> Fixes: 4c98834addfe ("V4L/DVB (10048): gspca - stv06xx: New
+>> subdriver.") Cc: stable@vger.kernel.org
+>> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
+>> Reported-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
+>> Tested-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
+>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> 
+> AFAIK, something similar is already applied to linux-media tree
+> https://git.linuxtv.org/media_tree.git/commit/?id=4f4e6644cd876c844cdb3bea2dd7051787d5ae25
+> 
 
-Do you have some numbers from experiments showing that these idle
-governor prediction values, which are passed from kernel to MCE
-firmware, are making a good 'guess'?
-How much precision (1us? 1ms?) in the values do you need there?
+Pavel,
 
-IIRC (probably Rafael's presentations) predicting in the kernel
-something like CPU idle time residency is not a trivial thing.
+Does the above handle the other drivers hdcs_1x00/1020 and pb01000?
 
-Another idea (depending on DT structure and PSCI bits):
-Could this be solved differently, but just having a knowledge that if
-the governor requested some C-state, this means governor 'predicted'
-an idle residency to be greater that min_residency attached to this
-C-state?
-Then, when that request shows up in your FW, you know that it must be at
-least min_residency because of this C-state id.
-It would depend on number of available states, max_residency, scale
-that you would choose while assigning values from [0, max_residency]
-to each state.
-IIRC there can be many state IDs for idle, so it would depend on
-number of bits encoding this state, and your needs. Example of
-linear scale:
-4-bits encoding idle state and max predicted residency 10msec,
-that means 10000us / 16 states = 625us/state.
-The max_residency might be split differently, using different than
-linear function, to have some rage more precised.
+Atul's patch handles those cases. If thoese code paths need to be fixes,
+Atul could do a patch on top of yours perhaps?
 
-Open question is if these idle states must be all represented
-in DT, or there is a way of describing a 'set of idle states'
-automatically.
+thanks,
+-- Shuah
 
-Regards,
-Lukasz
+
