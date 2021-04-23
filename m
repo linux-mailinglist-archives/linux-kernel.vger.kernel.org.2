@@ -2,160 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B43A369BEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 23:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7723C369BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 23:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244007AbhDWVPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 17:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232636AbhDWVPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 17:15:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FC2D61410;
-        Fri, 23 Apr 2021 21:14:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619212485;
-        bh=Ny/kPQPnadP9Iyp68buiBCfGzmA7A9zDcsM3WlAru80=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JaUXjHeEV4GsFfjoH6IiFBjTSDoDwocFIQut89gegZsBlk9AePgL+1ZTzlvkit17u
-         viGw96ZD+CkfoNJHehCoJKdJL2xGGHgzhSisqX7dEjLDVCWfvLpT51iqV7ouMoTg45
-         cu7DQ4XhJjhmUbqNid/bqyqxNipBmg2mweevOFGnY6sRLcvElpBsQHtFGVeio+I84Q
-         ElnhB5Y6VAChH1sPFh556X9cC6fyOsMq4oZVK527NzzK9iOEFW4pJvYB0vtFMS0UZT
-         HtrEHUi7Y+ZhzapWV1oxKXFYCij0a6ZE32d+UwLPMw57B2d32mYYX02MRl8owj9BO4
-         b6Zmo9Q5g25fg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D8F395C064D; Fri, 23 Apr 2021 14:14:44 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 14:14:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210423211444.GO975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210420064934.GE31773@xsang-OptiPlex-9020>
- <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
- <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
- <87tunwvmmu.ffs@nanos.tec.linutronix.de>
+        id S244027AbhDWVUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 17:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232686AbhDWVUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 17:20:19 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82313C061574;
+        Fri, 23 Apr 2021 14:19:42 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id p12so36030804pgj.10;
+        Fri, 23 Apr 2021 14:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WAO+nTeTFKCXmHl+vp74ehdsr2jzD+Il2HojC2vivp4=;
+        b=jh3E0F9cmHHV45i2iz4jSxo6rNeP1zus8z7oJn9SUycV0Qwp/5hqJ6LIJsCaGM5azq
+         0j4/pX8V/HNvmN3TQcgtlvCWt5l7I05gNF2CImlB4N0UnWK0RBoe7UGB/GKi3cF02Et8
+         s/8ILNzGnE/1JyxtRr919BrJZc/2ZOxe/stWx7HHzDxJFfmABIgxNjbKCwBq/h+ZTPtN
+         sCzAgUtJSiXsLpfjUNH8RZPI7kImn3S7zT0jUNr2Bv4oGPWAs7mkhaia9TMELq6YCKNg
+         3esi8HjeOyeHnmCk9h1kQzG61G0TVi+6DFxepUsPo9cdET7YCwVw++0hE421c5V0q9dN
+         7n7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WAO+nTeTFKCXmHl+vp74ehdsr2jzD+Il2HojC2vivp4=;
+        b=XY13GvJrX6fmMVJRJmtGc7n0+D3cswuL4WyZ4HZct9usoCfIfSlrkoxBVqTLgtbd0W
+         YIQB4UqHXlE0208i6upt0QVWeH+ZkOo7klwLbszQoWPtidjpI+6KWwzDY7znZXviH/e5
+         6dHcStwtjgxclhV7e1jzbPCkTE8lFMpGd8OzPxvIgENNIk5QQ5jst305Y/CyVdObrwaL
+         0dA4IZe4sCTXcOG8cKLr/wvII0wWle3KhxHL5bn9pZNJpGg9d2LyUJVI52if8v/T0pek
+         cJgGCyAeXxibrDlBglNm/M3H8Lq5TVG5AN4CiBMGA9SABODlNuVVwSpDEMA9MIyv12SP
+         iJxg==
+X-Gm-Message-State: AOAM530s+8t8W9UYft6FAb++FlBhxmTcXT7hFc+U78/Vjz9bb2kGQtEw
+        m119koFYL/OadTitftO0KlE=
+X-Google-Smtp-Source: ABdhPJwgDjseqFJlZ7o7q9LGMWZO9BTmSGr0Y6iCXKAXi19G4EFyrcnl6ZWfwKsgNo8LSmW07YWeTA==
+X-Received: by 2002:a63:5626:: with SMTP id k38mr5878365pgb.128.1619212781788;
+        Fri, 23 Apr 2021 14:19:41 -0700 (PDT)
+Received: from localhost (g191.124-44-145.ppp.wakwak.ne.jp. [124.44.145.191])
+        by smtp.gmail.com with ESMTPSA id d17sm5339384pfn.60.2021.04.23.14.19.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 14:19:41 -0700 (PDT)
+Date:   Sat, 24 Apr 2021 06:19:39 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        rppt@kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
+        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] openrisc: Fix a memory leak
+Message-ID: <20210423211939.GP3288043@lianli.shorne-pla.net>
+References: <c078439e31fd60e1617be8c17cc1ec57639e0586.1619190470.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tunwvmmu.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <c078439e31fd60e1617be8c17cc1ec57639e0586.1619190470.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 09:14:49PM +0200, Thomas Gleixner wrote:
-> On Thu, Apr 22 2021 at 07:24, Paul E. McKenney wrote:
-> > On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
-> > So what are our options?
-> >
-> > 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
-> >
-> > 2.	#1, but add tsc-early into the watchdog list and set
-> > 	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
-> >
-> > 3.	Add a field to struct clocksource that, if non-zero, gives
-> > 	the maximum drift in nanoseconds per half second (AKA
-> > 	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
-> > 	is used.  Set this to (say) 150,000ns for tsc-early.
-> >
-> > 4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
-> > 	which again is not a good approach given the real-world needs
-> > 	of real-world applications.
-> >
-> > 5.	Your ideas here.
+On Fri, Apr 23, 2021 at 05:09:28PM +0200, Christophe JAILLET wrote:
+> 'setup_find_cpu_node()' take a reference on the node it returns.
+> This reference must be decremented when not needed anymore, or there will
+> be a leak.
 > 
-> #3 or add a flag to the clocksource which says 'frequency is guesswork' and
-> increase the threshold based on that.
+> Add the missing 'of_node_put(cpu)'.
 > 
-> If that flag is still set max_drift is != 0 after 20 seconds yell.
+> Note that 'setup_cpuinfo()' that also calls this function already has a
+> correct 'of_node_put(cpu)' at its end.
 
-I made it 60 seconds based on recent experience with large systems,
-but sounds good!
+Thanks, this looks good to me.  I will queue it up.
 
-And the calls to clocksource_unregister(&clocksource_tsc_early) mean
-that it is not necessary to actually clear the .max_drift field, if
-I understand correctly.
-
-It looks to me that init_tsc_clocksource() is invoked at device_initcall()
-time, and that it either immediately unregisters clocksource_tsc_early
-(known TSC frequency), or schedules a delayed work to make
-tsc_refine_calibration_work() do the calibration and the unregister.
-
-Please see below for an untested patch.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 56289170753c..7192b8950322 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1127,6 +1127,7 @@ static int tsc_cs_enable(struct clocksource *cs)
- static struct clocksource clocksource_tsc_early = {
- 	.name			= "tsc-early",
- 	.rating			= 299,
-+	.max_drift		= 5 * NSEC_PER_MSEC,
- 	.read			= read_tsc,
- 	.mask			= CLOCKSOURCE_MASK(64),
- 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 83a3ebff7456..0c4418b381bf 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -93,6 +93,7 @@ struct clocksource {
- 	u32			shift;
- 	u64			max_idle_ns;
- 	u32			maxadj;
-+	u32			max_drift;
- #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
- 	struct arch_clocksource_data archdata;
- #endif
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index a1f90e2b1039..871837c46c62 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -126,6 +126,7 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
-  */
- #define WATCHDOG_INTERVAL (HZ >> 1)
- #define WATCHDOG_THRESHOLD (200 * NSEC_PER_USEC)
-+#define WATCHDOG_SYNC_FORGIVENESS (HZ * 60UL)
- 
- /*
-  * Maximum permissible delay between two readouts of the watchdog
-@@ -377,6 +378,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- 	int next_cpu, reset_pending;
- 	int64_t wd_nsec, cs_nsec;
- 	struct clocksource *cs;
-+	u32 md;
- 
- 	spin_lock(&watchdog_lock);
- 	if (!watchdog_running)
-@@ -423,6 +425,12 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 
- 		/* Check the deviation from the watchdog clocksource. */
-+		if (!cs->max_drift) {
-+			md = WATCHDOG_MAX_SKEW;
-+		} else {
-+			WARN_ON_ONCE(time_after(jiffies, WATCHDOG_SYNC_FORGIVENESS));
-+			md = cs->max_drift;
-+		}
- 		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
+> Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  arch/openrisc/kernel/setup.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
+> index 2416a9f91533..c6f9e7b9f7cb 100644
+> --- a/arch/openrisc/kernel/setup.c
+> +++ b/arch/openrisc/kernel/setup.c
+> @@ -278,6 +278,8 @@ void calibrate_delay(void)
+>  	pr_cont("%lu.%02lu BogoMIPS (lpj=%lu)\n",
+>  		loops_per_jiffy / (500000 / HZ),
+>  		(loops_per_jiffy / (5000 / HZ)) % 100, loops_per_jiffy);
+> +
+> +	of_node_put(cpu);
+>  }
+>  
+>  void __init setup_arch(char **cmdline_p)
+> -- 
+> 2.27.0
+> 
