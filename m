@@ -2,89 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5313691A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C674B3691FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242283AbhDWL6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 07:58:11 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53326 "EHLO mail.skyhub.de"
+        id S242531AbhDWMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:23:24 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38492 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242260AbhDWL6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:58:06 -0400
-Received: from zn.tnic (p200300ec2f0cb100de1b78f3b91faa58.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:b100:de1b:78f3:b91f:aa58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7B5301EC0118;
-        Fri, 23 Apr 2021 13:57:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619179049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hl4owIygIiuL+Uo1VjLb8yx5rvDHEvzCcFzwABb5PYo=;
-        b=cGIDsJufxJejr6m5pU81tTIT5Zyyt/2m8sYjxfkATzMh/3QXpk/K/n8xkzuQocNbCoqnl9
-        6d8orgS8F0w3utnveodjRJL4h4MBQ6mAb3318hEQ3HyHAWpVgMjvVvq8hjFsTAlSkRFQjT
-        tzlIChMkDT5sk7sIhm7GSvd/E9pb8js=
-Date:   Fri, 23 Apr 2021 13:57:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Aili Yao <yaoaili@kingsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>, Jue Wang <juew@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Message-ID: <20210423115725.GB18085@zn.tnic>
-References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
- <20210421005728.1994268-4-nao.horiguchi@gmail.com>
- <20210422170213.GE7021@zn.tnic>
- <20210423021833.GB68967@hori.linux.bs1.fc.nec.co.jp>
+        id S231315AbhDWMXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:23:10 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lZupM-00019R-00; Fri, 23 Apr 2021 14:22:32 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 93878C0AC8; Fri, 23 Apr 2021 13:47:28 +0200 (CEST)
+Date:   Fri, 23 Apr 2021 13:47:28 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     xiaochuan mao <maoxiaochuan@loongson.cn>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Qing Zhang <zhangqing@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS:DTS:Fix label name and interrupt number of ohci for
+ Loongson-2K
+Message-ID: <20210423114728.GA8582@alpha.franken.de>
+References: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210423021833.GB68967@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 02:18:34AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
-> I don't know exactly.  MCE subsystem seems to have code extracting linear
-> address, so I wonder that that could be used as a hint to memory_failure()
-> to find the proper virtual address.
+On Fri, Apr 23, 2021 at 09:52:34AM +0800, xiaochuan mao wrote:
+> from Loongson-2K1000 user manual know that under pci bus
+> the device num is 4, function number is 2 and register is 0x2200
+> is ohci. the ohci interrupt number is 51. because Loongson-2K1000 has
+> 64 interrupt sources, 0-31 correspond to the device tree liointc0 device
+>  node, and the other correspond to liointc1 node. so it should be
+> number 19 correspon to liointc1.
+> 
+> Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
+> ---
+>  arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-See "Table 15-3. Address Mode in IA32_MCi_MISC[8:6]" in the SDM -
-apparently it can report all kinds of address types, depending on the hw
-incarnation or MCA bank type or whatnot. Tony knows :)
+applied to mips-next.
 
-> The situation in question is caused by action required MCE, so
-> we know which process we should send SIGBUS to. So if we choose
-> to send SIGBUS to all, no innocent bystanders would be affected.
-> But when the process have multiple virtual addresses associated
-> with the error physical address, the process receives multiple
-> SIGBUSs and all but one have wrong value in si_addr in siginfo_t,
-> so that's confusing.
-
-Is that scenario real or hypothetical?
-
-Because I'd expect that if we send it a SIGBUS and we poison that page,
-then all the VAs mapping it will have to handle the situation that that
-page has been poisoned and pulled from under them.
-
-So from a hw perspective, there won't be any more accesses to the faulty
-physical page.
-
-In a perfect world, that is...
+Thomas.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
