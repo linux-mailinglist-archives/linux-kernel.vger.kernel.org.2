@@ -2,210 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9936F369880
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4391369882
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhDWReh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:34:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40016 "EHLO
+        id S243364AbhDWRe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:34:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20644 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231400AbhDWRef (ORCPT
+        by vger.kernel.org with ESMTP id S243123AbhDWRe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:34:35 -0400
+        Fri, 23 Apr 2021 13:34:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619199238;
+        s=mimecast20190719; t=1619199259;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u22w+RSynisaPd5cjgqVArOtH7V0gJivQPhfXsRScaw=;
-        b=W42J9mYESRFlxPmyunZv4R/v1ziIk/Eo4XHLSqXOh+1Z3Xm3oj8jCeWMBnx+ExQ7vr3MsA
-        FqqkhI6b6+9SB+M7MLwSDznTMyKkGO2Kx4jOr1psRehzTqwdbveWdqZA93tCnzmJMRF2Ej
-        98T0NDfovu9hmLU2CHjzt5etoeNTpsw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-bFVwvJEzMcukoDy8ub4C6A-1; Fri, 23 Apr 2021 13:33:55 -0400
-X-MC-Unique: bFVwvJEzMcukoDy8ub4C6A-1
-Received: by mail-ed1-f71.google.com with SMTP id o4-20020a0564024384b0290378d45ecf57so19117718edc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:33:55 -0700 (PDT)
+        bh=2ktUbwIWTJ14trqUM1JPFPbDz0iRRWU7hILTLbA82a8=;
+        b=GgfTu/lEqR9G9wmTQ2YZajxZTcDQ79V6d4/AEzrT4Ux76DcZ8L5VZAv6XxcpECnZZeZavo
+        lm6Zq4EFQLNAE2XMk3EFzhz0GnBmzZsoTO5UzHqjK1uFTF2fhoxjhT047mAKuYULE9f4Ed
+        0iqWHB8zipAp87wap8U4G8uATyGFQ0M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-FLhU6C76OfmnePVU158Brg-1; Fri, 23 Apr 2021 13:34:17 -0400
+X-MC-Unique: FLhU6C76OfmnePVU158Brg-1
+Received: by mail-wr1-f71.google.com with SMTP id 88-20020adf95610000b029010758d8d7e2so3728364wrs.19
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:34:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u22w+RSynisaPd5cjgqVArOtH7V0gJivQPhfXsRScaw=;
-        b=GApNljghhapyoVgC4/GUht+C0aVwelUaKucra2P9iT9PbSVg6uZdOLrRGGFwHPIKGZ
-         pUn0jHNJryo3WV7XxBClD0FAHQ5gvxTiFj6NpZWARWxC0dQUhC1MHUZfy0enYHh5gXc8
-         1fa7zOFA7FhBxtvsOHmFRmKgwaOcTtyOEpdROmxoKwZOEqhzlumP7bFDvUvyPZEOTWsI
-         pDWNWX6kQF6/Ehy+fZdqWfpJy6WMbQSzTc94B57Jlo4AcOxMf367+C0Mtlc+Ns6hC5Nv
-         DHybX+Ybj3o2PqCaTJegHTcDm2SAukh86gSJKjyJMJtKRJo2E2+eS/SaBjeKrQ2tTRgg
-         X2zw==
-X-Gm-Message-State: AOAM531krZbhYj/BSKsvPLtw610Rr3tfnPRW44BsHiseEOUnJRpYLvAS
-        tKqsc/tvWT21RAU4uhEt37befaRiI6LphF5GuttptWHs7qCyKXNKjD9MJ39ZpG0JbZEy3/bfL1X
-        wZVXcH5Q/kl8stXtV0ts8FilZshI6ob+2wlW6Lx0UbVZwVCPJjHq9qGGKGLXtaC1j2yMJNV2iJJ
-        OL
-X-Received: by 2002:a17:906:eb4a:: with SMTP id mc10mr5462656ejb.392.1619199233756;
-        Fri, 23 Apr 2021 10:33:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxeiYnJN5V/hxrzJvjDvdcEqDPbWD0iFU40GKqTcCRu0jjmltVQfM6/bh5gUzMa0m8e5QhMbw==
-X-Received: by 2002:a17:906:eb4a:: with SMTP id mc10mr5462646ejb.392.1619199233549;
-        Fri, 23 Apr 2021 10:33:53 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id ck29sm5316179edb.47.2021.04.23.10.33.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 10:33:53 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] i2c: cht-wc: Use fwnode for the controller and IRQ
- domain
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
- <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com>
- <YDZLuzNivBP4HcPd@smile.fi.intel.com>
- <7e5f8d81-0ee5-b8ad-ed72-06d4677cd8f7@redhat.com>
- <CAHp75VeNZ9REU5nCDJ-Rt4Wmsnsz+hcN-P_oopzN8LpVTkU74g@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <0f395776-b14e-4fde-403e-633580b1d7f1@redhat.com>
-Date:   Fri, 23 Apr 2021 19:33:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=2ktUbwIWTJ14trqUM1JPFPbDz0iRRWU7hILTLbA82a8=;
+        b=n6vTWHtoN+KrOG538SxufNTnY9cJvCCt3usx2/BDKIvdyKm/T/cfM5P/U4p6bVytL0
+         dm5OT+JY828HIg66dwHV6q9kdpJj8VQen/Nt8+b8MUi+Eeh6u4bif0B7zeM8mAwRqblp
+         oyWGjax1/SHzoaY5SvK0z+SsaQID2gt/jNOUUETKdazsLlNZOEIsfGCwFhx9D3f4vZcV
+         2Cimu4wWIS8GgBKmKqcv47wX8whWnMsVuATcadHqN40eDBZHh/Z4CPmv1x1qJohS/O4T
+         yh+VkHtJ4bRuhknFFLWp0dCChMdt+tw77nwV1Jey+tbBXz3vE8kls2HhFVgZit7Umtg3
+         Pbng==
+X-Gm-Message-State: AOAM530bvidxLm82V0htWCfUnTUj6r2zoVxMJK1s6WBIPuUkRvupTvG9
+        ewXwfqTof1tdlz/FmuCGvtEQh+yxRRSuLxpDAr7GUot3w6m7Lfc6w4M6S1zavKLLf1rfnhNyWSI
+        +Fl9DgXHe4aqkse6Lj+V3ea3x
+X-Received: by 2002:a7b:c8ce:: with SMTP id f14mr6555916wml.113.1619199256170;
+        Fri, 23 Apr 2021 10:34:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyh+EjNZzglFda5j+WRJWaTK/VWXhlD03BlaQaBpPs6h5L2iYZBz1lgQWscsMuEMh4laCiLXg==
+X-Received: by 2002:a7b:c8ce:: with SMTP id f14mr6555895wml.113.1619199256037;
+        Fri, 23 Apr 2021 10:34:16 -0700 (PDT)
+Received: from ?IPv6:2a0c:5a80:3108:4700:8d94:f633:2343:f95c? ([2a0c:5a80:3108:4700:8d94:f633:2343:f95c])
+        by smtp.gmail.com with ESMTPSA id o17sm7767902wmq.47.2021.04.23.10.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 10:34:15 -0700 (PDT)
+Message-ID: <84cafe48637fd1deed7da2cd15eb2f7679545416.camel@redhat.com>
+Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
+ beyond limit.
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Joe Burmeister <joe.burmeister@devtank.co.uk>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 23 Apr 2021 19:34:14 +0200
+In-Reply-To: <20210423162055.GE5507@sirena.org.uk>
+References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
+         <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
+         <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
+         <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
+         <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
+         <20210423115724.GB5507@sirena.org.uk>
+         <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
+         <20210423162055.GE5507@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeNZ9REU5nCDJ-Rt4Wmsnsz+hcN-P_oopzN8LpVTkU74g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 2021-04-23 at 17:20 +0100, Mark Brown wrote:
+> On Fri, Apr 23, 2021 at 03:12:11PM +0100, Joe Burmeister wrote:
+> > Of course we could just raise BCM2835_SPI_NUM_CS to 8 or more if that is
+> > preferred. Does seams like the dynamic solution is less favoured.
+> 
+> The best thing would be to have it not have a single array of chip
+> select specific data and instead store everything in the controller_data
+> that's there per-device.
 
-On 2/25/21 4:44 PM, Andy Shevchenko wrote:
-> On Thu, Feb 25, 2021 at 5:11 AM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 2/24/21 1:51 PM, Andy Shevchenko wrote:
->>> On Tue, Feb 23, 2021 at 08:25:35PM +0100, Hans de Goede wrote:
->>>> On 2/23/21 6:22 PM, Andy Shevchenko wrote:
->>>>> It's better to describe the I²C controller and associated IRQ domain with
->>>>> fwnode, so they will find their place in the hierarchy in sysfs and also
->>>>> make easier to debug.
-> 
-> ...
-> 
->>>>> +   set_primary_fwnode(&adap->adapter.dev, fwnode);
->>>>
->>>> So now we have the main PMIC device i2c-client, the platform-device instantiated
->>>> for the MFD-cell for the PMIC's builtin I2C-controller; and the device instantiated
->>>> for the adapter-device all 3 share the same ACPI-companion fwnode.
->>>
->>> Okay, this step in this patch maybe not needed (or should be a separate change,
->>> but I don't see clearly what would be the benefit out of it).
-> 
-> Shall I leave this or should be removed in v2?
-> 
-> ...
-> 
->>>>> -   adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
->>>>> -                                            &irq_domain_simple_ops, NULL);
->>>>> +   adap->irq_domain = irq_domain_create_linear(fwnode, 1,
->>>>> +                                               &irq_domain_simple_ops, NULL);
->>>>
->>>> Hmm, not sure this is right, admittedly the old code looks weird too, but now we
->>>> are creating a second irq_domain at the same level as the irq_domain created for
->>>> the IRQ-chip part of the PMIC. But this is really more of a child-domain of just
->>>> the I2C-controller MFD-cell. The IRQ-CHIP part of the PMIC has a single IRQ for the
->>>> I2C controller which gets raised both on i2c-transfer completions and when the
->>>> pin on the PMIC which is reserved as input for the IRQ coming out of the charger-chip
->>>> gets triggered.
->>>>
->>>> IOW we have this:
->>>>
->>>>
->>>>                PMIC
->>>>                  |
->>>>     ------------------------------
->>>>     |       |        |           |
->>>>    IRQ1   IRQ2      IRQ3       I2C-IRQ
->>>>                                  |
->>>>                    ----------------------------------
->>>>                    |        |         |             |
->>>>                  READIRQ   WRIRQ    NACKIRQ     CLIENT-IRQ
->>>>
->>>> Where READIRQ, WRIRQ and NACKIRQ are directly consumed
->>>> and the CLIENT-IRQ is being represented as a single IRQ on
->>>> a new irqchip so that we can pass it along to the i2c-driver
->>>> for the charger-chip which is connected to the Whiskey Cove's
->>>> builtin I2C controller.
->>>>
->>>> But doing as you suggest would model the IRQs as:
->>>>
->>>>                PMIC
->>>>                  |
->>>>     --------------------------------------------------
->>>>     |       |        |           |                    |
->>>>    IRQ1   IRQ2      IRQ3       I2C-IRQ           CLIENT-IRQ
->>>>
->>>> Which is not the same really. I guess it is better then what we
->>>> have though ?
->>>
->>> Hmm... There should not be difference in the hierarchy. add_linear ==
->>> create_linear. The propagation of *device* (not an IRQ) fwnode is just
->>> convenient way to have IRQ domain be named (instead of 'unknown-N' or so).
->>> Maybe I have read __irq_domain_add() code wrongly.
->>
->> Sorry, this is probably my bad. The first ASCII-art which I posted is
->> how things actually work in HW. The second one is how I assumed that
->> things would look like in some nested representation of the IRQ-domains
->> given that all the IRQs mentioned in the ASCII-art now use the same fwnode
->> as parent for their domain. But poking around in sysfs I don't see any
->> hierarchical representation of the domains at all. Actually I cannot
->> find any representation of the IRQ domains inside sysfs (I've never
->> looked at / into this before) ?
-> 
-> I have enabled  GENERIC_IRQ_DEBUGFS to see some information.
-> 
->> If what you say is right and the fwnode is only used to set a name (where can
->> I see those names ?) then your patch is probably correct.
-> 
-> I have checked again and I don't see anything except it uses it as a
-> domain name and takes reference count.
-> 
->>> Nevertheless, thinking more about it, why we don't add an IRQ chip via regmap
->>> IRQ API?
->>
->> There already is a regmap IRQ chip associated with the MFD device and the
->> IRQ handling required here is somewhat tricky (see the comments in the driver)
->> so I would prefer to keep this as is.
-> 
-> Ah, that makes things complicated a bit.
-> 
->>>> Note I can test any changes made here, but I'm not 100% convinced that
->>>> the current version of this patch is correct.
->>>
->>> If we settle on the idea first. I'm (slowly) looking forward to check another
->>> CherryTrail device we have at the lab, but we lack of some (power) equipment
->>> right now to setup it properly. I hope it may have the Whiskey Cove PMIC there.
->>
->> More testing is always welcome :)   With that said, testing these changes really
->> is not a lot of work for me.
-> 
-> I would expect that we will have a clash with IRQ domain names and
-> thus we would need our own fwnode here.
-> 
-> I will think about it, but it sounds like we need to create a
-> hierarchy of the IRQ domains and take the device's fwnode as a parent
-> here.
-> 
-> Overall, I stumbled over of_node use in pure ACPI case (simplest "fix"
-> is to provide a NULL pointer there). If you think we can get rid of
-> of_node as intermediate step, I will send v2 with that.
++1
 
-Sorry for being slow to respond.
+All in all, it would make for a cleaner driver.
 
-I agree that the of_node use is weird, so a patch which simply replaces the
-pdev->dev.of_node with NULL would be good. Otherwise I would just leave the
-code as is.
-
-Regards,
-
-Hans
+-- 
+Nicolás Sáenz
 
