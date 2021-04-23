@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393123691B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A247F3691B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242241AbhDWMDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:03:01 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:56399 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231472AbhDWMC4 (ORCPT
+        id S242293AbhDWMDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:03:42 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34262 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242259AbhDWMDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:02:56 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d63 with ME
-        id wC2J2400121Fzsu03C2JFL; Fri, 23 Apr 2021 14:02:19 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 23 Apr 2021 14:02:19 +0200
-X-ME-IP: 86.243.172.93
-Subject: AW: [PATCH 1/4] clk: mvebu: Fix a memory leak in an error handling
- path
-To:     Walter Harms <wharms@bfs.de>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "thomas.petazzoni@free-electrons.com" 
-        <thomas.petazzoni@free-electrons.com>
-Cc:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-References: <cover.1619157996.git.christophe.jaillet@wanadoo.fr>
- <27db232fdd14e14d493f29a5404d9e643f09cc96.1619157996.git.christophe.jaillet@wanadoo.fr>
- <3e38da0e86c045d3aefd46f375e8b48e@bfs.de>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <f26e2ad3-d1b8-de96-febe-5b8f52abdf8f@wanadoo.fr>
-Date:   Fri, 23 Apr 2021 14:02:17 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 23 Apr 2021 08:03:40 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13NC24LM015246;
+        Fri, 23 Apr 2021 14:02:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=WD96ZYftirjps1b7STHm3D8G2o7VrvWXKlGU+slnDzA=;
+ b=QWSIQn0rA70SBTvEpG87q+vOwzUeAmH0wACwXjBG3/R2Ea0L/S54z06W3ZrQE0GlJCtS
+ uqJWHodePUjdqSpzSc5/0t67nZ7z8s7QCbF18/ckwlqbPnOkGDlIHxrl0W0eYeov4sSR
+ pUMUHufdMwNomVUk9LoimzsgObDivNC+RLBEs2JNi0J8xHc5CRRajqQ7FcgFMqfRnIBk
+ k7QCXQI/VufY5LZCZKc58r1ujSXOPoZzepuaWmD/6trAwoUm8er4L+ZHMHz8rKQ5HQbP
+ /aBJKbujf2Bt9TqoH/V2+0FuMUvNVZsRMvn67HF0OB8exABPzj9kTrMGuYwvYWsHNJdt nA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3836fcqekv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Apr 2021 14:02:43 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5FD7A10002A;
+        Fri, 23 Apr 2021 14:02:40 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3E926229DBC;
+        Fri, 23 Apr 2021 14:02:40 +0200 (CEST)
+Received: from [10.48.0.224] (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
+ 2021 14:02:39 +0200
+Subject: Re: [Linux-stm32] [PATCH 1/2] memory: stm32-fmc2-ebi: add missing
+ of_node_put for loop iteration
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Christophe Kerello <christophe.kerello@st.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210423101815.119341-1-krzysztof.kozlowski@canonical.com>
+From:   Christophe Kerello <christophe.kerello@foss.st.com>
+Message-ID: <86a216db-b9b7-da45-ab74-a32538da6e00@foss.st.com>
+Date:   Fri, 23 Apr 2021 14:02:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <3e38da0e86c045d3aefd46f375e8b48e@bfs.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210423101815.119341-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-23_04:2021-04-23,2021-04-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 23/04/2021 à 13:42, Walter Harms a écrit :
-> nitpicking:
->   clk_name could be replaced with cpuclk[cpu].clk_name
+Hi Krzysztof,
 
-Agreed, Thx.
-I'll wait a few days to see if there are other comments before sending a 
-v2. (especially if 4/4 is correct or not)
-I'll also add "clk-cpu:" after "clk: mvebu:"
-
-> and the commit msg is from the other patch (free  cpuclk[cpu].clk_name)
+On 4/23/21 12:18 PM, Krzysztof Kozlowski wrote:
+> Early exits from for_each_available_child_of_node() should decrement the
+> node reference counter.  Reported by Coccinelle:
 > 
-
-But here, I don't follow you.
-What do you mean? Which other patch?
-
-Do you mean that the commit message has to be updated accordingly?
-(ie: s/clk_name/cpuclk[cpu].clk_name/ must be freed)
-
-
-> jm2c,
+>    drivers/memory/stm32-fmc2-ebi.c:1046:1-33: WARNING:
+>      Function "for_each_available_child_of_node" should have of_node_put() before return around line 1051.
 > 
-> re,
->   wh
-> ________________________________________
-> Von: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Gesendet: Freitag, 23. April 2021 08:25:01
-> An: mturquette@baylibre.com; sboyd@kernel.org; gregory.clement@bootlin.com; thomas.petazzoni@free-electrons.com
-> Cc: linux-clk@vger.kernel.org; linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org; Christophe JAILLET
-> Betreff: [PATCH 1/4] clk: mvebu: Fix a memory leak in an error handling path
-> 
-> WARNUNG: Diese E-Mail kam von außerhalb der Organisation. Klicken Sie nicht auf Links oder öffnen Sie keine Anhänge, es sei denn, Sie kennen den/die Absender*in und wissen, dass der Inhalt sicher ist.
-> 
-> 
-> If an error occurs in the for_each loop, clk_name must be freed.
-> 
-> In order to do so, sightly rearrange the code:
->     - move the allocation to simplify error handling
->     - use kasprintf instead of kzalloc/sprintf to simplify code and avoid a
->       magic number
-> 
-> Fixes: ab8ba01b3fe5 ("clk: mvebu: add armada-370-xp CPU specific clocks")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Fixes: 66b8173a197f ("memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
-> The { } around the 1 line block after kasprintf is intentional and makes
-> sense with 2/2
-> ---
->   drivers/clk/mvebu/clk-cpu.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
+>   drivers/memory/stm32-fmc2-ebi.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/clk/mvebu/clk-cpu.c b/drivers/clk/mvebu/clk-cpu.c
-> index c2af3395cf13..a11d7273fcc7 100644
-> --- a/drivers/clk/mvebu/clk-cpu.c
-> +++ b/drivers/clk/mvebu/clk-cpu.c
-> @@ -195,17 +195,17 @@ static void __init of_cpu_clk_setup(struct device_node *node)
->          for_each_of_cpu_node(dn) {
->                  struct clk_init_data init;
->                  struct clk *clk;
-> -               char *clk_name = kzalloc(5, GFP_KERNEL);
-> +               char *clk_name;
->                  int cpu, err;
-> 
-> -               if (WARN_ON(!clk_name))
-> -                       goto bail_out;
-> -
->                  err = of_property_read_u32(dn, "reg", &cpu);
->                  if (WARN_ON(err))
->                          goto bail_out;
-> 
-> -               sprintf(clk_name, "cpu%d", cpu);
-> +               clk_name = kasprintf(GFP_KERNEL, "cpu%d", cpu);
-> +               if (WARN_ON(!clk_name)) {
-> +                       goto bail_out;
-> +               }
-> 
->                  cpuclk[cpu].parent_name = of_clk_get_parent_name(node, 0);
->                  cpuclk[cpu].clk_name = clk_name;
-> --
-> 2.27.0
-> 
-> 
+> diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
+> index 4d5758c419c5..ffec26a99313 100644
+> --- a/drivers/memory/stm32-fmc2-ebi.c
+> +++ b/drivers/memory/stm32-fmc2-ebi.c
+> @@ -1048,16 +1048,19 @@ static int stm32_fmc2_ebi_parse_dt(struct stm32_fmc2_ebi *ebi)
+>   		if (ret) {
+>   			dev_err(dev, "could not retrieve reg property: %d\n",
+>   				ret);
+> +			of_node_put(child);
+>   			return ret;
+>   		}
+>   
+>   		if (bank >= FMC2_MAX_BANKS) {
+>   			dev_err(dev, "invalid reg value: %d\n", bank);
+> +			of_node_put(child);
+>   			return -EINVAL;
+>   		}
+>   
+>   		if (ebi->bank_assigned & BIT(bank)) {
+>   			dev_err(dev, "bank already assigned: %d\n", bank);
+> +			of_node_put(child);
+>   			return -EINVAL;
+>   		}
+>   
+> @@ -1066,6 +1069,7 @@ static int stm32_fmc2_ebi_parse_dt(struct stm32_fmc2_ebi *ebi)
+>   			if (ret) {
+>   				dev_err(dev, "setup chip select %d failed: %d\n",
+>   					bank, ret);
+> +				of_node_put(child);
+>   				return ret;
+>   			}
+>   		}
+>
+
+Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
+
+Regards,
+Christophe Kerello.
 
