@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE25D368AC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754FD368ACA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240522AbhDWByZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240012AbhDWByY (ORCPT
+        id S240526AbhDWBy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:54:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33657 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240154AbhDWByy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:54:24 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5695C061574;
-        Thu, 22 Apr 2021 18:53:48 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so3666206pjb.1;
-        Thu, 22 Apr 2021 18:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3AapXKx/UR2C9m5toXV3NnksmytSDvqetzIlr+4AOIQ=;
-        b=Yq+hWTpyUb5jC2aBPRWWAT+1pNXN/PmmoktnFe3+ZoIKpoi9HD+uuf610lPw33ctPd
-         Pe1o/4yySjl6O6sverUn9FEPzsuL6C956CAdI1JBBryV5WxvxwW8BYCS4akZ+6MGeSrb
-         9LdOLdQGOZbP4+UrfkjrzBsrGPgzVkNXzaPV3ejf7YniWLsyKIucQ3S6RZUQcm7+EwpA
-         BieKb/DD2vCGtesqvFbmIQQ4oiILAZlvW3+d/i4weL1A8EiY1N9s+JKdPMtdQU5uYAWf
-         ixJto0TfgEHUM7JCxkCreznNHG7uapUOrwvD2NYnFK4K5oV8cxUK2NKMU3/QWuysHgdB
-         OjSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3AapXKx/UR2C9m5toXV3NnksmytSDvqetzIlr+4AOIQ=;
-        b=r8L7XbjuxIrHcR8kYKMt2iCAjY0z++ByGy2VxgmDV1qlYTEZ2J/w3HLK2/1fPHBWv6
-         Hb4/1jOfKZarkOyIZUjBbaQX/MtiVxYuSXYAHipglV/FgiVmJdaU8VkdX8pB5BogkaTG
-         +iHqJJyc4mw/E+O0lr5th7P3oaGHZVYJ2Mgs0VsN1SHiabOiQwdXIqYgOQ8jAIwfUGWX
-         UFG1+3bFzJShWBL+MOGoEZueT00IICtulasZJzviD6S4rgQXcy9eQ61IVLNezah3IA10
-         2XfsOyQOwPvW2uNpFR8MdqoruZ140pnXTWd2hB6yhWrj4pZKCE7UK2UASsyJch7Iwtj1
-         XjrA==
-X-Gm-Message-State: AOAM5310ibpO9KCMpYq2kS6T0kDOL4IB1GXSVmRhj25iYY4PtGwKPkTC
-        l6FkVcjGs4MMBFtQ1io4aLJz3IFajeI=
-X-Google-Smtp-Source: ABdhPJyj2Cq7+PyyT+IF3sUuvDH34b1XSGAshK+VWvD3G8i3BbEhLCS1ZOlNdrNvreOFeU2KJJxVcw==
-X-Received: by 2002:a17:90b:1646:: with SMTP id il6mr3110884pjb.27.1619142828040;
-        Thu, 22 Apr 2021 18:53:48 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 16sm6073884pjk.15.2021.04.22.18.53.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 18:53:47 -0700 (PDT)
-Subject: Re: [PATCH 02/14] drivers: net: dsa: qca8k: tweak internal delay to
- oem spec
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210423014741.11858-1-ansuelsmth@gmail.com>
- <20210423014741.11858-3-ansuelsmth@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <fdddeb1a-33c7-3087-86a1-f3b735a90eb1@gmail.com>
-Date:   Thu, 22 Apr 2021 18:53:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Thu, 22 Apr 2021 21:54:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619142858;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JuicL4NJ8ntJP8ZqsMGE4tBWCboCpYJmZ5Z+nKeH780=;
+        b=FpNB6z+uCzot1/QYT8HbuFQTvYcSVAGquj/XqeGuDZanIZ5Mlowt2mHZi3qlz17slNf3FG
+        kalzPTXzMczXy2iRauDlQl3VOzbZYfDX9TgXMBpFdGwB4fkRmBE0MbzkR4XNfCl+U8ilIB
+        /MYnRC89bJdz5IVLbN8vOgORdYTy5SI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-oTL6rHyBMziFn2smuNcELA-1; Thu, 22 Apr 2021 21:54:16 -0400
+X-MC-Unique: oTL6rHyBMziFn2smuNcELA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3555110054F6;
+        Fri, 23 Apr 2021 01:54:15 +0000 (UTC)
+Received: from T590 (ovpn-13-78.pek2.redhat.com [10.72.13.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 151C15DDAD;
+        Fri, 23 Apr 2021 01:54:05 +0000 (UTC)
+Date:   Fri, 23 Apr 2021 09:54:01 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kashyap.desai@broadcom.com, dgilbert@interlog.com
+Subject: Re: [PATCH] scsi: core: Cap initial sdev queue depth at
+ shost.can_queue
+Message-ID: <YIIouSOM77zEw3Qb@T590>
+References: <1618848384-204144-1-git-send-email-john.garry@huawei.com>
+ <YH4aIECa/J/1uS5S@T590>
+ <bba5f248-523d-0def-1a3e-bafeb2b7633f@huawei.com>
+ <YIDTlD2Mq+U36Oqz@T590>
+ <186be6c5-dbcd-d1fb-67c5-72b5a761568a@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210423014741.11858-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <186be6c5-dbcd-d1fb-67c5-72b5a761568a@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/22/2021 6:47 PM, Ansuel Smith wrote:
-> The original code had the internal dalay set to 1 for tx and 2 for rx.
-> Apply the oem internal dalay to fix some switch communication error.
+On Thu, Apr 22, 2021 at 05:35:42PM +0100, John Garry wrote:
+> On 22/04/2021 02:38, Ming Lei wrote:
+> > > I would rather not change the values which are provided from the driver. I
+> > > would rather take the original values and try to use them in a sane way.
+> > > 
+> > > I have not seen other places where driver shost config values are modified
+> > > by the core code.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  drivers/net/dsa/qca8k.c | 6 ++++--
->  drivers/net/dsa/qca8k.h | 9 ++++-----
->  2 files changed, 8 insertions(+), 7 deletions(-)
+> Hi Ming,
 > 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index a6d35b825c0e..b8bfc7acf6f4 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -849,8 +849,10 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
->  		 */
->  		qca8k_write(priv, reg,
->  			    QCA8K_PORT_PAD_RGMII_EN |
-> -			    QCA8K_PORT_PAD_RGMII_TX_DELAY(QCA8K_MAX_DELAY) |
-> -			    QCA8K_PORT_PAD_RGMII_RX_DELAY(QCA8K_MAX_DELAY));
-> +			    QCA8K_PORT_PAD_RGMII_TX_DELAY(1) |
-> +			    QCA8K_PORT_PAD_RGMII_RX_DELAY(2) |
-> +			    QCA8K_PORT_PAD_RGMII_TX_DELAY_EN |
-> +			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
+> > Wrt. .cmd_per_lun, I think it is safe to modify it into one correct
+> > depth because almost all drivers are just producer of .cmd_per_lun. And
+> > except for debug purpose, there are only three consumers of .cmd_per_lun
+> > in scsi, and all are for scsi_change_queue_depth():
+> > 
+> > 	process_message()
+> > 	scsi_alloc_sdev()
+> > 	virtscsi_change_queue_depth()
+> 
+> sg_ioctl_common() also looks to read it, but I can't imagine we could break
+> that interface with either suggested change.
 
-There are standard properties in order to configure a specific RX and TX
-delay:
+Then one bad .cmd_per_lun can be passed to userspace, as your patch
+doesn't cover this case.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/net/ethernet-controller.yaml#n125
+> 
+> So I still prefer not to modify shost.cmd_per_lun, but if you feel strongly
+> enough then I can look to make that change.
 
-can you use that mechanism and parse that property, or if nothing else,
-allow an user to override delays via device tree using these standard
-properties?
--- 
-Florian
+I still suggest to make .cmd_per_lun correct since the beginning,
+otherwise you may have to cover anywhere .cmd_per_lun is used.
+
+
+Thanks,
+Ming
+
