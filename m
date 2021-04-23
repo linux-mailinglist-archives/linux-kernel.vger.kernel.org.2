@@ -2,225 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDED3369A93
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2626D369A97
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243573AbhDWTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWTAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:00:43 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC63C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:00:06 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id y14-20020a056830208eb02902a1c9fa4c64so9682305otq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0o8YsKPbK9n+ndRN2Vz6EJYEmhROyvarHJTuZPEflmo=;
-        b=TUoGQ2idbkgeKBd7H6e+7VnfvpIWJcmUBsuoFOpZY0GxgsTthuJ+Yyl3AwaEvVv5r6
-         tbvfAdBGAJk7QS0Nqr2sXSJLYeSPtBxz6ReyyQzGr58fZvgqc2SJMqq3ZT0ypKf+l38p
-         5pLB2spdVUbTb/mjJALfnsMbekDSU+3IdIlSTUL3ksn7CWreJUomMKrwx/SAsAKU7Zri
-         iVtKjmpvt6KnmJaJpQWCRsCkBRLM6Mv79yc60bUE49T1yFNTj5f1ZC+0hNtff7RPVhxL
-         dyDgnPb8P2lnhrJ9GZm8sqwjYw0F14pxwxhVFp+A++oYwmB7S5/9gJHlFNG7XZ8O7B9x
-         BBAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0o8YsKPbK9n+ndRN2Vz6EJYEmhROyvarHJTuZPEflmo=;
-        b=CxfJ3JMqQ1s9/EaghNxAIEbougsIGWpuk28GXGsnMgCKNzghY4XWgP21AOxsl0FS+o
-         r1MhhuMvPBBqQj10B4M3d+CJYUo9scGYVjxdh2eHVmYVwHfFbeSniHtkv1Aom3BuhJPF
-         epffoKXSyXeVxURQJuJjmTm+RpRkjTYli4I2oBCMayOZqYMZput7tKZ0bvm/oSVOTovw
-         CddQsapnndAvGuzc0ikrDSe7EurTawixR3tUhYLnSbRq8jccPTw8s/O1V2b7l6oGqxsb
-         rWAWFPaZR3eAgCYg9FEKkI7BiMfS+Utg4ZzFqz0Bsgp4vXAol0yIeAZ4ssp1byYWr34Z
-         C4Fw==
-X-Gm-Message-State: AOAM530pMva2Biv2pKbEyM4xnFbORT/LboPxEkmTLN4D3yTL3A/vGcke
-        g5TwdLTL1eDLRBH66980Z9ONejTZCXqRQvbcI7I=
-X-Google-Smtp-Source: ABdhPJwvqBI0PCB1jdyspoom0AX+75lO37FZqUwSZpYvy2a3NQEgRCZHdLB1PSFUjjgOB/tOgFmxGEXE+L0ZB50WJXI=
-X-Received: by 2002:a05:6830:15d3:: with SMTP id j19mr4621881otr.23.1619204405457;
- Fri, 23 Apr 2021 12:00:05 -0700 (PDT)
+        id S243695AbhDWTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232212AbhDWTCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 15:02:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E14A96023E;
+        Fri, 23 Apr 2021 19:01:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619204519;
+        bh=epcsoljHvi9gYrkPaYroz7lAJfkykNkXVTsL93os0ks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rZkx44d41/yEe47pLGE2G3jPry1b03Wq2tvpDSSl0iLEMIISYiYMzu+xf7nPWt1si
+         EQu6ifWgVO8ob/0t9ig92J6sb1++e92ISWpRhB1OjvVaR3jmcUkdqZVdsRHnxOKyVy
+         qSg3fiLucdbVd+/VvirCpJUE+oBVDbMmmGbL0GpQRbY0Lz/T3ug6hiF/qyTfoGG7xW
+         MzBphd0AoycNx1aBQMEUTSJcdnAEZwQZ/Wjyukio+KMw+yBvhrn3HFBK7uLyPuD6XB
+         WrCwjt6lWmqQ5NfiKHjLGAwlxlFEN6ob/jaoJBaGOPL95gKJ6jEe/iyHN+YROZjsJA
+         w3kM664iQpdqg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 45B9340647; Fri, 23 Apr 2021 15:59:55 -0300 (-03)
+Date:   Fri, 23 Apr 2021 15:59:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Alexander Schmidt <alexschm@de.ibm.com>
+Subject: Re: [PATCH] [PING] perf ftrace: Command fails on s390
+Message-ID: <YIMZK3dARqXXsR76@kernel.org>
+References: <20210421120400.2126433-1-tmricht@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210421174248.97506-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210421174248.97506-1-kai.heng.feng@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 23 Apr 2021 14:59:54 -0400
-Message-ID: <CADnq5_NcoKD8rfxUkVsRo7TVpoqp-3KK+EiaxtYj_iN8a0LPyQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Register VGA clients after init can no longer fail
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>, Huang Rui <ray.huang@amd.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Evan Quan <evan.quan@amd.com>, Dennis Li <Dennis.Li@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421120400.2126433-1-tmricht@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 1:43 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> When an amdgpu device fails to init, it makes another VGA device cause
-> kernel splat:
-> kernel: amdgpu 0000:08:00.0: amdgpu: amdgpu_device_ip_init failed
-> kernel: amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
-> kernel: amdgpu: probe of 0000:08:00.0 failed with error -110
-> ...
-> kernel: amdgpu 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=3Dio=
-+mem,decodes=3Dnone:owns=3Dnone
-> kernel: BUG: kernel NULL pointer dereference, address: 0000000000000018
-> kernel: #PF: supervisor read access in kernel mode
-> kernel: #PF: error_code(0x0000) - not-present page
-> kernel: PGD 0 P4D 0
-> kernel: Oops: 0000 [#1] SMP NOPTI
-> kernel: CPU: 6 PID: 1080 Comm: Xorg Tainted: G        W         5.12.0-rc=
-8+ #12
-> kernel: Hardware name: HP HP EliteDesk 805 G6/872B, BIOS S09 Ver. 02.02.0=
-0 12/30/2020
-> kernel: RIP: 0010:amdgpu_device_vga_set_decode+0x13/0x30 [amdgpu]
-> kernel: Code: 06 31 c0 c3 b8 ea ff ff ff 5d c3 66 2e 0f 1f 84 00 00 00 00=
- 00 66 90 0f 1f 44 00 00 55 48 8b 87 90 06 00 00 48 89 e5 53 89 f3 <48> 8b =
-40 18 40 0f b6 f6 e8 40 58 39 fd 80 fb 01 5b 5d 19 c0 83 e0
-> kernel: RSP: 0018:ffffae3c0246bd68 EFLAGS: 00010002
-> kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> kernel: RDX: ffff8dd1af5a8560 RSI: 0000000000000000 RDI: ffff8dce8c160000
-> kernel: RBP: ffffae3c0246bd70 R08: ffff8dd1af5985c0 R09: ffffae3c0246ba38
-> kernel: R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000246
-> kernel: R13: 0000000000000000 R14: 0000000000000003 R15: ffff8dce81490000
-> kernel: FS:  00007f9303d8fa40(0000) GS:ffff8dd1af580000(0000) knlGS:00000=
-00000000000
-> kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> kernel: CR2: 0000000000000018 CR3: 0000000103cfa000 CR4: 0000000000350ee0
-> kernel: Call Trace:
-> kernel:  vga_arbiter_notify_clients.part.0+0x4a/0x80
-> kernel:  vga_get+0x17f/0x1c0
-> kernel:  vga_arb_write+0x121/0x6a0
-> kernel:  ? apparmor_file_permission+0x1c/0x20
-> kernel:  ? security_file_permission+0x30/0x180
-> kernel:  vfs_write+0xca/0x280
-> kernel:  ksys_write+0x67/0xe0
-> kernel:  __x64_sys_write+0x1a/0x20
-> kernel:  do_syscall_64+0x38/0x90
-> kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> kernel: RIP: 0033:0x7f93041e02f7
-> kernel: Code: 75 05 48 83 c4 58 c3 e8 f7 33 ff ff 0f 1f 80 00 00 00 00 f3=
- 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d =
-00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> kernel: RSP: 002b:00007fff60e49b28 EFLAGS: 00000246 ORIG_RAX: 00000000000=
-00001
-> kernel: RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f93041e02f7
-> kernel: RDX: 000000000000000b RSI: 00007fff60e49b40 RDI: 000000000000000f
-> kernel: RBP: 00007fff60e49b40 R08: 00000000ffffffff R09: 00007fff60e499d0
-> kernel: R10: 00007f93049350b5 R11: 0000000000000246 R12: 000056111d45e808
-> kernel: R13: 0000000000000000 R14: 000056111d45e7f8 R15: 000056111d46c980
-> kernel: Modules linked in: nls_iso8859_1 snd_hda_codec_realtek snd_hda_co=
-dec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg=
- snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_seq input_leds snd_seq_de=
-vice snd_timer snd soundcore joydev kvm_amd serio_raw k10temp mac_hid hp_wm=
-i ccp kvm sparse_keymap wmi_bmof ucsi_acpi efi_pstore typec_ucsi rapl typec=
- video wmi sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables auto=
-fs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov as=
-ync_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 m=
-ultipath linear dm_mirror dm_region_hash dm_log hid_generic usbhid hid amdg=
-pu drm_ttm_helper ttm iommu_v2 gpu_sched i2c_algo_bit drm_kms_helper syscop=
-yarea sysfillrect crct10dif_pclmul sysimgblt crc32_pclmul fb_sys_fops ghash=
-_clmulni_intel cec rc_core aesni_intel crypto_simd psmouse cryptd r8169 i2c=
-_piix4 drm ahci xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_g=
-eneric
-> kernel: CR2: 0000000000000018
-> kernel: ---[ end trace 76d04313d4214c51 ]---
->
-> Commit 4192f7b57689 ("drm/amdgpu: unmap register bar on device init
-> failure") makes amdgpu_driver_unload_kms() skips amdgpu_device_fini(),
-> so the VGA clients remain registered. So when
-> vga_arbiter_notify_clients() iterates over registered clients, it causes
-> NULL pointer dereference.
->
-> Since there's no reason to register VGA clients that early, so solve
-> the issue by putting them after all the goto cleanups.
->
-> Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failu=
-re")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Em Wed, Apr 21, 2021 at 02:04:00PM +0200, Thomas Richter escreveu:
+> Command 'perf ftrace -v -- ls' fails in s390 (at least 5.12.0rc6).
+> 
+> The root cause is a missing pointer dereference which causes an
+> array element address to be used as PID.
+
+Since you pinged on this one, and rightly so, please CC:
+
+From the MAINTAINERS file:
+
+PERFORMANCE EVENTS SUBSYSTEM
+R:      Jiri Olsa <jolsa@redhat.com>
+R:      Namhyung Kim <namhyung@kernel.org>
+
+These reviewers that help me into getting patches processed.
+
+Patch is processed now, good catch, I collected Namhyung's Acked-by.
+
+Thanks,
+
+- Arnaldo
+
+ 
+> Fix this by extracting the PID.
+> 
+> Output before:
+>   # ./perf ftrace -v -- ls
+>   function_graph tracer is used
+>   write '-263732416' to tracing/set_ftrace_pid failed: Invalid argument
+>   failed to set ftrace pid
+>   #
+> 
+> Output after:
+>    ./perf ftrace -v -- ls
+>    function_graph tracer is used
+>    # tracer: function_graph
+>    #
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    4)               |  rcu_read_lock_sched_held() {
+>    4)   0.552 us    |    rcu_lockdep_current_cpu_online();
+>    4)   6.124 us    |  }
+> 
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Reported-by: Alexander Schmidt <alexschm@de.ibm.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 26 +++++++++++-----------
->  1 file changed, 13 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
-/amd/amdgpu/amdgpu_device.c
-> index b4ad1c055c70..115a7699e11e 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@ -3410,19 +3410,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
->         /* doorbell bar mapping and doorbell index init*/
->         amdgpu_device_doorbell_init(adev);
->
-> -       /* if we have > 1 VGA cards, then disable the amdgpu VGA resource=
-s */
-> -       /* this will fail for cards that aren't VGA class devices, just
-> -        * ignore it */
-> -       if ((adev->pdev->class >> 8) =3D=3D PCI_CLASS_DISPLAY_VGA)
-> -               vga_client_register(adev->pdev, adev, NULL, amdgpu_device=
-_vga_set_decode);
-> -
-> -       if (amdgpu_device_supports_px(ddev)) {
-> -               px =3D true;
-> -               vga_switcheroo_register_client(adev->pdev,
-> -                                              &amdgpu_switcheroo_ops, px=
-);
-> -               vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_p=
-m_domain);
-> -       }
-> -
->         if (amdgpu_emu_mode =3D=3D 1) {
->                 /* post the asic on emulation mode */
->                 emu_soc_asic_init(adev);
-> @@ -3619,6 +3606,19 @@ int amdgpu_device_init(struct amdgpu_device *adev,
->         if (amdgpu_device_cache_pci_state(adev->pdev))
->                 pci_restore_state(pdev);
->
-> +       /* if we have > 1 VGA cards, then disable the amdgpu VGA resource=
-s */
-> +       /* this will fail for cards that aren't VGA class devices, just
-> +        * ignore it */
-> +       if ((adev->pdev->class >> 8) =3D=3D PCI_CLASS_DISPLAY_VGA)
-> +               vga_client_register(adev->pdev, adev, NULL, amdgpu_device=
-_vga_set_decode);
-> +
-> +       if (amdgpu_device_supports_px(ddev)) {
-> +               px =3D true;
-> +               vga_switcheroo_register_client(adev->pdev,
-> +                                              &amdgpu_switcheroo_ops, px=
-);
-> +               vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_p=
-m_domain);
-> +       }
-> +
-
-If we move vga_switcheroo_init_domain_pm_ops() here, I think we can
-remove the vga_switcheroo cleanup in the failed: label.
-
-Alex
-
-
->         if (adev->gmc.xgmi.pending_reset)
->                 queue_delayed_work(system_wq, &mgpu_info.delayed_reset_wo=
-rk,
->                                    msecs_to_jiffies(AMDGPU_RESUME_MS));
-> --
+>  tools/perf/builtin-ftrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> index d49448a1060c..87cb11a7a3ee 100644
+> --- a/tools/perf/builtin-ftrace.c
+> +++ b/tools/perf/builtin-ftrace.c
+> @@ -289,7 +289,7 @@ static int set_tracing_pid(struct perf_ftrace *ftrace)
+>  
+>  	for (i = 0; i < perf_thread_map__nr(ftrace->evlist->core.threads); i++) {
+>  		scnprintf(buf, sizeof(buf), "%d",
+> -			  ftrace->evlist->core.threads->map[i]);
+> +			  perf_thread_map__pid(ftrace->evlist->core.threads, i));
+>  		if (append_tracing_file("set_ftrace_pid", buf) < 0)
+>  			return -1;
+>  	}
+> -- 
 > 2.30.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+
+-- 
+
+- Arnaldo
