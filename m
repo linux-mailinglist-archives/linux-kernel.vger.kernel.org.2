@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7756C3693D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4CF3693D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhDWNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:37:49 -0400
-Received: from ozlabs.org ([203.11.71.1]:59021 "EHLO ozlabs.org"
+        id S231132AbhDWNlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:41:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240985AbhDWNgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:36:36 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FRb0F39tJz9sVb;
-        Fri, 23 Apr 2021 23:35:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619184957;
-        bh=daUQFFEwMMybYrOEm10p4BFIfHa+Oi4Il2zr3ldWm+0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p12ShYAU4cP4gLk538PGF0czfYIHpJcFrCspkitH5j78WiY4UR2/TQKifLWw0HsIs
-         uI5UZf4vG2wtTIMSC220Ngn20+WQbJtY02suxhZKno2TWtoiAxkn5Gin9YdZD2AGzM
-         O8yWsNRbPJDnPe6K7/eqP+U9sCzeUdtLBiLdEbrnE0tjRMlwYCChtq5GuenUwZuoAI
-         p8SiI0QB/X9yEdRn7Zq159w+Ma5T76akpka9okOCfU/w+D4S26JnKP7gdSa7bbu8zu
-         i16BaEMDZTkV7b7jh0UgofbVfi7D7GspGXRo+LVX0JLbwG1TSpstKINnRWlLLn/CBr
-         nHCZ6JiMeJwjw==
-Date:   Fri, 23 Apr 2021 23:35:55 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Apr 23
-Message-ID: <20210423233555.1fae8e11@canb.auug.org.au>
-In-Reply-To: <20210423230655.3738a6d1@canb.auug.org.au>
-References: <20210423230655.3738a6d1@canb.auug.org.au>
+        id S229479AbhDWNlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:41:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B76D361352;
+        Fri, 23 Apr 2021 13:40:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619185236;
+        bh=wO7XEt5yo8xj6mXlT5bhC3QSmJWtxF0ejIkJ/7vvnHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b9IApsIprIJfDv3jCRT0S7MopYzRdhARsJQJmd1w4sRz0u63G/GBHGyHDIiEQHkr4
+         J0txO/rYYArxeig1yG6Z1m0pVRmhgkYlpEi1TB1HY+q30+D+vojyd95he57RkLacxd
+         qQtoadS6uvQCAUyAEG0g5+kl8fhzegpkMmf2ypKrAEMbBN3PxL0QLfBfR46iEHAtHJ
+         3Vdr17tdzTvPQJGa44K40dXAn44Nvd/YCb4rZGhvhemMyt/z0lRSvZbGgz7Kb5OyeH
+         1FGl9FwY2318dDoQOJabmTVrKGQ7J6wic5STp6fcVKM34Wlxe34jhtYtb6WU9hcClD
+         eWRSCHJ4cfE9Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3D53C40647; Fri, 23 Apr 2021 10:40:32 -0300 (-03)
+Date:   Fri, 23 Apr 2021 10:40:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Alexander Schmidt <alexschm@de.ibm.com>
+Subject: Re: [PATCH] [PING] perf ftrace: Command fails on s390
+Message-ID: <YILOUOd2bHxuopJv@kernel.org>
+References: <20210421120400.2126433-1-tmricht@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/SeRa5qiRDLRIcgNL=vQVICl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421120400.2126433-1-tmricht@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/SeRa5qiRDLRIcgNL=vQVICl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Em Wed, Apr 21, 2021 at 02:04:00PM +0200, Thomas Richter escreveu:
+> Command 'perf ftrace -v -- ls' fails in s390 (at least 5.12.0rc6).
+> 
+> The root cause is a missing pointer dereference which causes an
+> array element address to be used as PID.
+> 
+> Fix this by extracting the PID.
 
-Hi all,
+Thanks, applied.
 
-On Fri, 23 Apr 2021 23:06:55 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Non-merge commits (relative to Linus' tree): 13678
->  11650 files changed, 651895 insertions(+), 285075 deletions(-)
+- Arnaldo
 
-This is the largest linux-next (by number of commits) ever ...
+ 
+> Output before:
+>   # ./perf ftrace -v -- ls
+>   function_graph tracer is used
+>   write '-263732416' to tracing/set_ftrace_pid failed: Invalid argument
+>   failed to set ftrace pid
+>   #
+> 
+> Output after:
+>    ./perf ftrace -v -- ls
+>    function_graph tracer is used
+>    # tracer: function_graph
+>    #
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    4)               |  rcu_read_lock_sched_held() {
+>    4)   0.552 us    |    rcu_lockdep_current_cpu_online();
+>    4)   6.124 us    |  }
+> 
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Reported-by: Alexander Schmidt <alexschm@de.ibm.com>
+> ---
+>  tools/perf/builtin-ftrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> index d49448a1060c..87cb11a7a3ee 100644
+> --- a/tools/perf/builtin-ftrace.c
+> +++ b/tools/perf/builtin-ftrace.c
+> @@ -289,7 +289,7 @@ static int set_tracing_pid(struct perf_ftrace *ftrace)
+>  
+>  	for (i = 0; i < perf_thread_map__nr(ftrace->evlist->core.threads); i++) {
+>  		scnprintf(buf, sizeof(buf), "%d",
+> -			  ftrace->evlist->core.threads->map[i]);
+> +			  perf_thread_map__pid(ftrace->evlist->core.threads, i));
+>  		if (append_tracing_file("set_ftrace_pid", buf) < 0)
+>  			return -1;
+>  	}
+> -- 
+> 2.30.2
+> 
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
 
---Sig_/SeRa5qiRDLRIcgNL=vQVICl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCCzTsACgkQAVBC80lX
-0GwLEQgAiQ56rHjSP2XFETAf3e/AZWdVV7FtkWgs6La2HqFj9Ml7hbKJTZpjmOhJ
-xbg0BQxtZz53+ezyqmIkvKQNDxCVODQ5EPRHgIuDws6khmT0FuhMbvSdWEuXvUDy
-cl2WFlnLt9pSGDuOgTnX2COOFH/ofrNsvuierIvUUEF5hkC3Jll5x7HyaSBAfkS3
-u4dTdl6aICc5ryqu/HSLqFmIUTxBIgsD/9H6L6ZOk04PuuiqV78CPJNL1+NWtf2h
-Vokh7PDpIaNVapA5v3hh1s3ZoJyPjjYDNFOwsa8PTvqwdtAWeDK8FHj4jDn5Zpqv
-5RWjSEdWbEjMqV9GdDtdvT4tAzhaiw==
-=0tpz
------END PGP SIGNATURE-----
-
---Sig_/SeRa5qiRDLRIcgNL=vQVICl--
+- Arnaldo
