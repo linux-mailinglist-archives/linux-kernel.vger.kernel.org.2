@@ -2,256 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E156C3690EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3681E3690ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242141AbhDWLOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 07:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhDWLOO (ORCPT
+        id S242175AbhDWLPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 07:15:39 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:43980 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229890AbhDWLPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:14:14 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA25C061574;
-        Fri, 23 Apr 2021 04:13:35 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id g5so66589162ejx.0;
-        Fri, 23 Apr 2021 04:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YHPMnwS1dURi5l1HSs6lXsnAbBpe7PxogTJiMBTEHvw=;
-        b=oEpBq1Fuo/AIN23HrnGCnNKX5gSh7n0HPo0mODmYYtxzr9Ug6D8ohXWugDTsei9Gdz
-         iCgi5Q+CjmdJ4CV+di6aM6JAitf4mEUPccE8ISW87TwaJYu8Mtsiqttmr+cBOQoUY6CT
-         mHVJuLLG6wmiP/DRq0xg1NOtEHPoSlxJD0uQg/AWRiS+Kw7xVuJ5kuoZYDrp/01G57+K
-         1l8Tz3/pFGyCVageS2m6O29dxm+gr8XR+Akfn6WA97Y4OTG5rLhAB39NQelwkwE75Zov
-         QSSMbHwrBBkTjWiHdlR4BlQ3lKZRENOMC85hiaQqFtT22BoEm7ET3sZC1dIVHbdduiz+
-         CXMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YHPMnwS1dURi5l1HSs6lXsnAbBpe7PxogTJiMBTEHvw=;
-        b=dvmRcG93J8F4kMhdsq+w+9BznqGur8vNxryhTEl3aGh1AkcF7O0g5kU94MtA8TCCjn
-         OQThz+t1baxZ4Odii0qga8aC7XQFYIgXATmYbgqRQ2IKqZ0tFFgu0zEZZDSUnMyXJVIr
-         nQqC4fbqIPAaGyBINMXF5YND5/NwttI5DzoJHc0koCFrFRDo5SixbbYD/4fXeUOEsDId
-         L00qvKnLOCBfALQTcqQZ1JSYekVGhhTx9Sm7n4lHBrG0MX1eVXlV0BZHsAwPWzIJJ0oL
-         UOYNMwMaVSnSrTMrwcWFQWj6WfUtB/TNjc8h655uVdCZRHTl5CuOnz7ewTuAMRJxkJ4+
-         7p7A==
-X-Gm-Message-State: AOAM531oLPPHqUzAflAa8aDyCRXTBX/jgD86yxV6WDlTKWIfWK2iX+fE
-        VTu2MHhEGcmQ+Yb8nJOkqDE=
-X-Google-Smtp-Source: ABdhPJzZgn3hc4mNrhwnJScJOT2r7t49AdvgebRp7aJZ9kjR/Un/7sPJtoB3t7RWb5jaaIofvaQ1aw==
-X-Received: by 2002:a17:906:c297:: with SMTP id r23mr3731783ejz.48.1619176414380;
-        Fri, 23 Apr 2021 04:13:34 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id g12sm4521920edr.83.2021.04.23.04.13.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 04:13:32 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 13:14:22 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on
- sc7180-trogdor-pompom
-Message-ID: <YIKsDtjcIHGNvW0u@orome.fritz.box>
-References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
- <20210326000907.GA1965415@robh.at.kernel.org>
- <CAD=FV=XqG8oH5HCttKSNYJV2eHwLxq-tm1C+UFLn+cAHUrBaHg@mail.gmail.com>
- <CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com>
+        Fri, 23 Apr 2021 07:15:37 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13NB6s9s000522;
+        Fri, 23 Apr 2021 11:14:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=e6UoQ3Sz9f7WFV5mtRzwBcTj28OvIA+hDg21SLUc3pg=;
+ b=WV1aqczTtVCGOctNcVgMq0APAnFZY/m01vdaccfTLxp493RIPB2iMJl+pqD21GboS5ym
+ wcIFNRP0Q0FgB75HBBL+P6Mz7CLlOVATLAMgXvsGE0VeHiBuFuapt2aZKkXzW0hWzDli
+ DFAJTggJrXUl1CrZPKb5+sM3Hjmw9qLCa8/YuDD6J7M7mg36ysTNlp0tmbdUN7di4IAZ
+ d8+NNC6nPMNGbuvv4RcI+mIUTj150KSkENNJMGsJMekuXLaMuW+iIflL+lySfrWaywv2
+ v6O8BdTeqfspw16h91XKe4DZmOjiMcQyoZ+FGj5Oc1LSXcZmPi5uqGjdL4hXd25jakSg OA== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 382uth0pj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Apr 2021 11:14:41 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13NBEQ8Y004911;
+        Fri, 23 Apr 2021 11:14:40 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 383cbf0y7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Apr 2021 11:14:40 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13NB5ZX0146618;
+        Fri, 23 Apr 2021 11:14:40 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 383cbf0y6h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Apr 2021 11:14:40 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13NBEZVa012333;
+        Fri, 23 Apr 2021 11:14:35 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 23 Apr 2021 04:14:34 -0700
+Date:   Fri, 23 Apr 2021 14:14:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Sergey Organov <sorganov@gmail.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Brad Bishop <bradleyb@fuzziesquirrel.com>,
+        Patrick Venture <venture@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Lippert <rlippert@google.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] soc: aspeed: fix a ternary sign expansion bug
+Message-ID: <20210423111425.GT1959@kadam>
+References: <YIE90PSXsMTa2Y8n@mwanda>
+ <59596244622c4a15ac8cc0747332d0be@AcuMS.aculab.com>
+ <877dktuvmz.fsf@osv.gnss.ru>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pwwIyjYU7zT6YQlm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <877dktuvmz.fsf@osv.gnss.ru>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: buI5O6n7g4zgWO5D-JTNuvwpixakMr6V
+X-Proofpoint-GUID: buI5O6n7g4zgWO5D-JTNuvwpixakMr6V
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 23, 2021 at 01:45:40PM +0300, Sergey Organov wrote:
+> David Laight <David.Laight@ACULAB.COM> writes:
+> 
+> > From: Dan Carpenter
+> >> Sent: 22 April 2021 10:12
+> >> 
+> >> The intent here was to return negative error codes but it actually
+> >> returns positive values.  The problem is that type promotion with
+> >> ternary operations is quite complicated.
+> >> 
+> >> "ret" is an int.  "copied" is a u32.  And the snoop_file_read() function
+> >> returns long.  What happens is that "ret" is cast to u32 and becomes
+> >> positive then it's cast to long and it's still positive.
+> >> 
+> >> Fix this by removing the ternary so that "ret" is type promoted directly
+> >> to long.
+> >> 
+> >> Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+> >> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >> ---
+> >>  drivers/soc/aspeed/aspeed-lpc-snoop.c | 4 +++-
+> >>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >> 
+> >> diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> >> index 210455efb321..eceeaf8dfbeb 100644
+> >> --- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> >> +++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> >> @@ -94,8 +94,10 @@ static ssize_t snoop_file_read(struct file *file, char __user *buffer,
+> >>  			return -EINTR;
+> >>  	}
+> >>  	ret = kfifo_to_user(&chan->fifo, buffer, count, &copied);
+> >> +	if (ret)
+> >> +		return ret;
+> >> 
+> >> -	return ret ? ret : copied;
+> >> +	return copied;
+> >
+> > I wonder if changing it to:
+> > 	return ret ? ret + 0L : copied;
+> >
+> > Might make people think in the future and not convert it back
+> > as an 'optimisation'.
+> 
+> It rather made me think: "what the heck is going on here?!"
+> 
+> Shouldn't it better be:
+> 
+>  	return ret ? ret : (long)copied;
+> 
+> or even:
+> 
+>         return ret ?: (long)copied;
 
---pwwIyjYU7zT6YQlm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I work with Greg a lot and his bias against ternaries has rubbed off a
+bit.  They're sort of Perl-ish.  And I have nothing against Perl.  It's
+a perfectly fine programming language, but when I write Perl I write it
+in C.
 
-On Thu, Apr 22, 2021 at 03:08:48PM -0700, Doug Anderson wrote:
-> Hi,
->=20
-> On Mon, Mar 29, 2021 at 9:25 AM Doug Anderson <dianders@chromium.org> wro=
-te:
-> >
-> > Hi,
-> >
-> > On Thu, Mar 25, 2021 at 5:09 PM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
-> > > > The sc7180-trogdor-pompom board might be attached to any number of a
-> > > > pile of eDP panels. At the moment I'm told that the list might incl=
-ude:
-> > > > - KD KD116N21-30NV-A010
-> > > > - KD KD116N09-30NH-A016
-> > > > - Starry 2081116HHD028001-51D
-> > > > - Sharp LQ116M1JW10
-> > > >
-> > > > It should be noted that while the EDID programmed in the first 3
-> > > > panels indicates that they should run with exactly the same timing =
-(to
-> > > > keep things simple), the 4th panel not only needs different timing =
-but
-> > > > has a different resolution.
-> > > >
-> > > > As is true in general with eDP panels, we can figure out which panel
-> > > > we have and all the info needed to drive its pixel clock by reading
-> > > > the EDID. However, we can do this only after we've powered the panel
-> > > > on. Powering on the panels requires following the timing diagram in
-> > > > each panel's datasheet which specifies delays between certain
-> > > > actions. This means that, while we can be quite dynamic about handl=
-ing
-> > > > things we can't just totally skip out on describing the panel like =
-we
-> > > > could do if it was connected to an external-facing DP port.
-> > >
-> > > Is this a 'standard' eDP connector? AFAICT, there does seem to be
-> > > such a thing.
-> >
-> > To answer this one: there's not any "standard" physical plug as far as
-> > I can tell. There's a connector on the board side for the LCD that has
-> > a whole hodgepodge of signals on it. Maybe USB for a camera. Some
-> > power signals. Maybe a PWM for a backlight. Maybe some DMIC signals.
-> > eDP signals which might be anywhere from 1 to 4 lanes. HPD (which is
-> > really a "panel ready" signal for eDP). The size / style of connector
-> > and the exact set of signals (and their ordering) is board specific.
-> > You then get a board-specific cable that splits things out. Some might
-> > go to a camera/MIC sub board. Some go to the panel and hook onto a
-> > panel-specific connector which has pin count and orderings defined by
-> > that panel. :-P
-> >
-> >
-> > > I've said in the past I'd be okay with a edp-connector
-> > > node. If that needs just the "HPD absent delay" property, I think that
-> > > would be okay. It's just a never ending stream of new properties with
-> > > each new panel that I don't want to see.
-> >
-> > Thinking about this we'd need at least one other property right now
-> > which is an enable delay. Specifically at least one panel I've
-> > supported recently lied about HPD for a short period after bootup.
-> > Specifically see commit 667d73d72f31 ("drm: panel: simple: Delay HPD
-> > checking on boe_nv133fhm_n61 for 15 ms"). ...and, of course, the
-> > existing power supply / enable signals that "simple-panel" already
-> > has.
-> >
-> > Also: if we weren't going to add the other delay properties in the
-> > device tree, we'd have to add the code right away that used the EDID
-> > to set other delays. That wouldn't be the end of the world, but it
-> > would be code to write.
-> >
-> >
-> > One last thought to add: I've looked at ~10 panels specs recently.
-> > Though they are all a little different from each other, I will say
-> > that almost every one of them seems to have the exact same timing
-> > diagram in it just with different numbers filled in. To me that backs
-> > up the idea that you can/should do the power sequence with a fairly
-> > standard (parameterized) driver. I can't link the datasheets I have
-> > but searching for "edp panel datasheet" finds me this random
-> > datasheet:
-> >
-> > https://www.data-modul.com/sites/default/files/products/NV156QUM-N72_sp=
-ecification_12039472.pdf
-> >
-> > See "8.0 POWER SEQUENCE" in that document. All the panels have a
-> > nearly identical diagram with different numbers filled in. You can
-> > kinda tell it was copied from some other panel since some numbers
-> > (like T4) aren't even defined.
->=20
-> So this thread has been quiet for a while, but the problem still exists.
->=20
-> Here's my current plan, but please yell if you disagree:
->=20
-> 1. See about adding a generic "eDP connector" node. Having stewed on
-> this for a while I think I'm convinced that even though there's not
-> really a single standard physical connector that is used everywhere
-> that there are at least a set of signals that can be collectively
-> thought about as the "eDP signals". Certainly I have a set of very
-> different panels from very different manufacturers that I can
-> "interchange" and they work fine assuming I have the right cable
-> "adapting" them from the connector on my board to the connector on the
-> panel. While different panels have different timings that they care
-> are enforced, there is a way to express it in a relatively common way
-> as evidenced by the fact that all panel datasheet timing diagrams look
-> similar and the fact that panel-simple handles so many different
-> panels (yes, we periodically add more timing constraints to handle
-> there but mostly that's because the code wasn't able to handle every
-> constraint that could be expressed in those standard-looking timing
-> diagrams in the datasheets).
->=20
->=20
-> 2. The "eDP connector" node will have all the same properties as
-> today's "panel-simple.yaml" with the addition of:
->=20
-> enable-delay
-> hpd-absent-delay
->=20
-> The idea is that you power on the panel, hardcode an enable-delay (to
-> handle early HPD glitches), and then wait for HPD (or wait
-> hpd-absent-delay if HPD isn't provided).
->=20
-> Note that "ddc-i2c-bus" will be a required node instead of optional.
->=20
->=20
-> 3. Once we power the panel on then we will query the EDID and set the
-> rest of the panel timings / modes based on the model specified in the
-> EDID. Potentially it could update the "enable-delay" and
-> "hpd-absent-delay" at this point too.
-
-I think that sounds good. If ddc-i2c-bus is required, this basically
-implies that EDID needs to be available for these panels, too. If that's
-the case we can identify the panel based on information from the EDID.
-That would make panels "discoverable", so that we can describe them with
-a more generic compatible string that basically describes the interface
-needed to get at the discoverable information, much like we would do for
-a bus like PCI.
-
-I don't know if the manufacturer ID and product code are enough to
-uniquely identify every panel, but maybe something like the DisplayID
-extension can be used to gather more identification data.
-
-Thierry
-
---pwwIyjYU7zT6YQlm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCCrAsACgkQ3SOs138+
-s6FPTBAArVUbY8SmP4Hz12t546ddjfozLRZRVqY0+m8gwjjm74D4y6SfGyd47wKI
-Euy1fK+faHgm7J94Wc3e2dqe757ApzBw4vhRxgqGR6AwBIoovRE3MWdvgib+FFuj
-2f+/D9sYfsluGvHkWYUkgrnZ1VPGw9WjGK3L2VfnqE3jC42uZp7GBVaNqeQBDTVN
-vNY7sraJhyy62GLwQ0AWK+MZbDfauMTWJGhby4I2gyQpgID7JWEPiWrz0hEng5Px
-950+BAa0TltM/7aAt+KURkkJmjWGj5+LdKEBweQmyxancmi4vx4LSFQCNe+x0yEg
-G/uWVTH+71C5GJT+PA1JiSNP9ctartxRklIOak7GpBJlkz/aO56iDxbNQBFriFWW
-z/cneIzmi9H+f3zvg2Tq/NUqXZSFHxu2guu5dKJ7voRPyoIWMDQcSCsAI/9dIIxt
-mzc9hSX3wjD2uGB6Q7TGoLRFBrswTjMiMDmig/8xg7O/4evgmok4wWYLVo4dc82C
-C4U/2dxwAYd/Jg7iRQvWdewvCcz7U+T0WXZwuGV4OmQpDTPGf1V7U5m04anpiEXU
-Sk+WeJAdbd/kwo/JM0krqLeUnp28OUzJoTbQFH8aMR9XGPZ+Scu3rAVEG9TmIr9R
-LBKS5GaNib5Gnhmw6X+7NxCm8JZlEA22Qrf3K2BB1r2rX7FmpqQ=
-=XnhE
------END PGP SIGNATURE-----
-
---pwwIyjYU7zT6YQlm--
+regards,
+dan carpenter
