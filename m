@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC48F369760
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13016369759
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243207AbhDWQsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        id S242966AbhDWQrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243109AbhDWQsY (ORCPT
+        with ESMTP id S229691AbhDWQro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:48:24 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FD9C061574;
-        Fri, 23 Apr 2021 09:47:47 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id l22so49016409ljc.9;
-        Fri, 23 Apr 2021 09:47:47 -0700 (PDT)
+        Fri, 23 Apr 2021 12:47:44 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D08C061574;
+        Fri, 23 Apr 2021 09:47:07 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g17so57476323edm.6;
+        Fri, 23 Apr 2021 09:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z9CSkWjoaT/hQ88KgcDlGnLSBzYbOvKna9ZhP8lUZlE=;
-        b=hh2gs7JpCs90IkiY1rJczvQ4E//glxdSIg/kg+tq2pkIs4RN3xiMFPZ+TMAuGELAyM
-         57ls2e8+VzwclzTEv4xYxrB0/CnzL0unkwFIs6KTd7ECdG/7eJ4fIWeg9SpFKuOx4vB0
-         TWgV+nXk0XrtEuuLhwu4Crrf++Cl/7ERHNZikP8jfpNKX8KmZiqxSKRoDyZULJY/yUmZ
-         FnD/a86WVXqJ/zLNyTEgZoQKrUfPbaIywZuGhuwOac9YNZCANo+KH91Vm5AAoWBdaugE
-         LgidWvZ866PrB9S+uBJLpd8XnFtPvCC7yywctkJxX1gs4MWHhrmK/kN7ZyvnEFdqRuce
-         8fKg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Jiu2CnPrgJlZKOacLkwJ8LJ+LZThWvCdLjqGPP9/CBQ=;
+        b=I6GEuDgJNDT+Qs+mwBu0cU71fDssIorLBZ+1WPka/mh9dnoBGLeT7q/KdEOE2rZdmB
+         GYrLgQj7tnit4o5Qw+rhee/H1vLmV5m1RgBufwd8rtvVGXWNO26QrJfvzj5drP8EQlY8
+         m3iRLYayyxnn0S58d3zLrK83tSjBAO+UN6r/8ERJpAT0QLm3FQivr6dZq037/RlugCQL
+         4CbD6wfzCnoLL5mQxtde1Sng+r30b3+p3JW5m9QEzMQ11E8oV43/YiTQuLNORSRCy2kh
+         85Nc2QB2j8UfEZfQNawxVEofGTE1yupGLwuyEwplalE//d9aljwJh4Hd77f4ozTqhI3h
+         JuKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z9CSkWjoaT/hQ88KgcDlGnLSBzYbOvKna9ZhP8lUZlE=;
-        b=Cg7GTGJrPJNDtDXjNP5saJ0H5QsShwQI/t1triNCOHaRU1Do1D/izQsTRb05TD033N
-         kP/ZDWpDDQmOAwPf3UuXVr/3Wu9k2ieZ3Fr1fhyxBYOxY8WmUnoW5CAukfnJslCrEmBb
-         Hh0Bg6Ss1DG0KpwHO5NvpzuYG4UJ+ed4J6kkmwT7PK2Md/SzKSYSLpXCWLXPMFGEh1b9
-         jj9NU2GJQQ7kHgLQA2YOuF3O4jwrdhVlOVmzFGzQLiyWVorAHWqNTTZ2OIuODJHShX/T
-         mdA6A9dMtv8Y4TfwGdTPH0frHLSX+ciR/5PH6Xc5SCOIhppo0aFPFlQYHApmL7nwiDrg
-         rz7w==
-X-Gm-Message-State: AOAM531O8xdyOQe0gGjBpq/QWx9KZGwXfqJqXj7elHYxmQ8W2iKdU65s
-        tZA7hV+Qh88TzOOqoTAYvWuuRIqTURDesvQI1de7Rh6Z
-X-Google-Smtp-Source: ABdhPJxpbgAqS1GibhcllwDT+1U4zjY+5kMeemf9VlkANhkfYipY7NLqbF5yJgJW4JdQkixwi8+KQjlNOUQR7YAdedk=
-X-Received: by 2002:a2e:6c0d:: with SMTP id h13mr3226834ljc.486.1619196465904;
- Fri, 23 Apr 2021 09:47:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Jiu2CnPrgJlZKOacLkwJ8LJ+LZThWvCdLjqGPP9/CBQ=;
+        b=hw/QYTupAQdidKupJ4J4yjSx0jBVLvvBapA2XIQ87JnSPM42JeUqKj91lXi0AGeQQU
+         PHgXlON3eyD1a0Rc8wiuhOFDfiVxS3tGe2vqZ3Lfau874GTogiGM+1pXcZDwgVMg/Pyt
+         5XlJsQ71tzIw+6H8S5EYmZI58e/Y3wFZWRTsjBQvJr9mHPsygSfhBa63TXVUysI1A6Xi
+         3Ib4Uf2hx8dmNzfSjUDbYhrxpA0RKY0n8fAuQ8RiH9AG3hykdIrLP7aZnrEIy4qKVBep
+         lWLarTs1ki8xvSAQxROlOJkr8++jEGi5qoHowivnIp9u7e7QioMp2wk79+T6G/dLEeUw
+         oa9w==
+X-Gm-Message-State: AOAM533GLFTI6RCIQG2nZqlqgbvOVePfEop26hYnk5DiekjrmwLLdi91
+        5JfW8jyJx5K+NxYcDe2Xqvs6nhMptYA=
+X-Google-Smtp-Source: ABdhPJztzmxtzdsfzQYgnh3Csc0vESlubuEhwO8pHyjkXw6UK6ImN6Go/GxbiALYAyrZX1X72TORdQ==
+X-Received: by 2002:a05:6402:c:: with SMTP id d12mr5556664edu.100.1619196426033;
+        Fri, 23 Apr 2021 09:47:06 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id mm8sm4456113ejb.28.2021.04.23.09.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 09:47:04 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 18:47:54 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        matthias.bgg@gmail.com, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] pwm: mediatek: remove unused function
+Message-ID: <YIL6OoqF+CtGyi1p@orome.fritz.box>
+References: <1618475753-102123-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-References: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
- <7ecb85e6-410b-65bb-a042-74045ee17c3f@iogearbox.net> <93957f3e-2274-c389-64a4-235ed8a228bf@linux.alibaba.com>
-In-Reply-To: <93957f3e-2274-c389-64a4-235ed8a228bf@linux.alibaba.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 23 Apr 2021 09:47:34 -0700
-Message-ID: <CAADnVQJoJW9GWk4guqzHQkDPD4RWoh-puVhnfW0LBPT_N6-4HA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-To:     Abaci Robot <abaci@linux.alibaba.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UDuYcdOPnu8vXxWU"
+Content-Disposition: inline
+In-Reply-To: <1618475753-102123-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 4:57 AM Abaci Robot <abaci@linux.alibaba.com> wrote=
-:
->
-> =E5=9C=A8 2021/4/23 =E4=B8=8A=E5=8D=885:56, Daniel Borkmann =E5=86=99=E9=
-=81=93:
-> > On 4/22/21 12:00 PM, Jiapeng Chong wrote:
-> >> Fix the following coccicheck warning:
-> >>
-> >> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
-> >> comparing pointer to 0.
-> >>
-> >> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> >> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> >
-> > How many more of those 'comparing pointer to 0' patches do you have?
-> > Right now we already merged the following with similar trivial pattern:
-> >
-> > - ebda107e5f222a086c83ddf6d1ab1da97dd15810
-> > - a9c80b03e586fd3819089fbd33c38fb65ad5e00c
-> > - 04ea63e34a2ee85cfd38578b3fc97b2d4c9dd573
-> >
-> > Given they don't really 'fix' anything, I would like to reduce such
-> > patch cleanup churn on the bpf tree. Please _consolidate_ all other
-> > such occurrences into a _single_ patch for BPF selftests, and resubmit.
-> >
-> > Thanks!
-> >
-> >> ---
-> >>   tools/testing/selftests/bpf/progs/fentry_test.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c
-> >> b/tools/testing/selftests/bpf/progs/fentry_test.c
-> >> index 52a550d..d4247d6 100644
-> >> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
-> >> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-> >> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
-> >>   SEC("fentry/bpf_fentry_test8")
-> >>   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
-> >>   {
-> >> -    if (arg->a =3D=3D 0)
-> >> +    if (!arg->a)
-> >>           test8_result =3D 1;
-> >>       return 0;
-> >>   }
-> >>
->
-> Hi,
->
-> Thanks for your reply.
->
-> TLDR:
-> 1. Now all this kind of warning in tools/testing/selftests/bpf/progs/
-> were reported and discussed except this one.
-> 2. We might not do scanning and check reports on
-> tools/testing/selftests/bpf/progs/ in the future,
 
-please stop such scans in selftests/bpf.
-I don't see any value in such patches.
+--UDuYcdOPnu8vXxWU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Apr 15, 2021 at 04:35:53PM +0800, Jiapeng Chong wrote:
+> Fix the following clang warning:
+>=20
+> drivers/pwm/pwm-mediatek.c:110:19: warning: unused function
+> 'pwm_mediatek_readl' [-Wunused-function].
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/pwm/pwm-mediatek.c | 6 ------
+>  1 file changed, 6 deletions(-)
+
+Applied, thanks.
+
+Thierry
+
+--UDuYcdOPnu8vXxWU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCC+joACgkQ3SOs138+
+s6GMFA/+Ov/ZsslM92MqD1LXtllAdQoyXgyArwL6x6OfuwJlg9S/tgH94R2efhpR
+JuMMyW/E/zpvLI+22EgS/ASWtGE2R+Y6NnjHz65mRBiDgo1WLhHOn2b90YbIN7wG
+C7usfcDOex1KKJxYPBboKkcqyKpU60eGkPI8Wu/H9tNgLz2KnzUSxy3vvI6nI70d
+SP9341phubwxTsvV8hABZsmeKLg89UfsnvQ9IdEQBcvvDnHBlb3R4oTqkGdvy906
+Z1EOrtD3BrCQjTm6H2FlSLdlpNiy4jAa5ptfsaAUhA88Wyawf0KWN7kpX1pT5BkI
+mieOLbsEPWiCnIzktGt9TvAQ80pyAu/vWiaO1jnadYGwOLIUT8Eb/K1rJjnvfiO/
+IjbjIkWz68LCA+qZ0lPQPRbL0ZmeaBL5RDdj7npFLutLHOCptRbHgg3BfI7SZHrY
+N6B89MRIJlRhsqCGbyGCAVzqftQdaytGfx0AwHCsvTRHTxrPKNxuY7JYP/iaVJo9
+mF+nPNhcTxdH/RJaI5qVnJhIYvb1yr6cpXSkjSsesHJBRqP++SEyeBeyzFFw6j2s
+kECJtkMjw39eNAFcg5Pfol8pFp0PCdHkCr2THp24qNy8PGTuo7Fy+kwbEndP/I7l
+RyeY8duMnJ+8uHw7PTwwU30hynY2nqk9hTo/XTB/jBNBeJ8u7uM=
+=Z3fH
+-----END PGP SIGNATURE-----
+
+--UDuYcdOPnu8vXxWU--
