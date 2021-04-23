@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C0D3699A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B605C3699C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243633AbhDWSaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:30:06 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35474 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhDWSaF (ORCPT
+        id S243644AbhDWSfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhDWSe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:30:05 -0400
-Received: by mail-oi1-f176.google.com with SMTP id e25so20087604oii.2;
-        Fri, 23 Apr 2021 11:29:27 -0700 (PDT)
+        Fri, 23 Apr 2021 14:34:59 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4CFC061574;
+        Fri, 23 Apr 2021 11:34:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id f11-20020a17090a638bb02901524d3a3d48so1644378pjj.3;
+        Fri, 23 Apr 2021 11:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ae1Dg8y0lP5V7dkFaUmfaA9k11TAbQosKBq+vb9Jow=;
+        b=JqMyOVliMrzRp6IA5HA/AelAUTvlEh1nbaEGOc3miOW0hQdxQvCmC+kXXGn+IzMMVk
+         b+5UrjfLboDtFxTAkujnIRNBAR0b4hDckgxgKz/OPgJfxAXApqGCmOaxfzyz3MNYC2SR
+         ompfscidyn9hsQ7UAtdR1SF6hnc08Kr8/tjmP9MjCXCrpwfjd4boxhBwc240vhd7wHBg
+         FetRZwvQ01kme6fbcpGXyLN3dArGsOJB8LT356mL6LQMRTA+CA/VKubEBDrjvjsCyQNO
+         WILQ8wH5a6FWXylVNUNoBjxVt3eEVHYnU29/mfVcaWqAlQQL7A6RhXptCsv97pT7rkYI
+         WTmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hn2ZcalQMf1zWjqze+P91WzURaNyzdTYLcJnyDlbbDU=;
-        b=gqO7D2EHyvJ22IzClJSgIHrwbboGvirPo2J9aMun0v/PAU0buVd69Ij7a7hHOIEr0K
-         oc2YR6+cVAgwveOWINXXhNasM2hMcAbiRYTIWUfVbOd6Zka3tgIpwvJCQvdX4STzzI8k
-         rlySH1+UYXqjo3VdDeF4Y0y3qvauuAOIX+33stZ5m2p60zl8H9WvkgQJM4IWovyswx+c
-         6luLwTYpowI2bOFZZqfnFtxaLQBbyDH1gsVxT/grDgTFhVrthNKISG5Ocxzk2eymeAWJ
-         GfrBWjoMEm8jv7I0Ru+tXJc4gfjCTRIWeCP1GPAfhcpGeTspc3xPrY/0vucw97H+/iy5
-         /lnQ==
-X-Gm-Message-State: AOAM533Wt/2kOmOTI00Ihi+T7GMqlifJLZD9T1t+8lSYozro3EC6DCmh
-        4m+w041D4DwYc7BLl7MPgDOfX49Kx9LTwC19mx4=
-X-Google-Smtp-Source: ABdhPJzRn7LUW/2xl/6xnu2Th+5lmg9/l9qlSwX354B0I7YDAStqpHmWc2Rgu06HSj2m/CVBU1T2JRNJU/IK3kSJPGQ=
-X-Received: by 2002:a54:4501:: with SMTP id l1mr5072767oil.157.1619202567364;
- Fri, 23 Apr 2021 11:29:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ae1Dg8y0lP5V7dkFaUmfaA9k11TAbQosKBq+vb9Jow=;
+        b=KLvvvU9cH+qD4CW70U+Dknc4GXCAQC9hnqA3er6dw96fkf7n97DPATeciItyeq/wjr
+         NAevJagkGozq6r+1qdMS7Qdp1BI0YnYa5y5ZtxyDP+f+SfbVzyGtnYUgiiDcaXwbVorK
+         vUpzsK6hRfJGUM4C35MmOO19WcTwCarT7yRiy46mWDVqEstJQ1bLg5JlNFF14hbJjP5k
+         YVSKeN40JG48+T5638Hs7rLkc4xzu4U7OoezJdqsCMeu19AIgyz17n+lcuXWFIkyBUTq
+         PJ/Gajh4OjJHwNVaBy8ZEMYN9ZctlCHizBSdTnABdjLkguXGFYL3HKjvBmbtCVo+IGeA
+         giyw==
+X-Gm-Message-State: AOAM531RITnKbEMB9Qw2SbmMdycdD3Lke8nK0hqUjHO7P1vaDDp6utSt
+        FCNJLcHVJkDPDd8ZhWIKic9M7Guzj5c=
+X-Google-Smtp-Source: ABdhPJwFX6hIMN8LuFoTGg1xoWlDYo70Z/+35G4V7FnIdrrEkaju4cVcg9GeHltBusATaatH3t1UgQ==
+X-Received: by 2002:a17:90a:6b84:: with SMTP id w4mr5837462pjj.134.1619202860534;
+        Fri, 23 Apr 2021 11:34:20 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f10sm8456763pju.27.2021.04.23.11.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 11:34:19 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-serial@vger.kernel.org
+Cc:     alcooperx@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        andy.shevchenko@gmail.com, Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH tty-next] serial: 8250: of: Check for CONFIG_SERIAL_8250_BCM7271
+Date:   Fri, 23 Apr 2021 11:32:04 -0700
+Message-Id: <20210423183206.3917725-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210422214708.716164-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210422214708.716164-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAJZ5v0iv0r3x0rDiB6+M+CZcAPcFK8i6R1n=v1NPcNg16invTQ@mail.gmail.com> <789781a4-026b-f023-6192-5a0099fd88fd@linux.intel.com>
-In-Reply-To: <789781a4-026b-f023-6192-5a0099fd88fd@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 23 Apr 2021 20:29:16 +0200
-Message-ID: <CAJZ5v0jonk2Pb2HUHMoe69vnCV4+EV9XZpo2LwKrnYPF3CxD_A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] x86/acpi, x86/boot: Add multiprocessor wake-up support
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rafael J Wysocki <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 7:58 PM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
->
->
-> On 4/23/21 6:05 AM, Rafael J. Wysocki wrote:
-> > Although I've looked at this patch already, I now realize that
-> > according to the spec the mailbox is only suitable for the first AP
-> > wakeup during system initialization.
-> >
-> > Shouldn't the original handler be restored then to handle subsequent wakeups?
->
-> For TDX use case, since it does not support CPU hotplug/offline features, once
-> the AP is turned on, it will never be off-lined and hence need not support
-> subsequent wakeups.
->
-> AFAIK, this MADT wake table is mainly defined for TDX use case.
->
-> Please also check the TDX GHCI spec, sec 4.1.
->
-> For each TD-guest, application processor, the mailbox can be used once for the
-> wakeup command. After the guest-application processor takes the action according
-> to the command, the intention is the mailbox will no longer be checked by the
-> guest-application processor. Other guest processors can continue using the mailbox
-> for the next command.
+From: Jim Quinlan <jim2101024@gmail.com>
 
-But this patch modifies generic code and the ACPI mechanism used by it
-is generic.  TDX is not even mentioned by the spec section pointed to
-by the changelog.
+Our SoC's have always had a NS16650A UART core and older SoC's would
+have a compatible string of: 'compatible = ""ns16550a"' and use the
+8250_of driver. Our newer SoC's have added enhancements to the base
+core to add support for DMA and accurate high speed baud rates and use
+this newer 8250_bcm7271 driver. The Device Tree node for our enhanced
+UARTs has a compatible string of: 'compatible = "brcm,bcm7271-uart",
+"ns16550a"''. With both drivers running and the link order setup so
+that the 8250_bcm7217 driver is initialized before the 8250_of driver,
+we should bind the 8250_bcm7271 driver to the enhanced UART, or for
+upstream kernels that don't have the 8250_bcm7271 driver, we bind to
+the 8250_of driver.
 
-IMO it should at least ensure that the AP wakeup callback will return
-an error on an attempt to use it more than once on a given CPU.
+The problem is that when both the 8250_of and 8250_bcm7271 drivers
+were running, occasionally the 8250_of driver would be bound to the
+enhanced UART instead of the 8250_bcm7271 driver. This was happening
+because we use SCMI based clocks which come up late in initialization
+and cause probe DEFER's when the two drivers get their clocks.
+
+Occasionally the SCMI clock would become ready between the 8250_bcm7271
+probe and the 8250_of probe and the 8250_of driver would be bound. To
+fix this we decided to config only our 8250_bcm7271 driver and added
+"ns16665a0" to the compatible string so the driver would work on our
+older system.
+
+This commit has of_platform_serial_probe() check specifically for the
+"brcm,bcm7271-uart" and whether its companion driver is enabled. If it
+is the case, and the clock provider is not ready, we want to make sure
+that when the 8250_bcm7271.c driver returns EPROBE_DEFER, we are not
+getting the UART registered via 8250_of.c.
+
+Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/tty/serial/8250/8250_of.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+index 0b077b45d6a9..bce28729dd7b 100644
+--- a/drivers/tty/serial/8250/8250_of.c
++++ b/drivers/tty/serial/8250/8250_of.c
+@@ -192,6 +192,10 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
+ 	u32 tx_threshold;
+ 	int ret;
+ 
++	if (IS_ENABLED(CONFIG_SERIAL_8250_BCM7271) &&
++	    of_device_is_compatible(ofdev->dev.of_node, "brcm,bcm7271-uart"))
++		return -ENODEV;
++
+ 	port_type = (unsigned long)of_device_get_match_data(&ofdev->dev);
+ 	if (port_type == PORT_UNKNOWN)
+ 		return -EINVAL;
+-- 
+2.25.1
+
