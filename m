@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A943699E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F22C3699EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243694AbhDWSmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:42:13 -0400
-Received: from mail-mw2nam12on2104.outbound.protection.outlook.com ([40.107.244.104]:61696
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231684AbhDWSmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:42:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ds46aVg27G1fqG80JKNApfNcQH1GDrj+waAkZC9sbfIjp1CPXPPkX19leQV+/8boyMnt4ARQSvWLI57XWgHpNVUuYEZeNcNzu6nDubT8bpGddiMqaCaxDs9f9TQFl0eCpOBYJv9LIjenLo9qajzQ55o7cVqYFRhnbagb2gh4EAZSl6zkDuDNKbPb3dxntl8xdCDYPPbaBnyKHj1Lqf2SaU+Z3Ujn6bsaY3lV3NNCgGPqLtx8YuebcF/6WezxlQShaXXYo5bGPyeKytAQahW+r9nFDD258gRhHdl/93J/hsAseBTAna4nBE9AP8d9scR7CGIU+w/alW6Ttc4rfQgj4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=viY3VigOWx2RFE5ZEx8juSy95Qx4CbqF0XqG7NLfIVc=;
- b=Kn5kfEHHcne/OhHfaaugVfTE671qbziO6fhPI8tl4JjQPLwT1jpxndYhXnXEF9kqosC8EkXkfYnVxxsP8Sj8sor0I0vSARrJ6p1BPxV/dMp4w7zK6vbwwP55uioboRIlOAJvDIwMDF2jjFGY9sRw2qKzud2K61G4COBTfVC2gz4Gcr3rXu396ra2dVMm/Nq2lyVNNNjiKfgLbfkcpEBtRLj752nxtuqU3NICkZABeg47MQdteYABGbMJw2zV+sfdYjPijISg7w7WHEBVjlh8gdIsnFVSxQ+MLXzjSVwJP8e7riPr4x5fB1/WvyXEDWO2pAEA8wOxAXA8ws0Pe4/sIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=viY3VigOWx2RFE5ZEx8juSy95Qx4CbqF0XqG7NLfIVc=;
- b=gYKsaJ7+xZTRHprYwy3WSo7UhTqt7SKVz12cFHQPLtleOYk1eJC/UzPOyDdHM8PD9XBsKujTlEWlJy6vDfeQDW4N2VtM0NLZuFx9n2iNm45AQxTBaFw0S/qCZq2F98mPRP27XlE29PWJRJOOk3N5l4DkjVN1uGgxLT2tYSa1XRk=
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- (2603:10b6:302:10::24) by MWHPR2101MB0809.namprd21.prod.outlook.com
- (2603:10b6:301:76::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.4; Fri, 23 Apr
- 2021 18:41:32 +0000
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4065.008; Fri, 23 Apr 2021
- 18:41:32 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Long Li <longli@microsoft.com>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [Patch v2 1/2] PCI: hv: Fix a race condition when removing the
- device
-Thread-Topic: [Patch v2 1/2] PCI: hv: Fix a race condition when removing the
- device
-Thread-Index: AQHXNzrEqHm1W7VddEiGdCJpDqqWbKrBrccwgADBxQCAAAH5cA==
-Date:   Fri, 23 Apr 2021 18:41:32 +0000
-Message-ID: <MW2PR2101MB0892D7E83CC44D97F4317871BF459@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <1619070346-21557-1-git-send-email-longli@linuxonhyperv.com>
- <MW2PR2101MB0892A9A0972199A2FF6D68B0BF459@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <BYAPR21MB1271F9B76FAA423D7BE6DDEECE459@BYAPR21MB1271.namprd21.prod.outlook.com>
-In-Reply-To: <BYAPR21MB1271F9B76FAA423D7BE6DDEECE459@BYAPR21MB1271.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=825368ff-303b-448a-ba43-6f3872c68267;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-23T06:58:52Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:8b00:6b90:55f8:4d3d:9b51:7264]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d2c5a49f-cf4d-4370-e446-08d906876a74
-x-ms-traffictypediagnostic: MWHPR2101MB0809:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR2101MB080907708B0DD33D8D5F2E0CBF459@MWHPR2101MB0809.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xRiEHvygmErbK0EmnWmk53gou4vEsi064Lby57vN1gg6LnTcolZQlYvy4G+IW7euGOBi96juAapVVv+7lI9UKuW35hkUuJjj2Ee2r052Vfj4xchn3t0hA/YrfoWxi2O1hyaMFHdf2rAKefqIKtBrCxcYWle2mgkp9BGrUYqRuD6n/hsU0zule5ujrlsLUbK7QAUZi0YnVt/FYREaOfaenquaKf5lwf2GXIk0XFK+7pWYN1Qz1nMcl07zQTrInA4irzPNs/uXEFNZswDFBr4ZrrQhOkQlFU0cPBzmKWUTY3oyW8Nkuw8Cl978iERa9irGn4QLbMirjmx6VmRCsq+Dizi5PgsXK33xqZJQwWSzdrPxqzOwKsN4SUq3xRKn6lLalpHi9E6gPNHNDhDu0lpADZw1HyA/IeFQKOtwMhDuBYRoyV5+zQStoKQF/AK+6j9ewSjOXDrqHAIFHPtGg3/ulaFRTpw3TUIcr0T9oc/eRRWnBg+RsVu6SIyPOihV1ToGNqyhsxY3tt6igp+w4m2iAQYESpZDqp6us9A8iTpdL00hKFpj7dRHvTpxb8PwC7nosES7fIAVwVJIKt9KhrSCGpY4aCJcMGbnEOpDG6BTbN/5EgoyLQlX88iRlW1nFvuwTsE8eZ1LUed8I7CM9t4cxA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(82950400001)(921005)(8936002)(66446008)(8676002)(64756008)(110136005)(2906002)(66476007)(76116006)(5660300002)(7696005)(66556008)(86362001)(52536014)(83380400001)(38100700002)(6506007)(186003)(71200400001)(33656002)(55016002)(10290500003)(9686003)(82960400001)(316002)(8990500004)(4744005)(122000001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?f/EBjZgz5xAz1+xAghAIQqTewsnEsh2RvEJ4uGBB2kFIqAdpmfyZSsim+j7x?=
- =?us-ascii?Q?sjhT7OeHGfqJn3oGCZkh3WHZZbOvSvDV9jdjtxpmOWuGmm8ZF7mkLMnWVvXA?=
- =?us-ascii?Q?89U32ooVrO9t650akl0vp40HtRDxKp8iEwAn00FJ8Hf1x9G74glo6wxHBV/7?=
- =?us-ascii?Q?REyBcWb3CCkxACZWl1FqU6QG/VuEwX6/vwXOBUsU9s2fNp45eeig0ij97PPG?=
- =?us-ascii?Q?hLCVVLyxrMHE3zdGHg8dn8RkyD+CnlZRTF9/Asi73gmWV2XAi/cI7sCCgFc4?=
- =?us-ascii?Q?gvkbSfOnMQv0mMN3wejbRZ4n0sVvk8HYYfHkOeDnxANQBKtjtf6x2wAhrrHC?=
- =?us-ascii?Q?fFYOJKaX0omxUUSZRcGhn3sQc0ts9x+oZ7/DFYe8on9adka1vws4RDhSztQh?=
- =?us-ascii?Q?5skK9ymD2Jgfh85Wy3N2y+GR4QlUsOKgQ7lLyjZepZSzlbYPhkSUBOzpKhQ4?=
- =?us-ascii?Q?nSidaoDYAl4uZ3/KJ4EvxUmLY8gPnqo8qDEw6xX8aBpFLWXDWID1IKuGJw/o?=
- =?us-ascii?Q?7WzOAcpiPbPNPLYI8Tar+8s0ZhOfb73afHLWQDr4ZT9TabvIsXUrH3pwxZdP?=
- =?us-ascii?Q?k89g/sCJ0nvdHvC0sboUCpy9W2lgly6McwQhjknWhBxDwk1lDe5jWBksBnWJ?=
- =?us-ascii?Q?TM1jzvBgCoWhimKJMyluxRkmkHBSEGZk1hlS8nErlvWZE86VKw9gP7Izo1CB?=
- =?us-ascii?Q?pd4qjJqFXv3uQfvD+n93rsAjUdVli79dBvupS/cnvKUfV+P0ofr4YSo/l5J4?=
- =?us-ascii?Q?/k7C9WeYsbwl2SUEYHyTbh7i89zA3/nJO8hoiduy6uazKsVJBlHoihhz6QbH?=
- =?us-ascii?Q?G67pXnUmCsQthg5jpxmbPqd9SwVrLT/N3CxBXRsHldJs0qBRcnoSKf0D3rkb?=
- =?us-ascii?Q?ZQlCZeGrjmEcQpj2I3RZvcpLya5MYrz/Tba3U0cvuw4cG+PUa6GLE1Kj06ht?=
- =?us-ascii?Q?w+C9aZA97pieEEGcPnfA5yto/roMuscEAW0sgZ0RxMGQ2Xub+Go7f0ALZnvF?=
- =?us-ascii?Q?XJEuYIgLZgfyAdC2GvzD7a9SZGBkaYKsH+DlnB8n3jR8Ig+B/jCL6BM5bP7C?=
- =?us-ascii?Q?jyPMS3Fg0mXpZgR7Nj/4PSulnyBjygVrPbgaKT7R6Vd+XDnvpTccNGn/Etqr?=
- =?us-ascii?Q?Sb7Q6q6Kj+MyW0XqE4WJDHgry9KzWNB1oUTTkNQrbYfjCkvDNNSN8LbrbaUt?=
- =?us-ascii?Q?+Gd2JMlyLxrwhAkGr7gWHDe5HwrqqYE/hKRBL+TPOZm2HkXfS/Z0Ya5PNtR5?=
- =?us-ascii?Q?EKDoulwnWV16mQCV8ltN6vxMSbhn5bOkHJt6QyX0AKge/py/LNdrsVr21o3f?=
- =?us-ascii?Q?i5HUgFjA/6LvF4Dnrppm7yfm6NRDy9f8DA6gKo2tCf+E0AmkDo8RfPJJkL9x?=
- =?us-ascii?Q?zSgDTRQZuVGeWF0dGNKjpR2GEY2j?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S243713AbhDWSmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhDWSmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 14:42:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1C9061139;
+        Fri, 23 Apr 2021 18:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619203330;
+        bh=qIaVUyzdhjBUU7tl3VOejcO6+StJQjKYlePJddUmi7E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aWSmmAHDhWfWLE27J7QqAexykU5n2y1GB/omH7zwDOAleNlcEqvO2r1rMfIBOL2q7
+         Lat+X4UwmhBUzghwYL1bKCHRq97nz9BIxbw15E69e7LN1imyo834aKxbQU2BOZKLG7
+         CVyzo1lcmj88d9r6farXjOhA1Rm8GL8AnHsRC8WFMbZJMpPY7B9Lb2pGosTLA2m2+Y
+         5hD67MSNjpt5Ga27/Rf1fRdnUh4QwM/XkMrGxJbCtqqFTEORU7D5sq1QWsLr3YhrpA
+         0+DeEnj573ny/o1tQZWsJCqSMxo1EYPj1CfYZLrcQJi1p9zO9VbWKG1PLpMe59Egvp
+         C5Pgpz85CJBvg==
+Received: by mail-ed1-f51.google.com with SMTP id g17so57822888edm.6;
+        Fri, 23 Apr 2021 11:42:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533dM28BrDcP/pun+4d78kpUgHchAi4Z5zwXS20RVhAa0ChHQU6G
+        hQTudVdZFVr8Hb+LSJlyZz35M0FMW+fxtHwpWQ==
+X-Google-Smtp-Source: ABdhPJxRxWR99r32kKOjtbYRcF+R9SoFCUGOziFQxhTRy7/ub7acC9s4XzQRvki8x3jvmUqBtR/g+HPM9RbFw1VUkOs=
+X-Received: by 2002:a05:6402:34c8:: with SMTP id w8mr6219150edc.194.1619203328426;
+ Fri, 23 Apr 2021 11:42:08 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2c5a49f-cf4d-4370-e446-08d906876a74
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 18:41:32.4783
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eNhzXhz8kRBJyUqHI9r6z945oobe6nfyXtzbeO5C+ctIsY0/5IhFqvtw3cknBkCWSk5C1kHMYi6aQGSYRgnYzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0809
+References: <20210420024222.101615-1-ilya.lipnitskiy@gmail.com>
+ <20210421220302.GA1637795@robh.at.kernel.org> <CALCv0x2oSXBT-6LteYtr9J5XmmDuer_=sbCgB5CBXWe_cKk2sA@mail.gmail.com>
+In-Reply-To: <CALCv0x2oSXBT-6LteYtr9J5XmmDuer_=sbCgB5CBXWe_cKk2sA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 23 Apr 2021 13:41:56 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+Zhgn53wGdMbZKMjxk2gPQQFpjSsudVso+keonDCd+oQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+Zhgn53wGdMbZKMjxk2gPQQFpjSsudVso+keonDCd+oQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: net: mediatek/ralink: remove unused bindings
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Long Li <longli@microsoft.com>
-> Sent: Friday, April 23, 2021 11:32 AM
-> > ...
-> > If we test "rmmod pci-hyperv", I suspect the warning will be printed:
-> > hv_pci_remove() -> hv_pci_bus_exit() -> hv_pci_start_relations_work():
->=20
-> In most case, it will not print anything.
+On Wed, Apr 21, 2021 at 5:05 PM Ilya Lipnitskiy
+<ilya.lipnitskiy@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> On Wed, Apr 21, 2021 at 3:03 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Mon, Apr 19, 2021 at 07:42:22PM -0700, Ilya Lipnitskiy wrote:
+> > > Revert commit 663148e48a66 ("Documentation: DT: net: add docs for
+> > > ralink/mediatek SoC ethernet binding")
+> > >
+> > > No in-tree drivers use the compatible strings present in these bindings,
+> > > and some have been superseded by DSA-capable mtk_eth_soc driver, so
+> > > remove these obsolete bindings.
+> >
+> > Looks like maybe OpenWRT folks are using these. If so, you can't revert
+> > them.
+> Indeed, there are out of tree drivers for some of these. I wasn't sure
+> what the dt-binding policy was for such use cases - can you point me
+> to a definitive reference?
 
-If I read the code correctly, I think the warning is printed _every time_ w=
-e
-unload pci-hyperv.
+Perhaps we should write that down more explicitly, but I think it is
+pretty rare actually. And really, I'd like to require we have at least
+1 dts user. Though, then we'd just have dead dts files. More
+generally, other projects use the bindings and dts files. The bindings
+and dts files live in the kernel tree for convenience and the simple
+fact that is where the vast majority of both developers and hardware
+support are. There are exceptions of course such as h/w that doesn't
+run Linux.
 
-> It will print something if there is a PCI_BUS_RELATION work pending at th=
-e time
-> of remove. The same goes to PCI_EJECT. In those cases, the message is val=
-uable
-> to troubleshooting.
+I'm all for removing this if no one cares (please try to find out) or
+if the existing binding is just bad (doesn't match the h/w or is
+incomplete in an incompatible way). I would have expected in the 5
+years since it was added, a user (either dts file or driver) would
+have appeared.
+
+Rob
