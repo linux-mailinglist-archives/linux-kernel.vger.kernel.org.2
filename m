@@ -2,187 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8A4369379
+	by mail.lfdr.de (Postfix) with ESMTP id A489436937A
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242718AbhDWNdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:33:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:34898 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231220AbhDWNcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:32:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DBFB1396;
-        Fri, 23 Apr 2021 06:31:31 -0700 (PDT)
-Received: from [10.57.62.63] (unknown [10.57.62.63])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B58A3F73B;
-        Fri, 23 Apr 2021 06:31:22 -0700 (PDT)
-Subject: Re: [PATCH v5 08/16] swiotlb: Update is_swiotlb_active to add a
- struct device argument
-To:     Claire Chang <tientzu@chromium.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-References: <20210422081508.3942748-1-tientzu@chromium.org>
- <20210422081508.3942748-9-tientzu@chromium.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1f84aa4c-f966-0986-b5a4-eecbf3b454ec@arm.com>
-Date:   Fri, 23 Apr 2021 14:31:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S243147AbhDWNdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:33:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242868AbhDWNc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:32:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619184709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JwXA95xpkdvKsThFqSoFgKkVO4UJfYvDK51YUGC/Cz0=;
+        b=darYsuV7dnS+Bd+Yop7fAIjsg5socJLBa2c8GNn2Qlrj0wjBb6iB68q5kkz+qOi/C8tAIa
+        XZUGH9H4mCqsj8qms7FLMpl0spTBFSkcKvMQwMWsLqhVopQC8XG1B0l0RRNoFMXI+V7CRj
+        RSjYKNmC3BNqyAXBw0d9qp95HwFTrnE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-j8WNcCryMEWhxNu3vGpGAA-1; Fri, 23 Apr 2021 09:31:45 -0400
+X-MC-Unique: j8WNcCryMEWhxNu3vGpGAA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C3F1343BA;
+        Fri, 23 Apr 2021 13:31:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DC5C05C3FD;
+        Fri, 23 Apr 2021 13:31:27 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v7 16/31] netfs: Add a tracepoint to log failures that would
+ be otherwise unseen
+From:   David Howells <dhowells@redhat.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        dhowells@redhat.com,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Date:   Fri, 23 Apr 2021 14:31:27 +0100
+Message-ID: <161918468704.3145707.1831226581568224387.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <20210422081508.3942748-9-tientzu@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-22 09:15, Claire Chang wrote:
-> Update is_swiotlb_active to add a struct device argument. This will be
-> useful later to allow for restricted DMA pool.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> ---
->   drivers/gpu/drm/i915/gem/i915_gem_internal.c | 2 +-
->   drivers/gpu/drm/nouveau/nouveau_ttm.c        | 2 +-
->   drivers/pci/xen-pcifront.c                   | 2 +-
->   include/linux/swiotlb.h                      | 4 ++--
->   kernel/dma/direct.c                          | 2 +-
->   kernel/dma/swiotlb.c                         | 4 ++--
->   6 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_internal.c b/drivers/gpu/drm/i915/gem/i915_gem_internal.c
-> index ce6b664b10aa..7d48c433446b 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_internal.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_internal.c
-> @@ -42,7 +42,7 @@ static int i915_gem_object_get_pages_internal(struct drm_i915_gem_object *obj)
->   
->   	max_order = MAX_ORDER;
->   #ifdef CONFIG_SWIOTLB
-> -	if (is_swiotlb_active()) {
-> +	if (is_swiotlb_active(NULL)) {
->   		unsigned int max_segment;
->   
->   		max_segment = swiotlb_max_segment();
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_ttm.c b/drivers/gpu/drm/nouveau/nouveau_ttm.c
-> index e8b506a6685b..2a2ae6d6cf6d 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_ttm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_ttm.c
-> @@ -321,7 +321,7 @@ nouveau_ttm_init(struct nouveau_drm *drm)
->   	}
->   
->   #if IS_ENABLED(CONFIG_SWIOTLB) && IS_ENABLED(CONFIG_X86)
-> -	need_swiotlb = is_swiotlb_active();
-> +	need_swiotlb = is_swiotlb_active(NULL);
->   #endif
->   
->   	ret = ttm_device_init(&drm->ttm.bdev, &nouveau_bo_driver, drm->dev->dev,
-> diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
-> index b7a8f3a1921f..6d548ce53ce7 100644
-> --- a/drivers/pci/xen-pcifront.c
-> +++ b/drivers/pci/xen-pcifront.c
-> @@ -693,7 +693,7 @@ static int pcifront_connect_and_init_dma(struct pcifront_device *pdev)
->   
->   	spin_unlock(&pcifront_dev_lock);
->   
-> -	if (!err && !is_swiotlb_active()) {
-> +	if (!err && !is_swiotlb_active(NULL)) {
->   		err = pci_xen_swiotlb_init_late();
->   		if (err)
->   			dev_err(&pdev->xdev->dev, "Could not setup SWIOTLB!\n");
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 2a6cca07540b..c530c976d18b 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -123,7 +123,7 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
->   void __init swiotlb_exit(void);
->   unsigned int swiotlb_max_segment(void);
->   size_t swiotlb_max_mapping_size(struct device *dev);
-> -bool is_swiotlb_active(void);
-> +bool is_swiotlb_active(struct device *dev);
->   void __init swiotlb_adjust_size(unsigned long size);
->   #else
->   #define swiotlb_force SWIOTLB_NO_FORCE
-> @@ -143,7 +143,7 @@ static inline size_t swiotlb_max_mapping_size(struct device *dev)
->   	return SIZE_MAX;
->   }
->   
-> -static inline bool is_swiotlb_active(void)
-> +static inline bool is_swiotlb_active(struct device *dev)
->   {
->   	return false;
->   }
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 84c9feb5474a..7a88c34d0867 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -495,7 +495,7 @@ int dma_direct_supported(struct device *dev, u64 mask)
->   size_t dma_direct_max_mapping_size(struct device *dev)
->   {
->   	/* If SWIOTLB is active, use its maximum mapping size */
-> -	if (is_swiotlb_active() &&
-> +	if (is_swiotlb_active(dev) &&
->   	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE))
+Add a tracepoint to log internal failures (such as cache errors) that we
+don't otherwise want to pass back to the netfs.
 
-I wonder if it's worth trying to fold these other conditions into 
-is_swiotlb_active() itself? I'm not entirely sure what matters for Xen, 
-but for the other cases it seems like they probably only care about 
-whether bouncing may occur for their particular device or not (possibly 
-they want to be using dma_max_mapping_size() now anyway - TBH I'm 
-struggling to make sense of what the swiotlb_max_segment business is 
-supposed to mean).
+Signed-off-by: David Howells <dhowells@redhat.com>
+Tested-by: Jeff Layton <jlayton@kernel.org>
+Tested-by: Dave Wysochanski <dwysocha@redhat.com>
+Tested-By: Marc Dionne <marc.dionne@auristor.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-mm@kvack.org
+cc: linux-cachefs@redhat.com
+cc: linux-afs@lists.infradead.org
+cc: linux-nfs@vger.kernel.org
+cc: linux-cifs@vger.kernel.org
+cc: ceph-devel@vger.kernel.org
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-fsdevel@vger.kernel.org
+Link: https://lore.kernel.org/r/161781048813.463527.1557000804674707986.stgit@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/161789082749.6155.15498680577213140870.stgit@warthog.procyon.org.uk/ # v6
+---
 
-Otherwise, patch #9 will need to touch here as well to make sure that 
-per-device forced bouncing is reflected correctly.
+ fs/netfs/read_helper.c       |   14 +++++++++-
+ include/trace/events/netfs.h |   58 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+), 2 deletions(-)
 
-Robin.
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index cd3b61d5e192..1d3b50c5db6d 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -271,6 +271,8 @@ static void netfs_rreq_copy_terminated(void *priv, ssize_t transferred_or_error,
+ 
+ 	if (IS_ERR_VALUE(transferred_or_error)) {
+ 		netfs_stat(&netfs_n_rh_write_failed);
++		trace_netfs_failure(rreq, subreq, transferred_or_error,
++				    netfs_fail_copy_to_cache);
+ 	} else {
+ 		netfs_stat(&netfs_n_rh_write_done);
+ 	}
+@@ -323,6 +325,7 @@ static void netfs_rreq_do_write_to_cache(struct netfs_read_request *rreq)
+ 		ret = cres->ops->prepare_write(cres, &subreq->start, &subreq->len,
+ 					       rreq->i_size);
+ 		if (ret < 0) {
++			trace_netfs_failure(rreq, subreq, ret, netfs_fail_prepare_write);
+ 			trace_netfs_sreq(subreq, netfs_sreq_trace_write_skip);
+ 			continue;
+ 		}
+@@ -627,6 +630,8 @@ void netfs_subreq_terminated(struct netfs_read_subrequest *subreq,
+ 
+ 	if (IS_ERR_VALUE(transferred_or_error)) {
+ 		subreq->error = transferred_or_error;
++		trace_netfs_failure(rreq, subreq, transferred_or_error,
++				    netfs_fail_read);
+ 		goto failed;
+ 	}
+ 
+@@ -996,8 +1001,10 @@ int netfs_readpage(struct file *file,
+ 	} while (test_bit(NETFS_RREQ_IN_PROGRESS, &rreq->flags));
+ 
+ 	ret = rreq->error;
+-	if (ret == 0 && rreq->submitted < rreq->len)
++	if (ret == 0 && rreq->submitted < rreq->len) {
++		trace_netfs_failure(rreq, NULL, ret, netfs_fail_short_readpage);
+ 		ret = -EIO;
++	}
+ out:
+ 	netfs_put_read_request(rreq, false);
+ 	return ret;
+@@ -1069,6 +1076,7 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+ 		/* Allow the netfs (eg. ceph) to flush conflicts. */
+ 		ret = ops->check_write_begin(file, pos, len, page, _fsdata);
+ 		if (ret < 0) {
++			trace_netfs_failure(NULL, NULL, ret, netfs_fail_check_write_begin);
+ 			if (ret == -EAGAIN)
+ 				goto retry;
+ 			goto error;
+@@ -1145,8 +1153,10 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
+ 	}
+ 
+ 	ret = rreq->error;
+-	if (ret == 0 && rreq->submitted < rreq->len)
++	if (ret == 0 && rreq->submitted < rreq->len) {
++		trace_netfs_failure(rreq, NULL, ret, netfs_fail_short_write_begin);
+ 		ret = -EIO;
++	}
+ 	netfs_put_read_request(rreq, false);
+ 	if (ret < 0)
+ 		goto error;
+diff --git a/include/trace/events/netfs.h b/include/trace/events/netfs.h
+index e3ebeabd3852..de1c64635e42 100644
+--- a/include/trace/events/netfs.h
++++ b/include/trace/events/netfs.h
+@@ -47,6 +47,15 @@ enum netfs_sreq_trace {
+ 	netfs_sreq_trace_write_term,
+ };
+ 
++enum netfs_failure {
++	netfs_fail_check_write_begin,
++	netfs_fail_copy_to_cache,
++	netfs_fail_read,
++	netfs_fail_short_readpage,
++	netfs_fail_short_write_begin,
++	netfs_fail_prepare_write,
++};
++
+ #endif
+ 
+ #define netfs_read_traces					\
+@@ -81,6 +90,14 @@ enum netfs_sreq_trace {
+ 	EM(netfs_sreq_trace_write_skip,		"SKIP ")	\
+ 	E_(netfs_sreq_trace_write_term,		"WTERM")
+ 
++#define netfs_failures							\
++	EM(netfs_fail_check_write_begin,	"check-write-begin")	\
++	EM(netfs_fail_copy_to_cache,		"copy-to-cache")	\
++	EM(netfs_fail_read,			"read")			\
++	EM(netfs_fail_short_readpage,		"short-readpage")	\
++	EM(netfs_fail_short_write_begin,	"short-write-begin")	\
++	E_(netfs_fail_prepare_write,		"prep-write")
++
+ 
+ /*
+  * Export enum symbols via userspace.
+@@ -94,6 +111,7 @@ netfs_read_traces;
+ netfs_rreq_traces;
+ netfs_sreq_sources;
+ netfs_sreq_traces;
++netfs_failures;
+ 
+ /*
+  * Now redefine the EM() and E_() macros to map the enums to the strings that
+@@ -197,6 +215,46 @@ TRACE_EVENT(netfs_sreq,
+ 		      __entry->error)
+ 	    );
+ 
++TRACE_EVENT(netfs_failure,
++	    TP_PROTO(struct netfs_read_request *rreq,
++		     struct netfs_read_subrequest *sreq,
++		     int error, enum netfs_failure what),
++
++	    TP_ARGS(rreq, sreq, error, what),
++
++	    TP_STRUCT__entry(
++		    __field(unsigned int,		rreq		)
++		    __field(unsigned short,		index		)
++		    __field(short,			error		)
++		    __field(unsigned short,		flags		)
++		    __field(enum netfs_read_source,	source		)
++		    __field(enum netfs_failure,		what		)
++		    __field(size_t,			len		)
++		    __field(size_t,			transferred	)
++		    __field(loff_t,			start		)
++			     ),
++
++	    TP_fast_assign(
++		    __entry->rreq	= rreq->debug_id;
++		    __entry->index	= sreq ? sreq->debug_index : 0;
++		    __entry->error	= error;
++		    __entry->flags	= sreq ? sreq->flags : 0;
++		    __entry->source	= sreq ? sreq->source : NETFS_INVALID_READ;
++		    __entry->what	= what;
++		    __entry->len	= sreq ? sreq->len : 0;
++		    __entry->transferred = sreq ? sreq->transferred : 0;
++		    __entry->start	= sreq ? sreq->start : 0;
++			   ),
++
++	    TP_printk("R=%08x[%u] %s f=%02x s=%llx %zx/%zx %s e=%d",
++		      __entry->rreq, __entry->index,
++		      __print_symbolic(__entry->source, netfs_sreq_sources),
++		      __entry->flags,
++		      __entry->start, __entry->transferred, __entry->len,
++		      __print_symbolic(__entry->what, netfs_failures),
++		      __entry->error)
++	    );
++
+ #endif /* _TRACE_NETFS_H */
+ 
+ /* This part must be outside protection */
 
->   		return swiotlb_max_mapping_size(dev);
->   	return SIZE_MAX;
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index ffbb8724e06c..1d221343f1c8 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -659,9 +659,9 @@ size_t swiotlb_max_mapping_size(struct device *dev)
->   	return ((size_t)IO_TLB_SIZE) * IO_TLB_SEGSIZE;
->   }
->   
-> -bool is_swiotlb_active(void)
-> +bool is_swiotlb_active(struct device *dev)
->   {
-> -	return io_tlb_default_mem != NULL;
-> +	return get_io_tlb_mem(dev) != NULL;
->   }
->   EXPORT_SYMBOL_GPL(is_swiotlb_active);
->   
-> 
+
