@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A854F36951B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247EA36951E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242779AbhDWOv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        id S242790AbhDWOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbhDWOv1 (ORCPT
+        with ESMTP id S229871AbhDWOwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:51:27 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90CFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:50:50 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id n140so49382149oig.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:50:50 -0700 (PDT)
+        Fri, 23 Apr 2021 10:52:07 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EFAC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:51:31 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id r186so21628416oif.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=f26salV1YONwthrr9i5IByzy2v+Ur3hR9OqqinAL1Ug=;
-        b=HCf1U1iQ4B4smQ+qxODrbF29uSIY+cWfhHMTASKdmajsJcSAgNlRFEOv1jVm32LR9U
-         xD3SoRkKn5gItx+pabT3s0MQCxRnKoJB0UeFiMWtWCT6hwOn8O971+5oBXnzU6sZbK+1
-         cC6qa3DrbBxN5vceGGgMfKYcS8qNzxt6tZUYSGJmyweS4huG2zmNa1XlM1PW3Rl//kp8
-         Qu5oYOGhNwlEhE7h/qNbgJrWY0He4thJKrqwfJXkcdOY9c1ALoxyN302hU9TU3cK7JWS
-         so+f+n6rNIlRcOFcschbb95/pFDuqwPkpR/8bP1B/HlME1VAKv9/p3bxm52+RLmfevfV
-         tBvA==
+        bh=EJM6pcyl5JpVhByUSBnFL3WnPUaWSbf6IkyIpm5v1k0=;
+        b=BZlG4390wuLg5aXUToizN7kM6ql25OpmR5pOWw+rrhzNUcGe4Bcnt0O2J4gM35lPEb
+         JxjMmMF0XSlrFkhrgqHzh9pYerbsZWdHKJVrQMcekzegzPGarMTIV/B7SK20ajESfOMe
+         OnXYqeGxvoIH1+D4ua/SCEbLInqQDZglV4gERWblGVvYFrJu1jqjW7YbrZSOMqTALYWP
+         HikgNxpLniYY8CRv9ii4L9utkPxgg5x1ZQ11Fo0kQVmRgIJEMq0fTJBTgM47a1NRxESu
+         sdypenaNA7+K5ZVeF9S4OyJL0Dzv81Hm8JboWGoGizNbZZsLFZflqy2wqT8n3cj7vWiW
+         euCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=f26salV1YONwthrr9i5IByzy2v+Ur3hR9OqqinAL1Ug=;
-        b=dgpMo3aweUNQs6sOkICagIIK5E1ZveCEUp1Q1aZNBL5fekVBajqdjKL4VhHbHFCOBo
-         z9XBZAFBIvtUrwBLbHAITJI8dCLM5VqXJkqrfsTfipcbCPqOzkuf1tRfRA/+zI3T31Z3
-         aN0Vlfa2UI68C5EIX2Av+BMf2G+341nSQStbAFbvtv7OuuY+FYnj8QFfvJflGe+Wjdnz
-         B6vcyH+bEBjdJrP9bv+zqncM/3ASJws9OpzfWARd+uJPa+6Q2FsUSDhHbS3S0VABOMfM
-         xL/dT3z6ojkLORuJawoJxVZShWLwWsP2CEw7FMk232zGNrH0JZKltvek/TM6pu2Sqtj2
-         KkHA==
-X-Gm-Message-State: AOAM533bO8aLru+1st5LHERNeIbWo+ImRPcOwpCyUquu76KX978mMTeH
-        5+MG+I2z/ku6zGKnRQzejJZI/g==
-X-Google-Smtp-Source: ABdhPJyWTiOMQqGgTo0m+fFWWeOjgdIvyqP6jE16dXn/PMChAYrJ+ebmGllRDk6dz3Nt1YvTqqZ82g==
-X-Received: by 2002:aca:dfc1:: with SMTP id w184mr3145515oig.79.1619189450134;
-        Fri, 23 Apr 2021 07:50:50 -0700 (PDT)
+        bh=EJM6pcyl5JpVhByUSBnFL3WnPUaWSbf6IkyIpm5v1k0=;
+        b=RvzdmhXzQ/eh9NQBdd4wI++g2mkssGo95WMMTT2Q1+fBL8SERAQ5jni4br4zTgV+c/
+         RYztOEqkjFsCBidgAifXKvAnzEz5LPbcS+ekRcw46G39+kAkA83i6LWT09GOrU07VnM9
+         J1JwghVVmOmXVifuM0YcMyJNLf6A1Qhg0CulJuXvtqfOAg094azYDeDVrI8k2OOk3IFl
+         X/LDxdaLAdpOwvktS9+YFBx9PJ3Jc+xGhf7RTLIqHO9yuMNX9nMkyCOB5W3lj3QYvga5
+         +sHSUkYQn0MsfkUlkThQPXaFEZxfUcJHKZNc5A+r0lFOqshNltFFc+/8UbXZ1LJAOR/w
+         ztdQ==
+X-Gm-Message-State: AOAM531FQ/8nRjahZNHcmtvQjU7Ddupj5ONdO3j5xSC4Wmcdog+89NOl
+        mnf2u/5s8I99Myo9U9rHx/oOtA==
+X-Google-Smtp-Source: ABdhPJypPkXURU9wCcUA9qAGTFRHLghubKiKXtHZ1oSHCwTXEJQAGZNqpwuAdUzgZLo69Ia2QRkSEA==
+X-Received: by 2002:aca:4749:: with SMTP id u70mr3017886oia.34.1619189490542;
+        Fri, 23 Apr 2021 07:51:30 -0700 (PDT)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l9sm1244933oog.32.2021.04.23.07.50.49
+        by smtp.gmail.com with ESMTPSA id w9sm1288105oiv.8.2021.04.23.07.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:50:49 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:50:47 -0500
+        Fri, 23 Apr 2021 07:51:30 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:51:28 -0500
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Douglas Anderson <dianders@chromium.org>
 Cc:     Andrzej Hajda <a.hajda@samsung.com>,
@@ -64,35 +64,27 @@ Cc:     Andrzej Hajda <a.hajda@samsung.com>,
         linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Robert Foss <robert.foss@linaro.org>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 16/27] drm/panel: panel-simple: Get rid of hacky HPD
- chicken-and-egg code
-Message-ID: <YILex5oaMUQy5zs/@builder.lan>
+Subject: Re: [PATCH v4 17/27] drm/bridge: ti-sn65dsi86: Use pm_runtime
+ autosuspend
+Message-ID: <YILe8KziQNalL994@builder.lan>
 References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.16.I40eeedc23459d1e3fc96fa6cdad775d88c6e706c@changeid>
+ <20210416153909.v4.17.I4c0b4a87e4dc19e5023b4d0a21bbfa6d9c09ebd8@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.16.I40eeedc23459d1e3fc96fa6cdad775d88c6e706c@changeid>
+In-Reply-To: <20210416153909.v4.17.I4c0b4a87e4dc19e5023b4d0a21bbfa6d9c09ebd8@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
 
-> When I added support for the hpd-gpio to simple-panel in commit
-> 48834e6084f1 ("drm/panel-simple: Support hpd-gpios for delaying
-> prepare()"), I added a special case to handle a circular dependency I
-> was running into on the ti-sn65dsi86 bridge chip. On my board the
-> hpd-gpio is actually provided by the bridge chip. That was causing
-> some circular dependency problems that I had to work around by getting
-> the hpd-gpio late.
-> 
-> I've now reorganized the ti-sn65dsi86 bridge chip driver to be a
-> collection of sub-drivers. Now the GPIO part can probe separately and
-> that breaks the chain. Let's get rid of the old code to clean things
-> up.
+> Let's make the bridge use autosuspend with a 500ms delay. This is in
+> preparation for promoting DP AUX transfers to their own sub-driver so
+> that we're not constantly powering up and down the device as we
+> transfer all the chunks.
 > 
 
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -105,66 +97,76 @@ Bjorn
 > 
 > (no changes since v1)
 > 
->  drivers/gpu/drm/panel/panel-simple.c | 24 +++++-------------------
->  1 file changed, 5 insertions(+), 19 deletions(-)
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 6b22872b3281..90a17ca79d06 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -366,8 +366,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 44edcf6f5744..a98abf496190 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -243,7 +243,7 @@ static int status_show(struct seq_file *s, void *data)
+>  		seq_printf(s, "[0x%02x] = 0x%08x\n", reg, val);
+>  	}
+>  
+> -	pm_runtime_put(pdata->dev);
+> +	pm_runtime_put_autosuspend(pdata->dev);
+>  
 >  	return 0;
 >  }
->  
-> -static int panel_simple_get_hpd_gpio(struct device *dev,
-> -				     struct panel_simple *p, bool from_probe)
-> +static int panel_simple_get_hpd_gpio(struct device *dev, struct panel_simple *p)
->  {
->  	int err;
->  
-> @@ -375,17 +374,10 @@ static int panel_simple_get_hpd_gpio(struct device *dev,
->  	if (IS_ERR(p->hpd_gpio)) {
->  		err = PTR_ERR(p->hpd_gpio);
->  
-> -		/*
-> -		 * If we're called from probe we won't consider '-EPROBE_DEFER'
-> -		 * to be an error--we'll leave the error code in "hpd_gpio".
-> -		 * When we try to use it we'll try again.  This allows for
-> -		 * circular dependencies where the component providing the
-> -		 * hpd gpio needs the panel to init before probing.
-> -		 */
-> -		if (err != -EPROBE_DEFER || !from_probe) {
-> +		if (err != -EPROBE_DEFER)
->  			dev_err(dev, "failed to get 'hpd' GPIO: %d\n", err);
-> -			return err;
-> -		}
-> +
-> +		return err;
+> @@ -292,7 +292,7 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+>  	if (!edid) {
+>  		pm_runtime_get_sync(pdata->dev);
+>  		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
+> -		pm_runtime_put(pdata->dev);
+> +		pm_runtime_put_autosuspend(pdata->dev);
 >  	}
+>  
+>  	if (edid && drm_edid_is_valid(edid)) {
+> @@ -418,7 +418,7 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+>  	/* check if continuous dsi clock is required or not */
+>  	pm_runtime_get_sync(pdata->dev);
+>  	regmap_read(pdata->regmap, SN_DPPLL_SRC_REG, &val);
+> -	pm_runtime_put(pdata->dev);
+> +	pm_runtime_put_autosuspend(pdata->dev);
+>  	if (!(val & DPPLL_CLK_SRC_DSICLK))
+>  		dsi->mode_flags |= MIPI_DSI_CLOCK_NON_CONTINUOUS;
+>  
+> @@ -1049,7 +1049,7 @@ static int ti_sn_bridge_gpio_get(struct gpio_chip *chip, unsigned int offset)
+>  	 */
+>  	pm_runtime_get_sync(pdata->dev);
+>  	ret = regmap_read(pdata->regmap, SN_GPIO_IO_REG, &val);
+> -	pm_runtime_put(pdata->dev);
+> +	pm_runtime_put_autosuspend(pdata->dev);
+>  
+>  	if (ret)
+>  		return ret;
+> @@ -1100,7 +1100,7 @@ static int ti_sn_bridge_gpio_direction_input(struct gpio_chip *chip,
+>  	 * it off and when it comes back it will have lost all state, but
+>  	 * that's OK because the default is input and we're now an input.
+>  	 */
+> -	pm_runtime_put(pdata->dev);
+> +	pm_runtime_put_autosuspend(pdata->dev);
 >  
 >  	return 0;
-> @@ -416,12 +408,6 @@ static int panel_simple_prepare_once(struct panel_simple *p)
->  		msleep(delay);
->  
->  	if (p->hpd_gpio) {
-> -		if (IS_ERR(p->hpd_gpio)) {
-> -			err = panel_simple_get_hpd_gpio(dev, p, false);
-> -			if (err)
-> -				goto error;
-> -		}
-> -
->  		if (p->desc->delay.hpd_absent_delay)
->  			hpd_wait_us = p->desc->delay.hpd_absent_delay * 1000UL;
->  		else
-> @@ -682,7 +668,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
->  
->  	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
->  	if (!panel->no_hpd) {
-> -		err = panel_simple_get_hpd_gpio(dev, panel, true);
-> +		err = panel_simple_get_hpd_gpio(dev, panel);
->  		if (err)
->  			return err;
+>  }
+> @@ -1126,7 +1126,7 @@ static int ti_sn_bridge_gpio_direction_output(struct gpio_chip *chip,
+>  				 SN_GPIO_MUX_OUTPUT << shift);
+>  	if (ret) {
+>  		clear_bit(offset, pdata->gchip_output);
+> -		pm_runtime_put(pdata->dev);
+> +		pm_runtime_put_autosuspend(pdata->dev);
 >  	}
+>  
+>  	return ret;
+> @@ -1408,6 +1408,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_runtime_disable, dev);
+>  	if (ret)
+>  		return ret;
+> +	pm_runtime_set_autosuspend_delay(pdata->dev, 500);
+> +	pm_runtime_use_autosuspend(pdata->dev);
+>  
+>  	ti_sn65dsi86_debugfs_init(pdata);
+>  
 > -- 
 > 2.31.1.368.gbe11c130af-goog
 > 
