@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863AC369AEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81935369AEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243764AbhDWTaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:30:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56902 "EHLO mail.kernel.org"
+        id S243822AbhDWTaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:30:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhDWTaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:30:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E7F61425;
-        Fri, 23 Apr 2021 19:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1619206181;
-        bh=hmXgOMfwOqJWu9RVsEL53nURi7NTe6eTVDA00J2JLGY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ghs6938sRT3RY96brYK9XC67wcNBnu5gflBqZKXhDOXIpujK/eN2ORs7mZ5d0cguv
-         K/jbAImScii8I8CnZTmYjJPnnLMZOrLm5GK3V1w5q7qGV2ZtCEJQA6iL9AasAKxH0R
-         VE0qhRHkPJIoxR4VbrvpEWBDikog8gNYrPI8DCiY=
-Date:   Fri, 23 Apr 2021 12:29:40 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2 2/2] mm/filemap: fix mapping_seek_hole_data on THP &
- 32-bit
-Message-Id: <20210423122940.26829dc784a4b6546349dac5@linux-foundation.org>
-In-Reply-To: <alpine.LSU.2.11.2104231009520.18646@eggly.anvils>
-References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils>
-        <alpine.LSU.2.11.2104211737410.3299@eggly.anvils>
-        <20210422011631.GL3596236@casper.infradead.org>
-        <alpine.LSU.2.11.2104212253000.4412@eggly.anvils>
-        <alpine.LSU.2.11.2104221338410.1170@eggly.anvils>
-        <alpine.LSU.2.11.2104221347240.1170@eggly.anvils>
-        <20210422160410.e9014b38b843d7a6ec06a9bb@linux-foundation.org>
-        <alpine.LSU.2.11.2104231009520.18646@eggly.anvils>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229549AbhDWTad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 15:30:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 107286134F;
+        Fri, 23 Apr 2021 19:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619206196;
+        bh=ikzGb+8FgMM5E+UXyiyzMOROEMO+CNXykpkkBbepjm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NIzx/5eCMVVtm4AJM102X9KO2qHDSz+Aul45b4EMeDbQDu4C66vCLColnWz7AdRPw
+         2zyXZMMH1pdI+PR+MrAoINvOmsnNhJxU4EPfq298jYqHiH5RmVaRH/sIsYpWE0h7lx
+         N950L7r1vBrIYR+O6JLnrkjw5AX1vILGLlKb4NaDDSbyBqeyToNYCiJn7FXf3VUjU5
+         xsYWyoKup6RctsBga+G+vJZ9Y/9AndFHfcrkv3J13ImdzxMM0n5n2Az+4LsEXTemL7
+         wTP5DzUhusiat/7txRfZ6Q/xuR+19uzHmU5yRvkW5+JYOlEsmhgwHskZy1WW5NvXnj
+         t4G5C7kfGUutg==
+Date:   Fri, 23 Apr 2021 22:29:52 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     "Shelat, Abhi" <a.shelat@northeastern.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YIMgMHwYkVBdrICs@unreal>
+References: <YH+7ZydHv4+Y1hlx@kroah.com>
+ <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
+ <YH/8jcoC1ffuksrf@kroah.com>
+ <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
+ <20210421133727.GA27929@fieldses.org>
+ <YIAta3cRl8mk/RkH@unreal>
+ <20210421135637.GB27929@fieldses.org>
+ <20210422193950.GA25415@fieldses.org>
+ <YIMDCNx4q6esHTYt@unreal>
+ <20210423180727.GD10457@fieldses.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423180727.GD10457@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 10:22:51 -0700 (PDT) Hugh Dickins <hughd@google.com> wrote:
-
-> On Thu, 22 Apr 2021, Andrew Morton wrote:
-> > On Thu, 22 Apr 2021 13:48:57 -0700 (PDT) Hugh Dickins <hughd@google.com> wrote:
+On Fri, Apr 23, 2021 at 02:07:27PM -0400, J. Bruce Fields wrote:
+> On Fri, Apr 23, 2021 at 08:25:28PM +0300, Leon Romanovsky wrote:
+> > On Thu, Apr 22, 2021 at 03:39:50PM -0400, J. Bruce Fields wrote:
+> > > On Wed, Apr 21, 2021 at 09:56:37AM -0400, J. Bruce Fields wrote:
+> > > > On Wed, Apr 21, 2021 at 04:49:31PM +0300, Leon Romanovsky wrote:
+> > > > > If you want to see another accepted patch that is already part of
+> > > > > stable@, you are invited to take a look on this patch that has "built-in bug":
+> > > > > 8e949363f017 ("net: mlx5: Add a missing check on idr_find, free buf")
+> > > > 
+> > > > Interesting, thanks.
+> > > 
+> > > Though looking at it now, I'm not actually seeing the bug--probably I'm
+> > > overlooking something obvious.
 > > 
-> > > Andrew, I'd have just sent a -fix.patch to remove the unnecessary u64s,
-> > > but need to reword the commit message: so please replace yesterday's
-> > > mm-filemap-fix-mapping_seek_hole_data-on-thp-32-bit.patch
-> > > by this one - thanks.
-> > 
-> > Actually, I routinely update the base patch's changelog when queueing a -fix.
+> > It was fixed in commit 31634bf5dcc4 ("net/mlx5: FPGA, tls, hold rcu read lock a bit longer")
 > 
-> And thank you for that, but if there's time, I think we would still
-> prefer the final commit message to include corrections where Matthew
-> enlightened me (that "sign-extension" claim came from my confusion):
+> So is the "Fixes:" line on that commit wrong?  It claims the bug was
+> introduced by an earlier commit, ab412e1dd7db ("net/mlx5: Accel, add TLS
+> rx offload routines").
 
-That's my point.  When I merge a -v2 as a -fix, I replace the v1
-patch's changelog with v2's changelog so everything works out after
-folding.
+Yes, I think that Fixes line is misleading.
 
+> 
+> Looks like Aditya Pakki's commit may have widened the race a little, but
+> I find it a little hard to fault him for that.
+
+We can argue about severity of this bug, but the whole paper talks about
+introduction of UAF bugs unnoticed.
+
+Thanks
+
+> 
+> --b.
