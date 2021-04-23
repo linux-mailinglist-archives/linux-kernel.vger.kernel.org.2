@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E2C368D8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3461D368D8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbhDWHEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:04:14 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36167 "EHLO
+        id S240699AbhDWHEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:04:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36200 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240699AbhDWHEL (ORCPT
+        with ESMTP id S229456AbhDWHEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:04:11 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
+        Fri, 23 Apr 2021 03:04:47 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lZpqg-0002xq-Hv
-        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 07:03:34 +0000
-Received: by mail-wm1-f71.google.com with SMTP id 26-20020a05600c021ab029012e366eff83so349521wmi.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:03:34 -0700 (PDT)
+        id 1lZprG-00030i-Dr
+        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 07:04:10 +0000
+Received: by mail-wr1-f69.google.com with SMTP id 88-20020adf95610000b029010758d8d7e2so3132422wrs.19
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:04:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=V38j0qcwNTGkM7Oe+SGtrgoJmBSn3ZlecfCYAX/KXuM=;
-        b=mjvdkqb2lj60AhoHbpV73yjZsY7pFUIvYMGFkE1EfEdRylniIwHSZXgxEsRDCc2WoH
-         jrNNWM/Lsry2TSjB9Poxe9qfdA2noRp3F6xjUjI5U7BTImMjeOffnSk1xCRgC0AMJL7Z
-         CeoOK/fI5c4FyX8dANK2NTHu0+Dui+CYAJag2HxmwF5gCjX3H2L6t0nTfZ3waEoKG5Es
-         03z3r8VkcAXb6JSdomH2T5YQygrVjtzyK9i8B4PRlMXjqEukBnq3g4H3GTuiVOWCekMf
-         X6Y/RFVWSdyh2S4j/NpJh4hf18ViSJzWR6v5YF/xbycOGEKr6Ve/bftiy5WLmN4SQfHk
-         WtvA==
-X-Gm-Message-State: AOAM532wQLNAeSMOKhCcMBs+uHafe7rJuGwDKxXt8Hzs/BbEcw/i5Mb7
-        Jb6rkUW23+50iFrrprlJM2XC5p7XY27F86S72w0PLxT2nMumICK4838aiGEP1a8WVKOMDFpC88R
-        uM7/qXnkiifeveQ3V0PHf4DQzklCK6a7Ks/Mual3Pcw==
-X-Received: by 2002:a5d:45ce:: with SMTP id b14mr2676104wrs.357.1619161414304;
-        Fri, 23 Apr 2021 00:03:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyO59qk5YeDRA+kiPdKbggmrUajmisQRCiN+3ylFMCG0okSSvLVuBDRIx1AxMLoeNtV9f9omg==
-X-Received: by 2002:a5d:45ce:: with SMTP id b14mr2676092wrs.357.1619161414191;
-        Fri, 23 Apr 2021 00:03:34 -0700 (PDT)
+        bh=6OTJ8nwJ9QH/vOYRJ/lKw2Zze+GhAGRCcxguGQb/Ofo=;
+        b=pGxggYXo8VszF6zye2+KA/nGYKqri7EF9ITJ/1woA1iKAh4Y+J7lExakRMS8S3Qqn7
+         BZ2fMM9vmvOJQ0jr1F0FxDkn6ZIi5zKdQhfaVWlCc6C+aUTWYEkKyBa0iMobmcS5ItiL
+         ezSWfaIwGGYMANlFY/rSZQvzm7b9jpMeFNZEmWUnLcueiRhlVhAJj8Z3hX9z1CfFIqG5
+         m9xM1jzlnfyf3jwaGxOTxus5bWbrSHnEkQi3TMfYRswdxZGS1xxc64++rZkSJ+oVYia4
+         8r4CeKK2vNdsEslAC1HiuEjbNpMnnCp0zvzjGogbTzKdSmSwLekkuuKZUgiuIINHY4DI
+         bDTQ==
+X-Gm-Message-State: AOAM530+Amb0RBEDiyi3LY5BalaKldBysNsJt//63i0qloNg/8RntqVi
+        WG5EBzu4SD4xIa4EDcCITs3nV7eYLUoOFqmMjU80C/9ShrgjujakvkwcO2/pC4sBsscrRPHLnqH
+        VJEWaa9OLe8F/OAJuyBtW+K9ebXoUVVb8Uf6kP5lLyw==
+X-Received: by 2002:a05:6000:1ac5:: with SMTP id i5mr2720714wry.412.1619161450205;
+        Fri, 23 Apr 2021 00:04:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLgHzE2ruZNhHHOewzD5BqENY0Py4skf0E/cE5rjXhjpb1kjw4TCu7EiKjupVYKcZdWnq1gw==
+X-Received: by 2002:a05:6000:1ac5:: with SMTP id i5mr2720702wry.412.1619161450099;
+        Fri, 23 Apr 2021 00:04:10 -0700 (PDT)
 Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id z18sm9236166wrr.9.2021.04.23.00.03.33
+        by smtp.gmail.com with ESMTPSA id e9sm7800169wrs.84.2021.04.23.00.04.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 00:03:33 -0700 (PDT)
-Subject: Re: [PATCH 005/190] Revert "media: exynos4-is: Fix a reference count
- leak due to pm_runtime_get_sync"
+        Fri, 23 Apr 2021 00:04:09 -0700 (PDT)
+Subject: Re: [PATCH 006/190] Revert "media: exynos4-is: Fix a reference count
+ leak"
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     Qiushi Wu <wu000273@umn.edu>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-6-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-7-gregkh@linuxfoundation.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <a3433d00-2fd5-f7a5-703f-76d348884449@canonical.com>
-Date:   Fri, 23 Apr 2021 09:03:33 +0200
+Message-ID: <e9fd0218-5ef6-784f-8702-22013b4e1593@canonical.com>
+Date:   Fri, 23 Apr 2021 09:04:09 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-6-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-7-gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,7 +68,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
-> This reverts commit c47f7c779ef0458a58583f00c9ed71b7f5a4d0a2.
+> This reverts commit 64157b2cb1940449e7df2670e85781c690266588.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -89,9 +89,8 @@ On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
 > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/media/platform/exynos4-is/media-dev.c | 4 +---
+>  drivers/media/platform/exynos4-is/mipi-csis.c | 4 +---
 >  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
 
 
 This looks like a good commit but should be done now in a different way
