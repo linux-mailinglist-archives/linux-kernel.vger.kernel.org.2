@@ -2,141 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C523692EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136AA3692F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242751AbhDWNT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:19:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231169AbhDWNT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619183960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2oFmuFF9Ujspg66yFLYIBAD7UKWnT0Uxm+etSkS7sV8=;
-        b=eXYfnnx3jyjf3c/dk8qinFBdXeydYsh1xFayfc1f3T4g71uq3Cy2HjqIh77zOvBUn3GTIN
-        yvpNMrKNIgjTBHc0NhGWZw7k32eIldEf+VQU9oIC9nIL38jD7tDrjK6oemyUKnYhVDyTek
-        O6o54ZYdgV/2HRGfbLLRNhalFH/murU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-UI0mO126PTWCLOOXR4Fbng-1; Fri, 23 Apr 2021 09:19:16 -0400
-X-MC-Unique: UI0mO126PTWCLOOXR4Fbng-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1764F8026AD;
-        Fri, 23 Apr 2021 13:19:09 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-112-41.ams2.redhat.com [10.36.112.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 704E960BE5;
-        Fri, 23 Apr 2021 13:18:47 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH RFC 7/7] fs: update documentation of get_write_access() and friends
-Date:   Fri, 23 Apr 2021 15:16:40 +0200
-Message-Id: <20210423131640.20080-8-david@redhat.com>
-In-Reply-To: <20210423131640.20080-1-david@redhat.com>
-References: <20210423131640.20080-1-david@redhat.com>
+        id S242542AbhDWNU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:20:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:34716 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231169AbhDWNU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:20:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D140F1396;
+        Fri, 23 Apr 2021 06:20:21 -0700 (PDT)
+Received: from [10.57.67.211] (unknown [10.57.67.211])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 112CF3F73B;
+        Fri, 23 Apr 2021 06:20:19 -0700 (PDT)
+Subject: Re: [PATCH v1] coresight: add node to reset all coresight devices
+To:     Tao Zhang <taozha@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
+References: <1619166578-28690-1-git-send-email-taozha@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <e753898c-0334-cf84-620e-d9b9f18d87e7@arm.com>
+Date:   Fri, 23 Apr 2021 14:20:18 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <1619166578-28690-1-git-send-email-taozha@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As VM_DENYWRITE does no longer exists, let's spring-clean the
-documentation of get_write_access() and friends.
+On 23/04/2021 09:29, Tao Zhang wrote:
+> Add new reset_source_sink node to be able to disable all active
+> coresight devices.
+> In this way, we no longer need to manually disable all active
+> coresight devices one by one. After enabling multiple coresight
+> paths, users can reset their status more conveniently by this
+> node.
+> 
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/fs.h | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+What is the use case here ? Why would you trigger a reset for all the
+sources/sink without gracefully completing any on-going sessions
+(including the perf ones, which are driven by the kernel perf layer)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index ec8f3ddf4a6a..b0a410a14170 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2906,15 +2906,20 @@ static inline void file_end_write(struct file *file)
- }
- 
- /*
-+ * This is used for regular files where some users -- especially the
-+ * currently executed binary in a process, previously handled via
-+ * VM_DENYWRITE -- cannot handle concurrent write (and maybe mmap
-+ * read-write shared) accesses.
-+ *
-  * get_write_access() gets write permission for a file.
-  * put_write_access() releases this write permission.
-- * This is used for regular files.
-- * We cannot support write (and maybe mmap read-write shared) accesses and
-- * MAP_DENYWRITE mmappings simultaneously. The i_writecount field of an inode
-- * can have the following values:
-- * 0: no writers, no VM_DENYWRITE mappings
-- * < 0: (-i_writecount) vm_area_structs with VM_DENYWRITE set exist
-- * > 0: (i_writecount) users are writing to the file.
-+ * deny_write_access() denies write access to a file.
-+ * allow_write_access() re-enables write access to a file.
-+ *
-+ * The i_writecount field of an inode can have the following values:
-+ * 0: no write access, no denied write access
-+ * < 0: (-i_writecount) users that denied write access to the file.
-+ * > 0: (i_writecount) users that have write access to the file.
-  *
-  * Normally we operate on that counter with atomic_{inc,dec} and it's safe
-  * except for the cases where we don't hold i_writecount yet. Then we need to
--- 
-2.30.2
+> This patch base on coresight-next repo
+> http://git.linaro.org/kernel/coresight.git/log/?h=next
+> 
+> And this patch depends on the following patch
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2551216.html
+
+Please post related patches as a series, possibly describing the overall
+problem that you are trying to solve, in the cover letter.
+
+> 
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> Signed-off-by: Mao Jinlong <jinlmao@codeaurora.org>
+> Signed-off-by: Tao Zhang <taozha@codeaurora.org>
+> ---
+>   drivers/hwtracing/coresight/coresight-core.c | 72 ++++++++++++++++++++++++----
+>   1 file changed, 64 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 7dfadb6..0001b6c 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -107,6 +107,23 @@ static int coresight_source_is_unique(struct coresight_device *csdev)
+>   				 csdev, coresight_id_match);
+>   }
+>   
+> +static int coresight_reset_sink(struct device *dev, void *data)
+> +{
+> +	struct coresight_device *csdev = to_coresight_device(dev);
+> +
+> +	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+> +	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
+> +	     csdev->activated)
+> +		csdev->activated = false;
+
+Why is this needed, when the disabl_path() should have taken care of this ?
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void coresight_reset_all_sink(void)
+> +{
+> +	bus_for_each_dev(&coresight_bustype, NULL, NULL, coresight_reset_sink);
+> +}
+> +
+
+How can you disable all the active sinks when some of the sinks could be 
+driven by perf ?
+
+>   static int coresight_find_link_inport(struct coresight_device *csdev,
+>   				      struct coresight_device *parent)
+>   {
+> @@ -1137,7 +1154,7 @@ int coresight_enable(struct coresight_device *csdev)
+>   }
+>   EXPORT_SYMBOL_GPL(coresight_enable);
+>   
+> -void coresight_disable(struct coresight_device *csdev)
+> +static void __coresight_disable(struct coresight_device *csdev)
+>   {
+>   	int  ret;
+>   	struct list_head *path = NULL;
+> @@ -1145,14 +1162,12 @@ void coresight_disable(struct coresight_device *csdev)
+>   	struct coresight_path *cspath_next = NULL;
+>   	struct coresight_device *src_csdev = NULL;
+>   
+> -	mutex_lock(&coresight_mutex);
+> -
+>   	ret = coresight_validate_source(csdev, __func__);
+>   	if (ret)
+> -		goto out;
+> +		return;
+>   
+>   	if (!csdev->enable || !coresight_disable_source(csdev))
+> -		goto out;
+> +		return;
+>   
+>   	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, link) {
+>   		src_csdev = coresight_get_source(cspath->path);
+> @@ -1165,12 +1180,16 @@ void coresight_disable(struct coresight_device *csdev)
+>   		}
+>   	}
+>   	if (path == NULL)
+> -		goto out;
+> +		return;
+>   
+>   	coresight_disable_path(path);
+>   	coresight_release_path(path);
+> +}
+>   
+> -out:
+> +void coresight_disable(struct coresight_device *csdev)
+> +{
+> +	mutex_lock(&coresight_mutex);
+> +	__coresight_disable(csdev);
+>   	mutex_unlock(&coresight_mutex);
+>   }
+>   EXPORT_SYMBOL_GPL(coresight_disable);
+> @@ -1467,7 +1486,43 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
+>   
+>   	return -EAGAIN;
+>   }
+> -EXPORT_SYMBOL_GPL(coresight_timeout);
+
+Why ?
+
+> +
+> +static ssize_t reset_source_sink_store(struct bus_type *bus,
+> +				       const char *buf, size_t size)
+> +{
+> +	int ret = 0;
+> +	unsigned long val;
+> +	struct coresight_path *cspath = NULL;
+> +	struct coresight_path *cspath_next = NULL;
+> +	struct coresight_device *csdev;
+> +
+> +	ret = kstrtoul(buf, 10, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_lock(&coresight_mutex);
+> +
+> +	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, link) {
+> +		csdev = coresight_get_source(cspath->path);
+> +		if (!csdev)
+> +			continue;
+> +		atomic_set(csdev->refcnt, 1);
+
+Is this safe ?
+
+> +		__coresight_disable(csdev);
+> +	}
+> +
+> +	/* Reset all activated sinks */
+> +	coresight_reset_all_sink();
+> +
+> +	mutex_unlock(&coresight_mutex);
+> +	return size;
+> +}
+> +static BUS_ATTR_WO(reset_source_sink);
+> +
+> +static struct attribute *coresight_reset_source_sink_attrs[] = {
+> +	&bus_attr_reset_source_sink.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(coresight_reset_source_sink);
+>   
+>   /*
+>    * coresight_release_platform_data: Release references to the devices connected
+> @@ -1680,6 +1735,7 @@ EXPORT_SYMBOL_GPL(coresight_alloc_device_name);
+>   
+>   struct bus_type coresight_bustype = {
+>   	.name	= "coresight",
+> +	.bus_groups	= coresight_reset_source_sink_groups,
+>   };
+>   
+>   static int __init coresight_init(void)
+> 
 
