@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FC7368E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF10368E82
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241318AbhDWILC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:11:02 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:49629 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229917AbhDWILA (ORCPT
+        id S241347AbhDWILI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241336AbhDWILG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:11:00 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id ZqtHlzRhVvTEDZqtKlcUnC; Fri, 23 Apr 2021 10:10:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1619165423; bh=EcScAH6eePoXZNhp3QLEsBHw0eB+HfJTJNLE+H0Pt/A=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=OK7nVT847yTO3MMsxINrhRCWIjZpKnwazJdO5R4acHvWepErFi2bCOk7+3V4daHXs
-         IMj/OzQeUwwpK7hxXkd/zruiY9BixEWzUQwAqTjGKxTVDHl+dMiAuZKqADTKy1P7rn
-         IaApjmOjm1HGkEZqFZg84ZjyR87OG8Toykqe1CO19aGQDH50ELk+rbSWsLCBPBzGLN
-         2rnNtuHWbH6zwo4z+9IVcpwo5+P7NCEfkQrZBSLcvzxFX1UrXiG3roz1Qu6w8MQJQo
-         knftXxlB/P15z6uMUDYdXeEMJlY4md79iE9C3Lw+RwK11HlpqpirQMYohWGCw7hgAG
-         /MynsUvU5cygQ==
-Subject: Re: [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count
- leak"
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Julia Lawall <julia.lawall@inria.fr>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-10-gregkh@linuxfoundation.org>
- <b43fc2b0-b3cf-15ab-7d3c-25c1f2a3e658@canonical.com>
- <YIJy6AnG6QBlkV/5@kroah.com> <20210423100727.5a999c2e@coco.lan>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <02966f20-342d-cf21-8216-d364b67753b7@xs4all.nl>
-Date:   Fri, 23 Apr 2021 10:10:19 +0200
+        Fri, 23 Apr 2021 04:11:06 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AC3C061574;
+        Fri, 23 Apr 2021 01:10:29 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id r12so72642315ejr.5;
+        Fri, 23 Apr 2021 01:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=9ehiXslja300i2vGj1/93A1eFwKfaTwfsPk1xeLX9g0=;
+        b=mTvEpz2zpeZnMPAsi5WCXFZWP6lDmuYfIHb8spsDH+ZFdAw5955Jn4QCxuCahCwVhu
+         2HfEZB6dg1r5ZFiYL9cFtr+Eg+uOdzzf10gwJshgk6Dk0/jn8oqeZ6Rqc3JHhUSCByZT
+         eIqiD3BzxpNBtswgL1dPuvnJhlbvdIXqHw2F0hoP9T1nVa+685UqEsz5JoW4QpU4UulT
+         bVnm/9Y+I6Z+7t0sDQ1YFdF9SQP7EVB/JVHanABcn7GMxf/teGdINxjrY+Gj0JyrTAOr
+         1hauBrNq0ZirSeDDRTC+zCEK9hVLSWBSnmJ5d8NW+h2uj+kh7RoQqlzS0Xmt4zYOOKhW
+         3X5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9ehiXslja300i2vGj1/93A1eFwKfaTwfsPk1xeLX9g0=;
+        b=HYLHj8Lo7Ju3DOpcmkfFR4SwdZkQG6C+KfLfu7hHVExQFdulT0rl9PN9jVtkPIBjsV
+         +ajA5iPowPHfX/BXN8fPypcUUwYftw4fiZsXaou8swbygzFkm64jFufq5u/65TCX6YWC
+         n5ZixKHHO4vRs9GKUtTI68E1HKK56oAQYTKHEjdIAV+lu6I82xqQo8DBkd7Wmb+cDECD
+         oap0Psx9XBy/97gMDhMNzMbUanimCuYR5ysbfFUbF+QqUHYBk0L5SsixpoxsbpfZsI21
+         +MGddxlA+Sjh6rqUCBiDrxIvP0hnq1TjjFapH7uDL/Q3+68oZn9YARMFXOtQi2ojGUGD
+         1BOg==
+X-Gm-Message-State: AOAM533Y/Lu8/ANUmv3Vlut7xOErhF/ZAjVFBl2IOeISc+T/8uspZNaV
+        HNkPxUBYWOLG59f1ETi1WpM=
+X-Google-Smtp-Source: ABdhPJxVQP52a6KQPI83FRSHoKvz2CE8KYNXcsOBDRk9jrxzfsx25SaDMYXg1BKJAWCldqO9IVHctA==
+X-Received: by 2002:a17:906:cc46:: with SMTP id mm6mr3007567ejb.138.1619165428070;
+        Fri, 23 Apr 2021 01:10:28 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:509f:9ae8:ad1c:20a4? ([2a02:908:1252:fb60:509f:9ae8:ad1c:20a4])
+        by smtp.gmail.com with ESMTPSA id t14sm3461827ejj.77.2021.04.23.01.10.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 01:10:27 -0700 (PDT)
+Subject: Re: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error
+ path
+To:     Jan Harkes <jaharkes@cs.cmu.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, coda@cs.cmu.edu,
+        miklos@szeredi.hu, akpm@linux-foundation.org, jgg@ziepe.ca
+References: <20210421132012.82354-1-christian.koenig@amd.com>
+ <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
+ <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
+ <20210422135103.hif4a5znhzt4pc6f@cs.cmu.edu>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <1dce6311-c708-19a8-a9cb-489602d6e930@gmail.com>
+Date:   Fri, 23 Apr 2021 10:10:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210423100727.5a999c2e@coco.lan>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210422135103.hif4a5znhzt4pc6f@cs.cmu.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFv5AVe5WAV0eqXvSpQ3I9w5TgfoQ64YGz9JCetHfj46pyXEfamPgtQe+QKbzYSRg8RMnWyrfq/BMJWCB6uwddqsZItPG7UEWPXy7FCj87hLrCBV3RU6
- 3ZPs3KHUcaMk9444sk3YbA+KPFU+70W3ueUKU2AXjDlhHMqEbm6UDjghfpTj42fN0jolknVUyjzSQB8CXERA0BRWwJv41PubALLAWbv3HyIocKwAoJb+U01G
- Bk6NvFHjdRiAduICSB61OQ4Psd+VuLIeeJXM+jkWrd1Nb0JfvMso9gh6sHtHmliNv69u51a8rzhp3Ptfj57Br+5BDPL4dfPuSfHYFh2lUqkxld8q9m24JfMd
- vxwfV1XtG5iqCL6mh45L7xguLJUk6Mr+b5iS21824GjaFiYakkc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2021 10:07, Mauro Carvalho Chehab wrote:
-> Em Fri, 23 Apr 2021 09:10:32 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> 
->> On Fri, Apr 23, 2021 at 09:04:27AM +0200, Krzysztof Kozlowski wrote:
->>> On 21/04/2021 14:58, Greg Kroah-Hartman wrote:  
->>>> This reverts commit 78741ce98c2e36188e2343434406b0e0bc50b0e7.
->>>>
->>>> Commits from @umn.edu addresses have been found to be submitted in "bad
->>>> faith" to try to test the kernel community's ability to review "known
->>>> malicious" changes.  The result of these submissions can be found in a
->>>> paper published at the 42nd IEEE Symposium on Security and Privacy
->>>> entitled, "Open Source Insecurity: Stealthily Introducing
->>>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
->>>> of Minnesota) and Kangjie Lu (University of Minnesota).
->>>>
->>>> Because of this, all submissions from this group must be reverted from
->>>> the kernel tree and will need to be re-reviewed again to determine if
->>>> they actually are a valid fix.  Until that work is complete, remove this
->>>> change to ensure that no problems are being introduced into the
->>>> codebase.
->>>>
->>>> Cc: Qiushi Wu <wu000273@umn.edu>
->>>> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>> ---
->>>>  drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +---
->>>>  1 file changed, 1 insertion(+), 3 deletions(-)
->>>>   
+Am 22.04.21 um 15:51 schrieb Jan Harkes:
+> On Thu, Apr 22, 2021 at 02:39:41PM +0200, Christian König wrote:
+>> Am 22.04.21 um 14:27 schrieb Jan Harkes:
+>>> Looks good to me.
 >>>
->>> This looks like a good commit but should be done now in a different way
->>> - using pm_runtime_resume_and_get().  Therefore I am fine with revert
->>> and I can submit later better fix.  
+>>> I'm also maintaining an out of tree coda module build that people sometimes use, which has workarounds for differences between the various kernel versions.
+>>>
+>>> Do you have a reference to the corresponding mmap_region change? If it is merged already I'll probably be able to find it. Is this mmap_region change expected to be backported to any lts kernels?
+>> That is the following upstream commit in Linus tree:
 >>
->> Great, thanks for letting me know, I can have someone work on the
->> "better fix" at the same time.
-> 
-> IMO, it is better to keep the fix. I mean, there's no reason to
-> revert a fix that it is known to be good.
-> 
-> The "better fix" patch can be produced anytime. A simple coccinelle
-> ruleset can replace patterns like:
-> 
-> 	ret = pm_runtime_get_sync(pm->device);
-> 	if (ret < 0) {
-> 		pm_runtime_put_noidle(pm->device);
-> 		return ret;
-> 	}
-> 
-> and the broken pattern:
-> 
-> 	ret = pm_runtime_get_sync(pm->device);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> to:
-> 
-> 	ret = pm_runtime_resume_and_get(pm->device);
-> 	if (ret < 0)
-> 		return ret;
+>> commit 1527f926fd04490f648c42f42b45218a04754f87
+>> Author: Christian König <christian.koenig@amd.com>
+>> Date:   Fri Oct 9 15:08:55 2020 +0200
+>>
+>>      mm: mmap: fix fput in error path v2
+>>
+>> But I don't think we should backport that.
+>>
+>> And sorry for the noise. We had so many places which expected different
+>> behavior that I didn't noticed that two occasions in the fs code actually
+>> rely on the current behavior.
+>>
+>> For your out of tree module you could make the code version independent by
+>> setting the vma back to the original file in case of an error. That should
+>> work with both behaviors in mmap_region.
+> Awesome, I'll give that a try, it may very well be a cleaner solution
+> either way.
+>
+> And thank you for following up after your original patch and finding
+> the filesystems that mess around with those mappings. I'm sure it would
+> have taken me a while to figure out why file refcounts would go weird
+> for some people, especially because this only happens in the error path.
 
-That's my preference as well.
+Kudos goes to Miklos for figured out why the refcount for overlayfs was 
+suddenly wrong.
 
-	Hans
+And please also see the follow up commit:
 
-> 
-> Regards,
-> Mauro
-> 
+commit 295992fb815e791d14b18ef7cdbbaf1a76211a31 (able/vma_file)
+Author: Christian König <christian.koenig@amd.com>
+Date:   Mon Sep 14 15:09:33 2020 +0200
+
+     mm: introduce vma_set_file function v5
+
+It adds a new vma_set_file() function which implements the necessary 
+refcount dance for changing the vma file in a clean manner.
+
+Thanks,
+Christian.
+
+>
+> Jan
+>
 
