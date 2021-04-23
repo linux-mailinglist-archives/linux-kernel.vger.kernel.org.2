@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5528C368F35
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73180368F37
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241716AbhDWJKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:10:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWJJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:09:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA8461422;
-        Fri, 23 Apr 2021 09:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619168962;
-        bh=92QnR4XOC2Ox/VZ3/+ThjkYwdNbdMZQj5ZUKFq4Cg7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hXyi4ngfEwOkhsfiO95ELRM1g2hSBHCHITn59/Ir3JQ7PY0UkQu6jVjjDVreQmimn
-         bnA+n2v5soHVunQ/ZsKX2ixjbC5PIFjAUKzEAAyoigD2GKruIkEvevADZEns2QKxGs
-         SB3zleS54TTWjUrqYMUZmJG8MTUIOy5Z3q5rXdFk=
-Date:   Fri, 23 Apr 2021 11:09:19 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     rjw@rjwysocki.net, pavel@ucw.cz, len.brown@intel.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PM: Use pm_pr_dbg() instead of pr_debug().
-Message-ID: <YIKOv3h0xFAttYlq@kroah.com>
-References: <20210423081223.26111-1-zhaoxiao@uniontech.com>
+        id S241725AbhDWJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:10:46 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:58719 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhDWJKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:10:45 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MowT0-1lGW6A2OII-00qRVk; Fri, 23 Apr 2021 11:10:08 +0200
+Received: by mail-wm1-f52.google.com with SMTP id d200-20020a1c1dd10000b02901384767d4a5so791858wmd.3;
+        Fri, 23 Apr 2021 02:10:08 -0700 (PDT)
+X-Gm-Message-State: AOAM532chMh6sJsAcm+oUrzm8Ae8Az9gpXb/2TuiZs5DFqp38z8D7FPK
+        bElUy7UyBdp2bgZ3qWQBfxq0I+HXzYCqnPsHpoI=
+X-Google-Smtp-Source: ABdhPJwG4iISCun3SMeBT+lGNcPYknZCmZ8DGhKtLsTvEtKKUMDsbx2MeJ/NM+0B7i+dYTrSWag9p/pB+JkKtkFk9/E=
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr4574759wmf.84.1619169008193;
+ Fri, 23 Apr 2021 02:10:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423081223.26111-1-zhaoxiao@uniontech.com>
+References: <20210423025545.313965-1-palmer@dabbelt.com>
+In-Reply-To: <20210423025545.313965-1-palmer@dabbelt.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 23 Apr 2021 11:09:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2+yCYm22g-r7aWE4RT7ZLcZn89aiWGcDhgFh_ZU3fSfQ@mail.gmail.com>
+Message-ID: <CAK8P3a2+yCYm22g-r7aWE4RT7ZLcZn89aiWGcDhgFh_ZU3fSfQ@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic: Remove asm/setup.h from the UABI.
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:v5dXW3kRmXrqrQDdVtMA5jZn00BZqD+wIKeyF2uVwTkYnhHl22m
+ wZoZtbrL9Do5qpR8fzXf0DeyQPAd/nIxdVsOw5fggNDxWgQxXePgIdHmTJXDWchW/h0mzbf
+ Nl7JPwSKbtLGMAUiSAzF9Mzg4NRP8qWPEmI6DZXvvgKql44UkuTR7jPYblJi2Sp+tEt4b4i
+ HZT+KFxt+/tHmu7BjRaqQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LCMt4R5q5Es=:5e9FOZecZpffL9T4kLM+DJ
+ 7cDMldASflKRsXrwTJIkA40KhvPmRyckowRnJD3m6QYePZFfgneSrLSS3pxPPTk4Pxid8nx4O
+ gm0furu3T/9UXlhf7COkuJhQ472LQ10vthcgqGIqmpso02j51A2wtbGIdR41Qy8KZejo+TJZd
+ 8VhYVemxU3IyQBeJWwazBxUujLsYnNcmg3EXMmqAE0SUVPNsUQ9X10ecwvYFcdTiT1Zd3cFCZ
+ LDkblgF+bThVr7JlQSg+Elx/34ut7Au/OhHg8kxZtqvq0Q859o7ytmpzgpE/VpI+VRy6bHTFq
+ 1H2GMrf/bUy2bGUNq8kwKW32T7G9mmZMt7ZOj46Oh2bV2xZr/xqeOPLL5VeFccoDVJPwevDWF
+ 3tDCIcyz7VaBT8uqzAxIykuVX97uKQKeh2l+No5/+HPXoAdH+nJVs7PStENPiHtsKlIOMukBa
+ 9+D5bg5v8D90hgEGfTGz4S//nJ4He+sC3sabELmEBmlD27ULAHlF4ou+kxVmqcyO9Ch4RCKij
+ 8uYbdRJf3nksi5wzPqN48g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 04:12:23PM +0800, zhaoxiao wrote:
-> These prints are useful if we're doing PM suspend debugging. Having them
-> at pr_debug() level means that we need to either enable DEBUG in this
-> file, or compile the kernel with dynamic debug capabilities. Both of
-> these options have drawbacks like custom compilation or opting into all
-> debug statements being included into the kernel image. Given that we
-> already have infrastructure to collect PM debugging information with
-> CONFIG_PM_DEBUG and friends, let's change the pr_debug usage here to be
-> pm_pr_dbg() instead so we can collect the wakeup information in the
-> kernel logs.
-> 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+On Fri, Apr 23, 2021 at 4:57 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> I honestly have no idea if this is sane.
+>
+> This all came up in the context of increasing COMMAND_LINE_SIZE in the
+> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
+> maximum length of /proc/cmdline and userspace could staticly rely on
+> that to be correct.
+>
+> Usually I wouldn't mess around with changing this sort of thing, but
+> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
+> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
+> increasing, but they're from before the UAPI split so I'm not quite sure
+> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
+> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
+> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
+> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
+> asm-generic/setup.h.").
+>
+> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
+> part of the UABI to begin with, and userspace should be able to handle
+> /proc/cmdline of whatever length it turns out to be.  I don't see any
+> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
+> search, but that's not really enough to consider it unused on my end.
+>
+> I couldn't think of a better way to ask about this then just sending the
+> patch.
 
-Please use a "full" name.  Unless one word really is how you sign legal
-documents?
+I think removing asm/setup.h from the uapi headers makes sense,
+but then we should do it consistently for all architectures as far
+as possible.
 
-> ---
->  drivers/base/power/main.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index f893c3c5af07..6e64e3fff84c 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -133,7 +133,7 @@ void device_pm_add(struct device *dev)
->  	if (device_pm_not_required(dev))
->  		return;
->  
-> -	pr_debug("Adding info for %s:%s\n",
-> +	pm_pr_dbg("Adding info for %s:%s\n",
->  		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
+Most architectures either use the generic file or they provide their
+own one-line version, so if we move them back, I would do it
+for all.
 
-Why are these all just not normal dev_dbg() calls?  That handles the "no
-bus" stuff automatically.
+The architectures that have additional contents in this file
+are alpha, arm, and ia64. We I would leave those unchanged
+in that case.
 
-thanks,
-
-greg k-h
+        Arnd
