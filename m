@@ -2,139 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB2936944D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED6B369451
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhDWOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        id S229474AbhDWODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhDWOAz (ORCPT
+        with ESMTP id S229890AbhDWODG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:00:55 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722C4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:00:19 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id s5so40865823qkj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:00:19 -0700 (PDT)
+        Fri, 23 Apr 2021 10:03:06 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CB6C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:02:29 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id c15so39591539wro.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kepstin.ca; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=91ekDJXVgfwpLgSEU6EfScTLzN1EQxy8q++S/uFtrf8=;
-        b=WQdJMPV+gF4pVn8tObs9agKPNPZOvDAB4/1Zr8qhOSC5bS516+EmOhVZ7pxYwOQ+rz
-         DFEfBdHXJSTJAiPKkymKGTf8Xb+mLLHhjPWmZeQYwVbjYPotaVBZe+QEeWwCj/n0SRS4
-         Jgi7LkTOW/TOx1YB2aDG5MxNTRyrlr4qJzIMg=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=mqDAI2Eo0AiEBMj+7YqhB+/EfKK7wEdKmdXLdRdTOaw=;
+        b=PcB4NGYzuRZfIQCklsDEhiVsnNkUPaGQDpaJWtwroqJaTW5plTBA+wjkIKfKDkxwZ6
+         xU/1Rm894k7ruc2jCU5Syg239Uc5QDMokzbD7CNnG4G6j6GpIQegviH8dySyJI+p9xti
+         uSPcxDix+2yCqVELTmFsbybyYHZKJJfkSY/PqCCQwrB5rqN5v860ewnFzHu7JNeLjCGy
+         Ytr1QXVS8RT1QZKRwvFls5lO3rXmt/NpghkyAdFbpyF3tHLByDrWcaPZsEAEVNEsxIfA
+         Rz6vQcpl+UHoeIGDrZg1koY5RRt4SRsniACz5udYvR3UH5+UAGO39IpGB23DXdJGBZBk
+         13yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=91ekDJXVgfwpLgSEU6EfScTLzN1EQxy8q++S/uFtrf8=;
-        b=SmHCYQoUf0ClXyh9waZNuVhly/Tu9u9K+hxxx/X+1vBhvEf1gkxd9fHypby1lc7Nxd
-         qIkh2xzVt6sX0sP7nIKOSZy4AV4ahA3cUTS4FgJW4939Y/X0Oee+X1or+2chQUb9sKHp
-         xhCi4hoJBwU90FSaeTk1DnIyrtZJ0/q9EbwFUQ44TXZZ8fP1f4REGfc4YhDaRwH/teYt
-         PkKSKSQ0WX6gPnIsexVa+cl7/hc+1DHTGpWK6tFR6UAB774bG27jQp8uqsYS/O6y7KEY
-         UBYzYJmQ80pYGIc94s3dkMnq8f/seP5y/NPh+5+yPiWBw0Le5mPcPZx5Y3viRRbzdIp7
-         BVhg==
-X-Gm-Message-State: AOAM531VGzOBcodvWu1N4RNNaMzci9bSUuPmzp9o1+iy2+I7saDL2jfs
-        Ju+zLm9tdtsAc7j8YdYocyTpYQ==
-X-Google-Smtp-Source: ABdhPJyiNYSj32/cj2GQgKymQhpjfGi8r2EhPJo1VwLclB+YLH6u112BLcv/rBjignkdjvJfKTRbLg==
-X-Received: by 2002:a05:620a:d51:: with SMTP id o17mr4330852qkl.96.1619186418469;
-        Fri, 23 Apr 2021 07:00:18 -0700 (PDT)
-Received: from sasami.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
-        by smtp.gmail.com with ESMTPSA id b8sm4318386qka.117.2021.04.23.07.00.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=mqDAI2Eo0AiEBMj+7YqhB+/EfKK7wEdKmdXLdRdTOaw=;
+        b=l2NsdBHcJX2fVeyVYzgeDgFFHilNsZCSbPP3Z7DdN18i4bo71I/YJOVdhWlJmDV4sk
+         8cN4l7LZxLVmdLncSvmb48VIag9m4d7XtEyQ6sIZZYX3SZK2ffFp1BZNkxOrtkVgq167
+         1fLI0fJQVj+hsMU5Iz3cZMTXOQbs7E0GGOW+zFmboOsWKNJyEYeaLA4fwF09yW8/6Hmx
+         jD/ZPjEyDqzuUTZgVxJ1ASzyRei7RK+r3IM7GXNbkDJLPfSS6wYtPQLl3qVoV0c4tYkm
+         mssiwmgpzs3jwa3DtTIQviCb43qiD9eEV7zli34jIjE4DQdt4YbSLvueHLx5inbts0nx
+         oJ4Q==
+X-Gm-Message-State: AOAM531NPxyPVndZik/ZajI1COWC3JdScRo6XiAyCT7lQjCIdyas3gSv
+        /W4Ob7imYK7EMLpfAg23QrPbdg==
+X-Google-Smtp-Source: ABdhPJz4lBAWRredHV50729J0WuYpflBIWpdZIt5fX8mmVLMQZwVCqN6/75zTpHENIY+al7Yf6HlWg==
+X-Received: by 2002:a05:6000:18ae:: with SMTP id b14mr4943822wri.211.1619186548117;
+        Fri, 23 Apr 2021 07:02:28 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:d1f:43f2:c472:9b8])
+        by smtp.gmail.com with ESMTPSA id z15sm8890560wrv.39.2021.04.23.07.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:00:17 -0700 (PDT)
-Message-ID: <23f75aaf3d37cbad6f8ed7bd970434e4a2dc388e.camel@kepstin.ca>
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection
- on AMD processors
-From:   Calvin Walton <calvin.walton@kepstin.ca>
-To:     Borislav Petkov <bp@suse.de>, Chen Yu <yu.c.chen@intel.com>
-Cc:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wei.huang2@amd.com, aros@gmx.com, rui.zhang@intel.com
-Date:   Fri, 23 Apr 2021 10:00:14 -0400
-In-Reply-To: <20210423121934.GC24710@zn.tnic>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
-         <20210420020336.GA386151@chenyu-desktop> <20210420080701.GA2326@zn.tnic>
-         <20210420131541.GA388877@chenyu-desktop>
-         <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
-         <20210420143754.GA390118@chenyu-desktop>
-         <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
-         <20210423121607.GA426003@chenyu-desktop> <20210423121934.GC24710@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Fri, 23 Apr 2021 07:02:27 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 16:02:21 +0200
+From:   Marco Elver <elver@google.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, akpm@linux-foundation.org
+Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
+Message-ID: <YILTbVnxBJVYa3jT@elver.google.com>
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
+ <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
+ <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
+ <20210422122419.GF2047089@ziepe.ca>
+ <782e329a-7c3f-a0da-5d2f-89871b0c4b9b@acm.org>
+ <YIG5tLBIAledZetf@unreal>
+ <53b2ef14-1b8a-43b1-ef53-e314e2649ea0@acm.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <53b2ef14-1b8a-43b1-ef53-e314e2649ea0@acm.org>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-23 at 14:19 +0200, Borislav Petkov wrote:
-> On Fri, Apr 23, 2021 at 08:16:07PM +0800, Chen Yu wrote:
-> > From b2e63fe4f02e17289414b4f61237da822df115fb Mon Sep 17 00:00:00
-> > 2001
-> > From: Calvin Walton <calvin.walton@kepstin.ca>
-> > Date: Fri, 23 Apr 2021 17:32:13 +0800
-> > Subject: [PATCH 3/5] tools/power turbostat: Fix offset overflow
-> > issue in index
-> >  converting
+On Thu, Apr 22, 2021 at 01:30PM -0700, Bart Van Assche wrote:
+> On 4/22/21 11:00 AM, Leon Romanovsky wrote:
+> > On Thu, Apr 22, 2021 at 10:12:33AM -0700, Bart Van Assche wrote:
+> > > On 4/22/21 5:24 AM, Jason Gunthorpe wrote:
+> > > > On Mon, Apr 19, 2021 at 01:02:34PM -0700, Bart Van Assche wrote:
+> > > > > On 4/18/21 11:36 PM, Marion et Christophe JAILLET wrote:
+> > > > > > The list in To: is the one given by get_maintainer.pl. Usualy, I only
+> > > > > > put the ML in Cc: I've run the script on the 2 patches of the serie
+> > > > > > and merged the 2 lists. Everyone is in the To: of the cover letter
+> > > > > > and of the 2 patches.
+> > > > > > 
+> > > > > > If Th�o is "Tejun Heo" (  (maintainer:WORKQUEUE) ), he is already in
+> > > > > > the To: line.
+> > > > > Linus wants to see a "Cc: ${maintainer}" tag in patches that he receives
+> > > > > from a maintainer and that modify another subsystem than the subsystem
+> > > > > maintained by that maintainer.
+> > > > 
+> > > > Really? Do you remember a lore link for this?
+> > > 
+> > > Last time I saw Linus mentioning this was a few months ago.
+> > > Unfortunately I cannot find that message anymore.
+> > > 
+> > > > Generally I've been junking the CC lines (vs Andrew at the other
+> > > > extreme that often has 10's of CC lines)
+> > > 
+> > > Most entries in the MAINTAINERS file have one to three email addresses
+> > > so I'm surprised to read that Cc-ing maintainer(s) could result in tens
+> > > of Cc lines?
 > > 
-> > The idx_to_offset() function returns type int (32-bit signed), but
-> > MSR_PKG_ENERGY_STAT is greater than INT_MAX (or rather, would be
-> > interpreted as a negative number). The end result is that it hits
-> > the if (offset < 0) check in update_msr_sum() resulting in the
-> > timer
-> > callback for updating the stat in the background when long
-> > durations
-> > are used to not happen. The similar issue exists in offset_to_idx()
-> > and update_msr_sum().
+> > git log mm/
 > > 
-> > This patch fixes this issue by converting the 'int' type to 'off_t'
-> > accordingly.
+> > commit 2b8305260fb37fc20e13f71e13073304d0a031c8
+> > Author: Alexander Potapenko <glider@google.com>
+> > Date:   Thu Feb 25 17:19:21 2021 -0800
 > > 
-> > Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL
-> > display")
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> 
-> This patch's authorship is weird: it says From: Calvin but doesn't
-> have
-> his SOB here - only yours.
-
-I think this patch is adapted from one of my earlier submissions? I
-don't think I can really say that I wrote it, but I'll certainly review
-it.
-
-> 
-> > ---
-> >  tools/power/x86/turbostat/turbostat.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >      kfence, kasan: make KFENCE compatible with KASAN
 > > 
-> > diff --git a/tools/power/x86/turbostat/turbostat.c
-> > b/tools/power/x86/turbostat/turbostat.c
-> > index a211264b57fd..77557122b292 100644
-> > --- a/tools/power/x86/turbostat/turbostat.c
-> > +++ b/tools/power/x86/turbostat/turbostat.c
-> > @@ -296,9 +296,9 @@ struct msr_sum_array {
-> >  /* The percpu MSR sum array.*/
-> >  struct msr_sum_array *per_cpu_msr_sum;
-> >  
-> > -int idx_to_offset(int idx)
-> > +off_t idx_to_offset(int idx)
+> >      Make KFENCE compatible with KASAN. Currently this helps test KFENCE
+> >      itself, where KASAN can catch potential corruptions to KFENCE state, or
+> >      other corruptions that may be a result of freepointer corruptions in the
+> >      main allocators.
+> > 
+> >      [akpm@linux-foundation.org: merge fixup]
+> >      [andreyknvl@google.com: untag addresses for KFENCE]
+> >        Link: https://lkml.kernel.org/r/9dc196006921b191d25d10f6e611316db7da2efc.1611946152.git.andreyknvl@google.com
+> > 
+> >      Link: https://lkml.kernel.org/r/20201103175841.3495947-7-elver@google.com
+> >      Signed-off-by: Marco Elver <elver@google.com>
+> >      Signed-off-by: Alexander Potapenko <glider@google.com>
+> >      Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >      Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> >      Reviewed-by: Jann Horn <jannh@google.com>
+> >      Co-developed-by: Marco Elver <elver@google.com>
+> >      Cc: Andrey Konovalov <andreyknvl@google.com>
+> >      Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> >      Cc: Andy Lutomirski <luto@kernel.org>
+> >      Cc: Borislav Petkov <bp@alien8.de>
+> >      Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >      Cc: Christopher Lameter <cl@linux.com>
+> >      Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> >      Cc: David Rientjes <rientjes@google.com>
+> >      Cc: Eric Dumazet <edumazet@google.com>
+> >      Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >      Cc: Hillf Danton <hdanton@sina.com>
+> >      Cc: "H. Peter Anvin" <hpa@zytor.com>
+> >      Cc: Ingo Molnar <mingo@redhat.com>
+> >      Cc: Joern Engel <joern@purestorage.com>
+> >      Cc: Jonathan Corbet <corbet@lwn.net>
+> >      Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> >      Cc: Kees Cook <keescook@chromium.org>
+> >      Cc: Mark Rutland <mark.rutland@arm.com>
+> >      Cc: Paul E. McKenney <paulmck@kernel.org>
+> >      Cc: Pekka Enberg <penberg@kernel.org>
+> >      Cc: Peter Zijlstra <peterz@infradead.org>
+> >      Cc: SeongJae Park <sjpark@amazon.de>
+> >      Cc: Thomas Gleixner <tglx@linutronix.de>
+> >      Cc: Vlastimil Babka <vbabka@suse.cz>
+> >      Cc: Will Deacon <will@kernel.org>
+> >      Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >      Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+This is a special case probably as KFENCE touched various subsystems and
+architectures.
+
+That Cc list is from the original
+
+	https://lkml.kernel.org/r/20201103175841.3495947-7-elver@google.com
+
+It was determined based on the full series, mostly from a
+get_maintainer.pl of 'reviewer' and 'maintainer' lists of the full
+series diff, minus a some false positives to avoid spamming people, and
+plus a few people get_maintainer.pl missed that had provided or could
+provide useful input. So the list above is mostly maintainers+reviewers
+of mm/, mm/kasan, arch/x86, and arch/arm64.
+
+> But where does that Cc-list come from? If I extract that patch and run the
+> get_maintainer.pl script, the following output appears:
 > 
-> And this is silly. MSRs are unsigned int. Fullstop.
-> 
-> So that function should either return u32 or unsigned int or so.
+> $ git format-patch -1 2b8305260fb37fc20e13f71e13073304d0a031c8
+> 0001-kfence-kasan-make-KFENCE-compatible-with-KASAN.patch
+> $ scripts/get_maintainer.pl
+> 0001-kfence-kasan-make-KFENCE-compatible-with-KASAN.patch
+> Alexander Potapenko <glider@google.com> (maintainer:KFENCE)
+> Marco Elver <elver@google.com> (maintainer:KFENCE)
 
-So, there's two problems with that:
-   1. This function needs to be able to return an error value that cannot be
-      confused with a valid MSR. This is currently done by returning a
-      negative number. If an unsigned value is used, a different way of
-      indicating errors needs to be written.
-   2. We are not using CPU instructions to access MSRs direction. Instead
-      they are being read from /dev/msr. So the "offset" value is actually a
-      seek into the /dev/msr file (using pread), and thus is of type off_t.
+KFENCE did not yet exist when the patch the above series was part of was
+posted... so chicken and egg situation here. ;-)
 
--- 
-Calvin Walton <calvin.walton@kepstin.ca>
+> Dmitry Vyukov <dvyukov@google.com> (reviewer:KFENCE)
+> Andrey Ryabinin <ryabinin.a.a@gmail.com> (maintainer:KASAN)
+> Andrey Konovalov <andreyknvl@gmail.com> (reviewer:KASAN)
+> Andrew Morton <akpm@linux-foundation.org> (maintainer:MEMORY MANAGEMENT)
+> kasan-dev@googlegroups.com (open list:KFENCE)
+> linux-kernel@vger.kernel.org (open list)
+> linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
 
+Thanks,
+-- Marco
