@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC08B368B9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79747368BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237200AbhDWDdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWDdU (ORCPT
+        id S237143AbhDWDhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:37:41 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:60833 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhDWDhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:33:20 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365DAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:32:45 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w6so18645787pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BzcRr/BEJlxG1MpN8LmOK5QXIGm507wREeeatIRcmts=;
-        b=HjgJfX4AGivc/yz15utqAttjyCo8TXvjXlokGilyhSygKgtXnyvysUjh3O/opPQ41b
-         8W+q43D466oP0P8GXVp1bM+zsLGZ/tvn9XRfNNAqG5a2r/FlkrZiJETcM2cX3vMrBes5
-         spbmOgoPfZfHUNibT56s2tZvv04L9WgFW2tlZb7mGjDgE4syYduOsvMkEFwK95GBCplG
-         5mspC06tvcUxxCiYidGMHgFr8Cbxl3NJGc4pXK+8IBEXq0cNwMTRsDZ4LjEY0JW0V1nA
-         EjvwnB3gl3Wxcw8RF0rE3GmJffXKBvFP27b4aAYKrGUNm+5+wE4I4phyZq1rZuH+AxIc
-         JDVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=BzcRr/BEJlxG1MpN8LmOK5QXIGm507wREeeatIRcmts=;
-        b=ReRf+lxJafPZo/L8nZqdGr1v/ghFjoJrI/jIv/lmA8bP/B2pJwCEcSRX/57NPbHkPs
-         4mj7dUu3BfwvYrjb2puQwhA87qcwlsZrgjqan17Xs3yCZJrBbd6+SyAPxlsJ4XRUunJG
-         PSlTH9QPffXQ9treFrQoQEMcdwuEkmRDLFdacpmyjKdxq1BpoBlRvcOjsuREp+clLxvP
-         hwksItBcbvQSqlfGreIJH7BH6WLfRKTLH2mYmy5Dk4tDAMhz9tZnBhZPnAVpDL/dvUE5
-         EPmzBJQuMoMgY4cm0yJrh38P9OIRMtdNLGTHjlhN4cwmGVNPcEWTgNnOzCS7EW7LV5IB
-         F8Lw==
-X-Gm-Message-State: AOAM530eqUZ5WHzs0K5rQaaGKHRBOSVskgAf4gd7dhdJq79XLagnuzM9
-        RbIRDsKnPlMzFS58RViehj8ZBw==
-X-Google-Smtp-Source: ABdhPJy6qJxJ8lRees7PAkjHN4lM1cwhzbiZJmx3wp7by094PXqPDiT6QTymt1lj7cT+q0VRg0zOkA==
-X-Received: by 2002:a05:6a00:23c2:b029:24c:4748:4a80 with SMTP id g2-20020a056a0023c2b029024c47484a80mr1857979pfc.13.1619148764766;
-        Thu, 22 Apr 2021 20:32:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id e1sm3493455pgl.25.2021.04.22.20.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 20:32:44 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 20:32:44 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 20:32:42 PDT (-0700)
-Subject:     Re: [RFC] dt-bindings: riscv: enum for riscv,isa
-In-Reply-To: <5385012d-9f09-d7d9-7b6a-cef7de2d4056@gmx.de>
-CC:     robh+dt@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     xypron.glpk@gmx.de
-Message-ID: <mhng-cec1febb-7da2-4d6e-9c38-3b1580b75e19@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 22 Apr 2021 23:37:40 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 13N3b2fG043700
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:37:02 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1619149017; x=1621741017;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZbUCIK+vNMXLT6bt5IcYDuPKpMJvQ+n7NbeVwMpT5/0=;
+        b=FVpPsRSuS/RsEqijSUV8uTTjOLRi503VnPxsanGaP3fHa3d6xVrnBIGtypFoLBEG
+        Loln0W7HGDMFvF3XRc9NWA7h/xVH4aPVwl/rmvBiJWuxGQW2Mm9XD6FQ0jG96E8r
+        R4v18WILQ/+xA7POlk79HkmgNr3T874pnH8fTX/hnYFwpFQzwWohfCUNLxJAw8mu
+        FulijclffSO5lhweAsb4jIAI5vjL4kM1jO8lppJeFfNd9reUs8o04lFLepFVy0u8
+        VyH/fRUCK9YkFsin65HChB0AoynmIlZKTsFq9pVEg4DkaPEMRiL7OcqjYWsxek9l
+        wjTgkE/jQVIaTTxUw4M6jA==;
+X-AuditID: 8b5b014d-a4c337000000209f-81-608240d9df52
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 1B.8A.08351.9D042806; Fri, 23 Apr 2021 06:36:57 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Fri, 23 Apr 2021 06:36:56 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     mick@ics.forth.gr, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] RISC-V: Add kexec/kdump support
+Organization: FORTH
+In-Reply-To: <mhng-4f2d27cc-6dc2-4d3d-ae61-5681b15372b7@palmerdabbelt-glaptop>
+References: <mhng-4f2d27cc-6dc2-4d3d-ae61-5681b15372b7@palmerdabbelt-glaptop>
+Message-ID: <0ce30336b7dfaaf14a20e72e990d70f5@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsXSHT1dWfemQ1OCwYHz/BaXd81hs9j2uYXN
+        ovndOXaLl5d7mC3aZvE7sHq8efmSxePhpktMHpuX1Htcar7O7vF5k1wAaxSXTUpqTmZZapG+
+        XQJXxr85/1gL9gpV/G2fw97AuIevi5GTQ0LARKJ16kzWLkYuDiGBo4wS29ceY4VImErM3tvJ
+        CGLzCghKnJz5hAXEZhawkJh6ZT8jhC0v0bx1NjOIzSKgKvH22RqwXjYBTYn5lw6C1YsIqEsc
+        eH2HGWQBs8AkRomWQy/BEsIC1hIf1x4Cs/kFhCU+3b0I1swp4Cdxamc/O4gtJOAr8efSDyaI
+        I1wk2k91s0EcpyLx4fcDoBoODlEge/NcpQmMgrOQnDoLyamzkJy6gJF5FaNAYpmxXmZysV5a
+        flFJhl560SZGcGgz+u5gvL35rd4hRiYOxkOMEhzMSiK8XkcbE4R4UxIrq1KL8uOLSnNSiw8x
+        SnOwKInz8upNiBcSSE8sSc1OTS1ILYLJMnFwSjUwNUVuPHPp9Z6EdgnpHsGESxMY7Z4t/Tll
+        8i+tonC/rRfavvbPfxtsYxPH/HTLwxlhErclJk584L9u0xaHF87Wrt+v9F86+Xmh0I2Px9Yn
+        yYhsmHnRJ7x9am/x/sNZ/6ZlzcidFP9xfYAK/7aoJZctzojPnvI7Z8Ft3SdHFgu9OZfUdbM8
+        QaP98SrOBFvuVUus3ZcxFR9rmSfms63t8cxCh8l3/M4L7Tac86E9oro6rfQts8/GOYqBfdZX
+        Kp+umHN29kW2Bw9NFyr17y81yOsWX5h3bcKRZ0zBbKKpLNqHmardXnGlfL89rcza0/bR7sr5
+        k59+XbyyOrzvINO9rviTicGeU/LF7j5TZFu5M2e16gclluKMREMt5qLiRADFU4G93AIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Apr 2021 12:05:34 PDT (-0700), xypron.glpk@gmx.de wrote:
-> In Documentation/devicetree/bindings/riscv/cpus.yaml I find for riscv,isa:
->
->      enum:
->        - rv64imac
->        - rv64imafdc
->
-> This implies that 'rv64imafc' or 'rv64imafdqc' would be illegal values
-> while these combinations of extensions would be compliant with "The
-> RISC-V Instruction Set Manual".
->
-> To me it does not make much sense to try to enumerate all permissible
-> permutations of RISC-V extensions.
->
-> Shouldn't this enum be removed and replaced by examples?
+Στις 2021-04-23 06:30, Palmer Dabbelt έγραψε:
+> On Mon, 05 Apr 2021 01:57:07 PDT (-0700), mick@ics.forth.gr wrote:
+>> This patch series adds kexec/kdump and crash kernel
+>> support on RISC-V. For testing the patches a patched
+>> version of kexec-tools is needed (still a work in
+>> progress) which can be found at:
+>> 
+>> https://riscv.ics.forth.gr/kexec-tools-patched.tar.xz
+>> 
+>> v3:
+>>  * Rebase on newer kernel tree
+>>  * Minor cleanups
+>>  * Split UAPI changes to a separate patch
+>>  * Improve / cleanup init_resources
+>>  * Resolve Palmer's comments
+>> 
+>> v2:
+>>  * Rebase on newer kernel tree
+>>  * Minor cleanups
+>>  * Properly populate the ioresources tre, so that it
+>>    can be used later on for implementing strict /dev/mem
+>>  * Use linux,usable-memory on /memory instead of a new binding
+>>  * USe a reserved-memory node for ELF core header
+>> 
+>> Nick Kossifidis (5):
+>>   RISC-V: Add EM_RISCV to kexec UAPI header
+>>   RISC-V: Add kexec support
+>>   RISC-V: Improve init_resources
+>>   RISC-V: Add kdump support
+>>   RISC-V: Add crash kernel support
+>> 
+>>  arch/riscv/Kconfig                  |  25 ++++
+>>  arch/riscv/include/asm/elf.h        |   6 +
+>>  arch/riscv/include/asm/kexec.h      |  54 +++++++
+>>  arch/riscv/kernel/Makefile          |   6 +
+>>  arch/riscv/kernel/crash_dump.c      |  46 ++++++
+>>  arch/riscv/kernel/crash_save_regs.S |  56 +++++++
+>>  arch/riscv/kernel/kexec_relocate.S  | 222 
+>> ++++++++++++++++++++++++++++
+>>  arch/riscv/kernel/machine_kexec.c   | 193 ++++++++++++++++++++++++
+>>  arch/riscv/kernel/setup.c           | 113 ++++++++------
+>>  arch/riscv/mm/init.c                | 110 ++++++++++++++
+>>  include/uapi/linux/kexec.h          |   1 +
+>>  11 files changed, 787 insertions(+), 45 deletions(-)
+>>  create mode 100644 arch/riscv/include/asm/kexec.h
+>>  create mode 100644 arch/riscv/kernel/crash_dump.c
+>>  create mode 100644 arch/riscv/kernel/crash_save_regs.S
+>>  create mode 100644 arch/riscv/kernel/kexec_relocate.S
+>>  create mode 100644 arch/riscv/kernel/machine_kexec.c
+> 
+> Thanks.  There were some minor issues and some merge conflicts, I put
+> this on for-next with some fixups.
 
-I'm generally OK with that, but I'm not sure how to do it: won't we fail 
-the scheme checks if we don't have something defined for "riscv,isa"?
+I've sent a v4 that shouldn't have merge conflicts, addressing some 
+comments from Alex as well, could you use that instead or is it too late 
+?
