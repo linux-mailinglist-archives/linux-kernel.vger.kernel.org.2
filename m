@@ -2,157 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EEE368BB2
+	by mail.lfdr.de (Postfix) with ESMTP id 8628C368BB3
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbhDWDsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:48:46 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:28102 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhDWDso (ORCPT
+        id S240338AbhDWDtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhDWDs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:48:44 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id E5586282390;
-        Fri, 23 Apr 2021 11:48:06 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AOUAdwCCDk8v*1Yj0s9Qo4qH.3.1619149686926.Hmail.wangqing@vivo.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWNyAxLzJdIHdhdGNoZG9nOiBtdGs6IHN1cHBvcnQgcHJlLXRpbWVvdXQgd2hlbiB0aGUgYmFyayBpcnEgaXMgYXZhaWxhYmxl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <0de7e5c8-57a2-9b27-d8a8-ed7e0b394b02@roeck-us.net>
-MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 23 Apr 2021 11:48:06 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Fri, 23 Apr 2021 11:48:06 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGU1LTlZCSB4eS05CSRkeSE5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1IS0xIS0hMSkhON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6NC46Hww4OD8QQw1RSiIRSwhCKhRPCjNVSFVKTUpCSk9CTUNMSUlPVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBSktDTUg3Bg++
-X-HM-Tid: 0a78fcd7889f9395kuwse5586282390
+        Thu, 22 Apr 2021 23:48:59 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDA9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:48:22 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id c3so14413009pfo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ntpVuO8X+igpPibq9Gc+rNStHJCK1DeGnF4sSyHqys=;
+        b=q+8tLAClXdoKZoxwH6aoS8dhA2mAeIiEAz7jxIDqN0n9qnE03NAy3X0j1MrEkrgCTN
+         HcSUZKyKOYTMLFzO7PBxcrdMLSXwhozbg3PmqMP4lHT8uCS1AdwGK6GdkQzlUC3wFHNv
+         OK6FzK79xQOJ6Gxtx17C8RKo24JbajOBtUoLslGTSNmwaD+QGQBULbQVvimxv83x2W1R
+         rVlvBcawqR8zMjVh5HAZhN2kBVsbRfiTLeJ/FWozXbFuIqEfrEoIjzIBQyk0+gkUPMbS
+         S/GPgWLDL5Z+PvJrVxHdku9Hi8HTzuRTpy4nBlNJZZQpcZn/cJftbs4j+ZU+w+hTEbvF
+         FNOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+ntpVuO8X+igpPibq9Gc+rNStHJCK1DeGnF4sSyHqys=;
+        b=cVYS6CEq85s4r4ZpGsnfd5VIjVl6Jfxtlcclnb6WVkVc9XzekrDIIykuAs8cxk0UHI
+         tMckVNb0CLOcWoOat9rH7tFEamvK09PB4PV2n+D/bi50huzvweCaKa1+dADZAL5aPMCo
+         s816WwVrRJHI3+gMBgLDZzCzOM8L1u1oAbStHIR57eQMbG8WMrXBS6aelxuLrwNBzlJK
+         uWDbAy0DBwI2++1IQBrxhiY71JcXvEpUzWZuJerC65Hm/kR0TGiyootOaesp1UfCKekr
+         3plp68+r0fEKX64gFcTKm9ROGmy7Lq3aptqH0iKLAsU1pz0Gxtyxm+DpcZHWFwvWb6k4
+         PxuQ==
+X-Gm-Message-State: AOAM531GHG0aNesZ9W6x0ymFeJnUnNI5FLDc4yvohXj9M+3n8trI1A+R
+        HTuRXSwDMFUWa3J798yHKx0lEw==
+X-Google-Smtp-Source: ABdhPJy+LWkhzAtNZnx/H+Ie1yN35G2kCRwKnOPrL35GhAul1IUChWItJHtRTzAuC7QT3ZwbD5SXbw==
+X-Received: by 2002:a62:1b50:0:b029:257:da1e:837f with SMTP id b77-20020a621b500000b0290257da1e837fmr1756576pfb.57.1619149702227;
+        Thu, 22 Apr 2021 20:48:22 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id kk9sm3416763pjb.23.2021.04.22.20.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 20:48:21 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 20:48:21 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 20:48:20 PDT (-0700)
+Subject:     Re: [PATCH v3 0/5] RISC-V: Add kexec/kdump support
+In-Reply-To: <0ce30336b7dfaaf14a20e72e990d70f5@mailhost.ics.forth.gr>
+CC:     mick@ics.forth.gr, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     mick@ics.forth.gr
+Message-ID: <mhng-c073ca02-d152-4ef5-86c5-4bcf58154afc@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA0LzIyLzIxIDc6NTMgUE0sIFdhbmcgUWluZyB3cm90ZToKPj4gVXNlIHRoZSBiYXJrIGlu
-dGVycnVwdCBhcyB0aGUgcHJldGltZW91dCBub3RpZmllciBpZiBhdmFpbGFibGUuCj4+IAo+PiBX
-aGVuIHRoZSB3YXRjaGRvZyB0aW1lciBleHBpcmVzIGluIGR1YWwgbW9kZSwgYW4gaW50ZXJydXB0
-IHdpbGwgYmUKPj4gdHJpZ2dlcmVkIGZpcnN0LCB0aGVuIHRoZSB0aW1pbmcgcmVzdGFydHMuIFRo
-ZSByZXNldCBzaWduYWwgd2lsbCBiZQo+PiBpbml0aWF0ZWQgd2hlbiB0aGUgdGltZXIgZXhwaXJl
-cyBhZ2Fpbi4KPj4gCj4+IFRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBh
-dCB0aW1lb3V0LXNlYy8yLgo+PiAKPj4gVjI6Cj4+IC0gcGFuaWMoKSBieSBkZWZhdWx0IGlmIFdB
-VENIRE9HX1BSRVRJTUVPVVRfR09WIGlzIG5vdCBlbmFibGVkLgo+PiAKPj4gVjM6Cj4+IC0gTW9k
-aWZ5IHRoZSBwcmV0aW1lb3V0IGJlaGF2aW9yLCBtYW51YWxseSByZXNldCBhZnRlciB0aGUgcHJl
-dGltZW91dAo+PiAtIGlzIHByb2Nlc3NlZCBhbmQgd2FpdCB1bnRpbCB0aW1lb3V0Lgo+PiAKPj4g
-VjQ6Cj4+IC0gUmVtb3ZlIHByZXRpbWVvdXQgcmVsYXRlZCBwcm9jZXNzaW5nLiAKPj4gLSBBZGQg
-ZHVhbCBtb2RlIGNvbnRyb2wgc2VwYXJhdGVseS4KPj4gCj4+IFY1Ogo+PiAtIEZpeCBzb21lIGZv
-cm1hdHRpbmcgYW5kIHByaW50aW5nIHByb2JsZW1zLgo+PiAKPj4gVjY6Cj4+IC0gUmVhbGl6ZSBw
-cmV0aW1lb3V0IHByb2Nlc3NpbmcgdGhyb3VnaCBkdWFsbW9kZS4KPj4gCj4+IFY3Ogo+PiAtIEFk
-ZCBzZXRfcHJldGltZW91dCgpLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogV2FuZyBRaW5nIDx3YW5n
-cWluZ0B2aXZvLmNvbT4KPj4gLS0tCj4+ICBkcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYyB8IDc2
-ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0KPj4gIDEgZmls
-ZSBjaGFuZ2VkLCA3MSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+PiAKPj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jIGIvZHJpdmVycy93YXRjaGRvZy9tdGtf
-d2R0LmMKPj4gaW5kZXggOTdjYTk5My4uYWIzYWM1ZAo+PiAtLS0gYS9kcml2ZXJzL3dhdGNoZG9n
-L210a193ZHQuYwo+PiArKysgYi9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYwo+PiBAQCAtMjUs
-NiArMjUsNyBAQAo+PiAgI2luY2x1ZGUgPGxpbnV4L3Jlc2V0LWNvbnRyb2xsZXIuaD4KPj4gICNp
-bmNsdWRlIDxsaW51eC90eXBlcy5oPgo+PiAgI2luY2x1ZGUgPGxpbnV4L3dhdGNoZG9nLmg+Cj4+
-ICsjaW5jbHVkZSA8bGludXgvaW50ZXJydXB0Lmg+Cj4+ICAKPj4gICNkZWZpbmUgV0RUX01BWF9U
-SU1FT1VUCQkzMQo+PiAgI2RlZmluZSBXRFRfTUlOX1RJTUVPVVQJCTEKPj4gQEAgLTE4NCwxNSAr
-MTg1LDIzIEBAIHN0YXRpYyBpbnQgbXRrX3dkdF9zZXRfdGltZW91dChzdHJ1Y3Qgd2F0Y2hkb2df
-ZGV2aWNlICp3ZHRfZGV2LAo+PiAgewo+PiAgCXN0cnVjdCBtdGtfd2R0X2RldiAqbXRrX3dkdCA9
-IHdhdGNoZG9nX2dldF9kcnZkYXRhKHdkdF9kZXYpOwo+PiAgCXZvaWQgX19pb21lbSAqd2R0X2Jh
-c2UgPSBtdGtfd2R0LT53ZHRfYmFzZTsKPj4gKwl1bnNpZ25lZCBpbnQgdGltZW91dF9pbnRlcnZh
-bCA9IHRpbWVvdXQ7Cj4+ICAJdTMyIHJlZzsKPj4gIAo+PiAgCXdkdF9kZXYtPnRpbWVvdXQgPSB0
-aW1lb3V0Owo+PiAtCj4+ICsJLyoKPj4gKwkgKiBJbiBkdWFsIG1vZGUsIGlycSB3aWxsIGJlIHRy
-aWdnZXJlZCBhdCB0aW1lb3V0IC8gMgo+PiArCSAqIHRoZSByZWFsIHRpbWVvdXQgb2NjdXJzIGF0
-IHRpbWVvdXQKPj4gKwkgKi8KPj4gKwlpZiAod2R0X2Rldi0+cHJldGltZW91dCkgewo+PiArCQl3
-ZHRfZGV2LT5wcmV0aW1lb3V0ID0gdGltZW91dCAvIDI7Cj4KPm1pbl90aW1lb3V0IGlzIHNldCB0
-byAxLiBJIGRvbid0IHRoaXMgd29ya3Mgd2VsbCBpZiB0aW1lb3V0ID09IDEuCj5Zb3UnbGwgZWl0
-aGVyIG5lZWQgdG8gc2V0IG1pbl90aW1lb3V0IHRvIDIsIG9yIGhhbmRsZSB0aGF0IGNhc2UuCgpJ
-dCBpcyBhcHByb3ByaWF0ZSB0byBjaGFuZ2UgbWluX3RpbWVvdXQgIHRvIDIuCgo+Cj4+ICsJCXRp
-bWVvdXRfaW50ZXJ2YWwgPSB3ZHRfZGV2LT5wcmV0aW1lb3V0Owo+Cj50aW1lb3V0X2ludGVydmFs
-IGlzIHVubmVjZXNzYXJ5LiBKdXN0IHVwZGF0ZSB0aW1lb3V0IGFjY29yZGluZ2x5Lgo+SXQgbmVl
-ZHMgdG8gdGFrZSB0aGUgc2l0dWF0aW9uIG9mIHRpbWVvdXQgPT0gMSBpbnRvIGFjY291bnQsIHRo
-b3VnaC4KCnRpbWVvdXQgcmVwcmVzZW50cyB0aGUgcmVzZXQgdGltZS4gV2hlbiB0aGUgdXNlciBj
-YWxscyB0aW1lb3V0X3Nob3csIApIZSBob3BlcyB0byBnZXQgdGhlIGNvbmZpZ3VyZWQgdGltZW91
-dCwgbm90IHRoZSB2YWx1ZSBjaGFuZ2VkCmJ5IHByZS10aW1lb3V0LgpJIG1vZGlmeSBpdCBsaWtl
-IHRoaXMgbW9yZSBpbiBsaW5lIHdpdGggdGhlIG9yaWdpbmFsIGludGVudGlvbi4KCj4KPj4gKwl9
-Cj4+ICAJLyoKPj4gIAkgKiBPbmUgYml0IGlzIHRoZSB2YWx1ZSBvZiA1MTIgdGlja3MKPj4gIAkg
-KiBUaGUgY2xvY2sgaGFzIDMyIEtIego+PiAgCSAqLwo+PiAtCXJlZyA9IFdEVF9MRU5HVEhfVElN
-RU9VVCh0aW1lb3V0IDw8IDYpIHwgV0RUX0xFTkdUSF9LRVk7Cj4+ICsJcmVnID0gV0RUX0xFTkdU
-SF9USU1FT1VUKHRpbWVvdXRfaW50ZXJ2YWwgPDwgNikgfCBXRFRfTEVOR1RIX0tFWTsKPj4gIAlp
-b3dyaXRlMzIocmVnLCB3ZHRfYmFzZSArIFdEVF9MRU5HVEgpOwo+PiAgCj4+ICAJbXRrX3dkdF9w
-aW5nKHdkdF9kZXYpOwo+PiBAQCAtMjM5LDEzICsyNDgsNDYgQEAgc3RhdGljIGludCBtdGtfd2R0
-X3N0YXJ0KHN0cnVjdCB3YXRjaGRvZ19kZXZpY2UgKndkdF9kZXYpCj4+ICAJCXJldHVybiByZXQ7
-Cj4+ICAKPj4gIAlyZWcgPSBpb3JlYWQzMih3ZHRfYmFzZSArIFdEVF9NT0RFKTsKPj4gLQlyZWcg
-Jj0gfihXRFRfTU9ERV9JUlFfRU4gfCBXRFRfTU9ERV9EVUFMX0VOKTsKPj4gKwlpZiAod2R0X2Rl
-di0+cHJldGltZW91dCkKPj4gKwkJcmVnIHw9IChXRFRfTU9ERV9JUlFfRU4gfCBXRFRfTU9ERV9E
-VUFMX0VOKTsKPj4gKwllbHNlCj4+ICsJCXJlZyAmPSB+KFdEVF9NT0RFX0lSUV9FTiB8IFdEVF9N
-T0RFX0RVQUxfRU4pOwo+PiAgCXJlZyB8PSAoV0RUX01PREVfRU4gfCBXRFRfTU9ERV9LRVkpOwo+
-PiAgCWlvd3JpdGUzMihyZWcsIHdkdF9iYXNlICsgV0RUX01PREUpOwo+PiAgCj4+ICAJcmV0dXJu
-IDA7Cj4+ICB9Cj4+ICAKPj4gK3N0YXRpYyBpbnQgbXRrX3dkdF9zZXRfcHJldGltZW91dChzdHJ1
-Y3Qgd2F0Y2hkb2dfZGV2aWNlICp3ZGQsCj4+ICsJCQkJCXVuc2lnbmVkIGludCB0aW1lb3V0KQo+
-PiArewo+PiArCXN0cnVjdCBtdGtfd2R0X2RldiAqbXRrX3dkdCA9IHdhdGNoZG9nX2dldF9kcnZk
-YXRhKHdkZCk7Cj4+ICsJdm9pZCBfX2lvbWVtICp3ZHRfYmFzZSA9IG10a193ZHQtPndkdF9iYXNl
-Owo+PiArCXUzMiByZWcgPSBpb3JlYWQzMih3ZHRfYmFzZSArIFdEVF9NT0RFKTsKPj4gKwo+PiAr
-CWlmICh0aW1lb3V0ICYmICF3ZGQtPnByZXRpbWVvdXQpIHsKPj4gKwkJd2RkLT5wcmV0aW1lb3V0
-ID0gd2RkLT50aW1lb3V0IC8gMjsKPj4gKwkJcmVnIHw9IChXRFRfTU9ERV9JUlFfRU4gfCBXRFRf
-TU9ERV9EVUFMX0VOKTsKPj4gKwl9IGVsc2UgaWYgKCF0aW1lb3V0ICYmIHdkZC0+cHJldGltZW91
-dCkgewo+PiArCQl3ZGQtPnByZXRpbWVvdXQgPSAwOwo+PiArCQlyZWcgJj0gfihXRFRfTU9ERV9J
-UlFfRU4gfCBXRFRfTU9ERV9EVUFMX0VOKTsKPj4gKwl9IGVsc2UKPj4gKwkJcmV0dXJuIDA7Cj4+
-ICsKPj4gKwlpb3dyaXRlMzIocmVnLCB3ZHRfYmFzZSArIFdEVF9NT0RFKTsKPgo+V2hhdCBpcyB0
-aGUgcG9pbnQgb2Ygc2V0dGluZyB0aGUgbW9kZSBoZXJlID8gSXQgd2lsbAo+YmUgc2V0IGFnYWlu
-IGluIG10a193ZHRfc2V0X3RpbWVvdXQoKS4gU2VlbXMgdG8gbWUgYWxsCj55b3UgbmVlZCB0byBk
-byBoZXJlIGlzIHRvIHNldCB3ZGQtPnByZXRpbWVvdXQsCj50aGVuIGNhbGwgbXRrX3dkdF9zZXRf
-dGltZW91dCgpLgoKbXRrX3dkdF9zZXRfdGltZW91dCgpIG9ubHkgc2V0IHRpbWVvdXQgYW5kIHBp
-bmcoKS4KSGVyZSBhbHNvIG5lZWQgdG8gY29uZmlnIHRvIHRoZSBkdWFsbW9kZSBvciBub3QuCgpU
-aGFua3MsClFpbmcKPgo+R3VlbnRlcgo+Cj4+ICsKPj4gKwlyZXR1cm4gbXRrX3dkdF9zZXRfdGlt
-ZW91dCh3ZGQsIHdkZC0+dGltZW91dCk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpcnFyZXR1cm5f
-dCBtdGtfd2R0X2lzcihpbnQgaXJxLCB2b2lkICphcmcpCj4+ICt7Cj4+ICsJc3RydWN0IHdhdGNo
-ZG9nX2RldmljZSAqd2RkID0gYXJnOwo+PiArCj4+ICsJd2F0Y2hkb2dfbm90aWZ5X3ByZXRpbWVv
-dXQod2RkKTsKPj4gKwo+PiArCXJldHVybiBJUlFfSEFORExFRDsKPj4gK30KPj4gKwo+PiAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCB3YXRjaGRvZ19pbmZvIG10a193ZHRfaW5mbyA9IHsKPj4gIAkuaWRl
-bnRpdHkJPSBEUlZfTkFNRSwKPj4gIAkub3B0aW9ucwk9IFdESU9GX1NFVFRJTUVPVVQgfAo+PiBA
-QCAtMjUzLDEyICsyOTUsMjEgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCB3YXRjaGRvZ19pbmZvIG10
-a193ZHRfaW5mbyA9IHsKPj4gIAkJCSAgV0RJT0ZfTUFHSUNDTE9TRSwKPj4gIH07Cj4+ICAKPj4g
-K3N0YXRpYyBjb25zdCBzdHJ1Y3Qgd2F0Y2hkb2dfaW5mbyBtdGtfd2R0X3B0X2luZm8gPSB7Cj4+
-ICsJLmlkZW50aXR5CT0gRFJWX05BTUUsCj4+ICsJLm9wdGlvbnMJPSBXRElPRl9TRVRUSU1FT1VU
-IHwKPj4gKwkJCSAgV0RJT0ZfUFJFVElNRU9VVCB8Cj4+ICsJCQkgIFdESU9GX0tFRVBBTElWRVBJ
-TkcgfAo+PiArCQkJICBXRElPRl9NQUdJQ0NMT1NFLAo+PiArfTsKPj4gKwo+PiAgc3RhdGljIGNv
-bnN0IHN0cnVjdCB3YXRjaGRvZ19vcHMgbXRrX3dkdF9vcHMgPSB7Cj4+ICAJLm93bmVyCQk9IFRI
-SVNfTU9EVUxFLAo+PiAgCS5zdGFydAkJPSBtdGtfd2R0X3N0YXJ0LAo+PiAgCS5zdG9wCQk9IG10
-a193ZHRfc3RvcCwKPj4gIAkucGluZwkJPSBtdGtfd2R0X3BpbmcsCj4+ICAJLnNldF90aW1lb3V0
-CT0gbXRrX3dkdF9zZXRfdGltZW91dCwKPj4gKwkuc2V0X3ByZXRpbWVvdXQJPSBtdGtfd2R0X3Nl
-dF9wcmV0aW1lb3V0LAo+PiAgCS5yZXN0YXJ0CT0gbXRrX3dkdF9yZXN0YXJ0LAo+PiAgfTsKPj4g
-IAo+PiBAQCAtMjY3LDcgKzMxOCw3IEBAIHN0YXRpYyBpbnQgbXRrX3dkdF9wcm9iZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiAgCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5k
-ZXY7Cj4+ICAJc3RydWN0IG10a193ZHRfZGV2ICptdGtfd2R0Owo+PiAgCWNvbnN0IHN0cnVjdCBt
-dGtfd2R0X2RhdGEgKndkdF9kYXRhOwo+PiAtCWludCBlcnI7Cj4+ICsJaW50IGVyciwgaXJxOwo+
-PiAgCj4+ICAJbXRrX3dkdCA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqbXRrX3dkdCksIEdG
-UF9LRVJORUwpOwo+PiAgCWlmICghbXRrX3dkdCkKPj4gQEAgLTI3OSw3ICszMzAsMjIgQEAgc3Rh
-dGljIGludCBtdGtfd2R0X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+ICAJ
-aWYgKElTX0VSUihtdGtfd2R0LT53ZHRfYmFzZSkpCj4+ICAJCXJldHVybiBQVFJfRVJSKG10a193
-ZHQtPndkdF9iYXNlKTsKPj4gIAo+PiAtCW10a193ZHQtPndkdF9kZXYuaW5mbyA9ICZtdGtfd2R0
-X2luZm87Cj4+ICsJaXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAwKTsKPj4gKwlpZiAoaXJx
-ID4gMCkgewo+PiArCQllcnIgPSBkZXZtX3JlcXVlc3RfaXJxKCZwZGV2LT5kZXYsIGlycSwgbXRr
-X3dkdF9pc3IsIDAsICJ3ZHRfYmFyayIsCj4+ICsJCQkJCSZtdGtfd2R0LT53ZHRfZGV2KTsKPj4g
-KwkJaWYgKGVycikKPj4gKwkJCXJldHVybiBlcnI7Cj4+ICsKPj4gKwkJbXRrX3dkdC0+d2R0X2Rl
-di5pbmZvID0gJm10a193ZHRfcHRfaW5mbzsKPj4gKwkJbXRrX3dkdC0+d2R0X2Rldi5wcmV0aW1l
-b3V0ID0gV0RUX01BWF9USU1FT1VUIC8gMjsKPj4gKwl9IGVsc2Ugewo+PiArCQlpZiAoaXJxID09
-IC1FUFJPQkVfREVGRVIpCj4+ICsJCQlyZXR1cm4gLUVQUk9CRV9ERUZFUjsKPj4gKwo+PiArCQlt
-dGtfd2R0LT53ZHRfZGV2LmluZm8gPSAmbXRrX3dkdF9pbmZvOwo+PiArCX0KPj4gKwo+PiAgCW10
-a193ZHQtPndkdF9kZXYub3BzID0gJm10a193ZHRfb3BzOwo+PiAgCW10a193ZHQtPndkdF9kZXYu
-dGltZW91dCA9IFdEVF9NQVhfVElNRU9VVDsKPj4gIAltdGtfd2R0LT53ZHRfZGV2Lm1heF9od19o
-ZWFydGJlYXRfbXMgPSBXRFRfTUFYX1RJTUVPVVQgKiAxMDAwOwo+PiAKPgoNCg0K
+On Thu, 22 Apr 2021 20:36:56 PDT (-0700), mick@ics.forth.gr wrote:
+> Στις 2021-04-23 06:30, Palmer Dabbelt έγραψε:
+>> On Mon, 05 Apr 2021 01:57:07 PDT (-0700), mick@ics.forth.gr wrote:
+>>> This patch series adds kexec/kdump and crash kernel
+>>> support on RISC-V. For testing the patches a patched
+>>> version of kexec-tools is needed (still a work in
+>>> progress) which can be found at:
+>>>
+>>> https://riscv.ics.forth.gr/kexec-tools-patched.tar.xz
+>>>
+>>> v3:
+>>>  * Rebase on newer kernel tree
+>>>  * Minor cleanups
+>>>  * Split UAPI changes to a separate patch
+>>>  * Improve / cleanup init_resources
+>>>  * Resolve Palmer's comments
+>>>
+>>> v2:
+>>>  * Rebase on newer kernel tree
+>>>  * Minor cleanups
+>>>  * Properly populate the ioresources tre, so that it
+>>>    can be used later on for implementing strict /dev/mem
+>>>  * Use linux,usable-memory on /memory instead of a new binding
+>>>  * USe a reserved-memory node for ELF core header
+>>>
+>>> Nick Kossifidis (5):
+>>>   RISC-V: Add EM_RISCV to kexec UAPI header
+>>>   RISC-V: Add kexec support
+>>>   RISC-V: Improve init_resources
+>>>   RISC-V: Add kdump support
+>>>   RISC-V: Add crash kernel support
+>>>
+>>>  arch/riscv/Kconfig                  |  25 ++++
+>>>  arch/riscv/include/asm/elf.h        |   6 +
+>>>  arch/riscv/include/asm/kexec.h      |  54 +++++++
+>>>  arch/riscv/kernel/Makefile          |   6 +
+>>>  arch/riscv/kernel/crash_dump.c      |  46 ++++++
+>>>  arch/riscv/kernel/crash_save_regs.S |  56 +++++++
+>>>  arch/riscv/kernel/kexec_relocate.S  | 222
+>>> ++++++++++++++++++++++++++++
+>>>  arch/riscv/kernel/machine_kexec.c   | 193 ++++++++++++++++++++++++
+>>>  arch/riscv/kernel/setup.c           | 113 ++++++++------
+>>>  arch/riscv/mm/init.c                | 110 ++++++++++++++
+>>>  include/uapi/linux/kexec.h          |   1 +
+>>>  11 files changed, 787 insertions(+), 45 deletions(-)
+>>>  create mode 100644 arch/riscv/include/asm/kexec.h
+>>>  create mode 100644 arch/riscv/kernel/crash_dump.c
+>>>  create mode 100644 arch/riscv/kernel/crash_save_regs.S
+>>>  create mode 100644 arch/riscv/kernel/kexec_relocate.S
+>>>  create mode 100644 arch/riscv/kernel/machine_kexec.c
+>>
+>> Thanks.  There were some minor issues and some merge conflicts, I put
+>> this on for-next with some fixups.
+>
+> I've sent a v4 that shouldn't have merge conflicts, addressing some
+> comments from Alex as well, could you use that instead or is it too late
+> ?
+
+Thanks, for some reason I didn't see it when poking around.  There was 
+still that one init_resources() merge conflict and I fixed up some of 
+the commit texts, it's now on for-next as
+
+b94394119804 (HEAD -> for-next, riscv/for-next) RISC-V: Add crash kernel support
+6e8451782c90 RISC-V: Add kdump support
+0a0652429bdb RISC-V: Improve init_resources()
+d9a8897d6b5d RISC-V: Add kexec support
+f59938095b94 RISC-V: Add EM_RISCV to kexec UAPI header
