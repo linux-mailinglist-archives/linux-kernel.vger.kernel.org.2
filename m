@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F36D369640
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74475369635
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243087AbhDWPei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:34:38 -0400
-Received: from mail.solidxs.nl ([176.9.52.130]:46040 "EHLO mail.solidxs.nl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242623AbhDWPeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:34:37 -0400
-X-Greylist: delayed 506 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Apr 2021 11:34:37 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.solidxs.nl (Postfix) with ESMTP id 70F7D4C80C46;
-        Fri, 23 Apr 2021 17:25:32 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at solidxs.nl
-Received: from mail.solidxs.nl ([127.0.0.1])
-        by localhost (mail.solidxs.nl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ARmYwmx2-_4L; Fri, 23 Apr 2021 17:25:32 +0200 (CEST)
-Received: from precision.lan (81-227-11-245-no2212.tbcn.telia.com [81.227.11.245])
-        by mail.solidxs.nl (Postfix) with ESMTPA id F0A1D4C80C33;
-        Fri, 23 Apr 2021 17:25:31 +0200 (CEST)
-From:   Marcel Hamer <marcel@solidxs.se>
-To:     linux-usb@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-kernel@vger.kernel.org,
-        Marcel Hamer <marcel@solidxs.se>
-Subject: [PATCH] usb: dwc3: gadget: add missing wakeup link states
-Date:   Fri, 23 Apr 2021 17:25:24 +0200
-Message-Id: <20210423152524.624619-1-marcel@solidxs.se>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230330AbhDWPeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:34:25 -0400
+Received: from smtp.outgoing.loopia.se ([93.188.3.37]:44801 "EHLO
+        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230294AbhDWPeX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:34:23 -0400
+Received: from s807.loopia.se (localhost [127.0.0.1])
+        by s807.loopia.se (Postfix) with ESMTP id 82A1C2466654
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:33:44 +0200 (CEST)
+Received: from s630.loopia.se (unknown [172.22.191.5])
+        by s807.loopia.se (Postfix) with ESMTP id 71F5C2E3A4ED;
+        Fri, 23 Apr 2021 17:33:44 +0200 (CEST)
+Received: from s476.loopia.se (unknown [172.22.191.6])
+        by s630.loopia.se (Postfix) with ESMTP id 5CE1813B942E;
+        Fri, 23 Apr 2021 17:33:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at amavis.loopia.se
+X-Spam-Flag: NO
+X-Spam-Score: -1
+X-Spam-Level: 
+X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
+        tests=[ALL_TRUSTED=-1] autolearn=disabled
+Received: from s645.loopia.se ([172.22.191.5])
+        by s476.loopia.se (s476.loopia.se [172.22.190.16]) (amavisd-new, port 10024)
+        with LMTP id ChAuIG7mRKrG; Fri, 23 Apr 2021 17:33:43 +0200 (CEST)
+X-Loopia-Auth: user
+X-Loopia-User: carl@hgsystem.se
+X-Loopia-Originating-IP: 155.4.131.157
+Received: from localhost.localdomain (h-155-4-131-157.NA.cust.bahnhof.se [155.4.131.157])
+        (Authenticated sender: carl@hgsystem.se)
+        by s645.loopia.se (Postfix) with ESMTPSA id 57CB5157A045;
+        Fri, 23 Apr 2021 17:33:43 +0200 (CEST)
+From:   Erik Rosen <erik.rosen@metormote.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Erik Rosen <erik.rosen@metormote.com>
+Subject: [PATCH 0/2] hwmon: (pmbus/zl6100) Add support for ZLS1003, ZLS4009 and ZL8802
+Date:   Fri, 23 Apr 2021 17:33:27 +0200
+Message-Id: <20210423153329.33457-1-erik.rosen@metormote.com>
+X-Mailer: git-send-email 2.11.0 (Apple Git-81)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dwc3_send_gadget_ep_cmd() a check is performed if the gadget needs
-waking up. The following condition is checked before calling the
-__dwc3_gadget_wakeup() function:
+Add support for Renesas ZL8802 Dual Channel/Dual Phase PMBus DC/DC
+Digital Controller as well as support for the Renesas custom controller
+chips ZLS1003 and ZLS4009 to the zl6100 pmbus driver.
 
-	needs_wakeup = (dwc->link_state == DWC3_LINK_STATE_U1 ||
-        		dwc->link_state == DWC3_LINK_STATE_U2 ||
-                        dwc->link_state == DWC3_LINK_STATE_U3);
+The ZL8802 support was tested using a Flex BMR469 converter module,
+the ZLS1003 with a Flex BMR466 and the ZLS4009 with a Flex BMR465.
 
-Inside __dwc3_gadget_wakeup() only link_state DWC3_LINK_STATE_U3 is checked
-and link state DWC3_LINK_STATE_U1 and DWC3_LINK_STATE_U2 are considered
-invalid and generate a warning because of the call to:
+The documentation is updated with new sysfs attribute descriptions and
+broken links to technical specifications has been fixed. Also the Renesas
+company name was added and Ericsson changed to Flex to reflect new
+ownership relations.
 
-	dev_WARN_ONCE(dwc->dev, ret, "wakeup failed --> %d\n", ret);
+Erik Rosen (2):
+  Add support for ZLS1003, ZLS4009 and ZL8802
+  Update documentation for zl6100 driver
 
-because of ret being -EINVAL.
+ Documentation/hwmon/zl6100.rst | 132 ++++++++++++++++++++++-----------
+ drivers/hwmon/pmbus/zl6100.c   |  94 +++++++++++++++++++----
+ 2 files changed, 169 insertions(+), 57 deletions(-)
 
-Signed-off-by: Marcel Hamer <marcel@solidxs.se>
----
- drivers/usb/dwc3/gadget.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index c7ef218e7a8c..d05a7d630410 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1972,6 +1972,8 @@ static int __dwc3_gadget_wakeup(struct dwc3 *dwc)
- 	switch (link_state) {
- 	case DWC3_LINK_STATE_RESET:
- 	case DWC3_LINK_STATE_RX_DET:	/* in HS, means Early Suspend */
-+	case DWC3_LINK_STATE_U1:
-+	case DWC3_LINK_STATE_U2:
- 	case DWC3_LINK_STATE_U3:	/* in HS, means SUSPEND */
- 	case DWC3_LINK_STATE_RESUME:
- 		break;
+base-commit: 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
 -- 
-2.25.1
+2.20.1
 
