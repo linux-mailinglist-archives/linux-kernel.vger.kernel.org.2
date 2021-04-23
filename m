@@ -2,131 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA953689E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A6C3689EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239953AbhDWAdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 20:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235302AbhDWAdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 20:33:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 520C4613F6;
-        Fri, 23 Apr 2021 00:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619137947;
-        bh=HxcklD0m2+PXP/vIiOXF29m0Dl9QrshDlK/NZ6JeiX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EGX3Bts2GQCYP5+LroCn6aAMaLHd4ZUVjU0s+4nvbCvIPE589xstwR/oKN0LHnlLQ
-         1kHNasUGRrH8AB+HDMViRw+78dSmqgQC6JzsKa+R0G4HIceLC2DndNKiWhIO67X5VK
-         G4wIb1qjlPG7BxKknHmyMg9xJqN9D27WYwPTyyHNvosJrp6cxwms3fyUZhbc9cfOzU
-         ca0hExb0c4WGjx3RJ7WQNLktGCITgTRV9wMg6ZQF9BOn/uLxPOucsag8xxGGO/jRM9
-         sm4qLr3SBOMAfxoZUVtLwdGkE4x933W9MQ3S4dbVVC7TXEjtZml4yWIlhDj8NgEPNd
-         tROCSFGicHofQ==
-Date:   Thu, 22 Apr 2021 17:32:21 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Joe Perches <joe@perches.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <jroedel@suse.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/boot/compressed: enable -Wundef
-Message-ID: <YIIVlahVlJAsaE9W@archlinux-ax161>
-References: <20210422190450.3903999-1-ndesaulniers@google.com>
+        id S239999AbhDWAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 20:39:06 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49537 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236896AbhDWAjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 20:39:03 -0400
+X-UUID: 614ca0896ed040a596488d13a30df04c-20210423
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=FEiz4MQ68oyPYAAvIdQyHnWL6vlPbuhFdtR/TLrAy5I=;
+        b=BWxaLPumfojDd06VKoTv6lAoNa7qVMdwDkyLcpzOO0S4+53o8brbfXuzL0Tp4JuJJiEYL1m2ELQCUaoP31qxEzXBqROITQ8iLJmVFU2geE0t/hhlbnf9zSmh+zTM3jEnurvEEUF6lep/YmBy3ev8ViEdqRjaHVytl+vLR/5Piqk=;
+X-UUID: 614ca0896ed040a596488d13a30df04c-20210423
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <ed.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1250232820; Fri, 23 Apr 2021 08:38:23 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 23 Apr 2021 08:38:22 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 23 Apr 2021 08:38:22 +0800
+Message-ID: <0fd8e103cc2886724979f7d93066b86b773032eb.camel@mediatek.com>
+Subject: Re: [PATCH 1/1] sched: remove the redundant 'success' in the sched
+ tracepoint
+From:   Ed Tsai <ed.tsai@mediatek.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <stanley.chu@mediatek.com>, <loda.chou@mediatek.com>
+Date:   Fri, 23 Apr 2021 08:38:22 +0800
+In-Reply-To: <20210422114629.2b1ea3ad@gandalf.local.home>
+References: <20210422122226.9415-1-ed.tsai@mediatek.com>
+         <20210422114629.2b1ea3ad@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422190450.3903999-1-ndesaulniers@google.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:04:42PM -0700, Nick Desaulniers wrote:
-> A discussion around -Wundef showed that there were still a few boolean
-> Kconfigs where #if was used rather than #ifdef to guard different code.
-> Kconfig doesn't define boolean configs, which can result in -Wundef
-> warnings.
-> 
-> arch/x86/boot/compressed/Makefile resets the CFLAGS used for this
-> directory, and doesn't re-enable -Wundef as the top level Makefile does.
-> If re-added, with RANDOMIZE_BASE and X86_NEED_RELOCS disabled, the
-> following warnings are visible.
-> 
-> arch/x86/boot/compressed/misc.h:82:5: warning: 'CONFIG_RANDOMIZE_BASE'
-> is not defined, evaluates to 0 [-Wundef]
->     ^
-> arch/x86/boot/compressed/misc.c:175:5: warning: 'CONFIG_X86_NEED_RELOCS'
-> is not defined, evaluates to 0 [-Wundef]
->     ^
-> 
-> Simply fix these and re-enable this warning for this directory.
+T24gVGh1LCAyMDIxLTA0LTIyIGF0IDExOjQ2IC0wNDAwLCBTdGV2ZW4gUm9zdGVkdCB3cm90ZToN
+Cj4gT24gVGh1LCAyMiBBcHIgMjAyMSAyMDoyMjoyNiArMDgwMA0KPiBFZCBUc2FpIDxlZC50c2Fp
+QG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+IA0KPiA+ICdzdWNjZXNzJyBpcyBsZWZ0IGhlcmUgZm9y
+IGEgbG9uZyB0aW1lIGFuZCBhbHNvIGl0IGlzIG1lYW5pbmdsZXNzDQo+ID4gZm9yIHRoZSB1cHBl
+ciB1c2VyLiBKdXN0IHJlbW92ZSBpdC4NCj4gDQo+IEhhdmUgeW91IHRlc3RlZCBhbGwgdXNlcnNw
+YWNlIGNvZGUgdGhhdCBtaWdodCB1c2UgdGhpcz8NCj4gDQo+IFRoaXMgaXMgdGhlICJwb3N0ZXIg
+Ym95IiBleGFtcGxlIG9mIHdoeSBQZXRlciBaaWpsc3RyYSBoYXRlcyB0cmFjZQ0KPiBldmVudHMg
+Oy0pDQo+IA0KPiBJIGtub3cgSSd2ZSB1cGRhdGVkIHRyYWNlLWNtZCB0byBjaGVjayB0byBzZWUg
+aWYgdGhpcyBmaWVsZCBleGl0cw0KPiBiZWZvcmUNCj4gZGVwZW5kaW5nIG9uIGl0LCBidXQgdGhl
+cmUgbWF5IGJlIHNvbWUgb3RoZXIgdG9vbHMgdGhhdCBtYXkgbm90Lg0KPiBQZXJoYXBzDQo+IG5v
+dGhpbmcgd2lsbCBicmVhay4NCj4gDQo+IEknbSBhbGwgZm9yIHRoaXMgY2hhbmdlLCBidXQgYmUg
+d2FyZSwgaXQgbWlnaHQgYmUgcmV2ZXJ0ZWQgaWYgdGhlcmUncw0KPiBzb21lDQo+IHRvb2wgb3V0
+IHRoYXQgdGhhdCBleHBlY3RzIGl0IHRvIGV4aXN0LiBUaGlzIGlzIHdoeSBpdCBoYXNuJ3QgYmVl
+bg0KPiByZW1vdmVkLg0KPiANCj4gLS0gU3RldmUNCg0KSXQgaXMgbGVmdCBoZXJlIG92ZXIgNSB5
+ZWFycy4gT2xkIHVzZXJzcGFjZSBjb2RlIG5lZWQgdGhpcyBlbnRyeSBhbmQNCmFsc28gc29tZW9u
+ZSBtYXkgdXNlIGl0IGZvciBhIG5ldyB0b29sLiBJIGhhdGUgdGhpcyBidXQgaXQgaXMgYSBwcm9i
+bGVtDQpzaG91bGQgYmUgcmVzb2x2ZWQgZm9yIHRoZSBrZXJuZWwgb3IgaWdub3JlIGp1c3QgZmlu
+ZS4NCg0KDQoNCg==
 
-I wonder if it is worth turning on -Wall for this directory...
-
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: Joe Perches <joe@perches.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/570
-> Link: https://lore.kernel.org/lkml/67f6cd269684c9aa8463ff4812c3b4605e6739c3.camel@perches.com/
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  arch/x86/boot/compressed/Makefile | 1 +
->  arch/x86/boot/compressed/misc.c   | 2 +-
->  arch/x86/boot/compressed/misc.h   | 2 +-
->  3 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index e0bc3988c3fa..77cc373c1036 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -30,6 +30,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinux.bin.lzma \
->  
->  KBUILD_CFLAGS := -m$(BITS) -O2
->  KBUILD_CFLAGS += -fno-strict-aliasing -fPIE
-> +KBUILD_CFLAGS += -Wundef
->  KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
->  cflags-$(CONFIG_X86_32) := -march=i386
->  cflags-$(CONFIG_X86_64) := -mcmodel=small -mno-red-zone
-> diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-> index 267e7f93050e..3a214cc3239f 100644
-> --- a/arch/x86/boot/compressed/misc.c
-> +++ b/arch/x86/boot/compressed/misc.c
-> @@ -172,7 +172,7 @@ void __puthex(unsigned long value)
->  	}
->  }
->  
-> -#if CONFIG_X86_NEED_RELOCS
-> +#ifdef CONFIG_X86_NEED_RELOCS
->  static void handle_relocations(void *output, unsigned long output_len,
->  			       unsigned long virt_addr)
->  {
-> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-> index 901ea5ebec22..b140f988a233 100644
-> --- a/arch/x86/boot/compressed/misc.h
-> +++ b/arch/x86/boot/compressed/misc.h
-> @@ -79,7 +79,7 @@ struct mem_vector {
->  	u64 size;
->  };
->  
-> -#if CONFIG_RANDOMIZE_BASE
-> +#ifdef CONFIG_RANDOMIZE_BASE
->  /* kaslr.c */
->  void choose_random_location(unsigned long input,
->  			    unsigned long input_size,
-> 
-> base-commit: 16fc44d6387e260f4932e9248b985837324705d8
-> -- 
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
