@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29B0368FF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 12:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B18368FF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 12:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241846AbhDWKBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 06:01:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41417 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbhDWKBT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 06:01:19 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lZsc5-00005E-V2
-        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 10:00:42 +0000
-Received: by mail-wm1-f71.google.com with SMTP id o18-20020a1ca5120000b02901333a56d46eso537672wme.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 03:00:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RT/uGfEE61bUXQ3HR7ruOjjWjeW0FT4Ckc7w+ZiFRPw=;
-        b=WRnUuRktBtXtBhlfeJy6XIoS9HTocWRXRy22id9HsEpK8ZI0CUBnmbNTEscuEgN8MW
-         RtsNWmTce7HzqIeLguI3a9j4K8gWg57tmAvMSc45uwvqdAkacUkHLQ8j5ZduaSFqBa3f
-         IkdiRRil2IX2XOt+zZm0zm8RpgSinxk1zuHapvpvZa3lfvf9iUFN5X0k8n2kBUZDyYn7
-         R2TNd3EXibwzFO80UBjWp1DmO/Eufr6wMNQ0S+RL3zxOld7TZkHVJwZGpSRXXnqEPF3e
-         uTAHWYFA0CKzwGjxpsD4Gga/UqdfB5Z4sDFYOoSRz6dZkRxyzzwIDdBdp2B/QHUntd2j
-         snGQ==
-X-Gm-Message-State: AOAM531Jah1KuwZv+fkcP8a/as/44I679Zb9ZpdHOF3vMpvb0Ub+Feuh
-        UaWI4mtUqnGHTtzbezadjkgQ9bHTIQCPvkoCjfg3od1WlN7oYgzvDSVbu/UZPo2jTPlHctG/QZO
-        uJA8Nb/ZAxiwzQBeW83s4hOP2cKn9Kq0Jct0xUAzZcw==
-X-Received: by 2002:adf:9d88:: with SMTP id p8mr3657103wre.138.1619172041622;
-        Fri, 23 Apr 2021 03:00:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw37ml8W+zBb1rCUp4rhtus6Jm+/6pWmI4PCg6VZ5/5mLKg2BJ23hfoMJNqtZbgO3uAQu/Kig==
-X-Received: by 2002:adf:9d88:: with SMTP id p8mr3657089wre.138.1619172041449;
-        Fri, 23 Apr 2021 03:00:41 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id r2sm8006103wrt.79.2021.04.23.03.00.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 03:00:41 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] coccinelle: irqf_oneshot: reduce the severity due to false positives
-Date:   Fri, 23 Apr 2021 12:00:33 +0200
-Message-Id: <20210423100033.78580-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S241888AbhDWKCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 06:02:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:54056 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230036AbhDWKCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 06:02:31 -0400
+IronPort-SDR: 9G4E3Ov8ssAf/hNOCMSTzMAy6OjXeohq6tQpfVoV4YnjIIGX8+FthmQPMri9FytpZUfpzcIE0O
+ YkNH1tqouVHA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="195601753"
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="195601753"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 03:01:52 -0700
+IronPort-SDR: rAkZ9qqNlkzR9RQiI6kXoqh1DuQ9T70NQSncXM/J+MS347z6VVq5gTON5YXp36GbgmH22P8Rbr
+ L0e+gVRln1XA==
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="603499222"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 03:01:49 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 66F5820207;
+        Fri, 23 Apr 2021 13:01:46 +0300 (EEST)
+Date:   Fri, 23 Apr 2021 13:01:46 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/vsprintf.c: remove leftover 'f' and 'F' cases from
+ bstr_printf()
+Message-ID: <20210423100146.GQ3@paasikivi.fi.intel.com>
+References: <20210423094529.1862521-1-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423094529.1862521-1-linux@rasmusvillemoes.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IRQF_ONESHOT should be present for threaded IRQ using default
-primary handler.  However intetrupt of many child devices, e.g. children
-of MFD, is nested thus the IRQF_ONESHOT is not needed.  The coccinelle
-message about error misleads submitters and reviewers about the severity
-of the issue, so make it a warning and mention possible false positive.
+Hi Rasmus,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- scripts/coccinelle/misc/irqf_oneshot.cocci | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Apr 23, 2021 at 11:45:29AM +0200, Rasmus Villemoes wrote:
+> Commit 9af7706492f9 ("lib/vsprintf: Remove support for %pF and %pf in
+> favour of %pS and %ps") removed support for %pF and %pf, and correctly
+> removed the handling of those cases in vbin_printf(). However, the
+> corresponding cases in bstr_printf() were left behind.
+> 
+> In the same series, %pf was re-purposed for dealing with
+> fwnodes (3bd32d6a2ee6, "lib/vsprintf: Add %pfw conversion specifier
+> for printing fwnode names").
+> 
+> So should anyone use %pf with the binary printf routines,
+> vbin_printf() would (correctly, as it involves dereferencing the
+> pointer) do the string formatting to the u32 array, but bstr_printf()
+> would not copy the string from the u32 array, but instead interpret
+> the first sizeof(void*) bytes of the formatted string as a pointer -
+> which generally won't end well (also, all subsequent get_args would be
+> out of sync).
+> 
+> Fixes: 9af7706492f9 ("lib/vsprintf: Remove support for %pF and %pf in favour of %pS and %ps")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-diff --git a/scripts/coccinelle/misc/irqf_oneshot.cocci b/scripts/coccinelle/misc/irqf_oneshot.cocci
-index 7b48287b3dc1..9b6f404d07f2 100644
---- a/scripts/coccinelle/misc/irqf_oneshot.cocci
-+++ b/scripts/coccinelle/misc/irqf_oneshot.cocci
-@@ -103,11 +103,11 @@ devm_request_threaded_irq@p(dev, irq, NULL, ...)
- @script:python depends on org@
- p << match.p;
- @@
--msg = "ERROR: Threaded IRQ with no primary handler requested without IRQF_ONESHOT"
-+msg = "WARNING: Threaded IRQ with no primary handler requested without IRQF_ONESHOT (unless it is nested IRQ)"
- coccilib.org.print_todo(p[0],msg)
- 
- @script:python depends on report@
- p << match.p;
- @@
--msg = "ERROR: Threaded IRQ with no primary handler requested without IRQF_ONESHOT"
-+msg = "WARNING: Threaded IRQ with no primary handler requested without IRQF_ONESHOT (unless it is nested IRQ)"
- coccilib.report.print_report(p[0],msg)
+Thanks!
+
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+> ---
+>  lib/vsprintf.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 41ddc353ebb8..39ef2e314da5 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -3135,8 +3135,6 @@ int bstr_printf(char *buf, size_t size, const char *fmt, const u32 *bin_buf)
+>  			switch (*fmt) {
+>  			case 'S':
+>  			case 's':
+> -			case 'F':
+> -			case 'f':
+>  			case 'x':
+>  			case 'K':
+>  			case 'e':
+> -- 
+> 2.29.2
+> 
+
 -- 
-2.25.1
-
+Sakari Ailus
