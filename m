@@ -2,127 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D51536976E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE61836976D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243226AbhDWQxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
+        id S243193AbhDWQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWQxa (ORCPT
+        with ESMTP id S229691AbhDWQxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:53:30 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EABC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:52:53 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r7so37024455wrm.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:52:53 -0700 (PDT)
+        Fri, 23 Apr 2021 12:53:19 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4550BC061574;
+        Fri, 23 Apr 2021 09:52:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id j7so21297477eds.8;
+        Fri, 23 Apr 2021 09:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=9tb7u/DpAkV0Suiokby9iWVlYLDwOXtPXfFXKs/iF3c=;
-        b=aznGAWk5e294SbU2cMMw/mNdZng6zwqph1PWWlygg2hb6DaDD2veMhcyn03CpU0lbb
-         lezjXJWfi8PriUYUEDvwWLY9jyzhWTAY2NvBV/IvNy7i3hkq1/VZMQS0qneaPJf3wvh1
-         vjqRrNPGdLNWGBDk3JiZkztlkLsdOhuOmqd7glheHEMGjV8x9vFm+iV+M4jEoPraKNB8
-         eRrXNdKwabUvPVzFQgT4cMmUSWufNKpx8z2KQKN/HGstJnhLZ0x3JhvFIBu6pQea0FnH
-         qUXbzA214WBtdcPvv3CcA8hA/80anbIylW2HMhgAOMQntnSoi+n4mGwn2RPJq9K/6hG8
-         zHrA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=jFCniOtGAUvh5tDuIWS7uZa9/8xrAA1r1T8fT2Kl1d8=;
+        b=FjQGgLqAoRAhJDP8bvbuAIWX1fRLtXTbDahJh8lyg9ZwyYqTYQ1JrARnNmgGE1G2fF
+         NddJewqq3uVP6kIqIhAVFRXj1BLLalyAk3qquiW/5rFAl7uuyy/UrdEOdKRK/uP/Fov7
+         Can6OluAi2QOdBAXmgyWKMDze3WaAF20Y7wlUdt4v8a/kFPqjpfneJQpQEca1vvzXQQ1
+         e7D99+zVtTmacVRvTWzKb/tyWzekicGmRNvV/wzHXKSUv4/ASkhoVpvQ25OGiXpblfO3
+         LH0NLRkGWpHDLY/8P069PE3KUJLRo+/6SNsQs6Ymw0TZ0kHFX6U7IW5/lEoBLz7D3Ejw
+         aD9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=9tb7u/DpAkV0Suiokby9iWVlYLDwOXtPXfFXKs/iF3c=;
-        b=Dq3lQR92x5eH42ry+nFUfaS1gnsRTaL3dp9dec0T5PpErmakqoKVSM/HPDyceFTebn
-         b/EfBJgztgswAAejfL4D20np2X9Lwilw3XvPPz4Vool9s3Gl+DGmJFTidzvBFczFvSO1
-         dPxHpwOh1RD7gutkV135xl7DkzDG2mQeIrsPcK2RJYaihrUM+BsSD+pj5XxM92LjtfuH
-         eK239/pfNlUBPOLevuZLf0A2S+A1Fvczfy8X2Q0RxLo8Aw+cUHltwnui+ELhpTwztEXW
-         Q2eHCsmeeLhu5lgZX8xHR9bolB7xa21nOzswcg6DlxGgrygOqeZj572qZd9EU9bKjrzq
-         KoAg==
-X-Gm-Message-State: AOAM530qOA2J73mA0Qpg6Z3Kw2bh/oGR43O1mLSO8yzp+393IdRURU3p
-        IpRPtfgGWzwS3s799pQKN9Rj3Oi16Wdw6A==
-X-Google-Smtp-Source: ABdhPJy2J+JRVR6CxxPl3+91w9mwKINYMfv4HSPJYB99mp0TeatcSk5rYYe7PTz7gcm7hCstYjqUqg==
-X-Received: by 2002:a5d:60d0:: with SMTP id x16mr6005051wrt.0.1619196772627;
-        Fri, 23 Apr 2021 09:52:52 -0700 (PDT)
-Received: from agape.jhs ([109.52.244.233])
-        by smtp.gmail.com with ESMTPSA id x23sm8089171wmj.43.2021.04.23.09.52.51
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jFCniOtGAUvh5tDuIWS7uZa9/8xrAA1r1T8fT2Kl1d8=;
+        b=Yudr37XL/J4rtpp/1lwEai0W79AzHprUzOFeE5RviugCZgvxr0EW8FQzVxMcHv+7MF
+         mQ/2/Wl7Q5yg52WypsD7Ez9BqEZf+mhHexMlw3Kl/q2Pyle8h41r5RiftRwc1ayVFHmI
+         3+uLjZj2U+PW9IPEbrdGsVkyFRvaXG9LAxBS9UTg1Vis+s0gIOKlcBaABPvGkwIurIxf
+         uRb6pmuoVFPDiwjYEeVQtEhfGVpCeblVfe1eezJzV+E8hC5939pGoSxGgYb/EtnBxjlE
+         rvVKxnGAiyof18pOq65STuQzSITWbfzFQhGIVoTfqRhtPQTlpjLDFxvc6mp9I7o0UMcg
+         +Z0A==
+X-Gm-Message-State: AOAM530/beQPzhgui5AQo2+UBPx+ltm3scKslJwL3uECYjsP6q/DODpu
+        ByYwH+MYlPgWUFQAagKLJmM=
+X-Google-Smtp-Source: ABdhPJwztJLM5Bl1NlErdY2qO/fU4NaGrY72Dw41ahvzAZi/41DyvMd8wADZX8VGCRAySbgqCt/D9A==
+X-Received: by 2002:aa7:c511:: with SMTP id o17mr5452004edq.335.1619196761013;
+        Fri, 23 Apr 2021 09:52:41 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id q16sm5446999edv.61.2021.04.23.09.52.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 09:52:52 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 18:52:49 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/49] staging: rtl8723bs: replace DBG_871X_SEL log macro
- with netdev_dbg()
-Message-ID: <20210423165249.GA1419@agape.jhs>
-References: <cover.1619189489.git.fabioaiuto83@gmail.com>
- <9e6a1e4dc8962bfd58375be98619c76e8e28febe.1619189489.git.fabioaiuto83@gmail.com>
- <0a68fbfffba4cc801814e3af1e3a7571928c1921.camel@perches.com>
+        Fri, 23 Apr 2021 09:52:40 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 18:53:29 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
+Message-ID: <YIL7ibC/Pojfw3OT@orome.fritz.box>
+References: <20210412200155.5316-1-jbx6244@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zQJ8OWk5MsO8Q17F"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a68fbfffba4cc801814e3af1e3a7571928c1921.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210412200155.5316-1-jbx6244@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 08:27:58AM -0700, Joe Perches wrote:
-> On Fri, 2021-04-23 at 16:57 +0200, Fabio Aiuto wrote:
-> > replace DBG_871X_SEL log macro with the net device driver
-> > recommended netdev_dbg().
-> > 
-> > This macro by default does a raw printk, and the alternative
-> > behaviour, never triggered is a seq_print() call.
-> []
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_debug.c b/drivers/staging/rtl8723bs/core/rtw_debug.c
-> []
-> > @@ -23,9 +23,10 @@ void mac_reg_dump(void *sel, struct adapter *adapter)
-> >  	for (i = 0x0; i < 0x800; i += 4) {
-> >  		if (j%4 == 1)
-> >  			netdev_dbg(adapter->pnetdev, "0x%03x", i);
-> > -		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
-> > +		netdev_dbg(adapter->pnetdev, " 0x%08x ",
-> > +			   rtw_read32(adapter, i));
-> >  		if ((j++)%4 == 0)
-> > -			DBG_871X_SEL(sel, "\n");
-> > +			netdev_dbg(adapter->pnetdev, "\n");
-> >  	}
-> 
-> This makes a mess of the output as each netdev_dbg call
-> is a separate line.
-> 
-> Dumping 1000 register lines into output logs seems impolite
-> at best, even for debugging.
-> 
-> This _might_ be rewritten to something like:
-> 
-> void dump_4_regs(struct adapter *adapter, int offset)
-> {
-> 	u32 reg[4];
-> 	int i;
-> 
-> 	for (i = 0; i < 4; i++)
-> 		reg[i] = rtw_read32(adapter, offset + i);
-> 
-> 	netdev_dbg(adapter->pnetdev, "0x%03x 0x%08x 0x%08x 0x%08x 0x%08x\n",
-> 		   i, reg[0], reg[1], reg[2], reg[3]);
-> }
-> 
-> void mac_reg_dump(...)
-> {
-> 	...
-> 
-> 	for (i = 0; i < 0x800; i += 4)
-> 		dump_4_regs(adapter, i);
-> 
-> 
-> 
 
-interesting, sure that will be matter of another patch series,
-the ugly output was already there, old macro used to wrap a raw
-printk...
+--zQJ8OWk5MsO8Q17F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 12, 2021 at 10:01:52PM +0200, Johan Jonker wrote:
+> Current dts files with 'pwm' nodes are manually verified.
+> In order to automate this process pwm-rockchip.txt
+> has to be converted to yaml.
+>=20
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+> For some SoC nodes this patch serie generates notifications
+> for undocumented "interrupts" properties shared between
+> PWM channels till there is consensus of what to do with it or
+> someone makes a solution for the whole PWM block.
+>=20
+> Changed V3:
+>   fix mistake with compatibles introduced in V2
+> Changed V2:
+>   changed schema for clocks and clock-names
+> ---
+>  .../devicetree/bindings/pwm/pwm-rockchip.txt       | 27 -------
+>  .../devicetree/bindings/pwm/pwm-rockchip.yaml      | 88 ++++++++++++++++=
+++++++
+>  2 files changed, 88 insertions(+), 27 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.ya=
+ml
+
+All 4 patches applied, thanks.
+
+Thierry
+
+--zQJ8OWk5MsO8Q17F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCC+4kACgkQ3SOs138+
+s6HqWw//ZMveK8MeXwu6wrXBFllrTVKghpCj/TcBnvjT39S+lh/KNUVhkDbki0+A
+VliqplxKSCk2ZPcu9FCnEDN0l8NI7TQLRtJ6QGPnAWuEkAIhn9qaS9VBN1yo6Sob
+0mSvzRy5iGUN90xYyjYujns3oXe0vIxNZwRO/KBztsg6uis2sN3E6zqvbyPl6Pdt
+ll8pY5N+GimqEG5vACKWOpHkVZUp5j/ojfEWfQL/R9S7iVJo1yzoqVLzTyBc2oYx
+CiVFo54KNR/WnacrrC+GIpmgnrLbKEh/bswNugXaZ/Umdd2dhxtgGI8hUMgRUqx1
+rIpWFHboxGLlqeFQORoxxV3a4ybFcZB1wdTbHyb5XsMyfYxFRqabED9K84JxMxpB
+DaxOOBW2jDBiwmJjhWuy2ICE65rtSx6rrGkr4gply7O14A8bllHKrHG6W0DrT2hY
+k1l6J5J+RZc+Ivf3NRpfO1a74/80xXKeXi4KSgfIxl/mM9AGKN6yDVEf0e085rau
+9kGHvOdjuItr7XeneUz0FuSqdKK/6UwyMU+QohELgJ313zKeX0/gOQME7+AKa/36
+4sbGuTXjTXbIjOK5sAk1kR5VLFUcohMVbRfm4c3lI3wjEkrRfPCKnrD0WRy30leq
+7vz7Y0Zn3IciHw0ZL77RMip0doXR8wlX+Qazl5TXqLpY/d4BRW8=
+=RnDA
+-----END PGP SIGNATURE-----
+
+--zQJ8OWk5MsO8Q17F--
