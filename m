@@ -2,127 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAC3368EDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4735B368EE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241320AbhDWIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhDWIeW (ORCPT
+        id S241495AbhDWIeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:34:44 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:55361 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhDWIen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:34:22 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2DCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:33:44 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id p2so19268144pgh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PPP0dRgPfG6zQIMdWqCkBDehDsZiZdXDI5NgAH85Nqs=;
-        b=HY8/qndk5bgQgsED9BAcRMLKI1nSjL/D2dc++lw6cLUyVE1vKQtQOKJSkqjyYpLMen
-         HrJtLLy0P7ogIZqdchvzc60HOuBnRLdcRSaVAi3IYqAknoW+/pK/djaYEOYzXJ0ps9Aw
-         kDHC0LF/mPnyKVV8U6bFij0c51UMXFsii8RYoNwWJp60eYPTBElwO1aBcpBb3j+NmxbV
-         QU9WenoLZVQRotjTLFjdQWh+iUj+aolJxPfnmrmAqVpZVB5u3BqYzUH8boj/OXBACw53
-         We+9M+KwDIrL7yv5tevpprwfCJpqVFQYmrFc/6Sr8GCUfglT6LFoqPRLPYDs7lmmyz/t
-         29qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PPP0dRgPfG6zQIMdWqCkBDehDsZiZdXDI5NgAH85Nqs=;
-        b=oBJbJ+DBy7NfH1A0CL5YcoDyAamKIgBM7Am4uPgBIYLgc1/zO7EXbIXhEsYx2UKoyY
-         LTquL6vY4qMARVLywJGxUCCbQwHs/O3MceWkEN6HRR6QA82fUBKBssjbbWaMoXkF2EfC
-         29qZs7og3GV2OKZMN/hfbeOlFzF0TZP4+n92hco8yhT7wGXbSQO9mozhDuJ87BRQrwV0
-         loO7QcFnJGfAbeTICuzYU1h1C1V4AsVqJv9DNNWHGOOcBuaI/sP15QATRG9c7hNGsMAT
-         kgvII+EzRhH/sQqQq64+69gJ7ThqiNCzSXD8jkBg+M7Q0SLn5VIAWm7xd4cnvPu2xzG/
-         e1WA==
-X-Gm-Message-State: AOAM530mroGMCszmGAhQTeI1QamQn7wP/RilQ/idFLst4+Y0+1huzSL3
-        WnCem6auFKfwCTQ4pFXno1gdPoZWWfgDNxsVChoguw==
-X-Google-Smtp-Source: ABdhPJxaiiAj0rO1om5p99kZATGkc+WzZV3B+EC/6dlnMwASzl0N+Q58LGX5yoSnQ9BHBz01nxUJrsgmNj19R4p1Ao8=
-X-Received: by 2002:a63:91c9:: with SMTP id l192mr2724655pge.339.1619166823869;
- Fri, 23 Apr 2021 01:33:43 -0700 (PDT)
+        Fri, 23 Apr 2021 04:34:43 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 178B620003;
+        Fri, 23 Apr 2021 08:34:02 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Fix 32b kernel caused by 64b kernel mapping moving
+ outside linear mapping
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        kasan-dev@googlegroups.com,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210417172159.32085-1-alex@ghiti.fr>
+ <CAAhSdy23jRTp3VoBpnH8B79eSSmuw8qMEYrXyh-02ccWT3O5QQ@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <66e9a8e0-5764-2eea-4070-bad3fb7ee48e@ghiti.fr>
+Date:   Fri, 23 Apr 2021 04:34:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210422064015.15285-1-jee.heng.sia@intel.com>
-In-Reply-To: <20210422064015.15285-1-jee.heng.sia@intel.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 23 Apr 2021 10:33:32 +0200
-Message-ID: <CAG3jFysq1w9Di1YAQMS7v37Wdog1TCBYHfycRyF1Rr67U0HjyA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] drm: bridge: adv7511: Support I2S IEC958 encoded
- PCM format
-To:     Sia Jee Heng <jee.heng.sia@intel.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        pierre-louis.bossart@linux.intel.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAhSdy23jRTp3VoBpnH8B79eSSmuw8qMEYrXyh-02ccWT3O5QQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Sia,
+Le 4/20/21 à 12:18 AM, Anup Patel a écrit :
+> On Sat, Apr 17, 2021 at 10:52 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Fix multiple leftovers when moving the kernel mapping outside the linear
+>> mapping for 64b kernel that left the 32b kernel unusable.
+>>
+>> Fixes: 4b67f48da707 ("riscv: Move kernel mapping outside of linear mapping")
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> 
+> Quite a few #ifdef but I don't see any better way at the moment. Maybe we can
+> clean this later. Otherwise looks good to me.
+> 
+> Reviewed-by: Anup Patel <anup@brainfault.org>
 
-Thanks for the reminder!
+Thanks Anup!
 
-I've merged this patch to drm-misc-next.
+@Palmer: This is not on for-next yet and then rv32 is broken. This does 
+not apply immediately on top of for-next though, so if you need a new 
+version, I can do that. But this squashes nicely with the patch it fixes 
+if you prefer.
 
-https://cgit.freedesktop.org/drm/drm-misc/log/
+Let me know, I can do that very quickly.
 
-On Thu, 22 Apr 2021 at 08:57, Sia Jee Heng <jee.heng.sia@intel.com> wrote:
->
-> Support IEC958 encoded PCM format for ADV7511 so that ADV7511 HDMI
-> audio driver can accept the IEC958 data from the I2S input.
->
-> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  drivers/gpu/drm/bridge/adv7511/adv7511.h       | 1 +
->  drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 6 ++++++
->  2 files changed, 7 insertions(+)
->
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511.h b/drivers/gpu/drm/bridge/adv7511/adv7511.h
-> index a9bb734366ae..05e3abb5a0c9 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511.h
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511.h
-> @@ -191,6 +191,7 @@
->  #define ADV7511_I2S_FORMAT_I2S                 0
->  #define ADV7511_I2S_FORMAT_RIGHT_J             1
->  #define ADV7511_I2S_FORMAT_LEFT_J              2
-> +#define ADV7511_I2S_IEC958_DIRECT              3
->
->  #define ADV7511_PACKET(p, x)       ((p) * 0x20 + (x))
->  #define ADV7511_PACKET_SDP(x)      ADV7511_PACKET(0, x)
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-> index 45838bd08d37..61f4a38e7d2b 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-> @@ -101,6 +101,10 @@ static int adv7511_hdmi_hw_params(struct device *dev, void *data,
->         case 20:
->                 len = ADV7511_I2S_SAMPLE_LEN_20;
->                 break;
-> +       case 32:
-> +               if (fmt->bit_fmt != SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE)
-> +                       return -EINVAL;
-> +               fallthrough;
->         case 24:
->                 len = ADV7511_I2S_SAMPLE_LEN_24;
->                 break;
-> @@ -112,6 +116,8 @@ static int adv7511_hdmi_hw_params(struct device *dev, void *data,
->         case HDMI_I2S:
->                 audio_source = ADV7511_AUDIO_SOURCE_I2S;
->                 i2s_format = ADV7511_I2S_FORMAT_I2S;
-> +               if (fmt->bit_fmt == SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE)
-> +                       i2s_format = ADV7511_I2S_IEC958_DIRECT;
->                 break;
->         case HDMI_RIGHT_J:
->                 audio_source = ADV7511_AUDIO_SOURCE_I2S;
->
-> base-commit: e488b1023a4a4eab15b905871cf8e81f00336ed7
-> --
-> 2.18.0
->
+Alex
+
+> 
+> Regards,
+> Anup
+> 
+>> ---
+>>   arch/riscv/include/asm/page.h    |  9 +++++++++
+>>   arch/riscv/include/asm/pgtable.h | 16 ++++++++++++----
+>>   arch/riscv/mm/init.c             | 25 ++++++++++++++++++++++++-
+>>   3 files changed, 45 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+>> index 22cfb2be60dc..f64b61296c0c 100644
+>> --- a/arch/riscv/include/asm/page.h
+>> +++ b/arch/riscv/include/asm/page.h
+>> @@ -90,15 +90,20 @@ typedef struct page *pgtable_t;
+>>
+>>   #ifdef CONFIG_MMU
+>>   extern unsigned long va_pa_offset;
+>> +#ifdef CONFIG_64BIT
+>>   extern unsigned long va_kernel_pa_offset;
+>> +#endif
+>>   extern unsigned long pfn_base;
+>>   #define ARCH_PFN_OFFSET                (pfn_base)
+>>   #else
+>>   #define va_pa_offset           0
+>> +#ifdef CONFIG_64BIT
+>>   #define va_kernel_pa_offset    0
+>> +#endif
+>>   #define ARCH_PFN_OFFSET                (PAGE_OFFSET >> PAGE_SHIFT)
+>>   #endif /* CONFIG_MMU */
+>>
+>> +#ifdef CONFIG_64BIT
+>>   extern unsigned long kernel_virt_addr;
+>>
+>>   #define linear_mapping_pa_to_va(x)     ((void *)((unsigned long)(x) + va_pa_offset))
+>> @@ -112,6 +117,10 @@ extern unsigned long kernel_virt_addr;
+>>          (_x < kernel_virt_addr) ?                                               \
+>>                  linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);      \
+>>          })
+>> +#else
+>> +#define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
+>> +#define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+>> +#endif
+>>
+>>   #ifdef CONFIG_DEBUG_VIRTUAL
+>>   extern phys_addr_t __virt_to_phys(unsigned long x);
+>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>> index 80e63a93e903..5afda75cc2c3 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -16,19 +16,27 @@
+>>   #else
+>>
+>>   #define ADDRESS_SPACE_END      (UL(-1))
+>> -/*
+>> - * Leave 2GB for kernel and BPF at the end of the address space
+>> - */
+>> +
+>> +#ifdef CONFIG_64BIT
+>> +/* Leave 2GB for kernel and BPF at the end of the address space */
+>>   #define KERNEL_LINK_ADDR       (ADDRESS_SPACE_END - SZ_2G + 1)
+>> +#else
+>> +#define KERNEL_LINK_ADDR       PAGE_OFFSET
+>> +#endif
+>>
+>>   #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>>   #define VMALLOC_END      (PAGE_OFFSET - 1)
+>>   #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>>
+>> -/* KASLR should leave at least 128MB for BPF after the kernel */
+>>   #define BPF_JIT_REGION_SIZE    (SZ_128M)
+>> +#ifdef CONFIG_64BIT
+>> +/* KASLR should leave at least 128MB for BPF after the kernel */
+>>   #define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
+>>   #define BPF_JIT_REGION_END     (BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+>> +#else
+>> +#define BPF_JIT_REGION_START   (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>> +#define BPF_JIT_REGION_END     (VMALLOC_END)
+>> +#endif
+>>
+>>   /* Modules always live before the kernel */
+>>   #ifdef CONFIG_64BIT
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index 093f3a96ecfc..dc9b988e0778 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -91,8 +91,10 @@ static void print_vm_layout(void)
+>>                    (unsigned long)VMALLOC_END);
+>>          print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
+>>                    (unsigned long)high_memory);
+>> +#ifdef CONFIG_64BIT
+>>          print_mlm("kernel", (unsigned long)KERNEL_LINK_ADDR,
+>>                    (unsigned long)ADDRESS_SPACE_END);
+>> +#endif
+>>   }
+>>   #else
+>>   static void print_vm_layout(void) { }
+>> @@ -165,9 +167,11 @@ static struct pt_alloc_ops pt_ops;
+>>   /* Offset between linear mapping virtual address and kernel load address */
+>>   unsigned long va_pa_offset;
+>>   EXPORT_SYMBOL(va_pa_offset);
+>> +#ifdef CONFIG_64BIT
+>>   /* Offset between kernel mapping virtual address and kernel load address */
+>>   unsigned long va_kernel_pa_offset;
+>>   EXPORT_SYMBOL(va_kernel_pa_offset);
+>> +#endif
+>>   unsigned long pfn_base;
+>>   EXPORT_SYMBOL(pfn_base);
+>>
+>> @@ -410,7 +414,9 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>          load_sz = (uintptr_t)(&_end) - load_pa;
+>>
+>>          va_pa_offset = PAGE_OFFSET - load_pa;
+>> +#ifdef CONFIG_64BIT
+>>          va_kernel_pa_offset = kernel_virt_addr - load_pa;
+>> +#endif
+>>
+>>          pfn_base = PFN_DOWN(load_pa);
+>>
+>> @@ -469,12 +475,16 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>                             pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
+>>          dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
+>>   #else /* CONFIG_BUILTIN_DTB */
+>> +#ifdef CONFIG_64BIT
+>>          /*
+>>           * __va can't be used since it would return a linear mapping address
+>>           * whereas dtb_early_va will be used before setup_vm_final installs
+>>           * the linear mapping.
+>>           */
+>>          dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
+>> +#else
+>> +       dtb_early_va = __va(dtb_pa);
+>> +#endif /* CONFIG_64BIT */
+>>   #endif /* CONFIG_BUILTIN_DTB */
+>>   #else
+>>   #ifndef CONFIG_BUILTIN_DTB
+>> @@ -486,7 +496,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>                             pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
+>>          dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
+>>   #else /* CONFIG_BUILTIN_DTB */
+>> +#ifdef CONFIG_64BIT
+>>          dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
+>> +#else
+>> +       dtb_early_va = __va(dtb_pa);
+>> +#endif /* CONFIG_64BIT */
+>>   #endif /* CONFIG_BUILTIN_DTB */
+>>   #endif
+>>          dtb_early_pa = dtb_pa;
+>> @@ -571,12 +585,21 @@ static void __init setup_vm_final(void)
+>>                  for (pa = start; pa < end; pa += map_size) {
+>>                          va = (uintptr_t)__va(pa);
+>>                          create_pgd_mapping(swapper_pg_dir, va, pa,
+>> -                                          map_size, PAGE_KERNEL);
+>> +                                          map_size,
+>> +#ifdef CONFIG_64BIT
+>> +                                          PAGE_KERNEL
+>> +#else
+>> +                                          PAGE_KERNEL_EXEC
+>> +#endif
+>> +                                       );
+>> +
+>>                  }
+>>          }
+>>
+>> +#ifdef CONFIG_64BIT
+>>          /* Map the kernel */
+>>          create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+>> +#endif
+>>
+>>          /* Clear fixmap PTE and PMD mappings */
+>>          clear_fixmap(FIX_PTE);
+>> --
+>> 2.20.1
+>>
