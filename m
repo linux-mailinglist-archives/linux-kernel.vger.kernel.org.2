@@ -2,110 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E643694DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0573C3694DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241042AbhDWOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        id S240985AbhDWOiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhDWOhZ (ORCPT
+        with ESMTP id S229454AbhDWOit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:37:25 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36974C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:47 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id q10so35313856pgj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:47 -0700 (PDT)
+        Fri, 23 Apr 2021 10:38:49 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1029C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:38:12 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so40372089otf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uoOkccNDSms2R4LZsMg1sjMsmp7WtuEiZhaADKTqPMM=;
-        b=a2X1O2GpUB1cmeStoxoytRyRwXSNa9srsnr2FVr6ocsOYkrx2cLMRNhSJr6gh4gE1M
-         FUsr3/5t9rC1a/a3tZXV5ZJirxH/b4E5fKUz1sFdyjKZ7Dc8dj69fq9eC4GWfLn5lKI3
-         0rssI18e+zs58t30w3bgVMnel8Ajs+IQ+dWcJcloeu2ooFOiOOjhpr6Pvg2+dqhBvHRO
-         zptbyjoKv57PWMkAgoje2QcsVsiPTf3HLmNs5PhIPor+2FmNLa06Jxe8S7LDtZjm/Zzz
-         eKASbMAgXAu9V9cbtUxjGlxXSVcUV0oCig4JsmtECZlmM1zMKE6rIOOJ86HQNCT5Tq77
-         tyGg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NRE9QbrX/aDzI7BokRhqkKTHnKj1gy2yobJ+pmPUges=;
+        b=JnjnE8scoMKiMsn2WI2JJGApFjwHhkXV2h1hZ6aowI6ySX76qoFvwJEeJ5b8u3MHfO
+         DIeUi4Tp72ybADLKCPQwCAfW5e0KYT+TW7nLX/wTaFpY8DIyRIGOOFf9eNa+kewocn1y
+         fPGI1GPbbbkQPwQN2tJjZ23JgJi2jB+mgXEt2ZBVL+yRtxJIyBNW6uwqvgt2MBkj6iWJ
+         65C0DcxS23+1iCUJkamBc1gdTDF1D05rxtam11/PJOx18XhXES1x45j1T5fTMe6oLyZo
+         lM/oTkbkS8PK+ILWbvqR7HJOzjQYnkOTaDC5+X51lz9dWoV/U2CnLG1TvtLVZ76pgqt1
+         nBaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=uoOkccNDSms2R4LZsMg1sjMsmp7WtuEiZhaADKTqPMM=;
-        b=lolv20X1HKWPBo2CnVYgb6HfU1mXmgawcN3Shr9tJ3q/BmOj0d/K20yGah73ZzSe4N
-         UxUXOjua21RT0UQQRaikAdVPHnVC+wzkypRWHCgPDns+Sd1ecbemiuI2JD+/qlCpLsls
-         2D0fGdb7QhmO3hpO18aJsFH6uCiV6EBxPAR5dviWUfeO8Fx8tqM6CdAHoIxZuNFniNIL
-         3P+fYWuVUssl2dw+M9s1tcRMJZJbeem1090Vdke9Ps0vN+lTEB4r7YVrvS6aMRcMJ3jB
-         3dKoH7IuSRXxI7Xfp69NRb0r71pE1AgHjbm0eL6qh1eBUa3xI9+ewOaq142xNztyDq+s
-         f4VQ==
-X-Gm-Message-State: AOAM531L5k528YcR8SRirx8jlDMkSBXZpPRgOOPGGaBIYsVz/aX+15dW
-        9KrLF+NPtTaNzWuB/PMGSzmo/MJmw8HnLnkl
-X-Google-Smtp-Source: ABdhPJxskERFqYIiVdaP/G0GpZFz42BGMcnIgrol0YG2i6ZSO+jJ7FOg1Lu5RjPTfKHv1TBAWs2s5Q==
-X-Received: by 2002:a63:2204:: with SMTP id i4mr4098426pgi.76.1619188606622;
-        Fri, 23 Apr 2021 07:36:46 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id u20sm5417753pgl.27.2021.04.23.07.36.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NRE9QbrX/aDzI7BokRhqkKTHnKj1gy2yobJ+pmPUges=;
+        b=qezZomlHNuuckvVrZdXWqOAELU1mrDjl986104n/RBnHxGz5JCGNZ2XoutYvr025D7
+         6DKeD4jBu+sIPPCPZEZIf3e+174bmvrufX0css3vAZ/hUjYgdXpIfqTuqb6TvkRcc52C
+         TcKVvtlijLKemcCExPsjcBCm9uChdNFIWNbEblyV1ooABJLn7uJXqkEtNYwoW8H4jgqV
+         GQffog5fP2tKL0Ipjy/iop5jDezIgv6un70cVHWlAcnvm32hBqrwiNujRqDjauBzfCGK
+         AObbsbBSZuO/pc4Vcpl0IlH6M3b7lMEmv0eogOg898RTMzqJxLKSAklHsMQlVguncgak
+         /dmw==
+X-Gm-Message-State: AOAM533/Lyef4Wc/eWRFFyHR0Mkjp9I5ccwlS8KWbsEMPyih2dNe/6YJ
+        Prn4XiWJBu+tmc5np0Os4lJ3qQ==
+X-Google-Smtp-Source: ABdhPJyIuk+s7BfatZ+LX3Jze2EUeAMDwGu3pEcnv7gx4wV+urxaFqMUx6OtitjHOT/734tTtUfVEA==
+X-Received: by 2002:a05:6830:1af7:: with SMTP id c23mr3799532otd.3.1619188692103;
+        Fri, 23 Apr 2021 07:38:12 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w84sm1308335oig.20.2021.04.23.07.38.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:36:45 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 07:36:45 -0700 (PDT)
-X-Google-Original-Date: Fri, 23 Apr 2021 07:36:44 PDT (-0700)
-Subject:     Re: [PATCH] asm-generic: Remove asm/setup.h from the UABI.
-In-Reply-To: <CAK8P3a2+yCYm22g-r7aWE4RT7ZLcZn89aiWGcDhgFh_ZU3fSfQ@mail.gmail.com>
-CC:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Message-ID: <mhng-1f6be9fb-cb82-4a66-b23b-59b0c0d33b42@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Fri, 23 Apr 2021 07:38:11 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:38:09 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 11/27] drm/bridge: ti-sn65dsi86: Add local var for
+ "dev" to simplify probe
+Message-ID: <YILb0Q79huUgGgd1@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.11.I83925d8ca228bdc5f55b17854c90754efc6a470e@changeid>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.11.I83925d8ca228bdc5f55b17854c90754efc6a470e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 02:09:46 PDT (-0700), Arnd Bergmann wrote:
-> On Fri, Apr 23, 2021 at 4:57 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->>
->> From: Palmer Dabbelt <palmerdabbelt@google.com>
->>
->> I honestly have no idea if this is sane.
->>
->> This all came up in the context of increasing COMMAND_LINE_SIZE in the
->> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
->> maximum length of /proc/cmdline and userspace could staticly rely on
->> that to be correct.
->>
->> Usually I wouldn't mess around with changing this sort of thing, but
->> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
->> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
->> increasing, but they're from before the UAPI split so I'm not quite sure
->> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
->> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
->> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
->> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
->> asm-generic/setup.h.").
->>
->> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
->> part of the UABI to begin with, and userspace should be able to handle
->> /proc/cmdline of whatever length it turns out to be.  I don't see any
->> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
->> search, but that's not really enough to consider it unused on my end.
->>
->> I couldn't think of a better way to ask about this then just sending the
->> patch.
->
-> I think removing asm/setup.h from the uapi headers makes sense,
-> but then we should do it consistently for all architectures as far
-> as possible.
->
-> Most architectures either use the generic file or they provide their
-> own one-line version, so if we move them back, I would do it
-> for all.
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
 
-Ya, makes sense.  I just wanted to see if anyone had a reason for things 
-being this way before I chased everything around.
+> Tiny cleanup for probe so we don't keep having to specify
+> "&client->dev" or "pdata->dev". No functional changes intended.
+> 
 
-> The architectures that have additional contents in this file
-> are alpha, arm, and ia64. We I would leave those unchanged
-> in that case.
+Nice
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 26 ++++++++++++--------------
+>  1 file changed, 12 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 0c6aa99ddc99..2cbf619fbd27 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -1226,6 +1226,7 @@ static void ti_sn_bridge_parse_lanes(struct ti_sn65dsi86 *pdata,
+>  static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  			      const struct i2c_device_id *id)
+>  {
+> +	struct device *dev = &client->dev;
+>  	struct ti_sn65dsi86 *pdata;
+>  	int ret;
+>  
+> @@ -1234,8 +1235,7 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return -ENODEV;
+>  	}
+>  
+> -	pdata = devm_kzalloc(&client->dev, sizeof(struct ti_sn65dsi86),
+> -			     GFP_KERNEL);
+> +	pdata = devm_kzalloc(dev, sizeof(struct ti_sn65dsi86), GFP_KERNEL);
+>  	if (!pdata)
+>  		return -ENOMEM;
+>  
+> @@ -1246,26 +1246,24 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return PTR_ERR(pdata->regmap);
+>  	}
+>  
+> -	pdata->dev = &client->dev;
+> +	pdata->dev = dev;
+>  
+> -	ret = drm_of_find_panel_or_bridge(pdata->dev->of_node, 1, 0,
+> -					  &pdata->panel, NULL);
+> +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &pdata->panel, NULL);
+>  	if (ret) {
+>  		DRM_ERROR("could not find any panel node\n");
+>  		return ret;
+>  	}
+>  
+> -	dev_set_drvdata(&client->dev, pdata);
+> +	dev_set_drvdata(dev, pdata);
+>  
+> -	pdata->enable_gpio = devm_gpiod_get(pdata->dev, "enable",
+> -					    GPIOD_OUT_LOW);
+> +	pdata->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+>  	if (IS_ERR(pdata->enable_gpio)) {
+>  		DRM_ERROR("failed to get enable gpio from DT\n");
+>  		ret = PTR_ERR(pdata->enable_gpio);
+>  		return ret;
+>  	}
+>  
+> -	ti_sn_bridge_parse_lanes(pdata, client->dev.of_node);
+> +	ti_sn_bridge_parse_lanes(pdata, dev->of_node);
+>  
+>  	ret = ti_sn65dsi86_parse_regulators(pdata);
+>  	if (ret) {
+> @@ -1273,7 +1271,7 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return ret;
+>  	}
+>  
+> -	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
+> +	pdata->refclk = devm_clk_get_optional(dev, "refclk");
+>  	if (IS_ERR(pdata->refclk))
+>  		return PTR_ERR(pdata->refclk);
+>  
+> @@ -1281,23 +1279,23 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  	if (ret)
+>  		return ret;
+>  
+> -	pm_runtime_enable(pdata->dev);
+> +	pm_runtime_enable(dev);
+>  
+>  	ret = ti_sn_setup_gpio_controller(pdata);
+>  	if (ret) {
+> -		pm_runtime_disable(pdata->dev);
+> +		pm_runtime_disable(dev);
+>  		return ret;
+>  	}
+>  
+>  	i2c_set_clientdata(client, pdata);
+>  
+>  	pdata->aux.name = "ti-sn65dsi86-aux";
+> -	pdata->aux.dev = pdata->dev;
+> +	pdata->aux.dev = dev;
+>  	pdata->aux.transfer = ti_sn_aux_transfer;
+>  	drm_dp_aux_init(&pdata->aux);
+>  
+>  	pdata->bridge.funcs = &ti_sn_bridge_funcs;
+> -	pdata->bridge.of_node = client->dev.of_node;
+> +	pdata->bridge.of_node = dev->of_node;
+>  
+>  	drm_bridge_add(&pdata->bridge);
+>  
+> -- 
+> 2.31.1.368.gbe11c130af-goog
+> 
