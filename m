@@ -2,168 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A09E368A6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7830F368A6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237101AbhDWBf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWBf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:35:27 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DFEC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:34:51 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so380345pja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2u9IVBbrQtK5nxCkY5Ql7e2S1s+pJgrMEaI8rlOVi1A=;
-        b=kTIabuH9XG8EpGNkxN0ttB2TSmNE1UXivJVL/O3iBhAmQtRpUGW6mdNngm3gaVyfHk
-         mZd9igv/ZBylu7j0rFkbzyVbfgP+ZKtnZIFUq1iqZQmxygpodGL8feHFwTGP6bxSDycC
-         aS/dcIescNWiXHRyi86Y8JX+grwyam5ml+aVSu0fu1iKHlX2FNXST0o08A+dKXWyewrs
-         Kh2wSpw3Z38NA32RLIlAhlUrXsT3V8u9XqihnCW3TDKfRab7JiRIMyde0fJAEMOA6t0x
-         dHExxcIpGTZcYxxvXbTeDJKIXOlCaRLkaiKneXlRbAMT21PyRBSE/QeEK7EInSAU7Ulk
-         lR/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2u9IVBbrQtK5nxCkY5Ql7e2S1s+pJgrMEaI8rlOVi1A=;
-        b=IqR+OlrBP1Mn1y/QEC3jI/KNasJqIAFXqrTJ5fx7lfWJFvTngjK9gG6oRXElHiVLxn
-         odX66wwf3Pha65KCFsNY9uo6vu/uJ9d9HpV51Jd9fhN6YP3HW/rJjEUP1N/g9rSYV9JB
-         kA0AkzuRhnNIRQLDtuXpf39s9swI7kfZZVRe/q+dPpT9upoH4ezHyvu32syyKgH6h39+
-         0VZ8tARwShZjP2zdvCHvpe1Agd5F6pYYIZIboj4nG3r4EolCG7G+sq8N1H4C6b2ZDlzv
-         faOvuEjplcUSu/d9pkxYDgA2OnPcCoFJfA4GJGISs41OguuRRkUwJG16zHRcEUdK6avX
-         ZKFA==
-X-Gm-Message-State: AOAM530eGsFdSw5z3RGjU5Lr9QF7XwGy0fwyQPsbT5TrLg3QO/ODCYrE
-        ZMLlg9dnWvY675w3L9O9pOPM/Q==
-X-Google-Smtp-Source: ABdhPJyPGTWn9ZwTGF0D0ZB3bx8F9D7skQtSMEe+BuiaPPW01VWIa1OOFmwPEC3wIJMBb5FDn5+xdg==
-X-Received: by 2002:a17:90b:950:: with SMTP id dw16mr3058402pjb.68.1619141690659;
-        Thu, 22 Apr 2021 18:34:50 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w140sm3106903pfc.176.2021.04.22.18.34.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 18:34:50 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 18:34:50 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 18:34:48 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Protect kernel linear mapping only if CONFIG_STRICT_KERNEL_RWX is set
-In-Reply-To: <72130961-0419-9b1f-e88e-aa1e933f2942@ghiti.fr>
-CC:     anup@brainfault.org, corbet@lwn.net,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-45fde203-6fd8-408c-b911-3efbb83d9cf3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S239954AbhDWBgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:36:25 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55629 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231261AbhDWBgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 21:36:23 -0400
+IronPort-SDR: 0GaWCl+tLFAJLWt1E/kAOGlacWOYEMF+6Ke6WL70B72fsVS9UMcKMpYSKSvwSEX5Ve8T5T7UWr
+ D658FZf+BHbQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="176123785"
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="176123785"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 18:35:48 -0700
+IronPort-SDR: 7COMgSPIn92wJ8pf4KhIGkThc41EHZ/MG5ENrO7WxsLlgZ/+7goY2y+DkvdDz0Jx/rUswQDV3t
+ +zktEf4d18zQ==
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="428195313"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 18:35:47 -0700
+Date:   Thu, 22 Apr 2021 18:35:46 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper
+ functions
+Message-ID: <20210423013546.GK1401198@tassilo.jf.intel.com>
+References: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
+ <c015093fdbc8e6a5aa9fc43f78fec8d9c38295c7.1616801167.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com>
+ <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
+ <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
+ <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
+ <d99941db-6ee6-267e-dece-6220af0ea305@intel.com>
+ <9161efc0-fd25-d239-32b7-5d2c726579b0@linux.intel.com>
+ <4ac4ed35-212b-f7ad-55f4-937946ffec1a@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4ac4ed35-212b-f7ad-55f4-937946ffec1a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Apr 2021 10:26:36 PDT (-0700), alex@ghiti.fr wrote:
-> Le 4/16/21 à 12:33 PM, Palmer Dabbelt a écrit :
->> On Fri, 16 Apr 2021 03:47:19 PDT (-0700), alex@ghiti.fr wrote:
->>> Hi Anup,
->>>
->>> Le 4/16/21 à 6:41 AM, Anup Patel a écrit :
->>>> On Thu, Apr 15, 2021 at 4:34 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>>>
->>>>> If CONFIG_STRICT_KERNEL_RWX is not set, we cannot set different
->>>>> permissions
->>>>> to the kernel data and text sections, so make sure it is defined before
->>>>> trying to protect the kernel linear mapping.
->>>>>
->>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>>>
->>>> Maybe you should add "Fixes:" tag in commit tag ?
->>>
->>> Yes you're right I should have done that. Maybe Palmer will squash it as
->>> it just entered for-next?
->>
->> Ya, I'll do it.  My testing box was just tied up last night for the rc8
->> PR, so I threw this on for-next to get the buildbots to take a look.
->> It's a bit too late to take something for this week, as I try to be
->> pretty conservative this late in the cycle.  There's another kprobes fix
->> on the list so if we end up with an rc8 I might send this along with
->> that, otherwise this'll just go onto for-next before the linear map
->> changes that exercise the bug.
->>
->> You're more than welcome to just dig up the fixes tag and reply, my
->> scripts pull all tags from replies (just like Revieweb-by).  Otherwise
->> I'll do it myself, most people don't really post Fixes tags that
->> accurately so I go through it for pretty much everything anyway.
->
-> Here it is:
->
-> Fixes: 4b67f48da707 ("riscv: Move kernel mapping outside of linear mapping")
+On Thu, Apr 22, 2021 at 06:21:07PM -0700, Dave Hansen wrote:
+> On 4/22/21 6:09 PM, Kuppuswamy, Sathyanarayanan wrote:
+> > But let me try to explain it here. What I meant by complication is,
+> > for in/out instruction, we use alternative_io() to substitute in/out
+> > instructions with tdg_in()/tdg_out() assembly calls. So we have to ensure
+> > that we don't corrupt registers or stack from the substituted instructions
+> > 
+> > If you check the implementation of tdg_in()/tdg_out(), you will notice
+> > that we have added code to preserve the caller registers. So, if we use
+> > C wrapper for this use case, there is a chance that it might mess
+> > the caller registers or stack.
+> > 
+> > ����alternative_io("in" #bwl " %w2, %" #bw "0",����������� \
+> > ����������� "call tdg_in" #bwl, X86_FEATURE_TDX_GUEST,��� \
+> > ����������� "=a"(value), "d"(port))
+> 
+> Are you saying that calling C functions from inline assembly might
+> corrupt the stack or registers?  Are you suggesting that you simply
 
-Thanks.  I just squashed it, though, as I had to rewrite this anyway.
+It's possible, but you would need to mark a lot more registers clobbered
+(the x86-64 ABI allows to clobber many registers)
 
->
-> Thanks,
->
->>
->> Thanks for sorting this out so quickly!
->>
->>>
->>>>
->>>> Otherwise it looks good.
->>>>
->>>> Reviewed-by: Anup Patel <anup@brainfault.org>
->>>
->>> Thank you!
->>>
->>> Alex
->>>
->>>>
->>>> Regards,
->>>> Anup
->>>>
->>>>> ---
->>>>>   arch/riscv/kernel/setup.c | 8 ++++----
->>>>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->>>>> index 626003bb5fca..ab394d173cd4 100644
->>>>> --- a/arch/riscv/kernel/setup.c
->>>>> +++ b/arch/riscv/kernel/setup.c
->>>>> @@ -264,12 +264,12 @@ void __init setup_arch(char **cmdline_p)
->>>>>
->>>>>          sbi_init();
->>>>>
->>>>> -       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
->>>>> +       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
->>>>>                  protect_kernel_text_data();
->>>>> -
->>>>> -#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
->>>>> -       protect_kernel_linear_mapping_text_rodata();
->>>>> +#ifdef CONFIG_64BIT
->>>>> +               protect_kernel_linear_mapping_text_rodata();
->>>>>   #endif
->>>>> +       }
->>>>>
->>>>>   #ifdef CONFIG_SWIOTLB
->>>>>          swiotlb_init(1);
->>>>> --
->>>>> 2.20.1
->>>>>
->>>>
->>>> _______________________________________________
->>>> linux-riscv mailing list
->>>> linux-riscv@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+I don't think the stack would be messed up, but there might be problems
+with writing the correct unwind information (which tends to be tricky)
+
+Usually it's better to avoid it.
+
+-Andi
+
+
+> can't call C functions from inline assembly?  Or, that you can't express
+> the register clobbers of a function call in inline assembly?
+> 
+> You might want to check around the kernel to see how other folks do it.
