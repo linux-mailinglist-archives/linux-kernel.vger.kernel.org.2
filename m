@@ -2,85 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC601368CF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898F7368CFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236446AbhDWGKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:10:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17394 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWGKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:10:32 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FRP3J4vYDzlZ9B;
-        Fri, 23 Apr 2021 14:07:56 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 23 Apr 2021 14:09:44 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: clean up left deprecated IO trace codes
-Date:   Fri, 23 Apr 2021 14:09:38 +0800
-Message-ID: <20210423060938.23020-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S240627AbhDWGL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:11:59 -0400
+Received: from mga09.intel.com ([134.134.136.24]:35630 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhDWGL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 02:11:56 -0400
+IronPort-SDR: bWumElhRyYeXky++UdTOqkR+gJszjAFafJ50oVwTeDbniQeFzxbKA4urjCpsY52usVImVWPtxj
+ O7ytTOcj15PA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="196134218"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="196134218"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 23:11:19 -0700
+IronPort-SDR: g1QJ2Z+IQvwwcaYx28TotL1I+YdibeUKbXZRtPjp/IWSWiNFj3Ow4+CGKX6Ulh05wNZsu2YUDH
+ CHnocbv1WDQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="421652421"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Apr 2021 23:11:15 -0700
+Date:   Fri, 23 Apr 2021 14:11:15 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, lkp@intel.com
+Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
+ -14.4% regression
+Message-ID: <20210423061115.GA62813@shbuild999.sh.intel.com>
+References: <20210420064934.GE31773@xsang-OptiPlex-9020>
+ <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
+ <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
+ <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
+ <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
+ <20210422074126.GA85095@shbuild999.sh.intel.com>
+ <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d5f7bc0064e0 ("f2fs: deprecate f2fs_trace_io") left some
-dead codes, delete them.
+On Thu, Apr 22, 2021 at 09:57:43AM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 22, 2021 at 07:24:54AM -0700, Paul E. McKenney wrote:
+> > On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
+> > > Hi Paul,
+> > > 
+> > > On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
+> > > > 
+> > > > 
+> > > > On 4/21/2021 9:42 PM, Paul E. McKenney wrote:
+> > > > >On Wed, Apr 21, 2021 at 02:07:19PM +0800, Xing, Zhengjun wrote:
+> > > > >>
+> > > > >>On 4/20/2021 10:05 PM, Paul E. McKenney wrote:
+> > > > >>>On Tue, Apr 20, 2021 at 06:43:31AM -0700, Paul E. McKenney wrote:
+> > > > >>>>On Tue, Apr 20, 2021 at 02:49:34PM +0800, kernel test robot wrote:
+> > > > >>>>>Greeting,
+> > > > >>>>>
+> > > > >>>>>FYI, we noticed a -14.4% regression of stress-ng.opcode.ops_per_sec due to commit:
+> > > > >>>>>
+> > > > >>>>>
+> > > > >>>>>commit: 6c52b5f3cfefd6e429efc4413fd25e3c394e959f ("clocksource: Reduce WATCHDOG_THRESHOLD")
+> > > > >>>>>https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.13a
+> > > > >>>>>
+> > > > >>>>>
+> > > > >>>>>in testcase: stress-ng
+> > > > >>>>>on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
+> > > > >>>>>with following parameters:
+> > > > >>>>>
+> > > > >>>>>	nr_threads: 10%
+> > > > >>>>>	disk: 1HDD
+> > > > >>>>>	testtime: 60s
+> > > > >>>>>	fs: ext4
+> > > > >>>>>	class: os
+> > > > >>>>>	test: opcode
+> > > > >>>>>	cpufreq_governor: performance
+> > > > >>>>>	ucode: 0x5003006
+> > > > >>>>Hmmm...  I will try a less-aggressive reduction.  Thank you for testing!
+> > > > >>>But wait...  This code is only running twice per second.  It is very
+> > > > >>>hard to believe that a clock-read retry twice per second is worth 2% of
+> > > > >>>performance, let alone 14.4%.
+> > > > >>>
+> > > > >>>Is something else perhaps going on here?
+> > > > >>>
+> > > > >>>For example, did this run enable any of the new diagnositic clocksource.*
+> > > > >>>kernel parameters?
+> > > > >>>
+> > > > >>>								Thanx, Paul
+> > > > >>I attached the kernel log, the following logs are related with the
+> > > > >>clocksource.
+> > > > >>[    3.453206] clocksource: timekeeping watchdog on CPU1: Marking
+> > > > >>clocksource 'tsc-early' as unstable because the skew is too large:
+> > > > >>[    3.455197] clocksource:                       'hpet' wd_now: 288fcc0
+> > > > >>wd_last: 1a8b333 mask: ffffffff
+> > > > >>[    3.455199] clocksource:                       'tsc-early' cs_now:
+> > > > >>1def309ebfdee cs_last: 1def2bd70d92c mask: ffffffffffffffff
+> > > > >>[    3.455201] clocksource:                       No current clocksource.
+> > > > >>[    3.457197] tsc: Marking TSC unstable due to clocksource watchdog
+> > > > >>
+> > > > >>6c52b5f3cf reduced WATCHDOG_THRESHOLD, then in clocksource_watchdog, the
+> > > > >>warning logs are print, the TSC is marked as unstable.
+> > > > >>/* Check the deviation from the watchdog clocksource. */
+> > > > >Aha, so this system really does have an unstable TSC!  Which means that
+> > > > >the patch is operating as designed.
+> > > > >
+> > > > >Or are you saying that this is a false positive?
+> > > > >
+> > > > >							Thanx, Paul
+> > > > 
+> > > > It happened during boot and before TSC calibration
+> > > > (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
+> > > > > WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
+> > > > After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
+> > > > WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
+> > > > WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
+> > > > by more than 1% to be marked unstable.
+> > 
+> > This is common code, so we do need an architecture-independent way to
+> > handle this.
+> > 
+> > > As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
+> > > times calibration of tsc, the first one of early quick calibration gives
+> > > 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
+> > > is about 2.5/1000 deviation for the first number, which just exceeds the
+> > > 1/1000 threshold you set :)
+> > 
+> > Even my 2/1000 initial try would have caused this, then.  ;-)
+> > 
+> > But even 1/1000 deviation would cause any number of applications some
+> > severe heartburn, so I am not at all happy with the thought of globally
+> > increasing to (say) 3/1000.
+> > 
+> > > Following is the tsc freq info from kernel log
+> > > 
+> > > [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+> > > [    0.000000] tsc: Detected 2100.000 MHz processor
+> > > ...
+> > > [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
+> > 
+> > So what are our options?
+> > 
+> > 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
+> > 
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/compress.c | 6 ------
- fs/f2fs/f2fs.h     | 8 --------
- 2 files changed, 14 deletions(-)
+I think option 1 is fine, as tsc will still get checked once 'tsc'
+clocksource is registered, but Thomas and Peter should know more
+background and corner cases of tsc.
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 9961d04d5ad8..38dbe123e410 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -78,12 +78,6 @@ bool f2fs_is_compressed_page(struct page *page)
- 		return false;
- 	if (IS_ATOMIC_WRITTEN_PAGE(page) || IS_DUMMY_WRITTEN_PAGE(page))
- 		return false;
--	/*
--	 * page->private may be set with pid.
--	 * pid_max is enough to check if it is traced.
--	 */
--	if (IS_IO_TRACED_PAGE(page))
--		return false;
- 
- 	f2fs_bug_on(F2FS_M_SB(page->mapping),
- 		*((u32 *)page_private(page)) != F2FS_COMPRESSED_PAGE_MAGIC);
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 244dbb80e94d..40e126b33256 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1304,14 +1304,6 @@ enum {
- #define IS_DUMMY_WRITTEN_PAGE(page)			\
- 		(page_private(page) == DUMMY_WRITTEN_PAGE)
- 
--#ifdef CONFIG_F2FS_IO_TRACE
--#define IS_IO_TRACED_PAGE(page)			\
--		(page_private(page) > 0 &&		\
--		 page_private(page) < (unsigned long)PID_MAX_LIMIT)
--#else
--#define IS_IO_TRACED_PAGE(page) (0)
--#endif
--
- /* For compression */
- enum compress_algorithm_type {
- 	COMPRESS_LZO,
--- 
-2.29.2
+Also we have been working on another patchset to skip watchdog check
+for x86 platforms with stable tsc:
 
+https://lore.kernel.org/lkml/1618291897-71581-1-git-send-email-feng.tang@intel.com/
+https://lore.kernel.org/lkml/1618291897-71581-2-git-send-email-feng.tang@intel.com/
+
+Thanks,
+Feng
+
+> > 2.	#1, but add tsc-early into the watchdog list and set
+> > 	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
+> > 
+> > 3.	Add a field to struct clocksource that, if non-zero, gives
+> > 	the maximum drift in nanoseconds per half second (AKA
+> > 	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
+> > 	is used.  Set this to (say) 150,000ns for tsc-early.
+> > 
+> > 4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
+> > 	which again is not a good approach given the real-world needs
+> > 	of real-world applications.
+> > 
+> > 5.	Your ideas here.
+> 
+> Oh, and:
+> 
+> 6.	Improve the quick calibration to be better than one part per thousand.
+> 
+> > All in all, I am glad that I made the patch that decreases
+> > WATCHDOG_MAX_SKEW be separate and at the end of the series.  ;-)
+> 
+> 							Thanx, Paul
