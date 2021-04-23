@@ -2,160 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE41369B37
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140C0369B3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243901AbhDWUUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhDWUT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:19:56 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8778C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:19:17 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so41249476otf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:19:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J1NPesUHck/PXytWUMZaL5H3tigSX17N3XIw4EegWTo=;
-        b=h/zj34eMbFVxnsOvC1DnFfdHinWG50GkumzwQGZ3MZu0ke7Lr1+JaFtFTDV5XOMqgb
-         YRBq6VuCEXA8EBgdPhBKdI8oQ+W1EfSjN+mznToiU1mQ0PHbX7CJj/DLoXjr/0DPhu53
-         nqx6oFLPXP+PI2JuGA23gyWv8SY61CY5Ie7jE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J1NPesUHck/PXytWUMZaL5H3tigSX17N3XIw4EegWTo=;
-        b=HiuSz9tPcadPyfEfeVcedziwOgAFpcD6zEbMvBOC9Ke0oKfWis7xrMSlmLZgFGAEze
-         8P5/PTbUVqKbTQ+yfVXn89vueZdzGCevlKGIEztULU9r9P5aG308eDBBVYFd9p70/HfM
-         wYT83HNWxMDxfD/NLZJ4VYtrFMoYZMzcnz33EfiBWJId4hyj5ZP0bCpY/9p2Z/6hw5qw
-         gqewZfmrpjcCAvfWXv1k+BJ3F/wSiDiNwLf++Q1S3ZGREXU9/Jep+mo5GUrXHJFdfH/t
-         ZEeOkpBS72tQL9fkn612fvGy4WuXIohrG3ncHj5wqVvdCV6RGx41Px38WyMgRFzfAKDt
-         Gqmw==
-X-Gm-Message-State: AOAM533jNVj7mEHuqd8XuVF4be9XmJy8XUafNxwI2XWRk1iPcCICngur
-        bMTPnVlzyqXLRRKDB8twO//HUA==
-X-Google-Smtp-Source: ABdhPJxveYdA31BMuoApMGii8ccA7nrQElJ5ZWPWnXUmpT+f0qLEMUCiESWam2UcuOfjVW+ktXgpRA==
-X-Received: by 2002:a9d:6483:: with SMTP id g3mr4825315otl.332.1619209157176;
-        Fri, 23 Apr 2021 13:19:17 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o20sm1364829oos.19.2021.04.23.13.19.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 13:19:16 -0700 (PDT)
-Subject: Re: [PATCH] media: gspca: stv06xx: Fix memleak in stv06xx subdrivers
-To:     Pavel Skripkin <paskripkin@gmail.com>,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Cc:     syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        mchehab@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-media@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210422160742.7166-1-atulgopinathan@gmail.com>
- <20210422215511.01489adb@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <36f126fc-6a5e-a078-4cf0-c73d6795a111@linuxfoundation.org>
-Date:   Fri, 23 Apr 2021 14:19:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S243965AbhDWUVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:21:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:1486 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243797AbhDWUVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 16:21:03 -0400
+IronPort-SDR: f7Q3W0mylJr2Ey/B1hqwXKKRw8ZjtHkmGiexD/8k03JOp01+/QikxzJwxiEQvNNaacoraow4Z0
+ CNnlyGCRkIRg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="175613764"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
+   d="scan'208";a="175613764"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 13:20:26 -0700
+IronPort-SDR: 54r4bvCv6axoXQdodLdBnWsX+tO7jlSMCFnwdM0OO5IKfYVe1p28GCt4YRryFlPMaOhO3iVZC4
+ jV0viDgksRSA==
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
+   d="scan'208";a="618069478"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 13:20:25 -0700
+Date:   Fri, 23 Apr 2021 13:20:24 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET 0/5] perf report: Make --stat output more compact
+Message-ID: <20210423202024.GO1401198@tassilo.jf.intel.com>
+References: <20210423182813.1472902-1-namhyung@kernel.org>
+ <20210423184647.GN1401198@tassilo.jf.intel.com>
+ <CAM9d7ciy82RM4UDHeAXwu4p7nPSg58euNK=Kdb7E0mj06e10oQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210422215511.01489adb@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ciy82RM4UDHeAXwu4p7nPSg58euNK=Kdb7E0mj06e10oQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 12:55 PM, Pavel Skripkin wrote:
-> Hi!
+On Sat, Apr 24, 2021 at 04:00:55AM +0900, Namhyung Kim wrote:
+> Hi Andi,
 > 
-> On Thu, 22 Apr 2021 21:37:42 +0530
-> Atul Gopinathan <atulgopinathan@gmail.com> wrote:
->> During probing phase of a gspca driver in "gspca_dev_probe2()", the
->> stv06xx subdrivers have certain sensor variants (namely, hdcs_1x00,
->> hdcs_1020 and pb_0100) that allocate memory for their respective
->> sensor which is passed to the "sd->sensor_priv" field. During the
->> same probe routine, after "sensor_priv" allocation, there are chances
->> of later functions invoked to fail which result in the probing
->> routine to end immediately via "goto out" path. While doing so, the
->> memory allocated earlier for the sensor isn't taken care of resulting
->> in memory leak.
->>
->> Fix this by adding operations to the gspca, stv06xx and down to the
->> sensor levels to free this allocated memory during gspca probe
->> failure.
->>
->> -
->> The current level of hierarchy looks something like this:
->>
->> 	gspca (main driver) represented by struct gspca_dev
->> 	   |
->> ___________|_____________________________________
->> |	|	|	|	|		| (subdrivers)
->> 			|			  represented
->>   			stv06xx			  by "struct
->> sd" |
->>   	 _______________|_______________
->>   	 |	|	|	|	|  (sensors)
->> 	 	|			|
->>   		hdcs_1x00/1020		pb01000
->> 			|_________________|
->> 				|
->> 			These three sensor variants
->> 			allocate memory for
->> 			"sd->sensor_priv" field.
->>
->> Here, "struct gspca_dev" is the representation used in the top level.
->> In the sub-driver levels, "gspca_dev" pointer is cast to "struct sd*",
->> something like this:
->>
->> 	struct sd *sd = (struct sd *)gspca_dev;
->>
->> This is possible because the first field of "struct sd" is
->> "gspca_dev":
->>
->> 	struct sd {
->> 		struct gspca_dev;
->> 		.
->> 		.
->> 	}
->>
->> Therefore, to deallocate the "sd->sensor_priv" fields from
->> "gspca_dev_probe2()" which is at the top level, the patch creates
->> operations for the subdrivers and sensors to be invoked from the gspca
->> driver levels. These operations essentially free the "sd->sensor_priv"
->> which were allocated by the "config" and "init_controls" operations in
->> the case of stv06xx sub-drivers and the sensor levels.
->>
->> This patch doesn't affect other sub-drivers or even sensors who never
->> allocate memory to "sensor_priv". It has also been tested by syzbot
->> and it returned an "OK" result.
->>
->> https://syzkaller.appspot.com/bug?id=ab69427f2911374e5f0b347d0d7795bfe384016c
->> -
->>
->> Fixes: 4c98834addfe ("V4L/DVB (10048): gspca - stv06xx: New
->> subdriver.") Cc: stable@vger.kernel.org
->> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
->> Reported-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
->> Tested-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
->> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> On Sat, Apr 24, 2021 at 3:46 AM Andi Kleen <ak@linux.intel.com> wrote:
+> >
+> > > So I added --skip-empty (and --no-skip-empty automatically) to suppres
+> > > the 0 output and add the event stats like below.
+> >
+> > I doubt we need the option for this.
+> >
+> > But if you change it I would add the percentages after the absolute values.
 > 
-> AFAIK, something similar is already applied to linux-media tree
-> https://git.linuxtv.org/media_tree.git/commit/?id=4f4e6644cd876c844cdb3bea2dd7051787d5ae25
-> 
+> What kind of percentages are you talking about?
 
-Pavel,
+The percentage of that value to the total sum of all the counts.
 
-Does the above handle the other drivers hdcs_1x00/1020 and pb01000?
-
-Atul's patch handles those cases. If thoese code paths need to be fixes,
-Atul could do a patch on top of yours perhaps?
-
-thanks,
--- Shuah
-
-
+-Andi
