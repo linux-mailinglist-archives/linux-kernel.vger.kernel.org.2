@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024FF368AC4
+	by mail.lfdr.de (Postfix) with ESMTP id 72A80368AC5
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240287AbhDWBxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:53:45 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:54684 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240162AbhDWBxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:53:44 -0400
-Received: from localhost.localdomain (unknown [58.249.121.165])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxLcl0KIJg9aoMAA--.16933S2;
-        Fri, 23 Apr 2021 09:52:54 +0800 (CST)
-From:   xiaochuan mao <maoxiaochuan@loongson.cn>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        xiaochuan mao <maoxiaochuan@loongson.cn>
-Subject: [PATCH] MIPS:DTS:Fix label name and interrupt number of ohci for Loongson-2K
-Date:   Fri, 23 Apr 2021 09:52:34 +0800
-Message-Id: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAf9AxLcl0KIJg9aoMAA--.16933S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF13CF4fCr47uw1DWrWkXrb_yoWkKrg_GF
-        929a1kGryfXFZakry7urs8JF13u3y7Ca4fCa42qry093s0vrs3GFWUCFWDGF93Wryjvrs3
-        X395Wr48Cry7KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoPEfUUUUU
-X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
+        id S240316AbhDWByF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236080AbhDWByF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 21:54:05 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B8FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:53:29 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id h11so2015200pfn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hWpkxbRFPrHzvBdyCxq0yM9F4eVkT1GLFQSzePBdBvU=;
+        b=ui0YQ67r0GMCX0m9lG1nzigxAQyxN6UQjTQ38IAJMKfa3dvpbR9pKjP3RR7EV73O0Z
+         e3A/51zX3+Qr4PGyqcUlm+zDOL6MNVoGcw8/3CHeek2cGdc2jBC1Q8pbyE58bMkzakis
+         +1yR8DKBYTUf8GPeYAbNsW14EiKjMWOZE84VsnBXigwUzIGTtpYRWtoUgNSir9tuyXSD
+         2djFeLgdvkxX08pFvWgY5AnfurYjLEAeyeMLXngalTqHEz5W0yEZQAN4u2IIJvqXLiyk
+         kUhHqrt5OQRDHXXMOW7VEi4KPph11LcHxjf/1P+dVnVfRhh3bcXPLH17fHzButt0nxwY
+         8vVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=hWpkxbRFPrHzvBdyCxq0yM9F4eVkT1GLFQSzePBdBvU=;
+        b=HTsWhzXQ9MNzblvYrfIXW6h7/g46OHR9TGUao0C0tgYUFseIje8drZBk//SoOlOTFK
+         VtmOZPw+4eaje++gC/jRB1UZftxccK4U8q8wcloeC70owaesvv6N1w+/Xqk+GaAEF3t1
+         U+F/VocdmgeOn02lCREvUB7AKviYSUevvA75fr71lgAdb8rui/0HEjjP7ZzXXdq9nlGI
+         H7mUHNyfrdU6/fdvq62pgXzyGdRjUtclH3cFz/MhPNUMFGfHkWh0kvzS1FJ5Ucj8IjB4
+         daElM8dsn2CT0q4/aXPwWYe+KMbI+QSB2Yc0F0UBmY8O0m/XPfG94mRcvtbz79GgUeDk
+         tdUw==
+X-Gm-Message-State: AOAM5307gCD6gautLEfubyGg+HusulxsTigvTCRsuphI3oGTaiW1NtUt
+        ClnzCu+CWQ97Bv3YUQW4tcLctg==
+X-Google-Smtp-Source: ABdhPJwhOCtZhiWeV5BXgLADTWwMhpuimis0nWYpyu/hpAfFNe2Pgn6BjVC9l+syYXOFfmH5snsLXw==
+X-Received: by 2002:a63:ec4e:: with SMTP id r14mr1567362pgj.153.1619142808475;
+        Thu, 22 Apr 2021 18:53:28 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id u18sm3113176pfm.4.2021.04.22.18.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 18:53:28 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 18:53:28 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 18:53:26 PDT (-0700)
+Subject:     Re: [PATCH] riscv/mm: Use BUG_ON instead of if condition followed by BUG.
+In-Reply-To: <1617112588-7750-1-git-send-email-zhouchuangao@vivo.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>, rppt@kernel.org,
+        akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
+        zong.li@sifive.com, mick@ics.forth.gr,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zhouchuangao@vivo.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     zhouchuangao@vivo.com
+Message-ID: <mhng-1c7adead-9a56-41dc-a734-61e0088b0cc3@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-from Loongson-2K1000 user manual know that under pci bus
-the device num is 4, function number is 2 and register is 0x2200
-is ohci. the ohci interrupt number is 51. because Loongson-2K1000 has
-64 interrupt sources, 0-31 correspond to the device tree liointc0 device
- node, and the other correspond to liointc1 node. so it should be
-number 19 correspon to liointc1.
+On Tue, 30 Mar 2021 06:56:26 PDT (-0700), zhouchuangao@vivo.com wrote:
+> BUG_ON() uses unlikely in if(), which can be optimized at compile time.
+>
+> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+> ---
+>  arch/riscv/mm/init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 067583a..a7fa5e2 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -213,8 +213,8 @@ static phys_addr_t alloc_pte_late(uintptr_t va)
+>  	unsigned long vaddr;
+>
+>  	vaddr = __get_free_page(GFP_KERNEL);
+> -	if (!vaddr || !pgtable_pte_page_ctor(virt_to_page(vaddr)))
+> -		BUG();
+> +	BUG_ON(!vaddr || !pgtable_pte_page_ctor(virt_to_page(vaddr)));
+> +
+>  	return __pa(vaddr);
+>  }
 
-Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
----
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index fd0e99bfe57b..89f079097f32 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -125,14 +125,14 @@
- 				interrupt-parent = <&liointc1>;
- 			};
- 
--			ehci@4,2 {
-+			ohci@4,2 {
- 				compatible = "pci0014,7a24.0",
- 						   "pci0014,7a24",
- 						   "pciclass0c0310",
- 						   "pciclass0c03";
- 
- 				reg = <0x2200 0x0 0x0 0x0 0x0>;
--				interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
-+				interrupts = <19 IRQ_TYPE_LEVEL_LOW>;
- 				interrupt-parent = <&liointc1>;
- 			};
- 
--- 
-2.17.1
-
+Thanks, this is on for-next.
