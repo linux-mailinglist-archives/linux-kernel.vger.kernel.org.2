@@ -2,148 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3D5369119
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA49369120
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236837AbhDWLap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 07:30:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:21264 "EHLO pegase1.c-s.fr"
+        id S234057AbhDWLfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 07:35:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:33678 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhDWLal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:30:41 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FRXBx1czYz9ttBT;
-        Fri, 23 Apr 2021 13:30:01 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id VRzNkODV-j7U; Fri, 23 Apr 2021 13:30:01 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FRXBx07wyz9ttBK;
-        Fri, 23 Apr 2021 13:30:01 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B72208B849;
-        Fri, 23 Apr 2021 13:30:02 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id b6jQpDb8KpiG; Fri, 23 Apr 2021 13:30:02 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9748F8B765;
-        Fri, 23 Apr 2021 13:29:59 +0200 (CEST)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
- <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
- <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
- <6a809d3f-c9e3-0eb7-9c1d-a202ad848424@csgroup.eu>
- <ab1c3803-179c-7882-2bba-9eeda5211ad1@isovalent.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <90e2da42-6924-4246-f2f6-cfb2778cd804@csgroup.eu>
-Date:   Fri, 23 Apr 2021 13:29:59 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229957AbhDWLfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 07:35:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 204A413A1;
+        Fri, 23 Apr 2021 04:34:39 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D48233F694;
+        Fri, 23 Apr 2021 04:34:32 -0700 (PDT)
+Subject: Re: [PATCH v5 05/16] swiotlb: Add restricted DMA pool initialization
+To:     Claire Chang <tientzu@chromium.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+References: <20210422081508.3942748-1-tientzu@chromium.org>
+ <20210422081508.3942748-6-tientzu@chromium.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <c9abca62-328d-d0d6-a8a6-a67475171f92@arm.com>
+Date:   Fri, 23 Apr 2021 12:34:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <ab1c3803-179c-7882-2bba-9eeda5211ad1@isovalent.com>
+In-Reply-To: <20210422081508.3942748-6-tientzu@chromium.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 23/04/2021 à 12:59, Quentin Monnet a écrit :
-> 2021-04-23 12:46 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
->>
->>
->> Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
->>> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy
->>> <christophe.leroy@csgroup.eu>
->>>
->>> [...]
->>>
->>>> I finally managed to cross compile bpftool with libbpf, libopcodes,
->>>> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
->>>> made it.
->>>
->>> Libcap is optional and bpftool does not use readline or ncurses. May I
->>> ask how you tried to build it?
->>
->> cd tools/bpf/
->>
->> make ARCH=powerpc CROSS_COMPILE=ppc-linux-
+On 22/04/2021 09:14, Claire Chang wrote:
+> Add the initialization function to create restricted DMA pools from
+> matching reserved-memory nodes.
 > 
-> Ok, you could try running directly from tools/bpf/bpftool/ next time
-> instead.
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>   include/linux/device.h  |  4 +++
+>   include/linux/swiotlb.h |  3 +-
+>   kernel/dma/swiotlb.c    | 80 +++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 86 insertions(+), 1 deletion(-)
 > 
-> Readline at least is for a different tool under tools/bpf/, bpf_dbg (But
-> I'm still not sure where that ncurses requirement was pulled from). The
-> requirements for specific kernel options probably came from yet another
-> tool (runqslower, I think).
-> 
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 38a2071cf776..4987608ea4ff 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -416,6 +416,7 @@ struct dev_links_info {
+>    * @dma_pools:	Dma pools (if dma'ble device).
+>    * @dma_mem:	Internal for coherent mem override.
+>    * @cma_area:	Contiguous memory area for dma allocations
+> + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
+>    * @archdata:	For arch-specific additions.
+>    * @of_node:	Associated device tree node.
+>    * @fwnode:	Associated device node supplied by platform firmware.
+> @@ -521,6 +522,9 @@ struct device {
+>   #ifdef CONFIG_DMA_CMA
+>   	struct cma *cma_area;		/* contiguous memory area for dma
+>   					   allocations */
+> +#endif
+> +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> +	struct io_tlb_mem *dma_io_tlb_mem;
+>   #endif
+>   	/* arch specific additions */
+>   	struct dev_archdata	archdata;
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index 216854a5e513..03ad6e3b4056 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -72,7 +72,8 @@ extern enum swiotlb_force swiotlb_force;
+>    *		range check to see if the memory was in fact allocated by this
+>    *		API.
+>    * @nslabs:	The number of IO TLB blocks (in groups of 64) between @start and
+> - *		@end. This is command line adjustable via setup_io_tlb_npages.
+> + *		@end. For default swiotlb, this is command line adjustable via
+> + *		setup_io_tlb_npages.
+>    * @used:	The number of used IO TLB block.
+>    * @list:	The free list describing the number of free entries available
+>    *		from each index.
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 57a9adb920bf..ffbb8724e06c 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -39,6 +39,13 @@
+>   #ifdef CONFIG_DEBUG_FS
+>   #include <linux/debugfs.h>
+>   #endif
+> +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> +#include <linux/io.h>
+> +#include <linux/of.h>
+> +#include <linux/of_fdt.h>
+> +#include <linux/of_reserved_mem.h>
+> +#include <linux/slab.h>
+> +#endif
+>   
+>   #include <asm/io.h>
+>   #include <asm/dma.h>
+> @@ -681,3 +688,76 @@ static int __init swiotlb_create_default_debugfs(void)
+>   late_initcall(swiotlb_create_default_debugfs);
+>   
+>   #endif
+> +
+> +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+> +				    struct device *dev)
+> +{
+> +	struct io_tlb_mem *mem = rmem->priv;
+> +	unsigned long nslabs = rmem->size >> IO_TLB_SHIFT;
+> +
+> +	if (dev->dma_io_tlb_mem)
+> +		return 0;
+> +
+> +	/* Since multiple devices can share the same pool, the private data,
+> +	 * io_tlb_mem struct, will be initialized by the first device attached
+> +	 * to it.
+> +	 */
+> +	if (!mem) {
+> +		mem = kzalloc(struct_size(mem, slots, nslabs), GFP_KERNEL);
+> +		if (!mem)
+> +			return -ENOMEM;
+> +#ifdef CONFIG_ARM
+> +		if (!PageHighMem(pfn_to_page(PHYS_PFN(rmem->base)))) {
+> +			kfree(mem);
+> +			return -EINVAL;
+> +		}
+> +#endif /* CONFIG_ARM */
+> +		swiotlb_init_io_tlb_mem(mem, rmem->base, nslabs, false);
+> +
+> +		rmem->priv = mem;
+> +	}
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +	if (!io_tlb_default_mem->debugfs)
+> +		io_tlb_default_mem->debugfs =
+> +			debugfs_create_dir("swiotlb", NULL);
 
-ncurses (or termcap) is required by readline
+At this point it's possible for io_tlb_default_mem to be NULL, leading 
+to a splat.
 
-Christophe
+But even then if it's not and we have the situation where debugfs==NULL 
+then the debugfs_create_dir() here will cause a subsequent attempt in 
+swiotlb_create_debugfs() to fail (directory already exists) leading to 
+mem->debugfs being assigned an error value. I suspect the creation of 
+the debugfs directory needs to be separated from io_tlb_default_mem 
+being set.
+
+Other than that I gave this series a go with our prototype of Arm's 
+Confidential Computer Architecture[1] - since the majority of the 
+guest's memory is protected from the host the restricted DMA pool allows 
+(only) a small area to be shared with the host.
+
+After fixing (well hacking round) the above it all seems to be working 
+fine with virtio drivers.
+
+Thanks,
+
+Steve
+
+[1] 
+https://www.arm.com/why-arm/architecture/security-features/arm-confidential-compute-architecture
