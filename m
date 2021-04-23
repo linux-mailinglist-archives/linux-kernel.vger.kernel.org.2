@@ -2,355 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7759369B80
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D82369B82
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244010AbhDWUqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243985AbhDWUpw (ORCPT
+        id S232255AbhDWUrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:47:15 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:58816 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232193AbhDWUrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:45:52 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691B6C061574;
-        Fri, 23 Apr 2021 13:45:14 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id A1E731F43DC5
-Subject: Re: RFC: building a regression tracking bot for Linux kernel
- development
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        regressions@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        ksummit@lists.linux.dev, workflows@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "kernelci@groups.io" <kernelci@groups.io>,
-        automated-testing@lists.yoctoproject.org
-References: <268a3049-7c0b-8a33-1ff6-5a2d35fcba16@leemhuis.info>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <de923dec-b0e8-788d-f73f-ee7a1c6af47b@collabora.com>
-Date:   Fri, 23 Apr 2021 21:45:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <268a3049-7c0b-8a33-1ff6-5a2d35fcba16@leemhuis.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 23 Apr 2021 16:47:13 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210423204635euoutp02874ee1c3a609c42860040ac15bab8545~4l6PVvwKM3195531955euoutp02N
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 20:46:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210423204635euoutp02874ee1c3a609c42860040ac15bab8545~4l6PVvwKM3195531955euoutp02N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619210796;
+        bh=MV1mRG4BKFdOMValOTDfhZayzXXJHdWLha0V/QcWJ3U=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=LNFXwbiusJCWCp2pGZu7SduT/u6smC5XrFsPexDQIeLJs4gLmpVnSQeKaadk4OVCB
+         fJJ1D3RwBrw1AZcjB4cp+SWwqEf6YYdK5+Mt4NUP8D9D5kgDls9utuHIOFyR12jhTj
+         CwZ1iBS5I/8+N1SxeQBolPya31j4rbEGUwT1cKLk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210423204634eucas1p1f93e8016028ee121931b60ea3da0f367~4l6OUa05B0175301753eucas1p1B;
+        Fri, 23 Apr 2021 20:46:34 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 1C.C1.09452.A2233806; Fri, 23
+        Apr 2021 21:46:34 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210423204633eucas1p2f5178b2cb85dc63e780b81deebf0700f~4l6NXL5c00621106211eucas1p21;
+        Fri, 23 Apr 2021 20:46:33 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210423204633eusmtrp29c19c0a7a17115f80ea5813c6e77a060~4l6NWjx7D2289222892eusmtrp2g;
+        Fri, 23 Apr 2021 20:46:33 +0000 (GMT)
+X-AuditID: cbfec7f2-ab7ff700000024ec-eb-6083322a7980
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 88.1F.08705.92233806; Fri, 23
+        Apr 2021 21:46:33 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210423204633eusmtip1e51ab6a9949b734d63c83841f956b6e8~4l6M-YpHW2824828248eusmtip1z;
+        Fri, 23 Apr 2021 20:46:33 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Subject: [PATCH] extcon: max8997: Add missing modalias string
+Date:   Fri, 23 Apr 2021 22:46:24 +0200
+Message-Id: <20210423204624.10398-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKIsWRmVeSWpSXmKPExsWy7djP87paRs0JBhO6DSyuf3nOanF51xw2
+        i7VH7rJb3G5cwebA4tG3ZRWjx+dNcgFMUVw2Kak5mWWpRfp2CVwZE9dtZyo4ylax/c4slgbG
+        W6xdjJwcEgImEnt/TAWyuTiEBFYwSrS/38YC4XxhlLh6fRE7hPOZUaJ37zy4ltWb/0FVLWeU
+        OL32AkLLywXrmECq2AQMJbredrGB2CICChKbe5+BLWEWaGCUmHrgKjNIQljAVuLqzwdgY1kE
+        VCXub/sF1swLFN8y5wsbxDp5idUbDjCDNEsIXGKXmHz/IwtEwkWi48Z2JghbWOLV8S3sELaM
+        xP+d85kgGpoZJR6eW8sO4fQwSlxumsEIUWUtcefcL6AVHEA3aUqs36UPYkoIOEpcumMDYfJJ
+        3HgrCFLMDGRO2jadGSLMK9HRJgQxQ01i1vF1cFsPXrjEDGF7SJzpuAV2pZBArMTt119ZJzDK
+        zUJYtYCRcRWjeGppcW56arFhXmq5XnFibnFpXrpecn7uJkZgTJ/+d/zTDsa5rz7qHWJk4mA8
+        xCjBwawkwut1tDFBiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+q2WvihQTSE0tSs1NTC1KLYLJM
+        HJxSDUyGl5a96tbfPUdbRpqX8WTt1/zXVidXfvl673xl0ttDs/v+y04yzzvy50n5ocTnB0IT
+        Tux00um/G7zY/rBxW1KKq8WtG5qr17ClTM3wKe/MS9+yef3d6m2HF9r0x/Y/Xej5jO3ivS0t
+        gb/V1jTr3lt5WGvh4k01jiffyxlalb/+7u6jLXiu8865MGGGooY8n0uLfzPfklc097+wQX6f
+        VehB07jJ4VtvRRyZx9bwppXNIXHej35O7YJ7k/ZOSpGddfxsTpTWtO/TF+dlhExUCb15jO3m
+        95n3O2U6gt43+SYU5VnOPX2wd/0z/nkHXiz9dWP2Z10t/aSlL5bOtNj+skr03JdU09NL/xvP
+        ick2Dm7crMRSnJFoqMVcVJwIACArlIxYAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNLMWRmVeSWpSXmKPExsVy+t/xu7qaRs0JBn8vaVtc//Kc1eLyrjls
+        FmuP3GW3uN24gs2BxaNvyypGj8+b5AKYovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyN
+        zWOtjEyV9O1sUlJzMstSi/TtEvQyJq7bzlRwlK1i+51ZLA2Mt1i7GDk5JARMJFZv/sfSxcjF
+        ISSwlFGi+eImFoiEjMTJaQ1QRcISf651sUEUfWKUuPDqJlgRm4ChRNdbkAQnh4iAgsTm3mes
+        IEXMAk2MEj8fN4AlhAVsJa7+fAA2iUVAVeL+tl9MIDYvUHzLnC9sEBvkJVZvOMA8gZFnASPD
+        KkaR1NLi3PTcYkO94sTc4tK8dL3k/NxNjMBQ2nbs5+YdjPNefdQ7xMjEwXiIUYKDWUmE1+to
+        Y4IQb0piZVVqUX58UWlOavEhRlOgfROZpUST84HBnFcSb2hmYGpoYmZpYGppZqwkzrt17pp4
+        IYH0xJLU7NTUgtQimD4mDk6pBqZGH2eWuIJtjhlt8fef/5zm1HW/5+W3DAbVqIVxG9c6LEr6
+        WD21PsPt+w2Hu2wblcvEvdbMePTt4zH/Q+fTPz3cNPHonZLyg5FvOt70V5scajdccvvrzELD
+        /KClrML3nCvnWG0NnjhzwZE1XtXduyOTJ3yV6xZJt77cKfjs6+bA70t2znWWtMu/FBleffF8
+        qPK9l10f7eUvChWVHOdsjbns+aly1ftbTIu3uHJZiNZxTvzk1dYpfMiFLXXB5tsRtkvCZPg+
+        ut18dW3StUwxLqXp+x2Oi6cdc8xrXThbQXrz+tiAMzfF11w2cU1xWtL0as+pKXKLWRK7A2P8
+        zyxXmRsck3N5C1eCSchxlv9MYf+UWIozEg21mIuKEwHKicPbrgIAAA==
+X-CMS-MailID: 20210423204633eucas1p2f5178b2cb85dc63e780b81deebf0700f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210423204633eucas1p2f5178b2cb85dc63e780b81deebf0700f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210423204633eucas1p2f5178b2cb85dc63e780b81deebf0700f
+References: <CGME20210423204633eucas1p2f5178b2cb85dc63e780b81deebf0700f@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+kernelci +automated-testing
+The platform device driver name is "max8997-muic", so advertise it
+properly in the modalias string. This fixes automated module loading when
+this driver is compiled as a module.
 
-Hi Thorsten,
+Fixes: b76668ba8a77 ("Extcon: add MAX8997 extcon driver")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/extcon/extcon-max8997.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 22/04/2021 08:16, Thorsten Leemhuis wrote:
-> Lo! As mentioned a few times recently I'm staring to build a bot for
-> semi-automatic Linux kernel regressions tracking. Find below a rough
-> description of how I imagine it's going to work. That way I want to give
-> everyone a chance to influence things before I'm starting to code for
-> real. Early feedback will help to build something that's acceptable for
-> the Linux kernel developer community and used in practice in the long
-> run, and that's what I aim for.
-> 
-> I know, I know, "Talk is cheap. Show me the code.". But I had to think
-> things through and write some of it down anyway, so no harm done in
-> posting it as RFC. I CCed ksummit, as many maintainers hang out there
-> and because this is a follow up to my former regression tracking work we
-> discussed on both kernel and maintainers summit 2017; it fact it
-> hopefully might be something for this year as well, we'll see, too early
-> to tell.
-
-This sounds great, with a simple email-based interface and a well
-defined scope for the bot's role.
-
-There are a few things that are worth mentioning from a KernelCI
-point of view though, to ensure both tools work together and not
-against each other (see https://kernelci.org).
-
-The first thing is that KernelCI detects and tracks a fair amount
-of regressions all the time, then runs automated bisections to
-find the breaking commits.  This currently leads to between 1 and
-10 unique "bug reports" per week.  So including "regzbot" in
-those reports would initially seem simple and very effective.
-
-Then another aspect to take into account is the proliferation of
-tools.  KernelCI's mission is not only to run tests but also to
-gather results from other test systems into a common database
-called KCIDB.  The main goal is to provide a full picture of all
-the issues in one place, with unified email reports and a web
-dashboard.
-
-Tracking regressions is on the roadmap for KCIDB, although it's
-not yet entirely decided how it will actually work.  Ideally it
-would simply let systems submit their own regression data to
-KCIDB, which sounds very similar to what regzbot would be doing.
-
-I can think of several ways to orchestrate these things together.
-In a nutshell, this is what I believe to be the best way around:
-
-* automated test systems submit regressions to KCIDB, just like
-  some of them already do with build and test data (syzbot, Red
-  Hat's CKI, linux.kernelci.org, tuxsuite...)
-
-* regzbot provides a way for reporting regressions by hand via
-  email, and forwards them automatically to KCIDB too
-
-Essentially, regzbot would remain autonomous but also act as an
-email-based interface to submit data to KCIDB.  This gives you a
-web dashboard and a common place to gather all regressions "for
-free" among other things on kcidb.kernelci.org (still early
-days).  You may also generate some regzbot dedicated web pages
-elsewhere if needed in practice, both could co-exist.
-
-How does that sound?
-
-Another hypothetical scenario would be if regzbot was the
-unifying tool, and all automated test systems sent their
-regression data to it.  But then, KCIDB would become either
-redundant or starved of the regression data it needs to
-complement its test results.  So this doesn't seem so good.
-
-
-I know it's important to have tools that work "by hand" for
-developers, but automated testing leads to a better life!
-
-Best wishes,
-Guillaume
-
-> So how will the "regzbot" work? The ideal case is simple:
-> 
-> Someone reports a regression to the recently created regressions mailing
-> list(regressions@lists.linux.dev). There the user includes a tag like this:
->> #regzb introduced: 94a632d91ad1 ("usc: xhbi-foo: check bar_params earlier")
-> 
-> That will make regzbot add the report to its list of regressions it
-> tracks, which among other will make it store the mail's message-id
-> (let's assume it's `xt6uzpqtaqru6pmh@earth.solsystem`). Ideally some
-> developer within a few days will fix the regression with a patch. When
-> doing so, they already often include a tag linking to the report:
->> Link: https://lore.kernel.org/r/xt6uzpqtaqru6pmh@earth.solsystem
-> 
-> 
-> Regzbot will notice this tag refers to the regression it tracks and
-> automatically close the entry for it.
-> 
-> That's it already. The regression was tracked with:
-> 
->  * minimal overhead for the reporter
->  * no additional overhead for the developers – only something they ought
-> to do already became more important
-> 
-> Invisible ideally
-> -----------------
-> 
-> In the ideal case regzbot thus seems to be of no use. But obviously
-> things will be anything else than ideal quite often – for example when
-> nobody fixes the reported regression.
-> 
-> The webpages that Regzbot will generate (see below) will show this. They
-> among others are meant for Linus or Greg to check how things stand, so
-> they can simply fix a regression by reverting the causing commit if they
-> want to; in other situations they might decide to delay a release to get
-> crucial regressions solved.
-> 
-> And that's what regression tracking is about: providing a view into the
-> state of things with regards to regressions, as that's the important
-> thing missing in Linux kernel development right now.
-> 
-> 
-> That can't be all
-> -----------------
-> 
-> Of course the world is more complicated than the simple example scenario
-> above, as the devil is always in the details. The three most obvious
-> problems the initial ideal scenario left aside:
-> 
-> * The reporter doesn't specify the #regzb tag at all. Regzbot can't do
-> anything about it, it sadly won't have visionary power and a AI engine
-> any time soon. Some human (for a while that often will be me) thus needs
-> to reply with the tag with a proper reply-to to the report to make
-> regboz track it.
-> 
-> * The commit causing the regression is unknown to the reporter. In that
-> case the tag should mention the span when the regression was introduced:
->> #regzb introduced: v5.7..v5.8-rc1
-> 
-> * The developer who fixes the issue forgets to place the "Link:" tag,
-> which can't be added once committed. In that case some human needs to
-> reply to the thread with the initial report with a tag like this:
->> #regzb Fixed-by: c39667ddcfd5 
-> 
-> 
-> How will it look
-> ----------------
-> 
-> Here is a mockup on the website for the regzbotproject:
-> https://linux-regtracking.leemhuis.info/images/regzbot-mockup.png
-> 
-> You'll notice a few things:
-> 
->  * regressions for mainline kernel will be shown on a different page
-> than those in stable and longterm kernels, as they are handled by
-> different people.
-> 
->  * regressions where the culprit is known get the top spot, as the
-> change causing them can sometimes simply be reverted to fix the regression.
-> 
->  * the second spot is for regressions in the current cycle, as contrary
-> to those in previous release there is still time to fix those before the
-> next release.
-> 
->  * Regzbot will try to monitor the process between reporting and fixing
-> and provide links to lookup details. Regzbot will thus watch the thread
-> where the regression was reported and show when it noticed the last
-> activity; it will also look out for `#regszb Link:` and `Link:` tags in
-> patch submissions and linux-next. That way release managers can
-> immediately see if things stalled after the regression was reported; it
-> also allows them to see if developers are working on a fix and how far
-> it got in the machinery. If the causing commit is known, the webview
-> obviously will link to it as well.
-> 
->  * regressions where nothing happened for a while will be moved to the
-> "dormant" page, to prevent the status page from getting filled by
-> reports that obviously nobody cares about anymore. Reporters will be
-> told about this by mail to give them a chance to provide a fresh status
-> update to get things rolling again.
-> 
-> 
-> Even more problems in the details
-> ---------------------------------
-> 
-> Regzbot on purpose will lack many features found in traditional bug
-> trackers: it's meant to be a simple tool acting in the background
-> without much overhead, as it doesn't want to become yet another bug
-> tracker. Nevertheless, it will need a few features they typically offer.
-> Those will be usable via tags that need to be dropped into mails send in
-> direct or indirect reply to the mail with the report:
-> 
-> * Mark a report as a duplicate of another or revert such a marking:
->> #regzb dup: https://lore.kernel.org/r/yt6uzpqtaqru6pmh@mars.solsystem
-> 
->> #regzb undup
-> 
-> * Mark a report as invalid.
->> #regzb invalid: Turned out it never worked
-> 
-> 
-> * generate a new title
->> #regzb new-title: Insert better description of the regression
-> 
-> 
-> * the initially mentioned tag can be used in replies to the report to
-> specify the commit causing the regression:
->> #regzb introduced: v5.7..v5.8-rc1
-> 
-> 
-> * Tell regzbot that a discussion is related to a tracked regression:
->> #regszb Link: https://lore.kernel.org/r/yt6uzpqtaqru6pmh@mars.solsystem
-> 
->   In the long run this is supposed to work in both directions, so you
-> can use it in a thread started by a regression report to link to some
-> other discussion or vice versa.
-> 
-> 
-> Implications and hidden aspects
-> -------------------------------
-> 
-> There are a few things of note:
-> 
->  * The plan for now is to not have a tag like `#regzb unfix`: in case it
-> turns out a commit did not fix a regression it's likely better to start
-> with a fresh report anyway. That forces someone to explain the current
-> state of things including the history clearly and straight forward; that
-> makes things a lot easier to follow for others in these situations and
-> thus is a good thing.
-> 
->  * regzbot works without a public unique-id, as it uses the URL of the
-> report instead and keeps any eye on is using the mail's message-id (say
-> 20210406135151.xt6uzpqtaqru6pmh@earth.solsystem).
-> 
->  * regzbot won't be able to handle regressions reported to a mailing
-> list thread that is already tracked by regzbot, as it will assume all
-> mails in a thread are related to the earlier report. In that case the
-> reporter must be asked to start a new mailing list thread for the second
-> regression. But that's quite normal, as a similar approach is needed
-> when somebody reports an issue deep in a bug tracker ticket that was
-> crated for a totally different issue.
-> 
->  * Initially it won't be possible to track reports that are filed in bug
-> trackers; but this use-case will be kept in mind during the design to
-> make sure such a functionality can be added later easily.
-> 
->  * developer when fixing a regression with a bisected "#regzb
-> introduced:" tag can simply do `s/#regzb introduced:/Fixes:/` to get a
-> tag they are supposed to add.
-> 
->  * regression in stable and longterm kernels sometimes affect multiple
-> versions, for example if a patch that works fine in mainline was
-> backported to the longterm kernel 5.10 and 5.4 – but causes problems in
-> both, as something required by the patch is missing in those lines. How
-> this will be solved exactly remains to be seen, maybe like this:
->> #regzb Introduced: c39667ddcfd6 e39667ddcfd1 ("usc: xhbi-foo: check bar_params a little later again")
-> 
->  Then regzbot can look those commits up and from that determine the
-> affected versions. Obviously the reporter will likely not be aware of
-> it, hence it's likely that the stable maintainer or the developer need
-> to send a mail to make regzbot aware that this regression affects
-> multiple versions.
-> 
->  * Regzbot will need to be able to work with mails where mailers placed
-> a linebreak into the text that follows the #regzb tag. This will be
-> tricky, but is doable.
-> 
->  * to keep things simple there are neither authentication nor
-> restrictions for now, so anyone could mess things up by sending mails to
-> an open list and using those tags. If that against expectations turns
-> out to become a problem some restrictions will need to be put in place,
-> for example to allow changes only from email addresses that (1) are on
-> an allow list, (2) participated in the discussion or (3) have commits in
-> the kernel. People could still forge complete mails including "From",
-> but that's quite some work for not much to gain (except for messing
-> regression tracking up).
-> 
-> 
-> Implementation
-> --------------
-> 
-> The rough initial idea had been to reuse parts of the syzbot golang
-> source code, which already has an email interface similar to the one
-> regzbot needs. But the closer I looked, the more I came to the
-> conclusion that writing something in python is easier and better (even
-> if that means I need to bring my really rusty python skills up to
-> speed). That also has the benefit that python afaics is preferred by the
-> kernel.org admins, which would make it more attractive for them to host
-> the bot later.
-> 
-> The focus will be to properly establishing regression tracking with
-> regszbot first. All features not strictly needed will thus be left out
-> first to focus on what's most important. I'll also provide documentation
-> and will use the bot myself to track regressions as I did a few years
-> ago. Just like any other tracking solution it will always need some
-> hand-holding...
-> 
-> = EOF =
-> 
-> That's it. FWIW, this mail is slightly modified version of a text I
-> posted on the website for the regzbot project:
-> https://linux-regtracking.leemhuis.info/post/regzbot-approach/
-> 
-> Side note: that project and my work is funded by NGI pointer for one
-> year (see the website's about page for details). Follow-up funding won't
-> be possible from there, but hopefully by then I can find some other way
-> to keep things running and me in a position to look after regression
-> tracking.
-> 
-> Ciao, Thorsten
-> 
+diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
+index e1408075ef7d..633597a6081a 100644
+--- a/drivers/extcon/extcon-max8997.c
++++ b/drivers/extcon/extcon-max8997.c
+@@ -788,3 +788,4 @@ module_platform_driver(max8997_muic_driver);
+ MODULE_DESCRIPTION("Maxim MAX8997 Extcon driver");
+ MODULE_AUTHOR("Donggeun Kim <dg77.kim@samsung.com>");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:max8997-muic");
+-- 
+2.17.1
 
