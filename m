@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13334368EC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1863368EC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241418AbhDWIUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:20:14 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:58640 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229456AbhDWIUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:20:12 -0400
-Received: from [10.0.2.15] (unknown [58.249.121.165])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL+4Pg4JgZNQMAA--.4973S3;
-        Fri, 23 Apr 2021 16:19:28 +0800 (CST)
-Subject: =?UTF-8?B?UmU6IOWbnuWkje+8miBbUEFUQ0hdIE1JUFM6RFRTOkZpeCBsYWJlbCBu?=
- =?UTF-8?Q?ame_and_interrupt_number_of_ohci_for_Loongson-2K?=
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
- <1053fddf-479a-6014-ca2c-110c19574f84@loongson.cn>
- <tencent_A816CB57EADAD19FD3FFC04C3598E81B5608@qq.com>
- <6abcefbe-0e49-4e68-abc1-b9535d5467ea@www.fastmail.com>
-From:   Xiaochuan Mao <maoxiaochuan@loongson.cn>
-Message-ID: <24218389-e2d8-6e91-d72d-f0d961e3f9b8@loongson.cn>
-Date:   Fri, 23 Apr 2021 16:19:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241454AbhDWIUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:20:24 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:47848 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWIUX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 04:20:23 -0400
+Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 6BF2FA471E0;
+        Fri, 23 Apr 2021 10:19:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1619165985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sq6FHbzlathvCZzoMydAX13uBBzPWKO/SRxFralH4D8=;
+        b=KaXcWN7NsMg/HQb9++N0iYdLJ6eHuzsRPeDfCoFVS/TmOevAzY/DLmjA+y6gsb/Miriec7
+        zUHhIG5zF/EVgwu7lMpjeu/qx8hPIXsjjRuXOMyUMjKmWY2HhYcUD7FFChAwHTtFnFLipm
+        2YAvxBEUDY1gGszhyGzK4MOo8LaDmEk=
+Date:   Fri, 23 Apr 2021 10:19:44 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Subject: Re: [igb] netconsole triggers warning in netpoll_poll_dev
+Message-ID: <20210423081944.kvvm4v7jcdyj74l3@spock.localdomain>
+References: <20210406123619.rhvtr73xwwlbu2ll@spock.localdomain>
+ <20210406114734.0e00cb2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210407060053.wyo75mqwcva6w6ci@spock.localdomain>
+ <20210407083748.56b9c261@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAKgT0UfLLQycLsAZQ98ofBGYPwejA6zHbG6QsNrU92mizS7e0g@mail.gmail.com>
+ <20210407110722.1eb4ebf2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAKgT0UcQXVOifi_2r_Y6meg_zvHDBf1me8VwA4pvEtEMzOaw2Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6abcefbe-0e49-4e68-abc1-b9535d5467ea@www.fastmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf9DxL+4Pg4JgZNQMAA--.4973S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF1xAw48tFW7Zr1xCw1Utrb_yoW8Ww17pr
-        s3Aa1IgF4DJr1Ikw42kr1j9F1jq34UJrn5XFn8Cas5GFWqvwn5Jry8ZrW0qry2qry7Ca1U
-        Zry2qr429as8ArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
-        87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfU0yxRDUUUU
-X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UcQXVOifi_2r_Y6meg_zvHDBf1me8VwA4pvEtEMzOaw2Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello.
 
-On 2021/4/23 下午12:02, Jiaxun Yang wrote:
->
-> On Fri, Apr 23, 2021, at 10:47 AM, maoxiaochuan wrote:
->> Ok, I will send a another patch for it.
-> Please correct your email client setup.
->
->
-> https://www.kernel.org/doc/html/latest/process/email-clients.html
-thanks for your suggest.
->>  
->> 祝好
->>  
->>
->>
->> ------------------ 原始邮件 ------------------
->> *发件人:* "zhangqing"<zhangqing@loongson.cn>; 
->> *发送时间:* 2021年4月23日(星期五) 上午10:37
->> *收件人:* "xiaochuan mao"<maoxiaochuan@loongson.cn>; "Rob 
->> Herring"<robh+dt@kernel.org>; "Thomas 
->> Bogendoerfer"<tsbogend@alpha.franken.de>; "Jiaxun 
->> Yang"<jiaxun.yang@flygoat.com>; 
->> *抄送:* "devicetree"<devicetree@vger.kernel.org>; 
->> "linux-mips"<linux-mips@vger.kernel.org>; 
->> "linux-kernel"<linux-kernel@vger.kernel.org>; 
->> *主题:* Re: [PATCH] MIPS:DTS:Fix label name and interrupt number of ohci 
->> for Loongson-2K
->>
->>
->> On 04/23/2021 09:52 AM, xiaochuan mao wrote:
->>> from Loongson-2K1000 user manual know that under pci bus
->>> the device num is 4, function number is 2 and register is 0x2200
->>> is ohci. the ohci interrupt number is 51. because Loongson-2K1000 has
->>> 64 interrupt sources, 0-31 correspond to the device tree liointc0 device
->>>   node, and the other correspond to liointc1 node. so it should be
->>> number 19 correspon to liointc1.
->>>
->>> Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
->>>
->> Hi, xiaozhuan
->>
->>
->> Thanks for the patch, this is my mistake.
->>
->> Can you correct the GPL-3.0 of this file to GPL-2.0 by the way?
->>
->> Thanks
->>
->> -Qing
->
+On Wed, Apr 07, 2021 at 04:06:29PM -0700, Alexander Duyck wrote:
+> On Wed, Apr 7, 2021 at 11:07 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Wed, 7 Apr 2021 09:25:28 -0700 Alexander Duyck wrote:
+> > > On Wed, Apr 7, 2021 at 8:37 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > >
+> > > > On Wed, 7 Apr 2021 08:00:53 +0200 Oleksandr Natalenko wrote:
+> > > > > Thanks for the effort, but reportedly [1] it made no difference,
+> > > > > unfortunately.
+> > > > >
+> > > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=212573#c8
+> > > >
+> > > > The only other option I see is that somehow the NAPI has no rings.
+> > > >
+> > > > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > index a45cd2b416c8..24568adc2fb1 100644
+> > > > --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > @@ -7980,7 +7980,7 @@ static int igb_poll(struct napi_struct *napi, int budget)
+> > > >         struct igb_q_vector *q_vector = container_of(napi,
+> > > >                                                      struct igb_q_vector,
+> > > >                                                      napi);
+> > > > -       bool clean_complete = true;
+> > > > +       bool clean_complete = q_vector->tx.ring || q_vector->rx.ring;
+> > > >         int work_done = 0;
+> > > >
+> > > >  #ifdef CONFIG_IGB_DCA
+> > >
+> > > It might make sense to just cast the work_done as a unsigned int, and
+> > > then on the end of igb_poll use:
+> > >   return min_t(unsigned int, work_done, budget - 1);
+> >
+> > Sure, that's simplest. I wasn't sure something is supposed to prevent
+> > this condition or if it's okay to cover it up.
+> 
+> I'm pretty sure it is okay to cover it up. In this case the "budget -
+> 1" is supposed to be the upper limit on what can be reported. I think
+> it was assuming an unsigned value anyway.
+> 
+> Another alternative would be to default clean_complete to !!budget.
+> Then if budget is 0 clean_complete would always return false.
+
+So, among all the variants, which one to try? Or there was a separate
+patch sent to address this?
+
+Thanks.
+
 -- 
---xiaochuan
-
+  Oleksandr Natalenko (post-factum)
