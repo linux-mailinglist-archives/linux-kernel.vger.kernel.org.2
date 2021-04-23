@@ -2,232 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837AD368A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB504368A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239976AbhDWBoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:44:55 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:43930 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbhDWBoy (ORCPT
+        id S236378AbhDWBqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:46:04 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17814 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235302AbhDWBqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:44:54 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id DE00DBA143;
-        Fri, 23 Apr 2021 09:44:03 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31919T139684250371840S1619142242534325_;
-        Fri, 23 Apr 2021 09:44:03 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1992614d86c6477ffb7c4ec9c31cbe71>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 8
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     heiko@sntech.de, linus.walleij@linaro.org, robh+dt@kernel.org
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH] dt-bindings: pinctrl: rockchip: Convert to json-schema
-Date:   Fri, 23 Apr 2021 09:44:00 +0800
-Message-Id: <20210423014400.1433347-1-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 22 Apr 2021 21:46:03 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FRH9d3lPGz7wxZ;
+        Fri, 23 Apr 2021 09:43:01 +0800 (CST)
+Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 23 Apr 2021 09:45:18 +0800
+From:   Zhe Li <lizhe67@huawei.com>
+To:     <nico@fluxnic.net>, <viro@zeniv.linux.org.uk>
+CC:     <linux-kernel@vger.kernel.org>, <lizhe67@huawei.com>,
+        <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>
+Subject: Re:[PATCH] cramfs: fix potential "unable to mount root fs" problem
+Date:   Fri, 23 Apr 2021 09:45:17 +0800
+Message-ID: <20210423014517.51196-1-lizhe67@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <p3554720-q5q8-nqo8-n01o-847oq81s6364@syhkavp.arg>
+References: <p3554720-q5q8-nqo8-n01o-847oq81s6364@syhkavp.arg>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.101.50]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the pinctrl/rockchip,pinctrl.txt binding document to
-json-schema.
+On Thu, 22 Apr 2021, Pitre wrote:
+>On Thu, 22 Apr 2021, lizhe wrote:
+>
+>> We may encounter panic problem without "rootfstype=" options in
+>> bootargs. The logs are listed below.
+>> 
+>> [0.551962] RAMDISK: squashfs filesystem found at block 0
+>> [0.551977] RAMDISK: Loading 18117KiB [1 disk] into ram disk...
+>> [0.719465] done.
+>> [0.748379] VFS: Cannot open root device "ram0" or unknown-block(1,0): error -92
+>> [0.748390] Please append a correct "root=" boot option; here are the available partitions:
+>> [0.748408] 0100           65536 ram0
+>> [0.748413]  (driver?)
+>> [0.748430] 0101           65536 ram1
+>> [0.748434]  (driver?)
+>> [0.748450] 0102
+>> [0.748454]  (driver?)
+>> [0.748470] 0103           65536 ram3
+>> [0.748475]  (driver?)
+>> [0.748498] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(1,0)
+>> [0.847579] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0 #68
+>> [0.847598] Call trace:
+>> [0.847616]  dump_backtrace+0x0/0x1f8
+>> [0.847627]  show_stack+0x30/0x40
+>> [0.847638]  dump_stack+0xdc/0x13c
+>> [0.847650]  panic+0x144/0x35c
+>> [0.847665]  mount_block_root+0x2c0/0x36c
+>> [0.847676]  mount_root+0x7c/0x90
+>> [0.847686]  prepare_namespace+0x178/0x188
+>> [0.847697]  kernel_init_freeable+0x220/0x28c
+>> [0.847708]  kernel_init+0x1c/0xf8
+>> [0.847719]  ret_from_fork+0x10/0x30
+>> 
+>> If we set CONFIG_CRAMFS_MTD and CONFIG_CRAMFS_BLOCKDEV to n,
+>> CONFIG_CRAMFS to y, function cramfs_get_tree return -ENOPROTOOPT,
+>> which breaks loops in function mount_block_root and we have no
+>> chance to try other filesystem type. In my opinion, ENOPROTOOPT
+>> is not an appropriate return value for cramfs mount function, so
+>> change it to EINVAL.
+>> 
+>> Fixes: 99c18ce58 (cramfs: direct memory access support)
+>> Signed-off-by: lizhe <lizhe67@huawei.com>
+>
+>Acked-by: Nicolas Pitre <nico@fluxnic.net>
+>
+>Please send this to Al Viro for merging.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- .../bindings/pinctrl/rockchip,pinctrl.yaml    | 163 ++++++++++++++++++
- 1 file changed, 163 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
+Hi Viro, please review my patch. Thank you.
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
-new file mode 100644
-index 000000000000..59cddcd30dbc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
-@@ -0,0 +1,163 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/rockchip,rockchip-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip Pinmux Controller
-+
-+maintainers:
-+  - Heiko Stuebner <heiko@sntech.de>
-+
-+description: |
-+  The Rockchip Pinmux Controller, enables the IC
-+  to share one PAD to several functional blocks. The sharing is done by
-+  multiplexing the PAD input/output signals. For each PAD there are several
-+  muxing options with option 0 being the use as a GPIO.
-+
-+  Please refer to pinctrl-bindings.txt in this directory for details of the
-+  common pinctrl bindings used by client devices, including the meaning of the
-+  phrase "pin configuration node".
-+
-+  The Rockchip pin configuration node is a node of a group of pins which can be
-+  used for a specific device or function. This node represents both mux and
-+  config of the pins in that group. The 'pins' selects the function mode(also
-+  named pin mode) this pin can work on and the 'config' configures various pad
-+  settings such as pull-up, etc.
-+
-+  The pins are grouped into up to 5 individual pin banks which need to be
-+  defined as gpio sub-nodes of the pinmux controller.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rockchip,px30-pinctrl
-+      - rockchip,rv1108-pinctrl
-+      - rockchip,rk2928-pinctrl
-+      - rockchip,rk3066a-pinctrl
-+      - rockchip,rk3066b-pinctrl
-+      - rockchip,rk3128-pinctrl
-+      - rockchip,rk3188-pinctrl
-+      - rockchip,rk3228-pinctrl
-+      - rockchip,rk3288-pinctrl
-+      - rockchip,rk3308-pinctrl
-+      - rockchip,rk3328-pinctrl
-+      - rockchip,rk3368-pinctrl
-+      - rockchip,rk3399-pinctrl
-+      - rockchip,rk3568-pinctrl
-+
-+  rockchip,grf:
-+    description: |
-+      phandle referencing a syscon providing the "general register files"
-+    maxItems: 1
-+
-+  rockchip,pmu:
-+    description: |
-+      Optional. Phandle referencing a syscon providing the pmu registers
-+      as some SoCs carry parts of the iomux controller registers there.
-+      Required for at least rk3188 and rk3288. On the rk3368 this should
-+      point to the PMUGRF syscon.
-+    maxItems: 1
-+
-+  ranges: true
-+
-+patternProperties:
-+  "^gpio[0-9]@[0-9a-f]":
-+    type: object
-+    description: gpio sub node
-+
-+    properties:
-+      compatible:
-+        enum:
-+          - rockchip,gpio-bank
-+          - rockchip,rk3188-gpio-bank0
-+
-+      reg:
-+        maxItems: 2
-+
-+      interrupts:
-+        description: Specifies the Rockchip summary IRQ
-+        maxItems: 1
-+
-+      interrupt-controller: true
-+
-+      '#interrupt-cells':
-+        description:
-+          Specifies the PIN numbers and Flags, as defined in defined in
-+          include/dt-bindings/interrupt-controller/irq.h
-+        const: 2
-+
-+      gpio-controller: true
-+
-+      '#gpio-cells':
-+        const: 2
-+
-+      clocks:
-+        description: clock that drives this gpio bank
-+        minItems: 1
-+        maxItems: 2
-+
-+      required:
-+        - compatible
-+        - reg
-+        - interrupts
-+        - interrupt-controller
-+        - '#interrupt-cells'
-+        - gpio-controller
-+        - '#gpio-cells'
-+        - clocks
-+
-+      additionalProperties: false
-+
-+required:
-+  - compatible
-+  - rockchip,grf
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+        #include <dt-bindings/pinctrl/rockchip.h>
-+        pcfg_pull_default: pcfg_pull_default {
-+            bias-pull-pin-default
-+        };
-+
-+        pinctrl@20008000 {
-+            compatible = "rockchip,rk3066a-pinctrl";
-+            rockchip,grf = <&grf>;
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+            ranges;
-+
-+            gpio0: gpio0@20034000 {
-+                compatible = "rockchip,gpio-bank";
-+                reg = <0x20034000 0x100>;
-+                interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
-+                interrupt-controller;
-+                #interrupt-cells = <2>;
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+                clocks = <&clk_gates8 9>;
-+            };
-+
-+            uart2 {
-+                uart2_xfer: uart2-xfer {
-+                    rockchip,pins = <1 RK_PB0 1 &pcfg_pull_default>,
-+                                    <1 RK_PB1 1 &pcfg_pull_default>;
-+                };
-+            };
-+        };
-+
-+        uart2: serial@20064000 {
-+            compatible = "snps,dw-apb-uart";
-+                reg = <0x20064000 0x400>;
-+                interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&mux_uart2>;
-+                pinctrl-0 = <&uart2_xfer>;
-+                pinctrl-names = "default";
-+                reg-shift = <2>;
-+                reg-io-width = <1>;
-+        };
--- 
-2.25.1
-
-
-
+>
+>> ---
+>>  fs/cramfs/inode.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+>> index 2be6526..9942955 100644
+>> --- a/fs/cramfs/inode.c
+>> +++ b/fs/cramfs/inode.c
+>> @@ -951,7 +951,7 @@ static const struct super_operations cramfs_ops = {
+>>  
+>>  static int cramfs_get_tree(struct fs_context *fc)
+>>  {
+>> -	int ret = -ENOPROTOOPT;
+>> +	int ret = -EINVAL;
+>>  
+>>  	if (IS_ENABLED(CONFIG_CRAMFS_MTD)) {
+>>  		ret = get_tree_mtd(fc, cramfs_mtd_fill_super);
+>> -- 
+>> 2.7.4
+>> 
+>> 
