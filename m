@@ -2,148 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB82636946F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646E0369472
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhDWOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S238586AbhDWONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhDWOMu (ORCPT
+        with ESMTP id S229939AbhDWONO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:12:50 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16940C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:12:14 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so1319290wmq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:12:14 -0700 (PDT)
+        Fri, 23 Apr 2021 10:13:14 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09ACC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:12:37 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id e2so20966135plh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=devtank-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=CU0yuJS9gxaSOduT5DnrFoz0/Pq9Ku7rhLu8n8w6dEQ=;
-        b=FjcMFAiC2Nzpzw2fgx4R7R4Ayv9f1f1mFWIV68T6kRA9aCFsYDjKJe3lYN+Wtnb+Bi
-         tv70qgnADNyPnBXTx9QgyNgWVvsEXful5jnEg8aAiE0DnnFpDaDtfRK0WMiUvS1OBuVZ
-         YUxW5ugHFa8VqJ5zkT1tLg7sOgQuIyZ9HabaL5RxFaSH6HxJWAdEu0oT4abXnbw2BrJY
-         gce99n3TnU2B2XFjohjlk6B/TXsgkTvUywf3mYjp7uKYRw+a4yyTFczj5I38zVUP+eqc
-         /4YSiRDed7pPOe104yond7mK/E4a5Rvctl/sVovxZSMCHq9UTY2HBS2zEVNcw+hlaOf+
-         f3MA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ajVi+9Fz0ys2enjKok/N/kbmnzMuDauCUH0fs9IKEz0=;
+        b=HEHFl5VeYwDsoLVSOGgYnu99ThD/fhwYVwtuoASS0BgfOPwTFVEfcPyFxLZAMprg7s
+         M5nmBsOBVNbPmNoloPdhMFEPZrQIIvLjxmPlAS9V9XmAkF8oK/MdKpuvfbGsBcA/r57K
+         4rRS9zp3WsgfW2VBwYPlmIvwJsJERcK8vbnox6Un3ce1rJ+I1ipv5w/uSWfmoDJrCNkJ
+         jXn9Kk1+GLZUN2QmkH8bqIBSg57O5jiLdpvnJPN8amM2MkufeSVh2kWytCu6DGuvtRL7
+         HZB4pbZu6+OmZ+rUscONnm/Qb/7bm4KJvq54vdtPrHcTtLfRQsNgvcuoLUD9qcT7DoZ6
+         Hjpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=CU0yuJS9gxaSOduT5DnrFoz0/Pq9Ku7rhLu8n8w6dEQ=;
-        b=hplS6vReseyDI9JU/r60ZIkn23vYx4uqRaMWwzI/oAWOBKKeFY1je+CIZ4RnntyHE7
-         iGzX0tmZoqqNXbdpH5dZbAqHfCIv/H+JVrurykqBM2tnDZ7Dj+A6HZ0gMBXuU7zcqbrq
-         AQqT8gh0I/Alpl5yt6U5e+ZngzaHZCQ9Q6A7tgpQxaI7txvm+VC/z4WJ84nt1ubXdlej
-         nmX6I4OasEGJ+ZIxf1SYbhThX//zUwrj5JJCYijNjhstK393044uamqOMhi4JGZHBbuw
-         g/qA9bLD1r/vFcmdnommQ237mCLUep8j/uvn8rjyiJ7A/UMPFgwKiyIidZaiZEFyFsyc
-         Ztfg==
-X-Gm-Message-State: AOAM533+XDd1ddXmHzdom0/1cubbgYQsX4+bUpLNSFB9mOMiptk9lXxA
-        dvMndCgD32wLyZhmuJ7wsrkPOA==
-X-Google-Smtp-Source: ABdhPJzCHgg/2eIkE3KAMeST4LBIh9mq2YzSwL9e0W0UUVBt9YDteBaDv0wB6DjYQ8P9i84/lb7j6w==
-X-Received: by 2002:a7b:c5c8:: with SMTP id n8mr5858732wmk.63.1619187132828;
-        Fri, 23 Apr 2021 07:12:12 -0700 (PDT)
-Received: from [192.168.200.229] (static-84-9-134-242.vodafonexdsl.co.uk. [84.9.134.242])
-        by smtp.gmail.com with ESMTPSA id s16sm10871212wmh.11.2021.04.23.07.12.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 07:12:12 -0700 (PDT)
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nsaenz@kernel.org
-References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
- <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
- <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
- <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
- <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
- <20210423115724.GB5507@sirena.org.uk>
-From:   Joe Burmeister <joe.burmeister@devtank.co.uk>
-Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
- beyond limit.
-Message-ID: <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
-Date:   Fri, 23 Apr 2021 15:12:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ajVi+9Fz0ys2enjKok/N/kbmnzMuDauCUH0fs9IKEz0=;
+        b=jOOp/B9z2OJIr1sdpSIgDiBwVtFuwmH9uVnJJYbLLrzeRw6GwmlCVpYmZ7yT7KNQ1J
+         5UysrIUpUhPd9BNL5symMtU/LZ1WLGqU0CQ8AfW4WBuqqYBK0idNwBNHGpeZS4/FYlw+
+         bHe4FR07t8O7V5zedJEBibym1m0dGhC+EDUFBDIBqvueUOQyc6hgfYReaw2/OG6H1WYo
+         KQhOqGq63ofAD2cYxT/xsW44FqcANAfgHi/mgceEKwvOtCHP95f37bVa/ud3JJqqs++8
+         zKdsVCLyEfqeXZRpxeGzX+7vXCauABTFhaagJmscoVhUB5+cdw6sfvKINs18uuvKipD0
+         cq3Q==
+X-Gm-Message-State: AOAM530dsFBGwyU7hpn+V2gTvVrJFlFFg1LlGB8gUN9ntATI52c69cBQ
+        r/g5ou4VtbAtkZAtkkrEpAz94Q==
+X-Google-Smtp-Source: ABdhPJxklyb/JLlpqm/k8LcKabgsrb+/ZUxF2SYRQSHaFi240wu2tEqEvL8CVFL2+P3FPeLLlGB31Q==
+X-Received: by 2002:a17:90a:5b15:: with SMTP id o21mr4714274pji.193.1619187156819;
+        Fri, 23 Apr 2021 07:12:36 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h18sm5059108pgj.51.2021.04.23.07.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:12:36 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 14:12:32 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Reiji Watanabe <reijiw@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v2] KVM: SVM: Delay restoration of host MSR_TSC_AUX until
+ return to userspace
+Message-ID: <YILV0KrBUaESfTiY@google.com>
+References: <20210422001736.3255735-1-seanjc@google.com>
+ <CAAeT=FxaRV+za7yk8_9p45k4ui3QJx90gN4b8k4egrxux=QWFA@mail.gmail.com>
+ <YIHYsa1+psfnszcv@google.com>
+ <8cc2bb9a-167e-598c-6a9e-c23e943b1248@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210423115724.GB5507@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-GB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8cc2bb9a-167e-598c-6a9e-c23e943b1248@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2021 12:57, Mark Brown wrote:
-> On Fri, Apr 23, 2021 at 11:03:22AM +0100, Joe Burmeister wrote:
->> On 23/04/2021 00:49, Florian Fainelli wrote:
->>> Right, which means that we should probably seek a solution within the=
+On Fri, Apr 23, 2021, Paolo Bonzini wrote:
+> On 22/04/21 22:12, Sean Christopherson wrote:
+> > 	case MSR_TSC_AUX:
+> > 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+> > 			return 1;
+> > 
+> > 		if (!msr_info->host_initiated &&
+> > 		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> > 			return 1;
+> > 
+> > 		/*
+> > 		 * TSC_AUX is usually changed only during boot and never read
+> > 		 * directly.  Intercept TSC_AUX instead of exposing it to the
+> > 		 * guest via direct_access_msrs, and switch it via user return.
+> > 		 */
+> > 		preempt_disable();
+> > 		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
+> > 		preempt_enable();
+> > 		if (r)
+> > 			return 1;
+> > 
+> > 		/*
+> > 		 * Bits 63:32 are dropped by AMD CPUs, but are reserved on
+> > 		 * Intel CPUs.  AMD's APM has incomplete and conflicting info
+> > 		 * on the architectural behavior; emulate current hardware as
+> > 		 * doing so ensures migrating from AMD to Intel won't explode.
+> > 		 */
+> > 		svm->tsc_aux = (u32)data;
+> > 		break;
+> > 
+> 
+> Ok, squashed in the following:
 
->>> SPI core itself, even if you can only test with spi-bcm2835.c chances=
+Too fast!  The below won't compile (s/msr_info/msr and 'r' needs to be defined),
+and the get_msr() path needs the guest_cpuid_has() check.  I'll spin a v3. 
 
->>> are that the fix would be applicable for other controllers if done in=
-
->>> the core.
->> I'm not sure it's possible to do in the core alone. The numb of the
->> issue is the core changes ctlr->num_chipselect to what is in the devic=
-e
->> tree and some drivers are cool with that overs quietly stomp memory.
-> I wouldn't expect any controller to be OK with that?  Drivers can store=
-
-> per-client data in spi_device->controller_data which doesn't need
-> scaling (but is also not so helpful if you need to look at clients othe=
-r
-> than the one you're currently controlling).
-I can see a number which certainly wouldn't. Though I don't want to
-assume that all don't.
-
-If we are happy just not letting the core expand num_chipselect that
-does stop the condition on everything.
-
-Any controller that can go higher without issue could them have their
-num_chipselect set to what their real limit is if this enforcement
-causes an issue.
-
-
->> I've got a simple little patch to warn when the core expands
->> ctlr->num_chipselect. This warning won't go off in bcm2835 with my pat=
-ch
->> because I am also extending ctlr->num_chipselect to the amount in the
->> device tree before the core does that expansion. Hopefully that new
->> warning would make people investigate and fix problem drivers.
->>>> There is protection in spi_add_device, which will catch extra added
->>>> later, but not ones in the device tree when the spi controller was
->>>> registered.
->>> Not sure I follow you, if we have the overlay before
->>> spi_register_controller() is called, how can the check there not
->>> trigger? And if we load the overlay later when the SPI controller is
->>> already registered, why does not spi_add_device()'s check work?
->> I think it might be a RPI thing. I think it is merging in the overlay
->> and giving Linux one already merged.
-> If the overlay is handled by the bootloader then from the point of view=
-
-> of Linux there is no overlay - sounds like there's an issue in the
-> overlay, it should be overriding something that it doesn't?
-Does it matter if the final device tree was compiled like that in the
-first place or merge into that by the bootloader?
-
-The limit isn't an hardware issue because the bcm2835 just uses any
-gpios for CS. So hardware like ours with 8 spi chips on the bus is fine.
-The driver's limit at 4 is arbitrary.
-
-My patch for the bcm2835 just compares of what is in the device
-tree and the harcoded limit and uses the largest. Other drivers do this.
-
-Of course we could just raise BCM2835_SPI_NUM_CS to 8 or more if that is
-preferred. Does seams like the dynamic solution is less favoured.
-
-Regards,
-
-Joe
-
-
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 14ff7f0963e9..00e9680969a2 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2875,16 +2875,28 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+>  		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+>  			return 1;
+> +		if (!msr_info->host_initiated &&
+> +		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> +			return 1;
+> +
+>  		/*
+>  		 * TSC_AUX is usually changed only during boot and never read
+>  		 * directly.  Intercept TSC_AUX instead of exposing it to the
+>  		 * guest via direct_access_msrs, and switch it via user return.
+>  		 */
+> -		svm->tsc_aux = data;
+> -
+>  		preempt_disable();
+> -		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
+> +		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
+>  		preempt_enable();
+> +		if (r)
+> +			return 1;
+> +
+> +		/*
+> +		 * Bits 63:32 are dropped by AMD CPUs, but are reserved on
+> +		 * Intel CPUs.  AMD's APM has incomplete and conflicting info
+> +		 * on the architectural behavior; emulate current hardware as
+> +		 * doing so ensures migrating from AMD to Intel won't explode.
+> +		 */
+> +		svm->tsc_aux = (u32)data;
+>  		break;
+>  	case MSR_IA32_DEBUGCTLMSR:
+>  		if (!boot_cpu_has(X86_FEATURE_LBRV)) {
+> 
+> Paolo
+> 
