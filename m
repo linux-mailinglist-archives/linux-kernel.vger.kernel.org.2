@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753D3369614
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333CB36961B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236938AbhDWPXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:23:05 -0400
-Received: from smtp-1908.mail.infomaniak.ch ([185.125.25.8]:51443 "EHLO
-        smtp-1908.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231320AbhDWPXD (ORCPT
+        id S232067AbhDWPYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhDWPYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:23:03 -0400
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FRdM55TyDzMrV2C;
-        Fri, 23 Apr 2021 17:22:25 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4FRdM160b0zlh8TR;
-        Fri, 23 Apr 2021 17:22:21 +0200 (CEST)
-Subject: Re: [PATCH v34 00/13] Landlock LSM
-To:     James Morris <jmorris@namei.org>
-Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org
-References: <20210422154123.13086-1-mic@digikod.net>
- <9c775578-627c-e682-873a-ec7b763a7fcd@namei.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <ac26af3b-067b-de01-8c99-687c5de432e5@digikod.net>
-Date:   Fri, 23 Apr 2021 17:22:11 +0200
-User-Agent: 
+        Fri, 23 Apr 2021 11:24:04 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172F1C061574;
+        Fri, 23 Apr 2021 08:23:26 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j18so78129072lfg.5;
+        Fri, 23 Apr 2021 08:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n5/P3oLW/T875nhk38fWvvBcXE+/GVaIkWm4ulWT5wE=;
+        b=W5cQCMg7NNkYQKAZqRvcb4c8g4HSECVX1Edc17mn3r0emGHFU3Z/4HKbnvPlLO5C07
+         GkucuOR+TdOONwnH/ikfN+nQnJOvd1FqUu8by2KhZ/NjfEAtKOv9cIn6tfr7LS5qTMtB
+         tCGaFtIMZC6hiTmkuOH42dUk3YOZzaxKsR1Hc0n2Wi7YK1WQegQNS6jcvKxOAfZvQ8AG
+         RBeuBFoVvbOqnAG1+sERGib8EMpkNXAhCnhPlrsZEgKITr0S0LVoQ4xmbgNahqfQv4jT
+         peix0RW3vtyN4lypDBjppnK7TFL6iRJPhlUm3dlHQP++mKkM2ANyxaUx8sFs9Nywh8hs
+         vsbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n5/P3oLW/T875nhk38fWvvBcXE+/GVaIkWm4ulWT5wE=;
+        b=k0M6LgTyCpihCMb/nJlVQeHFk1HV2rf2tnU+5yWui96cPvk1J7E+gyru6NPOuN317V
+         MROv+sJ1NVAt8OoBr1rCEag7yOheEkEV/jCcO3u6wO9hH2j5UOQ1sRWN5B9ZwU1B2sqp
+         suhA9sT+Q8sMJKENIPcNn9QEoP5NvLTvqUy+xJ0JRsoIK7zQBequ+GlCZPg15/iusX9w
+         pDiggG8U+FhmkU/y6Zsd7w37DdvtLJ5JY1I5f1/3nF8RU/UnbhBElVV+//Qp8KxU5/Xj
+         amBwCLs1aT2yfw3nm0qJ1Hi0J6Gj+Dpagel4zhkDYW7FsV53Pwj1mCmxrKF/Z9wVckPN
+         wLNQ==
+X-Gm-Message-State: AOAM5324CJtG7rQ/7sftafx5mSuJzTCtwN0kN+HGT0+H33468jDixi/O
+        TY9rUofQ8XpIc00TuW+Wa5EDuRPUsxA=
+X-Google-Smtp-Source: ABdhPJx7dckk2pxEp/9xgSTGhkwCinZbZk3SLiXmMuI4u5wtA2nNSFJjJcolacRxt2TyFsCkVflzfw==
+X-Received: by 2002:ac2:5299:: with SMTP id q25mr3354496lfm.594.1619191404448;
+        Fri, 23 Apr 2021 08:23:24 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
+        by smtp.googlemail.com with ESMTPSA id c2sm581127lfi.143.2021.04.23.08.23.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 08:23:24 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] iommu/tegra-smmu: Revert workaround that was
+ needed for Nyan Big Chromebook
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210328233256.20494-1-digetx@gmail.com>
+ <20210328233256.20494-2-digetx@gmail.com>
+ <20210401085549.GA31146@Asurada-Nvidia>
+ <50a7e4c7-0e72-534a-a317-366e455213c1@gmail.com>
+ <d01ccde4-5fa9-2aa7-c28b-b3899cc54c54@collabora.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <724e683f-5317-cdf7-7351-fcfd42b7b607@gmail.com>
+Date:   Fri, 23 Apr 2021 18:23:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <9c775578-627c-e682-873a-ec7b763a7fcd@namei.org>
+In-Reply-To: <d01ccde4-5fa9-2aa7-c28b-b3899cc54c54@collabora.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -54,21 +79,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 22/04/2021 21:31, James Morris wrote:
-> On Thu, 22 Apr 2021, Mickaël Salaün wrote:
-> 
->> Hi,
+23.04.2021 18:01, Guillaume Tucker пишет:
+> On 02/04/2021 15:40, Dmitry Osipenko wrote:
+>> 01.04.2021 11:55, Nicolin Chen пишет:
+>>> On Mon, Mar 29, 2021 at 02:32:56AM +0300, Dmitry Osipenko wrote:
+>>>> The previous commit fixes problem where display client was attaching too
+>>>> early to IOMMU during kernel boot in a multi-platform kernel configuration
+>>>> which enables CONFIG_ARM_DMA_USE_IOMMU=y. The workaround that helped to
+>>>> defer the IOMMU attachment for Nyan Big Chromebook isn't needed anymore,
+>>>> revert it.
+>>>
+>>> Sorry for the late reply. I have been busy with downstream tasks.
+>>>
+>>> I will give them a try by the end of the week. Yet, probably it'd
+>>> be better to include Guillaume also as he has the Nyan platform.
+>>>
 >>
->> This updated patch series adds a new patch on top of the previous ones.
->> It brings a new flag to landlock_create_ruleset(2) that enables
->> efficient and simple backward compatibility checks for future evolutions
->> of Landlock (e.g. new access-control rights).
+>> Indeed, thanks. Although, I'm pretty sure that it's the same issue which
+>> I reproduced on Nexus 7.
+>>
+>> Guillaume, could you please give a test to these patches on Nyan Big?
+>> There should be no EMEM errors in the kernel log with this patches.
+>>
+>> https://patchwork.ozlabs.org/project/linux-tegra/list/?series=236215
 > 
-> Applied to git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git 
-> landlock_lsm_v34
+> So sorry for the very late reply.  I have tried the patches but
+> hit some issues on linux-next, it's not reaching a login prompt
+> with next-20210422.  So I then tried with next-20210419 which
+> does boot but shows the IOMMU error:
 > 
-> and it replaces the v33 branch in next-testing.
+> <6>[    2.995341] tegra-dc 54200000.dc: Adding to iommu group 1
+> <4>[    3.001070] Failed to attached device 54200000.dc to IOMMU_mapping  
+> 
+>   https://lava.collabora.co.uk/scheduler/job/3570052#L1120
+> 
+> The branch I'm using with the patches applied can be found here:
+> 
+>   https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210419-nyan-big-drm-read/
+> 
+> Hope this helps, let me know if you need anything else to be
+> tested.
 
-Thanks! It is now in next:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?h=next-20210423
+
+Hello Guillaume,
+
+The current linux-next doesn't boot on all ARM (AFAIK), the older
+next-20210413 works. The above message should be unrelated to the boot
+problem. It should be okay to ignore that message as it should be
+harmless in yours case.
