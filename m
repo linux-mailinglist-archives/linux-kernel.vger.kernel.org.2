@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18029368DB0
+	by mail.lfdr.de (Postfix) with ESMTP id 643CB368DB1
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241132AbhDWHLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:11:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44092 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240809AbhDWHLD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:11:03 -0400
-Date:   Fri, 23 Apr 2021 07:10:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619161826;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=09dBzRNeTTyOEBMb99GRp77QLkcjKqVQA+vtksddIKw=;
-        b=Gj4i5rAVtpOVfPgVW9+n+adJ1hcOLJypWgmiQu9uQA1ToZAA6QUEzQEeXakp5uboHyNX1x
-        6D5Q2ltgb6FovWTDOhaG7zncAYzYnldnoCu+DqAAo1ZIQ7LTbHcaUEAMQp0fGVW022gupw
-        c3Z67Pl7L5p1AZR3/di1J0mKX+WSgV/cZfMnImeysm58oit4lKkEfau2sZtqj/yyX0EsqT
-        xXIYLeS2AVUAeHFnkDI68CLv39yw0aVsZxVBrSg3zNCkpjleUtpg+S41j38rMpCo3RU+Ah
-        5wbpMQjHtzMk1B1DfwbEpAHKQe4Mf5pC1OC3G/a4uOO6T8WMMmcpmTSQDczeuA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619161826;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=09dBzRNeTTyOEBMb99GRp77QLkcjKqVQA+vtksddIKw=;
-        b=7ILJaY3pDa7d/5l9yUvfvAUlWQQpC9+5hV0oVzlmy/GLIChJ6gRCEKJp9A8BEx2nQvylgS
-        q1apND61DSc6AUCg==
-From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86: Allow for 8<num_fixed_counters<16
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210420142907.382417-1-colin.king@canonical.com>
-References: <20210420142907.382417-1-colin.king@canonical.com>
+        id S241161AbhDWHLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241136AbhDWHLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:11:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97D7C6144A;
+        Fri, 23 Apr 2021 07:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619161835;
+        bh=07uPf56UihuHP6h60A6xn8XZGobXrQnzIBtqs41xaHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R+zLdASW653rPTYWWbEq5RzR4UDjL3O0nmqzFujAyyrxzzsVQdI82KIjwogosCCas
+         IbIeWuCKT6N1uvPvc5U/hxIq0xImoD8C0MFTiF2XGFQ4cjnnxGrygqJAC3IRphnnOb
+         M4/8JLAAWlX1H3RLwROhKy595ej0quXnQpzabxjo=
+Date:   Fri, 23 Apr 2021 09:10:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count
+ leak"
+Message-ID: <YIJy6AnG6QBlkV/5@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-10-gregkh@linuxfoundation.org>
+ <b43fc2b0-b3cf-15ab-7d3c-25c1f2a3e658@canonical.com>
 MIME-Version: 1.0
-Message-ID: <161916182610.29796.18400441270045420747.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b43fc2b0-b3cf-15ab-7d3c-25c1f2a3e658@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On Fri, Apr 23, 2021 at 09:04:27AM +0200, Krzysztof Kozlowski wrote:
+> On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
+> > This reverts commit 78741ce98c2e36188e2343434406b0e0bc50b0e7.
+> > 
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > Cc: Qiushi Wu <wu000273@umn.edu>
+> > Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> 
+> This looks like a good commit but should be done now in a different way
+> - using pm_runtime_resume_and_get().  Therefore I am fine with revert
+> and I can submit later better fix.
 
-Commit-ID:     32d35c4a96ec79446f0d7be308a6eb248b507a0b
-Gitweb:        https://git.kernel.org/tip/32d35c4a96ec79446f0d7be308a6eb248b507a0b
-Author:        Colin Ian King <colin.king@canonical.com>
-AuthorDate:    Tue, 20 Apr 2021 15:29:07 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 23 Apr 2021 09:03:15 +02:00
+Great, thanks for letting me know, I can have someone work on the
+"better fix" at the same time.
 
-perf/x86: Allow for 8<num_fixed_counters<16
-
-The 64 bit value read from MSR_ARCH_PERFMON_FIXED_CTR_CTRL is being
-bit-wise masked with the value (0x03 << i*4). However, the shifted value
-is evaluated using 32 bit arithmetic, so will UB when i > 8. Fix this
-by making 0x03 a ULL so that the shift is performed using 64 bit
-arithmetic.
-
-This makes the arithmetic internally consistent and preparers for the
-day when hardware provides 8<num_fixed_counters<16.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210420142907.382417-1-colin.king@canonical.com
----
- arch/x86/events/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 3fe66b7..c7fcc8d 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -278,7 +278,7 @@ bool check_hw_exists(struct pmu *pmu, int num_counters, int num_counters_fixed)
- 		for (i = 0; i < num_counters_fixed; i++) {
- 			if (fixed_counter_disabled(i, pmu))
- 				continue;
--			if (val & (0x03 << i*4)) {
-+			if (val & (0x03ULL << i*4)) {
- 				bios_fail = 1;
- 				val_fail = val;
- 				reg_fail = reg;
+greg k-h
