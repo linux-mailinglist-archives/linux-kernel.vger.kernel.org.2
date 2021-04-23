@@ -2,290 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89898369208
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F58736920A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242355AbhDWMZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhDWMZD (ORCPT
+        id S242467AbhDWMZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:25:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45766 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242393AbhDWMZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:25:03 -0400
-X-Greylist: delayed 8917 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 23 Apr 2021 05:24:26 PDT
-Received: from smtp-good-out-4.t-2.net (smtp-good-out-4.t-2.net [IPv6:2a01:260:1:4::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36719C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 05:24:26 -0700 (PDT)
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [84.255.208.30])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FRYPh0jGqz1Fyg;
-        Fri, 23 Apr 2021 14:24:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1619180664;
-        bh=ldvIxGJbVP27nohopjRASvuunWRgZUj24T93quRxLH8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=BesrjE0uDl/VxaxfGBFp7Z2SP8DqH+OjlshtRpU/Ck3ViQXE8fkIrGHNXGy0/dHP4
-         8jlpwc2kaLPsC0WDAGmi8SMQlWtOJ6DgoAykvYRW4risNyEbDTQUBO+j2hGgI6dkp2
-         MLJTJgZWng72A+oVbhfF25JWhspkFjFmv/swPZIs=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FRYPh0WGHzTqTbg;
-        Fri, 23 Apr 2021 14:24:24 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oFSRsqNubC84; Fri, 23 Apr 2021 14:24:23 +0200 (CEST)
-Received: from hpg3.u2up.net (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Fri, 23 Apr 2021 14:23:47 +0200 (CEST)
-Message-ID: <8b875c15ef457eb25dd1984c09d65dcae91bcee3.camel@t-2.net>
-Subject: [PATCH] ttyprintk: Add TTY port shutdown callback.
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Fri, 23 Apr 2021 14:23:46 +0200
-In-Reply-To: <56763238-c613-e882-a575-75a324d539b1@kernel.org>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <YGx59PEq2Y015YdK@alley>
-         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
-         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
-         <YG24F9Kx+tjxhh8G@kroah.com>
-         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-         <YHQkeZVs3pmyie9e@kroah.com>
-         <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
-         <YHQ3Zy9gRdZsu77w@kroah.com>
-         <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
-         <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
-         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
-         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-         <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
-         <56763238-c613-e882-a575-75a324d539b1@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 23 Apr 2021 08:25:12 -0400
+Date:   Fri, 23 Apr 2021 12:24:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619180675;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R/gyr1lMkvwIWABkm0oft2MwHWjjX0MGvPtqErZws6k=;
+        b=hGBl7fUyNwt7Cs3kcyh8bedjUa0Bm2hAGRf26jPWrJS/Q/YWlfRsWKHMFw8L34IvljhJtW
+        Aaa5DvMmpQHesY/OoyLFGXaNa02rmqM2q+6o3DVdNtw4rszkLGP/8ohG9tSvDaQC89HLzu
+        ORPxYvdqP4W8hoPTXMeIBWsc6hzDJVP067jpUXfoSj3bI1Km4hHNveNXn1OR5jj3U2F6TQ
+        iCtCRowvmQHk8Wve9dxv787wVB6YkcKJ+kKXtcGdSuuYtKt4dFjohlK9pViMtBmyew7LWJ
+        fvSOeav1u02U/0TYDWIk/fBV6cRJJh+puFEdBELtw8b83iVzGb0QwhfA893agA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619180675;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R/gyr1lMkvwIWABkm0oft2MwHWjjX0MGvPtqErZws6k=;
+        b=ONT5O0qQIrKxvBcug84BPrn2KXTHzouMNkf0Fb5OchPcBfZ/Jx0boLSLeHd4OT+jMsasrn
+        vPlH8ZUjsINOSyAQ==
+From:   "irqchip-bot for He Ying" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3: Do not enable irqs when
+ handling spurious interrups
+Cc:     Mark Rutland <mark.rutland@arm.com>, He Ying <heying24@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org,
+        tglx@linutronix.de
+In-Reply-To: <20210423083516.170111-1-heying24@huawei.com>
+References: <20210423083516.170111-1-heying24@huawei.com>
+MIME-Version: 1.0
+Message-ID: <161918067453.29796.494167512532062279.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 23.04.2021 (pet) ob 12:28 +0200 je Jiri Slaby napisal(a):
-> On 23. 04. 21, 11:55, Samo Pogačnik wrote:
-> > Dne 23.04.2021 (pet) ob 06:22 +0200 je Jiri Slaby napisal(a):
-> > > On 18. 04. 21, 13:16, Samo Pogačnik wrote:
-> > > > Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
-> > > > > syzbot is reporting hung task due to flood of
-> > > > > 
-> > > > >     tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
-> > > > >              port->count);
-> > > > > 
-> > > > > message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
-> > > > > decrementing port->count due to tty_hung_up_p() == true.
-> > > > > 
-> > > > > ----------
-> > > > > #include <sys/types.h>
-> > > > > #include <sys/stat.h>
-> > > > > #include <fcntl.h>
-> > > > > #include <sys/ioctl.h>
-> > > > > #include <unistd.h>
-> > > > > 
-> > > > > int main(int argc, char *argv[])
-> > > > > {
-> > > > > 	int i;
-> > > > > 	int fd[10];
-> > > > > 
-> > > > > 	for (i = 0; i < 10; i++)
-> > > > > 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
-> > > > > 	ioctl(fd[0], TIOCVHANGUP);
-> > > > > 	for (i = 0; i < 10; i++)
-> > > > > 		close(fd[i]);
-> > > > > 	close(open("/dev/ttyprintk", O_WRONLY));
-> > > > > 	return 0;
-> > > > > }
-> > > > > ----------
-> > > > > 
-> > > > > When TTY hangup happens, port->count needs to be reset via
-> > > > > "struct tty_operations"->hangup callback.
-> > > > > 
-> > > > > [1]
-> > > > > 
-> > 
-> > 
-https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-> > > > > 
-> > > > > Reported-by: syzbot <
-> > > > > syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com
-> > > > > > 
-> > > > > 
-> > > > > Reported-by: syzbot <
-> > > > > syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com
-> > > > > > 
-> > > > > 
-> > > > > Tested-by: syzbot <
-> > > > > syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-> > > > > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> > > > > Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
-> > > > > ---
-> > > > >    drivers/char/ttyprintk.c | 11 +++++++++++
-> > > > >    1 file changed, 11 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-> > > > > index 6a0059e508e3..93f5d11c830b 100644
-> > > > > --- a/drivers/char/ttyprintk.c
-> > > > > +++ b/drivers/char/ttyprintk.c
-> > > > > @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
-> > > > >    	return 0;
-> > > > >    }
-> > > > >    
-> > > > > +/*
-> > > > > + * TTY operations hangup function.
-> > > > > + */
-> > > > > +static void tpk_hangup(struct tty_struct *tty)
-> > > > > +{
-> > > > > +	struct ttyprintk_port *tpkp = tty->driver_data;
-> > > > > +
-> > > > > +	tty_port_hangup(&tpkp->port);
-> > > > > +}
-> > > > > +
-> > > > >    static const struct tty_operations ttyprintk_ops = {
-> > > > >    	.open = tpk_open,
-> > > > >    	.close = tpk_close,
-> > > > >    	.write = tpk_write,
-> > > > >    	.write_room = tpk_write_room,
-> > > > >    	.ioctl = tpk_ioctl,
-> > > > > +	.hangup = tpk_hangup,
-> > > > >    };
-> > > > >    
-> > > > >    static const struct tty_port_operations null_ops = { };
-> > > > 
-> > > > Using the supplied test code, i've tested the patch on my desktop
-> > > > running
-> > > > the
-> > > > 5.4 kernel. After applying the patch, the kernel warnings like
-> > > > "ttyprintk:
-> > > > tty_port_close_start: tty->count = 1 port count = 11" do not appear any
-> > > > more,
-> > > > when the test code is run.
-> > > > I think the patch is ok.
-> > > 
-> > > I wonder if the buffer shouldn't be flushed in hangup too? Or better,
-> > > the flush moved from tty_ops->close to tty_port->ops->shutdown?
-> > > 
-> > > thanks,
-> > 
-> > Good point. I tried the following additional change, which seems to do the
-> > trick. What do you think?
-> > 
-> > thanks, Samo
-> > ---
-> >   drivers/char/ttyprintk.c | 26 ++++++++++++++++++--------
-> >   1 file changed, 18 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-> > index 93f5d11c8..420222a92 100644
-> > --- a/drivers/char/ttyprintk.c
-> > +++ b/drivers/char/ttyprintk.c
-> > @@ -100,12 +100,6 @@ static int tpk_open(struct tty_struct *tty, struct file
-> > *filp)
-> >   static void tpk_close(struct tty_struct *tty, struct file *filp)
-> >   {
-> >   	struct ttyprintk_port *tpkp = tty->driver_data;
-> > -	unsigned long flags;
-> > -
-> > -	spin_lock_irqsave(&tpkp->spinlock, flags);
-> > -	/* flush tpk_printk buffer */
-> > -	tpk_printk(NULL, 0);
-> 
-> And now, you can drop NULL buf handling from tpk_printk, right?
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Exactly!
+Commit-ID:     a97709f563a078e259bf0861cd259aa60332890a
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/a97709f563a078e259bf0861cd259aa60332890a
+Author:        He Ying <heying24@huawei.com>
+AuthorDate:    Fri, 23 Apr 2021 04:35:16 -04:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Fri, 23 Apr 2021 13:19:08 +01:00
 
-thanks, Samo
+irqchip/gic-v3: Do not enable irqs when handling spurious interrups
 
+We triggered the following error while running our 4.19 kernel
+with the pseudo-NMI patches backported to it:
+
+[   14.816231] ------------[ cut here ]------------
+[   14.816231] kernel BUG at irq.c:99!
+[   14.816232] Internal error: Oops - BUG: 0 [#1] SMP
+[   14.816232] Process swapper/0 (pid: 0, stack limit = 0x(____ptrval____))
+[   14.816233] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      4.19.95.aarch64 #14
+[   14.816233] Hardware name: evb (DT)
+[   14.816234] pstate: 80400085 (Nzcv daIf +PAN -UAO)
+[   14.816234] pc : asm_nmi_enter+0x94/0x98
+[   14.816235] lr : asm_nmi_enter+0x18/0x98
+[   14.816235] sp : ffff000008003c50
+[   14.816235] pmr_save: 00000070
+[   14.816237] x29: ffff000008003c50 x28: ffff0000095f56c0
+[   14.816238] x27: 0000000000000000 x26: ffff000008004000
+[   14.816239] x25: 00000000015e0000 x24: ffff8008fb916000
+[   14.816240] x23: 0000000020400005 x22: ffff0000080817cc
+[   14.816241] x21: ffff000008003da0 x20: 0000000000000060
+[   14.816242] x19: 00000000000003ff x18: ffffffffffffffff
+[   14.816243] x17: 0000000000000008 x16: 003d090000000000
+[   14.816244] x15: ffff0000095ea6c8 x14: ffff8008fff5ab40
+[   14.816244] x13: ffff8008fff58b9d x12: 0000000000000000
+[   14.816245] x11: ffff000008c8a200 x10: 000000008e31fca5
+[   14.816246] x9 : ffff000008c8a208 x8 : 000000000000000f
+[   14.816247] x7 : 0000000000000004 x6 : ffff8008fff58b9e
+[   14.816248] x5 : 0000000000000000 x4 : 0000000080000000
+[   14.816249] x3 : 0000000000000000 x2 : 0000000080000000
+[   14.816250] x1 : 0000000000120000 x0 : ffff0000095f56c0
+[   14.816251] Call trace:
+[   14.816251]  asm_nmi_enter+0x94/0x98
+[   14.816251]  el1_irq+0x8c/0x180                    (IRQ C)
+[   14.816252]  gic_handle_irq+0xbc/0x2e4
+[   14.816252]  el1_irq+0xcc/0x180                    (IRQ B)
+[   14.816253]  arch_timer_handler_virt+0x38/0x58
+[   14.816253]  handle_percpu_devid_irq+0x90/0x240
+[   14.816253]  generic_handle_irq+0x34/0x50
+[   14.816254]  __handle_domain_irq+0x68/0xc0
+[   14.816254]  gic_handle_irq+0xf8/0x2e4
+[   14.816255]  el1_irq+0xcc/0x180                    (IRQ A)
+[   14.816255]  arch_cpu_idle+0x34/0x1c8
+[   14.816255]  default_idle_call+0x24/0x44
+[   14.816256]  do_idle+0x1d0/0x2c8
+[   14.816256]  cpu_startup_entry+0x28/0x30
+[   14.816256]  rest_init+0xb8/0xc8
+[   14.816257]  start_kernel+0x4c8/0x4f4
+[   14.816257] Code: 940587f1 d5384100 b9401001 36a7fd01 (d4210000)
+[   14.816258] Modules linked in: start_dp(O) smeth(O)
+[   15.103092] ---[ end trace 701753956cb14aa8 ]---
+[   15.103093] Kernel panic - not syncing: Fatal exception in interrupt
+[   15.103099] SMP: stopping secondary CPUs
+[   15.103100] Kernel Offset: disabled
+[   15.103100] CPU features: 0x36,a2400218
+[   15.103100] Memory Limit: none
+
+which is cause by a 'BUG_ON(in_nmi())' in nmi_enter().
+
+>From the call trace, we can find three interrupts (noted A, B, C above):
+interrupt (A) is preempted by (B), which is further interrupted by (C).
+
+Subsequent investigations show that (B) results in nmi_enter() being
+called, but that it actually is a spurious interrupt. Furthermore,
+interrupts are reenabled in the context of (B), and (C) fires with
+NMI priority. We end-up with a nested NMI situation, something
+we definitely do not want to (and cannot) handle.
+
+The bug here is that spurious interrupts should never result in any
+state change, and we should just return to the interrupted context.
+Moving the handling of spurious interrupts as early as possible in
+the GICv3 handler fixes this issue.
+
+Fixes: 3f1f3234bc2d ("irqchip/gic-v3: Switch to PMR masking before calling IRQ handler")
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+[maz: rewrote commit message, corrected Fixes: tag]
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210423083516.170111-1-heying24@huawei.com
+Cc: stable@vger.kernel.org
 ---
- drivers/char/ttyprintk.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+ drivers/irqchip/irq-gic-v3.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-index 93f5d11c8..6f616cb7c 100644
---- a/drivers/char/ttyprintk.c
-+++ b/drivers/char/ttyprintk.c
-@@ -54,11 +54,6 @@ static int tpk_printk(const unsigned char *buf, int count)
- {
- 	int i = tpk_curr;
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index eb0ee35..0040402 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -648,6 +648,10 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
  
--	if (buf == NULL) {
--		tpk_flush();
--		return i;
--	}
--
- 	for (i = 0; i < count; i++) {
- 		if (tpk_curr >= TPK_STR_SIZE) {
- 			/* end of tmp buffer reached: cut the message in two */
-@@ -100,12 +95,6 @@ static int tpk_open(struct tty_struct *tty, struct file
-*filp)
- static void tpk_close(struct tty_struct *tty, struct file *filp)
- {
- 	struct ttyprintk_port *tpkp = tty->driver_data;
--	unsigned long flags;
--
--	spin_lock_irqsave(&tpkp->spinlock, flags);
--	/* flush tpk_printk buffer */
--	tpk_printk(NULL, 0);
--	spin_unlock_irqrestore(&tpkp->spinlock, flags);
+ 	irqnr = gic_read_iar();
  
- 	tty_port_close(&tpkp->port, tty, filp);
- }
-@@ -168,6 +157,20 @@ static void tpk_hangup(struct tty_struct *tty)
- 	tty_port_hangup(&tpkp->port);
- }
- 
-+/*
-+ * TTY port operations shutdown function.
-+ */
-+static void tpk_port_shutdown(struct tty_port *tport)
-+{
-+	struct ttyprintk_port *tpkp =
-+		container_of(tport, struct ttyprintk_port, port);
-+	unsigned long flags;
++	/* Check for special IDs first */
++	if ((irqnr >= 1020 && irqnr <= 1023))
++		return;
 +
-+	spin_lock_irqsave(&tpkp->spinlock, flags);
-+	tpk_flush();
-+	spin_unlock_irqrestore(&tpkp->spinlock, flags);
-+}
-+
- static const struct tty_operations ttyprintk_ops = {
- 	.open = tpk_open,
- 	.close = tpk_close,
-@@ -177,7 +180,9 @@ static const struct tty_operations ttyprintk_ops = {
- 	.hangup = tpk_hangup,
- };
+ 	if (gic_supports_nmi() &&
+ 	    unlikely(gic_read_rpr() == GICD_INT_NMI_PRI)) {
+ 		gic_handle_nmi(irqnr, regs);
+@@ -659,10 +663,6 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+ 		gic_arch_enable_irqs();
+ 	}
  
--static const struct tty_port_operations null_ops = { };
-+static const struct tty_port_operations tpk_port_ops = {
-+	.shutdown = tpk_port_shutdown,
-+};
- 
- static struct tty_driver *ttyprintk_driver;
- 
-@@ -195,7 +200,7 @@ static int __init ttyprintk_init(void)
- 		return PTR_ERR(ttyprintk_driver);
- 
- 	tty_port_init(&tpk_port.port);
--	tpk_port.port.ops = &null_ops;
-+	tpk_port.port.ops = &tpk_port_ops;
- 
- 	ttyprintk_driver->driver_name = "ttyprintk";
- 	ttyprintk_driver->name = "ttyprintk";
--- 
-2.17.1
-
+-	/* Check for special IDs first */
+-	if ((irqnr >= 1020 && irqnr <= 1023))
+-		return;
+-
+ 	if (static_branch_likely(&supports_deactivate_key))
+ 		gic_write_eoir(irqnr);
+ 	else
