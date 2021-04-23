@@ -2,167 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7977C369481
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB3F369482
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhDWOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:19:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34142 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229939AbhDWOTb (ORCPT
+        id S234677AbhDWOVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhDWOVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:19:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619187534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UsLHXkZihTU6VaR2mOY6eO9xp9LBBo1wxPeRGitgkmA=;
-        b=WDnZSRbN0sjuUNXTchZjvv6sgtpJCR41QDcbN65Moybrr8tyTFB1ixMiCRsDO+XzxoEFuj
-        sc0QRr2HK+1xN1zqGurPZ7oFSKJSyGo4rz8mi0abbE8Ks1k908lEm4hZDuErZ8wfw0R9TJ
-        P7ueznGxEXhh9DAj4bs0nEOXwEt6Fvg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-vU7cy8XCPwy6lyucCyYF1A-1; Fri, 23 Apr 2021 10:18:52 -0400
-X-MC-Unique: vU7cy8XCPwy6lyucCyYF1A-1
-Received: by mail-ed1-f70.google.com with SMTP id bf25-20020a0564021a59b0290385169cebf8so11336684edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:18:52 -0700 (PDT)
+        Fri, 23 Apr 2021 10:21:05 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787C7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:20:29 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id b17so35297699pgh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0xghm4OXD8c/QLiiGnWTz+eX5J3vFTUT6uMEKutl3hs=;
+        b=Ye8U9iMLDZV2fucp4kn601q9lppSMINsKKEwNooGz2vucLufcoXK8aUsogzRVUgJDl
+         1wpCqbgv7vVSbSHFIRBB7yaRQqkjHNdTbmDF+YsvcDgsLEGPMYqe29Q9xKfRXWiXHYKu
+         hUoepEi6yOUboJXa5YvAg2Mlt2dCBPMcG7htg4j8XX6IY3LjBJDRbR12Reo1tJhD9z46
+         yHCja3hOrPFDlZcPnjlhwIeZNgS+V1nWxKNUiAFFIXcdb2Ncm2xaMA4pbXfTrkhevWn/
+         F7emJZQMK/ixiunFM+cLOQjrxFR3rl/0p27ZfwTquWYCBfheKvdFk4sRkC2rxbFt1nFN
+         ru0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=UsLHXkZihTU6VaR2mOY6eO9xp9LBBo1wxPeRGitgkmA=;
-        b=EgpzTgQ94gahpjFkODyX/VADu7+jZeK+CqndVqlUXRCtXGBj6gmnstqWbfmSkybWc9
-         o3RZJ4VMH3gM2I1mMi+HWoQklLZNQK2iHgzqIAgHXqzgIkWeZ/XeCGHeqdH3mMC9Aghb
-         JCy93OBKaPmMb467vjuTd+yyYY3vAilXwxmsTmVJn2Q7JwwJwFrK/xnNq0uR6Nx6BSNn
-         jwUIK6yG3vr1A8CLnUPCFao0RrcfjNlEOa91sbj//9do6g1ijPQQSeYi4L3mETzq9qYI
-         QycZIReeUI4sm7YRnOsaA0ohEbNvigWMolWDzdVUHOvgvhf9TDw/koGKvHRhiu+P67cU
-         kN+Q==
-X-Gm-Message-State: AOAM531HMrL+8buA4Z4q/1fxUR2Ckns13nOKBp1+HgBdcArw5uAFg7Bc
-        Yc4i2nDxuQlmih2UzOJHvJRp8R+NGcB9FJ+mEfhZ4tXbvQqCBoS6hCT7qbIeebxkmlTK65nsVj3
-        NqB0FCOTW7tbkapht0VBoAMFX
-X-Received: by 2002:a05:6402:698:: with SMTP id f24mr4742290edy.217.1619187531219;
-        Fri, 23 Apr 2021 07:18:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKLjJjrrGECre0642SldNRMLenv6iwnHRnZcPIfUd/61v7M7C6kwxIVHZzjKvod2PvLFIBNg==
-X-Received: by 2002:a05:6402:698:: with SMTP id f24mr4742264edy.217.1619187530997;
-        Fri, 23 Apr 2021 07:18:50 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q25sm4992019edt.51.2021.04.23.07.18.49
+        bh=0xghm4OXD8c/QLiiGnWTz+eX5J3vFTUT6uMEKutl3hs=;
+        b=Lyag4OBGouKIHR4a1rWbw/aBuDVxiD0+XpE8F7M5jcHQzQp0kMwK5ri8hHzdiBWkzT
+         IY3vJtl/6E5p127sHTz4n4kJSY6KOPKBCNtze4seYe77JvjX0AgUfoz8y/yRr8SPyJr6
+         MYfUnO/DULd/nvFguy14rszn/iRaKLJcDCYlO4Pq0A3qvB0KBa4VZtjnJ5hij7ZpJZ1n
+         kRzrLQcDOp9xuDQgjbs5pju4LhpZ6HMf27X2EbLF4iNv6YGhUQT83tazt8vLDhMhTTxA
+         KMLZnZae8QTsQk+kLegp+eVy+LcYPxO1vSeSPJhgtw7zFWhx4jzX1zdrIwoypKU5FeWV
+         l8Yg==
+X-Gm-Message-State: AOAM533SK+pG6iABIaWiHASbsBNGd8ppEv8AQhH3bavm+BX31HW8KbLX
+        vaYfMq+n4gtQwFK2CqfpqsKtfMxsFI0EyZVO
+X-Google-Smtp-Source: ABdhPJy2+amVauYpcugTFnQ+Oi/lsJTU11+p37KXaElfiq9cTMZ6LTfgj/M8vKyB9idx/KBcDXDUMg==
+X-Received: by 2002:a05:6a00:170c:b029:225:8851:5b3c with SMTP id h12-20020a056a00170cb029022588515b3cmr4126113pfc.0.1619187628882;
+        Fri, 23 Apr 2021 07:20:28 -0700 (PDT)
+Received: from ?IPv6:2600:380:497c:70df:6bb6:caf7:996c:9229? ([2600:380:497c:70df:6bb6:caf7:996c:9229])
+        by smtp.gmail.com with ESMTPSA id a20sm4918907pfi.138.2021.04.23.07.20.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 07:18:50 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: SVM: Delay restoration of host MSR_TSC_AUX until
- return to userspace
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Reiji Watanabe <reijiw@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20210422001736.3255735-1-seanjc@google.com>
- <CAAeT=FxaRV+za7yk8_9p45k4ui3QJx90gN4b8k4egrxux=QWFA@mail.gmail.com>
- <YIHYsa1+psfnszcv@google.com>
- <8cc2bb9a-167e-598c-6a9e-c23e943b1248@redhat.com>
- <YILV0KrBUaESfTiY@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <fe66cff5-4b20-2c8b-8b2c-0eca6bf14b2d@redhat.com>
-Date:   Fri, 23 Apr 2021 16:18:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 23 Apr 2021 07:20:28 -0700 (PDT)
+Subject: Re: [PATCH 167/190] Revert "gdrom: fix a memory leak bug"
+To:     Peter Rosin <peda@axentia.se>, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, wang6495@umn.edu
+References: <20210421130105.1226686-168-gregkh@linuxfoundation.org>
+ <23ffd3c5-0095-6a95-8c30-2b6f67377ce7@axentia.se>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <14bdfbee-b8b9-d8ac-de34-b6d852d1485b@kernel.dk>
+Date:   Fri, 23 Apr 2021 08:20:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YILV0KrBUaESfTiY@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <23ffd3c5-0095-6a95-8c30-2b6f67377ce7@axentia.se>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/21 16:12, Sean Christopherson wrote:
-> On Fri, Apr 23, 2021, Paolo Bonzini wrote:
->> On 22/04/21 22:12, Sean Christopherson wrote:
->>> 	case MSR_TSC_AUX:
->>> 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
->>> 			return 1;
->>>
->>> 		if (!msr_info->host_initiated &&
->>> 		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
->>> 			return 1;
->>>
->>> 		/*
->>> 		 * TSC_AUX is usually changed only during boot and never read
->>> 		 * directly.  Intercept TSC_AUX instead of exposing it to the
->>> 		 * guest via direct_access_msrs, and switch it via user return.
->>> 		 */
->>> 		preempt_disable();
->>> 		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
->>> 		preempt_enable();
->>> 		if (r)
->>> 			return 1;
->>>
->>> 		/*
->>> 		 * Bits 63:32 are dropped by AMD CPUs, but are reserved on
->>> 		 * Intel CPUs.  AMD's APM has incomplete and conflicting info
->>> 		 * on the architectural behavior; emulate current hardware as
->>> 		 * doing so ensures migrating from AMD to Intel won't explode.
->>> 		 */
->>> 		svm->tsc_aux = (u32)data;
->>> 		break;
->>>
->>
->> Ok, squashed in the following:
+On 4/22/21 3:29 PM, Peter Rosin wrote:
+>> This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
 > 
-> Too fast!  The below won't compile (s/msr_info/msr and 'r' needs to be defined),
-> and the get_msr() path needs the guest_cpuid_has() check.
-
-Oops I missed the get_msr().  (I modify my local tree very aggressively, 
-often without even compiling, so that I can use "git range-diff 
-kvm/next..kvm/queue kvm/next.." as a reminder of things that are pending).
-
-Paolo
-
-   I'll spin a v3.
+> The reverted patch looks fishy.
 > 
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index 14ff7f0963e9..00e9680969a2 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -2875,16 +2875,28 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
->>   		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
->>   			return 1;
->> +		if (!msr_info->host_initiated &&
->> +		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
->> +			return 1;
->> +
->>   		/*
->>   		 * TSC_AUX is usually changed only during boot and never read
->>   		 * directly.  Intercept TSC_AUX instead of exposing it to the
->>   		 * guest via direct_access_msrs, and switch it via user return.
->>   		 */
->> -		svm->tsc_aux = data;
->> -
->>   		preempt_disable();
->> -		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
->> +		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
->>   		preempt_enable();
->> +		if (r)
->> +			return 1;
->> +
->> +		/*
->> +		 * Bits 63:32 are dropped by AMD CPUs, but are reserved on
->> +		 * Intel CPUs.  AMD's APM has incomplete and conflicting info
->> +		 * on the architectural behavior; emulate current hardware as
->> +		 * doing so ensures migrating from AMD to Intel won't explode.
->> +		 */
->> +		svm->tsc_aux = (u32)data;
->>   		break;
->>   	case MSR_IA32_DEBUGCTLMSR:
->>   		if (!boot_cpu_has(X86_FEATURE_LBRV)) {
->>
->> Paolo
->>
+> gc.cd_info is kzalloc:ed on probe. In case probe fails after this allocation, the
+> memory is kfree:d but the variable is NOT zeroed out.
 > 
+> AFAICT, the above leads to a double-free on exit by the added line.
+> 
+> I believe gd.cd_info should be kfree:d on remove instead.
+> 
+> However, might not gc.toc also be kfree:d twice for similar reasons?
+> 
+> I could easily be mistaken.
+
+From taking a quick look the other day, that's my conclusion too. I
+don't think the patch is correct, but I don't think the surrounding code
+is correct right now either.
+
+-- 
+Jens Axboe
 
