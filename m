@@ -2,146 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78188368A60
+	by mail.lfdr.de (Postfix) with ESMTP id 001BB368A61
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhDWBal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:30:41 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:33676 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229888AbhDWBak (ORCPT
+        id S229888AbhDWBaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:30:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17027 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236126AbhDWBau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:30:40 -0400
-X-UUID: 978b514e859449d0ae0616db152677d0-20210423
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=uPI3I76ev2hEGW8ViAx+aH2J2P8PkgKs+WekwKZHjwA=;
-        b=fvJFxGoKt/dhGUV0b8f8Due0px808hgWCEMSykyNinpn2PL597pXqsUgLI2x9LCfmAPs917ZKksRVKYKN4ivN5pbA2bruXSfBVoU39F2CazwFF2tmq+LctxoKEYceE3DOmyIASNP5JWYWO/Fkt1QCfaV8G/S5VgteMY3sp7WRHw=;
-X-UUID: 978b514e859449d0ae0616db152677d0-20210423
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1278433265; Fri, 23 Apr 2021 09:30:00 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Apr 2021 09:29:41 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Apr 2021 09:29:41 +0800
-Message-ID: <1619141381.28327.8.camel@mtksdaap41>
-Subject: Re: [PATCH] drm/mediatek: clear pending flag when cmdq packet is
- done.
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Dennis YC Hsieh" <dennis-yc.hsieh@mediatek.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
+        Thu, 22 Apr 2021 21:30:50 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FRGqL6ZBQzPtTq;
+        Fri, 23 Apr 2021 09:27:10 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 23 Apr
+ 2021 09:30:09 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: set prefree as free segments after clear
+ prefree segments
+To:     Yangtao Li <frank.li@vivo.com>, <jaegeuk@kernel.org>,
+        <chao@kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
         <linux-kernel@vger.kernel.org>
-Date:   Fri, 23 Apr 2021 09:29:41 +0800
-In-Reply-To: <20210422111004.1338867-1-hsinyi@chromium.org>
-References: <20210422111004.1338867-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+References: <20210422125910.127871-1-frank.li@vivo.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <247c6055-c004-72a6-5093-3949c2ed8495@huawei.com>
+Date:   Fri, 23 Apr 2021 09:30:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210422125910.127871-1-frank.li@vivo.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4teWk6DQoNCk9uIFRodSwgMjAyMS0wNC0yMiBhdCAxOToxMCArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBDSyBIdSA8Y2suaHVAbWVkaWF0ZWsuY29tPg0KPiANCj4g
-SW4gY21kcSBtb2RlLCBwYWNrZXQgbWF5IGJlIGZsdXNoZWQgYmVmb3JlIGl0IGlzIGV4ZWN1dGVk
-LCBzbw0KPiB0aGUgcGVuZGluZyBmbGFnIHNob3VsZCBiZSBjbGVhcmVkIGFmdGVyIGNtZHEgcGFj
-a2V0IGlzIGRvbmUuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDSyBIdSA8Y2suaHVAbWVkaWF0ZWsu
-Y29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+
-DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fY3J0Yy5jICB8IDU2
-ICsrKysrKysrKysrKysrKysrKysrKy0tLQ0KPiAgaW5jbHVkZS9saW51eC9tYWlsYm94L210ay1j
-bWRxLW1haWxib3guaCB8ICAxICsNCj4gIDIgZmlsZXMgY2hhbmdlZCwgNTEgaW5zZXJ0aW9ucygr
-KSwgNiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX2RybV9jcnRjLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9j
-cnRjLmMNCj4gaW5kZXggNDBkZjJjODIzMTg3Li4wNTFiZjBlYjAwZDMgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2NydGMuYw0KPiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMNCj4gQEAgLTIyNCw2ICsyMjQsNDUgQEAg
-c3RydWN0IG10a19kZHBfY29tcCAqbXRrX2RybV9kZHBfY29tcF9mb3JfcGxhbmUoc3RydWN0IGRy
-bV9jcnRjICpjcnRjLA0KPiAgI2lmIElTX1JFQUNIQUJMRShDT05GSUdfTVRLX0NNRFEpDQo+ICBz
-dGF0aWMgdm9pZCBkZHBfY21kcV9jYihzdHJ1Y3QgY21kcV9jYl9kYXRhIGRhdGEpDQo+ICB7DQo+
-ICsJc3RydWN0IGNtZHFfcGt0ICpwa3QgPSAoc3RydWN0IGNtZHFfcGt0ICopZGF0YS5kYXRhOw0K
-PiArCXN0cnVjdCBtdGtfZHJtX2NydGMgKm10a19jcnRjID0gKHN0cnVjdCBtdGtfZHJtX2NydGMg
-Kilwa3QtPmNydGM7DQo+ICsJc3RydWN0IG10a19jcnRjX3N0YXRlICpzdGF0ZSA9IHRvX210a19j
-cnRjX3N0YXRlKG10a19jcnRjLT5iYXNlLnN0YXRlKTsNCj4gKwl1bnNpZ25lZCBpbnQgaTsNCj4g
-Kw0KPiArCWlmIChkYXRhLnN0YSA9PSBDTURRX0NCX0VSUk9SKQ0KDQpJIHByZWZlciB1c2Ugc3Rh
-bmRhcmQgZXJyb3Igc3RhdHVzIGluc3RlYWQgb2YgcHJvcHJpZXRhcnkgb25lLCBzbyBJIHNlbmQN
-CmEgcGF0Y2ggWzFdLiBJIHdvdWxkIGxpa2UgdGhpcyBwYXRjaCBkZXBlbmQgb24gWzFdLg0KDQpb
-MV0NCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9w
-YXRjaC8yMDIxMDMxNDIzMzMyMy4yMzM3Ny0yLWNodW5rdWFuZy5odUBrZXJuZWwub3JnLw0KDQo+
-ICsJCWdvdG8gZGVzdHJveV9wa3Q7DQo+ICsNCj4gKwlpZiAoc3RhdGUtPnBlbmRpbmdfY29uZmln
-KSB7DQo+ICsJCXN0YXRlLT5wZW5kaW5nX2NvbmZpZyA9IGZhbHNlOw0KPiArCX0NCj4gKw0KPiAr
-CWlmIChtdGtfY3J0Yy0+cGVuZGluZ19wbGFuZXMpIHsNCj4gKwkJZm9yIChpID0gMDsgaSA8IG10
-a19jcnRjLT5sYXllcl9ucjsgaSsrKSB7DQo+ICsJCQlzdHJ1Y3QgZHJtX3BsYW5lICpwbGFuZSA9
-ICZtdGtfY3J0Yy0+cGxhbmVzW2ldOw0KPiArCQkJc3RydWN0IG10a19wbGFuZV9zdGF0ZSAqcGxh
-bmVfc3RhdGU7DQo+ICsNCj4gKwkJCXBsYW5lX3N0YXRlID0gdG9fbXRrX3BsYW5lX3N0YXRlKHBs
-YW5lLT5zdGF0ZSk7DQo+ICsNCj4gKwkJCWlmIChwbGFuZV9zdGF0ZS0+cGVuZGluZy5jb25maWcp
-DQo+ICsJCQkJcGxhbmVfc3RhdGUtPnBlbmRpbmcuY29uZmlnID0gZmFsc2U7DQo+ICsJCX0NCj4g
-KwkJbXRrX2NydGMtPnBlbmRpbmdfcGxhbmVzID0gZmFsc2U7DQo+ICsJfQ0KPiArDQo+ICsJaWYg
-KG10a19jcnRjLT5wZW5kaW5nX2FzeW5jX3BsYW5lcykgew0KPiArCQlmb3IgKGkgPSAwOyBpIDwg
-bXRrX2NydGMtPmxheWVyX25yOyBpKyspIHsNCj4gKwkJCXN0cnVjdCBkcm1fcGxhbmUgKnBsYW5l
-ID0gJm10a19jcnRjLT5wbGFuZXNbaV07DQo+ICsJCQlzdHJ1Y3QgbXRrX3BsYW5lX3N0YXRlICpw
-bGFuZV9zdGF0ZTsNCj4gKw0KPiArCQkJcGxhbmVfc3RhdGUgPSB0b19tdGtfcGxhbmVfc3RhdGUo
-cGxhbmUtPnN0YXRlKTsNCj4gKw0KPiArCQkJaWYgKHBsYW5lX3N0YXRlLT5wZW5kaW5nLmFzeW5j
-X2NvbmZpZykNCj4gKwkJCQlwbGFuZV9zdGF0ZS0+cGVuZGluZy5hc3luY19jb25maWcgPSBmYWxz
-ZTsNCj4gKwkJfQ0KPiArCQltdGtfY3J0Yy0+cGVuZGluZ19hc3luY19wbGFuZXMgPSBmYWxzZTsN
-Cj4gKwl9DQo+ICsNCj4gK2Rlc3Ryb3lfcGt0Og0KPiAgCWNtZHFfcGt0X2Rlc3Ryb3koZGF0YS5k
-YXRhKTsNCj4gIH0NCj4gICNlbmRpZg0KPiBAQCAtMzc3LDggKzQxNiw4IEBAIHN0YXRpYyB2b2lk
-IG10a19jcnRjX2RkcF9jb25maWcoc3RydWN0IGRybV9jcnRjICpjcnRjLA0KPiAgCQkJCSAgICBz
-dGF0ZS0+cGVuZGluZ19oZWlnaHQsDQo+ICAJCQkJICAgIHN0YXRlLT5wZW5kaW5nX3ZyZWZyZXNo
-LCAwLA0KPiAgCQkJCSAgICBjbWRxX2hhbmRsZSk7DQo+IC0NCj4gLQkJc3RhdGUtPnBlbmRpbmdf
-Y29uZmlnID0gZmFsc2U7DQo+ICsJCWlmICghY21kcV9oYW5kbGUpDQo+ICsJCQlzdGF0ZS0+cGVu
-ZGluZ19jb25maWcgPSBmYWxzZTsNCj4gIAl9DQo+ICANCj4gIAlpZiAobXRrX2NydGMtPnBlbmRp
-bmdfcGxhbmVzKSB7DQo+IEBAIC0zOTgsOSArNDM3LDExIEBAIHN0YXRpYyB2b2lkIG10a19jcnRj
-X2RkcF9jb25maWcoc3RydWN0IGRybV9jcnRjICpjcnRjLA0KPiAgCQkJCW10a19kZHBfY29tcF9s
-YXllcl9jb25maWcoY29tcCwgbG9jYWxfbGF5ZXIsDQo+ICAJCQkJCQkJICBwbGFuZV9zdGF0ZSwN
-Cj4gIAkJCQkJCQkgIGNtZHFfaGFuZGxlKTsNCj4gLQkJCXBsYW5lX3N0YXRlLT5wZW5kaW5nLmNv
-bmZpZyA9IGZhbHNlOw0KPiArCQkJaWYgKCFjbWRxX2hhbmRsZSkNCj4gKwkJCQlwbGFuZV9zdGF0
-ZS0+cGVuZGluZy5jb25maWcgPSBmYWxzZTsNCj4gIAkJfQ0KPiAtCQltdGtfY3J0Yy0+cGVuZGlu
-Z19wbGFuZXMgPSBmYWxzZTsNCj4gKwkJaWYgKCFjbWRxX2hhbmRsZSkNCj4gKwkJCW10a19jcnRj
-LT5wZW5kaW5nX3BsYW5lcyA9IGZhbHNlOw0KPiAgCX0NCj4gIA0KPiAgCWlmIChtdGtfY3J0Yy0+
-cGVuZGluZ19hc3luY19wbGFuZXMpIHsNCj4gQEAgLTQyMCw5ICs0NjEsMTEgQEAgc3RhdGljIHZv
-aWQgbXRrX2NydGNfZGRwX2NvbmZpZyhzdHJ1Y3QgZHJtX2NydGMgKmNydGMsDQo+ICAJCQkJbXRr
-X2RkcF9jb21wX2xheWVyX2NvbmZpZyhjb21wLCBsb2NhbF9sYXllciwNCj4gIAkJCQkJCQkgIHBs
-YW5lX3N0YXRlLA0KPiAgCQkJCQkJCSAgY21kcV9oYW5kbGUpOw0KPiAtCQkJcGxhbmVfc3RhdGUt
-PnBlbmRpbmcuYXN5bmNfY29uZmlnID0gZmFsc2U7DQo+ICsJCQlpZiAoIWNtZHFfaGFuZGxlKQ0K
-PiArCQkJCXBsYW5lX3N0YXRlLT5wZW5kaW5nLmFzeW5jX2NvbmZpZyA9IGZhbHNlOw0KPiAgCQl9
-DQo+IC0JCW10a19jcnRjLT5wZW5kaW5nX2FzeW5jX3BsYW5lcyA9IGZhbHNlOw0KPiArCQlpZiAo
-IWNtZHFfaGFuZGxlKQ0KPiArCQkJbXRrX2NydGMtPnBlbmRpbmdfYXN5bmNfcGxhbmVzID0gZmFs
-c2U7DQo+ICAJfQ0KPiAgfQ0KPiAgDQo+IEBAIC00NzUsNiArNTE4LDcgQEAgc3RhdGljIHZvaWQg
-bXRrX2RybV9jcnRjX3VwZGF0ZV9jb25maWcoc3RydWN0IG10a19kcm1fY3J0YyAqbXRrX2NydGMs
-DQo+ICAJCWNtZHFfcGt0X3dmZShjbWRxX2hhbmRsZSwgbXRrX2NydGMtPmNtZHFfZXZlbnQsIGZh
-bHNlKTsNCj4gIAkJbXRrX2NydGNfZGRwX2NvbmZpZyhjcnRjLCBjbWRxX2hhbmRsZSk7DQo+ICAJ
-CWNtZHFfcGt0X2ZpbmFsaXplKGNtZHFfaGFuZGxlKTsNCj4gKwkJY21kcV9oYW5kbGUtPmNydGMg
-PSBtdGtfY3J0YzsNCj4gIAkJY21kcV9wa3RfZmx1c2hfYXN5bmMoY21kcV9oYW5kbGUsIGRkcF9j
-bWRxX2NiLCBjbWRxX2hhbmRsZSk7DQo+ICAJfQ0KPiAgI2VuZGlmDQo+IGRpZmYgLS1naXQgYS9p
-bmNsdWRlL2xpbnV4L21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5oIGIvaW5jbHVkZS9saW51eC9t
-YWlsYm94L210ay1jbWRxLW1haWxib3guaA0KPiBpbmRleCBkNWE5ODNkNjVmMDUuLmMwNmIxNGVj
-MDNlNSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tYWlsYm94L210ay1jbWRxLW1haWxi
-b3guaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5oDQo+
-IEBAIC05MCw2ICs5MCw3IEBAIHN0cnVjdCBjbWRxX3BrdCB7DQo+ICAJc3RydWN0IGNtZHFfdGFz
-a19jYgljYjsNCj4gIAlzdHJ1Y3QgY21kcV90YXNrX2NiCWFzeW5jX2NiOw0KPiAgCXZvaWQJCQkq
-Y2w7DQo+ICsJdm9pZAkJCSpjcnRjOw0KDQpOb3QgYWxsIGNsaWVudCBuZWVkIGNydGMsIHNvIEkg
-d291bGQgbGlrZSB0byB1c2UgYW5vdGhlciBzdHJ1Y3R1cmUgdG8NCmluY2x1ZGUgY21kcV9wa3Qg
-YW5kIGNydGMgYW5kIGNhc3QgdGhhdCBzdHJ1Y3R1cmUgdG8gY21kcV9wa3QuIEkgaGF2ZSBhDQpw
-bGFuIHRvIHVzZSBtYWlsYm94IHJ4X2NhbGxiYWNrIGluc3RlYWQgb2YgY21kcV90YXNrX2NiIFsy
-XSAobm90DQp1cHN0cmVhbWVkIHlldCksIGFuZCBpdCBpcyBhbiBleGFtcGxlIHRoYXQgY3J0YyBp
-bmNsdWRlIGNtZHFfcGt0LiBUbw0KdXBzdHJlYW0gWzJdIHdvdWxkIHRha2UgYSBsb25nIHRpbWUs
-IHlvdSBjb3VsZCBjaG9vc2UgdG8gZGVwZW5kIG9uIFsyXQ0Kb3Igbm90Lg0KDQpbMl0NCmh0dHBz
-Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2NodW5rdWFuZy5odS9s
-aW51eC5naXQvY29tbWl0Lz9oPW1lZGlhdGVrLWNtZHEmaWQ9MmMzMjg5YjE1NTBlYTExMDVhMDI3
-NTA5MjhkZjczODc1M2RkZjhlMQ0KDQpSZWdhcmRzLA0KQ0sNCg0KPiAgfTsNCj4gIA0KPiAgdTgg
-Y21kcV9nZXRfc2hpZnRfcGEoc3RydWN0IG1ib3hfY2hhbiAqY2hhbik7DQoNCg==
+On 2021/4/22 20:59, Yangtao Li wrote:
+> For now, when do_checkpoint fails, the prefree bitmap is not cleared,
+> but these segments are already in the free state. If these segments
+> are used, the segments in use will be reset to the free state when
+> f2fs_clear_prefree_segments is called next time.
+> 
+> So move set_prefree_as_free_segments after clear_prefree_segments.
 
+That's not correct.
+
+/*
+  * Should call f2fs_clear_prefree_segments after checkpoint is done.
+  */
+static void set_prefree_as_free_segments(struct f2fs_sb_info *sbi)
+
+Comments above set_prefree_as_free_segments() should have told you
+the rule, otherwise if checkpoint failed, valid data in last valid
+checkpoint could be corrupted after segment reuse.
+
+Thanks,
+
+> 
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>   fs/f2fs/segment.c | 17 +----------------
+>   1 file changed, 1 insertion(+), 16 deletions(-)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index c2866561263e..ea1334e17a0d 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -1945,20 +1945,6 @@ void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi)
+>   		release_discard_addr(entry);
+>   }
+>   
+> -/*
+> - * Should call f2fs_clear_prefree_segments after checkpoint is done.
+> - */
+> -static void set_prefree_as_free_segments(struct f2fs_sb_info *sbi)
+> -{
+> -	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+> -	unsigned int segno;
+> -
+> -	mutex_lock(&dirty_i->seglist_lock);
+> -	for_each_set_bit(segno, dirty_i->dirty_segmap[PRE], MAIN_SEGS(sbi))
+> -		__set_test_and_free(sbi, segno, false);
+> -	mutex_unlock(&dirty_i->seglist_lock);
+> -}
+> -
+>   void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>   						struct cp_control *cpc)
+>   {
+> @@ -1993,6 +1979,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>   		for (i = start; i < end; i++) {
+>   			if (test_and_clear_bit(i, prefree_map))
+>   				dirty_i->nr_dirty[PRE]--;
+> +			__set_test_and_free(sbi, i, false);
+>   		}
+>   
+>   		if (!f2fs_realtime_discard_enable(sbi))
+> @@ -4188,8 +4175,6 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>   		cpc->trim_start = trim_start;
+>   	}
+>   	up_write(&sit_i->sentry_lock);
+> -
+> -	set_prefree_as_free_segments(sbi);
+>   }
+>   
+>   static int build_sit_info(struct f2fs_sb_info *sbi)
+> 
