@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47342368EAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59731368EB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241548AbhDWIPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:15:33 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:27228 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241376AbhDWIPb (ORCPT
+        id S241565AbhDWIQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241227AbhDWIQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:15:31 -0400
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 0785DE0104;
-        Fri, 23 Apr 2021 16:14:53 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Wei Xu <xuwei5@hisilicon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] arm/mach-hisi: Use BUG_ON instead of if condition followed by BUG
-Date:   Fri, 23 Apr 2021 01:14:45 -0700
-Message-Id: <1619165686-69955-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQxoeGVYYHUpKSklOShgeGENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OAg6Egw6Fz8XMA0eDRAhHxNM
-        HjEKCzVVSlVKTUpCSk1OTUJITUtCVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlIQ0I3Bg++
-X-HM-Tid: 0a78fdcbc4ec2c17kusn0785de0104
+        Fri, 23 Apr 2021 04:16:07 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7CFC061574;
+        Fri, 23 Apr 2021 01:15:30 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id u16so31164282oiu.7;
+        Fri, 23 Apr 2021 01:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rTgYKXVFN4z09HpmN1O6TXEkHZJ19ni7p0W0OFc/XYA=;
+        b=ik2Q6Z3wpY5lOE8J+UQbLUUMuQfnRBx/FK+TB+EvupFs3gvyNdt3yUHiSKS7In+Y9p
+         k62QLI6AfpvDIuGo7vodSr9IGHazllQc6sTvmokp8cL5jBm4RQVRceGzYobQOFrq/JMd
+         uY5dXUK7skZKYwYKunJsjYlD9ZwGLvTmO1hSJYw5v72TLHuVJTdKCgUlxaDKDGUOTzDQ
+         cQtLCLmszlZnhzP9CXuQ9krxad9LqlPBk4rIrp7Say/LsKa95Q1yR62oFxY8OSs462Sv
+         aCcQZMdBF+ymkLwmr5ZOjz3OrzNGoURxWmmEF3LSaAvXryo2vLi02DxEPvZua7c0DXL1
+         Bzaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rTgYKXVFN4z09HpmN1O6TXEkHZJ19ni7p0W0OFc/XYA=;
+        b=O6Br7sfyvLQlNe9uLErrvfGGO+fbJIo/8x2fyxoNJ8P5gdw7z7QYkls0fwbLAFWJnV
+         kkRe3J1ItOa3dy+2anyIBP/ZLJ+fmjlrCBOt/54seC8E4iKFY6UNVIdg1vLYfAjWgHja
+         vVIXtKzX4XxeYvf/bmpV/dAMwVw4sWGMCB3WIqOvq6LomlkBwOusD18PjETEYVVUQcu7
+         u1pMtIc5uXawHpj2q+VFby8zDE5Qg06qlvyV9pYxh8tFUdVbNB3B/KG4D0xuhWLL4Nxd
+         tdy4WVwiRU6HIYFEDf1GiepVWdIOnd+PCZsShwYJjH599UdLMqDjL7m5lP+5K6f+ZgsY
+         18hg==
+X-Gm-Message-State: AOAM530dQZla56zxOAcsZp5MKJi+BSGZsRu02+0Ej2PV19xzqCYWv0pn
+        0Pt8WYi9qu2J56qlnmcFSmjuYI5vXkLkmo2CNUY=
+X-Google-Smtp-Source: ABdhPJyysdq1QM5DrMQvundaY6dMneomaGYygEwKV4TNz+HAgaZxYrkFMtY5tYXGJDxMJ+1VGB8tyIyecpfcjp0lP8A=
+X-Received: by 2002:aca:c08a:: with SMTP id q132mr2961354oif.5.1619165730242;
+ Fri, 23 Apr 2021 01:15:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <1619161883-5963-1-git-send-email-wanpengli@tencent.com> <f025b59c-5a8a-abf7-20fc-323a5b450ba5@redhat.com>
+In-Reply-To: <f025b59c-5a8a-abf7-20fc-323a5b450ba5@redhat.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 23 Apr 2021 16:15:18 +0800
+Message-ID: <CANRm+CxcqMW-m7WNmMv6uP3DusPTWmizf3AwOh9tY43HgrugBg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/xen: Take srcu lock when accessing kvm_memslots()
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUG_ON uses unlikely in if(). Through disassembly, we can see that
-brk #0x800 is compiled to the end of the function.
-As you can see below:
-    ......
-    ffffff8008660bec:   d65f03c0    ret
-    ffffff8008660bf0:   d4210000    brk #0x800
+On Fri, 23 Apr 2021 at 16:13, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 23/04/21 09:11, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > kvm_memslots() will be called by kvm_write_guest_offset_cached() so
+> > take the srcu lock.
+> >
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+>
+> Good catch.  But I would pull it from kvm_steal_time_set_preempted to
+> kvm_arch_vcpu_put instead.
 
-Usually, the condition in if () is not satisfied. For the
-multi-stage pipeline, we do not need to perform fetch decode
-and excute operation on brk instruction.
+Will do. :)
 
-In my opinion, this can improve the efficiency of the
-multi-stage pipeline.
-
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- arch/arm/mach-hisi/hotplug.c  | 3 +--
- arch/arm/mach-hisi/platmcpm.c | 4 ++--
- 2 files changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm/mach-hisi/hotplug.c b/arch/arm/mach-hisi/hotplug.c
-index c517941..b9ced60 100644
---- a/arch/arm/mach-hisi/hotplug.c
-+++ b/arch/arm/mach-hisi/hotplug.c
-@@ -193,8 +193,7 @@ void hix5hd2_set_cpu(int cpu, bool enable)
- 	u32 val = 0;
- 
- 	if (!ctrl_base)
--		if (!hix5hd2_hotplug_init())
--			BUG();
-+		BUG_ON(!hix5hd2_hotplug_init());
- 
- 	if (enable) {
- 		/* power on cpu1 */
-diff --git a/arch/arm/mach-hisi/platmcpm.c b/arch/arm/mach-hisi/platmcpm.c
-index 96a4840..6c90039 100644
---- a/arch/arm/mach-hisi/platmcpm.c
-+++ b/arch/arm/mach-hisi/platmcpm.c
-@@ -82,8 +82,8 @@ static void hip04_set_snoop_filter(unsigned int cluster, unsigned int on)
- {
- 	unsigned long data;
- 
--	if (!fabric)
--		BUG();
-+	BUG_ON(!fabric);
-+
- 	data = readl_relaxed(fabric + FAB_SF_MODE);
- 	if (on)
- 		data |= 1 << cluster;
--- 
-2.7.4
-
+    Wanpeng
