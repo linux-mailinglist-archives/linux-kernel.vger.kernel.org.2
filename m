@@ -2,69 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D82A368EA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6745D368EAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241467AbhDWIN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:13:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38359 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241361AbhDWIN4 (ORCPT
+        id S241395AbhDWIPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhDWIP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:13:56 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lZqw9-0008Ax-SJ; Fri, 23 Apr 2021 08:13:17 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][V2] serial: qcom_geni_serial: redundant initialization to variable line
-Date:   Fri, 23 Apr 2021 09:13:17 +0100
-Message-Id: <20210423081317.318352-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 23 Apr 2021 04:15:29 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4080C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:14:51 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id y22so312598vsd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GMFn2cur8SrV9Ee+5W2clOCMlH7QL1pNxnb7A8dZKjw=;
+        b=A5COx/a+h7x4MQF8S9NQjNMRt8dPwnpfYxqd95vH8GWQ6peJI62TrZsTjXBHNUG81v
+         nYyXLTazc2OgijovXo2q2L35DuIYru3iLaYkWn2ZMbwp55GvzbEXCjHRg5fppYay3Uy3
+         YdhqnD/nxVDjNMXDoe7chzVxYiqUVyfhYg04RfOxrI4QzVFfvIvqg+oTdPojVEF2mDya
+         Mvkxh5lYIlYc4KP8pYSk8NGHqJhTrPhFVG3+eg7RtXvmVE5neAJ6L9OK0b0RCN+jXYSK
+         UFI07OLDVxDVQfGLB6IdtXvegDKad+fSljNFy47oyQ8SwA0roWyR05w7At+QktKv1Nh5
+         fMEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GMFn2cur8SrV9Ee+5W2clOCMlH7QL1pNxnb7A8dZKjw=;
+        b=jOuAD5UxM3a/JoHr3nwRCmS623U2rnbtdr4DqSDcf/GSG37xNZ781Wsm4WuH14RwCr
+         k5lrIir/hovk288WBfKjZtNCwtgwkr1K8UUDO7wfKKybJFqS3O3M1Kbz5hbpGnyD2OAp
+         a8aVkWiMEprb+rkjvUruq126X7NLg67RfM4S67D8RYyQPfYf3jlWthMxelLzL+Q4Zuwv
+         55kSbuV3L9VZtDRRmdM8h2knKUGqw7MFXXPIsD/L9ckzbLRBYMJzfu/AmbMGIum9uPyD
+         Qm+//VUdbEB0u7O5f+KmpZMpgOAnB2N04JTI+ZmtSx0pAm+T13JZrdrus/RpcbJ35HHF
+         s0mA==
+X-Gm-Message-State: AOAM5302Eef6IRQgQ42EvoW/XD0ceSJ8UQ+cgFLwXlDZ2P96HHEUfJ4n
+        kGT3fsZGp0ZRdPivErVCTR2Z4V38PVdATGadPqXfPY4+dV7gaw==
+X-Google-Smtp-Source: ABdhPJxIvSz3yw05lnDAjMh107swAa9Dw9VrtEFVTDWNxK0fvLlh+evM9UjPlnNMToaujh4Lit6LGBJ4MnPe5Nbvo3Y=
+X-Received: by 2002:a67:dd04:: with SMTP id y4mr2164981vsj.55.1619165691222;
+ Fri, 23 Apr 2021 01:14:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210420134641.57343-1-avri.altman@wdc.com> <20210420134641.57343-2-avri.altman@wdc.com>
+In-Reply-To: <20210420134641.57343-2-avri.altman@wdc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 23 Apr 2021 10:14:15 +0200
+Message-ID: <CAPDyKFoejcQz2jPgqzc+2W+mfaXOatGCdd8CdNYsk4FsUEb=7Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] mmc: block: Issue flush only if allowed
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Peter <bpeter@lytx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, 20 Apr 2021 at 15:46, Avri Altman <avri.altman@wdc.com> wrote:
+>
+> The cache may be flushed to the nonvolatile storage by writing to
+> FLUSH_CACHE byte (EXT_CSD byte [32]). When in command queueing mode, the
+> cache may be flushed by issuing a CMDQ_TASK_ DEV_MGMT (CMD48) with a
+> FLUSH_CACHE op-code.  Either way, verify that The cache function is
+> turned ON before doing so.
+>
+> fixes: 1e8e55b67030 (mmc: block: Add CQE support)
+>
+> Reported-by: Brendan Peter <bpeter@lytx.com>
+> Tested-by: Brendan Peter <bpeter@lytx.com>
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/mmc/core/block.c   | 9 +++++++++
+>  drivers/mmc/core/mmc.c     | 2 +-
+>  drivers/mmc/core/mmc_ops.h | 5 +++++
+>  3 files changed, 15 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 8bfd4d95b386..24e1ecbdd510 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2186,6 +2186,11 @@ static int mmc_blk_wait_for_idle(struct mmc_queue *mq, struct mmc_host *host)
+>         return mmc_blk_rw_wait(mq, NULL);
+>  }
+>
+> +static bool mmc_blk_cache_disabled(struct mmc_card *card)
+> +{
+> +       return mmc_card_mmc(card) && !mmc_flush_allowed(card);
 
-The variable line being initialized with a value that is never read
-and it is being updated later with a new value. The initialization is
-redundant and can be removed.
+It's these kinds of use with mmc_card_mmc() that I think we need to
+strive towards avoiding when going forward.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
----
+For example, newer SD cards support both cache and command queueing
+nowadays, which means that we need to make the code in the mmc block
+layer more agnostic. To do that, I think we should use the bus_ops
+callbacks. That's why I started out by adding the ->flush_cache()
+callback in the other patch.
 
-V2: fix $SUBJECT
+> +}
+> +
+>  enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+>  {
+>         struct mmc_blk_data *md = mq->blkdata;
+> @@ -2225,6 +2230,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+>         case MMC_ISSUE_ASYNC:
+>                 switch (req_op(req)) {
+>                 case REQ_OP_FLUSH:
+> +                       if (mmc_blk_cache_disabled(mq->card)) {
 
----
- drivers/tty/serial/qcom_geni_serial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I suggest that you add a new bus ops callback ->cache_enabled() and
+implement it for the mmc bus type.
 
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 99375d99f6fa..c5f2a4fa2bb1 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -1338,7 +1338,7 @@ static const struct uart_ops qcom_geni_uart_pops = {
- static int qcom_geni_serial_probe(struct platform_device *pdev)
- {
- 	int ret = 0;
--	int line = -1;
-+	int line;
- 	struct qcom_geni_serial_port *port;
- 	struct uart_port *uport;
- 	struct resource *res;
--- 
-2.30.2
+From the mmc block layer point of view, it would then mean that if the
+callback isn't implemented, the cache ctrl isn't supported (which
+would be the case for SD then)
 
+> +                               blk_mq_end_request(req, BLK_STS_OK);
+> +                               return MMC_REQ_FINISHED;
+> +                       }
+>                         ret = mmc_blk_cqe_issue_flush(mq, req);
+
+>                         break;
+>                 case REQ_OP_READ:
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> index 9ad4aa537867..e3da62ffcb5e 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -2037,7 +2037,7 @@ static int _mmc_flush_cache(struct mmc_card *card)
+>  {
+>         int err = 0;
+>
+> -       if (card->ext_csd.cache_size > 0 && card->ext_csd.cache_ctrl & 1) {
+> +       if (mmc_flush_allowed(card)) {
+>                 err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+>                                  EXT_CSD_FLUSH_CACHE, 1,
+>                                  CACHE_FLUSH_TIMEOUT_MS);
+> diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+> index 5782fdf4e8e9..2682bf66708a 100644
+> --- a/drivers/mmc/core/mmc_ops.h
+> +++ b/drivers/mmc/core/mmc_ops.h
+> @@ -19,6 +19,11 @@ enum mmc_busy_cmd {
+>  struct mmc_host;
+>  struct mmc_card;
+>
+> +static inline bool mmc_flush_allowed(struct mmc_card *card)
+> +{
+> +       return card->ext_csd.cache_size > 0 && card->ext_csd.cache_ctrl & 1;
+> +}
+> +
+>  int mmc_select_card(struct mmc_card *card);
+>  int mmc_deselect_cards(struct mmc_host *host);
+>  int mmc_set_dsr(struct mmc_host *host);
+> --
+> 2.25.1
+>
+
+Having said the above, we clearly want to tag $subject patch for
+stable kernels as well, which means we need a simple patch as
+possible.
+
+Clearly $subject patch should have come first, prior to my patch where
+I added the ->flush_cache() bus ops callback, as it messes things up.
+
+Therefore, I decided to rebase my next branch to drop the patch adding
+the ->flush_cache() bus ops (I will re-post the patch after we have
+got your changes in).
+
+Can you please re-base $subject patch and address my comments? My
+apologies for the mess!
+
+Kind regards
+Uffe
