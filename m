@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC93369848
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C65936984A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243421AbhDWR0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231966AbhDWR0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:26:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0852F613D5;
-        Fri, 23 Apr 2021 17:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619198764;
-        bh=6zMoHw/VBY/e8RJbI71N7/NWOr/2/DETkGuRnIBCHGw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QMXSl6LmbZW6/RHClQgaTkbPJg9eeYOfEe4e/xLY3c4NCLdYAvPBb7Fs5iNCcAkl+
-         +oiuqLdlRao/N2XUv3y9OKQdZz/iak900FRxmSlgrbDdS6hbKvmWZy8MOQF1I4OvyP
-         t+fHDdqJ1t0oJXtP9SEdz2k34R0RYIjLhDfhgv7Q5n+8+MeMpfeAA2er/fBH5v5QDN
-         6v013qZ2YSi0w3UmF3lxfgxNXDC4Ai29g08vWDN4i4dbC5B6lCEJmlCvKsPH3kolrV
-         2kyOrZCf/Ms0fP61MfLKD5O2jwKd0PWaBfQNWOHPPtHWCvZWmGDirMs46E5BNyswVe
-         uA/J++YWRXjJw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 02B12608FB;
-        Fri, 23 Apr 2021 17:26:04 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210423081638.16925-1-brgl@bgdev.pl>
-References: <20210423081638.16925-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210423081638.16925-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12
-X-PR-Tracked-Commit-Id: ddd8d94ca31e768c76cf8bfe34ba7b10136b3694
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 22c4e5bcd3cd7a798f1c6b4df646f75587813e72
-Message-Id: <161919876400.26356.3180382453638492872.pr-tracker-bot@kernel.org>
-Date:   Fri, 23 Apr 2021 17:26:04 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        id S231953AbhDWR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhDWR2b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:28:31 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC32C061574;
+        Fri, 23 Apr 2021 10:27:54 -0700 (PDT)
+Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:79a2:c598:7744:783a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 735381F43D84;
+        Fri, 23 Apr 2021 18:27:52 +0100 (BST)
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     dafna.hirschfeld@collabora.com, kernel@collabora.com,
+        dafna3@gmail.com, enric.balletbo@collabora.com,
+        tiffany.lin@mediatek.com, andrew-ct.chen@mediatek.com,
+        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
+        mchehab@kernel.org, matthias.bgg@gmail.com,
+        linux-media@vger.kernel.org
+Subject: [PATCH] media: mtk-vpu: on suspend, read/write regs only if vpu is running
+Date:   Fri, 23 Apr 2021 19:27:45 +0200
+Message-Id: <20210423172745.30092-1-dafna.hirschfeld@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Apr 2021 10:16:38 +0200:
+If the vpu is not running, we should not relay on VPU_IDLE_REG
+value. In this case, the suspend cb should only unprepare the
+clock. This fixes a system-wide suspend to ram failure:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12
+[  273.073363] PM: suspend entry (deep)
+[  273.410502] mtk-msdc 11230000.mmc: phase: [map:ffffffff] [maxlen:32] [final:10]
+[  273.455926] Filesystems sync: 0.378 seconds
+[  273.589707] Freezing user space processes ... (elapsed 0.003 seconds) done.
+[  273.600104] OOM killer disabled.
+[  273.603409] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  273.613361] mwifiex_sdio mmc2:0001:1: None of the WOWLAN triggers enabled
+[  274.784952] mtk_vpu 10020000.vpu: vpu idle timeout
+[  274.789764] PM: dpm_run_callback(): platform_pm_suspend+0x0/0x70 returns -5
+[  274.796740] mtk_vpu 10020000.vpu: PM: failed to suspend: error -5
+[  274.802842] PM: Some devices failed to suspend, or early wake event detected
+[  275.426489] OOM killer enabled.
+[  275.429718] Restarting tasks ...
+[  275.435765] done.
+[  275.447510] PM: suspend exit
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/22c4e5bcd3cd7a798f1c6b4df646f75587813e72
+Fixes: 1f565e263c3e ("media: mtk-vpu: VPU should be in idle state before system is suspended")
+Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+---
+ drivers/media/platform/mtk-vpu/mtk_vpu.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Thank you!
-
+diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+index 043894f7188c..f49f6d53a941 100644
+--- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
++++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+@@ -987,6 +987,12 @@ static int mtk_vpu_suspend(struct device *dev)
+ 		return ret;
+ 	}
+ 
++	if (!vpu_running(vpu)) {
++		vpu_clock_disable(vpu);
++		clk_unprepare(vpu->clk);
++		return 0;
++	}
++
+ 	mutex_lock(&vpu->vpu_mutex);
+ 	/* disable vpu timer interrupt */
+ 	vpu_cfg_writel(vpu, vpu_cfg_readl(vpu, VPU_INT_STATUS) | VPU_IDLE_STATE,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
