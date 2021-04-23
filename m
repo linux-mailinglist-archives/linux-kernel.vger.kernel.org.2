@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C223697BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1DD3697A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243511AbhDWRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
+        id S243430AbhDWRAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243310AbhDWRAZ (ORCPT
+        with ESMTP id S243282AbhDWRAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:00:25 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E6CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:45 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id kb13-20020a17090ae7cdb02901503d67f0beso4784935pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:45 -0700 (PDT)
+        Fri, 23 Apr 2021 13:00:23 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06199C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:46 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id u11so19771244pjr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xP5DIs1FkSE0BDkM2KIzYkHfQ0hdD3i5eW0X+nUNW+Y=;
-        b=Nui0pXvr5mJQMbnlzuYsHB8sZuXeWkPY3IJOWfaIzTzDi/nK7GX+qeRokQsNKy2fYL
-         j1y6mX12y+CQx8BOw57VkZYhCBu6XhRlhhbJYAlTfbuYaUlcixbob351UBwviRX9wNcv
-         xKZ6ARbbjmm25KQR9dd0/UTv4z2clW3SG0Ocs=
+        bh=pdcpo4UqRlWs4ocPfX4snuIEGMWz2iUneYKWicWu5Ps=;
+        b=UiXErXemW2Z1PCdM9rdxduLgZdKkZp2cJ5UTIOMhKS/ZBUmVIriOjKreGnp1xfCQs4
+         vE7OR5LEr7+0PS3EtSxsnORGB1XnMRLhtR/hwozuWTiDGTDzBVc+Z7heZxAXehNhWWu8
+         mitoDjp0bgrk9G2vLOxRD91XRxARy41wepVMg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xP5DIs1FkSE0BDkM2KIzYkHfQ0hdD3i5eW0X+nUNW+Y=;
-        b=nAKGHU6fqbdkoJaC2UjG/gafz6n7UmDQjGRmGHgSss6TaS+4+hP61BNSkzaC1d1egm
-         V5KoXi+bS9ilvjgIygOpepjR4cm2qho/RmB74yUQcEfhZXPjR4ibzVT08hLhYODv/CKX
-         J01ExPRtsctwNgEAMq75E2geDvtcOjB0E6mmJGXuOzl+9ASIN2/WJjU1VIxyf1O3KaBu
-         mqHJezli0fWd6grvubMDX29Kbijgs6rAJwnSA5Atm13xnMqJjHaJ9dgN0yh9AMN3Ydcu
-         BCKqSlehe5/VQgtLUPiihlsuxrEO8qZw9MpWGSJi/iwONtWwnv6OkIalBABDBSfc8pJm
-         ELPw==
-X-Gm-Message-State: AOAM531WsAOM1euC+Cu8YagKacQKTd2VUjCUkbgWHtiWpXoyfK2Rm5Hr
-        zIm3v3xko78dc0rcvpu++shIoQ==
-X-Google-Smtp-Source: ABdhPJxb8n3U3zZOiWMrXechOGFa6o/j6TcVWcBF+GRLB7Z3nK12l4CAlGd+Lw7zqpaW3ocWIOL1DQ==
-X-Received: by 2002:a17:90a:a395:: with SMTP id x21mr5425317pjp.95.1619197184632;
-        Fri, 23 Apr 2021 09:59:44 -0700 (PDT)
+        bh=pdcpo4UqRlWs4ocPfX4snuIEGMWz2iUneYKWicWu5Ps=;
+        b=smnZatWK8bpF9XDZ5TJIxKF8UmPNicLaKRb3t9hDit/8ZW0I5/EdEfuD+VLIi/6rbZ
+         2BMu69hur7Y6C4JiHCq64H8IBOs5xXJ5LP1j8bFvAUbYrfWL9iuVodf9rJneYDJHSM6k
+         JR6h0phKW5uxixXPmJlCr6NUjQ51GOAkhHVHZ93OQwAkdxT42s/700puQorrJ6GHpQYM
+         jAwZBNdssebxdgM1sauKXldKjRIayvaF9kmCklNKnw9as21GTcAKzM+rX5vUBoBMx6qN
+         EnR07b4oZLCIqFwk0jcbuXZieordRNDNFkLfrxAGkk6CbeYgRgxcpSuko2IaelE6zQ1D
+         //6Q==
+X-Gm-Message-State: AOAM533pWa2eiFhXqyMk4i+rT/PRoKo5pmYBfNDaV2LuOVkQusTO10x9
+        Pwh2sOFrGYqYpPIQpTn8AaBamg==
+X-Google-Smtp-Source: ABdhPJyAWKVmxvEi9reu/EoUqAW7KcB819hFWrr09EJVcKqxEtEvh/AuypvfPYDZ1yx6Fv3YxVpHEQ==
+X-Received: by 2002:a17:90b:344d:: with SMTP id lj13mr6661098pjb.44.1619197185610;
+        Fri, 23 Apr 2021 09:59:45 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6d86:663d:71f8:6a11])
-        by smtp.gmail.com with ESMTPSA id v8sm5123607pfm.128.2021.04.23.09.59.43
+        by smtp.gmail.com with ESMTPSA id v8sm5123607pfm.128.2021.04.23.09.59.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 09:59:44 -0700 (PDT)
+        Fri, 23 Apr 2021 09:59:45 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -66,9 +66,9 @@ Cc:     linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
         David Airlie <airlied@linux.ie>,
         Robert Foss <robert.foss@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 04/20] drm/bridge: ti-sn65dsi86: Use devm to do our runtime_disable
-Date:   Fri, 23 Apr 2021 09:58:50 -0700
-Message-Id: <20210423095743.v5.4.I1e627eb5f316c0cf6595b120e6e262f5bf890300@changeid>
+Subject: [PATCH v5 05/20] drm/bridge: ti-sn65dsi86: Clean debugfs code
+Date:   Fri, 23 Apr 2021 09:58:51 -0700
+Message-Id: <20210423095743.v5.5.I5fe072753290c6a77eda736ebd5778e17b7cb0fb@changeid>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 In-Reply-To: <20210423165906.2504169-1-dianders@chromium.org>
 References: <20210423165906.2504169-1-dianders@chromium.org>
@@ -78,64 +78,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no devm_runtime_enable(), but it's easy to use
-devm_add_action_or_reset() and means we don't need to worry about the
-disable in our remove() routine or in error paths.
-
-No functional changes intended by this change.
+Let's cleanup the debugfs code to:
+- Check for errors.
+- Use devm to manage freeing, which also means we don't need to store
+  a pointer in our structure.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
+Bjorn: I left off your tag on this patch since I made changes compared
+to v4. Can you re-add if it still looks OK? This is now ordered
+_after_ the pm_runtime patch so I believe the ordering problem you
+pointed out should be fixed as well?
 
 Changes in v5:
-- Reordered to debugfs change to avoid transient issue
+- Don't print debugfs creation errors.
+- Handle NULL from debugfs_create_dir() which is documented possible.
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 33 +++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 57574132e200..44d8395505f0 100644
+index 44d8395505f0..8aa36074aab9 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -1213,6 +1213,11 @@ static void ti_sn_bridge_parse_lanes(struct ti_sn65dsi86 *pdata,
- 	pdata->ln_polrs = ln_polrs;
+@@ -118,7 +118,6 @@
+  * @aux:          Our aux channel.
+  * @bridge:       Our bridge.
+  * @connector:    Our connector.
+- * @debugfs:      Used for managing our debugfs.
+  * @host_node:    Remote DSI node.
+  * @dsi:          Our MIPI DSI source.
+  * @edid:         Detected EDID of eDP panel.
+@@ -146,7 +145,6 @@ struct ti_sn65dsi86 {
+ 	struct drm_dp_aux		aux;
+ 	struct drm_bridge		bridge;
+ 	struct drm_connector		connector;
+-	struct dentry			*debugfs;
+ 	struct edid			*edid;
+ 	struct device_node		*host_node;
+ 	struct mipi_dsi_device		*dsi;
+@@ -245,18 +243,31 @@ static int status_show(struct seq_file *s, void *data)
+ 
+ DEFINE_SHOW_ATTRIBUTE(status);
+ 
+-static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
++static void ti_sn65dsi86_debugfs_remove(void *data)
+ {
+-	pdata->debugfs = debugfs_create_dir(dev_name(pdata->dev), NULL);
+-
+-	debugfs_create_file("status", 0600, pdata->debugfs, pdata,
+-			&status_fops);
++	debugfs_remove_recursive(data);
  }
  
-+static void ti_sn65dsi86_runtime_disable(void *data)
-+{
-+	pm_runtime_disable(data);
-+}
-+
- static int ti_sn65dsi86_probe(struct i2c_client *client,
- 			      const struct i2c_device_id *id)
+-static void ti_sn65dsi86_debugfs_remove(struct ti_sn65dsi86 *pdata)
++static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
  {
-@@ -1272,12 +1277,13 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
- 		return ret;
- 
- 	pm_runtime_enable(pdata->dev);
-+	ret = devm_add_action_or_reset(pdata->dev, ti_sn65dsi86_runtime_disable, pdata->dev);
+-	debugfs_remove_recursive(pdata->debugfs);
+-	pdata->debugfs = NULL;
++	struct device *dev = pdata->dev;
++	struct dentry *debugfs;
++	int ret;
++
++	debugfs = debugfs_create_dir(dev_name(dev), NULL);
++
++	/*
++	 * We might get an error back if debugfs wasn't enabled in the kernel
++	 * so let's just silently return upon failure.
++	 */
++	if (IS_ERR_OR_NULL(debugfs))
++		return;
++
++	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_debugfs_remove, debugfs);
 +	if (ret)
-+		return ret;
++		return;
++
++	debugfs_create_file("status", 0600, debugfs, pdata, &status_fops);
+ }
  
- 	ret = ti_sn_setup_gpio_controller(pdata);
--	if (ret) {
--		pm_runtime_disable(pdata->dev);
-+	if (ret)
- 		return ret;
--	}
+ /* Connector funcs */
+@@ -1316,8 +1327,6 @@ static int ti_sn65dsi86_remove(struct i2c_client *client)
  
- 	i2c_set_clientdata(client, pdata);
+ 	kfree(pdata->edid);
  
-@@ -1314,8 +1320,6 @@ static int ti_sn65dsi86_remove(struct i2c_client *client)
- 
+-	ti_sn65dsi86_debugfs_remove(pdata);
+-
  	drm_bridge_remove(&pdata->bridge);
  
--	pm_runtime_disable(pdata->dev);
--
  	of_node_put(pdata->host_node);
- 
- 	return 0;
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
