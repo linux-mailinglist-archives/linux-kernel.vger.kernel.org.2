@@ -2,197 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8646C36975C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC48F369760
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243068AbhDWQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:48:16 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:60178 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231339AbhDWQsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:48:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619196438; bh=z3leCzf2X/tNuwgTzoeUqyr4wu750Vn5tcozSBKQw2M=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=YeZAievs9z/N31xFQx4CEtDiCYvOITJ10X4XHcITabIwPblyly4wKliC1/tCGHTpl
-         bq3OsVsofqP4pvzVQ+lbB4WHn9CB7Z0+IbGIuF6urdt6teLjqCWiqBQm3eZrY4Ggbw
-         RI9BVIn3jNqizRUemqcIGg1exs/Y7f+O0Akru0DM=
-Received: by 192.168.90.13 [192.168.90.13] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Fri, 23 Apr 2021 18:47:18 +0200 (CEST)
-X-EA-Auth: 6Gt86bPbKxbgD+EgdGLwnZpdYOhJNl/my9pdtr18tNlTJ9PLiiWrncfF6hR9Byfr2xz3lnGrxbEJonfohBIOoamlupv1DGjy
-Date:   Fri, 23 Apr 2021 22:17:12 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
-Message-ID: <20210423164712.GA252852@localhost>
-References: <20210422103037.GA239298@localhost>
- <bcfdf67a-37df-335e-9367-75a46496d04b@xs4all.nl>
+        id S243207AbhDWQsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243109AbhDWQsY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 12:48:24 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FD9C061574;
+        Fri, 23 Apr 2021 09:47:47 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id l22so49016409ljc.9;
+        Fri, 23 Apr 2021 09:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z9CSkWjoaT/hQ88KgcDlGnLSBzYbOvKna9ZhP8lUZlE=;
+        b=hh2gs7JpCs90IkiY1rJczvQ4E//glxdSIg/kg+tq2pkIs4RN3xiMFPZ+TMAuGELAyM
+         57ls2e8+VzwclzTEv4xYxrB0/CnzL0unkwFIs6KTd7ECdG/7eJ4fIWeg9SpFKuOx4vB0
+         TWgV+nXk0XrtEuuLhwu4Crrf++Cl/7ERHNZikP8jfpNKX8KmZiqxSKRoDyZULJY/yUmZ
+         FnD/a86WVXqJ/zLNyTEgZoQKrUfPbaIywZuGhuwOac9YNZCANo+KH91Vm5AAoWBdaugE
+         LgidWvZ866PrB9S+uBJLpd8XnFtPvCC7yywctkJxX1gs4MWHhrmK/kN7ZyvnEFdqRuce
+         8fKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z9CSkWjoaT/hQ88KgcDlGnLSBzYbOvKna9ZhP8lUZlE=;
+        b=Cg7GTGJrPJNDtDXjNP5saJ0H5QsShwQI/t1triNCOHaRU1Do1D/izQsTRb05TD033N
+         kP/ZDWpDDQmOAwPf3UuXVr/3Wu9k2ieZ3Fr1fhyxBYOxY8WmUnoW5CAukfnJslCrEmBb
+         Hh0Bg6Ss1DG0KpwHO5NvpzuYG4UJ+ed4J6kkmwT7PK2Md/SzKSYSLpXCWLXPMFGEh1b9
+         jj9NU2GJQQ7kHgLQA2YOuF3O4jwrdhVlOVmzFGzQLiyWVorAHWqNTTZ2OIuODJHShX/T
+         mdA6A9dMtv8Y4TfwGdTPH0frHLSX+ciR/5PH6Xc5SCOIhppo0aFPFlQYHApmL7nwiDrg
+         rz7w==
+X-Gm-Message-State: AOAM531O8xdyOQe0gGjBpq/QWx9KZGwXfqJqXj7elHYxmQ8W2iKdU65s
+        tZA7hV+Qh88TzOOqoTAYvWuuRIqTURDesvQI1de7Rh6Z
+X-Google-Smtp-Source: ABdhPJxpbgAqS1GibhcllwDT+1U4zjY+5kMeemf9VlkANhkfYipY7NLqbF5yJgJW4JdQkixwi8+KQjlNOUQR7YAdedk=
+X-Received: by 2002:a2e:6c0d:: with SMTP id h13mr3226834ljc.486.1619196465904;
+ Fri, 23 Apr 2021 09:47:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bcfdf67a-37df-335e-9367-75a46496d04b@xs4all.nl>
+References: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+ <7ecb85e6-410b-65bb-a042-74045ee17c3f@iogearbox.net> <93957f3e-2274-c389-64a4-235ed8a228bf@linux.alibaba.com>
+In-Reply-To: <93957f3e-2274-c389-64a4-235ed8a228bf@linux.alibaba.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 23 Apr 2021 09:47:34 -0700
+Message-ID: <CAADnVQJoJW9GWk4guqzHQkDPD4RWoh-puVhnfW0LBPT_N6-4HA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+To:     Abaci Robot <abaci@linux.alibaba.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:14:57AM +0200, Hans Verkuil wrote:
-> On 22/04/2021 12:30, Deepak R Varma wrote:
-> > It is recommended to use driver model diagnostic macros dev_*() instead
-> > of pr_*() since the former ensures that the log messages are always
-> > associated with the corresponding device and driver.
-> > 
-> > Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > ---
-> > 
-> > Note: There are few more pr_into() calls that I have not replaced since
-> > they are very basic (entry and exit) and temporary. They can be removed 
-> > if the APIs are fully tested. See this example:
-> > 	pr_info("%s S\n", __func__);
-> > 
-> > Let me know if I should remove them and resubmit this patch.
-> > 
-> > 
-> >  .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
-> >  1 file changed, 15 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > index 7e4e123fdb52..27153ec6f65e 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > @@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  	/* pixel clock calculattion */
-> >  	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
-> >  	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
-> > -	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
-> > +	dev_info(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
-> 
-> Use dev_dbg instead to avoid spamming the kernel log with all these
-> messages. dev_dbg is perfectly fine for this, but not pr_info/dev_info.
+On Fri, Apr 23, 2021 at 4:57 AM Abaci Robot <abaci@linux.alibaba.com> wrote=
+:
+>
+> =E5=9C=A8 2021/4/23 =E4=B8=8A=E5=8D=885:56, Daniel Borkmann =E5=86=99=E9=
+=81=93:
+> > On 4/22/21 12:00 PM, Jiapeng Chong wrote:
+> >> Fix the following coccicheck warning:
+> >>
+> >> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
+> >> comparing pointer to 0.
+> >>
+> >> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> >> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> >
+> > How many more of those 'comparing pointer to 0' patches do you have?
+> > Right now we already merged the following with similar trivial pattern:
+> >
+> > - ebda107e5f222a086c83ddf6d1ab1da97dd15810
+> > - a9c80b03e586fd3819089fbd33c38fb65ad5e00c
+> > - 04ea63e34a2ee85cfd38578b3fc97b2d4c9dd573
+> >
+> > Given they don't really 'fix' anything, I would like to reduce such
+> > patch cleanup churn on the bpf tree. Please _consolidate_ all other
+> > such occurrences into a _single_ patch for BPF selftests, and resubmit.
+> >
+> > Thanks!
+> >
+> >> ---
+> >>   tools/testing/selftests/bpf/progs/fentry_test.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c
+> >> b/tools/testing/selftests/bpf/progs/fentry_test.c
+> >> index 52a550d..d4247d6 100644
+> >> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
+> >> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
+> >> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+> >>   SEC("fentry/bpf_fentry_test8")
+> >>   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+> >>   {
+> >> -    if (arg->a =3D=3D 0)
+> >> +    if (!arg->a)
+> >>           test8_result =3D 1;
+> >>       return 0;
+> >>   }
+> >>
+>
+> Hi,
+>
+> Thanks for your reply.
+>
+> TLDR:
+> 1. Now all this kind of warning in tools/testing/selftests/bpf/progs/
+> were reported and discussed except this one.
+> 2. We might not do scanning and check reports on
+> tools/testing/selftests/bpf/progs/ in the future,
 
-Hi Hans,
-Thank you for the feedback. I will make the improvement and resubmit v2.
-
-Regards,
-deepak.
-
-> 
-> Regards,
-> 
-> 	Hans
-> 
-> >  
-> >  	/* get integration time */
-> >  	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
-> > @@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  	if (ret)
-> >  		return ret;
-> >  	buf->crop_horizontal_start = val | (reg_val & 0xFF);
-> > -	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
-> > +	dev_info(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
-> >  
-> >  	/* Getting crop_vertical_start */
-> >  	ret =  gc0310_read_reg(client, GC0310_8BIT,
-> > @@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  	if (ret)
-> >  		return ret;
-> >  	buf->crop_vertical_start = val | (reg_val & 0xFF);
-> > -	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
-> > +	dev_info(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
-> >  
-> >  	/* Getting output_width */
-> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> > @@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  	if (ret)
-> >  		return ret;
-> >  	buf->output_width = val | (reg_val & 0xFF);
-> > -	pr_info("output_width=%d\n", buf->output_width);
-> > +	dev_info(&client->dev, "output_width=%d\n", buf->output_width);
-> >  
-> >  	/* Getting output_height */
-> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> > @@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  	if (ret)
-> >  		return ret;
-> >  	buf->output_height = val | (reg_val & 0xFF);
-> > -	pr_info("output_height=%d\n", buf->output_height);
-> > +	dev_info(&client->dev, "output_height=%d\n", buf->output_height);
-> >  
-> >  	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
-> >  	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
-> > -	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
-> > -	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
-> > +	dev_info(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
-> > +	dev_info(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
-> >  
-> >  	/* Getting line_length_pck */
-> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> > @@ -389,8 +389,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  		return ret;
-> >  	sh_delay = reg_val;
-> >  	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
-> > -	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
-> > -		sh_delay, buf->line_length_pck);
-> > +	dev_info(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
-> > +		 sh_delay, buf->line_length_pck);
-> >  
-> >  	/* Getting frame_length_lines */
-> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> > @@ -404,8 +404,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
-> >  		return ret;
-> >  	vert_blanking = val | (reg_val & 0xFF);
-> >  	buf->frame_length_lines = buf->output_height + vert_blanking;
-> > -	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
-> > -		buf->frame_length_lines);
-> > +	dev_info(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
-> > +		 buf->frame_length_lines);
-> >  
-> >  	buf->binning_factor_x = res->bin_factor_x ?
-> >  				res->bin_factor_x : 1;
-> > @@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
-> >  		dgain = gain / 2;
-> >  	}
-> >  
-> > -	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
-> > +	dev_info(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
-> >  
-> >  	/* set analog gain */
-> >  	ret = gc0310_write_reg(client, GC0310_8BIT,
-> > @@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
-> >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
-> >  	int ret;
-> >  
-> > -	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
-> > +	dev_info(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
-> >  
-> >  	/* set exposure */
-> >  	ret = gc0310_write_reg(client, GC0310_8BIT,
-> > @@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
-> >  		return -ENODEV;
-> >  	}
-> >  	id = ((((u16)high) << 8) | (u16)low);
-> > -	pr_info("sensor ID = 0x%x\n", id);
-> > +	dev_info(&client->dev, "sensor ID = 0x%x\n", id);
-> >  
-> >  	if (id != GC0310_ID) {
-> >  		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
-> > @@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
-> >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
-> >  	int ret;
-> >  
-> > -	pr_info("%s S enable=%d\n", __func__, enable);
-> > +	dev_info(&client->dev, "%s S enable=%d\n", __func__, enable);
-> >  	mutex_lock(&dev->input_lock);
-> >  
-> >  	if (enable) {
-> > 
-> 
-
-
+please stop such scans in selftests/bpf.
+I don't see any value in such patches.
