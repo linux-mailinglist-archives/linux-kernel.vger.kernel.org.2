@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3A93692F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9583692FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242569AbhDWNWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S230100AbhDWNZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhDWNWl (ORCPT
+        with ESMTP id S229456AbhDWNZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:22:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D795C061574;
-        Fri, 23 Apr 2021 06:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tpTBKNV5/izxL1k5IlHIzvsRqg3svyXWJhuDCpXyO+A=; b=MHQet0QejLNMAzlp2D84sdDlE7
-        z8qe6n1GFkCB/BkNAYLvOt0ujj5k2q82CxRvH1HHwkRVSdTwGJD3uHa4Lt0tiB+mRGBHqQbPx8bW9
-        ZNRJxDU7mhF4xnEi5x3I+KV3s9Mr0E0piUmhIs+p6kzLRFpctHSgp9etgpFHI9XP090GBkHciinEw
-        FBX61IUTaDPEG307xfYRyg1uYVY41AP0wjIelDatlxEVOOCn6V3TdpL6ei6r9TLkxQgPHcLz9Hlh4
-        6PwP2aXWA/DTWTEK/zgquxOOan2HQNRD1sOoGm6hhQIjBOJ3PcCc3KmCw85PYI0WWH0/slyrxhcXE
-        esCUXA9w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZvkD-001tIH-3X; Fri, 23 Apr 2021 13:21:27 +0000
-Date:   Fri, 23 Apr 2021 14:21:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] scripts: kernel-doc: reduce repeated regex expressions
- into variables
-Message-ID: <20210423132117.GB235567@casper.infradead.org>
-References: <20210422191839.6119-1-yashsri421@gmail.com>
+        Fri, 23 Apr 2021 09:25:10 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F62C061574;
+        Fri, 23 Apr 2021 06:24:30 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso1255963pjn.3;
+        Fri, 23 Apr 2021 06:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wicbX1JgvhArdJhR+hyR7jupbo+4izdh0id2xxwTkCM=;
+        b=hjw81NRhqRugQl2cfN12iBG1nJFp5NZV3e2Dz4vDVBjftb2lDIMV/38BIPh/69MqyP
+         j/h3ANwzhnZ/lWVcPqLAWfm+ZeAkrIeAOE34QjKvTGuwerDC9rKgye/ua+fbnF69sYzR
+         lho27abTjt5IpiYhBB5rbDXDa6KV3/or0OfAyn3CKPqOyrqg+4f0FwTG9aGBsq4kNno3
+         YrfMxvzKqmdlkNDDe35i0PMMOwBRt3WCAqSN5QZB2A1Yodq3LIwgMOTxDiwzcnhOR+eQ
+         PTDNfVDHaf1EGuqIIAT9bCdCY2WNVEIhzlXoJErehMJEPzekLa1zbwlg4ylQLkTO6j3o
+         kIsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wicbX1JgvhArdJhR+hyR7jupbo+4izdh0id2xxwTkCM=;
+        b=RIvWqm0CNYJi+76e1HIK6Jt7j4CTj37G3eOB84oIvs27LImDa16Ea6l3AoV+fYRFmo
+         RAlzypCWVAm4ZxwkChFa4StlCn8PuBauok3bouMK9ssnIjRHL3H5nj/3j8o9ZUjsTC4m
+         Nz2Yb88aalur68d7OVMCPOQyKsyTxAOoXzJcgv72pqy19FgMhBujGPeGs4nz4U0rw7zO
+         mLgpCsgJ8TFPmzI/kCWgfDWdGfhX8s6qpAIdohGH/qrcnS0DtOSKZR65GzN+JRPbwCLE
+         yD7vXF6vj+uEtXP8rC1RSSXtPhep6Sh6S7fcSFhBtO51wwMd7HLs0b6jwPnSm/DZ+NqM
+         i5yw==
+X-Gm-Message-State: AOAM532MHN7N++/+c5aXN2F0m9uePOKpmyL/xoe18H1UQWrnmeHFtey+
+        Tbbx6gk+At8K5wRBZHAE6rjDROjLpS5xhspbb1A=
+X-Google-Smtp-Source: ABdhPJyq5d4UiJ6syt8c/ck9U703nGEJa9zcEdL/HPP1h99ITbxFZVJoIvPy21EfrZ3i8vJuPfBARA==
+X-Received: by 2002:a17:90a:4b8c:: with SMTP id i12mr5796811pjh.66.1619184269789;
+        Fri, 23 Apr 2021 06:24:29 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id g16sm5092880pfu.45.2021.04.23.06.24.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 06:24:29 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] usb: gadget: function: fix typo in f_hid.c
+Date:   Fri, 23 Apr 2021 21:24:17 +0800
+Message-Id: <20210423132417.4385-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422191839.6119-1-yashsri421@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:48:39AM +0530, Aditya Srivastava wrote:
-> +my $pointer_function = qr{([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)};
+Replace `me` with `be`
 
-Is that a pointer-to-function?  Or as people who write C usually call it,
-a function pointer?  Wouldn't it be better to call it $function_pointer?
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+---
+ drivers/usb/gadget/function/f_hid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> @@ -1210,8 +1211,14 @@ sub dump_struct($$) {
->      my $decl_type;
->      my $members;
->      my $type = qr{struct|union};
-> +    my $packed = qr{__packed};
-> +    my $aligned = qr{__aligned};
-> +    my $cacheline_aligned_in_smp = qr{____cacheline_aligned_in_smp};
-> +    my $cacheline_aligned = qr{____cacheline_aligned};
-
-I don't think those four definitions actually simplify anything.
-
-> +    my $attribute = qr{__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)}i;
-
-... whereas this one definitely does.
-
-> -	$members =~ s/\s*__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)/ /gi;
-> -	$members =~ s/\s*__aligned\s*\([^;]*\)/ /gos;
-> -	$members =~ s/\s*__packed\s*/ /gos;
-> +	$members =~ s/\s*$attribute/ /gi;
-> +	$members =~ s/\s*$aligned\s*\([^;]*\)/ /gos;
-
-Maybe put the \s*\([^;]*\) into $aligned?  Then it becomes a useful
-abstraction.
-
-> -    } elsif ($prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
-> -	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
-> -	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/)  {
-> +    } elsif ($prototype =~ m/^()($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^(\w+)\s+($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^(\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^(\w+\s+\w+)\s+($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
-> +	$prototype =~ m/^()($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+)\s+($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-> +	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*($name)\s*$prototype_end2/)  {
-
-This is probably the best patch I've seen so far this year.
-
-Now, can we go further?  For example:
-	$prototype_end = $prototype_end1|$prototype_end2
-That would let us cut the number of lines here in half.
-
-Can we create a definition for a variable number of \w and \s and '*'
-in the return type?  In fact, can we define a regex that matches a type?
-So this would become:
-
-> +    } elsif ($prototype =~ m/^($type)\s*($name)\s*$prototype_end/) {
+diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
+index 1125f4715830..0c964be58406 100644
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -1117,7 +1117,7 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
+ 	hidg->func.setup   = hidg_setup;
+ 	hidg->func.free_func = hidg_free;
+ 
+-	/* this could me made configurable at some point */
++	/* this could be made configurable at some point */
+ 	hidg->qlen	   = 4;
+ 
+ 	return &hidg->func;
+-- 
+2.25.1
 
