@@ -2,90 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A24E369252
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A7B36924F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242502AbhDWMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhDWMmu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:42:50 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C47C06174A;
-        Fri, 23 Apr 2021 05:42:12 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id w3so73743580ejc.4;
-        Fri, 23 Apr 2021 05:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Cigm8FoAQJCFR8BBSxQb1qtaSNBp4pLV8SFaN1EkbqQ=;
-        b=C99A1yH9iuOPA7YDilWOAH5Eqbrw3NHSmFOxiJSMYi5w4kJo5XTFSmijgXxPMvaT/g
-         aQiNDwBil9E3asW3C2gTw/dl4sK1Wku/ufrK6xY3Io9hzQVvk8yRrFIqTPhkgh8biJJ+
-         esfve6ZPYHvyIJolS41HMXF6LVRQsv4WH/CzjBnQG0XKY31lJBfHg/OSxGz7m6/dHdcc
-         6RxZ2SIWTu493LFovRgcqfEY2WmTSNpmcFpmkk7qAvpNPwCqvaF96WM86t4SUpS+1WkM
-         OdD8Sv2Cges8w47SyAm+1NOpHnd6YAjr+IH/eJ/sFnvrrX4G9a8y59NAJPr51Z/rYj85
-         uSLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Cigm8FoAQJCFR8BBSxQb1qtaSNBp4pLV8SFaN1EkbqQ=;
-        b=DLd4RdKLd/2B7GdwXOP9AWRCXqKDUiCC9LcwfiwV5Q5eX54QAjce3j6v+4Cupn7yli
-         b3Sab5DO47e/LxF3GaRCsuc2cvSsiL1DkEuvcBeEi9vwbgrtJ23HCvdTPI5SDoQpMKd0
-         7GdM5INhpk0AbQbjlj+t6DnJ0urbDCOGl0zvawag3F8/XYGDR/HZ4hknRNbghCyth469
-         cghXO29chdO5rzM3wLqPMhJeuHZ14mvYIBeKDmB17fAnNg+jDCrJd4yP+L3NhZPQnKyR
-         cqThKTr2Mn8Nx+wy3s2GwwI/dFz4AsaQexSfSUa/bMDBJPkmKVRQLZrpF0LCmrQQJGmZ
-         W+8Q==
-X-Gm-Message-State: AOAM533kxznp6kFOe3ykx+J+T1qIVpnTkiR0Cer/rAkoagUpcy9XTdqL
-        lj3UuatWp/I1LX5w0GGRyQkIH2Bj+pE1bCWE
-X-Google-Smtp-Source: ABdhPJxEVyBDl9SrHFwOI9XmiRaLeOLGTbuurEQaw23ba78UH7qsNOzcWob/nfgJzAn2GOknA3DBng==
-X-Received: by 2002:a17:906:f2c8:: with SMTP id gz8mr4110139ejb.242.1619181731477;
-        Fri, 23 Apr 2021 05:42:11 -0700 (PDT)
-Received: from localhost.localdomain ([102.156.210.94])
-        by smtp.gmail.com with ESMTPSA id lb18sm3894116ejc.6.2021.04.23.05.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 05:42:11 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH-next] fs/btrfs: Fix uninitialized variable
-Date:   Fri, 23 Apr 2021 13:42:01 +0100
-Message-Id: <20210423124201.11262-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S242373AbhDWMmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:42:47 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37902 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhDWMmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:42:45 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lZv8H-000eQR-55; Fri, 23 Apr 2021 14:42:05 +0200
+Date:   Fri, 23 Apr 2021 14:42:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/14] drivers: net: dsa: qca8k: add support for qca8327
+ switch
+Message-ID: <YILAnViiXnMdCJNv@lunn.ch>
+References: <20210423014741.11858-1-ansuelsmth@gmail.com>
+ <20210423014741.11858-6-ansuelsmth@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423014741.11858-6-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'zone' is uninitialized which
-introduce some build warning.
+> @@ -1467,11 +1468,16 @@ qca8k_sw_probe(struct mdio_device *mdiodev)
+>  		gpiod_set_value_cansleep(priv->reset_gpio, 0);
+>  	}
+>  
+> +	/* get the switches ID from the compatible */
+> +	data = of_device_get_match_data(&mdiodev->dev);
+> +	if (!data)
+> +		return -ENODEV;
+> +
+>  	/* read the switches ID register */
+>  	id = qca8k_read(priv, QCA8K_REG_MASK_CTRL);
+>  	id >>= QCA8K_MASK_CTRL_ID_S;
+>  	id &= QCA8K_MASK_CTRL_ID_M;
+> -	if (id != QCA8K_ID_QCA8337)
+> +	if (id != data->id)
+>  		return -ENODEV;
 
-It is not always set or overwritten within
-the function. So explicitly initialize it.
+It is useful to print an error message here: Found X, expected
+Y. Gives the DT writer an idea what they did wrong.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
- fs/btrfs/zoned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 432509f4b3ac..42f99b25127f 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -136,7 +136,7 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
-  */
- static inline u32 sb_zone_number(int shift, int mirror)
- {
--	u64 zone;
-+	u64 zone = 0;
- 
- 	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
- 	switch (mirror) {
-
-base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
--- 
-2.17.1
-
+   Andrew
