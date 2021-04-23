@@ -2,50 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF29369808
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1830336980F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243258AbhDWRMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48300 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhDWRMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:12:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B451613CB;
-        Fri, 23 Apr 2021 17:11:49 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: Show three registers per line
-Date:   Fri, 23 Apr 2021 18:11:46 +0100
-Message-Id: <161919777114.6013.3738864758201386208.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210420172245.3679077-1-willy@infradead.org>
-References: <20210420172245.3679077-1-willy@infradead.org>
+        id S243184AbhDWRO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:14:26 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:11197 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhDWROY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:14:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1619198028; x=1650734028;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pboT/kDc5xJQjQGNQQF1NQ1YOHf2UntvUl8huRCydEo=;
+  b=qkzrAXItW9X8+wnjMZMmTxxi94hZ8HdU7kSsGQ+t99pwhLSN+GXxDE5e
+   3ArojBLJOP8pau9x/ogStLmhzCw6Mqj3Dc6cnhSEy/KNeXCg/AwEqIA5N
+   jSvzSi4u5r7ZeWXZbA0gxfG2yBPf+JkyAZgabqpF+y3qLDnWSr2i+P0fu
+   eBoacoXXIPtZ7Ij1E32CRdmwgD525QjPMdXH+91+9VSygCM1O52nKzotw
+   0ZoG87z9/y+0H9mW6CS+hSRWQzCcvDqslyXKqfgYn/rj55ChUqSMv1uJd
+   YMak+PKg7efzBWzgzYB0F5xfkPbzkQ2Kv52SfKDN4S29TzvrxvwMmu+Fx
+   g==;
+IronPort-SDR: QqzZ8qBGFZVNzXyKqIC9SolqTBwxHE8E3gmN07EDLb+TLUNsg/jDFszieIv4XL5DhA4rm3Ue9u
+ nKQuhXNtqZhQzt5bTJ0bKAgezs8kucDN/+HOSHxSoV2UFM1Az9m1ToVCnftynFaW3WW8QQMm9i
+ sB/NyrEW9N1o+xU+1slBupMXhu4Ru6KhXhGrsZ/6lGYOOCc2rcpG2nYl2tpE65N8zXSrH+6xs9
+ yCPdmFHDHQe2o4Xd1SdelwgJA8pVSq6xWY1SN6i42BlNQ8DSDAqv3bLfVioCV/IVIVxi9hZYQp
+ K9s=
+X-IronPort-AV: E=Sophos;i="5.82,246,1613458800"; 
+   d="scan'208";a="52301924"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Apr 2021 10:13:46 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 23 Apr 2021 10:13:44 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 23 Apr 2021 10:13:37 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <nsaenz@kernel.org>,
+        <maxime@cerno.tech>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <khilman@kernel.org>,
+        <ulf.hansson@linaro.org>, <len.brown@intel.com>, <pavel@ucw.cz>,
+        <robh+dt@kernel.org>, <frowand.list@gmail.com>, <maz@kernel.org>,
+        <tglx@linutronix.de>, <saravanak@google.com>,
+        <geert@linux-m68k.org>, <nsaenzjulienne@suse.de>,
+        <linux@roeck-us.net>, <guillaume.tucker@collabora.com>
+CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <corbet@lwn.net>, <nicolas.ferre@microchip.com>,
+        <claudiu.beznea@microchip.com>, <linux-doc@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-acpi@vger.kernel.org>, <kernel-team@android.com>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH 0/2] clk: Do not register provider with a NULL dev->of_node 
+Date:   Fri, 23 Apr 2021 20:13:32 +0300
+Message-ID: <20210423171335.262316-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 18:22:45 +0100, Matthew Wilcox (Oracle) wrote:
-> Displaying two registers per line takes 15 lines.  That improves to just
-> 10 lines if we display three registers per line, which reduces the amount
-> of information lost when oopses are cut off.  It stays within 80 columns
-> and matches x86-64.
+This fixes a NULL pointer dereference that was revealed by
+commit 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
 
-Applied to arm64 (for-next/core), thanks!
+I chose to just return -ENODEV when a driver calls devm_of_clk_add_hw_provider()
+with a NULL dev->of_node, because it seems natural to return a failure when one
+asks for an _of_ function to do something, but by providing with a NULL of_node.
+Plus, it avoids some waste of memory, as the call to devres_alloc() will not
+take place.
 
-[1/1] arm64: Show three registers per line
-      https://git.kernel.org/arm64/c/0bca3ec846d7
+The opinions on how to handle this NULL pointer dereference were split, either
+by returning an error when one calls devm_of_clk_add_hw_provider() with a NULL
+dev->of_node, as I did, or by 
+return 0 in of_clk_add_hw_provider() when np == NULL and
+return 0 in of_clk_del_provider() when np == NULL.
+Let me know if you prefer the second approach.
+
+Compile tested only.
+
+Tudor Ambarus (2):
+  clk: Do not register provider with a NULL dev->of_node
+  clk: bcm: rpi: Do not call devm_of_clk_add_hw_provider with a NULL
+    dev->of_node
+
+ drivers/clk/bcm/clk-raspberrypi.c | 10 ++++++----
+ drivers/clk/clk.c                 | 12 +++++++-----
+ 2 files changed, 13 insertions(+), 9 deletions(-)
 
 -- 
-Catalin
+2.25.1
 
