@@ -2,240 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6648E368FEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFF7368FEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241822AbhDWJ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:56:29 -0400
-Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:33636 "EHLO
-        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbhDWJ41 (ORCPT
+        id S234535AbhDWJ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:59:36 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:5981 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhDWJ7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:56:27 -0400
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FRV6B5HcXz2Tdb;
-        Fri, 23 Apr 2021 11:55:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1619171746;
-        bh=CQLGBITPcURbn/+mYjBsa7GeWHDzDfJAEpyyNpMAAVU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=U49rOfLFvvuFKYWoiGEJgpFFhTRkKVh1Z3KE71AybsQksPfJ/m9BKHGdt34226kiG
-         povdlvhDHDYCUHVxKwaCfQjVry5d7UkLWGhYbDyQ9y5zmKdei2w9br+qVi4fQlYRLO
-         vWX+NqfBhAHhgH+J2i68zbjCc4mSGin50/30WHpM=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FRV6B54y1zTpmmy;
-        Fri, 23 Apr 2021 11:55:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oiqWVsDx0Tk5; Fri, 23 Apr 2021 11:55:45 +0200 (CEST)
-Received: from hpg3.u2up.net (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Fri, 23 Apr 2021 11:55:09 +0200 (CEST)
-Message-ID: <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Fri, 23 Apr 2021 11:55:09 +0200
-In-Reply-To: <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <YGx59PEq2Y015YdK@alley>
-         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
-         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
-         <YG24F9Kx+tjxhh8G@kroah.com>
-         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-         <YHQkeZVs3pmyie9e@kroah.com>
-         <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
-         <YHQ3Zy9gRdZsu77w@kroah.com>
-         <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
-         <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
-         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
-         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 23 Apr 2021 05:59:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619171939; x=1650707939;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=cXNC7uikYdwCUpELACGEwC1FHUvytv+1LulwpirWLME=;
+  b=TFLeAM/b9Fek+VCwknqpvLKGLF+zAjkKnr83lfE46uzdnfDWYvMW85MX
+   ln0iyYx4FzATVaxmcuKL8Fzg3Uw4DtFDZe/wd5YxGFM7f20IdLdk1d5tY
+   833XK7J/MVbLFNvDTd8BxAq3kUTiOv0sSjziZEMIAy72SEiwX1rCgKyYt
+   E=;
+X-IronPort-AV: E=Sophos;i="5.82,245,1613433600"; 
+   d="scan'208";a="103560581"
+Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 23 Apr 2021 09:58:50 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 51796A1CAC;
+        Fri, 23 Apr 2021 09:58:49 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 23 Apr 2021 09:58:49 +0000
+Received: from [10.95.82.45] (10.43.161.41) by EX13D20UWC001.ant.amazon.com
+ (10.43.162.244) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
+ 2021 09:58:34 +0000
+Message-ID: <ded8db53-0e58-654a-fff2-de536bcbc961@amazon.com>
+Date:   Fri, 23 Apr 2021 11:58:13 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0)
+ Gecko/20100101 Thunderbird/89.0
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+CC:     Evgeny Iakovlev <eyakovl@amazon.de>, Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210423090333.21910-1-sidcha@amazon.de>
+ <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
+ <213887af-78b8-03ad-b3f9-c2194cb27b13@redhat.com>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <213887af-78b8-03ad-b3f9-c2194cb27b13@redhat.com>
+X-Originating-IP: [10.43.161.41]
+X-ClientProxiedBy: EX13D31UWA004.ant.amazon.com (10.43.160.217) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 23.04.2021 (pet) ob 06:22 +0200 je Jiri Slaby napisal(a):
-> On 18. 04. 21, 13:16, Samo Pogačnik wrote:
-> > Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
-> > > syzbot is reporting hung task due to flood of
-> > > 
-> > >    tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
-> > >             port->count);
-> > > 
-> > > message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
-> > > decrementing port->count due to tty_hung_up_p() == true.
-> > > 
-> > > ----------
-> > > #include <sys/types.h>
-> > > #include <sys/stat.h>
-> > > #include <fcntl.h>
-> > > #include <sys/ioctl.h>
-> > > #include <unistd.h>
-> > > 
-> > > int main(int argc, char *argv[])
-> > > {
-> > > 	int i;
-> > > 	int fd[10];
-> > > 
-> > > 	for (i = 0; i < 10; i++)
-> > > 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
-> > > 	ioctl(fd[0], TIOCVHANGUP);
-> > > 	for (i = 0; i < 10; i++)
-> > > 		close(fd[i]);
-> > > 	close(open("/dev/ttyprintk", O_WRONLY));
-> > > 	return 0;
-> > > }
-> > > ----------
-> > > 
-> > > When TTY hangup happens, port->count needs to be reset via
-> > > "struct tty_operations"->hangup callback.
-> > > 
-> > > [1]
-> > > 
-https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-> > > 
-> > > Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com
-> > > >
-> > > Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com
-> > > >
-> > > Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-> > > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> > > Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
-> > > ---
-> > >   drivers/char/ttyprintk.c | 11 +++++++++++
-> > >   1 file changed, 11 insertions(+)
-> > > 
-> > > diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-> > > index 6a0059e508e3..93f5d11c830b 100644
-> > > --- a/drivers/char/ttyprintk.c
-> > > +++ b/drivers/char/ttyprintk.c
-> > > @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
-> > >   	return 0;
-> > >   }
-> > >   
-> > > +/*
-> > > + * TTY operations hangup function.
-> > > + */
-> > > +static void tpk_hangup(struct tty_struct *tty)
-> > > +{
-> > > +	struct ttyprintk_port *tpkp = tty->driver_data;
-> > > +
-> > > +	tty_port_hangup(&tpkp->port);
-> > > +}
-> > > +
-> > >   static const struct tty_operations ttyprintk_ops = {
-> > >   	.open = tpk_open,
-> > >   	.close = tpk_close,
-> > >   	.write = tpk_write,
-> > >   	.write_room = tpk_write_room,
-> > >   	.ioctl = tpk_ioctl,
-> > > +	.hangup = tpk_hangup,
-> > >   };
-> > >   
-> > >   static const struct tty_port_operations null_ops = { };
-> > 
-> > Using the supplied test code, i've tested the patch on my desktop running
-> > the
-> > 5.4 kernel. After applying the patch, the kernel warnings like "ttyprintk:
-> > tty_port_close_start: tty->count = 1 port count = 11" do not appear any
-> > more,
-> > when the test code is run.
-> > I think the patch is ok.
-> 
-> I wonder if the buffer shouldn't be flushed in hangup too? Or better, 
-> the flush moved from tty_ops->close to tty_port->ops->shutdown?
-> 
-> thanks,
-
-Good point. I tried the following additional change, which seems to do the
-trick. What do you think?
-
-thanks, Samo
----
- drivers/char/ttyprintk.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-index 93f5d11c8..420222a92 100644
---- a/drivers/char/ttyprintk.c
-+++ b/drivers/char/ttyprintk.c
-@@ -100,12 +100,6 @@ static int tpk_open(struct tty_struct *tty, struct file
-*filp)
- static void tpk_close(struct tty_struct *tty, struct file *filp)
- {
- 	struct ttyprintk_port *tpkp = tty->driver_data;
--	unsigned long flags;
--
--	spin_lock_irqsave(&tpkp->spinlock, flags);
--	/* flush tpk_printk buffer */
--	tpk_printk(NULL, 0);
--	spin_unlock_irqrestore(&tpkp->spinlock, flags);
- 
- 	tty_port_close(&tpkp->port, tty, filp);
- }
-@@ -168,6 +162,20 @@ static void tpk_hangup(struct tty_struct *tty)
- 	tty_port_hangup(&tpkp->port);
- }
- 
-+/*
-+ * TTY port operations shutdown function.
-+ */
-+static void tpk_port_shutdown(struct tty_port *tport)
-+{
-+	struct ttyprintk_port *tpkp =
-+		container_of(tport, struct ttyprintk_port, port);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&tpkp->spinlock, flags);
-+	tpk_flush();
-+	spin_unlock_irqrestore(&tpkp->spinlock, flags);
-+}
-+
- static const struct tty_operations ttyprintk_ops = {
- 	.open = tpk_open,
- 	.close = tpk_close,
-@@ -177,7 +185,9 @@ static const struct tty_operations ttyprintk_ops = {
- 	.hangup = tpk_hangup,
- };
- 
--static const struct tty_port_operations null_ops = { };
-+static const struct tty_port_operations tpk_port_ops = {
-+	.shutdown = tpk_port_shutdown,
-+};
- 
- static struct tty_driver *ttyprintk_driver;
- 
-@@ -195,7 +205,7 @@ static int __init ttyprintk_init(void)
- 		return PTR_ERR(ttyprintk_driver);
- 
- 	tty_port_init(&tpk_port.port);
--	tpk_port.port.ops = &null_ops;
-+	tpk_port.port.ops = &tpk_port_ops;
- 
- 	ttyprintk_driver->driver_name = "ttyprintk";
- 	ttyprintk_driver->name = "ttyprintk";
--- 
-2.17.1
-
-
-
-
+CgpPbiAyMy4wNC4yMSAxMTo1MCwgUGFvbG8gQm9uemluaSB3cm90ZToKPiBDQVVUSU9OOiBUaGlz
+IGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5v
+dCAKPiBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgY2FuIGNvbmZp
+cm0gdGhlIHNlbmRlciBhbmQgCj4ga25vdyB0aGVjb250ZW50IGlzIHNhZmUuCj4gCj4gCj4gCj4g
+T24gMjMvMDQvMjEgMTE6MjQsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+PiBJIGNhbiBzZWUgaG93
+IHRoYXQgbWF5IGdldCBpbnRlcmVzdGluZyBmb3Igb3RoZXIgb3ZlcmxheSBwYWdlcyBsYXRlciwK
+Pj4gYnV0IHRoaXMgb25lIGluIHBhcnRpY3VsYXIgaXMganVzdCBhbiBNU1Igd3JpdGUsIG5vPyBJ
+cyB0aGVyZSBhbnkgcmVhc29uCj4+IHdlIGNhbid0IGp1c3QgdXNlIHRoZSB1c2VyIHNwYWNlIE1T
+UiBoYW5kbGluZyBsb2dpYyBpbnN0ZWFkPwo+Pgo+PiBXaGF0J3MgbWlzc2luZyB0aGVuIGlzIGEg
+d2F5IHRvIHB1bGwgdGhlIGhjYWxsIHBhZ2UgY29udGVudHMgZnJvbSBLVk0uCj4+IEJ1dCBldmVu
+IHRoZXJlIEknbSBub3QgY29udmluY2VkIHRoYXQgS1ZNIHNob3VsZCBiZSB0aGUgcmVmZXJlbmNl
+IHBvaW50Cj4+IGZvciBpdHMgY29udGVudHMuIElzbid0IHVzZXIgc3BhY2UgaW4gYW4gYXMgZ29v
+ZCBwb3NpdGlvbiB0byBhc3NlbWJsZSBpdD8KPiAKPiBJbiB0aGVvcnkgdXNlcnNwYWNlIGRvZXNu
+J3Qga25vdyBob3cgS1ZNIHdpc2hlcyB0byBpbXBsZW1lbnQgdGhlCj4gaHlwZXJjYWxsIHBhZ2Us
+IGVzcGVjaWFsbHkgaWYgWGVuIGh5cGVyY2FsbHMgYXJlIGVuYWJsZWQgYXMgd2VsbC4KCkknbSBu
+b3Qgc3VyZSBJIGFncmVlIHdpdGggdGhhdCBzZW50aW1lbnQgOikuIFVzZXIgc3BhY2UgaXMgdGhl
+IG9uZSB0aGF0IApzZXRzIHRoZSB4ZW4gY29tcGF0IG1vZGUuIEFsbCB3ZSBuZWVkIHRvIGRvIGlz
+IGRlY2xhcmUgdGhlIE9SaW5nIGFzIHBhcnQgCm9mIHRoZSBLVk0gQUJJLiBXaGljaCB3ZSBlZmZl
+Y3RpdmVseSBhcmUgZG9pbmcgYWxyZWFkeSwgYmVjYXVzZSBpdCdzIApwYXJ0IG9mIHRoZSBBQkkg
+dG8gdGhlIGd1ZXN0LCBubz8KCj4gCj4gQnV0IHVzZXJzcGFjZSBoYXMgdHdvIHBsYXVzaWJsZSB3
+YXlzIHRvIGdldCB0aGUgcGFnZSBjb250ZW50czoKPiAKPiAxKSBhZGQgYSBpb2N0bCB0byB3cml0
+ZSB0aGUgaHlwZXJjYWxsIHBhZ2UgY29udGVudHMgdG8gYW4gYXJiaXRyYXJ5Cj4gdXNlcnNwYWNl
+IGFkZHJlc3MKPiAKPiAyKSBhZnRlciB1c2Vyc3BhY2UgdXBkYXRlcyB0aGUgbWVtc2xvdHMgdG8g
+YWRkIHRoZSBvdmVybGF5IHBhZ2UgYXQgdGhlCj4gcmlnaHQgcGxhY2UsIHVzZSBLVk1fU0VUX01T
+UiBmcm9tIHVzZXJzcGFjZSAod2hpY2ggd29uJ3QgYmUgZmlsdGVyZWQKPiBiZWNhdXNlIGl0J3Mg
+aG9zdCBpbml0aWF0ZWQpCj4gCj4gVGhlIHNlY29uZCBoYXMgdGhlIGFkdmFudGFnZSBvZiBub3Qg
+bmVlZGluZyBhbnkgbmV3IGNvZGUgYXQgYWxsLCBidXQKPiBpdCdzIGEgYml0IG1vcmUgdWdseS4K
+ClRoZSBtb3JlIG9mIGFsbCBvZiB0aGF0IGh5cGVyLXYgY29kZSB3ZSBjYW4gaGF2ZSBsaXZlIGlu
+IHVzZXIgc3BhY2UsIHRoZSAKaGFwcGllciBJIGFtIDopLgoKCkFsZXgKCgoKQW1hem9uIERldmVs
+b3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdl
+c2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWlu
+Z2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBC
+ClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
