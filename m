@@ -2,148 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEE0368E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0CC368E9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241618AbhDWIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:12:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17395 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241470AbhDWIL7 (ORCPT
+        id S241315AbhDWINU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:13:20 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:58662 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWINR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:11:59 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FRRlQ6dgTzlZ9n;
-        Fri, 23 Apr 2021 16:09:22 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 23 Apr 2021 16:11:17 +0800
-Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Will Deacon" <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
- <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
- <YIEl8aKr8Ly0Zd3O@kernel.org>
- <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
-Message-ID: <2a1592ad-bc9d-4664-fd19-f7448a37edc0@huawei.com>
-Date:   Fri, 23 Apr 2021 16:11:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 23 Apr 2021 04:13:17 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id B6B02CD7E6;
+        Fri, 23 Apr 2021 16:12:24 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P18569T140528077227776S1619165544413195_;
+        Fri, 23 Apr 2021 16:12:24 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <9422ddefe1494081fcea59c3190594dc>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: rjw@rjwysocki.net
+X-RCPT-COUNT: 7
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     rjw@rjwysocki.net, pavel@ucw.cz, len.brown@intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] PM: Use pm_pr_dbg() instead of pr_debug().
+Date:   Fri, 23 Apr 2021 16:12:23 +0800
+Message-Id: <20210423081223.26111-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These prints are useful if we're doing PM suspend debugging. Having them
+at pr_debug() level means that we need to either enable DEBUG in this
+file, or compile the kernel with dynamic debug capabilities. Both of
+these options have drawbacks like custom compilation or opting into all
+debug statements being included into the kernel image. Given that we
+already have infrastructure to collect PM debugging information with
+CONFIG_PM_DEBUG and friends, let's change the pr_debug usage here to be
+pm_pr_dbg() instead so we can collect the wakeup information in the
+kernel logs.
 
-On 2021/4/22 23:28, Kefeng Wang wrote:
->
-> On 2021/4/22 15:29, Mike Rapoport wrote:
->> On Thu, Apr 22, 2021 at 03:00:20PM +0800, Kefeng Wang wrote:
->>> On 2021/4/21 14:51, Mike Rapoport wrote:
->>>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>>
->>>> Hi,
->>>>
->>>> These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially 
->>>> hardwire
->>>> pfn_valid_within() to 1.
->>>>
->>>> The idea is to mark NOMAP pages as reserved in the memory map and 
->>>> restore
->>>> the intended semantics of pfn_valid() to designate availability of 
->>>> struct
->>>> page for a pfn.
->>>>
->>>> With this the core mm will be able to cope with the fact that it 
->>>> cannot use
->>>> NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER 
->>>> blocks
->>>> will be treated correctly even without the need for pfn_valid_within.
->>>>
->>>> The patches are only boot tested on qemu-system-aarch64 so I'd really
->>>> appreciate memory stress tests on real hardware.
->>>>
->>>> If this actually works we'll be one step closer to drop custom 
->>>> pfn_valid()
->>>> on arm64 altogether.
-...
->
-> Ok, thanks, we met a same panic like the link on arm32(without 
-> HOLES_IN_ZONE),
->
-> the scheme for arm64 could be suit for arm32, right?  I will try the 
-> patchset with
->
-> some changes on arm32 and give some feedback.
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ drivers/base/power/main.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-I tested this patchset(plus arm32 change, like arm64 does) based on lts 
-5.10，add
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index f893c3c5af07..6e64e3fff84c 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -133,7 +133,7 @@ void device_pm_add(struct device *dev)
+ 	if (device_pm_not_required(dev))
+ 		return;
+ 
+-	pr_debug("Adding info for %s:%s\n",
++	pm_pr_dbg("Adding info for %s:%s\n",
+ 		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
+ 	device_pm_check_callbacks(dev);
+ 	mutex_lock(&dpm_list_mtx);
+@@ -154,7 +154,7 @@ void device_pm_remove(struct device *dev)
+ 	if (device_pm_not_required(dev))
+ 		return;
+ 
+-	pr_debug("Removing info for %s:%s\n",
++	pm_pr_dbg("Removing info for %s:%s\n",
+ 		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
+ 	complete_all(&dev->power.completion);
+ 	mutex_lock(&dpm_list_mtx);
+@@ -173,7 +173,7 @@ void device_pm_remove(struct device *dev)
+  */
+ void device_pm_move_before(struct device *deva, struct device *devb)
+ {
+-	pr_debug("Moving %s:%s before %s:%s\n",
++	pm_pr_dbg("Moving %s:%s before %s:%s\n",
+ 		 deva->bus ? deva->bus->name : "No Bus", dev_name(deva),
+ 		 devb->bus ? devb->bus->name : "No Bus", dev_name(devb));
+ 	/* Delete deva from dpm_list and reinsert before devb. */
+@@ -187,7 +187,7 @@ void device_pm_move_before(struct device *deva, struct device *devb)
+  */
+ void device_pm_move_after(struct device *deva, struct device *devb)
+ {
+-	pr_debug("Moving %s:%s after %s:%s\n",
++	pm_pr_dbg("Moving %s:%s after %s:%s\n",
+ 		 deva->bus ? deva->bus->name : "No Bus", dev_name(deva),
+ 		 devb->bus ? devb->bus->name : "No Bus", dev_name(devb));
+ 	/* Delete deva from dpm_list and reinsert after devb. */
+@@ -200,7 +200,7 @@ void device_pm_move_after(struct device *deva, struct device *devb)
+  */
+ void device_pm_move_last(struct device *dev)
+ {
+-	pr_debug("Moving %s:%s to end of list\n",
++	pm_pr_dbg("Moving %s:%s to end of list\n",
+ 		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
+ 	list_move_tail(&dev->power.entry, &dpm_list);
+ }
+-- 
+2.20.1
 
-some debug log, the useful info shows below, if we enable HOLES_IN_ZONE, 
-no panic,
 
-any idea, thanks.
-
-Zone ranges:
-   Normal   [mem 0x0000000080a00000-0x00000000b01fffff]
-   HighMem  [mem 0x00000000b0200000-0x00000000ffffefff]
-Movable zone start for each node
-Early memory node ranges
-   node   0: [mem 0x0000000080a00000-0x00000000855fffff]
-   node   0: [mem 0x0000000086a00000-0x0000000087dfffff]
-   node   0: [mem 0x000000008bd00000-0x000000008c4fffff]
-   node   0: [mem 0x000000008e300000-0x000000008ecfffff]
-   node   0: [mem 0x0000000090d00000-0x00000000bfffffff]
-   node   0: [mem 0x00000000cc000000-0x00000000dc9fffff]
-   node   0: [mem 0x00000000de700000-0x00000000de9fffff]
-   node   0: [mem 0x00000000e0800000-0x00000000e0bfffff]
-   node   0: [mem 0x00000000f4b00000-0x00000000f6ffffff]
-   node   0: [mem 0x00000000fda00000-0x00000000ffffefff]
-
-----> free_memmap, start_pfn = 85800,  85800000 end_pfn = 86a00, 86a00000
-----> free_memmap, start_pfn = 8c800,  8c800000 end_pfn = 8e300, 8e300000
-----> free_memmap, start_pfn = 8f000,  8f000000 end_pfn = 90000, 90000000
-----> free_memmap, start_pfn = dcc00,  dcc00000 end_pfn = de700, de700000
-----> free_memmap, start_pfn = dec00,  dec00000 end_pfn = e0000, e0000000
-----> free_memmap, start_pfn = e0c00,  e0c00000 end_pfn = e4000, e4000000
-----> free_memmap, start_pfn = f7000,  f7000000 end_pfn = f8000, f8000000
-=== >move_freepages: start_pfn/end_pfn [de600, de7ff], [de600000, 
-de7ff000] :  pfn =de600 pfn2phy = de600000 , page = ef3cc000, page-flags 
-= ffffffff
-8<--- cut here ---
-Unable to handle kernel paging request at virtual address fffffffe
-pgd = 5dd50df5
-[fffffffe] *pgd=affff861, *pte=00000000, *ppte=00000000
-Internal error: Oops: 37 [#1] SMP ARM
-Modules linked in: gmac(O)
-CPU: 2 PID: 635 Comm: test-oom Tainted: G           O      5.10.0+ #31
-Hardware name: Hisilicon A9
-PC is at move_freepages_block+0x150/0x278
-LR is at move_freepages_block+0x150/0x278
-pc : [<c02383a4>]    lr : [<c02383a4>]    psr: 200e0393
-sp : c4179cf8  ip : 00000000  fp : 00000001
-r10: c4179d58  r9 : 000de7ff  r8 : 00000000
-r7 : c0863280  r6 : 000de600  r5 : 000de600  r4 : ef3cc000
-r3 : ffffffff  r2 : 00000000  r1 : ef5d069c  r0 : fffffffe
-Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 1ac5387d  Table: 83b0c04a  DAC: 55555555
-Process test-oom (pid: 635, stack limit = 0x25d667df)
 
