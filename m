@@ -2,137 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B16368BB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599ED368BBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237162AbhDWDxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWDxR (ORCPT
+        id S240341AbhDWDyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:54:24 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:25220 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231277AbhDWDyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:53:17 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE88C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:52:41 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d21so35830776edv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=AsQS2+WKWTfo1Jt7nW4OhF01pRbwMoQdzfJIXlY/3JE=;
-        b=aEUrJRPr2CPm0gyMjMpJzsHaKhYyHhYeb/Cswp/opvqq+XH72jpl3dHSAP/SmCh9Qv
-         CemRSb/oq0FwHDAcUoqY2GTOmwCE2geQNbwCHy8Wdn16Hv2gx2IvsVjkYuGMUhoVxidS
-         p3uS9NsJMYShQLCnNQ+Koo2ZC7xgR0bJjRali0A6lft0xV/rZxDxIMorMO7uFBz4tsEm
-         Th6GIeUxa9DgyB2XxpXOabM9VBUWvGkjlGVCRukWAVXEY7KLyAYGtn+al5srkJQ0EQhc
-         W0QR2dYmzNF44+D8+6Yjm1uvy3Kn02Vw3fuXqEGTrFXozFYIZPOJQ2akf6tZ3wP4GaLu
-         Y58w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=AsQS2+WKWTfo1Jt7nW4OhF01pRbwMoQdzfJIXlY/3JE=;
-        b=Yhlz7UNo2Nw0uSm2njmbH2FOAtbNKfLZGgpBEY10wLmZH4eoxzOEN/Tvwm+OyED/T7
-         /pczMdgkjxUvO5MFfQRoKNr5+Jkdry5a1fsmQUsnLiqw7mvDGH2May/bZv3kaI2J6sUY
-         9HnM3PAxbPVyy4i3SZwes0SQbAA2v9lmwb0Ftix6cSFEbBOU8EC7dRs5/5PO+zKGq5oZ
-         Z9pv0QHC+I7zo5NShZ0g0UGAqh3PlQ+TIBvoE1VfdrOnrZ1PeG1Juvq+HASnGGpMUT6F
-         G1qN2my3CJE3ghtV6hP9exppnJ8LXUGDHzcj/g0pV+s/G6jkaJ3eNeocS9JvuhqO7My8
-         uf6A==
-X-Gm-Message-State: AOAM531nKionS+rD8v9TNrXMygQVbkQq0idpUCNnzzkQ3Y4KQoBRc6Os
-        1rTIqKLpl06m9p1eqKnsSVjiMSZCaBK0fkPtR84=
-X-Google-Smtp-Source: ABdhPJyS3WSdMIZNgtRyHDciXIkP+vYLJyfArCej6T4gFVnL9UyqYnz3fiSbyNB1bw4RQthfqVa90ovzzv16Vv4BCvg=
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr2037305edd.78.1619149960146;
- Thu, 22 Apr 2021 20:52:40 -0700 (PDT)
+        Thu, 22 Apr 2021 23:54:23 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 13N3rkPW043861
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:53:46 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1619150021; x=1621742021;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6JC6V3yB3c17P/ozmgZ9a/Qnmb/kmR5GANxG8psx14o=;
+        b=VSTJkNpQANQuiJxvooVcX6x/cLTK+ymcbf49Lii8BdzNNn5oJaqhlt7CyKIBmAZn
+        83PjQD8yGw9tQJRhrJnMuoQyC6rvq0xTl3x36NELQwhm7HWbR7Vy/K1TN5iNtKf6
+        8OhG5W6leEGVJnlxPtJ7BL62NyQd+GmtosFAJsYeBA09UfIXKm4E4IIXkxXxVxQW
+        sJAhrMYthh2NghVWApDQe6flM3YLCnM60+4PsgHBGSn744qe85ZE4ACV05ud5fns
+        kCM1ZmriUmYLYg9W/sPmYESJMg9QdxzrIa7Igbdins3IvJFFonLbFeOQwaClAQc1
+        SPDF1NToX8UNuCf7TAKDIg==;
+X-AuditID: 8b5b014d-a70347000000209f-f6-608244c4ff26
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id F1.9A.08351.4C442806; Fri, 23 Apr 2021 06:53:41 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 23 Apr 2021 13:52:29 +1000
-Message-ID: <CAPM=9tyKdGHyiRLDooKrMf=02GtNn8U4YfF4dJtXdabnVAGdXQ@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.12 final
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 23 Apr 2021 06:53:40 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     mick@ics.forth.gr, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] RISC-V: Add kexec/kdump support
+Organization: FORTH
+In-Reply-To: <mhng-c073ca02-d152-4ef5-86c5-4bcf58154afc@palmerdabbelt-glaptop>
+References: <mhng-c073ca02-d152-4ef5-86c5-4bcf58154afc@palmerdabbelt-glaptop>
+Message-ID: <d3e45b902a28ec95c25cfa1f34d07d0d@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsXSHT1dWfeoS1OCwaljTBaXd81hs9j2uYXN
+        ovndOXaLl5d7mC3aZvE7sHq8efmSxePhpktMHpuX1Htcar7O7vF5k1wAaxSXTUpqTmZZapG+
+        XQJXxsHmiewFPyUqts5rZmpgfCvcxcjJISFgIrHt6X7WLkYuDiGBo4wS77u3M0IkTCVm7+0E
+        s3kFBCVOznzCAmIzC1hITL2ynxHClpdo3jqbGcRmEVCVmL/rNFgNm4CmxPxLB8FsEQF1iQOv
+        7zCDLGAWmMQo0XLoJVhCWMBa4uPaQ2A2v4CwxKe7F1lBbE4BP4lr3TPAbCEBX4mFH5+zQBzh
+        ItHyeA8LxHEqEh9+P2DvYuTgEAWyN89VmsAoOAvJqbOQnDoLyakLGJlXMQoklhnrZSYX66Xl
+        F5Vk6KUXbWIEhzaj7w7G25vf6h1iZOJgPMQowcGsJMLrdbQxQYg3JbGyKrUoP76oNCe1+BCj
+        NAeLkjgvr96EeCGB9MSS1OzU1ILUIpgsEwenVANT6+7tE44d3faM55mRsKXksYzE5x9D9c0E
+        rpl2/1rzU+k348ZX2UejGf7Vfudq/vhHPOtSdE3NqZkF9x8K715vz5KUetKqd29bnp5itNXK
+        z4vljfxsY3s2n9ANylvvvJLBbp+3C2eDhVz12rdXNf4cs9CbVfTF9ehFiYYj3Vkb9ssx9reE
+        Km66Prm/teYDb9P3OFXHyfmTLHZ+zT7uwPxt9bS7B8yP9BsyRSx//z7O/0LfpcDjIg1bZ55g
+        j9rcI374dNMc6ccq7P8nvrnw3mzfKwXdC77iJSEi0gnuX2+rCiz9xHA8ssuAU3Ld7sTa1t8z
+        9iqdKIwL49hw89Gs/IJF2VHJMxNuGnYrnVm4O7BQiaU4I9FQi7moOBEAGqNUStwCAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Στις 2021-04-23 06:48, Palmer Dabbelt έγραψε:
+> On Thu, 22 Apr 2021 20:36:56 PDT (-0700), mick@ics.forth.gr wrote:
+>> Στις 2021-04-23 06:30, Palmer Dabbelt έγραψε:
+>>> On Mon, 05 Apr 2021 01:57:07 PDT (-0700), mick@ics.forth.gr wrote:
+>>>> This patch series adds kexec/kdump and crash kernel
+>>>> support on RISC-V. For testing the patches a patched
+>>>> version of kexec-tools is needed (still a work in
+>>>> progress) which can be found at:
+>>>> 
+>>>> https://riscv.ics.forth.gr/kexec-tools-patched.tar.xz
+>>>> 
+>>>> v3:
+>>>>  * Rebase on newer kernel tree
+>>>>  * Minor cleanups
+>>>>  * Split UAPI changes to a separate patch
+>>>>  * Improve / cleanup init_resources
+>>>>  * Resolve Palmer's comments
+>>>> 
+>>>> v2:
+>>>>  * Rebase on newer kernel tree
+>>>>  * Minor cleanups
+>>>>  * Properly populate the ioresources tre, so that it
+>>>>    can be used later on for implementing strict /dev/mem
+>>>>  * Use linux,usable-memory on /memory instead of a new binding
+>>>>  * USe a reserved-memory node for ELF core header
+>>>> 
+>>>> Nick Kossifidis (5):
+>>>>   RISC-V: Add EM_RISCV to kexec UAPI header
+>>>>   RISC-V: Add kexec support
+>>>>   RISC-V: Improve init_resources
+>>>>   RISC-V: Add kdump support
+>>>>   RISC-V: Add crash kernel support
+>>>> 
+>>>>  arch/riscv/Kconfig                  |  25 ++++
+>>>>  arch/riscv/include/asm/elf.h        |   6 +
+>>>>  arch/riscv/include/asm/kexec.h      |  54 +++++++
+>>>>  arch/riscv/kernel/Makefile          |   6 +
+>>>>  arch/riscv/kernel/crash_dump.c      |  46 ++++++
+>>>>  arch/riscv/kernel/crash_save_regs.S |  56 +++++++
+>>>>  arch/riscv/kernel/kexec_relocate.S  | 222
+>>>> ++++++++++++++++++++++++++++
+>>>>  arch/riscv/kernel/machine_kexec.c   | 193 ++++++++++++++++++++++++
+>>>>  arch/riscv/kernel/setup.c           | 113 ++++++++------
+>>>>  arch/riscv/mm/init.c                | 110 ++++++++++++++
+>>>>  include/uapi/linux/kexec.h          |   1 +
+>>>>  11 files changed, 787 insertions(+), 45 deletions(-)
+>>>>  create mode 100644 arch/riscv/include/asm/kexec.h
+>>>>  create mode 100644 arch/riscv/kernel/crash_dump.c
+>>>>  create mode 100644 arch/riscv/kernel/crash_save_regs.S
+>>>>  create mode 100644 arch/riscv/kernel/kexec_relocate.S
+>>>>  create mode 100644 arch/riscv/kernel/machine_kexec.c
+>>> 
+>>> Thanks.  There were some minor issues and some merge conflicts, I put
+>>> this on for-next with some fixups.
+>> 
+>> I've sent a v4 that shouldn't have merge conflicts, addressing some
+>> comments from Alex as well, could you use that instead or is it too 
+>> late
+>> ?
+> 
+> Thanks, for some reason I didn't see it when poking around.  There was
+> still that one init_resources() merge conflict and I fixed up some of
+> the commit texts, it's now on for-next as
+> 
+> b94394119804 (HEAD -> for-next, riscv/for-next) RISC-V: Add crash 
+> kernel support
+> 6e8451782c90 RISC-V: Add kdump support
+> 0a0652429bdb RISC-V: Improve init_resources()
+> d9a8897d6b5d RISC-V: Add kexec support
+> f59938095b94 RISC-V: Add EM_RISCV to kexec UAPI header
 
-Just some small i915 and amdgpu fixes this week, Should be all until
-you open the merge window.
-
-Regards,
-Dave.
-
-drm-fixes-2021-04-23:
-drm fixes for 5.12 final
-
-amdgpu:
-- Fix gpuvm page table update issue
-- Modifier fixes
-- Register fix for dimgrey cavefish
-
-i915:
-- GVT's BDW regression fix for cmd parser
-- Fix modesetting in case of unexpected AUX timeouts
-The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
-
-  Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-23
-
-for you to fetch changes up to aca38735ae624b93c71c055b68d5802b8f356ea5:
-
-  Merge tag 'drm-intel-fixes-2021-04-22' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2021-04-23
-12:18:21 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.12 final
-
-amdgpu:
-- Fix gpuvm page table update issue
-- Modifier fixes
-- Register fix for dimgrey cavefish
-
-i915:
-- GVT's BDW regression fix for cmd parser
-- Fix modesetting in case of unexpected AUX timeouts
-
-----------------------------------------------------------------
-Dave Airlie (2):
-      Merge tag 'amd-drm-fixes-5.12-2021-04-21' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-04-22' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-
-Imre Deak (1):
-      drm/i915: Fix modesetting in case of unexpected AUX timeouts
-
-Jiansong Chen (1):
-      drm/amdgpu: fix GCR_GENERAL_CNTL offset for dimgrey_cavefish
-
-Philip Yang (1):
-      drm/amdgpu: reserve fence slot to update page table
-
-Qingqing Zhuo (1):
-      drm/amd/display: Update modifier list for gfx10_3
-
-Rodrigo Vivi (1):
-      Merge tag 'gvt-fixes-2021-04-20' of
-https://github.com/intel/gvt-linux into drm-intel-fixes
-
-Simon Ser (1):
-      amd/display: allow non-linear multi-planar formats
-
-Zhenyu Wang (1):
-      drm/i915/gvt: Fix BDW command parser regression
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c                | 10 ++++++++--
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c                |  2 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c     | 15 ++++++---------
- drivers/gpu/drm/i915/display/intel_dp_link_training.c |  3 ++-
- drivers/gpu/drm/i915/gvt/cmd_parser.c                 | 19 +++++++++++++------
- 5 files changed, 30 insertions(+), 19 deletions(-)
+Thanks a lot ! I'll keep on working on the user-space part and submit it 
+on kexec-tools later on.
