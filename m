@@ -2,190 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3104368D39
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B997368D3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240645AbhDWGia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:38:30 -0400
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]:42808 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWGi3 (ORCPT
+        id S240711AbhDWGkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:40:39 -0400
+Received: from de-smtp-delivery-1.mimecast.com ([62.140.7.241]:52677 "EHLO
+        de-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229519AbhDWGkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:38:29 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 13N6bWCt008041; Fri, 23 Apr 2021 15:37:32 +0900
-X-Iguazu-Qid: 34trpShQIL3mJzL9dg
-X-Iguazu-QSIG: v=2; s=0; t=1619159852; q=34trpShQIL3mJzL9dg; m=JcyYP3KROQ8IPtwGt4642etF122VhPv1oSBRnFeNGyA=
-Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
-        by relay.securemx.jp (mx-mr1510) id 13N6bTZU032573
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 23 Apr 2021 15:37:30 +0900
-Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id AEFD5100123;
-        Fri, 23 Apr 2021 15:37:29 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 13N6bTlV027483;
-        Fri, 23 Apr 2021 15:37:29 +0900
-From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
-References: <20210421134844.3297838-1-arnd@kernel.org>
-        <871rb2swd9.fsf@kokedama.swc.toshiba.co.jp>
-        <01e78b64-8ad1-dfc8-9fc0-6afff4841492@xilinx.com>
-Date:   Fri, 23 Apr 2021 15:37:25 +0900
-In-Reply-To: <01e78b64-8ad1-dfc8-9fc0-6afff4841492@xilinx.com> (Michal Simek's
-        message of "Thu, 22 Apr 2021 12:54:00 +0200")
-X-TSB-HOP: ON
-Message-ID: <87v98dqzfe.fsf@kokedama.swc.toshiba.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Fri, 23 Apr 2021 02:40:37 -0400
+X-Greylist: delayed 62401 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Apr 2021 02:40:36 EDT
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2052.outbound.protection.outlook.com [104.47.21.52]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-31-HrlBS9-uNbqkGqzld9qZng-1; Fri, 23 Apr 2021 08:38:23 +0200
+X-MC-Unique: HrlBS9-uNbqkGqzld9qZng-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB2119.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:84::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Fri, 23 Apr
+ 2021 06:38:22 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4042.024; Fri, 23 Apr 2021
+ 06:38:22 +0000
+From:   =?utf-8?B?Q2hyaXN0aWFuIEzDtmhsZQ==?= <CLoehle@hyperstone.com>
+To:     Shawn Lin <shawn.lin@rock-chips.com>
+CC:     "pali@kernel.org" <pali@kernel.org>,
+        "huyue2@yulong.com" <huyue2@yulong.com>,
+        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+Subject: =?utf-8?B?UmU6IFtQQVRDSF0gbW1jOiBlbmFibGUgVUhTIHZvbHRhZ2Ugc3dpdGNoIGZv?=
+ =?utf-8?B?ciBTRFNDIGlmIHN1cHBvcnRlZOOAkOivt+azqOaEj++8jOmCruS7tueUsWxp?=
+ =?utf-8?B?bnV4LW1tYy1vd25lckB2Z2VyLmtlcm5lbC5vcmfku6Plj5HjgJE=?=
+Thread-Topic: =?utf-8?B?W1BBVENIXSBtbWM6IGVuYWJsZSBVSFMgdm9sdGFnZSBzd2l0Y2ggZm9yIFNE?=
+ =?utf-8?B?U0MgaWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgt?=
+ =?utf-8?B?bW1jLW93bmVyQHZnZXIua2VybmVsLm9yZ+S7o+WPkeOAkQ==?=
+Thread-Index: AQHXN+FTXUcmKL1cg0aJQqpoaGswk6rBpbam
+Date:   Fri, 23 Apr 2021 06:38:22 +0000
+Message-ID: <CWXP265MB2680E0D998AF13C041D18859C4459@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
+In-Reply-To: <35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9b910540-d7fe-44e0-bb36-08d9062263cd
+x-ms-traffictypediagnostic: CWXP265MB2119:
+x-microsoft-antispam-prvs: <CWXP265MB211989F67ACCC5DED99F2B45C4459@CWXP265MB2119.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8273
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: krNvLFlsAkWPnqoyt0JQIObAKxZ4tDhbTR+Q4E0ospf7Qv5xbgMg62mX7LE6NYON1WCt8PIdKkSKzJHoV2bexbWZRr++j4UIckY5++OC1uKeECJY3aVjriCOSVtp4wdWc3l9qOo/5KkqN8QTMy4maUHiU9L2zNetwVQ7jOA1ln6PGqxrj4rif/5pTOb15rkergcgIHri0ajGApDiQ9uUOlsfeWbrRHSmxxSIB7uazjVp7uiJhgxZNoe/8/exiHSOG7Cj51PBAkXIB90QObV3LYvY5qOCIfRork5Je0hvSlwVDFpS8m1msYRL5SYG2T/wdu5FYtcYaRbU1cIOA1GG0R7DDMLUy3qCFsWS4k7u78hpdfQCvC94RmZTyewFVZ9SoofuiXfKIQG3kPmmEGrX1e5UwsznXbgranOairD3QvEQafNCMFIxmpo7BrMMatBPVfLWqaXNi25bUs/EU8E9ambStwYiM+BdMjrWi8W1LRx5St6cs1Zwr4BgrCsUzBlirq4vtWxYWqCGnCJ14/OrXvq9RcJRB4FMJDbPFNAog1jBV0uTN5Ax5W2Hhukam0jrpdW7+bLzJdbaM8DtRbN32/BqJI7IOww1B4zwzK4GqIEsMvjYx+vTXd5zuET/RIJA88EiUmAjNIn/QPR58YVAmN2SxOLL4clROhvxgGa8uztYgpByv0C6YyCex8OJfAXM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39830400003)(376002)(136003)(346002)(366004)(6916009)(478600001)(33656002)(5660300002)(86362001)(83380400001)(52536014)(9686003)(122000001)(4326008)(66574015)(26005)(316002)(6506007)(85182001)(54906003)(38100700002)(71200400001)(66476007)(66556008)(76116006)(66446008)(91956017)(2906002)(7696005)(66946007)(224303003)(85202003)(966005)(186003)(53546011)(55016002)(64756008)(8936002);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?utf-8?B?UXJHZUh6SHFEMzdZeDBqN2Q5WjhXWFpCVXd5aklVMnJwTUt3bHlOQkMzWDNK?=
+ =?utf-8?B?clNPWExBMFlyd2tYdFlGL3lEeTBtNkVXZk5BdEVCenI5Q21yc0UrYVRXcWhP?=
+ =?utf-8?B?eHV4Mkd5VVZVMEZnT200dE9EQ3FNOFpqTWdDUXN4NlhwWHh5QzRYbUhkOWhn?=
+ =?utf-8?B?R3kwUGJFNWpoNlBxd2VPckNrY1c4QmpFQlZJVno1Y2x4RGRtdzI5RkhRbnIx?=
+ =?utf-8?B?VURvU1piRG4yaElTZWNiTStxVVc1VG5ObTRJTTJ6UXFMaXlFOHhCRlRyVFZL?=
+ =?utf-8?B?dlRmazhNVGY2Q051eTBOUlR0RkRkVnpzbHB0Q3dmNkpJWUFtWUxGYUhqZTdR?=
+ =?utf-8?B?OG9VM0Q4K2NTRFB2Z1dxdFkzdkcra3BOWUExTWovdXRDanpWa0phKy9ZMFVM?=
+ =?utf-8?B?NVMxM21GZlNQaGZLU05lTXdOZDhXY3JvTGdLYm5SWXNIYmlCalJWU3NKU3RB?=
+ =?utf-8?B?cEZLd3JLbFRSUXZTM2JZRnNuVXRhTVBZeHhrRm1reHUvcG9hdFNyNUlsOVNG?=
+ =?utf-8?B?M1U3cW51djRwTXdWaElFVWxaYmNVQ0RBdFNGS3N6VjliVFNaL1ZFbWtZaE03?=
+ =?utf-8?B?STV4MTM2bHRTUTdCdjl1UTQ1ejdOV2FocVkvS2JRZWFNT2VNZ1VxR1NKVHJX?=
+ =?utf-8?B?M2lZZzkvWUZMb3dSWFBHc1J2TjNGRS9tTnMzQjUvTWhUNEZxaERvZVJka1Ra?=
+ =?utf-8?B?NndMSWRmaGh3NEcyd29VMlRHVzB4bG5jVUJoVThqY3FjcmlSTitBK3VBenNO?=
+ =?utf-8?B?cVloRUVoTWtlWWloQXdDQ21MR1RyUmxKK1NOYU5jSTBOOUJqZkM4Q05IS2dQ?=
+ =?utf-8?B?dElxaHBzcnVVQ3hESXNsbk1WejErUGtOSFpzbVlLb3FUQ2EzLzNaSVdzTUVU?=
+ =?utf-8?B?Rk9BT28xTWxJdWtxMGZSWVB6UW0vRGNtaUFhb0ZmbllnQVVCNWNmMEVTVkRD?=
+ =?utf-8?B?czhSakJpWTNQUXRJS1RoWlRod1JVWnZmNjQzK29hbUhpUE8vODlJbjNFd3Uy?=
+ =?utf-8?B?K05heVArWXNNUytTZnN1QXRJa1dIOHNzeFJWd1NXUkVteEZITG1vZU5NSUJD?=
+ =?utf-8?B?ZVlCYXpQbENmRG1EOCtsZEtUZzhMZkpDNU1yWXNncG9temZ4OU1KNE5Rc0ln?=
+ =?utf-8?B?Z00zRlpGUnVYRmxRWHRMSm1pVXkyRUkzbXBENENKS3FxSXcwV0FFUGhGeU5y?=
+ =?utf-8?B?WW9WVEgvQnE0dTlROE1pZjh6TVN0R1Z4OE5KeCt0SlVrekkvOHlkek1scHpt?=
+ =?utf-8?B?eUY4TjlTWWJUbjI1Zkd0WjVUbC9wSUw3cUxCY0RlTS9SS2JEcVJKNjZLekE5?=
+ =?utf-8?B?RTRob0RjT0EzblNhS09tWUNHQlBaazVlWmxMcmxsMTA4d1dEWmt5N0VHcjAx?=
+ =?utf-8?B?ZzdZaFE4VlFoemkwSjdaWmR1ckFyTEppaHQ3NVNSVnlrMXBKWHVBZzdZUjJI?=
+ =?utf-8?B?MTZVV0hNRnBDd0pKZWpDclZBZ0dVUEJJUmlRZ2xSWVBOdnJlbzhialhEaGl1?=
+ =?utf-8?B?L29OSXR1ZnYrc204NlovRFhBc084SklIVDdiRUkydXVqZXEzQ2tJUnE2Ynlz?=
+ =?utf-8?B?SUYrb2lHbWQzVm1wZ3pJOU4xR2l2R3RpajEzTGVoYUVUd0phbmNuL1JLelZ5?=
+ =?utf-8?B?eHYwUUVtV0dJSk90b0RzMVAwc2RFeXBBMHQ4bnBZd05qenRiNXU3c1ZhcVVK?=
+ =?utf-8?B?am9zendXcCtweG11SUU1SGI4UlcybHVHd0ZiaUVnNzI4VWd2KzI2NklzR3Er?=
+ =?utf-8?Q?1pbRqI1D0fO0V2Aens=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b910540-d7fe-44e0-bb36-08d9062263cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 06:38:22.1682
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T5HyUAUNbXLaHvp4ntrpRb0IrKr7+1k7ohB/jRn52wvj21glqgZ5T5QsPejWuf1oJfArrRY98N8lqpJF5fJHdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2119
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Simek <michal.simek@xilinx.com> writes:
+Q2xhaW1pbmcgVUhTLUkgc3VwcG9ydCB3aXRoIFNEU0MgaXMgcHJldHR5IHJhcmUsIGZvciBvYnZp
+b3VzIHJlYXNvbnMgKG5hbWVseSB0aGV5IGFyZSBub24tc3RhbmRhcmQsIHNvIGl0J3MgYSBnYW1i
+bGUgaWYgYSBob3N0IG1ha2VzIHVzZSBvZiBpdCksIGJ1dCBoZXJlIHlvdSBnbzoKaHR0cHM6Ly9k
+ZS5ycy1vbmxpbmUuY29tL3dlYi9wL21pY3JvLXNkLWthcnRlbi84NzQzOTEwLwooc29ycnkgZm9y
+IHRoZSBnZXJtYW4sIHRoZSBzaXRlIGhhcyBhIGVuLiBzdWJwYWdlLCBidXQgaXQncyBjZXJ0aWZp
+Y2F0ZSBzZWVtIHVudHJ1c3RlZC4pClRoZSBtb3JlIGxpa2VseSBjYXNlIGlzIHRoYXQgdGhleSBk
+byBub3QgYWR2ZXJ0aXNlIFVIUy1JIHRvIGN1c3RvbWVycywKYnV0IHRoZSBjYXJkIHdpbGwgc2hv
+dyBzdXBwb3J0IHRvIHRoZSBob3N0LgpMZXQncyBsb29rIGF0IHRoaXMgcHJvZHVjdCwganVzdCBh
+cyBhbiBleGFtcGxlLgpodHRwczovL3d3dy50bWUuZXUvaHRtbC9FTi9nb29kcmFtLWluZHVzdHJp
+YWwtaW5kdXN0cmlhbC1zZC1zZC1taWNyby1tZW1vcnktY2FyZHMvcmFta2FfMTUyNDJfRU5fcGVs
+bnkuaHRtbApUaGV5IHByb3ZpZGUgYW4gTUxDIGFuZCBwU0xDIHZlcnNpb24gb2YgZWFjaCBkZXZp
+Y2UsIHdpdGggaGFsZiB0aGUgY2FwYWNpdHkgbmF0dXJhbGx5LgpUaGUgNEdCIE1MQyBjbGFpbXMg
+VUhTLUkgc3VwcG9ydCwgdGhlIDJHQiBwU0xDIGlzIHZlcnkgbGlrZWx5IHRvIGJlIHRoZSBzYW1l
+IGNvbnRyb2xsZXIsCml0IG9ubHkgY2xhaW1zIENsYXNzIDYuClNvIGVpdGhlciB0aGV5IHNwZWNp
+ZmljYWxseSBjaGFuZ2VkIHRoZSBmaXJtd2FyZSB0byByZW1vdmUgYW55IFVIUyBzdXBwb3J0IGlu
+ZGljYXRpb24sCm9yLCBtb3JlIGxpa2VseSBJTU8sIHRoZSBjYXJkIHN0aWxsIHJlcG9ydHMgVUhT
+IHN1cHBvcnQgdG8gdGhlIGhvc3QuClN1Y2ggYSBjYXJkIHdvdWxkIGJlbmVmaXQgZnJvbSB0aGlz
+IHBhdGNoLgoKRGlzY2xhaW1lcjogSSBkbyBub3Qgb3duIHRoZSBwcm9kdWN0IGFuZCBoYXZlIG5v
+dCBjb25maXJtZWQgdGhpcyBkZXZpY2UgaW4gYW55IHdheSwKYnV0IEkgaGF2ZSBzZWVuIFVIUyBz
+dXBwb3J0IG9uIG90aGVyIGRldmljZXMgdGhhdCBkbyBub3QgYWR2ZXJ0aXNlIGl0IGZvciB0aGVp
+cgpTRFNDIHZlcnNpb25zLgpJZiB0aGUgbWFpbGluZyBsaXN0IHdvdWxkIGJlIGludGVyZXN0ZWQs
+IEkgY2FuIHRyeSB0byBhY3F1aXJlIHN1Y2ggZGV2aWNlcywgbGlzdGVkIGluCnB1YmxpYyBvcGVu
+IHN0b3Jlcy4gTW9kZXJuLCBwb3RlbnRpYWxseSBVSFMgc3VwcG9ydGluZyBjYXJkcy4gYXJlLAph
+cyBtZW50aW9uZWQgaW4gdGhlIGluaXRpYWwgTWFpbCwgb2Z0ZW4gU0xDIG9yIHBTTEMgYW5kIG9m
+dGVuIGFyZSBtYWRlIG9uCmEgY3VzdG9tZXJzIHJlcXVlc3QuCgoKRnJvbTogU2hhd24gTGluIDxz
+aGF3bi5saW5Acm9jay1jaGlwcy5jb20+ClNlbnQ6IEZyaWRheSwgQXByaWwgMjMsIDIwMjEgMzoz
+NCBBTQpUbzogQ2hyaXN0aWFuIEzDtmhsZSA8Q0xvZWhsZUBoeXBlcnN0b25lLmNvbT4KQ2M6IHNo
+YXduLmxpbkByb2NrLWNoaXBzLmNvbSA8c2hhd24ubGluQHJvY2stY2hpcHMuY29tPjsgcGFsaUBr
+ZXJuZWwub3JnIDxwYWxpQGtlcm5lbC5vcmc+OyBodXl1ZTJAeXVsb25nLmNvbSA8aHV5dWUyQHl1
+bG9uZy5jb20+OyB0aWFudGFvNkBoaXNpbGljb24uY29tIDx0aWFudGFvNkBoaXNpbGljb24uY29t
+PjsgbGludXgtbW1jQHZnZXIua2VybmVsLm9yZyA8bGludXgtbW1jQHZnZXIua2VybmVsLm9yZz47
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc+OyB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnIDx1bGYuaGFuc3NvbkBsaW5hcm8ub3JnPgpTdWJq
+ZWN0OiBSZTogW1BBVENIXSBtbWM6IGVuYWJsZSBVSFMgdm9sdGFnZSBzd2l0Y2ggZm9yIFNEU0Mg
+aWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1jLW93bmVyQHZnZXIu
+a2VybmVsLm9yZ+S7o+WPkeOAkSAKwqAKT24gMjAyMS80LzIyIDIxOjE4LCBDaHJpc3RpYW4gTMO2
+aGxlIHdyb3RlOgo+IElnbm9yZSB0aGUgcmVwb3J0ZWQgY2FwYWNpdHkgaWYgdGhlIGNhcmQgb3Ro
+ZXJ3aXNlIHJlcG9ydHMgVUhTIHN1cHBvcnQuCj4gCj4gQ3VycmVudGx5IFNEU0MgY2FyZHMgcmVw
+b3J0aW5nIFVIUyBzdXBwb3J0IGV4Y2VwdCBmb3IgdGhlIENDUyBkbyBub3QgcnVuCj4gdGhyb3Vn
+aCB0aGUgdm9sdGFnZSBzd2l0Y2guCj4gV2hpbGUgc3RyaWN0bHkgc3BlYWtpbmcgYSBTRFNDIGNh
+cmQgY2Fubm90IHN1cHBvcnQgVUhTIGluIGNvbXBsaWFuY2UKPiB3aXRoIHRoZSBzdGFuZGFyZCwg
+dGhlcmUgaXMgbm8gZ29vZCByZWFzb24gdG8gdGhyb3R0bGUgdGhlbSB0aGF0IHdheS4KPiBFc3Bl
+Y2lhbGx5IGZvciBwU0xDcyBpbiBwcmFjdGljZSBzdWNoIGNhcmRzIGJlbmVmaXQgZ3JlYXRseSBi
+eSB0aGlzIHBhdGNoLAoKQ2R1bGQgeW91IHByb3ZpZGUgc29tZSBtb3JlIGluZm9tYXRpb24gYWJv
+dXQgdGhlIFNEU0MgY2FyZHMgd2hpY2ggb25lcyAKYXJlIGxhYmVsZWQgYXMgVUhTLCBlLmcgYnJh
+bmQsIHdlYnBhZ2UuLi4uCgo+IGFzIHRoZXkgY2FuIGJlIG5ldyBhbmQgVUhTIHN1cHBvcnRpbmcs
+IGJ1dCBtdXN0IG5vdCBsaWUgYWJvdXQgdGhlaXIgQ0NTLgo+IFRoZSBiZWhhdmlvdXIgb2YgbGlu
+dXgtbW1jIGZvciBTRFNDIGlzIGRldmlhdGluZyBmcm9tIHRoZSBzdGFuZGFyZCBhbnl3YXkKPiBp
+biBzdWNoIGEgY2FzZSwgYXMgdGhlIGNhcmQgaXMgdHJlYXRlZCBhcyBVSFMgY2FyZCBub3Qgc3Vw
+cG9ydGluZyB0aGUKPiB2b2x0YWdlIHN3aXRjaCBpbiBnZW5lcmFsLgo+IFN1Y2ggYSBjYXJkIHdp
+bGwgY29tZSB1cCBhcwo+IG1tYzA6IG5ldyB1bHRyYSBoaWdoIHNwZWVkIFNEUjI1IFNEIGNhcmQg
+YXQgYWRkcmVzcyAwMDAxLgo+IFRodXMgdGhlIHN1YnN5c3RlbSB3aWxsIHN1cHBvcnQgQ01EMjMg
+YW5kIG90aGVycyB0byB0aGUgY2FyZC4KPiBCdXQgaWYgd2UgZGV2aWF0ZSBmcm9tIHRoZSBzdGFu
+ZGFyZCBhbnl3YXksIHRoZW4gd2UgbWlnaHQgYXMgd2VsbAo+IG5vdCB0aHJvdHRsZSBTRFNDIHRv
+IDI1TUIvcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RpYW4gTG9laGxlIDxjbG9laGxlQGh5
+cGVyc3RvbmUuY29tPgo+IC0tLQo+wqDCoCBkcml2ZXJzL21tYy9jb3JlL3NkLmMgfCA3ICsrKy0t
+LS0KPsKgwqAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkK
+PiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tbWMvY29yZS9zZC5jIGIvZHJpdmVycy9tbWMvY29y
+ZS9zZC5jCj4gaW5kZXggNmZhNTFhNmVkMDU4Li4yODFjYTJkYThlMGIgMTAwNjQ0Cj4gLS0tIGEv
+ZHJpdmVycy9tbWMvY29yZS9zZC5jCj4gKysrIGIvZHJpdmVycy9tbWMvY29yZS9zZC5jCj4gQEAg
+LTg0MSwxMSArODQxLDEwIEBAIGludCBtbWNfc2RfZ2V0X2NpZChzdHJ1Y3QgbW1jX2hvc3QgKmhv
+c3QsIHUzMiBvY3IsIHUzMiAqY2lkLCB1MzIgKnJvY3IpCj7CoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuIGVycjsKPsKgwqAgCj7CoMKgwqDCoMKgwqDCoCAvKgo+IC3CoMKgwqDC
+oMKgICogSW4gY2FzZSBDQ1MgYW5kIFMxOEEgaW4gdGhlIHJlc3BvbnNlIGlzIHNldCwgc3RhcnQg
+U2lnbmFsIFZvbHRhZ2UKPiAtwqDCoMKgwqDCoCAqIFN3aXRjaCBwcm9jZWR1cmUuIFNQSSBtb2Rl
+IGRvZXNuJ3Qgc3VwcG9ydCBDTUQxMS4KPiArwqDCoMKgwqDCoCAqIEluIGNhc2UgUzE4QSBpbiB0
+aGUgcmVzcG9uc2UgaXMgc2V0LCBzdGFydCBTaWduYWwgVm9sdGFnZSBTd2l0Y2gKPiArwqDCoMKg
+wqDCoCAqIHByb2NlZHVyZS4gU1BJIG1vZGUgZG9lc24ndCBzdXBwb3J0IENNRDExLgo+wqDCoMKg
+wqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoCBpZiAoIW1tY19ob3N0X2lzX3NwaShob3N0KSAmJiBy
+b2NyICYmCj4gLcKgwqDCoMKgwqDCoMKgICgoKnJvY3IgJiAweDQxMDAwMDAwKSA9PSAweDQxMDAw
+MDAwKSkgewo+ICvCoMKgwqDCoCBpZiAoIW1tY19ob3N0X2lzX3NwaShob3N0KSAmJiByb2NyICYm
+ICgqcm9jciAmIDB4MDEwMDAwMDApKSB7Cj7CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+ZXJyID0gbW1jX3NldF91aHNfdm9sdGFnZShob3N0LCBwb2NyKTsKPsKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBpZiAoZXJyID09IC1FQUdBSU4pIHsKPsKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0cmllcy0tOwo+IAoKDQpIeXBlcnN0b25lIEdt
+YkggfCBMaW5lLUVpZC1TdHJhc3NlIDMgfCA3ODQ2NyBLb25zdGFueg0KTWFuYWdpbmcgRGlyZWN0
+b3JzOiBEci4gSmFuIFBldGVyIEJlcm5zLg0KQ29tbWVyY2lhbCByZWdpc3RlciBvZiBsb2NhbCBj
+b3VydHM6IEZyZWlidXJnIEhSQjM4MTc4Mg0K
 
-> Hi,
->
-> On 4/22/21 7:48 AM, Punit Agrawal wrote:
->> Hi Arnd,
->> 
->> Thanks for the fix.
->> 
->> Arnd Bergmann <arnd@kernel.org> writes:
->> 
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> When the firmware code is disabled, the incomplete error handling
->>> in the clk driver causes compile-time warnings:
->>>
->>> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
->>> drivers/clk/zynqmp/pll.c:147:29: error: 'fbdiv' is used uninitialized [-Werror=uninitialized]
->>>   147 |         rate =  parent_rate * fbdiv;
->>>       |                 ~~~~~~~~~~~~^~~~~~~
->>> In function 'zynqmp_pll_get_mode',
->>>     inlined from 'zynqmp_pll_recalc_rate' at drivers/clk/zynqmp/pll.c:148:6:
->>> drivers/clk/zynqmp/pll.c:61:27: error: 'ret_payload' is used uninitialized [-Werror=uninitialized]
->>>    61 |         return ret_payload[1];
->>>       |                ~~~~~~~~~~~^~~
->>> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
->>> drivers/clk/zynqmp/pll.c:53:13: note: 'ret_payload' declared here
->>>    53 |         u32 ret_payload[PAYLOAD_ARG_CNT];
->>>       |             ^~~~~~~~~~~
->>> drivers/clk/zynqmp/clk-mux-zynqmp.c: In function 'zynqmp_clk_mux_get_parent':
->>> drivers/clk/zynqmp/clk-mux-zynqmp.c:57:16: error: 'val' is used uninitialized [-Werror=uninitialized]
->>>    57 |         return val;
->>>       |                ^~~
->> 
->> 
->> Not sure what I am missing but I couldn't reproduce these warnings. I
->> tried a few different ways to toggle CONFIG_ZYNQMP_FIRMWARE.
->> 
->> Regardless...
->
-> Me too. Can you share your .config file?
->
->> 
->>> As it was apparently intentional to support this for compile testing
->>> purposes, change the code to have just enough error handling for the
->>> compiler to not notice the remaining bugs.
->>>
->>> Fixes: 21f237534661 ("clk: zynqmp: Drop dependency on ARCH_ZYNQMP")
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>> ---
->>>  drivers/clk/zynqmp/clk-mux-zynqmp.c | 4 +++-
->>>  drivers/clk/zynqmp/pll.c            | 8 ++++++--
->>>  2 files changed, 9 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
->>> index 06194149be83..2afded3c7c11 100644
->>> --- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
->>> +++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
->>> @@ -50,9 +50,11 @@ static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
->>>  
->>>  	ret = zynqmp_pm_clock_getparent(clk_id, &val);
->>>  
->>> -	if (ret)
->>> +	if (ret) {
->>>  		pr_warn_once("%s() getparent failed for clock: %s, ret = %d\n",
->>>  			     __func__, clk_name, ret);
->>> +		return ret;
->
-> return should be u8 and this can be negative value. That's why I think
-> this should be fixed differently and all users should be checked that it
-> is handled like that.
->
->
->>> +	}
->>>  
->>>  	return val;
->>>  }
->>> diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
->>> index abe6afbf3407..67d2a2d260c1 100644
->>> --- a/drivers/clk/zynqmp/pll.c
->>> +++ b/drivers/clk/zynqmp/pll.c
->>> @@ -54,9 +54,11 @@ static inline enum pll_mode zynqmp_pll_get_mode(struct clk_hw *hw)
->>>  	int ret;
->>>  
->>>  	ret = zynqmp_pm_get_pll_frac_mode(clk_id, ret_payload);
->>> -	if (ret)
->>> +	if (ret) {
->>>  		pr_warn_once("%s() PLL get frac mode failed for %s, ret = %d\n",
->>>  			     __func__, clk_name, ret);
->>> +		return ret;
->>> +	}
->
-> Return should be enum pll_mode which is 0 or 1 which is likely not done
-> here.
->
->>>  
->>>  	return ret_payload[1];
->>>  }
->>> @@ -140,9 +142,11 @@ static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
->>>  	int ret;
->>>  
->>>  	ret = zynqmp_pm_clock_getdivider(clk_id, &fbdiv);
->>> -	if (ret)
->>> +	if (ret) {
->>>  		pr_warn_once("%s() get divider failed for %s, ret = %d\n",
->>>  			     __func__, clk_name, ret);
->>> +		return -1ul;
->>> +	}
->
-> Same here.
->
->
->>>  
->>>  	rate =  parent_rate * fbdiv;
->>>  	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
->> 
->> The changes make sense in that the functions error out sensibly when the
->> zynqmp firmware driver is not enabled.
->> 
->> Acked-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
->
-> I think code should be checked that these error values are handled how
-> they should be handled.
-
-I only looked at it from the point of view of getting rid of the
-warnings - based on the commit log, Arnd's patch is only taking care of
-the compiler warnings when the driver is built with
-CONFIG_COMPILE_TEST=y and likely CONFIG_ZYNQMP_FIRMWARE=n.
-
-In practice, the code should not be hit at runtime due to the dependency
-on the firmware driver. Even then, a better fix would indeed be taking
-the returned values at call sites into account.
-
-[...]
