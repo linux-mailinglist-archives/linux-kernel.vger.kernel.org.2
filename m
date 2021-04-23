@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF0F368F85
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C356368F8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241753AbhDWJkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:40:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:60516 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230006AbhDWJj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:39:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9640111D4;
-        Fri, 23 Apr 2021 02:39:22 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29A73F774;
-        Fri, 23 Apr 2021 02:39:19 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 10:39:15 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, jh80.chung@samsung.com,
-        Zong Li <zong.li@sifive.com>, robh+dt@kernel.org,
-        vidyas@nvidia.com, alex.dewar90@gmail.com,
-        Erik Danie <erik.danie@sifive.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Stephen Boyd <sboyd@kernel.org>,
-        hayashi.kunihiko@socionext.com, hes@sifive.com,
-        khilman@baylibre.com, Philipp Zabel <p.zabel@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, devicetree@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver
- support
-Message-ID: <20210423093915.GA7784@lpieralisi>
-References: <mhng-f3dd2202-8d2b-4e17-9067-c4521aac8125@palmerdabbelt-glaptop>
- <mhng-41850660-4a95-462a-9b1e-33dfc67815a4@palmerdabbelt-glaptop>
- <CAHCEehJHZGEUy2TO6fPg1WyAbQCoVee=AcRrkZE4Zhw+ibYKqQ@mail.gmail.com>
+        id S241773AbhDWJmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:42:49 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3343 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhDWJms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:42:48 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FRTk25Ljvz19Gmj;
+        Fri, 23 Apr 2021 17:38:18 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 23 Apr 2021 17:42:08 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Apr
+ 2021 17:42:08 +0800
+Subject: Re: [PATCH net v4 1/2] net: sched: fix packet stuck problem for
+ lockless qdisc
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     Michal Kubecek <mkubecek@suse.cz>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <olteanv@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
+        <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <pabeni@redhat.com>, <mzhivich@akamai.com>,
+        <johunt@akamai.com>, <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>
+References: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
+ <1618535809-11952-2-git-send-email-linyunsheng@huawei.com>
+ <20210419152946.3n7adsd355rfeoda@lion.mk-sys.cz>
+ <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
+ <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
+ <80d64438-e3e5-e861-4da0-f6c89e3c73f7@huawei.com>
+ <20210421053123.wdq3kwlvf72kwtch@lion.mk-sys.cz>
+ <6a8dea49-3a3e-4172-1d65-5dbcb0125eda@huawei.com>
+ <20210421084428.xbjgoi4r2d6t65gy@lion.mk-sys.cz>
+ <b3dacf14-0fb6-0cad-8b85-f5c8d7cd97ef@huawei.com>
+Message-ID: <a6abb3d8-f857-14e1-4212-a12df36027cf@huawei.com>
+Date:   Fri, 23 Apr 2021 17:42:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCEehJHZGEUy2TO6fPg1WyAbQCoVee=AcRrkZE4Zhw+ibYKqQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b3dacf14-0fb6-0cad-8b85-f5c8d7cd97ef@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 02:00:46PM +0800, Greentime Hu wrote:
-> Palmer Dabbelt <palmer@dabbelt.com> 於 2021年4月23日 週五 下午1:10寫道：
-> >
-> > On Thu, 22 Apr 2021 21:43:03 PDT (-0700), Palmer Dabbelt wrote:
-> > > On Sun, 11 Apr 2021 19:37:50 PDT (-0700), greentime.hu@sifive.com wrote:
-> > >> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> 於 2021年4月9日 週五 下午4:54寫道：
-> > >>>
-> > >>> On Tue, 6 Apr 2021 17:26:28 +0800, Greentime Hu wrote:
-> > >>> > This patchset includes SiFive FU740 PCIe host controller driver. We also
-> > >>> > add pcie_aux clock and pcie_power_on_reset controller to prci driver for
-> > >>> > PCIe driver to use it.
-> > >>> >
-> > >>> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
-> > >>> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
-> > >>> > v5.11 Linux kernel.
-> > >>> >
-> > >>> > [...]
-> > >>>
-> > >>> Applied to pci/dwc [dropped patch 6], thanks!
-> > >>>
-> > >>> [1/6] clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
-> > >>>       https://git.kernel.org/lpieralisi/pci/c/f3ce593b1a
-> > >>> [2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
-> > >>>       https://git.kernel.org/lpieralisi/pci/c/0a78fcfd3d
-> > >>> [3/6] MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
-> > >>>       https://git.kernel.org/lpieralisi/pci/c/8bb1c66a90
-> > >>> [4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-> > >>>       https://git.kernel.org/lpieralisi/pci/c/b86d55c107
-> > >>> [5/6] PCI: fu740: Add SiFive FU740 PCIe host controller driver
-> > >>>       https://git.kernel.org/lpieralisi/pci/c/327c333a79
-> > >>>
-> > >>> Thanks,
-> > >>> Lorenzo
-> > >>
-> > >> Hi Palmer,
-> > >>
-> > >> Since the PCIE driver has been applied, would you please pick patch 6
-> > >> to RISC-V for-next tree?
-> > >> Thank you. :)
-> > >
-> > > Sorry, I got this confused between the Linux patch set and the u-boot
-> > > patch set so I thought more versions of this had kept comming.  The DT
-> > > is on for-next now.
-> >
-> > I spoke too soon: this actually dosn't even build for me.  It's the
-> > "clocks = <&prci PRCI_CLK_PCIE_AUX>;" line
-> >
-> >     Error: arch/riscv/boot/dts/sifive/fu740-c000.dtsi:319.20-21 syntax error
-> >     FATAL ERROR: Unable to parse input tree
-> >     make[2]: *** [scripts/Makefile.lib:336: arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dtb] Error 1
-> >     make[1]: *** [scripts/Makefile.build:514: arch/riscv/boot/dts/sifive] Error 2
-> >     make: *** [Makefile:1388: dtbs] Error 2
-> >     make: *** Waiting for unfinished jobs....
-> >
-> > I'm not sure what the issue is, I see an anchor for "prci".  Do you mind
-> > sending along a new version that compiles on top of for-next?  If I need
-> > the definiton of PRCI_CLK_PCIE_AUX from a PCIe tree then it's probably
-> > best to just keep the DTS along with the rest of the patches.  IIRC I
-> > alredy Acked it, but just to be clear
-> >
-> > Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> >
-> > Thanks!
+On 2021/4/21 17:25, Yunsheng Lin wrote:
+> On 2021/4/21 16:44, Michal Kubecek wrote:
 > 
-> Thank you, Palmer.
-> It is defined in the first commit of this patchset. "clk: sifive: Add
-> pcie_aux clock in prci driver for PCIe driver"
-> You can select these whole 6 patches to make sure it can be built.
+>>
+>> I'll try running some tests also on other architectures, including arm64
+>> and s390x (to catch potential endinanity issues).
+
+I tried debugging nperf in arm64, with the below patch:
+diff --git a/client/main.c b/client/main.c
+index 429634d..de1a3ef 100644
+--- a/client/main.c
++++ b/client/main.c
+@@ -63,7 +63,10 @@ static int client_init(void)
+        ret = client_set_usr1_handler();
+        if (ret < 0)
+                return ret;
+-       return ignore_signal(SIGPIPE);
++       //return ignore_signal(SIGPIPE);
++       signal(SIGPIPE, SIG_IGN);
++
++       return 0;
+ }
+
+ static int ctrl_send_start(struct client_config *config)
+diff --git a/client/worker.c b/client/worker.c
+index ac026893..d269311 100644
+--- a/client/worker.c
++++ b/client/worker.c
+@@ -7,7 +7,7 @@
+ #include "worker.h"
+ #include "main.h"
+
+-#define WORKER_STACK_SIZE 16384
++#define WORKER_STACK_SIZE 131072
+
+ struct client_worker_data *workers_data;
+ union sockaddr_any test_addr;
+
+It has below error output:
+
+../nperf/nperf -H 127.0.0.1 -l 3 -i 1 --exact -t TCP_STREAM -M 1
+server: 127.0.0.1, port 12543
+iterations: 1, threads: 1, test length: 3
+test: TCP_STREAM, message size: 1048576
+
+run test begin
+send begin
+send done: -32
+failed to receive server stats
+*** Iteration 1 failed, quitting. ***
+
+
+Tcpdump has below output:
+09:55:12.253341 IP localhost.53080 > localhost.12543: Flags [S], seq 3954442980, win 65495, options [mss 65495,sackOK,TS val 3268837738 ecr 0,nop,wscale 7], length 0
+09:55:12.253363 IP localhost.12543 > localhost.53080: Flags [S.], seq 4240541653, ack 3954442981, win 65483, options [mss 65495,sackOK,TS val 3268837738 ecr 3268837738,nop,wscale 7], length 0
+09:55:12.253379 IP localhost.53080 > localhost.12543: Flags [.], ack 1, win 512, options [nop,nop,TS val 3268837738 ecr 3268837738], length 0
+09:55:12.253412 IP localhost.53080 > localhost.12543: Flags [P.], seq 1:29, ack 1, win 512, options [nop,nop,TS val 3268837738 ecr 3268837738], length 28
+09:55:12.253863 IP localhost.12543 > localhost.53080: Flags [P.], seq 1:17, ack 29, win 512, options [nop,nop,TS val 3268837739 ecr 3268837738], length 16
+09:55:12.253891 IP localhost.53080 > localhost.12543: Flags [.], ack 17, win 512, options [nop,nop,TS val 3268837739 ecr 3268837739], length 0
+09:55:12.254265 IP localhost.12543 > localhost.53080: Flags [F.], seq 17, ack 29, win 512, options [nop,nop,TS val 3268837739 ecr 3268837739], length 0
+09:55:12.301992 IP localhost.53080 > localhost.12543: Flags [.], ack 18, win 512, options [nop,nop,TS val 3268837787 ecr 3268837739], length 0
+09:55:15.254389 IP localhost.53080 > localhost.12543: Flags [F.], seq 29, ack 18, win 512, options [nop,nop,TS val 3268840739 ecr 3268837739], length 0
+09:55:15.254426 IP localhost.12543 > localhost.53080: Flags [.], ack 30, win 512, options [nop,nop,TS val 3268840739 ecr 3268840739], length 0
+
+
+Any idea what went wrong here?
+
+Also, Would you mind running netperf to see if there is similar issue
+in your system?
+
+>>
+>> Michal
+>>
+>> .
+>>
 > 
-> Hi Lorenzo,
-> Would you mind to pick the 6th patch along with the other 5 patches?
-> Thank you.
+> 
+> .
+> 
 
-Done, on my pci/dwc branch.
-
-Thanks,
-Lorenzo
