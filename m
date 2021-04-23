@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18831368F6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74F0368F6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241749AbhDWJd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:33:59 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25986 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229939AbhDWJdz (ORCPT
+        id S241825AbhDWJeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241759AbhDWJeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:33:55 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13N94AmB183133;
-        Fri, 23 Apr 2021 05:32:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ls43Bhvmg/av+jbLzz7/aLd4mS/CPGhhM61MlkiE+wA=;
- b=NwPWHwKLP7omCZ97un+qBGPwWw6tF327tQ//x1W/lnYNfozPWng70eCSWCbyU0lHSa5R
- BfQnR5yk6xSkek0ArDe0qUhY31ucxzLzZBlwt8g4LDqJz2fpnAzuJbng40okzQP37PWQ
- Jt+UUjvKHq+JW3LuT9cTM0mRZZzZ+1j5naj0TYmxaCz8k9kQU0pIn8t/CcZPEyZoYllY
- heOfYIDbWzWOPQuUz3J6k6KtAiJ+U8MuUZsjy+Ya+IGeixecWtQXbOeDqETRiHE4FS+6
- m3QfhKGiqH1ie6dFl57oLbwLgdz0pcfA3ZB+GmiyAE/kTTtUIQpafdjwThRSaHaqaXaI kA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 383tqxswam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Apr 2021 05:32:42 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13N9NUgn084705;
-        Fri, 23 Apr 2021 05:32:41 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 383tqxsw98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Apr 2021 05:32:41 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13N9WQEx003330;
-        Fri, 23 Apr 2021 09:32:39 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 37yt2ru8ca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Apr 2021 09:32:39 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13N9WaSZ44499336
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Apr 2021 09:32:36 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 53C764C04A;
-        Fri, 23 Apr 2021 09:32:36 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB1A64C050;
-        Fri, 23 Apr 2021 09:32:35 +0000 (GMT)
-Received: from localhost (unknown [9.171.28.167])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 23 Apr 2021 09:32:35 +0000 (GMT)
-Date:   Fri, 23 Apr 2021 11:32:34 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: [PATCH v3 9/9] KVM: Move instrumentation-safe annotations for
- enter/exit to x86 code
-Message-ID: <your-ad-here.call-01619170354-ext-2090@work.hours>
-References: <20210415222106.1643837-1-seanjc@google.com>
- <20210415222106.1643837-10-seanjc@google.com>
- <0c74158d-279a-5afa-0778-822c77ac8dc2@de.ibm.com>
- <yt9d4kfypeov.fsf@linux.ibm.com>
+        Fri, 23 Apr 2021 05:34:11 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE6CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:33:34 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id m9so34930852wrx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Y9sjCGRBeC9olD1ipL8CilaBrM51tepXMv+9DOr/vcA=;
+        b=IdByi7XRnG6bTBkYTyr4CaMa5Nfbl4pVA7Yx4gu/FsVVGIyqZP6SbSkqaUUOD3bU3y
+         UadZLBdrcoIatneM6gVlCPRzuyeUMR/m8ojc+WeqAbKIsTgXxfvepMOpEhHt1HXnPBv/
+         dewdHTevMuS4bCqms2tpztBfTIN5G6wQ4cgIIfK5Gq22J71Q5e8D5eBus10Ofw36zuGI
+         jFvmTru4QlpTaUkwI/d6IewwEK9/CucL9VhofbVJV832jVKprPyDWpq2vqgvU/q7aFgW
+         Cdm7oY2dBfUIJOb57+aouNSiEQeZnK2UiK6zZW2sZDRTZFWtWCvABVY12MB0cWwxw3ME
+         Kuaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Y9sjCGRBeC9olD1ipL8CilaBrM51tepXMv+9DOr/vcA=;
+        b=m9MHSMLXj0A70/d6vXzfL5NDDiU1aABcpomrMI+Q9yQBvcJ46sPiCLWc+nKLCJM7Ge
+         EwTdZrdhCAsL+f3nlwdXt5O/i+DoJPIPFKBtg2Xbgfwx1yNhVMSXiEIfohc1c8gUWLQb
+         r/FD0eFrojCuPLY4ryBsIwTj3tm3aPmqxQmomTxpal+8ma5bQwFkzm3XvEK/NkCoRavX
+         /+oI0SWTM8Wy2jdZ1APHUaVjfIPcfNIZrzj7iBI1mYFXFWAGrCawQHHybpROPhfLfFhE
+         U1WZnN13YDMv7pKzUBRYGyq0LJsjItHoLjLtdg/m2Gx2QjDUwX+mQBl2wbF9SzhJP6/N
+         Zewg==
+X-Gm-Message-State: AOAM531OnjQO+JLSluRB5iszNHoE0AWNjF6eZ2agiFb/syc0JDsQL+zy
+        pSJsQXdsisjjuGAfUqiS1d9+ug==
+X-Google-Smtp-Source: ABdhPJx/qWGko2tNm6hwMQwKav/UXX7Xf0wKSFXBriRhNUQxT2/YyVJKUtx2iyS7weGO1NGoXQ0fYA==
+X-Received: by 2002:adf:fbc8:: with SMTP id d8mr3560558wrs.94.1619170413462;
+        Fri, 23 Apr 2021 02:33:33 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id a22sm8154282wrc.59.2021.04.23.02.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 02:33:32 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 10:33:31 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Guru Das Srinagesh <gurus@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Add Qualcomm Technologies, Inc. PM8008 MFD driver
+Message-ID: <20210423093331.GF6446@dell>
+References: <cover.1618278453.git.gurus@codeaurora.org>
+ <20210420164659.GA21665@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <yt9d4kfypeov.fsf@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: CVTcfdrAiltuMym0SPDmpYabxyQpO3oV
-X-Proofpoint-GUID: nlrBmLBZz6P_QB0L9eVTwnmkvBPwdEXC
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-22_15:2021-04-22,2021-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- adultscore=0 spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104230058
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210420164659.GA21665@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:38:24PM +0200, Sven Schnelle wrote:
-> Christian Borntraeger <borntraeger@de.ibm.com> writes:
-> 
-> > On 16.04.21 00:21, Sean Christopherson wrote:
-> >> Drop the instrumentation_{begin,end}() annonations from the common KVM
-> >> guest enter/exit helpers, and massage the x86 code as needed to preserve
-> >> the necessary annotations.  x86 is the only architecture whose transition
-> >> flow is tagged as noinstr, and more specifically, it is the only
-> >> architecture for which instrumentation_{begin,end}() can be non-empty.
-> >> No other architecture supports CONFIG_STACK_VALIDATION=y, and s390
-> >> is the
-> >> only other architecture that support CONFIG_DEBUG_ENTRY=y.  For
-> >> instrumentation annontations to be meaningful, both aformentioned configs
-> >> must be enabled.
-> >> Letting x86 deal with the annotations avoids unnecessary nops by
-> >> squashing back-to-back instrumention-safe sequences.
-> >
-> > We have considered implementing objtool for s390. Not sure where we
-> > stand and if we will do this or not. Sven/Heiko?
-> 
-> We are planning to support objtool on s390. Vasily is working on it -
-> maybe he has some thoughts about this.
+On Tue, 20 Apr 2021, Guru Das Srinagesh wrote:
 
-We got CONFIG_DEBUG_ENTRY=y since 5.12, objtool runs on vmlinux.o but I have
-not yet enabled --noinstr option in s390 objtool. So, it's hard to say in
-advance if this particular change would make things better or worse.
-In general, common code annotations are problematic, because arch
-specific code is still not identical and this leads sometimes to different
-needs for common code annotations.
+> On Mon, Apr 12, 2021 at 07:00:24PM -0700, Guru Das Srinagesh wrote:
+> > Changes from v2:
+> >   - Collected Rob Herring's Acked-by for the IRQ listing patch
+> >   - Addressed Rob's comments for the dt-bindings patch
+> > 
+> > Changes from v1:
+> >   - Removed errant Change-Id from dt-bindings IRQ patch and gathered Bjorn's
+> >     Reviewed-by
+> >   - Fixed up YAML errors using make dt_binding_check
+> > 
+> > This driver is dependent on changes that have been made to the regmap-irq
+> > framework that have currently been accepted [1][2] in regmap.git upstream by
+> > Mark Brown but haven't made it to Linus' tree yet. For this reason, this driver
+> > has been based on the tip of regmap.git and not mfd.git.
+> > 
+> > Those changes, and this driver, are the result of a rewrite effort that was
+> > promised a long ago [3]. The framework changes and this driver have been tested
+> > and verified end-to-end on an internal platform.
+> > 
+> > [1] https://lore.kernel.org/lkml/20210318183607.gFxO2hoTO274vl3jUuxWbi19rq9wQELzN-y3B4jvO10@z/
+> > [2] https://lore.kernel.org/lkml/161726943419.2413.4844313396830856637.b4-ty@kernel.org/
+> > [3] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
+> 
+> Hi Lee, mfd reviewers,
+> 
+> This new driver depends on three regmap-irq framework changes that have
+> been accepted by Mark (please see above) and hence will land only in the
+> next rc-1 release. I just wanted to make sure that this patch series was
+> on your radar [1]. The dt-bindings has been Acked by Rob already, and
+> I'd be happy to address any review comments while patiently waiting for
+> the dependencies to land.
 
-I'll try to experiment with --noinstr on s390 shortly.
+Yes, it's on my to-review list.
+
+Linus is about to release v5.12.  I'll review this set in good time.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
