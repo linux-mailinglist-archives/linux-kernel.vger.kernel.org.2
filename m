@@ -2,128 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF10368E82
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEE0368E99
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241347AbhDWILI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241336AbhDWILG (ORCPT
+        id S241618AbhDWIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:12:05 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17395 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241470AbhDWIL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:11:06 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AC3C061574;
-        Fri, 23 Apr 2021 01:10:29 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id r12so72642315ejr.5;
-        Fri, 23 Apr 2021 01:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=9ehiXslja300i2vGj1/93A1eFwKfaTwfsPk1xeLX9g0=;
-        b=mTvEpz2zpeZnMPAsi5WCXFZWP6lDmuYfIHb8spsDH+ZFdAw5955Jn4QCxuCahCwVhu
-         2HfEZB6dg1r5ZFiYL9cFtr+Eg+uOdzzf10gwJshgk6Dk0/jn8oqeZ6Rqc3JHhUSCByZT
-         eIqiD3BzxpNBtswgL1dPuvnJhlbvdIXqHw2F0hoP9T1nVa+685UqEsz5JoW4QpU4UulT
-         bVnm/9Y+I6Z+7t0sDQ1YFdF9SQP7EVB/JVHanABcn7GMxf/teGdINxjrY+Gj0JyrTAOr
-         1hauBrNq0ZirSeDDRTC+zCEK9hVLSWBSnmJ5d8NW+h2uj+kh7RoQqlzS0Xmt4zYOOKhW
-         3X5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=9ehiXslja300i2vGj1/93A1eFwKfaTwfsPk1xeLX9g0=;
-        b=HYLHj8Lo7Ju3DOpcmkfFR4SwdZkQG6C+KfLfu7hHVExQFdulT0rl9PN9jVtkPIBjsV
-         +ajA5iPowPHfX/BXN8fPypcUUwYftw4fiZsXaou8swbygzFkm64jFufq5u/65TCX6YWC
-         n5ZixKHHO4vRs9GKUtTI68E1HKK56oAQYTKHEjdIAV+lu6I82xqQo8DBkd7Wmb+cDECD
-         oap0Psx9XBy/97gMDhMNzMbUanimCuYR5ysbfFUbF+QqUHYBk0L5SsixpoxsbpfZsI21
-         +MGddxlA+Sjh6rqUCBiDrxIvP0hnq1TjjFapH7uDL/Q3+68oZn9YARMFXOtQi2ojGUGD
-         1BOg==
-X-Gm-Message-State: AOAM533Y/Lu8/ANUmv3Vlut7xOErhF/ZAjVFBl2IOeISc+T/8uspZNaV
-        HNkPxUBYWOLG59f1ETi1WpM=
-X-Google-Smtp-Source: ABdhPJxVQP52a6KQPI83FRSHoKvz2CE8KYNXcsOBDRk9jrxzfsx25SaDMYXg1BKJAWCldqO9IVHctA==
-X-Received: by 2002:a17:906:cc46:: with SMTP id mm6mr3007567ejb.138.1619165428070;
-        Fri, 23 Apr 2021 01:10:28 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:509f:9ae8:ad1c:20a4? ([2a02:908:1252:fb60:509f:9ae8:ad1c:20a4])
-        by smtp.gmail.com with ESMTPSA id t14sm3461827ejj.77.2021.04.23.01.10.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 01:10:27 -0700 (PDT)
-Subject: Re: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error
- path
-To:     Jan Harkes <jaharkes@cs.cmu.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, coda@cs.cmu.edu,
-        miklos@szeredi.hu, akpm@linux-foundation.org, jgg@ziepe.ca
-References: <20210421132012.82354-1-christian.koenig@amd.com>
- <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
- <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
- <20210422135103.hif4a5znhzt4pc6f@cs.cmu.edu>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <1dce6311-c708-19a8-a9cb-489602d6e930@gmail.com>
-Date:   Fri, 23 Apr 2021 10:10:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 23 Apr 2021 04:11:59 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FRRlQ6dgTzlZ9n;
+        Fri, 23 Apr 2021 16:09:22 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 23 Apr 2021 16:11:17 +0800
+Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
+ pfn_valid()
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Will Deacon" <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210421065108.1987-1-rppt@kernel.org>
+ <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
+ <YIEl8aKr8Ly0Zd3O@kernel.org>
+ <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
+Message-ID: <2a1592ad-bc9d-4664-fd19-f7448a37edc0@huawei.com>
+Date:   Fri, 23 Apr 2021 16:11:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210422135103.hif4a5znhzt4pc6f@cs.cmu.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 22.04.21 um 15:51 schrieb Jan Harkes:
-> On Thu, Apr 22, 2021 at 02:39:41PM +0200, Christian König wrote:
->> Am 22.04.21 um 14:27 schrieb Jan Harkes:
->>> Looks good to me.
->>>
->>> I'm also maintaining an out of tree coda module build that people sometimes use, which has workarounds for differences between the various kernel versions.
->>>
->>> Do you have a reference to the corresponding mmap_region change? If it is merged already I'll probably be able to find it. Is this mmap_region change expected to be backported to any lts kernels?
->> That is the following upstream commit in Linus tree:
->>
->> commit 1527f926fd04490f648c42f42b45218a04754f87
->> Author: Christian König <christian.koenig@amd.com>
->> Date:   Fri Oct 9 15:08:55 2020 +0200
->>
->>      mm: mmap: fix fput in error path v2
->>
->> But I don't think we should backport that.
->>
->> And sorry for the noise. We had so many places which expected different
->> behavior that I didn't noticed that two occasions in the fs code actually
->> rely on the current behavior.
->>
->> For your out of tree module you could make the code version independent by
->> setting the vma back to the original file in case of an error. That should
->> work with both behaviors in mmap_region.
-> Awesome, I'll give that a try, it may very well be a cleaner solution
-> either way.
+
+On 2021/4/22 23:28, Kefeng Wang wrote:
 >
-> And thank you for following up after your original patch and finding
-> the filesystems that mess around with those mappings. I'm sure it would
-> have taken me a while to figure out why file refcounts would go weird
-> for some people, especially because this only happens in the error path.
-
-Kudos goes to Miklos for figured out why the refcount for overlayfs was 
-suddenly wrong.
-
-And please also see the follow up commit:
-
-commit 295992fb815e791d14b18ef7cdbbaf1a76211a31 (able/vma_file)
-Author: Christian König <christian.koenig@amd.com>
-Date:   Mon Sep 14 15:09:33 2020 +0200
-
-     mm: introduce vma_set_file function v5
-
-It adds a new vma_set_file() function which implements the necessary 
-refcount dance for changing the vma file in a clean manner.
-
-Thanks,
-Christian.
-
+> On 2021/4/22 15:29, Mike Rapoport wrote:
+>> On Thu, Apr 22, 2021 at 03:00:20PM +0800, Kefeng Wang wrote:
+>>> On 2021/4/21 14:51, Mike Rapoport wrote:
+>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>
+>>>> Hi,
+>>>>
+>>>> These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially 
+>>>> hardwire
+>>>> pfn_valid_within() to 1.
+>>>>
+>>>> The idea is to mark NOMAP pages as reserved in the memory map and 
+>>>> restore
+>>>> the intended semantics of pfn_valid() to designate availability of 
+>>>> struct
+>>>> page for a pfn.
+>>>>
+>>>> With this the core mm will be able to cope with the fact that it 
+>>>> cannot use
+>>>> NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER 
+>>>> blocks
+>>>> will be treated correctly even without the need for pfn_valid_within.
+>>>>
+>>>> The patches are only boot tested on qemu-system-aarch64 so I'd really
+>>>> appreciate memory stress tests on real hardware.
+>>>>
+>>>> If this actually works we'll be one step closer to drop custom 
+>>>> pfn_valid()
+>>>> on arm64 altogether.
+...
 >
-> Jan
+> Ok, thanks, we met a same panic like the link on arm32(without 
+> HOLES_IN_ZONE),
 >
+> the scheme for arm64 could be suit for arm32, right?  I will try the 
+> patchset with
+>
+> some changes on arm32 and give some feedback.
+
+I tested this patchset(plus arm32 change, like arm64 does) based on lts 
+5.10，add
+
+some debug log, the useful info shows below, if we enable HOLES_IN_ZONE, 
+no panic,
+
+any idea, thanks.
+
+Zone ranges:
+   Normal   [mem 0x0000000080a00000-0x00000000b01fffff]
+   HighMem  [mem 0x00000000b0200000-0x00000000ffffefff]
+Movable zone start for each node
+Early memory node ranges
+   node   0: [mem 0x0000000080a00000-0x00000000855fffff]
+   node   0: [mem 0x0000000086a00000-0x0000000087dfffff]
+   node   0: [mem 0x000000008bd00000-0x000000008c4fffff]
+   node   0: [mem 0x000000008e300000-0x000000008ecfffff]
+   node   0: [mem 0x0000000090d00000-0x00000000bfffffff]
+   node   0: [mem 0x00000000cc000000-0x00000000dc9fffff]
+   node   0: [mem 0x00000000de700000-0x00000000de9fffff]
+   node   0: [mem 0x00000000e0800000-0x00000000e0bfffff]
+   node   0: [mem 0x00000000f4b00000-0x00000000f6ffffff]
+   node   0: [mem 0x00000000fda00000-0x00000000ffffefff]
+
+----> free_memmap, start_pfn = 85800,  85800000 end_pfn = 86a00, 86a00000
+----> free_memmap, start_pfn = 8c800,  8c800000 end_pfn = 8e300, 8e300000
+----> free_memmap, start_pfn = 8f000,  8f000000 end_pfn = 90000, 90000000
+----> free_memmap, start_pfn = dcc00,  dcc00000 end_pfn = de700, de700000
+----> free_memmap, start_pfn = dec00,  dec00000 end_pfn = e0000, e0000000
+----> free_memmap, start_pfn = e0c00,  e0c00000 end_pfn = e4000, e4000000
+----> free_memmap, start_pfn = f7000,  f7000000 end_pfn = f8000, f8000000
+=== >move_freepages: start_pfn/end_pfn [de600, de7ff], [de600000, 
+de7ff000] :  pfn =de600 pfn2phy = de600000 , page = ef3cc000, page-flags 
+= ffffffff
+8<--- cut here ---
+Unable to handle kernel paging request at virtual address fffffffe
+pgd = 5dd50df5
+[fffffffe] *pgd=affff861, *pte=00000000, *ppte=00000000
+Internal error: Oops: 37 [#1] SMP ARM
+Modules linked in: gmac(O)
+CPU: 2 PID: 635 Comm: test-oom Tainted: G           O      5.10.0+ #31
+Hardware name: Hisilicon A9
+PC is at move_freepages_block+0x150/0x278
+LR is at move_freepages_block+0x150/0x278
+pc : [<c02383a4>]    lr : [<c02383a4>]    psr: 200e0393
+sp : c4179cf8  ip : 00000000  fp : 00000001
+r10: c4179d58  r9 : 000de7ff  r8 : 00000000
+r7 : c0863280  r6 : 000de600  r5 : 000de600  r4 : ef3cc000
+r3 : ffffffff  r2 : 00000000  r1 : ef5d069c  r0 : fffffffe
+Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 1ac5387d  Table: 83b0c04a  DAC: 55555555
+Process test-oom (pid: 635, stack limit = 0x25d667df)
 
