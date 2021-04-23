@@ -2,177 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E66E36996D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56405369986
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243752AbhDWSZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:25:32 -0400
-Received: from mga07.intel.com ([134.134.136.100]:38428 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243587AbhDWSZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:25:10 -0400
-IronPort-SDR: OG1+3wLUeT2zkR+7Rya8fU+meROV6McWNMMZ4wqzJ285e0i0MSLXpM5TpL7NnA8wC5Eb5AbyZt
- JgwGw/aZq1Jw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="260067665"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="260067665"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 11:24:33 -0700
-IronPort-SDR: ikThB6vvqANmfWpDuK7yX7nu5uoQO1fodbpA78AAAL6Nv73k3ir45sTswpkMRkA2pL2G9Kupbi
- zUG0Rf5ahsVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="385169389"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 23 Apr 2021 11:24:30 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 8A708C80; Fri, 23 Apr 2021 21:24:45 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 14/14] spi: pxa2xx: Introduce special type for Merrifield SPIs
-Date:   Fri, 23 Apr 2021 21:24:41 +0300
-Message-Id: <20210423182441.50272-15-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+        id S243739AbhDWS02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:26:28 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:34557 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243808AbhDWS0N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 14:26:13 -0400
+Received: by mail-oi1-f176.google.com with SMTP id k18so45096281oik.1;
+        Fri, 23 Apr 2021 11:25:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qgWGrU+NRgbqW5EZG+gvjikL17VEIwiL+m90q0aPjwU=;
+        b=bOP/JV2gXaA1tS5cPh4kRC8B3l3H8YLhYtMCw4g0c0qAovC3nDahc/MVCEjEwFiOCH
+         Dkyo2q0YqCoTXNzXlk16/toi/1QOoMlA4dzY9qD8PkYPEARrHygeKG/b7weMgQp2y4n6
+         /+P4fH2G9CF2WKMRQMtruyKZlcGSDfkkCpxSkv6kwbA2OnHFo8Vhz/J5ZppCcRxJvlGq
+         7GoMrWacuSER70pp04Fv76IrzpdytOYBFZvRFJszHhJd/yrTRXQMPJjC+n6PocChuR36
+         KLhWLxC0cJvTFf+O2w7g44zttEFq5dEybGGdYYv/R3dIn4hiIQ5VyPqmZBwEgEQt+4W4
+         P8/A==
+X-Gm-Message-State: AOAM532qKIHd+GvNbL/aTAzEONNOWjcOfKClUsDyZAbiDD0Y9ZCYzREk
+        eIdCl2Zrua9yZaTReMC9dM3yQId1QcMhl3WVP6M=
+X-Google-Smtp-Source: ABdhPJzIW9nCpFD4K+luzh3oa4XdA6nBZsXZR10JnAacbR+a5loiOX9m3bVXP0pS7HUWcs68mtIJTozgOqDI0y55Jkg=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr3628059oib.69.1619202335347;
+ Fri, 23 Apr 2021 11:25:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210422214930.716596-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAJZ5v0gH-Zg7YZPf9joaMt1zfYfNkUGpo596=9QEJ1NKAw87qQ@mail.gmail.com> <df09a419-c881-c987-ef07-1b0e05bb171e@linux.intel.com>
+In-Reply-To: <df09a419-c881-c987-ef07-1b0e05bb171e@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Apr 2021 20:25:24 +0200
+Message-ID: <CAJZ5v0gzCSrjjEKfu-whehh28eNMPaDAmjpBEikFFV00iEqbBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ACPICA: Add SVKL table headers
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael J Wysocki <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Merrifield SPI is actually more closer to PXA3xx. It has extended FIFO
-(32 bytes) and additional registers to get or set FIFO thresholds.
+On Fri, Apr 23, 2021 at 6:52 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+>
+> On 4/23/21 5:36 AM, Rafael J. Wysocki wrote:
+> > Evidently, this is ACPICA material, so I'm expecting to receive this
+> > patch from Erik within the normal ACPICA development process, so I'm
+> > not sure what the purpose of this submission is.
+> >
+>
+> Erik already sent a pull request to merge this patch to ACPICA repo.
+>
+> After he updated the ACPICA commit ID, he sent it to me for Linux
+> submission.
+>
+> I am not sure whether there is a special process for ACPICA related
+> submission to Linux kernel. But if I had to guess, since I have sent
+> both SVKL and MADT patches at the same time, Erik might have assumed
+> that it should be merged in the same patch set and hence sent to me
+> for upstream submission.
+>
+> > Has this patch been posted here for reference only?
+>
+> If this submission is incorrect, I can request Erik to submit it again
+> for upstream merge.
 
-Introduce new type for Intel Merrifield SPI host controllers and handle bigger
-FIFO size.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-pxa2xx-pci.c |  2 +-
- drivers/spi/spi-pxa2xx.c     | 32 +++++++++++++++++++++++++++++---
- include/linux/pxa2xx_ssp.h   | 16 ++++++++++++++++
- 3 files changed, 46 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index 5af0a3fbc1b0..5df6e11b345d 100644
---- a/drivers/spi/spi-pxa2xx-pci.c
-+++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -179,7 +179,7 @@ static struct pxa_spi_info spi_info_configs[] = {
- 		.rx_param = &bsw2_rx_param,
- 	},
- 	[PORT_MRFLD] = {
--		.type = PXA27x_SSP,
-+		.type = MRFLD_SSP,
- 		.max_clk_rate = 25000000,
- 		.setup = mrfld_spi_setup,
- 	},
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 5a4f808eefde..313095bfa7dd 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -200,6 +200,11 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
- 	return drv_data->ssp_type == MMP2_SSP;
- }
- 
-+static bool is_mrfld_ssp(const struct driver_data *drv_data)
-+{
-+	return drv_data->ssp_type == MRFLD_SSP;
-+}
-+
- static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
- {
- 	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
-@@ -1087,6 +1092,15 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
- 	}
- 
-+	if (is_mrfld_ssp(drv_data)) {
-+		u32 thresh = 0;
-+
-+		thresh |= SFIFOTT_RxThresh(chip->lpss_rx_threshold);
-+		thresh |= SFIFOTT_TxThresh(chip->lpss_tx_threshold);
-+
-+		pxa2xx_spi_update(drv_data, SFIFOTT, 0xffffffff, thresh);
-+	}
-+
- 	if (is_quark_x1000_ssp(drv_data))
- 		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
- 
-@@ -1253,6 +1267,11 @@ static int setup(struct spi_device *spi)
- 		tx_hi_thres = 0;
- 		rx_thres = RX_THRESH_QUARK_X1000_DFLT;
- 		break;
-+	case MRFLD_SSP:
-+		tx_thres = TX_THRESH_MRFLD_DFLT;
-+		tx_hi_thres = 0;
-+		rx_thres = RX_THRESH_MRFLD_DFLT;
-+		break;
- 	case CE4100_SSP:
- 		tx_thres = TX_THRESH_CE4100_DFLT;
- 		tx_hi_thres = 0;
-@@ -1328,9 +1347,16 @@ static int setup(struct spi_device *spi)
- 		chip->cr1 |= SSCR1_SPH;
- 	}
- 
--	chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
--	chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres)
--				| SSITF_TxHiThresh(tx_hi_thres);
-+	if (is_lpss_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
-+		chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres) |
-+					  SSITF_TxHiThresh(tx_hi_thres);
-+	}
-+
-+	if (is_mrfld_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = rx_thres;
-+		chip->lpss_tx_threshold = tx_thres;
-+	}
- 
- 	/* set dma burst and threshold outside of chip_info path so that if
- 	 * chip_info goes away after setting chip->enable_dma, the
-diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
-index fdfbe17e15f4..2b21bc1f3c73 100644
---- a/include/linux/pxa2xx_ssp.h
-+++ b/include/linux/pxa2xx_ssp.h
-@@ -183,6 +183,21 @@ struct device_node;
- #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
- #define SSACD_SCDX8		BIT(7)		/* SYSCLK division ratio select */
- 
-+/* Intel Merrifield SSP */
-+#define SFIFOL			0x68		/* FIFO level */
-+#define SFIFOTT			0x6c		/* FIFO trigger threshold */
-+
-+#define RX_THRESH_MRFLD_DFLT	16
-+#define TX_THRESH_MRFLD_DFLT	16
-+
-+#define SFIFOL_TFL_MASK		GENMASK(15, 0)	/* Transmit FIFO Level mask */
-+#define SFIFOL_RFL_MASK		GENMASK(31, 16)	/* Receive FIFO Level mask */
-+
-+#define SFIFOTT_TFT		GENMASK(15, 0)	/* Transmit FIFO Threshold (mask) */
-+#define SFIFOTT_TxThresh(x)	(((x) - 1) << 0)	/* TX FIFO trigger threshold / level */
-+#define SFIFOTT_RFT		GENMASK(31, 16)	/* Receive FIFO Threshold (mask) */
-+#define SFIFOTT_RxThresh(x)	(((x) - 1) << 16)	/* RX FIFO trigger threshold / level */
-+
- /* LPSS SSP */
- #define SSITF			0x44		/* TX FIFO trigger level */
- #define SSITF_TxHiThresh(x)	(((x) - 1) << 0)
-@@ -205,6 +220,7 @@ enum pxa_ssp_type {
- 	MMP2_SSP,
- 	PXA910_SSP,
- 	CE4100_SSP,
-+	MRFLD_SSP,
- 	QUARK_X1000_SSP,
- 	LPSS_LPT_SSP, /* Keep LPSS types sorted with lpss_platforms[] */
- 	LPSS_BYT_SSP,
--- 
-2.30.2
-
+All of the sign-offs under the original ACPICA commit should have been
+preserved, then.
