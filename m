@@ -2,175 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB806368ABE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE465368AC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240200AbhDWBwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
+        id S240271AbhDWBwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240151AbhDWBwp (ORCPT
+        with ESMTP id S240151AbhDWBwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:52:45 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16B8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:52:09 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso406817pjs.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:52:09 -0700 (PDT)
+        Thu, 22 Apr 2021 21:52:49 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14576C061574;
+        Thu, 22 Apr 2021 18:52:14 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id g16so19744755pfq.5;
+        Thu, 22 Apr 2021 18:52:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AiHVqz2ZM9GbopK8GrCcTF54E/i2NQ9u5jilhDOJuRE=;
-        b=W4gJKQ4ZMAf5rIX7i7nyhW5N2PmY2iiejKjAVEp70tzVSI/RmgXSp/HT2gimvD3Ftu
-         5+yKrBJdDjE+bh2zAcMwDnbWKidg2+MRCwuaH+ualj+q0dbbEn7LtvtQht3oGskDk6s6
-         eYZeAUistrNjrhqj4EwYSh5WHL5myCvjDA9oUlsTFRy7p5Ckte+91Kf0cdba6KgjanKy
-         7QAp97UCxnoL61onek3F2WTfuHhSCsz9Y8GmKFzSIwHRhj8CDf1pRNsQuFprZOJwxFIh
-         esReJ7f7pRXzefJ3LZv4um9Ao8qt4IBxBQ9AzbbWJTNYdtFRqYWuCygCkcWWy2HpdqSj
-         /pKw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hTqeOoCxpmP+/VpBMHvIwM6ctbQfsuJAmHPb75r8utw=;
+        b=uRTlOmJYnj3BKHWQdK4Zx05P2L/OrJXrcgtmTL6Z2WO/HFNVRKkRr//ZXQaD2HUsBl
+         Xa4yO5qpS2lOEo4A1FM3SGSWQhJEfwtIgHDM8Xi/5rWlVKTZl/7havR8xUKvcGiQaWdV
+         ahMrLM3ASAaL9I8Jk7ci6JfJAewGjcobUrGYDV8X17KATKe7Xo+1k5QA+Y02quPC/Vq/
+         Bqp9BMbvHkxkmd8Ragi1INRjV5sLf+ReinpHYvaGNiYE10DjVd9mQ6zNCRq/a21IEgKS
+         vreHv0ziTXns0m8n34mWA7swZwCItO65JI8i8g2t9If/1fMGUCVoNgevgkWD0HiFWaKq
+         3Dyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=AiHVqz2ZM9GbopK8GrCcTF54E/i2NQ9u5jilhDOJuRE=;
-        b=dP/wuWMBiMa2BPM1GWK9auktdRLKPlyCtm5CCezW6YyIL1sDqj52vSTh5VpwHW8IKW
-         rQ3S2IhBUJuvjzQ4fjfC+CfllvXJsCekHuSz+SXtpAgoMuREnSbbXoDYxyeSTGB4eu5p
-         ttVcd8KiyxRhUtg6UjvEgvciMwfQsi4DgTT0TDuvJLXtslylnwrfq4c5XiLTbRKrjIdK
-         7KrkqspGmnU7m8cYtP9vn7AsFDiPyhwreBadj0U9s1KExAlEOWWQ3Oh+iNpb8kA6ftPF
-         M1v9GeTnHwbyOzcOPH2yaV9AAw2i2dfZbKKtXvIL9veQnbyMwPugfUvNdS4qN7t2N9JA
-         xQEw==
-X-Gm-Message-State: AOAM532xoyy0ZOFxAJ32tClB9w30okKWT7nLVaL1LHatJRj0BC5AVHTP
-        ix6sS/7vZv5kB1LJJxbA/Wa0Dw==
-X-Google-Smtp-Source: ABdhPJyzRjdUJ0WNvSFPxEBrMRrXaH9r1e4asketjQTy1cc9hCIxWZ0pZ59ybpNxlodmeH4lUjmJeA==
-X-Received: by 2002:a17:90a:4d8a:: with SMTP id m10mr1707999pjh.42.1619142729330;
-        Thu, 22 Apr 2021 18:52:09 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v8sm3059263pfm.128.2021.04.22.18.52.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 18:52:08 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 18:52:08 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 18:51:40 PDT (-0700)
-Subject:     Re: [PATCH] riscv/kprobe: fix kernel panic when invoking sys_read traced by kprobe
-In-Reply-To: <20210330081848.14043-1-liaochang1@huawei.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        guoren@linux.alibaba.com, mhiramat@kernel.org, penberg@kernel.org,
-        lkp@intel.com, me@packi.ch, liaochang1@huawei.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     liaochang1@huawei.com
-Message-ID: <mhng-afc94428-3903-4949-8d3e-f7a081886e38@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hTqeOoCxpmP+/VpBMHvIwM6ctbQfsuJAmHPb75r8utw=;
+        b=Pgx7YqIiOeh+Ey09NG5HO5EnIvybNW5vZioh+8qgFzibBYpDDm4aTVm9j5PvEOri2p
+         gDb16+eeqvImGQud2ROfiKa6dM4SdiLRYs3PocB0/pkP0NZQxxCerxV13EYvRJ5KzQjy
+         FP7dUlS+F2zCp8vpCH7cZVN1T1RKCBDbObPTsVYBQy1PWkw2auvy9v9EWxwgQ4dI2R13
+         tkcjAfA4JMlXlSKF/hFgYfuaa8y9ZQSJ9gUJ8CVSXxiw2kVZLt3XOHTxkLyiSteVyI/O
+         rwJcYOuRoTXfBs51qZA7PTvUAtpznrOx2uN92SHksvB2crDJADhRmYZQiA+EpF+rjYuV
+         xQiA==
+X-Gm-Message-State: AOAM532ZyGX+sA+T9tCMRGSvwND7mFBLbN4PXTRIXpKpQ09f9tLaTRdE
+        WQITJ1/IIdifh0rw7WWJwADpGtTJpjc=
+X-Google-Smtp-Source: ABdhPJzyC8KaGdFuiC+qSklSghjKjeN5KwifZKxtReNWozv6hjrULdZkPFdNDKbGUMzKCvJu6dulrw==
+X-Received: by 2002:a63:e541:: with SMTP id z1mr1564175pgj.59.1619142733188;
+        Thu, 22 Apr 2021 18:52:13 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id n50sm3099672pfv.69.2021.04.22.18.52.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 18:52:12 -0700 (PDT)
+Subject: Re: [PATCH 01/14] drivers: net: dsa: qca8k: handle error with
+ set_page
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210423014741.11858-1-ansuelsmth@gmail.com>
+ <20210423014741.11858-2-ansuelsmth@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e2a3fc19-d7ee-3552-e443-ba0190fa4b08@gmail.com>
+Date:   Thu, 22 Apr 2021 18:52:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210423014741.11858-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 01:18:48 PDT (-0700), liaochang1@huawei.com wrote:
-> The execution of sys_read end up hitting a BUG_ON() in __find_get_block
-> after installing kprobe at sys_read, the BUG message like the following:
->
-> [   65.708663] ------------[ cut here ]------------
-> [   65.709987] kernel BUG at fs/buffer.c:1251!
-> [   65.711283] Kernel BUG [#1]
-> [   65.712032] Modules linked in:
-> [   65.712925] CPU: 0 PID: 51 Comm: sh Not tainted 5.12.0-rc4 #1
-> [   65.714407] Hardware name: riscv-virtio,qemu (DT)
-> [   65.715696] epc : __find_get_block+0x218/0x2c8
-> [   65.716835]  ra : __getblk_gfp+0x1c/0x4a
-> [   65.717831] epc : ffffffe00019f11e ra : ffffffe00019f56a sp : ffffffe002437930
-> [   65.719553]  gp : ffffffe000f06030 tp : ffffffe0015abc00 t0 : ffffffe00191e038
-> [   65.721290]  t1 : ffffffe00191e038 t2 : 000000000000000a s0 : ffffffe002437960
-> [   65.723051]  s1 : ffffffe00160ad00 a0 : ffffffe00160ad00 a1 : 000000000000012a
-> [   65.724772]  a2 : 0000000000000400 a3 : 0000000000000008 a4 : 0000000000000040
-> [   65.726545]  a5 : 0000000000000000 a6 : ffffffe00191e000 a7 : 0000000000000000
-> [   65.728308]  s2 : 000000000000012a s3 : 0000000000000400 s4 : 0000000000000008
-> [   65.730049]  s5 : 000000000000006c s6 : ffffffe00240f800 s7 : ffffffe000f080a8
-> [   65.731802]  s8 : 0000000000000001 s9 : 000000000000012a s10: 0000000000000008
-> [   65.733516]  s11: 0000000000000008 t3 : 00000000000003ff t4 : 000000000000000f
-> [   65.734434]  t5 : 00000000000003ff t6 : 0000000000040000
-> [   65.734613] status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-> [   65.734901] Call Trace:
-> [   65.735076] [<ffffffe00019f11e>] __find_get_block+0x218/0x2c8
-> [   65.735417] [<ffffffe00020017a>] __ext4_get_inode_loc+0xb2/0x2f6
-> [   65.735618] [<ffffffe000201b6c>] ext4_get_inode_loc+0x3a/0x8a
-> [   65.735802] [<ffffffe000203380>] ext4_reserve_inode_write+0x2e/0x8c
-> [   65.735999] [<ffffffe00020357a>] __ext4_mark_inode_dirty+0x4c/0x18e
-> [   65.736208] [<ffffffe000206bb0>] ext4_dirty_inode+0x46/0x66
-> [   65.736387] [<ffffffe000192914>] __mark_inode_dirty+0x12c/0x3da
-> [   65.736576] [<ffffffe000180dd2>] touch_atime+0x146/0x150
-> [   65.736748] [<ffffffe00010d762>] filemap_read+0x234/0x246
-> [   65.736920] [<ffffffe00010d834>] generic_file_read_iter+0xc0/0x114
-> [   65.737114] [<ffffffe0001f5d7a>] ext4_file_read_iter+0x42/0xea
-> [   65.737310] [<ffffffe000163f2c>] new_sync_read+0xe2/0x15a
-> [   65.737483] [<ffffffe000165814>] vfs_read+0xca/0xf2
-> [   65.737641] [<ffffffe000165bae>] ksys_read+0x5e/0xc8
-> [   65.737816] [<ffffffe000165c26>] sys_read+0xe/0x16
-> [   65.737973] [<ffffffe000003972>] ret_from_syscall+0x0/0x2
-> [   65.738858] ---[ end trace fe93f985456c935d ]---
->
-> A simple reproducer looks like:
-> 	echo 'p:myprobe sys_read fd=%a0 buf=%a1 count=%a2' > /sys/kernel/debug/tracing/kprobe_events
-> 	echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
-> 	cat /sys/kernel/debug/tracing/trace
->
-> Here's what happens to hit that BUG_ON():
->
-> 1) After installing kprobe at entry of sys_read, the first instruction
->    is replaced by 'ebreak' instruction on riscv64 platform.
->
-> 2) Once kernel reach the 'ebreak' instruction at the entry of sys_read,
->    it trap into the riscv breakpoint handler, where it do something to
->    setup for coming single-step of origin instruction, including backup
->    the 'sstatus' in pt_regs, followed by disable interrupt during single
->    stepping via clear 'SIE' bit of 'sstatus' in pt_regs.
->
-> 3) Then kernel restore to the instruction slot contains two instructions,
->    one is original instruction at entry of sys_read, the other is 'ebreak'.
->    Here it trigger a 'Instruction page fault' exception (value at 'scause'
->    is '0xc'), if PF is not filled into PageTabe for that slot yet.
->
-> 4) Again kernel trap into page fault exception handler, where it choose
->    different policy according to the state of running kprobe. Because
->    afte 2) the state is KPROBE_HIT_SS, so kernel reset the current kprobe
->    and 'pc' points back to the probe address.
->
-> 5) Because 'epc' point back to 'ebreak' instrution at sys_read probe,
->    kernel trap into breakpoint handler again, and repeat the operations
->    at 2), however 'sstatus' without 'SIE' is keep at 4), it cause the
->    real 'sstatus' saved at 2) is overwritten by the one withou 'SIE'.
->
-> 6) When kernel cross the probe the 'sstatus' CSR restore with value
->    without 'SIE', and reach __find_get_block where it requires the
->    interrupt must be enabled.
->
-> Fix this is very trivial, just restore the value of 'sstatus' in pt_regs
-> with backup one at 2) when the instruction being single stepped cause a
-> page fault.
->
-> Fixes: c22b0bcb1dd02 ("riscv: Add kprobes supported")
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  arch/riscv/kernel/probes/kprobes.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-> index 7e2c78e2ca6b..d71f7c49a721 100644
-> --- a/arch/riscv/kernel/probes/kprobes.c
-> +++ b/arch/riscv/kernel/probes/kprobes.c
-> @@ -260,8 +260,10 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int trapnr)
->
->  		if (kcb->kprobe_status == KPROBE_REENTER)
->  			restore_previous_kprobe(kcb);
-> -		else
-> +		else {
-> +			kprobes_restore_local_irqflag(kcb, regs);
->  			reset_current_kprobe();
-> +		}
->
->  		break;
->  	case KPROBE_HIT_ACTIVE:
 
-Sorry, I missed this when going through everything for fixes.  I've just 
-put it on for next, as I don't really want te send along anything this 
-late.
+
+On 4/22/2021 6:47 PM, Ansuel Smith wrote:
+> Better handle function qca8k_set_page. The original code requires a
+> deleay of 5us and set the current page only if the bus write has not
+> failed.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/net/dsa/qca8k.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index cdaf9f85a2cb..a6d35b825c0e 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -133,9 +133,12 @@ qca8k_set_page(struct mii_bus *bus, u16 page)
+>  	if (page == qca8k_current_page)
+>  		return;
+>  
+> -	if (bus->write(bus, 0x18, 0, page) < 0)
+> +	if (bus->write(bus, 0x18, 0, page)) {
+>  		dev_err_ratelimited(&bus->dev,
+>  				    "failed to set qca8k page\n");
+> +		return;
+> +	}
+
+An improvement would be to propagate the return value to the two callers
+which themselves do allow an error to be propagated no? If you cannot
+set the page you are pretty much toast.
+-- 
+Florian
