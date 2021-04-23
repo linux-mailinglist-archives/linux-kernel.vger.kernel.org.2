@@ -2,278 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEF4369537
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37E436953A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242702AbhDWO46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:56:58 -0400
-Received: from mail-mw2nam12on2073.outbound.protection.outlook.com ([40.107.244.73]:20705
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230416AbhDWO4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242821AbhDWO5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231169AbhDWO4z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Apr 2021 10:56:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZvT0qAxTEnE5aoneEO/Hb86me64dl1IkOI3/wlXB6juupFtm4zhUw6c3tz2jlfGauY5G74GjN8u42vNEsG1gaiDHafSqh2+Zr7/jlRCeCnTC8PWAs9LClJLiFplytzWT7/WWgzYSjM2XiAfmnNsWGUt67Mvv3yAkbw9gAjcy2JXZJ/xaQ7dpzxh5rh4slhxX8bPlfbkbNuQgswxsjefHy/v9/mBG9T2cizRij/s99WOSBOod1iEcp8Wb6HJeMwe3OAgNnrYs0yaunXfO+mZkORGNjvGBIC0csFj7hblnJ/Mr2r6udJeoY3Mz536WsKVEjfPQiK+3/SN7byDdcRJ+kg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EhcZc2pA6K8PnCsrcf2oxrBZADWdyYQ1S9+CnECYIi8=;
- b=AmQIv7NP9V20aH5y4fDfhHB1MBxWiUzz/cU19K+bgAi9a8U7jUIOT5hmcJFO0qdmnoK0KafW0jlvkSlTFsqFEdEpi9VM7SgGST2gkUAa/uKC62m5qFrRaH01qqrX9QclCcyLVKTne7n5aaw50RUTWhZaHqaAETX7bXkQ/ot1HXNhxC11FgvpvmWNhdnDZ5bBsoqwLFe4efT8pxsFXWGdLbwJa8PfewAuWcQAjmENtKw7wWAefh4Jhh/z31dhpwaBe0QraPonSKFMUiWht7EJLk7eBsRD6lOwvZKp6LFFMPXUL2Cy2D4dryNjesCyM4GlIo4w0+6ESTZqVRudT1rU4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EhcZc2pA6K8PnCsrcf2oxrBZADWdyYQ1S9+CnECYIi8=;
- b=ZQdxz6i+G/xBTphTJzT2p0jR4fXAwraVzVob5NQR+P46aNSW2xbmHhYnykuUcqIxXnI3tXU3kx1UEZe7yHjiy5cB63ZHQ0O5RzIZ7yy5LtRLl1Sppr22AvF9uRFTPT1JyAUPBN+ouQ1irjnbbRzJAuyYZg0an9Qcepecnwv36gQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR1201MB0025.namprd12.prod.outlook.com (2603:10b6:4:53::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4042.18; Fri, 23 Apr 2021 14:56:16 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4065.023; Fri, 23 Apr
- 2021 14:56:16 +0000
-Subject: Re: [PATCH v3 4/7] KVM: SVM: hyper-v: Nested enlightenments in VMCB
-To:     Vineeth Pillai <viremana@linux.microsoft.com>,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-References: <cover.1619013347.git.viremana@linux.microsoft.com>
- <8c24e4fe8bee44730716e28a1985b6536a9f15c5.1619013347.git.viremana@linux.microsoft.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <81cc0700-ab88-0b37-4a6f-685589e73212@amd.com>
-Date:   Fri, 23 Apr 2021 09:56:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <8c24e4fe8bee44730716e28a1985b6536a9f15c5.1619013347.git.viremana@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA0PR11CA0180.namprd11.prod.outlook.com
- (2603:10b6:806:1bb::35) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6C4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:56:18 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso43611396otb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wkujAwLb9O/rrm3Yi4HThUcLCn5rqmLKN6hTLLP3m7M=;
+        b=AAEnqBqO/BUPTeclCJsRwU8qIQfWXrMQZ447bhEgf6Q0iWY2TwqUQklE+lKS1wFpn7
+         AOD+oZpozm8wam+D2G6vAY+2ieb4SX5YgPGIORe7fNvNi96Nx3ZCygvhfDmbZ/2PY9P7
+         azVgzxh8Ww841tIgIy3v+va1BCYQNMUUmTDysDqomJy0LrjqusGILLG8EZndshPDZIqH
+         fGoyRMWwcx5wzNK9utAUAqBSSty3lQGv1ij66N6zzJrVlPIt1xfLJHdQo9SKZ+h27Q3I
+         Y1FRumW9B12mN2Sw0Wcraj630OPaJvJM1Sc19oZmVrm1s88tUjATxyLOw39rW8SESviL
+         g5Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wkujAwLb9O/rrm3Yi4HThUcLCn5rqmLKN6hTLLP3m7M=;
+        b=T2iDsO1lLIhT3HdeOiT8BT8NCAN8Num+x85acoSbn05GWBM1c1CxmrFmrEYS0KGuya
+         dmkhb8tp3EX8Vysj2uG9euKikq3bYn2MJzircBJ/7ilkWgTcJr0aiKgAmOj9c6C6kcVj
+         RjljMS6QQJLFClQr/wbHEfjBMG8WG4DcJaEwXiOyhMfa+f2K1HbzAHKdaHODeXtKiKc4
+         OfWJU3mwg0w38lPEi1LWXPaIm0KYDNXihws/7pMJC5CVxrJEVzqFsUhZLYUVLngiElvV
+         ydtajt3FYCIzH+mqNYe17iay3yNoQJMOXn0/fuUOfsOtmhYBN25TcxdCWz3jjsrPhYPB
+         h0dQ==
+X-Gm-Message-State: AOAM531rSqBLDPRQ/5VvK7AbUVNM+xMkC8g1UL9YSP02QpK0erlcEQ3h
+        +xzeCy2cQi4e+Lknmm3Da1Z5ag==
+X-Google-Smtp-Source: ABdhPJyqYiwPxVLgniDoMg9bnzoLZWqDsYnTqw10U3odXx+PBYiQ8zWVdp+AHJCNMDcUttVopRjS+g==
+X-Received: by 2002:a9d:648c:: with SMTP id g12mr3729413otl.299.1619189778220;
+        Fri, 23 Apr 2021 07:56:18 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m127sm1311178oib.32.2021.04.23.07.56.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:56:17 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:56:15 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 19/27] drm/bridge: ti-sn65dsi86: If refclk, DP AUX can
+ happen w/out pre-enable
+Message-ID: <YILgD5gGmWEwzvxZ@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.19.Ie8cf556114953c6e7634564cc0d3ddbd103cb96c@changeid>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SA0PR11CA0180.namprd11.prod.outlook.com (2603:10b6:806:1bb::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22 via Frontend Transport; Fri, 23 Apr 2021 14:56:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a98a929d-3b0e-442e-2e97-08d90667f259
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0025:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB00255D131BAFB239752728B6EC459@DM5PR1201MB0025.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TQPlhE2zNyAaW+oicattDwyzHCvXT5FOfLV8Vnx6PR7TtD0qQclldYArhVUDUFhiEjb6qa9UTtp0isN81v9YuI6N62wOZQX0H9FW4iBpDOZvdFJ3ot+C5tV7xvqgeRWRMigUR5rfR5rBVuS+IXvnLVkQsEppVcIepUJEDIDwrcd95dtHFcXL7Y8Ahz79xK6WLGNWdqlnC1a+NBX5HMtf8ncuDyN+IVAEid6O9CXJwNyugHQqIfwG09OZkQhzf3YEtZIBE8c8Rbhpn+/NyT66zkdNZ+2RZZFm+TP2B8JAs8Wm3/b2Kyit2oqPEw6KhirRBh7/vMbNHeY85B2X3Mp/GcTTh07EzTCy6DlN1FPoXMljUcPfQZjXvzYOHQ2lK6wh988AyMyyp2+C8ouKay0n+DW0vOie11IlzJ4eR1XE0uSpLPJ1s7aY/8D59IQ7lEFXZzj9B9mrjhmRU8Nk8JeIOrUkjvKTwR/bTxpFF+O3aZU6F5c2fqlg7gpDk2oxHK+a4fDILyNlfz5OzqMWDwqmUfpNY96zqy1S1IPAP2lAiodNNRapK1Sis2qXsVMMwETMFFVByeFHd/VI4sBu0Tp6jbsF0b/DXjU+ZL1bo+MZSmL6Gslg9TRoP0Y9AWYydEl74eZXxu91DETfzcJTIc/1CP6J9jxzRBygEgKNe56eXA5c3RnAPbbmTCY6ONXFP0RK+AREz08NhZ2QFRljR3PP9Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(346002)(366004)(376002)(83380400001)(38100700002)(7416002)(956004)(5660300002)(66556008)(4326008)(53546011)(66946007)(478600001)(31686004)(54906003)(921005)(316002)(6486002)(6506007)(16526019)(36756003)(8936002)(8676002)(2616005)(2906002)(66476007)(86362001)(26005)(186003)(110136005)(31696002)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U2xIamx1MEl2U2NqQWtkbm9RRWE0MVZhcTVybU5OVjBPc3IwRHU0NEtYVXlT?=
- =?utf-8?B?NFZhSTBUVDg2VExUYkhYUFVRRG5takZwaEpIYjEvTkZON2lybkIrVUpXLzRo?=
- =?utf-8?B?eVJQYmNvd1NTZnBINWZCUFNOemdBaGU5TVl4TlJ1QzJaRFVvREZXalpMQ1dx?=
- =?utf-8?B?M2g0dDF6dUo3UkF2Y1RTNnY1WXp1VVFNSDRBSG9FU0VoWVZUMlZJbU5DNWF4?=
- =?utf-8?B?amFuWEdyUitOaXZWSHNBVUh1REl6WVhyMHZRbXAxdnBUcVBNWkRVTWxTV2pm?=
- =?utf-8?B?K1prL0dGcDdvUThPTEFrbFM5bjd0U0x6OXRtcUJXVktiNVduN2xoWnRtVG5Q?=
- =?utf-8?B?SzdqSUVvdjZscDN1Y3lOZG5vcXBwV2JVSC9KemFxRGdkT09QaFh0eXZucVEy?=
- =?utf-8?B?K0VsTE1QVTQ2dzc5RG03a0RabUlHRWRWVEZzUE04bHJQSjlHNEtMaDBwbmtK?=
- =?utf-8?B?WDYxcVVBZk15NlNNT241cXY2WVVhWlU1T3hoQTB4QkJHQXhReUN0V2ZuY2Ra?=
- =?utf-8?B?d1BXdEtBb1VUamxyTkJGaGExY0YwS3p1REtyMFJlVC9xNEUxZjhhcTRWM1FI?=
- =?utf-8?B?SFdpR2ZnTlJGWnFHTk5BVTV2T2d2VXlET1BjTlJ3WWV0SVpjbmxYMDBOVWpx?=
- =?utf-8?B?dzlPMERGUlFOSGJUd0xmbXBTRmYzU1c4R3VWQkpjRlJqVjRNWHZ0czVhdmE5?=
- =?utf-8?B?WWZhY05pTEQxR0VTREs5T0ppU2swMENWYUJvUytLSVpRRDhVcFdkdTZ5NklS?=
- =?utf-8?B?ZDhlcC9RMUlSRHNmb3JBbklsVTA5Q1k4VkxnOXlQVUNWRUJMNTVxcmYxSm0v?=
- =?utf-8?B?dmxncXNPdDVKcitFQytrcmY0WUV6dXcrN2kweGl3dzY0NkVZZ2JLTXhYMkJP?=
- =?utf-8?B?Mms4a08xNEMyVUtiWmk0V25xdTFxVjQzWFFpMVF0c0d5am0vSFNGSWl0SVh3?=
- =?utf-8?B?UGVXbXhla0JFaktoT2V5dmRFc205bDB2MTc3RFY3SEdiMmtsa0FNTUVPUFdY?=
- =?utf-8?B?TXJLQ0hYUzBoYnNFZkVBWFpDQWlUanN6dHZrWUk0VEhQaEhNK1U1Qm1id0ZT?=
- =?utf-8?B?RFcwbS9VdnRPU2VCbFk5Skk2YlU3WVZzbzhWalVpOTkyN3Zjb3VPMFFVc1Fr?=
- =?utf-8?B?eWp0MHhMNlZCQVZGRUxoQ29BeFp5MHZBV2duN1g1NFBpOEJGOTJaZ05lSnZY?=
- =?utf-8?B?SE5JSVBOamxzWnNzbFBBWTgxUy9ZbjJSQTMvTGFQNFpUaXliQlJGMWgyWVRW?=
- =?utf-8?B?SXRIS0FWY3A0RFVPTXd3NlI0dk1pZVVHc3lXcG1CeUpSVTlLUkpwN3BlTGdH?=
- =?utf-8?B?TkJ1Qjd5UUUyWFJtQjVSZ1hlSnBoMk9pYWpZT2dxZkJrWkcycGtGNE5jS3pO?=
- =?utf-8?B?U01nNE9rZzdwVC9VUjR2aVFKcWxVRkR1L0ZLaEZTcExTWC9zclJhODBGdXA0?=
- =?utf-8?B?dU9YdmVFKzhOdEs2VjgybmdQWGVuMHBVQVpqb1hQaldEcDd1eDluckZCQWdt?=
- =?utf-8?B?ejRNd1RpK082TzM0Z2h5Z2ZlVm1jNThVMm9oeWROa2g4eDYzcjd4Y2VVVlRK?=
- =?utf-8?B?b0tTSXpjdFJNa0tTaFRiRnhUckw5RytVa2laU2plM05iYy9HcUNSbm1mR2Nu?=
- =?utf-8?B?REF0Y3VrU0pSU3dwa085MUs0c3A2bkFlSHQrTFQranZqYTlGWjBvL1RDZWt0?=
- =?utf-8?B?Q1VwWlUzNElqa3d1T0hUME1GSms1aEtVYmp3cXJDdm1sUGV5dFZwUEZ0YlhQ?=
- =?utf-8?Q?tzu2X29zSPth9c4JqpY6szwtr2ALXWFczxJ5Yon?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a98a929d-3b0e-442e-2e97-08d90667f259
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 14:56:16.8074
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yiDjj5eMA78Jghy0LSSiw1vOsFGAFulv7UsnLD2fU/129SQOefsVer4XrYUKiYhDrrPpUQbzZw7KActLhVZHWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0025
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.19.Ie8cf556114953c6e7634564cc0d3ddbd103cb96c@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 9:06 AM, Vineeth Pillai wrote:
-> Add Hyper-V specific fields in VMCB to support SVM enlightenments.
-> Also a small refactoring of VMCB clean bits handling.
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+
+> Let's reorganize how we init and turn on the reference clock in the
+> code to allow us to turn it on early (even before pre_enable()) so
+> that we can read the EDID early. This is handy for eDP because:
+> - We always assume that a panel is there.
+> - Once we report that a panel is there we get asked to read the EDID.
+> - Pre-enable isn't called until we know what pixel clock we want to
+>   use and we're ready to turn everything on. That's _after_ we get
+>   asked to read the EDID.
 > 
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> NOTE: the above only works out OK if we "refclk" is provided. Though I
+> don't have access to any hardware that uses ti-sn65dsi86 and _doesn't_
+> provide a "refclk", I believe that we'll have trouble reading the EDID
+> at bootup in that case. Specifically I believe that if there's no
+> "refclk" we need the MIPI source clock to be active before we can
+> successfully read the EDID. My evidence here is that, in testing, I
+> couldn't read the EDID until I turned on the DPPLL in the bridge chip
+> and that the DPPLL needs the input clock to be active.
+> 
+> Since this is hard to support, let's punt trying to handle this case
+> if there's no "refclk". In that case we'll enable comms in
+> pre_enable() like we always did.
+> 
+> I don't believe there are any users of the ti-sn65dsi86 bridge chip
+> that _don't_ use "refclk". The bridge chip is _very_ inflexible in
+> that mode. The only time I've seen that mode used was for some really
+> early prototype hardware that was thrown in the e-waste bin years ago
+> when we realized how inflexible it was.
+> 
+> Even if someone is using the bridge chip without the "refclk" they're
+> in no worse shape than they were before the (fairly recent) commit
+> 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC").
+> 
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  arch/x86/include/asm/svm.h | 24 +++++++++++++++++++++++-
->  arch/x86/kvm/svm/svm.c     |  8 ++++++++
->  arch/x86/kvm/svm/svm.h     | 12 +++++++++++-
->  3 files changed, 42 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 1c561945b426..3586d7523ce8 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -322,9 +322,31 @@ static inline void __unused_size_checks(void)
->  	BUILD_BUG_ON(sizeof(struct ghcb)		!= EXPECTED_GHCB_SIZE);
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 129 +++++++++++++++++++-------
+>  1 file changed, 94 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index b3c699da7724..875e5dbe6594 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -132,6 +132,8 @@
+>   * @dp_lanes:     Count of dp_lanes we're using.
+>   * @ln_assign:    Value to program to the LN_ASSIGN register.
+>   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
+> + * @comms_enabled: If true then communication over the aux channel is enabled.
+> + * @comms_mutex:   Protects modification of comms_enabled.
+>   *
+>   * @gchip:        If we expose our GPIOs, this is used.
+>   * @gchip_output: A cache of whether we've set GPIOs to output.  This
+> @@ -162,6 +164,8 @@ struct ti_sn65dsi86 {
+>  	int				dp_lanes;
+>  	u8				ln_assign;
+>  	u8				ln_polrs;
+> +	bool				comms_enabled;
+> +	struct mutex			comms_mutex;
+>  
+>  #if defined(CONFIG_OF_GPIO)
+>  	struct gpio_chip		gchip;
+> @@ -250,6 +254,47 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn65dsi86 *pdata)
+>  			   REFCLK_FREQ(i));
 >  }
 >  
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +struct __packed hv_enlightenments {
-> +	struct __packed hv_enlightenments_control {
-> +		u32 nested_flush_hypercall:1;
-> +		u32 msr_bitmap:1;
-> +		u32 enlightened_npt_tlb: 1;
-> +		u32 reserved:29;
-> +	} hv_enlightenments_control;
-> +	u32 hv_vp_id;
-> +	u64 hv_vm_id;
-> +	u64 partition_assist_page;
-> +	u64 reserved;
-> +};
-> +#define VMCB_CONTROL_END	992	// 32 bytes for Hyper-V
-> +#else
-> +#define VMCB_CONTROL_END	1024
-> +#endif
-> +
->  struct vmcb {
->  	struct vmcb_control_area control;
-> -	u8 reserved_control[1024 - sizeof(struct vmcb_control_area)];
-> +	u8 reserved_control[VMCB_CONTROL_END - sizeof(struct vmcb_control_area)];
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	struct hv_enlightenments hv_enlightenments;
-> +#endif
-
-I believe the 32 bytes at the end of the VMCB control area will be for use
-by any software/hypervisor. The APM update that documents this change,
-along with clean bit 31, isn't public, yet, but should be in a month or so
-(from what I was told).
-
-So these fields should be added generically and then your code should make
-use of the generic field mapped with your structure.
-
-To my knowledge (until the APM is public and documents everything), I
-believe the following will be in place:
-
-  VMCB offset 0x3e0 - 0x3ff is reserved for software
-  Clean bit 31 is reserved for software
-  SVM intercept exit code 0xf0000000 is reserved for software
-
->  	struct vmcb_save_area save;
->  } __packed;
->  
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index baee91c1e936..9a241a0806cd 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -31,6 +31,7 @@
->  #include <asm/tlbflush.h>
->  #include <asm/desc.h>
->  #include <asm/debugreg.h>
-> +#include <asm/hypervisor.h>
->  #include <asm/kvm_para.h>
->  #include <asm/irq_remapping.h>
->  #include <asm/spec-ctrl.h>
-> @@ -122,6 +123,8 @@ bool npt_enabled = true;
->  bool npt_enabled;
->  #endif
->  
-> +u32 __read_mostly vmcb_all_clean_mask = ((1 << VMCB_DIRTY_MAX) - 1);
-> +
->  /*
->   * These 2 parameters are used to config the controls for Pause-Loop Exiting:
->   * pause_filter_count: On processors that support Pause filtering(indicated
-> @@ -1051,6 +1054,11 @@ static __init int svm_hardware_setup(void)
->  	 */
->  	allow_smaller_maxphyaddr = !npt_enabled;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	if (hypervisor_is_type(X86_HYPER_MS_HYPERV))
-> +		vmcb_all_clean_mask |= BIT(VMCB_HV_NESTED_ENLIGHTENMENTS);
-> +#endif
-> +
-
-Is there any way to hide all the #if's in this and the other patches so
-that the .c files are littered with the #if IS_ENABLED() lines. Put them
-in svm.h or a new svm-hv.h file?
-
->  	return 0;
->  
->  err:
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 39e071fdab0c..ff0a70bd7fce 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -51,11 +51,16 @@ enum {
->  			  * AVIC LOGICAL_TABLE pointer
->  			  */
->  	VMCB_DIRTY_MAX,
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	VMCB_HV_NESTED_ENLIGHTENMENTS = 31,
-> +#endif
-
-Again, this should be generic.
-
-Thanks,
-Tom
-
->  };
->  
->  /* TPR and CR2 are always written before VMRUN */
->  #define VMCB_ALWAYS_DIRTY_MASK	((1U << VMCB_INTR) | (1U << VMCB_CR2))
->  
-> +extern u32 vmcb_all_clean_mask __read_mostly;
-> +
->  struct kvm_sev_info {
->  	bool active;		/* SEV enabled guest */
->  	bool es_active;		/* SEV-ES enabled guest */
-> @@ -230,7 +235,7 @@ static inline void vmcb_mark_all_dirty(struct vmcb *vmcb)
->  
->  static inline void vmcb_mark_all_clean(struct vmcb *vmcb)
->  {
-> -	vmcb->control.clean = ((1 << VMCB_DIRTY_MAX) - 1)
-> +	vmcb->control.clean = vmcb_all_clean_mask
->  			       & ~VMCB_ALWAYS_DIRTY_MASK;
->  }
->  
-> @@ -239,6 +244,11 @@ static inline void vmcb_mark_dirty(struct vmcb *vmcb, int bit)
->  	vmcb->control.clean &= ~(1 << bit);
->  }
->  
-> +static inline bool vmcb_is_clean(struct vmcb *vmcb, int bit)
+> +static void ti_sn65dsi86_enable_comms(struct ti_sn65dsi86 *pdata)
 > +{
-> +	return (vmcb->control.clean & (1 << bit));
+> +	mutex_lock(&pdata->comms_mutex);
+> +
+> +	/* configure bridge ref_clk */
+> +	ti_sn_bridge_set_refclk_freq(pdata);
+> +
+> +	/*
+> +	 * HPD on this bridge chip is a bit useless.  This is an eDP bridge
+> +	 * so the HPD is an internal signal that's only there to signal that
+> +	 * the panel is done powering up.  ...but the bridge chip debounces
+> +	 * this signal by between 100 ms and 400 ms (depending on process,
+> +	 * voltage, and temperate--I measured it at about 200 ms).  One
+> +	 * particular panel asserted HPD 84 ms after it was powered on meaning
+> +	 * that we saw HPD 284 ms after power on.  ...but the same panel said
+> +	 * that instead of looking at HPD you could just hardcode a delay of
+> +	 * 200 ms.  We'll assume that the panel driver will have the hardcoded
+> +	 * delay in its prepare and always disable HPD.
+> +	 *
+> +	 * If HPD somehow makes sense on some future panel we'll have to
+> +	 * change this to be conditional on someone specifying that HPD should
+> +	 * be used.
+> +	 */
+> +	regmap_update_bits(pdata->regmap, SN_HPD_DISABLE_REG, HPD_DISABLE,
+> +			   HPD_DISABLE);
+> +
+> +	pdata->comms_enabled = true;
+> +
+> +	mutex_unlock(&pdata->comms_mutex);
 > +}
 > +
->  static inline struct vcpu_svm *to_svm(struct kvm_vcpu *vcpu)
+> +static void ti_sn65dsi86_disable_comms(struct ti_sn65dsi86 *pdata)
+> +{
+> +	mutex_lock(&pdata->comms_mutex);
+> +
+> +	pdata->comms_enabled = false;
+> +	clk_disable_unprepare(pdata->refclk);
+> +
+> +	mutex_unlock(&pdata->comms_mutex);
+> +}
+> +
+>  static int __maybe_unused ti_sn65dsi86_resume(struct device *dev)
 >  {
->  	return container_of(vcpu, struct vcpu_svm, vcpu);
+>  	struct ti_sn65dsi86 *pdata = dev_get_drvdata(dev);
+> @@ -263,6 +308,16 @@ static int __maybe_unused ti_sn65dsi86_resume(struct device *dev)
+>  
+>  	gpiod_set_value(pdata->enable_gpio, 1);
+>  
+> +	/*
+> +	 * If we have a reference clock we can enable communication w/ the
+> +	 * panel (including the aux channel) w/out any need for an input clock
+> +	 * so we can do it in resume which lets us read the EDID before
+> +	 * pre_enable(). Without a reference clock we need the MIPI reference
+> +	 * clock so reading early doesn't work.
+> +	 */
+> +	if (pdata->refclk)
+> +		ti_sn65dsi86_enable_comms(pdata);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -271,6 +326,9 @@ static int __maybe_unused ti_sn65dsi86_suspend(struct device *dev)
+>  	struct ti_sn65dsi86 *pdata = dev_get_drvdata(dev);
+>  	int ret;
+>  
+> +	if (pdata->refclk)
+> +		ti_sn65dsi86_disable_comms(pdata);
+> +
+>  	gpiod_set_value(pdata->enable_gpio, 0);
+>  
+>  	ret = regulator_bulk_disable(SN_REGULATOR_SUPPLY_NUM, pdata->supplies);
+> @@ -843,27 +901,8 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
+>  
+>  	pm_runtime_get_sync(pdata->dev);
+>  
+> -	/* configure bridge ref_clk */
+> -	ti_sn_bridge_set_refclk_freq(pdata);
+> -
+> -	/*
+> -	 * HPD on this bridge chip is a bit useless.  This is an eDP bridge
+> -	 * so the HPD is an internal signal that's only there to signal that
+> -	 * the panel is done powering up.  ...but the bridge chip debounces
+> -	 * this signal by between 100 ms and 400 ms (depending on process,
+> -	 * voltage, and temperate--I measured it at about 200 ms).  One
+> -	 * particular panel asserted HPD 84 ms after it was powered on meaning
+> -	 * that we saw HPD 284 ms after power on.  ...but the same panel said
+> -	 * that instead of looking at HPD you could just hardcode a delay of
+> -	 * 200 ms.  We'll assume that the panel driver will have the hardcoded
+> -	 * delay in its prepare and always disable HPD.
+> -	 *
+> -	 * If HPD somehow makes sense on some future panel we'll have to
+> -	 * change this to be conditional on someone specifying that HPD should
+> -	 * be used.
+> -	 */
+> -	regmap_update_bits(pdata->regmap, SN_HPD_DISABLE_REG, HPD_DISABLE,
+> -			   HPD_DISABLE);
+> +	if (!pdata->refclk)
+> +		ti_sn65dsi86_enable_comms(pdata);
+>  
+>  	drm_panel_prepare(pdata->panel);
+>  }
+> @@ -874,7 +913,8 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+>  
+>  	drm_panel_unprepare(pdata->panel);
+>  
+> -	clk_disable_unprepare(pdata->refclk);
+> +	if (!pdata->refclk)
+> +		ti_sn65dsi86_disable_comms(pdata);
+>  
+>  	pm_runtime_put_sync(pdata->dev);
+>  }
+> @@ -908,6 +948,20 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+>  	if (len > SN_AUX_MAX_PAYLOAD_BYTES)
+>  		return -EINVAL;
+>  
+> +	pm_runtime_get_sync(pdata->dev);
+> +	mutex_lock(&pdata->comms_mutex);
+> +
+> +	/*
+> +	 * If someone tries to do a DDC over AUX transaction before pre_enable()
+> +	 * on a device without a dedicated reference clock then we just can't
+> +	 * do it. Fail right away. This prevents non-refclk users from reading
+> +	 * the EDID before enabling the panel but such is life.
+> +	 */
+> +	if (!pdata->comms_enabled) {
+> +		ret = -EIO;
+> +		goto exit;
+> +	}
+> +
+>  	switch (request) {
+>  	case DP_AUX_NATIVE_WRITE:
+>  	case DP_AUX_I2C_WRITE:
+> @@ -918,7 +972,8 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+>  		msg->reply = 0;
+>  		break;
+>  	default:
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto exit;
+>  	}
+>  
+>  	BUILD_BUG_ON(sizeof(addr_len) != sizeof(__be32));
+> @@ -942,11 +997,11 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+>  	ret = regmap_read_poll_timeout(pdata->regmap, SN_AUX_CMD_REG, val,
+>  				       !(val & AUX_CMD_SEND), 0, 50 * 1000);
+>  	if (ret)
+> -		return ret;
+> +		goto exit;
+>  
+>  	ret = regmap_read(pdata->regmap, SN_AUX_CMD_STATUS_REG, &val);
+>  	if (ret)
+> -		return ret;
+> +		goto exit;
+>  
+>  	if (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT) {
+>  		/*
+> @@ -954,13 +1009,14 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+>  		 * but it hit a timeout. We ignore defers here because they're
+>  		 * handled in hardware.
+>  		 */
+> -		return -ETIMEDOUT;
+> +		ret = -ETIMEDOUT;
+> +		goto exit;
+>  	}
+>  
+>  	if (val & AUX_IRQ_STATUS_AUX_SHORT) {
+>  		ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &len);
+>  		if (ret)
+> -			return ret;
+> +			goto exit;
+>  	} else if (val & AUX_IRQ_STATUS_NAT_I2C_FAIL) {
+>  		switch (request) {
+>  		case DP_AUX_I2C_WRITE:
+> @@ -972,18 +1028,19 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+>  			msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
+>  			break;
+>  		}
+> -		return 0;
+> +		len = 0;
+> +		goto exit;
+>  	}
+>  
+> -	if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE ||
+> -	    len == 0)
+> -		return len;
+> +	if (request != DP_AUX_NATIVE_WRITE && request != DP_AUX_I2C_WRITE && len != 0)
+> +		ret = regmap_bulk_read(pdata->regmap, SN_AUX_RDATA_REG(0), buf, len);
+>  
+> -	ret = regmap_bulk_read(pdata->regmap, SN_AUX_RDATA_REG(0), buf, len);
+> -	if (ret)
+> -		return ret;
+> +exit:
+> +	mutex_unlock(&pdata->comms_mutex);
+> +	pm_runtime_mark_last_busy(pdata->dev);
+> +	pm_runtime_put_autosuspend(pdata->dev);
+>  
+> -	return len;
+> +	return ret ? ret : len;
+>  }
+>  
+>  static int ti_sn_bridge_parse_dsi_host(struct ti_sn65dsi86 *pdata)
+> @@ -1380,6 +1437,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  	dev_set_drvdata(dev, pdata);
+>  	pdata->dev = dev;
+>  
+> +	mutex_init(&pdata->comms_mutex);
+> +
+>  	pdata->regmap = devm_regmap_init_i2c(client,
+>  					     &ti_sn65dsi86_regmap_config);
+>  	if (IS_ERR(pdata->regmap)) {
+> -- 
+> 2.31.1.368.gbe11c130af-goog
 > 
