@@ -2,392 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8E13694BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E133694C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbhDWObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
+        id S242219AbhDWOcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhDWOa6 (ORCPT
+        with ESMTP id S229871AbhDWOcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:30:58 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C226C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:30:22 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id k18so44415883oik.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:30:22 -0700 (PDT)
+        Fri, 23 Apr 2021 10:32:35 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C3AC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:31:57 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u21so74230321ejo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s4Pheq9PDNIDsp1Djm9lWBkYRNBEd5f1JPLVoIAwO7s=;
-        b=SneFwxJNf5hRMj0oAjotIQWgg9ctrLYRRb6VAWf/r5gxZo83SKAWBNWPTY1WTk77LC
-         EjhJplhQpgjvQ5GjYtePYgOF6I+6Xnk5Y5sMjBKyxqzNHlIomSKFE05NCSEspzTpOEv4
-         iTH4w2tQ8WLP7KdtGkZL7X2sDVNK9dYU8UaI/ddAkxD/e1S0gm95IN48RjaZvcPBUbyl
-         bGPdFonuf3/BP6Vx6UgqEJS1B9YQNx+ndNRfS24M3F5Y9yr9vx19zic1KLu6uO1e37wi
-         kDAb1jscvlZ+GBgMTFGFK6sxjek9nDdoRuotQswtzGVYYIMYzpA0wkcJjzfDbn/TmWB8
-         5T5w==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Po06NcnT9yNS5y0Tdw+z+LUZj1goxErV8JsQ4hnl1f8=;
+        b=h2sigU193ei7wlls3OtQxPVANPWHCDuUQdHwG9ltnN//J0Y+dgEP64zStBizdjw7B+
+         c5XCST0dVO3wfJIGUSRxXtvohSa1ELxPpXtNky0BGp5I5bLY15sX/zsnmFYx71TGvTZU
+         0tNlwjM31HwVyWv/Gwt19ZBLR1YKBsNQT8VUI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s4Pheq9PDNIDsp1Djm9lWBkYRNBEd5f1JPLVoIAwO7s=;
-        b=ubAIga1IaXAZT5dvVnsdILz1WTqakaqSIzL0JqrH0gDqU9VT2Ty0OdhIhRbghZTdSu
-         qseOiKCGb5w4Nsci5LBXt8zAM1Py898qYU5jg5iZL99QVsNBEPVnrPD6rAC5kxHLqXJI
-         HQYlsh4PSZobYHuqizT6zglbqgxYFqCVkLfWf/EJYys3uU3qpAPZ7VkHDDR5KtkzrBFm
-         V4wUtLpn3F+17bVA2S3wF2SEPHEGovxerdVgKHBuQNHugAzVZ54byeLhXc8Lqmf4QcJi
-         u1OEuWeq8Xw472ku1pIOF6EhsP7CUZYYTm9p7BCpCmxpqSfOziqW5vDb7Yt2jeltDQRa
-         sU+w==
-X-Gm-Message-State: AOAM531TxHP+wxv4B07K9CRS7cHionZjfZFfmk4rg5BHQDrJxC8GEX3l
-        JVDCljRU6+T+eOvUJojNCdvppQ==
-X-Google-Smtp-Source: ABdhPJysk9RqrcMBcWpAJANe1464voBGiez5PZ92w8aCCGoDOvrskGOhAjvXSKbdQav/N1+DfCj/vA==
-X-Received: by 2002:aca:b387:: with SMTP id c129mr4088803oif.30.1619188221737;
-        Fri, 23 Apr 2021 07:30:21 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 3sm1419707otw.58.2021.04.23.07.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:30:21 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:30:19 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 09/27] drm/bridge: ti-sn65dsi86: More renames in prep
- for sub-devices
-Message-ID: <YILZ+6bYlvGQquz+@builder.lan>
-References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.9.I4b28c737933a44548662df42ccd37db89ec739c1@changeid>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Po06NcnT9yNS5y0Tdw+z+LUZj1goxErV8JsQ4hnl1f8=;
+        b=X41BBugEt+tS+QXL0a2/c6TBig+06AVHeNND2iar5yA3Akol8TLQ3gWorZEq9zPgYb
+         G8Fy6vF0qxGwG0LOfYdRuhr4sPg3Yd1LShxrYJtSCTxwLay9K0WYkrZ7d25rE6IVC8YR
+         Pl5Gkau09byfImPQAlccbQPudJDxE3CbZABNkgxomZu9xtiPlqi8XOuNlrBCoObICyh1
+         shCUpcboBLP9mSN5Nl87c101SFDa4bwtYUedpIypgdReNGRGNcUd8TYo5UPLD2nQJDSq
+         byuw+hQbangnE6hHtIlmCg4PeXyq0QNehje0fNHVLCBZquru/fkUcS+pWSSnCK9l3CEN
+         +msg==
+X-Gm-Message-State: AOAM53151fu30UOlk0Ue6hAEPK83U7iuWylBUWSYq1WpsFkiu0luyuyC
+        YmxTJWoCBV0J2tB5TiXlKgsraisvbeDsPI3U
+X-Google-Smtp-Source: ABdhPJzxo07/NknLqD5JUK4v3yRS/SIjczGsIh8TkIp5c36iA9BoNwxl5nrsA9zdEXJV0KvkNa0Hjw==
+X-Received: by 2002:a17:906:1101:: with SMTP id h1mr4686184eja.179.1619188315737;
+        Fri, 23 Apr 2021 07:31:55 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id s9sm4602492edd.16.2021.04.23.07.31.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 07:31:55 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 0/2] Implement BPF formatted output helpers with
+ bstr_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210423011517.4069221-1-revest@chromium.org>
+ <8f89faf1-d7e6-ebe0-fb7d-c5b8243d140a@rasmusvillemoes.dk>
+ <CABRcYmLDBfoM8rOwPf+SdqkmJgtFRLYF94S4Fv2eU=Uwg4asTQ@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <8ef7319d-7692-0067-bb86-a0d5465e997f@rasmusvillemoes.dk>
+Date:   Fri, 23 Apr 2021 16:31:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.9.I4b28c737933a44548662df42ccd37db89ec739c1@changeid>
+In-Reply-To: <CABRcYmLDBfoM8rOwPf+SdqkmJgtFRLYF94S4Fv2eU=Uwg4asTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+On 23/04/2021 15.26, Florent Revest wrote:
+> On Fri, Apr 23, 2021 at 10:50 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
 
-> Like the previous patch ("drm/bridge: ti-sn65dsi86: Rename the main
-> driver data structure") this is just a no-op rename in preparation for
-> splitting the driver up a bit.
+>>> This solves a bug reported by Rasmus Villemoes that would mangle
+>>> arguments on 32 bit machines.
+>>
+>> That's not entirely accurate. The arguments are also mangled on x86-64,
+>> it's just that in a few cases that goes unnoticed. That's why I
+>> suggested you try and take your test case (which I assume had been
+>> passing with flying colours on x86-64) and rearrange the specifiers,
+>> arguments and expected output string so that the (morally) 32 bit
+>> arguments end up beyond those-that-end-up-in-the-reg_save_area.
+>>
+>> IOWs, it is the 32 bit arguments that are mangled (because they get
+>> passed as-if they were actually 64 bits), and that applies on all
+>> architectures; nothing to do with sizeof(long).
 > 
-> Here I've attempted to rename functions / structures making sure that
-> anything applicable to the whole chip (instead of just the MIPI to eDP
-> bridge part) included "sn65dsi86" somewhere in the name instead of
-> just "ti_sn_bridge".
+> Mh, yes, I get your point and I agree that my description does not
+> really fit what you reported.
+> 
+> I tried what you suggested though, with the current bpf-next/master on x86_64:
+> BPF_SNPRINTF(out, sizeof(out),
+> "%u %d %u %d %u %d %u %d %u %d %u %d",
+> 1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12);
+> 
+> And out is "1 -2 3 -4 5 -6 7 -8 9 -10 11 -12" so i can't seem to be
+> able to produce the bug you described.
+> Do you think I'm missing something? Would you try it differently ?
 > 
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Nah, sorry, I must have misremembered the x86-64 ABI. Re-reading it, it
+clearly says as the very first thing "The size of each argument gets
+rounded up to eightbytes". So each of the ints that get passed on the
+stack do indeed occupy 8 bytes (i.e., the overflow_area pointer gets
+adjusted by 8 bytes, for both va_arg(ap, int) and va_arg(ap, long)). So
+it will indeed work on x86-64. And probably other 64 bit ABIs behave the
+same way (it would make sense) - at least ppc64 and arm64 seem to behave
+like that.
 
-Regards,
-Bjorn
+So in a round-about way it's probably true that the bug would only be
+seen on 32 bit machines, but only because all (relevant) 64 bit arches
+seem to, on the ABI level, effectively do argument promotion to u64 anyway.
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 84 +++++++++++++--------------
->  1 file changed, 42 insertions(+), 42 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index f00ceb9dda29..57574132e200 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -164,30 +164,30 @@ struct ti_sn65dsi86 {
->  #endif
->  };
->  
-> -static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
-> +static const struct regmap_range ti_sn65dsi86_volatile_ranges[] = {
->  	{ .range_min = 0, .range_max = 0xFF },
->  };
->  
->  static const struct regmap_access_table ti_sn_bridge_volatile_table = {
-> -	.yes_ranges = ti_sn_bridge_volatile_ranges,
-> -	.n_yes_ranges = ARRAY_SIZE(ti_sn_bridge_volatile_ranges),
-> +	.yes_ranges = ti_sn65dsi86_volatile_ranges,
-> +	.n_yes_ranges = ARRAY_SIZE(ti_sn65dsi86_volatile_ranges),
->  };
->  
-> -static const struct regmap_config ti_sn_bridge_regmap_config = {
-> +static const struct regmap_config ti_sn65dsi86_regmap_config = {
->  	.reg_bits = 8,
->  	.val_bits = 8,
->  	.volatile_table = &ti_sn_bridge_volatile_table,
->  	.cache_type = REGCACHE_NONE,
->  };
->  
-> -static void ti_sn_bridge_write_u16(struct ti_sn65dsi86 *pdata,
-> +static void ti_sn65dsi86_write_u16(struct ti_sn65dsi86 *pdata,
->  				   unsigned int reg, u16 val)
->  {
->  	regmap_write(pdata->regmap, reg, val & 0xFF);
->  	regmap_write(pdata->regmap, reg + 1, val >> 8);
->  }
->  
-> -static int __maybe_unused ti_sn_bridge_resume(struct device *dev)
-> +static int __maybe_unused ti_sn65dsi86_resume(struct device *dev)
->  {
->  	struct ti_sn65dsi86 *pdata = dev_get_drvdata(dev);
->  	int ret;
-> @@ -203,7 +203,7 @@ static int __maybe_unused ti_sn_bridge_resume(struct device *dev)
->  	return ret;
->  }
->  
-> -static int __maybe_unused ti_sn_bridge_suspend(struct device *dev)
-> +static int __maybe_unused ti_sn65dsi86_suspend(struct device *dev)
->  {
->  	struct ti_sn65dsi86 *pdata = dev_get_drvdata(dev);
->  	int ret;
-> @@ -217,8 +217,8 @@ static int __maybe_unused ti_sn_bridge_suspend(struct device *dev)
->  	return ret;
->  }
->  
-> -static const struct dev_pm_ops ti_sn_bridge_pm_ops = {
-> -	SET_RUNTIME_PM_OPS(ti_sn_bridge_suspend, ti_sn_bridge_resume, NULL)
-> +static const struct dev_pm_ops ti_sn65dsi86_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(ti_sn65dsi86_suspend, ti_sn65dsi86_resume, NULL)
->  	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
->  				pm_runtime_force_resume)
->  };
-> @@ -245,7 +245,7 @@ static int status_show(struct seq_file *s, void *data)
->  
->  DEFINE_SHOW_ATTRIBUTE(status);
->  
-> -static void ti_sn_debugfs_init(struct ti_sn65dsi86 *pdata)
-> +static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
->  {
->  	pdata->debugfs = debugfs_create_dir(dev_name(pdata->dev), NULL);
->  
-> @@ -253,7 +253,7 @@ static void ti_sn_debugfs_init(struct ti_sn65dsi86 *pdata)
->  			&status_fops);
->  }
->  
-> -static void ti_sn_debugfs_remove(struct ti_sn65dsi86 *pdata)
-> +static void ti_sn65dsi86_debugfs_remove(struct ti_sn65dsi86 *pdata)
->  {
->  	debugfs_remove_recursive(pdata->debugfs);
->  	pdata->debugfs = NULL;
-> @@ -261,14 +261,14 @@ static void ti_sn_debugfs_remove(struct ti_sn65dsi86 *pdata)
->  
->  /* Connector funcs */
->  static struct ti_sn65dsi86 *
-> -connector_to_ti_sn_bridge(struct drm_connector *connector)
-> +connector_to_ti_sn65dsi86(struct drm_connector *connector)
->  {
->  	return container_of(connector, struct ti_sn65dsi86, connector);
->  }
->  
->  static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->  {
-> -	struct ti_sn65dsi86 *pdata = connector_to_ti_sn_bridge(connector);
-> +	struct ti_sn65dsi86 *pdata = connector_to_ti_sn65dsi86(connector);
->  	struct edid *edid = pdata->edid;
->  	int num, ret;
->  
-> @@ -314,12 +314,12 @@ static const struct drm_connector_funcs ti_sn_bridge_connector_funcs = {
->  	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
->  };
->  
-> -static struct ti_sn65dsi86 *bridge_to_ti_sn_bridge(struct drm_bridge *bridge)
-> +static struct ti_sn65dsi86 *bridge_to_ti_sn65dsi86(struct drm_bridge *bridge)
->  {
->  	return container_of(bridge, struct ti_sn65dsi86, bridge);
->  }
->  
-> -static int ti_sn_bridge_parse_regulators(struct ti_sn65dsi86 *pdata)
-> +static int ti_sn65dsi86_parse_regulators(struct ti_sn65dsi86 *pdata)
->  {
->  	unsigned int i;
->  	const char * const ti_sn_bridge_supply_names[] = {
-> @@ -337,7 +337,7 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  			       enum drm_bridge_attach_flags flags)
->  {
->  	int ret, val;
-> -	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn_bridge(bridge);
-> +	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
->  	struct mipi_dsi_host *host;
->  	struct mipi_dsi_device *dsi;
->  	const struct mipi_dsi_device_info info = { .type = "ti_sn_bridge",
-> @@ -425,12 +425,12 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  
->  static void ti_sn_bridge_detach(struct drm_bridge *bridge)
->  {
-> -	drm_dp_aux_unregister(&bridge_to_ti_sn_bridge(bridge)->aux);
-> +	drm_dp_aux_unregister(&bridge_to_ti_sn65dsi86(bridge)->aux);
->  }
->  
->  static void ti_sn_bridge_disable(struct drm_bridge *bridge)
->  {
-> -	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn_bridge(bridge);
-> +	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
->  
->  	drm_panel_disable(pdata->panel);
->  
-> @@ -648,9 +648,9 @@ static void ti_sn_bridge_set_video_timings(struct ti_sn65dsi86 *pdata)
->  	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
->  		vsync_polarity = CHA_VSYNC_POLARITY;
->  
-> -	ti_sn_bridge_write_u16(pdata, SN_CHA_ACTIVE_LINE_LENGTH_LOW_REG,
-> +	ti_sn65dsi86_write_u16(pdata, SN_CHA_ACTIVE_LINE_LENGTH_LOW_REG,
->  			       mode->hdisplay);
-> -	ti_sn_bridge_write_u16(pdata, SN_CHA_VERTICAL_DISPLAY_SIZE_LOW_REG,
-> +	ti_sn65dsi86_write_u16(pdata, SN_CHA_VERTICAL_DISPLAY_SIZE_LOW_REG,
->  			       mode->vdisplay);
->  	regmap_write(pdata->regmap, SN_CHA_HSYNC_PULSE_WIDTH_LOW_REG,
->  		     (mode->hsync_end - mode->hsync_start) & 0xFF);
-> @@ -751,7 +751,7 @@ static int ti_sn_link_training(struct ti_sn65dsi86 *pdata, int dp_rate_idx,
->  
->  static void ti_sn_bridge_enable(struct drm_bridge *bridge)
->  {
-> -	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn_bridge(bridge);
-> +	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
->  	bool rate_valid[ARRAY_SIZE(ti_sn_bridge_dp_rate_lut)] = { };
->  	const char *last_err_str = "No supported DP rate";
->  	int dp_rate_idx;
-> @@ -822,7 +822,7 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
->  
->  static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
->  {
-> -	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn_bridge(bridge);
-> +	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
->  
->  	pm_runtime_get_sync(pdata->dev);
->  
-> @@ -853,7 +853,7 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
->  
->  static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
->  {
-> -	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn_bridge(bridge);
-> +	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
->  
->  	drm_panel_unprepare(pdata->panel);
->  
-> @@ -871,7 +871,7 @@ static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
->  	.post_disable = ti_sn_bridge_post_disable,
->  };
->  
-> -static struct ti_sn65dsi86 *aux_to_ti_sn_bridge(struct drm_dp_aux *aux)
-> +static struct ti_sn65dsi86 *aux_to_ti_sn65dsi86(struct drm_dp_aux *aux)
->  {
->  	return container_of(aux, struct ti_sn65dsi86, aux);
->  }
-> @@ -879,7 +879,7 @@ static struct ti_sn65dsi86 *aux_to_ti_sn_bridge(struct drm_dp_aux *aux)
->  static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->  				  struct drm_dp_aux_msg *msg)
->  {
-> -	struct ti_sn65dsi86 *pdata = aux_to_ti_sn_bridge(aux);
-> +	struct ti_sn65dsi86 *pdata = aux_to_ti_sn65dsi86(aux);
->  	u32 request = msg->request & ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
->  	u32 request_val = AUX_CMD_REQ(msg->request);
->  	u8 *buf = msg->buffer;
-> @@ -1213,7 +1213,7 @@ static void ti_sn_bridge_parse_lanes(struct ti_sn65dsi86 *pdata,
->  	pdata->ln_polrs = ln_polrs;
->  }
->  
-> -static int ti_sn_bridge_probe(struct i2c_client *client,
-> +static int ti_sn65dsi86_probe(struct i2c_client *client,
->  			      const struct i2c_device_id *id)
->  {
->  	struct ti_sn65dsi86 *pdata;
-> @@ -1230,7 +1230,7 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  		return -ENOMEM;
->  
->  	pdata->regmap = devm_regmap_init_i2c(client,
-> -					     &ti_sn_bridge_regmap_config);
-> +					     &ti_sn65dsi86_regmap_config);
->  	if (IS_ERR(pdata->regmap)) {
->  		DRM_ERROR("regmap i2c init failed\n");
->  		return PTR_ERR(pdata->regmap);
-> @@ -1257,7 +1257,7 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  
->  	ti_sn_bridge_parse_lanes(pdata, client->dev.of_node);
->  
-> -	ret = ti_sn_bridge_parse_regulators(pdata);
-> +	ret = ti_sn65dsi86_parse_regulators(pdata);
->  	if (ret) {
->  		DRM_ERROR("failed to parse regulators\n");
->  		return ret;
-> @@ -1291,12 +1291,12 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  
->  	drm_bridge_add(&pdata->bridge);
->  
-> -	ti_sn_debugfs_init(pdata);
-> +	ti_sn65dsi86_debugfs_init(pdata);
->  
->  	return 0;
->  }
->  
-> -static int ti_sn_bridge_remove(struct i2c_client *client)
-> +static int ti_sn65dsi86_remove(struct i2c_client *client)
->  {
->  	struct ti_sn65dsi86 *pdata = i2c_get_clientdata(client);
->  
-> @@ -1310,7 +1310,7 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
->  
->  	kfree(pdata->edid);
->  
-> -	ti_sn_debugfs_remove(pdata);
-> +	ti_sn65dsi86_debugfs_remove(pdata);
->  
->  	drm_bridge_remove(&pdata->bridge);
->  
-> @@ -1321,29 +1321,29 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
->  	return 0;
->  }
->  
-> -static struct i2c_device_id ti_sn_bridge_id[] = {
-> +static struct i2c_device_id ti_sn65dsi86_id[] = {
->  	{ "ti,sn65dsi86", 0},
->  	{},
->  };
-> -MODULE_DEVICE_TABLE(i2c, ti_sn_bridge_id);
-> +MODULE_DEVICE_TABLE(i2c, ti_sn65dsi86_id);
->  
-> -static const struct of_device_id ti_sn_bridge_match_table[] = {
-> +static const struct of_device_id ti_sn65dsi86_match_table[] = {
->  	{.compatible = "ti,sn65dsi86"},
->  	{},
->  };
-> -MODULE_DEVICE_TABLE(of, ti_sn_bridge_match_table);
-> +MODULE_DEVICE_TABLE(of, ti_sn65dsi86_match_table);
->  
-> -static struct i2c_driver ti_sn_bridge_driver = {
-> +static struct i2c_driver ti_sn65dsi86_driver = {
->  	.driver = {
->  		.name = "ti_sn65dsi86",
-> -		.of_match_table = ti_sn_bridge_match_table,
-> -		.pm = &ti_sn_bridge_pm_ops,
-> +		.of_match_table = ti_sn65dsi86_match_table,
-> +		.pm = &ti_sn65dsi86_pm_ops,
->  	},
-> -	.probe = ti_sn_bridge_probe,
-> -	.remove = ti_sn_bridge_remove,
-> -	.id_table = ti_sn_bridge_id,
-> +	.probe = ti_sn65dsi86_probe,
-> +	.remove = ti_sn65dsi86_remove,
-> +	.id_table = ti_sn65dsi86_id,
->  };
-> -module_i2c_driver(ti_sn_bridge_driver);
-> +module_i2c_driver(ti_sn65dsi86_driver);
->  
->  MODULE_AUTHOR("Sandeep Panda <spanda@codeaurora.org>");
->  MODULE_DESCRIPTION("sn65dsi86 DSI to eDP bridge driver");
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
+Rasmus
