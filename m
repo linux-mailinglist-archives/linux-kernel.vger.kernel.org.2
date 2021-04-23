@@ -2,269 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FC936955A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA7536955F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243263AbhDWPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        id S243336AbhDWPA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242901AbhDWO76 (ORCPT
+        with ESMTP id S243085AbhDWO76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Apr 2021 10:59:58 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF35C061349
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:17 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 35-20020a9d05260000b029029c82502d7bso14112926otw.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:17 -0700 (PDT)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58E8C06138D
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:20 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id g9so32692335wrx.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Eeg2Cdj7IqiRDIpGWDL+djvwkAbqWFueQTDOXtzqyV0=;
-        b=llqMPs2cQF2iF8MbJi5mQ+GplbFcna5rRdIDTYCe+MZFvzoEElcATWzMHaNHV4RCNy
-         WmGk+wpNjwswhvfDpkvusvFgtH3OkEI3ei2O4ekYKDXOsNJFxToxZufir5szAmAeB6HC
-         qHb4Pvm9brJmeEM0slxVEtotsR+hD+a4TY2lI8zxho+kGzxUZ9dsXU6JKLZksl9Pti4z
-         c7stZs4ozAirbotRZ3g5PFrD7sOk/kdrfN5q1zx7HHFYhN76I4in3HFi/oEprEb8ALTj
-         lCWC5Y+jjCyGNhfO1CfPWGDcJ5VXivhhqpfv/57t3m1tR0lryEFuP9hbrmc7beRAW/ok
-         cUIQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xT7xLGR/u98oUeFxtP8FIkbPXzcjRalBgVrGk8h35HY=;
+        b=mlrh+t1+toJD+jvvYVxjAwWpjhowFNzMA6Pq+99h7jrnxG9gUpps/g2fyDgvAbaWXz
+         zLnVRkV1PURSJzPfKtczN8wAXLi9h8QxW0vr56qS/H61mfP9Sxg3V+chWYTilNYSURYt
+         MMU9jxbdV9nyct0jqH/tTtqU30wq0wa2UIBZITgYJ4yky0RA8F9FBq7J8fSrz/pGchkg
+         9LbhvZbNV4peYTxU0fj3RaJaHXRjuzZX5otk5ko+frBWZaOAx97trf3QuuiyVp728FDG
+         2FhqsBBWxN5N1FaDVo3WMluOSzHQPUhj3hf8k6oLJrLZkWFXTRUqBrAp11CAIUxJz00J
+         NtjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Eeg2Cdj7IqiRDIpGWDL+djvwkAbqWFueQTDOXtzqyV0=;
-        b=GOz4d61XAbz7yVbk4u+m/SP5j1lsCLx52VpTcTDsv6PzwfOvgJ8BnEEz69x/lxJzeQ
-         NsnTnKgSVrFxxX233vQy2EVbrqh7EWKSnyoBJJ02o3l/X5chAf0EYdaZ/o+mqOa8kycm
-         ieZ6g86ZCm6ZUvJcbNOFDBrkRywWb6rOITPGEsESnGRnPsPTq7Wbs8Yjt4z5ZtUqmb0l
-         sPH2oX9zpLxaSliG07eVfhHvXDA6pgsaeBaejR4nOxD8ScK9wrGfbGUOVl9wkZbOqxGO
-         AtaQPSzw5x9720tfb+4PJWZ9rtV/QlBUCJ2m5R+wLgJCxPymDfMzvVGlIigZYOSoKfAe
-         HKdg==
-X-Gm-Message-State: AOAM530WB6827HP8WwfM0tW/jlTEUthhB0NZCA9wkU1xcLXv0krQbmpt
-        fu7oIBgLcneWbajXRzog+TRrBQ==
-X-Google-Smtp-Source: ABdhPJyPspT+h1LQZ7BDvlkSJWpSkZMti9S33XeGe2+KpIGOxPsTkIlm5BtXNMUKRso6XfVaf2emXg==
-X-Received: by 2002:a05:6830:91e:: with SMTP id v30mr3739310ott.180.1619189956533;
-        Fri, 23 Apr 2021 07:59:16 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t19sm1441111otm.40.2021.04.23.07.59.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xT7xLGR/u98oUeFxtP8FIkbPXzcjRalBgVrGk8h35HY=;
+        b=YpK9PDR3dS7qq9rMoCB1kkDRhWT39whWWpYKc3ZMpIfoHXKAr4Cwke9DiaHKaBId1W
+         DFBJIqPY9DMreNT6mYbA7SY89PLKeyACUmrZMHVfsHDKE9eF+w6E3EnddNG7J8sY3euK
+         lUPDp5LUEUoLjOGFAQYI+c+dKhy2oQec/LKd+dqO/LbNXQWQoeDP2kgdImnIt9/WZ4ib
+         GGuTnm1E4Mr6tfIaWH8YGHMoq/Kbx3yt/cnxfzPmzhkvvOnWKsCvStzcMT2OB97fllCK
+         RR7t5JPeRYa0pTbMOhWKV5DMktoBTzGpKDhF+uX3Cfb5YoS7Ag4xl15K/dIs4bosD+r9
+         2nvw==
+X-Gm-Message-State: AOAM533/BEF0IU6Be5QW08z75Np0DdUdBba8Da8sM42M6iRs9zT3gUJa
+        aENhCraBZiVwvsRzMnHhoXWAT5tRrq0=
+X-Google-Smtp-Source: ABdhPJwyqPevWd+FJFUXDiBY0cbq0n1y7jtD7eSQyCVrztIZRxneeF5GW391yxNp86CiEFIywfGE2g==
+X-Received: by 2002:a5d:69d0:: with SMTP id s16mr5286531wrw.102.1619189959406;
+        Fri, 23 Apr 2021 07:59:19 -0700 (PDT)
+Received: from agape ([5.171.72.99])
+        by smtp.gmail.com with ESMTPSA id l13sm9356780wrt.14.2021.04.23.07.59.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:59:16 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:59:14 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 20/27] drm/bridge: ti-sn65dsi86: Promote the AUX
- channel to its own sub-dev
-Message-ID: <YILgwpg/uPgIario@builder.lan>
-References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.20.Ie9daa320d907fff73f893f74b898197e399cce59@changeid>
+        Fri, 23 Apr 2021 07:59:19 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 23/49] staging: rtl8723bs: remove obsolete debug macro definitions
+Date:   Fri, 23 Apr 2021 16:58:14 +0200
+Message-Id: <dccf1519d6da1d646d493bbbefe7cab45954b539.1619189489.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1619189489.git.fabioaiuto83@gmail.com>
+References: <cover.1619189489.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.20.Ie9daa320d907fff73f893f74b898197e399cce59@changeid>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+remove debug macro definition untied to any tracing component.
 
-> We'd like to be able to expose the DDC-over-AUX channel bus to our
-> panel. This gets into a chicken-and-egg problem because:
-> - The panel wants to get its DDC at probe time.
-> - The ti-sn65dsi86 MIPI-to-eDP bridge code, which provides the DDC
->   bus, wants to get the panel at probe time.
-> 
-> By using a sub device we can fully create the AUX channel bits so that
-> the panel can get them. Then the panel can finish probing and the
-> bridge can probe.
-> 
-> To accomplish this, we also move registering the AUX channel out of
-> the bridge's attach code and do it right at probe time. We use devm to
-> manage cleanup.
-> 
-> NOTE: there's a little bit of a trick here. Though the AUX channel can
-> run without the MIPI-to-eDP bits of the code, the MIPI-to-eDP bits
-> can't run without the AUX channel. We could come up a complicated
-> signaling scheme (have the MIPI-to-eDP bits return EPROBE_DEFER for a
-> while or wait on some sort of completion), but it seems simple enough
-> to just not even bother creating the bridge device until the AUX
-> channel probes. That's what we'll do.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 82 ++++++++++++++++++++-------
->  1 file changed, 63 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 875e5dbe6594..8253098bcdbf 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -116,6 +116,7 @@
->   * struct ti_sn65dsi86 - Platform data for ti-sn65dsi86 driver.
->   * @bridge_aux:   AUX-bus sub device for MIPI-to-eDP bridge functionality.
->   * @gpio_aux:     AUX-bus sub device for GPIO controller functionality.
-> + * @aux_aux:      AUX-bus sub device for eDP AUX channel functionality.
->   *
->   * @dev:          Pointer to the top level (i2c) device.
->   * @regmap:       Regmap for accessing i2c.
-> @@ -148,6 +149,7 @@
->  struct ti_sn65dsi86 {
->  	struct auxiliary_device		bridge_aux;
->  	struct auxiliary_device		gpio_aux;
-> +	struct auxiliary_device		aux_aux;
->  
->  	struct device			*dev;
->  	struct regmap			*regmap;
-> @@ -483,18 +485,12 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  		return -EINVAL;
->  	}
->  
-> -	ret = drm_dp_aux_register(&pdata->aux);
-> -	if (ret < 0) {
-> -		drm_err(bridge->dev, "Failed to register DP AUX channel: %d\n", ret);
-> -		return ret;
-> -	}
-> -
->  	ret = drm_connector_init(bridge->dev, &pdata->connector,
->  				 &ti_sn_bridge_connector_funcs,
->  				 DRM_MODE_CONNECTOR_eDP);
->  	if (ret) {
->  		DRM_ERROR("Failed to initialize connector with drm\n");
-> -		goto err_conn_init;
-> +		return ret;
->  	}
->  
->  	drm_connector_helper_add(&pdata->connector,
-> @@ -551,8 +547,6 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  	mipi_dsi_device_unregister(dsi);
->  err_dsi_host:
->  	drm_connector_cleanup(&pdata->connector);
-> -err_conn_init:
-> -	drm_dp_aux_unregister(&pdata->aux);
->  	return ret;
->  }
->  
-> @@ -1316,11 +1310,6 @@ static int ti_sn_bridge_probe(struct auxiliary_device *adev,
->  	if (ret)
->  		return ret;
->  
-> -	pdata->aux.name = "ti-sn65dsi86-aux";
-> -	pdata->aux.dev = pdata->dev;
-> -	pdata->aux.transfer = ti_sn_aux_transfer;
-> -	drm_dp_aux_init(&pdata->aux);
-> -
->  	pdata->bridge.funcs = &ti_sn_bridge_funcs;
->  	pdata->bridge.of_node = np;
->  
-> @@ -1419,6 +1408,54 @@ static int ti_sn65dsi86_add_aux_device(struct ti_sn65dsi86 *pdata,
->  	return ret;
->  }
->  
-> +static void ti_sn65dsi86_unregister_dp_aux(void *data)
-> +{
-> +	drm_dp_aux_unregister(data);
-> +}
-> +
-> +static int ti_sn_aux_probe(struct auxiliary_device *adev,
-> +			   const struct auxiliary_device_id *id)
-> +{
-> +	struct ti_sn65dsi86 *pdata = dev_get_drvdata(adev->dev.parent);
-> +	int ret;
-> +
-> +	pdata->aux.name = "ti-sn65dsi86-aux";
-> +	pdata->aux.dev = pdata->dev;
-> +	pdata->aux.transfer = ti_sn_aux_transfer;
-> +	drm_dp_aux_init(&pdata->aux);
-> +
-> +	ret = drm_dp_aux_register(&pdata->aux);
-> +	if (ret < 0) {
-> +		drm_err(pdata, "Failed to register DP AUX channel: %d\n", ret);
-> +		return ret;
-> +	}
-> +	ret = devm_add_action_or_reset(&adev->dev,
-> +				       ti_sn65dsi86_unregister_dp_aux, &pdata->aux);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * The eDP to MIPI bridge parts don't work until the AUX channel is
-> +	 * setup so we don't add it in the main driver probe, we add it now.
-> +	 */
-> +	return ti_sn65dsi86_add_aux_device(pdata, &pdata->bridge_aux, "bridge");
-> +}
-> +
-> +static const struct auxiliary_device_id ti_sn_aux_id_table[] = {
-> +	{ .name = "ti_sn65dsi86.aux", },
-> +	{},
-> +};
-> +
-> +MODULE_DEVICE_TABLE(auxiliary, ti_sn_aux_id_table);
-> +
-> +static struct auxiliary_driver ti_sn_aux_driver = {
-> +	.name = "aux",
-> +	.probe = ti_sn_aux_probe,
-> +	.id_table = ti_sn_aux_id_table,
-> +};
-> +
-> +module_auxiliary_driver(ti_sn_aux_driver);
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-As with the earlier patch, please drop MODULE_DEVICE_TABLE() and rework
-module_driver().
+diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
+index bb56d38e6b7a..6e6dea4779d9 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_debug.h
++++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
+@@ -7,7 +7,6 @@
+ #ifndef __RTW_DEBUG_H__
+ #define __RTW_DEBUG_H__
+ 
+-#define _module_cmd_osdep_c_		BIT(8)
+ #define _module_rtl871x_io_c_				BIT(9)
+ #define _module_io_osdep_c_		BIT(10)
+ #define _module_os_intfs_c_			BIT(11)
+@@ -35,9 +34,7 @@
+ 
+ #undef _MODULE_DEFINE_
+ 
+-#if defined _CMD_OSDEP_C_
+-	#define _MODULE_DEFINE_	_module_cmd_osdep_c_
+-#elif defined _RTW_IO_C_
++#if defined _RTW_IO_C_
+ 	#define _MODULE_DEFINE_	_module_rtl871x_io_c_
+ #elif defined _IO_OSDEP_C_
+ 	#define _MODULE_DEFINE_	_module_io_osdep_c_
+-- 
+2.20.1
 
-Regards,
-Bjorn
-
-> +
->  static int ti_sn65dsi86_probe(struct i2c_client *client,
->  			      const struct i2c_device_id *id)
->  {
-> @@ -1477,10 +1514,11 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
->  	 * motiviation here is to solve the chicken-and-egg problem of probe
->  	 * ordering. The bridge wants the panel to be there when it probes.
->  	 * The panel wants its HPD GPIO (provided by sn65dsi86 on some boards)
-> -	 * when it probes. There will soon be other devices (DDC I2C bus, PWM)
-> -	 * that have the same problem. Having sub-devices allows the some sub
-> -	 * devices to finish probing even if others return -EPROBE_DEFER and
-> -	 * gets us around the problems.
-> +	 * when it probes. The panel and maybe backlight might want the DDC
-> +	 * bus. Soon the PWM provided by the bridge chip will have the same
-> +	 * problem. Having sub-devices allows the some sub devices to finish
-> +	 * probing even if others return -EPROBE_DEFER and gets us around the
-> +	 * problems.
->  	 */
->  
->  	if (IS_ENABLED(CONFIG_OF_GPIO)) {
-> @@ -1489,7 +1527,13 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
->  			return ret;
->  	}
->  
-> -	return ti_sn65dsi86_add_aux_device(pdata, &pdata->bridge_aux, "bridge");
-> +	/*
-> +	 * NOTE: At the end of the AUX channel probe we'll add the aux device
-> +	 * for the bridge. This is because the bridge can't be used until the
-> +	 * AUX channel is there and this is a very simple solution to the
-> +	 * dependency problem.
-> +	 */
-> +	return ti_sn65dsi86_add_aux_device(pdata, &pdata->aux_aux, "aux");
->  }
->  
->  static struct i2c_device_id ti_sn65dsi86_id[] = {
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
