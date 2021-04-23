@@ -2,144 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF171368EF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67939368F04
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhDWImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:42:11 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:17534
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230007AbhDWImK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:42:10 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A4G2ug6stEWm5EsPGI2AcM+bn7skDl9V00zAX?=
- =?us-ascii?q?/kB9WHVpW+afkN2jm+le6A/shF8qKRUdsP2JJaXoexjh3LFv5415B92fdSng/F?=
- =?us-ascii?q?ClNYRzqbblqgeAJwTb1spwkZhtaLJ/DtqYNykese/f7BOjG9gthPmrmZrJuc7k?=
- =?us-ascii?q?w31gTR5nZshbhm9EIz2WHUFsSA5NCYBRLuv+2uN8uzGidX4LB/7UOlA5WYH4y+?=
- =?us-ascii?q?HjqIjrelovCRIh9WC1/FGVwY+/Ilyj0hASXygn+9of2GLO+jaX2pme?=
-X-IronPort-AV: E=Sophos;i="5.82,245,1613430000"; 
-   d="scan'208";a="379461705"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 10:41:32 +0200
-Date:   Fri, 23 Apr 2021 10:41:32 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>
-Subject: Re: [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count
- leak"
-In-Reply-To: <ed2859a3-0051-5ef4-483c-9abd4fa81b22@canonical.com>
-Message-ID: <alpine.DEB.2.22.394.2104231037400.4538@hadrien>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-10-gregkh@linuxfoundation.org> <b43fc2b0-b3cf-15ab-7d3c-25c1f2a3e658@canonical.com> <YIJy6AnG6QBlkV/5@kroah.com> <20210423100727.5a999c2e@coco.lan>
- <02966f20-342d-cf21-8216-d364b67753b7@xs4all.nl> <ed2859a3-0051-5ef4-483c-9abd4fa81b22@canonical.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S241666AbhDWIn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:43:27 -0400
+Received: from m12-17.163.com ([220.181.12.17]:47807 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhDWIn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 04:43:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OZm9k
+        Dl6iBZXozcJeRVw3q8Ozl61aoipUtEec09/+do=; b=edKvS6w3ThB+Sv6NdjmMh
+        4gfLj/9xNuD6AvxRPTQECTxUknH54wFkA3YMu2KKKFD1wSP3DHpqaIjn955SybGj
+        fSV1jTznSuVuYX3RwHicWsSHy9j/eqHAAVosPI5RtjOaUOxSHJN1krDgES/tzFwp
+        0Ic5hcHORemfaH4h53uF7U=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp13 (Coremail) with SMTP id EcCowAAXGpJsiIJgH_Lyww--.55156S2;
+        Fri, 23 Apr 2021 16:42:22 +0800 (CST)
+From:   dingsenjie@163.com
+To:     shawnguo@kernel.org, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] gpu: drm: Use devm_platform_ioremap_resource_byname
+Date:   Fri, 23 Apr 2021 16:41:39 +0800
+Message-Id: <20210423084139.1240-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAAXGpJsiIJgH_Lyww--.55156S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJw4rZrWfGF4DZr13AF1DZFb_yoW5Ww45pr
+        WxGa1UCr4rJF4vg39xJF4DZF9xAw1YyayrCrs7Wwnaka98AFyDAFy5Za40v343Jas8Cr17
+        tFWayFWUZa4DXFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jUCztUUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipQ59yFUMdnUbNwAAso
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: dingsenjie <dingsenjie@yulong.com>
+
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
+separately.
+
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/gpu/drm/zte/zx_vou.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/gpu/drm/zte/zx_vou.c b/drivers/gpu/drm/zte/zx_vou.c
+index 904f62f..ba50ddf 100644
+--- a/drivers/gpu/drm/zte/zx_vou.c
++++ b/drivers/gpu/drm/zte/zx_vou.c
+@@ -764,7 +764,6 @@ static int zx_crtc_bind(struct device *dev, struct device *master, void *data)
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct drm_device *drm = data;
+ 	struct zx_vou_hw *vou;
+-	struct resource *res;
+ 	int irq;
+ 	int ret;
+ 
+@@ -772,16 +771,14 @@ static int zx_crtc_bind(struct device *dev, struct device *master, void *data)
+ 	if (!vou)
+ 		return -ENOMEM;
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "osd");
+-	vou->osd = devm_ioremap_resource(dev, res);
++	vou->osd = devm_platform_ioremap_resource_byname(pdev, "osd");
+ 	if (IS_ERR(vou->osd)) {
+ 		ret = PTR_ERR(vou->osd);
+ 		DRM_DEV_ERROR(dev, "failed to remap osd region: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "timing_ctrl");
+-	vou->timing = devm_ioremap_resource(dev, res);
++	vou->timing = devm_platform_ioremap_resource_byname(pdev, "timing_ctrl");
+ 	if (IS_ERR(vou->timing)) {
+ 		ret = PTR_ERR(vou->timing);
+ 		DRM_DEV_ERROR(dev, "failed to remap timing_ctrl region: %d\n",
+@@ -789,16 +786,14 @@ static int zx_crtc_bind(struct device *dev, struct device *master, void *data)
+ 		return ret;
+ 	}
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dtrc");
+-	vou->dtrc = devm_ioremap_resource(dev, res);
++	vou->dtrc = devm_platform_ioremap_resource_byname(pdev, "dtrc");
+ 	if (IS_ERR(vou->dtrc)) {
+ 		ret = PTR_ERR(vou->dtrc);
+ 		DRM_DEV_ERROR(dev, "failed to remap dtrc region: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "vou_ctrl");
+-	vou->vouctl = devm_ioremap_resource(dev, res);
++	vou->vouctl = devm_platform_ioremap_resource_byname(pdev, "vou_ctrl");
+ 	if (IS_ERR(vou->vouctl)) {
+ 		ret = PTR_ERR(vou->vouctl);
+ 		DRM_DEV_ERROR(dev, "failed to remap vou_ctrl region: %d\n",
+@@ -806,8 +801,7 @@ static int zx_crtc_bind(struct device *dev, struct device *master, void *data)
+ 		return ret;
+ 	}
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otfppu");
+-	vou->otfppu = devm_ioremap_resource(dev, res);
++	vou->otfppu = devm_platform_ioremap_resource_byname(pdev, "otfppu");
+ 	if (IS_ERR(vou->otfppu)) {
+ 		ret = PTR_ERR(vou->otfppu);
+ 		DRM_DEV_ERROR(dev, "failed to remap otfppu region: %d\n", ret);
+-- 
+1.9.1
 
 
-On Fri, 23 Apr 2021, Krzysztof Kozlowski wrote:
-
-> On 23/04/2021 10:10, Hans Verkuil wrote:
-> > On 23/04/2021 10:07, Mauro Carvalho Chehab wrote:
-> >> Em Fri, 23 Apr 2021 09:10:32 +0200
-> >> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> >>
-> >>> On Fri, Apr 23, 2021 at 09:04:27AM +0200, Krzysztof Kozlowski wrote:
-> >>>> On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
-> >>>>> This reverts commit 78741ce98c2e36188e2343434406b0e0bc50b0e7.
-> >>>>>
-> >>>>> Commits from @umn.edu addresses have been found to be submitted in "bad
-> >>>>> faith" to try to test the kernel community's ability to review "known
-> >>>>> malicious" changes.  The result of these submissions can be found in a
-> >>>>> paper published at the 42nd IEEE Symposium on Security and Privacy
-> >>>>> entitled, "Open Source Insecurity: Stealthily Introducing
-> >>>>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> >>>>> of Minnesota) and Kangjie Lu (University of Minnesota).
-> >>>>>
-> >>>>> Because of this, all submissions from this group must be reverted from
-> >>>>> the kernel tree and will need to be re-reviewed again to determine if
-> >>>>> they actually are a valid fix.  Until that work is complete, remove this
-> >>>>> change to ensure that no problems are being introduced into the
-> >>>>> codebase.
-> >>>>>
-> >>>>> Cc: Qiushi Wu <wu000273@umn.edu>
-> >>>>> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> >>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>>>> ---
-> >>>>>  drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +---
-> >>>>>  1 file changed, 1 insertion(+), 3 deletions(-)
-> >>>>>
-> >>>>
-> >>>> This looks like a good commit but should be done now in a different way
-> >>>> - using pm_runtime_resume_and_get().  Therefore I am fine with revert
-> >>>> and I can submit later better fix.
-> >>>
-> >>> Great, thanks for letting me know, I can have someone work on the
-> >>> "better fix" at the same time.
-> >>
-> >> IMO, it is better to keep the fix. I mean, there's no reason to
-> >> revert a fix that it is known to be good.
-> >>
-> >> The "better fix" patch can be produced anytime. A simple coccinelle
-> >> ruleset can replace patterns like:
-> >>
-> >> 	ret = pm_runtime_get_sync(pm->device);
-> >> 	if (ret < 0) {
-> >> 		pm_runtime_put_noidle(pm->device);
-> >> 		return ret;
-> >> 	}
-> >>
-> >> and the broken pattern:
-> >>
-> >> 	ret = pm_runtime_get_sync(pm->device);
-> >> 	if (ret < 0)
-> >> 		return ret;
-> >>
-> >> to:
-> >>
-> >> 	ret = pm_runtime_resume_and_get(pm->device);
-> >> 	if (ret < 0)
-> >> 		return ret;
-> >
-> > That's my preference as well.
->
-> It won't be that easy because sometimes the error handling is via goto
-> (like in other patches here) but anyway I don't mind keeping the
-> original commits.
-
-I tried the following semantic patch:
-
-@@
-expression ret,e;
-@@
-
--     ret = pm_runtime_get_sync(e);
-+     ret = pm_resume_and_get(e);
-      if (ret < 0) {
-              ...
-?-            pm_runtime_put_noidle(e);
-              ...
-              return ret;
-      }
-
-It has the following features:
-
-* The ? means that if pm_runtime_put_noidle is absent, the transformation
-will happen anyway.
-
-* The ... before the return means that the matching will jump over a goto.
-
-It makes a lot of changes (in a kernel I had handy from March).  This is a
-complicated API, however, and I don't know if there are any other issues
-to take into account, especially in the case where the call to
-pm_runtime_put_noidle is not present.
-
-julia
