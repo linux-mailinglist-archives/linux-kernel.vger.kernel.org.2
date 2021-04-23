@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F22C3699EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9433A3699FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243713AbhDWSmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhDWSmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:42:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1C9061139;
-        Fri, 23 Apr 2021 18:42:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619203330;
-        bh=qIaVUyzdhjBUU7tl3VOejcO6+StJQjKYlePJddUmi7E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aWSmmAHDhWfWLE27J7QqAexykU5n2y1GB/omH7zwDOAleNlcEqvO2r1rMfIBOL2q7
-         Lat+X4UwmhBUzghwYL1bKCHRq97nz9BIxbw15E69e7LN1imyo834aKxbQU2BOZKLG7
-         CVyzo1lcmj88d9r6farXjOhA1Rm8GL8AnHsRC8WFMbZJMpPY7B9Lb2pGosTLA2m2+Y
-         5hD67MSNjpt5Ga27/Rf1fRdnUh4QwM/XkMrGxJbCtqqFTEORU7D5sq1QWsLr3YhrpA
-         0+DeEnj573ny/o1tQZWsJCqSMxo1EYPj1CfYZLrcQJi1p9zO9VbWKG1PLpMe59Egvp
-         C5Pgpz85CJBvg==
-Received: by mail-ed1-f51.google.com with SMTP id g17so57822888edm.6;
-        Fri, 23 Apr 2021 11:42:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533dM28BrDcP/pun+4d78kpUgHchAi4Z5zwXS20RVhAa0ChHQU6G
-        hQTudVdZFVr8Hb+LSJlyZz35M0FMW+fxtHwpWQ==
-X-Google-Smtp-Source: ABdhPJxRxWR99r32kKOjtbYRcF+R9SoFCUGOziFQxhTRy7/ub7acC9s4XzQRvki8x3jvmUqBtR/g+HPM9RbFw1VUkOs=
-X-Received: by 2002:a05:6402:34c8:: with SMTP id w8mr6219150edc.194.1619203328426;
- Fri, 23 Apr 2021 11:42:08 -0700 (PDT)
+        id S243662AbhDWSoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:44:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56151 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243503AbhDWSoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 14:44:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619203425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xCk+7HBEDSqMgOjZMBk+r1aGT3OYcq/6hTQ7p1Jbu/c=;
+        b=PCpm5hUKGdRXuiA8WQKOHvLhBYa9sqm5y48BbXYZ1EptZe6bDFl3KXY26axtf4Fz0pS4BE
+        QEJE7uAh44+qQ9ywzUR7ZZCUQQXugOkSEIFH8PXvTyrqdJkCFyGfZLW/RtNjhxQEZqLSZF
+        5O4L0RQkGhk1TZYvEU9CpoA0fe/cHP8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-137-qwKfC8WPM_q7IqnQ0uIp8g-1; Fri, 23 Apr 2021 14:43:40 -0400
+X-MC-Unique: qwKfC8WPM_q7IqnQ0uIp8g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01E2C80D6A8;
+        Fri, 23 Apr 2021 18:43:36 +0000 (UTC)
+Received: from Ruby.lyude.net (ovpn-114-74.rdu2.redhat.com [10.10.114.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96776608BA;
+        Fri, 23 Apr 2021 18:43:30 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Parshuram Thombare <pthombar@cadence.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 01/17] drm/bridge/cdns-mhdp8546: Register DP aux channel with userspace
+Date:   Fri, 23 Apr 2021 14:42:53 -0400
+Message-Id: <20210423184309.207645-2-lyude@redhat.com>
+In-Reply-To: <20210423184309.207645-1-lyude@redhat.com>
+References: <20210423184309.207645-1-lyude@redhat.com>
 MIME-Version: 1.0
-References: <20210420024222.101615-1-ilya.lipnitskiy@gmail.com>
- <20210421220302.GA1637795@robh.at.kernel.org> <CALCv0x2oSXBT-6LteYtr9J5XmmDuer_=sbCgB5CBXWe_cKk2sA@mail.gmail.com>
-In-Reply-To: <CALCv0x2oSXBT-6LteYtr9J5XmmDuer_=sbCgB5CBXWe_cKk2sA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 23 Apr 2021 13:41:56 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+Zhgn53wGdMbZKMjxk2gPQQFpjSsudVso+keonDCd+oQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+Zhgn53wGdMbZKMjxk2gPQQFpjSsudVso+keonDCd+oQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: net: mediatek/ralink: remove unused bindings
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 5:05 PM Ilya Lipnitskiy
-<ilya.lipnitskiy@gmail.com> wrote:
->
-> Hi Rob,
->
-> On Wed, Apr 21, 2021 at 3:03 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Mon, Apr 19, 2021 at 07:42:22PM -0700, Ilya Lipnitskiy wrote:
-> > > Revert commit 663148e48a66 ("Documentation: DT: net: add docs for
-> > > ralink/mediatek SoC ethernet binding")
-> > >
-> > > No in-tree drivers use the compatible strings present in these bindings,
-> > > and some have been superseded by DSA-capable mtk_eth_soc driver, so
-> > > remove these obsolete bindings.
-> >
-> > Looks like maybe OpenWRT folks are using these. If so, you can't revert
-> > them.
-> Indeed, there are out of tree drivers for some of these. I wasn't sure
-> what the dt-binding policy was for such use cases - can you point me
-> to a definitive reference?
+Just adds some missing calls to
+drm_dp_aux_register()/drm_dp_aux_unregister() for when we attach/detach the
+bridge.
 
-Perhaps we should write that down more explicitly, but I think it is
-pretty rare actually. And really, I'd like to require we have at least
-1 dts user. Though, then we'd just have dead dts files. More
-generally, other projects use the bindings and dts files. The bindings
-and dts files live in the kernel tree for convenience and the simple
-fact that is where the vast majority of both developers and hardware
-support are. There are exceptions of course such as h/w that doesn't
-run Linux.
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-I'm all for removing this if no one cares (please try to find out) or
-if the existing binding is just bad (doesn't match the h/w or is
-incomplete in an incompatible way). I would have expected in the 5
-years since it was added, a user (either dts file or driver) would
-have appeared.
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index 01e95466502a..49e4c340f1de 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -1719,10 +1719,14 @@ static int cdns_mhdp_attach(struct drm_bridge *bridge,
+ 
+ 	dev_dbg(mhdp->dev, "%s\n", __func__);
+ 
++	ret = drm_dp_aux_register(&mhdp->aux);
++	if (ret < 0)
++		return ret;
++
+ 	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+ 		ret = cdns_mhdp_connector_init(mhdp);
+ 		if (ret)
+-			return ret;
++			goto aux_unregister;
+ 	}
+ 
+ 	spin_lock(&mhdp->start_lock);
+@@ -1738,6 +1742,9 @@ static int cdns_mhdp_attach(struct drm_bridge *bridge,
+ 		       mhdp->regs + CDNS_APB_INT_MASK);
+ 
+ 	return 0;
++aux_unregister:
++	drm_dp_aux_unregister(&mhdp->aux);
++	return ret;
+ }
+ 
+ static void cdns_mhdp_configure_video(struct cdns_mhdp_device *mhdp,
+@@ -2082,6 +2089,8 @@ static void cdns_mhdp_detach(struct drm_bridge *bridge)
+ 
+ 	dev_dbg(mhdp->dev, "%s\n", __func__);
+ 
++	drm_dp_aux_unregister(&mhdp->aux);
++
+ 	spin_lock(&mhdp->start_lock);
+ 
+ 	mhdp->bridge_attached = false;
+-- 
+2.30.2
 
-Rob
