@@ -2,186 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E431368AF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21342368AFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbhDWCQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:16:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57676 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230367AbhDWCQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:16:38 -0400
-IronPort-SDR: 9oFg7co7rUnv7fBoSuivU7pKNWEn2TaTKb3d914zp2oT/EP645GFnvX6ld07jISzOzZV4EyJuo
- pPjds5ki4KYQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="192817646"
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="192817646"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:16:02 -0700
-IronPort-SDR: 3nIHzZZCasK7WPQ5/mr1vBaEn1/Pj/ss9BNYkuieE5VnGJP5QUZcS6P27zONsY9ISWfh3MAtbo
- JDaoBTkN3yPw==
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="428205418"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.46]) ([10.238.4.46])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:15:58 -0700
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-To:     paulmck@kernel.org, Feng Tang <feng.tang@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-References: <20210420064934.GE31773@xsang-OptiPlex-9020>
- <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
- <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <d3a01227-cec5-2670-5525-36a418c5f4a0@linux.intel.com>
-Date:   Fri, 23 Apr 2021 10:15:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S237088AbhDWCST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:18:19 -0400
+Received: from mail-eopbgr1410075.outbound.protection.outlook.com ([40.107.141.75]:26720
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236498AbhDWCSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 22:18:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mnZnnNVdBBkCMSkS2B6qyuX4ENuyWJbh4+LpUDP3lOnEptmhKGVGIcwZvPl70F3wsTQXH98WouSlOeV7gVJXd9xX5YpyXVHGaMg/Fdux3w8TPpnw4/uzakj37k5s6Ylb+FxX/CRyfZbRffpxgCLMt8oMSNMv/VVJ3NeqFcmh7F58g/b834TxvubUSzO+6iueN3FNi1YFJYLDfUYK1vitD4WUVEbFOlOkgpCY65TYU0sS7+3cR+oYV+Wg+8fuc6UN28KwCb9pevoQPCKZV8poYMt6ZeOfUvj5P2OH+5lh4umrlwM5hRmaVn4sOnYZzV3o+WRRGktUgDMUg58MN2bJIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OCJ2wfQyDFXba+qUhT17CoyyZ2qlttL/3KGv77bubN0=;
+ b=U5eR61dpklBtJbXkocLpzr1mn+FJrZbwomAECoTVgeA1wwmYdr2PbxS1hXSSmW3EOrXzKv3Tv88zPT2cDCNMh8QwnzoAfpZyx+NeXMXkZkd8Qz3hxwfkpKqeykAPOWQVQCWEVZ0JCXdFBVkqb9G7E559IlmQ3jU9RmRk4MpNxk9/29RJw0ACZv9RwDVwRZfE9Z6XEiN2e3pySMmErTdOeo+eHhxFb2X+7mp9yUMDuFpLJKuku1qdShwqG6OcX0OuyCgVcY6WXBXHyBW/90jMg8TywrbiCQjasFCSGnaXqGKyI8vJD3H3GDT2rGHqKfk7PwdFgQ5WEd4JAubwo2T+wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OCJ2wfQyDFXba+qUhT17CoyyZ2qlttL/3KGv77bubN0=;
+ b=MM5LJIXUVJGoU/+KvllnWsU1Wz5GzwmUM9/n4rTrneaXy7gvvQWuk8L15WSHtaz065ulw3R1JmJI4KN5pAnL+XpUpcWVSDyGTWxtQVigHLoQfV+SIYt+Dm6LwRM0Ia9xqfgwv9hwqNbgIiebPzEdCmFQcOJ8dEjcEn4C3rJ7nHU=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYAPR01MB3501.jpnprd01.prod.outlook.com (2603:1096:404:be::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Fri, 23 Apr
+ 2021 02:17:40 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.4042.024; Fri, 23 Apr 2021
+ 02:17:40 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] mm,hwpoison: return -EHWPOISON when page already
+Thread-Topic: [PATCH v3 2/3] mm,hwpoison: return -EHWPOISON when page already
+Thread-Index: AQHXNkllEN6LAIGMUEi3fVQNTtIJxqrAxd0AgACbOoA=
+Date:   Fri, 23 Apr 2021 02:17:40 +0000
+Message-ID: <20210423021739.GA68967@hori.linux.bs1.fc.nec.co.jp>
+References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
+ <20210421005728.1994268-3-nao.horiguchi@gmail.com>
+ <20210422170204.GD7021@zn.tnic>
+In-Reply-To: <20210422170204.GD7021@zn.tnic>
+Accept-Language: ja-JP, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.97.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ee4dac63-94d8-4591-efa4-08d905fdf867
+x-ms-traffictypediagnostic: TYAPR01MB3501:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB350139F6FE94EACF841CEFEFE7459@TYAPR01MB3501.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:328;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aFG2wbMwEe9cdM826DHgMxbdoUcqHo+uL0pSNTP5Uv1wzDDh6vfmp1SctFRC9aYE4kG3x0OmHKW3A74PY/bKkYWlDrROuJC0IkMD/NxbSemblWNuPCk7tCEiQ1coetV+VaZ1KqEaA+gbRN39CqJ7a+dTyzG9Okr4VEfQgqb6lKWA6NVMDq58pTTMbs700dtdq9mtJyc4c0vjvp0g9VDAjrYVIGEpaTyJtu8lb/6h37tLrSSEUI+wVPvmg/k8XNuexLl80enI++M4ucAM6FjlVor3ESgA12oXbAirPkgFDXPX1E87Cjy6jRtdteGVPmhXndVN+rRRZ2FBglW1LDRqCtm5FmN+L3pcZV+kKBNBE4RBmt5eB+/lp7GevHwwDWxaUQ19HTamyqd685HIIEP1qFziFqiob85MgpG+ChmKNB1LDqI5cI8+U7sttVSRmBln4lOvo89379xtRp0aO8E+ZOvCdZJHy+jvRqTK26akVwMxzoGI7GdYgKtdrxP8kqT6ijnd9uh8vXHX6z+qyyMTLoTwZQeQlcVMgDVdNi3Se69TGIiZc2GlavnauBqUOZf4pJkyv0qVrlQt+xHH7zc6sXnzL3sTlo2gldEB0jVObT0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(136003)(39860400002)(376002)(55236004)(8936002)(8676002)(478600001)(71200400001)(54906003)(6486002)(316002)(86362001)(6506007)(122000001)(7416002)(186003)(38100700002)(6916009)(2906002)(66946007)(76116006)(66446008)(26005)(4326008)(83380400001)(6512007)(4744005)(33656002)(66556008)(9686003)(64756008)(66476007)(85182001)(1076003)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cEJqS2lnZzdnMmUrQ3E5dkxDZHIvOEsrQU1HY1ZIaW0xYXRYZElYT2U0ZE0r?=
+ =?utf-8?B?OFgvTjkrdjEweTR2SVlrMWlpZVQ1Y0JmVXpDTzRZYVpBSUdJSzh0TDRDWjll?=
+ =?utf-8?B?alIxbDlkRWpTZm5vT1JqcWUyN29NSmVxZVRsQzBWSmYrVDIwbzRJd0hkb29G?=
+ =?utf-8?B?dUg0NlIzaS84bW12SlEwM2JHcEcyUjRCNW1Nenp5NGs4Qkd5MXFjb0EvcE1L?=
+ =?utf-8?B?WXVHYllVSFdBVlZuZWs1MFJEMEVHZXN3UEUrOTZROVpjSlFBSHdyS2szeWtF?=
+ =?utf-8?B?bXZLVlNtSEdReHp0akFTazh1aHptYU9nYU5ReGFMZ2x2WnFNRmc0Rm5wTUdk?=
+ =?utf-8?B?T1NRNlBIM2NMeVdtK3dlYWt5NWRYSTZjeU9vaHRtejBDVk9Xekg3Vis0WjR5?=
+ =?utf-8?B?b0V0RHhacHpHaWlJWkFOVEZieVZRSDQxV0ZIU1o1YTZLaks3Y3ZXdGl2eXhm?=
+ =?utf-8?B?NFRWYnErN0pTZWNsU3BNYWE2aHZETmc3Y0s2VHZpWmxYRWlpdFRqSUJCMFNo?=
+ =?utf-8?B?R2Y5U0VRYWVJRktjZi9KcE90cEhCS0cyYUdlRXlXTkpqUUdXT0RCNFRESEI5?=
+ =?utf-8?B?eEp6MC8wd2EzRVV3b29XUkc2MVJVbjJWc0E3ZGYyeUtoRkhwMno0VkU5NHN5?=
+ =?utf-8?B?MzJodzVEK0lCNzdRUkdqZWhGclR6QzVRUUxwaUpoZmxWRHBlZHZySkRRQ0xQ?=
+ =?utf-8?B?N2kvUVh5cVpXeXNlR0JzNGhaOEt5SnRwTmxQVytGZnBRaW92MnNTUHhXL21h?=
+ =?utf-8?B?anlSVkJLNysxN2szRlRpMWxDTzd5RGdIa3BTczFqaFR6azBVd0dRYXRaTlA1?=
+ =?utf-8?B?Z0xuK2lwS0lac1JsU24yUW5ic29rT1JVaU9tdXh5SFhxVEphRGhrL3dsazhY?=
+ =?utf-8?B?UVArZXNhL0wvaC9nNlpxaGJpbXNNcGs1VVhSMktIdlRuUTNQcGt1eUxjS1Vi?=
+ =?utf-8?B?bk82NUZ0YTRJQlRBTkk2a252NklrNUc2Z1dLdlF2NmhQTDNiSlN4TndTbW4w?=
+ =?utf-8?B?NmtWMTV0QnY1Vko0aUxxbTBSd1VyanpqRW4xOHVIeUlUa3hMMThrcStpV0lI?=
+ =?utf-8?B?OTVkRGdicHh2K01WazJlNW12TDdVZUlzOHZ4MmFSK01DcXhoSDhVcE16dkJ0?=
+ =?utf-8?B?dUtMKzg1VDY2V1JzVTJrTXN0RFpVMVNtUzhGajM5U1BtUWIyWUFaUmFmTkZm?=
+ =?utf-8?B?djIvcVRlK2w2RFBZVVVLNTV5YUdmN1k0SDdsRm9pRngxWEV1NW9mWUg4ellG?=
+ =?utf-8?B?Ym93Z0MwNkpZd1F2a0dLTTZKYlBpK0hENGRLUzVFR1dDdEpaWVBLVHFoMnpW?=
+ =?utf-8?B?MmdaaStDU2NBRnhidnNVM25GM2VHbjRwYi9HM2xLdk9UbldlOEVvblAwNGl6?=
+ =?utf-8?B?bUd6dmhhWWtRNFJYUDZGUG41WjlNRHg1ME44Wnp5alYvNEhUR0hwcFM2VnJX?=
+ =?utf-8?B?aGtJUTFYK3JkbS9GaTBTU0J6TnV0UHp3WHJKcjlRYmRNOU4rS0pDNjVEN2ZF?=
+ =?utf-8?B?L2JZaW5sNmp4UEFYMFdUZFhYYk5rdGkzUFZCUDA3OHRpMU1hNDZiYnpJdzlN?=
+ =?utf-8?B?bHRZcnhSMkgra0o1cUFxWXNkUXZxRkYzbkVMaDdMNC9ITGxYdkdycFBqZFJS?=
+ =?utf-8?B?S3pFbkU1VFdJaHZhcWZaSExrbGhNQWYzSUkxZTBzMnQ0OFphMTRlREt2UXN4?=
+ =?utf-8?B?SjczcHIwNGZQSWFTcU9zcUI2TWxMc3RGN1RoUWVqYXBIbTluaGJLL2l5UU1S?=
+ =?utf-8?Q?O9wiO2vk4tiAZMVaJ30Zr9YtoUcXpbyzl65l5NS?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DA0550574E0A8342BDF97EFEF13DBFD8@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee4dac63-94d8-4591-efa4-08d905fdf867
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 02:17:40.1392
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +RXrs2Yhskp2ISWqUOLOa1wY6A8DLBbyA5alL8DXAgY8XWwZ6bBBUgHt1rKNgvMdu5UDR7KZ/vwGDCVJJQNjnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3501
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/22/2021 10:24 PM, Paul E. McKenney wrote:
-> On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
->> Hi Paul,
->>
->> On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
->>>
->>>
->>> On 4/21/2021 9:42 PM, Paul E. McKenney wrote:
->>>> On Wed, Apr 21, 2021 at 02:07:19PM +0800, Xing, Zhengjun wrote:
->>>>>
->>>>> On 4/20/2021 10:05 PM, Paul E. McKenney wrote:
->>>>>> On Tue, Apr 20, 2021 at 06:43:31AM -0700, Paul E. McKenney wrote:
->>>>>>> On Tue, Apr 20, 2021 at 02:49:34PM +0800, kernel test robot wrote:
->>>>>>>> Greeting,
->>>>>>>>
->>>>>>>> FYI, we noticed a -14.4% regression of stress-ng.opcode.ops_per_sec due to commit:
->>>>>>>>
->>>>>>>>
->>>>>>>> commit: 6c52b5f3cfefd6e429efc4413fd25e3c394e959f ("clocksource: Reduce WATCHDOG_THRESHOLD")
->>>>>>>> https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.13a
->>>>>>>>
->>>>>>>>
->>>>>>>> in testcase: stress-ng
->>>>>>>> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
->>>>>>>> with following parameters:
->>>>>>>>
->>>>>>>> 	nr_threads: 10%
->>>>>>>> 	disk: 1HDD
->>>>>>>> 	testtime: 60s
->>>>>>>> 	fs: ext4
->>>>>>>> 	class: os
->>>>>>>> 	test: opcode
->>>>>>>> 	cpufreq_governor: performance
->>>>>>>> 	ucode: 0x5003006
->>>>>>> Hmmm...  I will try a less-aggressive reduction.  Thank you for testing!
->>>>>> But wait...  This code is only running twice per second.  It is very
->>>>>> hard to believe that a clock-read retry twice per second is worth 2% of
->>>>>> performance, let alone 14.4%.
->>>>>>
->>>>>> Is something else perhaps going on here?
->>>>>>
->>>>>> For example, did this run enable any of the new diagnositic clocksource.*
->>>>>> kernel parameters?
->>>>>>
->>>>>> 								Thanx, Paul
->>>>> I attached the kernel log, the following logs are related with the
->>>>> clocksource.
->>>>> [    3.453206] clocksource: timekeeping watchdog on CPU1: Marking
->>>>> clocksource 'tsc-early' as unstable because the skew is too large:
->>>>> [    3.455197] clocksource:                       'hpet' wd_now: 288fcc0
->>>>> wd_last: 1a8b333 mask: ffffffff
->>>>> [    3.455199] clocksource:                       'tsc-early' cs_now:
->>>>> 1def309ebfdee cs_last: 1def2bd70d92c mask: ffffffffffffffff
->>>>> [    3.455201] clocksource:                       No current clocksource.
->>>>> [    3.457197] tsc: Marking TSC unstable due to clocksource watchdog
->>>>>
->>>>> 6c52b5f3cf reduced WATCHDOG_THRESHOLD, then in clocksource_watchdog, the
->>>>> warning logs are print, the TSC is marked as unstable.
->>>>> /* Check the deviation from the watchdog clocksource. */
->>>> Aha, so this system really does have an unstable TSC!  Which means that
->>>> the patch is operating as designed.
->>>>
->>>> Or are you saying that this is a false positive?
->>>>
->>>> 							Thanx, Paul
->>>
->>> It happened during boot and before TSC calibration
->>> (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
->>>> WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
->>> After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
->>> WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
->>> WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
->>> by more than 1% to be marked unstable.
-> 
-> This is common code, so we do need an architecture-independent way to
-> handle this.
-> 
->> As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
->> times calibration of tsc, the first one of early quick calibration gives
->> 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
->> is about 2.5/1000 deviation for the first number, which just exceeds the
->> 1/1000 threshold you set :)
-> 
-> Even my 2/1000 initial try would have caused this, then.  ;-)
-> 
-> But even 1/1000 deviation would cause any number of applications some
-> severe heartburn, so I am not at all happy with the thought of globally
-> increasing to (say) 3/1000.
-> 
->> Following is the tsc freq info from kernel log
->>
->> [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
->> [    0.000000] tsc: Detected 2100.000 MHz processor
->> ...
->> [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
-> 
-> So what are our options?
-> 
-> 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
-> 
-> 2.	#1, but add tsc-early into the watchdog list and set
-> 	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
-> 
-> 3.	Add a field to struct clocksource that, if non-zero, gives
-> 	the maximum drift in nanoseconds per half second (AKA
-> 	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
-> 	is used.  Set this to (say) 150,000ns for tsc-early.
-> 
-> 4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
-> 	which again is not a good approach given the real-world needs
-> 	of real-world applications.
-> 
-> 5.	Your ideas here.
-How about set two watchdog thresholds, one for before 
-calibration(1/100), the other for after calibration(1/1000)? For 
-example, u64 watchdog_thresholds[2].
-
-> 
-> All in all, I am glad that I made the patch that decreases
-> WATCHDOG_MAX_SKEW be separate and at the end of the series.  ;-)
-> 
-> 							Thanx, Paul
-> 
-
--- 
-Zhengjun Xing
+T24gVGh1LCBBcHIgMjIsIDIwMjEgYXQgMDc6MDI6MDRQTSArMDIwMCwgQm9yaXNsYXYgUGV0a292
+IHdyb3RlOg0KPiBPbiBXZWQsIEFwciAyMSwgMjAyMSBhdCAwOTo1NzoyN0FNICswOTAwLCBOYW95
+YSBIb3JpZ3VjaGkgd3JvdGU6DQo+ID4gRnJvbTogQWlsaSBZYW8gPHlhb2FpbGlAa2luZ3NvZnQu
+Y29tPg0KPiANCi4uLg0KPiBUaGlzIHdob2xlIGNvbW1pdCBtZXNzYWdlIG5lZWRzIHNhbml0aXpp
+bmcuDQo+IA0KPiBBbHNvLCBsb29raW5nIGF0IHRoZSBuZXh0IHBhdGNoLCB5b3UgY2FuIG1lcmdl
+IHRoaXMgb25lIGludG8gdGhlIG5leHQNCj4gYmVjYXVzZSB0aGUgbmV4dCBvbmUgaXMgYWN0aW5n
+IG9uIC1FSFdQT0lTT04gc28gaXQgYWxsIGJlbG9uZ3MgdG9nZXRoZXINCj4gaW4gYSBzaW5nbGUg
+cGF0Y2guDQoNCk9LLCBJJ2xsIGZvbGQgdGhpcyBpbnRvIDMvMy4NCg0KVGhhbmtzLA0KTmFveWEg
+SG9yaWd1Y2hp
