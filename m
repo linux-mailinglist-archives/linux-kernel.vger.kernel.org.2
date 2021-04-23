@@ -2,653 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341323694A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10C03694B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242198AbhDWO2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhDWO2E (ORCPT
+        id S242734AbhDWO2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:28:33 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:49868 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242624AbhDWO2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:28:04 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0929EC061574;
-        Fri, 23 Apr 2021 07:27:27 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso36812054ott.8;
-        Fri, 23 Apr 2021 07:27:27 -0700 (PDT)
+        Fri, 23 Apr 2021 10:28:30 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13NEQsNI006668;
+        Fri, 23 Apr 2021 14:27:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=b9oRtVragDlRg6DGknmEJP3/Jw2VQJNkJ7ZM88INP1o=;
+ b=WTJCWijaKXIrwm+ZC+ey6rbZRbP6Kwx8rNMIKslxUh0aYHHybUjIrixShCVbbYZk9L9a
+ Raub3aLuj1oUSNPRZZFFJsP138UBjKMrPcGWXgaEIAbLEoNgV1lhqX1R6blqHvs+XBdp
+ NiEVv/Yd40+y1VicI/bcEwAE7LU8JsSwF4xHNIyJNYA6ThZWeVmRgervs1EAPEk0AYCn
+ oZ6ONoRCyKfuyBoRRwEhp2oFkvm5FntcNkBpMmuWAJDHhM28mgOSfAUFUOO59jGu1I9Y
+ p/qU8kvNrqWo6mCwsQK4w1qNc/9+pPJ6ymUu6aztcvgGI1uQCAGNPvjOSf1tUa7INbC1 yg== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 382uth0rpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Apr 2021 14:27:49 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13NERmRl162129;
+        Fri, 23 Apr 2021 14:27:48 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by aserp3030.oracle.com with ESMTP id 383ccfkhxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Apr 2021 14:27:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EjOxpmc2HBN6MIA5+/eq9PCXKditDLg0sHh/roPnA7Rreb9kf0FltyR86QDQL9E+qQUheb6NTLHucEjSK34dhtu8nt6aCHVQjNRGk5DVS6E6mMC9HzROPCTeN+qoPMrqLYBGp+twrQW0X2JNPQAbOHfL49B1Tq7K0TWg1l0WnWbs3oQ2WtMWebqswEANFQf1qd78K1kyX2UryrZH5rothOKm0og0VI7kbtxwgt8P5D/oEKbDTtupc/50OrUTGudyNp++XInQmGCwpoiUH8OA5Ha+eudDcD1s8UNHNN4FL28dMN5UhWiwQS5RSxp2/ZqXbZ+pVCvSLqTi/8qjwcoucg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b9oRtVragDlRg6DGknmEJP3/Jw2VQJNkJ7ZM88INP1o=;
+ b=BEWF0DDZItcsL8+3DqC8e2csG0LGQHAj3wjsc/Jhk8eGWRhACfT0E/HavpPFboI6qTDpHI/dD9IfPofV/vGIYY8hccfM0oRLvk6Y5ElhyKkffe7zNdYL5u53eLslMKvY4ga+QCaP8kvW2WMYKyn/dNuXPV08rgpBuhNB6Qip2Ty57TGnew2GM6JurTcZgJolvFRaNpiDNL6Ow1TNqGJ+yRe1FPdq9IsP7snc8Z9RCAOQacx1huHiBZQoXPI3hDsvJMQTWg7n7Img47ZuEqwVFm52SxN5C0ztMiEUNqabXT+2D0mAXycgqQ5Xhrdrlhz4RcGiJBiUILChD3sZMomfkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cDY0rUitiYjY1Gdzo3JLW6cvc4WRFyUmQnzh3Ywoi8s=;
-        b=ScUqT1SysTzLCEeuPv4t+QlWNAANL+fMZElODHuBTyuI0sok7p1ej2bjB8a5yG+2KF
-         KQZ2ulnCUVCmVLL9BwxQYh8YQ5rW247xHXRjwgFdME5+XSj08Rw1CaNxjhMVOm1a6uKM
-         JMQuew4pR2gQANpGtLCQzSDVoWZ/N+IhfDS1ZIFztZRnDUwomV/GEFXg6kC1v1s1QvAr
-         /XSsMSFCElEM8itNa3DU5FByuchPJ5RpUVtlx/7tQ4wv03GpK4zKlaG+nNw3iqUaFs8U
-         esSLkGd212yRqolaSA4ZW46uv+6eyC8qG409jDHodkXUVEgo+CuqczRKxmpFADk4wkNd
-         DLwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cDY0rUitiYjY1Gdzo3JLW6cvc4WRFyUmQnzh3Ywoi8s=;
-        b=l6ud/Zrrzd/09NviiUVOlpne/B07cPHZ/g5xFhawyVcfVNJnQ1asc3ydtjrz6XTNQl
-         MZOkNxPTOshO1xYkcniGenEEye8wLfL5E/24w3ZkT1HJoqU9MI+PJ2s0d4dJ9fZtCfm+
-         mkJhg/YHDk216byY8RVmQO7wJWPGVH/ziCfHtDR54XPO9s0hdY1DPWFsWTEuo/qFNXvt
-         Er8rM0ey90vdMYBGSEvi7alPbkVZ9xk/ugh/T01xtT7a6Ee/uFtXWX2FOOjXIa8U7E5H
-         gfztED7P34gZ/6oIyG41ejfwPKWy4HWF4uPg0BlPcTEg0WHQ+tHpEV47lBdisEcHD7bH
-         9Jeg==
-X-Gm-Message-State: AOAM532cstaIEs/Alz8OnlVC5781OhjfESOpWxk9pp5dSvIPg+Mt2/CT
-        UmJGXaNgxCFNBH3pyEkeAOlLTjpOGJM=
-X-Google-Smtp-Source: ABdhPJyWzmR2basCt0dgPAUVZGnoGpzf4Oz8iULP4sBiKoP1dKmJv5HSFbaEL0HcREi59cVO53oX8g==
-X-Received: by 2002:a05:6830:14cd:: with SMTP id t13mr3678225otq.74.1619188046361;
-        Fri, 23 Apr 2021 07:27:26 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x5sm1430148ota.79.2021.04.23.07.27.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 23 Apr 2021 07:27:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 23 Apr 2021 07:27:24 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v4 3/4] hwmon: smpro: Add Ampere's Altra smpro-hwmon
- driver
-Message-ID: <20210423142724.GA136170@roeck-us.net>
-References: <20210422090843.4614-1-quan@os.amperecomputing.com>
- <20210422090843.4614-4-quan@os.amperecomputing.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b9oRtVragDlRg6DGknmEJP3/Jw2VQJNkJ7ZM88INP1o=;
+ b=zi23WG39QF7z6uYGnWfQExY+YjOIOXJEuTqYtEiTR4qCMVOE6lFJpCkdKy9oY7E/10vzDWJh2F1tsr9f8vguKvH4ZcWM3mLActJmPFe8nseJrLdv4YXFaOIshbr2iQ+kpjo+b+A0+Ioj3OJCihCdZ5de2LOKz9AQSV8uM6xntFM=
+Authentication-Results: Kimitos-MBP.hsd1.co.comcast.net; dkim=none (message
+ not signed) header.d=none;Kimitos-MBP.hsd1.co.comcast.net; dmarc=none
+ action=none header.from=oracle.com;
+Received: from CY4PR10MB1815.namprd10.prod.outlook.com (2603:10b6:903:125::10)
+ by CY4PR10MB1288.namprd10.prod.outlook.com (2603:10b6:903:27::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Fri, 23 Apr
+ 2021 14:27:46 +0000
+Received: from CY4PR10MB1815.namprd10.prod.outlook.com
+ ([fe80::1405:2af1:a195:63cc]) by CY4PR10MB1815.namprd10.prod.outlook.com
+ ([fe80::1405:2af1:a195:63cc%6]) with mapi id 15.20.4065.025; Fri, 23 Apr 2021
+ 14:27:46 +0000
+Subject: Re: [External] : RE: [PATCH RESEND v3] mmc-utils: Re-submit of the
+ erase command addition plus remval of MMC_IOC_MULTI_CMD ifndef for erase.
+ Re-committing the change per request by Avir.
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "luserhker@gmail.com" <luserhker@gmail.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "kenny.gibbons@oracle.com" <kenny.gibbons@oracle.com>,
+        "rkamdar@micron.com" <rkamdar@micron.com>,
+        "chris@printf.net" <chris@printf.net>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
+References: <20210422161255.4610-1-luserhker@gmail.com>
+ <DM6PR04MB657557ACD70FF26950CF0B0AFC459@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <DM6PR04MB6575ABF56616177093F75D80FC459@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   kimito.sakata@oracle.com
+Message-ID: <08442250-bc20-eaea-f383-cb36f4370102@oracle.com>
+Date:   Fri, 23 Apr 2021 08:27:41 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+In-Reply-To: <DM6PR04MB6575ABF56616177093F75D80FC459@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [73.243.79.162]
+X-ClientProxiedBy: SN4PR0501CA0102.namprd05.prod.outlook.com
+ (2603:10b6:803:42::19) To CY4PR10MB1815.namprd10.prod.outlook.com
+ (2603:10b6:903:125::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422090843.4614-4-quan@os.amperecomputing.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.208] (73.243.79.162) by SN4PR0501CA0102.namprd05.prod.outlook.com (2603:10b6:803:42::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.16 via Frontend Transport; Fri, 23 Apr 2021 14:27:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0751fdfc-b052-4c15-4a46-08d90663f695
+X-MS-TrafficTypeDiagnostic: CY4PR10MB1288:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR10MB1288321017D2A0111B3866529D459@CY4PR10MB1288.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XZyc74FyB3BxT2oplWhMo3BDSOsa8gNewsxd428hEGBKUOTd5Dj1z7qZcT7m2P0WHhvMeLlAv3X31TPrjyoPpnZtiT7c9uM2Rqq2q2v2zi4iR4bUGtLBRFRNBTFldjzoIav3Po9+D8ZYz97AmOaLzbkmJKGXm6GFoeoBNrbMIUbxYEUDNB/aEqLrOEnn3FJRNWsD7fGyuTvQGTP+UD2pZJMA/+vVU+eLnheKG03MYrQqWaZo+zJhTo0M6wyU6SmcQ6YJqZ3Ird50P5sGSmKXTrVxamitd9amjYMTh8aCVQe0VNplxFTYcdE8Hq/V8cOQHhxMPU2bAk3Fa4Zwg4dSNeOY6pliF2JRTcMPQZLkSl0eva4N1T9RrhfiYbbxrhe8/GsUmIlaNOyOXf6h+MVfkEW8wx+2SM4VrgvBx8YL5ykPt/JdWeFyVX8XBWHguzfzegnkWQnwm2Ym2S1WjRrtntKP7F4ES9bnASYfZECrZwUjltQRWbs76/4co4PhKU6ZxfSO2oObSnPBeEILoHAloy4t4xJXMOuouEvAATb37yjcT9x6Tl0QMWFOeu3bIsdrZfN2VdvGaULBHltAsIDoNIjx3JhZ3oYLRZpeqXo6R3h57ssAAgK8guPHlbvzCV1tonf22jxa9NX07WWDGcWO2DUFU9nFZBHv1maRDWsKJ7f28tex76dE1m4rV0vFS2ImqzUonD8xVETtrLMrO+H/sdREgprIU8jPu/o8kS81zbwpw6vQT2fzMeMFpW1U6ZHid+vdumytRjalMOKaJVZT6g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1815.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(39860400002)(396003)(136003)(16576012)(2906002)(83380400001)(9686003)(26005)(110136005)(316002)(66476007)(31686004)(8676002)(8936002)(4326008)(16526019)(478600001)(186003)(53546011)(38100700002)(31696002)(5660300002)(86362001)(6666004)(36756003)(2616005)(966005)(66556008)(6486002)(54906003)(66946007)(956004)(46800400005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZHhOSTYzMjliNExMNnI3cmQ3RHNpV1doZnNRMGpvaFFyMkNEdzlWQ0tDeGJp?=
+ =?utf-8?B?R0VWNEpmb0VnOVJZQ295NFhma3ZPM2hQcTIyUlBncFhUNnF4MEZXS2Evb2k5?=
+ =?utf-8?B?ZFp1MjlPalp1Skt3QW1BdTBrQUlreDVYVHU5bHhablV3Zzl0YjFEcGgyaVhQ?=
+ =?utf-8?B?SzljVWJLbTNSaWNVVks0ejhmTm92Uk5SWjNWNFNGK3d0amx2QnhOeEttdDNk?=
+ =?utf-8?B?OHZOSUN3b1FpaTNkNitJTEwxWGZ0dyt3blBOaE5sNDAzM3pjZ29oTlRGQjJs?=
+ =?utf-8?B?WmxOSUdXWHRvcnhSN1hvN3RxYmZ4N0hFZmk0TDBRa29qbEJBT3AwODFBNy9S?=
+ =?utf-8?B?U09RRE9mYnVtVm9xYS9CM2FMZ0NkRkdONmlOWXV0cWpsRVpvOUpITGhVOHhG?=
+ =?utf-8?B?VWNHbEd1MTBneE1HbXFTeUcwQVlKUU0vaHE5c0tHOEJOcDI0TVFZOWJpVStS?=
+ =?utf-8?B?dC9MeTd3Y2ZaNlBKdVJ0cjJGVGdTNERsN0FVYUxneGEybXVwWGdoZGxpRW5x?=
+ =?utf-8?B?Tnc1L0hTclZ2eUZFUGdEUU9Id1cxRVphVE80dFRxRjhFcUFkNWgzZmpiNXA0?=
+ =?utf-8?B?MWhoV3FwSTBnRTVuUFBYQWQzRGpTeG4wZmRtdk05NWgyb2pUTTh4WnJtTWpv?=
+ =?utf-8?B?VW9mbkIyT1ZGVFlOckkyUlUwN0VPT0lESU5vOUE5bzkzOHpWbDhXd0JRMXNP?=
+ =?utf-8?B?THpaL016L1p2dS9UQlF6SGhCRTdERHNvTU9HV3l5ZFBGRHRYdjJSM0hSbWRy?=
+ =?utf-8?B?QlFGeTZFbUZpMDVqV3pkOUlZUDlkTFlCT2tCOFRvVDBXNkFHSXFxTHdMRm1a?=
+ =?utf-8?B?bHE1YkcrcEN0Tll1OG5CeWdycFlrUGtXM3I2RWFVVDhHYkpLYlMvQWl2YnV1?=
+ =?utf-8?B?VlIwRlVKOGswUEU0ZHJHTlRUa0pVVElYUDVSMlB1MHBRTjNYcS9ZbmQyM3BS?=
+ =?utf-8?B?NXJua0V3bGxOWUFOTXBrOGhIdzRYVENtU0kzd0VsbXRvMFlFV3hmbEdUZFJH?=
+ =?utf-8?B?ZlZIU1FoVEJuK3ExN0gyNndrVHk4Z0lyM0o1TnBOaGllWkhaTzVRTDg3SXdS?=
+ =?utf-8?B?YmpFWkxqM3czL0o1a2xVMnVGNkpOQzRvNE5jZU5KL0dFNGRVZmtGZnhHOFo0?=
+ =?utf-8?B?WnJ3eU5nVXRaak9QZTJEOTVvb3FjekY3VVVuQzh5Z1RIZ0RYWFBWYWNlVWg3?=
+ =?utf-8?B?K0tPRFVNUkNib2lKZVJrQ0FENFpmZUNvMWpBek85RVJZMFpCVjBWODJvTFBS?=
+ =?utf-8?B?bXdPL0FPUmQ5MW9tLzNkRUQ0WXpoczFhaXNGejVqRjlSeGxZRFZCSkI3a3Fs?=
+ =?utf-8?B?cFVtSmQvSnpJWDVNYVdxVnJwOHdsQ2pGa3lrT2pQdGtyTXJjRkdtei9kemln?=
+ =?utf-8?B?WHBWU1VXaTNtK0UrYVFKN0UzUkZqL0dDbXNUcWkvbVVRTlZsQkh1K21HZnVP?=
+ =?utf-8?B?dEJaUW5NZWwzcUF1M3VxakhNTGc2L2FQelRITmZtUDZtVmV1cmdaS2VwZW41?=
+ =?utf-8?B?N1NUdTQzS2x5bUpIOGJ1WmhTRk1QMmF1QWFHVWkyOHM4NnpHN0xwbG0rQjdT?=
+ =?utf-8?B?SEVtZXdROFRGOWFZK1pUYmVqQ0xvdXlsaVJDUDBmS1ZBd3kyNmIwOTRSMlVl?=
+ =?utf-8?B?L0ZlU3NjQWRKcE8wOFJFUlcrS0tRSmtzRG13VUlSYjZSdDdKSjZmRHkzSE9p?=
+ =?utf-8?B?NG9JMDRoa01BQUZ3dGR4NkFMQXI4ZnVnN3VhTW9MWWFTK3lTWGZtekQzSFBN?=
+ =?utf-8?Q?3CUkpoUuPIOawP/fwD7SCdw6LRc9YCnUOZ/VLXS?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0751fdfc-b052-4c15-4a46-08d90663f695
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1815.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 14:27:46.0002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Mm2OxWZFJ5KYZoqUTp9qoTQzwkzNrbH5dlBduWCh4Ok8xtD/pIoGzxjtVuec1aDAGMoZh3Wad4LYOZsJ/cwZhLjl5DarLauNWdujilvDYkU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1288
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9963 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104230094
+X-Proofpoint-ORIG-GUID: 9O4sYFp4jkCDXM1yFapF4WUqr0D0hEY_
+X-Proofpoint-GUID: 9O4sYFp4jkCDXM1yFapF4WUqr0D0hEY_
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:08:42PM +0700, Quan Nguyen wrote:
-> This commit adds support for Ampere SMpro hwmon driver. This driver
-> supports accessing various CPU sensors provided by the SMpro co-processor
-> including temperature, power, voltages, and current.
-> 
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+Its basically the same changes. Bean was coaching me on how to send the 
+changes.
+The only difference between Bean's submit and my last one is Ulf 
+requested me to make a change in my changes to remove the 
+MMC_IOC_MULTI_CMD #ifndef segments.
 
-For my reference:
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Thanks
+Kimito
 
-We'll need to wait for dt approval.
+On 4/22/2021 11:31 PM, Avri Altman wrote:
+> +Bean
+>
+>>> From: Kimito Sakata <kimito.sakata@oracle.com>
+>>>
+>>> Signed-off-by: Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
+>> Hi Kimito,
+>> Please use a proper subject and commit log body.
+>> If you don't understand the difference between those two - please ask.
+>> Also for consistency, you might want to use your oracle mail for your Signed-
+>> off-by tag.
+>> You need to change your git configs for that.
+> Also, can you refer to this patch submitted by Bean - https://urldefense.com/v3/__https://www.spinics.net/lists/linux-mmc/msg63582.html__;!!GqivPVa7Brio!PTrg4lGpraGQnZjmxPdNPivVE4IYFevBm1M6vu3_hfHR8REY7LwkcZ3WiZc3MhF21tM$
+> Are you co-developing this together?
+>
+> Thanks,
+> Avri
+>
+>> Thanks,
+>> Avri
+>>
+>>> ---
+>>>   mmc.c      |   8 ++++
+>>>   mmc.h      |  13 +++++-
+>>>   mmc_cmds.c | 135
+>>> +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>   mmc_cmds.h |   1 +
+>>>   4 files changed, 156 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/mmc.c b/mmc.c
+>>> index f3d724b..eb2638b 100644
+>>> --- a/mmc.c
+>>> +++ b/mmc.c
+>>> @@ -229,6 +229,14 @@ static struct Command commands[] = {
+>>>                  "Run Field Firmware Update with <image name> on <device>.\n",
+>>>            NULL
+>>>          },
+>>> +       { do_erase, -4,
+>>> +       "erase", "<type> " "<start address> " "<end address> " "<device>\n"
+>>> +               "Send Erase CMD38 with specific argument to the <device>\n\n"
+>>> +               "NOTE!: This will delete all user data in the specified region of the
+>>> device\n"
+>>> +               "<type> must be: legacy | discard | secure-erase | "
+>>> +               "secure-trim1 | secure-trim2 | trim \n",
+>>> +       NULL
+>>> +       },
+>>>          { 0, 0, 0, 0 }
+>>>   };
+>>>
+>>> diff --git a/mmc.h b/mmc.h
+>>> index 5754a9d..e9766d7 100644
+>>> --- a/mmc.h
+>>> +++ b/mmc.h
+>>> @@ -35,7 +35,15 @@
+>>>   #define MMC_SET_WRITE_PROT     28    /* ac   [31:0] data addr   R1b */
+>>>   #define MMC_CLEAR_WRITE_PROT   29    /* ac   [31:0] data addr   R1b */
+>>>   #define MMC_SEND_WRITE_PROT_TYPE 31   /* ac   [31:0] data addr   R1  */
+>>> -
+>>> +#define MMC_ERASE_GROUP_START  35    /* ac   [31:0] data addr   R1  */
+>>> +#define MMC_ERASE_GROUP_END    36    /* ac   [31:0] data addr   R1  */
+>>> +#define MMC_ERASE              38    /* ac   [31] Secure request
+>>> +                                             [30:16] set to 0
+>>> +                                             [15] Force Garbage Collect request
+>>> +                                             [14:2] set to 0
+>>> +                                             [1] Discard Enable
+>>> +                                             [0] Identify Write Blocks for
+>>> +                                             Erase (or TRIM Enable)  R1b */
+>>>   /*
+>>>    * EXT_CSD fields
+>>>    */
+>>> @@ -62,6 +70,7 @@
+>>>   #define EXT_CSD_CACHE_SIZE_2           251
+>>>   #define EXT_CSD_CACHE_SIZE_1           250
+>>>   #define EXT_CSD_CACHE_SIZE_0           249
+>>> +#define EXT_CSD_SEC_FEATURE_SUPPORT    231
+>>>   #define EXT_CSD_BOOT_INFO              228     /* R/W */
+>>>   #define EXT_CSD_HC_ERASE_GRP_SIZE      224
+>>>   #define EXT_CSD_HC_WP_GRP_SIZE         221
+>>> @@ -190,6 +199,8 @@
+>>>   #define EXT_CSD_REV_V4_2               2
+>>>   #define EXT_CSD_REV_V4_1               1
+>>>   #define EXT_CSD_REV_V4_0               0
+>>> +#define EXT_CSD_SEC_GB_CL_EN           (1<<4)
+>>> +#define EXT_CSD_SEC_ER_EN              (1<<0)
+>>>
+>>>
+>>>   /* From kernel linux/mmc/core.h */
+>>> diff --git a/mmc_cmds.c b/mmc_cmds.c
+>>> index 6c24cea..9340e3f 100644
+>>> --- a/mmc_cmds.c
+>>> +++ b/mmc_cmds.c
+>>> @@ -2514,6 +2514,141 @@ int do_cache_dis(int nargs, char **argv)
+>>>          return do_cache_ctrl(0, nargs, argv);
+>>>   }
+>>>
+>>> +static int erase(int dev_fd, __u32 argin, __u32 start, __u32 end)
+>>> +{
+>>> +#ifndef MMC_IOC_MULTI_CMD
+>>> +       fprintf(stderr, "mmc-utils has been compiled without
+>>> MMC_IOC_MULTI_CMD"
+>>> +                       " support, needed by erase.\n");
+>>> +       return -ENOTSUP;
+>>> +#else
+>>> +       int ret = 0;
+>>> +       struct mmc_ioc_multi_cmd *multi_cmd;
+>>> +
+>>> +       multi_cmd = calloc(1, sizeof(struct mmc_ioc_multi_cmd) +
+>>> +                          3 * sizeof(struct mmc_ioc_cmd));
+>>> +       if (!multi_cmd) {
+>>> +               perror("Failed to allocate memory");
+>>> +               return -ENOMEM;
+>>> +       }
+>>> +
+>>> +       multi_cmd->num_of_cmds = 3;
+>>> +       /* Set erase start address */
+>>> +       multi_cmd->cmds[0].opcode = MMC_ERASE_GROUP_START;
+>>> +       multi_cmd->cmds[0].arg = start;
+>>> +       multi_cmd->cmds[0].flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 |
+>>> MMC_CMD_AC;
+>>> +       multi_cmd->cmds[0].write_flag = 1;
+>>> +
+>>> +       /* Set erase end address */
+>>> +       multi_cmd->cmds[1].opcode = MMC_ERASE_GROUP_END;
+>>> +       multi_cmd->cmds[1].arg = end;
+>>> +       multi_cmd->cmds[1].flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 |
+>>> MMC_CMD_AC;
+>>> +       multi_cmd->cmds[1].write_flag = 1;
+>>> +
+>>> +       /* Send Erase Command */
+>>> +       multi_cmd->cmds[2].opcode = MMC_ERASE;
+>>> +       multi_cmd->cmds[2].arg = argin;
+>>> +       multi_cmd->cmds[2].cmd_timeout_ms = 300*255*255;
+>>> +       multi_cmd->cmds[2].flags = MMC_RSP_SPI_R1B | MMC_RSP_R1B |
+>>> MMC_CMD_AC;
+>>> +       multi_cmd->cmds[2].write_flag = 1;
+>>> +
+>>> +       /* send erase cmd with multi-cmd */
+>>> +       ret = ioctl(dev_fd, MMC_IOC_MULTI_CMD, multi_cmd);
+>>> +       if (ret)
+>>> +               perror("Erase multi-cmd ioctl");
+>>> +
+>>> +       free(multi_cmd);
+>>> +       return ret;
+>>> +#endif
+>>> +}
+>>> +
+>>> +int do_erase(int nargs, char **argv)
+>>> +{
+>>> +       int dev_fd, ret;
+>>> +       char *print_str;
+>>> +       char **eptr = NULL;
+>>> +       __u8 ext_csd[512], checkup_mask = 0;
+>>> +       __u32 arg, start, end;
+>>> +
+>>> +       if (nargs != 5) {
+>>> +               fprintf(stderr, "Usage: erase <type> <start addr> <end addr>
+>>> </path/to/mmcblkX>\n");
+>>> +               exit(1);
+>>> +       }
+>>> +
+>>> +       if (strstr(argv[2], "0x") || strstr(argv[2], "0X"))
+>>> +               start = strtol(argv[2], eptr, 16);
+>>> +       else
+>>> +               start = strtol(argv[2], eptr, 10);
+>>> +
+>>> +       if (strstr(argv[3], "0x") || strstr(argv[3], "0X"))
+>>> +               end = strtol(argv[3], eptr, 16);
+>>> +       else
+>>> +               end = strtol(argv[3], eptr, 10);
+>>> +
+>>> +       if (end < start) {
+>>> +               fprintf(stderr, "erase start [0x%08x] > erase end [0x%08x]\n",
+>>> +                       start, end);
+>>> +               exit(1);
+>>> +       }
+>>> +
+>>> +       if (strcmp(argv[1], "legacy") == 0) {
+>>> +               arg = 0x00000000;
+>>> +               print_str = "Legacy Erase";
+>>> +       } else if (strcmp(argv[1], "discard") == 0) {
+>>> +               arg = 0x00000003;
+>>> +               print_str = "Discard";
+>>> +       } else if (strcmp(argv[1], "secure-erase") == 0) {
+>>> +               print_str = "Secure Erase";
+>>> +               checkup_mask = EXT_CSD_SEC_ER_EN;
+>>> +               arg = 0x80000000;
+>>> +       } else if (strcmp(argv[1], "secure-trim1") == 0) {
+>>> +               print_str = "Secure Trim Step 1";
+>>> +               checkup_mask = EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_EN;
+>>> +               arg = 0x80000001;
+>>> +       } else if (strcmp(argv[1], "secure-trim2") == 0) {
+>>> +               print_str = "Secure Trim Step 2";
+>>> +               checkup_mask = EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_EN;
+>>> +               arg = 0x80008000;
+>>> +       } else if (strcmp(argv[1], "trim") == 0) {
+>>> +               print_str = "Trim";
+>>> +               checkup_mask = EXT_CSD_SEC_GB_CL_EN;
+>>> +               arg = 0x00000001;
+>>> +       } else {
+>>> +               fprintf(stderr, "Unknown erase type: %s\n", argv[1]);
+>>> +               exit(1);
+>>> +       }
+>>> +
+>>> +       dev_fd = open(argv[4], O_RDWR);
+>>> +       if (dev_fd < 0) {
+>>> +               perror(argv[4]);
+>>> +               exit(1);
+>>> +       }
+>>> +
+>>> +       if (checkup_mask) {
+>>> +               ret = read_extcsd(dev_fd, ext_csd);
+>>> +               if (ret) {
+>>> +                       fprintf(stderr, "Could not read EXT_CSD from %s\n",
+>>> +                               argv[4]);
+>>> +                       goto out;
+>>> +               }
+>>> +               if ((checkup_mask & ext_csd[EXT_CSD_SEC_FEATURE_SUPPORT]) !=
+>>> +                                                               checkup_mask) {
+>>> +                       fprintf(stderr, "%s is not supported in %s\n",
+>>> +                               print_str, argv[4]);
+>>> +                       ret = -ENOTSUP;
+>>> +                       goto out;
+>>> +               }
+>>> +
+>>> +       }
+>>> +       printf("Executing %s from 0x%08x to 0x%08x\n", print_str, start, end);
+>>> +
+>>> +       ret = erase(dev_fd, arg, start, end);
+>>> +out:
+>>> +       printf(" %s %s!\n\n", print_str, ret ? "Failed" : "Succeed");
+>>> +       close(dev_fd);
+>>> +       return ret;
+>>> +}
+>>> +
+>>> +
+>>>   int do_ffu(int nargs, char **argv)
+>>>   {
+>>>   #ifndef MMC_IOC_MULTI_CMD
+>>> diff --git a/mmc_cmds.h b/mmc_cmds.h
+>>> index 9d3246c..8331ab2 100644
+>>> --- a/mmc_cmds.h
+>>> +++ b/mmc_cmds.h
+>>> @@ -45,3 +45,4 @@ int do_ffu(int nargs, char **argv);
+>>>   int do_read_scr(int argc, char **argv);
+>>>   int do_read_cid(int argc, char **argv);
+>>>   int do_read_csd(int argc, char **argv);
+>>> +int do_erase(int nargs, char **argv);
+>>> --
+>>> 2.24.1 (Apple Git-126)
 
-Thanks,
-Guenter
-
-> ---
-> Changes in v4:
->   + Returned regmap_read() error code [Guenter]
-> 
-> Changes in v3:
->   + Handled negative temperature value [Guenter]
->   + Returned -ENODEV if Manufacturer ID is wrong [Guenter]
->   + Refactored smpro_read_string() and smpro_temp_read() [Guenter]
->   + Removed smpro_write() function [Guenter]
->   + Added minor refactor changes [Quan]
-> 
-> Changes in v2:
->   + Removed "virtual" sensors [Guenter]
->   + Reported SOC_TDP as "Socket TDP" using max attributes [Guenter]
->   + Corrected return error code when host is turn off [Guenter]
->   + Reported MEM HOT Threshold for all DIMMs as temp*_crit [Guenter]
->   + Removed license info as SPDX-License-Identifier existed [Guenter]
->   + Added is_visible() support [Guenter]
->   + Used HWMON_CHANNEL_INFO() macro and LABEL attributes [Guenter]
->   + Made is_valid_id() return boolean [Guenter]
->   + Returned -EPROBE_DEFER when smpro reg inaccessible [Guenter]
->   + Removed unnecessary error message when dev register fail [Guenter]
->   + Removed Socket TDP sensor [Quan]
->   + Included sensor type and channel in labels [Quan]
->   + Refactorized code to fix checkpatch.pl --strict complaint [Quan]
-> 
->  drivers/hwmon/Kconfig       |   8 +
->  drivers/hwmon/Makefile      |   1 +
->  drivers/hwmon/smpro-hwmon.c | 491 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 500 insertions(+)
->  create mode 100644 drivers/hwmon/smpro-hwmon.c
-> 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 0ddc974b102e..ba4b5a911baf 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -67,6 +67,14 @@ config SENSORS_ABITUGURU3
->  	  This driver can also be built as a module. If so, the module
->  	  will be called abituguru3.
->  
-> +config SENSORS_SMPRO
-> +	tristate "Ampere's Altra SMpro hardware monitoring driver"
-> +	depends on MFD_SMPRO
-> +	help
-> +	  If you say yes here you get support for the thermal, voltage,
-> +	  current and power sensors of Ampere's Altra processor family SoC
-> +	  with SMpro co-processor.
-> +
->  config SENSORS_AD7314
->  	tristate "Analog Devices AD7314 and compatibles"
->  	depends on SPI
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 59e78bc212cf..b25391f9c651 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -174,6 +174,7 @@ obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
->  obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
->  obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
->  obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
-> +obj-$(CONFIG_SENSORS_SMPRO)	+= smpro-hwmon.o
->  obj-$(CONFIG_SENSORS_SMSC47B397)+= smsc47b397.o
->  obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
->  obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
-> diff --git a/drivers/hwmon/smpro-hwmon.c b/drivers/hwmon/smpro-hwmon.c
-> new file mode 100644
-> index 000000000000..1be3d98e73c7
-> --- /dev/null
-> +++ b/drivers/hwmon/smpro-hwmon.c
-> @@ -0,0 +1,491 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Ampere Computing SoC's SMPro Hardware Monitoring Driver
-> + *
-> + * Copyright (c) 2021, Ampere Computing LLC
-> + */
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +
-> +/* Identification Registers */
-> +#define MANUFACTURER_ID_REG	0x02
-> +#define AMPERE_MANUFACTURER_ID	0xCD3A
-> +
-> +/* Logical Power Sensor Registers */
-> +#define SOC_TEMP		0x00
-> +#define SOC_VRD_TEMP		0x01
-> +#define DIMM_VRD_TEMP		0x02
-> +#define CORE_VRD_TEMP		0x03
-> +#define CH0_DIMM_TEMP		0x04
-> +#define CH1_DIMM_TEMP		0x05
-> +#define CH2_DIMM_TEMP		0x06
-> +#define CH3_DIMM_TEMP		0x07
-> +#define CH4_DIMM_TEMP		0x08
-> +#define CH5_DIMM_TEMP		0x09
-> +#define CH6_DIMM_TEMP		0x0A
-> +#define CH7_DIMM_TEMP		0x0B
-> +#define RCA_VRD_TEMP		0x0C
-> +
-> +#define CORE_VRD_PWR		0x10
-> +#define SOC_PWR			0x11
-> +#define DIMM_VRD1_PWR		0x12
-> +#define DIMM_VRD2_PWR		0x13
-> +#define CORE_VRD_PWR_MW		0x16
-> +#define SOC_PWR_MW		0x17
-> +#define DIMM_VRD1_PWR_MW	0x18
-> +#define DIMM_VRD2_PWR_MW	0x19
-> +#define RCA_VRD_PWR		0x1A
-> +#define RCA_VRD_PWR_MW		0x1B
-> +
-> +#define MEM_HOT_THRESHOLD	0x22
-> +#define SOC_VR_HOT_THRESHOLD	0x23
-> +#define CORE_VRD_VOLT		0x24
-> +#define SOC_VRD_VOLT		0x25
-> +#define DIMM_VRD1_VOLT		0x26
-> +#define DIMM_VRD2_VOLT		0x27
-> +#define RCA_VRD_VOLT		0x28
-> +
-> +#define CORE_VRD_CURR		0x29
-> +#define SOC_VRD_CURR		0x2A
-> +#define DIMM_VRD1_CURR		0x2B
-> +#define DIMM_VRD2_CURR		0x2C
-> +#define RCA_VRD_CURR		0x2D
-> +
-> +struct smpro_hwmon {
-> +	struct regmap *regmap;
-> +	u32 offset;
-> +};
-> +
-> +struct smpro_sensor {
-> +	const u8 reg;
-> +	const u8 reg_ext;
-> +	const char *label;
-> +};
-> +
-> +static const struct smpro_sensor temperature[] = {
-> +	{
-> +		.reg = SOC_TEMP,
-> +		.label = "temp1 SoC"
-> +	},
-> +	{
-> +		.reg = SOC_VRD_TEMP,
-> +		.reg_ext = SOC_VR_HOT_THRESHOLD,
-> +		.label = "temp2 SoC VRD"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD_TEMP,
-> +		.label = "temp3 DIMM VRD"
-> +	},
-> +	{
-> +		.reg = CORE_VRD_TEMP,
-> +		.label = "temp4 CORE VRD"
-> +	},
-> +	{
-> +		.reg = CH0_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp5 CH0 DIMM"
-> +	},
-> +	{
-> +		.reg = CH1_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp6 CH1 DIMM"
-> +	},
-> +	{
-> +		.reg = CH2_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp7 CH2 DIMM"
-> +	},
-> +	{
-> +		.reg = CH3_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp8 CH3 DIMM"
-> +	},
-> +	{
-> +		.reg = CH4_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp9 CH4 DIMM"
-> +	},
-> +	{
-> +		.reg = CH5_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp10 CH5 DIMM"
-> +	},
-> +	{
-> +		.reg = CH6_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp11 CH6 DIMM"
-> +	},
-> +	{
-> +		.reg = CH7_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp12 CH7 DIMM"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_TEMP,
-> +		.label = "temp13 RCA VRD"
-> +	},
-> +};
-> +
-> +static const struct smpro_sensor voltage[] = {
-> +	{
-> +		.reg = CORE_VRD_VOLT,
-> +		.label = "vout0 CORE VRD"
-> +	},
-> +	{
-> +		.reg = SOC_VRD_VOLT,
-> +		.label = "vout1 SoC VRD"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD1_VOLT,
-> +		.label = "vout2 DIMM VRD1"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD2_VOLT,
-> +		.label = "vout3 DIMM VRD2"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_VOLT,
-> +		.label = "vout4 RCA VRD"
-> +	},
-> +};
-> +
-> +static const struct smpro_sensor curr_sensor[] = {
-> +	{
-> +		.reg = CORE_VRD_CURR,
-> +		.label = "iout1 CORE VRD"
-> +	},
-> +	{
-> +		.reg = SOC_VRD_CURR,
-> +		.label = "iout2 SoC VRD"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD1_CURR,
-> +		.label = "iout3 DIMM VRD1"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD2_CURR,
-> +		.label = "iout4 DIMM VRD2"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_CURR,
-> +		.label = "iout5 RCA VRD"
-> +	},
-> +};
-> +
-> +static const struct smpro_sensor power[] = {
-> +	{
-> +		.reg = CORE_VRD_PWR,
-> +		.reg_ext = CORE_VRD_PWR_MW,
-> +		.label = "power1 CORE VRD"
-> +	},
-> +	{
-> +		.reg = SOC_PWR,
-> +		.reg_ext = SOC_PWR_MW,
-> +		.label = "power2 SoC"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD1_PWR,
-> +		.reg_ext = DIMM_VRD1_PWR_MW,
-> +		.label = "power3 DIMM VRD1"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD2_PWR,
-> +		.reg_ext = DIMM_VRD2_PWR_MW,
-> +		.label = "power4 DIMM VRD2"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_PWR,
-> +		.reg_ext = RCA_VRD_PWR_MW,
-> +		.label = "power5 RCA VRD"
-> +	},
-> +};
-> +
-> +static int smpro_read_temp(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + temperature[channel].reg, &value);
-> +		if (ret)
-> +			return ret;
-> +		break;
-> +	case hwmon_temp_crit:
-> +		ret = regmap_read(hwmon->regmap,
-> +				  hwmon->offset + temperature[channel].reg_ext, &value);
-> +		if (ret)
-> +			return ret;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	*val = sign_extend32(value, 8) * 1000;
-> +	return 0;
-> +}
-> +
-> +static int smpro_read_in(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_in_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + voltage[channel].reg, &value);
-> +		if (ret < 0)
-> +			return ret;
-> +		/* 15-bit value in 1mV */
-> +		*val = value & 0x7fff;
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read_curr(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_curr_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + curr_sensor[channel].reg, &value);
-> +		if (ret < 0)
-> +			return ret;
-> +		/* Scale reported by the hardware is 1mA */
-> +		*val = value & 0x7fff;
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read_power(struct device *dev, u32 attr, int channel, long *val_pwr)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int val = 0, val_mw = 0;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_power_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + power[channel].reg, &val);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + power[channel].reg_ext, &val_mw);
-> +		if (ret)
-> +			return ret;
-> +
-> +		*val_pwr = val * 1000000 + val_mw * 1000;
-> +		return 0;
-> +
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read(struct device *dev, enum hwmon_sensor_types type,
-> +		      u32 attr, int channel, long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		return smpro_read_temp(dev, attr, channel, val);
-> +	case hwmon_in:
-> +		return smpro_read_in(dev, attr, channel, val);
-> +	case hwmon_power:
-> +		return smpro_read_power(dev, attr, channel, val);
-> +	case hwmon_curr:
-> +		return smpro_read_curr(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read_string(struct device *dev, enum hwmon_sensor_types type,
-> +			     u32 attr, int channel, const char **str)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_label:
-> +			*str = temperature[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_label:
-> +			*str = voltage[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_label:
-> +			*str = curr_sensor[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_label:
-> +			*str = power[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static umode_t smpro_is_visible(const void *data, enum hwmon_sensor_types type,
-> +				u32 attr, int channel)
-> +{
-> +	const struct smpro_hwmon *hwmon = data;
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +		case hwmon_temp_label:
-> +		case hwmon_temp_crit:
-> +			ret = regmap_read(hwmon->regmap,
-> +					  hwmon->offset + temperature[channel].reg, &value);
-> +			if (ret || value == 0xFFFF)
-> +				return 0;
-> +		break;
-> +		}
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0444;
-> +}
-> +
-> +static const struct hwmon_channel_info *smpro_info[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL),
-> +	HWMON_CHANNEL_INFO(power,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops smpro_hwmon_ops = {
-> +	.is_visible = smpro_is_visible,
-> +	.read = smpro_read,
-> +	.read_string = smpro_read_string,
-> +};
-> +
-> +static const struct hwmon_chip_info smpro_chip_info = {
-> +	.ops = &smpro_hwmon_ops,
-> +	.info = smpro_info,
-> +};
-> +
-> +static int smpro_hwmon_probe(struct platform_device *pdev)
-> +{
-> +	struct smpro_hwmon *hwmon;
-> +	struct device *hwmon_dev;
-> +	unsigned int val;
-> +	int ret;
-> +
-> +	hwmon = devm_kzalloc(&pdev->dev, sizeof(struct smpro_hwmon), GFP_KERNEL);
-> +	if (!hwmon)
-> +		return -ENOMEM;
-> +
-> +	hwmon->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +	if (!hwmon->regmap)
-> +		return -ENODEV;
-> +
-> +	ret = device_property_read_u32(&pdev->dev, "reg", &hwmon->offset);
-> +	if (ret)
-> +		return -EINVAL;
-> +
-> +	/* Check for valid ID */
-> +	ret = regmap_read(hwmon->regmap, MANUFACTURER_ID_REG, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val != AMPERE_MANUFACTURER_ID)
-> +		return -ENODEV;
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev, "smpro_hwmon",
-> +							 hwmon, &smpro_chip_info, NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct of_device_id smpro_hwmon_of_match[] = {
-> +	{ .compatible = "ampere,ac01-hwmon" },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, smpro_hwmon_of_match);
-> +
-> +static struct platform_driver smpro_hwmon_driver = {
-> +	.probe		= smpro_hwmon_probe,
-> +	.driver = {
-> +		.name	= "smpro-hwmon",
-> +		.of_match_table = smpro_hwmon_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(smpro_hwmon_driver);
-> +
-> +MODULE_AUTHOR("Thu Nguyen <thu@os.amperecomputing.com>");
-> +MODULE_AUTHOR("Quan Nguyen <quan@os.amperecomputing.com>");
-> +MODULE_DESCRIPTION("Ampere Altra SMPro hwmon driver");
-> +MODULE_LICENSE("GPL v2");
