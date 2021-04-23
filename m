@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9F4369560
+	by mail.lfdr.de (Postfix) with ESMTP id E36D7369561
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243343AbhDWPA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S242823AbhDWPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243091AbhDWPAA (ORCPT
+        with ESMTP id S243114AbhDWPAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:00:00 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C773C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:22 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id h4so39664472wrt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:22 -0700 (PDT)
+        Fri, 23 Apr 2021 11:00:02 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335D4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:24 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id c4so9801955wrt.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Juwe0Gjnc+rMihuOPa254C+qnQsP361xtVqHu6bwkD0=;
-        b=cilC5YmEgJWBEcFSrGf/9kWUjXxhw49oiDoI3EjCtAmU2yChXbtjNmoQ6uMhNnR8Rq
-         n3aLrpj/1oVi33nYg60ypuXLCgszNOofkfDhiu+t2a/9n1F7/Uy55lyp21fQcaCtnnS1
-         OtG6vsJI/3v9ZJUHO+N0kHcXXZnSNTc7SbznsFVDW/Lrb92Zb9yVqgMLw13+XSL9DMhF
-         mYopVWSdBftqRn4VMVFwA5Y5XzcFMXR7Ce/9wzl4kgG+obWINEFCJCCqv3uZ2cjqsF4N
-         ORFQfa5hiJFI1rqTA+++4cma0u3Vv74e2r92lTTFy/F8fHuAZKoNKBYRepEItbcjJDbt
-         LtWg==
+        bh=XYEtVs71demyjHNP7zVoWDRnn91iokd22i1cMtV03Xk=;
+        b=dTFDOVUhCQy/HyZI45D/BRGsGYn7pPNKhW0rjzitmxWCiHZGwjhGtsYbP0KvpSZjFG
+         ia9lz7GVujnpkyw+xpAAYjXvhBdbh1BVf1cvMhN2tG6bnIovqsk6JA3CCzOIP2Y956hH
+         /4ZzsC/hMFx7RdFzpxz32qCeVYyLHX+tsdG2FlKgamN4xvIP1i6/A4nf30qyZbztwPOi
+         FwbEgMmE6KyWaC4xNZaaENRLi1mG48n+RdWOrH6ihEmpjHtquXQz03VcQWBosYZHqKQt
+         2wZgGoX3Rm5s1rw3pG3kxBQjHtoyiPUeH9NuqfaueM4swuXrM7mpYfZ9L1bY6lzHDJV0
+         ny/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Juwe0Gjnc+rMihuOPa254C+qnQsP361xtVqHu6bwkD0=;
-        b=RBveUDEyt6LaBG2ZccfLNO0KfzpLXr6qsvXoirrSCLWrkhToUFSeYh43fDQEAhhvFZ
-         ORbKVlSCGIJDrNPSQUSEFNiRnRPJliP+WVfZ/ogSn51NjuKw0Kt0rZVyO5XwESmKxHcH
-         3BxU8r7gIevnC5BNqXt7Z35yhXwhJZSwh27hDRPKWqAM3JcWU0tQx+iFbhFDi/v6vwi6
-         RwGMqkkekclOTNMZoYFBXPXbu2q2FWdAHmV5I02pr9s437czoqHwd/y/7lYls87szHqs
-         8jbcgg2LmB58k0fVcJ8bD3vVBSZVchSuG9MINVChVKxyQPlGx8E7Xp76oGJGUPNHj0k5
-         VCvQ==
-X-Gm-Message-State: AOAM532UqYGsEMTMTIMNukZickC3wan/5Y7wpBrB87WzVqbsLuPcCIky
-        oLSJ0lemXEGHkjDAHwB/1dvwahG6S2s=
-X-Google-Smtp-Source: ABdhPJz9kh80zY5LPlC37x/Vv1IbCQwUqZ99lMGUtY3OmTk+nlgp25cntfeAJZzL5zlLbQmfTUZdNg==
-X-Received: by 2002:a5d:47ad:: with SMTP id 13mr5342048wrb.56.1619189961030;
-        Fri, 23 Apr 2021 07:59:21 -0700 (PDT)
+        bh=XYEtVs71demyjHNP7zVoWDRnn91iokd22i1cMtV03Xk=;
+        b=fqWAuPyw+4X7qR0Pm+pakaRVolxqJu1KLLYBw++ZqYhXY7FADhHFzFosVifLD02Z+R
+         JWFsJoofN+WrZs86x1k3iA7/DWQiG7RhPtxKFmsGNg3K+QSQzSmBWrK5/ybB4WIQZw1z
+         Fsecvl03bNXWiOF0sdeaJ5zZBGs4zIJPAo1iM0U6lpzSo5a6ubUCGYdt3wWdEAXrL9IX
+         JagMl1li7YGKY8n4pOgIxA8hN4NXFauaQ/iXm5Blria1l+ygUK96rnaoHyC0fQ7an7hp
+         ANMqz4W0Zxh11NviDX3c60zPJfK6O1JZB4WpgKM0oCMP01Thzq9gZarStSILvi8wn8cM
+         8uqA==
+X-Gm-Message-State: AOAM5312O8a4p0eZJ5+lGY568NdwaQaql9NR+dYa8jwKF8rfOmQxFvsa
+        Te3W22XPmW9uUXXUb1oVReINipgOgqk=
+X-Google-Smtp-Source: ABdhPJwR972YNryguem4qNYhTf7ipjU9t2KZfvCsg+GRcCleP6kgvUTGKZiRZDwYpKiEulOAARcF0w==
+X-Received: by 2002:a05:6000:18ae:: with SMTP id b14mr5259719wri.211.1619189962771;
+        Fri, 23 Apr 2021 07:59:22 -0700 (PDT)
 Received: from agape ([5.171.72.99])
-        by smtp.gmail.com with ESMTPSA id g1sm9301081wrd.69.2021.04.23.07.59.20
+        by smtp.gmail.com with ESMTPSA id 2sm10781344wmi.19.2021.04.23.07.59.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:59:20 -0700 (PDT)
+        Fri, 23 Apr 2021 07:59:22 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 24/49] staging: rtl8723bs: remove debug macros related to core/rtw_io.c tracing
-Date:   Fri, 23 Apr 2021 16:58:15 +0200
-Message-Id: <fd1b76fc795bb0752ff0de0486f996148a3d0a72.1619189489.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 25/49] staging: rtl8723bs: remove obsolete _IO_OSDEP_C_ debug macro definition
+Date:   Fri, 23 Apr 2021 16:58:16 +0200
+Message-Id: <a2d3a6e3523b06ab706d3c137a9703705dabc1c7.1619189489.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619189489.git.fabioaiuto83@gmail.com>
 References: <cover.1619189489.git.fabioaiuto83@gmail.com>
@@ -63,51 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove debug macro definitions related to core/rtw_io.c
-obsolete tracing.
+remove _IO_OSDEP_C_ debug macro definition
+untied to any tracing component.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_io.c       | 2 --
  drivers/staging/rtl8723bs/include/rtw_debug.h | 5 +----
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_io.c b/drivers/staging/rtl8723bs/core/rtw_io.c
-index c860ab7d618c..ecbb679fbc16 100644
---- a/drivers/staging/rtl8723bs/core/rtw_io.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_io.c
-@@ -25,8 +25,6 @@ jackson@realtek.com.tw
- 
- */
- 
--#define _RTW_IO_C_
--
- #include <drv_types.h>
- #include <rtw_debug.h>
- 
 diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index 6e6dea4779d9..7206fdfbe12d 100644
+index 7206fdfbe12d..470edb0b655b 100644
 --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
 +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
 @@ -7,7 +7,6 @@
  #ifndef __RTW_DEBUG_H__
  #define __RTW_DEBUG_H__
  
--#define _module_rtl871x_io_c_				BIT(9)
- #define _module_io_osdep_c_		BIT(10)
+-#define _module_io_osdep_c_		BIT(10)
  #define _module_os_intfs_c_			BIT(11)
  #define _module_rtl871x_security_c_		BIT(12)
-@@ -34,9 +33,7 @@
+ #define _module_rtl871x_eeprom_c_			BIT(13)
+@@ -33,9 +32,7 @@
  
  #undef _MODULE_DEFINE_
  
--#if defined _RTW_IO_C_
--	#define _MODULE_DEFINE_	_module_rtl871x_io_c_
--#elif defined _IO_OSDEP_C_
-+#if defined _IO_OSDEP_C_
- 	#define _MODULE_DEFINE_	_module_io_osdep_c_
- #elif defined _OS_INTFS_C_
+-#if defined _IO_OSDEP_C_
+-	#define _MODULE_DEFINE_	_module_io_osdep_c_
+-#elif defined _OS_INTFS_C_
++#if defined _OS_INTFS_C_
  	#define	_MODULE_DEFINE_	_module_os_intfs_c_
+ #elif defined _RTW_SECURITY_C_
+ 	#define	_MODULE_DEFINE_	_module_rtl871x_security_c_
 -- 
 2.20.1
 
