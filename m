@@ -2,126 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE61836976D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0D836977A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243193AbhDWQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWQxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:53:19 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4550BC061574;
-        Fri, 23 Apr 2021 09:52:42 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id j7so21297477eds.8;
-        Fri, 23 Apr 2021 09:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jFCniOtGAUvh5tDuIWS7uZa9/8xrAA1r1T8fT2Kl1d8=;
-        b=FjQGgLqAoRAhJDP8bvbuAIWX1fRLtXTbDahJh8lyg9ZwyYqTYQ1JrARnNmgGE1G2fF
-         NddJewqq3uVP6kIqIhAVFRXj1BLLalyAk3qquiW/5rFAl7uuyy/UrdEOdKRK/uP/Fov7
-         Can6OluAi2QOdBAXmgyWKMDze3WaAF20Y7wlUdt4v8a/kFPqjpfneJQpQEca1vvzXQQ1
-         e7D99+zVtTmacVRvTWzKb/tyWzekicGmRNvV/wzHXKSUv4/ASkhoVpvQ25OGiXpblfO3
-         LH0NLRkGWpHDLY/8P069PE3KUJLRo+/6SNsQs6Ymw0TZ0kHFX6U7IW5/lEoBLz7D3Ejw
-         aD9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jFCniOtGAUvh5tDuIWS7uZa9/8xrAA1r1T8fT2Kl1d8=;
-        b=Yudr37XL/J4rtpp/1lwEai0W79AzHprUzOFeE5RviugCZgvxr0EW8FQzVxMcHv+7MF
-         mQ/2/Wl7Q5yg52WypsD7Ez9BqEZf+mhHexMlw3Kl/q2Pyle8h41r5RiftRwc1ayVFHmI
-         3+uLjZj2U+PW9IPEbrdGsVkyFRvaXG9LAxBS9UTg1Vis+s0gIOKlcBaABPvGkwIurIxf
-         uRb6pmuoVFPDiwjYEeVQtEhfGVpCeblVfe1eezJzV+E8hC5939pGoSxGgYb/EtnBxjlE
-         rvVKxnGAiyof18pOq65STuQzSITWbfzFQhGIVoTfqRhtPQTlpjLDFxvc6mp9I7o0UMcg
-         +Z0A==
-X-Gm-Message-State: AOAM530/beQPzhgui5AQo2+UBPx+ltm3scKslJwL3uECYjsP6q/DODpu
-        ByYwH+MYlPgWUFQAagKLJmM=
-X-Google-Smtp-Source: ABdhPJwztJLM5Bl1NlErdY2qO/fU4NaGrY72Dw41ahvzAZi/41DyvMd8wADZX8VGCRAySbgqCt/D9A==
-X-Received: by 2002:aa7:c511:: with SMTP id o17mr5452004edq.335.1619196761013;
-        Fri, 23 Apr 2021 09:52:41 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id q16sm5446999edv.61.2021.04.23.09.52.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 09:52:40 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 18:53:29 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, robh+dt@kernel.org,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
-Message-ID: <YIL7ibC/Pojfw3OT@orome.fritz.box>
-References: <20210412200155.5316-1-jbx6244@gmail.com>
+        id S232065AbhDWQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229691AbhDWQ5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 12:57:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA89611AE;
+        Fri, 23 Apr 2021 16:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619197018;
+        bh=LfID890VAjx1GZR+zOrDOxEjOHzkC+fZhl1uOkQgHsw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r5veA+XwtEUJElzT1v6yOIVjcnYgfLhLHRdA/om5LzaouZiCO5kAYjkTP1F2/MQ+g
+         0yyG03jy82r4Ix6/aqifdqt2fg50ItCwKTNxi3eM8gkLvo+72oFxgZcUjLnc7FQkxT
+         jvOWV5pgX1FTP0wrCGMUEgo/gRBkWzkCr0r2iCcDon0sgEDfsGGN8BKERulBIdSgVp
+         CJHDeIjag9Q31U6GZnPxnlW6k0TUSNHPs/lE2zIobgahDbb6tEyzmjGcsAOgBDLt+n
+         eCfDuJ/9ngfXzXuGvv/3vkrnfk/zy8nPq+Z1ZOZo1pgIgrdEaGSg27/5hx1zU4YJjl
+         yIG8RNvTnJhng==
+Date:   Fri, 23 Apr 2021 17:56:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 05/14] spi: pxa2xx: Consolidate related headers under
+ include/linux/spi
+Message-ID: <20210423165630.GH5507@sirena.org.uk>
+References: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
+ <20210423163437.89306-5-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zQJ8OWk5MsO8Q17F"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Rn7IEEq3VEzCw+ji"
 Content-Disposition: inline
-In-Reply-To: <20210412200155.5316-1-jbx6244@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <20210423163437.89306-5-andriy.shevchenko@linux.intel.com>
+X-Cookie: This is now.  Later is later.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---zQJ8OWk5MsO8Q17F
+--Rn7IEEq3VEzCw+ji
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 12, 2021 at 10:01:52PM +0200, Johan Jonker wrote:
-> Current dts files with 'pwm' nodes are manually verified.
-> In order to automate this process pwm-rockchip.txt
-> has to be converted to yaml.
->=20
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
-> For some SoC nodes this patch serie generates notifications
-> for undocumented "interrupts" properties shared between
-> PWM channels till there is consensus of what to do with it or
-> someone makes a solution for the whole PWM block.
->=20
-> Changed V3:
->   fix mistake with compatibles introduced in V2
-> Changed V2:
->   changed schema for clocks and clock-names
-> ---
->  .../devicetree/bindings/pwm/pwm-rockchip.txt       | 27 -------
->  .../devicetree/bindings/pwm/pwm-rockchip.yaml      | 88 ++++++++++++++++=
-++++++
->  2 files changed, 88 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
->  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.ya=
-ml
+On Fri, Apr 23, 2021 at 07:34:28PM +0300, Andy Shevchenko wrote:
 
-All 4 patches applied, thanks.
+> We have two headers split between include/linux and include/linux/spi.
+> Consolidated them under SPI realm, i.e. in the latter folder.
 
-Thierry
+Why?  Isn't the point to maintain an abstraction between the general
+purpose use of the SSP IP and its application as a SPI controller?  I'd
+check the cover letter for the series but there doesn't seem to be one.
 
---zQJ8OWk5MsO8Q17F
+--Rn7IEEq3VEzCw+ji
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCC+4kACgkQ3SOs138+
-s6HqWw//ZMveK8MeXwu6wrXBFllrTVKghpCj/TcBnvjT39S+lh/KNUVhkDbki0+A
-VliqplxKSCk2ZPcu9FCnEDN0l8NI7TQLRtJ6QGPnAWuEkAIhn9qaS9VBN1yo6Sob
-0mSvzRy5iGUN90xYyjYujns3oXe0vIxNZwRO/KBztsg6uis2sN3E6zqvbyPl6Pdt
-ll8pY5N+GimqEG5vACKWOpHkVZUp5j/ojfEWfQL/R9S7iVJo1yzoqVLzTyBc2oYx
-CiVFo54KNR/WnacrrC+GIpmgnrLbKEh/bswNugXaZ/Umdd2dhxtgGI8hUMgRUqx1
-rIpWFHboxGLlqeFQORoxxV3a4ybFcZB1wdTbHyb5XsMyfYxFRqabED9K84JxMxpB
-DaxOOBW2jDBiwmJjhWuy2ICE65rtSx6rrGkr4gply7O14A8bllHKrHG6W0DrT2hY
-k1l6J5J+RZc+Ivf3NRpfO1a74/80xXKeXi4KSgfIxl/mM9AGKN6yDVEf0e085rau
-9kGHvOdjuItr7XeneUz0FuSqdKK/6UwyMU+QohELgJ313zKeX0/gOQME7+AKa/36
-4sbGuTXjTXbIjOK5sAk1kR5VLFUcohMVbRfm4c3lI3wjEkrRfPCKnrD0WRy30leq
-7vz7Y0Zn3IciHw0ZL77RMip0doXR8wlX+Qazl5TXqLpY/d4BRW8=
-=RnDA
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCC/D0ACgkQJNaLcl1U
+h9CLHAf/eyWaZV/yF5wLiXo/wOpqfrx3e/NqVjLRELGlZE+ar0ILQQ9eW9MXKr1d
+dY8YMPYTi95D/hs2pHwY+69eqE/jSVqiDXg0ClNqfcNE+T/u+AJP5AjN8vxkHgA1
+2D5kguaPu/cBUZgByp4oDlAVTdFlT44mLDNwgjBaJR+/zMUl35CTKqzLYD2XB7+6
+vj9KiXPatFJLphF9XoDc0s8Z2lZZkUWhVG3hku2pvH8E2X+zJpAQYFKtxwXAKSrt
+zjuR7BvYrlIRgZnYT6ct3gtl+fPoBXimyvWDH86cxopeAsiHcFg7Jq7+TqlOYtPY
+ZEwe0ACiO9v2GD60nmZC4JwhDTSMgA==
+=0Eci
 -----END PGP SIGNATURE-----
 
---zQJ8OWk5MsO8Q17F--
+--Rn7IEEq3VEzCw+ji--
