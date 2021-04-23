@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FE83691A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5313691A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242154AbhDWL6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 07:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
+        id S242283AbhDWL6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 07:58:11 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53326 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230431AbhDWL63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C5560FE6;
-        Fri, 23 Apr 2021 11:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619179072;
-        bh=XHhUEsWfWTLuM2T3rYpeV+q3eu/vxOPKqov8USBod8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KlsIf7gDmCUFe63JZrQcKGw3TpMYWWBKVFGoKAcLJemQo2BXM8sh/JklJWQy4aOEW
-         7xY/iEUnXtDn6iXiD+qkvvBo9Roa51Nr+LizCJzD1SwOCkAOB9T6hKCXN+U6Il5r1f
-         oSHswGUQOHWUHXqj8wcIv61T5aoft2iJVP7DpiLH9Geh8VpM5sce/+1vuKK8Y0AwY1
-         xvXdqCrL2mrxdKXuiOMcBLNIM2XfAyBiNMPEwoy41doIxjynwVthWwP8ypXqTepXTm
-         GBxIA47eNrV6mBjkzNlguwynHKNkpwzCo2Urv/gJpWECZUpvxDwzQmZS/uyn+zhYIW
-         W/z89NBU5JpAw==
-Date:   Fri, 23 Apr 2021 12:57:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Joe Burmeister <joe.burmeister@devtank.co.uk>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nsaenz@kernel.org
-Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
- beyond limit.
-Message-ID: <20210423115724.GB5507@sirena.org.uk>
-References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
- <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
- <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
- <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
- <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
+        id S242260AbhDWL6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 07:58:06 -0400
+Received: from zn.tnic (p200300ec2f0cb100de1b78f3b91faa58.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:b100:de1b:78f3:b91f:aa58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7B5301EC0118;
+        Fri, 23 Apr 2021 13:57:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619179049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hl4owIygIiuL+Uo1VjLb8yx5rvDHEvzCcFzwABb5PYo=;
+        b=cGIDsJufxJejr6m5pU81tTIT5Zyyt/2m8sYjxfkATzMh/3QXpk/K/n8xkzuQocNbCoqnl9
+        6d8orgS8F0w3utnveodjRJL4h4MBQ6mAb3318hEQ3HyHAWpVgMjvVvq8hjFsTAlSkRFQjT
+        tzlIChMkDT5sk7sIhm7GSvd/E9pb8js=
+Date:   Fri, 23 Apr 2021 13:57:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] mm,hwpoison: add kill_accessing_process() to find
+ error virtual address
+Message-ID: <20210423115725.GB18085@zn.tnic>
+References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
+ <20210421005728.1994268-4-nao.horiguchi@gmail.com>
+ <20210422170213.GE7021@zn.tnic>
+ <20210423021833.GB68967@hori.linux.bs1.fc.nec.co.jp>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
-X-Cookie: This is now.  Later is later.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210423021833.GB68967@hori.linux.bs1.fc.nec.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 23, 2021 at 02:18:34AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
+> I don't know exactly.  MCE subsystem seems to have code extracting linear
+> address, so I wonder that that could be used as a hint to memory_failure()
+> to find the proper virtual address.
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+See "Table 15-3. Address Mode in IA32_MCi_MISC[8:6]" in the SDM -
+apparently it can report all kinds of address types, depending on the hw
+incarnation or MCA bank type or whatnot. Tony knows :)
 
-On Fri, Apr 23, 2021 at 11:03:22AM +0100, Joe Burmeister wrote:
-> On 23/04/2021 00:49, Florian Fainelli wrote:
+> The situation in question is caused by action required MCE, so
+> we know which process we should send SIGBUS to. So if we choose
+> to send SIGBUS to all, no innocent bystanders would be affected.
+> But when the process have multiple virtual addresses associated
+> with the error physical address, the process receives multiple
+> SIGBUSs and all but one have wrong value in si_addr in siginfo_t,
+> so that's confusing.
 
-> > Right, which means that we should probably seek a solution within the
-> > SPI core itself, even if you can only test with spi-bcm2835.c chances
-> > are that the fix would be applicable for other controllers if done in
-> > the core.
+Is that scenario real or hypothetical?
 
-> I'm not sure it's possible to do in the core alone. The numb of the
-> issue is the core changes ctlr->num_chipselect to what is in the device
-> tree and some drivers are cool with that overs quietly stomp memory.
+Because I'd expect that if we send it a SIGBUS and we poison that page,
+then all the VAs mapping it will have to handle the situation that that
+page has been poisoned and pulled from under them.
 
-I wouldn't expect any controller to be OK with that?  Drivers can store
-per-client data in spi_device->controller_data which doesn't need
-scaling (but is also not so helpful if you need to look at clients other
-than the one you're currently controlling).
+So from a hw perspective, there won't be any more accesses to the faulty
+physical page.
 
-> I've got a simple little patch to warn when the core expands
-> ctlr->num_chipselect. This warning won't go off in bcm2835 with my patch
-> because I am also extending ctlr->num_chipselect to the amount in the
-> device tree before the core does that expansion. Hopefully that new
-> warning would make people investigate and fix problem drivers.
+In a perfect world, that is...
 
-> >> There is protection in spi_add_device, which will catch extra added
-> >> later, but not ones in the device tree when the spi controller was
-> >> registered.
+-- 
+Regards/Gruss,
+    Boris.
 
-> > Not sure I follow you, if we have the overlay before
-> > spi_register_controller() is called, how can the check there not
-> > trigger? And if we load the overlay later when the SPI controller is
-> > already registered, why does not spi_add_device()'s check work?
-
-> I think it might be a RPI thing. I think it is merging in the overlay
-> and giving Linux one already merged.
-
-If the overlay is handled by the bootloader then from the point of view
-of Linux there is no overlay - sounds like there's an issue in the
-overlay, it should be overriding something that it doesn't?
-
---Fba/0zbH8Xs+Fj9o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCCtiMACgkQJNaLcl1U
-h9Dwcgf/RhxsmRv+fSZkggMBeXhfQdCHVV9N6DSV57v+ahuQ8VCNWLfk/35iJjhl
-tDd52TaNUx0yFF1suhpqhh6QeSugO1jxCa1n6i2fdjIH41VMdbJ8JUMN4MdQBQhx
-7m1kLoHhq9p2RiAuwmD9nYo3A0oq9XqJf5dM2cMtnJMuOJZlOy34x/Fpm2b57wFt
-tm6HNuCr6NGP/+QHomA1TUzir+ce3Kz3noDdkLcOhI7Xyzu21/zV7wir4cd9MuOy
-rJrRknfYiUc+TAn75cI3cRozvyguuI5QmEVVl3CN65m/Z00docIaHpR/IN8CFqgB
-UGuGG+IVAd/rMlxT+AwPnFD2P/3zrA==
-=uofI
------END PGP SIGNATURE-----
-
---Fba/0zbH8Xs+Fj9o--
+https://people.kernel.org/tglx/notes-about-netiquette
