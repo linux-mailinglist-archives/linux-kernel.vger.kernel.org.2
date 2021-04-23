@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EE9369298
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D31636929C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242541AbhDWNBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhDWNBp (ORCPT
+        id S242575AbhDWNCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:02:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45986 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhDWNCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:01:45 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82148C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:01:08 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id e7so57282659edu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2rHamcAk69i1heErTD043nvHWdBaYcGMYqk0SxlLX3w=;
-        b=AI4OF1eHAcLvyWD6iouxBu3wzPXbE7lqxD/nvUDlUK6sCGPvqEiURU18cQsgP60E9B
-         79XpQibjTf/FlzQDqoN1m5Xox0apvDhFykYVGLADrOrtndSOh4jcTHehoSL6CP5+tm3A
-         K0hA7VUPU7KcWWquu+KenypCJDq2PzLWPT13f3BEr3icJCOt6wvTHM2Vbdp3dw0p4ELx
-         dJMs/UerJVfhV13oS+6JAVOptYzHzjOwPt3NZPtEdroHfd5ogVdtz78kjCWB/KMlKxrO
-         UeVaHJ8m1HYcZ0RhK4C8RpAYQU5X1LCldsFsS/aQlKYGbqWoMuPE27tWoUwBkuhT49t9
-         nruA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2rHamcAk69i1heErTD043nvHWdBaYcGMYqk0SxlLX3w=;
-        b=t/WUwsADUIHn7GmN/+cMnt0lpkP8P9f2YtuwD2F91V6mU/F/c9epUGSsmLauYVla5l
-         X4f5wQnMOxqhmL5ICPM1aaYhXLIgL6E3gWO0zGIvMlUfRWCNecicrtdVlUMnBR1C8JB5
-         n6244RtgWZBkpRKS81Gg2u3iGihUVuVc90XnRa5Se8HUK0Ep6FoCA9107/eMh5D7rDO5
-         R/FB8dFwydXNllQk0D0t77VaxjJ13jqRJdhJchKZBnslTlkPIl7eHM4VvaH4lR9YDvxG
-         Xj8FhW2qj9rfiSVNpSlqovO2F5sZ63+0YV6g3ZYhABsaN0/QUmxlu1uPbNHbwiZDpg5b
-         NfQQ==
-X-Gm-Message-State: AOAM531kbNmXfaHmDBTpmFegOymchWnGpPFtNni8dRxK1ypR4d8qAELA
-        KBGbUlJOtJ7Xgy5csoj0iF/Xsg==
-X-Google-Smtp-Source: ABdhPJyDrw4UO6yanfUyRpsU9b8VpZWr1Al+SSF6+YcbsniqaahON/TAvV32FxXYlw+iumrp6+ExVg==
-X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr4292611edw.118.1619182867214;
-        Fri, 23 Apr 2021 06:01:07 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id d14sm4537418edc.11.2021.04.23.06.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 06:01:06 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 15:00:48 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     eric.auger@redhat.com, alex.williamson@redhat.com,
-        eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        jiangkunkun@huawei.com, joro@8bytes.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        lushenming@huawei.com, maz@kernel.org, robin.murphy@arm.com,
-        tn@semihalf.com, vivek.gautam@arm.com, vsethi@nvidia.com,
-        wangxingang5@huawei.com, will@kernel.org, zhangfei.gao@linaro.org,
-        zhukeqian1@huawei.com, vdumpa@nvidia.com
-Subject: Re: [PATCH v14 00/13] SMMUv3 Nested Stage Setup (IOMMU part)
-Message-ID: <YILFAJ50aqvkQaT/@myrica>
-References: <f99d8af1-425b-f1d5-83db-20e32b856143@redhat.com>
- <1619103878-6664-1-git-send-email-sumitg@nvidia.com>
+        Fri, 23 Apr 2021 09:02:01 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619182884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rSY2/gYOdotd/jaEwm21lbEsmSCocKn3J8Yq4V9NaR4=;
+        b=TDVd56DKo9LkEK17x2DJXIHlkpMrWAMJPeYQg6m+A1veFo1eumh2r65IGTY9eWhrZzQrsN
+        KmoR/NxwOHnbX5axhXJz3gMuEBKB5JW/GQiCKmWvkaDb5IkZp96XMPqGuDhz7LTl1E2o41
+        b1vyNvc4E6gbXuWFWkE6au45otcybFrBF1Xs/LvxLYkSBcCSx8qh2os6atRRlITyROfEJa
+        caKsDcs60iUaZtjYhOuMF8u8V6qKpoqBCu6UQuuG4NeuEA1sYM+KlCdQpOWYbI8S9BONZ+
+        b8qdruQJDqY4Udq2DNniy524m/baN/6uEAqskO1FGtqZ7F69oVxANcDdPFwTkg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619182884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rSY2/gYOdotd/jaEwm21lbEsmSCocKn3J8Yq4V9NaR4=;
+        b=6iBeaJFCuzUCoILDwx2L15VO7BjqHB0IETk+h7mD6jbwXElOzojGzl2w39FrG/thQawR1K
+        22KAgtTx4IHOqtCw==
+To:     John Garry <john.garry@huawei.com>
+Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: Question on threaded handlers for managed interrupts
+In-Reply-To: <874kfxw9zv.ffs@nanos.tec.linutronix.de>
+References: <b8c4be8c-1d67-c16c-570e-d3c883c77ea2@huawei.com> <874kfxw9zv.ffs@nanos.tec.linutronix.de>
+Date:   Fri, 23 Apr 2021 15:01:23 +0200
+Message-ID: <871rb1w3x8.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619103878-6664-1-git-send-email-sumitg@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
+John,
 
-On Thu, Apr 22, 2021 at 08:34:38PM +0530, Sumit Gupta wrote:
-> Had to revert patch "mm: notify remote TLBs when dirtying a PTE".
+On Fri, Apr 23 2021 at 12:50, Thomas Gleixner wrote:
+> On Thu, Apr 22 2021 at 17:10, John Garry wrote:
+> OTOH, the way how you splitted the handling into hard/thread context
+> provides already the base for this.
+>
+> The missing piece is infrastructure at the irq/scheduler core level to
+> handle this transparently.
+>
+> I have some horrible ideas how to solve that, but I'm sure the scheduler
+> wizards can come up with a reasonable and generic solution.
 
-Did that patch cause any issue, or is it just not needed on your system?
-It fixes an hypothetical problem with the way ATS is implemented. Maybe I
-actually observed it on an old software model, I don't remember. Either
-way it's unlikely to go upstream but I'd like to know if I should drop it
-from my tree.
+So one thing I forgot to ask is:
+
+Is the thread simply stuck in the while() loop forever or is
+this just an endless hardirq/thread/hardirq/thread stream?
 
 Thanks,
-Jean
+
+        tglx
