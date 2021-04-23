@@ -2,583 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67216368A4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE48D368A51
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240140AbhDWBQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240012AbhDWBP7 (ORCPT
+        id S240131AbhDWBRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:17:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12514 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235302AbhDWBRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:15:59 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94409C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:15:23 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id w4so42932621wrt.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:15:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lzQz53Dyr4VaEnOtOvCzZGEEMawO8rrtvUi1dAgwgJs=;
-        b=FduYITz0MEkWtLzfo3PQZc2UBIVwytuajvwOFchbTNbiOEMGQmDM7j6XKtNCWCID1o
-         mICd/G9YKUF0GPNbZB3Pv13IRU874WC52FBQNjZLzidvmPB7z4AWUwuFoCmHk+cfzesR
-         w5YKMPUBUP1pPHJdl5c7BtZeKRXHzGSxG0Psw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lzQz53Dyr4VaEnOtOvCzZGEEMawO8rrtvUi1dAgwgJs=;
-        b=peB1mlNgSpKcAhowaE3AVoatmNX7/hvMqKzEffhfnUq3jVteCpNMWS3lFx+DaH/sPz
-         JdHQMYPZ+6s5j65Ym5pA+iibknsaiF02W/GXcBX9AhnWpgNBn5appJ07+khPI4IY4no/
-         tiZFVLODbUbGlEe9XMwGYOPUN0iDQYKH4NHMZ+N4vuFugtdSDfy9rPPL4dTQXu+32G6s
-         VDJjFRgrewA7TX2Q7Snd7gtoZRaHdZw3jK7UelB4Gdi0b6HS8z/8ioPLlXzGWQwoPjbE
-         MdtYyL3WB9jgK25DOx+BdJiPNm2TgojlXxBqqbry+YK8XualEJtpKCi1Xa6AZAAknpij
-         pMtg==
-X-Gm-Message-State: AOAM531Cge9F0XWcY7M3YGzYhWRpBdpBDgTMTxsJZNBM+qHHx3iDmf5b
-        WiiyVL2Qwk/S/4CVB05Cw8V7lSD526IhDQ==
-X-Google-Smtp-Source: ABdhPJxnZ25VwrgrCBZvNTc042f4aCegFjwT1hFeKlYICQ5QA4bM8U3hip/kNZLBqLoywUqaSe6ctw==
-X-Received: by 2002:a5d:4251:: with SMTP id s17mr1278444wrr.174.1619140522308;
-        Thu, 22 Apr 2021 18:15:22 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:e4b7:67ca:7609:a533])
-        by smtp.gmail.com with ESMTPSA id a13sm6709340wrs.78.2021.04.22.18.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 18:15:21 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, jackmanb@google.com, linux@rasmusvillemoes.dk,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next 2/2] bpf: Implement formatted output helpers with bstr_printf
-Date:   Fri, 23 Apr 2021 03:15:17 +0200
-Message-Id: <20210423011517.4069221-3-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-In-Reply-To: <20210423011517.4069221-1-revest@chromium.org>
-References: <20210423011517.4069221-1-revest@chromium.org>
+        Thu, 22 Apr 2021 21:17:10 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13N12vxV105266;
+        Thu, 22 Apr 2021 21:16:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=WCR08HLwwWRb8pAWrXgvI7x6gIayoqqrGOqJvhQPaXI=;
+ b=oiFD23uM9GLTJditlSQeklAbH0cdfeD4NMld3eGLhnoHJOHb5PK9kEuQWtfz6joI+3No
+ O0+c2p/HLVHNZa6AkxzWsf2rwyc0Ov9E8jS35IV8goWXTa4RoerxIDsX1UikXjsS2vqT
+ 46fRFC1yvn2D+uMEJMg/KA655TbOpOT6PTjDU8sNyxdmodY0sSvuJ3uiFS04KXpPJ5vE
+ Z+leI+aN7MWxICGvCg2nDh6JMMOSxmuda+dmIFL0zd/R8PqbPVvFGspPtlAJVWCdV5Vv
+ J5g/efz3w6U13HN9RPEDlW5v4jHXpQd5YAhkafzxO0iNQRV6YFPgPv6hofSzA+hWc8py qA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 383bhsxsfq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 21:16:15 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13N1Dx1J140114;
+        Thu, 22 Apr 2021 21:16:15 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 383bhsxsey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 21:16:15 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13N1F8I5020727;
+        Fri, 23 Apr 2021 01:16:12 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 37yqa8k48y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Apr 2021 01:16:12 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13N1G9ah29688098
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Apr 2021 01:16:09 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 95C16A4040;
+        Fri, 23 Apr 2021 01:16:09 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB68CA4055;
+        Fri, 23 Apr 2021 01:16:06 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com.com (unknown [9.211.42.66])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 23 Apr 2021 01:16:06 +0000 (GMT)
+From:   Nayna Jain <nayna@linux.ibm.com>
+To:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org
+Cc:     linux-security-module@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nayna Jain <nayna@linux.ibm.com>
+Subject: [PATCH] ima: ensure IMA_APPRAISE_MODSIG has necessary dependencies
+Date:   Thu, 22 Apr 2021 21:16:02 -0400
+Message-Id: <20210423011602.138946-1-nayna@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: thdCZmDlXiDK3Vmw2OiBe-MAdeKXbqTb
+X-Proofpoint-GUID: _XxRXm8PKYLZFsFca0WG19YqSa7Uxfs-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_15:2021-04-22,2021-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104230003
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPF has three formatted output helpers: bpf_trace_printk, bpf_seq_printf
-and bpf_snprintf. Their signatures specifies that arguments are always
-provided from the BPF world as u64s (in an array or as registers). All
-of these helpers are currently implemented by calling functions such as
-snprintf() whose signatures take arguments as a va_list.
+IMA_APPRAISE_MODSIG is used for verifying the integrity of both kernel
+and modules. Enabling IMA_APPRAISE_MODSIG without MODULES causes a build
+break.
 
-To convert args from u64s to a va_list "d9c9e4db bpf: Factorize
-bpf_trace_printk and bpf_seq_printf" introduced a bpf_printf_prepare
-function that fills an array of arguments and an array of modifiers.
-The BPF_CAST_FMT_ARG macro was supposed to consume these arrays and cast
-each argument to the right size. However, the C promotion rules implies
-that every argument is stored as a u64 in the va_list.
+Ensure the build time kernel signing key is only generated if both
+IMA_APPRAISE_MODSIG and MODULES are enabled.
 
-In "88a5c690b6 bpf: fix bpf_trace_printk on 32 bit archs", this problem
-had been solved for bpf_trace_printk only with a "horrid workaround"
-that emitted multiple calls to trace_printk where each call had
-different types stored in its va_list, known at compilation time. This
-was ok with 3 arguments but bpf_seq_printf and bpf_snprintf have a
-maximum of 12 arguments and because this approach scales code
-exponentially, this is not a viable option.
-
-Because the promotion rules are part of the language and because the
-construction of a va_list is an arch- and compiler-specific ABI, it's
-easier to avoid va_lists altogether. Thankfully snprintf() has an
-alternative in the form of bstr_printf() that accepts arguments in a
-"binary buffer representation". These binary buffers are currently
-created by vbin_printf and used in the tracing subsystem.
-
-This patch refactors bpf_printf_prepare to construct binary buffers of
-arguments consumable by bstr_printf() instead of arrays of arguments and
-modifiers. This greatly simplifies the bpf_printf_prepare API usage but
-there are a few gotchas that change how bpf_printf_prepare does things.
-
-Currently, bpf_printf_prepare uses a per cpu temporary buffer as a
-generic storage for strings and IP addresses. With this refactoring, the
-temporary buffers now stores all the arguments in a structured binary
-format.
-
-To comply with the format expected by bstr_printf, certain format
-specifiers also need to be pre-formatted: %pB and %pi6/%pi4/%pI4/%pI6.
-Because vsnprintf subroutines for these specifiers are hard to expose,
-we pre-format these arguments with calls to snprintf().
-
-Signed-off-by: Florent Revest <revest@chromium.org>
-Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Fixes: 0165f4ca223b ("ima: enable signing of modules with build time generated key") 
+Reported-by: Randy Dunlap <rdunlap@infradead.org> 
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
 ---
- include/linux/bpf.h      |  22 +----
- init/Kconfig             |   1 +
- kernel/bpf/helpers.c     | 188 +++++++++++++++++++++------------------
- kernel/bpf/verifier.c    |   2 +-
- kernel/trace/bpf_trace.c |  34 +++----
- 5 files changed, 115 insertions(+), 132 deletions(-)
+ certs/Kconfig               | 2 +-
+ certs/Makefile              | 2 ++
+ certs/system_certificates.S | 3 ++-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f8a45f109e96..8f59df9fc9fc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2079,24 +2079,8 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- struct btf_id_set;
- bool btf_id_set_contains(const struct btf_id_set *set, u32 id);
- 
--enum bpf_printf_mod_type {
--	BPF_PRINTF_INT,
--	BPF_PRINTF_LONG,
--	BPF_PRINTF_LONG_LONG,
--};
--
--/* Workaround for getting va_list handling working with different argument type
-- * combinations generically for 32 and 64 bit archs.
-- */
--#define BPF_CAST_FMT_ARG(arg_nb, args, mod)				\
--	(mod[arg_nb] == BPF_PRINTF_LONG_LONG ||				\
--	 (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)	\
--	  ? (u64)args[arg_nb]						\
--	  : (u32)args[arg_nb])
--
--int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
--		       u64 *final_args, enum bpf_printf_mod_type *mod,
--		       u32 num_args);
--void bpf_printf_cleanup(void);
-+int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-+			u32 **bin_buf, u32 num_args);
-+void bpf_bprintf_cleanup(void);
- 
- #endif /* _LINUX_BPF_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index 5deae45b8d81..0d82a1f838cc 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1708,6 +1708,7 @@ config BPF_SYSCALL
- 	select BPF
- 	select IRQ_WORK
- 	select TASKS_TRACE_RCU
-+	select BINARY_PRINTF
- 	select NET_SOCK_MSG if INET
- 	default n
+diff --git a/certs/Kconfig b/certs/Kconfig
+index 48675ad319db..e4d00348fd73 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -4,7 +4,7 @@ menu "Certificates for signature checking"
+ config MODULE_SIG_KEY
+ 	string "File name or PKCS#11 URI of module signing key"
+ 	default "certs/signing_key.pem"
+-	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
++	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
  	help
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 85b26ca5aacd..24cc99a4ee38 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -707,9 +707,6 @@ static int try_get_fmt_tmp_buf(char **tmp_buf)
- 	struct bpf_printf_buf *bufs;
- 	int used;
+          Provide the file name of a private key/certificate in PEM format,
+          or a PKCS#11 URI according to RFC7512. The file should contain, or
+diff --git a/certs/Makefile b/certs/Makefile
+index e3185c57fbd8..2f369d6aa494 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -36,8 +36,10 @@ ifeq ($(CONFIG_MODULE_SIG),y)
+ endif
  
--	if (*tmp_buf)
--		return 0;
--
- 	preempt_disable();
- 	used = this_cpu_inc_return(bpf_printf_buf_used);
- 	if (WARN_ON_ONCE(used > 1)) {
-@@ -723,7 +720,7 @@ static int try_get_fmt_tmp_buf(char **tmp_buf)
- 	return 0;
- }
+ ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
++ifeq ($(CONFIG_MODULES),y)
+ 	SIGN_KEY = y
+ endif
++endif
  
--void bpf_printf_cleanup(void)
-+void bpf_bprintf_cleanup(void)
- {
- 	if (this_cpu_read(bpf_printf_buf_used)) {
- 		this_cpu_dec(bpf_printf_buf_used);
-@@ -732,43 +729,45 @@ void bpf_printf_cleanup(void)
- }
- 
- /*
-- * bpf_parse_fmt_str - Generic pass on format strings for printf-like helpers
-+ * bpf_bprintf_prepare - Generic pass on format strings for bprintf-like helpers
-  *
-  * Returns a negative value if fmt is an invalid format string or 0 otherwise.
-  *
-  * This can be used in two ways:
-- * - Format string verification only: when final_args and mod are NULL
-+ * - Format string verification only: when bin_args is NULL
-  * - Arguments preparation: in addition to the above verification, it writes in
-- *   final_args a copy of raw_args where pointers from BPF have been sanitized
-- *   into pointers safe to use by snprintf. This also writes in the mod array
-- *   the size requirement of each argument, usable by BPF_CAST_FMT_ARG for ex.
-+ *   bin_args a binary representation of arguments usable by bstr_printf where
-+ *   pointers from BPF have been sanitized.
-  *
-  * In argument preparation mode, if 0 is returned, safe temporary buffers are
-- * allocated and bpf_printf_cleanup should be called to free them after use.
-+ * allocated and bpf_bprintf_cleanup should be called to free them after use.
-  */
--int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
--			u64 *final_args, enum bpf_printf_mod_type *mod,
--			u32 num_args)
-+int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-+			u32 **bin_args, u32 num_args)
- {
--	char *unsafe_ptr = NULL, *tmp_buf = NULL, *fmt_end;
--	size_t tmp_buf_len = MAX_PRINTF_BUF_LEN;
--	int err, i, num_spec = 0, copy_size;
--	enum bpf_printf_mod_type cur_mod;
-+	char *unsafe_ptr = NULL, *tmp_buf = NULL, *tmp_buf_end, *fmt_end;
-+	size_t sizeof_cur_arg, sizeof_cur_ip;
-+	int err, i, num_spec = 0;
- 	u64 cur_arg;
--	char fmt_ptype;
--
--	if (!!final_args != !!mod)
--		return -EINVAL;
-+	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
- 
- 	fmt_end = strnchr(fmt, fmt_size, 0);
- 	if (!fmt_end)
- 		return -EINVAL;
- 	fmt_size = fmt_end - fmt;
- 
-+	if (bin_args) {
-+		if (num_args && try_get_fmt_tmp_buf(&tmp_buf))
-+			return -EBUSY;
-+
-+		tmp_buf_end = tmp_buf + MAX_PRINTF_BUF_LEN;
-+		*bin_args = (u32 *)tmp_buf;
-+	}
-+
- 	for (i = 0; i < fmt_size; i++) {
- 		if ((!isprint(fmt[i]) && !isspace(fmt[i])) || !isascii(fmt[i])) {
- 			err = -EINVAL;
--			goto cleanup;
-+			goto out;
- 		}
- 
- 		if (fmt[i] != '%')
-@@ -781,7 +780,7 @@ int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
- 
- 		if (num_spec >= num_args) {
- 			err = -EINVAL;
--			goto cleanup;
-+			goto out;
- 		}
- 
- 		/* The string is zero-terminated so if fmt[i] != 0, we can
-@@ -800,7 +799,7 @@ int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
- 		}
- 
- 		if (fmt[i] == 'p') {
--			cur_mod = BPF_PRINTF_LONG;
-+			sizeof_cur_arg = sizeof(long);
- 
- 			if ((fmt[i + 1] == 'k' || fmt[i + 1] == 'u') &&
- 			    fmt[i + 2] == 's') {
-@@ -811,117 +810,140 @@ int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
- 
- 			if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
- 			    ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
--			    fmt[i + 1] == 'x' || fmt[i + 1] == 'B' ||
--			    fmt[i + 1] == 's' || fmt[i + 1] == 'S') {
-+			    fmt[i + 1] == 'x' || fmt[i + 1] == 's' ||
-+			    fmt[i + 1] == 'S') {
- 				/* just kernel pointers */
--				if (final_args)
-+				if (tmp_buf)
- 					cur_arg = raw_args[num_spec];
--				goto fmt_next;
-+				i++;
-+				goto nocopy_fmt;
-+			}
-+
-+			if (fmt[i + 1] == 'B') {
-+				if (tmp_buf)  {
-+					err = snprintf(tmp_buf,
-+						       (tmp_buf_end - tmp_buf),
-+						       "%pB",
-+						       (void *)(long)raw_args[num_spec]);
-+					tmp_buf += (err + 1);
-+				}
-+
-+				i++;
-+				num_spec++;
-+				continue;
- 			}
- 
- 			/* only support "%pI4", "%pi4", "%pI6" and "%pi6". */
- 			if ((fmt[i + 1] != 'i' && fmt[i + 1] != 'I') ||
- 			    (fmt[i + 2] != '4' && fmt[i + 2] != '6')) {
- 				err = -EINVAL;
--				goto cleanup;
-+				goto out;
- 			}
- 
- 			i += 2;
--			if (!final_args)
--				goto fmt_next;
-+			if (!tmp_buf)
-+				goto nocopy_fmt;
- 
--			if (try_get_fmt_tmp_buf(&tmp_buf)) {
--				err = -EBUSY;
--				goto out;
--			}
--
--			copy_size = (fmt[i + 2] == '4') ? 4 : 16;
--			if (tmp_buf_len < copy_size) {
-+			sizeof_cur_ip = (fmt[i] == '4') ? 4 : 16;
-+			if ((tmp_buf_end - tmp_buf) < sizeof_cur_ip) {
- 				err = -ENOSPC;
--				goto cleanup;
-+				goto out;
- 			}
- 
- 			unsafe_ptr = (char *)(long)raw_args[num_spec];
--			err = copy_from_kernel_nofault(tmp_buf, unsafe_ptr,
--						       copy_size);
-+			err = copy_from_kernel_nofault(cur_ip, unsafe_ptr,
-+						       sizeof_cur_ip);
- 			if (err < 0)
--				memset(tmp_buf, 0, copy_size);
--			cur_arg = (u64)(long)tmp_buf;
--			tmp_buf += copy_size;
--			tmp_buf_len -= copy_size;
-+				memset(cur_ip, 0, sizeof_cur_ip);
-+
-+			/* hack: bstr_printf expects IP addresses to be
-+			 * pre-formatted as strings, ironically, the easiest way
-+			 * to do that is to call snprintf.
-+			 */
-+			ip_spec[2] = fmt[i - 1];
-+			ip_spec[3] = fmt[i];
-+			err = snprintf(tmp_buf, (tmp_buf_end - tmp_buf),
-+				       ip_spec, &cur_ip);
- 
--			goto fmt_next;
-+			tmp_buf += (err + 1);
-+			num_spec++;
-+
-+			continue;
- 		} else if (fmt[i] == 's') {
--			cur_mod = BPF_PRINTF_LONG;
- 			fmt_ptype = fmt[i];
- fmt_str:
- 			if (fmt[i + 1] != 0 &&
- 			    !isspace(fmt[i + 1]) &&
- 			    !ispunct(fmt[i + 1])) {
- 				err = -EINVAL;
--				goto cleanup;
--			}
--
--			if (!final_args)
--				goto fmt_next;
--
--			if (try_get_fmt_tmp_buf(&tmp_buf)) {
--				err = -EBUSY;
- 				goto out;
- 			}
- 
--			if (!tmp_buf_len) {
-+			if (!tmp_buf)
-+				goto nocopy_fmt;
-+
-+			if (tmp_buf_end == tmp_buf) {
- 				err = -ENOSPC;
--				goto cleanup;
-+				goto out;
- 			}
- 
- 			unsafe_ptr = (char *)(long)raw_args[num_spec];
- 			err = bpf_trace_copy_string(tmp_buf, unsafe_ptr,
--						    fmt_ptype, tmp_buf_len);
-+						    fmt_ptype,
-+						    (tmp_buf_end - tmp_buf));
- 			if (err < 0) {
- 				tmp_buf[0] = '\0';
- 				err = 1;
- 			}
- 
--			cur_arg = (u64)(long)tmp_buf;
- 			tmp_buf += err;
--			tmp_buf_len -= err;
-+			num_spec++;
- 
--			goto fmt_next;
-+			continue;
- 		}
- 
--		cur_mod = BPF_PRINTF_INT;
-+		sizeof_cur_arg = sizeof(int);
- 
- 		if (fmt[i] == 'l') {
--			cur_mod = BPF_PRINTF_LONG;
-+			sizeof_cur_arg = sizeof(long);
- 			i++;
- 		}
- 		if (fmt[i] == 'l') {
--			cur_mod = BPF_PRINTF_LONG_LONG;
-+			sizeof_cur_arg = sizeof(long long);
- 			i++;
- 		}
- 
- 		if (fmt[i] != 'i' && fmt[i] != 'd' && fmt[i] != 'u' &&
- 		    fmt[i] != 'x' && fmt[i] != 'X') {
- 			err = -EINVAL;
--			goto cleanup;
-+			goto out;
- 		}
- 
--		if (final_args)
-+		if (tmp_buf)
- 			cur_arg = raw_args[num_spec];
--fmt_next:
--		if (final_args) {
--			mod[num_spec] = cur_mod;
--			final_args[num_spec] = cur_arg;
-+nocopy_fmt:
-+		if (tmp_buf) {
-+			tmp_buf = PTR_ALIGN(tmp_buf, sizeof(u32));
-+			if ((tmp_buf_end - tmp_buf) < sizeof_cur_arg) {
-+				err = -ENOSPC;
-+				goto out;
-+			}
-+
-+			if (sizeof_cur_arg == 8) {
-+				*(u32 *)tmp_buf = *(u32 *)&cur_arg;
-+				*(u32 *)(tmp_buf + 4) = *((u32 *)&cur_arg + 1);
-+			} else {
-+				*(u32 *)tmp_buf = (u32)(long)cur_arg;
-+			}
-+			tmp_buf += sizeof_cur_arg;
- 		}
- 		num_spec++;
- 	}
- 
- 	err = 0;
--cleanup:
--	if (err)
--		bpf_printf_cleanup();
- out:
-+	if (err)
-+		bpf_bprintf_cleanup();
- 	return err;
- }
- 
-@@ -930,9 +952,8 @@ int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
- BPF_CALL_5(bpf_snprintf, char *, str, u32, str_size, char *, fmt,
- 	   const void *, data, u32, data_len)
- {
--	enum bpf_printf_mod_type mod[MAX_SNPRINTF_VARARGS];
--	u64 args[MAX_SNPRINTF_VARARGS];
- 	int err, num_args;
-+	u32 *bin_args;
- 
- 	if (data_len % 8 || data_len > MAX_SNPRINTF_VARARGS * 8 ||
- 	    (data_len && !data))
-@@ -942,22 +963,13 @@ BPF_CALL_5(bpf_snprintf, char *, str, u32, str_size, char *, fmt,
- 	/* ARG_PTR_TO_CONST_STR guarantees that fmt is zero-terminated so we
- 	 * can safely give an unbounded size.
- 	 */
--	err = bpf_printf_prepare(fmt, UINT_MAX, data, args, mod, num_args);
-+	err = bpf_bprintf_prepare(fmt, UINT_MAX, data, &bin_args, num_args);
- 	if (err < 0)
- 		return err;
- 
--	/* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
--	 * all of them to snprintf().
--	 */
--	err = snprintf(str, str_size, fmt, BPF_CAST_FMT_ARG(0, args, mod),
--		BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
--		BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
--		BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
--		BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
--		BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
--		BPF_CAST_FMT_ARG(11, args, mod));
--
--	bpf_printf_cleanup();
-+	err = bstr_printf(str, str_size, fmt, bin_args);
-+
-+	bpf_bprintf_cleanup();
- 
- 	return err + 1;
- }
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 58730872f7e5..48539afb9e9a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5947,7 +5947,7 @@ static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
- 	/* We are also guaranteed that fmt+fmt_map_off is NULL terminated, we
- 	 * can focus on validating the format specifiers.
- 	 */
--	err = bpf_printf_prepare(fmt, UINT_MAX, NULL, NULL, NULL, num_args);
-+	err = bpf_bprintf_prepare(fmt, UINT_MAX, NULL, NULL, num_args);
- 	if (err < 0)
- 		verbose(env, "Invalid format string\n");
- 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 2a8bcdc927c7..c8702d6ce7de 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -381,27 +381,23 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 	   u64, arg2, u64, arg3)
- {
- 	u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
--	enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
-+	u32 *bin_args;
- 	static char buf[BPF_TRACE_PRINTK_SIZE];
- 	unsigned long flags;
- 	int ret;
- 
--	ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
--				 MAX_TRACE_PRINTK_VARARGS);
-+	ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
-+				  MAX_TRACE_PRINTK_VARARGS);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
--		BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
--	/* snprintf() will not append null for zero-length strings */
--	if (ret == 0)
--		buf[0] = '\0';
-+	ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
- 
- 	raw_spin_lock_irqsave(&trace_printk_lock, flags);
- 	trace_bpf_trace_printk(buf);
- 	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
- 
--	bpf_printf_cleanup();
-+	bpf_bprintf_cleanup();
- 
- 	return ret;
- }
-@@ -435,31 +431,21 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
- BPF_CALL_5(bpf_seq_printf, struct seq_file *, m, char *, fmt, u32, fmt_size,
- 	   const void *, data, u32, data_len)
- {
--	enum bpf_printf_mod_type mod[MAX_SEQ_PRINTF_VARARGS];
--	u64 args[MAX_SEQ_PRINTF_VARARGS];
- 	int err, num_args;
-+	u32 *bin_args;
- 
- 	if (data_len & 7 || data_len > MAX_SEQ_PRINTF_VARARGS * 8 ||
- 	    (data_len && !data))
- 		return -EINVAL;
- 	num_args = data_len / 8;
- 
--	err = bpf_printf_prepare(fmt, fmt_size, data, args, mod, num_args);
-+	err = bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
- 	if (err < 0)
- 		return err;
- 
--	/* Maximumly we can have MAX_SEQ_PRINTF_VARARGS parameter, just give
--	 * all of them to seq_printf().
--	 */
--	seq_printf(m, fmt, BPF_CAST_FMT_ARG(0, args, mod),
--		BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
--		BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
--		BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
--		BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
--		BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
--		BPF_CAST_FMT_ARG(11, args, mod));
--
--	bpf_printf_cleanup();
-+	seq_bprintf(m, fmt, bin_args);
-+
-+	bpf_bprintf_cleanup();
- 
- 	return seq_has_overflowed(m) ? -EOVERFLOW : 0;
- }
+ ifdef SIGN_KEY
+ ###############################################################################
+diff --git a/certs/system_certificates.S b/certs/system_certificates.S
+index dcad27ea8527..e1645e6f4d97 100644
+--- a/certs/system_certificates.S
++++ b/certs/system_certificates.S
+@@ -9,7 +9,8 @@
+ system_certificate_list:
+ __cert_list_start:
+ __module_cert_start:
+-#if defined(CONFIG_MODULE_SIG) || defined(CONFIG_IMA_APPRAISE_MODSIG)
++#if defined(CONFIG_MODULE_SIG) || (defined(CONFIG_IMA_APPRAISE_MODSIG) \
++			       && defined(CONFIG_MODULES))
+ 	.incbin "certs/signing_key.x509"
+ #endif
+ __module_cert_end:
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+2.29.2
 
