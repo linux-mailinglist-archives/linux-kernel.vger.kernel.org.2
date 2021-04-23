@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F153694DB
+	by mail.lfdr.de (Postfix) with ESMTP id 38E643694DA
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242533AbhDWOhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
+        id S241042AbhDWOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhDWOhc (ORCPT
+        with ESMTP id S229871AbhDWOhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:37:32 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CCDC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:50 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 4so17999604lfp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:49 -0700 (PDT)
+        Fri, 23 Apr 2021 10:37:25 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36974C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:47 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id q10so35313856pgj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rGVMK1LPh9iIc+XnF1YdK9uGnLn1GjuOH4C0X7AWW18=;
-        b=ibnNxKI5LWvzWd65BU2zvJQ3lZMkhb1LLEARrXo8fh/Rbz/rfSC6mIwVjEdsykK89c
-         NejtsnaccVOuASPeR9gGFE5MPQzHaHKRgP5Y/pz0cOECwfTI0q8/0miB8rvnra9ZOCZ/
-         ng1jnduShfGZAfZyFIY5f0GV9vDniT6Xx7XqgmFTLL7DqonI8SYoqhkDjdN5jfba7u7P
-         PvQxVkNETEmcUxzBXMmpliJQJ97BhmLTKtJ+gTKzXfdKmCjPyMCQVNqlf/QSI6u/3aEi
-         hksfL1C3NTyGLoxH+em122rqRRn3Wtx8Qdyo4zc0DE13g71NRdPskvQx8eSfOG4kIHrI
-         AcoQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uoOkccNDSms2R4LZsMg1sjMsmp7WtuEiZhaADKTqPMM=;
+        b=a2X1O2GpUB1cmeStoxoytRyRwXSNa9srsnr2FVr6ocsOYkrx2cLMRNhSJr6gh4gE1M
+         FUsr3/5t9rC1a/a3tZXV5ZJirxH/b4E5fKUz1sFdyjKZ7Dc8dj69fq9eC4GWfLn5lKI3
+         0rssI18e+zs58t30w3bgVMnel8Ajs+IQ+dWcJcloeu2ooFOiOOjhpr6Pvg2+dqhBvHRO
+         zptbyjoKv57PWMkAgoje2QcsVsiPTf3HLmNs5PhIPor+2FmNLa06Jxe8S7LDtZjm/Zzz
+         eKASbMAgXAu9V9cbtUxjGlxXSVcUV0oCig4JsmtECZlmM1zMKE6rIOOJ86HQNCT5Tq77
+         tyGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rGVMK1LPh9iIc+XnF1YdK9uGnLn1GjuOH4C0X7AWW18=;
-        b=Bg99GebDAWESOQhGTuen6iEm6Pu0tKkpv4iHjOVktk2HeU7T3dDBvjFybwFEhWsn4d
-         Y1H2bM9RvtGF1605DAfI9HBZ6icJCIU/lhZ/KaPvy7UgOJH3A650Qt4QAwNlywgAdkFm
-         Ws4pjzpGnVSr9w+p/81kAjnnCLBEGPxQ9GC9oMzV8yYt3SJ8qqG5sXo0uJAZXJIG6WQ3
-         anXVnzkuGzRR6j0RliIBWZWb6C5arwM9kfwM5RPHFRwlW3voJaPUSa0oZB+6IpqecO6Z
-         U0TV/y3BTehDv06bqNz+htstUs5a8zZPPRI63kKYDgUV8rKUR/9StrkoAMWdfBYch214
-         wklQ==
-X-Gm-Message-State: AOAM531naBdt1CfOAcw3tBQ4wES3gGEPiCvgtdI1lgcJ/AG9DDa+e3Mn
-        CJByCe+w5fXgpx6y0nrzFOuIFUk4tRE9ob+q+pk7MA==
-X-Google-Smtp-Source: ABdhPJyP6Uu0qWuAegZYZDUSEd9xuSqzExELRiyoT5S0n936RRLzfq/8QcEhnek3SSimkfoYPYC2HuOLBQSjzbhGPSQ=
-X-Received: by 2002:a19:7e97:: with SMTP id z145mr3212097lfc.280.1619188608499;
- Fri, 23 Apr 2021 07:36:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <87ft6act3c.fsf@redhat.com> <20210421172714.912119-1-snaipe@arista.com>
- <87h7jyvfsm.fsf@redhat.com>
-In-Reply-To: <87h7jyvfsm.fsf@redhat.com>
-From:   =?UTF-8?B?RnJhbmtsaW4g4oCcU25haXBl4oCdIE1hdGhpZXU=?= 
-        <snaipe@arista.com>
-Date:   Fri, 23 Apr 2021 16:36:12 +0200
-Message-ID: <CAK8sBDOfVKvv4V-0wzz6ZAsi0Gs6pPVDHhxg++RLgcdA5mmF3g@mail.gmail.com>
-Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated
- user namespaces
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     Alexander Mihalicyn <alexander@mihalicyn.com>,
-        christian.brauner@ubuntu.com,
-        containers@lists.linux-foundation.org, cyphar@cyphar.com,
-        ebiederm@xmission.com, geofft@ldpreload.com, jcsible@cert.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, luto@amacapital.net, mic@digikod.net,
-        mpatel@redhat.com, ptikhomirov@virtuozzo.com,
-        Sargun Dhillon <sargun@sargun.me>, serge@hallyn.com,
-        stgraber@ubuntu.com, vgoyal@redhat.com, Wat Lim <watl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=uoOkccNDSms2R4LZsMg1sjMsmp7WtuEiZhaADKTqPMM=;
+        b=lolv20X1HKWPBo2CnVYgb6HfU1mXmgawcN3Shr9tJ3q/BmOj0d/K20yGah73ZzSe4N
+         UxUXOjua21RT0UQQRaikAdVPHnVC+wzkypRWHCgPDns+Sd1ecbemiuI2JD+/qlCpLsls
+         2D0fGdb7QhmO3hpO18aJsFH6uCiV6EBxPAR5dviWUfeO8Fx8tqM6CdAHoIxZuNFniNIL
+         3P+fYWuVUssl2dw+M9s1tcRMJZJbeem1090Vdke9Ps0vN+lTEB4r7YVrvS6aMRcMJ3jB
+         3dKoH7IuSRXxI7Xfp69NRb0r71pE1AgHjbm0eL6qh1eBUa3xI9+ewOaq142xNztyDq+s
+         f4VQ==
+X-Gm-Message-State: AOAM531L5k528YcR8SRirx8jlDMkSBXZpPRgOOPGGaBIYsVz/aX+15dW
+        9KrLF+NPtTaNzWuB/PMGSzmo/MJmw8HnLnkl
+X-Google-Smtp-Source: ABdhPJxskERFqYIiVdaP/G0GpZFz42BGMcnIgrol0YG2i6ZSO+jJ7FOg1Lu5RjPTfKHv1TBAWs2s5Q==
+X-Received: by 2002:a63:2204:: with SMTP id i4mr4098426pgi.76.1619188606622;
+        Fri, 23 Apr 2021 07:36:46 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id u20sm5417753pgl.27.2021.04.23.07.36.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:36:45 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 07:36:45 -0700 (PDT)
+X-Google-Original-Date: Fri, 23 Apr 2021 07:36:44 PDT (-0700)
+Subject:     Re: [PATCH] asm-generic: Remove asm/setup.h from the UABI.
+In-Reply-To: <CAK8P3a2+yCYm22g-r7aWE4RT7ZLcZn89aiWGcDhgFh_ZU3fSfQ@mail.gmail.com>
+CC:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Message-ID: <mhng-1f6be9fb-cb82-4a66-b23b-59b0c0d33b42@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 11:18 AM Giuseppe Scrivano <gscrivan@redhat.com> wrote:
-> thanks for the feedback.  We are still facing the issue with rootless
-> Podman, and these patches (listed here so you won't need to dig into archives):
+On Fri, 23 Apr 2021 02:09:46 PDT (-0700), Arnd Bergmann wrote:
+> On Fri, Apr 23, 2021 at 4:57 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>>
+>> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>>
+>> I honestly have no idea if this is sane.
+>>
+>> This all came up in the context of increasing COMMAND_LINE_SIZE in the
+>> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
+>> maximum length of /proc/cmdline and userspace could staticly rely on
+>> that to be correct.
+>>
+>> Usually I wouldn't mess around with changing this sort of thing, but
+>> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
+>> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
+>> increasing, but they're from before the UAPI split so I'm not quite sure
+>> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
+>> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
+>> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
+>> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
+>> asm-generic/setup.h.").
+>>
+>> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
+>> part of the UABI to begin with, and userspace should be able to handle
+>> /proc/cmdline of whatever length it turns out to be.  I don't see any
+>> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
+>> search, but that's not really enough to consider it unused on my end.
+>>
+>> I couldn't think of a better way to ask about this then just sending the
+>> patch.
 >
-> https://github.com/giuseppe/linux/commit/7e0701b389c497472d11fab8570c153a414050af
-> https://github.com/giuseppe/linux/commit/1c5fe726346b216293a527719e64f34e6297f0c2
+> I think removing asm/setup.h from the uapi headers makes sense,
+> but then we should do it consistently for all architectures as far
+> as possible.
 >
-> would solve the issue for us as well and we can use setgroups within a
-> user namespace in a safe way.
->
-> Any comments on this approach?  Could we move forward with it?
->
+> Most architectures either use the generic file or they provide their
+> own one-line version, so if we move them back, I would do it
+> for all.
 
-I rebased and built your changes on top of v5.10, patched our tool to
-burn "shadow" into /proc/self/setgroups, and it's working beautifully:
+Ya, makes sense.  I just wanted to see if anyone had a reason for things 
+being this way before I chased everything around.
 
-    $ id
-    uid=1000(snaipe) gid=1000(snaipe) groups=1000(snaipe),998(wheel)
-
-    $ bst grep . /proc/self/uid_map /proc/self/gid_map /proc/self/setgroups
-    /proc/self/uid_map:         0       1000          1
-    /proc/self/uid_map:         1     100000      65536
-    /proc/self/gid_map:         0       1000          1
-    /proc/self/gid_map:         1     100000      65536
-    /proc/self/setgroups:shadow
-
-    $ ls -l
-    total 8
-    drwxr-xr-x 2 root wheel 4096 Apr 23 14:18 allowed
-    drwx---r-x 2 root wheel 4096 Apr 23 14:18 denied
-
-    $ bst sh -c 'id; ls allowed denied'
-    uid=0(root) gid=0(root) groups=0(root)
-    allowed:
-    ls: cannot open directory 'denied': Permission denied
-
-    $ bst --groups 1 sh -c 'id; ls allowed denied'
-    uid=0(root) gid=0(root) groups=0(root),1(daemon)
-    allowed:
-    ls: cannot open directory 'denied': Permission denied
-
--- 
-Snaipe
+> The architectures that have additional contents in this file
+> are alpha, arm, and ia64. We I would leave those unchanged
+> in that case.
