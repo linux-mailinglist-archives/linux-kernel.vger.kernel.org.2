@@ -2,389 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A0036926C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E745369278
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242663AbhDWMtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242588AbhDWMte (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:49:34 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5443FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 05:48:57 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id a11so5625251ioo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 05:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=O+rmbNtIBSXZ/XeZNozymtB5zL/sr3YrkP9UtKLl2rs=;
-        b=aZjAZQW/603u3NDuX167F3db2C9xmaDqfYg7B6tVGWJIoyEVGKRyjwwP8ENUdrgfPz
-         nQzM133fzB9SeAlOWDJ97F1ZwhEQmW0z70AjKsqOLrACPe9YW3mTopdSQKU052HA39nQ
-         Ro3qt8UiSmBu3PBrVCwGJsfkWBKSaxd2MoMtE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O+rmbNtIBSXZ/XeZNozymtB5zL/sr3YrkP9UtKLl2rs=;
-        b=PTX2gtTuGY7MYA5tLh+gKXbAHUgfsh5+XS1L9FHavIidh21gECYVoEnQJIlESORN+V
-         mW2yPEEiS9C7l5zcjZWqWqNKJN+HPN2VgqmeinLmNGQu6fFszIehzgSyO+GfI3X5ZdTH
-         s5uI4sqJoQ/du7Dk/IXiEcjHnjOzoRDbauCnNzc7ViFyoLykoAWVCppgYyMHv3iVUywD
-         SSQKw2fYk+dhxivODE5uWcPtbfB/nAt5E1uMEbUOrxhC/T/2Qg4LnFarktj3sG7jN4VM
-         KfRd7oQ8wFjxIvCKKg5sgfpAFUS24P+au2zI/n5NSuk2N2C+m1quayzJ/k8IJdvKpzs5
-         BODA==
-X-Gm-Message-State: AOAM530hZxI7u0hUCOwsSlltBERt3XFjt3J+CRTvJIrRRtD+yrN5SN+i
-        +BZarBqaTm45QA59f0g3+13n6p2Y3qXgQg==
-X-Google-Smtp-Source: ABdhPJwcHmSTjB2/Y3RIg6kM/R74XEPOdpLLq6FBFkJQmT8JIyD2QQ6BLfZbVaxW6whhIqQJXBuDrQ==
-X-Received: by 2002:a5d:87ca:: with SMTP id q10mr3282921ios.67.1619182136481;
-        Fri, 23 Apr 2021 05:48:56 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id 13sm2872414ioz.40.2021.04.23.05.48.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 05:48:55 -0700 (PDT)
-Subject: Re: [PATCH net-next v5 3/3] net: ethernet: rmnet: Add support for
- MAPv5 egress packets
-To:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
-        davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        cpratapa@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <stranche@codeaurora.org linux-doc@vger.kernel.org corbet@lwn.net>
- <1619180343-3943-1-git-send-email-sharathv@codeaurora.org>
- <1619180343-3943-4-git-send-email-sharathv@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <67955e34-d1e1-f73a-8f21-938976d9f34b@ieee.org>
-Date:   Fri, 23 Apr 2021 07:48:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S242336AbhDWMxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:53:10 -0400
+Received: from mail-eopbgr760084.outbound.protection.outlook.com ([40.107.76.84]:18434
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230521AbhDWMxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:53:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HQ6IX/Gadw23geWeYfaiIJf9Gr1EsJDjkIJDLMrlUUMjVPUuQREJPEg04bItM+0rS+GC7Kdbjm73aFYmLhoXL69IN4bg0BRZbwE9VlcZ7RVpTFEl1loKT/cWMgniLM8mwjZT1QbdTXpxNjcNw9coUS4uzSw5U2KSvh4wd14prOy7EsO/bFYRSfN7xei1EnInjT4EHRmKPUAYXAYRHRP7QPGJCISnwPglhI7TIFzfifGb7mINaf2BMcseV5f8P4RhZdUf0N8hm7+HACNp1XkT2mpmmDTr9MHL/ydxmIEnese8K+VrfT616mOZ44R42qh0FA4TnLBswrCSAD5ANgCZvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E3kbO3EK/UOB3QrHQg1YwgV2pbcarnUwz0vNHQ4w48c=;
+ b=KmxVvBcOPtIUPvU8zKloc/8Caifn5+i/UN9k3dtqQytb5CCeDu1jG+ShP6NkdojWGJlWjvQOrzSNvmMB+C3FsVlCTbLcB+HcZvgiArJlEa3khr74HVdpEwcxGdkF4GtzWuehveoccQt81WP8s5uGL7ZUZaKoC6CHbnQL1CKmv7zM/o2jYmSH6ZCuH4SWhA4mAmQg7X3CnZ1+7cSWsH3EnGKt4OLD61DLDQr0kHPFvtaTaDJebKQ/qZxdozTzswuBAQmWaXXianWOpbgPuhSkWqNoDqOgMkFaHpCmjHJjNmHT7KiNm5nwF0umCUmo4443MJRN6Suo2zzrLGZJcG9GZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E3kbO3EK/UOB3QrHQg1YwgV2pbcarnUwz0vNHQ4w48c=;
+ b=UDbOURqRzeXvWdufCuXupQFzX3zAlYVEQ8EXSpq+CsOQ76coxtjoUdzGL+edKV8Vi+q3e+r0m1Ib+pDDJG2RTjXQ/bQMVDT0RWB/usG63kzNTVA0m2BGV6f0Xh34WEK/NsGkDQ/Q9h2G5R9z2VQOlD1XVE2wuWZWhJKzwcxHyAE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
+ by MWHPR12MB1789.namprd12.prod.outlook.com (2603:10b6:300:112::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Fri, 23 Apr
+ 2021 12:52:29 +0000
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::f07c:dc0f:e7e8:416c]) by MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::f07c:dc0f:e7e8:416c%4]) with mapi id 15.20.4065.024; Fri, 23 Apr 2021
+ 12:52:29 +0000
+Date:   Fri, 23 Apr 2021 20:52:08 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
+        "Pierre-Loup A . Griffais" <pgriffais@valvesoftware.com>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] x86, sched: Fix the AMD CPPC maximum perf on some
+ specific generations
+Message-ID: <20210423125208.GA688865@hr-amd>
+References: <20210423023928.688767-1-ray.huang@amd.com>
+ <CAJZ5v0iH0-YL-yVPSA2oJF7PGfQs5Tcv5ktH43xMLPAKysDXPw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJZ5v0iH0-YL-yVPSA2oJF7PGfQs5Tcv5ktH43xMLPAKysDXPw@mail.gmail.com>
+X-Originating-IP: [58.247.170.245]
+X-ClientProxiedBy: HK2PR0302CA0001.apcprd03.prod.outlook.com
+ (2603:1096:202::11) To MWHPR12MB1248.namprd12.prod.outlook.com
+ (2603:10b6:300:12::21)
 MIME-Version: 1.0
-In-Reply-To: <1619180343-3943-4-git-send-email-sharathv@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hr-amd (58.247.170.245) by HK2PR0302CA0001.apcprd03.prod.outlook.com (2603:1096:202::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.16 via Frontend Transport; Fri, 23 Apr 2021 12:52:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 79353791-4971-4014-6e45-08d90656a77d
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1789:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1789E75FE86F2025BA2F5DAEEC459@MWHPR12MB1789.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lDhNOqmSBOQ+y5UrvGGOLadBJXP4IYENcC9DNKFT6LJNU7d8g5zXWD5pRWmSFnLNfdOtQWlbmNkvp4ugUegQDQDylVgPGTS1+8LulMFPRBH2NYxLrBohhQlf+kuG34uZkGfXzq5LrLO3sbVAOSxGowtI/J/GRHm1lAw+YWpCq0qo7rEQMN2xBbAWejr16a/hG/EIsNbYUnij5av0G3SSdTnumQ9iLbCkw6SKSC1/67EzuTsiOKP1dJA13+ho6LyNojMW7/zO0y8iIOW1J7giiVK4HLuTDhvvzyoWAe2EGPK/qnRLq2tHRFdcSo7D9gaILOlyT6nT3qxoE5VUdGwPBB5Ru4yKLVSXUd2vEJ2RRTdfinUAWLc9q1FC8y2OxJy0yaM6P+XKbuGJedMEMcoi1j5/GL3ob6dcw/Q5a8S0tgPNdIZcMoJTZDIxo3lZuq5Ga3u59SYN8UwUpxieC2dyTVSOgci/86d1MNFwdBTNxdqhlq4I1OyJ4+uqLPvjKa7CdiPDnlEkQ+IAx2AxwwI5pf9a9yBUwhBZSPEvMQi7uv1f8rAm8Bc63x1AxYa2/t7XdA5wP+EChhiGuK6AZb8hzKMh0gE3vaygntpzI6Umpm/NJtxyb99ubpzv101r7XJr+XwlwzDGkinoyIThPftLlprx7QiuxRYENvTujm2jnBuLGT0MmUJluqqRL0fDfoS6eI/C3u3bURxv9vFs17WlO1v0ar+qdVTL9kroffqNPRQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(136003)(366004)(376002)(396003)(478600001)(16526019)(33656002)(316002)(83380400001)(55016002)(6666004)(66556008)(5660300002)(66946007)(54906003)(8676002)(4326008)(6496006)(8936002)(66476007)(956004)(53546011)(38100700002)(38350700002)(86362001)(6916009)(9686003)(52116002)(186003)(2906002)(26005)(1076003)(45080400002)(33716001)(966005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bOaCw4LoXaZkcKpA4gyhZ+jx47h1ktJOgS8ZudBB2jduW3BCLtXNDYdyac8+?=
+ =?us-ascii?Q?HfnopXGtcUT7KSPi7JJwJawiK0smsqURknT9Ep1tTjzIF5HlJtyDt1vT4HbY?=
+ =?us-ascii?Q?2XB8D1rlkOvE/bLCkPYBQm/dDkF+KJtwpWrlVoJVmjvpVUdzeNdxB97mDKNA?=
+ =?us-ascii?Q?8SHWvKhY6Jm0Ac19jEcrrdRWW/0FmzMcZ1CPWhbTLw6grgXODbnGD486y2MM?=
+ =?us-ascii?Q?FIyi723qeX+Kz+CSEdsFSivffcZuVvUa2rUfYi0+uMfjAOfzPaqUdPIGWNbI?=
+ =?us-ascii?Q?0yE1w7Sh3i/aoxwYE22auxg4Tk0RUPcjmWy+HoCR+9lGXSK2x4H4E3UPmOSW?=
+ =?us-ascii?Q?fsTByNe3jAWnRCS4xV9FvLtFGuCD1mcinDSaB2ijls8Cx0frPJa8UDrfBKvL?=
+ =?us-ascii?Q?ejN4Ieg5zMSadz8Eg2D62MdFvjd9Vq1W3fZ0qc2l5BfycCCy1OZwx9ej+Ab1?=
+ =?us-ascii?Q?V/0WcsowbyJAcMpqFQgFR92nIMFpdPX+AaF4KZ/+XhuNwRUpcwo025mcp6Zt?=
+ =?us-ascii?Q?ZQ98G9R0QaZCSBqgeLnOboYFfxfrPKMEfqUEe9Y6uGbwc/oPvK0sxv+4LyHv?=
+ =?us-ascii?Q?vFwSiGFSV2lSPteGAKqr5G1EaEJ49SoAzJEgLhV8BdpgWhhC9P/TBrVay2U7?=
+ =?us-ascii?Q?3W4bId9KHbWOxCKEY6otiafcMHncUFfJmD4WpiE77kqKwos/RXE9bMbJywqw?=
+ =?us-ascii?Q?H/YXaYMXJxvhzZAUXyaomwFTLcMl1usW9AMfLs5fQjW0NAFp7Cj6ifVuPH5g?=
+ =?us-ascii?Q?OfeRIwGu1AWCPb3erjRu1f6wpjbeW6wYeZQo7AWqUSbmxAnM/9tHB00CDxne?=
+ =?us-ascii?Q?NWSgwFwWCEPoWQ1YY5e21CzTYDzG3GjV0KKtBqADFT9607e4a7NAsBxFcSew?=
+ =?us-ascii?Q?hH6cz321CR/I6u+DcQVkhJ9YonzoDFCOzYpXEQLbjcSWFM8wfYY/hid2PDNt?=
+ =?us-ascii?Q?f5J+8UN7TAP6RzxABKx33u1zMNh67dP+7ZZ2KaMriga5b5qDzL/9yUUxiq2T?=
+ =?us-ascii?Q?VqJxBofXG2BPnp/0A4Z93fgVwUkyRG+eksjdcnRqrl7r2mbZv2nVssaMzsp4?=
+ =?us-ascii?Q?s8hEInmmhDuWipn+GUViygBoAuebN3kTj2sJKtle+Eyonex6fNVUWKdJahd3?=
+ =?us-ascii?Q?fTc1Z3veVrjpqXBYnK2tu93nIagQfoav05wlb0RnQZxOYGVp8D2XpMlRtErX?=
+ =?us-ascii?Q?2Lg1CnPueohtB222B7FdJsNp+0fEfauj81DSdKBMgNiDcpSJEzKsZ3lq7EW9?=
+ =?us-ascii?Q?MsxyxelpyXauOo22hHmKqUPQp+wjjlbNPBAIrFlRxUGgaOVH5sL+y9bRX0GY?=
+ =?us-ascii?Q?udwdBCmi0gEsqIiJTmsxw2K3?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79353791-4971-4014-6e45-08d90656a77d
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 12:52:29.8304
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WrSS6knrC1iPMiznyXbvFX4vfMmw6VED48oaQZ++Id2Av6C8KNtrYktSEzfD0a14khP5UlaOM7SmdWjPaByHjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1789
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/23/21 7:19 AM, Sharath Chandra Vurukala wrote:
-> Adding Support for MAPv5 egress packets.
-> Based on the configuration Request HW for csum offload
-> by setting the csum_valid_required of Mapv5 packet.
+On Fri, Apr 23, 2021 at 08:09:49PM +0800, Rafael J. Wysocki wrote:
+> On Fri, Apr 23, 2021 at 4:40 AM Huang Rui <ray.huang@amd.com> wrote:
+> >
+> > Some AMD Ryzen generations has different calculation method on maximum
+> > perf. 255 is not for all asics, some specific generations should use 166
+> > as the maximum perf. Otherwise, it will report incorrect frequency value
+> > like below:
+> >
+> > ~ =1B$B"*=1B(B lscpu | grep MHz
+> > CPU MHz:                         3400.000
+> > CPU max MHz:                     7228.3198
+> > CPU min MHz:                     2200.0000
+> >
+> > Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AM=
+D systems")
+> > Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover b=
+oost frequencies")
+> >
+> > Reported-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
+> > Tested-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
+> > Bugzilla: https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3=
+A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D211791&amp;data=3D04%7C01%=
+7Cray.huang%40amd.com%7Ce9ed877387fc4b7431e108d90650b98f%7C3dd8961fe4884e60=
+8e11a82d994e183d%7C0%7C0%7C637547766057950380%7CUnknown%7CTWFpbGZsb3d8eyJWI=
+joiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sd=
+ata=3DR%2FSBLaYOhTjrli%2BT054EytKeh8VmN7ryOQuQW4mgz6M%3D&amp;reserved=3D0
+> > Signed-off-by: Huang Rui <ray.huang@amd.com>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: Nathan Fontenot <nathan.fontenot@amd.com>
+> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Cc: Borislav Petkov <bp@suse.de>
+> > Cc: x86@kernel.org
+> > Cc: stable@vger.kernel.org
+> > ---
+> >
+> > Changes from V1 -> V2:
+> > - Enhance the commit message.
+> > - Move amd_get_highest_perf() into amd.c.
+> > - Refine the implementation of switch-case.
+> > - Cc stable mail list.
+> >
+> > Changes from V2 -> V3:
+> > - Move the update into cppc_get_perf_caps() to correct the highest perf=
+ value in
+> >   the API.
+> >
+> > ---
+> >  arch/x86/include/asm/processor.h |  2 ++
+> >  arch/x86/kernel/cpu/amd.c        | 22 ++++++++++++++++++++++
+> >  drivers/acpi/cppc_acpi.c         |  8 ++++++--
+> >  3 files changed, 30 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/pr=
+ocessor.h
+> > index f1b9ed5efaa9..908bcaea1361 100644
+> > --- a/arch/x86/include/asm/processor.h
+> > +++ b/arch/x86/include/asm/processor.h
+> > @@ -804,8 +804,10 @@ DECLARE_PER_CPU(u64, msr_misc_features_shadow);
+> >
+> >  #ifdef CONFIG_CPU_SUP_AMD
+> >  extern u32 amd_get_nodes_per_socket(void);
+> > +extern u32 amd_get_highest_perf(void);
+> >  #else
+> >  static inline u32 amd_get_nodes_per_socket(void)       { return 0; }
+> > +static inline u32 amd_get_highest_perf(void)           { return 0; }
+> >  #endif
+> >
+> >  static inline uint32_t hypervisor_cpuid_base(const char *sig, uint32_t=
+ leaves)
+> > diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+> > index 347a956f71ca..aadb691d9357 100644
+> > --- a/arch/x86/kernel/cpu/amd.c
+> > +++ b/arch/x86/kernel/cpu/amd.c
+> > @@ -1170,3 +1170,25 @@ void set_dr_addr_mask(unsigned long mask, int dr)
+> >                 break;
+> >         }
+> >  }
+> > +
+> > +u32 amd_get_highest_perf(void)
+> > +{
+> > +       struct cpuinfo_x86 *c =3D &boot_cpu_data;
+> > +       u32 cppc_max_perf =3D 225;
+> > +
+> > +       switch (c->x86) {
+> > +       case 0x17:
+> > +               if ((c->x86_model >=3D 0x30 && c->x86_model < 0x40) ||
+> > +                   (c->x86_model >=3D 0x70 && c->x86_model < 0x80))
+> > +                       cppc_max_perf =3D 166;
+> > +               break;
+> > +       case 0x19:
+> > +               if ((c->x86_model >=3D 0x20 && c->x86_model < 0x30) ||
+> > +                   (c->x86_model >=3D 0x40 && c->x86_model < 0x70))
+> > +                       cppc_max_perf =3D 166;
+> > +               break;
+> > +       }
+> > +
+> > +       return cppc_max_perf;
+> > +}
+> > +EXPORT_SYMBOL_GPL(amd_get_highest_perf);
+> > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> > index 69057fcd2c04..58e72b6e222f 100644
+> > --- a/drivers/acpi/cppc_acpi.c
+> > +++ b/drivers/acpi/cppc_acpi.c
+> > @@ -1107,8 +1107,12 @@ int cppc_get_perf_caps(int cpunum, struct cppc_p=
+erf_caps *perf_caps)
+> >                 }
+> >         }
+> >
+> > -       cpc_read(cpunum, highest_reg, &high);
+> > -       perf_caps->highest_perf =3D high;
+> > +       if (boot_cpu_data.x86_vendor =3D=3D X86_VENDOR_AMD) {
+>=20
+> This is a generic arch-independent file.
+>=20
+> Can we avoid adding the x86-specific check here?
 
-Please try to re-word this description.  I'm not sure
-I understand what it means.
+OK, I see, it will be used by ARM as well.
 
-I see what I think is a bug below.  Please either
-fix or explain.
+Can I rollback to implementation of V2:
 
-> Acked-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
-> Acked-by: Alex Elder <elder@linaro.org>
+https://lore.kernel.org/r/20210421023807.1540290-1-ray.huang@amd.com
 
-I did not acknowledge this patch.
+If stick to add quirk in cppc_acpi.c and avoid x86-specific check at the
+same time here, the code will not be straight forward. Or will you have any
+other good idea?
 
-> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
-> ---
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |  4 +-
->   .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   | 14 +++-
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  8 +-
->   .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 93 ++++++++++++++++++++--
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |  3 +-
->   include/uapi/linux/if_link.h                       |  1 +
->   6 files changed, 109 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-> index 8d8d469..8e64ca9 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-> @@ -1,5 +1,6 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
-> -/* Copyright (c) 2013-2014, 2016-2018 The Linux Foundation. All rights reserved.
-> +/* Copyright (c) 2013-2014, 2016-2018, 2021 The Linux Foundation.
-> + * All rights reserved.
->    *
->    * RMNET Data configuration engine
->    */
-> @@ -56,6 +57,7 @@ struct rmnet_priv_stats {
->   	u64 csum_fragmented_pkt;
->   	u64 csum_skipped;
->   	u64 csum_sw;
-> +	u64 csum_hw;
-
-Why is this new statistic type added?  Would it be
-meaningful to use before--with only QMAPv4?  Or is
-there something different about QMAPv5 (inline) checksum
-offload that makes this necessary or desirable?
-
-This is something new that ought to be at least
-mentioned in the description at the top.  And for
-future reference, this could likely have been
-defined in a separate patch, before this one.
-
->   };
->   
->   struct rmnet_priv {
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> index 706a225..51a2e94 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> @@ -133,7 +133,7 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
->   				    struct rmnet_port *port, u8 mux_id,
->   				    struct net_device *orig_dev)
->   {
-> -	int required_headroom, additional_header_len;
-> +	int required_headroom, additional_header_len, csum_type = 0;
->   	struct rmnet_map_header *map_header;
->   
->   	additional_header_len = 0;
-> @@ -142,6 +142,10 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
->   	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
->   		additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
->   		required_headroom += additional_header_len;
-> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
-> +	} else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
-> +		additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
-> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
->   	}
-
-Does additional_header_len need to be added to required_headroom,
-as it is for QMAPv4 above?
-
-If so, this is a bug and must be fixed.
-
-What I tested last week (and verified work for IPA v3.5.1 and
-IPA v4.2) looked like this:
-
-     if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
-         additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
-         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
-     } else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
-         additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
-         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
-     }
-     required_headroom += additional_header_len;
-
-					-Alex
-
->   	if (skb_headroom(skb) < required_headroom) {
-> @@ -149,10 +153,12 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
->   			return -ENOMEM;
->   	}
->   
-> -	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
-> -		rmnet_map_checksum_uplink_packet(skb, orig_dev);
-> +	if (csum_type)
-> +		rmnet_map_checksum_uplink_packet(skb, port, orig_dev,
-> +						 csum_type);
->   
-> -	map_header = rmnet_map_add_map_header(skb, additional_header_len, 0);
-> +	map_header = rmnet_map_add_map_header(skb, additional_header_len,
-> +					      port, 0);
->   	if (!map_header)
->   		return -ENOMEM;
->   
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> index 1a399bf..e5a0b38 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> @@ -43,11 +43,15 @@ enum rmnet_map_commands {
->   struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
->   				      struct rmnet_port *port);
->   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
-> -						  int hdrlen, int pad);
-> +						  int hdrlen,
-> +						  struct rmnet_port *port,
-> +						  int pad);
->   void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port);
->   int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len);
->   void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-> -				      struct net_device *orig_dev);
-> +				      struct rmnet_port *port,
-> +				      struct net_device *orig_dev,
-> +				      int csum_type);
->   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb, u16 len);
->   
->   #endif /* _RMNET_MAP_H_ */
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index 43813cf..339d964 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -12,6 +12,7 @@
->   #include "rmnet_config.h"
->   #include "rmnet_map.h"
->   #include "rmnet_private.h"
-> +#include <linux/bitfield.h>
->   
->   #define RMNET_MAP_DEAGGR_SPACING  64
->   #define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
-> @@ -251,12 +252,69 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
->   }
->   #endif
->   
-> +static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
-> +						struct rmnet_port *port,
-> +						struct net_device *orig_dev)
-> +{
-> +	struct rmnet_priv *priv = netdev_priv(orig_dev);
-> +	struct rmnet_map_v5_csum_header *ul_header;
-> +
-> +	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
-> +		return;
-> +
-> +	ul_header = skb_push(skb, sizeof(*ul_header));
-> +	memset(ul_header, 0, sizeof(*ul_header));
-> +	ul_header->header_info = RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD <<
-> +					MAPV5_HDRINFO_HDR_TYPE_SHIFT;
-> +
-> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-> +		void *iph = (char *)ul_header + sizeof(*ul_header);
-> +		__sum16 *check;
-> +		void *trans;
-> +		u8 proto;
-> +
-> +		if (skb->protocol == htons(ETH_P_IP)) {
-> +			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
-> +
-> +			proto = ((struct iphdr *)iph)->protocol;
-> +			trans = iph + ip_len;
-> +		} else if (skb->protocol == htons(ETH_P_IPV6)) {
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +			u16 ip_len = sizeof(struct ipv6hdr);
-> +
-> +			proto = ((struct ipv6hdr *)iph)->nexthdr;
-> +			trans = iph + ip_len;
-> +#else
-> +			priv->stats.csum_err_invalid_ip_version++;
-> +			goto sw_csum;
-> +#endif /* CONFIG_IPV6 */
-> +		} else {
-> +			priv->stats.csum_err_invalid_ip_version++;
-> +			goto sw_csum;
-> +		}
-> +
-> +		check = rmnet_map_get_csum_field(proto, trans);
-> +		if (check) {
-> +			skb->ip_summed = CHECKSUM_NONE;
-> +			/* Ask for checksum offloading */
-> +			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
-> +			priv->stats.csum_hw++;
-> +			return;
-> +		}
-> +	}
-> +
-> +sw_csum:
-> +	priv->stats.csum_sw++;
-> +}
-> +
->   /* Adds MAP header to front of skb->data
->    * Padding is calculated and set appropriately in MAP header. Mux ID is
->    * initialized to 0.
->    */
->   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
-> -						  int hdrlen, int pad)
-> +						  int hdrlen,
-> +						  struct rmnet_port *port,
-> +						  int pad)
->   {
->   	struct rmnet_map_header *map_header;
->   	u32 padding, map_datalen;
-> @@ -267,6 +325,10 @@ struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
->   			skb_push(skb, sizeof(struct rmnet_map_header));
->   	memset(map_header, 0, sizeof(struct rmnet_map_header));
->   
-> +	/* Set next_hdr bit for csum offload packets */
-> +	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5)
-> +		map_header->flags |= MAP_NEXT_HEADER_FLAG;
-> +
->   	if (pad == RMNET_MAP_NO_PAD_BYTES) {
->   		map_header->pkt_len = htons(map_datalen);
->   		return map_header;
-> @@ -394,11 +456,8 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
->   	return 0;
->   }
->   
-> -/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
-> - * packets that are supported for UL checksum offload.
-> - */
-> -void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-> -				      struct net_device *orig_dev)
-> +static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
-> +						struct net_device *orig_dev)
->   {
->   	struct rmnet_priv *priv = netdev_priv(orig_dev);
->   	struct rmnet_map_ul_csum_header *ul_header;
-> @@ -417,10 +476,12 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->   
->   		if (skb->protocol == htons(ETH_P_IP)) {
->   			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
-> +			priv->stats.csum_hw++;
->   			return;
->   		} else if (skb->protocol == htons(ETH_P_IPV6)) {
->   #if IS_ENABLED(CONFIG_IPV6)
->   			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
-> +			priv->stats.csum_hw++;
->   			return;
->   #else
->   			priv->stats.csum_err_invalid_ip_version++;
-> @@ -437,6 +498,26 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->   	priv->stats.csum_sw++;
->   }
->   
-> +/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
-> + * packets that are supported for UL checksum offload.
-> + */
-> +void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-> +				      struct rmnet_port *port,
-> +				      struct net_device *orig_dev,
-> +				      int csum_type)
-> +{
-> +	switch (csum_type) {
-> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV4:
-> +		rmnet_map_v4_checksum_uplink_packet(skb, orig_dev);
-> +		break;
-> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV5:
-> +		rmnet_map_v5_checksum_uplink_packet(skb, port, orig_dev);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
->   /* Process a MAPv5 packet header */
->   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
->   				      u16 len)
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> index 41fbd2c..bc6d6ac 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> @@ -174,6 +174,7 @@ static const char rmnet_gstrings_stats[][ETH_GSTRING_LEN] = {
->   	"Checksum skipped on ip fragment",
->   	"Checksum skipped",
->   	"Checksum computed in software",
-> +	"Checksum computed in hardware",
->   };
->   
->   static void rmnet_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
-> @@ -354,4 +355,4 @@ int rmnet_vnd_update_dev_mtu(struct rmnet_port *port,
->   	}
->   
->   	return 0;
-> -}
-> \ No newline at end of file
-> +}
-> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-> index 21529b3..1691f3a 100644
-> --- a/include/uapi/linux/if_link.h
-> +++ b/include/uapi/linux/if_link.h
-> @@ -1236,6 +1236,7 @@ enum {
->   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV4           (1U << 2)
->   #define RMNET_FLAGS_EGRESS_MAP_CKSUMV4            (1U << 3)
->   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV5           (1U << 4)
-> +#define RMNET_FLAGS_EGRESS_MAP_CKSUMV5            (1U << 5)
->   
->   enum {
->   	IFLA_RMNET_UNSPEC,
-> 
-
+Thanks,
+Ray
