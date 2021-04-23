@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5D83698CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6602D3698D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhDWSH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:07:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50754 "EHLO mail.kernel.org"
+        id S243429AbhDWSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:07:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhDWSHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:07:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A3760241;
-        Fri, 23 Apr 2021 18:06:47 +0000 (UTC)
+        id S229549AbhDWSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 14:07:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E34C60FE6;
+        Fri, 23 Apr 2021 18:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619201208;
-        bh=mt8xzBNFIiy8EM+Iw03Waf263vHIN+QILutR/5xyMCs=;
+        s=k20201202; t=1619201211;
+        bh=zY8W3QUzcAWl6AFnPYVD24wO4KnCsJRKIXsxHN8wx1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DMVTyIlUIAP3D/r8LDQYhLnWTT1DmFrqn10JxurGwqd42vHLEG0rqhBr8aziRHZxu
-         CFL15ekSQqqA2fEl85wrm6oHyDEEh8ASxwE30X8rkMpSO8KX7/cNUf24xLMXgFJg04
-         NtpM51R/uPBKU3QzHoKJET22LFhSMYmGPTOKfX4ThlR1DChf7tdUaRQJp3yukRX8ev
-         VQ5n3eetibuE/hDEmJQL9VzYzGSEIrL7b1oMVu5UPPLORIUBek2YwUhXY+3jG6KD+e
-         DnrUo8+I5P7ikwsDG2QGxd8yqy8SssSNT4eyD0uwC3FTaAytm0vHQDAE3ZOc/P5Fp5
-         ohDaeogndt7Zw==
+        b=dTiTKJSplBFdws7Z670JSl0N3QnlSoG/MoXHlgmknls69QEaMI4AZS0zAiJVGn6Sn
+         80zKX+YZ7XvG4iXz0s4AVJF7PHczSnd/AQyvbSPpNTLmdAyn5lOtZNTpooK7p/6FC1
+         tYpZxIH9z9nzGB0SI+BfDZ9E2AzLg15qzJrGXI7jqb/mpOpg1Jm17zVT5pVi2O1jwY
+         DMnxOBp4giIJ6ylJop8R/4fT32MRGwUN31+Hqn+yShNjHWYwq9skVN5ws+UvxLITk6
+         WHyYdsAyNQGxXM95V//QHFcNbIjUOm+qm21Uw46Or6ZeP4jSGF8o5Ss30h+6QcdSiP
+         spTh0yeAk27/g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@axis.com, guodong.xu@linaro.org
-Subject: Re: [PATCH] regulator: core: Fix off_on_delay handling
-Date:   Fri, 23 Apr 2021 19:06:16 +0100
-Message-Id: <161920103666.15429.14029390761495428957.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        devicetree@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Joseph Chen <chenjh@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kever Yang <kever.yang@rock-chips.com>, kernel@collabora.com,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add Tang Cheng (TCS)
+Date:   Fri, 23 Apr 2021 19:06:17 +0100
+Message-Id: <161920103667.15429.2219995515166264842.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210423114524.26414-1-vincent.whitchurch@axis.com>
-References: <20210423114524.26414-1-vincent.whitchurch@axis.com>
+In-Reply-To: <20210421210338.43819-1-ezequiel@collabora.com>
+References: <20210421210338.43819-1-ezequiel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,16 +47,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 13:45:24 +0200, Vincent Whitchurch wrote:
-> The jiffies-based off_on_delay implementation has a couple of problems
-> that cause it to sometimes not actually delay for the required time:
-> 
->  (1) If, for example, the off_on_delay time is equivalent to one jiffy,
->      and the ->last_off_jiffy is set just before a new jiffy starts,
->      then _regulator_do_enable() does not wait at all since it checks
->      using time_before().
-> 
-> [...]
+On Wed, 21 Apr 2021 18:03:36 -0300, Ezequiel Garcia wrote:
+> Shenzhen City Tang Cheng Technology (http://www.tctek.cn/)
+> is a power management IC manufacturer.
 
 Applied to
 
@@ -58,8 +57,12 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: core: Fix off_on_delay handling
-      commit: a8ce7bd89689997537dd22dcbced46cf23dc19da
+[1/3] dt-bindings: vendor-prefixes: Add Tang Cheng (TCS)
+      commit: 3007accc39776e0888f7692bd1cb639c51cc29c5
+[2/3] dt-bindings: regulator: Add support for TCS4525
+      commit: f80505fdff771c89c9350895e99140ffc824e564
+[3/3] regulator: fan53555: Add TCS4525 DCDC support
+      commit: 914df8faa7d6fdff7afa1fbde888a2bed8d72fa7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
