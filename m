@@ -2,125 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C98036964B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C79369652
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242976AbhDWPiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:38:55 -0400
-Received: from mga04.intel.com ([192.55.52.120]:46575 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231437AbhDWPiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:38:50 -0400
-IronPort-SDR: BCIuvbWxEFgUV4bjIFDiFbc5bHvPct+aCkPeWNOu96+wf4z/dUB6GErT3Qp6aa2te2GEoC/sUq
- 8JrLIVT9pQYg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="193970046"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="193970046"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 08:38:12 -0700
-IronPort-SDR: aH4akTIP2teA/UjFL9N/7tOnMKBK0JgtC5Q2nwl/rVNAiWUaBIfBqeSRdp58Gu6Es0yMZhrrhD
- ASnKQuOVr3kQ==
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="385123549"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 08:38:12 -0700
-Date:   Fri, 23 Apr 2021 08:38:10 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper
- functions
-Message-ID: <20210423153810.GL1401198@tassilo.jf.intel.com>
-References: <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com>
- <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
- <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
- <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
- <d99941db-6ee6-267e-dece-6220af0ea305@intel.com>
- <9161efc0-fd25-d239-32b7-5d2c726579b0@linux.intel.com>
- <4ac4ed35-212b-f7ad-55f4-937946ffec1a@intel.com>
- <20210423013546.GK1401198@tassilo.jf.intel.com>
- <YILkl3C4YjGPM5Jr@google.com>
- <CAPcyv4gwDeLzG98CegHQs8AAAdctD4vLrAzncu=ciVMyBSDxAQ@mail.gmail.com>
+        id S242917AbhDWPlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242895AbhDWPlL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:41:11 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE81C061574;
+        Fri, 23 Apr 2021 08:40:33 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id j7so26039481pgi.3;
+        Fri, 23 Apr 2021 08:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YWiMdIvIJTgEdS/toi4P5fn1mH/h8UEOSVIoZ/iPl0A=;
+        b=TG6BH8I3MB2RG2/vbj70hkQ6Q0PHjFRcRg/x4C/Gd7/W/7a1IlHo2fP+Zv8gLem5uh
+         88qRrNKxlRU0XfNez5j8dhr7FKPai3Ui2RiRr2z396NSatUgxKqR1JkLKNZP9tmTDl4Q
+         XyvZxkjnoKJb4SeNTWeyuXhzFndtQahOn63PR/ZGYZICx1PE7yWwEMK3RIWGUj2O40li
+         GjMUWB6CUYlF5i6rCr2Fqk5HYGNb426ilPx6282xryllzyJMfQpt4kkCpUL4LzdIJiyZ
+         rQ7mZJX9KI3EDlZORwREb9feLuZhFt2/+cC0lMzgsCw4dz7buOtCke0DDvGp1TLEzGOT
+         f17w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YWiMdIvIJTgEdS/toi4P5fn1mH/h8UEOSVIoZ/iPl0A=;
+        b=aPl+yvsruNEP0w9AwMKwHxyy3HC/tT72J1CvntSRueFEyEArdiI9/ApVUXteij+Ft8
+         NFcgDca7nrmNEZgnK+QpvakXHkeDLO3VEDL6/8544J3vvBS3Zg+CiRv4NR+tqBwgIqTN
+         ENsuN2HwMkgDLvJrWL54wfxOxCDsye/PPIlKNp5xRc4eNt+oc/atckOINrjozp0hER6b
+         e7LrVeTYpqMYgUCxKKs3oe4PKfTKPNRIpU1TmDcLbHjMqMl1lW3tUIlsPNcChOHyOSXj
+         Zb5an++YDBSKVUMs8f3o+cqKxWCLhww+9uo9+lGaQVEjuBMpP0MTVfHnswizrHs+vmu7
+         v3KQ==
+X-Gm-Message-State: AOAM530Jz7SFh1oWGoOEspSqMvZ9dJbpf16WFt1c5E3NqDEB+EU38xga
+        yYcx2jMPMWrntexp4nI7n5lsHNltFzLg40MG1aM=
+X-Google-Smtp-Source: ABdhPJy9MQfjhX9tXSAuJ2nZG3KkkXoEHLisMRFwPUBhbDsIgJqvlHg31bZow1IfzXoS/QP85TP3b/mFHsP4x6CM1pY=
+X-Received: by 2002:a62:5c6:0:b029:24d:e97f:1b1d with SMTP id
+ 189-20020a6205c60000b029024de97f1b1dmr4523754pff.40.1619192432762; Fri, 23
+ Apr 2021 08:40:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4gwDeLzG98CegHQs8AAAdctD4vLrAzncu=ciVMyBSDxAQ@mail.gmail.com>
+References: <20210423152333.6299-1-brgl@bgdev.pl>
+In-Reply-To: <20210423152333.6299-1-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 23 Apr 2021 18:40:16 +0300
+Message-ID: <CAHp75VcprveU4UiCeezJrnR5n3gWoP5dM1x6E7G1tE2HqOo8Rg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: sim: allocate IDA numbers earlier
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 08:28:45AM -0700, Dan Williams wrote:
-> On Fri, Apr 23, 2021 at 8:15 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Thu, Apr 22, 2021, Andi Kleen wrote:
-> > > On Thu, Apr 22, 2021 at 06:21:07PM -0700, Dave Hansen wrote:
-> > > > On 4/22/21 6:09 PM, Kuppuswamy, Sathyanarayanan wrote:
-> > > > > But let me try to explain it here. What I meant by complication is,
-> > > > > for in/out instruction, we use alternative_io() to substitute in/out
-> > > > > instructions with tdg_in()/tdg_out() assembly calls. So we have to ensure
-> > > > > that we don't corrupt registers or stack from the substituted instructions
-> > > > >
-> > > > > If you check the implementation of tdg_in()/tdg_out(), you will notice
-> > > > > that we have added code to preserve the caller registers. So, if we use
-> > > > > C wrapper for this use case, there is a chance that it might mess
-> > > > > the caller registers or stack.
-> > > > >
-> > > > >     alternative_io("in" #bwl " %w2, %" #bw "0",            \
-> > > > >             "call tdg_in" #bwl, X86_FEATURE_TDX_GUEST,    \
-> >
-> > Has Intel "officially" switched to "tdg" as the acronym for TDX guest?  As much
-> > as I dislike having to juggle "TDX host" vs "TDX guest" concepts, tdx_ vs tdg_
-> > isn't any better IMO.  The latter looks an awful lot like a typo, grepping for
-> > "tdx" to find relevant code will get fail (sometimes), and confusion seems
-> > inevitable as keeping "TDX" out of guest code/comments/documentation will be
-> > nigh impossible.
-> >
-> > If we do decide to go with "tdg" for the guest stuff, then _all_ of the guest
-> > stuff, file names included, should use tdg.  Maybe X86_FEATURE_TDX_GUEST could
-> > be left as a breadcrumb for translating TDX->TDG.
-> >
-> > > > >             "=a"(value), "d"(port))
-> > > >
-> > > > Are you saying that calling C functions from inline assembly might
-> > > > corrupt the stack or registers?  Are you suggesting that you simply
-> > >
-> > > It's possible, but you would need to mark a lot more registers clobbered
-> > > (the x86-64 ABI allows to clobber many registers)
-> > >
-> > > I don't think the stack would be messed up, but there might be problems
-> > > with writing the correct unwind information (which tends to be tricky)
-> > >
-> > > Usually it's better to avoid it.
-> >
-> > For me, the more important justification is that, if calling from alternative_io,
-> > the input parameters will be in the wrong registers.  The OUT wrapper would be
-> > especially gross as RAX (the value to write) isn't an input param, i.e. shifting
-> > via "ignored" params wouldn't work.
-> >
-> > But to Dave's point, that justfication needs to be in the changelog.
-> 
-> It's not clear to me that in()/out() need to be inline asm with an
-> alternative vs out-of-line function calls with a static branch?
+On Fri, Apr 23, 2021 at 6:24 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> Instead of allocating the device ID number for gpio-sim platform devices
+> when the associated configfs item is committed, do it already when the
+> item is created. This way we can display the device name even when the
+> chip is still pending. Once it's committed the user can easily identify
+> the chip by its real device name. This will allow launching concurrent
+> user-space test suites with gpio-sim.
 
-I doubt it matters at all on a modern machine (the cost of a IO port
-access is many orders of magnitudes greater than a call), but it might
-have mattered on really old systems, like 486 class. Maybe if someone
-is still running those moving it out of line could be a problem.
+Thanks!
+With or without below comment addressed:
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-But likely it's fine.
+> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> ---
+> Hi all! This is a late one for which I'm sorry but I realized that this
+> change will allow us to launch test-suites concurrently if we allow the
+> user-space to read the device name before the device is created and then
+> wait for this specific name to appear in a udev add event.
+>
+>  drivers/gpio/gpio-sim.c | 21 ++++++++++-----------
+>  1 file changed, 10 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> index 92493b98c51b..2e2e6399e453 100644
+> --- a/drivers/gpio/gpio-sim.c
+> +++ b/drivers/gpio/gpio-sim.c
+> @@ -409,6 +409,7 @@ struct gpio_sim_chip_config {
+>          * item is 'live'.
+>          */
+>         struct platform_device *pdev;
+> +       int id;
+>
+>         /*
+>          * Each configfs filesystem operation is protected with the subsystem
+> @@ -442,7 +443,7 @@ static ssize_t gpio_sim_config_dev_name_show(struct config_item *item,
+>         if (pdev)
+>                 ret = sprintf(page, "%s\n", dev_name(&pdev->dev));
+>         else
+> -               ret = sprintf(page, "none\n");
+> +               ret = sprintf(page, "gpio-sim.%d\n", config->id);
 
-I think actually for the main kernel we could just rely on #VE here
-and drop it all.
-Doing it without #VE only really matters for the old boot code, where
-performance doesn't really matter.
+Wondering if you need to have one place of definition, i.e. "gpio-sim" part.
 
--Andi
+>         mutex_unlock(&config->lock);
+>
+>         return ret;
+> @@ -724,6 +725,7 @@ static void gpio_sim_chip_config_release(struct config_item *item)
+>         struct gpio_sim_chip_config *config = to_gpio_sim_chip_config(item);
+>
+>         mutex_destroy(&config->lock);
+> +       ida_free(&gpio_sim_ida, config->id);
+>         kfree_strarray(config->line_names, config->num_line_names);
+>         kfree(config);
+>  }
+> @@ -747,6 +749,12 @@ gpio_sim_config_make_item(struct config_group *group, const char *name)
+>         if (!config)
+>                 return ERR_PTR(-ENOMEM);
+>
+> +       config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
+> +       if (config->id < 0) {
+> +               kfree(config);
+> +               return ERR_PTR(config->id);
+> +       }
+> +
+>         config_item_init_type_name(&config->item, name,
+>                                    &gpio_sim_chip_config_type);
+>         config->num_lines = 1;
+> @@ -781,18 +789,12 @@ static int gpio_sim_config_commit_item(struct config_item *item)
+>                                                 config->line_names,
+>                                                 config->num_line_names);
+>
+> -       pdevinfo.id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
+> -       if (pdevinfo.id < 0) {
+> -               mutex_unlock(&config->lock);
+> -               return pdevinfo.id;
+> -       }
+> -
+>         pdevinfo.name = "gpio-sim";
+>         pdevinfo.properties = properties;
+> +       pdevinfo.id = config->id;
+>
+>         pdev = platform_device_register_full(&pdevinfo);
+>         if (IS_ERR(pdev)) {
+> -               ida_free(&gpio_sim_ida, pdevinfo.id);
+>                 mutex_unlock(&config->lock);
+>                 return PTR_ERR(pdev);
+>         }
+> @@ -806,15 +808,12 @@ static int gpio_sim_config_commit_item(struct config_item *item)
+>  static int gpio_sim_config_uncommit_item(struct config_item *item)
+>  {
+>         struct gpio_sim_chip_config *config = to_gpio_sim_chip_config(item);
+> -       int id;
+>
+>         mutex_lock(&config->lock);
+> -       id = config->pdev->id;
+>         platform_device_unregister(config->pdev);
+>         config->pdev = NULL;
+>         mutex_unlock(&config->lock);
+>
+> -       ida_free(&gpio_sim_ida, id);
+>         return 0;
+>  }
+>
+> --
+> 2.30.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
