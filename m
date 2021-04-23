@@ -2,90 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D73E369645
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4D7369649
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhDWPhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230294AbhDWPhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:37:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8F86611AE;
-        Fri, 23 Apr 2021 15:37:04 +0000 (UTC)
-Date:   Fri, 23 Apr 2021 16:37:02 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Kai Shen <shenkai8@huawei.com>
-Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, xuwei5@hisilicon.com,
-        hewenliang4@huawei.com, wuxu.wu@huawei.com
-Subject: Re: [PATCH] arm64:align function __arch_clear_user
-Message-ID: <20210423153701.GP18757@arm.com>
-References: <58fecb22-f932-cb6e-d996-ca75fe26a75d@huawei.com>
- <20210414104144.GB8320@arm.com>
- <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
+        id S242953AbhDWPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242623AbhDWPif (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:38:35 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7FFC06174A;
+        Fri, 23 Apr 2021 08:37:58 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so4653313pjb.1;
+        Fri, 23 Apr 2021 08:37:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e6LvPN5k/e6aeDrQflzhvIspluilkhQHg67ojXCyOBs=;
+        b=Tk3OglU8G2AJv4SGZhCyFCJjt8fgdTjSTqcMopPgywdvcv13dBwJCXoIW3bWqIRbQ1
+         wRlRnUrUw+avpWjLlwHgPFM/Ey8AhILNMmdrPrBcA1P5wGDcIQPgJtJHoKvnM2WTv0SF
+         xhEoGKaFpCa4pS+6Iv1YFcxCIDyOXes/n0CjKoB38qQA28Rh0i+v1V3fgaDzRzLllX8Q
+         xP43XXMaV50fn1GoCbd1JG+SBD7dE1kJ7j3eeP6el2R6ma28LoSxxrV4RpqPD470G3go
+         uPFUaQVaHfwrR5yunBlVCWFrOHyLzNP1fpMRjClvRAzmjQnklZ8J5Y/iX4KtC6u85mtv
+         SgZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e6LvPN5k/e6aeDrQflzhvIspluilkhQHg67ojXCyOBs=;
+        b=Wpi/AbayBATn6RKi6g4IGEC5QWr9d/x62PWXaQNttLqudkImo9kZLzNRAltELRTMgK
+         bdzUSeooFq4NrK/RwFY5jnIHkDNEg0p63DdiOZN6tosJO0Ci5LZgdQDO7OL2kCxAVXEB
+         G5Jfj8KSU6X1YwjnGSm5haZDK148tV9BSrSO4lOhjwLbk0xNHJ4Zoh3v/W+cX0bzFl3s
+         r7jADm32xvJ2ajZfEgwH19Bw5NVvg9LH5bjzrcigJG0wf56bnlY1tKVoA2VpSQLjepnx
+         HNYpEuSPNRn/aN2LM+/X1leI1pZe52c/3INO3De+YQPUQAPUPNavjCnJIDuASDNw73XB
+         lfkQ==
+X-Gm-Message-State: AOAM531SOtLbjvQUDR5abxlsoP/Um8eSDjLtKJ9t2bRySw70P1SoFKng
+        hzhdicXSVJHLyE1XPnqUG5QxRRRzCDm7Y6IfeiQ=
+X-Google-Smtp-Source: ABdhPJzTza+5jyGlQ2j+ywWd9ns17382C+/TZwys5DJ6aS783eNyYPuvy6ta8sD/mKk4RVE6ZofvLiB08h7zeJijrec=
+X-Received: by 2002:a17:90b:1c0f:: with SMTP id oc15mr5263860pjb.228.1619192277759;
+ Fri, 23 Apr 2021 08:37:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210422152055.85544-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20210422152055.85544-1-tsbogend@alpha.franken.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 23 Apr 2021 18:37:41 +0300
+Message-ID: <CAHp75Ve6PEr5TFGRgALPCbi-T5Y5yNPV+-fJHC7C2mU+ms30uw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:05:16AM +0800, Kai Shen wrote:
-> On 2021/4/14 18:41, Catalin Marinas wrote:
-> > On Wed, Apr 14, 2021 at 05:25:43PM +0800, Kai Shen wrote:
-> > > Performance decreases happen in __arch_clear_user when this
-> > > function is not correctly aligned on HISI-HIP08 arm64 SOC which
-> > > fetches 32 bytes (8 instructions) from icache with a 32-bytes
-> > > aligned end address. As a result, if the hot loop is not 32-bytes
-> > > aligned, it may take more icache fetches which leads to decrease
-> > > in performance.
-> > > Dump of assembler code for function __arch_clear_user:
-> > >         0xffff0000809e3f10 :    nop
-> > >         0xffff0000809e3f14 :    mov x2, x1
-> > >         0xffff0000809e3f18 :    subs x1, x1, #0x8
-> > >         0xffff0000809e3f1c :    b.mi 0xffff0000809e3f30 <__arch_clear_user+3
-> > > -----  0xffff0000809e3f20 :    str    xzr, [x0],#8
-> > > hot    0xffff0000809e3f24 :    nop
-> > > loop   0xffff0000809e3f28 :    subs x1, x1, #0x8
-> > > -----  0xffff0000809e3f2c :    b.pl  0xffff0000809e3f20 <__arch_clear_user+1
-> > > The hot loop above takes one icache fetch as the code is in one
-> > > 32-bytes aligned area and the loop takes one more icache fetch
-> > > when it is not aligned like below.
-> > >         0xffff0000809e4178 :   str    xzr, [x0],#8
-> > >         0xffff0000809e417c :   nop
-> > >         0xffff0000809e4180 :   subs x1, x1, #0x8
-> > >         0xffff0000809e4184 :   b.pl  0xffff0000809e4178 <__arch_clear_user+
-> > > Data collected by perf:
-> > >                           aligned   not aligned
-> > >            instructions   57733790     57739065
-> > >         L1-dcache-store   14938070     13718242
-> > > L1-dcache-store-misses     349280       349869
-> > >         L1-icache-loads   15380895     28500665
-> > > As we can see, L1-icache-loads almost double when the loop is not
-> > > aligned.
-> > > This problem is found in linux 4.19 on HISI-HIP08 arm64 SOC.
-> > > Not sure what the case is on other arm64 SOC, but it should do
-> > > no harm.
-> > > Signed-off-by: Kai Shen <shenkai8@huawei.com>
-> > 
-> > Do you have a real world workload that's affected by this function?
-> > 
-> > I'm against adding alignments and nops for specific hardware
-> > implementations. What about lots of other loops that the compiler may
-> > generate or that we wrote in asm?
+On Thu, Apr 22, 2021 at 6:21 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
 >
-> The benchmark we used which suffer performance decrease:
->     https://github.com/redhat-performance/libMicro
->     pread $OPTS -N "pread_z1k"    -s 1k    -I 300  -f /dev/zero
->     pread $OPTS -N "pread_z10k"    -s 10k    -I 1000 -f /dev/zero
->     pread $OPTS -N "pread_z100k"    -s 100k    -I 2000 -f /dev/zero
+> IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+> to 32 gpios. All gpios could be used as interrupt source.
 
-Is there any real world use-case that would benefit from this
-optimisation? Reading /dev/zero in a loop hardly counts as a practical
-workload.
+as an interrupt
+
+Thanks for an update, my comments below (minus that you already figured out).
+
+...
+
+> +config GPIO_IDT3243X
+> +       tristate "IDT 79RC3243X GPIO support"
+> +       depends on MIKROTIK_RB532 || COMPILE_TEST
+
+Right.
+
+But if MikroTik is dependent on this you may return default in a form of
+
+  default MIKROTIK_RB532
+
+Up to you. (What I meant previously is the unnecessary ' y if' part).
+
+> +       select GPIO_GENERIC
+> +       select GPIOLIB_IRQCHIP
+> +       help
+> +         Select this option to enable GPIO driver for
+> +         IDT 79RC3243X SoC devices.
+
+Seems like you may elaborate a bit more here, what kind of the
+devices, list one or couple of examples, etc.
+
+> +         To compile this driver as a module, choose M here: the module will
+> +         be called gpio-idt3243x.
+
+...
+
+> +/*
+> + * Driver for IDT/Renesas 79RC3243x Interrupt Controller.
+> + */
+
+One line?
+
+...
+
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+Why is this?
+
+...
+
+> +#include <linux/gpio/driver.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+
+> +#include <linux/irqchip.h>
+> +#include <linux/irqchip/chained_irq.h>
+
+Aren't those guaranteed to be included by irq.h?
+
+> +#include <linux/irqdomain.h>
+
+Missed mod_devicetable.h
+module.h
+
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+
+Do you use them anyhow? (See below as well)
+
+Missed types.h
+
+...
+
+> +static void idt_gpio_dispatch(struct irq_desc *desc)
+> +{
+> +       struct gpio_chip *gc = irq_desc_get_handler_data(desc);
+> +       struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
+> +       struct irq_chip *host_chip = irq_desc_get_chip(desc);
+> +       unsigned int bit, virq;
+> +       unsigned long pending;
+> +
+> +       chained_irq_enter(host_chip, desc);
+> +
+> +       pending = readl(ctrl->pic + IDT_PIC_IRQ_PEND);
+> +       pending &= ~ctrl->mask_cache;
+> +       for_each_set_bit(bit, &pending, gc->ngpio) {
+
+> +               virq = irq_linear_revmap(gc->irq.domain, bit);
+
+Is it guaranteed to be linear always?
+
+> +               if (virq)
+> +                       generic_handle_irq(virq);
+> +       }
+> +
+> +       chained_irq_exit(host_chip, desc);
+> +}
+
+...
+
+> +       if (sense & ~(IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
+
+There is a _BOTH variant.
+
+> +               return -EINVAL;
+
+> +       ilevel = readl(ctrl->gpio + IDT_GPIO_ILEVEL);
+> +       if (sense & IRQ_TYPE_LEVEL_HIGH)
+> +               ilevel |= BIT(d->hwirq);
+> +       else if (sense & IRQ_TYPE_LEVEL_LOW)
+> +               ilevel &= ~BIT(d->hwirq);
+
+> +       else
+> +               return -EINVAL;
+
+Is it a double check of the above?
+
+...
+
+> +       ctrl->gc.parent = dev;
+
+Wondering if it's already done by GPIO library.
+
+...
+
+> +       ctrl->gc.ngpio = ngpios;
+
+Shouldn't you do this before calling for bgpio_init()?
+
+...
+
+> +       parent_irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
+
+platform_get_irq() ?..
+
+> +       if (!parent_irq) {
+
+> +               dev_err(&pdev->dev, "Failed to map parent IRQ!\n");
+
+...and drop this, since it will be taken care of.
+
+> +               return -EINVAL;
+> +       }
+
+...
+
+> +       /* Mask interrupts. */
+> +       ctrl->mask_cache = 0xffffffff;
+> +       writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
+
+What about using ->init_hw() call back?
+
+...
+
+> +       girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
+
+1 -> girq->num_parents
+
+> +                                    GFP_KERNEL);
+> +       if (!girq->parents) {
+> +               ret = -ENOMEM;
+> +               goto out_unmap_irq;
+> +       }
+
+...
+
+> +       girq->handler = handle_level_irq;
+
+handle_bad_irq()
+
+...
+
+> +       ret = devm_gpiochip_add_data(&pdev->dev, &ctrl->gc, ctrl);
+> +       if (ret)
+> +               goto out_unmap_irq;
+> +
+> +       return 0;
+
+return devm_...;
+
+...
+
+> +out_unmap_irq:
+> +       irq_dispose_mapping(parent_irq);
+> +       return ret;
+> +}
+
+No need.
 
 -- 
-Catalin
+With Best Regards,
+Andy Shevchenko
