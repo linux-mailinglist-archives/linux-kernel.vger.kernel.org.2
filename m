@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76771369891
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618A5369899
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243396AbhDWRkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:40:04 -0400
-Received: from mail-oo1-f50.google.com ([209.85.161.50]:41509 "EHLO
-        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhDWRkB (ORCPT
+        id S232154AbhDWRnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:43:25 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:33525 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhDWRnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:40:01 -0400
-Received: by mail-oo1-f50.google.com with SMTP id d16-20020a4a3c100000b02901f0590a614eso3017531ooa.8;
-        Fri, 23 Apr 2021 10:39:25 -0700 (PDT)
+        Fri, 23 Apr 2021 13:43:24 -0400
+Received: by mail-ot1-f41.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso23494147otl.0;
+        Fri, 23 Apr 2021 10:42:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=sGjhlhtLBObGLd+1LCyQnr489UoVKc66rsGAgizXgdA=;
-        b=XoWpnPj3RMHhDKn9aHkV+YQSz/BjMTnmAzlrMBFKXYyyVB/0FuLAJZC95BalScab/8
-         +6JS0MxbCjgLoKEKh5PtX/bzD/55wIMp+EU359YZ5J/FDtpSrkKTDxdLwQ8fwtDmHOxN
-         OeixdTJcLhd7T09ShcSJOgMc5ic48iclBWzn0prBSfCT6ZBPawmH6YE128lZycwuhrfj
-         KTTbGRTL6M0buDt5yevhOsA4FUKneS/57LXhiVT42TsOOAZLWKis4C/UbIZ+F3lUiwdJ
-         sQAU8QSMGsC/vZcwOeXaIW+jNHLOyhzVHJYIVH3G3yZhSTzXQDFGc2lhNJCjCcAPF2iv
-         eB6A==
-X-Gm-Message-State: AOAM530YjVxCpK75cSxOz9jIc29hApygihSAwvS+HZ+T5coPEwXNiKnw
-        BbqSVu5FOOYphTtjQaMgVaY9gpMnUw==
-X-Google-Smtp-Source: ABdhPJy5iKKa2NKC7L22NHljOcFkozW6mDcypQA5M62c2D/DIZ38rv/lwTl5CYBmNwkQRaOpZl+scQ==
-X-Received: by 2002:a4a:d513:: with SMTP id m19mr3825953oos.92.1619199564685;
-        Fri, 23 Apr 2021 10:39:24 -0700 (PDT)
+        bh=NRdnwDjQMRMO0UqN7+1YzzfPwFgjXHPJS+9F8SLu950=;
+        b=mQqmGrLY15PoM0eg5uIpdvUvzKy7x3MuYJTsW/Be5UnYwwaBLCTOl93JXK4MvGS7ZL
+         NLgX5o6qQPYak9h5Z1V8CWBlCQ9VVG80kvDPTBAd0DO5rxIoF4G8WCzPb3DxO5iDc/lJ
+         qLw1LEWhqo/oQxCWsHndrXVNgDBkcpfn/XksoSuNvW8FLKoBp6KQAAJ3YDvmcn5xRndM
+         q588ilZZDhVCs2/UE7/77eOVuraP6hivtNsO0BDkmb1iqvDBsKrKA5ynYxEFBDP9p0iZ
+         CwafI/Xu9h9qfSHG34iCx++22BgOpjD7AAGVAXFLkpexjA8FRG4i4HaeYCqkYveKX55v
+         v44g==
+X-Gm-Message-State: AOAM532hP3NmAwDvcCCp1qrIsg9HWEj2QVMKfQUDY6p0gKdiPRGL9bUP
+        pnTGRlP8nk9nuTC0tH07lw==
+X-Google-Smtp-Source: ABdhPJzLEjI07iwHUCGRfyOJQOgqUJHhqprXp2Cv1C6UlS/oc6NShfcmaU+7AwydfaeOdPkEv40Aqg==
+X-Received: by 2002:a05:6830:1094:: with SMTP id y20mr4329988oto.135.1619199767008;
+        Fri, 23 Apr 2021 10:42:47 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e2sm1506515otk.70.2021.04.23.10.39.23
+        by smtp.gmail.com with ESMTPSA id 39sm1538549otv.21.2021.04.23.10.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 10:39:23 -0700 (PDT)
-Received: (nullmailer pid 1308565 invoked by uid 1000);
-        Fri, 23 Apr 2021 17:39:22 -0000
-Date:   Fri, 23 Apr 2021 12:39:22 -0500
+        Fri, 23 Apr 2021 10:42:46 -0700 (PDT)
+Received: (nullmailer pid 1314100 invoked by uid 1000);
+        Fri, 23 Apr 2021 17:42:45 -0000
+Date:   Fri, 23 Apr 2021 12:42:45 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mediatek@lists.infradead.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH V7, RESEND 2/2] doc: mtk-wdt: support pre-timeout when
- the bark irq is available
-Message-ID: <20210423173922.GA1308513@robh.at.kernel.org>
-References: <1619148020-2236-1-git-send-email-wangqing@vivo.com>
- <1619148020-2236-3-git-send-email-wangqing@vivo.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     julia.lawall@inria.fr, mturquette@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, sboyd@kernel.org
+Subject: Re: [PATCH v5 3/3] dt-bindings: clock: add ti,lmk04832 bindings
+Message-ID: <20210423174245.GA1314048@robh.at.kernel.org>
+References: <20210423004057.283926-1-liambeguin@gmail.com>
+ <20210423004057.283926-4-liambeguin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619148020-2236-3-git-send-email-wangqing@vivo.com>
+In-Reply-To: <20210423004057.283926-4-liambeguin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 11:20:20 +0800, Wang Qing wrote:
-> Add description of pre-timeout in mtk-wdt.
+On Thu, 22 Apr 2021 20:40:57 -0400, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> Document devicetree bindings for Texas Instruments' LMK04832.
+> The LMK04208 is a high performance clock conditioner with superior clock
+> jitter cleaning, generation, and distribution with JEDEC JESD204B
+> support.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
 > ---
->  Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 5 +++++
->  1 file changed, 5 insertions(+)
+>  .../bindings/clock/ti,lmk04832.yaml           | 209 ++++++++++++++++++
+>  1 file changed, 209 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
