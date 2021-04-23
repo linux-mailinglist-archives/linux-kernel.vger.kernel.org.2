@@ -2,193 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B997368D3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB92368D3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240711AbhDWGkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:40:39 -0400
-Received: from de-smtp-delivery-1.mimecast.com ([62.140.7.241]:52677 "EHLO
-        de-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229519AbhDWGkh (ORCPT
+        id S236807AbhDWGj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:39:58 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:56124 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhDWGj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:40:37 -0400
-X-Greylist: delayed 62401 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Apr 2021 02:40:36 EDT
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com
- (mail-lo2gbr01lp2052.outbound.protection.outlook.com [104.47.21.52]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-31-HrlBS9-uNbqkGqzld9qZng-1; Fri, 23 Apr 2021 08:38:23 +0200
-X-MC-Unique: HrlBS9-uNbqkGqzld9qZng-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWXP265MB2119.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:84::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Fri, 23 Apr
- 2021 06:38:22 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4042.024; Fri, 23 Apr 2021
- 06:38:22 +0000
-From:   =?utf-8?B?Q2hyaXN0aWFuIEzDtmhsZQ==?= <CLoehle@hyperstone.com>
-To:     Shawn Lin <shawn.lin@rock-chips.com>
-CC:     "pali@kernel.org" <pali@kernel.org>,
-        "huyue2@yulong.com" <huyue2@yulong.com>,
-        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: =?utf-8?B?UmU6IFtQQVRDSF0gbW1jOiBlbmFibGUgVUhTIHZvbHRhZ2Ugc3dpdGNoIGZv?=
- =?utf-8?B?ciBTRFNDIGlmIHN1cHBvcnRlZOOAkOivt+azqOaEj++8jOmCruS7tueUsWxp?=
- =?utf-8?B?bnV4LW1tYy1vd25lckB2Z2VyLmtlcm5lbC5vcmfku6Plj5HjgJE=?=
-Thread-Topic: =?utf-8?B?W1BBVENIXSBtbWM6IGVuYWJsZSBVSFMgdm9sdGFnZSBzd2l0Y2ggZm9yIFNE?=
- =?utf-8?B?U0MgaWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgt?=
- =?utf-8?B?bW1jLW93bmVyQHZnZXIua2VybmVsLm9yZ+S7o+WPkeOAkQ==?=
-Thread-Index: AQHXN+FTXUcmKL1cg0aJQqpoaGswk6rBpbam
-Date:   Fri, 23 Apr 2021 06:38:22 +0000
-Message-ID: <CWXP265MB2680E0D998AF13C041D18859C4459@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
-In-Reply-To: <35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9b910540-d7fe-44e0-bb36-08d9062263cd
-x-ms-traffictypediagnostic: CWXP265MB2119:
-x-microsoft-antispam-prvs: <CWXP265MB211989F67ACCC5DED99F2B45C4459@CWXP265MB2119.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8273
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: krNvLFlsAkWPnqoyt0JQIObAKxZ4tDhbTR+Q4E0ospf7Qv5xbgMg62mX7LE6NYON1WCt8PIdKkSKzJHoV2bexbWZRr++j4UIckY5++OC1uKeECJY3aVjriCOSVtp4wdWc3l9qOo/5KkqN8QTMy4maUHiU9L2zNetwVQ7jOA1ln6PGqxrj4rif/5pTOb15rkergcgIHri0ajGApDiQ9uUOlsfeWbrRHSmxxSIB7uazjVp7uiJhgxZNoe/8/exiHSOG7Cj51PBAkXIB90QObV3LYvY5qOCIfRork5Je0hvSlwVDFpS8m1msYRL5SYG2T/wdu5FYtcYaRbU1cIOA1GG0R7DDMLUy3qCFsWS4k7u78hpdfQCvC94RmZTyewFVZ9SoofuiXfKIQG3kPmmEGrX1e5UwsznXbgranOairD3QvEQafNCMFIxmpo7BrMMatBPVfLWqaXNi25bUs/EU8E9ambStwYiM+BdMjrWi8W1LRx5St6cs1Zwr4BgrCsUzBlirq4vtWxYWqCGnCJ14/OrXvq9RcJRB4FMJDbPFNAog1jBV0uTN5Ax5W2Hhukam0jrpdW7+bLzJdbaM8DtRbN32/BqJI7IOww1B4zwzK4GqIEsMvjYx+vTXd5zuET/RIJA88EiUmAjNIn/QPR58YVAmN2SxOLL4clROhvxgGa8uztYgpByv0C6YyCex8OJfAXM
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39830400003)(376002)(136003)(346002)(366004)(6916009)(478600001)(33656002)(5660300002)(86362001)(83380400001)(52536014)(9686003)(122000001)(4326008)(66574015)(26005)(316002)(6506007)(85182001)(54906003)(38100700002)(71200400001)(66476007)(66556008)(76116006)(66446008)(91956017)(2906002)(7696005)(66946007)(224303003)(85202003)(966005)(186003)(53546011)(55016002)(64756008)(8936002);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata: =?utf-8?B?UXJHZUh6SHFEMzdZeDBqN2Q5WjhXWFpCVXd5aklVMnJwTUt3bHlOQkMzWDNK?=
- =?utf-8?B?clNPWExBMFlyd2tYdFlGL3lEeTBtNkVXZk5BdEVCenI5Q21yc0UrYVRXcWhP?=
- =?utf-8?B?eHV4Mkd5VVZVMEZnT200dE9EQ3FNOFpqTWdDUXN4NlhwWHh5QzRYbUhkOWhn?=
- =?utf-8?B?R3kwUGJFNWpoNlBxd2VPckNrY1c4QmpFQlZJVno1Y2x4RGRtdzI5RkhRbnIx?=
- =?utf-8?B?VURvU1piRG4yaElTZWNiTStxVVc1VG5ObTRJTTJ6UXFMaXlFOHhCRlRyVFZL?=
- =?utf-8?B?dlRmazhNVGY2Q051eTBOUlR0RkRkVnpzbHB0Q3dmNkpJWUFtWUxGYUhqZTdR?=
- =?utf-8?B?OG9VM0Q4K2NTRFB2Z1dxdFkzdkcra3BOWUExTWovdXRDanpWa0phKy9ZMFVM?=
- =?utf-8?B?NVMxM21GZlNQaGZLU05lTXdOZDhXY3JvTGdLYm5SWXNIYmlCalJWU3NKU3RB?=
- =?utf-8?B?cEZLd3JLbFRSUXZTM2JZRnNuVXRhTVBZeHhrRm1reHUvcG9hdFNyNUlsOVNG?=
- =?utf-8?B?M1U3cW51djRwTXdWaElFVWxaYmNVQ0RBdFNGS3N6VjliVFNaL1ZFbWtZaE03?=
- =?utf-8?B?STV4MTM2bHRTUTdCdjl1UTQ1ejdOV2FocVkvS2JRZWFNT2VNZ1VxR1NKVHJX?=
- =?utf-8?B?M2lZZzkvWUZMb3dSWFBHc1J2TjNGRS9tTnMzQjUvTWhUNEZxaERvZVJka1Ra?=
- =?utf-8?B?NndMSWRmaGh3NEcyd29VMlRHVzB4bG5jVUJoVThqY3FjcmlSTitBK3VBenNO?=
- =?utf-8?B?cVloRUVoTWtlWWloQXdDQ21MR1RyUmxKK1NOYU5jSTBOOUJqZkM4Q05IS2dQ?=
- =?utf-8?B?dElxaHBzcnVVQ3hESXNsbk1WejErUGtOSFpzbVlLb3FUQ2EzLzNaSVdzTUVU?=
- =?utf-8?B?Rk9BT28xTWxJdWtxMGZSWVB6UW0vRGNtaUFhb0ZmbllnQVVCNWNmMEVTVkRD?=
- =?utf-8?B?czhSakJpWTNQUXRJS1RoWlRod1JVWnZmNjQzK29hbUhpUE8vODlJbjNFd3Uy?=
- =?utf-8?B?K05heVArWXNNUytTZnN1QXRJa1dIOHNzeFJWd1NXUkVteEZITG1vZU5NSUJD?=
- =?utf-8?B?ZVlCYXpQbENmRG1EOCtsZEtUZzhMZkpDNU1yWXNncG9temZ4OU1KNE5Rc0ln?=
- =?utf-8?B?Z00zRlpGUnVYRmxRWHRMSm1pVXkyRUkzbXBENENKS3FxSXcwV0FFUGhGeU5y?=
- =?utf-8?B?WW9WVEgvQnE0dTlROE1pZjh6TVN0R1Z4OE5KeCt0SlVrekkvOHlkek1scHpt?=
- =?utf-8?B?eUY4TjlTWWJUbjI1Zkd0WjVUbC9wSUw3cUxCY0RlTS9SS2JEcVJKNjZLekE5?=
- =?utf-8?B?RTRob0RjT0EzblNhS09tWUNHQlBaazVlWmxMcmxsMTA4d1dEWmt5N0VHcjAx?=
- =?utf-8?B?ZzdZaFE4VlFoemkwSjdaWmR1ckFyTEppaHQ3NVNSVnlrMXBKWHVBZzdZUjJI?=
- =?utf-8?B?MTZVV0hNRnBDd0pKZWpDclZBZ0dVUEJJUmlRZ2xSWVBOdnJlbzhialhEaGl1?=
- =?utf-8?B?L29OSXR1ZnYrc204NlovRFhBc084SklIVDdiRUkydXVqZXEzQ2tJUnE2Ynlz?=
- =?utf-8?B?SUYrb2lHbWQzVm1wZ3pJOU4xR2l2R3RpajEzTGVoYUVUd0phbmNuL1JLelZ5?=
- =?utf-8?B?eHYwUUVtV0dJSk90b0RzMVAwc2RFeXBBMHQ4bnBZd05qenRiNXU3c1ZhcVVK?=
- =?utf-8?B?am9zendXcCtweG11SUU1SGI4UlcybHVHd0ZiaUVnNzI4VWd2KzI2NklzR3Er?=
- =?utf-8?Q?1pbRqI1D0fO0V2Aens=3D?=
-x-ms-exchange-transport-forked: True
+        Fri, 23 Apr 2021 02:39:57 -0400
+Received: by mail-il1-f197.google.com with SMTP id v1-20020a92d2410000b02901533f3ed5dbso20728381ilg.22
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:39:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mz6YscuvZogBNVtCM3+B/kPlahbgXIU6kxtAJ38URss=;
+        b=QLi/RqIlnBQkAF/2B+yqh6VOldcL4rmcT2zm8yWReZuYbl0O7XRIkkPh3E4qBbu3t2
+         NW+IiWDCpxUWz9aNMFL3bdN4pgwMnx6mLfUX4ySA7KapnlX2Z6vg9QvqAwgo9fxUUjeT
+         6Ck2nIQ1loU9hwcTD6FRnz8rryiiqTWm8A3y9/ttLosbBH4NwqjtPSuKhwjTX7aNOgxz
+         Drw3iCPYZsXwt4ekCiKr4L1ArVt3ETZLm6pkV5lTv+izM8tGNJhk0kW1Ey0xIVJyYkXp
+         aVBMoBQ1kI30uANHY2VBiNkZ0mr5ofQ+Y56Ci56dJ3bXlQc1MJHbUD/1eJFhfa2d6S3R
+         QdSQ==
+X-Gm-Message-State: AOAM533f1GjIKqn/cewzIRM9i82svxLBDay7EG3FC7gwHHfgd6qTsKtq
+        X0+QC0ccxZl7gSo6qfM/m8AL0WmJBSw9q3Gyyoz4mqxg+hO1
+X-Google-Smtp-Source: ABdhPJx5rVdBAWR6yLoY6VS2F6GSO1mNHqq/d0GsQrzl6UBCH65Jgfp7PUakW2CmpeMeqZ/hWaLTDe13ZTnq27h8fMBEuNQ02WIa
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b910540-d7fe-44e0-bb36-08d9062263cd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 06:38:22.1682
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T5HyUAUNbXLaHvp4ntrpRb0IrKr7+1k7ohB/jRn52wvj21glqgZ5T5QsPejWuf1oJfArrRY98N8lqpJF5fJHdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2119
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-Received: by 2002:a05:6e02:154d:: with SMTP id j13mr1694340ilu.46.1619159959603;
+ Thu, 22 Apr 2021 23:39:19 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 23:39:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003a11a005c09e0e6e@google.com>
+Subject: [syzbot] general protection fault in qca_power_shutdown
+From:   syzbot <syzbot+adafc67b05ed63665d5e@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2xhaW1pbmcgVUhTLUkgc3VwcG9ydCB3aXRoIFNEU0MgaXMgcHJldHR5IHJhcmUsIGZvciBvYnZp
-b3VzIHJlYXNvbnMgKG5hbWVseSB0aGV5IGFyZSBub24tc3RhbmRhcmQsIHNvIGl0J3MgYSBnYW1i
-bGUgaWYgYSBob3N0IG1ha2VzIHVzZSBvZiBpdCksIGJ1dCBoZXJlIHlvdSBnbzoKaHR0cHM6Ly9k
-ZS5ycy1vbmxpbmUuY29tL3dlYi9wL21pY3JvLXNkLWthcnRlbi84NzQzOTEwLwooc29ycnkgZm9y
-IHRoZSBnZXJtYW4sIHRoZSBzaXRlIGhhcyBhIGVuLiBzdWJwYWdlLCBidXQgaXQncyBjZXJ0aWZp
-Y2F0ZSBzZWVtIHVudHJ1c3RlZC4pClRoZSBtb3JlIGxpa2VseSBjYXNlIGlzIHRoYXQgdGhleSBk
-byBub3QgYWR2ZXJ0aXNlIFVIUy1JIHRvIGN1c3RvbWVycywKYnV0IHRoZSBjYXJkIHdpbGwgc2hv
-dyBzdXBwb3J0IHRvIHRoZSBob3N0LgpMZXQncyBsb29rIGF0IHRoaXMgcHJvZHVjdCwganVzdCBh
-cyBhbiBleGFtcGxlLgpodHRwczovL3d3dy50bWUuZXUvaHRtbC9FTi9nb29kcmFtLWluZHVzdHJp
-YWwtaW5kdXN0cmlhbC1zZC1zZC1taWNyby1tZW1vcnktY2FyZHMvcmFta2FfMTUyNDJfRU5fcGVs
-bnkuaHRtbApUaGV5IHByb3ZpZGUgYW4gTUxDIGFuZCBwU0xDIHZlcnNpb24gb2YgZWFjaCBkZXZp
-Y2UsIHdpdGggaGFsZiB0aGUgY2FwYWNpdHkgbmF0dXJhbGx5LgpUaGUgNEdCIE1MQyBjbGFpbXMg
-VUhTLUkgc3VwcG9ydCwgdGhlIDJHQiBwU0xDIGlzIHZlcnkgbGlrZWx5IHRvIGJlIHRoZSBzYW1l
-IGNvbnRyb2xsZXIsCml0IG9ubHkgY2xhaW1zIENsYXNzIDYuClNvIGVpdGhlciB0aGV5IHNwZWNp
-ZmljYWxseSBjaGFuZ2VkIHRoZSBmaXJtd2FyZSB0byByZW1vdmUgYW55IFVIUyBzdXBwb3J0IGlu
-ZGljYXRpb24sCm9yLCBtb3JlIGxpa2VseSBJTU8sIHRoZSBjYXJkIHN0aWxsIHJlcG9ydHMgVUhT
-IHN1cHBvcnQgdG8gdGhlIGhvc3QuClN1Y2ggYSBjYXJkIHdvdWxkIGJlbmVmaXQgZnJvbSB0aGlz
-IHBhdGNoLgoKRGlzY2xhaW1lcjogSSBkbyBub3Qgb3duIHRoZSBwcm9kdWN0IGFuZCBoYXZlIG5v
-dCBjb25maXJtZWQgdGhpcyBkZXZpY2UgaW4gYW55IHdheSwKYnV0IEkgaGF2ZSBzZWVuIFVIUyBz
-dXBwb3J0IG9uIG90aGVyIGRldmljZXMgdGhhdCBkbyBub3QgYWR2ZXJ0aXNlIGl0IGZvciB0aGVp
-cgpTRFNDIHZlcnNpb25zLgpJZiB0aGUgbWFpbGluZyBsaXN0IHdvdWxkIGJlIGludGVyZXN0ZWQs
-IEkgY2FuIHRyeSB0byBhY3F1aXJlIHN1Y2ggZGV2aWNlcywgbGlzdGVkIGluCnB1YmxpYyBvcGVu
-IHN0b3Jlcy4gTW9kZXJuLCBwb3RlbnRpYWxseSBVSFMgc3VwcG9ydGluZyBjYXJkcy4gYXJlLAph
-cyBtZW50aW9uZWQgaW4gdGhlIGluaXRpYWwgTWFpbCwgb2Z0ZW4gU0xDIG9yIHBTTEMgYW5kIG9m
-dGVuIGFyZSBtYWRlIG9uCmEgY3VzdG9tZXJzIHJlcXVlc3QuCgoKRnJvbTogU2hhd24gTGluIDxz
-aGF3bi5saW5Acm9jay1jaGlwcy5jb20+ClNlbnQ6IEZyaWRheSwgQXByaWwgMjMsIDIwMjEgMzoz
-NCBBTQpUbzogQ2hyaXN0aWFuIEzDtmhsZSA8Q0xvZWhsZUBoeXBlcnN0b25lLmNvbT4KQ2M6IHNo
-YXduLmxpbkByb2NrLWNoaXBzLmNvbSA8c2hhd24ubGluQHJvY2stY2hpcHMuY29tPjsgcGFsaUBr
-ZXJuZWwub3JnIDxwYWxpQGtlcm5lbC5vcmc+OyBodXl1ZTJAeXVsb25nLmNvbSA8aHV5dWUyQHl1
-bG9uZy5jb20+OyB0aWFudGFvNkBoaXNpbGljb24uY29tIDx0aWFudGFvNkBoaXNpbGljb24uY29t
-PjsgbGludXgtbW1jQHZnZXIua2VybmVsLm9yZyA8bGludXgtbW1jQHZnZXIua2VybmVsLm9yZz47
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
-cmc+OyB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnIDx1bGYuaGFuc3NvbkBsaW5hcm8ub3JnPgpTdWJq
-ZWN0OiBSZTogW1BBVENIXSBtbWM6IGVuYWJsZSBVSFMgdm9sdGFnZSBzd2l0Y2ggZm9yIFNEU0Mg
-aWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1jLW93bmVyQHZnZXIu
-a2VybmVsLm9yZ+S7o+WPkeOAkSAKwqAKT24gMjAyMS80LzIyIDIxOjE4LCBDaHJpc3RpYW4gTMO2
-aGxlIHdyb3RlOgo+IElnbm9yZSB0aGUgcmVwb3J0ZWQgY2FwYWNpdHkgaWYgdGhlIGNhcmQgb3Ro
-ZXJ3aXNlIHJlcG9ydHMgVUhTIHN1cHBvcnQuCj4gCj4gQ3VycmVudGx5IFNEU0MgY2FyZHMgcmVw
-b3J0aW5nIFVIUyBzdXBwb3J0IGV4Y2VwdCBmb3IgdGhlIENDUyBkbyBub3QgcnVuCj4gdGhyb3Vn
-aCB0aGUgdm9sdGFnZSBzd2l0Y2guCj4gV2hpbGUgc3RyaWN0bHkgc3BlYWtpbmcgYSBTRFNDIGNh
-cmQgY2Fubm90IHN1cHBvcnQgVUhTIGluIGNvbXBsaWFuY2UKPiB3aXRoIHRoZSBzdGFuZGFyZCwg
-dGhlcmUgaXMgbm8gZ29vZCByZWFzb24gdG8gdGhyb3R0bGUgdGhlbSB0aGF0IHdheS4KPiBFc3Bl
-Y2lhbGx5IGZvciBwU0xDcyBpbiBwcmFjdGljZSBzdWNoIGNhcmRzIGJlbmVmaXQgZ3JlYXRseSBi
-eSB0aGlzIHBhdGNoLAoKQ2R1bGQgeW91IHByb3ZpZGUgc29tZSBtb3JlIGluZm9tYXRpb24gYWJv
-dXQgdGhlIFNEU0MgY2FyZHMgd2hpY2ggb25lcyAKYXJlIGxhYmVsZWQgYXMgVUhTLCBlLmcgYnJh
-bmQsIHdlYnBhZ2UuLi4uCgo+IGFzIHRoZXkgY2FuIGJlIG5ldyBhbmQgVUhTIHN1cHBvcnRpbmcs
-IGJ1dCBtdXN0IG5vdCBsaWUgYWJvdXQgdGhlaXIgQ0NTLgo+IFRoZSBiZWhhdmlvdXIgb2YgbGlu
-dXgtbW1jIGZvciBTRFNDIGlzIGRldmlhdGluZyBmcm9tIHRoZSBzdGFuZGFyZCBhbnl3YXkKPiBp
-biBzdWNoIGEgY2FzZSwgYXMgdGhlIGNhcmQgaXMgdHJlYXRlZCBhcyBVSFMgY2FyZCBub3Qgc3Vw
-cG9ydGluZyB0aGUKPiB2b2x0YWdlIHN3aXRjaCBpbiBnZW5lcmFsLgo+IFN1Y2ggYSBjYXJkIHdp
-bGwgY29tZSB1cCBhcwo+IG1tYzA6IG5ldyB1bHRyYSBoaWdoIHNwZWVkIFNEUjI1IFNEIGNhcmQg
-YXQgYWRkcmVzcyAwMDAxLgo+IFRodXMgdGhlIHN1YnN5c3RlbSB3aWxsIHN1cHBvcnQgQ01EMjMg
-YW5kIG90aGVycyB0byB0aGUgY2FyZC4KPiBCdXQgaWYgd2UgZGV2aWF0ZSBmcm9tIHRoZSBzdGFu
-ZGFyZCBhbnl3YXksIHRoZW4gd2UgbWlnaHQgYXMgd2VsbAo+IG5vdCB0aHJvdHRsZSBTRFNDIHRv
-IDI1TUIvcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RpYW4gTG9laGxlIDxjbG9laGxlQGh5
-cGVyc3RvbmUuY29tPgo+IC0tLQo+wqDCoCBkcml2ZXJzL21tYy9jb3JlL3NkLmMgfCA3ICsrKy0t
-LS0KPsKgwqAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkK
-PiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tbWMvY29yZS9zZC5jIGIvZHJpdmVycy9tbWMvY29y
-ZS9zZC5jCj4gaW5kZXggNmZhNTFhNmVkMDU4Li4yODFjYTJkYThlMGIgMTAwNjQ0Cj4gLS0tIGEv
-ZHJpdmVycy9tbWMvY29yZS9zZC5jCj4gKysrIGIvZHJpdmVycy9tbWMvY29yZS9zZC5jCj4gQEAg
-LTg0MSwxMSArODQxLDEwIEBAIGludCBtbWNfc2RfZ2V0X2NpZChzdHJ1Y3QgbW1jX2hvc3QgKmhv
-c3QsIHUzMiBvY3IsIHUzMiAqY2lkLCB1MzIgKnJvY3IpCj7CoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgcmV0dXJuIGVycjsKPsKgwqAgCj7CoMKgwqDCoMKgwqDCoCAvKgo+IC3CoMKgwqDC
-oMKgICogSW4gY2FzZSBDQ1MgYW5kIFMxOEEgaW4gdGhlIHJlc3BvbnNlIGlzIHNldCwgc3RhcnQg
-U2lnbmFsIFZvbHRhZ2UKPiAtwqDCoMKgwqDCoCAqIFN3aXRjaCBwcm9jZWR1cmUuIFNQSSBtb2Rl
-IGRvZXNuJ3Qgc3VwcG9ydCBDTUQxMS4KPiArwqDCoMKgwqDCoCAqIEluIGNhc2UgUzE4QSBpbiB0
-aGUgcmVzcG9uc2UgaXMgc2V0LCBzdGFydCBTaWduYWwgVm9sdGFnZSBTd2l0Y2gKPiArwqDCoMKg
-wqDCoCAqIHByb2NlZHVyZS4gU1BJIG1vZGUgZG9lc24ndCBzdXBwb3J0IENNRDExLgo+wqDCoMKg
-wqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoCBpZiAoIW1tY19ob3N0X2lzX3NwaShob3N0KSAmJiBy
-b2NyICYmCj4gLcKgwqDCoMKgwqDCoMKgICgoKnJvY3IgJiAweDQxMDAwMDAwKSA9PSAweDQxMDAw
-MDAwKSkgewo+ICvCoMKgwqDCoCBpZiAoIW1tY19ob3N0X2lzX3NwaShob3N0KSAmJiByb2NyICYm
-ICgqcm9jciAmIDB4MDEwMDAwMDApKSB7Cj7CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-ZXJyID0gbW1jX3NldF91aHNfdm9sdGFnZShob3N0LCBwb2NyKTsKPsKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBpZiAoZXJyID09IC1FQUdBSU4pIHsKPsKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0cmllcy0tOwo+IAoKDQpIeXBlcnN0b25lIEdt
-YkggfCBMaW5lLUVpZC1TdHJhc3NlIDMgfCA3ODQ2NyBLb25zdGFueg0KTWFuYWdpbmcgRGlyZWN0
-b3JzOiBEci4gSmFuIFBldGVyIEJlcm5zLg0KQ29tbWVyY2lhbCByZWdpc3RlciBvZiBsb2NhbCBj
-b3VydHM6IEZyZWlidXJnIEhSQjM4MTc4Mg0K
+Hello,
 
+syzbot found the following issue on:
+
+HEAD commit:    c98ff1d0 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d44341d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=339c2ecce8fdd1d0
+dashboard link: https://syzkaller.appspot.com/bug?extid=adafc67b05ed63665d5e
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+adafc67b05ed63665d5e@syzkaller.appspotmail.com
+
+Bluetooth: hci7: Reading QCA version information failed (-110)
+Bluetooth: hci7: Retry BT power ON:0
+general protection fault, probably for non-canonical address 0xdffffc000000000f: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000078-0x000000000000007f]
+CPU: 1 PID: 6293 Comm: kworker/u5:5 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: hci7 hci_power_on
+RIP: 0010:dev_get_drvdata include/linux/device.h:666 [inline]
+RIP: 0010:serdev_device_get_drvdata include/linux/serdev.h:117 [inline]
+RIP: 0010:qca_soc_type drivers/bluetooth/hci_qca.c:240 [inline]
+RIP: 0010:qca_power_shutdown+0x77/0x3b0 drivers/bluetooth/hci_qca.c:1821
+Code: 4c 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e8 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 75 08 49 8d 7e 78 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ae 02 00 00 4d 85 f6 4d 8b 6e 78 41 bc 01 00 00
+RSP: 0018:ffffc9000193f978 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff888024c82000 RCX: 0000000000000000
+RDX: 000000000000000f RSI: ffffffff864835a6 RDI: 0000000000000078
+RBP: ffff88802818b800 R08: 0000000000000024 R09: 0000000000000000
+R10: ffffffff815bdabe R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88802818b800 R14: 0000000000000000 R15: ffff88802818b808
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004e4a61 CR3: 000000007172f000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ qca_setup+0x912/0x2070 drivers/bluetooth/hci_qca.c:1740
+ hci_uart_setup+0x1b1/0x480 drivers/bluetooth/hci_ldisc.c:423
+ hci_dev_do_open+0x3e1/0x1a00 net/bluetooth/hci_core.c:1499
+ hci_power_on+0x133/0x650 net/bluetooth/hci_core.c:2247
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Modules linked in:
+---[ end trace d4921a9b71de1581 ]---
+RIP: 0010:dev_get_drvdata include/linux/device.h:666 [inline]
+RIP: 0010:serdev_device_get_drvdata include/linux/serdev.h:117 [inline]
+RIP: 0010:qca_soc_type drivers/bluetooth/hci_qca.c:240 [inline]
+RIP: 0010:qca_power_shutdown+0x77/0x3b0 drivers/bluetooth/hci_qca.c:1821
+Code: 4c 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e8 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 75 08 49 8d 7e 78 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ae 02 00 00 4d 85 f6 4d 8b 6e 78 41 bc 01 00 00
+RSP: 0018:ffffc9000193f978 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff888024c82000 RCX: 0000000000000000
+RDX: 000000000000000f RSI: ffffffff864835a6 RDI: 0000000000000078
+RBP: ffff88802818b800 R08: 0000000000000024 R09: 0000000000000000
+R10: ffffffff815bdabe R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88802818b800 R14: 0000000000000000 R15: ffff88802818b808
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004e4a61 CR3: 000000007172f000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
