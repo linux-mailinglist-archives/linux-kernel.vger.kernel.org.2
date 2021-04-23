@@ -2,214 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226AA368BBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B16368BB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240431AbhDWDxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:53:32 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:41284 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240259AbhDWDxY (ORCPT
+        id S237162AbhDWDxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhDWDxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:53:24 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13N3qdBrB021907, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13N3qdBrB021907
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 23 Apr 2021 11:52:39 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 23 Apr 2021 11:52:39 +0800
-Received: from localhost.localdomain (172.21.132.99) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 23 Apr 2021 11:52:37 +0800
-From:   <hildawu@realtek.com>
-To:     <marcel@holtmann.org>
-CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <apusaka@chromium.org>, <tientzu@chromium.org>,
-        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
-        <kidman@realtek.com>
-Subject: [PATCH v3 2/2] Bluetooth: hci_h5: Add flag for keep power during suspend/resume
-Date:   Fri, 23 Apr 2021 11:52:29 +0800
-Message-ID: <20210423035229.27513-3-hildawu@realtek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210423035229.27513-1-hildawu@realtek.com>
-References: <20210423035229.27513-1-hildawu@realtek.com>
+        Thu, 22 Apr 2021 23:53:17 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE88C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:52:41 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id d21so35830776edv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=AsQS2+WKWTfo1Jt7nW4OhF01pRbwMoQdzfJIXlY/3JE=;
+        b=aEUrJRPr2CPm0gyMjMpJzsHaKhYyHhYeb/Cswp/opvqq+XH72jpl3dHSAP/SmCh9Qv
+         CemRSb/oq0FwHDAcUoqY2GTOmwCE2geQNbwCHy8Wdn16Hv2gx2IvsVjkYuGMUhoVxidS
+         p3uS9NsJMYShQLCnNQ+Koo2ZC7xgR0bJjRali0A6lft0xV/rZxDxIMorMO7uFBz4tsEm
+         Th6GIeUxa9DgyB2XxpXOabM9VBUWvGkjlGVCRukWAVXEY7KLyAYGtn+al5srkJQ0EQhc
+         W0QR2dYmzNF44+D8+6Yjm1uvy3Kn02Vw3fuXqEGTrFXozFYIZPOJQ2akf6tZ3wP4GaLu
+         Y58w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=AsQS2+WKWTfo1Jt7nW4OhF01pRbwMoQdzfJIXlY/3JE=;
+        b=Yhlz7UNo2Nw0uSm2njmbH2FOAtbNKfLZGgpBEY10wLmZH4eoxzOEN/Tvwm+OyED/T7
+         /pczMdgkjxUvO5MFfQRoKNr5+Jkdry5a1fsmQUsnLiqw7mvDGH2May/bZv3kaI2J6sUY
+         9HnM3PAxbPVyy4i3SZwes0SQbAA2v9lmwb0Ftix6cSFEbBOU8EC7dRs5/5PO+zKGq5oZ
+         Z9pv0QHC+I7zo5NShZ0g0UGAqh3PlQ+TIBvoE1VfdrOnrZ1PeG1Juvq+HASnGGpMUT6F
+         G1qN2my3CJE3ghtV6hP9exppnJ8LXUGDHzcj/g0pV+s/G6jkaJ3eNeocS9JvuhqO7My8
+         uf6A==
+X-Gm-Message-State: AOAM531nKionS+rD8v9TNrXMygQVbkQq0idpUCNnzzkQ3Y4KQoBRc6Os
+        1rTIqKLpl06m9p1eqKnsSVjiMSZCaBK0fkPtR84=
+X-Google-Smtp-Source: ABdhPJyS3WSdMIZNgtRyHDciXIkP+vYLJyfArCej6T4gFVnL9UyqYnz3fiSbyNB1bw4RQthfqVa90ovzzv16Vv4BCvg=
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr2037305edd.78.1619149960146;
+ Thu, 22 Apr 2021 20:52:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.99]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzQvMjMgpFekyCAwMToxMjowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/23/2021 03:40:47
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163299 [Apr 22 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 443 443 d64ad0ad6f66abd85f8fb55fe5d831fdcc4c44a0
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/23/2021 03:44:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/23/2021 03:40:47
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163299 [Apr 22 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 443 443 d64ad0ad6f66abd85f8fb55fe5d831fdcc4c44a0
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/23/2021 03:44:00
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 23 Apr 2021 13:52:29 +1000
+Message-ID: <CAPM=9tyKdGHyiRLDooKrMf=02GtNn8U4YfF4dJtXdabnVAGdXQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.12 final
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hildawu <hildawu@realtek.com>
+Hi Linus,
 
-RTL8822C and RTL8852A devices support BT wakeup Host. Add a flag
-for these specific devices did not power off during suspend and resume.
-By this change, if the Host support that received BT device signal then
-it can wake Host up.
+Just some small i915 and amdgpu fixes this week, Should be all until
+you open the merge window.
 
-Signed-off-by: hildawu <hildawu@realtek.com>
----
-Changed in v3:
-- Reworked to use UART flag, refer to Maintainer's suggestion.
-- Split into two patches for different purpose.
+Regards,
+Dave.
 
-Changes in v2:
-- Add the missing struct member
-- Modify title length
----
----
- drivers/bluetooth/hci_h5.c    | 34 ++++++++++++++++++++++++----------
- drivers/bluetooth/hci_ldisc.c |  3 ++-
- drivers/bluetooth/hci_uart.h  |  1 +
- 3 files changed, 27 insertions(+), 11 deletions(-)
+drm-fixes-2021-04-23:
+drm fixes for 5.12 final
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index 27e96681d583..9cacc4cdc928 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -911,6 +911,15 @@ static int h5_btrtl_setup(struct h5 *h5)
- 	 */
- 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
- 
-+	switch (btrtl_dev->project_id) {
-+	case CHIP_ID_8822C:
-+	case CHIP_ID_8852A:
-+		set_bit(HCI_UART_WAKEUP_ENABLE, &h5->hu->hdev_flags);
-+		break;
-+	default:
-+		break;
-+	}
-+
- out_free:
- 	btrtl_free(btrtl_dev);
- 
-@@ -945,8 +954,11 @@ static void h5_btrtl_close(struct h5 *h5)
- static int h5_btrtl_suspend(struct h5 *h5)
- {
- 	serdev_device_set_flow_control(h5->hu->serdev, false);
--	gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
--	gpiod_set_value_cansleep(h5->enable_gpio, 0);
-+
-+	if (!test_bit(HCI_UART_WAKEUP_ENABLE, &h5->hu->hdev_flags)) {
-+		gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
-+		gpiod_set_value_cansleep(h5->enable_gpio, 0);
-+	}
- 	return 0;
- }
- 
-@@ -972,17 +984,19 @@ static void h5_btrtl_reprobe_worker(struct work_struct *work)
- 
- static int h5_btrtl_resume(struct h5 *h5)
- {
--	struct h5_btrtl_reprobe *reprobe;
-+	if (!test_bit(HCI_UART_WAKEUP_ENABLE, &h5->hu->hdev_flags)) {
-+		struct h5_btrtl_reprobe *reprobe;
- 
--	reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
--	if (!reprobe)
--		return -ENOMEM;
-+		reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
-+		if (!reprobe)
-+			return -ENOMEM;
- 
--	__module_get(THIS_MODULE);
-+		__module_get(THIS_MODULE);
- 
--	INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
--	reprobe->dev = get_device(&h5->hu->serdev->dev);
--	queue_work(system_long_wq, &reprobe->work);
-+		INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
-+		reprobe->dev = get_device(&h5->hu->serdev->dev);
-+		queue_work(system_long_wq, &reprobe->work);
-+	}
- 	return 0;
- }
- 
-diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
-index 637c5b8c2aa1..3a1038e9dc6a 100644
---- a/drivers/bluetooth/hci_ldisc.c
-+++ b/drivers/bluetooth/hci_ldisc.c
-@@ -719,7 +719,8 @@ static int hci_uart_set_flags(struct hci_uart *hu, unsigned long flags)
- 				    BIT(HCI_UART_CREATE_AMP) |
- 				    BIT(HCI_UART_INIT_PENDING) |
- 				    BIT(HCI_UART_EXT_CONFIG) |
--				    BIT(HCI_UART_VND_DETECT);
-+				    BIT(HCI_UART_VND_DETECT) |
-+				    BIT(HCI_UART_WAKEUP_ENABLE);
- 
- 	if (flags & ~valid_flags)
- 		return -EINVAL;
-diff --git a/drivers/bluetooth/hci_uart.h b/drivers/bluetooth/hci_uart.h
-index 4e039d7a16f8..25f5e5c7544c 100644
---- a/drivers/bluetooth/hci_uart.h
-+++ b/drivers/bluetooth/hci_uart.h
-@@ -41,6 +41,7 @@
- #define HCI_UART_INIT_PENDING	3
- #define HCI_UART_EXT_CONFIG	4
- #define HCI_UART_VND_DETECT	5
-+#define HCI_UART_WAKEUP_ENABLE	6
- 
- struct hci_uart;
- struct serdev_device;
--- 
-2.17.1
+amdgpu:
+- Fix gpuvm page table update issue
+- Modifier fixes
+- Register fix for dimgrey cavefish
 
+i915:
+- GVT's BDW regression fix for cmd parser
+- Fix modesetting in case of unexpected AUX timeouts
+The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
+
+  Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-23
+
+for you to fetch changes up to aca38735ae624b93c71c055b68d5802b8f356ea5:
+
+  Merge tag 'drm-intel-fixes-2021-04-22' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2021-04-23
+12:18:21 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.12 final
+
+amdgpu:
+- Fix gpuvm page table update issue
+- Modifier fixes
+- Register fix for dimgrey cavefish
+
+i915:
+- GVT's BDW regression fix for cmd parser
+- Fix modesetting in case of unexpected AUX timeouts
+
+----------------------------------------------------------------
+Dave Airlie (2):
+      Merge tag 'amd-drm-fixes-5.12-2021-04-21' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-04-22' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+Imre Deak (1):
+      drm/i915: Fix modesetting in case of unexpected AUX timeouts
+
+Jiansong Chen (1):
+      drm/amdgpu: fix GCR_GENERAL_CNTL offset for dimgrey_cavefish
+
+Philip Yang (1):
+      drm/amdgpu: reserve fence slot to update page table
+
+Qingqing Zhuo (1):
+      drm/amd/display: Update modifier list for gfx10_3
+
+Rodrigo Vivi (1):
+      Merge tag 'gvt-fixes-2021-04-20' of
+https://github.com/intel/gvt-linux into drm-intel-fixes
+
+Simon Ser (1):
+      amd/display: allow non-linear multi-planar formats
+
+Zhenyu Wang (1):
+      drm/i915/gvt: Fix BDW command parser regression
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c                | 10 ++++++++--
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c                |  2 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c     | 15 ++++++---------
+ drivers/gpu/drm/i915/display/intel_dp_link_training.c |  3 ++-
+ drivers/gpu/drm/i915/gvt/cmd_parser.c                 | 19 +++++++++++++------
+ 5 files changed, 30 insertions(+), 19 deletions(-)
