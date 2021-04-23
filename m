@@ -2,164 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058E1368C3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEE0368C45
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhDWEkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S230437AbhDWElg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 00:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhDWEkC (ORCPT
+        with ESMTP id S229454AbhDWEld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:40:02 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF42C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:39:25 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id gq23-20020a17090b1057b0290151869af68bso519182pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:39:25 -0700 (PDT)
+        Fri, 23 Apr 2021 00:41:33 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4F1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:40:56 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id r8so7291379uaw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:40:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6J3S1EowMxNgodKbT6VuqOpLG5n59kYtaEQul9RuocM=;
-        b=G6vbo+4Rdmql+OYi5hs8Gm22/IgtpWNS4R/rUQtCppbXNatRIHJSdGYL5+cg0N9YkO
-         6g6Xax/aKtDB1oKsSv3VEuoJ1KYVuytBAMDmOI8DdzZW4nypqSdPzQjUNf9cvUOvzpGg
-         UXJSDminP52VTMGOPkFaYCTO41nldXADgh+LcRxWoE6DrjzwwLyzPxoUVgYDuYCxVMg+
-         QQiz3g4Z7NVTyBCE17gQXSRO3VDZ5FZ54E4FiA8lveGm+dfLwf4Kq+Y9L1QIH1eoWAYs
-         73hSNzfhm8cnNl5n5zvZhidPdvYISA1NeaXa3MOA4LB7/Sa8fVlHxviDXb3tlM7W9SZY
-         KQQg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cYjZlbF3DXM7zGnEvoUEauj9qs95JDVKd+qkmT8E5Es=;
+        b=Sz162M5Od95RKrPl3X/Ac4xcDjeMsrrM/4Xt3pyER0eWJaPxr1EiE1YWPdfvaRqo8Z
+         9BuZXgXl61gDrjkAfvHLKWCwv0Hz3q0z5HGKJCQkDs0zZc1hd1SYYMVD4xhYjVO1eYBK
+         nUrplSbXYGSOOCNOwNBzogI6pG1sjmuXCgXbc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=6J3S1EowMxNgodKbT6VuqOpLG5n59kYtaEQul9RuocM=;
-        b=l3u3jHG+IWiw7hBXf57eHfGYY+BSkc5gXBkFBY0L1ikFfHd3bCbWLPNmrNitxpTllj
-         C38QZi49q9HLE0qCZJDzG6SbOK4WHMr/T0nCXlufdGk+vDOnoY7bwbXbf6IFYr3/grfv
-         lVzEH1UyCeVzgGWXgyqUI4tjLxf5YEFD2dVd6N/UcYq7YJ5gGKighzCctLpV/IDBUR3X
-         e5d7u6q0phuCQN1yfQynJ4MedCFbMORYpiyHrIa85i0lLIZcoaoAFp8RPKyshQXqzQEo
-         C8+U4DXYPs5QjVXj7Y934I52Hi0eZ+XiYg9HuiJPYyfRYD4l+uGJyCEbXdlVwAwAg0Sb
-         ysfw==
-X-Gm-Message-State: AOAM530k/lzyZ949yqh/aoP2o37UIUa/EiRDzYpvHNt8VzPNdfw+vI1E
-        75l6AOtccoMgqZkwE5ibJi0LEA==
-X-Google-Smtp-Source: ABdhPJxooiiHU5Bw3U0Jm6BQ2vbg4+eeLs8IAwR4giBk61hPyKTGAhXnRp+COmX4wuGdjiR3Yq8VhA==
-X-Received: by 2002:a17:902:b687:b029:eb:6491:b3f7 with SMTP id c7-20020a170902b687b02900eb6491b3f7mr1962804pls.38.1619152765050;
-        Thu, 22 Apr 2021 21:39:25 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id o5sm3518344pgq.58.2021.04.22.21.39.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 21:39:24 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 21:39:24 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 21:39:21 PDT (-0700)
-Subject:     Re: [PATCH] implement flush_cache_vmap for RISC-V
-In-Reply-To: <18d198ac-7bc0-934d-e1e9-eca01b790d61@ghiti.fr>
-CC:     Jisheng.Zhang@synaptics.com, liu@jiuyang.me,
-        waterman@eecs.berkeley.edu,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        geert@linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-12e52134-80b2-409c-bf30-1300875c54a2@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cYjZlbF3DXM7zGnEvoUEauj9qs95JDVKd+qkmT8E5Es=;
+        b=X5wJfb3c9ushtzsKh1X+ZHN45OgoPPTRSK6WH7OGb3IIKrCrCiBbBUw89JhPo3kBCe
+         DjgTw8gh3D9DJy8ev/Z9PJgWCHSR86gjegpiNuUvTfKHXEgVduvxHg4wDYCLagBUz6IA
+         CxhuBsOvUhVYNGTlwXS3qqENUD20oYbnVZytcwro+jtbPMTuiJ/quXAEafAxMYVS+Gf0
+         xpN4YMVyGD8jIZ0V4Plb8vUuJ/rBmTJjh0ak6hJPVMGN50NSnyFEASa247a3K+EhYuTu
+         IeKKqc6MNfWRKwnH4rUldN5aPQ47spN61jYC2rYD0SejUkcuKEtPHcbfX0rNub3qGZKL
+         0m1w==
+X-Gm-Message-State: AOAM533VMM0aV9xQg7RUbUYzqVagB3et6uBCuVIFnmndUzZwa9OzZ7tI
+        0y+2fPO2W6ChiljD/pp2NWRiwL656wvW1ceL+SHF9w==
+X-Google-Smtp-Source: ABdhPJxN50JqYMGhnzwmNIzBqf5XELBKZ9iKqf346L2CEQrzbVJ1FDlyDZ16cLmlLwpKkRZI87JeC+iOPw+JE+Tq628=
+X-Received: by 2002:ab0:638e:: with SMTP id y14mr1572161uao.82.1619152855684;
+ Thu, 22 Apr 2021 21:40:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210221195833.23828-1-lhenriques@suse.de> <20210222102456.6692-1-lhenriques@suse.de>
+ <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
+ <YDYpHccgM7agpdTQ@suse.de> <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
+ <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com>
+ <8735vzfugn.fsf@suse.de> <CAOQ4uxjdVZywBi6=D1eRfBhRk+nobTz4N87jcejDtvzBMMMKXQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjdVZywBi6=D1eRfBhRk+nobTz4N87jcejDtvzBMMMKXQ@mail.gmail.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Fri, 23 Apr 2021 12:40:44 +0800
+Message-ID: <CANMq1KAOwj9dJenwF2NadQ73ytfccuPuahBJE7ak6S7XP6nCjg@mail.gmail.com>
+Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Luis Henriques <lhenriques@suse.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 00:03:13 PDT (-0700), alex@ghiti.fr wrote:
-> Hi,
+On Fri, Apr 9, 2021 at 9:50 PM Amir Goldstein <amir73il@gmail.com> wrote:
 >
-> Le 4/12/21 à 3:08 AM, Jisheng Zhang a écrit :
->> Hi Jiuyang,
->>
->> On Mon, 12 Apr 2021 00:05:30 +0000 Jiuyang Liu <liu@jiuyang.me> wrote:
->>
->>
->>>
->>> This patch implements flush_cache_vmap for RISC-V, since it modifies PTE.
->>> Without this patch, SFENCE.VMA won't be added to related codes, which
->>> might introduce a bug in the out-of-order micro-architecture
->>> implementations.
->>>
->>> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
->>> Reviewed-by: Alexandre Ghiti <alex@ghiti.fr>
->>> Reviewed-by: Palmer Dabbelt <palmer@dabbelt.com>
->>
->> IIRC, Palmer hasn't given this Reviewed-by tag.
+> On Fri, Apr 9, 2021 at 4:39 PM Luis Henriques <lhenriques@suse.de> wrote:
+> >
+> > Nicolas Boichat <drinkcat@chromium.org> writes:
+> >
+> > > On Wed, Feb 24, 2021 at 6:44 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+> > >>
+> > >> On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote:
+> > >> >
+> > >> > On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
+> > >> > > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> wrote:
+> > >> > > >
+> > >> > > > A regression has been reported by Nicolas Boichat, found while using the
+> > >> > > > copy_file_range syscall to copy a tracefs file.  Before commit
+> > >> > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> > >> > > > kernel would return -EXDEV to userspace when trying to copy a file across
+> > >> > > > different filesystems.  After this commit, the syscall doesn't fail anymore
+> > >> > > > and instead returns zero (zero bytes copied), as this file's content is
+> > >> > > > generated on-the-fly and thus reports a size of zero.
+> > >> > > >
+> > >> > > > This patch restores some cross-filesystem copy restrictions that existed
+> > >> > > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> > >> > > > devices").  Filesystems are still allowed to fall-back to the VFS
+> > >> > > > generic_copy_file_range() implementation, but that has now to be done
+> > >> > > > explicitly.
+> > >> > > >
+> > >> > > > nfsd is also modified to fall-back into generic_copy_file_range() in case
+> > >> > > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+> > >> > > >
+> > >> > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> > >> > > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> > >> > > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> > >> > > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> > >> > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > >> > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > >> > >
+> > >> > > I tested v8 and I believe it works for NFS.
+> > >> >
+> > >> > Thanks a lot for the testing.  And to everyone else for reviews,
+> > >> > feedback,... and patience.
+> > >>
+> > >> Thanks so much to you!!!
+> > >>
+> > >> Works here, you can add my
+> > >> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
+> > >
+> > > What happened to this patch? It does not seem to have been picked up
+> > > yet? Any reason why?
+> >
+> > Hmm... good question.  I'm not actually sure who would be picking it.  Al,
+> > maybe...?
+> >
+>
+> Darrick,
+>
+> Would you mind taking this through your tree in case Al doesn't pick it up?
 
-Yes.  In fact, I gave the opposite of a RB: we shouldn't have this, at 
-least without some demonstration of a meaningful performance improvement 
-and likely with a host of other changes to change the whole port over to 
-avoid relying on traps to handle new mappings.  I really don't think 
-that's a sane way to go, as the theory is that reasonable 
-microarchitectures won't have big windows over which these faults can 
-occur so there won't be that many of them.  If it ends up being an issue 
-on real hardware we can try and sort something out, but it's going to be 
-a lot of work as we'll need to avoid hurting performance on 
-implementations that don't make invalid mappings visible often.
+Err, sorry for yet another ping... but it would be good to move
+forward with those patches ,-P
 
->>
->>> ---
->>
->> Could you plz add version and changes? IIRC, this is the v3.
->>
->>>   arch/riscv/include/asm/cacheflush.h | 6 ++++++
->>>   1 file changed, 6 insertions(+)
->>>
->>> diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
->>> index 23ff70350992..3fd528badc35 100644
->>> --- a/arch/riscv/include/asm/cacheflush.h
->>> +++ b/arch/riscv/include/asm/cacheflush.h
->>> @@ -30,6 +30,12 @@ static inline void flush_dcache_page(struct page *page)
->>>   #define flush_icache_user_page(vma, pg, addr, len) \
->>>          flush_icache_mm(vma->vm_mm, 0)
->>>
->>> +/*
->>> + * flush_cache_vmap is invoked after map_kernel_range() has installed the page
->>> + * table entries, which modifies PTE, SFENCE.VMA should be inserted.
->>
->> Just my humble opinion, flush_cache_vmap() may not be necessary. vmalloc_fault
->> can take care of this, and finally sfence.vma is inserted in related path.
->>
->
->
-> I believe Palmer and Jisheng are right, my initial proposal to implement
-> flush_cache_vmap is wrong.
->
-> But then, Jiuyang should not have noticed any problem here, so what's
-> wrong? @Jiuyang: Does implementing flush_cache_vmap fix your issue?
->
-> And regarding flush_cache_vunmap, from Jisheng call stack, it seems also
-> not necessary.
+Thanks!
 
-FWIW: I still think that flush_cache_vunmap() is necessary -- we don't 
-have any other way to guarantee that mapping isn't visible.  Implementing 
-flush_cache_vmap() could work around the real bug of lacking 
-flush_cache_vunmap(), as we'd see stale mappings.
-
-That said, it could just be covering up some other bug.  Wouldn't be 
-surprised if it's a bug in our port, but this is the sort of thing that 
-could also be a hardware bug of some sort.
-
->
-> @Jiuyang: Can you tell us more about what you noticed?
->
->
->> Regards
->>
->>> + */
->>> +#define flush_cache_vmap(start, end) flush_tlb_all()
->>> +
->>>   #ifndef CONFIG_SMP
->>>
->>>   #define flush_icache_all() local_flush_icache_all()
->>> --
->>> 2.31.1
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
+> Thanks,
+> Amir.
