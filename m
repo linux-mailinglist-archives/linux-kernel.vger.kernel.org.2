@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2769369AA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5758369AAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243683AbhDWTKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhDWTKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:10:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD87C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:10:01 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619204999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CfdWq7sxIYHSIUJRgs6eEDCymepNPtB5XuGEN2D2Fu8=;
-        b=FCYwCmk2R2+uNhdhD6lqeIuih/SbsKMQ4T2dsho5l0a9jysrkC2G2zzd/AwinL9krsn98x
-        C04Oo+yv3N5GDMtaMV1/otvyjP2SsQK27rUmtVC6qGlMT6l1l3ckdGZsgCevuITM4qi80L
-        uMXqCq8XnMe4PbjjhsKE9kuHijckO/O0Oj3HKnGAsKAbzuu25k8j+GOVrtDJfveRB4vHg0
-        O5mE/YSiVXTNo3U5F240E4lbGJOSylDT7Uju970Mxw0YaAj8AqcXG6VjVg5yO51PPcdIfe
-        A+AYy12Vyc3fhOCqcSXzHoIxS3GB9ya6HwfETLPZ4gKqJshmXtgxi5Ah5+w3UA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619204999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CfdWq7sxIYHSIUJRgs6eEDCymepNPtB5XuGEN2D2Fu8=;
-        b=bhdFtftvFs9WP/CjlSwyDGG/qCwbmX6h8qLBZJgjFmcvw7wi0Tb2Hso6uwgzsT2m4VgZdY
-        LIxJmSp+HWyoGVDw==
-To:     Feng Tang <feng.tang@intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        paulmck@kernel.org
-Cc:     paulmck@kernel.org, John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec -14.4% regression
-In-Reply-To: <20210422074126.GA85095@shbuild999.sh.intel.com>
-References: <20210420064934.GE31773@xsang-OptiPlex-9020> <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1> <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1> <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com> <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1> <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com> <20210422074126.GA85095@shbuild999.sh.intel.com>
-Date:   Fri, 23 Apr 2021 21:09:58 +0200
-Message-ID: <87wnssvmux.ffs@nanos.tec.linutronix.de>
+        id S243721AbhDWTLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:11:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28894 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231684AbhDWTLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 15:11:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619205065; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=nqDuTeZ3IIZiGO3ZwiqtVGLNHOV5zxEBXOCW/TQfJRk=; b=Mamns3uApUH6kQpfqciWu/cpiI0yRhS8FZJqt6AhmpvpcYUAW9EBo5qwhcPgqcfz2wbMBCCI
+ 5ytSMZ+yOFjuMkXvcWVcbbbiCehuWzTLGGuAomORZhKvEGB8LrAW8ILPIaWw6r6eujv3Emhj
+ x1QfJiHAgsTXRiRVpc55MKHqtZc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60831bc4f34440a9d448bc48 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Apr 2021 19:11:00
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88076C433D3; Fri, 23 Apr 2021 19:11:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.110.218] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C243C433F1;
+        Fri, 23 Apr 2021 19:10:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C243C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v2] usb: gadget: Fix double free of device descriptor
+ pointers
+To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org,
+        peter.chen@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>, stable@vger.kernel.org
+References: <1619034452-17334-1-git-send-email-wcheng@codeaurora.org>
+ <87lf9amvl5.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <c5599433-3eb0-3918-d93b-6860f7951e92@codeaurora.org>
+Date:   Fri, 23 Apr 2021 12:10:57 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <87lf9amvl5.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22 2021 at 15:41, Feng Tang wrote:
-> On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
->> It happened during boot and before TSC calibration
->> (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
->> > WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
->> After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
->> WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
->> WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
->> by more than 1% to be marked unstable.
->
-> As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
-> times calibration of tsc, the first one of early quick calibration gives
-> 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
-> is about 2.5/1000 deviation for the first number, which just exceeds the
-> 1/1000 threshold you set :)
->
-> Following is the tsc freq info from kernel log
->
-> [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-> [    0.000000] tsc: Detected 2100.000 MHz processor
-> ...
-> [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
 
-Right, that's because in 2021 we still use technology from the last
-millenium to figure the correct TSC frequency out by doing a long time
-measurement against some other timer where we assume to know the
-frequeny it runs with.
 
-Thanks,
+On 4/22/2021 4:01 AM, Felipe Balbi wrote:
+> 
+> Hi,
+> 
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+> 
+>> From: Hemant Kumar <hemantk@codeaurora.org>
+>>
+>> Upon driver unbind usb_free_all_descriptors() function frees all
+>> speed descriptor pointers without setting them to NULL. In case
+>> gadget speed changes (i.e from super speed plus to super speed)
+>> after driver unbind only upto super speed descriptor pointers get
+>> populated. Super speed plus desc still holds the stale (already
+>> freed) pointer. Fix this issue by setting all descriptor pointers
+>> to NULL after freeing them in usb_free_all_descriptors().
+> 
+> could you describe this a little better? How can one trigger this case?
+> Is the speed demotion happening after unbinding? It's not clear how to
+> cause this bug.
+> 
+Hi Felipe,
 
-        tglx
+Internally, we have a mechanism to switch the DWC3 core maximum speed
+parameter dynamically for displayport use cases.  This issue happens
+whenever we have a maximum speed change occur on the USB gadget, which
+for DWC3 happens whenever we call gadget init.  When we switch in and
+out of host mode, gadget init is being executed, leading to the change
+in the USB gadget max speed parameter:
+
+dwc->gadget->max_speed		= dwc->maximum_speed;
+
+I know that configFS gadget has the max_speed sysfs file, which is a
+similar mechanism, but I haven't tried to see if we can reproduce the
+same issue with it.  Let me see if we can reproduce this with that
+configfs speed setting.
+
+Thanks
+Wesley Cheng
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
