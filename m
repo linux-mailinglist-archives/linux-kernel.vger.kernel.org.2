@@ -2,215 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136AA3692F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3A93692F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242542AbhDWNU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:20:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:34716 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231169AbhDWNU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:20:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D140F1396;
-        Fri, 23 Apr 2021 06:20:21 -0700 (PDT)
-Received: from [10.57.67.211] (unknown [10.57.67.211])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 112CF3F73B;
-        Fri, 23 Apr 2021 06:20:19 -0700 (PDT)
-Subject: Re: [PATCH v1] coresight: add node to reset all coresight devices
-To:     Tao Zhang <taozha@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
-References: <1619166578-28690-1-git-send-email-taozha@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <e753898c-0334-cf84-620e-d9b9f18d87e7@arm.com>
-Date:   Fri, 23 Apr 2021 14:20:18 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S242569AbhDWNWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhDWNWl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:22:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D795C061574;
+        Fri, 23 Apr 2021 06:22:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tpTBKNV5/izxL1k5IlHIzvsRqg3svyXWJhuDCpXyO+A=; b=MHQet0QejLNMAzlp2D84sdDlE7
+        z8qe6n1GFkCB/BkNAYLvOt0ujj5k2q82CxRvH1HHwkRVSdTwGJD3uHa4Lt0tiB+mRGBHqQbPx8bW9
+        ZNRJxDU7mhF4xnEi5x3I+KV3s9Mr0E0piUmhIs+p6kzLRFpctHSgp9etgpFHI9XP090GBkHciinEw
+        FBX61IUTaDPEG307xfYRyg1uYVY41AP0wjIelDatlxEVOOCn6V3TdpL6ei6r9TLkxQgPHcLz9Hlh4
+        6PwP2aXWA/DTWTEK/zgquxOOan2HQNRD1sOoGm6hhQIjBOJ3PcCc3KmCw85PYI0WWH0/slyrxhcXE
+        esCUXA9w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZvkD-001tIH-3X; Fri, 23 Apr 2021 13:21:27 +0000
+Date:   Fri, 23 Apr 2021 14:21:17 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] scripts: kernel-doc: reduce repeated regex expressions
+ into variables
+Message-ID: <20210423132117.GB235567@casper.infradead.org>
+References: <20210422191839.6119-1-yashsri421@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1619166578-28690-1-git-send-email-taozha@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422191839.6119-1-yashsri421@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2021 09:29, Tao Zhang wrote:
-> Add new reset_source_sink node to be able to disable all active
-> coresight devices.
-> In this way, we no longer need to manually disable all active
-> coresight devices one by one. After enabling multiple coresight
-> paths, users can reset their status more conveniently by this
-> node.
-> 
+On Fri, Apr 23, 2021 at 12:48:39AM +0530, Aditya Srivastava wrote:
+> +my $pointer_function = qr{([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)};
 
-What is the use case here ? Why would you trigger a reset for all the
-sources/sink without gracefully completing any on-going sessions
-(including the perf ones, which are driven by the kernel perf layer)
+Is that a pointer-to-function?  Or as people who write C usually call it,
+a function pointer?  Wouldn't it be better to call it $function_pointer?
 
-> This patch base on coresight-next repo
-> http://git.linaro.org/kernel/coresight.git/log/?h=next
-> 
-> And this patch depends on the following patch
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2551216.html
+> @@ -1210,8 +1211,14 @@ sub dump_struct($$) {
+>      my $decl_type;
+>      my $members;
+>      my $type = qr{struct|union};
+> +    my $packed = qr{__packed};
+> +    my $aligned = qr{__aligned};
+> +    my $cacheline_aligned_in_smp = qr{____cacheline_aligned_in_smp};
+> +    my $cacheline_aligned = qr{____cacheline_aligned};
 
-Please post related patches as a series, possibly describing the overall
-problem that you are trying to solve, in the cover letter.
+I don't think those four definitions actually simplify anything.
 
-> 
-> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> Signed-off-by: Mao Jinlong <jinlmao@codeaurora.org>
-> Signed-off-by: Tao Zhang <taozha@codeaurora.org>
-> ---
->   drivers/hwtracing/coresight/coresight-core.c | 72 ++++++++++++++++++++++++----
->   1 file changed, 64 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 7dfadb6..0001b6c 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -107,6 +107,23 @@ static int coresight_source_is_unique(struct coresight_device *csdev)
->   				 csdev, coresight_id_match);
->   }
->   
-> +static int coresight_reset_sink(struct device *dev, void *data)
-> +{
-> +	struct coresight_device *csdev = to_coresight_device(dev);
-> +
-> +	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
-> +	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
-> +	     csdev->activated)
-> +		csdev->activated = false;
+> +    my $attribute = qr{__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)}i;
 
-Why is this needed, when the disabl_path() should have taken care of this ?
+... whereas this one definitely does.
 
-> +
-> +	return 0;
-> +}
-> +
-> +static void coresight_reset_all_sink(void)
-> +{
-> +	bus_for_each_dev(&coresight_bustype, NULL, NULL, coresight_reset_sink);
-> +}
-> +
+> -	$members =~ s/\s*__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)/ /gi;
+> -	$members =~ s/\s*__aligned\s*\([^;]*\)/ /gos;
+> -	$members =~ s/\s*__packed\s*/ /gos;
+> +	$members =~ s/\s*$attribute/ /gi;
+> +	$members =~ s/\s*$aligned\s*\([^;]*\)/ /gos;
 
-How can you disable all the active sinks when some of the sinks could be 
-driven by perf ?
+Maybe put the \s*\([^;]*\) into $aligned?  Then it becomes a useful
+abstraction.
 
->   static int coresight_find_link_inport(struct coresight_device *csdev,
->   				      struct coresight_device *parent)
->   {
-> @@ -1137,7 +1154,7 @@ int coresight_enable(struct coresight_device *csdev)
->   }
->   EXPORT_SYMBOL_GPL(coresight_enable);
->   
-> -void coresight_disable(struct coresight_device *csdev)
-> +static void __coresight_disable(struct coresight_device *csdev)
->   {
->   	int  ret;
->   	struct list_head *path = NULL;
-> @@ -1145,14 +1162,12 @@ void coresight_disable(struct coresight_device *csdev)
->   	struct coresight_path *cspath_next = NULL;
->   	struct coresight_device *src_csdev = NULL;
->   
-> -	mutex_lock(&coresight_mutex);
-> -
->   	ret = coresight_validate_source(csdev, __func__);
->   	if (ret)
-> -		goto out;
-> +		return;
->   
->   	if (!csdev->enable || !coresight_disable_source(csdev))
-> -		goto out;
-> +		return;
->   
->   	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, link) {
->   		src_csdev = coresight_get_source(cspath->path);
-> @@ -1165,12 +1180,16 @@ void coresight_disable(struct coresight_device *csdev)
->   		}
->   	}
->   	if (path == NULL)
-> -		goto out;
-> +		return;
->   
->   	coresight_disable_path(path);
->   	coresight_release_path(path);
-> +}
->   
-> -out:
-> +void coresight_disable(struct coresight_device *csdev)
-> +{
-> +	mutex_lock(&coresight_mutex);
-> +	__coresight_disable(csdev);
->   	mutex_unlock(&coresight_mutex);
->   }
->   EXPORT_SYMBOL_GPL(coresight_disable);
-> @@ -1467,7 +1486,43 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
->   
->   	return -EAGAIN;
->   }
-> -EXPORT_SYMBOL_GPL(coresight_timeout);
+> -    } elsif ($prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/)  {
+> +    } elsif ($prototype =~ m/^()($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^(\w+)\s+($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^(\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^(\w+\s+\w+)\s+($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
+> +	$prototype =~ m/^()($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+)\s+($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*($name)\s*$prototype_end2/)  {
 
-Why ?
+This is probably the best patch I've seen so far this year.
 
-> +
-> +static ssize_t reset_source_sink_store(struct bus_type *bus,
-> +				       const char *buf, size_t size)
-> +{
-> +	int ret = 0;
-> +	unsigned long val;
-> +	struct coresight_path *cspath = NULL;
-> +	struct coresight_path *cspath_next = NULL;
-> +	struct coresight_device *csdev;
-> +
-> +	ret = kstrtoul(buf, 10, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mutex_lock(&coresight_mutex);
-> +
-> +	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, link) {
-> +		csdev = coresight_get_source(cspath->path);
-> +		if (!csdev)
-> +			continue;
-> +		atomic_set(csdev->refcnt, 1);
+Now, can we go further?  For example:
+	$prototype_end = $prototype_end1|$prototype_end2
+That would let us cut the number of lines here in half.
 
-Is this safe ?
+Can we create a definition for a variable number of \w and \s and '*'
+in the return type?  In fact, can we define a regex that matches a type?
+So this would become:
 
-> +		__coresight_disable(csdev);
-> +	}
-> +
-> +	/* Reset all activated sinks */
-> +	coresight_reset_all_sink();
-> +
-> +	mutex_unlock(&coresight_mutex);
-> +	return size;
-> +}
-> +static BUS_ATTR_WO(reset_source_sink);
-> +
-> +static struct attribute *coresight_reset_source_sink_attrs[] = {
-> +	&bus_attr_reset_source_sink.attr,
-> +	NULL,
-> +};
-> +ATTRIBUTE_GROUPS(coresight_reset_source_sink);
->   
->   /*
->    * coresight_release_platform_data: Release references to the devices connected
-> @@ -1680,6 +1735,7 @@ EXPORT_SYMBOL_GPL(coresight_alloc_device_name);
->   
->   struct bus_type coresight_bustype = {
->   	.name	= "coresight",
-> +	.bus_groups	= coresight_reset_source_sink_groups,
->   };
->   
->   static int __init coresight_init(void)
-> 
+> +    } elsif ($prototype =~ m/^($type)\s*($name)\s*$prototype_end/) {
 
