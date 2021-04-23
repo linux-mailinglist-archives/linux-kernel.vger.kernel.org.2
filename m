@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E41F368F23
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C286D368F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241560AbhDWJBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:01:03 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:43068 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWJBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:01:02 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lZrfg-0005L5-Nr; Fri, 23 Apr 2021 11:00:20 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     broonie@kernel.org, Jon Lin <jon.lin@rock-chips.com>
-Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@esmil.dk, Jon Lin <jon.lin@rock-chips.com>
-Subject: Re: [PATCH v1 2/8] spi: rockchip: add compatible string for rv1126
-Date:   Fri, 23 Apr 2021 11:00:18 +0200
-Message-ID: <10186800.nitPUkWRp2@diego>
-In-Reply-To: <20210423084155.17439-2-jon.lin@rock-chips.com>
-References: <20210423084155.17439-1-jon.lin@rock-chips.com> <20210423084155.17439-2-jon.lin@rock-chips.com>
+        id S241616AbhDWJC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:02:57 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:42632 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWJCz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:02:55 -0400
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id A678A282549;
+        Fri, 23 Apr 2021 17:02:15 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AFEABgD8Dpew4xXUTGbeMKpn.3.1619168535646.Hmail.frank.li@vivo.com>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     jaegeuk@kernel.org, chao@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtmMmZzLWRldl0gW1BBVENIXSBmMmZzOiBzZXQgcHJlZnJlZSBhcyBmcmVlIHNlZ21lbnRzIGFmdGVyIGNsZWFyIHByZWZyZWUgc2VnbWVudHM=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.250.176.228
+In-Reply-To: <3323e5c0-cd52-528a-6a57-5982db05a4bf@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from frank.li@vivo.com( [58.250.176.228) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 23 Apr 2021 17:02:15 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Date:   Fri, 23 Apr 2021 17:02:15 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQklJQlZDQhlOTk8dHUIfQ0lVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1IS0xITUJKTkpMN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6PT46ORw*Qz8LHgxPAyMuLzwZHjYwCxVVSFVKTUpCSk1DTkhNQktMVTMWGhIXVR0JGhUQVRcS
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSU5LVUpMTVVJSUNZV1kIAVlBTE1CSDcG
+X-HM-Tid: 0a78fdf724849395kuwsa678a282549
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
-
-Am Freitag, 23. April 2021, 10:41:49 CEST schrieb Jon Lin:
-> Add compatible string for rv1126 to applications for potential
-> applications.
-> 
-> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> ---
->  drivers/spi/spi-rockchip.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-> index 52d6259d96ed..dae0281f6ba8 100644
-> --- a/drivers/spi/spi-rockchip.c
-> +++ b/drivers/spi/spi-rockchip.c
-> @@ -911,7 +911,9 @@ static const struct dev_pm_ops rockchip_spi_pm = {
->  };
->  
->  static const struct of_device_id rockchip_spi_dt_match[] = {
-> -	{ .compatible = "rockchip,px30-spi", },
-> +	{ .compatible = "rockchip,px30-spi",   },
-
-unrelated change with the add "space" at the end
-
-> +	{ .compatible = "rockchip,rv1108-spi", },
-> +	{ .compatible = "rockchip,rv1126-spi", },
-
-it seems the list was sorted alphabetically, so rv* comes after rk*
-which is probably why the rv1108 was at the bottom and rightfully so.
-
-
-Heiko
-
->  	{ .compatible = "rockchip,rk3036-spi", },
->  	{ .compatible = "rockchip,rk3066-spi", },
->  	{ .compatible = "rockchip,rk3188-spi", },
-> @@ -921,7 +923,6 @@ static const struct of_device_id rockchip_spi_dt_match[] = {
->  	{ .compatible = "rockchip,rk3328-spi", },
->  	{ .compatible = "rockchip,rk3368-spi", },
->  	{ .compatible = "rockchip,rk3399-spi", },
-> -	{ .compatible = "rockchip,rv1108-spi", },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, rockchip_spi_dt_match);
-> 
-
-
-
-
+SEkgQ2hhbywKPgo+PiBGb3IgZG9fY2hlY2twb2ludCBzdWNlc3M6Cj4+IAo+PiBmMmZzX3dyaXRl
+X2NoZWNrcG9pbnQKPj4gLT5mMmZzX2ZsdXNoX3NpdF9lbnRyaWVzCj4+ICAgICAgLT5zZXRfcHJl
+ZnJlZV9hc19mcmVlX3NlZ21lbnRzCj4+IC0+ZG9fY2hlY2twb2ludAo+PiAtPmYyZnNfY2xlYXJf
+cHJlZnJlZV9zZWdtZW50cwo+PiAKPj4gCj4+IENhbGxpbmcgc2V0X3ByZWZyZWVfYXNfZnJlZV9z
+ZWdtZW50cyB3aGVuIGRvX2NoZWNrcG9pbnQgZmFpbHMsCj4+IHNlZW1zIHRvIGJlIGluY29ycmVj
+dC4gSSB0aGluayBjbGVhciBmcmVlIGJpdG1hcCBzaG91bGQgYmUgYWZ0ZXIKPj4gY2xlYXIgcHJl
+ZnJlZSBiaXRtYXAuCj4+IAo+PiBGb3IgZG9fY2hlY2twb2ludCBmYWlsOgo+PiAKPj4gZjJmc193
+cml0ZV9jaGVja3BvaW50Cj4+IC0+ZjJmc19mbHVzaF9zaXRfZW50cmllcwo+PiAgICAgIC0+c2V0
+X3ByZWZyZWVfYXNfZnJlZV9zZWdtZW50cwo+PiAtPmRvX2NoZWNrcG9pbnQKPj4gLT5mMmZzX3Jl
+bGVhc2VfZGlzY2FyZF9hZGRycwo+PiAKPj4gVGhlIHByZWZyZWUgYml0bWFwIGlzIG5vdCBjbGVh
+cmVkLCBidXQgZnJlZSBiaXRtYXAgaXMgY2xlYXJlZO+8jHdoaWNoIG1lYW5zCj4+IHdlIGNhbiB1
+c2UgdGhlc2Ugc2VnbWVudHMgdGhhdCBhcmUgbWFya2VkIGFzIGZyZWUuIFdoZW4gdGhlIGZyZWUg
+c2VnbWVudHMKPj4gaXMgdXNlZCwgdGhlIG5leHQgZjJmc19jbGVhcl9wcmVmcmVlX3NlZ21lbnRz
+IHdpbGwgbWFyayBwcmVmcmVlIGFzIGZyZWUgYWdhaW4sCj4+IGNhdXNpbmcgc29tZSBwcm9ibGVt
+Lgo+Cj5Pa2F5LCBJIGNhbiB1bmRlcnN0YW5kIHRoYXQuCj4KPkJ1dCB0aGUgcHJvYmxlbSBoZXJl
+IGlzLCBhZnRlciBhcHBseWluZyB0aGlzIHBhdGNoLCBzdWNjZXNzZnVsIGNoZWNrcG9pbnQKPm1h
+eSByZWNvcmQgd3JvbmcgZnJlZV9zZWdtZW50IHZhbHVlOgo+Cj4tIGYyZnNfd3JpdGVfY2hlY2tw
+b2ludAo+ICAtIGYyZnNfZmx1c2hfc2l0X2VudHJpZXMKPiAgLSBkb19jaGVja3BvaW50Cj4gICAt
+IGNrcHQtPmZyZWVfc2VnbWVudF9jb3VudCA9IGNwdV90b19sZTMyKGZyZWVfc2VnbWVudHMoc2Jp
+KSk7Cj4gIC0gZjJmc19jbGVhcl9wcmVmcmVlX3NlZ21lbnRzCj4gICAtIF9fc2V0X3Rlc3RfYW5k
+X2ZyZWUKPiAgICAtIGZyZWVfaS0+ZnJlZV9zZWdtZW50cysrOwoKWWVhaC4KCj4KPkkgZ3Vlc3Mg
+Zm9yIHRoZSBjYXNlIG9mIGRvX2NoZWNrcG9pbnQoKSBmYWlscywgbWF5YmUgd2UgY2FuIHJlc2V0
+Cj5mcmVlIHNlZ21lbnQgdG8gcHJlZnJlZSBzdGF0dXMuCj4KPlRob3VnaHRzPwo+CgpSZXNldCBm
+cmVlIHNlZ21lbnQgdG8gcHJlZnJlZSBzdGF0dXMgb3Igc2VwYXJhdGUgdGhlIG51bWJlciBvZiBz
+dGF0aXN0aWNzIGZyb20gdGhlIGNsZWFyIGJpdG1hcC4KCkhvdyBhYm91dCB0aGlzIG9uZSBiZWxv
+d++8nwoKZGlmZiAtLWdpdCBhL2ZzL2YyZnMvY2hlY2twb2ludC5jIGIvZnMvZjJmcy9jaGVja3Bv
+aW50LmMKaW5kZXggYmU1NDE1YTBkYmJjLi4wMjAwYWY0ZDAyZWYgMTAwNjQ0Ci0tLSBhL2ZzL2Yy
+ZnMvY2hlY2twb2ludC5jCisrKyBiL2ZzL2YyZnMvY2hlY2twb2ludC5jCkBAIC0xNjQ3LDEwICsx
+NjQ3LDEyIEBAIGludCBmMmZzX3dyaXRlX2NoZWNrcG9pbnQoc3RydWN0IGYyZnNfc2JfaW5mbyAq
+c2JpLCBzdHJ1Y3QgY3BfY29udHJvbCAqY3BjKQogCWYyZnNfc2F2ZV9pbm1lbV9jdXJzZWcoc2Jp
+KTsKIAogCWVyciA9IGRvX2NoZWNrcG9pbnQoc2JpLCBjcGMpOwotCWlmIChlcnIpCisJaWYgKGVy
+cikgewogCQlmMmZzX3JlbGVhc2VfZGlzY2FyZF9hZGRycyhzYmkpOwotCWVsc2UKKwkJZjJmc19z
+ZXRfZnJlZV9hc19wcmVmcmVlX3NlZ21lbnRzKHNiaSk7CisJfSBlbHNlIHsKIAkJZjJmc19jbGVh
+cl9wcmVmcmVlX3NlZ21lbnRzKHNiaSwgY3BjKTsKKwl9CiAKIAlmMmZzX3Jlc3RvcmVfaW5tZW1f
+Y3Vyc2VnKHNiaSk7CiBzdG9wOgpkaWZmIC0tZ2l0IGEvZnMvZjJmcy9mMmZzLmggYi9mcy9mMmZz
+L2YyZnMuaAppbmRleCBlMmQzMDJhZTNhNDYuLjE2MThlOWE3NGU4OSAxMDA2NDQKLS0tIGEvZnMv
+ZjJmcy9mMmZzLmgKKysrIGIvZnMvZjJmcy9mMmZzLmgKQEAgLTMzNjksNiArMzM2OSw3IEBAIGJv
+b2wgZjJmc19pc19jaGVja3BvaW50ZWRfZGF0YShzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmksIGJs
+b2NrX3QgYmxrYWRkcik7CiB2b2lkIGYyZnNfZHJvcF9kaXNjYXJkX2NtZChzdHJ1Y3QgZjJmc19z
+Yl9pbmZvICpzYmkpOwogdm9pZCBmMmZzX3N0b3BfZGlzY2FyZF90aHJlYWQoc3RydWN0IGYyZnNf
+c2JfaW5mbyAqc2JpKTsKIGJvb2wgZjJmc19pc3N1ZV9kaXNjYXJkX3RpbWVvdXQoc3RydWN0IGYy
+ZnNfc2JfaW5mbyAqc2JpKTsKK3ZvaWQgZjJmc19zZXRfZnJlZV9hc19wcmVmcmVlX3NlZ21lbnRz
+KHN0cnVjdCBmMmZzX3NiX2luZm8gKnNiaSk7CiB2b2lkIGYyZnNfY2xlYXJfcHJlZnJlZV9zZWdt
+ZW50cyhzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmksCiAJCQkJCXN0cnVjdCBjcF9jb250cm9sICpj
+cGMpOwogdm9pZCBmMmZzX2RpcnR5X3RvX3ByZWZyZWUoc3RydWN0IGYyZnNfc2JfaW5mbyAqc2Jp
+KTsKZGlmZiAtLWdpdCBhL2ZzL2YyZnMvc2VnbWVudC5jIGIvZnMvZjJmcy9zZWdtZW50LmMKaW5k
+ZXggYzI4NjY1NjEyNjNlLi4zMzRlNDk5YTBmNDMgMTAwNjQ0Ci0tLSBhL2ZzL2YyZnMvc2VnbWVu
+dC5jCisrKyBiL2ZzL2YyZnMvc2VnbWVudC5jCkBAIC0xOTU5LDYgKzE5NTksMTkgQEAgc3RhdGlj
+IHZvaWQgc2V0X3ByZWZyZWVfYXNfZnJlZV9zZWdtZW50cyhzdHJ1Y3QgZjJmc19zYl9pbmZvICpz
+YmkpCiAJbXV0ZXhfdW5sb2NrKCZkaXJ0eV9pLT5zZWdsaXN0X2xvY2spOwogfQogCit2b2lkIGYy
+ZnNfc2V0X2ZyZWVfYXNfcHJlZnJlZV9zZWdtZW50cyhzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmkp
+Cit7CisJc3RydWN0IGRpcnR5X3NlZ2xpc3RfaW5mbyAqZGlydHlfaSA9IERJUlRZX0koc2JpKTsK
+Kwl1bnNpZ25lZCBpbnQgc2Vnbm87CisKKwltdXRleF9sb2NrKCZkaXJ0eV9pLT5zZWdsaXN0X2xv
+Y2spOworCWZvcl9lYWNoX3NldF9iaXQoc2Vnbm8sIGRpcnR5X2ktPmRpcnR5X3NlZ21hcFtQUkVd
+LCBNQUlOX1NFR1Moc2JpKSkgeworCQlpZiAoX19zZXRfdGVzdF9hbmRfaW51c2Uoc2JpLCBzZWdu
+bykpCisJCQl0ZXN0X2FuZF9jbGVhcl9iaXQoc2Vnbm8sIGRpcnR5X2ktPmRpcnR5X3NlZ21hcFtQ
+UkVdKTsKKwl9CisJbXV0ZXhfdW5sb2NrKCZkaXJ0eV9pLT5zZWdsaXN0X2xvY2spOworfQorCiB2
+b2lkIGYyZnNfY2xlYXJfcHJlZnJlZV9zZWdtZW50cyhzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmks
+CiAJCQkJCQlzdHJ1Y3QgY3BfY29udHJvbCAqY3BjKQogewpkaWZmIC0tZ2l0IGEvZnMvZjJmcy9z
+ZWdtZW50LmggYi9mcy9mMmZzL3NlZ21lbnQuaAppbmRleCBlOWE3YTYzN2Q2ODguLjVkYThkMTEw
+MGI4NyAxMDA2NDQKLS0tIGEvZnMvZjJmcy9zZWdtZW50LmgKKysrIGIvZnMvZjJmcy9zZWdtZW50
+LmgKQEAgLTQ4NywxOSArNDg3LDI0IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBfX3NldF90ZXN0X2Fu
+ZF9mcmVlKHN0cnVjdCBmMmZzX3NiX2luZm8gKnNiaSwKIAlzcGluX3VubG9jaygmZnJlZV9pLT5z
+ZWdtYXBfbG9jayk7CiB9CiAKLXN0YXRpYyBpbmxpbmUgdm9pZCBfX3NldF90ZXN0X2FuZF9pbnVz
+ZShzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmksCitzdGF0aWMgaW5saW5lIGJvb2wgX19zZXRfdGVz
+dF9hbmRfaW51c2Uoc3RydWN0IGYyZnNfc2JfaW5mbyAqc2JpLAogCQl1bnNpZ25lZCBpbnQgc2Vn
+bm8pCiB7CiAJc3RydWN0IGZyZWVfc2VnbWFwX2luZm8gKmZyZWVfaSA9IEZSRUVfSShzYmkpOwog
+CXVuc2lnbmVkIGludCBzZWNubyA9IEdFVF9TRUNfRlJPTV9TRUcoc2JpLCBzZWdubyk7CisJYm9v
+bCBpc19pbnVzZSA9IGZhbHNlOwogCiAJc3Bpbl9sb2NrKCZmcmVlX2ktPnNlZ21hcF9sb2NrKTsK
+IAlpZiAoIXRlc3RfYW5kX3NldF9iaXQoc2Vnbm8sIGZyZWVfaS0+ZnJlZV9zZWdtYXApKSB7CiAJ
+CWZyZWVfaS0+ZnJlZV9zZWdtZW50cy0tOwogCQlpZiAoIXRlc3RfYW5kX3NldF9iaXQoc2Vjbm8s
+IGZyZWVfaS0+ZnJlZV9zZWNtYXApKQogCQkJZnJlZV9pLT5mcmVlX3NlY3Rpb25zLS07CisJfSBl
+bHNlIHsKKwkJaXNfaW51c2UgPSB0cnVlOwogCX0KIAlzcGluX3VubG9jaygmZnJlZV9pLT5zZWdt
+YXBfbG9jayk7CisKKwlyZXR1cm4gaXNfaW51c2U7CiB9CiAKIHN0YXRpYyBpbmxpbmUgdm9pZCBn
+ZXRfc2l0X2JpdG1hcChzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmksCgogVGh4Cg0KDQo=
