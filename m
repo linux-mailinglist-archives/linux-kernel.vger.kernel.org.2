@@ -2,179 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BBD369457
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7E136945D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236925AbhDWOFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:05:16 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:47622 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231281AbhDWOFJ (ORCPT
+        id S236205AbhDWOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhDWOHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:05:09 -0400
-Received: from mailhost.synopsys.com (badc-mailhost2.synopsys.com [10.192.0.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 78B97C00E6;
-        Fri, 23 Apr 2021 14:04:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1619186671; bh=F25TZesxYrcIWpFGMCcxaprImHLY7H56V0m5IcaXX+w=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=PymJh43U0Gj1IvcN7iwaXzRqWYAdhknEtT+ZAhsC5Xh0xfoUuqNkWanqHeG7Ac7FI
-         JSrWe0T4DW49n7zrVRRyWWP++EWADHRPVui2Wo4RdFMdROO1/NMTPVqZ+XcVyjWzg5
-         p9DdVZosIMBEXXQSPgZFyfScTb6qieCquiPD/9i8R+P4yrtExCwr3Z1XvqLU3edBLz
-         A3xxBSifApdTqz/xWK2rOkFQEkGB6Xf9E/yqyeaNwglgOrYDxbfOGrN0W8POo6l1Wl
-         q0lC/l/9AqXnLGAmkwCzzY0J1oN+y/VfDY2L40HyuDYAZWq8JUtoJbIEvzSrLHP0K/
-         gSb8cqqZkdPhA==
-Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 66889A006F;
-        Fri, 23 Apr 2021 14:04:23 +0000 (UTC)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 60D54400A4;
-        Fri, 23 Apr 2021 14:04:21 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="sF4jbmqV";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QRkzpnYxF7VqfPOirSoDWJUygcXWwtAE7RajKPl50MGCVBxTK6jLP6EzKSzaFv/8MbiuKHochr82XTePD5Xwp+vlfFbevpyvIY5VTaXJ/lorfODy94EOE8RmKFflCmYJDRNyQb5a7fLDnu4O50xhsjj44qfQQ3sTsCEq+oPHu6SqmclKR073sYByIhYlL0M/RKG1CTNPBhupQh7nbBHfPkNYBr4zsjKn8M78WVRx4qOmK5JeGnNtGFZEmOStpQwOh4nH3SleQvdpjGASvDs1s6KW74sQqcZNofh5OHrAxSDtj8UDrRcUop1+qGv5cR/No29coVeWQ5wCXZxiGwqyIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V2b1Xsx6236BlZI0gOlgf9vj5qFFKCoB+EpH2FgESoE=;
- b=MIvJVF/rkp9OPZP5Sh4jFnGrKSxDQm4Y6MXChMsEpljfBQMkJPx27JXw4fSyUTOctejGXzp+HwopiuhPdpWT4WDbuXm9e7E99u4TtEStiBMEV5XqOYloiQ/knpGUipbRmhlDSlylRFex88H0kCHDatY0j08DuA74myAi2dCDr4icXq2Ps6zkdErEhMHLlxTYR0Xjr2Xkjb6fP7AYago+oZdcFLJILxYv0uxNkxpuQBLEfYnkNH1ndKb0vkG055AfS0TF+Z+/WLg1TFimRRSPOeRxJJOkNI6vAUHEGCFTTqm8kNaRdoZazkucl+FYVRvn9JdzHV+OwIHqrYDJ0NOb8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V2b1Xsx6236BlZI0gOlgf9vj5qFFKCoB+EpH2FgESoE=;
- b=sF4jbmqVf9ihSDO3saO/0OiFoB0vBy/XOfl0SWq62LaP6VTNUee+tl89eWFJE77VGrmm7JVl2raboow+06CSk6GCLR+sstZC5jfVHfwwNfXevq7DPe6twWuLmpsObOlhw4DXZ2KIwIyYGzQHMlHocEta8DiruYVazmC8XkPXr5E=
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
- by BY5PR12MB3924.namprd12.prod.outlook.com (2603:10b6:a03:1af::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Fri, 23 Apr
- 2021 14:04:18 +0000
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d]) by BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d%7]) with mapi id 15.20.4065.021; Fri, 23 Apr 2021
- 14:04:18 +0000
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- arc-current tree
-Thread-Topic: linux-next: manual merge of the akpm-current tree with the
- arc-current tree
-Thread-Index: AQHXOBGkg1I5+OF+v0i2ZmOtZID1cqrCIvWA
-Date:   Fri, 23 Apr 2021 14:04:18 +0000
-Message-ID: <96a18d65-8c50-e4c2-10bf-c762ad4a74ac@synopsys.com>
-References: <20210423172351.4e3d194b@canb.auug.org.au>
-In-Reply-To: <20210423172351.4e3d194b@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-authentication-results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none
- header.from=synopsys.com;
-x-originating-ip: [24.4.73.83]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 02ae45df-2dfd-41ad-466e-08d90660afda
-x-ms-traffictypediagnostic: BY5PR12MB3924:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB3924F27416DE91EFE5695A29B6459@BY5PR12MB3924.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: heXgKm+qztKzzGbdOyGSBndRnLsVVdAcUc+l2IYavN9GWH320HH6Ur3Kc3D+56A/eDKTFIF1M2xR8WLTl95OayiWLXmKANDuP8j07+3UfXmpTNRyZDlNU/9soH7sL4hk+nUDqi9jKhmZ5bjv4Td+l4V/oSvDXTEJDd4HtHqGWC65AuIpVeX8Ck8U/jOhDEUivcsDov69uy5S8HR0cvF4lvm0Tt29bDUS5e9fXnahgK/rdqFRum0Sn1GnCaqEbfYl5FgP/vsSdYbB6nWeQoMlaecjdGEMVSxyf2HNkgFdn8wmwh99gCHfaf1otW958+vGY2XTl3AD8KNuJUgUezIoblmIaYxEGyBzCReKTQCX+XR7fl2aekqXSYP5SuzNjHr9Tp+YRWSJmhI3Ci7ipP4X2oyqRrsWLp6uvmYp0qsifpbNFzYRc36g0xSFvnt8Z9pMk8XwyiUMHxel3lxFUlBzHouaPBcWi4/SvWFe92/OD2g6sTpzVM8/I4lxOMNovmkipXFPswworZjHrBgR5QENzOmPa/pYZmtbWGsCGvaUfE6ISaMmxWvXHxAQgexMdGjrtL1SF+T6yjWFFEZ6cOU1Wsp199LRaI0Nbrm5nQ9gyn+lnVGZWrcWdWDK7tLefEC3s9rihpHkzuJ3bUc709UaGGMcQ5B1JrxMVRuSWSpakeROiBL74s0iN3JbXlVo5uJt
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(366004)(39860400002)(376002)(66946007)(64756008)(76116006)(38100700002)(6506007)(66446008)(6512007)(66476007)(53546011)(122000001)(66556008)(71200400001)(31686004)(2906002)(186003)(6486002)(478600001)(4326008)(31696002)(2616005)(86362001)(8936002)(316002)(5660300002)(36756003)(4744005)(110136005)(54906003)(26005)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?Windows-1252?Q?b/2tbjz8Faw+UXGONc9pMXcmmr78rpMu3TxdXdwu2RIVaYOvnuAjsAO/?=
- =?Windows-1252?Q?BADSu+WYOrPD7wac/F4FN00xOUCr/cAFl1oyQr/vAELRJpWD60Q026Vh?=
- =?Windows-1252?Q?P4P/lk812yKqBhDPa+u6oCgjhn6WCPqsVLhdlUS1GpHjjNz0IaCeurx8?=
- =?Windows-1252?Q?qBEyYRAfCS6h67sQP/j7v2iqWed4o3UMsz8GFDyLqXRokU4OXit8lLbt?=
- =?Windows-1252?Q?fbCs/DKiDZzHtBZiz5Oyj0aIsyl07KDdYq53XzSszC5VAg5P9JoY0+PZ?=
- =?Windows-1252?Q?PwQvmLZc92k1Wp15uoxTvK+bolmYvBC4AX/NuadOyjASLdtOC+cWUNHw?=
- =?Windows-1252?Q?DA+137Ia4J8h4E+2rphGXtcwXVkI7R+IdG7jPe/kghREnKkXq5Hzbwdg?=
- =?Windows-1252?Q?49fWailpBUfEBh+ipdRD9YTIUX6zZZTvXMttgJhZSAjh/KG/Ifg9avjT?=
- =?Windows-1252?Q?r/QCO22bo+Ue/55lM3wq0h+9WQV0AFOcYqnT6GSJzyNgLjjvMm5ZCZeN?=
- =?Windows-1252?Q?e42NoJJ9qFaSWZoSi7jIQnJ+fk4pVgDO5TXQtpx+kZzXorR/pURdAj4Z?=
- =?Windows-1252?Q?jWUXC97wWdFeXCTEiArqbtVBaJshAx/mj9arxWTw8VM3XL8PlzRw8Ej/?=
- =?Windows-1252?Q?Xy6LGNnCF7W9DdkqOOrGWHKjZgdR2lMfNz9iwRKahxpIrtOtC9og0FKr?=
- =?Windows-1252?Q?y4aQ+UzRzqBOgjSc21lNK1D6g5k/IEWGAzPmrJWMUycMjvHytlVZwydG?=
- =?Windows-1252?Q?clno4H7oQyg+hrRPyQoYj+j3wRdlqD+jidar1Btn58I9YruKWRVY3Wh6?=
- =?Windows-1252?Q?/BJGEoWJ3QVqNigHc3kXdNfj88JtvR/jfkvTMJhLMitANV1hmG0PfMEe?=
- =?Windows-1252?Q?PTbBoMfrOuXtMM1NtA6/sh/PGM+84Im5vesrbRmTD4DSe07+bSCWbrlF?=
- =?Windows-1252?Q?DGJChP2fQAulHuB3Up73FPtSwvi7tNbLQj8qI3oRjUt0QJRsITuCEBAb?=
- =?Windows-1252?Q?0pByRReOzBxWqCNkkLHRWei0s49I5IfvC79yVbAjsKYow3P53E/1X92l?=
- =?Windows-1252?Q?p4KGrn6C39KNquTyIglBDDWEXmLZtgjVSPTpcDwLzKLp7kpPUThAoMHW?=
- =?Windows-1252?Q?r8XkK33xSr1HsdLKzvtqOeDSzC+7goGp0vH5zTbsavoMb6KRbwJcSqOv?=
- =?Windows-1252?Q?CnesgJTdupmU+a0+kI5suh0WKLmXR3IxFAKx+Z+KBE+oerpKxC1PwA5s?=
- =?Windows-1252?Q?1kqpM16fNi8wjHazo4tZqRUCgQPLOGoptT4pnWV/CufeCvgvj5A1EKuI?=
- =?Windows-1252?Q?XJrmkdTOFG6PqCgM/V3wkaAXXEv2tgWGDBrSTroPbbSG4jaBs+VRPBVy?=
- =?Windows-1252?Q?sX9jejV6HFmkgDRmKTUt1mm7L6of74el6xg=3D?=
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <ABF79497B1F0034FB983B484ABEFB552@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 23 Apr 2021 10:07:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC135C061574;
+        Fri, 23 Apr 2021 07:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=S30ovdpPLsZJJVMtk7+hTOIHIzuBQqKDqd/E3ECGbNY=; b=PUO+5rd07iXw0IxIrYHPsCwBLF
+        T5s9+4Gxq1Pd8hfLwuRHgFQnchpJzv4LivhtWC7t7a2k+z7zF0UURKHVsr3zhWI0jwEt2Xb9LhYfh
+        S0bUhYDXHhGLnf56/p+MZuW1m0Q6D9mYBmQzMqKkzaYGoWVCQYSZYT67l/ARCzaj+dc6bFHCsHpzD
+        be96Zbyrbq1SJJbDUhjC/2c9XNN0uvvHL3Ky34MNMADISOaMjW5NjOuuspzxLTtdyFVy9KM4eLOSm
+        r6rKv9II+8C9MFuJooOLgMCL2z+QAeEjwZHDZ6TtW2ivmX6FtTqMIWOcubYB2TqpRwzNkLSTW520a
+        wpnjlzHw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZwRu-001x7h-0W; Fri, 23 Apr 2021 14:06:30 +0000
+Date:   Fri, 23 Apr 2021 15:06:25 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
+Message-ID: <20210423140625.GC235567@casper.infradead.org>
+References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+ <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02ae45df-2dfd-41ad-466e-08d90660afda
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 14:04:18.5311
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c4N1+zIH+lnydPkmyoBhuLhNBQN+KhwXdLa9R4S7z6kVnN3WvaRnAaxMmgr68lnkZamRKji4ixYUlW+lbQ4Spg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3924
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/23/21 12:23 AM, Stephen Rothwell wrote:
-> Hi all,
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->
->    net/core/page_pool.c
->
-> between commit:
->
->    004f078a57d3 ("mm: Fix struct page layout on 32-bit systems")
->
-> from the arc-current tree and commit:
->
->    8fdd71a69f19 ("net: page_pool: refactor dma_map into own function page=
-_pool_dma_map")
->
-> from the akpm-current tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
+> +#define iterate_xarray(i, n, __v, skip, STEP) {		\
+> +	struct page *head = NULL;				\
+> +	size_t wanted = n, seg, offset;				\
+> +	loff_t start = i->xarray_start + skip;			\
+> +	pgoff_t index = start >> PAGE_SHIFT;			\
+> +	int j;							\
+> +								\
+> +	XA_STATE(xas, i->xarray, index);			\
+> +								\
+> +	rcu_read_lock();						\
+> +	xas_for_each(&xas, head, ULONG_MAX) {				\
+> +		if (xas_retry(&xas, head))				\
+> +			continue;					\
+> +		if (WARN_ON(xa_is_value(head)))				\
+> +			break;						\
+> +		if (WARN_ON(PageHuge(head)))				\
+> +			break;						\
+> +		for (j = (head->index < index) ? index - head->index : 0; \
+> +		     j < thp_nr_pages(head); j++) {			\
 
-Sorry this was a snafu at my end - I pushed wrong local branch (to test=20
-Matthew's changes)
-Its fixed now.
+if head->index > index, something has gone disastrously wrong.
 
-Thx,
--Vineet
+		for (j = index - head->index; j < thp_nr_pages(head); j++) { \
+
+would be enough.
+
+However ... the tree you were originally testing this against has the
+page cache fixed to use only one entry per THP.  The tree you want to
+apply this to inserts 2^n entries per THP.  They're all the head page,
+but they're distinct entries as far as xas_for_each() is concerned.
+So I think the loop you want looks like this:
+
++	rcu_read_lock();						\
++	xas_for_each(&xas, head, ULONG_MAX) {				\
++		if (xas_retry(&xas, head))				\
++			continue;					\
++		if (WARN_ON(xa_is_value(head)))				\
++			break;						\
++		if (WARN_ON(PageHuge(head)))				\
++			break;						\
++		__v.bv_page = head + index - head->index;		\
++		offset = offset_in_page(i->xarray_start + skip);	\
++		seg = PAGE_SIZE - offset;				\
++		__v.bv_offset = offset;					\
++		__v.bv_len = min(n, seg);				\
++		(void)(STEP);						\
++		n -= __v.bv_len;					\
++		skip += __v.bv_len;					\
++		if (n == 0)						\
++			break;						\
++	}								\
++	rcu_read_unlock();						\
+
+Now, is this important?  There are no filesystems which do I/O to THPs
+today.  So it's not possible to pick up the fact that it doesn't work,
+and I hope to have the page cache fixed soon.  And fixing this now
+will create more work later as part of fixing the page cache.  But I
+wouldn't feel right not mentioning this problem ...
+
+(also, iov_iter really needs to be fixed to handle bvecs which cross
+page boundaries, but that's a fight for another day)
