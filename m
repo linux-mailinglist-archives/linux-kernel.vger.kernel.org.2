@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D70368995
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3325836899A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhDWAEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 20:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        id S239790AbhDWAHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 20:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbhDWAET (ORCPT
+        with ESMTP id S235691AbhDWAHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 20:04:19 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF059C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:03:43 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id i190so32877151pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:03:43 -0700 (PDT)
+        Thu, 22 Apr 2021 20:07:16 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24254C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:06:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n11-20020a25808b0000b02904d9818b80e8so21941972ybk.14
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QWRme8W90t1BPTeoXEcFelQYikUvUd/HuwmVxLORM6Q=;
-        b=gFBLejZmWYtwWuTbUzXrKVzwnRinJd2NDYaixKXbcMVTKTkTFJD5G29Fmaw6ukvp2g
-         kiDQQ4mbkZlpkqSpolEsWqjz65mPpQLL9lGq2eDwRrSsLwSvKNRotY03yT1Ap/tPaHfm
-         THy4S89Bpv6M0bNUc1JqdLBxFWELnuPQ1uhimcodJNU8zByseVj0EdUVRIKunkr/RGBB
-         xhZP94F9yddMKYdyYH48PFjg/osYDJrhBB1+O/2+Qf3lIsQDE7A/qp0WvOlN+ceL+jrR
-         fVWakjHTYnhrSZ7/8L4VwbmnQEJVMtVEHpKr9p+eEnb5z+NMC335lPmWT1dPoC8lC0Ty
-         R4Cg==
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=v66Jk+gEpeRgxxkcCt+o/qjQEpMd7xAYrLPcmO2p4cI=;
+        b=VTxsg4h0oDCx7YbTDXvRJwivIso/3i16ryOJZvE2aLPAXwnNlMyYEX/xjLO65QNGnq
+         UAWmt8fAh4j5/dxuDxyFeEP7NHUD2X1W0xTxJFuJ984FLTRQI2v2r29shPH1N66C2uKS
+         b5p0PZPRzxa63ZguF4QbBvsH9mXOk5vpkzcYubnxNVrMUa3a1Anr5nS1yN42Q8rwn62m
+         1mjb0FxpoDDLkAL1TZXgJzLI++X8PnErigmkdYmXmD7a2wr/egMfDrsllaG+o9jXsU23
+         uy1sHv2Js6+L0X9k6abwbNoDVvOCaybixGMHokDHKp9M1sy0pbVZDW5iSnSZAV7x7vk3
+         aB7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QWRme8W90t1BPTeoXEcFelQYikUvUd/HuwmVxLORM6Q=;
-        b=stMs6MohAXJ41i/RvzJ9wSw/YRoN6sn+U/wqLeMxDpSHf/OKMz1pF1qIFeiaQjmT6u
-         qJcKVj7ekJR+hPZZTD12YqlQ2Z+9LeHvRkKvo4MmlowaKgdOZipAadjojNop56MOYF5F
-         HKGuH+MNZA5kwGu0LLcoUD4WhV3MMD3X6ruBpE3Gmvqi+2o1wo99iTT5mAxPZAxOPt/k
-         oK5YwOAGJQGcycZpDf5Ul9sodKNYcyAWTChIUmOHEPdXA/Bumd+SCqKGFsBOwxVHhYNU
-         rz+0sktZRf2/fy75jgGwuykDZ4ebSr8eHj5WJoAzu2+ZwSsBp04HzSq5tcsu2kPEMLxW
-         szrA==
-X-Gm-Message-State: AOAM532QhrAk9oKNXZRA9WRPyGwVFzpicFM01Ew6XpTmuo3hO7zn70f/
-        Dh1b/xNkD4obpPwTF7wVM+iLoQ==
-X-Google-Smtp-Source: ABdhPJxEbZ7nzcHxEZ6WSTvN/ARrDhrTpdP+eAUgFOHzIyiWl+s74b+BkGvs5YUkzPirrG0+T9YwIw==
-X-Received: by 2002:aa7:90d3:0:b029:241:21a1:6ffb with SMTP id k19-20020aa790d30000b029024121a16ffbmr1089728pfk.43.1619136223169;
-        Thu, 22 Apr 2021 17:03:43 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id pc17sm3135335pjb.19.2021.04.22.17.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 17:03:41 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 00:03:31 +0000
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=v66Jk+gEpeRgxxkcCt+o/qjQEpMd7xAYrLPcmO2p4cI=;
+        b=njNldWITtgTAxZchTNRpVmxT/IIL2WlQzu9vNna3vWVYwwusl+aTLQQoIjCtDxnioe
+         VgKDv51mAi0TjhmScYdPczNZs30PI2WNC8tvpT1jM6pvgLrQv2RVKzSGTY5rkc7NUzW8
+         c0kJ/S1FTp0d1jqHjFwpLI30+dYOgQJDEelE2AJ2AH/5jUqvQ2CK8mRrDsIziM/xS9dC
+         hYo/8mQ7XbTH6cBtX9C0i/p4MJDJ0sEs1Ds6EkK3DPpL3HWr4NTRUMnNsTyqXx6ijT2R
+         a10/a475sv3ZPczmPTQJdMMRBYF0ExuDi/e0CHLwJD5FJv6LDbx0F53sPhyJsybOAfGu
+         jxSQ==
+X-Gm-Message-State: AOAM530+2co83rcR9GR3enRrIY6rdGQVN6ff6Uoql3DZaqa15llpK92R
+        qHRLpY3YwGASQhplY72Ykd/Y1g1jNog=
+X-Google-Smtp-Source: ABdhPJzadxessdpAjDDbX76aXuVMs4n1pAxeTI8YzDEJJFSYiKh/f16bzz2wlJzDr6iw5UeDcHZHJI7BPzg=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e012:374c:592:6194])
+ (user=seanjc job=sendgmr) by 2002:a25:680c:: with SMTP id d12mr122727ybc.87.1619136400249;
+ Thu, 22 Apr 2021 17:06:40 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 22 Apr 2021 17:06:33 -0700
+Message-Id: <20210423000637.3692951-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH 0/4] KVM: x86: Kill off pdptrs_changed()
 From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-Subject: Re: [PATCH 1/4] KVM: x86: Add AMD SEV specific Hypercall3
-Message-ID: <YIIO0wtHeNK6pyri@google.com>
-References: <cover.1619124613.git.ashish.kalra@amd.com>
- <c33adc91aa57df258821f78224c0a2b73591423a.1619124613.git.ashish.kalra@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c33adc91aa57df258821f78224c0a2b73591423a.1619124613.git.ashish.kalra@amd.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Ashish Kalra wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> KVM hypercall framework relies on alternative framework to patch the
-> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
-> apply_alternative() is called then it defaults to VMCALL. The approach
-> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
-> will be able to decode the instruction and do the right things. But
-> when SEV is active, guest memory is encrypted with guest key and
-> hypervisor will not be able to decode the instruction bytes.
-> 
-> Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
-> will be used by the SEV guest to notify encrypted pages to the hypervisor.
+Remove pdptrs_changed(), which is mostly dead anyways, and the few bits
+that are still thrashing are useless.
 
-I still think we should invert the default and avoid having an SEV specific
-variant of kvm_hypercall3().
+This conflicts with Maxim's work to migrate PDPTRs out-of-band, but I
+think it will conflict in a good way as the "skip load_pdptrs()"
+logic for the out-of-band case won't have to juggle this legacy crud.
 
-https://lore.kernel.org/kvm/X8gyhCsEMf8QU9H%2F@google.com/
+Sean Christopherson (4):
+  KVM: nVMX: Drop obsolete (and pointless) pdptrs_changed() check
+  KVM: nSVM: Drop pointless pdptrs_changed() check on nested transition
+  KVM: x86: Always load PDPTRs on CR3 load for SVM w/o NPT and a PAE
+    guest
+  KVM: x86: Unexport kvm_read_guest_page_mmu()
+
+ arch/x86/include/asm/kvm_host.h |  4 ----
+ arch/x86/kvm/svm/nested.c       |  6 ++---
+ arch/x86/kvm/vmx/nested.c       |  8 +++----
+ arch/x86/kvm/x86.c              | 41 ++++-----------------------------
+ 4 files changed, 10 insertions(+), 49 deletions(-)
+
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
