@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E113695C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3543695C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhDWPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:12:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
+        id S242912AbhDWPMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:12:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230294AbhDWPM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:12:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40EAC613D5;
-        Fri, 23 Apr 2021 15:11:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619190711;
-        bh=pRvdHw9EcnpaLKM69axa64lLoJKi9Cz0YmK+KqwiGDE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O9lsIr/dFB67AkBgtpLoR/fZkd6/v8Q1+irMcKKYytgkcg2mYumLBaUtOouW//mwm
-         k8SganjyM37qKtUrG29EluSLHI6ugaAjfdv1UIovKK3obpNWYs/Q9H+6otMaXwczZy
-         LSIJU+0bx0n2gR0qHOrSwRoT2BsdRKWD2o3K8Ds8=
-Date:   Fri, 23 Apr 2021 17:11:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
-Message-ID: <YILjtWuUbwyVXEyc@kroah.com>
-References: <20210419130527.791982064@linuxfoundation.org>
- <20210419213037.GB6626@amd>
+        id S237081AbhDWPMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:12:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2305B613D5;
+        Fri, 23 Apr 2021 15:12:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619190726;
+        bh=8Mkj5bXqM2cvFiGupG938Y/QnyU3NfrDfuKS5blpr08=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jD20PlsbvdhCddy52R4Gpb3+mp9sbsN5mK9DcEUegwgXIsgvJNJdSyrv2j42xC7LS
+         GlGjavrV+w7EJtijlqqDOm/SBrAqycY2V34hLtLSSsdr2/uYzE2dDmjGv7lo8sBAn1
+         LyuAoz8siw4oM8pqMgT8gMF789tH6tnnobQGtlRHsipdMSuhZSpfEhA4y6QTQm5tql
+         LiAbjK9lcvXn8vJ9ANHwKvOAU3l/C7zUfb7TioUcUIjmGULYQZCfgLZqgC3K9ItI8J
+         VOCDOxU/ix7kt2Do+gTaVH4vZDYYt5BSz5HqOVjI3omDs9nbliNNCZ0+TQXo/pmYEQ
+         ma4fADxmufwPg==
+Subject: Re: [PATCH 1/1] PCI: Add pci reset quirk for Nvidia GPUs
+To:     Shanker Donthineni <sdonthineni@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vikram Sethi <vsethi@nvidia.com>
+References: <20210423145402.14559-1-sdonthineni@nvidia.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Message-ID: <ff4812ba-ec1d-9462-0cbd-029635af3267@kernel.org>
+Date:   Fri, 23 Apr 2021 11:12:05 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419213037.GB6626@amd>
+In-Reply-To: <20210423145402.14559-1-sdonthineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:30:37PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > This is the start of the stable review cycle for the 5.10.32 release.
-> > There are 103 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> > Anything received after that time might be too late.
-> 
-> CIP testing did not find any problems here:
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
-> 
-> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-> 
-> Best regards,
->                                                                 Pavel
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
++Alex,
 
+On 4/23/2021 10:54 AM, Shanker Donthineni wrote:
+> +static int reset_nvidia_gpu_quirk(struct pci_dev *dev, int probe)
+> +{
+> +#ifdef CONFIG_ACPI
+> +	acpi_handle handle = ACPI_HANDLE(&dev->dev);
+> +
+> +	/*
+> +	 * Check for the affected devices' ID range. If device is not in
+> +	 * the affected range, return -ENOTTY indicating no device
+> +	 * specific reset method is available.
+> +	 */
+> +	if ((dev->device & 0xffc0) != 0x2340)
+> +		return -ENOTTY;
+> +
+> +	/*
+> +	 * Return -ENOTTY indicating no device-specific reset method if _RST
+> +	 * method is not defined
+> +	 */
+> +	if (!handle || !acpi_has_method(handle, "_RST"))
+> +		return -ENOTTY;
+> +
+> +	/* Return 0 for probe phase indicating that we can reset this device */
+> +	if (probe)
+> +		return 0;
+> +
+> +	/* Invoke _RST() method to perform the device-specific reset */
+> +	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
+> +		pci_warn(dev, "Failed to reset the device\n");
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +#else
+> +	return -ENOTTY;
+> +#endif
+> +}
 
-Thanks for testing and letting me know.
-
-greg k-h
-
+Interesting, some pieces of this function (especially the ACPI _RST)
+could be generalized.
