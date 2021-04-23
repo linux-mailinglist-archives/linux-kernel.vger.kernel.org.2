@@ -2,222 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187303697EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA31D3697F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243307AbhDWRF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243264AbhDWRFZ (ORCPT
+        id S243309AbhDWRGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:06:43 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:44584 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhDWRGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:05:25 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB04CC06175F;
-        Fri, 23 Apr 2021 10:04:48 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id g17so57531646edm.6;
-        Fri, 23 Apr 2021 10:04:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yp0Fcm4ftjxsSpx+OMWSILWZbaBJSa4V9KKvmMfNtFk=;
-        b=t4w9Merg1efC3mkVl8fmW75MKFTzIUHGYMFsFQI9yr6SD+0AHgRhFxzU1JgdgR/2ZB
-         1kuGO+ZRGcNY7wrdTmpwaFai1FAMSQi5Mn6xmr20fMfUDxmsB4DITAWkHyIJp2WAYUNs
-         FhOqslTv2JcT4pKfXpTF56AGIqReqMaUavVZR56ixQoZpQaUCbmJaDRcnZ5zg9s7QIfa
-         PpboitbSfwBfEwzIiRMtJYriFBSzmPipqm5iw1jR3TZBHhoY9cSeJeoAsFOqJDT+y1D+
-         9TCnI3xLX6BoLR4TXJrI2cibi7/lwi23dSdHZ3WEmdx+XZ+zONZrDXWgiE/bYYLKjbp0
-         0HAQ==
+        Fri, 23 Apr 2021 13:06:40 -0400
+Received: by mail-lj1-f175.google.com with SMTP id a25so43143908ljm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:06:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yp0Fcm4ftjxsSpx+OMWSILWZbaBJSa4V9KKvmMfNtFk=;
-        b=Efx++3peN7vxRJrFGajX+gFwDu6UaIr6Ljkz70hddskAglQvBAcKeZYYelQ1zJOMz5
-         jCCYvz7Dns38bV2a9EdiPuAZIuWMMGYVTix35GHj6ZGFuYCq3BZj2GMWRZwtssUdUfg0
-         GVreOA3UOuhVNg2MyTf/m9uPx/4AahfWPxoKXIahBskeciZ3N1P+QlFrL5p+nXOKNXRU
-         Ji0Bno0gAdCeZ8J25HN+XhcGcf9DcvjBmavhBpQYbFcIKC8ZiWq+auQIBEKZUDsB3QdW
-         4dVeqsKL1mhg61Jre6By2F2Yo0tG46W7pyp1hIf6tMEKeD5lFyeI3rx+/5cZon+yZP48
-         6WKg==
-X-Gm-Message-State: AOAM530j4D8jPkls/Hg2miy/qvDTL1RHN48MvoLeJrjZrAGJZXfZsc4E
-        GiE9fUSXjpDQP2C5fH5YW+g=
-X-Google-Smtp-Source: ABdhPJyzyWxSdAyEIFimlcXfMU2ky29TPHyE2cUPGI/3diEAZcyN7IZZI+wAMpHiJgeHhB24Fj2H7A==
-X-Received: by 2002:a05:6402:5111:: with SMTP id m17mr5867151edd.175.1619197487628;
-        Fri, 23 Apr 2021 10:04:47 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id e11sm4470851ejn.100.2021.04.23.10.04.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 10:04:46 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 19:05:35 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] pwm: visconti: Add Toshiba Visconti SoC PWM
- support
-Message-ID: <YIL+Xwjbk1EE04Sm@orome.fritz.box>
-References: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Scw7Z57rdAZa2hiqBu8RC+dLrEZpg3DOUeAN5WDTx40=;
+        b=Jm6GZCbiNgZ4/GhUVJ0hq2PdhhB29uKJ5z5S66fS5gShijkR3C4F7xQiiQJfGHJnHD
+         lbwgapj1lgy+jzxczVW2BJQCPl8XWucYTCGjmO4cZhfe7cI+Eui55YEXq4FJlxEXy+TF
+         Zh9xuUUCDz4Sep1MCpCI0+g8lB3NfJTYo7K82bfBB28ChqP9YLXthuzcGDqKVkTFRf1v
+         lFWGtDYUQQ4cUr0kyKG0gYj9YqySasJBJuDM2EBOfBJiKbtzF7qo84weYgLUYUN0KtVR
+         DRMQWA5kCY5ls6I0VQQdRDUBrl4xfpRvTFcWxwvxWr6bsoOT7/Pc79vDZFIu5WA/bRWx
+         bPkA==
+X-Gm-Message-State: AOAM532ZGjS84rFa4ox+gX7Am9JKNQDjBTmxaJgSDsAu4orvGZSGb4Tl
+        sNv/lLE+1BX1QvKXfDnT+NqAlDfE4hJeuKMRHQE=
+X-Google-Smtp-Source: ABdhPJw0ey2XwzY3HOr7o82xaNlvuhHijnwYtg6C6LiAHxughdEE0Bqmcf6XJYew/0KLuNWGYhsG902Hm1D/nTpDJ3A=
+X-Received: by 2002:a05:651c:30b:: with SMTP id a11mr3385392ljp.52.1619197562455;
+ Fri, 23 Apr 2021 10:06:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OOXUOpActKFR3W/b"
-Content-Disposition: inline
-In-Reply-To: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+References: <1618470001-7239-1-git-send-email-lirongqing@baidu.com> <a9a29f801740491bb97e765ff58a9772@baidu.com>
+In-Reply-To: <a9a29f801740491bb97e765ff58a9772@baidu.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sat, 24 Apr 2021 02:05:51 +0900
+Message-ID: <CAM9d7cj4nyr8qeUVOgC43-gyDOwPXBumBhHtpc2S-3f8WrWyKw@mail.gmail.com>
+Subject: Re: [PATCH][resend] perf x86 kvm-stat: support to analyze kvm msr
+To:     "Li,Rongqing" <lirongqing@baidu.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---OOXUOpActKFR3W/b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 22, 2021 at 11:33 AM Li,Rongqing <lirongqing@baidu.com> wrote:
+> > Subject: [PATCH][resend] perf x86 kvm-stat: support to analyze kvm msr
+> >
+> > From: Lei Zhao <zhaolei27@baidu.com>
+> >
+> > usage:
+> >     - kvm stat
+> >       run a command and gather performance counter statistics
+> >
+> >     - show the result:
+> >       perf kvm stat report --event=msr
+> >
+> > See the msr events:
+> >
+> > Analyze events for all VMs, all VCPUs:
+> >
+> > MSR Access Samples  Samples% Time%  Min Time Max Time  Avg time
+> >
+> >   0x6e0:W   67007  98.17%   98.31%  0.59us   10.69us  0.90us ( +-
+> > 0.10% )
+> >   0x830:W    1186   1.74%    1.60%  0.53us  108.34us  0.82us ( +-
+> > 11.02% )
+> >    0x3b:R      66   0.10%    0.09%  0.56us    1.26us  0.80us ( +-
+> > 3.24% )
+> >
+> > Total Samples:68259, Total events handled time:61150.95us.
+> >
+> > Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> > Signed-off-by: Lei Zhao <zhaolei27@baidu.com>
 
-On Mon, Apr 19, 2021 at 09:00:05AM +0900, Nobuhiro Iwamatsu wrote:
-> Hi,
->=20
-> This series is the PWM driver for Toshiba's ARM SoC, Visconti[0].
-> This provides DT binding documentation and device driver.
->=20
-> [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/imag=
-e-recognition-processors-visconti.html
->=20
-> Updates:
->=20
->   dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
->     v5 -> v6:
->       - No update.
->     v4 -> v5:
->       - No update.
->     v3 -> v4:
->       - No update.
->     v2 -> v3:
->       - Change compatible to toshiba,visconti-pwm
->       - Change filename to toshiba,visconti-pwm.yaml.
->       - Add Reviewed-by tag from Rob.
->     v1 -> v2:
->       - Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause.
->       - Set compatible toshiba,pwm-visconti only.
->       - Drop unnecessary comments.
->=20
->   pwm: visconti: Add Toshiba Visconti SoC PWM support
->     v5 -> v6:
->      - Update year in copyright.
->      - Update limitations.
->      - Fix coding style, used braces for both branches.
->     v4 -> v5:
->       - Droped checking PIPGM_PCSR from visconti_pwm_get_state.
->       - Changed from to_visconti_chip to visconti_pwm_from_chip.
->       - Removed pwmchip_remove return value management.
->       - Add limitations of this device.
->       - Add 'state->enabled =3D true' to visconti_pwm_get_state().
->     v3 -> v4:
->       - Sorted alphabetically include files.
->       - Changed container_of to using static inline functions.
->       - Dropped unnecessary dev_dbg().
->       - Drop Initialization of chip.base.
->       - Drop commnet "period too small".
->       - Rebased for-next.=20
->     v2 -> v3:
->       - Change compatible to toshiba,visconti-pwm.
->       - Fix MODULE_ALIAS to platform:pwm-visconti, again.
->       - Align continuation line to the opening parenthesis.
->       - Rewrite the contents of visconti_pwm_apply() based on the content=
-s suggested by Uwe.
->     v1 -> v2:
->       - Change SPDX-License-Identifier to GPL-2.0-only.
->       - Add prefix for the register defines.
->       - Drop struct device from struct visconti_pwm_chip.
->       - Use '>>' instead of '/'.
->       - Drop error message by devm_platform_ioremap_resource().
->       - Use dev_err_probe instead of dev_err.
->       - Change dev_info to dev_dbg.
->       - Remove some empty lines.
->       - Fix MODULE_ALIAS to platform:pwm-visconti.
->       - Add .get_state() function.
->       - Use the author name and email address to MODULE_AUTHOR.
->       - Add more comment to function of the hardware.
->       - Support .get_status() function.
->       - Use NSEC_PER_USEC instead of 1000.
->       - Alphabetically sorted for Makefile and Kconfig.
->       - Added check for set value in visconti_pwm_apply().
->=20
-> Nobuhiro Iwamatsu (2):
->   dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
->   pwm: visconti: Add Toshiba Visconti SoC PWM support
->=20
->  .../bindings/pwm/toshiba,pwm-visconti.yaml    |  43 ++++
->  drivers/pwm/Kconfig                           |   9 +
->  drivers/pwm/Makefile                          |   1 +
->  drivers/pwm/pwm-visconti.c                    | 189 ++++++++++++++++++
->  4 files changed, 242 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/toshiba,pwm-vis=
-conti.yaml
->  create mode 100644 drivers/pwm/pwm-visconti.c
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Both patches applied, thanks.
+Thanks,
+Namhyung
 
-checkpatch did complain when I applied:
 
-> WARNING: please write a paragraph that describes the config symbol fully
-> #9: FILE: drivers/pwm/Kconfig:604:
-> +config PWM_VISCONTI
-
-That seems a bit excessive. The paragraph is perhaps not a poster child
-for Kconfig, but there are others that aren't better, so I think that's
-fine.
-
-> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> #32:=20
-> new file mode 100644
-
-Fine, too.
-
-> WARNING: 'loosing' may be misspelled - perhaps 'losing'?
-> #112: FILE: drivers/pwm/pwm-visconti.c:76:
->  +	 * NSEC_PER_SEC / CLKFREQ =3D 1000 without loosing precision.
->   	                                         ^^^^^^^
-
-I've fixed that up while applying.
-
-> WARNING: Avoid crashing the kernel - try using WARN_ON & recovery code ra=
-ther than BUG() or BUG_ON()
-> #127: FILE: drivers/pwm/pwm-visconti.c:91:
-> +		BUG_ON(pwmc0 > 3);
-
-I think that one is legit. I've turned that into:
-
-	if (WARN_ON(pwmc0 > 3))
-		return -EINVAL;
-
-so that requests for too big period will be rejected rather than crash
-the system. Next time, please run checkpatch before submitting and
-eliminate at least the big warnings.
-
-Thierry
-
---OOXUOpActKFR3W/b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCC/lwACgkQ3SOs138+
-s6GyZg//fJSJJDdj59dL5ufPtYkDzLvfPUP/5WuRD3JMyxANw11LWExaErgZmtC4
-JDAsEWBPV0MwNKECyTpYiCJpKWOjer9lIw4oVCqbMeSjZBaRN7RJJb83j68v2tU0
-ksaN8tGyOLz3UZnJRh3ExXQ3iAwYJcZDRFCjJTypc7Ve2kUdiK3FEv5uPfNpSK8a
-o6DmGe2Lv78F/rn3VZzZtgA2kYsGu8UGW3LM0DygZ1zb/W60x0SlKWAEPfhpUVKV
-+KKMMDlVcfp/G1/V3Iw8X0L1C/psC3QtwM8VFOQuml4EkCxGKF7BUbqxMWgQo/uh
-5ugx5C48cZ4U2aDnfyc1M0Hy7bF3uuSck8PV8bEY6BSci5Wol3z2U27JsZpMKA24
-8HmzBBVlc1l0an2Cd2nAf8osc3r+UKltAzHIBwi46gs43Pt0zc60b/mfu6CJA9V0
-jlGXM5JTWtNxpEhshKvNtk8gpMVieeVC9o4Rh/U8PpZbEZThmBAisn7ygZWFyW7s
-yff9YcV1EI4p5kUVgcBMR/04OBshPDfBz/hpoyzT4t9I6KT6DlSWjB8h94QX71zD
-z+SsL/5YprPAl0QqdzZUvDO+pu8PBVidu12222hnICrgK6u1WcU/My44GgXul22o
-kArqNPZWJvW6GEm5DofV8zvo4mfEfXns2mhOgGE9d4FuhNtumic=
-=YER4
------END PGP SIGNATURE-----
-
---OOXUOpActKFR3W/b--
+> > ---
+> >  tools/perf/arch/x86/util/kvm-stat.c |   46
+> > +++++++++++++++++++++++++++++++++++
+> >  1 files changed, 46 insertions(+), 0 deletions(-)
+> >
+> > diff --git a/tools/perf/arch/x86/util/kvm-stat.c
+> > b/tools/perf/arch/x86/util/kvm-stat.c
+> > index 0729204..c5dd54f 100644
+> > --- a/tools/perf/arch/x86/util/kvm-stat.c
+> > +++ b/tools/perf/arch/x86/util/kvm-stat.c
+> > @@ -133,11 +133,56 @@ static void ioport_event_decode_key(struct
+> > perf_kvm_stat *kvm __maybe_unused,
+> >       .name = "IO Port Access"
+> >  };
+> >
+> > + /* The time of emulation msr is from kvm_msr to kvm_entry. */ static
+> > +void msr_event_get_key(struct evsel *evsel,
+> > +                              struct perf_sample *sample,
+> > +                              struct event_key *key)
+> > +{
+> > +     key->key  = evsel__intval(evsel, sample, "ecx");
+> > +     key->info = evsel__intval(evsel, sample, "write"); }
+> > +
+> > +static bool msr_event_begin(struct evsel *evsel,
+> > +                            struct perf_sample *sample,
+> > +                            struct event_key *key)
+> > +{
+> > +     if (!strcmp(evsel->name, "kvm:kvm_msr")) {
+> > +             msr_event_get_key(evsel, sample, key);
+> > +             return true;
+> > +     }
+> > +
+> > +     return false;
+> > +}
+> > +
+> > +static bool msr_event_end(struct evsel *evsel,
+> > +                          struct perf_sample *sample __maybe_unused,
+> > +                          struct event_key *key __maybe_unused) {
+> > +     return kvm_entry_event(evsel);
+> > +}
+> > +
+> > +static void msr_event_decode_key(struct perf_kvm_stat *kvm
+> > __maybe_unused,
+> > +                                 struct event_key *key,
+> > +                                 char *decode)
+> > +{
+> > +     scnprintf(decode, decode_str_len, "%#llx:%s",
+> > +               (unsigned long long)key->key,
+> > +               key->info ? "W" : "R");
+> > +}
+> > +
+> > +static struct kvm_events_ops msr_events = {
+> > +     .is_begin_event = msr_event_begin,
+> > +     .is_end_event = msr_event_end,
+> > +     .decode_key = msr_event_decode_key,
+> > +     .name = "MSR Access"
+> > +};
+> > +
+> >  const char *kvm_events_tp[] = {
+> >       "kvm:kvm_entry",
+> >       "kvm:kvm_exit",
+> >       "kvm:kvm_mmio",
+> >       "kvm:kvm_pio",
+> > +     "kvm:kvm_msr",
+> >       NULL,
+> >  };
+> >
+> > @@ -145,6 +190,7 @@ struct kvm_reg_events_ops kvm_reg_events_ops[] = {
+> >       { .name = "vmexit", .ops = &exit_events },
+> >       { .name = "mmio", .ops = &mmio_events },
+> >       { .name = "ioport", .ops = &ioport_events },
+> > +     { .name = "msr", .ops = &msr_events },
+> >       { NULL, NULL },
+> >  };
+> >
+> > --
+> > 1.7.1
+>
