@@ -2,135 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDDE3693F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499443693F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhDWNqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
+        id S236262AbhDWNqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhDWNqH (ORCPT
+        with ESMTP id S231220AbhDWNqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:46:07 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0045C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:45:29 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id v123so42069498ioe.10
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:45:29 -0700 (PDT)
+        Fri, 23 Apr 2021 09:46:37 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F101C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:45:59 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id cq11so13907427edb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:45:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hadQA6kRs+D4pVpp3rDemh4znqWCxT2uwsFMnVuSorc=;
-        b=RQhD6LxA0EbE2aUkDyAwhX+M5JkqY9x9p4Ho29YHrrZ8YXyYl3QfXISkyDJe2RwTH0
-         Ie9LgFomrUlYkmNy9NCH4oiTdGIsiEo8T9azTwMIpIMBdXmSZp39AWROhGvugMRnFVy7
-         jF1q3pwqbLkJl3aivQQC/FUAKR7+y/J35NbH0=
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n5Uhq6jNvjbLhhBE8wTMbQRhY41737IGH9rJTPdv1/s=;
+        b=WrUskFpZ/jAkCPqD/Zwfl16X0sAViH9r3hpOIEfZql8ABaNipRa1giywFJBoXADikq
+         Kd5wECOip7A0Kbr5iQdNhflL0j5WHIZal7JWtftRvku56+jey4UX+vywjmiOorkSLQy9
+         go4eEu/gmFWeyemzpFwLScryfH+2DWy0P8c+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hadQA6kRs+D4pVpp3rDemh4znqWCxT2uwsFMnVuSorc=;
-        b=GxsQFpjQrCAIZmXa7syyxGtzcUUR2ioOSkUU7Jlhk5LveUYBjtgBLc5qXrG3JaZzxV
-         cogqwfVWkTbmTCKmCylWkTQP14cXTM+biHtwgZtBFf+TjROjYeWNc8aYewA9d/aFWVu/
-         nEo7+aLYpojQYHEtyntGz9vhGcovi8J1j0HnvfOFKuPQRmS/GP8qjZwhSKb+c3Qrm3nn
-         gnt+ndwlXXR22NVIIjbv57Y7KGGGZ+tmNm6JjIVQb7VXlDH2h2Yjs9dnkVoGKgg/QtG/
-         nWBChlrocDBvxtSgdvEAneU59K1iN2goq4bVkh5dDpAsAPEYH7ub/lWpw8G6/KQ1K53d
-         lVIA==
-X-Gm-Message-State: AOAM533XNz0y10n00D4wM1t1iHs3v5IsIgWLNrYnQZNWoV//gRcYJUcq
-        ngc3CXd+qD92S9WK/nJp5mvKWpuHbFvr5mgNi9bowg==
-X-Google-Smtp-Source: ABdhPJwTV4gp9LJYsVJJWcgJFrxSByzV5LSYY0rO2SJ1PjoOjh4K6HODB5G8+uITBoMdVJ4FKhPUoLzQHeIArrG+vC8=
-X-Received: by 2002:a02:9508:: with SMTP id y8mr3702499jah.125.1619185529119;
- Fri, 23 Apr 2021 06:45:29 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n5Uhq6jNvjbLhhBE8wTMbQRhY41737IGH9rJTPdv1/s=;
+        b=ikPWVCC4g3GTgixGFOwGwQ70Y2JZ7LpyutyMnngII+N6Wi4LLfUKinNyda3GyiHBoA
+         j/5culfcZ4VdXE2fbmWkrYVCeEbpCIKOcyLw9nnvLgbqcNs9G9t8YkRqyEIqfbLCC50q
+         QuH/QhfxmAiO21HC3F+cHPqsKr0cWMb4a7JV++orrbTngmeq4xvJS12cS3U6zb5oHF8b
+         lwQ0yApdkb1WPlhv6v+eaqnSJvfXVcFE+VRpc4d+7H1qknTMSZVf9X+mvf7pZ/122XzU
+         AnQsrYLTR1ENVW/Z7XmX1EXH0he2ZlIADBSHjCwD1ICDeUKZDqsN8/B/P7jj5JcIfwXt
+         qYfw==
+X-Gm-Message-State: AOAM5314CHE066nVsYUDs5TA+rVvSmWNJpam8Amht322xNIRJ8Q4SwKM
+        elKDzJK7/ThtGCo5BH5QGuvaxg==
+X-Google-Smtp-Source: ABdhPJzZIZ5cyXz61PoWuy7G4QErd1/DDp+b7pabjmKRrRu773JRnb2HaHyi6+aCHyzsXud9FjNaMw==
+X-Received: by 2002:a05:6402:1741:: with SMTP id v1mr4608739edx.127.1619185557798;
+        Fri, 23 Apr 2021 06:45:57 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id e22sm4959971edy.63.2021.04.23.06.45.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 06:45:57 -0700 (PDT)
+Subject: Re: [PATCH v5 05/13] module: Add printk formats to add module build
+ ID to stacktraces
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+References: <20210420215003.3510247-1-swboyd@chromium.org>
+ <20210420215003.3510247-6-swboyd@chromium.org>
+ <YIARTVqnN8t/FA/P@smile.fi.intel.com>
+ <161913520061.46595.8469966711677906076@swboyd.mtv.corp.google.com>
+ <YILKpQ2KsBXCoHlG@smile.fi.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <dabbab72-7534-66e2-21e1-6e0005bdc2d7@rasmusvillemoes.dk>
+Date:   Fri, 23 Apr 2021 15:45:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210423011517.4069221-1-revest@chromium.org> <20210423011517.4069221-3-revest@chromium.org>
- <ebe46a2a-92f8-8235-ecd8-566a46e41ed5@rasmusvillemoes.dk>
-In-Reply-To: <ebe46a2a-92f8-8235-ecd8-566a46e41ed5@rasmusvillemoes.dk>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 23 Apr 2021 15:45:18 +0200
-Message-ID: <CABRcYmJj5MTHKkOq9DT4Ju0LJmFV_8hZ+uLxwVf4bhoaL3C_aQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] bpf: Implement formatted output helpers with bstr_printf
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YILKpQ2KsBXCoHlG@smile.fi.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:27 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 23/04/2021 03.15, Florent Revest wrote:
-> > BPF has three formatted output helpers: bpf_trace_printk, bpf_seq_printf
-> > and bpf_snprintf. Their signatures specifies that arguments are always
-> > provided from the BPF world as u64s (in an array or as registers). All
-> > of these helpers are currently implemented by calling functions such as
-> > snprintf() whose signatures take arguments as a va_list.
->
-> It's nitpicking, but I'd prefer to keep the details accurate as this has
-> already caused enough confusion. snprintf() does not take a va_list, it
-> takes a variable number of arguments.
+On 23/04/2021 15.24, Andy Shevchenko wrote:
+> On Thu, Apr 22, 2021 at 04:46:40PM -0700, Stephen Boyd wrote:
 
-Agreed, will fix in v2
+>>>> +#include <linux/kernel.h>
+>>>
+>>> What do you need this header for?
+>>>
+>>
+>> For typeof_member().
+> 
+> Argh... We really need to split this and container_of to something else. Having
+> entire kernel.h for that is an overkill.
+> 
 
-> > To convert args from u64s to a va_list
->
-> No, the args are not converted from u64 to a va_list, they are passed to
-> said variadic function (possibly after zeroing the top half via an
-> interim cast to u32) as 64-bit arguments.
+Yeah, we should have a type-macros.h (or type-helpers or whatever) that
+doesn't include any other kernel headers, just stddef.h (which is
+compiler-provided) for offsetof(), providing
 
-Agreed
+typeof_member
+sizeof_member
+container_of
+same_type
+type_min
+type_max
+is_signed_type
+__choose_type
 
-> "d9c9e4db bpf: Factorize
-> > bpf_trace_printk and bpf_seq_printf" introduced a bpf_printf_prepare
-> > function that fills an array of arguments and an array of modifiers.
-> > The BPF_CAST_FMT_ARG macro was supposed to consume these arrays and cast
-> > each argument to the right size. However, the C promotion rules implies
-> > that every argument is stored as a u64 in the va_list.
->
-> "that every argument is passed as a u64".
-
-Yes
-
-> >
-> > To comply with the format expected by bstr_printf, certain format
-> > specifiers also need to be pre-formatted: %pB and %pi6/%pi4/%pI4/%pI6.
-> > Because vsnprintf subroutines for these specifiers are hard to expose,
->
-> Indeed, as lib/vsnprintf.c reviewer I would very likely NAK that.
-
-I imagined yes :)
-
-> > we pre-format these arguments with calls to snprintf().
->
-> Nothing to do with this patch, but wouldn't it be better if one just
-> stored the 4 or 16 bytes of ip address in the buffer, and let
-> bstr_printf do the formatting?
->
-> The derefencing of the pointer must be done at "prepare" time, but I
-> don't see the point of actually doing the textual formatting at that
-> time, when the point of BINARY_PRINT is to get out of the way as fast as
-> possible and punt the decimal conversion slowness to a later time.
->
-> I also don't see why '%pB' needs to be handled specially, other than the
-> fact that bin_printf doesn't handle it currently; AFAICT it should be
-> just as safe as 'S' and 's' to just save the pointer and act on the
-> pointer value later.
-
-These changes would make sense to me, yes, and I tried having %pB work
-like %pS and %ps yesterday, it worked like a charm for my usecase but
-while reading the commit log of vsprintf.c to understand the
-philosophy of this function better, I came across "841a915d20c
-vsprintf: Do not have bprintf dereference pointers" that says "Since
-perf and trace-cmd already can handle %p[sSfF] via saving kallsyms,
-their pointers are saved and not processed during vbin_printf(). If
-they were converted, it would break perf and trace-cmd, as they would
-not know how to deal with the conversion.". I interpreted that as
-"this args binary representation is some sort of UABI '' so I tried
-not to mess around with it. But maybe I misunderstood something ?
-+cc Steven who probably has context, I should have done that earlier. :)
+or whatever their names are currently.
