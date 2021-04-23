@@ -2,206 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69965369B1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F9369B1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243922AbhDWUHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:07:31 -0400
-Received: from mga06.intel.com ([134.134.136.31]:26481 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhDWUH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:07:27 -0400
-IronPort-SDR: fEXJueB/vC00nosE6F1+VpBOXSCqFZcYrrZmSFhQQaIjH52S2sZlYPZ8hoCBBSGSvUk76TH1Yh
- 575feTjN0iWg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="257432468"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="257432468"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 13:06:49 -0700
-IronPort-SDR: wk/5XvhQKdt7g6AucIWoOATP7K0KLYNBcNl/CZISFgOOTwASwNSI97bR6Qe7x/tx0SAGcICht2
- W2A1k7tstrpA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="386478202"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 23 Apr 2021 13:06:47 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1la24d-0004p3-54; Fri, 23 Apr 2021 20:06:47 +0000
-Date:   Sat, 24 Apr 2021 04:06:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/core] BUILD SUCCESS
- ed8e50800bf4c2d904db9c75408a67085e6cca3d
-Message-ID: <608328b1.vJQyLNUHQraVgqxZ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S243904AbhDWUHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:07:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231721AbhDWUHI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 16:07:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619208390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4QiJOyaRBjpj+Qp4w+e7694mCmNFhGls/eL4ztohU9Y=;
+        b=KgF5KQpWtQ/LCHQk6CqWB1RD/xvN4tDzE2C499dTMecYMM/XXp1yq1dow3HPTAMoLKWwqO
+        A6ganN8cKc525c8t+6rv7F5BWTJiEeFv1lofxVqNe3Pl/mYdo2fYaZAsWN9GEHdFc9/JpK
+        uH7L98dlX9mElc7DmcFsprs8WCkdp2A=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-mvX0ehGNM9WD-GtB4TxBKA-1; Fri, 23 Apr 2021 16:06:29 -0400
+X-MC-Unique: mvX0ehGNM9WD-GtB4TxBKA-1
+Received: by mail-qv1-f70.google.com with SMTP id a15-20020a0cca8f0000b029019d6ca62771so19077458qvk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:06:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=4QiJOyaRBjpj+Qp4w+e7694mCmNFhGls/eL4ztohU9Y=;
+        b=Z7OCuK2g4jJVxUxhyqrJl39p1EarRXNAlV9CxKPLknyk6pCCnKUeCTNUn2uplRpueU
+         BzFVo+qRbXJMsaZJnc5fyoif2Lr24YR3eEdhpvOuiufJcjl1wQFeGfOQKgM5Apa6CBEw
+         wLl11DUPWtmbftLn1jM2aII5I9iIrjcfKZm+70U3P2msMRoyw+plK+FFYMgZ1BlhW5oX
+         +Swj0oZvuU1LyzRwp2I51FYjLTHJCbutnpFdubl34+HzWIMr9XAZqDgPd2jtxnDLAlvv
+         EsDW0rZy/4XXTPsAHx4SIqJLvII3usBpfEJ3SmdcdYIm802Qy8bh9wTrn+WlOmAYvYcL
+         Iv4w==
+X-Gm-Message-State: AOAM5334xOp4gv102HkxLsfLykbSpnJ72ZYS4zVP2mutwaZUCLHlMc7n
+        5oL94i0ag+HN/vGpwUjHIpcufGX+USzjUD/LrOYsBD6eZJwuds9pH8OfUvNP8VDs/ia+9AU+104
+        ccKVZLROTqK1JzQvOCyYcF7pT
+X-Received: by 2002:a0c:f04a:: with SMTP id b10mr6261764qvl.59.1619208388190;
+        Fri, 23 Apr 2021 13:06:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzgdtumIs7B0CTazXqadnVbV5Zu/bStO7szazOP/9Tj1DQ93qT3QIMbESYDUlPfIwa3ilxYSg==
+X-Received: by 2002:a0c:f04a:: with SMTP id b10mr6261738qvl.59.1619208387658;
+        Fri, 23 Apr 2021 13:06:27 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id f2sm5109329qkh.76.2021.04.23.13.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 13:06:27 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH-next v5 3/4] mm/memcg: Improve refill_obj_stock()
+ performance
+To:     Roman Gushchin <guro@fb.com>, Waiman Long <llong@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210420192907.30880-1-longman@redhat.com>
+ <20210420192907.30880-4-longman@redhat.com>
+ <YIC7dh0+nQDFmU+T@carbon.dhcp.thefacebook.com>
+ <d17f1c19-fc1b-df92-8361-fa6b88170861@redhat.com> <YIIwsAk4RaJw5WCL@carbon>
+Message-ID: <49715eb2-9ac4-8208-2c63-e432092c3ab2@redhat.com>
+Date:   Fri, 23 Apr 2021 16:06:25 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <YIIwsAk4RaJw5WCL@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-branch HEAD: ed8e50800bf4c2d904db9c75408a67085e6cca3d  signal, perf: Add missing TRAP_PERF case in siginfo_layout()
+On 4/22/21 10:28 PM, Roman Gushchin wrote:
+> On Thu, Apr 22, 2021 at 01:26:08PM -0400, Waiman Long wrote:
+>> On 4/21/21 7:55 PM, Roman Gushchin wrote:
+>>> On Tue, Apr 20, 2021 at 03:29:06PM -0400, Waiman Long wrote:
+>>>> There are two issues with the current refill_obj_stock() code. First of
+>>>> all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
+>>>> atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
+>>>> and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
+>>>> be used again which leads to another call to drain_obj_stock() and
+>>>> obj_cgroup_get() as well as atomically retrieve the available byte from
+>>>> obj_cgroup. That is costly. Instead, we should just uncharge the excess
+>>>> pages, reduce the stock bytes and be done with it. The drain_obj_stock()
+>>>> function should only be called when obj_cgroup changes.
+>>> I really like this idea! Thanks!
+>>>
+>>> However, I wonder if it can implemented simpler by splitting drain_obj_stock()
+>>> into two functions:
+>>>        empty_obj_stock() will flush cached bytes, but not reset the objcg
+>>>        drain_obj_stock() will call empty_obj_stock() and then reset objcg
+>>>
+>>> Then we simple can replace the second drain_obj_stock() in
+>>> refill_obj_stock() with empty_obj_stock(). What do you think?
+>> Actually the problem is the flushing cached bytes to objcg->nr_charged_bytes
+>> that can become a performance bottleneck in a multithreaded testing
+>> scenario. See my description in the latter half of my cover-letter.
+>>
+>> For cgroup v2, update the page charge will mostly update the per-cpu page
+>> charge stock. Flushing the remaining byte charge, however, will cause the
+>> obgcg to became the single contended cacheline for all the cpus that need to
+>> flush the byte charge. That is why I only update the page charge and left
+>> the remaining byte charge stayed put in the object stock.
+>>
+>>>> Secondly, when charging an object of size not less than a page in
+>>>> obj_cgroup_charge(), it is possible that the remaining bytes to be
+>>>> refilled to the stock will overflow a page and cause refill_obj_stock()
+>>>> to uncharge 1 page. To avoid the additional uncharge in this case,
+>>>> a new overfill flag is added to refill_obj_stock() which will be set
+>>>> when called from obj_cgroup_charge().
+>>>>
+>>>> A multithreaded kmalloc+kfree microbenchmark on a 2-socket 48-core
+>>>> 96-thread x86-64 system with 96 testing threads were run.  Before this
+>>>> patch, the total number of kilo kmalloc+kfree operations done for a 4k
+>>>> large object by all the testing threads per second were 4,304 kops/s
+>>>> (cgroup v1) and 8,478 kops/s (cgroup v2). After applying this patch, the
+>>>> number were 4,731 (cgroup v1) and 418,142 (cgroup v2) respectively. This
+>>>> represents a performance improvement of 1.10X (cgroup v1) and 49.3X
+>>>> (cgroup v2).
+>>> This part looks more controversial. Basically if there are N consequent
+>>> allocations of size (PAGE_SIZE + x), the stock will end up with (N * x)
+>>> cached bytes, right? It's not the end of the world, but do we really
+>>> need it given that uncharging a page is also cached?
+>> Actually the maximum charge that can be accumulated in (2*PAGE_SIZE + x - 1)
+>> since a following consume_obj_stock() will use those bytes once the byte
+>> charge is not less than (PAGE_SIZE + x).
+> Got it, thank you for the explanation!
+>
+> Can you, please, add a comment explaining what the "overfill" parameter does
+> and why it has different values on charge and uncharge paths?
+> Personally, I'd revert it's meaning and rename it to something like "trim"
+> or just plain "bool charge".
+> I think the simple explanation is that during the charge we can't refill more
+> than a PAGE_SIZE - 1 and the following allocation will likely use it or
+> the following deallocation will trim it if necessarily.
+> And on the uncharge path there are no bounds and the following deallocation
+> can only increase the cached value.
 
-elapsed time: 723m
+Yes, that is the intention. I will make suggested change and put in a 
+comment about it.
 
-configs tested: 144
-configs skipped: 2
+Thanks,
+Longman
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                  maltasmvp_eva_defconfig
-arm64                            alldefconfig
-um                                allnoconfig
-nios2                         3c120_defconfig
-m68k                             alldefconfig
-powerpc64                           defconfig
-mips                            e55_defconfig
-mips                         cobalt_defconfig
-powerpc                     tqm8541_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                    mvme5100_defconfig
-ia64                            zx1_defconfig
-mips                        workpad_defconfig
-arm                         socfpga_defconfig
-powerpc                     asp8347_defconfig
-powerpc                       holly_defconfig
-m68k                            mac_defconfig
-powerpc                     tqm8540_defconfig
-mips                      fuloong2e_defconfig
-mips                      pic32mzda_defconfig
-sh                   sh7770_generic_defconfig
-arm                         s3c2410_defconfig
-sh                        sh7757lcr_defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-mips                            ar7_defconfig
-m68k                          sun3x_defconfig
-powerpc                 canyonlands_defconfig
-m68k                        mvme16x_defconfig
-mips                  decstation_64_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                malta_kvm_guest_defconfig
-arm                       imx_v4_v5_defconfig
-sh                          r7780mp_defconfig
-mips                     decstation_defconfig
-powerpc                           allnoconfig
-arm                          moxart_defconfig
-powerpc                     tqm8555_defconfig
-arm                         vf610m4_defconfig
-powerpc                        cell_defconfig
-mips                        nlm_xlp_defconfig
-sh                          lboxre2_defconfig
-powerpc                 mpc832x_mds_defconfig
-sparc64                             defconfig
-arm                        mini2440_defconfig
-sh                           se7343_defconfig
-arm                           tegra_defconfig
-openrisc                 simple_smp_defconfig
-arm                            lart_defconfig
-powerpc                  storcenter_defconfig
-powerpc                     taishan_defconfig
-sh                          urquell_defconfig
-powerpc                 linkstation_defconfig
-powerpc                      pasemi_defconfig
-m68k                       m5208evb_defconfig
-arm                         s5pv210_defconfig
-arm                             ezx_defconfig
-mips                           ip22_defconfig
-powerpc                     mpc5200_defconfig
-arm                         lpc18xx_defconfig
-powerpc                     tqm8548_defconfig
-m68k                        stmark2_defconfig
-powerpc                      pcm030_defconfig
-arm                         palmz72_defconfig
-mips                        nlm_xlr_defconfig
-arc                        nsimosci_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a002-20210423
-x86_64               randconfig-a004-20210423
-x86_64               randconfig-a001-20210423
-x86_64               randconfig-a005-20210423
-x86_64               randconfig-a006-20210423
-x86_64               randconfig-a003-20210423
-i386                 randconfig-a005-20210423
-i386                 randconfig-a002-20210423
-i386                 randconfig-a001-20210423
-i386                 randconfig-a006-20210423
-i386                 randconfig-a004-20210423
-i386                 randconfig-a003-20210423
-i386                 randconfig-a014-20210423
-i386                 randconfig-a012-20210423
-i386                 randconfig-a011-20210423
-i386                 randconfig-a013-20210423
-i386                 randconfig-a015-20210423
-i386                 randconfig-a016-20210423
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210423
-x86_64               randconfig-a016-20210423
-x86_64               randconfig-a011-20210423
-x86_64               randconfig-a014-20210423
-x86_64               randconfig-a012-20210423
-x86_64               randconfig-a013-20210423
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
