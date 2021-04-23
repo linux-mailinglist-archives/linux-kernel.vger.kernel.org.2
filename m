@@ -2,133 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E98368F96
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5138368F98
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241886AbhDWJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:43:19 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:56338 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241859AbhDWJnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:43:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1619170962; x=1650706962;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9mMr/D9KoykMs8D6BsWa8p9s/mOXuf0pFKy9BjBITS8=;
-  b=qEknc8/CuCW46YGTJQXU814Iej/ItOY0U8nI+2uFHiJ569ZVhIfiLz3t
-   QvM5kPBFtvFF+9jZYzAS/f+Dlxyc0W6UUBuEzOwtXSZ30SK6vaHliXJVX
-   jFcFMfR+TktS3VUIUKKJybtJa9abQ+ewGEuR4uS6fEVCEkqFhHbZVmeVk
-   o=;
-X-IronPort-AV: E=Sophos;i="5.82,245,1613433600"; 
-   d="scan'208";a="121018895"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 23 Apr 2021 09:42:33 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id AF72AA1F06;
-        Fri, 23 Apr 2021 09:42:28 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.162.207) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 23 Apr 2021 09:42:22 +0000
-Date:   Fri, 23 Apr 2021 11:42:17 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Alexander Graf <graf@amazon.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
-Message-ID: <20210423094216.GA30824@uc8bbc9586ea454.ant.amazon.com>
-References: <20210423090333.21910-1-sidcha@amazon.de>
- <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
+        id S241896AbhDWJnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230418AbhDWJnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:43:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD33461458;
+        Fri, 23 Apr 2021 09:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619170979;
+        bh=ohNDdgyCEYPEiMXGQqQtgVLZH4NRJYTRwIqMUaOw+Kk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T9j6vCTGdxYLgrTRnzRw4yysUwhUqA3VTN81m/a2lwIGqTPBcww45JNr0dCInKBTR
+         1fSVVjoRZP2bGJrU5Wz5TQW6Ud7yEVmVGt5A9Eop5NYfGlnlmi7sz1KLNidROhg/fO
+         hDUsllRIyvmjY6gN5xbhvKQ1JiJkJplkPwkkS16tP0CHZsFRhXu0cT79uTzsg5SQTW
+         3tBadEXxGr8vR93vevpD1/bDN9pht98zrzNdizU+l3E62t09m7YbQhYwtXwdhgrPcr
+         ye6taQ19vHiKwoaZacQOeAZxZubxg5FXuYh+2AlLV7k8RmR4oIYglNiT8gOQg9h9T1
+         IQltg7a8+c64g==
+Date:   Fri, 23 Apr 2021 11:42:55 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count
+ leak"
+Message-ID: <20210423114241.29cf1ab3@coco.lan>
+In-Reply-To: <alpine.DEB.2.22.394.2104231037400.4538@hadrien>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+        <20210421130105.1226686-10-gregkh@linuxfoundation.org>
+        <b43fc2b0-b3cf-15ab-7d3c-25c1f2a3e658@canonical.com>
+        <YIJy6AnG6QBlkV/5@kroah.com>
+        <20210423100727.5a999c2e@coco.lan>
+        <02966f20-342d-cf21-8216-d364b67753b7@xs4all.nl>
+        <ed2859a3-0051-5ef4-483c-9abd4fa81b22@canonical.com>
+        <alpine.DEB.2.22.394.2104231037400.4538@hadrien>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.162.207]
-X-ClientProxiedBy: EX13D35UWB002.ant.amazon.com (10.43.161.154) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:24:04AM +0200, Alexander Graf wrote:
+(adding c/c to Rafael)
+
+Em Fri, 23 Apr 2021 10:41:32 +0200 (CEST)
+Julia Lawall <julia.lawall@inria.fr> escreveu:
+
+> On Fri, 23 Apr 2021, Krzysztof Kozlowski wrote:
 > 
+> > On 23/04/2021 10:10, Hans Verkuil wrote:  
+> > > On 23/04/2021 10:07, Mauro Carvalho Chehab wrote:  
+> > >> Em Fri, 23 Apr 2021 09:10:32 +0200
+> > >> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > >>  
+> > >>> On Fri, Apr 23, 2021 at 09:04:27AM +0200, Krzysztof Kozlowski wrote:  
+> > >>>> On 21/04/2021 14:58, Greg Kroah-Hartman wrote:  
+> > >>>>> This reverts commit 78741ce98c2e36188e2343434406b0e0bc50b0e7.
+> > >>>>>
+> > >>>>> Commits from @umn.edu addresses have been found to be submitted in "bad
+> > >>>>> faith" to try to test the kernel community's ability to review "known
+> > >>>>> malicious" changes.  The result of these submissions can be found in a
+> > >>>>> paper published at the 42nd IEEE Symposium on Security and Privacy
+> > >>>>> entitled, "Open Source Insecurity: Stealthily Introducing
+> > >>>>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > >>>>> of Minnesota) and Kangjie Lu (University of Minnesota).
+> > >>>>>
+> > >>>>> Because of this, all submissions from this group must be reverted from
+> > >>>>> the kernel tree and will need to be re-reviewed again to determine if
+> > >>>>> they actually are a valid fix.  Until that work is complete, remove this
+> > >>>>> change to ensure that no problems are being introduced into the
+> > >>>>> codebase.
+> > >>>>>
+> > >>>>> Cc: Qiushi Wu <wu000273@umn.edu>
+> > >>>>> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > >>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > >>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > >>>>> ---
+> > >>>>>  drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +---
+> > >>>>>  1 file changed, 1 insertion(+), 3 deletions(-)
+> > >>>>>  
+> > >>>>
+> > >>>> This looks like a good commit but should be done now in a different way
+> > >>>> - using pm_runtime_resume_and_get().  Therefore I am fine with revert
+> > >>>> and I can submit later better fix.  
+> > >>>
+> > >>> Great, thanks for letting me know, I can have someone work on the
+> > >>> "better fix" at the same time.  
+> > >>
+> > >> IMO, it is better to keep the fix. I mean, there's no reason to
+> > >> revert a fix that it is known to be good.
+> > >>
+> > >> The "better fix" patch can be produced anytime. A simple coccinelle
+> > >> ruleset can replace patterns like:
+> > >>
+> > >> 	ret = pm_runtime_get_sync(pm->device);
+> > >> 	if (ret < 0) {
+> > >> 		pm_runtime_put_noidle(pm->device);
+> > >> 		return ret;
+> > >> 	}
+> > >>
+> > >> and the broken pattern:
+> > >>
+> > >> 	ret = pm_runtime_get_sync(pm->device);
+> > >> 	if (ret < 0)
+> > >> 		return ret;
+> > >>
+> > >> to:
+> > >>
+> > >> 	ret = pm_runtime_resume_and_get(pm->device);
+> > >> 	if (ret < 0)
+> > >> 		return ret;  
+> > >
+> > > That's my preference as well.  
+> >
+> > It won't be that easy because sometimes the error handling is via goto
+> > (like in other patches here) but anyway I don't mind keeping the
+> > original commits.  
 > 
-> On 23.04.21 11:03, Siddharth Chandrasekaran wrote:
-> > Hypercall code page is specified in the Hyper-V TLFS to be an overlay
-> > page, ie., guest chooses a GPA and the host _places_ a page at that
-> > location, making it visible to the guest and the existing page becomes
-> > inaccessible. Similarly when disabled, the host should _remove_ the
-> > overlay and the old page should become visible to the guest.
-> > 
-> > Currently KVM directly patches the hypercall code into the guest chosen
-> > GPA. Since the guest seldom moves the hypercall code page around, it
-> > doesn't see any problems even though we are corrupting the exiting data
-> > in that GPA.
-> > 
-> > VSM API introduces more complex overlay workflows during VTL switches
-> > where the guest starts to expect that the existing page is intact. This
-> > means we need a more generic approach to handling overlay pages: add a
-> > new exit reason KVM_EXIT_HYPERV_OVERLAY that exits to userspace with the
-> > expectation that a page gets overlaid there.
+> I tried the following semantic patch:
 > 
-> I can see how that may get interesting for other overlay pages later, but
-> this one in particular is just an MSR write, no? Is there any reason we
-> can't just use the user space MSR handling logic instead?
+> @@
+> expression ret,e;
+> @@
 > 
-> What's missing then is a way to pull the hcall page contents from KVM. But
-> even there I'm not convinced that KVM should be the reference point for its
-> contents. Isn't user space in an as good position to assemble it?
-
-Makes sense. Let me explore that route and get back to you.
-
-> > 
-> > In the interest of maintaing userspace exposed behaviour, add a new KVM
-> > capability to allow the VMMs to enable this if they can handle the
-> > hypercall page in userspace.
-> > 
-> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> > 
-> > CR: https://code.amazon.com/reviews/CR-49011379
+> -     ret = pm_runtime_get_sync(e);
+> +     ret = pm_resume_and_get(e);
+>       if (ret < 0) {
+>               ...
+> ?-            pm_runtime_put_noidle(e);
+>               ...
+>               return ret;
+>       }
 > 
-> Please remove this line from upstream submissions :).
-
-I noticed it a bit late (a tooling gap). You shouldn't see this in any
-of my future patches.
-
-> > ---
-> >   arch/x86/include/asm/kvm_host.h |  4 ++++
-> >   arch/x86/kvm/hyperv.c           | 25 ++++++++++++++++++++++---
-> >   arch/x86/kvm/x86.c              |  5 +++++
-> >   include/uapi/linux/kvm.h        | 10 ++++++++++
+> It has the following features:
 > 
-> You're modifying / adding a user space API. Please make sure to update the
-> documentation in Documentation/virt/kvm/api.rst when you do that.
+> * The ? means that if pm_runtime_put_noidle is absent, the transformation
+> will happen anyway.
+> 
+> * The ... before the return means that the matching will jump over a goto.
+> 
+> It makes a lot of changes (in a kernel I had handy from March). 
 
-Ack. Will add it.
+I would expect lots of changes, as the pm_runtime_resume_and_get() was only
+recently introduced on this changeset:
 
+commit dd8088d5a8969dc2b42f71d7bc01c25c61a78066
+Author: Zhang Qilong <zhangqilong3@huawei.com>
+Date:   Tue Nov 10 17:29:32 2020 +0800
 
+    PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter
+    
+    In many case, we need to check return value of pm_runtime_get_sync, but
+    it brings a trouble to the usage counter processing. Many callers forget
+    to decrease the usage counter when it failed, which could resulted in
+    reference leak. It has been discussed a lot[0][1]. So we add a function
+    to deal with the usage counter for better coding.
+    
+    [0]https://lkml.org/lkml/2020/6/14/88
+    [1]https://patchwork.ozlabs.org/project/linux-tegra/list/?series=178139
+    Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+    Acked-by: Rafael J. Wysocki  <rafael.j.wysocki@intel.com>
+    Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+> This is a
+> complicated API, however, and I don't know if there are any other issues
+> to take into account, especially in the case where the call to
+> pm_runtime_put_noidle is not present.
 
+I double-checked the code, despite its name, pm_runtime_put_noidle() just
+changes the refcount. See, the relevant code is here:
 
+	static inline void pm_runtime_put_noidle(struct device *dev)
+	{
+		atomic_add_unless(&dev->power.usage_count, -1, 0);
+	}
 
+	static inline int pm_runtime_get_sync(struct device *dev)
+	{
+		return __pm_runtime_resume(dev, RPM_GET_PUT);
+	}
+
+	int __pm_runtime_resume(struct device *dev, int rpmflags)
+	{
+	        unsigned long flags;
+	        int retval;
+
+	        might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe &&
+	                        dev->power.runtime_status != RPM_ACTIVE);
+
+	        if (rpmflags & RPM_GET_PUT)
+	                atomic_inc(&dev->power.usage_count);
+
+	        spin_lock_irqsave(&dev->power.lock, flags);
+	        retval = rpm_resume(dev, rpmflags);
+	        spin_unlock_irqrestore(&dev->power.lock, flags);
+
+	        return retval;
+	}
+
+Not being an expert at the PM runtime API, at least on my eyes,
+replacing pm_runtime_get_sync() by pm_runtime_resume_and_get()
+seems to be the right thing to do, but Rafael should know more.
+
+Thanks,
+Mauro
