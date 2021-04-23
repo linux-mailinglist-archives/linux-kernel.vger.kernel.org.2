@@ -2,99 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866833694EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD853694F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240868AbhDWOla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:41:30 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:53014 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbhDWOl1 (ORCPT
+        id S242715AbhDWOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242681AbhDWOmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:41:27 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d51 with ME
-        id wEgp2400d21Fzsu03EgqWK; Fri, 23 Apr 2021 16:40:50 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 23 Apr 2021 16:40:50 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     benh@kernel.crashing.org, mpe@ellerman.id.au, paulus@samba.org,
-        gustavoars@kernel.org, robh@kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] powerpc: Save a few lines of code
-Date:   Fri, 23 Apr 2021 16:40:48 +0200
-Message-Id: <0ff6235a4e2d497e146ce401fa2df71449d290b6.1619188632.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <f2186955f310494f10990b5c402ada164d7834b8.1619188632.git.christophe.jaillet@wanadoo.fr>
-References: <f2186955f310494f10990b5c402ada164d7834b8.1619188632.git.christophe.jaillet@wanadoo.fr>
+        Fri, 23 Apr 2021 10:42:05 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40A5C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:41:27 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id l17so18060108oil.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FePZXkucMceLOfDt03Vpu6abm992vMdpP+oGJ2jOjNw=;
+        b=m6fpWplmKwdwXU4JK/IzeVTFzLzC28YWwbXoD+y/NaLLaErrITDCBfoyGoqFlIdHtw
+         2Ai/wBaQ/xW7RyPPeV2dMP1pp+WVF4QImf73t/ouSQmci0HuziElWSVp2RdH1RIVvkWH
+         /ucHbwRkH0n8TZ9bcizSv996O93ISQEPrkQBlCjrKx53OY1o1SFfhyB1MsGb45PeKr8F
+         EtXs/0kpF1Sfi19AoeE8Y7oDxDgMiKcts7PNmyofMsCGA5xnz+EG/AXo6gBir5R3VmnJ
+         SJt7pUeTT+NKIbktxIgXSSdyGduCcevrzTTlVtayEjH0KOnCIV4g/n8PI9x2USqEP0UZ
+         6gKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FePZXkucMceLOfDt03Vpu6abm992vMdpP+oGJ2jOjNw=;
+        b=QAwPX5Ee3msjmB/udUPCAOUDnAbd/q7Zx3zLdSG+KdaCAbKA/aUSZraYPUQyraIVjd
+         Jz6LImSsxN68DzEqEac37rbbz6F4CFQVZCG5PDSRDVV8MMO69pFcTl+KIeP3BR1M2vFD
+         vWDPXBJZqS0K4Q3tYnRlBFKy2bP4LNQXrNz+ZsRkP/p1Ed0skAhODFImXZETRDIjCo6c
+         G14yIz4Ef9Gy8kET29kOlivvL7xNuT3KQk5HOo4KQZwajn4hw5HCo8UR9Hvi25hdfi24
+         gThF1B8fJwhnb96BaX7O994mRY/kGFYVu2PC8RCwSspqhhvXKFUxRiqw6Z9XMvGWZWb/
+         c4TQ==
+X-Gm-Message-State: AOAM531GZeOGonwOcLuCOFEvO4UTI3mYx2Ns1CNDta4GqhYVbFBkWnns
+        /v9Mg4fsmI5uT7H8W0ZE3ZfGtA==
+X-Google-Smtp-Source: ABdhPJxwatmNfPYAnerhrE6CQ2lbmlzjbgp9e+EIKP+DoG9PcKGhtuAVJ9evo923JktvZP5xV9BSBA==
+X-Received: by 2002:a05:6808:1305:: with SMTP id y5mr4378294oiv.142.1619188887294;
+        Fri, 23 Apr 2021 07:41:27 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j20sm1228593ooc.29.2021.04.23.07.41.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:41:26 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:41:24 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 14/27] drm/bridge: ti-sn65dsi86: Move all the
+ chip-related init to the start
+Message-ID: <YILclD/XF1Ww6H7g@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.14.Ide8ba40feb2e43bc98a11edbb08d696d62dcd83e@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.14.Ide8ba40feb2e43bc98a11edbb08d696d62dcd83e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'arch/powerpc/platforms/powermac/feature.c' triggers many checkpatch.pl
-warnings.
-The code looks old and not very active, so fixing them all does not make
-so much sense and will hide some 'git blame' information.
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
 
-So only apply a few fixes that save a few lines of code.
+> This is just code motion of the probe routine to move all the things
+> that are for the "whole chip" (instead of the GPIO parts or the
+> MIPI-to-eDP parts) together at the start of probe. This is in
+> preparation for breaking the driver into sub-drivers.
+> 
+> Since we're using devm for all of the "whole chip" stuff this is
+> actually quite easy now.
+> 
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- arch/powerpc/platforms/powermac/feature.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/arch/powerpc/platforms/powermac/feature.c b/arch/powerpc/platforms/powermac/feature.c
-index e612222f7d2e..155e8586692e 100644
---- a/arch/powerpc/platforms/powermac/feature.c
-+++ b/arch/powerpc/platforms/powermac/feature.c
-@@ -83,8 +83,7 @@ struct macio_chip *macio_find(struct device_node *child, int type)
- }
- EXPORT_SYMBOL_GPL(macio_find);
- 
--static const char *macio_names[] =
--{
-+static const char *macio_names[] = {
- 	"Unknown",
- 	"Grand Central",
- 	"OHare",
-@@ -119,8 +118,7 @@ struct feature_table_entry {
- 	feature_call	function;
- };
- 
--struct pmac_mb_def
--{
-+struct pmac_mb_def {
- 	const char*			model_string;
- 	const char*			model_name;
- 	int				model_id;
-@@ -301,11 +299,10 @@ static long ohare_sleep_state(struct device_node *node, long param, long value)
- 
- 	if ((pmac_mb.board_flags & PMAC_MB_CAN_SLEEP) == 0)
- 		return -EPERM;
--	if (value == 1) {
-+	if (value == 1)
- 		MACIO_BIC(OHARE_FCR, OH_IOBUS_ENABLE);
--	} else if (value == 0) {
-+	else if (value == 0)
- 		MACIO_BIS(OHARE_FCR, OH_IOBUS_ENABLE);
--	}
- 
- 	return 0;
- }
-@@ -2992,7 +2989,6 @@ void pmac_register_agp_pm(struct pci_dev *bridge,
- 	if (bridge != pmac_agp_bridge)
- 		return;
- 	pmac_agp_suspend = pmac_agp_resume = NULL;
--	return;
- }
- EXPORT_SYMBOL(pmac_register_agp_pm);
- 
--- 
-2.27.0
+Regards,
+Bjorn
 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 53f1f7b3022f..57bc489a0412 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -1253,12 +1253,6 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return PTR_ERR(pdata->regmap);
+>  	}
+>  
+> -	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &pdata->panel, NULL);
+> -	if (ret) {
+> -		DRM_ERROR("could not find any panel node\n");
+> -		return ret;
+> -	}
+> -
+>  	pdata->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+>  	if (IS_ERR(pdata->enable_gpio)) {
+>  		DRM_ERROR("failed to get enable gpio from DT\n");
+> @@ -1266,8 +1260,6 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return ret;
+>  	}
+>  
+> -	ti_sn_bridge_parse_lanes(pdata, dev->of_node);
+> -
+>  	ret = ti_sn65dsi86_parse_regulators(pdata);
+>  	if (ret) {
+>  		DRM_ERROR("failed to parse regulators\n");
+> @@ -1278,12 +1270,22 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  	if (IS_ERR(pdata->refclk))
+>  		return PTR_ERR(pdata->refclk);
+>  
+> -	ret = ti_sn_bridge_parse_dsi_host(pdata);
+> +	pm_runtime_enable(dev);
+> +	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_runtime_disable, dev);
+>  	if (ret)
+>  		return ret;
+>  
+> -	pm_runtime_enable(dev);
+> -	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_runtime_disable, dev);
+> +	ti_sn65dsi86_debugfs_init(pdata);
+> +
+> +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &pdata->panel, NULL);
+> +	if (ret) {
+> +		DRM_ERROR("could not find any panel node\n");
+> +		return ret;
+> +	}
+> +
+> +	ti_sn_bridge_parse_lanes(pdata, dev->of_node);
+> +
+> +	ret = ti_sn_bridge_parse_dsi_host(pdata);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1301,8 +1303,6 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  
+>  	drm_bridge_add(&pdata->bridge);
+>  
+> -	ti_sn65dsi86_debugfs_init(pdata);
+> -
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.31.1.368.gbe11c130af-goog
+> 
