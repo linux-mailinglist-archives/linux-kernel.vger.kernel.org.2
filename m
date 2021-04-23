@@ -2,86 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39DD368D6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93ADB368D6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240854AbhDWG4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhDWG4l (ORCPT
+        id S240880AbhDWG5A convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 02:57:00 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:36885 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhDWG46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:56:41 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA2DC061574;
-        Thu, 22 Apr 2021 23:56:05 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id q10so34555794pgj.2;
-        Thu, 22 Apr 2021 23:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=YwCnxkXVRrLVAcaZu7Tt0zFvI7AfeBQzqeihkPgPDZI=;
-        b=NaWkQ+BKCNjiXFDZ7Gm7qkfb+cJ/DGSYgJRYtzo2BQ/S0kNrXOG/tOEvqPoFozf41I
-         V9kBPzwz334k6KoPzxFPxUcB0zk11tsoFDO6yAYzzRvTGP9ecUIcqyrig+GgVz2OC9Cd
-         8PeScAxx+jY4wnRFFfqNxhCD8RFlecYKzTeTaFtMffcuTquHcqX7ojsmA3W4mEDlgRab
-         Zn0qrMm2GgQ7Grsm2Sr2CzNN23g5nSqHqISvx4KBUulvAdXlmU8YQhjoya08B1LY0aHw
-         k9VUhUTl4bPNZdDRPw8l8f4K14YF34yexHFY9LDDDspiUGpQxfhL+lExtjWlVqzuaSlT
-         SJOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=YwCnxkXVRrLVAcaZu7Tt0zFvI7AfeBQzqeihkPgPDZI=;
-        b=RdtRp7SiXfJHkgGBnCE6GpDLXtdu5gtRLBaWFNsYzORqEr8EKvkaa0wh8mS7NXK4rO
-         fyXF4pp0J1PiK8LbcuR8gRun/xR0/95G0Ap9qp2QHy+R0FylxSYzdsnnoHkBOmM8Erij
-         IkcE2kotJhJN7wXFrTXX9TVCb2UHx2MBnkOK4Yor1XsZ9FK12cmMrCE9H8sOrOtCHEie
-         kVt2zGgh5d1vUor9JB/L8BmsuGaUH0qsTX6uVPsua+ffhgaej1SQAJX4KvTgi5aJ1Adc
-         SWXDabqFuvny6DoVNDlOudUF2KN1kps87kcS4SCG4FqPaWULrLPHgCtSU6wI0rHv/wjk
-         k6lg==
-X-Gm-Message-State: AOAM530DMZ9EsIn2yDZRyM/OsQH4bwhiqQ+oE5sdxcb1c/qFKVaU2QrU
-        e/izZ+lzzORKSa7OWbW1HuBypymYQBr++xFx
-X-Google-Smtp-Source: ABdhPJyJGsZ5F+USbYFqWRFWnoyY8uMqzjmeA4ZPw6lDk25CG2uV6vZifGZvrq8auO/UhvauDrZ/Rg==
-X-Received: by 2002:a63:d915:: with SMTP id r21mr2444317pgg.69.1619160965221;
-        Thu, 22 Apr 2021 23:56:05 -0700 (PDT)
-Received: from shreya-VirtualBox ([122.167.91.182])
-        by smtp.gmail.com with ESMTPSA id 31sm3872335pgw.3.2021.04.22.23.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 23:56:03 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 12:25:58 +0530
-From:   Shreya Ajith <shreya.ajithchb@gmail.com>
-To:     davem@davemloft.net
-Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
-        davem@davemloft.net
-Subject: [PATCH]sbus:char:bbc_i2c:Replaced header file asm/io.h with
- linux/io.h
-Message-ID: <20210423065558.d5gy3zpxus6gsyc2@shreya-VirtualBox>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Fri, 23 Apr 2021 02:56:58 -0400
+Received: from marcel-macbook.holtmann.net (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
+        by mail.holtmann.org (Postfix) with ESMTPSA id CA66CCECFA;
+        Fri, 23 Apr 2021 09:04:08 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3 1/2] Bluetooth: btrtl: Adjust the position of strcut
+ definition
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210423035229.27513-2-hildawu@realtek.com>
+Date:   Fri, 23 Apr 2021 08:56:21 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        apusaka@chromium.org, tientzu@chromium.org, max.chou@realtek.com,
+        alex_lu@realsil.com.cn, kidman@realtek.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8AA44691-FFB2-4755-B7F2-6ABFCAAAEAA7@holtmann.org>
+References: <20210423035229.27513-1-hildawu@realtek.com>
+ <20210423035229.27513-2-hildawu@realtek.com>
+To:     Hilda Wu <hildawu@realtek.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaced header file asm/io.h with linux/io.h
+Hi Hilda,
 
-Signed-off-by:Shreya Ajith <shreya.ajithchb@gmail.com>
----
- drivers/sbus/char/bbc_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Adjust the position of strcut definition for btrtl and hci_h5.
+> The purpose is to avoid re-defining some chip features and let UART devices
+> get relevant information too.
+> 
+> Signed-off-by: hildawu <hildawu@realtek.com>
+> ---
+> drivers/bluetooth/btrtl.c | 36 ------------------------------------
+> drivers/bluetooth/btrtl.h | 36 +++++++++++++++++++++++++++++++++++-
+> 2 files changed, 35 insertions(+), 37 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+> index e7fe5fb22753..94d1e7885aee 100644
+> --- a/drivers/bluetooth/btrtl.c
+> +++ b/drivers/bluetooth/btrtl.c
+> @@ -38,42 +38,6 @@
+> 	.hci_ver = (hciv), \
+> 	.hci_bus = (bus)
+> 
+> -enum btrtl_chip_id {
+> -	CHIP_ID_8723A,
+> -	CHIP_ID_8723B,
+> -	CHIP_ID_8821A,
+> -	CHIP_ID_8761A,
+> -	CHIP_ID_8822B = 8,
+> -	CHIP_ID_8723D,
+> -	CHIP_ID_8821C,
+> -	CHIP_ID_8822C = 13,
+> -	CHIP_ID_8761B,
+> -	CHIP_ID_8852A = 18,
+> -};
+> -
+> -struct id_table {
+> -	__u16 match_flags;
+> -	__u16 lmp_subver;
+> -	__u16 hci_rev;
+> -	__u8 hci_ver;
+> -	__u8 hci_bus;
+> -	bool config_needed;
+> -	bool has_rom_version;
+> -	char *fw_name;
+> -	char *cfg_name;
+> -};
+> -
+> -struct btrtl_device_info {
+> -	const struct id_table *ic_info;
+> -	u8 rom_version;
+> -	u8 *fw_data;
+> -	int fw_len;
+> -	u8 *cfg_data;
+> -	int cfg_len;
+> -	bool drop_fw;
+> -	int project_id;
+> -};
+> -
+> static const struct id_table ic_id_table[] = {
+> 	/* 8723A */
+> 	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
+> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
+> index 2a582682136d..08bda0597c0c 100644
+> --- a/drivers/bluetooth/btrtl.h
+> +++ b/drivers/bluetooth/btrtl.h
+> @@ -12,7 +12,41 @@
+> #define rtl_dev_info(dev, fmt, ...) bt_dev_info(dev, "RTL: " fmt, ##__VA_ARGS__)
+> #define rtl_dev_dbg(dev, fmt, ...) bt_dev_dbg(dev, "RTL: " fmt, ##__VA_ARGS__)
+> 
+> -struct btrtl_device_info;
+> +enum btrtl_chip_id {
+> +	CHIP_ID_8723A,
+> +	CHIP_ID_8723B,
+> +	CHIP_ID_8821A,
+> +	CHIP_ID_8761A,
+> +	CHIP_ID_8822B = 8,
+> +	CHIP_ID_8723D,
+> +	CHIP_ID_8821C,
+> +	CHIP_ID_8822C = 13,
+> +	CHIP_ID_8761B,
+> +	CHIP_ID_8852A = 18,
+> +};
+> +
+> +struct id_table {
+> +	__u16 match_flags;
+> +	__u16 lmp_subver;
+> +	__u16 hci_rev;
+> +	__u8 hci_ver;
+> +	__u8 hci_bus;
+> +	bool config_needed;
+> +	bool has_rom_version;
+> +	char *fw_name;
+> +	char *cfg_name;
+> +};
+> +
+> +struct btrtl_device_info {
+> +	const struct id_table *ic_info;
+> +	u8 rom_version;
+> +	u8 *fw_data;
+> +	int fw_len;
+> +	u8 *cfg_data;
+> +	int cfg_len;
+> +	bool drop_fw;
+> +	int project_id;
+> +};
 
-diff --git a/drivers/sbus/char/bbc_i2c.c b/drivers/sbus/char/bbc_i2c.c
-index 537e55cd038d..a4a38a405b6f 100644
---- a/drivers/sbus/char/bbc_i2c.c
-+++ b/drivers/sbus/char/bbc_i2c.c
-@@ -16,7 +16,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <asm/bbc.h>
--#include <asm/io.h>
-+#include <linux/io.h>
- 
- #include "bbc_i2c.h"
- 
--- 
-2.25.1
+I really doubt that you need to expose all of these. Provide access function if needed.
+
+Regards
+
+Marcel
 
