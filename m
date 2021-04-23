@@ -2,159 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F10368C56
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D32368C60
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhDWErv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:47:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59462 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhDWErs (ORCPT
+        id S233399AbhDWEyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 00:54:52 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:33604 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhDWEyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:47:48 -0400
-Received: from 1-171-214-192.dynamic-ip.hinet.net ([1.171.214.192] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lZnic-0002E6-5n; Fri, 23 Apr 2021 04:47:07 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP Workstation laptops
-Date:   Fri, 23 Apr 2021 12:46:54 +0800
-Message-Id: <20210423044700.247359-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 23 Apr 2021 00:54:51 -0400
+Received: by mail-lf1-f47.google.com with SMTP id j4so36103460lfp.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:54:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=oNpP1yn0jsOF4WqBd73vLMfKDwqGpqekATuoCYN7vtU=;
+        b=JYcOmNO4znusDZLA73znmGu1iwZyzU2cR0K4IipY871ILMzi+PcmKEP132VG6aT75y
+         4HN8zFb1TWxc5JsIo8aJtOkS9QOGsgmzRl57moQKaCaPf9dWlxTxWEi5/XnaIiR3PWwd
+         nhjTxAq4HTuqhrxNXRpcK7V8wGbSiVrQfEcYP2bc9wILuu1BbE175dsL06GddfTdfgBr
+         977R8muPwCAP8hu4TMlXNFqJbajQuRF5hx/6mVeLIJwcbHU34Lvqde5wLqYJtHwwUZoj
+         s8PcRc5yipsDGDoruHZiztvQljWvYHj5rMOZ6OT4p+qxvYfDAR5O7lhsZQ4cDsc0KS2c
+         bjog==
+X-Gm-Message-State: AOAM53084GqKhpvRJIQMGJYeSclbn05xJQO6dun0U2m+whjs+zQUyv7m
+        wOHfp58VduXhS8m7+Wx6bck=
+X-Google-Smtp-Source: ABdhPJxaxJlW9K3GCghhd6Zw/eaS5uY7GoSxoWXzkfHXldG1iAjyooaOfRRXPvKVO7AO2VHE0m7Kig==
+X-Received: by 2002:ac2:529b:: with SMTP id q27mr1259429lfm.519.1619153654787;
+        Thu, 22 Apr 2021 21:54:14 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id i125sm459676lji.51.2021.04.22.21.54.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 21:54:14 -0700 (PDT)
+Message-ID: <f0792d1d1f5596ad0256aa01d88eb5bd7ceff653.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH] regulator: bd71815: include <linux/of.h> and
+ <linux/gpio/consumer.h>
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-power@fi.rohmeurope.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210422133338.1734640-1-arnd@kernel.org>
+References: <20210422133338.1734640-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Fri, 23 Apr 2021 07:54:00 +0300
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
-to discrete GFX after S3. This is not desirable, because userspace will
-treat connected display as a new one, losing display settings.
 
-The expected behavior is to let discrete GFX drives all external
-displays.
+On Thu, 2021-04-22 at 15:33 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The new driver causes a build failure because of a missing includes:
 
-The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
-The method is inside the BXT _DSM, so add the _DSM and call it
-accordingly.
+Odd that I never saw these errors. Thanks for the fix anyways! Much
+appreciated.
 
-I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
-regression was found.
+> drivers/regulator/bd71815-regulator.c: In function
+> 'buck12_set_hw_dvs_levels':
+> drivers/regulator/bd71815-regulator.c:210:13: error: implicit
+> declaration of function 'of_find_property' [-Werror=implicit-
+> function-declaration]
+>   210 |         if (of_find_property(np, "rohm,dvs-run-voltage",
+> NULL) ||
+>       |             ^~~~~~~~~~~~~~~~
+> drivers/regulator/bd71815-regulator.c: At top level:
+> drivers/regulator/bd71815-regulator.c:461:37: error: implicit
+> declaration of function 'of_match_ptr' [-Werror=implicit-function-
+> declaration]
+>   461 |                         .of_match =
+> of_match_ptr(#_name),               \
+>       |                                     ^~~~~~~~~~~~
+> drivers/regulator/bd71815-regulator.c: In function 'bd7181x_probe':
+> drivers/regulator/bd71815-regulator.c:590:19: error: implicit
+> declaration of function 'devm_gpiod_get_from_of_node' [-
+> Werror=implicit-function-declaration]
+>   590 |         ldo4_en = devm_gpiod_get_from_of_node(&pdev->dev,
+>       |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/regulator/bd71815-regulator.c:593:50: error: 'GPIOD_ASIS'
+> undeclared (first use in this function); did you mean 'GPIOF_IN'?
+>   593 |                                                  GPIOD_ASIS,
+> "ldo4-en");
+>       |                                                  ^~~~~~~~~~
+>       |                                                  GPIOF_IN
+> 
+> Fixes: 1aad39001e85 ("regulator: Support ROHM BD71815 regulators")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> As found yesterday with another patch I sent for this driver,
+> it is apparently not part of the regulator tree but only merged
+> through Lee's mfd tree.
+> ---
+>  drivers/regulator/bd71815-regulator.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/regulator/bd71815-regulator.c
+> b/drivers/regulator/bd71815-regulator.c
+> index a4e8d5e36b40..5be2b01632a0 100644
+> --- a/drivers/regulator/bd71815-regulator.c
+> +++ b/drivers/regulator/bd71815-regulator.c
+> @@ -16,9 +16,10 @@
+>  #include <linux/regulator/driver.h>
+>  #include <linux/delay.h>
+>  #include <linux/slab.h>
+> -#include <linux/gpio.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/mfd/rohm-generic.h>
+>  #include <linux/mfd/rohm-bd71815.h>
+> +#include <linux/of.h>
+>  #include <linux/regulator/of_regulator.h>
+>  
+>  struct bd71815_regulator {
 
-v2:
- - Forward declare struct pci_dev.
-
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
-References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
- drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
- drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
- 3 files changed, 25 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-index 833d0c1be4f1..c7b57c22dce3 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.c
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-@@ -14,11 +14,16 @@
- 
- #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
- #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
-+#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
- 
- static const guid_t intel_dsm_guid =
- 	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
- 		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
- 
-+static const guid_t intel_bxt_dsm_guid =
-+	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
-+		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
-+
- static char *intel_dsm_port_name(u8 id)
- {
- 	switch (id) {
-@@ -176,6 +181,18 @@ void intel_unregister_dsm_handler(void)
- {
- }
- 
-+void intel_bxt_dsm_detect(struct pci_dev *pdev)
-+{
-+	acpi_handle dhandle;
-+
-+	dhandle = ACPI_HANDLE(&pdev->dev);
-+	if (!dhandle)
-+		return;
-+
-+	acpi_evaluate_dsm(dhandle, &intel_bxt_dsm_guid, INTEL_DSM_REVISION_ID,
-+			  INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO, NULL);
-+}
-+
- /*
-  * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
-  * Attached to the Display Adapter).
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
-index e8b068661d22..d2d560d63bb3 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.h
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.h
-@@ -6,15 +6,18 @@
- #ifndef __INTEL_ACPI_H__
- #define __INTEL_ACPI_H__
- 
-+struct pci_dev;
- struct drm_i915_private;
- 
- #ifdef CONFIG_ACPI
- void intel_register_dsm_handler(void);
- void intel_unregister_dsm_handler(void);
-+void intel_bxt_dsm_detect(struct pci_dev *pdev);
- void intel_acpi_device_id_update(struct drm_i915_private *i915);
- #else
- static inline void intel_register_dsm_handler(void) { return; }
- static inline void intel_unregister_dsm_handler(void) { return; }
-+static inline void intel_bxt_dsm_detect(struct pci_dev *pdev) { return; }
- static inline
- void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
- #endif /* CONFIG_ACPI */
-diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
-index 785dcf20c77b..57b12068aab4 100644
---- a/drivers/gpu/drm/i915/i915_drv.c
-+++ b/drivers/gpu/drm/i915/i915_drv.c
-@@ -853,6 +853,8 @@ int i915_driver_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_cleanup_gem;
- 
-+	intel_bxt_dsm_detect(pdev);
-+
- 	i915_driver_register(i915);
- 
- 	enable_rpm_wakeref_asserts(&i915->runtime_pm);
-@@ -1215,6 +1217,7 @@ int i915_suspend_switcheroo(struct drm_i915_private *i915, pm_message_t state)
- static int i915_drm_resume(struct drm_device *dev)
- {
- 	struct drm_i915_private *dev_priv = to_i915(dev);
-+	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
- 	int ret;
- 
- 	disable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
-@@ -1271,6 +1274,8 @@ static int i915_drm_resume(struct drm_device *dev)
- 
- 	intel_gvt_resume(dev_priv);
- 
-+	intel_bxt_dsm_detect(pdev);
-+
- 	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
- 
- 	return 0;
--- 
-2.30.2
 
