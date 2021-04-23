@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5E4368992
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D70368995
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239890AbhDWABo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 20:01:44 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17391 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235569AbhDWABn (ORCPT
+        id S235916AbhDWAEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 20:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235302AbhDWAET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 20:01:43 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FRDsl4mgRzlZ7c;
-        Fri, 23 Apr 2021 07:59:07 +0800 (CST)
-Received: from A190218597.china.huawei.com (10.47.31.136) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 23 Apr 2021 08:00:56 +0800
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <salil.mehta@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linuxarm@openeuler.org>, <intel-wired-lan@lists.osuosl.org>
-Subject: [PATCH V3 net] ice: Re-organizes reqstd/avail {R,T}XQ check/code for efficiency
-Date:   Fri, 23 Apr 2021 01:00:18 +0100
-Message-ID: <20210423000018.20244-1-salil.mehta@huawei.com>
-X-Mailer: git-send-email 2.8.3
+        Thu, 22 Apr 2021 20:04:19 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF059C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:03:43 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id i190so32877151pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 17:03:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QWRme8W90t1BPTeoXEcFelQYikUvUd/HuwmVxLORM6Q=;
+        b=gFBLejZmWYtwWuTbUzXrKVzwnRinJd2NDYaixKXbcMVTKTkTFJD5G29Fmaw6ukvp2g
+         kiDQQ4mbkZlpkqSpolEsWqjz65mPpQLL9lGq2eDwRrSsLwSvKNRotY03yT1Ap/tPaHfm
+         THy4S89Bpv6M0bNUc1JqdLBxFWELnuPQ1uhimcodJNU8zByseVj0EdUVRIKunkr/RGBB
+         xhZP94F9yddMKYdyYH48PFjg/osYDJrhBB1+O/2+Qf3lIsQDE7A/qp0WvOlN+ceL+jrR
+         fVWakjHTYnhrSZ7/8L4VwbmnQEJVMtVEHpKr9p+eEnb5z+NMC335lPmWT1dPoC8lC0Ty
+         R4Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QWRme8W90t1BPTeoXEcFelQYikUvUd/HuwmVxLORM6Q=;
+        b=stMs6MohAXJ41i/RvzJ9wSw/YRoN6sn+U/wqLeMxDpSHf/OKMz1pF1qIFeiaQjmT6u
+         qJcKVj7ekJR+hPZZTD12YqlQ2Z+9LeHvRkKvo4MmlowaKgdOZipAadjojNop56MOYF5F
+         HKGuH+MNZA5kwGu0LLcoUD4WhV3MMD3X6ruBpE3Gmvqi+2o1wo99iTT5mAxPZAxOPt/k
+         oK5YwOAGJQGcycZpDf5Ul9sodKNYcyAWTChIUmOHEPdXA/Bumd+SCqKGFsBOwxVHhYNU
+         rz+0sktZRf2/fy75jgGwuykDZ4ebSr8eHj5WJoAzu2+ZwSsBp04HzSq5tcsu2kPEMLxW
+         szrA==
+X-Gm-Message-State: AOAM532QhrAk9oKNXZRA9WRPyGwVFzpicFM01Ew6XpTmuo3hO7zn70f/
+        Dh1b/xNkD4obpPwTF7wVM+iLoQ==
+X-Google-Smtp-Source: ABdhPJxEbZ7nzcHxEZ6WSTvN/ARrDhrTpdP+eAUgFOHzIyiWl+s74b+BkGvs5YUkzPirrG0+T9YwIw==
+X-Received: by 2002:aa7:90d3:0:b029:241:21a1:6ffb with SMTP id k19-20020aa790d30000b029024121a16ffbmr1089728pfk.43.1619136223169;
+        Thu, 22 Apr 2021 17:03:43 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id pc17sm3135335pjb.19.2021.04.22.17.03.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 17:03:41 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 00:03:31 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com
+Subject: Re: [PATCH 1/4] KVM: x86: Add AMD SEV specific Hypercall3
+Message-ID: <YIIO0wtHeNK6pyri@google.com>
+References: <cover.1619124613.git.ashish.kalra@amd.com>
+ <c33adc91aa57df258821f78224c0a2b73591423a.1619124613.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.31.136]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c33adc91aa57df258821f78224c0a2b73591423a.1619124613.git.ashish.kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If user has explicitly requested the number of {R,T}XQs, then it is
-unnecessary to get the count of already available {R,T}XQs from the
-PF avail_{r,t}xqs bitmap. This value will get overridden by user specified
-value in any case.
+On Thu, Apr 22, 2021, Ashish Kalra wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> KVM hypercall framework relies on alternative framework to patch the
+> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
+> apply_alternative() is called then it defaults to VMCALL. The approach
+> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
+> will be able to decode the instruction and do the right things. But
+> when SEV is active, guest memory is encrypted with guest key and
+> hypervisor will not be able to decode the instruction bytes.
+> 
+> Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
+> will be used by the SEV guest to notify encrypted pages to the hypervisor.
 
-Re-organize this code for improving the flow, readability and efficiency.
-This scope of improvement was found during the review of the ICE driver
-code.
+I still think we should invert the default and avoid having an SEV specific
+variant of kvm_hypercall3().
 
-Fixes: 87324e747fde ("ice: Implement ethtool ops for channels")
-Cc: intel-wired-lan@lists.osuosl.org
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
----
-Change:
-V2->V3
- (*) Addressed some comments from Paul Menzel
-     Link: https://lkml.org/lkml/2021/4/21/136
-V1->V2
- (*) Fixed the comments from Anthony Nguyen(Intel)
-     Link: https://lkml.org/lkml/2021/4/12/1997
----
- drivers/net/ethernet/intel/ice/ice_lib.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index d13c7fc8fb0a..d77133d6baa7 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -161,12 +161,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
- 
- 	switch (vsi->type) {
- 	case ICE_VSI_PF:
--		vsi->alloc_txq = min3(pf->num_lan_msix,
--				      ice_get_avail_txq_count(pf),
--				      (u16)num_online_cpus());
- 		if (vsi->req_txq) {
- 			vsi->alloc_txq = vsi->req_txq;
- 			vsi->num_txq = vsi->req_txq;
-+		} else {
-+			vsi->alloc_txq = min3(pf->num_lan_msix,
-+					      ice_get_avail_txq_count(pf),
-+					      (u16)num_online_cpus());
- 		}
- 
- 		pf->num_lan_tx = vsi->alloc_txq;
-@@ -175,12 +176,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
- 		if (!test_bit(ICE_FLAG_RSS_ENA, pf->flags)) {
- 			vsi->alloc_rxq = 1;
- 		} else {
--			vsi->alloc_rxq = min3(pf->num_lan_msix,
--					      ice_get_avail_rxq_count(pf),
--					      (u16)num_online_cpus());
- 			if (vsi->req_rxq) {
- 				vsi->alloc_rxq = vsi->req_rxq;
- 				vsi->num_rxq = vsi->req_rxq;
-+			} else {
-+				vsi->alloc_rxq = min3(pf->num_lan_msix,
-+						      ice_get_avail_rxq_count(pf),
-+						      (u16)num_online_cpus());
- 			}
- 		}
- 
--- 
-2.17.1
-
+https://lore.kernel.org/kvm/X8gyhCsEMf8QU9H%2F@google.com/
