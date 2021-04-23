@@ -2,102 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744DF369AE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B242E369AE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbhDWT01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        id S243754AbhDWT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhDWT0Y (ORCPT
+        with ESMTP id S229549AbhDWT20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:26:24 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67EDC061574;
-        Fri, 23 Apr 2021 12:25:46 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id l21so6680222iob.1;
-        Fri, 23 Apr 2021 12:25:46 -0700 (PDT)
+        Fri, 23 Apr 2021 15:28:26 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E85C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:27:48 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id sd23so66772588ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:27:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V74EFI5YNJRXk9wbQGsunfhXeUPcRx2BctxhLBEUfgo=;
-        b=R4tHKzWSlnVchgZMTxQt8mh2HlOm4QZ0qaFpPPNs+HYbAwxDV8w8OldLTQP9YfglmI
-         +U+/Qw/2nTL7wkgRiXayU/OpgxmO+kyMos+6h3pj1Y5LSG/pj35IvClud97PXWHoA8kr
-         a1Cjry+dJxq+ue6+EOuLUrls0IdfsxZ7Uj+m8eCE5lS4o3KDMlQ31wo+D7Twx/dZolcm
-         Le92efrv3bfj/p7fa6ADzjn8C1uTBW7pyM07sLZIrQUi2h12VTYXwJndqhM5QzADdtzL
-         1Iu6hmiob01pfYTipBiEhfpCIh0StokbFJVDPjbucWwLl9g4W6USFvof2dZxcjFElgTU
-         1tgg==
+         :cc:content-transfer-encoding;
+        bh=GGmswUWs0RhjLm11KvpLJnLg6G3DSRO1QkIM1fXbk7s=;
+        b=02tLZjLeYkxGPB2kXMhpJATnGAtGmYPsmzTboVgl/LmG2WbReuSJpJrPlxJd90ALKR
+         97sPdAcYuV4/oaDQXmOwIgdjD3nkc+vwW8/gPUaZkaeqTEC94+s9E0R4OCZ0ig8W1+nl
+         nqyN38L7dwd2RMuWYF5cioO9XPfvVR8M4cdSiNRh2SX+d3OdOTrXdAsX8ksUKHDvZ72w
+         waDXwP7pSE48qNSKfm0IAeh4BaI4PqR+hSTGCwLYYApnxxeImRsdoFWDHwFXJVBi+Q3C
+         zRKDs+BLZ0nrlPvvpF+sufIB8MBeGS7GtuL2Al6hW3uvcCJLJ1xC0gcUtMBvVM0hyzO2
+         HqhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V74EFI5YNJRXk9wbQGsunfhXeUPcRx2BctxhLBEUfgo=;
-        b=j/g76nWoiKNQxdv7T69lMR1Dlab3OMT0Dj7G/0LA5p52fxYjQeBtq3ZRK5Vsdi0BIz
-         Rs58TC180yW3T+Ij6QaqD0b7P3/owcfW0naFsPMkcAZ098TLoyTCUNsNfK1SwpYayd1z
-         CYx9cCo2bKmmiJhOaIUhAUYBu270E+2y90YANSOhxLbMte9USea8NwwKUgDpmzsVPP9H
-         qajYOXiBLzu1/yHYw5GfmDGTFut7aKWAmTWYxOk3IqiG6QPGnHZBoiF+x5eL7LAIZ5Em
-         7qoDgEU50rzL0LArmr6TWrlAi+bbrLjTpufnQAnXhhRb2NI9MN1Zhg3tM9aMKnthK2hV
-         c8wQ==
-X-Gm-Message-State: AOAM531s/HwwcQMy5OSD+2zbeWl/q9+mxzoW1p/P6X/sIdlgVFZcgvqm
-        g0JslaQ4mWRvd92ZeNDFt3tv7Za3eLHF/T6pCfwPV1Sn
-X-Google-Smtp-Source: ABdhPJyDh2LIYibl4XZHDQP3iL2hiUueGExWaOu8x9Ee2ludbcNor4m4tdmVcjvGC4xOt2k/sO3qTRR0NlLb+wPdlhA=
-X-Received: by 2002:a6b:f808:: with SMTP id o8mr4582100ioh.140.1619205946260;
- Fri, 23 Apr 2021 12:25:46 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GGmswUWs0RhjLm11KvpLJnLg6G3DSRO1QkIM1fXbk7s=;
+        b=hPaLB6Z0C7W3796phkcMdUhXt6DwX1/q4w84h+FyAVryhRrHMk61hyWVsiSdjDNPmG
+         wKmTZSrDSqho+a4RK8bCsLXaKP8R6Uv8Y/OyCg6J+jTNeNrjJQ03tl0W8J0f7xBhL7ls
+         rD0VuBEwGBFbMhepknQYuptHoS2lT7kUwpMq2X+rbCqn51TsvWvAN/ED4c6/3RYvgFSj
+         8lidzqGAOLRzHoTZixjI/9o8a5V2pOVW1Wj6WjuMW9xGN4priXazCYAXPwj9FmguxE18
+         PyqLCSltx0CH2gnv3Mb6K2pbz+7Qi59TjhNMY9qw8Y2vzck0NS9FJxZVghap17abD5Y/
+         5Alw==
+X-Gm-Message-State: AOAM530Ihf35csFHdphlAm9LzabZKtgd+CneLnJ3tglIpgWpnZD8dYwn
+        Px1kSX3dZvqMFMsmITg2NBD8n5BNVpQnK+rQVMSJ
+X-Google-Smtp-Source: ABdhPJxFunO8u/UyY8hB3Vbeq+g3Smp6PbgP4kttDr+81dktNKM4DKLyCDErbfUfCB/j8VqV43lTQ0UFMkx/w+QTI+E=
+X-Received: by 2002:a17:906:f283:: with SMTP id gu3mr5825341ejb.91.1619206066758;
+ Fri, 23 Apr 2021 12:27:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423191920.42940-1-alcooperx@gmail.com>
-In-Reply-To: <20210423191920.42940-1-alcooperx@gmail.com>
-From:   Alan Cooper <alcooperx@gmail.com>
-Date:   Fri, 23 Apr 2021 15:25:35 -0400
-Message-ID: <CAOGqxeVokFqOQMpTrpyg1GPRk6YCw=GF0-ShBtiKz_3_0RU2XQ@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250: of: Check for CONFIG_SERIAL_8250_BCM7271
-To:     ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+References: <000000000000307cc205bbbf31d3@google.com> <29f03460-c0ba-07a0-ef98-9597ef157797@oracle.com>
+In-Reply-To: <29f03460-c0ba-07a0-ef98-9597ef157797@oracle.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 23 Apr 2021 15:27:35 -0400
+Message-ID: <CAHC9VhSKtS7syw51S8=KOFNu-NSyV5vw+uyr50KexBKW_QAP_w@mail.gmail.com>
+Subject: Re: WARNING in netlbl_cipsov4_add
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     syzbot <syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this patch, it was already submitted by Florian about an hour ago.
+On Fri, Apr 23, 2021 at 6:47 AM Vegard Nossum <vegard.nossum@oracle.com> wr=
+ote:
+> Hi Paul,
+>
+> This syzbot report reproduces in mainline for me and it looks like
+> you're the author/maintainer of this code, so I'm just adding some info
+> to hopefully aid the preparation of a fix:
 
-Thanks
-Al
+Hi Vegard,
 
-On Fri, Apr 23, 2021 at 3:20 PM Al Cooper <alcooperx@gmail.com> wrote:
+Yes, you've come to the right place, thank you for your help in
+tracking this down.  Some comments and initial thoughts below ...
+
+> On 2021-02-20 08:05, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+
+...
+
+> Running strace on the reproducer says:
 >
-> From: Jim Quinlan <jim2101024@gmail.com>
+> socket(PF_NETLINK, SOCK_RAW, NETLINK_GENERIC) =3D 3
+> socket(PF_NETLINK, SOCK_RAW, NETLINK_GENERIC) =3D 4
+> sendto(4,
+> "(\0\0\0\20\0\5\0\0\0\0\0\0\0\0\0\3\0\0\0\21\0\2\0NLBL_CIPSOv4\0\0\0\0",
+> 40, 0, {sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000000}, 12) =3D 40
+> recvfrom(4,
+> "\234\0\0\0\20\0\0\0\0\0\0\0\f\r\0\0\1\2\0\0\21\0\2\0NLBL_CIPSOv4\0\0\0\0=
+\6\0\1\0\24\0\0\0\10\0\3\0\3\0\0\0\10\0\4\0\0\0\0\0\10\0\5\0\f\0\0\0T\0\6\0=
+\24\0\1\0\10\0\1\0\1\0\0\0\10\0\2\0\v\0\0\0\24\0\2\0\10\0\1\0\2\0\0\0\10\0\=
+2\0\v\0\0\0\24\0\3\0\10\0\1\0\3\0\0\0\10\0\2\0\n\0\0\0\24\0\4\0\10\0\1\0\4\=
+0\0\0\10\0\2\0\f\0\0\0",
+> 4096, 0, NULL, NULL) =3D 156
+> recvfrom(4,
+> "$\0\0\0\2\0\0\0\0\0\0\0\f\r\0\0\0\0\0\0(\0\0\0\20\0\5\0\0\0\0\0\0\0\0\0"=
+,
+> 4096, 0, NULL, NULL) =3D 36
+> sendmsg(3, {msg_name(0)=3DNULL,
+> msg_iov(1)=3D[{"T\0\0\0\24\0\1\0\0\0\0\0\0\0\0\0\1\0\0\0,\0\10\200\34\0\7=
+\200\10\0\5\0\3608)
+> \10\0\6\0\0\0\0\0\10\0\6\0\0\0\0\0\f\0\7\200\10\0\5\0\0\0\0\0\4\0\4\200\1=
+0\0\1\0\0\0\0\0\10\0\2\0\1\0\0\0",
+> 84}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 84
 >
-> This commit has of_platform_serial_probe() check specifically for the
-> "brcm,bcm7271-uart" and whether its companion driver is enabled. If it
-> is the case, and the clock provider is not ready, we want to make sure
-> that when the 8250_bcm7271.c driver returns EPROBE_DEFER, we are not
-> getting the UART registered via 8250_of.c.
+> We're ending up in netlbl_cipsov4_add() with CIPSO_V4_MAP_TRANS, so it
+> calls netlbl_cipsov4_add_std() where this is the problematic allocation:
 >
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> ---
->  drivers/tty/serial/8250/8250_of.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> doi_def->map.std->lvl.local =3D kcalloc(doi_def->map.std->lvl.local_size,
+>                                        sizeof(u32),
+>                                        GFP_KERNEL);
 >
-> diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
-> index 65e9045dafe6..aa458f3c6644 100644
-> --- a/drivers/tty/serial/8250/8250_of.c
-> +++ b/drivers/tty/serial/8250/8250_of.c
-> @@ -192,6 +192,10 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
->         u32 tx_threshold;
->         int ret;
+> It looks like there is already a check on the max size:
 >
-> +       if (IS_ENABLED(CONFIG_SERIAL_8250_BCM7271) &&
-> +           of_device_is_compatible(ofdev->dev.of_node, "brcm,bcm7271-uart"))
-> +               return -ENODEV;
-> +
->         port_type = (unsigned long)of_device_get_match_data(&ofdev->dev);
->         if (port_type == PORT_UNKNOWN)
->                 return -EINVAL;
-> --
-> 2.17.1
+> if (nla_get_u32(nla_b) >
+>      CIPSO_V4_MAX_LOC_LVLS)
+>          goto add_std_failure;
+> if (nla_get_u32(nla_b) >=3D
+>      doi_def->map.std->lvl.local_size)
+>       doi_def->map.std->lvl.local_size =3D
+>               nla_get_u32(nla_b) + 1;
 >
+> However, the limit is quite generous:
+>
+> #define CIPSO_V4_INV_LVL              0x80000000
+> #define CIPSO_V4_MAX_LOC_LVLS         (CIPSO_V4_INV_LVL - 1)
+>
+> so maybe a fix would just lower this to something that agrees with the
+> page allocator?
+
+Hmm, I agree that from a practical point of view the limit does seem
+high.  The issue is that I'm not sure we have an easy way to determine
+an appropriate local limit considering that it is determined by the
+LSM and in some cases it is determined by the LSM's loaded policy.  On
+the plus side you need privilege to get this far in the code so the
+impact is minimized, although we still should look into catching this
+prior to the WARN_ON_ONCE() in __alloc_pages_nodemask().  If nothing
+else it allows the fuzzers to keep making progress and not die here.
+
+We could drop CIPSO_V4_MAX_LOC_LVLS to an arbitrary value, or better
+yet make it a sysctl (or similar), but that doesn't feel right and I'd
+prefer to not create another runtime config knob if we don't have to
+do so.  Is there a safe/stable way to ask the allocator what size is
+*too* big?  That might be a better solution as we could catch it in
+the CIPSO code and return an error before calling kmalloc.  I'm not a
+mm expert, but looking through include/linux/slab.h I wonder if we
+could just compare the allocation size with KMALLOC_SHIFT_MAX?  Or is
+that still too big?
+
+> At first glance it may appear like there is a similar issue with
+> doi_def->map.std->lvl.cipso_size, but that one looks restricted to a
+> saner limit of CIPSO_V4_MAX_REM_LVLS =3D=3D 255. It's probably better to
+> double check both in case I read this wrong.
+
+This one is a bit easier, that limit is defined by the CIPSO protocol
+and we really shouldn't change that.
+
+FWIW, I would expect that we would have a similar issue with the
+CIPSO_V4_MAX_LOC_CATS check in the same function.  My initial thinking
+is that we can solve it in the same manner as the
+CIPSO_V4_MAX_LOC_LVLS fix.
+
+--=20
+paul moore
+www.paul-moore.com
