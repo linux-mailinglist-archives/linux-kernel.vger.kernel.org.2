@@ -2,156 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7720C368E9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D82A368EA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241428AbhDWINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:13:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46488 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241361AbhDWINr (ORCPT
+        id S241467AbhDWIN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:13:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38359 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241361AbhDWIN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:13:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619165590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JV8lxB5jxKaMLebE0kj34sple4uhf5PyGZQen4ktIWM=;
-        b=LDz91TX5E08jq4PvBHjAAmeNhVuzOJpP2I+AlgYMgcXhJP5ychacd+buwwUkA1q9y/DIHn
-        elV3qE9Z+WqQwod+eNb56F32CtxMzlFEixaW0qY8vN/jCMG1Tc+l5EeSw7x+B5T6wPbBrV
-        m7GXp92o5N0zw74YkH+H1xesbOZ3snw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-244-X8GxsUdhMfehJZ0A0CoyAA-1; Fri, 23 Apr 2021 04:13:09 -0400
-X-MC-Unique: X8GxsUdhMfehJZ0A0CoyAA-1
-Received: by mail-ed1-f69.google.com with SMTP id f1-20020a0564021941b02903850806bb32so12263003edz.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:13:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JV8lxB5jxKaMLebE0kj34sple4uhf5PyGZQen4ktIWM=;
-        b=RdIH6CUhcNRzmlM4lbksCbdgmzoh2UgdLpwXqrggdEzKuicnsqxwEMYaeRm721yWu0
-         0jyQ/JYxqcuhAvSD0cBjLh97hVKPecKwt7qIvvrwTuBHNnpWKON3zWRnBPyx2fvhAcWO
-         LFG67onjmdEQ/ODq4RLQ8QVYI7gqkq0Woep1oUAJUTGuWs8lJHSPqT6JmCrIawJqxyB4
-         JsPWe/NPQAuQvKhMPtoeY7Xo5h021SxIEU0i7C4PBB8XZTdpEqIoQvZwXh4ud4as18qb
-         exmxorrjf8Zi+1Fed+tdpe/iZk+vU98Bj4gWEMle+YOmLQcFzVtDtpBBw0IXC91dQajc
-         U4ug==
-X-Gm-Message-State: AOAM531u9pE9CWa/N/wQLD88yhA9Hl1Gu1Cvrk5AONS7isbzaMLauDcj
-        HCSUwLv8YjVrfT8CUK4oJ6lUmkdEB0KBcKrOXB3XHivSDMFuXSUCsvBMlOlfRhi0QW/YhRhYoib
-        a+VRAhQ8OhhhsEHj9na0ovL5d
-X-Received: by 2002:a17:906:80d1:: with SMTP id a17mr2940524ejx.55.1619165587543;
-        Fri, 23 Apr 2021 01:13:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwmHJI1X+H7hKlvBNxRQOwhvUiNXWScEBXZM+Kc2dHSs2YT40KOzysDXFu7gbrM6y/ENjHjaw==
-X-Received: by 2002:a17:906:80d1:: with SMTP id a17mr2940509ejx.55.1619165587397;
-        Fri, 23 Apr 2021 01:13:07 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f19sm3521662ejc.54.2021.04.23.01.13.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 01:13:06 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/xen: Take srcu lock when accessing
- kvm_memslots()
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1619161883-5963-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f025b59c-5a8a-abf7-20fc-323a5b450ba5@redhat.com>
-Date:   Fri, 23 Apr 2021 10:13:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 23 Apr 2021 04:13:56 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lZqw9-0008Ax-SJ; Fri, 23 Apr 2021 08:13:17 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] serial: qcom_geni_serial: redundant initialization to variable line
+Date:   Fri, 23 Apr 2021 09:13:17 +0100
+Message-Id: <20210423081317.318352-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1619161883-5963-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/21 09:11, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> kvm_memslots() will be called by kvm_write_guest_offset_cached() so
-> take the srcu lock.
-> 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Good catch.  But I would pull it from kvm_steal_time_set_preempted to 
-kvm_arch_vcpu_put instead.
+The variable line being initialized with a value that is never read
+and it is being updated later with a new value. The initialization is
+redundant and can be removed.
 
-Paolo
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+---
 
-> ---
->   arch/x86/kvm/xen.c | 18 ++++++++++++++----
->   1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-> index ae17250..d0df782 100644
-> --- a/arch/x86/kvm/xen.c
-> +++ b/arch/x86/kvm/xen.c
-> @@ -96,6 +96,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
->   	struct kvm_vcpu_xen *vx = &v->arch.xen;
->   	uint64_t state_entry_time;
->   	unsigned int offset;
-> +	int idx;
->   
->   	kvm_xen_update_runstate(v, state);
->   
-> @@ -133,10 +134,16 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
->   	BUILD_BUG_ON(sizeof(((struct compat_vcpu_runstate_info *)0)->state_entry_time) !=
->   		     sizeof(state_entry_time));
->   
-> +	/*
-> +	 * Take the srcu lock as memslots will be accessed to check the gfn
-> +	 * cache generation against the memslots generation.
-> +	 */
-> +	idx = srcu_read_lock(&v->kvm->srcu);
-> +
->   	if (kvm_write_guest_offset_cached(v->kvm, &v->arch.xen.runstate_cache,
->   					  &state_entry_time, offset,
->   					  sizeof(state_entry_time)))
-> -		return;
-> +		goto out;
->   	smp_wmb();
->   
->   	/*
-> @@ -154,7 +161,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
->   					  &vx->current_runstate,
->   					  offsetof(struct vcpu_runstate_info, state),
->   					  sizeof(vx->current_runstate)))
-> -		return;
-> +		goto out;
->   
->   	/*
->   	 * Write the actual runstate times immediately after the
-> @@ -173,7 +180,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
->   					  &vx->runstate_times[0],
->   					  offset + sizeof(u64),
->   					  sizeof(vx->runstate_times)))
-> -		return;
-> +		goto out;
->   
->   	smp_wmb();
->   
-> @@ -186,7 +193,10 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
->   	if (kvm_write_guest_offset_cached(v->kvm, &v->arch.xen.runstate_cache,
->   					  &state_entry_time, offset,
->   					  sizeof(state_entry_time)))
-> -		return;
-> +		goto out;
-> +
-> +out:
-> +	srcu_read_unlock(&v->kvm->srcu, idx);
->   }
->   
->   int __kvm_xen_has_interrupt(struct kvm_vcpu *v)
-> 
+V2: fix $SUBJECT
+
+---
+ drivers/tty/serial/qcom_geni_serial.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+index 99375d99f6fa..c5f2a4fa2bb1 100644
+--- a/drivers/tty/serial/qcom_geni_serial.c
++++ b/drivers/tty/serial/qcom_geni_serial.c
+@@ -1338,7 +1338,7 @@ static const struct uart_ops qcom_geni_uart_pops = {
+ static int qcom_geni_serial_probe(struct platform_device *pdev)
+ {
+ 	int ret = 0;
+-	int line = -1;
++	int line;
+ 	struct qcom_geni_serial_port *port;
+ 	struct uart_port *uport;
+ 	struct resource *res;
+-- 
+2.30.2
 
