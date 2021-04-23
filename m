@@ -2,230 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F6B368F49
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13DE368F4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241662AbhDWJWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:22:40 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:43771 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229456AbhDWJWi (ORCPT
+        id S241594AbhDWJZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:25:00 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:38107 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229939AbhDWJY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:22:38 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id Zs0bl016nvTEDZs0elcmaK; Fri, 23 Apr 2021 11:22:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1619169721; bh=4i33cPq5YRlrGpo3f6T0iY7nVs8xwHxqgZTcEaiRlys=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=VcdX/Zz6wZ64cvFSuzuAlo9UFk+M6yQ3OCgXaTotMPNTW7MkbmioqFoz1CnCbDH2y
-         GBodOuefqbocRUS73rET96GqNq7TgAQhG91Eq48Nc9YUVTkuPGUw8/erAMlKFyo29i
-         Wx1cj3hsj6wuBY4Y6lU2Oh0cb4i7yt9UcaTUtXwTJAxlZNeNEzWdqh2sXh/TlfW+Y2
-         t5jMvFDDW74An57jEksIFtSl9tUQrAltAGG76H5YH9Pf2XNu0XGrCIkWm1WBPEvtLc
-         KfWJ9cIZ3+yDLeX07krnawJqcPxwlLrZkVMpwThl+/G2M6R1FRrMLxS9iY6kdjKIVP
-         JGqIIPNlbppLw==
-Subject: Re: [Outreachy kernel] [PATCH v3] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-References: <20210421123718.GA4597@focaruja>
- <alpine.DEB.2.22.394.2104211507280.9436@hadrien>
- <7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel@gmail.com>
- <alpine.DEB.2.22.394.2104211555040.9436@hadrien>
- <16dd7a16a8cc69aa0f81dd6bf47f09e878c71a6b.camel@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <d2cfc472-d3ac-fd47-aa0c-ed6414f671fc@xs4all.nl>
-Date:   Fri, 23 Apr 2021 11:21:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Fri, 23 Apr 2021 05:24:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619169862; x=1650705862;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MmetagU797mHfH+rqMJ7bdU2UjwXQjjYyjhXUU6aeSM=;
+  b=jvKDcDXfY5JGPHahebd/r4LACHuHVTBrWuSIV6UKvHi1PhoeNEzqu4pO
+   xgUwd7SydOjQCwY/4Pk4o9FHzBsdiLptdS+vHZg5E1tzioSsIRH9pQxvu
+   EJzrMhkKBDhumrzfz2lv+qwPKpywzdbWWZceOjFfOC0cDXBvvQTgl0RyO
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.82,245,1613433600"; 
+   d="scan'208";a="121015296"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 23 Apr 2021 09:24:14 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 0478A240A64;
+        Fri, 23 Apr 2021 09:24:09 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 23 Apr 2021 09:24:09 +0000
+Received: from [10.95.82.45] (10.43.160.119) by EX13D20UWC001.ant.amazon.com
+ (10.43.162.244) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
+ 2021 09:24:05 +0000
+Message-ID: <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
+Date:   Fri, 23 Apr 2021 11:24:04 +0200
 MIME-Version: 1.0
-In-Reply-To: <16dd7a16a8cc69aa0f81dd6bf47f09e878c71a6b.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:88.0)
+ Gecko/20100101 Thunderbird/88.0
+Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfFg8zDW66Qc5exL+94pEGtwkZUK5dwl/4XxeSs55yNAO6xWqR6mWZzZxIkspH6Guqm1cswU2CpzcvkW9A+Itu/Bl/G1ivMjMGof/wUNYGzQtggjQOKdD
- obs180G+1O3b2etGFhbUHB+9hIIy9IpLRm1KGjB+IFYEX2//A7j1AAoYjs0zP2zOiHJfu+VPF4wMM64vlgEPsfkoSDC9qFB0LaEtdVkiLX6vxL2XXXew46Vz
- nPvtdKhi3hEtq/mRlErtXYL8Wa2zBj0IQsFx/+FG6oeXstucdzue3EnvdVuCK13FklJQLnyUxdGtnWkI997RQtVU7hGjbY6V41xpb1B+ECdokuS4+tELyAED
- s95knAHpKcFaxpF74A8ZxQ+uvn9MCeZ8Kc/p1GFsuMqPMVNd3BM0fvOnG5rbYVsr7usBd7gkY1ewUxE3+DbkaF+UXW294gY5FFRO4GfkTRtkaV0aYDThbfne
- oou6K0Vt0T1IeGPYXVF4F2g2aq/gdUHzKiaua8cD3KVo3qvKOackHxrUM0dHige6M5CwD86WL0C+htyu
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+CC:     Evgeny Iakovlev <eyakovl@amazon.de>, Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210423090333.21910-1-sidcha@amazon.de>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <20210423090333.21910-1-sidcha@amazon.de>
+X-Originating-IP: [10.43.160.119]
+X-ClientProxiedBy: EX13D17UWB001.ant.amazon.com (10.43.161.252) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/2021 16:21, Aline Santana Cordeiro wrote:
-> Em qua, 2021-04-21 às 15:56 +0200, Julia Lawall escreveu:
->>
->>
->> On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
->>
->>> Em qua, 2021-04-21 às 15:08 +0200, Julia Lawall escreveu:
->>>>
->>>>
->>>> On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
->>>>
->>>>> Change line break to avoid an open parenthesis at the end of
->>>>> the
->>>>> line.
->>>>> It consequently removed spaces at the start of the subsequent
->>>>> line.
->>>>
->>>> The message is hard to understand.  There are a lot of singular
->>>> nouns, but
->>>> actually there are two changes.  Which change is being described
->>>> by
->>>> the
->>>> above message?  What does "It" refer to?
->>>>
->>>> julia
->>>
->>> Checkpatch indicated two problems with this function declaration:
->>> 1) The line ending with an open parenthesis, and
->>> 2) The following line - with the function parameters - has spaces
->>> in
->>> its identation.
->>>
->>> When I changed the line break to put the function name and its
->>> parameter in the following line, both checkpath checks were
->>> eliminated.
->>>
->>> So, the main change was the line break and, also, the line break
->>> (it)
->>> removed the space in the following line.
->>>
->>> Is it better to change the message and explain only about the line
->>> break?
->>
->> The message should explain about the whole patch.  So if you change
->> two
->> things, it should be clear that what you are saying covers both of
->> them.
-> 
-> Ok, I can do that. In the commit message I described just one issue
-> because it is only one patch, I didn't want it to look like I was
-> changing different issues in just one patch.
-> 
->>
->> But it seems that Matthew doesn't think that the line break is a good
->> idea
->> anyway.
-> 
-> Yes, I'm sending this email to Matthew too, because I don't know
-> exactly how to proceed as Hans asked me to made some corrections too. 
-> I've made these changes because checkpatch has indicated and with this
-> line break, checkpatch does not indicate any check or warning anymore.
-> But I can undo that too, I just don't know what I'm supposed to do with
-> so many opposite opinions. 
-
-As one of the media maintainers I can say that in this case the preference
-would be to split it up in two lines. It's one of those areas where
-different maintainers have different opinions.
-
-Just keep in mind that this is all nitpicking and normally we probably
-wouldn't bother with this at all, but it is a good exercise to learn
-about patches and contributing :-)
-
-Regards,
-
-	Hans
-
-> 
-> 
-> Thank you all,
-> Aline 
->>
->> julia
->>
->>>
->>> Thank you,
->>> Aline
->>>>
->>>>
->>>>> Both issues detected by checkpatch.pl.
->>>>>
->>>>> Signed-off-by: Aline Santana Cordeiro <
->>>>> alinesantanacordeiro@gmail.com>
->>>>> ---
->>>>>
->>>>> Changes since v2:
->>>>>  - Insert a space between the function type and pointer
->>>>>
->>>>> Changes since v1:
->>>>>  - Keep the pointer with the function return type
->>>>>    instead of left it with the function name
->>>>>
->>>>>  drivers/staging/media/atomisp/pci/atomisp_cmd.h | 10 +++++----
->>>>> -
->>>>>  1 file changed, 5 insertions(+), 5 deletions(-)
->>>>>
->>>>> diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
->>>>> b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
->>>>> index 1c0d464..639eca3 100644
->>>>> --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
->>>>> +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
->>>>> @@ -75,8 +75,8 @@ void atomisp_wdt(struct timer_list *t);
->>>>>  void atomisp_setup_flash(struct atomisp_sub_device *asd);
->>>>>  irqreturn_t atomisp_isr(int irq, void *dev);
->>>>>  irqreturn_t atomisp_isr_thread(int irq, void *isp_ptr);
->>>>> -const struct atomisp_format_bridge
->>>>> *get_atomisp_format_bridge_from_mbus(
->>>>> -    u32 mbus_code);
->>>>> +const struct atomisp_format_bridge *
->>>>> +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
->>>>>  bool atomisp_is_mbuscode_raw(uint32_t code);
->>>>>  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
->>>>>                            const struct ia_css_frame *frame,
->>>>> u32
->>>>> *p_pgnr);
->>>>> @@ -381,9 +381,9 @@ enum mipi_port_id __get_mipi_port(struct
->>>>> atomisp_device *isp,
->>>>>
->>>>>  bool atomisp_is_vf_pipe(struct atomisp_video_pipe *pipe);
->>>>>
->>>>> -void atomisp_apply_css_parameters(
->>>>> -    struct atomisp_sub_device *asd,
->>>>> -    struct atomisp_css_params *css_param);
->>>>> +void atomisp_apply_css_parameters(struct atomisp_sub_device
->>>>> *asd,
->>>>> +                                 struct atomisp_css_params
->>>>> *css_param);
->>>>> +
->>>>>  void atomisp_free_css_parameters(struct atomisp_css_params
->>>>> *css_param);
->>>>>
->>>>>  void atomisp_handle_parameter_and_buffer(struct
->>>>> atomisp_video_pipe
->>>>> *pipe);
->>>>> --
->>>>> 2.7.4
->>>>>
->>>>> --
->>>>> You received this message because you are subscribed to the
->>>>> Google
->>>>> Groups "outreachy-kernel" group.
->>>>> To unsubscribe from this group and stop receiving emails from
->>>>> it,
->>>>> send an email to outreachy-kernel+unsubscribe@googlegroups.com.
->>>>> To view this discussion on the web visit
->>>>> https://groups.google.com/d/msgid/outreachy-kernel/20210421123718.GA4597%40focaruja
->>>>> .
->>>>>
->>>
->>>
->>> --
->>> You received this message because you are subscribed to the Google
->>> Groups "outreachy-kernel" group.
->>> To unsubscribe from this group and stop receiving emails from it,
->>> send an email to outreachy-kernel+unsubscribe@googlegroups.com.
->>> To view this discussion on the web visit    
->>> https://groups.google.com/d/msgid/outreachy-kernel/7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel%40gmail.com
->>> .
-> 
-> 
+CgpPbiAyMy4wNC4yMSAxMTowMywgU2lkZGhhcnRoIENoYW5kcmFzZWthcmFuIHdyb3RlOgo+IEh5
+cGVyY2FsbCBjb2RlIHBhZ2UgaXMgc3BlY2lmaWVkIGluIHRoZSBIeXBlci1WIFRMRlMgdG8gYmUg
+YW4gb3ZlcmxheQo+IHBhZ2UsIGllLiwgZ3Vlc3QgY2hvb3NlcyBhIEdQQSBhbmQgdGhlIGhvc3Qg
+X3BsYWNlc18gYSBwYWdlIGF0IHRoYXQKPiBsb2NhdGlvbiwgbWFraW5nIGl0IHZpc2libGUgdG8g
+dGhlIGd1ZXN0IGFuZCB0aGUgZXhpc3RpbmcgcGFnZSBiZWNvbWVzCj4gaW5hY2Nlc3NpYmxlLiBT
+aW1pbGFybHkgd2hlbiBkaXNhYmxlZCwgdGhlIGhvc3Qgc2hvdWxkIF9yZW1vdmVfIHRoZQo+IG92
+ZXJsYXkgYW5kIHRoZSBvbGQgcGFnZSBzaG91bGQgYmVjb21lIHZpc2libGUgdG8gdGhlIGd1ZXN0
+Lgo+IAo+IEN1cnJlbnRseSBLVk0gZGlyZWN0bHkgcGF0Y2hlcyB0aGUgaHlwZXJjYWxsIGNvZGUg
+aW50byB0aGUgZ3Vlc3QgY2hvc2VuCj4gR1BBLiBTaW5jZSB0aGUgZ3Vlc3Qgc2VsZG9tIG1vdmVz
+IHRoZSBoeXBlcmNhbGwgY29kZSBwYWdlIGFyb3VuZCwgaXQKPiBkb2Vzbid0IHNlZSBhbnkgcHJv
+YmxlbXMgZXZlbiB0aG91Z2ggd2UgYXJlIGNvcnJ1cHRpbmcgdGhlIGV4aXRpbmcgZGF0YQo+IGlu
+IHRoYXQgR1BBLgo+IAo+IFZTTSBBUEkgaW50cm9kdWNlcyBtb3JlIGNvbXBsZXggb3ZlcmxheSB3
+b3JrZmxvd3MgZHVyaW5nIFZUTCBzd2l0Y2hlcwo+IHdoZXJlIHRoZSBndWVzdCBzdGFydHMgdG8g
+ZXhwZWN0IHRoYXQgdGhlIGV4aXN0aW5nIHBhZ2UgaXMgaW50YWN0LiBUaGlzCj4gbWVhbnMgd2Ug
+bmVlZCBhIG1vcmUgZ2VuZXJpYyBhcHByb2FjaCB0byBoYW5kbGluZyBvdmVybGF5IHBhZ2VzOiBh
+ZGQgYQo+IG5ldyBleGl0IHJlYXNvbiBLVk1fRVhJVF9IWVBFUlZfT1ZFUkxBWSB0aGF0IGV4aXRz
+IHRvIHVzZXJzcGFjZSB3aXRoIHRoZQo+IGV4cGVjdGF0aW9uIHRoYXQgYSBwYWdlIGdldHMgb3Zl
+cmxhaWQgdGhlcmUuCgpJIGNhbiBzZWUgaG93IHRoYXQgbWF5IGdldCBpbnRlcmVzdGluZyBmb3Ig
+b3RoZXIgb3ZlcmxheSBwYWdlcyBsYXRlciwgCmJ1dCB0aGlzIG9uZSBpbiBwYXJ0aWN1bGFyIGlz
+IGp1c3QgYW4gTVNSIHdyaXRlLCBubz8gSXMgdGhlcmUgYW55IHJlYXNvbiAKd2UgY2FuJ3QganVz
+dCB1c2UgdGhlIHVzZXIgc3BhY2UgTVNSIGhhbmRsaW5nIGxvZ2ljIGluc3RlYWQ/CgpXaGF0J3Mg
+bWlzc2luZyB0aGVuIGlzIGEgd2F5IHRvIHB1bGwgdGhlIGhjYWxsIHBhZ2UgY29udGVudHMgZnJv
+bSBLVk0uIApCdXQgZXZlbiB0aGVyZSBJJ20gbm90IGNvbnZpbmNlZCB0aGF0IEtWTSBzaG91bGQg
+YmUgdGhlIHJlZmVyZW5jZSBwb2ludCAKZm9yIGl0cyBjb250ZW50cy4gSXNuJ3QgdXNlciBzcGFj
+ZSBpbiBhbiBhcyBnb29kIHBvc2l0aW9uIHRvIGFzc2VtYmxlIGl0PwoKPiAKPiBJbiB0aGUgaW50
+ZXJlc3Qgb2YgbWFpbnRhaW5nIHVzZXJzcGFjZSBleHBvc2VkIGJlaGF2aW91ciwgYWRkIGEgbmV3
+IEtWTQo+IGNhcGFiaWxpdHkgdG8gYWxsb3cgdGhlIFZNTXMgdG8gZW5hYmxlIHRoaXMgaWYgdGhl
+eSBjYW4gaGFuZGxlIHRoZQo+IGh5cGVyY2FsbCBwYWdlIGluIHVzZXJzcGFjZS4KPiAKPiBTaWdu
+ZWQtb2ZmLWJ5OiBTaWRkaGFydGggQ2hhbmRyYXNla2FyYW4gPHNpZGNoYUBhbWF6b24uZGU+Cj4g
+Cj4gQ1I6IGh0dHBzOi8vY29kZS5hbWF6b24uY29tL3Jldmlld3MvQ1ItNDkwMTEzNzkKClBsZWFz
+ZSByZW1vdmUgdGhpcyBsaW5lIGZyb20gdXBzdHJlYW0gc3VibWlzc2lvbnMgOikuCgo+IC0tLQo+
+ICAgYXJjaC94ODYvaW5jbHVkZS9hc20va3ZtX2hvc3QuaCB8ICA0ICsrKysKPiAgIGFyY2gveDg2
+L2t2bS9oeXBlcnYuYyAgICAgICAgICAgfCAyNSArKysrKysrKysrKysrKysrKysrKysrLS0tCj4g
+ICBhcmNoL3g4Ni9rdm0veDg2LmMgICAgICAgICAgICAgIHwgIDUgKysrKysKPiAgIGluY2x1ZGUv
+dWFwaS9saW51eC9rdm0uaCAgICAgICAgfCAxMCArKysrKysrKysrCgpZb3UncmUgbW9kaWZ5aW5n
+IC8gYWRkaW5nIGEgdXNlciBzcGFjZSBBUEkuIFBsZWFzZSBtYWtlIHN1cmUgdG8gdXBkYXRlIAp0
+aGUgZG9jdW1lbnRhdGlvbiBpbiBEb2N1bWVudGF0aW9uL3ZpcnQva3ZtL2FwaS5yc3Qgd2hlbiB5
+b3UgZG8gdGhhdC4KCgpBbGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBH
+bWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlz
+dGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0
+IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBE
+RSAyODkgMjM3IDg3OQoKCg==
 
