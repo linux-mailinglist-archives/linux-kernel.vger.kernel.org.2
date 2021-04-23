@@ -2,157 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A5936969F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C983696C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhDWQHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWQH3 (ORCPT
+        id S231691AbhDWQTl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 12:19:41 -0400
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:54818 "EHLO
+        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230355AbhDWQTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:07:29 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23157C061574;
-        Fri, 23 Apr 2021 09:06:52 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g1-20020a17090adac1b0290150d07f9402so1422485pjx.5;
-        Fri, 23 Apr 2021 09:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IogqCPyvEvuM6GWvpXpHl19+M+Wj9F934eJ8mKManQw=;
-        b=k2KvuTXUaJRxSWSbxOHfmPWor1BH2QRGJTkOflXnvKePtPb2rFZVAnV+MN3p4+VBYe
-         zqL//K4qzi9xpVeQ27cexC+jwQ/ch6vrLSOfCy+5068m/S7jQ/IIBy3F7XHM89stpaQC
-         5yJgpQs4Mnr1aEsnzaPEtQ+9jQe/OwsvpEY6Ixpxwro+3+0ouzUJJ0iSK5E6348mTBUX
-         VF0LYVKjKY2kxfKpNz0rpjIBGUlLpNDH0nUU4eyxUQVyHAex+/tzHtMY0JJyywMJZbmI
-         q9ZMPZIuenE05lKaPeFwyWP+K0Z0oGZjIk1DkSAy1d8b4eZIAkCPxdStzMDoGFREKBA8
-         6Nig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IogqCPyvEvuM6GWvpXpHl19+M+Wj9F934eJ8mKManQw=;
-        b=g3HF3dGunErDdOgt/deLUe4+fZybL+7VlA0onvRXnrIly0hJhiYyLkIGWceVP6gN/V
-         AFmZw3oTONGf02Fdw6bOadoz8SRAWAEaH1/kb7H37eHVzZxGiILaCGs8fF2d8ownsq+p
-         i0UV0BdU/G0e+lTH2UPBK8yDCLND+cX4jG35p2rTAH3tlxDEYrph4ULQmrHh0bGt0XxI
-         uZ5hAG5K1aAoqgpNEdFDvz3xpLIaAur0gBnfW+oQpJBrieMIXCuWo4Lt9hgde8XfrCRt
-         437gPpoya+DBOSKkDhCqM3XatReKguPSnmFXaJOHUKABuBJZZNZzFfO7TTfcR/AAyl0K
-         K9ag==
-X-Gm-Message-State: AOAM533CzlOwDzKXuchMp9C51Mx6UFj9BY9Qhu8yM6C8CuPyXdgfZC+D
-        w7wskyzU5CYaBvueNZ4EcsKjYD4TOY02UudxNJ0=
-X-Google-Smtp-Source: ABdhPJyCF5pfkqJvfI/SycPE59PP6Rrzx1x/SiXt/11eiyE8YcxxM3KPBfePw+OrmXFGq3h+2xVTOOJevU9KJV3Hpic=
-X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr6859715pjr.181.1619194006820;
- Fri, 23 Apr 2021 09:06:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210420132333.99886-1-tomas.melin@vaisala.com> <20210420132333.99886-3-tomas.melin@vaisala.com>
-In-Reply-To: <20210420132333.99886-3-tomas.melin@vaisala.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 23 Apr 2021 19:06:30 +0300
-Message-ID: <CAHp75Ve2AEA8yPw5qN+R=K=ovaO8vX53hYU9=knjY_Z+EHDdww@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] iio: accel: Add driver for Murata SCA3300 accelerometer
-To:     Tomas Melin <tomas.melin@vaisala.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Fri, 23 Apr 2021 12:19:39 -0400
+X-Greylist: delayed 511 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Apr 2021 12:19:39 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id A3B019C225E;
+        Fri, 23 Apr 2021 12:10:30 -0400 (EDT)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id XG_rFHhL8pfK; Fri, 23 Apr 2021 12:10:30 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id 243769C23BA;
+        Fri, 23 Apr 2021 12:10:30 -0400 (EDT)
+X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Y8oj36qeAhEC; Fri, 23 Apr 2021 12:10:30 -0400 (EDT)
+Received: from barbarian (unknown [192.168.51.254])
+        by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 040489C225E;
+        Fri, 23 Apr 2021 12:10:30 -0400 (EDT)
+Message-ID: <b9598838a77c156a88b2847f43c3a276c340de04.camel@savoirfairelinux.com>
+Subject: uio: uio_pci_generic: add missing memory mappings
+From:   firas ashkar <firas.ashkar@savoirfairelinux.com>
+To:     mst@redhat.com
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Date:   Fri, 23 Apr 2021 12:10:29 -0400
+Organization: SavoirFaireLinux
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 4:24 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
->
-> Add initial support for Murata SCA3300 3-axis industrial
-> accelerometer with digital SPI interface. This device also
-> provides a temperature measurement.
-
-Thanks for an update, my comments below.
-
-They can be addressed as followups, but I think regmap API can be
-considered right now.
-
-...
-
-> +static int sca3300_read_reg(struct sca3300_data *sca_data, u8 reg, int *val)
-> +{
-> +       int ret;
-> +
-> +       mutex_lock(&sca_data->lock);
-> +       sca_data->txbuf[0] = reg << 2;
-> +       ret = sca3300_transfer(sca_data, val);
-> +       mutex_unlock(&sca_data->lock);
-> +       if (ret != -EINVAL)
-> +               return ret;
-> +
-> +       return sca3300_error_handler(sca_data);
-> +}
-> +
-> +static int sca3300_write_reg(struct sca3300_data *sca_data, u8 reg, int val)
-> +{
-> +       int reg_val = 0;
-> +       int ret;
-> +
-> +       mutex_lock(&sca_data->lock);
-> +       /* BIT(7) for write operation */
-> +       sca_data->txbuf[0] = BIT(7) | (reg << 2);
-> +       put_unaligned_be16(val, &sca_data->txbuf[1]);
-> +       ret = sca3300_transfer(sca_data, &reg_val);
-> +       mutex_unlock(&sca_data->lock);
-> +       if (ret != -EINVAL)
-> +               return ret;
-> +
-> +       return sca3300_error_handler(sca_data);
-> +}
-
-Okay, BIT(7) for write/read is pretty much standard stuff for such
-sensors. If you transform your driver to use REGMAP_SPI, you will get
-it thru regmap configuration. Also, you will get a locking there, in
-case you don't need to have several I/O in a row atomically.
-
-..
-
-> +       for_each_set_bit(bit, indio_dev->active_scan_mask,
-> +                        indio_dev->masklength) {
-
-One line?
-
-> +               ret = sca3300_read_reg(data, sca3300_channels[bit].address,
-> +                                      &val);
-> +               if (ret) {
-> +                       dev_err_ratelimited(&data->spi->dev,
-> +                               "failed to read register, error: %d\n", ret);
-> +                       /* handled, but bailing out due to errors */
-> +                       goto out;
-> +               }
-> +               data->scan.channels[i++] = val;
-> +       }
-
-...
-
-> +       int ret;
-> +       int value = 0;
-
-Reversed xmas tree ordering?
-
-...
-
-> +       /*
-> +        * Wait 1ms after SW-reset command.
-> +        * Wait 15ms for settling of signal paths.
-> +        */
-> +       usleep_range(16e3, 50e3);
-
-Hmm... Perhaps re-use msleep_range()
-https://elixir.bootlin.com/linux/latest/source/drivers/media/i2c/imx274.c#L601?
-
-...
-
-> +       .debugfs_reg_access = &sca3300_debugfs_reg_access,
-
-Reading of the registers you will get as a bonus when switching over
-to regmap SPI API.
+Hi,
+pls find attached a trivial but necessary patch, this change is based on [drivers/uio/uio_pdrv_genirq.c], 
+the patch was tested on following hardware: MiniPCIE AltaData ARNIC-429 module on imx8qm-apalis-ixora-v1.2
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Firas Ashkar
+Developpeur Système Embarqué
+
+savoirfairelinux.com  | Montréal, Québec
+
+Tél.: +1 514 276 5468 ext. 118
+--------------------------------------
+
+From 0c83bbc8bbf6c45efc52f6d30b8302a5d9075198 Mon Sep 17 00:00:00 2001
+From: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
+Date: Fri, 23 Apr 2021 10:38:28 -0400
+Subject: [PATCH 1/1] uio: uio_pci_generic: add memory mappings
+
+import memory resources from underlaying pci device, thus allowing
+userspace applications to memory map those resources.
+---
+ drivers/uio/uio_pci_generic.c | 52 +++++++++++++++++++++++++++++------
+ 1 file changed, 43 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/uio/uio_pci_generic.c
+b/drivers/uio/uio_pci_generic.c
+index c7d681fef198..809eca95b5bb 100644
+--- a/drivers/uio/uio_pci_generic.c
++++ b/drivers/uio/uio_pci_generic.c
+@@ -24,9 +24,9 @@
+ #include <linux/slab.h>
+ #include <linux/uio_driver.h>
+ 
+-#define DRIVER_VERSION	"0.01.0"
+-#define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
+-#define DRIVER_DESC	"Generic UIO driver for PCI 2.3 devices"
++#define DRIVER_VERSION "0.01.0"
++#define DRIVER_AUTHOR "Michael S. Tsirkin <mst@redhat.com>"
++#define DRIVER_DESC "Generic UIO driver for PCI 2.3 devices"
+ 
+ struct uio_pci_generic_dev {
+ 	struct uio_info info;
+@@ -56,7 +56,8 @@ static int release(struct uio_info *info, struct
+inode *inode)
+ }
+ 
+ /* Interrupt handler. Read/modify/write the command register to
+disable
+- * the interrupt. */
++ * the interrupt.
++ */
+ static irqreturn_t irqhandler(int irq, struct uio_info *info)
+ {
+ 	struct uio_pci_generic_dev *gdev =
+to_uio_pci_generic_dev(info);
+@@ -68,11 +69,12 @@ static irqreturn_t irqhandler(int irq, struct
+uio_info *info)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int probe(struct pci_dev *pdev,
+-			   const struct pci_device_id *id)
++static int probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ {
+ 	struct uio_pci_generic_dev *gdev;
++	struct uio_mem *uiomem;
+ 	int err;
++	int i;
+ 
+ 	err = pcim_enable_device(pdev);
+ 	if (err) {
+@@ -84,7 +86,8 @@ static int probe(struct pci_dev *pdev,
+ 	if (pdev->irq && !pci_intx_mask_supported(pdev))
+ 		return -ENOMEM;
+ 
+-	gdev = devm_kzalloc(&pdev->dev, sizeof(struct
+uio_pci_generic_dev), GFP_KERNEL);
++	gdev = devm_kzalloc(&pdev->dev, sizeof(struct
+uio_pci_generic_dev),
++			    GFP_KERNEL);
+ 	if (!gdev)
+ 		return -ENOMEM;
+ 
+@@ -97,8 +100,39 @@ static int probe(struct pci_dev *pdev,
+ 		gdev->info.irq_flags = IRQF_SHARED;
+ 		gdev->info.handler = irqhandler;
+ 	} else {
+-		dev_warn(&pdev->dev, "No IRQ assigned to device: "
+-			 "no support for interrupts?\n");
++		dev_warn(
++			&pdev->dev,
++			"No IRQ assigned to device: no support for
+interrupts?\n");
++	}
++
++	uiomem = &gdev->info.mem[0];
++	for (i = 0; i < MAX_UIO_MAPS; ++i) {
++		struct resource *r = &pdev->resource[i];
++
++		if (r->flags != (IORESOURCE_SIZEALIGN |
+IORESOURCE_MEM))
++			continue;
++
++		if (uiomem >= &gdev->info.mem[MAX_UIO_MAPS]) {
++			dev_warn(
++				&pdev->dev,
++				"device has more than " __stringify(
++					MAX_UIO_MAPS) " I/O memory
+resources.\n");
++			break;
++		}
++
++		uiomem->memtype = UIO_MEM_PHYS;
++		uiomem->addr = r->start & PAGE_MASK;
++		uiomem->offs = r->start & ~PAGE_MASK;
++		uiomem->size =
++			(uiomem->offs + resource_size(r) + PAGE_SIZE -
+1) &
++			PAGE_MASK;
++		uiomem->name = r->name;
++		++uiomem;
++	}
++
++	while (uiomem < &gdev->info.mem[MAX_UIO_MAPS]) {
++		uiomem->size = 0;
++		++uiomem;
+ 	}
+ 
+ 	return devm_uio_register_device(&pdev->dev, &gdev->info);
+-- 
+2.25.1
+
+
+
+          
+
