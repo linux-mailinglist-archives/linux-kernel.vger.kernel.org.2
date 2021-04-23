@@ -2,203 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189F2368B07
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1007368B12
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237236AbhDWCbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:31:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:2176 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236080AbhDWCa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:30:59 -0400
-IronPort-SDR: nsBYqubn98nBXbSDggHD0NwsOVFwwe/EKhT/YtkUr7fD0x/4OAM0pPaGjBy5+qj6L8e1VI2ozL
- m7fjXIrWMV7Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="176128408"
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="176128408"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:30:23 -0700
-IronPort-SDR: 041zm7c8mdnKtAVNeJfVBZZKbigKrKUCxF9Wh+7IK0Le2mfrsZ8U1rGRSju71lU05xj7uEbej4
- +PzfezIkGQ9A==
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="402047000"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:30:06 -0700
-Date:   Fri, 23 Apr 2021 10:47:22 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: 08ed4efad6: stress-ng.sigsegv.ops_per_sec -41.9% regression
-Message-ID: <20210423024722.GA13968@xsang-OptiPlex-9020>
-References: <7abe5ab608c61fc2363ba458bea21cf9a4a64588.1617814298.git.gladkov.alexey@gmail.com>
- <20210408083026.GE1696@xsang-OptiPlex-9020>
- <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
- <m1im4wmx9g.fsf@fess.ebiederm.org>
+        id S240223AbhDWCfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:35:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33083 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235302AbhDWCfD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 22:35:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619145266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZQNY+2dK0F2J25PQHKOH4E0JeQgPhZv8sqXjSjM4ajs=;
+        b=iPxRYj4zeTjavxcBVvkNSs8i8zgfO0e6LVzkhrGvbjGrDB2/RLqnKJhZ8SGpQVtT8nCLs/
+        iRTBBUpNwkXyRRujDvvkNtpv2DH57O+T/Ix9fdrnxPh1TkonyXdRj9rA+HIU+AXyID2mot
+        J/af6zzcqIB3x/W0yvowykyAEPTdKPo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-3icZjueBOtWDe9XSTnYHtg-1; Thu, 22 Apr 2021 22:34:23 -0400
+X-MC-Unique: 3icZjueBOtWDe9XSTnYHtg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7C4E1922036;
+        Fri, 23 Apr 2021 02:34:20 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26D305C3E6;
+        Fri, 23 Apr 2021 02:34:10 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 22:34:08 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/2] audit: add support for the openat2 syscall
+Message-ID: <20210423023408.GB2174828@madcap2.tricolour.ca>
+References: <cover.1616031035.git.rgb@redhat.com>
+ <49510cacfb5fbbaa312a4a389f3a6619675007ab.1616031035.git.rgb@redhat.com>
+ <20210318104843.uiga6tmmhn5wfhbs@wittgenstein>
+ <20210318120801.GK3141668@madcap2.tricolour.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m1im4wmx9g.fsf@fess.ebiederm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210318120801.GK3141668@madcap2.tricolour.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi, Eric,
+On 2021-03-18 08:08, Richard Guy Briggs wrote:
+> On 2021-03-18 11:48, Christian Brauner wrote:
+> > [+Cc Aleksa, the author of openat2()]
+> 
+> Ah!  Thanks for pulling in Aleksa.  I thought I caught everyone...
+> 
+> > and a comment below. :)
+> 
+> Same...
+> 
+> > On Wed, Mar 17, 2021 at 09:47:17PM -0400, Richard Guy Briggs wrote:
+> > > The openat2(2) syscall was added in kernel v5.6 with commit fddb5d430ad9
+> > > ("open: introduce openat2(2) syscall")
+> > > 
+> > > Add the openat2(2) syscall to the audit syscall classifier.
+> > > 
+> > > See the github issue
+> > > https://github.com/linux-audit/audit-kernel/issues/67
+> > > 
+> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > ---
+> > >  arch/alpha/kernel/audit.c          | 2 ++
+> > >  arch/ia64/kernel/audit.c           | 2 ++
+> > >  arch/parisc/kernel/audit.c         | 2 ++
+> > >  arch/parisc/kernel/compat_audit.c  | 2 ++
+> > >  arch/powerpc/kernel/audit.c        | 2 ++
+> > >  arch/powerpc/kernel/compat_audit.c | 2 ++
+> > >  arch/s390/kernel/audit.c           | 2 ++
+> > >  arch/s390/kernel/compat_audit.c    | 2 ++
+> > >  arch/sparc/kernel/audit.c          | 2 ++
+> > >  arch/sparc/kernel/compat_audit.c   | 2 ++
+> > >  arch/x86/ia32/audit.c              | 2 ++
+> > >  arch/x86/kernel/audit_64.c         | 2 ++
+> > >  kernel/auditsc.c                   | 3 +++
+> > >  lib/audit.c                        | 4 ++++
+> > >  lib/compat_audit.c                 | 4 ++++
+> > >  15 files changed, 35 insertions(+)
+> > > 
+> > > diff --git a/arch/alpha/kernel/audit.c b/arch/alpha/kernel/audit.c
+> > > index 96a9d18ff4c4..06a911b685d1 100644
+> > > --- a/arch/alpha/kernel/audit.c
+> > > +++ b/arch/alpha/kernel/audit.c
+> > > @@ -42,6 +42,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
+> > >  		return 3;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/arch/ia64/kernel/audit.c b/arch/ia64/kernel/audit.c
+> > > index 5192ca899fe6..5eaa888c8fd3 100644
+> > > --- a/arch/ia64/kernel/audit.c
+> > > +++ b/arch/ia64/kernel/audit.c
+> > > @@ -43,6 +43,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
+> > >  		return 3;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/arch/parisc/kernel/audit.c b/arch/parisc/kernel/audit.c
+> > > index 9eb47b2225d2..fc721a7727ba 100644
+> > > --- a/arch/parisc/kernel/audit.c
+> > > +++ b/arch/parisc/kernel/audit.c
+> > > @@ -52,6 +52,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
+> > >  		return 3;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/arch/parisc/kernel/compat_audit.c b/arch/parisc/kernel/compat_audit.c
+> > > index 20c39c9d86a9..fc6d35918c44 100644
+> > > --- a/arch/parisc/kernel/compat_audit.c
+> > > +++ b/arch/parisc/kernel/compat_audit.c
+> > > @@ -35,6 +35,8 @@ int parisc32_classify_syscall(unsigned syscall)
+> > >  		return 3;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 1;
+> > >  	}
+> > > diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
+> > > index a2dddd7f3d09..8f32700b0baa 100644
+> > > --- a/arch/powerpc/kernel/audit.c
+> > > +++ b/arch/powerpc/kernel/audit.c
+> > > @@ -54,6 +54,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
+> > >  		return 4;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
+> > > index 55c6ccda0a85..ebe45534b1c9 100644
+> > > --- a/arch/powerpc/kernel/compat_audit.c
+> > > +++ b/arch/powerpc/kernel/compat_audit.c
+> > > @@ -38,6 +38,8 @@ int ppc32_classify_syscall(unsigned syscall)
+> > >  		return 4;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 1;
+> > >  	}
+> > > diff --git a/arch/s390/kernel/audit.c b/arch/s390/kernel/audit.c
+> > > index d395c6c9944c..d964cb94cfaf 100644
+> > > --- a/arch/s390/kernel/audit.c
+> > > +++ b/arch/s390/kernel/audit.c
+> > > @@ -54,6 +54,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
+> > >  		return 4;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/arch/s390/kernel/compat_audit.c b/arch/s390/kernel/compat_audit.c
+> > > index 444fb1f66944..f7b32933ce0e 100644
+> > > --- a/arch/s390/kernel/compat_audit.c
+> > > +++ b/arch/s390/kernel/compat_audit.c
+> > > @@ -39,6 +39,8 @@ int s390_classify_syscall(unsigned syscall)
+> > >  		return 4;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 1;
+> > >  	}
+> > > diff --git a/arch/sparc/kernel/audit.c b/arch/sparc/kernel/audit.c
+> > > index a6e91bf34d48..b6dcca9c6520 100644
+> > > --- a/arch/sparc/kernel/audit.c
+> > > +++ b/arch/sparc/kernel/audit.c
+> > > @@ -55,6 +55,8 @@ int audit_classify_syscall(int abi, unsigned int syscall)
+> > >  		return 4;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/arch/sparc/kernel/compat_audit.c b/arch/sparc/kernel/compat_audit.c
+> > > index 10eeb4f15b20..d2652a1083ad 100644
+> > > --- a/arch/sparc/kernel/compat_audit.c
+> > > +++ b/arch/sparc/kernel/compat_audit.c
+> > > @@ -39,6 +39,8 @@ int sparc32_classify_syscall(unsigned int syscall)
+> > >  		return 4;
+> > >  	case __NR_execve:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 1;
+> > >  	}
+> > > diff --git a/arch/x86/ia32/audit.c b/arch/x86/ia32/audit.c
+> > > index 6efe6cb3768a..57a02ade5503 100644
+> > > --- a/arch/x86/ia32/audit.c
+> > > +++ b/arch/x86/ia32/audit.c
+> > > @@ -39,6 +39,8 @@ int ia32_classify_syscall(unsigned syscall)
+> > >  	case __NR_execve:
+> > >  	case __NR_execveat:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 1;
+> > >  	}
+> > > diff --git a/arch/x86/kernel/audit_64.c b/arch/x86/kernel/audit_64.c
+> > > index 83d9cad4e68b..39de1e021258 100644
+> > > --- a/arch/x86/kernel/audit_64.c
+> > > +++ b/arch/x86/kernel/audit_64.c
+> > > @@ -53,6 +53,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
+> > >  	case __NR_execve:
+> > >  	case __NR_execveat:
+> > >  		return 5;
+> > > +	case __NR_openat2:
+> > > +		return 6;
+> > >  	default:
+> > >  		return 0;
+> > >  	}
+> > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > > index 8bb9ac84d2fb..f5616e70d129 100644
+> > > --- a/kernel/auditsc.c
+> > > +++ b/kernel/auditsc.c
+> > > @@ -76,6 +76,7 @@
+> > >  #include <linux/fsnotify_backend.h>
+> > >  #include <uapi/linux/limits.h>
+> > >  #include <uapi/linux/netfilter/nf_tables.h>
+> > > +#include <uapi/linux/openat2.h>
+> > >  
+> > >  #include "audit.h"
+> > >  
+> > > @@ -195,6 +196,8 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
+> > >  		return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
+> > >  	case 5: /* execve */
+> > >  		return mask & AUDIT_PERM_EXEC;
+> > > +	case 6: /* openat2 */
+> > > +		return mask & ACC_MODE((u32)((struct open_how *)ctx->argv[2])->flags);
+> > 
+> > That looks a bit dodgy. Maybe sm like the below would be a bit better?
+> 
+> Ah, ok, fair enough, since original flags use a u32 and this was picked
+> as u64 for alignment.  It was just occurring to me last night that I
+> might have the dubious honour of being the first usage of 0%llo format
+> specifier in the kernel...  ;-)
 
-On Thu, Apr 08, 2021 at 01:44:43PM -0500, Eric W. Biederman wrote:
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
-> 
-> > On Thu, Apr 8, 2021 at 1:32 AM kernel test robot <oliver.sang@intel.com> wrote:
-> >>
-> >> FYI, we noticed a -41.9% regression of stress-ng.sigsegv.ops_per_sec due to commit
-> >> 08ed4efad684 ("[PATCH v10 6/9] Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> >
-> > Ouch.
-> 
-> We were cautiously optimistic when no test problems showed up from
-> the last posting that there was nothing to look at here.
-> 
-> Unfortunately it looks like the bots just missed the last posting. 
+> > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > index 47fb48f42c93..531e882a5096 100644
+> > --- a/kernel/auditsc.c
+> > +++ b/kernel/auditsc.c
+> > @@ -159,6 +159,7 @@ static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
+> > 
+> >  static int audit_match_perm(struct audit_context *ctx, int mask)
+> >  {
+> > +       struct open_how *openat2;
+> >         unsigned n;
+> >         if (unlikely(!ctx))
+> >                 return 0;
+> > @@ -195,6 +196,12 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
+> >                 return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
+> >         case 5: /* execve */
+> >                 return mask & AUDIT_PERM_EXEC;
+> > +       case 6: /* openat2 */
+> > +               openat2 = ctx->argv[2];
+> > +               if (upper_32_bits(openat2->flags))
+> > +                       pr_warn("Some sensible warning about unknown flags");
+> > +
+> > +               return mask & ACC_MODE(lower_32_bits(openat2->flags));
+> >         default:
+> >                 return 0;
+> >         }
+> > 
+> > (Ideally we'd probably notice at build-time that we've got flags
+> > exceeding 32bits. Could probably easily been done by exposing an all
+> > flags macro somewhere and then we can place a BUILD_BUG_ON() or sm into
+> > such places.)
 
-this report is upon v10. do you have newer version which hope bot test?
+open_how arguments are translated to open_flags which is limited to 32 bits.
 
-please be noted, sorry to say, due to various reasons, it will be a
-big challenge for us to capture each version of a patch set.
+This code is shared with the other open functions that are limited to 32 bits
+in open_flags.  openat2 was created to avoid the limitations of openat, so at
+some point it isn't unreasonable that flags exceed 32 bits, but open_flags
+would have to be modified at that point to accommodate.
 
-e.g. we didn't make out a similar performance regression for
-v8/v9 version of this one..
+This value is handed in from userspace, and could be handed in without being
+defined in the kernel, so those values need to be properly checked regardless
+of the flags defined in the kernel.
 
+The openat2 syscall claims to check all flags but no check is done on the top
+32 bits.
+
+build_open_flags() assigns how->flags to an int, effectively dropping the top
+32 bits, before being checked against ~VALID_OPEN_FLAGS.  This happens after
+audit mode filtering, but has the same result.
+
+Audit mode filtering using ACC_MODE() already masks out all but the lowest two
+bits with O_ACCMODE, so there is no danger of overflowing a u32.
+
+tomoyo_check_open_permission() assigns ACC_MODE() to u8 without a check.
+
+All FMODE_* flags are clamped at u32.
+
+6 bits remain at top and 4 bits just above O_ACCMODE, so there is no immediate
+danger of overflow and if any additional mode bits are needed they are
+available.
+000377777703 used
+037777777777 available
+10 bits remaining
+
+So, I don't think a check at this point in the code is useful, but do agree
+that there should be some changes and checks added in sys_openat2 and
+build_open_flags().
+
+
+Also noticed: It looks like fddb5d430ad9f left in VALID_UPGRADE_FLAGS for
+how->upgrade_mask that was removed.  This may be used at a later date, but at
+this point is dead code.
+
+> > Christian
 > 
-> So it seems we are finally pretty much at correct code in need
-> of performance tuning.
-> 
-> > I *think* this test may be testing "send so many signals that it
-> > triggers the signal queue overflow case".
-> >
-> > And I *think* that the performance degradation may be due to lots of
-> > unnecessary allocations, because ity looks like that commit changes
-> > __sigqueue_alloc() to do
-> >
-> >         struct sigqueue *q = kmem_cache_alloc(sigqueue_cachep, flags);
-> >
-> > *before* checking the signal limit, and then if the signal limit was
-> > exceeded, it will just be free'd instead.
-> >
-> > The old code would check the signal count against RLIMIT_SIGPENDING
-> > *first*, and if there were m ore pending signals then it wouldn't do
-> > anything at all (including not incrementing that expensive atomic
-> > count).
-> 
-> This is an interesting test in a lot of ways as it is testing the
-> synchronous signal delivery path caused by an exception.  The test
-> is either executing *ptr = 0 (where ptr points to a read-only page)
-> or it executes an x86 instruction that is excessively long.
-> 
-> I have found the code but I haven't figured out how it is being
-> called yet.  The core loop is just:
-> 	for(;;) {
-> 		sigaction(SIGSEGV, &action, NULL);
-> 		sigaction(SIGILL, &action, NULL);
-> 		sigaction(SIGBUS, &action, NULL);
-> 
-> 		ret = sigsetjmp(jmp_env, 1);
-> 		if (done())
->                 	break;
-> 		if (ret) {
->                 	/* verify signal */
->                 } else {
->                 	*ptr = 0;
->                 }
-> 	}
-> 
-> Code like that fundamentally can not be multi-threaded.  So the only way
-> the sigpending limit is being hit is if there are more processes running
-> that code simultaneously than the size of the limit.
-> 
-> Further it looks like stress-ng pushes RLIMIT_SIGPENDING as high as it
-> will go before the test starts.
-> 
-> 
-> > Also, the old code was very careful to only do the "get_user()" for
-> > the *first* signal it added to the queue, and do the "put_user()" for
-> > when removing the last signal. Exactly because those atomics are very
-> > expensive.
-> >
-> > The new code just does a lot of these atomics unconditionally.
-> 
-> Yes. That seems a likely culprit.
-> 
-> > I dunno. The profile data in there is a bit hard to read, but there's
-> > a lot more cachee misses, and a *lot* of node crossers:
-> >
-> >>    5961544          +190.4%   17314361        perf-stat.i.cache-misses
-> >>   22107466          +119.2%   48457656        perf-stat.i.cache-references
-> >>     163292 ą  3%   +4582.0%    7645410        perf-stat.i.node-load-misses
-> >>     227388 ą  2%   +3708.8%    8660824        perf-stat.i.node-loads
-> >
-> > and (probably as a result) average instruction costs have gone up enormously:
-> >
-> >>       3.47           +66.8%       5.79        perf-stat.overall.cpi
-> >>      22849           -65.6%       7866        perf-stat.overall.cycles-between-cache-misses
-> >
-> > and it does seem to be at least partly about "put_ucounts()":
-> >
-> >>       0.00            +4.5        4.46        perf-profile.calltrace.cycles-pp.put_ucounts.__sigqueue_free.get_signal.arch_do_signal_or_restart.exit_to_user_mode_prepare
-> >
-> > and a lot of "get_ucounts()".
-> >
-> > But it may also be that the new "get sigpending" is just *so* much
-> > more expensive than it used to be.
-> 
-> That too is possible.
-> 
-> That node-load-misses number does look like something is bouncing back
-> and forth between the nodes a lot more.  So I suspect stress-ng is
-> running multiple copies of the sigsegv test in different processes at
-> once.
-> 
-> 
-> 
-> That really suggests cache line ping pong from get_ucounts and
-> incrementing sigpending.
-> 
-> It surprises me that obtaining the cache lines exclusively is
-> the dominant cost on this code path but obtaining two cache lines
-> exclusively instead of one cache cache line exclusively is consistent
-> with a causing the exception delivery to take nearly twice as long.
-> 
-> For the optimization we only care about the leaf count so with a little
-> care we can restore the optimization.  So that is probably the thing
-> to do here.  The fewer changes to worry about the less likely to find
-> surprises.
-> 
-> 
-> 
-> That said for this specific case there is a lot of potential room for
-> improvement.  As this is a per thread signal the code update sigpending
-> in commit_cred and never worry about needing to pin the struct
-> user_struct or struct ucounts.  As this is a synchronous signal we could
-> skip the sigpending increment, skip the signal queue entirely, and
-> deliver the signal to user-space immediately.  The removal of all cache
-> ping pongs might make it worth it.
-> 
-> There is also Thomas Gleixner's recent optimization to cache one
-> sigqueue entry per task to give more predictable behavior.  That
-> would remove the cost of the allocation.
-> 
-> Eric
+> - RGB
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
