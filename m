@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9225836A11D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D6F36A11F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhDXMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 08:24:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55706 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231799AbhDXMYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 08:24:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619267008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XHvp0OcZq0sBkrjLYAKxEf8MZPhojvIv7Wl5Pm/lV2g=;
-        b=dbVbNKWBNscmAc+trqKQB6FGeYufs7XfkBNvUrxaRS6eZb0EkV5Oeri5JTt7nuj2TZdl0C
-        FwJYgpEpoeGZxPp5SaCz+GXR2rDWpXKHt/WhCcDGE0+K9icLtDT9rTWRFayi9qbIKJGxye
-        XpqP33rzdYDSedIAN5y+TJ6d4AsJsTs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-5vt4abhqP62awmm18NEoxg-1; Sat, 24 Apr 2021 08:23:24 -0400
-X-MC-Unique: 5vt4abhqP62awmm18NEoxg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36FB5343A2;
-        Sat, 24 Apr 2021 12:23:23 +0000 (UTC)
-Received: from krava (unknown [10.40.192.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B1C5919C46;
-        Sat, 24 Apr 2021 12:23:20 +0000 (UTC)
-Date:   Sat, 24 Apr 2021 14:23:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHSET 0/5] perf report: Make --stat output more compact
-Message-ID: <YIQNtxTku/JihU+s@krava>
-References: <20210423182813.1472902-1-namhyung@kernel.org>
- <20210423184647.GN1401198@tassilo.jf.intel.com>
+        id S234525AbhDXMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 08:30:09 -0400
+Received: from mga18.intel.com ([134.134.136.126]:24827 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231799AbhDXMaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 08:30:05 -0400
+IronPort-SDR: zVaWZGUh9lauCEQIIs7jXFh5TCfHMPxsdIzXyi+AU6zdz9NDnaiu7ps89mHzMUrGDZWV5pY7Q8
+ nMDYlb6fdxLA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="183660741"
+X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
+   d="scan'208";a="183660741"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 05:29:24 -0700
+IronPort-SDR: 1ODtIshg6Q2oFAdGNBdY6ni/OWd5vkiCfmYBNE445erQf4C81d2os/leek/ycdlrDOyeueLM8+
+ nxqYexbyyDew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
+   d="scan'208";a="422064952"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Apr 2021 05:29:20 -0700
+Date:   Sat, 24 Apr 2021 20:29:20 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, lkp@intel.com
+Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
+ -14.4% regression
+Message-ID: <20210424122920.GB85095@shbuild999.sh.intel.com>
+References: <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
+ <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
+ <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
+ <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
+ <20210422074126.GA85095@shbuild999.sh.intel.com>
+ <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
+ <20210423061115.GA62813@shbuild999.sh.intel.com>
+ <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210423184647.GN1401198@tassilo.jf.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:46:47AM -0700, Andi Kleen wrote:
-> > So I added --skip-empty (and --no-skip-empty automatically) to suppres
-> > the 0 output and add the event stats like below.
+Hi Paul,
+
+On Fri, Apr 23, 2021 at 07:02:54AM -0700, Paul E. McKenney wrote:
+[...]
+> > > > > Following is the tsc freq info from kernel log
+> > > > > 
+> > > > > [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+> > > > > [    0.000000] tsc: Detected 2100.000 MHz processor
+> > > > > ...
+> > > > > [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
+> > > > 
+> > > > So what are our options?
+> > > > 
+> > > > 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
+> > > > 
+> > 
+> > I think option 1 is fine, as tsc will still get checked once 'tsc'
+> > clocksource is registered, but Thomas and Peter should know more
+> > background and corner cases of tsc.
 > 
-> I doubt we need the option for this.
-
-I agree this could be default, but I'm getting compilation fail:
-
-  CC       ui/browsers/hists.o
-ui/browsers/hists.c: In function ‘hist_browser__handle_hotkey’:
-ui/browsers/hists.c:699:29: error: ‘struct hists_stats’ has no member named ‘nr_lost_warned’
-  699 |       (browser->hists->stats.nr_lost_warned !=
-      |                             ^
-ui/browsers/hists.c:700:28: error: ‘struct hists_stats’ has no member named ‘nr_events’
-  700 |       browser->hists->stats.nr_events[PERF_RECORD_LOST])) {
-      |                            ^
-ui/browsers/hists.c:701:25: error: ‘struct hists_stats’ has no member named ‘nr_lost_warned’
-  701 |    browser->hists->stats.nr_lost_warned =
-      |                         ^
-ui/browsers/hists.c:702:26: error: ‘struct hists_stats’ has no member named ‘nr_events’
-  702 |     browser->hists->stats.nr_events[PERF_RECORD_LOST];
-      |                          ^
-ui/browsers/hists.c: In function ‘perf_evsel_menu__write’:
-ui/browsers/hists.c:3419:40: error: ‘struct hists_stats’ has no member named ‘nr_events’
- 3419 |  unsigned long nr_events = hists->stats.nr_events[PERF_RECORD_SAMPLE];
-      |                                        ^
-ui/browsers/hists.c:3435:33: error: ‘struct hists_stats’ has no member named ‘nr_events’
- 3435 |    nr_events += pos_hists->stats.nr_events[PERF_RECORD_SAMPLE];
-      |                                 ^
-ui/browsers/hists.c:3444:26: error: ‘struct hists_stats’ has no member named ‘nr_events’
- 3444 |  nr_events = hists->stats.nr_events[PERF_RECORD_LOST];
-      |                          ^
-ui/browsers/hists.c: In function ‘block_hists_browser__title’:
-ui/browsers/hists.c:3650:41: error: ‘struct hists_stats’ has no member named ‘nr_events’
- 3650 |  unsigned long nr_samples = hists->stats.nr_events[PERF_RECORD_SAMPLE];
-      |                                         ^
-
-jirka
-
-
+> I will look at adding such a patch to my series, preceding the change
+> to 1/1000 deviation.
 > 
-> But if you change it I would add the percentages after the absolute values.
+> > Also we have been working on another patchset to skip watchdog check
+> > for x86 platforms with stable tsc:
+> > 
+> > https://lore.kernel.org/lkml/1618291897-71581-1-git-send-email-feng.tang@intel.com/
+> > https://lore.kernel.org/lkml/1618291897-71581-2-git-send-email-feng.tang@intel.com/
 > 
-> -Andi
-> 
+> It will be interesting to see what fraction of those with large numbers
+> of systems choose to revert your 2/2, and for what period of time.
+> You really needed my clocksource patch series to have been in place some
+> years back so that people wouldn't have been seeing the false-postive
+> clock-skew complaints.  Those complaints did not help people build up
+> their trust in the TSC.  :-/
 
+I read you patchset, and I think the recheck to avoid false alarm makes
+sense to me, as well as the debug method you adds, and they have no
+conflict with my patches which tends to newer x86 platforms only.
+
+And yes, I only have met and debugged tsc wrongly marked unstable cases
+on several clients platforms, and in one case I disabled the HPET for
+Baytrail 10 years ago. Our test farm has different kinds of servers,
+only up to 4 sockets and 192 CPUs, where no tsc unstable issue has been
+seen.
+
+And I'm eager to know if there is any real case of an unreliable tsc
+on the 'large numbers' of x86 system which complies with our cpu feature
+check. And if there is, my 2/2 definitely should be dropped.   
+
+> This last sentence is not a theoretical statement.  In the past, I have
+> suggested using the existing "tsc=reliable" kernel boot parameter,
+> which disables watchdogs on TSC, similar to your patch 2/2 above.
+> The discussion was short and that boot parameter was not set.  And the
+> discussion motivated to my current clocksource series.  ;-)
+> 
+> I therefore suspect that someone will want a "tsc=unreliable" boot
+> parameter (or similar) to go with your patch 2/2.
+ 
+Possibly :)
+
+But I wonder if tsc is disabled on that 'large system', what will be
+used instead? HPET is known to be much slower for clocksource, as shown
+in this regression report :) not mentioning the 'acpi_pm' timer. 
+
+Again, I want to know the real tsc unstable case. I have spent lots
+of time searching these info from git logs and mail archives before
+writing the patches.
+
+Thanks,
+Feng
+
+> 							Thanx, Paul
