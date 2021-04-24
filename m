@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C3D36A06D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB2236A070
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238261AbhDXJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 05:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        id S238370AbhDXJHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 05:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237545AbhDXJEe (ORCPT
+        with ESMTP id S237556AbhDXJEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 05:04:34 -0400
+        Sat, 24 Apr 2021 05:04:37 -0400
 Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D835C06134E
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:03:52 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x5so384906wrv.13
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:03:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6BDC06134F
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:03:54 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id g9so34664275wrx.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B1aC/KYysf2u98efPHVNtXofbiGurQZJ94vgGaYPVJg=;
-        b=IEpn+rUgo/JgvRuVTTWPxI8iRJ2UDFAkqucjjaT/kfQxpMuLPuBFa/mZkp6Aql6TUR
-         7c/T45mAZ7YPwiHQB77KhzUOnPudzM5yhtTKTD67EEwVinbs1rL2l19bpnh4ZgYSzixs
-         3iTLp2E8qodBog5v9b393jo7ZucU+hONm7008+/monL1M7RhBkB1K2sigzajCzkDb7uS
-         HepQnKpz0CR2Vfi9i4iY2wQs8CSAscT19eFJGaQIZriqtu6KEj/3BOSxBwkA6Tn/pjAe
-         dp/Gd8TOV1+PtZdiaMEKax6h5ZVn42TVkcEGEJy660q9G+fAd74VVOPDGg2VyXEYX4Yn
-         zPzQ==
+        bh=rCpiiCQz4n2K9iobxaVb23hXxM/13FWIKgaoFavgS9Q=;
+        b=BIf/Rognnm34C02Z28qf991UuikYFjyn96QushrO1E3l7bgqs8Rv6xNo51X0iIa2A8
+         J9I/XMWDFY2fYMAa8HrbUeRhWuDgT7nEdH1HwA1Gcxuw5AfXqYrGEV2Bye05i4mLCSbC
+         S5o8JF7kD7upLRSAVpga62f/UmJr/tKSdBUW/Cu+s3wK0DfpHrzFP4/M+W22KzB1se8V
+         aJ/BGumwxj73CZX3FK8+kRfyFWsiZVvaGeePbwE41ip82es10CXu+M6IVf1xzhBAzkhr
+         KXjVfBA2/3pQ+q7nt/PhMQDvEffeC+fgFDDzKV5j00RMH46yiZahH2haOzCkDvctpS1P
+         sezw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B1aC/KYysf2u98efPHVNtXofbiGurQZJ94vgGaYPVJg=;
-        b=nXniuRvFInC1iy8kTe4SvCIK1BjbDwtS98nzEWE5p11xZhSNN7BixyYcG/82inoq9X
-         OL+Yz37io+OxNWrrsIeK9jtz3aQtA9JuhFPkU/XRLQt8KXboNNMqEjxUylZJzbgDTBtR
-         PA8mYG67CGGCxEK5y15mLU9tT18LDz9foo7T1yHgQOYaDnfgvsf/ajO4U1G4QggTD5rB
-         GMIhDFfnhBgbmWk3jRXronhNqtZXysE82YLbHRXPJc+5CDrinprXZ0YZ/JBp5lo5oZB0
-         pTUoYeUH8bC/+HDa2r/VBxq/XX8GB+kc5A97l66J7AyAtE5IE2xU9AC8nYF2azRUgFb4
-         fq4Q==
-X-Gm-Message-State: AOAM532S9X4k7N0IlXztVUTY4kL3fcOQnPWBJnp63jy8RESbGmlyQYU3
-        qDIU/O7lWfxTFrE+dxlcMahB1jzfff6g3A==
-X-Google-Smtp-Source: ABdhPJyrXMWqG4Zvj0jQ/tYhT9XOh+t/a+VU1Ie6ZHv4OBTaq7GECNDzydjhTYtIux1x+NKpz6SWWg==
-X-Received: by 2002:adf:fecd:: with SMTP id q13mr9853223wrs.7.1619255031081;
-        Sat, 24 Apr 2021 02:03:51 -0700 (PDT)
+        bh=rCpiiCQz4n2K9iobxaVb23hXxM/13FWIKgaoFavgS9Q=;
+        b=gVhL3m39advqmA2/xvUKCbA7BZruNR5O4tYG4iGfB1c3pAejSeFex+tiaJU3SwD3Hs
+         A596Ffx1orrJSY1AiQZSaLFpN/b19CJakR+jgZHEOseAfOckW6CEEb1x+JLvd9hY+zJs
+         c37jB04EjbtWTyZOa0s9NM0ZwAA3nvLUm+cxMHgMQQngz6ipXVEl+K9NUyPRE7/0NTk9
+         Y/Oia1v/tk7zuAjp3sMntaXCq6HLhr85E/n3fMpdF2CXmDGGXQQmEkLOkPxBZLwxsvWD
+         mEDgaHGyx9DOIMFxbBXipSFEeRlaUJp0QWWoM0zwJ/K3qpe/YuZOA1IGh1p4j76Iw6VD
+         8NRw==
+X-Gm-Message-State: AOAM5312AWyFBXUN3dNziu+VBbhwhuEy1+PX+AHcR89EIk6MdID0Z/7X
+        YpHifbwzh52wGWxDg7OEJN8BEQRm1cvXmw==
+X-Google-Smtp-Source: ABdhPJxGPC4ApYau7PQBxhEYUbjlKjECjmNiAPpfp5fyU9UuIZVQGiaB4iYnjISGEnuelwQpmY+yng==
+X-Received: by 2002:a5d:460b:: with SMTP id t11mr10042424wrq.310.1619255032723;
+        Sat, 24 Apr 2021 02:03:52 -0700 (PDT)
 Received: from agape ([5.171.80.252])
-        by smtp.gmail.com with ESMTPSA id t206sm10198617wmb.11.2021.04.24.02.03.50
+        by smtp.gmail.com with ESMTPSA id p3sm767511wmc.9.2021.04.24.02.03.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 02:03:50 -0700 (PDT)
+        Sat, 24 Apr 2021 02:03:52 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 45/50] staging: rtl8723bs: remove commented out macro definition
-Date:   Sat, 24 Apr 2021 11:02:28 +0200
-Message-Id: <2b56922e8e4c5fde6e594a9bbeb888bf7717015d.1619254603.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 46/50] staging: rtl8723bs: remove unused debug macro definitions
+Date:   Sat, 24 Apr 2021 11:02:29 +0200
+Message-Id: <02f0a7ad7ad00dbafeaee1796f62f8f2e921d772.1619254603.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619254603.git.fabioaiuto83@gmail.com>
 References: <cover.1619254603.git.fabioaiuto83@gmail.com>
@@ -64,25 +64,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove commented out debug macro definition.
+remove unused debug macro definitions.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/rtw_debug.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index 1a52200e525c..cde4b1d6a4b7 100644
+index cde4b1d6a4b7..ad96fe1de971 100644
 --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
 +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
-@@ -7,7 +7,6 @@
+@@ -7,11 +7,8 @@
  #ifndef __RTW_DEBUG_H__
  #define __RTW_DEBUG_H__
  
--/* define _module_efuse_			BIT(27) */
- #define	_module_rtl8192c_xmit_c_ BIT(28)
- #define _module_hal_xmit_c_	BIT(28)
+-#define	_module_rtl8192c_xmit_c_ BIT(28)
+-#define _module_hal_xmit_c_	BIT(28)
  #define _module_efuse_			BIT(29)
+ #define _module_rtl8712_recv_c_		BIT(30)
+-#define _module_rtl8712_led_c_		BIT(31)
+ 
+ #undef _MODULE_DEFINE_
+ 
 -- 
 2.20.1
 
