@@ -2,62 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAA7369E5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 03:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75400369E60
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 03:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236105AbhDXBXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 21:23:08 -0400
-Received: from cock.li ([37.120.193.123]:48928 "EHLO mail.cock.li"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232619AbhDXBWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 21:22:44 -0400
+        id S236948AbhDXBYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 21:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236561AbhDXBYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 21:24:09 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CBAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 18:23:04 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id s4so9945236qtw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 18:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j1dtGHCCWZvvr6CUZxSFYg4ycltQtDMhB55xHyddT1U=;
+        b=iPzgLMbqNidTWALjuay0axgZy8gCv7UEhtPJQltTbuSoObd5x9zd1vKuc8IhZgpO8p
+         IWCLl//lvaWrBEx/ATyPLwfx5gEByi606E4QKANTfdiEyg74Y7LNZp+g5uJQ458spFTJ
+         Bl9rmukBGpJmzdIaVwV+UhqH1onrbm2bRZnYAvUAA0m75SkbApOe/ZBH7MEupfF1/IyW
+         iFfGFl/GSpfK/DuX8RUXf2Dlj//+T3qCp/q/wlQmIiJIncWn0qx7f7rHhRFWNFppuAK4
+         XqA5TxuiW3uSTMpND1F24sAX0S9XMr39yEZkPeCfNYu6mQIjSHiWL+oP1E4map+0jm05
+         NnLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j1dtGHCCWZvvr6CUZxSFYg4ycltQtDMhB55xHyddT1U=;
+        b=BXgBnH0V4vCfejg35dqXssu8gi5zFo4bGY/QtbtNLL4ttrTmttc7GOPvs8yZ1JShvq
+         eNxIBQP6PW25OZaBUcL9pucpPWR6lAiVK/tsyvU3x0PeRXgBl6HD4tTKGBiSgaeZjRDU
+         oOmKIg5MEqrYmuQ8YigYJcbofxNbE/3BZ6Brurx3hN5U6K2nBBePo0TjLXCLmJathqHK
+         e+eale7c6BRudAxQGSbw4jx5bx8wKR4P2kth+GW6ivHR7hD20Kz5BeIXLaUJw46aTlAt
+         k+e0P5i2Fsiv2oR7tsghPeoSoSAOhPQiU+yl6TpL7L78CIJSXkHnlbQgLJJibjTeeIOI
+         wokQ==
+X-Gm-Message-State: AOAM533i6zEfcB4j0eBc/IDQnDaTYelJbugGnmbuv7DDDq4ZypT9Mvjn
+        1N9Bx3jyB6eLl8UhC6sy39ARySY6ajqIeXj/q5tPaw==
+X-Google-Smtp-Source: ABdhPJx93J/4VFwNJBe7TbrHDN/vekXXuyX5e7MHnFJJ5sLxOsvTVWjFY+y+2vzfaTEJgdpjpdunXWK9g7C1/uaoy5s=
+X-Received: by 2002:a05:622a:3c8:: with SMTP id k8mr6422988qtx.101.1619227383594;
+ Fri, 23 Apr 2021 18:23:03 -0700 (PDT)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
-        t=1619227324; bh=AtJkQYBUxG0DpzLy79GT9+XpHqr5+jgU29O9CprbXF0=;
-        h=Date:From:To:Subject:From;
-        b=f19HSBQp67gqiN7WOH2BSwGGfOEBRf8dfA/lm6jYzJENaAYjfO+lD9QKpEHLp5juo
-         NyLR+F/0D2TU+vUDk7JALth4xaWW3okDSazCn6VEuG47CGkJ24UDOcVg/OgIAZjWdQ
-         zgIysR9X6Y90P1PRD2cHuQe6LkGHiwwCOoY8hP4BLjDojwcnbwJBHJ8AjfrbEbCOL1
-         iTTe3zvehpHf66TEVQtu7Ivl+I4yGMriB3dKjqCJB/s/pki9+mDuMk2zOrcN/JtO2b
-         PBTPhAprCofX/xZ5JZ4TdzmdaB3F8AWlG/tFkIcZMtD28jfhZdw480OmCXR02oLbId
-         piQDU07gz4kSA==
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sat, 24 Apr 2021 01:22:04 +0000
-From:   mikeeusa@firemail.cc
-To:     linux-kernel@vger.kernel.org
-Subject: Grsecurity is blatantly violating the GPL
-Message-ID: <dab684f31b29b0f9d919a13e0de971c3@firemail.cc>
-X-Sender: mikeeusa@firemail.cc
-User-Agent: Roundcube Webmail/1.3.15
+References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
+In-Reply-To: <20210422123308.196692074@infradead.org>
+From:   Josh Don <joshdon@google.com>
+Date:   Fri, 23 Apr 2021 18:22:52 -0700
+Message-ID: <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Grsecurity is blatantly violating the GPL copyright license. 
-Specifically the provision within it:
-> You may NOT modify, SUBLICENSE OR DISTRIBUTE... except as EXPRESSLY 
-> PROVIDED UNDER THIS LICENSE.
+Hi Peter,
 
-They do, indeed, distribute under terms not expressly included within 
-the GPL text. Here are the additional terms they attach as a codicil:
-> https://perens.com/wp-content/uploads/sites/4/2017/06/grsecstablepatchaccessagreement_additionalterms.pdf
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -186,12 +186,37 @@ int sysctl_sched_rt_runtime = 950000;
+>
+>  void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
+>  {
+> -       raw_spin_lock_nested(rq_lockp(rq), subclass);
+> +       raw_spinlock_t *lock;
+> +
+> +       if (sched_core_disabled()) {
 
-These additional terms include:
-> No redistribution (or else)
-> You may only sue us in this forum
-> You may only use the law we choose
-> Waiver of liability if terminated due to redistribution
+Nothing to stop sched_core from being enabled right here? Leading to
+us potentially taking the wrong lock.
 
-4 additional terms. All ment to nullify the distributee's rights given 
-by the original copyright holders to which Grsecurity's copyright is 
-subject to.
-
-Blatant, in wrighting, clear, bright line, violation.
-Yet I'm a "schizo"
-
-No: moron. I'm a licensed Attorney. (and a programmer (hobby)). You are 
-Jack Shit.
->> 81294664 →
-> Fuck off schizo
+> +               raw_spin_lock_nested(&rq->__lock, subclass);
+> +               return;
+> +       }
+> +
+> +       for (;;) {
+> +               lock = rq_lockp(rq);
+> +               raw_spin_lock_nested(lock, subclass);
+> +               if (likely(lock == rq_lockp(rq)))
+> +                       return;
+> +               raw_spin_unlock(lock);
+> +       }
+>  }
