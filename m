@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063F436A199
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 16:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0E136A1A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 16:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhDXOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 10:33:48 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:38306 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231940AbhDXOdm (ORCPT
+        id S233128AbhDXOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 10:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhDXOh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 10:33:42 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13OESTDJ031824;
-        Sat, 24 Apr 2021 09:32:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=iSDBMw7lUXC0nxbFWkgwKdryX2zBWk3FQAlbk4Vd6ME=;
- b=AGwDhc+7VkVEVi5OUQ+7m1w2MeCwJAmS1l+ssaFQ7bTc2bdqntKaEe1V21bGOCt0dHMe
- rp0YHrT2KeTZhN7w8qjqouCFvm39jotc7KHkoiG/pAQBUG5Eab6LxohbwAxl1KuyTyMa
- xOIFsH01tEhqd/Y+fwqFcIwZrNRFDY1Xccppu1ehShI+hqcGwCBPm+/r5LtX8c5hQPnw
- fIe6SMXhaY1zQiRZymcluKv7ee4T/xKROHSi6LJpSsFdIwHdPuFKCEvKpQQJ505fv+Rt
- Wlauok7umAgDOcnBs6gP+RLzgIvNuUDsiiF54gqtSZiDs+RWu/Xb2dMYu4uA12DDFaDG aA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 384frs094x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 24 Apr 2021 09:32:47 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sat, 24 Apr
- 2021 15:32:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Sat, 24 Apr 2021 15:32:45 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.200])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B680C11D6;
-        Sat, 24 Apr 2021 14:32:45 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>
-Subject: [PATCH v1 2/2] ALSA: hda/cirrus: Use CS8409 Equalizer to fix abnormal sounds on Bullseye
-Date:   Sat, 24 Apr 2021 15:32:44 +0100
-Message-ID: <20210424143244.639125-3-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210424143244.639125-1-vitalyr@opensource.cirrus.com>
-References: <20210424143244.639125-1-vitalyr@opensource.cirrus.com>
+        Sat, 24 Apr 2021 10:37:59 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E8EC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 07:37:21 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id a25so45552873ljm.11
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 07:37:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uoH4H/qXa4Hgq9FClpPx5Dd1jyM5vAg3STeuwuUsMrM=;
+        b=R5+47fg2JRT8b1JFcau5QKkKNNrVbDJ9eorTWPmron02FSe1B6uz22b6WJRS9xk6vy
+         ryaJvb91zrghAXcsNyFmSj1Mmd/AaOcrw57gha4nL2MwH3QSVcqKfLYPHSINGRQE2W8W
+         KWPAKE2+bZ+SrCZntoEYkx75yT1cjKasMn864wU8PMP9dO6PIFPShZZvb8vyinC5FHkW
+         SfVq0+e3yKpyOEGHJ5nrqexpIHEHRusjtC5QFbkq9NMLl1ZZzSbJ8wypyZ98W2Gj8np/
+         nKxvwBho8zISh+gR9kkNhnwxtuC7DFcRa2w0wqEhu4bFVcMcBYSAfwEYa+4+Wp7naA0i
+         UjqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uoH4H/qXa4Hgq9FClpPx5Dd1jyM5vAg3STeuwuUsMrM=;
+        b=ArjLtqjjMjfpcvZlU9vFnWBR3bjsUzLYYMRkIfrK2BAA/3PIRKFNq0x1w8q3jTXPHW
+         fQtc55uP+jWlco2nOJWwFlVbmZwAGT+Vdb4n57zwKsKnV84H9oPXPoi8Ow2b9waM2ja8
+         y3v9WDmlk0KAP7at5V9eJp1L6u9IgDqHbKpCFckIcAw1H6EDBpzsZoLXEzs9vzn0ojS0
+         5cBcYb65O0CRNOjiA+JpqZVXxFjDDDg9lorZmClk5pM4m6m6xUvptHQkj3gmoIub8563
+         9nOy0+Pdb8kIVAVKxcE7QiwDGvs4P6rld07wNJmf/xHPTmb3LWFlFRNYM9SA2QX8NwKK
+         92vg==
+X-Gm-Message-State: AOAM532oOSbtN2Hc7+/Cx0Qv1EGeCIxbuqL+21l2AuwuuyBkPm84eICU
+        vMlFW18m5SEYlaflUdHCXV3BGnGghMbVdR+xvP/gxF9Pql2bHH2D
+X-Google-Smtp-Source: ABdhPJySHRSJNlYs06zs6c5IJXEasLWi9mJck6gduE1wPps9RrO4Ua2TDbKsgpqrqeqnccCSersGmdTwtjCdUgHzV6o=
+X-Received: by 2002:a2e:3c1a:: with SMTP id j26mr6138999lja.297.1619275039634;
+ Sat, 24 Apr 2021 07:37:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xiwT5PQu4rn7s4ubWknFajiWxq315qrP
-X-Proofpoint-GUID: xiwT5PQu4rn7s4ubWknFajiWxq315qrP
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 spamscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 adultscore=0
- bulkscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104240107
+References: <20210422151022.17868-1-sxwjean@me.com> <15aac264-8626-ad15-7301-044c622d7f60@csgroup.eu>
+In-Reply-To: <15aac264-8626-ad15-7301-044c622d7f60@csgroup.eu>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Sat, 24 Apr 2021 22:36:53 +0800
+Message-ID: <CAEVVKH8K84=DuQy370eVv4kx24nHiOqnputtERLuGoc4-MwYtg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] powerpc: Make the code in __show_regs nice-looking
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Xiongwei Song <sxwjean@me.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
+        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
+        aneesh.kumar@linux.ibm.com, 0x7f454c46@gmail.com,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+On Thu, Apr 22, 2021 at 11:27 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 22/04/2021 =C3=A0 17:10, Xiongwei Song a =C3=A9crit :
+> > From: Xiongwei Song <sxwjean@gmail.com>
+> >
+> > Create a new function named interrupt_detail_printable to judge which
+> > interrupts can print esr/dsisr register.
+>
+> What is the benefit of that function ? It may be interesting if the test =
+was done at several places,
+> but as it is done at only one place, I don't thing it is an improvement.
+>
+> Until know, you new immediately what was the traps that would print it. N=
+ow you have to go and look
+> into a sub-function.
 
-Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
+How about replace if statement with switch statement directly, like
+the changes below:
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1924997
-Reported-and-tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
----
- sound/pci/hda/patch_cirrus.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+@@ -1467,13 +1481,17 @@ static void __show_regs(struct pt_regs *regs)
+        trap =3D TRAP(regs);
+        if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
+                pr_cont("CFAR: "REG" ", regs->orig_gpr3);
+-       if (trap =3D=3D INTERRUPT_MACHINE_CHECK ||
+-           trap =3D=3D INTERRUPT_DATA_STORAGE ||
+-           trap =3D=3D INTERRUPT_ALIGNMENT) {
++       switch(trap){
++       case INTERRUPT_MACHINE_CHECK:
++       case INTERRUPT_DATA_STORAGE:
++       case INTERRUPT_ALIGNMENT:
+                if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+                        pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar,
+regs->dsisr);
+                else
+                        pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar,
+regs->dsisr);
++               break;
++       default:
++               break;
+        }
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index d6cf93b7483c..82c5f0869684 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -1481,6 +1481,34 @@ static const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[] = {
- 	{} /* Terminator */
- };
- 
-+static const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[] = {
-+	{ 0x47, 0x65, 0x4000 }, /* EQ_SEL=1, EQ1/2_EN=0 */
-+	{ 0x47, 0x64, 0x4000 }, /* +EQ_ACC */
-+	{ 0x47, 0x65, 0x4010 }, /* +EQ2_EN */
-+	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
-+	{ 0x47, 0x64, 0xc0c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=0, EQ_DATA_LO=0x67 */
-+	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
-+	{ 0x47, 0x64, 0xc1c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=1, EQ_DATA_LO=0x67 */
-+	{ 0x47, 0x63, 0xf370 }, /* EQ_DATA_HI=0xf370 */
-+	{ 0x47, 0x64, 0xc271 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=2, EQ_DATA_LO=0x71 */
-+	{ 0x47, 0x63, 0x1ef8 }, /* EQ_DATA_HI=0x1ef8 */
-+	{ 0x47, 0x64, 0xc348 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=3, EQ_DATA_LO=0x48 */
-+	{ 0x47, 0x63, 0xc110 }, /* EQ_DATA_HI=0xc110 */
-+	{ 0x47, 0x64, 0xc45a }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=4, EQ_DATA_LO=0x5a */
-+	{ 0x47, 0x63, 0x1f29 }, /* EQ_DATA_HI=0x1f29 */
-+	{ 0x47, 0x64, 0xc574 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=5, EQ_DATA_LO=0x74 */
-+	{ 0x47, 0x63, 0x1d7a }, /* EQ_DATA_HI=0x1d7a */
-+	{ 0x47, 0x64, 0xc653 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=6, EQ_DATA_LO=0x53 */
-+	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
-+	{ 0x47, 0x64, 0xc714 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=7, EQ_DATA_LO=0x14 */
-+	{ 0x47, 0x63, 0x1ca3 }, /* EQ_DATA_HI=0x1ca3 */
-+	{ 0x47, 0x64, 0xc8c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=8, EQ_DATA_LO=0xc7 */
-+	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
-+	{ 0x47, 0x64, 0xc914 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=9, EQ_DATA_LO=0x14 */
-+	{ 0x47, 0x64, 0x0000 }, /* -EQ_ACC, -EQ_WRT */
-+	{} /* Terminator */
-+};
-+
- /**
-  * cs8409_enable_i2c_clock - Enable I2C clocks
-  * @codec: the codec instance
-@@ -2029,6 +2057,7 @@ static void cs8409_enable_ur(struct hda_codec *codec, int flag)
- static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- {
- 	const struct cs8409_cir_param *seq = cs8409_cs42l42_hw_cfg;
-+	const struct cs8409_cir_param *seq_bullseye = cs8409_cs42l42_bullseye_atn;
- 	struct cs_spec *spec = codec->spec;
- 
- 	if (spec->gpio_mask) {
-@@ -2043,6 +2072,10 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	for (; seq->nid; seq++)
- 		cs_vendor_coef_set(codec, seq->cir, seq->coeff);
- 
-+	if (codec->fixup_id == CS8409_BULLSEYE)
-+		for (; seq_bullseye->nid; seq_bullseye++)
-+			cs_vendor_coef_set(codec, seq_bullseye->cir, seq_bullseye->coeff);
-+
- 	/* Disable Unsolicited Response during boot */
- 	cs8409_enable_ur(codec, 0);
- 
--- 
-2.25.1
-
+Thanks,
+Xiongwei
