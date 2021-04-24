@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5817936A330
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 23:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826FE36A338
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 23:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237325AbhDXV0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 17:26:36 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:32860 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235013AbhDXV0e (ORCPT
+        id S235013AbhDXVfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 17:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233568AbhDXVfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 17:26:34 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 4ADD4F40540; Sat, 24 Apr 2021 23:25:54 +0200 (CEST)
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        linux-kernel@vger.kernel.org
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 3/3] dts: eeprom-93xx46: Add support for 93C46, 93C56 and 93C66
-Date:   Sat, 24 Apr 2021 23:25:43 +0200
-Message-Id: <20210424212543.13929-4-linkmauve@linkmauve.fr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210424212543.13929-1-linkmauve@linkmauve.fr>
-References: <20210424123034.11755-1-linkmauve@linkmauve.fr>
- <20210424212543.13929-1-linkmauve@linkmauve.fr>
+        Sat, 24 Apr 2021 17:35:34 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1357C061574;
+        Sat, 24 Apr 2021 14:34:55 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 653C372A6; Sat, 24 Apr 2021 17:34:54 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 653C372A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1619300094;
+        bh=Vr7MaCqYmKYqCBGZEDlXxdj0PiivX/JD0v8BQH6csTc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zW7DwFqDn3bEjPetg6lFRmCCOxUVQ3wRKkwbuZcH5Gp+cmSowrce9F+y32Ze+u2AL
+         C6XHzEKVWSVcuSW/lhwoqRmNCEX17Nhd3qvm02miP0sztAPIWrqTvrlFvcrYKvFkn7
+         QIBBOrnPZV2U77dJAIhKp/0fXcGngu1nZCIKH1QA=
+Date:   Sat, 24 Apr 2021 17:34:54 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Shelat, Abhi" <a.shelat@northeastern.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <20210424213454.GA4239@fieldses.org>
+References: <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
+ <20210421133727.GA27929@fieldses.org>
+ <YIAta3cRl8mk/RkH@unreal>
+ <20210421135637.GB27929@fieldses.org>
+ <20210422193950.GA25415@fieldses.org>
+ <YIMDCNx4q6esHTYt@unreal>
+ <20210423180727.GD10457@fieldses.org>
+ <YIMgMHwYkVBdrICs@unreal>
+ <20210423214850.GI10457@fieldses.org>
+ <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These devices differ by the size of their storage, which is why they
-have different compatible strings.
+On Sat, Apr 24, 2021 at 06:34:45PM +0000, Al Viro wrote:
+> On Fri, Apr 23, 2021 at 05:48:50PM -0400, J. Bruce Fields wrote:
+> > Have umn addresses been blocked from posting to kernel lists?
+> 
+> I don't see davem ever doing anything of that sort.  I've no information
+> about what has really happened, but "Uni lawyers and/or HR telling them
+> to stop making anything that might be considered public statements" sounds
+> much more plausible...
+> 
+> Again, it's only a speculation and it might very well have been something
+> else, but out of those two variants... I'd put high odds on the latter vs
+> the former.
 
-Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
----
- Documentation/devicetree/bindings/misc/eeprom-93xx46.txt | 3 +++
- 1 file changed, 3 insertions(+)
+From private email: "Our UMN emails addresses are already banned from
+the mailing list."
 
-diff --git a/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt b/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
-index 7b636b7a8311..72ea0af368d4 100644
---- a/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
-+++ b/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
-@@ -2,7 +2,10 @@ EEPROMs (SPI) compatible with Microchip Technology 93xx46 family.
- 
- Required properties:
- - compatible : shall be one of:
-+    "atmel,at93c46"
-     "atmel,at93c46d"
-+    "atmel,at93c56"
-+    "atmel,at93c66"
-     "eeprom-93xx46"
-     "microchip,93lc46b"
- - data-size : number of data bits per word (either 8 or 16)
--- 
-2.31.1
+Also, I didn't get a copy of
 
+	CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com
+
+through vger for some reason, and it didn't make it to lore.kernel.org either.
+
+In Greg's revert thread, Kangjie Lu's messages are also missing from the
+archives:
+
+	https://lore.kernel.org/lkml/20210421130105.1226686-1-gregkh@linuxfoundation.org/
+
+??
+
+--b.
