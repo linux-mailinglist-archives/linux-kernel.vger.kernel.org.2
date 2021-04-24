@@ -2,103 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC383369DCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24346369DD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244150AbhDXA01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:26:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232614AbhDXA0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 870D161476
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 00:25:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619223948;
-        bh=hhjXoFOS7MULhaH2eAbg6aq5dkXrvOaI7xjS7HFqXe0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GK0G8zXN66tUHlussUN5Vjc/K9oqAXRK0abA6s2QxZ3tq7fsDvvuIjbGa3BUDZ99N
-         zitv2zz9omc0KoAjqrKMIsTu3lNQ/Ac5+39OZb6THfNzGyzgeVDL8ffkbFiyhIt/TK
-         uTbPFThojEWgWHZhFvH0eIpWdYHX3xWGBDUPg86ryNd3EdzH7v6nZmANtvSW5+Kw2t
-         3ZgeECGqb+I6TYT0WPYu1de7+OCaUEyBGi4vmvKtlvSY9i9kZt7Wp3M0olYVslN4UN
-         8//viqJDSSgxHHdmz33CLjDjOH8tID7a4Lz3o7qOQ9P8MR2otzLTyKllx4cJ65069B
-         z1gINSiwDiHNA==
-Received: by mail-ed1-f44.google.com with SMTP id h8so19121575edb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:25:48 -0700 (PDT)
-X-Gm-Message-State: AOAM5332D+lVPSorwRR+jpJd6Zz/mDhmGz2OHpYfn8caDSNQ04gQqYq7
-        vAOZ3AAUziyzVjiXCrzrxRuHsu7hjKXU8Jr5og==
-X-Google-Smtp-Source: ABdhPJxBTXib/RTXK9IEyyqRWQN2gM044cLDarwNUaBYySdbYao+uXwAkbPJ8CvcyZEI+UG1zkDReajVBv2wkbv96lQ=
-X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr7578022eds.166.1619223947148;
- Fri, 23 Apr 2021 17:25:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419073244.2678688-1-narmstrong@baylibre.com> <20210419073244.2678688-6-narmstrong@baylibre.com>
-In-Reply-To: <20210419073244.2678688-6-narmstrong@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 24 Apr 2021 08:25:36 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9PyKK4+gqiU4aP48fB-y34EdW7RULBxOfU2KU+V1toXw@mail.gmail.com>
-Message-ID: <CAAOTY_9PyKK4+gqiU4aP48fB-y34EdW7RULBxOfU2KU+V1toXw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] gpu/drm: mediatek: hdmi: add MT8167 configuration
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>
+        id S236850AbhDXAaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232501AbhDXA37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 20:29:59 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758A9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:29:22 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id a7-20020a62bd070000b029025434d5ead4so15162987pff.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:29:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=IN+7hpfuilZwjXuucv+7rDMA58hZ+Pmp36t/KLM1cMw=;
+        b=g+1yWDroVwsnWvXxUagwJlOAeimwDRkQ63OncNnDLg+sFstxe5ZnEz7JvM5tMy2LrZ
+         b+PFOldLW3B8xzdZ/fsFTl90Wr4s2T+VM1XPtdAgMCf/pzyJNfYWMewADYTWKrvC3bz5
+         G+YrM8Lod0/La+MGwv7rRnCyLwG2nIKFIADcwfjEjMZESYkQGD/IQBgKkC7m0Ou9ICI6
+         3jUwzlNMb+Eq/8d4Etq3xFrKo4YUKzgbEgl2GphuEloomYeZGOWpgoJk8YRLzKcHgbB5
+         0Zvlnmh0VaOAg0fHBAT8pxTzPku11UBW85rGzlN4+OCF3wC4Kqc/mP17nP1EeYRwj6eK
+         w12w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=IN+7hpfuilZwjXuucv+7rDMA58hZ+Pmp36t/KLM1cMw=;
+        b=ighez5gek4Q+ICjxNCbf9E0DoIZhJlJRVDLrmWNo15bzKru/q17DOS07BAKgVB2pCT
+         xSgLf31lvN7CoOiiZAXb7pef3rCnpnYLIXPi7SdyNYz2zFS1jrC++u2y/CuwlDCNmlye
+         f+n9M6HFWPoVQrEuOBsO1EMPb3dvToX3GPlPYyu8WhTl8vPKnat/cdFRQO60xyOhh03T
+         RSyZ0XDG20LQ10lSgOqx14yC6dmYEjgpCzdOfno4HH+cgzBSD28n8W/aLIHhOHhJzotd
+         ps349ccKF2VzJPtSAJrd8NKaMCE6c87ZrEJmIjunCCNsxfOW+HD4hi7Ku8EQBlrvHwGG
+         nchg==
+X-Gm-Message-State: AOAM531BWB3XeVxjivqYsmke/iWO4WQILTCYK/c83hjdHZF6UHyN96pj
+        ZAh2djClDz7KkPzdswTDZ7qOYB0WqHcF
+X-Google-Smtp-Source: ABdhPJycZqWca6XT3XcA+7vy+xZvUsOwCq9bzaaj1UwM2i0BjgltOYKaHQB1q4nJ3AUaFhQeuLfqwWiRdo1w
+X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:5cef:2faf:44cf:b69b])
+ (user=rajatja job=sendgmr) by 2002:aa7:93aa:0:b029:25e:31ca:756f with SMTP id
+ x10-20020aa793aa0000b029025e31ca756fmr6527446pff.70.1619224162041; Fri, 23
+ Apr 2021 17:29:22 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 17:29:17 -0700
+Message-Id: <20210424002918.1962649-1-rajatja@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH 1/2] driver core: Move the "removable" attribute from USB to core
+From:   Rajat Jain <rajatja@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rajat Jain <rajatja@google.com>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-usb@vger.kernel.org,
+        helgaas@kernel.org
+Cc:     rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neil:
+Move the "removable" attribute from USB to core in order to allow
+it to be supported by other subsystem / buses. Individual buses
+that want to support this attribute can opt-in by setting the
+supports_removable flag, and then populating the removable property
+of the device while enumerating it.
 
-Neil Armstrong <narmstrong@baylibre.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=881=
-9=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> The MT8167 SoC have a hard limit on the maximal supported HDMI TMDS clock=
-,
-> and is not validated and supported for HDMI modes out of HDMI CEA modes,
-> so add a configuration entry linked to the MT8167 compatible.
+Signed-off-by: Rajat Jain <rajatja@google.com>
+Change-Id: I55a0ee5e13d87cd0c5d9cfc98403caba1989b518
+---
+ drivers/base/core.c      | 28 ++++++++++++++++++++++++++++
+ drivers/usb/core/hub.c   |  8 ++++----
+ drivers/usb/core/sysfs.c | 24 ------------------------
+ drivers/usb/core/usb.c   |  1 +
+ include/linux/device.h   | 36 ++++++++++++++++++++++++++++++++++++
+ include/linux/usb.h      |  7 -------
+ 6 files changed, 69 insertions(+), 35 deletions(-)
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index f29839382f81..b8ae4cc52805 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2327,6 +2327,25 @@ static ssize_t online_store(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RW(online);
+ 
++static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
++			      char *buf)
++{
++	const char *state;
++
++	switch (dev->removable) {
++	case DEVICE_REMOVABLE:
++		state = "removable";
++		break;
++	case DEVICE_FIXED:
++		state = "fixed";
++		break;
++	default:
++		state = "unknown";
++	}
++	return sprintf(buf, "%s\n", state);
++}
++static DEVICE_ATTR_RO(removable);
++
+ int device_add_groups(struct device *dev, const struct attribute_group **groups)
+ {
+ 	return sysfs_create_groups(&dev->kobj, groups);
+@@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
+ 			goto err_remove_dev_online;
+ 	}
+ 
++	if (type && type->supports_removable) {
++		error = device_create_file(dev, &dev_attr_removable);
++		if (error)
++			goto err_remove_dev_waiting_for_supplier;
++	}
++
+ 	return 0;
+ 
++ err_remove_dev_waiting_for_supplier:
++	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+  err_remove_dev_online:
+ 	device_remove_file(dev, &dev_attr_online);
+  err_remove_dev_groups:
+@@ -2525,6 +2552,7 @@ static void device_remove_attrs(struct device *dev)
+ 	struct class *class = dev->class;
+ 	const struct device_type *type = dev->type;
+ 
++	device_remove_file(dev, &dev_attr_removable);
+ 	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+ 	device_remove_file(dev, &dev_attr_online);
+ 	device_remove_groups(dev, dev->groups);
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 7f71218cc1e5..500e5648de04 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -2442,11 +2442,11 @@ static void set_usb_port_removable(struct usb_device *udev)
+ 	 */
+ 	switch (hub->ports[udev->portnum - 1]->connect_type) {
+ 	case USB_PORT_CONNECT_TYPE_HOT_PLUG:
+-		udev->removable = USB_DEVICE_REMOVABLE;
++		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+ 		return;
+ 	case USB_PORT_CONNECT_TYPE_HARD_WIRED:
+ 	case USB_PORT_NOT_USED:
+-		udev->removable = USB_DEVICE_FIXED;
++		dev_set_removable(&udev->dev, DEVICE_FIXED);
+ 		return;
+ 	default:
+ 		break;
+@@ -2471,9 +2471,9 @@ static void set_usb_port_removable(struct usb_device *udev)
+ 	}
+ 
+ 	if (removable)
+-		udev->removable = USB_DEVICE_REMOVABLE;
++		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+ 	else
+-		udev->removable = USB_DEVICE_FIXED;
++		dev_set_removable(&udev->dev, DEVICE_FIXED);
+ 
+ }
+ 
+diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+index d85699bee671..e8ff3afdf7af 100644
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -298,29 +298,6 @@ static ssize_t urbnum_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(urbnum);
+ 
+-static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+-			      char *buf)
+-{
+-	struct usb_device *udev;
+-	char *state;
+-
+-	udev = to_usb_device(dev);
+-
+-	switch (udev->removable) {
+-	case USB_DEVICE_REMOVABLE:
+-		state = "removable";
+-		break;
+-	case USB_DEVICE_FIXED:
+-		state = "fixed";
+-		break;
+-	default:
+-		state = "unknown";
+-	}
+-
+-	return sprintf(buf, "%s\n", state);
+-}
+-static DEVICE_ATTR_RO(removable);
+-
+ static ssize_t ltm_capable_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+@@ -825,7 +802,6 @@ static struct attribute *dev_attrs[] = {
+ 	&dev_attr_avoid_reset_quirk.attr,
+ 	&dev_attr_authorized.attr,
+ 	&dev_attr_remove.attr,
+-	&dev_attr_removable.attr,
+ 	&dev_attr_ltm_capable.attr,
+ #ifdef CONFIG_OF
+ 	&dev_attr_devspec.attr,
+diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+index a566bb494e24..5a0f73a28196 100644
+--- a/drivers/usb/core/usb.c
++++ b/drivers/usb/core/usb.c
+@@ -523,6 +523,7 @@ struct device_type usb_device_type = {
+ #ifdef CONFIG_PM
+ 	.pm =		&usb_device_pm_ops,
+ #endif
++	.supports_removable = true,
+ };
+ 
+ 
+diff --git a/include/linux/device.h b/include/linux/device.h
+index ba660731bd25..d6442b811607 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -93,6 +93,12 @@ struct device_type {
+ 	void (*release)(struct device *dev);
+ 
+ 	const struct dev_pm_ops *pm;
++
++	/*
++	 * Determines whether the subsystem supports classifying the devices of
++	 * this type into removable vs fixed.
++	 */
++	bool supports_removable;
+ };
+ 
+ /* interface for exporting device attributes */
+@@ -350,6 +356,19 @@ enum dl_dev_state {
+ 	DL_DEV_UNBINDING,
+ };
+ 
++/**
++ * enum device_removable - Whether the device is removable. The criteria for a
++ * device to be classified as removable, is determined by its subsystem or bus.
++ * @DEVICE_REMOVABLE_UNKNOWN:  Device location is Unknown (default).
++ * @DEVICE_REMOVABLE: Device is removable by the user.
++ * @DEVICE_FIXED: Device is not removable by the user.
++ */
++enum device_removable {
++	DEVICE_REMOVABLE_UNKNOWN = 0,
++	DEVICE_REMOVABLE,
++	DEVICE_FIXED,
++};
++
+ /**
+  * struct dev_links_info - Device data related to device links.
+  * @suppliers: List of links to supplier devices.
+@@ -431,6 +450,9 @@ struct dev_links_info {
+  * 		device (i.e. the bus driver that discovered the device).
+  * @iommu_group: IOMMU group the device belongs to.
+  * @iommu:	Per device generic IOMMU runtime data
++ * @removable:  Whether the device can be removed from the system. This
++ *              should be set by the subsystem / bus driver that discovered
++ *              the device.
+  *
+  * @offline_disabled: If set, the device is permanently online.
+  * @offline:	Set after successful invocation of bus type's .offline().
+@@ -541,6 +563,8 @@ struct device {
+ 	struct iommu_group	*iommu_group;
+ 	struct dev_iommu	*iommu;
+ 
++	enum device_removable	removable;
++
+ 	bool			offline_disabled:1;
+ 	bool			offline:1;
+ 	bool			of_node_reused:1;
+@@ -778,6 +802,18 @@ static inline bool dev_has_sync_state(struct device *dev)
+ 	return false;
+ }
+ 
++static inline void dev_set_removable(struct device *dev,
++				     enum device_removable removable)
++{
++	dev->removable = removable;
++}
++
++static inline bool dev_is_removable(struct device *dev)
++{
++	return dev && dev->type && dev->type->supports_removable
++	    && dev->removable == DEVICE_REMOVABLE;
++}
++
+ /*
+  * High level routines for use by the bus drivers
+  */
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index d6a41841b93e..0bbb9e8b18c7 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -473,12 +473,6 @@ struct usb_dev_state;
+ 
+ struct usb_tt;
+ 
+-enum usb_device_removable {
+-	USB_DEVICE_REMOVABLE_UNKNOWN = 0,
+-	USB_DEVICE_REMOVABLE,
+-	USB_DEVICE_FIXED,
+-};
+-
+ enum usb_port_connect_type {
+ 	USB_PORT_CONNECT_TYPE_UNKNOWN = 0,
+ 	USB_PORT_CONNECT_TYPE_HOT_PLUG,
+@@ -701,7 +695,6 @@ struct usb_device {
+ #endif
+ 	struct wusb_dev *wusb_dev;
+ 	int slot_id;
+-	enum usb_device_removable removable;
+ 	struct usb2_lpm_parameters l1_params;
+ 	struct usb3_lpm_parameters u1_params;
+ 	struct usb3_lpm_parameters u2_params;
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_hdmi.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediat=
-ek/mtk_hdmi.c
-> index bc50d97f2553..c1651a83700d 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> @@ -1787,10 +1787,18 @@ static const struct mtk_hdmi_conf mtk_hdmi_conf_m=
-t2701 =3D {
->         .tz_disabled =3D true,
->  };
->
-> +static const struct mtk_hdmi_conf mtk_hdmi_conf_mt8167 =3D {
-> +       .max_mode_clock =3D 148500,
-> +       .cea_modes_only =3D true,
-> +};
-> +
->  static const struct of_device_id mtk_drm_hdmi_of_ids[] =3D {
->         { .compatible =3D "mediatek,mt2701-hdmi",
->           .data =3D &mtk_hdmi_conf_mt2701,
->         },
-> +       { .compatible =3D "mediatek,mt8167-hdmi",
-> +         .data =3D &mtk_hdmi_conf_mt8167,
-> +       },
->         { .compatible =3D "mediatek,mt8173-hdmi",
->         },
->         {}
-> --
-> 2.25.1
->
