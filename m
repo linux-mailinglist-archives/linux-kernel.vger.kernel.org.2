@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C02936A071
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AB236A076
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237556AbhDXJHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 05:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237582AbhDXJEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 05:04:39 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A7DC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:04:00 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id k14so767303wrv.5
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ck3YsdNSVP0rZ1FtHCUQWW2VZt87Mqq7djATO4TUkHY=;
-        b=HkF9xIaCcJXTwTE676PshFJce2H+E5YLOZk5Se6EptvcO9HuBZTrOSwhHLFPXOR+SI
-         So/BVexFRF0eUmkRzZ0edJRoDGoJxJs0Jj0s66alCoUMwP4hPQR3YmwFMsGWK+IQMx+4
-         rxW+PvicMwqsyLBJCdo3qc2mNAeOz3kGqhxHefODoKP87KFETlOFFmtnexDP2/fLHcmw
-         wzh0Q91/2mnuzHvtTrGetIqIVnwP0Lp9fF0CSi1cRjbFjQUSnOG0LpxxYnx/0EI3Q182
-         O+NNflsl/u6kXwuQnRFHmGx0ESzPTIKLPimYmbJYkIdJddg5/XeujHLMb/E3siZCzdur
-         kGww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ck3YsdNSVP0rZ1FtHCUQWW2VZt87Mqq7djATO4TUkHY=;
-        b=In12H0LMWR1RA88WUwymRkoQnSr4UB7ZFKSctYDtu4YmtymfHS0m3r7yy8twWQ5Vok
-         hPazVQk+0N8/ozphWMdcUbFwl69JONq4RQmlPa9qSAOehWAeNFUFSKo32zLd1lW23cAu
-         bnE3E1ijND2fX7Iy+sFzgemY4Xc+FtNA7v2et6885LCp9gki/CD59kUPWfBMZOlN6L68
-         eEzEwUGPnMmwlSCuEyYaAc/6gcn6d2+MtgNgg8PKW9iwVXEo99FrJJCUMHIRHUz2aZbN
-         A1oLYVgFHCBWFNysFVul7rDKiSMXf+VrN7zWzPOkUlNJCl/ztd3o/8JyUlg2dY7gtw9Z
-         TJmA==
-X-Gm-Message-State: AOAM531OdAzIv/8N8fG0Ngv3yvmUT8c6wK1+m3vgIRuRrjsuJDHrNYd0
-        8mkLtIJ0MtlmIrXS3G3EwlWBzjTH5XO3zg==
-X-Google-Smtp-Source: ABdhPJwye49sqjYh3F1rAtuwk/EJTLSPCSamHCBjMkk0VD5Dw1yBWU2jSxRMnOdOoTcfWS9ZQd5how==
-X-Received: by 2002:adf:f00e:: with SMTP id j14mr9504311wro.180.1619255039453;
-        Sat, 24 Apr 2021 02:03:59 -0700 (PDT)
-Received: from agape ([5.171.80.252])
-        by smtp.gmail.com with ESMTPSA id m14sm389517wmi.39.2021.04.24.02.03.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 02:03:59 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     joe@perches.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 50/50] staging: rtl8723bs: macro DRIVER_PREFIX expands to lowercase driver name
-Date:   Sat, 24 Apr 2021 11:02:33 +0200
-Message-Id: <c986e9a3c9b2f73cb784bd5dc7c877eb9a669c89.1619254603.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1619254603.git.fabioaiuto83@gmail.com>
-References: <cover.1619254603.git.fabioaiuto83@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S237527AbhDXJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 05:07:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238055AbhDXJHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 05:07:20 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0349B61131;
+        Sat, 24 Apr 2021 09:06:43 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1laEFM-009DDW-Pi; Sat, 24 Apr 2021 10:06:41 +0100
+Date:   Sat, 24 Apr 2021 10:06:39 +0100
+Message-ID: <87r1j0rqzk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Krishna Reddy <vdumpa@nvidia.com>
+Cc:     Sumit Gupta <sumitg@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "jiangkunkun@huawei.com" <jiangkunkun@huawei.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "tn@semihalf.com" <tn@semihalf.com>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        "wangxingang5@huawei.com" <wangxingang5@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "zhukeqian1@huawei.com" <zhukeqian1@huawei.com>,
+        Sachin Nikam <Snikam@nvidia.com>,
+        Bibek Basu <bbasu@nvidia.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+Subject: Re: [PATCH v14 00/13] SMMUv3 Nested Stage Setup (IOMMU part)
+In-Reply-To: <BY5PR12MB37642B9AC7E5D907F5A664F6B3459@BY5PR12MB3764.namprd12.prod.outlook.com>
+References: <f99d8af1-425b-f1d5-83db-20e32b856143@redhat.com>
+        <1619103878-6664-1-git-send-email-sumitg@nvidia.com>
+        <YILFAJ50aqvkQaT/@myrica>
+        <5a8825bc-286e-b316-515f-3bd3c9c70a80@nvidia.com>
+        <BY5PR12MB37642B9AC7E5D907F5A664F6B3459@BY5PR12MB3764.namprd12.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: vdumpa@nvidia.com, sumitg@nvidia.com, jean-philippe@linaro.org, eric.auger@redhat.com, alex.williamson@redhat.com, eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org, jiangkunkun@huawei.com, joro@8bytes.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, lushenming@huawei.com, robin.murphy@arm.com, tn@semihalf.com, vivek.gautam@arm.com, vsethi@nvidia.com, wangxingang5@huawei.com, will@kernel.org, zhangfei.gao@linaro.org, zhukeqian1@huawei.com, Snikam@nvidia.com, bbasu@nvidia.com, sdonthineni@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-macro DRIVER_PREFIX expands to lowercase driver name.
+On Fri, 23 Apr 2021 18:58:23 +0100,
+Krishna Reddy <vdumpa@nvidia.com> wrote:
+> 
+> >> Did that patch cause any issue, or is it just not needed on your system?
+> >> It fixes an hypothetical problem with the way ATS is implemented. 
+> >> Maybe I actually observed it on an old software model, I don't 
+> >> remember. Either way it's unlikely to go upstream but I'd like to know 
+> >> if I should drop it from my tree.
+> 
+> > Had to revert same patch "mm: notify remote TLBs when dirtying a PTE" to
+> > avoid below crash[1]. I am not sure about the cause yet.
+> 
+> I have noticed this issue earlier with patch pointed here and root
+> caused the issue as below.  It happens after vfio_mmap request from
+> QEMU for the PCIe device and during the access of VA when PTE access
+> flags are updated.
+> 
+> kvm_mmu_notifier_change_pte() --> kvm_set_spte_hve() -->
+> kvm_set_spte_hva() --> clean_dcache_guest_page()
+> 
+> The validation model doesn't have FWB capability supported.
+> __clean_dcache_guest_page() attempts to perform dcache flush on pcie
+> bar address(not a valid_pfn()) through page_address(), which doesn't
+> have page table mapping and leads to exception.
+> 
+> I have worked around the issue by filtering out the request if the
+> pfn is not valid in __clean_dcache_guest_page().  As the patch
+> wasn't posted in the community, reverted it as well.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/include/rtw_debug.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That's papering over the real issue, and this mapping path needs
+fixing as it was only ever expected to be called for CoW.
 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index 189f02a8300a..3a5b083e95a1 100644
---- a/drivers/staging/rtl8723bs/include/rtw_debug.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
-@@ -7,7 +7,7 @@
- #ifndef __RTW_DEBUG_H__
- #define __RTW_DEBUG_H__
- 
--#define DRIVER_PREFIX "RTL8723BS: "
-+#define DRIVER_PREFIX "rtl8723bs: "
- 
- void mac_reg_dump(struct adapter *adapter);
- void bb_reg_dump(struct adapter *adapter);
+Can you please try the following patch and let me know if that fixes
+the issue for good?
+
+Thanks,
+
+	M.
+
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 77cb2d28f2a4..b62dd40a4083 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -1147,7 +1147,8 @@ int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
+ 	 * We've moved a page around, probably through CoW, so let's treat it
+ 	 * just like a translation fault and clean the cache to the PoC.
+ 	 */
+-	clean_dcache_guest_page(pfn, PAGE_SIZE);
++	if (!kvm_is_device_pfn(pfn))
++		clean_dcache_guest_page(pfn, PAGE_SIZE);
+ 	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pfn);
+ 	return 0;
+ }
+
+
 -- 
-2.20.1
-
+Without deviation from the norm, progress is not possible.
