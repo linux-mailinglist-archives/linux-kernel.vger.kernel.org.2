@@ -2,169 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0AD36A0F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 13:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3089536A0FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 13:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236023AbhDXLwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 07:52:39 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:22439 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhDXLwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 07:52:36 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 13OBmmYp018893;
-        Sat, 24 Apr 2021 20:48:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 13OBmmYp018893
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619264929;
-        bh=QZtRNPI9tcJewNEkn9qFVV65UXR5+ejTwS0WZTz9ytE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OgS1xS1pH9Ae7mvvS/tN0XQ1KlXN6XJGvC6a13xxxGpBWrmoZDHvSad9U/i4OE8GB
-         SCxToXKcTar8y85/ZgdttfyNTyNT4QrOt9teXbme+DbWLOvA6ZrXrCO9RRSno8lrbq
-         LjUaRUllsq7tNZxY6TW1P2027e2ET3kGuIHAKskUXsNQpb0WM+C5rMbvyGoCM6Ek/7
-         Q/SeGxa5kazVx8r7jeV7piS2uH99EolfxgJA1jfMxcGW50i+Le9Z1lHf7UOa7+H1Z8
-         9PSecdZ0jU7Sa07LWptBy+FREZsqXgLxyhpbsEsyDWHdwWRB00Ubg9Phg50IHfqaLC
-         nNznHrSvYzgDQ==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthias Maennich <maennich@google.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mptcp@lists.01.org, netdev@vger.kernel.org
-Subject: [PATCH] kbuild: replace LANG=C with LC_ALL=C
-Date:   Sat, 24 Apr 2021 20:48:41 +0900
-Message-Id: <20210424114841.394239-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S237175AbhDXLxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 07:53:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231203AbhDXLxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 07:53:08 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B53D661467;
+        Sat, 24 Apr 2021 11:52:29 +0000 (UTC)
+Date:   Sat, 24 Apr 2021 12:53:09 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Tomas Melin <tomas.melin@vaisala.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/2] iio: accel: Add driver for Murata SCA3300
+ accelerometer
+Message-ID: <20210424125309.426d675c@jic23-huawei>
+In-Reply-To: <CAHp75Ve2AEA8yPw5qN+R=K=ovaO8vX53hYU9=knjY_Z+EHDdww@mail.gmail.com>
+References: <20210420132333.99886-1-tomas.melin@vaisala.com>
+        <20210420132333.99886-3-tomas.melin@vaisala.com>
+        <CAHp75Ve2AEA8yPw5qN+R=K=ovaO8vX53hYU9=knjY_Z+EHDdww@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LANG gives a weak default to each LC_* in case it is not explicitly
-defined. LC_ALL, if set, overrides all other LC_* variables.
+On Fri, 23 Apr 2021 19:06:30 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-  LANG  <  LC_CTYPE, LC_COLLATE, LC_MONETARY, LC_NUMERIC, ...  <  LC_ALL
+> On Tue, Apr 20, 2021 at 4:24 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+> >
+> > Add initial support for Murata SCA3300 3-axis industrial
+> > accelerometer with digital SPI interface. This device also
+> > provides a temperature measurement.  
+> 
+> Thanks for an update, my comments below.
+> 
+> They can be addressed as followups, but I think regmap API can be
+> considered right now.
 
-This is why documentation such as [1] suggests to set LC_ALL in build
-scripts to get the deterministic result.
+It's not a totally clear cut case of regmap making sense for this particular
+device. I think you'd have do a custom regmap to support
+the cs_change = 1, needed for transfers and once you are going down that
+route the advantages of regmap have to be balanced against needing
+custom callbacks anyway.
 
-LANG=C is not strong enough to override LC_* that may be set by end
-users.
+Without actually implementing it I'm not certain whether it would be
+a good thing here or not. It should be fairly easy to try though if
+Tomas wants to.
 
-[1]: https://reproducible-builds.org/docs/locales/
+Jonathan
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/powerpc/boot/wrapper                          | 2 +-
- scripts/nsdeps                                     | 2 +-
- scripts/recordmcount.pl                            | 2 +-
- scripts/setlocalversion                            | 2 +-
- scripts/tags.sh                                    | 2 +-
- tools/testing/selftests/net/mptcp/mptcp_connect.sh | 2 +-
- usr/gen_initramfs.sh                               | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/arch/powerpc/boot/wrapper b/arch/powerpc/boot/wrapper
-index 41fa0a8715e3..cdb796b76e2e 100755
---- a/arch/powerpc/boot/wrapper
-+++ b/arch/powerpc/boot/wrapper
-@@ -191,7 +191,7 @@ if [ -z "$kernel" ]; then
-     kernel=vmlinux
- fi
- 
--LANG=C elfformat="`${CROSS}objdump -p "$kernel" | grep 'file format' | awk '{print $4}'`"
-+LC_ALL=C elfformat="`${CROSS}objdump -p "$kernel" | grep 'file format' | awk '{print $4}'`"
- case "$elfformat" in
-     elf64-powerpcle)	format=elf64lppc	;;
-     elf64-powerpc)	format=elf32ppc	;;
-diff --git a/scripts/nsdeps b/scripts/nsdeps
-index e8ce2a4d704a..04c4b96e95ec 100644
---- a/scripts/nsdeps
-+++ b/scripts/nsdeps
-@@ -44,7 +44,7 @@ generate_deps() {
- 		for source_file in $mod_source_files; do
- 			sed '/MODULE_IMPORT_NS/Q' $source_file > ${source_file}.tmp
- 			offset=$(wc -l ${source_file}.tmp | awk '{print $1;}')
--			cat $source_file | grep MODULE_IMPORT_NS | LANG=C sort -u >> ${source_file}.tmp
-+			cat $source_file | grep MODULE_IMPORT_NS | LC_ALL=C sort -u >> ${source_file}.tmp
- 			tail -n +$((offset +1)) ${source_file} | grep -v MODULE_IMPORT_NS >> ${source_file}.tmp
- 			if ! diff -q ${source_file} ${source_file}.tmp; then
- 				mv ${source_file}.tmp ${source_file}
-diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-index 867860ea57da..0a7fc9507d6f 100755
---- a/scripts/recordmcount.pl
-+++ b/scripts/recordmcount.pl
-@@ -497,7 +497,7 @@ sub update_funcs
- #
- # Step 2: find the sections and mcount call sites
- #
--open(IN, "LANG=C $objdump -hdr $inputfile|") || die "error running $objdump";
-+open(IN, "LC_ALL=C $objdump -hdr $inputfile|") || die "error running $objdump";
- 
- my $text;
- 
-diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-index bb709eda96cd..db941f6d9591 100755
---- a/scripts/setlocalversion
-+++ b/scripts/setlocalversion
-@@ -126,7 +126,7 @@ scm_version()
- 	fi
- 
- 	# Check for svn and a svn repo.
--	if rev=$(LANG= LC_ALL= LC_MESSAGES=C svn info 2>/dev/null | grep '^Last Changed Rev'); then
-+	if rev=$(LC_ALL=C svn info 2>/dev/null | grep '^Last Changed Rev'); then
- 		rev=$(echo $rev | awk '{print $NF}')
- 		printf -- '-svn%s' "$rev"
- 
-diff --git a/scripts/tags.sh b/scripts/tags.sh
-index fd96734deff1..db8ba411860a 100755
---- a/scripts/tags.sh
-+++ b/scripts/tags.sh
-@@ -326,5 +326,5 @@ esac
- 
- # Remove structure forward declarations.
- if [ -n "$remove_structs" ]; then
--    LANG=C sed -i -e '/^\([a-zA-Z_][a-zA-Z0-9_]*\)\t.*\t\/\^struct \1;.*\$\/;"\tx$/d' $1
-+    LC_ALL=C sed -i -e '/^\([a-zA-Z_][a-zA-Z0-9_]*\)\t.*\t\/\^struct \1;.*\$\/;"\tx$/d' $1
- fi
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-index 10a030b53b23..1d2a6e7b877c 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-@@ -273,7 +273,7 @@ check_mptcp_disabled()
- 	ip netns exec ${disabled_ns} sysctl -q net.mptcp.enabled=0
- 
- 	local err=0
--	LANG=C ip netns exec ${disabled_ns} ./mptcp_connect -t $timeout -p 10000 -s MPTCP 127.0.0.1 < "$cin" 2>&1 | \
-+	LC_ALL=C ip netns exec ${disabled_ns} ./mptcp_connect -t $timeout -p 10000 -s MPTCP 127.0.0.1 < "$cin" 2>&1 | \
- 		grep -q "^socket: Protocol not available$" && err=1
- 	ip netns delete ${disabled_ns}
- 
-diff --git a/usr/gen_initramfs.sh b/usr/gen_initramfs.sh
-index 8ae831657e5d..63476bb70b41 100755
---- a/usr/gen_initramfs.sh
-+++ b/usr/gen_initramfs.sh
-@@ -147,7 +147,7 @@ dir_filelist() {
- 	header "$1"
- 
- 	srcdir=$(echo "$1" | sed -e 's://*:/:g')
--	dirlist=$(find "${srcdir}" -printf "%p %m %U %G\n" | LANG=C sort)
-+	dirlist=$(find "${srcdir}" -printf "%p %m %U %G\n" | LC_ALL=C sort)
- 
- 	# If $dirlist is only one line, then the directory is empty
- 	if [  "$(echo "${dirlist}" | wc -l)" -gt 1 ]; then
--- 
-2.27.0
+> 
+> ...
+> 
+> > +static int sca3300_read_reg(struct sca3300_data *sca_data, u8 reg, int *val)
+> > +{
+> > +       int ret;
+> > +
+> > +       mutex_lock(&sca_data->lock);
+> > +       sca_data->txbuf[0] = reg << 2;
+> > +       ret = sca3300_transfer(sca_data, val);
+> > +       mutex_unlock(&sca_data->lock);
+> > +       if (ret != -EINVAL)
+> > +               return ret;
+> > +
+> > +       return sca3300_error_handler(sca_data);
+> > +}
+> > +
+> > +static int sca3300_write_reg(struct sca3300_data *sca_data, u8 reg, int val)
+> > +{
+> > +       int reg_val = 0;
+> > +       int ret;
+> > +
+> > +       mutex_lock(&sca_data->lock);
+> > +       /* BIT(7) for write operation */
+> > +       sca_data->txbuf[0] = BIT(7) | (reg << 2);
+> > +       put_unaligned_be16(val, &sca_data->txbuf[1]);
+> > +       ret = sca3300_transfer(sca_data, &reg_val);
+> > +       mutex_unlock(&sca_data->lock);
+> > +       if (ret != -EINVAL)
+> > +               return ret;
+> > +
+> > +       return sca3300_error_handler(sca_data);
+> > +}  
+> 
+> Okay, BIT(7) for write/read is pretty much standard stuff for such
+> sensors. If you transform your driver to use REGMAP_SPI, you will get
+> it thru regmap configuration. Also, you will get a locking there, in
+> case you don't need to have several I/O in a row atomically.
+> 
+> ..
+> 
+> > +       for_each_set_bit(bit, indio_dev->active_scan_mask,
+> > +                        indio_dev->masklength) {  
+> 
+> One line?
+> 
+> > +               ret = sca3300_read_reg(data, sca3300_channels[bit].address,
+> > +                                      &val);
+> > +               if (ret) {
+> > +                       dev_err_ratelimited(&data->spi->dev,
+> > +                               "failed to read register, error: %d\n", ret);
+> > +                       /* handled, but bailing out due to errors */
+> > +                       goto out;
+> > +               }
+> > +               data->scan.channels[i++] = val;
+> > +       }  
+> 
+> ...
+> 
+> > +       int ret;
+> > +       int value = 0;  
+> 
+> Reversed xmas tree ordering?
+> 
+> ...
+> 
+> > +       /*
+> > +        * Wait 1ms after SW-reset command.
+> > +        * Wait 15ms for settling of signal paths.
+> > +        */
+> > +       usleep_range(16e3, 50e3);  
+> 
+> Hmm... Perhaps re-use msleep_range()
+> https://elixir.bootlin.com/linux/latest/source/drivers/media/i2c/imx274.c#L601?
+> 
+> ...
+> 
+> > +       .debugfs_reg_access = &sca3300_debugfs_reg_access,  
+> 
+> Reading of the registers you will get as a bonus when switching over
+> to regmap SPI API.
+> 
 
