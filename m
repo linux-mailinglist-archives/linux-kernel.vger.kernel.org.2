@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5592369E30
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D56F369E31
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244342AbhDXAyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        id S244491AbhDXAyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244410AbhDXAxG (ORCPT
+        with ESMTP id S244442AbhDXAxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:53:06 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6E2C0612EF
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:48:11 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so4617225ybp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:48:11 -0700 (PDT)
+        Fri, 23 Apr 2021 20:53:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE8AC0612FD
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:48:14 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id o187-20020a2528c40000b02904e567b4bf7eso26380402ybo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:48:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=BdoSnjJxYw1zfGUU/Z7GRrV8PpQo7mVoIG98cidoNPE=;
-        b=ZXyR7PW511+wiI+r2z9sDLy0bn0R5t8+YYcLnYmh7WaFjgQWhFS6rovcK5dI6JHnlf
-         KI+2ZzBslvkOwq2PEeWwR9ep+zwT7rrBaLcQkBX/RbCQxCxGjt7ypzGich2z8BnjhR4s
-         qISIoA1jRnc5m3+Wk56tidUt6Zvx4lRgcTUDITmRZtq2YTrj+l4As3q4u4RtfEQ7SoT7
-         8/Xyso6YE9kY7cN+qAtFpwWyWusn8447Xu0ZG8v99Xn2XUxUBz9nVtdjEURfL7YbeTsa
-         9byiJ2akf/jQbdqZvhAgyf2enceQnK8WKNOs+E69qt6hTgsUJ4scu6PlzJXpcKyTmULh
-         fCVg==
+        bh=TyRU0/tPrLYATGQcgqMekR6RRGDcn8BCsFh+kG7e/tE=;
+        b=SMY4s4+fzw/1Y2OOxIguwHavAdi/v6k+lTW8DHAFW/hyqvcd0GNmF7lfKiHO9+Ge3G
+         ys7y3WcYFwlVue4WsLYkWnrl+8MRYkTkGgFHNBb9HVsTLY5M9daiCJHmnkCWpJuggoks
+         5yh6krar0RFaqT+Csqf/4Wx4prEvk8rWonrW6mbzyQ+pla/t8wr7B87c4p6fhn9At2nt
+         ZQvq8CQHkQ2M3lCX7tC/8ysu+Rp75vhqs0H2GFCoXktXEVbWbnhOuaYE2n6nnXRHv2PV
+         MCGEiE1OFhcPKQC3YDrbURvs68PdwNqGTXuGITfwnEBHOF9QG9EQbvuveedXXaNp1ThU
+         GBIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=BdoSnjJxYw1zfGUU/Z7GRrV8PpQo7mVoIG98cidoNPE=;
-        b=dM+d7a3dxJhDudKmJx9Zkt6ltdYYHbP/wye1rEKxkt2UJyX0/B3w3phOnyrdABrMIt
-         7idVVtLpyNnWjJ1Ibp2+HGhGFL6Xw9Rs4dxyxYzp2sE/ffFGxF/juJe9ELOvP2VvZWhM
-         R+0UIoBhc/cYQvTXB7x/CKQx3rz0NZbSeweM96Ln42Nq/EhpddOM242Q/2bjd8jXhSG7
-         DySK8LYwdSgGvalUHgUh7OgIXTJERPbcGPqIZs/k/nCEZE5kRjSsgqFTrT9MCv8mdY6C
-         kmsUzqrBrj6+yM/guIIUbow9l4ob+aH9jFT1OhA7b5GXAYYzxHD0EwFt/7pSRhqylGPu
-         ZyNg==
-X-Gm-Message-State: AOAM532e5N5AmVglCcTyf5hMlBGPLhfwavZZwlxruMJ9aFOZMSYNnuOH
-        oQFLm4ddSyIZd/SQJUh5NyQzaDrysFk=
-X-Google-Smtp-Source: ABdhPJwzgFMPHtpsTuP1bO+XVQ19S4WjrI+kU3mdBgFcxF60m+DI+8eH/lVH69xsBoUWa1oj0/dKVi9rINA=
+        bh=TyRU0/tPrLYATGQcgqMekR6RRGDcn8BCsFh+kG7e/tE=;
+        b=rjBBs9ncoXmPsEklipOLUK6P/WYcL8VoM2PP9jXQ5r5ID8AftriSRCHOgLL9wPGCZt
+         1AcevnHDYgXnDHyReCciAVibAirip8H2U/+eURkQY72tSnMrR+XeUfKtUrQv9qB0CQbT
+         ezXdMc5bS75KzIP9jfMaSXeK+i9SZvSphXXNM14j8aDIAEeaLr587Q/7mMwRQNkOvHKw
+         opvVjXeF0Wdh7ELHm39VtBlmVNeS0bz4R6jn6WehbHP4LDJaRTAYLZzmRDpS4FkMS8gs
+         SM99r6KoLsxuTztsBtW7laysQaLvoFNUJL9wDc67H6sUVdwGKnpBaEErGOAXalOCFBZ/
+         wHnw==
+X-Gm-Message-State: AOAM531f/bFxeljB2Yy7UBBY2l/Mh9Y4RIHVrJbz4bdJDD+1MovMzOER
+        7N6tpHfzuqC0gy/1zEKkaJO+OYQffQQ=
+X-Google-Smtp-Source: ABdhPJza0fNO9HnQ0aPO3jH9n9Houz3G6gIcPXjHTLM8IC4W4xFSfevYb0Xq8Fxsq9cjUzNMtFJB6ZA38C8=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:ad52:3246:e190:f070])
- (user=seanjc job=sendgmr) by 2002:a25:9a01:: with SMTP id x1mr9232033ybn.269.1619225291193;
- Fri, 23 Apr 2021 17:48:11 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:c444:: with SMTP id u65mr9803926ybf.93.1619225293387;
+ Fri, 23 Apr 2021 17:48:13 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 23 Apr 2021 17:46:34 -0700
+Date:   Fri, 23 Apr 2021 17:46:35 -0700
 In-Reply-To: <20210424004645.3950558-1-seanjc@google.com>
-Message-Id: <20210424004645.3950558-33-seanjc@google.com>
+Message-Id: <20210424004645.3950558-34-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210424004645.3950558-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH 32/43] KVM: VMX: Skip pointless MSR bitmap update when setting EFER
+Subject: [PATCH 33/43] KVM: VMX: Refresh list of user return MSRs after
+ setting guest CPUID
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -66,68 +67,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split setup_msrs() into vmx_setup_uret_msrs() and an open coded refresh
-of the MSR bitmap, and skip the latter when refreshing the user return
-MSRs during an EFER load.  Only the x2APIC MSRs are dynamically exposed
-and hidden, and those are not affected by a change in EFER.
+After a CPUID update, refresh the list of user return MSRs that are
+loaded into hardware when running the vCPU.  This is necessary to handle
+the oddball case where userspace exposes X86_FEATURE_RDTSCP to the guest
+after the vCPU is running.
 
+Fixes: 0023ef39dc35 ("kvm: vmx: Set IA32_TSC_AUX for legacy mode guests")
+Fixes: 4e47c7a6d714 ("KVM: VMX: Add instruction rdtscp support for guest")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 594975dc3f94..bdfb3def8526 100644
+index bdfb3def8526..57cabef3ffd9 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1767,11 +1767,12 @@ static void vmx_setup_uret_msr(struct vcpu_vmx *vmx, unsigned int msr)
- }
+@@ -7313,6 +7313,8 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	/* xsaves_enabled is recomputed in vmx_compute_secondary_exec_control(). */
+ 	vcpu->arch.xsaves_enabled = false;
  
- /*
-- * Set up the vmcs to automatically save and restore system
-- * msrs.  Don't touch the 64-bit msrs if the guest is in legacy
-- * mode, as fiddling with msrs is very expensive.
-+ * Configuring user return MSRs to automatically save, load, and restore MSRs
-+ * that need to be shoved into hardware when running the guest.  Note, omitting
-+ * an MSR here does _NOT_ mean it's not emulated, only that it will not be
-+ * loaded into hardware when running the guest.
-  */
--static void setup_msrs(struct vcpu_vmx *vmx)
-+static void vmx_setup_uret_msrs(struct vcpu_vmx *vmx)
- {
- 	vmx->guest_uret_msrs_loaded = false;
- 	vmx->nr_active_uret_msrs = 0;
-@@ -1793,9 +1794,6 @@ static void setup_msrs(struct vcpu_vmx *vmx)
- 		vmx_setup_uret_msr(vmx, MSR_TSC_AUX);
- 
- 	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL);
--
--	if (cpu_has_vmx_msr_bitmap())
--		vmx_update_msr_bitmap(&vmx->vcpu);
- }
- 
- static u64 vmx_write_l1_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
-@@ -2982,7 +2980,7 @@ int vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
- 
- 		msr->data = efer & ~EFER_LME;
- 	}
--	setup_msrs(vmx);
-+	vmx_setup_uret_msrs(vmx);
- 	return 0;
- }
- 
-@@ -4572,7 +4570,10 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	if (kvm_mpx_supported())
- 		vmcs_write64(GUEST_BNDCFGS, 0);
- 
--	setup_msrs(vmx);
 +	vmx_setup_uret_msrs(vmx);
 +
-+	if (cpu_has_vmx_msr_bitmap())
-+		vmx_update_msr_bitmap(&vmx->vcpu);
- 
- 	vmcs_write32(VM_ENTRY_INTR_INFO_FIELD, 0);  /* 22.2.1 */
- 
+ 	if (cpu_has_secondary_exec_ctrls()) {
+ 		vmx_compute_secondary_exec_control(vmx);
+ 		vmcs_set_secondary_exec_control(vmx);
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
