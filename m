@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F122C36A11A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9196736A11C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbhDXMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 08:21:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52886 "EHLO mail.kernel.org"
+        id S236981AbhDXMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 08:22:00 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:47003 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231836AbhDXMU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 08:20:58 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B63B861468;
-        Sat, 24 Apr 2021 12:20:18 +0000 (UTC)
-Date:   Sat, 24 Apr 2021 13:20:58 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     andy.shevchenko@gmail.com, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 2/2] dt-bindings: iio: light: Added AMS tsl2591
- device tree binding
-Message-ID: <20210424132058.6d493499@jic23-huawei>
-In-Reply-To: <20210421221330.17007-2-joe.g.sandom@gmail.com>
-References: <20210421221330.17007-1-joe.g.sandom@gmail.com>
-        <20210421221330.17007-2-joe.g.sandom@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231799AbhDXMV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 08:21:59 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FS9Hc68Zhz9tvrC;
+        Sat, 24 Apr 2021 14:21:16 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Ayt4oavMATdG; Sat, 24 Apr 2021 14:21:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FS9Hc4zLbz9tyxt;
+        Sat, 24 Apr 2021 14:21:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 74E698B76E;
+        Sat, 24 Apr 2021 14:21:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id el_4yr-dlpDL; Sat, 24 Apr 2021 14:21:18 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E7CDE8B75F;
+        Sat, 24 Apr 2021 14:21:17 +0200 (CEST)
+Subject: Re: [RFC PATCH] watchdog: Adding softwatchdog
+To:     Peter Enderborg <peter.enderborg@sony.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>
+References: <20210424102555.28203-1-peter.enderborg@sony.com>
+ <20210424102555.28203-2-peter.enderborg@sony.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ac949d08-72ff-edf6-6526-fdc9ad602631@csgroup.eu>
+Date:   Sat, 24 Apr 2021 14:21:11 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210424102555.28203-2-peter.enderborg@sony.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 23:13:30 +0100
-Joe Sandom <joe.g.sandom@gmail.com> wrote:
 
-> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
-> 
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
-> 
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
-> 
-> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Series applied to the togreg branch of iio.git and pushed out as testing
-to let 0-day poke at it and see if we missed anything :)
-
-Jonathan
-
-> ---
-> Changes in v9:
-> - No changes
+Le 24/04/2021 à 12:25, Peter Enderborg a écrit :
+> This is not a rebooting watchdog. It's function is to take other
+> actions than a hard reboot. On many complex system there is some
+> kind of manager that monitor and take action on slow systems.
+> Android has it's lowmemorykiller (lmkd), desktops has earlyoom.
+> This watchdog can be used to help monitor to preform some basic
+> action to keep the monitor running.
 > 
-> Notes:
-> - Re-submitted to align the version with part 1 of the patch series
-> 
->  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml b/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> new file mode 100644
-> index 000000000000..596a3bc770f4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/light/amstaos,tsl2591.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: AMS/TAOS TSL2591 Ambient Light Sensor (ALS)
-> +
-> +maintainers:
-> +  - Joe Sandom <joe.g.sandom@gmail.com>
-> +
-> +description: |
-> +  AMS/TAOS TSL2591 is a very-high sensitivity
-> +  light-to-digital converter that transforms light intensity into a digital
-> +  signal.
-> +
-> +properties:
-> +  compatible:
-> +    const: amstaos,tsl2591
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description:
-> +      Interrupt (INT:Pin 2) Active low. Should be set to IRQ_TYPE_EDGE_FALLING.
-> +      interrupt is used to detect if the light intensity has fallen below
-> +      or reached above the configured threshold values.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        tsl2591@29 {
-> +            compatible = "amstaos,tsl2591";
-> +            reg = <0x29>;
-> +            interrupts = <20 IRQ_TYPE_EDGE_FALLING>;
-> +       };
-> +    };
-> +...
+> It can also be used standalone. This add a policy that is
+> killing the process with highest oom_score_adj and using
+> oom functions to it quickly. I think it is a good usecase
+> for the patch. Memory siuations can be problematic for
+> software that monitor system, but other prolicys can
+> should also be possible. Like picking tasks from a memcg, or
+> specific UID's or what ever is low priority.
 
+
+I'm nore sure I understand the reasoning behind the choice of oom logic to decide which task to kill.
+
+Usually a watchdog will detect if a task is using 100% of the CPU time. If such a task exists, it is 
+the one running, not another one that has huge amount of memory allocated by spends like 1% of CPU time.
+
+So if there is a task to kill by a watchdog, I would say it is the current task.
+
+
+Another remark: you are using regular timers as far as I understand. I remember having problems with 
+that in the past, it required the use of hrtimers. I can't remember the details exactly but you can 
+look at commit https://github.com/linuxppc/linux/commit/1ff688209
+
+Christophe
