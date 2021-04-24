@@ -2,60 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EE2369DE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16050369DEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhDXAqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:46:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229957AbhDXAqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:46:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2C8BD6144A;
-        Sat, 24 Apr 2021 00:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619225163;
-        bh=HFH/c8ZLE+PdHTtTGzoN88oMkZgiqLWX4VOXwSYg/vo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=bWzpj3rIZ2TBFvpAyJiWTnOTHVWuyxwFgCPWHLYgT3Ap0VkPuI91sts/h1l8iCEGp
-         MDg3NTWVfCk30DYJxfuqrfGG97PxtcmoOHN4jNQloiYSh1hhYgisu6LlpN95rc7JEQ
-         LAEd2uOcgRnNvqwtXAkZCy3MYk0R+tFQIF4++iQ5rsVrmAW4qmtNyXTaYc4DSVOgLg
-         luBeKFWxYpe4LyZhz+wQ/URve5MWdCd9HOdXDonYkn8J73oaUlugcmOuLX+d9cvoDj
-         gOnIF+6hHOZs0F6mnvsrV5SQIcIHV2xFu6uPNX/kzeX8I5ScHExoN6eHS1pBm7saRF
-         3Cko5ZAVocD+A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2304660A52;
-        Sat, 24 Apr 2021 00:46:03 +0000 (UTC)
-Subject: Re: [GIT PULL] final pin control fixes for v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdY6g7eoqyJ-OHijbR_Gw2W7uoNF5Z6+-at5OBvaH9_kqw@mail.gmail.com>
-References: <CACRpkdY6g7eoqyJ-OHijbR_Gw2W7uoNF5Z6+-at5OBvaH9_kqw@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdY6g7eoqyJ-OHijbR_Gw2W7uoNF5Z6+-at5OBvaH9_kqw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.12-3
-X-PR-Tracked-Commit-Id: 482715ff0601c836152b792f06c353464d826b9b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8db5efb83fa99e81c3f8dee92a6589b251f117f3
-Message-Id: <161922516308.16732.9291408720338397856.pr-tracker-bot@kernel.org>
-Date:   Sat, 24 Apr 2021 00:46:03 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        id S232614AbhDXAr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237320AbhDXAro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 20:47:44 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF30C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:05 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id y14-20020a0cf14e0000b029019ff951fd16so18531651qvl.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=qhJeA9fQsblztcKyPyMtaBD+iwF8KjnP8LQXx6xVt+Y=;
+        b=b3hY/U1WaneYQzBX9CN0ubCT32hE7hloWZQl65LI4eOUrh2+bCCLjcGsK2HvWOnJpg
+         sBdJcC9mDoOMsLXUUS9kQD/3X5H/CcZLA/Eu6/ssiSu2KlTk+u2hrcofJqqKfoCqCauZ
+         u+SI3MhCXDJOhIOavHtb6eda4e+B49L6lq5e/0STCZqREnb3SRT7HHjzTfdatDkVET+/
+         0vOobWHTBwTP6Q37Za+FXkozTubZLUJjxuivp2cf6iN2odnT/Uu+Zgij495RzNj/le8U
+         R53bGc1k9EXAJf562dRE4GHwbMY6+Cr1bCcZWozxeuEU20vhS16WbFUKio0F/9kLuZfV
+         v0nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=qhJeA9fQsblztcKyPyMtaBD+iwF8KjnP8LQXx6xVt+Y=;
+        b=T7VaTorONMO4r1kK1T+onU9Y4iYBo6Qu7GtYjqtKFD5ySVUbSf8H2RcsOaOYWGj7rF
+         +UEsAN1E3HFKsrGQ213xarOA9XTpME4zWtrN7UCiXT8gObZjm0NZxzHzasaPCj7pGGQ3
+         NDuOi7Ckx7ONPnWlPgZgz0MGbhaC8iKahknN3v5AYo6yhRrIUCMu+qnqGOZNWM2hGZLS
+         RAsh5g/Rg6GMcC/BIdAbCzKEXyccXToZOgv4jJNeHM3rPmwpnNyLdwYVTjBjto3QmY+f
+         j4zlDLdbOlY0ivVlj1LXO+M9gJOx4o4sxTzbGeOkOT9R2eIkDBnAUuLF9bsOwESmicKH
+         nX6w==
+X-Gm-Message-State: AOAM532ey2brn0ye/rhkwCSRn02BWi9yV8FwKv/VizhVzEnpKga1J2y5
+        m5U9bJPtcCUCg8iU4njbUZh1oj0FQ1w=
+X-Google-Smtp-Source: ABdhPJyDQMKu2bPxJQfGop/kTOzjGyE4dTxY0BImHfkaNpq+Ou8R2DmlzmPCu2WWxy1hBBcaH1nOFkenA/M=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:ad52:3246:e190:f070])
+ (user=seanjc job=sendgmr) by 2002:a0c:e950:: with SMTP id n16mr7445105qvo.43.1619225224151;
+ Fri, 23 Apr 2021 17:47:04 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 23 Apr 2021 17:46:04 -0700
+In-Reply-To: <20210424004645.3950558-1-seanjc@google.com>
+Message-Id: <20210424004645.3950558-3-seanjc@google.com>
+Mime-Version: 1.0
+References: <20210424004645.3950558-1-seanjc@google.com>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH 02/43] KVM: VMX: Set EDX at INIT with CPUID.0x1, Family-Model-Stepping
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 24 Apr 2021 01:22:36 +0200:
+Set EDX at RESET/INIT based on the userspace-defined CPUID model when
+possible, i.e. when CPUID.0x1.EAX is defined by userspace.  At
+RESET/INIT, all CPUs that support CPUID set EDX to the FMS enumerated in
+CPUID.0x1.EAX.  If no CPUID match is found, fall back to KVM's default
+of 0x600 (Family '6'), which is the least awful approximation of KVM's
+virtual CPU model.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.12-3
+Fixes: 6aa8b732ca01 ("[PATCH] kvm: userspace interface")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8db5efb83fa99e81c3f8dee92a6589b251f117f3
-
-Thank you!
-
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index a182cae71044..9c00d013af59 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4497,6 +4497,7 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	struct msr_data apic_base_msr;
++	u32 eax, dummy;
+ 	u64 cr0;
+ 
+ 	vmx->rmode.vm86_active = 0;
+@@ -4504,7 +4505,11 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 
+ 	vmx->msr_ia32_umwait_control = 0;
+ 
+-	vmx->vcpu.arch.regs[VCPU_REGS_RDX] = get_rdx_init_val();
++	eax = 1;
++	if (!kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, true))
++		eax = get_rdx_init_val();
++	kvm_rdx_write(vcpu, eax);
++
+ 	vmx->hv_deadline_tsc = -1;
+ 	kvm_set_cr8(vcpu, 0);
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.31.1.498.g6c1eba8ee3d-goog
+
