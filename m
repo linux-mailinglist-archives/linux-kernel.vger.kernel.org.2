@@ -2,87 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA1436A2C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8B636A2CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233908AbhDXTXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 15:23:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53020 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbhDXTX3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 15:23:29 -0400
-Date:   Sat, 24 Apr 2021 19:22:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619292169;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aVg6UASrmOhYIGd3W45fEoM1+D6Wpd+ADc8akHmD790=;
-        b=IKeCuAhJRezxErSY1cc3qf9ZxtpZ0IAMKZwTN7AGb8R303yO0t/sO5kIIknvvmavgha47L
-        w7Jsmrshe4e0P3RoMJYo7Ww1/eJq6rFUHyKnhtu7mXNq28aaJ7BBmINxBNU6oM1qi1W0t5
-        o2nFTnb7g2685IhhLCuJcxxTfHLnWGbZUOAoqOygImwfx/GhzL9r42NRweaBYqRCZrF9RC
-        FzlhnFW1JuqDc+ImMOkN+fPh+DroVLKrFATY0TXJZUj/2+nVc/fP9D2QTy1DXNs+GaDcv4
-        Hf1zjEdSGdrv1Q/Sf7Y5qNMJq3Cc069FHIzktJbq5vGcQs9eNJZkzbYSVVePOA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619292169;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aVg6UASrmOhYIGd3W45fEoM1+D6Wpd+ADc8akHmD790=;
-        b=j+H6/8Va2B2/3RWqmVA8/QxPtFrCl7WmopE7WCiJCfSe7tVCl4Mz9bhoeTu4SRcV/OuFkA
-        Wm+YzF8yRaeFKhBA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] Merge tag 'irqchip-5.13' of
- git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210424094640.1731920-1-maz@kernel.org>
-References: <20210424094640.1731920-1-maz@kernel.org>
+        id S233733AbhDXTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 15:35:51 -0400
+Received: from mga03.intel.com ([134.134.136.65]:42940 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231814AbhDXTfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 15:35:51 -0400
+IronPort-SDR: dSyYwcWBxRo0M0Ld+X7Na3ZNzXH8PmCxteX2q8U5sk3/YPGjNyFbK01Oc79GoxQaqZjYSGIPXj
+ trg9vw1zdUmg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="196253525"
+X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
+   d="scan'208";a="196253525"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 12:35:11 -0700
+IronPort-SDR: eWaAuycVZvMYE5H07eDng9z4pX7deCf2/JaifkPQa2f60yrJW4x5fcl59Nm4fxqTq5VaI3/L77
+ PH3E33nayR3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
+   d="scan'208";a="464658036"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 24 Apr 2021 12:35:10 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1laO3Z-0005DM-FX; Sat, 24 Apr 2021 19:35:09 +0000
+Date:   Sun, 25 Apr 2021 03:34:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 8db8c57757fd307764c22a3c987850bec0a863f1
+Message-ID: <608472d2.KpO4ZMR7MX3SYmAg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Message-ID: <161929216888.29796.12906825332751670437.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 8db8c57757fd307764c22a3c987850bec0a863f1  Merge branch 'linus'
 
-Commit-ID:     765822e1569a37aab5e69736c52d4ad4a289eba6
-Gitweb:        https://git.kernel.org/tip/765822e1569a37aab5e69736c52d4ad4a289eba6
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 24 Apr 2021 21:18:44 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 24 Apr 2021 21:18:44 +02:00
+elapsed time: 723m
 
-Merge tag 'irqchip-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+configs tested: 99
+configs skipped: 2
 
-Pull irqchip and irqdomain updates from Marc Zyngier:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
- New HW support:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                             allyesconfig
+powerpc                  mpc885_ads_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                         bcm2835_defconfig
+powerpc                      walnut_defconfig
+mips                       capcella_defconfig
+arm                        trizeps4_defconfig
+arm                           sama5_defconfig
+arc                 nsimosci_hs_smp_defconfig
+i386                                defconfig
+arm                          exynos_defconfig
+ia64                             alldefconfig
+m68k                                defconfig
+arc                        vdk_hs38_defconfig
+arm                     eseries_pxa_defconfig
+arc                      axs103_smp_defconfig
+powerpc                     tqm8555_defconfig
+sh                           se7619_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                      tqm8xx_defconfig
+arm                            qcom_defconfig
+arm                        magician_defconfig
+sh                           sh2007_defconfig
+mips                        vocore2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210424
+i386                 randconfig-a002-20210424
+i386                 randconfig-a001-20210424
+i386                 randconfig-a006-20210424
+i386                 randconfig-a004-20210424
+i386                 randconfig-a003-20210424
+x86_64               randconfig-a015-20210424
+x86_64               randconfig-a016-20210424
+x86_64               randconfig-a011-20210424
+x86_64               randconfig-a014-20210424
+x86_64               randconfig-a013-20210424
+x86_64               randconfig-a012-20210424
+i386                 randconfig-a012-20210424
+i386                 randconfig-a014-20210424
+i386                 randconfig-a011-20210424
+i386                 randconfig-a013-20210424
+i386                 randconfig-a015-20210424
+i386                 randconfig-a016-20210424
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-  - New driver for the Nuvoton WPCM450 interrupt controller
-  - New driver for the IDT 79rc3243x interrupt controller
-  - Add support for interrupt trigger configuration to the MStar irqchip
-  - Add more external interrupt support to the STM32 irqchip
-  - Add new compatible strings for QCOM SC7280 to the qcom-pdc binding
+clang tested configs:
+x86_64               randconfig-a004-20210424
+x86_64               randconfig-a002-20210424
+x86_64               randconfig-a001-20210424
+x86_64               randconfig-a006-20210424
+x86_64               randconfig-a005-20210424
+x86_64               randconfig-a003-20210424
 
- Fixes and cleanups:
-
-  - Drop irq_create_strict_mappings() and irq_create_identity_mapping()
-    from the irqdomain API, with cleanups in a couple of drivers
-  - Fix nested NMI issue with spurious interrupts on GICv3
-  - Don't allow GICv4.1 vSGIs when the CPU doesn't support them
-  - Various cleanups and minor fixes
-
-Link: https://lore.kernel.org/r/20210424094640.1731920-1-maz@kernel.org
 ---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
