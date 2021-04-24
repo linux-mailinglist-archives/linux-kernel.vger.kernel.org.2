@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F7536A2A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 20:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA9E36A2B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 20:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhDXSfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 14:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
+        id S233797AbhDXStv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 14:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbhDXSfw (ORCPT
+        with ESMTP id S232434AbhDXStr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 14:35:52 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CAFC061574;
-        Sat, 24 Apr 2021 11:35:13 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1laN77-007ybn-Hc; Sat, 24 Apr 2021 18:34:45 +0000
-Date:   Sat, 24 Apr 2021 18:34:45 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Shelat, Abhi" <a.shelat@northeastern.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
-References: <YH/8jcoC1ffuksrf@kroah.com>
- <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
- <20210421133727.GA27929@fieldses.org>
- <YIAta3cRl8mk/RkH@unreal>
- <20210421135637.GB27929@fieldses.org>
- <20210422193950.GA25415@fieldses.org>
- <YIMDCNx4q6esHTYt@unreal>
- <20210423180727.GD10457@fieldses.org>
- <YIMgMHwYkVBdrICs@unreal>
- <20210423214850.GI10457@fieldses.org>
+        Sat, 24 Apr 2021 14:49:47 -0400
+X-Greylist: delayed 452 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 24 Apr 2021 11:49:08 PDT
+Received: from mail.solidxs.nl (mail.solidxs.nl [IPv6:2a01:4f8:150:72a3::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB03C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 11:49:08 -0700 (PDT)
+Received: by mail.solidxs.nl (Postfix, from userid 1000)
+        id 635834C80C46; Sat, 24 Apr 2021 20:41:33 +0200 (CEST)
+Date:   Sat, 24 Apr 2021 20:41:33 +0200
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Marcel Hamer <marcel@solidxs.se>, linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>
+Subject: Re: [PATCH] usb: dwc3: gadget: add missing wakeup link states
+Message-ID: <20210424184133.GA1778359@solidxs.nl>
+References: <20210423152524.624619-1-marcel@solidxs.se>
+ <87pmykksuw.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210423214850.GI10457@fieldses.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <87pmykksuw.fsf@kernel.org>
+From:   Marcel Hamer <marcel@solidxs.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 05:48:50PM -0400, J. Bruce Fields wrote:
-> Have umn addresses been blocked from posting to kernel lists?
+On Sat, Apr 24, 2021 at 11:08:07AM +0300, Felipe Balbi wrote:
+> Marcel Hamer <marcel@solidxs.se> writes:
+> 
+> > In dwc3_send_gadget_ep_cmd() a check is performed if the gadget needs
+> > waking up. The following condition is checked before calling the
+> > __dwc3_gadget_wakeup() function:
+> >
+> > 	needs_wakeup = (dwc->link_state == DWC3_LINK_STATE_U1 ||
+> >         		dwc->link_state == DWC3_LINK_STATE_U2 ||
+> >                         dwc->link_state == DWC3_LINK_STATE_U3);
+> >
+> > Inside __dwc3_gadget_wakeup() only link_state DWC3_LINK_STATE_U3 is checked
+> > and link state DWC3_LINK_STATE_U1 and DWC3_LINK_STATE_U2 are considered
+> > invalid and generate a warning because of the call to:
+> >
+> > 	dev_WARN_ONCE(dwc->dev, ret, "wakeup failed --> %d\n", ret);
+> >
+> > because of ret being -EINVAL.
+> >
+> > Signed-off-by: Marcel Hamer <marcel@solidxs.se>
+> > ---
+> >  drivers/usb/dwc3/gadget.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> > index c7ef218e7a8c..d05a7d630410 100644
+> > --- a/drivers/usb/dwc3/gadget.c
+> > +++ b/drivers/usb/dwc3/gadget.c
+> > @@ -1972,6 +1972,8 @@ static int __dwc3_gadget_wakeup(struct dwc3 *dwc)
+> >  	switch (link_state) {
+> >  	case DWC3_LINK_STATE_RESET:
+> >  	case DWC3_LINK_STATE_RX_DET:	/* in HS, means Early Suspend */
+> > +	case DWC3_LINK_STATE_U1:
+> > +	case DWC3_LINK_STATE_U2:
+> 
+> I think this was fixed recently by Thinh.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=c560e76319a94a3b9285bc426c609903408e4826
+> 
+> -- 
+> balbi
 
-I don't see davem ever doing anything of that sort.  I've no information
-about what has really happened, but "Uni lawyers and/or HR telling them
-to stop making anything that might be considered public statements" sounds
-much more plausible...
+Great, I missed that. Thank you for clarifying this.
 
-Again, it's only a speculation and it might very well have been something
-else, but out of those two variants... I'd put high odds on the latter vs
-the former.
+Kind regards,
+
+Marcel
