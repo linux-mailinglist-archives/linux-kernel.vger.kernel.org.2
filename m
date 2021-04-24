@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAC436A023
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0452836A029
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhDXI0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 04:26:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57336 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232942AbhDXIZN (ORCPT
+        id S236252AbhDXI1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 04:27:46 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:39115 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233128AbhDXIZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 04:25:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619252641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JG5lz1zucN+SOqKs9Q0DF5YgOmDD8WYIPbDEuaJ2ii4=;
-        b=bK9sRkrwrQw+ab3PI3IwOchfeVMuTox5T+OhPx/Ks4XHSMTy5UR/GVH2FUXvZc75G9XYsE
-        GPpBgUE+eLZS9zoeysdS0ybkTrVmEHB3zoVIaugesqCqleuNjNcow4S5qI+LVVZJdCT4jZ
-        JsoFF3wWIZk9xTKfL/K86uec6D2t7tk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-7EKwWYWbO6GMl3EdSzzoag-1; Sat, 24 Apr 2021 04:21:12 -0400
-X-MC-Unique: 7EKwWYWbO6GMl3EdSzzoag-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C061343A2;
-        Sat, 24 Apr 2021 08:21:11 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0DC55D6DC;
-        Sat, 24 Apr 2021 08:21:10 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fix for 5.12 final
-Date:   Sat, 24 Apr 2021 04:21:10 -0400
-Message-Id: <20210424082110.1773621-1-pbonzini@redhat.com>
+        Sat, 24 Apr 2021 04:25:28 -0400
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id ADE6FFF805;
+        Sat, 24 Apr 2021 08:24:12 +0000 (UTC)
+Date:   Sat, 24 Apr 2021 10:24:54 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Mauro,
 
-The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
+On Sat, Apr 24, 2021 at 08:44:48AM +0200, Mauro Carvalho Chehab wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+>
+> Use the new API, in order to cleanup the error check logic.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-  Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
+Thanks
+Acked-by: Jacopo Mondi <jacopo@jmondi.org>
 
-are available in the Git repository at:
+I should re-work the error handling sequence there on top of this
+patch as right now it's not the best, that 'done' label bothers me...
+anyway, for later.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 9c1a07442c95f6e64dc8de099e9f35ea73db7852:
-
-  KVM: x86/xen: Take srcu lock when accessing kvm_memslots() (2021-04-23 17:00:50 -0400)
-
-----------------------------------------------------------------
-SRCU bug introduced in the merge window
-
-----------------------------------------------------------------
-Wanpeng Li (1):
-      KVM: x86/xen: Take srcu lock when accessing kvm_memslots()
-
- arch/x86/kvm/x86.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
-
+> ---
+>  drivers/media/i2c/mt9m001.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/media/i2c/mt9m001.c b/drivers/media/i2c/mt9m001.c
+> index 3b0ba8ed5233..57e15a291ebd 100644
+> --- a/drivers/media/i2c/mt9m001.c
+> +++ b/drivers/media/i2c/mt9m001.c
+> @@ -217,9 +217,9 @@ static int mt9m001_s_stream(struct v4l2_subdev *sd, int enable)
+>  		goto done;
+>
+>  	if (enable) {
+> -		ret = pm_runtime_get_sync(&client->dev);
+> +		ret = pm_runtime_resume_and_get(&client->dev);
+>  		if (ret < 0)
+> -			goto put_unlock;
+> +			goto unlock;
+>
+>  		ret = mt9m001_apply_selection(sd);
+>  		if (ret)
+> @@ -247,6 +247,7 @@ static int mt9m001_s_stream(struct v4l2_subdev *sd, int enable)
+>
+>  put_unlock:
+>  	pm_runtime_put(&client->dev);
+> +unlock:
+>  	mutex_unlock(&mt9m001->mutex);
+>
+>  	return ret;
+> @@ -834,7 +835,7 @@ static int mt9m001_remove(struct i2c_client *client)
+>  {
+>  	struct mt9m001 *mt9m001 = to_mt9m001(client);
+>
+> -	pm_runtime_get_sync(&client->dev);
+> +	pm_runtime_resume_and_get(&client->dev);
+>
+>  	v4l2_async_unregister_subdev(&mt9m001->subdev);
+>  	media_entity_cleanup(&mt9m001->subdev.entity);
+> --
+> 2.30.2
+>
