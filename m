@@ -2,185 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2431936A2D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0230936A2D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbhDXTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 15:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S236201AbhDXTpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 15:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbhDXTno (ORCPT
+        with ESMTP id S233563AbhDXTp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 15:43:44 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B265EC061574;
-        Sat, 24 Apr 2021 12:43:05 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so815639pjz.0;
-        Sat, 24 Apr 2021 12:43:05 -0700 (PDT)
+        Sat, 24 Apr 2021 15:45:29 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C764C061574;
+        Sat, 24 Apr 2021 12:44:51 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id q22so19912532lfu.8;
+        Sat, 24 Apr 2021 12:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=Eoyv3XG1ZYXEWoIOV6LUW5hDQHt2KxAWCkkKAqqPJAY=;
-        b=CbXXAtAOVudmb5LcFoq3EFLwMI263EnPJykUMS6SNaZrMh8pptLwCWFxqpjUte7ff7
-         bc6DdT614r5tXTDUAMLvlSOwUf8OkZNiJ/BeC8gUp4U8V4pHAmuWKtMcApgSzMF6qwPt
-         Uu8NUdhAxLMpp7XhgBdwNYtGbuKBYv3swL8RfG4OfNSwZgj4nqs4CbN+J1fnBDGUAaGx
-         LVTFqAB0bgXkFel3/4M8ZUylKrfWG2Ex/DJl7JkaNc3NFp4bXuEUoex7VvQRDKJbSbXA
-         MeWb7PSzHIJQxyv3Umg9FW7At2oUv3QOnBY9AmgqAfi6V/k6GpCdJviY403mkbB7/FUp
-         SaJA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mO3sollJXZniXSf0grEoONPkmuT+3IbFGgVs9iYyV8E=;
+        b=pvfFOoGhgD3fJNBowis2wY9x0DEqAj80crAq3qOlg9WJbbUKnUd9v0gXwFImHVOD1K
+         uEMb10HNan7vcrfZc7iXdJQoyIj1srf/oCkfcSHatmcHDxa8tNnhn350O4QEzifpwmIi
+         4f3+771ygsS9+2mqlQJhunTd30V4RpVI9nimLA+9Oh/hH1/MFEeJKhr8KmvRBv73BUK5
+         vCZfILXCBL/JL6jPztA9viZ0N+wmg9E8bQcmQYLBigfZ3wxSiBGBrva8SUJh3JZWdli8
+         eMLynngnH9oZmKnysrqYPl8S96Q3n+naUYZdwASTN0a57PXCBRUx1qblToZwSjV4gMTi
+         DjPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=Eoyv3XG1ZYXEWoIOV6LUW5hDQHt2KxAWCkkKAqqPJAY=;
-        b=Dg5ectWlwYfG8vyxGiyP/tt2mdQct++AE7R3JfHnWwXhKPflyvG7UP+rYhg2m8m0WQ
-         E5zwqdQEis7GUcQLGk8jyAvhJPl/t75hKhfJO5c8PZYpfHIHeGuwwaYWPjTm1XPPBCVX
-         56lTV9XX7sP4FLMCD8ma81t8vJwx1MWjCG5L8SBlyqZJuFXmVzWBTHbK9DOlasYLPbgq
-         wbudKq0+9Cz+yJU8iy35gpkAG5k2PnUpXIBXDYK10yRAM8vlmX7/2VHhHiHyANqe/8Pq
-         p6p70eEohVqZK0/87xDL7esJ60F/Qa9YyuyS6RPFtkB/NAejxnNwm4zst0aZCDGnTjoA
-         rsKw==
-X-Gm-Message-State: AOAM531NSwHdnjjYsUvmoBoHYZwMDQk58IUd88nOoVpuOwylIwX0B41J
-        bXT8MNLHlTIDmLTVndcR10X5JzFwYk0GGk6j
-X-Google-Smtp-Source: ABdhPJzBw2E2Zkoqa8O0arEZVQ4U9ON+3Rt1poxgjpgfDwTquFvhv0YZPRwwbcpO4tG7rkR4LvgW3w==
-X-Received: by 2002:a17:902:dac9:b029:eb:732:d914 with SMTP id q9-20020a170902dac9b02900eb0732d914mr10122606plx.85.1619293385028;
-        Sat, 24 Apr 2021 12:43:05 -0700 (PDT)
-Received: from localhost ([122.172.37.94])
-        by smtp.gmail.com with ESMTPSA id u18sm7572146pfm.4.2021.04.24.12.43.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 12:43:04 -0700 (PDT)
-Date:   Sun, 25 Apr 2021 01:13:01 +0530
-From:   Anupama K Patil <anupamakpatil123@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, bkkarthik@pesu.pes.edu,
-        gregkh@linuxfoundation.org, kernelnewbies@kernelnewbies.org
-Subject: [PATCH] drivers: pnp: proc.c: Handle errors while attaching devices
-Message-ID: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mO3sollJXZniXSf0grEoONPkmuT+3IbFGgVs9iYyV8E=;
+        b=Va/glmU7LYNZ5ulUn2aPYKSbUFD3c/Lnwk8eNSDz/c3q5NbJj5yLKawg0K5rjFYnXv
+         Z55NXTATG1Z9pv8xF+9aqdk05qOZtIuB6eouFpBv/VXRY9M5z49O2mcbnP9mxWxhI6jI
+         V816CxoXqePtfuAtcXzoBwO2vb+BVkHiFBrm2b8ZsGgZRPaefbXNMhwoVY2xuXa21uyK
+         sRG7XGACq7iRzYX0uGzCEIu9JiZzZmCPQF7D0/WMTs2n6j9r5lMXdQY9Eo9pFUlY1kdn
+         lH0k4/Z2BaoIilarH29rJIx8K+iZAHn5AiTotfhysckMg+5lwrGg0n6wU40cmVdFiZ+B
+         aQXg==
+X-Gm-Message-State: AOAM530a9KgMpNW52yEROWPuIZ3388vds1z3xHZvegjNTmj3bQbFIDq6
+        e51JJZ4m0ZkfM1ZDGizFgaABlnwdRx4=
+X-Google-Smtp-Source: ABdhPJwYk9mTutWRrKfeRp0qlc/0icenaV/0c0ne4PejCC1OSrEePMsevvkneNprURiXoLlPpefoUg==
+X-Received: by 2002:ac2:4c85:: with SMTP id d5mr6924076lfl.79.1619293483582;
+        Sat, 24 Apr 2021 12:44:43 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
+        by smtp.googlemail.com with ESMTPSA id z10sm927974ljz.71.2021.04.24.12.44.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Apr 2021 12:44:43 -0700 (PDT)
+Subject: Re: [PATCH v3] iio: gyro: mpu3050: Fix reported temperature value
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Jean-Baptiste Maneyrol <JManeyrol@invensense.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210423020959.5023-1-digetx@gmail.com>
+ <BL0PR12MB5011563BCD5E11683D51F34EC4459@BL0PR12MB5011.namprd12.prod.outlook.com>
+ <edd85a7f-4c1f-9d2f-0425-93a6e45f13bb@gmail.com>
+ <20210424114650.6abb21a0@jic23-huawei>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9be008bf-e0b2-65b3-ced8-99d7097a5a41@gmail.com>
+Date:   Sat, 24 Apr 2021 22:44:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qw4iz6cfhv4x3sq7"
-Content-Disposition: inline
+In-Reply-To: <20210424114650.6abb21a0@jic23-huawei>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+24.04.2021 13:46, Jonathan Cameron пишет:
+> On Sat, 24 Apr 2021 07:58:08 +0300
+> Dmitry Osipenko <digetx@gmail.com> wrote:
+> 
+>> 23.04.2021 13:14, Jean-Baptiste Maneyrol пишет:
+>>> Hello,
+>>>
+>>> thanks for this work.
+>>>
+>>> Temperature value should obviously be 16 bits signed, thanks for the fix. By looking at our internal datasheets, I can confirm the values for MPU-30x0 family (div by 280 and 23000 offset LSB).
+>>>
+>>> I'm sorry I don't have access to these more than 1 decade old chips, so I cannot test on my side. But there is no reason it wouldn't be OK.
+>>>
+>>> Acked-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>  
+>>
+>> Thank you very much for confirming that the equation is correct, very
+>> appreciate that.
+> 
+> Thanks. Applied to the fixes-togreg branch of iio.git.
+> Note these won't go upstream until after rc1 but hopefully will soon after
+> that.
+> 
+> Thanks for the detective work etc on this!
 
---qw4iz6cfhv4x3sq7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-isapnp_proc_init() does not look at the return value from
-isapnp_proc_attach_device(). Check for this return value in
-isapnp_proc_detach_device().
-
-Cleanup in isapnp_proc_detach_device and
-isapnp_proc_detach_bus() for cleanup.
-
-Changed sprintf() to the kernel-space function scnprintf() as it returns
-the actual number of bytes written.
-
-Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
-save memory.
-
-Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
-Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
-Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
-Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
----
- drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
-index 785a796430fa..46ebc24175b7 100644
---- a/drivers/pnp/isapnp/proc.c
-+++ b/drivers/pnp/isapnp/proc.c
-@@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_ops =
-=3D {
- 	.proc_read	=3D isapnp_proc_bus_read,
- };
-=20
-+static int isapnp_proc_detach_device(struct pnp_dev *dev)
-+{
-+	proc_remove(dev->procent);
-+	dev->procent =3D NULL;
-+	return 0;
-+}
-+
-+static int isapnp_proc_detach_bus(struct pnp_card *bus)
-+{
-+	proc_remove(bus->procdir);
-+	return 0;
-+}
-+
- static int isapnp_proc_attach_device(struct pnp_dev *dev)
- {
- 	struct pnp_card *bus =3D dev->card;
--	struct proc_dir_entry *de, *e;
- 	char name[16];
-=20
--	if (!(de =3D bus->procdir)) {
--		sprintf(name, "%02x", bus->number);
--		de =3D bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
--		if (!de)
-+	if (!bus->procdir) {
-+		scnprintf(name, 16, "%02x", bus->number);
-+		bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-+		if (!bus->procdir)
- 			return -ENOMEM;
- 	}
--	sprintf(name, "%02x", dev->number);
--	e =3D dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, de,
-+	scnprintf(name, 16, "%02x", dev->number);
-+	dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, bus->procdir,
- 					    &isapnp_proc_bus_proc_ops, dev);
--	if (!e)
-+	if (!dev->procent) {
-+		isapnp_proc_detach_bus(bus);
- 		return -ENOMEM;
--	proc_set_size(e, 256);
-+	}
-+	proc_set_size(dev->procent, 256);
- 	return 0;
- }
-=20
- int __init isapnp_proc_init(void)
- {
- 	struct pnp_dev *dev;
-+	int dev_attach;
-=20
- 	isapnp_proc_bus_dir =3D proc_mkdir("bus/isapnp", NULL);
- 	protocol_for_each_dev(&isapnp_protocol, dev) {
--		isapnp_proc_attach_device(dev);
-+		dev_attach =3D isapnp_proc_attach_device(dev);
-+		if (!dev_attach) {
-+			pr_info("procfs: pnp: Unable to attach the device, not enough memory");
-+			isapnp_proc_detach_device(dev);
-+			return -ENOMEM;
-+		}
- 	}
- 	return 0;
- }
---=20
-2.25.1
-
-
---qw4iz6cfhv4x3sq7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEDSQZGCDcREXgcOjQtGmOOZV75b4FAmCEdMAACgkQtGmOOZV7
-5b5rYQv8DcfmujcVa4Pr/2j8qdR7cglKcWf8wD5DJzufBdxhKF64RpkQFtpHFfbS
-yb1X0KXHY+LonQgM994qYdnGA9zrBG5xihlhc9LtTjGqG3FTovVix1DveLX6GrXs
-9fmlEkGA8+Hn+rFbTfP6iJQBIGa3ifqqAWLVKbYPrA+9aox3b7HGDnzOvb6GhDAU
-vKEjRBFaPjSSHVsfiRnKCZJ0QW/oWvy0kMprR8bBa/pj8iSXD9qy4izut+ZVPs60
-JIe2YfGaitBlkhIU4Em0qgtJaACq4Ai6Kmb2x/gjQ3nupGzEoIe4XLVJKmggqdnX
-ccSBPJDT1KxPtYjI7Z2jqvh1G8wIb4YgtSB3oDgY+N+qFdBnrBveGItRBD4C8QPd
-80MFliKByEKy2v+ggnNweiznGp3Q1VVzvKySgdiKQz1rmUF3cLO2T84mm7TUYMNM
-w73W0XKpRiqeuALqqKfCGV7fpFIHzjQgmX5vpwps+hY4xjgPnl+gg9bjOWviAHIb
-6kKRsZYT
-=x6jQ
------END PGP SIGNATURE-----
-
---qw4iz6cfhv4x3sq7--
+Thank you.
