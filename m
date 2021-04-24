@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DB6369DC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFA1369DD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244144AbhDXAZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:25:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232742AbhDXAZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:25:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BECF61477
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 00:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619223897;
-        bh=JUtYUFPq9g527zehS3r3trQprwKqTKRWX2ZmF5KthfI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AXIRmdEEXTTTcqBDHEPz1I1nmt8HMK1D2iAXTYn2nwINJpOvTJnFJxd3aPfpCjRym
-         wRYr/iZ9HqdNPRslb2DKYUfnoY57wuZDG2BiCzSywUDACGi/yows4t3dKfD/8WdKN0
-         TybE6+JBuZqHJwoiRRcCxbBEOmGWoFaJSJhfdSXKoWbzBwz4I+xZMUAmWXhmDEAMKr
-         c9wXyBqjLUodk3/krfZdRmb0AZolokR1MTx7xSSTqfgSGqrKClzLBJVae5mQzlCSHm
-         sMCdSeVFphtUA1iGX3FgJEQ/HuMwQh9gWHHRTqvY/oedqgG9bj+BUgImEEaEf6DIOL
-         oJ8n9bODCW3Fw==
-Received: by mail-ed1-f54.google.com with SMTP id y3so22961215eds.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:24:57 -0700 (PDT)
-X-Gm-Message-State: AOAM533bMCO1o0x5v1xmWmlUlpDJZgc8r+KLMcoEiS+apTJsx8ynvmND
-        3vUg6up0zFJYQIb9nlZCcbzzydJlVhmY/eaaEg==
-X-Google-Smtp-Source: ABdhPJyFg/YGdVA+cnxdfhz7C/WrfEW6PAyHJGolTksIoWi6zl62XnlcHbtRzFYYVuxL2wWnJJTuCSRLpqM2wLP13MY=
-X-Received: by 2002:a05:6402:8d4:: with SMTP id d20mr7402937edz.49.1619223895851;
- Fri, 23 Apr 2021 17:24:55 -0700 (PDT)
+        id S244084AbhDXAb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232742AbhDXAbY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 20:31:24 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D460C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:30:47 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id y22-20020a17090a8b16b0290150ae1a6d2bso2172538pjn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=guSSRx65IripoYc8dsOm6JI430Ep/aIkyxlfSlPeaA8=;
+        b=IB00by7h6dymC8ZKL8amoE0YgUaKyWHVx6TLwSUhxXu/tEakwqd8LM3mPK8pAxQ5TH
+         mzdBEjNvt4M/1w/MJA/GYiupuELZS9Y5IqWiwuzY1W7Z6XnPXHOyAD9ChiE4I/pRgRRY
+         Unp90I5iviDab4Nz+nAadLFr+JgB9KPzCVhfIK7ZU5bAE3h48KDynKHvB6ARIFKrVS70
+         vExerh6n5VrHVFnVKfS3cK1rWNdjq1pFOzw0YLLEWI7orx2FRyYcBq0LwBxPSfShrr4Q
+         97shPWCY+sNlJRLdKvVXw/N1jNcvVN1l15KjnfY4Vbsx/+gYd5Pj3G6qTGYBkKyIQedr
+         Q7dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=guSSRx65IripoYc8dsOm6JI430Ep/aIkyxlfSlPeaA8=;
+        b=H+wliB29KbJ+rOTNufZ0dxNV91duBoB4rj1joQgK4nMN4IXwf0kvHlf97OUVwPvhYp
+         k+Qnu4tqco1Jliy/wFr0nAir1jDh6UcdU+MQJ56KL6fyaXlH5MmGUIgOULFuk56mT109
+         BgXHqyfVjIOJAQhDu9NpPmQXCaOqdtJiB5XeyNpLYqjewjr2drvMEnPIdR9OZb/hMZjI
+         rejA5yU4TmFpj/zniQaHo4kkiCWvlJ/t1l8wg8BV5+9fjM3fwDt2wjTReNtmqEVafz4C
+         gsZ2e6WSl8IFP6HXMJajQ1bKfIGExYyavUP4/G585W3JzJpWflaWhWMD0CUdZ00+VrkR
+         ivOw==
+X-Gm-Message-State: AOAM5311Z3U5N5AYuaJIoiUv6E1eE2h6eoNJJm5SnfhVHR71zFV+VaNH
+        8ImAAuZ0ohlSuecHXZdDMuh7Tw==
+X-Google-Smtp-Source: ABdhPJzmaUZNjFhvN7BPTb5VybKl4vJlX5CTqmcac0oPUJitgQ87Hn0K91tX3GuaHuoWjlkXGj/jtw==
+X-Received: by 2002:a17:902:b117:b029:e6:81ed:8044 with SMTP id q23-20020a170902b117b02900e681ed8044mr6399499plr.13.1619224246844;
+        Fri, 23 Apr 2021 17:30:46 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id lt11sm8733662pjb.23.2021.04.23.17.30.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 17:30:46 -0700 (PDT)
+Subject: [PATCH] tools/memory-model: Correct the name of smp_mb__after_spinlock()
+Date:   Fri, 23 Apr 2021 17:25:09 -0700
+Message-Id: <20210424002509.797308-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 MIME-Version: 1.0
-References: <20210419073244.2678688-1-narmstrong@baylibre.com> <20210419073244.2678688-5-narmstrong@baylibre.com>
-In-Reply-To: <20210419073244.2678688-5-narmstrong@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 24 Apr 2021 08:24:45 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-N4D2PJR0-YG3r+tLg0kcFZh8zyN=7kBNJsghpZG4nDA@mail.gmail.com>
-Message-ID: <CAAOTY_-N4D2PJR0-YG3r+tLg0kcFZh8zyN=7kBNJsghpZG4nDA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] gpu/drm: mediatek: hdmi: add optional limit on
- maximal HDMI mode clock
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        paulmck@kernel.org, akiyks@gmail.com,
+        Daniel Lustig <dlustig@nvidia.com>, joel@joelfernandes.org,
+        elver@google.com, Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@android.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     mingo@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neil:
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Neil Armstrong <narmstrong@baylibre.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=881=
-9=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Some SoCs like the MT8167 have a hard limit on the maximal supported HDMI=
- TMDS
-> clock, so add a configuration value to filter out those modes.
+This was missing one of the double _s.  I only found it because I
+mis-typed the name myself.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ tools/memory-model/Documentation/explanation.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_hdmi.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediat=
-ek/mtk_hdmi.c
-> index 0539262e69d3..bc50d97f2553 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> @@ -149,6 +149,7 @@ struct hdmi_audio_param {
->  struct mtk_hdmi_conf {
->         bool tz_disabled;
->         bool cea_modes_only;
-> +       unsigned long max_mode_clock;
->  };
->
->  struct mtk_hdmi {
-> @@ -1226,6 +1227,10 @@ static int mtk_hdmi_bridge_mode_valid(struct drm_b=
-ridge *bridge,
->         if (hdmi->conf->cea_modes_only && !drm_match_cea_mode(mode))
->                 return MODE_BAD;
->
-> +       if (hdmi->conf->max_mode_clock &&
-> +           mode->clock > hdmi->conf->max_mode_clock)
-> +               return MODE_CLOCK_HIGH;
-> +
->         if (mode->clock < 27000)
->                 return MODE_CLOCK_LOW;
->         if (mode->clock > 297000)
-> --
-> 2.25.1
->
+diff --git a/tools/memory-model/Documentation/explanation.txt b/tools/memory-model/Documentation/explanation.txt
+index f9d610d5a1a4..5d72f3112e56 100644
+--- a/tools/memory-model/Documentation/explanation.txt
++++ b/tools/memory-model/Documentation/explanation.txt
+@@ -2510,7 +2510,7 @@ they behave as follows:
+ 	smp_mb__after_atomic() orders po-earlier atomic updates and
+ 	the events preceding them against all po-later events;
+ 
+-	smp_mb_after_spinlock() orders po-earlier lock acquisition
++	smp_mb__after_spinlock() orders po-earlier lock acquisition
+ 	events and the events preceding them against all po-later
+ 	events.
+ 
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
