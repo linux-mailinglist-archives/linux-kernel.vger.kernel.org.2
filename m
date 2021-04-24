@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BAC36A1D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 17:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A5836A1D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 17:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhDXPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 11:44:00 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39338 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231814AbhDXPnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 11:43:55 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1laKR4-000pjt-9R; Sat, 24 Apr 2021 17:43:10 +0200
-Date:   Sat, 24 Apr 2021 17:43:10 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH net-next v6 03/10] net: dsa: microchip: ksz8795: move
- register offsets and shifts to separate struct
-Message-ID: <YIQ8joi30118oizw@lunn.ch>
-References: <20210423080218.26526-1-o.rempel@pengutronix.de>
- <20210423080218.26526-4-o.rempel@pengutronix.de>
+        id S233351AbhDXPrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 11:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231892AbhDXPrJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 11:47:09 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF54C061574;
+        Sat, 24 Apr 2021 08:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=xFgFa9UNKtHxWiZ1gGG+Qr1k1cFtE/Qa3neuOLZqyek=; b=R0Ik9e+y8ZIbGEE8kwmSD0kgVg
+        cWDkqc34o/J4CiPUBeLdOEApjGuHkaFleHrIMyTe8tc1HsIHsRCl1oe3j8GIrZSTv35EfMuTHdL0l
+        XcD5EnWDEwg7hXAqjJi9uqbiPeW2tgfgYGHPMQaCER8rW5360mIpilSIjFgwZSES0tTdnYMsCq02T
+        QyvKunE6z8FTxsVJXT5ixnlDTPezMh3rK3VGApd019TNdhmpaef5Y35F2wkgBnd+zbaKsOisbeOPP
+        w1Y54tuPJXJNsPIB8DYlYIjHait+YK+Jq6PZ696Pg2PP4IVNUhGRcwaDFjBAiEBGmt9OKLAfmnUUb
+        UBXMo9UQ==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1laKUG-0043o1-9s; Sat, 24 Apr 2021 15:46:28 +0000
+Subject: Re: [PATCH] selinux: Corrected comment to match kernel-doc comment
+To:     Souptick Joarder <jrdr.linux@gmail.com>, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1619263085-5047-1-git-send-email-jrdr.linux@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9428b8d9-976a-cfcb-0a97-01a18b92140a@infradead.org>
+Date:   Sat, 24 Apr 2021 08:46:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423080218.26526-4-o.rempel@pengutronix.de>
+In-Reply-To: <1619263085-5047-1-git-send-email-jrdr.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  static void ksz8_r_mib_cnt(struct ksz_device *dev, int port, u16 addr, u64 *cnt)
->  {
-> +	struct ksz8 *ksz8 = dev->priv;
-> +	const u32 *masks = ksz8->masks;
-> +	const u8 *regs = ksz8->regs;
+On 4/24/21 4:18 AM, Souptick Joarder wrote:
+> Kernel test robot throws below warning ->
+> 
+> security/selinux/avc.c:822: warning: This comment starts with '/**', but
+> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> 
+> Updated the comment to align with kernel-doc comment.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
+>  security/selinux/avc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/selinux/avc.c b/security/selinux/avc.c
+> index ad451cf..04a886b 100644
+> --- a/security/selinux/avc.c
+> +++ b/security/selinux/avc.c
+> @@ -818,7 +818,7 @@ int __init avc_add_callback(int (*callback)(u32 event), u32 events)
+>  	return rc;
+>  }
+>  
+> -/**
+> +/*
+>   * avc_update_node Update an AVC entry
 
-Reverse christmas tree.
+or
 
->  	u16 ctrl_addr;
->  	u32 data;
->  	u8 check;
-> @@ -150,6 +204,9 @@ static void ksz8_r_mib_cnt(struct ksz_device *dev, int port, u16 addr, u64 *cnt)
->  static void ksz8_r_mib_pkt(struct ksz_device *dev, int port, u16 addr,
->  			   u64 *dropped, u64 *cnt)
->  {
-> +	struct ksz8 *ksz8 = dev->priv;
-> +	const u32 *masks = ksz8->masks;
-> +	const u8 *regs = ksz8->regs;
+    * avc_update_node - Update an AVC entry
 
-Reverse christmas tree.
+would work also. :)
+And leave the /**.
+
+Mostly we want to have kernel-doc for exported (non-static) functions,
+but this file doesn't exactly conform to that, so the latter fix
+is more preferable IMO.
+
+>   * @event : Updating event
+>   * @perms : Permission mask bits
+> 
 
 
->  static void ksz8_w_table(struct ksz_device *dev, int table, u16 addr, u64 data)
->  {
-> +	struct ksz8 *ksz8 = dev->priv;
-> +	const u8 *regs = ksz8->regs;
+-- 
+~Randy
 
-...
-
->  static int ksz8_valid_dyn_entry(struct ksz_device *dev, u8 *data)
->  {
-> +	struct ksz8 *ksz8 = dev->priv;
-> +	const u32 *masks = ksz8->masks;
-> +	const u8 *regs = ksz8->regs;
->  	int timeout = 100;
-
-Please fix them all.
-
-Once you have fixed them, you can add my Reviewed-by.
-
-     Andrew
