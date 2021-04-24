@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98DD369EE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 06:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1076E369EEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 07:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbhDXE1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 00:27:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229654AbhDXE1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 00:27:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDF1061042;
-        Sat, 24 Apr 2021 04:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619238424;
-        bh=UNBzx7jGOk4CReRa/FNMvK2E7MWEObhV7+25u+OlWcw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uXa0xkUJojVbZiASIxKAC9TpK4tRigADTtUN97u04+2kkrdc/XvlWYUscHRCU5GES
-         XtGemyqqR6fJXQc829c3f4gZ5EOxqWjtY1T7updhyPMN9Ci/ounWpT//WODCk6f9Vt
-         /5b8SNAs56W1XG+IoANxiZvP/Q/wJSjDkzY20CzvWTywDojTdIzSAVHoP4RvdZnEHe
-         dSqnHkMPHfUyT0/QgtAe/dUhv3wI5rL7vpzXC085OXDHtnelcBpLsFSVtbZJAE+DjN
-         3nT25me2mAO7mnx8cEgHHA+dDXbD4VYEUtze7TvK7FfifGDU/OPuqPl8Nn6g/9o7K6
-         HrTxvRIuZDmWA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A18995C0698; Fri, 23 Apr 2021 21:27:04 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 21:27:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     mingo@kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        Daniel Lustig <dlustig@nvidia.com>, joel@joelfernandes.org,
-        elver@google.com, Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] tools/memory-model: Correct the name of
- smp_mb__after_spinlock()
-Message-ID: <20210424042704.GR975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210424002509.797308-1-palmer@dabbelt.com>
+        id S232155AbhDXE65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 00:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhDXE6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 00:58:52 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB2FC061574;
+        Fri, 23 Apr 2021 21:58:13 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y4so40318760lfl.10;
+        Fri, 23 Apr 2021 21:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=a/RO6+FvE3kXQ+8npkkEY+xEAPWUQZ6kpW2OWxzDF7w=;
+        b=T8Br2P6B9akN5tV8qbEolTp6pdmIa/h7nfHSMpxrK5pc3lUU8tsi1bzmtT+6EDFSO7
+         oQyq1ZxWV0ohcbSUP8Zn6c6Hy9dbJj3Nr/+Ph01TcTyvFBsMZ2KYfRcEepijRFkUmZ6r
+         //Owc1euvC0OfC/0cjl4zCbJSmqQjEI9RI+b/5b6gJ67MM/knKqZDL+rlSLqCYZljsUz
+         3m4SET1CHF9OUqs0/7kKjSnAiebuojsLpHX1w8R2Af+ErjLdWfHQx8MzpBzbXQqc5hF3
+         FGzfuhPrxalZHwVveIjfroOnRdFtcLx9M8fWS9yr/EEbEo30ONptDpcsy/FaXqGnn+h9
+         92xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a/RO6+FvE3kXQ+8npkkEY+xEAPWUQZ6kpW2OWxzDF7w=;
+        b=Av/v9ZIUuXhCyhTz+e8s5TjGaQ0CEIOOtw+FMWr4qhNUf8Vr+dvNSXMUHD8wjMKtfd
+         vICo16XWW/yD6SIX2VFo42tQJgUskw7XppNJinMEgoKkZdaYs+/TR4LErY/oLG+/ll2I
+         WE7swfkvuLAGr9S7rQo0D2FYLTNvUfCcVtWqMNJdKgnt/lP2XV450+MJBcRPUIXOD7k3
+         K793+TKlKw0Tk/T+ZENeBmAocG4kezdmLcEDQ87/yM+yA8YQ/x1l/oz7IOzLe+CgeGgd
+         ZSkNsjSxDO7rnw/bw29nFre1BFzI3FfrtsZdvJkC2AkiFRNMcwwbGZiSieg7TNgKmWX3
+         BAog==
+X-Gm-Message-State: AOAM530vc3SGknqZ9ZHxIFMl2XJMJqVvBD/pN+cs+kBNiup+TDR/dE5S
+        7AZ5kOXLNXUgMuIU3kcmd58sezdoihM=
+X-Google-Smtp-Source: ABdhPJwMZcy+121C4CMY16Kpzu9tInro2H9NFAapjK8Hti8rdjBpMxbTCIvr1N1bMEYE6Omlv/ZpRQ==
+X-Received: by 2002:a05:6512:110f:: with SMTP id l15mr4981027lfg.258.1619240289347;
+        Fri, 23 Apr 2021 21:58:09 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
+        by smtp.googlemail.com with ESMTPSA id x3sm740012ljm.90.2021.04.23.21.58.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 21:58:08 -0700 (PDT)
+Subject: Re: [PATCH v3] iio: gyro: mpu3050: Fix reported temperature value
+To:     Jean-Baptiste Maneyrol <JManeyrol@invensense.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210423020959.5023-1-digetx@gmail.com>
+ <BL0PR12MB5011563BCD5E11683D51F34EC4459@BL0PR12MB5011.namprd12.prod.outlook.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <edd85a7f-4c1f-9d2f-0425-93a6e45f13bb@gmail.com>
+Date:   Sat, 24 Apr 2021 07:58:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <BL0PR12MB5011563BCD5E11683D51F34EC4459@BL0PR12MB5011.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210424002509.797308-1-palmer@dabbelt.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 05:25:09PM -0700, Palmer Dabbelt wrote:
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
+23.04.2021 13:14, Jean-Baptiste Maneyrol пишет:
+> Hello,
 > 
-> This was missing one of the double _s.  I only found it because I
-> mis-typed the name myself.
+> thanks for this work.
 > 
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
-Good catch, and thank you, but Bj�rn T�pel beat you to it.
-
-dce310f2e546 ("tools/memory-model: Fix smp_mb__after_spinlock() spelling")
-
-This one is queued in the -rcu tree for the v5.14 merge window.
-
-But please keep the fixes coming!
-
-							Thanx, Paul
-
-> ---
->  tools/memory-model/Documentation/explanation.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Temperature value should obviously be 16 bits signed, thanks for the fix. By looking at our internal datasheets, I can confirm the values for MPU-30x0 family (div by 280 and 23000 offset LSB).
 > 
-> diff --git a/tools/memory-model/Documentation/explanation.txt b/tools/memory-model/Documentation/explanation.txt
-> index f9d610d5a1a4..5d72f3112e56 100644
-> --- a/tools/memory-model/Documentation/explanation.txt
-> +++ b/tools/memory-model/Documentation/explanation.txt
-> @@ -2510,7 +2510,7 @@ they behave as follows:
->  	smp_mb__after_atomic() orders po-earlier atomic updates and
->  	the events preceding them against all po-later events;
->  
-> -	smp_mb_after_spinlock() orders po-earlier lock acquisition
-> +	smp_mb__after_spinlock() orders po-earlier lock acquisition
->  	events and the events preceding them against all po-later
->  	events.
->  
-> -- 
-> 2.31.1.498.g6c1eba8ee3d-goog
+> I'm sorry I don't have access to these more than 1 decade old chips, so I cannot test on my side. But there is no reason it wouldn't be OK.
 > 
+> Acked-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+
+Thank you very much for confirming that the equation is correct, very
+appreciate that.
