@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9196736A11C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9225836A11D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236981AbhDXMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 08:22:00 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:47003 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231799AbhDXMV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 08:21:59 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FS9Hc68Zhz9tvrC;
-        Sat, 24 Apr 2021 14:21:16 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Ayt4oavMATdG; Sat, 24 Apr 2021 14:21:16 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FS9Hc4zLbz9tyxt;
-        Sat, 24 Apr 2021 14:21:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 74E698B76E;
-        Sat, 24 Apr 2021 14:21:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id el_4yr-dlpDL; Sat, 24 Apr 2021 14:21:18 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E7CDE8B75F;
-        Sat, 24 Apr 2021 14:21:17 +0200 (CEST)
-Subject: Re: [RFC PATCH] watchdog: Adding softwatchdog
-To:     Peter Enderborg <peter.enderborg@sony.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>
-References: <20210424102555.28203-1-peter.enderborg@sony.com>
- <20210424102555.28203-2-peter.enderborg@sony.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <ac949d08-72ff-edf6-6526-fdc9ad602631@csgroup.eu>
-Date:   Sat, 24 Apr 2021 14:21:11 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S233668AbhDXMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 08:24:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55706 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231799AbhDXMYH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 08:24:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619267008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XHvp0OcZq0sBkrjLYAKxEf8MZPhojvIv7Wl5Pm/lV2g=;
+        b=dbVbNKWBNscmAc+trqKQB6FGeYufs7XfkBNvUrxaRS6eZb0EkV5Oeri5JTt7nuj2TZdl0C
+        FwJYgpEpoeGZxPp5SaCz+GXR2rDWpXKHt/WhCcDGE0+K9icLtDT9rTWRFayi9qbIKJGxye
+        XpqP33rzdYDSedIAN5y+TJ6d4AsJsTs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-5vt4abhqP62awmm18NEoxg-1; Sat, 24 Apr 2021 08:23:24 -0400
+X-MC-Unique: 5vt4abhqP62awmm18NEoxg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36FB5343A2;
+        Sat, 24 Apr 2021 12:23:23 +0000 (UTC)
+Received: from krava (unknown [10.40.192.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B1C5919C46;
+        Sat, 24 Apr 2021 12:23:20 +0000 (UTC)
+Date:   Sat, 24 Apr 2021 14:23:19 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET 0/5] perf report: Make --stat output more compact
+Message-ID: <YIQNtxTku/JihU+s@krava>
+References: <20210423182813.1472902-1-namhyung@kernel.org>
+ <20210423184647.GN1401198@tassilo.jf.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210424102555.28203-2-peter.enderborg@sony.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210423184647.GN1401198@tassilo.jf.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 24/04/2021 à 12:25, Peter Enderborg a écrit :
-> This is not a rebooting watchdog. It's function is to take other
-> actions than a hard reboot. On many complex system there is some
-> kind of manager that monitor and take action on slow systems.
-> Android has it's lowmemorykiller (lmkd), desktops has earlyoom.
-> This watchdog can be used to help monitor to preform some basic
-> action to keep the monitor running.
+On Fri, Apr 23, 2021 at 11:46:47AM -0700, Andi Kleen wrote:
+> > So I added --skip-empty (and --no-skip-empty automatically) to suppres
+> > the 0 output and add the event stats like below.
 > 
-> It can also be used standalone. This add a policy that is
-> killing the process with highest oom_score_adj and using
-> oom functions to it quickly. I think it is a good usecase
-> for the patch. Memory siuations can be problematic for
-> software that monitor system, but other prolicys can
-> should also be possible. Like picking tasks from a memcg, or
-> specific UID's or what ever is low priority.
+> I doubt we need the option for this.
+
+I agree this could be default, but I'm getting compilation fail:
+
+  CC       ui/browsers/hists.o
+ui/browsers/hists.c: In function ‘hist_browser__handle_hotkey’:
+ui/browsers/hists.c:699:29: error: ‘struct hists_stats’ has no member named ‘nr_lost_warned’
+  699 |       (browser->hists->stats.nr_lost_warned !=
+      |                             ^
+ui/browsers/hists.c:700:28: error: ‘struct hists_stats’ has no member named ‘nr_events’
+  700 |       browser->hists->stats.nr_events[PERF_RECORD_LOST])) {
+      |                            ^
+ui/browsers/hists.c:701:25: error: ‘struct hists_stats’ has no member named ‘nr_lost_warned’
+  701 |    browser->hists->stats.nr_lost_warned =
+      |                         ^
+ui/browsers/hists.c:702:26: error: ‘struct hists_stats’ has no member named ‘nr_events’
+  702 |     browser->hists->stats.nr_events[PERF_RECORD_LOST];
+      |                          ^
+ui/browsers/hists.c: In function ‘perf_evsel_menu__write’:
+ui/browsers/hists.c:3419:40: error: ‘struct hists_stats’ has no member named ‘nr_events’
+ 3419 |  unsigned long nr_events = hists->stats.nr_events[PERF_RECORD_SAMPLE];
+      |                                        ^
+ui/browsers/hists.c:3435:33: error: ‘struct hists_stats’ has no member named ‘nr_events’
+ 3435 |    nr_events += pos_hists->stats.nr_events[PERF_RECORD_SAMPLE];
+      |                                 ^
+ui/browsers/hists.c:3444:26: error: ‘struct hists_stats’ has no member named ‘nr_events’
+ 3444 |  nr_events = hists->stats.nr_events[PERF_RECORD_LOST];
+      |                          ^
+ui/browsers/hists.c: In function ‘block_hists_browser__title’:
+ui/browsers/hists.c:3650:41: error: ‘struct hists_stats’ has no member named ‘nr_events’
+ 3650 |  unsigned long nr_samples = hists->stats.nr_events[PERF_RECORD_SAMPLE];
+      |                                         ^
+
+jirka
 
 
-I'm nore sure I understand the reasoning behind the choice of oom logic to decide which task to kill.
+> 
+> But if you change it I would add the percentages after the absolute values.
+> 
+> -Andi
+> 
 
-Usually a watchdog will detect if a task is using 100% of the CPU time. If such a task exists, it is 
-the one running, not another one that has huge amount of memory allocated by spends like 1% of CPU time.
-
-So if there is a task to kill by a watchdog, I would say it is the current task.
-
-
-Another remark: you are using regular timers as far as I understand. I remember having problems with 
-that in the past, it required the use of hrtimers. I can't remember the details exactly but you can 
-look at commit https://github.com/linuxppc/linux/commit/1ff688209
-
-Christophe
