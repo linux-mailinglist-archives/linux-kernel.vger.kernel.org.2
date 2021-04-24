@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D43369F08
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 08:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC905369F0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 08:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhDXGTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 02:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
+        id S231343AbhDXGfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 02:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhDXGTK (ORCPT
+        with ESMTP id S229626AbhDXGfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 02:19:10 -0400
+        Sat, 24 Apr 2021 02:35:31 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11643C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 23:18:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B95C061574;
+        Fri, 23 Apr 2021 23:34:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=UHtbsdbpwbNeabtBKPBRJb+nauxP3JoNafFlth/EW7A=; b=FnPqf4LID0GMM7t7Il58IshBFO
-        i2IuSZMm5y5kZMGogqLKyn1tSWaI6PdpZNYjGGs7HMr/GwzXHzgHr7/96LxNgPrZgDZbkoJ++VNGb
-        KDXHKXn2Xgs5aHFhLwiL8TDx//RkFJWltyE7d2U+FKWbHQ92yXFFl3v3gyP5bO4VYPc/R8cy/0fgL
-        80BZFAmQYWfvHF89pPu+0Xo8nWppaEOb1XCaJUCCeptAHEVhxPuXRE7qryUUDhhUMpftlsFcyC+Af
-        cfRsVnjLC6NI2+yOzuWUJEnm+XyLBacNHtTYGu0n3ymuX0V/fbb7mVuTGw0VarLcL11aNZYkoiGBh
-        6NJq6RPw==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=u+7u5YAxSddNuwZ0iuXyACMe11u6Ld/9nAcCfy7chps=; b=gp9oV5hZDj6kTzqn/Thq7VwT8j
+        D+Hkq8sp+XV5nw79gt3NT9ZK4yO/a6DwQBzqSHeQE5IE8of33UZEArZZcaxjF5f2b69PHmcS9e7Gu
+        ykP0FI2l/po5qieSCj4ojbaZe7shsyQxUtW826u9UD88a6nx6cpT5evqBVPAe8Pxq5RgzFp9ytfiN
+        0YPWTJafNv/yKhMCVNYjQJf/Aghvd3FsplhNKT9qFaX7qKbhrs2tOnZsY/DmMDsjMXKdYNOBdq3dX
+        YBsEPGI/RKDjP6JMQ7pg0vBsOVuc1p+rGt2CRmUkcxPgHSCs/VNPbgT4t0HESO2vlaT6dzn6VA1b3
+        0Chc8tjg==;
+Received: from [2601:1c0:6280:3f0::df68]
         by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1laBcT-0038ar-Qg; Sat, 24 Apr 2021 06:18:22 +0000
+        id 1laBsN-003AJB-7c; Sat, 24 Apr 2021 06:34:50 +0000
+Subject: Re: [PATCH 2/2] media: rc: clean up Kconfig dependencies
+To:     Arnd Bergmann <arnd@kernel.org>, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210421135935.3653827-1-arnd@kernel.org>
+ <20210421135935.3653827-2-arnd@kernel.org>
 From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Icenowy Zheng <icenowy@aosc.io>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Torsten Duwe <duwe@suse.de>, Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH] drm: bridge: add missing word in Analogix help text
-Date:   Fri, 23 Apr 2021 23:18:17 -0700
-Message-Id: <20210424061817.7339-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+Message-ID: <ecc20ef0-e12e-884b-38c1-681fb02a59b6@infradead.org>
+Date:   Fri, 23 Apr 2021 23:34:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210421135935.3653827-2-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Insert a missing word "power" in Kconfig help text.
+On 4/21/21 6:58 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> I came across a randconfig build failure from one driver
+> that only depends on CONFIG_USB_ARCH_HAS_HCD but fails when
+> built without CONFIG_USB:
+> 
+> ld: drivers/media/rc/ir_toy.o: in function `irtoy_disconnect':
+> ir_toy.c:(.text+0x24): undefined reference to `usb_kill_urb'
+> ld: ir_toy.c:(.text+0x2c): undefined reference to `usb_free_urb'
+> ld: ir_toy.c:(.text+0x34): undefined reference to `usb_kill_urb'
+> ld: ir_toy.c:(.text+0x3c): undefined reference to `usb_free_urb'
+> 
+> Upon a closer look, I find that a lot of the other drivers
+> 'select USB' rather than stating 'depends on USB' as is common
+> for most subsystems. I also find that all except one driver
+> have an extra 'depends on RC_CORE' that is already implied by
+> the top-level 'if RC_CORE' check.
+> 
+> Clean up both by reducing the dependencies to the required set.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Fixes: 6aa192698089 ("drm/bridge: Add Analogix anx6345 support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Robert Foss <robert.foss@linaro.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Icenowy Zheng <icenowy@aosc.io>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Torsten Duwe <duwe@suse.de>
-Cc: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/bridge/analogix/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
---- linux-next-20210423.orig/drivers/gpu/drm/bridge/analogix/Kconfig
-+++ linux-next-20210423/drivers/gpu/drm/bridge/analogix/Kconfig
-@@ -6,7 +6,7 @@ config DRM_ANALOGIX_ANX6345
- 	select DRM_KMS_HELPER
- 	select REGMAP_I2C
- 	help
--	  ANX6345 is an ultra-low Full-HD DisplayPort/eDP
-+	  ANX6345 is an ultra-low power Full-HD DisplayPort/eDP
- 	  transmitter designed for portable devices. The
- 	  ANX6345 transforms the LVTTL RGB output of an
- 	  application processor to eDP or DisplayPort.
+Thanks.
+
+> ---
+>  drivers/media/rc/Kconfig | 73 ++++++----------------------------------
+>  1 file changed, 11 insertions(+), 62 deletions(-)
+> 
+
+-- 
+~Randy
+
