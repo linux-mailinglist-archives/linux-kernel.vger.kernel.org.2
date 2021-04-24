@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624D6369DEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B7A369DF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244214AbhDXAsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
+        id S244242AbhDXAsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244109AbhDXArr (ORCPT
+        with ESMTP id S244151AbhDXArs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:47:47 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F99FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:07 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id l19-20020a37f5130000b02902e3dc23dc92so11863360qkk.15
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:07 -0700 (PDT)
+        Fri, 23 Apr 2021 20:47:48 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698C6C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:09 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id 99-20020a0c80ec0000b029017de514d56fso19458082qvb.17
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=WDHyTgGjim6hk3/xd8JtlILQjW4Wl2Ft0fupXNYGdHc=;
-        b=rvQnQvoP00Y7thOgQbkMO45k+pLyOLGgPtLCI27QOGyOOacF6s5jSWo7yThwKATN2j
-         gRoqPUOPIg6AkpXdKzh/EdXAzIXyvJAbL3JyWI6e7MEPDQe5Y6KR/cpJzkbmQOo7Cv2g
-         oqNuv3Vq4fCHXKP1dWMvFDgnu/lWiDStPzq0RDOJbXuuCyLYDo5CAX0P8NQM4GHHYW1C
-         PSqUlcNQ7Ytju04V1UQmEuoFBdp8VIBcbY9o33dP8BY10NLdCjeURq/0yAP+zgFk/BMk
-         OQYvtHz1eU0ypNg/RkrzVRr0Oi3Cht4n0S9STEhnJV+sNJ2/Bh8c9qaK9rP4cD83Lpgm
-         pm/g==
+        bh=Z23zPQAgxlBigLhFQaq/Iwh63wl+bRNTg9ZoEclpoEQ=;
+        b=SWsFp/9EiXizbzTZHrHr0qgh4MJgPmOaDWL3ZJFP7m6lSN0+Oc4/yRfnkMabUXBbO8
+         rrPWAtC/mzWxZlqtyksyKvjwtdZ6W4jL96KxqfaPjk8N4mxYETzupFdQgq7p7PZ3pXTi
+         vGgmGYA1EDadD+YakYmwdBZILiSbwl/3hMaITsMCr9utLlKPjkUWBMiYa/CKEKoe3eiu
+         ZKujj+e+blJrpSXrFco3lN84sEvEejoq9HVR78JJmEAa+HX3tn3+ZJK2wA9hymcKfp++
+         RtBF3/69GAczeXPMUbVIJQFWveCrfDknw3pN8A8mInXKqOoBDP/THOWRvRh8P9Ft/A4j
+         XSPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=WDHyTgGjim6hk3/xd8JtlILQjW4Wl2Ft0fupXNYGdHc=;
-        b=fxmbquGDmKPMMzrfRt61cAbBydQi+0E9EVqodS/YC2bd5Wf/NsXjGVhnaeEr/caX3n
-         tacx1jtJZJGYIHNNqw5dpOZpwQcHHukFRQFw3FyFLtD4+AgWbjgR4CwPFK58a960GMH3
-         wv/jvA8bOS9XcZeZ/dY8KFvr/9hbkjKjSoVYV6JUncfn+nyr1WhByhuY2AiwIvFxNYDP
-         T/yusQzTRzJ7gAvPVF/c5bIK2N3ZnCzv+QONqDncaB1+kUBt07EpJQ39Bd1Zuq2vxKgL
-         l3RTt9xc0u8dCT5sD7/0nnkhhTv2krimHtIJG395s7m6ySQoV812T5xZDL4sHF+zkoSA
-         2U9Q==
-X-Gm-Message-State: AOAM53092FF5/KkF1qMwj0vIsEtHqZzd1egaagzXw0aNA/TXBn55dePx
-        oradfkCjDlm/G/8jA2kMsOFDmK3IJHk=
-X-Google-Smtp-Source: ABdhPJxba3jkQY8JoBg2/bwM1Z2vQB+NWcrsdv6irr9VK+VHqlDgSN7t9llZT/MKf+h1RoPbe5u8rIhrzM8=
+        bh=Z23zPQAgxlBigLhFQaq/Iwh63wl+bRNTg9ZoEclpoEQ=;
+        b=iGFmKScHsTlyS6dhUqxgD2r0KqSVqxEBxsOGbSdUvoOLRzJhvbhm62PUcyIRrX+3qD
+         26cXVeD+Wjk8CbS5UmGDMblO5xdKxmzPHw7zZa2B+rsL+E3W9SP22OOy8WakDt0ghMBO
+         0evsW8ER+/qfAQFPMdiPPzfCha8BNzcAP/hkzIHXkdWsfxpw6tVGFqeT7rC7ZpuEdlDv
+         0U3DjA/DwUZQURj+QI73bPWEw2NZQI2SpK0FIWXBfZxR05xPCwm520fXBZuz9ebXx+av
+         ZyeWwZNNBPbqbeNUbro+FSSh6k07m1AtC+KNl7JgzsSOVBX5vkoICJZGqEnT8PRIavYe
+         vBTg==
+X-Gm-Message-State: AOAM53349QQhnl6J66TNgYi6OIRZDAmIFET/jSYKPAqMhcQ9oRTjd3Sk
+        5xeYYr9j8pNwhfAco/eWlnZDelo5Kso=
+X-Google-Smtp-Source: ABdhPJwL+caeGee5q5H1DwGy2Zp+KrNbEV1OdzbTDu+pWbDKkegIYuDBsNf+879sZmeGGLjrZGJLv0D5FB0=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:ad52:3246:e190:f070])
- (user=seanjc job=sendgmr) by 2002:a0c:f247:: with SMTP id z7mr7230997qvl.24.1619225226439;
- Fri, 23 Apr 2021 17:47:06 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:88d:: with SMTP id
+ cz13mr7404534qvb.13.1619225228657; Fri, 23 Apr 2021 17:47:08 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 23 Apr 2021 17:46:05 -0700
+Date:   Fri, 23 Apr 2021 17:46:06 -0700
 In-Reply-To: <20210424004645.3950558-1-seanjc@google.com>
-Message-Id: <20210424004645.3950558-4-seanjc@google.com>
+Message-Id: <20210424004645.3950558-5-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210424004645.3950558-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH 03/43] KVM: SVM: Require exact CPUID.0x1 match when stuffing
- EDX at INIT
+Subject: [PATCH 04/43] KVM: SVM: Fall back to KVM's hardcoded value for EDX at RESET/INIT
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,33 +66,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not allow an inexact CPUID "match" when querying the guest's CPUID.0x1
-to stuff EDX during INIT.  In the common case, where the guest CPU model
-is an AMD variant, allowing an inexact match is a nop since KVM doesn't
-emulate Intel's goofy "out-of-range" logic for AMD and Hygon.  If the
-vCPU model happens to be an Intel variant, an inexact match is possible
-if and only if the max CPUID leaf is precisely '0'. Aside from the fact
-that there's probably no CPU in existence with a single CPUID leaf, if
-the max CPUID leaf is '0', that means that CPUID.0.EAX is '0', and thus
-an inexact match for CPUID.0x1.EAX will also yield '0'.
+At vCPU RESET/INIT (mostly RESET), stuff EDX with KVM's hardcoded,
+default Family-Model-Stepping ID of 0x600 if CPUID.0x1 isn't defined.
+At RESET, the CPUID lookup is guaranteed to "miss" because KVM emulates
+RESET before exposing the vCPU to userspace, i.e. userspace can't
+possibly have done set the vCPU's CPUID model, and thus KVM will always
+write '0'.  At INIT, using 0x600 is less bad than using '0'.
 
-So, with lots of twisty logic, no functional change intended.
+While initializing EDX to '0' is _extremely_ unlikely to be noticed by
+the guest, let alone break the guest, and can be overridden by
+userspace for the RESET case, using 0x600 is preferable as it will allow
+consolidating the relevant VMX and SVM RESET/INIT logic in the future.
+And, digging through old specs suggests that neither Intel nor AMD have
+ever shipped a CPU that initialized EDX to '0' at RESET.
 
+Regarding 0x600 as KVM's default Family, it is a sane default and in
+many ways the most appropriate.  Prior to the 386 implementations, DX
+was undefined at RESET.  With the 386, 486, 586/P5, and 686/P6/Athlon,
+both Intel and AMD set EDX to 3, 4, 5, and 6 respectively.  AMD switched
+to using '15' as its primary Family with the introduction of AMD64, but
+Intel has continued using '6' for the last few decades.
+
+So, '6' is a valid Family for both Intel and AMD CPUs, is compatible
+with both 32-bit and 64-bit CPUs (albeit not a perfect fit for 64-bit
+AMD), and of the common Families (3 - 6), is the best fit with respect to
+KVM's virtual CPU model.  E.g. prior to the P6, Intel CPUs did not have a
+STI window.  Modern operating systems, Linux included, rely on the STI
+window, e.g. for "safe halt", and KVM unconditionally assumes the virtual
+CPU has an STI window.  Thus enumerating a Family ID of 3, 4, or 5 would
+be provably wrong.
+
+Opportunistically remove a stale comment.
+
+Fixes: 66f7b72e1171 ("KVM: x86: Make register state after reset conform to specification")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/svm/svm.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 14ff7f0963e9..b9e3229ddc27 100644
+index b9e3229ddc27..d4d7720ce42f 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -1299,7 +1299,7 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+@@ -1219,7 +1219,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_reset_context(vcpu);
+ 
+ 	save->cr4 = X86_CR4_PAE;
+-	/* rdx = ?? */
+ 
+ 	if (npt_enabled) {
+ 		/* Setup VMCB for Nested Paging */
+@@ -1299,7 +1298,15 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
  	}
  	init_vmcb(vcpu);
  
--	kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, false);
-+	kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, true);
+-	kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, true);
++	/*
++	 * Fall back to KVM's default Family/Model/Stepping if no CPUID match
++	 * is found.  Note, it's impossible to get a match at RESET since KVM
++	 * emulates RESET before exposing the vCPU to userspace, i.e. it's
++	 * impossible for kvm_cpuid() to find a valid entry on RESET.  But, go
++	 * through the motions in case that's ever remedied, and to be pedantic.
++	 */
++	if (!kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, true))
++		eax = get_rdx_init_val();
  	kvm_rdx_write(vcpu, eax);
  
  	if (kvm_vcpu_apicv_active(vcpu) && !init_event)
