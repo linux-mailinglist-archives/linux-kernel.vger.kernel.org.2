@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C599369FF1
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 09:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D26369FF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 09:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhDXHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 03:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhDXHUQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 03:20:16 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87620C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 00:19:38 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w10so306146pgh.5
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 00:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hn51PY3pPm3kGtoDtPX4jjQp72j/PPh9WRN9t50CmqE=;
-        b=kSJvGQDYFGHgB0/HnxoNSOhSHoQguJz14XtPApVtLtOyyYDK0iZb9ylkgJK3ubHNde
-         A30YOMdL9iF/EfqRxzzEhQC1l1JaQzhPB/f/7dErvYGPAIu5NVWqU6UmGY1uGFJkpBlr
-         /1K++6qvqqt7r4UDg88MPbW/73BldH9u//UKplas1k14WgxE+Oue93gUyOmGBNIL0wvr
-         a3ldCCij0Zs/GvDka8qbSZ5Nlx8GXcwzOWaRSMCda/2gpeCaDeiSq2xALrL+RO9II7eX
-         1jkuzUY5hfzNtpFZdYmCHMxmJ193/p5OYCjxwlFiECL98mocQmYtT+NbTJxfBm2QxIdk
-         fK9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hn51PY3pPm3kGtoDtPX4jjQp72j/PPh9WRN9t50CmqE=;
-        b=FtmWe4oDFWg7JI8BKdDFnZywaSU1es2pmPpIa4ASLx3e3FsRjClJ0aXk5rPkKNaizx
-         LDe1H07ZqjrgwApAm8TyZjgCwh4FI0ZGSCvirfC2drd4/M5eAaeXuAQ5eqTgJ/ahqPzp
-         LVRXgjbFcCQri7Uvd+NaAETducXSA1Jv9RVDF0WJfEKf+mcUEqjUPxNUhsEJ1tFe3stV
-         TETuOdRuEzkPomT0YhuU4AjYoCkhSEHVQMktapKSYZ37XHErltJo3Kpc0rHmBOE01ThM
-         d6wv26X7AogFKYqkrWq8LqhHQidoHPbKyzlHcpgbunyDeO7iRRcgJAVKH9xCi/XNZuO+
-         A3zA==
-X-Gm-Message-State: AOAM532umBYar5qOmSneqJQVd9vDHP2TfhS/ZddDJPSavdrH7KHMxZFK
-        huKmD4972czVssTRLRX3+asWUPbAGmKbbplm8ONWfA==
-X-Google-Smtp-Source: ABdhPJwxgoUJMtmz8jI1rLJsBnHJOS6IoMNPMyg2Bsm6KR3jRbbWp6mUrsGinx0hcYto5eFPQ6cclf/7+19x9xGh2SY=
-X-Received: by 2002:a05:6a00:15cb:b029:25c:a742:d34d with SMTP id
- o11-20020a056a0015cbb029025ca742d34dmr7330299pfu.25.1619248777694; Sat, 24
- Apr 2021 00:19:37 -0700 (PDT)
+        id S232714AbhDXHW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 03:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230471AbhDXHWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 03:22:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B4D961404;
+        Sat, 24 Apr 2021 07:21:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619248905;
+        bh=2IBg5lD3luughl/O28DyG4n7IZAasZN8SR4zzP9umVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T/mUlID+VCER99XBM7rxiCQNaW22mN7Z9/USnqDT/ucOQZLn/mdh5SGMKbidSefPX
+         Rf4JbhOcoL4tb9Re3uYHLlHl405t2+ACO38WozZiBdnghBgrlL0+knAQgOcgxQsow9
+         tKrQyhEpqsFPE55ZO7eFU2u5M8FBmeAv6eCj2qzbyLHVsBpyI05T96Xj2WOxWcnILH
+         eOqQkNOcvW954sHM6pK6cOtV/meI6/tEy72I3zH2Tca4107mNyvoNBnO3TvezyJtzT
+         Gr9GVMy8LvrUdClP+rFTp5os6X7AM7ND8Ah71hFsvMUCBWiz5zwBrakoHqqLBnQcmB
+         mKEQSv/CNzfXA==
+Date:   Sat, 24 Apr 2021 10:21:41 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     "Shelat, Abhi" <a.shelat@northeastern.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YIPHBZj/0Tn4nWVe@unreal>
+References: <YH/8jcoC1ffuksrf@kroah.com>
+ <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
+ <20210421133727.GA27929@fieldses.org>
+ <YIAta3cRl8mk/RkH@unreal>
+ <20210421135637.GB27929@fieldses.org>
+ <20210422193950.GA25415@fieldses.org>
+ <YIMDCNx4q6esHTYt@unreal>
+ <20210423180727.GD10457@fieldses.org>
+ <YIMgMHwYkVBdrICs@unreal>
+ <20210423214850.GI10457@fieldses.org>
 MIME-Version: 1.0
-References: <20210423223404.3860547-1-seanjc@google.com> <20210423223404.3860547-4-seanjc@google.com>
-In-Reply-To: <20210423223404.3860547-4-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Sat, 24 Apr 2021 00:19:21 -0700
-Message-ID: <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] KVM: x86: Tie Intel and AMD behavior for
- MSR_TSC_AUX to guest CPU model
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423214850.GI10457@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1610,6 +1610,29 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
->                  * invokes 64-bit SYSENTER.
->                  */
->                 data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
-> +               break;
-> +       case MSR_TSC_AUX:
-> +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
-> +                       return 1;
-> +
-> +               if (!host_initiated &&
-> +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> +                       return 1;
-> +
-> +               /*
-> +                * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
-> +                * incomplete and conflicting architectural behavior.  Current
-> +                * AMD CPUs completely ignore bits 63:32, i.e. they aren't
-> +                * reserved and always read as zeros.  Enforce Intel's reserved
-> +                * bits check if and only if the guest CPU is Intel, and clear
-> +                * the bits in all other cases.  This ensures cross-vendor
-> +                * migration will provide consistent behavior for the guest.
-> +                */
-> +               if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
-> +                       return 1;
-> +
-> +               data = (u32)data;
-> +               break;
->         }
->
->         msr.data = data;
-> @@ -1646,6 +1669,17 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
->         if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
->                 return KVM_MSR_RET_FILTERED;
->
-> +       switch (index) {
-> +       case MSR_TSC_AUX:
-> +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
-> +                       return 1;
-> +
-> +               if (!host_initiated &&
-> +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> +                       return 1;
+On Fri, Apr 23, 2021 at 05:48:50PM -0400, J. Bruce Fields wrote:
+> Have umn addresses been blocked from posting to kernel lists?
 
+It is very unlikely.
 
-It looks Table 2-2 of the Intel SDM Vol4 (April 2021) says
-TSC_AUX is supported:
+> 
+> Anyway:
+> 
+> On Fri, Apr 23, 2021 at 10:29:52PM +0300, Leon Romanovsky wrote:
+> > On Fri, Apr 23, 2021 at 02:07:27PM -0400, J. Bruce Fields wrote:
+> > > On Fri, Apr 23, 2021 at 08:25:28PM +0300, Leon Romanovsky wrote:
+> > > > On Thu, Apr 22, 2021 at 03:39:50PM -0400, J. Bruce Fields wrote:
+> > > > > On Wed, Apr 21, 2021 at 09:56:37AM -0400, J. Bruce Fields wrote:
+> > > > > > On Wed, Apr 21, 2021 at 04:49:31PM +0300, Leon Romanovsky wrote:
+> > > > > > > If you want to see another accepted patch that is already part of
+> > > > > > > stable@, you are invited to take a look on this patch that has "built-in bug":
+> > > > > > > 8e949363f017 ("net: mlx5: Add a missing check on idr_find, free buf")
+> > > > > > 
+> > > > > > Interesting, thanks.
+> > > > > 
+> > > > > Though looking at it now, I'm not actually seeing the bug--probably I'm
+> > > > > overlooking something obvious.
+> > > > 
+> > > > It was fixed in commit 31634bf5dcc4 ("net/mlx5: FPGA, tls, hold rcu read lock a bit longer")
+> > > 
+> > > So is the "Fixes:" line on that commit wrong?  It claims the bug was
+> > > introduced by an earlier commit, ab412e1dd7db ("net/mlx5: Accel, add TLS
+> > > rx offload routines").
+> > 
+> > Yes, I think that Fixes line is misleading.
+> > 
+> > > 
+> > > Looks like Aditya Pakki's commit may have widened the race a little, but
+> > > I find it a little hard to fault him for that.
+> > 
+> > We can argue about severity of this bug, but the whole paper talks about
+> > introduction of UAF bugs unnoticed.
+> 
+> Aditya Pakki points out in private mail that this patch is part of the
+> work described in this paper:
+> 
+> 	https://www-users.cs.umn.edu/~kjlu/papers/crix.pdf
+> 
+> (See the list of patches in the appendix.)
+> 
+> I mean, sure, I suppose they could have created that whole second line
+> of research just as a cover to submit malicious patches, but I think
+> we're running pretty hard into Occam's Razor at that point.
 
-   If CPUID.80000001H:EDX[27] = 1 or CPUID.(EAX=7,ECX=0):ECX[22] = 1
+Let's not speculate here.
 
-Should we also check X86_FEATURE_RDPID before returning 1
-due to no RDTSCP support ?
-There doesn't seem to be a similar description in the APM though.
+The lack of trust, due to unethical research that was done by UMN researchers,
+amount of bugs already introduced by @umn, and multiple attempts to repeat the
+same pattern (see Al Viro responses on patches like this SUNRPC patch) is enough
+to stop waste our time.
 
-Thanks,
-Reiji
+Thanks
+
+> 
+> --b.
