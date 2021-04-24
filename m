@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D852536A026
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAC436A023
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhDXI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 04:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233250AbhDXIZ2 (ORCPT
+        id S232738AbhDXI0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 04:26:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57336 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232942AbhDXIZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 04:25:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CE9C06174A;
-        Sat, 24 Apr 2021 01:17:00 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id t13so219396pji.4;
-        Sat, 24 Apr 2021 01:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=SNOBsMH6hsVrtOZBfES+XFjoqfZ4tZXMmDAM/d9yCW0=;
-        b=nDfAjvSaBukuzHQZFqayoYjcWAVJZvfAsIWufYv/XTRHe8J8tEG7xvd7V0buVXE/6g
-         qcMc4XbAjSrbdUH4CoradY9JACfaHlWQu9y/0tgHKs3DYT0v2pKUvFH5iMZ+fqPpI9nz
-         YT8NcCLaeNPoJJC5jAJOndlsh5Hbixscv+hdtCxr9oPgKinwF7oEs69R2xMUEy7mmz6I
-         N9F1Bo5M7hmkd8fNnbQV2R6nGn3nle1KUfQTU7iyvpmF5EB5XdngoTjQyO8imOtFpl2z
-         UTS1SKqMg4z1khlrmOZbKwgzxY+p8r9JBPAJ92WksCu2R7UJxmmcfy2ahq6yqHFt/H1V
-         QK/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=SNOBsMH6hsVrtOZBfES+XFjoqfZ4tZXMmDAM/d9yCW0=;
-        b=K/qqdUjoG4hPh22zIrClGbZNhgHfXZ1w7NstrpAUy81+q8o3Q/fIlJVzlf5fht/5+f
-         lSATa+k5gwJQ/6Gcqi0+X7ptwsTwokBmErt+TW13JfY1NHEnjTUgJF0YLb9O6IPpMlj7
-         z9Re9/Mhem5TbBJY9lx6oxpoz6cVeMUtppVTwBSIpbvVp7ZF2/yzyygzNNlWbQ+Jma34
-         Q4hvFaZdMbDUJowDCcwaB18+aEg8EOSFujQYhOPAqEsb67Z+SOMaBtj9EagF6ThE+FSr
-         mIevOieI4EVgJgyQBBIjeQihlhHSKhLsIoO+gNHvmp+bTau/v1qkrhJfWxztK1R6uqEV
-         fqgA==
-X-Gm-Message-State: AOAM533RPNU5RPSb7SWYcojgi/MoYeMyHGrprjPLnyoXjkklPPXLC29h
-        knEPPr2ATMSHT9rFN2Zr32s=
-X-Google-Smtp-Source: ABdhPJzFfPA+ORO7YmRlJnRiYqjZBrMqDO/4/ch4aPBZYgL41HJ1/RSkitblZIzpl6Z3koPsq18UFA==
-X-Received: by 2002:a17:90b:388a:: with SMTP id mu10mr9870600pjb.203.1619252219831;
-        Sat, 24 Apr 2021 01:16:59 -0700 (PDT)
-Received: from soma ([121.99.145.49])
-        by smtp.gmail.com with ESMTPSA id d4sm9157893pjz.49.2021.04.24.01.16.55
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sat, 24 Apr 2021 01:16:59 -0700 (PDT)
-Received: by soma (sSMTP sendmail emulation); Sat, 24 Apr 2021 20:16:52 +1200
-Date:   Sat, 24 Apr 2021 20:16:52 +1200
-From:   Daniel Beer <dlbeer@gmail.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Daniel Beer <dlbeer@gmail.com>
-Subject: [PATCH] mmc: sdhci-pci-gli: increase 1.8V regulator wait
-Message-ID: <20210424081652.GA16047@nyquist.nev>
+        Sat, 24 Apr 2021 04:25:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619252641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JG5lz1zucN+SOqKs9Q0DF5YgOmDD8WYIPbDEuaJ2ii4=;
+        b=bK9sRkrwrQw+ab3PI3IwOchfeVMuTox5T+OhPx/Ks4XHSMTy5UR/GVH2FUXvZc75G9XYsE
+        GPpBgUE+eLZS9zoeysdS0ybkTrVmEHB3zoVIaugesqCqleuNjNcow4S5qI+LVVZJdCT4jZ
+        JsoFF3wWIZk9xTKfL/K86uec6D2t7tk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-7EKwWYWbO6GMl3EdSzzoag-1; Sat, 24 Apr 2021 04:21:12 -0400
+X-MC-Unique: 7EKwWYWbO6GMl3EdSzzoag-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C061343A2;
+        Sat, 24 Apr 2021 08:21:11 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F0DC55D6DC;
+        Sat, 24 Apr 2021 08:21:10 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fix for 5.12 final
+Date:   Sat, 24 Apr 2021 04:21:10 -0400
+Message-Id: <20210424082110.1773621-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inserting an SD-card on an Intel NUC10i3FNK4 (which contains a GL9755)
-results in the message:
+Linus,
 
-    mmc0: 1.8V regulator output did not become stable
+The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
 
-Following this message, some cards work (sometimes), but most cards fail
-with EILSEQ. This behaviour is observed on Debian 10 running kernel
-4.19.188, but also with 5.8.18 and 5.11.15.
+  Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
 
-The driver currently waits 5ms after switching on the 1.8V regulator for
-it to become stable. Increasing this to 10ms gets rid of the warning
-about stability, but most cards still fail. Increasing it to 20ms gets
-some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
-doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
-cards work reliably.
+are available in the Git repository at:
 
-Signed-off-by: Daniel Beer <dlbeer@gmail.com>
----
- drivers/mmc/host/sdhci-pci-gli.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 592d79082f58..061618aa247f 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -627,8 +627,13 @@ static void sdhci_gli_voltage_switch(struct sdhci_host *host)
- 	 *
- 	 * Wait 5ms after set 1.8V signal enable in Host Control 2 register
- 	 * to ensure 1.8V signal enable bit is set by GL9750/GL9755.
-+	 *
-+	 * ...however, the controller in the NUC10i3FNK4 (a 9755) requires
-+	 * slightly longer than 5ms before the control register reports that
-+	 * 1.8V is ready, and far longer still before the card will actually
-+	 * work reliably.
- 	 */
--	usleep_range(5000, 5500);
-+	usleep_range(100000, 110000);
- }
- 
- static void sdhci_gl9750_reset(struct sdhci_host *host, u8 mask)
--- 
-2.20.1
+for you to fetch changes up to 9c1a07442c95f6e64dc8de099e9f35ea73db7852:
+
+  KVM: x86/xen: Take srcu lock when accessing kvm_memslots() (2021-04-23 17:00:50 -0400)
+
+----------------------------------------------------------------
+SRCU bug introduced in the merge window
+
+----------------------------------------------------------------
+Wanpeng Li (1):
+      KVM: x86/xen: Take srcu lock when accessing kvm_memslots()
+
+ arch/x86/kvm/x86.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
