@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E3236A2BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA1436A2C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhDXTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 15:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbhDXTFY (ORCPT
+        id S233908AbhDXTXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 15:23:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53020 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231814AbhDXTX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 15:05:24 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C47C061574;
-        Sat, 24 Apr 2021 12:04:45 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id v23so842069qkj.13;
-        Sat, 24 Apr 2021 12:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=EmREJ2/iRw8n3hCpoagIR/SHHYbiB6HFNVxF3BqpXcE=;
-        b=Bvx1MzorBEcYwYZLnkgNU1eqcJP9O3U4ynU4Qmb0bJlAUD/ElebctJvi8oIeZOtsRM
-         Lwu97kgeDyCD7tQSkQETgR1NaVopc/zeCeUVLSYBnR+T1XMW/s2pTGrl+Y3Jz7TYYW5t
-         ZidcznrxCOXRYUe/0qvY2WzacKypTZ0J61mfNBeHyZrLlqpyXEnqBplTfsElZkX6pHzs
-         PLxdhPAEUL7r7CbBDNo/BYkncGVeIvt4t9tm4SbF5a6yeRnBvgg+vr0CfCLLnuxyH+zB
-         63eXxsnAIPDO19K3mULJucY2bP/GMsA29M8hBYY7lLRynZIdmBrOxZSs02zjkfnWR/ls
-         BfAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=EmREJ2/iRw8n3hCpoagIR/SHHYbiB6HFNVxF3BqpXcE=;
-        b=FW6B47sljrcwfdYzImecwrvaSELR6dqhpHcpFf9C3PBfBT6nuBHz6SOI0hSGRDfjTg
-         DilOW2MzX+qtwAuOxx+Tthikk/LSVlI37CvqYNwgKckCQMBuY0/1g0XcZxM91OsKw1yM
-         s4n8gvUVGRFzpyAW80gdn+14fZs3VWUSVCr4VG2SPIWhZtQB9b7oq+484EoT9xBbLVXN
-         g44XhgAbJQlQLBzape56s6Yg6YJFDcP7o0NTDOvrBzOay24BJcXUlOSoPW65RIQlPAyw
-         J1VPiXyB+Q0zPGvRcsb8uK5HSSzT6CT0++8Cwj1HT1KO3K5rAG5L6ISsqBDp8IKIWd0U
-         IntA==
-X-Gm-Message-State: AOAM531lLH5NV70dLsnNd+FRE61arEMOx+d+5kfhF7eNXASw665r5zg3
-        HU0FzxsvFlVMC0KgkQg+uJMvnzUvz+lZlA==
-X-Google-Smtp-Source: ABdhPJwO6DpoeBBrWiO7IviNss6A856Tm0ryAhdIaD6aAsimCq1O/C8d6ELBmk+NX5+GT6pwYkGXJg==
-X-Received: by 2002:a37:58c5:: with SMTP id m188mr9823498qkb.327.1619291084626;
-        Sat, 24 Apr 2021 12:04:44 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:30c:909:ed00:eb66:a9ae:aa9c:152f])
-        by smtp.gmail.com with ESMTPSA id u4sm1005367qkp.22.2021.04.24.12.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 12:04:44 -0700 (PDT)
-Date:   Sat, 24 Apr 2021 16:04:41 -0300
-From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     andersonreisrosa@gmail.com
-Subject: Running kunit_tool on unclean trees
-Message-ID: <YIRryUf6noodWiqe@smtp.gmail.com>
+        Sat, 24 Apr 2021 15:23:29 -0400
+Date:   Sat, 24 Apr 2021 19:22:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619292169;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aVg6UASrmOhYIGd3W45fEoM1+D6Wpd+ADc8akHmD790=;
+        b=IKeCuAhJRezxErSY1cc3qf9ZxtpZ0IAMKZwTN7AGb8R303yO0t/sO5kIIknvvmavgha47L
+        w7Jsmrshe4e0P3RoMJYo7Ww1/eJq6rFUHyKnhtu7mXNq28aaJ7BBmINxBNU6oM1qi1W0t5
+        o2nFTnb7g2685IhhLCuJcxxTfHLnWGbZUOAoqOygImwfx/GhzL9r42NRweaBYqRCZrF9RC
+        FzlhnFW1JuqDc+ImMOkN+fPh+DroVLKrFATY0TXJZUj/2+nVc/fP9D2QTy1DXNs+GaDcv4
+        Hf1zjEdSGdrv1Q/Sf7Y5qNMJq3Cc069FHIzktJbq5vGcQs9eNJZkzbYSVVePOA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619292169;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aVg6UASrmOhYIGd3W45fEoM1+D6Wpd+ADc8akHmD790=;
+        b=j+H6/8Va2B2/3RWqmVA8/QxPtFrCl7WmopE7WCiJCfSe7tVCl4Mz9bhoeTu4SRcV/OuFkA
+        Wm+YzF8yRaeFKhBA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] Merge tag 'irqchip-5.13' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210424094640.1731920-1-maz@kernel.org>
+References: <20210424094640.1731920-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <161929216888.29796.12906825332751670437.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, a friend and I were chasing bug 205219 [1] listed in Bugzilla.
-We step into something a little bit different when trying to reproduce
-the buggy behavior. In our try, compilation failed with a message form
-make asking us to clean the source tree. We couldn't run kunit_tool
-after compiling the kernel for x86, as described by Ted in the
-discussion pointed out by the bug report.
+The following commit has been merged into the irq/core branch of tip:
 
-Steps to reproduce:
+Commit-ID:     765822e1569a37aab5e69736c52d4ad4a289eba6
+Gitweb:        https://git.kernel.org/tip/765822e1569a37aab5e69736c52d4ad4a289eba6
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sat, 24 Apr 2021 21:18:44 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 24 Apr 2021 21:18:44 +02:00
 
-0) Run kunit_tool
-$ ./tools/testing/kunit/kunit.py run
-Works fine with a clean tree.
+Merge tag 'irqchip-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
 
-1) Compile the kernel for some architecture (we did it for x86_64).
+Pull irqchip and irqdomain updates from Marc Zyngier:
 
-2) Run kunit_tool again
-$ ./tools/testing/kunit/kunit.py run
-Fails with a message form make asking us to clean the source tree.
+ New HW support:
 
-Removing the clean source tree check from the top-level Makefile gives
-us a similar error to what was described in the bug report. We see that
-after running `git clean -fdx` kunit_tool runs nicely again. However,
-this is not a real solution since some kernel binaries are erased by git.
+  - New driver for the Nuvoton WPCM450 interrupt controller
+  - New driver for the IDT 79rc3243x interrupt controller
+  - Add support for interrupt trigger configuration to the MStar irqchip
+  - Add more external interrupt support to the STM32 irqchip
+  - Add new compatible strings for QCOM SC7280 to the qcom-pdc binding
 
-We also had a look into the commit messages of Masahiro Yamada but
-couldn't quite grasp why the check for the tree to be clean was added.
-We could invest more time in this issue but actually don't know how to
-proceed. We'd be glad to receive any comment about it. We could also try
-something else if it's a too hard issue for beginners.
+ Fixes and cleanups:
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=205219
+  - Drop irq_create_strict_mappings() and irq_create_identity_mapping()
+    from the irqdomain API, with cleanups in a couple of drivers
+  - Fix nested NMI issue with spurious interrupts on GICv3
+  - Don't allow GICv4.1 vSGIs when the CPU doesn't support them
+  - Various cleanups and minor fixes
 
-
-Best Regards,
-
-Marcelo
+Link: https://lore.kernel.org/r/20210424094640.1731920-1-maz@kernel.org
+---
