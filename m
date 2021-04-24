@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C189A36A02B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D852536A026
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236781AbhDXI16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 04:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        id S233271AbhDXI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 04:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233206AbhDXI0o (ORCPT
+        with ESMTP id S233250AbhDXIZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 04:26:44 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1F4C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 01:26:05 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id k18so46595223oik.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 01:26:05 -0700 (PDT)
+        Sat, 24 Apr 2021 04:25:28 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CE9C06174A;
+        Sat, 24 Apr 2021 01:17:00 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id t13so219396pji.4;
+        Sat, 24 Apr 2021 01:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6/Lgj2H0ed/XrbAD6J3l5Bl7Ju8l+PqTifcTlzDYqAw=;
-        b=pC+E2E7fwVBRG4i8kwWyhwApWasHomUai+dhJFxCiW2CspTjBmsRgsI3V2JX//Gjp8
-         Tcz/BjeBZPP7+qELv9hWrOfQzjeDCcv3JU2AvCZVM/hwn/8ENVv20YE4WcLFjo/a/ONR
-         Bi7bnZWItgKCgswvLZFCS+tOgxdZvmsEnQUvXefJ7e2Wlzwrfk83l041y9pV6P49Qr5j
-         8yTeig3RXUotyTH3e5gJ9gYKUwHB4+33mK0I7zWqwgpgt+sK2Am3ZdtASPTqo98oLX4P
-         rT12veJk9NgZeZi7/BtyYJKTBnihSmsv2yFKPPeZg3U0AkwKK/zuT2haGEXREMmzUN4p
-         plDg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=SNOBsMH6hsVrtOZBfES+XFjoqfZ4tZXMmDAM/d9yCW0=;
+        b=nDfAjvSaBukuzHQZFqayoYjcWAVJZvfAsIWufYv/XTRHe8J8tEG7xvd7V0buVXE/6g
+         qcMc4XbAjSrbdUH4CoradY9JACfaHlWQu9y/0tgHKs3DYT0v2pKUvFH5iMZ+fqPpI9nz
+         YT8NcCLaeNPoJJC5jAJOndlsh5Hbixscv+hdtCxr9oPgKinwF7oEs69R2xMUEy7mmz6I
+         N9F1Bo5M7hmkd8fNnbQV2R6nGn3nle1KUfQTU7iyvpmF5EB5XdngoTjQyO8imOtFpl2z
+         UTS1SKqMg4z1khlrmOZbKwgzxY+p8r9JBPAJ92WksCu2R7UJxmmcfy2ahq6yqHFt/H1V
+         QK/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6/Lgj2H0ed/XrbAD6J3l5Bl7Ju8l+PqTifcTlzDYqAw=;
-        b=SlTNK63f0Xs2s7qWzOBLG1SnSLp+xQ89Qc3/65gPQHYC2e+V69EPV1Oln+UlawZu28
-         1ZmtbJlHz5IVMy4ww8dXiXqLr1SBaZlUUwL1EpZCj08FmzGTHwP7njGJxEmDa+5OOVil
-         ne3KBhMlHMltImlomfLp6or7sAPj0yl7FKctL4FLudS/jMBbI31sKo2eHkO3fi8yBtUL
-         XKAUX76NLPf6c/8mI/bSela/Ytxkeg0qqk9d+d4FPbJzhyTWMO36M34gal0w68ozIIdD
-         V0QGcR3HBC1xuJnPJ2sKZILzXikur1BpS0nNoaG5me2ow8R+6Zh3jW/eW3Xe4TcXM8m4
-         fDaQ==
-X-Gm-Message-State: AOAM533DJqxP0b07R1xNTkrgQZnYct93MtAWHSCUi/LWFKF6Bol1gbfy
-        ChQX0aoqM2CFFDAEATeGWe6Oq5igeELjNbp1
-X-Google-Smtp-Source: ABdhPJybGksZKUlk+stxmZH1m3GigZn8eCjxU4jOZ28zBZJn3L3kM3UjrkTUcN97YagNjlgvPqmjGw==
-X-Received: by 2002:a17:90b:198c:: with SMTP id mv12mr8930796pjb.51.1619252135213;
-        Sat, 24 Apr 2021 01:15:35 -0700 (PDT)
-Received: from ubuntu ([182.77.14.23])
-        by smtp.gmail.com with ESMTPSA id ne22sm9631736pjb.5.2021.04.24.01.15.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 01:15:34 -0700 (PDT)
-From:   Ashish Kalra <eashishkalra@gmail.com>
-X-Google-Original-From: Ashish Kalra <ashish@ubuntu>
-Date:   Sat, 24 Apr 2021 13:45:29 +0530
-To:     Joe Perches <joe@perches.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ashish Kalra <eashishkalra@gmail.com>,
-        Abheek Dhawan <adawesomeguy222@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Waiman Long <longman@redhat.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wlan-ng: silence incorrect type in argument 1
- (different address spaces) warning
-Message-ID: <20210424081529.GA1731@ubuntu>
-References: <20210420090142.GA4086@ashish-NUC8i5BEH>
- <YIE3IffGcjrkz4ZE@kroah.com>
- <20210423152619.GA2469@ashish-NUC8i5BEH>
- <YIOz6o8gwHv+cAN7@kroah.com>
- <bc8873a274bf489ad856386a9d9ee1110de4c4d3.camel@perches.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=SNOBsMH6hsVrtOZBfES+XFjoqfZ4tZXMmDAM/d9yCW0=;
+        b=K/qqdUjoG4hPh22zIrClGbZNhgHfXZ1w7NstrpAUy81+q8o3Q/fIlJVzlf5fht/5+f
+         lSATa+k5gwJQ/6Gcqi0+X7ptwsTwokBmErt+TW13JfY1NHEnjTUgJF0YLb9O6IPpMlj7
+         z9Re9/Mhem5TbBJY9lx6oxpoz6cVeMUtppVTwBSIpbvVp7ZF2/yzyygzNNlWbQ+Jma34
+         Q4hvFaZdMbDUJowDCcwaB18+aEg8EOSFujQYhOPAqEsb67Z+SOMaBtj9EagF6ThE+FSr
+         mIevOieI4EVgJgyQBBIjeQihlhHSKhLsIoO+gNHvmp+bTau/v1qkrhJfWxztK1R6uqEV
+         fqgA==
+X-Gm-Message-State: AOAM533RPNU5RPSb7SWYcojgi/MoYeMyHGrprjPLnyoXjkklPPXLC29h
+        knEPPr2ATMSHT9rFN2Zr32s=
+X-Google-Smtp-Source: ABdhPJzFfPA+ORO7YmRlJnRiYqjZBrMqDO/4/ch4aPBZYgL41HJ1/RSkitblZIzpl6Z3koPsq18UFA==
+X-Received: by 2002:a17:90b:388a:: with SMTP id mu10mr9870600pjb.203.1619252219831;
+        Sat, 24 Apr 2021 01:16:59 -0700 (PDT)
+Received: from soma ([121.99.145.49])
+        by smtp.gmail.com with ESMTPSA id d4sm9157893pjz.49.2021.04.24.01.16.55
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 24 Apr 2021 01:16:59 -0700 (PDT)
+Received: by soma (sSMTP sendmail emulation); Sat, 24 Apr 2021 20:16:52 +1200
+Date:   Sat, 24 Apr 2021 20:16:52 +1200
+From:   Daniel Beer <dlbeer@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Daniel Beer <dlbeer@gmail.com>
+Subject: [PATCH] mmc: sdhci-pci-gli: increase 1.8V regulator wait
+Message-ID: <20210424081652.GA16047@nyquist.nev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bc8873a274bf489ad856386a9d9ee1110de4c4d3.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:11:05PM -0700, Joe Perches wrote:
-> On Sat, 2021-04-24 at 08:00 +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Apr 23, 2021 at 08:56:19PM +0530, Ashish Kalra wrote:
-> > > On Thu, Apr 22, 2021 at 10:43:13AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Tue, Apr 20, 2021 at 02:31:42PM +0530, Ashish Kalra wrote:
-> > > > > Upon running sparse, "warning: incorrect type in argument 1 (different address spaces)
-> > > > > is brought to notice for this file.let's add correct typecast to make it cleaner and
-> > > > > silence the Sparse warning.
-> []
-> > >  struct p80211ioctl_req {
-> > >         char name[WLAN_DEVNAMELEN_MAX];
-> > > -       caddr_t data;
-> > > +       void __user *data;
-> > > 
-> > > Does this looks ok to you and is there any other check possible if this is ok?
-> > 
-> > Wait, what is "caddr_t"?  Try unwinding that mess first...
-> 
-> Might not be that simple.
-> 
-> include/linux/types.h:typedef __kernel_caddr_t  caddr_t;
-> include/uapi/linux/coda.h:typedef void * caddr_t;
-> include/uapi/asm-generic/posix_types.h:typedef char *           __kernel_caddr_t;
-> 
-> 
-data is part of p80211ioctl_req and is used at two places only inside p80211knetdev_do_ioctl
-it seems both places it will be used as void __user* only
+Inserting an SD-card on an Intel NUC10i3FNK4 (which contains a GL9755)
+results in the message:
 
-	msgbuf = memdup_user(req->data, req->len);
-        
-	if (result == 0) {
-                if (copy_to_user
-                    ((void __user *)req->data, msgbuf, req->len)) {
-                        result = -EFAULT;
-                }
-        }
+    mmc0: 1.8V regulator output did not become stable
 
-Will it still be problem if we change it from char * to void *.?
-is there any way to check how caller of this function will be using it?
+Following this message, some cards work (sometimes), but most cards fail
+with EILSEQ. This behaviour is observed on Debian 10 running kernel
+4.19.188, but also with 5.8.18 and 5.11.15.
+
+The driver currently waits 5ms after switching on the 1.8V regulator for
+it to become stable. Increasing this to 10ms gets rid of the warning
+about stability, but most cards still fail. Increasing it to 20ms gets
+some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
+doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
+cards work reliably.
+
+Signed-off-by: Daniel Beer <dlbeer@gmail.com>
+---
+ drivers/mmc/host/sdhci-pci-gli.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 592d79082f58..061618aa247f 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -627,8 +627,13 @@ static void sdhci_gli_voltage_switch(struct sdhci_host *host)
+ 	 *
+ 	 * Wait 5ms after set 1.8V signal enable in Host Control 2 register
+ 	 * to ensure 1.8V signal enable bit is set by GL9750/GL9755.
++	 *
++	 * ...however, the controller in the NUC10i3FNK4 (a 9755) requires
++	 * slightly longer than 5ms before the control register reports that
++	 * 1.8V is ready, and far longer still before the card will actually
++	 * work reliably.
+ 	 */
+-	usleep_range(5000, 5500);
++	usleep_range(100000, 110000);
+ }
+ 
+ static void sdhci_gl9750_reset(struct sdhci_host *host, u8 mask)
+-- 
+2.20.1
 
