@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57B8369E67
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 03:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3691E369E6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 03:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236561AbhDXBkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 21:40:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:5413 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231386AbhDXBkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 21:40:40 -0400
-IronPort-SDR: ie9AAaIFAxKpebDrztceUrjk0xm1lkFbkvg7dxGsUlEPKwp77MtmFj1M3b84IoumbOgyqvTmpm
- 7mkJ9iFeRAfA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="183639387"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="183639387"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 18:40:02 -0700
-IronPort-SDR: tGELKd+UU/Bfi7HiQx14vadwxKYsBbbKJYGetBnQbCfyGTR/+cu7A3B0qRIsx4GmxsrTvHVr6x
- f/WbX4L3Y2Tg==
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="421950590"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 18:39:56 -0700
-Date:   Sat, 24 Apr 2021 09:43:43 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Doug Smythies <dsmythies@telus.net>, bas@basnieuwenhuizen.nl,
-        Bingsong Si <owen.si@ucloud.cn>,
-        youling257 <youling257@gmail.com>
-Cc:     erwanaliasr1@gmail.com, lenb@kernel.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [3/3,v3] tools/power turbostat: Enable accumulate RAPL display
-Message-ID: <20210424014343.GA432544@chenyu-desktop>
-References: <1f6d32e14f121a8ccf8807b8343597c3ae88c7d2.1587196252.git.yu.c.chen@intel.com>
- <20210308134957.23852-1-youling257@gmail.com>
- <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
- <20210308161548.GA37664@chenyu-desktop>
- <CAAYoRsVkrHberSgM42dqYjdVwz8vumURJ1_DGeV1R5-=LMdjVA@mail.gmail.com>
- <20210312134114.GA21436@chenyu-desktop>
+        id S236118AbhDXBxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 21:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232106AbhDXBxS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 21:53:18 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF1BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 18:52:40 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id ef17so19085954qvb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 18:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UcY6Lu3u2CeikGQuheX4lmNqK8mFEGOt+ZAL+7yU8Dc=;
+        b=Jauv+uflVnnVf1sTvIAuyx6lYbj+w3YEeYLPo30ZDB/TwQ6WEYsR8KqnHRlXLb4ub8
+         SDsx7nH6WGGhkVhCfo0mwxG/SS1BUu821BVZwt7bQvJyAq+BUyN7U37Rwyx8t/1djF5a
+         KANU7RYbWXYohZK0kWujMdPCE5/CkQ+JLc0D84W4IhL3UKcvxiCD5rVzfA0N/knyjZtM
+         9k9JJDltJ8qzQXvWT/zm/c1vEDMTmTw2AqSzpwJvOUWdYx0OhJD2INBO+Vpt+xk6qHof
+         UjLXc1WQXSGIqtFky0qu7VK0YYh7OvwP4/Y7qQZ3uNN67SaqiKmVn7rm0EM8xGhNMIF/
+         t6Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UcY6Lu3u2CeikGQuheX4lmNqK8mFEGOt+ZAL+7yU8Dc=;
+        b=Dez42tNSK875yHpL5OA3TOSSSNy+AqiLv4+0B/ljOfO7uAUqEa7YIglo+Pptuyuptx
+         bVAcT8f744w2MyOwO7akaytz1r7oO0k6Aw0K9PWMzRENVbP3HmLRdNW9Cq+aZ3itYaAw
+         xleWYd662IUGKBtfZlkQowpAzL8F0J5BEPG1LhEg0MnkEClaYDZEeLMk2FvBGJLtA+aZ
+         Dy+9yBIsowt3mw0hRL6Ikh87EXyrI/nbczK+uMhzLo66tHM+SMe7KNfV5S9pyOa4zudB
+         JM722DGdNZYAMJpInj38Zn9oJe0YrKq1GLNNlBn8IOWpo+lgb9S2VYtv9Od6SFuCyyIB
+         9NCg==
+X-Gm-Message-State: AOAM530PxUE0tToa8EkdFTX9/p42uarismkpVDApq9NtKPBAU9jWvttk
+        hGxoeN50gbyaU8XefTOd/qt6wA==
+X-Google-Smtp-Source: ABdhPJyiOw7t62EyD1lV8XxKfvCZk/P/OPh7hCDSf08Jt2OMZoHDkUXqS9tnOiWkNCEYbON1Z5kV/g==
+X-Received: by 2002:ad4:5543:: with SMTP id v3mr7495429qvy.32.1619229159334;
+        Fri, 23 Apr 2021 18:52:39 -0700 (PDT)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id r5sm5389259qtp.75.2021.04.23.18.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 18:52:38 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm: fix LLC not being enabled for mmu500 targets
+Date:   Fri, 23 Apr 2021 21:49:26 -0400
+Message-Id: <20210424014927.1661-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312134114.GA21436@chenyu-desktop>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bas Nieuwenhuizen,
-On Fri, Mar 12, 2021 at 09:41:14PM +0800, Chen Yu wrote:
-> Hi Youling, Bas, and Bingsong,
-> On Wed, Mar 10, 2021 at 04:03:31PM -0800, Doug Smythies wrote:
-> > Hi Yu,
-> > 
-> > I am just resending your e-mail, adjusting the "To:" list to
-> > include the 3 others that have submitted similar patches.
-> > 
-> > ... Doug
-> > 
-> Could you please help check if the following combined patch works?
-> 
-> Thanks,
-> Chenyu
-> 
-> 
-> From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00 2001
-> From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-> Date: Fri, 12 Mar 2021 21:27:40 +0800
-> Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
-> 
-> It was reported that on Zen+ system turbostat started exiting,
-> which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
-> offset_to_idx wasn't returning a non-negative index.
-> 
-> This patch combined the modification from Bingsong Si and
-> Bas Nieuwenhuizen and addd the MSR to the index system as alternative for
-> MSR_PKG_ENERGY_STATUS.
-> 
-> Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-> Reported-by: youling257 <youling257@gmail.com>
-> Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
->
-Can I add your SOB here if you are not object to it?
+mmu500 targets don't have a "cx_mem" region, set llc_mmio to NULL in that
+case to avoid the IS_ERR() condition in a6xx_llc_activate().
 
-thanks,
-Chenyu
+Fixes: 3d247123b5a1 ("drm/msm/a6xx: Add support for using system cache on MMU500 based targets")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 1716984c68a8..727d111a413f 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1153,10 +1153,6 @@ static void a6xx_llc_slices_init(struct platform_device *pdev,
+ {
+ 	struct device_node *phandle;
+ 
+-	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
+-	if (IS_ERR(a6xx_gpu->llc_mmio))
+-		return;
+-
+ 	/*
+ 	 * There is a different programming path for targets with an mmu500
+ 	 * attached, so detect if that is the case
+@@ -1166,6 +1162,11 @@ static void a6xx_llc_slices_init(struct platform_device *pdev,
+ 		of_device_is_compatible(phandle, "arm,mmu-500"));
+ 	of_node_put(phandle);
+ 
++	if (a6xx_gpu->have_mmu500)
++		a6xx_gpu->llc_mmio = NULL;
++	else
++		a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
++
+ 	a6xx_gpu->llc_slice = llcc_slice_getd(LLCC_GPU);
+ 	a6xx_gpu->htw_llc_slice = llcc_slice_getd(LLCC_GPUHTW);
+ 
+-- 
+2.26.1
+
