@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B8736A10E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A12636A113
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 14:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhDXMJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 08:09:54 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:18319 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbhDXMJu (ORCPT
+        id S233731AbhDXMO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 08:14:27 -0400
+Received: from smtpout1.mo3004.mail-out.ovh.net ([79.137.123.219]:39635 "EHLO
+        smtpout1.mo3004.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231836AbhDXMOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 08:09:50 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 13OC8YJ9030030;
-        Sat, 24 Apr 2021 21:08:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 13OC8YJ9030030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619266115;
-        bh=FvNZUb8kMF+HSWmisrOZr06I2tZH5n65AdHI4NzQWyg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eqCGikcDV59DIzd/CAaXc3nwU/2Ga9/WsGlQKw04hIh5XJjAuGZRlnvTckQQlWCoY
-         GASkxMoh48b6DEKUdPGF5sc+oKd0Hr+L9BpZ95ruIIHk4yhNldR7+ACJzXubYWiAKG
-         tr/RQ7yJ6AV1nYq3syqgUMvwA5YCLc7j0LOoaPKaIfFIUTx8tKrQM0oc2C5wzPGes0
-         oJMdVBLGuzNz9+POo8yjHkPlj93m8XGVQSE0eWfl0SizTW517a2y4zf9ELHqIGg5+N
-         netvo/OTIxHbrwCuv3ApTXSyMnU6HiiiWd+hiGKhfjikM427brvECt+/mMFG5ve1oo
-         MAiA6GGz5qzXw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] genksyms: fix stale comment
-Date:   Sat, 24 Apr 2021 21:08:29 +0900
-Message-Id: <20210424120829.398360-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Sat, 24 Apr 2021 08:14:20 -0400
+Received: from pro2.mail.ovh.net (unknown [10.109.143.176])
+        by mo3004.mail-out.ovh.net (Postfix) with ESMTPS id 99D6723D114;
+        Sat, 24 Apr 2021 12:13:39 +0000 (UTC)
+Received: from localhost (89.70.221.198) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sat, 24 Apr
+ 2021 14:13:39 +0200
+Date:   Sat, 24 Apr 2021 14:09:36 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lars@metafoo.de>, <ardeleanalex@gmail.com>
+Subject: Re: [PATCH v2] iio: core: fix ioctl handlers removal
+Message-ID: <YIQKgLtdUlSHsJXu@arch>
+References: <20210423080244.2790-1-tomasz.duszynski@octakon.com>
+ <20210424115250.14d21a71@jic23-huawei>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210424115250.14d21a71@jic23-huawei>
+X-Originating-IP: [89.70.221.198]
+X-ClientProxiedBy: CAS2.emp2.local (172.16.1.2) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 825003158838008914
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddugedgheduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeffhffvuffkfhggtggujghisehttdortddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnhepkeejgfevledtgfdtfeettdektedvieeiveduueetudekieetiedujedtleevleelnecukfhppedtrddtrddtrddtpdekledrjedtrddvvddurdduleeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtoheprghruggvlhgvrghnrghlvgigsehgmhgrihhlrdgtohhm
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(shipped source) is a stale comment.
+On Sat, Apr 24, 2021 at 11:52:50AM +0100, Jonathan Cameron wrote:
+> On Fri, 23 Apr 2021 10:02:44 +0200
+> Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
+>
+> > Currently ioctl handlers are removed twice. For the first time during
+> > iio_device_unregister() then later on inside
+> > iio_device_unregister_eventset() and iio_buffers_free_sysfs_and_mask().
+> > Double free leads to kernel panic.
+> >
+> > Fix this by not touching ioctl handlers list directly but rather
+> > letting code responsible for registration call the matching cleanup
+> > routine itself.
+> >
+> > Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the main chardev")
+> > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+> > Acked-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+>
+> There are a bunch of unused local variables as a result of this change
+> (build warnings on my standard W=1 C=1 test).  I've dropped those as well and
+> applied this to the fixes-togreg branch of iio.git.
+>
 
-Since commit 833e62245943 ("genksyms: generate lexer and parser during
-build instead of shipping"), no genksyms source file is shipped.
+Right, thanks for catching this.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/genksyms/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/genksyms/Makefile b/scripts/genksyms/Makefile
-index ce4f99935de5..d6a422a63b6a 100644
---- a/scripts/genksyms/Makefile
-+++ b/scripts/genksyms/Makefile
-@@ -22,7 +22,7 @@ $(obj)/pars%.tab.c $(obj)/pars%.tab.h: $(src)/pars%.y FORCE
- 
- endif
- 
--# -I needed for generated C source (shipped source)
-+# -I needed for generated C source to include headers in source tree
- HOSTCFLAGS_parse.tab.o := -I $(srctree)/$(src)
- HOSTCFLAGS_lex.lex.o := -I $(srctree)/$(src)
- 
--- 
-2.27.0
-
+> We are a bit unfortunate on timing for this as I won't send a pull request
+> for fixes until towards the end of the merge window.  I've marked it for stable
+> though so it should filter back fairly quickly so kernels people actually
+> use.
+>
+> Thanks,
+>
+> Jonathan
+>
+> > ---
+> > v2:
+> > * add fixes tag and ack
+> >
+> >  drivers/iio/industrialio-core.c | 3 ---
+> >  1 file changed, 3 deletions(-)
+> >
+> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> > index d92c58a94fe4..98944cfc7331 100644
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@ -1939,9 +1939,6 @@ void iio_device_unregister(struct iio_dev *indio_dev)
+> >
+> >  	indio_dev->info = NULL;
+> >
+> > -	list_for_each_entry_safe(h, t, &iio_dev_opaque->ioctl_handlers, entry)
+> > -		list_del(&h->entry);
+> > -
+> >  	iio_device_wakeup_eventset(indio_dev);
+> >  	iio_buffer_wakeup_poll(indio_dev);
+> >
+> > --
+> > 2.31.1
+> >
+>
