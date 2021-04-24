@@ -2,148 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F8336A031
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B8736A038
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbhDXIek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 04:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbhDXIef (ORCPT
+        id S235399AbhDXIiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 04:38:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61641 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231919AbhDXIiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 04:34:35 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C85FC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 01:33:56 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id r128so53943249lff.4
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 01:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TJfy11hql+Mvf+Sxno1+shJA5Rufh7+jR8uX3mI97/4=;
-        b=1krv2nOeHbfRz9cmDSpTGq3AeuIMyykWEbx+JMnkkCTw79PbPm6RQAt1D69XglPdbP
-         SkFwQTH0yODyDA8/aA58XRY97Ax71CcoglGCdpL37lHw9GpwEB+Acnv7xpSopKAdHW95
-         lQS41BLenPQg/gf/0EeaAaOD/podn7rmyMshm3Hn4W7hcWwYZ+YBdspZXl9vNMYH6d9E
-         Tp8uZLrI1cHSaEibOqyK7woXqHolKE0JW0MPIBjMMOWoMI5RxJ0Tn5AzqQ6vxZ/NLHhB
-         RTHdPH7n4gvGJ6I6tbVqBtz9HyyokTAPxwYn8J+GRqMlNz9yIzPqWUaxSW79VaB+LaLW
-         +h9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TJfy11hql+Mvf+Sxno1+shJA5Rufh7+jR8uX3mI97/4=;
-        b=F/zpFV+LItFYd+MlR1XSOAN+ba/bxGRJkvKHxryfrCVkABrxta5E2w0TEaoI4fRzLV
-         Xk9X6lMKflsZojXQd8EceKXBI7cPvKepATzueR9b84/az/yDGVOwRn2XjscP/ndsFvCK
-         CuWjPFYqKBd0B208jmyZQQDviq6hsKuT5QeNv4abuhx2HuzxFvjE3czhS2HjnqzRD94F
-         UCkpOEncW7oNMhmwWhyuV1Mqrn+BLKFRFJ3O7jQBEpOd7QIfhcxy6aZiQ8Z0yTDon7DN
-         iLMOy3/TLTcddaNY0jfGQZqQx0CKlBqwT6l3K6Jvi6ERe344cGbQzNp1s4ZPYm0fKAJk
-         Lmjg==
-X-Gm-Message-State: AOAM53047BoJx+ptwPUQsxVPoRSWD6Lj/ptBsfuv1FnGyI+U+1G4B0y/
-        AiNKAogF63fV73B8FgtVMDY0PRijuPnavA==
-X-Google-Smtp-Source: ABdhPJxUeKXzefX+ne/CqSvopZnnLBGUZ+Or00N5w0Yo4nm9V0r6YUyf8A6fIIhr0HthAAQAgVZiZw==
-X-Received: by 2002:a05:6512:21a5:: with SMTP id c5mr5531362lft.534.1619253234679;
-        Sat, 24 Apr 2021 01:33:54 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id z28sm774464lfq.72.2021.04.24.01.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 01:33:54 -0700 (PDT)
-Date:   Sat, 24 Apr 2021 10:33:53 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 69/78] media: rcar-vin: use pm_runtime_resume_and_get()
-Message-ID: <YIPX8V2zsc59C7vn@oden.dyn.berto.se>
-References: <cover.1619191723.git.mchehab+huawei@kernel.org>
- <dc7f4bc45cd6be79d19d1a4027fb6f35dfb45a03.1619191723.git.mchehab+huawei@kernel.org>
+        Sat, 24 Apr 2021 04:38:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619253452; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=tOdeQlxOG0ea0KSqy8XicLj+TJYpvhk7DXB3N0ZtQmU=; b=thtpfgJx9ND3ga3Mb8gJmsv7i7GX1AeFWcpMmkXaqbw+YV9EEaBpmpzFfSxEvOIO/lE7pKco
+ QrrJI133UATqjedwf1rSJxJdVdYzJItYDYlBa/JZ7NnGR5DSnNaZOxozAoguebqJ3m7rwy29
+ 7qAMGF1eG6U5jsGCVrkjRmK6wWY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6083d8cc2cbba88980c56a64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 24 Apr 2021 08:37:32
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7E05DC43460; Sat, 24 Apr 2021 08:37:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.54.5] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EA9DC433F1;
+        Sat, 24 Apr 2021 08:37:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1EA9DC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v2] usb: gadget: Fix double free of device descriptor
+ pointers
+To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org,
+        peter.chen@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>, stable@vger.kernel.org
+References: <1619034452-17334-1-git-send-email-wcheng@codeaurora.org>
+ <87lf9amvl5.fsf@kernel.org>
+ <c5599433-3eb0-3918-d93b-6860f7951e92@codeaurora.org>
+ <69253e54-771b-3b1c-1765-77bfb6288715@codeaurora.org>
+ <87sg3gksyy.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <029267dd-69fb-1f07-b6ff-3384d56c9f89@codeaurora.org>
+Date:   Sat, 24 Apr 2021 01:37:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dc7f4bc45cd6be79d19d1a4027fb6f35dfb45a03.1619191723.git.mchehab+huawei@kernel.org>
+In-Reply-To: <87sg3gksyy.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
 
-Thanks for your work.
 
-On 2021-04-24 08:45:19 +0200, Mauro Carvalho Chehab wrote:
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
+On 4/24/2021 1:05 AM, Felipe Balbi wrote:
 > 
-> Use the new API, in order to cleanup the error check logic.
+> Hi,
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+>>>>> From: Hemant Kumar <hemantk@codeaurora.org>
+>>>>>
+>>>>> Upon driver unbind usb_free_all_descriptors() function frees all
+>>>>> speed descriptor pointers without setting them to NULL. In case
+>>>>> gadget speed changes (i.e from super speed plus to super speed)
+>>>>> after driver unbind only upto super speed descriptor pointers get
+>>>>> populated. Super speed plus desc still holds the stale (already
+>>>>> freed) pointer. Fix this issue by setting all descriptor pointers
+>>>>> to NULL after freeing them in usb_free_all_descriptors().
+>>>>
+>>>> could you describe this a little better? How can one trigger this case?
+>>>> Is the speed demotion happening after unbinding? It's not clear how to
+>>>> cause this bug.
+>>>>
+>>> Hi Felipe,
+>>>
+>>> Internally, we have a mechanism to switch the DWC3 core maximum speed
+>>> parameter dynamically for displayport use cases.  This issue happens
+>>> whenever we have a maximum speed change occur on the USB gadget, which
+>>> for DWC3 happens whenever we call gadget init.  When we switch in and
+>>> out of host mode, gadget init is being executed, leading to the change
+>>> in the USB gadget max speed parameter:
+>>>
+>>> dwc->gadget->max_speed		= dwc->maximum_speed;
+>>>
+>>> I know that configFS gadget has the max_speed sysfs file, which is a
+>>> similar mechanism, but I haven't tried to see if we can reproduce the
+>>> same issue with it.  Let me see if we can reproduce this with that
+>>> configfs speed setting.
+>>>
+>>> Thanks
+>>> Wesley Cheng
+>>>
+>>
+>> Hi Felipe,
+>>
+>> So I tried with doing it through the configFS max_speed, but it doesn't
+>> have the same effect, as the setting done in dwc3_gadget_init() will
+>> still be assigning the composite/UDC device's maximum speed to SSP/SS.
+>> This is what the usb_assign_descriptor() uses to determine whether or
+>> not to copy the SSP and SS descriptors.
+>>
+>> So in summary, at least for a DWC3 based subsystem, the only way to
+>> reproduce it is if there is a way to dynamically switch the DWC3 core
+>> max speed parameter.
+> 
+> Could it be that you have a bug in your out-of-tree changes? Perhaps
+> there's some assumption which your changes aren't guaranteeing.
+> 
+Hi Felipe,
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Unless there is a limitation on how the USB gadget max speed can be
+used, i.e. the USB gadget max speed MUST stay the same throughout a
+device's boot period, then our out of tree changes may have the wrong
+assumptions.  However, I don't see that stated anywhere, and I still
+feel the current usb_assign_descriptors() and usb_free_all_descriptors()
+aren't aligned with one another.  One API decides which descriptors to
+copy based on a parameter, whereas the other just frees all of them
+irrespective.
 
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 2 +-
->  drivers/media/platform/rcar-vin/rcar-dma.c  | 6 ++----
->  drivers/media/platform/rcar-vin/rcar-v4l2.c | 6 ++----
->  3 files changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index e06cd512aba2..85574765a11a 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -408,7 +408,7 @@ static void rcsi2_enter_standby(struct rcar_csi2 *priv)
->  
->  static void rcsi2_exit_standby(struct rcar_csi2 *priv)
->  {
-> -	pm_runtime_get_sync(priv->dev);
-> +	pm_runtime_resume_and_get(priv->dev);
->  	reset_control_deassert(priv->rstc);
->  }
->  
-> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-> index f30dafbdf61c..f5f722ab1d4e 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
-> @@ -1458,11 +1458,9 @@ int rvin_set_channel_routing(struct rvin_dev *vin, u8 chsel)
->  	u32 vnmc;
->  	int ret;
->  
-> -	ret = pm_runtime_get_sync(vin->dev);
-> -	if (ret < 0) {
-> -		pm_runtime_put_noidle(vin->dev);
-> +	ret = pm_runtime_resume_and_get(vin->dev);
-> +	if (ret < 0)
->  		return ret;
-> -	}
->  
->  	/* Make register writes take effect immediately. */
->  	vnmc = rvin_read(vin, VNMC_REG);
-> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> index 457a65bf6b66..b1e9f86caa5c 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> @@ -870,11 +870,9 @@ static int rvin_open(struct file *file)
->  	struct rvin_dev *vin = video_drvdata(file);
->  	int ret;
->  
-> -	ret = pm_runtime_get_sync(vin->dev);
-> -	if (ret < 0) {
-> -		pm_runtime_put_noidle(vin->dev);
-> +	ret = pm_runtime_resume_and_get(vin->dev);
-> +	if (ret < 0)
->  		return ret;
-> -	}
->  
->  	ret = mutex_lock_interruptible(&vin->lock);
->  	if (ret)
-> -- 
-> 2.30.2
-> 
+Thanks
+Wesley Cheng
+
 
 -- 
-Regards,
-Niklas Söderlund
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
