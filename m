@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3214436A1E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 18:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D20036A1E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 18:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhDXQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 12:02:23 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:42523 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236613AbhDXQCR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 12:02:17 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 13OG09Gi030091;
-        Sun, 25 Apr 2021 01:00:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 13OG09Gi030091
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619280010;
-        bh=ous90V3OsRa1CNPNiQRPMCNr53qr6PnxFFBb49TjtDY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Hzy8HpG8gAW0rq0UNe1mj2Xl1WWrEx1CptgBBTUdIpvIM/4o61pPUPcfTTQKo4zpc
-         wOjAKUWaez/s2O9xQnwUg2BhcKtsTTf3VHNb1fkNhNAQ8zZgxFdRxx4LZkOx/affHa
-         hJhJsYdOg2re4FTEbssO7WrFnbnvpLlmAzQr2zAi6Y72zqKVq2d5My/Xeq38syn/ZT
-         MwVSL9V3A9P2lFaB1TJy9NjM9TyZu6y2mxhheUeJWJ9Gv/u7FN25ZMtDJ3Fum9OelG
-         JIRCK+SW0wOWT/5TH9P1CR7WNTqJbBljqKkgLMSL6pdKU84lGyNcd4jW0W8kWaldPV
-         FGDBAN5ghXs9A==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org, patches@arm.linux.org.uk
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: boot: remove redundant piggy_data from clean-files
-Date:   Sun, 25 Apr 2021 01:00:07 +0900
-Message-Id: <20210424160007.819275-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S236493AbhDXQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 12:01:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39386 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhDXQBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 12:01:49 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1laKiP-000ppG-UI; Sat, 24 Apr 2021 18:01:05 +0200
+Date:   Sat, 24 Apr 2021 18:01:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v6 08/10] net: dsa: microchip: Add Microchip
+ KSZ8863 SMI based driver support
+Message-ID: <YIRAwY+5yLJf1+CH@lunn.ch>
+References: <20210423080218.26526-1-o.rempel@pengutronix.de>
+ <20210423080218.26526-9-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423080218.26526-9-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kbuild cleans up files listed in 'targets'.
+> +static int ksz8863_mdio_read(void *ctx, const void *reg_buf, size_t reg_len,
+> +			     void *val_buf, size_t val_len)
+> +{
+> +	struct ksz_device *dev = ctx;
+> +	struct ksz8 *ksz8 = dev->priv;
+> +	struct mdio_device *mdev = ksz8->priv;
+> +	u8 reg = *(u8 *)reg_buf;
+> +	u8 *val = val_buf;
+> +	int ret = 0;
+> +	int i;
 
-'piggy_data' is already added to 'targets' a few lines above.
+...
 
-Adding it to 'clean-files' is redundant.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> +
+> +	mutex_lock_nested(&mdev->bus->mdio_lock, MDIO_MUTEX_NESTED);
+> +	for (i = 0; i < val_len; i++) {
+> +		int tmp = reg + i;
+> +
+> +		ret = __mdiobus_read(mdev->bus, ((tmp & 0xE0) >> 5) |
+> +				     SMI_KSZ88XX_READ_PHY, tmp);
+> +		if (ret < 0)
+> +			goto out;
+> +
+> +		val[i] = ret;
+> +	}
+> +	ret = 0;
+> +
+> + out:
+> +	mutex_unlock(&mdev->bus->mdio_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ksz8863_mdio_write(void *ctx, const void *data, size_t count)
+> +{
+> +	struct ksz_device *dev = ctx;
+> +	struct ksz8 *ksz8 = dev->priv;
+> +	struct mdio_device *mdev = ksz8->priv;
+> +	u8 *val = (u8 *)(data + 4);
+> +	u32 reg = *(u32 *)data;
+> +	int ret = 0;
+> +	int i;
 
-KernelVersion: v5.12-rc1
+...
 
- arch/arm/boot/compressed/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 182b300e3f8a..e046e78e7945 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -100,7 +100,7 @@ targets       := vmlinux vmlinux.lds piggy_data piggy.o \
- 		 lib1funcs.o ashldi3.o bswapsdi2.o \
- 		 head.o $(OBJS)
- 
--clean-files += piggy_data lib1funcs.S ashldi3.S bswapsdi2.S hyp-stub.S
-+clean-files += lib1funcs.S ashldi3.S bswapsdi2.S hyp-stub.S
- 
- KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
- 
--- 
-2.27.0
+> +static const struct of_device_id ksz8863_dt_ids[] = {
+> +	{ .compatible = "microchip,ksz8863" },
+> +	{ .compatible = "microchip,ksz8873" },
+> +	{ },
+> +};
 
+Is there code somewhere which verifies that what has been found really
+does match what is in device tree? We don't want errors in the device
+tree to be ignored.
+
+     Andrew
