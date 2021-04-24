@@ -2,169 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECEB36A273
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 19:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B09936A276
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 19:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhDXRyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 13:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231307AbhDXRyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 13:54:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D27A961153;
-        Sat, 24 Apr 2021 17:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619286802;
-        bh=A4f6aSQX+lPhqDHwiAaP6gUtLzrlfKGT74tWbYhZBzE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fR/Utr1/D8q89177kwpH0b33BbGDFGWZQUwc4nGL7AdGCKQA3/UxrDVH+5mBc8lpY
-         9HDH6O+uI/sfgjrQIoy91yuhYaZMfuqIbSDqOVI7ktH9SPlcsIwcJ9bDSiaTMX3v7W
-         ZmEwX9aJpyB0TzHR5l5DZrwDlgtzgkYOcmt5KI24v6VSRrCTbBnObNZLBHTkJAbaEp
-         oA8HKa6gH7jm/gxsDpWU1RqUCdceI2uiPlaiQG1czZT4gTG1cvfUHtFKLU2y9driXC
-         w7xz4shUXQJyehIITuQKtg7OuRMPaWNqtvfww0FET+khxcSZFkKbGR26bDAqIg0mK6
-         JiFfrJfdlR6Sw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A5C4D5C0267; Sat, 24 Apr 2021 10:53:22 -0700 (PDT)
-Date:   Sat, 24 Apr 2021 10:53:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210424175322.GS975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
- <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
- <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
- <20210423061115.GA62813@shbuild999.sh.intel.com>
- <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210424122920.GB85095@shbuild999.sh.intel.com>
+        id S233605AbhDXR5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 13:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231307AbhDXR5T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 13:57:19 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B885FC061574;
+        Sat, 24 Apr 2021 10:56:39 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id a26-20020a05600c225ab029013f5867af96so699467wmm.0;
+        Sat, 24 Apr 2021 10:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+3dJUoLYyYMa/vI7AHmb/SZXL5HX54JGSkbPUpPeWD0=;
+        b=I7TgfXrERMrF6Fg9DoDM8q+Lt7w163xeraBoXQ/1BM9RzL4K0G+rDROWM2V/6qnvoy
+         3sIX4n4Qi9bf/mxEDs21jY84L8sqKVUuX0LQEIrzUXQvO1FZTuzC+C3Y6ClblxviaKCg
+         7eWglwb9jr7+x9ZgdvSNAkR6cnsyMdEBZrpgsYc0Mw305P9W3cV8xhRMZoZJqGFuLFrD
+         ls1AwHYPWZIlxFZhnFv021paz1pa4MXi8i3eLBbEofdU0QmFy2kOCmAK4KNvsn5RHXoJ
+         5Dw/+O/OM7OJpWUXNhrfGIQQs9rdGoVLHVAtfYNL7Pu2eZDbYkdXzWlkTa1sAfNNkTwu
+         WcXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+3dJUoLYyYMa/vI7AHmb/SZXL5HX54JGSkbPUpPeWD0=;
+        b=DMKceKyBp0j78qITgJVWP1DVNbPjBdmikB6mxCxd/aNdBudmTq5e47mp+gpzaqdy1C
+         ZuYqdX08r8QdH1OUQMRpdrhuPMqU4N1GHaBXAso+Lv5IQafXG1KbYx1Rjz2Mn6vUR5Tb
+         KeZeSxGabhRj0bVM6jzwHgcPyBThNIMC1RU0WYetVojW7oMMVIm7cZ7pMqDyKRRTJRNI
+         yv1MCLt5DRlBUflAX2XlVvEoj+Zx+2SijUanfqqSxfVuriZj+mEmwGsjxNzHlg5v8i3K
+         1tOeotcXyzD5OB1GdwNFEiD9cl/HAu/GfjxgCFT5exQKHN5YJ4eEJC6j6jA99tnWwss3
+         QBBQ==
+X-Gm-Message-State: AOAM530fBV/ZAYRMvhMnRR8aKezM1Jh4HuBhUP76nDycHXR4KnoxL6Lm
+        EFXJaPrAYmV67AtYVAep2vs=
+X-Google-Smtp-Source: ABdhPJyLjRZ6IPyTgXPVKlvPeziTETG15nsqCl3g7zO7HhQkPygxFVlUvq4iKkWvgcpkbthEvvaxEw==
+X-Received: by 2002:a1c:6382:: with SMTP id x124mr11669823wmb.142.1619286998442;
+        Sat, 24 Apr 2021 10:56:38 -0700 (PDT)
+Received: from [192.168.0.169] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id t14sm13485428wrz.55.2021.04.24.10.56.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Apr 2021 10:56:38 -0700 (PDT)
+Subject: Re: [RFC] bpf.2: Use standard types and attributes
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, libc-alpha@sourceware.org,
+        gcc-patches@gcc.gnu.org
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <56932c68-4992-c5e4-819f-a88f60b3f63a@gmail.com>
+Date:   Sat, 24 Apr 2021 19:56:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210424122920.GB85095@shbuild999.sh.intel.com>
+In-Reply-To: <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 08:29:20PM +0800, Feng Tang wrote:
-> Hi Paul,
-> 
-> On Fri, Apr 23, 2021 at 07:02:54AM -0700, Paul E. McKenney wrote:
-> [...]
-> > > > > > Following is the tsc freq info from kernel log
-> > > > > > 
-> > > > > > [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-> > > > > > [    0.000000] tsc: Detected 2100.000 MHz processor
-> > > > > > ...
-> > > > > > [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
-> > > > > 
-> > > > > So what are our options?
-> > > > > 
-> > > > > 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
-> > > > > 
-> > > 
-> > > I think option 1 is fine, as tsc will still get checked once 'tsc'
-> > > clocksource is registered, but Thomas and Peter should know more
-> > > background and corner cases of tsc.
-> > 
-> > I will look at adding such a patch to my series, preceding the change
-> > to 1/1000 deviation.
-> > 
-> > > Also we have been working on another patchset to skip watchdog check
-> > > for x86 platforms with stable tsc:
-> > > 
-> > > https://lore.kernel.org/lkml/1618291897-71581-1-git-send-email-feng.tang@intel.com/
-> > > https://lore.kernel.org/lkml/1618291897-71581-2-git-send-email-feng.tang@intel.com/
-> > 
-> > It will be interesting to see what fraction of those with large numbers
-> > of systems choose to revert your 2/2, and for what period of time.
-> > You really needed my clocksource patch series to have been in place some
-> > years back so that people wouldn't have been seeing the false-postive
-> > clock-skew complaints.  Those complaints did not help people build up
-> > their trust in the TSC.  :-/
-> 
-> I read you patchset, and I think the recheck to avoid false alarm makes
-> sense to me, as well as the debug method you adds, and they have no
-> conflict with my patches which tends to newer x86 platforms only.
+Hello Alexei,
 
-Would you be willing to give your Tested-by, Acked-by, or Reviewed-by
-to those patches?
+On 4/24/21 1:20 AM, Alexei Starovoitov wrote:
+> Nack.
+> The man page should describe the kernel api the way it is in .h file.
 
-Obviously, you would not be willing to do so for the patch that reduces
-the skew threshold, at least not until my most recent patch is beaten
-into shape.
+Why?
 
-> And yes, I only have met and debugged tsc wrongly marked unstable cases
-> on several clients platforms, and in one case I disabled the HPET for
-> Baytrail 10 years ago. Our test farm has different kinds of servers,
-> only up to 4 sockets and 192 CPUs, where no tsc unstable issue has been
-> seen.
+When glibc uses __size_t (or any other non-standard types) just because 
+the standard doesn't allow it to define some types in some specific 
+header, the manual pages document the equivalent standard type, (i.e., 
+if glibc uses __size_t, we document size_t).
 
-That is encouraging, but how many systems are in your test farm?
+The compiler, AFAIK (gcc is CCd, so they can jump in if I'm wrong), 
+using uint32_t in every situation where __u32 is expected.  They're both 
+typedefs for the same basic type.
 
-> And I'm eager to know if there is any real case of an unreliable tsc
-> on the 'large numbers' of x86 system which complies with our cpu feature
-> check. And if there is, my 2/2 definitely should be dropped.   
+I can understand why Linux will keep using u32 types (and their __ user 
+space variants), but that doesn't mean user space programs need to use 
+the same type.
 
-If you have enough systems, you see all sorts of strange things just
-due to the normal underlying failure rate of hardware.
+If we have a standard syntax for fixed-width integral types (and for 
+anything, actually), the manual pages should probably follow it, 
+whenever possible.  Any deviation from the standard (be it C or POSIX) 
+should have a very good reason to be;  otherwise, it only creates confusion.
 
-So my question is instead whether we will see any TSC failures
-unaccompanied by any other signs of trouble.
+Thanks,
 
-And if your 2/2 goes in, those who still distrust TSC will simply
-revert it.  In their defense, their distrust was built up over a very
-long period of time for very good reasons.
+Alex
 
-> > This last sentence is not a theoretical statement.  In the past, I have
-> > suggested using the existing "tsc=reliable" kernel boot parameter,
-> > which disables watchdogs on TSC, similar to your patch 2/2 above.
-> > The discussion was short and that boot parameter was not set.  And the
-> > discussion motivated to my current clocksource series.  ;-)
-> > 
-> > I therefore suspect that someone will want a "tsc=unreliable" boot
-> > parameter (or similar) to go with your patch 2/2.
->  
-> Possibly :)
-> 
-> But I wonder if tsc is disabled on that 'large system', what will be
-> used instead? HPET is known to be much slower for clocksource, as shown
-> in this regression report :) not mentioning the 'acpi_pm' timer. 
-
-Indeed, the default switch to HPET often causes the system to be taken
-out of service due to the resulting performance shortfall.  There is
-of course some automated recovery, and no, I am not familiar with the
-details, but I suspect that a simple reboot is an early recovery step.
-However, if the problem were to persist, the system would of course be
-considered to be permanently broken.
-
-> Again, I want to know the real tsc unstable case. I have spent lots
-> of time searching these info from git logs and mail archives before
-> writing the patches.
-
-So do I, which is why I put together this patch series.  My employer has
-a fairly strict upstream-first for things like this which are annoyances
-that are likely hiding other bugs, but which are not causing significant
-outages, which was of course the motivation for the fault-injection
-patches.
-
-As I said earlier, it would have been very helpful to you for a patch
-series like this to have been applied many years ago.  If it had been,
-we would already have the failure-rate data that you requested.  And of
-course if that failure-rate data indicated that TSC was reliable, there
-would be far fewer people still distrusting TSC.
-
-							Thanx, Paul
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+Senior SW Engineer; http://www.alejandro-colomar.es/
