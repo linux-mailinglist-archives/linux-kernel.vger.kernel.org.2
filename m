@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ADB36A035
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382B436A024
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbhDXIh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 04:37:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233650AbhDXIhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 04:37:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CF3161422;
-        Sat, 24 Apr 2021 08:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619251548;
-        bh=MoNCCUDokCP4DrrurD5djErNGwjYf26nE/vGHTxqckU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rakhRDD8XUxtxXgyEmPUGuoHiRaU0tf7No16u4r/+Dqka0g0CSgobQYoWVdDme5yF
-         avVNa6k0yUlPjB3U0F9o5mEEp/Iz/GJbKMjWqkHT4+/4A3QEUl24DJJVlPOmHBfQyy
-         krmTkf3d2gNnmvzVgJTiCDDEJz0SVvjohJO6ImQzhJNJYe/oM4PaLccl91VUgfKnTB
-         VmhBppiWqxJaHXBwgk8SuiA+FAkpXH2eXQsbjxo+RAv3wQntveY0orOcTwoHVtQ+C4
-         CVWL4hW53GYGAx+hyOuR3BPBN2364mxtQbvTDqHIjiQfTacG+1y6BSId9H67lnTTq7
-         MHKyJ2cjT9OMA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
-        peter.chen@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hemant Kumar <hemantk@codeaurora.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] usb: gadget: Fix double free of device descriptor
- pointers
-In-Reply-To: <69253e54-771b-3b1c-1765-77bfb6288715@codeaurora.org>
-References: <1619034452-17334-1-git-send-email-wcheng@codeaurora.org>
- <87lf9amvl5.fsf@kernel.org>
- <c5599433-3eb0-3918-d93b-6860f7951e92@codeaurora.org>
- <69253e54-771b-3b1c-1765-77bfb6288715@codeaurora.org>
-Date:   Sat, 24 Apr 2021 11:05:41 +0300
-Message-ID: <87sg3gksyy.fsf@kernel.org>
+        id S233997AbhDXI0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 04:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233206AbhDXIZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 04:25:28 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD042C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 01:15:35 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v13so12766133ple.9
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 01:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6/Lgj2H0ed/XrbAD6J3l5Bl7Ju8l+PqTifcTlzDYqAw=;
+        b=pC+E2E7fwVBRG4i8kwWyhwApWasHomUai+dhJFxCiW2CspTjBmsRgsI3V2JX//Gjp8
+         Tcz/BjeBZPP7+qELv9hWrOfQzjeDCcv3JU2AvCZVM/hwn/8ENVv20YE4WcLFjo/a/ONR
+         Bi7bnZWItgKCgswvLZFCS+tOgxdZvmsEnQUvXefJ7e2Wlzwrfk83l041y9pV6P49Qr5j
+         8yTeig3RXUotyTH3e5gJ9gYKUwHB4+33mK0I7zWqwgpgt+sK2Am3ZdtASPTqo98oLX4P
+         rT12veJk9NgZeZi7/BtyYJKTBnihSmsv2yFKPPeZg3U0AkwKK/zuT2haGEXREMmzUN4p
+         plDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6/Lgj2H0ed/XrbAD6J3l5Bl7Ju8l+PqTifcTlzDYqAw=;
+        b=kDulJR/+J/OE2YBYOdhCKlVCghHJz/2dA4PXm5ar0VU4UIXjN6NUIpkstWhT7Y10GY
+         abglHpW5KX0/I8YXg9VjJZLtGf41yAgGlN/rxATncfjG4e5EZFIdCRwU8cK2RS90wXpG
+         PdCICibj3oHoAUYDy1qqHyH8/ds3a54gSmTqaYipY4CaA0yxEDkryq668Z80H0mILt78
+         jTvK1nP1CdtdAvcUGiF2NavkB08SEF0dKWoaYli564Hg2ToHWgrnCjX+LqILmtEVzChF
+         pcziX+LSjdCGjgD45nEr4NWfrJ6zIH2wQGkOe0L8j0a3t5gLgNGekqVUU3lve6xt8Vxl
+         aJ2g==
+X-Gm-Message-State: AOAM533N5AGl61m3PwjYhDVe0YlvEPF3wcNEn3T3OMoYwTw1Y0rW4SWc
+        FhAqCAVT4je6zNe+L+KLTuI=
+X-Google-Smtp-Source: ABdhPJybGksZKUlk+stxmZH1m3GigZn8eCjxU4jOZ28zBZJn3L3kM3UjrkTUcN97YagNjlgvPqmjGw==
+X-Received: by 2002:a17:90b:198c:: with SMTP id mv12mr8930796pjb.51.1619252135213;
+        Sat, 24 Apr 2021 01:15:35 -0700 (PDT)
+Received: from ubuntu ([182.77.14.23])
+        by smtp.gmail.com with ESMTPSA id ne22sm9631736pjb.5.2021.04.24.01.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Apr 2021 01:15:34 -0700 (PDT)
+From:   Ashish Kalra <eashishkalra@gmail.com>
+X-Google-Original-From: Ashish Kalra <ashish@ubuntu>
+Date:   Sat, 24 Apr 2021 13:45:29 +0530
+To:     Joe Perches <joe@perches.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ashish Kalra <eashishkalra@gmail.com>,
+        Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wlan-ng: silence incorrect type in argument 1
+ (different address spaces) warning
+Message-ID: <20210424081529.GA1731@ubuntu>
+References: <20210420090142.GA4086@ashish-NUC8i5BEH>
+ <YIE3IffGcjrkz4ZE@kroah.com>
+ <20210423152619.GA2469@ashish-NUC8i5BEH>
+ <YIOz6o8gwHv+cAN7@kroah.com>
+ <bc8873a274bf489ad856386a9d9ee1110de4c4d3.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bc8873a274bf489ad856386a9d9ee1110de4c4d3.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Fri, Apr 23, 2021 at 11:11:05PM -0700, Joe Perches wrote:
+> On Sat, 2021-04-24 at 08:00 +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Apr 23, 2021 at 08:56:19PM +0530, Ashish Kalra wrote:
+> > > On Thu, Apr 22, 2021 at 10:43:13AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Tue, Apr 20, 2021 at 02:31:42PM +0530, Ashish Kalra wrote:
+> > > > > Upon running sparse, "warning: incorrect type in argument 1 (different address spaces)
+> > > > > is brought to notice for this file.let's add correct typecast to make it cleaner and
+> > > > > silence the Sparse warning.
+> []
+> > >  struct p80211ioctl_req {
+> > >         char name[WLAN_DEVNAMELEN_MAX];
+> > > -       caddr_t data;
+> > > +       void __user *data;
+> > > 
+> > > Does this looks ok to you and is there any other check possible if this is ok?
+> > 
+> > Wait, what is "caddr_t"?  Try unwinding that mess first...
+> 
+> Might not be that simple.
+> 
+> include/linux/types.h:typedef __kernel_caddr_t  caddr_t;
+> include/uapi/linux/coda.h:typedef void * caddr_t;
+> include/uapi/asm-generic/posix_types.h:typedef char *           __kernel_caddr_t;
+> 
+> 
+data is part of p80211ioctl_req and is used at two places only inside p80211knetdev_do_ioctl
+it seems both places it will be used as void __user* only
 
+	msgbuf = memdup_user(req->data, req->len);
+        
+	if (result == 0) {
+                if (copy_to_user
+                    ((void __user *)req->data, msgbuf, req->len)) {
+                        result = -EFAULT;
+                }
+        }
 
-Hi,
+Will it still be problem if we change it from char * to void *.?
+is there any way to check how caller of this function will be using it?
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
->>>> From: Hemant Kumar <hemantk@codeaurora.org>
->>>>
->>>> Upon driver unbind usb_free_all_descriptors() function frees all
->>>> speed descriptor pointers without setting them to NULL. In case
->>>> gadget speed changes (i.e from super speed plus to super speed)
->>>> after driver unbind only upto super speed descriptor pointers get
->>>> populated. Super speed plus desc still holds the stale (already
->>>> freed) pointer. Fix this issue by setting all descriptor pointers
->>>> to NULL after freeing them in usb_free_all_descriptors().
->>>
->>> could you describe this a little better? How can one trigger this case?
->>> Is the speed demotion happening after unbinding? It's not clear how to
->>> cause this bug.
->>>
->> Hi Felipe,
->>=20
->> Internally, we have a mechanism to switch the DWC3 core maximum speed
->> parameter dynamically for displayport use cases.  This issue happens
->> whenever we have a maximum speed change occur on the USB gadget, which
->> for DWC3 happens whenever we call gadget init.  When we switch in and
->> out of host mode, gadget init is being executed, leading to the change
->> in the USB gadget max speed parameter:
->>=20
->> dwc->gadget->max_speed		=3D dwc->maximum_speed;
->>=20
->> I know that configFS gadget has the max_speed sysfs file, which is a
->> similar mechanism, but I haven't tried to see if we can reproduce the
->> same issue with it.  Let me see if we can reproduce this with that
->> configfs speed setting.
->>=20
->> Thanks
->> Wesley Cheng
->>=20
->
-> Hi Felipe,
->
-> So I tried with doing it through the configFS max_speed, but it doesn't
-> have the same effect, as the setting done in dwc3_gadget_init() will
-> still be assigning the composite/UDC device's maximum speed to SSP/SS.
-> This is what the usb_assign_descriptor() uses to determine whether or
-> not to copy the SSP and SS descriptors.
->
-> So in summary, at least for a DWC3 based subsystem, the only way to
-> reproduce it is if there is a way to dynamically switch the DWC3 core
-> max speed parameter.
-
-Could it be that you have a bug in your out-of-tree changes? Perhaps
-there's some assumption which your changes aren't guaranteeing.
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmCD0VURHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQakZBAAgV+eQhx7ryPt0UO+KPkmowTjxDWbIW1M
-TYhaZFRXMO1adEkgJ5b7/MehTApckTLCdKePZbIr0tRYJiIl3nanEdwoYMXFu6gp
-77hb7BS44+uLUdzLwcMih0GM1YXc9pfW+KoJQgfr3WaMYARwBBfFFR6p/7a5xHiP
-B8SJQj01URImpDjHY4MVd3p2YXtAoDEtnnmOGO69CeRUoBodDKIC+VwqRIA7drzR
-+fUUOenSj5/5PGm0UMwlcKfOoqToAbbaEEYFWCWBHQOgPuEbUUEAq+y3dfYIM50v
-SItQAtURt/e47kUlSKylIhzEdBc66//SlysCDMdY8aHcF+IxBiQU0R0ObCE1XUFD
-kLKzol/0VshvbmsSYkk8xgxiXUrNlRbpeY30dr68GhW6pcWO36mC45UgZfh+3RrE
-Lk4/SN8WTqECtED4Bh1XY62ChIMTUrF/VnGHxsrloonsUW5BYx+uV0OKmHj9dsWD
-SjBRyakSRs030doET/eOrN03XudPlTcDUFRL7wXSAg3//MHCffJdWGlzwRHF5NmV
-0Op+Y6xgFrxDFetHJvJ4nV4bXp2FypkaqUxFafRAvA/vK6OVZEI3SvPNyF5jMzbH
-/17YNJ71W89CMdftoJmGoxQFwa5EnoJrMG8NaNPXUGABBwagUULKAvz3IBMadtbC
-NgreGiruzI8=
-=un7W
------END PGP SIGNATURE-----
---=-=-=--
