@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B09936A276
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 19:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325F636A289
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 20:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhDXR5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 13:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        id S233463AbhDXSUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 14:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhDXR5T (ORCPT
+        with ESMTP id S231814AbhDXSUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 13:57:19 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B885FC061574;
-        Sat, 24 Apr 2021 10:56:39 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id a26-20020a05600c225ab029013f5867af96so699467wmm.0;
-        Sat, 24 Apr 2021 10:56:39 -0700 (PDT)
+        Sat, 24 Apr 2021 14:20:20 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28516C061574;
+        Sat, 24 Apr 2021 11:19:42 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d6so20474459qtx.13;
+        Sat, 24 Apr 2021 11:19:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+3dJUoLYyYMa/vI7AHmb/SZXL5HX54JGSkbPUpPeWD0=;
-        b=I7TgfXrERMrF6Fg9DoDM8q+Lt7w163xeraBoXQ/1BM9RzL4K0G+rDROWM2V/6qnvoy
-         3sIX4n4Qi9bf/mxEDs21jY84L8sqKVUuX0LQEIrzUXQvO1FZTuzC+C3Y6ClblxviaKCg
-         7eWglwb9jr7+x9ZgdvSNAkR6cnsyMdEBZrpgsYc0Mw305P9W3cV8xhRMZoZJqGFuLFrD
-         ls1AwHYPWZIlxFZhnFv021paz1pa4MXi8i3eLBbEofdU0QmFy2kOCmAK4KNvsn5RHXoJ
-         5Dw/+O/OM7OJpWUXNhrfGIQQs9rdGoVLHVAtfYNL7Pu2eZDbYkdXzWlkTa1sAfNNkTwu
-         WcXg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8RXOlSm03VbeMbySXyCFRFEgeMcD59AdNwl/nJLNOYw=;
+        b=eFNW4N0ao0mYhI2AqP1eZXrblovrzgcVjtokOMYUpvRnR9Nes8Qn75ap3G+Iu2v8wr
+         TtiXtZnkQssUx5nqkAAtogoZjOPIVivEsg1K1Yb69odrA1+/6RLpKG+Y3bof5GV/tp3l
+         7pu+tzkU2nw/WXZ11LR6mtX1gBGdMEyF5LTrO/STURUa4+ZsylpHTC79q8nblQ0mmBDT
+         BQRc2tL4r9AtN2TiE31Xm2wegcROcxYaqIc2wKEroFbo6mCPFjaEKaRVm2mgmD+LnGUB
+         6c7j/GkQrSgjok9Dc+OOClJBpe/Q1+RsjYrl3zhU+ObJylBnuTTFn+cjXglTFP1UphH8
+         wnHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+3dJUoLYyYMa/vI7AHmb/SZXL5HX54JGSkbPUpPeWD0=;
-        b=DMKceKyBp0j78qITgJVWP1DVNbPjBdmikB6mxCxd/aNdBudmTq5e47mp+gpzaqdy1C
-         ZuYqdX08r8QdH1OUQMRpdrhuPMqU4N1GHaBXAso+Lv5IQafXG1KbYx1Rjz2Mn6vUR5Tb
-         KeZeSxGabhRj0bVM6jzwHgcPyBThNIMC1RU0WYetVojW7oMMVIm7cZ7pMqDyKRRTJRNI
-         yv1MCLt5DRlBUflAX2XlVvEoj+Zx+2SijUanfqqSxfVuriZj+mEmwGsjxNzHlg5v8i3K
-         1tOeotcXyzD5OB1GdwNFEiD9cl/HAu/GfjxgCFT5exQKHN5YJ4eEJC6j6jA99tnWwss3
-         QBBQ==
-X-Gm-Message-State: AOAM530fBV/ZAYRMvhMnRR8aKezM1Jh4HuBhUP76nDycHXR4KnoxL6Lm
-        EFXJaPrAYmV67AtYVAep2vs=
-X-Google-Smtp-Source: ABdhPJyLjRZ6IPyTgXPVKlvPeziTETG15nsqCl3g7zO7HhQkPygxFVlUvq4iKkWvgcpkbthEvvaxEw==
-X-Received: by 2002:a1c:6382:: with SMTP id x124mr11669823wmb.142.1619286998442;
-        Sat, 24 Apr 2021 10:56:38 -0700 (PDT)
-Received: from [192.168.0.169] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id t14sm13485428wrz.55.2021.04.24.10.56.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Apr 2021 10:56:38 -0700 (PDT)
-Subject: Re: [RFC] bpf.2: Use standard types and attributes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, libc-alpha@sourceware.org,
-        gcc-patches@gcc.gnu.org
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <56932c68-4992-c5e4-819f-a88f60b3f63a@gmail.com>
-Date:   Sat, 24 Apr 2021 19:56:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=8RXOlSm03VbeMbySXyCFRFEgeMcD59AdNwl/nJLNOYw=;
+        b=SDJ+egj1Mgu8KHFxvBa0wEMPxaaPaCpfPwNsGBkjHKobawfhsMfVdgD3oIjYmOmaH+
+         m4mc8+myAwT+PJGEoZ2kpgtFxhJOMqmji2BbTd+T1gaHpCFwgpyHSYYJ2CoNXijdX1ai
+         zCoEiFP5neoRhXy3wiyaC+LZJIqUrRR3Upm4fcExocdtI+/Rq8Mz5q8DWBiUKlcli2I8
+         RHFlrApBugZmB3M6thc/x0Meo/wIOfymJedh1sGHL77cpF7i2T9qMoZB1fIzduo7Efo5
+         pMVsDPV806atjG4QejHQ4soWDmBB/rzJdzsnTiXm3lyzH/Dl1tiv6UNWexUeT9i5vVFU
+         u5qQ==
+X-Gm-Message-State: AOAM531GOb+RojxR0VTXE6z2CMKXf1wFpz+lvwuqJliqUtFA+YXaBFAO
+        H0ZeU7wUUGb1mxtECNNbqpU=
+X-Google-Smtp-Source: ABdhPJxNt9CR9bI1aojKn6K6sSFRLVkrcTpKc47KQYxuIxRTaeKPGkF03kQgZE0MXY8J+gK9pnl2/Q==
+X-Received: by 2002:aed:2043:: with SMTP id 61mr2163587qta.308.1619288381155;
+        Sat, 24 Apr 2021 11:19:41 -0700 (PDT)
+Received: from localhost.localdomain ([187.74.38.55])
+        by smtp.googlemail.com with ESMTPSA id i21sm6355041qtr.94.2021.04.24.11.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Apr 2021 11:19:40 -0700 (PDT)
+From:   Rodrigo Figueiredo Zaiden <rodrigoffzz@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, rodrigoffzz@gmail.com
+Subject: [PATCH] media: atomisp: add ibuf_ctrl_rmgr.c to ISP2401 build only
+Date:   Sat, 24 Apr 2021 15:18:52 -0300
+Message-Id: <20210424181852.64472-1-rodrigoffzz@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexei,
+When CONFIG_VIDEO_ATOMISP_ISP2401 is not set, sparse shows
+the following warnings:
 
-On 4/24/21 1:20 AM, Alexei Starovoitov wrote:
-> Nack.
-> The man page should describe the kernel api the way it is in .h file.
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:34:6: warning: symbol 'ia_css_isys_ibuf_rmgr_init' was not declared. Should it be static?
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:40:6: warning: symbol 'ia_css_isys_ibuf_rmgr_uninit' was not declared. Should it be static?
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:46:6: warning: symbol 'ia_css_isys_ibuf_rmgr_acquire' was not declared. Should it be static?
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:106:6: warning: symbol 'ia_css_isys_ibuf_rmgr_release' was not declared. Should it be static?
 
-Why?
+The symbols stated as not declared are actually declared
+under ISP2401 definition in ia_css_isys.h.
+So, the file ibuf_ctrl_rmgr.c should be compiled only when
+ISP2401 is enabled.
 
-When glibc uses __size_t (or any other non-standard types) just because 
-the standard doesn't allow it to define some types in some specific 
-header, the manual pages document the equivalent standard type, (i.e., 
-if glibc uses __size_t, we document size_t).
+Signed-off-by: Rodrigo Figueiredo Zaiden <rodrigoffzz@gmail.com>
+---
+ drivers/staging/media/atomisp/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The compiler, AFAIK (gcc is CCd, so they can jump in if I'm wrong), 
-using uint32_t in every situation where __u32 is expected.  They're both 
-typedefs for the same basic type.
-
-I can understand why Linux will keep using u32 types (and their __ user 
-space variants), but that doesn't mean user space programs need to use 
-the same type.
-
-If we have a standard syntax for fixed-width integral types (and for 
-anything, actually), the manual pages should probably follow it, 
-whenever possible.  Any deviation from the standard (be it C or POSIX) 
-should have a very good reason to be;  otherwise, it only creates confusion.
-
-Thanks,
-
-Alex
-
+diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
+index 1dfad0dd02d0..555f2efa35b7 100644
+--- a/drivers/staging/media/atomisp/Makefile
++++ b/drivers/staging/media/atomisp/Makefile
+@@ -126,7 +126,6 @@ atomisp-objs += \
+ 	pci/runtime/inputfifo/src/inputfifo.o \
+ 	pci/runtime/isp_param/src/isp_param.o \
+ 	pci/runtime/isys/src/csi_rx_rmgr.o \
+-	pci/runtime/isys/src/ibuf_ctrl_rmgr.o \
+ 	pci/runtime/isys/src/isys_dma_rmgr.o \
+ 	pci/runtime/isys/src/isys_init.o \
+ 	pci/runtime/isys/src/isys_stream2mmio_rmgr.o \
+@@ -175,7 +174,8 @@ obj-cht = \
+ 	pci/css_2401_system/host/ibuf_ctrl.o \
+ 	pci/css_2401_system/host/isys_dma.o \
+ 	pci/css_2401_system/host/isys_irq.o \
+-	pci/css_2401_system/host/isys_stream2mmio.o
++	pci/css_2401_system/host/isys_stream2mmio.o \
++	pci/runtime/isys/src/ibuf_ctrl_rmgr.o
+ 
+ INCLUDES += \
+ 	-I$(atomisp)/ \
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-Senior SW Engineer; http://www.alejandro-colomar.es/
+2.25.1
+
