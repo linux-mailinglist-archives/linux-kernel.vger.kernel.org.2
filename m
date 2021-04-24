@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92D1369E0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7257F369E0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244335AbhDXAv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S244388AbhDXAvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244185AbhDXAtR (ORCPT
+        with ESMTP id S244262AbhDXAtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:49:17 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A13C061361
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:37 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so4616155ybp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:37 -0700 (PDT)
+        Fri, 23 Apr 2021 20:49:39 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BBCC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:40 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v63-20020a252f420000b02904ecfc17c803so15027762ybv.18
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=DJN/sqIDywz/2FMtb4bxhM2j3upE+B1Quag3pNmQ3Oo=;
-        b=sZAszlVUTvzyfXu+nPT1sSpYj6JD1dvWEsBo7Fa8ZOaVrztp8j1FjXhNAEl4UsxQ4v
-         G/v6zCJjgHHEdEBvvS+vhX8kL6jFFT07f8xMpxv76fFAXUdyPYTzD6nOltl/cvLoRAOr
-         JUW3K2I9ThxLa4WbtspdveKg8Gi7Ieiddv+pYVuaIXGh8GGSGjMmAan01ASS5CYd58xP
-         zG3NGAxWnobFVYq6Kny++rrHoILQoqRVbhLTi+WY1v3NRLFU2/jNF3HLsbc2Kc6kYlhn
-         cU2HcA9iXhu/gjXtmgoSZsgSV7fz6XGFe1wuMMyH984RXLdSOKKAl/O4X3A59SPATJgC
-         hEiA==
+        bh=NZdv+AGbcKGuCnoG8O16om5C2kLzm+MyJDxYqgfhwLA=;
+        b=mf8daJbNL2+OfvIgSL+41PtaksanbJRRqTdAYgYF/QdSjD42oJvxk44BDMRtD1W37p
+         HcrJChZUXCNY4kJ94XHe+ZcoL4C/IRyDvUpZCcOhRJkdzQWEhfKRcmYJHDLtzc9AH1DM
+         mr+SDmg4+cRDOFfsJq01xVEVATH1UMRq5WgW3de58q+dQwdP5A5+oPZNiDtUoPY0vQ6W
+         CxeqLA6hODY9xdGQJJmOvQw/I4mT2oY97Sy8oPky6wTmUvsDayPmW6Hf/2jPSv3r9FcX
+         oQMEMVYg+3givAO8GRo8clPvE0RstBCsB4TEMg2P7o/pw3XdI4LujyiHdF3w0IQU4RyY
+         WhlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=DJN/sqIDywz/2FMtb4bxhM2j3upE+B1Quag3pNmQ3Oo=;
-        b=hbAnQ8sZxlO0eRbXavg2iQVkhHxFT3ulKCyAr+W6lcRQjqZaCTDKflVAVHg22udcUB
-         gR/8i6BoCH2eLTkmEm/rnsPONio0u2uy5PQBsPmh0WqNGAD0wbedwlpSvXc66jmZdlL8
-         joIb0qaxjLZDowT8HfY4qFhIxauCtgwEu8KR+WybnEGiNo75aG2r/YyA3+SWAGATQ3lw
-         fxD7gyBxm12Glufohp4ApL2hJ2OjoK0ZjPuwlK2Va2B3mDg6wAzHFlFTo0q0wh3DoTfh
-         88aLyqvkp+OPsOF+xtdwO5KqqZ3Vt3M7VYXFfr0+e8O2b1zEQxbQM+AF8ysMhoz4qpkH
-         uUQw==
-X-Gm-Message-State: AOAM530RM4vDY0b/Rh/LNZtcriBkDjcNz/GFdtYlWl6r56RYqwunO96T
-        TkW3wZ2exXHk8IUoAweoHbQuZyZK8Qw=
-X-Google-Smtp-Source: ABdhPJw0zRN1qcjD7Mnma6hjavDzMn15lGBDX8VMfnGjsOTOnPpDJVLjMSbAtG6YvEXrlSOY/lTLS1NAABg=
+        bh=NZdv+AGbcKGuCnoG8O16om5C2kLzm+MyJDxYqgfhwLA=;
+        b=gwYobSDT+kMUcKs0r1n9n30a8J6NEJJ5oXHrj6AMUHoRuymjbvvVyj6y2PjtQTTFDS
+         54LG6gW/uNVOorlgYnWD5H6b+HJzqcuwN6WvfR6ji0bmopTHuHcYaz+zQ6dom8b139Zs
+         AWrm5UMWfTmSNX1BCFpGW9HYqRf6crT3qFEMn6UDhyZw2Q/5Wy1aByo5Hn2c+Y82SaHE
+         CWW55XqFsD2HWNDGTAOFhofOccidpaMPi5qIiqtlM9Be3MSjGT/51dSGHAIeAvDJB6DZ
+         /qg0ssmo3S4BpYicDcHA6i6qbRyHMG9gUJyrzXx7vclV1htHzJ26qlcKTEyhV8tfs+hq
+         DfeA==
+X-Gm-Message-State: AOAM5310D/Mt2PE1mVzCT1BrUE7FGBpNMn+rpU4igbe7dGWMbUbFajkx
+        bUg1Pkv+zoQbg8qAaoQYB/+EU14oyxg=
+X-Google-Smtp-Source: ABdhPJz2bRSOk/4gUqVZJXXQC3kpzYyE7rhGX85o1M51Ow03HS+MoK2fqNFfOt4irkPUD8x65HXfiKE6EFw=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:ad52:3246:e190:f070])
- (user=seanjc job=sendgmr) by 2002:a25:4946:: with SMTP id w67mr9609876yba.141.1619225257191;
- Fri, 23 Apr 2021 17:47:37 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:9ac7:: with SMTP id t7mr9678756ybo.58.1619225259641;
+ Fri, 23 Apr 2021 17:47:39 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 23 Apr 2021 17:46:19 -0700
+Date:   Fri, 23 Apr 2021 17:46:20 -0700
 In-Reply-To: <20210424004645.3950558-1-seanjc@google.com>
-Message-Id: <20210424004645.3950558-18-seanjc@google.com>
+Message-Id: <20210424004645.3950558-19-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210424004645.3950558-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH 17/43] KVM: x86: Open code necessary bits of
- kvm_lapic_set_base() at vCPU RESET
+Subject: [PATCH 18/43] KVM: x86: Consolidate APIC base RESET initialization code
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,59 +66,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stuff vcpu->arch.apic_base and apic->base_address directly during APIC
-reset, as opposed to bouncing through kvm_set_apic_base() while fudging
-the ENABLE bit during creation to avoid the other, unwanted side effects.
-
-This is a step towards consolidating the APIC RESET logic across x86,
-VMX, and SVM.
+Consolidate the APIC base RESET logic, which is currently spread out
+across both x86 and vendor code.  For an in-kernel APIC, the vendor code
+is redundant.  But for a userspace APIC, KVM relies on the vendor code
+to initialize vcpu->arch.apic_base.  Hoist the vcpu->arch.apic_base
+initialization above the !apic check so that it applies to both flavors
+of APIC emulation, and delete the vendor code.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/lapic.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ arch/x86/kvm/lapic.c   | 14 ++++++++------
+ arch/x86/kvm/svm/svm.c |  6 ------
+ arch/x86/kvm/vmx/vmx.c |  7 -------
+ 3 files changed, 8 insertions(+), 19 deletions(-)
 
 diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index b088f6984b37..b1366df46d1d 100644
+index b1366df46d1d..07cfa4d181da 100644
 --- a/arch/x86/kvm/lapic.c
 +++ b/arch/x86/kvm/lapic.c
-@@ -2305,7 +2305,6 @@ EXPORT_SYMBOL_GPL(kvm_apic_update_apicv);
- void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
- {
+@@ -2307,18 +2307,20 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
  	struct kvm_lapic *apic = vcpu->arch.apic;
--	u64 msr_val;
  	int i;
  
- 	if (!apic)
-@@ -2315,10 +2314,13 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	hrtimer_cancel(&apic->lapic_timer.timer);
- 
+-	if (!apic)
+-		return;
+-
+-	/* Stop the timer in case it's a reset to an active apic */
+-	hrtimer_cancel(&apic->lapic_timer.timer);
+-
  	if (!init_event) {
--		msr_val = APIC_DEFAULT_PHYS_BASE | MSR_IA32_APICBASE_ENABLE;
-+		vcpu->arch.apic_base = APIC_DEFAULT_PHYS_BASE |
-+				       MSR_IA32_APICBASE_ENABLE;
+ 		vcpu->arch.apic_base = APIC_DEFAULT_PHYS_BASE |
+ 				       MSR_IA32_APICBASE_ENABLE;
  		if (kvm_vcpu_is_reset_bsp(vcpu))
--			msr_val |= MSR_IA32_APICBASE_BSP;
--		kvm_lapic_set_base(vcpu, msr_val);
-+			vcpu->arch.apic_base |= MSR_IA32_APICBASE_BSP;
+ 			vcpu->arch.apic_base |= MSR_IA32_APICBASE_BSP;
++	}
+ 
++	if (!apic)
++		return;
 +
-+		apic->base_address = MSR_IA32_APICBASE_ENABLE;
++	/* Stop the timer in case it's a reset to an active apic */
++	hrtimer_cancel(&apic->lapic_timer.timer);
 +
++	if (!init_event) {
+ 		apic->base_address = MSR_IA32_APICBASE_ENABLE;
+ 
  		kvm_apic_set_xapic_id(apic, vcpu->vcpu_id);
- 	}
- 	kvm_apic_set_version(apic->vcpu);
-@@ -2461,11 +2463,6 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
- 		lapic_timer_advance_dynamic = false;
- 	}
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 6c73ea3d20c6..271b6def087f 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1289,12 +1289,6 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	svm->spec_ctrl = 0;
+ 	svm->virt_spec_ctrl = 0;
  
--	/*
--	 * APIC is created enabled. This will prevent kvm_lapic_set_base from
--	 * thinking that APIC state has changed.
--	 */
--	vcpu->arch.apic_base = MSR_IA32_APICBASE_ENABLE;
- 	static_branch_inc(&apic_sw_disabled.key); /* sw disabled at reset */
- 	kvm_iodevice_init(&apic->dev, &apic_mmio_ops);
+-	if (!init_event) {
+-		vcpu->arch.apic_base = APIC_DEFAULT_PHYS_BASE |
+-				       MSR_IA32_APICBASE_ENABLE;
+-		if (kvm_vcpu_is_reset_bsp(vcpu))
+-			vcpu->arch.apic_base |= MSR_IA32_APICBASE_BSP;
+-	}
+ 	init_vmcb(vcpu);
  
+ 	/*
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index fa14e9a74b96..40a4ac23d54f 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4509,13 +4509,6 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	vmx->hv_deadline_tsc = -1;
+ 	kvm_set_cr8(vcpu, 0);
+ 
+-	if (!init_event) {
+-		vcpu->arch.apic_base = APIC_DEFAULT_PHYS_BASE |
+-				       MSR_IA32_APICBASE_ENABLE;
+-		if (kvm_vcpu_is_reset_bsp(vcpu))
+-			vcpu->arch.apic_base |= MSR_IA32_APICBASE_BSP;
+-	}
+-
+ 	vmx_segment_cache_clear(vmx);
+ 
+ 	seg_setup(VCPU_SREG_CS);
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
