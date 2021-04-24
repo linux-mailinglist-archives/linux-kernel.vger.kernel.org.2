@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB133369E9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 05:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC82369EA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 05:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236914AbhDXDbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 23:31:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:48382 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232155AbhDXDbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 23:31:17 -0400
-IronPort-SDR: C3O9MesraxACpLR34qZmPN1I/AxS8edirfalVLsPM9eyFG44E3zR42J7g4dNK3RFbigttUh97C
- xwp7koxh0a0Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="257463733"
-X-IronPort-AV: E=Sophos;i="5.82,247,1613462400"; 
-   d="scan'208";a="257463733"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 20:30:40 -0700
-IronPort-SDR: GDpt/XE7DF3GrhacVF7Vpy23laFs/roeoUFy5BkMWagdXnUZPnMTIHXrOT2kg1nyQPmPbyfdlb
- ehwP5e+VqEkQ==
-X-IronPort-AV: E=Sophos;i="5.82,247,1613462400"; 
-   d="scan'208";a="535711869"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 20:30:40 -0700
-Date:   Fri, 23 Apr 2021 20:30:38 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-Message-ID: <20210424033038.GP1401198@tassilo.jf.intel.com>
-References: <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
- <20210413231436.GF63242@dread.disaster.area>
- <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
- <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
- <20210414155130.GU3762101@tassilo.jf.intel.com>
- <CAOUHufZ4o4zmW_PyRCXWmBj4OVgVJdC6h1wZsJFMWpGxpzyGdg@mail.gmail.com>
- <20210415030002.GX3762101@tassilo.jf.intel.com>
- <CAOUHufaAz72+0HJu=XPv-6T8rUAdYo_mb5=H+yF3=LfwoufeYg@mail.gmail.com>
- <20210415095708.GA6874@lespinasse.org>
- <CAOUHufZY62nDZiPvFH_SuMLN-4Nxhr0HeOo06RWdTcE9QbhhXg@mail.gmail.com>
+        id S236839AbhDXDrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 23:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232155AbhDXDrd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 23:47:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885C2C061574;
+        Fri, 23 Apr 2021 20:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=FxgtYpB8VTPXivQMswCaKcl2h1MJ9Tet6FGK833n5NE=; b=Kx/fI5NZ5bIK1dVhyPo+mBGltr
+        oQMQY1mUnbLjxT7C00AYIxQFDEKd/Esxh0ppFj+DfF+fhl2cqT3aIt2Z2aLr4+QVy5EeonuptP7/P
+        KQeyWyspBwzTB4Jm3jbI9FicQ6zP317djEflR9BXa9Cwg9PzLRrBUQRyPUejKdNVWoyg64YKPusmn
+        BfY/O4i4PMP2sOe9vmhntVLdsrWCb8MKPsGk8l70c/mTDmZmQi7WWIH7EimrDjEpJ7ix1lsjWykIf
+        IVATJ9ogrBFa4RNm9yo0gV3V+89DOhShRElsAeDxsbXmV09ebrKIle2BSqe/SUAcEX3HDgcMq2pU3
+        0R28pf+g==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1la9Fe-002gjB-Ac; Sat, 24 Apr 2021 03:46:41 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        Koji Matsuoka <koji.matsuoka.xm@renesas.com>,
+        David Airlie <airlied@linux.ie>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v3] drm: rcar: unbreak the R-Car menu items
+Date:   Fri, 23 Apr 2021 20:46:32 -0700
+Message-Id: <20210424034632.5531-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOUHufZY62nDZiPvFH_SuMLN-4Nxhr0HeOo06RWdTcE9QbhhXg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Now the question is how we build the bloom filter. A simple answer is
-> to let the rmap do the legwork, i.e., when it encounters dense
-> regions, add them to the filter. Of course this means we'll have to
-> use the rmap more than we do now, which is not ideal for some
-> workloads but necessary to avoid worst case scenarios.
+DRM_RCAR_CMM depends on DRM_RCAR_DU. Since the following Kconfig
+symbols do not depend on DRM_RCAR_DU, the menu presentation is
+broken for the following R-Car Kconfig symbols.
 
-How would you maintain the bloom filter over time? Assume a process
-that always creates new mappings and unmaps old mappings. How 
-do the stale old mappings get removed and avoid polluting it over time?
+Use an if/endif block to make all of these symbols depend on
+DRM_RCAR_DU (and remove the separate "depends on DRM_RCAR_DU").
+This makes the kconfig menu presentation much cleaner.
 
-Or are you thinking of one of the fancier bloom filter variants
-that support deletion? As I understand they're significantly less
-space efficient and more complicated.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-renesas-soc@vger.kernel.org
+Cc: Koji Matsuoka <koji.matsuoka.xm@renesas.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v2: use an if/endif block for the dependencies (thanks, Geert)
+v3: still applicable -- update/rebase
 
--Andi
+Applies after today's earlier patch to fix undefined reference
+build errors for R-Car (probably won't matter).
+
+I did this patch one year ago and then forgot about it somehow.
+Rediscovered & updated it today.
+
+ drivers/gpu/drm/rcar-du/Kconfig |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+--- linux-next-20210423.orig/drivers/gpu/drm/rcar-du/Kconfig
++++ linux-next-20210423/drivers/gpu/drm/rcar-du/Kconfig
+@@ -14,10 +14,11 @@ config DRM_RCAR_DU
+ 	  Choose this option if you have an R-Car chipset.
+ 	  If M is selected the module will be called rcar-du-drm.
+ 
++if DRM_RCAR_DU
++
+ config DRM_RCAR_CMM
+ 	tristate "R-Car DU Color Management Module (CMM) Support"
+ 	depends on DRM && OF
+-	depends on DRM_RCAR_DU
+ 	help
+ 	  Enable support for R-Car Color Management Module (CMM).
+ 
+@@ -41,7 +42,6 @@ config DRM_RCAR_LVDS
+ config DRM_RCAR_VSP
+ 	bool "R-Car DU VSP Compositor Support" if ARM
+ 	default y if ARM64
+-	depends on DRM_RCAR_DU
+ 	depends on VIDEO_RENESAS_VSP1=y || (VIDEO_RENESAS_VSP1 && DRM_RCAR_DU=m)
+ 	help
+ 	  Enable support to expose the R-Car VSP Compositor as KMS planes.
+@@ -49,4 +49,5 @@ config DRM_RCAR_VSP
+ config DRM_RCAR_WRITEBACK
+ 	bool
+ 	default y if ARM64
+-	depends on DRM_RCAR_DU
++
++endif # DRM_RCAR_DU
