@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09D436A042
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1128B36A047
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236970AbhDXJD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 05:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S237258AbhDXJDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 05:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234596AbhDXJDS (ORCPT
+        with ESMTP id S236929AbhDXJD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 05:03:18 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7B8C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:02:40 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x7so50644053wrw.10
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:02:40 -0700 (PDT)
+        Sat, 24 Apr 2021 05:03:26 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4010AC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:02:47 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id h4so41638110wrt.12
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 02:02:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F/iRqZNCmCgxmpFbtmmNVS6lXC39KZ3FxTpPWN6Xmdw=;
-        b=kkETIbPAMKrWgB3GJLegv/n7bkOYFzk2F9EyimD5MsOVsT6V4+Agkm29HbC3UdZIZQ
-         KmHJcU/b9m0rZKTWV9McwfuNtOm9MkbdNVVwv67LfC+9Pcly4ey0VxW41Z2DlhtkM5R5
-         sfzTjC7h1YRRzZzAaC3+7WTr4AIhGgmEca3lxL0fylAUebfI64zaY6LJpKh6pROdgZFO
-         h4as3dC/ZMRrjmEphWU70CReFRyi9a5H3dNdJpo1htICfqEdlpkd2Lh3+fd3g4fjXKtJ
-         +Zd6bzYmGfNtIWSQ5ePfAmj+OTtnrVUQ9V7j2if1YkwBd2ZdH8U/w578ZB4Jdlh25fNV
-         vXWw==
+        bh=fUd9HxcHs367PrWd2VzT9ubkbPclmdBjBx4thm1/S1c=;
+        b=pkG+Rf41rwJAQxzswPmXC3dUL8UELUIWMtuNNLzFagmTGP5nDxKR94ceazoRN/buhT
+         ycS8AuGWboBOcPDEVXQcKkQarFszrt6qH5iUjaxwZuYuKO6oFtdSKcXIjEz38kdgIl85
+         HrAZ8ZvYHN4Rx5SLJOEBzfSuS/LqbK8IzV/pX3aGhG486+2GZ61PMGfW/MsK4BoNUexu
+         9H485AiGEKre3VuTe28tY8AnaW1nBbpt3PY9aSI56UsElncGPeeGWU2aGIWDbpOHxFDB
+         +/hrMJanNUZrDLcCDYzV9bRWArSnREGxhBC5PVYghsGyvQ+s7w5ZZOIQikGXX/AfiYTB
+         VkQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F/iRqZNCmCgxmpFbtmmNVS6lXC39KZ3FxTpPWN6Xmdw=;
-        b=t/c5FJEUEEHJfTYtBGw+3Ezz/b+mVtQQa0OQQ18NeUIZR1updsOn95H16AMjXjjCpS
-         NTONGlXDWz8OtmhKUxDav8I2U9R3ewBOXZ5GOvvV7qe7NbELngl16SgrXO/oUkXXwgNp
-         F+da0bHV4QxKFjy/puWHPA2HGHJw1Wvo3uyFWdOnpBG4QoAYV4bG8gZsw5iiWmQ3coOO
-         sL5XnE/+bt3moZs76BQ7/YFlk7PMuvjeJaCYkRzA4eDbIlSiwPHeWA3Dcj9aymxdo89s
-         lTD+WFIl04B/EN5YpasCepAvPRkNkyMeci9rBZMJQMShvdvoq321Xt4cZSuFOE5MQ0F2
-         qugg==
-X-Gm-Message-State: AOAM531VLKmHhO2TI3VtVnTCUvWEn6UhUQRXkAgH3P2dbJfC45j4nlA0
-        eK5BonD5XljD55+qyR6JR72/iPX67cfX7Q==
-X-Google-Smtp-Source: ABdhPJwuChLrSMelNjxtMt9YStvxO4QP1m10Zlt/FsdYxnPDfnkoKltZdpnIMXZbhU57mU/Aw7IojQ==
-X-Received: by 2002:a05:6000:1789:: with SMTP id e9mr10083140wrg.110.1619254958990;
-        Sat, 24 Apr 2021 02:02:38 -0700 (PDT)
+        bh=fUd9HxcHs367PrWd2VzT9ubkbPclmdBjBx4thm1/S1c=;
+        b=PQBdLTf1FwvvhCiyKk7ca2aqms99qNxH//CwwvlYubiVwfZvjrFDOvcDn+xtzgSJNy
+         PhjTtqpvkzPV6kUMRSzpX85Q9g/HKtFr0xApyzNOPATCzqY5sAncn5E4HvDt9ti8G2pp
+         eX6GcVWnHjDNK5PTNbAeJ23wL6pPJrXbLk679+GkaAJZiywCs2udZhw99GoPmipmoQ5u
+         yLe0V/45rhgrQ6+jXubzzxZtd+DmUa6ViDJgGr3s5cNZ0+X4trzL5hjUDkimht4UMX3/
+         3ZXcOs8lag2EJKwle28QBfsCoV8y1b/fswL+umvzsQcEDdBMFEzdfXKDEHEzMZqwPmeI
+         RJqQ==
+X-Gm-Message-State: AOAM533QoHhjbn2pgnMf5QSd1rBbrGKhLtZ12XXoKaiY5CjJVOsOrbAd
+        07KqUHw00q/+h58QLgcntrxnioQvjrDxhQ==
+X-Google-Smtp-Source: ABdhPJygfG0NALyHPu0gj5S3qg5ZlRtmrfGyoRLWw7vzEkSLOX0/0WVwUs7N5+oZrV5IPGlENrxQUw==
+X-Received: by 2002:a05:6000:1ac7:: with SMTP id i7mr9924685wry.9.1619254960622;
+        Sat, 24 Apr 2021 02:02:40 -0700 (PDT)
 Received: from agape ([5.171.80.252])
-        by smtp.gmail.com with ESMTPSA id l5sm12377999wro.4.2021.04.24.02.02.38
+        by smtp.gmail.com with ESMTPSA id u8sm11211038wrp.66.2021.04.24.02.02.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 02:02:38 -0700 (PDT)
+        Sat, 24 Apr 2021 02:02:40 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 02/50] staging: rtl8723bs: replace DBG_871X_SEL log macro with netdev_dbg()
-Date:   Sat, 24 Apr 2021 11:01:45 +0200
-Message-Id: <9e6a1e4dc8962bfd58375be98619c76e8e28febe.1619254603.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 03/50] staging: rtl8723bs: add two functions to improve register dump in core/rtw_debug.c
+Date:   Sat, 24 Apr 2021 11:01:46 +0200
+Message-Id: <0f3300e6b07f811c0d3fc9c6dd46e5270dfb7a54.1619254603.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619254603.git.fabioaiuto83@gmail.com>
 References: <cover.1619254603.git.fabioaiuto83@gmail.com>
@@ -64,75 +64,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-replace DBG_871X_SEL log macro with the net device driver
-recommended netdev_dbg().
+Beautify register dump by adding two functions printing
+four register values per line. This is necessary after
+old macro replacement with netdev_dbg(), the former
+wrapped a raw printk, the latter
+prints lots of driver information overhead per line
+for each call. So avoid this noisy behaviour by dumping
+four values on each line.
 
-This macro by default does a raw printk, and the alternative
-behaviour, never triggered is a seq_print() call.
-
-So replace with netdev_dbg().
-
-The operation has been done with the following semantic patch
-script:
-
-@@
-expression sel;
-expression list args;
-identifier padapter;
-identifier func;
-@@
-
-func(..., struct adapter *padapter, ...) {
-	<...
--	DBG_871X_SEL(sel, args);
-+	netdev_dbg(padapter->pnetdev, args);
-	...>
-
+Suggested-by: Joe Perches <joe@perches.com>
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_debug.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_debug.c | 63 ++++++++++++----------
+ 1 file changed, 35 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/core/rtw_debug.c b/drivers/staging/rtl8723bs/core/rtw_debug.c
-index 0ee0190c09d7..a43fa38cae62 100644
+index a43fa38cae62..0e13a226e9be 100644
 --- a/drivers/staging/rtl8723bs/core/rtw_debug.c
 +++ b/drivers/staging/rtl8723bs/core/rtw_debug.c
-@@ -23,9 +23,10 @@ void mac_reg_dump(void *sel, struct adapter *adapter)
- 	for (i = 0x0; i < 0x800; i += 4) {
- 		if (j%4 == 1)
- 			netdev_dbg(adapter->pnetdev, "0x%03x", i);
--		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
-+		netdev_dbg(adapter->pnetdev, " 0x%08x ",
-+			   rtw_read32(adapter, i));
- 		if ((j++)%4 == 0)
--			DBG_871X_SEL(sel, "\n");
-+			netdev_dbg(adapter->pnetdev, "\n");
- 	}
+@@ -14,41 +14,54 @@ u32 GlobalDebugLevel = _drv_err_;
+ 
+ #include <rtw_version.h>
+ 
++static void dump_4_regs(struct adapter *adapter, int offset)
++{
++	u32 reg[4];
++	int i;
++
++	for (i = 0; i < 4; i++)
++		reg[i] = rtw_read32(adapter, offset + i);
++
++	netdev_dbg(adapter->pnetdev, "0x%03x 0x%08x 0x%08x 0x%08x 0x%08x\n",
++		   i, reg[0], reg[1], reg[2], reg[3]);
++}
++
+ void mac_reg_dump(void *sel, struct adapter *adapter)
+ {
+-	int i, j = 1;
++	int i;
+ 
+ 	netdev_dbg(adapter->pnetdev, "======= MAC REG =======\n");
+ 
+-	for (i = 0x0; i < 0x800; i += 4) {
+-		if (j%4 == 1)
+-			netdev_dbg(adapter->pnetdev, "0x%03x", i);
+-		netdev_dbg(adapter->pnetdev, " 0x%08x ",
+-			   rtw_read32(adapter, i));
+-		if ((j++)%4 == 0)
+-			netdev_dbg(adapter->pnetdev, "\n");
+-	}
++	for (i = 0x0; i < 0x800; i += 4)
++		dump_4_regs(adapter, i);
  }
  
-@@ -37,9 +38,10 @@ void bb_reg_dump(void *sel, struct adapter *adapter)
- 	for (i = 0x800; i < 0x1000 ; i += 4) {
- 		if (j%4 == 1)
- 			netdev_dbg(adapter->pnetdev, "0x%03x", i);
--		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
-+		netdev_dbg(adapter->pnetdev, " 0x%08x ",
-+			   rtw_read32(adapter, i));
- 		if ((j++)%4 == 0)
--			DBG_871X_SEL(sel, "\n");
-+			netdev_dbg(adapter->pnetdev, "\n");
- 	}
+ void bb_reg_dump(void *sel, struct adapter *adapter)
+ {
+-	int i, j = 1;
++	int i;
+ 
+ 	netdev_dbg(adapter->pnetdev, "======= BB REG =======\n");
+-	for (i = 0x800; i < 0x1000 ; i += 4) {
+-		if (j%4 == 1)
+-			netdev_dbg(adapter->pnetdev, "0x%03x", i);
+-		netdev_dbg(adapter->pnetdev, " 0x%08x ",
+-			   rtw_read32(adapter, i));
+-		if ((j++)%4 == 0)
+-			netdev_dbg(adapter->pnetdev, "\n");
+-	}
++
++	for (i = 0x800; i < 0x1000 ; i += 4)
++		dump_4_regs(adapter, i);
++}
++
++static void dump_4_rf_regs(struct adapter *adapter, int path, int offset)
++{
++	u8 reg[4];
++	int i;
++
++	for (i = 0; i < 4; i++)
++		reg[i] = rtw_hal_read_rfreg(adapter, path, offset + i,
++					    0xffffffff);
++
++	netdev_dbg(adapter->pnetdev, "0x%02x 0x%08x 0x%08x 0x%08x 0x%08x\n",
++		   i, reg[0], reg[1], reg[2], reg[3]);
  }
  
-@@ -64,9 +66,9 @@ void rf_reg_dump(void *sel, struct adapter *adapter)
- 			value = rtw_hal_read_rfreg(adapter, path, i, 0xffffffff);
- 			if (j%4 == 1)
- 				netdev_dbg(adapter->pnetdev, "0x%02x ", i);
--			DBG_871X_SEL(sel, " 0x%08x ", value);
-+			netdev_dbg(adapter->pnetdev, " 0x%08x ", value);
- 			if ((j++)%4 == 0)
--				DBG_871X_SEL(sel, "\n");
-+				netdev_dbg(adapter->pnetdev, "\n");
- 		}
+ void rf_reg_dump(void *sel, struct adapter *adapter)
+ {
+-	int i, j = 1, path;
+-	u32 value;
++	int i, path;
+ 	u8 rf_type = 0;
+ 	u8 path_nums = 0;
+ 
+@@ -62,13 +75,7 @@ void rf_reg_dump(void *sel, struct adapter *adapter)
+ 
+ 	for (path = 0; path < path_nums; path++) {
+ 		netdev_dbg(adapter->pnetdev, "RF_Path(%x)\n", path);
+-		for (i = 0; i < 0x100; i++) {
+-			value = rtw_hal_read_rfreg(adapter, path, i, 0xffffffff);
+-			if (j%4 == 1)
+-				netdev_dbg(adapter->pnetdev, "0x%02x ", i);
+-			netdev_dbg(adapter->pnetdev, " 0x%08x ", value);
+-			if ((j++)%4 == 0)
+-				netdev_dbg(adapter->pnetdev, "\n");
+-		}
++		for (i = 0; i < 0x100; i++)
++			dump_4_rf_regs(adapter, path, i);
  	}
  }
 -- 
