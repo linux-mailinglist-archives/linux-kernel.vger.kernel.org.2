@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19BB36A31B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 23:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D662836A31F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 23:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235888AbhDXVMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 17:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbhDXVMe (ORCPT
+        id S237056AbhDXVOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 17:14:46 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:55036 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232708AbhDXVOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 17:12:34 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A150C061574;
-        Sat, 24 Apr 2021 14:11:55 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id y1so11280960plg.11;
-        Sat, 24 Apr 2021 14:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F1cHbDPDF64Wi1+AKsHM3fUgzyza5XAOBv9Th82m2X4=;
-        b=oevOwD6QohyAZBVfkdBrnTJ8soy08U0ibfEMC3BAK3zDjagUWxh6Nq4xjXFuI3mag9
-         QnJcRb94nTy7hmpjXzKBzM5jmYka1lxqSt7NqQFfLLql62D7HptK7RcSQ+D1ok0cg1Ho
-         BmAMFU9b0LhnYQdhMeatEopK5cuk5R8Kim7xwkikAkfGelP5Xz7UqNB+TWiWyn3w+6Mu
-         zKqUlWLiyS9rGX2JgLPWg5Hq1kkG1kFU4O2+yKArZVCoNtcM0kNY3k98QZLe1DIBcXpx
-         qu+y4Zi2O9dK2NHrUU+wmL5I83LaafXM0sGDBhkgwe/DweK57t9cRbYx/NpZXRGBtU6v
-         qVEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F1cHbDPDF64Wi1+AKsHM3fUgzyza5XAOBv9Th82m2X4=;
-        b=puIOw8L+gJIZhaerPEJsXwubkhC43wBMZct81sYtnGbdRtWnztMRma0/UCg7kvZCIK
-         yNjkAX9J7Ia5/AbRZgtld4bpUbr960dmnrTAryNBef3sKLp4w3akChshFS282vkVRqRP
-         GBnDI+F1lL5RCxL7qUlqCjqhLx1CgXCICz3gxxsx28j7p8b49zgBHTV1LP+azai4P6j7
-         cRPz9VJBJT+LmdZZKz6FW/99LjTq881Uk0LfLk5wIkRH6tOzZiagoFPAMUGXZ9IvrT4G
-         5WjgsPk+L2hOukaWBGhgAaYWsIysKQLlBnjzJJCg2+smf+6jDxzoDnifol7YQmzb4mw5
-         sAWg==
-X-Gm-Message-State: AOAM531olyPaZmgTvvW2X2Mhces4TkICmpEJoLMd4IuJ+nRX4VkGYCA9
-        ZZtM3VIfeZAKUTrHeRtf86nZSFi9FwOYRJRxR+I=
-X-Google-Smtp-Source: ABdhPJyPYU1jv0jT5o+s2UU2hZtcZhy+s5F7ZOUW1ei4+8vwAeBE9Taa94PO8tJyojP3szUj+ARAFXRilmaT1R9+sFg=
-X-Received: by 2002:a17:90a:8906:: with SMTP id u6mr11702012pjn.162.1619298715074;
- Sat, 24 Apr 2021 14:11:55 -0700 (PDT)
+        Sat, 24 Apr 2021 17:14:45 -0400
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 13OLDoUM031351;
+        Sun, 25 Apr 2021 06:13:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 13OLDoUM031351
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1619298831;
+        bh=3OnUjkY5ajv//Bx4vO1T7kFi9gDr5XvlyfkukgBhE8M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QHcGgY38MLzXqjy+XVuE/W20vy9QzFQxvpkTeBGkSk1M0rivIN10Urz73YCeS3meL
+         skTmYehfrRmgyfQeFWVIfT30FunJZoXfxltEobiLNMPShdTRUkF+LUEXq19mhtvE/o
+         vNu5Kl7PZj3v6XToI+6z2PoLqhWYZmNg8PFx+cxhJxOQsaWqKy73bxPQBoXDbwRQwD
+         JlZiR0oTCEPvqhD2V/E+yPj+l16tMGQ/vF6gjfSrwbSau16Z91mJ7LfHAcjU66+JfW
+         P/8DU/uObzcwSINbNS3uAhYT7rRR2tMAHa3FhFbifHs0h4FVhtn0BgmoeybDSCREGJ
+         us+bddLjoQqAw==
+X-Nifty-SrcIP: [209.85.215.176]
+Received: by mail-pg1-f176.google.com with SMTP id y32so37556763pga.11;
+        Sat, 24 Apr 2021 14:13:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532WUoYbSLpuJfVP3kijXORcWTU6g/tH7cwXBtxK5IOvG//q14tA
+        +jNZwzudLOr3QTM5yC8p9oTq24lzyC8XyzFWSfs=
+X-Google-Smtp-Source: ABdhPJyH9gmmhhYlqBrKttzO47kXPH9XC/yWV/ZvhYSXUkxKYpk1zoN97j2v0cXd+U7krYzpYVs6DnLq72QsCFH4irY=
+X-Received: by 2002:a63:e1d:: with SMTP id d29mr10258164pgl.175.1619298830397;
+ Sat, 24 Apr 2021 14:13:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210411150623.8367-1-hcvcastro@gmail.com>
-In-Reply-To: <20210411150623.8367-1-hcvcastro@gmail.com>
-From:   Roderick Colenbrander <thunderbird2k@gmail.com>
-Date:   Sat, 24 Apr 2021 14:11:44 -0700
-Message-ID: <CAEc3jaAADGuPDwGLM6HskLq-OiecbV-76JbMe6yambVAT=h=bw@mail.gmail.com>
-Subject: Re: [PATCH] drivers/hid: avoid invalid denominator
-To:     Henry Castro <hcvcastro@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210422201914.3682494-1-nathan@kernel.org>
+In-Reply-To: <20210422201914.3682494-1-nathan@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 25 Apr 2021 06:13:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATgbzTBCrDaD3HhUQv=W3wLOKq3_iOiKM3CNEB4B=qh6Q@mail.gmail.com>
+Message-ID: <CAK7LNATgbzTBCrDaD3HhUQv=W3wLOKq3_iOiKM3CNEB4B=qh6Q@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Add $(KBUILD_HOSTLDFLAGS) to 'has_libelf' test
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Henry,
-
-Thanks for your patch. In what case has this been an issue? Or was it
-more theoretical.
-
-During normal operation this condition should never be triggered for a
-DualShock 4 when calibration succeeds. If it doesn't succeed the
-device is not registered. We had an issue recently with the DS4 dongle
-where the calibration data was 0, which was due to a race condition
-with Steam, but that was resolved recently.
-
-Thanks,
-Roderick
-
-On Sun, Apr 11, 2021 at 10:19 AM Henry Castro <hcvcastro@gmail.com> wrote:
+On Fri, Apr 23, 2021 at 5:19 AM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> Avoid a potential panic in case wrong denominator
-> is given.
+> Normally, invocations of $(HOSTCC) include $(KBUILD_HOSTLDFLAGS), which
+> in turn includes $(HOSTLDFLAGS), which allows users to pass in their own
+> flags when linking. However, the 'has_libelf' test does not, meaning
+> that if a user requests a specific linker via HOSTLDFLAGS=-fuse-ld=...,
+> it is not respected and the build might error.
 >
-> Signed-off-by: Henry Castro <hcvcastro@gmail.com>
+> For example, if a user building with clang wants to use all of the LLVM
+> tools without any GNU tools, they might remove all of the GNU tools from
+> their system or PATH then build with
+>
+> $ make HOSTLDFLAGS=-fuse-ld=lld LLVM=1 LLVM_IAS=1
+>
+> which says use all of the LLVM tools, the integrated assembler, and
+> ld.lld for linking host executables. Without this change, the build will
+> error because $(HOSTCC) uses its default linker, rather than the one
+> requested via -fuse-ld=..., which is GNU ld in clang's case in a default
+> configuration.
+>
+> error: Cannot generate ORC metadata for CONFIG_UNWINDER_ORC=y, please
+> install libelf-dev, libelf-devel or elfutils-libelf-devel
+> make[1]: *** [Makefile:1260: prepare-objtool] Error 1
+>
+> Add $(KBUILD_HOSTLDFLAGS) to the 'has_libelf' test so that the linker
+> choice is respected.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/479
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  drivers/hid/hid-sony.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+
+I applied this since the MW is opening shortly.
+
+However, I believe the right thing to do is
+to kill the pointless check entirely.
+
+
+
+
+>  Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
-> index 8319b0ce385a..67b45d82cc3b 100644
-> --- a/drivers/hid/hid-sony.c
-> +++ b/drivers/hid/hid-sony.c
-> @@ -1134,11 +1134,16 @@ static void dualshock4_parse_report(struct sony_sc *sc, u8 *rd, int size)
->                  * Note: we swap numerator 'x' and 'numer' in mult_frac for
->                  *       precision reasons so we don't need 64-bit.
->                  */
-> -               int calib_data = mult_frac(calib->sens_numer,
-> -                                          raw_data - calib->bias,
-> -                                          calib->sens_denom);
-> +               if (calib->sens_denom != 0) {
-> +                       int calib_data = mult_frac(calib->sens_numer,
-> +                                                  raw_data - calib->bias,
-> +                                                  calib->sens_denom);
-> +
-> +                       input_report_abs(sc->sensor_dev, calib->abs_code, calib_data);
-> +               } else {
-> +                       hid_warn(sc->hdev, "DualShock 4 parse report, avoid invalid denominator");
-> +               }
+> diff --git a/Makefile b/Makefile
+> index bc19584fee59..1535b32c8baa 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1092,7 +1092,7 @@ export mod_sign_cmd
+>  HOST_LIBELF_LIBS = $(shell pkg-config libelf --libs 2>/dev/null || echo -lelf)
 >
-> -               input_report_abs(sc->sensor_dev, calib->abs_code, calib_data);
->                 offset += 2;
->         }
->         input_sync(sc->sensor_dev);
+>  has_libelf = $(call try-run,\
+> -               echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
+> +               echo "int main() {}" | $(HOSTCC) $(KBUILD_HOSTLDFLAGS) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
+>
+>  ifdef CONFIG_STACK_VALIDATION
+>    ifeq ($(has_libelf),1)
+>
+> base-commit: bf05bf16c76bb44ab5156223e1e58e26dfe30a88
 > --
-> 2.20.1
+> 2.31.1.362.g311531c9de
 >
+
+
+-- 
+Best Regards
+Masahiro Yamada
