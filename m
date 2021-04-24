@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8CA36A0CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 13:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AE336A0D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 13:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhDXLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 07:15:16 -0400
-Received: from mga02.intel.com ([134.134.136.20]:35603 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231203AbhDXLPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 07:15:14 -0400
-IronPort-SDR: S13mW18+cSUIDnLJ9ODiLK73tSr2YaVykZZYiFcUrmhXZFnHjL3VofrQ2Xg4fdnnxpr1oC6MZw
- sFCDWs7VmHMg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="183304092"
-X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
-   d="scan'208";a="183304092"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 04:14:36 -0700
-IronPort-SDR: RlYoDBKcO4fEiCXNuBpmsJZuNUxTc/o6rIXFz6YvEh9Fqdw53uvqaIzZ9vd70ctiO8BAa6uigh
- ciko9hHUUnWA==
-X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
-   d="scan'208";a="386603881"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 04:14:33 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1laGF4-006ozO-7I; Sat, 24 Apr 2021 14:14:30 +0300
-Date:   Sat, 24 Apr 2021 14:14:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Subject: Re: [RFT, PATCH v1 0/5] gpio: xilinx: convert to use bitmap API
-Message-ID: <YIP9ltcdf7mNtYRd@smile.fi.intel.com>
-References: <20210408145601.68651-1-andriy.shevchenko@linux.intel.com>
- <CAMpxmJU+K6C_xbQPT=9QKtLLTnajJQbgJH0A2QqbGjCV+b9Z_g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJU+K6C_xbQPT=9QKtLLTnajJQbgJH0A2QqbGjCV+b9Z_g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S232934AbhDXLS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 07:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhDXLSx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 07:18:53 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB617C061574;
+        Sat, 24 Apr 2021 04:18:13 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so2642465pjv.1;
+        Sat, 24 Apr 2021 04:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=c5D467EjUrL3DZxzh5hff+LlbgHJxoTGzshACk+bFsU=;
+        b=hgbXm/QQDi9i27vr93N0nUt6Ru9QS1/G+w+nFQ/OtRDTX48qNPL2ZUEiMejii7VxmT
+         RrMgKOXJaZh0Q7Hc04o3qKOCUSzMvbo8+vGCmo6uPxecKCoE77MuZ58LJ5OLJrrCoAm3
+         f7d7HTWJ1gg6ElL5rS5BOYbLbT/AyteYhbrkOCRh6AeHLtpVYu8B5Zc4hCmktBkakAjF
+         ztGY9aGKdv1vF3Vt203DiYTxzHaEV56GxjopfpJB0nyVujsO0rJ7prcLKaDYOOiFBdC9
+         C5j6vCIUjJZsNXiGUpwl6z76G7ZUF2BruhwX4zsCU2rl96mEMpmCXlU0Lq6oz8X+puzu
+         ZEhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c5D467EjUrL3DZxzh5hff+LlbgHJxoTGzshACk+bFsU=;
+        b=r/QJRRI08pAyvp46Nn5viSoZEGM5XGyWFd9I3cG3Fn1M5ufs5i/5YFY6/QBOI07Hiz
+         gjH+IThhMnJeT9ky9pTFjCgCbHakVu9hwnANJR5KMQtmveWTm3VBxhFlGEUmat97yewt
+         waJ8NBBIwpGZnF079J5Ot9D4V1m+XKXlGnJORgJ9ZfkTSMsJ5ufZgnGQeTy3vwu77hWR
+         x6vMa+9E4wTJ7vimwm7He8KohxwfDmojQn+w3tKPXxgRq/xxyzHQk5xyC/zLWeht01Ct
+         1UAYW3nBZjVSZQVrTaUJU2WH5DiUHbmUhJTGEUFYms9PagLzdI3ClcyltzoYUVenMbrq
+         hyFg==
+X-Gm-Message-State: AOAM5310bmApmKzZ3f4CKDKH3RzpGOxXPV/E8t7qWjlaUD0q9WB64eJd
+        C9OB7HrRJU6lqESt6Y3MVQI=
+X-Google-Smtp-Source: ABdhPJynSBPkMwpKCpf6OvHgJGWEiLCM4k7nOJdIFTd2nQq2sELu5jBSq9jgziV7Q5dRuN05pTjoBQ==
+X-Received: by 2002:a17:90a:1b62:: with SMTP id q89mr11344828pjq.54.1619263093163;
+        Sat, 24 Apr 2021 04:18:13 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.81.172])
+        by smtp.gmail.com with ESMTPSA id ne22sm10023280pjb.5.2021.04.24.04.18.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 24 Apr 2021 04:18:12 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] selinux: Corrected comment to match kernel-doc comment
+Date:   Sat, 24 Apr 2021 16:48:05 +0530
+Message-Id: <1619263085-5047-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 10:41:26PM +0200, Bartosz Golaszewski wrote:
-> On Thu, Apr 8, 2021 at 4:55 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > The change in the series has been inspired by [1], which, I think,
-> > can be improved. Here I present the view how it can be done.
-> >
-> > The series marked as RFT since I have no hardware and I perform
-> > compile test only.
-> >
-> > The patches 1 and 2 can be (independently) applied for v5.13, but I'm not in
-> > hurry with the series, due to above (lack of real testing). So I'm flexible in
-> > a way how it can be proceed.
+Kernel test robot throws below warning ->
 
-> >   bitmap: Make bitmap_remap() and bitmap_bitremap() available to users
-> >   gpio: xilinx: Correct kernel doc for xgpio_probe()
+security/selinux/avc.c:822: warning: This comment starts with '/**', but
+isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-Bart, thanks for the warm words, just pointing out that patches 1 and 2 has
-been reviewed and may be applied for v5.13 cycle. Up to you.
+Updated the comment to align with kernel-doc comment.
 
-> I usually trust Andy with his work but is there any chance we can get
-> a Tested-by before the merge window?
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ security/selinux/avc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/security/selinux/avc.c b/security/selinux/avc.c
+index ad451cf..04a886b 100644
+--- a/security/selinux/avc.c
++++ b/security/selinux/avc.c
+@@ -818,7 +818,7 @@ int __init avc_add_callback(int (*callback)(u32 event), u32 events)
+ 	return rc;
+ }
+ 
+-/**
++/*
+  * avc_update_node Update an AVC entry
+  * @event : Updating event
+  * @perms : Permission mask bits
 -- 
-With Best Regards,
-Andy Shevchenko
-
+1.9.1
 
