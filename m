@@ -2,182 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FBD36A091
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE8E36A094
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 11:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233219AbhDXJrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 05:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231203AbhDXJro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 05:47:44 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S231919AbhDXJ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 05:59:06 -0400
+Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:41794 "EHLO
+        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhDXJ7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 05:59:04 -0400
+Received: from smtp-1.t-2.net (smtp-1.t-2.net [84.255.208.30])
+        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FS66m4kvqz2TdT;
+        Sat, 24 Apr 2021 11:58:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
+        s=smtp-out-2; t=1619258304;
+        bh=ypb2UrBwwB//ihXVXppvATnFzd9PXE4hhZyFAFmRCaU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=xMKtHJgQqYgfxRrTz5VmEYUTw6cFB+l1hxDpwL52sTFoTJ2IRu4TWVJ++6NLjZTaP
+         14u8lxYed04AJsr0w657VakAbjMWaN1oAJ35d8cczUc77adS/IJ7R11awcdHLac0Hm
+         kxfjepVRnPBgecpWtkAcFCsCFrP/Q7yMsAY65y5Q=
+Received: from localhost (localhost [127.0.0.1])
+        by smtp-1.t-2.net (Postfix) with ESMTP id 4FS66m4Wq6zTpmnB;
+        Sat, 24 Apr 2021 11:58:24 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at t-2.net
+Received: from smtp-1.t-2.net ([127.0.0.1])
+        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PV4iskh6-aLh; Sat, 24 Apr 2021 11:58:24 +0200 (CEST)
+Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E449161409;
-        Sat, 24 Apr 2021 09:47:05 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1laEsR-009DQH-Kc; Sat, 24 Apr 2021 10:47:03 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Ruppert <christian.ruppert@abilis.com>,
-        Erwan Le Ray <erwan.leray@foss.st.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Hao Fang <fanghao11@huawei.com>, He Ying <heying24@huawei.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Robert Hancock <robert.hancock@calian.com>,
-        Rob Herring <robh@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: [GIT PULL] irqchip updates for 5.13
-Date:   Sat, 24 Apr 2021 10:46:40 +0100
-Message-Id: <20210424094640.1731920-1-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        by smtp-1.t-2.net (Postfix) with ESMTPS;
+        Sat, 24 Apr 2021 11:57:48 +0200 (CEST)
+Message-ID: <9e8805a98d6c0d0f20e563c8e4db98b595826c13.camel@t-2.net>
+Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
+From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Date:   Sat, 24 Apr 2021 11:57:47 +0200
+In-Reply-To: <e7010c9e-1ac2-55a7-b505-802e03f13362@i-love.sakura.ne.jp>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+         <YGx59PEq2Y015YdK@alley>
+         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+         <YG24F9Kx+tjxhh8G@kroah.com>
+         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+         <YHQkeZVs3pmyie9e@kroah.com>
+         <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
+         <YHQ3Zy9gRdZsu77w@kroah.com>
+         <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
+         <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
+         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
+         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
+         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
+         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
+         <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
+         <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
+         <07c3c9015491ca9b42362098d5e90ca7480cf5ed.camel@t-2.net>
+         <e7010c9e-1ac2-55a7-b505-802e03f13362@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, arnd@arndb.de, christian.ruppert@abilis.com, erwan.leray@foss.st.com, geert+renesas@glider.be, fanghao11@huawei.com, heying24@huawei.com, jszhang@kernel.org, j.neuschaefer@gmx.net, lorenzo.pieralisi@arm.com, mark-pk.tsai@mediatek.com, mark.rutland@arm.com, rnayak@codeaurora.org, rdunlap@infradead.org, robert.hancock@calian.com, robh@kernel.org, swboyd@chromium.org, tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas,
+Dne 24.04.2021 (sob) ob 10:16 +0900 je Tetsuo Handa napisal(a):
+> On 2021/04/24 4:47, Samo Pogačnik wrote:
+> > At any point the tpk_buffer is potentially multiplexed/interleaved by parts
+> > of
+> > required output of any concurrent user, as buffs are being delivered by the
+> > scheduled writes.
+> 
+> As long as one line is printed by one printk() call, CONFIG_PRINTK_CALLER=y is
+> helpful enough to distinguish multilplexed/interleaved messages. I consider
+> that
+> ttyprintk offers additional advantage over printk() for allow buffering one
+> line
+> of message from userspace.
+> 
+> > 
+> > As per user buffers look promising with output formatting, the FDs passing
+> > between tasks lead to the same single buffer (Greg already mentioned that).
+> 
+> Those programs which use FD passing know what they are doing. If they still
+> want
+> one line of message printed via ttyprintk interface, they must do their
+> buffering
+> before trying to write() to ttyprintk's file descriptor.
+> 
+> Use of per "struct file" buffer gives those programs which does not use
+> FD passing a guarantee that one line of message from those programs won't be
+> multilplexed/interleaved (with the aid of CONFIG_PRINTK_CALLER=y).
+> I consider it an improvement.
+> 
+> >                                                                             
+> > The
+> > other thing which is important to me is the console redirection to
+> > ttyprintk,
+> > which automatically brings all concurrent console users to the single open
+> > of
+> > ttyprintk.
+> 
+> Gathering whole console output into one FD is similar to FD passing; that is
+> inevitable. But use of per "struct file" buffer allows /dev/ttyprintk users
+>  from outside of "gather whole console output into one FD" case to avoid
+> multilplexed/interleaved messages. I tried /dev/ttyprintk like
+> 
+https://lkml.kernel.org/r/be9e80b1-5be1-842e-538e-d69a3995d567@i-love.sakura.ne.jp
+>  .
+> 
 
-This is the set of irqchip/irqdomain updates for 5.13. Only a couple
-of new drivers this time around (though see below for the actual
-truth), a handful of fixes, and the start of a long overdue cleanup of
-the irqdomain library to try and get rid of some of the ancient (and
-mostly unused) cruft.
+I think i understand, what would you like to achieve, however implementation
+wise there seems to be no reference point available in tty write operation that
+would relate to its tty open/close operations (i.e. open() and close() provide
+filp while write() does not - probably for a reason) or is there such a relation
+available?
 
-But this PR isn't the full story: we also have support for the Apple
-M1 going via the the arm-soc tree, as it made more sense to keep all
-the various bits together. There is also the MSI rework to get rid of
-the msi_controller abstraction that is going via the PCI tree.
+On the other hand, my main concern is how to provide a reliable system wide
+collection of all console output via ttyprintk console redirection, while normal
+operation of system console is preserved (except its output being detoured via
+printk and as such logged together with kernel output). Such logging is
+particularly useful for after-the-fact inspection of system operation.
 
-Please pull,
+That being said i am thinking about how to permanently enable this redirection
+as early as possible (i.e. via kernel command line option). I had a working
+prototype for that some time ago (never posted). Would anybody like to see such
+functionality?
 
-	M.
+best regards, Samo
 
-The following changes since commit 5fbecd2389f48e1415799c63130d0cdce1cf3f60:
-
-  irqchip/ingenic: Add support for the JZ4760 (2021-03-09 08:45:17 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-5.13
-
-for you to fetch changes up to debf69cfd4c618c7036a13cc4edd1faf87ce7d53:
-
-  irqchip/xilinx: Expose Kconfig option for Zynq/ZynqMP (2021-04-24 09:50:03 +0100)
-
-----------------------------------------------------------------
-irqchip updates for Linux 5.13
-
-New HW support:
-
-- New driver for the Nuvoton WPCM450 interrupt controller
-- New driver for the IDT 79rc3243x interrupt controller
-- Add support for interrupt trigger configuration to the MStar irqchip
-- Add more external interrupt support to the STM32 irqchip
-- Add new compatible strings for QCOM SC7280 to the qcom-pdc binding
-
-Fixes and cleanups:
-
-- Drop irq_create_strict_mappings() and irq_create_identity_mapping()
-  from the irqdomain API, with cleanups in a couple of drivers
-- Fix nested NMI issue with spurious interrupts on GICv3
-- Don't allow GICv4.1 vSGIs when the CPU doesn't support them
-- Various cleanups and minor fixes
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      irqchip/gic-v3: Fix OF_BAD_ADDR error handling
-
-Erwan Le Ray (1):
-      irqchip/stm32: Add usart instances exti direct event support
-
-Hao Fang (1):
-      irqchip/hisi: Use the correct HiSilicon copyright
-
-He Ying (1):
-      irqchip/gic-v3: Do not enable irqs when handling spurious interrups
-
-Jisheng Zhang (1):
-      irqchip/sifive-plic: Mark two global variables __ro_after_init
-
-Jonathan Neuschäfer (2):
-      dt-bindings: interrupt-controller: Add nuvoton, wpcm450-aic
-      irqchip: Add driver for WPCM450 interrupt controller
-
-Lorenzo Pieralisi (1):
-      irqchip/gic-v4.1: Disable vSGI upon (GIC CPUIF < v4.1) detection
-
-Marc Zyngier (8):
-      sh: intc: Drop the use of irq_create_identity_mapping()
-      irqdomain: Get rid of irq_create_identity_mapping()
-      mips: netlogic: Use irq_domain_simple_ops for XLP PIC
-      irqchip/wpcm450: Drop COMPILE_TEST
-      ARM: PXA: Kill use of irq_create_strict_mappings()
-      irqchip/jcore-aic: Kill use of irq_create_strict_mappings()
-      irqdomain: Get rid of irq_create_strict_mappings()
-      irqdomain: Drop references to recusive irqdomain setup
-
-Mark-PK Tsai (1):
-      irqchip/irq-mst: Support polarity configuration
-
-Rajendra Nayak (1):
-      dt-bindings: qcom,pdc: Add compatible for sc7280
-
-Randy Dunlap (1):
-      irqchip/tb10x: Use 'fallthrough' to eliminate a warning
-
-Robert Hancock (1):
-      irqchip/xilinx: Expose Kconfig option for Zynq/ZynqMP
-
-Thomas Bogendoerfer (2):
-      irqchip: Add support for IDT 79rc3243x interrupt controller
-      dt-bindings: interrupt-controller: Add IDT 79RC3243x Interrupt Controller
-
- .../interrupt-controller/idt,32434-pic.yaml        |  48 ++++++
- .../interrupt-controller/nuvoton,wpcm450-aic.yaml  |  39 +++++
- .../bindings/interrupt-controller/qcom,pdc.txt     |   1 +
- arch/arm/mach-pxa/pxa_cplds_irqs.c                 |  24 ++-
- arch/arm64/kvm/vgic/vgic-mmio-v3.c                 |   4 +-
- arch/mips/netlogic/common/irq.c                    |   6 +-
- drivers/irqchip/Kconfig                            |  18 ++-
- drivers/irqchip/Makefile                           |   2 +
- drivers/irqchip/irq-gic-v3-mbi.c                   |   2 +-
- drivers/irqchip/irq-gic-v3.c                       |   8 +-
- drivers/irqchip/irq-gic-v4.c                       |  27 +++-
- drivers/irqchip/irq-hip04.c                        |   4 +-
- drivers/irqchip/irq-idt3243x.c                     | 124 ++++++++++++++++
- drivers/irqchip/irq-jcore-aic.c                    |   4 +-
- drivers/irqchip/irq-mbigen.c                       |   4 +-
- drivers/irqchip/irq-mst-intc.c                     |  98 ++++++++++++-
- drivers/irqchip/irq-sifive-plic.c                  |   4 +-
- drivers/irqchip/irq-stm32-exti.c                   |   7 +
- drivers/irqchip/irq-tb10x.c                        |   1 +
- drivers/irqchip/irq-wpcm450-aic.c                  | 161 +++++++++++++++++++++
- drivers/sh/intc/core.c                             |  49 +++----
- include/linux/irqchip/arm-gic-v4.h                 |   2 +
- include/linux/irqdomain.h                          |   9 --
- kernel/irq/irqdomain.c                             |  43 +-----
- 24 files changed, 570 insertions(+), 119 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/nuvoton,wpcm450-aic.yaml
- create mode 100644 drivers/irqchip/irq-idt3243x.c
- create mode 100644 drivers/irqchip/irq-wpcm450-aic.c
