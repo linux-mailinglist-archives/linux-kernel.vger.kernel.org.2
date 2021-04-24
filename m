@@ -2,220 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E7C369FE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 08:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C599369FF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 09:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbhDXG4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 02:56:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233122AbhDXGtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 02:49:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B04F961482;
-        Sat, 24 Apr 2021 06:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619246905;
-        bh=iDFkMz9wTw259TartRiubkvfsE8bQ88Y8Y/a1w04IbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aX7gfFQjMmFffHJKkzQzRLd8+QeBJq6xjsQZV110DFI1+SaEy8CNBOIQsxtxVUtxH
-         9w8pN9Om/9FW2r+F/BeLZzgY8RyczijKerFryPXRzCnxjm2t3fsZdeQBddTuL6iJa8
-         Ii99QflHKNeL0O9P8UC0wUvQcSLdvzylA8uNAxm4=
-Date:   Sat, 24 Apr 2021 08:48:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     firas ashkar <firas.ashkar@savoirfairelinux.com>
-Cc:     mst@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: uio: uio_pci_generic: add missing memory mappings
-Message-ID: <YIO/MgBS15Gme0Nu@kroah.com>
-References: <b9598838a77c156a88b2847f43c3a276c340de04.camel@savoirfairelinux.com>
+        id S232082AbhDXHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 03:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhDXHUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 03:20:16 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87620C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 00:19:38 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id w10so306146pgh.5
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 00:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hn51PY3pPm3kGtoDtPX4jjQp72j/PPh9WRN9t50CmqE=;
+        b=kSJvGQDYFGHgB0/HnxoNSOhSHoQguJz14XtPApVtLtOyyYDK0iZb9ylkgJK3ubHNde
+         A30YOMdL9iF/EfqRxzzEhQC1l1JaQzhPB/f/7dErvYGPAIu5NVWqU6UmGY1uGFJkpBlr
+         /1K++6qvqqt7r4UDg88MPbW/73BldH9u//UKplas1k14WgxE+Oue93gUyOmGBNIL0wvr
+         a3ldCCij0Zs/GvDka8qbSZ5Nlx8GXcwzOWaRSMCda/2gpeCaDeiSq2xALrL+RO9II7eX
+         1jkuzUY5hfzNtpFZdYmCHMxmJ193/p5OYCjxwlFiECL98mocQmYtT+NbTJxfBm2QxIdk
+         fK9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hn51PY3pPm3kGtoDtPX4jjQp72j/PPh9WRN9t50CmqE=;
+        b=FtmWe4oDFWg7JI8BKdDFnZywaSU1es2pmPpIa4ASLx3e3FsRjClJ0aXk5rPkKNaizx
+         LDe1H07ZqjrgwApAm8TyZjgCwh4FI0ZGSCvirfC2drd4/M5eAaeXuAQ5eqTgJ/ahqPzp
+         LVRXgjbFcCQri7Uvd+NaAETducXSA1Jv9RVDF0WJfEKf+mcUEqjUPxNUhsEJ1tFe3stV
+         TETuOdRuEzkPomT0YhuU4AjYoCkhSEHVQMktapKSYZ37XHErltJo3Kpc0rHmBOE01ThM
+         d6wv26X7AogFKYqkrWq8LqhHQidoHPbKyzlHcpgbunyDeO7iRRcgJAVKH9xCi/XNZuO+
+         A3zA==
+X-Gm-Message-State: AOAM532umBYar5qOmSneqJQVd9vDHP2TfhS/ZddDJPSavdrH7KHMxZFK
+        huKmD4972czVssTRLRX3+asWUPbAGmKbbplm8ONWfA==
+X-Google-Smtp-Source: ABdhPJwxgoUJMtmz8jI1rLJsBnHJOS6IoMNPMyg2Bsm6KR3jRbbWp6mUrsGinx0hcYto5eFPQ6cclf/7+19x9xGh2SY=
+X-Received: by 2002:a05:6a00:15cb:b029:25c:a742:d34d with SMTP id
+ o11-20020a056a0015cbb029025ca742d34dmr7330299pfu.25.1619248777694; Sat, 24
+ Apr 2021 00:19:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b9598838a77c156a88b2847f43c3a276c340de04.camel@savoirfairelinux.com>
+References: <20210423223404.3860547-1-seanjc@google.com> <20210423223404.3860547-4-seanjc@google.com>
+In-Reply-To: <20210423223404.3860547-4-seanjc@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Sat, 24 Apr 2021 00:19:21 -0700
+Message-ID: <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] KVM: x86: Tie Intel and AMD behavior for
+ MSR_TSC_AUX to guest CPU model
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:10:29PM -0400, firas ashkar wrote:
-> Hi,
-> pls find attached a trivial but necessary patch, this change is based on [drivers/uio/uio_pdrv_genirq.c], 
-> the patch was tested on following hardware: MiniPCIE AltaData ARNIC-429 module on imx8qm-apalis-ixora-v1.2
-> 
-> -- 
-> Firas Ashkar
-> Developpeur Système Embarqué
-> 
-> savoirfairelinux.com  | Montréal, Québec
-> 
-> Tél.: +1 514 276 5468 ext. 118
-> --------------------------------------
-> 
-> >From 0c83bbc8bbf6c45efc52f6d30b8302a5d9075198 Mon Sep 17 00:00:00 2001
-> From: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
-> Date: Fri, 23 Apr 2021 10:38:28 -0400
-> Subject: [PATCH 1/1] uio: uio_pci_generic: add memory mappings
-> 
-> import memory resources from underlaying pci device, thus allowing
-> userspace applications to memory map those resources.
-> ---
->  drivers/uio/uio_pci_generic.c | 52 +++++++++++++++++++++++++++++------
->  1 file changed, 43 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/uio/uio_pci_generic.c
-> b/drivers/uio/uio_pci_generic.c
-> index c7d681fef198..809eca95b5bb 100644
-> --- a/drivers/uio/uio_pci_generic.c
-> +++ b/drivers/uio/uio_pci_generic.c
-> @@ -24,9 +24,9 @@
->  #include <linux/slab.h>
->  #include <linux/uio_driver.h>
->  
-> -#define DRIVER_VERSION	"0.01.0"
-> -#define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
-> -#define DRIVER_DESC	"Generic UIO driver for PCI 2.3 devices"
-> +#define DRIVER_VERSION "0.01.0"
-> +#define DRIVER_AUTHOR "Michael S. Tsirkin <mst@redhat.com>"
-> +#define DRIVER_DESC "Generic UIO driver for PCI 2.3 devices"
->  
->  struct uio_pci_generic_dev {
->  	struct uio_info info;
-> @@ -56,7 +56,8 @@ static int release(struct uio_info *info, struct
-> inode *inode)
->  }
->  
->  /* Interrupt handler. Read/modify/write the command register to
-> disable
-> - * the interrupt. */
-> + * the interrupt.
-> + */
->  static irqreturn_t irqhandler(int irq, struct uio_info *info)
->  {
->  	struct uio_pci_generic_dev *gdev =
-> to_uio_pci_generic_dev(info);
-> @@ -68,11 +69,12 @@ static irqreturn_t irqhandler(int irq, struct
-> uio_info *info)
->  	return IRQ_HANDLED;
->  }
->  
-> -static int probe(struct pci_dev *pdev,
-> -			   const struct pci_device_id *id)
-> +static int probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
->  	struct uio_pci_generic_dev *gdev;
-> +	struct uio_mem *uiomem;
->  	int err;
-> +	int i;
->  
->  	err = pcim_enable_device(pdev);
->  	if (err) {
-> @@ -84,7 +86,8 @@ static int probe(struct pci_dev *pdev,
->  	if (pdev->irq && !pci_intx_mask_supported(pdev))
->  		return -ENOMEM;
->  
-> -	gdev = devm_kzalloc(&pdev->dev, sizeof(struct
-> uio_pci_generic_dev), GFP_KERNEL);
-> +	gdev = devm_kzalloc(&pdev->dev, sizeof(struct
-> uio_pci_generic_dev),
-> +			    GFP_KERNEL);
->  	if (!gdev)
->  		return -ENOMEM;
->  
-> @@ -97,8 +100,39 @@ static int probe(struct pci_dev *pdev,
->  		gdev->info.irq_flags = IRQF_SHARED;
->  		gdev->info.handler = irqhandler;
->  	} else {
-> -		dev_warn(&pdev->dev, "No IRQ assigned to device: "
-> -			 "no support for interrupts?\n");
-> +		dev_warn(
-> +			&pdev->dev,
-> +			"No IRQ assigned to device: no support for
-> interrupts?\n");
-> +	}
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1610,6 +1610,29 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
+>                  * invokes 64-bit SYSENTER.
+>                  */
+>                 data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
+> +               break;
+> +       case MSR_TSC_AUX:
+> +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
+> +                       return 1;
 > +
-> +	uiomem = &gdev->info.mem[0];
-> +	for (i = 0; i < MAX_UIO_MAPS; ++i) {
-> +		struct resource *r = &pdev->resource[i];
+> +               if (!host_initiated &&
+> +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> +                       return 1;
 > +
-> +		if (r->flags != (IORESOURCE_SIZEALIGN |
-> IORESOURCE_MEM))
-> +			continue;
+> +               /*
+> +                * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
+> +                * incomplete and conflicting architectural behavior.  Current
+> +                * AMD CPUs completely ignore bits 63:32, i.e. they aren't
+> +                * reserved and always read as zeros.  Enforce Intel's reserved
+> +                * bits check if and only if the guest CPU is Intel, and clear
+> +                * the bits in all other cases.  This ensures cross-vendor
+> +                * migration will provide consistent behavior for the guest.
+> +                */
+> +               if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
+> +                       return 1;
 > +
-> +		if (uiomem >= &gdev->info.mem[MAX_UIO_MAPS]) {
-> +			dev_warn(
-> +				&pdev->dev,
-> +				"device has more than " __stringify(
-> +					MAX_UIO_MAPS) " I/O memory
-> resources.\n");
-> +			break;
-> +		}
+> +               data = (u32)data;
+> +               break;
+>         }
+>
+>         msr.data = data;
+> @@ -1646,6 +1669,17 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+>         if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
+>                 return KVM_MSR_RET_FILTERED;
+>
+> +       switch (index) {
+> +       case MSR_TSC_AUX:
+> +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
+> +                       return 1;
 > +
-> +		uiomem->memtype = UIO_MEM_PHYS;
-> +		uiomem->addr = r->start & PAGE_MASK;
-> +		uiomem->offs = r->start & ~PAGE_MASK;
-> +		uiomem->size =
-> +			(uiomem->offs + resource_size(r) + PAGE_SIZE -
-> 1) &
-> +			PAGE_MASK;
-> +		uiomem->name = r->name;
-> +		++uiomem;
-> +	}
-> +
-> +	while (uiomem < &gdev->info.mem[MAX_UIO_MAPS]) {
-> +		uiomem->size = 0;
-> +		++uiomem;
->  	}
->  
->  	return devm_uio_register_device(&pdev->dev, &gdev->info);
-> -- 
-> 2.25.1
-> 
+> +               if (!host_initiated &&
+> +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> +                       return 1;
 
 
-Hi,
+It looks Table 2-2 of the Intel SDM Vol4 (April 2021) says
+TSC_AUX is supported:
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+   If CPUID.80000001H:EDX[27] = 1 or CPUID.(EAX=7,ECX=0):ECX[22] = 1
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Should we also check X86_FEATURE_RDPID before returning 1
+due to no RDTSCP support ?
+There doesn't seem to be a similar description in the APM though.
 
-- Your patch contains warnings and/or errors noticed by the
-  scripts/checkpatch.pl tool.
-
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
-
-- Your patch does not have a Signed-off-by: line.  Please read the
-  kernel file, Documentation/SubmittingPatches and resend it after
-  adding that line.  Note, the line needs to be in the body of the
-  email, before the patch, not at the bottom of the patch or in the
-  email signature.
-
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Thanks,
+Reiji
