@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DA1369DF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75543369DF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 02:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244339AbhDXAs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 20:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S244384AbhDXAsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 20:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244212AbhDXAr7 (ORCPT
+        with ESMTP id S244231AbhDXAsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 20:47:59 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7B6C061342
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:16 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id a15-20020a05622a02cfb02901b5e54ac2e5so15538268qtx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:16 -0700 (PDT)
+        Fri, 23 Apr 2021 20:48:02 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608E8C061345
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:18 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f7-20020a5b0c070000b02904e9a56ee7e7so26239649ybq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:47:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=JB6oJJbZMgaQnz7sqxcoT6QpJu5P3mbAqjor0BPlckU=;
-        b=gawyKmWHr60QBhm0KhMDBJy75XnqknCiP9RfJiC4WSxotL9fml3dncimBkNry5llXI
-         GIUHw+eneBqfGoQuUCB2zKZIi4DIN6WjCg78tl7wxvozV/T/ynHsjonDfy5HmUkIpK5p
-         Lemt/VPEUSJPXemM8qGHsVc7oTmx3EEbNpXkLltre8r3sxcPi1UnI0IJMHjILIQIEcDd
-         w9rp7c/auaOIc9xejwFwnQRk44gB4hJovUgyIgZUlojAXd7sptVvFsgkIw/cZ/+/bvZN
-         liEAQakKftCs3ilzhXSrJ7ipScs+kvm+FWY5ondZxDCqvBlsjJ4xzdNvgGiN7kKZObN4
-         Nq3A==
+        bh=Jt+QADH41QWXYhePdcqYrOCInHjfAIgUcTFitJT85II=;
+        b=VKCD32tNE1gQlT8ZBHmOFQRMkonRpIDU2w8ZcZmMWG/7LY6e4AiT3pguQltFHx+cnZ
+         Q1K5jdZDD7ObiUHwqs3LK8yW6Lm8azAWM8On3E0EOePkJjeVIpQbzl2NYdOA5DtnD0uE
+         /tJeuBOOcMgrXvAXgj70Gx2Raox3rxVrhxzxWGsTAydHbW/6kYjdTuiuVSQIZHDBcG7c
+         AOHXWD+1aSRrWePdu/il24DPE9Vd7L+uPsF+KwVKzddyZzCGn6HO8wm66J0kx3dIBVHX
+         Y3KTVdZKSBede+UunwTlNnFwh9QSaXzNjWKYCayzmuVdBWs22HkiQ5fltixxunX2zl7w
+         Zy7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=JB6oJJbZMgaQnz7sqxcoT6QpJu5P3mbAqjor0BPlckU=;
-        b=U3kpnYRW8sYH0tm6imhPtvw20do4g0FNhMGP2n77HrMF7qDe5NRbcacpV7FollmQSZ
-         lvFdTpcLKQDAEPRSVCjCsv6NzFRIQCMKupvhaMsz6UkkRxCd0NF3JN18wJFVvW4lIUAt
-         ala4cU9Ps2I372TIlW8XcdvO9Grdw37c+/mCppuNb2OzMbT+7f4OmZNzMjcrRbO5R2vb
-         dKhk9lN+fxjjrINkzAH3hKtfO/MTidPb0VUuIZNkcsOWFS5hH+HTrfKqQRxCs2WP13sq
-         tOUfVH1c9j2IZIxHbXYLVOYlX9rwHTcxzMj7dYiwyD5U0nUnJv2JJal1rGepNreDAAfg
-         OkeQ==
-X-Gm-Message-State: AOAM533qhMMZG/QC2TrR90f2WnQPOYofzc8DjrbIHSJVH+59Lx9bSkvh
-        Vj9In6a2DxC+J33gim/tW61Tleb1nkw=
-X-Google-Smtp-Source: ABdhPJylGy/lLogptAm0ek+Ns5KvivhCMZAXT84Fhul4D9tz+Lpeo/wX0Iaqw3kuo7eVq38Tn/AfvbaHqmQ=
+        bh=Jt+QADH41QWXYhePdcqYrOCInHjfAIgUcTFitJT85II=;
+        b=SpMvfQdvpDEjbC6EwfspyAiwg98iIGtLj2bAqhX2bKW35uXejlZXLyJJqu4lSzqy+m
+         rZcUS+p7IqHhtVVOW9iGMwCbWejRT033c4a53UT79h9d4kFmQww8UgOdJeuxgXPiNf32
+         0Orvr7UB6/ISgLWpJlg2oWUaL/KB7ypTQjaFOk/zHbpUe83VrYAPuIhpA3iKejDuvaMd
+         OAXJc/nX2OLaKJiDTSVXGBRbczvEyRjJojY2UHzk5+Ch/vG/GiY+cPaSrDk/LKs8/qoK
+         j+H/Q4jhC4bAXFNPG0uY83ZZvFvhIwXit6u0gWnv2KTGWI/LyKKElPMpdQ2nxfnH04JB
+         FBXA==
+X-Gm-Message-State: AOAM531Ubh41H5zN+/BmeTnJFAKBOUdEjQK6Q0aSEtGqtM8bBTqVcB90
+        xZcFaHrh5A6/i76Avun3MdViRaA0rCg=
+X-Google-Smtp-Source: ABdhPJwcTnmC6X0oWuujcgYVmlJxsbfvu4nwR2aDmxuh3bzRd3SWRELPe0JgJ/qSwHhiHda4+AZA0+IYfiQ=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:ad52:3246:e190:f070])
- (user=seanjc job=sendgmr) by 2002:a05:6214:3eb:: with SMTP id
- cf11mr7365067qvb.37.1619225235338; Fri, 23 Apr 2021 17:47:15 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:6f85:: with SMTP id k127mr10032078ybc.270.1619225237656;
+ Fri, 23 Apr 2021 17:47:17 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 23 Apr 2021 17:46:09 -0700
+Date:   Fri, 23 Apr 2021 17:46:10 -0700
 In-Reply-To: <20210424004645.3950558-1-seanjc@google.com>
-Message-Id: <20210424004645.3950558-8-seanjc@google.com>
+Message-Id: <20210424004645.3950558-9-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210424004645.3950558-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH 07/43] KVM: VMX: Remove explicit MMU reset in enter_rmode()
+Subject: [PATCH 08/43] KVM: SVM: Drop explicit MMU reset at RESET/INIT
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -66,38 +66,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop an explicit MMU reset when entering emulated real mode now that the
-vCPU INIT/RESET path correctly handles conditional MMU resets, e.g. if
-INIT arrives while the vCPU is in 64-bit mode.
+Drop an explicit MMU reset in SVM's vCPU RESET/INIT flow now that the
+common x86 path correctly handles conditional MMU resets, e.g. if INIT
+arrives while the vCPU is in 64-bit mode.
 
-Note, while there are multiple other direct calls to vmx_set_cr0(), i.e.
-paths that change CR0 without invoking kvm_post_set_cr0(), only the INIT
-emulation can reach enter_rmode().  CLTS emulation only toggles CR.TS,
-VM-Exit (and late VM-Fail) emulation cannot architecturally transition to
-Real Mode, and VM-Enter to Real Mode is possible if and only if
-Unrestricted Guest is enabled (exposed to L1).
-
-This effectively reverts commit 8668a3c468ed ("KVM: VMX: Reset mmu
-context when entering real mode")
+This reverts commit ebae871a509d ("kvm: svm: reset mmu on VCPU reset").
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/x86/kvm/svm/svm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 9c00d013af59..e90952ca6087 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2960,8 +2960,6 @@ static void enter_rmode(struct kvm_vcpu *vcpu)
- 	fix_rmode_seg(VCPU_SREG_DS, &vmx->rmode.segs[VCPU_SREG_DS]);
- 	fix_rmode_seg(VCPU_SREG_GS, &vmx->rmode.segs[VCPU_SREG_GS]);
- 	fix_rmode_seg(VCPU_SREG_FS, &vmx->rmode.segs[VCPU_SREG_FS]);
--
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index d4d7720ce42f..fbea2f45de9a 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1216,7 +1216,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
+ 	 * It also updates the guest-visible cr0 value.
+ 	 */
+ 	svm_set_cr0(vcpu, X86_CR0_NW | X86_CR0_CD | X86_CR0_ET);
 -	kvm_mmu_reset_context(vcpu);
- }
  
- int vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+ 	save->cr4 = X86_CR4_PAE;
+ 
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
