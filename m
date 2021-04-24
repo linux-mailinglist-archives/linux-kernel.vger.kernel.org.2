@@ -2,161 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8B636A2CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2431936A2D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 21:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhDXTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 15:35:51 -0400
-Received: from mga03.intel.com ([134.134.136.65]:42940 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231814AbhDXTfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 15:35:51 -0400
-IronPort-SDR: dSyYwcWBxRo0M0Ld+X7Na3ZNzXH8PmCxteX2q8U5sk3/YPGjNyFbK01Oc79GoxQaqZjYSGIPXj
- trg9vw1zdUmg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="196253525"
-X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
-   d="scan'208";a="196253525"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 12:35:11 -0700
-IronPort-SDR: eWaAuycVZvMYE5H07eDng9z4pX7deCf2/JaifkPQa2f60yrJW4x5fcl59Nm4fxqTq5VaI3/L77
- PH3E33nayR3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,248,1613462400"; 
-   d="scan'208";a="464658036"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 24 Apr 2021 12:35:10 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1laO3Z-0005DM-FX; Sat, 24 Apr 2021 19:35:09 +0000
-Date:   Sun, 25 Apr 2021 03:34:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 8db8c57757fd307764c22a3c987850bec0a863f1
-Message-ID: <608472d2.KpO4ZMR7MX3SYmAg%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234516AbhDXTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 15:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231814AbhDXTno (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 15:43:44 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B265EC061574;
+        Sat, 24 Apr 2021 12:43:05 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so815639pjz.0;
+        Sat, 24 Apr 2021 12:43:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=Eoyv3XG1ZYXEWoIOV6LUW5hDQHt2KxAWCkkKAqqPJAY=;
+        b=CbXXAtAOVudmb5LcFoq3EFLwMI263EnPJykUMS6SNaZrMh8pptLwCWFxqpjUte7ff7
+         bc6DdT614r5tXTDUAMLvlSOwUf8OkZNiJ/BeC8gUp4U8V4pHAmuWKtMcApgSzMF6qwPt
+         Uu8NUdhAxLMpp7XhgBdwNYtGbuKBYv3swL8RfG4OfNSwZgj4nqs4CbN+J1fnBDGUAaGx
+         LVTFqAB0bgXkFel3/4M8ZUylKrfWG2Ex/DJl7JkaNc3NFp4bXuEUoex7VvQRDKJbSbXA
+         MeWb7PSzHIJQxyv3Umg9FW7At2oUv3QOnBY9AmgqAfi6V/k6GpCdJviY403mkbB7/FUp
+         SaJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=Eoyv3XG1ZYXEWoIOV6LUW5hDQHt2KxAWCkkKAqqPJAY=;
+        b=Dg5ectWlwYfG8vyxGiyP/tt2mdQct++AE7R3JfHnWwXhKPflyvG7UP+rYhg2m8m0WQ
+         E5zwqdQEis7GUcQLGk8jyAvhJPl/t75hKhfJO5c8PZYpfHIHeGuwwaYWPjTm1XPPBCVX
+         56lTV9XX7sP4FLMCD8ma81t8vJwx1MWjCG5L8SBlyqZJuFXmVzWBTHbK9DOlasYLPbgq
+         wbudKq0+9Cz+yJU8iy35gpkAG5k2PnUpXIBXDYK10yRAM8vlmX7/2VHhHiHyANqe/8Pq
+         p6p70eEohVqZK0/87xDL7esJ60F/Qa9YyuyS6RPFtkB/NAejxnNwm4zst0aZCDGnTjoA
+         rsKw==
+X-Gm-Message-State: AOAM531NSwHdnjjYsUvmoBoHYZwMDQk58IUd88nOoVpuOwylIwX0B41J
+        bXT8MNLHlTIDmLTVndcR10X5JzFwYk0GGk6j
+X-Google-Smtp-Source: ABdhPJzBw2E2Zkoqa8O0arEZVQ4U9ON+3Rt1poxgjpgfDwTquFvhv0YZPRwwbcpO4tG7rkR4LvgW3w==
+X-Received: by 2002:a17:902:dac9:b029:eb:732:d914 with SMTP id q9-20020a170902dac9b02900eb0732d914mr10122606plx.85.1619293385028;
+        Sat, 24 Apr 2021 12:43:05 -0700 (PDT)
+Received: from localhost ([122.172.37.94])
+        by smtp.gmail.com with ESMTPSA id u18sm7572146pfm.4.2021.04.24.12.43.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Apr 2021 12:43:04 -0700 (PDT)
+Date:   Sun, 25 Apr 2021 01:13:01 +0530
+From:   Anupama K Patil <anupamakpatil123@gmail.com>
+To:     Jaroslav Kysela <perex@perex.cz>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, bkkarthik@pesu.pes.edu,
+        gregkh@linuxfoundation.org, kernelnewbies@kernelnewbies.org
+Subject: [PATCH] drivers: pnp: proc.c: Handle errors while attaching devices
+Message-ID: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qw4iz6cfhv4x3sq7"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 8db8c57757fd307764c22a3c987850bec0a863f1  Merge branch 'linus'
 
-elapsed time: 723m
+--qw4iz6cfhv4x3sq7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 99
-configs skipped: 2
+isapnp_proc_init() does not look at the return value from
+isapnp_proc_attach_device(). Check for this return value in
+isapnp_proc_detach_device().
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Cleanup in isapnp_proc_detach_device and
+isapnp_proc_detach_bus() for cleanup.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                             allyesconfig
-powerpc                  mpc885_ads_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                         bcm2835_defconfig
-powerpc                      walnut_defconfig
-mips                       capcella_defconfig
-arm                        trizeps4_defconfig
-arm                           sama5_defconfig
-arc                 nsimosci_hs_smp_defconfig
-i386                                defconfig
-arm                          exynos_defconfig
-ia64                             alldefconfig
-m68k                                defconfig
-arc                        vdk_hs38_defconfig
-arm                     eseries_pxa_defconfig
-arc                      axs103_smp_defconfig
-powerpc                     tqm8555_defconfig
-sh                           se7619_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                      tqm8xx_defconfig
-arm                            qcom_defconfig
-arm                        magician_defconfig
-sh                           sh2007_defconfig
-mips                        vocore2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210424
-i386                 randconfig-a002-20210424
-i386                 randconfig-a001-20210424
-i386                 randconfig-a006-20210424
-i386                 randconfig-a004-20210424
-i386                 randconfig-a003-20210424
-x86_64               randconfig-a015-20210424
-x86_64               randconfig-a016-20210424
-x86_64               randconfig-a011-20210424
-x86_64               randconfig-a014-20210424
-x86_64               randconfig-a013-20210424
-x86_64               randconfig-a012-20210424
-i386                 randconfig-a012-20210424
-i386                 randconfig-a014-20210424
-i386                 randconfig-a011-20210424
-i386                 randconfig-a013-20210424
-i386                 randconfig-a015-20210424
-i386                 randconfig-a016-20210424
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Changed sprintf() to the kernel-space function scnprintf() as it returns
+the actual number of bytes written.
 
-clang tested configs:
-x86_64               randconfig-a004-20210424
-x86_64               randconfig-a002-20210424
-x86_64               randconfig-a001-20210424
-x86_64               randconfig-a006-20210424
-x86_64               randconfig-a005-20210424
-x86_64               randconfig-a003-20210424
+Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
+save memory.
 
+Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
+Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
+Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
+index 785a796430fa..46ebc24175b7 100644
+--- a/drivers/pnp/isapnp/proc.c
++++ b/drivers/pnp/isapnp/proc.c
+@@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_ops =
+=3D {
+ 	.proc_read	=3D isapnp_proc_bus_read,
+ };
+=20
++static int isapnp_proc_detach_device(struct pnp_dev *dev)
++{
++	proc_remove(dev->procent);
++	dev->procent =3D NULL;
++	return 0;
++}
++
++static int isapnp_proc_detach_bus(struct pnp_card *bus)
++{
++	proc_remove(bus->procdir);
++	return 0;
++}
++
+ static int isapnp_proc_attach_device(struct pnp_dev *dev)
+ {
+ 	struct pnp_card *bus =3D dev->card;
+-	struct proc_dir_entry *de, *e;
+ 	char name[16];
+=20
+-	if (!(de =3D bus->procdir)) {
+-		sprintf(name, "%02x", bus->number);
+-		de =3D bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
+-		if (!de)
++	if (!bus->procdir) {
++		scnprintf(name, 16, "%02x", bus->number);
++		bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
++		if (!bus->procdir)
+ 			return -ENOMEM;
+ 	}
+-	sprintf(name, "%02x", dev->number);
+-	e =3D dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, de,
++	scnprintf(name, 16, "%02x", dev->number);
++	dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, bus->procdir,
+ 					    &isapnp_proc_bus_proc_ops, dev);
+-	if (!e)
++	if (!dev->procent) {
++		isapnp_proc_detach_bus(bus);
+ 		return -ENOMEM;
+-	proc_set_size(e, 256);
++	}
++	proc_set_size(dev->procent, 256);
+ 	return 0;
+ }
+=20
+ int __init isapnp_proc_init(void)
+ {
+ 	struct pnp_dev *dev;
++	int dev_attach;
+=20
+ 	isapnp_proc_bus_dir =3D proc_mkdir("bus/isapnp", NULL);
+ 	protocol_for_each_dev(&isapnp_protocol, dev) {
+-		isapnp_proc_attach_device(dev);
++		dev_attach =3D isapnp_proc_attach_device(dev);
++		if (!dev_attach) {
++			pr_info("procfs: pnp: Unable to attach the device, not enough memory");
++			isapnp_proc_detach_device(dev);
++			return -ENOMEM;
++		}
+ 	}
+ 	return 0;
+ }
+--=20
+2.25.1
+
+
+--qw4iz6cfhv4x3sq7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEDSQZGCDcREXgcOjQtGmOOZV75b4FAmCEdMAACgkQtGmOOZV7
+5b5rYQv8DcfmujcVa4Pr/2j8qdR7cglKcWf8wD5DJzufBdxhKF64RpkQFtpHFfbS
+yb1X0KXHY+LonQgM994qYdnGA9zrBG5xihlhc9LtTjGqG3FTovVix1DveLX6GrXs
+9fmlEkGA8+Hn+rFbTfP6iJQBIGa3ifqqAWLVKbYPrA+9aox3b7HGDnzOvb6GhDAU
+vKEjRBFaPjSSHVsfiRnKCZJ0QW/oWvy0kMprR8bBa/pj8iSXD9qy4izut+ZVPs60
+JIe2YfGaitBlkhIU4Em0qgtJaACq4Ai6Kmb2x/gjQ3nupGzEoIe4XLVJKmggqdnX
+ccSBPJDT1KxPtYjI7Z2jqvh1G8wIb4YgtSB3oDgY+N+qFdBnrBveGItRBD4C8QPd
+80MFliKByEKy2v+ggnNweiznGp3Q1VVzvKySgdiKQz1rmUF3cLO2T84mm7TUYMNM
+w73W0XKpRiqeuALqqKfCGV7fpFIHzjQgmX5vpwps+hY4xjgPnl+gg9bjOWviAHIb
+6kKRsZYT
+=x6jQ
+-----END PGP SIGNATURE-----
+
+--qw4iz6cfhv4x3sq7--
