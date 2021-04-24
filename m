@@ -2,130 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD5F369EB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 06:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98DD369EE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 06:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhDXERO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 00:17:14 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28354 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhDXERK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 00:17:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619237792; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=1GO/BHrD+uoX9nHzeuPKjOTdCUh7DzWsv7hYDHfSgzs=; b=BZLoUKOeQBfpOZ9PUYdOjPG0WqCQ2sdLHN4j8tuGJuFlyTyAZe4kgHRGnQX37lMWbhru9LeM
- CYOLu78dWACFLxVl0r81D8mMvzT2ygml1afrl1oTfbKN9aFhiB0EqJa/Epbi1XKBHgw+KdYK
- eeefv26wrmOvZs6PXOg2KT9MGJw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60839b9c2cc44d3aeaa71c79 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 24 Apr 2021 04:16:28
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9F92BC433F1; Sat, 24 Apr 2021 04:16:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.110.218] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38F36C433F1;
-        Sat, 24 Apr 2021 04:16:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 38F36C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v2] usb: gadget: Fix double free of device descriptor
- pointers
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org,
-        peter.chen@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hemant Kumar <hemantk@codeaurora.org>, stable@vger.kernel.org
-References: <1619034452-17334-1-git-send-email-wcheng@codeaurora.org>
- <87lf9amvl5.fsf@kernel.org>
- <c5599433-3eb0-3918-d93b-6860f7951e92@codeaurora.org>
-Message-ID: <69253e54-771b-3b1c-1765-77bfb6288715@codeaurora.org>
-Date:   Fri, 23 Apr 2021 21:16:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232619AbhDXE1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 00:27:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229654AbhDXE1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 00:27:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDF1061042;
+        Sat, 24 Apr 2021 04:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619238424;
+        bh=UNBzx7jGOk4CReRa/FNMvK2E7MWEObhV7+25u+OlWcw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uXa0xkUJojVbZiASIxKAC9TpK4tRigADTtUN97u04+2kkrdc/XvlWYUscHRCU5GES
+         XtGemyqqR6fJXQc829c3f4gZ5EOxqWjtY1T7updhyPMN9Ci/ounWpT//WODCk6f9Vt
+         /5b8SNAs56W1XG+IoANxiZvP/Q/wJSjDkzY20CzvWTywDojTdIzSAVHoP4RvdZnEHe
+         dSqnHkMPHfUyT0/QgtAe/dUhv3wI5rL7vpzXC085OXDHtnelcBpLsFSVtbZJAE+DjN
+         3nT25me2mAO7mnx8cEgHHA+dDXbD4VYEUtze7TvK7FfifGDU/OPuqPl8Nn6g/9o7K6
+         HrTxvRIuZDmWA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A18995C0698; Fri, 23 Apr 2021 21:27:04 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 21:27:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     mingo@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        Daniel Lustig <dlustig@nvidia.com>, joel@joelfernandes.org,
+        elver@google.com, Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH] tools/memory-model: Correct the name of
+ smp_mb__after_spinlock()
+Message-ID: <20210424042704.GR975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210424002509.797308-1-palmer@dabbelt.com>
 MIME-Version: 1.0
-In-Reply-To: <c5599433-3eb0-3918-d93b-6860f7951e92@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210424002509.797308-1-palmer@dabbelt.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/23/2021 12:10 PM, Wesley Cheng wrote:
+On Fri, Apr 23, 2021 at 05:25:09PM -0700, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
 > 
+> This was missing one of the double _s.  I only found it because I
+> mis-typed the name myself.
 > 
-> On 4/22/2021 4:01 AM, Felipe Balbi wrote:
->>
->> Hi,
->>
->> Wesley Cheng <wcheng@codeaurora.org> writes:
->>
->>> From: Hemant Kumar <hemantk@codeaurora.org>
->>>
->>> Upon driver unbind usb_free_all_descriptors() function frees all
->>> speed descriptor pointers without setting them to NULL. In case
->>> gadget speed changes (i.e from super speed plus to super speed)
->>> after driver unbind only upto super speed descriptor pointers get
->>> populated. Super speed plus desc still holds the stale (already
->>> freed) pointer. Fix this issue by setting all descriptor pointers
->>> to NULL after freeing them in usb_free_all_descriptors().
->>
->> could you describe this a little better? How can one trigger this case?
->> Is the speed demotion happening after unbinding? It's not clear how to
->> cause this bug.
->>
-> Hi Felipe,
-> 
-> Internally, we have a mechanism to switch the DWC3 core maximum speed
-> parameter dynamically for displayport use cases.  This issue happens
-> whenever we have a maximum speed change occur on the USB gadget, which
-> for DWC3 happens whenever we call gadget init.  When we switch in and
-> out of host mode, gadget init is being executed, leading to the change
-> in the USB gadget max speed parameter:
-> 
-> dwc->gadget->max_speed		= dwc->maximum_speed;
-> 
-> I know that configFS gadget has the max_speed sysfs file, which is a
-> similar mechanism, but I haven't tried to see if we can reproduce the
-> same issue with it.  Let me see if we can reproduce this with that
-> configfs speed setting.
-> 
-> Thanks
-> Wesley Cheng
-> 
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Hi Felipe,
+Good catch, and thank you, but Björn Töpel beat you to it.
 
-So I tried with doing it through the configFS max_speed, but it doesn't
-have the same effect, as the setting done in dwc3_gadget_init() will
-still be assigning the composite/UDC device's maximum speed to SSP/SS.
-This is what the usb_assign_descriptor() uses to determine whether or
-not to copy the SSP and SS descriptors.
+dce310f2e546 ("tools/memory-model: Fix smp_mb__after_spinlock() spelling")
 
-So in summary, at least for a DWC3 based subsystem, the only way to
-reproduce it is if there is a way to dynamically switch the DWC3 core
-max speed parameter.
+This one is queued in the -rcu tree for the v5.14 merge window.
 
-Thanks
-Wesley Cheng
+But please keep the fixes coming!
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+							Thanx, Paul
+
+> ---
+>  tools/memory-model/Documentation/explanation.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/memory-model/Documentation/explanation.txt b/tools/memory-model/Documentation/explanation.txt
+> index f9d610d5a1a4..5d72f3112e56 100644
+> --- a/tools/memory-model/Documentation/explanation.txt
+> +++ b/tools/memory-model/Documentation/explanation.txt
+> @@ -2510,7 +2510,7 @@ they behave as follows:
+>  	smp_mb__after_atomic() orders po-earlier atomic updates and
+>  	the events preceding them against all po-later events;
+>  
+> -	smp_mb_after_spinlock() orders po-earlier lock acquisition
+> +	smp_mb__after_spinlock() orders po-earlier lock acquisition
+>  	events and the events preceding them against all po-later
+>  	events.
+>  
+> -- 
+> 2.31.1.498.g6c1eba8ee3d-goog
+> 
