@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD8B36A1B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 16:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FDB36A1B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 17:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbhDXOz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 10:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbhDXOzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 10:55:25 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B558C061574;
-        Sat, 24 Apr 2021 07:54:47 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id m13so52102091oiw.13;
-        Sat, 24 Apr 2021 07:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=7Jv7S/tIrsm0fJNvZH7EY4pSQqJrTN9GdoDBxE/VwTk=;
-        b=IolVVn9BlI5HauMGHnjgoszZwPggzUvX6Wxqaa6cdtTawfCrOIFPCjVtVF9Bgkhaw2
-         4CbZZ0e57ofes9OjSm1S2Dscdu/JN2nLjqwNVqN+5kiEhhg+yGxn1GIMQEnrsG1m09aX
-         02i9l3rXelDnvARc44bXQTzzeZL17Ld784vaEoEDke+WNTWOi4OMeilNwbBU5gSexuEN
-         jD4zqxd8SDLfp2dx1n5DVSwSQy/C6eM9xm1duZk8C4BQlckJ4PMOcAmRVXX1/tLY4RJJ
-         +Ec/KJxPI+h+GfAznCmCn1mNK6Wf9Fo7wbOxfcmq1UajxHS5HqwxeBDE6N4ctmzMXGUv
-         +/Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=7Jv7S/tIrsm0fJNvZH7EY4pSQqJrTN9GdoDBxE/VwTk=;
-        b=Efl+mY6iodu/GvCQR93pdqJ3AionY6rvswY893iDlbgW4zZdv8M5/pX9ZRu9RmRxHg
-         iwu/I6lHENzle4k10KPodXL0JDG0Wn+Jx7xAvIA6rTRxaBYWpIiLMPJXMbjqkJ3L1HG6
-         P+birbrUY34ERlCex7ty4ZIsQFLym1xaPwfeSDRHVdZ+aXW4RPz0HWIkE2ihILa4whYO
-         EWF2YFv6x9Px8cDUjCzh3p2IKcZrJmKPmm9aP4Mr3jYFjvVGvQ6JKIkNuBnAxp4bqGCV
-         Odp/j+iNm7gc4WlvLGVXaoIgZDkQuMTSxaR11XxmuqRYPRDfJsP6tRkC6z3Lz8R49RIZ
-         +KEw==
-X-Gm-Message-State: AOAM533ZeXuc+yHFb7JJQ47doy0aFBcvZDaUFwjWBuCn0Z2RZCpF9AEZ
-        9Akmws7zlC9AReKJBvFA4aJ21gtocCo=
-X-Google-Smtp-Source: ABdhPJy0TCNZhkwwYHdqT7N+DixhR6/Huoocr9mQ/nNpc2en1Twtwmbjx+RgOJm3DSgqBq4GHylBqQ==
-X-Received: by 2002:a05:6808:14c8:: with SMTP id f8mr7647480oiw.55.1619276086749;
-        Sat, 24 Apr 2021 07:54:46 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x2sm2237773ote.47.2021.04.24.07.54.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 24 Apr 2021 07:54:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2] usb: gadget: Drop unnecessary NULL checks after container_of
-Date:   Sat, 24 Apr 2021 07:54:43 -0700
-Message-Id: <20210424145443.170413-1-linux@roeck-us.net>
+        id S233650AbhDXPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 11:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231892AbhDXPE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 11:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72D3261452;
+        Sat, 24 Apr 2021 15:04:19 +0000 (UTC)
+From:   Tom Zanussi <tom.zanussi@linux.intel.com>
+To:     vkoul@kernel.org
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        kan.liang@linux.intel.com, dave.jiang@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: [PATCH v4 0/2] dmaengine: idxd: IDXD pmu support
+Date:   Sat, 24 Apr 2021 10:04:14 -0500
+Message-Id: <cover.1619276133.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameters passed to allow_link and drop_link functions are never NULL.
-That means the result of container_of() on those parameters is also
-never NULL, even though the reference into the structure points to the
-first element of the structure. Remove the unnecessary NULL checks.
+Hi,
 
-This change was made automatically with the following Coccinelle script.
-A now obsolete 'out:' label was removed manually.
+This is v4 of the IDXD pmu support patchset, which is the same as v3
+but rebased to the latest dmaengine/next, no other changes.
 
-@@
-type t;
-identifier v;
-statement s;
-@@
+Thanks,
 
-<+...
-(
-  t v = container_of(...);
-|
-  v = container_of(...);
-)
-  ...
-  when != v
-- if (\( !v \| v == NULL \) ) s
-...+>
+Tom
 
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Dropped RFC, added Acked-by:, dropped now obsolete 'out:' label
+ -- original v3 text --
 
- drivers/usb/gadget/function/uvc_configfs.c | 5 -----
- 1 file changed, 5 deletions(-)
+Hi,
 
-diff --git a/drivers/usb/gadget/function/uvc_configfs.c b/drivers/usb/gadget/function/uvc_configfs.c
-index 00fb58e50a15..7775f9902360 100644
---- a/drivers/usb/gadget/function/uvc_configfs.c
-+++ b/drivers/usb/gadget/function/uvc_configfs.c
-@@ -914,8 +914,6 @@ static int uvcg_streaming_header_allow_link(struct config_item *src,
- 
- 	target_fmt = container_of(to_config_group(target), struct uvcg_format,
- 				  group);
--	if (!target_fmt)
--		goto out;
- 
- 	uvcg_format_set_indices(to_config_group(target));
- 
-@@ -955,8 +953,6 @@ static void uvcg_streaming_header_drop_link(struct config_item *src,
- 	mutex_lock(&opts->lock);
- 	target_fmt = container_of(to_config_group(target), struct uvcg_format,
- 				  group);
--	if (!target_fmt)
--		goto out;
- 
- 	list_for_each_entry_safe(format_ptr, tmp, &src_hdr->formats, entry)
- 		if (format_ptr->fmt == target_fmt) {
-@@ -968,7 +964,6 @@ static void uvcg_streaming_header_drop_link(struct config_item *src,
- 
- 	--target_fmt->linked;
- 
--out:
- 	mutex_unlock(&opts->lock);
- 	mutex_unlock(su_mutex);
- }
+This is v3 of the IDXD pmu support patch, which addresses the comments
+from Vinod:
+
+ - Removed the default line for INTEL_IDXD_PERFMON making it default 'n'
+
+ - Replaced #ifdef CONFIG_INTEL_IDXD_PERFMON with IS_ENABLED()
+
+ - Split the patch into two separate patches, the perfmon
+   implementation and the code that uses it in the IDXD driver.
+
+ - Added a new file,
+   Documentation/ABI/testing/sysfs-bus-event_source-devices-dsa that
+   documents the new format and cpumask attributes, and added better
+   comments for those in the code.
+
+ - Changed 'dogrp' to 'do_group' in perfmon_collect_events()
+
+ - Moved 'int idx' inside the loop in perfmon_validate_group() to the
+   top of function.
+
+ - In perfmon_pmu_read_counter(), return ioread64() directly and get
+   rid of cntrdata.
+
+I also fixed some erroneous code in perfmon_counter_overflow() that
+because of my misreading of the spec caused unintended clearing of
+wrong bits.  According to the spec you need to write 1 rather than 0
+to an OVFSTATUS bit to clear it.
+
+Thanks,
+
+Tom
+
+ -- original v2 text --
+
+Hi,
+
+This is v2 of the IDXD pmu support patch, which is the same as v1 but
+removes a few assigned-but-unused variables reported by kernel test
+robot <lkp@intel.com>.
+
+ -- original v1 text --
+
+Hi,
+
+This patchset implements initial pmu support for the Intel DSA (Data
+Streaming Accelerator [1]), which I'm hoping can go into 5.13.
+
+I'm also hoping to supply a couple follow-on patches in the near
+future, but I'm not yet sure how much sense they make, so I thought
+I'd throw a couple ideas out there and maybe get some opinions before
+going forward with them:
+
+  - The perf userspace interface for this isn't exactly user-friedly,
+    in that you currently need to specify numeric values for field
+    values:
+
+     # perf stat -e dsa0/filter_wq=0x1,filter_tc=0x1,filter_sz=0x7,
+                    filter_eng=0x1,event=0x8,event_category=0x3/
+
+    It would be nicer to be able to specify those values symbolically
+    instead, and the way to do that seems to be via some JSON files in
+    perf userspace.
+
+  - Some of the DSA pmu support is patterned after existing uncore
+    code, and there seems to be at least some opportunity to
+    consolidate some of the things they both do into common code, such
+    as the cpumask device attributes and related cpu hotplug support.
+    At this point I'm not sure how much sense it makes to put any
+    effort into that, but would be willing to try if there would be
+    some interest in it, especially considering there will probably be
+    future pmu support added that could benefit from it.
+
+Thanks,
+
+Tom
+
+
+Tom Zanussi (2):
+  dmaengine: idxd: Add IDXD performance monitor support
+  dmaengine: idxd: Enable IDXD performance monitor support
+
+ .../sysfs-bus-event_source-devices-dsa        |  30 +
+ drivers/dma/Kconfig                           |  12 +
+ drivers/dma/idxd/Makefile                     |   2 +
+ drivers/dma/idxd/idxd.h                       |  45 ++
+ drivers/dma/idxd/init.c                       |   9 +
+ drivers/dma/idxd/irq.c                        |   5 +-
+ drivers/dma/idxd/perfmon.c                    | 662 ++++++++++++++++++
+ drivers/dma/idxd/perfmon.h                    | 119 ++++
+ drivers/dma/idxd/registers.h                  | 108 +++
+ include/linux/cpuhotplug.h                    |   1 +
+ 10 files changed, 989 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-devices-dsa
+ create mode 100644 drivers/dma/idxd/perfmon.c
+ create mode 100644 drivers/dma/idxd/perfmon.h
+
 -- 
 2.17.1
 
