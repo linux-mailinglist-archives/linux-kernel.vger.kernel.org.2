@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B05336A014
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EAC36A019
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 10:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhDXIKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 04:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234643AbhDXIKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 04:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAEEE61360;
-        Sat, 24 Apr 2021 08:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619251763;
-        bh=K9GyT3PFlQx4FBRYAIiv5Tm15IYgz0y+dAxeGlaSEsU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ofhXQYpdJAF0PxXPwobcIl4RrFFBrUBu6seFW5T+ssDNcGZHbrbeqLmS6sAFGCBX0
-         GPe4O26uLNTwjkYZN+W9L/WrOPlh5K+GoZmplStOeZceXKAue1C90QBuPOkBNL8eI6
-         CWAdYORkFaXfM4ZmfIFdaQKlmCwGUnxZgVHspWC4sAhbnvGHEJwVCJtkasvkMWziCc
-         hOdpu3qNTW6ecr4Im7pfjkE3yxrhaKo5JCxqvmAtVwvrcl/5CycYTVuJP78Oapvh5b
-         /siKFHa7pNmVHzM4rXBVo6Cfjc7YDvF6qpOl1kdn5CtAU9Kp14KFp1wHQIUCqNyCZr
-         x+oB9Q1opd8lw==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wei Ming Chen <jj251510319013@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, Wei Ming Chen <jj251510319013@gmail.com>
-Subject: Re: [PATCH] usb: gadget: function: fix typo in f_hid.c
-In-Reply-To: <20210423132417.4385-1-jj251510319013@gmail.com>
-References: <20210423132417.4385-1-jj251510319013@gmail.com>
-Date:   Sat, 24 Apr 2021 11:09:16 +0300
-Message-ID: <87mttokssz.fsf@kernel.org>
+        id S233264AbhDXILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 04:11:30 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:55305 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233135AbhDXILZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 04:11:25 -0400
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 9E13040004;
+        Sat, 24 Apr 2021 08:10:39 +0000 (UTC)
+Date:   Sat, 24 Apr 2021 10:11:21 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH 06/78] media: renesas-ceu: fix pm_runtime_get_sync()
+ usage count
+Message-ID: <20210424081121.smppo4ly5p3fxto2@uno.localdomain>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <29ba3fafde4d2643fae49789e6b378d6b1fd51f5.1619191723.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <29ba3fafde4d2643fae49789e6b378d6b1fd51f5.1619191723.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Mauro,
 
+On Sat, Apr 24, 2021 at 08:44:16AM +0200, Mauro Carvalho Chehab wrote:
+> The pm_runtime_get_sync() internally increments the
+> dev->power.usage_count without decrementing it, even on errors.
+> replace it by the new pm_runtime_resume_and_get(), introduced by:
 
-Hi,
+Nit: 'Replace' as it follows a full stop ?
 
-Wei Ming Chen <jj251510319013@gmail.com> writes:
-
-> Replace `me` with `be`
+> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> in order to properly decrement the usage counter and avoid memory
+> leaks.
 >
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+> While here, check if the PM runtime was caught at open time.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+Nit: Maybe "PM runtime error ..." or something similar as I'm missing the
+subject of the phrase.
 
-=2D-=20
-balbi
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/renesas-ceu.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/platform/renesas-ceu.c b/drivers/media/platform/renesas-ceu.c
+> index cd137101d41e..965a7259e707 100644
+> --- a/drivers/media/platform/renesas-ceu.c
+> +++ b/drivers/media/platform/renesas-ceu.c
+> @@ -1099,7 +1099,10 @@ static int ceu_open(struct file *file)
+>
+>  	mutex_lock(&ceudev->mlock);
+>  	/* Causes soft-reset and sensor power on on first open */
+> -	pm_runtime_get_sync(ceudev->dev);
+> +	ret = pm_runtime_resume_and_get(ceudev->dev);
+> +	if (ret < 0)
+> +		return ret;
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+The mutex should be released before returning
 
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmCD0iwRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZ+Ng/+JiO1BZQCZktGHGRfGaHOpabmcjvHb+ai
-IAUuD35W9/35BJtgGUEUy71fPFr2aOl2l7QGIFSsLsVJyBx0EgFt+czvgax5sZUv
-y2cZLY8zoZrdOntjZ797ByNhrSWm7Y52n3RAUBce+quRo0x3bwRZFa+b5r9KWnQz
-mWmM2C6IAwHoDBvqz2OyMx1OTSkdQ9gdvbWMuWdrg20UmxLNYFNi2KMRRHJdSf5G
-mbkNrw1tCkzs24ugXGW/2c6NscOm1l0P4Kf3CwjRpH4R/SaXPQf17xyUnwuIbzMQ
-cnWpML0YMsLFnJHpnqCZdpltc4sXsPk1YiYnSq7Qg2d5eyhNa47dO1S/ehJyE7Ur
-CHG60Fpu5AP32u2IRdtMEoOzz6WD+KN2uj7fGY5NL6z/3YwFPxf3s43dr0N1LeGg
-Yng9v63X4mWBz9HXKiiscfWAtqiaUvq7MRKaKNx0lSzSWq/cBdDR6XXZ6i7wj015
-Vex3LqzTXhcoghKroWv1lr45ndFIYzSfYmUvclxTEdb5M6Em3F44AwF7A73qyqP1
-rlfMJ6+Ip+G6MD7DRwKnW1AKum1ZSKB1kdbE0n2WDszHzTzxh/VyfpKNVTT0Zhv4
-BxLV+vcu2h2sy7ApkiLE4mEzhossrwB9L4MDCTNF+030kYV0dGDVF7hRsv2KTDXP
-iRGADs1NQRM=
-=lVfK
------END PGP SIGNATURE-----
---=-=-=--
+> +
+>  	mutex_unlock(&ceudev->mlock);
+>
+>  	return 0;
+> --
+> 2.30.2
+>
