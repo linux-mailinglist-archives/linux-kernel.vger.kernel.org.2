@@ -2,140 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8309C36A0B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 12:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5E136A0AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 12:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235944AbhDXKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 06:48:29 -0400
-Received: from elvis.franken.de ([193.175.24.41]:39959 "EHLO elvis.franken.de"
+        id S234596AbhDXKqz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 24 Apr 2021 06:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231203AbhDXKs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 06:48:27 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1laFpE-0004gz-00; Sat, 24 Apr 2021 12:47:48 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5367AC0B47; Sat, 24 Apr 2021 12:35:44 +0200 (CEST)
-Date:   Sat, 24 Apr 2021 12:35:44 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] gpio: Add support for IDT 79RC3243x GPIO
- controller
-Message-ID: <20210424103544.GA4353@alpha.franken.de>
-References: <20210422152055.85544-1-tsbogend@alpha.franken.de>
- <CAHp75Ve6PEr5TFGRgALPCbi-T5Y5yNPV+-fJHC7C2mU+ms30uw@mail.gmail.com>
+        id S229848AbhDXKqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 06:46:50 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7E4261554;
+        Sat, 24 Apr 2021 10:46:09 +0000 (UTC)
+Date:   Sat, 24 Apr 2021 11:46:50 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jean-Baptiste Maneyrol <JManeyrol@invensense.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] iio: gyro: mpu3050: Fix reported temperature value
+Message-ID: <20210424114650.6abb21a0@jic23-huawei>
+In-Reply-To: <edd85a7f-4c1f-9d2f-0425-93a6e45f13bb@gmail.com>
+References: <20210423020959.5023-1-digetx@gmail.com>
+        <BL0PR12MB5011563BCD5E11683D51F34EC4459@BL0PR12MB5011.namprd12.prod.outlook.com>
+        <edd85a7f-4c1f-9d2f-0425-93a6e45f13bb@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Ve6PEr5TFGRgALPCbi-T5Y5yNPV+-fJHC7C2mU+ms30uw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 06:37:41PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 22, 2021 at 6:21 PM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> > +static void idt_gpio_dispatch(struct irq_desc *desc)
-> > +{
-> > +       struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-> > +       struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
-> > +       struct irq_chip *host_chip = irq_desc_get_chip(desc);
-> > +       unsigned int bit, virq;
-> > +       unsigned long pending;
-> > +
-> > +       chained_irq_enter(host_chip, desc);
-> > +
-> > +       pending = readl(ctrl->pic + IDT_PIC_IRQ_PEND);
-> > +       pending &= ~ctrl->mask_cache;
-> > +       for_each_set_bit(bit, &pending, gc->ngpio) {
+On Sat, 24 Apr 2021 07:58:08 +0300
+Dmitry Osipenko <digetx@gmail.com> wrote:
+
+> 23.04.2021 13:14, Jean-Baptiste Maneyrol пишет:
+> > Hello,
+> > 
+> > thanks for this work.
+> > 
+> > Temperature value should obviously be 16 bits signed, thanks for the fix. By looking at our internal datasheets, I can confirm the values for MPU-30x0 family (div by 280 and 23000 offset LSB).
+> > 
+> > I'm sorry I don't have access to these more than 1 decade old chips, so I cannot test on my side. But there is no reason it wouldn't be OK.
+> > 
+> > Acked-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>  
 > 
-> > +               virq = irq_linear_revmap(gc->irq.domain, bit);
-> 
-> Is it guaranteed to be linear always?
+> Thank you very much for confirming that the equation is correct, very
+> appreciate that.
 
-yes
+Thanks. Applied to the fixes-togreg branch of iio.git.
+Note these won't go upstream until after rc1 but hopefully will soon after
+that.
 
-> > +               if (virq)
-> > +                       generic_handle_irq(virq);
-> > +       }
-> > +
-> > +       chained_irq_exit(host_chip, desc);
-> > +}
-> 
-> ...
-> 
-> > +       if (sense & ~(IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
-> 
-> There is a _BOTH variant.
+Thanks for the detective work etc on this!
 
-that's IRQ_TYPE_EDGE_BOTH. LEVEL_BOTH would be an interesing concept.
-
-> > +       ilevel = readl(ctrl->gpio + IDT_GPIO_ILEVEL);
-> > +       if (sense & IRQ_TYPE_LEVEL_HIGH)
-> > +               ilevel |= BIT(d->hwirq);
-> > +       else if (sense & IRQ_TYPE_LEVEL_LOW)
-> > +               ilevel &= ~BIT(d->hwirq);
-> 
-> > +       else
-> > +               return -EINVAL;
-> 
-> Is it a double check of the above?
-
-no, the above test is for anything not LEVEL and this now takes care
-to be at least LEVEL_LOW or LEVEL_HIGH. This doesn't check for LOW|HIGH,
-which I assumed nobody tries to set...
-
-> > +       ctrl->gc.parent = dev;
-> 
-> Wondering if it's already done by GPIO library.
-
-no it uses it:
-
-        if (gc->parent) {
-                gdev->dev.parent = gc->parent;
-                gdev->dev.of_node = gc->parent->of_node;
-        }
-
-> ...
-> 
-> > +       ctrl->gc.ngpio = ngpios;
-> 
-> Shouldn't you do this before calling for bgpio_init()?
-
-no, bgpio_init() initializes ngpios to size of register width, which is
-32 for this hardware. And this statement restricts it to the real available
-number of gpios.
-
-> ...
-> 
-> > +       parent_irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
-> 
-> platform_get_irq() ?..
-
-yes, looks better :-)
-
-> > +       /* Mask interrupts. */
-> > +       ctrl->mask_cache = 0xffffffff;
-> > +       writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
-> 
-> What about using ->init_hw() call back?
-
-sure, doesn't look like it's worth the effort, but I changed it.
-
-> > +       girq->handler = handle_level_irq;
-> 
-> handle_bad_irq()
-
-the hardware only supports level interrupts. That's also why there is
-no handler change in idt_gpio_irq_set_type.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Jonathan
