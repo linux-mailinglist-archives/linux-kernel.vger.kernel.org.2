@@ -2,145 +2,529 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3E036A191
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 16:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C857236A196
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 16:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbhDXOWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 10:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
+        id S232989AbhDXO1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 10:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhDXOWf (ORCPT
+        with ESMTP id S230211AbhDXO1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 10:22:35 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21986C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 07:21:57 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id l22so51452075ljc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 07:21:56 -0700 (PDT)
+        Sat, 24 Apr 2021 10:27:52 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC00C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 07:27:13 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id d1so13630584qvy.11
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 07:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P531jV/gE1FZqL6RA2hoIiPZe+DPKeqrBTIMQshMdGo=;
-        b=o1clgpPjpGEFw3+FHdVkmFJOv8/dKJlYdw2w7kl6XVx/GSsBL29iRck78tEqK7ObYF
-         MbFaT+nPdKpMirkk+KDuJjJcsqB+FlZ1QKk9PXEkAxhKvaKa8p4OCNztMP+dWbX02ykS
-         3nVlCuHpAACeGMCRSdJncL9oTU4XvfOQD6ovqWO4Xlksm6+W7TGwUPSpV0+YogaDt9Cs
-         C5G8CBSqx4MMDNAHmk/5g+Y5pR58HapTLrB7QN3lU/KTKl4RQHgX+wQKqZ1p0UnuRTiA
-         S49Q67T95z+/mqJMg1Nu6HV1LpJN43+/AS5SBdD5QuVyfH56iQgh9EQThR94wqDJ2lGg
-         sjrg==
+         :cc;
+        bh=FyTmj2yrGu10LoW4x7q1sjq4p7FQgiD13avai4rt2WA=;
+        b=J6pKOSL8fluC0wMhPATdhdw25O9aQgaqzzV9J5246bjshX8/tY72j5S8UL0CV8nBqg
+         ImeLm2qeU+HSXY09kMvxhHdP0d+V5AzJfLEdYbysaVCdqZnieAzDVUDFc53ZAN+tZZp4
+         nHRlgGf3MwE9gHwJ55hDau95iLoF2Bf2Sz6wzxLAHXvW6XGcAF3HDAz+Vf++ZagVbStl
+         Lxd2kqLdu/S2hKQXi1Xbgof669x2uzM6UwkJ22Bq2pY5XOYQoOG6ePBqCjO8/8l/rD0o
+         Cg4iu/R5PPVKaHM3uy9YpHwyxmUH/33bbsWJf3OmUr+Z4Iv4n3HSmdJzVwbxtq3fbnZ6
+         dwOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P531jV/gE1FZqL6RA2hoIiPZe+DPKeqrBTIMQshMdGo=;
-        b=uGJUN6sAmN+VZUiJapiw7n0VjJ7/w0DM0jQ4eoZzNbXpnZVptkDuXukZCp2tCdvWn3
-         fA+DaiEyV03JoggV7pCs06gaaXhQQY3qjv3JtyFgTqr1iNlofDBGhkD8QKw4N9FrVNyI
-         zAagNvhpA35I1fJ+ZGt8Oy740h8VFC5+eEZ4a7lXz6kTUdGdetJO5W2Xc2yNUf9+cGUC
-         qP6U5Lplv1qU8bibEwcag2ZVD/SXMyOwAoN0KtQ8ij102478JT7W/5yksY95jtroCMpZ
-         NXhRY2C4AJ3bKwT/N9GyMMvP7BaYDRiZcIRUe0m2rSD2I/CkPez7HMKAAUATvErbXXyM
-         /SYg==
-X-Gm-Message-State: AOAM532lhMqzgtA9nEEt4k+Az0USjy6XOM+97JNqB8uaCOvrUf9FRRm0
-        qleqbW8lvNyqxSVu8rOmSSORzFNpbUac2JbTa1A=
-X-Google-Smtp-Source: ABdhPJwjfSVVifAjHfydswQQAARoNfpuidd98YqrcBbE9hLP1VRL8N8S3uHAuepIxwUToZfhYrytyg4o+OqulWITkuA=
-X-Received: by 2002:a2e:bb8f:: with SMTP id y15mr6174605lje.86.1619274115443;
- Sat, 24 Apr 2021 07:21:55 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=FyTmj2yrGu10LoW4x7q1sjq4p7FQgiD13avai4rt2WA=;
+        b=s4GU8JY7CEPJ0p62YfXDIEZpQIYlKqVwIn2SrLz81hI7204v+pgP4U0ISZRV09IWE7
+         VDQgI8B0+mSoKks5S/pLLvHnBBmar/s0skQt4J/UUUFwNQPhMfUIZP0seYbBvw3QVUK1
+         l95x1WLNYdZIk2iaS8mEOzDOvLRkP2M0o4YPAnleW5DVyBny9+9zPEaDVozNlQtE/wDI
+         FNW3ojwwq4qWBvSoc0QQ/0I4Rtct0B7YswPZWXOtz6ofQ4l2CazeShtfeWI4ULbj2lHz
+         PQ9bjpfgym1x9tyeKeV+Pg1jReTzgRYZzp+K03zQuiYM1abLUe0BJZs2X/jVIckZUAMu
+         saLQ==
+X-Gm-Message-State: AOAM530x3tBtxPjEJ6QQ4eEEoMsSFrfun9pYKC+N9aEMWbmTo7J1jlKm
+        z9RAM0a6lmTo47xIFMiFiRJrxZD+ARB+0lwlyNL8xA==
+X-Google-Smtp-Source: ABdhPJykyHPvrAJIJUTr37sQJHCWGyxPzRuhdUoC9uc8YhjWWEc9WTYEpOBvFSQ57F14vRzVdBdFv1e5G9KDOzj3U+w=
+X-Received: by 2002:a05:6214:504:: with SMTP id v4mr9543317qvw.4.1619274432026;
+ Sat, 24 Apr 2021 07:27:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210422151022.17868-1-sxwjean@me.com> <20210422151022.17868-2-sxwjean@me.com>
- <ac6cf0ae-7565-180e-03b2-5e72f89a823a@csgroup.eu> <7b3ad970-707d-ffcd-e4a3-0b6e622db403@csgroup.eu>
-In-Reply-To: <7b3ad970-707d-ffcd-e4a3-0b6e622db403@csgroup.eu>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Sat, 24 Apr 2021 22:21:29 +0800
-Message-ID: <CAEVVKH9xM7_u1xY9MswxT2ZH6XEDDxe2sW7f47ajw+x5J5vzgg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] powerpc: Print esr register when hitting Program Interrupt
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Xiongwei Song <sxwjean@me.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
-        aneesh.kumar@linux.ibm.com, 0x7f454c46@gmail.com,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210423172450.4885-1-jonathan@marek.ca> <20210423172450.4885-2-jonathan@marek.ca>
+In-Reply-To: <20210423172450.4885-2-jonathan@marek.ca>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 24 Apr 2021 17:27:00 +0300
+Message-ID: <CAA8EJppbBQGQds2=UADuHweWhiv3ZU3+eqxHqUqi9LfbMjLiBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] drm/msm/dsi: support CPHY mode for 7nm pll/phy
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Bernard Zhao <bernard@vivo.com>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:50 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Fri, 23 Apr 2021 at 20:28, Jonathan Marek <jonathan@marek.ca> wrote:
 >
+> Add the required changes to support 7nm pll/phy in CPHY mode.
 >
+> This adds a "qcom,dsi-phy-cphy-mode" property for the PHY node to enable
+> the CPHY mode.
 >
-> Le 22/04/2021 =C3=A0 17:29, Christophe Leroy a =C3=A9crit :
-> >
-> >
-> > Le 22/04/2021 =C3=A0 17:10, Xiongwei Song a =C3=A9crit :
-> >> From: Xiongwei Song <sxwjean@gmail.com>
-> >>
-> >> The esr register has the details of Program Interrupt on BookE/4xx cpu=
-s,
-> >> printing its value is helpful.
-> >>
-> >> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> >> ---
-> >>   arch/powerpc/kernel/process.c | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/proce=
-ss.c
-> >> index 5c3830837f3a..664aecf8ee2e 100644
-> >> --- a/arch/powerpc/kernel/process.c
-> >> +++ b/arch/powerpc/kernel/process.c
-> >> @@ -1459,6 +1459,7 @@ static bool interrupt_detail_printable(int trap)
-> >>       case INTERRUPT_MACHINE_CHECK:
-> >>       case INTERRUPT_DATA_STORAGE:
-> >>       case INTERRUPT_ALIGNMENT:
-> >> +    case INTERRUPT_PROGRAM:
-> >
-> > With this, it will also print the DSISR on 8xx/6xx so it will print gar=
-bage.
-> >
-> > 8xx/6xx provide the information in SRR1. If you want to proceed, you ha=
-ve to do the same as in ISI:
-> > Copy the content of SRR1 into regs->dsisr in the assembly handler in he=
-ad_book3s_32.S and in the
-> > instruction TLB error handler in head_8xx.S
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+>  drivers/gpu/drm/msm/dsi/dsi.xml.h         |   2 +
+>  drivers/gpu/drm/msm/dsi/dsi_host.c        |  34 ++++-
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy.c     |  47 +++++++
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy.h     |   3 +
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 147 +++++++++++++++-------
+>  5 files changed, 185 insertions(+), 48 deletions(-)
 >
-> In fact, we already have get_reason() called by do_program_check() to ret=
-rieve the reason of the
-> program check exception. Maybe it could be used to print usefull informat=
-ion instead of starting
-> doing almost the same is another way.
-
-Yes, there is the get_reason() function. But if the program interrupt
-is triggered in kernel mode,
-the reason can be lost , see the code below:
-
-335 static bool exception_common(int signr, struct pt_regs *regs, int code,
- 336                               unsigned long addr)
- 337 {
- 338         if (!user_mode(regs)) {
- 339                 die("Exception in kernel mode", regs, signr);
- 340                 return false;
- 341         }
-
-The third parameter(int code) of exception_common is to pass the
-reason, when in kernel
-mode, the "code" parameter is lost, hence I append INTERRUPT_PROGRAM here.
-
-This is for __show_regs(), so just printing the content of the
-register is fine I think.
-
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h b/drivers/gpu/drm/msm/dsi/dsi.xml.h
+> index 50eb4d1b8fdd..5087a65d3e11 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
+> @@ -621,6 +621,8 @@ static inline uint32_t DSI_VERSION_MAJOR(uint32_t val)
+>         return ((val) << DSI_VERSION_MAJOR__SHIFT) & DSI_VERSION_MAJOR__MASK;
+>  }
 >
-> Or we do as I suggested above, and we remove that get_reason() stuff. But=
- get_reason() is also used
-> by the alignment exception. So that doesn't look easy.
+> +#define REG_DSI_CPHY_MODE_CTRL                                 0x000002d4
+> +
+>  #define REG_DSI_PHY_PLL_CTRL_0                                 0x00000200
+>  #define DSI_PHY_PLL_CTRL_0_ENABLE                              0x00000001
 >
-> I don't know what the best approach is.
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index 8a10e4343281..ab8a8d408d50 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -27,6 +27,7 @@
+>  #include "dsi_cfg.h"
+>  #include "msm_kms.h"
+>  #include "msm_gem.h"
+> +#include "phy/dsi_phy.h"
+>
+>  #define DSI_RESET_TOGGLE_DELAY_MS 20
+>
+> @@ -168,6 +169,9 @@ struct msm_dsi_host {
+>         int dlane_swap;
+>         int num_data_lanes;
+>
+> +       /* from phy DT */
+> +       bool cphy_mode;
+> +
+>         u32 dma_cmd_ctrl_restore;
+>
+>         bool registered;
+> @@ -511,6 +515,7 @@ int msm_dsi_runtime_resume(struct device *dev)
+>
+>  int dsi_link_clk_set_rate_6g(struct msm_dsi_host *msm_host)
+>  {
+> +       u32 byte_intf_rate;
+>         int ret;
+>
+>         DBG("Set clk rates: pclk=%d, byteclk=%d",
+> @@ -530,8 +535,13 @@ int dsi_link_clk_set_rate_6g(struct msm_dsi_host *msm_host)
+>         }
+>
+>         if (msm_host->byte_intf_clk) {
+> -               ret = clk_set_rate(msm_host->byte_intf_clk,
+> -                                  msm_host->byte_clk_rate / 2);
+> +               /* For CPHY, byte_intf_clk is same as byte_clk */
+> +               if (msm_host->cphy_mode)
+> +                       byte_intf_rate = msm_host->byte_clk_rate;
+> +               else
+> +                       byte_intf_rate = msm_host->byte_clk_rate / 2;
+> +
+> +               ret = clk_set_rate(msm_host->byte_intf_clk, byte_intf_rate);
+>                 if (ret) {
+>                         pr_err("%s: Failed to set rate byte intf clk, %d\n",
+>                                __func__, ret);
+> @@ -711,7 +721,11 @@ static void dsi_calc_pclk(struct msm_dsi_host *msm_host, bool is_dual_dsi)
+>                 lanes = 1;
+>         }
+>
+> -       do_div(pclk_bpp, (8 * lanes));
+> +       /* CPHY "byte_clk" is in units of 16 bits */
+> +       if (msm_host->cphy_mode)
+> +               do_div(pclk_bpp, (16 * lanes));
+> +       else
+> +               do_div(pclk_bpp, (8 * lanes));
+>
+>         msm_host->pixel_clk_rate = pclk_rate;
+>         msm_host->byte_clk_rate = pclk_bpp;
+> @@ -937,6 +951,9 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
+>         data |= DSI_CTRL_ENABLE;
+>
+>         dsi_write(msm_host, REG_DSI_CTRL, data);
+> +
+> +       if (msm_host->cphy_mode)
+> +               dsi_write(msm_host, REG_DSI_CPHY_MODE_CTRL, BIT(0));
+>  }
+>
+>  static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_dual_dsi)
+> @@ -2230,6 +2247,8 @@ int msm_dsi_host_set_src_pll(struct mipi_dsi_host *host,
+>         struct clk *byte_clk_provider, *pixel_clk_provider;
+>         int ret;
+>
+> +       msm_host->cphy_mode = src_phy->cphy_mode;
+> +
+>         ret = msm_dsi_phy_get_clk_provider(src_phy,
+>                                 &byte_clk_provider, &pixel_clk_provider);
+>         if (ret) {
+> @@ -2301,7 +2320,14 @@ void msm_dsi_host_get_phy_clk_req(struct mipi_dsi_host *host,
+>                 return;
+>         }
+>
+> -       clk_req->bitclk_rate = msm_host->byte_clk_rate * 8;
+> +       /* CPHY transmits 16 bits over 7 clock cycles
+> +        * "byte_clk" is in units of 16-bits (see dsi_calc_pclk),
+> +        * so multiply by 7 to get the "bitclk rate"
+> +        */
+> +       if (msm_host->cphy_mode)
+> +               clk_req->bitclk_rate = msm_host->byte_clk_rate * 7;
+> +       else
+> +               clk_req->bitclk_rate = msm_host->byte_clk_rate * 8;
+>         clk_req->escclk_rate = msm_host->esc_clk_rate;
+>  }
+>
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> index ff7f2ec42030..5dd9dc4d81e2 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> @@ -461,6 +461,51 @@ int msm_dsi_dphy_timing_calc_v4(struct msm_dsi_dphy_timing *timing,
+>         return 0;
+>  }
+>
+> +int msm_dsi_cphy_timing_calc_v4(struct msm_dsi_dphy_timing *timing,
+> +       struct msm_dsi_phy_clk_request *clk_req)
+> +{
+> +       const unsigned long bit_rate = clk_req->bitclk_rate;
+> +       const unsigned long esc_rate = clk_req->escclk_rate;
+> +       s32 ui, ui_x7;
+> +       s32 tmax, tmin;
+> +       s32 coeff = 1000; /* Precision, should avoid overflow */
+> +       s32 temp;
+> +
+> +       if (!bit_rate || !esc_rate)
+> +               return -EINVAL;
+> +
+> +       ui = mult_frac(NSEC_PER_MSEC, coeff, bit_rate / 1000);
+> +       ui_x7 = ui * 7;
+> +
+> +       temp = S_DIV_ROUND_UP(38 * coeff, ui_x7);
+> +       tmin = max_t(s32, temp, 0);
+> +       temp = (95 * coeff) / ui_x7;
+> +       tmax = max_t(s32, temp, 0);
+> +       timing->clk_prepare = linear_inter(tmax, tmin, 50, 0, false);
+> +
+> +       tmin = DIV_ROUND_UP(50 * coeff, ui_x7);
+> +       tmax = 255;
+> +       timing->hs_rqst = linear_inter(tmax, tmin, 1, 0, false);
+> +
+> +       tmin = DIV_ROUND_UP(100 * coeff, ui_x7) - 1;
+> +       tmax = 255;
+> +       timing->hs_exit = linear_inter(tmax, tmin, 10, 0, false);
+> +
+> +       tmin = 1;
+> +       tmax = 32;
+> +       timing->shared_timings.clk_post = linear_inter(tmax, tmin, 80, 0, false);
+> +
+> +       tmin = min_t(s32, 64, S_DIV_ROUND_UP(262 * coeff, ui_x7) - 1);
+> +       tmax = 64;
+> +       timing->shared_timings.clk_pre = linear_inter(tmax, tmin, 20, 0, false);
+> +
+> +       DBG("%d, %d, %d, %d, %d",
+> +               timing->shared_timings.clk_pre, timing->shared_timings.clk_post,
+> +               timing->clk_prepare, timing->hs_exit, timing->hs_rqst);
+> +
+> +       return 0;
+> +}
+> +
+>  static int dsi_phy_regulator_init(struct msm_dsi_phy *phy)
+>  {
+>         struct regulator_bulk_data *s = phy->supplies;
+> @@ -657,6 +702,8 @@ static int dsi_phy_driver_probe(struct platform_device *pdev)
+>
+>         phy->regulator_ldo_mode = of_property_read_bool(dev->of_node,
+>                                 "qcom,dsi-phy-regulator-ldo-mode");
+> +       phy->cphy_mode = of_property_read_bool(dev->of_node,
+> +                               "qcom,dsi-phy-cphy-mode");
+>
+>         phy->base = msm_ioremap(pdev, "dsi_phy", "DSI_PHY");
+>         if (IS_ERR(phy->base)) {
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> index 94a77ac364d3..432e9a9de52f 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> @@ -95,6 +95,7 @@ struct msm_dsi_phy {
+>
+>         enum msm_dsi_phy_usecase usecase;
+>         bool regulator_ldo_mode;
+> +       bool cphy_mode;
+>
+>         struct clk_hw *vco_hw;
+>         bool pll_on;
+> @@ -115,5 +116,7 @@ int msm_dsi_dphy_timing_calc_v3(struct msm_dsi_dphy_timing *timing,
+>                                 struct msm_dsi_phy_clk_request *clk_req);
+>  int msm_dsi_dphy_timing_calc_v4(struct msm_dsi_dphy_timing *timing,
+>                                 struct msm_dsi_phy_clk_request *clk_req);
+> +int msm_dsi_cphy_timing_calc_v4(struct msm_dsi_dphy_timing *timing,
+> +                               struct msm_dsi_phy_clk_request *clk_req);
+>
+>  #endif /* __DSI_PHY_H__ */
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> index e76ce40a12ab..40b791ea7bb9 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> @@ -255,7 +255,7 @@ static void dsi_pll_commit(struct dsi_pll_7nm *pll, struct dsi_pll_config *confi
+>                   (config->frac_div_start & 0x30000) >> 16);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_PLL_PLL_LOCKDET_RATE_1, 0x40);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_PLL_PLL_LOCK_DELAY, 0x06);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_PLL_CMODE_1, 0x10); /* TODO: 0x00 for CPHY */
+> +       dsi_phy_write(base + REG_DSI_7nm_PHY_PLL_CMODE_1, pll->phy->cphy_mode ? 0x00 : 0x10);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_PLL_CLOCK_INVERTERS, config->pll_clock_inverters);
+>  }
+>
+> @@ -640,7 +640,8 @@ static int pll_7nm_register(struct dsi_pll_7nm *pll_7nm, struct clk_hw **provide
+>
+>         /* DSI Byte clock = VCO_CLK / OUT_DIV / BIT_DIV / 8 */
+>         hw = devm_clk_hw_register_fixed_factor(dev, clk_name, parent,
+> -                                         CLK_SET_RATE_PARENT, 1, 8);
+> +                                         CLK_SET_RATE_PARENT, 1,
+> +                                         pll_7nm->phy->cphy_mode ? 7 : 8);
+>         if (IS_ERR(hw)) {
+>                 ret = PTR_ERR(hw);
+>                 goto fail;
+> @@ -661,32 +662,47 @@ static int pll_7nm_register(struct dsi_pll_7nm *pll_7nm, struct clk_hw **provide
+>         snprintf(clk_name, 32, "dsi%d_pll_post_out_div_clk", pll_7nm->phy->id);
+>         snprintf(parent, 32, "dsi%d_pll_out_div_clk", pll_7nm->phy->id);
+>
+> -       hw = devm_clk_hw_register_fixed_factor(dev, clk_name, parent,
+> -                                         0, 1, 4);
+> +       if (pll_7nm->phy->cphy_mode)
+> +               hw = devm_clk_hw_register_fixed_factor(dev, clk_name, parent, 0, 2, 7);
+> +       else
+> +               hw = devm_clk_hw_register_fixed_factor(dev, clk_name, parent, 0, 1, 4);
+>         if (IS_ERR(hw)) {
+>                 ret = PTR_ERR(hw);
+>                 goto fail;
+>         }
+>
+> -       snprintf(clk_name, 32, "dsi%d_pclk_mux", pll_7nm->phy->id);
+> -       snprintf(parent, 32, "dsi%d_pll_bit_clk", pll_7nm->phy->id);
+> -       snprintf(parent2, 32, "dsi%d_pll_by_2_bit_clk", pll_7nm->phy->id);
+> -       snprintf(parent3, 32, "dsi%d_pll_out_div_clk", pll_7nm->phy->id);
+> -       snprintf(parent4, 32, "dsi%d_pll_post_out_div_clk", pll_7nm->phy->id);
+> -
+> -       hw = devm_clk_hw_register_mux(dev, clk_name,
+> -                                ((const char *[]){
+> -                                parent, parent2, parent3, parent4
+> -                                }), 4, 0, pll_7nm->phy->base +
+> -                                REG_DSI_7nm_PHY_CMN_CLK_CFG1,
+> -                                0, 2, 0, NULL);
+> -       if (IS_ERR(hw)) {
+> -               ret = PTR_ERR(hw);
+> -               goto fail;
+> -       }
+> +       /* in CPHY mode, pclk_mux will always have post_out_div as parent
+> +        * don't register a pclk_mux clock and just use post_out_div instead
+> +        */
+> +       if (pll_7nm->phy->cphy_mode) {
+> +               u32 data;
+> +
+> +               data = dsi_phy_read(pll_7nm->phy->base + REG_DSI_7nm_PHY_CMN_CLK_CFG1);
+> +               dsi_phy_write(pll_7nm->phy->base + REG_DSI_7nm_PHY_CMN_CLK_CFG1, data | 3);
+> +
+> +               snprintf(parent, 32, "dsi%d_pll_post_out_div_clk", pll_7nm->phy->id);
+> +       } else {
+> +               snprintf(clk_name, 32, "dsi%d_pclk_mux", pll_7nm->phy->id);
+> +               snprintf(parent, 32, "dsi%d_pll_bit_clk", pll_7nm->phy->id);
+> +               snprintf(parent2, 32, "dsi%d_pll_by_2_bit_clk", pll_7nm->phy->id);
+> +               snprintf(parent3, 32, "dsi%d_pll_out_div_clk", pll_7nm->phy->id);
+> +               snprintf(parent4, 32, "dsi%d_pll_post_out_div_clk", pll_7nm->phy->id);
+> +
+> +               hw = devm_clk_hw_register_mux(dev, clk_name,
+> +                                       ((const char *[]){
+> +                                       parent, parent2, parent3, parent4
+> +                                       }), 4, 0, pll_7nm->phy->base +
+> +                                       REG_DSI_7nm_PHY_CMN_CLK_CFG1,
+> +                                       0, 2, 0, NULL);
+> +               if (IS_ERR(hw)) {
+> +                       ret = PTR_ERR(hw);
+> +                       goto fail;
+> +               }
+> +
+> +               snprintf(parent, 32, "dsi%d_pclk_mux", pll_7nm->phy->id);
+> +       }
+>
+>         snprintf(clk_name, 32, "dsi%d_phy_pll_out_dsiclk", pll_7nm->phy->id);
+> -       snprintf(parent, 32, "dsi%d_pclk_mux", pll_7nm->phy->id);
+>
+>         /* PIX CLK DIV : DIV_CTRL_7_4*/
+>         hw = devm_clk_hw_register_divider(dev, clk_name, parent,
+> @@ -811,15 +827,21 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>         struct msm_dsi_dphy_timing *timing = &phy->timing;
+>         void __iomem *base = phy->base;
+>         bool less_than_1500_mhz;
+> -       u32 vreg_ctrl_0, glbl_str_swi_cal_sel_ctrl, glbl_hstx_str_ctrl_0;
+> +       u32 vreg_ctrl_0, vreg_ctrl_1, lane_ctrl0;
+> +       u32 glbl_pemph_ctrl_0;
+> +       u32 glbl_str_swi_cal_sel_ctrl, glbl_hstx_str_ctrl_0;
+>         u32 glbl_rescode_top_ctrl, glbl_rescode_bot_ctrl;
+>         u32 data;
+>
+>         DBG("");
+>
+> -       if (msm_dsi_dphy_timing_calc_v4(timing, clk_req)) {
+> +       if (phy->cphy_mode)
+> +               ret = msm_dsi_cphy_timing_calc_v4(timing, clk_req);
+> +       else
+> +               ret = msm_dsi_dphy_timing_calc_v4(timing, clk_req);
+> +       if (ret) {
+>                 DRM_DEV_ERROR(&phy->pdev->dev,
+> -                       "%s: D-PHY timing calculation failed\n", __func__);
+> +                       "%s: PHY timing calculation failed\n", __func__);
+>                 return -EINVAL;
+>         }
+>
+> @@ -840,6 +862,10 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>         /* Alter PHY configurations if data rate less than 1.5GHZ*/
+>         less_than_1500_mhz = (clk_req->bitclk_rate <= 1500000000);
+>
+> +       /* For C-PHY, no low power settings for lower clk rate */
+> +       if (phy->cphy_mode)
+> +               less_than_1500_mhz = false;
+> +
+>         if (phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V4_1) {
+>                 vreg_ctrl_0 = less_than_1500_mhz ? 0x53 : 0x52;
+>                 glbl_rescode_top_ctrl = less_than_1500_mhz ? 0x3d :  0x00;
+> @@ -854,6 +880,17 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>                 glbl_rescode_bot_ctrl = 0x3c;
+>         }
+>
+> +       if (phy->cphy_mode) {
+> +               vreg_ctrl_0 = 0x51;
+> +               vreg_ctrl_1 = 0x55;
+> +               glbl_pemph_ctrl_0 = 0x11;
+> +               lane_ctrl0 = 0x17;
+> +       } else {
+> +               vreg_ctrl_1 = 0x5c;
+> +               glbl_pemph_ctrl_0 = 0x00;
+> +               lane_ctrl0 = 0x1f;
+> +       }
+> +
+>         /* de-assert digital and pll power down */
+>         data = BIT(6) | BIT(5);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_CTRL_0, data);
+> @@ -874,15 +911,22 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_LANE_CFG0, 0x21);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_LANE_CFG1, 0x84);
+>
+> +       if (phy->cphy_mode)
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_CTRL, BIT(6));
+> +
+>         /* Enable LDO */
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_VREG_CTRL_0, vreg_ctrl_0);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_VREG_CTRL_1, 0x5c);
+> +       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_VREG_CTRL_1, vreg_ctrl_1);
+> +
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_CTRL_3, 0x00);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_STR_SWI_CAL_SEL_CTRL,
+>                       glbl_str_swi_cal_sel_ctrl);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_HSTX_STR_CTRL_0,
+>                       glbl_hstx_str_ctrl_0);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_PEMPH_CTRL_0, 0x00);
+> +       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_PEMPH_CTRL_0,
+> +                     glbl_pemph_ctrl_0);
+> +       if (phy->cphy_mode)
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_PEMPH_CTRL_1, 0x01);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_RESCODE_OFFSET_TOP_CTRL,
+>                       glbl_rescode_top_ctrl);
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_GLBL_RESCODE_OFFSET_BOT_CTRL,
+> @@ -892,10 +936,11 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>         /* Remove power down from all blocks */
+>         dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_CTRL_0, 0x7f);
+>
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_LANE_CTRL0, 0x1f);
+> +       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_LANE_CTRL0, lane_ctrl0);
+>
+>         /* Select full-rate mode */
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_CTRL_2, 0x40);
+> +       if (!phy->cphy_mode)
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_CTRL_2, 0x40);
+>
+>         ret = dsi_7nm_set_usecase(phy);
+>         if (ret) {
+> @@ -905,22 +950,36 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>         }
+>
+>         /* DSI PHY timings */
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_0, 0x00);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_1, timing->clk_zero);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_2, timing->clk_prepare);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_3, timing->clk_trail);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_4, timing->hs_exit);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_5, timing->hs_zero);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_6, timing->hs_prepare);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_7, timing->hs_trail);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_8, timing->hs_rqst);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_9, 0x02);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_10, 0x04);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_11, 0x00);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_12,
+> -                     timing->shared_timings.clk_pre);
+> -       dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_13,
+> -                     timing->shared_timings.clk_post);
+> +       if (phy->cphy_mode) {
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_0, 0x00);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_4, timing->hs_exit);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_5,
+> +                       timing->shared_timings.clk_pre);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_6, timing->clk_prepare);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_7,
+> +                       timing->shared_timings.clk_post);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_8, timing->hs_rqst);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_9, 0x02);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_10, 0x04);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_11, 0x00);
+> +       } else {
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_0, 0x00);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_1, timing->clk_zero);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_2, timing->clk_prepare);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_3, timing->clk_trail);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_4, timing->hs_exit);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_5, timing->hs_zero);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_6, timing->hs_prepare);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_7, timing->hs_trail);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_8, timing->hs_rqst);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_9, 0x02);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_10, 0x04);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_11, 0x00);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_12,
+> +                       timing->shared_timings.clk_pre);
+> +               dsi_phy_write(base + REG_DSI_7nm_PHY_CMN_TIMING_CTRL_13,
+> +                       timing->shared_timings.clk_post);
+> +       }
+>
+>         /* DSI lane settings */
+>         dsi_phy_hw_v4_0_lane_settings(phy);
+> --
+> 2.26.1
+>
 
-Is it acceptable to print the interrupt reason before invoking die()
-in exception_common()?
 
-Regards,
-Xiongwei
+-- 
+With best wishes
+Dmitry
