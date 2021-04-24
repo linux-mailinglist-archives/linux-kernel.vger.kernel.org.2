@@ -2,282 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEA9369E76
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 04:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0D8369E7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 04:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236838AbhDXCLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 22:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        id S236698AbhDXCRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 22:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236539AbhDXCLF (ORCPT
+        with ESMTP id S232155AbhDXCRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 22:11:05 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24FDC061574;
-        Fri, 23 Apr 2021 19:10:15 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id x27so24783251qvd.2;
-        Fri, 23 Apr 2021 19:10:15 -0700 (PDT)
+        Fri, 23 Apr 2021 22:17:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0749C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 19:16:35 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u3-20020a2509430000b02904e7f1a30cffso26489888ybm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 19:16:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=kcIelX1EsGDmdwC3ocBtd0zMhNA8a0bphR97MMdWuis=;
-        b=GtqXz/xQNMqRVwYlcLPVUMocoqdYzVUPJWUnA23leuh4I/iob899wcJIyWdkjD1pLT
-         HzYG8pOXtESdV3CWhiLV1RQBT7XKsjIYNOrNE5sIYbsN9cgiJBFGEH/x77PIH4hx2i8V
-         kUyhiunfmiGTNSu4QeBawS4JGhK+gqsANyvi2tHNvs5lxzPjAO06HwR29IcltnnombrW
-         UPwqtt+5fT1hrpvYgyFSXna8oKgoWT2Xec/W01S1aW6E9KFAVcfc3T9/BLdKoCz9Tkmq
-         mZ7V3UPFXEWDfbBqgwEff9i8ljBLuLmG+ozHTxzAmyh0DXkO430fwklCdE4KmMKXETSr
-         /P0A==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Mn/X37YGzoXaRidHpnWb9ANkD+US0YqkDbSrWqNk3xI=;
+        b=VeR5IHUodRGIJAp4ZK55DOQuTVeVGNv2TfMX/1yAsrlGPc6ZnxM5cwzmkPAJTPqS0s
+         QOqCtZ5kHOVDKUbLUw4qPfCjsccVYVaiwuAY2yt5OjY/jftJHu0MFocoqNjpbwgyrF06
+         AKMP2a7mA58KXkZA/TDedVWokzAeLCSOqNHTIyMwdkgHYlmnpWvpGUpNTlIkTayUGXqa
+         /XbcEIFptn/tp8i9zbOjRQJ4mVGoARjZ7BmZzOV8t0n/QV1uTipEVJRrJp8ZgBXvflP3
+         goHVVd4M7BKe2czJwPo6P+d1Be0d1Y+Z0jTD0BzvLdmHpbeeZwY4m+Pf5bNaAhbuArA5
+         edlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=kcIelX1EsGDmdwC3ocBtd0zMhNA8a0bphR97MMdWuis=;
-        b=l6THvMMk+QuSoyOuhP2ACWiEaBuPqpt76OKIpRdpW4J4Q8YrrQMzj7teGsKM8tBw6X
-         dlhJFfWmKXM9rYP08XOk9QHwzP6KC9u1/BYZcaOoDZvJRtTCxem7KNZXGzy53aCatAq4
-         J0Y4r95aF1ld4wE04Rt7QDggamFdFHe6uMIbWP8sMEF9JwZEKdkzSqLGvQ47CkD/VkK9
-         tF1AQ+g2fzBp03UYfeb9wYwoe1T6t0p2KAeMHQ+yu8aptxtq7kby2nWraHEx6qmtnRwN
-         CcOsjm0UGMB/7P8k6JtCAyEEpFnix0QgEEtIR0KT54mdCiX7JIzXld2f/Z5r/e6MEE8v
-         NHqA==
-X-Gm-Message-State: AOAM532pqeaxVvGkX1uxAz9xU0AsgrxmUn9RLFAkzj+cGySpk5/HTs/7
-        cwygVQz+qX34VNjfGH9x4p4=
-X-Google-Smtp-Source: ABdhPJxGNuD8Q0uexHAd2IERDSyUQL8artcvLH0hyQwEglMOZTYRD82ofp1LixQt+TEdr8EVqzALWQ==
-X-Received: by 2002:ad4:4c86:: with SMTP id bs6mr7796941qvb.39.1619230215035;
-        Fri, 23 Apr 2021 19:10:15 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f013:744e:ffa4:164a:a3e9:c671? ([2001:1284:f013:744e:ffa4:164a:a3e9:c671])
-        by smtp.gmail.com with ESMTPSA id l12sm5502413qth.72.2021.04.23.19.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 19:10:13 -0700 (PDT)
-Message-ID: <3ce3294c173c954381b26ab049222c186f81ddf4.camel@gmail.com>
-Subject: Re: [Outreachy kernel] [PATCH v3] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Fri, 23 Apr 2021 23:10:09 -0300
-In-Reply-To: <d2cfc472-d3ac-fd47-aa0c-ed6414f671fc@xs4all.nl>
-References: <20210421123718.GA4597@focaruja>
-         <alpine.DEB.2.22.394.2104211507280.9436@hadrien>
-         <7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel@gmail.com>
-         <alpine.DEB.2.22.394.2104211555040.9436@hadrien>
-         <16dd7a16a8cc69aa0f81dd6bf47f09e878c71a6b.camel@gmail.com>
-         <d2cfc472-d3ac-fd47-aa0c-ed6414f671fc@xs4all.nl>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Mn/X37YGzoXaRidHpnWb9ANkD+US0YqkDbSrWqNk3xI=;
+        b=f2xHZYtf4Gc3hMkmOB5OK/6oqOYfjQCVf0l3J+YxY+Rac5VFzB7u/m5qE39tHlhdV3
+         uDLfBUcHmDJf3G/hC6mOJsD/Uk9Tcc2mhLvWNrDVJliH79sEOhjxEB+jVmDaNyLkQT/d
+         u8JR5/Qz0dCH5rr18deq7D3jxZCoxcWCn6Ezg0aMaXhXyKIheLH9c6+Q2DJDLSy4ZZ2Q
+         JIT0abeu4LcPosUJgTjzxokPn4vexJLEV9b+93UNKCcee0IPGNgnshWV4i15wwm7MLW9
+         il5+C5bvc8DIWoh5yaw2onebhN0jfWFNGKSMQmatzT7Sr2HSPoXhLRkr+JlPvIHZlucZ
+         N2Xw==
+X-Gm-Message-State: AOAM533SwYY7yPT2nkkmMZMgG/ecWaQ0C9h3ozD8myWXyUyp7hdscSGs
+        E8jenCzE6DGQacLctzRvM4/aTzkk0kTl
+X-Google-Smtp-Source: ABdhPJyqTFwgr+iptO4mJmzwn4Zi2dDPDucXnfaoE/2/OvHuX9pLNICLnDV/HDosIYzlCrTJdY3OdbZ5Jy4F
+X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:5cef:2faf:44cf:b69b])
+ (user=rajatja job=sendgmr) by 2002:a5b:303:: with SMTP id j3mr8975440ybp.433.1619230594664;
+ Fri, 23 Apr 2021 19:16:34 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 19:16:30 -0700
+Message-Id: <20210424021631.1972022-1-rajatja@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH v2 1/2] driver core: Move the "removable" attribute from USB
+ to core
+From:   Rajat Jain <rajatja@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rajat Jain <rajatja@google.com>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-usb@vger.kernel.org,
+        helgaas@kernel.org
+Cc:     rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em sex, 2021-04-23 às 11:21 +0200, Hans Verkuil escreveu:
-> On 21/04/2021 16:21, Aline Santana Cordeiro wrote:
-> > Em qua, 2021-04-21 às 15:56 +0200, Julia Lawall escreveu:
-> > > 
-> > > 
-> > > On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
-> > > 
-> > > > Em qua, 2021-04-21 às 15:08 +0200, Julia Lawall escreveu:
-> > > > > 
-> > > > > 
-> > > > > On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
-> > > > > 
-> > > > > > Change line break to avoid an open parenthesis at the end
-> > > > > > of
-> > > > > > the
-> > > > > > line.
-> > > > > > It consequently removed spaces at the start of the
-> > > > > > subsequent
-> > > > > > line.
-> > > > > 
-> > > > > The message is hard to understand.  There are a lot of
-> > > > > singular
-> > > > > nouns, but
-> > > > > actually there are two changes.  Which change is being
-> > > > > described
-> > > > > by
-> > > > > the
-> > > > > above message?  What does "It" refer to?
-> > > > > 
-> > > > > julia
-> > > > 
-> > > > Checkpatch indicated two problems with this function
-> > > > declaration:
-> > > > 1) The line ending with an open parenthesis, and
-> > > > 2) The following line - with the function parameters - has
-> > > > spaces
-> > > > in
-> > > > its identation.
-> > > > 
-> > > > When I changed the line break to put the function name and its
-> > > > parameter in the following line, both checkpath checks were
-> > > > eliminated.
-> > > > 
-> > > > So, the main change was the line break and, also, the line
-> > > > break
-> > > > (it)
-> > > > removed the space in the following line.
-> > > > 
-> > > > Is it better to change the message and explain only about the
-> > > > line
-> > > > break?
-> > > 
-> > > The message should explain about the whole patch.  So if you
-> > > change
-> > > two
-> > > things, it should be clear that what you are saying covers both
-> > > of
-> > > them.
-> > 
-> > Ok, I can do that. In the commit message I described just one issue
-> > because it is only one patch, I didn't want it to look like I was
-> > changing different issues in just one patch.
-> > 
-> > > 
-> > > But it seems that Matthew doesn't think that the line break is a
-> > > good
-> > > idea
-> > > anyway.
-> > 
-> > Yes, I'm sending this email to Matthew too, because I don't know
-> > exactly how to proceed as Hans asked me to made some corrections
-> > too. 
-> > I've made these changes because checkpatch has indicated and with
-> > this
-> > line break, checkpatch does not indicate any check or warning
-> > anymore.
-> > But I can undo that too, I just don't know what I'm supposed to do
-> > with
-> > so many opposite opinions. 
-> 
-> As one of the media maintainers I can say that in this case the
-> preference
-> would be to split it up in two lines. It's one of those areas where
-> different maintainers have different opinions.
-> 
-> Just keep in mind that this is all nitpicking and normally we
-> probably
-> wouldn't bother with this at all, but it is a good exercise to learn
-> about patches and contributing :-)
-> 
-> Regards,
-> 
->         Hans
+Move the "removable" attribute from USB to core in order to allow
+it to be supported by other subsystem / buses. Individual buses
+that want to support this attribute can opt-in by setting the
+supports_removable flag, and then populating the removable property
+of the device while enumerating it. The ABI for the attribute remains
+unchanged.
 
-I really appreciate all the feedbacks I've received :)
-Indeed we can learn a lot about all the contributing process.
+Signed-off-by: Rajat Jain <rajatja@google.com>
+---
+v2: Add documentation
 
-Thank you,
-Aline
-> 
-> > 
-> > 
-> > Thank you all,
-> > Aline 
-> > > 
-> > > julia
-> > > 
-> > > > 
-> > > > Thank you,
-> > > > Aline
-> > > > > 
-> > > > > 
-> > > > > > Both issues detected by checkpatch.pl.
-> > > > > > 
-> > > > > > Signed-off-by: Aline Santana Cordeiro <
-> > > > > > alinesantanacordeiro@gmail.com>
-> > > > > > ---
-> > > > > > 
-> > > > > > Changes since v2:
-> > > > > >  - Insert a space between the function type and pointer
-> > > > > > 
-> > > > > > Changes since v1:
-> > > > > >  - Keep the pointer with the function return type
-> > > > > >    instead of left it with the function name
-> > > > > > 
-> > > > > >  drivers/staging/media/atomisp/pci/atomisp_cmd.h | 10
-> > > > > > +++++----
-> > > > > > -
-> > > > > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > > > > > 
-> > > > > > diff --git
-> > > > > > a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> > > > > > b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> > > > > > index 1c0d464..639eca3 100644
-> > > > > > --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> > > > > > +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> > > > > > @@ -75,8 +75,8 @@ void atomisp_wdt(struct timer_list *t);
-> > > > > >  void atomisp_setup_flash(struct atomisp_sub_device *asd);
-> > > > > >  irqreturn_t atomisp_isr(int irq, void *dev);
-> > > > > >  irqreturn_t atomisp_isr_thread(int irq, void *isp_ptr);
-> > > > > > -const struct atomisp_format_bridge
-> > > > > > *get_atomisp_format_bridge_from_mbus(
-> > > > > > -    u32 mbus_code);
-> > > > > > +const struct atomisp_format_bridge *
-> > > > > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
-> > > > > >  bool atomisp_is_mbuscode_raw(uint32_t code);
-> > > > > >  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
-> > > > > >                            const struct ia_css_frame
-> > > > > > *frame,
-> > > > > > u32
-> > > > > > *p_pgnr);
-> > > > > > @@ -381,9 +381,9 @@ enum mipi_port_id
-> > > > > > __get_mipi_port(struct
-> > > > > > atomisp_device *isp,
-> > > > > > 
-> > > > > >  bool atomisp_is_vf_pipe(struct atomisp_video_pipe *pipe);
-> > > > > > 
-> > > > > > -void atomisp_apply_css_parameters(
-> > > > > > -    struct atomisp_sub_device *asd,
-> > > > > > -    struct atomisp_css_params *css_param);
-> > > > > > +void atomisp_apply_css_parameters(struct
-> > > > > > atomisp_sub_device
-> > > > > > *asd,
-> > > > > > +                                 struct atomisp_css_params
-> > > > > > *css_param);
-> > > > > > +
-> > > > > >  void atomisp_free_css_parameters(struct atomisp_css_params
-> > > > > > *css_param);
-> > > > > > 
-> > > > > >  void atomisp_handle_parameter_and_buffer(struct
-> > > > > > atomisp_video_pipe
-> > > > > > *pipe);
-> > > > > > --
-> > > > > > 2.7.4
-> > > > > > 
-> > > > > > --
-> > > > > > You received this message because you are subscribed to the
-> > > > > > Google
-> > > > > > Groups "outreachy-kernel" group.
-> > > > > > To unsubscribe from this group and stop receiving emails
-> > > > > > from
-> > > > > > it,
-> > > > > > send an email to 
-> > > > > > outreachy-kernel+unsubscribe@googlegroups.com.
-> > > > > > To view this discussion on the web visit
-> > > > > > https://groups.google.com/d/msgid/outreachy-kernel/20210421123718.GA4597%40focaruja
-> > > > > > .
-> > > > > > 
-> > > > 
-> > > > 
-> > > > --
-> > > > You received this message because you are subscribed to the
-> > > > Google
-> > > > Groups "outreachy-kernel" group.
-> > > > To unsubscribe from this group and stop receiving emails from
-> > > > it,
-> > > > send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > > > To view this discussion on the web visit    
-> > > > https://groups.google.com/d/msgid/outreachy-kernel/7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel%40gmail.com
-> > > > .
-> > 
-> > 
-> 
+ Documentation/ABI/testing/sysfs-bus-usb       | 11 ------
+ .../ABI/testing/sysfs-devices-removable       | 17 +++++++++
+ drivers/base/core.c                           | 28 +++++++++++++++
+ drivers/usb/core/hub.c                        |  8 ++---
+ drivers/usb/core/sysfs.c                      | 24 -------------
+ drivers/usb/core/usb.c                        |  1 +
+ include/linux/device.h                        | 36 +++++++++++++++++++
+ include/linux/usb.h                           |  7 ----
+ 8 files changed, 86 insertions(+), 46 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-devices-removable
 
+diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
+index bf2c1968525f..73eb23bc1f34 100644
+--- a/Documentation/ABI/testing/sysfs-bus-usb
++++ b/Documentation/ABI/testing/sysfs-bus-usb
+@@ -154,17 +154,6 @@ Description:
+ 		files hold a string value (enable or disable) indicating whether
+ 		or not USB3 hardware LPM U1 or U2 is enabled for the device.
+ 
+-What:		/sys/bus/usb/devices/.../removable
+-Date:		February 2012
+-Contact:	Matthew Garrett <mjg@redhat.com>
+-Description:
+-		Some information about whether a given USB device is
+-		physically fixed to the platform can be inferred from a
+-		combination of hub descriptor bits and platform-specific data
+-		such as ACPI. This file will read either "removable" or
+-		"fixed" if the information is available, and "unknown"
+-		otherwise.
+-
+ What:		/sys/bus/usb/devices/.../ltm_capable
+ Date:		July 2012
+ Contact:	Sarah Sharp <sarah.a.sharp@linux.intel.com>
+diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+new file mode 100644
+index 000000000000..e13dddd547b5
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-devices-removable
+@@ -0,0 +1,17 @@
++What:		/sys/devices/.../removable
++Date:		Apr 2021
++Contact:	Matthew Garrett <mjg@redhat.com>,
++		Rajat Jain <rajatja@google.com>
++Description:
++		Information about whether a given device is physically fixed to
++		the platform. This is determined by the device's subsystem in a
++		bus / platform specific way. This attribute is only present for
++		buses that can support determining such information:
++
++		"removable": The device is external / removable from the system.
++		"fixed":     The device is internal / fixed to the system.
++		"unknown":   The information is unavailable.
++
++		Currently this is only supported by USB (which infers the
++		information from a combination of hub descriptor bits and
++		platform-specific data such as ACPI).
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index f29839382f81..b8ae4cc52805 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2327,6 +2327,25 @@ static ssize_t online_store(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RW(online);
+ 
++static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
++			      char *buf)
++{
++	const char *state;
++
++	switch (dev->removable) {
++	case DEVICE_REMOVABLE:
++		state = "removable";
++		break;
++	case DEVICE_FIXED:
++		state = "fixed";
++		break;
++	default:
++		state = "unknown";
++	}
++	return sprintf(buf, "%s\n", state);
++}
++static DEVICE_ATTR_RO(removable);
++
+ int device_add_groups(struct device *dev, const struct attribute_group **groups)
+ {
+ 	return sysfs_create_groups(&dev->kobj, groups);
+@@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
+ 			goto err_remove_dev_online;
+ 	}
+ 
++	if (type && type->supports_removable) {
++		error = device_create_file(dev, &dev_attr_removable);
++		if (error)
++			goto err_remove_dev_waiting_for_supplier;
++	}
++
+ 	return 0;
+ 
++ err_remove_dev_waiting_for_supplier:
++	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+  err_remove_dev_online:
+ 	device_remove_file(dev, &dev_attr_online);
+  err_remove_dev_groups:
+@@ -2525,6 +2552,7 @@ static void device_remove_attrs(struct device *dev)
+ 	struct class *class = dev->class;
+ 	const struct device_type *type = dev->type;
+ 
++	device_remove_file(dev, &dev_attr_removable);
+ 	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+ 	device_remove_file(dev, &dev_attr_online);
+ 	device_remove_groups(dev, dev->groups);
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 7f71218cc1e5..500e5648de04 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -2442,11 +2442,11 @@ static void set_usb_port_removable(struct usb_device *udev)
+ 	 */
+ 	switch (hub->ports[udev->portnum - 1]->connect_type) {
+ 	case USB_PORT_CONNECT_TYPE_HOT_PLUG:
+-		udev->removable = USB_DEVICE_REMOVABLE;
++		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+ 		return;
+ 	case USB_PORT_CONNECT_TYPE_HARD_WIRED:
+ 	case USB_PORT_NOT_USED:
+-		udev->removable = USB_DEVICE_FIXED;
++		dev_set_removable(&udev->dev, DEVICE_FIXED);
+ 		return;
+ 	default:
+ 		break;
+@@ -2471,9 +2471,9 @@ static void set_usb_port_removable(struct usb_device *udev)
+ 	}
+ 
+ 	if (removable)
+-		udev->removable = USB_DEVICE_REMOVABLE;
++		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+ 	else
+-		udev->removable = USB_DEVICE_FIXED;
++		dev_set_removable(&udev->dev, DEVICE_FIXED);
+ 
+ }
+ 
+diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+index d85699bee671..e8ff3afdf7af 100644
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -298,29 +298,6 @@ static ssize_t urbnum_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(urbnum);
+ 
+-static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+-			      char *buf)
+-{
+-	struct usb_device *udev;
+-	char *state;
+-
+-	udev = to_usb_device(dev);
+-
+-	switch (udev->removable) {
+-	case USB_DEVICE_REMOVABLE:
+-		state = "removable";
+-		break;
+-	case USB_DEVICE_FIXED:
+-		state = "fixed";
+-		break;
+-	default:
+-		state = "unknown";
+-	}
+-
+-	return sprintf(buf, "%s\n", state);
+-}
+-static DEVICE_ATTR_RO(removable);
+-
+ static ssize_t ltm_capable_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+@@ -825,7 +802,6 @@ static struct attribute *dev_attrs[] = {
+ 	&dev_attr_avoid_reset_quirk.attr,
+ 	&dev_attr_authorized.attr,
+ 	&dev_attr_remove.attr,
+-	&dev_attr_removable.attr,
+ 	&dev_attr_ltm_capable.attr,
+ #ifdef CONFIG_OF
+ 	&dev_attr_devspec.attr,
+diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+index a566bb494e24..5a0f73a28196 100644
+--- a/drivers/usb/core/usb.c
++++ b/drivers/usb/core/usb.c
+@@ -523,6 +523,7 @@ struct device_type usb_device_type = {
+ #ifdef CONFIG_PM
+ 	.pm =		&usb_device_pm_ops,
+ #endif
++	.supports_removable = true,
+ };
+ 
+ 
+diff --git a/include/linux/device.h b/include/linux/device.h
+index ba660731bd25..d6442b811607 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -93,6 +93,12 @@ struct device_type {
+ 	void (*release)(struct device *dev);
+ 
+ 	const struct dev_pm_ops *pm;
++
++	/*
++	 * Determines whether the subsystem supports classifying the devices of
++	 * this type into removable vs fixed.
++	 */
++	bool supports_removable;
+ };
+ 
+ /* interface for exporting device attributes */
+@@ -350,6 +356,19 @@ enum dl_dev_state {
+ 	DL_DEV_UNBINDING,
+ };
+ 
++/**
++ * enum device_removable - Whether the device is removable. The criteria for a
++ * device to be classified as removable, is determined by its subsystem or bus.
++ * @DEVICE_REMOVABLE_UNKNOWN:  Device location is Unknown (default).
++ * @DEVICE_REMOVABLE: Device is removable by the user.
++ * @DEVICE_FIXED: Device is not removable by the user.
++ */
++enum device_removable {
++	DEVICE_REMOVABLE_UNKNOWN = 0,
++	DEVICE_REMOVABLE,
++	DEVICE_FIXED,
++};
++
+ /**
+  * struct dev_links_info - Device data related to device links.
+  * @suppliers: List of links to supplier devices.
+@@ -431,6 +450,9 @@ struct dev_links_info {
+  * 		device (i.e. the bus driver that discovered the device).
+  * @iommu_group: IOMMU group the device belongs to.
+  * @iommu:	Per device generic IOMMU runtime data
++ * @removable:  Whether the device can be removed from the system. This
++ *              should be set by the subsystem / bus driver that discovered
++ *              the device.
+  *
+  * @offline_disabled: If set, the device is permanently online.
+  * @offline:	Set after successful invocation of bus type's .offline().
+@@ -541,6 +563,8 @@ struct device {
+ 	struct iommu_group	*iommu_group;
+ 	struct dev_iommu	*iommu;
+ 
++	enum device_removable	removable;
++
+ 	bool			offline_disabled:1;
+ 	bool			offline:1;
+ 	bool			of_node_reused:1;
+@@ -778,6 +802,18 @@ static inline bool dev_has_sync_state(struct device *dev)
+ 	return false;
+ }
+ 
++static inline void dev_set_removable(struct device *dev,
++				     enum device_removable removable)
++{
++	dev->removable = removable;
++}
++
++static inline bool dev_is_removable(struct device *dev)
++{
++	return dev && dev->type && dev->type->supports_removable
++	    && dev->removable == DEVICE_REMOVABLE;
++}
++
+ /*
+  * High level routines for use by the bus drivers
+  */
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index d6a41841b93e..0bbb9e8b18c7 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -473,12 +473,6 @@ struct usb_dev_state;
+ 
+ struct usb_tt;
+ 
+-enum usb_device_removable {
+-	USB_DEVICE_REMOVABLE_UNKNOWN = 0,
+-	USB_DEVICE_REMOVABLE,
+-	USB_DEVICE_FIXED,
+-};
+-
+ enum usb_port_connect_type {
+ 	USB_PORT_CONNECT_TYPE_UNKNOWN = 0,
+ 	USB_PORT_CONNECT_TYPE_HOT_PLUG,
+@@ -701,7 +695,6 @@ struct usb_device {
+ #endif
+ 	struct wusb_dev *wusb_dev;
+ 	int slot_id;
+-	enum usb_device_removable removable;
+ 	struct usb2_lpm_parameters l1_params;
+ 	struct usb3_lpm_parameters u1_params;
+ 	struct usb3_lpm_parameters u2_params;
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
