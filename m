@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601C436A1BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 17:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5265D36A1C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 17:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhDXPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 11:05:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233833AbhDXPFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 11:05:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D97136148E;
-        Sat, 24 Apr 2021 15:04:23 +0000 (UTC)
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     vkoul@kernel.org
-Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
-        kan.liang@linux.intel.com, dave.jiang@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: [PATCH v4 2/2] dmaengine: idxd: Enable IDXD performance monitor support
-Date:   Sat, 24 Apr 2021 10:04:16 -0500
-Message-Id: <a5564a5583911565d31c2af9234218c5166c4b2c.1619276133.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1619276133.git.zanussi@kernel.org>
-References: <cover.1619276133.git.zanussi@kernel.org>
-In-Reply-To: <cover.1619276133.git.zanussi@kernel.org>
-References: <cover.1619276133.git.zanussi@kernel.org>
+        id S233627AbhDXPYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 11:24:19 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:51905 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231814AbhDXPYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 11:24:18 -0400
+Received: from fsav303.sakura.ne.jp (fsav303.sakura.ne.jp [153.120.85.134])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13OFNbNP083442;
+        Sun, 25 Apr 2021 00:23:37 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav303.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp);
+ Sun, 25 Apr 2021 00:23:37 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13OFNbuq083438
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 25 Apr 2021 00:23:37 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC PATCH] watchdog: Adding softwatchdog
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>
+References: <20210424102555.28203-1-peter.enderborg@sony.com>
+ <20210424102555.28203-2-peter.enderborg@sony.com>
+ <d5db5606-f074-6d0e-2316-8ff41af25cfd@roeck-us.net>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <844e3ecb-62c3-856a-7273-e22eee35e80f@i-love.sakura.ne.jp>
+Date:   Sun, 25 Apr 2021 00:23:32 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <d5db5606-f074-6d0e-2316-8ff41af25cfd@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the code needed in the main IDXD driver to interface with the IDXD
-perfmon implementation.
+On 2021/04/24 23:41, Guenter Roeck wrote:
+> On 4/24/21 3:25 AM, Peter Enderborg wrote:
+>> This is not a rebooting watchdog. It's function is to take other
+>> actions than a hard reboot. On many complex system there is some
+>> kind of manager that monitor and take action on slow systems.
+>> Android has it's lowmemorykiller (lmkd), desktops has earlyoom.
+>> This watchdog can be used to help monitor to preform some basic
+>> action to keep the monitor running.
+>>
+>> It can also be used standalone. This add a policy that is
+>> killing the process with highest oom_score_adj and using
+>> oom functions to it quickly. I think it is a good usecase
+>> for the patch. Memory siuations can be problematic for
+>> software that monitor system, but other prolicys can
+>> should also be possible. Like picking tasks from a memcg, or
+>> specific UID's or what ever is low priority.
+>> ---
+> 
+> NACK. Besides this not following the new watchdog API, the task
+> of a watchdog is to reset the system on failure. Its task is most
+> definitely not to re-implement the oom killer in any way, shape,
+> or form.
+> 
 
-[ Based on work originally by Jing Lin. ]
-
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
----
- drivers/dma/idxd/init.c | 9 +++++++++
- drivers/dma/idxd/irq.c  | 5 +----
- 2 files changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 8003f8a25fff..2a926bef87f2 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -21,6 +21,7 @@
- #include "../dmaengine.h"
- #include "registers.h"
- #include "idxd.h"
-+#include "perfmon.h"
- 
- MODULE_VERSION(IDXD_DRIVER_VERSION);
- MODULE_LICENSE("GPL v2");
-@@ -541,6 +542,10 @@ static int idxd_probe(struct idxd_device *idxd)
- 
- 	idxd->major = idxd_cdev_get_major(idxd);
- 
-+	rc = perfmon_pmu_init(idxd);
-+	if (rc < 0)
-+		dev_warn(dev, "Failed to initialize perfmon. No PMU support: %d\n", rc);
-+
- 	dev_dbg(dev, "IDXD device %d probed successfully\n", idxd->id);
- 	return 0;
- 
-@@ -720,6 +725,7 @@ static void idxd_remove(struct pci_dev *pdev)
- 	if (device_pasid_enabled(idxd))
- 		idxd_disable_system_pasid(idxd);
- 	idxd_unregister_devices(idxd);
-+	perfmon_pmu_remove(idxd);
- 	iommu_dev_disable_feature(&pdev->dev, IOMMU_DEV_FEAT_SVA);
- }
- 
-@@ -749,6 +755,8 @@ static int __init idxd_init_module(void)
- 	else
- 		support_enqcmd = true;
- 
-+	perfmon_init();
-+
- 	err = idxd_register_bus_type();
- 	if (err < 0)
- 		return err;
-@@ -782,5 +790,6 @@ static void __exit idxd_exit_module(void)
- 	pci_unregister_driver(&idxd_pci_driver);
- 	idxd_cdev_remove();
- 	idxd_unregister_bus_type();
-+	perfmon_exit();
- }
- module_exit(idxd_exit_module);
-diff --git a/drivers/dma/idxd/irq.c b/drivers/dma/idxd/irq.c
-index afee571e0194..ae68e1e5487a 100644
---- a/drivers/dma/idxd/irq.c
-+++ b/drivers/dma/idxd/irq.c
-@@ -156,11 +156,8 @@ static int process_misc_interrupts(struct idxd_device *idxd, u32 cause)
- 	}
- 
- 	if (cause & IDXD_INTC_PERFMON_OVFL) {
--		/*
--		 * Driver does not utilize perfmon counter overflow interrupt
--		 * yet.
--		 */
- 		val |= IDXD_INTC_PERFMON_OVFL;
-+		perfmon_counter_overflow(idxd);
- 	}
- 
- 	val ^= cause;
--- 
-2.17.1
-
+I don't think this proposal is a watchdog. I think this proposal is
+a timer based process killer, based on an assumption that any slowdown
+which prevents the monitor process from pinging for more than 0.5 seconds
+(if HZ == 1000) is caused by memory pressure.
