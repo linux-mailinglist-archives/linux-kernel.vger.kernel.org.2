@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDECA36A429
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312AC36A434
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhDYC2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDYC2O (ORCPT
+        id S231319AbhDYCjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 22:39:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16153 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhDYCjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:28:14 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A8FC061574;
-        Sat, 24 Apr 2021 19:27:35 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id m11so36675406pfc.11;
-        Sat, 24 Apr 2021 19:27:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=URUmfHg69ru1rtAAU8sF2y/Od8zXksltkh0QYk6c5yk=;
-        b=qZZmRSjsgr5a2cRWZubG4sgo+dyxb90KT0bERd/00/jl+q+EKHLfLVvT4IPcrslo1O
-         gfjwfoUQQGYtgqnB8jybnRW8bu8KtGTfx7bl3hEVwJgQeA65Q3YlXSaxQX6s4SYjArNZ
-         B5bucFd4IL0N4uQXxIcfHnHL/Ca5ji7gPT0egYQrD1nOdfl6lVU7DIv+oxRPvVfgc4DT
-         NbSVsM+A/ZIIYYOVrl3Fx6GPj+pr1xsvuO5wSwapkk5J3Nffa8rWyA1vbye0vtMu2FCW
-         ug1gj21J5H7r5thQtEcjvVGt58Dipw7ifOaZ+AdJm7LsxpMDUQBlCoLu93/x1T8lIF3w
-         p80A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=URUmfHg69ru1rtAAU8sF2y/Od8zXksltkh0QYk6c5yk=;
-        b=lRVmTqBrgCCF1C3eBNGXTZnBFdFup+I2LCTOYf8MB7Gk7EJeQAQEzNI6jZgHDLp+XD
-         y5V3QSe8n115/XqCa2qenqNs2h9KVU4FztrEEVq7IfurmFrA6fAzWBhVwXTsajdd7Kfd
-         tEtS5Okt3+UHwPd5Ng9rGyp5Hs/iu/B3Cj4aFQ1cqGG1tMxMe8iGbyrhvAzvERHNGlOj
-         4Ya29WLBqrWbVtMHArqwp89qppGiMTuuFmmiOI+ivCmgCD2IdOH2peko/jvexCrLX8N7
-         A4t2T99bDODpX/Rwnqpjzm8C8oPRWW2Xz03wynADEHKvKNeITvCA++ywKnM/D8Vx5FeB
-         qMIQ==
-X-Gm-Message-State: AOAM533PV543XUix+dYNGVbcoerZPkaNveGNjkxM3igVVBYd8f4882B+
-        2xleKPnSxJ6X55l0NFzcpEMLc5vl+sQ=
-X-Google-Smtp-Source: ABdhPJxz+fvRubj8N3U41i+mc2OpjbO+EQz+u5/PQHZIfhqkS3ibY57MESZxvqj/Eu1ennhoa1eGag==
-X-Received: by 2002:aa7:908c:0:b029:209:aacd:d8b with SMTP id i12-20020aa7908c0000b0290209aacd0d8bmr11349537pfa.74.1619317654560;
-        Sat, 24 Apr 2021 19:27:34 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:28b7:b656:4f0d:6473])
-        by smtp.gmail.com with ESMTPSA id a5sm2122865pja.37.2021.04.24.19.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 19:27:33 -0700 (PDT)
-Date:   Sat, 24 Apr 2021 19:27:30 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: atkbd - simplify atkbd_show_force_release()
-Message-ID: <YITTkui8qer2S+4R@google.com>
-References: <20210421201639.1541945-1-linux@rasmusvillemoes.dk>
+        Sat, 24 Apr 2021 22:39:04 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FSXF35pmwzpbTB;
+        Sun, 25 Apr 2021 10:35:19 +0800 (CST)
+Received: from huawei.com (10.175.104.174) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Sun, 25 Apr 2021
+ 10:38:15 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <ying.huang@intel.com>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
+        <david@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linmiaohe@huawei.com>
+Subject: [PATCH v4 0/4] close various race windows for swap
+Date:   Sun, 25 Apr 2021 10:38:02 +0800
+Message-ID: <20210425023806.3537283-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421201639.1541945-1-linux@rasmusvillemoes.dk>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rasmus,
+Hi all,
+When I was investigating the swap code, I found some possible race
+windows. This series aims to fix all these races. But using current
+get/put_swap_device() to guard against concurrent swapoff for
+swap_readpage() looks terrible because swap_readpage() may take really
+long time. And to reduce the performance overhead on the hot-path as
+much as possible, it appears we can use the percpu_ref to close this
+race window(as suggested by Huang, Ying). The patch 1 adds percpu_ref
+support for swap and most of the remaining patches try to use this to
+close various race windows. More details can be found in the respective
+changelogs. Thanks!
 
-On Wed, Apr 21, 2021 at 10:16:39PM +0200, Rasmus Villemoes wrote:
-> We can just include the newline in the format string, and scnprintf()
-> guarantees nul-termination. These days, sysfs_emit() is
-> preferred in sysfs ->show methods, so switch to that.
+v3->v4:
+  some commit log and comment enhance per Huang, Ying
+  put get/put_swap_device() in shmem_swapin_page() per Huang, Ying
+  collect Reviewed-by tag
 
-Technically speaking the conversion is not 100% equivalent - original
-code ensured that there is always a newline in the output. I kind of
-like this, so maybe we need sysfs_emit_nl() or similar?
+v2->v3:
+  some commit log and comment enhance per Huang, Ying
+  remove ref_initialized field
+  squash PATCH 1-2
 
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  drivers/input/keyboard/atkbd.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/input/keyboard/atkbd.c b/drivers/input/keyboard/atkbd.c
-> index edc613efc158..b146a3ec631a 100644
-> --- a/drivers/input/keyboard/atkbd.c
-> +++ b/drivers/input/keyboard/atkbd.c
-> @@ -1492,13 +1492,8 @@ static ssize_t atkbd_set_extra(struct atkbd *atkbd, const char *buf, size_t coun
->  
->  static ssize_t atkbd_show_force_release(struct atkbd *atkbd, char *buf)
->  {
-> -	size_t len = scnprintf(buf, PAGE_SIZE - 1, "%*pbl",
-> -			       ATKBD_KEYMAP_SIZE, atkbd->force_release_mask);
-> -
-> -	buf[len++] = '\n';
-> -	buf[len] = '\0';
-> -
-> -	return len;
-> +	return sysfs_emit(buf, "%*pbl\n",
-> +			  ATKBD_KEYMAP_SIZE, atkbd->force_release_mask);
->  }
->  
->  static ssize_t atkbd_set_force_release(struct atkbd *atkbd,
-> -- 
-> 2.29.2
-> 
+v1->v2:
+  reorganize the patch-2/5
+  various enhance and fixup per Huang, Ying
+  Many thanks for the comments of Huang, Ying, Dennis Zhou and Tim Chen.
 
-Thanks.
+Miaohe Lin (4):
+  mm/swapfile: use percpu_ref to serialize against concurrent swapoff
+  swap: fix do_swap_page() race with swapoff
+  mm/swap: remove confusing checking for non_swap_entry() in
+    swap_ra_info()
+  mm/shmem: fix shmem_swapin() race with swapoff
+
+ include/linux/swap.h | 14 ++++++--
+ mm/memory.c          | 11 ++++--
+ mm/shmem.c           | 11 ++++++
+ mm/swap_state.c      |  6 ----
+ mm/swapfile.c        | 79 +++++++++++++++++++++++++++-----------------
+ 5 files changed, 81 insertions(+), 40 deletions(-)
 
 -- 
-Dmitry
+2.19.1
+
