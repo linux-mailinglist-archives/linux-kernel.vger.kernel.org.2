@@ -2,129 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55E136A440
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6291D36A443
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhDYCvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDYCvp (ORCPT
+        id S229677AbhDYC5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 22:57:53 -0400
+Received: from mail-m121145.qiye.163.com ([115.236.121.145]:27952 "EHLO
+        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhDYC5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:51:45 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE02C061574;
-        Sat, 24 Apr 2021 19:51:06 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so1115894pjz.0;
-        Sat, 24 Apr 2021 19:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=b8hpyDKfB8kYMTlAMk33KCFRc04U8eD4yoRmXwd6/1k=;
-        b=m6/cs0w0zl6hseoLN0XCTkyI/2aaLandJbgVegkAFPACOK3vgxjDEN5tLvAX1mD8LC
-         5Gf5JRweI4mz1gIzNfuzpOQlhubhNHMR8dvqdayX6FNX7heS/1KzGY6Ion08+021ddws
-         b1yErDu2H1Y3qst8pJNLJKXW8KYUeKSyAhSaSFYo2HM/3mKIMIPc8UCQSmgFxwhx2e7t
-         4q4+zeFWDd4bTfijVbR3Iric+0Ao9j/bEHZRoJZufWoTxoI4ari8fd//FBjTia+fPgac
-         gp/OLZrfhU056jbmUBPpSN6zNINdKiCXXSjfiZqJo9FrHFgl3+2bLThsr3SfEXHOKVam
-         qCSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=b8hpyDKfB8kYMTlAMk33KCFRc04U8eD4yoRmXwd6/1k=;
-        b=QIJGKP2FOn1UbEgv7uzxJf+08sp0ZSe2dRT0Ihn5UUsDC5UkVMi82H6NpcX/9f1vQ0
-         GiVJuoCtTUMvQVcoUD5diIl/LqqkFniNLj9mVW+y8q+BRElmRVNeRANEOnX+9/hlOBru
-         EPulZzr/3vMTwqWKlWoh7EYQxccPXHl0+CI00v92rs9egK8xl+9s7RAsED6+72lsvj98
-         Onsy5aD35l8Trtk4mIBMDPIQ7xNlFTCVDmpL2+6OYeApK98pyLZdSG9m84JNg8k0Vlf1
-         09jZEVPpAtbiv9JQLPL3F5GSbOCBVersdXlPUDxJuPr7QAinFpISXvBy8kz2O7BoFo4l
-         lhXw==
-X-Gm-Message-State: AOAM533FV4a1h5JGQcEQjXGPhfaPNbEOh5pnOztGcRedphi5EFnoNUJ4
-        u8hUPC2zhv1WKMPLpf6cJAQ=
-X-Google-Smtp-Source: ABdhPJzaM529HYznmdqky15x5KtHD46TLDcKeJaBCy+6gtf9+tlf+8eGhlbgwiZ3K2b7y+HYzPva4w==
-X-Received: by 2002:a17:90b:180b:: with SMTP id lw11mr14262132pjb.6.1619319065616;
-        Sat, 24 Apr 2021 19:51:05 -0700 (PDT)
-Received: from MacBook-Pro.local ([154.48.252.71])
-        by smtp.gmail.com with ESMTPSA id p22sm10620324pjz.20.2021.04.24.19.51.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Apr 2021 19:51:04 -0700 (PDT)
-To:     shuah@kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        Thomas Renninger <trenn@suse.com>
-From:   =?UTF-8?B?5b6Q56aP5rW3?= <xufuhai1992@gmail.com>
-Subject: [PATCH v4 2/2] cpupower: Fix to return negative value if no
- permisssion for read_msr
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lishujin@kuaishou.com, xufuhai <xufuhai@kuaishou.com>
-Message-ID: <2dccdf57-1546-e55e-2efe-3ac91ed7f043@gmail.com>
-Date:   Sun, 25 Apr 2021 10:51:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        Sat, 24 Apr 2021 22:57:51 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 61EA4800057;
+        Sun, 25 Apr 2021 10:57:10 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] ocfs2: Remove repeated uptodate check for buffer
+Date:   Sun, 25 Apr 2021 10:57:02 +0800
+Message-Id: <20210425025702.13628-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGkJJQ1ZLS0lLHh5CHRhDGUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        9ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mjo6Tzo5NT8NLAMeTyM3CUsP
+        OC0KCx9VSlVKTUpCSEpCT0hLQkpJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0hJNwY+
+X-HM-Tid: 0a7906f59d93b03akuuu61ea4800057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xufuhai <xufuhai@kuaishou.com>
+In commit 60f91826ca62 ("buffer: Avoid setting buffer bits that are
+already set"), function set_buffer_##name was added a test_bit() to
+check buffer, which is the same as function buffer_##name.
+The !buffer_uptodate(bh) here is a repeated check. Remove it.
 
-If the read_msr function is executed by a non-root user, the function returns 
--1, which means that there is no permission to access /dev/cpu/%d/msr, but 
-cpufreq_has_boost_support should also return -1 immediately, and should not
-follow the original logic to return 0, which will cause amd The cpupower tool
-returns the boost active state as 0.
-
-Reproduce procedure:
-        cpupower frequency-info
-
-Reported-by:   yangrui <yangrui@kuaishou.com>
-Signed-off-by: xufuhai <xufuhai@kuaishou.com>
-Signed-off-by: chenguanqiao <chenguanqiao@kuaishou.com>
-Signed-off-by: lishujin <lishujin@kuaishou.com>
-Reviewed-by: Thomas Renninger <trenn@suse.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- tools/power/cpupower/utils/helpers/misc.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ fs/ocfs2/aops.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
-index fc6e34511721..565f8c414396 100644
---- a/tools/power/cpupower/utils/helpers/misc.c
-+++ b/tools/power/cpupower/utils/helpers/misc.c
-@@ -16,7 +16,7 @@
- int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
-                        int *states)
- {
--       int ret;
-+       int ret = 0;
-        unsigned long long val;
-
-        *support = *active = *states = 0;
-@@ -30,18 +30,21 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
-                 */
-
-                if (cpupower_cpu_info.caps & CPUPOWER_CAP_AMD_CPB_MSR) {
--                       if (!read_msr(cpu, MSR_AMD_HWCR, &val)) {
-+                       /*
-+                        * no permission to access /dev/cpu/%d/msr, return -1 immediately,
-+                        * and should not follow the original logic to return 0
-+                        */
-+                       ret = read_msr(cpu, MSR_AMD_HWCR, &val);
-+                       if (!ret) {
-                                if (!(val & CPUPOWER_AMD_CPBDIS))
-                                        *active = 1;
-                        }
-                } else {
-                        ret = amd_pci_get_num_boost_states(active, states);
--                       if (ret)
--                               return ret;
-                }
-        } else if (cpupower_cpu_info.caps & CPUPOWER_CAP_INTEL_IDA)
-                *support = *active = 1;
--       return 0;
-+       return ret;
- }
-
- int cpupower_intel_get_perf_bias(unsigned int cpu)
---
-2.24.3 (Apple Git-128)
+diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+index ad20403b383f..bd039fdbb27e 100644
+--- a/fs/ocfs2/aops.c
++++ b/fs/ocfs2/aops.c
+@@ -634,8 +634,7 @@ int ocfs2_map_page_blocks(struct page *page, u64 *p_blkno,
+ 		}
+ 
+ 		if (PageUptodate(page)) {
+-			if (!buffer_uptodate(bh))
+-				set_buffer_uptodate(bh);
++			set_buffer_uptodate(bh);
+ 		} else if (!buffer_uptodate(bh) && !buffer_delay(bh) &&
+ 			   !buffer_new(bh) &&
+ 			   ocfs2_should_read_blk(inode, page, block_start) &&
+-- 
+2.25.1
 
