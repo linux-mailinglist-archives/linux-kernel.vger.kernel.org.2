@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6AA36A3BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 02:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A846536A3C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 02:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhDYAmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 20:42:39 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41979 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229687AbhDYAmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 20:42:38 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13P0fRtY031168
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Apr 2021 20:41:28 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3884F15C3BC5; Sat, 24 Apr 2021 20:41:27 -0400 (EDT)
-Date:   Sat, 24 Apr 2021 20:41:27 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Shelat, Abhi" <a.shelat@northeastern.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YIS6t+X1DOKlB+Z/@mit.edu>
-References: <20210421133727.GA27929@fieldses.org>
- <YIAta3cRl8mk/RkH@unreal>
- <20210421135637.GB27929@fieldses.org>
- <20210422193950.GA25415@fieldses.org>
- <YIMDCNx4q6esHTYt@unreal>
- <20210423180727.GD10457@fieldses.org>
- <YIMgMHwYkVBdrICs@unreal>
- <20210423214850.GI10457@fieldses.org>
- <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
- <20210424213454.GA4239@fieldses.org>
+        id S229980AbhDYAsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 20:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229695AbhDYAsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 20:48:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FCF613C4;
+        Sun, 25 Apr 2021 00:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619311658;
+        bh=mijs84e9TdAULlSFMzEsjGetGLdyir4mZ+ORmJUQPxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XkvpZaFuiMXZxiAo7kTJH47fZSBRkvK4MeVbZuQZVnqR3facBiY/7U1yUxzzSmpw6
+         H6hN9sTuGUSinznQNiywDO6aIwjvnONqO4pn7AfL5me9xUF7rA99Je7yW4rTWgeEYe
+         w8Zde1WJ7tySt5Oc3+DtfOOoKebLD8I6kf1lTHMwmikfQ277dA0NVLLziGeZokRfZN
+         AqNbLcMnvEQKNrOzTZ0/71I0tqc9yD3OkB617y9Th5AIL63JgwSidgKJIW74UmCt/s
+         zGFAI3V364zr5zNBaFkFJkYBUy0+mCEv5HGMDVxKtRi+WVa5GBluTIihP4miMChqOR
+         +D9aZGoWXwSlw==
+Date:   Sat, 24 Apr 2021 17:47:36 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH] f2fs: compress: remove unneed check condition
+Message-ID: <YIS8KHf9VPxZl85b@google.com>
+References: <20210421083941.66371-1-yuchao0@huawei.com>
+ <YID1sqemJVeBcdqD@google.com>
+ <2c6f17e6-ef23-f313-5df2-6bd63d7df2b1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210424213454.GA4239@fieldses.org>
+In-Reply-To: <2c6f17e6-ef23-f313-5df2-6bd63d7df2b1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 05:34:54PM -0400, J. Bruce Fields wrote:
-> In Greg's revert thread, Kangjie Lu's messages are also missing from the
-> archives:
+On 04/22, Chao Yu wrote:
+> On 2021/4/22 12:04, Jaegeuk Kim wrote:
+> > On 04/21, Chao Yu wrote:
+> > > In only call path of __cluster_may_compress(), __f2fs_write_data_pages()
+> > > has checked SBI_POR_DOING condition, and also cluster_may_compress()
+> > > has checked CP_ERROR_FLAG condition, so remove redundant check condition
+> > > in __cluster_may_compress() for cleanup.
+> > 
+> > I think cp_error can get any time without synchronization. Is it safe to say
+> > it's redundant?
 > 
-> 	https://lore.kernel.org/lkml/20210421130105.1226686-1-gregkh@linuxfoundation.org/
->
+> Yes,
+> 
+> But no matter how late we check cp_error, cp_error can happen after our
+> check points, it won't cause regression if we remove cp_error check there,
+> because for compress write, it uses OPU, it won't overwrite any existed data
+> in device.
+> 
+> Seems it will be more appropriate to check cp_error in
+> f2fs_write_compressed_pages() like we did in f2fs_write_single_data_page()
+> rather than in __cluster_may_compress().
+> 
+> BTW, shouldn't we rename __cluster_may_compress() to
+> cluster_beyond_filesize() for better readability?
 
-I'm going to guess it's one of two things.  The first is that they are
-sending mail messages with HTML which is getting bounced; the other
-possibility is that some of the messages were sent only to Greg, and
-he added the mailing list back to the cc.
+f2fs_cluster_has_data()?
 
-So for exampple, message-id
-CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com
-isn't in lore, but Greg's reply:
-
-https://lore.kernel.org/linux-nfs/YH%2FfM%2FTsbmcZzwnX@kroah.com/
-
-can be found in lore.kernel.org was presumably because the message
-where Aditya accused "wild accusations bordering on slander" and his
-claim that his patches were the fault of a "new static code analyzer"
-was sent only to Greg?  Either that, or it was bounced because he sent
-it from gmail without suppressing HTML.
-
-						- Ted
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > ---
+> > >   fs/f2fs/compress.c | 5 -----
+> > >   1 file changed, 5 deletions(-)
+> > > 
+> > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > index 3c9d797dbdd6..532c311e3a89 100644
+> > > --- a/fs/f2fs/compress.c
+> > > +++ b/fs/f2fs/compress.c
+> > > @@ -906,11 +906,6 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
+> > >   		f2fs_bug_on(sbi, !page);
+> > > -		if (unlikely(f2fs_cp_error(sbi)))
+> > > -			return false;
+> > > -		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+> > > -			return false;
+> > > -
+> > >   		/* beyond EOF */
+> > >   		if (page->index >= nr_pages)
+> > >   			return false;
+> > > -- 
+> > > 2.29.2
+> > .
+> > 
