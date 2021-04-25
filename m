@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41A536A69F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EEC36A6A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhDYK0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:26:34 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:35957 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhDYK0d (ORCPT
+        id S230015AbhDYK3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 06:29:53 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:31976 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229899AbhDYK3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:26:33 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1labxY-002Ytb-3m; Sun, 25 Apr 2021 12:25:52 +0200
-Received: from port-92-195-56-233.dynamic.as20676.net ([92.195.56.233] helo=[192.168.178.129])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1labxX-003D7W-NG; Sun, 25 Apr 2021 12:25:52 +0200
-Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
- driver
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Joshua Thompson <funaho@jurai.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
-Date:   Sun, 25 Apr 2021 12:25:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 92.195.56.233
+        Sun, 25 Apr 2021 06:29:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWg8-M1_1619346499;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWg8-M1_1619346499)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 25 Apr 2021 18:28:55 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] mtd: mtd_oobtest: Remove redundant assignment to err
+Date:   Sun, 25 Apr 2021 18:28:18 +0800
+Message-Id: <1619346498-43617-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/25/21 11:06 AM, Finn Thain wrote:
-> This was tested on my Quadra 630. I haven't tested it on my PowerBook 150
-> because I don't have a RAM adapter board for it.
-> 
-> Apparently, the hardware I tested doesn't need macide_clear_irq() or
-> macide_test_irq() -- if it did, the generic driver would not have worked.
-> It's possible that those routines are needed for the PowerBook 150 but
-> we can cross that bridge if and when we come to it.
-> 
-> BTW, macide_clear_irq() appears to suffer from a race condition. The write
-> to the interrupt flags register could easily have unintended side effects
-> as it may alter other flag bits. Fortunately, all of the other bits are
-> unused by Linux. Moreover, when tested on my Quadra 630, that assignment
-> (*ide_ifr &= ~0x20) was observed to have no effect on bit 5.
+Variable err is set to zero but this value is never read as it is
+overwritten with a new value later on, hence it is a redundant
+assignment and can be removed.
 
-Shouldn't we switch to a libata driver instead with legacy IDE been slated
-for removal from the Linux kernel?
+Cleans up the following clang-analyzer warning:
 
-Adrian
+drivers/mtd/tests/oobtest.c:626:4: warning: Value stored to 'err' is
+never read [clang-analyzer-deadcode.DeadStores].
 
+drivers/mtd/tests/oobtest.c:603:4: warning: Value stored to 'err' is
+never read [clang-analyzer-deadcode.DeadStores].
+
+drivers/mtd/tests/oobtest.c:579:4: warning: Value stored to 'err' is
+never read [clang-analyzer-deadcode.DeadStores].
+
+drivers/mtd/tests/oobtest.c:556:4: warning: Value stored to 'err' is
+never read [clang-analyzer-deadcode.DeadStores].
+
+drivers/mtd/tests/oobtest.c:532:3: warning: Value stored to 'err' is
+never read [clang-analyzer-deadcode.DeadStores].
+
+drivers/mtd/tests/oobtest.c:509:3: warning: Value stored to 'err' is
+never read [clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/mtd/tests/oobtest.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index c71daa8..3a31a2c 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -506,7 +506,6 @@ static int __init mtd_oobtest_init(void)
+ 	err = mtd_write_oob(mtd, addr0, &ops);
+ 	if (err) {
+ 		pr_info("error occurred as expected\n");
+-		err = 0;
+ 	} else {
+ 		pr_err("error: can write past end of OOB\n");
+ 		errcnt += 1;
+@@ -529,7 +528,6 @@ static int __init mtd_oobtest_init(void)
+ 
+ 	if (err) {
+ 		pr_info("error occurred as expected\n");
+-		err = 0;
+ 	} else {
+ 		pr_err("error: can read past end of OOB\n");
+ 		errcnt += 1;
+@@ -553,7 +551,6 @@ static int __init mtd_oobtest_init(void)
+ 		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+ 			pr_info("error occurred as expected\n");
+-			err = 0;
+ 		} else {
+ 			pr_err("error: wrote past end of device\n");
+ 			errcnt += 1;
+@@ -576,7 +573,6 @@ static int __init mtd_oobtest_init(void)
+ 
+ 		if (err) {
+ 			pr_info("error occurred as expected\n");
+-			err = 0;
+ 		} else {
+ 			pr_err("error: read past end of device\n");
+ 			errcnt += 1;
+@@ -600,7 +596,6 @@ static int __init mtd_oobtest_init(void)
+ 		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+ 			pr_info("error occurred as expected\n");
+-			err = 0;
+ 		} else {
+ 			pr_err("error: wrote past end of device\n");
+ 			errcnt += 1;
+@@ -623,7 +618,6 @@ static int __init mtd_oobtest_init(void)
+ 
+ 		if (err) {
+ 			pr_info("error occurred as expected\n");
+-			err = 0;
+ 		} else {
+ 			pr_err("error: read past end of device\n");
+ 			errcnt += 1;
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+1.8.3.1
+
