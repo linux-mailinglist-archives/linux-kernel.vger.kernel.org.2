@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF15236A794
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 15:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D103036A797
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 15:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhDYNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 09:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230214AbhDYNuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 09:50:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E5F761363;
-        Sun, 25 Apr 2021 13:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619358580;
-        bh=DGguM+dXVFEHhxP7ffgIr3ztEhgYe2f/QSBnkIvEibg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QcdMxScWzLppYu6Iki2rSJNfB9zAS7qdSTLw6JxFGaxv9tJQc7z5EYcxMqJZQ1ynd
-         4BTi3TSmsEUfHXh6hTDVqYuAEsmKY8ZbDJfIUl7FhiHsy6EuxQa7VmIuXkewgIAeg6
-         jMnX4UBU3TBE7frm0bLeSt+cou2Cyk041SgCsFS/gT2AvSyoVUbBNfBXkfiWiMG5mO
-         zrgM7/V8Y6n+X/x2JHmdJkqeOep+kQXzxgRkKchJpsV8xyNuZwRUNcDDOEx9WVBuVs
-         rcW0HTPPP/1430SRaa3sHHMSh1tq5x1Bt8QPF+X4Go3dtW7Yu4Ja4B5tebdvMQJddJ
-         hatRqgoAuxOcA==
-Date:   Sun, 25 Apr 2021 16:49:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rdma/siw: Fix a use after free in siw_alloc_mr
-Message-ID: <YIVzcBMCtvlFov4W@unreal>
-References: <20210425132001.3994-1-lyl2019@mail.ustc.edu.cn>
+        id S230296AbhDYNus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 09:50:48 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:40285 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229837AbhDYNuq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 09:50:46 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 22C3D5C0083;
+        Sun, 25 Apr 2021 09:50:06 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sun, 25 Apr 2021 09:50:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=Y
+        ch62pQrkLMvKo48PQDLgaNhdPAWa5zGFyf8q9cP3Bg=; b=Cy1Gqyn9vDBiG1zUk
+        97pxm+sFj0qziX/0nGlJb1HVK75oT9sslQ0lnEVMO/kaldEA8Qa2WgYZ1LXXxr33
+        6MNewMlhqKUctOtXCkkkiVCFQ/oTQEQB2KwRssKn/VP6+YK7NybEPf8SpB+tFHCh
+        OmAWMuXeD6NzrX0mcLHrm7p7WNRCOm5lcDEeZalyIsXsMBbesdbnR/BmXPXeRNjb
+        5ODivu1QHowqnqyxzTkhX78EMaDqS2tvNsD8S39co3FSL5gLF7qBOsX4oYgI4gme
+        FwwORizWhUCYupPW4WBEGN7qYywLJ98Wr2W6S5TXpjFeucgtytecA8jEzppqAjqn
+        37L5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=Ych62pQrkLMvKo48PQDLgaNhdPAWa5zGFyf8q9cP3
+        Bg=; b=VjVM8M1SWS2tjwCAcmeJ60XkZ35lsyEk3APFOGQz4jBIhme6rmp8euVJC
+        ZzUyqMYm2Cp6qMu037LpEfV45cK2SaM5XULwQFVFFAiWqpA1MJFKFOvaA9qKWv5u
+        Myt4mv31OVKkayntLRgwbqkYszCWXgDa5ICWkUpIvdxQVkFiYKTxBPeU+u35fuPI
+        1XQKaxzCe5ob/5yqqwE1Q6IvAyYMJOVMu9w/1E2471nLPf3bvoF60x4ROQGplolh
+        T2JP8mujglzkLpTe80FYNOxcvIxpjkapIdEPS2RTplDQDvzbSiKJn+IW5QFNhoXE
+        M7+VW9AxNnlhZtNzDIwSEo7cVrUIg==
+X-ME-Sender: <xms:jHOFYBh8ieP3RKejkaYHdU8UmwUBakyLuMY_x9pIfCxRKW-mJgdcgQ>
+    <xme:jHOFYGCCHeV8Gia9Avv8oUDqhHYfeVZodMujZQWE_HrW-3I54bk608UJCy7QzrAbF
+    1mAzthIF6sipelGWsM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduiedgjeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpefggfeikeejhefgkeegudffudeftefhveejleelleegheevieff
+    udejudfgtedvjeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeiuddrud
+    ehkedrudegledrkedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:jHOFYBEbk3jfjc6t55SkEj32ZwCkJERqFRnk2xDEQu8in3JqWCZZgg>
+    <xmx:jHOFYGQ4g3dNfkgc4j-N0-ag84tYTPk_TkTlsjrdH5XriNkXfJ4l7w>
+    <xmx:jHOFYOye_LcbN36e1kF_pqZhLQT14XPZD1TneoxcEI_BfqIvjPg38w>
+    <xmx:jnOFYItt4BXUGIYXCNfTbawxun4OFqOWSrOudjwaY4b-daFoZUbdtw>
+Received: from [192.168.43.122] (unknown [61.158.149.81])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 425A6240054;
+        Sun, 25 Apr 2021 09:49:59 -0400 (EDT)
+Subject: Re: [v1] MIPS:DTS:Correct device id of pcie for Loongnon-2K
+To:     Xiaochuan Mao <maoxiaochuan@loongson.cn>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Qing Zhang <zhangqing@loongson.cn>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210425130915.31001-1-maoxiaochuan@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <28bbe1bf-f421-afc7-07d3-e123764afe99@flygoat.com>
+Date:   Sun, 25 Apr 2021 21:49:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210425132001.3994-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210425130915.31001-1-maoxiaochuan@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 06:20:01AM -0700, Lv Yunlong wrote:
-> Our code analyzer reported a uaf.
-> 
-> In siw_alloc_mr, it calls siw_mr_add_mem(mr,..). In the implementation
-> of siw_mr_add_mem(), mem is assigned to mr->mem and then mem is freed
-> via kfree(mem) if xa_alloc_cyclic() failed. Here, mr->mem still point
-> to a freed object. After, the execution continue up to the err_out branch
-> of siw_alloc_mr, and the freed mr->mem is used in siw_mr_drop_mem(mr).
-> 
-> Fixes: 2251334dcac9e ("rdma/siw: application buffer management")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+
+ÔÚ 2021/4/25 21:09, Xiaochuan Mao Ð´µÀ:
+> from Loongson-2K user manual know that Loongson-2K have two
+> pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
+> and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
+> in each pcie controller and others are 7a09.
+>
+> Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
 > ---
->  drivers/infiniband/sw/siw/siw_mem.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-> index 34a910cf0edb..3bde3b6fca05 100644
-> --- a/drivers/infiniband/sw/siw/siw_mem.c
-> +++ b/drivers/infiniband/sw/siw/siw_mem.c
-> @@ -114,6 +114,7 @@ int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
->  	if (xa_alloc_cyclic(&sdev->mem_xa, &id, mem, limit, &next,
->  	    GFP_KERNEL) < 0) {
->  		kfree(mem);
-> +		mr->mem = NULL;
->  		return -ENOMEM;
->  	}
+> v1:
+> revert class code
 
-Please move "mr->mem = mem;" assignment to be here, after if (...) {} section.
 
-Thanks
+Could you please help me check the actual hardware?
 
->  	/* Set the STag index part */
-> -- 
-> 2.25.1
-> 
-> 
+TBH I remeber I filled it with actual hardware values.
+
+Btw the tittle should be prefixed with [PATCH v2]
+
+You may generate version suffix with `git format-patch -v2` or try to 
+utilize patch management tools like git-publish[1].
+
+Thanks.
+
+[1]: https://github.com/stefanha/git-publish
+
+- Jiaxun
+
+
+> ---
+
+[...]
+
