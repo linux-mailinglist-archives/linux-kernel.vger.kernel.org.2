@@ -2,93 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BA836A3DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AA936A3DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhDYBKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 21:10:31 -0400
-Received: from mga11.intel.com ([192.55.52.93]:48704 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229723AbhDYBKa (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 21:10:30 -0400
-IronPort-SDR: X82cNlA3EPUudMJPGLTCa03EJQrmm/sYdJzyNdX37sB+NMCGC45jfdCvFIubhK1PQjy5ED84rR
- inCa9pE/NNqw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="193018427"
-X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="193018427"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 18:09:51 -0700
-IronPort-SDR: 5kKneAmJBud43H5KummpJ77rwSkykSs1NBYOYtDRFiELhjduxaw7sdw0hXL70mal0l6P6aQPq/
- UdBYRbISkSQQ==
-X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="428895136"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 18:09:51 -0700
-Date:   Sat, 24 Apr 2021 18:09:50 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, kan.liang@intel.com,
-        yao.jin@intel.com
-Subject: Re: [PATCH] perf vendor events: Add missing model numbers
-Message-ID: <20210425010950.GQ1401198@tassilo.jf.intel.com>
-References: <20210329070903.8894-1-yao.jin@linux.intel.com>
- <67f05194-0eb4-becd-c8bb-7dc944ac6ca8@linux.intel.com>
+        id S230152AbhDYBLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 21:11:48 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17815 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhDYBLq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 21:11:46 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FSVK366lDz7vyN;
+        Sun, 25 Apr 2021 09:08:39 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 25 Apr 2021 09:11:00 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>, Yunlei He <heyunlei@hihonor.com>
+Subject: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
+Date:   Sun, 25 Apr 2021 09:10:53 +0800
+Message-ID: <20210425011053.44436-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67f05194-0eb4-becd-c8bb-7dc944ac6ca8@linux.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 10:58:02AM +0800, Jin, Yao wrote:
-> Hi Andi, Arnaldo, Jiri,
-> 
-> Can this patch be accepted?
+We may trigger high frequent checkpoint for below case:
+1. mkdir /mnt/dir1; set dir1 encrypted
+2. touch /mnt/file1; fsync /mnt/file1
+3. mkdir /mnt/dir2; set dir2 encrypted
+4. touch /mnt/file2; fsync /mnt/file2
+...
 
-Looks good to me.
+Although, newly created dir and file are not related, due to
+commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
+trigger checkpoint whenever fsync() comes after a new encrypted dir
+created.
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
+In order to avoid such condition, let's record an entry including
+directory's ino into global cache when we initialize encryption policy
+in a checkpointed directory, and then only trigger checkpoint() when
+target file's parent has non-persisted encryption policy, for the case
+its parent is not checkpointed, need_do_checkpoint() has cover that
+by verifying it with f2fs_is_checkpointed_node().
 
+Reported-by: Yunlei He <heyunlei@hihonor.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- fix to set ENC_DIR_INO only for encrypted directory
+ fs/f2fs/f2fs.h              | 2 ++
+ fs/f2fs/file.c              | 3 +++
+ fs/f2fs/xattr.c             | 6 ++++--
+ include/trace/events/f2fs.h | 3 ++-
+ 4 files changed, 11 insertions(+), 3 deletions(-)
 
-> 
-> Thanks
-> Jin Yao
-> 
-> On 3/29/2021 3:09 PM, Jin Yao wrote:
-> > Kernel has supported COMETLAKE/COMETLAKE_L to use the SKYLAKE
-> > events and supported TIGERLAKE_L/TIGERLAKE/ROCKETLAKE to use
-> > the ICELAKE events. But pmu-events mapfile.csv is missing
-> > these model numbers.
-> > 
-> > Now add the missing model numbers to mapfile.csv.
-> > 
-> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > ---
-> >   tools/perf/pmu-events/arch/x86/mapfile.csv | 3 +++
-> >   1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
-> > index 2f2a209e87e1..6455f06f35d3 100644
-> > --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
-> > +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
-> > @@ -24,6 +24,7 @@ GenuineIntel-6-1F,v2,nehalemep,core
-> >   GenuineIntel-6-1A,v2,nehalemep,core
-> >   GenuineIntel-6-2E,v2,nehalemex,core
-> >   GenuineIntel-6-[4589]E,v24,skylake,core
-> > +GenuineIntel-6-A[56],v24,skylake,core
-> >   GenuineIntel-6-37,v13,silvermont,core
-> >   GenuineIntel-6-4D,v13,silvermont,core
-> >   GenuineIntel-6-4C,v13,silvermont,core
-> > @@ -35,6 +36,8 @@ GenuineIntel-6-55-[01234],v1,skylakex,core
-> >   GenuineIntel-6-55-[56789ABCDEF],v1,cascadelakex,core
-> >   GenuineIntel-6-7D,v1,icelake,core
-> >   GenuineIntel-6-7E,v1,icelake,core
-> > +GenuineIntel-6-8[CD],v1,icelake,core
-> > +GenuineIntel-6-A7,v1,icelake,core
-> >   GenuineIntel-6-86,v1,tremontx,core
-> >   AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
-> >   AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
-> > 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index b9d5317db0a7..0fe881309a20 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -246,6 +246,7 @@ enum {
+ 	APPEND_INO,		/* for append ino list */
+ 	UPDATE_INO,		/* for update ino list */
+ 	TRANS_DIR_INO,		/* for trasactions dir ino list */
++	ENC_DIR_INO,		/* for encrypted dir ino list */
+ 	FLUSH_INO,		/* for multiple device flushing */
+ 	MAX_INO_ENTRY,		/* max. list */
+ };
+@@ -1090,6 +1091,7 @@ enum cp_reason_type {
+ 	CP_FASTBOOT_MODE,
+ 	CP_SPEC_LOG_NUM,
+ 	CP_RECOVER_DIR,
++	CP_ENC_DIR,
+ };
+ 
+ enum iostat_type {
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index a595050c56d3..62af29ec0879 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
+ 		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+ 							TRANS_DIR_INO))
+ 		cp_reason = CP_RECOVER_DIR;
++	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
++							ENC_DIR_INO))
++		cp_reason = CP_ENC_DIR;
+ 
+ 	return cp_reason;
+ }
+diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+index c8f34decbf8e..70615d504f7e 100644
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+ 			const char *name, const void *value, size_t size,
+ 			struct page *ipage, int flags)
+ {
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	struct f2fs_xattr_entry *here, *last;
+ 	void *base_addr, *last_base_addr;
+ 	int found, newsize;
+@@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+ 			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
+ 		f2fs_set_encrypted_inode(inode);
+ 	f2fs_mark_inode_dirty_sync(inode, true);
+-	if (!error && S_ISDIR(inode->i_mode))
+-		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
++	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
++			f2fs_is_checkpointed_node(sbi, inode->i_ino))
++		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
+ 
+ same:
+ 	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
+diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+index 56b113e3cd6a..ca0cf12226e9 100644
+--- a/include/trace/events/f2fs.h
++++ b/include/trace/events/f2fs.h
+@@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
+ 		{ CP_NODE_NEED_CP,	"node needs cp" },		\
+ 		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
+ 		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
+-		{ CP_RECOVER_DIR,	"dir needs recovery" })
++		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
++		{ CP_ENC_DIR,		"persist encryption policy" })
+ 
+ #define show_shutdown_mode(type)					\
+ 	__print_symbolic(type,						\
+-- 
+2.29.2
+
