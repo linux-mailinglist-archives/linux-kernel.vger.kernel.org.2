@@ -2,196 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D8336A95F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBA036A963
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhDYVHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 17:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbhDYVHd (ORCPT
+        id S231318AbhDYVKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 17:10:10 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:49127 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231209AbhDYVKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 17:07:33 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5BFC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:06:53 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id o5so28624792ljc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=rFL57X5dT8uq0jyTTi5e3CYAn19e6+moDRvcnmddWFs=;
-        b=Aj/RYne21IRfrpILIZ5N042zx9+zCYXeHQhqCJK4BScfCFjs3Xcdu1wnNkbRi+Lc3T
-         JYu3YHB0bEnjNI76MZEsWMfoZwbHVbS0XT9LFzA7Wgp9FdImW/33W1CV5qAdp4tWc903
-         nd1sEC2xxBHiHSWiyxQVhSFXaxbAojX9Ej3QA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=rFL57X5dT8uq0jyTTi5e3CYAn19e6+moDRvcnmddWFs=;
-        b=QTK1VK0qwQvMGf292DXBwEy/OmrBC0Bg/e07ion/ESAS1DKFncEYSEtVkyzsJcOcBk
-         XK/dGzzjiCrMSUDVOCbfpdL7MG5fFh55Mia/d0/CoqKW4IDau/FAgjC8RE0NRmJdDkNM
-         FaaaWdmM944DrDh3uMaORqWwthlPrJtm/WksWZs1FGMkWY2OlJGssHdKQM/J7odQI34h
-         c+eAqOK89TbRp4+YFJpvNpDxEbyegWHUlzl4kxBcZ9q6I07jPFm45RSLCmtAzOBRb30A
-         jpJeEwCvhd8yob7+IaNScv/tqctRDO6NqpJL6Hzqk3rjDRw+ywH3pBOVDfqmJHaGuhEw
-         mHWQ==
-X-Gm-Message-State: AOAM531NYtaZzRblQx9bZHklKVRP1/oj/GV9rd2PG22arJZA7kkwcDI/
-        u6qgW2ZBvH7mNgtsyfDLyh053tC0u6IozrwY
-X-Google-Smtp-Source: ABdhPJx0HF9rTGWL26JnlTuuzhns3Cba5L37e7TP9Lv7g8a/2QKq0AwNRVcyhpbELs+CPRV87v6YCg==
-X-Received: by 2002:a2e:b819:: with SMTP id u25mr10401700ljo.105.1619384811425;
-        Sun, 25 Apr 2021 14:06:51 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id n8sm1199348lfe.285.2021.04.25.14.06.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Apr 2021 14:06:51 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id n138so85367589lfa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:06:50 -0700 (PDT)
-X-Received: by 2002:ac2:43c5:: with SMTP id u5mr10050560lfl.40.1619384810680;
- Sun, 25 Apr 2021 14:06:50 -0700 (PDT)
+        Sun, 25 Apr 2021 17:10:05 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-264-PkwKK9X8NdyBSIEz6JCoUA-1; Sun, 25 Apr 2021 22:09:22 +0100
+X-MC-Unique: PkwKK9X8NdyBSIEz6JCoUA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sun, 25 Apr 2021 22:09:21 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Sun, 25 Apr 2021 22:09:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Zack Weinberg' <zackw@panix.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
+        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] bpf.2: Use standard types and attributes
+Thread-Topic: [RFC] bpf.2: Use standard types and attributes
+Thread-Index: AQHXOJdJ6YNcCKeqkEK6KUcQdn8TZarEIdzggAFrTACAAC7GAA==
+Date:   Sun, 25 Apr 2021 21:09:21 +0000
+Message-ID: <600f0f5de9ff4bc887eec42d38113a8c@AcuMS.aculab.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
+ <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
+ <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
+In-Reply-To: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 25 Apr 2021 14:06:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj3ANm8QrkC7GTAxQyXyurS0_yxMR3WwjhD9r7kTiOSTw@mail.gmail.com>
-Message-ID: <CAHk-=wj3ANm8QrkC7GTAxQyXyurS0_yxMR3WwjhD9r7kTiOSTw@mail.gmail.com>
-Subject: Linux 5.12
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks to everybody who made last week very calm indeed, which just
-makes me feel much happier about the final 5.12 release.
+RnJvbTogWmFjayBXZWluYmVyZw0KPiBTZW50OiAyNSBBcHJpbCAyMDIxIDIwOjE3DQo+IA0KPiBP
+biBTYXQsIEFwciAyNCwgMjAyMSBhdCA0OjQzIFBNIERhdmlkIExhaWdodCB2aWEgTGliYy1hbHBo
+YQ0KPiA8bGliYy1hbHBoYUBzb3VyY2V3YXJlLm9yZz4gd3JvdGU6DQo+ID4gRnJvbTogQWxleGVp
+IFN0YXJvdm9pdG92DQo+ID4gPiBPbiBGcmksIEFwciAyMywgMjAyMSBhdCA0OjE1IFBNIEFsZWph
+bmRybyBDb2xvbWFyIDxhbHgubWFucGFnZXNAZ21haWwuY29tPiB3cm90ZToNCj4gLi4uDQo+ID4g
+PiA+IFNvbWUgcGFnZXMgYWxzbyBkb2N1bWVudCBhdHRyaWJ1dGVzLCB1c2luZyBHTlUgc3ludGF4
+DQo+ID4gPiA+ICdfX2F0dHJpYnV0ZV9fKCh4eHgpKScuICBVcGRhdGUgdGhvc2UgdG8gdXNlIHRo
+ZSBzaG9ydGVyIGFuZCBtb3JlDQo+ID4gPiA+IHBvcnRhYmxlIEMyeCBzeW50YXgsIHdoaWNoIGhh
+c24ndCBiZWVuIHN0YW5kYXJkaXplZCB5ZXQsIGJ1dCBpcw0KPiA+ID4gPiBhbHJlYWR5IGltcGxl
+bWVudGVkIGluIEdDQywgYW5kIGF2YWlsYWJsZSB0aHJvdWdoIGVpdGhlciAtLXN0ZD1jMngNCj4g
+PiA+ID4gb3IgYW55IG9mIHRoZSAtLXN0ZD1nbnUuLi4gb3B0aW9ucy4NCj4gLi4NCj4gPiBBbmQg
+dGhlIGNvZGUgYmVsb3cgaXMgbm8gbW9yZSBwb3J0YWJsZSB0aGF0IGEgI3ByYWdtYScuDQo+ID4g
+SXQgaXMgcHJvYmFibHkgd29yc2UgdGhhbiBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkNCj4g
+PiArICAgICAgICAgICAgdWludDY0X3QgW1tnbnU6OmFsaWduZWQoOCldXSB2YWx1ZTsNCj4gPiBU
+aGUgc3RhbmRhcmRzIGNvbW1pdHRlZSBhcmUgc21va2luZyBkb3BlIGFnYWluLg0KPiA+IEF0IGxl
+YXN0IHRoZSAnX19hbGlnbmVkX3U2NCB2YWx1ZTsnIGZvcm0gc3RhbmRzIGEgcmVhc29uYWJsZQ0K
+PiA+IGNoYW5jZSBvZiBiZWluZyBjb252ZXJ0ZWQgYnkgY3BwIGludG8gd2hhdGV2ZXIgeW91ciBj
+b21waWxlciBzdXBwb3J0cy4NCj4gDQo+IElzIGl0IGFjdHVhbGx5IG5lY2Vzc2FyeSB0byBtZW50
+aW9uIHRoZSBhbGlnbm1lbnQgb3ZlcnJpZGVzIGF0IGFsbCBpbg0KPiB0aGUgbWFucGFnZXM/ICBU
+aGV5IGFyZSBvbmx5IHJlbGV2YW50IHRvIHBlb3BsZSB3b3JraW5nIGF0IHRoZSBsZXZlbA0KPiBv
+ZiBwaHlzaWNhbCBsYXlvdXQgb2YgdGhlIGRhdGEgaW4gUkFNLCBhbmQgdGhvc2UgcGVvcGxlIGFy
+ZSBwcm9iYWJseQ0KPiBnb2luZyB0byBoYXZlIHRvIGNvbnN1bHQgdGhlIGhlYWRlciBmaWxlIGFu
+eXdheS4NCg0KRGVwZW5kcywgaWYgdGhlIG1hbiBwYWdlIGRlZmluZXMgdGhlIHN0cnVjdHVyZSAt
+IGl0IG5lZWRzIHRvDQpjb250YWluIGl0cyBkZWZpbml0aW9uLg0KSWYgdGhlb3J5IHRoZSBtYW4g
+cGFnZSBvdWdodCB0byBiZSB0aGUgZGVmaW5pdGlvbiwgYW5kIHRoZSBjb2RlDQpkbyB3aGF0IHRo
+ZSBtYW4gcGFnZSBzYXlzIGhhcHBlbnMuDQoNCkFuIGFsdGVybmF0aXZlIGlzIGZvciB0aGUgbWFu
+IHBhZ2UgdG8gc2F5IHRoYXQgdGhlIHN0cnVjdHVyZQ0KY29udGFpbnMgc29tZSBmaWVsZHMgLSB3
+aXRob3V0IHByZXNjcmliaW5nIHRoZSBvcmRlciwgb3INCnN0b3BwaW5nIHRoZSBpbXBsZW1lbnRh
+dGlvbiBhZGRpbmcgYWRkaXRpb25hbCBmaWVsZHMgKG9yIGV2ZW4NCmNoYW5naW5nIHRoZSBhY3R1
+YWwgbnVtZXJpYyB0eXBlKS4NClRoaXMgaXMgbW9yZSBjb21tb24gaW4gdGhlIHN0YW5kYXJkcyBk
+b2N1bWVudHMuDQpJTUhPIFRoZSBMaW51eCBwYWdlcyByZWFsbHkgb3VnaHQgdG8gc2F5IGhvdyBs
+aW51eCBkb2VzIHRoaW5ncy4NCihXaXRoIG5vdGVzIGFib3V0IHBvcnRhYmlsaXR5LikNCg0KCURh
+dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
+dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
+Mzg2IChXYWxlcykNCg==
 
-Both the shortlog (appended) and the diffstat are absolutely tiny, and
-it's mainly just a random collection of small fixes in various areas:
-arm64 devicetree files, some x86 perf event fixes (and a couple of
-tooling ones), various minor driver fixes (amd and i915 gpu fixes
-stand out, but honestly, that's not because they are big, but because
-the rest is even smaller), a couple of small reverts, and a few
-locking fixes (one kvm serialization fix, one memory ordering fix for
-rwlocks).
-
-Anyway, this obviously means that I'll start the merge window for 5.13
-tomorrow. But I'd ask that even developers champing at the bit to get
-their shiny new code merged please spend a bit of time running and
-checking out 5.12.
-
-Despite the extra week, this was actually a fairly small release
-overall.  Judging by linux-next, 5.13 will be making up for it.
-
-         Linus
-
----
-
-Ali Saidi (1):
-      locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
-
-Andre Przywara (1):
-      arm64: dts: allwinner: Revert SD card CD GPIO for Pine64-LTS
-
-Andy Shevchenko (1):
-      pinctrl: core: Show pin numbers for the controllers with base =3D 0
-
-Christian K=C3=B6nig (2):
-      coda: fix reference counting in coda_file_mmap error path
-      ovl: fix reference counting in ovl_mmap error path
-
-Christoph Hellwig (1):
-      block: return -EBUSY when there are open partitions in blkdev_reread_=
-part
-
-Eli Cohen (1):
-      vdpa/mlx5: Set err =3D -ENOMEM in case dma_map_sg_attrs fails
-
-Hugh Dickins (2):
-      mm/filemap: fix find_lock_entries hang on 32-bit THP
-      mm/filemap: fix mapping_seek_hole_data on THP & 32-bit
-
-Imre Deak (1):
-      drm/i915: Fix modesetting in case of unexpected AUX timeouts
-
-James Bottomley (1):
-      KEYS: trusted: Fix TPM reservation for seal/unseal
-
-Jiansong Chen (1):
-      drm/amdgpu: fix GCR_GENERAL_CNTL offset for dimgrey_cavefish
-
-Jim Mattson (1):
-      perf/x86/kvm: Fix Broadwell Xeon stepping in isolation_ucodes[]
-
-Jon Hunter (2):
-      arm64: tegra: Set fw_devlink=3Don for Jetson TX2
-      arm64: tegra: Fix mmc0 alias for Jetson Xavier NX
-
-Kan Liang (1):
-      perf/x86/intel/uncore: Remove uncore extra PCI dev HSWEP_PCI_PCU_3
-
-Leo Yan (1):
-      perf auxtrace: Fix potential NULL pointer dereference
-
-Linus Torvalds (3):
-      Revert "gcov: clang: fix clang-11+ build"
-      Revert "net/rds: Avoid potential use after free in
-rds_send_remove_from_sock"
-      Linux 5.12
-
-Mike Galbraith (1):
-      x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
-
-Neil Armstrong (1):
-      mmc: meson-gx: replace WARN_ONCE with dev_warn_once about
-scatterlist size alignment in block mode
-
-Philip Yang (1):
-      drm/amdgpu: reserve fence slot to update page table
-
-Qingqing Zhuo (1):
-      drm/amd/display: Update modifier list for gfx10_3
-
-Sameer Pujar (1):
-      arm64: tegra: Move clocks from RT5658 endpoint to device node
-
-Serge E. Hallyn (1):
-      capabilities: require CAP_SETFCAP to map uid 0
-
-Simon Ser (1):
-      amd/display: allow non-linear multi-planar formats
-
-Steven Rostedt (VMware) (1):
-      tracing: Fix checking event hash pointer logic when tp_printk is enab=
-led
-
-Thierry Reding (1):
-      arm64: tegra: Add unit-address for ACONNECT on Tegra186
-
-Thomas Richter (1):
-      perf ftrace: Fix access to pid in array when setting a pid filter
-
-Tony Lindgren (1):
-      gpio: omap: Save and restore sysconfig
-
-Vasily Averin (1):
-      tools/cgroup/slabinfo.py: updated to work on current kernel
-
-Wanpeng Li (1):
-      KVM: x86/xen: Take srcu lock when accessing kvm_memslots()
-
-Xie Yongji (1):
-      vhost-vdpa: protect concurrent access to vhost device iotlb
-
-Yuanyuan Zhong (1):
-      pinctrl: lewisburg: Update number of pins in community
-
-Zhen Lei (2):
-      perf data: Fix error return code in perf_data__create_dir()
-      perf map: Fix error return code in maps__clone()
-
-Zhenyu Wang (1):
-      drm/i915/gvt: Fix BDW command parser regression
-
-Zhouyi Zhou (1):
-      preempt/dynamic: Fix typo in macro conditional statement
