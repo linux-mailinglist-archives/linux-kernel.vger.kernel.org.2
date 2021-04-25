@@ -2,173 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A34B36A8CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 20:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB4E36A8CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 20:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhDYSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 14:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        id S231240AbhDYSUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 14:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhDYSQc (ORCPT
+        with ESMTP id S230459AbhDYSUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 14:16:32 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8500EC061574;
-        Sun, 25 Apr 2021 11:15:50 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id ja3so5154953ejc.9;
-        Sun, 25 Apr 2021 11:15:50 -0700 (PDT)
+        Sun, 25 Apr 2021 14:20:34 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0B1C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 11:19:53 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id ja3so5164531ejc.9
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 11:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a/ZtSBDvqTlG56qptq7qwAgMe8JoTOcZRN0BpM31Y6Q=;
-        b=EHdMCZHHaGasg4SfOoxLwM9k24VLi/DajXoJH3DJacWrmFpGK1n20uze8m5xXuz4qJ
-         wCtvgwwLEwZg3aaKzDue6me8AiCojRKfUNbKT6rALXKBPGgEni4LBVz0L8698DoxWiD2
-         daYWMSU7pDuDypncA71Zltq7ZRZHSaa/IQq5v4PN7YRUaNnN7NFRHzNKE5xPEcxT0sXs
-         Kr3EBsLeBG6lGmqjtWuM6wfz1IuJCFLKgCsdiFlxTLfizWIQK0Tn9P8pOmMwFD/whjtE
-         VURZpMT/EpLcOdQQgWeH1iNeLbKHOC7/NMJCx+9q9hlcu7/J6Md1xKiUYzOGeca8KxT9
-         4Esg==
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=qk166Mtr97Uegou75uz10LObRraPNJwyXwP+uE6LyQw=;
+        b=IPe6mj81gSuElvbNYDwwcogHPUiaEEHuSJy9quaslWl/dT7MiQqbHhjoEzDh3kA2GZ
+         4gYDSo6YoyBA+r7y+WhgBbQkJt1GdEdEI3HqWs/JeBPqrSDH6ppdU33F/+Xgo5MkeNJ6
+         Nmsv/bbUkGRUfznUXErRf8mBtlNMkBEauOQAsj403Dwfxh6N5dG1mdFCCuqMzXWo6Zyt
+         jS8appOXEPIk2tJbekjlFvY1biZ7FXDpyYWVYfcq+QIfXztP9v2Swu5Gy6WHKXOU/q7j
+         Q4P99U19DNfrtkp7CGqxnC2ouzKUh/cGvj1NnN0XBRa/zIkBQSqKnGTvIyRe13mJKdB1
+         poqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a/ZtSBDvqTlG56qptq7qwAgMe8JoTOcZRN0BpM31Y6Q=;
-        b=XfTewP3PrQG5bBK/USpeBZKYeLw5qOn1QBGxV6twf5Nzm0GDPmkk17PcYmLsxFHj23
-         DDvXVzTX88vWPnU0Py7914lKtCX2R9V0REbSMXcNKAdQcHPlq6r6eO2CbC8h8Pt3GX35
-         WVWePuzJXP67aeLGriIiJJbhILNTQu5PgGA9Tu2ucpQHSyeU6FwLf4Kcka8xo0+fdTAG
-         NAwuaA+yr/6kOEFn/HfyonBUAqwfBX9BamPZgb4Vz78hd6ynUJnbkpGnsECq1jVxSXuF
-         8p8hTlhOaF2XBlFxl/zVPuwkP5xZU2thzSzOopskvAYJPTFgo0F+T5Wrb2XuyW8L6oPp
-         AXqA==
-X-Gm-Message-State: AOAM532Uu1NUBDS3Z+hIbp99WzphMo4dVY8trIIw5hHxkE41A2EkKXd/
-        1JRfK2R0nw9CllPVZOT05oMDovc0//WufhimJPBPWjtcjb7fRQ==
-X-Google-Smtp-Source: ABdhPJw10TCE534B8I5UX7zjBr5VS6kO6hjL4hJHk2mAAq0UjE7nEP6Kr+BYyFbO7ztXJ/hHR3FeQIjLJab45n2kxUM=
-X-Received: by 2002:a17:906:1c8f:: with SMTP id g15mr14445082ejh.20.1619374549025;
- Sun, 25 Apr 2021 11:15:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qk166Mtr97Uegou75uz10LObRraPNJwyXwP+uE6LyQw=;
+        b=p0YL2kQFndFANnUmh35qZOOF9xNX9Igj2bsQLmekJQzAq8d/xQJ/7IUDfOCv/nxEiL
+         8PbYud0FoiV5ZQA8Z5T5d0gbHmFC/F6fPdKrisBev/1t+k8G5Fr8KYDiCzo7ykiVOYi0
+         e8v1UUwokeXfhe4NtJMdT/LrRbYfFum90mORzQ+Vu2tWj18tLcDea+Y86eUHPIikCmlZ
+         s3Dz92Vv+KOC16Mr/y5EbIJomBJ0X7ppbboaQedpKJ7gAOQAYkFc0oF5HhdeNJCvn6ZS
+         GLNlLpDXZWwyRmx49g//mu8HuNgHNfy2fAGQ9uFOCEj3yfIssCOFausB08HvvVIdpX2n
+         xPJA==
+X-Gm-Message-State: AOAM531mm63yiqEmhkAxKaAKRGpms8jORTzn9DEHtmUB3zQTC5Ekffnu
+        sBpmHkuSpw/nsKp660ummyWhzQ==
+X-Google-Smtp-Source: ABdhPJwK336xqeeN0qCMFyS5+HPkdQBoFcU38Q0ElaOFUxrFifDkymZ0bNNyGQL77ZwZpt/Ou59AjQ==
+X-Received: by 2002:a17:906:88b:: with SMTP id n11mr14255156eje.26.1619374792417;
+        Sun, 25 Apr 2021 11:19:52 -0700 (PDT)
+Received: from localhost.localdomain (p200300d9971998009e1ae620ab52a3b7.dip0.t-ipconnect.de. [2003:d9:9719:9800:9e1a:e620:ab52:a3b7])
+        by smtp.googlemail.com with ESMTPSA id t14sm9992715ejj.77.2021.04.25.11.19.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Apr 2021 11:19:52 -0700 (PDT)
+Subject: Re: [PATCH 0/1] ipc/util.{c,h}: Use binary search for max_idx
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, 1vier1@web.de
+References: <20210425075208.11777-1-manfred@colorfullife.com>
+ <20210425180729.7ew42ab5ygstbwm4@offworld>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <3b503caa-2f2e-3b9a-e513-342509b668c2@colorfullife.com>
+Date:   Sun, 25 Apr 2021 20:19:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <CAFt=RON+KYYf5yt9vM3TdOSn4zco+3XtFyi3VDRr1vbQUBPZ0g@mail.gmail.com>
- <YIWd7v1U/dGivmSE@zeniv-ca.linux.org.uk> <CAFt=RONcpvvk5=8GLTvG44=6wKwiYPH7oG4YULfcP+J=x8OW-w@mail.gmail.com>
- <YIWlOlss7usVnvme@zeniv-ca.linux.org.uk> <CAFt=ROMhLo6AO98BHS4dW2rhXjhCzWqkiLFgYMPc3Q8+KHh1JQ@mail.gmail.com>
-In-Reply-To: <CAFt=ROMhLo6AO98BHS4dW2rhXjhCzWqkiLFgYMPc3Q8+KHh1JQ@mail.gmail.com>
-From:   haosdent <haosdent@gmail.com>
-Date:   Mon, 26 Apr 2021 02:15:37 +0800
-Message-ID: <CAFt=RON1gRRmsZmaeGLEvGoDyJeDksTappF2v8MGQ3rcpi809A@mail.gmail.com>
-Subject: Re: NULL pointer dereference when access /proc/net
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        zhengyu.duan@shopee.com, Haosong Huang <huangh@sea.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210425180729.7ew42ab5ygstbwm4@offworld>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> in RCU mode we really, really should not assume ->d_inode stable.
+Hi Davidlohr,
 
-Got it, but looks like the ->d_inode is NULL after out of RCU.
+On 4/25/21 8:07 PM, Davidlohr Bueso wrote:
+> On Sun, 25 Apr 2021, Manfred Spraul wrote:
+>
+>> 2nd version of the patch:
+>> @Andrew: Could you add the patch to your mm tree, as candidate for
+>> linux-next?
+>>
+>> Note:
+>> I have tried to remove the ids->max_idx cache entirely. Unfortunately,
+>> this causes a significant slow-down of semstat(,,IPC_STAT):
+>>   * no object allocated, no ipcmni_extended: +50%
+>>   * no object allocated, with ipcmni_extended: +80%
+>>   * 30 objects allocated, with large gaps, no ipcmni_extended:
+>>           +350%
+>> Thus I haven't removed ids->max_id.
+>
+> Right, IPC_STAT is the main usecase for max_id. But I'm not sure why
+> you were looking to remove it in the first place - or was it just to
+> avoid this patch altogether?
+>
+I had assumed that after removing the linear search, the lookup would be 
+so fast that the cache can be removed entirely.
+It would save ~20 lines of code and one int in struct ipc_ids (12 bytes 
+per namespace?).
 
-In `lookup_fast` and `walk_component`
+But: My assumption was wrong, the slowdown is too large.
 
-```
-  dentry = __d_lookup_rcu(parent, &nd->last, &seq);
-  ...
-  *inode = d_backing_inode(dentry);
-```
+--
 
-```
-static int walk_component(struct nameidata *nd, int flags)
-  ...
-  err = lookup_fast(nd, &path, &inode, &seq);
-  if (unlikely(err <= 0)) {
-    ...
-    path.dentry = lookup_slow(&nd->last, nd->path.dentry, nd->flags);
-    ...
-    seq = 0; /* we are already out of RCU mode */
-    inode = d_backing_inode(path.dentry);
-  }
-```
+     Manfred
 
-On Mon, Apr 26, 2021 at 2:00 AM haosdent <haosdent@gmail.com> wrote:
->
-> > In the kernels of 4.8..4.18 period there it used to do
-> > so, but only in non-RCU mode (which is the reason for explicit rcu argument passed
-> > through that callchain).
->
-> Yep, we saw the `inode` parameter pass to `__atime_needs_update` is already NULL
->
-> ```
-> bool __atime_needs_update(const struct path *path, struct inode *inode,
->   bool rcu)
-> {
-> struct vfsmount *mnt = path->mnt;
-> struct timespec now;
->
-> if (inode->i_flags & S_NOATIME)   <=== Oops at here because the params
-> inode is NULL
-> return false;
-> ```
->
-> ```
->     [exception RIP: __atime_needs_update+5]
->     ...  **RSI: 0000000000000000**  <=== the second params of
-> __atime_needs_update "struct inode *inode" is NULL
-> ```
->
-> On Mon, Apr 26, 2021 at 1:22 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Mon, Apr 26, 2021 at 01:04:46AM +0800, haosdent wrote:
-> > > Hi, Alexander, thanks a lot for your quick reply.
-> > >
-> > > > Not really - the crucial part is ->d_count == -128, i.e. it's already past
-> > > > __dentry_kill().
-> > >
-> > > Thanks a lot for your information, we would check this.
-> > >
-> > > > Which tree is that?
-> > > > If you have some patches applied on top of that...
-> > >
-> > > We use Ubuntu Linux Kernel "4.15.0-42.45~16.04.1" from launchpad directly
-> > > without any modification,  the mapping Linux Kernel should be
-> > > "4.15.18" according
-> > > to https://people.canonical.com/~kernel/info/kernel-version-map.html
-> >
-> > Umm...  OK, I don't have it Ubuntu source at hand, but the thing to look into
-> > would be
-> >         * nd->flags contains LOOKUP_RCU
-> >         * in the mainline from that period (i.e. back when __atime_needs_update()
-> > used to exist) we had atime_needs_update_rcu() called in get_link() under those
-> > conditions, with
-> > static inline bool atime_needs_update_rcu(const struct path *path,
-> >                                           struct inode *inode)
-> > {
-> >         return __atime_needs_update(path, inode, true);
-> > }
-> > and __atime_needs_update() passing its last argument (rcu:true in this case) to
-> > relatime_need_update() in
-> >         if (!relatime_need_update(path, inode, now, rcu))
-> > relatime_need_update() hitting
-> >         update_ovl_inode_times(path->dentry, inode, rcu);
-> > and update_ovl_inode_times() starting with
-> >         if (rcu || likely(!(dentry->d_flags & DCACHE_OP_REAL)))
-> >                 return;
-> > with subsequent accesses to ->d_inode.  Those obviously are *NOT* supposed
-> > to be reached in rcu mode, due to that check.
-> >
-> > Your oops looks like something similar to that call chain had been involved and
-> > somehow had managed to get through to those ->d_inode uses.
-> >
-> > Again, in RCU mode we really, really should not assume ->d_inode stable.  That's
-> > why atime_needs_update() gets inode as a separate argument and does *NOT* look
-> > at path->dentry at all.  In the kernels of 4.8..4.18 period there it used to do
-> > so, but only in non-RCU mode (which is the reason for explicit rcu argument passed
-> > through that callchain).
->
->
->
-> --
-> Best Regards,
-> Haosdent Huang
-
-
-
--- 
-Best Regards,
-Haosdent Huang
