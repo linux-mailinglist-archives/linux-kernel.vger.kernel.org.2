@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C929B36A5AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7B136A5B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhDYIT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 04:19:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56024 "EHLO mx2.suse.de"
+        id S229658AbhDYIWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 04:22:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56616 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhDYIT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 04:19:58 -0400
+        id S229485AbhDYIWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 04:22:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60636B01E;
-        Sun, 25 Apr 2021 08:19:18 +0000 (UTC)
-Date:   Sun, 25 Apr 2021 10:19:18 +0200
-Message-ID: <s5hr1iy4vzt.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 2B0A9B16E;
+        Sun, 25 Apr 2021 08:21:23 +0000 (UTC)
+Date:   Sun, 25 Apr 2021 10:21:23 +0200
+Message-ID: <s5hpmyi4vwc.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -24,10 +24,10 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         <linux-kernel@vger.kernel.org>,
         Stefan Binding <sbinding@opensource.cirrus.com>,
         You-Sheng Yang <vicamo.yang@canonical.com>
-Subject: Re: [PATCH v1 1/2] ALSA: hda/cirrus: Set Initial DMIC volume for Bullseye to 16%
-In-Reply-To: <20210424143244.639125-2-vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v1 2/2] ALSA: hda/cirrus: Use CS8409 Equalizer to fix abnormal sounds on Bullseye
+In-Reply-To: <20210424143244.639125-3-vitalyr@opensource.cirrus.com>
 References: <20210424143244.639125-1-vitalyr@opensource.cirrus.com>
-        <20210424143244.639125-2-vitalyr@opensource.cirrus.com>
+        <20210424143244.639125-3-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -37,16 +37,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Apr 2021 16:32:43 +0200,
+On Sat, 24 Apr 2021 16:32:44 +0200,
 Vitaly Rodionov wrote:
 > 
 > From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
 > Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
 
-Could you give a bit more descriptions why this patch is needed?
-And what do you mean 16%?  The only meaningful measure is dB in the
-h/w spec.  Last but not least, why this value was chosen?
+Similarly like the previous patch, the description about the problem
+itself is missing, so I cannot judge whether to take this or not.
+Please clarify at first.
+
+Also, it needs clarification whether applying this EQ to all hardware
+models with this codec chip is really safe or not; i.e. it's mandatory
+for the codec.
 
 
 thanks,
@@ -56,27 +60,70 @@ Takashi
 > 
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1923557
+> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1924997
 > Reported-and-tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
 > ---
->  sound/pci/hda/patch_cirrus.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  sound/pci/hda/patch_cirrus.c | 33 +++++++++++++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
 > 
 > diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-> index 5d57096b3a95..d6cf93b7483c 100644
+> index d6cf93b7483c..82c5f0869684 100644
 > --- a/sound/pci/hda/patch_cirrus.c
 > +++ b/sound/pci/hda/patch_cirrus.c
-> @@ -2172,6 +2172,10 @@ static void cs8409_cs42l42_fixups(struct hda_codec *codec,
->  			(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
->  		break;
->  	case HDA_FIXUP_ACT_PROBE:
+> @@ -1481,6 +1481,34 @@ static const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[] = {
+>  	{} /* Terminator */
+>  };
+>  
+> +static const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[] = {
+> +	{ 0x47, 0x65, 0x4000 }, /* EQ_SEL=1, EQ1/2_EN=0 */
+> +	{ 0x47, 0x64, 0x4000 }, /* +EQ_ACC */
+> +	{ 0x47, 0x65, 0x4010 }, /* +EQ2_EN */
+> +	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
+> +	{ 0x47, 0x64, 0xc0c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=0, EQ_DATA_LO=0x67 */
+> +	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
+> +	{ 0x47, 0x64, 0xc1c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=1, EQ_DATA_LO=0x67 */
+> +	{ 0x47, 0x63, 0xf370 }, /* EQ_DATA_HI=0xf370 */
+> +	{ 0x47, 0x64, 0xc271 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=2, EQ_DATA_LO=0x71 */
+> +	{ 0x47, 0x63, 0x1ef8 }, /* EQ_DATA_HI=0x1ef8 */
+> +	{ 0x47, 0x64, 0xc348 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=3, EQ_DATA_LO=0x48 */
+> +	{ 0x47, 0x63, 0xc110 }, /* EQ_DATA_HI=0xc110 */
+> +	{ 0x47, 0x64, 0xc45a }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=4, EQ_DATA_LO=0x5a */
+> +	{ 0x47, 0x63, 0x1f29 }, /* EQ_DATA_HI=0x1f29 */
+> +	{ 0x47, 0x64, 0xc574 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=5, EQ_DATA_LO=0x74 */
+> +	{ 0x47, 0x63, 0x1d7a }, /* EQ_DATA_HI=0x1d7a */
+> +	{ 0x47, 0x64, 0xc653 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=6, EQ_DATA_LO=0x53 */
+> +	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
+> +	{ 0x47, 0x64, 0xc714 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=7, EQ_DATA_LO=0x14 */
+> +	{ 0x47, 0x63, 0x1ca3 }, /* EQ_DATA_HI=0x1ca3 */
+> +	{ 0x47, 0x64, 0xc8c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=8, EQ_DATA_LO=0xc7 */
+> +	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
+> +	{ 0x47, 0x64, 0xc914 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=9, EQ_DATA_LO=0x14 */
+> +	{ 0x47, 0x64, 0x0000 }, /* -EQ_ACC, -EQ_WRT */
+> +	{} /* Terminator */
+> +};
 > +
-> +		if (codec->fixup_id == CS8409_BULLSEYE)
-> +			snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
-> +					HDA_INPUT, 0, 0xff, 0x19);
->  		snd_hda_gen_add_kctl(&spec->gen,
->  			NULL, &cs8409_cs42l42_hp_volume_mixer);
->  		snd_hda_gen_add_kctl(&spec->gen,
+>  /**
+>   * cs8409_enable_i2c_clock - Enable I2C clocks
+>   * @codec: the codec instance
+> @@ -2029,6 +2057,7 @@ static void cs8409_enable_ur(struct hda_codec *codec, int flag)
+>  static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+>  {
+>  	const struct cs8409_cir_param *seq = cs8409_cs42l42_hw_cfg;
+> +	const struct cs8409_cir_param *seq_bullseye = cs8409_cs42l42_bullseye_atn;
+>  	struct cs_spec *spec = codec->spec;
+>  
+>  	if (spec->gpio_mask) {
+> @@ -2043,6 +2072,10 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+>  	for (; seq->nid; seq++)
+>  		cs_vendor_coef_set(codec, seq->cir, seq->coeff);
+>  
+> +	if (codec->fixup_id == CS8409_BULLSEYE)
+> +		for (; seq_bullseye->nid; seq_bullseye++)
+> +			cs_vendor_coef_set(codec, seq_bullseye->cir, seq_bullseye->coeff);
+> +
+>  	/* Disable Unsolicited Response during boot */
+>  	cs8409_enable_ur(codec, 0);
+>  
 > -- 
 > 2.25.1
 > 
