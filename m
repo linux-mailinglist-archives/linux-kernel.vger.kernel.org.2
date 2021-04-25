@@ -2,83 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63A836A886
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 19:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA3B36A88B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 19:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhDYRWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 13:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
+        id S230491AbhDYRd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 13:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhDYRWo (ORCPT
+        with ESMTP id S230329AbhDYRd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 13:22:44 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0229CC061574;
-        Sun, 25 Apr 2021 10:22:03 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1laiSI-008D8r-8d; Sun, 25 Apr 2021 17:22:02 +0000
-Date:   Sun, 25 Apr 2021 17:22:02 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     haosdent <haosdent@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        zhengyu.duan@shopee.com, Haosong Huang <huangh@sea.com>
-Subject: Re: NULL pointer dereference when access /proc/net
-Message-ID: <YIWlOlss7usVnvme@zeniv-ca.linux.org.uk>
-References: <CAFt=RON+KYYf5yt9vM3TdOSn4zco+3XtFyi3VDRr1vbQUBPZ0g@mail.gmail.com>
- <YIWd7v1U/dGivmSE@zeniv-ca.linux.org.uk>
- <CAFt=RONcpvvk5=8GLTvG44=6wKwiYPH7oG4YULfcP+J=x8OW-w@mail.gmail.com>
+        Sun, 25 Apr 2021 13:33:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D832C061574;
+        Sun, 25 Apr 2021 10:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=voFwKrTTjjoyFJE6evMIYyhewsdMjPxL3p2swH7Uqb0=; b=LtSlhuaZiX7L9FFvjwUKDmATvG
+        ghN3hT8T+DxHu3JGJ40h6ULLb4Sx+VQIFytp9Ezy5D3U734hIvaOhCauDnrYMrPW0xPXEevle1jeg
+        U/OWE74IFVUB9+/7PWNPC01Dqzq45C/J03y96I7SGSiXEgVqHowYZixvbAANBSwGDvQ5WfOT+lJ7+
+        Uec8Mh41l525KKr3msY9vfYMLVdsiQNj49jzq96B/uQJU69WfE+WDRnfZ7C784/jT4+2JIlVJttj1
+        5sX6RxtDIrZtcXAs/16rlexZry10dzu1yQpIP+FRX864CUtBjAwwsZveGvxNm02EPfmNO/uEkhSum
+        59USWy3g==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1laibz-004Wfq-GF; Sun, 25 Apr 2021 17:32:07 +0000
+Subject: Re: [PATCH] pinctrl: aspeed: Fix minor documentation error
+To:     Souptick Joarder <jrdr.linux@gmail.com>, andrew@aj.id.au,
+        linus.walleij@linaro.org, joel@jms.id.au
+Cc:     linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6db04e41-3ee6-c569-34b2-83693b620362@infradead.org>
+Date:   Sun, 25 Apr 2021 10:32:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFt=RONcpvvk5=8GLTvG44=6wKwiYPH7oG4YULfcP+J=x8OW-w@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 01:04:46AM +0800, haosdent wrote:
-> Hi, Alexander, thanks a lot for your quick reply.
+On 4/25/21 5:26 AM, Souptick Joarder wrote:
+> Kernel test robot throws below warning ->
 > 
-> > Not really - the crucial part is ->d_count == -128, i.e. it's already past
-> > __dentry_kill().
+> drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c:2705: warning: This comment
+> starts with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+> drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c:2614: warning: This comment
+> starts with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+> drivers/pinctrl/aspeed/pinctrl-aspeed.c:111: warning: This comment
+> starts with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+> drivers/pinctrl/aspeed/pinmux-aspeed.c:24: warning: This comment starts
+> with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
 > 
-> Thanks a lot for your information, we would check this.
+> Fix minor documentation error.
 > 
-> > Which tree is that?
-> > If you have some patches applied on top of that...
-> 
-> We use Ubuntu Linux Kernel "4.15.0-42.45~16.04.1" from launchpad directly
-> without any modification,  the mapping Linux Kernel should be
-> "4.15.18" according
-> to https://people.canonical.com/~kernel/info/kernel-version-map.html
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
 
-Umm...  OK, I don't have it Ubuntu source at hand, but the thing to look into
-would be
-	* nd->flags contains LOOKUP_RCU
-	* in the mainline from that period (i.e. back when __atime_needs_update()
-used to exist) we had atime_needs_update_rcu() called in get_link() under those
-conditions, with
-static inline bool atime_needs_update_rcu(const struct path *path,
-				          struct inode *inode)
-{
-	return __atime_needs_update(path, inode, true);
-}
-and __atime_needs_update() passing its last argument (rcu:true in this case) to
-relatime_need_update() in
-	if (!relatime_need_update(path, inode, now, rcu))
-relatime_need_update() hitting
-	update_ovl_inode_times(path->dentry, inode, rcu);
-and update_ovl_inode_times() starting with
-	if (rcu || likely(!(dentry->d_flags & DCACHE_OP_REAL)))
-		return;
-with subsequent accesses to ->d_inode.  Those obviously are *NOT* supposed
-to be reached in rcu mode, due to that check.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Your oops looks like something similar to that call chain had been involved and
-somehow had managed to get through to those ->d_inode uses.
+Thanks.
 
-Again, in RCU mode we really, really should not assume ->d_inode stable.  That's
-why atime_needs_update() gets inode as a separate argument and does *NOT* look
-at path->dentry at all.  In the kernels of 4.8..4.18 period there it used to do
-so, but only in non-RCU mode (which is the reason for explicit rcu argument passed
-through that callchain).
+> ---
+>  drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c | 4 ++--
+>  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 4 ++--
+>  drivers/pinctrl/aspeed/pinctrl-aspeed.c    | 3 ++-
+>  drivers/pinctrl/aspeed/pinmux-aspeed.c     | 3 ++-
+>  4 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+> index 996ebcb..4c0d266 100644
+> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+> @@ -2702,8 +2702,8 @@ static int aspeed_g5_sig_expr_eval(struct aspeed_pinmux_data *ctx,
+>  }
+>  
+>  /**
+> - * Configure a pin's signal by applying an expression's descriptor state for
+> - * all descriptors in the expression.
+> + * aspeed_g5_sig_expr_set() - Configure a pin's signal by applying an
+> + * expression's descriptor state for all descriptors in the expression.
+>   *
+>   * @ctx: The pinmux context
+>   * @expr: The expression associated with the function whose signal is to be
+> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> index 5c1a109..eeab093 100644
+> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> @@ -2611,8 +2611,8 @@
+>  };
+>  
+>  /**
+> - * Configure a pin's signal by applying an expression's descriptor state for
+> - * all descriptors in the expression.
+> + * aspeed_g6_sig_expr_set() - Configure a pin's signal by applying an
+> + * expression's descriptor state for all descriptors in the expression.
+>   *
+>   * @ctx: The pinmux context
+>   * @expr: The expression associated with the function whose signal is to be
+> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+> index 9c65d56..9bbfe5c 100644
+> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+> @@ -108,7 +108,8 @@ static int aspeed_sig_expr_disable(struct aspeed_pinmux_data *ctx,
+>  }
+>  
+>  /**
+> - * Disable a signal on a pin by disabling all provided signal expressions.
+> + * aspeed_disable_sig() - Disable a signal on a pin by disabling all provided
+> + * signal expressions.
+>   *
+>   * @ctx: The pinmux context
+>   * @exprs: The list of signal expressions (from a priority level on a pin)
+> diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.c b/drivers/pinctrl/aspeed/pinmux-aspeed.c
+> index 57305ca..894e2ef 100644
+> --- a/drivers/pinctrl/aspeed/pinmux-aspeed.c
+> +++ b/drivers/pinctrl/aspeed/pinmux-aspeed.c
+> @@ -21,7 +21,8 @@ static inline void aspeed_sig_desc_print_val(
+>  }
+>  
+>  /**
+> - * Query the enabled or disabled state of a signal descriptor
+> + * aspeed_sig_desc_eval() - Query the enabled or disabled state of a signal
+> + * descriptor.
+>   *
+>   * @desc: The signal descriptor of interest
+>   * @enabled: True to query the enabled state, false to query disabled state
+> 
+
+
+-- 
+~Randy
+
