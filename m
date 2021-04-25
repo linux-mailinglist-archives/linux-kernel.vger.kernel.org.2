@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F6236A6CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AF836A6DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 13:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhDYKzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhDYKzp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:55:45 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A39CC061574;
-        Sun, 25 Apr 2021 03:55:05 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id y1so11777982plg.11;
-        Sun, 25 Apr 2021 03:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=8uNST6BHrCaJJiddSQkuIrWwpsSi7XWHQYiRIVP23V8=;
-        b=c2Uv6NWpPeQoa8IZLobkE6CbRlY7DEvRTtZscWBoNsiytcyOjko5F8V7L4JwcKlvWO
-         JueCkgOwXwXiqGtsKUoWZtXXcta8RPjrWi7RuOWdSpiCtpsJN2lcDmhuC9lX6KqMptiG
-         8oBzBXOGzVPVDCm6AcSncG8255thxWAM90ZIMA5HnoxsSw4/qqK6rXlEIXa0c3nv3MLR
-         H3bwn3MQlso+Tzj5mfvK1ST72RQGPRnkpPE2bxtf4/2+Ug6ezPsusOOqQ2ShIocMh61I
-         ndiioqs830wK3bk+VnZr8d5b/aXQzONOg/Mg6wqTayofHIqN9DEfI59A5EEVg8rUVsbo
-         kcaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8uNST6BHrCaJJiddSQkuIrWwpsSi7XWHQYiRIVP23V8=;
-        b=IrKDFmZ8QGsv4K+47nwa0QKNDb9E3G5vaH4sgDFK8SuFjmL/2PAHr8P3oYV7mmDPRY
-         4pMjblkD7OyrTOZo7GzGvbOtQUUh18YpqlHC9uZcK54Kdcjft8cJjzShe5fvRu6ODDI0
-         +IUNtp1ilK86WE6Af1JaRW+BHZfnhOZTq+669lw069btYXoMNvtAlBVCDdwFXRxifTc6
-         TCcyTXEcZfs1KXj+J0G6dHkbkXEieD0p5KFCQRzHEAKpTVSRlzsw0Y8uEx17c0SCiBpa
-         5vs94a7j1kFJQCJD5uB5wpokjmTH2i2NjRe1wtfkP495aspGQUi6hskk43gIAD8g2CJu
-         tUeA==
-X-Gm-Message-State: AOAM533WXASz2e48gg7Vfrhe6j2VztZK5QzvYT/FEYWxH9G2EvQQ5wgY
-        ekc5XOdsp7LDQOpUzrTFTLo=
-X-Google-Smtp-Source: ABdhPJyaw/z/hF428nIwctpnEi8Odqy/Hv19Oh8WaD8PPzgC/f4QsKNN7dI/472ryyPc5i42N7C2ng==
-X-Received: by 2002:a17:90b:1bd0:: with SMTP id oa16mr14578554pjb.49.1619348104965;
-        Sun, 25 Apr 2021 03:55:04 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.83.82])
-        by smtp.gmail.com with ESMTPSA id o9sm9402821pfh.217.2021.04.25.03.55.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Apr 2021 03:55:04 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     stas.yakovlev@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] ipw2x00: Minor documentation update
-Date:   Sun, 25 Apr 2021 16:24:48 +0530
-Message-Id: <1619348088-6887-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S230153AbhDYLNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 07:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229707AbhDYLM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 07:12:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B5E16120C;
+        Sun, 25 Apr 2021 11:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619349140;
+        bh=5lGEsDFA3d/Fb4AUtFXHzwkNjEGaSwEjqnnuzHp0H8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZsGQ2P/MD9LN1jzVG/y0h5BNz6xHNOMEFhoI6QnMDSnzbxMXfihUpMl1cEWmJeWap
+         +yhTveH8dqxyl59ZVjp3MFo8axqnDl9/1hbHWxsowu613kfM7vLaZkbYdGT7ARdM2p
+         fxMnChbXdN0WIldvMIHbf3iuUkbmtIL9jvB62zq6QJkP+HSjsPCVPBPSrdhkNVkwy7
+         6EPF++xlePG6dzZ/AqHbCZTajl27NNwmBwclPF4V11+Fhsm0Rl8J+guCaVR5D6Yu6u
+         WrVSaRztHMLPFglO+zgcWYNUUCsTPyLmYjpippyrGVByPZNsIAjb1xLWbp1Nxgg+7C
+         uB6lCTgb6g0sQ==
+Date:   Sun, 25 Apr 2021 14:12:16 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jethro Beekman <kernel@jbeekman.nl>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 net-next] macvlan: Add nodst option to macvlan type
+ source
+Message-ID: <YIVOkHgZXiShCH2M@unreal>
+References: <2afc4d46-aa9b-a7db-d872-d02163b1f29c@jbeekman.nl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2afc4d46-aa9b-a7db-d872-d02163b1f29c@jbeekman.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning ->
+On Sun, Apr 25, 2021 at 11:22:03AM +0200, Jethro Beekman wrote:
+> The default behavior for source MACVLAN is to duplicate packets to
+> appropriate type source devices, and then do the normal destination MACVLAN
+> flow. This patch adds an option to skip destination MACVLAN processing if
+> any matching source MACVLAN device has the option set.
+> 
+> This allows setting up a "catch all" device for source MACVLAN: create one
+> or more devices with type source nodst, and one device with e.g. type vepa,
+> and incoming traffic will be received on exactly one device.
+> 
+> v2: netdev wants non-standard line length
 
-drivers/net/wireless/intel/ipw2x00/ipw2100.c:5359: warning: This comment
-starts with '/**', but isn't a kernel-doc comment. Refer
-Documentation/doc-guide/kernel-doc.rst
+Can you please put the changelog after "---"? So it won't be part of
+commit message in the git log.
 
-Minor update in documentation.
+Thanks
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
----
-v2:
-	Updated docs.
-
- drivers/net/wireless/intel/ipw2x00/ipw2100.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2100.c b/drivers/net/wireless/intel/ipw2x00/ipw2100.c
-index 23fbddd..eeac9e3 100644
---- a/drivers/net/wireless/intel/ipw2x00/ipw2100.c
-+++ b/drivers/net/wireless/intel/ipw2x00/ipw2100.c
-@@ -5356,7 +5356,7 @@ struct ipw2100_wep_key {
- #define WEP_STR_128(x) x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10]
- 
- /**
-- * Set a the wep key
-+ * ipw2100_set_key() - Set the wep key
-  *
-  * @priv: struct to work on
-  * @idx: index of the key we want to set
--- 
-1.9.1
-
+> 
+> Signed-off-by: Jethro Beekman <kernel@jbeekman.nl>
+> ---
+>  drivers/net/macvlan.c        | 19 ++++++++++++++-----
+>  include/uapi/linux/if_link.h |  1 +
+>  2 files changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
+> index 9a9a5cf36a4b..7427b989607e 100644
+> --- a/drivers/net/macvlan.c
+> +++ b/drivers/net/macvlan.c
+> @@ -423,18 +423,24 @@ static void macvlan_forward_source_one(struct sk_buff *skb,
+>  	macvlan_count_rx(vlan, len, ret == NET_RX_SUCCESS, false);
+>  }
+>  
+> -static void macvlan_forward_source(struct sk_buff *skb,
+> +static bool macvlan_forward_source(struct sk_buff *skb,
+>  				   struct macvlan_port *port,
+>  				   const unsigned char *addr)
+>  {
+>  	struct macvlan_source_entry *entry;
+>  	u32 idx = macvlan_eth_hash(addr);
+>  	struct hlist_head *h = &port->vlan_source_hash[idx];
+> +	bool consume = false;
+>  
+>  	hlist_for_each_entry_rcu(entry, h, hlist) {
+> -		if (ether_addr_equal_64bits(entry->addr, addr))
+> +		if (ether_addr_equal_64bits(entry->addr, addr)) {
+> +			if (entry->vlan->flags & MACVLAN_FLAG_NODST)
+> +				consume = true;
+>  			macvlan_forward_source_one(skb, entry->vlan);
+> +		}
+>  	}
+> +
+> +	return consume;
+>  }
+>  
+>  /* called under rcu_read_lock() from netif_receive_skb */
+> @@ -463,7 +469,8 @@ static rx_handler_result_t macvlan_handle_frame(struct sk_buff **pskb)
+>  			return RX_HANDLER_CONSUMED;
+>  		*pskb = skb;
+>  		eth = eth_hdr(skb);
+> -		macvlan_forward_source(skb, port, eth->h_source);
+> +		if (macvlan_forward_source(skb, port, eth->h_source))
+> +			return RX_HANDLER_CONSUMED;
+>  		src = macvlan_hash_lookup(port, eth->h_source);
+>  		if (src && src->mode != MACVLAN_MODE_VEPA &&
+>  		    src->mode != MACVLAN_MODE_BRIDGE) {
+> @@ -482,7 +489,8 @@ static rx_handler_result_t macvlan_handle_frame(struct sk_buff **pskb)
+>  		return RX_HANDLER_PASS;
+>  	}
+>  
+> -	macvlan_forward_source(skb, port, eth->h_source);
+> +	if (macvlan_forward_source(skb, port, eth->h_source))
+> +		return RX_HANDLER_CONSUMED;
+>  	if (macvlan_passthru(port))
+>  		vlan = list_first_or_null_rcu(&port->vlans,
+>  					      struct macvlan_dev, list);
+> @@ -1286,7 +1294,8 @@ static int macvlan_validate(struct nlattr *tb[], struct nlattr *data[],
+>  		return 0;
+>  
+>  	if (data[IFLA_MACVLAN_FLAGS] &&
+> -	    nla_get_u16(data[IFLA_MACVLAN_FLAGS]) & ~MACVLAN_FLAG_NOPROMISC)
+> +	    nla_get_u16(data[IFLA_MACVLAN_FLAGS]) & ~(MACVLAN_FLAG_NOPROMISC |
+> +						      MACVLAN_FLAG_NODST))
+>  		return -EINVAL;
+>  
+>  	if (data[IFLA_MACVLAN_MODE]) {
+> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+> index 91c8dda6d95d..cd5b382a4138 100644
+> --- a/include/uapi/linux/if_link.h
+> +++ b/include/uapi/linux/if_link.h
+> @@ -614,6 +614,7 @@ enum macvlan_macaddr_mode {
+>  };
+>  
+>  #define MACVLAN_FLAG_NOPROMISC	1
+> +#define MACVLAN_FLAG_NODST	2 /* skip dst macvlan if matching src macvlan */
+>  
+>  /* VRF section */
+>  enum {
+> -- 
+> 2.31.1
+> 
