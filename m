@@ -2,172 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C0136A706
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 14:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531B736A71A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 14:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhDYMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 08:06:38 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60510 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229659AbhDYMGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 08:06:36 -0400
-Received: from [10.0.2.15] (unknown [58.249.121.165])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb8sYW4Vg5LQNAA--.23169S3;
-        Sun, 25 Apr 2021 20:05:45 +0800 (CST)
-Subject: Re: [PATCH] MIPS:DTS:Correct device id and class code of pcie for
- Loongnon-2K
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Qing Zhang <zhangqing@loongson.cn>
-Cc:     devicetree@vger.kernel.org,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210425052817.27373-1-maoxiaochuan@loongson.cn>
- <8cd60ba7-b0db-450f-8285-eb5429c4f3ec@www.fastmail.com>
-From:   Xiaochuan Mao <maoxiaochuan@loongson.cn>
-Message-ID: <60a86212-d0d4-7c3f-8ccd-20532fbf4b0c@loongson.cn>
-Date:   Sun, 25 Apr 2021 20:05:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230173AbhDYMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 08:21:02 -0400
+Received: from mga06.intel.com ([134.134.136.31]:63546 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229837AbhDYMU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 08:20:57 -0400
+IronPort-SDR: hXMMJBpyXQYbj/nwX+ke0zvw8TQmmHfjvc2iHvABgg/+6NJTt8CDJPHxh1qbMWufkDJpXE7z/Y
+ QgMYZ5VcQduA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="257536042"
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="scan'208";a="257536042"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 05:20:15 -0700
+IronPort-SDR: GxK5WXx/z622EJjt1X62nNHOczMp0htXHT9ESudgp9qLN//i2ptdHbhzT+AjYbgA8YexELGMTf
+ p+sz0c6acvZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="scan'208";a="422296359"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Apr 2021 05:20:06 -0700
+Subject: Re: [PATCH v21 1/2] scsi: ufs: Enable power management for wlun
+To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Hu <huyue2@yulong.com>,
+        Bart van Assche <bvanassche@acm.org>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1619223249.git.asutoshd@codeaurora.org>
+ <4662c462e79e3e7f541f54f88f8993f421026d83.1619223249.git.asutoshd@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <9e0655c3-42cf-d090-8aa5-2cb644b2e93c@intel.com>
+Date:   Sun, 25 Apr 2021 15:20:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <8cd60ba7-b0db-450f-8285-eb5429c4f3ec@www.fastmail.com>
+In-Reply-To: <4662c462e79e3e7f541f54f88f8993f421026d83.1619223249.git.asutoshd@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-CM-TRANSID: AQAAf9Dxb8sYW4Vg5LQNAA--.23169S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF1Uuw1rZryrWF4rCryUZFb_yoW5ArW8pF
-        13Gayj9r4kuF1Syr43AFWv9F47GrZIkFn5trnYqr1UArWqq3yq9r1UJr4xGrs5JFs8Aw4F
-        vF95XF1xGF1xt3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxv
-        r21lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfU038nUUUUU
-X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/04/21 3:20 am, Asutosh Das wrote:
+> During runtime-suspend of ufs host, the scsi devices are
+> already suspended and so are the queues associated with them.
+> But the ufs host sends SSU (START_STOP_UNIT) to wlun
+> during its runtime-suspend.
+> During the process blk_queue_enter checks if the queue is not in
+> suspended state. If so, it waits for the queue to resume, and never
+> comes out of it.
+> The commit
+> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+> adds the check if the queue is in suspended state in blk_queue_enter().
+> 
+> Call trace:
+>  __switch_to+0x174/0x2c4
+>  __schedule+0x478/0x764
+>  schedule+0x9c/0xe0
+>  blk_queue_enter+0x158/0x228
+>  blk_mq_alloc_request+0x40/0xa4
+>  blk_get_request+0x2c/0x70
+>  __scsi_execute+0x60/0x1c4
+>  ufshcd_set_dev_pwr_mode+0x124/0x1e4
+>  ufshcd_suspend+0x208/0x83c
+>  ufshcd_runtime_suspend+0x40/0x154
+>  ufshcd_pltfrm_runtime_suspend+0x14/0x20
+>  pm_generic_runtime_suspend+0x28/0x3c
+>  __rpm_callback+0x80/0x2a4
+>  rpm_suspend+0x308/0x614
+>  rpm_idle+0x158/0x228
+>  pm_runtime_work+0x84/0xac
+>  process_one_work+0x1f0/0x470
+>  worker_thread+0x26c/0x4c8
+>  kthread+0x13c/0x320
+>  ret_from_fork+0x10/0x18
+> 
+> Fix this by registering ufs device wlun as a scsi driver and
+> registering it for block runtime-pm. Also make this as a
+> supplier for all other luns. That way, this device wlun
+> suspends after all the consumers and resumes after
+> hba resumes. This also registers a new scsi driver for rpmb wlun.
+> This new driver is mostly used to clear rpmb uac.
+> 
+> Fixed smatch warnings:
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> Co-developed-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
 
-On 2021/4/25 下午6:39, Jiaxun Yang wrote:
->
-> On Sun, Apr 25, 2021, at 1:28 PM, Xiaochuan Mao wrote:
->> from Loongson-2K user manual know that Loongson-2K have two
->> pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
->> and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
->> in each pcie controller and others are 7a09. and their class code is 0b0300.
-> The manual is obviously incorrect.
->
-> class0604 is PCI to PCI bridge that matches. hardware. 0b03 is undefined.
->
-> Thanks.
-thanks your suggest ,  is my mistake .
->> Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
->> ---
->>  .../boot/dts/loongson/loongson64-2k1000.dtsi  | 40 +++++++++----------
->>  1 file changed, 20 insertions(+), 20 deletions(-)
->>
->> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi 
->> b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
->> index 569e814def83..a95121359080 100644
->> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
->> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
->> @@ -150,8 +150,8 @@
->>  			pci_bridge@9,0 {
->>  				compatible = "pci0014,7a19.0",
->>  						   "pci0014,7a19",
->> -						   "pciclass060400",
->> -						   "pciclass0604";
->> +						   "pciclass0b0300",
->> +						   "pciclass0b03";
->>  
->>  				reg = <0x4800 0x0 0x0 0x0 0x0>;
->>  				#interrupt-cells = <1>;
->> @@ -163,10 +163,10 @@
->>  			};
->>  
->>  			pci_bridge@a,0 {
->> -				compatible = "pci0014,7a19.0",
->> -						   "pci0014,7a19",
->> -						   "pciclass060400",
->> -						   "pciclass0604";
->> +				compatible = "pci0014,7a09.0",
->> +						   "pci0014,7a09",
->> +						   "pciclass0b0300",
->> +						   "pciclass0b03";
->>  
->>  				reg = <0x5000 0x0 0x0 0x0 0x0>;
->>  				#interrupt-cells = <1>;
->> @@ -178,10 +178,10 @@
->>  			};
->>  
->>  			pci_bridge@b,0 {
->> -				compatible = "pci0014,7a19.0",
->> -						   "pci0014,7a19",
->> -						   "pciclass060400",
->> -						   "pciclass0604";
->> +				compatible = "pci0014,7a09.0",
->> +						   "pci0014,7a09",
->> +						   "pciclass0b0300",
->> +						   "pciclass0b03";
->>  
->>  				reg = <0x5800 0x0 0x0 0x0 0x0>;
->>  				#interrupt-cells = <1>;
->> @@ -193,10 +193,10 @@
->>  			};
->>  
->>  			pci_bridge@c,0 {
->> -				compatible = "pci0014,7a19.0",
->> -						   "pci0014,7a19",
->> -						   "pciclass060400",
->> -						   "pciclass0604";
->> +				compatible = "pci0014,7a09.0",
->> +						   "pci0014,7a09",
->> +						   "pciclass0b0300",
->> +						   "pciclass0b03";
->>  
->>  				reg = <0x6000 0x0 0x0 0x0 0x0>;
->>  				#interrupt-cells = <1>;
->> @@ -210,8 +210,8 @@
->>  			pci_bridge@d,0 {
->>  				compatible = "pci0014,7a19.0",
->>  						   "pci0014,7a19",
->> -						   "pciclass060400",
->> -						   "pciclass0604";
->> +						   "pciclass0b0300",
->> +						   "pciclass0b03";
->>  
->>  				reg = <0x6800 0x0 0x0 0x0 0x0>;
->>  				#interrupt-cells = <1>;
->> @@ -223,10 +223,10 @@
->>  			};
->>  
->>  			pci_bridge@e,0 {
->> -				compatible = "pci0014,7a19.0",
->> -						   "pci0014,7a19",
->> -						   "pciclass060400",
->> -						   "pciclass0604";
->> +				compatible = "pci0014,7a09.0",
->> +						   "pci0014,7a09",
->> +						   "pciclass0b0300",
->> +						   "pciclass0b03";
->>  
->>  				reg = <0x7000 0x0 0x0 0x0 0x0>;
->>  				#interrupt-cells = <1>;
->> -- 
->> 2.17.1
->>
->>
->
--- 
---xiaochuan
+Note we don't use regulators, clocks, clock scaling or gating.
+Although those things do look OK.
+Notwithstanding that:
 
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
