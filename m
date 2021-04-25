@@ -2,84 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7925D36A5BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CAA36A5C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhDYIg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 04:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        id S229721AbhDYIiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 04:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhDYIgZ (ORCPT
+        with ESMTP id S229724AbhDYIip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 04:36:25 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8C8C061574;
-        Sun, 25 Apr 2021 01:35:45 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id q2so4996431pfk.9;
-        Sun, 25 Apr 2021 01:35:45 -0700 (PDT)
+        Sun, 25 Apr 2021 04:38:45 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F59C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 01:38:05 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id s20so11509790plr.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 01:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=bP0ylHzIuId6cFa3yNjrcjBn2O4Zdws4nrIAmBWVJc4=;
-        b=c6zXauhvHAB4KQJ3ZTHi7bIwCqE7Y/c1UxMRfuFdFzCjwBVk9D7ZeUC10qHF4kVOxX
-         MyAST7u/Hnbq171+Q7vhZeu3ObEj0VDX0YH4PiiaJuNXPhZ2HjFNJEuR3ptz9vAcQhU0
-         6CaSeC3ejt27G0FayF9HCZ9xs02tdiPXFHMVO99n7r3fo7kupzy82Qett08nmKGBM+lG
-         tPmc3yntvAqp0hycOAX8d8psuu7yTrNjSgSpAgqB+ivu7taPzeyA+ihB9vbWfS028JVN
-         Qci1UHRMioN1NBaJhyBNzfCeaXZRTkv6jJeLuDMiZqB5I8Spj0Z1fzqgJiAqUWKI6MOe
-         ZGeQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3W3NlpZ/7gGHJzSngRPZUKdly0z6CYcYYet1o/3cStA=;
+        b=DXhgLEsi/UC0GR5eFowFBe6fqTQ08/CSV6CJndatd25PlCEktjX6zCvjc3ZChBLqXb
+         fSYFeoB1EtLxUcP7zuBG6mt6+6dv+g9Dwt2WD/DdcWVMFbz++XjMeHA9MO2A0mor7pem
+         uNRuFOmpx5UJ6r1mtRpyCmsPaPwgQUSsrw4azukPCNco++CoqM9+kgWXJ92EzFgRAF97
+         6Q6OQgpNecQl25PNJd6A3M0OcP+el5d/oCjkpuZ8nzcVPJF0P+lI3KjaWuLvrtoi4Hzb
+         7T02TQpjumvtN7bJCUMGMxdFPncIWy32CBPuYhIzuo/4DhgV5scbUJljgZDMqXkI9duF
+         4o+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bP0ylHzIuId6cFa3yNjrcjBn2O4Zdws4nrIAmBWVJc4=;
-        b=an2TMaKWTjJBSYb6GA/3Q5yu/rPbRfXxSZ0IphTt4KcQPkV3zVBqxsKoabgg4GtvL3
-         9Thv8K44TFgFfBxIbD22kyr23EQ96NDjoK5THKPOMtRfxfWGYtj5yEgS9NGirh8ZjgWm
-         ZT1/bKuCY0DaqF6+5riaLUEqf+4Vax2OAQJ/Lld5sohwtUAWY+TD+60ztFGtqR19CHrd
-         UtChwiV79ajztO51lcs+a8BVIGZnlFVmmaNd0GF2i/sbpXPrFuj/6Qb8Oti3F2TBU9an
-         LuyBrbpE3AfIbP6D5pDcsBrKL0eQQsE803ru0dIYjQlPZBboiztKGj+PDiV75GZb7kd9
-         wAhg==
-X-Gm-Message-State: AOAM533SfTpdAtcC5REGv/tUVcsVDNSoTrd1j7xTDZUw1JLzVnhvu22K
-        cy+dUY4f5uALNeB5Nc3SObhStWpncq/YUauU
-X-Google-Smtp-Source: ABdhPJxUGgDG7HI/5qmWgu4xkphkn1LN4f2cmKUaX7KtLt26y7W6Ez+Zl/wEnsPuh6O2f2/ulArgCQ==
-X-Received: by 2002:a63:330b:: with SMTP id z11mr11632225pgz.32.1619339745167;
-        Sun, 25 Apr 2021 01:35:45 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.83.82])
-        by smtp.gmail.com with ESMTPSA id nv7sm11235629pjb.18.2021.04.25.01.35.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Apr 2021 01:35:44 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org
-Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH v2] selinux: Corrected comment to match kernel-doc comment
-Date:   Sun, 25 Apr 2021 14:05:37 +0530
-Message-Id: <1619339737-4824-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3W3NlpZ/7gGHJzSngRPZUKdly0z6CYcYYet1o/3cStA=;
+        b=TDEALd6kjeKecYjXUHya0Sze/2KUhGMFv7AmjaoXFPnd800W2HMqCTgXt7yYNUjqn9
+         xxH8WUP1Pkh6lfm9AkbO5WEiDPAp4NbK9TuKcnDeL/1NLzeUp07np7j+Rrm3pMGoeVKm
+         hCUcn6E9F3rdgrtYGpLkxbv/2G9UorJ/KLbmFIa9kO6at9U95pg7keEz4lwUorgQYzFv
+         uMYg247vUSAZmEu3ORD7fAGxDn+jBkKlMKkkkYd6B6US8LfPAxWGS2DIvmNNvedbtEYZ
+         PqKqt2CiCOrfJ9ZEhZ8++9o7AviP2IyOBb1zfHLRBa/V5QjFqbVRrDmpDzALuQfm2eZb
+         WZ/A==
+X-Gm-Message-State: AOAM533g+RYTw2dckbJe6K5+k5omlvXiTqgoIF7lscnl+r/+pLSFqFrG
+        j77A6JUn4bGyUxGmKIQ5ivm+Dw==
+X-Google-Smtp-Source: ABdhPJw2m1tS8wv7y7a1jo2Ew6sVzyL43/PoChNVNkvcYnSnbekk+H2+GIggB/9rbKvDSb23HTPzHw==
+X-Received: by 2002:a17:902:9347:b029:e8:c21c:f951 with SMTP id g7-20020a1709029347b02900e8c21cf951mr12640722plp.14.1619339884119;
+        Sun, 25 Apr 2021 01:38:04 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id fw24sm8820653pjb.21.2021.04.25.01.37.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 25 Apr 2021 01:38:03 -0700 (PDT)
+Date:   Sun, 25 Apr 2021 16:37:55 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] firmware: replace HOTPLUG with UEVENT in FW_ACTION
+ defines
+Message-ID: <20210425083754.GF15093@dragon>
+References: <20210425020024.28057-1-shawn.guo@linaro.org>
+ <YIUI3TZf/sZ6Sd3K@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIUI3TZf/sZ6Sd3K@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor documentation update.
+On Sun, Apr 25, 2021 at 08:14:53AM +0200, Greg Kroah-Hartman wrote:
+> On Sun, Apr 25, 2021 at 10:00:24AM +0800, Shawn Guo wrote:
+> > With commit 312c004d36ce ("[PATCH] driver core: replace "hotplug" by
+> > "uevent"") already in the tree over a decade, update the name of
+> > FW_ACTION defines to follow semantics, and reflect what the defines are
+> > really meant for, i.e. whether or not generate user space event.
+> > 
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > ---
+> >  drivers/dma/imx-sdma.c                      |  2 +-
+> >  drivers/media/platform/exynos4-is/fimc-is.c |  2 +-
+> >  drivers/mfd/iqs62x.c                        |  2 +-
+> >  drivers/misc/lattice-ecp3-config.c          |  2 +-
+> >  drivers/net/wireless/ti/wlcore/main.c       |  2 +-
+> >  drivers/platform/x86/dell/dell_rbu.c        |  2 +-
+> >  drivers/remoteproc/remoteproc_core.c        |  2 +-
+> >  drivers/scsi/lpfc/lpfc_init.c               |  2 +-
+> >  drivers/tty/serial/ucc_uart.c               |  2 +-
+> >  include/linux/firmware.h                    |  4 ++--
+> >  lib/test_firmware.c                         | 10 +++++-----
+> >  sound/soc/codecs/wm8958-dsp2.c              |  6 +++---
+> >  12 files changed, 19 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> > index d5590c08db51..e2b559945c11 100644
+> > --- a/drivers/dma/imx-sdma.c
+> > +++ b/drivers/dma/imx-sdma.c
+> > @@ -1829,7 +1829,7 @@ static int sdma_get_firmware(struct sdma_engine *sdma,
+> >  	int ret;
+> >  
+> >  	ret = request_firmware_nowait(THIS_MODULE,
+> > -			FW_ACTION_HOTPLUG, fw_name, sdma->dev,
+> > +			FW_ACTION_UEVENT, fw_name, sdma->dev,
+> 
+> Naming is hard :)
+> 
+> I can take this after -rc1, but really, is it needed?
+> 
+> What problem does this renaming solve?
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
----
- security/selinux/avc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+To me, it's a leftover from commit 312c004d36ce that made the rename at
+driver core.  With this patch, the define will be more matching its user
+request_firmware_nowait(..., bool uevent, ...).
 
-diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index ad451cf..c90f455 100644
---- a/security/selinux/avc.c
-+++ b/security/selinux/avc.c
-@@ -819,7 +819,7 @@ int __init avc_add_callback(int (*callback)(u32 event), u32 events)
- }
- 
- /**
-- * avc_update_node Update an AVC entry
-+ * avc_update_node - Update an AVC entry
-  * @event : Updating event
-  * @perms : Permission mask bits
-  * @ssid,@tsid,@tclass : identifier of an AVC entry
--- 
-1.9.1
+> Who is the current name
+> confusing?
 
+I'm one at least :)
+
+Shawn
