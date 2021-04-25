@@ -2,107 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F8436A413
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299A636A415
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhDYCIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:08:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3953 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhDYCIY (ORCPT
+        id S230357AbhDYCJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 22:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhDYCJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:08:24 -0400
-Received: from dggeml763-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FSWZL5Vb8z5v3Z;
-        Sun, 25 Apr 2021 10:05:14 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggeml763-chm.china.huawei.com (10.1.199.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sun, 25 Apr 2021 10:07:40 +0800
-Received: from [10.174.177.7] (10.174.177.7) by dggpeml500023.china.huawei.com
- (7.185.36.114) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sun, 25 Apr
- 2021 10:07:39 +0800
-Subject: Re: [PATCH] arm64:align function __arch_clear_user
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, <xuwei5@hisilicon.com>,
-        <hewenliang4@huawei.com>, <wuxu.wu@huawei.com>
-References: <58fecb22-f932-cb6e-d996-ca75fe26a75d@huawei.com>
- <20210414104144.GB8320@arm.com>
- <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
- <20210423153701.GP18757@arm.com>
-From:   Kai Shen <shenkai8@huawei.com>
-Message-ID: <b7ed22f7-2c89-c67d-5e06-380964371150@huawei.com>
-Date:   Sun, 25 Apr 2021 10:07:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Sat, 24 Apr 2021 22:09:29 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00D8C061574;
+        Sat, 24 Apr 2021 19:08:48 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id l19so3263277ilk.13;
+        Sat, 24 Apr 2021 19:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q5joxXb+m/AVdWJQOkqgevuyLLpgBYLxWdlDLAg7wMg=;
+        b=do7M+ldMyEfGW+Q1uF7F/gfSPJxniLSiW77dXEOUwj5kwiawaMxIooITghT+PjQ2d5
+         SXWu8arNGGhAJ1ph04Jc4pThLKLt35fzmaZ3vNSNkgOO6Ntwi/1VzV/+N2WOr9z+ppGk
+         owM/40ZQKdeJiuqorYdmJos8CopPTuoBH9zBYbJYSrQUXOcoMDvIDNjVm0pH6qZregEc
+         H1xQZusBMV1VVg4Y48fO1xrVb2UcVovjU6UlFhelz/bJRPLqax25JEUFV6UZgcIkRF+J
+         OrmndMcw+ivnRMpLDSMfd/4cQHF7B5J6wGWQ/7tzcPfehK7GNE3LrJxVeaGaXy7xsOPb
+         j07g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q5joxXb+m/AVdWJQOkqgevuyLLpgBYLxWdlDLAg7wMg=;
+        b=b6eJ5etaqQuGas28+rxCVNtzrQrX9wr9yOu6ORTEuJtCznBRcOY4QBJ79IALPpd2cb
+         Sd6KCzO5iKe3qzfcLuag56R6yJ55o26+1I1g2RCiqH1ZFaRbFGAaqyqo5PUT+O+prFrn
+         0GmgDlnAsfTeGmnE/S3xCsPhYUhZVxPYkolGFyDOX8x1cHJUpHWh8sScqPtZVwUsI/OL
+         MiQkHy5SyCeZNBD7QookLOsd8aLSOrtFdx371cegva9rB6AoL9vtC0tL36lDcIA+pYBz
+         Y9BJYiA/U7QU9/eAIGaqflNigM+2z0WijZko4UbrBfhzpfEYts5wi1fPhRjoPQL6emDl
+         ey7A==
+X-Gm-Message-State: AOAM530Z8teOmQ+l7oGx6AF6CKlgi/Bl1x/fm+eLyTjle1+gcLzzPdWU
+        Z22H4enl0i5Ju2vJCfo79l00buf2hw+D40d0G/MSgh0D
+X-Google-Smtp-Source: ABdhPJz9QSmeGDdV6grzI6q+QQx+mUj7HFsUDlSO4lGcPT0WVuDz9SKuQ4yieDUEuDKmA7qmDeCruCXCjRJwtEgytIo=
+X-Received: by 2002:a92:c525:: with SMTP id m5mr8077018ili.298.1619316528222;
+ Sat, 24 Apr 2021 19:08:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210423153701.GP18757@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.7]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+References: <20200828012844.18937-1-gmayyyha@gmail.com> <e3830bc562d86e7d82542a3ee3d6ce66c901fda0.camel@kernel.org>
+In-Reply-To: <e3830bc562d86e7d82542a3ee3d6ce66c901fda0.camel@kernel.org>
+From:   Yanhu Cao <gmayyyha@gmail.com>
+Date:   Sun, 25 Apr 2021 10:08:37 +0800
+Message-ID: <CAB9OAC2fXT_wWm9tf1bKAsZfX0mO=-s8znqMMj+hkU8SCZsaVw@mail.gmail.com>
+Subject: Re: [v2] ceph: support getting ceph.dir.rsnaps vxattr
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/23 23:37, Catalin Marinas wrote:
-> On Mon, Apr 19, 2021 at 10:05:16AM +0800, Kai Shen wrote:
->> On 2021/4/14 18:41, Catalin Marinas wrote:
->>> On Wed, Apr 14, 2021 at 05:25:43PM +0800, Kai Shen wrote:
->>>> Performance decreases happen in __arch_clear_user when this
->>>> function is not correctly aligned on HISI-HIP08 arm64 SOC which
->>>> fetches 32 bytes (8 instructions) from icache with a 32-bytes
->>>> aligned end address. As a result, if the hot loop is not 32-bytes
->>>> aligned, it may take more icache fetches which leads to decrease
->>>> in performance.
->>>> Dump of assembler code for function __arch_clear_user:
->>>>          0xffff0000809e3f10 :    nop
->>>>          0xffff0000809e3f14 :    mov x2, x1
->>>>          0xffff0000809e3f18 :    subs x1, x1, #0x8
->>>>          0xffff0000809e3f1c :    b.mi 0xffff0000809e3f30 <__arch_clear_user+3
->>>> -----  0xffff0000809e3f20 :    str    xzr, [x0],#8
->>>> hot    0xffff0000809e3f24 :    nop
->>>> loop   0xffff0000809e3f28 :    subs x1, x1, #0x8
->>>> -----  0xffff0000809e3f2c :    b.pl  0xffff0000809e3f20 <__arch_clear_user+1
->>>> The hot loop above takes one icache fetch as the code is in one
->>>> 32-bytes aligned area and the loop takes one more icache fetch
->>>> when it is not aligned like below.
->>>>          0xffff0000809e4178 :   str    xzr, [x0],#8
->>>>          0xffff0000809e417c :   nop
->>>>          0xffff0000809e4180 :   subs x1, x1, #0x8
->>>>          0xffff0000809e4184 :   b.pl  0xffff0000809e4178 <__arch_clear_user+
->>>> Data collected by perf:
->>>>                            aligned   not aligned
->>>>             instructions   57733790     57739065
->>>>          L1-dcache-store   14938070     13718242
->>>> L1-dcache-store-misses     349280       349869
->>>>          L1-icache-loads   15380895     28500665
->>>> As we can see, L1-icache-loads almost double when the loop is not
->>>> aligned.
->>>> This problem is found in linux 4.19 on HISI-HIP08 arm64 SOC.
->>>> Not sure what the case is on other arm64 SOC, but it should do
->>>> no harm.
->>>> Signed-off-by: Kai Shen <shenkai8@huawei.com>
->>>
->>> Do you have a real world workload that's affected by this function?
->>>
->>> I'm against adding alignments and nops for specific hardware
->>> implementations. What about lots of other loops that the compiler may
->>> generate or that we wrote in asm?
->>
->> The benchmark we used which suffer performance decrease:
->>      https://github.com/redhat-performance/libMicro
->>      pread $OPTS -N "pread_z1k"    -s 1k    -I 300  -f /dev/zero
->>      pread $OPTS -N "pread_z10k"    -s 10k    -I 1000 -f /dev/zero
->>      pread $OPTS -N "pread_z100k"    -s 100k    -I 2000 -f /dev/zero
-> 
-> Is there any real world use-case that would benefit from this
-> optimisation? Reading /dev/zero in a loop hardly counts as a practical
-> workload.
-> 
-Operations like "dd if=/dev/zero of=/dev/sda1" ?
+On Fri, Apr 9, 2021 at 8:50 PM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> On Fri, 2020-08-28 at 09:28 +0800, Yanhu Cao wrote:
+> > It's easy to know how many snapshots have been created.
+> >
+> > Link: https://tracker.ceph.com/issues/47168
+> > Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
+> > ---
+> >  fs/ceph/inode.c      | 1 +
+> >  fs/ceph/mds_client.c | 9 ++++++++-
+> >  fs/ceph/mds_client.h | 1 +
+> >  fs/ceph/super.h      | 2 +-
+> >  fs/ceph/xattr.c      | 7 +++++++
+> >  5 files changed, 18 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> > index 357c937699d5..650cad4b3ecb 100644
+> > --- a/fs/ceph/inode.c
+> > +++ b/fs/ceph/inode.c
+> > @@ -891,6 +891,7 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
+> >                       ci->i_rfiles = le64_to_cpu(info->rfiles);
+> >                       ci->i_rsubdirs = le64_to_cpu(info->rsubdirs);
+> >                       ci->i_dir_pin = iinfo->dir_pin;
+> > +                     ci->i_rsnaps = iinfo->rsnaps;
+> >                       ceph_decode_timespec64(&ci->i_rctime, &info->rctime);
+> >               }
+> >       }
+> > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> > index 4a26862d7667..3466845c0179 100644
+> > --- a/fs/ceph/mds_client.c
+> > +++ b/fs/ceph/mds_client.c
+> > @@ -176,6 +176,13 @@ static int parse_reply_info_in(void **p, void *end,
+> >                       memset(&info->snap_btime, 0, sizeof(info->snap_btime));
+> >               }
+> >
+> > +             /* snapshot count, remains zero for v<=3 */
+> > +             if (struct_v >= 4) {
+> > +                     ceph_decode_64_safe(p, end, info->rsnaps, bad);
+> > +             } else {
+> > +                     info->rsnaps = 0;
+> > +             }
+> > +
+> >               *p = end;
+> >       } else {
+> >               if (features & CEPH_FEATURE_MDS_INLINE_DATA) {
+> > @@ -214,7 +221,7 @@ static int parse_reply_info_in(void **p, void *end,
+> >               }
+> >
+> >               info->dir_pin = -ENODATA;
+> > -             /* info->snap_btime remains zero */
+> > +             /* info->snap_btime and info->rsnaps remain zero */
+> >       }
+> >       return 0;
+> >  bad:
+> > diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> > index bc9e95937d7c..76f2ed1a7cbf 100644
+> > --- a/fs/ceph/mds_client.h
+> > +++ b/fs/ceph/mds_client.h
+> > @@ -88,6 +88,7 @@ struct ceph_mds_reply_info_in {
+> >       s32 dir_pin;
+> >       struct ceph_timespec btime;
+> >       struct ceph_timespec snap_btime;
+> > +     u64 rsnaps;
+> >       u64 change_attr;
+> >  };
+> >
+> > diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> > index 4c3c964b1c54..eb108b69da71 100644
+> > --- a/fs/ceph/super.h
+> > +++ b/fs/ceph/super.h
+> > @@ -332,7 +332,7 @@ struct ceph_inode_info {
+> >
+> >       /* for dirs */
+> >       struct timespec64 i_rctime;
+> > -     u64 i_rbytes, i_rfiles, i_rsubdirs;
+> > +     u64 i_rbytes, i_rfiles, i_rsubdirs, i_rsnaps;
+> >       u64 i_files, i_subdirs;
+> >
+> >       /* quotas */
+> > diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
+> > index 3a733ac33d9b..c7d8ecc3d04b 100644
+> > --- a/fs/ceph/xattr.c
+> > +++ b/fs/ceph/xattr.c
+> > @@ -231,6 +231,12 @@ static ssize_t ceph_vxattrcb_dir_rsubdirs(struct ceph_inode_info *ci, char *val,
+> >       return ceph_fmt_xattr(val, size, "%lld", ci->i_rsubdirs);
+> >  }
+> >
+> > +static ssize_t ceph_vxattrcb_dir_rsnaps(struct ceph_inode_info *ci, char *val,
+> > +                                       size_t size)
+> > +{
+> > +     return ceph_fmt_xattr(val, size, "%lld", ci->i_rsnaps);
+> > +}
+> > +
+> >  static ssize_t ceph_vxattrcb_dir_rbytes(struct ceph_inode_info *ci, char *val,
+> >                                       size_t size)
+> >  {
+> > @@ -352,6 +358,7 @@ static struct ceph_vxattr ceph_dir_vxattrs[] = {
+> >       XATTR_RSTAT_FIELD(dir, rentries),
+> >       XATTR_RSTAT_FIELD(dir, rfiles),
+> >       XATTR_RSTAT_FIELD(dir, rsubdirs),
+> > +     XATTR_RSTAT_FIELD(dir, rsnaps),
+> >       XATTR_RSTAT_FIELD(dir, rbytes),
+> >       XATTR_RSTAT_FIELD(dir, rctime),
+> >       {
+>
+> Sorry we missed this one Yanhu. In the future, please put [PATCH] in the
+> subject line in some fashion and we may spot it more easily.
+
+OK. will do.
+
+>
+> This looks fine to me -- merged into ceph-client/testing branch, though
+> I did revise the changelog to be a bit more descriptive. Tell me if you
+> think it needs changes.
+
+LGTM.
+
+>
+> Thanks!
+> --
+> Jeff Layton <jlayton@kernel.org>
+>
