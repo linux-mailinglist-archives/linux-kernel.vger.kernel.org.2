@@ -2,153 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8887336A9D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 01:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9D836A9E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 01:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhDYXPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 19:15:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54348 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231247AbhDYXPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 19:15:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619392505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n+JuniTf6/0QJHyHH9jZCObdX5/aD9evlCt++gaJJ1U=;
-        b=XHuwJPRJUE/ui47Aju4ctDA+pDgtS+Qxu4ySzhkr6Oan9nyJfmrpl7KgqhO5gZzzilxuNU
-        WPmsMLdlCgOzNnyBg6jEarky6OW6hJ+0xjhik9pKvPWo6RprZkon8Z5DPC8p5NEdrKQ9ju
-        Y9NayKqF9KK4OB8VNyZko9LHVKrl+gQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-BQSQMrQCPYm7CjiNMMlK1Q-1; Sun, 25 Apr 2021 19:15:01 -0400
-X-MC-Unique: BQSQMrQCPYm7CjiNMMlK1Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 009458030B5;
-        Sun, 25 Apr 2021 23:14:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C7785D74F;
-        Sun, 25 Apr 2021 23:14:51 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
-References: <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk> <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] iov_iter: Four fixes for ITER_XARRAY
+        id S231512AbhDYXtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 19:49:35 -0400
+Received: from mout.gmx.net ([212.227.15.15]:40185 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231247AbhDYXt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 19:49:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619394514;
+        bh=X646+yzuPbS+s5kURuZn4C7yHFwk1iV6M3XlPmxCpnU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=LYmShbl99em9+TiR3a451+pSoTVhXCBAH2jin8fcrvH4sjxkyZuGxerSF2CmDIyfB
+         WrLCrzgrBbqThkME1lOxF0IAdLkAYxKajVAqVCk4v07Zu9z6Oncc/VF7P6Hrw2eaEE
+         yjW+NKxlrcv6p0BVKL5+UHt+dJG3PvwLMeP34M18=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MRmfo-1m3qbg0RSs-00TH76; Mon, 26
+ Apr 2021 01:48:34 +0200
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
+Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
+        keescook@chromium.org, jsnitsel@redhat.com, ml.linux@elloe.vision,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        LinoSanfilippo@gmx.de
+Subject: [PATCH v2 0/4] Fixes for TPM interrupt handling
+Date:   Mon, 26 Apr 2021 01:47:16 +0200
+Message-Id: <1619394440-30646-1-git-send-email-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3545033.1619392490.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 26 Apr 2021 00:14:50 +0100
-Message-ID: <3545034.1619392490@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:4qHzIHr6K2l3e4xERhZnmHXv8PS5230fp8C2yxIaIa7TVJMYFVc
+ BUMLrCu2i90goHg6nFZ49wMO6jrf9TVyycVF7JlyBhvcl4ME3aSeMqFOneoGApbHnkTczZp
+ SYs9e5CPSOaDt59e+lClecQJCTOmylNsZggvlNzcVjGGgDxcW84ZeBjlnVy4JJcXoChtbMm
+ 9y3YahnTEluPk29WUOnMw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:X8W08em31wE=:d2Sobpj8MM5gDUBMXedBX3
+ hNkmkN6uY+3HXF0XPya9ePkVvJIhtTxFEt/PnqEzlU6X9JGoRKN/4RuNZenAW7FCofQxcDYyg
+ eSWOu2/LGCqwfIKA41DttHyWV+vEv7nArzrtTqXTBYrdi5+AmqH2tI1HkmPI2389NdfMPNetT
+ EJDiepu1eEmYmfD4yy+RYg9XLkATT5KMhzvHS3KkO1XzhGTqwhvmW9OfSAHEgRXbn3/fx0iV8
+ ogvU6Ce9nJcSo/HDrVli4/4XOJAH+efUi3JK+z+ifkeH6+8Y9KG7CgPCUe88vePNW9bnDa1EO
+ wDHhE6hEtQbcFtB044dSreXDS37N2SzM9MByGDeFuQ3IEAWYGaeGy1/m1iyxcgVJWbOdwBagp
+ AQSB10w0rle2bUFgjGLdmI2SiEFQmFZB60udnwjXX6dQiMNXN+RjoOPBLuwcnr0HfmDHYa/Zh
+ 8LFPPI6G8ZESV8SxZ2T5ggl4u/gTWENROhPp4CfMnswxdz6iuJErkYd2uz+BlEYK3IDkNil/u
+ Y442AP/FED+MA2nO4xsOtSB/GyXmHQC5zAj2DsZ1bOTv0IgSNC8te2BgM9RqKKOukzap7gSTc
+ I01OSX2zXpseCAA1JjSNTkr20zhRmFwGEd6mDc4oYbIMsUeASBu+oRWo2bYaUfWNu/zY9jOjj
+ JRQvq5Qd1rUIthOcsdijl5QdQyOiBuu61irE6ZJQjrZNrexKXFqhWzNgfGZV1ZMvvdx1HqEs+
+ +EkJxAh1BkmOQZz46QwakqKUJEU63snnNuvTJ7nlrXVHXE3GHzs++UYYzXJVFgFcD4moXOhkz
+ XCFG6LxPb22s3Bty9WUHx4nIC5cMtxyVHzfz3hhPksNxy2BaIXN6rZhaQQ6BgHQYhxBhkRgnb
+ IJV1ANS0q4TRCn1R0scA5TUmoo7Qjg3hta9lB5e/wSJZIX7t077VuHbgzW1WlehY3/syNfZbh
+ 2ZqqEKRp8E4lnlxRpvrrEzJoXvpied9QGwjv3F/fLi/+NgVwoGhZhtYPDHgjscAnrLrpq9FPT
+ 22rnjGIRPMKUfYca7LPaK+20uY8UFpjBZOFUJtjPPqy56X/Vwefl3hfIV7NfllRBVhlx2CZLy
+ /l7M7VSsTmJtpT6C2cTwuqggNci0lrddE03sQUM/I4H1qPMBAJaeO8IWxRBMDnYs0o6ANdndC
+ coLqOQc2ckcpPewkimoju+wvcOXHMIemveOqLBwYWM6/dT7s3sc8xqrZhBMlTKTM1YWovUUpv
+ mVjaJZhH9PAVtsCcz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
-
-I think this patch should include all the fixes necessary.  I could merge
-it in, but I think it might be better to tag it on the end as an additiona=
-l
-patch.
-
-David
----
-iov_iter: Four fixes for ITER_XARRAY
-
-Fix four things[1] in the patch that adds ITER_XARRAY[2]:
-
- (1) Remove the address_space struct predeclaration.  This is a holdover
-     from when it was ITER_MAPPING.
-
- (2) Fix _copy_mc_to_iter() so that the xarray segment updates count and
-     iov_offset in the iterator before returning.
-
- (3) Fix iov_iter_alignment() to not loop in the xarray case.  Because the
-     middle pages are all whole pages, only the end pages need be
-     considered - and this can be reduced to just looking at the start
-     position in the xarray and the iteration size.
-
- (4) Fix iov_iter_advance() to limit the size of the advance to no more
-     than the remaining iteration size.
-
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/YIVrJT8GwLI0Wlgx@zeniv-ca.linux.org.uk [1]
-Link: https://lore.kernel.org/r/161918448151.3145707.11541538916600921083.=
-stgit@warthog.procyon.org.uk [2]
----
- include/linux/uio.h |    1 -
- lib/iov_iter.c      |    5 +++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 5f5ffc45d4aa..d3ec87706d75 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -10,7 +10,6 @@
- #include <uapi/linux/uio.h>
- =
-
- struct page;
--struct address_space;
- struct pipe_inode_info;
- =
-
- struct kvec {
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 44fa726a8323..61228a6c69f8 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -791,6 +791,8 @@ size_t _copy_mc_to_iter(const void *addr, size_t bytes=
-, struct iov_iter *i)
- 			curr_addr =3D (unsigned long) from;
- 			bytes =3D curr_addr - s_addr - rem;
- 			rcu_read_unlock();
-+			i->iov_offset +=3D bytes;
-+			i->count -=3D bytes;
- 			return bytes;
- 		}
- 		})
-@@ -1147,6 +1149,7 @@ void iov_iter_advance(struct iov_iter *i, size_t siz=
-e)
- 		return;
- 	}
- 	if (unlikely(iov_iter_is_xarray(i))) {
-+		size =3D min(size, i->count);
- 		i->iov_offset +=3D size;
- 		i->count -=3D size;
- 		return;
-@@ -1346,6 +1349,8 @@ unsigned long iov_iter_alignment(const struct iov_it=
-er *i)
- 			return size | i->iov_offset;
- 		return size;
- 	}
-+	if (unlikely(iov_iter_is_xarray(i)))
-+		return (i->xarray_start + i->iov_offset) | i->count;
- 	iterate_all_kinds(i, size, v,
- 		(res |=3D (unsigned long)v.iov_base | v.iov_len, 0),
- 		res |=3D v.bv_offset | v.bv_len,
-
+VGhpcyBzZXJpZXMgZW5hYmxlcyBpbnRlcnJ1cHRzIGZvciBUUE0uIEZvciB0aGlzIHNvbWUgb2Jz
+dGFjbGVzIGhhZCB0byBiZQpyZW1vdmVkIGZpcnN0LCBsaWtlIHRoZSBpbnRlcnJ1cHQgaGFuZGxl
+ciBydW5uaW5nIGluIGludGVycnVwdCBjb250ZXh0IGFuZAp0aHVzIG5vdCBhbGxvd2luZyB0byBh
+Y2Nlc3MgcmVnaXN0ZXJzIG92ZXIgU1BJLiBBbHNvIHRoZSBsb2NhbGl0eSBoYW5kbGluZwpoYXMg
+YmVlbiBzaW1wbGlmaWVkIHRvIG1ha2UgYSBjb21wbGljYXRlZCBzeW5jaHJvbml6YXRpb24gYmV0
+d2VlbiB0aHJlYWRzCmFuZCBpcnEgaGFuZGxlciB1bm5lY2Vzc2FyeS4gQXMgYSBzaWRlIGVmZmVj
+dCBvZiB0aGlzIHNpbXBsaWZpY2F0aW9uIGEgYnVnCmlzIGZpeGVkIGluIHdoaWNoIGEgVE1QIGNv
+bW1hbmQgaXMgaXNzdWVkIHdpdGhvdXQgYSBjbGFpbWVkIGxvY2FsaXR5IGluCmNhc2Ugb2YgVFBN
+IDIuCkFub3RoZXIgZml4IGNvbmNlcm5zIHRoZSBpbnRlcnJ1cHQgdGVzdCB3aGljaCBjdXJyZW50
+bHkgaXMgYnJva2VuLgpGaW5hbGx5IHRoZSByZXN1bHRzIG9mIHRoZSBjYXBhYmlsaXR5IHF1ZXJ5
+IGF0IHN0YXJ0dXAgaXMgdXNlZCB0byBvbmx5IHNldAp0aGUgaW50ZXJydXB0cyB3aGljaCBhcmUg
+YWN0dWFsbHkgc3VwcG9ydGVkIGJ5IHRoZSBoYXJkd2FyZS4KClRoZXNlIHBhdGNoZXMgYXJlIGJh
+c2VkIG9uIExpbnV4IG1haW5saW5lIFY1LjEyIGFuZCB0ZXN0ZWQgb24gYSBTTEIgOTY3MAp3aGlj
+aCB1c2VzIFRQTSAyIHZpYSBTUEkuCgpPZiBjb3Vyc2UgYW55IGZ1cnRoZXIgdGVzdGluZyBpcyBo
+aWdobHkgYXBwcmVjaWF0ZWQuCgpQQVRDSCAxOiBUaGUgU1BJIGltcGxlbWVudGF0aW9uIG9mIHRo
+ZSBmdW5jdGlvbnMgdG8gcmVhZC93cml0ZSB0by9mcm9tCnJlZ2lzdGVycyB1c2VzIG11dGV4ZXMg
+YW5kIHRodXMgcmVxdWlyZSBhIHNsZWVwYWJsZSBjb250ZXh0LiBGb3IgdGhpcwpyZWFzb24gcmVx
+dWVzdCBhIHRocmVhZGVkIGludGVycnVwdCBoYW5kbGVyLgoKUEFUQ0ggMjogU2ltcGxpZnkgbG9j
+YWxpdHkgaGFuZGxpbmcgYnkgdGFraW5nIHRoZSBkcml2ZXIgbG9jYWxpdHkgKDApIGF0CmRyaXZl
+ciBzdGFydHVwIGFuZCByZWxlYXNpbmcgaXQgYXQgZHJpdmVyIHNodXRkb3duLiBUaGlzIGFsc28g
+Zml4ZXMgYSBidWcKaW4gY2FzZSBvZiBUTVAgMi4KClBBVENIIDM6IEZpeCBhbmQgc2ltcGxpZnkg
+dGhlIHRlc3QgZm9yIGludGVycnVwdHMuCgpQQVRDSCA0OiBPbmx5IHNldCB0aGUgaW50ZXJydXB0
+cyB3aGljaCBhcmUgcmVwb3J0ZWQgYXMgYmVpbmcgYXZhaWxhYmxlLgoKQ2hhbmdlcyBpbiB2MjoK
+LSByZWJhc2UgYWdhaW5zdCA1LjEyCi0gZnJlZSBpcnEgb24gZXJyb3IgcGF0aAoKTGlubyBTYW5m
+aWxpcHBvICg0KToKICB0cG06IFVzZSBhIHRocmVhZGVkIGludGVycnVwdCBoYW5kbGVyCiAgdHBt
+OiBTaW1wbGlmeSBsb2NhbGl0eSBoYW5kbGluZwogIHRwbTogRml4IHRlc3QgZm9yIGludGVycnVw
+dHMKICB0cG06IE9ubHkgZW5hYmxlIHN1cHBvcnRlZCBpcnFzCgogZHJpdmVycy9jaGFyL3RwbS90
+cG0tY2hpcC5jICAgICB8ICA0MCAtLS0tLS0tLS0tCiBkcml2ZXJzL2NoYXIvdHBtL3RwbV90aXNf
+Y29yZS5jIHwgMTcwICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGRy
+aXZlcnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmggfCAgIDIgKy0KIGluY2x1ZGUvbGludXgvdHBt
+LmggICAgICAgICAgICAgfCAgIDUgKy0KIDQgZmlsZXMgY2hhbmdlZCwgNzIgaW5zZXJ0aW9ucygr
+KSwgMTQ1IGRlbGV0aW9ucygtKQoKLS0gCjIuNy40Cgo=
