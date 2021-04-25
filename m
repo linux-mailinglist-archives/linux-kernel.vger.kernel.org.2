@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F04F36A6BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7095A36A6BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhDYKlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhDYKla (ORCPT
+        id S230017AbhDYKlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 06:41:46 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50688 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229837AbhDYKlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:41:30 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70814C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 03:40:49 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n10so16269315plc.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 03:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dsl3b2VaWWjqUhBQn9UZvRtMk9N8rB5xjUtLj4O+9zs=;
-        b=IbBMniggUXZEvuTYpYEBMfvLRh4mpiisKnmiw/0bGoDWR7ibqD/rym4K1F5ClRhI0Y
-         4YckVzJCTvrOzWMqdznRBZzl/1L5EimzCF8ukmY6jUDrdl0dqjWxjbnn03wlg2uToOBk
-         bnbt1zUFYP5kLXsXWqFcearh+PIbg8L47eALDVW8hCGs21Q5KcNkzBTlZFU+kg33HcsX
-         JM5cxccNsknI3xkJ/SdOsrAeUcynOtOKTG7am8MpczjJyy8CCSg0wz1Gj2GAWzwYpLCc
-         paUYi3o9Uk8pJ/XLuK9shXi7GcbhOzUDDz12o2/fBtfYmXAUbg/4zMXEQIkPajTrzYWT
-         XhIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dsl3b2VaWWjqUhBQn9UZvRtMk9N8rB5xjUtLj4O+9zs=;
-        b=TR3n2v5TlRb9Zp+RWA1Y6+WCuATEfUiL4hI8xOaiVkfzdusVanNO3KsxhZ5UL6mG9M
-         SBmzjCDmLgDZouf4grUXZgTpEf9RHDJs3WB4iU+Mi4031ZPRXCxK9VdvPV2rqKZxrtho
-         2WBfpMKvvvjFgIO0naP2NkdulzH4B+bUsxfHlzmZ3ry+3t7ejay2ZuD5wfPyWz1F/bKf
-         7SxSvTrQkd0Xxb7qjLX8ToswOr2zXRFpe7wHCirfBLHJzV6Tg1g3516lBUAS5YG/EX5Z
-         vY11xVJ4rIQTFZamKJpwwcl5eUEYPcvR/F4QnKHAc7oxs7ck7wrDp6ja8Kvv2QbQrb3a
-         BquQ==
-X-Gm-Message-State: AOAM533YzzW62Et1ZzP6Fun1BuJ+1rWJy3Afraudf+eNWbc3h+NWfnc+
-        D350XMYJ7AYpqNFQJaszILEy5EWdHthd6+8/i8apN43NawN6VQ==
-X-Google-Smtp-Source: ABdhPJy/dm9agEumGI878/Tiw9CQAwYoLydksqvCEQ0FrYrLdqZX2ZGcG5efbbH7Z0F0BGyUJv+gHZ7bSwT28Cv19rY=
-X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr16689677pjr.181.1619347248901;
- Sun, 25 Apr 2021 03:40:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210424174138.175889-1-ftoth@exalondelft.nl>
-In-Reply-To: <20210424174138.175889-1-ftoth@exalondelft.nl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 25 Apr 2021 13:40:32 +0300
-Message-ID: <CAHp75VefKAcohOF=cuJ9A_tjZZLuvHcDB2xmTUCrA-xHaWm0oA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] extcon-intel-mrfld: initialize mrfld_extcon status
-To:     Ferry Toth <ftoth@exalondelft.nl>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 25 Apr 2021 06:41:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UWgfN9a_1619347259;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgfN9a_1619347259)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 25 Apr 2021 18:41:04 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     frowand.list@gmail.com
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] of: overlay: Remove redundant assignment to ret
+Date:   Sun, 25 Apr 2021 18:40:58 +0800
+Message-Id: <1619347258-55002-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 8:58 PM Ferry Toth <ftoth@exalondelft.nl> wrote:
->
-> extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
-> DRD to detect a change in the switch position. This change initializes the
-> status at probe time.
+Variable ret is set to zero but this value is never read as it is
+overwritten with a new value later on, hence it is a redundant
+assignment and can be removed.
 
-Thanks for catching and fixing this issue!
+Cleans up the following clang-analyzer warning:
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+drivers/of/overlay.c:1197:2: warning: Value stored to 'ret' is never
+read [clang-analyzer-deadcode.DeadStores].
 
-> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-> Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
-> ---
->  drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
-> index f47016fb28a8..cd1a5f230077 100644
-> --- a/drivers/extcon/extcon-intel-mrfld.c
-> +++ b/drivers/extcon/extcon-intel-mrfld.c
-> @@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
->         struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
->         struct regmap *regmap = pmic->regmap;
->         struct mrfld_extcon_data *data;
-> +       unsigned int status;
->         unsigned int id;
->         int irq, ret;
->
-> @@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
->         /* Get initial state */
->         mrfld_extcon_role_detect(data);
->
-> +       /*
-> +        * Cached status value is used for cable detection, see comments
-> +        * in mrfld_extcon_cable_detect(), we need to sync cached value
-> +        * with a real state of the hardware.
-> +        */
-> +       regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
-> +       data->status = status;
-> +
->         mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
->         mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
->
-> --
-> 2.27.0
->
+drivers/of/overlay.c:1026:2: warning: Value stored to 'ret' is never
+read [clang-analyzer-deadcode.DeadStores].
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/of/overlay.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
+diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+index 23effe5..74bb5e5 100644
+--- a/drivers/of/overlay.c
++++ b/drivers/of/overlay.c
+@@ -1023,7 +1023,6 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+ 	struct device_node *overlay_root = NULL;
+ 
+ 	*ovcs_id = 0;
+-	ret = 0;
+ 
+ 	if (overlay_fdt_size < sizeof(struct fdt_header) ||
+ 	    fdt_check_header(overlay_fdt)) {
+@@ -1194,8 +1193,6 @@ int of_overlay_remove(int *ovcs_id)
+ 	struct overlay_changeset *ovcs;
+ 	int ret, ret_apply, ret_tmp;
+ 
+-	ret = 0;
+-
+ 	if (devicetree_corrupt()) {
+ 		pr_err("suspect devicetree state, refuse to remove overlay\n");
+ 		ret = -EBUSY;
 -- 
-With Best Regards,
-Andy Shevchenko
+1.8.3.1
+
