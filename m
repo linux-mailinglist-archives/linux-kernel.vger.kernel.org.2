@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D2F36A9AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 00:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F119D36A9B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 00:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhDYW1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 18:27:14 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54318 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhDYW1L (ORCPT
+        id S231418AbhDYWpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 18:45:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58622 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231247AbhDYWpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 18:27:11 -0400
-Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13PMQPR4053479;
-        Mon, 26 Apr 2021 07:26:25 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
- Mon, 26 Apr 2021 07:26:25 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13PMQO9K053475
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 26 Apr 2021 07:26:25 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: [GIT PULL] a lockdep fix via tomoyo tree for v5.13
-Message-ID: <ec57ed59-7498-312c-4fdb-10cd924c5b87@i-love.sakura.ne.jp>
-Date:   Mon, 26 Apr 2021 07:26:19 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sun, 25 Apr 2021 18:45:10 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 305641C0B77; Mon, 26 Apr 2021 00:44:29 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 00:44:28 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Juergen Borleis <jbe@pengutronix.de>
+Cc:     linux-leds@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel@pengutronix.de
+Subject: Re: [PATCH] leds: trigger/tty: feature data direction
+Message-ID: <20210425224427.GM10996@amd>
+References: <20210422074702.8831-1-jbe@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="oiL9LJXJsdjS5rzq"
+Content-Disposition: inline
+In-Reply-To: <20210422074702.8831-1-jbe@pengutronix.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 5dc33592e95534dc8455ce3e9baaaf3dae0fff82:
 
-  lockdep: Allow tuning tracing capacity constants. (2021-04-05 20:33:57 +0900)
+--oiL9LJXJsdjS5rzq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the git repository at:
+Hi!
 
-  git://git.osdn.net/gitroot/tomoyo/tomoyo-test1.git tags/tomoyo-pr-20210426
+> The current implementation just signals a visible feedback on all kind of
+> activity on the corresponding TTY. But sometimes it is useful to see what
+> kind of activity just happens. This change adds the capability to filter
+> the direction of TTY's data flow. It enables a user to forward both
+> directions to separate LEDs for tx and rx on demand. Default behavior is
+> still both directions.
 
-for you to fetch changes up to 5dc33592e95534dc8455ce3e9baaaf3dae0fff82:
+Do you have actual usecase for this?
 
-  lockdep: Allow tuning tracing capacity constants. (2021-04-05 20:33:57 +0900)
+For most protocols, you get tx and rx at the same time...
 
-----------------------------------------------------------------
-This is an irregular pull request for sending a lockdep patch.
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Peter Zijlstra asked us to find bad annotation that blows up the lockdep
-storage [1][2][3] but we could not find such annotation [4][5], and
-Peter cannot give us feedback any more [6]. Since we tested this patch
-on linux-next.git without problems, and keeping this problem unresolved
-discourages kernel testing which is more painful, I'm sending this patch
-without forever waiting for response from Peter.
+--oiL9LJXJsdjS5rzq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-[1] https://lkml.kernel.org/r/20200916115057.GO2674@hirez.programming.kicks-ass.net
-[2] https://lkml.kernel.org/r/20201118142357.GW3121392@hirez.programming.kicks-ass.net
-[3] https://lkml.kernel.org/r/20201118151038.GX3121392@hirez.programming.kicks-ass.net
-[4] https://lkml.kernel.org/r/CACT4Y+asqRbjaN9ras=P5DcxKgzsnV0fvV0tYb2VkT+P00pFvQ@mail.gmail.com
-[5] https://lkml.kernel.org/r/4b89985e-99f9-18bc-0bf1-c883127dc70c@i-love.sakura.ne.jp
-[6] https://lkml.kernel.org/r/CACT4Y+YnHFV1p5mbhby2nyOaNTy8c_yoVk86z5avo14KWs0s1A@mail.gmail.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
- kernel/locking/lockdep.c           |    2 -
- kernel/locking/lockdep_internals.h |    8 +++----
- lib/Kconfig.debug                  |   40 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+), 5 deletions(-)
+iEYEARECAAYFAmCF8MoACgkQMOfwapXb+vLQagCfecm9tipkZxUfaWq9gbJV3BEA
+QCEAoJY51Z6aB3D/7RgRLuLPMcXp86QO
+=qRXZ
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
+--oiL9LJXJsdjS5rzq--
