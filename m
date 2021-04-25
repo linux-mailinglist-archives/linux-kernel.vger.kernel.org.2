@@ -2,66 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAA036A93D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 22:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3B436A941
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 22:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhDYUjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 16:39:10 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48460 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhDYUjJ (ORCPT
+        id S231276AbhDYUsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 16:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230494AbhDYUsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 16:39:09 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 439871C0B77; Sun, 25 Apr 2021 22:38:27 +0200 (CEST)
-Date:   Sun, 25 Apr 2021 22:38:25 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Amireddy Mallikarjuna <mallikarjunax.reddy@linux.intel.com>,
-        linux-leds@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] leds: lgm: Fix spelling mistake "prepate" ->
- "prepare"
-Message-ID: <20210425203825.GC10996@amd>
-References: <20210222134939.1510720-1-colin.king@canonical.com>
+        Sun, 25 Apr 2021 16:48:01 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869EEC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 13:47:21 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id v123so2909094ioe.10
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 13:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mf3PfXpISSLDZMwm9YZTjHVTAuZA/fvHBTlgaYQIzcI=;
+        b=X5AVotbEK6atQhNjrhtrKs3bygci5Hs9SdVKnTVbPJDpTIwFNEExX/mnZzzaIdYN56
+         We87O01mb+dinYzuDIkE/XV7X1vEDC4s4HdXwijqqdwtS7HAUrVy61RfAHMqoCuGCyo0
+         iXVBDvNwY6dcWBtMwEGuEjADsc3EnDeqpmfm5IkABz+d0gjFduOp8i+EaHSzTxCvrlwt
+         ooTjGMtdNMvWmGYsWaV6hnPZ/DCQkJBFckbUYsB9c5m9gRat1RJ1MjNwU2LYK+qcjiuv
+         jfeJiTcUhCgFaBjwR7/Yy/+1OUwpC3KXdnCJfaYrniNABJ5m94F47gR+DlhbLbzH8XNu
+         xCGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mf3PfXpISSLDZMwm9YZTjHVTAuZA/fvHBTlgaYQIzcI=;
+        b=VVvd9Xdz5QWFqdrJ9ej1qShhWka4ee0b0aEowKkaL6i1V0JhJmM9EUsKwZNjZJYNdZ
+         0NUpLrDsabagyJfG5EIM24AXf2GUvmMMvjzV01zkdfOYswY6MUhyMqxTUYHyIR3+1rIV
+         yk9pT/ySBoYFE0MwcfrpOpouhqsGDK0zfrSlxEy0pJLeylwcHXkifgVeGRWgsDp6l+cE
+         LZyTNGbimYWm0bYEdJKdN7Rsn1SkrxL0iztI06QDryxGQrA04Sgij+PmRo38EONHLCmU
+         /r/dh7tEMB/7G6oPWrRbu5USXXxneOxd7cl9bC1ci7jLcscs/nQgL44nSTtzHAMUdlqh
+         jJyA==
+X-Gm-Message-State: AOAM532I44lQfjAg7zWmTwGgKpEOanyqj26D0jLQNuoHTqgYnKS6Sb6m
+        GGfQ6qOgUMh5400RjidYTw9p09Z5/kPcbTvdpt2cGA==
+X-Google-Smtp-Source: ABdhPJygw52SbW2dXW+oPoyP50PRJ3SqpU5dALd4uwGiFSlA85XNU5GjOTBuXNctFj4gYs+N1Ax+fsUeXxWS12NU3Ec=
+X-Received: by 2002:a05:6638:2044:: with SMTP id t4mr13460135jaj.12.1619383640861;
+ Sun, 25 Apr 2021 13:47:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="E/DnYTRukya0zdZ1"
-Content-Disposition: inline
-In-Reply-To: <20210222134939.1510720-1-colin.king@canonical.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20210412074309.38484-1-psampat@linux.ibm.com> <20210412074309.38484-2-psampat@linux.ibm.com>
+In-Reply-To: <20210412074309.38484-2-psampat@linux.ibm.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Sun, 25 Apr 2021 13:47:10 -0700
+Message-ID: <CAAYoRsVcVnrBSNu=umdVWtRw3PyuD=c4uaCCcoGQpSWgq3AH=g@mail.gmail.com>
+Subject: Re: [RFC v4 1/2] cpuidle: Extract IPI based and timer based wakeup
+ latency from idle states
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pratik,
 
---E/DnYTRukya0zdZ1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 12, 2021 at 12:43 AM Pratik Rajesh Sampat
+<psampat@linux.ibm.com> wrote:
+>
+> Introduce a mechanism to fire directed IPIs from a specified source CPU
+> to a specified target CPU and measure the difference in time incurred on
+> wakeup.
+>
+> Also, introduce a mechanism to queue a HR timer on a specified CPU and
+> subsequently measure the time taken to wakeup the CPU.
+>
+> Finally define a simple debugfs interface to control the knobs to fire
+> the IPI and Timer events on specified CPU and view their incurred idle
+> wakeup latencies.
+>
+> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
 
-Hi!
-
-> There is a spelling mistake in a dev_err error message. Fix it.
->=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-
-Thanks, applied.
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---E/DnYTRukya0zdZ1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCF00EACgkQMOfwapXb+vKosQCfd5cbyZ/YvBNkdvF3mwm6gtyj
-01EAn2cSiUeZkrI6hmm6c3DaPiiRBW7U
-=xVQg
------END PGP SIGNATURE-----
-
---E/DnYTRukya0zdZ1--
+Reviewed-by: Doug Smythies <dsmythies@telus.net>
