@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CA636A6B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F5B36A6B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhDYKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:34:27 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48085 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhDYKe0 (ORCPT
+        id S229975AbhDYKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 06:36:13 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:48599 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229466AbhDYKgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:34:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UWgfM-0_1619346808;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgfM-0_1619346808)
+        Sun, 25 Apr 2021 06:36:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWgTzAH_1619346920;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgTzAH_1619346920)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 25 Apr 2021 18:33:35 +0800
+          Sun, 25 Apr 2021 18:35:27 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     pcnet32@frontier.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] fs: direct-io: Remove redundant assignment to retval
-Date:   Sun, 25 Apr 2021 18:33:27 +0800
-Message-Id: <1619346807-47104-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] pcnet32: Remove redundant variable prev_link and curr_link
+Date:   Sun, 25 Apr 2021 18:35:18 +0800
+Message-Id: <1619346918-49035-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable retval is set to zero but this value is never read as it is
-overwritten with a new value later on, hence it is a redundant
-assignment and can be removed.
+Variable prev_link and curr_link is being assigned a value from a
+calculation however the variable is never read, so this redundant
+variable can be removed.
 
 Cleans up the following clang-analyzer warning:
 
-fs/direct-io.c:1245:2: warning: Value stored to 'retval' is never read
-[clang-analyzer-deadcode.DeadStores].
+drivers/net/ethernet/amd/pcnet32.c:2857:4: warning: Value stored to
+'prev_link' is never read [clang-analyzer-deadcode.DeadStores].
+
+drivers/net/ethernet/amd/pcnet32.c:2856:4: warning: Value stored to
+'curr_link' is never read [clang-analyzer-deadcode.DeadStores].
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- fs/direct-io.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/amd/pcnet32.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index b2e86e7..b348264 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -1242,7 +1242,6 @@ static inline int drop_refcount(struct dio *dio)
- 	 */
- 	inode_dio_begin(inode);
- 
--	retval = 0;
- 	sdio.blkbits = blkbits;
- 	sdio.blkfactor = i_blkbits - blkbits;
- 	sdio.block_in_file = offset >> blkbits;
+diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
+index f78daba..aa41250 100644
+--- a/drivers/net/ethernet/amd/pcnet32.c
++++ b/drivers/net/ethernet/amd/pcnet32.c
+@@ -2853,8 +2853,7 @@ static void pcnet32_check_media(struct net_device *dev, int verbose)
+ 			netif_info(lp, link, dev, "link down\n");
+ 		}
+ 		if (lp->phycount > 1) {
+-			curr_link = pcnet32_check_otherphy(dev);
+-			prev_link = 0;
++			pcnet32_check_otherphy(dev);
+ 		}
+ 	} else if (verbose || !prev_link) {
+ 		netif_carrier_on(dev);
 -- 
 1.8.3.1
 
