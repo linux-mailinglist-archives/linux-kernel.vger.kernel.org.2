@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFAD36A51A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 08:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EF336A51E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 08:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhDYG2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 02:28:23 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17035 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhDYG2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 02:28:22 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FSdKc1RYFzNxhm;
-        Sun, 25 Apr 2021 14:24:36 +0800 (CST)
-Received: from [10.174.176.174] (10.174.176.174) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 25 Apr 2021 14:27:35 +0800
-Subject: Re: [PATCH v4 4/4] mm/shmem: fix shmem_swapin() race with swapoff
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
-        <david@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210425023806.3537283-1-linmiaohe@huawei.com>
- <20210425023806.3537283-5-linmiaohe@huawei.com>
- <87bla3xdt0.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <0213893e-2b05-8d2e-9a79-e8a71db23644@huawei.com>
- <87y2d7vvuq.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <63a730d6-b765-8ac5-f0eb-8e53e1c93b54@huawei.com>
-Date:   Sun, 25 Apr 2021 14:27:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229743AbhDYGak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 02:30:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhDYGaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 02:30:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B51706147F;
+        Sun, 25 Apr 2021 06:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619332198;
+        bh=XpYhucM6z3qhvkS1BQ76ZyjHypzTB3CNG91CD9wFHK0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g8VMoCLTfgJlmlKtaI9opdSQGRmtNOMzGO6XvoNBhvHmHnn3ox6PoAYv5Y+cE3i1T
+         sg2+VoR4ZZYPr+75nHqjWLi9mCuaUck3ZSEnJDfnALXrNH7ZITvfDu7uTc5TWAK353
+         /YG/RZRlGuaBsQ6ppAaWJug1IYWxtn4Enhb8uwJA=
+Date:   Sun, 25 Apr 2021 08:29:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Shelat, Abhi" <a.shelat@northeastern.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YIUMYYcf/VW4a28k@kroah.com>
+References: <YIAta3cRl8mk/RkH@unreal>
+ <20210421135637.GB27929@fieldses.org>
+ <20210422193950.GA25415@fieldses.org>
+ <YIMDCNx4q6esHTYt@unreal>
+ <20210423180727.GD10457@fieldses.org>
+ <YIMgMHwYkVBdrICs@unreal>
+ <20210423214850.GI10457@fieldses.org>
+ <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
+ <20210424213454.GA4239@fieldses.org>
+ <YIS6t+X1DOKlB+Z/@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <87y2d7vvuq.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.174]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIS6t+X1DOKlB+Z/@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/25 12:20, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
+On Sat, Apr 24, 2021 at 08:41:27PM -0400, Theodore Ts'o wrote:
+> On Sat, Apr 24, 2021 at 05:34:54PM -0400, J. Bruce Fields wrote:
+> > In Greg's revert thread, Kangjie Lu's messages are also missing from the
+> > archives:
+> > 
+> > 	https://lore.kernel.org/lkml/20210421130105.1226686-1-gregkh@linuxfoundation.org/
+> >
 > 
->> On 2021/4/25 11:07, Huang, Ying wrote:
->>> I think it's better to put_swap_device() just before returning from the
->>> function.  It's not a big issue to slow down swapoff() a little.  And
->>> this will make the logic easier to be understood.
->>>
->>
->> shmem_swapin_page() already has a methed, i.e. locked page, to prevent races. I was intended
->> to not mix with that. But your suggestion is good as this will make the logic easier to be
->> understood.
->>
->> Just to make sure, is this what you mean? Many thanks!
+> I'm going to guess it's one of two things.  The first is that they are
+> sending mail messages with HTML which is getting bounced; the other
+> possibility is that some of the messages were sent only to Greg, and
+> he added the mailing list back to the cc.
 > 
-> Yes.  Just a minor comment.
+> So for exampple, message-id
+> CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com
+> isn't in lore, but Greg's reply:
 > 
->>
->> diff --git a/mm/shmem.c b/mm/shmem.c
->> index 26c76b13ad23..737e5b3200c3 100644
->> --- a/mm/shmem.c
->> +++ b/mm/shmem.c
->> @@ -1696,6 +1696,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>         struct address_space *mapping = inode->i_mapping;
->>         struct shmem_inode_info *info = SHMEM_I(inode);
->>         struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
->> +       struct swap_info_struct *si;
->>         struct page *page;
->>         swp_entry_t swap;
->>         int error;
->> @@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>         swap = radix_to_swp_entry(*pagep);
->>         *pagep = NULL;
->>
->> +       /* Prevent swapoff from happening to us. */
->> +       si = get_swap_device(swap);
->> +       if (unlikely(!si)) {
+> https://lore.kernel.org/linux-nfs/YH%2FfM%2FTsbmcZzwnX@kroah.com/
 > 
-> I don't think it's necessary to use unlikely() here.
-> 
+> can be found in lore.kernel.org was presumably because the message
+> where Aditya accused "wild accusations bordering on slander" and his
+> claim that his patches were the fault of a "new static code analyzer"
+> was sent only to Greg?  Either that, or it was bounced because he sent
+> it from gmail without suppressing HTML.
 
-Will do in next version. Thanks!
+I did not "add back" the mailing list, it looks like they sent email in
+html format which prevented it from hitting the public lists.  I have
+the originals sent to me that shows the author intended it to be public.
 
-> Best Regards,
-> Huang, Ying
-> 
->> +               error = EINVAL;
->> +               goto failed;
->> +       }
->>         /* Look it up and read it in.. */
->>         page = lookup_swap_cache(swap, NULL, 0);
->>         if (!page) {
->> @@ -1765,6 +1772,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>         swap_free(swap);
->>
->>         *pagep = page;
->> +       if (si)
->> +               put_swap_device(si);
->>         return 0;
->>  failed:
->>         if (!shmem_confirm_swap(mapping, index, swap))
->> @@ -1775,6 +1784,9 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>                 put_page(page);
->>         }
->>
->> +       if (si)
->> +               put_swap_device(si);
->> +
->>         return error;
->>  }
->>
->>> Best Regards,
->>> Huang, Ying
->>>
-> .
-> 
+thanks,
 
+greg k-h
