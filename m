@@ -2,223 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2D636A3D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C7E36A3D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhDYBG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 21:06:56 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:45457 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhDYBGz (ORCPT
+        id S230251AbhDYBJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 21:09:12 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59223 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhDYBJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 21:06:55 -0400
-Date:   Sun, 25 Apr 2021 01:06:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1619312774;
-        bh=H1qMUcszeVpiIb8uqcXaGdv2ktJ1dJmxagIhRMHp9e0=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=hJ60eizsVk6CxSGemow6q0kUrB+SAbCTu1mB3sUPcw4fE0fVIvAIbdaIp9LmzgXEw
-         xFLFwXeB9DeueCg8q7PD8JUvJwBPwYf36AhNbziGeAOfsnr4z5O4gmqyj+XhpTu146
-         msKywUuN/1RUhL+H6mKlBW4B26DeldTFAG2KhJ5s=
-To:     Anupama K Patil <anupamakpatil123@gmail.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
-        "bkkarthik@pesu.pes.edu" <bkkarthik@pesu.pes.edu>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kernelnewbies@kernelnewbies.org" <kernelnewbies@kernelnewbies.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching devices
-Message-ID: <CSBw5RbPfjHIC-pzsVOv-S6X9ir8mhLYp3cP3P6UizGPb-wc-OUBfXFXvAPr7fISCC2Bo_r1hHsoltEEEK7VXi8UyTNHc51lH_att8eNZqk=@protonmail.com>
-In-Reply-To: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
-References: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
+        Sat, 24 Apr 2021 21:09:10 -0400
+Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13P18UUN019191;
+        Sun, 25 Apr 2021 10:08:30 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
+ Sun, 25 Apr 2021 10:08:30 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13P18TZk019178
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 25 Apr 2021 10:08:30 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC PATCH] watchdog: Adding softwatchdog
+To:     peter enderborg <peter.enderborg@sony.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>
+References: <20210424102555.28203-1-peter.enderborg@sony.com>
+ <20210424102555.28203-2-peter.enderborg@sony.com>
+ <d5db5606-f074-6d0e-2316-8ff41af25cfd@roeck-us.net>
+ <844e3ecb-62c3-856a-7273-e22eee35e80f@i-love.sakura.ne.jp>
+ <d2be282c-f39a-dc85-817b-94a40efeb232@sony.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <d76447a5-4580-eb4e-e6d9-d675ca016462@i-love.sakura.ne.jp>
+Date:   Sun, 25 Apr 2021 10:08:25 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <d2be282c-f39a-dc85-817b-94a40efeb232@sony.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On 2021/04/25 1:19, peter enderborg wrote:
+>> I don't think this proposal is a watchdog. I think this proposal is
+>> a timer based process killer, based on an assumption that any slowdown
+>> which prevents the monitor process from pinging for more than 0.5 seconds
+>> (if HZ == 1000) is caused by memory pressure.
+> 
+> You missing the point. The oom killer is a example of a work that it can do.
+> it is one policy. The idea is that you should have a policy that fits your needs.
 
+Implementing policy which can run in kernel from timer interrupt context is
+quite limited, for it is not allowed to perform operations that might sleep. See
 
-2021. =C3=A1prilis 24., szombat 21:43 keltez=C3=A9ssel, Anupama K Patil =
-=C3=ADrta:
+  [RFC] memory reserve for userspace oom-killer
+  https://lkml.kernel.org/r/CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com
 
-> isapnp_proc_init() does not look at the return value from
-> isapnp_proc_attach_device(). Check for this return value in
-> isapnp_proc_detach_device().
->
-> Cleanup in isapnp_proc_detach_device and
-> isapnp_proc_detach_bus() for cleanup.
->
-> Changed sprintf() to the kernel-space function scnprintf() as it returns
-> the actual number of bytes written.
->
-> Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
-> save memory.
->
-> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
-> Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
-> ---
->  drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
->  1 file changed, 30 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
-> index 785a796430fa..46ebc24175b7 100644
-> --- a/drivers/pnp/isapnp/proc.c
-> +++ b/drivers/pnp/isapnp/proc.c
-> @@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_ops=
- =3D {
->  =09.proc_read=09=3D isapnp_proc_bus_read,
->  };
->
-> +static int isapnp_proc_detach_device(struct pnp_dev *dev)
-> +{
-> +=09proc_remove(dev->procent);
-> +=09dev->procent =3D NULL;
-> +=09return 0;
-> +}
-> +
-> +static int isapnp_proc_detach_bus(struct pnp_card *bus)
-> +{
-> +=09proc_remove(bus->procdir);
+for implementing possibly useful policy.
 
-Is there any reason for not setting `bus->procdir` to `NULL`
-similarly to the previous function?
+> 
+> oom_score_adj is suitable for a android world. But it might be based on
+> uid's if your priority is some users over other.  Or a memcg. Or as
+> Christophe Leroy want the current. The policy is only a example that
+> fits a one area.
 
+Horrible idea. Imagine a kernel module that randomly sends SIGTERM/SIGKILL
+to "current" thread. How normal systems can survive? A normal system is not
+designed to survive random signals.
 
-> +=09return 0;
-> +}
-> +
+>                  You need to describe your prioritization, in android it is
+> oom_score_adj. For example I would very much have a policy that sends
+> sigterm instead of sigkill.
 
-Is there any reason why the previous two functions return something? It doe=
-sn't
-seem to be necessary.
+That's because Android framework is designed to survive random signals
+(in order to survive memory pressure situation).
 
+>                             But the integration with oom is there because
+> it is needed. Maybe a bad choice for political reasons but I don't it a
+> good idea to hide the intention. Please don't focus on the oom part.
 
->  static int isapnp_proc_attach_device(struct pnp_dev *dev)
->  {
->  =09struct pnp_card *bus =3D dev->card;
-> -=09struct proc_dir_entry *de, *e;
->  =09char name[16];
->
-> -=09if (!(de =3D bus->procdir)) {
-> -=09=09sprintf(name, "%02x", bus->number);
-> -=09=09de =3D bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-> -=09=09if (!de)
-> +=09if (!bus->procdir) {
-> +=09=09scnprintf(name, 16, "%02x", bus->number);
+I wonder what system other than Android framework can utilize this module.
 
-I think `sizeof(name)` would be preferable to hard-coding 16.
+By the way, there already is "Software Watchdog" ( drivers/watchdog/softdog.c )
+which some people might call it "soft watchdog". It is very confusing to name
+your module as "softwatchdog". Please find a different name.
 
-
-> +=09=09bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-> +=09=09if (!bus->procdir)
->  =09=09=09return -ENOMEM;
->  =09}
-> -=09sprintf(name, "%02x", dev->number);
-> -=09e =3D dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, de,
-> +=09scnprintf(name, 16, "%02x", dev->number);
-
-Here as well.
-
-
-> +=09dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, bus->procd=
-ir,
->  =09=09=09=09=09    &isapnp_proc_bus_proc_ops, dev);
-
-Please align the continuation properly.
-
-
-> -=09if (!e)
-> +=09if (!dev->procent) {
-> +=09=09isapnp_proc_detach_bus(bus);
-
-I'm not sure if this should be here. If I'm not mistaken, the code
-creates a procfs directory for a bus when it first sees a `pnp_dev` from th=
-at bus.
-This call removes the whole directory for the bus, and with that, the files=
- of
-those `pnp_dev`s which were successfully created earlier.
-
-
->  =09=09return -ENOMEM;
-> -=09proc_set_size(e, 256);
-> +=09}
-> +=09proc_set_size(dev->procent, 256);
->  =09return 0;
->  }
->
->  int __init isapnp_proc_init(void)
->  {
->  =09struct pnp_dev *dev;
-> +=09int dev_attach;
->
->  =09isapnp_proc_bus_dir =3D proc_mkdir("bus/isapnp", NULL);
-
-You could add a check to see if this `proc_mkdir()` call succeeds, and
-possibly return early if it does not.
-
-
->  =09protocol_for_each_dev(&isapnp_protocol, dev) {
-> -=09=09isapnp_proc_attach_device(dev);
-> +=09=09dev_attach =3D isapnp_proc_attach_device(dev);
-> +=09=09if (!dev_attach) {
-
-`isapnp_proc_attach_device()` returns 0 on success, so the condition should=
- be inverted.
-And maybe `err` or something like that would be a better name than `dev_att=
-ach`.
-
-
-> +=09=09=09pr_info("procfs: pnp: Unable to attach the device, not enough m=
-emory");
-
-If I'm not mistaken, allocation failures are logged, so this is probably no=
-t needed.
-
-
-> +=09=09=09isapnp_proc_detach_device(dev);
-
-I'm also not sure if this is needed here. If `isapnp_proc_attach_device()` =
-returns
-an error, then `dev->procdir` could not have been "created". In other words=
-,
-if the execution reaches this point, `proc_create_data()` could not have su=
-cceeded
-because either it had not yet been called or it had failed.
-
-
-> +=09=09=09return -ENOMEM;
-
-It is usually preferable to return the error code you receive. E.g.:
-
-  err =3D isapnp_proc_attach_device(...);
-  if (err) {
-    ...
-    return err;
-  }
-
-
-> +=09=09}
->  =09}
->  =09return 0;
->  }
-> --
-> 2.25.1
->
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
