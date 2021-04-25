@@ -2,126 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0E836A80E
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FDD36A816
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhDYPu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 11:50:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47554 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230288AbhDYPu4 (ORCPT
+        id S230493AbhDYPx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 11:53:29 -0400
+Received: from www381.your-server.de ([78.46.137.84]:48872 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhDYPx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 11:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619365814;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SpOAzQZIq10Nwe26WkJZs4EOWy5T6jlT3LYy+FshtrY=;
-        b=FHMh9elIq63+jQ5jfTF8O7zzkG7xwDs+6gZtEQgsg0V43n5YWINtf7NdJpxDepsrLgYYgA
-        TOz0z5BNSdkOVZAxFJjBm9XuWDwowJLf3pBzaWWfUFE/YmaW78PS/j2BmR3GRVkTLg9g/E
-        Ej4d55meXG2AESa20SubrcpWrxOwlaU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-jVGq0KGBOD2T7JvR945wng-1; Sun, 25 Apr 2021 11:50:12 -0400
-X-MC-Unique: jVGq0KGBOD2T7JvR945wng-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64812343A4;
-        Sun, 25 Apr 2021 15:50:10 +0000 (UTC)
-Received: from krava (unknown [10.40.192.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DA3685D9CC;
-        Sun, 25 Apr 2021 15:50:07 +0000 (UTC)
-Date:   Sun, 25 Apr 2021 17:50:07 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: Re: [PATCH] perf stat: Use aggregated counts directly
-Message-ID: <YIWPr5LFOAmQ0fg7@krava>
-References: <20210423023833.1430520-1-namhyung@kernel.org>
+        Sun, 25 Apr 2021 11:53:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=qVCYXXALEYBXY11wg18BGx/QYuKcJVstYR8bnCDnqws=; b=PJQYXMSCtv8TMwz8Ei6Lxf2uiE
+        HtxKaFWeC5REZ0zRjoJcD/ajifjLkZ0H/QuOorVp1VvejB+WM/8TqhkOawghJb4qEKY0uXPtLjeoM
+        DN9lEpkjiHya7B2B8wOeQAM/NmV6Lnt4vkwU+Z1/HHM+PnmBjcmdXsBnYu47On6M+gFvbfhMmRuI8
+        2lHMhAvp+cRpEfw7cd+DM5ftZ20QquUBiYQ4DbBWRTZpHJd5FwutdALekVlkOzoQqeM88nBzsh04M
+        cj/oIfq54FJUKDhQ+HQP9lrAYcuDx9eEDPHcO7Ulf3/zFnEDfkedx8rbmS1AKRbGBd+O3LerIchkf
+        sMYW0HAA==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lah3v-000B6J-CB; Sun, 25 Apr 2021 17:52:47 +0200
+Received: from [2001:a61:2a42:9501:9e5c:8eff:fe01:8578]
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lah3v-000TAH-6j; Sun, 25 Apr 2021 17:52:47 +0200
+Subject: Re: [PATCH 2/3] iio: sps30: add support for serial interface
+To:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        jic23@kernel.org, robh+dt@kernel.org
+References: <20210425135546.57343-1-tomasz.duszynski@octakon.com>
+ <20210425135546.57343-3-tomasz.duszynski@octakon.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <6b00dc0d-f678-07e2-96be-35eeca90d799@metafoo.de>
+Date:   Sun, 25 Apr 2021 17:52:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423023833.1430520-1-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210425135546.57343-3-tomasz.duszynski@octakon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26151/Sun Apr 25 13:05:06 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 07:38:33PM -0700, Namhyung Kim wrote:
-> The ps->res_stats is for repeated runs, so the interval code should
-> not touch it.  Actually the aggregated counts are available in the
-> counter->counts->aggr, so we can (and should) use it directly IMHO.
-> 
-> No functional change intended.
+On 4/25/21 3:55 PM, Tomasz Duszynski wrote:
+> [...]
+>
+> +struct sps30_serial_priv {
+> +	struct completion new_frame;
+> +	char buf[SPS30_SERIAL_MAX_BUF_SIZE];
+The driver uses char, but the serdev API uses unsigned char. Just to 
+avoid any surprises I'd use unsigned char for all the buffers in the 
+driver as well.
+> +	int num;
+> +	unsigned int chksum;
+> +	bool escaped;
+> +	bool done;
+> +};
+> +
+> +static int sps30_serial_xfer(struct sps30_state *state, const char *buf, int size)
+> +{
+> +	struct serdev_device *serdev = to_serdev_device(state->dev);
+> +	struct sps30_serial_priv *priv = state->priv;
+> +	int ret;
+> +
+> +	priv->num = 0;
+> +	priv->chksum = 0;
+> +	priv->escaped = false;
+> +	priv->done = false;
+Hm... no locking with regards to the serdev callback. I guess the 
+assumption is that we'll never receive any data without explicitly 
+requesting it.
+> +
+> +	ret = serdev_device_write(serdev, buf, size, SPS30_SERIAL_TIMEOUT);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (ret != size)
+> +		return -EIO;
+> +
+> +	ret = wait_for_completion_interruptible_timeout(&priv->new_frame, SPS30_SERIAL_TIMEOUT);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (!ret)
+> +		return -ETIMEDOUT;
+> +
+> +	return 0;
+> +}
+> [...]
+> +static bool sps30_serial_frame_valid(struct sps30_state *state, const char *buf)
+> +{
+> +	struct sps30_serial_priv *priv = state->priv;
+> +
+> +	if ((priv->num < SPS30_SERIAL_FRAME_MIN_SIZE) ||
+> +	    (priv->num != SPS30_SERIAL_FRAME_MIN_SIZE +
+> +	     priv->buf[SPS30_SERIAL_FRAME_MISO_LEN_OFFSET])) {
+> +		dev_err(state->dev, "frame has invalid number of bytes\n");
+> +		return false;
+> +	}
+> +
+> +	if ((priv->buf[SPS30_SERIAL_FRAME_ADR_OFFSET] != buf[SPS30_SERIAL_FRAME_ADR_OFFSET]) ||
+> +	    (priv->buf[SPS30_SERIAL_FRAME_CMD_OFFSET] != buf[SPS30_SERIAL_FRAME_CMD_OFFSET])) {
+> +		dev_err(state->dev, "frame has wrong ADR and CMD bytes\n");
+> +		return false;
+> +	}
+> +
+> +	if (priv->buf[SPS30_SERIAL_FRAME_MISO_STATE_OFFSET]) {
+> +		dev_err(state->dev, "frame with non-zero state received (0x%02x)\n",
+> +			priv->buf[SPS30_SERIAL_FRAME_MISO_STATE_OFFSET]);
+> +		//return false;
+What's with the out commented line?
+> +	}
+> +
+> +	if (priv->buf[priv->num - 2] != priv->chksum) {
+> +		dev_err(state->dev, "frame integrity check failed\n");
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static int sps30_serial_command(struct sps30_state *state, char cmd, void *arg, int arg_size,
+> +				void *rsp, int rsp_size)
+> +{
+> +	struct sps30_serial_priv *priv = state->priv;
+> +	char buf[SPS30_SERIAL_MAX_BUF_SIZE];
+> +	int ret, size;
+> +
+> +	size = sps30_serial_prep_frame(buf, cmd, arg, arg_size);
+> +	ret = sps30_serial_xfer(state, buf, size);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (!sps30_serial_frame_valid(state, buf))
+> +		return -EIO;
+> +
+> +	if (rsp) {
+> +		rsp_size = clamp((int)priv->buf[SPS30_SERIAL_FRAME_MISO_LEN_OFFSET], 0, rsp_size);
+If buf is unsigned char this can be a min_t(unsigned int, ...). And 
+maybe also make rsp_size unsigned int.
+> +		memcpy(rsp, &priv->buf[SPS30_SERIAL_FRAME_MISO_DATA_OFFSET], rsp_size);
+> +	}
+> +
+> +	return rsp_size;
+> +}
+> +
+> +static int sps30_serial_receive_buf(struct serdev_device *serdev, const unsigned char *buf,
+> +				    size_t size)
+> +{
+> +	struct iio_dev *indio_dev = dev_get_drvdata(&serdev->dev);
+> +	struct sps30_serial_priv *priv;
+> +	struct sps30_state *state;
+> +	unsigned char byte;
+> +	int i;
+> +
+> +	if (!indio_dev)
+> +		return 0;
 
-it looks ok, but it should fix the noise output then, right?
+> +
+> +	state = iio_priv(indio_dev);
+> +	priv = state->priv;
+> +
+> +	/* just in case device put some unexpected data on the bus */
+> +	if (priv->done)
+> +		return size;
+> +
+> +	/* wait for the start of frame */
+> +	if (!priv->num && size && buf[0] != SPS30_SERIAL_SOF_EOF)
+> +		return 1;
+> +
+> +	if (priv->num + size >= ARRAY_SIZE(priv->buf))
+> +		size = ARRAY_SIZE(priv->buf) - priv->num;
+> +
+> +	for (i = 0; i < size; i++) {
+> +		byte = buf[i];
+> +		/* remove stuffed bytes on-the-fly */
+> +		if (byte == SPS30_SERIAL_ESCAPE_CHAR) {
+> +			priv->escaped = true;
+> +			continue;
+> +		}
+> +
+> +		byte = sps30_serial_get_byte(priv->escaped, byte);
+> +		if (priv->escaped && !byte)
+> +			dev_warn(state->dev, "unrecognized escaped char (0x%02x)\n", byte);
+> +		priv->chksum += byte;
+> +		/* incrementing here would complete rx just after reading SOF */
+> +		priv->buf[priv->num] = byte;
+> +
+> +		if (priv->num++ && !priv->escaped && byte == SPS30_SERIAL_SOF_EOF) {
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+This is a bit to tricky for my taste.
 
-thanks,
-jirka
+How about.
 
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/stat-display.c |  8 ++++----
->  tools/perf/util/stat.c         | 12 ------------
->  2 files changed, 4 insertions(+), 16 deletions(-)
-> 
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index d3137bc17065..a38fa6527586 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -807,11 +807,11 @@ static void counter_aggr_cb(struct perf_stat_config *config __maybe_unused,
->  			    bool first __maybe_unused)
->  {
->  	struct caggr_data *cd = data;
-> -	struct perf_stat_evsel *ps = counter->stats;
-> +	struct perf_counts_values *aggr = &counter->counts->aggr;
->  
-> -	cd->avg += avg_stats(&ps->res_stats[0]);
-> -	cd->avg_enabled += avg_stats(&ps->res_stats[1]);
-> -	cd->avg_running += avg_stats(&ps->res_stats[2]);
-> +	cd->avg += aggr->val;
-> +	cd->avg_enabled += aggr->ena;
-> +	cd->avg_running += aggr->run;
->  }
->  
->  /*
-> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-> index 2db46b9bebd0..d3ec2624e036 100644
-> --- a/tools/perf/util/stat.c
-> +++ b/tools/perf/util/stat.c
-> @@ -437,18 +437,6 @@ int perf_stat_process_counter(struct perf_stat_config *config,
->  
->  	aggr->val = aggr->ena = aggr->run = 0;
->  
-> -	/*
-> -	 * We calculate counter's data every interval,
-> -	 * and the display code shows ps->res_stats
-> -	 * avg value. We need to zero the stats for
-> -	 * interval mode, otherwise overall avg running
-> -	 * averages will be shown for each interval.
-> -	 */
-> -	if (config->interval || config->summary) {
-> -		for (i = 0; i < 3; i++)
-> -			init_stats(&ps->res_stats[i]);
-> -	}
-> -
->  	if (counter->per_pkg)
->  		evsel__zero_per_pkg(counter);
->  
-> -- 
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
+priv->num++
+
+if (priv->num > 1 && ...)
+
+> +			/* SOF, EOF and checksum itself are not checksummed */
+> +			priv->chksum -= 2 * SPS30_SERIAL_SOF_EOF + priv->buf[priv->num - 2];
+> +			priv->chksum = (unsigned char)~priv->chksum;
+To keep the whole checksum stuff simpler, maybe just compute it in 
+sps30_serial_frame_valid() over the whole set of data.
+> +			priv->done = true;
+> +			complete(&priv->new_frame);
+> +			i++;
+> +			break;
+> +		}
+> +
+> +		priv->escaped = false;
+> +	}
+> +
+> +	return i;
+> +}
+> [...]
+> +static int sps30_serial_probe(struct serdev_device *serdev)
+> +{
+> [...]
+> +	return sps30_probe(dev, KBUILD_MODNAME, priv, &sps30_serial_ops);
+Usually the IIO device name should just be the part number. Ideally the 
+application should not care about the backend. I'd just pass "sps30" 
+here for the name.
+> +}
+
 
