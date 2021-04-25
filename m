@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D7336A44D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47ADD36A44C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhDYCyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:54:17 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:16260 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDYCyQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:54:16 -0400
-X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sat, 24 Apr 2021 22:54:16 EDT
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 38CE68001DD;
-        Sun, 25 Apr 2021 10:45:41 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] ntfs: Remove repeated uptodate check for buffer
-Date:   Sun, 25 Apr 2021 10:45:33 +0800
-Message-Id: <20210425024533.12540-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S229711AbhDYDB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 23:01:58 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:60587 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229514AbhDYDB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 23:01:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FSXpy4T0Rz9sT6;
+        Sun, 25 Apr 2021 13:01:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619319677;
+        bh=ziUauJwpgby+Ofvr57dpZoib6PJ1pOgHQSmGg/BBf18=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UUgGf38GunoRu8HlVtfyFZi4kOVLgLhjjiMJzQMSYkJTMNC9CiFNd8NWlFwU6ni0S
+         IiwoyRCD1LlLPWPHTS4CgYymkiM5Hsdx1/CUA46IM2keNcM0QFzT0iOYpYjtFHPp9w
+         EjKnFOVt1D/GsouWACLNqBQJp96Xb5tXeIJt7KSv3BDjKSb92ijl2WwfRpGR0J3kJM
+         qll4jzpBP/4MZVqflAoCtHevFpmn6rgOicPXftZxGUZ/DuVlViPmsmgb/o0sE4hBQB
+         fAO1nUzm1BQb8xu3BZked6Ij0cN8fU/tV93qQcHUACDVX+JWek5eJAS7ZBxIuSrDBj
+         FCBdwN0lMzkBA==
+Date:   Sun, 25 Apr 2021 13:01:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the risc-v tree
+Message-ID: <20210425130113.7bfe5cad@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0tDS1YeTUNCGUMdHk8aSR9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        9ISFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MRQ6CRw*Hz8VOAMcTz8fND0y
-        DjEwCwhVSlVKTUpCSEpDTE9KTEhJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTEtONwY+
-X-HM-Tid: 0a7906eb1977b03akuuu38ce68001dd
+Content-Type: multipart/signed; boundary="Sig_/hRS/hBA+OBWpE75XCOJ_Ylb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 60f91826ca62 ("buffer: Avoid setting buffer bits that are already set"),
-function set_buffer_##name was added a test_bit() to check buffer,
-which is the same as function buffer_##name.
-The !buffer_uptodate(bh) here is a repeated check. Remove it.
+--Sig_/hRS/hBA+OBWpE75XCOJ_Ylb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- fs/ntfs/logfile.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi all,
 
-diff --git a/fs/ntfs/logfile.c b/fs/ntfs/logfile.c
-index bc1bf217b38e..9695540ce581 100644
---- a/fs/ntfs/logfile.c
-+++ b/fs/ntfs/logfile.c
-@@ -796,8 +796,7 @@ bool ntfs_empty_logfile(struct inode *log_vi)
- 			get_bh(bh);
- 			/* Set the entire contents of the buffer to 0xff. */
- 			memset(bh->b_data, -1, block_size);
--			if (!buffer_uptodate(bh))
--				set_buffer_uptodate(bh);
-+			set_buffer_uptodate(bh);
- 			if (buffer_dirty(bh))
- 				clear_buffer_dirty(bh);
- 			/*
--- 
-2.25.1
+Commits
 
+  97db849866cf ("riscv: vdso: fix and clean-up Makefile")
+  ab541f55291b ("riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU")
+  c79a9a16f7e7 ("riscv: module: Create module allocations without exec perm=
+issions")
+  b170834bcc98 ("riscv: Mark some global variables __ro_after_init")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hRS/hBA+OBWpE75XCOJ_Ylb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCE23kACgkQAVBC80lX
+0GykPwgAkakp9NL5X4Upx9TdSU1Y7KLU8vK9An1BxRWKf02goRBfyS4a2zNUj/PU
+UWORT/Bwi2+1kqlWOAynUcpv7Ka9dFs2BIg5KYHjT14U3naSV6thyrHN7K6VZJjz
+2OrMAZiVJF7lZYcYZasYl9NtXhOYZx0cPe8iEGhb+PWUkvfg4hOO9syDlV4wG1ts
+YE1704qo60vQw7XlifRepCLc51rUU+nPZXztFe2DTnesjZzvqzVgrk4HSFqNgBIU
+hfxzTZpCbRHVjCB+vsJ9+XsnYsyHSfyyj/8dg9dxyoKZnpey3GExTe+AX+sDYygk
+TgJYsIteOgzSvNZcJXgANPuwRpgpQA==
+=Khyr
+-----END PGP SIGNATURE-----
+
+--Sig_/hRS/hBA+OBWpE75XCOJ_Ylb--
