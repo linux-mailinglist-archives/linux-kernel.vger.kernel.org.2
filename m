@@ -2,49 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C7E36A3D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C4D36A3DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhDYBJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 21:09:12 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59223 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhDYBJK (ORCPT
+        id S230393AbhDYBKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 21:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhDYBKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 21:09:10 -0400
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13P18UUN019191;
-        Sun, 25 Apr 2021 10:08:30 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Sun, 25 Apr 2021 10:08:30 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13P18TZk019178
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 25 Apr 2021 10:08:30 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC PATCH] watchdog: Adding softwatchdog
-To:     peter enderborg <peter.enderborg@sony.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>
-References: <20210424102555.28203-1-peter.enderborg@sony.com>
- <20210424102555.28203-2-peter.enderborg@sony.com>
- <d5db5606-f074-6d0e-2316-8ff41af25cfd@roeck-us.net>
- <844e3ecb-62c3-856a-7273-e22eee35e80f@i-love.sakura.ne.jp>
- <d2be282c-f39a-dc85-817b-94a40efeb232@sony.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <d76447a5-4580-eb4e-e6d9-d675ca016462@i-love.sakura.ne.jp>
-Date:   Sun, 25 Apr 2021 10:08:25 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sat, 24 Apr 2021 21:10:09 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34139C061574;
+        Sat, 24 Apr 2021 18:09:31 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id b17so743143pgh.7;
+        Sat, 24 Apr 2021 18:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hDUnIusZ1DadclcLYuMe0SfPY7kssajJ2jsKvP8VfMg=;
+        b=IdyNOxN4M14QU6/Aga/AL+7aidk4QuQALnJdzSwg7LGKIAefKHheh+ABksklkj1FUf
+         /i/edhCFTk//KAI4ArCQujmF0xT+j937hUZ+o+B3KFXH7/xwRTOKMXIjU17M06l3v4ij
+         v+IG8rXK2/pJOTcKr+5l6lQ5SbvCsJgf/BZTelsac4dHyuzxlnO9nPr1VFzhSACPLKyy
+         X107o1QtS+bA2Oz/pCRVHbylKiMAAN5Ub6+zd9bMbG0cJK3k1Yd4ZC5OpWAxpV2SKMnr
+         dtpaPwsNGmMnta7yIHS+PwtlgCeAGuvxGvgrghMeiagwAul9u1u7NOe0s+UZBsKqgipb
+         XwPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hDUnIusZ1DadclcLYuMe0SfPY7kssajJ2jsKvP8VfMg=;
+        b=H5SXyVr5+rWmWSIK15FNEc4+cvfRDskuXBvq9pM5FXzKRgrdME77dXmRkCW30WZugt
+         P9b2n2dHxBII50oQ81z5IfcUkidqY/3cwfzxn/DlVg9cBerAKE+8mWK6qdYk9Ai0EFOq
+         NWT9tawc3qCfoPgsgTZQV1M+q4mNlhZc8FU/68SOj3B2kzGrrqbxN/x9mpGgGe8YS0g1
+         HvQtV0UlGW8f7ETKTsjMKSJ2ZX5jl1aUqJhSWdhQJT71Jo8DiW9X0+nZwebAadgKDnzn
+         Fyb3OfDIecZLr6obuLCibJwLqyKZUYiZ+VRolRjV4y108A5uYvY/W5eUOEiHojYHJ6zi
+         DUJA==
+X-Gm-Message-State: AOAM532gkM9L4s5b5BGMtNiEIxII8uNfwh12Ozu43bPZMgPjPehZ0yR3
+        6wTFFp+8UJYon7pS2RrvQIOLMdkNiBY=
+X-Google-Smtp-Source: ABdhPJxj8b9/lzqBw/w6alkSqpAHYZUU/LQZFgOYG0g70kJl/vdINLwaPHHKmRb9lGJpSPgP8wi6xA==
+X-Received: by 2002:a65:4303:: with SMTP id j3mr10426132pgq.55.1619312970301;
+        Sat, 24 Apr 2021 18:09:30 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id i126sm7483065pfc.20.2021.04.24.18.09.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Apr 2021 18:09:29 -0700 (PDT)
+Subject: Re: [PATCH 11/14] drivers: net: dsa: qca8k: apply switch revision fix
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210423014741.11858-1-ansuelsmth@gmail.com>
+ <20210423014741.11858-12-ansuelsmth@gmail.com>
+ <e644aba9-a092-3825-b55b-e0cca158d28b@gmail.com>
+ <YISLHNK8binc9T1N@Ansuel-xps.localdomain>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <bbbb511a-0ab7-77e4-2dde-473d25b90d17@gmail.com>
+Date:   Sat, 24 Apr 2021 18:09:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <d2be282c-f39a-dc85-817b-94a40efeb232@sony.com>
+In-Reply-To: <YISLHNK8binc9T1N@Ansuel-xps.localdomain>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -52,47 +78,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/25 1:19, peter enderborg wrote:
->> I don't think this proposal is a watchdog. I think this proposal is
->> a timer based process killer, based on an assumption that any slowdown
->> which prevents the monitor process from pinging for more than 0.5 seconds
->> (if HZ == 1000) is caused by memory pressure.
+
+
+On 4/24/2021 2:18 PM, Ansuel Smith wrote:
+> On Thu, Apr 22, 2021 at 07:02:37PM -0700, Florian Fainelli wrote:
+>>
+>>
+>> On 4/22/2021 6:47 PM, Ansuel Smith wrote:
+>>> qca8k require special debug value based on the switch revision.
+>>>
+>>> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+>>> ---
+>>>  drivers/net/dsa/qca8k.c | 23 +++++++++++++++++++++--
+>>>  1 file changed, 21 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+>>> index 193c269d8ed3..12d2c97d1417 100644
+>>> --- a/drivers/net/dsa/qca8k.c
+>>> +++ b/drivers/net/dsa/qca8k.c
+>>> @@ -909,7 +909,7 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>>>  {
+>>>  	const struct qca8k_match_data *data;
+>>>  	struct qca8k_priv *priv = ds->priv;
+>>> -	u32 reg, val;
+>>> +	u32 phy, reg, val;
+>>>  
+>>>  	/* get the switches ID from the compatible */
+>>>  	data = of_device_get_match_data(priv->dev);
+>>> @@ -928,7 +928,26 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>>>  	case 3:
+>>>  	case 4:
+>>>  	case 5:
+>>> -		/* Internal PHY, nothing to do */
+>>> +		/* Internal PHY, apply revision fixup */
+>>> +		phy = qca8k_port_to_phy(port) % PHY_MAX_ADDR;
+>>> +		switch (priv->switch_revision) {
+>>> +		case 1:
+>>> +			/* For 100M waveform */
+>>> +			qca8k_phy_dbg_write(priv, phy, 0, 0x02ea);
+>>> +			/* Turn on Gigabit clock */
+>>> +			qca8k_phy_dbg_write(priv, phy, 0x3d, 0x68a0);
+>>> +			break;
+>>> +
+>>> +		case 2:
+>>> +			qca8k_phy_mmd_write(priv, phy, 0x7, 0x3c, 0x0);
+>>> +			fallthrough;
+>>> +		case 4:
+>>> +			qca8k_phy_mmd_write(priv, phy, 0x3, 0x800d, 0x803f);
+>>> +			qca8k_phy_dbg_write(priv, phy, 0x3d, 0x6860);
+>>> +			qca8k_phy_dbg_write(priv, phy, 0x5, 0x2c46);
+>>> +			qca8k_phy_dbg_write(priv, phy, 0x3c, 0x6000);
+>>> +			break;
+>>
+>> This would be better done with a PHY driver that is specific to the
+>> integrated PHY found in these switches, it would provide a nice clean
+>> layer and would allow you to expose additional features like cable
+>> tests, PHY statistics/counters, etc.
 > 
-> You missing the point. The oom killer is a example of a work that it can do.
-> it is one policy. The idea is that you should have a policy that fits your needs.
+> I'm starting to do some work with this and a problem arised. Since these
+> value are based on the switch revision, how can I access these kind of
+> data from the phy driver? It's allowed to declare a phy driver in the
+> dsa directory? (The idea would be to create a qca8k dir with the dsa
+> driver and the dedicated internal phy driver.) This would facilitate the
+> use of normal qca8k_read/write (to access the switch revision from the
+> phy driver) using common function?
 
-Implementing policy which can run in kernel from timer interrupt context is
-quite limited, for it is not allowed to perform operations that might sleep. See
+The PHY driver should live under drivers/net/phy/ and if you need to
+communicate the switch revision to the PHY driver you can use
+phydev->dev_flags and implement a dsa_switch_ops::get_phy_flags()
+callback and define a custom bitmask.
 
-  [RFC] memory reserve for userspace oom-killer
-  https://lkml.kernel.org/r/CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com
-
-for implementing possibly useful policy.
-
-> 
-> oom_score_adj is suitable for a android world. But it might be based on
-> uid's if your priority is some users over other.  Or a memcg. Or as
-> Christophe Leroy want the current. The policy is only a example that
-> fits a one area.
-
-Horrible idea. Imagine a kernel module that randomly sends SIGTERM/SIGKILL
-to "current" thread. How normal systems can survive? A normal system is not
-designed to survive random signals.
-
->                  You need to describe your prioritization, in android it is
-> oom_score_adj. For example I would very much have a policy that sends
-> sigterm instead of sigkill.
-
-That's because Android framework is designed to survive random signals
-(in order to survive memory pressure situation).
-
->                             But the integration with oom is there because
-> it is needed. Maybe a bad choice for political reasons but I don't it a
-> good idea to hide the intention. Please don't focus on the oom part.
-
-I wonder what system other than Android framework can utilize this module.
-
-By the way, there already is "Software Watchdog" ( drivers/watchdog/softdog.c )
-which some people might call it "soft watchdog". It is very confusing to name
-your module as "softwatchdog". Please find a different name.
-
+As far as the read/write operations if your switch implements a custom
+mii_bus for the purpose of doing all of the underlying indirect register
+accesses, then you should be fine. A lot of drivers do that however if
+you want an example of both (communicating something to the PHY driver
+and having a custom MII bus) you can look at drivers/net/dsa/bcm_sf2.c
+for an example.
+-- 
+Florian
