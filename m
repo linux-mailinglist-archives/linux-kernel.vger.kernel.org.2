@@ -2,152 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E9836A5A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805C336A5AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbhDYIK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 04:10:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32738 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhDYIKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 04:10:25 -0400
-IronPort-SDR: z0QpIoILqWiZEgCy46j/7XfmeDQ72HdpdE9yDT067AXhiu2SNvmMUXVMhH6VxW4hBjvbbWol48
- tXLE/UOUl3oA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="183353078"
-X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
-   d="scan'208";a="183353078"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 01:09:45 -0700
-IronPort-SDR: JJRw1EW8OL48cl1W71eXIjtcsmS6RvlCYJAMkEc531Vgc9dmC3pRJ8xc04KurcpUOf76oW+xJv
- Odz+xYKis9eA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
-   d="scan'208";a="453963285"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Apr 2021 01:09:44 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1laZpn-0005Rw-LI; Sun, 25 Apr 2021 08:09:43 +0000
-Date:   Sun, 25 Apr 2021 16:09:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- 765822e1569a37aab5e69736c52d4ad4a289eba6
-Message-ID: <608523c6.lpCBRGKFvsKF+/m9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S229603AbhDYIQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 04:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhDYIQ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 04:16:56 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B457C061574;
+        Sun, 25 Apr 2021 01:16:14 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso3442899pjg.2;
+        Sun, 25 Apr 2021 01:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=wnpkL3ueOA+zoMhko8uVKbNai7YgfMgiPqjt6r4gZac=;
+        b=r9Dd+O+wbK/P5tmd596jNPpN2wQePnAJpaj8OUvOejd7x/WqL0tZKv+dJ3PIuWasXs
+         rjiUe+5sVtnnpEdPV58g8qR0euZKocq8MQ1ZXhlFr+cMqY+T5cEW30wlR661t38cGIiM
+         nSWvRVIa3HODnKReMNU5mpOvOjxTw3b2mpNK90NjxZJ8ULWUQ5vo7tWm4wdZ5elXLPAD
+         561OGso6a3xuapNM82koZ8Xf9NbcQoPMi7PzuhEl3K0d/rW0vSCw3cN/dXmmBj460/M3
+         ESVukv+Jl3QPU4iIe+yQPMqF6HHmxl38x9Kfd5UL2M0dvxudWnv0Sr9VJ5Ju0jF8HUSl
+         IFFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=wnpkL3ueOA+zoMhko8uVKbNai7YgfMgiPqjt6r4gZac=;
+        b=gXASeVttPnaKg/R8lMMSwkmP7GzXcyoMtYCUoUY2qs0JHd0ZhPylHiqn0+a5zlyenY
+         LCN8dQwGNnjHR3Tn5AUMifmuRdmxdXZ6UdI2SBZtIS5ioiRpSPs5kpukFabQ2Lyg/URM
+         Qv7UbD+u/h6lfD/j2zGUUpJ2u8Q+jtg0/GhsiV0c0VhSF4yBNL8FOn8J8uR0Nh418W3u
+         s1rkRJOcWDBQo2d8qUPSqzRcaoeR+akBq/I5Aoni2xCfrkE78ApbH2jHMOKXq/8dN3gf
+         5Uje8xH4o0y31aykJ5xcgCnibQQID2mL0L1ytWF8aAs/pwgu4Y2pYhSbdHgOzqcR0Dpc
+         99IA==
+X-Gm-Message-State: AOAM531fqx+nrJVsUsMXalNf/PD2g65yknjR21Ol3xqWlz+w6ZIq/uN2
+        MWrb+PMWEKcF10IbUf4kiQk=
+X-Google-Smtp-Source: ABdhPJxYrg7gJC96ZRdTcEHuBp9yu2poWm4YcF6k7FJ/PnpVnt3ehs3/90tSwT1XgagYwaFeVJOwUA==
+X-Received: by 2002:a17:902:9008:b029:e6:f37a:2183 with SMTP id a8-20020a1709029008b02900e6f37a2183mr12487050plp.49.1619338573533;
+        Sun, 25 Apr 2021 01:16:13 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.83.82])
+        by smtp.gmail.com with ESMTPSA id k127sm8871993pfd.63.2021.04.25.01.16.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 25 Apr 2021 01:16:13 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     peter.chen@kernel.org, pawell@cadence.com, rogerq@kernel.org,
+        a-govindraju@ti.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH v2] usb: cdns3: Corrected comment to align with kernel-doc comment
+Date:   Sun, 25 Apr 2021 13:46:05 +0530
+Message-Id: <1619338565-4574-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: 765822e1569a37aab5e69736c52d4ad4a289eba6  Merge tag 'irqchip-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+Minor update in comment.
 
-elapsed time: 721m
-
-configs tested: 90
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-sh                         ap325rxa_defconfig
-parisc                generic-32bit_defconfig
-csky                                defconfig
-m68k                          multi_defconfig
-sh                   sh7724_generic_defconfig
-ia64                                defconfig
-sh                         apsh4a3a_defconfig
-mips                       bmips_be_defconfig
-mips                        nlm_xlp_defconfig
-arc                          axs103_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                    gamecube_defconfig
-sh                     sh7710voipgw_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210425
-x86_64               randconfig-a002-20210425
-x86_64               randconfig-a001-20210425
-x86_64               randconfig-a006-20210425
-x86_64               randconfig-a005-20210425
-x86_64               randconfig-a003-20210425
-i386                 randconfig-a005-20210425
-i386                 randconfig-a002-20210425
-i386                 randconfig-a001-20210425
-i386                 randconfig-a006-20210425
-i386                 randconfig-a004-20210425
-i386                 randconfig-a003-20210425
-i386                 randconfig-a012-20210425
-i386                 randconfig-a014-20210425
-i386                 randconfig-a011-20210425
-i386                 randconfig-a013-20210425
-i386                 randconfig-a015-20210425
-i386                 randconfig-a016-20210425
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210425
-x86_64               randconfig-a016-20210425
-x86_64               randconfig-a011-20210425
-x86_64               randconfig-a014-20210425
-x86_64               randconfig-a013-20210425
-x86_64               randconfig-a012-20210425
-
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v2:
+	Updated change logs and address review comment.
+
+ drivers/usb/cdns3/cdns3-gadget.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
+index 9b1bd41..21f026c 100644
+--- a/drivers/usb/cdns3/cdns3-gadget.c
++++ b/drivers/usb/cdns3/cdns3-gadget.c
+@@ -484,7 +484,7 @@ static void __cdns3_descmiss_copy_data(struct usb_request *request,
+ }
+ 
+ /**
+- * cdns3_wa2_descmiss_copy_data copy data from internal requests to
++ * cdns3_wa2_descmiss_copy_data - copy data from internal requests to
+  * request queued by class driver.
+  * @priv_ep: extended endpoint object
+  * @request: request object
+-- 
+1.9.1
+
