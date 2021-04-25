@@ -2,4402 +2,698 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EB836A74C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 14:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC1D36A74D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 14:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhDYMhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 08:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbhDYMhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 08:37:18 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39799C061574;
-        Sun, 25 Apr 2021 05:36:38 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w6so22625733pfc.8;
-        Sun, 25 Apr 2021 05:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CbNvHgg+kSiqFhoSBgjcB34l5OZtHhOtVp1sfisJGko=;
-        b=Ibh44rRq7MlT9VAtn/0vWB6Q8xiXqB94MVQ8ITSklOlBXuJ36f+uiY5if39ovkLqqn
-         CP6Ozbm4I/vbVW8yWGVKlR9vG7w9ZRrIQb0v22YmMiiXfuzS8NQC8bPvUe/fBe6TurH3
-         1wLVIOzzusYrLp/j3b1knBXSPh434TRM42Sex0fKPzMOOpzVD04jqzJsHFfXlEA1Pde+
-         6TMZIjCLcSMcjt1fO6r6Thmrxk6O70rDqLknYdGFb6DNPVCO1XghamjtgW01iehMQcz/
-         UzDlby/f7Jp0NXTXeUogfoOrv0k/jM0132+tQr7qimbn1BEIz5i6QxqCEtY6ri+XXqSI
-         n+wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CbNvHgg+kSiqFhoSBgjcB34l5OZtHhOtVp1sfisJGko=;
-        b=dGKLmWttiV80b5EqzAbtMUxoXmpMe45oTaJ1xUgMvSUuuY9j1wXzOqQyrov28Gqlbv
-         UHypCc5yXBXj4ogeLYVPGWWU6lEI8COgCWnLXTVcKJT1EWBAg2b2I0soV451cyjO9anj
-         cGnLAMIMYBYcC+uWkQDKqcUJ7TrF6xVEbFNjW6qAVaKxaN4tygsdsqd0+E6a0+QBAEhW
-         BqRGULRj3RcUVYgS+qM4GZNe8AVhgHxVE/Hh21sf28zYIdj5bK6Y1/PeucIKDXEnRRFI
-         0+7YUivX//1KyH+T6I5Svt1w4Ncb/Chbl0IBcmlDikvH7eLVKZ4ta3vkQSyVeGHBdlo4
-         s2HQ==
-X-Gm-Message-State: AOAM531EdLwzkor9pLb5XqhbTe7jfWqmzxDRatdx7GxvQBIu2NHvlz/d
-        TIjCuX9+Pf1AaBhVL+iZtuQ=
-X-Google-Smtp-Source: ABdhPJxIvkm0jV2w/Ck5/ZRy+A/kscwUQPkQxJLSw/EQqMRk/tgO1ozCtBYsB+lT3vtvVrlWRvuKcA==
-X-Received: by 2002:a62:84d7:0:b029:253:55cd:8cda with SMTP id k206-20020a6284d70000b029025355cd8cdamr12793967pfd.24.1619354196777;
-        Sun, 25 Apr 2021 05:36:36 -0700 (PDT)
-Received: from nj08008nbu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id f135sm8767808pfa.102.2021.04.25.05.36.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Apr 2021 05:36:36 -0700 (PDT)
-From:   Kevin Tang <kevin3.tang@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v5 6/6] drm/sprd: add Unisoc's drm mipi dsi&dphy driver
-Date:   Sun, 25 Apr 2021 20:36:07 +0800
-Message-Id: <20210425123607.26537-7-kevin3.tang@gmail.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210425123607.26537-1-kevin3.tang@gmail.com>
-References: <20210425123607.26537-1-kevin3.tang@gmail.com>
+        id S230165AbhDYMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 08:41:44 -0400
+Received: from mga14.intel.com ([192.55.52.115]:11381 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229659AbhDYMln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 08:41:43 -0400
+IronPort-SDR: CKB574n5km4pNmBPQ3kivjFqpmXKa3F4kjBoExSfHU6bgPfLQy75Ob0p0PtGPTpoOFkOQGkL+2
+ BumB/A6cX4ig==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="195785771"
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="gz'50?scan'50,208,50";a="195785771"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 05:41:03 -0700
+IronPort-SDR: hmjkySUSMlofv20Lod+nEYlKUVnYadIttLRDuIqj/IYOuIvPYxrxqh4dvqmqhgO8vi/OtVO/ZU
+ wOESQYJlJ4FA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="gz'50?scan'50,208,50";a="525445745"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Apr 2021 05:41:01 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lae4L-0005Xx-5i; Sun, 25 Apr 2021 12:41:01 +0000
+Date:   Sun, 25 Apr 2021 20:40:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Ungerer <gerg@linux-m68k.org>
+Subject: arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared
+Message-ID: <202104252048.b3uE6TyT-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="jRHKVT23PllUwdXP"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds dsi host controller support for the Unisoc's display subsystem.
-Adds dsi phy support for the Unisoc's display subsystem.
-Only MIPI DSI Displays supported, DP/TV/HMDI will be support
-in the feature.
 
-v1:
-  - Remove dphy and dsi graph binding, merge the dphy driver into the dsi.
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-v2:
-  - Use drm_xxx to replace all DRM_XXX.
-  - Use kzalloc to replace devm_kzalloc for sprd_dsi structure init.
+Hi Arnd,
 
-v4:
-  - Use drmm_helpers to allocate encoder.
-  - Move allocate encoder and connector to bind function.
+FYI, the error/warning still remains.
 
-v5:
-  - Drop the dsi ip file prefix.
-  - Fix the checkpatch warnings.
-  - Add Signed-off-by for dsi&dphy patch.
-  - Use the mode_flags of mipi_dsi_device to setup crtc DPI and EDPI
-    mode.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2a1d7946fa53cea2083e5981ff55a8176ab2be6b
+commit: a734bbf694270dca8594a5c33375867dc31503f5 m68k: m68328: move platform code to separate files
+date:   5 months ago
+config: m68k-randconfig-r016-20210425 (attached as .config)
+compiler: m68k-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a734bbf694270dca8594a5c33375867dc31503f5
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout a734bbf694270dca8594a5c33375867dc31503f5
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=m68k 
 
-Cc: Orson Zhai <orsonzhai@gmail.com>
-Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   arch/m68k/68000/dragen2.c:38:13: warning: no previous prototype for 'init_dragen2' [-Wmissing-prototypes]
+      38 | void __init init_dragen2(char *command, int size)
+         |             ^~~~~~~~~~~~
+   arch/m68k/68000/dragen2.c: In function 'init_dragen2':
+>> arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared (first use in this function)
+      73 |  LSSA = (long) screen_bits;
+         |                ^~~~~~~~~~~
+   arch/m68k/68000/dragen2.c:73:16: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +/screen_bits +73 arch/m68k/68000/dragen2.c
+
+    37	
+  > 38	void __init init_dragen2(char *command, int size)
+    39	{
+    40		mach_reset = dragen2_reset;
+    41	
+    42	#ifdef CONFIG_DIRECT_IO_ACCESS
+    43		SCR = 0x10;					/* allow user access to internal registers */
+    44	#endif
+    45	
+    46		/* CSGB Init */
+    47		CSGBB = 0x4000;
+    48		CSB = 0x1a1;
+    49	
+    50		/* CS8900 init */
+    51		/* PK3: hardware sleep function pin, active low */
+    52		PKSEL |= PK(3);				/* select pin as I/O */
+    53		PKDIR |= PK(3);				/* select pin as output */
+    54		PKDATA |= PK(3);			/* set pin high */
+    55	
+    56		/* PF5: hardware reset function pin, active high */
+    57		PFSEL |= PF(5);				/* select pin as I/O */
+    58		PFDIR |= PF(5);				/* select pin as output */
+    59		PFDATA &= ~PF(5);			/* set pin low */
+    60	
+    61		/* cs8900 hardware reset */
+    62		PFDATA |= PF(5);
+    63		{ int i; for (i = 0; i < 32000; ++i); }
+    64		PFDATA &= ~PF(5);
+    65	
+    66		/* INT1 enable (cs8900 IRQ) */
+    67		PDPOL &= ~PD(1);			/* active high signal */
+    68		PDIQEG &= ~PD(1);
+    69		PDIRQEN |= PD(1);			/* IRQ enabled */
+    70	
+    71	#ifdef CONFIG_INIT_LCD
+    72		/* initialize LCD controller */
+  > 73		LSSA = (long) screen_bits;
+
 ---
- drivers/gpu/drm/sprd/Kconfig         |    1 +
- drivers/gpu/drm/sprd/Makefile        |    6 +-
- drivers/gpu/drm/sprd/dsi_ctrl.c      |  794 ++++++++++++++
- drivers/gpu/drm/sprd/dsi_ctrl.h      | 1475 ++++++++++++++++++++++++++
- drivers/gpu/drm/sprd/dsi_ctrl_ppi.c  |  157 +++
- drivers/gpu/drm/sprd/dsi_ctrl_ppi.h  |   26 +
- drivers/gpu/drm/sprd/megacores_pll.c |  317 ++++++
- drivers/gpu/drm/sprd/megacores_pll.h |  146 +++
- drivers/gpu/drm/sprd/sprd_dpu.c      |   17 +
- drivers/gpu/drm/sprd/sprd_drm.c      |    1 +
- drivers/gpu/drm/sprd/sprd_drm.h      |    1 +
- drivers/gpu/drm/sprd/sprd_dsi.c      | 1124 ++++++++++++++++++++
- drivers/gpu/drm/sprd/sprd_dsi.h      |  107 ++
- 13 files changed, 4171 insertions(+), 1 deletion(-)
- create mode 100644 drivers/gpu/drm/sprd/dsi_ctrl.c
- create mode 100644 drivers/gpu/drm/sprd/dsi_ctrl.h
- create mode 100644 drivers/gpu/drm/sprd/dsi_ctrl_ppi.c
- create mode 100644 drivers/gpu/drm/sprd/dsi_ctrl_ppi.h
- create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
- create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
- create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
- create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/gpu/drm/sprd/Kconfig b/drivers/gpu/drm/sprd/Kconfig
-index 37762c333..3edeaeca0 100644
---- a/drivers/gpu/drm/sprd/Kconfig
-+++ b/drivers/gpu/drm/sprd/Kconfig
-@@ -5,6 +5,7 @@ config DRM_SPRD
- 	select DRM_GEM_CMA_HELPER
- 	select DRM_KMS_CMA_HELPER
- 	select DRM_KMS_HELPER
-+	select DRM_MIPI_DSI
- 	select VIDEOMODE_HELPERS
- 	help
- 	  Choose this option if you have a Unisoc chipset.
-diff --git a/drivers/gpu/drm/sprd/Makefile b/drivers/gpu/drm/sprd/Makefile
-index ab12b95e6..d49f4977b 100644
---- a/drivers/gpu/drm/sprd/Makefile
-+++ b/drivers/gpu/drm/sprd/Makefile
-@@ -1,4 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-y := sprd_drm.o \
--	sprd_dpu.o
-+	sprd_dpu.o \
-+	sprd_dsi.o \
-+	dw_dsi_ctrl.o \
-+	dw_dsi_ctrl_ppi.o \
-+	megacores_pll.o
-diff --git a/drivers/gpu/drm/sprd/dsi_ctrl.c b/drivers/gpu/drm/sprd/dsi_ctrl.c
-new file mode 100644
-index 000000000..7eccf9654
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/dsi_ctrl.c
-@@ -0,0 +1,794 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+
-+#include "dsi_ctrl.h"
-+
-+/*
-+ * Modify power status of DSI Host core
-+ */
-+void dsi_power_enable(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(enable, &reg->SOFT_RESET);
-+}
-+/*
-+ * Enable/disable DPI video mode
-+ */
-+void dsi_video_mode(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(0, &reg->DSI_MODE_CFG);
-+}
-+/*
-+ * Enable command mode (Generic interface)
-+ */
-+void dsi_cmd_mode(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(1, &reg->DSI_MODE_CFG);
-+}
-+
-+bool dsi_is_cmd_mode(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	return readl(&reg->DSI_MODE_CFG);
-+}
-+/*
-+ * Configure the read back virtual channel for the generic interface
-+ */
-+void dsi_rx_vcid(struct dsi_context *ctx, u8 vc)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x1C virtual_channel_id;
-+
-+	virtual_channel_id.val = readl(&reg->VIRTUAL_CHANNEL_ID);
-+	virtual_channel_id.bits.gen_rx_vcid = vc;
-+
-+	writel(virtual_channel_id.val, &reg->VIRTUAL_CHANNEL_ID);
-+}
-+/*
-+ * Write the DPI video virtual channel destination
-+ */
-+void dsi_video_vcid(struct dsi_context *ctx, u8 vc)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x1C virtual_channel_id;
-+
-+	virtual_channel_id.val = readl(&reg->VIRTUAL_CHANNEL_ID);
-+	virtual_channel_id.bits.video_pkt_vcid = vc;
-+
-+	writel(virtual_channel_id.val, &reg->VIRTUAL_CHANNEL_ID);
-+}
-+/*
-+ * Set DPI video mode type (burst/non-burst - with sync pulses or events)
-+ */
-+void dsi_dpi_video_burst_mode(struct dsi_context *ctx, int mode)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x38 vid_mode_cfg;
-+
-+	vid_mode_cfg.val = readl(&reg->VID_MODE_CFG);
-+	vid_mode_cfg.bits.vid_mode_type = mode;
-+
-+	writel(vid_mode_cfg.val, &reg->VID_MODE_CFG);
-+}
-+/*
-+ * Set DPI video color coding
-+ */
-+void dsi_dpi_color_coding(struct dsi_context *ctx, int coding)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x20 dpi_video_format;
-+
-+	dpi_video_format.val = readl(&reg->DPI_VIDEO_FORMAT);
-+	dpi_video_format.bits.dpi_video_mode_format = coding;
-+
-+	writel(dpi_video_format.val, &reg->DPI_VIDEO_FORMAT);
-+}
-+/*
-+ * Configure the Horizontal Line time
-+ * param "byte_cycle" taken to transmit the total of the horizontal line
-+ */
-+void dsi_dpi_hline_time(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x2C video_line_time;
-+
-+	video_line_time.val = readl(&reg->VIDEO_LINE_TIME);
-+	video_line_time.bits.video_line_time = byte_cycle;
-+
-+	writel(video_line_time.val, &reg->VIDEO_LINE_TIME);
-+}
-+/*
-+ * Configure the Horizontal back porch time
-+ * param "byte_cycle" taken to transmit the horizontal back porch
-+ */
-+void dsi_dpi_hbp_time(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x28 video_line_hblk_time;
-+
-+	video_line_hblk_time.val = readl(&reg->VIDEO_LINE_HBLK_TIME);
-+	video_line_hblk_time.bits.video_line_hbp_time = byte_cycle;
-+
-+	writel(video_line_hblk_time.val, &reg->VIDEO_LINE_HBLK_TIME);
-+}
-+/*
-+ * Configure the Horizontal sync time,
-+ * param "byte_cycle" taken to transmit the horizontal sync
-+ */
-+void dsi_dpi_hsync_time(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x28 video_line_hblk_time;
-+
-+	video_line_hblk_time.val = readl(&reg->VIDEO_LINE_HBLK_TIME);
-+	video_line_hblk_time.bits.video_line_hsa_time = byte_cycle;
-+
-+	writel(video_line_hblk_time.val, &reg->VIDEO_LINE_HBLK_TIME);
-+}
-+/*
-+ * Configure the vertical active lines of the video stream
-+ */
-+void dsi_dpi_vact(struct dsi_context *ctx, u16 lines)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x34 video_active_lines;
-+
-+	video_active_lines.val = readl(&reg->VIDEO_VACTIVE_LINES);
-+	video_active_lines.bits.vactive_lines = lines;
-+
-+	writel(video_active_lines.val, &reg->VIDEO_VACTIVE_LINES);
-+}
-+
-+void dsi_dpi_vfp(struct dsi_context *ctx, u16 lines)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x30 video_vblk_lines;
-+
-+	video_vblk_lines.val = readl(&reg->VIDEO_VBLK_LINES);
-+	video_vblk_lines.bits.vfp_lines = lines;
-+
-+	writel(video_vblk_lines.val, &reg->VIDEO_VBLK_LINES);
-+}
-+
-+void dsi_dpi_vbp(struct dsi_context *ctx, u16 lines)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x30 video_vblk_lines;
-+
-+	video_vblk_lines.val = readl(&reg->VIDEO_VBLK_LINES);
-+	video_vblk_lines.bits.vbp_lines = lines;
-+
-+	writel(video_vblk_lines.val, &reg->VIDEO_VBLK_LINES);
-+}
-+
-+void dsi_dpi_vsync(struct dsi_context *ctx, u16 lines)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x30 video_vblk_lines;
-+
-+	video_vblk_lines.val = readl(&reg->VIDEO_VBLK_LINES);
-+	video_vblk_lines.bits.vsa_lines = lines;
-+
-+	writel(video_vblk_lines.val, &reg->VIDEO_VBLK_LINES);
-+}
-+
-+void dsi_dpi_hporch_lp_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x38 vid_mode_cfg;
-+
-+	vid_mode_cfg.val = readl(&reg->VID_MODE_CFG);
-+
-+	vid_mode_cfg.bits.lp_hfp_en = enable;
-+	vid_mode_cfg.bits.lp_hbp_en = enable;
-+
-+	writel(vid_mode_cfg.val, &reg->VID_MODE_CFG);
-+}
-+/*
-+ * Enable return to low power mode inside vertical active lines periods when
-+ * timing allows
-+ */
-+void dsi_dpi_vporch_lp_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x38 vid_mode_cfg;
-+
-+	vid_mode_cfg.val = readl(&reg->VID_MODE_CFG);
-+
-+	vid_mode_cfg.bits.lp_vact_en = enable;
-+	vid_mode_cfg.bits.lp_vfp_en = enable;
-+	vid_mode_cfg.bits.lp_vbp_en = enable;
-+	vid_mode_cfg.bits.lp_vsa_en = enable;
-+
-+	writel(vid_mode_cfg.val, &reg->VID_MODE_CFG);
-+}
-+/*
-+ * Enable FRAME BTA ACK
-+ */
-+void dsi_dpi_frame_ack_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x38 vid_mode_cfg;
-+
-+	vid_mode_cfg.val = readl(&reg->VID_MODE_CFG);
-+	vid_mode_cfg.bits.frame_bta_ack_en = enable;
-+
-+	writel(vid_mode_cfg.val, &reg->VID_MODE_CFG);
-+}
-+/*
-+ * Write no of chunks to core - taken into consideration only when multi packet
-+ * is enabled
-+ */
-+void dsi_dpi_chunk_num(struct dsi_context *ctx, u16 num)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x24 video_pkt_config;
-+
-+	video_pkt_config.val = readl(&reg->VIDEO_PKT_CONFIG);
-+	video_pkt_config.bits.video_line_chunk_num = num;
-+
-+	writel(video_pkt_config.val, &reg->VIDEO_PKT_CONFIG);
-+}
-+/*
-+ * Write the null packet size - will only be taken into account when null
-+ * packets are enabled.
-+ */
-+void dsi_dpi_null_packet_size(struct dsi_context *ctx, u16 size)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xC0 video_nullpkt_size;
-+
-+	video_nullpkt_size.val = readl(&reg->VIDEO_NULLPKT_SIZE);
-+	video_nullpkt_size.bits.video_nullpkt_size = size;
-+
-+	writel(video_nullpkt_size.val, &reg->VIDEO_NULLPKT_SIZE);
-+}
-+/*
-+ * Write video packet size. obligatory for sending video
-+ */
-+void dsi_dpi_video_packet_size(struct dsi_context *ctx, u16 size)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x24 video_pkt_config;
-+
-+	video_pkt_config.val = readl(&reg->VIDEO_PKT_CONFIG);
-+	video_pkt_config.bits.video_pkt_size = size;
-+
-+	writel(video_pkt_config.val, &reg->VIDEO_PKT_CONFIG);
-+}
-+/*
-+ * Specifiy the size of the packet memory write start/continue
-+ */
-+void dsi_edpi_max_pkt_size(struct dsi_context *ctx, u16 size)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xC4 dcs_wm_pkt_size;
-+
-+	dcs_wm_pkt_size.val = readl(&reg->DCS_WM_PKT_SIZE);
-+	dcs_wm_pkt_size.bits.dcs_wm_pkt_size = size;
-+
-+	writel(dcs_wm_pkt_size.val, &reg->DCS_WM_PKT_SIZE);
-+}
-+/*
-+ * Enable tear effect acknowledge
-+ */
-+void dsi_tear_effect_ack_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x68 cmd_mode_cfg;
-+
-+	cmd_mode_cfg.val = readl(&reg->CMD_MODE_CFG);
-+	cmd_mode_cfg.bits.tear_fx_en = enable;
-+
-+	writel(cmd_mode_cfg.val, &reg->CMD_MODE_CFG);
-+}
-+/*
-+ * Set DCS command packet transmission to transmission type
-+ */
-+void dsi_cmd_mode_lp_cmd_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x68 cmd_mode_cfg;
-+
-+	cmd_mode_cfg.val = readl(&reg->CMD_MODE_CFG);
-+
-+	cmd_mode_cfg.bits.gen_sw_0p_tx = enable;
-+	cmd_mode_cfg.bits.gen_sw_1p_tx = enable;
-+	cmd_mode_cfg.bits.gen_sw_2p_tx = enable;
-+	cmd_mode_cfg.bits.gen_lw_tx = enable;
-+	cmd_mode_cfg.bits.dcs_sw_0p_tx = enable;
-+	cmd_mode_cfg.bits.dcs_sw_1p_tx = enable;
-+	cmd_mode_cfg.bits.dcs_lw_tx = enable;
-+	cmd_mode_cfg.bits.max_rd_pkt_size = enable;
-+
-+	cmd_mode_cfg.bits.gen_sr_0p_tx = enable;
-+	cmd_mode_cfg.bits.gen_sr_1p_tx = enable;
-+	cmd_mode_cfg.bits.gen_sr_2p_tx = enable;
-+	cmd_mode_cfg.bits.dcs_sr_0p_tx = enable;
-+
-+	writel(cmd_mode_cfg.val, &reg->CMD_MODE_CFG);
-+}
-+/*
-+ * Set DCS read command packet transmission to transmission type
-+ */
-+void dsi_video_mode_lp_cmd_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x38 vid_mode_cfg;
-+
-+	vid_mode_cfg.val = readl(&reg->VID_MODE_CFG);
-+	vid_mode_cfg.bits.lp_cmd_en = enable;
-+
-+	writel(vid_mode_cfg.val, &reg->VID_MODE_CFG);
-+}
-+
-+/*
-+ * Write command header in the generic interface (which also sends DCS commands) as a subset
-+ */
-+void dsi_set_packet_header(struct dsi_context *ctx,
-+				   u8 vc,
-+				   u8 type,
-+				   u8 wc_lsb,
-+				   u8 wc_msb)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x6C gen_hdr;
-+
-+	gen_hdr.bits.gen_dt = type;
-+	gen_hdr.bits.gen_vc = vc;
-+	gen_hdr.bits.gen_wc_lsbyte = wc_lsb;
-+	gen_hdr.bits.gen_wc_msbyte = wc_msb;
-+
-+	writel(gen_hdr.val, &reg->GEN_HDR);
-+}
-+/*
-+ * Write the payload of the long packet commands
-+ */
-+void dsi_set_packet_payload(struct dsi_context *ctx, u32 payload)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(payload, &reg->GEN_PLD_DATA);
-+}
-+/*
-+ * Read the payload of the long packet commands
-+ */
-+u32 dsi_get_rx_payload(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	return readl(&reg->GEN_PLD_DATA);
-+}
-+
-+/*
-+ * Enable Bus Turn-around request
-+ */
-+void dsi_bta_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(enable, &reg->TA_EN);
-+}
-+/*
-+ * Enable EOTp reception
-+ */
-+void dsi_eotp_rx_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xBC eotp_en;
-+
-+	eotp_en.val = readl(&reg->EOTP_EN);
-+	eotp_en.bits.rx_eotp_en = enable;
-+
-+	writel(eotp_en.val, &reg->EOTP_EN);
-+}
-+/*
-+ * Enable EOTp transmission
-+ */
-+void dsi_eotp_tx_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xBC eotp_en;
-+
-+	eotp_en.val = readl(&reg->EOTP_EN);
-+	eotp_en.bits.tx_eotp_en = enable;
-+
-+	writel(eotp_en.val, &reg->EOTP_EN);
-+}
-+/*
-+ * Enable ECC reception, error correction and reporting
-+ */
-+void dsi_ecc_rx_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xB4 rx_pkt_check_config;
-+
-+	rx_pkt_check_config.val = readl(&reg->RX_PKT_CHECK_CONFIG);
-+	rx_pkt_check_config.bits.rx_pkt_ecc_en = enable;
-+
-+	writel(rx_pkt_check_config.val, &reg->RX_PKT_CHECK_CONFIG);
-+}
-+/*
-+ * Enable CRC reception, error reporting
-+ */
-+void dsi_crc_rx_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xB4 rx_pkt_check_config;
-+
-+	rx_pkt_check_config.val = readl(&reg->RX_PKT_CHECK_CONFIG);
-+	rx_pkt_check_config.bits.rx_pkt_crc_en = enable;
-+
-+	writel(rx_pkt_check_config.val, &reg->RX_PKT_CHECK_CONFIG);
-+}
-+/*
-+ * Get status of read command
-+ */
-+bool dsi_is_bta_returned(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x98 cmd_mode_status;
-+
-+	cmd_mode_status.val = readl(&reg->CMD_MODE_STATUS);
-+
-+	return cmd_mode_status.bits.gen_cmd_rdcmd_done;
-+}
-+/*
-+ * Get the FULL status of generic read payload fifo
-+ */
-+bool dsi_is_rx_payload_fifo_full(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x98 cmd_mode_status;
-+
-+	cmd_mode_status.val = readl(&reg->CMD_MODE_STATUS);
-+
-+	return cmd_mode_status.bits.gen_cmd_rdata_fifo_full;
-+}
-+/*
-+ * Get the EMPTY status of generic read payload fifo
-+ */
-+bool dsi_is_rx_payload_fifo_empty(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x98 cmd_mode_status;
-+
-+	cmd_mode_status.val = readl(&reg->CMD_MODE_STATUS);
-+
-+	return cmd_mode_status.bits.gen_cmd_rdata_fifo_empty;
-+}
-+/*
-+ * Get the FULL status of generic write payload fifo
-+ */
-+bool dsi_is_tx_payload_fifo_full(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x98 cmd_mode_status;
-+
-+	cmd_mode_status.val = readl(&reg->CMD_MODE_STATUS);
-+
-+	return cmd_mode_status.bits.gen_cmd_wdata_fifo_full;
-+}
-+/*
-+ * Get the EMPTY status of generic write payload fifo
-+ */
-+bool dsi_is_tx_payload_fifo_empty(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x98 cmd_mode_status;
-+
-+	cmd_mode_status.val = readl(&reg->CMD_MODE_STATUS);
-+
-+	return cmd_mode_status.bits.gen_cmd_wdata_fifo_empty;
-+}
-+/*
-+ * Get the EMPTY status of generic command fifo
-+ */
-+bool dsi_is_tx_cmd_fifo_empty(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x98 cmd_mode_status;
-+
-+	cmd_mode_status.val = readl(&reg->CMD_MODE_STATUS);
-+
-+	return cmd_mode_status.bits.gen_cmd_cmd_fifo_empty;
-+}
-+/*
-+ * DPI interface signal delay config
-+ * param byte_cycle period for waiting after controller receiving HSYNC from
-+ * DPI interface to start read pixel data from memory.
-+ */
-+void dsi_dpi_sig_delay(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xD0 video_sig_delay_config;
-+
-+	video_sig_delay_config.val = readl(&reg->VIDEO_SIG_DELAY_CONFIG);
-+	video_sig_delay_config.bits.video_sig_delay = byte_cycle;
-+
-+	writel(video_sig_delay_config.val, &reg->VIDEO_SIG_DELAY_CONFIG);
-+}
-+/*
-+ * Configure how many cycles of byte clock would the PHY module take
-+ * to switch data lane from high speed to low power
-+ */
-+void dsi_datalane_hs2lp_config(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xAC phy_datalane_time_config;
-+
-+	phy_datalane_time_config.val = readl(&reg->PHY_DATALANE_TIME_CONFIG);
-+	phy_datalane_time_config.bits.phy_datalane_hs_to_lp_time = byte_cycle;
-+
-+	writel(phy_datalane_time_config.val, &reg->PHY_DATALANE_TIME_CONFIG);
-+}
-+/*
-+ * Configure how many cycles of byte clock would the PHY module take
-+ * to switch the data lane from to low power high speed
-+ */
-+void dsi_datalane_lp2hs_config(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xAC phy_datalane_time_config;
-+
-+	phy_datalane_time_config.val = readl(&reg->PHY_DATALANE_TIME_CONFIG);
-+	phy_datalane_time_config.bits.phy_datalane_lp_to_hs_time = byte_cycle;
-+
-+	writel(phy_datalane_time_config.val, &reg->PHY_DATALANE_TIME_CONFIG);
-+}
-+/*
-+ * Configure how many cycles of byte clock would the PHY module take
-+ * to switch clock lane from high speed to low power
-+ */
-+void dsi_clklane_hs2lp_config(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xA8 phy_clklane_time_config;
-+
-+	phy_clklane_time_config.val = readl(&reg->PHY_CLKLANE_TIME_CONFIG);
-+	phy_clklane_time_config.bits.phy_clklane_hs_to_lp_time = byte_cycle;
-+
-+	writel(phy_clklane_time_config.val, &reg->PHY_CLKLANE_TIME_CONFIG);
-+}
-+/*
-+ * Configure how many cycles of byte clock would the PHY module take
-+ * to switch clock lane from to low power high speed
-+ */
-+void dsi_clklane_lp2hs_config(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xA8 phy_clklane_time_config;
-+
-+	phy_clklane_time_config.val = readl(&reg->PHY_CLKLANE_TIME_CONFIG);
-+	phy_clklane_time_config.bits.phy_clklane_lp_to_hs_time = byte_cycle;
-+
-+	writel(phy_clklane_time_config.val, &reg->PHY_CLKLANE_TIME_CONFIG);
-+}
-+/*
-+ * Configure how many cycles of byte clock would the PHY module take
-+ * to turn the bus around to start receiving
-+ */
-+void dsi_max_read_time(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(byte_cycle, &reg->MAX_READ_TIME);
-+}
-+/*
-+ * Enable the automatic mechanism to stop providing clock in the clock
-+ * lane when time allows
-+ */
-+void dsi_nc_clk_en(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x74 phy_clk_lane_lp_ctrl;
-+
-+	phy_clk_lane_lp_ctrl.val = readl(&reg->PHY_CLK_LANE_LP_CTRL);
-+	phy_clk_lane_lp_ctrl.bits.auto_clklane_ctrl_en = enable;
-+
-+	writel(phy_clk_lane_lp_ctrl.val, &reg->PHY_CLK_LANE_LP_CTRL);
-+}
-+/*
-+ * Write transmission escape timeout
-+ * a safe guard so that the state machine would reset if transmission
-+ * takes too long
-+ */
-+void dsi_tx_escape_division(struct dsi_context *ctx, u8 div)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(div, &reg->TX_ESC_CLK_CONFIG);
-+}
-+/*
-+ * Configure timeout divisions (so they would have more clock ticks)
-+ * div no of hs cycles before transiting back to LP in
-+ *  (lane_clk / div)
-+ */
-+void dsi_timeout_clock_division(struct dsi_context *ctx, u8 div)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(div, &reg->TIMEOUT_CNT_CLK_CONFIG);
-+}
-+/*
-+ * Configure the Low power receive time out
-+ */
-+void dsi_lp_rx_timeout(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(byte_cycle, &reg->LRX_H_TO_CONFIG);
-+}
-+/*
-+ * Configure a high speed transmission time out
-+ */
-+void dsi_hs_tx_timeout(struct dsi_context *ctx, u16 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(byte_cycle, &reg->HTX_TO_CONFIG);
-+}
-+/*
-+ * Get the error 0 interrupt register status
-+ */
-+u32 dsi_int0_status(struct dsi_context *ctx)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x08 protocol_int_sts;
-+
-+	protocol_int_sts.val = readl(&reg->PROTOCOL_INT_STS);
-+	writel(protocol_int_sts.val, &reg->PROTOCOL_INT_CLR);
-+
-+	if (protocol_int_sts.bits.dphy_errors_0)
-+		drm_err(dsi->drm, "dphy_err: escape entry error\n");
-+
-+	if (protocol_int_sts.bits.dphy_errors_1)
-+		drm_err(dsi->drm, "dphy_err: lp data transmission sync error\n");
-+
-+	if (protocol_int_sts.bits.dphy_errors_2)
-+		drm_err(dsi->drm, "dphy_err: control error\n");
-+
-+	if (protocol_int_sts.bits.dphy_errors_3)
-+		drm_err(dsi->drm, "dphy_err: LP0 contention error\n");
-+
-+	if (protocol_int_sts.bits.dphy_errors_4)
-+		drm_err(dsi->drm, "dphy_err: LP1 contention error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_0)
-+		drm_err(dsi->drm, "ack_err: SoT error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_1)
-+		drm_err(dsi->drm, "ack_err: SoT Sync error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_2)
-+		drm_err(dsi->drm, "ack_err: EoT Sync error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_3)
-+		drm_err(dsi->drm, "ack_err: Escape Mode Entry Command error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_4)
-+		drm_err(dsi->drm, "ack_err: LP Transmit Sync error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_5)
-+		drm_err(dsi->drm, "ack_err: Peripheral Timeout error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_6)
-+		drm_err(dsi->drm, "ack_err: False Control error\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_7)
-+		drm_err(dsi->drm, "ack_err: reserved (specific to device)\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_8)
-+		drm_err(dsi->drm, "ack_err: ECC error, single-bit (corrected)\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_9)
-+		drm_err(dsi->drm, "ack_err: ECC error, multi-bit (not corrected)\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_10)
-+		drm_err(dsi->drm, "ack_err: checksum error (long packet only)\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_11)
-+		drm_err(dsi->drm, "ack_err: not recognized DSI data type\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_12)
-+		drm_err(dsi->drm, "ack_err: DSI VC ID Invalid\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_13)
-+		drm_err(dsi->drm, "ack_err: invalid transmission length\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_14)
-+		drm_err(dsi->drm, "ack_err: reserved (specific to device)\n");
-+
-+	if (protocol_int_sts.bits.ack_with_err_15)
-+		drm_err(dsi->drm, "ack_err: DSI protocol violation\n");
-+
-+	return 0;
-+}
-+/*
-+ * Get the error 1 interrupt register status
-+ */
-+u32 dsi_int1_status(struct dsi_context *ctx)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x10 internal_int_sts;
-+	u32 status = 0;
-+
-+	internal_int_sts.val = readl(&reg->INTERNAL_INT_STS);
-+	writel(internal_int_sts.val, &reg->INTERNAL_INT_CLR);
-+
-+	if (internal_int_sts.bits.receive_pkt_size_err)
-+		drm_err(dsi->drm, "receive packet size error\n");
-+
-+	if (internal_int_sts.bits.eotp_not_receive_err)
-+		drm_err(dsi->drm, "EoTp packet is not received\n");
-+
-+	if (internal_int_sts.bits.gen_cmd_cmd_fifo_wr_err)
-+		drm_err(dsi->drm, "cmd header-fifo is full\n");
-+
-+	if (internal_int_sts.bits.gen_cmd_rdata_fifo_rd_err)
-+		drm_err(dsi->drm, "cmd read-payload-fifo is empty\n");
-+
-+	if (internal_int_sts.bits.gen_cmd_rdata_fifo_wr_err)
-+		drm_err(dsi->drm, "cmd read-payload-fifo is full\n");
-+
-+	if (internal_int_sts.bits.gen_cmd_wdata_fifo_wr_err)
-+		drm_err(dsi->drm, "cmd write-payload-fifo is full\n");
-+
-+	if (internal_int_sts.bits.gen_cmd_wdata_fifo_rd_err)
-+		drm_err(dsi->drm, "cmd write-payload-fifo is empty\n");
-+
-+	if (internal_int_sts.bits.dpi_pix_fifo_wr_err) {
-+		drm_err(dsi->drm, "DPI pixel-fifo is full\n");
-+		status |= DSI_INT_STS_NEED_SOFT_RESET;
-+	}
-+
-+	if (internal_int_sts.bits.ecc_single_err)
-+		drm_err(dsi->drm, "ECC single error in a received packet\n");
-+
-+	if (internal_int_sts.bits.ecc_multi_err)
-+		drm_err(dsi->drm, "ECC multiple error in a received packet\n");
-+
-+	if (internal_int_sts.bits.crc_err)
-+		drm_err(dsi->drm, "CRC error in the received packet payload\n");
-+
-+	if (internal_int_sts.bits.hs_tx_timeout)
-+		drm_err(dsi->drm, "high-speed transmission timeout\n");
-+
-+	if (internal_int_sts.bits.lp_rx_timeout)
-+		drm_err(dsi->drm, "low-power reception timeout\n");
-+
-+	return status;
-+}
-+/*
-+ * Configure MASK (hiding) of interrupts coming from error 0 source
-+ */
-+void dsi_int0_mask(struct dsi_context *ctx, u32 mask)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(mask, &reg->MASK_PROTOCOL_INT);
-+}
-+/*
-+ * Configure MASK (hiding) of interrupts coming from error 1 source
-+ */
-+void dsi_int1_mask(struct dsi_context *ctx, u32 mask)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(mask, &reg->MASK_INTERNAL_INT);
-+}
-diff --git a/drivers/gpu/drm/sprd/dsi_ctrl.h b/drivers/gpu/drm/sprd/dsi_ctrl.h
-new file mode 100644
-index 000000000..88069227f
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/dsi_ctrl.h
-@@ -0,0 +1,1475 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#ifndef _DSI_CTRL_H_
-+#define _DSI_CTRL_H_
-+
-+#include <asm/types.h>
-+
-+#include "sprd_dsi.h"
-+
-+struct dsi_reg {
-+	union _0x00 {
-+		u32 val;
-+		struct _DSI_VERSION {
-+		u32 dsi_version: 16;
-+		u32 reserved: 16;
-+		} bits;
-+	} DSI_VERSION;
-+
-+	union _0x04 {
-+		u32 val;
-+		struct _SOFT_RESET {
-+		/*
-+		 * This bit configures the core either to work normal or to
-+		 * reset. It's default value is 0. After the core configur-
-+		 * ation, to enable the mipi_dsi_host, set this register to 1.
-+		 * 1: power up     0: reset core
-+		 */
-+		u32 dsi_soft_reset: 1;
-+
-+		u32 reserved: 31;
-+		} bits;
-+	} SOFT_RESET;
-+
-+	union _0x08 {
-+		u32 val;
-+		struct _PROTOCOL_INT_STS {
-+		/* ErrEsc escape entry error from Lane 0 */
-+		u32 dphy_errors_0: 1;
-+
-+		/* ErrSyncEsc low-power data transmission synchronization
-+		 * error from Lane 0
-+		 */
-+		u32 dphy_errors_1: 1;
-+
-+		/* ErrControl error from Lane 0 */
-+		u32 dphy_errors_2: 1;
-+
-+		/* ErrContentionLP0 LP0 contention error from Lane 0 */
-+		u32 dphy_errors_3: 1;
-+
-+		/* ErrContentionLP1 LP1 contention error from Lane 0 */
-+		u32 dphy_errors_4: 1;
-+
-+		/* debug mode protocol errors */
-+		u32 protocol_debug_err: 11;
-+
-+		/* SoT error from the Acknowledge error report */
-+		u32 ack_with_err_0: 1;
-+
-+		/* SoT Sync error from the Acknowledge error report */
-+		u32 ack_with_err_1: 1;
-+
-+		/* EoT Sync error from the Acknowledge error report */
-+		u32 ack_with_err_2: 1;
-+
-+		/* Escape Mode Entry Command error from the Acknowledge
-+		 * error report
-+		 */
-+		u32 ack_with_err_3: 1;
-+
-+		/* LP Transmit Sync error from the Acknowledge error report */
-+		u32 ack_with_err_4: 1;
-+
-+		/* Peripheral Timeout error from the Acknowledge error report */
-+		u32 ack_with_err_5: 1;
-+
-+		/* False Control error from the Acknowledge error report */
-+		u32 ack_with_err_6: 1;
-+
-+		/* reserved (specific to device) from the Acknowledge error
-+		 * report
-+		 */
-+		u32 ack_with_err_7: 1;
-+
-+		/* ECC error, single-bit (detected and corrected) from the
-+		 * Acknowledge error report
-+		 */
-+		u32 ack_with_err_8: 1;
-+
-+		/* ECC error, multi-bit (detected, not corrected) from the
-+		 * Acknowledge error report
-+		 */
-+		u32 ack_with_err_9: 1;
-+
-+		/* checksum error (long packet only) from the Acknowledge
-+		 * error report
-+		 */
-+		u32 ack_with_err_10: 1;
-+
-+		/* not recognized DSI data type from the Acknowledge error
-+		 * report
-+		 */
-+		u32 ack_with_err_11: 1;
-+
-+		/* DSI VC ID Invalid from the Acknowledge error report */
-+		u32 ack_with_err_12: 1;
-+
-+		/* invalid transmission length from the Acknowledge error
-+		 * report
-+		 */
-+		u32 ack_with_err_13: 1;
-+
-+		/* reserved (specific to device) from the Acknowledge error
-+		 * report
-+		 */
-+		u32 ack_with_err_14: 1;
-+
-+		/* DSI protocol violation from the Acknowledge error report */
-+		u32 ack_with_err_15: 1;
-+
-+		} bits;
-+	} PROTOCOL_INT_STS;
-+
-+	union _0x0C {
-+		u32 val;
-+		struct _MASK_PROTOCOL_INT {
-+		u32 mask_dphy_errors_0: 1;
-+		u32 mask_dphy_errors_1: 1;
-+		u32 mask_dphy_errors_2: 1;
-+		u32 mask_dphy_errors_3: 1;
-+		u32 mask_dphy_errors_4: 1;
-+		u32 mask_protocol_debug_err: 11;
-+		u32 mask_ack_with_err_0: 1;
-+		u32 mask_ack_with_err_1: 1;
-+		u32 mask_ack_with_err_2: 1;
-+		u32 mask_ack_with_err_3: 1;
-+		u32 mask_ack_with_err_4: 1;
-+		u32 mask_ack_with_err_5: 1;
-+		u32 mask_ack_with_err_6: 1;
-+		u32 mask_ack_with_err_7: 1;
-+		u32 mask_ack_with_err_8: 1;
-+		u32 mask_ack_with_err_9: 1;
-+		u32 mask_ack_with_err_10: 1;
-+		u32 mask_ack_with_err_11: 1;
-+		u32 mask_ack_with_err_12: 1;
-+		u32 mask_ack_with_err_13: 1;
-+		u32 mask_ack_with_err_14: 1;
-+		u32 mask_ack_with_err_15: 1;
-+		} bits;
-+	} MASK_PROTOCOL_INT;
-+
-+	union _0x10 {
-+		u32 val;
-+		struct _INTERNAL_INT_STS {
-+		/* This bit indicates that the packet size error is detected
-+		 * during the packet reception.
-+		 */
-+		u32 receive_pkt_size_err: 1;
-+
-+		/* This bit indicates that the EoTp packet is not received at
-+		 * the end of the incoming peripheral transmission
-+		 */
-+		u32 eotp_not_receive_err: 1;
-+
-+		/* This bit indicates that the system tried to write a command
-+		 * through the Generic interface and the FIFO is full. There-
-+		 * fore, the command is not written.
-+		 */
-+		u32 gen_cmd_cmd_fifo_wr_err: 1;
-+
-+		/* This bit indicates that during a DCS read data, the payload
-+		 * FIFO becomes	empty and the data sent to the interface is
-+		 * corrupted.
-+		 */
-+		u32 gen_cmd_rdata_fifo_rd_err: 1;
-+
-+		/* This bit indicates that during a generic interface packet
-+		 * read back, the payload FIFO becomes full and the received
-+		 * data is corrupted.
-+		 */
-+		u32 gen_cmd_rdata_fifo_wr_err: 1;
-+
-+		/* This bit indicates that the system tried to write a payload
-+		 * data through the Generic interface and the FIFO is full.
-+		 * Therefore, the payload is not written.
-+		 */
-+		u32 gen_cmd_wdata_fifo_wr_err: 1;
-+
-+		/* This bit indicates that during a Generic interface packet
-+		 * build, the payload FIFO becomes empty and corrupt data is
-+		 * sent.
-+		 */
-+		u32 gen_cmd_wdata_fifo_rd_err: 1;
-+
-+		/* This bit indicates that during a DPI pixel line storage,
-+		 * the payload FIFO becomes full and the data stored is
-+		 * corrupted.
-+		 */
-+		u32 dpi_pix_fifo_wr_err: 1;
-+
-+		/* internal debug error	*/
-+		u32 internal_debug_err: 19;
-+
-+		/* This bit indicates that the ECC single error is detected
-+		 * and corrected in a received packet.
-+		 */
-+		u32 ecc_single_err: 1;
-+
-+		/* This bit indicates that the ECC multiple error is detected
-+		 * in a received packet.
-+		 */
-+		u32 ecc_multi_err: 1;
-+
-+		/* This bit indicates that the CRC error is detected in the
-+		 * received packet payload.
-+		 */
-+		u32 crc_err: 1;
-+
-+		/* This bit indicates that the high-speed transmission timeout
-+		 * counter reached the end and contention is detected.
-+		 */
-+		u32 hs_tx_timeout: 1;
-+
-+		/* This bit indicates that the low-power reception timeout
-+		 * counter reached the end and contention is detected.
-+		 */
-+		u32 lp_rx_timeout: 1;
-+
-+		} bits;
-+	} INTERNAL_INT_STS;
-+
-+	union _0x14 {
-+		u32 val;
-+		struct _MASK_INTERNAL_INT {
-+		u32 mask_receive_pkt_size_err: 1;
-+		u32 mask_eopt_not_receive_err: 1;
-+		u32 mask_gen_cmd_cmd_fifo_wr_err: 1;
-+		u32 mask_gen_cmd_rdata_fifo_rd_err: 1;
-+		u32 mask_gen_cmd_rdata_fifo_wr_err: 1;
-+		u32 mask_gen_cmd_wdata_fifo_wr_err: 1;
-+		u32 mask_gen_cmd_wdata_fifo_rd_err: 1;
-+		u32 mask_dpi_pix_fifo_wr_err: 1;
-+		u32 mask_internal_debug_err: 19;
-+		u32 mask_ecc_single_err: 1;
-+		u32 mask_ecc_multi_err: 1;
-+		u32 mask_crc_err: 1;
-+		u32 mask_hs_tx_timeout: 1;
-+		u32 mask_lp_rx_timeout: 1;
-+		} bits;
-+	} MASK_INTERNAL_INT;
-+
-+	union _0x18 {
-+		u32 val;
-+		struct _DSI_MODE_CFG {
-+		/* This bit configures the operation mode
-+		 * 0: Video mode ;   1: Command mode
-+		 */
-+		u32 cmd_video_mode: 1;
-+
-+		u32 reserved: 31;
-+
-+		} bits;
-+	} DSI_MODE_CFG;
-+
-+	union _0x1C {
-+		u32 val;
-+		struct _VIRTUAL_CHANNEL_ID {
-+		/* This field indicates the Generic interface read-back
-+		 * virtual channel identification
-+		 */
-+		u32 gen_rx_vcid: 2;
-+
-+		/* This field configures the DPI virtual channel id that
-+		 * is indexed to the VIDEO mode packets
-+		 */
-+		u32 video_pkt_vcid: 2;
-+
-+		u32 reserved: 28;
-+
-+		} bits;
-+	} VIRTUAL_CHANNEL_ID;
-+
-+	union _0x20 {
-+		u32 val;
-+		struct _DPI_VIDEO_FORMAT {
-+		/*
-+		 * This field configures the DPI color coding as follows:
-+		 * 0000: 16-bit configuration 1
-+		 * 0001: 16-bit configuration 2
-+		 * 0010: 16-bit configuration 3
-+		 * 0011: 18-bit configuration 1
-+		 * 0100: 18-bit configuration 2
-+		 * 0101: 24-bit
-+		 * 0110: 20-bit YCbCr 4:2:2 loosely packed
-+		 * 0111: 24-bit YCbCr 4:2:2
-+		 * 1000: 16-bit YCbCr 4:2:2
-+		 * 1001: 30-bit
-+		 * 1010: 36-bit
-+		 * 1011: 12-bit YCbCr 4:2:0
-+		 * 1100: Compression Display Stream
-+		 * 1101-1111: 12-bit YCbCr 4:2:0
-+		 */
-+		u32 dpi_video_mode_format: 6;
-+
-+		/* When set to 1, this bit activates loosely packed
-+		 * variant to 18-bit configurations
-+		 */
-+		u32 loosely18_en: 1;
-+
-+		u32 reserved: 25;
-+
-+		} bits;
-+	} DPI_VIDEO_FORMAT;
-+
-+	union _0x24 {
-+		u32 val;
-+		struct _VIDEO_PKT_CONFIG {
-+		/*
-+		 * This field configures the number of pixels in a single
-+		 * video packet. For 18-bit not loosely packed data types,
-+		 * this number must be a multiple of 4. For YCbCr data
-+		 * types, it must be a multiple of 2, as described in the
-+		 * DSI specification.
-+		 */
-+		u32 video_pkt_size: 16;
-+
-+		/*
-+		 * This register configures the number of chunks to be
-+		 * transmitted during a Line period (a chunk consists of
-+		 * a video packet and a null packet). If set to 0 or 1,
-+		 * the video line is transmitted in a single packet. If
-+		 * set to 1, the packet is part of a chunk, so a null packet
-+		 * follows it if vid_null_size > 0. Otherwise, multiple chunks
-+		 * are used to transmit each video line.
-+		 */
-+		u32 video_line_chunk_num: 16;
-+
-+		} bits;
-+	} VIDEO_PKT_CONFIG;
-+
-+	union _0x28 {
-+		u32 val;
-+		struct _VIDEO_LINE_HBLK_TIME {
-+		/* This field configures the Horizontal Back Porch period
-+		 * in lane byte clock cycles
-+		 */
-+		u32 video_line_hbp_time: 16;
-+
-+		/* This field configures the Horizontal Synchronism Active
-+		 * period in lane byte clock cycles
-+		 */
-+		u32 video_line_hsa_time: 16;
-+
-+		} bits;
-+	} VIDEO_LINE_HBLK_TIME;
-+
-+	union _0x2C {
-+		u32 val;
-+		struct _VIDEO_LINE_TIME {
-+		/* This field configures the size of the total line time
-+		 * (HSA+HBP+HACT+HFP) counted in lane byte clock cycles
-+		 */
-+		u32 video_line_time: 16;
-+
-+		u32 reserved: 16;
-+
-+		} bits;
-+	} VIDEO_LINE_TIME;
-+
-+	union _0x30 {
-+		u32 val;
-+		struct _VIDEO_VBLK_LINES {
-+		/* This field configures the Vertical Front Porch period
-+		 * measured in number of horizontal lines
-+		 */
-+		u32 vfp_lines: 10;
-+
-+		/* This field configures the Vertical Back Porch period
-+		 * measured in number of horizontal lines
-+		 */
-+		u32 vbp_lines: 10;
-+
-+		/* This field configures the Vertical Synchronism Active
-+		 * period measured in number of horizontal lines
-+		 */
-+		u32 vsa_lines: 10;
-+
-+		u32 reserved: 2;
-+
-+		} bits;
-+	} VIDEO_VBLK_LINES;
-+
-+	union _0x34 {
-+		u32 val;
-+		struct _VIDEO_VACTIVE_LINES {
-+		/* This field configures the Vertical Active period measured
-+		 * in number of horizontal lines
-+		 */
-+		u32 vactive_lines: 14;
-+
-+		u32 reserved: 18;
-+
-+		} bits;
-+	} VIDEO_VACTIVE_LINES;
-+
-+	union _0x38 {
-+		u32 val;
-+		struct _VID_MODE_CFG {
-+		/*
-+		 * This field indicates the video mode transmission type as
-+		 * follows:
-+		 * 00: Non-burst with sync pulses
-+		 * 01: Non-burst with sync events
-+		 * 10 and 11: Burst mode
-+		 */
-+		u32 vid_mode_type: 2;
-+
-+		u32 reserved_0: 6;
-+
-+		/* When set to 1, this bit enables the return to low-power
-+		 * inside the VSA period when timing allows.
-+		 */
-+		u32 lp_vsa_en: 1;
-+
-+		/* When set to 1, this bit enables the return to low-power
-+		 * inside the VBP period when timing allows.
-+		 */
-+		u32 lp_vbp_en: 1;
-+
-+		/* When set to 1, this bit enables the return to low-power
-+		 * inside the VFP period when timing allows.
-+		 */
-+		u32 lp_vfp_en: 1;
-+
-+		/* When set to 1, this bit enables the return to low-power
-+		 * inside the VACT period when timing allows.
-+		 */
-+		u32 lp_vact_en: 1;
-+
-+		/* When set to 1, this bit enables the return to low-power
-+		 * inside the HBP period when timing allows.
-+		 */
-+		u32 lp_hbp_en: 1;
-+
-+		/* When set to 1, this bit enables the return to low-power
-+		 * inside the HFP period when timing allows.
-+		 */
-+		u32 lp_hfp_en: 1;
-+
-+		/* When set to 1, this bit enables the request for an ack-
-+		 * nowledge response at the end of a frame.
-+		 */
-+		u32 frame_bta_ack_en: 1;
-+
-+		/* When set to 1, this bit enables the command transmission
-+		 * only in low-power mode.
-+		 */
-+		u32 lp_cmd_en: 1;
-+
-+		u32 reserved_1: 16;
-+
-+		} bits;
-+	} VID_MODE_CFG;
-+
-+	union _0x3C {
-+		u32 val;
-+		struct _SDF_MODE_CONFIG {
-+		/*
-+		 * This field defines the 3D mode on/off & display orientation:
-+		 * 00: 3D mode off (2D mode on)
-+		 * 01: 3D mode on, portrait orientation
-+		 * 10: 3D mode on, landscape orientation
-+		 * 11: Reserved
-+		 */
-+		u32 rf_3d_mode: 2;
-+
-+		/*
-+		 * This field defines the 3D image format:
-+		 * 00: Line (alternating lines of left and right data)
-+		 * 01: Frame (alternating frames of left and right data)
-+		 * 10: Pixel (alternating pixels of left and right data)
-+		 * 11: Reserved
-+		 */
-+		u32 rf_3d_format: 2;
-+
-+		/*
-+		 * This field defines whether there is a second VSYNC pulse
-+		 * between Left and Right Images, when 3D Image Format is
-+		 * Frame-based:
-+		 * 0: No sync pulses between left and right data
-+		 * 1: Sync pulse (HSYNC, VSYNC, blanking) between left and
-+		 *    right data
-+		 */
-+		u32 second_vsync_en: 1;
-+
-+		/*
-+		 * This bit defines the left or right order:
-+		 * 0: Left eye data is sent first, and then the right eye data
-+		 *    is sent.
-+		 * 1: Right eye data is sent first, and then the left eye data
-+		 *    is sent.
-+		 */
-+		u32 left_right_order: 1;
-+
-+		u32 reserved_0: 2;
-+
-+		/*
-+		 * When set, causes the next VSS packet to include 3D control
-+		 * payload in every VSS packet.
-+		 */
-+		u32 rf_3d_payload_en: 1;
-+
-+		u32 reserved_1: 23;
-+
-+		} bits;
-+	} SDF_MODE_CONFIG;
-+
-+	union _0x40 {
-+		u32 val;
-+		struct _TIMEOUT_CNT_CLK_CONFIG {
-+		/*
-+		 * This field indicates the division factor for the Time Out
-+		 * clock used as the timing unit in the configuration of HS to
-+		 * LP and LP to HS transition error.
-+		 */
-+		u32 timeout_cnt_clk_config: 16;
-+
-+		u32 reserved: 16;
-+
-+		} bits;
-+	} TIMEOUT_CNT_CLK_CONFIG;
-+
-+	union _0x44 {
-+		u32 val;
-+		struct _HTX_TO_CONFIG {
-+		/*
-+		 * This field configures the timeout counter that triggers
-+		 * a high speed transmission timeout contention detection
-+		 * (measured in TO_CLK_DIVISION cycles).
-+		 *
-+		 * If using the non-burst mode and there is no sufficient
-+		 * time to switch from HS to LP and back in the period which
-+		 * is from one line data finishing to the next line sync
-+		 * start, the DSI link returns the LP state once per frame,
-+		 * then you should configure the TO_CLK_DIVISION and
-+		 * hstx_to_cnt to be in accordance with:
-+		 * hstx_to_cnt * lanebyteclkperiod * TO_CLK_DIVISION >= the
-+		 * time of one FRAME data transmission * (1 + 10%)
-+		 *
-+		 * In burst mode, RGB pixel packets are time-compressed,
-+		 * leaving more time during a scan line. Therefore, if in
-+		 * burst mode and there is sufficient time to switch from HS
-+		 * to LP and back in the period of time from one line data
-+		 * finishing to the next line sync start, the DSI link can
-+		 * return LP mode and back in this time interval to save power.
-+		 * For this, configure the TO_CLK_DIVISION and hstx_to_cnt
-+		 * to be in accordance with:
-+		 * hstx_to_cnt * lanebyteclkperiod * TO_CLK_DIVISION >= the
-+		 * time of one LINE data transmission * (1 + 10%)
-+		 */
-+		u32 htx_to_cnt_limit: 32;
-+		} bits;
-+	} HTX_TO_CONFIG;
-+
-+	union _0x48 {
-+		u32 val;
-+		struct _LRX_H_TO_CONFIG {
-+		/*
-+		 * This field configures the timeout counter that triggers
-+		 * a low-power reception timeout contention detection (measured
-+		 * in TO_CLK_DIVISION cycles).
-+		 */
-+		u32 lrx_h_to_cnt_limit: 32;
-+		} bits;
-+	} LRX_H_TO_CONFIG;
-+
-+	union _0x4C {
-+		u32 val;
-+		struct _RD_PRESP_TO_CONFIG {
-+		/*
-+		 * This field sets a period for which the DWC_mipi_dsi_host
-+		 * keeps the link still, after sending a low-power read oper-
-+		 * ation. This period is measured in cycles of lanebyteclk.
-+		 * The counting starts when the D-PHY enters the Stop state
-+		 * and causes no interrupts.
-+		 */
-+		u32 lprd_presp_to_cnt_limit: 16;
-+
-+		/*
-+		 * This field sets a period for which the DWC_mipi_dsi_host
-+		 * keeps the link still, after sending a high-speed read oper-
-+		 * ation. This period is measured in cycles of lanebyteclk.
-+		 * The counting starts when the D-PHY enters the Stop state
-+		 * and causes no interrupts.
-+		 */
-+		u32 hsrd_presp_to_cnt_limit: 16;
-+
-+		} bits;
-+	} RD_PRESP_TO_CONFIG;
-+
-+	union _0x50 {
-+		u32 val;
-+		struct _HSWR_PRESP_TO_CONFIG {
-+		/*
-+		 * This field sets a period for which the DWC_mipi_dsi_host
-+		 * keeps the link inactive after sending a high-speed write
-+		 * operation. This period is measured in cycles of lanebyteclk.
-+		 * The counting starts when the D-PHY enters the Stop state
-+		 * and causes no interrupts.
-+		 */
-+		u32 hswr_presp_to_cnt_limit: 16;
-+
-+		u32 reserved_0: 8;
-+
-+		/*
-+		 * When set to 1, this bit ensures that the peripheral response
-+		 * timeout caused by hs_wr_to_cnt is used only once per eDPI
-+		 * frame, when both the following conditions are met:
-+		 * dpivsync_edpiwms has risen and fallen.
-+		 * Packets originated from eDPI have been transmitted and its
-+		 * FIFO is empty again In this scenario no non-eDPI requests
-+		 * are sent to the D-PHY, even if there is traffic from generic
-+		 * or DBI ready to be sent, making it return to stop state.
-+		 * When it does so, PRESP_TO counter is activated and only when
-+		 * it finishes does the controller send any other traffic that
-+		 * is ready.
-+		 */
-+		u32 hswr_presp_to_mode: 1;
-+
-+		u32 reserved_1: 7;
-+
-+		} bits;
-+	} HSWR_PRESP_TO_CONFIG;
-+
-+	union _0x54 {
-+		u32 val;
-+		struct _LPWR_PRESP_TO_CONFIG {
-+		/*
-+		 * This field sets a period for which the DWC_mipi_dsi_host
-+		 * keeps the link still, after sending a low-power write oper-
-+		 * ation. This period is measured in cycles of lanebyteclk.
-+		 * The counting starts when the D-PHY enters the Stop state
-+		 * and causes no interrupts.
-+		 */
-+		u32 lpwr_presp_to_cnt_limit: 16;
-+
-+		u32 reserved: 16;
-+
-+		} bits;
-+	} LPWR_PRESP_TO_CONFIG;
-+
-+	union _0x58 {
-+		u32 val;
-+		struct _BTA_PRESP_TO_CONFIG {
-+		/*
-+		 * This field sets a period for which the DWC_mipi_dsi_host
-+		 * keeps the link still, after completing a Bus Turn-Around.
-+		 * This period is measured in cycles of lanebyteclk. The
-+		 * counting starts when the D-PHY enters the Stop state and
-+		 * causes no interrupts.
-+		 */
-+		u32 bta_presp_to_cnt_limit: 16;
-+
-+		u32 reserved: 16;
-+
-+		} bits;
-+	} BTA_PRESP_TO_CONFIG;
-+
-+	union _0x5C {
-+		u32 val;
-+		struct _TX_ESC_CLK_CONFIG {
-+		/*
-+		 * This field indicates the division factor for the TX Escape
-+		 * clock source (lanebyteclk). The values 0 and 1 stop the
-+		 * TX_ESC clock generation.
-+		 */
-+		u32 tx_esc_clk_config: 16;
-+
-+		u32 reserved: 16;
-+
-+		} bits;
-+	} TX_ESC_CLK_CONFIG;
-+
-+	union _0x60 {
-+		u32 val;
-+		struct _VACT_CMD_TRANS_LIMIT {
-+		/*
-+		 * This field is used for the transmission of commands in
-+		 * low-power mode. It defines the size, in bytes, of the
-+		 * largest packet that can fit in a line during the VACT
-+		 * region.
-+		 */
-+		u32 vact_cmd_trans_limit: 8;
-+
-+		u32 reserved: 24;
-+
-+		} bits;
-+	} VACT_CMD_TRANS_LIMIT;
-+
-+	union _0x64 {
-+		u32 val;
-+		struct _VBLK_CMD_TRANS_LIMIT {
-+		/*
-+		 * This field is used for the transmission of commands in
-+		 * low-power mode. It defines the size, in bytes, of the
-+		 * largest packet that can fit in a line during the VSA, VBP,
-+		 * and VFP regions.
-+		 */
-+		u32 vblk_cmd_trans_limit: 8;
-+
-+		u32 reserved: 24;
-+
-+		} bits;
-+	} VBLK_CMD_TRANS_LIMIT;
-+
-+	union _0x68 {
-+		u32 val;
-+		struct _CMD_MODE_CFG {
-+		/*
-+		 * When set to 1, this bit enables the tearing effect
-+		 * acknowledge request.
-+		 */
-+		u32 tear_fx_en: 1;
-+
-+		/*
-+		 * When set to 1, this bit enables the acknowledge request
-+		 * after each packet transmission.
-+		 */
-+		u32 ack_rqst_en: 1;
-+
-+		u32 reserved_0: 3;
-+
-+		u32 pps_tx: 1;
-+		u32 exq_tx: 1;
-+		u32 cmc_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic short write packet with
-+		 * zero parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_sw_0p_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic short write packet with
-+		 * one parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_sw_1p_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic short write packet with
-+		 * two parameters command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_sw_2p_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic short read packet with
-+		 * zero parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_sr_0p_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic short read packet with
-+		 * one parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_sr_1p_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic short read packet with
-+		 * two parameters command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_sr_2p_tx: 1;
-+
-+		/*
-+		 * This bit configures the Generic long write packet command
-+		 * transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 gen_lw_tx: 1;
-+
-+		u32 reserved_1: 1;
-+
-+		/*
-+		 * This bit configures the DCS short write packet with zero
-+		 * parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 dcs_sw_0p_tx: 1;
-+
-+		/*
-+		 * This bit configures the DCS short write packet with one
-+		 * parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 dcs_sw_1p_tx: 1;
-+
-+		/*
-+		 * This bit configures the DCS short read packet with zero
-+		 * parameter command transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 dcs_sr_0p_tx: 1;
-+
-+		/*
-+		 * This bit configures the DCS long write packet command
-+		 * transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 dcs_lw_tx: 1;
-+
-+		u32 reserved_2: 4;
-+
-+		/*
-+		 * This bit configures the maximum read packet size command
-+		 * transmission type:
-+		 * 0: High-speed 1: Low-power
-+		 */
-+		u32 max_rd_pkt_size: 1;
-+
-+		u32 reserved_3: 7;
-+
-+		} bits;
-+	} CMD_MODE_CFG;
-+
-+	union _0x6C {
-+		u32 val;
-+		struct _GEN_HDR {
-+		/*
-+		 * This field configures the packet data type of the header
-+		 * packet.
-+		 */
-+		u32 gen_dt: 6;
-+
-+		/*
-+		 * This field configures the virtual channel id of the header
-+		 * packet.
-+		 */
-+		u32 gen_vc: 2;
-+
-+		/*
-+		 * This field configures the least significant byte of the
-+		 * header packet's Word count for long packets or data 0 for
-+		 * short packets.
-+		 */
-+		u32 gen_wc_lsbyte: 8;
-+
-+		/*
-+		 * This field configures the most significant byte of the
-+		 * header packet's word count for long packets or data 1 for
-+		 * short packets.
-+		 */
-+		u32 gen_wc_msbyte: 8;
-+
-+		u32 reserved: 8;
-+
-+		} bits;
-+	} GEN_HDR;
-+
-+	union _0x70 {
-+		u32 val;
-+		struct _GEN_PLD_DATA {
-+		/* This field indicates byte 1 of the packet payload. */
-+		u32 gen_pld_b1: 8;
-+
-+		/* This field indicates byte 2 of the packet payload. */
-+		u32 gen_pld_b2: 8;
-+
-+		/* This field indicates byte 3 of the packet payload. */
-+		u32 gen_pld_b3: 8;
-+
-+		/* This field indicates byte 4 of the packet payload. */
-+		u32 gen_pld_b4: 8;
-+
-+		} bits;
-+	} GEN_PLD_DATA;
-+
-+	union _0x74 {
-+		u32 val;
-+		struct _PHY_CLK_LANE_LP_CTRL {
-+		/* This bit controls the D-PHY PPI txrequestclkhs signal */
-+		u32 phy_clklane_tx_req_hs: 1;
-+
-+		/* This bit enables the automatic mechanism to stop providing
-+		 * clock in the clock lane when time allows.
-+		 */
-+		u32 auto_clklane_ctrl_en: 1;
-+
-+		u32 reserved: 30;
-+		} bits;
-+	} PHY_CLK_LANE_LP_CTRL;
-+
-+	union _0x78 {
-+		u32 val;
-+		struct _PHY_INTERFACE_CTRL {
-+		/* When set to 0, this bit places the D-PHY macro in power-
-+		 * down state.
-+		 */
-+		u32 rf_phy_shutdown: 1;
-+
-+		/* When set to 0, this bit places the digital section of the
-+		 * D-PHY in the reset state.
-+		 */
-+		u32 rf_phy_reset_n: 1;
-+
-+		/* When set to 1, this bit enables the D-PHY Clock Lane
-+		 * module.
-+		 */
-+		u32 rf_phy_clk_en: 1;
-+
-+		/* When the D-PHY is in ULPS, this bit enables the D-PHY PLL. */
-+		u32 rf_phy_force_pll: 1;
-+
-+		/* ULPS mode Request on clock lane */
-+		u32 rf_phy_clk_txrequlps: 1;
-+
-+		/* ULPS mode Exit on clock lane */
-+		u32 rf_phy_clk_txexitulps: 1;
-+
-+		/* ULPS mode Request on all active data lanes */
-+		u32 rf_phy_data_txrequlps: 1;
-+
-+		/* ULPS mode Exit on all active data lanes */
-+		u32 rf_phy_data_txexitulps: 1;
-+
-+		u32 reserved: 24;
-+		} bits;
-+	} PHY_INTERFACE_CTRL;
-+
-+	union _0x7C {
-+		u32 val;
-+		struct _PHY_TX_TRIGGERS {
-+		/* This field controls the trigger transmissions. */
-+		u32 phy_tx_triggers: 4;
-+
-+		u32 reserved: 28;
-+		} bits;
-+	} PHY_TX_TRIGGERS;
-+
-+	union _0x80 {
-+		u32 val;
-+		struct _DESKEW_START {
-+		u32 deskew_start: 1;
-+		u32 reserved: 31;
-+		} bits;
-+	} DESKEW_START;
-+
-+	union _0x84 {
-+		u32 val;
-+		struct _DESKEW_MODE {
-+		u32 deskew_mode: 2;
-+		u32 reserved: 30;
-+		} bits;
-+	} DESKEW_MODE;
-+
-+	union _0x88 {
-+		u32 val;
-+		struct _DESKEW_TIME {
-+		u32 deskew_time: 32;
-+		} bits;
-+	} DESKEW_TIME;
-+
-+	union _0x8C {
-+		u32 val;
-+		struct _DESKEW_PERIOD {
-+		u32 deskew_period: 32;
-+		} bits;
-+	} DESKEW_PERIOD;
-+
-+	union _0x90 {
-+		u32 val;
-+		struct _DESKEW_BUSY {
-+		u32 deskew_busy: 1;
-+		u32 reserved: 31;
-+		} bits;
-+	} DESKEW_BUSY;
-+
-+	union _0x94 {
-+		u32 val;
-+		struct _DESKEW_LANE_MASK {
-+		u32 deskew_lane0_mask: 1;
-+		u32 deskew_lane1_mask: 1;
-+		u32 deskew_lane2_mask: 1;
-+		u32 deskew_lane3_mask: 1;
-+		u32 reserved: 28;
-+		} bits;
-+	} DESKEW_LANE_MASK;
-+
-+	union _0x98 {
-+		u32 val;
-+		struct _CMD_MODE_STATUS {
-+		/*
-+		 * This bit is set when a read command is issued and cleared
-+		 * when the entire response is stored in the FIFO.
-+		 * Value after reset: 0x0
-+		 *
-+		 * NOTE:
-+		 * For mipi-dsi-r1p0 IP, this bit is set immediately when
-+		 *     the read cmd is set to the GEN_HDR register.
-+		 *
-+		 * For dsi-ctrl-r1p0 IP, this bit is set only after the read
-+		 *     cmd was actually sent out from the controller.
-+		 */
-+		u32 gen_cmd_rdcmd_ongoing: 1;
-+
-+		/*
-+		 * This bit indicates the empty status of the generic read
-+		 * payload FIFO.
-+		 * Value after reset: 0x1
-+		 */
-+		u32 gen_cmd_rdata_fifo_empty: 1;
-+
-+		/*
-+		 * This bit indicates the full status of the generic read
-+		 * payload FIFO.
-+		 * Value after reset: 0x0
-+		 */
-+		u32 gen_cmd_rdata_fifo_full: 1;
-+
-+		/*
-+		 * This bit indicates the empty status of the generic write
-+		 * payload FIFO.
-+		 * Value after reset: 0x1
-+		 */
-+		u32 gen_cmd_wdata_fifo_empty: 1;
-+
-+		/*
-+		 * This bit indicates the full status of the generic write
-+		 * payload FIFO.
-+		 * Value after reset: 0x0
-+		 */
-+		u32 gen_cmd_wdata_fifo_full: 1;
-+
-+		/*
-+		 * This bit indicates the empty status of the generic
-+		 * command FIFO.
-+		 * Value after reset: 0x1
-+		 */
-+		u32 gen_cmd_cmd_fifo_empty: 1;
-+
-+		/*
-+		 * This bit indicates the full status of the generic
-+		 * command FIFO.
-+		 * Value after reset: 0x0
-+		 */
-+		u32 gen_cmd_cmd_fifo_full: 1;
-+
-+		/*
-+		 * This bit is set when the entire response of read is
-+		 * stored in the rx payload FIFO. And it will be cleared
-+		 * automaticlly after read this bit each time.
-+		 * Value after reset: 0x0
-+		 *
-+		 * NOTE: this bit is just supported for dsi-ctrl-r1p0 IP
-+		 */
-+		u32 gen_cmd_rdcmd_done: 1;
-+
-+		u32 reserved : 24;
-+
-+		} bits;
-+	} CMD_MODE_STATUS;
-+
-+	union _0x9C {
-+		u32 val;
-+		struct _PHY_STATUS {
-+		/* the status of phydirection D-PHY signal */
-+		u32 phy_direction: 1;
-+
-+		/* the status of phylock D-PHY signal */
-+		u32 phy_lock: 1;
-+
-+		/* the status of rxulpsesc0lane D-PHY signal */
-+		u32 phy_rxulpsesc0lane: 1;
-+
-+		/* the status of phystopstateclklane D-PHY signal */
-+		u32 phy_stopstateclklane: 1;
-+
-+		/* the status of phystopstate0lane D-PHY signal */
-+		u32 phy_stopstate0lane: 1;
-+
-+		/* the status of phystopstate1lane D-PHY signal */
-+		u32 phy_stopstate1lane: 1;
-+
-+		/* the status of phystopstate2lane D-PHY signal */
-+		u32 phy_stopstate2lane: 1;
-+
-+		/* the status of phystopstate3lane D-PHY signal */
-+		u32 phy_stopstate3lane: 1;
-+
-+		/* the status of phyulpsactivenotclk D-PHY signal */
-+		u32 phy_ulpsactivenotclk: 1;
-+
-+		/* the status of ulpsactivenot0lane D-PHY signal */
-+		u32 phy_ulpsactivenot0lane: 1;
-+
-+		/* the status of ulpsactivenot1lane D-PHY signal */
-+		u32 phy_ulpsactivenot1lane: 1;
-+
-+		/* the status of ulpsactivenot2lane D-PHY signal */
-+		u32 phy_ulpsactivenot2lane: 1;
-+
-+		/* the status of ulpsactivenot3lane D-PHY signal */
-+		u32 phy_ulpsactivenot3lane: 1;
-+
-+		u32 reserved: 19;
-+
-+		} bits;
-+	} PHY_STATUS;
-+
-+	union _0xA0 {
-+		u32 val;
-+		struct _PHY_MIN_STOP_TIME {
-+		/* This field configures the minimum wait period to request
-+		 * a high-speed transmission after the Stop state.
-+		 */
-+		u32 phy_min_stop_time: 8;
-+
-+		u32 reserved: 24;
-+		} bits;
-+	} PHY_MIN_STOP_TIME;
-+
-+	union _0xA4 {
-+		u32 val;
-+		struct _PHY_LANE_NUM_CONFIG {
-+		/*
-+		 * This field configures the number of active data lanes:
-+		 * 00: One data lane (lane 0)
-+		 * 01: Two data lanes (lanes 0 and 1)
-+		 * 10: Three data lanes (lanes 0, 1, and 2)
-+		 * 11: Four data lanes (lanes 0, 1, 2, and 3)
-+		 */
-+		u32 phy_lane_num: 2;
-+
-+		u32 reserved: 30;
-+
-+		} bits;
-+	} PHY_LANE_NUM_CONFIG;
-+
-+	union _0xA8 {
-+		u32 val;
-+		struct _PHY_CLKLANE_TIME_CONFIG {
-+		/*
-+		 * This field configures the maximum time that the D-PHY
-+		 * clock lane takes to go from low-power to high-speed
-+		 * transmission measured in lane byte clock cycles.
-+		 */
-+		u32 phy_clklane_lp_to_hs_time: 16;
-+
-+		/*
-+		 * This field configures the maximum time that the D-PHY
-+		 * clock lane takes to go from high-speed to low-power
-+		 * transmission measured in lane byte clock cycles.
-+		 */
-+		u32 phy_clklane_hs_to_lp_time: 16;
-+
-+		} bits;
-+	} PHY_CLKLANE_TIME_CONFIG;
-+
-+	union _0xAC {
-+		u32 val;
-+		struct _PHY_DATALANE_TIME_CONFIG {
-+		/*
-+		 * This field configures the maximum time that the D-PHY data
-+		 * lanes take to go from low-power to high-speed transmission
-+		 * measured in lane byte clock cycles.
-+		 */
-+		u32 phy_datalane_lp_to_hs_time: 16;
-+
-+		/*
-+		 * This field configures the maximum time that the D-PHY data
-+		 * lanes take to go from high-speed to low-power transmission
-+		 * measured in lane byte clock cycles.
-+		 */
-+		u32 phy_datalane_hs_to_lp_time: 16;
-+
-+		} bits;
-+	} PHY_DATALANE_TIME_CONFIG;
-+
-+	union _0xB0 {
-+		u32 val;
-+		struct _MAX_READ_TIME {
-+		/*
-+		 * This field configures the maximum time required to perform
-+		 * a read command in lane byte clock cycles. This register can
-+		 * only be modified when no read command is in progress.
-+		 */
-+		u32 max_rd_time: 16;
-+
-+		u32 reserved: 16;
-+
-+		} bits;
-+	} MAX_READ_TIME;
-+
-+	union _0xB4 {
-+		u32 val;
-+		struct _RX_PKT_CHECK_CONFIG {
-+		/* When set to 1, this bit enables the ECC reception, error
-+		 * correction, and reporting.
-+		 */
-+		u32 rx_pkt_ecc_en: 1;
-+
-+		/* When set to 1, this bit enables the CRC reception and error
-+		 * reporting.
-+		 */
-+		u32 rx_pkt_crc_en: 1;
-+
-+		u32 reserved: 30;
-+
-+		} bits;
-+	} RX_PKT_CHECK_CONFIG;
-+
-+	union _0xB8 {
-+		u32 val;
-+		struct _TA_EN {
-+		/* When set to 1, this bit enables the Bus Turn-Around (BTA)
-+		 * request.
-+		 */
-+		u32 ta_en: 1;
-+
-+		u32 reserved: 31;
-+
-+		} bits;
-+	} TA_EN;
-+
-+	union _0xBC {
-+		u32 val;
-+		struct _EOTP_EN {
-+		/* When set to 1, this bit enables the EoTp transmission */
-+		u32 tx_eotp_en: 1;
-+
-+		/* When set to 1, this bit enables the EoTp reception. */
-+		u32 rx_eotp_en: 1;
-+
-+		u32 reserved: 30;
-+
-+		} bits;
-+	} EOTP_EN;
-+
-+	union _0xC0 {
-+		u32 val;
-+		struct _VIDEO_NULLPKT_SIZE {
-+		/*
-+		 * This register configures the number of bytes inside a null
-+		 * packet. Setting it to 0 disables the null packets.
-+		 */
-+		u32 video_nullpkt_size: 13;
-+
-+		u32 reserved: 19;
-+
-+		} bits;
-+	} VIDEO_NULLPKT_SIZE;
-+
-+	union _0xC4 {
-+		u32 val;
-+		struct _DCS_WM_PKT_SIZE {
-+		/*
-+		 * This field configures the maximum allowed size for an eDPI
-+		 * write memory command, measured in pixels. Automatic parti-
-+		 * tioning of data obtained from eDPI is permanently enabled.
-+		 */
-+		u32 dcs_wm_pkt_size: 16;
-+
-+		u32 reserved: 16;
-+		} bits;
-+	} DCS_WM_PKT_SIZE;
-+
-+	union _0xC8 {
-+		u32 val;
-+		struct _PROTOCOL_INT_CLR {
-+		u32 clr_dphy_errors_0: 1;
-+		u32 clr_dphy_errors_1: 1;
-+		u32 clr_dphy_errors_2: 1;
-+		u32 clr_dphy_errors_3: 1;
-+		u32 clr_dphy_errors_4: 1;
-+		u32 clr_protocol_debug_err: 11;
-+		u32 clr_ack_with_err_0: 1;
-+		u32 clr_ack_with_err_1: 1;
-+		u32 clr_ack_with_err_2: 1;
-+		u32 clr_ack_with_err_3: 1;
-+		u32 clr_ack_with_err_4: 1;
-+		u32 clr_ack_with_err_5: 1;
-+		u32 clr_ack_with_err_6: 1;
-+		u32 clr_ack_with_err_7: 1;
-+		u32 clr_ack_with_err_8: 1;
-+		u32 clr_ack_with_err_9: 1;
-+		u32 clr_ack_with_err_10: 1;
-+		u32 clr_ack_with_err_11: 1;
-+		u32 clr_ack_with_err_12: 1;
-+		u32 clr_ack_with_err_13: 1;
-+		u32 clr_ack_with_err_14: 1;
-+		u32 clr_ack_with_err_15: 1;
-+		} bits;
-+	} PROTOCOL_INT_CLR;
-+
-+	union _0xCC {
-+		u32 val;
-+		struct _INTERNAL_INT_CLR {
-+		u32 clr_receive_pkt_size_err: 1;
-+		u32 clr_eopt_not_receive_err: 1;
-+		u32 clr_gen_cmd_cmd_fifo_wr_err: 1;
-+		u32 clr_gen_cmd_rdata_fifo_rd_err: 1;
-+		u32 clr_gen_cmd_rdata_fifo_wr_err: 1;
-+		u32 clr_gen_cmd_wdata_fifo_wr_err: 1;
-+		u32 clr_gen_cmd_wdata_fifo_rd_err: 1;
-+		u32 clr_dpi_pix_fifo_wr_err: 1;
-+		u32 clr_internal_debug_err: 19;
-+		u32 clr_ecc_single_err: 1;
-+		u32 clr_ecc_multi_err: 1;
-+		u32 clr_crc_err: 1;
-+		u32 clr_hs_tx_timeout: 1;
-+		u32 clr_lp_rx_timeout: 1;
-+		} bits;
-+	} INTERNAL_INT_CLR;
-+
-+	union _0xD0 {
-+		u32 val;
-+		struct _VIDEO_SIG_DELAY_CONFIG {
-+
-+		/*
-+		 * DPI interface signal delay to be used in clk lanebyte
-+		 * domain for control logic to read video data from pixel
-+		 * memory in mannal mode, measured in clk_lanebyte cycles
-+		 */
-+		u32 video_sig_delay: 24;
-+
-+		/*
-+		 * 1'b1: mannal mode
-+		 *       dsi controller will use video_sig_delay value as
-+		 *       the delay for the packet handle logic to read video
-+		 *       data from pixel memory.
-+		 *
-+		 * 1'b0: auto mode
-+		 *       dsi controller will auto calculate the delay for
-+		 *       the packet handle logic to read video data from
-+		 *       pixel memory.
-+		 */
-+		u32 video_sig_delay_mode: 1;
-+
-+		u32 reserved: 7;
-+		} bits;
-+	} VIDEO_SIG_DELAY_CONFIG;
-+
-+	u32 reservedD4_EC[7];
-+
-+	union _0xF0 {
-+		u32 val;
-+		struct _PHY_TST_CTRL0 {
-+		/* PHY test interface clear (active high) */
-+		u32 phy_testclr: 1;
-+
-+		/* This bit is used to clock the TESTDIN bus into the D-PHY */
-+		u32 phy_testclk: 1;
-+
-+		u32 reserved: 30;
-+		} bits;
-+	} PHY_TST_CTRL0;
-+
-+	union _0xF4 {
-+		u32 val;
-+		struct _PHY_TST_CTRL1 {
-+		/* PHY test interface input 8-bit data bus for internal
-+		 * register programming and test functionalities access.
-+		 */
-+		u32 phy_testdin: 8;
-+
-+		/* PHY output 8-bit data bus for read-back and internal
-+		 * probing functionalities.
-+		 */
-+		u32 phy_testdout: 8;
-+
-+		/*
-+		 * PHY test interface operation selector:
-+		 * 1: The address write operation is set on the falling edge
-+		 *    of the testclk signal.
-+		 * 0: The data write operation is set on the rising edge of
-+		 *    the testclk signal.
-+		 */
-+		u32 phy_testen: 1;
-+
-+		u32 reserved: 15;
-+		} bits;
-+	} PHY_TST_CTRL1;
-+
-+	u32 reservedF8_1FC[66];
-+
-+	union _0x200 {
-+		u32 val;
-+		struct _INT_PLL_STS {
-+		u32 int_pll_sts: 1;
-+		u32 reserved: 31;
-+		} bits;
-+	} INT_PLL_STS;
-+
-+	union _0x204 {
-+		u32 val;
-+		struct _INT_PLL_MSK {
-+		u32 int_pll_msk: 1;
-+		u32 reserved: 31;
-+		} bits;
-+	} INT_PLL_MSK;
-+
-+	union _0x208 {
-+		u32 val;
-+		struct _INT_PLL_CLR {
-+		u32 int_pll_clr: 1;
-+		u32 reserved: 31;
-+		} bits;
-+	} INT_PLL_CLR;
-+
-+};
-+
-+void dsi_power_enable(struct dsi_context *ctx, int enable);
-+void dsi_video_mode(struct dsi_context *ctx);
-+void dsi_cmd_mode(struct dsi_context *ctx);
-+bool dsi_is_cmd_mode(struct dsi_context *ctx);
-+void dsi_rx_vcid(struct dsi_context *ctx, u8 vc);
-+void dsi_video_vcid(struct dsi_context *ctx, u8 vc);
-+void dsi_dpi_video_burst_mode(struct dsi_context *ctx, int mode);
-+void dsi_dpi_color_coding(struct dsi_context *ctx, int coding);
-+void dsi_dpi_sig_delay(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_dpi_hline_time(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_dpi_hsync_time(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_dpi_hbp_time(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_dpi_vact(struct dsi_context *ctx, u16 lines);
-+void dsi_dpi_vfp(struct dsi_context *ctx, u16 lines);
-+void dsi_dpi_vbp(struct dsi_context *ctx, u16 lines);
-+void dsi_dpi_vsync(struct dsi_context *ctx, u16 lines);
-+void dsi_dpi_hporch_lp_en(struct dsi_context *ctx, int enable);
-+void dsi_dpi_vporch_lp_en(struct dsi_context *ctx, int enable);
-+void dsi_dpi_frame_ack_en(struct dsi_context *ctx, int enable);
-+void dsi_dpi_chunk_num(struct dsi_context *ctx, u16 no);
-+void dsi_dpi_null_packet_size(struct dsi_context *ctx, u16 size);
-+void dsi_dpi_video_packet_size(struct dsi_context *ctx, u16 size);
-+void dsi_edpi_max_pkt_size(struct dsi_context *ctx, u16 size);
-+void dsi_tear_effect_ack_en(struct dsi_context *ctx, int enable);
-+void dsi_cmd_mode_lp_cmd_en(struct dsi_context *ctx, int enable);
-+void dsi_video_mode_lp_cmd_en(struct dsi_context *ctx, int enable);
-+void dsi_set_packet_header(struct dsi_context *ctx, u8 vc, u8 type,
-+						u8 wc_lsb, u8 wc_msb);
-+void dsi_set_packet_payload(struct dsi_context *ctx, u32 payload);
-+u32 dsi_get_rx_payload(struct dsi_context *ctx);
-+void dsi_bta_en(struct dsi_context *ctx, int enable);
-+void dsi_eotp_rx_en(struct dsi_context *ctx, int enable);
-+void dsi_eotp_tx_en(struct dsi_context *ctx, int enable);
-+void dsi_ecc_rx_en(struct dsi_context *ctx, int enable);
-+void dsi_crc_rx_en(struct dsi_context *ctx, int enable);
-+bool dsi_is_bta_returned(struct dsi_context *ctx);
-+bool dsi_is_rx_payload_fifo_full(struct dsi_context *ctx);
-+bool dsi_is_rx_payload_fifo_empty(struct dsi_context *ctx);
-+bool dsi_is_tx_payload_fifo_full(struct dsi_context *ctx);
-+bool dsi_is_tx_payload_fifo_empty(struct dsi_context *ctx);
-+bool dsi_is_tx_cmd_fifo_empty(struct dsi_context *ctx);
-+void dsi_datalane_hs2lp_config(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_datalane_lp2hs_config(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_clklane_hs2lp_config(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_clklane_lp2hs_config(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_max_read_time(struct dsi_context *ctx, u16 byte_cycle);
-+void dsi_nc_clk_en(struct dsi_context *ctx, int enable);
-+void dsi_tx_escape_division(struct dsi_context *ctx, u8 div);
-+void dsi_timeout_clock_division(struct dsi_context *ctx, u8 div);
-+void dsi_lp_rx_timeout(struct dsi_context *ctx, u16 count);
-+void dsi_hs_tx_timeout(struct dsi_context *ctx, u16 count);
-+u32 dsi_int0_status(struct dsi_context *ctx);
-+u32 dsi_int1_status(struct dsi_context *ctx);
-+void dsi_int0_mask(struct dsi_context *ctx, u32 mask);
-+void dsi_int1_mask(struct dsi_context *ctx, u32 mask);
-+
-+#endif /* _DSI_CTRL_H_ */
-diff --git a/drivers/gpu/drm/sprd/dsi_ctrl_ppi.c b/drivers/gpu/drm/sprd/dsi_ctrl_ppi.c
-new file mode 100644
-index 000000000..6b3259ae5
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/dsi_ctrl_ppi.c
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+
-+#include "dsi_ctrl.h"
-+#include "dsi_ctrl_ppi.h"
-+
-+/*
-+ * Reset D-PHY module
-+ */
-+void dsi_phy_rstz(struct dsi_context *ctx, int level)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x78 phy_interface_ctrl;
-+
-+	phy_interface_ctrl.val = readl(&reg->PHY_INTERFACE_CTRL);
-+	phy_interface_ctrl.bits.rf_phy_reset_n = level;
-+
-+	writel(phy_interface_ctrl.val, &reg->PHY_INTERFACE_CTRL);
-+}
-+
-+/*
-+ * Power up/down D-PHY module
-+ */
-+void dsi_phy_shutdownz(struct dsi_context *ctx, int level)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x78 phy_interface_ctrl;
-+
-+	phy_interface_ctrl.val = readl(&reg->PHY_INTERFACE_CTRL);
-+	phy_interface_ctrl.bits.rf_phy_shutdown = level;
-+
-+	writel(phy_interface_ctrl.val, &reg->PHY_INTERFACE_CTRL);
-+}
-+
-+/*
-+ * Configure minimum wait period for HS transmission request after a stop state
-+ */
-+void dsi_phy_stop_wait_time(struct dsi_context *ctx, u8 byte_cycle)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(byte_cycle, &reg->PHY_MIN_STOP_TIME);
-+}
-+
-+/*
-+ * Set number of active lanes
-+ */
-+void dsi_phy_datalane_en(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+
-+	writel(ctx->lanes - 1, &reg->PHY_LANE_NUM_CONFIG);
-+}
-+
-+/*
-+ * Enable clock lane module
-+ */
-+void dsi_phy_clklane_en(struct dsi_context *ctx, int en)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x78 phy_interface_ctrl;
-+
-+	phy_interface_ctrl.val = readl(&reg->PHY_INTERFACE_CTRL);
-+	phy_interface_ctrl.bits.rf_phy_clk_en = en;
-+
-+	writel(phy_interface_ctrl.val, &reg->PHY_INTERFACE_CTRL);
-+}
-+
-+/*
-+ * Request the PHY module to start transmission of high speed clock.
-+ * This causes the clock lane to start transmitting DDR clock on the
-+ * lane interconnect.
-+ */
-+void dsi_phy_clk_hs_rqst(struct dsi_context *ctx, int enable)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x74 phy_clk_lane_lp_ctrl;
-+
-+	phy_clk_lane_lp_ctrl.val = readl(&reg->PHY_CLK_LANE_LP_CTRL);
-+	phy_clk_lane_lp_ctrl.bits.auto_clklane_ctrl_en = 0;
-+	phy_clk_lane_lp_ctrl.bits.phy_clklane_tx_req_hs = enable;
-+
-+	writel(phy_clk_lane_lp_ctrl.val, &reg->PHY_CLK_LANE_LP_CTRL);
-+}
-+
-+/*
-+ * Get D-PHY PPI status
-+ */
-+u8 dsi_phy_is_pll_locked(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0x9C phy_status;
-+
-+	phy_status.val = readl(&reg->PHY_STATUS);
-+
-+	return phy_status.bits.phy_lock;
-+}
-+
-+void dsi_phy_test_clk(struct dsi_context *ctx, u8 value)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xF0 phy_tst_ctrl0;
-+
-+	phy_tst_ctrl0.val = readl(&reg->PHY_TST_CTRL0);
-+	phy_tst_ctrl0.bits.phy_testclk = value;
-+
-+	writel(phy_tst_ctrl0.val, &reg->PHY_TST_CTRL0);
-+}
-+
-+void dsi_phy_test_clr(struct dsi_context *ctx, u8 value)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xF0 phy_tst_ctrl0;
-+
-+	phy_tst_ctrl0.val = readl(&reg->PHY_TST_CTRL0);
-+	phy_tst_ctrl0.bits.phy_testclr = value;
-+
-+	writel(phy_tst_ctrl0.val, &reg->PHY_TST_CTRL0);
-+}
-+
-+void dsi_phy_test_en(struct dsi_context *ctx, u8 value)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xF4 phy_tst_ctrl1;
-+
-+	phy_tst_ctrl1.val = readl(&reg->PHY_TST_CTRL1);
-+	phy_tst_ctrl1.bits.phy_testen = value;
-+
-+	writel(phy_tst_ctrl1.val, &reg->PHY_TST_CTRL1);
-+}
-+
-+u8 dsi_phy_test_dout(struct dsi_context *ctx)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xF4 phy_tst_ctrl1;
-+
-+	phy_tst_ctrl1.val = readl(&reg->PHY_TST_CTRL1);
-+
-+	return phy_tst_ctrl1.bits.phy_testdout;
-+}
-+
-+void dsi_phy_test_din(struct dsi_context *ctx, u8 data)
-+{
-+	struct dsi_reg *reg = (struct dsi_reg *)ctx->base;
-+	union _0xF4 phy_tst_ctrl1;
-+
-+	phy_tst_ctrl1.val = readl(&reg->PHY_TST_CTRL1);
-+	phy_tst_ctrl1.bits.phy_testdin = data;
-+
-+	writel(phy_tst_ctrl1.val, &reg->PHY_TST_CTRL1);
-+}
-diff --git a/drivers/gpu/drm/sprd/dsi_ctrl_ppi.h b/drivers/gpu/drm/sprd/dsi_ctrl_ppi.h
-new file mode 100644
-index 000000000..6fb3fad89
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/dsi_ctrl_ppi.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#ifndef _DSI_CTRL_PPI_H_
-+#define _DSI_CTRL_PPI_H_
-+
-+#include "sprd_dsi.h"
-+
-+void dsi_phy_rstz(struct dsi_context *ctx, int level);
-+void dsi_phy_shutdownz(struct dsi_context *ctx, int level);
-+void dsi_phy_force_pll(struct dsi_context *ctx, int force);
-+void dsi_phy_stop_wait_time(struct dsi_context *ctx, u8 byte_clk);
-+void dsi_phy_datalane_en(struct dsi_context *ctx);
-+void dsi_phy_clklane_en(struct dsi_context *ctx, int en);
-+void dsi_phy_clk_hs_rqst(struct dsi_context *ctx, int en);
-+u8 dsi_phy_is_pll_locked(struct dsi_context *ctx);
-+void dsi_phy_test_clk(struct dsi_context *ctx, u8 level);
-+void dsi_phy_test_clr(struct dsi_context *ctx, u8 level);
-+void dsi_phy_test_en(struct dsi_context *ctx, u8 level);
-+u8 dsi_phy_test_dout(struct dsi_context *ctx);
-+void dsi_phy_test_din(struct dsi_context *ctx, u8 data);
-+void dsi_phy_bist_en(struct dsi_context *ctx, int en);
-+
-+#endif /* _DSI_CTRL_PPI_H_ */
-diff --git a/drivers/gpu/drm/sprd/megacores_pll.c b/drivers/gpu/drm/sprd/megacores_pll.c
-new file mode 100644
-index 000000000..03c1f0f00
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/megacores_pll.c
-@@ -0,0 +1,317 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#include <asm/div64.h>
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/regmap.h>
-+#include <linux/string.h>
-+
-+#include "megacores_pll.h"
-+
-+#define L						0
-+#define H						1
-+#define CLK						0
-+#define DATA					1
-+#define INFINITY				0xffffffff
-+#define MIN_OUTPUT_FREQ			(100)
-+
-+#define AVERAGE(a, b) (min(a, b) + abs((b) - (a)) / 2)
-+
-+/* sharkle */
-+#define VCO_BAND_LOW	750
-+#define VCO_BAND_MID	1100
-+#define VCO_BAND_HIGH	1500
-+#define PHY_REF_CLK	26000
-+
-+static int dphy_calc_pll_param(struct dphy_pll *pll)
-+{
-+	const u32 khz = 1000;
-+	const u32 mhz = 1000000;
-+	const unsigned long long factor = 100;
-+	unsigned long long tmp;
-+	int i;
-+
-+	pll->potential_fvco = pll->freq / khz;
-+	pll->ref_clk = PHY_REF_CLK / khz;
-+
-+	for (i = 0; i < 4; ++i) {
-+		if (pll->potential_fvco >= VCO_BAND_LOW &&
-+			pll->potential_fvco <= VCO_BAND_HIGH) {
-+			pll->fvco = pll->potential_fvco;
-+			pll->out_sel = BIT(i);
-+			break;
-+		}
-+		pll->potential_fvco <<= 1;
-+	}
-+	if (pll->fvco == 0)
-+		return -EINVAL;
-+
-+	if (pll->fvco >= VCO_BAND_LOW && pll->fvco <= VCO_BAND_MID) {
-+		/* vco band control */
-+		pll->vco_band = 0x0;
-+		/* low pass filter control */
-+		pll->lpf_sel = 1;
-+	} else if (pll->fvco > VCO_BAND_MID && pll->fvco <= VCO_BAND_HIGH) {
-+		pll->vco_band = 0x1;
-+		pll->lpf_sel = 0;
-+	} else
-+		return -EINVAL;
-+
-+	pll->nint = pll->fvco / pll->ref_clk;
-+	tmp = pll->fvco * factor * mhz;
-+	do_div(tmp, pll->ref_clk);
-+	tmp = tmp - pll->nint * factor * mhz;
-+	tmp *= BIT(20);
-+	do_div(tmp, 100000000);
-+	pll->kint = (u32)tmp;
-+	pll->refin = 3; /* pre-divider bypass */
-+	pll->sdm_en = true; /* use fraction N PLL */
-+	pll->fdk_s = 0x1; /* fraction */
-+	pll->cp_s = 0x0;
-+	pll->det_delay = 0x1;
-+
-+	return 0;
-+}
-+
-+static void dphy_set_pll_reg(struct dphy_pll *pll, struct regmap *regmap)
-+{
-+	struct pll_reg *reg = &pll->reg;
-+	u8 *val;
-+	int i;
-+
-+	u8 reg_addr[] = {
-+		0x03, 0x04, 0x06, 0x08, 0x09,
-+		0x0a, 0x0b, 0x0e, 0x0f
-+	};
-+
-+	reg->_03.bits.prbs_bist = 1;
-+	reg->_03.bits.en_lp_treot = true;
-+	reg->_03.bits.lpf_sel = pll->lpf_sel;
-+	reg->_03.bits.txfifo_bypass = 0;
-+	reg->_04.bits.div = pll->div;
-+	reg->_04.bits.masterof8lane = 1;
-+	reg->_04.bits.cp_s = pll->cp_s;
-+	reg->_04.bits.fdk_s = pll->fdk_s;
-+	reg->_06.bits.nint = pll->nint;
-+	reg->_08.bits.vco_band = pll->vco_band;
-+	reg->_08.bits.sdm_en = pll->sdm_en;
-+	reg->_08.bits.refin = pll->refin;
-+	reg->_09.bits.kint_h = pll->kint >> 12;
-+	reg->_0a.bits.kint_m = (pll->kint >> 4) & 0xff;
-+	reg->_0b.bits.out_sel = pll->out_sel;
-+	reg->_0b.bits.kint_l = pll->kint & 0xf;
-+	reg->_0e.bits.pll_pu_byp = 0;
-+	reg->_0e.bits.pll_pu = 0;
-+	reg->_0e.bits.stopstate_sel = 1;
-+	reg->_0f.bits.det_delay = pll->det_delay;
-+
-+	val = (u8 *)&reg;
-+
-+	for (i = 0; i < sizeof(reg_addr); ++i) {
-+		regmap_write(regmap, reg_addr[i], val[i]);
-+		DRM_DEBUG("%02x: %02x\n", reg_addr[i], val[i]);
-+	}
-+}
-+
-+int dphy_pll_config(struct dsi_context *ctx)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	struct regmap *regmap = ctx->regmap;
-+	struct dphy_pll *pll = ctx->pll;
-+	int ret;
-+
-+	pll->freq = ctx->byte_clk * 8;
-+
-+	/* FREQ = 26M * (NINT + KINT / 2^20) / out_sel */
-+	ret = dphy_calc_pll_param(pll);
-+	if (ret) {
-+		drm_err(dsi->drm, "failed to calculate dphy pll parameters\n");
-+		return ret;
-+	}
-+	dphy_set_pll_reg(pll, regmap);
-+
-+	return 0;
-+}
-+
-+static void dphy_set_timing_reg(struct regmap *regmap, int type, u8 val[])
-+{
-+	switch (type) {
-+	case REQUEST_TIME:
-+		regmap_write(regmap, 0x31, val[CLK]);
-+		regmap_write(regmap, 0x41, val[DATA]);
-+		regmap_write(regmap, 0x51, val[DATA]);
-+		regmap_write(regmap, 0x61, val[DATA]);
-+		regmap_write(regmap, 0x71, val[DATA]);
-+
-+		regmap_write(regmap, 0x90, val[CLK]);
-+		regmap_write(regmap, 0xa0, val[DATA]);
-+		regmap_write(regmap, 0xb0, val[DATA]);
-+		regmap_write(regmap, 0xc0, val[DATA]);
-+		regmap_write(regmap, 0xd0, val[DATA]);
-+		break;
-+	case PREPARE_TIME:
-+		regmap_write(regmap, 0x32, val[CLK]);
-+		regmap_write(regmap, 0x42, val[DATA]);
-+		regmap_write(regmap, 0x52, val[DATA]);
-+		regmap_write(regmap, 0x62, val[DATA]);
-+		regmap_write(regmap, 0x72, val[DATA]);
-+
-+		regmap_write(regmap, 0x91, val[CLK]);
-+		regmap_write(regmap, 0xa1, val[DATA]);
-+		regmap_write(regmap, 0xb1, val[DATA]);
-+		regmap_write(regmap, 0xc1, val[DATA]);
-+		regmap_write(regmap, 0xd1, val[DATA]);
-+		break;
-+	case ZERO_TIME:
-+		regmap_write(regmap, 0x33, val[CLK]);
-+		regmap_write(regmap, 0x43, val[DATA]);
-+		regmap_write(regmap, 0x53, val[DATA]);
-+		regmap_write(regmap, 0x63, val[DATA]);
-+		regmap_write(regmap, 0x73, val[DATA]);
-+
-+		regmap_write(regmap, 0x92, val[CLK]);
-+		regmap_write(regmap, 0xa2, val[DATA]);
-+		regmap_write(regmap, 0xb2, val[DATA]);
-+		regmap_write(regmap, 0xc2, val[DATA]);
-+		regmap_write(regmap, 0xd2, val[DATA]);
-+		break;
-+	case TRAIL_TIME:
-+		regmap_write(regmap, 0x34, val[CLK]);
-+		regmap_write(regmap, 0x44, val[DATA]);
-+		regmap_write(regmap, 0x54, val[DATA]);
-+		regmap_write(regmap, 0x64, val[DATA]);
-+		regmap_write(regmap, 0x74, val[DATA]);
-+
-+		regmap_write(regmap, 0x93, val[CLK]);
-+		regmap_write(regmap, 0xa3, val[DATA]);
-+		regmap_write(regmap, 0xb3, val[DATA]);
-+		regmap_write(regmap, 0xc3, val[DATA]);
-+		regmap_write(regmap, 0xd3, val[DATA]);
-+		break;
-+	case EXIT_TIME:
-+		regmap_write(regmap, 0x36, val[CLK]);
-+		regmap_write(regmap, 0x46, val[DATA]);
-+		regmap_write(regmap, 0x56, val[DATA]);
-+		regmap_write(regmap, 0x66, val[DATA]);
-+		regmap_write(regmap, 0x76, val[DATA]);
-+
-+		regmap_write(regmap, 0x95, val[CLK]);
-+		regmap_write(regmap, 0xA5, val[DATA]);
-+		regmap_write(regmap, 0xB5, val[DATA]);
-+		regmap_write(regmap, 0xc5, val[DATA]);
-+		regmap_write(regmap, 0xd5, val[DATA]);
-+		break;
-+	case CLKPOST_TIME:
-+		regmap_write(regmap, 0x35, val[CLK]);
-+		regmap_write(regmap, 0x94, val[CLK]);
-+		break;
-+
-+	/* the following just use default value */
-+	case SETTLE_TIME:
-+	case TA_GET:
-+	case TA_GO:
-+	case TA_SURE:
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+void dphy_timing_config(struct dsi_context *ctx)
-+{
-+	struct regmap *regmap = ctx->regmap;
-+	struct dphy_pll *pll = ctx->pll;
-+	const u32 factor = 2;
-+	const u32 scale = 100;
-+	u32 t_ui, t_byteck, t_half_byteck;
-+	u32 range[2], constant;
-+	u8 val[2];
-+	u32 tmp = 0;
-+
-+	/* t_ui: 1 ui, byteck: 8 ui, half byteck: 4 ui */
-+	t_ui = 1000 * scale / (pll->freq / 1000);
-+	t_byteck = t_ui << 3;
-+	t_half_byteck = t_ui << 2;
-+	constant = t_ui << 1;
-+
-+	/* REQUEST_TIME: HS T-LPX: LP-01
-+	 * For T-LPX, mipi spec defined min value is 50ns,
-+	 * but maybe it shouldn't be too small, because BTA,
-+	 * LP-10, LP-00, LP-01, all of this is related to T-LPX.
-+	 */
-+	range[L] = 50 * scale;
-+	range[H] = INFINITY;
-+	val[CLK] = DIV_ROUND_UP(range[L] * (factor << 1), t_byteck) - 2;
-+	val[DATA] = val[CLK];
-+	dphy_set_timing_reg(regmap, REQUEST_TIME, val);
-+
-+	/* PREPARE_TIME: HS sequence: LP-00 */
-+	range[L] = 38 * scale;
-+	range[H] = 95 * scale;
-+	tmp = AVERAGE(range[L], range[H]);
-+	val[CLK] = DIV_ROUND_UP(AVERAGE(range[L], range[H]),
-+			t_half_byteck) - 1;
-+	range[L] = 40 * scale + 4 * t_ui;
-+	range[H] = 85 * scale + 6 * t_ui;
-+	tmp |= AVERAGE(range[L], range[H]) << 16;
-+	val[DATA] = DIV_ROUND_UP(AVERAGE(range[L], range[H]),
-+			t_half_byteck) - 1;
-+	dphy_set_timing_reg(regmap, PREPARE_TIME, val);
-+
-+	/* ZERO_TIME: HS-ZERO */
-+	range[L] = 300 * scale;
-+	range[H] = INFINITY;
-+	val[CLK] = DIV_ROUND_UP(range[L] * factor + (tmp & 0xffff)
-+			- 525 * t_byteck / 100, t_byteck) - 2;
-+	range[L] = 145 * scale + 10 * t_ui;
-+	val[DATA] = DIV_ROUND_UP(range[L] * factor
-+			+ ((tmp >> 16) & 0xffff) - 525 * t_byteck / 100,
-+			t_byteck) - 2;
-+	dphy_set_timing_reg(regmap, ZERO_TIME, val);
-+
-+	/* TRAIL_TIME: HS-TRAIL */
-+	range[L] = 60 * scale;
-+	range[H] = INFINITY;
-+	val[CLK] = DIV_ROUND_UP(range[L] * factor - constant, t_half_byteck);
-+	range[L] = max(8 * t_ui, 60 * scale + 4 * t_ui);
-+	val[DATA] = DIV_ROUND_UP(range[L] * 3 / 2 - constant, t_half_byteck) - 2;
-+	dphy_set_timing_reg(regmap, TRAIL_TIME, val);
-+
-+	/* EXIT_TIME: */
-+	range[L] = 100 * scale;
-+	range[H] = INFINITY;
-+	val[CLK] = DIV_ROUND_UP(range[L] * factor, t_byteck) - 2;
-+	val[DATA] = val[CLK];
-+	dphy_set_timing_reg(regmap, EXIT_TIME, val);
-+
-+	/* CLKPOST_TIME: */
-+	range[L] = 60 * scale + 52 * t_ui;
-+	range[H] = INFINITY;
-+	val[CLK] = DIV_ROUND_UP(range[L] * factor, t_byteck) - 2;
-+	val[DATA] = val[CLK];
-+	dphy_set_timing_reg(regmap, CLKPOST_TIME, val);
-+
-+	/* SETTLE_TIME:
-+	 * This time is used for receiver. So for transmitter,
-+	 * it can be ignored.
-+	 */
-+
-+	/* TA_GO:
-+	 * transmitter drives bridge state(LP-00) before releasing control,
-+	 * reg 0x1f default value: 0x04, which is good.
-+	 */
-+
-+	/* TA_SURE:
-+	 * After LP-10 state and before bridge state(LP-00),
-+	 * reg 0x20 default value: 0x01, which is good.
-+	 */
-+
-+	/* TA_GET:
-+	 * receiver drives Bridge state(LP-00) before releasing control
-+	 * reg 0x21 default value: 0x03, which is good.
-+	 */
-+}
-diff --git a/drivers/gpu/drm/sprd/megacores_pll.h b/drivers/gpu/drm/sprd/megacores_pll.h
-new file mode 100644
-index 000000000..bf20aae65
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/megacores_pll.h
-@@ -0,0 +1,146 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#ifndef _MEGACORES_PLL_H_
-+#define _MEGACORES_PLL_H_
-+
-+#include "sprd_dsi.h"
-+
-+enum PLL_TIMING {
-+	NONE,
-+	REQUEST_TIME,
-+	PREPARE_TIME,
-+	SETTLE_TIME,
-+	ZERO_TIME,
-+	TRAIL_TIME,
-+	EXIT_TIME,
-+	CLKPOST_TIME,
-+	TA_GET,
-+	TA_GO,
-+	TA_SURE,
-+	TA_WAIT,
-+};
-+
-+struct pll_reg {
-+	union __reg_03__ {
-+		struct __03 {
-+			u8 prbs_bist: 1;
-+			u8 en_lp_treot: 1;
-+			u8 lpf_sel: 4;
-+			u8 txfifo_bypass: 1;
-+			u8 freq_hopping: 1;
-+		} bits;
-+		u8 val;
-+	} _03;
-+	union __reg_04__ {
-+		struct __04 {
-+			u8 div: 3;
-+			u8 masterof8lane: 1;
-+			u8 hop_trig: 1;
-+			u8 cp_s: 2;
-+			u8 fdk_s: 1;
-+		} bits;
-+		u8 val;
-+	} _04;
-+	union __reg_06__ {
-+		struct __06 {
-+			u8 nint: 7;
-+			u8 mod_en: 1;
-+		} bits;
-+		u8 val;
-+	} _06;
-+	union __reg_07__ {
-+		struct __07 {
-+			u8 kdelta_h: 8;
-+		} bits;
-+		u8 val;
-+	} _07;
-+	union __reg_08__ {
-+		struct __08 {
-+			u8 vco_band: 1;
-+			u8 sdm_en: 1;
-+			u8 refin: 2;
-+			u8 kdelta_l: 4;
-+		} bits;
-+		u8 val;
-+	} _08;
-+	union __reg_09__ {
-+		struct __09 {
-+			u8 kint_h: 8;
-+		} bits;
-+		u8 val;
-+	} _09;
-+	union __reg_0a__ {
-+		struct __0a {
-+			u8 kint_m: 8;
-+		} bits;
-+		u8 val;
-+	} _0a;
-+	union __reg_0b__ {
-+		struct __0b {
-+			u8 out_sel: 4;
-+			u8 kint_l: 4;
-+		} bits;
-+		u8 val;
-+	} _0b;
-+	union __reg_0c__ {
-+		struct __0c {
-+			u8 kstep_h: 8;
-+		} bits;
-+		u8 val;
-+	} _0c;
-+	union __reg_0d__ {
-+		struct __0d {
-+			u8 kstep_m: 8;
-+		} bits;
-+		u8 val;
-+	} _0d;
-+	union __reg_0e__ {
-+		struct __0e {
-+			u8 pll_pu_byp: 1;
-+			u8 pll_pu: 1;
-+			u8 hsbist_len: 2;
-+			u8 stopstate_sel: 1;
-+			u8 kstep_l: 3;
-+		} bits;
-+		u8 val;
-+	} _0e;
-+	union __reg_0f__ {
-+		struct __0f {
-+			u8 det_delay:2;
-+			u8 kdelta: 4;
-+			u8 ldo0p4:2;
-+		} bits;
-+		u8 val;
-+	} _0f;
-+};
-+
-+struct dphy_pll {
-+	u8 refin; /* Pre-divider control signal */
-+	u8 cp_s; /* 00: SDM_EN=1, 10: SDM_EN=0 */
-+	u8 fdk_s; /* PLL mode control: integer or fraction */
-+	u8 sdm_en;
-+	u8 div;
-+	u8 int_n; /* integer N PLL */
-+	u32 ref_clk; /* dphy reference clock, unit: MHz */
-+	u32 freq; /* panel config, unit: KHz */
-+	u32 fvco;
-+	u32 potential_fvco;
-+	u32 nint; /* sigma delta modulator NINT control */
-+	u32 kint; /* sigma delta modulator KINT control */
-+	u8 lpf_sel; /* low pass filter control */
-+	u8 out_sel; /* post divider control */
-+	u8 vco_band; /* vco range */
-+	u8 det_delay;
-+
-+	struct pll_reg reg;
-+};
-+
-+struct dsi_context;
-+
-+int dphy_pll_config(struct dsi_context *ctx);
-+void dphy_timing_config(struct dsi_context *ctx);
-+
-+#endif /* _MEGACORES_PLL_H_ */
-diff --git a/drivers/gpu/drm/sprd/sprd_dpu.c b/drivers/gpu/drm/sprd/sprd_dpu.c
-index e74c3dbb3..10f6038e6 100644
---- a/drivers/gpu/drm/sprd/sprd_dpu.c
-+++ b/drivers/gpu/drm/sprd/sprd_dpu.c
-@@ -25,6 +25,7 @@
- 
- #include "sprd_drm.h"
- #include "sprd_dpu.h"
-+#include "sprd_dsi.h"
- 
- /* Global control registers */
- #define REG_DPU_CTRL	0x04
-@@ -687,9 +688,25 @@ static void sprd_crtc_mode_set_nofb(struct drm_crtc *crtc)
- {
- 	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
- 	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
-+	struct drm_encoder *encoder;
-+	struct mipi_dsi_device *slave;
-+	struct sprd_dsi *dsi;
- 
- 	if (mode->type & DRM_MODE_TYPE_PREFERRED)
- 		drm_display_mode_to_videomode(mode, &dpu->ctx.vm);
-+
-+	drm_for_each_encoder(encoder, crtc->dev) {
-+		if (encoder->crtc != crtc)
-+			continue;
-+
-+		dsi = encoder_to_dsi(encoder);
-+		slave = dsi->slave;
-+
-+		if (slave->mode_flags & MIPI_DSI_MODE_VIDEO)
-+			dpu->ctx.if_type = SPRD_DPU_IF_DPI;
-+		else
-+			dpu->ctx.if_type = SPRD_DPU_IF_EDPI;
-+	}
- }
- 
- static void sprd_crtc_atomic_enable(struct drm_crtc *crtc,
-diff --git a/drivers/gpu/drm/sprd/sprd_drm.c b/drivers/gpu/drm/sprd/sprd_drm.c
-index 549b71278..68cf0933c 100644
---- a/drivers/gpu/drm/sprd/sprd_drm.c
-+++ b/drivers/gpu/drm/sprd/sprd_drm.c
-@@ -183,6 +183,7 @@ static struct platform_driver sprd_drm_driver = {
- static struct platform_driver *sprd_drm_drivers[]  = {
- 	&sprd_drm_driver,
- 	&sprd_dpu_driver,
-+	&sprd_dsi_driver,
- };
- 
- static int __init sprd_drm_init(void)
-diff --git a/drivers/gpu/drm/sprd/sprd_drm.h b/drivers/gpu/drm/sprd/sprd_drm.h
-index 85d4a8b9f..95d1b972f 100644
---- a/drivers/gpu/drm/sprd/sprd_drm.h
-+++ b/drivers/gpu/drm/sprd/sprd_drm.h
-@@ -14,5 +14,6 @@ struct sprd_drm {
- };
- 
- extern struct platform_driver sprd_dpu_driver;
-+extern struct platform_driver sprd_dsi_driver;
- 
- #endif /* _SPRD_DRM_H_ */
-diff --git a/drivers/gpu/drm/sprd/sprd_dsi.c b/drivers/gpu/drm/sprd/sprd_dsi.c
-new file mode 100644
-index 000000000..f26a37e50
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/sprd_dsi.c
-@@ -0,0 +1,1124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#include <linux/component.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_graph.h>
-+#include <video/mipi_display.h>
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_crtc_helper.h>
-+#include <drm/drm_of.h>
-+#include <drm/drm_probe_helper.h>
-+
-+#include "sprd_drm.h"
-+#include "sprd_dpu.h"
-+#include "sprd_dsi.h"
-+#include "dsi_ctrl.h"
-+#include "dsi_ctrl_ppi.h"
-+
-+#define host_to_dsi(host) \
-+	container_of(host, struct sprd_dsi, host)
-+#define connector_to_dsi(connector) \
-+	container_of(connector, struct sprd_dsi, connector)
-+
-+static int regmap_tst_io_write(void *context, u32 reg, u32 val)
-+{
-+	struct sprd_dsi *dsi = context;
-+	struct dsi_context *ctx = &dsi->ctx;
-+
-+	if (val > 0xff || reg > 0xff)
-+		return -EINVAL;
-+
-+	drm_dbg(dsi->drm, "reg = 0x%02x, val = 0x%02x\n", reg, val);
-+
-+	dsi_phy_test_en(ctx, 1);
-+	dsi_phy_test_din(ctx, reg);
-+	dsi_phy_test_clk(ctx, 1);
-+	dsi_phy_test_clk(ctx, 0);
-+	dsi_phy_test_en(ctx, 0);
-+	dsi_phy_test_din(ctx, val);
-+	dsi_phy_test_clk(ctx, 1);
-+	dsi_phy_test_clk(ctx, 0);
-+
-+	return 0;
-+}
-+
-+static int regmap_tst_io_read(void *context, u32 reg, u32 *val)
-+{
-+	struct sprd_dsi *dsi = context;
-+	struct dsi_context *ctx = &dsi->ctx;
-+	int ret;
-+
-+	if (reg > 0xff)
-+		return -EINVAL;
-+
-+	dsi_phy_test_en(ctx, 1);
-+	dsi_phy_test_din(ctx, reg);
-+	dsi_phy_test_clk(ctx, 1);
-+	dsi_phy_test_clk(ctx, 0);
-+	dsi_phy_test_en(ctx, 0);
-+
-+	udelay(1);
-+
-+	ret = dsi_phy_test_dout(ctx);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = ret;
-+
-+	drm_dbg(dsi->drm, "reg = 0x%02x, val = 0x%02x\n", reg, *val);
-+	return 0;
-+}
-+
-+static struct regmap_bus regmap_tst_io = {
-+	.reg_write = regmap_tst_io_write,
-+	.reg_read = regmap_tst_io_read,
-+};
-+
-+static const struct regmap_config byte_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+};
-+
-+static int dphy_wait_pll_locked(struct dsi_context *ctx)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	int i;
-+
-+	for (i = 0; i < 50000; i++) {
-+		if (dsi_phy_is_pll_locked(ctx))
-+			return 0;
-+		udelay(3);
-+	}
-+
-+	drm_err(dsi->drm, "dphy pll can not be locked\n");
-+	return -ETIMEDOUT;
-+}
-+
-+static int dsi_wait_tx_payload_fifo_empty(struct dsi_context *ctx)
-+{
-+	int i;
-+
-+	for (i = 0; i < 5000; i++) {
-+		if (dsi_is_tx_payload_fifo_empty(ctx))
-+			return 0;
-+		udelay(1);
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int dsi_wait_tx_cmd_fifo_empty(struct dsi_context *ctx)
-+{
-+	int i;
-+
-+	for (i = 0; i < 5000; i++) {
-+		if (dsi_is_tx_cmd_fifo_empty(ctx))
-+			return 0;
-+		udelay(1);
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int dsi_wait_rd_resp_completed(struct dsi_context *ctx)
-+{
-+	int i;
-+
-+	for (i = 0; i < 10000; i++) {
-+		if (dsi_is_bta_returned(ctx))
-+			return 0;
-+		udelay(10);
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static u16 calc_bytes_per_pixel_x100(int coding)
-+{
-+	u16 Bpp_x100;
-+
-+	switch (coding) {
-+	case COLOR_CODE_16BIT_CONFIG1:
-+	case COLOR_CODE_16BIT_CONFIG2:
-+	case COLOR_CODE_16BIT_CONFIG3:
-+		Bpp_x100 = 200;
-+		break;
-+	case COLOR_CODE_18BIT_CONFIG1:
-+	case COLOR_CODE_18BIT_CONFIG2:
-+		Bpp_x100 = 225;
-+		break;
-+	case COLOR_CODE_24BIT:
-+		Bpp_x100 = 300;
-+		break;
-+	case COLOR_CODE_COMPRESSTION:
-+		Bpp_x100 = 100;
-+		break;
-+	case COLOR_CODE_20BIT_YCC422_LOOSELY:
-+		Bpp_x100 = 250;
-+		break;
-+	case COLOR_CODE_24BIT_YCC422:
-+		Bpp_x100 = 300;
-+		break;
-+	case COLOR_CODE_16BIT_YCC422:
-+		Bpp_x100 = 200;
-+		break;
-+	case COLOR_CODE_30BIT:
-+		Bpp_x100 = 375;
-+		break;
-+	case COLOR_CODE_36BIT:
-+		Bpp_x100 = 450;
-+		break;
-+	case COLOR_CODE_12BIT_YCC420:
-+		Bpp_x100 = 150;
-+		break;
-+	default:
-+		DRM_ERROR("invalid color coding");
-+		Bpp_x100 = 0;
-+		break;
-+	}
-+
-+	return Bpp_x100;
-+}
-+
-+static u8 calc_video_size_step(int coding)
-+{
-+	u8 video_size_step;
-+
-+	switch (coding) {
-+	case COLOR_CODE_16BIT_CONFIG1:
-+	case COLOR_CODE_16BIT_CONFIG2:
-+	case COLOR_CODE_16BIT_CONFIG3:
-+	case COLOR_CODE_18BIT_CONFIG1:
-+	case COLOR_CODE_18BIT_CONFIG2:
-+	case COLOR_CODE_24BIT:
-+	case COLOR_CODE_COMPRESSTION:
-+		return video_size_step = 1;
-+	case COLOR_CODE_20BIT_YCC422_LOOSELY:
-+	case COLOR_CODE_24BIT_YCC422:
-+	case COLOR_CODE_16BIT_YCC422:
-+	case COLOR_CODE_30BIT:
-+	case COLOR_CODE_36BIT:
-+	case COLOR_CODE_12BIT_YCC420:
-+		return video_size_step = 2;
-+	default:
-+		DRM_ERROR("invalid color coding");
-+		return 0;
-+	}
-+}
-+
-+static u16 round_video_size(int coding, u16 video_size)
-+{
-+	switch (coding) {
-+	case COLOR_CODE_16BIT_YCC422:
-+	case COLOR_CODE_24BIT_YCC422:
-+	case COLOR_CODE_20BIT_YCC422_LOOSELY:
-+	case COLOR_CODE_12BIT_YCC420:
-+		/* round up active H pixels to a multiple of 2 */
-+		if ((video_size % 2) != 0)
-+			video_size += 1;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return video_size;
-+}
-+
-+#define SPRD_MIPI_DSI_FMT_DSC 0xff
-+static u32 fmt_to_coding(u32 fmt)
-+{
-+	switch (fmt) {
-+	case MIPI_DSI_FMT_RGB565:
-+		return COLOR_CODE_16BIT_CONFIG1;
-+	case MIPI_DSI_FMT_RGB666:
-+	case MIPI_DSI_FMT_RGB666_PACKED:
-+		return COLOR_CODE_18BIT_CONFIG1;
-+	case MIPI_DSI_FMT_RGB888:
-+		return COLOR_CODE_24BIT;
-+	case SPRD_MIPI_DSI_FMT_DSC:
-+		return COLOR_CODE_COMPRESSTION;
-+	default:
-+		DRM_ERROR("Unsupported format (%d)\n", fmt);
-+		return COLOR_CODE_24BIT;
-+	}
-+}
-+
-+#define ns_to_cycle(ns, byte_clk) \
-+	DIV_ROUND_UP((ns) * (byte_clk), 1000000)
-+
-+static void sprd_dsi_init(struct dsi_context *ctx)
-+{
-+	u16 data_hs2lp, data_lp2hs, clk_hs2lp, clk_lp2hs;
-+	u16 max_rd_time;
-+	int div;
-+
-+	dsi_power_enable(ctx, 0);
-+	dsi_int0_mask(ctx, 0xffffffff);
-+	dsi_int1_mask(ctx, 0xffffffff);
-+	dsi_cmd_mode(ctx);
-+	dsi_eotp_rx_en(ctx, 0);
-+	dsi_eotp_tx_en(ctx, 0);
-+	dsi_ecc_rx_en(ctx, 1);
-+	dsi_crc_rx_en(ctx, 1);
-+	dsi_bta_en(ctx, 1);
-+	dsi_video_vcid(ctx, 0);
-+	dsi_rx_vcid(ctx, 0);
-+
-+	div = DIV_ROUND_UP(ctx->byte_clk, ctx->esc_clk);
-+	dsi_tx_escape_division(ctx, div);
-+
-+	max_rd_time = ns_to_cycle(ctx->max_rd_time, ctx->byte_clk);
-+	dsi_max_read_time(ctx, max_rd_time);
-+
-+	data_hs2lp = ns_to_cycle(ctx->data_hs2lp, ctx->byte_clk);
-+	data_lp2hs = ns_to_cycle(ctx->data_lp2hs, ctx->byte_clk);
-+	clk_hs2lp = ns_to_cycle(ctx->clk_hs2lp, ctx->byte_clk);
-+	clk_lp2hs = ns_to_cycle(ctx->clk_lp2hs, ctx->byte_clk);
-+	dsi_datalane_hs2lp_config(ctx, data_hs2lp);
-+	dsi_datalane_lp2hs_config(ctx, data_lp2hs);
-+	dsi_clklane_hs2lp_config(ctx, clk_hs2lp);
-+	dsi_clklane_lp2hs_config(ctx, clk_lp2hs);
-+
-+	dsi_power_enable(ctx, 1);
-+}
-+
-+/*
-+ * Free up resources and shutdown host controller and PHY
-+ */
-+static void sprd_dsi_fini(struct dsi_context *ctx)
-+{
-+	dsi_int0_mask(ctx, 0xffffffff);
-+	dsi_int1_mask(ctx, 0xffffffff);
-+	dsi_power_enable(ctx, 0);
-+}
-+
-+/*
-+ * If not in burst mode, it will compute the video and null packet sizes
-+ * according to necessity.
-+ * Configure timers for data lanes and/or clock lane to return to LP when
-+ * bandwidth is not filled by data.
-+ */
-+static int sprd_dsi_dpi_video(struct dsi_context *ctx)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	struct videomode *vm = &ctx->vm;
-+	u16 Bpp_x100;
-+	u16 video_size;
-+	u32 ratio_x1000;
-+	u16 null_pkt_size = 0;
-+	u8 video_size_step;
-+	u32 hs_to;
-+	u32 total_bytes;
-+	u32 bytes_per_chunk;
-+	u32 chunks = 0;
-+	u32 bytes_left = 0;
-+	u32 chunk_overhead;
-+	const u8 pkt_header = 6;
-+	u8 coding;
-+	int div;
-+	u16 hline;
-+
-+	coding = fmt_to_coding(ctx->format);
-+	video_size = round_video_size(coding, vm->hactive);
-+	Bpp_x100 = calc_bytes_per_pixel_x100(coding);
-+	video_size_step = calc_video_size_step(coding);
-+	ratio_x1000 = ctx->byte_clk * 1000 / (vm->pixelclock / 1000);
-+	hline = vm->hactive + vm->hsync_len + vm->hfront_porch +
-+		vm->hback_porch;
-+
-+	dsi_power_enable(ctx, 0);
-+	dsi_dpi_frame_ack_en(ctx, ctx->frame_ack_en);
-+	dsi_dpi_color_coding(ctx, coding);
-+	dsi_dpi_video_burst_mode(ctx, ctx->burst_mode);
-+	dsi_dpi_sig_delay(ctx, 95 * hline * ratio_x1000 / 100000);
-+	dsi_dpi_hline_time(ctx, hline * ratio_x1000 / 1000);
-+	dsi_dpi_hsync_time(ctx, vm->hsync_len * ratio_x1000 / 1000);
-+	dsi_dpi_hbp_time(ctx, vm->hback_porch * ratio_x1000 / 1000);
-+	dsi_dpi_vact(ctx, vm->vactive);
-+	dsi_dpi_vfp(ctx, vm->vfront_porch);
-+	dsi_dpi_vbp(ctx, vm->vback_porch);
-+	dsi_dpi_vsync(ctx, vm->vsync_len);
-+	dsi_dpi_hporch_lp_en(ctx, 1);
-+	dsi_dpi_vporch_lp_en(ctx, 1);
-+
-+	hs_to = (hline * vm->vactive) + (2 * Bpp_x100) / 100;
-+	for (div = 0x80; (div < hs_to) && (div > 2); div--) {
-+		if ((hs_to % div) == 0) {
-+			dsi_timeout_clock_division(ctx, div);
-+			dsi_lp_rx_timeout(ctx, hs_to / div);
-+			dsi_hs_tx_timeout(ctx, hs_to / div);
-+			break;
-+		}
-+	}
-+
-+	if (ctx->burst_mode == VIDEO_BURST_WITH_SYNC_PULSES) {
-+		dsi_dpi_video_packet_size(ctx, video_size);
-+		dsi_dpi_null_packet_size(ctx, 0);
-+		dsi_dpi_chunk_num(ctx, 0);
-+	} else {
-+		/* non burst transmission */
-+		null_pkt_size = 0;
-+
-+		/* bytes to be sent - first as one chunk */
-+		bytes_per_chunk = vm->hactive * Bpp_x100 / 100 + pkt_header;
-+
-+		/* hline total bytes from the DPI interface */
-+		total_bytes = (vm->hactive + vm->hfront_porch) *
-+				ratio_x1000 / ctx->lanes / 1000;
-+
-+		/* check if the pixels actually fit on the DSI link */
-+		if (total_bytes < bytes_per_chunk) {
-+			drm_err(dsi->drm, "current resolution can not be set\n");
-+			return -EINVAL;
-+		}
-+
-+		chunk_overhead = total_bytes - bytes_per_chunk;
-+
-+		/* overhead higher than 1 -> enable multi packets */
-+		if (chunk_overhead > 1) {
-+
-+			/* multi packets */
-+			for (video_size = video_size_step;
-+			     video_size < vm->hactive;
-+			     video_size += video_size_step) {
-+
-+				if (vm->hactive * 1000 / video_size % 1000)
-+					continue;
-+
-+				chunks = vm->hactive / video_size;
-+				bytes_per_chunk = Bpp_x100 * video_size / 100
-+						  + pkt_header;
-+				if (total_bytes >= (bytes_per_chunk * chunks)) {
-+					bytes_left = total_bytes -
-+						     bytes_per_chunk * chunks;
-+					break;
-+				}
-+			}
-+
-+			/* prevent overflow (unsigned - unsigned) */
-+			if (bytes_left > (pkt_header * chunks)) {
-+				null_pkt_size = (bytes_left -
-+						pkt_header * chunks) / chunks;
-+				/* avoid register overflow */
-+				if (null_pkt_size > 1023)
-+					null_pkt_size = 1023;
-+			}
-+
-+		} else {
-+
-+			/* single packet */
-+			chunks = 1;
-+
-+			/* must be a multiple of 4 except 18 loosely */
-+			for (video_size = vm->hactive;
-+			    (video_size % video_size_step) != 0;
-+			     video_size++)
-+				;
-+		}
-+
-+		dsi_dpi_video_packet_size(ctx, video_size);
-+		dsi_dpi_null_packet_size(ctx, null_pkt_size);
-+		dsi_dpi_chunk_num(ctx, chunks);
-+	}
-+
-+	dsi_int0_mask(ctx, ctx->int0_mask);
-+	dsi_int1_mask(ctx, ctx->int1_mask);
-+	dsi_power_enable(ctx, 1);
-+
-+	return 0;
-+}
-+
-+static void sprd_dsi_edpi_video(struct dsi_context *ctx)
-+{
-+	const u32 fifo_depth = 1096;
-+	const u32 word_length = 4;
-+	u32 hactive = ctx->vm.hactive;
-+	u32 Bpp_x100;
-+	u32 max_fifo_len;
-+	u8 coding;
-+
-+	coding = fmt_to_coding(ctx->format);
-+	Bpp_x100 = calc_bytes_per_pixel_x100(coding);
-+	max_fifo_len = word_length * fifo_depth * 100 / Bpp_x100;
-+
-+	dsi_power_enable(ctx, 0);
-+	dsi_dpi_color_coding(ctx, coding);
-+	dsi_tear_effect_ack_en(ctx, ctx->te_ack_en);
-+
-+	if (max_fifo_len > hactive)
-+		dsi_edpi_max_pkt_size(ctx, hactive);
-+	else
-+		dsi_edpi_max_pkt_size(ctx, max_fifo_len);
-+
-+	dsi_int0_mask(ctx, ctx->int0_mask);
-+	dsi_int1_mask(ctx, ctx->int1_mask);
-+	dsi_power_enable(ctx, 1);
-+}
-+
-+/*
-+ * Send a packet on the generic interface,
-+ * this function has an active delay to wait for the buffer to clear.
-+ * The delay is limited to:
-+ * (param_length / 4) x DSIH_FIFO_ACTIVE_WAIT x register access time
-+ * the controller restricts the sending of.
-+ *
-+ * This function will not be able to send Null and Blanking packets due to
-+ * controller restriction
-+ */
-+static int sprd_dsi_wr_pkt(struct dsi_context *ctx, u8 vc, u8 type,
-+			const u8 *param, u16 len)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	u8 wc_lsbyte, wc_msbyte;
-+	u32 payload;
-+	int i, j, ret;
-+
-+	if (vc > 3)
-+		return -EINVAL;
-+
-+
-+	/* 1st: for long packet, must config payload first */
-+	ret = dsi_wait_tx_payload_fifo_empty(ctx);
-+	if (ret) {
-+		drm_err(dsi->drm, "tx payload fifo is not empty\n");
-+		return ret;
-+	}
-+
-+	if (len > 2) {
-+		for (i = 0, j = 0; i < len; i += j) {
-+			payload = 0;
-+			for (j = 0; (j < 4) && ((j + i) < (len)); j++)
-+				payload |= param[i + j] << (j * 8);
-+
-+			dsi_set_packet_payload(ctx, payload);
-+		}
-+		wc_lsbyte = len & 0xff;
-+		wc_msbyte = len >> 8;
-+	} else {
-+		wc_lsbyte = (len > 0) ? param[0] : 0;
-+		wc_msbyte = (len > 1) ? param[1] : 0;
-+	}
-+
-+	/* 2nd: then set packet header */
-+	ret = dsi_wait_tx_cmd_fifo_empty(ctx);
-+	if (ret) {
-+		drm_err(dsi->drm, "tx cmd fifo is not empty\n");
-+		return ret;
-+	}
-+
-+	dsi_set_packet_header(ctx, vc, type, wc_lsbyte, wc_msbyte);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Send READ packet to peripheral using the generic interface,
-+ * this will force command mode and stop video mode (because of BTA).
-+ *
-+ * This function has an active delay to wait for the buffer to clear,
-+ * the delay is limited to 2 x DSIH_FIFO_ACTIVE_WAIT
-+ * (waiting for command buffer, and waiting for receiving)
-+ * @note this function will enable BTA
-+ */
-+static int sprd_dsi_rd_pkt(struct dsi_context *ctx, u8 vc, u8 type,
-+			u8 msb_byte, u8 lsb_byte,
-+			u8 *buffer, u8 bytes_to_read)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	int i, ret;
-+	int count = 0;
-+	u32 temp;
-+
-+	if (vc > 3)
-+		return -EINVAL;
-+
-+	/* 1st: send read command to peripheral */
-+	if (!dsi_is_tx_cmd_fifo_empty(ctx))
-+		return -EIO;
-+
-+	dsi_set_packet_header(ctx, vc, type, lsb_byte, msb_byte);
-+
-+	/* 2nd: wait peripheral response completed */
-+	ret = dsi_wait_rd_resp_completed(ctx);
-+	if (ret) {
-+		drm_err(dsi->drm, "wait read response time out\n");
-+		return ret;
-+	}
-+
-+	/* 3rd: get data from rx payload fifo */
-+	if (dsi_is_rx_payload_fifo_empty(ctx)) {
-+		drm_err(dsi->drm, "rx payload fifo empty\n");
-+		return -EIO;
-+	}
-+
-+	for (i = 0; i < 100; i++) {
-+		temp = dsi_get_rx_payload(ctx);
-+
-+		if (count < bytes_to_read)
-+			buffer[count++] = temp & 0xff;
-+		if (count < bytes_to_read)
-+			buffer[count++] = (temp >> 8) & 0xff;
-+		if (count < bytes_to_read)
-+			buffer[count++] = (temp >> 16) & 0xff;
-+		if (count < bytes_to_read)
-+			buffer[count++] = (temp >> 24) & 0xff;
-+
-+		if (dsi_is_rx_payload_fifo_empty(ctx))
-+			return count;
-+	}
-+
-+	return 0;
-+}
-+
-+static void sprd_dsi_set_work_mode(struct dsi_context *ctx, u8 mode)
-+{
-+	if (mode == DSI_MODE_CMD)
-+		dsi_cmd_mode(ctx);
-+	else
-+		dsi_video_mode(ctx);
-+}
-+
-+static void sprd_dsi_lp_cmd_enable(struct dsi_context *ctx, bool enable)
-+{
-+	if (dsi_is_cmd_mode(ctx))
-+		dsi_cmd_mode_lp_cmd_en(ctx, enable);
-+	else
-+		dsi_video_mode_lp_cmd_en(ctx, enable);
-+}
-+
-+static void sprd_dsi_state_reset(struct dsi_context *ctx)
-+{
-+	dsi_power_enable(ctx, 0);
-+	udelay(100);
-+	dsi_power_enable(ctx, 1);
-+}
-+
-+static u32 sprd_dsi_int_status(struct dsi_context *ctx, int index)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	u32 status;
-+
-+	if (index == 0)
-+		status = dsi_int0_status(ctx);
-+	else if (index == 1)
-+		status = dsi_int1_status(ctx);
-+	else {
-+		drm_err(dsi->drm, "invalid dsi IRQ index %d\n", index);
-+		status = -EINVAL;
-+	}
-+
-+	return status;
-+}
-+
-+static int sprd_dphy_init(struct dsi_context *ctx)
-+{
-+	struct sprd_dsi *dsi = container_of(ctx, struct sprd_dsi, ctx);
-+	int ret;
-+
-+	dsi_phy_rstz(ctx, 0);
-+	dsi_phy_shutdownz(ctx, 0);
-+	dsi_phy_clklane_en(ctx, 0);
-+
-+	dsi_phy_test_clr(ctx, 0);
-+	dsi_phy_test_clr(ctx, 1);
-+	dsi_phy_test_clr(ctx, 0);
-+
-+	dphy_pll_config(ctx);
-+	dphy_timing_config(ctx);
-+
-+	dsi_phy_shutdownz(ctx, 1);
-+	dsi_phy_rstz(ctx, 1);
-+	dsi_phy_stop_wait_time(ctx, 0x1C);
-+	dsi_phy_clklane_en(ctx, 1);
-+	dsi_phy_datalane_en(ctx);
-+
-+	ret = dphy_wait_pll_locked(ctx);
-+	if (ret) {
-+		drm_err(dsi->drm, "dphy initial failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void sprd_dphy_fini(struct dsi_context *ctx)
-+{
-+	dsi_phy_rstz(ctx, 0);
-+	dsi_phy_shutdownz(ctx, 0);
-+	dsi_phy_rstz(ctx, 1);
-+}
-+
-+static void sprd_dsi_encoder_enable(struct drm_encoder *encoder)
-+{
-+	struct sprd_dsi *dsi = encoder_to_dsi(encoder);
-+	struct sprd_dpu *dpu = to_sprd_crtc(encoder->crtc);
-+	struct dsi_context *ctx = &dsi->ctx;
-+
-+	if (ctx->enabled) {
-+		drm_warn(dsi->drm, "dsi is initialized\n");
-+		return;
-+	}
-+
-+	sprd_dsi_init(ctx);
-+	if (ctx->work_mode == DSI_MODE_VIDEO)
-+		sprd_dsi_dpi_video(ctx);
-+	else
-+		sprd_dsi_edpi_video(ctx);
-+
-+	sprd_dphy_init(ctx);
-+
-+	sprd_dsi_lp_cmd_enable(ctx, true);
-+
-+	if (dsi->panel) {
-+		drm_panel_prepare(dsi->panel);
-+		drm_panel_enable(dsi->panel);
-+	}
-+
-+	sprd_dsi_set_work_mode(ctx, ctx->work_mode);
-+	sprd_dsi_state_reset(ctx);
-+
-+	if (ctx->nc_clk_en)
-+		dsi_nc_clk_en(ctx, true);
-+	else {
-+		dsi_phy_clk_hs_rqst(ctx, true);
-+		dphy_wait_pll_locked(ctx);
-+	}
-+
-+	sprd_dpu_run(dpu);
-+
-+	ctx->enabled = true;
-+}
-+
-+static void sprd_dsi_encoder_disable(struct drm_encoder *encoder)
-+{
-+	struct sprd_dsi *dsi = encoder_to_dsi(encoder);
-+	struct sprd_dpu *dpu = to_sprd_crtc(encoder->crtc);
-+	struct dsi_context *ctx = &dsi->ctx;
-+
-+	if (!ctx->enabled) {
-+		drm_warn(dsi->drm, "dsi isn't initialized\n");
-+		return;
-+	}
-+
-+	sprd_dpu_stop(dpu);
-+	sprd_dsi_set_work_mode(ctx, DSI_MODE_CMD);
-+	sprd_dsi_lp_cmd_enable(ctx, true);
-+
-+	if (dsi->panel) {
-+		drm_panel_disable(dsi->panel);
-+		drm_panel_unprepare(dsi->panel);
-+	}
-+
-+	sprd_dphy_fini(ctx);
-+	sprd_dsi_fini(ctx);
-+
-+	ctx->enabled = false;
-+}
-+
-+static void sprd_dsi_encoder_mode_set(struct drm_encoder *encoder,
-+				 struct drm_display_mode *mode,
-+				 struct drm_display_mode *adj_mode)
-+{
-+	struct sprd_dsi *dsi = encoder_to_dsi(encoder);
-+
-+	drm_dbg(dsi->drm, "%s() set mode: %s\n", __func__, dsi->mode->name);
-+}
-+
-+static int sprd_dsi_encoder_atomic_check(struct drm_encoder *encoder,
-+				    struct drm_crtc_state *crtc_state,
-+				    struct drm_connector_state *conn_state)
-+{
-+	return 0;
-+}
-+
-+static const struct drm_encoder_helper_funcs sprd_encoder_helper_funcs = {
-+	.atomic_check	= sprd_dsi_encoder_atomic_check,
-+	.mode_set	= sprd_dsi_encoder_mode_set,
-+	.enable		= sprd_dsi_encoder_enable,
-+	.disable	= sprd_dsi_encoder_disable
-+};
-+
-+static const struct drm_encoder_funcs sprd_encoder_funcs = {
-+	.destroy = drm_encoder_cleanup,
-+};
-+
-+static struct sprd_dsi *sprd_dsi_encoder_init(struct drm_device *drm,
-+			       struct device *dev)
-+{
-+	struct sprd_dsi *dsi;
-+	u32 crtc_mask;
-+
-+	crtc_mask = drm_of_find_possible_crtcs(drm, dev->of_node);
-+	if (!crtc_mask) {
-+		drm_err(drm, "failed to find crtc mask\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	drm_dbg(drm, "find possible crtcs: 0x%08x\n", crtc_mask);
-+
-+	dsi = drmm_encoder_alloc(drm, struct sprd_dsi, encoder,
-+			       &sprd_encoder_funcs, DRM_MODE_ENCODER_DSI, NULL);
-+	if (IS_ERR(dsi)) {
-+		drm_err(drm, "failed to init dsi encoder.\n");
-+		return dsi;
-+	}
-+
-+	dsi->encoder.possible_crtcs = crtc_mask;
-+	drm_encoder_helper_add(&dsi->encoder, &sprd_encoder_helper_funcs);
-+
-+	return dsi;
-+}
-+
-+static int sprd_dsi_find_panel(struct sprd_dsi *dsi)
-+{
-+	struct device *dev = dsi->host.dev;
-+	struct device_node *child, *lcds_node;
-+	struct drm_panel *panel;
-+
-+	/* search /lcds child node first */
-+	lcds_node = of_find_node_by_path("/lcds");
-+	for_each_child_of_node(lcds_node, child) {
-+		panel = of_drm_find_panel(child);
-+		if (!IS_ERR(panel)) {
-+			dsi->panel = panel;
-+			return 0;
-+		}
-+	}
-+
-+	/*
-+	 * If /lcds child node search failed, we search
-+	 * the child of dsi host node.
-+	 */
-+	for_each_child_of_node(dev->of_node, child) {
-+		panel = of_drm_find_panel(child);
-+		if (!IS_ERR(panel)) {
-+			dsi->panel = panel;
-+			return 0;
-+		}
-+	}
-+
-+	drm_err(dsi->drm, "of_drm_find_panel() failed\n");
-+	return -ENODEV;
-+}
-+
-+static int sprd_dsi_host_attach(struct mipi_dsi_host *host,
-+			   struct mipi_dsi_device *slave)
-+{
-+	struct sprd_dsi *dsi = host_to_dsi(host);
-+	struct dsi_context *ctx = &dsi->ctx;
-+	int ret;
-+
-+	dsi->slave = slave;
-+	ctx->lanes = slave->lanes;
-+	ctx->format = slave->format;
-+	ctx->byte_clk = slave->hs_rate / 8;
-+	ctx->esc_clk = slave->lp_rate;
-+
-+	if (slave->mode_flags & MIPI_DSI_MODE_VIDEO)
-+		ctx->work_mode = DSI_MODE_VIDEO;
-+	else
-+		ctx->work_mode = DSI_MODE_CMD;
-+
-+	if (slave->mode_flags & MIPI_DSI_MODE_VIDEO_BURST)
-+		ctx->burst_mode = VIDEO_BURST_WITH_SYNC_PULSES;
-+	else if (slave->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE)
-+		ctx->burst_mode = VIDEO_NON_BURST_WITH_SYNC_PULSES;
-+	else
-+		ctx->burst_mode = VIDEO_NON_BURST_WITH_SYNC_EVENTS;
-+
-+	if (slave->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
-+		ctx->nc_clk_en = true;
-+
-+	ret = sprd_dsi_find_panel(dsi);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int sprd_dsi_host_detach(struct mipi_dsi_host *host,
-+			   struct mipi_dsi_device *slave)
-+{
-+	/* do nothing */
-+	return 0;
-+}
-+
-+static ssize_t sprd_dsi_host_transfer(struct mipi_dsi_host *host,
-+				const struct mipi_dsi_msg *msg)
-+{
-+	struct sprd_dsi *dsi = host_to_dsi(host);
-+	const u8 *tx_buf = msg->tx_buf;
-+
-+	if (msg->rx_buf && msg->rx_len) {
-+		u8 lsb = (msg->tx_len > 0) ? tx_buf[0] : 0;
-+		u8 msb = (msg->tx_len > 1) ? tx_buf[1] : 0;
-+
-+		return sprd_dsi_rd_pkt(&dsi->ctx, msg->channel, msg->type,
-+				msb, lsb, msg->rx_buf, msg->rx_len);
-+	}
-+
-+	if (msg->tx_buf && msg->tx_len)
-+		return sprd_dsi_wr_pkt(&dsi->ctx, msg->channel, msg->type,
-+					tx_buf, msg->tx_len);
-+
-+	return 0;
-+}
-+
-+static const struct mipi_dsi_host_ops sprd_dsi_host_ops = {
-+	.attach = sprd_dsi_host_attach,
-+	.detach = sprd_dsi_host_detach,
-+	.transfer = sprd_dsi_host_transfer,
-+};
-+
-+static int sprd_dsi_host_init(struct sprd_dsi *dsi, struct device *dev)
-+{
-+	int ret;
-+
-+	dsi->host.dev = dev;
-+	dsi->host.ops = &sprd_dsi_host_ops;
-+
-+	ret = mipi_dsi_host_register(&dsi->host);
-+	if (ret)
-+		drm_err(dsi->drm, "failed to register dsi host\n");
-+
-+	return ret;
-+}
-+
-+static int sprd_dsi_connector_get_modes(struct drm_connector *connector)
-+{
-+	struct sprd_dsi *dsi = connector_to_dsi(connector);
-+
-+	return drm_panel_get_modes(dsi->panel, connector);
-+}
-+
-+static enum drm_mode_status
-+sprd_dsi_connector_mode_valid(struct drm_connector *connector,
-+			 struct drm_display_mode *mode)
-+{
-+	struct sprd_dsi *dsi = connector_to_dsi(connector);
-+
-+	drm_dbg(dsi->drm, "%s() mode: "DRM_MODE_FMT"\n", __func__, DRM_MODE_ARG(mode));
-+
-+	if (mode->type & DRM_MODE_TYPE_PREFERRED) {
-+		dsi->mode = mode;
-+		drm_display_mode_to_videomode(dsi->mode, &dsi->ctx.vm);
-+	}
-+
-+	return MODE_OK;
-+}
-+
-+static struct drm_encoder *
-+sprd_dsi_connector_best_encoder(struct drm_connector *connector)
-+{
-+	struct sprd_dsi *dsi = connector_to_dsi(connector);
-+
-+	return &dsi->encoder;
-+}
-+
-+static struct drm_connector_helper_funcs sprd_dsi_connector_helper_funcs = {
-+	.get_modes = sprd_dsi_connector_get_modes,
-+	.mode_valid = sprd_dsi_connector_mode_valid,
-+	.best_encoder = sprd_dsi_connector_best_encoder,
-+};
-+
-+static enum drm_connector_status
-+sprd_dsi_connector_detect(struct drm_connector *connector, bool force)
-+{
-+	struct sprd_dsi *dsi = connector_to_dsi(connector);
-+
-+	if (dsi->panel) {
-+		drm_panel_add(dsi->panel);
-+		return connector_status_connected;
-+	}
-+
-+	return connector_status_disconnected;
-+}
-+
-+static void sprd_dsi_connector_destroy(struct drm_connector *connector)
-+{
-+	drm_connector_unregister(connector);
-+	drm_connector_cleanup(connector);
-+}
-+
-+static const struct drm_connector_funcs sprd_dsi_atomic_connector_funcs = {
-+	.fill_modes = drm_helper_probe_single_connector_modes,
-+	.detect = sprd_dsi_connector_detect,
-+	.destroy = sprd_dsi_connector_destroy,
-+	.reset = drm_atomic_helper_connector_reset,
-+	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-+};
-+
-+static int sprd_dsi_connector_init(struct drm_device *drm, struct sprd_dsi *dsi)
-+{
-+	struct drm_encoder *encoder = &dsi->encoder;
-+	struct drm_connector *connector = &dsi->connector;
-+	int ret;
-+
-+	connector->polled = DRM_CONNECTOR_POLL_HPD;
-+
-+	ret = drm_connector_init(drm, connector,
-+				 &sprd_dsi_atomic_connector_funcs,
-+				 DRM_MODE_CONNECTOR_DSI);
-+	if (ret) {
-+		drm_err(drm, "drm_connector_init() failed\n");
-+		return ret;
-+	}
-+
-+	drm_connector_helper_add(connector,
-+				 &sprd_dsi_connector_helper_funcs);
-+
-+	drm_connector_attach_encoder(connector, encoder);
-+
-+	return 0;
-+}
-+
-+static irqreturn_t sprd_dsi_isr(int irq, void *data)
-+{
-+	struct sprd_dsi *dsi = data;
-+	u32 status = 0;
-+
-+	if (dsi->ctx.irq0 == irq)
-+		status = sprd_dsi_int_status(&dsi->ctx, 0);
-+	else if (dsi->ctx.irq1 == irq)
-+		status = sprd_dsi_int_status(&dsi->ctx, 1);
-+
-+	if (status & DSI_INT_STS_NEED_SOFT_RESET)
-+		sprd_dsi_state_reset(&dsi->ctx);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int sprd_dsi_context_init(struct sprd_dsi *dsi,
-+			struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct dsi_context *ctx = &dsi->ctx;
-+	struct resource *res;
-+	int ret;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	ctx->base = devm_ioremap(dev, res->start, resource_size(res));
-+	if (!ctx->base) {
-+		drm_err(dsi->drm, "failed to map dsi host registers\n");
-+		return -ENXIO;
-+	}
-+
-+	ctx->pll = devm_kzalloc(dev, sizeof(*ctx->pll), GFP_KERNEL);
-+	if (!ctx->pll)
-+		return -ENOMEM;
-+
-+	ctx->regmap = devm_regmap_init(dev, &regmap_tst_io, dsi, &byte_config);
-+	if (IS_ERR(ctx->regmap)) {
-+		drm_err(dsi->drm, "dphy regmap init failed\n");
-+		return PTR_ERR(ctx->regmap);
-+	}
-+
-+	ctx->irq0 = platform_get_irq(pdev, 0);
-+	if (ctx->irq0 > 0) {
-+		ret = request_irq(ctx->irq0, sprd_dsi_isr, 0, "DSI_INT0", dsi);
-+		if (ret) {
-+			drm_err(dsi->drm, "failed to request dsi irq int0!\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	ctx->irq1 = platform_get_irq(pdev, 1);
-+	if (ctx->irq1 > 0) {
-+		ret = request_irq(ctx->irq1, sprd_dsi_isr, 0, "DSI_INT1", dsi);
-+		if (ret) {
-+			drm_err(dsi->drm, "failed to request dsi irq int1!\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	ctx->data_hs2lp = 120;
-+	ctx->data_lp2hs = 500;
-+	ctx->clk_hs2lp = 4;
-+	ctx->clk_lp2hs = 15;
-+	ctx->max_rd_time = 6000;
-+	ctx->int0_mask = 0xffffffff;
-+	ctx->int1_mask = 0xffffffff;
-+	ctx->enabled = true;
-+
-+	return 0;
-+}
-+
-+static int sprd_dsi_bind(struct device *dev, struct device *master, void *data)
-+{
-+	struct drm_device *drm = data;
-+	struct sprd_dsi *dsi;
-+	int ret;
-+
-+	dsi = sprd_dsi_encoder_init(drm, dev);
-+	if (IS_ERR(dsi))
-+		return PTR_ERR(dsi);
-+
-+	dsi->drm = drm;
-+	dev_set_drvdata(dev, dsi);
-+
-+	ret = sprd_dsi_connector_init(drm, dsi);
-+	if (ret)
-+		return ret;
-+
-+	ret = sprd_dsi_context_init(dsi, dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = sprd_dsi_host_init(dsi, dev);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static void sprd_dsi_unbind(struct device *dev,
-+			struct device *master, void *data)
-+{
-+	struct sprd_dsi *dsi = dev_get_drvdata(dev);
-+
-+	mipi_dsi_host_unregister(&dsi->host);
-+}
-+
-+static const struct component_ops dsi_component_ops = {
-+	.bind	= sprd_dsi_bind,
-+	.unbind	= sprd_dsi_unbind,
-+};
-+
-+static const struct of_device_id dsi_match_table[] = {
-+	{ .compatible = "sprd,sharkl3-dsi-host" },
-+	{ /* sentinel */ },
-+};
-+
-+static int sprd_dsi_probe(struct platform_device *pdev)
-+{
-+	return component_add(&pdev->dev, &dsi_component_ops);
-+}
-+
-+static int sprd_dsi_remove(struct platform_device *pdev)
-+{
-+	component_del(&pdev->dev, &dsi_component_ops);
-+
-+	return 0;
-+}
-+
-+struct platform_driver sprd_dsi_driver = {
-+	.probe = sprd_dsi_probe,
-+	.remove = sprd_dsi_remove,
-+	.driver = {
-+		.name = "sprd-dsi-drv",
-+		.of_match_table = dsi_match_table,
-+	},
-+};
-+
-+MODULE_AUTHOR("Leon He <leon.he@unisoc.com>");
-+MODULE_AUTHOR("Kevin Tang <kevin.tang@unisoc.com>");
-+MODULE_DESCRIPTION("Unisoc MIPI DSI HOST Controller Driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/gpu/drm/sprd/sprd_dsi.h b/drivers/gpu/drm/sprd/sprd_dsi.h
-new file mode 100644
-index 000000000..6a9fd48f0
---- /dev/null
-+++ b/drivers/gpu/drm/sprd/sprd_dsi.h
-@@ -0,0 +1,107 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 Unisoc Inc.
-+ */
-+
-+#ifndef __SPRD_DSI_H__
-+#define __SPRD_DSI_H__
-+
-+#include <linux/of.h>
-+#include <linux/device.h>
-+#include <linux/regmap.h>
-+#include <video/videomode.h>
-+
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_connector.h>
-+#include <drm/drm_encoder.h>
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_print.h>
-+#include <drm/drm_panel.h>
-+
-+#include "megacores_pll.h"
-+
-+#define encoder_to_dsi(encoder) \
-+	container_of(encoder, struct sprd_dsi, encoder)
-+
-+#define DSI_INT_STS_NEED_SOFT_RESET	BIT(0)
-+#define DSI_INT_STS_NEED_HARD_RESET	BIT(1)
-+
-+enum dsi_work_mode {
-+	DSI_MODE_CMD = 0,
-+	DSI_MODE_VIDEO
-+};
-+
-+enum video_burst_mode {
-+	VIDEO_NON_BURST_WITH_SYNC_PULSES = 0,
-+	VIDEO_NON_BURST_WITH_SYNC_EVENTS,
-+	VIDEO_BURST_WITH_SYNC_PULSES
-+};
-+
-+enum dsi_color_coding {
-+	COLOR_CODE_16BIT_CONFIG1 = 0,
-+	COLOR_CODE_16BIT_CONFIG2,
-+	COLOR_CODE_16BIT_CONFIG3,
-+	COLOR_CODE_18BIT_CONFIG1,
-+	COLOR_CODE_18BIT_CONFIG2,
-+	COLOR_CODE_24BIT,
-+	COLOR_CODE_20BIT_YCC422_LOOSELY,
-+	COLOR_CODE_24BIT_YCC422,
-+	COLOR_CODE_16BIT_YCC422,
-+	COLOR_CODE_30BIT,
-+	COLOR_CODE_36BIT,
-+	COLOR_CODE_12BIT_YCC420,
-+	COLOR_CODE_COMPRESSTION,
-+	COLOR_CODE_MAX
-+};
-+
-+struct dsi_context {
-+	void __iomem *base;
-+	struct regmap *regmap;
-+	struct dphy_pll *pll;
-+	struct videomode vm;
-+	bool enabled;
-+
-+	u8 lanes;
-+	u32 format;
-+	u8 work_mode;
-+	u8 burst_mode;
-+
-+	int irq0;
-+	int irq1;
-+	u32 int0_mask;
-+	u32 int1_mask;
-+
-+	/* byte clock [KHz] */
-+	u32 byte_clk;
-+	/* escape clock [KHz] */
-+	u32 esc_clk;
-+	/* maximum time (ns) for data lanes from HS to LP */
-+	u16 data_hs2lp;
-+	/* maximum time (ns) for data lanes from LP to HS */
-+	u16 data_lp2hs;
-+	/* maximum time (ns) for clk lanes from HS to LP */
-+	u16 clk_hs2lp;
-+	/* maximum time (ns) for clk lanes from LP to HS */
-+	u16 clk_lp2hs;
-+	/* maximum time (ns) for BTA operation - REQUIRED */
-+	u16 max_rd_time;
-+	/* enable receiving frame ack packets - for video mode */
-+	bool frame_ack_en;
-+	/* enable receiving tear effect ack packets - for cmd mode */
-+	bool te_ack_en;
-+	/* enable non coninuous clock for energy saving */
-+	bool nc_clk_en;
-+};
-+
-+struct sprd_dsi {
-+	struct drm_device *drm;
-+	struct mipi_dsi_host host;
-+	struct mipi_dsi_device *slave;
-+	struct drm_encoder encoder;
-+	struct drm_connector connector;
-+	struct drm_panel *panel;
-+	struct drm_display_mode *mode;
-+	struct dsi_context ctx;
-+};
-+
-+#endif /* __SPRD_DSI_H__ */
--- 
-2.29.0
+--jRHKVT23PllUwdXP
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+SC8Pue8GHM2WvKyImrRl9/83rSFIs9YBAA==
+
+--jRHKVT23PllUwdXP--
