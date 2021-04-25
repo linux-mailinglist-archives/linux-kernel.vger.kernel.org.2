@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBA036A963
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE9236A967
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhDYVKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 17:10:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:49127 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231209AbhDYVKF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 17:10:05 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-264-PkwKK9X8NdyBSIEz6JCoUA-1; Sun, 25 Apr 2021 22:09:22 +0100
-X-MC-Unique: PkwKK9X8NdyBSIEz6JCoUA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sun, 25 Apr 2021 22:09:21 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sun, 25 Apr 2021 22:09:21 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Zack Weinberg' <zackw@panix.com>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
-        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] bpf.2: Use standard types and attributes
-Thread-Topic: [RFC] bpf.2: Use standard types and attributes
-Thread-Index: AQHXOJdJ6YNcCKeqkEK6KUcQdn8TZarEIdzggAFrTACAAC7GAA==
-Date:   Sun, 25 Apr 2021 21:09:21 +0000
-Message-ID: <600f0f5de9ff4bc887eec42d38113a8c@AcuMS.aculab.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
- <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
- <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-In-Reply-To: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231321AbhDYVMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 17:12:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:39913 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230494AbhDYVMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 17:12:39 -0400
+IronPort-SDR: NNf1iKeDHOdO8bsOXdi1AybhUcfQgkC8b4ISQ+lFnhDXWBG/56Eg3CcszDWx4BrF1IwaUDt9nO
+ c4/v+X+J4lXg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="260209109"
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="scan'208";a="260209109"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 14:11:58 -0700
+IronPort-SDR: luuqIzZY83IKnOkMvGxO8R7d1vhCzuWojivUgJTwhcPbwRsRyg1NCR+pGGIcxBBboaUDyZS6xc
+ VawvYKbWUdgA==
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="scan'208";a="402697833"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 14:11:58 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     peterz@infradead.org
+Cc:     jpoimboe@redhat.com, jbaron@akamai.com,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH] static_call: Use single copy of static_call_return0
+Date:   Sun, 25 Apr 2021 14:11:40 -0700
+Message-Id: <20210425211140.3157580-1-ak@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogWmFjayBXZWluYmVyZw0KPiBTZW50OiAyNSBBcHJpbCAyMDIxIDIwOjE3DQo+IA0KPiBP
-biBTYXQsIEFwciAyNCwgMjAyMSBhdCA0OjQzIFBNIERhdmlkIExhaWdodCB2aWEgTGliYy1hbHBo
-YQ0KPiA8bGliYy1hbHBoYUBzb3VyY2V3YXJlLm9yZz4gd3JvdGU6DQo+ID4gRnJvbTogQWxleGVp
-IFN0YXJvdm9pdG92DQo+ID4gPiBPbiBGcmksIEFwciAyMywgMjAyMSBhdCA0OjE1IFBNIEFsZWph
-bmRybyBDb2xvbWFyIDxhbHgubWFucGFnZXNAZ21haWwuY29tPiB3cm90ZToNCj4gLi4uDQo+ID4g
-PiA+IFNvbWUgcGFnZXMgYWxzbyBkb2N1bWVudCBhdHRyaWJ1dGVzLCB1c2luZyBHTlUgc3ludGF4
-DQo+ID4gPiA+ICdfX2F0dHJpYnV0ZV9fKCh4eHgpKScuICBVcGRhdGUgdGhvc2UgdG8gdXNlIHRo
-ZSBzaG9ydGVyIGFuZCBtb3JlDQo+ID4gPiA+IHBvcnRhYmxlIEMyeCBzeW50YXgsIHdoaWNoIGhh
-c24ndCBiZWVuIHN0YW5kYXJkaXplZCB5ZXQsIGJ1dCBpcw0KPiA+ID4gPiBhbHJlYWR5IGltcGxl
-bWVudGVkIGluIEdDQywgYW5kIGF2YWlsYWJsZSB0aHJvdWdoIGVpdGhlciAtLXN0ZD1jMngNCj4g
-PiA+ID4gb3IgYW55IG9mIHRoZSAtLXN0ZD1nbnUuLi4gb3B0aW9ucy4NCj4gLi4NCj4gPiBBbmQg
-dGhlIGNvZGUgYmVsb3cgaXMgbm8gbW9yZSBwb3J0YWJsZSB0aGF0IGEgI3ByYWdtYScuDQo+ID4g
-SXQgaXMgcHJvYmFibHkgd29yc2UgdGhhbiBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkNCj4g
-PiArICAgICAgICAgICAgdWludDY0X3QgW1tnbnU6OmFsaWduZWQoOCldXSB2YWx1ZTsNCj4gPiBU
-aGUgc3RhbmRhcmRzIGNvbW1pdHRlZSBhcmUgc21va2luZyBkb3BlIGFnYWluLg0KPiA+IEF0IGxl
-YXN0IHRoZSAnX19hbGlnbmVkX3U2NCB2YWx1ZTsnIGZvcm0gc3RhbmRzIGEgcmVhc29uYWJsZQ0K
-PiA+IGNoYW5jZSBvZiBiZWluZyBjb252ZXJ0ZWQgYnkgY3BwIGludG8gd2hhdGV2ZXIgeW91ciBj
-b21waWxlciBzdXBwb3J0cy4NCj4gDQo+IElzIGl0IGFjdHVhbGx5IG5lY2Vzc2FyeSB0byBtZW50
-aW9uIHRoZSBhbGlnbm1lbnQgb3ZlcnJpZGVzIGF0IGFsbCBpbg0KPiB0aGUgbWFucGFnZXM/ICBU
-aGV5IGFyZSBvbmx5IHJlbGV2YW50IHRvIHBlb3BsZSB3b3JraW5nIGF0IHRoZSBsZXZlbA0KPiBv
-ZiBwaHlzaWNhbCBsYXlvdXQgb2YgdGhlIGRhdGEgaW4gUkFNLCBhbmQgdGhvc2UgcGVvcGxlIGFy
-ZSBwcm9iYWJseQ0KPiBnb2luZyB0byBoYXZlIHRvIGNvbnN1bHQgdGhlIGhlYWRlciBmaWxlIGFu
-eXdheS4NCg0KRGVwZW5kcywgaWYgdGhlIG1hbiBwYWdlIGRlZmluZXMgdGhlIHN0cnVjdHVyZSAt
-IGl0IG5lZWRzIHRvDQpjb250YWluIGl0cyBkZWZpbml0aW9uLg0KSWYgdGhlb3J5IHRoZSBtYW4g
-cGFnZSBvdWdodCB0byBiZSB0aGUgZGVmaW5pdGlvbiwgYW5kIHRoZSBjb2RlDQpkbyB3aGF0IHRo
-ZSBtYW4gcGFnZSBzYXlzIGhhcHBlbnMuDQoNCkFuIGFsdGVybmF0aXZlIGlzIGZvciB0aGUgbWFu
-IHBhZ2UgdG8gc2F5IHRoYXQgdGhlIHN0cnVjdHVyZQ0KY29udGFpbnMgc29tZSBmaWVsZHMgLSB3
-aXRob3V0IHByZXNjcmliaW5nIHRoZSBvcmRlciwgb3INCnN0b3BwaW5nIHRoZSBpbXBsZW1lbnRh
-dGlvbiBhZGRpbmcgYWRkaXRpb25hbCBmaWVsZHMgKG9yIGV2ZW4NCmNoYW5naW5nIHRoZSBhY3R1
-YWwgbnVtZXJpYyB0eXBlKS4NClRoaXMgaXMgbW9yZSBjb21tb24gaW4gdGhlIHN0YW5kYXJkcyBk
-b2N1bWVudHMuDQpJTUhPIFRoZSBMaW51eCBwYWdlcyByZWFsbHkgb3VnaHQgdG8gc2F5IGhvdyBs
-aW51eCBkb2VzIHRoaW5ncy4NCihXaXRoIG5vdGVzIGFib3V0IHBvcnRhYmlsaXR5LikNCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+With the inline version of static calls it is trying to use
+all static call functions inline. But this doesn't work for
+__static_call_return0, because its address is always taken,
+which forces the compiler to generate a out of line copy.
+
+If it only exists as a static inline this means there are
+many copies generated. Instead use the out of line in static_call.c
+for this.
+
+This fixes another bug. When _INLINE is set static_inline.c was
+not compiled at all, which disabled the self test even when
+it was enabled in the configuration.
+
+This fixes a build problem with gcc LTO. __static_call_return0
+is referenced from assembler, which requires making it global
+because the assembler can end in a different file than the other
+C code.  But that's not possible for a static inline function.
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ include/linux/static_call.h | 9 ++-------
+ kernel/Makefile             | 2 +-
+ kernel/static_call.c        | 4 ++++
+ 3 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index ae04b1123a93..e75aef659224 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -100,6 +100,8 @@
+ #ifdef CONFIG_HAVE_STATIC_CALL
+ #include <asm/static_call.h>
+ 
++extern long __static_call_return0(void);
++
+ /*
+  * Either @site or @tramp can be NULL.
+  */
+@@ -148,8 +150,6 @@ extern void __static_call_update(struct static_call_key *key, void *tramp, void
+ extern int static_call_mod_init(struct module *mod);
+ extern int static_call_text_reserved(void *start, void *end);
+ 
+-extern long __static_call_return0(void);
+-
+ #define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+ 	__visible struct static_call_key STATIC_CALL_KEY(name) = {	\
+@@ -221,11 +221,6 @@ static inline int static_call_text_reserved(void *start, void *end)
+ 	return 0;
+ }
+ 
+-static inline long __static_call_return0(void)
+-{
+-	return 0;
+-}
+-
+ #define EXPORT_STATIC_CALL(name)					\
+ 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
+ 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 320f1f3941b7..b589442c7724 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -110,7 +110,7 @@ obj-$(CONFIG_CPU_PM) += cpu_pm.o
+ obj-$(CONFIG_BPF) += bpf/
+ obj-$(CONFIG_KCSAN) += kcsan/
+ obj-$(CONFIG_SHADOW_CALL_STACK) += scs.o
+-obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) += static_call.o
++obj-$(CONFIG_HAVE_STATIC_CALL) += static_call.o
+ 
+ obj-$(CONFIG_PERF_EVENTS) += events/
+ 
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 6d332c0c9134..7ec8608d94ab 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -10,6 +10,8 @@
+ #include <linux/processor.h>
+ #include <asm/sections.h>
+ 
++#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
++
+ extern struct static_call_site __start_static_call_sites[],
+ 			       __stop_static_call_sites[];
+ extern struct static_call_tramp_key __start_static_call_tramp_key[],
+@@ -496,6 +498,8 @@ int __init static_call_init(void)
+ }
+ early_initcall(static_call_init);
+ 
++#endif /* HAVE_STATIC_CALL_INLINE */
++
+ long __static_call_return0(void)
+ {
+ 	return 0;
+-- 
+2.25.4
 
