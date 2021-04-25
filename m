@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C9536A8B8
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3C436A8BA
 	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 20:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhDYSBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 14:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        id S231258AbhDYSB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 14:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhDYSBT (ORCPT
+        with ESMTP id S231250AbhDYSBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 14:01:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0C1C061574;
-        Sun, 25 Apr 2021 11:00:39 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id cq11so19452216edb.0;
-        Sun, 25 Apr 2021 11:00:39 -0700 (PDT)
+        Sun, 25 Apr 2021 14:01:25 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1064EC061574;
+        Sun, 25 Apr 2021 11:00:45 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id z16so38605525pga.1;
+        Sun, 25 Apr 2021 11:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ReeEc8S73nyjDOIe7NAJ3YuXZmnnG8VFsB28ujaVD70=;
-        b=mjRdE1RGuXiyKuR9adhwb/XPalg3Dr5ZW0bZCoon35B0Wi/G8ERN/LcgfvX+l7ocw9
-         TTCVeSsdC3xaaNXao3inDGb739Qox8Y6A0C6jt5Q/goUuhpAtxAfaXI2cItiyhmXNbsc
-         NnrErQ2Ax8u6jGdYWSt+w9y1DiiQIt4NkvpgLWmFGF5lgJLGEaZu1plh1f5bVGQ/QH/6
-         ikGTW8oZnVlqN6ZWFWCnYBsgMof6lxILFygFDnNjnSYy03U3cTXfo48BBh64Y72JiC1V
-         cLv85kfJHrskfSIpX7u1cvLILfm6RNRMdte0IzFDu0LbbeMJNwfCk7hyqZlZ4mjFiDWz
-         xnDQ==
+        bh=b3xnyyXl8Zdin1DIWvD41f6uZR/KPwcFkPpRMWNH32o=;
+        b=dTdGdV+RagTyq72wYBAVUTWK4TLHMS0gEtgZqYA91S8vO7eF3Z8irSUGX00VvrpONf
+         y016962iSNwN5d6ahPtlMy9MWGBxRG+pZSwGjQwkYkNMuP3kyCOFoe1SpgO22SLBr3Fn
+         A6j5GMp0XhoPLeq9fL28nwXjPt1Wj0Ii1fPQMZEf2bDQVWXSKjIOYU1zpif7ANsH8v9r
+         0zSOdRi8gCvtAER0NuKgM3S2SgTyLn9xFXl+9EMNxXKsxqbRk6HJgZXomkHcEhzXMZmw
+         sgsPwCtjM1q4UXjFfGONBBWy9mYZYFirSJT34mMwWeAhS+1GTJrlgUZRkkbH4x4kkkTg
+         2MfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ReeEc8S73nyjDOIe7NAJ3YuXZmnnG8VFsB28ujaVD70=;
-        b=QL1dO7m6XwxMrcFI2JWmUtmdglVqduS3Lo0ne4XR63qqUdJm5cEHiMOrbujvJzdTEo
-         Sre1232HSS+CIoy7SYdQRHg8K2bFMxZXldWvfMw2GoCRfCUnYmdlO6vqqi2vsEgLpfbc
-         /wdQEGqEWxHfh1SJyLFEGgZlR/LysyWLQMbAy5tHXXaqI03O4AodWU3+fpGdXdgzl/Pz
-         EJn+QNjdq8Ha9ypTBS7dM1DzjJNT3qqJysYMlJRbiOqfmSsP5R/8dkrOrhNwvhMlFgaO
-         32UsP4Hl1ZP3sRPRrft/GB2TXMnuCzIEd8a33Cn2pcBqSEpaak02tDf+hJreOTfjZ18d
-         SgJg==
-X-Gm-Message-State: AOAM533nLzg6UjlhkmQNHQzcIljpbOa7l3QtmXq0Q659GkY79FriHw1m
-        yu5YKHTIeEM7wD6N/pdCIF4ddWloqmLC2W8XVRo=
-X-Google-Smtp-Source: ABdhPJySLiFKDAwm8T0KSxt/lOvGo7/i/oQ6nDSQYauWDOO9/CUBjgXPhFMFouNpRptggueg8LP/GGMxLEdJz0dp6EQ=
-X-Received: by 2002:a05:6402:1a47:: with SMTP id bf7mr16992729edb.173.1619373638001;
- Sun, 25 Apr 2021 11:00:38 -0700 (PDT)
+        bh=b3xnyyXl8Zdin1DIWvD41f6uZR/KPwcFkPpRMWNH32o=;
+        b=kuclnDOOrVujF0gHWm3gXuOKkHrYpQ+JvxwEt8FX29wo1Q5ZSC9eI+oloYDajhZ6Hw
+         TTzL1EtiZug8z+RPgpNZMviWF/+y8WI8yN7fnwSsBSXb/Xjzs2M70S86Bw1XX+Ocnmk7
+         l5MCSkyWVu9iIgRTd3RpxawmYxldr5WAkyoX/0OarrJ0qoVmdS+FhGf1PAy5XjF43TUy
+         3QZUwr25cE1FRePFiCTda977KRTSpYayyfnQ35fmUW35VuCqG+NpA8cG1hheBec0h+AP
+         3XM5/+me1BYSTpv1lAJc3TBGXfnhZE9SaqMppd56yw8XaX2Ml4iISwTAfbpoyVQ8Ltfk
+         gSQQ==
+X-Gm-Message-State: AOAM532HTK5EKHqrvqxbmcx/l3Dqb5NSBNW97hvp64vO0DAcVmpzDYSK
+        /tG0N5lR1xYzZhiDiNnhg/mVSjRlqGt4fZq1/9e85dI3rAj/FQ==
+X-Google-Smtp-Source: ABdhPJySCNXwFAtWJ0zYn0NeMXeGHPMJxUlAmbsYuTbk1486MVOrnPXqtKofoBvmNMzJEVSafPxcQ7tt7QAYqOIwVK0=
+X-Received: by 2002:a63:cd11:: with SMTP id i17mr13237609pgg.74.1619373644543;
+ Sun, 25 Apr 2021 11:00:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAFt=RON+KYYf5yt9vM3TdOSn4zco+3XtFyi3VDRr1vbQUBPZ0g@mail.gmail.com>
- <YIWd7v1U/dGivmSE@zeniv-ca.linux.org.uk> <CAFt=RONcpvvk5=8GLTvG44=6wKwiYPH7oG4YULfcP+J=x8OW-w@mail.gmail.com>
- <YIWlOlss7usVnvme@zeniv-ca.linux.org.uk>
-In-Reply-To: <YIWlOlss7usVnvme@zeniv-ca.linux.org.uk>
-From:   haosdent <haosdent@gmail.com>
-Date:   Mon, 26 Apr 2021 02:00:26 +0800
-Message-ID: <CAFt=ROMhLo6AO98BHS4dW2rhXjhCzWqkiLFgYMPc3Q8+KHh1JQ@mail.gmail.com>
-Subject: Re: NULL pointer dereference when access /proc/net
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        zhengyu.duan@shopee.com, Haosong Huang <huangh@sea.com>
+References: <20210425150947.5862-1-ftoth@exalondelft.nl>
+In-Reply-To: <20210425150947.5862-1-ftoth@exalondelft.nl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 25 Apr 2021 21:00:28 +0300
+Message-ID: <CAHp75VecaOXdXh5O5NBA9EtoMnPEE_0mmvcFiXVUgw6cT1s51Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] usb: dwc3: pci: Enable usb2-gadget-lpm-disable for
+ Intel Merrifield
+To:     Ferry Toth <ftoth@exalondelft.nl>
+Cc:     USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> In the kernels of 4.8..4.18 period there it used to do
-> so, but only in non-RCU mode (which is the reason for explicit rcu argument passed
-> through that callchain).
-
-Yep, we saw the `inode` parameter pass to `__atime_needs_update` is already NULL
-
-```
-bool __atime_needs_update(const struct path *path, struct inode *inode,
-  bool rcu)
-{
-struct vfsmount *mnt = path->mnt;
-struct timespec now;
-
-if (inode->i_flags & S_NOATIME)   <=== Oops at here because the params
-inode is NULL
-return false;
-```
-
-```
-    [exception RIP: __atime_needs_update+5]
-    ...  **RSI: 0000000000000000**  <=== the second params of
-__atime_needs_update "struct inode *inode" is NULL
-```
-
-On Mon, Apr 26, 2021 at 1:22 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Sun, Apr 25, 2021 at 6:26 PM Ferry Toth <ftoth@exalondelft.nl> wrote:
 >
-> On Mon, Apr 26, 2021 at 01:04:46AM +0800, haosdent wrote:
-> > Hi, Alexander, thanks a lot for your quick reply.
-> >
-> > > Not really - the crucial part is ->d_count == -128, i.e. it's already past
-> > > __dentry_kill().
-> >
-> > Thanks a lot for your information, we would check this.
-> >
-> > > Which tree is that?
-> > > If you have some patches applied on top of that...
-> >
-> > We use Ubuntu Linux Kernel "4.15.0-42.45~16.04.1" from launchpad directly
-> > without any modification,  the mapping Linux Kernel should be
-> > "4.15.18" according
-> > to https://people.canonical.com/~kernel/info/kernel-version-map.html
->
-> Umm...  OK, I don't have it Ubuntu source at hand, but the thing to look into
-> would be
->         * nd->flags contains LOOKUP_RCU
->         * in the mainline from that period (i.e. back when __atime_needs_update()
-> used to exist) we had atime_needs_update_rcu() called in get_link() under those
-> conditions, with
-> static inline bool atime_needs_update_rcu(const struct path *path,
->                                           struct inode *inode)
-> {
->         return __atime_needs_update(path, inode, true);
-> }
-> and __atime_needs_update() passing its last argument (rcu:true in this case) to
-> relatime_need_update() in
->         if (!relatime_need_update(path, inode, now, rcu))
-> relatime_need_update() hitting
->         update_ovl_inode_times(path->dentry, inode, rcu);
-> and update_ovl_inode_times() starting with
->         if (rcu || likely(!(dentry->d_flags & DCACHE_OP_REAL)))
->                 return;
-> with subsequent accesses to ->d_inode.  Those obviously are *NOT* supposed
-> to be reached in rcu mode, due to that check.
->
-> Your oops looks like something similar to that call chain had been involved and
-> somehow had managed to get through to those ->d_inode uses.
->
-> Again, in RCU mode we really, really should not assume ->d_inode stable.  That's
-> why atime_needs_update() gets inode as a separate argument and does *NOT* look
-> at path->dentry at all.  In the kernels of 4.8..4.18 period there it used to do
-> so, but only in non-RCU mode (which is the reason for explicit rcu argument passed
-> through that callchain).
+> On Intel Merrifield LPM is causing host to reset port after a timeout.
 
+the host
+
+> By disabling LPM entirely this is prevented.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Thanks!
+
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merrifield")
+> ---
+>  drivers/usb/dwc3/dwc3-pci.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+> index 4c5c6972124a..e5d7eed2e60c 100644
+> --- a/drivers/usb/dwc3/dwc3-pci.c
+> +++ b/drivers/usb/dwc3/dwc3-pci.c
+> @@ -122,6 +122,7 @@ static const struct property_entry dwc3_pci_mrfld_properties[] = {
+>         PROPERTY_ENTRY_STRING("linux,extcon-name", "mrfld_bcove_pwrsrc"),
+>         PROPERTY_ENTRY_BOOL("snps,dis_u3_susphy_quirk"),
+>         PROPERTY_ENTRY_BOOL("snps,dis_u2_susphy_quirk"),
+> +       PROPERTY_ENTRY_BOOL("snps,usb2-gadget-lpm-disable"),
+>         PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+>         {}
+>  };
+> --
+> 2.27.0
+>
 
 
 -- 
-Best Regards,
-Haosdent Huang
+With Best Regards,
+Andy Shevchenko
