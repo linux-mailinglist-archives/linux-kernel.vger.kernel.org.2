@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D945036A7DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 16:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B9336A7E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhDYPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 11:00:14 -0400
-Received: from smtp-35-i2.italiaonline.it ([213.209.12.35]:42599 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230293AbhDYPAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 11:00:12 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([95.244.94.151])
-        by smtp-35.iol.local with ESMTPA
-        id agEHlY8ippK9wagELlbBD1; Sun, 25 Apr 2021 16:59:29 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1619362769; bh=IebJ39rC3YsAS5xcTpDkg4gCO5NahbB0WbaWRAFj/w4=;
-        h=From;
-        b=oI/jhgzhNFHHxfSRzm4moPnc+TMttR9dCsrmmz1prn9aelKJ2ywgpN4BgAR6/+CST
-         /KpJfRuEAkVaZk1cctJ5ToVEOyK4h4u2+BQRfd5fOy5NT+VVZ+0h/dt7dX05AOISJp
-         rPyP/pRb7W1cBYecT7CXKBWX8uKAEhCaNF1YBC5BgKs9g3tO5m5hDwdXLPip0qTKw1
-         TPQjFnXbxuhZk7QzPW062V9AOINBEobnO6onv5JGsR7YJvbV90CAe6shJjeA0x+aNK
-         z+2YjHg+/qfbcyLV+AkE25Mae4ksKaYHBnq5CaovdKveEbu+z0o9nqosVQrTX5nnrZ
-         FKRsYXFqTwg7A==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=608583d1 cx=a_exe
- a=ugxisoNCKEotYwafST++Mw==:117 a=ugxisoNCKEotYwafST++Mw==:17
- a=VTExqAix1d_2lDZdMv4A:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: [PATCH] rtc: omap: use rtc_write to access OMAP_RTC_OSC_REG
-Date:   Sun, 25 Apr 2021 16:59:23 +0200
-Message-Id: <20210425145924.23353-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfCmwAtpzgqSBvqvD0wrg6fFGgfB/GIyon6Zwfi9hzuSo4XorEh2Uu0oeSMcmQzSO6erot9c9HHPVfjNd8K+YZ0/MugbNYBEyVPGAWiq+D9bD/krMBwAu
- IVXsOnUFy3cuUZFGjDUpguLDPWX9FQ1eDcf7ipCQoeBTMU5G4qOMwZTpPb7mRduhUQcCKnlZZZUX2+2G6vtiG4T3jQxQn2hIVgCldyST7rgnkZpKs0UAJK5j
- IRfRrdP1+TS/CeFLRf0aqV7KDqdY7JvBKSXAiPmsLfb3H94e1bVo4jq+RfKiK2UjoDNr2iT1qQvioijKzCg99nogPNWdpjFsWmpRV+u25Pf5BLY5r5QIvc8/
- TYJEPwUbnZRooJbVhijvejWl0YTBe3AqsIIcE2W3IdaLLkywc5A=
+        id S230426AbhDYPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 11:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhDYPJz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 11:09:55 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47EAC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 08:09:15 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id v13so14000648ple.9
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 08:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pHlGHrrVXtk9PyuNnHPbkHmoxxzuCU4xw3xKGDcLefE=;
+        b=PwW1NXTB+lRzMAk6pg/yZyqkjDjzUz9mBqtFiiyHaustu5oLV1FSWi50riU2mmxrlt
+         vM4wEIP7MwXexti9vkJdwfEoOA8KPaf0FcXM+Pe0Hb7emfgH64VXzBPflqEP5jk5u+bc
+         UV77c1gYddnjxzMDGaCnWly4PzZqECyoFNjgjf0zQhFeJb2MXuh2TnyJ5KVwWgrGOut2
+         MxdEZPAua8HSdaW/Y/FsMAwkGZ5hIYNZKpXc3Mm9uk3xx7+a/eZ9B5fu/6uzTK+1Dveh
+         q4xCcoHuQOZBKq/bDzVp8msBzM12hALbYN+xMChnLQDQVCWKO09fRZ4a35L/1kkuEgac
+         5j+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pHlGHrrVXtk9PyuNnHPbkHmoxxzuCU4xw3xKGDcLefE=;
+        b=BrhtMWVmOEk4d8zf4bnqRH4+P4scZ2Cv/CUi5xPF2N+o9s30EClkAD3P3eKxcMR0DC
+         IZP4IpveZxCkAiv5AsTF3QUoOXsgn1Yl3WCl0j2pTrFNt5s8XyVGXhuSQnIWDzUsTZU/
+         KLbPxF9yZOeGs7F4Vimmpfh+7rJ8zHPsVDfOlUAimKWoo2sFb3XkuU20TLmYwxmLAiqa
+         QofIM2CobcjGqQJacDXytnOsJ9SUClgyKZCB+L0xTuzEWfRG2zKzI3bYZ/1e43sulHSJ
+         9vkI4/tS/xqGZ+Xqro/bM18bVfrgVS9QbcIQeyxglYXjg5Yx9vCKx+6tn9NyVAnyppZD
+         m/cQ==
+X-Gm-Message-State: AOAM532/ukz9ilLec9i4OtsvLyb9gL5rMm8OCQfe83tkXk2IK7BxiVhv
+        1JcUBFQC17N16zP6xVLM7jo6RAXUzeHftt4ciI0=
+X-Google-Smtp-Source: ABdhPJw3yq1HH7o+ixENDzThz1DUj3VsrIrvra3OvLY0H6yn+Tim8cmCGSs0yQT25H9pBnmW7N73CQ==
+X-Received: by 2002:a17:90b:3796:: with SMTP id mz22mr16609803pjb.80.1619363355135;
+        Sun, 25 Apr 2021 08:09:15 -0700 (PDT)
+Received: from localhost.localdomain ([223.72.62.201])
+        by smtp.gmail.com with ESMTPSA id z26sm9098171pfr.106.2021.04.25.08.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Apr 2021 08:09:14 -0700 (PDT)
+From:   Ben Dai <ben.dai9703@gmail.com>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, Ben Dai <ben.dai@unisoc.com>
+Subject: [PATCH] genirq/timings: prevent potential array overflow in __irq_timings_store()
+Date:   Sun, 25 Apr 2021 23:09:03 +0800
+Message-Id: <20210425150903.25456-1-ben.dai9703@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RTC_OSC_REG register is 32-bit, but the useful information is found
-in the 7 least significant bits (bits 7-31 are reserved). And in fact,
-as you can see from the code, all read accesses are 8-bit, as well as
-some writes. Let's make sure all writes are 8-bit. Moreover, in contexts
-where consecutive reads / writes after the busy check must take place
-within 15 us, it is better not to waste time on useless accesses.
+From: Ben Dai <ben.dai@unisoc.com>
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+When the interrupt interval is greater than 2 ^ PREDICTION_BUFFER_SIZE *
+PREDICTION_FACTOR us and less than 1s, the calculated index will be greater
+than the length of irqs->ema_time[]. Check the calculated index before
+using it to prevent array overflow.
+
+Signed-off-by: Ben Dai <ben.dai@unisoc.com>
 ---
+ kernel/irq/timings.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
- drivers/rtc/rtc-omap.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/rtc/rtc-omap.c b/drivers/rtc/rtc-omap.c
-index dc7db2477f88..d46e0f0cc502 100644
---- a/drivers/rtc/rtc-omap.c
-+++ b/drivers/rtc/rtc-omap.c
-@@ -786,8 +786,7 @@ static int omap_rtc_probe(struct platform_device *pdev)
- 	/* enable RTC functional clock */
- 	if (rtc->type->has_32kclk_en) {
- 		reg = rtc_read(rtc, OMAP_RTC_OSC_REG);
--		rtc_writel(rtc, OMAP_RTC_OSC_REG,
--				reg | OMAP_RTC_OSC_32KCLK_EN);
-+		rtc_write(rtc, OMAP_RTC_OSC_REG, reg | OMAP_RTC_OSC_32KCLK_EN);
- 	}
+diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
+index 773b6105c4ae..6990490fa67b 100644
+--- a/kernel/irq/timings.c
++++ b/kernel/irq/timings.c
+@@ -453,6 +453,11 @@ static __always_inline void __irq_timings_store(int irq, struct irqt_stat *irqs,
+ 	 */
+ 	index = irq_timings_interval_index(interval);
  
- 	/* clear old status */
-@@ -845,7 +844,7 @@ static int omap_rtc_probe(struct platform_device *pdev)
- 		reg = rtc_read(rtc, OMAP_RTC_OSC_REG);
- 		reg &= ~OMAP_RTC_OSC_OSC32K_GZ_DISABLE;
- 		reg |= OMAP_RTC_OSC_32KCLK_EN | OMAP_RTC_OSC_SEL_32KCLK_SRC;
--		rtc_writel(rtc, OMAP_RTC_OSC_REG, reg);
-+		rtc_write(rtc, OMAP_RTC_OSC_REG, reg);
- 	}
- 
- 	rtc->type->lock(rtc);
++	if (index > PREDICTION_BUFFER_SIZE - 1) {
++		irqs->count = 0;
++		return;
++	}
++
+ 	/*
+ 	 * Store the index as an element of the pattern in another
+ 	 * circular array.
 -- 
-2.17.1
+2.25.1
 
