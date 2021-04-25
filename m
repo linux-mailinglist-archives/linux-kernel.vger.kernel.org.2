@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106FD36A448
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D7336A44D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhDYC60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDYC6Z (ORCPT
+        id S229644AbhDYCyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 22:54:17 -0400
+Received: from mail-m121145.qiye.163.com ([115.236.121.145]:16260 "EHLO
+        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhDYCyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:58:25 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12897C061574;
-        Sat, 24 Apr 2021 19:57:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FSXks1s9Pz9sTD;
-        Sun, 25 Apr 2021 12:57:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619319461;
-        bh=IlDw152+VnNwvGFbT7+RKXa6YNLAwp+EGmgw5nY/LP8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DZruapsxt2uqHUJwhZs4FAQmx2PRJdGmMs7qbjSrHW/uaLeR0mPIzxFPIBIGipc7N
-         WjNdGRYa6E6LDQQVptVGxn/BCFLBZpqdZGlsKHNINbNDGAyaMZS2ts+i/6Lb4fFZ1Y
-         W3xDRQfw1X2xCQYk+KHXHWsdClWOquZloxjdYCSQonqVbTsZE3OEPVcraQmg378gk8
-         j5kgSqfp7heaAMc/bD2edk9BqNp9FwiNVK6U0f7oYUIkHPuJLOrHKfQ/dU2yacsXwm
-         rcTS1Q/T3KicReCfiga+507Cxo2qV2tr6RTQhY0qL/cWY/R43D5MXVRw3GIkgHzmiT
-         8XeIsKSl0uWEg==
-Date:   Sun, 25 Apr 2021 12:57:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the dma-mapping-fixes tree
-Message-ID: <20210425125739.1b93e0f0@canb.auug.org.au>
+        Sat, 24 Apr 2021 22:54:16 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sat, 24 Apr 2021 22:54:16 EDT
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 38CE68001DD;
+        Sun, 25 Apr 2021 10:45:41 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] ntfs: Remove repeated uptodate check for buffer
+Date:   Sun, 25 Apr 2021 10:45:33 +0800
+Message-Id: <20210425024533.12540-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gfSsXbXPzN+IeowCvpcVS6D";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0tDS1YeTUNCGUMdHk8aSR9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        9ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MRQ6CRw*Hz8VOAMcTz8fND0y
+        DjEwCwhVSlVKTUpCSEpDTE9KTEhJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTEtONwY+
+X-HM-Tid: 0a7906eb1977b03akuuu38ce68001dd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gfSsXbXPzN+IeowCvpcVS6D
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+In commit 60f91826ca62 ("buffer: Avoid setting buffer bits that are already set"),
+function set_buffer_##name was added a test_bit() to check buffer,
+which is the same as function buffer_##name.
+The !buffer_uptodate(bh) here is a repeated check. Remove it.
 
-Hi all,
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ fs/ntfs/logfile.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-In commit
+diff --git a/fs/ntfs/logfile.c b/fs/ntfs/logfile.c
+index bc1bf217b38e..9695540ce581 100644
+--- a/fs/ntfs/logfile.c
++++ b/fs/ntfs/logfile.c
+@@ -796,8 +796,7 @@ bool ntfs_empty_logfile(struct inode *log_vi)
+ 			get_bh(bh);
+ 			/* Set the entire contents of the buffer to 0xff. */
+ 			memset(bh->b_data, -1, block_size);
+-			if (!buffer_uptodate(bh))
+-				set_buffer_uptodate(bh);
++			set_buffer_uptodate(bh);
+ 			if (buffer_dirty(bh))
+ 				clear_buffer_dirty(bh);
+ 			/*
+-- 
+2.25.1
 
-  49702360af50 ("swiotlb: fix the type of index")
-
-Fixes tag
-
-  Fixes: 0774983bc923 ("swiotlb: refactor swiotlb_tbl_map_single")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 26a7e094783d ("swiotlb: refactor swiotlb_tbl_map_single")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gfSsXbXPzN+IeowCvpcVS6D
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCE2qMACgkQAVBC80lX
-0Gw2XAf/bXA7hX+USDh5170BCa9UDfWKXa44a1r22HHDxZ9YfQLO5vWU4sGpT/IK
-3YcwzTwDhjVEWS7N/p19aSTE+zbhr8+sfBjbntUBgJGnO1qYGsSJxRi3rvfFG51J
-+v05CtoVnSH3HTcHSt/8Ui/sjrVY6OXHXnnWCii4TreX6JspKLiw/0xXJOcVXwx8
-qJaxsASQiYhEPAL2cDX5F4+SYAHFNxOqx3hgoMN02xymtnEQIdKV+qae6Bwze3er
-pSc3yEJKoGSreP0l8Kv5WGcGxx+UNNcAiCN+FHCvN762KlknVNWQ46jO76gF0vvi
-drX+M6Imasn57i89+O1BnmEImyVDQA==
-=N8PY
------END PGP SIGNATURE-----
-
---Sig_/gfSsXbXPzN+IeowCvpcVS6D--
