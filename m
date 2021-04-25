@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4068136A456
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA7D36A459
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhDYDKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 23:10:05 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39377 "EHLO mga07.intel.com"
+        id S229708AbhDYDPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 23:15:22 -0400
+Received: from mga03.intel.com ([134.134.136.65]:45425 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhDYDKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 23:10:00 -0400
-IronPort-SDR: J8Z8kVLYMGW/VcI1I9WB8uzQQj+9lKzjrSSR3vsQDZl1Nsuo6vXzPFvlkA1ZtsUuO4kLJBVz2v
- b6OzsmMXEAHQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="260162110"
+        id S229514AbhDYDPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 23:15:21 -0400
+IronPort-SDR: ZMcN30g/T7HSCq49lMUjQelANJU6Eb2rHj+Di9Omn93cTs5vEilLErx4FyH8SdCGjhT0o3hTOR
+ WVT6YPwd1+Mg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="196267711"
 X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="260162110"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:09:20 -0700
-IronPort-SDR: CRUydiyRZCcxxUktF8ALsPsp7pExL6AWNIFbr0n9Xys2yPdRlAXCsK4upUlRT0+jxSkeQEOgDZ
- 9he9kPwURuvw==
+   d="scan'208";a="196267711"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:14:41 -0700
+IronPort-SDR: wsHUTaW3CXFpl8ncYrwEjcsh8LP+NdcQWH3nyouj+W7Q9aNKLlGKVxhgt+msbM0L6q0aTbmR1U
+ PXIkscNYKHCQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="525371685"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:09:16 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
-        <david@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 3/4] mm/swap: remove confusing checking for
- non_swap_entry() in swap_ra_info()
-References: <20210425023806.3537283-1-linmiaohe@huawei.com>
-        <20210425023806.3537283-4-linmiaohe@huawei.com>
-Date:   Sun, 25 Apr 2021 11:09:14 +0800
-In-Reply-To: <20210425023806.3537283-4-linmiaohe@huawei.com> (Miaohe Lin's
-        message of "Sun, 25 Apr 2021 10:38:05 +0800")
-Message-ID: <8735vfxdph.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+   d="scan'208";a="428919636"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga008.jf.intel.com with ESMTP; 24 Apr 2021 20:14:37 -0700
+Date:   Sun, 25 Apr 2021 11:14:37 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, lkp@intel.com
+Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
+ -14.4% regression
+Message-ID: <20210425031437.GA38485@shbuild999.sh.intel.com>
+References: <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
+ <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
+ <20210422074126.GA85095@shbuild999.sh.intel.com>
+ <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
+ <20210423061115.GA62813@shbuild999.sh.intel.com>
+ <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210424122920.GB85095@shbuild999.sh.intel.com>
+ <20210424175322.GS975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210425021438.GA2942@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425021438.GA2942@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
-
-> The non_swap_entry() was used for working with VMA based swap readahead
-> via commit ec560175c0b6 ("mm, swap: VMA based swap readahead"). At that
-> time, the non_swap_entry() checking is necessary because the function is
-> called before checking that in do_swap_page(). Then it's moved to
-> swap_ra_info() since commit eaf649ebc3ac ("mm: swap: clean up swap
-> readahead"). After that, the non_swap_entry() checking is unnecessary,
-> because swap_ra_info() is called after non_swap_entry() has been checked
-> already. The resulting code is confusing as the non_swap_entry() check
-> looks racy now because while we released the pte lock, somebody else might
-> have faulted in this pte. So we should check whether it's swap pte first
-> to guard against such race or swap_type will be unexpected. But the race
-> isn't important because it will not cause problem. We would have enough
-> checking when we really operate the PTE entries later. So we remove the
-> non_swap_entry() check here to avoid confusion.
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-
-Best Regards,
-Huang, Ying
-
-> ---
->  mm/swap_state.c | 6 ------
->  1 file changed, 6 deletions(-)
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 272ea2108c9d..df5405384520 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -721,7 +721,6 @@ static void swap_ra_info(struct vm_fault *vmf,
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	unsigned long ra_val;
-> -	swp_entry_t entry;
->  	unsigned long faddr, pfn, fpfn;
->  	unsigned long start, end;
->  	pte_t *pte, *orig_pte;
-> @@ -739,11 +738,6 @@ static void swap_ra_info(struct vm_fault *vmf,
+On Sun, Apr 25, 2021 at 10:14:38AM +0800, Feng Tang wrote:
+> On Sat, Apr 24, 2021 at 10:53:22AM -0700, Paul E. McKenney wrote:
+> > And if your 2/2 goes in, those who still distrust TSC will simply
+> > revert it.  In their defense, their distrust was built up over a very
+> > long period of time for very good reasons.
+> > 
+> > > > This last sentence is not a theoretical statement.  In the past, I have
+> > > > suggested using the existing "tsc=reliable" kernel boot parameter,
+> > > > which disables watchdogs on TSC, similar to your patch 2/2 above.
+> > > > The discussion was short and that boot parameter was not set.  And the
+> > > > discussion motivated to my current clocksource series.  ;-)
+> > > > 
+> > > > I therefore suspect that someone will want a "tsc=unreliable" boot
+> > > > parameter (or similar) to go with your patch 2/2.
+> > >  
+> > > Possibly :)
+> > > 
+> > > But I wonder if tsc is disabled on that 'large system', what will be
+> > > used instead? HPET is known to be much slower for clocksource, as shown
+> > > in this regression report :) not mentioning the 'acpi_pm' timer. 
+> > 
+> > Indeed, the default switch to HPET often causes the system to be taken
+> > out of service due to the resulting performance shortfall.  There is
+> > of course some automated recovery, and no, I am not familiar with the
+> > details, but I suspect that a simple reboot is an early recovery step.
+> > However, if the problem were to persist, the system would of course be
+> > considered to be permanently broken.
+> 
+> Thanks for the info, if a sever is taken out of service just because
+> of a false alarm of tsc, then it's a big waste!
+> 
+> > > Again, I want to know the real tsc unstable case. I have spent lots
+> > > of time searching these info from git logs and mail archives before
+> > > writing the patches.
+> > 
+> > So do I, which is why I put together this patch series.  My employer has
+> > a fairly strict upstream-first for things like this which are annoyances
+> > that are likely hiding other bugs, but which are not causing significant
+> > outages, which was of course the motivation for the fault-injection
+> > patches.
+> > 
+> > As I said earlier, it would have been very helpful to you for a patch
+> > series like this to have been applied many years ago.  If it had been,
+> > we would already have the failure-rate data that you requested.  And of
+> > course if that failure-rate data indicated that TSC was reliable, there
+> > would be far fewer people still distrusting TSC.
 >  
->  	faddr = vmf->address;
->  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
-> -	entry = pte_to_swp_entry(*pte);
-> -	if ((unlikely(non_swap_entry(entry)))) {
-> -		pte_unmap(orig_pte);
-> -		return;
-> -	}
->  
->  	fpfn = PFN_DOWN(faddr);
->  	ra_val = GET_SWAP_RA_VAL(vma);
+> Yes, if they can share the detailed info (like what's the 'watchdog')
+> and debug info, it can enable people to debug and root cause the
+> problem to be a false alarm or a real silicon platform. Personally, for
+> newer platforms I tend to trust tsc much more than other clocksources.
+ 
+I understand people may 'distrust' tsc, after seeing that 'tsc unstable'
+cases. But for 'newer platforms', if the unstable was judged by hpet,
+acpi_pm_timer or the software 'refined-jiffies', then it could possibly
+be just a false alarm, and that's not too difficult to be root caused.
+And if there is a real evidence of a broken tsc case, then the distrust
+is not just in impression from old days :) 
+
+Thanks,
+Feng
