@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EF336A51E
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 08:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0D136A527
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 08:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhDYGak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 02:30:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhDYGaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 02:30:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B51706147F;
-        Sun, 25 Apr 2021 06:29:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619332198;
-        bh=XpYhucM6z3qhvkS1BQ76ZyjHypzTB3CNG91CD9wFHK0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g8VMoCLTfgJlmlKtaI9opdSQGRmtNOMzGO6XvoNBhvHmHnn3ox6PoAYv5Y+cE3i1T
-         sg2+VoR4ZZYPr+75nHqjWLi9mCuaUck3ZSEnJDfnALXrNH7ZITvfDu7uTc5TWAK353
-         /YG/RZRlGuaBsQ6ppAaWJug1IYWxtn4Enhb8uwJA=
-Date:   Sun, 25 Apr 2021 08:29:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Shelat, Abhi" <a.shelat@northeastern.edu>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YIUMYYcf/VW4a28k@kroah.com>
-References: <YIAta3cRl8mk/RkH@unreal>
- <20210421135637.GB27929@fieldses.org>
- <20210422193950.GA25415@fieldses.org>
- <YIMDCNx4q6esHTYt@unreal>
- <20210423180727.GD10457@fieldses.org>
- <YIMgMHwYkVBdrICs@unreal>
- <20210423214850.GI10457@fieldses.org>
- <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
- <20210424213454.GA4239@fieldses.org>
- <YIS6t+X1DOKlB+Z/@mit.edu>
+        id S229646AbhDYGmu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Apr 2021 02:42:50 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:13464 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229480AbhDYGmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 02:42:49 -0400
+Subject: Re: [RFC PATCH] watchdog: Adding softwatchdog
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Shakeel Butt <shakeelb@google.com>
+References: <20210424102555.28203-1-peter.enderborg@sony.com>
+ <20210424102555.28203-2-peter.enderborg@sony.com>
+ <d5db5606-f074-6d0e-2316-8ff41af25cfd@roeck-us.net>
+ <844e3ecb-62c3-856a-7273-e22eee35e80f@i-love.sakura.ne.jp>
+ <d2be282c-f39a-dc85-817b-94a40efeb232@sony.com>
+ <d76447a5-4580-eb4e-e6d9-d675ca016462@i-love.sakura.ne.jp>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <1d4ef30a-69c5-c4dc-c3bd-8d7c0c99b3f3@sony.com>
+Date:   Sun, 25 Apr 2021 08:42:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIS6t+X1DOKlB+Z/@mit.edu>
+In-Reply-To: <d76447a5-4580-eb4e-e6d9-d675ca016462@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=DLnxHBFb c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=uherdBYGAAAA:8 a=VwQbUJbxAAAA:8 a=bVD-iCYiVT72kJ5F44QA:9 a=QEXdDO2ut3YA:10 a=Ef4yma5cpRUEJWN9UqBm:22 a=AjGcO6oz07-iQ99wixmX:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 08:41:27PM -0400, Theodore Ts'o wrote:
-> On Sat, Apr 24, 2021 at 05:34:54PM -0400, J. Bruce Fields wrote:
-> > In Greg's revert thread, Kangjie Lu's messages are also missing from the
-> > archives:
-> > 
-> > 	https://lore.kernel.org/lkml/20210421130105.1226686-1-gregkh@linuxfoundation.org/
-> >
-> 
-> I'm going to guess it's one of two things.  The first is that they are
-> sending mail messages with HTML which is getting bounced; the other
-> possibility is that some of the messages were sent only to Greg, and
-> he added the mailing list back to the cc.
-> 
-> So for exampple, message-id
-> CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com
-> isn't in lore, but Greg's reply:
-> 
-> https://lore.kernel.org/linux-nfs/YH%2FfM%2FTsbmcZzwnX@kroah.com/
-> 
-> can be found in lore.kernel.org was presumably because the message
-> where Aditya accused "wild accusations bordering on slander" and his
-> claim that his patches were the fault of a "new static code analyzer"
-> was sent only to Greg?  Either that, or it was bounced because he sent
-> it from gmail without suppressing HTML.
+On 4/25/21 3:08 AM, Tetsuo Handa wrote:
+> On 2021/04/25 1:19, peter enderborg wrote:
+>>> I don't think this proposal is a watchdog. I think this proposal is
+>>> a timer based process killer, based on an assumption that any slowdown
+>>> which prevents the monitor process from pinging for more than 0.5 seconds
+>>> (if HZ == 1000) is caused by memory pressure.
+>> You missing the point. The oom killer is a example of a work that it can do.
+>> it is one policy. The idea is that you should have a policy that fits your needs.
+> Implementing policy which can run in kernel from timer interrupt context is
+> quite limited, for it is not allowed to perform operations that might sleep. See
+>
+>   [RFC] memory reserve for userspace oom-killer
+>   https://urldefense.com/v3/__https://lkml.kernel.org/r/CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz*u3bFFyOLg@mail.gmail.com__;Kw!!JmoZiZGBv3RvKRSx!tqBFKAdfydRJ5M0oP4xCRvSscrBwChj5MWuj1YUNAk05uORWkbcz-iodFCHYjKdOytmHoO4$ 
+>
+> for implementing possibly useful policy.
 
-I did not "add back" the mailing list, it looks like they sent email in
-html format which prevented it from hitting the public lists.  I have
-the originals sent to me that shows the author intended it to be public.
+I you need to do a more complex approach you might need to
+have a work queue.  For example a SIGTERM solution might
+be like that. You send sigterm wait some time and then send a sigkill.
 
-thanks,
 
-greg k-h
+>> oom_score_adj is suitable for a android world. But it might be based on
+>> uid's if your priority is some users over other.  Or a memcg. Or as
+>> Christophe Leroy want the current. The policy is only a example that
+>> fits a one area.
+> Horrible idea. Imagine a kernel module that randomly sends SIGTERM/SIGKILL
+> to "current" thread. How normal systems can survive? A normal system is not
+> designed to survive random signals.
+
+I think you need to see it in the context of a watchdog. It might be
+problematic, but it has a good statistical change to hit a cpu hogger. 
+
+And seeing as watchdog, the alternative is a system reset. You
+take a chance.  Reboot should be the last resort.
+
+I can imagine a kernel module that  randomly sends SIGTERM/SIGKILL,
+we already have that. It is called oom-kill. This is *exactly* the problem.
+
+>
+>>                  You need to describe your prioritization, in android it is
+>> oom_score_adj. For example I would very much have a policy that sends
+>> sigterm instead of sigkill.
+> That's because Android framework is designed to survive random signals
+> (in order to survive memory pressure situation).
+It using a lot to control the system. It use it differently than you would
+with a shell or window-manager.
+>
+>>                             But the integration with oom is there because
+>> it is needed. Maybe a bad choice for political reasons but I don't it a
+>> good idea to hide the intention. Please don't focus on the oom part.
+> I wonder what system other than Android framework can utilize this module.
+I think it will be useful for embedded systems as well.
+> By the way, there already is "Software Watchdog" ( drivers/watchdog/softdog.c )
+> which some people might call it "soft watchdog". It is very confusing to name
+> your module as "softwatchdog". Please find a different name.
+>
+It is mention in the patch-set. I had as an idea to add this function to that one,
+but I decided that it was better to separate so point out the feature  that is to
+be "Soft" rather than so hard.
+
