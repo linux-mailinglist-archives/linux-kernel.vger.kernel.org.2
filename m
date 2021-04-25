@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7095A36A6BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D96336A6C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhDYKlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:41:46 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50688 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229837AbhDYKlp (ORCPT
+        id S230123AbhDYKnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 06:43:46 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46850 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229551AbhDYKno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:41:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UWgfN9a_1619347259;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgfN9a_1619347259)
+        Sun, 25 Apr 2021 06:43:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UWgU-OO_1619347377;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgU-OO_1619347377)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 25 Apr 2021 18:41:04 +0800
+          Sun, 25 Apr 2021 18:43:03 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     frowand.list@gmail.com
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] of: overlay: Remove redundant assignment to ret
-Date:   Sun, 25 Apr 2021 18:40:58 +0800
-Message-Id: <1619347258-55002-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] net: davicom: Remove redundant assignment to ret
+Date:   Sun, 25 Apr 2021 18:42:56 +0800
+Message-Id: <1619347376-56140-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -35,39 +35,27 @@ assignment and can be removed.
 
 Cleans up the following clang-analyzer warning:
 
-drivers/of/overlay.c:1197:2: warning: Value stored to 'ret' is never
-read [clang-analyzer-deadcode.DeadStores].
-
-drivers/of/overlay.c:1026:2: warning: Value stored to 'ret' is never
-read [clang-analyzer-deadcode.DeadStores].
+drivers/net/ethernet/davicom/dm9000.c:1527:5: warning: Value stored to
+'ret' is never read [clang-analyzer-deadcode.DeadStores].
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/of/overlay.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/ethernet/davicom/dm9000.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-index 23effe5..74bb5e5 100644
---- a/drivers/of/overlay.c
-+++ b/drivers/of/overlay.c
-@@ -1023,7 +1023,6 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
- 	struct device_node *overlay_root = NULL;
- 
- 	*ovcs_id = 0;
--	ret = 0;
- 
- 	if (overlay_fdt_size < sizeof(struct fdt_header) ||
- 	    fdt_check_header(overlay_fdt)) {
-@@ -1194,8 +1193,6 @@ int of_overlay_remove(int *ovcs_id)
- 	struct overlay_changeset *ovcs;
- 	int ret, ret_apply, ret_tmp;
- 
--	ret = 0;
--
- 	if (devicetree_corrupt()) {
- 		pr_err("suspect devicetree state, refuse to remove overlay\n");
- 		ret = -EBUSY;
+diff --git a/drivers/net/ethernet/davicom/dm9000.c b/drivers/net/ethernet/davicom/dm9000.c
+index 8a9096a..e0c0349 100644
+--- a/drivers/net/ethernet/davicom/dm9000.c
++++ b/drivers/net/ethernet/davicom/dm9000.c
+@@ -1524,7 +1524,6 @@ static struct dm9000_plat_data *dm9000_parse_dt(struct device *dev)
+ 			if (ret) {
+ 				dev_err(db->dev, "irq %d cannot set wakeup (%d)\n",
+ 					db->irq_wake, ret);
+-				ret = 0;
+ 			} else {
+ 				irq_set_irq_wake(db->irq_wake, 0);
+ 				db->wake_supported = 1;
 -- 
 1.8.3.1
 
