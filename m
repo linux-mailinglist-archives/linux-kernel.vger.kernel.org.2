@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D876436A90A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2D936A90D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhDYTd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 15:33:57 -0400
-Received: from l2mail1.panix.com ([166.84.1.75]:59969 "EHLO l2mail1.panix.com"
+        id S231264AbhDYTha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 15:37:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhDYTd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 15:33:56 -0400
-Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
-        by l2mail1.panix.com (Postfix) with ESMTPS id 4FSySz3gfQzDjg;
-        Sun, 25 Apr 2021 15:17:07 -0400 (EDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FSySy3clvzSNw;
-        Sun, 25 Apr 2021 15:17:06 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
-        t=1619378226; bh=XhZeMGV3zn3KbXb4vXiIiqcwTRwZv6RkFQ/y5sRLQ54=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc;
-        b=UChIu6fy15PFybZhRlSS4vrq054UVvqJdU+KyBlRIxDTTEMHxGg67D25N0JFbLdVR
-         Kpz2r1rpi9w8L0pujDrTE5VNtc1dOAgk9Q+U0GRptV9ZEyiYrybQdA9biZxvkpUBjM
-         zYgAEqqXpozo0XtOvTFPBBXgir5C57DjzTdcc/cY=
-Received: by mail-yb1-f171.google.com with SMTP id p202so18428452ybg.8;
-        Sun, 25 Apr 2021 12:17:06 -0700 (PDT)
-X-Gm-Message-State: AOAM532wkqOoWBIjPeoDxhJuTOFDCRwJFb7Sgby9eKFfY5ZT+I1fXHPP
-        SxnpyKjV7HFe61q+BpWqy/RWtLP2/mw4vk7EMqA=
-X-Google-Smtp-Source: ABdhPJztPCPXO7s31JTURrUaXheP5N6/ezQIspG2gIv0gIdLsrS/RpqygJaJ2EKeEgLkyzpRG1xzKDeBit2LpklR234=
-X-Received: by 2002:a5b:34a:: with SMTP id q10mr19917362ybp.224.1619378226198;
- Sun, 25 Apr 2021 12:17:06 -0700 (PDT)
+        id S230494AbhDYTh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 15:37:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE6D6115C;
+        Sun, 25 Apr 2021 19:36:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619379408;
+        bh=ZTvkB5rpoSHuROmi1/t8X2IfN8+PT9jVHAjIgyd+yvc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=K/TPQ+pu5oKIiPLhY7i0PgolmO+F20176UyTTTpuMtYIAqV6UnK+uhasctEMkbFA2
+         hIW/g0s7Fp0q24TldhlylRL0Q79OpNwbkm1ZlmslLQ8bG+EEUAFieGuMWIOWJQ5ufq
+         AXBUX4AUxOK1+anKCXnh1jZLYQdNHJknVNR58pvQktWd4Mt+U19D009mZjh+k2C9da
+         GwjiF+fgOp7OtIzqJW/wBYzdpXVWd8bv0BotUTjcF2AoTdBOVdn5ssYZklaMWTMOLN
+         2vqNW26Fc0URvqCUqqwIAPu+RWcvg50LMLg+U+gn44WvDAhDwZZiBpSt50XIVDhRZJ
+         N/MUkYQ17brcw==
+Subject: Re: [PATCH 72/78] media: s3c-camif: use pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <3cfe70dad65dc078a656458cb55087a5269e9cc3.1619191723.git.mchehab+huawei@kernel.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <dfb7f44b-5848-b968-6479-a088e72f1a47@kernel.org>
+Date:   Sun, 25 Apr 2021 21:36:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com> <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
-In-Reply-To: <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
-From:   Zack Weinberg <zackw@panix.com>
-Date:   Sun, 25 Apr 2021 15:16:54 -0400
-X-Gmail-Original-Message-ID: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-Message-ID: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-Subject: Re: [RFC] bpf.2: Use standard types and attributes
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
-        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3cfe70dad65dc078a656458cb55087a5269e9cc3.1619191723.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 4:43 PM David Laight via Libc-alpha
-<libc-alpha@sourceware.org> wrote:
-> From: Alexei Starovoitov
-> > On Fri, Apr 23, 2021 at 4:15 PM Alejandro Colomar <alx.manpages@gmail.com> wrote:
-...
-> > > Some pages also document attributes, using GNU syntax
-> > > '__attribute__((xxx))'.  Update those to use the shorter and more
-> > > portable C2x syntax, which hasn't been standardized yet, but is
-> > > already implemented in GCC, and available through either --std=c2x
-> > > or any of the --std=gnu... options.
-..
-> And the code below is no more portable that a #pragma'.
-> It is probably worse than __attribute__((aligned(8)))
-> +            uint64_t [[gnu::aligned(8)]] value;
-> The standards committee are smoking dope again.
-> At least the '__aligned_u64 value;' form stands a reasonable
-> chance of being converted by cpp into whatever your compiler supports.
+Hi Mauro,
 
-Is it actually necessary to mention the alignment overrides at all in
-the manpages?  They are only relevant to people working at the level
-of physical layout of the data in RAM, and those people are probably
-going to have to consult the header file anyway.
+On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>   drivers/media/platform/s3c-camif/camif-capture.c | 5 ++---
+>   drivers/media/platform/s3c-camif/camif-core.c    | 5 +++--
+>   2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/platform/s3c-camif/camif-capture.c b/drivers/media/platform/s3c-camif/camif-capture.c
+> index 9ca49af29542..01fa08065ebc 100644
+> --- a/drivers/media/platform/s3c-camif/camif-capture.c
+> +++ b/drivers/media/platform/s3c-camif/camif-capture.c
+> @@ -547,16 +547,15 @@ static int s3c_camif_open(struct file *file)
+>   	if (ret < 0)
+>   		goto unlock;
+>   
+> -	ret = pm_runtime_get_sync(camif->dev);
+> +	ret = pm_runtime_resume_and_get(camif->dev);
+>   	if (ret < 0)
 
-zw
+> -		goto err_pm;
+> +		goto unlock;
+
+I think we don't need that label change, fh still needs to be released
+in case of an error.
+
+>   	ret = sensor_set_power(camif, 1);
+>   	if (!ret)
+>   		goto unlock;
+>   
+>   	pm_runtime_put(camif->dev);
+> -err_pm:
+>   	v4l2_fh_release(file);
+>   unlock:
+>   	mutex_unlock(&camif->lock);
+
+--
+Regards,
+Sylwester
