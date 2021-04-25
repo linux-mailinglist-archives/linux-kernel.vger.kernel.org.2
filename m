@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D1436A558
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7AC36A55B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhDYHNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 03:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
+        id S230027AbhDYHOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 03:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhDYHNt (ORCPT
+        with ESMTP id S230020AbhDYHOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 03:13:49 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74ADC06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:13:09 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id w10so646951pgh.5
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:13:09 -0700 (PDT)
+        Sun, 25 Apr 2021 03:14:00 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807B6C06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:13:21 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 31so6124462pgn.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SoZb++zfv4yAwjnBuF75FK8ZgZmHYksA4MNIPLiTWic=;
-        b=1bTV5nlan8MWSy/nxj3eASEhGZQ0KgaptGQnSI4jeHIJoKISCdIAIfXYgMXuR8w6Qm
-         whcjZTBlqfrQHnqAkLtAmFI/s/iVKboYu8prKLL2RESUL/0F8aqxYDsK6BwhCAfn9B7M
-         6aMckk8KY7N5FtmWr4s+4SkZneSWlGLPAdmhPrIimCHVCX6xGtTb3PUr6wByNhQt0Fv0
-         xo19FtUwBs++wyhnN5YNeUOU68UJe8qCYgEwFnr8reliOTEseI2qhXqSVe3we2fqlN+M
-         NscD3hOSHmqVdWqSdtx855l7rBfO+o6QFlcRwZQJ8Jeahk39bpLL/rBchITeD9qP9o8/
-         9i9A==
+        bh=VCnSzaZHCKqH61wVuHk0o1TT9bY3u6rBTZhvsMh9WN0=;
+        b=iuQotF7krxl+PvfWxvrxojZC+Ta2JWPbGuN2zQiuPoAyq/hTMN+QHfdyvnmzFdNrtY
+         PZoazCj4l9Qk3whw/6Lo9YfVMl8m5vCJq5PSfaeaWDFWN/JIu3LzyNtFtDZEDEM9l7zt
+         BHb8F8zJ4VZnvv0x2w8QBXd74v7xGF8eCU+MnGs1BmRzSLbLWQkAQfJgOGYbR78a5nHT
+         6NWPZfdHnQPBDYLqa49bu1p3uIrYtt5tcBydJxCBdpYvpBL3ROPVFwDo9QEXmILBsslJ
+         FrphOMXa3NlDc7zj+lKCgZJhf7l7ho81fJX8cYJwlnkYk2t9+UnctntoezhwWokv+Xhj
+         yD9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SoZb++zfv4yAwjnBuF75FK8ZgZmHYksA4MNIPLiTWic=;
-        b=Hzj1KcNe7N6Wv8bKAhWEOYl4TAWu/fuNI+mLqcFS/OmdIHC4uTqZ+Glzg3K42icPAU
-         d0MmCwAMsA3+OIlbF+U77/LcyTOVwri6Kh921dhKHiHKu4lxZPLKK42rjiSU+mpnTmjk
-         LW3B+ShebUnzylVN/qe5mUZSFkX0QPJkJ2FDbdoOJutpfa1dZXkJi947MKYCfBTWpENT
-         kz0/nrmNSJN8EAYxMokpyclVaFKmkRvi3i37pCGVLpFKKvmYhCPPidd5Sv7103RTHHVS
-         RhFcNe1r/e/8Tspqif46QGdCrodN9tbhZ2HzvlhK7U1hPV8v6iy+NMpfbTBByYK+m7wm
-         gJiw==
-X-Gm-Message-State: AOAM5309JaonffXp/sLHWL3aRbrGnGB2NylRpBaNnHwOhObiYVGu6BJI
-        YETsNWSRfHdXQQeD687/89DBLw==
-X-Google-Smtp-Source: ABdhPJyXeVBx1my+A3dIYD92sTzDNr3ovIrz5cTjVTbBWqptlQztvOxxOJgEOP5gZ0JNR7axJrRZ/A==
-X-Received: by 2002:a62:e315:0:b029:263:8436:e784 with SMTP id g21-20020a62e3150000b02902638436e784mr11318972pfh.69.1619334789431;
-        Sun, 25 Apr 2021 00:13:09 -0700 (PDT)
+        bh=VCnSzaZHCKqH61wVuHk0o1TT9bY3u6rBTZhvsMh9WN0=;
+        b=YPC8Nk6EEe+E8HgFIpmQ/x4G2+cwqOJUieUvAuObpr+dlXZSZGAnakC+sUlt37BpHn
+         ReW/bkscodEC48nuYCafb5o7Lc5RuS1Xviar8TIy+y70WIdcXlyRo85RKde4n/R5cyLn
+         If71LHBGqsbh0uO05e9VytgWEJpxuttWYY72zQahDMrLWUXIMa1JlZc9jzTA9hZi0fK1
+         FtnAQqsNHI0K8HIqogSIzbMCAdJXeqysNEbks9PenKh5lvoJoEiAREFby06+7hFr/naW
+         6XFWSp19Vrv5Z9L95FqusirhSWKI+OCYaRgi0LuZdMgvkECPxPLhBJGXzBF8G+PsWd6J
+         V6Mw==
+X-Gm-Message-State: AOAM532OazcnYY4kevPBS3AqrxCZ4uYmDKTK3Pb76ymhHOqcVPsuFNyb
+        X44hHLO0S7SVR/0Wg5FEL4pPlg==
+X-Google-Smtp-Source: ABdhPJwq/7b7UqgASe/biYAAZkDOaSMih+KJKhTHZoTaSTPoiT5ytk6k4oe47NPsXl9TWBo1ZygRmg==
+X-Received: by 2002:aa7:8142:0:b029:256:d3d4:16a0 with SMTP id d2-20020aa781420000b0290256d3d416a0mr11569996pfn.56.1619334801067;
+        Sun, 25 Apr 2021 00:13:21 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id h8sm8767125pjt.17.2021.04.25.00.12.57
+        by smtp.gmail.com with ESMTPSA id h8sm8767125pjt.17.2021.04.25.00.13.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Apr 2021 00:13:09 -0700 (PDT)
+        Sun, 25 Apr 2021 00:13:20 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
         mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
@@ -66,11 +66,10 @@ Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
         Muchun Song <songmuchun@bytedance.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>,
-        Balbir Singh <bsingharora@gmail.com>
-Subject: [PATCH v21 2/9] mm: hugetlb: introduce a new config HUGETLB_PAGE_FREE_VMEMMAP
-Date:   Sun, 25 Apr 2021 15:07:45 +0800
-Message-Id: <20210425070752.17783-3-songmuchun@bytedance.com>
+        Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Subject: [PATCH v21 3/9] mm: hugetlb: gather discrete indexes of tail page
+Date:   Sun, 25 Apr 2021 15:07:46 +0800
+Message-Id: <20210425070752.17783-4-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210425070752.17783-1-songmuchun@bytedance.com>
 References: <20210425070752.17783-1-songmuchun@bytedance.com>
@@ -80,69 +79,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
-some vmemmap pages associated with pre-allocated HugeTLB pages.
-For example, on X86_64 6 vmemmap pages of size 4KB each can be
-saved for each 2MB HugeTLB page. 4094 vmemmap pages of size 4KB
-each can be saved for each 1GB HugeTLB page.
-
-When a HugeTLB page is allocated or freed, the vmemmap array
-representing the range associated with the page will need to be
-remapped. When a page is allocated, vmemmap pages are freed
-after remapping. When a page is freed, previously discarded
-vmemmap pages must be allocated before remapping.
-
-The config option is introduced early so that supporting code
-can be written to depend on the option. The initial version of
-the code only provides support for x86-64.
-
-If config HAVE_BOOTMEM_INFO_NODE is enabled, the freeing vmemmap
-page code denpend on it to free vmemmap pages. Otherwise, just
-use free_reserved_page() to free vmemmmap pages. The routine
-register_page_bootmem_info() is used to register bootmem info.
-Therefore, make sure register_page_bootmem_info is enabled if
-HUGETLB_PAGE_FREE_VMEMMAP is defined.
+For HugeTLB page, there are more metadata to save in the struct page.
+But the head struct page cannot meet our needs, so we have to abuse
+other tail struct page to store the metadata. In order to avoid
+conflicts caused by subsequent use of more tail struct pages, we can
+gather these discrete indexes of tail struct page. In this case, it
+will be easier to add a new tail page index later.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Tested-by: Chen Huang <chenhuang5@huawei.com>
 Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Reviewed-by: Balbir Singh <bsingharora@gmail.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- arch/x86/mm/init_64.c | 2 +-
- fs/Kconfig            | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ include/linux/hugetlb.h        | 21 +++++++++++++++++++--
+ include/linux/hugetlb_cgroup.h | 19 +++++++++++--------
+ 2 files changed, 30 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 3aaf1d30c777..65ea58527176 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1270,7 +1270,7 @@ static struct kcore_list kcore_vsyscall;
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index b92f25ccef58..d523a345dc86 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -29,6 +29,23 @@ typedef struct { unsigned long pd; } hugepd_t;
+ #include <linux/shm.h>
+ #include <asm/tlbflush.h>
  
- static void __init register_page_bootmem_info(void)
- {
--#ifdef CONFIG_NUMA
-+#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
- 	int i;
- 
- 	for_each_online_node(i)
-diff --git a/fs/Kconfig b/fs/Kconfig
-index dcd9161fbeba..6ce6fdac00a3 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -240,6 +240,11 @@ config HUGETLBFS
- config HUGETLB_PAGE
- 	def_bool HUGETLBFS
- 
-+config HUGETLB_PAGE_FREE_VMEMMAP
-+	def_bool HUGETLB_PAGE
-+	depends on X86_64
-+	depends on SPARSEMEM_VMEMMAP
++/*
++ * For HugeTLB page, there are more metadata to save in the struct page. But
++ * the head struct page cannot meet our needs, so we have to abuse other tail
++ * struct page to store the metadata. In order to avoid conflicts caused by
++ * subsequent use of more tail struct pages, we gather these discrete indexes
++ * of tail struct page here.
++ */
++enum {
++	SUBPAGE_INDEX_SUBPOOL = 1,	/* reuse page->private */
++#ifdef CONFIG_CGROUP_HUGETLB
++	SUBPAGE_INDEX_CGROUP,		/* reuse page->private */
++	SUBPAGE_INDEX_CGROUP_RSVD,	/* reuse page->private */
++	__MAX_CGROUP_SUBPAGE_INDEX = SUBPAGE_INDEX_CGROUP_RSVD,
++#endif
++	__NR_USED_SUBPAGE,
++};
 +
- config MEMFD_CREATE
- 	def_bool TMPFS || HUGETLBFS
+ struct hugepage_subpool {
+ 	spinlock_t lock;
+ 	long count;
+@@ -627,13 +644,13 @@ extern unsigned int default_hstate_idx;
+  */
+ static inline struct hugepage_subpool *hugetlb_page_subpool(struct page *hpage)
+ {
+-	return (struct hugepage_subpool *)(hpage+1)->private;
++	return (void *)page_private(hpage + SUBPAGE_INDEX_SUBPOOL);
+ }
+ 
+ static inline void hugetlb_set_page_subpool(struct page *hpage,
+ 					struct hugepage_subpool *subpool)
+ {
+-	set_page_private(hpage+1, (unsigned long)subpool);
++	set_page_private(hpage + SUBPAGE_INDEX_SUBPOOL, (unsigned long)subpool);
+ }
+ 
+ static inline struct hstate *hstate_file(struct file *f)
+diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
+index 0bff345c4bc6..0b8d1fdda3a1 100644
+--- a/include/linux/hugetlb_cgroup.h
++++ b/include/linux/hugetlb_cgroup.h
+@@ -21,15 +21,16 @@ struct hugetlb_cgroup;
+ struct resv_map;
+ struct file_region;
+ 
++#ifdef CONFIG_CGROUP_HUGETLB
+ /*
+  * Minimum page order trackable by hugetlb cgroup.
+  * At least 4 pages are necessary for all the tracking information.
+- * The second tail page (hpage[2]) is the fault usage cgroup.
+- * The third tail page (hpage[3]) is the reservation usage cgroup.
++ * The second tail page (hpage[SUBPAGE_INDEX_CGROUP]) is the fault
++ * usage cgroup. The third tail page (hpage[SUBPAGE_INDEX_CGROUP_RSVD])
++ * is the reservation usage cgroup.
+  */
+-#define HUGETLB_CGROUP_MIN_ORDER	2
++#define HUGETLB_CGROUP_MIN_ORDER order_base_2(__MAX_CGROUP_SUBPAGE_INDEX + 1)
+ 
+-#ifdef CONFIG_CGROUP_HUGETLB
+ enum hugetlb_memory_event {
+ 	HUGETLB_MAX,
+ 	HUGETLB_NR_MEMORY_EVENTS,
+@@ -66,9 +67,9 @@ __hugetlb_cgroup_from_page(struct page *page, bool rsvd)
+ 	if (compound_order(page) < HUGETLB_CGROUP_MIN_ORDER)
+ 		return NULL;
+ 	if (rsvd)
+-		return (struct hugetlb_cgroup *)page[3].private;
++		return (void *)page_private(page + SUBPAGE_INDEX_CGROUP_RSVD);
+ 	else
+-		return (struct hugetlb_cgroup *)page[2].private;
++		return (void *)page_private(page + SUBPAGE_INDEX_CGROUP);
+ }
+ 
+ static inline struct hugetlb_cgroup *hugetlb_cgroup_from_page(struct page *page)
+@@ -90,9 +91,11 @@ static inline int __set_hugetlb_cgroup(struct page *page,
+ 	if (compound_order(page) < HUGETLB_CGROUP_MIN_ORDER)
+ 		return -1;
+ 	if (rsvd)
+-		page[3].private = (unsigned long)h_cg;
++		set_page_private(page + SUBPAGE_INDEX_CGROUP_RSVD,
++				 (unsigned long)h_cg);
+ 	else
+-		page[2].private = (unsigned long)h_cg;
++		set_page_private(page + SUBPAGE_INDEX_CGROUP,
++				 (unsigned long)h_cg);
+ 	return 0;
+ }
  
 -- 
 2.11.0
