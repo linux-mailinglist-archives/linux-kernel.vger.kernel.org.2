@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2D936A90D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6313836A911
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhDYTha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 15:37:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhDYTh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 15:37:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE6D6115C;
-        Sun, 25 Apr 2021 19:36:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619379408;
-        bh=ZTvkB5rpoSHuROmi1/t8X2IfN8+PT9jVHAjIgyd+yvc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=K/TPQ+pu5oKIiPLhY7i0PgolmO+F20176UyTTTpuMtYIAqV6UnK+uhasctEMkbFA2
-         hIW/g0s7Fp0q24TldhlylRL0Q79OpNwbkm1ZlmslLQ8bG+EEUAFieGuMWIOWJQ5ufq
-         AXBUX4AUxOK1+anKCXnh1jZLYQdNHJknVNR58pvQktWd4Mt+U19D009mZjh+k2C9da
-         GwjiF+fgOp7OtIzqJW/wBYzdpXVWd8bv0BotUTjcF2AoTdBOVdn5ssYZklaMWTMOLN
-         2vqNW26Fc0URvqCUqqwIAPu+RWcvg50LMLg+U+gn44WvDAhDwZZiBpSt50XIVDhRZJ
-         N/MUkYQ17brcw==
-Subject: Re: [PATCH 72/78] media: s3c-camif: use pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <cover.1619191723.git.mchehab+huawei@kernel.org>
- <3cfe70dad65dc078a656458cb55087a5269e9cc3.1619191723.git.mchehab+huawei@kernel.org>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <dfb7f44b-5848-b968-6479-a088e72f1a47@kernel.org>
-Date:   Sun, 25 Apr 2021 21:36:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231286AbhDYTzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 15:55:50 -0400
+Received: from mailfilter02-out40.webhostingserver.nl ([195.211.72.22]:27964
+        "EHLO mailfilter02-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231265AbhDYTzs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 15:55:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=exalondelft.nl; s=whs1;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         from;
+        bh=89+H5rCRk92mV8YEGLrI/q3ZeBEsPhsRhzx51JBwkfg=;
+        b=f+kJWoMWLD/LuRe/dkY4Fhhtebv9AVaWrEipdOhWbda1oZSt0qFDB45dHLefE8U7d3GP3DuXnaM9Q
+         Z0LWf4VOdvfels9iTyizpHa+Vj188EMXC6blufcxdwf4FPRVnI9wRKMUy9Ry9ch+R/+vWxtei9RqDL
+         0EgGBhsjo5RivsNCtne3SDNWQLHxGyhahenoYZCxiQ+kun81jRULc2sfbg4tPOpjsbsEZv1qJopa/L
+         Q83kGJdTtZdMGMZRJLJY8hyUcoOjAiprW/lGTE8gb6YIqe+EoKHgjZbO1lJBb+Zv/svCqO4GdEQthC
+         rP5JtrzQC5Ro457vsndP4iDaDif8cLA==
+X-Halon-ID: 219f4f46-a600-11eb-8288-001a4a4cb922
+Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
+        by mailfilter02.webhostingserver.nl (Halon) with ESMTPSA
+        id 219f4f46-a600-11eb-8288-001a4a4cb922;
+        Sun, 25 Apr 2021 21:55:05 +0200 (CEST)
+Received: from [2001:981:6fec:1:1853:1ae5:69c6:8aab] (helo=delfion.fritz.box)
+        by s198.webhostingserver.nl with esmtpa (Exim 4.94)
+        (envelope-from <ftoth@exalondelft.nl>)
+        id 1lakqP-008RrJ-Lw; Sun, 25 Apr 2021 21:55:05 +0200
+From:   Ferry Toth <ftoth@exalondelft.nl>
+To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v2 1/1] usb: dwc3: pci: Enable usb2-gadget-lpm-disable for Intel Merrifield
+Date:   Sun, 25 Apr 2021 21:54:52 +0200
+Message-Id: <20210425195452.94143-1-ftoth@exalondelft.nl>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <3cfe70dad65dc078a656458cb55087a5269e9cc3.1619191723.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Intel Merrifield LPM is causing the host to reset port after a timeout.
+By disabling LPM entirely this is prevented.
 
-On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
-> 
-> Use the new API, in order to cleanup the error check logic.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   drivers/media/platform/s3c-camif/camif-capture.c | 5 ++---
->   drivers/media/platform/s3c-camif/camif-core.c    | 5 +++--
->   2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/platform/s3c-camif/camif-capture.c b/drivers/media/platform/s3c-camif/camif-capture.c
-> index 9ca49af29542..01fa08065ebc 100644
-> --- a/drivers/media/platform/s3c-camif/camif-capture.c
-> +++ b/drivers/media/platform/s3c-camif/camif-capture.c
-> @@ -547,16 +547,15 @@ static int s3c_camif_open(struct file *file)
->   	if (ret < 0)
->   		goto unlock;
->   
-> -	ret = pm_runtime_get_sync(camif->dev);
-> +	ret = pm_runtime_resume_and_get(camif->dev);
->   	if (ret < 0)
+Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merrifield")
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/usb/dwc3/dwc3-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> -		goto err_pm;
-> +		goto unlock;
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index 4c5c6972124a..e5d7eed2e60c 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -122,6 +122,7 @@ static const struct property_entry dwc3_pci_mrfld_properties[] = {
+ 	PROPERTY_ENTRY_STRING("linux,extcon-name", "mrfld_bcove_pwrsrc"),
+ 	PROPERTY_ENTRY_BOOL("snps,dis_u3_susphy_quirk"),
+ 	PROPERTY_ENTRY_BOOL("snps,dis_u2_susphy_quirk"),
++	PROPERTY_ENTRY_BOOL("snps,usb2-gadget-lpm-disable"),
+ 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
+ 	{}
+ };
+-- 
+2.27.0
 
-I think we don't need that label change, fh still needs to be released
-in case of an error.
-
->   	ret = sensor_set_power(camif, 1);
->   	if (!ret)
->   		goto unlock;
->   
->   	pm_runtime_put(camif->dev);
-> -err_pm:
->   	v4l2_fh_release(file);
->   unlock:
->   	mutex_unlock(&camif->lock);
-
---
-Regards,
-Sylwester
