@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEEB36A995
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EB336A997
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhDYVog convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Apr 2021 17:44:36 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5718 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231416AbhDYVod (ORCPT
+        id S230494AbhDYVpT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Apr 2021 17:45:19 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13602 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231426AbhDYVpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 17:44:33 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13PLZbtJ014413
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:43:53 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 384f10ntvj-2
+        Sun, 25 Apr 2021 17:45:12 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13PLY3q3018801
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:44:32 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3853g8a7nc-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:43:53 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 14:44:31 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 25 Apr 2021 14:43:51 -0700
+ 15.1.2176.2; Sun, 25 Apr 2021 14:43:55 -0700
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 5EF1662E2330; Sun, 25 Apr 2021 14:43:46 -0700 (PDT)
+        id C0CF062E2330; Sun, 25 Apr 2021 14:43:48 -0700 (PDT)
 From:   Song Liu <song@kernel.org>
 To:     <linux-kernel@vger.kernel.org>
 CC:     <kernel-team@fb.com>, <acme@kernel.org>, <acme@redhat.com>,
         <namhyung@kernel.org>, <jolsa@kernel.org>, <songliubraving@fb.com>,
         Song Liu <song@kernel.org>
-Subject: [PATCH v5 4/5] perf-stat: introduce ':b' modifier
-Date:   Sun, 25 Apr 2021 14:43:32 -0700
-Message-ID: <20210425214333.1090950-5-song@kernel.org>
+Subject: [PATCH v5 5/5] perf-stat: introduce bpf_counter_ops->disable()
+Date:   Sun, 25 Apr 2021 14:43:33 -0700
+Message-ID: <20210425214333.1090950-6-song@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210425214333.1090950-1-song@kernel.org>
 References: <20210425214333.1090950-1-song@kernel.org>
@@ -40,128 +40,149 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 82yAvUV2uwNlTZw6rQC-n-luRkaron7U
-X-Proofpoint-ORIG-GUID: 82yAvUV2uwNlTZw6rQC-n-luRkaron7U
+X-Proofpoint-ORIG-GUID: 7TsyWlJWDSzxrObmeriLsqe9I-XdrwZx
+X-Proofpoint-GUID: 7TsyWlJWDSzxrObmeriLsqe9I-XdrwZx
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-25_09:2021-04-23,2021-04-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 priorityscore=1501
- mlxscore=0 bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104250162
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1015 mlxscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104250162
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce 'b' modifier to event parser, which means use BPF program to
-manage this event. This is the same as --bpf-counters option, but only
-applies to this event. For example,
+Introduce bpf_counter_ops->disable(), which is used stop counting the
+event.
 
-  perf stat -e cycles:b,cs               # use bpf for cycles, but not cs
-  perf stat -e cycles,cs --bpf-counters  # use bpf for both cycles and cs
-
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- tools/perf/util/bpf_counter.c  | 2 +-
- tools/perf/util/evsel.h        | 1 +
- tools/perf/util/parse-events.c | 8 +++++++-
- tools/perf/util/parse-events.l | 2 +-
- 4 files changed, 10 insertions(+), 3 deletions(-)
+ tools/perf/util/bpf_counter.c | 26 ++++++++++++++++++++++++++
+ tools/perf/util/bpf_counter.h |  7 +++++++
+ tools/perf/util/evlist.c      |  4 ++++
+ 3 files changed, 37 insertions(+)
 
 diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 33b1888103dfa..f179f57430253 100644
+index f179f57430253..ddb52f748c8e8 100644
 --- a/tools/perf/util/bpf_counter.c
 +++ b/tools/perf/util/bpf_counter.c
-@@ -790,7 +790,7 @@ int bpf_counter__load(struct evsel *evsel, struct target *target)
- {
- 	if (target->bpf_str)
- 		evsel->bpf_counter_ops = &bpf_program_profiler_ops;
--	else if (target->use_bpf ||
-+	else if (target->use_bpf || evsel->bpf_counter ||
- 		 evsel__match_bpf_counter_events(evsel->name))
- 		evsel->bpf_counter_ops = &bperf_ops;
- 
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index ce4b629d659c2..8f66cdcb338d0 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -82,6 +82,7 @@ struct evsel {
- 		bool			auto_merge_stats;
- 		bool			collect_stat;
- 		bool			weak_group;
-+		bool			bpf_counter;
- 		int			bpf_fd;
- 		struct bpf_object	*bpf_obj;
- 	};
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 8123d218ad17c..46ebd269a98d1 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1804,6 +1804,7 @@ struct event_modifier {
- 	int pinned;
- 	int weak;
- 	int exclusive;
-+	int bpf_counter;
- };
- 
- static int get_event_modifier(struct event_modifier *mod, char *str,
-@@ -1824,6 +1825,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
- 	int exclude = eu | ek | eh;
- 	int exclude_GH = evsel ? evsel->exclude_GH : 0;
- 	int weak = 0;
-+	int bpf_counter = 0;
- 
- 	memset(mod, 0, sizeof(*mod));
- 
-@@ -1867,6 +1869,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
- 			exclusive = 1;
- 		} else if (*str == 'W') {
- 			weak = 1;
-+		} else if (*str == 'b') {
-+			bpf_counter = 1;
- 		} else
- 			break;
- 
-@@ -1898,6 +1902,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
- 	mod->sample_read = sample_read;
- 	mod->pinned = pinned;
- 	mod->weak = weak;
-+	mod->bpf_counter = bpf_counter;
- 	mod->exclusive = exclusive;
- 
+@@ -215,6 +215,17 @@ static int bpf_program_profiler__enable(struct evsel *evsel)
  	return 0;
-@@ -1912,7 +1917,7 @@ static int check_modifier(char *str)
- 	char *p = str;
+ }
  
- 	/* The sizeof includes 0 byte as well. */
--	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
-+	if (strlen(str) > (sizeof("ukhGHpppPSDIWeb") - 1))
- 		return -1;
++static int bpf_program_profiler__disable(struct evsel *evsel)
++{
++	struct bpf_counter *counter;
++
++	list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
++		assert(counter->skel != NULL);
++		bpf_prog_profiler_bpf__detach(counter->skel);
++	}
++	return 0;
++}
++
+ static int bpf_program_profiler__read(struct evsel *evsel)
+ {
+ 	// perf_cpu_map uses /sys/devices/system/cpu/online
+@@ -280,6 +291,7 @@ static int bpf_program_profiler__install_pe(struct evsel *evsel, int cpu,
+ struct bpf_counter_ops bpf_program_profiler_ops = {
+ 	.load       = bpf_program_profiler__load,
+ 	.enable	    = bpf_program_profiler__enable,
++	.disable    = bpf_program_profiler__disable,
+ 	.read       = bpf_program_profiler__read,
+ 	.destroy    = bpf_program_profiler__destroy,
+ 	.install_pe = bpf_program_profiler__install_pe,
+@@ -627,6 +639,12 @@ static int bperf__enable(struct evsel *evsel)
+ 	return 0;
+ }
  
- 	while (*p) {
-@@ -1953,6 +1958,7 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
- 		evsel->sample_read         = mod.sample_read;
- 		evsel->precise_max         = mod.precise_max;
- 		evsel->weak_group	   = mod.weak;
-+		evsel->bpf_counter	   = mod.bpf_counter;
++static int bperf__disable(struct evsel *evsel)
++{
++	evsel->follower_skel->bss->enabled = 0;
++	return 0;
++}
++
+ static int bperf__read(struct evsel *evsel)
+ {
+ 	struct bperf_follower_bpf *skel = evsel->follower_skel;
+@@ -768,6 +786,7 @@ static int bperf__destroy(struct evsel *evsel)
+ struct bpf_counter_ops bperf_ops = {
+ 	.load       = bperf__load,
+ 	.enable     = bperf__enable,
++	.disable    = bperf__disable,
+ 	.read       = bperf__read,
+ 	.install_pe = bperf__install_pe,
+ 	.destroy    = bperf__destroy,
+@@ -806,6 +825,13 @@ int bpf_counter__enable(struct evsel *evsel)
+ 	return evsel->bpf_counter_ops->enable(evsel);
+ }
  
- 		if (evsel__is_group_leader(evsel)) {
- 			evsel->core.attr.pinned = mod.pinned;
-diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-index 0b36285a9435d..fb8646cc3e834 100644
---- a/tools/perf/util/parse-events.l
-+++ b/tools/perf/util/parse-events.l
-@@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
- name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
- drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
- /* If you add a modifier you need to update check_modifier() */
--modifier_event	[ukhpPGHSDIWe]+
-+modifier_event	[ukhpPGHSDIWeb]+
- modifier_bp	[rwx]{1,3}
++int bpf_counter__disable(struct evsel *evsel)
++{
++	if (bpf_counter_skip(evsel))
++		return 0;
++	return evsel->bpf_counter_ops->disable(evsel);
++}
++
+ int bpf_counter__read(struct evsel *evsel)
+ {
+ 	if (bpf_counter_skip(evsel))
+diff --git a/tools/perf/util/bpf_counter.h b/tools/perf/util/bpf_counter.h
+index cb9c532e0a079..d6d907c3dcf92 100644
+--- a/tools/perf/util/bpf_counter.h
++++ b/tools/perf/util/bpf_counter.h
+@@ -18,6 +18,7 @@ typedef int (*bpf_counter_evsel_install_pe_op)(struct evsel *evsel,
+ struct bpf_counter_ops {
+ 	bpf_counter_evsel_target_op load;
+ 	bpf_counter_evsel_op enable;
++	bpf_counter_evsel_op disable;
+ 	bpf_counter_evsel_op read;
+ 	bpf_counter_evsel_op destroy;
+ 	bpf_counter_evsel_install_pe_op install_pe;
+@@ -32,6 +33,7 @@ struct bpf_counter {
  
- %%
+ int bpf_counter__load(struct evsel *evsel, struct target *target);
+ int bpf_counter__enable(struct evsel *evsel);
++int bpf_counter__disable(struct evsel *evsel);
+ int bpf_counter__read(struct evsel *evsel);
+ void bpf_counter__destroy(struct evsel *evsel);
+ int bpf_counter__install_pe(struct evsel *evsel, int cpu, int fd);
+@@ -51,6 +53,11 @@ static inline int bpf_counter__enable(struct evsel *evsel __maybe_unused)
+ 	return 0;
+ }
+ 
++static inline int bpf_counter__disable(struct evsel *evsel __maybe_unused)
++{
++	return 0;
++}
++
+ static inline int bpf_counter__read(struct evsel *evsel __maybe_unused)
+ {
+ 	return -EAGAIN;
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index d29a8a118973c..e71041c890102 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -17,6 +17,7 @@
+ #include "evsel.h"
+ #include "debug.h"
+ #include "units.h"
++#include "bpf_counter.h"
+ #include <internal/lib.h> // page_size
+ #include "affinity.h"
+ #include "../perf.h"
+@@ -421,6 +422,9 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+ 	if (affinity__setup(&affinity) < 0)
+ 		return;
+ 
++	evlist__for_each_entry(evlist, pos)
++		bpf_counter__disable(pos);
++
+ 	/* Disable 'immediate' events last */
+ 	for (imm = 0; imm <= 1; imm++) {
+ 		evlist__for_each_cpu(evlist, i, cpu) {
 -- 
 2.30.2
 
