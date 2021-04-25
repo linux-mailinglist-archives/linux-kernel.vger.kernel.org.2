@@ -2,199 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5630236A800
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FFE36A803
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhDYPh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 11:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhDYPhZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 11:37:25 -0400
-X-Greylist: delayed 492 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 25 Apr 2021 08:36:45 PDT
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D21C061574;
-        Sun, 25 Apr 2021 08:36:45 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1DAAD3EB2E;
-        Sun, 25 Apr 2021 17:28:28 +0200 (CEST)
-From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To:     netdev@vger.kernel.org
-Cc:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [PATCH net] net: bridge: mcast: fix broken length + header check for MRDv6 Adv.
-Date:   Sun, 25 Apr 2021 17:27:35 +0200
-Message-Id: <20210425152736.8421-1-linus.luessing@c0d3.blue>
+        id S230451AbhDYPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 11:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230293AbhDYPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 11:40:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DAC661168;
+        Sun, 25 Apr 2021 15:40:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619365202;
+        bh=vJQId1sKBjLTaFwG7YtTI4NnN2kP1/6h7OuKvaYH7tc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ObQ99q5AWRiK9wV2jNlINCQQ1yVNdDq3tvZlwTUSiIxFbe+f4Jp5NisWIWhZUfsMR
+         XqstutyPx8m/yu3C1YgLQr7yWnF1kqlP5ah3SNB44laVj0z1gQ/tGfcZlJ0eAzGKKo
+         BA4E44I96t0rkGDkpq4RIk40oH8P/qlN7mdNLNtJ3vHkPfmR8Ux4x8COkQIArb6rD1
+         By4yXo5z6psUZx5UqtMbX3sr4cQVs74ZMg1ZPpgpJsWwj8jvIcq+EJ4GbsbUFdsTuu
+         k9QLlh50uPM9gCRX8mCSDqQGxpX7VHsXzfoI3hDa/UNQbnR2BVvEyDxTGdZA0P9rgJ
+         mkEexFxS/rx/g==
+Received: by pali.im (Postfix)
+        id B7C5689A; Sun, 25 Apr 2021 17:39:59 +0200 (CEST)
+Date:   Sun, 25 Apr 2021 17:39:59 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        'Amey Narkhede' <ameynarkhede03@gmail.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "helgaas@kernel.org" <helgaas@kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "kabel@kernel.org" <kabel@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "raphael.norwitz@nutanix.com" <raphael.norwitz@nutanix.com>
+Subject: Re: How long should be PCIe card in Warm Reset state?
+Message-ID: <20210425153959.3ydpjzyx5jp7uqzf@pali>
+References: <20210310110535.zh4pnn4vpmvzwl5q@pali>
+ <20210323161941.gim6msj3ruu3flnf@archlinux>
+ <20210323162747.tscfovntsy7uk5bk@pali>
+ <20210323165749.retjprjgdj7seoan@archlinux>
+ <a8e256ece0334734b1ef568820b95a15@AcuMS.aculab.com>
+ <alpine.DEB.2.21.2103301428030.18977@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2103301428030.18977@angie.orcam.me.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IPv6 Multicast Router Advertisements parsing has the following two
-issues:
+On Tuesday 30 March 2021 15:04:02 Maciej W. Rozycki wrote:
+> On Thu, 25 Mar 2021, David Laight wrote:
+> 
+> > I can't see the value in the (nice bound) copy of the PCI 2.0 spec I have.
+> > But IIRC it is 100ms (it might just me 500ms).
+> > While this might seem like ages it can be problematic if targets have
+> > to load large FPGA images from serial EEPROMs.
+> 
+>  AFAICT it is 100ms for the Conventional Reset before Configuration 
+> Requests are allowed to be issued in the first place...
 
-For one thing, ICMPv6 MRD Advertisements are smaller than ICMPv6 MLD
-messages (ICMPv6 MRD Adv.: 8 bytes vs. ICMPv6 MLDv1/2: >= 24 bytes,
-assuming MLDv2 Reports with at least one multicast address entry).
-When ipv6_mc_check_mld_msg() tries to parse an Multicast Router
-Advertisement its MLD length check will fail - and it will wrongly
-return -EINVAL, even if we have a valid MRD Advertisement. With the
-returned -EINVAL the bridge code will assume a broken packet and will
-wrongly discard it, potentially leading to multicast packet loss towards
-multicast routers.
+Hi Maciej! Now I see that we have talked about two different things.
 
-The second issue is the MRD header parsing in
-br_ip6_multicast_mrd_rcv(): It wrongly checks for an ICMPv6 header
-immediately after the IPv6 header (IPv6 next header type). However
-according to RFC4286, section 2 all MRD messages contain a Router Alert
-option (just like MLD). So instead there is an IPv6 Hop-by-Hop option
-for the Router Alert between the IPv6 and ICMPv6 header, again leading
-to the bridge wrongly discarding Multicast Router Advertisements.
+My question is: How long should be card is reset state. And you
+described timeouts after reset finish... which are different timeouts.
 
-To fix these two issues, introduce a new return value -ENODATA to
-ipv6_mc_check_mld() to indicate a valid ICMPv6 packet with a hop-by-hop
-option which is not an MLD but potentially an MRD packet. This also
-simplifies further parsing in the bridge code, as ipv6_mc_check_mld()
-already fully checks the ICMPv6 header and hop-by-hop option.
-
-These issues were found and fixed with the help of the mrdisc tool
-(https://github.com/troglobit/mrdisc).
-
-Fixes: 4b3087c7e37f ("bridge: Snoop Multicast Router Advertisements")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
----
- include/net/addrconf.h    |  1 -
- net/bridge/br_multicast.c | 33 ++++++++-------------------------
- net/ipv6/mcast_snoop.c    | 12 +++++++-----
- 3 files changed, 15 insertions(+), 31 deletions(-)
-
-diff --git a/include/net/addrconf.h b/include/net/addrconf.h
-index 18f783dcd55f..78ea3e332688 100644
---- a/include/net/addrconf.h
-+++ b/include/net/addrconf.h
-@@ -233,7 +233,6 @@ void ipv6_mc_unmap(struct inet6_dev *idev);
- void ipv6_mc_remap(struct inet6_dev *idev);
- void ipv6_mc_init_dev(struct inet6_dev *idev);
- void ipv6_mc_destroy_dev(struct inet6_dev *idev);
--int ipv6_mc_check_icmpv6(struct sk_buff *skb);
- int ipv6_mc_check_mld(struct sk_buff *skb);
- void addrconf_dad_failure(struct sk_buff *skb, struct inet6_ifaddr *ifp);
- 
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index 9d265447d654..229309d7b4ff 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -3152,25 +3152,14 @@ static int br_multicast_ipv4_rcv(struct net_bridge *br,
- }
- 
- #if IS_ENABLED(CONFIG_IPV6)
--static int br_ip6_multicast_mrd_rcv(struct net_bridge *br,
--				    struct net_bridge_port *port,
--				    struct sk_buff *skb)
-+static void br_ip6_multicast_mrd_rcv(struct net_bridge *br,
-+				     struct net_bridge_port *port,
-+				     struct sk_buff *skb)
- {
--	int ret;
--
--	if (ipv6_hdr(skb)->nexthdr != IPPROTO_ICMPV6)
--		return -ENOMSG;
--
--	ret = ipv6_mc_check_icmpv6(skb);
--	if (ret < 0)
--		return ret;
--
- 	if (icmp6_hdr(skb)->icmp6_type != ICMPV6_MRDISC_ADV)
--		return -ENOMSG;
-+		return;
- 
- 	br_multicast_mark_router(br, port);
--
--	return 0;
- }
- 
- static int br_multicast_ipv6_rcv(struct net_bridge *br,
-@@ -3184,18 +3173,12 @@ static int br_multicast_ipv6_rcv(struct net_bridge *br,
- 
- 	err = ipv6_mc_check_mld(skb);
- 
--	if (err == -ENOMSG) {
-+	if (err == -ENOMSG || err == -ENODATA) {
- 		if (!ipv6_addr_is_ll_all_nodes(&ipv6_hdr(skb)->daddr))
- 			BR_INPUT_SKB_CB(skb)->mrouters_only = 1;
--
--		if (ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr)) {
--			err = br_ip6_multicast_mrd_rcv(br, port, skb);
--
--			if (err < 0 && err != -ENOMSG) {
--				br_multicast_err_count(br, port, skb->protocol);
--				return err;
--			}
--		}
-+		if (err == -ENODATA &&
-+		    ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr))
-+			br_ip6_multicast_mrd_rcv(br, port, skb);
- 
- 		return 0;
- 	} else if (err < 0) {
-diff --git a/net/ipv6/mcast_snoop.c b/net/ipv6/mcast_snoop.c
-index d3d6b6a66e5f..04d5fcdfa6e0 100644
---- a/net/ipv6/mcast_snoop.c
-+++ b/net/ipv6/mcast_snoop.c
-@@ -109,7 +109,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
- 	struct mld_msg *mld;
- 
- 	if (!ipv6_mc_may_pull(skb, len))
--		return -EINVAL;
-+		return -ENODATA;
- 
- 	mld = (struct mld_msg *)skb_transport_header(skb);
- 
-@@ -122,7 +122,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
- 	case ICMPV6_MGM_QUERY:
- 		return ipv6_mc_check_mld_query(skb);
- 	default:
--		return -ENOMSG;
-+		return -ENODATA;
- 	}
- }
- 
-@@ -131,7 +131,7 @@ static inline __sum16 ipv6_mc_validate_checksum(struct sk_buff *skb)
- 	return skb_checksum_validate(skb, IPPROTO_ICMPV6, ip6_compute_pseudo);
- }
- 
--int ipv6_mc_check_icmpv6(struct sk_buff *skb)
-+static int ipv6_mc_check_icmpv6(struct sk_buff *skb)
- {
- 	unsigned int len = skb_transport_offset(skb) + sizeof(struct icmp6hdr);
- 	unsigned int transport_len = ipv6_transport_len(skb);
-@@ -150,7 +150,6 @@ int ipv6_mc_check_icmpv6(struct sk_buff *skb)
- 
- 	return 0;
- }
--EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
- 
- /**
-  * ipv6_mc_check_mld - checks whether this is a sane MLD packet
-@@ -161,7 +160,10 @@ EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
-  *
-  * -EINVAL: A broken packet was detected, i.e. it violates some internet
-  *  standard
-- * -ENOMSG: IP header validation succeeded but it is not an MLD packet.
-+ * -ENOMSG: IP header validation succeeded but it is not an ICMPv6 packet
-+ *  with a hop-by-hop option.
-+ * -ENODATA: IP+ICMPv6 header with hop-by-hop option validation succeeded
-+ *  but it is not an MLD packet.
-  * -ENOMEM: A memory allocation failure happened.
-  *
-  * Caller needs to set the skb network header and free any returned skb if it
--- 
-2.31.0
-
+In case you know also timeout how long should card stay in reset state
+then please let us know!
