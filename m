@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3200E36A452
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CA736A454
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhDYDH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 23:07:57 -0400
-Received: from mga14.intel.com ([192.55.52.115]:22914 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229739AbhDYDHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 23:07:53 -0400
-IronPort-SDR: xcpAz9NFaRmU6DkP1ELkK1+SnKDDnUmitRyrGzq7pfP6TrorEH54Ah7Qsn/MAVCXcCm/eban4c
- Miwn6NLSkTvg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="195762760"
-X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="195762760"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:07:14 -0700
-IronPort-SDR: tb7Uxd0r54Hy4tnkUnO2ZpI1EabmeQSPKX52feURX78+7Q0v31a3MwON9PupyowYQUzYq5MUek
- DxIYxI/RSccw==
-X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="422203786"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:07:09 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
-        <david@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 4/4] mm/shmem: fix shmem_swapin() race with swapoff
-References: <20210425023806.3537283-1-linmiaohe@huawei.com>
-        <20210425023806.3537283-5-linmiaohe@huawei.com>
-Date:   Sun, 25 Apr 2021 11:07:07 +0800
-In-Reply-To: <20210425023806.3537283-5-linmiaohe@huawei.com> (Miaohe Lin's
-        message of "Sun, 25 Apr 2021 10:38:06 +0800")
-Message-ID: <87bla3xdt0.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S229582AbhDYDJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 23:09:05 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:52730 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhDYDJA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 23:09:00 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 91D62ED;
+        Sun, 25 Apr 2021 05:08:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1619320099;
+        bh=Qq0p0ICsIakO1oWz+z9LSXPUEEHiuJO/sMFZGcF6bp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fRuyb5ZkFtsN+VybuQVzRXsnVkHQ7QL1rA8bSlwfaCYs/T0KNS6duQ90jmgpMVcQ3
+         Foz7x+UXNlBwll93tMfa5k1xdl0/JZS5+UlRo6enb1jnhG/xFpNO1d22WB7JRRHWyK
+         7uADCTMLtBMS6c1b4/a9Pp2iutu5SGbBe9RqPZE8=
+Date:   Sun, 25 Apr 2021 06:08:14 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2] usb: gadget: Drop unnecessary NULL checks after
+ container_of
+Message-ID: <YITdHl3vb5qiCHPC@pendragon.ideasonboard.com>
+References: <20210424145443.170413-1-linux@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210424145443.170413-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+Hi Guenter,
 
-> When I was investigating the swap code, I found the below possible race
-> window:
->
-> CPU 1                                         CPU 2
-> -----                                         -----
-> shmem_swapin
->   swap_cluster_readahead
->     if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
->                                               swapoff
->                                                 ..
->                                                 si->swap_file = NULL;
->                                                 ..
->     struct inode *inode = si->swap_file->f_mapping->host;[oops!]
->
-> Close this race window by using get/put_swap_device() to guard against
-> concurrent swapoff.
->
-> Fixes: 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or not")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Thank you for the patch.
+
+On Sat, Apr 24, 2021 at 07:54:43AM -0700, Guenter Roeck wrote:
+> The parameters passed to allow_link and drop_link functions are never NULL.
+> That means the result of container_of() on those parameters is also
+> never NULL, even though the reference into the structure points to the
+> first element of the structure. Remove the unnecessary NULL checks.
+> 
+> This change was made automatically with the following Coccinelle script.
+> A now obsolete 'out:' label was removed manually.
+> 
+> @@
+> type t;
+> identifier v;
+> statement s;
+> @@
+> 
+> <+...
+> (
+>   t v = container_of(...);
+> |
+>   v = container_of(...);
+> )
+>   ...
+>   when != v
+> - if (\( !v \| v == NULL \) ) s
+> ...+>
+> 
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Felipe Balbi <balbi@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Acked-by: Felipe Balbi <balbi@kernel.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 > ---
->  mm/shmem.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 26c76b13ad23..be388d0cf8b5 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1696,6 +1696,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  	struct address_space *mapping = inode->i_mapping;
->  	struct shmem_inode_info *info = SHMEM_I(inode);
->  	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
-> +	struct swap_info_struct *si;
->  	struct page *page;
->  	swp_entry_t swap;
->  	int error;
-> @@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  	swap = radix_to_swp_entry(*pagep);
->  	*pagep = NULL;
+> v2: Dropped RFC, added Acked-by:, dropped now obsolete 'out:' label
+> 
+>  drivers/usb/gadget/function/uvc_configfs.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/function/uvc_configfs.c b/drivers/usb/gadget/function/uvc_configfs.c
+> index 00fb58e50a15..7775f9902360 100644
+> --- a/drivers/usb/gadget/function/uvc_configfs.c
+> +++ b/drivers/usb/gadget/function/uvc_configfs.c
+> @@ -914,8 +914,6 @@ static int uvcg_streaming_header_allow_link(struct config_item *src,
 >  
-> +	/* Prevent swapoff from happening to us. */
-> +	si = get_swap_device(swap);
-> +	if (unlikely(!si)) {
-> +		error = EINVAL;
-> +		goto failed;
-> +	}
->  	/* Look it up and read it in.. */
->  	page = lookup_swap_cache(swap, NULL, 0);
->  	if (!page) {
-> @@ -1720,6 +1727,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  			goto failed;
->  		}
->  	}
-> +	put_swap_device(si);
-
-I think it's better to put_swap_device() just before returning from the
-function.  It's not a big issue to slow down swapoff() a little.  And
-this will make the logic easier to be understood.
-
-Best Regards,
-Huang, Ying
-
+>  	target_fmt = container_of(to_config_group(target), struct uvcg_format,
+>  				  group);
+> -	if (!target_fmt)
+> -		goto out;
 >  
->  	/* We have to do this with page locked to prevent races */
->  	lock_page(page);
-> @@ -1775,6 +1783,9 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  		put_page(page);
->  	}
+>  	uvcg_format_set_indices(to_config_group(target));
 >  
-> +	if (si)
-> +		put_swap_device(si);
-> +
->  	return error;
+> @@ -955,8 +953,6 @@ static void uvcg_streaming_header_drop_link(struct config_item *src,
+>  	mutex_lock(&opts->lock);
+>  	target_fmt = container_of(to_config_group(target), struct uvcg_format,
+>  				  group);
+> -	if (!target_fmt)
+> -		goto out;
+>  
+>  	list_for_each_entry_safe(format_ptr, tmp, &src_hdr->formats, entry)
+>  		if (format_ptr->fmt == target_fmt) {
+> @@ -968,7 +964,6 @@ static void uvcg_streaming_header_drop_link(struct config_item *src,
+>  
+>  	--target_fmt->linked;
+>  
+> -out:
+>  	mutex_unlock(&opts->lock);
+>  	mutex_unlock(su_mutex);
 >  }
+
+-- 
+Regards,
+
+Laurent Pinchart
