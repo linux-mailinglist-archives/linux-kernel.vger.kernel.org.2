@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805C336A5AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C929B36A5AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhDYIQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 04:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhDYIQ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 04:16:56 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B457C061574;
-        Sun, 25 Apr 2021 01:16:14 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso3442899pjg.2;
-        Sun, 25 Apr 2021 01:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wnpkL3ueOA+zoMhko8uVKbNai7YgfMgiPqjt6r4gZac=;
-        b=r9Dd+O+wbK/P5tmd596jNPpN2wQePnAJpaj8OUvOejd7x/WqL0tZKv+dJ3PIuWasXs
-         rjiUe+5sVtnnpEdPV58g8qR0euZKocq8MQ1ZXhlFr+cMqY+T5cEW30wlR661t38cGIiM
-         nSWvRVIa3HODnKReMNU5mpOvOjxTw3b2mpNK90NjxZJ8ULWUQ5vo7tWm4wdZ5elXLPAD
-         561OGso6a3xuapNM82koZ8Xf9NbcQoPMi7PzuhEl3K0d/rW0vSCw3cN/dXmmBj460/M3
-         ESVukv+Jl3QPU4iIe+yQPMqF6HHmxl38x9Kfd5UL2M0dvxudWnv0Sr9VJ5Ju0jF8HUSl
-         IFFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wnpkL3ueOA+zoMhko8uVKbNai7YgfMgiPqjt6r4gZac=;
-        b=gXASeVttPnaKg/R8lMMSwkmP7GzXcyoMtYCUoUY2qs0JHd0ZhPylHiqn0+a5zlyenY
-         LCN8dQwGNnjHR3Tn5AUMifmuRdmxdXZ6UdI2SBZtIS5ioiRpSPs5kpukFabQ2Lyg/URM
-         Qv7UbD+u/h6lfD/j2zGUUpJ2u8Q+jtg0/GhsiV0c0VhSF4yBNL8FOn8J8uR0Nh418W3u
-         s1rkRJOcWDBQo2d8qUPSqzRcaoeR+akBq/I5Aoni2xCfrkE78ApbH2jHMOKXq/8dN3gf
-         5Uje8xH4o0y31aykJ5xcgCnibQQID2mL0L1ytWF8aAs/pwgu4Y2pYhSbdHgOzqcR0Dpc
-         99IA==
-X-Gm-Message-State: AOAM531fqx+nrJVsUsMXalNf/PD2g65yknjR21Ol3xqWlz+w6ZIq/uN2
-        MWrb+PMWEKcF10IbUf4kiQk=
-X-Google-Smtp-Source: ABdhPJxYrg7gJC96ZRdTcEHuBp9yu2poWm4YcF6k7FJ/PnpVnt3ehs3/90tSwT1XgagYwaFeVJOwUA==
-X-Received: by 2002:a17:902:9008:b029:e6:f37a:2183 with SMTP id a8-20020a1709029008b02900e6f37a2183mr12487050plp.49.1619338573533;
-        Sun, 25 Apr 2021 01:16:13 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.83.82])
-        by smtp.gmail.com with ESMTPSA id k127sm8871993pfd.63.2021.04.25.01.16.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Apr 2021 01:16:13 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     peter.chen@kernel.org, pawell@cadence.com, rogerq@kernel.org,
-        a-govindraju@ti.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH v2] usb: cdns3: Corrected comment to align with kernel-doc comment
-Date:   Sun, 25 Apr 2021 13:46:05 +0530
-Message-Id: <1619338565-4574-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S229619AbhDYIT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 04:19:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhDYIT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 04:19:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 60636B01E;
+        Sun, 25 Apr 2021 08:19:18 +0000 (UTC)
+Date:   Sun, 25 Apr 2021 10:19:18 +0200
+Message-ID: <s5hr1iy4vzt.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>
+Subject: Re: [PATCH v1 1/2] ALSA: hda/cirrus: Set Initial DMIC volume for Bullseye to 16%
+In-Reply-To: <20210424143244.639125-2-vitalyr@opensource.cirrus.com>
+References: <20210424143244.639125-1-vitalyr@opensource.cirrus.com>
+        <20210424143244.639125-2-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor update in comment.
+On Sat, 24 Apr 2021 16:32:43 +0200,
+Vitaly Rodionov wrote:
+> 
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
+> 
+> Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
-v2:
-	Updated change logs and address review comment.
+Could you give a bit more descriptions why this patch is needed?
+And what do you mean 16%?  The only meaningful measure is dB in the
+h/w spec.  Last but not least, why this value was chosen?
 
- drivers/usb/cdns3/cdns3-gadget.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index 9b1bd41..21f026c 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -484,7 +484,7 @@ static void __cdns3_descmiss_copy_data(struct usb_request *request,
- }
- 
- /**
-- * cdns3_wa2_descmiss_copy_data copy data from internal requests to
-+ * cdns3_wa2_descmiss_copy_data - copy data from internal requests to
-  * request queued by class driver.
-  * @priv_ep: extended endpoint object
-  * @request: request object
--- 
-1.9.1
+thanks,
 
+Takashi
+
+> 
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1923557
+> Reported-and-tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
+> ---
+>  sound/pci/hda/patch_cirrus.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+> index 5d57096b3a95..d6cf93b7483c 100644
+> --- a/sound/pci/hda/patch_cirrus.c
+> +++ b/sound/pci/hda/patch_cirrus.c
+> @@ -2172,6 +2172,10 @@ static void cs8409_cs42l42_fixups(struct hda_codec *codec,
+>  			(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
+>  		break;
+>  	case HDA_FIXUP_ACT_PROBE:
+> +
+> +		if (codec->fixup_id == CS8409_BULLSEYE)
+> +			snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
+> +					HDA_INPUT, 0, 0xff, 0x19);
+>  		snd_hda_gen_add_kctl(&spec->gen,
+>  			NULL, &cs8409_cs42l42_hp_volume_mixer);
+>  		snd_hda_gen_add_kctl(&spec->gen,
+> -- 
+> 2.25.1
+> 
