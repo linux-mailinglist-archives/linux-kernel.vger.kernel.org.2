@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9ED36A455
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4068136A456
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbhDYDJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 23:09:23 -0400
-Received: from mga04.intel.com ([192.55.52.120]:45647 "EHLO mga04.intel.com"
+        id S231489AbhDYDKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 23:10:05 -0400
+Received: from mga07.intel.com ([134.134.136.100]:39377 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhDYDJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 23:09:21 -0400
-IronPort-SDR: XK6RLg1zf2azbmpfuXm8M4RlnY+3NoezAwOQAOORd8zh+AxiAUcjwpJhZrzNEvaV7VX8nN7k3e
- ubFPQEfs0yGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="194091140"
+        id S229592AbhDYDKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 23:10:00 -0400
+IronPort-SDR: J8Z8kVLYMGW/VcI1I9WB8uzQQj+9lKzjrSSR3vsQDZl1Nsuo6vXzPFvlkA1ZtsUuO4kLJBVz2v
+ b6OzsmMXEAHQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="260162110"
 X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="194091140"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:08:41 -0700
-IronPort-SDR: GCWUeG9Clk7R9Dj2RDIZI7NT3+JEbMA8vymVhE9MS6gCXx5KziMJmNb7rB0TyS6BHAUfBhLpOu
- s/f9SbKFXVbA==
+   d="scan'208";a="260162110"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:09:20 -0700
+IronPort-SDR: CRUydiyRZCcxxUktF8ALsPsp7pExL6AWNIFbr0n9Xys2yPdRlAXCsK4upUlRT0+jxSkeQEOgDZ
+ 9he9kPwURuvw==
 X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
-   d="scan'208";a="422203947"
+   d="scan'208";a="525371685"
 Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:08:38 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 20:09:16 -0700
 From:   "Huang, Ying" <ying.huang@intel.com>
 To:     Miaohe Lin <linmiaohe@huawei.com>
 Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
@@ -33,13 +33,14 @@ Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
         <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
         <david@redhat.com>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 2/4] swap: fix do_swap_page() race with swapoff
+Subject: Re: [PATCH v4 3/4] mm/swap: remove confusing checking for
+ non_swap_entry() in swap_ra_info()
 References: <20210425023806.3537283-1-linmiaohe@huawei.com>
-        <20210425023806.3537283-3-linmiaohe@huawei.com>
-Date:   Sun, 25 Apr 2021 11:08:36 +0800
-In-Reply-To: <20210425023806.3537283-3-linmiaohe@huawei.com> (Miaohe Lin's
-        message of "Sun, 25 Apr 2021 10:38:04 +0800")
-Message-ID: <877dkrxdqj.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <20210425023806.3537283-4-linmiaohe@huawei.com>
+Date:   Sun, 25 Apr 2021 11:09:14 +0800
+In-Reply-To: <20210425023806.3537283-4-linmiaohe@huawei.com> (Miaohe Lin's
+        message of "Sun, 25 Apr 2021 10:38:05 +0800")
+Message-ID: <8735vfxdph.fsf@yhuang6-desk1.ccr.corp.intel.com>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ascii
@@ -49,32 +50,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Miaohe Lin <linmiaohe@huawei.com> writes:
 
-> When I was investigating the swap code, I found the below possible race
-> window:
+> The non_swap_entry() was used for working with VMA based swap readahead
+> via commit ec560175c0b6 ("mm, swap: VMA based swap readahead"). At that
+> time, the non_swap_entry() checking is necessary because the function is
+> called before checking that in do_swap_page(). Then it's moved to
+> swap_ra_info() since commit eaf649ebc3ac ("mm: swap: clean up swap
+> readahead"). After that, the non_swap_entry() checking is unnecessary,
+> because swap_ra_info() is called after non_swap_entry() has been checked
+> already. The resulting code is confusing as the non_swap_entry() check
+> looks racy now because while we released the pte lock, somebody else might
+> have faulted in this pte. So we should check whether it's swap pte first
+> to guard against such race or swap_type will be unexpected. But the race
+> isn't important because it will not cause problem. We would have enough
+> checking when we really operate the PTE entries later. So we remove the
+> non_swap_entry() check here to avoid confusion.
 >
-> CPU 1                                   	CPU 2
-> -----                                   	-----
-> do_swap_page
->   if (data_race(si->flags & SWP_SYNCHRONOUS_IO)
->   swap_readpage
->     if (data_race(sis->flags & SWP_FS_OPS)) {
->                                         	swapoff
-> 					  	  ..
-> 					  	  p->swap_file = NULL;
-> 					  	  ..
->     struct file *swap_file = sis->swap_file;
->     struct address_space *mapping = swap_file->f_mapping;[oops!]
->
-> Note that for the pages that are swapped in through swap cache, this isn't
-> an issue. Because the page is locked, and the swap entry will be marked
-> with SWAP_HAS_CACHE, so swapoff() can not proceed until the page has been
-> unlocked.
->
-> Fix this race by using get/put_swap_device() to guard against concurrent
-> swapoff.
->
-> Fixes: 0bcac06f27d7 ("mm,swap: skip swapcache for swapin of synchronous device")
-> Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
 > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
 Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
@@ -83,75 +73,30 @@ Best Regards,
 Huang, Ying
 
 > ---
->  include/linux/swap.h |  9 +++++++++
->  mm/memory.c          | 11 +++++++++--
->  2 files changed, 18 insertions(+), 2 deletions(-)
+>  mm/swap_state.c | 6 ------
+>  1 file changed, 6 deletions(-)
 >
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index c9e7fea10b83..46d51d058d05 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -527,6 +527,15 @@ static inline struct swap_info_struct *swp_swap_info(swp_entry_t entry)
->  	return NULL;
->  }
->  
-> +static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void put_swap_device(struct swap_info_struct *si)
-> +{
-> +}
-> +
->  #define swap_address_space(entry)		(NULL)
->  #define get_nr_swap_pages()			0L
->  #define total_swap_pages			0L
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 27014c3bde9f..39c910678387 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 272ea2108c9d..df5405384520 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -721,7 +721,6 @@ static void swap_ra_info(struct vm_fault *vmf,
 >  {
 >  	struct vm_area_struct *vma = vmf->vma;
->  	struct page *page = NULL, *swapcache;
-> +	struct swap_info_struct *si = NULL;
->  	swp_entry_t entry;
->  	pte_t pte;
->  	int locked;
-> @@ -3338,14 +3339,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  		goto out;
->  	}
+>  	unsigned long ra_val;
+> -	swp_entry_t entry;
+>  	unsigned long faddr, pfn, fpfn;
+>  	unsigned long start, end;
+>  	pte_t *pte, *orig_pte;
+> @@ -739,11 +738,6 @@ static void swap_ra_info(struct vm_fault *vmf,
 >  
-> +	/* Prevent swapoff from happening to us. */
-> +	si = get_swap_device(entry);
-> +	if (unlikely(!si))
-> +		goto out;
+>  	faddr = vmf->address;
+>  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
+> -	entry = pte_to_swp_entry(*pte);
+> -	if ((unlikely(non_swap_entry(entry)))) {
+> -		pte_unmap(orig_pte);
+> -		return;
+> -	}
 >  
->  	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
->  	page = lookup_swap_cache(entry, vma, vmf->address);
->  	swapcache = page;
->  
->  	if (!page) {
-> -		struct swap_info_struct *si = swp_swap_info(entry);
-> -
->  		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
->  		    __swap_count(entry) == 1) {
->  			/* skip swapcache */
-> @@ -3514,6 +3517,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  unlock:
->  	pte_unmap_unlock(vmf->pte, vmf->ptl);
->  out:
-> +	if (si)
-> +		put_swap_device(si);
->  	return ret;
->  out_nomap:
->  	pte_unmap_unlock(vmf->pte, vmf->ptl);
-> @@ -3525,6 +3530,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  		unlock_page(swapcache);
->  		put_page(swapcache);
->  	}
-> +	if (si)
-> +		put_swap_device(si);
->  	return ret;
->  }
+>  	fpfn = PFN_DOWN(faddr);
+>  	ra_val = GET_SWAP_RA_VAL(vma);
