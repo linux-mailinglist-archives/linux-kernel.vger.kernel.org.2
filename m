@@ -2,88 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB2836A779
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 15:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F15236A77D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 15:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhDYNVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 09:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhDYNVB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 09:21:01 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE520C061574;
-        Sun, 25 Apr 2021 06:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=H0P1ITf89K
-        5sWKVsgcrAvlSWObfhUJULio5yAsXO4CI=; b=xNLrQp6dpfbv9wmRm3MNjpFlcr
-        PkPMDaggIENDm1cnDoZbO58x6kGkYZDcwLaNA5uHjVbk3EX669YEgl4Q/sm/N/T6
-        JW984AkuG1xCuHyFeHMph0nvwkFaAV6Zh+BKbTamwaqNpv7GtgieFJ9hma6Te/5r
-        dK3Rf7Fap8wUevgPw=
-Received: from ubuntu.localdomain (unknown [223.104.36.137])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzj6FbIVgoWNDAA--.4410S4;
-        Sun, 25 Apr 2021 21:20:07 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] rdma/siw: Fix a use after free in siw_alloc_mr
-Date:   Sun, 25 Apr 2021 06:20:01 -0700
-Message-Id: <20210425132001.3994-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230171AbhDYN0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 09:26:11 -0400
+Received: from mail-bn7nam10on2064.outbound.protection.outlook.com ([40.107.92.64]:54112
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229688AbhDYN0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 09:26:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FR8c7/ei7RoQ6lErIIXh0Lo+xtnsIUwrkbyQPm+umk+Z03gS9u3OUG1/YxQ1Ydob3nvo9vueZ84Pz5SCj+12otpB/AmBFmDjskt6ZFuZK8DgN5Bi5ytLa3QpCLlEVlE+pKi4826RiBJ2Bk6N0u5ykof93iTJ0invd9DIWq7XzZwshoNyLSO33FYxIuYYc/jzxeXuYHFmmmhuyNG4x1ACNvwLDwTJYcQwXJ06L0uxokw96S7TYY17DHnF9im50pBDzDvMwwtQQCPve++ak5ym+XnJQ4LsMMqt5a3HSe/Wm4P6TPpNuo1Vtjsu8kMjYyJfOoa9kR2bxpZxxvXicQsN/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fru3fRmdZZ49M+6RxL1lkx9WfUKWakhQxk6txESo48I=;
+ b=cnHn1iBW/vn12NgWr8FxjEQu/83S7dazZvmc+tMVp4dyWYtcJoNK9++F7kUSOfEbnoE6dEsVsQEPLD/x6NU4v1d3/ditgohKQSv9JX6XHbJKRqU9nlSb7EklS9/is63HjyfxqPxBE567L8qnXUL8GffAqtZvSXIOJC8w2U6VqdxUWjVPm0SnhCqTusn17yxTQTiOXPBbUncOKgQDf/1i9Cokg37wm5OsMiwSJb8tauy6WC5uKV06pwSM3F48nRg1Y3dR/LEboWj84UwdtAjwCdHnBS9ZX3pHlx4N3WNmMoPxFDFQSsA5N3dzJfl68/wtjrJB0WY4DfUCUMHYCn7Ytw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fru3fRmdZZ49M+6RxL1lkx9WfUKWakhQxk6txESo48I=;
+ b=UOAIwW50f1Jl2ZpXmQ3X9ze7+aWmDDvQeF8nbbGR3oCHqs0SdBgQPBiGSYaEv2Ucl8tLJgv5ID8VXBV9D8+b/HwiheDmNSs78CMNURw0i6GoPMMV3FmQGJ7td77OqwX+uMhvKa9dlG21G70qv5U4hlqaITZSQ65HM1RVSK486j6JoF5uvF3rF6ViD3z1t/Rw/yMnWVv0o+EHLWfxNRveGPNsQ5oahlab5/ZNCjJ2zguL/uoV2M3DkLIsX2KBhNg+6o6qAxjEa9cKd+AJgk1RgW0xHhyrWI/eRuAm6wkgUq63VL9zv8D85+DqI4LgyJ+isq6OM9WXpx+PtKJi0HJTFQ==
+Received: from DM6PR08CA0055.namprd08.prod.outlook.com (2603:10b6:5:1e0::29)
+ by BN9PR12MB5068.namprd12.prod.outlook.com (2603:10b6:408:135::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22; Sun, 25 Apr
+ 2021 13:25:29 +0000
+Received: from DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1e0:cafe::d8) by DM6PR08CA0055.outlook.office365.com
+ (2603:10b6:5:1e0::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend
+ Transport; Sun, 25 Apr 2021 13:25:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT051.mail.protection.outlook.com (10.13.172.243) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Sun, 25 Apr 2021 13:25:29 +0000
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 25 Apr 2021 13:25:27 +0000
+Date:   Sun, 25 Apr 2021 16:25:23 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+Message-ID: <20210425132523.GA43506@mtl-vdi-166.wap.labs.mlnx>
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
+ <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
+ <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
+ <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+ <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygDHzj6FbIVgoWNDAA--.4410S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr15Wr1xtFyxKrWftFWkJFb_yoWkXFbEkr
-        4UJFnrXw1Yyw4SkFsru3W3uFZ5K3yFyr1vqasYgr1fGayUArs5J3y8tF1rZ3y7Ww10k39I
-        gr9rW393ArW8GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ23UUU
-        UU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+In-Reply-To: <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6b49fce5-0448-453b-7222-08d907ed9877
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5068:
+X-Microsoft-Antispam-PRVS: <BN9PR12MB506894BD3B2B15687A1EE355AB439@BN9PR12MB5068.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XSj4SI42M3br5rvbvx67e1/ZDn/BjF1eBNDz6ntHi+OkRptKKTscr3QiHd2di3H3/EvsVIwvGZ3OAMOnza/mwiSg0c2z3NeoJa1THfxe8mVcPbYTIrejg1k/r9wqOeOMZo4XCV4faGk6yt/9J0zmuTaugMBXrRNan7V5HbuPvFliiwSK31AVXePwoZbQZ/xqbk6SpZ9pdTkJH1Z4C+P+UI+FNPstt+EujZb5xCKVaSylQEKhaynvO3xXAdqtb8xL6Du6UypPBb3yz1vuwjSWXA9tnQgQJ+xnT+MqS4BxgulFWWOogJZHAvYVQfDHP9FrNfOyqO++AT6Zw/1H8r9TxBMrsMVKvsILZMrBd3Z3oNkWMH4XYxIyUhENfnxGdoQDSQvD0O98943fNqEflc8J0JBZ5wmbD2dVwGaS1N3mt6+JmxZq8lX9W3wh+zz3kLh+do5XLhSHyhrcjH5FZTM79sZWaa3mjHeru5R9ypkzy6pZTzkqGXh1MK4U7n5W2/wSoTCo22ljLAQgw29zXHBSdOfAgbeTgjtdLw/kYpWT3szdzcT2xvcJ7hOhMGQ12HrJfHoV/rXSDK8oRqHplOL5sOoAclURFE6eqV7JnSGmO5UykduObYgWE7tmSlCsJYjXu7GZcreqlFrBXVtNpIebIb+m9y5k2MEGMxKSUj//XK8=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(46966006)(36840700001)(336012)(33656002)(8676002)(70206006)(16526019)(6916009)(82740400003)(356005)(9686003)(8936002)(426003)(26005)(83380400001)(70586007)(36906005)(7636003)(478600001)(4326008)(47076005)(54906003)(5660300002)(82310400003)(316002)(2906002)(186003)(7696005)(86362001)(36860700001)(55016002)(1076003)(6666004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2021 13:25:29.5244
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b49fce5-0448-453b-7222-08d907ed9877
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our code analyzer reported a uaf.
+On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
+> 
+> 在 2021/4/22 下午4:39, Eli Cohen 写道:
+> > On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
+> > > 在 2021/4/22 下午4:07, Eli Cohen 写道:
+> > > > On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
+> > > > > On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
+> > > > > > 在 2021/4/21 下午6:41, Eli Cohen 写道:
+> > > > > > > Implement mlx5_get_vq_notification() to return the doorbell address.
+> > > > > > > Size is set to one system page as required.
+> > > > > > > 
+> > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > > > ---
+> > > > > > >     drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
+> > > > > > >     drivers/vdpa/mlx5/core/resources.c | 1 +
+> > > > > > >     drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+> > > > > > >     3 files changed, 8 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > > > > index b6cc53ba980c..49de62cda598 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > > > > +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > > > > @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+> > > > > > >     	u32 pdn;
+> > > > > > >     	struct mlx5_uars_page *uar;
+> > > > > > >     	void __iomem *kick_addr;
+> > > > > > > +	u64 phys_kick_addr;
+> > > > > > >     	u16 uid;
+> > > > > > >     	u32 null_mkey;
+> > > > > > >     	bool valid;
+> > > > > > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> > > > > > > index 6521cbd0f5c2..665f8fc1710f 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/core/resources.c
+> > > > > > > +++ b/drivers/vdpa/mlx5/core/resources.c
+> > > > > > > @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > > >     		goto err_key;
+> > > > > > >     	kick_addr = mdev->bar_addr + offset;
+> > > > > > > +	res->phys_kick_addr = kick_addr;
+> > > > > > >     	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
+> > > > > > >     	if (!res->kick_addr) {
+> > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > index 10c5fef3c020..680751074d2a 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
+> > > > > > >     static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+> > > > > > >     {
+> > > > > > > +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > > > > > >     	struct vdpa_notification_area ret = {};
+> > > > > > > +	struct mlx5_vdpa_net *ndev;
+> > > > > > > +
+> > > > > > > +	ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > > > > > +	ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+> > > > > > > +	ret.size = PAGE_SIZE;
+> > > > > > Note that the page will be mapped in to guest, so it's only safe if the
+> > > > > > doorbeel exclusively own the page. This means if there're other registers in
+> > > > > > the page, we can not let the doorbell bypass to work.
+> > > > > > 
+> > > > > > So this is suspicious at least in the case of subfunction where we calculate
+> > > > > > the bar length in mlx5_sf_dev_table_create() as:
+> > > > > > 
+> > > > > > table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
+> > > > > > 
+> > > > > > It looks to me this can only work for the arch with PAGE_SIZE = 4096,
+> > > > > > otherwise we can map more into the userspace(guest).
+> > > > > > 
+> > > > > Correct, so I guess I should return here 4096.
+> > > 
+> > > I'm not quite sure but since the calculation of the sf_bar_length is doen
+> > > via a shift of 12, it might be correct.
+> > > 
+> > > And please double check if the doorbell own the page exclusively.
+> > I am checking if it is safe to map the any part of the SF's BAR to
+> > userspace without harming other functions. If this is true, I will check
+> > if I can return PAGE_SIZE without compromising security.
+> 
+> 
+> It's usally not safe and a layer violation if other registers are placed at
+> the same page.
+> 
+> 
+> >   I think we may
+> > need to extend struct vdpa_notification_area to contain another field
+> > offset which indicates the offset from addr where the actual doorbell
+> > resides.
+> 
+> 
+> The movitiaton of the current design is to be fit seamless into how Qemu
+> model doorbell layouts currently:
+> 
+> 1) page-per-vq, each vq has its own page aligned doorbell
+> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
+> 
+> Only 1) is support in vhost-vDPA (and vhost-user) since it's rather simple
+> and secure (page aligned) to be modelled and implemented via mmap().
+> 
+> Exporting a complex layout is possbile but requires careful design.
+> 
+> Actually, we had antoher option
+> 
+> 3) shared doorbell: all virtqueue shares a single page aligned doorbell
+> 
 
-In siw_alloc_mr, it calls siw_mr_add_mem(mr,..). In the implementation
-of siw_mr_add_mem(), mem is assigned to mr->mem and then mem is freed
-via kfree(mem) if xa_alloc_cyclic() failed. Here, mr->mem still point
-to a freed object. After, the execution continue up to the err_out branch
-of siw_alloc_mr, and the freed mr->mem is used in siw_mr_drop_mem(mr).
+This nearly matches we have in ConnectX devices. All the doorbells are
+located at the same place. For 4K page size atchitectures it is aligned
+to the start of the page. For larger page sizes it is not aligned.
+If we don't allow to some offset within the page, it means that direct
+doorbells will not work for 64K page size archs over ConnectX.
 
-Fixes: 2251334dcac9e ("rdma/siw: application buffer management")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/infiniband/sw/siw/siw_mem.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index 34a910cf0edb..3bde3b6fca05 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -114,6 +114,7 @@ int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
- 	if (xa_alloc_cyclic(&sdev->mem_xa, &id, mem, limit, &next,
- 	    GFP_KERNEL) < 0) {
- 		kfree(mem);
-+		mr->mem = NULL;
- 		return -ENOMEM;
- 	}
- 	/* Set the STag index part */
--- 
-2.25.1
-
-
+> This is not yet supported by Qemu.
+> 
+> Thanks
+> 
+> 
+> > > 
+> > > > > I also think that the check in vhost_vdpa_mmap() should verify that the
+> > > > > returned size is not smaller than PAGE_SIZE because the returned address
+> > > > Actually I think it's ok since you verify the size equals vma->vm_end -
+> > > > vma->vm_start which must be at least PAGE_SIZE.
+> > > 
+> > > Yes.
+> > > 
+> > > Thanks
+> > > 
+> > > 
+> > > > > might just be aligned to PAGE_SIZE. I think this should be enoght but
+> > > > > maybe also use the same logic in vhost_vdpa_fault().
+> 
