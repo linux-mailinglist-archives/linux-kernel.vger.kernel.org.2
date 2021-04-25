@@ -2,208 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AA636A56D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE3336A541
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhDYHPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 03:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhDYHPL (ORCPT
+        id S229815AbhDYHJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 03:09:22 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32312 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhDYHJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 03:15:11 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ED2C06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:14:31 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id w10so647953pgh.5
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=d7E9xxvtIaGoCVHKrBienU8O4EF8xbijYGjRWUP+xNQ=;
-        b=tfD1/0Rrs9QLHAe+XDoBLSsiOGvAfo7UPeNO3TvB0I9YNsovxZnHvyJCBVMLAGaeJ6
-         VeBJhqrtHPwKyGjLTmcTGkIAig7dSRfq0DnzUQaHWukyvgXcB7zGIaY4xuqiAfBfRrkG
-         19A8bLMrK1bAd/smR40Pb3f2ryKuvWRdC5X1jtZuckqy/eniKorMV6bjAhmKa2lXfIMr
-         x7Bz38c0+raE89+dZVcSLPbApJ980ASHMWEm+ulIIOMijksJ1sgfm/+7rUM+2iKBW1+L
-         VXzESxCQQE0MCLXC9gUoa6LF7Qm5vBE+/0Hu9p2w+5U6PqxJYCR3k0spfhInpn4A6MqV
-         FPiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=d7E9xxvtIaGoCVHKrBienU8O4EF8xbijYGjRWUP+xNQ=;
-        b=iLd49Ce2lpaIsxnt+kfz0Vyt5Z6zA382rzCyBxfNPliWgQkHdPVA/NccQx5N87oKhw
-         livf6SuLQQLseKRsCP6pBW4wWJQy4Aw/N2gQHsWRhBIzPXCKjxL0juB7+5rSm9FTEj1L
-         ZnJci8d75xT7lPEw6lOG1lT2k8ayB6QvvKfBx/k2TTyJ1lJyq7Fl074+9DQZ9/kgnIuz
-         y0rLBPrjnHVR5d0zR+cAJW2Rt9a2veDLTL9/UmriCjXRgOCztB4MYpUofkeypQHrumBh
-         El/oJmowG/rU0bcWlS1JWzpAe17KA9PDmW41wAfxTkqlbfroso8Jn9BW6vUWd9FflHFJ
-         711Q==
-X-Gm-Message-State: AOAM531UsvKilWOSmaMnlKkdSv4VbJcJV+10kqd3rVE875tcGbw2BfIi
-        4vo4TjjWtQIbEyjorFxKs+6eZg==
-X-Google-Smtp-Source: ABdhPJxV+24WPh7aprLog7xJUYz8OvYabaL/FKS2fFZ/ta2X1S8bPUnjuEqxMaMkb8pt77ZwdTK3Hw==
-X-Received: by 2002:a63:d507:: with SMTP id c7mr11382542pgg.306.1619334870996;
-        Sun, 25 Apr 2021 00:14:30 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id h8sm8767125pjt.17.2021.04.25.00.14.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Apr 2021 00:14:30 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
-        song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, joao.m.martins@oracle.com
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        zhengqi.arch@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Subject: [PATCH v21 9/9] mm: hugetlb: introduce nr_free_vmemmap_pages in the struct hstate
-Date:   Sun, 25 Apr 2021 15:07:52 +0800
-Message-Id: <20210425070752.17783-10-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210425070752.17783-1-songmuchun@bytedance.com>
-References: <20210425070752.17783-1-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 25 Apr 2021 03:09:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619334522; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=niPyJpAZpR71QDB+qwRPU8SYtCcTw1VHp+nM0K9chAQ=; b=iLBhOmh8Wu1k6p9HQhx4it5wIhL7E29bN9hsHn60sSkzAv/o6F43v+d1qP27c4QOeWt5HyEg
+ dLmZM1iA2LnjPH15nVxFfZrj1cxFpY9q3KDqid8bxDU1fZTE321A0RIWumlNEsctJKzCFUtW
+ WL2xEKsbDnaqI8nL3DHyDQu2f0c=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 608515782cc44d3aea6e458c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 25 Apr 2021 07:08:40
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4D2FC433D3; Sun, 25 Apr 2021 07:08:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BFF6CC433D3;
+        Sun, 25 Apr 2021 07:08:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BFF6CC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v3] Add support for duty-cycle for RCG
+Date:   Sun, 25 Apr 2021 12:38:21 +0530
+Message-Id: <1619334502-9880-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the infrastructure is ready, so we introduce nr_free_vmemmap_pages
-field in the hstate to indicate how many vmemmap pages associated with
-a HugeTLB page that can be freed to buddy allocator. And initialize it
-in the hugetlb_vmemmap_init(). This patch is actual enablement of the
-feature.
+The root clock generators with MND divider has the capability to support
+change in duty-cycle by updating the 'D'. Add the clock ops which would
+check all the boundary conditions and enable setting the desired duty-cycle
+as per the consumer.
 
-There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
-page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
-so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
+[v3]
+  * Implement clockops for get_duty_cycle.
+  * Return -EINVAL for Non-MND or HID RCGs.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Tested-by: Chen Huang <chenhuang5@huawei.com>
-Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
----
- include/linux/hugetlb.h |  3 +++
- mm/hugetlb.c            |  1 +
- mm/hugetlb_vmemmap.c    | 33 +++++++++++++++++++++++++++++++++
- mm/hugetlb_vmemmap.h    | 10 ++++++----
- 4 files changed, 43 insertions(+), 4 deletions(-)
+Taniya Das (1):
+  clk: qcom: clk-rcg2: Add support for duty-cycle for RCG
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 65865d523ef7..c7e66251997d 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -602,6 +602,9 @@ struct hstate {
- 	unsigned int nr_huge_pages_node[MAX_NUMNODES];
- 	unsigned int free_huge_pages_node[MAX_NUMNODES];
- 	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-+#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-+	unsigned int nr_free_vmemmap_pages;
-+#endif
- #ifdef CONFIG_CGROUP_HUGETLB
- 	/* cgroup control files */
- 	struct cftype cgroup_files_dfl[7];
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 1e3e3a8e05e2..9c617c19fc18 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3521,6 +3521,7 @@ void __init hugetlb_add_hstate(unsigned int order)
- 	h->next_nid_to_free = first_memory_node;
- 	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
- 					huge_page_size(h)/1024);
-+	hugetlb_vmemmap_init(h);
- 
- 	parsed_hstate = h;
- }
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 3070e1465b1b..f9f9bb212319 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -262,3 +262,36 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
- 
- 	SetHPageVmemmapOptimized(head);
- }
-+
-+void __init hugetlb_vmemmap_init(struct hstate *h)
-+{
-+	unsigned int nr_pages = pages_per_huge_page(h);
-+	unsigned int vmemmap_pages;
-+
-+	/*
-+	 * There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
-+	 * page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
-+	 * so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
-+	 */
-+	BUILD_BUG_ON(__NR_USED_SUBPAGE >=
-+		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
-+
-+	if (!hugetlb_free_vmemmap_enabled)
-+		return;
-+
-+	vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
-+	/*
-+	 * The head page and the first tail page are not to be freed to buddy
-+	 * allocator, the other pages will map to the first tail page, so they
-+	 * can be freed.
-+	 *
-+	 * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? It is true
-+	 * on some architectures (e.g. aarch64). See Documentation/arm64/
-+	 * hugetlbpage.rst for more details.
-+	 */
-+	if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
-+		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
-+
-+	pr_info("can free %d vmemmap pages for %s\n", h->nr_free_vmemmap_pages,
-+		h->name);
-+}
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index a37771b0b82a..cb2bef8f9e73 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -13,17 +13,15 @@
- #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
- int alloc_huge_page_vmemmap(struct hstate *h, struct page *head);
- void free_huge_page_vmemmap(struct hstate *h, struct page *head);
-+void hugetlb_vmemmap_init(struct hstate *h);
- 
- /*
-  * How many vmemmap pages associated with a HugeTLB page that can be freed
-  * to the buddy allocator.
-- *
-- * Todo: Returns zero for now, which means the feature is disabled. We will
-- * enable it once all the infrastructure is there.
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
--	return 0;
-+	return h->nr_free_vmemmap_pages;
- }
- #else
- static inline int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-@@ -35,6 +33,10 @@ static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
- {
- }
- 
-+static inline void hugetlb_vmemmap_init(struct hstate *h)
-+{
-+}
-+
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
- 	return 0;
--- 
-2.11.0
+ drivers/clk/qcom/clk-rcg2.c | 81 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
+
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
 
