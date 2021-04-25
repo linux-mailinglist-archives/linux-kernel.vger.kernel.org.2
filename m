@@ -2,146 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C8136A3E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43E436A3EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhDYBWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 21:22:14 -0400
-Received: from [119.249.100.101] ([119.249.100.101]:10939 "EHLO
-        mx425.baidu.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229687AbhDYBWN (ORCPT
+        id S229999AbhDYB3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 21:29:13 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3407 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhDYB3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 21:22:13 -0400
-Received: from unknown.domain.tld (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by mx425.baidu.com (Postfix) with ESMTP id 1B87C125810A7;
-        Sun, 25 Apr 2021 09:21:02 +0800 (CST)
-From:   chukaiping <chukaiping@baidu.com>
-To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
-        bhe@redhat.com, khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
-        mateusznosek0@gmail.com, sh_def@163.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v3] mm/compaction:let proactive compaction order configurable
-Date:   Sun, 25 Apr 2021 09:21:02 +0800
-Message-Id: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        Sat, 24 Apr 2021 21:29:10 -0400
+Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FSVhL3mf4z5tWv;
+        Sun, 25 Apr 2021 09:25:22 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sun, 25 Apr 2021 09:28:26 +0800
+Subject: Re: [PATCH] f2fs: compress: remove unneed check condition
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210421083941.66371-1-yuchao0@huawei.com>
+ <YID1sqemJVeBcdqD@google.com>
+ <2c6f17e6-ef23-f313-5df2-6bd63d7df2b1@huawei.com>
+ <YIS8KHf9VPxZl85b@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <5d7de7c7-5cc5-c342-3652-ab904b3e43b2@huawei.com>
+Date:   Sun, 25 Apr 2021 09:28:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <YIS8KHf9VPxZl85b@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the proactive compaction order is fixed to
-COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
-normal 4KB memory, but it's too high for the machines with small
-normal memory, for example the machines with most memory configured
-as 1GB hugetlbfs huge pages. In these machines the max order of
-free pages is often below 9, and it's always below 9 even with hard
-compaction. This will lead to proactive compaction be triggered very
-frequently. In these machines we only care about order of 3 or 4.
-This patch export the oder to proc and let it configurable
-by user, and the default value is still COMPACTION_HPAGE_ORDER.
+On 2021/4/25 8:47, Jaegeuk Kim wrote:
+> On 04/22, Chao Yu wrote:
+>> On 2021/4/22 12:04, Jaegeuk Kim wrote:
+>>> On 04/21, Chao Yu wrote:
+>>>> In only call path of __cluster_may_compress(), __f2fs_write_data_pages()
+>>>> has checked SBI_POR_DOING condition, and also cluster_may_compress()
+>>>> has checked CP_ERROR_FLAG condition, so remove redundant check condition
+>>>> in __cluster_may_compress() for cleanup.
+>>>
+>>> I think cp_error can get any time without synchronization. Is it safe to say
+>>> it's redundant?
+>>
+>> Yes,
+>>
+>> But no matter how late we check cp_error, cp_error can happen after our
+>> check points, it won't cause regression if we remove cp_error check there,
+>> because for compress write, it uses OPU, it won't overwrite any existed data
+>> in device.
+>>
+>> Seems it will be more appropriate to check cp_error in
+>> f2fs_write_compressed_pages() like we did in f2fs_write_single_data_page()
+>> rather than in __cluster_may_compress().
+>>
+>> BTW, shouldn't we rename __cluster_may_compress() to
+>> cluster_beyond_filesize() for better readability?
+> 
+> f2fs_cluster_has_data()?
 
-Signed-off-by: chukaiping <chukaiping@baidu.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
+Maybe cluster_has_invalid_data()? which indicates there is invalid data
+beyond filesize.
 
-Changes in v3:
-    - change the min value of compaction_order to 1 because the fragmentation
-      index of order 0 is always 0
-    - move the definition of max_buddy_zone into #ifdef CONFIG_COMPACTION
+Thanks,
 
-Changes in v2:
-    - fix the compile error in ia64 and powerpc, move the initialization
-      of sysctl_compaction_order to kcompactd_init because 
-      COMPACTION_HPAGE_ORDER is a variable in these architectures
-    - change the hard coded max order number from 10 to MAX_ORDER - 1
-
- include/linux/compaction.h |    1 +
- kernel/sysctl.c            |   10 ++++++++++
- mm/compaction.c            |    9 ++++++---
- 3 files changed, 17 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index ed4070e..151ccd1 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
- #ifdef CONFIG_COMPACTION
- extern int sysctl_compact_memory;
- extern unsigned int sysctl_compaction_proactiveness;
-+extern unsigned int sysctl_compaction_order;
- extern int sysctl_compaction_handler(struct ctl_table *table, int write,
- 			void *buffer, size_t *length, loff_t *ppos);
- extern int sysctl_extfrag_threshold;
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 62fbd09..e50f7d2 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -196,6 +196,7 @@ enum sysctl_writes_mode {
- #endif /* CONFIG_SCHED_DEBUG */
- 
- #ifdef CONFIG_COMPACTION
-+static int max_buddy_zone = MAX_ORDER - 1;
- static int min_extfrag_threshold;
- static int max_extfrag_threshold = 1000;
- #endif
-@@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.extra2		= &one_hundred,
- 	},
- 	{
-+		.procname       = "compaction_order",
-+		.data           = &sysctl_compaction_order,
-+		.maxlen         = sizeof(sysctl_compaction_order),
-+		.mode           = 0644,
-+		.proc_handler   = proc_dointvec_minmax,
-+		.extra1         = SYSCTL_ONE,
-+		.extra2         = &max_buddy_zone,
-+	},
-+	{
- 		.procname	= "extfrag_threshold",
- 		.data		= &sysctl_extfrag_threshold,
- 		.maxlen		= sizeof(int),
-diff --git a/mm/compaction.c b/mm/compaction.c
-index e04f447..70c0acd 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
- 
- /*
-  * A zone's fragmentation score is the external fragmentation wrt to the
-- * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-+ * sysctl_compaction_order. It returns a value in the range [0, 100].
-  */
- static unsigned int fragmentation_score_zone(struct zone *zone)
- {
--	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-+	return extfrag_for_order(zone, sysctl_compaction_order);
- }
- 
- /*
-  * A weighted zone's fragmentation score is the external fragmentation
-- * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-+ * wrt to the sysctl_compaction_order scaled by the zone's size. It
-  * returns a value in the range [0, 100].
-  *
-  * The scaling factor ensures that proactive compaction focuses on larger
-@@ -2666,6 +2666,7 @@ static void compact_nodes(void)
-  * background. It takes values in the range [0, 100].
-  */
- unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
-+unsigned int __read_mostly sysctl_compaction_order;
- 
- /*
-  * This is the entry point for compacting all nodes via
-@@ -2958,6 +2959,8 @@ static int __init kcompactd_init(void)
- 	int nid;
- 	int ret;
- 
-+	sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
-+
- 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
- 					"mm/compaction:online",
- 					kcompactd_cpu_online, NULL);
--- 
-1.7.1
-
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>> ---
+>>>>    fs/f2fs/compress.c | 5 -----
+>>>>    1 file changed, 5 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>>> index 3c9d797dbdd6..532c311e3a89 100644
+>>>> --- a/fs/f2fs/compress.c
+>>>> +++ b/fs/f2fs/compress.c
+>>>> @@ -906,11 +906,6 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
+>>>>    		f2fs_bug_on(sbi, !page);
+>>>> -		if (unlikely(f2fs_cp_error(sbi)))
+>>>> -			return false;
+>>>> -		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+>>>> -			return false;
+>>>> -
+>>>>    		/* beyond EOF */
+>>>>    		if (page->index >= nr_pages)
+>>>>    			return false;
+>>>> -- 
+>>>> 2.29.2
+>>> .
+>>>
+> .
+> 
