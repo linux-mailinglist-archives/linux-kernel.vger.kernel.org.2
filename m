@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F85836A8AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 19:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99A536A8AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 19:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhDYRuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 13:50:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51468 "EHLO
+        id S231181AbhDYRua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 13:50:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51472 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhDYRuB (ORCPT
+        with ESMTP id S230329AbhDYRu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 13:50:01 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        Sun, 25 Apr 2021 13:50:29 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1laisi-0005G8-Vb
-        for linux-kernel@vger.kernel.org; Sun, 25 Apr 2021 17:49:21 +0000
-Received: by mail-ed1-f71.google.com with SMTP id i2-20020a0564020542b02903875c5e7a00so2312955edx.6
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 10:49:20 -0700 (PDT)
+        id 1laitA-0005Hh-Cw
+        for linux-kernel@vger.kernel.org; Sun, 25 Apr 2021 17:49:48 +0000
+Received: by mail-ed1-f69.google.com with SMTP id h13-20020a05640250cdb02903790a9c55acso21666421edb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 10:49:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Hwe4LiI2mB2p7vvt78qDlg9KbaNBJtoApmcjF0+mFaI=;
-        b=DVdY60D2jh4BfrIwsGKP+uutd+0XYMSwMGzm7a5lMhKTLoyuyHPsfmBYDxnOdB9HRs
-         gHj/nPrBCUvXIW2lGNtzjWH0Ms+S+mOwFC6bGP9KFQtxRxAexU04aCJBCJrzDzKWhJql
-         QgcSWLbKbj9Ay9C8do+3iWVdUy5TB8/K7U8NSbGrx8TiGYUlp2Zwe5uMsRYZW/CM3NRX
-         LjuDIxxUuyl5QGe5Ertdnnr1dn5ky4fl+ke+TyFRonqndPkRvZmeHcCCm3l7mPgD3E6e
-         JBNzkJeDfY3atxJfzTE+SJEvqNQuF42PrVF4YD/gicMExzi5dGvpPULjV6zENgapjZr0
-         +uXQ==
-X-Gm-Message-State: AOAM531QYo9barHc0DCHe7TsY7DXGMLZmCd9pXi5F+1YXmOKY2Tmjlrk
-        iBELK/nIcS2Pws396L/8KmpYxSNLG3WD1mwQqAzbCfpiCwGZ/x4mRaavzgEwpYnSdAQXm7Gr7pc
-        Ctf4Fb92eXItSIJpgtMCzS//EzFj14BEaBCgC3nhUIA==
-X-Received: by 2002:aa7:d9ce:: with SMTP id v14mr16921388eds.110.1619372960669;
-        Sun, 25 Apr 2021 10:49:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx2a5Ye4BWF/Syln3Li03foCbrkIbPmJ88zvLzsdqLilS9jE2MfCrBCU8lMkLvF1sifmkLDYg==
-X-Received: by 2002:aa7:d9ce:: with SMTP id v14mr16921380eds.110.1619372960519;
-        Sun, 25 Apr 2021 10:49:20 -0700 (PDT)
+        bh=RBjEAtJQftD+dVBcJH/vI5ONKidJRREyztVu/ffD0/8=;
+        b=p4hP00EoXAJ7Kgvzv7dp+SPB2lhWDeIc6PzCgRjJDix7hWxHYKQqPdlN+9VomYDSxN
+         orTPz0UUBJSvRpqQq6UXIB5gADOawBb+7CoWPpZc/1/KPc/q5c8sZx7DKha74pR99W6b
+         ArG+NMPxY2srE7kuw5Q3brIcOEx8TwucexIbX/XygcE/OCLnfUA6jUsHEhWtis3nfTFo
+         R2TV4zRLg1ZMWmu7z7odJC4fB0XjFm14hnBGgI4AW1X4c6sk843PYOXYzQLRLeYJcyGJ
+         6UOmcF1TcjDJUU5OGG95KZbpWU7E71c6EatWQZXGugCbAaa5ia3njCJkWu1r9QP3nZOw
+         hEOg==
+X-Gm-Message-State: AOAM532OthTIkKYzH5R4ZG727JLiVZRtPTzjjzdJM9ZOc9smKWu48Xuf
+        P9Dan3c8Pzwrn/lxlyi7N12acWk10SxVwqE/dH1p49KcX+zT4RIqY2qNIevu8DnHniISzZclS1O
+        IxFvV2I4E9zddjNb7eWrqK5xJ5Y6cmUs2I5Nf4FcQvw==
+X-Received: by 2002:a17:906:38c5:: with SMTP id r5mr14085228ejd.230.1619372988161;
+        Sun, 25 Apr 2021 10:49:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxIa+fvr/8tH3+GL4vr6HdZUUJF//xEt4ORa/3i/PjDfkoJ3qcmGmy6Th5L2m2eXQP7EgPhw==
+X-Received: by 2002:a17:906:38c5:: with SMTP id r5mr14085217ejd.230.1619372988033;
+        Sun, 25 Apr 2021 10:49:48 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id b22sm12503206edr.52.2021.04.25.10.49.20
+        by smtp.gmail.com with ESMTPSA id ca1sm12113585edb.76.2021.04.25.10.49.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Apr 2021 10:49:20 -0700 (PDT)
+        Sun, 25 Apr 2021 10:49:47 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH] mfd: Add missing of_node_put for loop iteration
-Date:   Sun, 25 Apr 2021 19:49:18 +0200
-Message-Id: <20210425174918.164470-1-krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: exynos: add missing of_node_put for loop iteration
+Date:   Sun, 25 Apr 2021 19:49:45 +0200
+Message-Id: <20210425174945.164612-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -58,38 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Early exits from for_each_child_of_node() should decrement the
+Early exits from for_each_compatible_node() should decrement the
 node reference counter.  Reported by Coccinelle:
 
-  drivers/mfd/mfd-core.c:197:2-24: WARNING:
-    Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
+  arch/arm/mach-exynos/exynos.c:52:1-25: WARNING:
+    Function "for_each_compatible_node" should have of_node_put() before break around line 58.
 
-Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
+Fixes: b3205dea8fbf ("ARM: EXYNOS: Map SYSRAM through generic DT bindings")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/mfd/mfd-core.c | 2 ++
+ arch/arm/mach-exynos/exynos.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index 6f02b8022c6d..fa7d86302be8 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -198,6 +198,7 @@ static int mfd_add_device(struct device *parent, int id,
- 			if (of_device_is_compatible(np, cell->of_compatible)) {
- 				/* Ignore 'disabled' devices error free */
- 				if (!of_device_is_available(np)) {
-+					of_node_put(np);
- 					ret = 0;
- 					goto fail_alias;
- 				}
-@@ -205,6 +206,7 @@ static int mfd_add_device(struct device *parent, int id,
- 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
- 				if (ret == -EAGAIN)
- 					continue;
-+				of_node_put(np);
- 				if (ret)
- 					goto fail_alias;
+diff --git a/arch/arm/mach-exynos/exynos.c b/arch/arm/mach-exynos/exynos.c
+index 25b01da4771b..8b48326be9fd 100644
+--- a/arch/arm/mach-exynos/exynos.c
++++ b/arch/arm/mach-exynos/exynos.c
+@@ -55,6 +55,7 @@ void __init exynos_sysram_init(void)
+ 		sysram_base_addr = of_iomap(node, 0);
+ 		sysram_base_phys = of_translate_address(node,
+ 					   of_get_address(node, 0, NULL, NULL));
++		of_node_put(node);
+ 		break;
+ 	}
  
+@@ -62,6 +63,7 @@ void __init exynos_sysram_init(void)
+ 		if (!of_device_is_available(node))
+ 			continue;
+ 		sysram_ns_base_addr = of_iomap(node, 0);
++		of_node_put(node);
+ 		break;
+ 	}
+ }
 -- 
 2.25.1
 
