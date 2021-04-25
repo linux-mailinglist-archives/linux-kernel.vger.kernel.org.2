@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A846536A3C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 02:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F2636A3C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 02:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhDYAsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 20:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44814 "EHLO mail.kernel.org"
+        id S230150AbhDYAtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 20:49:07 -0400
+Received: from mga09.intel.com ([134.134.136.24]:44023 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229695AbhDYAsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 20:48:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FCF613C4;
-        Sun, 25 Apr 2021 00:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619311658;
-        bh=mijs84e9TdAULlSFMzEsjGetGLdyir4mZ+ORmJUQPxw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XkvpZaFuiMXZxiAo7kTJH47fZSBRkvK4MeVbZuQZVnqR3facBiY/7U1yUxzzSmpw6
-         H6hN9sTuGUSinznQNiywDO6aIwjvnONqO4pn7AfL5me9xUF7rA99Je7yW4rTWgeEYe
-         w8Zde1WJ7tySt5Oc3+DtfOOoKebLD8I6kf1lTHMwmikfQ277dA0NVLLziGeZokRfZN
-         AqNbLcMnvEQKNrOzTZ0/71I0tqc9yD3OkB617y9Th5AIL63JgwSidgKJIW74UmCt/s
-         zGFAI3V364zr5zNBaFkFJkYBUy0+mCEv5HGMDVxKtRi+WVa5GBluTIihP4miMChqOR
-         +D9aZGoWXwSlw==
-Date:   Sat, 24 Apr 2021 17:47:36 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH] f2fs: compress: remove unneed check condition
-Message-ID: <YIS8KHf9VPxZl85b@google.com>
-References: <20210421083941.66371-1-yuchao0@huawei.com>
- <YID1sqemJVeBcdqD@google.com>
- <2c6f17e6-ef23-f313-5df2-6bd63d7df2b1@huawei.com>
+        id S229695AbhDYAtF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 20:49:05 -0400
+IronPort-SDR: GSq/ueOLhBaiPlGY7RVWixzgzeYaeRN6oaIhJIpt7j3MN1VtX5r+v0+9si6YlQgzWWwJlpRUoG
+ w13Cx43tBFbg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="196315554"
+X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
+   d="scan'208";a="196315554"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 17:48:26 -0700
+IronPort-SDR: EeMfR+hV1QrmnisxPdxkxo1LcIoKYFOjOAP13eXwTZTXMao2BRqg949nKNtJRVaNoSTvjOuMH+
+ /lr9129zEQHg==
+X-IronPort-AV: E=Sophos;i="5.82,249,1613462400"; 
+   d="scan'208";a="428890013"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 17:48:24 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, tim.c.chen@linux.intel.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, wfg@mail.ustc.edu.cn
+Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
+ too_many_isolated()
+References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
+        <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com>
+        <YIGuvh70JbE1Cx4U@google.com>
+        <7a0fecab-f9e1-ad39-d55e-01e574a35484@linux.intel.com>
+        <YIMsykToLKUVMWbZ@google.com>
+Date:   Sun, 25 Apr 2021 08:48:22 +0800
+In-Reply-To: <YIMsykToLKUVMWbZ@google.com> (Yu Zhao's message of "Fri, 23 Apr
+        2021 14:23:38 -0600")
+Message-ID: <87fszfxk89.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c6f17e6-ef23-f313-5df2-6bd63d7df2b1@huawei.com>
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/22, Chao Yu wrote:
-> On 2021/4/22 12:04, Jaegeuk Kim wrote:
-> > On 04/21, Chao Yu wrote:
-> > > In only call path of __cluster_may_compress(), __f2fs_write_data_pages()
-> > > has checked SBI_POR_DOING condition, and also cluster_may_compress()
-> > > has checked CP_ERROR_FLAG condition, so remove redundant check condition
-> > > in __cluster_may_compress() for cleanup.
-> > 
-> > I think cp_error can get any time without synchronization. Is it safe to say
-> > it's redundant?
-> 
-> Yes,
-> 
-> But no matter how late we check cp_error, cp_error can happen after our
-> check points, it won't cause regression if we remove cp_error check there,
-> because for compress write, it uses OPU, it won't overwrite any existed data
-> in device.
-> 
-> Seems it will be more appropriate to check cp_error in
-> f2fs_write_compressed_pages() like we did in f2fs_write_single_data_page()
-> rather than in __cluster_may_compress().
-> 
-> BTW, shouldn't we rename __cluster_may_compress() to
-> cluster_beyond_filesize() for better readability?
+Yu Zhao <yuzhao@google.com> writes:
+[snip]
 
-f2fs_cluster_has_data()?
+> @@ -2966,13 +2938,20 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+>  			/* need some check for avoid more shrink_zone() */
+>  		}
+>  
+> -		/* See comment about same check for global reclaim above */
+> -		if (zone->zone_pgdat == last_pgdat)
+> -			continue;
+> -		last_pgdat = zone->zone_pgdat;
+>  		shrink_node(zone->zone_pgdat, sc);
+>  	}
+>  
+> +	if (last_pgdat)
+> +		atomic_dec(&last_pgdat->nr_reclaimers);
+> +	else if (should_retry) {
+> +		/* wait a bit for the reclaimer. */
+> +		if (!schedule_timeout_killable(HZ / 10))
 
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > ---
-> > >   fs/f2fs/compress.c | 5 -----
-> > >   1 file changed, 5 deletions(-)
-> > > 
-> > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > > index 3c9d797dbdd6..532c311e3a89 100644
-> > > --- a/fs/f2fs/compress.c
-> > > +++ b/fs/f2fs/compress.c
-> > > @@ -906,11 +906,6 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
-> > >   		f2fs_bug_on(sbi, !page);
-> > > -		if (unlikely(f2fs_cp_error(sbi)))
-> > > -			return false;
-> > > -		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
-> > > -			return false;
-> > > -
-> > >   		/* beyond EOF */
-> > >   		if (page->index >= nr_pages)
-> > >   			return false;
-> > > -- 
-> > > 2.29.2
-> > .
-> > 
+Once we reached here, even accidentally, the caller needs to sleep at
+least 100ms.  How about use a semaphore for pgdat->nr_reclaimers?  Then
+the sleeper can be waken up when the resource is considered enough.
+
+Best Regards,
+Huang, Ying
+
+> +			goto retry;
+> +
+> +		/* We are about to die and free our memory. Return now. */
+> +		sc->nr_reclaimed += SWAP_CLUSTER_MAX;
+> +	}
+> +
+>  	/*
+>  	 * Restore to original mask to avoid the impact on the caller if we
+>  	 * promoted it to __GFP_HIGHMEM.
+
+[snip]
