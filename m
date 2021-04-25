@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AA936A3DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B678036A3E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 03:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhDYBLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 21:11:48 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17815 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhDYBLq (ORCPT
+        id S230220AbhDYBUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 21:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhDYBUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 21:11:46 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FSVK366lDz7vyN;
-        Sun, 25 Apr 2021 09:08:39 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 25 Apr 2021 09:11:00 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>, Yunlei He <heyunlei@hihonor.com>
-Subject: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
-Date:   Sun, 25 Apr 2021 09:10:53 +0800
-Message-ID: <20210425011053.44436-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Sat, 24 Apr 2021 21:20:06 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A75AC061574;
+        Sat, 24 Apr 2021 18:19:27 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id bx20so60484474edb.12;
+        Sat, 24 Apr 2021 18:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7qMzhN/e+jpxAR24tyrQUmKft76I/dbVtvs0AcxWx1g=;
+        b=PCpsgsy5ID5M7bkoEoEU3pRLSgCdYzp/T8A8tTwwY2imC/Q9kLWxZX1Kw+VZ1CKjrj
+         YaiwFeKZa5JLcWbu7hAJXwSGMXGbRrIXytmSWAzHI5t7y5uY2rS9YGB7pgorv7ttkA8G
+         W0seifSA8sHfqhTjsIp9aZ/pKsAdPiBeDzucRgizf13JA5aBC5H/3siXDeSf+s+OV27+
+         uCDve2XrGNScYUemUZPmWKcUjpyoLw8D/Xp38YLXSX+ooTbWYDswPnNdAdzyqtwtZhTI
+         3AuFmUwXZmbGd54483ilpQlW1ghLFhnUbIZvbaZLYbJfhSZLLaQ2uebjs/6IVqIHf7rT
+         nYvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7qMzhN/e+jpxAR24tyrQUmKft76I/dbVtvs0AcxWx1g=;
+        b=RRvmD3tQ90aoA8FVliwnjoYtTkmqn+iWrjUlYvsC+we/So1IDWqLE7a+XIthG3dDEr
+         XQHpyQIiPymiRDvj+bFhOKdy+VAwyTJd7aze8IFfvrAQWITPwieTT8scTP138ScyLPro
+         QfhzGC8DkF/P5ydSjjkANX+2mTwfVc99Wv1Zn8E4Kz6GG9vkKnfVUfDyTM/7KugOvhHi
+         613c3juFpV1FRZ307R9T8tkeyJ/PvIQumshdF9aBjqde48c3hfs8VHXfxfCsd2r6EEtb
+         30Vgl4TF/ujgavdW6MvvvbvSprjXD5JYeyNetG5HC8tbdDHvIzo3kBDx92NElz1gDwAG
+         KJ5A==
+X-Gm-Message-State: AOAM530R6INuB5u/7yEeuqVXLoczqIo8ECz34SxvgyjOZ1p/6kSBlg7/
+        HrEMdVCNSYtinT3DBoLKlbI=
+X-Google-Smtp-Source: ABdhPJzeFix8alnTi639bZjNfC8LynvA7kifQQFD5FScrYcF7mMxlRb++qSxJ90CBrc+tpgpa9dxjw==
+X-Received: by 2002:a05:6402:2215:: with SMTP id cq21mr12980291edb.177.1619313565338;
+        Sat, 24 Apr 2021 18:19:25 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id u13sm8167638ejj.16.2021.04.24.18.19.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Apr 2021 18:19:25 -0700 (PDT)
+Date:   Sun, 25 Apr 2021 03:19:22 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/14] drivers: net: dsa: qca8k: apply switch revision fix
+Message-ID: <YITDmjB1pd+7oebm@Ansuel-xps.localdomain>
+References: <20210423014741.11858-1-ansuelsmth@gmail.com>
+ <20210423014741.11858-12-ansuelsmth@gmail.com>
+ <e644aba9-a092-3825-b55b-e0cca158d28b@gmail.com>
+ <YISLHNK8binc9T1N@Ansuel-xps.localdomain>
+ <bbbb511a-0ab7-77e4-2dde-473d25b90d17@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bbbb511a-0ab7-77e4-2dde-473d25b90d17@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We may trigger high frequent checkpoint for below case:
-1. mkdir /mnt/dir1; set dir1 encrypted
-2. touch /mnt/file1; fsync /mnt/file1
-3. mkdir /mnt/dir2; set dir2 encrypted
-4. touch /mnt/file2; fsync /mnt/file2
-...
+On Sat, Apr 24, 2021 at 06:09:27PM -0700, Florian Fainelli wrote:
+> 
+> 
+> On 4/24/2021 2:18 PM, Ansuel Smith wrote:
+> > On Thu, Apr 22, 2021 at 07:02:37PM -0700, Florian Fainelli wrote:
+> >>
+> >>
+> >> On 4/22/2021 6:47 PM, Ansuel Smith wrote:
+> >>> qca8k require special debug value based on the switch revision.
+> >>>
+> >>> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> >>> ---
+> >>>  drivers/net/dsa/qca8k.c | 23 +++++++++++++++++++++--
+> >>>  1 file changed, 21 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> >>> index 193c269d8ed3..12d2c97d1417 100644
+> >>> --- a/drivers/net/dsa/qca8k.c
+> >>> +++ b/drivers/net/dsa/qca8k.c
+> >>> @@ -909,7 +909,7 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+> >>>  {
+> >>>  	const struct qca8k_match_data *data;
+> >>>  	struct qca8k_priv *priv = ds->priv;
+> >>> -	u32 reg, val;
+> >>> +	u32 phy, reg, val;
+> >>>  
+> >>>  	/* get the switches ID from the compatible */
+> >>>  	data = of_device_get_match_data(priv->dev);
+> >>> @@ -928,7 +928,26 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+> >>>  	case 3:
+> >>>  	case 4:
+> >>>  	case 5:
+> >>> -		/* Internal PHY, nothing to do */
+> >>> +		/* Internal PHY, apply revision fixup */
+> >>> +		phy = qca8k_port_to_phy(port) % PHY_MAX_ADDR;
+> >>> +		switch (priv->switch_revision) {
+> >>> +		case 1:
+> >>> +			/* For 100M waveform */
+> >>> +			qca8k_phy_dbg_write(priv, phy, 0, 0x02ea);
+> >>> +			/* Turn on Gigabit clock */
+> >>> +			qca8k_phy_dbg_write(priv, phy, 0x3d, 0x68a0);
+> >>> +			break;
+> >>> +
+> >>> +		case 2:
+> >>> +			qca8k_phy_mmd_write(priv, phy, 0x7, 0x3c, 0x0);
+> >>> +			fallthrough;
+> >>> +		case 4:
+> >>> +			qca8k_phy_mmd_write(priv, phy, 0x3, 0x800d, 0x803f);
+> >>> +			qca8k_phy_dbg_write(priv, phy, 0x3d, 0x6860);
+> >>> +			qca8k_phy_dbg_write(priv, phy, 0x5, 0x2c46);
+> >>> +			qca8k_phy_dbg_write(priv, phy, 0x3c, 0x6000);
+> >>> +			break;
+> >>
+> >> This would be better done with a PHY driver that is specific to the
+> >> integrated PHY found in these switches, it would provide a nice clean
+> >> layer and would allow you to expose additional features like cable
+> >> tests, PHY statistics/counters, etc.
+> > 
+> > I'm starting to do some work with this and a problem arised. Since these
+> > value are based on the switch revision, how can I access these kind of
+> > data from the phy driver? It's allowed to declare a phy driver in the
+> > dsa directory? (The idea would be to create a qca8k dir with the dsa
+> > driver and the dedicated internal phy driver.) This would facilitate the
+> > use of normal qca8k_read/write (to access the switch revision from the
+> > phy driver) using common function?
+> 
+> The PHY driver should live under drivers/net/phy/ and if you need to
+> communicate the switch revision to the PHY driver you can use
+> phydev->dev_flags and implement a dsa_switch_ops::get_phy_flags()
+> callback and define a custom bitmask.
+> 
+> As far as the read/write operations if your switch implements a custom
+> mii_bus for the purpose of doing all of the underlying indirect register
+> accesses, then you should be fine. A lot of drivers do that however if
+> you want an example of both (communicating something to the PHY driver
+> and having a custom MII bus) you can look at drivers/net/dsa/bcm_sf2.c
+> for an example.
+> -- 
+> Florian
 
-Although, newly created dir and file are not related, due to
-commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
-trigger checkpoint whenever fsync() comes after a new encrypted dir
-created.
-
-In order to avoid such condition, let's record an entry including
-directory's ino into global cache when we initialize encryption policy
-in a checkpointed directory, and then only trigger checkpoint() when
-target file's parent has non-persisted encryption policy, for the case
-its parent is not checkpointed, need_do_checkpoint() has cover that
-by verifying it with f2fs_is_checkpointed_node().
-
-Reported-by: Yunlei He <heyunlei@hihonor.com>
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2:
-- fix to set ENC_DIR_INO only for encrypted directory
- fs/f2fs/f2fs.h              | 2 ++
- fs/f2fs/file.c              | 3 +++
- fs/f2fs/xattr.c             | 6 ++++--
- include/trace/events/f2fs.h | 3 ++-
- 4 files changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index b9d5317db0a7..0fe881309a20 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -246,6 +246,7 @@ enum {
- 	APPEND_INO,		/* for append ino list */
- 	UPDATE_INO,		/* for update ino list */
- 	TRANS_DIR_INO,		/* for trasactions dir ino list */
-+	ENC_DIR_INO,		/* for encrypted dir ino list */
- 	FLUSH_INO,		/* for multiple device flushing */
- 	MAX_INO_ENTRY,		/* max. list */
- };
-@@ -1090,6 +1091,7 @@ enum cp_reason_type {
- 	CP_FASTBOOT_MODE,
- 	CP_SPEC_LOG_NUM,
- 	CP_RECOVER_DIR,
-+	CP_ENC_DIR,
- };
- 
- enum iostat_type {
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index a595050c56d3..62af29ec0879 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
- 		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
- 							TRANS_DIR_INO))
- 		cp_reason = CP_RECOVER_DIR;
-+	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-+							ENC_DIR_INO))
-+		cp_reason = CP_ENC_DIR;
- 
- 	return cp_reason;
- }
-diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
-index c8f34decbf8e..70615d504f7e 100644
---- a/fs/f2fs/xattr.c
-+++ b/fs/f2fs/xattr.c
-@@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
- 			const char *name, const void *value, size_t size,
- 			struct page *ipage, int flags)
- {
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	struct f2fs_xattr_entry *here, *last;
- 	void *base_addr, *last_base_addr;
- 	int found, newsize;
-@@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
- 			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
- 		f2fs_set_encrypted_inode(inode);
- 	f2fs_mark_inode_dirty_sync(inode, true);
--	if (!error && S_ISDIR(inode->i_mode))
--		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
-+	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
-+			f2fs_is_checkpointed_node(sbi, inode->i_ino))
-+		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
- 
- same:
- 	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 56b113e3cd6a..ca0cf12226e9 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
- 		{ CP_NODE_NEED_CP,	"node needs cp" },		\
- 		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
- 		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
--		{ CP_RECOVER_DIR,	"dir needs recovery" })
-+		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
-+		{ CP_ENC_DIR,		"persist encryption policy" })
- 
- #define show_shutdown_mode(type)					\
- 	__print_symbolic(type,						\
--- 
-2.29.2
+Thanks a lot for the suggestions. Will send v2 to the net-next branch
+hoping I did all the correct way. 
 
