@@ -2,137 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB8936A53D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9CC36A547
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbhDYHAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 03:00:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhDYHAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 03:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40FB46023B;
-        Sun, 25 Apr 2021 06:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619333969;
-        bh=ALZmUg3aLVOMwTOpSkzKAu3QbSkOH0nkV19EGy5CnWY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTkBA1bAi227vq8nv7Y3635yQJXT4Dm9rXiN9XadbtKqV0vegdA4EYsMfQGwBg7bh
-         fTxh7S3Q+utvZRMgunLLzZR2H6SWAqRs3SM0bbIezJGwNJ65hYW0SQ0rDrnNxdsRgk
-         STaTVMIop+tRNiVtTjMmeBPPfXP+Bu2zJxuAaeBZGvk5awCTT47WPZgCi5q3p7hga+
-         7ZWjc0MfUT2awSF/RVlYPYoagO5R328dq/OVCYOIwewc9wMN+zkbedbqEtHk3lQ9k+
-         1DmOGz2COpdWYXfZ03tPJqud7ZB8paNMhg5qZsTaOuzMEH5A83kANNkAAxOfZCfv0n
-         sqFwgjLUO+5Yg==
-Date:   Sun, 25 Apr 2021 09:59:20 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-Message-ID: <YIUTSDnWe97vX1YP@kernel.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
- <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
- <YIEl8aKr8Ly0Zd3O@kernel.org>
- <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
+        id S229753AbhDYHIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 03:08:52 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:50377 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhDYHIu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 03:08:50 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 13P77E6F032328;
+        Sun, 25 Apr 2021 16:07:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 13P77E6F032328
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1619334435;
+        bh=e6ebiU5ULjsvQr300Dk6h49ie/rrrFWrO2lUQXq6JzM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I4BunMKeL0Ue5l5vmpDu7RlRqPy/iEWvFuaLJjK5Dz84pf1tUbGmZxRlAj9gfCjxt
+         JL7jroB+Ns3eoTwNDnRgGTQuYmdzpM34IekuYKyIQgX1mebLosKS/typ40B2Aw2yFP
+         /2hZY0sidDJq/DKkE6OfzGHXP7I145Su6bZ9Jqt3b6aIqRqqBQ98JDhAN7t6t2enua
+         eJNOU6HqpDZaTNlYiyzTpCE566HaZj9aISKGNvHt2wn49M+ninryGrrvH/tOhrfvrY
+         95PpII7S/IBYwCUOTuqn0+qXiqwAwAUB2NW6tWgaVfO6mm2GwNrTrm2W2jW6A6J7oV
+         Xi8CQU8wn2tfw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: add a script to remove stale generated files
+Date:   Sun, 25 Apr 2021 16:07:12 +0900
+Message-Id: <20210425070712.1202472-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 11:28:24PM +0800, Kefeng Wang wrote:
-> 
-> On 2021/4/22 15:29, Mike Rapoport wrote:
-> > On Thu, Apr 22, 2021 at 03:00:20PM +0800, Kefeng Wang wrote:
-> > > On 2021/4/21 14:51, Mike Rapoport wrote:
-> > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
-> > > > pfn_valid_within() to 1.
-> > > > 
-> > > > The idea is to mark NOMAP pages as reserved in the memory map and restore
-> > > > the intended semantics of pfn_valid() to designate availability of struct
-> > > > page for a pfn.
-> > > > 
-> > > > With this the core mm will be able to cope with the fact that it cannot use
-> > > > NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
-> > > > will be treated correctly even without the need for pfn_valid_within.
-> > > > 
-> > > > The patches are only boot tested on qemu-system-aarch64 so I'd really
-> > > > appreciate memory stress tests on real hardware.
-> > > > 
-> > > > If this actually works we'll be one step closer to drop custom pfn_valid()
-> > > > on arm64 altogether.
-> > > Hi Mike，I have a question, without HOLES_IN_ZONE, the pfn_valid_within() in
-> > > move_freepages_block()->move_freepages()
-> > > will be optimized, if there are holes in zone, the 'struce page'(memory map)
-> > > for pfn range of hole will be free by
-> > > free_memmap(), and then the page traverse in the zone(with holes) from
-> > > move_freepages() will meet the wrong page，
-> > > then it could panic at PageLRU(page) test, check link[1],
-> > First, HOLES_IN_ZONE name us hugely misleading, this configuration option
-> > has nothing to to with memory holes, but rather it is there to deal with
-> > holes or undefined struct pages in the memory map, when these holes can be
-> > inside a MAX_ORDER_NR_PAGES region.
-> > 
-> > In general pfn walkers use pfn_valid() and pfn_valid_within() to avoid
-> > accessing *missing* struct pages, like those that are freed at
-> > free_memmap(). But on arm64 these tests also filter out the nomap entries
-> > because their struct pages are not initialized.
-> > 
-> > The panic you refer to happened because there was an uninitialized struct
-> > page in the middle of MAX_ORDER_NR_PAGES region because it corresponded to
-> > nomap memory.
-> > 
-> > With these changes I make sure that such pages will be properly initialized
-> > as PageReserved and the pfn walkers will be able to rely on the memory map.
-> > 
-> > Note also, that free_memmap() aligns the parts being freed on MAX_ORDER
-> > boundaries, so there will be no missing parts in the memory map within a
-> > MAX_ORDER_NR_PAGES region.
-> 
-> Ok, thanks, we met a same panic like the link on arm32(without
-> HOLES_IN_ZONE),
-> 
-> the scheme for arm64 could be suit for arm32, right?
+We maintain .gitignore and Makefiles so build artifacts are properly
+ignored by Git, and cleaned up by 'make clean'. However, the code is
+always changing; generated files are often moved to another directory,
+or removed when they become unnecessary. Such garbage files tend to be
+left over in the source tree because people usually git-pull without
+cleaning the tree.
 
-In general yes. You just need to make sure that usage of pfn_valid() in
-arch/arm does not presume that it tests something beyond availability of
-struct page for a pfn.
- 
-> I will try the patchset with some changes on arm32 and give some
-> feedback.
-> 
-> Again, the stupid question, where will mark the region of memblock with
-> MEMBLOCK_NOMAP flag ?
- 
-Not sure I understand the question. The memory regions with "nomap"
-property in the device tree will be marked MEMBLOCK_NOMAP.
- 
-> > > "The idea is to mark NOMAP pages as reserved in the memory map", I see the
-> > > patch2 check memblock_is_nomap() in memory region
-> > > of memblock, but it seems that memblock_mark_nomap() is not called(maybe I
-> > > missed), then memmap_init_reserved_pages() won't
-> > > work, so should the HOLES_IN_ZONE still be needed for generic mm code?
-> > > 
-> > > [1] https://lore.kernel.org/linux-arm-kernel/541193a6-2bce-f042-5bb2-88913d5f1047@arm.com/
-> > > 
+This is not only the noise for 'git status', but also a build issue
+in some cases.
 
+One solution is to remove a stale file like commit 223c24a7dba9 ("kbuild:
+Automatically remove stale <linux/version.h> file") did. Such workaround
+should be removed after a while, but we forget about that if we scatter
+the workaround code in random places.
+
+So, this commit adds a new script to collect cleanings of stale files.
+
+As a start point, move the code in arch/arm/boot/compressed/Makefile
+into this script.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ Makefile                          |  6 +++++-
+ arch/arm/boot/compressed/Makefile |  7 -------
+ scripts/remove-stale-files        | 31 +++++++++++++++++++++++++++++++
+ 3 files changed, 36 insertions(+), 8 deletions(-)
+ create mode 100755 scripts/remove-stale-files
+
+diff --git a/Makefile b/Makefile
+index b14483742a67..e970c8adf272 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1202,7 +1202,7 @@ PHONY += prepare archprepare
+ 
+ archprepare: outputmakefile archheaders archscripts scripts include/config/kernel.release \
+ 	asm-generic $(version_h) $(autoksyms_h) include/generated/utsrelease.h \
+-	include/generated/autoconf.h
++	include/generated/autoconf.h remove-stale-files
+ 
+ prepare0: archprepare
+ 	$(Q)$(MAKE) $(build)=scripts/mod
+@@ -1211,6 +1211,10 @@ prepare0: archprepare
+ # All the preparing..
+ prepare: prepare0 prepare-objtool prepare-resolve_btfids
+ 
++PHONY += remove-stale-files
++remove-stale-files:
++	$(Q)$(srctree)/scripts/remove-stale-files
++
+ # Support for using generic headers in asm-generic
+ asm-generic := -f $(srctree)/scripts/Makefile.asm-generic obj
+ 
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index fd94e27ba4fa..182b300e3f8a 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -96,13 +96,6 @@ endif
+ $(foreach o, $(libfdt_objs) atags_to_fdt.o fdt_check_mem_start.o, \
+ 	$(eval CFLAGS_$(o) := -I $(srctree)/scripts/dtc/libfdt -fno-stack-protector))
+ 
+-# These were previously generated C files. When you are building the kernel
+-# with O=, make sure to remove the stale files in the output tree. Otherwise,
+-# the build system wrongly compiles the stale ones.
+-ifdef building_out_of_srctree
+-$(shell rm -f $(addprefix $(obj)/, fdt_rw.c fdt_ro.c fdt_wip.c fdt.c))
+-endif
+-
+ targets       := vmlinux vmlinux.lds piggy_data piggy.o \
+ 		 lib1funcs.o ashldi3.o bswapsdi2.o \
+ 		 head.o $(OBJS)
+diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
+new file mode 100755
+index 000000000000..c3eb81c3f7de
+--- /dev/null
++++ b/scripts/remove-stale-files
+@@ -0,0 +1,31 @@
++#!/bin/sh
++
++set -e
++
++# When you move, remove or rename generated files, you probably also update
++# .gitignore and cleaning rules in the Makefile. This is the right thing
++# to do. However, people usually do 'git pull', 'git bisect', etc. without
++# running 'make clean'. Then, the stale generated files are left over, often
++# causing build issues.
++#
++# Also, 'git status' shows such stale build artifacts as untracked files.
++# What is worse, some people send a wrong patch to get them back to .gitignore
++# without checking the commit history.
++#
++# So, when you (re)move generated files, please move the cleaning rules from
++# the Makefile to this script. This is run before Kbuild starts building
++# anything, so people will not be annoyed by such garbage files.
++#
++# This script is not intended to grow endlessly. Rather, it is a temporary scrap
++# yard. Stale files stay in this file for a while (for some release cycles?),
++# then will be really dead and removed from the code base entirely.
++
++# These were previously generated source files. When you are building the kernel
++# with O=, make sure to remove the stale files in the output tree. Otherwise,
++# the build system wrongly compiles the stale ones.
++if [ -n "${building_out_of_srctree}" ]; then
++	for f in fdt_rw.c fdt_ro.c fdt_wip.c fdt.c
++	do
++		rm -f arch/arm/boot/compressed/${f}
++	done
++fi
 -- 
-Sincerely yours,
-Mike.
+2.27.0
+
