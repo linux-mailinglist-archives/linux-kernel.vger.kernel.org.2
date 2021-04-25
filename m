@@ -2,66 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A9236A6E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 13:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481C036A6FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 13:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhDYL11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 07:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        id S230200AbhDYMAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 08:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhDYL10 (ORCPT
+        with ESMTP id S229688AbhDYMAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 07:27:26 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B48C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 04:26:46 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 124so2967830lff.5
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 04:26:45 -0700 (PDT)
+        Sun, 25 Apr 2021 08:00:05 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7638C061574;
+        Sun, 25 Apr 2021 04:59:25 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id e5so24281444wrg.7;
+        Sun, 25 Apr 2021 04:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=/FyJkmE+TP5guGdySzJDcorjg+9w5Zr0XONBXXrQx4Q=;
-        b=Hk+cI8cR17EGw1MsqXpORoB633/E380XRXnx3W+O+Ppc0zY6q/EPvMxH/YaBScCzOJ
-         QVahsKSmYFL8poHn9v7CKHL0OQRINsb+O0+sJBOXsKmxMrCmV6lAsUabw/RcvoM55Bl6
-         ycllTF61IgEsfhUVb+tfNdUTAeEGZ8sB6qn0foMqbw/7QCbe4sdUrvYoYa23K9Tca762
-         EnJMmG38mdUEGBTD/CjUfzc4Gchcj2sNm0wc2Q9KbY1Lo+JvBu+LCKy6bU4y5Kp8xNx7
-         74YRDiCOiywAstXh2cRC2gr7ULwKjFJgObNysgyeYIqdSb9zzlg38DLbV4QhEaKXBTG8
-         ZQlQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8KHdZTzB5dgfRAU0lEA2gt32lF1fprQam0jC3ww0W64=;
+        b=Ai0jmEFjrPeSPkmccM78UE+jIsEWHopVHtT+OAXvx+K7fgTu8c7rgLsaF1smxnv7nI
+         uM0uulHh3qvWpJXUOlH6lDS2vq8ESBv9iggElz9w5ClIO2AABUb4xhrYlg7UAAec1iph
+         XuAjCAYWr4kZa2u+BiQ8/SkMqNdPjSobAu5wrr12ETj1LkQDhKYE6Y/bXykGtSQ8T83f
+         Tr58KfAaA7VHR1xW3N6D2AZlP14jbt1xtbMSxBkl5GM72NJloomgBCvwxMATjz6v+sGA
+         /Vc8q6PBv0wyEW2oyoUT92p+teN6c9T5RB6jiL6Oavk/92cK1pGLeqsBYDE1AcpHZ88m
+         wzbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=/FyJkmE+TP5guGdySzJDcorjg+9w5Zr0XONBXXrQx4Q=;
-        b=tXneWO8hUPQEUrMg0IxXvT56B7PIgsARbYyXCmvq5EcQSJcaF6G7xr9mbs9kfdJXS8
-         EdVx8DnMzxMVNdq4DLjmzt6BTm6zzuGmp62fwVeybyAUTtIQEAkgcdgexP83pnKzW83Q
-         MhmER0Ca/8Nbdxer/dSCZ4qDcFdFQqlS3JHsKrhrwnuYcuIjvj3IE9Y6+RvLeYh6TDjz
-         9N5aX1jiXZicJo+ffat70gk06OnasPf32zH6Yi7NOO8Jzhg7jJo3pu/QkMcimoMwemy/
-         7skpR0GIlniNf1+R8lG8VytFpA6Cfqa+4PQPpVi+MI9tzwolCIbWcwfrE+KZ44+8UYkH
-         6E6w==
-X-Gm-Message-State: AOAM531qCJmMmzjdjYfrV+bsSoPNg8ahORMpXqCgrvZ16hxGSVYYP4eV
-        h7OeMk7oz22jUh8MQhHll23TYaDiwjTMswpNHv8=
-X-Google-Smtp-Source: ABdhPJyE/Q+RKV/v9ubQM0jhDsMPBTmXq/gYkJBdUHp9yzg/ETcu0Hy4+PukXLDGXqUG+QTKJrmrd11FlRffe4nn5uo=
-X-Received: by 2002:a05:6512:11cc:: with SMTP id h12mr9207655lfr.567.1619350003904;
- Sun, 25 Apr 2021 04:26:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8KHdZTzB5dgfRAU0lEA2gt32lF1fprQam0jC3ww0W64=;
+        b=mndsSYVXDWVJ97nrRtfgl8prIzy9wHBnPEBlEmSJAmwFwTK+GUd8e5FY1Ln9Sx6qPZ
+         HMGpfAs3M9jc7/Ro+L0wwOzaSNx5aK9SM9SvZxvRTsjNYldlfijoraeSKB8g+2znEFwX
+         O8suVI0sYEyS9t0y+1i1ZS90aLyWnFN+nCJ0HlfofiaIBJtrrbU3nVP+w9WwJ76trUK+
+         kveLlMmZNByXIv/unLHqY1w2aG4d3qYEujiMOS2S3upI18OF5bJouVAz763Zf4WASXah
+         D4e7BjxaR+IHf4RlsmqqWMhdyswd3P2ckmJ3viTfQOAtFyGm3QrpG6y0x3kR1LidvkOd
+         CJWg==
+X-Gm-Message-State: AOAM533HMjLiLJ8X3xH+QPrVU8kydwCwZUoimwNcGEpWvDWEPK12HIue
+        Md1zgwBAi6gyeX2uTZrhEthCkJSuHs9+gw==
+X-Google-Smtp-Source: ABdhPJyE3dy+asCu9vuV8z6p85bA1GNmwIgLABXac/CwtbgRTksf3eK5UrRFs6ZgjwA/EhnNRIsHMw==
+X-Received: by 2002:a5d:6a84:: with SMTP id s4mr877193wru.178.1619351964259;
+        Sun, 25 Apr 2021 04:59:24 -0700 (PDT)
+Received: from Ansuel-xps.localdomain ([5.170.104.9])
+        by smtp.gmail.com with ESMTPSA id w22sm16469137wmc.13.2021.04.25.04.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Apr 2021 04:59:23 -0700 (PDT)
+Date:   Sun, 25 Apr 2021 13:59:19 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/14] drivers: net: dsa: qca8k: apply switch revision fix
+Message-ID: <YIVZl9qbXLcCrqNl@Ansuel-xps.localdomain>
+References: <20210423014741.11858-1-ansuelsmth@gmail.com>
+ <20210423014741.11858-12-ansuelsmth@gmail.com>
+ <e644aba9-a092-3825-b55b-e0cca158d28b@gmail.com>
+ <YISLHNK8binc9T1N@Ansuel-xps.localdomain>
+ <20210425044554.194770-1-dqfext@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6504:288:0:0:0:0 with HTTP; Sun, 25 Apr 2021 04:26:43
- -0700 (PDT)
-Reply-To: stephenbordeaux@yahoo.com
-From:   Stephen Bordeaux <sherihewson200@gmail.com>
-Date:   Sun, 25 Apr 2021 12:26:43 +0100
-Message-ID: <CAL=TkS1BtaLVct5ZCD1e3s08sOZoXKwOjVYC7tK0EUP5-qXttQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425044554.194770-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Guten Morgen, ich bin Rechtsanwalt Stephen Bordeaux, Anwalt in der
-Anwaltskanzlei Bordeaux. Ich habe Sie bez=C3=BCglich des kontaktiert
-Eigentum des verstorbenen Dr. Edwin sollen 8,5 Millionen Dollar sein
-R=C3=BCckkehrer auf Ihr Konto. Auch in dieser Transaktion m=C3=B6chte ich d=
-ass
-Sie vertraulich antworten. Stephen Bordeaux
+On Sun, Apr 25, 2021 at 12:45:54PM +0800, DENG Qingfang wrote:
+> Hi Ansuel,
+> 
+> On Sat, Apr 24, 2021 at 11:18:20PM +0200, Ansuel Smith wrote:
+> > 
+> > I'm starting to do some work with this and a problem arised. Since these
+> > value are based on the switch revision, how can I access these kind of
+> > data from the phy driver? It's allowed to declare a phy driver in the
+> > dsa directory? (The idea would be to create a qca8k dir with the dsa
+> > driver and the dedicated internal phy driver.) This would facilitate the
+> > use of normal qca8k_read/write (to access the switch revision from the
+> > phy driver) using common function?
+> 
+> In case of different switch revision, the PHY ID should also be different.
+> I think you can reuse the current at803x.c PHY driver, as they seem to
+> share similar registers.
+>
+
+Is this really necessary? Every PHY has the same ID linked to the switch
+id but the revision can change across the same switch id. Isn't the phy
+dev flag enought to differiante one id from another? 
+
+> > 
+> > > -- 
+> > > Florian
