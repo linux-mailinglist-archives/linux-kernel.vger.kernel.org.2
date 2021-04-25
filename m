@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFC336A411
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F8436A413
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhDYCE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDYCE6 (ORCPT
+        id S229795AbhDYCIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 22:08:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3953 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhDYCIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:04:58 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98773C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:04:18 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id a25so46651581ljm.11
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dBImDjtC+qnZ8/5fP2PL/vVTHMmZW0yK3v6Rit5lABk=;
-        b=GUJOgG+BvBe+DaGrfpnz9o1gDEYYNiBZpRgXRxxL0ZilC65247muQ6yEjKB40wZTOs
-         ZAmT+dJweHEMu98gmjD8ygVomy9raa0B3SKr3XzLkKOBFfGq2sq9Z9QpFTZ7hK3Nru+M
-         vKq1754eCVzgnAfgm6Bx7Et59dI0K4T6tjpBY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dBImDjtC+qnZ8/5fP2PL/vVTHMmZW0yK3v6Rit5lABk=;
-        b=ihwHpYKQD2I1icETcS2E6X1hsFYyd0GEABtilR1s8iQUViA5WNAUQxe35P9Ja1GhaY
-         kZAK7PGbfuMn3fkwiWABZaxKhRVQxnsjm+V7fhllmjSjGVnu0oAtl11jpHYstbXYuQIu
-         4/UJKPFWA3X0EsiusnJSuNZEcAEn+LD1i0pz/onHPvybLCvzvNPvrHPJ9xtfeDBS8qB/
-         Pp8SPLe76v5eWYrC/RkdhiSdP9k/0iHSE7bABWRQVveRr8ljeSOmJkTMyJrTZXTO3z8r
-         jTWzI8BCc43Koo04tOh5/wmgbY6L2h7YqABQJP1pwTxE6zoiZ3BojrM/OCiUNYCuqSKx
-         F1vA==
-X-Gm-Message-State: AOAM532nhZbel4eCs26sH4JmvJAU01cD/T38lSnkjIkQkOJ7KRsFVXmU
-        cVf9fFEX7eHcknsGAksbqMVB99MQNsrXBKwd
-X-Google-Smtp-Source: ABdhPJxgZpK/AMLg+5BguNeuizfwbC8iCxwJrmXP8qBB8nCEieAferUFROsadGfkSy9Re3VsGPH49Q==
-X-Received: by 2002:a2e:a592:: with SMTP id m18mr7662712ljp.189.1619316256844;
-        Sat, 24 Apr 2021 19:04:16 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id l24sm975088lfc.23.2021.04.24.19.04.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Apr 2021 19:04:16 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id s9so2020988ljj.6
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:04:16 -0700 (PDT)
-X-Received: by 2002:a05:651c:1117:: with SMTP id d23mr8080059ljo.220.1619316255975;
- Sat, 24 Apr 2021 19:04:15 -0700 (PDT)
+        Sat, 24 Apr 2021 22:08:24 -0400
+Received: from dggeml763-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FSWZL5Vb8z5v3Z;
+        Sun, 25 Apr 2021 10:05:14 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
+ dggeml763-chm.china.huawei.com (10.1.199.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sun, 25 Apr 2021 10:07:40 +0800
+Received: from [10.174.177.7] (10.174.177.7) by dggpeml500023.china.huawei.com
+ (7.185.36.114) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sun, 25 Apr
+ 2021 10:07:39 +0800
+Subject: Re: [PATCH] arm64:align function __arch_clear_user
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, <xuwei5@hisilicon.com>,
+        <hewenliang4@huawei.com>, <wuxu.wu@huawei.com>
+References: <58fecb22-f932-cb6e-d996-ca75fe26a75d@huawei.com>
+ <20210414104144.GB8320@arm.com>
+ <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
+ <20210423153701.GP18757@arm.com>
+From:   Kai Shen <shenkai8@huawei.com>
+Message-ID: <b7ed22f7-2c89-c67d-5e06-380964371150@huawei.com>
+Date:   Sun, 25 Apr 2021 10:07:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210423063227.GA17429@xsang-OptiPlex-9020> <CAHk-=wg8iAG6bBB+zdoZvZx1XYmyAXrWL0gPs_eTrTt+tXN0Tw@mail.gmail.com>
- <20210425014816.GB5251@xsang-OptiPlex-9020>
-In-Reply-To: <20210425014816.GB5251@xsang-OptiPlex-9020>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 24 Apr 2021 19:04:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiW7xdHZTBgVOpVFM_7bek0HGvioQvCCyDXCbRa2fWdXQ@mail.gmail.com>
-Message-ID: <CAHk-=wiW7xdHZTBgVOpVFM_7bek0HGvioQvCCyDXCbRa2fWdXQ@mail.gmail.com>
-Subject: Re: [mm/vunmap] e47110e905: WARNING:at_mm/vmalloc.c:#__vunmap
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210423153701.GP18757@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.7]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 6:31 PM Oliver Sang <oliver.sang@intel.com> wrote:
-> >
-> > Oliver - how reliable is that bisection?
->
-> we will check further if any issue in our test env.
->
-> by bot auto tests, we saw 12 issue instances out of 74 runs. but not happen
-> out of 100 runs of parent.
-
-Oh, that's interesting. So only 12 out of 74 runs saw that __vunmap
-warning, but if I understand your table correctly, there were some
-_other_ issues in there?
-
-Are those also for that same commit? (ie those RIP:kfree /
-RIP:kobject_add_internal / etc)?
-
-I'm not sure how to read that table of yours - if I understand it
-correctly, it looks like the parent commit had some different ones
-that the child did not (eg 2 cases of BUG_at_mm/usercopy.c?)
-
-So it feels to me like there's some memory corruption somewhere, and
-that commit that it bisected to likely just changed the failure case
-(due to timing differences or allocation ordering changes).
-
-IOW, there seem to be other panics even in the parent.
-
-Yes/No?
-
-             Linus
+On 2021/4/23 23:37, Catalin Marinas wrote:
+> On Mon, Apr 19, 2021 at 10:05:16AM +0800, Kai Shen wrote:
+>> On 2021/4/14 18:41, Catalin Marinas wrote:
+>>> On Wed, Apr 14, 2021 at 05:25:43PM +0800, Kai Shen wrote:
+>>>> Performance decreases happen in __arch_clear_user when this
+>>>> function is not correctly aligned on HISI-HIP08 arm64 SOC which
+>>>> fetches 32 bytes (8 instructions) from icache with a 32-bytes
+>>>> aligned end address. As a result, if the hot loop is not 32-bytes
+>>>> aligned, it may take more icache fetches which leads to decrease
+>>>> in performance.
+>>>> Dump of assembler code for function __arch_clear_user:
+>>>>          0xffff0000809e3f10 :    nop
+>>>>          0xffff0000809e3f14 :    mov x2, x1
+>>>>          0xffff0000809e3f18 :    subs x1, x1, #0x8
+>>>>          0xffff0000809e3f1c :    b.mi 0xffff0000809e3f30 <__arch_clear_user+3
+>>>> -----  0xffff0000809e3f20 :    str    xzr, [x0],#8
+>>>> hot    0xffff0000809e3f24 :    nop
+>>>> loop   0xffff0000809e3f28 :    subs x1, x1, #0x8
+>>>> -----  0xffff0000809e3f2c :    b.pl  0xffff0000809e3f20 <__arch_clear_user+1
+>>>> The hot loop above takes one icache fetch as the code is in one
+>>>> 32-bytes aligned area and the loop takes one more icache fetch
+>>>> when it is not aligned like below.
+>>>>          0xffff0000809e4178 :   str    xzr, [x0],#8
+>>>>          0xffff0000809e417c :   nop
+>>>>          0xffff0000809e4180 :   subs x1, x1, #0x8
+>>>>          0xffff0000809e4184 :   b.pl  0xffff0000809e4178 <__arch_clear_user+
+>>>> Data collected by perf:
+>>>>                            aligned   not aligned
+>>>>             instructions   57733790     57739065
+>>>>          L1-dcache-store   14938070     13718242
+>>>> L1-dcache-store-misses     349280       349869
+>>>>          L1-icache-loads   15380895     28500665
+>>>> As we can see, L1-icache-loads almost double when the loop is not
+>>>> aligned.
+>>>> This problem is found in linux 4.19 on HISI-HIP08 arm64 SOC.
+>>>> Not sure what the case is on other arm64 SOC, but it should do
+>>>> no harm.
+>>>> Signed-off-by: Kai Shen <shenkai8@huawei.com>
+>>>
+>>> Do you have a real world workload that's affected by this function?
+>>>
+>>> I'm against adding alignments and nops for specific hardware
+>>> implementations. What about lots of other loops that the compiler may
+>>> generate or that we wrote in asm?
+>>
+>> The benchmark we used which suffer performance decrease:
+>>      https://github.com/redhat-performance/libMicro
+>>      pread $OPTS -N "pread_z1k"    -s 1k    -I 300  -f /dev/zero
+>>      pread $OPTS -N "pread_z10k"    -s 10k    -I 1000 -f /dev/zero
+>>      pread $OPTS -N "pread_z100k"    -s 100k    -I 2000 -f /dev/zero
+> 
+> Is there any real world use-case that would benefit from this
+> optimisation? Reading /dev/zero in a loop hardly counts as a practical
+> workload.
+> 
+Operations like "dd if=/dev/zero of=/dev/sda1" ?
