@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CC336A9BE
+	by mail.lfdr.de (Postfix) with ESMTP id C90DF36A9C0
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 00:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhDYWsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 18:48:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50806 "EHLO mail.kernel.org"
+        id S231573AbhDYWsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 18:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231435AbhDYWrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231441AbhDYWrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 25 Apr 2021 18:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF89613B3;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60F23613BB;
         Sun, 25 Apr 2021 22:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619390831;
-        bh=61SePc1GcT9sPgJaob+M5p4af6p5YFJt5b4qYSd6fRg=;
+        bh=YOXvJ9c4FtwxVpG/WsHRuATvBXtO3NDC6pYxQbAN5x0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h2Pz/mbUwH+bhbWTJ9Khlv4fPnUggLcKs0cglGBDITD+eUP7codcqVrsBSZ7RFi+m
-         7KP0pAh58Nc1Iuh6zE6kl++SKjWoXek1nGDTbpqmgayZIyaFYYiiRBy78sfrFKE3Qc
-         4CNEiPhSs3cjzKDo4aTSERvINkRpfFKzmHn0AEy5dW4eAuGRBbNrOaZ/9mSYpEFyx+
-         mkPZFXB+Yz4DSTJdMhT4UkUbexS0aQ44ygJwyYbgliXCy3tpcGA7Qfe8wD+nhgTVQ7
-         ge2/uTdd1km4P9mVDjq7jbJKu4v09G3PBRTcMQgLFjk5mPgO8mqiPBddSNAUv0JvOf
-         CbHpIsXVWKaBA==
+        b=LlUoC/3CuWoSzxWmtb6iuhCs3ToYXoDONB7lCkjX52/CPDXAp1Y6VwDJOCxiR9w9X
+         GzZVcidyOQ9UPBE/I6QVnm9k2Tm+Y/hLh/oOQ5byGSME72N4rEbWgxNAkaPb1pOZGA
+         RnoI411D1QYy4zg9y3J+skeEjJoyIkhUEm7hkgzgYyFQtmsgjFGgKUr4HZ+JN8s5zb
+         LkRe9jRqu83h4GX/1A/NC3tk2SmYnJOXIsv2FPOnqfCfOVjFcedP69FxqfGlZ3PdzH
+         9aTyynk46R+HWErFtmkgAp3wI8iyVpf3y7kI0qxk/7XvnYVZmDs2XXJoPU9MO+CclQ
+         eRzxegXNYBSSw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DB58D5C027B; Sun, 25 Apr 2021 15:47:10 -0700 (PDT)
+        id DD2705C05AA; Sun, 25 Apr 2021 15:47:10 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
         maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
         ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
         "Paul E. McKenney" <paulmck@kernel.org>, Chris Mason <clm@fb.com>
-Subject: [PATCH v9 clocksource 6/6] clocksource: Reduce WATCHDOG_THRESHOLD
-Date:   Sun, 25 Apr 2021 15:47:08 -0700
-Message-Id: <20210425224709.1312655-7-paulmck@kernel.org>
+Subject: [PATCH v10 clocksource 7/7] clocksource: Reduce WATCHDOG_THRESHOLD
+Date:   Sun, 25 Apr 2021 15:47:09 -0700
+Message-Id: <20210425224709.1312655-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
 References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
@@ -71,18 +71,19 @@ Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 2981e293a468..d82ad0492777 100644
+index 070b09dab815..a374cf7b6336 100644
 --- a/kernel/time/clocksource.c
 +++ b/kernel/time/clocksource.c
-@@ -125,14 +125,14 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
+@@ -125,7 +125,7 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
   * Interval: 0.5sec Threshold: 0.0625s
   */
  #define WATCHDOG_INTERVAL (HZ >> 1)
 -#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
 +#define WATCHDOG_THRESHOLD (200 * NSEC_PER_USEC)
+ #define WATCHDOG_SYNC_FORGIVENESS (HZ * 60UL)
  
  /*
-  * Maximum permissible delay between two readouts of the watchdog
+@@ -133,7 +133,7 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
   * clocksource surrounding a read of the clocksource being validated.
   * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
   */
