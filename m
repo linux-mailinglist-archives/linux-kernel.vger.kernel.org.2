@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FEF36A596
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E79936A598
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhDYHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 03:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S229650AbhDYHxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 03:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhDYHtl (ORCPT
+        with ESMTP id S229575AbhDYHxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 03:49:41 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D03C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:49:02 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id g16so10457792plq.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:49:02 -0700 (PDT)
+        Sun, 25 Apr 2021 03:53:02 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC6BC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:52:23 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 26-20020a05600c22dab029013efd7879b8so1551019wmg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:52:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mMC9VyMwLf/GfBfr0WOgCBomIsX/etjUIbslChnLKO8=;
-        b=rdV7Uk+Lv//4PPy3jrfkDGOF6hsGrCo/rxBEcBU119LGQ3eA1F5lciK9q7uT3RvADx
-         LpuNhCevhuwkrKKNPW/strFN3EjeCTtskyZI1gpGrq5qVA86I4RjaZGpBwx8ohxuko65
-         jysPfUbiuoRY3QHdbVdP7xFI1cW4IQRmdBP47QDQSPJm2LzogoK32Wt2B/GLOXFy/VVz
-         I4m8sWIXEKXwe5SfAzjtgnU67XTq/d2suQbtquJVw3clnkp5du7y1hvn41B2NN3WozX5
-         v+0eEw4SEUpCz6Gd5peIW/h1Ay+gtRybdvgNdHSTN7vk1O7lOvK++sXyFF51J1l0w/eT
-         yySg==
+        bh=DxXfssDzZ5x1LEXGMfUGWMuElg3emrhM9KxgFO/3r7I=;
+        b=RKcm0mnpPekdsyNlRFiGOmfjcV4J9ZbIVJOZTub5dFxfEJd5yICsFYE6bN9w4RHTCR
+         SRJOwOHAxpr4PXdYUmUA0Qzop6GrJamo7viYc6iq+Yc1emXCZ6l5M4f5l7Z5c+AtCXHQ
+         FVmBwzqeqsl9gOK1U5sUZo3jObNaJirmJG4SaGeBEmBURiqz+/p+CG6kBr1BQlVjvEhR
+         CLqbrf2ACgmp+X7X4ZVWkos0EmAakOPBKHX3AyZ/YuIhTO6xRRxXGB+gceC6cNLsRy5H
+         cbmfnuPrbbYvl7hVV5OvvH+wOJO7TwZlDcH8pEuEPPyvQWbWxBj7IEcla1t3eJMHVS0u
+         zI5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mMC9VyMwLf/GfBfr0WOgCBomIsX/etjUIbslChnLKO8=;
-        b=NkDst9DN6ADArUOQuvLM3JVzp9huKfY2y7YNFeotddNes+QdW9SbdcB6u3hp6f2KEP
-         NaKdyRapvAY0BhYLTqqjyFjn4Ai4qKz63d/VB9afO+NtcR1elgt7wjjsBPCpGfxGpqdH
-         qBGr4QJ46hq4suDv55ZlWktrfs20+lNh6Cq9QAj3YtIoC9vCpyY0CbCbZaQnBhY7hlKg
-         AGaAK6juWt1wadpUxlO+EwWG/cQDGi+2hk1V0xqeo3lvIcEdPOcxe60QBZ6t2R4iq2zb
-         5wdyWTk/gI2foQlUaWkMXtrpr4kvBgJ4+nguOilFhB+JZgrjLpurZL8ZdK2CItbocy7x
-         tdJA==
-X-Gm-Message-State: AOAM533f78qBQDw1nkDgR1QgmRG0yCINuijbiSc0ez+vdJ+5XGwCsWmn
-        pp5BRJyvIC8RqHWZrn+51Ww=
-X-Google-Smtp-Source: ABdhPJwnraxQf8SxUW4EDxzy/W00s1TOYyNp5Kl6lwkYzgYX6ImkouH2o9bW+CQnzZ28kosGTVmFUw==
-X-Received: by 2002:a17:90a:1f49:: with SMTP id y9mr14504341pjy.69.1619336941649;
-        Sun, 25 Apr 2021 00:49:01 -0700 (PDT)
-Received: from nuc.wg.ducheng.me ([202.133.196.154])
-        by smtp.gmail.com with ESMTPSA id a5sm2737862pja.37.2021.04.25.00.48.59
+        bh=DxXfssDzZ5x1LEXGMfUGWMuElg3emrhM9KxgFO/3r7I=;
+        b=QXwgj/jh1JFXkJYsObt0z+jD077OiNaJTBoqEGoc+PmKegQfBGO7lyixyn7MV/1GUT
+         86VMO9T4qj08YKOiZyYA8W5WyNPgn+3qHBWsusBd2S2JT5hl2XDnoc40vay//5sgL4w/
+         hzenHZcXcx904Mgtd74rMxGTls8lv5YZUI04BQTYDzP6g72+QrvH7Z+IRkMvuPjx2WZW
+         YHQjas81twbVIx9xb04dgkdqcaivUmJM2rZtUf3JWpTQE1QX9qBRjgdFrHNN2279Ksnm
+         uSTvI9IO4FU++ii8I1T61C40ANrk65hholc8oSOPX4okBEh1brZAhk/O+HsACZh6XIVm
+         WD1w==
+X-Gm-Message-State: AOAM530EYK8HXUCS18g8JVZWBO/32rSsA9livETesmiePteDYRocAgW7
+        OoHXVcFJKnYUjq27SJW00S6rx2JT7D0h/g==
+X-Google-Smtp-Source: ABdhPJyKkypBVt1Dv8z66wjR3Mpvmj65Wi/QN10SxhsN57XRFPh0o3KDnXSjRCLEnZaWrsnOHScSfQ==
+X-Received: by 2002:a05:600c:2112:: with SMTP id u18mr12898543wml.33.1619337141689;
+        Sun, 25 Apr 2021 00:52:21 -0700 (PDT)
+Received: from localhost.localdomain (p200300d9971998009e1ae620ab52a3b7.dip0.t-ipconnect.de. [2003:d9:9719:9800:9e1a:e620:ab52:a3b7])
+        by smtp.googlemail.com with ESMTPSA id n3sm12780169wmi.7.2021.04.25.00.52.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Apr 2021 00:49:01 -0700 (PDT)
-From:   Du Cheng <ducheng2@gmail.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org, Du Cheng <ducheng2@gmail.com>,
-        syzbot+651ca866e5e2b4b5095b@syzkaller.appspotmail.com
-Subject: [PATCH] fs:minix: catch inode->i_nlink == 0 in minix_rename()
-Date:   Sun, 25 Apr 2021 15:48:51 +0800
-Message-Id: <20210425074851.14100-1-ducheng2@gmail.com>
+        Sun, 25 Apr 2021 00:52:21 -0700 (PDT)
+From:   Manfred Spraul <manfred@colorfullife.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     1vier1@web.de, Manfred Spraul <manfred@colorfullife.com>
+Subject: [PATCH 0/1] ipc/util.{c,h}: Use binary search for max_idx
+Date:   Sun, 25 Apr 2021 09:52:07 +0200
+Message-Id: <20210425075208.11777-1-manfred@colorfullife.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,41 +63,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the destination inode has i_nlink==0, it is invalid. Hence we should
-return an error instead of proceeding with drop_nlink() which causes
-WARN_ON().
+2nd version of the patch:
+@Andrew: Could you add the patch to your mm tree, as candidate for
+linux-next?
 
-Reported by syzkaller:
-https://syzkaller.appspot.com/bug?id=0b1ac5e39c478b05355e189451b5379dc925fd2e
-
-Reported-by: syzbot+651ca866e5e2b4b5095b@syzkaller.appspotmail.com
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
----
-This patch fixed the kernel panic on my testing envionment with the syzbot
-reproducer.
-
-This patch works in a similar spirit with the following patch on bad inode:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=facb03dddec04e4aac1bb2139accdceb04deb1f3
+Note:
+I have tried to remove the ids->max_idx cache entirely. Unfortunately,
+this causes a significant slow-down of semstat(,,IPC_STAT):
+   * no object allocated, no ipcmni_extended: +50%
+   * no object allocated, with ipcmni_extended: +80%
+   * 30 objects allocated, with large gaps, no ipcmni_extended:
+           +350%
+Thus I haven't removed ids->max_id.
 
 
- fs/minix/namei.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/minix/namei.c b/fs/minix/namei.c
-index 937fa5fae2b8..96761536b8d4 100644
---- a/fs/minix/namei.c
-+++ b/fs/minix/namei.c
-@@ -215,6 +215,10 @@ static int minix_rename(struct user_namespace *mnt_userns,
- 		struct page * new_page;
- 		struct minix_dir_entry * new_de;
- 
-+		err = -EINVAL;
-+		if (new_inode->i_nlink == 0)
-+			goto out_dir;
-+
- 		err = -ENOTEMPTY;
- 		if (dir_de && !minix_empty_dir(new_inode))
- 			goto out_dir;
--- 
-2.30.2
+--
+	Manfred
 
