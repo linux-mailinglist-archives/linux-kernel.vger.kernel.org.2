@@ -2,908 +2,656 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E77F36A808
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA0736A80D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhDYPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 11:46:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhDYPqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 11:46:13 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F12A4611C0;
-        Sun, 25 Apr 2021 15:45:31 +0000 (UTC)
-Date:   Sun, 25 Apr 2021 16:46:13 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <lars@metafoo.de>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/3] iio: sps30: separate core and interface specific
- code
-Message-ID: <20210425164613.7eda8f6c@jic23-huawei>
-In-Reply-To: <20210425135546.57343-2-tomasz.duszynski@octakon.com>
-References: <20210425135546.57343-1-tomasz.duszynski@octakon.com>
-        <20210425135546.57343-2-tomasz.duszynski@octakon.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230445AbhDYPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 11:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230491AbhDYPsL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 11:48:11 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3218EC061574;
+        Sun, 25 Apr 2021 08:47:31 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g14so3156081edy.6;
+        Sun, 25 Apr 2021 08:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=vHWq/ShrO8Ihlax4FGlybv3r2SlZSeDRDrjLDYGnrHs=;
+        b=bcCucZZcNQit4TU7W3BdU/6VbAN63dkyzqcRWveXskUNgVEIIake9AodnMPQuhuWdH
+         5xIHKSnsI/o8AjfbrSk6gEllTBF+6nLQY5py/eVxRG6Sit7whqjVKQygcwsliL9J3wWZ
+         wMhKPbdfhtRrpExDEEhgwa7syhvLOun/hKN01sS2lzsFoS4QOlUEhTOVTnaLiiLrcey4
+         QlDpOwEvuDM+ISRDhVxCOnu+pII1+FUk0t0SMPGpPULUeM8F/Mi5RoQ8wGAdK8/JeyYF
+         l+wSfiHEKVeQF5plJJkj8qDIgrQEgu7hawhmYxOFTxTysP3lAqPPqCjIw2rD8OaDpLnB
+         8dXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=vHWq/ShrO8Ihlax4FGlybv3r2SlZSeDRDrjLDYGnrHs=;
+        b=KzGRImLQkQm4jKmwXUd+0SyXo6g7/3XEFNTHcMo+bVyYUi4zcFk6vZVKgSJDqz6pBk
+         61r6cSnmMa8R25HDHHr4xUDl4b4gBR/QoVI3EJGL7sGO4DM6Z0E414Cu8KEmgxsC9Kap
+         6UZN5bC1Ou6bx2g2dIonMrt/MYDFdYWAuux/xDX2SBl4YW9rOGDdo1jyTCBQgsoPem65
+         hvP8ZeEBtcoFekHz37qyo8xrPUzFkeLXcbXf2cEpdP9TVsU9E7qxFACypNs/wvg5NT1z
+         BYBEeBYV+DgmTQSYlzEj0fALC9j6aGVaUOHzZZhgpg8fjsYbzJKM9kd+IXL6EK1Tvrpp
+         fZyw==
+X-Gm-Message-State: AOAM533cEtBd7de+APZvWazjHHVdpQ60HH/g4bfh8DR1CsEM6Ycftszi
+        r3tdMLQEgPkz0MjzeWbhkTRoGNLl7YojsgONbwCt32PJrRDlIw==
+X-Google-Smtp-Source: ABdhPJzkvq0WT9B4A/+mIlMgDUJY2gfbTdXzYWtcZI/CyhRZsQeZhm5F26U+ejDVu5QAqwz2C/SIuUfJPSofhCWepCU=
+X-Received: by 2002:a05:6402:5111:: with SMTP id m17mr16903379edd.175.1619365649424;
+ Sun, 25 Apr 2021 08:47:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   haosdent <haosdent@gmail.com>
+Date:   Sun, 25 Apr 2021 23:47:18 +0800
+Message-ID: <CAFt=ROP_L3bt63ugj7pf43vC7OCPb=Ywr-xfmLwaj-G2Fo5k_g@mail.gmail.com>
+Subject: NULL pointer dereference when access /proc/net
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+Cc:     Haosong Huang <huangh@sea.com>, zhengyu.duan@shopee.com,
+        =?UTF-8?B?6buE5rWp5p2+?= <haosdent@gmail.com>
+Content-Type: multipart/mixed; boundary="0000000000004c6b0005c0cdf290"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Apr 2021 15:55:44 +0200
-Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
+--0000000000004c6b0005c0cdf290
+Content-Type: text/plain; charset="UTF-8"
 
-> Move code responsible for handling i2c communication to a separate file.
-> Rationale for this change is preparation for adding support for serial
-> communication.
-> 
-> Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Hi, Alexander Viro and dear Linux Filesystems maintainers, recently we
+encounter a NULL pointer dereference Oops in our production.
 
-Hi Tomasz,
+We have attempted to analyze the core dump and compare it with source
+code in the past few weeks, currently still could not understand why
+`dentry->d_inode` become NULL while other fields look normal.
 
-This seems rather less minimal than I'd usually expect for this sort of refactor
-but (other than a few things commented on inline) it seems like all the other
-bits of refactoring are sensible to me.
+Here is the call stack trace of this Oops.
 
-Thanks,
+```
+[19521409.363839] BUG: unable to handle kernel NULL pointer
+dereference at 000000000000000c
+[19521409.372016] IP: __atime_needs_update+0x5/0x190
+[19521409.376757] PGD 80000020326ad067 P4D 80000020326ad067 PUD 200fd06067 PMD 0
+[19521409.384025] Oops: 0000 [#1] SMP PTI
+[19521409.387796] Modules linked in: veth ipt_MASQUERADE
+nf_nat_masquerade_ipv4 nf_conntrack_netlink nfnetlink xfrm_user
+xfrm_algo xt_addrtype iptable_nat nf_nat_ipv4 nf_nat br_netfilter
+bridge stp llc aufs overlay cpuid iptable_filter ip_tables cls_cgroup
+sch_htb xt_multiport ufs qnx4 hfsplus hfs minix ntfs msdos jfs xfs
+ip6table_filter ip6_tables nf_conntrack_ipv4 nf_defrag_ipv4 xt_tcpudp
+xt_conntrack x_tables bonding nls_utf8 isofs ib_iser rdma_cm iw_cm
+ib_cm ib_core iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi
+toa(OE) nf_conntrack lp parport intel_rapl skx_edac
+x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm irqbypass
+intel_cstate intel_rapl_perf ipmi_ssif ipmi_si dcdbas mei_me mei
+ipmi_devintf lpc_ich shpchp ipmi_msghandler acpi_power_meter mac_hid
+autofs4 btrfs zstd_compress
+[19521409.458627]  raid10 raid456 async_raid6_recov async_memcpy
+async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0
+multipath linear crct10dif_pclmul crc32_pclmul mgag200
+ghash_clmulni_intel ttm pcbc drm_kms_helper aesni_intel syscopyarea
+aes_x86_64 sysfillrect ixgbe igb sysimgblt crypto_simd fb_sys_fops dca
+i2c_algo_bit glue_helper ptp megaraid_sas ahci drm cryptd mdio
+pps_core libahci [last unloaded: ip_tables]
+[19521409.496053] CPU: 46 PID: 10855 Comm: node-exporter Tainted: G
+       OE    4.15.0-42-generic #46~16.04.1+4
+[19521409.506851] Hardware name: Dell Inc. PowerEdge R740xd/08D89F,
+BIOS 1.4.9 06/29/2018
+[19521409.514784] RIP: 0010:__atime_needs_update+0x5/0x190
+[19521409.520026] RSP: 0018:ffff9dee09c2fc48 EFLAGS: 00010202
+[19521409.525528] RAX: ffff8a4281d01ec0 RBX: fefefefefefefeff RCX:
+0000000000000040
+[19521409.532942] RDX: 0000000000000001 RSI: 0000000000000000 RDI:
+ffff9dee09c2fde8
+[19521409.540354] RBP: ffff9dee09c2fca8 R08: ffff9dee09c2fbf4 R09:
+ffff9dee09c2fd90
+[19521409.547761] R10: ffff8a34397b4022 R11: 6b636f732f74656e R12:
+2f2f2f2f2f2f2f2f
+[19521409.555176] R13: 0000000000000000 R14: ffff8a34397b4026 R15:
+ffff9dee09c2fde8
+[19521409.562592] FS:  000000c000218090(0000)
+GS:ffff8a3b401c0000(0000) knlGS:0000000000000000
+[19521409.570976] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[19521409.577001] CR2: 000000000000000c CR3: 000000203ad22005 CR4:
+00000000007606e0
+[19521409.584415] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[19521409.592937] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+[19521409.601419] PKRU: 55555554
+[19521409.605464] Call Trace:
+[19521409.609235]  ? link_path_walk+0x3e4/0x5a0
+[19521409.614546]  ? path_init+0x177/0x2f0
+[19521409.619423]  path_openat+0xe4/0x1770
+[19521409.624282]  ? ttwu_do_wakeup+0x1e/0x140
+[19521409.629465]  ? ttwu_do_activate+0x77/0x80
+[19521409.634713]  ? try_to_wake_up+0x59/0x480
+[19521409.639864]  do_filp_open+0x9b/0x110
+[19521409.644638]  ? __check_object_size+0xaf/0x1b0
+[19521409.650176]  ? path_get+0x27/0x30
+[19521409.654652]  do_sys_open+0x1bb/0x2c0
+[19521409.659372]  ? do_sys_open+0x1bb/0x2c0
+[19521409.664254]  SyS_openat+0x14/0x20
+[19521409.668677]  do_syscall_64+0x73/0x130
+[19521409.673479]  entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+[19521409.679602] RIP: 0033:0x4a5c9a
+[19521409.683706] RSP: 002b:000000c000304ab0 EFLAGS: 00000202
+ORIG_RAX: 0000000000000101
+[19521409.692316] RAX: ffffffffffffffda RBX: 000000c00002f400 RCX:
+00000000004a5c9a
+[19521409.700483] RDX: 0000000000080000 RSI: 000000c00175a020 RDI:
+ffffffffffffff9c
+[19521409.708640] RBP: 000000c000304b28 R08: 0000000000000000 R09:
+0000000000000000
+[19521409.716806] R10: 0000000000000000 R11: 0000000000000202 R12:
+ffffffffffffffff
+[19521409.724962] R13: 0000000000000002 R14: 0000000000000001 R15:
+0000000000000100
+[19521409.733145] Code: 83 ec 08 0f 0d 8f 80 05 00 00 e8 87 ff ff ff
+48 85 c0 74 10 48 89 c7 48 89 45 f8 e8 56 d4 ff ff 48 8b 45 f8 c9 c3
+0f 1f 44 00 00 <f6> 46 0c 02 0f 85 9b 00 00 00 83 7e 04 ff 0f 84 91 00
+00 00 83
+[19521409.753799] RIP: __atime_needs_update+0x5/0x190 RSP: ffff9dee09c2fc48
+[19521409.761228] CR2: 000000000000000c
+```
 
-Jonathan
+In the coredump, we try to figure out how this NULL pointer Oops
+happen. It looks like when the program `node-exporter` tries to access
+`/proc/net/sockstat`, when `walk_component()` the `/proc/net`, it got
+a dentry which `d_inode` is NULL while other fields have data.
 
-> ---
->  MAINTAINERS                      |   1 +
->  drivers/iio/chemical/Kconfig     |  13 +-
->  drivers/iio/chemical/Makefile    |   1 +
->  drivers/iio/chemical/sps30.c     | 270 ++++++-------------------------
->  drivers/iio/chemical/sps30.h     |  73 +++++++++
->  drivers/iio/chemical/sps30_i2c.c | 256 +++++++++++++++++++++++++++++
->  6 files changed, 391 insertions(+), 223 deletions(-)
->  create mode 100644 drivers/iio/chemical/sps30.h
->  create mode 100644 drivers/iio/chemical/sps30_i2c.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ccc59fd7e5c0..4b39a9c48736 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16137,6 +16137,7 @@ M:	Tomasz Duszynski <tduszyns@gmail.com>
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/iio/chemical/sensirion,sps30.yaml
->  F:	drivers/iio/chemical/sps30.c
-> +F:	drivers/iio/chemical/sps30_i2c.c
->  
->  SERIAL DEVICE BUS
->  M:	Rob Herring <robh@kernel.org>
-> diff --git a/drivers/iio/chemical/Kconfig b/drivers/iio/chemical/Kconfig
-> index 10bb431bc3ce..82af5f62fbc6 100644
-> --- a/drivers/iio/chemical/Kconfig
-> +++ b/drivers/iio/chemical/Kconfig
-> @@ -133,8 +133,6 @@ config SENSIRION_SGP30
->  
->  config SPS30
->  	tristate "SPS30 particulate matter sensor"
+```
+struct dentry {
+  ...
+  d_name = {
+    {
+      {
+        hash = 2805607892,
+        len = 3
+      },
+      hash_len = 15690509780
+    },
+    name = 0xffff8a4281d01ef8 "net"
+  },
+  struct inode *d_inode = 0x0         <======= d_inode is NULL and cause Oops!
+  -> NULL
+  d_iname = "net\000:01:00.0\000\000sage_in_bytes\000B\212\377",
+...
+```
 
-One option here is to simplify the Kconfig memu options by
-dropping the text above so the option is hidden then selecting
-this option (rather than depends) for the bus specific drivers.
+We extra the nameidata from the crash dump as well, `link_inode` is
+NULL, looks like either `lookup_slow` or `lookup_fast` return a dentry
+which `inode` is NULL while other fields look normal.
 
-> -	depends on I2C
-> -	select CRC8
->  	select IIO_BUFFER
->  	select IIO_TRIGGERED_BUFFER
->  	help
-> @@ -144,6 +142,17 @@ config SPS30
->  	  To compile this driver as a module, choose M here: the module will
->  	  be called sps30.
->  
-> +config SPS30_I2C
-> +	tristate "SPS30 particulate matter sensor I2C driver"
-> +	depends on SPS30 && I2C
-> +	select CRC8
-> +	help
-> +	  Say Y here to build support for the Sensirion SPS30 I2C interface
-> +	  driver.
-> +
-> +	  To compile this driver as a module, choose M here: the module will
-> +	  be called sps30_i2c.
-> +
->  config VZ89X
->  	tristate "SGX Sensortech MiCS VZ89X VOC sensor"
->  	depends on I2C
-> diff --git a/drivers/iio/chemical/Makefile b/drivers/iio/chemical/Makefile
-> index fef63dd5bf92..41c264a229c0 100644
-> --- a/drivers/iio/chemical/Makefile
-> +++ b/drivers/iio/chemical/Makefile
-> @@ -17,4 +17,5 @@ obj-$(CONFIG_SCD30_I2C) += scd30_i2c.o
->  obj-$(CONFIG_SCD30_SERIAL) += scd30_serial.o
->  obj-$(CONFIG_SENSIRION_SGP30)	+= sgp30.o
->  obj-$(CONFIG_SPS30) += sps30.o
-> +obj-$(CONFIG_SPS30_I2C) += sps30_i2c.o
->  obj-$(CONFIG_VZ89X)		+= vz89x.o
-> diff --git a/drivers/iio/chemical/sps30.c b/drivers/iio/chemical/sps30.c
-> index 7486591588c3..ec9db99e324c 100644
-> --- a/drivers/iio/chemical/sps30.c
-> +++ b/drivers/iio/chemical/sps30.c
-> @@ -3,11 +3,8 @@
->   * Sensirion SPS30 particulate matter sensor driver
->   *
->   * Copyright (c) Tomasz Duszynski <tduszyns@gmail.com>
-> - *
-> - * I2C slave address: 0x69
->   */
->  
-> -#include <asm/unaligned.h>
->  #include <linux/crc8.h>
->  #include <linux/delay.h>
->  #include <linux/i2c.h>
-> @@ -19,27 +16,14 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  
-> -#define SPS30_CRC8_POLYNOMIAL 0x31
-> -/* max number of bytes needed to store PM measurements or serial string */
-> -#define SPS30_MAX_READ_SIZE 48
-> +#include "sps30.h"
-> +
->  /* sensor measures reliably up to 3000 ug / m3 */
->  #define SPS30_MAX_PM 3000
->  /* minimum and maximum self cleaning periods in seconds */
->  #define SPS30_AUTO_CLEANING_PERIOD_MIN 0
->  #define SPS30_AUTO_CLEANING_PERIOD_MAX 604800
->  
-> -/* SPS30 commands */
-> -#define SPS30_START_MEAS 0x0010
-> -#define SPS30_STOP_MEAS 0x0104
-> -#define SPS30_RESET 0xd304
-> -#define SPS30_READ_DATA_READY_FLAG 0x0202
-> -#define SPS30_READ_DATA 0x0300
-> -#define SPS30_READ_SERIAL 0xd033
-> -#define SPS30_START_FAN_CLEANING 0x5607
-> -#define SPS30_AUTO_CLEANING_PERIOD 0x8004
-> -/* not a sensor command per se, used only to distinguish write from read */
-> -#define SPS30_READ_AUTO_CLEANING_PERIOD 0x8005
-> -
->  enum {
->  	PM1,
->  	PM2P5,
-> @@ -52,114 +36,9 @@ enum {
->  	MEASURING,
->  };
->  
-> -struct sps30_state {
-> -	struct i2c_client *client;
-> -	/*
-> -	 * Guards against concurrent access to sensor registers.
-> -	 * Must be held whenever sequence of commands is to be executed.
-> -	 */
-> -	struct mutex lock;
-> -	int state;
-> -};
-> -
-> -DECLARE_CRC8_TABLE(sps30_crc8_table);
-> -
-> -static int sps30_write_then_read(struct sps30_state *state, u8 *txbuf,
-> -				 int txsize, u8 *rxbuf, int rxsize)
-> -{
-> -	int ret;
-> -
-> -	/*
-> -	 * Sensor does not support repeated start so instead of
-> -	 * sending two i2c messages in a row we just send one by one.
-> -	 */
-> -	ret = i2c_master_send(state->client, txbuf, txsize);
-> -	if (ret != txsize)
-> -		return ret < 0 ? ret : -EIO;
-> -
-> -	if (!rxbuf)
-> -		return 0;
-> -
-> -	ret = i2c_master_recv(state->client, rxbuf, rxsize);
-> -	if (ret != rxsize)
-> -		return ret < 0 ? ret : -EIO;
-> -
-> -	return 0;
-> -}
-> -
-> -static int sps30_do_cmd(struct sps30_state *state, u16 cmd, u8 *data, int size)
-> -{
-> -	/*
-> -	 * Internally sensor stores measurements in a following manner:
-> -	 *
-> -	 * PM1: upper two bytes, crc8, lower two bytes, crc8
-> -	 * PM2P5: upper two bytes, crc8, lower two bytes, crc8
-> -	 * PM4: upper two bytes, crc8, lower two bytes, crc8
-> -	 * PM10: upper two bytes, crc8, lower two bytes, crc8
-> -	 *
-> -	 * What follows next are number concentration measurements and
-> -	 * typical particle size measurement which we omit.
-> -	 */
-> -	u8 buf[SPS30_MAX_READ_SIZE] = { cmd >> 8, cmd };
-> -	int i, ret = 0;
-> -
-> -	switch (cmd) {
-> -	case SPS30_START_MEAS:
-> -		buf[2] = 0x03;
-> -		buf[3] = 0x00;
-> -		buf[4] = crc8(sps30_crc8_table, &buf[2], 2, CRC8_INIT_VALUE);
-> -		ret = sps30_write_then_read(state, buf, 5, NULL, 0);
-> -		break;
-> -	case SPS30_STOP_MEAS:
-> -	case SPS30_RESET:
-> -	case SPS30_START_FAN_CLEANING:
-> -		ret = sps30_write_then_read(state, buf, 2, NULL, 0);
-> -		break;
-> -	case SPS30_READ_AUTO_CLEANING_PERIOD:
-> -		buf[0] = SPS30_AUTO_CLEANING_PERIOD >> 8;
-> -		buf[1] = (u8)(SPS30_AUTO_CLEANING_PERIOD & 0xff);
-> -		fallthrough;
-> -	case SPS30_READ_DATA_READY_FLAG:
-> -	case SPS30_READ_DATA:
-> -	case SPS30_READ_SERIAL:
-> -		/* every two data bytes are checksummed */
-> -		size += size / 2;
-> -		ret = sps30_write_then_read(state, buf, 2, buf, size);
-> -		break;
-> -	case SPS30_AUTO_CLEANING_PERIOD:
-> -		buf[2] = data[0];
-> -		buf[3] = data[1];
-> -		buf[4] = crc8(sps30_crc8_table, &buf[2], 2, CRC8_INIT_VALUE);
-> -		buf[5] = data[2];
-> -		buf[6] = data[3];
-> -		buf[7] = crc8(sps30_crc8_table, &buf[5], 2, CRC8_INIT_VALUE);
-> -		ret = sps30_write_then_read(state, buf, 8, NULL, 0);
-> -		break;
-> -	}
-> -
-> -	if (ret)
-> -		return ret;
-> -
-> -	/* validate received data and strip off crc bytes */
-> -	for (i = 0; i < size; i += 3) {
-> -		u8 crc = crc8(sps30_crc8_table, &buf[i], 2, CRC8_INIT_VALUE);
-> -
-> -		if (crc != buf[i + 2]) {
-> -			dev_err(&state->client->dev,
-> -				"data integrity check failed\n");
-> -			return -EIO;
-> -		}
-> -
-> -		*data++ = buf[i];
-> -		*data++ = buf[i + 1];
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static s32 sps30_float_to_int_clamped(const u8 *fp)
-> +static s32 sps30_float_to_int_clamped(__be32 fp)
->  {
-> -	int val = get_unaligned_be32(fp);
-> +	int val = be32_to_cpu(fp);
->  	int mantissa = val & GENMASK(22, 0);
->  	/* this is fine since passed float is always non-negative */
->  	int exp = val >> 23;
-> @@ -188,38 +67,35 @@ static s32 sps30_float_to_int_clamped(const u8 *fp)
->  
->  static int sps30_do_meas(struct sps30_state *state, s32 *data, int size)
->  {
-> -	int i, ret, tries = 5;
-> -	u8 tmp[16];
-> +	int i, ret;
->  
->  	if (state->state == RESET) {
-> -		ret = sps30_do_cmd(state, SPS30_START_MEAS, NULL, 0);
-> +		ret = sps30_start_meas(state);
->  		if (ret)
->  			return ret;
->  
->  		state->state = MEASURING;
->  	}
->  
-> -	while (tries--) {
-> -		ret = sps30_do_cmd(state, SPS30_READ_DATA_READY_FLAG, tmp, 2);
-> -		if (ret)
-> -			return -EIO;
-> +	ret = sps30_read_meas(state, data, size);
-> +	if (ret)
-> +		return ret;
->  
-> -		/* new measurements ready to be read */
-> -		if (tmp[1] == 1)
-> -			break;
-> +	for (i = 0; i < size; i++)
-> +		data[i] = sps30_float_to_int_clamped((__force __be32)data[i]);
->  
-> -		msleep_interruptible(300);
-> -	}
-> +	return 0;
-> +}
->  
-> -	if (tries == -1)
-> -		return -ETIMEDOUT;
-> +static int sps30_do_reset(struct sps30_state *state)
-> +{
-> +	int ret;
->  
-> -	ret = sps30_do_cmd(state, SPS30_READ_DATA, tmp, sizeof(int) * size);
-> +	ret = sps30_reset(state);
->  	if (ret)
->  		return ret;
->  
-> -	for (i = 0; i < size; i++)
-> -		data[i] = sps30_float_to_int_clamped(&tmp[4 * i]);
-> +	state->state = RESET;
->  
->  	return 0;
->  }
-> @@ -310,24 +186,6 @@ static int sps30_read_raw(struct iio_dev *indio_dev,
->  	return -EINVAL;
->  }
->  
-> -static int sps30_do_cmd_reset(struct sps30_state *state)
-> -{
-> -	int ret;
-> -
-> -	ret = sps30_do_cmd(state, SPS30_RESET, NULL, 0);
-> -	msleep(300);
-> -	/*
-> -	 * Power-on-reset causes sensor to produce some glitch on i2c bus and
-> -	 * some controllers end up in error state. Recover simply by placing
-> -	 * some data on the bus, for example STOP_MEAS command, which
-> -	 * is NOP in this case.
-> -	 */
-> -	sps30_do_cmd(state, SPS30_STOP_MEAS, NULL, 0);
-> -	state->state = RESET;
-> -
-> -	return ret;
-> -}
-> -
->  static ssize_t start_cleaning_store(struct device *dev,
->  				    struct device_attribute *attr,
->  				    const char *buf, size_t len)
-> @@ -340,7 +198,7 @@ static ssize_t start_cleaning_store(struct device *dev,
->  		return -EINVAL;
->  
->  	mutex_lock(&state->lock);
-> -	ret = sps30_do_cmd(state, SPS30_START_FAN_CLEANING, NULL, 0);
-> +	ret = sps30_clean_fan(state);
->  	mutex_unlock(&state->lock);
->  	if (ret)
->  		return ret;
-> @@ -349,31 +207,28 @@ static ssize_t start_cleaning_store(struct device *dev,
->  }
->  
->  static ssize_t cleaning_period_show(struct device *dev,
-> -				      struct device_attribute *attr,
-> -				      char *buf)
-> +				    struct device_attribute *attr,
-> +				    char *buf)
->  {
->  	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->  	struct sps30_state *state = iio_priv(indio_dev);
-> -	u8 tmp[4];
-> -	int ret;
-> +	int val, ret;
->  
->  	mutex_lock(&state->lock);
-> -	ret = sps30_do_cmd(state, SPS30_READ_AUTO_CLEANING_PERIOD, tmp, 4);
-> +	ret = sps30_read_cleaning_period(state, &val);
->  	mutex_unlock(&state->lock);
->  	if (ret)
->  		return ret;
->  
-> -	return sprintf(buf, "%d\n", get_unaligned_be32(tmp));
-> +	return sprintf(buf, "%d\n", be32_to_cpu((__force __be32)val));
+```
+struct nameidata {
+  last = {
+    {
+      {
+        hash = 2805607892,
+        len = 3
+      },
+      hash_len = 15690509780
+    },
+    name = 0xffff8a34397b4022 "net/sockstat"
+  },
+  struct filename *name = 0xffff8a34397b4000
+  -> {
+       name = 0xffff8a34397b401c "/proc/net/sockstat",
+       uptr = 0xc00175a020 <Address 0xc00175a020 out of bounds>,
+       aname = 0xffff8a3b2f3c9860,
+       refcnt = 2,
+       iname = 0xffff8a34397b401c "/proc/net/sockstat"
+     }
+  struct nameidata *saved = 0x0
+  -> NULL
+  struct inode *link_inode = 0x0      <======= link_inode is NULL as well!
+  -> NULL
+}
+```
 
-As below, I'm not seeing the necessity of this cast.  Just make val a
-__be32 and deal with parameters being passed around as that type.
+We try to reproduce this question at the beginning, however, it looks
+difficult to reproduce. We keep running `while true; do cat
+/proc/net/sockstat; done`, but could not reproduce so far. In the past
+year, we only found two similar crashes in thousands of servers in our
+production.
 
->  }
->  
-> -static ssize_t cleaning_period_store(struct device *dev,
-> -				       struct device_attribute *attr,
-> -				       const char *buf, size_t len)
-> +static ssize_t cleaning_period_store(struct device *dev, struct device_attribute *attr,
-> +				     const char *buf, size_t len)
->  {
->  	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->  	struct sps30_state *state = iio_priv(indio_dev);
->  	int val, ret;
-> -	u8 tmp[4];
->  
->  	if (kstrtoint(buf, 0, &val))
->  		return -EINVAL;
-> @@ -382,10 +237,8 @@ static ssize_t cleaning_period_store(struct device *dev,
->  	    (val > SPS30_AUTO_CLEANING_PERIOD_MAX))
->  		return -EINVAL;
->  
-> -	put_unaligned_be32(val, tmp);
-> -
->  	mutex_lock(&state->lock);
-> -	ret = sps30_do_cmd(state, SPS30_AUTO_CLEANING_PERIOD, tmp, 0);
-> +	ret = sps30_write_cleaning_period(state, (__force int)cpu_to_be32(val));
+By right `link_inode` should always have values according to our tiny
+bpftrace program result.
 
-I guess this is related to the below question of the type of period parameter.
-I'd make it a be32 directly if that's what it actually is!
+```
+# /tmp/trace_walk_component.bt
+kprobe:walk_component {
+  $p=((struct nameidata*) arg0);
+  printf("nameidata->last.name: %s, nameidata->link_inode: %p\n",
+str($p->last.name), $p->link_inode);
+}
+```
 
->  	if (ret) {
->  		mutex_unlock(&state->lock);
->  		return ret;
-> @@ -397,7 +250,7 @@ static ssize_t cleaning_period_store(struct device *dev,
->  	 * sensor requires reset in order to return up to date self cleaning
->  	 * period
->  	 */
-> -	ret = sps30_do_cmd_reset(state);
-> +	ret = sps30_do_reset(state);
->  	if (ret)
->  		dev_warn(dev,
->  			 "period changed but reads will return the old value\n");
-> @@ -460,90 +313,65 @@ static const struct iio_chan_spec sps30_channels[] = {
->  	IIO_CHAN_SOFT_TIMESTAMP(4),
->  };
->  
-> -static void sps30_stop_meas(void *data)
-> +static void sps30_devm_stop_meas(void *data)
->  {
->  	struct sps30_state *state = data;
->  
-> -	sps30_do_cmd(state, SPS30_STOP_MEAS, NULL, 0);
-> +	if (state->state == MEASURING)
-> +		sps30_stop_meas(state);
->  }
->  
->  static const unsigned long sps30_scan_masks[] = { 0x0f, 0x00 };
->  
-> -static int sps30_probe(struct i2c_client *client)
-> +int sps30_probe(struct device *dev, const char *name, void *priv, const struct sps30_ops *ops)
->  {
->  	struct iio_dev *indio_dev;
->  	struct sps30_state *state;
-> -	u8 buf[32];
->  	int ret;
->  
-> -	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-> -		return -EOPNOTSUPP;
-> -
-> -	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*state));
-> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*state));
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
-> +	dev_set_drvdata(dev, indio_dev);
-> +
->  	state = iio_priv(indio_dev);
-> -	i2c_set_clientdata(client, indio_dev);
-> -	state->client = client;
-> -	state->state = RESET;
-> +	state->dev = dev;
-> +	state->priv = priv;
-> +	state->ops = ops;
-> +	mutex_init(&state->lock);
-> +
->  	indio_dev->info = &sps30_info;
-> -	indio_dev->name = client->name;
-> +	indio_dev->name = name;
->  	indio_dev->channels = sps30_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(sps30_channels);
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->available_scan_masks = sps30_scan_masks;
->  
-> -	mutex_init(&state->lock);
-> -	crc8_populate_msb(sps30_crc8_table, SPS30_CRC8_POLYNOMIAL);
-> -
-> -	ret = sps30_do_cmd_reset(state);
-> +	ret = sps30_do_reset(state);
->  	if (ret) {
-> -		dev_err(&client->dev, "failed to reset device\n");
-> +		dev_err(dev, "failed to reset device\n");
->  		return ret;
->  	}
->  
-> -	ret = sps30_do_cmd(state, SPS30_READ_SERIAL, buf, sizeof(buf));
-> +	ret = sps30_show_info(state);
->  	if (ret) {
-> -		dev_err(&client->dev, "failed to read serial number\n");
-> +		dev_err(dev, "failed to read device info\n");
->  		return ret;
->  	}
-> -	/* returned serial number is already NUL terminated */
-> -	dev_info(&client->dev, "serial number: %s\n", buf);
->  
-> -	ret = devm_add_action_or_reset(&client->dev, sps30_stop_meas, state);
-> +	ret = devm_add_action_or_reset(dev, sps30_devm_stop_meas, state);
->  	if (ret)
->  		return ret;
->  
-> -	ret = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
-> +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
->  					      sps30_trigger_handler, NULL);
->  	if (ret)
->  		return ret;
->  
-> -	return devm_iio_device_register(&client->dev, indio_dev);
-> +	return devm_iio_device_register(dev, indio_dev);
->  }
-> -
-> -static const struct i2c_device_id sps30_id[] = {
-> -	{ "sps30" },
-> -	{ }
-> -};
-> -MODULE_DEVICE_TABLE(i2c, sps30_id);
-> -
-> -static const struct of_device_id sps30_of_match[] = {
-> -	{ .compatible = "sensirion,sps30" },
-> -	{ }
-> -};
-> -MODULE_DEVICE_TABLE(of, sps30_of_match);
-> -
-> -static struct i2c_driver sps30_driver = {
-> -	.driver = {
-> -		.name = "sps30",
-> -		.of_match_table = sps30_of_match,
-> -	},
-> -	.id_table = sps30_id,
-> -	.probe_new = sps30_probe,
-> -};
-> -module_i2c_driver(sps30_driver);
-> +EXPORT_SYMBOL(sps30_probe);
->  
->  MODULE_AUTHOR("Tomasz Duszynski <tduszyns@gmail.com>");
->  MODULE_DESCRIPTION("Sensirion SPS30 particulate matter sensor driver");
-> diff --git a/drivers/iio/chemical/sps30.h b/drivers/iio/chemical/sps30.h
-> new file mode 100644
-> index 000000000000..d2b7140fdeb4
-> --- /dev/null
-> +++ b/drivers/iio/chemical/sps30.h
-> @@ -0,0 +1,73 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _SPS30_H
-> +#define _SPS30_H
-> +
-> +struct sps30_state;
-> +struct sps30_ops {
-> +	int (*start_meas)(struct sps30_state *state);
-> +	int (*stop_meas)(struct sps30_state *state);
-> +	int (*read_meas)(struct sps30_state *state, int *meas, int num);
-> +	int (*reset)(struct sps30_state *state);
-> +	int (*clean_fan)(struct sps30_state *state);
-> +	int (*read_cleaning_period)(struct sps30_state *state, int *period);
+```
+# Output
+nameidata->last.name: net/sockstat, nameidata->link_inode: 0xffffffffab299966
+nameidata->last.name: net/sockstat, nameidata->link_inode: 0xffff9a4efe813ab8
+nameidata->last.name: net/sockstat, nameidata->link_inode: 0xffffffffab299966
+nameidata->last.name: net/sockstat, nameidata->link_inode: 0xffff9a4efe813ab8
+nameidata->last.name: net/sockstat, nameidata->link_inode: 0xffffffffab299966
+nameidata->last.name: net/sockstat, nameidata->link_inode: 0xffffffffab299966
+```
 
-As mentioned below, I think period should be a fixed width type.
+We try to search in past kernel threads, could not find a similar
+crash yet, but could find a similar case in another user's blog
+https://utcc.utoronto.ca/~cks/space/blog/linux/Ubuntu1804OddKernelPanic
+. However, in that blog, the user didn't figure out the reason as well
+although their crash stack same as us exactly.
 
-> +	int (*write_cleaning_period)(struct sps30_state *state, int period);
-> +	int (*show_info)(struct sps30_state *state);
-> +};
-> +
-> +struct sps30_state {
-> +	/* serialize access to the device */
-> +	struct mutex lock;
-> +	struct device *dev;
-> +	int state;
-> +	/*
-> +	 * priv pointer is solely for serdev driver private data. We keep it
-> +	 * here because driver_data inside dev has been already used for iio and
-> +	 * struct serdev_device doesn't have one.
-> +	 */
-> +	void *priv;
-> +	const struct sps30_ops *ops;
-> +};
-> +
-> +int sps30_probe(struct device *dev, const char *name, void *priv, const struct sps30_ops *ops);
-> +
-> +static inline int sps30_start_meas(struct sps30_state *state)
-> +{
-> +	return state->ops->start_meas(state);
+Is this a known bug that makes dentry become corrupt? Because we could
+not reproduce this issue so far, it is difficult to verify if this is
+fixed in mainline. So we write this email to see if any insights from
+other Linux developers, any replies would be appreciated.
 
-I'm not convinced the following wrappers are worthwhile.
-Most of these are only called in one or two places and having the
-ops structure exposed in the calls doesn't really matter much for readability etc.
+Thank you in advanace.
 
-> +}
-> +
-> +static inline int sps30_stop_meas(struct sps30_state *state)
-> +{
-> +	return state->ops->stop_meas(state);
-> +}
-> +
-> +static inline int sps30_read_meas(struct sps30_state *state, void *meas, int num)
-> +{
-> +	return state->ops->read_meas(state, meas, num);
-> +}
-> +
-> +static inline int sps30_clean_fan(struct sps30_state *state)
-> +{
-> +	return state->ops->clean_fan(state);
-> +}
-> +
-> +static inline int sps30_write_cleaning_period(struct sps30_state *state, int period)
-> +{
-> +	return state->ops->write_cleaning_period(state, period);
-> +}
-> +
-> +static inline int sps30_read_cleaning_period(struct sps30_state *state, int *period)
-> +{
-> +	return state->ops->read_cleaning_period(state, period);
-> +}
-> +
-> +static inline int sps30_show_info(struct sps30_state *state)
-> +{
-> +	return state->ops->show_info(state);
-> +}
-> +
-> +static inline int sps30_reset(struct sps30_state *state)
-> +{
-> +	return state->ops->reset(state);
-> +}
-> +
-> +#endif
-> diff --git a/drivers/iio/chemical/sps30_i2c.c b/drivers/iio/chemical/sps30_i2c.c
-> new file mode 100644
-> index 000000000000..97146cd50aa5
-> --- /dev/null
-> +++ b/drivers/iio/chemical/sps30_i2c.c
-> @@ -0,0 +1,256 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Sensirion SPS30 particulate matter sensor i2c driver
-> + *
-> + * Copyright (c) 2020 Tomasz Duszynski <tomasz.duszynski@octakon.com>
-> + *
-> + * I2C slave address: 0x69
-> + */
-> +#include <asm/unaligned.h>
-> +#include <linux/crc8.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/errno.h>
-> +#include <linux/i2c.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/types.h>
-> +
-> +#include "sps30.h"
-> +
-> +#define SPS30_I2C_CRC8_POLYNOMIAL 0x31
-> +/* max number of bytes needed to store PM measurements or serial string */
-> +#define SPS30_I2C_MAX_BUF_SIZE 48
-> +
-> +DECLARE_CRC8_TABLE(sps30_i2c_crc8_table);
-> +
-> +#define SPS30_I2C_START_MEAS 0x0010
-> +#define SPS30_I2C_STOP_MEAS 0x0104
-> +#define SPS30_I2C_READ_MEAS 0x0300
-> +#define SPS30_I2C_MEAS_READY 0x0202
-> +#define SPS30_I2C_RESET 0xd304
-> +#define SPS30_I2C_CLEAN_FAN 0x5607
-> +#define SPS30_I2C_PERIOD 0x8004
-> +#define SPS30_I2C_READ_SERIAL 0xd033
-> +#define SPS30_I2C_READ_VERSION 0xd100
-> +
-> +static int sps30_i2c_xfer(struct sps30_state *state, char *txbuf, int txsize,
-> +			  char *rxbuf, int rxsize)
-> +{
-> +	struct i2c_client *client = to_i2c_client(state->dev);
-> +	int ret;
-> +
-> +	/*
-> +	 * Sensor does not support repeated start so instead of
-> +	 * sending two i2c messages in a row we just send one by one.
-> +	 */
-> +	ret = i2c_master_send(client, txbuf, txsize);
-> +	if (ret < 0)
-> +		return ret;
-> +	if (ret != txsize)
-> +		return -EIO;
-> +
-> +	if (!rxsize)
-> +		return 0;
-> +
-> +	ret = i2c_master_recv(client, rxbuf, rxsize);
-> +	if (ret < 0)
-> +		return ret;
-> +	if (ret != rxsize)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +static int sps30_i2c_command(struct sps30_state *state, u16 cmd, void *arg, int arg_size,
-> +			     void *rsp, int rsp_size)
-> +{
-> +	/*
-> +	 * Internally sensor stores measurements in a following manner:
-> +	 *
-> +	 * PM1: upper two bytes, crc8, lower two bytes, crc8
-> +	 * PM2P5: upper two bytes, crc8, lower two bytes, crc8
-> +	 * PM4: upper two bytes, crc8, lower two bytes, crc8
-> +	 * PM10: upper two bytes, crc8, lower two bytes, crc8
-> +	 *
-> +	 * What follows next are number concentration measurements and
-> +	 * typical particle size measurement which we omit.
-> +	 */
-> +	char buf[SPS30_I2C_MAX_BUF_SIZE];
-> +	int i, ret;
-> +	char *tmp;
-> +	char crc;
-> +
-> +	put_unaligned_be16(cmd, buf);
-> +	i = 2;
-> +
-> +	if (rsp) {
-> +		/* each two bytes are followed by a crc8 */
-> +		rsp_size += rsp_size / 2;
-> +	} else {
-> +		tmp = arg;
-> +
-> +		while (arg_size) {
-> +			buf[i] = *tmp++;
-> +			buf[i + 1] = *tmp++;
-> +			buf[i + 2] = crc8(sps30_i2c_crc8_table, buf + i, 2, CRC8_INIT_VALUE);
-> +			arg_size -= 2;
-> +			i += 3;
-> +		}
-> +	}
-> +
-> +	ret = sps30_i2c_xfer(state, buf, i, buf, rsp_size);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* validate received data and strip off crc bytes */
-> +	tmp = rsp;
-> +	for (i = 0; i < rsp_size; i += 3) {
-> +		crc = crc8(sps30_i2c_crc8_table, buf + i, 2, CRC8_INIT_VALUE);
-> +		if (crc != buf[i + 2]) {
-> +			dev_err(state->dev, "data integrity check failed\n");
-> +			return -EIO;
-> +		}
-> +
-> +		*tmp++ = buf[i];
-> +		*tmp++ = buf[i + 1];
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int sps30_i2c_start_meas(struct sps30_state *state)
-> +{
-> +	/* request BE IEEE754 formatted data */
-> +	char buf[] = { 0x03, 0x00 };
-> +
-> +	return sps30_i2c_command(state, SPS30_I2C_START_MEAS, buf, sizeof(buf), NULL, 0);
-> +}
-> +
-> +static int sps30_i2c_stop_meas(struct sps30_state *state)
-> +{
-> +	return sps30_i2c_command(state, SPS30_I2C_STOP_MEAS, NULL, 0, NULL, 0);
-> +}
-> +
-> +static int sps30_i2c_reset(struct sps30_state *state)
-> +{
-> +	int ret;
-> +
-> +	ret = sps30_i2c_command(state, SPS30_I2C_RESET, NULL, 0, NULL, 0);
-> +	msleep(500);
-> +	/*
-> +	 * Power-on-reset causes sensor to produce some glitch on i2c bus and
-> +	 * some controllers end up in error state. Recover simply by placing
-> +	 * some data on the bus, for example STOP_MEAS command, which
-> +	 * is NOP in this case.
-> +	 */
-> +	sps30_i2c_stop_meas(state);
-> +
-> +	return ret;
-> +}
-> +
-> +static bool sps30_i2c_meas_ready(struct sps30_state *state)
-> +{
-> +	char buf[2];
-> +	int ret;
-> +
-> +	ret = sps30_i2c_command(state, SPS30_I2C_MEAS_READY, NULL, 0, buf, sizeof(buf));
-> +	if (ret)
-> +		return false;
-> +
-> +	return buf[1];
-> +}
-> +
-> +static int sps30_i2c_read_meas(struct sps30_state *state, int *meas, int num)
-> +{
-> +	int tries = 3;
-> +
-> +	do {
-> +		if (sps30_i2c_meas_ready(state))
-> +			break;
-> +
-> +		if (msleep_interruptible(500))
-> +			return -EINTR;
-> +	} while (--tries);
-> +
-> +	if (!tries)
-> +		return -ETIMEDOUT;
-> +
-> +	return sps30_i2c_command(state, SPS30_I2C_READ_MEAS, NULL, 0, meas, sizeof(num) * num);
-> +}
-> +
-> +static int sps30_i2c_clean_fan(struct sps30_state *state)
-> +{
-> +	return sps30_i2c_command(state, SPS30_I2C_CLEAN_FAN, NULL, 0, NULL, 0);
-> +}
-> +
-> +static int sps30_i2c_read_cleaning_period(struct sps30_state *state, int *period)
-> +{
-> +	return sps30_i2c_command(state, SPS30_I2C_PERIOD, NULL, 0, period, sizeof(*period));
+Attach files are the dentry and nameidata which extra from the core
+dump, not sure if there are helpful to check this Oops.
 
-Do you not want a fixed size type of period?  u32 or something like that?
+-- 
+Best Regards,
+Haosdent Huang
 
-> +}
-> +
-> +static int sps30_i2c_write_cleaning_period(struct sps30_state *state, int period)
-> +{
-> +	return sps30_i2c_command(state, SPS30_I2C_PERIOD, &period, sizeof(period), NULL, 0);
-> +}
-> +
-> +static int sps30_i2c_show_info(struct sps30_state *state)
-> +{
-> +	/* extra nul just in case */
-> +	char buf[32 + 1] = { 0x00 };
-> +	int ret;
-> +
-> +	ret = sps30_i2c_command(state, SPS30_I2C_READ_SERIAL, NULL, 0, buf, sizeof(buf) - 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_info(state->dev, "serial number: %s\n", buf);
-> +
-> +	ret = sps30_i2c_command(state, SPS30_I2C_READ_VERSION, NULL, 0, buf, 2);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_info(state->dev, "fw version: %u.%u\n", buf[0], buf[1]);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct sps30_ops sps30_i2c_ops = {
-> +	.start_meas = sps30_i2c_start_meas,
-> +	.stop_meas = sps30_i2c_stop_meas,
-> +	.read_meas = sps30_i2c_read_meas,
-> +	.reset = sps30_i2c_reset,
-> +	.clean_fan = sps30_i2c_clean_fan,
-> +	.read_cleaning_period = sps30_i2c_read_cleaning_period,
-> +	.write_cleaning_period = sps30_i2c_write_cleaning_period,
-> +	.show_info = sps30_i2c_show_info,
-> +};
-> +
-> +static int sps30_i2c_probe(struct i2c_client *client)
-> +{
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-> +		return -EOPNOTSUPP;
-> +
-> +	crc8_populate_msb(sps30_i2c_crc8_table, SPS30_I2C_CRC8_POLYNOMIAL);
-> +
-> +	return sps30_probe(&client->dev, client->name, NULL, &sps30_i2c_ops);
-> +}
-> +
-> +static const struct of_device_id sps30_i2c_of_match[] = {
-> +	{ .compatible = "sensirion,sps30" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sps30_i2c_of_match);
-> +
-> +static struct i2c_driver sps30_i2c_driver = {
-> +	.driver = {
-> +		.name = KBUILD_MODNAME,
-> +		.of_match_table = sps30_i2c_of_match,
-> +	},
-> +	.probe_new = sps30_i2c_probe,
-> +};
-> +module_i2c_driver(sps30_i2c_driver);
-> +
-> +MODULE_AUTHOR("Tomasz Duszynski <tomasz.duszynski@octakon.com>");
-> +MODULE_DESCRIPTION("Sensirion SPS30 particulate matter sensor i2c driver");
-> +MODULE_LICENSE("GPL v2");
+--0000000000004c6b0005c0cdf290
+Content-Type: text/plain; charset="US-ASCII"; name="dentry.txt"
+Content-Disposition: attachment; filename="dentry.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_knxcgezl0>
+X-Attachment-Id: f_knxcgezl0
 
+c3RydWN0IGRlbnRyeSB7CiAgZF9mbGFncyA9IDMyOTA0LCAKICBkX3NlcSA9IHsKICAgIHNlcXVl
+bmNlID0gNAogIH0sIAogIGRfaGFzaCA9IHsKICAgIG5leHQgPSAweDAsIAogICAgcHByZXYgPSAw
+eDAKICB9LCAKICBzdHJ1Y3QgZGVudHJ5ICpkX3BhcmVudCA9IDB4ZmZmZjhhNGIzYjgwOTUwMAog
+IC0+IHsKICAgICAgIGRfZmxhZ3MgPSAyMDk3MTUyLCAKICAgICAgIGRfc2VxID0gewogICAgICAg
+ICBzZXF1ZW5jZSA9IDIKICAgICAgIH0sIAogICAgICAgZF9oYXNoID0gewogICAgICAgICBuZXh0
+ID0gMHgwLCAKICAgICAgICAgcHByZXYgPSAweDAKICAgICAgIH0sIAogICAgICAgZF9wYXJlbnQg
+PSAweGZmZmY4YTRiM2I4MDk1MDAsIAogICAgICAgZF9uYW1lID0gewogICAgICAgICB7CiAgICAg
+ICAgICAgewogICAgICAgICAgICAgaGFzaCA9IDAsIAogICAgICAgICAgICAgbGVuID0gMQogICAg
+ICAgICAgIH0sIAogICAgICAgICAgIGhhc2hfbGVuID0gNDI5NDk2NzI5NgogICAgICAgICB9LCAK
+ICAgICAgICAgbmFtZSA9IDB4ZmZmZjhhNGIzYjgwOTUzOCAiLyIKICAgICAgIH0sIAogICAgICAg
+ZF9pbm9kZSA9IDB4ZmZmZjhhNGIzYjgxODU5OCwgCiAgICAgICBkX2luYW1lID0gIi9cMDAwZC11
+c2ItcG9kLmtvXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAw
+XDAwMFwwMDBcMDAwXDAwMFwwMDAiLCAKICAgICAgIGRfbG9ja3JlZiA9IHsKICAgICAgICAgewog
+ICAgICAgICAgIGxvY2tfY291bnQgPSAzMjA4MzQwNTcwMTEyLCAKICAgICAgICAgICB7CiAgICAg
+ICAgICAgICBsb2NrID0gewogICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgcmxvY2sg
+PSB7CiAgICAgICAgICAgICAgICAgICByYXdfbG9jayA9IHsKICAgICAgICAgICAgICAgICAgICAg
+dmFsID0gewogICAgICAgICAgICAgICAgICAgICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgICAg
+ICAgICAgIH0KICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICB9CiAgICAgICAg
+ICAgICAgIH0KICAgICAgICAgICAgIH0sIAogICAgICAgICAgICAgY291bnQgPSA3NDcKICAgICAg
+ICAgICB9CiAgICAgICAgIH0KICAgICAgIH0sIAogICAgICAgZF9vcCA9IDB4MCwgCiAgICAgICBk
+X3NiID0gMHhmZmZmOGEzYjNmODBlODAwLCAKICAgICAgIGRfdGltZSA9IDAsIAogICAgICAgZF9m
+c2RhdGEgPSAweDAsIAogICAgICAgewogICAgICAgICBkX2xydSA9IHsKICAgICAgICAgICBuZXh0
+ID0gMHhmZmZmOGE0YjNiODA5NTgwLCAKICAgICAgICAgICBwcmV2ID0gMHhmZmZmOGE0YjNiODA5
+NTgwCiAgICAgICAgIH0sIAogICAgICAgICBkX3dhaXQgPSAweGZmZmY4YTRiM2I4MDk1ODAKICAg
+ICAgIH0sIAogICAgICAgZF9jaGlsZCA9IHsKICAgICAgICAgbmV4dCA9IDB4ZmZmZjhhNGIzYjgw
+OTU5MCwgCiAgICAgICAgIHByZXYgPSAweGZmZmY4YTRiM2I4MDk1OTAKICAgICAgIH0sIAogICAg
+ICAgZF9zdWJkaXJzID0gewogICAgICAgICBuZXh0ID0gMHhmZmZmOGE0MmEyNzM0YTUwLCAKICAg
+ICAgICAgcHJldiA9IDB4ZmZmZjhhNGIzYjgwOGJkMAogICAgICAgfSwgCiAgICAgICBkX3UgPSB7
+CiAgICAgICAgIGRfYWxpYXMgPSB7CiAgICAgICAgICAgbmV4dCA9IDB4MCwgCiAgICAgICAgICAg
+cHByZXYgPSAweGZmZmY4YTRiM2I4MTg2ZDgKICAgICAgICAgfSwgCiAgICAgICAgIGRfaW5fbG9v
+a3VwX2hhc2ggPSB7CiAgICAgICAgICAgbmV4dCA9IDB4MCwgCiAgICAgICAgICAgcHByZXYgPSAw
+eGZmZmY4YTRiM2I4MTg2ZDgKICAgICAgICAgfSwgCiAgICAgICAgIGRfcmN1ID0gewogICAgICAg
+ICAgIG5leHQgPSAweDAsIAogICAgICAgICAgIGZ1bmMgPSAweGZmZmY4YTRiM2I4MTg2ZDgKICAg
+ICAgICAgfQogICAgICAgfQogICAgIH0KICBkX25hbWUgPSB7CiAgICB7CiAgICAgIHsKICAgICAg
+ICBoYXNoID0gMjgwNTYwNzg5MiwgCiAgICAgICAgbGVuID0gMwogICAgICB9LCAKICAgICAgaGFz
+aF9sZW4gPSAxNTY5MDUwOTc4MAogICAgfSwgCiAgICBuYW1lID0gMHhmZmZmOGE0MjgxZDAxZWY4
+ICJuZXQiCiAgfSwgCiAgc3RydWN0IGlub2RlICpkX2lub2RlID0gMHgwCiAgLT4gTlVMTAogIGRf
+aW5hbWUgPSAibmV0XDAwMDowMTowMC4wXDAwMFwwMDBzYWdlX2luX2J5dGVzXDAwMEJcMjEyXDM3
+NyIsIAogIGRfbG9ja3JlZiA9IHsKICAgIHsKICAgICAgbG9ja19jb3VudCA9IDE4NDQ2NzQzNTIz
+OTUzNzM3NzI4LCAKICAgICAgewogICAgICAgIGxvY2sgPSB7CiAgICAgICAgICB7CiAgICAgICAg
+ICAgIHJsb2NrID0gewogICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAgICAgICAgICAgICAg
+dmFsID0gewogICAgICAgICAgICAgICAgICBjb3VudGVyID0gMAogICAgICAgICAgICAgICAgfQog
+ICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgfQogICAgICAgIH0sIAogICAg
+ICAgIGNvdW50ID0gLTEyOAogICAgICB9CiAgICB9CiAgfSwgCiAgY29uc3Qgc3RydWN0IGRlbnRy
+eV9vcGVyYXRpb25zICpkX29wID0gMHhmZmZmZmZmZjgyNDQxZWMwCiAgLT4gPHNpbXBsZV9kZW50
+cnlfb3BlcmF0aW9ucz4gewogICAgICAgZF9yZXZhbGlkYXRlID0gMHgwLCAKICAgICAgIGRfd2Vh
+a19yZXZhbGlkYXRlID0gMHgwLCAKICAgICAgIGRfaGFzaCA9IDB4MCwgCiAgICAgICBkX2NvbXBh
+cmUgPSAweDAsIAogICAgICAgZF9kZWxldGUgPSAweGZmZmZmZmZmODE4YTJjZjAgPGFsd2F5c19k
+ZWxldGVfZGVudHJ5PiwgCiAgICAgICBkX2luaXQgPSAweDAsIAogICAgICAgZF9yZWxlYXNlID0g
+MHgwLCAKICAgICAgIGRfcHJ1bmUgPSAweDAsIAogICAgICAgZF9pcHV0ID0gMHgwLCAKICAgICAg
+IGRfZG5hbWUgPSAweDAsIAogICAgICAgZF9hdXRvbW91bnQgPSAweDAsIAogICAgICAgZF9tYW5h
+Z2UgPSAweDAsIAogICAgICAgZF9yZWFsID0gMHgwCiAgICAgfQogIHN0cnVjdCBzdXBlcl9ibG9j
+ayAqZF9zYiA9IDB4ZmZmZjhhM2IzZjgwZTgwMAogIC0+IHsKICAgICAgIHNfbGlzdCA9IHsKICAg
+ICAgICAgbmV4dCA9IDB4ZmZmZjhhM2IzYWVjZjAwMCwgCiAgICAgICAgIHByZXYgPSAweGZmZmY4
+YTNiM2Y4MGQwMDAKICAgICAgIH0sIAogICAgICAgc19kZXYgPSA0LCAKICAgICAgIHNfYmxvY2tz
+aXplX2JpdHMgPSAxMCAnXG4nLCAKICAgICAgIHNfYmxvY2tzaXplID0gMTAyNCwgCiAgICAgICBz
+X21heGJ5dGVzID0gMjE0NzQ4MzY0NywgCiAgICAgICBzX3R5cGUgPSAweGZmZmZmZmZmODJiM2Jj
+ODAsIAogICAgICAgc19vcCA9IDB4ZmZmZmZmZmY4MjQ0NjEwMCwgCiAgICAgICBkcV9vcCA9IDB4
+MCwgCiAgICAgICBzX3Fjb3AgPSAweDAsIAogICAgICAgc19leHBvcnRfb3AgPSAweDAsIAogICAg
+ICAgc19mbGFncyA9IDE2MTQ4MDkwOTgsIAogICAgICAgc19pZmxhZ3MgPSAyMiwgCiAgICAgICBz
+X21hZ2ljID0gNDA4NjQsIAogICAgICAgc19yb290ID0gMHhmZmZmOGE0YjNiODA5NTAwLCAKICAg
+ICAgIHNfdW1vdW50ID0gewogICAgICAgICBjb3VudCA9IHsKICAgICAgICAgICBjb3VudGVyID0g
+MAogICAgICAgICB9LCAKICAgICAgICAgd2FpdF9saXN0ID0gewogICAgICAgICAgIG5leHQgPSAw
+eGZmZmY4YTNiM2Y4MGU4NzgsIAogICAgICAgICAgIHByZXYgPSAweGZmZmY4YTNiM2Y4MGU4NzgK
+ICAgICAgICAgfSwgCiAgICAgICAgIHdhaXRfbG9jayA9IHsKICAgICAgICAgICByYXdfbG9jayA9
+IHsKICAgICAgICAgICAgIHZhbCA9IHsKICAgICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAg
+ICAgICAgIH0KICAgICAgICAgICB9CiAgICAgICAgIH0sIAogICAgICAgICBvc3EgPSB7CiAgICAg
+ICAgICAgdGFpbCA9IHsKICAgICAgICAgICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgfQogICAg
+ICAgICB9LCAKICAgICAgICAgb3duZXIgPSAweDEKICAgICAgIH0sIAogICAgICAgc19jb3VudCA9
+IDEsIAogICAgICAgc19hY3RpdmUgPSB7CiAgICAgICAgIGNvdW50ZXIgPSAxNwogICAgICAgfSwg
+CiAgICAgICBzX3NlY3VyaXR5ID0gMHgwLCAKICAgICAgIHNfeGF0dHIgPSAweDAsIAogICAgICAg
+c19jb3AgPSAweDAsIAogICAgICAgc19hbm9uID0gewogICAgICAgICBmaXJzdCA9IDB4MAogICAg
+ICAgfSwgCiAgICAgICBzX21vdW50cyA9IHsKICAgICAgICAgbmV4dCA9IDB4ZmZmZjhhNGIzYmU0
+YWE3MCwgCiAgICAgICAgIHByZXYgPSAweGZmZmY4YTRiMjUzNDgzNzAKICAgICAgIH0sIAogICAg
+ICAgc19iZGV2ID0gMHgwLCAKICAgICAgIHNfYmRpID0gMHhmZmZmZmZmZjgyYWZmOTQwLCAKICAg
+ICAgIHNfbXRkID0gMHgwLCAKICAgICAgIHNfaW5zdGFuY2VzID0gewogICAgICAgICBuZXh0ID0g
+MHgwLCAKICAgICAgICAgcHByZXYgPSAweGZmZmY4YTNiMjMyMzcwZTgKICAgICAgIH0sIAogICAg
+ICAgc19xdW90YV90eXBlcyA9IDAsIAogICAgICAgc19kcXVvdCA9IHsKICAgICAgICAgZmxhZ3Mg
+PSAwLCAKICAgICAgICAgZHFpb19zZW0gPSB7CiAgICAgICAgICAgY291bnQgPSB7CiAgICAgICAg
+ICAgICBjb3VudGVyID0gMAogICAgICAgICAgIH0sIAogICAgICAgICAgIHdhaXRfbGlzdCA9IHsK
+ICAgICAgICAgICAgIG5leHQgPSAweGZmZmY4YTNiM2Y4MGU5MTAsIAogICAgICAgICAgICAgcHJl
+diA9IDB4ZmZmZjhhM2IzZjgwZTkxMAogICAgICAgICAgIH0sIAogICAgICAgICAgIHdhaXRfbG9j
+ayA9IHsKICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAgICAgICAgICAgICB2YWwgPSB7CiAg
+ICAgICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAgICAgICAgICAgfQogICAgICAgICAgICAg
+fQogICAgICAgICAgIH0sIAogICAgICAgICAgIG9zcSA9IHsKICAgICAgICAgICAgIHRhaWwgPSB7
+CiAgICAgICAgICAgICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgICB9CiAgICAgICAgICAgfSwg
+CiAgICAgICAgICAgb3duZXIgPSAweDAKICAgICAgICAgfSwgCiAgICAgICAgIGZpbGVzID0gezB4
+MCwgMHgwLCAweDB9LCAKICAgICAgICAgaW5mbyA9IHt7CiAgICAgICAgICAgICBkcWlfZm9ybWF0
+ID0gMHgwLCAKICAgICAgICAgICAgIGRxaV9mbXRfaWQgPSAwLCAKICAgICAgICAgICAgIGRxaV9k
+aXJ0eV9saXN0ID0gewogICAgICAgICAgICAgICBuZXh0ID0gMHgwLCAKICAgICAgICAgICAgICAg
+cHJldiA9IDB4MAogICAgICAgICAgICAgfSwgCiAgICAgICAgICAgICBkcWlfZmxhZ3MgPSAwLCAK
+ICAgICAgICAgICAgIGRxaV9iZ3JhY2UgPSAwLCAKICAgICAgICAgICAgIGRxaV9pZ3JhY2UgPSAw
+LCAKICAgICAgICAgICAgIGRxaV9tYXhfc3BjX2xpbWl0ID0gMCwgCiAgICAgICAgICAgICBkcWlf
+bWF4X2lub19saW1pdCA9IDAsIAogICAgICAgICAgICAgZHFpX3ByaXYgPSAweDAKICAgICAgICAg
+ICB9LCB7CiAgICAgICAgICAgICBkcWlfZm9ybWF0ID0gMHgwLCAKICAgICAgICAgICAgIGRxaV9m
+bXRfaWQgPSAwLCAKICAgICAgICAgICAgIGRxaV9kaXJ0eV9saXN0ID0gewogICAgICAgICAgICAg
+ICBuZXh0ID0gMHgwLCAKICAgICAgICAgICAgICAgcHJldiA9IDB4MAogICAgICAgICAgICAgfSwg
+CiAgICAgICAgICAgICBkcWlfZmxhZ3MgPSAwLCAKICAgICAgICAgICAgIGRxaV9iZ3JhY2UgPSAw
+LCAKICAgICAgICAgICAgIGRxaV9pZ3JhY2UgPSAwLCAKICAgICAgICAgICAgIGRxaV9tYXhfc3Bj
+X2xpbWl0ID0gMCwgCiAgICAgICAgICAgICBkcWlfbWF4X2lub19saW1pdCA9IDAsIAogICAgICAg
+ICAgICAgZHFpX3ByaXYgPSAweDAKICAgICAgICAgICB9LCB7CiAgICAgICAgICAgICBkcWlfZm9y
+bWF0ID0gMHgwLCAKICAgICAgICAgICAgIGRxaV9mbXRfaWQgPSAwLCAKICAgICAgICAgICAgIGRx
+aV9kaXJ0eV9saXN0ID0gewogICAgICAgICAgICAgICBuZXh0ID0gMHgwLCAKICAgICAgICAgICAg
+ICAgcHJldiA9IDB4MAogICAgICAgICAgICAgfSwgCiAgICAgICAgICAgICBkcWlfZmxhZ3MgPSAw
+LCAKICAgICAgICAgICAgIGRxaV9iZ3JhY2UgPSAwLCAKICAgICAgICAgICAgIGRxaV9pZ3JhY2Ug
+PSAwLCAKICAgICAgICAgICAgIGRxaV9tYXhfc3BjX2xpbWl0ID0gMCwgCiAgICAgICAgICAgICBk
+cWlfbWF4X2lub19saW1pdCA9IDAsIAogICAgICAgICAgICAgZHFpX3ByaXYgPSAweDAKICAgICAg
+ICAgICB9fSwgCiAgICAgICAgIG9wcyA9IHsweDAsIDB4MCwgMHgwfQogICAgICAgfSwgCiAgICAg
+ICBzX3dyaXRlcnMgPSB7CiAgICAgICAgIGZyb3plbiA9IDAsIAogICAgICAgICB3YWl0X3VuZnJv
+emVuID0gewogICAgICAgICAgIGxvY2sgPSB7CiAgICAgICAgICAgICB7CiAgICAgICAgICAgICAg
+IHJsb2NrID0gewogICAgICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAgICAgICAgICAgICAg
+ICAgdmFsID0gewogICAgICAgICAgICAgICAgICAgICBjb3VudGVyID0gMAogICAgICAgICAgICAg
+ICAgICAgfQogICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgfQogICAgICAgICAgICAg
+fQogICAgICAgICAgIH0sIAogICAgICAgICAgIGhlYWQgPSB7CiAgICAgICAgICAgICBuZXh0ID0g
+MHhmZmZmOGEzYjNmODBlYTQ4LCAKICAgICAgICAgICAgIHByZXYgPSAweGZmZmY4YTNiM2Y4MGVh
+NDgKICAgICAgICAgICB9CiAgICAgICAgIH0sIAogICAgICAgICByd19zZW0gPSB7ewogICAgICAg
+ICAgICAgcnNzID0gewogICAgICAgICAgICAgICBncF9zdGF0ZSA9IDAsIAogICAgICAgICAgICAg
+ICBncF9jb3VudCA9IDAsIAogICAgICAgICAgICAgICBncF93YWl0ID0gewogICAgICAgICAgICAg
+ICAgIGxvY2sgPSB7CiAgICAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgIHJs
+b2NrID0gewogICAgICAgICAgICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAgICAgICAgICAg
+ICAgICAgICAgICAgdmFsID0gewogICAgICAgICAgICAgICAgICAgICAgICAgICBjb3VudGVyID0g
+MAogICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgIH0KICAg
+ICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAg
+IH0sIAogICAgICAgICAgICAgICAgIGhlYWQgPSB7CiAgICAgICAgICAgICAgICAgICBuZXh0ID0g
+MHhmZmZmOGEzYjNmODBlYTY4LCAKICAgICAgICAgICAgICAgICAgIHByZXYgPSAweGZmZmY4YTNi
+M2Y4MGVhNjgKICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgIH0sIAogICAgICAgICAg
+ICAgICBjYl9zdGF0ZSA9IDAsIAogICAgICAgICAgICAgICBjYl9oZWFkID0gewogICAgICAgICAg
+ICAgICAgIG5leHQgPSAweDAsIAogICAgICAgICAgICAgICAgIGZ1bmMgPSAweDAKICAgICAgICAg
+ICAgICAgfSwgCiAgICAgICAgICAgICAgIGdwX3R5cGUgPSBSQ1VfU0NIRURfU1lOQwogICAgICAg
+ICAgICAgfSwgCiAgICAgICAgICAgICByZWFkX2NvdW50ID0gMHgyODk2YywgCiAgICAgICAgICAg
+ICByd19zZW0gPSB7CiAgICAgICAgICAgICAgIGNvdW50ID0gewogICAgICAgICAgICAgICAgIGNv
+dW50ZXIgPSAwCiAgICAgICAgICAgICAgIH0sIAogICAgICAgICAgICAgICB3YWl0X2xpc3QgPSB7
+CiAgICAgICAgICAgICAgICAgbmV4dCA9IDB4ZmZmZjhhM2IzZjgwZWFhOCwgCiAgICAgICAgICAg
+ICAgICAgcHJldiA9IDB4ZmZmZjhhM2IzZjgwZWFhOAogICAgICAgICAgICAgICB9LCAKICAgICAg
+ICAgICAgICAgd2FpdF9sb2NrID0gewogICAgICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAg
+ICAgICAgICAgICAgICAgdmFsID0gewogICAgICAgICAgICAgICAgICAgICBjb3VudGVyID0gMAog
+ICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgfSwg
+CiAgICAgICAgICAgICAgIG9zcSA9IHsKICAgICAgICAgICAgICAgICB0YWlsID0gewogICAgICAg
+ICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAg
+IH0sIAogICAgICAgICAgICAgICBvd25lciA9IDB4MAogICAgICAgICAgICAgfSwgCiAgICAgICAg
+ICAgICB3cml0ZXIgPSB7CiAgICAgICAgICAgICAgIHRhc2sgPSAweDAKICAgICAgICAgICAgIH0s
+IAogICAgICAgICAgICAgcmVhZGVyc19ibG9jayA9IDAKICAgICAgICAgICB9LCB7CiAgICAgICAg
+ICAgICByc3MgPSB7CiAgICAgICAgICAgICAgIGdwX3N0YXRlID0gMCwgCiAgICAgICAgICAgICAg
+IGdwX2NvdW50ID0gMCwgCiAgICAgICAgICAgICAgIGdwX3dhaXQgPSB7CiAgICAgICAgICAgICAg
+ICAgbG9jayA9IHsKICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgcmxv
+Y2sgPSB7CiAgICAgICAgICAgICAgICAgICAgICAgcmF3X2xvY2sgPSB7CiAgICAgICAgICAgICAg
+ICAgICAgICAgICB2YWwgPSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvdW50ZXIgPSAw
+CiAgICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgICAgfQogICAg
+ICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAg
+fSwgCiAgICAgICAgICAgICAgICAgaGVhZCA9IHsKICAgICAgICAgICAgICAgICAgIG5leHQgPSAw
+eGZmZmY4YTNiM2Y4MGVhZTgsIAogICAgICAgICAgICAgICAgICAgcHJldiA9IDB4ZmZmZjhhM2Iz
+ZjgwZWFlOAogICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgfSwgCiAgICAgICAgICAg
+ICAgIGNiX3N0YXRlID0gMCwgCiAgICAgICAgICAgICAgIGNiX2hlYWQgPSB7CiAgICAgICAgICAg
+ICAgICAgbmV4dCA9IDB4MCwgCiAgICAgICAgICAgICAgICAgZnVuYyA9IDB4MAogICAgICAgICAg
+ICAgICB9LCAKICAgICAgICAgICAgICAgZ3BfdHlwZSA9IFJDVV9TQ0hFRF9TWU5DCiAgICAgICAg
+ICAgICB9LCAKICAgICAgICAgICAgIHJlYWRfY291bnQgPSAweDI4OWE4LCAKICAgICAgICAgICAg
+IHJ3X3NlbSA9IHsKICAgICAgICAgICAgICAgY291bnQgPSB7CiAgICAgICAgICAgICAgICAgY291
+bnRlciA9IDAKICAgICAgICAgICAgICAgfSwgCiAgICAgICAgICAgICAgIHdhaXRfbGlzdCA9IHsK
+ICAgICAgICAgICAgICAgICBuZXh0ID0gMHhmZmZmOGEzYjNmODBlYjI4LCAKICAgICAgICAgICAg
+ICAgICBwcmV2ID0gMHhmZmZmOGEzYjNmODBlYjI4CiAgICAgICAgICAgICAgIH0sIAogICAgICAg
+ICAgICAgICB3YWl0X2xvY2sgPSB7CiAgICAgICAgICAgICAgICAgcmF3X2xvY2sgPSB7CiAgICAg
+ICAgICAgICAgICAgICB2YWwgPSB7CiAgICAgICAgICAgICAgICAgICAgIGNvdW50ZXIgPSAwCiAg
+ICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICB9LCAK
+ICAgICAgICAgICAgICAgb3NxID0gewogICAgICAgICAgICAgICAgIHRhaWwgPSB7CiAgICAgICAg
+ICAgICAgICAgICBjb3VudGVyID0gMAogICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAg
+fSwgCiAgICAgICAgICAgICAgIG93bmVyID0gMHgwCiAgICAgICAgICAgICB9LCAKICAgICAgICAg
+ICAgIHdyaXRlciA9IHsKICAgICAgICAgICAgICAgdGFzayA9IDB4MAogICAgICAgICAgICAgfSwg
+CiAgICAgICAgICAgICByZWFkZXJzX2Jsb2NrID0gMAogICAgICAgICAgIH0sIHsKICAgICAgICAg
+ICAgIHJzcyA9IHsKICAgICAgICAgICAgICAgZ3Bfc3RhdGUgPSAwLCAKICAgICAgICAgICAgICAg
+Z3BfY291bnQgPSAwLCAKICAgICAgICAgICAgICAgZ3Bfd2FpdCA9IHsKICAgICAgICAgICAgICAg
+ICBsb2NrID0gewogICAgICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgICBybG9j
+ayA9IHsKICAgICAgICAgICAgICAgICAgICAgICByYXdfbG9jayA9IHsKICAgICAgICAgICAgICAg
+ICAgICAgICAgIHZhbCA9IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgY291bnRlciA9IDAK
+ICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAg
+ICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICB9
+LCAKICAgICAgICAgICAgICAgICBoZWFkID0gewogICAgICAgICAgICAgICAgICAgbmV4dCA9IDB4
+ZmZmZjhhM2IzZjgwZWI2OCwgCiAgICAgICAgICAgICAgICAgICBwcmV2ID0gMHhmZmZmOGEzYjNm
+ODBlYjY4CiAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICB9LCAKICAgICAgICAgICAg
+ICAgY2Jfc3RhdGUgPSAwLCAKICAgICAgICAgICAgICAgY2JfaGVhZCA9IHsKICAgICAgICAgICAg
+ICAgICBuZXh0ID0gMHgwLCAKICAgICAgICAgICAgICAgICBmdW5jID0gMHgwCiAgICAgICAgICAg
+ICAgIH0sIAogICAgICAgICAgICAgICBncF90eXBlID0gUkNVX1NDSEVEX1NZTkMKICAgICAgICAg
+ICAgIH0sIAogICAgICAgICAgICAgcmVhZF9jb3VudCA9IDB4Mjg5YWMsIAogICAgICAgICAgICAg
+cndfc2VtID0gewogICAgICAgICAgICAgICBjb3VudCA9IHsKICAgICAgICAgICAgICAgICBjb3Vu
+dGVyID0gMAogICAgICAgICAgICAgICB9LCAKICAgICAgICAgICAgICAgd2FpdF9saXN0ID0gewog
+ICAgICAgICAgICAgICAgIG5leHQgPSAweGZmZmY4YTNiM2Y4MGViYTgsIAogICAgICAgICAgICAg
+ICAgIHByZXYgPSAweGZmZmY4YTNiM2Y4MGViYTgKICAgICAgICAgICAgICAgfSwgCiAgICAgICAg
+ICAgICAgIHdhaXRfbG9jayA9IHsKICAgICAgICAgICAgICAgICByYXdfbG9jayA9IHsKICAgICAg
+ICAgICAgICAgICAgIHZhbCA9IHsKICAgICAgICAgICAgICAgICAgICAgY291bnRlciA9IDAKICAg
+ICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgIH0sIAog
+ICAgICAgICAgICAgICBvc3EgPSB7CiAgICAgICAgICAgICAgICAgdGFpbCA9IHsKICAgICAgICAg
+ICAgICAgICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICB9
+LCAKICAgICAgICAgICAgICAgb3duZXIgPSAweDAKICAgICAgICAgICAgIH0sIAogICAgICAgICAg
+ICAgd3JpdGVyID0gewogICAgICAgICAgICAgICB0YXNrID0gMHgwCiAgICAgICAgICAgICB9LCAK
+ICAgICAgICAgICAgIHJlYWRlcnNfYmxvY2sgPSAwCiAgICAgICAgICAgfX0KICAgICAgIH0sIAog
+ICAgICAgc19pZCA9ICJwcm9jXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAw
+MFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAw
+XDAwMFwwMDBcMDAwIiwgCiAgICAgICBzX3V1aWQgPSB7CiAgICAgICAgIGIgPSAiXDAwMFwwMDBc
+MDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwXDAwMFwwMDBcMDAwIgogICAg
+ICAgfSwgCiAgICAgICBzX2ZzX2luZm8gPSAweGZmZmZmZmZmODJhNTljNjAsIAogICAgICAgc19t
+YXhfbGlua3MgPSAwLCAKICAgICAgIHNfbW9kZSA9IDAsIAogICAgICAgc190aW1lX2dyYW4gPSAx
+LCAKICAgICAgIHNfdmZzX3JlbmFtZV9tdXRleCA9IHsKICAgICAgICAgb3duZXIgPSB7CiAgICAg
+ICAgICAgY291bnRlciA9IDAKICAgICAgICAgfSwgCiAgICAgICAgIHdhaXRfbG9jayA9IHsKICAg
+ICAgICAgICB7CiAgICAgICAgICAgICBybG9jayA9IHsKICAgICAgICAgICAgICAgcmF3X2xvY2sg
+PSB7CiAgICAgICAgICAgICAgICAgdmFsID0gewogICAgICAgICAgICAgICAgICAgY291bnRlciA9
+IDAKICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgIH0KICAg
+ICAgICAgICB9CiAgICAgICAgIH0sIAogICAgICAgICBvc3EgPSB7CiAgICAgICAgICAgdGFpbCA9
+IHsKICAgICAgICAgICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgfQogICAgICAgICB9LCAKICAg
+ICAgICAgd2FpdF9saXN0ID0gewogICAgICAgICAgIG5leHQgPSAweGZmZmY4YTNiM2Y4MGVjMzAs
+IAogICAgICAgICAgIHByZXYgPSAweGZmZmY4YTNiM2Y4MGVjMzAKICAgICAgICAgfQogICAgICAg
+fSwgCiAgICAgICBzX3N1YnR5cGUgPSAweDAsIAogICAgICAgc19kX29wID0gMHgwLCAKICAgICAg
+IGNsZWFuY2FjaGVfcG9vbGlkID0gLTEsIAogICAgICAgc19zaHJpbmsgPSB7CiAgICAgICAgIGNv
+dW50X29iamVjdHMgPSAweGZmZmZmZmZmODE4NzhlODAgPHBlcmZfdHJhY2VfY29uc3VtZV9za2I+
+LCAKICAgICAgICAgc2Nhbl9vYmplY3RzID0gMHhmZmZmZmZmZjgxODdhNmQwIDxzdXBlcl9jYWNo
+ZV9zY2FuPiwgCiAgICAgICAgIHNlZWtzID0gMiwgCiAgICAgICAgIGJhdGNoID0gMTAyNCwgCiAg
+ICAgICAgIGZsYWdzID0gMywgCiAgICAgICAgIGxpc3QgPSB7CiAgICAgICAgICAgbmV4dCA9IDB4
+ZmZmZjhhM2IzYWVjZjQ4MCwgCiAgICAgICAgICAgcHJldiA9IDB4ZmZmZjhhM2IzZjgwZDQ4MAog
+ICAgICAgICB9LCAKICAgICAgICAgbnJfZGVmZXJyZWQgPSAweGZmZmY4YTNiM2Y4MDE2ZjAKICAg
+ICAgIH0sIAogICAgICAgc19yZW1vdmVfY291bnQgPSB7CiAgICAgICAgIGNvdW50ZXIgPSAwCiAg
+ICAgICB9LCAKICAgICAgIHNfcmVhZG9ubHlfcmVtb3VudCA9IDAsIAogICAgICAgc19kaW9fZG9u
+ZV93cSA9IDB4MCwgCiAgICAgICBzX3BpbnMgPSB7CiAgICAgICAgIGZpcnN0ID0gMHgwCiAgICAg
+ICB9LCAKICAgICAgIHNfdXNlcl9ucyA9IDB4ZmZmZmZmZmY4MmE1MmYwMCwgCiAgICAgICBzX2Rl
+bnRyeV9scnUgPSB7CiAgICAgICAgIG5vZGUgPSAweGZmZmY4YTRiM2JlMmVjODAsIAogICAgICAg
+ICBsaXN0ID0gewogICAgICAgICAgIG5leHQgPSAweGZmZmY4YTNiM2Y4MGQ1MDgsIAogICAgICAg
+ICAgIHByZXYgPSAweGZmZmY4YTNiM2Y4MGVkMDgKICAgICAgICAgfQogICAgICAgfSwgCiAgICAg
+ICBzX2lub2RlX2xydSA9IHsKICAgICAgICAgbm9kZSA9IDB4ZmZmZjhhNGIzYmUyZTMwMCwgCiAg
+ICAgICAgIGxpc3QgPSB7CiAgICAgICAgICAgbmV4dCA9IDB4ZmZmZjhhM2IzZjgwZWNjOCwgCiAg
+ICAgICAgICAgcHJldiA9IDB4ZmZmZjhhM2IzYWVjZjRjOAogICAgICAgICB9CiAgICAgICB9LCAK
+ICAgICAgIHJjdSA9IHsKICAgICAgICAgbmV4dCA9IDB4MCwgCiAgICAgICAgIGZ1bmMgPSAweDAK
+ICAgICAgIH0sIAogICAgICAgZGVzdHJveV93b3JrID0gewogICAgICAgICBkYXRhID0gewogICAg
+ICAgICAgIGNvdW50ZXIgPSAwCiAgICAgICAgIH0sIAogICAgICAgICBlbnRyeSA9IHsKICAgICAg
+ICAgICBuZXh0ID0gMHgwLCAKICAgICAgICAgICBwcmV2ID0gMHgwCiAgICAgICAgIH0sIAogICAg
+ICAgICBmdW5jID0gMHgwCiAgICAgICB9LCAKICAgICAgIHNfc3luY19sb2NrID0gewogICAgICAg
+ICBvd25lciA9IHsKICAgICAgICAgICBjb3VudGVyID0gMAogICAgICAgICB9LCAKICAgICAgICAg
+d2FpdF9sb2NrID0gewogICAgICAgICAgIHsKICAgICAgICAgICAgIHJsb2NrID0gewogICAgICAg
+ICAgICAgICByYXdfbG9jayA9IHsKICAgICAgICAgICAgICAgICB2YWwgPSB7CiAgICAgICAgICAg
+ICAgICAgICBjb3VudGVyID0gMAogICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgfQog
+ICAgICAgICAgICAgfQogICAgICAgICAgIH0KICAgICAgICAgfSwgCiAgICAgICAgIG9zcSA9IHsK
+ICAgICAgICAgICB0YWlsID0gewogICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAgICAgICB9
+CiAgICAgICAgIH0sIAogICAgICAgICB3YWl0X2xpc3QgPSB7CiAgICAgICAgICAgbmV4dCA9IDB4
+ZmZmZjhhM2IzZjgwZWQ1OCwgCiAgICAgICAgICAgcHJldiA9IDB4ZmZmZjhhM2IzZjgwZWQ1OAog
+ICAgICAgICB9CiAgICAgICB9LCAKICAgICAgIHNfc3RhY2tfZGVwdGggPSAyLCAKICAgICAgIHNf
+aW5vZGVfbGlzdF9sb2NrID0gewogICAgICAgICB7CiAgICAgICAgICAgcmxvY2sgPSB7CiAgICAg
+ICAgICAgICByYXdfbG9jayA9IHsKICAgICAgICAgICAgICAgdmFsID0gewogICAgICAgICAgICAg
+ICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgIH0KICAgICAgICAg
+ICB9CiAgICAgICAgIH0KICAgICAgIH0sIAogICAgICAgc19pbm9kZXMgPSB7CiAgICAgICAgIG5l
+eHQgPSAweGZmZmY4YTNiMzcxMGYwZjgsIAogICAgICAgICBwcmV2ID0gMHhmZmZmOGEzYjM3MTRh
+MTQ4CiAgICAgICB9LCAKICAgICAgIHNfaW5vZGVfd2JsaXN0X2xvY2sgPSB7CiAgICAgICAgIHsK
+ICAgICAgICAgICBybG9jayA9IHsKICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAgICAgICAg
+ICAgICB2YWwgPSB7CiAgICAgICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAgICAgICAgICAg
+fQogICAgICAgICAgICAgfQogICAgICAgICAgIH0KICAgICAgICAgfQogICAgICAgfSwgCiAgICAg
+ICBzX2lub2Rlc193YiA9IHsKICAgICAgICAgbmV4dCA9IDB4ZmZmZjhhM2IzZjgwZWRhMCwgCiAg
+ICAgICAgIHByZXYgPSAweGZmZmY4YTNiM2Y4MGVkYTAKICAgICAgIH0KICAgICB9CiAgZF90aW1l
+ID0gMTg0NDY2MTQ2MTY3MTM3NjA3NjgsIAogIHZvaWQgKmRfZnNkYXRhID0gMHgwCiAgLT4gTlVM
+TAogIHsKICAgIGRfbHJ1ID0gewogICAgICBuZXh0ID0gMHhmZmZmOGE0MjgxZDAxZjQwLCAKICAg
+ICAgcHJldiA9IDB4ZmZmZjhhNDI4MWQwMWY0MAogICAgfSwgCiAgICBkX3dhaXQgPSAweGZmZmY4
+YTQyODFkMDFmNDAKICB9LCAKICBkX2NoaWxkID0gewogICAgbmV4dCA9IDB4ZmZmZjhhNDI5OTZi
+OTRkMCwgCiAgICBwcmV2ID0gMHhmZmZmOGE0YjNiODA5NWEwCiAgfSwgCiAgZF9zdWJkaXJzID0g
+ewogICAgbmV4dCA9IDB4ZmZmZjhhNDI4MWQwMWY2MCwgCiAgICBwcmV2ID0gMHhmZmZmOGE0Mjgx
+ZDAxZjYwCiAgfSwgCiAgZF91ID0gewogICAgZF9hbGlhcyA9IHsKICAgICAgbmV4dCA9IDB4ZmZm
+ZjhhNDI4MWQwMDBiMCwgCiAgICAgIHBwcmV2ID0gMHhmZmZmZmZmZjgxODkxMDcwIDxfX2RfZnJl
+ZT4KICAgIH0sIAogICAgZF9pbl9sb29rdXBfaGFzaCA9IHsKICAgICAgbmV4dCA9IDB4ZmZmZjhh
+NDI4MWQwMDBiMCwgCiAgICAgIHBwcmV2ID0gMHhmZmZmZmZmZjgxODkxMDcwIDxfX2RfZnJlZT4K
+ICAgIH0sIAogICAgZF9yY3UgPSB7CiAgICAgIG5leHQgPSAweGZmZmY4YTQyODFkMDAwYjAsIAog
+ICAgICBmdW5jID0gMHhmZmZmZmZmZjgxODkxMDcwIDxfX2RfZnJlZT4KICAgIH0KICB9Cn0K
+--0000000000004c6b0005c0cdf290
+Content-Type: text/plain; charset="US-ASCII"; name="nameidata.txt"
+Content-Disposition: attachment; filename="nameidata.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_knxcgezu1>
+X-Attachment-Id: f_knxcgezu1
+
+c3RydWN0IG5hbWVpZGF0YSB7CiAgcGF0aCA9IHsKICAgIG1udCA9IDB4ZmZmZjhhNGIzNDUyZTJh
+MCwgCiAgICBkZW50cnkgPSAweGZmZmY4YTRiM2I4MDk1MDAKICB9LCAKICBsYXN0ID0gewogICAg
+ewogICAgICB7CiAgICAgICAgaGFzaCA9IDI4MDU2MDc4OTIsIAogICAgICAgIGxlbiA9IDMKICAg
+ICAgfSwgCiAgICAgIGhhc2hfbGVuID0gMTU2OTA1MDk3ODAKICAgIH0sIAogICAgbmFtZSA9IDB4
+ZmZmZjhhMzQzOTdiNDAyMiAibmV0L3NvY2tzdGF0IgogIH0sIAogIHJvb3QgPSB7CiAgICBtbnQg
+PSAweGZmZmY4YTRiMzNiNTIyYTAsIAogICAgZGVudHJ5ID0gMHhmZmZmOGE0YjM0YmU3NWMwCiAg
+fSwgCiAgc3RydWN0IGlub2RlICppbm9kZSA9IDB4ZmZmZjhhNGIzYjgxODU5OAogIC0+IHsKICAg
+ICAgIGlfbW9kZSA9IDE2NzQ5LCAKICAgICAgIGlfb3BmbGFncyA9IDMsIAogICAgICAgaV91aWQg
+PSB7CiAgICAgICAgIHZhbCA9IDAKICAgICAgIH0sIAogICAgICAgaV9naWQgPSB7CiAgICAgICAg
+IHZhbCA9IDAKICAgICAgIH0sIAogICAgICAgaV9mbGFncyA9IDAsIAogICAgICAgaV9hY2wgPSAw
+eGZmZmZmZmZmZmZmZmZmZmYsIAogICAgICAgaV9kZWZhdWx0X2FjbCA9IDB4ZmZmZmZmZmZmZmZm
+ZmZmZiwgCiAgICAgICBpX29wID0gMHhmZmZmZmZmZjgyNDQ2MjAwLCAKICAgICAgIGlfc2IgPSAw
+eGZmZmY4YTNiM2Y4MGU4MDAsIAogICAgICAgaV9tYXBwaW5nID0gMHhmZmZmOGE0YjNiODE4NzEw
+LCAKICAgICAgIGlfc2VjdXJpdHkgPSAweDAsIAogICAgICAgaV9pbm8gPSAxLCAKICAgICAgIHsK
+ICAgICAgICAgaV9ubGluayA9IDgsIAogICAgICAgICBfX2lfbmxpbmsgPSA4CiAgICAgICB9LCAK
+ICAgICAgIGlfcmRldiA9IDAsIAogICAgICAgaV9zaXplID0gMCwgCiAgICAgICBpX2F0aW1lID0g
+ewogICAgICAgICB0dl9zZWMgPSAxNTk4ODY5MzA5LCAKICAgICAgICAgdHZfbnNlYyA9IDI4NDAw
+MDAwMAogICAgICAgfSwgCiAgICAgICBpX210aW1lID0gewogICAgICAgICB0dl9zZWMgPSAxNTk4
+ODY5MzA5LCAKICAgICAgICAgdHZfbnNlYyA9IDI4NDAwMDAwMAogICAgICAgfSwgCiAgICAgICBp
+X2N0aW1lID0gewogICAgICAgICB0dl9zZWMgPSAxNTk4ODY5MzA5LCAKICAgICAgICAgdHZfbnNl
+YyA9IDI4NDAwMDAwMAogICAgICAgfSwgCiAgICAgICBpX2xvY2sgPSB7CiAgICAgICAgIHsKICAg
+ICAgICAgICBybG9jayA9IHsKICAgICAgICAgICAgIHJhd19sb2NrID0gewogICAgICAgICAgICAg
+ICB2YWwgPSB7CiAgICAgICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAgICAgICAgICAgfQog
+ICAgICAgICAgICAgfQogICAgICAgICAgIH0KICAgICAgICAgfQogICAgICAgfSwgCiAgICAgICBp
+X2J5dGVzID0gMCwgCiAgICAgICBpX2Jsa2JpdHMgPSAxMCwgCiAgICAgICBpX3dyaXRlX2hpbnQg
+PSBXUklURV9MSUZFX05PVF9TRVQsIAogICAgICAgaV9ibG9ja3MgPSAwLCAKICAgICAgIGlfc3Rh
+dGUgPSAwLCAKICAgICAgIGlfcndzZW0gPSB7CiAgICAgICAgIGNvdW50ID0gewogICAgICAgICAg
+IGNvdW50ZXIgPSAwCiAgICAgICAgIH0sIAogICAgICAgICB3YWl0X2xpc3QgPSB7CiAgICAgICAg
+ICAgbmV4dCA9IDB4ZmZmZjhhNGIzYjgxODY0OCwgCiAgICAgICAgICAgcHJldiA9IDB4ZmZmZjhh
+NGIzYjgxODY0OAogICAgICAgICB9LCAKICAgICAgICAgd2FpdF9sb2NrID0gewogICAgICAgICAg
+IHJhd19sb2NrID0gewogICAgICAgICAgICAgdmFsID0gewogICAgICAgICAgICAgICBjb3VudGVy
+ID0gMAogICAgICAgICAgICAgfQogICAgICAgICAgIH0KICAgICAgICAgfSwgCiAgICAgICAgIG9z
+cSA9IHsKICAgICAgICAgICB0YWlsID0gewogICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAg
+ICAgICB9CiAgICAgICAgIH0sIAogICAgICAgICBvd25lciA9IDB4MQogICAgICAgfSwgCiAgICAg
+ICBkaXJ0aWVkX3doZW4gPSAwLCAKICAgICAgIGRpcnRpZWRfdGltZV93aGVuID0gMCwgCiAgICAg
+ICBpX2hhc2ggPSB7CiAgICAgICAgIG5leHQgPSAweDAsIAogICAgICAgICBwcHJldiA9IDB4MAog
+ICAgICAgfSwgCiAgICAgICBpX2lvX2xpc3QgPSB7CiAgICAgICAgIG5leHQgPSAweGZmZmY4YTRi
+M2I4MTg2ODgsIAogICAgICAgICBwcmV2ID0gMHhmZmZmOGE0YjNiODE4Njg4CiAgICAgICB9LCAK
+ICAgICAgIGlfd2IgPSAweDAsIAogICAgICAgaV93Yl9mcm5fd2lubmVyID0gMCwgCiAgICAgICBp
+X3diX2Zybl9hdmdfdGltZSA9IDAsIAogICAgICAgaV93Yl9mcm5faGlzdG9yeSA9IDAsIAogICAg
+ICAgaV9scnUgPSB7CiAgICAgICAgIG5leHQgPSAweGZmZmY4YTRiM2I4MTg2YTgsIAogICAgICAg
+ICBwcmV2ID0gMHhmZmZmOGE0YjNiODE4NmE4CiAgICAgICB9LCAKICAgICAgIGlfc2JfbGlzdCA9
+IHsKICAgICAgICAgbmV4dCA9IDB4ZmZmZjhhNGIzYjgxODZiOCwgCiAgICAgICAgIHByZXYgPSAw
+eGZmZmY4YTRiM2I4MTg2YjgKICAgICAgIH0sIAogICAgICAgaV93Yl9saXN0ID0gewogICAgICAg
+ICBuZXh0ID0gMHhmZmZmOGE0YjNiODE4NmM4LCAKICAgICAgICAgcHJldiA9IDB4ZmZmZjhhNGIz
+YjgxODZjOAogICAgICAgfSwgCiAgICAgICB7CiAgICAgICAgIGlfZGVudHJ5ID0gewogICAgICAg
+ICAgIGZpcnN0ID0gMHhmZmZmOGE0YjNiODA5NWIwCiAgICAgICAgIH0sIAogICAgICAgICBpX3Jj
+dSA9IHsKICAgICAgICAgICBuZXh0ID0gMHhmZmZmOGE0YjNiODA5NWIwLCAKICAgICAgICAgICBm
+dW5jID0gMHgwCiAgICAgICAgIH0KICAgICAgIH0sIAogICAgICAgaV92ZXJzaW9uID0gMCwgCiAg
+ICAgICBpX2NvdW50ID0gewogICAgICAgICBjb3VudGVyID0gMQogICAgICAgfSwgCiAgICAgICBp
+X2Rpb19jb3VudCA9IHsKICAgICAgICAgY291bnRlciA9IDAKICAgICAgIH0sIAogICAgICAgaV93
+cml0ZWNvdW50ID0gewogICAgICAgICBjb3VudGVyID0gMAogICAgICAgfSwgCiAgICAgICBpX3Jl
+YWRjb3VudCA9IHsKICAgICAgICAgY291bnRlciA9IDAKICAgICAgIH0sIAogICAgICAgaV9mb3Ag
+PSAweGZmZmZmZmZmODI0NDYyYzAsIAogICAgICAgaV9mbGN0eCA9IDB4MCwgCiAgICAgICBpX2Rh
+dGEgPSB7CiAgICAgICAgIGhvc3QgPSAweGZmZmY4YTRiM2I4MTg1OTgsIAogICAgICAgICBwYWdl
+X3RyZWUgPSB7CiAgICAgICAgICAgZ2ZwX21hc2sgPSAxODM1MDExMiwgCiAgICAgICAgICAgcm5v
+ZGUgPSAweDAKICAgICAgICAgfSwgCiAgICAgICAgIHRyZWVfbG9jayA9IHsKICAgICAgICAgICB7
+CiAgICAgICAgICAgICBybG9jayA9IHsKICAgICAgICAgICAgICAgcmF3X2xvY2sgPSB7CiAgICAg
+ICAgICAgICAgICAgdmFsID0gewogICAgICAgICAgICAgICAgICAgY291bnRlciA9IDAKICAgICAg
+ICAgICAgICAgICB9CiAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgIH0KICAgICAgICAgICB9
+CiAgICAgICAgIH0sIAogICAgICAgICBpX21tYXBfd3JpdGFibGUgPSB7CiAgICAgICAgICAgY291
+bnRlciA9IDAKICAgICAgICAgfSwgCiAgICAgICAgIGlfbW1hcCA9IHsKICAgICAgICAgICByYl9y
+b290ID0gewogICAgICAgICAgICAgcmJfbm9kZSA9IDB4MAogICAgICAgICAgIH0sIAogICAgICAg
+ICAgIHJiX2xlZnRtb3N0ID0gMHgwCiAgICAgICAgIH0sIAogICAgICAgICBpX21tYXBfcndzZW0g
+PSB7CiAgICAgICAgICAgY291bnQgPSB7CiAgICAgICAgICAgICBjb3VudGVyID0gMAogICAgICAg
+ICAgIH0sIAogICAgICAgICAgIHdhaXRfbGlzdCA9IHsKICAgICAgICAgICAgIG5leHQgPSAweGZm
+ZmY4YTRiM2I4MTg3NDgsIAogICAgICAgICAgICAgcHJldiA9IDB4ZmZmZjhhNGIzYjgxODc0OAog
+ICAgICAgICAgIH0sIAogICAgICAgICAgIHdhaXRfbG9jayA9IHsKICAgICAgICAgICAgIHJhd19s
+b2NrID0gewogICAgICAgICAgICAgICB2YWwgPSB7CiAgICAgICAgICAgICAgICAgY291bnRlciA9
+IDAKICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgfQogICAgICAgICAgIH0sIAogICAgICAg
+ICAgIG9zcSA9IHsKICAgICAgICAgICAgIHRhaWwgPSB7CiAgICAgICAgICAgICAgIGNvdW50ZXIg
+PSAwCiAgICAgICAgICAgICB9CiAgICAgICAgICAgfSwgCiAgICAgICAgICAgb3duZXIgPSAweDAK
+ICAgICAgICAgfSwgCiAgICAgICAgIG5ycGFnZXMgPSAwLCAKICAgICAgICAgbnJleGNlcHRpb25h
+bCA9IDAsIAogICAgICAgICB3cml0ZWJhY2tfaW5kZXggPSAwLCAKICAgICAgICAgYV9vcHMgPSAw
+eGZmZmZmZmZmODI0NDE0NjAsIAogICAgICAgICBmbGFncyA9IDAsIAogICAgICAgICBwcml2YXRl
+X2xvY2sgPSB7CiAgICAgICAgICAgewogICAgICAgICAgICAgcmxvY2sgPSB7CiAgICAgICAgICAg
+ICAgIHJhd19sb2NrID0gewogICAgICAgICAgICAgICAgIHZhbCA9IHsKICAgICAgICAgICAgICAg
+ICAgIGNvdW50ZXIgPSAwCiAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICB9CiAgICAg
+ICAgICAgICB9CiAgICAgICAgICAgfQogICAgICAgICB9LCAKICAgICAgICAgZ2ZwX21hc2sgPSAy
+MTEwMjc5NCwgCiAgICAgICAgIHByaXZhdGVfbGlzdCA9IHsKICAgICAgICAgICBuZXh0ID0gMHhm
+ZmZmOGE0YjNiODE4Nzk4LCAKICAgICAgICAgICBwcmV2ID0gMHhmZmZmOGE0YjNiODE4Nzk4CiAg
+ICAgICAgIH0sIAogICAgICAgICBwcml2YXRlX2RhdGEgPSAweDAsIAogICAgICAgICB3Yl9lcnIg
+PSAwCiAgICAgICB9LCAKICAgICAgIGlfZGV2aWNlcyA9IHsKICAgICAgICAgbmV4dCA9IDB4ZmZm
+ZjhhNGIzYjgxODdiOCwgCiAgICAgICAgIHByZXYgPSAweGZmZmY4YTRiM2I4MTg3YjgKICAgICAg
+IH0sIAogICAgICAgewogICAgICAgICBpX3BpcGUgPSAweDJmOTc4ODVlLCAKICAgICAgICAgaV9i
+ZGV2ID0gMHgyZjk3ODg1ZSwgCiAgICAgICAgIGlfY2RldiA9IDB4MmY5Nzg4NWUsIAogICAgICAg
+ICBpX2xpbmsgPSAweDJmOTc4ODVlIDxBZGRyZXNzIDB4MmY5Nzg4NWUgb3V0IG9mIGJvdW5kcz4s
+IAogICAgICAgICBpX2Rpcl9zZXEgPSA3OTg0NTk5OTgKICAgICAgIH0sIAogICAgICAgaV9nZW5l
+cmF0aW9uID0gMCwgCiAgICAgICBpX2Zzbm90aWZ5X21hc2sgPSAwLCAKICAgICAgIGlfZnNub3Rp
+ZnlfbWFya3MgPSAweDAsIAogICAgICAgaV9jcnlwdF9pbmZvID0gMHgwLCAKICAgICAgIGlfcHJp
+dmF0ZSA9IDB4MAogICAgIH0KICBmbGFncyA9IDgxLCAKICBzZXEgPSAyLCAKICBtX3NlcSA9IDEz
+MjMxMDYsIAogIGxhc3RfdHlwZSA9IDAsIAogIGRlcHRoID0gMSwgCiAgdG90YWxfbGlua19jb3Vu
+dCA9IDEsIAogIHN0cnVjdCBzYXZlZCAqc3RhY2sgPSAweGZmZmY5ZGVlMDljMmZkZTgKICAtPiB7
+CiAgICAgICBsaW5rID0gewogICAgICAgICBtbnQgPSAweGZmZmY4YTRiMzQ1MmUyYTAsIAogICAg
+ICAgICBkZW50cnkgPSAweGZmZmY4YTQyODFkMDFlYzAKICAgICAgIH0sIAogICAgICAgZG9uZSA9
+IHsKICAgICAgICAgZm4gPSAweDAsIAogICAgICAgICBhcmcgPSAweGZmZmZmZmZmODE4NzAzYWYg
+PF9fY2hlY2tfb2JqZWN0X3NpemUrMTc1PgogICAgICAgfSwgCiAgICAgICBuYW1lID0gMHhmZmZm
+OGEzYjJmM2M5YTg4ICJcMjQwXCJcMjY1XDA2M0tcMjEyXDM3N1wzNzdcMzAwdVwyNzZcMDY0S1wy
+MTJcMzc3XDM3NyIsIAogICAgICAgc2VxID0gNAogICAgIH0KICBpbnRlcm5hbCA9IHt7CiAgICAg
+IGxpbmsgPSB7CiAgICAgICAgbW50ID0gMHhmZmZmOGE0YjM0NTJlMmEwLCAKICAgICAgICBkZW50
+cnkgPSAweGZmZmY4YTQyODFkMDFlYzAKICAgICAgfSwgCiAgICAgIGRvbmUgPSB7CiAgICAgICAg
+Zm4gPSAweDAsIAogICAgICAgIGFyZyA9IDB4ZmZmZmZmZmY4MTg3MDNhZiA8X19jaGVja19vYmpl
+Y3Rfc2l6ZSsxNzU+CiAgICAgIH0sIAogICAgICBuYW1lID0gMHhmZmZmOGEzYjJmM2M5YTg4ICJc
+MjQwXCJcMjY1XDA2M0tcMjEyXDM3N1wzNzdcMzAwdVwyNzZcMDY0S1wyMTJcMzc3XDM3NyIsIAog
+ICAgICBzZXEgPSA0CiAgICB9LCB7CiAgICAgIGxpbmsgPSB7CiAgICAgICAgbW50ID0gMHhmZmZm
+ZmZmZjgxODgxOTQ3IDxwYXRoX2dldCszOT4sIAogICAgICAgIGRlbnRyeSA9IDB4MjNjMzEzZGRj
+MDUyM2YwMAogICAgICB9LCAKICAgICAgZG9uZSA9IHsKICAgICAgICBmbiA9IDB4ZCwgCiAgICAg
+ICAgYXJnID0gMHgwCiAgICAgIH0sIAogICAgICBuYW1lID0gMHg0MDAwIDxBZGRyZXNzIDB4NDAw
+MCBvdXQgb2YgYm91bmRzPiwgCiAgICAgIHNlcSA9IDc2MjEyODAwMAogICAgfX0sIAogIHN0cnVj
+dCBmaWxlbmFtZSAqbmFtZSA9IDB4ZmZmZjhhMzQzOTdiNDAwMAogIC0+IHsKICAgICAgIG5hbWUg
+PSAweGZmZmY4YTM0Mzk3YjQwMWMgIi9wcm9jL25ldC9zb2Nrc3RhdCIsIAogICAgICAgdXB0ciA9
+IDB4YzAwMTc1YTAyMCA8QWRkcmVzcyAweGMwMDE3NWEwMjAgb3V0IG9mIGJvdW5kcz4sIAogICAg
+ICAgYW5hbWUgPSAweGZmZmY4YTNiMmYzYzk4NjAsIAogICAgICAgcmVmY250ID0gMiwgCiAgICAg
+ICBpbmFtZSA9IDB4ZmZmZjhhMzQzOTdiNDAxYyAiL3Byb2MvbmV0L3NvY2tzdGF0IgogICAgIH0K
+ICBzdHJ1Y3QgbmFtZWlkYXRhICpzYXZlZCA9IDB4MAogIC0+IE5VTEwKICBzdHJ1Y3QgaW5vZGUg
+KmxpbmtfaW5vZGUgPSAweDAKICAtPiBOVUxMCiAgcm9vdF9zZXEgPSAyLCAKICBkZmQgPSAtMTAw
+Cn0K
+--0000000000004c6b0005c0cdf290--
