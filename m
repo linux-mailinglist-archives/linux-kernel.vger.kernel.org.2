@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE9236A967
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D10736A968
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 23:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhDYVMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 17:12:40 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39913 "EHLO mga07.intel.com"
+        id S231334AbhDYVNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 17:13:18 -0400
+Received: from mga06.intel.com ([134.134.136.31]:43887 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhDYVMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 17:12:39 -0400
-IronPort-SDR: NNf1iKeDHOdO8bsOXdi1AybhUcfQgkC8b4ISQ+lFnhDXWBG/56Eg3CcszDWx4BrF1IwaUDt9nO
- c4/v+X+J4lXg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="260209109"
+        id S230494AbhDYVNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 17:13:17 -0400
+IronPort-SDR: ZHslSZhGNPYu64ieBCnbyHKC0haWxe7e0C73hK2UAKdWuFXIIkeSJ/Xw+Ba6oZcmrA7Ek+VMPL
+ XSOHCNmWNzbg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="257560459"
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="scan'208";a="257560459"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 14:12:37 -0700
+IronPort-SDR: fkz3ua720CuPcH922xWOpiVrg2n2y5hre6AFEnn+b+UPGZXRaJjQ507KCCGaL1yuNciuUA/fe/
+ l8+jp9jGekug==
 X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
-   d="scan'208";a="260209109"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 14:11:58 -0700
-IronPort-SDR: luuqIzZY83IKnOkMvGxO8R7d1vhCzuWojivUgJTwhcPbwRsRyg1NCR+pGGIcxBBboaUDyZS6xc
- VawvYKbWUdgA==
-X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
-   d="scan'208";a="402697833"
+   d="scan'208";a="429115870"
 Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 14:11:58 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 14:12:37 -0700
 From:   Andi Kleen <ak@linux.intel.com>
-To:     peterz@infradead.org
-Cc:     jpoimboe@redhat.com, jbaron@akamai.com,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH] static_call: Use single copy of static_call_return0
-Date:   Sun, 25 Apr 2021 14:11:40 -0700
-Message-Id: <20210425211140.3157580-1-ak@linux.intel.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH] x86/resctrl: Fix init const confusion
+Date:   Sun, 25 Apr 2021 14:12:29 -0700
+Message-Id: <20210425211229.3157674-1-ak@linux.intel.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,100 +38,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the inline version of static calls it is trying to use
-all static call functions inline. But this doesn't work for
-__static_call_return0, because its address is always taken,
-which forces the compiler to generate a out of line copy.
+From: Andi Kleen <andi@firstfloor.org>
 
-If it only exists as a static inline this means there are
-many copies generated. Instead use the out of line in static_call.c
-for this.
+const variable must be initconst, not initdata.
 
-This fixes another bug. When _INLINE is set static_inline.c was
-not compiled at all, which disabled the self test even when
-it was enabled in the configuration.
-
-This fixes a build problem with gcc LTO. __static_call_return0
-is referenced from assembler, which requires making it global
-because the assembler can end in a different file than the other
-C code.  But that's not possible for a static inline function.
-
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Andi Kleen <andi@firstfloor.org>
 ---
- include/linux/static_call.h | 9 ++-------
- kernel/Makefile             | 2 +-
- kernel/static_call.c        | 4 ++++
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ arch/x86/kernel/cpu/resctrl/monitor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index ae04b1123a93..e75aef659224 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -100,6 +100,8 @@
- #ifdef CONFIG_HAVE_STATIC_CALL
- #include <asm/static_call.h>
- 
-+extern long __static_call_return0(void);
-+
- /*
-  * Either @site or @tramp can be NULL.
-  */
-@@ -148,8 +150,6 @@ extern void __static_call_update(struct static_call_key *key, void *tramp, void
- extern int static_call_mod_init(struct module *mod);
- extern int static_call_text_reserved(void *start, void *end);
- 
--extern long __static_call_return0(void);
--
- #define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	__visible struct static_call_key STATIC_CALL_KEY(name) = {	\
-@@ -221,11 +221,6 @@ static inline int static_call_text_reserved(void *start, void *end)
- 	return 0;
- }
- 
--static inline long __static_call_return0(void)
--{
--	return 0;
--}
--
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
- 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 320f1f3941b7..b589442c7724 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -110,7 +110,7 @@ obj-$(CONFIG_CPU_PM) += cpu_pm.o
- obj-$(CONFIG_BPF) += bpf/
- obj-$(CONFIG_KCSAN) += kcsan/
- obj-$(CONFIG_SHADOW_CALL_STACK) += scs.o
--obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) += static_call.o
-+obj-$(CONFIG_HAVE_STATIC_CALL) += static_call.o
- 
- obj-$(CONFIG_PERF_EVENTS) += events/
- 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 6d332c0c9134..7ec8608d94ab 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -10,6 +10,8 @@
- #include <linux/processor.h>
- #include <asm/sections.h>
- 
-+#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
-+
- extern struct static_call_site __start_static_call_sites[],
- 			       __stop_static_call_sites[];
- extern struct static_call_tramp_key __start_static_call_tramp_key[],
-@@ -496,6 +498,8 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
-+#endif /* HAVE_STATIC_CALL_INLINE */
-+
- long __static_call_return0(void)
- {
- 	return 0;
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 7ac31210e452..4327792a22f2 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -84,7 +84,7 @@ unsigned int resctrl_cqm_threshold;
+ static const struct mbm_correction_factor_table {
+ 	u32 rmidthreshold;
+ 	u64 cf;
+-} mbm_cf_table[] __initdata = {
++} mbm_cf_table[] __initconst = {
+ 	{7,	CF(1.000000)},
+ 	{15,	CF(1.000000)},
+ 	{15,	CF(0.969650)},
 -- 
 2.25.4
 
