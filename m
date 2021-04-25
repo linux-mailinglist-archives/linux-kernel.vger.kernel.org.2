@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7D536A5DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571FE36A5D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhDYIpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 04:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        id S229831AbhDYIpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 04:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhDYIpP (ORCPT
+        with ESMTP id S229485AbhDYIpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 04:45:15 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7DFC061574;
-        Sun, 25 Apr 2021 01:44:34 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id c4so13769046wrt.8;
-        Sun, 25 Apr 2021 01:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=31vdil8td01hkvlGl+21+jMqDUYmSn86sls5WfMRhSg=;
-        b=lgPkMKm/tYu+zzdehfIt3WP/UYMJP5J1wLwGb97bDBn5e7XUzz6oOK8mx0XvA89J4a
-         reLzRoDLV7JApHd/GyLEadfUGzmULqJ4NMVzqqCJYnos687TYhufLOzSZu/i4hHNHQAk
-         /FBnMU2IiUARmDbsveWkv9q9udiPK49ybFNZLK5uZlSlymT9iW2YRGTr6K6mdsbefY4s
-         NXZOENTSn4dIDbqLveDy8wZOU8R0gQ65az+yMo/F04RrRvRmoUNkiDS6/4hSIiDKZD8P
-         VMCqTpoe7M+IoxPnjKUOtACUJAzro5uVQdUqP832lYV6KRx5glrfFX4YadG3LkVioE3t
-         qFdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=31vdil8td01hkvlGl+21+jMqDUYmSn86sls5WfMRhSg=;
-        b=TD8RowfO6MXAAFc1TzrxxXkdIWJtHT4E5EeeLc8j/CMpPETMSjxci+miLq1efp8Li4
-         fV2tLvYpN37Z9qxz5ObopOzuqMm41hNwoioTOwtJIKmB9a1b2Xyvct6fitwnETU00vy3
-         NF0rZw7FIA6VVMMLdSZX5xJvGHCP2faDwG8QnGpgXzGTW8PwwxxnqA4/E+3wZK87031R
-         NR/gNS8XVvjtaDcoC23lPuMRooE09Zp4v3wjhbJKdqU3uIaC1CWUq3Mo9vRWW2d2U0jB
-         oINLKegfGt5zvV9T/H1ekpQVLXyR3S8F3BRVT836zTVNJLCwTgF1iU+lWfwR5jUD16AS
-         EHow==
-X-Gm-Message-State: AOAM531NiDghJcBZrS/nFAFm5a5kERunCBmeyagtMiAqF2moz43hPsvJ
-        ENU5Lbdb3OMkFjdxTugVpK+1klGOL1Q=
-X-Google-Smtp-Source: ABdhPJweHiH/5X/2E9b9TYd3Tsbs3DeJYVqXTQrldUVE2z3siASvHPRHi7TkqNplK658uUMGs7wI+w==
-X-Received: by 2002:adf:ec42:: with SMTP id w2mr15660229wrn.373.1619340272873;
-        Sun, 25 Apr 2021 01:44:32 -0700 (PDT)
-Received: from ?IPv6:2a01:cb05:8f8a:1800:2216:4e4e:b697:b4ce? (2a01cb058f8a180022164e4eb697b4ce.ipv6.abo.wanadoo.fr. [2a01:cb05:8f8a:1800:2216:4e4e:b697:b4ce])
-        by smtp.gmail.com with ESMTPSA id f7sm15432133wrp.48.2021.04.25.01.44.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Apr 2021 01:44:32 -0700 (PDT)
-Subject: Re: [PATCH v4] mips: Do not include hi and lo in clobber list for R6
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20210420211210.702980-1-sudipm.mukherjee@gmail.com>
-From:   Romain Naour <romain.naour@gmail.com>
-Message-ID: <79aa7a3c-92ee-48d4-4945-48061e77541d@gmail.com>
-Date:   Sun, 25 Apr 2021 10:44:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sun, 25 Apr 2021 04:45:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731F4C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 01:44:34 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1laaNT-00025b-UY; Sun, 25 Apr 2021 10:44:31 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1laaNR-0008QD-Fd; Sun, 25 Apr 2021 10:44:29 +0200
+Date:   Sun, 25 Apr 2021 10:44:26 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the pwm tree
+Message-ID: <20210425084426.uxzfnkkxhcvblzjt@pengutronix.de>
+References: <20210425131557.5eab8265@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210420211210.702980-1-sudipm.mukherjee@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="afsagho32ileb2cb"
+Content-Disposition: inline
+In-Reply-To: <20210425131557.5eab8265@canb.auug.org.au>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudip, All,
 
-Le 20/04/2021 à 23:12, Sudip Mukherjee a écrit :
-> From: Romain Naour <romain.naour@gmail.com>
-> 
-> From [1]
-> "GCC 10 (PR 91233) won't silently allow registers that are not
-> architecturally available to be present in the clobber list anymore,
-> resulting in build failure for mips*r6 targets in form of:
-> ...
-> .../sysdep.h:146:2: error: the register ‘lo’ cannot be clobbered in ‘asm’ for the current target
->   146 |  __asm__ volatile (      \
->       |  ^~~~~~~
-> 
-> This is because base R6 ISA doesn't define hi and lo registers w/o DSP
-> extension. This patch provides the alternative clobber list for r6 targets
-> that won't include those registers."
-> 
-> Since kernel 5.4 and mips support for generic vDSO [2], the kernel fail to
-> build for mips r6 cpus with gcc 10 for the same reason as glibc.
-> 
-> [1] https://sourceware.org/git/?p=glibc.git;a=commit;h=020b2a97bb15f807c0482f0faee2184ed05bcad8
-> [2] '24640f233b46 ("mips: Add support for generic vDSO")'
-> 
-> Signed-off-by: Romain Naour <romain.naour@gmail.com>
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> ---
-> 
-> v4: [sudip] added macro VDSO_SYSCALL_CLOBBERS and fix checkpatch errors with commit message.
-> v3 Avoid duplicate code (Maciej W. Rozycki)
-> v2 use MIPS_ISA_REV instead of __mips_isa_rev (Alexander Lobakin)
-> 
-> I have reused the original patch by Romain and have retained his s-o-b
-> and author name as he is the original author of this patch. I have just
-> added the macro. Build tested with gcc-10.3.1 and gcc-9.3.0.
-> 
+--afsagho32ileb2cb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the rework!
+Hello Thierry,
 
-Best regards,
-Romain
+On Sun, Apr 25, 2021 at 01:15:57PM +1000, Stephen Rothwell wrote:
+> In commit
+>=20
+>   30d0031bd7ca ("pwm: Reword docs about pwm_apply_state()")
+>=20
+> Fixes tag
+>=20
+>   Fixes: 539ed98e2bd3 ("pwm: Clarify documentation about pwm_get_state()")
+>=20
+> has these problem(s):
+>=20
+>   - Target SHA1 does not exist
+>=20
+> I could not easily find which commit you meant.
+
+This is my fault. The commit I meant is:
+
+	1a7a6e8072ea ("pwm: Clarify which state pwm_get_state() returns")
+
+Best regards and thanks for your attention,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--afsagho32ileb2cb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCFK+cACgkQwfwUeK3K
+7AlV0Qf/edI2C8ghD4pNs8HMAdAvZAw1btWnsXyhURId8CaBGm7E/FrMblji+XkY
+pSvOUUWwgoLna9lPcX740fBHvlSb5JtxqPNrP3qiIc2mNiXgf4oY7pNPCS7tldTx
+9fN06Y5TN7k1EU5Wx2tc6IDndQSjOK95O0P6i4RhJ2MnoD1h5p4G3U+RS8stseeU
+rpP2+Lsgrk36bfx2eUlx808ZHVmwZOPJwqdSGxUz4l22u3KV7HlvAi1y/A3rWAuP
+DVz7r2S4dbIk+iUaRhXCvImX3ZNpLQ8bdHAjO4VMP6pwRYIG8RZz5ZHlRwzD0CxX
+yMvT+4E+GVrSnLUYi9z04Buof15V0A==
+=iUUj
+-----END PGP SIGNATURE-----
+
+--afsagho32ileb2cb--
