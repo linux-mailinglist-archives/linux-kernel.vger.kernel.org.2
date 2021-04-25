@@ -2,147 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA3B36A88B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 19:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3EB36A892
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 19:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhDYRd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 13:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhDYRd0 (ORCPT
+        id S231183AbhDYRib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 13:38:31 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21342 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhDYRia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 13:33:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D832C061574;
-        Sun, 25 Apr 2021 10:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=voFwKrTTjjoyFJE6evMIYyhewsdMjPxL3p2swH7Uqb0=; b=LtSlhuaZiX7L9FFvjwUKDmATvG
-        ghN3hT8T+DxHu3JGJ40h6ULLb4Sx+VQIFytp9Ezy5D3U734hIvaOhCauDnrYMrPW0xPXEevle1jeg
-        U/OWE74IFVUB9+/7PWNPC01Dqzq45C/J03y96I7SGSiXEgVqHowYZixvbAANBSwGDvQ5WfOT+lJ7+
-        Uec8Mh41l525KKr3msY9vfYMLVdsiQNj49jzq96B/uQJU69WfE+WDRnfZ7C784/jT4+2JIlVJttj1
-        5sX6RxtDIrZtcXAs/16rlexZry10dzu1yQpIP+FRX864CUtBjAwwsZveGvxNm02EPfmNO/uEkhSum
-        59USWy3g==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1laibz-004Wfq-GF; Sun, 25 Apr 2021 17:32:07 +0000
-Subject: Re: [PATCH] pinctrl: aspeed: Fix minor documentation error
-To:     Souptick Joarder <jrdr.linux@gmail.com>, andrew@aj.id.au,
-        linus.walleij@linaro.org, joel@jms.id.au
-Cc:     linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sun, 25 Apr 2021 13:38:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1619372265; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=fywXrVS5FDz6iU2UMI38X0Fikxn98aH2GUygN9jtSMHGaQcRFey+e8nCvWZRYNSfrcC0DgH3afaGzw/PdOTJXUCjWDPj9+UhJOnq2OMBgSpU7fpz8j2kdn6DAMoVFAaJsiVBaXKEWKMmv1XVJWiX8vci4rSqCQI5+OAZZdOAud0=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1619372265; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=k/EGKXFAZVuJOd2JkD/RJjW4fi/tHKJRxr2RkqQG2Do=; 
+        b=UXRWi7MJ3YF0d33lLIIRegelrktSJhhi6qRGWm7+xK1UPeAQaKZS7mIgkiLBaW/PKi5gTFauYgeBHbSK7xaMX2Km7RFZpxBm3eiHsxame0qkyN87MyoLxGh9pQU2Dh6YaibJsUzM7VOikhFO8FT7cHW3uoKiPnejzYG+k7inKRo=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1619372265;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=k/EGKXFAZVuJOd2JkD/RJjW4fi/tHKJRxr2RkqQG2Do=;
+        b=MQeLg+DkcwiBucf3gKN4zHpugUU+ZfFm44TS+mQL0Ckm9C+2cPNv025i49WXlwxK
+        3L26ZXqb5K88mqgNN50g0ViwD+JvHD/ag1O3xll0MiVaVg7VqdpcPAURcz3ajZD2aqI
+        VovkqqKulT0PClkW/qRPhWaVTULat/J7gvlMG3Jw=
+Received: from localhost.localdomain (49.207.208.26 [49.207.208.26]) by mx.zohomail.com
+        with SMTPS id 1619372262325930.7778518171191; Sun, 25 Apr 2021 10:37:42 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6db04e41-3ee6-c569-34b2-83693b620362@infradead.org>
-Date:   Sun, 25 Apr 2021 10:32:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Subject: [PATCH] usbhid: fix info leak in hid_submit_ctrl
+Date:   Sun, 25 Apr 2021 23:03:53 +0530
+Message-Id: <20210425173353.10231-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/25/21 5:26 AM, Souptick Joarder wrote:
-> Kernel test robot throws below warning ->
-> 
-> drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c:2705: warning: This comment
-> starts with '/**', but isn't a kernel-doc comment. Refer
-> Documentation/doc-guide/kernel-doc.rst
-> drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c:2614: warning: This comment
-> starts with '/**', but isn't a kernel-doc comment. Refer
-> Documentation/doc-guide/kernel-doc.rst
-> drivers/pinctrl/aspeed/pinctrl-aspeed.c:111: warning: This comment
-> starts with '/**', but isn't a kernel-doc comment. Refer
-> Documentation/doc-guide/kernel-doc.rst
-> drivers/pinctrl/aspeed/pinmux-aspeed.c:24: warning: This comment starts
-> with '/**', but isn't a kernel-doc comment. Refer
-> Documentation/doc-guide/kernel-doc.rst
-> 
-> Fix minor documentation error.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
+In hid_submit_ctrl(), the way of calculating the report length doesn't
+take into account that report->size can be zero. When running the
+syzkaller reproducer, a report of size 0 causes hid_submit_ctrl) to
+calculate transfer_buffer_length as 16384. When this urb is passed to
+the usb core layer, KMSAN reports an info leak of 16384 bytes.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+To fix this, first modify hid_report_len() to account for the zero
+report size case by using DIV_ROUND_UP for the division. Then, call it
+from hid_submit_ctrl().
 
-Thanks.
+Reported-by: syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
+ drivers/hid/usbhid/hid-core.c | 2 +-
+ include/linux/hid.h           | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-> ---
->  drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c | 4 ++--
->  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 4 ++--
->  drivers/pinctrl/aspeed/pinctrl-aspeed.c    | 3 ++-
->  drivers/pinctrl/aspeed/pinmux-aspeed.c     | 3 ++-
->  4 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-> index 996ebcb..4c0d266 100644
-> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-> @@ -2702,8 +2702,8 @@ static int aspeed_g5_sig_expr_eval(struct aspeed_pinmux_data *ctx,
->  }
->  
->  /**
-> - * Configure a pin's signal by applying an expression's descriptor state for
-> - * all descriptors in the expression.
-> + * aspeed_g5_sig_expr_set() - Configure a pin's signal by applying an
-> + * expression's descriptor state for all descriptors in the expression.
->   *
->   * @ctx: The pinmux context
->   * @expr: The expression associated with the function whose signal is to be
-> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> index 5c1a109..eeab093 100644
-> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> @@ -2611,8 +2611,8 @@
->  };
->  
->  /**
-> - * Configure a pin's signal by applying an expression's descriptor state for
-> - * all descriptors in the expression.
-> + * aspeed_g6_sig_expr_set() - Configure a pin's signal by applying an
-> + * expression's descriptor state for all descriptors in the expression.
->   *
->   * @ctx: The pinmux context
->   * @expr: The expression associated with the function whose signal is to be
-> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-> index 9c65d56..9bbfe5c 100644
-> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-> @@ -108,7 +108,8 @@ static int aspeed_sig_expr_disable(struct aspeed_pinmux_data *ctx,
->  }
->  
->  /**
-> - * Disable a signal on a pin by disabling all provided signal expressions.
-> + * aspeed_disable_sig() - Disable a signal on a pin by disabling all provided
-> + * signal expressions.
->   *
->   * @ctx: The pinmux context
->   * @exprs: The list of signal expressions (from a priority level on a pin)
-> diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.c b/drivers/pinctrl/aspeed/pinmux-aspeed.c
-> index 57305ca..894e2ef 100644
-> --- a/drivers/pinctrl/aspeed/pinmux-aspeed.c
-> +++ b/drivers/pinctrl/aspeed/pinmux-aspeed.c
-> @@ -21,7 +21,8 @@ static inline void aspeed_sig_desc_print_val(
->  }
->  
->  /**
-> - * Query the enabled or disabled state of a signal descriptor
-> + * aspeed_sig_desc_eval() - Query the enabled or disabled state of a signal
-> + * descriptor.
->   *
->   * @desc: The signal descriptor of interest
->   * @enabled: True to query the enabled state, false to query disabled state
-> 
-
-
+diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+index 86257ce6d619..4e9077363c96 100644
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -374,7 +374,7 @@ static int hid_submit_ctrl(struct hid_device *hid)
+ 	raw_report = usbhid->ctrl[usbhid->ctrltail].raw_report;
+ 	dir = usbhid->ctrl[usbhid->ctrltail].dir;
+ 
+-	len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
++	len = hid_report_len(report);
+ 	if (dir == USB_DIR_OUT) {
+ 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+ 		usbhid->urbctrl->transfer_buffer_length = len;
+diff --git a/include/linux/hid.h b/include/linux/hid.h
+index 271021e20a3f..10e922cee4eb 100644
+--- a/include/linux/hid.h
++++ b/include/linux/hid.h
+@@ -1167,8 +1167,7 @@ static inline void hid_hw_wait(struct hid_device *hdev)
+  */
+ static inline u32 hid_report_len(struct hid_report *report)
+ {
+-	/* equivalent to DIV_ROUND_UP(report->size, 8) + !!(report->id > 0) */
+-	return ((report->size - 1) >> 3) + 1 + (report->id > 0);
++	return DIV_ROUND_UP(report->size, 8) + (report->id > 0);
+ }
+ 
+ int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, u32 size,
 -- 
-~Randy
+2.26.2
 
