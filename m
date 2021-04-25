@@ -2,168 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E5A36A5AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E9836A5A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 10:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhDYIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 04:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhDYIME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 04:12:04 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18E6C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 01:11:23 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id d15so9167012ljo.12
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 01:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ja9s7DnGWK5NRJashY05ov0nwmFYwHpa/VMTSuJsJUk=;
-        b=rEus9jnA+ejmTp7ph79aQsJ7EK4671QgNJJnPWBK3K8AlAHrQ0mCob3KZgWwBV1Vo3
-         y0sTGUCHCZEkWsZK7TCGjz17Pp3/8kL8xW/ikeFt0tnDwP5Kc0Lye77shWXiiLd34dpf
-         G9SaqVH0F4EigkJqWIujmNJlp0rUE3v4KHcaAOCumgb1ctcMaMEw1EC2m5MWhAm3vWqb
-         B+yGGgWceoUAr9ZdtYaIa8OtXkabiBSzUy1pNkhHqfA9xSwgxVW9QR85qGI7J9rDXL10
-         Kw4vgfG4u911QsOVk499X0zx8jr9Vj50oCyjXkJSB6scdH4ywYQ+CNt6RaW8tE8A1JFp
-         oT5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ja9s7DnGWK5NRJashY05ov0nwmFYwHpa/VMTSuJsJUk=;
-        b=MgB3dHYErFvkaQQmCee+dzfVIZVaxQahE0M881Bb/zhMJYnb4CEk/AckK8rxKJNytj
-         xzmm66Ty2sGsmAtxUB7o0sv+QNkjRtYd5hhw3M4GJqUq1BuLoFjFFe7Q+pEW5E4syJpi
-         NFs9QrljV1mTnT0ikEbF65K43Z43exTCttkB3u2pnRnvQhbCCEs5Q96Gn9KPuCnYfsaj
-         MDPgk+49+8Zdu2z0ODDiei6T7ANcMEgjCDM34RXzTGxk4DHX4QDl7/6cX2ablxDxUUGl
-         d+oHk3MVTpPWUD/c6Pwje9XAlIYaviwjaR1gQ8eQ8jezFvpLNiEidXQURRnjAzFJrEj1
-         tCZw==
-X-Gm-Message-State: AOAM530ThLd/VspoZB02O1H+0qWfzC/CBabuWCu3MwLZOH5fzr0RKTiF
-        5Uv93d0O4HrtRYj6efdxk7tq2Q==
-X-Google-Smtp-Source: ABdhPJwb7xJPKOHrp2rA3TRsGAgiQOlmydTxYB9ZmpmdYXn9gjPbf6dzKEW4HEb5H0Bw3xAaGrfFag==
-X-Received: by 2002:a05:651c:603:: with SMTP id k3mr8618756lje.191.1619338282374;
-        Sun, 25 Apr 2021 01:11:22 -0700 (PDT)
-Received: from localhost.localdomain (ti0005a400-2280.bb.online.no. [80.212.253.245])
-        by smtp.gmail.com with ESMTPSA id a5sm1038906lfg.115.2021.04.25.01.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Apr 2021 01:11:22 -0700 (PDT)
-From:   Odin Ugedal <odin@uged.al>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Odin Ugedal <odin@uged.al>
-Subject: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load decay
-Date:   Sun, 25 Apr 2021 10:09:02 +0200
-Message-Id: <20210425080902.11854-2-odin@uged.al>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210425080902.11854-1-odin@uged.al>
-References: <20210425080902.11854-1-odin@uged.al>
+        id S229573AbhDYIK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 04:10:26 -0400
+Received: from mga02.intel.com ([134.134.136.20]:32738 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhDYIKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 04:10:25 -0400
+IronPort-SDR: z0QpIoILqWiZEgCy46j/7XfmeDQ72HdpdE9yDT067AXhiu2SNvmMUXVMhH6VxW4hBjvbbWol48
+ tXLE/UOUl3oA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9964"; a="183353078"
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="scan'208";a="183353078"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 01:09:45 -0700
+IronPort-SDR: JJRw1EW8OL48cl1W71eXIjtcsmS6RvlCYJAMkEc531Vgc9dmC3pRJ8xc04KurcpUOf76oW+xJv
+ Odz+xYKis9eA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,250,1613462400"; 
+   d="scan'208";a="453963285"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 25 Apr 2021 01:09:44 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1laZpn-0005Rw-LI; Sun, 25 Apr 2021 08:09:43 +0000
+Date:   Sun, 25 Apr 2021 16:09:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 765822e1569a37aab5e69736c52d4ad4a289eba6
+Message-ID: <608523c6.lpCBRGKFvsKF+/m9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes an issue where old load on a cfs_rq is not properly decayed,
-resulting in strange behavior where fairness can decrease drastically.
-Real workloads with equally weighted control groups have ended up
-getting a respective 99% and 1%(!!) of cpu time.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 765822e1569a37aab5e69736c52d4ad4a289eba6  Merge tag 'irqchip-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
 
-When an idle task is attached to a cfs_rq by attaching a pid to a cgroup,
-the old load of the task is attached to the new cfs_rq and sched_entity by
-attach_entity_cfs_rq. If the task is then moved to another cpu (and
-therefore cfs_rq) before being enqueued/woken up, the load will be moved
-to cfs_rq->removed from the sched_entity. Such a move will happen when
-enforcing a cpuset on the task (eg. via a cgroup) that force it to move.
+elapsed time: 721m
 
-The load will however not be removed from the task_group itself, making
-it look like there is a constant load on that cfs_rq. This causes the
-vruntime of tasks on other sibling cfs_rq's to increase faster than they
-are supposed to; causing severe fairness issues. If no other task is
-started on the given cfs_rq, and due to the cpuset it would not happen,
-this load would never be properly unloaded. With this patch the load
-will be properly removed inside update_blocked_averages. This also
-applies to tasks moved to the fair scheduling class and moved to another
-cpu, and this path will also fix that. For fork, the entity is queued
-right away, so this problem does not affect that.
+configs tested: 90
+configs skipped: 2
 
-For a simple cgroup hierarchy (as seen below) with two equally weighted
-groups, that in theory should get 50/50 of cpu time each, it often leads
-to a load of 60/40 or 70/30.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-parent/
-  cg-1/
-    cpu.weight: 100
-    cpuset.cpus: 1
-  cg-2/
-    cpu.weight: 100
-    cpuset.cpus: 1
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+sh                         ap325rxa_defconfig
+parisc                generic-32bit_defconfig
+csky                                defconfig
+m68k                          multi_defconfig
+sh                   sh7724_generic_defconfig
+ia64                                defconfig
+sh                         apsh4a3a_defconfig
+mips                       bmips_be_defconfig
+mips                        nlm_xlp_defconfig
+arc                          axs103_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                    gamecube_defconfig
+sh                     sh7710voipgw_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210425
+x86_64               randconfig-a002-20210425
+x86_64               randconfig-a001-20210425
+x86_64               randconfig-a006-20210425
+x86_64               randconfig-a005-20210425
+x86_64               randconfig-a003-20210425
+i386                 randconfig-a005-20210425
+i386                 randconfig-a002-20210425
+i386                 randconfig-a001-20210425
+i386                 randconfig-a006-20210425
+i386                 randconfig-a004-20210425
+i386                 randconfig-a003-20210425
+i386                 randconfig-a012-20210425
+i386                 randconfig-a014-20210425
+i386                 randconfig-a011-20210425
+i386                 randconfig-a013-20210425
+i386                 randconfig-a015-20210425
+i386                 randconfig-a016-20210425
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-If the hierarchy is deeper (as seen below), while keeping cg-1 and cg-2
-equally weighted, they should still get a 50/50 balance of cpu time.
-This however sometimes results in a balance of 10/90 or 1/99(!!) between
-the task groups.
+clang tested configs:
+x86_64               randconfig-a015-20210425
+x86_64               randconfig-a016-20210425
+x86_64               randconfig-a011-20210425
+x86_64               randconfig-a014-20210425
+x86_64               randconfig-a013-20210425
+x86_64               randconfig-a012-20210425
 
-$ ps u -C stress
-USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
-root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
-
-parent/
-  cg-1/
-    cpu.weight: 100
-    sub-group/
-      cpu.weight: 1
-      cpuset.cpus: 1
-  cg-2/
-    cpu.weight: 100
-    sub-group/
-      cpu.weight: 10000
-      cpuset.cpus: 1
-
-This can be reproduced by attaching an idle process to a cgroup and
-moving it to a given cpuset before it wakes up. The issue is evident in
-many (if not most) container runtimes, and has been reproduced
-with both crun and runc (and therefore docker and all its "derivatives"),
-and with both cgroup v1 and v2.
-
-Fixes: 3d30544f0212 ("sched/fair: Apply more PELT fixes")
-Signed-off-by: Odin Ugedal <odin@uged.al>
 ---
- kernel/sched/fair.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 794c2cb945f8..ad7556f99b4a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10916,6 +10916,19 @@ static void attach_task_cfs_rq(struct task_struct *p)
- 
- 	if (!vruntime_normalized(p))
- 		se->vruntime += cfs_rq->min_vruntime;
-+
-+	/*
-+	 * Make sure the attached load will decay properly
-+	 * in case the task is moved to another cpu before
-+	 * being queued.
-+	 */
-+	if (!task_on_rq_queued(p)) {
-+		for_each_sched_entity(se) {
-+			if (se->on_rq)
-+				break;
-+			list_add_leaf_cfs_rq(cfs_rq_of(se));
-+		}
-+	}
- }
- 
- static void switched_from_fair(struct rq *rq, struct task_struct *p)
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
