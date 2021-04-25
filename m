@@ -2,118 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8958036A84D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 18:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21C336A852
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 18:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhDYQO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 12:14:56 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:45623 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhDYQOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 12:14:54 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d64 with ME
-        id x4EB2400621Fzsu034EBvP; Sun, 25 Apr 2021 18:14:12 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 25 Apr 2021 18:14:12 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] macvlan: Use 'hash' iterators to simplify code
-Date:   Sun, 25 Apr 2021 18:14:10 +0200
-Message-Id: <fa1b35d89a6254b3d46d9385ae6f85584138cc31.1619367130.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S230458AbhDYQRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 12:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhDYQRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 12:17:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EDB761363;
+        Sun, 25 Apr 2021 16:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619367386;
+        bh=mnUKMeurzof7SYDsHIcy+IPWCYjV/kIYWE3itQrOVew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tyoNVqkR4np7QMhEjyxr/O5jeG/nI3HKJ3LAGozM4xv2lJQ0zvzaUJYJB9y8kvckm
+         L2jcLp5gE/7DFHWexxt+esfq3j4Y+80ZrKLDGpY1hItWekFfHt6DGpBpGYtqthN/dt
+         BXXejMbh+hyEnaKURtqUlC0qnvOR4EeJxSQpaygKZ8+qFbGmG45pPD0hf3B4hFXAeI
+         NtqAbBPQhzejhCk7C7FBTU3lJD+VKBaGtTANR0FtoRalEXF/u8foPgrTuDDZAVM38u
+         geaDf+rCu7W06U5F4pK6q1mOjtBzyXX7RlbQIQw0hqgHH4RbIXzvzqXERQ/CzNU2cA
+         dk5uHyOAlUXCw==
+Date:   Sun, 25 Apr 2021 21:46:22 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Tom Zanussi <tom.zanussi@linux.intel.com>
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        kan.liang@linux.intel.com, dave.jiang@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] dmaengine: idxd: IDXD pmu support
+Message-ID: <YIWV1ufq4WgS1WNH@vkoul-mobl.Dlink>
+References: <cover.1619276133.git.zanussi@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619276133.git.zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'hash_for_each_rcu' and 'hash_for_each_safe' instead of hand writing
-them. This saves some lines of code, reduce indentation and improve
-readability.
+On 24-04-21, 10:04, Tom Zanussi wrote:
+> Hi,
+> 
+> This is v4 of the IDXD pmu support patchset, which is the same as v3
+> but rebased to the latest dmaengine/next, no other changes.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested only
----
- drivers/net/macvlan.c | 45 +++++++++++++++++--------------------------
- 1 file changed, 18 insertions(+), 27 deletions(-)
+Applied, thanks
 
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index 9a9a5cf36a4b..b4f9c66e9a75 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -272,25 +272,22 @@ static void macvlan_broadcast(struct sk_buff *skb,
- 	if (skb->protocol == htons(ETH_P_PAUSE))
- 		return;
- 
--	for (i = 0; i < MACVLAN_HASH_SIZE; i++) {
--		hlist_for_each_entry_rcu(vlan, &port->vlan_hash[i], hlist) {
--			if (vlan->dev == src || !(vlan->mode & mode))
--				continue;
-+	hash_for_each_rcu(port->vlan_hash, i, vlan, hlist) {
-+		if (vlan->dev == src || !(vlan->mode & mode))
-+			continue;
- 
--			hash = mc_hash(vlan, eth->h_dest);
--			if (!test_bit(hash, vlan->mc_filter))
--				continue;
-+		hash = mc_hash(vlan, eth->h_dest);
-+		if (!test_bit(hash, vlan->mc_filter))
-+			continue;
- 
--			err = NET_RX_DROP;
--			nskb = skb_clone(skb, GFP_ATOMIC);
--			if (likely(nskb))
--				err = macvlan_broadcast_one(
--					nskb, vlan, eth,
-+		err = NET_RX_DROP;
-+		nskb = skb_clone(skb, GFP_ATOMIC);
-+		if (likely(nskb))
-+			err = macvlan_broadcast_one(nskb, vlan, eth,
- 					mode == MACVLAN_MODE_BRIDGE) ?:
--				      netif_rx_ni(nskb);
--			macvlan_count_rx(vlan, skb->len + ETH_HLEN,
--					 err == NET_RX_SUCCESS, true);
--		}
-+			      netif_rx_ni(nskb);
-+		macvlan_count_rx(vlan, skb->len + ETH_HLEN,
-+				 err == NET_RX_SUCCESS, true);
- 	}
- }
- 
-@@ -380,20 +377,14 @@ static void macvlan_broadcast_enqueue(struct macvlan_port *port,
- static void macvlan_flush_sources(struct macvlan_port *port,
- 				  struct macvlan_dev *vlan)
- {
-+	struct macvlan_source_entry *entry;
-+	struct hlist_node *next;
- 	int i;
- 
--	for (i = 0; i < MACVLAN_HASH_SIZE; i++) {
--		struct hlist_node *h, *n;
--
--		hlist_for_each_safe(h, n, &port->vlan_source_hash[i]) {
--			struct macvlan_source_entry *entry;
-+	hash_for_each_safe(port->vlan_source_hash, i, next, entry, hlist)
-+		if (entry->vlan == vlan)
-+			macvlan_hash_del_source(entry);
- 
--			entry = hlist_entry(h, struct macvlan_source_entry,
--					    hlist);
--			if (entry->vlan == vlan)
--				macvlan_hash_del_source(entry);
--		}
--	}
- 	vlan->macaddr_count = 0;
- }
- 
 -- 
-2.30.2
-
+~Vinod
