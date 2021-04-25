@@ -2,288 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E751936A40B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFC336A411
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 04:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhDYCBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 22:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        id S230334AbhDYCE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 22:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhDYCBO (ORCPT
+        with ESMTP id S229514AbhDYCE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 22:01:14 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4B3C061760
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:00:34 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id lt13so16191816pjb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:00:34 -0700 (PDT)
+        Sat, 24 Apr 2021 22:04:58 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98773C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:04:18 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id a25so46651581ljm.11
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=pfKEWUq+7HdZXyLv9uBgLMyTjIFIuvFO3U3TOTycvWs=;
-        b=TXA4W+j6ZPgZcjznEbUBFH/sa2ePdug4fG/3ZZgIQUHaMBbgAikBel4x05+lMn6TKx
-         BTwGfiEIE9CMhmw3LRHRD7MM9nRcl0CsiU9SSZX0YKUfe6+BEKugvq73PaQH/bBRG5+q
-         W/QelVx/yeaSJIR+xD04abdDjKSAvPtDLHZ0MWC0jt3NkSsWIpdOTAJpkC7pAiMjLMyM
-         1DH3XT6SSzdI7tZxo0adlAJuQKWcFq9jP545WOxsj2PMN3mm9NTTn6mE3dyLg0M5TUu6
-         ZoX8q8epntw7ynIcY0m1xWUQrVaaettt42UkUiU2qf+x4aEzd0EkXNrTprx/s8BhT9fN
-         kvVw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dBImDjtC+qnZ8/5fP2PL/vVTHMmZW0yK3v6Rit5lABk=;
+        b=GUJOgG+BvBe+DaGrfpnz9o1gDEYYNiBZpRgXRxxL0ZilC65247muQ6yEjKB40wZTOs
+         ZAmT+dJweHEMu98gmjD8ygVomy9raa0B3SKr3XzLkKOBFfGq2sq9Z9QpFTZ7hK3Nru+M
+         vKq1754eCVzgnAfgm6Bx7Et59dI0K4T6tjpBY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pfKEWUq+7HdZXyLv9uBgLMyTjIFIuvFO3U3TOTycvWs=;
-        b=rmhKa8JPFcvskJxXPXp/SaUqmFhlJwAbGmfx/81TcaALrDiL/g66J9QRm/Tv/ll+2i
-         rsSQRkB3My+j8dchOwZ3PY4zYaMk+WRo6UlnIcf5GhIKXcKABzitKyW2Rl051M5v21+3
-         Qnt7ho0CwwHlRSd4u508GZtsEMhd34YkekCO77QVUAh9ODhOX1p+BqjnsvG6p5SoARUD
-         nvEceHfNfmWJKWbEj8/EdMboxHTQ54Ch+HSJH9A8bgE09jkHz2ZIxNv60eGeAnydo65p
-         3l2M0YgMvdGTKR9SshC73F+Pqs01MbMINoTUmuR5UiGfIyjXs6AImlFomwgD/+5Y7OOb
-         4APA==
-X-Gm-Message-State: AOAM5316kVMBAqZjv+8SCryXzFtGUvTRtSChaEil31t2HKCnJLC5/mLe
-        QgEosj5bYTlCxDF6MxqLhiHl1w==
-X-Google-Smtp-Source: ABdhPJyLTHM+AeR2NF5iMsqOHSN/wM4K9/TwkZNXzXYcU1XACN4MG5MKrwnhNLEYGlAWcX8nSTQu3A==
-X-Received: by 2002:a17:902:9b96:b029:ec:b399:8389 with SMTP id y22-20020a1709029b96b02900ecb3998389mr11387230plp.1.1619316034219;
-        Sat, 24 Apr 2021 19:00:34 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id f20sm8101273pgb.47.2021.04.24.19.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 19:00:33 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Timur Tabi <timur@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] firmware: replace HOTPLUG with UEVENT in FW_ACTION defines
-Date:   Sun, 25 Apr 2021 10:00:24 +0800
-Message-Id: <20210425020024.28057-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dBImDjtC+qnZ8/5fP2PL/vVTHMmZW0yK3v6Rit5lABk=;
+        b=ihwHpYKQD2I1icETcS2E6X1hsFYyd0GEABtilR1s8iQUViA5WNAUQxe35P9Ja1GhaY
+         kZAK7PGbfuMn3fkwiWABZaxKhRVQxnsjm+V7fhllmjSjGVnu0oAtl11jpHYstbXYuQIu
+         4/UJKPFWA3X0EsiusnJSuNZEcAEn+LD1i0pz/onHPvybLCvzvNPvrHPJ9xtfeDBS8qB/
+         Pp8SPLe76v5eWYrC/RkdhiSdP9k/0iHSE7bABWRQVveRr8ljeSOmJkTMyJrTZXTO3z8r
+         jTWzI8BCc43Koo04tOh5/wmgbY6L2h7YqABQJP1pwTxE6zoiZ3BojrM/OCiUNYCuqSKx
+         F1vA==
+X-Gm-Message-State: AOAM532nhZbel4eCs26sH4JmvJAU01cD/T38lSnkjIkQkOJ7KRsFVXmU
+        cVf9fFEX7eHcknsGAksbqMVB99MQNsrXBKwd
+X-Google-Smtp-Source: ABdhPJxgZpK/AMLg+5BguNeuizfwbC8iCxwJrmXP8qBB8nCEieAferUFROsadGfkSy9Re3VsGPH49Q==
+X-Received: by 2002:a2e:a592:: with SMTP id m18mr7662712ljp.189.1619316256844;
+        Sat, 24 Apr 2021 19:04:16 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id l24sm975088lfc.23.2021.04.24.19.04.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Apr 2021 19:04:16 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id s9so2020988ljj.6
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Apr 2021 19:04:16 -0700 (PDT)
+X-Received: by 2002:a05:651c:1117:: with SMTP id d23mr8080059ljo.220.1619316255975;
+ Sat, 24 Apr 2021 19:04:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210423063227.GA17429@xsang-OptiPlex-9020> <CAHk-=wg8iAG6bBB+zdoZvZx1XYmyAXrWL0gPs_eTrTt+tXN0Tw@mail.gmail.com>
+ <20210425014816.GB5251@xsang-OptiPlex-9020>
+In-Reply-To: <20210425014816.GB5251@xsang-OptiPlex-9020>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 24 Apr 2021 19:04:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiW7xdHZTBgVOpVFM_7bek0HGvioQvCCyDXCbRa2fWdXQ@mail.gmail.com>
+Message-ID: <CAHk-=wiW7xdHZTBgVOpVFM_7bek0HGvioQvCCyDXCbRa2fWdXQ@mail.gmail.com>
+Subject: Re: [mm/vunmap] e47110e905: WARNING:at_mm/vmalloc.c:#__vunmap
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Harish Sriram <harish@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 312c004d36ce ("[PATCH] driver core: replace "hotplug" by
-"uevent"") already in the tree over a decade, update the name of
-FW_ACTION defines to follow semantics, and reflect what the defines are
-really meant for, i.e. whether or not generate user space event.
+On Sat, Apr 24, 2021 at 6:31 PM Oliver Sang <oliver.sang@intel.com> wrote:
+> >
+> > Oliver - how reliable is that bisection?
+>
+> we will check further if any issue in our test env.
+>
+> by bot auto tests, we saw 12 issue instances out of 74 runs. but not happen
+> out of 100 runs of parent.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- drivers/dma/imx-sdma.c                      |  2 +-
- drivers/media/platform/exynos4-is/fimc-is.c |  2 +-
- drivers/mfd/iqs62x.c                        |  2 +-
- drivers/misc/lattice-ecp3-config.c          |  2 +-
- drivers/net/wireless/ti/wlcore/main.c       |  2 +-
- drivers/platform/x86/dell/dell_rbu.c        |  2 +-
- drivers/remoteproc/remoteproc_core.c        |  2 +-
- drivers/scsi/lpfc/lpfc_init.c               |  2 +-
- drivers/tty/serial/ucc_uart.c               |  2 +-
- include/linux/firmware.h                    |  4 ++--
- lib/test_firmware.c                         | 10 +++++-----
- sound/soc/codecs/wm8958-dsp2.c              |  6 +++---
- 12 files changed, 19 insertions(+), 19 deletions(-)
+Oh, that's interesting. So only 12 out of 74 runs saw that __vunmap
+warning, but if I understand your table correctly, there were some
+_other_ issues in there?
 
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index d5590c08db51..e2b559945c11 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -1829,7 +1829,7 @@ static int sdma_get_firmware(struct sdma_engine *sdma,
- 	int ret;
- 
- 	ret = request_firmware_nowait(THIS_MODULE,
--			FW_ACTION_HOTPLUG, fw_name, sdma->dev,
-+			FW_ACTION_UEVENT, fw_name, sdma->dev,
- 			GFP_KERNEL, sdma, sdma_load_firmware);
- 
- 	return ret;
-diff --git a/drivers/media/platform/exynos4-is/fimc-is.c b/drivers/media/platform/exynos4-is/fimc-is.c
-index 972d9601d236..8f3ba74f19f2 100644
---- a/drivers/media/platform/exynos4-is/fimc-is.c
-+++ b/drivers/media/platform/exynos4-is/fimc-is.c
-@@ -436,7 +436,7 @@ static void fimc_is_load_firmware(const struct firmware *fw, void *context)
- static int fimc_is_request_firmware(struct fimc_is *is, const char *fw_name)
- {
- 	return request_firmware_nowait(THIS_MODULE,
--				FW_ACTION_HOTPLUG, fw_name, &is->pdev->dev,
-+				FW_ACTION_UEVENT, fw_name, &is->pdev->dev,
- 				GFP_KERNEL, is, fimc_is_load_firmware);
- }
- 
-diff --git a/drivers/mfd/iqs62x.c b/drivers/mfd/iqs62x.c
-index d1fc38a78acb..9805cf191245 100644
---- a/drivers/mfd/iqs62x.c
-+++ b/drivers/mfd/iqs62x.c
-@@ -998,7 +998,7 @@ static int iqs62x_probe(struct i2c_client *client)
- 
- 	device_property_read_string(&client->dev, "firmware-name", &fw_name);
- 
--	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 				      fw_name ? : iqs62x->dev_desc->fw_name,
- 				      &client->dev, GFP_KERNEL, iqs62x,
- 				      iqs62x_firmware_load);
-diff --git a/drivers/misc/lattice-ecp3-config.c b/drivers/misc/lattice-ecp3-config.c
-index 5eaf74447ca1..0f54730c7ed5 100644
---- a/drivers/misc/lattice-ecp3-config.c
-+++ b/drivers/misc/lattice-ecp3-config.c
-@@ -198,7 +198,7 @@ static int lattice_ecp3_probe(struct spi_device *spi)
- 	spi_set_drvdata(spi, data);
- 
- 	init_completion(&data->fw_loaded);
--	err = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+	err = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 				      FIRMWARE_NAME, &spi->dev,
- 				      GFP_KERNEL, spi, firmware_load);
- 	if (err) {
-diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
-index 8509b989940c..5bf15355c2b3 100644
---- a/drivers/net/wireless/ti/wlcore/main.c
-+++ b/drivers/net/wireless/ti/wlcore/main.c
-@@ -6784,7 +6784,7 @@ int wlcore_probe(struct wl1271 *wl, struct platform_device *pdev)
- 
- 	if (pdev_data->family && pdev_data->family->nvs_name) {
- 		nvs_name = pdev_data->family->nvs_name;
--		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 					      nvs_name, &pdev->dev, GFP_KERNEL,
- 					      wl, wlcore_nvs_cb);
- 		if (ret < 0) {
-diff --git a/drivers/platform/x86/dell/dell_rbu.c b/drivers/platform/x86/dell/dell_rbu.c
-index 03c3ff34bcf5..8758d717ae5c 100644
---- a/drivers/platform/x86/dell/dell_rbu.c
-+++ b/drivers/platform/x86/dell/dell_rbu.c
-@@ -573,7 +573,7 @@ static ssize_t image_type_write(struct file *filp, struct kobject *kobj,
- 		if (!rbu_data.entry_created) {
- 			spin_unlock(&rbu_data.lock);
- 			req_firm_rc = request_firmware_nowait(THIS_MODULE,
--				FW_ACTION_NOHOTPLUG, "dell_rbu",
-+				FW_ACTION_NOUEVENT, "dell_rbu",
- 				&rbu_device->dev, GFP_KERNEL, &context,
- 				callbackfn_rbu);
- 			if (req_firm_rc) {
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index ab150765d124..c3e01e95c0d2 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1628,7 +1628,7 @@ static int rproc_trigger_auto_boot(struct rproc *rproc)
- 	 * We're initiating an asynchronous firmware loading, so we can
- 	 * be built-in kernel code, without hanging the boot process.
- 	 */
--	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 				      rproc->firmware, &rproc->dev, GFP_KERNEL,
- 				      rproc, rproc_auto_boot_callback);
- 	if (ret < 0)
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index 71f340dd4fbd..53546b079553 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -13159,7 +13159,7 @@ lpfc_sli4_request_firmware_update(struct lpfc_hba *phba, uint8_t fw_upgrade)
- 	snprintf(file_name, ELX_MODEL_NAME_SIZE, "%s.grp", phba->ModelName);
- 
- 	if (fw_upgrade == INT_FW_UPGRADE) {
--		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 					file_name, &phba->pcidev->dev,
- 					GFP_KERNEL, (void *)phba,
- 					lpfc_write_firmware);
-diff --git a/drivers/tty/serial/ucc_uart.c b/drivers/tty/serial/ucc_uart.c
-index d6a8604157ab..e651c9aafdd0 100644
---- a/drivers/tty/serial/ucc_uart.c
-+++ b/drivers/tty/serial/ucc_uart.c
-@@ -1227,7 +1227,7 @@ static int soft_uart_init(struct platform_device *ofdev)
- 		 * kernel, then we use it.
- 		 */
- 		ret = request_firmware_nowait(THIS_MODULE,
--					      FW_ACTION_HOTPLUG, filename, &ofdev->dev,
-+					      FW_ACTION_UEVENT, filename, &ofdev->dev,
- 					      GFP_KERNEL, &ofdev->dev, uart_firmware_cont);
- 		if (ret) {
- 			dev_err(&ofdev->dev,
-diff --git a/include/linux/firmware.h b/include/linux/firmware.h
-index 84e346ae766e..25109192cebe 100644
---- a/include/linux/firmware.h
-+++ b/include/linux/firmware.h
-@@ -6,8 +6,8 @@
- #include <linux/compiler.h>
- #include <linux/gfp.h>
- 
--#define FW_ACTION_NOHOTPLUG 0
--#define FW_ACTION_HOTPLUG 1
-+#define FW_ACTION_NOUEVENT 0
-+#define FW_ACTION_UEVENT 1
- 
- struct firmware {
- 	size_t size;
-diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-index b6fe89add9fe..1bccd6cd5f48 100644
---- a/lib/test_firmware.c
-+++ b/lib/test_firmware.c
-@@ -260,8 +260,8 @@ static ssize_t config_show(struct device *dev,
- 	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"send_uevent:\t\t%s\n",
- 			test_fw_config->send_uevent ?
--			"FW_ACTION_HOTPLUG" :
--			"FW_ACTION_NOHOTPLUG");
-+			"FW_ACTION_UEVENT" :
-+			"FW_ACTION_NOUEVENT");
- 	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"into_buf:\t\t%s\n",
- 			test_fw_config->into_buf ? "true" : "false");
-@@ -729,7 +729,7 @@ static ssize_t trigger_custom_fallback_store(struct device *dev,
- 	mutex_lock(&test_fw_mutex);
- 	release_firmware(test_firmware);
- 	test_firmware = NULL;
--	rc = request_firmware_nowait(THIS_MODULE, FW_ACTION_NOHOTPLUG, name,
-+	rc = request_firmware_nowait(THIS_MODULE, FW_ACTION_NOUEVENT, name,
- 				     dev, GFP_KERNEL, NULL,
- 				     trigger_async_request_cb);
- 	if (rc) {
-@@ -938,8 +938,8 @@ ssize_t trigger_batched_requests_async_store(struct device *dev,
- 	pr_info("batched loading '%s' custom fallback mechanism %u times\n",
- 		test_fw_config->name, test_fw_config->num_requests);
- 
--	send_uevent = test_fw_config->send_uevent ? FW_ACTION_HOTPLUG :
--		FW_ACTION_NOHOTPLUG;
-+	send_uevent = test_fw_config->send_uevent ? FW_ACTION_UEVENT :
-+		FW_ACTION_NOUEVENT;
- 
- 	for (i = 0; i < test_fw_config->num_requests; i++) {
- 		req = &test_fw_config->reqs[i];
-diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index 3bce9a14f0f3..a5ea1645993b 100644
---- a/sound/soc/codecs/wm8958-dsp2.c
-+++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -912,13 +912,13 @@ void wm8958_dsp2_init(struct snd_soc_component *component)
- 
- 
- 	/* We don't *require* firmware and don't want to delay boot */
--	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 				"wm8958_mbc.wfw", component->dev, GFP_KERNEL,
- 				component, wm8958_mbc_loaded);
--	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 				"wm8958_mbc_vss.wfw", component->dev, GFP_KERNEL,
- 				component, wm8958_mbc_vss_loaded);
--	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
- 				"wm8958_enh_eq.wfw", component->dev, GFP_KERNEL,
- 				component, wm8958_enh_eq_loaded);
- 
--- 
-2.17.1
+Are those also for that same commit? (ie those RIP:kfree /
+RIP:kobject_add_internal / etc)?
 
+I'm not sure how to read that table of yours - if I understand it
+correctly, it looks like the parent commit had some different ones
+that the child did not (eg 2 cases of BUG_at_mm/usercopy.c?)
+
+So it feels to me like there's some memory corruption somewhere, and
+that commit that it bisected to likely just changed the failure case
+(due to timing differences or allocation ordering changes).
+
+IOW, there seem to be other panics even in the parent.
+
+Yes/No?
+
+             Linus
