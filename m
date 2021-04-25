@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E810336A6AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CA636A6B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhDYKcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:32:25 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35432 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229525AbhDYKcY (ORCPT
+        id S229973AbhDYKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 06:34:27 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48085 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229466AbhDYKe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:32:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UWgfLgy_1619346697;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgfLgy_1619346697)
+        Sun, 25 Apr 2021 06:34:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UWgfM-0_1619346808;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWgfM-0_1619346808)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 25 Apr 2021 18:31:43 +0800
+          Sun, 25 Apr 2021 18:33:35 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mike.marciniszyn@cornelisnetworks.com
-Cc:     dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] IB/hfi1: Remove redundant variable rcd
-Date:   Sun, 25 Apr 2021 18:31:36 +0800
-Message-Id: <1619346696-46300-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] fs: direct-io: Remove redundant assignment to retval
+Date:   Sun, 25 Apr 2021 18:33:27 +0800
+Message-Id: <1619346807-47104-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable rcd is being assigned a value from a calculation
-however the variable is never read, so this redundant variable
-can be removed.
+Variable retval is set to zero but this value is never read as it is
+overwritten with a new value later on, hence it is a redundant
+assignment and can be removed.
 
 Cleans up the following clang-analyzer warning:
 
-drivers/infiniband/hw/hfi1/affinity.c:986:3: warning: Value stored to
-'rcd' is never read [clang-analyzer-deadcode.DeadStores].
+fs/direct-io.c:1245:2: warning: Value stored to 'retval' is never read
+[clang-analyzer-deadcode.DeadStores].
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/infiniband/hw/hfi1/affinity.c | 1 -
+ fs/direct-io.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
-index 04b1e8f..ae9a335 100644
---- a/drivers/infiniband/hw/hfi1/affinity.c
-+++ b/drivers/infiniband/hw/hfi1/affinity.c
-@@ -983,7 +983,6 @@ void hfi1_put_irq_affinity(struct hfi1_devdata *dd,
- 			set = &entry->rcv_intr;
- 		break;
- 	case IRQ_NETDEVCTXT:
--		rcd = (struct hfi1_ctxtdata *)msix->arg;
- 		set = &entry->def_intr;
- 		break;
- 	default:
+diff --git a/fs/direct-io.c b/fs/direct-io.c
+index b2e86e7..b348264 100644
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -1242,7 +1242,6 @@ static inline int drop_refcount(struct dio *dio)
+ 	 */
+ 	inode_dio_begin(inode);
+ 
+-	retval = 0;
+ 	sdio.blkbits = blkbits;
+ 	sdio.blkfactor = i_blkbits - blkbits;
+ 	sdio.block_in_file = offset >> blkbits;
 -- 
 1.8.3.1
 
