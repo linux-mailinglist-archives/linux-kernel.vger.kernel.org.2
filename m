@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347C736A8FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D876436A90A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhDYTPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 15:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47116 "EHLO mail.kernel.org"
+        id S231271AbhDYTd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 15:33:57 -0400
+Received: from l2mail1.panix.com ([166.84.1.75]:59969 "EHLO l2mail1.panix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230359AbhDYTPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 15:15:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B5361354;
-        Sun, 25 Apr 2021 19:15:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619378109;
-        bh=IDhdXhEWkP8+zyOMVwKhjzel5WhHS2X+9rCIiGVqR9A=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PEOAgm7jk4DdnRK1y8nuEzeAimZkY3ZE5moJkKaSieeMDa3eHXRKKf9mMl4RGC4ZL
-         pkqctbRlinR40akw/B4Secjf9BqlAZMbmRKzRc8fIwMKxRmgfSFinJU3/ge7e4SJva
-         xqT/k9YInZ34yuPryDdwv+GIXPO4tnvO3BkYrfUn98WwgKgJ06ibv15CvB7/cB3adu
-         b/8ajRZtkH/3e+X1DRyBcODBC05uNFnjBn/3BY00AkXrvOt4D4cdYK1JDVpx1XXROW
-         41fgOECbcfNXCjFi7QBuxY7z2/aMiG3/1QBGmT0WcBDk+1z8540u+crHJPIevo0baY
-         G6wvc2EDGKUmw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 96A915C010F; Sun, 25 Apr 2021 12:15:09 -0700 (PDT)
-Date:   Sun, 25 Apr 2021 12:15:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210425191509.GV975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
- <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
- <20210423061115.GA62813@shbuild999.sh.intel.com>
- <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210424122920.GB85095@shbuild999.sh.intel.com>
- <20210424175322.GS975577@paulmck-ThinkPad-P17-Gen-1>
- <20210425021438.GA2942@shbuild999.sh.intel.com>
- <20210425031437.GA38485@shbuild999.sh.intel.com>
+        id S230494AbhDYTd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 15:33:56 -0400
+Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
+        by l2mail1.panix.com (Postfix) with ESMTPS id 4FSySz3gfQzDjg;
+        Sun, 25 Apr 2021 15:17:07 -0400 (EDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FSySy3clvzSNw;
+        Sun, 25 Apr 2021 15:17:06 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+        t=1619378226; bh=XhZeMGV3zn3KbXb4vXiIiqcwTRwZv6RkFQ/y5sRLQ54=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=UChIu6fy15PFybZhRlSS4vrq054UVvqJdU+KyBlRIxDTTEMHxGg67D25N0JFbLdVR
+         Kpz2r1rpi9w8L0pujDrTE5VNtc1dOAgk9Q+U0GRptV9ZEyiYrybQdA9biZxvkpUBjM
+         zYgAEqqXpozo0XtOvTFPBBXgir5C57DjzTdcc/cY=
+Received: by mail-yb1-f171.google.com with SMTP id p202so18428452ybg.8;
+        Sun, 25 Apr 2021 12:17:06 -0700 (PDT)
+X-Gm-Message-State: AOAM532wkqOoWBIjPeoDxhJuTOFDCRwJFb7Sgby9eKFfY5ZT+I1fXHPP
+        SxnpyKjV7HFe61q+BpWqy/RWtLP2/mw4vk7EMqA=
+X-Google-Smtp-Source: ABdhPJztPCPXO7s31JTURrUaXheP5N6/ezQIspG2gIv0gIdLsrS/RpqygJaJ2EKeEgLkyzpRG1xzKDeBit2LpklR234=
+X-Received: by 2002:a5b:34a:: with SMTP id q10mr19917362ybp.224.1619378226198;
+ Sun, 25 Apr 2021 12:17:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210425031437.GA38485@shbuild999.sh.intel.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com> <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
+In-Reply-To: <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
+From:   Zack Weinberg <zackw@panix.com>
+Date:   Sun, 25 Apr 2021 15:16:54 -0400
+X-Gmail-Original-Message-ID: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
+Message-ID: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
+Subject: Re: [RFC] bpf.2: Use standard types and attributes
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
+        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 11:14:37AM +0800, Feng Tang wrote:
-> On Sun, Apr 25, 2021 at 10:14:38AM +0800, Feng Tang wrote:
-> > On Sat, Apr 24, 2021 at 10:53:22AM -0700, Paul E. McKenney wrote:
-> > > And if your 2/2 goes in, those who still distrust TSC will simply
-> > > revert it.  In their defense, their distrust was built up over a very
-> > > long period of time for very good reasons.
-> > > 
-> > > > > This last sentence is not a theoretical statement.  In the past, I have
-> > > > > suggested using the existing "tsc=reliable" kernel boot parameter,
-> > > > > which disables watchdogs on TSC, similar to your patch 2/2 above.
-> > > > > The discussion was short and that boot parameter was not set.  And the
-> > > > > discussion motivated to my current clocksource series.  ;-)
-> > > > > 
-> > > > > I therefore suspect that someone will want a "tsc=unreliable" boot
-> > > > > parameter (or similar) to go with your patch 2/2.
-> > > >  
-> > > > Possibly :)
-> > > > 
-> > > > But I wonder if tsc is disabled on that 'large system', what will be
-> > > > used instead? HPET is known to be much slower for clocksource, as shown
-> > > > in this regression report :) not mentioning the 'acpi_pm' timer. 
-> > > 
-> > > Indeed, the default switch to HPET often causes the system to be taken
-> > > out of service due to the resulting performance shortfall.  There is
-> > > of course some automated recovery, and no, I am not familiar with the
-> > > details, but I suspect that a simple reboot is an early recovery step.
-> > > However, if the problem were to persist, the system would of course be
-> > > considered to be permanently broken.
-> > 
-> > Thanks for the info, if a sever is taken out of service just because
-> > of a false alarm of tsc, then it's a big waste!
-> > 
-> > > > Again, I want to know the real tsc unstable case. I have spent lots
-> > > > of time searching these info from git logs and mail archives before
-> > > > writing the patches.
-> > > 
-> > > So do I, which is why I put together this patch series.  My employer has
-> > > a fairly strict upstream-first for things like this which are annoyances
-> > > that are likely hiding other bugs, but which are not causing significant
-> > > outages, which was of course the motivation for the fault-injection
-> > > patches.
-> > > 
-> > > As I said earlier, it would have been very helpful to you for a patch
-> > > series like this to have been applied many years ago.  If it had been,
-> > > we would already have the failure-rate data that you requested.  And of
-> > > course if that failure-rate data indicated that TSC was reliable, there
-> > > would be far fewer people still distrusting TSC.
-> >  
-> > Yes, if they can share the detailed info (like what's the 'watchdog')
-> > and debug info, it can enable people to debug and root cause the
-> > problem to be a false alarm or a real silicon platform. Personally, for
-> > newer platforms I tend to trust tsc much more than other clocksources.
->  
-> I understand people may 'distrust' tsc, after seeing that 'tsc unstable'
-> cases. But for 'newer platforms', if the unstable was judged by hpet,
-> acpi_pm_timer or the software 'refined-jiffies', then it could possibly
-> be just a false alarm, and that's not too difficult to be root caused.
-> And if there is a real evidence of a broken tsc case, then the distrust
-> is not just in impression from old days :) 
+On Sat, Apr 24, 2021 at 4:43 PM David Laight via Libc-alpha
+<libc-alpha@sourceware.org> wrote:
+> From: Alexei Starovoitov
+> > On Fri, Apr 23, 2021 at 4:15 PM Alejandro Colomar <alx.manpages@gmail.com> wrote:
+...
+> > > Some pages also document attributes, using GNU syntax
+> > > '__attribute__((xxx))'.  Update those to use the shorter and more
+> > > portable C2x syntax, which hasn't been standardized yet, but is
+> > > already implemented in GCC, and available through either --std=c2x
+> > > or any of the --std=gnu... options.
+..
+> And the code below is no more portable that a #pragma'.
+> It is probably worse than __attribute__((aligned(8)))
+> +            uint64_t [[gnu::aligned(8)]] value;
+> The standards committee are smoking dope again.
+> At least the '__aligned_u64 value;' form stands a reasonable
+> chance of being converted by cpp into whatever your compiler supports.
 
-Agreed!
+Is it actually necessary to mention the alignment overrides at all in
+the manpages?  They are only relevant to people working at the level
+of physical layout of the data in RAM, and those people are probably
+going to have to consult the header file anyway.
 
-And I am hoping that my patch series can provide more clarity in the
-future.
-
-							Thanx, Paul
+zw
