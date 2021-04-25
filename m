@@ -2,180 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9412836A59A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78E236A59C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 09:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbhDYHyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 03:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
+        id S229563AbhDYH5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 03:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhDYHxD (ORCPT
+        with ESMTP id S229471AbhDYH5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 03:53:03 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D736BC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:52:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 26-20020a05600c22dab029013efd7879b8so1551024wmg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:52:23 -0700 (PDT)
+        Sun, 25 Apr 2021 03:57:39 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616DAC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:57:00 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v20so53386plo.10
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 00:57:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TZ794c1czbFaz1DBCk5cud8qffi0zVdnLWwZEp2YHM8=;
-        b=RUjvJkv5zRnynT9vkWV9PGXxMJR3x0dvzVjvQ5QzNrWnU6/jyMhOa/YQqGsMe1dMu1
-         4ZzGcwpyA6seMEp/FusJEN1H/Ko0yrv/u44bTSkmPSwGsLqL2AbpcwjNRzMKtOX+th8R
-         Y2I8/azwTed3G1ceAhRrtALqoSJUXjY2QSAn3amuhE3LHUogIRrje8WnEut9fWO5VMSM
-         C5gxu054ss4wyzloJH0W/zLPu2wo2em4vqQ1wkmL+PEGEaONtlVjNUHrTEVd91iaFNwZ
-         JUU4ipPfr1tDbh7SI1N9/mw5wQCx9hu8I3QvVxjth4h01TtVQrhc+L2gle+RUL55VxnA
-         Nmeg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DTSkEph7qL8ctEwVYodw+espySzWTEr2PJqwjnU2IwA=;
+        b=YArwpms4v/ebs6QBCf1CGl2uuaUyu+UF1v0h7p108viBd2U9qf+F2CEuWeL1v1SQYA
+         hkn/IuRVgXsDg2MsWYBr6dQJIYosab3LRXZODBHGsGEgSnMM1qO0sM5T/O1BKhmU0xgd
+         2JqiNp7PSBPQQIVFxkmXIsqbmCaVOkGaQe59xXb+pRACMxHXSFq5aD/jE+hsrd0vIW2d
+         Ji0ga2wU2ahPoF7clxKb5BmD/Bx5jJ5XM76+S46Q+AL4UhDbi14ihQXoL5H7XFVC8Bxn
+         BvSmdixlYxfyPMH5aZL0I+Jq742Z0nZcAj9LA4z7WSFGNgzmrdEFi+RQmAlB4oksXgF3
+         GOZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TZ794c1czbFaz1DBCk5cud8qffi0zVdnLWwZEp2YHM8=;
-        b=BRVB76suz+azhjqCNkEFXkrR6N+CJ0+8fQvCLk+oLpzoGHPAkDAK6eZRw0E1pRWIEe
-         9GzN8mzVzxIJh0LHqehi81TxBKdYxNZzF3QUB6rcoNgSiwk12Ur/ToouGB/igqd4Xt7H
-         7JBs3gAs2BLWSaWSpzHxxaGGS1AE8z1txH/al4zut3ibjHbDaJWOznPSZgy9igoNDkiF
-         ANZsHOLeajZjV1QHOBwYxHUQ97QUDmnCSRUUuR+xwlqYVrA++6vmb0LcaTWycdJoY8Ma
-         riIfJmS+K+5lU357H15vnZfJK1gm5vINSkZCOQaxGwHX6Gpxsz5KDEOzzTzj7fljxjMT
-         iPPQ==
-X-Gm-Message-State: AOAM533RWrKtnBF/o+F3oFKB7idbRwWdyZJ69EuueW8U9X3YsvTHFS/k
-        SOPnttq4tVgVL/uYWFLcZ0aMUhVS1UNS7Q==
-X-Google-Smtp-Source: ABdhPJw0IITqP7a7V1xdvpyicdLTzL1iyiyHND2KDALDOdBnBLhbz6uMNK1SY+A30ej5Ndk+qxmJVA==
-X-Received: by 2002:a1c:2c85:: with SMTP id s127mr12863500wms.83.1619337142437;
-        Sun, 25 Apr 2021 00:52:22 -0700 (PDT)
-Received: from localhost.localdomain (p200300d9971998009e1ae620ab52a3b7.dip0.t-ipconnect.de. [2003:d9:9719:9800:9e1a:e620:ab52:a3b7])
-        by smtp.googlemail.com with ESMTPSA id n3sm12780169wmi.7.2021.04.25.00.52.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Apr 2021 00:52:22 -0700 (PDT)
-From:   Manfred Spraul <manfred@colorfullife.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     1vier1@web.de, Manfred Spraul <manfred@colorfullife.com>
-Subject: [PATCH] ipc/util.c: Use binary search for max_idx
-Date:   Sun, 25 Apr 2021 09:52:08 +0200
-Message-Id: <20210425075208.11777-2-manfred@colorfullife.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210425075208.11777-1-manfred@colorfullife.com>
-References: <20210425075208.11777-1-manfred@colorfullife.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DTSkEph7qL8ctEwVYodw+espySzWTEr2PJqwjnU2IwA=;
+        b=XS98Dx4/4Fm4Dr4MnH4MRMmkROPzKWKuFCuXfehwpE8G7Cn90R31ezaMyEiRXHIFi4
+         ZpGRRNclFSFpAAj3z7l4WGxhIS3v8ZrfR9Ax1IXm3sFMFZ6q4RXLyP/pY3bRPBGep+ZL
+         ZqQF1YSfpsQe01AgVY0Wk3clAthYuerzU0icQb2IxV6oCMYLVKltQh8ClqjKW8VH+xR4
+         55TeMa/mJp3hcZqiFXju0i6winMoerugBF3d1bcIvVeFfURCg0ohpS3Ir/W5JO7w7hC+
+         PQeerp4clLyTMm1MMK6c2LO0kL+EQl5oaT5srg5qXSC/l+eYkmOW2a6SgGmERO0yMrug
+         xuAA==
+X-Gm-Message-State: AOAM533Cis5wP8fOkviPnlqvay+YTlpZB3hwuEMwOkF0SpCfXWyQ5Qng
+        jhu4as2F/0+1XGyPSGWju8KBZg==
+X-Google-Smtp-Source: ABdhPJxt94EaODQ6xUr6u0EpOWiZ6SVb3NyMWhIkriwxWC5qFE6d12Ze1J4FmoZNRU9GljOR+A9WCA==
+X-Received: by 2002:a17:902:6ac3:b029:e6:c6a3:a697 with SMTP id i3-20020a1709026ac3b02900e6c6a3a697mr12560454plt.2.1619337419848;
+        Sun, 25 Apr 2021 00:56:59 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.255])
+        by smtp.gmail.com with ESMTPSA id c193sm8689444pfc.11.2021.04.25.00.56.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 25 Apr 2021 00:56:59 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        zhengqi.arch@bytedance.com, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcontrol: fix root_mem_cgroup charging
+Date:   Sun, 25 Apr 2021 15:54:10 +0800
+Message-Id: <20210425075410.19255-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If semctl(), msgctl() and shmctl() are called with IPC_INFO, SEM_INFO,
-MSG_INFO or SHM_INFO, then the return value is the index of the highest
-used index in the kernel's internal array recording information about
-all SysV objects of the requested type for the current namespace.
-(This information can be used with repeated ..._STAT or ..._STAT_ANY
-operations to obtain information about all SysV objects on the system.)
+The below scenario can cause the page counters of the root_mem_cgroup
+to be out of balance.
 
-There is a cache for this value. But when the cache needs up be updated,
-then the highest used index is determined by looping over all possible
-values. With the introduction of IPCMNI_EXTEND_SHIFT, this could be a
-loop over 16 million entries. And due to /proc/sys/kernel/*next_id,
-the index values do not need to be consecutive.
+CPU0:                                   CPU1:
 
-With <write 16000000 to msg_next_id>, msgget(), msgctl(,IPC_RMID) in
-a loop, I have observed a performance increase of around factor 13000.
+objcg = get_obj_cgroup_from_current()
+obj_cgroup_charge_pages(objcg)
+                                        memcg_reparent_objcgs()
+                                            // reparent to root_mem_cgroup
+                                            WRITE_ONCE(iter->memcg, parent)
+    // memcg == root_mem_cgroup
+    memcg = get_mem_cgroup_from_objcg(objcg)
+    // do not charge to the root_mem_cgroup
+    try_charge(memcg)
 
-As there is no get_last() function for idr structures:
-Implement a "get_last()" using a binary search.
+obj_cgroup_uncharge_pages(objcg)
+    memcg = get_mem_cgroup_from_objcg(objcg)
+    // uncharge from the root_mem_cgroup
+    refill_stock(memcg)
+        drain_stock(memcg)
+            page_counter_uncharge(&memcg->memory)
 
-As far as I see, ipc is the only user that needs get_last(), thus
-implement it in ipc/util.c and not in a central location.
+get_obj_cgroup_from_current() never returns a root_mem_cgroup's objcg,
+so we never explicitly charge the root_mem_cgroup. And it's not
+going to change. It's all about a race when we got an obj_cgroup
+pointing at some non-root memcg, but before we were able to charge it,
+the cgroup was gone, objcg was reparented to the root and so we're
+skipping the charging. Then we store the objcg pointer and later use
+to uncharge the root_mem_cgroup.
 
-Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+This can cause the page counter to be less than the actual value.
+Although we do not display the value (mem_cgroup_usage) so there
+shouldn't be any actual problem, but there is a WARN_ON_ONCE in
+the page_counter_cancel(). Who knows if it will trigger? So it
+is better to fix it.
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- ipc/util.c | 44 +++++++++++++++++++++++++++++++++++++++-----
- ipc/util.h |  3 +++
- 2 files changed, 42 insertions(+), 5 deletions(-)
+Changeslog in v2:
+ - Update commit log.
+ - Rename __try_charge to try_charge_memcg.
 
-diff --git a/ipc/util.c b/ipc/util.c
-index cfa0045e748d..23cf5b5450ff 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -64,6 +64,7 @@
- #include <linux/memory.h>
- #include <linux/ipc_namespace.h>
- #include <linux/rhashtable.h>
-+#include <linux/log2.h>
- 
- #include <asm/unistd.h>
- 
-@@ -450,6 +451,41 @@ static void ipc_kht_remove(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
- 				       ipc_kht_params);
+ mm/memcontrol.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 64ada9e650a5..42dee9798ab8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2504,8 +2504,8 @@ void mem_cgroup_handle_over_high(void)
+ 	css_put(&memcg->css);
  }
  
-+/**
-+ * ipc_search_maxidx - search the highest assigned index
-+ * @ids: ipc identifier set
-+ * @limit: known upper limit for highest assigned index
-+ *
-+ * The function determines the highest assigned index in @ids. It is intended
-+ * to be called when ids->max_idx needs to be updated.
-+ * Updating ids->max_idx is necessary when the current highest index ipc
-+ * object is deleted.
-+ * If no ipc object is allocated, then -1 is returned.
-+ *
-+ * ipc_ids.rwsem needs to be owned by the caller.
-+ */
-+static int ipc_search_maxidx(struct ipc_ids *ids, int limit)
+-static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+-		      unsigned int nr_pages)
++static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
++			unsigned int nr_pages)
+ {
+ 	unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
+ 	int nr_retries = MAX_RECLAIM_RETRIES;
+@@ -2517,8 +2517,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	bool drained = false;
+ 	unsigned long pflags;
+ 
+-	if (mem_cgroup_is_root(memcg))
+-		return 0;
+ retry:
+ 	if (consume_stock(memcg, nr_pages))
+ 		return 0;
+@@ -2698,6 +2696,15 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	return 0;
+ }
+ 
++static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
++			     unsigned int nr_pages)
 +{
-+	int tmpidx;
-+	int i;
-+	int retval;
++	if (mem_cgroup_is_root(memcg))
++		return 0;
 +
-+	i = ilog2(limit+1);
-+
-+	retval = 0;
-+	for (; i >= 0; i--) {
-+		tmpidx = retval | (1<<i);
-+		/*
-+		 * "0" is a possible index value, thus search using
-+		 * e.g. 15,7,3,1,0 instead of 16,8,4,2,1.
-+		 */
-+		tmpidx = tmpidx-1;
-+		if (idr_get_next(&ids->ipcs_idr, &tmpidx))
-+			retval |= (1<<i);
-+	}
-+	return retval - 1;
++	return try_charge_memcg(memcg, gfp_mask, nr_pages);
 +}
 +
- /**
-  * ipc_rmid - remove an ipc identifier
-  * @ids: ipc identifier set
-@@ -468,11 +504,9 @@ void ipc_rmid(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
- 	ipcp->deleted = true;
+ #if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
+ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+ {
+@@ -2925,7 +2932,7 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
  
- 	if (unlikely(idx == ids->max_idx)) {
--		do {
--			idx--;
--			if (idx == -1)
--				break;
--		} while (!idr_find(&ids->ipcs_idr, idx));
-+		idx = ids->max_idx-1;
-+		if (idx >= 0)
-+			idx = ipc_search_maxidx(ids, idx);
- 		ids->max_idx = idx;
- 	}
- }
-diff --git a/ipc/util.h b/ipc/util.h
-index 5766c61aed0e..317c8fe15383 100644
---- a/ipc/util.h
-+++ b/ipc/util.h
-@@ -145,6 +145,9 @@ int ipcperms(struct ipc_namespace *ns, struct kern_ipc_perm *ipcp, short flg);
-  * ipc_get_maxidx - get the highest assigned index
-  * @ids: ipc identifier set
-  *
-+ * The function returns the highest assinged index for @ids. The function
-+ * doesn't scan the idr tree, it uses a cached value.
-+ *
-  * Called with ipc_ids.rwsem held for reading.
-  */
- static inline int ipc_get_maxidx(struct ipc_ids *ids)
+ 	memcg = get_mem_cgroup_from_objcg(objcg);
+ 
+-	ret = try_charge(memcg, gfp, nr_pages);
++	ret = try_charge_memcg(memcg, gfp, nr_pages);
+ 	if (ret)
+ 		goto out;
+ 
 -- 
-2.30.2
+2.11.0
 
