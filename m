@@ -2,192 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3D536A6BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F04F36A6BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 12:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhDYKkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 06:40:25 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:52857 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhDYKkX (ORCPT
+        id S229912AbhDYKlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 06:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhDYKla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 06:40:23 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id C5FC714E2;
-        Sun, 25 Apr 2021 06:39:42 -0400 (EDT)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Sun, 25 Apr 2021 06:39:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=XoLG+aIFDcgO90G6lE25YWBzpmWK/3l
-        +t91ve9Q4KX4=; b=ikyRl9eulf1qr1qyOGRAubwZCS5+ndJyQXTExuVp4v4VN/6
-        E67mYf/wMF18RZ/a527+TlQkuYFtHzoAncKWNVPL1aFIBeL8omCjjY7s2mxXNqD/
-        92nQPbUnUGJmls52B4AgV+tBJ/yq1afG8hF0iAXEyx2boTWb6HSt+768LwADJQnm
-        MxF1o/sByOU1KuU5ZoVXfw+q2UXqKrViNgUj0MVsg7Zs7CjCVhmXEzGUL/pSIAfu
-        wpnAnIYn5vBoQ0lLp0C4zpJBygTMU4gxMtOI+sGGzEznQ40F4j9VejLFF6e29VWh
-        Mgg18f/UuqzEhSPPY5espI15hlzANSF1Ra7bCow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=XoLG+a
-        IFDcgO90G6lE25YWBzpmWK/3l+t91ve9Q4KX4=; b=Dx9fYcxegZ32Iquv3WkUZ/
-        hfhXzCHAt+QYgqH+2QknmfWke7IBshyCd/1hsNJAq+s3j8zAPz3PlxR87F/IQow9
-        3b61dnsWex28u0iUxt9xOMrmDLGyNTEKJY8b6ALNkJrRpl6f1XVNKLHDG+/ZUP3Y
-        fpiSMDmRHx6UGhGeKUnRnAysYYf8YeEg/nTJNphkLUQbfQRGJvcG/5QNry7OOQSM
-        iG7bO+NALoVcv0uyH2TjIZZD2JY/usMGHKDziORPIdDlefNRm23tR84jXUtYQ4zr
-        D3Qwk2xTf5gJdlGU/9diV7LFA9Gq+w49YdZvfiF2a1wrgzmfmwg1FcbJdEbECJUQ
-        ==
-X-ME-Sender: <xms:7UaFYO4Q8fmbSKSkzZSsNpDn32ELhHmUgkQXFrAyiRbWiJc7Mw46Jg>
-    <xme:7UaFYH4lOEgTTpQG5laIVFqwOn1GZXuZToVfQn-T9mby1_kHSQjbcaRAqEArO2kru
-    eyeQ2MnKYQBezv_dGM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduiedgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdflihgr
-    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeevtdehveetkedvvdehhfeuueeffeduffduveevudeiveeu
-    tedvheekteeujeegueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:7UaFYNeCH_1OmQv000hUNRqdE_nlmqKcjUdu2cZXYugo1XlPildYJQ>
-    <xmx:7UaFYLJLD2tY4ZhbY22l1hm-xCm9hjInQE49QUPef1sLLCWcuSriLA>
-    <xmx:7UaFYCLr4LMTpPHGKgbEctaQRuOgVPhKj6-Uyu5z7gU5mRDn--5XCw>
-    <xmx:7kaFYHEqYYxL4DD9PYhgcasNJ107VpD23N1mVrVPnnh0dSO7tS3bYw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1E246130005F; Sun, 25 Apr 2021 06:39:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
-Mime-Version: 1.0
-Message-Id: <8cd60ba7-b0db-450f-8285-eb5429c4f3ec@www.fastmail.com>
-In-Reply-To: <20210425052817.27373-1-maoxiaochuan@loongson.cn>
-References: <20210425052817.27373-1-maoxiaochuan@loongson.cn>
-Date:   Sun, 25 Apr 2021 18:39:20 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "xiaochuan mao" <maoxiaochuan@loongson.cn>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Qing Zhang" <zhangqing@loongson.cn>
-Cc:     devicetree@vger.kernel.org,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH]_MIPS:DTS:Correct_device_id_and_class_code_of_pcie_?=
- =?UTF-8?Q?for_Loongnon-2K?=
-Content-Type: text/plain
+        Sun, 25 Apr 2021 06:41:30 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70814C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 03:40:49 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id n10so16269315plc.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 03:40:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dsl3b2VaWWjqUhBQn9UZvRtMk9N8rB5xjUtLj4O+9zs=;
+        b=IbBMniggUXZEvuTYpYEBMfvLRh4mpiisKnmiw/0bGoDWR7ibqD/rym4K1F5ClRhI0Y
+         4YckVzJCTvrOzWMqdznRBZzl/1L5EimzCF8ukmY6jUDrdl0dqjWxjbnn03wlg2uToOBk
+         bnbt1zUFYP5kLXsXWqFcearh+PIbg8L47eALDVW8hCGs21Q5KcNkzBTlZFU+kg33HcsX
+         JM5cxccNsknI3xkJ/SdOsrAeUcynOtOKTG7am8MpczjJyy8CCSg0wz1Gj2GAWzwYpLCc
+         paUYi3o9Uk8pJ/XLuK9shXi7GcbhOzUDDz12o2/fBtfYmXAUbg/4zMXEQIkPajTrzYWT
+         XhIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsl3b2VaWWjqUhBQn9UZvRtMk9N8rB5xjUtLj4O+9zs=;
+        b=TR3n2v5TlRb9Zp+RWA1Y6+WCuATEfUiL4hI8xOaiVkfzdusVanNO3KsxhZ5UL6mG9M
+         SBmzjCDmLgDZouf4grUXZgTpEf9RHDJs3WB4iU+Mi4031ZPRXCxK9VdvPV2rqKZxrtho
+         2WBfpMKvvvjFgIO0naP2NkdulzH4B+bUsxfHlzmZ3ry+3t7ejay2ZuD5wfPyWz1F/bKf
+         7SxSvTrQkd0Xxb7qjLX8ToswOr2zXRFpe7wHCirfBLHJzV6Tg1g3516lBUAS5YG/EX5Z
+         vY11xVJ4rIQTFZamKJpwwcl5eUEYPcvR/F4QnKHAc7oxs7ck7wrDp6ja8Kvv2QbQrb3a
+         BquQ==
+X-Gm-Message-State: AOAM533YzzW62Et1ZzP6Fun1BuJ+1rWJy3Afraudf+eNWbc3h+NWfnc+
+        D350XMYJ7AYpqNFQJaszILEy5EWdHthd6+8/i8apN43NawN6VQ==
+X-Google-Smtp-Source: ABdhPJy/dm9agEumGI878/Tiw9CQAwYoLydksqvCEQ0FrYrLdqZX2ZGcG5efbbH7Z0F0BGyUJv+gHZ7bSwT28Cv19rY=
+X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr16689677pjr.181.1619347248901;
+ Sun, 25 Apr 2021 03:40:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210424174138.175889-1-ftoth@exalondelft.nl>
+In-Reply-To: <20210424174138.175889-1-ftoth@exalondelft.nl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 25 Apr 2021 13:40:32 +0300
+Message-ID: <CAHp75VefKAcohOF=cuJ9A_tjZZLuvHcDB2xmTUCrA-xHaWm0oA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] extcon-intel-mrfld: initialize mrfld_extcon status
+To:     Ferry Toth <ftoth@exalondelft.nl>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 24, 2021 at 8:58 PM Ferry Toth <ftoth@exalondelft.nl> wrote:
+>
+> extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+> DRD to detect a change in the switch position. This change initializes the
+> status at probe time.
 
+Thanks for catching and fixing this issue!
 
-On Sun, Apr 25, 2021, at 1:28 PM, Xiaochuan Mao wrote:
-> from Loongson-2K user manual know that Loongson-2K have two
-> pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
-> and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
-> in each pcie controller and others are 7a09. and their class code is 0b0300.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-The manual is obviously incorrect.
-
-class0604 is PCI to PCI bridge that matches. hardware. 0b03 is undefined.
-
-Thanks.
-
-> 
-> Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
 > ---
->  .../boot/dts/loongson/loongson64-2k1000.dtsi  | 40 +++++++++----------
->  1 file changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi 
-> b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> index 569e814def83..a95121359080 100644
-> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> @@ -150,8 +150,8 @@
->  			pci_bridge@9,0 {
->  				compatible = "pci0014,7a19.0",
->  						   "pci0014,7a19",
-> -						   "pciclass060400",
-> -						   "pciclass0604";
-> +						   "pciclass0b0300",
-> +						   "pciclass0b03";
->  
->  				reg = <0x4800 0x0 0x0 0x0 0x0>;
->  				#interrupt-cells = <1>;
-> @@ -163,10 +163,10 @@
->  			};
->  
->  			pci_bridge@a,0 {
-> -				compatible = "pci0014,7a19.0",
-> -						   "pci0014,7a19",
-> -						   "pciclass060400",
-> -						   "pciclass0604";
-> +				compatible = "pci0014,7a09.0",
-> +						   "pci0014,7a09",
-> +						   "pciclass0b0300",
-> +						   "pciclass0b03";
->  
->  				reg = <0x5000 0x0 0x0 0x0 0x0>;
->  				#interrupt-cells = <1>;
-> @@ -178,10 +178,10 @@
->  			};
->  
->  			pci_bridge@b,0 {
-> -				compatible = "pci0014,7a19.0",
-> -						   "pci0014,7a19",
-> -						   "pciclass060400",
-> -						   "pciclass0604";
-> +				compatible = "pci0014,7a09.0",
-> +						   "pci0014,7a09",
-> +						   "pciclass0b0300",
-> +						   "pciclass0b03";
->  
->  				reg = <0x5800 0x0 0x0 0x0 0x0>;
->  				#interrupt-cells = <1>;
-> @@ -193,10 +193,10 @@
->  			};
->  
->  			pci_bridge@c,0 {
-> -				compatible = "pci0014,7a19.0",
-> -						   "pci0014,7a19",
-> -						   "pciclass060400",
-> -						   "pciclass0604";
-> +				compatible = "pci0014,7a09.0",
-> +						   "pci0014,7a09",
-> +						   "pciclass0b0300",
-> +						   "pciclass0b03";
->  
->  				reg = <0x6000 0x0 0x0 0x0 0x0>;
->  				#interrupt-cells = <1>;
-> @@ -210,8 +210,8 @@
->  			pci_bridge@d,0 {
->  				compatible = "pci0014,7a19.0",
->  						   "pci0014,7a19",
-> -						   "pciclass060400",
-> -						   "pciclass0604";
-> +						   "pciclass0b0300",
-> +						   "pciclass0b03";
->  
->  				reg = <0x6800 0x0 0x0 0x0 0x0>;
->  				#interrupt-cells = <1>;
-> @@ -223,10 +223,10 @@
->  			};
->  
->  			pci_bridge@e,0 {
-> -				compatible = "pci0014,7a19.0",
-> -						   "pci0014,7a19",
-> -						   "pciclass060400",
-> -						   "pciclass0604";
-> +				compatible = "pci0014,7a09.0",
-> +						   "pci0014,7a09",
-> +						   "pciclass0b0300",
-> +						   "pciclass0b03";
->  
->  				reg = <0x7000 0x0 0x0 0x0 0x0>;
->  				#interrupt-cells = <1>;
-> -- 
-> 2.17.1
-> 
-> 
+>  drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
+> index f47016fb28a8..cd1a5f230077 100644
+> --- a/drivers/extcon/extcon-intel-mrfld.c
+> +++ b/drivers/extcon/extcon-intel-mrfld.c
+> @@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+>         struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+>         struct regmap *regmap = pmic->regmap;
+>         struct mrfld_extcon_data *data;
+> +       unsigned int status;
+>         unsigned int id;
+>         int irq, ret;
+>
+> @@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+>         /* Get initial state */
+>         mrfld_extcon_role_detect(data);
+>
+> +       /*
+> +        * Cached status value is used for cable detection, see comments
+> +        * in mrfld_extcon_cable_detect(), we need to sync cached value
+> +        * with a real state of the hardware.
+> +        */
+> +       regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
+> +       data->status = status;
+> +
+>         mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+>         mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
+>
+> --
+> 2.27.0
+>
 
 
 -- 
-- Jiaxun
+With Best Regards,
+Andy Shevchenko
