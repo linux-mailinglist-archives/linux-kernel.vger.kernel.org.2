@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6313836A911
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 21:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0816C36A917
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 22:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhDYTzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 15:55:50 -0400
-Received: from mailfilter02-out40.webhostingserver.nl ([195.211.72.22]:27964
-        "EHLO mailfilter02-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231265AbhDYTzs (ORCPT
+        id S231314AbhDYUHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 16:07:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27628 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231197AbhDYUHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 15:55:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=exalondelft.nl; s=whs1;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
-         from;
-        bh=89+H5rCRk92mV8YEGLrI/q3ZeBEsPhsRhzx51JBwkfg=;
-        b=f+kJWoMWLD/LuRe/dkY4Fhhtebv9AVaWrEipdOhWbda1oZSt0qFDB45dHLefE8U7d3GP3DuXnaM9Q
-         Z0LWf4VOdvfels9iTyizpHa+Vj188EMXC6blufcxdwf4FPRVnI9wRKMUy9Ry9ch+R/+vWxtei9RqDL
-         0EgGBhsjo5RivsNCtne3SDNWQLHxGyhahenoYZCxiQ+kun81jRULc2sfbg4tPOpjsbsEZv1qJopa/L
-         Q83kGJdTtZdMGMZRJLJY8hyUcoOjAiprW/lGTE8gb6YIqe+EoKHgjZbO1lJBb+Zv/svCqO4GdEQthC
-         rP5JtrzQC5Ro457vsndP4iDaDif8cLA==
-X-Halon-ID: 219f4f46-a600-11eb-8288-001a4a4cb922
-Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
-        by mailfilter02.webhostingserver.nl (Halon) with ESMTPSA
-        id 219f4f46-a600-11eb-8288-001a4a4cb922;
-        Sun, 25 Apr 2021 21:55:05 +0200 (CEST)
-Received: from [2001:981:6fec:1:1853:1ae5:69c6:8aab] (helo=delfion.fritz.box)
-        by s198.webhostingserver.nl with esmtpa (Exim 4.94)
-        (envelope-from <ftoth@exalondelft.nl>)
-        id 1lakqP-008RrJ-Lw; Sun, 25 Apr 2021 21:55:05 +0200
-From:   Ferry Toth <ftoth@exalondelft.nl>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2 1/1] usb: dwc3: pci: Enable usb2-gadget-lpm-disable for Intel Merrifield
-Date:   Sun, 25 Apr 2021 21:54:52 +0200
-Message-Id: <20210425195452.94143-1-ftoth@exalondelft.nl>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+        Sun, 25 Apr 2021 16:07:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619381217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=WNLmXfNHHFxJs3CZDbz/p8vZ8D/qmUMYK+vF6Nbj3qY=;
+        b=SKL558aGsvZ21zVBZBOW4PFk/y+SKRZGx1L5RbCRwjhwvu7GWQKWktlXOJNLWgI20Qigwu
+        ai3gvJXq5jyH3whAY/k29z3UDRPNQoQ6l+ZBpnFB3qpCFSbH7he2H0dDzmlXcEmxl1eJos
+        /ah00ObSCs8vlWUEvPzFoDQWh+bP1Bo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-qBlmxkS1OcicwS1fDheDZQ-1; Sun, 25 Apr 2021 16:06:56 -0400
+X-MC-Unique: qBlmxkS1OcicwS1fDheDZQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB49A107ACCA;
+        Sun, 25 Apr 2021 20:06:54 +0000 (UTC)
+Received: from llong.com (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0602719D80;
+        Sun, 25 Apr 2021 20:06:51 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] locking/qrwlock: queued_write_lock_slowpath() cleanup
+Date:   Sun, 25 Apr 2021 16:06:37 -0400
+Message-Id: <20210425200637.31298-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Intel Merrifield LPM is causing the host to reset port after a timeout.
-By disabling LPM entirely this is prevented.
+Make the code more readable by replacing the atomic_cmpxchg_acquire()
+by an equivalent atomic_try_cmpxchg_acquire() and change atomic_add()
+to atomic_or().
 
-Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merrifield")
-Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+For architectures that use qrwlock, I do not find one that has an
+atomic_add() defined but not an atomic_or().  I guess it should be fine
+by changing atomic_add() to atomic_or(). I add a comment to state that
+we can change it back to atomic_add() if there is an architecture that
+has a more performant atomic_add() than an atomic_or().
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- drivers/usb/dwc3/dwc3-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/locking/qrwlock.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-index 4c5c6972124a..e5d7eed2e60c 100644
---- a/drivers/usb/dwc3/dwc3-pci.c
-+++ b/drivers/usb/dwc3/dwc3-pci.c
-@@ -122,6 +122,7 @@ static const struct property_entry dwc3_pci_mrfld_properties[] = {
- 	PROPERTY_ENTRY_STRING("linux,extcon-name", "mrfld_bcove_pwrsrc"),
- 	PROPERTY_ENTRY_BOOL("snps,dis_u3_susphy_quirk"),
- 	PROPERTY_ENTRY_BOOL("snps,dis_u2_susphy_quirk"),
-+	PROPERTY_ENTRY_BOOL("snps,usb2-gadget-lpm-disable"),
- 	PROPERTY_ENTRY_BOOL("linux,sysdev_is_parent"),
- 	{}
- };
+diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+index b94f3831e963..a1fa0f636b07 100644
+--- a/kernel/locking/qrwlock.c
++++ b/kernel/locking/qrwlock.c
+@@ -60,18 +60,26 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
+  */
+ void queued_write_lock_slowpath(struct qrwlock *lock)
+ {
+-	int cnts;
++	int cnts = 0;
+ 
+ 	/* Put the writer into the wait queue */
+ 	arch_spin_lock(&lock->wait_lock);
+ 
+ 	/* Try to acquire the lock directly if no reader is present */
+ 	if (!atomic_read(&lock->cnts) &&
+-	    (atomic_cmpxchg_acquire(&lock->cnts, 0, _QW_LOCKED) == 0))
++	    atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED))
+ 		goto unlock;
+ 
+-	/* Set the waiting flag to notify readers that a writer is pending */
+-	atomic_add(_QW_WAITING, &lock->cnts);
++	/*
++	 * Set the waiting flag to notify readers that a writer is pending
++	 *
++	 * As only one writer who is the wait_lock owner can set the waiting
++	 * flag which will be cleared later on when acquiring the write lock,
++	 * we can easily replace atomic_or() by an atomic_add() if there is
++	 * an architecture where an atomic_add() performs better than an
++	 * atomic_or().
++	 */
++	atomic_or(_QW_WAITING, &lock->cnts);
+ 
+ 	/* When no more readers or writers, set the locked flag */
+ 	do {
 -- 
-2.27.0
+2.18.1
 
