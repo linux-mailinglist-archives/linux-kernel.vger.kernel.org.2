@@ -2,138 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D82736A7F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5630236A800
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 17:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhDYPWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 11:22:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhDYPWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 11:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 029BE60FE6;
-        Sun, 25 Apr 2021 15:21:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619364118;
-        bh=tyzFJ9iGIpdDVYK7Ymmi3AvpC3VGDnX2EwM97dgE2h0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wc3nz9NFZ2ZpYKwsyCTyUi2U9YoY2o8CaqP7wFdn0SuFlwEMZFAU8Ng+wMFwMIFM1
-         p/CK1qhjLydnjIU3adLi9g8Gu+I/YxbxuaLBxiApwgUFLUxq5Qbi5KRJrVEYytnCY+
-         fEJZ+EEf/ztH6zfaQXs2aazl6We/3gBhDBkuWu9k2jUiaKfMhh+4v7IvT+1ATpSL2X
-         2z3twLx3BBcQViQ31DfU4nnwEzgXY4aKcOa/WOzjfwPnwDKz/zPg4v+/F8ErukZ6Yw
-         8bNE+tsHsBQsEaKTu2mLt4iNVbrFu/wKd70yWVBe0qC9qA2AY3ewI3CpQdRCt1wxNl
-         82iw/JXJgjeHg==
-Received: by pali.im (Postfix)
-        id 4170389A; Sun, 25 Apr 2021 17:21:55 +0200 (CEST)
-Date:   Sun, 25 Apr 2021 17:21:55 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Marek Behun <marek.behun@nic.cz>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain
- to zero
-Message-ID: <20210425152155.mstuxndsoqdbdape@pali>
-References: <20210412123936.25555-1-pali@kernel.org>
- <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
- <20210415083640.ntg6kv6ayppxldgd@pali>
- <20210415104537.403de52e@thinkpad>
- <CAL_JsqL2gjprb3MDv8KPSpe0CUBFjGajnMbF71DM+F9Yewp2uw@mail.gmail.com>
- <20210417144953.pznysgn5rdraxggx@pali>
- <CAL_Jsq+fNGQ+qMuqQ_c1Nou1h4R=-R5sn2n0p7rx==+e2JybSg@mail.gmail.com>
+        id S230421AbhDYPh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 11:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhDYPhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 11:37:25 -0400
+X-Greylist: delayed 492 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 25 Apr 2021 08:36:45 PDT
+Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D21C061574;
+        Sun, 25 Apr 2021 08:36:45 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1DAAD3EB2E;
+        Sun, 25 Apr 2021 17:28:28 +0200 (CEST)
+From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To:     netdev@vger.kernel.org
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: [PATCH net] net: bridge: mcast: fix broken length + header check for MRDv6 Adv.
+Date:   Sun, 25 Apr 2021 17:27:35 +0200
+Message-Id: <20210425152736.8421-1-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_Jsq+fNGQ+qMuqQ_c1Nou1h4R=-R5sn2n0p7rx==+e2JybSg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 23 April 2021 10:33:38 Rob Herring wrote:
-> On Sat, Apr 17, 2021 at 9:49 AM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > On Thursday 15 April 2021 10:13:17 Rob Herring wrote:
-> > > On Thu, Apr 15, 2021 at 3:45 AM Marek Behun <marek.behun@nic.cz> wrote:
-> > > >
-> > > > On Thu, 15 Apr 2021 10:36:40 +0200
-> > > > Pali Rohár <pali@kernel.org> wrote:
-> > > >
-> > > > > On Tuesday 13 April 2021 13:17:29 Rob Herring wrote:
-> > > > > > On Mon, Apr 12, 2021 at 7:41 AM Pali Rohár <pali@kernel.org> wrote:
-> > > > > > >
-> > > > > > > Since commit 526a76991b7b ("PCI: aardvark: Implement driver 'remove'
-> > > > > > > function and allow to build it as module") PCIe controller driver for
-> > > > > > > Armada 37xx can be dynamically loaded and unloaded at runtime. Also driver
-> > > > > > > allows dynamic binding and unbinding of PCIe controller device.
-> > > > > > >
-> > > > > > > Kernel PCI subsystem assigns by default dynamically allocated PCI domain
-> > > > > > > number (starting from zero) for this PCIe controller every time when device
-> > > > > > > is bound. So PCI domain changes after every unbind / bind operation.
-> > > > > >
-> > > > > > PCI host bridges as a module are relatively new, so seems likely a bug to me.
-> > > > >
-> > > > > Why a bug? It is there since 5.10 and it is working.
-> > >
-> > > I mean historically, the PCI subsystem didn't even support host
-> > > bridges as a module. They weren't even proper drivers and it was all
-> > > arch specific code. Most of the host bridge drivers are still built-in
-> > > only. This seems like a small detail that was easily overlooked.
-> > > unbind is not a well tested path.
-> >
-> > Ok! Just to note that during my testing I have not spotted any issue.
-> >
-> > > > > > > Alternative way for assigning PCI domain number is to use static allocated
-> > > > > > > numbers defined in Device Tree. This option has requirement that every PCI
-> > > > > > > controller in system must have defined PCI bus number in Device Tree.
-> > > > > >
-> > > > > > That seems entirely pointless from a DT point of view with a single PCI bridge.
-> > > > >
-> > > > > If domain id is not specified in DT then kernel uses counter and assigns
-> > > > > counter++. So it is not pointless if we want to have stable domain id.
-> > > >
-> > > > What Rob is trying to say is that
-> > > > - the bug is that kernel assigns counter++
-> > > > - device-tree should not be used to fix problems with how kernel does
-> > > >   things
-> > > > - if a device has only one PCIe controller, it is pointless to define
-> > > >   it's pci-domain. If there were multiple controllers, then it would
-> > > >   make sense, but there is only one
-> > >
-> > > Yes. I think what we want here is a domain bitmap rather than a
-> > > counter and we assign the lowest free bit. That could also allow for
-> > > handling a mixture of fixed domain numbers and dynamically assigned
-> > > ones.
-> >
-> > Currently this code is implemented in pci_bus_find_domain_nr() function.
-> > IIRC domain number is 16bit integer, so plain bitmap would consume 8 kB
-> > of memory. I'm not sure if it is fine or some other tree-based structure
-> > for allocated domain numbers is needed.
-> 
-> It's an atomic_t but then shortened (potentially) to an 'int'. Surely
-> we don't need 8k (or 2^31) host bridges? Seems like we could start
-> with 64 and bump it as needed. Or the idr route is another option if
-> that works. We'd need to get the lowest free value and be able to
-> reserve values (when specified by firmware).
+The IPv6 Multicast Router Advertisements parsing has the following two
+issues:
 
-Seems that idr_alloc() supports both required operations as you can ask
-idr_alloc() for allocating specific id (if is available).
+For one thing, ICMPv6 MRD Advertisements are smaller than ICMPv6 MLD
+messages (ICMPv6 MRD Adv.: 8 bytes vs. ICMPv6 MLDv1/2: >= 24 bytes,
+assuming MLDv2 Reports with at least one multicast address entry).
+When ipv6_mc_check_mld_msg() tries to parse an Multicast Router
+Advertisement its MLD length check will fail - and it will wrongly
+return -EINVAL, even if we have a valid MRD Advertisement. With the
+returned -EINVAL the bridge code will assume a broken packet and will
+wrongly discard it, potentially leading to multicast packet loss towards
+multicast routers.
 
-> > > You could create scenarios where the numbers change on you, but it
-> > > wouldn't be any different than say plugging in USB serial adapters.
-> > > You get the same ttyUSBx device when you re-attach unless there's been
-> > > other ttyUSBx devices attached/detached.
-> >
-> > This should be fine for most scenarios. Dynamically attaching /
-> > detaching PCI domain is not such common action...
-> >
-> > Will you implement this new feature?
-> 
-> Yes, after I find a DT binding co-maintainer.
-> 
-> Rob
+The second issue is the MRD header parsing in
+br_ip6_multicast_mrd_rcv(): It wrongly checks for an ICMPv6 header
+immediately after the IPv6 header (IPv6 next header type). However
+according to RFC4286, section 2 all MRD messages contain a Router Alert
+option (just like MLD). So instead there is an IPv6 Hop-by-Hop option
+for the Router Alert between the IPv6 and ICMPv6 header, again leading
+to the bridge wrongly discarding Multicast Router Advertisements.
+
+To fix these two issues, introduce a new return value -ENODATA to
+ipv6_mc_check_mld() to indicate a valid ICMPv6 packet with a hop-by-hop
+option which is not an MLD but potentially an MRD packet. This also
+simplifies further parsing in the bridge code, as ipv6_mc_check_mld()
+already fully checks the ICMPv6 header and hop-by-hop option.
+
+These issues were found and fixed with the help of the mrdisc tool
+(https://github.com/troglobit/mrdisc).
+
+Fixes: 4b3087c7e37f ("bridge: Snoop Multicast Router Advertisements")
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+---
+ include/net/addrconf.h    |  1 -
+ net/bridge/br_multicast.c | 33 ++++++++-------------------------
+ net/ipv6/mcast_snoop.c    | 12 +++++++-----
+ 3 files changed, 15 insertions(+), 31 deletions(-)
+
+diff --git a/include/net/addrconf.h b/include/net/addrconf.h
+index 18f783dcd55f..78ea3e332688 100644
+--- a/include/net/addrconf.h
++++ b/include/net/addrconf.h
+@@ -233,7 +233,6 @@ void ipv6_mc_unmap(struct inet6_dev *idev);
+ void ipv6_mc_remap(struct inet6_dev *idev);
+ void ipv6_mc_init_dev(struct inet6_dev *idev);
+ void ipv6_mc_destroy_dev(struct inet6_dev *idev);
+-int ipv6_mc_check_icmpv6(struct sk_buff *skb);
+ int ipv6_mc_check_mld(struct sk_buff *skb);
+ void addrconf_dad_failure(struct sk_buff *skb, struct inet6_ifaddr *ifp);
+ 
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index 9d265447d654..229309d7b4ff 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -3152,25 +3152,14 @@ static int br_multicast_ipv4_rcv(struct net_bridge *br,
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+-static int br_ip6_multicast_mrd_rcv(struct net_bridge *br,
+-				    struct net_bridge_port *port,
+-				    struct sk_buff *skb)
++static void br_ip6_multicast_mrd_rcv(struct net_bridge *br,
++				     struct net_bridge_port *port,
++				     struct sk_buff *skb)
+ {
+-	int ret;
+-
+-	if (ipv6_hdr(skb)->nexthdr != IPPROTO_ICMPV6)
+-		return -ENOMSG;
+-
+-	ret = ipv6_mc_check_icmpv6(skb);
+-	if (ret < 0)
+-		return ret;
+-
+ 	if (icmp6_hdr(skb)->icmp6_type != ICMPV6_MRDISC_ADV)
+-		return -ENOMSG;
++		return;
+ 
+ 	br_multicast_mark_router(br, port);
+-
+-	return 0;
+ }
+ 
+ static int br_multicast_ipv6_rcv(struct net_bridge *br,
+@@ -3184,18 +3173,12 @@ static int br_multicast_ipv6_rcv(struct net_bridge *br,
+ 
+ 	err = ipv6_mc_check_mld(skb);
+ 
+-	if (err == -ENOMSG) {
++	if (err == -ENOMSG || err == -ENODATA) {
+ 		if (!ipv6_addr_is_ll_all_nodes(&ipv6_hdr(skb)->daddr))
+ 			BR_INPUT_SKB_CB(skb)->mrouters_only = 1;
+-
+-		if (ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr)) {
+-			err = br_ip6_multicast_mrd_rcv(br, port, skb);
+-
+-			if (err < 0 && err != -ENOMSG) {
+-				br_multicast_err_count(br, port, skb->protocol);
+-				return err;
+-			}
+-		}
++		if (err == -ENODATA &&
++		    ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr))
++			br_ip6_multicast_mrd_rcv(br, port, skb);
+ 
+ 		return 0;
+ 	} else if (err < 0) {
+diff --git a/net/ipv6/mcast_snoop.c b/net/ipv6/mcast_snoop.c
+index d3d6b6a66e5f..04d5fcdfa6e0 100644
+--- a/net/ipv6/mcast_snoop.c
++++ b/net/ipv6/mcast_snoop.c
+@@ -109,7 +109,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
+ 	struct mld_msg *mld;
+ 
+ 	if (!ipv6_mc_may_pull(skb, len))
+-		return -EINVAL;
++		return -ENODATA;
+ 
+ 	mld = (struct mld_msg *)skb_transport_header(skb);
+ 
+@@ -122,7 +122,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
+ 	case ICMPV6_MGM_QUERY:
+ 		return ipv6_mc_check_mld_query(skb);
+ 	default:
+-		return -ENOMSG;
++		return -ENODATA;
+ 	}
+ }
+ 
+@@ -131,7 +131,7 @@ static inline __sum16 ipv6_mc_validate_checksum(struct sk_buff *skb)
+ 	return skb_checksum_validate(skb, IPPROTO_ICMPV6, ip6_compute_pseudo);
+ }
+ 
+-int ipv6_mc_check_icmpv6(struct sk_buff *skb)
++static int ipv6_mc_check_icmpv6(struct sk_buff *skb)
+ {
+ 	unsigned int len = skb_transport_offset(skb) + sizeof(struct icmp6hdr);
+ 	unsigned int transport_len = ipv6_transport_len(skb);
+@@ -150,7 +150,6 @@ int ipv6_mc_check_icmpv6(struct sk_buff *skb)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
+ 
+ /**
+  * ipv6_mc_check_mld - checks whether this is a sane MLD packet
+@@ -161,7 +160,10 @@ EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
+  *
+  * -EINVAL: A broken packet was detected, i.e. it violates some internet
+  *  standard
+- * -ENOMSG: IP header validation succeeded but it is not an MLD packet.
++ * -ENOMSG: IP header validation succeeded but it is not an ICMPv6 packet
++ *  with a hop-by-hop option.
++ * -ENODATA: IP+ICMPv6 header with hop-by-hop option validation succeeded
++ *  but it is not an MLD packet.
+  * -ENOMEM: A memory allocation failure happened.
+  *
+  * Caller needs to set the skb network header and free any returned skb if it
+-- 
+2.31.0
+
