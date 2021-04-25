@@ -2,113 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCFD36A464
+	by mail.lfdr.de (Postfix) with ESMTP id 5D26536A465
 	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 05:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhDYD3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Apr 2021 23:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhDYD3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Apr 2021 23:29:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82B4761154;
-        Sun, 25 Apr 2021 03:28:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619321337;
-        bh=rnzq7hymD1yyqndLzmlHZWhdSR/iXxuNvtGqJkDhxxo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rli9kLKMPfWi6nnOMsXMojc7Cl6RLJGWTSM7j8AsfWZ2MfE+Pyj1KUCFkaVcCWwHj
-         nIwS7EDsolGFXYDa1N8ZhmsVTL4g9QZ/bnXdm8AYVdF9+S51sBmcFoPS2a2FvSRkXT
-         tiU+o/flMUuLG+LyCXhYXJyzBrx+8U0u3G1jhf6I4FUVnqEO4xOBLm0PG+qK89AFym
-         BmpcVrGC6VN2KGWBmSldaD8FA4yVXOys+CVqLXhXAaHySJCJJioR8SyM1z+lfUjDhI
-         BVPlGLr0j+g0cvZOc7igYhDwEz9+EzsLIoj3mGsUNKNfjlGgKkTA0/xGc+TPr7smJX
-         Tucm8B0rCbU6w==
-Date:   Sun, 25 Apr 2021 11:28:52 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     "balbi@kernel.org" <balbi@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ruslan.bilovol@gmail.com" <ruslan.bilovol@gmail.com>,
-        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rahul Kumar <kurahul@cadence.com>
-Subject: Re: [PATCH 1/2] usb: gadget: f_uac2: Stop endpoint before enabling
- it.
-Message-ID: <20210425032852.GA10463@nchen>
-References: <20210419075053.28467-1-pawell@gli-login.cadence.com>
- <20210420010846.GA6408@nchen>
- <BYAPR07MB5381F9748155F73732090E87DD489@BYAPR07MB5381.namprd07.prod.outlook.com>
- <20210423104914.GA6448@nchen>
+        id S229726AbhDYDe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Apr 2021 23:34:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17054 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhDYDe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Apr 2021 23:34:27 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FSYTh4WLVz17Rjs;
+        Sun, 25 Apr 2021 11:31:20 +0800 (CST)
+Received: from [10.174.176.174] (10.174.176.174) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 25 Apr 2021 11:33:43 +0800
+Subject: Re: [PATCH v4 4/4] mm/shmem: fix shmem_swapin() race with swapoff
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
+        <david@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210425023806.3537283-1-linmiaohe@huawei.com>
+ <20210425023806.3537283-5-linmiaohe@huawei.com>
+ <87bla3xdt0.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <0213893e-2b05-8d2e-9a79-e8a71db23644@huawei.com>
+Date:   Sun, 25 Apr 2021 11:33:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423104914.GA6448@nchen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87bla3xdt0.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-04-23 18:49:14, Peter Chen wrote:
-> On 21-04-20 03:56:25, Pawel Laszczak wrote:
-> > >On 21-04-19 09:50:53, Pawel Laszczak wrote:
-> > >> From: Pawel Laszczak <pawell@cadence.com>
-> > >>
-> > >> Patch adds disabling endpoint before enabling it during changing
-> > >> alternate setting. Lack of this functionality causes that in some
-> > >> cases uac2 queue the same request multiple time.
-> > >> Such situation can occur when host send set interface with
-> > >> alternate setting 1 twice.
-> > >>
-> > >> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> > >> ---
-> > >>  drivers/usb/gadget/function/f_uac2.c | 8 ++++----
-> > >>  1 file changed, 4 insertions(+), 4 deletions(-)
-> > >>
-> > >> diff --git a/drivers/usb/gadget/function/f_uac2.c b/drivers/usb/gadget/function/f_uac2.c
-> > >> index 9cc5c512a5cd..7d20a9d8a1b4 100644
-> > >> --- a/drivers/usb/gadget/function/f_uac2.c
-> > >> +++ b/drivers/usb/gadget/function/f_uac2.c
-> > >> @@ -890,17 +890,17 @@ afunc_set_alt(struct usb_function *fn, unsigned intf, unsigned alt)
-> > >>  	if (intf == uac2->as_out_intf) {
-> > >>  		uac2->as_out_alt = alt;
-> > >>
-> > >> +		u_audio_stop_capture(&uac2->g_audio);
-> > >> +
-> > >>  		if (alt)
-> > >>  			ret = u_audio_start_capture(&uac2->g_audio);
-> > >> -		else
-> > >> -			u_audio_stop_capture(&uac2->g_audio);
-> > >>  	} else if (intf == uac2->as_in_intf) {
-> > >>  		uac2->as_in_alt = alt;
-> > >>
-> > >> +		u_audio_stop_playback(&uac2->g_audio);
-> > >> +
-> > >>  		if (alt)
-> > >>  			ret = u_audio_start_playback(&uac2->g_audio);
-> > >> -		else
-> > >> -			u_audio_stop_playback(&uac2->g_audio);
-> > >>  	} else {
-> > >>  		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-> > >>  		return -EINVAL;
-> > >
-> > >To avoid this, you may use prm->ep_enabled to judge if the endpoint has
-> > >already enabled.
-> > 
-> > Such condition is as first instruction inside u_audio_stop_playback->free_ep  function,
-> > so we don't need duplicate it here.
-> > 
+On 2021/4/25 11:07, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
 > 
-> Get your points, you may add more explanations both the code your change
-> and the commit log.
+>> When I was investigating the swap code, I found the below possible race
+>> window:
+>>
+>> CPU 1                                         CPU 2
+>> -----                                         -----
+>> shmem_swapin
+>>   swap_cluster_readahead
+>>     if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
+>>                                               swapoff
+>>                                                 ..
+>>                                                 si->swap_file = NULL;
+>>                                                 ..
+>>     struct inode *inode = si->swap_file->f_mapping->host;[oops!]
+>>
+>> Close this race window by using get/put_swap_device() to guard against
+>> concurrent swapoff.
+>>
+>> Fixes: 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or not")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/shmem.c | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>>
+>> diff --git a/mm/shmem.c b/mm/shmem.c
+>> index 26c76b13ad23..be388d0cf8b5 100644
+>> --- a/mm/shmem.c
+>> +++ b/mm/shmem.c
+>> @@ -1696,6 +1696,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+>>  	struct address_space *mapping = inode->i_mapping;
+>>  	struct shmem_inode_info *info = SHMEM_I(inode);
+>>  	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
+>> +	struct swap_info_struct *si;
+>>  	struct page *page;
+>>  	swp_entry_t swap;
+>>  	int error;
+>> @@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+>>  	swap = radix_to_swp_entry(*pagep);
+>>  	*pagep = NULL;
+>>  
+>> +	/* Prevent swapoff from happening to us. */
+>> +	si = get_swap_device(swap);
+>> +	if (unlikely(!si)) {
+>> +		error = EINVAL;
+>> +		goto failed;
+>> +	}
+>>  	/* Look it up and read it in.. */
+>>  	page = lookup_swap_cache(swap, NULL, 0);
+>>  	if (!page) {
+>> @@ -1720,6 +1727,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+>>  			goto failed;
+>>  		}
+>>  	}
+>> +	put_swap_device(si);
+> 
+> I think it's better to put_swap_device() just before returning from the
+> function.  It's not a big issue to slow down swapoff() a little.  And
+> this will make the logic easier to be understood.
 > 
 
-After thinking more, I think it is better add judge code at
-u_audio_start_playback/capture, but not change code here. The reader may
-not understand the code your change at the first glance.
+shmem_swapin_page() already has a methed, i.e. locked page, to prevent races. I was intended
+to not mix with that. But your suggestion is good as this will make the logic easier to be
+understood.
 
--- 
+Just to make sure, is this what you mean? Many thanks!
 
-Thanks,
-Peter Chen
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 26c76b13ad23..737e5b3200c3 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1696,6 +1696,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+        struct address_space *mapping = inode->i_mapping;
+        struct shmem_inode_info *info = SHMEM_I(inode);
+        struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
++       struct swap_info_struct *si;
+        struct page *page;
+        swp_entry_t swap;
+        int error;
+@@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+        swap = radix_to_swp_entry(*pagep);
+        *pagep = NULL;
+
++       /* Prevent swapoff from happening to us. */
++       si = get_swap_device(swap);
++       if (unlikely(!si)) {
++               error = EINVAL;
++               goto failed;
++       }
+        /* Look it up and read it in.. */
+        page = lookup_swap_cache(swap, NULL, 0);
+        if (!page) {
+@@ -1765,6 +1772,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+        swap_free(swap);
+
+        *pagep = page;
++       if (si)
++               put_swap_device(si);
+        return 0;
+ failed:
+        if (!shmem_confirm_swap(mapping, index, swap))
+@@ -1775,6 +1784,9 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+                put_page(page);
+        }
+
++       if (si)
++               put_swap_device(si);
++
+        return error;
+ }
+
+> Best Regards,
+> Huang, Ying
+> 
+>>  
+>>  	/* We have to do this with page locked to prevent races */
+>>  	lock_page(page);
+>> @@ -1775,6 +1783,9 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+>>  		put_page(page);
+>>  	}
+>>  
+>> +	if (si)
+>> +		put_swap_device(si);
+>> +
+>>  	return error;
+>>  }
+> .
+> 
 
