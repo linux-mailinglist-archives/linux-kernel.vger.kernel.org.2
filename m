@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE3036A4F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 07:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9595036A4FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Apr 2021 08:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhDYFbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 01:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhDYFbM (ORCPT
+        id S229617AbhDYGDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 02:03:06 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:26809 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhDYGDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 01:31:12 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43C9C061574;
-        Sat, 24 Apr 2021 22:30:32 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 10so1383340pfl.1;
-        Sat, 24 Apr 2021 22:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a3+ipCY9vk70vioGW8dxqD6cTHuZgEM4qMQTJ6iWkys=;
-        b=aRjs6dvjkj6kZGGmsSfu/rZ8k1tKxua8TnAnHe3CJaC9bj8fi/J2kdwrcWIc9+ZM89
-         mIpz9qnvIKSNJzHL0Mc4o72f7pJtkIEstLWidgCRyqWsTAyHVfkv7NB5ku5H0nfD90WX
-         bek/xBNUM7XfnZjDoMIKSdpKk5qp9HAM3ecGllyz2XAejqrC0iOPo/ZUf9f/GwSKhqUH
-         QqTFyjKrLCW+OijOaXNiYsaWyAvKCx0DrwjJrhmq1RJL/HwIC2bmUomOEv/xH96LYRX7
-         rDwGSMaCHQ9ThY64wDBIeO9C0+hHNi3ok3x/bq5c4QRv4gLW8pYYAkoZ42UnuitTPDR4
-         +wEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a3+ipCY9vk70vioGW8dxqD6cTHuZgEM4qMQTJ6iWkys=;
-        b=cC/QaZL/TM50SXkrjp3M2RYQ39P0wNQLpOH7F8MUOxQZ6llByNvSsSSdHvlpCDMVNP
-         51QnTruM24O00+NKVKF4ZezI4teQLO6DLeTbJTtg0g0k6yg7dpw9VcTpmnFNEkFUi0ng
-         r/zNeQFsQ99kWNMoZIR4J0oWjxXX3dESMVTHj9oIVKY6V1BJhyz9bXvmE8uurvWWyOXi
-         3jL/jB6CuckrhPHyAjPN9UkhhvrCaxNlIybax/XYoXZ+DhywBMQwJoZsSWGsDYwgqctn
-         fUoCobVlvC3XaxPXnJmfZIZkqj2Kj944GkqsH/RjR4dqBarm/N0L9454LRbuOvcEPNuT
-         Jp0w==
-X-Gm-Message-State: AOAM531Q4z32L45cdfJrQD47dPX9s/yCEtnR867lcEbY/PUBjo2Anph3
-        Qf00pbMSQ8UTTDklBjs6ScQ=
-X-Google-Smtp-Source: ABdhPJxUixRvy3pXd2mOtVWJRCF1AyuQ/tqm8NRWs+OY2VLn2+PQjLic6j4gjWPiM2nbNLXvQ8JNOw==
-X-Received: by 2002:a63:175c:: with SMTP id 28mr10914775pgx.376.1619328632129;
-        Sat, 24 Apr 2021 22:30:32 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:28b7:b656:4f0d:6473])
-        by smtp.gmail.com with ESMTPSA id b21sm7356492pfl.82.2021.04.24.22.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 22:30:31 -0700 (PDT)
-Date:   Sat, 24 Apr 2021 22:30:29 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     zhuguangqing83@gmail.com, Bastien Nocera <hadess@hadess.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Input: goodix - Fix missing IRQF_ONESHOT as only
- threaded handler
-Message-ID: <YIT+da7/ZXr5Uj33@google.com>
-References: <20210416031747.28504-1-zhuguangqing83@gmail.com>
- <CAJKOXPeEHRZboCJs+eScjsLDybDzXSaP3jBLkAYiQt_7Ft2nog@mail.gmail.com>
+        Sun, 25 Apr 2021 02:03:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1619330545; x=1650866545;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QFcJ0x/yJ6dOOOaoLHEDCD4plD9rAdd2WtAJd+rmii8=;
+  b=a1Fr6nQdvf9ALhgakFq0jQ2umq619RjKKywSHiKvLtRcFCw2l/0ZeXPU
+   4leJqxGniCjqX0KRcMzpNmKZBRwfbzmBbW5DQ4eZIx+v5ue74mzHXSDi+
+   c61Lw5JB0AGHcUq8Dxtf16Q2kDwzGi5kbnLj2pfbNdmfLnSjFAfZEnUso
+   rYVuzk40F784Ul/eLm1+EyqvoJIIYTpLp1rjqv/OkDhJXj4iy4Vy0nc/2
+   7OQ+OQcFI3tzvSCySWhHTycCDsK5ZV707AFgpmm0YVCt8DtNuIChtyXsY
+   G/WTeemrG20vdEwEjVZ7095qYWVbeq77m/DNQFEobqRKz+jdASp7/XImw
+   A==;
+IronPort-SDR: oXQEKtzumh8aFBQ9cv2LKWL0ZdNRs81v4YLZE+dwkj6CvfRhd8hn2FHg9cyvjlEFMsU4QPBTe2
+ pP+G+H2DIPLWOabj9brbZC+2ppRAv+CzGMRq2Zhhgmt/OWOJ8ecmwtRf7SDVjbdJjTWl1xfUQy
+ 2g6hpkb2mVJTwMuFEH/jpiIsZVfWiFFIDxiyRdtpgWPoy5kixytm2bLg1k6wO1VffURzL9Vbdu
+ SsTbbL5ABgvy1Lf+4cdxiCDUiRiauL8hXY7veLS3Pz7bCGnuTK+1FIOCEX4DJw/yrOlWXCgR3y
+ La4=
+X-IronPort-AV: E=Sophos;i="5.82,249,1613404800"; 
+   d="scan'208";a="165539924"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 25 Apr 2021 14:02:25 +0800
+IronPort-SDR: VDr20nykoOy2HJsEKKeUVecfd8vd/hkxTnS7FjeDpdenKiqlpnHiRS0bTZnCG/0TDV+XxG2k7D
+ va4ph3OWnR1t6qkYHEIEOfXhjmFjTnHTYnoBu4u3eCf8kxUSUmcPJc4JY5/AWP6PjXR8NhsKVo
+ +3zvR1VGFeN0Vb/jtk/wC9ashPZnEBFWjP954bI1Az6bAh+CQaj9vV33CaIvzHD/L8pJpySgcF
+ WF5hzhasOcxiBp9p6ihJ0dUQForEN2cZA09tfU0DNMtHLtBMAdnPS/+LFWj3UbKdhqiE7hgG5a
+ Sht33PSUfK0LkccFG7xx3uoX
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2021 22:42:54 -0700
+IronPort-SDR: 1fIg2WOJDH1j1mTRicT/qqcsaBmAdCnni+FCJbE20CyNfmNEwx0sYJZ4nmkmEc8zu8//ItcraR
+ 0GGC9i4pLKl+4RPFwvMXeGgMETGPybaXWgM3v6to0k95DTj1cK+Adt3EIGUaoE7QMI7GzL6SlC
+ GxlKqTN0e4zgxy/PSH6pc5L6uIbXFdjUAjdEzIXZBb/w/UHgKtWP4jae1+EB7Z8vmEkmtPbJm1
+ HcVsLqAGHCVbklMjdSpz/qQvdviHkhd/zy6pN+kvFHTiZiXCOmsg7xy2FwI+8d5Y3et9IdWFqP
+ O2A=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip01.wdc.com with ESMTP; 24 Apr 2021 23:02:23 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-kernel@vger.kernel.org, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v5 0/2] Do not flush cache when it is disabled
+Date:   Sun, 25 Apr 2021 09:02:05 +0300
+Message-Id: <20210425060207.2591-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPeEHRZboCJs+eScjsLDybDzXSaP3jBLkAYiQt_7Ft2nog@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:47:11AM +0200, Krzysztof Kozlowski wrote:
-> On Fri, 16 Apr 2021 at 05:18, <zhuguangqing83@gmail.com> wrote:
-> >
-> > From: Guangqing Zhu <zhuguangqing83@gmail.com>
-> >
-> > Coccinelle noticed:
-> > drivers/input/touchscreen/goodix.c:497:8-33: ERROR: Threaded IRQ with no
-> > primary handler requested without IRQF_ONESHOT
-> >
-> > Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
-> > ---
-> >  drivers/input/touchscreen/goodix.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> 
-> Did you test it? There are several patches like this all over the tree
-> so it looks like "let's fix everything from Coccinelle" because you
-> ignored at least in some of the cases that the handler is not the
-> default primary one. I am not saying that the change is bad, but
-> rather it looks automated and needs more consideration.
+v4 -> v5
+ - patche "Update ext_csd.cache_ctrl if it was written" accepted
+ - Add one more patch: "Add cache_enabled bus ops"
+ - Add Acked-by tag
+ - another rebase
 
-At least the subject is bad because IRQF_ONESHOT is not missing, it is
-simply set up elsewhere, the patch itself is a noop. I do not see a
-reason to take this.
+v3 -> v4
+ - Attend Adrian's comments
+ - Add Acked-by tag
 
-Thanks.
+v2 -> v3:
+ - rebase onto recent cache changes
+
+v1 -> v2:
+ - Attend Adrian's comments
+
+Cache is a temporary storage space in an eMMC device. Volatile by
+nature, the cache should in typical case reduce the access time compared
+to an access to the main nonvolatile storage.
+
+Avri Altman (2):
+  mmc: Add cache_enabled bus ops
+  mmc: block: Issue flush only if allowed
+
+ drivers/mmc/core/block.c   | 9 +++++++++
+ drivers/mmc/core/core.h    | 7 +++++++
+ drivers/mmc/core/mmc.c     | 7 +++++++
+ drivers/mmc/core/mmc_ops.c | 4 +---
+ 4 files changed, 24 insertions(+), 3 deletions(-)
 
 -- 
-Dmitry
+2.25.1
+
