@@ -2,105 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCD636B5E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6733C36B5EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhDZPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:36:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22814 "EHLO mga07.intel.com"
+        id S234111AbhDZPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:38:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:25864 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233674AbhDZPg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:36:56 -0400
-IronPort-SDR: LhET2EHdWGVNCfGcxjwjB0uCY76L+Z/G5xPfRu5jzxhiLoic5ceG45RV75RHBDm1u8+eN9vvHZ
- tVx9YZDcEFSg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="260307153"
+        id S233829AbhDZPiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 11:38:14 -0400
+IronPort-SDR: 0Ps1ud8W/vAJpOFy7l9sVU/LcIfNMT2oGcMzF7mkEOyqDPypU4teQfk9WELc6DIDCFqPZ7Cwf1
+ 4vaOvDg5PMeA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="193167198"
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="260307153"
+   d="scan'208";a="193167198"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 08:36:14 -0700
-IronPort-SDR: m+nfO1E7Z8YUMK3wMtAGpECch3URtvb1mkCyVJVWh5V1sj+prtpkEb3i3fdBJSgFe5hEhY3f8n
- wpQPfu++SrrQ==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 08:37:33 -0700
+IronPort-SDR: xbpSw5gqLmsvik3kUAvICs6QTJ8iOjAx+3jhnjyKWKR1Zq0EvL4hrJJfNsMCyiavtIARNI+cLT
+ b/GHLOZwtzfg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="422698767"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Apr 2021 08:36:06 -0700
-Date:   Mon, 26 Apr 2021 23:36:05 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        zhengjun.xing@intel.com,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
- pre-calibration drift
-Message-ID: <20210426153605.GB89018@shbuild999.sh.intel.com>
-References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
- <20210425224709.1312655-6-paulmck@kernel.org>
- <20210426150127.GB23119@shbuild999.sh.intel.com>
- <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
+   d="scan'208";a="422699105"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga008.fm.intel.com with SMTP; 26 Apr 2021 08:37:26 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 26 Apr 2021 18:37:25 +0300
+Date:   Mon, 26 Apr 2021 18:37:25 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP
+ Workstation laptops
+Message-ID: <YIbeNYRbNsVcmyZi@intel.com>
+References: <20210423044700.247359-1-kai.heng.feng@canonical.com>
+ <YILAc6EhoWWhENq8@intel.com>
+ <CAAd53p72Y8Rda0Hk3WReLKPGJe8rwc5X-Pi5cyCpRPAm8sVEzg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAd53p72Y8Rda0Hk3WReLKPGJe8rwc5X-Pi5cyCpRPAm8sVEzg@mail.gmail.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:25:29AM -0700, Paul E. McKenney wrote:
-> On Mon, Apr 26, 2021 at 11:01:27PM +0800, Feng Tang wrote:
-> > Hi Paul,
-> > 
-> > On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
-> > > Because the x86 tsc_early clocksource is given a quick and semi-accurate
-> > > calibration (by design!), it might have drift rates well in excess of
-> > > the 0.1% limit that is in the process of being adopted.
-> > > 
-> > > Therefore, add a max_drift field to the clocksource structure that, when
-> > > non-zero, specifies the maximum allowable drift rate in nanoseconds over
-> > > a half-second period.  The tsc_early clocksource initializes this to five
-> > > miliseconds, which corresponds to the 1% drift rate limit suggested by
-> > > Xing Zhengjun.  This max_drift field is intended only for early boot,
-> > > so clocksource_watchdog() splats if it encounters a non-zero value in
-> > > this field more than 60 seconds after boot, inspired by a suggestion by
-> > > Thomas Gleixner.
-> > > 
-> > > This was tested by setting the clocksource_tsc ->max_drift field to 1,
-> > > which, as expected, resulted in a clock-skew event.
-> > 
-> > We've run the same last for this v10, and those 'unstable' thing [1] can
-> > not be reproduced!
+On Mon, Apr 26, 2021 at 07:10:06PM +0800, Kai-Heng Feng wrote:
+> On Fri, Apr 23, 2021 at 8:41 PM Ville Syrjälä
+> <ville.syrjala@linux.intel.com> wrote:
+> >
+> > On Fri, Apr 23, 2021 at 12:46:54PM +0800, Kai-Heng Feng wrote:
+> > > On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+> > > to discrete GFX after S3. This is not desirable, because userspace will
+> > > treat connected display as a new one, losing display settings.
+> > >
+> > > The expected behavior is to let discrete GFX drives all external
+> > > displays.
+> > >
+> > > The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+> > > The method is inside the BXT _DSM, so add the _DSM and call it
+> > > accordingly.
+> > >
+> > > I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
+> > > regression was found.
+> > >
+> > > v2:
+> > >  - Forward declare struct pci_dev.
+> > >
+> > > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+> > > References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
+> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > ---
+> > >  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
+> > >  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
+> > >  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
+> > >  3 files changed, 25 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> > > index 833d0c1be4f1..c7b57c22dce3 100644
+> > > --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> > > +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> > > @@ -14,11 +14,16 @@
+> > >
+> > >  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
+> > >  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
+> > > +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
+> > >
+> > >  static const guid_t intel_dsm_guid =
+> > >       GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+> > >                 0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+> > >
+> > > +static const guid_t intel_bxt_dsm_guid =
+> > > +     GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
+> > > +               0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
+> > > +
+> >
+> > I think this dsm is just supposed to be more or less an
+> > alternative to the opregion SCI stuff. Why there are two
+> > ways to do the same things I have no idea. The opregion
+> > spec does not tell us such mundane details.
 > 
-> Good to hear!  ;-)
+> Right now I think it's HP specific and from what I can see it doesn't
+> touch opregion.
+
+It's part of the opregion spec.
+
 > 
-> > We've reported one case that tsc can be wrongly judged as 'unstable'
-> > by 'refined-jiffies' watchdog [1], while reducing the threshold could
-> > make it easier to be triggered.
-> > 
-> > It could be reproduced on the a plaform with a 115200 serial console,
-> > and hpet been disabled (several x86 platforms has this), add 
-> > 'initcall_debug' cmdline parameter to get more debug message, we can
-> > see:
-> > 
-> > [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
-> > [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
-> > [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
-> > [    1.134220] clocksource:                       No current clocksource.
-> > [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
+> >
+> > It's also not documented to do anything except list the
+> > supported functions:
+> > "Get BIOS Data Functions Supported “Function #0"
+> >  This function can be called to discover which “_DSM” Functions are
+> >  supported. It may only return success if the return value accurately
+> >  lists supported Functions."
+> >
+> > But what you're apparently saying is that calling this changes
+> > the behaviour of the system somehow? That is troubling.
 > 
-> Just to make sure I understand: "could be reproduced" as in this is the
-> result from v9, and v10 avoids this, correct?
-
-Sorry I didn't make it clear. This is a rarely happened case, and can
-be reproduced with upstream kerenl, which has 62.5 ms threshold. 6/7 &
-7/7 patch of reducing the threshold can make it easier to be triggered.
-
-Thanks,
-Feng
-
-
-> 							Thanx, Paul
+> It flips a bit in BIOS-reserved Intel GPIO, and EC/hardware will
+> change the MUX based on the GPIO bit.
 > 
+> We can add a DMI check to match "HP" to minimize the potential
+> regression factor.
+
+I'm rather thinking that calling it always may be the right thing to do,
+assuming Windows does it as well. Maybe more vendors use it to backdoor in
+random junk like this :(
+
+-- 
+Ville Syrjälä
+Intel
