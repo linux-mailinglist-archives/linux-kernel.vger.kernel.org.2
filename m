@@ -2,170 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DD436B4C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6A136B4C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhDZOWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:22:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34410 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbhDZOWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:22:03 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619446880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MJ6EOI6m5aMtbVSyjGx8P9B6cH6gCK1DbxS5kxDcTwI=;
-        b=Qm6325BMyee6Edzoz1xvthynaLYkXLggmi0oO4aRuKO8nNMGIskj9zRTet9/4FEVuo7LM6
-        Ko3+9g+NRo3cnPSiiNsKnGzzWzNV13DjMuT4XFzNHGbMnbQyzbuLdygJmQBzzw+ylo+OjL
-        vKxFpPMHiA8xll1S5ZJLhuKrBTwv2mzxcjLVDY4zN9dpC98t/QH6zn9uBJJ99HhmYFefbs
-        4KbCbNwPLf7MDyXMM0Q4txG2vXKoJX42/RcqP5xyhYkbWWzt5uAHFwkwEZYA6rO3ut9WT6
-        Xu5A8pfYD5PufM8B2c9jXQZdaTwPGJlAMl2FAWzss9YieGOdplpRvdQN3pAlAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619446880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MJ6EOI6m5aMtbVSyjGx8P9B6cH6gCK1DbxS5kxDcTwI=;
-        b=c7fOkmvGbRyRpgY6VCsiH/tbCpAMe/hN2vAOuS17HNIhTe2DUK89BNdoYoDe9LdUX7vBAM
-        SubDH6mOYy3QlkDA==
-To:     Hikaru Nishida <hikalium@chromium.org>, kvm@vger.kernel.org
-Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [RFC PATCH 6/6] x86/kvm: Add a guest side support for virtual suspend time injection
-In-Reply-To: <20210426090644.2218834-7-hikalium@chromium.org>
-References: <20210426090644.2218834-1-hikalium@chromium.org> <20210426090644.2218834-7-hikalium@chromium.org>
-Date:   Mon, 26 Apr 2021 16:21:20 +0200
-Message-ID: <87mttlt9cv.ffs@nanos.tec.linutronix.de>
+        id S233494AbhDZOYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:24:19 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:59590 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233794AbhDZOYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:24:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619446996; bh=qLIEQUlgVaVlvxyYH9GXN75xqc+053qIC7Vi4/7g2gE=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=b5lbyA2nYksKhRDDI1B8UPskROEfYZYrjH/IlOLk3WV8fFrA1YMqUw2M5xmCuqv5/
+         fCN39ZezJi+hU98eFSXjGIzpgF+MV6gdOSY/zguDNn8RqaeKbXYVshFEWdc23XaWN4
+         knP9lXnPjD2hKCixYmruiNXxnW3x3r+RfLMKlm50=
+Received: by 192.168.90.14 [192.168.90.14] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Mon, 26 Apr 2021 16:23:16 +0200 (CEST)
+X-EA-Auth: 2/nJR6gMP/fq7ocmepPRQYccRlg/10OG6f7N+h7IU08n9RQvtmCxSJeZvB53v8u8S9twUQN2UvZbbDpn9AUI9JEL78wf2WM6
+Date:   Mon, 26 Apr 2021 19:53:09 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
+Message-ID: <YIbMzXTkvNicI0z3@192.168.1.8>
+References: <20210422103037.GA239298@localhost>
+ <20210426092125.GU3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426092125.GU3@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26 2021 at 18:06, Hikaru Nishida wrote:
-> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-> +/*
-> + * timekeeping_inject_suspend_time - Inject virtual suspend time
-> + * if it is requested by kvm host.
-> + * This function should be called under holding timekeeper_lock and
-> + * only from timekeeping_advance().
-> + */
-> +static void timekeeping_inject_virtual_suspend_time(struct timekeeper *tk)
-> +{
-> +	struct timespec64 delta;
-> +	u64 suspend_time;
-> +
-> +	suspend_time = kvm_get_suspend_time();
-> +	if (suspend_time <= tk->suspend_time_injected) {
-> +		/* Sufficient amount of suspend time is already injected. */
+On Mon, Apr 26, 2021 at 12:21:26PM +0300, Sakari Ailus wrote:
+> Hi Deepak,
+> 
+> Thanks for the patch.
+> 
+> On Thu, Apr 22, 2021 at 04:00:37PM +0530, Deepak R Varma wrote:
+> > It is recommended to use driver model diagnostic macros dev_*() instead
+> > of pr_*() since the former ensures that the log messages are always
+> > associated with the corresponding device and driver.
+> > 
+> > Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > ---
+> > 
+> > Note: There are few more pr_into() calls that I have not replaced since
+> > they are very basic (entry and exit) and temporary. They can be removed 
+> > if the APIs are fully tested. See this example:
+> > 	pr_info("%s S\n", __func__);
+> > 
+> > Let me know if I should remove them and resubmit this patch.
+> 
+> Most probably leftovers from development time. I think these could be
+> removed but perhaps by a separate patch.
 
-What's a sufficient amount of suspend time?
+Yes, sure. Will send in a separate patch. In fact, I will include this
+and the other patch and send those in the earlier clear up patch set. It
+all does the same thing for this driver.
 
-> +		return;
-> +	}
-> +	delta = ns_to_timespec64(suspend_time - tk->suspend_time_injected);
-> +	__timekeeping_inject_sleeptime(tk, &delta);
-> +	tk->suspend_time_injected = suspend_time;
-> +}
-> +#endif
->
-> +
->  /*
->   * timekeeping_advance - Updates the timekeeper to the current time and
->   * current NTP tick length
-> @@ -2143,6 +2166,10 @@ static void timekeeping_advance(enum timekeeping_adv_mode mode)
->  	/* Do some additional sanity checking */
->  	timekeeping_check_update(tk, offset);
->  
-> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
+> 
+> > 
+> > 
+> >  .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
+> >  1 file changed, 15 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > index 7e4e123fdb52..27153ec6f65e 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > @@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  	/* pixel clock calculattion */
+> >  	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
+> >  	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
+> > -	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
+> > +	dev_info(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
+> 
+> Over 80; please wrap. The same for the rest of such lines.
 
-There are better ways than slapping #ifdefs into the code.
+My apologies for the over sight. I will review and correct these.
 
-> +	timekeeping_inject_virtual_suspend_time(tk);
-> +#endif
+> 
+> >  
+> >  	/* get integration time */
+> >  	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
+> > @@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  	if (ret)
+> >  		return ret;
+> >  	buf->crop_horizontal_start = val | (reg_val & 0xFF);
+> > -	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
+> > +	dev_info(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
+> >  
+> >  	/* Getting crop_vertical_start */
+> >  	ret =  gc0310_read_reg(client, GC0310_8BIT,
+> > @@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  	if (ret)
+> >  		return ret;
+> >  	buf->crop_vertical_start = val | (reg_val & 0xFF);
+> > -	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
+> > +	dev_info(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
+> >  
+> >  	/* Getting output_width */
+> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> > @@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  	if (ret)
+> >  		return ret;
+> >  	buf->output_width = val | (reg_val & 0xFF);
+> > -	pr_info("output_width=%d\n", buf->output_width);
+> > +	dev_info(&client->dev, "output_width=%d\n", buf->output_width);
+> >  
+> >  	/* Getting output_height */
+> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> > @@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  	if (ret)
+> >  		return ret;
+> >  	buf->output_height = val | (reg_val & 0xFF);
+> > -	pr_info("output_height=%d\n", buf->output_height);
+> > +	dev_info(&client->dev, "output_height=%d\n", buf->output_height);
+> >  
+> >  	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
+> >  	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
+> > -	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
+> > -	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
+> > +	dev_info(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
+> > +	dev_info(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
+> >  
+> >  	/* Getting line_length_pck */
+> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> > @@ -389,8 +389,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  		return ret;
+> >  	sh_delay = reg_val;
+> >  	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
+> > -	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
+> > -		sh_delay, buf->line_length_pck);
+> > +	dev_info(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
+> > +		 sh_delay, buf->line_length_pck);
+> >  
+> >  	/* Getting frame_length_lines */
+> >  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> > @@ -404,8 +404,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+> >  		return ret;
+> >  	vert_blanking = val | (reg_val & 0xFF);
+> >  	buf->frame_length_lines = buf->output_height + vert_blanking;
+> > -	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
+> > -		buf->frame_length_lines);
+> > +	dev_info(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
+> > +		 buf->frame_length_lines);
+> >  
+> >  	buf->binning_factor_x = res->bin_factor_x ?
+> >  				res->bin_factor_x : 1;
+> > @@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
+> >  		dgain = gain / 2;
+> >  	}
+> >  
+> > -	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
+> > +	dev_info(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
+> >  
+> >  	/* set analog gain */
+> >  	ret = gc0310_write_reg(client, GC0310_8BIT,
+> > @@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+> >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> >  	int ret;
+> >  
+> > -	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
+> > +	dev_info(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
+> >  
+> >  	/* set exposure */
+> >  	ret = gc0310_write_reg(client, GC0310_8BIT,
+> > @@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
+> >  		return -ENODEV;
+> >  	}
+> >  	id = ((((u16)high) << 8) | (u16)low);
+> > -	pr_info("sensor ID = 0x%x\n", id);
+> > +	dev_info(&client->dev, "sensor ID = 0x%x\n", id);
+> >  
+> >  	if (id != GC0310_ID) {
+> >  		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
+> > @@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
+> >  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> >  	int ret;
+> >  
+> > -	pr_info("%s S enable=%d\n", __func__, enable);
+> > +	dev_info(&client->dev, "%s S enable=%d\n", __func__, enable);
+> >  	mutex_lock(&dev->input_lock);
+> >  
+> >  	if (enable) {
+> 
+> -- 
+> Kind regards,
+> 
+> Sakari Ailus
 
-So this is invoked on every tick? How is that justified?
+Thank you Sakari.
+deepak.
 
-The changelog is silent about this, but that's true for most of your
-changelogs as they describe what the patch is doing and not the WHY,
-which is the most important information. Also please do a
 
-grep 'This patch' Documentation/process
-
-the match there will lead you also to documentation about changelogs in
-general.
-
-Now to the overall approach, which works only for a subset of host
-systems:
-
-  Host resumes
-      timekeeping_resume()
-
-        delta = get_suspend_time_if_possible(); <----- !!
-
-        kvm_arch_timekeeping_inject_sleeptime(delta)
-            TSC offset adjustment on all vCPUs
-            and prepare for magic injection
-
-So this fails to work on host systems which cannot calculate the suspend
-time in timekeeping_resume() because the clocksource stops in suspend
-and some other source, e.g. RTC, is not accessible at that point in
-time. There is a world outside of x86.
-
-So on the host side the notification for the hypervisor has to be in
-__timekeeping_inject_sleeptime() obviously.
-
-Also I explicitely said hypervisor as we really don't want anything KVM
-only here because there are other hypervisors which might want to have
-the same functionality. We're not going to add a per hypervisor call
-just because.
-
-Now to the guest side:
-
-  Guest is unfrozen
-
-   clocksource in guest restarts at the point of freeze (TSC on x86)
-
-     All CLOCK ids except CLOCK_MONOTONIC continue from the state of
-     freeze up to the point where the first tick() after unfreeze
-     happens in the guest.
-     
-     Now that first tick does sleep time injection which makes all
-     clocks except CLOCK_MONOTONIC jump forward by the amount of time
-     which was spent in suspend on the host.
-
-     But why is this gap correct? The first tick after unfreeze might be
-     up to a jiffie away.
-
-Again the changelog is silent about this. 
-
-Also for the guest side there has to be a better way than lazily polling
-a potential suspend injection on every tick and imposing the overhead
-whether it's needed or not.
-
-That's a one off event and really should be handled by some one off
-injection mechanism which then invokes the existing
-timekeeping_inject_sleeptime64(). There is no need for special
-KVM/hypervisor magic in the core timekeeping code at all.
-
-Seriously, if the only way to handle one off event injection from
-hypervisor to guest is by polling, then there is a fundamental design
-flaw in KVM or whatever hypervisor.
-
-Thanks,
-
-        tglx
