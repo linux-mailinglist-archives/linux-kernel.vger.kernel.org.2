@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CEE36BB2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD4636BB32
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236202AbhDZV0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234217AbhDZV0e (ORCPT
+        id S237001AbhDZV21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:28:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60683 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234146AbhDZV2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:26:34 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01387C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:25:51 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C9161891AE;
-        Tue, 27 Apr 2021 09:25:42 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1619472342;
-        bh=g2nmzz+iF9AnESqZRCU3eNTJ2vsNP4pPDFPWeqtXgQw=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=i7OGZ/jz4GL8AxW+dYkInYJapng7ijHut512W6M8pe0l0jtOD9wfnLdSOwewHjVUy
-         v8UVkOvmGwhzHpAm38UN27fLCGLJsin3HZNnx2xKt7+6ZzEp5elgaSggfhEECrzU95
-         Qj3WYtnBPwqsGmgE7kiQQLF1Oaa4PSQeOk1qTLhEeYmcb9qqGod8ozR5Sydwpar4fc
-         cg1i11IRXXytgdrRRkP2xpRxlLcA+Fzx4RsaHMMcZAqoIuWOiqQOsM52iZrgD6c/vH
-         tUBWs5ue4UX7i6ls46tjVBc9vfm9r4wr7zqoPT5NC+1V7jEDkrJmXpa1QaCFDpmJDE
-         yvNXLkIf2fCBg==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60872fd60001>; Tue, 27 Apr 2021 09:25:42 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 27 Apr 2021 09:25:42 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.015; Tue, 27 Apr 2021 09:25:42 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     =?utf-8?B?5pu554Wc?= <cao88yu@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "olteanv@gmail.com" <olteanv@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: mv88e6171r and mv88e6161 switch not working properly after commit
- 0f3c66a3c7b4e8b9f654b3c998e9674376a51b0f
-Thread-Topic: mv88e6171r and mv88e6161 switch not working properly after
- commit 0f3c66a3c7b4e8b9f654b3c998e9674376a51b0f
-Thread-Index: AQHXOBZmIGlhuMeONku8NdcHoOSOH6rGjBOA
-Date:   Mon, 26 Apr 2021 21:25:42 +0000
-Message-ID: <b5768b0e-1c11-b817-b66f-c565c0afb910@alliedtelesis.co.nz>
-References: <CACu-5+1X1y-DmbyqB4Tooj+DuARhK_V1F16Pa3hWNF9q0sexbg@mail.gmail.com>
-In-Reply-To: <CACu-5+1X1y-DmbyqB4Tooj+DuARhK_V1F16Pa3hWNF9q0sexbg@mail.gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <90D1DE511086194F843E2EAD5EF635B8@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Mon, 26 Apr 2021 17:28:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619472461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o3JpOlUQxKikE6j4QEgKul9bAOYHZGdHCW6yEmwN6gQ=;
+        b=U+euS1wjh3EGrhi514bTUC7ElRNFDwdjiv/LEh3EfmaIaNjcmtrCUk2mCNuqTxyQ15wH+B
+        oxHeBIDvp8AAcUSQOuVJH2WlvxEYsF7TmMX1Zj2Zn8ID50DMWUIKIA+ZPHXtfscvNFfOHx
+        rt+U4eVdJpJMfgUAoFDzLXVYxQ05yIc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-Kug2PHRzNzCy8RzPRlPTAA-1; Mon, 26 Apr 2021 17:27:38 -0400
+X-MC-Unique: Kug2PHRzNzCy8RzPRlPTAA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A563D1922964;
+        Mon, 26 Apr 2021 21:27:37 +0000 (UTC)
+Received: from krava (unknown [10.40.193.34])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BFE2218A73;
+        Mon, 26 Apr 2021 21:27:35 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 23:27:34 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@kernel.org,
+        acme@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        songliubraving@fb.com
+Subject: Re: [PATCH v5 5/5] perf-stat: introduce bpf_counter_ops->disable()
+Message-ID: <YIcwRj4WtsZln4SR@krava>
+References: <20210425214333.1090950-1-song@kernel.org>
+ <20210425214333.1090950-6-song@kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=myVwGOACAAAA:8 a=o6mhGMi_7v_8qPRsk9kA:9 a=QEXdDO2ut3YA:10 a=p5cQTkJONggA:10 a=PizmSyiMN4ROI5oN2gJl:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425214333.1090950-6-song@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIDIzLzA0LzIxIDc6NTcgcG0sIOabueeFnCB3cm90ZToNCj4gSGksDQo+ICAgICAg
-SSd2ZSBjb25maXJtZWQgdGhhdCB0aGUgbXY4OGU2MTcxciBhbmQgbXY4OGU2MTYxIHN3aXRjaCBy
-dW4gaW50bw0KPiBNVFUgaXNzdWUgYWZ0ZXIgdGhhdCBjb21taXQgKGZyb20ga2VybmVsIDUuOS4w
-IHRvIGtlcm5lbCA1LjEyLXJjKToNClNvcnJ5IHRvIGhlYXIgdGhhdC4NCj4gY29tbWl0IDBmM2M2
-NmEzYzdiNGU4YjlmNjU0YjNjOTk4ZTk2NzQzNzZhNTFiMGYNCj4gQXV0aG9yOiBDaHJpcyBQYWNr
-aGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+DQo+IERhdGU6ICAgRnJpIEp1
-bCAyNCAxMToyMToyMCAyMDIwICsxMjAwDQo+DQo+ICAgICAgbmV0OiBkc2E6IG12ODhlNnh4eDog
-TVY4OEU2MDk3IGRvZXMgbm90IHN1cHBvcnQganVtYm8gY29uZmlndXJhdGlvbg0KPg0KPiAgICAg
-IFRoZSBNVjg4RTYwOTcgY2hpcCBkb2VzIG5vdCBzdXBwb3J0IGNvbmZpZ3VyaW5nIGp1bWJvIGZy
-YW1lcy4gUHJpb3IgdG8NCj4gICAgICBjb21taXQgNWY0MzY2NjYwZDY1IG9ubHkgdGhlIDYzNTIs
-IDYzNTEsIDYxNjUgYW5kIDYzMjAgY2hpcHMgY29uZmlndXJlZA0KPiAgICAgIGp1bWJvIG1vZGUu
-IFRoZSByZWZhY3RvciBhY2NpZGVudGFsbHkgYWRkZWQgdGhlIGZ1bmN0aW9uIGZvciB0aGUgNjA5
-Ny4NCj4gICAgICBSZW1vdmUgdGhlIGVycm9uZW91cyBmdW5jdGlvbiBwb2ludGVyIGFzc2lnbm1l
-bnQuDQo+DQpEbyB5b3UgbWVhbiBvbmUgb2YgdGhlIG90aGVyIGNvbW1pdHMgaW4gdGhhdCBzZXJp
-ZXM/IEkgdGhpbmsgcGVyaGFwcyB0aGUgDQo4OGU2MTYxIGlzIG1pc3NpbmcgZnJvbSBjb21taXQg
-MWJhZjBmYWMxMGZiICgibmV0OiBkc2E6IG12ODhlNnh4eDogVXNlIA0KY2hpcC13aWRlIG1heCBm
-cmFtZSBzaXplIGZvciBNVFUiKS4gSSB3YXMgZG9pbmcgdGhhdCBtb3N0bHkgZnJvbSB0aGUgDQpk
-YXRhc2hlZXRzIEkgaGFkIGF2YWlsYWJsZSBzbyBjb3VsZCBoYXZlIGVhc2lseSBtaXNzZWQgb25l
-Lg0KDQo+IEFmdGVyIG15IG1vZGlmeToNCj4NCj4gcmVtb3ZlDQo+IC5wb3J0X3NldF9qdW1ib19z
-aXplID0gbXY4OGU2MTY1X3BvcnRfc2V0X2p1bWJvX3NpemUsDQo+DQo+IGFkZA0KPiAuc2V0X21h
-eF9mcmFtZV9zaXplID0gbXY4OGU2MTg1X2cxX3NldF9tYXhfZnJhbWVfc2l6ZSwNCj4NCj4gVGhl
-IGlzc3VlIGlzIGdvbmUsIHNvIGNvdWxkIHlvdSBwbGVhc2UgY29tbWl0IGEgZml4IGZvciB0aGVz
-ZSB0d28gY2hpcHM/DQpJJ20gdHJhdmVsaW5nIHJpZ2h0IG5vdyBidXQgSSBzaG91bGQgYmUgYWJs
-ZSB0byB0YWtlIGEgbG9vayBuZXh0IHdlZWsgDQooYXNzdW1pbmcgc29tZW9uZSBlbHNlIGRvZXNu
-J3QgYmVhdCBtZSB0byBpdCkuDQo+IFBTOiB0aGVyZSBhcmUgc29tZSBtb3JlIGluZm8gb24gdGhp
-cyBwb3N0Og0KPiBodHRwczovL2ZvcnVtLmRvb3phbi5jb20vcmVhZC5waHA/MiwxMTk0NDkNCj4N
-Cj4NCj4gUmVnYXJkcyE=
+On Sun, Apr 25, 2021 at 02:43:33PM -0700, Song Liu wrote:
+
+SNIP
+
+> +static inline int bpf_counter__disable(struct evsel *evsel __maybe_unused)
+> +{
+> +	return 0;
+> +}
+> +
+>  static inline int bpf_counter__read(struct evsel *evsel __maybe_unused)
+>  {
+>  	return -EAGAIN;
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index d29a8a118973c..e71041c890102 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -17,6 +17,7 @@
+>  #include "evsel.h"
+>  #include "debug.h"
+>  #include "units.h"
+> +#include "bpf_counter.h"
+>  #include <internal/lib.h> // page_size
+>  #include "affinity.h"
+>  #include "../perf.h"
+> @@ -421,6 +422,9 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+>  	if (affinity__setup(&affinity) < 0)
+>  		return;
+>  
+> +	evlist__for_each_entry(evlist, pos)
+> +		bpf_counter__disable(pos);
+
+I was wondering why you don't check evsel__is_bpf like
+for the enable case.. and realized that we don't skip
+bpf evsels in __evlist__enable and __evlist__disable
+like we do in read_affinity_counters
+
+so I guess there's extra affinity setup and bunch of
+wrong ioctls being called?
+
+jirka
+
+
+> +
+>  	/* Disable 'immediate' events last */
+>  	for (imm = 0; imm <= 1; imm++) {
+>  		evlist__for_each_cpu(evlist, i, cpu) {
+> -- 
+> 2.30.2
+> 
+
