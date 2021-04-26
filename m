@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D5A36AD07
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB23136AD0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbhDZHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42422 "EHLO mail.kernel.org"
+        id S232344AbhDZHcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232297AbhDZHb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232318AbhDZHb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 03:31:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B20FD61006;
-        Mon, 26 Apr 2021 07:31:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A06611C9;
+        Mon, 26 Apr 2021 07:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422275;
-        bh=LOlADFzhj9u7N+oW6X7MLeJkJfSO1cq7azF0vxb+kMc=;
+        s=korg; t=1619422277;
+        bh=vKweCKWSIkgNbcEEo2obRL3rL/LqXkVVwAvne2xhoAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1egjIwL6ZG1TCczDyejjzwsOUI5DbEjnAFu3CNhFGHLWkLQNFaL54k7cvbKcaSHho
-         h+mUYqKYO5J7ukZMNMmohBKkbVL+pVqUHbcOWYgjiZxRT8rlB0x6F1NrxXMr0p1D9Q
-         nAWYVGVifcXBAS6OPZchwP5oOvGsdpb/Vvr/iWKY=
+        b=h4GIm2WivxoJe6KjHklEUcFd/MsPGIl7ec2Bxlfd94JdTKKVskY5aoFqNIBxWr4fs
+         bULnMjPfAfXB+wQaHSk3eeyuqsdXpiZjAl/bNmupSqpwRD6p7A7NIsFtenX0WHpKye
+         6MHpqvB9NlW6FAWYdxDsAlNt5NbYfuuaF+wZ0soU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabian Vogt <fabian@ritter-vogt.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 02/32] Input: nspire-keypad - enable interrupts only when opened
-Date:   Mon, 26 Apr 2021 09:29:00 +0200
-Message-Id: <20210426072816.678166882@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 03/32] dmaengine: dw: Make it dependent to HAS_IOMEM
+Date:   Mon, 26 Apr 2021 09:29:01 +0200
+Message-Id: <20210426072816.708221425@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
 References: <20210426072816.574319312@linuxfoundation.org>
@@ -40,119 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabian Vogt <fabian@ritter-vogt.de>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 69d5ff3e9e51e23d5d81bf48480aa5671be67a71 ]
+[ Upstream commit 88cd1d6191b13689094310c2405394e4ce36d061 ]
 
-The driver registers an interrupt handler in _probe, but didn't configure
-them until later when the _open function is called. In between, the keypad
-can fire an IRQ due to touchpad activity, which the handler ignores. This
-causes the kernel to disable the interrupt, blocking the keypad from
-working.
+Some architectures do not provide devm_*() APIs. Hence make the driver
+dependent on HAVE_IOMEM.
 
-Fix this by disabling interrupts before registering the handler.
-Additionally, disable them in _close, so that they're only enabled while
-open.
-
-Fixes: fc4f31461892 ("Input: add TI-Nspire keypad support")
-Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
-Link: https://lore.kernel.org/r/3383725.iizBOSrK1V@linux-e202.suse.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: dbde5c2934d1 ("dw_dmac: use devm_* functions to simplify code")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Link: https://lore.kernel.org/r/20210324141757.24710-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/nspire-keypad.c | 56 ++++++++++++++------------
- 1 file changed, 31 insertions(+), 25 deletions(-)
+ drivers/dma/dw/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/input/keyboard/nspire-keypad.c b/drivers/input/keyboard/nspire-keypad.c
-index 7abfd34eb87e..bcec72367c1d 100644
---- a/drivers/input/keyboard/nspire-keypad.c
-+++ b/drivers/input/keyboard/nspire-keypad.c
-@@ -96,9 +96,15 @@ static irqreturn_t nspire_keypad_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
+diff --git a/drivers/dma/dw/Kconfig b/drivers/dma/dw/Kconfig
+index e00c9b022964..6ea3e95c287b 100644
+--- a/drivers/dma/dw/Kconfig
++++ b/drivers/dma/dw/Kconfig
+@@ -11,6 +11,7 @@ config DW_DMAC_BIG_ENDIAN_IO
  
--static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
-+static int nspire_keypad_open(struct input_dev *input)
- {
-+	struct nspire_keypad *keypad = input_get_drvdata(input);
- 	unsigned long val = 0, cycles_per_us, delay_cycles, row_delay_cycles;
-+	int error;
-+
-+	error = clk_prepare_enable(keypad->clk);
-+	if (error)
-+		return error;
- 
- 	cycles_per_us = (clk_get_rate(keypad->clk) / 1000000);
- 	if (cycles_per_us == 0)
-@@ -124,30 +130,6 @@ static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
- 	keypad->int_mask = 1 << 1;
- 	writel(keypad->int_mask, keypad->reg_base + KEYPAD_INTMSK);
- 
--	/* Disable GPIO interrupts to prevent hanging on touchpad */
--	/* Possibly used to detect touchpad events */
--	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
--	/* Acknowledge existing interrupts */
--	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
--
--	return 0;
--}
--
--static int nspire_keypad_open(struct input_dev *input)
--{
--	struct nspire_keypad *keypad = input_get_drvdata(input);
--	int error;
--
--	error = clk_prepare_enable(keypad->clk);
--	if (error)
--		return error;
--
--	error = nspire_keypad_chip_init(keypad);
--	if (error) {
--		clk_disable_unprepare(keypad->clk);
--		return error;
--	}
--
- 	return 0;
- }
- 
-@@ -155,6 +137,11 @@ static void nspire_keypad_close(struct input_dev *input)
- {
- 	struct nspire_keypad *keypad = input_get_drvdata(input);
- 
-+	/* Disable interrupts */
-+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
-+	/* Acknowledge existing interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_INT);
-+
- 	clk_disable_unprepare(keypad->clk);
- }
- 
-@@ -215,6 +202,25 @@ static int nspire_keypad_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	}
- 
-+	error = clk_prepare_enable(keypad->clk);
-+	if (error) {
-+		dev_err(&pdev->dev, "failed to enable clock\n");
-+		return error;
-+	}
-+
-+	/* Disable interrupts */
-+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
-+	/* Acknowledge existing interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_INT);
-+
-+	/* Disable GPIO interrupts to prevent hanging on touchpad */
-+	/* Possibly used to detect touchpad events */
-+	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
-+	/* Acknowledge existing GPIO interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
-+
-+	clk_disable_unprepare(keypad->clk);
-+
- 	input_set_drvdata(input, keypad);
- 
- 	input->id.bustype = BUS_HOST;
+ config DW_DMAC
+ 	tristate "Synopsys DesignWare AHB DMA platform driver"
++	depends on HAS_IOMEM
+ 	select DW_DMAC_CORE
+ 	select DW_DMAC_BIG_ENDIAN_IO if AVR32
+ 	default y if CPU_AT32AP7000
+@@ -21,6 +22,7 @@ config DW_DMAC
+ config DW_DMAC_PCI
+ 	tristate "Synopsys DesignWare AHB DMA PCI driver"
+ 	depends on PCI
++	depends on HAS_IOMEM
+ 	select DW_DMAC_CORE
+ 	help
+ 	  Support the Synopsys DesignWare AHB DMA controller on the
 -- 
 2.30.2
 
