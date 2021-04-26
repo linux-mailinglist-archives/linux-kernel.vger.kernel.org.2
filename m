@@ -2,133 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B52D36B3ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0459436B3EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbhDZNQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 09:16:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48437 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231862AbhDZNQ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:16:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619442975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q1QoYvHAS2PJHcD4J9inVUs2O0h3REMpAF4YKOpBDCU=;
-        b=A/N3ILX1a/NS0LikGim/U4Enl2Rp5LDakBcKazd24HsqyDXDzQ7lrRO9BItWjGfdd+Jtqn
-        hOiJSbu/BsuQVMPCjXPLVXLRbzx7fgqxW47owxa/1lOzEYZkL/GzzfC5vkI7jTM6W8XS10
-        qAXrWgb15+CgFyGNmTtuof330VMoZgA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-d0pn2xLjOviwd4szRfX5vw-1; Mon, 26 Apr 2021 09:16:13 -0400
-X-MC-Unique: d0pn2xLjOviwd4szRfX5vw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7C50343A8;
-        Mon, 26 Apr 2021 13:16:10 +0000 (UTC)
-Received: from starship (unknown [10.40.192.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 615C71002EE6;
-        Mon, 26 Apr 2021 13:15:54 +0000 (UTC)
-Message-ID: <0cfc93405443bed335981ffd5cc07272ffb0ce3a.camel@redhat.com>
-Subject: Re: [RFC PATCH 0/6] x86/kvm: Virtual suspend time injection support
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Hikaru Nishida <hikalium@chromium.org>, kvm@vger.kernel.org
-Cc:     suleiman@google.com, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Date:   Mon, 26 Apr 2021 16:15:52 +0300
-In-Reply-To: <20210426090644.2218834-1-hikalium@chromium.org>
-References: <20210426090644.2218834-1-hikalium@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S233679AbhDZNRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 09:17:04 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57069 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233639AbhDZNRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 09:17:00 -0400
+IronPort-SDR: 0HSAgCNe2jiemAoIwXW+KKzSc0WBAzar8kENjloFPizDf5/kaUSXMvvOnNA922igVNPP2pkIjd
+ J/pbkzSiic7Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175815560"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="175815560"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 06:16:17 -0700
+IronPort-SDR: Ti+R+OWnJB5xZhTB9xttgtscJxu8efdsn4ZOYzQKqv3fuxMhSLOBS7O/8SIMqlXbITTI+E6uuo
+ 84m/HTlgOrqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="424903128"
+Received: from nntpdsd52-165.inn.intel.com ([10.125.52.165])
+  by orsmga007.jf.intel.com with ESMTP; 26 Apr 2021 06:16:14 -0700
+From:   alexander.antonov@linux.intel.com
+To:     peterz@infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     alexander.shishkin@linux.intel.com, kan.liang@linux.intel.com,
+        ak@linux.intel.com, steve.wahl@hpe.com, kyle.meyer@hpe.com,
+        alexander.antonov@linux.intel.com,
+        alexey.v.bayduraev@linux.intel.com
+Subject: [PATCH 0/3] perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on SNR and ICX
+Date:   Mon, 26 Apr 2021 16:16:11 +0300
+Message-Id: <20210426131614.16205-1-alexander.antonov@linux.intel.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-26 at 18:06 +0900, Hikaru Nishida wrote:
-> Hi,
-> 
-> This patch series adds virtual suspend time injection support to KVM.
-> 
-> Before this change, if the host goes into suspended state while the
-> guest is running, the guest will experience a time jump after the host's
-> resume. This can confuse some services in the guest since they can't
-> detect if the system went into suspend or not by comparing
-> CLOCK_BOOTTIME and CLOCK_MONOTONIC.
-> 
-> To solve this problem, we wanted to add a way to adjust the guest clocks
-> without actually suspending the guests. However, there was no way to
-> modify a gap between CLOCK_BOOTTIME and CLOCK_MONOTONIC without actually
-> suspending the guests. Therefore, this series introduce a new struct
-> called kvm_host_suspend_time to share the suspend time between host and
-> guest and a mechanism to inject a suspend time to the guest while
-> keeping
-> monotonicity of the clocks.
-> 
-> Could you take a look and let me know how we can improve the patches if
-> they are doing something wrong?
-> 
-> Thanks,
-> 
-> Hikaru Nishida
-> 
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-I haven't yet looked at that, but in my experience when I suspend the host
-with VMs running, after resume all my VMs complain something about TSC watchdog
-and stop using it. The TSC is stable/synchornized, but after resume it does
-reset to 0 on all CPUs.
+Currently I/O stacks to IIO PMON mapping is available on Skylake servers only
+and it is exposed through attributes /sys/devices/uncore_iio_<pmu_idx>/dieX,
+where dieX is a file which holds "Segment:Root Bus" for PCIe root port which
+can be monitored by that IIO PMON block.
 
-I use INVTSC flag for all my VMs.
-I haven't investigated this futher yet.
+The example for 2-S Skylake server:
 
-Just my 0.2 cents.
+# tail /sys/devices/uncore_iio_*/die*
+==> /sys/devices/uncore_iio_0/die0 <==
+0000:00
+==> /sys/devices/uncore_iio_0/die1 <==
+0000:80
+==> /sys/devices/uncore_iio_1/die0 <==
+0000:17
+==> /sys/devices/uncore_iio_1/die1 <==
+0000:85
+==> /sys/devices/uncore_iio_2/die0 <==
+0000:3a
+==> /sys/devices/uncore_iio_2/die1 <==
+0000:ae
+==> /sys/devices/uncore_iio_3/die0 <==
+0000:5d
+==> /sys/devices/uncore_iio_3/die1 <==
+0000:d7
 
-Best regards,
-	Maxim Levitsky
+Mapping algorithm for Skylake server is based on topology information
+from CPU_BUS_NO MSR but this approach is not applicable for Snowridge and
+Icelake server.
+In case of these platforms mapping can be enabled by reading SAD_CONTROL_CFG
+CSR from Mesh2IIO device with 0x09a2 DID. This CSR contains stack IDs in its
+own notation and these IDs are statically mapped on IDs in PMON notation.
 
-> 
-> 
-> Hikaru Nishida (6):
->   x86/kvm: Reserve KVM_FEATURE_HOST_SUSPEND_TIME and
->     MSR_KVM_HOST_SUSPEND_TIME
->   x86/kvm: Add a struct and constants for virtual suspend time injection
->   x86/kvm: Add CONFIG_KVM_VIRT_SUSPEND_TIMING
->   x86/kvm: Add a host side support for virtual suspend time injection
->   x86/kvm: Add CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
->   x86/kvm: Add a guest side support for virtual suspend time injection
-> 
->  Documentation/virt/kvm/cpuid.rst     |  3 +
->  Documentation/virt/kvm/msr.rst       | 29 +++++++++
->  arch/x86/Kconfig                     | 13 ++++
->  arch/x86/include/asm/kvm_host.h      |  5 ++
->  arch/x86/include/asm/kvm_para.h      |  9 +++
->  arch/x86/include/uapi/asm/kvm_para.h |  6 ++
->  arch/x86/kernel/kvmclock.c           | 25 ++++++++
->  arch/x86/kvm/Kconfig                 | 13 ++++
->  arch/x86/kvm/cpuid.c                 |  4 ++
->  arch/x86/kvm/x86.c                   | 89 +++++++++++++++++++++++++++-
->  include/linux/kvm_host.h             |  7 +++
->  include/linux/timekeeper_internal.h  |  4 ++
->  kernel/time/timekeeping.c            | 31 ++++++++++
->  13 files changed, 237 insertions(+), 1 deletion(-)
-> 
+This patchset enables I/O stacks to IIO PMON mapping for Snowridge and Icelake
+server.
 
+Alexander Antonov (3):
+  perf/x86/intel/uncore: Generalize I/O stacks to PMON mapping procedure
+  perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on SNR
+  perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on ICX
+
+ arch/x86/events/intel/uncore.h       |   1 +
+ arch/x86/events/intel/uncore_snbep.c | 173 ++++++++++++++++++++++++++-
+ 2 files changed, 168 insertions(+), 6 deletions(-)
+
+
+base-commit: cface0326a6c2ae5c8f47bd466f07624b3e348a7
+-- 
+2.21.3
 
