@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E687836AEFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646E936AEE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhDZHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:50:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60148 "EHLO mail.kernel.org"
+        id S233719AbhDZHtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233459AbhDZHlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:41:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70246613AF;
-        Mon, 26 Apr 2021 07:39:16 +0000 (UTC)
+        id S232788AbhDZHjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 617FD613E3;
+        Mon, 26 Apr 2021 07:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422757;
-        bh=zAgo88+hqQFP8MeP6wbx6FNplEoNlK4DeHeoK5/GuhY=;
+        s=korg; t=1619422711;
+        bh=WA+hp9zzQ6k702CVT4hO1F/VsZZ0r5aaOv+Hng2CqMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ILyK4petjasTdlTCA3Tu4XLCx7WEjNfSFib0SoqykDGJ9PNoZjbuKEvzEskLL1GH/
-         7eNLVkIe2z9FFuLgVAsfe46Enev9DD59xc8+gH6PL5ZTLULvT7wEsme7tRUXWlezQk
-         FEUkaBUZpNz/7RXNTE1euZs5Bk+zolCmbRJijbJU=
+        b=IiEZHQ9NKXByavmcMk0aB7U5Pkr+Qw1KUx21nFxYfG4XFkkH02fh/+T53y4BgI8jO
+         mOaJBdAA7l6LzNGcZ8cZUs5pqqlG8guawEjx/7zEBKZxaYPz/A9limbBj/gW0f0AAh
+         wi23SR+Hnw21960Sl4EKH3/xJOofr2c2AonhFe48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -33,12 +33,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tiezhu Yang <yangtiezhu@loongson.cn>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 16/36] perf auxtrace: Fix potential NULL pointer dereference
-Date:   Mon, 26 Apr 2021 09:29:58 +0200
-Message-Id: <20210426072819.338696417@linuxfoundation.org>
+Subject: [PATCH 5.4 08/20] perf auxtrace: Fix potential NULL pointer dereference
+Date:   Mon, 26 Apr 2021 09:29:59 +0200
+Message-Id: <20210426072816.958871353@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -79,10 +79,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index d8ada6a3c555..d3c15b53495d 100644
+index 61b8dc45428f..ae5b97427192 100644
 --- a/tools/perf/util/auxtrace.c
 +++ b/tools/perf/util/auxtrace.c
-@@ -636,7 +636,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
+@@ -586,7 +586,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
  		break;
  	}
  
