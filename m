@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68C436B4FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A06B36B506
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbhDZOgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbhDZOgp (ORCPT
+        id S233856AbhDZOiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:38:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22098 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232575AbhDZOiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:36:45 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F256C061756;
-        Mon, 26 Apr 2021 07:36:02 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id g9-20020a4ad3090000b02901ec6daba49aso5504475oos.6;
-        Mon, 26 Apr 2021 07:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=1uvxZJv7NEH6OlB0CPMKpMb7Akfa13bCI4rzIGoVg9Q=;
-        b=Zyfy0F0wkpJKZ9NeMFQOcMIoCxL1+3xCAMMZGPv2+Q/bj3I0wih25Z5tYK9a8heIrz
-         zAu/Tn0ZoRs/U8XkmjosQ+5kaTcHc+zBa7f3C9QsM/LM8opUePa0Ul2wCabc33tD1dkX
-         LOmjrozfLmoXm8yJfXTuaC5V5Au80KUeeU2ReZRT+NBH4LdLsT1/EROnDfNIn5hLabSf
-         66swUVuvEJiZTDpcgqKijo1aaPhDRAVAXTmAFmoeQYj4x0sGGkjs0ejQj4AKKYpXYh9d
-         adq/VzHKxq1a8D4CwVA6Zf13sSIvE2aBzrKgCmvhR32iTgTvcB+HTW0QLQ6XE3OAetEj
-         UYWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=1uvxZJv7NEH6OlB0CPMKpMb7Akfa13bCI4rzIGoVg9Q=;
-        b=VxKQMlamO5tRlceAu7y+OajjJ61kJC3UveBxyWpx6hkjKFdmM0x6KFIEnH1C+1TI+3
-         92+lvLou8HtAW9wlwJJc+yCPddfs7lOOq9zACM3/5hwui+Fj7XuFMxZYgjj9yXKtRUQg
-         WeCV6XF0JEafiUIZldLYyidhskx9Ct1gJEeef5+ZDPctuSptHsI8sIBXnx8F/8tf1Pjz
-         f8S6ZC+sXInANNYHaVmhYIp6MATehOsV0b46UhfEECvG4LfmhIqIaKE61o2ZyrzHQh48
-         8VwF5kfwxk32AjCXMpG8ylBaSuG0Tyo0XpejGrQWau5RKClMJpmyV9cwvwzE93sV2Kdx
-         Wj1Q==
-X-Gm-Message-State: AOAM531fceAV3w3h+Ck2gB4Q/44O/DXptWfedjTmXMq0FGm75IjLXSoz
-        w6CeM9S0lLKF72EEtHqURPM=
-X-Google-Smtp-Source: ABdhPJy7RjGcfngqk5ns+IfAM26Ogp7/MMZ/3lERy+T3yGgBoyPYs6ERPRB/mA0KfpXBBpv26ocpMA==
-X-Received: by 2002:a4a:3142:: with SMTP id v2mr13599985oog.9.1619447761416;
-        Mon, 26 Apr 2021 07:36:01 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r9sm3479054otn.64.2021.04.26.07.36.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Apr 2021 07:36:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 26 Apr 2021 07:35:59 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     =?iso-8859-1?Q?V=E1clav_Kubern=E1t?= <kubernat@cesnet.cz>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
-Message-ID: <20210426143559.GA112486@roeck-us.net>
-References: <20210413025948.901867-1-kubernat@cesnet.cz>
- <250c1c16-541a-984f-c720-1a8b6176e97e@roeck-us.net>
- <CABKa3npjrpq5Aw_Xqy3mFZtUHZcfB0YENxEDgo_MCwPUKqA4ww@mail.gmail.com>
- <20210426141745.GA257701@roeck-us.net>
- <CABKa3np=osah3zcNmwohL0h8sVOHYcGW6rNYhM=1OzrOiLo50A@mail.gmail.com>
+        Mon, 26 Apr 2021 10:38:14 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QEWwRW072667;
+        Mon, 26 Apr 2021 10:37:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=dIR8qG+fZkjKx3j7arXn5imLXqkq2cTjPJyuy5kjYco=;
+ b=aWmoFan4j0muEg/S825aP4IzMh+/36Cf65CkCTuymgotwkWre0ODG7768UGs+QaRlguT
+ CFXBvcro2d8wm1arFk8pQHtD+wW4HdUQcV0fVptGxsr72xS2Ole5nskyZ4YosYuSXDKU
+ oxdDPAvP12QSxCjx9F6N5QIe6uEPWwdGJyN9rF8sI5jQ1qOc9RZNSpH9QNYD1Ti00llx
+ A/Ve5V+4h6yymXABX9GGxs08rpi/EMQaQ+VKMAOz0/VjNI/uXTws86tqgb3btp9PCqwY
+ xYeiUQPEaoVjQ75208jyOU4FeKGQDpNdymoWzqn4OptPjbgbthgNNvJCBqTGRHpuZw6m Wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 385xfbtjct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 10:37:26 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13QEXFah073564;
+        Mon, 26 Apr 2021 10:37:26 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 385xfbtjc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 10:37:25 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13QEb45p018141;
+        Mon, 26 Apr 2021 14:37:25 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04dal.us.ibm.com with ESMTP id 384ay9afdp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 14:37:25 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13QEbOvL34603460
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Apr 2021 14:37:24 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3BA6BAC05F;
+        Mon, 26 Apr 2021 14:37:24 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29B11AC05E;
+        Mon, 26 Apr 2021 14:37:24 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 26 Apr 2021 14:37:24 +0000 (GMT)
+Subject: Re: [PATCH v2 1/4] tpm: Use a threaded interrupt handler
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        jarkko@kernel.org, jgg@ziepe.ca
+Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
+        keescook@chromium.org, jsnitsel@redhat.com, ml.linux@elloe.vision,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1619394440-30646-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1619394440-30646-2-git-send-email-LinoSanfilippo@gmx.de>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <d6bf7eef-acfd-b9a0-9892-8309079684e5@linux.ibm.com>
+Date:   Mon, 26 Apr 2021 10:37:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABKa3np=osah3zcNmwohL0h8sVOHYcGW6rNYhM=1OzrOiLo50A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1619394440-30646-2-git-send-email-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: H9oGXGdNxmJDpC5gO_lrsSNUVDxZdFK7
+X-Proofpoint-ORIG-GUID: Jh8jNyDJEWdZAhmkBuiueWmFMbYSB531
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-26_07:2021-04-26,2021-04-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 clxscore=1015 priorityscore=1501
+ adultscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=805
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 04:29:55PM +0200, Václav Kubernát wrote:
-> po 26. 4. 2021 v 16:18 odesílatel Guenter Roeck <linux@roeck-us.net> napsal:
-> >
-> > On Mon, Apr 26, 2021 at 02:46:27PM +0200, Václav Kubernát wrote:
-> > > Hello.
-> > >
-> > > I'm sending a new version of my patch on max31790. This new version
-> > > fixes the cache issue and actually makes it work by setting
-> > > .cache_type. You were right about the "yes/no" ranges, so I flipped
-> > > those.
-> > >
-> > > By the way, it seems that the reason your reply got lost is because of
-> > > weird addresses in the "Cc:" email field, they end with "cesnet.cz",
-> > > so it could be that I'm sending email incorrectly. Let me know if I'm
-> > > doing something wrong.
-> > >
-> >
-> > Yes, the To: field of your series is either empty (for the first patch
-> > of the series), or it is something like:
-> >         To: unlisted-recipients: no To-header on input <;
-> >
-> > Also, you send your follow-up series as response of the previous series
-> > which doesn't follow the guidance for submitting patches and may result
-> > in the entire series getting lost.
-> >
-> 
-> Sorry, I will fix my email-sending procedure. Should I resend the
-> patch series without the In-Reply-To field?
-> 
-No, just keep it in mind for next time.
 
-Thanks,
-Guenter
+On 4/25/21 7:47 PM, Lino Sanfilippo wrote:
+> Interrupt handling at least includes reading and writing the interrupt
+> status register from the interrupt routine. However over SPI those accesses
+> require a sleepable context, since a mutex is used in the concerning
+> functions.
+> For this reason request a threaded interrupt handler which is running in
+> (sleepable) process context.
+>
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+
+
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+
+
