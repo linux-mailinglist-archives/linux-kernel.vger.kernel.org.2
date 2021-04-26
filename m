@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5EF36AEC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B571F36AD68
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhDZHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56258 "EHLO mail.kernel.org"
+        id S232564AbhDZHg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233523AbhDZHjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8543861041;
-        Mon, 26 Apr 2021 07:37:51 +0000 (UTC)
+        id S232754AbhDZHdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35C9D61004;
+        Mon, 26 Apr 2021 07:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422672;
-        bh=c3etItYbJNLwhyV+X5QRFBVYf4oOqVzZ7m6Jhhxowvc=;
+        s=korg; t=1619422392;
+        bh=t0vC+f2byHsMR+27DDNB5nfUbO6bLL77AyUQ7BA8Fak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I+QNiLkiLEq+OI2T0XY+CI4z+NrXCnQLLpptD4nLIi6KZStI+0L4NjfLmraV5aBv2
-         LHH5Ea7LINsPkmUWCg7BjruK/zhrgWeUdUcMV+QXsIaYdtA+/SsAAOZiRVQcZXQGYm
-         iz8Y6+pPsbubpfLtxMe+RqNI2mHyqZ0Wlj0SRefc=
+        b=jZzmbKvJ0TVDdR3EmVICCl0L7HKzQhNG4OQp7aRIWhFLTUz6DNWSYr+ljQQm9gZ9n
+         7iPWAw3JNb8+Mf6C2Katwf/BwN+VOejaUH7QHdaSgIA/RfvCOq3bIukP+/neXgIfrz
+         Ri8GR6WHiXfTd5gyPhtZ0No/X6qajN5hFOEckCKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hristo Venev <hristo@venev.name>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 34/57] net: sit: Unregister catch-all devices
-Date:   Mon, 26 Apr 2021 09:29:31 +0200
-Message-Id: <20210426072821.734197259@linuxfoundation.org>
+        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 31/37] ARM: dts: Fix swapped mmc order for omap3
+Date:   Mon, 26 Apr 2021 09:29:32 +0200
+Message-Id: <20210426072818.303109646@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hristo Venev <hristo@venev.name>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 610f8c0fc8d46e0933955ce13af3d64484a4630a upstream.
+[ Upstream commit a1ebdb3741993f853865d1bd8f77881916ad53a7 ]
 
-A sit interface created without a local or a remote address is linked
-into the `sit_net::tunnels_wc` list of its original namespace. When
-deleting a network namespace, delete the devices that have been moved.
+Also some omap3 devices like n900 seem to have eMMC and micro-sd swapped
+around with commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for
+drivers that existed in v4.4").
 
-The following script triggers a null pointer dereference if devices
-linked in a deleted `sit_net` remain:
+Let's fix the issue with aliases as discussed on the mailing lists. While
+the mmc aliases should be board specific, let's first fix the issue with
+minimal changes.
 
-    for i in `seq 1 30`; do
-        ip netns add ns-test
-        ip netns exec ns-test ip link add dev veth0 type veth peer veth1
-        ip netns exec ns-test ip link add dev sit$i type sit dev veth0
-        ip netns exec ns-test ip link set dev sit$i netns $$
-        ip netns del ns-test
-    done
-    for i in `seq 1 30`; do
-        ip link del dev sit$i
-    done
-
-Fixes: 5e6700b3bf98f ("sit: add support of x-netns")
-Signed-off-by: Hristo Venev <hristo@venev.name>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/sit.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/omap3.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -1818,9 +1818,9 @@ static void __net_exit sit_destroy_tunne
- 		if (dev->rtnl_link_ops == &sit_link_ops)
- 			unregister_netdevice_queue(dev, head);
- 
--	for (prio = 1; prio < 4; prio++) {
-+	for (prio = 0; prio < 4; prio++) {
- 		int h;
--		for (h = 0; h < IP6_SIT_HASH_SIZE; h++) {
-+		for (h = 0; h < (prio ? IP6_SIT_HASH_SIZE : 1); h++) {
- 			struct ip_tunnel *t;
- 
- 			t = rtnl_dereference(sitn->tunnels[prio][h]);
+diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
+index 2008648b8c9f..0a7600d06fb5 100644
+--- a/arch/arm/boot/dts/omap3.dtsi
++++ b/arch/arm/boot/dts/omap3.dtsi
+@@ -23,6 +23,9 @@
+ 		i2c0 = &i2c1;
+ 		i2c1 = &i2c2;
+ 		i2c2 = &i2c3;
++		mmc0 = &mmc1;
++		mmc1 = &mmc2;
++		mmc2 = &mmc3;
+ 		serial0 = &uart1;
+ 		serial1 = &uart2;
+ 		serial2 = &uart3;
+-- 
+2.30.2
+
 
 
