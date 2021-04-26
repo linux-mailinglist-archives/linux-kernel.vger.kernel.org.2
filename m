@@ -2,136 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BEE36B012
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69D436B016
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhDZI6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 04:58:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20108 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232116AbhDZI6S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:58:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619427450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xrtgnm/L0WtusbYF9SuDZ+pYt9hjB7RMvd0KmtVIh7o=;
-        b=OtR+TGKCg4S/PVJ8lQwYlY2Sqd4gYCMUQxm7WJ+ReO3P5NMQGDfSjM7r/rP0JM9BpWW6Yp
-        hsKn0jxcqVpd0wbBm1x7Aur2UfUQS2b+gmTg8TfDDXo/ucMCYDtrkYGkKImEwLMRMeFyUZ
-        MS9kpfEG3Mug2vZzvNIn03UGEintzi8=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-603-cEPmFHbAMjq8giTK5dyVpA-1; Mon, 26 Apr 2021 04:57:28 -0400
-X-MC-Unique: cEPmFHbAMjq8giTK5dyVpA-1
-Received: by mail-ej1-f69.google.com with SMTP id p25-20020a1709061419b0290378364a6464so9917789ejc.15
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 01:57:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xrtgnm/L0WtusbYF9SuDZ+pYt9hjB7RMvd0KmtVIh7o=;
-        b=gCrC7lmVHOkjdGMwXA1xL5L/qpx2qOF39YqbWzcefJB66O4y9s9DAIWMT/VuYEuFNZ
-         xZcroWxeuNQdcvJ2fwDU4ubZ8/Y823Brmck6U37c2pFboH/wV2Jb+L110kTr1todm+8O
-         TLAfLAnrKqLoDbceGd4Wb2aBiutHcVynczDvpmBcT9HO6lPQOkYWJ1TiX73CIJaqb6Rr
-         xCnaivFqBAbqdCZPkeAJp8fYArSiAO1q5tRLj+J9//GeeLXa6l8UhCkiXLbCOrKC+3nA
-         dx/BFoQa4DolH4XHX7oGhduvA5Lu5fiATXDG1AAfQ3HWUoJhAZyS3JWjCRCzLeyXM/QJ
-         gbUw==
-X-Gm-Message-State: AOAM533JfhWR/bdQyL8lhx1n7yz/qOkPy/DFc+TZK24h9XgNsFtzixF6
-        dN8SgqScXJi2DuTa59+527Q6r3IQTcy4B+lqCrFuotG8YYMo53F5/F5huQzskTX3k6kudd1ruv6
-        kxemB9kZZ9YPHvBq1UVAzV7AE
-X-Received: by 2002:aa7:d3c2:: with SMTP id o2mr11080385edr.111.1619427447086;
-        Mon, 26 Apr 2021 01:57:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy5MzhdKNnSR2VHJq899bCvKAXx3Od/AUHphWB11TckcK76RF4SdIk9cZ4VNU+wCPmi6XCfvA==
-X-Received: by 2002:aa7:d3c2:: with SMTP id o2mr11080371edr.111.1619427446916;
-        Mon, 26 Apr 2021 01:57:26 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o8sm10956335ejm.18.2021.04.26.01.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 01:57:26 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH v3 2/4] KVM: SVM: Clear MSR_TSC_AUX[63:32] on write
-In-Reply-To: <20210423223404.3860547-3-seanjc@google.com>
-References: <20210423223404.3860547-1-seanjc@google.com>
- <20210423223404.3860547-3-seanjc@google.com>
-Date:   Mon, 26 Apr 2021 10:57:26 +0200
-Message-ID: <87k0opfmo9.fsf@vitty.brq.redhat.com>
+        id S232418AbhDZI7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 04:59:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232116AbhDZI7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 04:59:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 176FB60FEE;
+        Mon, 26 Apr 2021 08:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619427521;
+        bh=dGqN4lwNdcHBEwE1VHJZImPQnsWd/13B9Bs/6EaeKQc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oeuRlvapCCWYmIvRgL62e0f7V6q3+ahoVw0at875tvVt9XGXgWVG7Q4x/o0SJgHeU
+         kU8h2qe8YTwgr7Zq8Gprli+Wgb5rIZ0hkfj9Ea9MKkFRUs7LMUWrOn4HspkCDPFMc3
+         KFLLju55uGTC3d6OsNPWJc4CdwxOT4m6d0HQ0YDyLHVGMRplHmDMpFlDvlSKp57P/y
+         lkchv2v+wOfnbQeLWYeEHcR6NIc1m5sfAy1UE7HrSDQ+8+R4cj1Ty7MLvSMd9fxbLt
+         bac6AqeozVm3YQfZwdCUDbaDtNOhB1jR2OhEQachuSPZyibpFYVcfn1nHHMrrsfEbr
+         VmanR2Tw/7W9A==
+Date:   Mon, 26 Apr 2021 09:58:36 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ardb@kernel.org
+Subject: Re: [PATCH 3/4] crypto: arm64: generate *.S by Perl at build time
+ instead of shipping them
+Message-ID: <20210426085836.GA5802@willie-the-truck>
+References: <20210425175734.1310191-1-masahiroy@kernel.org>
+ <20210425175734.1310191-3-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425175734.1310191-3-masahiroy@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+[+Ard]
 
-> Force clear bits 63:32 of MSR_TSC_AUX on write to emulate current AMD
-> CPUs, which completely ignore the upper 32 bits, including dropping them
-> on write.  Emulating AMD hardware will also allow migrating a vCPU from
-> AMD hardware to Intel hardware without requiring userspace to manually
-> clear the upper bits, which are reserved on Intel hardware.
->
-> Presumably, MSR_TSC_AUX[63:32] are intended to be reserved on AMD, but
-> sadly the APM doesn't say _anything_ about those bits in the context of
-> MSR access.  The RDTSCP entry simply states that RCX contains bits 31:0
-> of the MSR, zero extended.  And even worse is that the RDPID description
-> implies that it can consume all 64 bits of the MSR:
->
->   RDPID reads the value of TSC_AUX MSR used by the RDTSCP instruction
->   into the specified destination register. Normal operand size prefixes
->   do not apply and the update is either 32 bit or 64 bit based on the
->   current mode.
->
-> Emulate current hardware behavior to give KVM the best odds of playing
-> nice with whatever the behavior of future AMD CPUs happens to be.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Mon, Apr 26, 2021 at 02:57:33AM +0900, Masahiro Yamada wrote:
+> Generate *.S by Perl like arch/{mips,x86}/crypto/Makefile.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  arch/x86/kvm/svm/svm.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 9ed9c7bd7cfd..71d704f8d569 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2904,8 +2904,17 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
->  		 * direct_access_msrs.  Doing that would require a rdmsr in
->  		 * svm_vcpu_put.
->  		 */
-> -		svm->tsc_aux = data;
->  		wrmsrl(MSR_TSC_AUX, svm->tsc_aux);
+> 
+>  arch/arm64/crypto/Makefile                |    9 +-
+>  arch/arm64/crypto/poly1305-core.S_shipped |  835 ---------
+>  arch/arm64/crypto/sha256-core.S_shipped   | 2069 ---------------------
+>  arch/arm64/crypto/sha512-core.S_shipped   | 1093 -----------
+>  4 files changed, 3 insertions(+), 4003 deletions(-)
+>  delete mode 100644 arch/arm64/crypto/poly1305-core.S_shipped
+>  delete mode 100644 arch/arm64/crypto/sha256-core.S_shipped
+>  delete mode 100644 arch/arm64/crypto/sha512-core.S_shipped
 
-Hm, shouldn't this be 
+What's the advantage of removing the _shipped files? We included them
+originally so that we didn't require perl for the kernel build -- is that no
+longer an issue?
 
-wrmsrl(MSR_TSC_AUX, data) or wrmsrl(MSR_TSC_AUX, (u32)data)
+I guess I'm just missing the justification for the change.
 
-then? As svm->tsc_aux wasn't updated yet.
+Cheers,
 
-> +
-> +		/*
-> +		 * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
-> +		 * incomplete and conflicting architectural behavior.  Current
-> +		 * AMD CPUs completely ignore bits 63:32, i.e. they aren't
-> +		 * reserved and always read as zeros.  Emulate AMD CPU behavior
-> +		 * to avoid explosions if the vCPU is migrated from an AMD host
-> +		 * to an Intel host.
-> +		 */
-> +		svm->tsc_aux = (u32)data;
-
-Actually, shouldn't we just move wrmsrl() here? Assuming we're not sure
-how (and if) upper 32 bits are going to be used, it would probably make
-sense to not write them to the actual MSR...
-
->  		break;
->  	case MSR_IA32_DEBUGCTLMSR:
->  		if (!boot_cpu_has(X86_FEATURE_LBRV)) {
-
--- 
-Vitaly
-
+Will
