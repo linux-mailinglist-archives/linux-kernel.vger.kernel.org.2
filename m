@@ -2,147 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA94636B14A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C413336B167
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhDZKK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbhDZKK5 (ORCPT
+        id S232860AbhDZKPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:15:03 -0400
+Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:38363 "EHLO
+        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232173AbhDZKPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:10:57 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5A5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:10:16 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id e186so2352913iof.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+fN1CnJTyw4SnuzW6DBA9Vu0o0I1yNjEi0kq9D/Z/LQ=;
-        b=VC5Jbt1mUZhRJa1ZD/9L/LbwQ5aW97mMI1TZ/3Td6ktOlGoYQVNPE7WaGDo/cTgrhG
-         rHXRlzfr2sRQoAkwwC78WuaYeYATWmQLvI/7Yk6UnCohEEtwLG429skjYJI7Fm3yqlO6
-         AK38rjEuSzLGwA50eHF516Yiu234Il1D7XIys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+fN1CnJTyw4SnuzW6DBA9Vu0o0I1yNjEi0kq9D/Z/LQ=;
-        b=OSURT2otsEX/YKKRe/aBxM3+4wtDxwVytNkhbSqIpcaIE95gld/cG48ULQm2INRGXd
-         fUTzXWbGSvwlc2neKOrYrBCxb3ePzuHYASBaEN7R8vMl0UKJ3KhRiwLFApI6DYTDORXd
-         hd4ZCHV2kBW0Sd0rZhUbwzsVRYkapCFQa1R8Vg4LT3xBk8BDIXa7m+aUthXjiNv3qwaj
-         9PGlG3g+UUUuo5AxQ8jX48gAx0HquxPsk4XtxJ0nTn6qONQ3n/ICJr1J62mpeXhvPi7B
-         V6y0ybQ4jify4QecNq0s+3zP0I1vzCcvVHtaHHtwjJgynoWGUTlW5sGUY0nZcMsGqWxy
-         wQsQ==
-X-Gm-Message-State: AOAM532ijFG9fd++GmaIEn4aZ4g5mzEUW+fG0Eaf4F9+6+GTBXf+CaWJ
-        8JWdTthBAKIPHz4VzwE1aFX0exzbXV1avTDWB2Dv+A==
-X-Google-Smtp-Source: ABdhPJwgriBQCSHOjdrO17+KXCZW2qXNmeiV/x6yOVr2f5eCl0JJpBSIeqFLUiV7xldi2fX/95tSgAQ+2QJx3f1w2Y0=
-X-Received: by 2002:a05:6602:218a:: with SMTP id b10mr13945010iob.122.1619431815692;
- Mon, 26 Apr 2021 03:10:15 -0700 (PDT)
+        Mon, 26 Apr 2021 06:15:01 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.20.143])
+        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id DDA44A25FE9F;
+        Mon, 26 Apr 2021 12:14:18 +0200 (CEST)
+Received: from localhost (89.70.221.198) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Apr
+ 2021 12:14:18 +0200
+Date:   Mon, 26 Apr 2021 12:10:13 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Lars-Peter Clausen <lars@metafoo.de>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/3] iio: sps30: separate core and interface specific code
+Message-ID: <YIaRhdyy79/KyIV+@arch>
+References: <20210425135546.57343-1-tomasz.duszynski@octakon.com>
+ <20210425135546.57343-2-tomasz.duszynski@octakon.com>
+ <38d5438d-7e00-ed5d-ed33-01ff04e26f33@metafoo.de>
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
- <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Mon, 26 Apr 2021 12:10:04 +0200
-Message-ID: <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <38d5438d-7e00-ed5d-ed33-01ff04e26f33@metafoo.de>
+X-Originating-IP: [89.70.221.198]
+X-ClientProxiedBy: DAG4EX1.emp2.local (172.16.2.31) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 10555030155743353940
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddukedgvdeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjihesthdtredttddtjeenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucggtffrrghtthgvrhhnpedtheevtefhffduteejfedtkeeuheejgeejvdetfffgveekffefgeffueeghefgjeenucfkpheptddrtddrtddrtddpkeelrdejtddrvddvuddrudelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehrohgshhdoughtsehkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 12:38 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Sun, Apr 25, 2021 at 05:16:14PM +0200, Lars-Peter Clausen wrote:
+> On 4/25/21 3:55 PM, Tomasz Duszynski wrote:
+> > Move code responsible for handling i2c communication to a separate file.
+> > Rationale for this change is preparation for adding support for serial
+> > communication.
+> >
+> > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
 >
-> On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > The "positive" part tests all format specifiers when things go well.
-> >
-> > The "negative" part makes sure that incorrect format strings fail at
-> > load time.
-> >
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
-> >  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
-> >  .../bpf/progs/test_snprintf_single.c          |  20 +++
-> >  3 files changed, 218 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> Hi,
+>
+> The whole series looks really great. Couple of small comments inline.
+>
+> > [...]
+> > diff --git a/drivers/iio/chemical/Kconfig b/drivers/iio/chemical/Kconfig
+> > index 10bb431bc3ce..82af5f62fbc6 100644
+> > --- a/drivers/iio/chemical/Kconfig
+> > +++ b/drivers/iio/chemical/Kconfig
+> > @@ -133,8 +133,6 @@ config SENSIRION_SGP30
+> >   config SPS30
+> >   	tristate "SPS30 particulate matter sensor"
+> > -	depends on I2C
+> > -	select CRC8
+> >   	select IIO_BUFFER
+> >   	select IIO_TRIGGERED_BUFFER
+> >   	help
+> > @@ -144,6 +142,17 @@ config SPS30
+> >   	  To compile this driver as a module, choose M here: the module will
+> >   	  be called sps30.
+> > +config SPS30_I2C
+> > +	tristate "SPS30 particulate matter sensor I2C driver"
+> > +	depends on SPS30 && I2C
+> > +	select CRC8
+> Since the base module is not very useful without any of the drivers enabled,
+> what you can do here is, make the base module non-user-selectable, e.g.
+> remove the description text after the tristate and then do a `select SPS30`
+> both here from he I2C module and the serial module.
+
+Right. Current form was helpful in debugging and eventually I forgot to
+change it to something reasonable. Thanks for catching this.
+
+> > +	help
+> > +	  Say Y here to build support for the Sensirion SPS30 I2C interface
+> > +	  driver.
+> > +
+> > +	  To compile this driver as a module, choose M here: the module will
+> > +	  be called sps30_i2c.
+> > +
+> >   config VZ89X
+> >   	tristate "SGX Sensortech MiCS VZ89X VOC sensor"
+> >   	depends on I2C
+> > diff --git a/drivers/iio/chemical/Makefile b/drivers/iio/chemical/Makefile
+> > index fef63dd5bf92..41c264a229c0 100644
+> > --- a/drivers/iio/chemical/Makefile
+> > +++ b/drivers/iio/chemical/Makefile
+> > @@ -17,4 +17,5 @@ obj-$(CONFIG_SCD30_I2C) += scd30_i2c.o
+> >   obj-$(CONFIG_SCD30_SERIAL) += scd30_serial.o
+> >   obj-$(CONFIG_SENSIRION_SGP30)	+= sgp30.o
+> >   obj-$(CONFIG_SPS30) += sps30.o
+> > +obj-$(CONFIG_SPS30_I2C) += sps30_i2c.o
+> >   obj-$(CONFIG_VZ89X)		+= vz89x.o
+> > diff --git a/drivers/iio/chemical/sps30.c b/drivers/iio/chemical/sps30.c
+> > index 7486591588c3..ec9db99e324c 100644
+> > --- a/drivers/iio/chemical/sps30.c
+> > +++ b/drivers/iio/chemical/sps30.c
+> > [...]
+> > +EXPORT_SYMBOL(sps30_probe);
+> EXPORT_SYMBOL_GPL()
+
+Ack.
+
+> >   MODULE_AUTHOR("Tomasz Duszynski <tduszyns@gmail.com>");
+> >   MODULE_DESCRIPTION("Sensirion SPS30 particulate matter sensor driver");
+> > diff --git a/drivers/iio/chemical/sps30.h b/drivers/iio/chemical/sps30.h
 > > new file mode 100644
-> > index 000000000000..a958c22aec75
+> > index 000000000000..d2b7140fdeb4
 > > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > @@ -0,0 +1,125 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2021 Google LLC. */
+> > +++ b/drivers/iio/chemical/sps30.h
+> > @@ -0,0 +1,73 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _SPS30_H
+> > +#define _SPS30_H
 > > +
-> > +#include <test_progs.h>
-> > +#include "test_snprintf.skel.h"
-> > +#include "test_snprintf_single.skel.h"
-> > +
-> > +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-> > +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-> > +
-> > +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-> > +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-> > +
-> > +/* The third specifier, %pB, depends on compiler inlining so don't check it */
-> > +#define EXP_SYM_OUT  "schedule schedule+0x0/"
-> > +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-> > +
-> > +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-> > +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-> > +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-> > +
-> > +#define EXP_STR_OUT  "str1 longstr"
-> > +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-> > +
-> > +#define EXP_OVER_OUT "%over"
-> > +#define EXP_OVER_RET 10
-> > +
-> > +#define EXP_PAD_OUT "    4 000"
+> > +struct sps30_state;
+> > +struct sps30_ops {
+> > +	int (*start_meas)(struct sps30_state *state);
+> > +	int (*stop_meas)(struct sps30_state *state);
+> > +	int (*read_meas)(struct sps30_state *state, int *meas, int num);
+> > +	int (*reset)(struct sps30_state *state);
+> > +	int (*clean_fan)(struct sps30_state *state);
+> > +	int (*read_cleaning_period)(struct sps30_state *state, int *period);
+> > +	int (*write_cleaning_period)(struct sps30_state *state, int period);
 >
-> Roughly 50% of the time I get failure for this test case:
+> The interface for {read,write}_cleaning_period() should use __be32, since
+> that is what is being passed around.
 >
-> test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
-> 0000' != expected '    4 000'
+> I was a bit confused when reviewing the uart driver why we can just memcpy
+> an int into the output buffer without endianess problems.
 >
-> Re-running this test case immediately passes. Running again most
-> probably fails. Please take a look.
 
-Do you have more information on how to reproduce this ?
-I spinned up a VM at 87bd9e602 with ./vmtest -s and then run this script:
+Agree that indeed might be confusing at first read since as you said
+all endianess conversions are handled in core and other components just
+take everything verbatim - which isn't that obvious.
 
-#!/bin/sh
-for i in `seq 1000`
-do
-  ./test_progs -t snprintf
-  if [ $? -ne 0 ];
-  then
-    echo FAILURE
-    exit 1
-  fi
-done
-
-The thousand executions passed.
-
-This is a bit concerning because your unexpected_pad_out seems to have
-an extra '0' so it ends up with strlen(pad_out)=11 but
-sizeof(pad_out)=10. The actual string writing is not really done by
-our helper code but by the snprintf implementation (str and str_size
-are only given to snprintf()) so I'd expect the truncation to work
-well there. I'm a bit puzzled
+> > +	int (*show_info)(struct sps30_state *state);
+> > +};
+> > +
+> [...]
