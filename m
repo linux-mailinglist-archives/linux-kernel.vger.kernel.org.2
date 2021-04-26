@@ -2,104 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE6636B844
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C4E36B847
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhDZRrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234754AbhDZRri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:47:38 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566C4C061574;
-        Mon, 26 Apr 2021 10:46:54 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id a22-20020a05600c2256b029014294520f18so1163094wmm.1;
-        Mon, 26 Apr 2021 10:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4XKAccquTkn2r9S6tK2dd4VsmZ5JwMPtXDxEVgO3+sU=;
-        b=BVKc7Elf+DJwmd8DO+dUSUES1VeE5m6YInxlMRS46RgdxiEpEF5zQpB4636NUI2Gj3
-         iEhS5h0T0BFf1FyjI+oVe4z9l8C0xi9oANZBNkg4wHhVqeNnisv+DRCp6h5/v+nvNQqg
-         iPD9IBcxrp0t4BSw+Vsx/c33RLo0qKLFgC3RAr9Wg0pWbuY3KYKnm9Z6GVwhFbXnLy1V
-         d1gPd0YtxaDhmxudXE/6avEjdSd/aJ5dEF2mj9Wnxf0wjFKP9F1CNi30nquSqjsvBHLR
-         zpjYavSaYHJs3nv61k01H4CQQTGre1fiNKPOJJGONiSUrkm3CdkzRrTOVX1K595n6sgH
-         1clQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4XKAccquTkn2r9S6tK2dd4VsmZ5JwMPtXDxEVgO3+sU=;
-        b=VNUzc3iINib6aO2pSLN8260qekCqRLnrQMHUZgryMuHCbUsnNNn1rqyHCmL5A6rW8O
-         7h0c2Q+LWR91wsmwIdTog9LfsG7wTtEf6U2QRclFhdbcQDoOowcp2yNbmUmDf/Ydsa+h
-         iEs5XP/uDVzTjXGiehSmf1+cluvXK+dPvgR8ol7BT4SSUZJL1fxdKCXdDf/JrvVPMROl
-         PEeQWFckp4s1xEh85txrB1Q/RaV78DjfweX0BnRcAecm89+oHJrl8zS2O8+QSgo2zVQC
-         V1uWpMA7nf5snntIRqhgfagGRwuv4a2afTWmeWBHe+oZqCO/aR1CM6tZgmH53Ciqfl0+
-         ak1w==
-X-Gm-Message-State: AOAM530hRyvuuTzS6V8IjcSNXq3/JbiBlvf3o1Ps0nT1Wo1OOB9YEXhi
-        f/42CmKmh9Ozmbudug/FD8OrD/LaHYY=
-X-Google-Smtp-Source: ABdhPJyBTVMEkJVcz7ZsgiS7yXAcyiYnLgSQV4HKlQvUuplG6/YeQfRhYQb/dLRC2hGhs72gw1CxxA==
-X-Received: by 2002:a05:600c:40c4:: with SMTP id m4mr206472wmh.25.1619459212987;
-        Mon, 26 Apr 2021 10:46:52 -0700 (PDT)
-Received: from [10.8.0.106] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id u8sm933072wrp.66.2021.04.26.10.46.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 10:46:52 -0700 (PDT)
-Subject: Re: [RFC] bpf.2: Use standard types and attributes
-To:     Joseph Myers <joseph@codesourcery.com>
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        gcc-patches@gcc.gnu.org, libc-alpha@sourceware.org,
-        linux-kernel@vger.kernel.org
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <alpine.DEB.2.22.394.2104261717120.641239@digraph.polyomino.org.uk>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <c7185e24-b63d-2863-b71c-2258c510ead9@gmail.com>
-Date:   Mon, 26 Apr 2021 19:46:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2104261717120.641239@digraph.polyomino.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S237482AbhDZRsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:48:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235584AbhDZRr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 13:47:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EA342613B2;
+        Mon, 26 Apr 2021 17:47:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619459235;
+        bh=t6L+sC5Vr3ZziZ+vqTWovfRpM028shEMLNqe0TWZoDU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=HA/I1cCSUqzyGbbIB29DPGqoikyIHuyYR/UdxSzoT05CEa7lyzGRANJnMUuoJcMjv
+         vUasn1miR1D+t3fLAw5CQt9B3Qys5JL2sT8yRY9G9lhCToL29+sgX5JHLNp2mlxCgT
+         etSXHZ056P0GynQnD1yG5T1RvXetLZW0TuPx+QLX1/kDSJMdy/cod8l9kdTDImQq0z
+         i4tnmbc5U6mdX4k7l/6CLSHWcgOcsEcfz3QB+gTO0eVn0UKQ/hcRVU8gdiu45f2T0I
+         xT+RKJXh4hcsJIVzMu8mgYe1S476umQXDla45nnXyPrlRgajVqcSJAI2oR0Du2UMV6
+         E3PMyiJGg31QQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E197D609AE;
+        Mon, 26 Apr 2021 17:47:14 +0000 (UTC)
+Subject: Re: [GIT PULL] Hyper-V commits for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210426172042.tzl7i3mdr6dc4iyp@liuwe-devbox-debian-v2>
+References: <20210426172042.tzl7i3mdr6dc4iyp@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210426172042.tzl7i3mdr6dc4iyp@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210426
+X-PR-Tracked-Commit-Id: 753ed9c95c37d058e50e7d42bbe296ee0bf6670d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4d480dbf21f3385e9957b1ee8dadee35548f4516
+Message-Id: <161945923491.30101.1618177739366309098.pr-tracker-bot@kernel.org>
+Date:   Mon, 26 Apr 2021 17:47:14 +0000
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joseph,
+The pull request you sent on Mon, 26 Apr 2021 17:20:42 +0000:
 
-On 4/26/21 7:19 PM, Joseph Myers wrote:
-> On Sat, 24 Apr 2021, Alejandro Colomar via Libc-alpha wrote:
-> 
->> Some pages also document attributes, using GNU syntax
->> '__attribute__((xxx))'.  Update those to use the shorter and more
->> portable C2x syntax, which hasn't been standardized yet, but is
->> already implemented in GCC, and available through either --std=c2x
->> or any of the --std=gnu... options.
-> 
-> If you mention alignment in the manpage at all, the same reasoning would
-> say you should use _Alignas(8) not [[gnu::aligned(8)]], in any context
-> where _Alignas is valid.
-> 
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210426
 
-Agree.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4d480dbf21f3385e9957b1ee8dadee35548f4516
 
-I just didn't know 'alignas()' (a.k.a. '_Alignas()'), so I used 
-attributes and only changed the syntax.  But yes, we should use that C11 
-feature.  Given that we already used 'noreturn' and not '_Noreturn' (see 
-exit(3) and its family), I'll use 'alignas()'.
-
-I'll send a v2 with those changes.
-
-Thanks,
-
-Alex
+Thank you!
 
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
