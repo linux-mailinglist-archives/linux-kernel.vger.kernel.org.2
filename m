@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE64336AD66
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB0436ADD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhDZHgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:36:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
+        id S233287AbhDZHjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232733AbhDZHdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A12326105A;
-        Mon, 26 Apr 2021 07:33:09 +0000 (UTC)
+        id S232965AbhDZHgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48BFD613C1;
+        Mon, 26 Apr 2021 07:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422390;
-        bh=EDj1gHlZSzYdYf98LrWwBli/46xSjlYyncHL60ccxE8=;
+        s=korg; t=1619422492;
+        bh=mVyWi9XG90EchzaJQHS0kyf10Ks7lxWF4bcLEboImsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CDbiPbK0/gT5tlT7ATkNopDMWd935W0sSnac6Koqt0Bz8LvJhlcuD7451f0KA92dh
-         RB2VwJQqWAb755QFULTLpfReWEoS4tqKHwqyZiJwvG4JhH+JyOe6JcNXq9wyf+oTka
-         pPe6RxT8NYYHZO69+kGDwUUqzmh0rxcSaUhS7BJ0=
+        b=bHnd2N7GuvmvHhSTlyn2GHvYc5BCc/oMENQ/sMnVYIVBmlAu1WrTysnOw3OFEseTv
+         YPZng2T20jzpf0QYEzt5SZ6pCtcJrcBsLPffZ09F4M5/Z0DWiX3rUoYPG3DC4alHo2
+         RYqdUl6xSNWsJJpOIfdo+BeRmp39vHUDNUNHRsAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 30/37] HID: alps: fix error return code in alps_input_configured()
+        stable@vger.kernel.org, Fredrik Strupe <fredrik@strupe.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.14 35/49] ARM: 9071/1: uprobes: Dont hook on thumb instructions
 Date:   Mon, 26 Apr 2021 09:29:31 +0200
-Message-Id: <20210426072818.273795807@linuxfoundation.org>
+Message-Id: <20210426072820.920816921@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-[ Upstream commit fa8ba6e5dc0e78e409e503ddcfceef5dd96527f4 ]
+commit d2f7eca60b29006285d57c7035539e33300e89e5 upstream.
 
-When input_register_device() fails, no error return code is assigned.
-To fix this bug, ret is assigned with -ENOENT as error return code.
+Since uprobes is not supported for thumb, check that the thumb bit is
+not set when matching the uprobes instruction hooks.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The Arm UDF instructions used for uprobes triggering
+(UPROBE_SWBP_ARM_INSN and UPROBE_SS_ARM_INSN) coincidentally share the
+same encoding as a pair of unallocated 32-bit thumb instructions (not
+UDF) when the condition code is 0b1111 (0xf). This in effect makes it
+possible to trigger the uprobes functionality from thumb, and at that
+using two unallocated instructions which are not permanently undefined.
+
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Cc: stable@vger.kernel.org
+Fixes: c7edc9e326d5 ("ARM: add uprobes support")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/hid-alps.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/probes/uprobes/core.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index ed9c0ea5b026..1bc6ad0339d2 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -429,6 +429,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
- 		ret = input_register_device(data->input2);
- 		if (ret) {
- 			input_free_device(input2);
-+			ret = -ENOENT;
- 			goto exit;
- 		}
- 	}
--- 
-2.30.2
-
+--- a/arch/arm/probes/uprobes/core.c
++++ b/arch/arm/probes/uprobes/core.c
+@@ -207,7 +207,7 @@ unsigned long uprobe_get_swbp_addr(struc
+ static struct undef_hook uprobes_arm_break_hook = {
+ 	.instr_mask	= 0x0fffffff,
+ 	.instr_val	= (UPROBE_SWBP_ARM_INSN & 0x0fffffff),
+-	.cpsr_mask	= MODE_MASK,
++	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
+ 	.cpsr_val	= USR_MODE,
+ 	.fn		= uprobe_trap_handler,
+ };
+@@ -215,7 +215,7 @@ static struct undef_hook uprobes_arm_bre
+ static struct undef_hook uprobes_arm_ss_hook = {
+ 	.instr_mask	= 0x0fffffff,
+ 	.instr_val	= (UPROBE_SS_ARM_INSN & 0x0fffffff),
+-	.cpsr_mask	= MODE_MASK,
++	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
+ 	.cpsr_val	= USR_MODE,
+ 	.fn		= uprobe_trap_handler,
+ };
 
 
