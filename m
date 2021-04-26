@@ -2,82 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F9436B6DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FB436B6E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234315AbhDZQdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbhDZQdb (ORCPT
+        id S234479AbhDZQeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:34:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50590 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234174AbhDZQeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:33:31 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F766C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:32:47 -0700 (PDT)
+        Mon, 26 Apr 2021 12:34:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13QGTVnh161258;
+        Mon, 26 Apr 2021 16:33:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Mi+yG3kq6rVsz7OW6hIQ212zudjQT5IvQmL1+26C7sQ=;
+ b=ukOuaJIOuW8zRi7xkFCNPSITLJ1YZyMMQe/wyx+0FecK3momztre/guPfs2vsxXmsm6M
+ X4B4shR0LTxy+wGm+quH+oYSKdQV7MmJh2PpaXPVkWT1mZCNxPnixca26d/gqGA9TfaP
+ Z5gVxuGNq68/nM5ufj42QqGVKy6ZzE2wh4G2GXJPp9khLcw1xcnxSq2vD6JjXwjPnQlS
+ eQD3EZwG3415Zzbz62VADyQ473CIMGomtLcJoT8RXz6pyK9xPEJeTHjlNg6L8cLMz7NV
+ bqmetBYZ9y4AHu+hAy/ZfufpCk8fbselZprGFmTdme6hzW0HZW++GkmhDCJ09Maz+cMh bg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 385aeptpaf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Apr 2021 16:33:17 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13QGUQ75090673;
+        Mon, 26 Apr 2021 16:33:16 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by aserp3030.oracle.com with ESMTP id 3849cdeesp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Apr 2021 16:33:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=asYzBg6nTGFO0WeEEeNP5GyFl58/otUK1wC+OJ426tccgBz0BXvm2ha/2NO8iXf5iYq6ZX/+Z7V0cwTlklVga8NZyB3mkDDixC8blWoiNkUNzKNY/5ditblOrLpuisPXY4QZwbcPyEzTFtaudI3fgDn52yGC+s3aYaNWKx9gEcs6CSvVkfCoICLA6tFAl5fpieW9ZLjWz5m1B0cWZ7x4V0fDlqCf0kTYAE3c6+pQV07pk0cY1j+g7gyDP3ZsbfgewrSveirEMXT0XsO0UmrZ4PjtkvRYhR35uf0vraeE0B3YLINB2vKtVrTCy8vnbSxilhoeVUBKiwlhxRi4EodoHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mi+yG3kq6rVsz7OW6hIQ212zudjQT5IvQmL1+26C7sQ=;
+ b=dF2m3jdf/3LqmDxAkD76izA9kcHDnQy5Pl9HlbkAxLX9d1BLn0wMT5ukUxCGjaNRHaMTTRV9z/AyjdeqVmla9JBmlP61Lllqt5OWpUDt1L3mTiTubhoymwYrhAgGbSMuITRKr/WD6EpcJhKZiv8PISyBFbrkfrUFNhWaPE3dd8BdDn5McPsRikine8ED9Y0YlJRRxfHRkwsLb8VnVki31VQc3rj+0Z1cfqQLOEfrwKSwN5Y3+DMNFkQQxyW/wVa8dobEfQdXHe9/Yd1zpQGVpjF+ieNtLw1MGZtgnmMZi7aakrY/DFx2DF7lKU5tNDYrBUrMswVDS6ZTaiJKDte1hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=ZnKKNkG0oL5dEwDyIPEqRG6U0N8v7ecXgYJg
-        96Izn3s=; b=gNfOzZz+f390YDWZGOZPC/MpIlOcWT1B7Eq38Kxe1oUBezxLS+oR
-        DBleY6Utk7LhDGFXS0NXyb1S9hPbXDN7TGipP1Mldc/lEEsxrIKJOXdcZXO/2df8
-        wD+70+F2wuX7oCxQl/8y5Fv3o1ixFbxqCASBIX6Y/RevemE8gTtlG2M=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Tue, 27 Apr
- 2021 00:32:13 +0800 (GMT+08:00)
-X-Originating-IP: [104.245.96.151]
-Date:   Tue, 27 Apr 2021 00:32:13 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Greg KH" <gregkh@linuxfoundation.org>
-Cc:     siglesias@igalia.com, jens.taprogge@taprogge.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] Staging:ipack/carriers/tpci200: Fix a double free
- in tpci200_pci_probe
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <YIbocgzOz+rAcuit@kroah.com>
-References: <20210426153547.9058-1-lyl2019@mail.ustc.edu.cn>
- <YIbocgzOz+rAcuit@kroah.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mi+yG3kq6rVsz7OW6hIQ212zudjQT5IvQmL1+26C7sQ=;
+ b=lG+5ynStpNms1a5IMIwHwHWzUVNupfWedfan+BwGQYNT87xLVyd5701vcdHLoyDmIq9Hrk18TrkH+odPhM0q0Z2GcmRnimgKGPxv5cuoQKtq1188+GXxs8eaRAqULd4EvNUhJzaAXF6gJMpHcpYA3Tby8q5KABTc1haWrRCpkDk=
+Authentication-Results: connolly.tech; dkim=none (message not signed)
+ header.d=none;connolly.tech; dmarc=none action=none header.from=oracle.com;
+Received: from CY4PR1001MB2133.namprd10.prod.outlook.com
+ (2603:10b6:910:43::27) by CY4PR10MB1464.namprd10.prod.outlook.com
+ (2603:10b6:903:27::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22; Mon, 26 Apr
+ 2021 16:33:14 +0000
+Received: from CY4PR1001MB2133.namprd10.prod.outlook.com
+ ([fe80::40a:b796:4a86:d0cc]) by CY4PR1001MB2133.namprd10.prod.outlook.com
+ ([fe80::40a:b796:4a86:d0cc%3]) with mapi id 15.20.4065.026; Mon, 26 Apr 2021
+ 16:33:14 +0000
+Subject: Re: [PATCH] serial: 8250: fix NULL pointer dereference in
+ serial8250_do_startup()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-serial@vger.kernel.org,
+        syzbot+4c7f1a69dfe24c6b3aeb@syzkaller.appspotmail.com,
+        syzbot+92f32d4e21fb246d31a2@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Caleb Connolly <caleb@connolly.tech>
+References: <00000000000044a65205994a7e13@google.com>
+ <20210426161433.20829-1-vegard.nossum@oracle.com>
+ <YIbnq2ljdQzaN8gy@kroah.com>
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+Message-ID: <e3617587-7ff1-720c-00ab-434608705652@oracle.com>
+Date:   Mon, 26 Apr 2021 18:33:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <YIbnq2ljdQzaN8gy@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [86.217.245.67]
+X-ClientProxiedBy: MR1P264CA0015.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:2e::20) To CY4PR1001MB2133.namprd10.prod.outlook.com
+ (2603:10b6:910:43::27)
 MIME-Version: 1.0
-Message-ID: <3f833e21.61c9b.1790f062e01.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygB3f58O64ZgABFMAA--.1W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoDBlQhn6bxAwAAsw
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.13] (86.217.245.67) by MR1P264CA0015.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:2e::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22 via Frontend Transport; Mon, 26 Apr 2021 16:33:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2c3b30cd-438b-4f92-5343-08d908d0fd65
+X-MS-TrafficTypeDiagnostic: CY4PR10MB1464:
+X-Microsoft-Antispam-PRVS: <CY4PR10MB14648B348121F0379F860BB697429@CY4PR10MB1464.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kreSewbPzkXsgoiCeoCpQNPZXWE/1PwiaekL8mEjZub/HB4iDnT5NYgD+Md4iZu9X4JlsEHgHvbbHhfhwaIgkR6Q+TwyYLrG1Z8dpdpBkJtgc/fbHNM+LI5Mu28hF20QNaqG7w5TsqVrDJnVhOBFsy6NOAA6r9qx0OfltJqxc7SObL0ui+Z3QkGsoihsTowwnflUOzWQPOnwAgp7+9CDk9nVbdnwuxAO62WUyA3W3O7AeYlTMjVv62j2cDiu0fwaavr2nih6WAAKo+93aabAYJGlLRqIfYFaysOXwZMJnJ4qww1u3FSbAzTcRjC38uFXrAWLcYa3+8v4PBQ5IFc7p2kkY7I8etLPhQG99rKg+HUbYlb2a+XIgz2az9CklBoIPtQkZO+eh0Q9ywuYUDr9Rr6ghKj2N7aIfEup/x/i3U73BWPi6jTrmcZTcy2n3RSXCcUBZonpagQ1Fbx6XWID+uF3fBoHebRsgVkP2Uu4TqgMDRvuHm3QQkqsihvwHvwxGoqydj1RVVqPAmqsNZJ2K4LgAEBYioPYr1W4LUi/8R2z81R9yhrU++Q2UThRgYI+RARHy9rrMQvVSL2dUEvtMsUAL0vVEknNzv454Yw8QMynoFqndihs3+DNpRkPajw2sN1MQm1pP/2qrgY8CBMQ5g4PfpSK74bZvONGjUVJHDewJIjqGCtj+8JyXPXx0p5QkGBlOq1OI9CRDIXbqRYJgA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2133.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(346002)(136003)(376002)(54906003)(31696002)(6666004)(36756003)(83380400001)(478600001)(16576012)(316002)(31686004)(5660300002)(6916009)(4326008)(66556008)(44832011)(66476007)(52116002)(38350700002)(16526019)(26005)(53546011)(66946007)(2616005)(6486002)(38100700002)(186003)(8936002)(2906002)(956004)(8676002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dmRhb1lJVVYxaUk1Sy9hMVg3VUltamRjd0NreEdBb21pK3l3VUJDemp0QW1M?=
+ =?utf-8?B?cnlzQmpTdWUxSVFIOUI1c0kyaHpZWEd4WnlFeEtHMkdWUjd6cjNTdnA4Y3ox?=
+ =?utf-8?B?K3kvMm1DTXY0YnQ1L1FPck1FVTRWQnkvY3dVK0d5QVJucDZjMG9hSFBNVGpR?=
+ =?utf-8?B?cDFyNUd4Mlk2M09nd3hrTnpPM0o4NFlLYmZtemJLYWpNS0dTd3FFM1dTbDB6?=
+ =?utf-8?B?b2s4S0lVRUN1aVJYaWZhaFlaYkhLWjdpaEthajU1Z21RV2I1bzlxVnYyZ2Z1?=
+ =?utf-8?B?akhpc1hNUksrcG0ySHRaR2VlVEZFZUZFbXU0SHdvclNPci9Ua1dsNG9DNmg1?=
+ =?utf-8?B?N2ovblNodEZtYm1yazlLbkpESTAyaTY2SDRNdnYwNUVJaDdOVUowTG5lQ0ZW?=
+ =?utf-8?B?T0UvVG42MjQyelBuN2V6clhoVVFqQmd6MEFsa09TZWEzTFJnRDQ5R1NvZzdj?=
+ =?utf-8?B?Nk1IMForRUVmYkthd1NJVGN4VEhpMHB0TVZBQjF5V3R5QlE1UktUMTEwRk13?=
+ =?utf-8?B?ZmZwY1ZnelhpTXA1b1ZGUGtSZ1ZBU3EzTDVCWXBTc09KdnVNa0dHVDI4UGxm?=
+ =?utf-8?B?TkZGWEdGM2V0M1pyVWRoU09ETFZyeUpWd3Q5VFJCZmRHd2hUWGx0TE9TOHNC?=
+ =?utf-8?B?N1owWVArc3U5UUNjVVZkNFFTaGw1UWh3dVJNYzJwVm5iQWNzSWo0cWFNUEw4?=
+ =?utf-8?B?em9ZVXRsb2x0dkdaWGYydnNqNVN6MklqOWYvQlR6TG9jTHViS0haTERPTEFU?=
+ =?utf-8?B?VWdzeTQxY0FjRlQ0Q1VpSS9kZ0ZYQXNGaWV0K3pDOXR6WjJUS2hxVmNzY3BG?=
+ =?utf-8?B?eWZCUDlrVnFXbGlBNVczTnAxZGlPd3M4TFNTRmJsOFgzVGpBWTlLa0hRSjcy?=
+ =?utf-8?B?OStXZjBtRWw3S3o4NTJWSzFRMFJiNjNLcWxFZWZMOTUvU05NUktETktrNjMv?=
+ =?utf-8?B?THpBdDhyQS9sSFVrYXdQdlM3Y0FVQmJxSEk0RmRyWkVjWmxSdkxzNkh1dVBs?=
+ =?utf-8?B?eXhNUy9xZWdVUmRNME9DbVo0M1NaMHVSMFZqTlpCM2RtUmljTUdQbVFDeHdD?=
+ =?utf-8?B?WkU3VHpOdERERWN6TUpUcXMwczJ4SUZFZ3Q5ek1pVHBaUkhWd28wTkZURXlk?=
+ =?utf-8?B?UnFLQzV4NTdaNFN2WDkxRzZRV2l4bkYwY1R0Z0tMTC9uM1Y0NUx0TUZ0Njlq?=
+ =?utf-8?B?aGYvL2lVZGV2YlZ3M1ZqMHJPTDdmSXdDQXJsaTZXeWo3UGQ5c01nUDUzUUwr?=
+ =?utf-8?B?M1cxNEh3MkNHL0FTNTc0OEhNN3ZJZWRtZHFzaUZBRmxQM0N5UHVrMWhLRGtp?=
+ =?utf-8?B?ZVJCaHVFWHZMZlZyTldBVWZLeUkrVnorWmxkY1BEZ1JqS2tMdG16ZjNiQmVY?=
+ =?utf-8?B?UVp5NkduQ0cxM0F4OVdmcUFBMndrWU1SMTB6UTdjY28zb2dXS3FyNDAzT25h?=
+ =?utf-8?B?N1BHVnk2ZXlTbWZJLzNPRHIwdUt4eTBpcUxJYllXUm84OGd0Vm4zODlpdTNa?=
+ =?utf-8?B?RTIyY1krNkZNV3NMY2x0YWFpamE3UnpDMytoVmFHa09UVjRjRUdWZTVnWUh0?=
+ =?utf-8?B?VUNtaVNQa1VsMmNXYVFCRFFHcUs1bElMdnZuanJWQU9kNXJkVXNQcUFRaWNh?=
+ =?utf-8?B?cXg0Y1lRbmxzbGprSTJ4YWR6THFtZGNNTEE4bXVZYTR5RGdBRmpsSUwyb245?=
+ =?utf-8?B?UU84U216TzdNWHBNbnZIeGFYSFdqczNaQ3BWY2c1WDVJM21XYWFJYzFrSXNI?=
+ =?utf-8?Q?ChxEAQNKbu9uOZW85saHuLQNwYVkoB2AaGSv1xq?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c3b30cd-438b-4f92-5343-08d908d0fd65
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2133.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 16:33:14.8450
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PXDjFJbStsh22wfMCaFa8hwHchb4zvFwHWD4Uiv9PlLV+mqOa7XowbNoOM50MavGBvi3phiVJOIOXR3tyQAkQQLSUzyFGAF4ws+jAotcNxc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1464
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9966 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ adultscore=0 mlxscore=0 spamscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260126
+X-Proofpoint-ORIG-GUID: SgPZf6lpFm5sRexD3QcqM6uqDqNAStMX
+X-Proofpoint-GUID: SgPZf6lpFm5sRexD3QcqM6uqDqNAStMX
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9966 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 suspectscore=0 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkdyZWcgS0giIDxn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTA0LTI3IDAw
-OjIxOjA2ICjmmJ/mnJ/kuowpDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1h
-aWwudXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogc2lnbGVzaWFzQGlnYWxpYS5jb20sIGplbnMudGFw
-cm9nZ2VAdGFwcm9nZ2Uub3JnLCBpbmR1c3RyeXBhY2stZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0LCBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IOS4u+mimDogUmU6IFtQQVRDSF0g
-U3RhZ2luZzppcGFjay9jYXJyaWVycy90cGNpMjAwOiBGaXggYSBkb3VibGUgZnJlZSBpbiB0cGNp
-MjAwX3BjaV9wcm9iZQ0KPiANCj4gT24gTW9uLCBBcHIgMjYsIDIwMjEgYXQgMDg6MzU6NDdBTSAt
-MDcwMCwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiBJbiB0aGUgb3V0X2Vycl9idXNfcmVnaXN0ZXIg
-ZXJyb3IgYnJhbmNoIG9mIHRwY2kyMDBfcGNpX3Byb2JlLA0KPiA+IHRwY2kyMDAtPmluZm8tPmNm
-Z19yZWdzIGlzIGZyZWVkIGJ5IHRwY2kyMDBfdW5pbnN0YWxsKCktPg0KPiA+IHRwY2kyMDBfdW5y
-ZWdpc3RlcigpLT5wY2lfaW91bm1hcCguLix0cGNpMjAwLT5pbmZvLT5jZmdfcmVncykNCj4gPiBp
-biB0aGUgZmlyc3QgdGltZS4NCj4gPiANCj4gPiBCdXQgbGF0ZXIsIGlvdW5tYXAoKSBpcyBjYWxs
-ZWQgdG8gZnJlZSB0cGNpMjAwLT5pbmZvLT5jZmdfcmVncw0KPiA+IGFnYWluLg0KPiA+IA0KPiA+
-IE15IHBhdGNoIHNldHMgdHBjaTIwMC0+aW5mby0+Y2ZnX3JlZ3MgdG8gTlVMTCBhZnRlciB0cGNp
-MjAwX3VuaW5zdGFsbCgpDQo+ID4gdG8gYXZvaWQgdGhlIGRvdWJsZSBmcmVlLg0KPiA+IA0KPiA+
-IEZpeGVzOiBjZWEyZjdjZGZmMmFmICgiU3RhZ2luZzogaXBhY2svYnJpZGdlcy90cGNpMjAwOiBV
-c2UgdGhlIFRQQ0kyMDAgaW4gYmlnIGVuZGlhbiBtb2RlIikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBM
-diBZdW5sb25nIDxseWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+ID4gLS0tDQo+ID4gIGRyaXZl
-cnMvaXBhY2svY2FycmllcnMvdHBjaTIwMC5jIHwgNSArKysrLQ0KPiANCj4gVGhpcyBpcyBub3Qg
-YSBzdGFnaW5nIGRyaXZlciwgd2h5IGRvZXMgeW91ciBzdWJqZWN0IGxpbmUgc2F5IHRoYXQ/DQo+
-IA0KPiB0aGFua3MsDQo+IA0KPiBncmVnIGstaA0KDQpJIHNlZSB0aGUgZml4ZXMgY2VhMmY3Y2Rm
-ZjJhZiBoYXMgYWRkZWQgdGhlIHN1YnN5c3RlbSBuYW1lIGluIHN1YmplY3QsIHNvIGkgZ3Vlc3MN
-CnRoYXQgdGhlICJTdGFnaW5nIiBtYXkgYmUgYW4gYWxpYXMgb2YgdGhpcyBtb2R1bGUuIFNvcnJ5
-LCBpIHdpbGwgbmFtZSB0aGUgc3ViamVjdA0KbGluZSBtb3JlIGNhcmVmdWxseSBpbiBmdXR1cmUu
-DQo=
+On 2021-04-26 18:17, Greg Kroah-Hartman wrote:
+> On Mon, Apr 26, 2021 at 06:14:33PM +0200, Vegard Nossum wrote:
+>>   static void set_io_from_upio(struct uart_port *p)
+>>   {
+>>   	struct uart_8250_port *up = up_to_u8250p(p);
+>> @@ -2151,6 +2178,11 @@ int serial8250_do_startup(struct uart_port *port)
+>>   	unsigned char lsr, iir;
+>>   	int retval;
+>>   
+>> +	if (WARN_ON_ONCE(needs_membase(port->iotype) && !port->membase))
+>> +		return -ENODEV;
+>> +	if (WARN_ON_ONCE(needs_iobase(port->iotype) && !port->iobase))
+>> +		return -ENODEV;
+> 
+> These WARN_ON() will still trigger syzbot.  Are you sure you tested this
+> and had syzbot verify it?
+
+I tested it locally and the WARN_ON()s don't trigger -- presumably
+because serial8250_verify_port() is called from uart_set_info() before
+we get to serial8250_do_startup():
+
+         /*
+          * Ask the low level driver to verify the settings.
+          */
+         if (uport->ops->verify_port)
+                 retval = uport->ops->verify_port(uport, new_info);
+
+[...]
+
+                 retval = uart_startup(tty, state, 1);
+
+At least, this was my intention. Although now that I look at it again,
+it looks like this check may be skipped in some cases; is that what
+you're referring to?
+
+I didn't have syzbot verify it -- I thought it would do that when
+submitting my patch. Looks like I need to push somewhere and ask syzbot
+to test it using this?
+
+#syz test: git://repo/address.git commit-hash
+
+(I assume I can send this privately as long as I use the right
+syzbot+...@ To-address?)
+
+Thanks,
+
+
+Vegard
