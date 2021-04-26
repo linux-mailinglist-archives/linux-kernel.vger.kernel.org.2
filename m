@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DC436B923
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9753F36B91D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235927AbhDZSkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        id S238719AbhDZSkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238102AbhDZSjD (ORCPT
+        with ESMTP id S238654AbhDZSkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:39:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648CAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=67Creo4gLYBxQ5qf1EsBIy56GvQMCAKhgqOjplxQ+n0=; b=tNMMxKClPJhYnpSnH/C/7EV1OS
-        Jq+zn7FW3Z2pImBVHwcPA1WtVjIgmxU1+Wh/j5ra78tTMpOJYoOgELlO9W1O3lPi18GUrrt36sDdU
-        gkuUtz6+sMxzL9ZOhaBstRpvMJB+3SHEAt/6nI6kxNFpjqCLJa2GlI3YV9qUCyZR6KbE06xvkSTPL
-        4bI1PKKmJr18/NHLP+4sBidxe2yGvv3BBtDCZHAGdXuILkG9MBFAf+sacC+kZ5iIKn279cW2yeoFb
-        Tt74WyT7+KkkHoTCT14HZ+HGncWqnRP3zV1gDARCzmfdBw8oKCF2u8YrmJ/gTwDHAovcd+xPmeTQm
-        Js9mEdtQ==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=casper.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb67I-005xzJ-7h; Mon, 26 Apr 2021 18:37:58 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH -next RESEND] regulator: BD71815: select REGULATOR_ROHM to fix link errors
-Date:   Mon, 26 Apr 2021 11:37:52 -0700
-Message-Id: <20210426183752.19089-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 26 Apr 2021 14:40:16 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C55C061574;
+        Mon, 26 Apr 2021 11:39:33 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t22so5387371pgu.0;
+        Mon, 26 Apr 2021 11:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j9+QSmlBQy3w+PMo2MN3olBIQ1GcC6U1YwHegTMRMOc=;
+        b=n6RBy2Jzn/sJ89Aw4e+S15Nwtld1F/fpsNuveRxNz24yl232tPRffDQpbZhYdza5eA
+         VOYQR6GvBC8d/3EydDuTRvkEhaC7pzMtVBI8hlUjG3AA77rhs/wgcj73YO3iIEN4RomW
+         aV9MRRAY2ZazPgwP/wgh8ADH5O0TAAHEB7Wunr662Q45KY6jKKXQ0sCZMGyJXOHnRQ2Z
+         hiKDfytrPancx/Et4dh+AK44o01ivxH93fAHB/SDWSJj6tK2ERUb4F+6LDS2iDfKxr1E
+         UuagVKpjgpe2T52sukeEUYJiVSSvivWeYuaKARSMke+CBp/rw/89GLFwfAig5wswkb/i
+         chZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j9+QSmlBQy3w+PMo2MN3olBIQ1GcC6U1YwHegTMRMOc=;
+        b=W2ZBHlTBSGROStBPSjc0vUu145+aZ8tgxIzvTdv5SKH0MzTwf7wZGATZGoGwVe7bkL
+         w+mwmw0HIHU8dXSKiweWfvm5ZCSmkQfk7Vr2XhvIOEYgS9iwU4FZ+wlDqaDPgAFCMhYm
+         eQDRfJCcyXbJ+8RD7yKxAk9Y+uM1gkFcp8Y14vR1uaUYrXsxfGF4qLl8YRNKpTuah3BN
+         sS4v5rhnTEfWAtw1hnoiyjaCm8BMEYisEAuZccUybjI2NMdanrM4lHAUssU1VUvzRpaJ
+         ttFLYyEe3zRrmzZYPIJzGJ4nZCBmciwVn+nlL9LFeFP9IMKW1KrMIQJZixRiwfXNqUh4
+         TRuA==
+X-Gm-Message-State: AOAM5305KFvjjwD+tFXT8p09h5RJ2JZrUMpeFqL419/oBMJ2Bs++LxKn
+        NKkL1w0cU1W575oUUdzTa6IK1dkIDx0=
+X-Google-Smtp-Source: ABdhPJy4SABJJ9AzYtj5/qnXFjj9UlLUQAtuBgIJpL8Ih3U1LI7bE+lelVRkJCZUrgcLwNT8Au0HGQ==
+X-Received: by 2002:aa7:8a4e:0:b029:263:5a27:e867 with SMTP id n14-20020aa78a4e0000b02902635a27e867mr18882850pfa.55.1619462372631;
+        Mon, 26 Apr 2021 11:39:32 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w6sm384319pfj.85.2021.04.26.11.39.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 11:39:32 -0700 (PDT)
+Subject: Re: [net-next, v2, 2/7] net: dsa: no longer identify PTP packet in
+ core driver
+To:     Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210426093802.38652-1-yangbo.lu@nxp.com>
+ <20210426093802.38652-3-yangbo.lu@nxp.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d6cfb1b4-1d04-8a6a-10a4-5e3ced139e3f@gmail.com>
+Date:   Mon, 26 Apr 2021 11:39:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210426093802.38652-3-yangbo.lu@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With REGULATOR_ROHM there are linker errors:
+On 4/26/21 2:37 AM, Yangbo Lu wrote:
+> Move ptp_classify_raw out of dsa core driver for handling tx
+> timestamp request. Let device drivers do this if they want.
+> Not all drivers want to limit tx timestamping for only PTP
+> packet.
+> 
+> Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
+> Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
 
-ld: drivers/regulator/bd71815-regulator.o: in function `set_hw_dvs_levels':
-bd71815-regulator.c:(.text+0xbb): undefined reference to `rohm_regulator_set_dvs_levels'
-ld: drivers/regulator/bd71815-regulator.o: in function `buck12_set_hw_dvs_levels':
-bd71815-regulator.c:(.text+0x33e): undefined reference to `rohm_regulator_set_dvs_levels'
+This patch does appear to introduce build failures:
 
-Fixes: 1aad39001e851 ("regulator: Support ROHM BD71815 regulators")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
----
-Sorry about the Resend. I'm having some email problems.
+https://patchwork.hopto.org/static/nipa/473157/12224031/build_32bit/stderr
 
- drivers/regulator/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20210426.orig/drivers/regulator/Kconfig
-+++ linux-next-20210426/drivers/regulator/Kconfig
-@@ -207,6 +207,7 @@ config REGULATOR_BD70528
- config REGULATOR_BD71815
- 	tristate "ROHM BD71815 Power Regulator"
- 	depends on MFD_ROHM_BD71828
-+	select REGULATOR_ROHM
- 	help
- 	  This driver supports voltage regulators on ROHM BD71815 PMIC.
- 	  This will enable support for the software controllable buck
+https://patchwork.kernel.org/project/netdevbpf/patch/20210426093802.38652-4-yangbo.lu@nxp.com/
+-- 
+Florian
