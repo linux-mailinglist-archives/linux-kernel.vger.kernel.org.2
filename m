@@ -2,192 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BDB36B821
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D2236B827
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbhDZRdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:33:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234754AbhDZRdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:33:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 571DF6101D;
-        Mon, 26 Apr 2021 17:32:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619458347;
-        bh=3gcDGsqtYznY2J6G8/OOhG+6Er20sOKCcXAp/WwEQ6s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PtY5d00F/sxz6eMNhq+j3wKjLV4ARzIEUJjXrP+N+/B10O4jujT2Ed9Xh9lIC9yVl
-         7K19B/KY7Ek59SrEs26OyA3x1MX6Q7VSr4nDup81VjPFz1Y02Vx/sfuuqyPkAc+WTP
-         hJyRrKZO6amS9JXcY0Of5eJVpuljp2u4nNLZ57Pmr4tvD7ZHUt5wrmRihu0/69COYP
-         pYYDLi2V9XIDSMVrLy3esFtu8cqx2mWl4/teZuE7021YPWXwrqoTyVc4X/0IEoCpAs
-         AyuK78afSQCdVECBDKetEt0wVJlcmS+OM31fgWW5fSQUjW5rDorDk5w8VadPQB7IrX
-         Al7rHUbMFrEYw==
-Date:   Mon, 26 Apr 2021 19:32:23 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 25/78] media: i2c: ccs-core: use
- pm_runtime_resume_and_get()
-Message-ID: <20210426193223.78bd06f3@coco.lan>
-In-Reply-To: <20210426142901.GX3@paasikivi.fi.intel.com>
-References: <cover.1619191723.git.mchehab+huawei@kernel.org>
-        <34da940f76da6c1d61a193409164070f47243b64.1619191723.git.mchehab+huawei@kernel.org>
-        <20210425185525.GS3@paasikivi.fi.intel.com>
-        <20210426160151.61ac6ef2@coco.lan>
-        <20210426140900.GW3@paasikivi.fi.intel.com>
-        <20210426161659.7b979c44@coco.lan>
-        <20210426142901.GX3@paasikivi.fi.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S236101AbhDZRil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234754AbhDZRij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 13:38:39 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69147C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:37:57 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i3so41033167edt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QP0CmUOmuZCqFMCKbU7p6miMg+oTUEAR2qJhsCeBN3g=;
+        b=M78V2gjSMdnIA3IGGpOKBt23gjaj6T/rFhYiDsIGYpthKKMLq+xksmfqE1O5ZzCIMT
+         thpCHpkYFCRoICXNYbM+6G5S+mWzl80T9xpqt5LTmkJcqJW2gnrRhqUxIPscQ61pV7yJ
+         JN6LoHFDwpco6cOiCMtqxcskVlcKmTTPPBe/u23auJIp/BwYFUlsZqH8lqtK83ZG8pyP
+         GeIdUn++Ix43s1WBNQeVP/kjK7FZI3kGLUD21b+kLpsiZVIXzWpvN4i/VloRoACY+SFC
+         066jcpMatjvUsz/FuAsNX5D1lDhxq6sjbUEK9Gn4IToxVBrzKkQs8qf/AC61IdvAVBuz
+         z2lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QP0CmUOmuZCqFMCKbU7p6miMg+oTUEAR2qJhsCeBN3g=;
+        b=Dmr8NKbfRFP6Oo51Hj0cW00mExjFqQpBRYdQrtvY6Eu5sayHM5T64I2uAtcXO9xaiU
+         8HLeQfzro6F7R7hAGW5jRhLvKBw4E/Ixqa/CYkMuWRKNXqVM+fkD3aVMV2+wD/5APVBi
+         NW5I3wEcIUs6jmzmGKTe6dMYHppKH76EafbDf/nvcJ8fA8bwfWaDBVP+1sdbQozfQYL7
+         W3JZrhkFSmzGjIos/Ms4eSRGnUA+38ckzYHobfPqRXnIPJBnBRztjPgpvPq6aYYYmDkk
+         nJEvPeV5GUm1+gDIA/Kf7eKKRILCc6uejuJzYXw2zmd0D3XRw0rX2GXGWGScSFtNTSlz
+         CNig==
+X-Gm-Message-State: AOAM53106+0YNT791EhFqYHRPgvn1Ht91vTMoIKDztV3iUIBkfPq8O5p
+        /hDY6B1K+d6JYLdU5a5r15mc86COwUKJIjJOHgp0XQ==
+X-Google-Smtp-Source: ABdhPJw8ntNewUe3WzcD7bi7C8umTwXUMW2bj96iebG+KrEjIdXnwc94Jzl4KA2EgjkxOGFXRAH2XpWHzndTYnXfviE=
+X-Received: by 2002:aa7:c78a:: with SMTP id n10mr22185210eds.239.1619458676007;
+ Mon, 26 Apr 2021 10:37:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210426072819.666570770@linuxfoundation.org>
+In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 26 Apr 2021 23:07:44 +0530
+Message-ID: <CA+G9fYut9RpR+ciV7uX7zfpRW8=knqgHY3XeuJJxnBTCVYcvLQ@mail.gmail.com>
+Subject: Re: [PATCH 5.11 00/41] 5.11.17-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 26 Apr 2021 17:29:02 +0300
-Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
+On Mon, 26 Apr 2021 at 13:15, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.11.17 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.17-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> On Mon, Apr 26, 2021 at 04:16:59PM +0200, Mauro Carvalho Chehab wrote:
-> > Em Mon, 26 Apr 2021 17:09:00 +0300
-> > Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
-> >   
-> > > Hi Mauro,
-> > > 
-> > > On Mon, Apr 26, 2021 at 04:01:51PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Em Sun, 25 Apr 2021 21:55:25 +0300
-> > > > Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
-> > > >     
-> > > > > Hi Mauro,
-> > > > > 
-> > > > > Thanks for the patch.
-> > > > > 
-> > > > > On Sat, Apr 24, 2021 at 08:44:35AM +0200, Mauro Carvalho Chehab wrote:    
-> > > > > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > > > > added pm_runtime_resume_and_get() in order to automatically handle
-> > > > > > dev->power.usage_count decrement on errors.
-> > > > > > 
-> > > > > > Use the new API, in order to cleanup the error check logic.
-> > > > > > 
-> > > > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > > > > ---
-> > > > > >  drivers/media/i2c/ccs/ccs-core.c | 11 +++++------
-> > > > > >  1 file changed, 5 insertions(+), 6 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-> > > > > > index 9dc3f45da3dc..1441ddcc9b35 100644
-> > > > > > --- a/drivers/media/i2c/ccs/ccs-core.c
-> > > > > > +++ b/drivers/media/i2c/ccs/ccs-core.c
-> > > > > > @@ -1880,12 +1880,11 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
-> > > > > >  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
-> > > > > >  	int rval;
-> > > > > >  
-> > > > > > -	rval = pm_runtime_get_sync(&client->dev);
-> > > > > > -	if (rval < 0) {
-> > > > > > -		pm_runtime_put_noidle(&client->dev);
-> > > > > > -
-> > > > > > +	rval = pm_runtime_resume_and_get(&client->dev);
-> > > > > > +	if (rval < 0)
-> > > > > >  		return rval;
-> > > > > > -	} else if (!rval) {
-> > > > > > +
-> > > > > > +	if (!rval) {
-> > > > > >  		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
-> > > > > >  					       ctrl_handler);
-> > > > > >  		if (rval)
-> > > > > > @@ -3089,7 +3088,7 @@ static int __maybe_unused ccs_suspend(struct device *dev)
-> > > > > >  	bool streaming = sensor->streaming;
-> > > > > >  	int rval;
-> > > > > >  
-> > > > > > -	rval = pm_runtime_get_sync(dev);
-> > > > > > +	rval = pm_runtime_resume_and_get(dev);
-> > > > > >  	if (rval < 0) {
-> > > > > >  		pm_runtime_put_noidle(dev);      
-> > > > > 
-> > > > > You'll need to drop pm_runtime_put_noidle() here.    
-> > > > 
-> > > > OK!
-> > > > 
-> > > > ---
-> > > > 
-> > > > On a non-related issue at the same code, after the change, the
-> > > > suspend function will be:
-> > > > 
-> > > >   static int __maybe_unused ccs_suspend(struct device *dev)
-> > > >   {
-> > > >         struct i2c_client *client = to_i2c_client(dev);
-> > > >         struct v4l2_subdev *subdev = i2c_get_clientdata(client);
-> > > >         struct ccs_sensor *sensor = to_ccs_sensor(subdev);
-> > > >         bool streaming = sensor->streaming;
-> > > >         int rval;
-> > > > 
-> > > >         rval = pm_runtime_resume_and_get(dev);
-> > > >         if (rval < 0) 
-> > > >                 return -EAGAIN;
-> > > > 
-> > > >         if (sensor->streaming)
-> > > >                 ccs_stop_streaming(sensor);
-> > > > 
-> > > >         /* save state for resume */
-> > > >         sensor->streaming = streaming;
-> > > > 
-> > > >         return 0;
-> > > >   }
-> > > > 
-> > > > Not sure if "return -EAGAIN" is the right thing here. I mean,
-> > > > the PM runtime core has two error conditions that are independent
-> > > > on whatever the PM callback would be doing[1]:
-> > > > 
-> > > > 	        if (dev->power.runtime_error)
-> > > >                 retval = -EINVAL;
-> > > >         else if (dev->power.disable_depth > 0)
-> > > >                 retval = -EACCES;
-> > > > 
-> > > > It would be very unlikely that trying to suspend again would solve
-> > > > those conditions.
-> > > > 
-> > > > So, I guess that the right thing to do is to change the code
-> > > > to do, instead:
-> > > > 
-> > > >   static int __maybe_unused ccs_suspend(struct device *dev)
-> > > >   {
-> > > >         struct i2c_client *client = to_i2c_client(dev);
-> > > >         struct v4l2_subdev *subdev = i2c_get_clientdata(client);
-> > > >         struct ccs_sensor *sensor = to_ccs_sensor(subdev);
-> > > >         bool streaming = sensor->streaming;
-> > > >         int rval;
-> > > > 
-> > > >         rval = pm_runtime_resume_and_get(dev);
-> > > >         if (rval < 0) 
-> > > >                 return rval;
-> > > > 	...
-> > > >   }
-> > > > 
-> > > > 
-> > > > [1] see rpm_resume() code at drivers/base/power/runtime.c.    
-> > > 
-> > > Yeah, I agree. This code is one of the older parts the driver.
-> > > 
-> > > Please add:
-> > > 
-> > > Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > 
-> > > The same goes for the other sensor driver patches in the set you cc'd me,
-> > > i.e. patches 12, 15, 26, 28,32, 40, 45, 51, 53 and 55.  
-> > 
-> > It probably makes sense to address the suspend/resume -EAGAIN
-> > return code on a separate patch series, before this one, as:
-> > 
-> > 1. this is unrelated to this change;
-> > 2. it is something that should be c/c to fixes. So, having it
-> >    before this series makes easier to apply there.  
-> 
-> Sounds good to me. If you can submit a patch, please add my ack. :-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Sure. I'll work on such patch series.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks!
-Mauro
+## Build
+* kernel: 5.11.17-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.11.y
+* git commit: 847f63d2d71067175476a525cd35c5520e66f466
+* git describe: v5.11.16-42-g847f63d2d710
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
+.16-42-g847f63d2d710
+
+## No regressions (compared to v5.11.16)
+
+## No fixes (compared to v5.11.16)
+
+## Test result summary
+ total: 83400, pass: 68313, fail: 2671, skip: 12150, xfail: 266,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
