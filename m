@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC70E36AD34
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5E336AD69
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbhDZHdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44336 "EHLO mail.kernel.org"
+        id S232755AbhDZHg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:36:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232161AbhDZHcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:32:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3DB961152;
-        Mon, 26 Apr 2021 07:32:10 +0000 (UTC)
+        id S232777AbhDZHeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:34:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F8E561077;
+        Mon, 26 Apr 2021 07:33:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422331;
-        bh=QD1rZwMlNtvX5vHPARzO8cvKTRwXY+3/QEppNqFo+DA=;
+        s=korg; t=1619422402;
+        bh=cb/WSjGhZm9qsYRe4EugrntntQRK3N9XOP/ZsHZsCME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sM9seSkMqshorIotv1qRjCsXRp1rhJNQzOcyAjpGzBxgx+shTqsVS2KXeNinuCmzC
-         a7ExP2Ci3sEAdvNNcpXXxGPK2z9H1WF2A/cmvnzgNQhneIBB6gWOOEPVS58CYD94sO
-         KVTfQQRA36GL/olIc1sh5noodDZgCZEQcnGHW3b0=
+        b=AQrIjNbaJ3Zh3klrmqaEaM2jTBRvSNgR7mU1+XrdjIpkq39m2dTJ4Jld7q5lJDyyd
+         Qmvv8z5BAehC3c4h2gRaWEBCXfmEQNHkkeSLAhkhkbmTp7Tf6+d/Em535qZCwNQDRz
+         HrvJjRZw/NOgAI78wFddvhSIfzJak/syk9RJbOlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shujin Li <lishujin@kuaishou.com>,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 20/32] i40e: fix the panic when running bpf in xdpdrv mode
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.9 17/37] Input: i8042 - fix Pegatron C15B ID entry
 Date:   Mon, 26 Apr 2021 09:29:18 +0200
-Message-Id: <20210426072817.266628984@linuxfoundation.org>
+Message-Id: <20210426072817.835788879@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 4e39a072a6a0fc422ba7da5e4336bdc295d70211 upstream.
+commit daa58c8eec0a65ac8e2e77ff3ea8a233d8eec954 upstream.
 
-Fix this panic by adding more rules to calculate the value of @rss_size_max
-which could be used in allocating the queues when bpf is loaded, which,
-however, could cause the failure and then trigger the NULL pointer of
-vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
-cpus are online and then allocates 256 queues on the machine with 32 cpus
-online actually.
+The Zenbook Flip entry that was added overwrites a previous one
+because of a typo:
 
-Once the load of bpf begins, the log will go like this "failed to get
-tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-failed".
+In file included from drivers/input/serio/i8042.h:23,
+                 from drivers/input/serio/i8042.c:131:
+drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
+  591 |                 .matches = {
+      |                            ^
+drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
 
-Thus, I attach the key information of the crash-log here.
+Add the missing separator between the two.
 
-BUG: unable to handle kernel NULL pointer dereference at
-0000000000000000
-RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-Call Trace:
-[2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-[2160294.717666]  dev_xdp_install+0x4f/0x70
-[2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-[2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-[2160294.718705]  do_setlink+0xac7/0xe70
-[2160294.719035]  ? __nla_parse+0xed/0x120
-[2160294.719365]  rtnl_newlink+0x73b/0x860
-
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Link: https://lore.kernel.org/r/20210323130623.2302402-1-arnd@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/input/serio/i8042-x86ia64io.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -8148,6 +8148,7 @@ static int i40e_sw_init(struct i40e_pf *
- {
- 	int err = 0;
- 	int size;
-+	u16 pow;
- 
- 	pf->msg_enable = netif_msg_init(I40E_DEFAULT_MSG_ENABLE,
- 				(NETIF_MSG_DRV|NETIF_MSG_PROBE|NETIF_MSG_LINK));
-@@ -8182,6 +8183,11 @@ static int i40e_sw_init(struct i40e_pf *
- 	pf->rss_table_size = pf->hw.func_caps.rss_table_size;
- 	pf->rss_size_max = min_t(int, pf->rss_size_max,
- 				 pf->hw.func_caps.num_tx_qp);
-+
-+	/* find the next higher power-of-2 of num cpus */
-+	pow = roundup_pow_of_two(num_online_cpus());
-+	pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
-+
- 	if (pf->hw.func_caps.rss) {
- 		pf->flags |= I40E_FLAG_RSS_ENABLED;
- 		pf->rss_size = min_t(int, pf->rss_size_max, num_online_cpus());
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -579,6 +579,7 @@ static const struct dmi_system_id i8042_
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "VGN-CS"),
+ 		},
++	}, {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
 
 
