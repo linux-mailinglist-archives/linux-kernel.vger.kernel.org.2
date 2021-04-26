@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310F736BB7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5B236BB90
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237131AbhDZWIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 18:08:34 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34655 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232062AbhDZWIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 18:08:32 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FTfCP1phfz9sWC;
-        Tue, 27 Apr 2021 08:07:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619474869;
-        bh=yUSdgMdbiCqL5+OB/Of+i6iHUia7HTBO6AQDdHDUFHw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jExKIdmrd1XvwPEf+Hngt7YG01RUf6N2r6Gq3GQ4U8owT1ZeVnuumYzbTFVVME4Dl
-         SpFtXMA4Y6n4I4+1u8pMjtID3Tsf+iMhpLXEvL3pmak1KTaQm6zYBGxWSD3ONGn5Z9
-         ZjcTjgNp/IGjuIjt8ks6BUbcFfnwqTluGcERX5ULj4sMTO3H61eKC9facgC+tebmkp
-         VlmyIC48qP13Zf/JMYpBt74F59wRnO2oa5ti730nHFqdnLMH951+U1B1z1PfVqGVCr
-         0LSkWJTrYP43M/xDJo3ie3k3/FVCWF7tYL146KEOvMkSuorGnvLUv9zS8LZ14yzZTG
-         Eiic8arbqchGA==
-Date:   Tue, 27 Apr 2021 08:07:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg KH <greg@kroah.com>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tomislav Denis <tomislav.denis@avl.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the staging tree
-Message-ID: <20210427080741.5f3de906@canb.auug.org.au>
-In-Reply-To: <20210329165525.32d51a3a@canb.auug.org.au>
-References: <20210329165525.32d51a3a@canb.auug.org.au>
+        id S236825AbhDZWSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 18:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhDZWSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 18:18:40 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3A9C061574;
+        Mon, 26 Apr 2021 15:17:58 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 190so1508443qkl.11;
+        Mon, 26 Apr 2021 15:17:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pT8Z+BT2Uzmb9KP8iLMvUauv3UtnTngOEKOh9DM9qy4=;
+        b=ls88h6qyJchcgT2gheBMtudKdMq1gyb07dTcQOV8pEX9uxpTys/RsUPQg8mKcSczat
+         N3AQwYv1yH2AVQF6kTC7//Y6JGWsod8vPKVCN/NHqF88ETT4zerdjRIuSMjqXQxsvz2n
+         2PUrkKm00H5yDGX7LdUNkU9VMzb7z1KmIug7hMxRE+3M/SqERb0K+XdQ0LDjHc1Mwmr9
+         Q/MgfjEIR3UhkTeObEGz0vTnkDJWgVm4/s0kb3FvY0DHNeVRIpmE0STPoMDver35CK8d
+         C0CFtEXktUU4xM0z73+1cCpVKXsME2/Z//BAbumV00rpa/r3iz8MGU4glUaHGLXTEJyi
+         Xupw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pT8Z+BT2Uzmb9KP8iLMvUauv3UtnTngOEKOh9DM9qy4=;
+        b=Tm7TaMW8qv0wG6hL0DPoTcFU407yeRfomQ8HEBT+kd+Olo/73/xXnfBmwd8VcNp1zr
+         CW86s3uPAUJCV/J7nS+zyw/yqJlfudiyUuQJBEJJl3JFeO+3sJZNv/sSrDu9faxIsg4M
+         XiXCeYvVTxn9N9CCdQQ5adJrv7UuCrdj1LHtS5Mv2s8Zb4d1Zn7MfHzCeYWpuM4Xeqpt
+         5TYs1aqEVsNYmvw/Sf1t5W+9O6WI8o4JXjhmtemNjHiN41g86tkobF4KVPgbfwdp0JwP
+         o/uMUgYRrWtVtk80oLENYAAYdSZdX8YVYGJk1JLTZ2VbCgjcNr5zwqNivGykYQ7ZX/dD
+         1Ltg==
+X-Gm-Message-State: AOAM530PBPFm8s8pCPyDctFchwej+q2GEAbGE/meN00GoaKx2tf4r6g+
+        DOKYT2NV6r1vZHnKRy9/xc4=
+X-Google-Smtp-Source: ABdhPJwHRhWj15+STILXHLcbrerqEPaFw9TR6Lud8ogKrGI6XqXY451mMzvcEH4xijSbRTNDATMIFg==
+X-Received: by 2002:a05:620a:670:: with SMTP id a16mr20732183qkh.428.1619475477527;
+        Mon, 26 Apr 2021 15:17:57 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.37.247])
+        by smtp.gmail.com with ESMTPSA id x20sm1374111qkf.42.2021.04.26.15.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 15:17:56 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     corbet@lwn.net, nathan@kernel.org, linux-kernel@vger.kernel.org,
+        viresh.kumar@linaro.org, linux-doc@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, viro@zeniv.linux.org.uk,
+        tglx@linutronix.de, gregkh@linuxfoundation.org,
+        rdunlap@infradead.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org
+Subject: [PATCH  RESENDING 0/3] Removed oprofile stale entries
+Date:   Tue, 27 Apr 2021 03:38:44 +0530
+Message-Id: <cover.1619181632.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C3oPscR5rztSzRkQu0g316m";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C3oPscR5rztSzRkQu0g316m
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch series trying to clean up the remaining debris of removed
+functionality.Kindly see the commit : 24880bef417f(oprofile-removal)
 
-Hi all,
+In truest sense, it is all trivial in nature, so cc'ing that mail id too..
 
-On Mon, 29 Mar 2021 16:55:25 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the staging tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_read_reg':
-> drivers/iio/adc/ti-ads131e08.c:180:5: error: 'struct spi_transfer' has no=
- member named 'delay_usecs'
->   180 |    .delay_usecs =3D st->sdecode_delay_us,
->       |     ^~~~~~~~~~~
-> drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_write_reg':
-> drivers/iio/adc/ti-ads131e08.c:206:5: error: 'struct spi_transfer' has no=
- member named 'delay_usecs'
->   206 |    .delay_usecs =3D st->sdecode_delay_us,
->       |     ^~~~~~~~~~~
->=20
-> Caused by commit
->=20
->   d935eddd2799 ("iio: adc: Add driver for Texas Instruments ADS131E0x ADC=
- family")
->=20
-> interacting with commit
->=20
->   3ab1cce55337 ("spi: core: remove 'delay_usecs' field from spi_transfer")
->=20
-> from the spi tree.
->=20
-> I have applied the following merge fix patch.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 29 Mar 2021 16:51:22 +1100
-> Subject: [PATCH] iio: adc: merge fix for "spi: core: remove 'delay_usecs'
->  field from spi_transfer"
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/iio/adc/ti-ads131e08.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/iio/adc/ti-ads131e08.c b/drivers/iio/adc/ti-ads131e0=
-8.c
-> index 0060d5f0abb0..764dab087b41 100644
-> --- a/drivers/iio/adc/ti-ads131e08.c
-> +++ b/drivers/iio/adc/ti-ads131e08.c
-> @@ -177,7 +177,10 @@ static int ads131e08_read_reg(struct ads131e08_state=
- *st, u8 reg)
->  		{
->  			.tx_buf =3D &st->tx_buf,
->  			.len =3D 2,
-> -			.delay_usecs =3D st->sdecode_delay_us,
-> +			.delay =3D {
-> +				.value =3D st->sdecode_delay_us,
-> +				.unit =3D SPI_DELAY_UNIT_USECS,
-> +			},
->  		}, {
->  			.rx_buf =3D &st->rx_buf,
->  			.len =3D 1,
-> @@ -203,7 +206,10 @@ static int ads131e08_write_reg(struct ads131e08_stat=
-e *st, u8 reg, u8 value)
->  		{
->  			.tx_buf =3D &st->tx_buf,
->  			.len =3D 3,
-> -			.delay_usecs =3D st->sdecode_delay_us,
-> +			.delay =3D {
-> +				.value =3D st->sdecode_delay_us,
-> +				.unit =3D SPI_DELAY_UNIT_USECS,
-> +			},
->  		}
->  	};
-> =20
-> --=20
-> 2.30.0
+trivial@vger.kernel.org
 
-This is now a conflict between the spi (and spi-fixes) tree and Linus' tree.
+Bhaskar Chowdhury (3):
+  Removed the oprofiled version option
+  oprofiled version output line removed from the list
+  Enlisted oprofile version line removed
 
---=20
-Cheers,
-Stephen Rothwell
+ Documentation/process/changes.rst                    | 1 -
+ Documentation/translations/it_IT/process/changes.rst | 1 -
+ scripts/ver_linux                                    | 1 -
+ 3 files changed, 3 deletions(-)
 
---Sig_/C3oPscR5rztSzRkQu0g316m
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--
+2.26.3
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCHOa0ACgkQAVBC80lX
-0Gxwzgf9FD/51KTFC3rZnCYZSe9dRL02WaB445/tOHbhruU8LQIQ7S1yY0AJXp3t
-uDbALgCjeqH6nV2XVVAo1OBZJpkAbuTw5+l2XftwNJwd1gie3AiT/ZvrGbEim/Wj
-xm+emzRuPHFCvMtxyJ31JSdUmTS0BMW1/4aSBKHxf6f6Fddy7GSkIZ9bVA5LOtp/
-8TiMKWLFE4x0E1ndkvKHkppO3wqk7KQvbJMqcNgF3iKQrRhrSEYb22TMxeXG6qUc
-xZPLgW/OKjsRwi3XYEeODX9LrhudGL3wV2XZ+77QUDWl903QPI0jLHNPdTY0fh8u
-amrG2Fa7n8HCJO7ja+4yqFyRMYgolQ==
-=WGP7
------END PGP SIGNATURE-----
-
---Sig_/C3oPscR5rztSzRkQu0g316m--
