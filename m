@@ -2,155 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161D936BC5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970BD36BC63
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhDZXum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S232642AbhDZX51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhDZXul (ORCPT
+        with ESMTP id S232022AbhDZX5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:50:41 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0872FC061574;
-        Mon, 26 Apr 2021 16:49:59 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w6so25571908pfc.8;
-        Mon, 26 Apr 2021 16:49:59 -0700 (PDT)
+        Mon, 26 Apr 2021 19:57:25 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57728C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:56:43 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i201-20020a25d1d20000b02904ed4c01f82bso13206609ybg.20
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:56:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4Kj0SXA9vsOtoPJRmbl9kO6maA5cV9sB7CgScAwXMzI=;
-        b=PFvUwvqW69maGIZ5IE53RvvUM+/kvn8XSEdtYOjbhbPlzT0Riuw8w7Ts1JFVxIDqpQ
-         hkN+WE+9gKJKaxtoiRgHMpvs9sljBPxeoFTD8nkotwJ/goVrvSwQUvwMUdX0MB/hLWnu
-         MHDlhhg8N/JbcQAJZ2Db5qaoK6tdTEf1BouwU/gi3Jg6UZCryIRDm9+uZZRvWjQ+QUb2
-         +OMRwFtjC+RQpFVbk6gyUexFskpIjmkRZODzFO+vpHsN+PWjGIOYxdVwKcYgAWrvOR92
-         EyGQlT0paeIxMRnpQ59hRd6/qHmCbR/KDJxaMA02Q6ibFopq2uKIiC6xQzJoLcSwHQ+0
-         bIdw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bLpFuVYdmPMnBYEaz/LwZMrDFGhW/UaBfFKC3wD97bw=;
+        b=jtFpzcZtBpvmVY1OQxFz99OaCQ/fGYvIQYAsMbBQWsumpBgVpO8xEj/8Mdu8/VKkAE
+         zv/RYjenlWm2FfayETY4b50Z3O3i0hYcGuoefZnBASscfpyqLwNzqaTwTkTIBZSxGjNe
+         ZAacjTRxdZGCkWPvLfYtKwRHc44z/0sWRzovy820iYr8jKjXq1CMgC13KUneGdQ4lpWi
+         CExeaHOA8ukZOnu1Ox3SV7z5J92DawYKeTbHgdJ+1l8JJQ8ck4o7S0tL2DrKMfBlLfIg
+         GpU2kgeQYxrQfXI1DXOGj7vF76v+WsV5c+ZyEdkTm+LwCYxQzHlexbPeJqOL5J34K0yc
+         pmcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4Kj0SXA9vsOtoPJRmbl9kO6maA5cV9sB7CgScAwXMzI=;
-        b=qEzWEhmda9UHg/Ot595huQAWu/MH2ieyK2OdLNZtxjj219A/SNzyKYNDiCt8uh94/i
-         12HBXr2MmOwwZmSSoFtTCVbTxPvBjrNsBuBIWP5kmZEyXKK/m4DzxWcSahTKMOi1UCCc
-         rpF2W+SwZtiuy61pBEi1wEW0mpwG6vAm8Lz+B6qr+uoeyAEfLxJnhRFcW4hsOWfb+gX9
-         ZnFc+3zNA6Ak1cihOT8VTm3pKaWm0BYlBGIWzIvQvQCPuPi438+vY00VfW25YPHtQR9U
-         BPZyT5JSnGAZHioa8N3rNebQSAKWdyuaiQXqCP8qAwWLH6WBVtqNvU8AyoOGb7MWrg3M
-         fMPA==
-X-Gm-Message-State: AOAM532+hbRN7STcip4CfnF8QteAnc3u/bI4BiVl8sBaFc6XPCz7Mv0W
-        r40nmLXo7ewWnlDfc37UNRM=
-X-Google-Smtp-Source: ABdhPJzlJCZjMw1AMpMrqCCtVcFtp5ga8BJTa2+1W/jHgDQCNHWITvuZXAkIlz5HiSTjiD6+Kb+v/A==
-X-Received: by 2002:a63:eb46:: with SMTP id b6mr4060320pgk.199.1619480998570;
-        Mon, 26 Apr 2021 16:49:58 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id w189sm646315pfc.31.2021.04.26.16.49.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 16:49:57 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list),
-        linux-media@vger.kernel.org (open list:DMA BUFFER SHARING FRAMEWORK),
-        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
-        FRAMEWORK)
-Subject: [PATCH] drm/msm: Do not unpin/evict exported dma-buf's
-Date:   Mon, 26 Apr 2021 16:53:25 -0700
-Message-Id: <20210426235326.1230125-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bLpFuVYdmPMnBYEaz/LwZMrDFGhW/UaBfFKC3wD97bw=;
+        b=AzgbhWnfPSOxx1i52zgIVlXJf5IfcgGfPWmYi3oJh+LOV4lJ9LGsqARJgTfmFKHU9b
+         yZkAH09Jp5zWxlrtKcwSkR7vOhNymWAyFroBAzu8Dt91w4rwzv5wwl0FhnxSlHjBJsQs
+         z51F2I9DrF5Yrh8PhWMoa+6c4vFlsl0xkfG/+jSB4y2CYdKTXA1ZNFbggCP1hBNt/Rp7
+         hsF/d3R8l/5T0lOwK69nZGPvy6ixtkW3W3me9VZzQUaxmMKATThSU/rYs3nSYCpcHwa4
+         U7cD1RCSCdeSzwO6coJl/KecpouWiacbo8zpCaqF/tEAennYFOL9Ve3kKUcm3YHNHv8c
+         Y8cg==
+X-Gm-Message-State: AOAM531xTAmofTPM/+YNFR0eAs5fVzQzocSVbvkboPvxXPbV6K/UW4qJ
+        me61E5zbwlpdSC5hWd6eYTPL3wT/kbH0BG4=
+X-Google-Smtp-Source: ABdhPJyssTCKXdLShQhExFAq2pBioU6ZEBWFFG5oiOoJL/kVfwi2w1LlaVZYGfaj8wii6xiRIYL8G7dgnUVa9Uc=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:d0ce:dc79:218:3f25])
+ (user=saravanak job=sendgmr) by 2002:a25:d40d:: with SMTP id
+ m13mr235353ybf.170.1619481402352; Mon, 26 Apr 2021 16:56:42 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 16:56:38 -0700
+Message-Id: <20210426235638.1285530-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH] spi: Fix spi device unregister flow
+From:   Saravana Kannan <saravanak@google.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        kernel-team@android.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+When an SPI device is unregistered, the spi->controller->cleanup() is
+called in the device's release callback. That's wrong for a couple of
+reasons:
 
-Our initial logic for excluding dma-bufs was not quite right.  In
-particular we want msm_gem_get/put_pages() path used for exported
-dma-bufs to increment/decrement the pin-count.
+1. spi_dev_put() can be called before spi_add_device() is called. And
+   it's spi_add_device() that calls spi_setup(). This will cause clean()
+   to get called without the spi device ever being setup.
 
-Also, in case the importer is vmap'ing the dma-buf, we need to be
-sure to update the object's status, because it is now no longer
-potentially evictable.
+2. There's no guarantee that the controller's driver would be present by
+   the time the spi device's release function gets called.
 
-Fixes: 63f17ef83428 drm/msm: Support evicting GEM objects to swap
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+3. It also causes "sleeping in atomic context" stack dump[1] when device
+   link deletion code does a put_device() on the spi device.
+
+Fix these issues by simply moving the cleanup from the device release
+callback to the actual spi_unregister_device() function.
+
+[1] - https://lore.kernel.org/lkml/CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com/
+Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/gpu/drm/msm/msm_gem.c | 16 +++++++++++++++-
- drivers/gpu/drm/msm/msm_gem.h |  4 ++--
- 2 files changed, 17 insertions(+), 3 deletions(-)
+ drivers/spi/spi.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 09ef4ec6eb34..17f85d2f23ab 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -190,13 +190,25 @@ struct page **msm_gem_get_pages(struct drm_gem_object *obj)
- 	}
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index b08efe88ccd6..7d0d89172a1d 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -47,10 +47,6 @@ static void spidev_release(struct device *dev)
+ {
+ 	struct spi_device	*spi = to_spi_device(dev);
  
- 	p = get_pages(obj);
+-	/* spi controllers may cleanup for released devices */
+-	if (spi->controller->cleanup)
+-		spi->controller->cleanup(spi);
+-
+ 	spi_controller_put(spi->controller);
+ 	kfree(spi->driver_override);
+ 	kfree(spi);
+@@ -558,6 +554,12 @@ static int spi_dev_check(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
++static void spi_cleanup(struct spi_device *spi)
++{
++	if (spi->controller->cleanup)
++		spi->controller->cleanup(spi);
++}
 +
-+	if (!IS_ERR(p)) {
-+		msm_obj->pin_count++;
-+		update_inactive(msm_obj);
+ /**
+  * spi_add_device - Add spi_device allocated with spi_alloc_device
+  * @spi: spi_device to register
+@@ -622,11 +624,13 @@ int spi_add_device(struct spi_device *spi)
+ 
+ 	/* Device may be bound to an active driver when this returns */
+ 	status = device_add(&spi->dev);
+-	if (status < 0)
++	if (status < 0) {
+ 		dev_err(dev, "can't add %s, status %d\n",
+ 				dev_name(&spi->dev), status);
+-	else
++		spi_cleanup(spi);
++	} else {
+ 		dev_dbg(dev, "registered child %s\n", dev_name(&spi->dev));
 +	}
+ 
+ done:
+ 	mutex_unlock(&spi_add_lock);
+@@ -713,6 +717,8 @@ void spi_unregister_device(struct spi_device *spi)
+ 	if (!spi)
+ 		return;
+ 
++	spi_cleanup(spi);
 +
- 	msm_gem_unlock(obj);
- 	return p;
- }
- 
- void msm_gem_put_pages(struct drm_gem_object *obj)
- {
--	/* when we start tracking the pin count, then do something here */
-+	struct msm_gem_object *msm_obj = to_msm_bo(obj);
-+
-+	msm_gem_lock(obj);
-+	msm_obj->pin_count--;
-+	GEM_WARN_ON(msm_obj->pin_count < 0);
-+	update_inactive(msm_obj);
-+	msm_gem_unlock(obj);
- }
- 
- int msm_gem_mmap_obj(struct drm_gem_object *obj,
-@@ -646,6 +658,8 @@ static void *get_vaddr(struct drm_gem_object *obj, unsigned madv)
- 			ret = -ENOMEM;
- 			goto fail;
- 		}
-+
-+		update_inactive(msm_obj);
- 	}
- 
- 	return msm_obj->vaddr;
-diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
-index 1b519fcd8418..66fb40b87122 100644
---- a/drivers/gpu/drm/msm/msm_gem.h
-+++ b/drivers/gpu/drm/msm/msm_gem.h
-@@ -228,7 +228,7 @@ static inline bool is_active(struct msm_gem_object *msm_obj)
- /* imported/exported objects are not purgeable: */
- static inline bool is_unpurgeable(struct msm_gem_object *msm_obj)
- {
--	return msm_obj->base.dma_buf && msm_obj->base.import_attach;
-+	return msm_obj->base.import_attach || msm_obj->pin_count;
- }
- 
- static inline bool is_purgeable(struct msm_gem_object *msm_obj)
-@@ -278,7 +278,7 @@ static inline void mark_unpurgeable(struct msm_gem_object *msm_obj)
- 
- static inline bool is_unevictable(struct msm_gem_object *msm_obj)
- {
--	return is_unpurgeable(msm_obj) || msm_obj->pin_count || msm_obj->vaddr;
-+	return is_unpurgeable(msm_obj) || msm_obj->vaddr;
- }
- 
- static inline void mark_evictable(struct msm_gem_object *msm_obj)
+ 	if (spi->dev.of_node) {
+ 		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
+ 		of_node_put(spi->dev.of_node);
 -- 
-2.30.2
+2.31.1.498.g6c1eba8ee3d-goog
 
