@@ -2,134 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF34336B668
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEBF36B66D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbhDZQES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:04:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233971AbhDZQEQ (ORCPT
+        id S234285AbhDZQE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234253AbhDZQE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:04:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619453014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F2VQNktxrJFjZNGeAQOvtUIbQ1fYV2wfq5utzj3C6Yw=;
-        b=NtL0uRtp58SowZXpdiI3bPsG4ptRxq+hgqX3qAMaY4YiRMvSNJDqZ1NR2Hb2NAlmaJzHFM
-        7ZTKfenSogeBOXcVG5ydf6AkjAe36LR6O8j8tz2VSQ3KMUorhEgPHeMM83HwtwX+AvtoOo
-        IsY7uYYQQFaHMu+iU8fq1A5+/y8uVXc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455--dDJ8-2eNW6DkZhtWjVrlw-1; Mon, 26 Apr 2021 12:03:30 -0400
-X-MC-Unique: -dDJ8-2eNW6DkZhtWjVrlw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62431814337;
-        Mon, 26 Apr 2021 16:03:27 +0000 (UTC)
-Received: from krava (unknown [10.40.193.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D4E95D9CD;
-        Mon, 26 Apr 2021 16:03:19 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 18:03:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <YIbkR6z6mxdNSzGO@krava>
-References: <20210423130530.GA6564@kitsune.suse.cz>
- <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
+        Mon, 26 Apr 2021 12:04:27 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E12DC061574;
+        Mon, 26 Apr 2021 09:03:45 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id s9so7157838ybe.5;
+        Mon, 26 Apr 2021 09:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gd4ZhEau0qWA2BMeNjBvJSwbDJZQ4gsJUf4VrIX6+54=;
+        b=mm3aD12HkBeYcRFSoCWjfkfjRqTOgeMAI0SXaX/PQzrSFKL/l2PZ/M+m4L3sszHP3s
+         XRVtgM4w7hJlcvexlT9t34U9TMl/7iyBp26PhAviJlvbSJ09uR8cb1KVUpMXT7jtHAY+
+         /KYiCnJuuGeRi2XpRytf+32ZIjyXrhY4s5XoUndagshRFVUA9Ws3LGQh1f8JHd2UAwFJ
+         mCr6IlObZYCak7xrXl/I8ylbSA/IX9oq6LXwBK33FS34+Un/gLC3HbhNX4xEfanZF+H/
+         aqDIncbwaAWx0QnxNzToQzoE6oVD4JJqHLJvphBfDcU9ngGK+zp7mGEZnaDFpIBP5mU5
+         rkgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gd4ZhEau0qWA2BMeNjBvJSwbDJZQ4gsJUf4VrIX6+54=;
+        b=NwstO1pcVGjLT1k8BqS88izcxxcs+Npv6EmaTFiVLf+EImTEisD4p4JNmYl8WRvDej
+         TsMThDf672IfS02ulqSApIGuehsKF00v2bbiNS52D2CpaxfSovdHd1hSHvWiimpjdIiM
+         q5wQa8QZQ6YSvCThRpV4IkUKWJrJomhIS3j/ogUiLAUCaRkcQ4beVEvP1s5xgmUQ8ccL
+         t856ToewLum71iGQTyLHS4USuqKiRnlBXM9Ub/sUdVA27xwQhn4Q4VMAGN0VhnGmqGj+
+         pOi7a3N5IVr9Q5FmKDynpBbWVcm7CXzwk9M7ZvlqgwvZRZPAkR9FkvmKW6klZ3aWsS2Y
+         O3fA==
+X-Gm-Message-State: AOAM530qm714ONCRqBUx+zLE8s0sBau2GGBfBvJMP8re7aQ5Pz+IZFrG
+        45g0xtaA5NnKzKfyVjN4Y0um03jUImBnJZmv6HM=
+X-Google-Smtp-Source: ABdhPJyZbmD3r5DnAQLJo+hcsM5MEAzeCoCaQm//N+Yyqb5Ur/oT8kBKWb4m4+w0X7R+Du5POs39jHYvBMfutm3ccsE=
+X-Received: by 2002:a25:9085:: with SMTP id t5mr27355436ybl.26.1619453024883;
+ Mon, 26 Apr 2021 09:03:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <YIGVFCymUn+4HBIj@google.com> <CACRpkdat-4BbKHMBerdxXBseMb9O3PiDRZmMLP_OWFE2ctSgEg@mail.gmail.com>
+ <YIbQ3dHOpyD/yymW@google.com>
+In-Reply-To: <YIbQ3dHOpyD/yymW@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 26 Apr 2021 18:03:33 +0200
+Message-ID: <CANiq72ngdcxj44cybyRE57ziMQ16DNzOG2U=cOM=X=6eZ_YMwA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Wedson Almeida Filho <wedsonaf@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
-> 
-> 
-> On 4/26/21 5:14 AM, Michal Suchánek wrote:
-> > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
-> > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > > > > 
-> > > > > > > 
-> > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > > > > Hello,
-> > > > > > > > 
-> > > > > > > > I see this build error in linux-next (config attached).
-> > > > > > > > 
-> > > > > > > > [ 4939s]   LD      vmlinux
-> > > > > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > > > > [ 4960s] make[1]: ***
-> > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > > > > vmlinux] Error 255
-> > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
+On Mon, Apr 26, 2021 at 4:40 PM Wedson Almeida Filho
+<wedsonaf@google.com> wrote:
+>
+> I see now that Miguel has already responded to this thread so I'll stop here.
+> Happy to follow up on anything.
 
-this one was reported by Jesper and was fixed by upgrading pahole
-that contains the new function generation fixes (v1.19)
+No, no, the message was directed to you, and you gave very nice examples! :)
 
-> > > > > > > 
-> > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > > > > Could you try a later version of pahole?
-> > > > > > 
-> > > > > > Is this requireent new?
-> > > > > > 
-> > > > > > I have pahole 1.20, and master does build without problems.
-> > > > > > 
-> > > > > > If newer version is needed can a check be added?
-> > > > > 
-> > > > > With dwarves 1.21 some architectures are fixed and some report other
-> > > > > missing symbol. Definitely an improvenent.
-> > > > > 
-> > > > > I see some new type support was added so it makes sense if that type is
-> > > > > used the new dwarves are needed.
-> > > > 
-> > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
-> > > > 
-> > > > [ 2548s]   LD      vmlinux
-> > > > [ 2557s]   BTFIDS  vmlinux
-> > > > [ 2557s] FAILED unresolved symbol vfs_truncate
-> > > > [ 2558s] make[1]: ***
-> > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> > > > vmlinux] Error 255
-> 
-> This is PPC64, from attached config:
->   CONFIG_PPC64=y
-> I don't have environment to cross-compile for PPC64.
-> Jiri, could you take a look? Thanks!
+I think having both replies is great, we gave different perspectives.
 
-looks like vfs_truncate did not get into BTF data,
-I'll try to reproduce
-
-jirka
-
+Cheers,
+Miguel
