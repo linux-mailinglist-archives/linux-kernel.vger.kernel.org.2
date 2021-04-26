@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A7B36ADD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EED36AE64
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhDZHjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46814 "EHLO mail.kernel.org"
+        id S233872AbhDZHoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232960AbhDZHgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F16C7613B1;
-        Mon, 26 Apr 2021 07:34:46 +0000 (UTC)
+        id S233100AbhDZHif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:38:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02DA661263;
+        Mon, 26 Apr 2021 07:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422487;
-        bh=1oGOIp7h3twToVROsUH/gsrhBU5B8Xms4BkTTFSFlk8=;
+        s=korg; t=1619422588;
+        bh=S9j2j3t4tF2/8xQSthAg9QuWfEmYK7JBs2DtGb+LQoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=woyVTXouLxUDBYZDyOT+smWtryrYLzPRej1R19j2NrQVtu1wr+z0BCzwCa0ORVQQC
-         9oRpujY55lgcwq7V3S3NVSOd14Fm2JYPbE/cCuhv0RSFuqvOKU2jeYMtiK6KAOpycV
-         QENfWSzQhlKh5LcPnNVYxbp534qaVPuh5ibqi4yo=
+        b=XfhHH+lAICsRv5WaKqmOSk6Qe0pT6skULzIzo3pg0iNVZ7RpQo87w9V9D1fykxpJg
+         k8lEnUd6+vkNLPRMzrVtT+MxzmkFtZjmT0OEisnPV1vcAI7CPLI7E5TkD7PJVpQbh1
+         UW0pAcXfor4dypEIAkadX3ackbbQVwysQTAsIPB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo Jiaxing <luojiaxing@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Jolly Shah <jollys@google.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 25/49] scsi: libsas: Reset num_scatter if libata marks qc as NODATA
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 24/57] Input: i8042 - fix Pegatron C15B ID entry
 Date:   Mon, 26 Apr 2021 09:29:21 +0200
-Message-Id: <20210426072820.581141392@linuxfoundation.org>
+Message-Id: <20210426072821.397565284@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jolly Shah <jollys@google.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 176ddd89171ddcf661862d90c5d257877f7326d6 upstream.
+commit daa58c8eec0a65ac8e2e77ff3ea8a233d8eec954 upstream.
 
-When the cache_type for the SCSI device is changed, the SCSI layer issues a
-MODE_SELECT command. The caching mode details are communicated via a
-request buffer associated with the SCSI command with data direction set as
-DMA_TO_DEVICE (scsi_mode_select()). When this command reaches the libata
-layer, as a part of generic initial setup, libata layer sets up the
-scatterlist for the command using the SCSI command (ata_scsi_qc_new()).
-This command is then translated by the libata layer into
-ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat()). The libata layer treats
-this as a non-data command (ata_mselect_caching()), since it only needs an
-ATA taskfile to pass the caching on/off information to the device. It does
-not need the scatterlist that has been setup, so it does not perform
-dma_map_sg() on the scatterlist (ata_qc_issue()). Unfortunately, when this
-command reaches the libsas layer (sas_ata_qc_issue()), libsas layer sees it
-as a non-data command with a scatterlist. It cannot extract the correct DMA
-length since the scatterlist has not been mapped with dma_map_sg() for a
-DMA operation. When this partially constructed SAS task reaches pm80xx
-LLDD, it results in the following warning:
+The Zenbook Flip entry that was added overwrites a previous one
+because of a typo:
 
-"pm80xx_chip_sata_req 6058: The sg list address
-start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
-end_addr_low=0xffffffff has crossed 4G boundary"
+In file included from drivers/input/serio/i8042.h:23,
+                 from drivers/input/serio/i8042.c:131:
+drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
+  591 |                 .matches = {
+      |                            ^
+drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
 
-Update libsas to handle ATA non-data commands separately so num_scatter and
-total_xfer_len remain 0.
+Add the missing separator between the two.
 
-Link: https://lore.kernel.org/r/20210318225632.2481291-1-jollys@google.com
-Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA")
-Tested-by: Luo Jiaxing <luojiaxing@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Jolly Shah <jollys@google.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Link: https://lore.kernel.org/r/20210323130623.2302402-1-arnd@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/libsas/sas_ata.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/scsi/libsas/sas_ata.c
-+++ b/drivers/scsi/libsas/sas_ata.c
-@@ -219,18 +219,17 @@ static unsigned int sas_ata_qc_issue(str
- 		memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
- 		task->total_xfer_len = qc->nbytes;
- 		task->num_scatter = qc->n_elem;
-+		task->data_dir = qc->dma_dir;
-+	} else if (qc->tf.protocol == ATA_PROT_NODATA) {
-+		task->data_dir = DMA_NONE;
- 	} else {
- 		for_each_sg(qc->sg, sg, qc->n_elem, si)
- 			xfer += sg_dma_len(sg);
- 
- 		task->total_xfer_len = xfer;
- 		task->num_scatter = si;
--	}
--
--	if (qc->tf.protocol == ATA_PROT_NODATA)
--		task->data_dir = DMA_NONE;
--	else
- 		task->data_dir = qc->dma_dir;
-+	}
- 	task->scatter = qc->sg;
- 	task->ata_task.retry_count = 1;
- 	task->task_state_flags = SAS_TASK_STATE_PENDING;
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -592,6 +592,7 @@ static const struct dmi_system_id i8042_
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
+ 		},
++	}, {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
 
 
