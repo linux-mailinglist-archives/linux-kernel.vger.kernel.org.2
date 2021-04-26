@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233CB36BC23
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C07536BC26
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237752AbhDZXjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:39:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:59761 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237677AbhDZXjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:39:07 -0400
-IronPort-SDR: hi2N/OYRUK1SBv3ZwQs2BLJPjHixmabKB7m3mnbHv5CZ/iBvGBdm5Vmcp2oSGjp2g9YL3hd5tk
- q89L9+9KkYoA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="260374755"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="260374755"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 16:38:23 -0700
-IronPort-SDR: A50+Fd5pn/qjEoSorYMDPYKihZpodieBazBUiERfxoqvGxei7QgZ5XYQMXGBr7+xxjtAB4Hi42
- 7J1D/c4nsVXg==
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="618771565"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 16:38:23 -0700
-Date:   Mon, 26 Apr 2021 16:38:23 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v3 1/3] fsdax: Factor helpers to simplify dax fault code
-Message-ID: <20210426233823.GT1904484@iweiny-DESK2.sc.intel.com>
-References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
- <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
+        id S235193AbhDZXkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234458AbhDZXkx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:40:53 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A75C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:40:09 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u17so87026196ejk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vw/q1N9vMicwTdxGLHITsHnCd0VrdAA0I/RrXTIhVOI=;
+        b=XNPk5lG2U3zyNjaKNuF1C8i1rPntHZBPQPZL/nfKK3D8V9c0WHVqvn2Afyi/RExFMU
+         p0Sy8ZX8EM/MfzD+DU6Emiyf593K8wv7r+xY8zoZgcqdD39Tb5C+oUAba/RVJ7GV0U14
+         5R/4K+5ZWB3aY+g1cSgnLc9oITNMPhFjXz728=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vw/q1N9vMicwTdxGLHITsHnCd0VrdAA0I/RrXTIhVOI=;
+        b=sohrxtqbxojBBWp0Y890IgUMy1narQFIgi3CxCO2SX+A8b56MDpoFM1ibyCovD6zvG
+         AgcgNKOSKdewbIe2NcqKkz/UtzmgYWKPENZjlJGMtjjfQq2QGJgSnIfaSOGJqUTq8+oa
+         r4ISLXonjrPwYSVQX3jsP0lcIPNwIeo4MEtt9ypjWxeYu9rFik29UDCybW7EwZ4sRD7H
+         XPRGUU6UQnA/eN3viEMYqcKDdwMWEyQchmh92TmCnxj973wgcN1AGnFRNTXKs4Q31KY2
+         XcZDRCgdOPLpXAtPG9Vyn1h1dMaQN5Pk+PbTpQ16X3Bvc/+qhtkSTUXBckksp27DiFGN
+         x2Jg==
+X-Gm-Message-State: AOAM531vYVnzC5Mq0YqlfHebm7vLgWE+rtI2rG2Dr7aEISGMRebTlD6A
+        0+gm0coR4RhPMISnixrqGyFnQ307fRawswEGzDDw3g==
+X-Google-Smtp-Source: ABdhPJwpHC44uVJBxlPBTC49UbsEm4N+0n1Sb5Bp5vY2HO/P/273acyvKxuXCnQFmrQvavZlMq1qNB12n/BHwhbZHT8=
+X-Received: by 2002:a17:906:13d6:: with SMTP id g22mr20750757ejc.475.1619480408197;
+ Mon, 26 Apr 2021 16:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20210427083307.15c6cd15@canb.auug.org.au>
+In-Reply-To: <20210427083307.15c6cd15@canb.auug.org.au>
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Mon, 26 Apr 2021 13:39:57 -1000
+Message-ID: <CAJ-EccMspu59MC_DwD0No15NTOM9pbGCX94P+o8aTX26uAGN9A@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the safesetid tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:44:59PM +0800, Shiyang Ruan wrote:
-> The dax page fault code is too long and a bit difficult to read. And it
-> is hard to understand when we trying to add new features. Some of the
-> PTE/PMD codes have similar logic. So, factor them as helper functions to
-> simplify the code.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/dax.c | 153 ++++++++++++++++++++++++++++++-------------------------
->  1 file changed, 84 insertions(+), 69 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index b3d27fdc6775..f843fb8fbbf1 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
+On Mon, Apr 26, 2021 at 12:33 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commit
+>
+>   290f1097a2bc ("LSM: SafeSetID: Fix code specification by scripts/checkpatch.pl")
+>
+> is missing a Signed-off-by from its committer.
 
-[snip]
+Oops, thanks!
 
-> @@ -1355,19 +1379,8 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
->  		entry = dax_insert_entry(&xas, mapping, vmf, entry, pfn,
->  						 0, write && !sync);
->  
-> -		/*
-> -		 * If we are doing synchronous page fault and inode needs fsync,
-> -		 * we can insert PTE into page tables only after that happens.
-> -		 * Skip insertion for now and return the pfn so that caller can
-> -		 * insert it after fsync is done.
-> -		 */
->  		if (sync) {
-> -			if (WARN_ON_ONCE(!pfnp)) {
-> -				error = -EIO;
-> -				goto error_finish_iomap;
-> -			}
-> -			*pfnp = pfn;
-> -			ret = VM_FAULT_NEEDDSYNC | major;
-> +			ret = dax_fault_synchronous_pfnp(pfnp, pfn);
+Fixed
 
-I commented on the previous version...  So I'll ask here too.
-
-Why is it ok to drop 'major' here?
-
-Ira
-
+>
+> --
+> Cheers,
+> Stephen Rothwell
