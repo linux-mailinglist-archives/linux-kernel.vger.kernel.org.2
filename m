@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C036536AF0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8912F36AEC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232143AbhDZHwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60040 "EHLO mail.kernel.org"
+        id S233404AbhDZHq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233237AbhDZHnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:43:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B2BD61077;
-        Mon, 26 Apr 2021 07:39:50 +0000 (UTC)
+        id S233475AbhDZHjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49EF6613D1;
+        Mon, 26 Apr 2021 07:37:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422791;
-        bh=4TPFWSzxY20YttP+7dVvuyCN/2VKEqYrBz7HpVxtg+k=;
+        s=korg; t=1619422657;
+        bh=YW3vYxnGOhg3+Kycggdg534bAnAV6eoJFWmNIQVXieA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DVjkdNAon87QuLrZnTABKyQD/JN5P3a+9r2t2tItH5QCZv3BmEZeepTxkN1/VQEZv
-         xgYyAThtYzVo1mcOvAm4nZvOd31RgBD2Lb9JVfmapp99FCTNvKvSe9PwHZdTmUAiAv
-         5lAzBrXOueQ3/GVE7FlC9sgo0EzgyucdFkY3LSf0=
+        b=pqC0dMvwEEFOeModLZmxQMyEJMiB9kYzj6fjQGfPFp4LZszmZL6m1hOc/zK2ppXdw
+         nDL7RTX8JD1rxAWnq49uxvXGDhPOPV6n2qfRoM+S3r7CX/519WtGRwKy6mLqgSy97b
+         8cbHtUdLwszg75QtCIaV2tuSMjSv6395EweZa9FA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Weiser <michael.weiser@gmx.de>,
-        Daniel Kulesz <kuleszdl@posteo.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Michael Brown <mbrown@fensystems.co.uk>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 08/36] arm64: dts: allwinner: Revert SD card CD GPIO for Pine64-LTS
+Subject: [PATCH 4.19 53/57] xen-netback: Check for hotplug-status existence before watching
 Date:   Mon, 26 Apr 2021 09:29:50 +0200
-Message-Id: <20210426072819.085052204@linuxfoundation.org>
+Message-Id: <20210426072822.374888140@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Michael Brown <mbrown@fensystems.co.uk>
 
-[ Upstream commit 4d09ccc4a81e7de6b002482af554d8b5626f5041 ]
+[ Upstream commit 2afeec08ab5c86ae21952151f726bfe184f6b23d ]
 
-Commit 941432d00768 ("arm64: dts: allwinner: Drop non-removable from
-SoPine/LTS SD card") enabled the card detect GPIO for the SOPine module,
-along the way with the Pine64-LTS, which share the same base .dtsi.
+The logic in connect() is currently written with the assumption that
+xenbus_watch_pathfmt() will return an error for a node that does not
+exist.  This assumption is incorrect: xenstore does allow a watch to
+be registered for a nonexistent node (and will send notifications
+should the node be subsequently created).
 
-This was based on the observation that the Pine64-LTS has as "push-push"
-SD card socket, and that the schematic mentions the card detect GPIO.
+As of commit 1f2565780 ("xen-netback: remove 'hotplug-status' once it
+has served its purpose"), this leads to a failure when a domU
+transitions into XenbusStateConnected more than once.  On the first
+domU transition into Connected state, the "hotplug-status" node will
+be deleted by the hotplug_status_changed() callback in dom0.  On the
+second or subsequent domU transition into Connected state, the
+hotplug_status_changed() callback will therefore never be invoked, and
+so the backend will remain stuck in InitWait.
 
-After having received two reports about failing SD card access with that
-patch, some more research and polls on that subject revealed that there
-are at least two different versions of the Pine64-LTS out there:
-- On some boards (including mine) the card detect pin is "stuck" at
-  high, regardless of an microSD card being inserted or not.
-- On other boards the card-detect is working, but is active-high, by
-  virtue of an explicit inverter circuit, as shown in the schematic.
+This failure prevents scenarios such as reloading the xen-netfront
+module within a domU, or booting a domU via iPXE.  There is
+unfortunately no way for the domU to work around this dom0 bug.
 
-To cover all versions of the board out there, and don't take any chances,
-let's revert the introduction of the active-low CD GPIO, but let's use
-the broken-cd property for the Pine64-LTS this time. That should avoid
-regressions and should work for everyone, even allowing SD card changes
-now.
-The SOPine card detect has proven to be working, so let's keep that
-GPIO in place.
+Fix by explicitly checking for existence of the "hotplug-status" node,
+thereby creating the behaviour that was previously assumed to exist.
 
-Fixes: 941432d00768 ("arm64: dts: allwinner: Drop non-removable from SoPine/LTS SD card")
-Reported-by: Michael Weiser <michael.weiser@gmx.de>
-Reported-by: Daniel Kulesz <kuleszdl@posteo.org>
-Suggested-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Tested-by: Michael Weiser <michael.weiser@gmx.de>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210414104740.31497-1-andre.przywara@arm.com
+Signed-off-by: Michael Brown <mbrown@fensystems.co.uk>
+Reviewed-by: Paul Durrant <paul@xen.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/xen-netback/xenbus.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts
-index a1f621b388fe..358df6d926af 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts
-@@ -10,5 +10,5 @@
- };
+diff --git a/drivers/net/xen-netback/xenbus.c b/drivers/net/xen-netback/xenbus.c
+index 107bbd4ae825..78c56149559c 100644
+--- a/drivers/net/xen-netback/xenbus.c
++++ b/drivers/net/xen-netback/xenbus.c
+@@ -1043,11 +1043,15 @@ static void connect(struct backend_info *be)
+ 	xenvif_carrier_on(be->vif);
  
- &mmc0 {
--	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 push-push switch */
-+	broken-cd;		/* card detect is broken on *some* boards */
- };
+ 	unregister_hotplug_status_watch(be);
+-	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch, NULL,
+-				   hotplug_status_changed,
+-				   "%s/%s", dev->nodename, "hotplug-status");
+-	if (!err)
++	if (xenbus_exists(XBT_NIL, dev->nodename, "hotplug-status")) {
++		err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch,
++					   NULL, hotplug_status_changed,
++					   "%s/%s", dev->nodename,
++					   "hotplug-status");
++		if (err)
++			goto err;
+ 		be->have_hotplug_status_watch = 1;
++	}
+ 
+ 	netif_tx_wake_all_queues(be->vif->dev);
+ 
 -- 
 2.30.2
 
