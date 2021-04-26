@@ -2,136 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CAC36B444
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC3A36B44C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233689AbhDZNuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 09:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhDZNuv (ORCPT
+        id S233741AbhDZNx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 09:53:58 -0400
+Received: from smtprelay0040.hostedemail.com ([216.40.44.40]:48124 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230250AbhDZNx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:50:51 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDAAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 06:50:09 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id l4so84508571ejc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 06:50:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WNnvA9/2jBDYMEDC1w1C/VHcqT7vK38Vp7qzF/BVp38=;
-        b=EfOYkhreFsfsXRF64hm7fSGQAbrmc4om/PWG9R/5+Op3S+UGlQiANlGfBAznabRs0h
-         0iuWynP9DmNFyzIcz7lzfH6FLdVYt3zZdh09AWJkp0Ygl6h9Vd22yBSO2NbFBEEpGlf3
-         uDJAFpUp7ru4xrmtdvUOLq8BlZJWq+IMmpDybw9PP0lX18oDECML2VQUjdd6DDvSoRGs
-         QGBiYJ+4YLL1vFUaFFI8iNtmdgPe3eIOQAd2RZI7iRsQIMf6NIjAO+UqHMz5gqQEAvmH
-         HIs2JH5L9xAPb3+BQXkEY6y7XXmFjMUs3YtLFOe732bU8q1vCpyBmGw/D5Y9aHRlt7kW
-         w7TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WNnvA9/2jBDYMEDC1w1C/VHcqT7vK38Vp7qzF/BVp38=;
-        b=T5vlu6qMdC6MmrkhPscfoE6dQ2ZiYdVZhunul5nVrZ8iEqyPXEBNcHC2HD52lfjbrb
-         SpclHV62qYRxiB/BnZiSSHcm79NyQutHmRtIzunmp5y7cPKLrqA7w/yeEa9FL3obpr3L
-         H4Low9BAcXtDRf8+K6SJXPWrO041Dns9fyfEJ8yMuoP+B2PBg5YXg7YbgvOgH98dto3D
-         Z5PI1NggEuHDOgegWF3LRqU0bdVHyLGo1PcwbFQs3cCxSxPTU9o41UgPPY77udKpn1t9
-         MZ5V3/hgTFu3so88JYJhSAudUxrgj42hnRwqKieP2LLKnMAHn8n3QiFqfDkYEJKTseOQ
-         jl6g==
-X-Gm-Message-State: AOAM530CDuz0/tYlUb9anP8ksNRyhDTI7cdPdUIqNeSMMO3OCnFgNDPU
-        f/vRvMrIrbueSelOT+WJbD8=
-X-Google-Smtp-Source: ABdhPJyS70pfKecNihEcCvlQZrTAzeE0Edi7bSj7WmzB9CaxqQs+xCg7H/LK7mu3o4a4eT4lAKoOUQ==
-X-Received: by 2002:a17:907:9811:: with SMTP id ji17mr19196220ejc.188.1619445008593;
-        Mon, 26 Apr 2021 06:50:08 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id s8sm14988990edj.25.2021.04.26.06.50.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 06:50:07 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba: Convert module from IDR to XArray
-Date:   Mon, 26 Apr 2021 15:50:06 +0200
-Message-ID: <2352794.1zacegZ1vs@linux.local>
-In-Reply-To: <20210426132928.GL235567@casper.infradead.org>
-References: <20210426095015.18556-1-fmdefrancesco@gmail.com> <2833559.jtDpNxbUmt@linux.local> <20210426132928.GL235567@casper.infradead.org>
+        Mon, 26 Apr 2021 09:53:57 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A37821800E39B;
+        Mon, 26 Apr 2021 13:53:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 491DC20A298;
+        Mon, 26 Apr 2021 13:53:14 +0000 (UTC)
+Message-ID: <58eb44800ec3aaafa0f3a88a6d046ac85aaa02fe.camel@perches.com>
+Subject: Re: [PATCH] bonding/alb: return -ENOMEM when kmalloc failed
+From:   Joe Perches <joe@perches.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>, j.vosburgh@gmail.com
+Cc:     vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 26 Apr 2021 06:53:12 -0700
+In-Reply-To: <1619429620-52948-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1619429620-52948-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 491DC20A298
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: okpmrasujzkq9opcd5o75jf3abzaebt9
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19vfUab48sJmY3HRmSzw5Q5g4fiz1KSh2g=
+X-HE-Tag: 1619445194-382861
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, April 26, 2021 3:29:28 PM CEST Matthew Wilcox wrote:
-> On Mon, Apr 26, 2021 at 03:14:42PM +0200, Fabio M. De Francesco wrote:
-> > > > -	int id;
-> > > > -	unsigned long flags;
-> > > > 
-> > > > -	idr_preload(GFP_KERNEL);
-> > > > -	spin_lock_irqsave(lock, flags);
-> > > > -	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
-> > > > -	spin_unlock_irqrestore(lock, flags);
-> > > > -	idr_preload_end();
-> > > > -	/* failure */
-> > > > -	if (id < 0)
-> > > > -		return 0;
-> > > > -	/* idr_alloc() guarantees > 0 */
-> > > > -	return (unsigned int)(id);
-> > > 
-> > > And it shouldn't be using GFP_NOWAIT, but GFP_KERNEL, like the IDR code
-> > > used to do.
-> > 
-> > I'm not sure to understand why idr_preload() uses GFP_KERNEL and instead
-> > idr_alloc() uses GFP_NOWAIT. I'd better read anew the documentation of the
-> > above-mentioned functions
+On Mon, 2021-04-26 at 17:33 +0800, Yang Li wrote:
+> The driver is using -1 instead of the -ENOMEM defined macro to
+> specify that a buffer allocation failed. Using the correct error
+> code is more intuitive.
 > 
-> If you're holding a spinlock, you can't do a GFP_KERNEL allocation,
-> because it can sleep, and sleeping while holding a spinlock isn't allowed.
->
-I know that since a long time... that is last week, day more day less  :) 
+> Smatch tool warning:
+> drivers/net/bonding/bond_alb.c:850 rlb_initialize() warn: returning -1
+> instead of -ENOMEM is sloppy
+> 
+> No functional change, just more standardized.
+[]
+> diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
+[]
+> @@ -847,7 +847,7 @@ static int rlb_initialize(struct bonding *bond)
+>  
+> 
+>  	new_hashtbl = kmalloc(size, GFP_KERNEL);
+>  	if (!new_hashtbl)
+> -		return -1;
+> +		return -ENOMEM;
+>  
+> 
+>  	spin_lock_bh(&bond->mode_lock);
+>  
+> 
 
-I've just started to read R.Love's LKD 3rd ed. I don't have enough time to 
-read it at the moment, however I skipped a few chapters and read "Kernel 
-synchronization methods" and "Memory management".
-> 
-> The IDR and radix tree have an approach where you first preallocate
-> memory using GFP_KERNEL and then use GFP_NOWAIT or GFP_ATOMIC after
-> you've taken the spinlock.  XArray doesn't do that; it takes the spinlock
-> and does a GFP_NOWAIT allocation.  If it fails, it drops the spinlock,
-> allocates the memory using GFP_KERNEL, and retries.
->
-This is something one cannot find in Love's book, unless I overlooked that.
-> 
-> > This will not be anymore a problem when I'll restore the use of one 
-namespace
-> > per HBA. It's correct?
-> 
-> true ...
-> 
-> > > More generally, the IDR required you call idr_destroy() to avoid leaking
-> > > preallocated memory.  I changed that, but there are still many drivers
-> > > that have unnecessary calls to idr_destroy().  It's good form to just
-> > > delete them and not turn them into calls to xa_destroy().
-> > 
-> > This one is a bit obscure to me. I have to look into it more carefully. 
-Maybe
-> > I'll ask for some further help.
-> 
-> The IDR used to have a per-idr preallocation, so you had to destroy it
-> in order to make sure they were freed.  I got rid of that about five
-> years ago because most IDR users weren't calling idr_destroy().
->
-OK, I think I got it.
->
-Thanks again,
+Perhaps the bond_alb_initialize call here which uses the return
+value from this function:
 
-Fabio
+drivers/net/bonding/bond_main.c:                if (bond_alb_initialize(bond, (BOND_MODE(bond) == BOND_MODE_ALB)))
+drivers/net/bonding/bond_main.c-                        return -ENOMEM;
 
+should use a store/test/return style instead of a fixed value return.
+
+						res = bond_alb_initialize(bond, BOND_MODE(bond) == BOND_MODE_ALB);
+						if (res < 0)
+							return res;
 
 
 
