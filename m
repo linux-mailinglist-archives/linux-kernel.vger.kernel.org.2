@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7667036B1C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EDA36B1CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhDZKor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:44:47 -0400
-Received: from mx01-muc.bfs.de ([193.174.230.67]:25527 "EHLO mx01-muc.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232194AbhDZKoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:44:46 -0400
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-muc.bfs.de (Postfix) with ESMTPS id 77011203E3;
-        Mon, 26 Apr 2021 12:44:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1619433843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CN1EadlOcJbMEc7RUViIyObDkCP4jxrU+GKcEXbe0Xg=;
-        b=07I+Eddij4EPl+O3Lks6w4bT9ENPt6PSz/eF7PV1sIuT2rlAceYMeOOPif1kHj3UUzIuvR
-        zYrHyPWhULgIjtmgbs7mlWpqHATb6g659AzY2iA1Ltn8pgoCTy3HKxj5N8lPgL6ijS+usI
-        Q/CqJkidr6CT3H4ttFeigpI/queqxZo7XlSjv6FuRKKbWeWW/L5RLH8ZnXVEzHVSChMYG/
-        cw/78M5sW84KDwn6Uo82f78wLmAEmAkP9aQyUmGEtI6ApNodOBnUrm27uAPxUcpI610BVR
-        ibbyV/YhB7Z9dj5zzvzIKtcK5z/L6DB960kghfStoL3CQiKFnAGOHWAHc1FkHw==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2242.4; Mon, 26 Apr
- 2021 12:44:02 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
- 15.01.2242.008; Mon, 26 Apr 2021 12:44:02 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Colin King <colin.king@canonical.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov" <asml.silence@gmail.com>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: [PATCH][next][V2] io_uring: Fix uninitialized variable up.resv
-Thread-Topic: [PATCH][next][V2] io_uring: Fix uninitialized variable up.resv
-Thread-Index: AQHXOoTfpdBElL+S8UuH+t8Syt902arGnMMm
-Date:   Mon, 26 Apr 2021 10:44:02 +0000
-Message-ID: <23460b552c344907bd6f254149519119@bfs.de>
-References: <20210426101353.9237-1-colin.king@canonical.com>
-In-Reply-To: <20210426101353.9237-1-colin.king@canonical.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.40]
-x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-26114.006
-x-tm-as-result: No-10-0.663500-5.000000
-x-tmase-matchedrid: dtkKbEKn3AnRubRCcrbc5grcxrzwsv5u3dCmvEa6IiGoLZarzrrPme6X
-        ODXRWDdKxkb9fACVrLIWgZoMea78SXgEmMsrY8ykiVJZi91I9JgORjM32hn2b63DfQXYDXXmRiM
-        0r5DoZkAcEwO4f1ey3nakECIa+Y+L35CXmGCLTEU5FhAF440dkZ54zspPOxzffGAgiBknOLXxZ8
-        6WI5OtobTU+D0ttl649Zy0Abon06cB5jDL4tJv076EJGSqPePTRiPTMMc/MmkDAA5uRHailgN06
-        QRaBqZ4jxqOaLLtmI1c4eBDXe7orqp9JB8tr9I3LZ01719etEh8s0cy6t/KSDVjvc93O9dkQBzo
-        PKhLasiPqQJ9fQR1zkgXurX+wtIA/Vk1QoTj6earm7DrUlmNkF+24nCsUSFNjaPj0W1qn0TKayT
-        /BQTiGtQYs0qry+30Z0NSz7eJS83lOFtSxQd27Sha0WRI/FvmUd+sqX3TeLAJ3PUOotbczqKexv
-        pua0brgVArSQ9tw7eIji5iFASLgGk5lMFB6EFJcCmyZvDwQy2t5ahRvDIGLa2t1VXHehFeLnS15
-        FcU1hfvdCUIFuasqw==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10-0.663500-5.000000
-x-tmase-version: SMEX-14.0.0.3080-8.6.1012-26114.006
-x-tm-snts-smtp: 6D111E8F88184EEAC1061FD27B2F032A87388310536EA6692307AC678EE65E282000:9
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S233033AbhDZKpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:45:18 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45701 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232194AbhDZKpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 06:45:17 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QAftq6004032;
+        Mon, 26 Apr 2021 12:44:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=ZLdR6V+nGOyKcwMp0e+5LN3hyD1wKCdQx98TUxklqiw=;
+ b=KVMcl4Dp2wEuEqkaC8tGk2eBZUM30sLD3Uru5jTRrZ0Gi7cxLRCMgwKwEOEFl+xuht0Y
+ jZudrP3H8H3AjgqwOeFTORtg+jHHLfFSjAfn/+SyCLPUFjYx87+UgqL+zbOO3CG4MEyU
+ IRpDR1Dy1PzBKU/xgzRoC6E0DKFbXzhYWa6cY9ia7lrYoTmMmtfszaN2Z1irll9svrxE
+ KVcBwnFx7+3zfmgmws9gutNNfSORfgCxuScMHSbLcLnvE+bzyqJjR6Rzj+PSH8GwgfM2
+ B3bO5FAe+j1qzieRv00icHN9Ztdyh6x1GwrYAeq7W38Nzt7yAeKMZ5kSBfEARIjiy2Z/ KQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 385aeec51e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 12:44:24 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BCB0910002A;
+        Mon, 26 Apr 2021 12:44:23 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A70D3243D2F;
+        Mon, 26 Apr 2021 12:44:23 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Apr
+ 2021 12:44:23 +0200
+Subject: Re: [1/1] ARM: dts: stm32: Configure qspi's mdma transfer to block
+ for stm32mp151
+To:     <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <alexandre.torgue@foss.st.com>
+CC:     <mcoquelin.stm32@gmail.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        "Christophe Kerello" <christophe.kerello@st.com>
+References: <20210426103956.29007-1-patrice.chotard@foss.st.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <c6a63d27-e0d9-ec7e-0f40-907084dde28f@foss.st.com>
+Date:   Mon, 26 Apr 2021 12:44:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-16.50 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
-         BAYES_HAM(-3.00)[99.99%];
-         WHITELIST_LOCAL_IP(-15.00)[10.129.90.31];
-         FREEMAIL_TO(0.00)[canonical.com,kernel.dk,gmail.com,vger.kernel.org];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-Authentication-Results: mx01-muc.bfs.de;
-        none
-X-Spam-Status: No, score=-16.50
+In-Reply-To: <20210426103956.29007-1-patrice.chotard@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-26_03:2021-04-26,2021-04-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-why not:
- struct io_uring_rsrc_update up=3D{0};
+Don't take care of this patch, i will resend it with the correct header.
 
-would be future proof :)
+Patrice
 
-jm2c,
-
-re,
- wh
-________________________________________
-Von: Colin King <colin.king@canonical.com>
-Gesendet: Montag, 26. April 2021 12:13:53
-An: Jens Axboe; Pavel Begunkov; io-uring@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-Betreff: [PATCH][next][V2] io_uring: Fix uninitialized variable up.resv
-
-WARNUNG: Diese E-Mail kam von au=DFerhalb der Organisation. Klicken Sie nic=
-ht auf Links oder =F6ffnen Sie keine Anh=E4nge, es sei denn, Sie kennen den=
-/die Absender*in und wissen, dass der Inhalt sicher ist.
-
-
-From: Colin Ian King <colin.king@canonical.com>
-
-The variable up.resv is not initialized and is being checking for a
-non-zero value in the call to _io_register_rsrc_update. Fix this by
-explicitly setting up.resv to 0.
-
-Addresses-Coverity: ("Uninitialized scalar variable)"
-Fixes: c3bdad027183 ("io_uring: add generic rsrc update with tags")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
----
-
-V2: replace "pointer" in commit message with "up.resv"
-
----
- fs/io_uring.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index f4ec092c23f4..63f610ee274b 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5842,6 +5842,7 @@ static int io_files_update(struct io_kiocb *req, unsi=
-gned int issue_flags)
-        up.data =3D req->rsrc_update.arg;
-        up.nr =3D 0;
-        up.tags =3D 0;
-+       up.resv =3D 0;
-
-        mutex_lock(&ctx->uring_lock);
-        ret =3D __io_register_rsrc_update(ctx, IORING_RSRC_FILE,
---
-2.30.2
-
+On 4/26/21 12:39 PM, patrice.chotard@foss.st.com wrote:
+> From: Patrice Chotard <patrice.chotard@foss.st.com>
+> 
+> Configure qspi's mdma from buffer transfer (max 128 bytes) to
+> block transfer (max 64K bytes).
+> 
+> mtd_speedtest shows that write throughtput increases :
+>   - from 734 to 782 KiB/s (~6.5%) with s25fl512s SPI-NOR.
+>   - from 4848 to 5319 KiB/s (~9.72%) with Micron SPI-NAND.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> ---
+>  arch/arm/boot/dts/stm32mp151.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+> index 4b8031782555..cb326c1e12bc 100644
+> --- a/arch/arm/boot/dts/stm32mp151.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
+> @@ -1358,8 +1358,8 @@
+>  			reg = <0x58003000 0x1000>, <0x70000000 0x10000000>;
+>  			reg-names = "qspi", "qspi_mm";
+>  			interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>;
+> -			dmas = <&mdma1 22 0x2 0x100002 0x0 0x0>,
+> -			       <&mdma1 22 0x2 0x100008 0x0 0x0>;
+> +			dmas = <&mdma1 22 0x2 0x10100002 0x0 0x0>,
+> +			       <&mdma1 22 0x2 0x10100008 0x0 0x0>;
+>  			dma-names = "tx", "rx";
+>  			clocks = <&rcc QSPI_K>;
+>  			resets = <&rcc QSPI_R>;
+> 
