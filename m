@@ -2,159 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F55636B360
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5789B36B36A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhDZMrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbhDZMrA (ORCPT
+        id S233521AbhDZMrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:47:25 -0400
+Received: from office2.cesnet.cz ([195.113.144.244]:46088 "EHLO
+        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDZMrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:47:00 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90743C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:46:18 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id p12so39966576pgj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vBwj4uVXhHL7JLV9W7jcaKiEoNSYfcenJXMDu4IEgb4=;
-        b=EIyPOAWKOCj1qnQXj5/vN7SitJydh8ksy/yWGwQIbgSR521++d+8lcitRG5F43ZRN8
-         QlIz2IYMDdvrq7GEPn+gbkkJo04dJ0eNOGdIV2+9B+1mpqeIRsndnuCrYH08c3QM78uF
-         nvFlamzqa7lgpVbeGBjuZqGvlFXZczbfXeRdg8ijj5aaoc2K7x+xsoarcOUdzAtPDS15
-         +BNGv7x7jZknt+Xa8dES1Hbq64WeYF4K/CXeIUpdVGE9UhhkJ3STv92QHNSVzp59g8XW
-         luhApgxmd+mV9uDhUYSmVempN7kd2Ind88+SJbRpU5DHToCqxClSyKlfolvZaayn9rty
-         7eTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vBwj4uVXhHL7JLV9W7jcaKiEoNSYfcenJXMDu4IEgb4=;
-        b=e/j6GEAcB7rKejqCe/imxkCJ5Z8n1Hy1jkEk7zJgz8pStsyMwsGGrfQYDG8zr/qlGW
-         duPm04V73NPD/H5C/xwp3pQj4Z2F8XDrAIKybUg5QtwwVdDdSZwG2AmArkzHFA5zAB7K
-         7QNfH0SW0M+i4Q1p9d+hWL+0AAY7/8VIUOCzcwwjRJmnnBOtb9HEtw8X2+U7xS/f8wal
-         mjRD848WM6dajB76ng7sOGfxzMUCOjPcn4rKhdrLFeyD56kSjNme1SkMifcYZ7TL4pZh
-         tr0BKXyQ2tRePkCz+FTVz/LDfFkPsz6qdh5lE6PSrrzFEkIw4JAAsUni/z1ogW7HSa5W
-         en6A==
-X-Gm-Message-State: AOAM530Vk1zYeBghBwyeW4Gah/Ud04Bgu7mlQmtFJ1xV9zitUrK3X2Ww
-        mEetMvDnx7NnD2K/2hJUT4ZONDcBoEWX+w==
-X-Google-Smtp-Source: ABdhPJygv6nf3XPJmGVk0TrnyRzt5cckGF0TuhEKL/xCK66Iuw/v0yRZic7hhP9dbBy7CQRGKbKpQA==
-X-Received: by 2002:a63:1b5c:: with SMTP id b28mr16454750pgm.444.1619441177945;
-        Mon, 26 Apr 2021 05:46:17 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id q6sm11136437pfs.33.2021.04.26.05.46.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 05:46:17 -0700 (PDT)
-Subject: Re: linux-next: boot failure in today's linux-next
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus <torvalds@linux-foundation.org>,
-        Changheun Lee <nanich.lee@samsung.com>
-References: <20210426163606.36a97253@canb.auug.org.au>
- <20210426174310.6f03345b@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <387b26fe-81f5-1bb1-33fd-7fccb7b73823@kernel.dk>
-Date:   Mon, 26 Apr 2021 06:46:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 26 Apr 2021 08:47:24 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 422A6400052;
+        Mon, 26 Apr 2021 14:46:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1619441201;
+        bh=vAAsbBiBH7LAbBh1t9loyx/hGv7nApOFY9XOY22lVNg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=aKdaeQQmkMCROGpYjyLcjsOEBCprIG7wrCPrVQ5HqomHNBDoHwBPWJZCn6ZQXtabE
+         pHsrmmkEicC00vRdQ2n3ELyIGG9hj3XNmHsb7seMPBpbRMk4Q/NN8hgtatP+uzMtfK
+         jKMjKJ919ECBYJPOiu48KDaZ4LCsMsjXQiu+x94SSnZ1PVS+ar2BPU15ptVfEmUBDC
+         q2DcT+/k3M0EI/fafovQ6F/XzFtvszfYxR+2EPp2j4Iw5QRegzB54985sppPZPT2IE
+         FyuAXeCp25b03P1aV5z1IA+qSVfbEtfTAD+m4HcUohDQuNUMi554u1DRSJRJ2rKU0J
+         d0IHLxGEQaWcg==
+Received: by mail-pj1-f45.google.com with SMTP id md17so1524734pjb.0;
+        Mon, 26 Apr 2021 05:46:41 -0700 (PDT)
+X-Gm-Message-State: AOAM531het5S/UIIBVooOVqB7eNTSrGHke5axXrG277hgfLVdqCbv7TP
+        WyJQLDVPDN97oJRw87FOZITEh30kCHgwcLCxngQ=
+X-Google-Smtp-Source: ABdhPJw45wCj7QeQGS20UcVMLO74ChUMRhb/yYlOPI3Wl6DXngaPVEiVwR8/pT7CtHuZCHWgY8+dy+ZmltO0gzr0AcY=
+X-Received: by 2002:a17:902:b408:b029:ec:e879:bbd8 with SMTP id
+ x8-20020a170902b408b02900ece879bbd8mr12993884plr.65.1619441199370; Mon, 26
+ Apr 2021 05:46:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210426174310.6f03345b@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210413025948.901867-1-kubernat@cesnet.cz> <250c1c16-541a-984f-c720-1a8b6176e97e@roeck-us.net>
+In-Reply-To: <250c1c16-541a-984f-c720-1a8b6176e97e@roeck-us.net>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Mon, 26 Apr 2021 14:46:27 +0200
+X-Gmail-Original-Message-ID: <CABKa3npjrpq5Aw_Xqy3mFZtUHZcfB0YENxEDgo_MCwPUKqA4ww@mail.gmail.com>
+Message-ID: <CABKa3npjrpq5Aw_Xqy3mFZtUHZcfB0YENxEDgo_MCwPUKqA4ww@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/21 1:43 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 26 Apr 2021 16:36:06 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Today's linux-next build (ipowerpc_pseries_le_defconfig)
->> failed its qemu boot tests like this:
->>
->> [    1.833361][    T1] ibmvscsi 71000003: SRP_VERSION: 16.a
->> [    1.834439][    T1] ibmvscsi 71000003: Maximum ID: 64 Maximum LUN: 32 Maximum Channel: 3
->> [    1.834683][    T1] scsi host0: IBM POWER Virtual SCSI Adapter 1.5.9
->> [    1.842605][    C0] ibmvscsi 71000003: partner initialization complete
->> [    1.844979][    C0] ibmvscsi 71000003: host srp version: 16.a, host partition qemu (0), OS 2, max io 2097152
->> [    1.845502][    C0] ibmvscsi 71000003: sent SRP login
->> [    1.845853][    C0] ibmvscsi 71000003: SRP_LOGIN succeeded
->> [    1.851447][    T1] BUG: Kernel NULL pointer dereference on write at 0x00000390
->> [    1.851577][    T1] Faulting instruction address: 0xc00000000070386c
->> [    1.852171][    T1] Oops: Kernel access of bad area, sig: 11 [#1]
->> [    1.852324][    T1] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
->> [    1.852689][    T1] Modules linked in:
->> [    1.853136][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0 #2
->> [    1.853555][    T1] NIP:  c00000000070386c LR: c000000000703a6c CTR: 0000000000000000
->> [    1.853679][    T1] REGS: c0000000063a2f40 TRAP: 0380   Not tainted  (5.12.0)
->> [    1.853870][    T1] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 44002240  XER: 00000000
->> [    1.854305][    T1] CFAR: c000000000703a68 IRQMASK: 0 
->> [    1.854305][    T1] GPR00: c000000000703a6c c0000000063a31e0 c00000000146b200 c0000000080ca800 
->> [    1.854305][    T1] GPR04: c000000006067380 c00c000000020180 0000000000000024 0000000000008500 
->> [    1.854305][    T1] GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
->> [    1.854305][    T1] GPR12: 0000000000002000 c000000001640000 c000000008068508 0000000000000020 
->> [    1.854305][    T1] GPR16: 0000000000000000 0000000000000024 c000000000f85f78 c000000000f0d998 
->> [    1.854305][    T1] GPR20: c0000000013b59e0 0000000000000003 c0000000063a340c 0000000000000001 
->> [    1.854305][    T1] GPR24: 0000000000000000 c0000000084a3000 c0000000080ca800 c00c000000020180 
->> [    1.854305][    T1] GPR28: 0000000000008500 c0000000080ca800 0000000000000024 c000000006067380 
->> [    1.855486][    T1] NIP [c00000000070386c] bio_add_hw_page+0x7c/0x240
->> [    1.856357][    T1] LR [c000000000703a6c] bio_add_pc_page+0x3c/0x70
->> [    1.856723][    T1] Call Trace:
->> [    1.856890][    T1] [c0000000063a31e0] [0000000000000c00] 0xc00 (unreliable)
->> [    1.857390][    T1] [c0000000063a3230] [c00000000070105c] bio_kmalloc+0x3c/0xd0
->> [    1.857514][    T1] [c0000000063a3260] [c000000000713014] blk_rq_map_kern+0x164/0x4a0
->> [    1.857630][    T1] [c0000000063a32d0] [c0000000008e17dc] __scsi_execute+0x1cc/0x270
->> [    1.857746][    T1] [c0000000063a3350] [c0000000008e7bf0] scsi_probe_and_add_lun+0x250/0xd90
->> [    1.857887][    T1] [c0000000063a34c0] [c0000000008e921c] __scsi_scan_target+0x17c/0x630
->> [    1.858007][    T1] [c0000000063a35d0] [c0000000008e9900] scsi_scan_channel+0x90/0xe0
->> [    1.858133][    T1] [c0000000063a3620] [c0000000008e9ba8] scsi_scan_host_selected+0x138/0x1a0
->> [    1.858258][    T1] [c0000000063a3670] [c0000000008e9fec] scsi_scan_host+0x2dc/0x320
->> [    1.858367][    T1] [c0000000063a3710] [c00000000091b2a0] ibmvscsi_probe+0xa70/0xa80
->> [    1.858487][    T1] [c0000000063a3800] [c0000000000eb8ac] vio_bus_probe+0x9c/0x460
->> [    1.858616][    T1] [c0000000063a38a0] [c0000000008979bc] really_probe+0x12c/0x6b0
->> [    1.858749][    T1] [c0000000063a3950] [c000000000897fd4] driver_probe_device+0x94/0x130
->> [    1.858874][    T1] [c0000000063a3980] [c00000000089896c] device_driver_attach+0x11c/0x130
->> [    1.858999][    T1] [c0000000063a39c0] [c000000000898a38] __driver_attach+0xb8/0x1a0
->> [    1.859123][    T1] [c0000000063a3a10] [c0000000008941a8] bus_for_each_dev+0xa8/0x130
->> [    1.859257][    T1] [c0000000063a3a70] [c000000000896ef4] driver_attach+0x34/0x50
->> [    1.859381][    T1] [c0000000063a3a90] [c000000000896510] bus_add_driver+0x170/0x2b0
->> [    1.859503][    T1] [c0000000063a3b20] [c000000000899b04] driver_register+0xb4/0x1c0
->> [    1.859626][    T1] [c0000000063a3b90] [c0000000000ea808] __vio_register_driver+0x68/0x90
->> [    1.859754][    T1] [c0000000063a3bb0] [c0000000010cee74] ibmvscsi_module_init+0xa4/0xdc
->> [    1.859931][    T1] [c0000000063a3bf0] [c000000000012190] do_one_initcall+0x60/0x2c0
->> [    1.860071][    T1] [c0000000063a3cc0] [c0000000010846e4] kernel_init_freeable+0x300/0x3a0
->> [    1.860207][    T1] [c0000000063a3da0] [c000000000012764] kernel_init+0x2c/0x168
->> [    1.860336][    T1] [c0000000063a3e10] [c00000000000d5ec] ret_from_kernel_thread+0x5c/0x70
->> [    1.860690][    T1] Instruction dump:
->> [    1.861072][    T1] fba10038 7cbb2b78 7c7d1b78 7cfc3b78 a1440048 2c2a0000 4082008c a13f004a 
->> [    1.861328][    T1] 7c095040 40810110 e93f0008 811f0028 <e9290390> e9290050 812903d8 7d3e4850 
->> [    1.863000][    T1] ---[ end trace c49ca2d91ee47d7f ]---
->> [    1.879456][    T1] 
->> [    2.880941][    T1] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
->>
->> I don't know what caused this, but it is some change since Friday.
->>
->> I have left it like this.
-> 
-> Bisections leads to commit
-> 
->   42fb54fbc707 ("bio: limit bio max size")
-> 
-> from the block tree.  Reverting that commit on top of today's
-> linux-next allows to the boot to work again.
+Hello.
 
-The patch has been dropped, thanks Stephen.
+I'm sending a new version of my patch on max31790. This new version
+fixes the cache issue and actually makes it work by setting
+.cache_type. You were right about the "yes/no" ranges, so I flipped
+those.
 
--- 
-Jens Axboe
+By the way, it seems that the reason your reply got lost is because of
+weird addresses in the "Cc:" email field, they end with "cesnet.cz",
+so it could be that I'm sending email incorrectly. Let me know if I'm
+doing something wrong.
 
+Thanks,
+V=C3=A1clav
+
+=C4=8Dt 22. 4. 2021 v 3:31 odes=C3=ADlatel Guenter Roeck <linux@roeck-us.ne=
+t> napsal:
+>
+> On 4/12/21 7:59 PM, V=C3=A1clav Kubern=C3=A1t wrote:
+> > Converting the driver to use regmap makes it more generic. It also make=
+s
+> > it a lot easier to debug through debugfs.
+> >
+> > Signed-off-by: V=C3=A1clav Kubern=C3=A1t <kubernat@cesnet.cz>
+> > ---
+> >  drivers/hwmon/Kconfig    |   1 +
+> >  drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
+> >  2 files changed, 133 insertions(+), 122 deletions(-)
+> >
+> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> > index 1ecf697d8d99..9f11d036c316 100644
+> > --- a/drivers/hwmon/Kconfig
+> > +++ b/drivers/hwmon/Kconfig
+> > @@ -1095,6 +1095,7 @@ config SENSORS_MAX6697
+> >  config SENSORS_MAX31790
+> >       tristate "Maxim MAX31790 sensor chip"
+> >       depends on I2C
+> > +     select REGMAP_I2C
+> >       help
+> >         If you say yes here you get support for 6-Channel PWM-Output
+> >         Fan RPM Controller.
+> > diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+> > index 2c6b333a28e9..e3765ce4444a 100644
+> > --- a/drivers/hwmon/max31790.c
+> > +++ b/drivers/hwmon/max31790.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/init.h>
+> >  #include <linux/jiffies.h>
+> >  #include <linux/module.h>
+> > +#include <linux/regmap.h>
+> >  #include <linux/slab.h>
+> >
+> >  /* MAX31790 registers */
+> > @@ -46,92 +47,53 @@
+> >
+> >  #define NR_CHANNEL                   6
+> >
+> > +#define MAX31790_REG_USER_BYTE_67    0x67
+> > +
+> > +#define BULK_TO_U16(msb, lsb)                (((msb) << 8) + (lsb))
+> > +#define U16_MSB(num)                 (((num) & 0xFF00) >> 8)
+> > +#define U16_LSB(num)                 ((num) & 0x00FF)
+> > +
+> > +static const struct regmap_range max31790_ro_range =3D {
+> > +     .range_min =3D MAX31790_REG_TACH_COUNT(0),
+> > +     .range_max =3D MAX31790_REG_PWMOUT(0) - 1,
+> > +};
+> > +
+> > +static const struct regmap_access_table max31790_wr_table =3D {
+> > +     .no_ranges =3D &max31790_ro_range,
+> > +     .n_no_ranges =3D 1,
+> > +};
+> > +
+> > +static const struct regmap_range max31790_volatile_ranges[] =3D {
+> > +     regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_CO=
+UNT(12)),
+> > +     regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN=
+_FAULT_STATUS1),
+> > +};
+> > +
+> > +static const struct regmap_access_table max31790_volatile_table =3D {
+> > +     .no_ranges =3D max31790_volatile_ranges,
+> > +     .n_no_ranges =3D 2,
+> > +     .n_yes_ranges =3D 0
+> > +};
+>
+> Looks like my reply to this got lost. Other regmap code suggests that
+> volatile register ranges are identified with yes_ranges, not with no_rang=
+es.
+> "no" seems to mean "not volatile". Please verify and confirm if the
+> above code does what you want it to do.
+>
+> Thanks,
+> Guenter
