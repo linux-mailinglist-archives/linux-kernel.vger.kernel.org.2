@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BC536B20A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB9B36B20B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbhDZLEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:04:06 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:50328 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbhDZLD7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:03:59 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9FDB21C0B77; Mon, 26 Apr 2021 13:03:16 +0200 (CEST)
-Date:   Mon, 26 Apr 2021 13:03:16 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Tianling Shen <cnsztl@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        David Bauer <mail@david-bauer.net>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
-Message-ID: <20210426110316.GA13974@duo.ucw.cz>
-References: <20210319051627.814-1-cnsztl@gmail.com>
- <161640742725.808893.3666594351389773587.b4-ty@sntech.de>
- <20210425213321.GF10996@amd>
- <CAOP2_ThcRMkgSm872q2By=gALoK-qAjq92FtNQkDO999pZR8kg@mail.gmail.com>
+        id S233155AbhDZLFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:05:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36754 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232878AbhDZLFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 07:05:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619435068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jhkDCiDbD3dtlOrKi/5BJLtDDAnpNEhS5Hg5hY/KW74=;
+        b=F/L2H45PgMTLn/0UXVDSHCqeu1VpNDUD6+kzRnoL4tmCWMJiUXKho1maND2JFBn3IT62Yl
+        qcF7tBnAvZ1yIvU2blCl3+9O1NwkQob4a5VvimqbiIfsz0IiNoygskbQHfI53WTlGyAxkG
+        izV0O9xiHLiCtzGQQvLsmCssL3HB+Qk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B804BAD69;
+        Mon, 26 Apr 2021 11:04:28 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 13:04:28 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v5 04/13] dump_stack: Add vmlinux build ID to stack traces
+Message-ID: <YIaePJGgD+FEQAUF@alley>
+References: <20210420215003.3510247-1-swboyd@chromium.org>
+ <20210420215003.3510247-5-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOP2_ThcRMkgSm872q2By=gALoK-qAjq92FtNQkDO999pZR8kg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210420215003.3510247-5-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 2021-04-20 14:49:54, Stephen Boyd wrote:
+> Add the running kernel's build ID[1] to the stacktrace information
+> header.  This makes it simpler for developers to locate the vmlinux with
+> full debuginfo for a particular kernel stacktrace. Combined with
+> scripts/decode_stracktrace.sh, a developer can download the correct
+> vmlinux from a debuginfod[2] server and find the exact file and line
+> number for the functions plus offsets in a stacktrace.
+> 
+> diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+> index f375900cf9ed..3b7a0ff4642f 100644
+> --- a/include/linux/buildid.h
+> +++ b/include/linux/buildid.h
+> @@ -10,7 +10,11 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+>  		   __u32 *size);
+>  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size);
+>  
+> +#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) || IS_ENABLED(CONFIG_CRASH_CORE)
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why is this enabled for CONFIG_CRASH_CORE, please?
 
-Hi!
-> > > > - Fixed format of LED nodes
-> > > >
-> > > > Changes in v5:
-> > > > - Dropped the empty PCIe node
-> > > > - Dropped useless `/delete-property/`
-> > > > - Renamed LED nodes
-> > > >
-> > > > [...]
-> > >
-> > > Applied, thanks!
-> > >
-> > > [1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
-> > >       commit: 1003888415e83e15ddb63d1d96189b4f2c5f1d48
-> > > [2/2] rockchip: rk3399: Add support for FriendlyARM NanoPi R4S
-> > >       commit: db792e9adbf85ffc9d6b0b060ac3c8e3148c8992
-> >
-> > Sorry for late review, but:
-> >
-> >
-> > +                       label =3D "red:sys";
-> >
-> > This should be red:power based on the discussion in earlier threads.
->=20
-> However based on the introduction from FriendlyELEC[1], this is not
-> the "power" lamp...
-> "LEDs: 1 x power LED and 3 x GPIO Controlled LED (SYS, LAN, WAN)"
+Is some crash_core code going to printk it id even when
+CONFIG_STACKTRACE_BUILD_ID is disabled?
 
-It is always on, and "sys" is not a valid function.
+Anyway, this condition should be added in the patch when a code is
+really going to depend on it. Or the intention should be explained
+in the commit message at least.
 
-I'd suggest labeling it as "red:power". Feel free to make other
-suggestion but lets keep existing functions.
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
 
---huq684BweRXVnRxX
-Content-Type: application/pgp-signature; name="signature.asc"
+>  extern unsigned char vmlinux_build_id[BUILD_ID_SIZE_MAX];
+>  void init_vmlinux_build_id(void);
+> +#else
+> +static inline void init_vmlinux_build_id(void) { }
+> +#endif
 
------BEGIN PGP SIGNATURE-----
+Otherwise, the patch looks good to me.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYIad9AAKCRAw5/Bqldv6
-8rTHAJ4nA4Fv8pKz5+41IbOTLBjIMzKo5wCgniy+wweKJ3Bq1M+lSS+ghFLC/5A=
-=/ktb
------END PGP SIGNATURE-----
-
---huq684BweRXVnRxX--
+Best Regards,
+Petr
