@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD8136B884
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CC936B885
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhDZSD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:03:26 -0400
+        id S234320AbhDZSDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:03:33 -0400
 Received: from mga14.intel.com ([192.55.52.115]:31731 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234207AbhDZSDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234217AbhDZSDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 14:03:22 -0400
-IronPort-SDR: O4uRmldbhiaSbZVSk9toXwPw/I0Qq7P+dSTdpT8zm2jMB6xns39jIu7P9vmNTb2lxfHFqyj8jR
- iIDgADPIR2mw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="195934012"
+IronPort-SDR: 7XUw59QjsrI+7p7DC69fqdnylSapn+bt61JWZpkU7mD+oA/+jgGTD65/2yCF9hk9Uu84tvAjXU
+ 2TxMsbLCKq8A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="195934014"
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="195934012"
+   d="scan'208";a="195934014"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:40 -0700
-IronPort-SDR: MUnzBsymXGXqphr4lgHc8arSvbrNhX/ZOwkWl/+/7+lczsjkhBOwg3aPQVmwW58hfw+5mLuhXC
- tYaPRnvWP9yQ==
+IronPort-SDR: 5Bh+oBc+13KOMasGgi9erfzxHWn4/g2mquTTNMpAAnToq3dOFSLYKKcKfmPOeAJs4ZVTKoOclI
+ /BUnHykuhnlA==
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="447353325"
+   d="scan'208";a="447353330"
 Received: from ssumanpx-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.34.197])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:39 -0700
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:40 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -39,214 +39,55 @@ Cc:     Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2 01/32] x86/paravirt: Introduce CONFIG_PARAVIRT_XL
-Date:   Mon, 26 Apr 2021 11:01:28 -0700
-Message-Id: <4f8c9559dd04d8e8485c419c5ebc9471613f7928.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2 02/32] x86/tdx: Introduce INTEL_TDX_GUEST config option
+Date:   Mon, 26 Apr 2021 11:01:29 -0700
+Message-Id: <32870c547c6e143a8f42667c6087ee61dc07e90b.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Add INTEL_TDX_GUEST config option to selectively compile
+TDX guest support.
 
-Split off halt paravirt calls from CONFIG_PARAVIRT_XXL into
-a separate config option. It provides a middle ground for
-not-so-deep paravirtulized environments.
-
-CONFIG_PARAVIRT_XL will be used by TDX that needs couple of paravirt
-calls that were hidden under CONFIG_PARAVIRT_XXL, but the rest of the
-config would be a bloat for TDX.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/Kconfig                      |  4 +++
- arch/x86/boot/compressed/misc.h       |  1 +
- arch/x86/include/asm/irqflags.h       | 38 +++++++++++++++------------
- arch/x86/include/asm/paravirt.h       | 22 +++++++++-------
- arch/x86/include/asm/paravirt_types.h |  3 ++-
- arch/x86/kernel/paravirt.c            |  4 ++-
- arch/x86/mm/mem_encrypt_identity.c    |  1 +
- 7 files changed, 44 insertions(+), 29 deletions(-)
+ arch/x86/Kconfig | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879d398e..6b4b682af468 100644
+index 6b4b682af468..932e6d759ba7 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -783,8 +783,12 @@ config PARAVIRT
- 	  over full virtualization.  However, when run without a hypervisor
- 	  the kernel is theoretically slower and slightly larger.
+@@ -875,6 +875,21 @@ config ACRN_GUEST
+ 	  IOT with small footprint and real-time features. More details can be
+ 	  found in https://projectacrn.org/.
  
-+config PARAVIRT_XL
-+	bool
-+
- config PARAVIRT_XXL
- 	bool
++config INTEL_TDX_GUEST
++	bool "Intel Trusted Domain eXtensions Guest Support"
++	depends on X86_64 && CPU_SUP_INTEL && PARAVIRT
++	depends on SECURITY
 +	select PARAVIRT_XL
- 
- config PARAVIRT_DEBUG
- 	bool "paravirt-ops debugging"
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index 901ea5ebec22..4b84abe43765 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -9,6 +9,7 @@
-  * paravirt and debugging variants are added.)
-  */
- #undef CONFIG_PARAVIRT
-+#undef CONFIG_PARAVIRT_XL
- #undef CONFIG_PARAVIRT_XXL
- #undef CONFIG_PARAVIRT_SPINLOCKS
- #undef CONFIG_KASAN
-diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
-index 144d70ea4393..1688841893d7 100644
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -59,27 +59,11 @@ static inline __cpuidle void native_halt(void)
- 
- #endif
- 
--#ifdef CONFIG_PARAVIRT_XXL
-+#ifdef CONFIG_PARAVIRT_XL
- #include <asm/paravirt.h>
- #else
- #ifndef __ASSEMBLY__
- #include <linux/types.h>
--
--static __always_inline unsigned long arch_local_save_flags(void)
--{
--	return native_save_fl();
--}
--
--static __always_inline void arch_local_irq_disable(void)
--{
--	native_irq_disable();
--}
--
--static __always_inline void arch_local_irq_enable(void)
--{
--	native_irq_enable();
--}
--
- /*
-  * Used in the idle loop; sti takes one instruction cycle
-  * to complete:
-@@ -97,6 +81,26 @@ static inline __cpuidle void halt(void)
- {
- 	native_halt();
- }
-+#endif /* !__ASSEMBLY__ */
-+#endif /* CONFIG_PARAVIRT_XL */
++	select X86_X2APIC
++	select SECURITY_LOCKDOWN_LSM
++	help
++	  Provide support for running in a trusted domain on Intel processors
++	  equipped with Trusted Domain eXtenstions. TDX is an new Intel
++	  technology that extends VMX and Memory Encryption with a new kind of
++	  virtual machine guest called Trust Domain (TD). A TD is designed to
++	  run in a CPU mode that protects the confidentiality of TD memory
++	  contents and the TD’s CPU state from other software, including VMM.
 +
-+#ifndef CONFIG_PARAVIRT_XXL
-+#ifndef __ASSEMBLY__
-+
-+static __always_inline unsigned long arch_local_save_flags(void)
-+{
-+	return native_save_fl();
-+}
-+
-+static __always_inline void arch_local_irq_disable(void)
-+{
-+	native_irq_disable();
-+}
-+
-+static __always_inline void arch_local_irq_enable(void)
-+{
-+	native_irq_enable();
-+}
+ endif #HYPERVISOR_GUEST
  
- /*
-  * For spinlocks, etc:
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 4abf110e2243..2dbb6c9c7e98 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -84,6 +84,18 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
- 	PVOP_VCALL1(mmu.exit_mmap, mm);
- }
- 
-+#ifdef CONFIG_PARAVIRT_XL
-+static inline void arch_safe_halt(void)
-+{
-+	PVOP_VCALL0(irq.safe_halt);
-+}
-+
-+static inline void halt(void)
-+{
-+	PVOP_VCALL0(irq.halt);
-+}
-+#endif
-+
- #ifdef CONFIG_PARAVIRT_XXL
- static inline void load_sp0(unsigned long sp0)
- {
-@@ -145,16 +157,6 @@ static inline void __write_cr4(unsigned long x)
- 	PVOP_VCALL1(cpu.write_cr4, x);
- }
- 
--static inline void arch_safe_halt(void)
--{
--	PVOP_VCALL0(irq.safe_halt);
--}
--
--static inline void halt(void)
--{
--	PVOP_VCALL0(irq.halt);
--}
--
- static inline void wbinvd(void)
- {
- 	PVOP_VCALL0(cpu.wbinvd);
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index de87087d3bde..5261fba47ba5 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -177,7 +177,8 @@ struct pv_irq_ops {
- 	struct paravirt_callee_save save_fl;
- 	struct paravirt_callee_save irq_disable;
- 	struct paravirt_callee_save irq_enable;
--
-+#endif
-+#ifdef CONFIG_PARAVIRT_XL
- 	void (*safe_halt)(void);
- 	void (*halt)(void);
- #endif
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index c60222ab8ab9..d6d0b363fe70 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -322,9 +322,11 @@ struct paravirt_patch_template pv_ops = {
- 	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
- 	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(native_irq_disable),
- 	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(native_irq_enable),
-+#endif /* CONFIG_PARAVIRT_XXL */
-+#ifdef CONFIG_PARAVIRT_XL
- 	.irq.safe_halt		= native_safe_halt,
- 	.irq.halt		= native_halt,
--#endif /* CONFIG_PARAVIRT_XXL */
-+#endif /* CONFIG_PARAVIRT_XL */
- 
- 	/* Mmu ops. */
- 	.mmu.flush_tlb_user	= native_flush_tlb_local,
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index 6c5eb6f3f14f..20d0cb116557 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -24,6 +24,7 @@
-  * be extended when new paravirt and debugging variants are added.)
-  */
- #undef CONFIG_PARAVIRT
-+#undef CONFIG_PARAVIRT_XL
- #undef CONFIG_PARAVIRT_XXL
- #undef CONFIG_PARAVIRT_SPINLOCKS
- 
+ source "arch/x86/Kconfig.cpu"
 -- 
 2.25.1
 
