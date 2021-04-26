@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAF336AD81
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A58B36AE15
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhDZHgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:36:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
+        id S233025AbhDZHlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:41:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232881AbhDZHgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3C78611C0;
-        Mon, 26 Apr 2021 07:33:38 +0000 (UTC)
+        id S232518AbhDZHhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:37:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54074613D1;
+        Mon, 26 Apr 2021 07:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422419;
-        bh=efcH76/H992K5sTUACLYs6HZFPNoeDIAmLaSe9RPjgY=;
+        s=korg; t=1619422513;
+        bh=mmqXnEmK4ToVFy73X1N/RxuP77uIlWbP25bozuVedqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GtVmPpd/TVZuHWNMW1JNnQs/59T5LJyf0E+KNykuO2nrLRCHbRv74l88yr4J1B0bM
-         4Ty++0h2DxbzH7XxdQ7gkdGRPD/QwF2WXXNH/eIylxlxikdG4+KjwI4Lx8Yi/H71II
-         RsDT4nSQIHlASQcX4OoBxCjhnzkRUVdyQrItpdt0=
+        b=VkJDhmHOxOVzQw8YX5JznxZ9Dq1kV4p2x5YZLLZuFsD3J+4J+HOq01VylxKm73p6k
+         vX1eEp13Eo/IjH91IjR9GDDmEnVulHh2ogS6r9nY5LRWSCcktLMrppHn/ywAsMG60r
+         9eNaOUUKtbErxU/umevHnr5YbmgnPHUac1sqFpkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shujin Li <lishujin@kuaishou.com>,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 21/37] i40e: fix the panic when running bpf in xdpdrv mode
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.14 26/49] netfilter: conntrack: do not print icmpv6 as unknown via /proc
 Date:   Mon, 26 Apr 2021 09:29:22 +0200
-Message-Id: <20210426072817.973879455@linuxfoundation.org>
+Message-Id: <20210426072820.612461514@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +38,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 4e39a072a6a0fc422ba7da5e4336bdc295d70211 upstream.
+commit fbea31808ca124dd73ff6bb1e67c9af4607c3e32 upstream.
 
-Fix this panic by adding more rules to calculate the value of @rss_size_max
-which could be used in allocating the queues when bpf is loaded, which,
-however, could cause the failure and then trigger the NULL pointer of
-vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
-cpus are online and then allocates 256 queues on the machine with 32 cpus
-online actually.
+/proc/net/nf_conntrack shows icmpv6 as unknown.
 
-Once the load of bpf begins, the log will go like this "failed to get
-tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-failed".
-
-Thus, I attach the key information of the crash-log here.
-
-BUG: unable to handle kernel NULL pointer dereference at
-0000000000000000
-RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-Call Trace:
-[2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-[2160294.717666]  dev_xdp_install+0x4f/0x70
-[2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-[2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-[2160294.718705]  do_setlink+0xac7/0xe70
-[2160294.719035]  ? __nla_parse+0xed/0x120
-[2160294.719365]  rtnl_newlink+0x73b/0x860
-
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 09ec82f5af99 ("netfilter: conntrack: remove protocol name from l4proto struct")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ net/netfilter/nf_conntrack_standalone.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -8504,6 +8504,7 @@ static int i40e_sw_init(struct i40e_pf *
- {
- 	int err = 0;
- 	int size;
-+	u16 pow;
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -272,6 +272,7 @@ static const char* l4proto_name(u16 prot
+ 	case IPPROTO_GRE: return "gre";
+ 	case IPPROTO_SCTP: return "sctp";
+ 	case IPPROTO_UDPLITE: return "udplite";
++	case IPPROTO_ICMPV6: return "icmpv6";
+ 	}
  
- 	pf->msg_enable = netif_msg_init(I40E_DEFAULT_MSG_ENABLE,
- 				(NETIF_MSG_DRV|NETIF_MSG_PROBE|NETIF_MSG_LINK));
-@@ -8531,6 +8532,11 @@ static int i40e_sw_init(struct i40e_pf *
- 	pf->rss_table_size = pf->hw.func_caps.rss_table_size;
- 	pf->rss_size_max = min_t(int, pf->rss_size_max,
- 				 pf->hw.func_caps.num_tx_qp);
-+
-+	/* find the next higher power-of-2 of num cpus */
-+	pow = roundup_pow_of_two(num_online_cpus());
-+	pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
-+
- 	if (pf->hw.func_caps.rss) {
- 		pf->flags |= I40E_FLAG_RSS_ENABLED;
- 		pf->alloc_rss_size = min_t(int, pf->rss_size_max,
+ 	return "unknown";
 
 
