@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDD236ADCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402AD36AE6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhDZHiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
+        id S234206AbhDZHo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:44:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232916AbhDZHgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B00C613BA;
-        Mon, 26 Apr 2021 07:34:33 +0000 (UTC)
+        id S233205AbhDZHjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57936611C9;
+        Mon, 26 Apr 2021 07:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422473;
-        bh=wQmhuzaCHK+pZWUvY/gW8zm0lQr9CrxBVVbOKseXz0M=;
+        s=korg; t=1619422604;
+        bh=mQjJ6x20xtSCymemq+yGIgamS3EJ0KEd6zbDPnV6+DU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=swJOujZTQbbUOaWjC15rUA1u8YMQtQKu4UIyCqnk3YT8dLKUs+TOfp0NfJC+4mm0E
-         OZCckNPjQ68R6qNReMsd2hMY5kmT1WjHn62xomUO2npg8WtCr5APE9JZ3vtu8do82G
-         5LQMWobDFJen/52sEiU7GMkFwsQZIqT/t3EbmBMg=
+        b=SajTRdFRlgC0qmWfUJbxZ2ppGXtvc3hKryP9tJ9CrxjWGzFEFKkyXGon47ZGgOOgf
+         OqWDmz+T6KBCrOxDVkeEd3wpwrHdL0pGG6gCghiNaWQ9gAwBYWzhOJ7XVn5+sECSy2
+         OpwydW66Fa0I4NqiTYsdpClKywSlMhT6ezL86pro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Qing <wangqing@vivo.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 05/49] arc: kernel: Return -EFAULT if copy_to_user() fails
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 04/57] dmaengine: dw: Make it dependent to HAS_IOMEM
 Date:   Mon, 26 Apr 2021 09:29:01 +0200
-Message-Id: <20210426072819.894742117@linuxfoundation.org>
+Message-Id: <20210426072820.723532700@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Qing <wangqing@vivo.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 46e152186cd89d940b26726fff11eb3f4935b45a ]
+[ Upstream commit 88cd1d6191b13689094310c2405394e4ce36d061 ]
 
-The copy_to_user() function returns the number of bytes remaining to be
-copied, but we want to return -EFAULT if the copy doesn't complete.
+Some architectures do not provide devm_*() APIs. Hence make the driver
+dependent on HAVE_IOMEM.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Fixes: dbde5c2934d1 ("dw_dmac: use devm_* functions to simplify code")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Link: https://lore.kernel.org/r/20210324141757.24710-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/signal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/dma/dw/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
-index 48685445002e..da243420bcb5 100644
---- a/arch/arc/kernel/signal.c
-+++ b/arch/arc/kernel/signal.c
-@@ -99,7 +99,7 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
- 			     sizeof(sf->uc.uc_mcontext.regs.scratch));
- 	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+diff --git a/drivers/dma/dw/Kconfig b/drivers/dma/dw/Kconfig
+index 04b9728c1d26..070860ec0ef1 100644
+--- a/drivers/dma/dw/Kconfig
++++ b/drivers/dma/dw/Kconfig
+@@ -8,6 +8,7 @@ config DW_DMAC_CORE
  
--	return err;
-+	return err ? -EFAULT : 0;
- }
- 
- static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
-@@ -113,7 +113,7 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
- 				&(sf->uc.uc_mcontext.regs.scratch),
- 				sizeof(sf->uc.uc_mcontext.regs.scratch));
- 	if (err)
--		return err;
-+		return -EFAULT;
- 
- 	set_current_blocked(&set);
- 	regs->bta	= uregs.scratch.bta;
+ config DW_DMAC
+ 	tristate "Synopsys DesignWare AHB DMA platform driver"
++	depends on HAS_IOMEM
+ 	select DW_DMAC_CORE
+ 	help
+ 	  Support the Synopsys DesignWare AHB DMA controller. This
+@@ -16,6 +17,7 @@ config DW_DMAC
+ config DW_DMAC_PCI
+ 	tristate "Synopsys DesignWare AHB DMA PCI driver"
+ 	depends on PCI
++	depends on HAS_IOMEM
+ 	select DW_DMAC_CORE
+ 	help
+ 	  Support the Synopsys DesignWare AHB DMA controller on the
 -- 
 2.30.2
 
