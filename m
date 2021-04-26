@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5740B36BC69
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1D336BC76
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235524AbhD0AAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 20:00:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41021 "EHLO m43-7.mailgun.net"
+        id S235203AbhD0AFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 20:05:36 -0400
+Received: from gate.crashing.org ([63.228.1.57]:52976 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232022AbhDZX76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:59:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619481556; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GcO9FSTs8okq7VxKnlYZ4hhkxpYDAKyTLpMyXAcIVm0=; b=gRHHMEsfbnCofrcWhFDJNUquHuWK0YaMHjLEbCC2dw1eA2MbcWWICd7XnwCI1LQ0F2WSg3tQ
- lil8XBpN67Zxe/dv33fRkfLeuVSDFWkdLWCf7pFkhUDSU4iFc8rk9dXULvAWu6kS9HwZL78T
- QqJZEphikgGM0FS7w6Al/L1RjTg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 608753cd853c0a2c46380394 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 23:59:09
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D479C43460; Mon, 26 Apr 2021 23:59:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8576AC433F1;
-        Mon, 26 Apr 2021 23:59:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8576AC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH] bus: mhi: core: Validate channel ID when processing command completions
-Date:   Mon, 26 Apr 2021 16:58:58 -0700
-Message-Id: <1619481538-4435-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S233919AbhD0AFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 20:05:34 -0400
+Received: from ip6-localhost (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13QNi8nL025548;
+        Mon, 26 Apr 2021 18:44:08 -0500
+Message-ID: <3677398ebb77f334abb4899770db633d9658fe82.camel@kernel.crashing.org>
+Subject: Re: [PATCH net-next v4 2/2] of: net: fix of_get_mac_addr_nvmem()
+ for non-platform devices
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        netdev <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-oxnas@groups.io, linux-omap <linux-omap@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Andreas Larsson <andreas@gaisler.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Byungho An <bh74.an@samsung.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Date:   Tue, 27 Apr 2021 09:44:07 +1000
+In-Reply-To: <108f268a35843368466004f7fe5f9f88@walle.cc>
+References: <20210412174718.17382-1-michael@walle.cc>
+         <20210412174718.17382-3-michael@walle.cc>
+         <730d603b12e590c56770309b4df2bd668f7afbe3.camel@kernel.crashing.org>
+         <8157eba9317609294da80472622deb28@walle.cc>
+         <CAL_JsqLrx6nFZrKiEtm2a1vDvQGG+FkpGtJCG2osM8hhGo3P=Q@mail.gmail.com>
+         <108f268a35843368466004f7fe5f9f88@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MHI reads the channel ID from the event ring element sent by the
-device which can be any value between 0 and 255. In order to
-prevent any out of bound accesses, add a check against the maximum
-number of channels supported by the controller and those channels
-not configured yet so as to skip processing of that event ring
-element.
+On Mon, 2021-04-26 at 12:54 +0200, Michael Walle wrote:
+> Before I'll try to come up with a patch for this, I'd like to get
+> your opinion on it.
+> 
+> (1) replacing of_get_mac_address(node) with eth_get_mac_address(dev)
+>      might sometimes lead to confusing comments like in
+>      drivers/net/ethernet/allwinner/sun4i-emac.c:
+> 
+>      /* Read MAC-address from DT */
+>      ret = of_get_mac_address(np, ndev->dev_addr);
 
-Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/main.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+You could leave it or turn it into "from platform", doesn't matter...
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 22acde1..ed07421 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -773,11 +773,16 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
- 	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
- 
- 	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
--	mhi_chan = &mhi_cntrl->mhi_chan[chan];
--	write_lock_bh(&mhi_chan->lock);
--	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
--	complete(&mhi_chan->completion);
--	write_unlock_bh(&mhi_chan->lock);
-+	WARN_ON(chan >= mhi_cntrl->max_chan);
-+
-+	if (chan < mhi_cntrl->max_chan &&
-+	    mhi_cntrl->mhi_chan[chan].configured) {
-+		mhi_chan = &mhi_cntrl->mhi_chan[chan];
-+		write_lock_bh(&mhi_chan->lock);
-+		mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
-+		complete(&mhi_chan->completion);
-+		write_unlock_bh(&mhi_chan->lock);
-+	}
- 
- 	mhi_del_ring_element(mhi_cntrl, mhi_ring);
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> (2) What do you think of eth_get_mac_address(ndev). That is, the
+
+Not sure what you mean, eth_platform_get_mac_address() takes the
+address as an argument. I think what you want is a consolidated
+nvmem_get_mac_address + eth_platform_get_mac_address that takes a
+device, which would have no requirement of the bus_type at all.
+
+Cheers,
+Ben.
 
