@@ -2,109 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8EE36ACC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150E636ACC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhDZHQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S232102AbhDZHRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbhDZHQB (ORCPT
+        with ESMTP id S232100AbhDZHRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:16:01 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1A0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:15:20 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id n127so17536762wmb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:15:20 -0700 (PDT)
+        Mon, 26 Apr 2021 03:17:53 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D877C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:17:00 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id w3so82915582ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dnRv0hx7T2iwOT1O1w9fhtRjWFNst0K+ucU5RxAsI0U=;
-        b=CeWnh2LbEWabetknFejFcJIDf/OyIRMgwnzJCibLEdA1mrBHcwD038VvBwEracDC51
-         w0glPFhn1dzvGTfnN3mljzyH21L96E1IsG8FGzbhjIbX1GXvTosJfgV8soIucfRPICpY
-         /nFpBXhCrev0R+4N2L0J7KMxVSs/TcAS5cxM6KpAwk0873GVyEgx7Ht9dX7w2h1NbzVJ
-         R9xn+EO6b6o2UCGWzEpH/LHlymsMNiC7cZGwfYVw5iaKV+AepgSgff2rkjuuaadiDwBa
-         EEUXkUOW6MPJRk2OZCKo6cZJqo582rV1RCENBv6JXQUQvLTbNeE18QVubrltWB6B97zC
-         O+IA==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MH933JiX/H5vIrqO4AxOURlaNcW6gFjmPwklzI1FH0I=;
+        b=0jMzRzgE2kkoPMhWjrzPZDGwEhuG4SrR2M46DjrE2hcFtECln0zCGdsFIHAIk+lU8J
+         C/ofDwawrfFnQsRbEVwFk2oJrIP6NNtECIKxLOBg3Jx0IQ8xmfuO5qbrGHnTKWcxG3BP
+         jv7VSQzCLqlFGYxl5IGbDEetukm4DVndeNrr0BFKM4Qus5NMmL8pI/E7DGUYKkV/Ud08
+         WlXJcmsc7rFzz+o4bqXvppOaBCYe3OmISqDDKo+2clXRPnwjV3BKWWhIsb980vzfjnAU
+         InP8KodM2gBESaSibTvil3tI/5R7S7vyW72mElKABVS3PhGDvt2DH1GqIMlw0Op9PgQk
+         fvcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dnRv0hx7T2iwOT1O1w9fhtRjWFNst0K+ucU5RxAsI0U=;
-        b=G7Wt4qQa1HA2sfa0EjC7cX5iwHHaMOqC+4hI3YIG5i2pwz9lPM0HtzqaFfNFeHf8s0
-         hq8MGnrehaSJ/AAD8E8b4r4OhF/iYKGN5gW2YWBx+eN1MO7/3OGAb8Iz4grBTfFiRtMa
-         Ca8SHZHUBIw+cosj/8yaz5496WSNumoLZBbVhJItQsDtHBC9zHCgRVa6QGA3EbSpxDBt
-         01CZ+SpiXJT3kWwG1WzyOBt5WdkixSBf/A6JGiYTLgKV4/IMomN6C2I8q5u8x2U7pfDi
-         ShlDdSKMaEi+mC5zGsm6q6MxcdEs8RbF1M46G80GWHuyQOHFTKQ//5RfArkOGAYjUWfs
-         K1ng==
-X-Gm-Message-State: AOAM530HmzwHZojzlZxVx2cFy2Bn5Op/3wSoNhpmwhCIu809DKIuTyIw
-        ZF/CxsyLGmkAE7D2+acPkQA9pA==
-X-Google-Smtp-Source: ABdhPJw+LljXF/i5dij4rTrhjsbP0UeJSjI2KzKG7Mv+o6cUOME7Jt3lZXQa5cQ0yRYx1HRY999q4g==
-X-Received: by 2002:a05:600c:b4b:: with SMTP id k11mr20089414wmr.129.1619421319330;
-        Mon, 26 Apr 2021 00:15:19 -0700 (PDT)
-Received: from Armstrongs-MacBook-Pro.local ([2a01:e0a:90c:e290:9d7d:4b49:ce60:a152])
-        by smtp.gmail.com with ESMTPSA id q128sm4566253wma.39.2021.04.26.00.15.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 00:15:18 -0700 (PDT)
-Subject: Re: [PATCH] drm: bridge: add missing word in Analogix help text
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Icenowy Zheng <icenowy@aosc.io>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Torsten Duwe <duwe@suse.de>, Maxime Ripard <maxime@cerno.tech>
-References: <20210424061817.7339-1-rdunlap@infradead.org>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Message-ID: <ecbe576f-1a96-a873-3716-6fa478a8269e@baylibre.com>
-Date:   Mon, 26 Apr 2021 09:15:17 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MH933JiX/H5vIrqO4AxOURlaNcW6gFjmPwklzI1FH0I=;
+        b=EW7LNX9wFyMcts1fLD773NhakTl4SrLuenllj1HlGPyKWP81TeW9bXE6OD/tf9s1S4
+         pk2Awc9TwIdkYTpRQVxQDz35+iSGL1+qMjhTMUmMTDG2/++UrjMl0bjflFea8XbMWzPb
+         RWHmLqiaM39c4ZmcUJbelNbsy9dgpruWFlERyLhFpuwKt97yx1di+oMMjjXKtuQByfLR
+         7bLrj1i9TOUf0kL85I0TR6VUHECNVq7pb6RGDYbZ5IvH0cms31ZU6p4n8tbKLhdUzOEN
+         zvoYg5rlh6l5QroPD4Tr20ej4U0TFYWOmXTceFhMpNsAHPDAFf+Jm8wOaaDFDXPhbUnv
+         pEiA==
+X-Gm-Message-State: AOAM532IU46/OiBRvscT0+j69V64Cp5/LHMyYzv+8XS77OILThqJ/R4w
+        EptG3nursDq0nafK2O9lM24FdstJjXUiklTC+lYrig==
+X-Google-Smtp-Source: ABdhPJxY8aQGlMeoZmTW3iZo4yxpbbqK8ctIDP9CUlsJ2+2Kgs9avQ0jY3hRJX2eCaEU3f5jCMkHZHFKbTM+mlpys2M=
+X-Received: by 2002:a17:906:7842:: with SMTP id p2mr17682145ejm.87.1619421419222;
+ Mon, 26 Apr 2021 00:16:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210424061817.7339-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210423152333.6299-1-brgl@bgdev.pl> <CAHp75VcprveU4UiCeezJrnR5n3gWoP5dM1x6E7G1tE2HqOo8Rg@mail.gmail.com>
+In-Reply-To: <CAHp75VcprveU4UiCeezJrnR5n3gWoP5dM1x6E7G1tE2HqOo8Rg@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 26 Apr 2021 09:16:48 +0200
+Message-ID: <CAMRc=MdTYEyw_0Dmq_6fgtmwvKXS-bWe=VQGPDnOqw8L-S=5cA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: sim: allocate IDA numbers earlier
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 23, 2021 at 5:40 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Fri, Apr 23, 2021 at 6:24 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Instead of allocating the device ID number for gpio-sim platform devices
+> > when the associated configfs item is committed, do it already when the
+> > item is created. This way we can display the device name even when the
+> > chip is still pending. Once it's committed the user can easily identify
+> > the chip by its real device name. This will allow launching concurrent
+> > user-space test suites with gpio-sim.
+>
+> Thanks!
+> With or without below comment addressed:
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+> > Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> > ---
+> > Hi all! This is a late one for which I'm sorry but I realized that this
+> > change will allow us to launch test-suites concurrently if we allow the
+> > user-space to read the device name before the device is created and then
+> > wait for this specific name to appear in a udev add event.
+> >
+> >  drivers/gpio/gpio-sim.c | 21 ++++++++++-----------
+> >  1 file changed, 10 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> > index 92493b98c51b..2e2e6399e453 100644
+> > --- a/drivers/gpio/gpio-sim.c
+> > +++ b/drivers/gpio/gpio-sim.c
+> > @@ -409,6 +409,7 @@ struct gpio_sim_chip_config {
+> >          * item is 'live'.
+> >          */
+> >         struct platform_device *pdev;
+> > +       int id;
+> >
+> >         /*
+> >          * Each configfs filesystem operation is protected with the subsystem
+> > @@ -442,7 +443,7 @@ static ssize_t gpio_sim_config_dev_name_show(struct config_item *item,
+> >         if (pdev)
+> >                 ret = sprintf(page, "%s\n", dev_name(&pdev->dev));
+> >         else
+> > -               ret = sprintf(page, "none\n");
+> > +               ret = sprintf(page, "gpio-sim.%d\n", config->id);
+>
+> Wondering if you need to have one place of definition, i.e. "gpio-sim" part.
+>
 
+I applied it as is for 5.13. Feel free to submit a patch if you think
+this is useful.
 
-Le 24/04/2021 à 08:18, Randy Dunlap a écrit :
-> Insert a missing word "power" in Kconfig help text.
-> 
-> Fixes: 6aa192698089 ("drm/bridge: Add Analogix anx6345 support")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Robert Foss <robert.foss@linaro.org>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Icenowy Zheng <icenowy@aosc.io>
-> Cc: Vasily Khoruzhick <anarsoul@gmail.com>
-> Cc: Torsten Duwe <duwe@suse.de>
-> Cc: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/gpu/drm/bridge/analogix/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20210423.orig/drivers/gpu/drm/bridge/analogix/Kconfig
-> +++ linux-next-20210423/drivers/gpu/drm/bridge/analogix/Kconfig
-> @@ -6,7 +6,7 @@ config DRM_ANALOGIX_ANX6345
->  	select DRM_KMS_HELPER
->  	select REGMAP_I2C
->  	help
-> -	  ANX6345 is an ultra-low Full-HD DisplayPort/eDP
-> +	  ANX6345 is an ultra-low power Full-HD DisplayPort/eDP
->  	  transmitter designed for portable devices. The
->  	  ANX6345 transforms the LVTTL RGB output of an
->  	  application processor to eDP or DisplayPort.
-> 
+Bart
 
-Reviewed-by: Neil Armstrong <narmstrongt@baylibre.com>
+> >         mutex_unlock(&config->lock);
+> >
+> >         return ret;
+> > @@ -724,6 +725,7 @@ static void gpio_sim_chip_config_release(struct config_item *item)
+> >         struct gpio_sim_chip_config *config = to_gpio_sim_chip_config(item);
+> >
+> >         mutex_destroy(&config->lock);
+> > +       ida_free(&gpio_sim_ida, config->id);
+> >         kfree_strarray(config->line_names, config->num_line_names);
+> >         kfree(config);
+> >  }
+> > @@ -747,6 +749,12 @@ gpio_sim_config_make_item(struct config_group *group, const char *name)
+> >         if (!config)
+> >                 return ERR_PTR(-ENOMEM);
+> >
+> > +       config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
+> > +       if (config->id < 0) {
+> > +               kfree(config);
+> > +               return ERR_PTR(config->id);
+> > +       }
+> > +
+> >         config_item_init_type_name(&config->item, name,
+> >                                    &gpio_sim_chip_config_type);
+> >         config->num_lines = 1;
+> > @@ -781,18 +789,12 @@ static int gpio_sim_config_commit_item(struct config_item *item)
+> >                                                 config->line_names,
+> >                                                 config->num_line_names);
+> >
+> > -       pdevinfo.id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
+> > -       if (pdevinfo.id < 0) {
+> > -               mutex_unlock(&config->lock);
+> > -               return pdevinfo.id;
+> > -       }
+> > -
+> >         pdevinfo.name = "gpio-sim";
+> >         pdevinfo.properties = properties;
+> > +       pdevinfo.id = config->id;
+> >
+> >         pdev = platform_device_register_full(&pdevinfo);
+> >         if (IS_ERR(pdev)) {
+> > -               ida_free(&gpio_sim_ida, pdevinfo.id);
+> >                 mutex_unlock(&config->lock);
+> >                 return PTR_ERR(pdev);
+> >         }
+> > @@ -806,15 +808,12 @@ static int gpio_sim_config_commit_item(struct config_item *item)
+> >  static int gpio_sim_config_uncommit_item(struct config_item *item)
+> >  {
+> >         struct gpio_sim_chip_config *config = to_gpio_sim_chip_config(item);
+> > -       int id;
+> >
+> >         mutex_lock(&config->lock);
+> > -       id = config->pdev->id;
+> >         platform_device_unregister(config->pdev);
+> >         config->pdev = NULL;
+> >         mutex_unlock(&config->lock);
+> >
+> > -       ida_free(&gpio_sim_ida, id);
+> >         return 0;
+> >  }
+> >
+> > --
+> > 2.30.1
+> >
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
