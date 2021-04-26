@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8E336AA6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908E236AA6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhDZBkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 21:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231550AbhDZBkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 21:40:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AAF3B611ED;
-        Mon, 26 Apr 2021 01:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619401210;
-        bh=3OlOuFiRkvr+T/H+9LWs4X92HLyYnu2aOQY4rm95o6s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=secRZg0CkwX6FQd9yprYRgej6pQzVpdvmt9uedOKt5ZKvWwdbNhrh0+0YilrGEGPo
-         FhnIJdEl5fCblkyo84o6hM7sWnyUeR4AhNjxUOyuiV8Cxklh4QpfTsPhdyxtAQmOrZ
-         yL/zj4dq5OmcwDlqvHiqATIvES0r5PM7GqoWBA/ilpmHsNu2Wy2BGqfJ7hnCv0SFhs
-         L5IFC2HL61W/JtmX28QIReqhW6YDEp6LXmyxuEvrfp7R9AfWEyrgRtuQGkzVOYT3sY
-         N93DhdZBFbSqd0YGGCVWHwZX24pqXcqU8Wnqi2dNg3V4yAmKEMow6QXE8J+qJQDZpo
-         q4jTerubXeqwA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9F8A46094F;
-        Mon, 26 Apr 2021 01:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] macvlan: Add nodst option to macvlan type source
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161940121064.11520.1501104560907483893.git-patchwork-notify@kernel.org>
-Date:   Mon, 26 Apr 2021 01:40:10 +0000
-References: <2afc4d46-aa9b-a7db-d872-d02163b1f29c@jbeekman.nl>
-In-Reply-To: <2afc4d46-aa9b-a7db-d872-d02163b1f29c@jbeekman.nl>
-To:     Jethro Beekman <kernel@jbeekman.nl>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        id S231671AbhDZBlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 21:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhDZBlu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 21:41:50 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B7AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 18:41:09 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id j7so29629044pgi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 18:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I+Sh8EYFGPmDbslMrURueAi2FXlz6kxx3HeQf9lvCjE=;
+        b=h4l6cTTdLEb6VcZy0qecF2ehn4GaIcmDh0CT/taq8wYAMUtr3p1BriwDeXlDO3f28C
+         4e3BqOm/rAFwfnwpjvR0mWrXRnu9Rg5HebkSV7wXrco9+YRyBWRPdgrEodMdTXWyow3R
+         6Yl1+mAWz3aoLLsvYEXh6pWU1SqZJsUpd+PpadIPVOT2t1h5tieh8eQpRq7nhbfN5oK/
+         4d9LmMVTAFcY6/czSkG3oTF1E2yNqcd8ua2irjuBpl4bx66zzXpmuYUM8Xa00zsWw8W7
+         VufeMZV8UNciMoVQ8JR1KQsaVtVA3pUoa3Q//zCpdLMq1tu28OhlKqnic4bWSKpS47cs
+         jupg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I+Sh8EYFGPmDbslMrURueAi2FXlz6kxx3HeQf9lvCjE=;
+        b=c207jIfZ75MWGtE6YDpPC/l2JIfn5LoaC+xdPbTpyNyGZsHmqWF9SZ2gRF6m0Vsvpq
+         OEuSp7hWbrZ0hsq9PeA9fKMScBN+Kj46rLm0J4cQI7E3B671cMWsXuVTBLF2hluzk/VE
+         nRUyhr+1H2gbJTLX6YcQyWcTaeneUjHZjce5eFvG5HlyoQQSJf7hQwDDikbE+6QCHU2X
+         /Mtd6sJCzI/4bNqRqv/Oq9djkndHscxA8pK6JxJmmemPaNDtDrHonHujxuUgNZ2lmO55
+         ytKXk/ntXHFN4F8detIlmO6G74Cqp273SzjkYbavYANwkgGvSE9eLrt2v0hZpKt/Hki+
+         qzGw==
+X-Gm-Message-State: AOAM533aEtWREaiYBU5QXRRG5KGKbrAgbflXuLkUZNtCpNrlumXgG+Gx
+        hA7+7ksoDbsHv9/+si2pi5nhww==
+X-Google-Smtp-Source: ABdhPJwNhChGJRTAH8pT4yzviBH931A0srwDaHeS76htArBnKHVtvY5DjUTA7Q2skvZ9saCaSOt3Ww==
+X-Received: by 2002:a63:4415:: with SMTP id r21mr14615350pga.222.1619401268947;
+        Sun, 25 Apr 2021 18:41:08 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([116.206.101.229])
+        by smtp.gmail.com with ESMTPSA id l3sm12815078pju.44.2021.04.25.18.41.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Apr 2021 18:41:08 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 09:41:02 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Steve MacLean <Steve.MacLean@Microsoft.com>,
+        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
+        Kan Liang <kan.liang@linux.intel.com>,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/3] perf: Allow TIME_CONV to be backwards-compatible
+ and dump it
+Message-ID: <20210426014102.GC176271@leoy-ThinkPad-X240s>
+References: <20210412083459.462817-1-leo.yan@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412083459.462817-1-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Apr 12, 2021 at 04:34:56PM +0800, Leo Yan wrote:
+> The event PERF_RECORD_TIME_CONV was extended for clock parameters, but
+> the tool fails to be backwards-compatible for the old event format.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Gentle ping ...
 
-On Sun, 25 Apr 2021 11:22:03 +0200 you wrote:
-> The default behavior for source MACVLAN is to duplicate packets to
-> appropriate type source devices, and then do the normal destination MACVLAN
-> flow. This patch adds an option to skip destination MACVLAN processing if
-> any matching source MACVLAN device has the option set.
-> 
-> This allows setting up a "catch all" device for source MACVLAN: create one
-> or more devices with type source nodst, and one device with e.g. type vepa,
-> and incoming traffic will be received on exactly one device.
-> 
-> [...]
+Adrian, could you take a look for this patch series?
 
-Here is the summary with links:
-  - [v2,net-next] macvlan: Add nodst option to macvlan type source
-    https://git.kernel.org/netdev/net-next/c/427f0c8c194b
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Leo
