@@ -2,69 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E1F36B439
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311FB36B43D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbhDZNrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 09:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S233699AbhDZNrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 09:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhDZNr3 (ORCPT
+        with ESMTP id S230250AbhDZNrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:47:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AA5C061574;
-        Mon, 26 Apr 2021 06:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N1CS+JREmKmZmsb3/+Y0E8O1tSvBvWwvhYqw5K1frW8=; b=fyFSwHnVtojOmyAIldsnUxbp2c
-        fStqfRoBxbicVf6TyYYq5KR7CSJtoZlTTGuM55J44givMzR8eZ6GmAM9wLvG2YRqzc1esFeeuM/5N
-        5kzj7tysOOMdsK3iixuRAjwN3UEKRmXeyAf8ljNskHktrDG6f90ueV6ojBicMYS/cR6CwKGV8d2DY
-        ELU56FceROBeH1ibYgIa1NJvmGI9rkEEOTOd5onPHysUEFA/3xQKzSPzTIuVhmTeFUYcYGLJJqleY
-        hcipJwnP68IeYZLj2WZoRCgao/jEx6d8B8QCOvvqpYtNU2mw90m0fXkoUuVTGsXCocKhCH1tk/ztB
-        TnIlW3tA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb1ZI-005fv5-OG; Mon, 26 Apr 2021 13:46:36 +0000
-Date:   Mon, 26 Apr 2021 14:46:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, jack@suse.cz,
-        slp@redhat.com, groug@kaod.org
-Subject: Re: [PATCH v4 1/3] dax: Add an enum for specifying dax wakup mode
-Message-ID: <20210426134632.GM235567@casper.infradead.org>
-References: <20210423130723.1673919-1-vgoyal@redhat.com>
- <20210423130723.1673919-2-vgoyal@redhat.com>
+        Mon, 26 Apr 2021 09:47:53 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FCDC061574;
+        Mon, 26 Apr 2021 06:47:12 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 966213723; Mon, 26 Apr 2021 09:47:11 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 966213723
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1619444831;
+        bh=o1uV8mMXke6YWci50VHqZhlaQRReuOaqTAAYtR+elE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qTPyU0qm8YYRWeSjDPQeY0Bdm37EJnecOt71xY/pT/e03dK0uipO2rk+Xu/IAsYhk
+         CTtheiYvyfbzjjf7L6A+8KGZo5dbWd1GqkfBAkeN5GYAuyEJaIeQDsb1o359SmOPOY
+         M+CIqqYl5mV/6uL/wKRw+HM5O2GYRXkXvxqhfQe4=
+Date:   Mon, 26 Apr 2021 09:47:11 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Al Viro <viro@zeniv.linux.org.uk>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Shelat, Abhi" <a.shelat@northeastern.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <20210426134711.GE21222@fieldses.org>
+References: <20210422193950.GA25415@fieldses.org>
+ <YIMDCNx4q6esHTYt@unreal>
+ <20210423180727.GD10457@fieldses.org>
+ <YIMgMHwYkVBdrICs@unreal>
+ <20210423214850.GI10457@fieldses.org>
+ <YIRkxQCVr6lFM3r3@zeniv-ca.linux.org.uk>
+ <20210424213454.GA4239@fieldses.org>
+ <YIS6t+X1DOKlB+Z/@mit.edu>
+ <YIUMYYcf/VW4a28k@kroah.com>
+ <20210426133605.GD21222@fieldses.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210423130723.1673919-2-vgoyal@redhat.com>
+In-Reply-To: <20210426133605.GD21222@fieldses.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 09:07:21AM -0400, Vivek Goyal wrote:
-> +enum dax_wake_mode {
-> +	WAKE_NEXT,
-> +	WAKE_ALL,
-> +};
+On Mon, Apr 26, 2021 at 09:36:05AM -0400, J. Bruce Fields wrote:
+> On Sun, Apr 25, 2021 at 08:29:53AM +0200, Greg KH wrote:
+> > On Sat, Apr 24, 2021 at 08:41:27PM -0400, Theodore Ts'o wrote:
+> > > On Sat, Apr 24, 2021 at 05:34:54PM -0400, J. Bruce Fields wrote:
+> > > > In Greg's revert thread, Kangjie Lu's messages are also missing from the
+> > > > archives:
+> > > > 
+> > > > 	https://lore.kernel.org/lkml/20210421130105.1226686-1-gregkh@linuxfoundation.org/
+> > > >
+> > > 
+> > > I'm going to guess it's one of two things.  The first is that they are
+> > > sending mail messages with HTML which is getting bounced; the other
+> > > possibility is that some of the messages were sent only to Greg, and
+> > > he added the mailing list back to the cc.
+> > > 
+> > > So for exampple, message-id
+> > > CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com
+> > > isn't in lore, but Greg's reply:
+> > > 
+> > > https://lore.kernel.org/linux-nfs/YH%2FfM%2FTsbmcZzwnX@kroah.com/
+> > > 
+> > > can be found in lore.kernel.org was presumably because the message
+> > > where Aditya accused "wild accusations bordering on slander" and his
+> > > claim that his patches were the fault of a "new static code analyzer"
+> > > was sent only to Greg?  Either that, or it was bounced because he sent
+> > > it from gmail without suppressing HTML.
+> > 
+> > I did not "add back" the mailing list, it looks like they sent email in
+> > html format which prevented it from hitting the public lists.  I have
+> > the originals sent to me that shows the author intended it to be public.
+> 
+> Yes, the list cc's are all on there.
+> 
+> It's multipart/alternative with equivalent plain text and html parts,
+> which appears to be gmail's default behavior.  Is that really rejected
+> by default?
 
-Why define them in this order when ...
+Hah, when I sent that mail I quoted parts of the message including the
+Content-Type headers delineating the parts and got an immediate bounce
+saying "The message contains HTML subpart, therefore we consider it SPAM
+or Outlook Virus.  TEXT/PLAIN is accepted".
 
-> @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
->  	 * must be in the waitqueue and the following check will see them.
->  	 */
->  	if (waitqueue_active(wq))
-> -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
-> +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
+Which seems perfectly clear.  OK, sorry for the noise!
 
-... they're used like this?  This is almost as bad as
-
-enum bool {
-	true,
-	false,
-};
-
+--b.
