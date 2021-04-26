@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06EC36AE1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EFB36AED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhDZHln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46726 "EHLO mail.kernel.org"
+        id S232586AbhDZHsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232731AbhDZHhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B9BC613D0;
-        Mon, 26 Apr 2021 07:35:17 +0000 (UTC)
+        id S233353AbhDZHjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95331613C5;
+        Mon, 26 Apr 2021 07:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422518;
-        bh=g2eIx8Az/Bb0zYkng6cw8qgVnkYdIcpHR3F4HJvjseM=;
+        s=korg; t=1619422634;
+        bh=4dfD035EZVU7/rE1m/24A+eFBD9li4LC3/bEig9uRaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhqbfP9tdxTwJF28iZ3PESxPCThFwcjd4FY2SdLcyNynVs3Xk4ILJkmYroWeEunIp
-         UyN8fz6pKzRF0p8RcjFvJOUCL4i/QOQsWfIyFqhujHP+m+Wd4bZZH23RYNIiLxANSo
-         VAXEQtochR2tD/mt3iarj57uD/o9/6zdlfX8Tsjo=
+        b=G0fwiShx3kNg00VKJVTBCcISjFN1tcf+ylyN/09VSO6Y9S5ojOXB0MgCjCO3O++HQ
+         nDnYisQBzQUooUvpQBapo6f1dzecO0N9CMdyu1vEk6/FVQPD0DV9N9JqypR2Shi3aC
+         8GKolphl+/cWJMVA+VROwacrzCJOtSpiqAV6lCQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Brown <mbrown@fensystems.co.uk>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yuanyuan Zhong <yzhong@purestorage.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 45/49] xen-netback: Check for hotplug-status existence before watching
+Subject: [PATCH 4.19 44/57] pinctrl: lewisburg: Update number of pins in community
 Date:   Mon, 26 Apr 2021 09:29:41 +0200
-Message-Id: <20210426072821.262786809@linuxfoundation.org>
+Message-Id: <20210426072822.058864172@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Brown <mbrown@fensystems.co.uk>
+From: Yuanyuan Zhong <yzhong@purestorage.com>
 
-[ Upstream commit 2afeec08ab5c86ae21952151f726bfe184f6b23d ]
+[ Upstream commit 196d941753297d0ca73c563ccd7d00be049ec226 ]
 
-The logic in connect() is currently written with the assumption that
-xenbus_watch_pathfmt() will return an error for a node that does not
-exist.  This assumption is incorrect: xenstore does allow a watch to
-be registered for a nonexistent node (and will send notifications
-should the node be subsequently created).
+When updating pin names for Intel Lewisburg, the numbers of pins were
+left behind. Update them accordingly.
 
-As of commit 1f2565780 ("xen-netback: remove 'hotplug-status' once it
-has served its purpose"), this leads to a failure when a domU
-transitions into XenbusStateConnected more than once.  On the first
-domU transition into Connected state, the "hotplug-status" node will
-be deleted by the hotplug_status_changed() callback in dom0.  On the
-second or subsequent domU transition into Connected state, the
-hotplug_status_changed() callback will therefore never be invoked, and
-so the backend will remain stuck in InitWait.
-
-This failure prevents scenarios such as reloading the xen-netfront
-module within a domU, or booting a domU via iPXE.  There is
-unfortunately no way for the domU to work around this dom0 bug.
-
-Fix by explicitly checking for existence of the "hotplug-status" node,
-thereby creating the behaviour that was previously assumed to exist.
-
-Signed-off-by: Michael Brown <mbrown@fensystems.co.uk>
-Reviewed-by: Paul Durrant <paul@xen.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e66ff71fd0db ("pinctrl: lewisburg: Update pin list according to v1.1v6")
+Signed-off-by: Yuanyuan Zhong <yzhong@purestorage.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/xenbus.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/pinctrl/intel/pinctrl-lewisburg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/xen-netback/xenbus.c b/drivers/net/xen-netback/xenbus.c
-index 910322b442bd..9092b55e087f 100644
---- a/drivers/net/xen-netback/xenbus.c
-+++ b/drivers/net/xen-netback/xenbus.c
-@@ -1043,11 +1043,15 @@ static void connect(struct backend_info *be)
- 	xenvif_carrier_on(be->vif);
+diff --git a/drivers/pinctrl/intel/pinctrl-lewisburg.c b/drivers/pinctrl/intel/pinctrl-lewisburg.c
+index dc32c22bf19f..8388aa671b21 100644
+--- a/drivers/pinctrl/intel/pinctrl-lewisburg.c
++++ b/drivers/pinctrl/intel/pinctrl-lewisburg.c
+@@ -297,9 +297,9 @@ static const struct pinctrl_pin_desc lbg_pins[] = {
+ static const struct intel_community lbg_communities[] = {
+ 	LBG_COMMUNITY(0, 0, 71),
+ 	LBG_COMMUNITY(1, 72, 132),
+-	LBG_COMMUNITY(3, 133, 144),
+-	LBG_COMMUNITY(4, 145, 180),
+-	LBG_COMMUNITY(5, 181, 246),
++	LBG_COMMUNITY(3, 133, 143),
++	LBG_COMMUNITY(4, 144, 178),
++	LBG_COMMUNITY(5, 179, 246),
+ };
  
- 	unregister_hotplug_status_watch(be);
--	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch, NULL,
--				   hotplug_status_changed,
--				   "%s/%s", dev->nodename, "hotplug-status");
--	if (!err)
-+	if (xenbus_exists(XBT_NIL, dev->nodename, "hotplug-status")) {
-+		err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch,
-+					   NULL, hotplug_status_changed,
-+					   "%s/%s", dev->nodename,
-+					   "hotplug-status");
-+		if (err)
-+			goto err;
- 		be->have_hotplug_status_watch = 1;
-+	}
- 
- 	netif_tx_wake_all_queues(be->vif->dev);
- 
+ static const struct intel_pinctrl_soc_data lbg_soc_data = {
 -- 
 2.30.2
 
