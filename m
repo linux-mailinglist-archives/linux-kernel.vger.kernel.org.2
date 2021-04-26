@@ -2,234 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7EA36B262
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44B636B265
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhDZLe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:34:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:8016 "EHLO mga04.intel.com"
+        id S232050AbhDZLe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:34:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhDZLe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:34:28 -0400
-IronPort-SDR: 0LfKmjYQoLm+PHx4xOhn4txgKFN8AEdK9jXnDHNHxLOcTr2oqI3gHMSye7Lw3a9fb7r4VBfdaJ
- nhSg2ZH7cYhw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="194201988"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="194201988"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 04:33:46 -0700
-IronPort-SDR: yihyOgeDCK01Q+WFBYzKIzpXnFACw2a8HX0PVwUNo5Yt+8F1ciYRI5Tru1X8I/R3KVFxifiok2
- yNsm/xgTasLw==
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="429361896"
-Received: from unknown (HELO localhost) ([10.252.50.197])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 04:33:40 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP Workstation laptops
-In-Reply-To: <CAAd53p5=LqxKZGTARpvVCC2hcZP4aQPqjD6WszTDuQfv2owhfA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210423044700.247359-1-kai.heng.feng@canonical.com> <87fszh78tf.fsf@intel.com> <CAAd53p5=LqxKZGTARpvVCC2hcZP4aQPqjD6WszTDuQfv2owhfA@mail.gmail.com>
-Date:   Mon, 26 Apr 2021 14:33:37 +0300
-Message-ID: <87r1ix5lgu.fsf@intel.com>
+        id S229554AbhDZLez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 07:34:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B935560FEF;
+        Mon, 26 Apr 2021 11:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619436852;
+        bh=W3vHHW3L5Jp7qhyyytzPq8R1EAEE0x9hepv5yOVGiRM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PzJLN44f1mr5WcC7jeAPhpk/RlAA/VxnIP5hH63DuQeJo4pNvVQGNVefB9rfBqJxn
+         +MwmWvHS5yMRvz9j2A/WaASB86j1Msz9XErlBhhRRX1VOpEyX62xbfehJMca8q5/9A
+         Tie1CVBm9NweI4Q7M0p6AFVvtQn16HW5TUply6Ck=
+Date:   Mon, 26 Apr 2021 13:34:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of
+ division or modulo by zero
+Message-ID: <YIalMRdbAKZpIJWP@kroah.com>
+References: <20210426074935.11131-1-sherry.sun@nxp.com>
+ <20210426074935.11131-2-sherry.sun@nxp.com>
+ <YIZ0/vRLASlUph6x@kroah.com>
+ <AM0PR04MB4947A9253CE547BEBE95BE8092429@AM0PR04MB4947.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM0PR04MB4947A9253CE547BEBE95BE8092429@AM0PR04MB4947.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
-> On Fri, Apr 23, 2021 at 3:35 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
->>
->> On Fri, 23 Apr 2021, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
->> > On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
->> > to discrete GFX after S3. This is not desirable, because userspace will
->> > treat connected display as a new one, losing display settings.
->> >
->> > The expected behavior is to let discrete GFX drives all external
->> > displays.
->> >
->> > The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
->> > The method is inside the BXT _DSM, so add the _DSM and call it
->> > accordingly.
->> >
->> > I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
->> > regression was found.
->>
->> I don't know whether this change is the right thing to do. I don't know
->> if it isn't either. Need to look into it.
->>
->> However, I have some general comments, inline.
->>
->> >
->> > v2:
->> >  - Forward declare struct pci_dev.
->> >
->> > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
->> > References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
->> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> > ---
->> >  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
->> >  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
->> >  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
->> >  3 files changed, 25 insertions(+)
->> >
->> > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
->> > index 833d0c1be4f1..c7b57c22dce3 100644
->> > --- a/drivers/gpu/drm/i915/display/intel_acpi.c
->> > +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
->> > @@ -14,11 +14,16 @@
->> >
->> >  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
->> >  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
->> > +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
->> >
->> >  static const guid_t intel_dsm_guid =
->> >       GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
->> >                 0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
->> >
->> > +static const guid_t intel_bxt_dsm_guid =
->> > +     GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
->> > +               0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
->> > +
->> >  static char *intel_dsm_port_name(u8 id)
->> >  {
->> >       switch (id) {
->> > @@ -176,6 +181,18 @@ void intel_unregister_dsm_handler(void)
->> >  {
->> >  }
->> >
->> > +void intel_bxt_dsm_detect(struct pci_dev *pdev)
->>
->> Please leave out bxt from the naming and make the argument struct
->> drm_i915_private *i915. Mmh, then it conflicts with existing
->> intel_dsm_detect(), maybe we need a more descriptive name altogether?
->
-> If there's no oppose, I'll change it to intel_hp_dsm_detect() in v2.
-> So far, I've only seen that DSM in HP platform.
+On Mon, Apr 26, 2021 at 11:30:47AM +0000, Sherry Sun wrote:
+> Hi Greg,
+> 
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: 2021年4月26日 16:09
+> > To: Sherry Sun <sherry.sun@nxp.com>
+> > Cc: jirislaby@kernel.org; linux-serial@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
+> > Subject: Re: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of division
+> > or modulo by zero
+> > 
+> > On Mon, Apr 26, 2021 at 03:49:34PM +0800, Sherry Sun wrote:
+> > > This issue is reported by Coverity Check.
+> > > In lpuart32_console_get_options, division or modulo by zero may
+> > > results in undefined behavior.
+> > >
+> > > Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+> > > ---
+> > >  drivers/tty/serial/fsl_lpuart.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/drivers/tty/serial/fsl_lpuart.c
+> > > b/drivers/tty/serial/fsl_lpuart.c index 794035041744..777d54b593f8
+> > > 100644
+> > > --- a/drivers/tty/serial/fsl_lpuart.c
+> > > +++ b/drivers/tty/serial/fsl_lpuart.c
+> > > @@ -2414,6 +2414,9 @@ lpuart32_console_get_options(struct lpuart_port
+> > > *sport, int *baud,
+> > >
+> > >  	bd = lpuart32_read(&sport->port, UARTBAUD);
+> > >  	bd &= UARTBAUD_SBR_MASK;
+> > > +	if (!bd)
+> > > +		return;
+> > 
+> > How can this ever happen?
+> > 
+> > Not to say this is a bad check, but it feels like this can't really happen in real
+> > life, what code patch could create this result?
+> > 
+> > And have you tested this on real hardware?
+> > 
+> 
+> Thanks for the reviewing, yes, I have tested the patchset on the real hardware.
+> 
+> Seems the coverity check is static scan, so cannot judge if UARTBAUD Register will be zero.
+> I just found below statement in the uart reference manual: "When SBR is 1 - 8191, the baud rate equals "baud clock / ((OSR+1) × SBR)"."
+> Since I am not familiar with uart, do you mean that the value of UARTBAUD Register will never be zero, so this case will not happen in real word?
 
-I'd rather have generic calls with generic naming from appropriate
-places in the driver, and then hide the ugly platform or device specific
-details within the calls. I certainly don't want any references to a
-specific OEM in function names in functions called from the highest
-levels of driver probe/resume/etc.
+Given that this never has happened with hardware for such an old device,
+perhaps it is impossible.  But it would be good to check.
 
-BR,
-Jani.
+> If yes, I will drop this patch.
 
->
->>
->> > +{
->> > +     acpi_handle dhandle;
->> > +
->> > +     dhandle = ACPI_HANDLE(&pdev->dev);
->> > +     if (!dhandle)
->> > +             return;
->> > +
->> > +     acpi_evaluate_dsm(dhandle, &intel_bxt_dsm_guid, INTEL_DSM_REVISION_ID,
->> > +                       INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO, NULL);
->> > +}
->> > +
->> >  /*
->> >   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
->> >   * Attached to the Display Adapter).
->> > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
->> > index e8b068661d22..d2d560d63bb3 100644
->> > --- a/drivers/gpu/drm/i915/display/intel_acpi.h
->> > +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
->> > @@ -6,15 +6,18 @@
->> >  #ifndef __INTEL_ACPI_H__
->> >  #define __INTEL_ACPI_H__
->> >
->> > +struct pci_dev;
->> >  struct drm_i915_private;
->> >
->> >  #ifdef CONFIG_ACPI
->> >  void intel_register_dsm_handler(void);
->> >  void intel_unregister_dsm_handler(void);
->> > +void intel_bxt_dsm_detect(struct pci_dev *pdev);
->> >  void intel_acpi_device_id_update(struct drm_i915_private *i915);
->> >  #else
->> >  static inline void intel_register_dsm_handler(void) { return; }
->> >  static inline void intel_unregister_dsm_handler(void) { return; }
->> > +static inline void intel_bxt_dsm_detect(struct pci_dev *pdev) { return; }
->> >  static inline
->> >  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
->> >  #endif /* CONFIG_ACPI */
->> > diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
->> > index 785dcf20c77b..57b12068aab4 100644
->> > --- a/drivers/gpu/drm/i915/i915_drv.c
->> > +++ b/drivers/gpu/drm/i915/i915_drv.c
->> > @@ -853,6 +853,8 @@ int i915_driver_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->> >       if (ret)
->> >               goto out_cleanup_gem;
->> >
->> > +     intel_bxt_dsm_detect(pdev);
->> > +
->>
->> The call sites in i915_driver_probe() and i915_drm_resume() seem rather
->> arbitrary.
->
-> Yes, because what it really does is flipping a bit in one GPIO, the
-> EC/hardware will change the MUX based on the GPIO bit.
-> So it doesn't have any ordering needs to be enforced.
->
->>
->> Long term, I'd like most or all of the display stuff like this placed in
->> appropriate intel_modeset_*() functions in display/intel_display.c. I'm
->> not keen on having new and very specific calls in the higher levels.
->>
->> At probe, feels like the routing should happen earlier, before output
->> setup? In intel_modeset_init_nogem()?
->
-> OK, I'll put that in intel_modeset_init_hw() to cover both probe and
-> resume routines.
->
-> Kai-Heng
->
->
->>
->> >       i915_driver_register(i915);
->> >
->> >       enable_rpm_wakeref_asserts(&i915->runtime_pm);
->> > @@ -1215,6 +1217,7 @@ int i915_suspend_switcheroo(struct drm_i915_private *i915, pm_message_t state)
->> >  static int i915_drm_resume(struct drm_device *dev)
->> >  {
->> >       struct drm_i915_private *dev_priv = to_i915(dev);
->> > +     struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
->> >       int ret;
->> >
->> >       disable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->> > @@ -1271,6 +1274,8 @@ static int i915_drm_resume(struct drm_device *dev)
->> >
->> >       intel_gvt_resume(dev_priv);
->> >
->> > +     intel_bxt_dsm_detect(pdev);
->> > +
->>
->> In intel_display_resume() perhaps?
->>
->> (Yay for confusing naming wrt display and modeset, it's a
->> work-in-progress.)
->>
->> BR,
->> Jani.
->>
->>
->> >       enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->> >
->> >       return 0;
->>
->> --
->> Jani Nikula, Intel Open Source Graphics Center
+Handling "bad data" from hardware is never a bad idea, so I don't
+necessarily want to drop this patch, I just want to try to figure out if
+this is a "incase the hardware is broken/malicious" type of change, vs.
+a "this bug we are seeing in real hardware" type of change.
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+thanks,
+
+greg k-h
