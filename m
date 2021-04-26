@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF0436B41E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A65236B422
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhDZNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 09:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDZNaR (ORCPT
+        id S233645AbhDZNcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 09:32:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35962 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231862AbhDZNcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:30:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C72C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 06:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hPisMVH8gfXHgWng4qXBnIRMDi/jAWhIm5sJAtRK0W4=; b=VSK1NBc2TFzoP2NEfsMcpRIwU9
-        FzZlMsPEbApabA4uPbVdjh/adudAYxpGdpMlT4zQOsqHhLxboJhEeEsmmi0L5411BJF8pIHjjELKc
-        MoiQetait6zn8nCdT48UVfSERi4S1v7owmRevnn1M50qLqE/lAAx+ulu66uHgkwlXB4aVwo/YalTa
-        ngM3lyZmLwFTPnF5ARk0ZtvPozt1ZGwMSvHgb279/0qwq0na9Y366iFWtDmSCTd+MA/s6i+Z7fWne
-        5HLJA+5X8hJp/w88U9zFIGnRvi7fX7XFsKWun2B5DPffRn1QND0qrTX8IXYixACBqY/reJnrBjIUA
-        Q36hfRqA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb1Im-005ezZ-T1; Mon, 26 Apr 2021 13:29:30 +0000
-Date:   Mon, 26 Apr 2021 14:29:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba:
- Convert module from IDR to XArray
-Message-ID: <20210426132928.GL235567@casper.infradead.org>
-References: <20210426095015.18556-1-fmdefrancesco@gmail.com>
- <20210426114902.GI235567@casper.infradead.org>
- <2833559.jtDpNxbUmt@linux.local>
+        Mon, 26 Apr 2021 09:32:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619443881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f3iMS4ZD9vcBcKbInQFZuGVgR0cLzV0CMjanYaop2+w=;
+        b=MQ0Et86PBAvSIMUmH5juoX+T5lXBdipC62SH6mri2e0JJ9bSblLCY2B63cpG/oyrGgXgA1
+        sPxGkid6zi5cJV9tddiqgbQAtC9MrK3tA1AIODDZsi+fKuk+1NBnw6jTr5lgg36aM8hoRZ
+        tBNTLhDkQZxB4xqWP2XXKdgVFjCgq1A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-rP8L9APNOLuq6qo9zGuhAQ-1; Mon, 26 Apr 2021 09:31:19 -0400
+X-MC-Unique: rP8L9APNOLuq6qo9zGuhAQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1F3D8189C7;
+        Mon, 26 Apr 2021 13:31:17 +0000 (UTC)
+Received: from starship (unknown [10.40.192.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 283BC19704;
+        Mon, 26 Apr 2021 13:31:12 +0000 (UTC)
+Message-ID: <e887a66ea714cf244958b60e85db6f6f1336887a.camel@redhat.com>
+Subject: Re: [PATCH v2 4/6] KVM: x86: Introduce KVM_GET_SREGS2 /
+ KVM_SET_SREGS2
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Date:   Mon, 26 Apr 2021 16:31:11 +0300
+In-Reply-To: <05161b6e-6d85-be14-9e30-e61cb742f6d0@redhat.com>
+References: <20210426111333.967729-1-mlevitsk@redhat.com>
+         <20210426111333.967729-5-mlevitsk@redhat.com>
+         <898a9b18-4578-cb9d-ece7-f45ba5b7bb89@redhat.com>
+         <eeaa6c0f6efef926eb606b354052aba8cfef2c21.camel@redhat.com>
+         <05161b6e-6d85-be14-9e30-e61cb742f6d0@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2833559.jtDpNxbUmt@linux.local>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 03:14:42PM +0200, Fabio M. De Francesco wrote:
-> > > -	int id;
-> > > -	unsigned long flags;
+On Mon, 2021-04-26 at 15:28 +0200, Paolo Bonzini wrote:
+> On 26/04/21 14:56, Maxim Levitsky wrote:
+> > On Mon, 2021-04-26 at 14:32 +0200, Paolo Bonzini wrote:
+> > > On 26/04/21 13:13, Maxim Levitsky wrote:
+> > > > +	if (sregs2->flags & KVM_SREGS2_FLAGS_PDPTRS_VALID) {
+> > > > +
+> > > > +		if (!is_pae_paging(vcpu))
+> > > > +			return -EINVAL;
+> > > > +
+> > > > +		for (i = 0 ; i < 4 ; i++)
+> > > > +			kvm_pdptr_write(vcpu, i, sregs2->pdptrs[i]);
+> > > > +
+> > > > +		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+> > > > +		mmu_reset_needed = 1;
+> > > > +	}
 > > > 
-> > > -	idr_preload(GFP_KERNEL);
-> > > -	spin_lock_irqsave(lock, flags);
-> > > -	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
-> > > -	spin_unlock_irqrestore(lock, flags);
-> > > -	idr_preload_end();
-> > > -	/* failure */
-> > > -	if (id < 0)
-> > > -		return 0;
-> > > -	/* idr_alloc() guarantees > 0 */
-> > > -	return (unsigned int)(id);
-> >
-> > And it shouldn't be using GFP_NOWAIT, but GFP_KERNEL, like the IDR code
-> > used to do.
-> I'm not sure to understand why idr_preload() uses GFP_KERNEL and instead  
-> idr_alloc() uses GFP_NOWAIT. I'd better read anew the documentation of the 
-> above-mentioned functions  
+> > > I think this should also have
+> > > 
+> > > 	else {
+> > > 		if (is_pae_paging(vcpu))
+> > > 			return -EINVAL;
+> > > 	}
+> > 
+> > What about the case when we migrate from qemu that doesn't use
+> > this ioctl to qemu that does?
+> 
+> Right, that makes sense but then the "else" branch should do the same as 
+> KVM_SET_SREGS.  Maybe add a "load_pdptrs" bool to __set_sregs_common?
 
-If you're holding a spinlock, you can't do a GFP_KERNEL allocation,
-because it can sleep, and sleeping while holding a spinlock isn't allowed.
+Yes, I'll do something like that.
+Thanks,
+	Best regards,
+		Maxim Levitsky
 
-The IDR and radix tree have an approach where you first preallocate
-memory using GFP_KERNEL and then use GFP_NOWAIT or GFP_ATOMIC after
-you've taken the spinlock.  XArray doesn't do that; it takes the spinlock
-and does a GFP_NOWAIT allocation.  If it fails, it drops the spinlock,
-allocates the memory using GFP_KERNEL, and retries.
+> 
+> Paolo
+> 
 
-> This will not be anymore a problem when I'll restore the use of one namespace 
-> per HBA. It's correct?
 
-true ...
-
-> > More generally, the IDR required you call idr_destroy() to avoid leaking
-> > preallocated memory.  I changed that, but there are still many drivers
-> > that have unnecessary calls to idr_destroy().  It's good form to just
-> > delete them and not turn them into calls to xa_destroy().
-> >
-> This one is a bit obscure to me. I have to look into it more carefully. Maybe 
-> I'll ask for some further help.
-
-The IDR used to have a per-idr preallocation, so you had to destroy it
-in order to make sure they were freed.  I got rid of that about five
-years ago because most IDR users weren't calling idr_destroy().
