@@ -2,93 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E5A36B98D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1506236B993
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239871AbhDZTBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240804AbhDZTAe (ORCPT
+        id S239880AbhDZTDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:03:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22419 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239866AbhDZTDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:00:34 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D1AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:59:50 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a25so52086850ljm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N6NhyOtw+47/wlSJQy44o+Q+9qeFKYm6+1wm+9Mor5I=;
-        b=W4B5jO/WpbeTL6sGvTyuUrIymMntan1MJKukHcm0sUR5tMf0hNrTBF25OJxDmP+3MP
-         tXn6F90eiPO+5LdV8R56hK+uu/6tndnNrMnnigaKK3G0y+Nq2D1KAGVCsMZtrO3YhtUH
-         ijDagMJpAx2tRWSUFkTk6/IFPCOIcKLf0fpow=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N6NhyOtw+47/wlSJQy44o+Q+9qeFKYm6+1wm+9Mor5I=;
-        b=e8+PP0fDHXmwHR7gHU9FUyDlZ3c5SFLQhrw0B/ISoj9tg2BsCkyGKWnE3FOCpAQbRu
-         2B6J5zb+kqZB+J3idI/0nhEI9Ai7URzJ9yG0CZB85LwJqrVZtSdmmEBtomvWjcnXNet+
-         +ecoUC1qILmkqr+XFp1AN2bb1NefHLLCFnEC5PPRIwHs/als4zM2i/CzdrKl5AnDfDja
-         7jWD/jOJBRsqWjdOdRJx1ybEtPSfYC584kW1J45u1XkoxRqNklkuuyBT/HyPZ3s8lWz3
-         GG+2yk/RH1sUk5il+uwFWNmCyOmSkQIKHuqyHViTug0Hjfj9J6gqNTN20Rc6Vb7mqt7H
-         1DIw==
-X-Gm-Message-State: AOAM533kBcduNMxP67lBCljuugCGqe7W3GU0Diy9HWSO/bs7J4hKznj5
-        py6JPmKlbowOn95/OO5AYF++ql679aSFiVuv
-X-Google-Smtp-Source: ABdhPJxhdAhgtNDXGOM2nRE9heyZr098UvIveN2cffzRO+g5ZZmQxc7UqvVPOOnLCEmI3ByYHnRPTw==
-X-Received: by 2002:a2e:9953:: with SMTP id r19mr14027874ljj.132.1619463588850;
-        Mon, 26 Apr 2021 11:59:48 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id h5sm91105ljj.98.2021.04.26.11.59.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 11:59:48 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id a36so54542895ljq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:59:48 -0700 (PDT)
-X-Received: by 2002:a2e:330f:: with SMTP id d15mr13954436ljc.251.1619463587784;
- Mon, 26 Apr 2021 11:59:47 -0700 (PDT)
+        Mon, 26 Apr 2021 15:03:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619463745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lUOmIfVKVmn7W2gLrr33NGKDnELSORbbbUBZA/ks9GQ=;
+        b=A2KUIkTmVsu09Tv8jmIbxmiKfIj5mSNZmhH3sZGug+MPbKuMqHAEDDiQ6Lo0JpcGDQJB1B
+        lacqkO2y2eJXWX5wsKVEwuOWW3LgOGdDPaw+nGg4GHeW7YV/9b0jFrZm6t3C1I6YqMiEF8
+        8bLJO9ReQzQhUQEHpc59LtGyobKYqAQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-5MeCUxOGM2-6fMla4thlMg-1; Mon, 26 Apr 2021 15:02:18 -0400
+X-MC-Unique: 5MeCUxOGM2-6fMla4thlMg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5D22107ACE8;
+        Mon, 26 Apr 2021 19:02:13 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6EBA4610A8;
+        Mon, 26 Apr 2021 19:02:13 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 13:02:12 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH 1/1] PCI: Add pci reset quirk for Nvidia GPUs
+Message-ID: <20210426130212.4c2e78f2@redhat.com>
+In-Reply-To: <c758d8a8-4f8b-c505-118e-b364e93ae539@nvidia.com>
+References: <20210423145402.14559-1-sdonthineni@nvidia.com>
+        <ff4812ba-ec1d-9462-0cbd-029635af3267@kernel.org>
+        <20210423093701.594efd86@redhat.com>
+        <c758d8a8-4f8b-c505-118e-b364e93ae539@nvidia.com>
 MIME-Version: 1.0
-References: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
-In-Reply-To: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 26 Apr 2021 11:59:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
-Message-ID: <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
-Subject: Re: [BISECTED] 5.12 hangs at reboot
-To:     Harald Arnesen <harald@skogtun.org>
-Cc:     johannes.berg@intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:47 AM Harald Arnesen <harald@skogtun.org> wrote:
->
-> Bisected to commit 776a39b8196dbca4afb69669db0d9926ffac29ab, and
-> reverting this makes the machine reboot as usual.
+On Fri, 23 Apr 2021 16:45:15 -0500
+Shanker R Donthineni <sdonthineni@nvidia.com> wrote:
 
-Hmm. That was already in rc1, so this isn't some late untested
-last-minute commit that broke things for you.
+> On 4/23/21 10:37 AM, Alex Williamson wrote:
+> > External email: Use caution opening links or attachments
+> >
+> >
+> > On Fri, 23 Apr 2021 11:12:05 -0400
+> > Sinan Kaya <okaya@kernel.org> wrote:
+> > =20
+> >> +Alex,
+> >>
+> >> On 4/23/2021 10:54 AM, Shanker Donthineni wrote: =20
+> >>> +static int reset_nvidia_gpu_quirk(struct pci_dev *dev, int probe)
+> >>> +{
+> >>> +#ifdef CONFIG_ACPI
+> >>> +   acpi_handle handle =3D ACPI_HANDLE(&dev->dev);
+> >>> +
+> >>> +   /*
+> >>> +    * Check for the affected devices' ID range. If device is not in
+> >>> +    * the affected range, return -ENOTTY indicating no device
+> >>> +    * specific reset method is available.
+> >>> +    */
+> >>> +   if ((dev->device & 0xffc0) !=3D 0x2340)
+> >>> +           return -ENOTTY;
+> >>> +
+> >>> +   /*
+> >>> +    * Return -ENOTTY indicating no device-specific reset method if _=
+RST
+> >>> +    * method is not defined
+> >>> +    */
+> >>> +   if (!handle || !acpi_has_method(handle, "_RST"))
+> >>> +           return -ENOTTY;
+> >>> +
+> >>> +   /* Return 0 for probe phase indicating that we can reset this dev=
+ice */
+> >>> +   if (probe)
+> >>> +           return 0;
+> >>> +
+> >>> +   /* Invoke _RST() method to perform the device-specific reset */
+> >>> +   if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL)=
+)) {
+> >>> +           pci_warn(dev, "Failed to reset the device\n");
+> >>> +           return -EINVAL;
+> >>> +   }
+> >>> +   return 0;
+> >>> +#else
+> >>> +   return -ENOTTY;
+> >>> +#endif
+> >>> +} =20
+> >> Interesting, some pieces of this function (especially the ACPI _RST)
+> >> could be generalized. =20
+> > Agreed, we should add a new function level reset method for this rather
+> > than a device specific reset.  At that point the extent of the device
+> > specific quirk could be to restrict SBR. =20
+> Thanks Sinan/Alex, Agree ACPI _RST is a generic method applicable
+> to all PCI-ACPI-DEVICE objects. I'll define a new helper function
+> pci_dev_acpi_reset() and move common code to it. I've one question
+> before posting a v2 patch, should I call pci_dev_acpi_reset() from
+> the reset_nvidia_gpu_quirk() or always apply _RST method if exists?
+>=20
+> Option-1:
+> static int reset_nvidia_gpu_quirk(struct pci_dev *dev, int probe)
+> {
+>  =C2=A0=C2=A0=C2=A0 /* Check for the affected devices' ID range */
+>  =C2=A0=C2=A0=C2=A0 if ((dev->device & 0xffc0) !=3D 0x2340)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOTTY;
+>  =C2=A0=C2=A0=C2=A0 return pci_dev_acpi_reset(dev, probe);
+> }
+>=20
+> OR
+>=20
+> Option-2
+> int pci_dev_specific_reset(struct pci_dev *dev, int probe)
+> {
+>  =C2=A0=C2=A0 const struct pci_dev_reset_methods *i;
+>=20
+>  =C2=A0=C2=A0 if (!pci_dev_acpi_reset(dev, probe))
+>  =C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>  =C2=A0=C2=A0 ...
+> }
 
-Which implies that it's likely something fairly specific to  your
-setup (either the config or the hardware - or possibly Void Linux
-doing something other distros don't).
+Not quite either actually.  I think this is a standard mechanism for
+firmware to provide a reset method for a device, so it should be called
+as a first-class mechanism from __pci_reset_function_locked() and
+pci_probe_reset_function() rather than from within the device specific
+callout.  pci_dev_specific_reset() should only handle our own software
+defined reset quirks for devices.  It seems like we should be able to
+safely probe any device for an ACPI device handle with _RST method
+support.
 
-Mind also attaching a dmesg of an affected kernel (or with the revert
-in place, I guess - it shouldn't matter until the reboot ;)
+I'd likely set the default priority of a a new acpi reset mechanism
+below our own software defined resets, but above hardware resets.  We
+should only need the PCI header fixup quirk for this device to set the
+NO_BUS_RESET flag, which would prevent userspace from re-prioritizing
+SBR reset when we consider proposals like the one from Amey to allow
+userspace policy management of reset mechanisms[1].
 
-There's a lockdep assertion there, but you don't seem to have lockdep
-enabled. So it be interesting to see what happens if you
+> >    It'd be useful to know what
+> > these devices are (not in pciids yet), why we expect to only see them in
+> > specific platforms (embedded device?), and the failure mode of the SBR.=
+ =20
+> These are not plug-in PCIe GPU cards, will exist on upcoming
+> server baseboards. Triggering SBR without firmware notification
+> would leave the device inoperable for the current system boot.
+> It requires a system hard-reboot to get the GPU device back to
+> normal operating condition post-SBR.
 
- (a) enable lockdep
+Any such descriptions you can include in the quirk to disable SBR for
+this device, especially if you can share public code names, seems like
+it would only help people associate this support to the hardware that
+requires it.  Thanks,
 
- (b) make sure to reboot in text mode so that any lockdep messages
-would actually be visible.
+Alex
 
-Maybe Johannes will go "Doh!" and see what's wrong.
+[1]https://lore.kernel.org/linux-pci/20210409192324.30080-1-ameynarkhede03@=
+gmail.com/
 
-                  Linus
