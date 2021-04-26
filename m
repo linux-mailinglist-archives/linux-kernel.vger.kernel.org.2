@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7FA36AEEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FD336AF2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233850AbhDZHtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:49:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49266 "EHLO mail.kernel.org"
+        id S234712AbhDZHys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:54:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232685AbhDZHk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:40:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEC12611CA;
-        Mon, 26 Apr 2021 07:38:37 +0000 (UTC)
+        id S233870AbhDZHoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:44:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0D8613C2;
+        Mon, 26 Apr 2021 07:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422718;
-        bh=6Qc/Da3dRb/UdVG4q50oDReBLc8kQByQo/gnEgPYf1w=;
+        s=korg; t=1619422853;
+        bh=NXGoH78Kp2eo148446i7uboIojbe33UGTo54o2XgmwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJrrDg6tNaf31WcvTb74QIEaUurH+UlfhN7FyKmqW21a/G0UzmCF4OcQrkBv6DjKp
-         /4zUUHm+eeJhmSni0xr8igdt0kqbUt5w/coJY3X4eGraq9zCmy9GAUifXG5BeuA8nf
-         ODJ/IB8ANY/45qx/o1bDi28L32Sy7QtPe863QRzo=
+        b=1zhOINIAmp2PstzSY8v8qX/alX2AH0Y+BVk8DMeluIR/j3N5OnBqSl7C05iLQcj0g
+         G6Md3daM9XiybJm7URWJpXRgkTtJrdDRO3y6P/bS7UG8qYvgYBTpTAR3Rb97n39KSF
+         mxG4GmxoDtfNDOY6AoWsoc0mXrmxyXrT26jc+sxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com,
-        Phillip Potter <phil@philpotter.co.uk>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 13/20] net: geneve: check skb is large enough for IPv4/IPv6 header
-Date:   Mon, 26 Apr 2021 09:30:04 +0200
-Message-Id: <20210426072817.119888105@linuxfoundation.org>
+Subject: [PATCH 5.11 18/41] perf/x86/intel/uncore: Remove uncore extra PCI dev HSWEP_PCI_PCU_3
+Date:   Mon, 26 Apr 2021 09:30:05 +0200
+Message-Id: <20210426072820.302374773@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
-References: <20210426072816.686976183@linuxfoundation.org>
+In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
+References: <20210426072819.666570770@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +41,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit 6628ddfec7580882f11fdc5c194a8ea781fdadfa ]
+[ Upstream commit 9d480158ee86ad606d3a8baaf81e6b71acbfd7d5 ]
 
-Check within geneve_xmit_skb/geneve6_xmit_skb that sk_buff structure
-is large enough to include IPv4 or IPv6 header, and reject if not. The
-geneve_xmit_skb portion and overall idea was contributed by Eric Dumazet.
-Fixes a KMSAN-found uninit-value bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
+There may be a kernel panic on the Haswell server and the Broadwell
+server, if the snbep_pci2phy_map_init() return error.
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The uncore_extra_pci_dev[HSWEP_PCI_PCU_3] is used in the cpu_init() to
+detect the existence of the SBOX, which is a MSR type of PMON unit.
+The uncore_extra_pci_dev is allocated in the uncore_pci_init(). If the
+snbep_pci2phy_map_init() returns error, perf doesn't initialize the
+PCI type of the PMON units, so the uncore_extra_pci_dev will not be
+allocated. But perf may continue initializing the MSR type of PMON
+units. A null dereference kernel panic will be triggered.
+
+The sockets in a Haswell server or a Broadwell server are identical.
+Only need to detect the existence of the SBOX once.
+Current perf probes all available PCU devices and stores them into the
+uncore_extra_pci_dev. It's unnecessary.
+Use the pci_get_device() to replace the uncore_extra_pci_dev. Only
+detect the existence of the SBOX on the first available PCU device once.
+
+Factor out hswep_has_limit_sbox(), since the Haswell server and the
+Broadwell server uses the same way to detect the existence of the SBOX.
+
+Add some macros to replace the magic number.
+
+Fixes: 5306c31c5733 ("perf/x86/uncore/hsw-ep: Handle systems with only two SBOXes")
+Reported-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Steve Wahl <steve.wahl@hpe.com>
+Link: https://lkml.kernel.org/r/1618521764-100923-1-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/geneve.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/events/intel/uncore_snbep.c | 61 ++++++++++++----------------
+ 1 file changed, 26 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-index c7ec3d24eabc..c33a08d65208 100644
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -891,6 +891,9 @@ static int geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
- 	__be16 sport;
- 	int err;
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 7bdb1821215d..3112186a4f4b 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -1159,7 +1159,6 @@ enum {
+ 	SNBEP_PCI_QPI_PORT0_FILTER,
+ 	SNBEP_PCI_QPI_PORT1_FILTER,
+ 	BDX_PCI_QPI_PORT2_FILTER,
+-	HSWEP_PCI_PCU_3,
+ };
  
-+	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
-+		return -EINVAL;
-+
- 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
- 	rt = geneve_get_v4_rt(skb, dev, gs4, &fl4, info,
- 			      geneve->info.key.tp_dst, sport);
-@@ -954,6 +957,9 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
- 	__be16 sport;
- 	int err;
+ static int snbep_qpi_hw_config(struct intel_uncore_box *box, struct perf_event *event)
+@@ -2816,22 +2815,33 @@ static struct intel_uncore_type *hswep_msr_uncores[] = {
+ 	NULL,
+ };
  
-+	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
-+		return -EINVAL;
+-void hswep_uncore_cpu_init(void)
++#define HSWEP_PCU_DID			0x2fc0
++#define HSWEP_PCU_CAPID4_OFFET		0x94
++#define hswep_get_chop(_cap)		(((_cap) >> 6) & 0x3)
 +
- 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
- 	dst = geneve_get_v6_dst(skb, dev, gs6, &fl6, info,
- 				geneve->info.key.tp_dst, sport);
++static bool hswep_has_limit_sbox(unsigned int device)
+ {
+-	int pkg = boot_cpu_data.logical_proc_id;
++	struct pci_dev *dev = pci_get_device(PCI_VENDOR_ID_INTEL, device, NULL);
++	u32 capid4;
++
++	if (!dev)
++		return false;
++
++	pci_read_config_dword(dev, HSWEP_PCU_CAPID4_OFFET, &capid4);
++	if (!hswep_get_chop(capid4))
++		return true;
+ 
++	return false;
++}
++
++void hswep_uncore_cpu_init(void)
++{
+ 	if (hswep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+ 		hswep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
+ 
+ 	/* Detect 6-8 core systems with only two SBOXes */
+-	if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
+-		u32 capid4;
+-
+-		pci_read_config_dword(uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3],
+-				      0x94, &capid4);
+-		if (((capid4 >> 6) & 0x3) == 0)
+-			hswep_uncore_sbox.num_boxes = 2;
+-	}
++	if (hswep_has_limit_sbox(HSWEP_PCU_DID))
++		hswep_uncore_sbox.num_boxes = 2;
+ 
+ 	uncore_msr_uncores = hswep_msr_uncores;
+ }
+@@ -3094,11 +3104,6 @@ static const struct pci_device_id hswep_uncore_pci_ids[] = {
+ 		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
+ 						   SNBEP_PCI_QPI_PORT1_FILTER),
+ 	},
+-	{ /* PCU.3 (for Capability registers) */
+-		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2fc0),
+-		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
+-						   HSWEP_PCI_PCU_3),
+-	},
+ 	{ /* end: all zeroes */ }
+ };
+ 
+@@ -3190,27 +3195,18 @@ static struct event_constraint bdx_uncore_pcu_constraints[] = {
+ 	EVENT_CONSTRAINT_END
+ };
+ 
++#define BDX_PCU_DID			0x6fc0
++
+ void bdx_uncore_cpu_init(void)
+ {
+-	int pkg = topology_phys_to_logical_pkg(boot_cpu_data.phys_proc_id);
+-
+ 	if (bdx_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+ 		bdx_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
+ 	uncore_msr_uncores = bdx_msr_uncores;
+ 
+-	/* BDX-DE doesn't have SBOX */
+-	if (boot_cpu_data.x86_model == 86) {
+-		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
+ 	/* Detect systems with no SBOXes */
+-	} else if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
+-		struct pci_dev *pdev;
+-		u32 capid4;
+-
+-		pdev = uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3];
+-		pci_read_config_dword(pdev, 0x94, &capid4);
+-		if (((capid4 >> 6) & 0x3) == 0)
+-			bdx_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
+-	}
++	if ((boot_cpu_data.x86_model == 86) || hswep_has_limit_sbox(BDX_PCU_DID))
++		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
++
+ 	hswep_uncore_pcu.constraints = bdx_uncore_pcu_constraints;
+ }
+ 
+@@ -3431,11 +3427,6 @@ static const struct pci_device_id bdx_uncore_pci_ids[] = {
+ 		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
+ 						   BDX_PCI_QPI_PORT2_FILTER),
+ 	},
+-	{ /* PCU.3 (for Capability registers) */
+-		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x6fc0),
+-		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
+-						   HSWEP_PCI_PCU_3),
+-	},
+ 	{ /* end: all zeroes */ }
+ };
+ 
 -- 
 2.30.2
 
