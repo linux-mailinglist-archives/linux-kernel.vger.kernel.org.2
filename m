@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E82636AED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8174936AD22
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhDZHrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
+        id S232408AbhDZHck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:32:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233083AbhDZHi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:38:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D1861364;
-        Mon, 26 Apr 2021 07:36:25 +0000 (UTC)
+        id S232416AbhDZHca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:32:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26B5A611C9;
+        Mon, 26 Apr 2021 07:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422586;
-        bh=+aeO+f+Y2ffOCXajMAx0E9n74vMRNP/r8MCf0cTWVPg=;
+        s=korg; t=1619422309;
+        bh=ePKgHYrMCvetSA5ZIScOwo9vPcIwkmkQGfZFuVIbcTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1gJLh15v6jjeghFiS91SD2egtniTPRP/ooH4LwSODWljrCvmcQAsIBM5+ThDQ33Wz
-         QmmGUmzCTJYDx2dkz0q4tdkDQw/H5/7dxiNiciyrmQIH7Vdgp7N2l+Uk3TLA3Z85io
-         cUNEjB2m2EmylQDDxdPdoGOS+0JGueaewZH1rAVo=
+        b=rEzwtW6Ot0FrSp3+Z5VjITaBRdlSYL5vFToZlUvmbTG/Qh6lFY0ARc0RQ2WfDQzPl
+         cwCD/m3YRQIEA+SuGZwqJSE4WFxy1CGLo/LVOKAvLaA7MmjVLApu8rN68HOEY7EK/V
+         WnBhGLFl0KFwLE0wcf+U697qmTkCAM0nZkb2amKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Caleb Connolly <caleb@connolly.tech>,
-        Andi Shyti <andi@etezian.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.19 23/57] Input: s6sy761 - fix coordinate read bit shift
+        stable@vger.kernel.org,
+        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 22/32] net: hso: fix null-ptr-deref during tty device unregistration
 Date:   Mon, 26 Apr 2021 09:29:20 +0200
-Message-Id: <20210426072821.364580076@linuxfoundation.org>
+Message-Id: <20210426072817.327441466@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
+References: <20210426072816.574319312@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +42,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Caleb Connolly <caleb@connolly.tech>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit 30b3f68715595dee7fe4d9bd91a2252c3becdf0a upstream.
+commit 8a12f8836145ffe37e9c8733dce18c22fb668b66 upstream
 
-The touch coordinate register contains the following:
+Multiple ttys try to claim the same the minor number causing a double
+unregistration of the same device. The first unregistration succeeds
+but the next one results in a null-ptr-deref.
 
-        byte 3             byte 2             byte 1
-+--------+--------+ +-----------------+ +-----------------+
-|        |        | |                 | |                 |
-| X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
-|        |        | |                 | |                 |
-+--------+--------+ +-----------------+ +-----------------+
+The get_free_serial_index() function returns an available minor number
+but doesn't assign it immediately. The assignment is done by the caller
+later. But before this assignment, calls to get_free_serial_index()
+would return the same minor number.
 
-Bytes 2 and 1 need to be shifted left by 4 bits, the least significant
-nibble of each is stored in byte 3. Currently they are only
-being shifted by 3 causing the reported coordinates to be incorrect.
+Fix this by modifying get_free_serial_index to assign the minor number
+immediately after one is found to be and rename it to obtain_minor()
+to better reflect what it does. Similary, rename set_serial_by_index()
+to release_minor() and modify it to free up the minor number of the
+given hso_serial. Every obtain_minor() should have corresponding
+release_minor() call.
 
-This matches downstream examples, and has been confirmed on my
-device (OnePlus 7 Pro).
-
-Fixes: 0145a7141e59 ("Input: add support for the Samsung S6SY761 touchscreen")
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-Reviewed-by: Andi Shyti <andi@etezian.org>
-Link: https://lore.kernel.org/r/20210305185710.225168-1-caleb@connolly.tech
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 72dc1c096c705 ("HSO: add option hso driver")
+Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+Tested-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/s6sy761.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/hso.c |   33 ++++++++++++---------------------
+ 1 file changed, 12 insertions(+), 21 deletions(-)
 
---- a/drivers/input/touchscreen/s6sy761.c
-+++ b/drivers/input/touchscreen/s6sy761.c
-@@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(s
- 	u8 major = event[4];
- 	u8 minor = event[5];
- 	u8 z = event[6] & S6SY761_MASK_Z;
--	u16 x = (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
--	u16 y = (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
-+	u16 x = (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
-+	u16 y = (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -635,7 +635,7 @@ static struct hso_serial *get_serial_by_
+ 	return serial;
+ }
  
- 	input_mt_slot(sdata->input, tid);
+-static int get_free_serial_index(void)
++static int obtain_minor(struct hso_serial *serial)
+ {
+ 	int index;
+ 	unsigned long flags;
+@@ -643,8 +643,10 @@ static int get_free_serial_index(void)
+ 	spin_lock_irqsave(&serial_table_lock, flags);
+ 	for (index = 0; index < HSO_SERIAL_TTY_MINORS; index++) {
+ 		if (serial_table[index] == NULL) {
++			serial_table[index] = serial->parent;
++			serial->minor = index;
+ 			spin_unlock_irqrestore(&serial_table_lock, flags);
+-			return index;
++			return 0;
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&serial_table_lock, flags);
+@@ -653,15 +655,12 @@ static int get_free_serial_index(void)
+ 	return -1;
+ }
+ 
+-static void set_serial_by_index(unsigned index, struct hso_serial *serial)
++static void release_minor(struct hso_serial *serial)
+ {
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&serial_table_lock, flags);
+-	if (serial)
+-		serial_table[index] = serial->parent;
+-	else
+-		serial_table[index] = NULL;
++	serial_table[serial->minor] = NULL;
+ 	spin_unlock_irqrestore(&serial_table_lock, flags);
+ }
+ 
+@@ -2249,6 +2248,7 @@ static int hso_stop_serial_device(struct
+ static void hso_serial_tty_unregister(struct hso_serial *serial)
+ {
+ 	tty_unregister_device(tty_drv, serial->minor);
++	release_minor(serial);
+ }
+ 
+ static void hso_serial_common_free(struct hso_serial *serial)
+@@ -2273,25 +2273,23 @@ static int hso_serial_common_create(stru
+ 				    int rx_size, int tx_size)
+ {
+ 	struct device *dev;
+-	int minor;
+ 	int i;
+ 
+ 	tty_port_init(&serial->port);
+ 
+-	minor = get_free_serial_index();
+-	if (minor < 0)
++	if (obtain_minor(serial))
+ 		goto exit2;
+ 
+ 	/* register our minor number */
+ 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
+-			tty_drv, minor, &serial->parent->interface->dev,
++			tty_drv, serial->minor, &serial->parent->interface->dev,
+ 			serial->parent, hso_serial_dev_groups);
+-	if (IS_ERR(serial->parent->dev))
++	if (IS_ERR(serial->parent->dev)) {
++		release_minor(serial);
+ 		goto exit2;
++	}
+ 	dev = serial->parent->dev;
+ 
+-	/* fill in specific data for later use */
+-	serial->minor = minor;
+ 	serial->magic = HSO_SERIAL_MAGIC;
+ 	spin_lock_init(&serial->serial_lock);
+ 	serial->num_rx_urbs = num_urbs;
+@@ -2692,9 +2690,6 @@ static struct hso_device *hso_create_bul
+ 
+ 	serial->write_data = hso_std_serial_write_data;
+ 
+-	/* and record this serial */
+-	set_serial_by_index(serial->minor, serial);
+-
+ 	/* setup the proc dirs and files if needed */
+ 	hso_log_port(hso_dev);
+ 
+@@ -2751,9 +2746,6 @@ struct hso_device *hso_create_mux_serial
+ 	serial->shared_int->ref_count++;
+ 	mutex_unlock(&serial->shared_int->shared_int_lock);
+ 
+-	/* and record this serial */
+-	set_serial_by_index(serial->minor, serial);
+-
+ 	/* setup the proc dirs and files if needed */
+ 	hso_log_port(hso_dev);
+ 
+@@ -3140,7 +3132,6 @@ static void hso_free_interface(struct us
+ 			cancel_work_sync(&serial_table[i]->async_get_intf);
+ 			hso_serial_tty_unregister(serial);
+ 			kref_put(&serial_table[i]->ref, hso_serial_ref_free);
+-			set_serial_by_index(i, NULL);
+ 		}
+ 	}
  
 
 
