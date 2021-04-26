@@ -2,48 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6FB36AA5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAEA36AA60
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhDZBbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 21:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60344 "EHLO mail.kernel.org"
+        id S231752AbhDZBbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 21:31:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231655AbhDZBa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231663AbhDZBa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 25 Apr 2021 21:30:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 182EC61354;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2104C6135F;
         Mon, 26 Apr 2021 01:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619400616;
-        bh=HSjejELuLAnios+2Vt6fh6poFSknYMXQcK5WMIfv1UU=;
+        bh=kMA1CM3cbnfdnimBc+GZhNWNAA6x7qfdv/cRcUAsDgQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fAozgIdBiU7Uc22IZ+UwQXQBAxPCcfrp1eIl71ahG2whJB8qy4GNF5KOEYxwfe5c2
-         EATPBG4deNLAul4Iq4/awq6WkgL8ODZjafBqLKBAZ43adQFiymJDxnrL4BkJ16k+dS
-         D5TPhUrSyvMRyZepvMA6Ee9KrMnA8l+mDOKVcSRK/IMzb+Syv1rHnQv317juumS/rZ
-         eIGeL8Tj2Nnt5S7gmSRo7HBcKpzjXQftwsdThF7oEtT07zkfsQNzh+KntLz2C2TtWV
-         HShpgI061pj+j0PLVx0JOr1v+YJsTIHc0SOzUwXwC3ccaJlO0l1O+yH5LvWwuIqAcL
-         51PjwMv3q9ZEw==
+        b=l9ajjJq9sqxBXQVJjzTliIC5A6qdIW5FbQhjkiRzIleheH+17zgiH9fjK4Pr5D1YS
+         X0FtXURBrfDJ/5AkZsN38O+u0RBxjDAYZvci/ihnvldAP7xbHUFraTWcEk0Wl5GOvH
+         aGk4DelAE37aQyeHqXbSgKK/wmmfyNCvXMZ/PGxVVFdZj9QCdcbO6IHVAdk2OwD6LZ
+         vaMS3rEIjXhMvNIv9/nq29qpLeuQlMoMvWMjtJFj12ZEbwMiA6EUV/D01OPip/lsWT
+         cyz+0UJiWPfYHMYKmtsmCEitdqYruasG5DmLBn7Plm721mmTe4yQ4QOQN7GscdfvVe
+         bX3Px8tExv1Zw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0D0B160CE2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 18F686094F;
         Mon, 26 Apr 2021 01:30:16 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next][REPOST] hv_netvsc: Make netvsc/VF binding check both
- MAC and serial number
+Subject: Re: [PATCH net-next] r8152: remove some bit operations
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161940061604.7794.9498613769256285295.git-patchwork-notify@kernel.org>
+Message-Id: <161940061609.7794.12561749260438717374.git-patchwork-notify@kernel.org>
 Date:   Mon, 26 Apr 2021 01:30:16 +0000
-References: <20210424011235.18721-1-decui@microsoft.com>
-In-Reply-To: <20210424011235.18721-1-decui@microsoft.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, stephen@networkplumber.org,
-        sthemmin@microsoft.com, wei.liu@kernel.org, liuwe@microsoft.com,
-        netdev@vger.kernel.org, leon@kernel.org, andrew@lunn.ch,
-        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
-        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, Joseph.Salisbury@microsoft.com
+References: <1394712342-15778-362-Taiwan-albertk@realtek.com>
+In-Reply-To: <1394712342-15778-362-Taiwan-albertk@realtek.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -52,19 +47,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 23 Apr 2021 18:12:35 -0700 you wrote:
-> Currently the netvsc/VF binding logic only checks the PCI serial number.
+On Sat, 24 Apr 2021 14:09:03 +0800 you wrote:
+> Remove DELL_TB_RX_AGG_BUG and LENOVO_MACPASSTHRU flags of rtl8152_flags.
+> They are only set when initializing and wouldn't be change. It is enough
+> to record them with variables.
 > 
-> The Microsoft Azure Network Adapter (MANA) supports multiple net_device
-> interfaces (each such interface is called a "vPort", and has its unique
-> MAC address) which are backed by the same VF PCI device, so the binding
-> logic should check both the MAC address and the PCI serial number.
-> 
-> [...]
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> ---
+>  drivers/net/usb/r8152.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 
 Here is the summary with links:
-  - [net-next,REPOST] hv_netvsc: Make netvsc/VF binding check both MAC and serial number
-    https://git.kernel.org/netdev/net-next/c/64ff412ad41f
+  - [net-next] r8152: remove some bit operations
+    https://git.kernel.org/netdev/net-next/c/9c68011bd7e4
 
 You are awesome, thank you!
 --
