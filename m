@@ -2,723 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654B936BB27
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE3736BB29
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235098AbhDZVZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:25:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234146AbhDZVZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:25:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B346D61185;
-        Mon, 26 Apr 2021 21:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619472272;
-        bh=i+UiqZV0qb73JVReQ2Bmgd4wLN38xTZrL0hVUVF8i28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fwfevxXby+dWIrAnroSfbnof2+2J0C4eEffFKDufOKeYhJuk2ZKWS0NHuQSfxBqvC
-         a7uUV0GbwGV9eANW83+mjFQBiYdaNocIwxDlRCvhys18NvWWpDqyTf37qiA7Pkcz/A
-         dOSa9DFSVcNfe1VmYjp6qAMeu3AxReuPe/n+uASX2x/2DJ7mU5uh46870dNG/+5xNd
-         xVNfuO9U+nquQQrRvNw6/nXLaL1YQdRxgG1+LX0/lJHUlFIZbX/NT/P1khx+Rj2YBY
-         MQpA8j+yRgxTanXuh2UhaaMfQwdB4CM36XLQhoaneeAd9rrlQvMZfXoqfvO/o3UTfa
-         hiCm3PyVDtlug==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 328E140647; Mon, 26 Apr 2021 18:24:29 -0300 (-03)
-Date:   Mon, 26 Apr 2021 18:24:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>
-Subject: Re: [PATCH v2] perf data: Add JSON export
-Message-ID: <YIcvjFr/hN2Syybc@kernel.org>
-References: <3884969f-804d-2f53-c648-e2b0bd85edff@codeweavers.com>
- <YIch1aRwL4Lk7iWJ@kernel.org>
+        id S235496AbhDZV0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234217AbhDZV0T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 17:26:19 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEA2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:25:37 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id q192so13065163ybg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=508ovmXS8DpmpNPbL89LJR27EX3QMuO+O3AIb+NoGvQ=;
+        b=VTQ6bSOGVug3MmyZAeIZXQ8sbTxH+e90Ylebh+pSEzYa/AYQikD4zIVgKPmf20gLa8
+         Bbmkk+RSzFGuiXqWJeAbkwWEL7keR6g5gCKJQDpgOZ3yhVGCWpyu6UDhpvVKTrsUbnro
+         eYDUaAKyosYlZoSZ5ibWmoVum9ILLBpVZXgXFpDObvPuRgWAzYtjhBlCOeeR8BS4iYn1
+         Y0ssTZVjNGBclfyG1eyzIy+Z55j0Q3NdzzKA9otkvKIg2gAU0hxswK1MUH7glibSS5/z
+         97ASA+opSNFE4GPPSKsNoZJ2N2K87V+ND62TL34FWbT24IOrc30UMmUxll6HIRyN+dpu
+         yUEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=508ovmXS8DpmpNPbL89LJR27EX3QMuO+O3AIb+NoGvQ=;
+        b=Zavco7jmQ7qHnZMh+Srgh0bu+XWAhq5Mt3SVZv6IbWEY9NtrpmKgOOicNaYdlAtOYk
+         gxFqpAtdY/JxnmbmYuKE/+4cVGBCekjmBFmKZekReQFHbGsK8EQpoD8qBdIvhk1XV5s9
+         1CX02/2EcerX3+TbIEcRNS4YUXFw1puKT2jE43sWEeXe8tsxh85J8Qlk89Ddacq3MeZ2
+         0/yOerTsmGqLuPN8WuIiEtQT1W9TAB+c8LqG2P/GIeobLu8Maqf4VG3ZxRaUlCXsxkwC
+         gPCMiIItvGxQVpRoE0mlfnuMX7y+L2EdgW00V83deWiYXTY4/1jns8ibndpJZh32yV8U
+         Zb9A==
+X-Gm-Message-State: AOAM5315GBxauJbzEKE0L86HwrfnDWtTMUGhiqVRYOhqyRuIkM7UBLxz
+        UWW2zWqAOkeKuh5lt78s4Ok5Rk9TEOQApX1voKa1PQ==
+X-Google-Smtp-Source: ABdhPJz9Hft4UOIdQp2htw0zmi/yxVjNy/q9zcG3JEAGDJSbU0S1tQpnvZWHiqueTOsa/WB0ZFTWjQU/vr/xe6Frnrc=
+X-Received: by 2002:a5b:a82:: with SMTP id h2mr1073683ybq.20.1619472336867;
+ Mon, 26 Apr 2021 14:25:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIch1aRwL4Lk7iWJ@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 26 Apr 2021 14:25:00 -0700
+Message-ID: <CAGETcx_4B9v-xF+pBCHSSOsEsKeYq=LqtTmGrMcsnNcY7aXT4w@mail.gmail.com>
+Subject: Re: Sleeping in atomic context on device release due to device links
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Apr 26, 2021 at 05:25:58PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Apr 26, 2021 at 10:47:16AM -0400, Nicholas Fraser escreveu:
-> > This adds a feature to export perf data to JSON.
-> > 
-> > The resolved symbols are exported into the JSON so that external tools
-> > don't need to load the dsos themselves (or even have access to them at
-> > all.) This makes it easy to load and analyze perf data with standalone
-> > tools where direct perf or libbabeltrace integration is impractical.
-> > 
-> > The exporter uses a minimal inline JSON encoding without any external
-> > dependencies. Currently it only outputs some headers and sample metadata
-> > but it's easily extensible.
-> > 
-> > Use it like this:
-> > 
-> > perf data convert --to-json out.json
+On Mon, Apr 26, 2021 at 10:08 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> Hi!
+>
+> Is the below already fixed somewhere (v5.12 seems still has it)?
+> Or I missed something?
+>
+> [  186.439095] BUG: sleeping function called from invalid context at
+> drivers/gpio/gpiolib.c:1952
+> [  186.451666] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
+> 119, name: kworker/0:2
+> [  186.463885] 2 locks held by kworker/0:2/119:
+> [  186.470831]  #0: ffff985d8110d338
+> ((wq_completion)rcu_gp){....}-{0:0}, at: process_one_work+0x1bc/0x4b0
+> [  186.484458]  #1: ffffb1a2c0367e70
+> ((work_completion)(&sdp->work)){....}-{0:0}, at:
+> process_one_work+0x1bc/0x4b
+> 0
+> [  186.498732] CPU: 0 PID: 119 Comm: kworker/0:2 Not tainted 5.12.0-rc8+ #168
+> [  186.508301] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
+> BIOS 542 2015.01.21:18.19.48
+> [  186.521000] Workqueue: rcu_gp srcu_invoke_callbacks
+> [  186.528515] Call Trace:
+> [  186.532288]  dump_stack+0x69/0x8e
+> [  186.536964]  ___might_sleep.cold+0x95/0xa2
+> [  186.543606]  gpiod_free_commit+0x25/0x170
+> [  186.550163]  gpiod_put+0x19/0x40
+> [  186.554728]  cleanup+0x1b/0x30 [spi_pxa2xx_platform]
+> [  186.562246]  spidev_release+0x24/0x50
+> [  186.567243]  device_release+0x34/0x90
+> [  186.572228]  kobject_put+0x86/0x1d0
+> [  186.577035]  __device_link_free_srcu+0x47/0x70
+> [  186.583942]  srcu_invoke_callbacks+0xc8/0x170
+> [  186.590720]  process_one_work+0x24d/0x4b0
+> [  186.597118]  worker_thread+0x55/0x3c0
+> [  186.602030]  ? rescuer_thread+0x390/0x390
+> [  186.608373]  kthread+0x137/0x150
+> [  186.612834]  ? __kthread_bind_mask+0x60/0x60
+> [  186.619446]  ret_from_fork+0x22/0x30
+>
 
-One more, clang complains:
+This took a few hours to debug, but it looks like a SPI framework bug.
+Just that some device link code is exposing the bug.
 
-   7    50.92 alpine:3.10                   : FAIL gcc version 8.3.0 (Alpine 8.3.0)
-    util/data-convert-json.c:126:32: error: address of array 'al->sym->name' will always evaluate to 'true' [-Werror,-Wpointer-bool-conversion]
-            if (al && al->sym && al->sym->name && strlen(al->sym->name) > 0) {
-                              ~~ ~~~~~~~~~^~~~
-    1 error generated.
-    make[3]: *** [/git/perf-5.12.0/tools/build/Makefile.build:139: util] Error 2
+Basically calling the spi controller cleanup in the device's release
+op is wrong for many reasons. I'll send a patch for SPI later.
 
- 
-> I had to apply this for it to build:
-> 
-> diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
-> index b57c48d355039f6f..f24593d57f80be1b 100644
-> --- a/tools/perf/util/data-convert-json.c
-> +++ b/tools/perf/util/data-convert-json.c
-> @@ -100,7 +100,7 @@ static void output_json_key_string(FILE *out, bool comma, int depth,
->  }
-> 
->  // Outputs a JSON key-value pair where the value is a printf format string.
-> -__(printf, 5, 6)
-> +__printf(5, 6)
->  static void output_json_key_format(FILE *out, bool comma, int depth,
->                 const char *key, const char *format, ...)
->  {
-> [acme@five perf]$
-> 
-> I'll test build with the container suite and test the feature, thanks!
-> 
-> - Arnaldo
->  
-> > Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> > ---
-> > 
-> > Notes:
-> >     This is a follow-up to a patch sent a couple weeks ago. I realized I sent a
-> >     fixed version incorrectly as a reply to a previous version of the same patch so
-> >     I'm re-sending it properly.
-> >     
-> >     Here's an example of what the resulting JSON looks like:
-> >     
-> >     {
-> >             "linux-perf-json-version": 1,
-> >             "headers": {
-> >                     "header-version": 1,
-> >                     "captured-on": "2021-04-06T08:42:01Z",
-> >                     "os-release": "5.11.11-arch1-1",
-> >                     "arch": "x86_64",
-> >                     "cpu-desc": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
-> >                     ...
-> >             },
-> >             "samples": [
-> >                     {
-> >                             "timestamp": 3074717308597,
-> >                             "pid": 8604,
-> >                             "tid": 8604,
-> >                             "comm": "sh",
-> >                             "callchain": [
-> >                                     {
-> >                                             "ip": "0x7f1e0deb2d36",
-> >                                             "symbol": "__strcmp_avx2",
-> >                                             "dso": "libc-2.33.so"
-> >                                     },
-> >                                     {
-> >                                             "ip": "0x7f1e0dd7f49f",
-> >                                             "symbol": "__gconv_find_transform",
-> >                                             "dso": "libc-2.33.so"
-> >                                     },
-> >                                     ...
-> >                             ]
-> >                     },
-> >                     ...
-> >             ]
-> >     }
-> >     
-> >     The JSON is of course huge but it compresses well. It can be piped directly to
-> >     a compressor, for example:
-> >     
-> >     perf data convert --to-json /dev/stdout | xz > out.json.xz
-> > 
-> >  tools/perf/Documentation/perf-data.txt |   5 +-
-> >  tools/perf/builtin-data.c              |  26 +-
-> >  tools/perf/util/Build                  |   1 +
-> >  tools/perf/util/data-convert-bt.c      |   2 +-
-> >  tools/perf/util/data-convert-bt.h      |  11 -
-> >  tools/perf/util/data-convert-json.c    | 384 +++++++++++++++++++++++++
-> >  tools/perf/util/data-convert.h         |  10 +
-> >  7 files changed, 418 insertions(+), 21 deletions(-)
-> >  delete mode 100644 tools/perf/util/data-convert-bt.h
-> >  create mode 100644 tools/perf/util/data-convert-json.c
-> > 
-> > diff --git a/tools/perf/Documentation/perf-data.txt b/tools/perf/Documentation/perf-data.txt
-> > index 726b9bc9e1a7..417bf17e265c 100644
-> > --- a/tools/perf/Documentation/perf-data.txt
-> > +++ b/tools/perf/Documentation/perf-data.txt
-> > @@ -17,7 +17,7 @@ Data file related processing.
-> >  COMMANDS
-> >  --------
-> >  convert::
-> > -	Converts perf data file into another format (only CTF [1] format is support by now).
-> > +	Converts perf data file into another format.
-> >  	It's possible to set data-convert debug variable to get debug messages from conversion,
-> >  	like:
-> >  	  perf --debug data-convert data convert ...
-> > @@ -27,6 +27,9 @@ OPTIONS for 'convert'
-> >  --to-ctf::
-> >  	Triggers the CTF conversion, specify the path of CTF data directory.
-> >  
-> > +--to-json::
-> > +	Triggers JSON conversion. Specify the JSON filename to output.
-> > +
-> >  --tod::
-> >  	Convert time to wall clock time.
-> >  
-> > diff --git a/tools/perf/builtin-data.c b/tools/perf/builtin-data.c
-> > index 8d23b8d6ee8e..15ca23675ef0 100644
-> > --- a/tools/perf/builtin-data.c
-> > +++ b/tools/perf/builtin-data.c
-> > @@ -7,7 +7,6 @@
-> >  #include "debug.h"
-> >  #include <subcmd/parse-options.h>
-> >  #include "data-convert.h"
-> > -#include "data-convert-bt.h"
-> >  
-> >  typedef int (*data_cmd_fn_t)(int argc, const char **argv);
-> >  
-> > @@ -55,7 +54,8 @@ static const char * const data_convert_usage[] = {
-> >  
-> >  static int cmd_data_convert(int argc, const char **argv)
-> >  {
-> > -	const char *to_ctf     = NULL;
-> > +	const char *to_json = NULL;
-> > +	const char *to_ctf = NULL;
-> >  	struct perf_data_convert_opts opts = {
-> >  		.force = false,
-> >  		.all = false,
-> > @@ -63,6 +63,7 @@ static int cmd_data_convert(int argc, const char **argv)
-> >  	const struct option options[] = {
-> >  		OPT_INCR('v', "verbose", &verbose, "be more verbose"),
-> >  		OPT_STRING('i', "input", &input_name, "file", "input file name"),
-> > +		OPT_STRING(0, "to-json", &to_json, NULL, "Convert to JSON format"),
-> >  #ifdef HAVE_LIBBABELTRACE_SUPPORT
-> >  		OPT_STRING(0, "to-ctf", &to_ctf, NULL, "Convert to CTF format"),
-> >  		OPT_BOOLEAN(0, "tod", &opts.tod, "Convert time to wall clock time"),
-> > @@ -72,11 +73,6 @@ static int cmd_data_convert(int argc, const char **argv)
-> >  		OPT_END()
-> >  	};
-> >  
-> > -#ifndef HAVE_LIBBABELTRACE_SUPPORT
-> > -	pr_err("No conversion support compiled in. perf should be compiled with environment variables LIBBABELTRACE=1 and LIBBABELTRACE_DIR=/path/to/libbabeltrace/\n");
-> > -	return -1;
-> > -#endif
-> > -
-> >  	argc = parse_options(argc, argv, options,
-> >  			     data_convert_usage, 0);
-> >  	if (argc) {
-> > @@ -84,11 +80,25 @@ static int cmd_data_convert(int argc, const char **argv)
-> >  		return -1;
-> >  	}
-> >  
-> > +	if (to_json && to_ctf) {
-> > +		pr_err("You cannot specify both --to-ctf and --to-json.\n");
-> > +		return -1;
-> > +	}
-> > +	if (!to_json && !to_ctf) {
-> > +		pr_err("You must specify one of --to-ctf or --to-json.\n");
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (to_json)
-> > +		return bt_convert__perf2json(input_name, to_json, &opts);
-> > +
-> >  	if (to_ctf) {
-> >  #ifdef HAVE_LIBBABELTRACE_SUPPORT
-> >  		return bt_convert__perf2ctf(input_name, to_ctf, &opts);
-> >  #else
-> > -		pr_err("The libbabeltrace support is not compiled in.\n");
-> > +		pr_err("The libbabeltrace support is not compiled in. perf should be "
-> > +		       "compiled with environment variables LIBBABELTRACE=1 and "
-> > +		       "LIBBABELTRACE_DIR=/path/to/libbabeltrace/\n");
-> >  		return -1;
-> >  #endif
-> >  	}
-> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> > index e2563d0154eb..de9ac182b25a 100644
-> > --- a/tools/perf/util/Build
-> > +++ b/tools/perf/util/Build
-> > @@ -163,6 +163,7 @@ perf-$(CONFIG_LIBUNWIND_X86)      += libunwind/x86_32.o
-> >  perf-$(CONFIG_LIBUNWIND_AARCH64)  += libunwind/arm64.o
-> >  
-> >  perf-$(CONFIG_LIBBABELTRACE) += data-convert-bt.o
-> > +perf-y += data-convert-json.o
-> >  
-> >  perf-y += scripting-engines/
-> >  
-> > diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
-> > index 27c5fef9ad54..803102207a8b 100644
-> > --- a/tools/perf/util/data-convert-bt.c
-> > +++ b/tools/perf/util/data-convert-bt.c
-> > @@ -21,7 +21,7 @@
-> >  #include <babeltrace/ctf/events.h>
-> >  #include <traceevent/event-parse.h>
-> >  #include "asm/bug.h"
-> > -#include "data-convert-bt.h"
-> > +#include "data-convert.h"
-> >  #include "session.h"
-> >  #include "debug.h"
-> >  #include "tool.h"
-> > diff --git a/tools/perf/util/data-convert-bt.h b/tools/perf/util/data-convert-bt.h
-> > deleted file mode 100644
-> > index 821674d63c4e..000000000000
-> > --- a/tools/perf/util/data-convert-bt.h
-> > +++ /dev/null
-> > @@ -1,11 +0,0 @@
-> > -/* SPDX-License-Identifier: GPL-2.0 */
-> > -#ifndef __DATA_CONVERT_BT_H
-> > -#define __DATA_CONVERT_BT_H
-> > -#include "data-convert.h"
-> > -#ifdef HAVE_LIBBABELTRACE_SUPPORT
-> > -
-> > -int bt_convert__perf2ctf(const char *input_name, const char *to_ctf,
-> > -			 struct perf_data_convert_opts *opts);
-> > -
-> > -#endif /* HAVE_LIBBABELTRACE_SUPPORT */
-> > -#endif /* __DATA_CONVERT_BT_H */
-> > diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
-> > new file mode 100644
-> > index 000000000000..b57c48d35503
-> > --- /dev/null
-> > +++ b/tools/perf/util/data-convert-json.c
-> > @@ -0,0 +1,384 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * JSON export.
-> > + *
-> > + * Copyright (C) 2021, CodeWeavers Inc. <nfraser@codeweavers.com>
-> > + */
-> > +
-> > +#include "data-convert.h"
-> > +
-> > +#include <fcntl.h>
-> > +#include <inttypes.h>
-> > +#include <sys/stat.h>
-> > +#include <unistd.h>
-> > +
-> > +#include "linux/compiler.h"
-> > +#include "linux/err.h"
-> > +#include "util/auxtrace.h"
-> > +#include "util/debug.h"
-> > +#include "util/dso.h"
-> > +#include "util/event.h"
-> > +#include "util/evsel.h"
-> > +#include "util/evlist.h"
-> > +#include "util/header.h"
-> > +#include "util/map.h"
-> > +#include "util/session.h"
-> > +#include "util/symbol.h"
-> > +#include "util/thread.h"
-> > +#include "util/tool.h"
-> > +
-> > +struct convert_json {
-> > +	struct perf_tool tool;
-> > +	FILE *out;
-> > +	bool first;
-> > +	u64 events_count;
-> > +};
-> > +
-> > +// Outputs a JSON-encoded string surrounded by quotes with characters escaped.
-> > +static void output_json_string(FILE *out, const char *s)
-> > +{
-> > +	fputc('"', out);
-> > +	while (*s) {
-> > +		switch (*s) {
-> > +
-> > +		// required escapes with special forms as per RFC 8259
-> > +		case '"':  fputs("\\\"", out); break;
-> > +		case '\\': fputs("\\\\", out); break;
-> > +		case '\b': fputs("\\b", out);  break;
-> > +		case '\f': fputs("\\f", out);  break;
-> > +		case '\n': fputs("\\n", out);  break;
-> > +		case '\r': fputs("\\r", out);  break;
-> > +		case '\t': fputs("\\t", out);  break;
-> > +
-> > +		default:
-> > +			// all other control characters must be escaped by hex code
-> > +			if (*s <= 0x1f)
-> > +				fprintf(out, "\\u%04x", *s);
-> > +			else
-> > +				fputc(*s, out);
-> > +			break;
-> > +		}
-> > +
-> > +		++s;
-> > +	}
-> > +	fputc('"', out);
-> > +}
-> > +
-> > +// Outputs an optional comma, newline and indentation to delimit a new value
-> > +// from the previous one in a JSON object or array.
-> > +static void output_json_delimiters(FILE *out, bool comma, int depth)
-> > +{
-> > +	int i;
-> > +
-> > +	if (comma)
-> > +		fputc(',', out);
-> > +	fputc('\n', out);
-> > +	for (i = 0; i < depth; ++i)
-> > +		fputc('\t', out);
-> > +}
-> > +
-> > +// Outputs a printf format string (with delimiter) as a JSON value.
-> > +__printf(4, 5)
-> > +static void output_json_format(FILE *out, bool comma, int depth, const char *format, ...)
-> > +{
-> > +	va_list args;
-> > +
-> > +	output_json_delimiters(out, comma, depth);
-> > +	va_start(args, format);
-> > +	vfprintf(out,  format, args);
-> > +	va_end(args);
-> > +}
-> > +
-> > +// Outputs a JSON key-value pair where the value is a string.
-> > +static void output_json_key_string(FILE *out, bool comma, int depth,
-> > +		const char *key, const char *value)
-> > +{
-> > +	output_json_delimiters(out, comma, depth);
-> > +	output_json_string(out, key);
-> > +	fputs(": ", out);
-> > +	output_json_string(out, value);
-> > +}
-> > +
-> > +// Outputs a JSON key-value pair where the value is a printf format string.
-> > +__(printf, 5, 6)
-> > +static void output_json_key_format(FILE *out, bool comma, int depth,
-> > +		const char *key, const char *format, ...)
-> > +{
-> > +	va_list args;
-> > +
-> > +	output_json_delimiters(out, comma, depth);
-> > +	output_json_string(out, key);
-> > +	fputs(": ", out);
-> > +	va_start(args, format);
-> > +	vfprintf(out,  format, args);
-> > +	va_end(args);
-> > +}
-> > +
-> > +static void output_sample_callchain_entry(struct perf_tool *tool,
-> > +		u64 ip, struct addr_location *al)
-> > +{
-> > +	struct convert_json *c = container_of(tool, struct convert_json, tool);
-> > +	FILE *out = c->out;
-> > +
-> > +	output_json_format(out, false, 4, "{");
-> > +	output_json_key_format(out, false, 5, "ip", "\"0x%" PRIx64 "\"", ip);
-> > +
-> > +	if (al && al->sym && al->sym->name && strlen(al->sym->name) > 0) {
-> > +		fputc(',', out);
-> > +		output_json_key_string(out, false, 5, "symbol", al->sym->name);
-> > +
-> > +		if (al->map && al->map->dso) {
-> > +			const char *dso = al->map->dso->short_name;
-> > +
-> > +			if (dso && strlen(dso) > 0) {
-> > +				fputc(',', out);
-> > +				output_json_key_string(out, false, 5, "dso", dso);
-> > +			}
-> > +		}
-> > +	}
-> > +
-> > +	output_json_format(out, false, 4, "}");
-> > +}
-> > +
-> > +static int process_sample_event(struct perf_tool *tool,
-> > +				union perf_event *event __maybe_unused,
-> > +				struct perf_sample *sample,
-> > +				struct evsel *evsel __maybe_unused,
-> > +				struct machine *machine)
-> > +{
-> > +	struct convert_json *c = container_of(tool, struct convert_json, tool);
-> > +	FILE *out = c->out;
-> > +	struct addr_location al, tal;
-> > +	u8 cpumode = PERF_RECORD_MISC_USER;
-> > +
-> > +	if (machine__resolve(machine, &al, sample) < 0) {
-> > +		pr_err("Sample resolution failed!\n");
-> > +		return -1;
-> > +	}
-> > +
-> > +	++c->events_count;
-> > +
-> > +	if (c->first)
-> > +		c->first = false;
-> > +	else
-> > +		fputc(',', out);
-> > +	output_json_format(out, false, 2, "{");
-> > +
-> > +	output_json_key_format(out, false, 3, "timestamp", "%" PRIi64, sample->time);
-> > +	output_json_key_format(out, true, 3, "pid", "%i", al.thread->pid_);
-> > +	output_json_key_format(out, true, 3, "tid", "%i", al.thread->tid);
-> > +
-> > +	if (al.thread->cpu >= 0)
-> > +		output_json_key_format(out, true, 3, "cpu", "%i", al.thread->cpu);
-> > +
-> > +	output_json_key_string(out, true, 3, "comm", thread__comm_str(al.thread));
-> > +
-> > +	output_json_key_format(out, true, 3, "callchain", "[");
-> > +	if (sample->callchain) {
-> > +		unsigned int i;
-> > +		bool ok;
-> > +		bool first_callchain = true;
-> > +
-> > +		for (i = 0; i < sample->callchain->nr; ++i) {
-> > +			u64 ip = sample->callchain->ips[i];
-> > +
-> > +			if (ip >= PERF_CONTEXT_MAX) {
-> > +				switch (ip) {
-> > +				case PERF_CONTEXT_HV:
-> > +					cpumode = PERF_RECORD_MISC_HYPERVISOR;
-> > +					break;
-> > +				case PERF_CONTEXT_KERNEL:
-> > +					cpumode = PERF_RECORD_MISC_KERNEL;
-> > +					break;
-> > +				case PERF_CONTEXT_USER:
-> > +					cpumode = PERF_RECORD_MISC_USER;
-> > +					break;
-> > +				default:
-> > +					pr_debug("invalid callchain context: %"
-> > +							PRId64 "\n", (s64) ip);
-> > +					break;
-> > +				}
-> > +				continue;
-> > +			}
-> > +
-> > +			if (first_callchain)
-> > +				first_callchain = false;
-> > +			else
-> > +				fputc(',', out);
-> > +
-> > +			ok = thread__find_symbol(al.thread, cpumode, ip, &tal);
-> > +			output_sample_callchain_entry(tool, ip, ok ? &tal : NULL);
-> > +		}
-> > +	} else {
-> > +		output_sample_callchain_entry(tool, sample->ip, &al);
-> > +	}
-> > +	output_json_format(out, false, 3, "]");
-> > +
-> > +	output_json_format(out, false, 2, "}");
-> > +	return 0;
-> > +}
-> > +
-> > +static void output_headers(struct perf_session *session, struct convert_json *c)
-> > +{
-> > +	struct stat st;
-> > +	struct perf_header *header = &session->header;
-> > +	int ret;
-> > +	int fd = perf_data__fd(session->data);
-> > +	int i;
-> > +	FILE *out = c->out;
-> > +
-> > +	output_json_key_format(out, false, 2, "header-version", "%u", header->version);
-> > +
-> > +	ret = fstat(fd, &st);
-> > +	if (ret >= 0) {
-> > +		time_t stctime = st.st_mtime;
-> > +		char buf[256];
-> > +
-> > +		strftime(buf, sizeof(buf), "%FT%TZ", gmtime(&stctime));
-> > +		output_json_key_string(out, true, 2, "captured-on", buf);
-> > +	} else {
-> > +		pr_debug("Failed to get mtime of source file, not writing captured-on");
-> > +	}
-> > +
-> > +	output_json_key_format(out, true, 2, "data-offset", "%" PRIu64, header->data_offset);
-> > +	output_json_key_format(out, true, 2, "data-size", "%" PRIu64, header->data_size);
-> > +	output_json_key_format(out, true, 2, "feat-offset", "%" PRIu64, header->feat_offset);
-> > +
-> > +	output_json_key_string(out, true, 2, "hostname", header->env.hostname);
-> > +	output_json_key_string(out, true, 2, "os-release", header->env.os_release);
-> > +	output_json_key_string(out, true, 2, "arch", header->env.arch);
-> > +
-> > +	output_json_key_string(out, true, 2, "cpu-desc", header->env.cpu_desc);
-> > +	output_json_key_string(out, true, 2, "cpuid", header->env.cpuid);
-> > +	output_json_key_format(out, true, 2, "nrcpus-online", "%u", header->env.nr_cpus_online);
-> > +	output_json_key_format(out, true, 2, "nrcpus-avail", "%u", header->env.nr_cpus_avail);
-> > +
-> > +	if (header->env.clock.enabled) {
-> > +		output_json_key_format(out, true, 2, "clockid",
-> > +				"%u", header->env.clock.clockid);
-> > +		output_json_key_format(out, true, 2, "clock-time",
-> > +				"%" PRIu64, header->env.clock.clockid_ns);
-> > +		output_json_key_format(out, true, 2, "real-time",
-> > +				"%" PRIu64, header->env.clock.tod_ns);
-> > +	}
-> > +
-> > +	output_json_key_string(out, true, 2, "perf-version", header->env.version);
-> > +
-> > +	output_json_key_format(out, true, 2, "cmdline", "[");
-> > +	for (i = 0; i < header->env.nr_cmdline; i++) {
-> > +		output_json_delimiters(out, i != 0, 3);
-> > +		output_json_string(c->out, header->env.cmdline_argv[i]);
-> > +	}
-> > +	output_json_format(out, false, 2, "]");
-> > +}
-> > +
-> > +int bt_convert__perf2json(const char *input_name, const char *output_name,
-> > +		struct perf_data_convert_opts *opts __maybe_unused)
-> > +{
-> > +	struct perf_session *session;
-> > +	int fd;
-> > +	int ret = -1;
-> > +
-> > +	struct convert_json c = {
-> > +		.tool = {
-> > +			.sample         = process_sample_event,
-> > +			.mmap           = perf_event__process_mmap,
-> > +			.mmap2          = perf_event__process_mmap2,
-> > +			.comm           = perf_event__process_comm,
-> > +			.namespaces     = perf_event__process_namespaces,
-> > +			.cgroup         = perf_event__process_cgroup,
-> > +			.exit           = perf_event__process_exit,
-> > +			.fork           = perf_event__process_fork,
-> > +			.lost           = perf_event__process_lost,
-> > +			.tracing_data   = perf_event__process_tracing_data,
-> > +			.build_id       = perf_event__process_build_id,
-> > +			.id_index       = perf_event__process_id_index,
-> > +			.auxtrace_info  = perf_event__process_auxtrace_info,
-> > +			.auxtrace       = perf_event__process_auxtrace,
-> > +			.event_update   = perf_event__process_event_update,
-> > +			.ordered_events = true,
-> > +			.ordering_requires_timestamps = true,
-> > +		},
-> > +		.first = true,
-> > +		.events_count = 0,
-> > +	};
-> > +
-> > +	struct perf_data data = {
-> > +		.mode = PERF_DATA_MODE_READ,
-> > +		.path = input_name,
-> > +		.force = opts->force,
-> > +	};
-> > +
-> > +	if (opts->all) {
-> > +		pr_err("--all is currently unsupported for JSON output.\n");
-> > +		goto err;
-> > +	}
-> > +	if (opts->tod) {
-> > +		pr_err("--tod is currently unsupported for JSON output.\n");
-> > +		goto err;
-> > +	}
-> > +
-> > +	fd = open(output_name, O_CREAT | O_WRONLY | (opts->force ? O_TRUNC : O_EXCL), 0666);
-> > +	if (fd == -1) {
-> > +		if (errno == EEXIST)
-> > +			pr_err("Output file exists. Use --force to overwrite it.\n");
-> > +		else
-> > +			pr_err("Error opening output file!\n");
-> > +		goto err;
-> > +	}
-> > +
-> > +	c.out = fdopen(fd, "w");
-> > +	if (!c.out) {
-> > +		fprintf(stderr, "Error opening output file!\n");
-> > +		close(fd);
-> > +		goto err;
-> > +	}
-> > +
-> > +	session = perf_session__new(&data, false, &c.tool);
-> > +	if (IS_ERR(session)) {
-> > +		fprintf(stderr, "Error creating perf session!\n");
-> > +		goto err_fclose;
-> > +	}
-> > +
-> > +	if (symbol__init(&session->header.env) < 0) {
-> > +		fprintf(stderr, "Symbol init error!\n");
-> > +		goto err_session_delete;
-> > +	}
-> > +
-> > +	// The opening brace is printed manually because it isn't delimited from a
-> > +	// previous value (i.e. we don't want a leading newline)
-> > +	fputc('{', c.out);
-> > +
-> > +	// Version number for future-proofing. Most additions should be able to be
-> > +	// done in a backwards-compatible way so this should only need to be bumped
-> > +	// if some major breaking change must be made.
-> > +	output_json_format(c.out, false, 1, "\"linux-perf-json-version\": 1");
-> > +
-> > +	// Output headers
-> > +	output_json_format(c.out, true, 1, "\"headers\": {");
-> > +	output_headers(session, &c);
-> > +	output_json_format(c.out, false, 1, "}");
-> > +
-> > +	// Output samples
-> > +	output_json_format(c.out, true, 1, "\"samples\": [");
-> > +	perf_session__process_events(session);
-> > +	output_json_format(c.out, false, 1, "]");
-> > +	output_json_format(c.out, false, 0, "}");
-> > +	fputc('\n', c.out);
-> > +
-> > +	fprintf(stderr,
-> > +			"[ perf data convert: Converted '%s' into JSON data '%s' ]\n",
-> > +			data.path, output_name);
-> > +
-> > +	fprintf(stderr,
-> > +			"[ perf data convert: Converted and wrote %.3f MB (%" PRIu64 " samples) ]\n",
-> > +			(ftell(c.out)) / 1024.0 / 1024.0, c.events_count);
-> > +
-> > +	ret = 0;
-> > +err_session_delete:
-> > +	perf_session__delete(session);
-> > +err_fclose:
-> > +	fclose(c.out);
-> > +err:
-> > +	return ret;
-> > +}
-> > diff --git a/tools/perf/util/data-convert.h b/tools/perf/util/data-convert.h
-> > index feab5f114e37..1b4c5f598415 100644
-> > --- a/tools/perf/util/data-convert.h
-> > +++ b/tools/perf/util/data-convert.h
-> > @@ -2,10 +2,20 @@
-> >  #ifndef __DATA_CONVERT_H
-> >  #define __DATA_CONVERT_H
-> >  
-> > +#include <stdbool.h>
-> > +
-> >  struct perf_data_convert_opts {
-> >  	bool force;
-> >  	bool all;
-> >  	bool tod;
-> >  };
-> >  
-> > +#ifdef HAVE_LIBBABELTRACE_SUPPORT
-> > +int bt_convert__perf2ctf(const char *input_name, const char *to_ctf,
-> > +			 struct perf_data_convert_opts *opts);
-> > +#endif /* HAVE_LIBBABELTRACE_SUPPORT */
-> > +
-> > +int bt_convert__perf2json(const char *input_name, const char *to_ctf,
-> > +			 struct perf_data_convert_opts *opts);
-> > +
-> >  #endif /* __DATA_CONVERT_H */
-> > -- 
-> > 2.31.1
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-
--- 
-
-- Arnaldo
+-Saravana
