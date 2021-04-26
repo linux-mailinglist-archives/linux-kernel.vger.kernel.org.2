@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE1436B0AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81E436B125
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhDZJda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:33:30 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:60024 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232871AbhDZJdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:33:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWpMjTz_1619429550;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UWpMjTz_1619429550)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Apr 2021 17:32:31 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] mtd: return -ENOMEM when kmalloc failed
-Date:   Mon, 26 Apr 2021 17:32:23 +0800
-Message-Id: <1619429543-52234-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232911AbhDZJ6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:58:38 -0400
+Received: from elvis.franken.de ([193.175.24.41]:43385 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232140AbhDZJ6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:58:36 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lay01-000823-00; Mon, 26 Apr 2021 11:57:53 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1C898C0BB9; Mon, 26 Apr 2021 11:33:13 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 11:33:13 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] gpio: Add support for IDT 79RC3243x GPIO
+ controller
+Message-ID: <20210426093313.GA7488@alpha.franken.de>
+References: <20210422152055.85544-1-tsbogend@alpha.franken.de>
+ <CAHp75VdToRrxxLSAnNPtN4sSoVfJ1yHQffUAuVL+SpsxkmYu5Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdToRrxxLSAnNPtN4sSoVfJ1yHQffUAuVL+SpsxkmYu5Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is using -1 instead of the -ENOMEM defined macro to
-specify that a buffer allocation failed. Using the correct error
-code is more intuitive
+On Fri, Apr 23, 2021 at 06:56:23PM +0300, Andy Shevchenko wrote:
+> On Thu, Apr 22, 2021 at 6:21 PM Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> wrote:
+> >
+> > IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+> > to 32 gpios. All gpios could be used as interrupt source.
+> 
+> One missed question: No I/O serialization in the entire driver? Is it
+> taken care of by bgpio wrapper or ...?
 
-Smatch tool warning:
-drivers/mtd/inftlmount.c:333 check_free_sectors() warn: returning -1
-instead of -ENOMEM is sloppy
-drivers/mtd/nftlmount.c:272 check_free_sectors() warn: returning -1
-instead of -ENOMEM is sloppy
+for gpios bggpio takes care of it, for irqs I've added them in coming v4.
 
-No functional change, just more standardized.
+Thomas.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/mtd/inftlmount.c | 2 +-
- drivers/mtd/nftlmount.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index af16d34..39d0241 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -330,7 +330,7 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
- 
- 	buf = kmalloc(SECTORSIZE + mtd->oobsize, GFP_KERNEL);
- 	if (!buf)
--		return -1;
-+		return -ENOMEM;
- 
- 	ret = -1;
- 	for (i = 0; i < len; i += SECTORSIZE) {
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index 444a77b..fd331bc 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -269,7 +269,7 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
- 
- 	buf = kmalloc(SECTORSIZE + mtd->oobsize, GFP_KERNEL);
- 	if (!buf)
--		return -1;
-+		return -ENOMEM;
- 
- 	ret = -1;
- 	for (i = 0; i < len; i += SECTORSIZE) {
 -- 
-1.8.3.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
