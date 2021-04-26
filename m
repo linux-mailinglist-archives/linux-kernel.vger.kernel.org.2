@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28ED636B9EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD2836B9F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240215AbhDZTV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239038AbhDZTV6 (ORCPT
+        id S240242AbhDZTYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:24:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28266 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239966AbhDZTYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:21:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF44C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5LaqQeBsNBHU9D9jZgjWkNwbT7whKdIcOp7Scece9yQ=; b=ZlCvedhhe+0hN8sK0mbS6kAgvL
-        +GPvZWgvOyaFM8lynXHsvjoIOKX0H3LR0Rw/IHh4vf/MDNJbypiFUjVTUWXbA+dti2wnCzteYyOf5
-        NFRCWV+oAX0yzXfXp+S33CFFw5uTtlbRMOmKki+D89ne/gzmrfeWzFIYrlfJSvTAYVbnLOia0ghnw
-        7Xf3wp8J2YMpgp0N756wucqRhoRlku1NqP5CVVKyGQMfmVXVnMCOV2rd3/TzD1UI6K098/yUksab/
-        sx9wdnbzinoSkEj3GB48lsRBDHlFgVIJkyoYRwXHui3yBDqNSgZOld8MDNhP2DSziy/Hbi+Voh3rQ
-        QV7ZfNbw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb6mz-0060Kk-Fr; Mon, 26 Apr 2021 19:21:05 +0000
-Date:   Mon, 26 Apr 2021 20:21:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [PATCH v3] staging: unisys: visorhba: Convert
- module from IDR to XArray
-Message-ID: <20210426192101.GQ235567@casper.infradead.org>
-References: <20210426184245.12269-1-fmdefrancesco@gmail.com>
+        Mon, 26 Apr 2021 15:24:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619465039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4SqDWTwGLz0yG83bRGbUR1MGHDhF5H6AJtqMldOHVmY=;
+        b=iPescA7+mdsUbYmNeIfUoXCyhDmro2YHWlD7D68Y9NRY0dIi4a1TXT9wm0ys3kb0JNcfEk
+        pYSdtGJ5dBkpmzO5baZ/NQyC4u4z4dXCKoHhRJlp8L/sJjjICMGiDKFRqpYPGZL/vK+j1E
+        fArWddvNPCgBES8OtvfG5Crk+xfMppI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-BAwWcPM1PsiTJg_KTP0EFA-1; Mon, 26 Apr 2021 15:23:54 -0400
+X-MC-Unique: BAwWcPM1PsiTJg_KTP0EFA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBE0418A08DD;
+        Mon, 26 Apr 2021 19:23:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 363631A353;
+        Mon, 26 Apr 2021 19:23:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk>
+References: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk> <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk> <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426184245.12269-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3651950.1619465011.1@warthog.procyon.org.uk>
+Date:   Mon, 26 Apr 2021 20:23:31 +0100
+Message-ID: <3651951.1619465011@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:42:45PM +0200, Fabio M. De Francesco wrote:
-> +static void setup_scsitaskmgmt_handles(struct xarray *xa, struct uiscmdrsp *cmdrsp,
->  				       wait_queue_head_t *event, int *result)
->  {
-> -	/* specify the event that has to be triggered when this */
-> -	/* cmd is complete */
-> -	cmdrsp->scsitaskmgmt.notify_handle =
-> -		simple_idr_get(idrtable, event, lock);
-> -	cmdrsp->scsitaskmgmt.notifyresult_handle =
-> -		simple_idr_get(idrtable, result, lock);
-> +	u32 id;
-> +	int ret;
-> +
-> +	/* specify the event that has to be triggered when this cmd is complete */
-> +	id = (u32)cmdrsp->scsitaskmgmt.notify_handle;
-> +	ret = xa_alloc_irq(xa, &id, event, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
+Al Viro <viro@zeniv.linux.org.uk> wrote:
 
-OK, think this one through a bit.  When xa_alloc_irq() stores the ID that
-it assigned into 'id', what happens to it next?
+> On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
+> > -#define iterate_all_kinds(i, n, v, I, B, K) {			\
+> > +#define iterate_xarray(i, n, __v, skip, STEP) {		\
+> > +	struct page *head = NULL;				\
+> > +	size_t wanted = n, seg, offset;				\
+> > +	loff_t start = i->xarray_start + skip;			\
+> > +	pgoff_t index = start >> PAGE_SHIFT;			\
+> > +	int j;							\
+> > +								\
+> > +	XA_STATE(xas, i->xarray, index);			\
+> > +								\
+> > +	rcu_read_lock();						\
+> > +	xas_for_each(&xas, head, ULONG_MAX) {				\
+> > +		if (xas_retry(&xas, head))				\
+> > +			continue;					\
+> 
+> OK, now I'm really confused; what's to guarantee that restart will not have
+> you hit the same entry more than once?  STEP might be e.g.
+> 
+> 		memcpy_to_page(v.bv_page, v.bv_offset,
+> 			       (from += v.bv_len) - v.bv_len, v.bv_len)
+> 
+> which is clearly not idempotent - from gets incremented, after all.
+> What am I missing here?
 
-> +	id = (u32)cmdrsp->scsitaskmgmt.notifyresult_handle;
-> +	ret = xa_alloc_irq(xa, &id, result, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
->  }
+I really need to defer this question to Willy, but as I understand it,
+xas_retry() only restarts the current iteration.  Referring to the comment on
+xas_reset():
 
-> @@ -1053,8 +1018,6 @@ static int visorhba_probe(struct visor_device *dev)
->  	if (err)
->  		goto err_debugfs_info;
->  
-> -	idr_init(&devdata->idr);
+ * Resets the error or walk state of the @xas so future walks of the
+ * array will start from the root.  Use this if you have dropped the
+ * xarray lock and want to reuse the xa_state.
 
-You still need to initialise the XArray, either with xa_init() or by
-using DEFINE_XARRAY.  Since it's dynamically allocated, the former is
-correct.
+I think that the walk returns to the bottom of the tree and whilst xarray
+presents an interface that appears to be a contiguous array, it's actually a
+tree internally - and 'root' is the root of the tree, not the head of the
+array.
+
+Basically, I think it throws away its cached iteration state - which might
+have been modified - and rewalks the tree to get back to the same index.
+
+David
 
