@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA70036ACEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6913F36ACED
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhDZHba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:31:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhDZHb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:31:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A90CF61041;
-        Mon, 26 Apr 2021 07:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422246;
-        bh=DVXXAnLoVWgZ+1YCkGZuJAOvDooxlpbEBfviWDTW2Fc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VobeJ3cqEGkeHZrs6IU13k46tU+pI0bW/SysdJ48PubcWEqAtiGwhNEtdn8BEfE89
-         b9atSaxba/BVqDZO9hjGK22L8YCCCfeXz0c7vjylbH+6OsBKIcYo3sgYweGzsmY7mv
-         aChMjifQeHa9R/OC8hFWYn2b3XkGJjcZYGZNiqjw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Or Cohen <orcohen@paloaltonetworks.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 01/32] net/sctp: fix race condition in sctp_destroy_sock
-Date:   Mon, 26 Apr 2021 09:28:59 +0200
-Message-Id: <20210426072816.631201988@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
+        id S232100AbhDZHaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231171AbhDZHao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:30:44 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A530BC061574;
+        Mon, 26 Apr 2021 00:30:03 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n10so17301827plc.0;
+        Mon, 26 Apr 2021 00:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wSkcP15Ns1kAwtVg2PMjnrCnhxuuDVvHOr4fXBeFdqg=;
+        b=VuSwlwaAvTv4k9aLudb9CtzbPfwVFEjOREgZfC1AjSkvb99bD/m3qlCa56eHkJRKqO
+         plD6aq5i01LC9JcilJJoclpgkRoqvvRGiA5R82LoGLd/e4bt7fouki4lkQJ6yP/vLbvo
+         ZVFlwB6my/tFm4Al9m6NvJ3c8iiBspM07sTTUkLJsQ2rHqmxGHhf2xGJyS/HxqHIIJX/
+         p4G3At/lODq6wXS5rMC130rhnubK9QGjHTfbOsmYXOzYkwePzvctipCSt6vn0GqihbIJ
+         E3fsB+qek82N120kx3nUeeJc6Yajzc28nc349a++gH5v794zA53qrm8F0O0G8/C7t+Tc
+         5lNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wSkcP15Ns1kAwtVg2PMjnrCnhxuuDVvHOr4fXBeFdqg=;
+        b=ugNZKSZpsUczE4xSUZ1fv9x2+26ea4X/8qaoZ3L2f9kMW5/8VdUqQUUgaE3GqcIE3G
+         TkHCEbVaXqUe+3EJIh8jnxhDLCU5JpHJnN/h96zvWI2hUY5xnnz1/nQoBS0tT9SbwLw9
+         3AV65+Kqd8gXHXGC4bniFU2PvLzwVX9HZTRA5xsPlBcYlbJpMLoz1TxJga7nIycYGjxa
+         oy5FQ4DRN1sHQ7HdjpA6gF3he5ZThxVuv8rRRxaseAYpghIGIoFDgpvAnfQHniOY4mLQ
+         ZwExlUp+06RfAeVTcGNR8QYyNCWX6c+no0XXAwm3jg0jaYG81pDpmBdhsIDTwdPObgar
+         dZzQ==
+X-Gm-Message-State: AOAM532lOjkpagVwwYwzWuUGMQ2H6q7vsFMX+XtexN22IpgaMDzWxEpD
+        Gx+wjftf34UdjjADlytw0bw=
+X-Google-Smtp-Source: ABdhPJw0wyrQebS7h0snSgJTDJtgFjSeLVyIGfV5I0nCe7nxR7VMU2oU7pmJp+WtFSIiR5m7MVAdzQ==
+X-Received: by 2002:a17:90b:1e01:: with SMTP id pg1mr21310323pjb.156.1619422203240;
+        Mon, 26 Apr 2021 00:30:03 -0700 (PDT)
+Received: from gli-arch.genesyslogic.com.tw ([122.146.30.3])
+        by smtp.gmail.com with ESMTPSA id m11sm10487246pgs.4.2021.04.26.00.30.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 00:30:02 -0700 (PDT)
+From:   Ben Chuang <benchuanggli@gmail.com>
+To:     dlbeer@gmail.com
+Cc:     adrian.hunter@intel.com, ben.chuang@genesyslogic.com.tw,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        ulf.hansson@linaro.org, benchuanggli@gmail.com
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: increase 1.8V regulator wait
+Date:   Mon, 26 Apr 2021 15:32:51 +0800
+Message-Id: <20210426073251.7726-1-benchuanggli@gmail.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210424081652.GA16047@nyquist.nev>
+References: <20210424081652.GA16047@nyquist.nev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Or Cohen <orcohen@paloaltonetworks.com>
+Hi Daniel,
 
-commit b166a20b07382b8bc1dcee2a448715c9c2c81b5b upstream.
+> Inserting an SD-card on an Intel NUC10i3FNK4 (which contains a GL9755)
+> results in the message:
+> 
+>     mmc0: 1.8V regulator output did not become stable
+> 
+> Following this message, some cards work (sometimes), but most cards fail
+> with EILSEQ. This behaviour is observed on Debian 10 running kernel
+> 4.19.188, but also with 5.8.18 and 5.11.15.
 
-If sctp_destroy_sock is called without sock_net(sk)->sctp.addr_wq_lock
-held and sp->do_auto_asconf is true, then an element is removed
-from the auto_asconf_splist without any proper locking.
+Glad to receive your report. Thanks.
 
-This can happen in the following functions:
-1. In sctp_accept, if sctp_sock_migrate fails.
-2. In inet_create or inet6_create, if there is a bpf program
-   attached to BPF_CGROUP_INET_SOCK_CREATE which denies
-   creation of the sctp socket.
+> 
+> The driver currently waits 5ms after switching on the 1.8V regulator for
+> it to become stable. Increasing this to 10ms gets rid of the warning
+> about stability, but most cards still fail. Increasing it to 20ms gets
+> some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
+> doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
+> cards work reliably.
 
-The bug is fixed by acquiring addr_wq_lock in sctp_destroy_sock
-instead of sctp_close.
+If it is convenient, can you provide the appearance pictures and product
+links of these two cards? We want to buy them.
 
-This addresses CVE-2021-23133.
+> 
+> Signed-off-by: Daniel Beer <dlbeer@gmail.com>
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index 592d79082f58..061618aa247f 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -627,8 +627,13 @@ static void sdhci_gli_voltage_switch(struct sdhci_host *host)
+>  	 *
+>  	 * Wait 5ms after set 1.8V signal enable in Host Control 2 register
+>  	 * to ensure 1.8V signal enable bit is set by GL9750/GL9755.
+> +	 *
+> +	 * ...however, the controller in the NUC10i3FNK4 (a 9755) requires
+> +	 * slightly longer than 5ms before the control register reports that
+> +	 * 1.8V is ready, and far longer still before the card will actually
+> +	 * work reliably.
+>  	 */
+> -	usleep_range(5000, 5500);
+> +	usleep_range(100000, 110000);
 
-Reported-by: Or Cohen <orcohen@paloaltonetworks.com>
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
-Fixes: 610236587600 ("bpf: Add new cgroup attach type to enable sock modifications")
-Signed-off-by: Or Cohen <orcohen@paloaltonetworks.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/sctp/socket.c |   13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+Looks good for me.
 
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -1567,11 +1567,9 @@ static void sctp_close(struct sock *sk,
- 
- 	/* Supposedly, no process has access to the socket, but
- 	 * the net layers still may.
--	 * Also, sctp_destroy_sock() needs to be called with addr_wq_lock
--	 * held and that should be grabbed before socket lock.
- 	 */
--	spin_lock_bh(&net->sctp.addr_wq_lock);
--	bh_lock_sock_nested(sk);
-+	local_bh_disable();
-+	bh_lock_sock(sk);
- 
- 	/* Hold the sock, since sk_common_release() will put sock_put()
- 	 * and we have just a little more cleanup.
-@@ -1580,7 +1578,7 @@ static void sctp_close(struct sock *sk,
- 	sk_common_release(sk);
- 
- 	bh_unlock_sock(sk);
--	spin_unlock_bh(&net->sctp.addr_wq_lock);
-+	local_bh_enable();
- 
- 	sock_put(sk);
- 
-@@ -4161,9 +4159,6 @@ static int sctp_init_sock(struct sock *s
- 	sk_sockets_allocated_inc(sk);
- 	sock_prot_inuse_add(net, sk->sk_prot, 1);
- 
--	/* Nothing can fail after this block, otherwise
--	 * sctp_destroy_sock() will be called without addr_wq_lock held
--	 */
- 	if (net->sctp.default_auto_asconf) {
- 		spin_lock(&sock_net(sk)->sctp.addr_wq_lock);
- 		list_add_tail(&sp->auto_asconf_list,
-@@ -4198,7 +4193,9 @@ static void sctp_destroy_sock(struct soc
- 
- 	if (sp->do_auto_asconf) {
- 		sp->do_auto_asconf = 0;
-+		spin_lock_bh(&sock_net(sk)->sctp.addr_wq_lock);
- 		list_del(&sp->auto_asconf_list);
-+		spin_unlock_bh(&sock_net(sk)->sctp.addr_wq_lock);
- 	}
- 	sctp_endpoint_free(sp->ep);
- 	local_bh_disable();
+>  }
+>  
+>  static void sdhci_gl9750_reset(struct sdhci_host *host, u8 mask)
+> -- 
+> 2.20.1
+> 
+> 
 
-
+Best regards,
+Ben
