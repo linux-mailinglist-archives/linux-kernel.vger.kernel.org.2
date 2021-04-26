@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2D536BB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0542536BB40
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhDZVcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S236364AbhDZVek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235389AbhDZVcV (ORCPT
+        with ESMTP id S235919AbhDZVei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:32:21 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BD0C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:31:37 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id o16so65832214ljp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:31:37 -0700 (PDT)
+        Mon, 26 Apr 2021 17:34:38 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E28C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:55 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id q192so13090708ybg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BRra/jPCviRQtIjxwlgYvRcZtIqfcfIxl/QCOhP8XqM=;
-        b=EP90p7ehHJgY9KOuBLpqwJgUuPk26rDZaLsYDOARIyfUD1fUzFTxEvCMTbbvLT/eAQ
-         /HofzxErUfyaUxu42mnvT3eSHi++IydOeLXKom0EquNHllzWRxGw4GtTPFehG/4g46k3
-         c2/HfzLw0vSVk3MS7Bq014JfUDcTKiYbBYaI6rKuJ4L4NuNzyLythel33HovI4hZxYZ2
-         sJKdHi+Co5GRMFTNYxjJFMnu86wlEPZmkjHgDttNoiNENZXZiuNV2+2SnAfVO8ZfTOZX
-         8yjobRRjFIwTisT3sTYTPem40ksdqpTx/RO7h+1uRqhfRJMAl+PhGwfIcYX6z2QkFRHc
-         kjlg==
+        bh=YIDuPmzhPxytj5Fxz8H+t6WOGUUiRZKI+5N5FdxPWcA=;
+        b=f7Bsl2HRqgoSKtZA1OEo9CjCT7yvy46UVd9fQXeBhISTQCXh+fY6JC/QYdyS5RN/5S
+         2TlcOziMAURGHaOkKR+bkpj3IpNiBEM07P2e+N5/r/lzOIBlCsvPUq5oDJvtY6luCpLO
+         VgxFrD2QVn8Jd8DM/bbBKh+NDwDS3osI1AJncPFugFg8yMyqPX1bWqAHp1LyIcZfxGIt
+         TgdxdvWy52Dx0dO3Qvcezrw2YDP4fhJigpUS9jG78TGzHN+SonPtLHnt+CbfPZZfg1VH
+         VQRzjt/PWACZ8OM2Lbs3B/hIx3iJak8g87JjG+6bmfXK0Gtojx4tofqDdEGsMNLZ0gGH
+         Gr7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BRra/jPCviRQtIjxwlgYvRcZtIqfcfIxl/QCOhP8XqM=;
-        b=MVbQvFwWzcGdipAvrXJgVn0mEL+t6LTbwT437kiMP4A/qLxLw977CueroRDQQvBcB7
-         wBryoDppB1bX/QOCu6OjWZc0cHEMs5x6oSfpJi26e0hDM5gGAh10LnI3iuWffJhCQTdY
-         iyfBfXVaYSbo+Ahv1/OueBl7sePQp9nV/ZpREkIHIHDYt2rAG26jx3tdeOg7oZN0g6Gc
-         gLwS4boRmSpnqIt5MYYm5BaZQp2frgmJLet4kOJNTAxmg2JiEcBj04C3vRlPSnIFeTlT
-         2i/qqFXEiwYPmTGg/y3kJYthNsxk0F4nz4KaM86UKmEY9wjYy+pfwxHHD6x2es0+Zbym
-         IzSg==
-X-Gm-Message-State: AOAM533GQF3Mk9P6XLb/RMwScOBsKdVay/BYysQhUxrce7d7RZl8ogKV
-        0av4yoTwgDJSgWCJe2AOcqIA8/MWcQp+I+0gQ6Bk1g==
-X-Google-Smtp-Source: ABdhPJwb6noPMEQT7PFHLLDX/Wj/+CQ5T7aiSIwPoaMBKaaARccUgY4lxKlabFJX+twK0ijxUkBKZjoGrmU1D5Tq7BE=
-X-Received: by 2002:a05:651c:1102:: with SMTP id d2mr13553294ljo.490.1619472696085;
- Mon, 26 Apr 2021 14:31:36 -0700 (PDT)
+        bh=YIDuPmzhPxytj5Fxz8H+t6WOGUUiRZKI+5N5FdxPWcA=;
+        b=feYcDHTB/X3O+JrM8Hjjhef+zKgKYmUQc0uK9/8hoLLf5AWdTE4ESvMOv/ohK/uDSh
+         SO0xuJS5A6IwjKWzbHcb17ffFWCztUkd+u1cSV0A5ZvhKjxpzHV0/icoRtvx8kzQJmDf
+         DPklY879NPa6DuWY7pE0EytcODzpU6F5YHFrfMF0yFY+3nS0/JdhgTrGZO4c0a7G3VCE
+         jf8z4/C8MXEmOysw/ME1CXmWAb5GEUEgoaWi4DdjLdXHmhQEGCvkTQUvSzF5XhHIfOwZ
+         tS0G7Kr3B+phdR8G5I94X4M+uWoKpvzoGvDe63Em3+fGpEJOCUpOErxpuhtZCwvaW32H
+         mKPw==
+X-Gm-Message-State: AOAM5310p6vCkUxaGdD4XBAcLe4BO793W9raAM4yAKXDqx7FF1D/qDCA
+        Tv01drXN7aT0zt0EJcHolIUZkQGHiGsD7+fKWf4JGg==
+X-Google-Smtp-Source: ABdhPJwLl2VY0dtZA+suUEsn4n034jtV11uMqgYWkEuxAZMAl2kGLl4LAr2KIr24/m67fn946GYDX57/fmP//3k2dBk=
+X-Received: by 2002:a5b:a82:: with SMTP id h2mr1115898ybq.20.1619472834555;
+ Mon, 26 Apr 2021 14:33:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <YIRryUf6noodWiqe@smtp.gmail.com> <CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW+gfg@mail.gmail.com>
-In-Reply-To: <CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW+gfg@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Tue, 27 Apr 2021 05:31:27 +0800
-Message-ID: <CABVgOSmxdQJKgWpXNuuPX=KLaqb4BqdndMRkJ6wpXvLdhieppw@mail.gmail.com>
-Subject: Re: Running kunit_tool on unclean trees
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        andersonreisrosa@gmail.com
+References: <20210302211133.2244281-1-saravanak@google.com>
+ <20210302211133.2244281-4-saravanak@google.com> <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
+In-Reply-To: <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 26 Apr 2021 14:33:18 -0700
+Message-ID: <CAGETcx_ayXd1uDR6WHWxLmskYwOSjyynNi3Rt8irRUrfnr266w@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by default""
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Michael Walle <michael@walle.cc>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 3:06 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Mon, Apr 26, 2021 at 1:51 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
-> On Sun, Apr 25, 2021 at 4:05 AM Marcelo Schmitt
-> <marcelo.schmitt1@gmail.com> wrote:
-> >
-> > Hi, a friend and I were chasing bug 205219 [1] listed in Bugzilla.
-> > We step into something a little bit different when trying to reproduce
-> > the buggy behavior. In our try, compilation failed with a message form
-> > make asking us to clean the source tree. We couldn't run kunit_tool
-> > after compiling the kernel for x86, as described by Ted in the
-> > discussion pointed out by the bug report.
-> >
-> > Steps to reproduce:
-> >
-> > 0) Run kunit_tool
-> > $ ./tools/testing/kunit/kunit.py run
-> > Works fine with a clean tree.
-> >
-> > 1) Compile the kernel for some architecture (we did it for x86_64).
-> >
-> > 2) Run kunit_tool again
-> > $ ./tools/testing/kunit/kunit.py run
-> > Fails with a message form make asking us to clean the source tree.
+> Hi Saravana,
 >
-> This is probably because
-> tools/testing/kunit/kunit_kernel.py
-> runs make with O= option.
+> Adding Sudeep and Christian, Al and Jim.
 >
+> On 3/2/21 1:11 PM, Saravana Kannan wrote:
+> > This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
+> >
+> > Since all reported issues due to fw_devlink=on should be addressed by
+> > this series, revert the revert. fw_devlink=on Take II.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
 >
->
+> This change breaks booting on SCMI-based platforms such as ARCH_BRCMSTB.
+> If I revert this change or boot with fw_devlink=permissive, then our
+> systems boot again. From a quick look, the SCMI clock provider was never
+> probed which means that our UART driver never got a chance to get its
+> clock and we have no console -> timeout.
 
-Yes: KUnit's tooling has started setting O=.kunit by default[1]. If
-you'd rather build KUnit in-tree, you can use the "kunit.py run
---build_dir=." option, which should work.
+We explicitly landed changes to handle this condition. So we'll see if
+this is what is happening.
 
--- David
+> Al, AFAICT you had started to analyze this before in the context of
+> SCMI, do you mind sharing what you had found?
+>
+> Saravana, is there any debugging output that we can help provide?
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/testing/kunit?id=ddbd60c779b4ddaa87173a160ce90146933fb8f9
+Thanks for the report. Couple of things that can help:
+1. Example DTS file (the final board file so that I can get the full DT view).
+2. Point out the UART device node and the SCMI device node that you
+suspect is causing the issue.
+3. Boot logs with dev_dbg changed to dev_info in device_link_add() and
+device_links_check_suppliers()
+
+Thanks,
+Saravana
