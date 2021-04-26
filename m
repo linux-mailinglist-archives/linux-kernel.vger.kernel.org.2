@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7740336AF22
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E544136AEE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhDZHyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60076 "EHLO mail.kernel.org"
+        id S232978AbhDZHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:48:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233811AbhDZHoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:44:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6076613DF;
-        Mon, 26 Apr 2021 07:40:34 +0000 (UTC)
+        id S232617AbhDZHjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E4DC613DE;
+        Mon, 26 Apr 2021 07:38:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422835;
-        bh=WNa6cmLFR1ps0i/+YURskK1FOl/xhyAEyTXYllI+WCw=;
+        s=korg; t=1619422708;
+        bh=fopELUJT+NkfhV1e4h5AI7uAGQ2bR6OSpfAXGFu+biY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vvYSO2WY0VhrmEUUr1jV5ZbPtTJmC7giLm+BaYbLmXaRioZHJ55ye+1stPSLU3L1m
-         Scua1kzbLkwCXm2Y8IRDZHGw+S92OAr7LfemC8YHgWrS+SsKjqSL1Irg+erWl0iLwN
-         E5d1eSMnCA9M6CGNPFNeQjs8HkHFmvg4VNH+fcjI=
+        b=cAo1/B2qGaaoN/1pOSgiVo8fsVEdCL2hM6qYprPB3y9ST1Hh6rpFLpxk97h8vI7Uq
+         cZIG9KeZT5dZQFKdimpn+fwjcGBSgnqIA9kFyVuQb4bdqxD3wm3pK/kGO7HEA5ZZ9q
+         QuhqGziYGwJOPqw7jpgfrqkN8LJc0cKQ+6EEFm8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Peter Shier <pshier@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 11/41] block: return -EBUSY when there are open partitions in blkdev_reread_part
+Subject: [PATCH 5.4 07/20] perf/x86/kvm: Fix Broadwell Xeon stepping in isolation_ucodes[]
 Date:   Mon, 26 Apr 2021 09:29:58 +0200
-Message-Id: <20210426072820.064323264@linuxfoundation.org>
+Message-Id: <20210426072816.919608891@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
-References: <20210426072819.666570770@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Jim Mattson <jmattson@google.com>
 
-[ Upstream commit 68e6582e8f2dc32fd2458b9926564faa1fb4560e ]
+[ Upstream commit 4b2f1e59229b9da319d358828cdfa4ddbc140769 ]
 
-The switch to go through blkdev_get_by_dev means we now ignore the
-return value from bdev_disk_changed in __blkdev_get.  Add a manual
-check to restore the old semantics.
+The only stepping of Broadwell Xeon parts is stepping 1. Fix the
+relevant isolation_ucodes[] entry, which previously enumerated
+stepping 2.
 
-Fixes: 4601b4b130de ("block: reopen the device in blkdev_reread_part")
-Reported-by: Karel Zak <kzak@redhat.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210421160502.447418-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Although the original commit was characterized as an optimization, it
+is also a workaround for a correctness issue.
+
+If a PMI arrives between kvm's call to perf_guest_get_msrs() and the
+subsequent VM-entry, a stale value for the IA32_PEBS_ENABLE MSR may be
+restored at the next VM-exit. This is because, unbeknownst to kvm, PMI
+throttling may clear bits in the IA32_PEBS_ENABLE MSR. CPUs with "PEBS
+isolation" don't suffer from this issue, because perf_guest_get_msrs()
+doesn't report the IA32_PEBS_ENABLE value.
+
+Fixes: 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary work in guest filtering")
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Peter Shier <pshier@google.com>
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210422001834.1748319-1-jmattson@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/events/intel/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index ff241e663c01..8ba1ed8defd0 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -89,6 +89,8 @@ static int blkdev_reread_part(struct block_device *bdev, fmode_t mode)
- 		return -EINVAL;
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
-+	if (bdev->bd_part_count)
-+		return -EBUSY;
- 
- 	/*
- 	 * Reopen the device to revalidate the driver state and force a
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 90760393a964..9cb3266e148d 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3999,7 +3999,7 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 3, 0x07000009),
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 4, 0x0f000009),
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 5, 0x0e000002),
+-	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
++	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 1, 0x0b000014),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
 -- 
 2.30.2
 
