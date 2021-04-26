@@ -2,97 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461E836BC58
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161D936BC5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhDZXtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
+        id S234953AbhDZXum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237769AbhDZXtH (ORCPT
+        with ESMTP id S232022AbhDZXul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:49:07 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0251AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:48:24 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id r5so7856019ilb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:48:23 -0700 (PDT)
+        Mon, 26 Apr 2021 19:50:41 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0872FC061574;
+        Mon, 26 Apr 2021 16:49:59 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id w6so25571908pfc.8;
+        Mon, 26 Apr 2021 16:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HKfX60qyJHhVwdcWm8es8/kYODKadyAvexHgfU8BlKA=;
-        b=dtiNn5Z3oodaEoICir1M2tB+F85jDVY1603MLyeW+9Dtx/bGoAfIGMZWMywLzUFIuI
-         fgPtwxDu2vE3cDixi3GsN+YR4qV1gapk7MJbKkLMwGrNmMbWRVDTmSj3S6HyPBtWgb3L
-         6RH13MjO4Gq0n/HhnR2K4AilLkY+MZEd2LPhU=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Kj0SXA9vsOtoPJRmbl9kO6maA5cV9sB7CgScAwXMzI=;
+        b=PFvUwvqW69maGIZ5IE53RvvUM+/kvn8XSEdtYOjbhbPlzT0Riuw8w7Ts1JFVxIDqpQ
+         hkN+WE+9gKJKaxtoiRgHMpvs9sljBPxeoFTD8nkotwJ/goVrvSwQUvwMUdX0MB/hLWnu
+         MHDlhhg8N/JbcQAJZ2Db5qaoK6tdTEf1BouwU/gi3Jg6UZCryIRDm9+uZZRvWjQ+QUb2
+         +OMRwFtjC+RQpFVbk6gyUexFskpIjmkRZODzFO+vpHsN+PWjGIOYxdVwKcYgAWrvOR92
+         EyGQlT0paeIxMRnpQ59hRd6/qHmCbR/KDJxaMA02Q6ibFopq2uKIiC6xQzJoLcSwHQ+0
+         bIdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HKfX60qyJHhVwdcWm8es8/kYODKadyAvexHgfU8BlKA=;
-        b=CrmeV5VuzIjQiCfYumGqP9NXpBzmkGRiGZ/MwrJ8P8MzR7faHJY6ZwU69qoFgoFbXU
-         +I7VZPwjR2Nkq2sU3og2j5g/0PkzDZKBWY9TTXU8broW8ttAdcyT332r5MZqi2CohU3Z
-         kJ6LbwZVO3L5FKM9YZPD+xmOrqKCZKh8TuKVxaU3dbvkcGQTnxfRAKjmwp1USnJO14CP
-         HYo5+0E12Qcv66KWAzH8VnqsSJGcq9hxYehX4WmA2fVYMcPvr2LVxYnwk9S1OkSYy+vi
-         YAo/uGDXBvCMffG3FnOoSxzbabYU4sDRQfg9vUSNgDn6fzUMtQcGJ1cLysH3MMpY3mkm
-         yp3g==
-X-Gm-Message-State: AOAM531xfEHMe/q6SmBNsmZDYNTPujKTEW41yslZ3+4Mvsgad/ksWoir
-        M75PkDqj6TTJgeiZhlWMW6hQ8w==
-X-Google-Smtp-Source: ABdhPJw8yrdO+y/c7huENqJX414DRYIWSKHfZ7a9wvwforzmsWvbmmB1RQ8eB57WR+uhOtjdbcbXfw==
-X-Received: by 2002:a92:c791:: with SMTP id c17mr10762151ilk.107.1619480903462;
-        Mon, 26 Apr 2021 16:48:23 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u4sm603653iln.36.2021.04.26.16.48.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 16:48:23 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/32] 4.4.268-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <32fdfc53-65d0-4e4f-551c-045862936dcf@linuxfoundation.org>
-Date:   Mon, 26 Apr 2021 17:48:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=4Kj0SXA9vsOtoPJRmbl9kO6maA5cV9sB7CgScAwXMzI=;
+        b=qEzWEhmda9UHg/Ot595huQAWu/MH2ieyK2OdLNZtxjj219A/SNzyKYNDiCt8uh94/i
+         12HBXr2MmOwwZmSSoFtTCVbTxPvBjrNsBuBIWP5kmZEyXKK/m4DzxWcSahTKMOi1UCCc
+         rpF2W+SwZtiuy61pBEi1wEW0mpwG6vAm8Lz+B6qr+uoeyAEfLxJnhRFcW4hsOWfb+gX9
+         ZnFc+3zNA6Ak1cihOT8VTm3pKaWm0BYlBGIWzIvQvQCPuPi438+vY00VfW25YPHtQR9U
+         BPZyT5JSnGAZHioa8N3rNebQSAKWdyuaiQXqCP8qAwWLH6WBVtqNvU8AyoOGb7MWrg3M
+         fMPA==
+X-Gm-Message-State: AOAM532+hbRN7STcip4CfnF8QteAnc3u/bI4BiVl8sBaFc6XPCz7Mv0W
+        r40nmLXo7ewWnlDfc37UNRM=
+X-Google-Smtp-Source: ABdhPJzlJCZjMw1AMpMrqCCtVcFtp5ga8BJTa2+1W/jHgDQCNHWITvuZXAkIlz5HiSTjiD6+Kb+v/A==
+X-Received: by 2002:a63:eb46:: with SMTP id b6mr4060320pgk.199.1619480998570;
+        Mon, 26 Apr 2021 16:49:58 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id w189sm646315pfc.31.2021.04.26.16.49.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 16:49:57 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list),
+        linux-media@vger.kernel.org (open list:DMA BUFFER SHARING FRAMEWORK),
+        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
+        FRAMEWORK)
+Subject: [PATCH] drm/msm: Do not unpin/evict exported dma-buf's
+Date:   Mon, 26 Apr 2021 16:53:25 -0700
+Message-Id: <20210426235326.1230125-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/21 1:28 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.268 release.
-> There are 32 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.268-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+From: Rob Clark <robdclark@chromium.org>
 
-Compiled and booted on my test system. No dmesg regressions.
+Our initial logic for excluding dma-bufs was not quite right.  In
+particular we want msm_gem_get/put_pages() path used for exported
+dma-bufs to increment/decrement the pin-count.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Also, in case the importer is vmap'ing the dma-buf, we need to be
+sure to update the object's status, because it is now no longer
+potentially evictable.
 
-thanks,
--- Shuah
+Fixes: 63f17ef83428 drm/msm: Support evicting GEM objects to swap
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.c | 16 +++++++++++++++-
+ drivers/gpu/drm/msm/msm_gem.h |  4 ++--
+ 2 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 09ef4ec6eb34..17f85d2f23ab 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -190,13 +190,25 @@ struct page **msm_gem_get_pages(struct drm_gem_object *obj)
+ 	}
+ 
+ 	p = get_pages(obj);
++
++	if (!IS_ERR(p)) {
++		msm_obj->pin_count++;
++		update_inactive(msm_obj);
++	}
++
+ 	msm_gem_unlock(obj);
+ 	return p;
+ }
+ 
+ void msm_gem_put_pages(struct drm_gem_object *obj)
+ {
+-	/* when we start tracking the pin count, then do something here */
++	struct msm_gem_object *msm_obj = to_msm_bo(obj);
++
++	msm_gem_lock(obj);
++	msm_obj->pin_count--;
++	GEM_WARN_ON(msm_obj->pin_count < 0);
++	update_inactive(msm_obj);
++	msm_gem_unlock(obj);
+ }
+ 
+ int msm_gem_mmap_obj(struct drm_gem_object *obj,
+@@ -646,6 +658,8 @@ static void *get_vaddr(struct drm_gem_object *obj, unsigned madv)
+ 			ret = -ENOMEM;
+ 			goto fail;
+ 		}
++
++		update_inactive(msm_obj);
+ 	}
+ 
+ 	return msm_obj->vaddr;
+diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+index 1b519fcd8418..66fb40b87122 100644
+--- a/drivers/gpu/drm/msm/msm_gem.h
++++ b/drivers/gpu/drm/msm/msm_gem.h
+@@ -228,7 +228,7 @@ static inline bool is_active(struct msm_gem_object *msm_obj)
+ /* imported/exported objects are not purgeable: */
+ static inline bool is_unpurgeable(struct msm_gem_object *msm_obj)
+ {
+-	return msm_obj->base.dma_buf && msm_obj->base.import_attach;
++	return msm_obj->base.import_attach || msm_obj->pin_count;
+ }
+ 
+ static inline bool is_purgeable(struct msm_gem_object *msm_obj)
+@@ -278,7 +278,7 @@ static inline void mark_unpurgeable(struct msm_gem_object *msm_obj)
+ 
+ static inline bool is_unevictable(struct msm_gem_object *msm_obj)
+ {
+-	return is_unpurgeable(msm_obj) || msm_obj->pin_count || msm_obj->vaddr;
++	return is_unpurgeable(msm_obj) || msm_obj->vaddr;
+ }
+ 
+ static inline void mark_evictable(struct msm_gem_object *msm_obj)
+-- 
+2.30.2
 
