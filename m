@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44B636B265
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7F836B266
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhDZLe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:34:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhDZLez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:34:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B935560FEF;
-        Mon, 26 Apr 2021 11:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619436852;
-        bh=W3vHHW3L5Jp7qhyyytzPq8R1EAEE0x9hepv5yOVGiRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PzJLN44f1mr5WcC7jeAPhpk/RlAA/VxnIP5hH63DuQeJo4pNvVQGNVefB9rfBqJxn
-         +MwmWvHS5yMRvz9j2A/WaASB86j1Msz9XErlBhhRRX1VOpEyX62xbfehJMca8q5/9A
-         Tie1CVBm9NweI4Q7M0p6AFVvtQn16HW5TUply6Ck=
-Date:   Mon, 26 Apr 2021 13:34:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of
- division or modulo by zero
-Message-ID: <YIalMRdbAKZpIJWP@kroah.com>
-References: <20210426074935.11131-1-sherry.sun@nxp.com>
- <20210426074935.11131-2-sherry.sun@nxp.com>
- <YIZ0/vRLASlUph6x@kroah.com>
- <AM0PR04MB4947A9253CE547BEBE95BE8092429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+        id S231944AbhDZLgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:36:18 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:45247 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229554AbhDZLgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 07:36:17 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id EC017F850C
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:35:34 +0100 (IST)
+Received: (qmail 19014 invoked from network); 26 Apr 2021 11:35:34 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.248])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Apr 2021 11:35:34 -0000
+Date:   Mon, 26 Apr 2021 12:35:33 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH 00/10] sched/fair: wake_affine improvements
+Message-ID: <20210426113533.GD4239@techsingularity.net>
+References: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
+ <20210423082532.GA4239@techsingularity.net>
+ <20210423103129.GH2633526@linux.vnet.ibm.com>
+ <20210423123854.GC4239@techsingularity.net>
+ <20210426103032.GI2633526@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM0PR04MB4947A9253CE547BEBE95BE8092429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+In-Reply-To: <20210426103032.GI2633526@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:30:47AM +0000, Sherry Sun wrote:
-> Hi Greg,
+On Mon, Apr 26, 2021 at 04:00:32PM +0530, Srikar Dronamraju wrote:
+> * Mel Gorman <mgorman@techsingularity.net> [2021-04-23 13:38:55]:
 > 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: 2021年4月26日 16:09
-> > To: Sherry Sun <sherry.sun@nxp.com>
-> > Cc: jirislaby@kernel.org; linux-serial@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
-> > Subject: Re: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of division
-> > or modulo by zero
-> > 
-> > On Mon, Apr 26, 2021 at 03:49:34PM +0800, Sherry Sun wrote:
-> > > This issue is reported by Coverity Check.
-> > > In lpuart32_console_get_options, division or modulo by zero may
-> > > results in undefined behavior.
-> > >
-> > > Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-> > > ---
-> > >  drivers/tty/serial/fsl_lpuart.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/tty/serial/fsl_lpuart.c
-> > > b/drivers/tty/serial/fsl_lpuart.c index 794035041744..777d54b593f8
-> > > 100644
-> > > --- a/drivers/tty/serial/fsl_lpuart.c
-> > > +++ b/drivers/tty/serial/fsl_lpuart.c
-> > > @@ -2414,6 +2414,9 @@ lpuart32_console_get_options(struct lpuart_port
-> > > *sport, int *baud,
-> > >
-> > >  	bd = lpuart32_read(&sport->port, UARTBAUD);
-> > >  	bd &= UARTBAUD_SBR_MASK;
-> > > +	if (!bd)
-> > > +		return;
-> > 
-> > How can this ever happen?
-> > 
-> > Not to say this is a bad check, but it feels like this can't really happen in real
-> > life, what code patch could create this result?
-> > 
-> > And have you tested this on real hardware?
-> > 
+> Hi Mel,
 > 
-> Thanks for the reviewing, yes, I have tested the patchset on the real hardware.
+> > On Fri, Apr 23, 2021 at 04:01:29PM +0530, Srikar Dronamraju wrote:
+> > > > The series also oopses a *lot* and didn't get through a run of basic
+> > > > workloads on x86 on any of three machines. An example oops is
+> > > > 
+> > > 
+> > > Can you pass me your failing config. I am somehow not been seeing this
+> > > either on x86 or on Powerpc on multiple systems.
+> > 
+> > The machines have since moved onto testing something else (Rik's patch
+> > for newidle) but the attached config should be close enough.
+> > 
+> > > Also if possible cat /proc/schedstat and cat
+> > > /proc/sys/kernel/sched_domain/cpu0/domain*/name
+> > > 
+> > 
+> > For the vanilla kernel
+> > 
+> > SMT
+> > MC
+> > NUMA
 > 
-> Seems the coverity check is static scan, so cannot judge if UARTBAUD Register will be zero.
-> I just found below statement in the uart reference manual: "When SBR is 1 - 8191, the baud rate equals "baud clock / ((OSR+1) × SBR)"."
-> Since I am not familiar with uart, do you mean that the value of UARTBAUD Register will never be zero, so this case will not happen in real word?
+> I was able to reproduce the problem and analyze why it would panic in
+> cpus_share_cache.
+> 
+> In my patch(es), we have code snippets like this.
+> 
+> 	if (tsds->idle_core != -1) {
+> 		if (cpumask_test_cpu(tsds->idle_core, p->cpus_ptr))
+> 			return tsds->idle_core;
+> 		return this_cpu;
+> 	}
+> 
+> Here when we tested the idle_core and cpumask_test_cpu,
+> tsds->idle_core may not have been -1; However by the time it returns,
+> tsds->idle_core could be -1;
+> 
+> cpus_share_cpus() then tries to find sd_llc_id for -1 and crashes.
+> 
+> Its more easier to reproduce this on a machine with more cores in a
+> LLC than say a Power10/Power9.  Hence we are hitting this more often
+> on x86.
+> 
+> One way could be to save the idle_core to a local variable, but that
+> negates the whole purpose since we may end up choosing a busy CPU.  I
+> will find a way to fix this problem.
+> 
 
-Given that this never has happened with hardware for such an old device,
-perhaps it is impossible.  But it would be good to check.
+As there is no locking that protects the variable, it's inherently
+race-prone. A READ_ONCE to a local variable may be your only choice
 
-> If yes, I will drop this patch.
-
-Handling "bad data" from hardware is never a bad idea, so I don't
-necessarily want to drop this patch, I just want to try to figure out if
-this is a "incase the hardware is broken/malicious" type of change, vs.
-a "this bug we are seeing in real hardware" type of change.
-
-thanks,
-
-greg k-h
+-- 
+Mel Gorman
+SUSE Labs
