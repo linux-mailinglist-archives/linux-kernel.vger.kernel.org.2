@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C223236AE6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E27436AED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhDZHow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233199AbhDZHjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F424613A9;
-        Mon, 26 Apr 2021 07:36:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619422607;
-        bh=GwPSu/fSJdWA+JCc7GkdYIaZyIKkZ5LE/IaMDsFYvgg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bh1ErATCz22pvJhz6iHHblEiExj6g5T5hws8Zpuu6xqxdyBA2d/ihOYK/vBPbNOJ5
-         +FCRDuq92diQbELDCx9kao4Q/it/nXvBt+fdGq8nYQ8XnW3w4tmW7SmkSyCN7S5sXr
-         TvSSDMan30bD8Js56/Zb9m8hcgac18grO6JOyPwTnKINUDI/oHGvBvRvsszhpgqmQz
-         rRyrv1GfzP5cTErIj9TflnFCjtgzhrl5qjt5n+zeujAlfa0joijKnZsP1MuEu/ztab
-         eBbxE0iv36cWY2lj+8F9m693tC+4fsbAoGe6J/kQXe90ZN6rhgE/1dZfIHCYNg8nzs
-         9vzEB5Pk324FQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lavnd-0007u7-6e; Mon, 26 Apr 2021 09:36:57 +0200
-Date:   Mon, 26 Apr 2021 09:36:57 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
+        id S233137AbhDZHrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:47:40 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42184 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhDZHiE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:38:04 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id F3BF620306;
+        Mon, 26 Apr 2021 03:37:16 -0400 (EDT)
+Date:   Mon, 26 Apr 2021 17:37:22 +1000 (AEST)
+From:   Finn Thain <fthain@fastmail.com.au>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Joshua Thompson <funaho@jurai.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH 4.4 22/32] net: hso: fix null-ptr-deref during tty device
- unregistration
-Message-ID: <YIZtmT1CjlnwImlc@hovoldconsulting.com>
-References: <20210426072816.574319312@linuxfoundation.org>
- <20210426072817.327441466@linuxfoundation.org>
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org
+Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
+ driver
+In-Reply-To: <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
+Message-ID: <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
+References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au> <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426072817.327441466@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 09:29:20AM +0200, Greg Kroah-Hartman wrote:
-> From: Anirudh Rayabharam <mail@anirudhrb.com>
-> 
-> commit 8a12f8836145ffe37e9c8733dce18c22fb668b66 upstream
-> 
-> Multiple ttys try to claim the same the minor number causing a double
-> unregistration of the same device. The first unregistration succeeds
-> but the next one results in a null-ptr-deref.
-> 
-> The get_free_serial_index() function returns an available minor number
-> but doesn't assign it immediately. The assignment is done by the caller
-> later. But before this assignment, calls to get_free_serial_index()
-> would return the same minor number.
-> 
-> Fix this by modifying get_free_serial_index to assign the minor number
-> immediately after one is found to be and rename it to obtain_minor()
-> to better reflect what it does. Similary, rename set_serial_by_index()
-> to release_minor() and modify it to free up the minor number of the
-> given hso_serial. Every obtain_minor() should have corresponding
-> release_minor() call.
-> 
-> Fixes: 72dc1c096c705 ("HSO: add option hso driver")
-> Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
-> Tested-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> [sudip: adjust context]
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/net/usb/hso.c |   33 ++++++++++++---------------------
->  1 file changed, 12 insertions(+), 21 deletions(-)
+On Sun, 25 Apr 2021, John Paul Adrian Glaubitz wrote:
 
-We just got a regression report against this one. Perhaps better to hold
-off until that has been resolved.
+> On 4/25/21 11:06 AM, Finn Thain wrote:
+> > This was tested on my Quadra 630. I haven't tested it on my PowerBook 150
+> > because I don't have a RAM adapter board for it.
+> > 
+> > Apparently, the hardware I tested doesn't need macide_clear_irq() or
+> > macide_test_irq() -- if it did, the generic driver would not have worked.
+> > It's possible that those routines are needed for the PowerBook 150 but
+> > we can cross that bridge if and when we come to it.
+> > 
+> > BTW, macide_clear_irq() appears to suffer from a race condition. The write
+> > to the interrupt flags register could easily have unintended side effects
+> > as it may alter other flag bits. Fortunately, all of the other bits are
+> > unused by Linux. Moreover, when tested on my Quadra 630, that assignment
+> > (*ide_ifr &= ~0x20) was observed to have no effect on bit 5.
+> 
+> Shouldn't we switch to a libata driver instead with legacy IDE been slated
+> for removal from the Linux kernel?
+> 
 
-	https://lore.kernel.org/r/20210425233509.9ce29da49037e1a421000bdd@aruba.it
+This patch means that the Quadra 630/580 config will work the same as the 
+Powerbook 190 config. Please see commit 50c5feeea0af ("ide/macide: Convert 
+Mac IDE driver to platform driver") for some background.
 
-Johan
+This patch also means that the kernel/drivers/ide/macide.ko driver module 
+will disappear completely. The module that will replace it is up to you.
+
+If you enable CONFIG_IDE and CONFIG_BLK_DEV_PLATFORM, Quadras and 
+Powerbooks will use the kernel/drivers/ide/ide_platform.ko module.
+
+If you enable CONFIG_ATA and CONFIG_PATA_PLATFORM, Quadras and
+Powerbooks will use the kernel/drivers/ata/pata_platform.ko module.
+
+(If you enable all of the above, you may need to use a blacklist to ensure 
+that the preferred driver module gets loaded.)
+
+Was macide the only IDE driver in Debian/m68k kernels without a libata 
+alternative? If so, this patch would allow you to finally drop CONFIG_IDE.
+
+> Adrian
+> 
+> -- 
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer - glaubitz@debian.org
+> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> 
