@@ -2,175 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D323136AFB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D796036AFB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhDZIYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 04:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
+        id S232406AbhDZI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 04:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbhDZIYs (ORCPT
+        with ESMTP id S232227AbhDZI0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:24:48 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FC4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 01:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UsttuYyWWXXfFqramAtLv9r5WWvVXVZfD8CroXTtQD8=; b=VwncH1TcxrHt3xxJZWShbw2aCs
-        I1SrVyz5SLbfJbGMzq/UzBH4CvbNKZ4YMEy6+abslXEv651f7Tz6JvEp0c5CfauiPh+SQcWio720S
-        bUG0DnR82yl7ynhc6exqkXBd2JsMAyJuK/4XBV7754jbvLwEHsJoVXdQ+MwzBsZ/1J8t//SKtvLI8
-        pCUqyN49MWyCSSrlP283TtnBa9i61Y1umpSNhaxT+N6olb37uFsUK+mlCG4X22f6I5zQc2Qasyqof
-        JopPK3XXWM5iuFAPAIzwowa9YRzdI4eI3zfGLnIFkKQhdMG51/ZCP0hCrCIbmtqDpQGwv3sgo5bKE
-        3P7THP5Q==;
-Received: from [2001:8b0:10b:1:4a2a:e3ff:fe14:8625] (helo=u3832b3a9db3152.ant.amazon.com)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lawXD-007Cgh-Sk; Mon, 26 Apr 2021 08:24:04 +0000
-Message-ID: <ee050b2dce3a233318748df416be0ebff4402ed2.camel@infradead.org>
-Subject: Re: [RFC PATCH v2] jffs2: add support for zstd compression
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Rui Salvaterra <rsalvaterra@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     lizhe67@huawei.com, christian.brauner@ubuntu.com,
-        gustavoars@kernel.org, trix@redhat.com, keescook@chromium.org
-Date:   Mon, 26 Apr 2021 09:24:03 +0100
-In-Reply-To: <CALjTZvaX8miSycr4oGmF_rGN4KWWBzfyBj1-7jefT=Uz3w9Oww@mail.gmail.com>
-References: <20210316141916.447493-1-rsalvaterra@gmail.com>
-         <CALjTZvaX8miSycr4oGmF_rGN4KWWBzfyBj1-7jefT=Uz3w9Oww@mail.gmail.com>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-3D4XrG5ic/K2nvjFAOWW"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+        Mon, 26 Apr 2021 04:26:17 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328B6C061574;
+        Mon, 26 Apr 2021 01:25:34 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id w20so698436pge.13;
+        Mon, 26 Apr 2021 01:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jQWKwPGTMFGJm+uWgEIF87JnJjFNAJL/m8Q6ObzH+Yk=;
+        b=YTLVEqNZnFp898icZZIjFJYPF1GwzfEQ2oQbBZUDecL/Zs7+lYJjHRhYQlKttdHbR1
+         JRqITjQR4nTBHUtFNvt2t3SdZ2lvDCeTdZ0SJGM+DNI/KYpZBhTYFRMy2d+4iYp6Txr/
+         o9OlNjYjQL330HE9TVy26wcj9nCpenHBsy7C/PahCeuQE02XjeE/fD54gKI4sbloSBZ6
+         WuQ5rLHkso8g/Wx2up/GgsCXMVjlsb1h7M0rBQhXLyDubpqFdZJCnH/TL42iHPKKUDva
+         QAY0BtYv9Dbnewm6cuvyjTpkg67Oj+9G+iTnikXX15WvAYU+6g7k4IBdWThBTrIZAiHg
+         frCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jQWKwPGTMFGJm+uWgEIF87JnJjFNAJL/m8Q6ObzH+Yk=;
+        b=Q0nMAdTQE9XLm6lAiuoepqpcLFkI5e7BUkPGD+9dcA28FSvLrKNrEODuZdh8M7dgNi
+         E9ZKp3MZojlDCIpFtgUvoO+cBDHceOx0QZaDQyg+235R0iuWLhGqHoT1uynrzYciDQEC
+         ATvVLqNlZoIvVyUuOFCglq+dgwUvTWnpi90pcuNWOSqKNz0fJIoJh5eMhiX99I3dWm9B
+         A/XoWgcoxfmn9OyugzSNMMryso2CiUm0NQ7CbZdUbb+pOBLA6dHTUijNuP2S/+gAIx0N
+         Bz4LESj7ABSwqB8CHhmmpsQbsXFRs/GZbK9mNX5cg3bvltObOpEgPix37bOQRA58uUfY
+         mtIQ==
+X-Gm-Message-State: AOAM5323NL/4UpTHDS9KLPLc1o9yumwYi72jw3yJdN7VUoLnWQbjf/R+
+        wVVlSmbqPFKSriHajKjU+7I=
+X-Google-Smtp-Source: ABdhPJzg+FvvaI1gfWjnjrqTCUdrmfoILYPZaaXfOkn59Rn+vg5oqctdgdIKYxmDJjFpODrKYohpxQ==
+X-Received: by 2002:a63:3c59:: with SMTP id i25mr15573515pgn.366.1619425533827;
+        Mon, 26 Apr 2021 01:25:33 -0700 (PDT)
+Received: from soma ([121.99.145.49])
+        by smtp.gmail.com with ESMTPSA id n25sm10558132pff.154.2021.04.26.01.25.29
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 26 Apr 2021 01:25:33 -0700 (PDT)
+Received: by soma (sSMTP sendmail emulation); Mon, 26 Apr 2021 20:25:26 +1200
+Date:   Mon, 26 Apr 2021 20:25:26 +1200
+From:   Daniel Beer <dlbeer@gmail.com>
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     adrian.hunter@intel.com, ben.chuang@genesyslogic.com.tw,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        ulf.hansson@linaro.org
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: increase 1.8V regulator wait
+Message-ID: <20210426082526.GA16240@nyquist.nev>
+References: <20210424081652.GA16047@nyquist.nev>
+ <20210426073251.7726-1-benchuanggli@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426073251.7726-1-benchuanggli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 26, 2021 at 03:32:51PM +0800, Ben Chuang wrote:
+> > The driver currently waits 5ms after switching on the 1.8V regulator for
+> > it to become stable. Increasing this to 10ms gets rid of the warning
+> > about stability, but most cards still fail. Increasing it to 20ms gets
+> > some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
+> > doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
+> > cards work reliably.
+> 
+> If it is convenient, can you provide the appearance pictures and product
+> links of these two cards? We want to buy them.
 
---=-3D4XrG5ic/K2nvjFAOWW
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Ben,
 
-On Thu, 2021-03-25 at 14:47 +0000, Rui Salvaterra wrote:
-> Friendly ping (and also cc'ing dwmw2).
->=20
-> On Tue, 16 Mar 2021 at 14:19, Rui Salvaterra <rsalvaterra@gmail.com> wrot=
-e:
-> >=20
-> > Implement support for zstd compression in jffs2 at the default compress=
-ion
-> > level (3).
-> >=20
-> > Lightly tested in OpenWrt, on a single CPU embedded MIPS32 system (AirG=
-rid M2).
+The first is a Samsung EVO microSDXC 32GB:
 
-Seems reasonable. Do you have the corresponding addition for mkfs.jffs2
-and can you report the boot time / image sizes with it vs. zlib on a
-typical platform?
+    https://www.samsung.com/nz/memory-storage/memory-card/evo-plus-microsd-card-95-mbs-sd-adapter-32gb-mb-mc32ga-apc/
 
-And if it doesn't make a difference to boot time or image size... why
-are we doing it?
+The second is an ADATA Premier Pro SDXC UHS-I U3 Class 10 (V30S) 128GB:
 
---=-3D4XrG5ic/K2nvjFAOWW
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+    https://www.adata.com/us/consumer/289
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
-NDI2MDgyNDAzWjAvBgkqhkiG9w0BCQQxIgQgqJqWFgexgqhmIGTg+EjcUQ/KSFqa6repSbzXYfDD
-yOowgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAGr3c4egzg1vBbhVBazBuPnevxlO/+g8qapWOVtWfjCtsBpVBjid57utxJn7iA7Z
-Zsj1c/uAMQ6FyQQbR1ZjcBiFC/ot96eezifbaLjH74OYSGD1KXtsm1DFYSeRGco89wJ2MewzPieE
-X2eeyR9j1Bact53rNQU15v3tk0t7haDWY9I69oJxPR1GzfOM6emBqNHh5N0LFHKWqsmLDi/ZO54D
-f5klwzDvfM0g+QTOU+NgosB0oyxDlAkU9xyGQ0XbGJCYh/cOqkyrBImj4yj19Lb0H48qMu0Zp1I/
-Cs6AaR6/asdEo6iovdvbXmVDO/CTh/hwDjpa+umY5TheOn1QH3YAAAAAAAA=
+The images on those two pages match what I have in front of me here.
 
+Cheers,
+Daniel
 
---=-3D4XrG5ic/K2nvjFAOWW--
-
+-- 
+Daniel Beer <dlbeer@gmail.com> http://dlbeer.co.nz/
+PGP: BA6E 0B26 1F89 246C E3F3  C910 1E58 C43A 160A 553B
