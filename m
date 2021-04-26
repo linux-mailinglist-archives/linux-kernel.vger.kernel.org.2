@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CBB36B0B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A7236B0B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhDZJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:34:33 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53924 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232542AbhDZJeb (ORCPT
+        id S232675AbhDZJgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:36:13 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:51732 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232078AbhDZJgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:34:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UWpMjkG_1619429625;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UWpMjkG_1619429625)
+        Mon, 26 Apr 2021 05:36:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWpMk66_1619429727;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UWpMk66_1619429727)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Apr 2021 17:33:48 +0800
+          Mon, 26 Apr 2021 17:35:28 +0800
 From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     j.vosburgh@gmail.com
-Cc:     vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] bonding/alb: return -ENOMEM when kmalloc failed
-Date:   Mon, 26 Apr 2021 17:33:40 +0800
-Message-Id: <1619429620-52948-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-usb@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] HID: hiddev: return -ENOMEM when kmalloc failed
+Date:   Mon, 26 Apr 2021 17:35:26 +0800
+Message-Id: <1619429726-54768-1-git-send-email-yang.lee@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -34,7 +34,7 @@ specify that a buffer allocation failed. Using the correct error
 code is more intuitive.
 
 Smatch tool warning:
-drivers/net/bonding/bond_alb.c:850 rlb_initialize() warn: returning -1
+drivers/hid/usbhid/hiddev.c:894 hiddev_connect() warn: returning -1
 instead of -ENOMEM is sloppy
 
 No functional change, just more standardized.
@@ -42,22 +42,22 @@ No functional change, just more standardized.
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/net/bonding/bond_alb.c | 2 +-
+ drivers/hid/usbhid/hiddev.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
-index c3091e0..dad5383 100644
---- a/drivers/net/bonding/bond_alb.c
-+++ b/drivers/net/bonding/bond_alb.c
-@@ -847,7 +847,7 @@ static int rlb_initialize(struct bonding *bond)
+diff --git a/drivers/hid/usbhid/hiddev.c b/drivers/hid/usbhid/hiddev.c
+index 45e0b1c..88020f3 100644
+--- a/drivers/hid/usbhid/hiddev.c
++++ b/drivers/hid/usbhid/hiddev.c
+@@ -891,7 +891,7 @@ int hiddev_connect(struct hid_device *hid, unsigned int force)
+ 	}
  
- 	new_hashtbl = kmalloc(size, GFP_KERNEL);
- 	if (!new_hashtbl)
+ 	if (!(hiddev = kzalloc(sizeof(struct hiddev), GFP_KERNEL)))
 -		return -1;
 +		return -ENOMEM;
  
- 	spin_lock_bh(&bond->mode_lock);
- 
+ 	init_waitqueue_head(&hiddev->wait);
+ 	INIT_LIST_HEAD(&hiddev->list);
 -- 
 1.8.3.1
 
