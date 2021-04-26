@@ -2,223 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6F136AAC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C4C36AAC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhDZCqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:46:22 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33603 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231502AbhDZCqV (ORCPT
+        id S231678AbhDZCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 22:49:28 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:15211 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhDZCt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:46:21 -0400
-X-UUID: b7ca71ebd67645f19152bc396427ec68-20210426
-X-UUID: b7ca71ebd67645f19152bc396427ec68-20210426
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 405022291; Mon, 26 Apr 2021 10:45:38 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Apr 2021 10:45:36 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Apr 2021 10:45:35 +0800
-From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
-To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
-        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
-        <sean.wang@kernel.org>
-CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
-        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
-        <sean.wang@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
-Subject: [PATCH v7] pinctrl: mediatek: add rsel setting on MT8195
-Date:   Mon, 26 Apr 2021 10:45:33 +0800
-Message-ID: <20210426024533.20840-2-zhiyong.tao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210426024533.20840-1-zhiyong.tao@mediatek.com>
-References: <20210426024533.20840-1-zhiyong.tao@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Sun, 25 Apr 2021 22:49:27 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210426024844epoutp03990b5de1744c863c5b39fb2445546106~5SJAaKKOf0247602476epoutp03L
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:48:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210426024844epoutp03990b5de1744c863c5b39fb2445546106~5SJAaKKOf0247602476epoutp03L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619405324;
+        bh=4ob6MCI6cZXvhtmK5oTsjw66/FJrr0nc3ypW4cDAKUU=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=FlwbOHhQLsAqXRKx0Qa6+gJdzx4aq7gIV8ac9LbzMT8PTL3ar5A470sS460pwIwQA
+         qRrw8+rXg3qlraZpJ6jPlUsvdfbvPxkuIwaH1fYB77vTDGiDkvmhNJs9eRkxOO5klr
+         TKewMWqBaiNz5LVsC42Ca/8JkDx9HCQgE23eqauA=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210426024843epcas2p141f017287c214a2c4a2243638e306419~5SI-hbFlE1672616726epcas2p1e;
+        Mon, 26 Apr 2021 02:48:43 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4FT8V10s8Wz4x9Q0; Mon, 26 Apr
+        2021 02:48:41 +0000 (GMT)
+X-AuditID: b6c32a47-f61ff700000024d9-80-60862a0869bb
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FB.EE.09433.80A26806; Mon, 26 Apr 2021 11:48:40 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v32 0/4] scsi: ufs: Add Host Performance Booster
+ Support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <b7f64b4dcd688b769f9ff8f9b4b378a2@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210426024840epcms2p7fa68f5abe64b031bbf67d0f69d88b7b5@epcms2p7>
+Date:   Mon, 26 Apr 2021 11:48:40 +0900
+X-CMS-MailID: 20210426024840epcms2p7fa68f5abe64b031bbf67d0f69d88b7b5
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te0xTVxzHc+693BaSkguCHsABu2xGcJSWUXYEykwgswzcyJ6Ki3CFSyHr
+        K71lwRmR+ABEARc2xAYRWHjIq+CE1hImryEykGwIEybKMoiYiDLZzDpHN/pgmv33yTe/1/f3
+        O4ePe94nffnZKh2rVTEKmnQjugeDUSg/pCBNtPwwGs1Xd5Oot2CEhx5YpkhUsWLB0RNDgwt6
+        MBCMzP39JGqe/xgd/9pAoqrxfAyVlHWR6Jv+Dhz9emeVh+pud2OozFpIoO5VD3T9xiOAJs1V
+        JDr9k4lEjdetGKrvmgHo1LlWYtdm2eStRNlkaQkmu6qf48nO1vUB2bULrTzZiRvXCNlvi7OE
+        rPRKM5CtXvaXFfadxpLdUhQxWSyTwWoDWVW6OiNbJZfSie+nxqVKIkXiUPFO9AYdqGKUrJSO
+        T0oOfStbsW6TDvyMUeSsS8kMx9FhsTFadY6ODcxSczopzWoyFBqxWCPkGCWXo5IL09XKKLFI
+        FC5Zj0xTZF0obwOaedfcofNh+eAJWQxc+ZCKgMODA6AYuPE9KROAX5a28IoBny+gPOCaaZMt
+        ZhP1Hvy7v42wsSdFQ8MPep5DF8LZX1qBjUnqNXhu5J5d96IS4B/lLS62mji1RsLvR5pcHM0E
+        sLJwkXCwHzQ2dtmTXalYqL9Yhjv07fDPhhIne8OZlmXeBj8evggc7AVP3h13xnjAeUuPU/eB
+        wz0rmIOPwq47f9mNQeoMgINXZ51DhMHpok77EAJqD6xeGrVvgqBehWeKDc5C8fBYY7ddx6kA
+        aFyuwm1LwalgaDCH2RBSQXBoltiwld/5jPd/xil3WDS49p9uql5wjrYNtlsM2FkQpH++af0L
+        vfTPe9UAvBlsZjWcUs5y4ZrXX7ztZWB/8SG7TaByeUU4ADA+GACQj9NeAtJ8Ms1TkMEc+pzV
+        qlO1OQqWGwCSdZdf4L7e6er1L6PSpYol4ZGRop0SJIkMR/QWgYXNS/Ok5IyO/ZRlNax2Iw/j
+        u/rmYzsE9yp+Ptj+He9W/s1YpYgQavLmJm5/9WbBO++6N50CSVR6dPylrpfJHVzRzam+JUPa
+        6IFD+440l4W8bVVu3f5jZ2bIQkTHw28bjB0f5QaFHZvp8IF7k4X+/a2l5y2KCvczd1Ni8vwO
+        90pivJ7WpT8OuKLDxoqltfWKYe/6iIl/2uUHMutf+r0zYNrHGr2U0Ly62NkREyvf1mPcorS2
+        JU3s1xmfnZiYOl7C7KNKLaPagsQ4+Vazr6nq/nRZps/Yh65B1tqj0uhPmLldubyUp1hDlF9t
+        3N4mo8W8J2U2J+mVRws1HxypKS/xlx4e0uq8xhJ6x91GyVjBAplXmX2wPOrSfprgshhxCK7l
+        mH8BqLsPN3oEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217
+References: <b7f64b4dcd688b769f9ff8f9b4b378a2@codeaurora.org>
+        <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
+        <CGME20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch provides rsel setting on MT8195.
+Hi Can Guo,
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
----
- drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 22 +++++++++++++++++++
- .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 14 ++++++++++++
- .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  | 10 +++++++++
- drivers/pinctrl/mediatek/pinctrl-paris.c      | 16 ++++++++++++++
- 4 files changed, 62 insertions(+)
+>> 
+>> HPB is shown to have a performance improvement of 58 - 67% for random 
+>> read
+>> workload. [1]
+>> 
+>> [1]:
+>> https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+>> 
+>> Daejun Park (4):
+>>   scsi: ufs: Introduce HPB feature
+>>   scsi: ufs: L2P map management for HPB read
+>>   scsi: ufs: Prepare HPB read for cached sub-region
+>>   scsi: ufs: Add HPB 2.0 support
+>> 
+>>  Documentation/ABI/testing/sysfs-driver-ufs |  162 ++
+>>  drivers/scsi/ufs/Kconfig                   |    9 +
+>>  drivers/scsi/ufs/Makefile                  |    1 +
+>>  drivers/scsi/ufs/ufs-sysfs.c               |   22 +
+>>  drivers/scsi/ufs/ufs.h                     |   54 +-
+>>  drivers/scsi/ufs/ufshcd.c                  |   74 +-
+>>  drivers/scsi/ufs/ufshcd.h                  |   29 +
+>>  drivers/scsi/ufs/ufshpb.c                  | 2387 ++++++++++++++++++++
+>>  drivers/scsi/ufs/ufshpb.h                  |  277 +++
+>>  9 files changed, 3013 insertions(+), 2 deletions(-)
+>>  create mode 100644 drivers/scsi/ufs/ufshpb.c
+>>  create mode 100644 drivers/scsi/ufs/ufshpb.h
+> 
+>To the entire series:
+> 
+>Tested-by: Can Guo <cang@codeaurora.org>
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8195.c b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-index a7500e18bb1d..66608b8d346a 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-@@ -779,6 +779,25 @@ static const struct mtk_pin_field_calc mt8195_pin_drv_adv_range[] = {
- 	PIN_FIELD_BASE(45, 45, 1, 0x040, 0x10, 9, 3),
- };
- 
-+static const struct mtk_pin_field_calc mt8195_pin_rsel_range[] = {
-+	PIN_FIELD_BASE(8, 8, 4, 0x0c0, 0x10, 15, 3),
-+	PIN_FIELD_BASE(9, 9, 4, 0x0c0, 0x10, 0, 3),
-+	PIN_FIELD_BASE(10, 10, 4, 0x0c0, 0x10, 18, 3),
-+	PIN_FIELD_BASE(11, 11, 4, 0x0c0, 0x10, 3, 3),
-+	PIN_FIELD_BASE(12, 12, 4, 0x0c0, 0x10, 21, 3),
-+	PIN_FIELD_BASE(13, 13, 4, 0x0c0, 0x10, 6, 3),
-+	PIN_FIELD_BASE(14, 14, 4, 0x0c0, 0x10, 24, 3),
-+	PIN_FIELD_BASE(15, 15, 4, 0x0c0, 0x10, 9, 3),
-+	PIN_FIELD_BASE(16, 16, 4, 0x0c0, 0x10, 27, 3),
-+	PIN_FIELD_BASE(17, 17, 4, 0x0c0, 0x10, 12, 3),
-+	PIN_FIELD_BASE(29, 29, 2, 0x080, 0x10, 0, 3),
-+	PIN_FIELD_BASE(30, 30, 2, 0x080, 0x10, 3, 3),
-+	PIN_FIELD_BASE(34, 34, 1, 0x0e0, 0x10, 0, 3),
-+	PIN_FIELD_BASE(35, 35, 1, 0x0e0, 0x10, 3, 3),
-+	PIN_FIELD_BASE(44, 44, 1, 0x0e0, 0x10, 6, 3),
-+	PIN_FIELD_BASE(45, 45, 1, 0x0e0, 0x10, 9, 3),
-+};
-+
- static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_MODE] = MTK_RANGE(mt8195_pin_mode_range),
- 	[PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8195_pin_dir_range),
-@@ -793,6 +812,7 @@ static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_R0] = MTK_RANGE(mt8195_pin_r0_range),
- 	[PINCTRL_PIN_REG_R1] = MTK_RANGE(mt8195_pin_r1_range),
- 	[PINCTRL_PIN_REG_DRV_ADV] = MTK_RANGE(mt8195_pin_drv_adv_range),
-+	[PINCTRL_PIN_REG_RSEL] = MTK_RANGE(mt8195_pin_rsel_range),
- };
- 
- static const char * const mt8195_pinctrl_register_base_names[] = {
-@@ -823,6 +843,8 @@ static const struct mtk_pin_soc mt8195_data = {
- 	.drive_get = mtk_pinconf_drive_get_rev1,
- 	.adv_drive_get = mtk_pinconf_adv_drive_get_raw,
- 	.adv_drive_set = mtk_pinconf_adv_drive_set_raw,
-+	.rsel_set = mtk_pinconf_rsel_set,
-+	.rsel_get = mtk_pinconf_rsel_get,
- };
- 
- static const struct of_device_id mt8195_pinctrl_of_match[] = {
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-index 2b51f4a9b860..d1526d0c6248 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-@@ -1041,6 +1041,20 @@ int mtk_pinconf_adv_drive_get_raw(struct mtk_pinctrl *hw,
- }
- EXPORT_SYMBOL_GPL(mtk_pinconf_adv_drive_get_raw);
- 
-+int mtk_pinconf_rsel_set(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 arg)
-+{
-+	return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_RSEL, arg);
-+}
-+EXPORT_SYMBOL_GPL(mtk_pinconf_rsel_set);
-+
-+int mtk_pinconf_rsel_get(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 *val)
-+{
-+	return mtk_hw_get_value(hw, desc, PINCTRL_PIN_REG_RSEL, val);
-+}
-+EXPORT_SYMBOL_GPL(mtk_pinconf_rsel_get);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Sean Wang <sean.wang@mediatek.com>");
- MODULE_DESCRIPTION("Pin configuration library module for mediatek SoCs");
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-index fd5ce9c5dcbd..570e8da7bf38 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-+++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-@@ -67,6 +67,7 @@ enum {
- 	PINCTRL_PIN_REG_DRV_E0,
- 	PINCTRL_PIN_REG_DRV_E1,
- 	PINCTRL_PIN_REG_DRV_ADV,
-+	PINCTRL_PIN_REG_RSEL,
- 	PINCTRL_PIN_REG_MAX,
- };
- 
-@@ -237,6 +238,10 @@ struct mtk_pin_soc {
- 			     const struct mtk_pin_desc *desc, u32 arg);
- 	int (*adv_drive_get)(struct mtk_pinctrl *hw,
- 			     const struct mtk_pin_desc *desc, u32 *val);
-+	int (*rsel_set)(struct mtk_pinctrl *hw,
-+			const struct mtk_pin_desc *desc, u32 arg);
-+	int (*rsel_get)(struct mtk_pinctrl *hw,
-+			const struct mtk_pin_desc *desc, u32 *val);
- 
- 	/* Specific driver data */
- 	void				*driver_data;
-@@ -320,5 +325,10 @@ int mtk_pinconf_adv_drive_set_raw(struct mtk_pinctrl *hw,
- int mtk_pinconf_adv_drive_get_raw(struct mtk_pinctrl *hw,
- 				  const struct mtk_pin_desc *desc, u32 *val);
- 
-+int mtk_pinconf_rsel_set(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 arg);
-+int mtk_pinconf_rsel_get(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 *val);
-+
- bool mtk_is_virt_gpio(struct mtk_pinctrl *hw, unsigned int gpio_n);
- #endif /* __PINCTRL_MTK_COMMON_V2_H */
-diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.c b/drivers/pinctrl/mediatek/pinctrl-paris.c
-index da1f19288aa6..392fdfcb5b87 100644
---- a/drivers/pinctrl/mediatek/pinctrl-paris.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-paris.c
-@@ -22,6 +22,8 @@
- #define MTK_PIN_CONFIG_PU_ADV	(PIN_CONFIG_END + 3)
- #define MTK_PIN_CONFIG_PD_ADV	(PIN_CONFIG_END + 4)
- #define MTK_PIN_CONFIG_DRV_ADV	(PIN_CONFIG_END + 5)
-+#define MTK_PIN_CONFIG_RSEL	(PIN_CONFIG_END + 6)
-+
- 
- static const struct pinconf_generic_params mtk_custom_bindings[] = {
- 	{"mediatek,tdsel",	MTK_PIN_CONFIG_TDSEL,		0},
-@@ -29,6 +31,7 @@ static const struct pinconf_generic_params mtk_custom_bindings[] = {
- 	{"mediatek,pull-up-adv", MTK_PIN_CONFIG_PU_ADV,		1},
- 	{"mediatek,pull-down-adv", MTK_PIN_CONFIG_PD_ADV,	1},
- 	{"mediatek,drive-strength-adv", MTK_PIN_CONFIG_DRV_ADV,	2},
-+	{"mediatek,rsel",		MTK_PIN_CONFIG_RSEL,	2},
- };
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -38,6 +41,7 @@ static const struct pin_config_item mtk_conf_items[] = {
- 	PCONFDUMP(MTK_PIN_CONFIG_PU_ADV, "pu-adv", NULL, true),
- 	PCONFDUMP(MTK_PIN_CONFIG_PD_ADV, "pd-adv", NULL, true),
- 	PCONFDUMP(MTK_PIN_CONFIG_DRV_ADV, "drive-strength-adv", NULL, true),
-+	PCONFDUMP(MTK_PIN_CONFIG_RSEL, "rsel", NULL, true),
- };
- #endif
- 
-@@ -176,6 +180,12 @@ static int mtk_pinconf_get(struct pinctrl_dev *pctldev,
- 		else
- 			err = -ENOTSUPP;
- 		break;
-+	case MTK_PIN_CONFIG_RSEL:
-+		if (hw->soc->rsel_get)
-+			err = hw->soc->rsel_get(hw, desc, &ret);
-+		else
-+			err = -ENOTSUPP;
-+		break;
- 	default:
- 		err = -ENOTSUPP;
- 	}
-@@ -295,6 +305,12 @@ static int mtk_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
- 		else
- 			err = -ENOTSUPP;
- 		break;
-+	case MTK_PIN_CONFIG_RSEL:
-+		if (hw->soc->rsel_set)
-+			err = hw->soc->rsel_set(hw, desc, arg);
-+		else
-+			err = -ENOTSUPP;
-+		break;
- 	default:
- 		err = -ENOTSUPP;
- 	}
--- 
-2.18.0
+Thanks for testing the patch series. :)
 
+Daejun
