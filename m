@@ -2,178 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC78B36B479
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC07036B47A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233703AbhDZOFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDZOFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:05:41 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EE8C061574;
-        Mon, 26 Apr 2021 07:04:59 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id p12so40108405pgj.10;
-        Mon, 26 Apr 2021 07:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=diIQNj+fq7cLP/VfK5jIgYyt6WpLRDuOebeyCDenI/4=;
-        b=j4D+l4O368V00hvwUHS/SV9UgjCy/89yTiaGqTMxlvnq4FbiOW2JjtBj8ZXjfPrTOc
-         a8fvCzu4eoP39BwrscaLwhnu8QZqLLcaCgNo4iOAapzbCdsgmYRmcaBQNxcd3AoqkUYB
-         ASD5FxspAH89tKDXM05E5tHT6cr6ivXYtR9lI5ayBKNKt+puF2081DHG/PM3LKLe5vzd
-         LGAa8bf7ofvszcUMmLB+yGjov8wMVWjFgExDKQuU8z0jFri6xDXZVq9bW4RcGmEAx8uH
-         ta4ygoLjlD+2HpgA2NO3RIfWlgau2JG0hL8gIXPrYjL4fy74Ng1THS70mbtLFYNVpwXZ
-         FScw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=diIQNj+fq7cLP/VfK5jIgYyt6WpLRDuOebeyCDenI/4=;
-        b=s7M1ZlmwVtYZQ12xNq5DcrSDFq96pqF0ttvMcUInOT+b/Enbm2/EA4gqgdCWKfwNkW
-         Evs3bL6jqNLYWhUgjXZdk1PzfDmtWFb3/Jq9bi5eoLOPmGUuXwUak7xtQweQ+7xeTpIw
-         IsQdF1lOOIQdBIZ8WES0QxxSzrAFXy/fBCN64TcgMGfbIgrcWsl+5iZVrgwIK0yoKrgU
-         f7xwYdBzx4lEzW74Hl75OZk5toY7Pphuu2n9+4ZCSLBC+hRdB4RwSSz78bzgdIFKKH4R
-         Df3emflawa3NkGljSsolhDmNe92WadFmuRvMY1si3Pebiw/kVWC/KxKE9LON8maQUy/Z
-         7vYw==
-X-Gm-Message-State: AOAM531YcRVvWRb0yXeS/74+d0B6hBz6cqEAJLTOrQXTACNEeF5Ec0Iv
-        k144D0rjmpZrUfOUVHsbGI9qbcBltRFiuPYB95Q=
-X-Google-Smtp-Source: ABdhPJxgrQtMKpD4UrsflSNc2WpMuQpgSZBw6j3yc6QFCtWuFYbpSjUJdmOdKxSiY0QC0WVmrYu2AdRC+7PIf6KDJpQ=
-X-Received: by 2002:a65:5a4d:: with SMTP id z13mr17064008pgs.4.1619445899049;
- Mon, 26 Apr 2021 07:04:59 -0700 (PDT)
+        id S233748AbhDZOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:06:02 -0400
+Received: from mga12.intel.com ([192.55.52.136]:60594 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233720AbhDZOF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:05:58 -0400
+IronPort-SDR: RroM1/ceBrUJZxjLC9quLxg8aCgKfd1hn4uFtyYsvZ0O6Hg8P28UMc/9hZla2rn+auGoC11ida
+ IF/o5+IvRY/w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175822019"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="175822019"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 07:05:17 -0700
+IronPort-SDR: QOJ9Wvja0C8wdUuxGOawy1dtz4M6jw5IIyYFuzYGoN1fdzWSvv+hr0/yoJ3zq0dRkGIIOGELhV
+ TXbJ5Pk0pf4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="465123921"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 26 Apr 2021 07:05:13 -0700
+Date:   Mon, 26 Apr 2021 22:05:12 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>
+Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
+ -14.4% regression
+Message-ID: <20210426140512.GA23119@shbuild999.sh.intel.com>
+References: <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
+ <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
+ <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
+ <20210422074126.GA85095@shbuild999.sh.intel.com>
+ <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
+ <20210423061115.GA62813@shbuild999.sh.intel.com>
+ <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210424122920.GB85095@shbuild999.sh.intel.com>
+ <87pmyhte2q.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1619080202-31924-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1619080202-31924-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <CAHp75VfCbbnN-TBJiYFb=6Rhf30jA-Hz1p1UORsubF7UG6-ATw@mail.gmail.com> <DM5PR02MB3877B234F85F3B4887DF3A95BD429@DM5PR02MB3877.namprd02.prod.outlook.com>
-In-Reply-To: <DM5PR02MB3877B234F85F3B4887DF3A95BD429@DM5PR02MB3877.namprd02.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 26 Apr 2021 17:04:42 +0300
-Message-ID: <CAHp75VfugGqLNU8LKJ_K3dPr=-eh6LHx75eV=33jH9OnryBoGA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
-To:     Sai Krishna Potthuri <lakshmis@xilinx.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        git <git@xilinx.com>,
-        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pmyhte2q.ffs@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 4:20 PM Sai Krishna Potthuri
-<lakshmis@xilinx.com> wrote:
-> > From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Sent: Friday, April 23, 2021 9:24 PM
-> > On Thu, Apr 22, 2021 at 11:31 AM Sai Krishna Potthuri
-> > <lakshmi.sai.krishna.potthuri@xilinx.com> wrote:
+Hi Thomas,
 
-...
+On Mon, Apr 26, 2021 at 08:39:25PM +0800, Thomas Gleixner wrote:
+> On Sat, Apr 24 2021 at 20:29, Feng Tang wrote:
+> > On Fri, Apr 23, 2021 at 07:02:54AM -0700, Paul E. McKenney wrote:
+> > And I'm eager to know if there is any real case of an unreliable tsc
+> > on the 'large numbers' of x86 system which complies with our cpu feature
+> > check. And if there is, my 2/2 definitely should be dropped.   
+> 
+> Nothing prevents BIOS tinkerers from trying to be 'smart'. My most
+> recent encounter (3 month ago) was on a laptop where TSC drifted off on
+> CPU0 very slowly, but was caught due to the TSC_ADJUST check in idle.
 
-> > > +config PINCTRL_ZYNQMP
-> > > +       tristate "Pinctrl driver for Xilinx ZynqMP"
-> > > +       depends on ZYNQMP_FIRMWARE
-> > > +       select PINMUX
-> > > +       select GENERIC_PINCONF
-> > > +       default ZYNQMP_FIRMWARE
-> > > +       help
-> > > +         This selects the pinctrl driver for Xilinx ZynqMP platform.
-> > > +         This driver will query the pin information from the firmware
-> > > +         and allow configuring the pins.
-> > > +         Configuration can include the mux function to select on those
-> > > +         pin(s)/group(s), and various pin configuration parameters
-> > > +         such as pull-up, slew rate, etc.
-> >
-> > Missed module name.
-> Is this (module name) a configuration option in Kconfig?
+Thanks for sharing the info! So this laptop can still work with the
+tsc_adjust check and restore, without triggering the 'unstable' alarm.
 
-It's a text in a free form that sheds light on how the module will be
-named in case the user will choose "m".
+Why are those BIOSes playing the trick? Maybe some other OS has hard limit
+for SMI's maxim handling time, so they try to hide the time?
 
-...
+> I'm still thinking about a solution to avoid that extra timer and the
+> watchdog for these systems, but haven't found anything which I don't
+> hate with a passion yet.
 
-> > > + * Copyright (C) 2020 Xilinx, Inc.
-> >
-> > 2021?
-> Couple of versions for this patch series sent in 2020, hence maintaining
-> the same.
-> Is it like we maintain the year when this patch series is applied, which is
-> 2021?
+I see. So should I hold my two patches (tsc_adjust timer and tsc watchdog
+check lifting) for a while?
 
-2020, 2021 sounds okay as well.
+Thanks,
+Feng
 
-...
-
-> > > +       if (pin >= zynqmp_desc.npins)
-> > > +               return -EOPNOTSUPP;
-> >
-> > Is it possible?
-> This is a safe check.
-
-I.o.w. dead code, right?
-
-> Pin information will get from dt files/Xilinx firmware (query pin information
-> for a group)/user application and there are chances of getting wrong pin.
-
-I'm not sure I understand this. How comes that pin control core will
-ask for a pin higher than npins?
-
-...
-
-> > > +               ret = zynqmp_pm_pinctrl_get_config(pin, param, &arg);
-> > > +               if (arg != PM_PINCTRL_BIAS_PULL_UP)
-> > > +                       return -EINVAL;
-> >
-> > Error code being shadowed. Instead check it here properly.
-
-> Are you mentioning the case where ret is also a non-zero?
-> If yes, then I will update this check to
-> if (!ret && arg != PM_PINCTRL_BIAS_PULL_UP)
->         return -EINVAL;
-
-No, this is wrong in the same way.
-
-> ret non-zero case, we are handling at the end of switch case.
-
-I meant that you need to pass the real return code to the (upper) caller.
-Ditto for all other cases (mentioned and not mentioned)
-
-...
-
-> > > +                       ret = -EOPNOTSUPP;
-> >
-> > Isn't it ENOTSUP for all cases here?
-> Giving 'Operation Not Supported (EOPNOTSUPP)' error, when
-> driver gets a request for unsupported pin or configuration.
-> Can you please elaborate your question if I didn't answer properly.
-
-The pin control subsystem along with the GPIO library are using
--ENOTSUPP error code for internal operations.
-EOPNOTSUPP is the one that should be returned to user space. Is it the
-case here?
-
-...
-
-> > > +};
-> >
-> > > +
-> >
-> > Ditto.
-> I see some drivers are maintaining the extra line in above two cases.
-> We shouldn't maintain extra line after struct declaration?
-
-What's the point to add more blank lines where they won't add any value?
-
-> > > +module_platform_driver(zynqmp_pinctrl_driver);
-
--- 
-With Best Regards,
-Andy Shevchenko
+> Thanks,
+> 
+>         tglx
