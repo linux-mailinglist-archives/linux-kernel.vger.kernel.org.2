@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A165136B74B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0439D36B74D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbhDZQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:56:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60208 "EHLO mail.kernel.org"
+        id S234837AbhDZQ4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233736AbhDZQ4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:56:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F065961076;
-        Mon, 26 Apr 2021 16:55:36 +0000 (UTC)
+        id S233736AbhDZQ4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 12:56:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3C09610FC;
+        Mon, 26 Apr 2021 16:56:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619456137;
-        bh=K8s2HR2UdDqXVvoQjGH6zirtLDDVxviKtltWnei6bNk=;
+        s=korg; t=1619456162;
+        bh=N7vt9zftrYqQ9v5BBLSOwN6fk2XkSs+fz0f4XPtJeQ0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wr5110SEyhbwJHa7bvzB/A1tCbCapnx8RlAEka1r87GwMue32H9kwBpLhLD1003IC
-         W6lES/hT8xQhZ7OAR4kkTgZ76bjf2zuwXOhhxXXHyQFmtQqHUoe0+dTx4K0g0Jo4fw
-         Grmdi15dN8Zu8v32uhbb/TllmUDzVfTVyKviTVM0=
-Date:   Mon, 26 Apr 2021 18:55:34 +0200
+        b=KfIuqpGUiyGjHnSxfJLyfvOGlTj6PdUEmJV4LTXrdX1vjDDVV21YT6fNuyTbyDL3u
+         S8TW/Zvc3A2kTDzhp0eek4xGRRcwQI428aODeGNnDadQU4nM8IciDYi4XcP+4bo2Rm
+         IIgpuB4cg+GbmEYqJxxf1H0Tu/dR3vN8kV862K9c=
+Date:   Mon, 26 Apr 2021 18:55:59 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Aditya Pakki <pakki001@umn.edu>, kjlu@umn.edu,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>,
-        Nicolai Stange <nstange@suse.de>,
-        Roland Dreier <roland@purestorage.com>
-Subject: Re: [PATCH 113/190] Revert "x86/hpet: Prevent potential NULL pointer
- dereference"
-Message-ID: <YIbwhpNDx1KjVbLe@kroah.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 064/190] Revert "nfc: s3fwrn5: replace the assertion with
+ a WARN_ON"
+Message-ID: <YIbwn6D1EykhhMPJ@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-114-gregkh@linuxfoundation.org>
- <202104211245.F5FEC8D15D@keescook>
- <87im4dx5cc.ffs@nanos.tec.linutronix.de>
- <202104230201.EEB997CD8@keescook>
+ <20210421130105.1226686-65-gregkh@linuxfoundation.org>
+ <9c2877c3-8077-c2e2-ed0d-80b2a0c87634@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202104230201.EEB997CD8@keescook>
+In-Reply-To: <9c2877c3-8077-c2e2-ed0d-80b2a0c87634@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 02:03:50AM -0700, Kees Cook wrote:
-> On Fri, Apr 23, 2021 at 01:33:07AM +0200, Thomas Gleixner wrote:
-> > On Wed, Apr 21 2021 at 12:49, Kees Cook wrote:
-> > > On Wed, Apr 21, 2021 at 02:59:48PM +0200, Greg Kroah-Hartman wrote:
-> > >> diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-> > >> index 08651a4e6aa0..0515a97bf6f5 100644
-> > >> --- a/arch/x86/kernel/hpet.c
-> > >> +++ b/arch/x86/kernel/hpet.c
-> > >> @@ -930,8 +930,6 @@ int __init hpet_enable(void)
-> > >>  		return 0;
-> > >>  
-> > >>  	hpet_set_mapping();
-> > >> -	if (!hpet_virt_address)
-> > >> -		return 0;
-> > >>  
-> > >>  	/* Validate that the config register is working */
-> > >>  	if (!hpet_cfg_working())
-> > >
-> > > FWIW, this patch looks harmless. It is checking for a failure in
-> > > hpet_set_mapping(), and avoids the following code from performing
-> > > 0-offset reads. hpet_set_mapping() is likely to never fail in real-world
-> > > situations. *shrug*
+On Fri, Apr 23, 2021 at 09:29:57AM +0200, Krzysztof Kozlowski wrote:
+> On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
+> > This reverts commit 615f22f58029aa747b12768985e7f91cd053daa2.
 > > 
-> > 'likely never to fail' is clearly a receipe for disaster and you should
-> > know that.
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > Cc: Aditya Pakki <pakki001@umn.edu>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/nfc/s3fwrn5/firmware.c | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/nfc/s3fwrn5/firmware.c b/drivers/nfc/s3fwrn5/firmware.c
+> > index eb5d7a5beac7..f77f183c9bd0 100644
+> > --- a/drivers/nfc/s3fwrn5/firmware.c
+> > +++ b/drivers/nfc/s3fwrn5/firmware.c
+> > @@ -492,10 +492,7 @@ int s3fwrn5_fw_recv_frame(struct nci_dev *ndev, struct sk_buff *skb)
+> >  	struct s3fwrn5_info *info = nci_get_drvdata(ndev);
+> >  	struct s3fwrn5_fw_info *fw_info = &info->fw_info;
+> >  
+> > -	if (WARN_ON(fw_info->rsp)) {
+> > -		kfree_skb(skb);
+> > -		return -EINVAL;
+> > -	}
+> > +	BUG_ON(fw_info->rsp);
 > 
-> Of course -- I prefer to keep the sanity check. It just wasn't as good
-> as it could have been: it's not clear just by looking at the patch how
-> hpet_virt_address and hpet_set_mapping() are related.
+> It took me some time to understand this but the original commit looks
+> correct. The recv_frame functions s3fwrn5_recv_frame() or
+> nci_recv_frame() should free the skb buffer on errors.  Here, the
+> s3fwrn5_fw_recv_frame() should be called only after sending a FW msg and
+> is expected to have fw_info->rsp=NULL. Otherwise it could mean that
+> frame came twice or it came when we did not ask for it.
 > 
-> > 
-> > > I think it would make more sense for the check to live in
-> > > hpet_cfg_working(), though.
-> > 
-> > No. That does not make any sense at all.
-> > 
-> > The proper change would have been to make hpet_set_mapping() return
-> > an error/success code and act on that.
-> > 
-> > But that does _NOT_ make the patch invalid.
-> > 
-> > I'm pretty sure that I looked at it and thought about the proper
-> > solution (see above) and then shrugged it off because of overload...
-> 
-> Right, no, I was saying the original patch should stay. It shouldn't be
-> reverted.
-> 
-> Greg, please drop this patch from the revert list.
+> Original code looks good, please drop the revert.
 
-Now dropped, thanks for the review.
+Thanks for the review, I've dropped the revert now.
 
 greg k-h
