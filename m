@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCB436BC1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233CB36BC23
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235571AbhDZXhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58850 "EHLO mail.kernel.org"
+        id S237752AbhDZXjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:39:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:59761 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235203AbhDZXhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:37:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 27E85611BE;
-        Mon, 26 Apr 2021 23:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619480201;
-        bh=t+Nto9cpCrIrQwyNsBHGPh9fhxd37tgVWi2hsO1WHk4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=M4bwfj9vDZPwed9CcWibSeNQe81GGs7aSCjF7q0DT3HW3DB6guQDZhySHbHZmron+
-         V2rKrUrHMAN/e/06BEJwH1M1CmLFtDzGGF4SGxfAyigbk9iuWRAGPmjDy3Ow2Ge9Iw
-         DeDD0myUbA6WTCraLxweu9bBY98fFrs7jhEee6OCOWrqrkAqc3cSnTA3OhOky9qQlr
-         d26fU+2xtTLot2ptCFZNg6KZJ44fyeu08hy0QpaY6vAOsuqr3HjHUXl8w38LPh4Qx8
-         snavvfyetrmGwsIGbvmyTmHZFZ/ixqcAvXn2cBqUJJAp0SpI5vBhPndiaSPYxpkBbe
-         2ZX/ZLR/GFHjQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 20959609AE;
-        Mon, 26 Apr 2021 23:36:41 +0000 (UTC)
-Subject: Re: [GIT PULL] SPI updates for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210426144116.D2DBA60E0C@mail.kernel.org>
-References: <20210426144116.D2DBA60E0C@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210426144116.D2DBA60E0C@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v5.13
-X-PR-Tracked-Commit-Id: 86527bcbc88922ea40df05d28189ee15489d2cf1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4a0225c3d208cfa6e4550f2210ffd9114a952a81
-Message-Id: <161948020112.27003.8565683957256706979.pr-tracker-bot@kernel.org>
-Date:   Mon, 26 Apr 2021 23:36:41 +0000
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+        id S237677AbhDZXjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:39:07 -0400
+IronPort-SDR: hi2N/OYRUK1SBv3ZwQs2BLJPjHixmabKB7m3mnbHv5CZ/iBvGBdm5Vmcp2oSGjp2g9YL3hd5tk
+ q89L9+9KkYoA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="260374755"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="260374755"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 16:38:23 -0700
+IronPort-SDR: A50+Fd5pn/qjEoSorYMDPYKihZpodieBazBUiERfxoqvGxei7QgZ5XYQMXGBr7+xxjtAB4Hi42
+ 7J1D/c4nsVXg==
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="618771565"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 16:38:23 -0700
+Date:   Mon, 26 Apr 2021 16:38:23 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v3 1/3] fsdax: Factor helpers to simplify dax fault code
+Message-ID: <20210426233823.GT1904484@iweiny-DESK2.sc.intel.com>
+References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
+ <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 15:40:34 +0100:
+On Thu, Apr 22, 2021 at 09:44:59PM +0800, Shiyang Ruan wrote:
+> The dax page fault code is too long and a bit difficult to read. And it
+> is hard to understand when we trying to add new features. Some of the
+> PTE/PMD codes have similar logic. So, factor them as helper functions to
+> simplify the code.
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  fs/dax.c | 153 ++++++++++++++++++++++++++++++-------------------------
+>  1 file changed, 84 insertions(+), 69 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index b3d27fdc6775..f843fb8fbbf1 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v5.13
+[snip]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4a0225c3d208cfa6e4550f2210ffd9114a952a81
+> @@ -1355,19 +1379,8 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>  		entry = dax_insert_entry(&xas, mapping, vmf, entry, pfn,
+>  						 0, write && !sync);
+>  
+> -		/*
+> -		 * If we are doing synchronous page fault and inode needs fsync,
+> -		 * we can insert PTE into page tables only after that happens.
+> -		 * Skip insertion for now and return the pfn so that caller can
+> -		 * insert it after fsync is done.
+> -		 */
+>  		if (sync) {
+> -			if (WARN_ON_ONCE(!pfnp)) {
+> -				error = -EIO;
+> -				goto error_finish_iomap;
+> -			}
+> -			*pfnp = pfn;
+> -			ret = VM_FAULT_NEEDDSYNC | major;
+> +			ret = dax_fault_synchronous_pfnp(pfnp, pfn);
 
-Thank you!
+I commented on the previous version...  So I'll ask here too.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Why is it ok to drop 'major' here?
+
+Ira
+
