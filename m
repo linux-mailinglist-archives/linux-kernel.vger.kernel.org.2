@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F0636AF06
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1290836AEB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhDZHv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56330 "EHLO mail.kernel.org"
+        id S232846AbhDZHqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232616AbhDZHnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:43:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D03EA613AA;
-        Mon, 26 Apr 2021 07:39:43 +0000 (UTC)
+        id S233468AbhDZHji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D635613CF;
+        Mon, 26 Apr 2021 07:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422784;
-        bh=oyP6LS1k5NAJuRJ7cgqeIJDp4HwS7W3aMhJT+0+SU/U=;
+        s=korg; t=1619422653;
+        bh=wR6pr5QdpJH085Lt23DSVtUerLrLmPTa3RzwULkpT3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Et7FLxLcL1ZC7JeNwbQj1yDtJHcU5+NYDs8gVKgm/vJpYJtGRHT0L5DHkyTfQsOj
-         T/VgbiMdpYAPf2ebhQv4ZZbqiDylwBMZOyfazFgHqla7B2/wgZFwprIwQgwbN6CTxn
-         MCXYAL/fS3v2Jnp79iwZL2o099oPFMELhVGCgDM8=
+        b=JgPQgTBXTAxQa1TxTD+BtmHdlc5kF8CbkGYIy3kUseCzb0XmA5PGj6qSx8VF1bPFr
+         1a3/g24rA2DJWzs8iTZdSI6hNGeeWre5cE9Jo+9M08w2E1Sc2hovXzN6ZE6n0WxpwD
+         cVulCV1TDhIQGWhid4c9dFVJ/KbEzrWvi73Y7/28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuanyuan Zhong <yzhong@purestorage.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 05/36] pinctrl: lewisburg: Update number of pins in community
-Date:   Mon, 26 Apr 2021 09:29:47 +0200
-Message-Id: <20210426072818.969086612@linuxfoundation.org>
+Subject: [PATCH 4.19 51/57] net: geneve: check skb is large enough for IPv4/IPv6 header
+Date:   Mon, 26 Apr 2021 09:29:48 +0200
+Message-Id: <20210426072822.301891397@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuanyuan Zhong <yzhong@purestorage.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit 196d941753297d0ca73c563ccd7d00be049ec226 ]
+[ Upstream commit 6628ddfec7580882f11fdc5c194a8ea781fdadfa ]
 
-When updating pin names for Intel Lewisburg, the numbers of pins were
-left behind. Update them accordingly.
+Check within geneve_xmit_skb/geneve6_xmit_skb that sk_buff structure
+is large enough to include IPv4 or IPv6 header, and reject if not. The
+geneve_xmit_skb portion and overall idea was contributed by Eric Dumazet.
+Fixes a KMSAN-found uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
 
-Fixes: e66ff71fd0db ("pinctrl: lewisburg: Update pin list according to v1.1v6")
-Signed-off-by: Yuanyuan Zhong <yzhong@purestorage.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-lewisburg.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/geneve.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-lewisburg.c b/drivers/pinctrl/intel/pinctrl-lewisburg.c
-index 7fdf4257df1e..ad4b446d588e 100644
---- a/drivers/pinctrl/intel/pinctrl-lewisburg.c
-+++ b/drivers/pinctrl/intel/pinctrl-lewisburg.c
-@@ -299,9 +299,9 @@ static const struct pinctrl_pin_desc lbg_pins[] = {
- static const struct intel_community lbg_communities[] = {
- 	LBG_COMMUNITY(0, 0, 71),
- 	LBG_COMMUNITY(1, 72, 132),
--	LBG_COMMUNITY(3, 133, 144),
--	LBG_COMMUNITY(4, 145, 180),
--	LBG_COMMUNITY(5, 181, 246),
-+	LBG_COMMUNITY(3, 133, 143),
-+	LBG_COMMUNITY(4, 144, 178),
-+	LBG_COMMUNITY(5, 179, 246),
- };
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index 2e2afc824a6a..ce6fecf421f8 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -839,6 +839,9 @@ static int geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 df;
+ 	int err;
  
- static const struct intel_pinctrl_soc_data lbg_soc_data = {
++	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
++		return -EINVAL;
++
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+ 	rt = geneve_get_v4_rt(skb, dev, gs4, &fl4, info,
+ 			      geneve->info.key.tp_dst, sport);
+@@ -882,6 +885,9 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
+ 
++	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
++		return -EINVAL;
++
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+ 	dst = geneve_get_v6_dst(skb, dev, gs6, &fl6, info,
+ 				geneve->info.key.tp_dst, sport);
 -- 
 2.30.2
 
