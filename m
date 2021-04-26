@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C397536AD88
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B7536AE65
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhDZHhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
+        id S233891AbhDZHoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:44:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232882AbhDZHgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AEDB6135F;
-        Mon, 26 Apr 2021 07:33:40 +0000 (UTC)
+        id S233112AbhDZHil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:38:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB4A61177;
+        Mon, 26 Apr 2021 07:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422421;
-        bh=mVyWi9XG90EchzaJQHS0kyf10Ks7lxWF4bcLEboImsE=;
+        s=korg; t=1619422593;
+        bh=/RhyiARNCwH9QEe9nI53s2Uk333XquDJ4kmE8dRT9m0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=esxUFgktd+RxU6FQCWWWpK9Snvj7dcaWysWr6EoYhXJsXelPxiEjlxg6qMCiOC7fl
-         CI5qwwuGfPt2t6fsGQ2gpgaO75Ig+JkCsELBB9cMrbnfseOC6UXz6sLKRl/nJoLr6v
-         O+uxaBfSRltQy0riEYZkET2FBpJMODT+6N50YzTg=
+        b=BJUmGWTdegEE13xhV8pt8fNcONd3fa/A9q/+BWAXsy0R21bEAZu0hlrmVqG2JDHgc
+         83iTsrz0ZdC5ngjcmUhPFi/HcafrKkNM3mtmPR8gwoRaeR/i9sx/E0rR6lA7zWhvTJ
+         mNcH3888wgkdGkmWJ2PIBK/qpwIA5AyIGRmPDd7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fredrik Strupe <fredrik@strupe.net>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.9 22/37] ARM: 9071/1: uprobes: Dont hook on thumb instructions
+        stable@vger.kernel.org, Jaegeuk Kim <jaegeuk@google.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 26/57] dm verity fec: fix misaligned RS roots IO
 Date:   Mon, 26 Apr 2021 09:29:23 +0200
-Message-Id: <20210426072818.005764582@linuxfoundation.org>
+Message-Id: <20210426072821.465825929@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fredrik Strupe <fredrik@strupe.net>
+From: Jaegeuk Kim <jaegeuk@google.com>
 
-commit d2f7eca60b29006285d57c7035539e33300e89e5 upstream.
+commit 8ca7cab82bda4eb0b8064befeeeaa38106cac637 upstream.
 
-Since uprobes is not supported for thumb, check that the thumb bit is
-not set when matching the uprobes instruction hooks.
+commit df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to
+block size") introduced the possibility for misaligned roots IO
+relative to the underlying device's logical block size. E.g. Android's
+default RS roots=2 results in dm_bufio->block_size=1024, which causes
+the following EIO if the logical block size of the device is 4096,
+given v->data_dev_block_bits=12:
 
-The Arm UDF instructions used for uprobes triggering
-(UPROBE_SWBP_ARM_INSN and UPROBE_SS_ARM_INSN) coincidentally share the
-same encoding as a pair of unallocated 32-bit thumb instructions (not
-UDF) when the condition code is 0b1111 (0xf). This in effect makes it
-possible to trigger the uprobes functionality from thumb, and at that
-using two unallocated instructions which are not permanently undefined.
+E sd 0    : 0:0:0: [sda] tag#30 request not aligned to the logical block size
+E blk_update_request: I/O error, dev sda, sector 10368424 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+E device-mapper: verity-fec: 254:8: FEC 9244672: parity read failed (block 18056): -5
 
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Fix this by onlu using f->roots for dm_bufio blocksize IFF it is
+aligned to v->data_dev_block_bits.
+
+Fixes: df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
 Cc: stable@vger.kernel.org
-Fixes: c7edc9e326d5 ("ARM: add uprobes support")
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/probes/uprobes/core.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/dm-verity-fec.c |   11 ++++++++---
+ drivers/md/dm-verity-fec.h |    1 +
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
---- a/arch/arm/probes/uprobes/core.c
-+++ b/arch/arm/probes/uprobes/core.c
-@@ -207,7 +207,7 @@ unsigned long uprobe_get_swbp_addr(struc
- static struct undef_hook uprobes_arm_break_hook = {
- 	.instr_mask	= 0x0fffffff,
- 	.instr_val	= (UPROBE_SWBP_ARM_INSN & 0x0fffffff),
--	.cpsr_mask	= MODE_MASK,
-+	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
- 	.cpsr_val	= USR_MODE,
- 	.fn		= uprobe_trap_handler,
- };
-@@ -215,7 +215,7 @@ static struct undef_hook uprobes_arm_bre
- static struct undef_hook uprobes_arm_ss_hook = {
- 	.instr_mask	= 0x0fffffff,
- 	.instr_val	= (UPROBE_SS_ARM_INSN & 0x0fffffff),
--	.cpsr_mask	= MODE_MASK,
-+	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
- 	.cpsr_val	= USR_MODE,
- 	.fn		= uprobe_trap_handler,
- };
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -69,7 +69,7 @@ static u8 *fec_read_parity(struct dm_ver
+ 	u8 *res;
+ 
+ 	position = (index + rsb) * v->fec->roots;
+-	block = div64_u64_rem(position, v->fec->roots << SECTOR_SHIFT, &rem);
++	block = div64_u64_rem(position, v->fec->io_size, &rem);
+ 	*offset = (unsigned)rem;
+ 
+ 	res = dm_bufio_read(v->fec->bufio, block, buf);
+@@ -158,7 +158,7 @@ static int fec_decode_bufs(struct dm_ver
+ 
+ 		/* read the next block when we run out of parity bytes */
+ 		offset += v->fec->roots;
+-		if (offset >= v->fec->roots << SECTOR_SHIFT) {
++		if (offset >= v->fec->io_size) {
+ 			dm_bufio_release(buf);
+ 
+ 			par = fec_read_parity(v, rsb, block_offset, &offset, &buf);
+@@ -743,8 +743,13 @@ int verity_fec_ctr(struct dm_verity *v)
+ 		return -E2BIG;
+ 	}
+ 
++	if ((f->roots << SECTOR_SHIFT) & ((1 << v->data_dev_block_bits) - 1))
++		f->io_size = 1 << v->data_dev_block_bits;
++	else
++		f->io_size = v->fec->roots << SECTOR_SHIFT;
++
+ 	f->bufio = dm_bufio_client_create(f->dev->bdev,
+-					  f->roots << SECTOR_SHIFT,
++					  f->io_size,
+ 					  1, 0, NULL, NULL);
+ 	if (IS_ERR(f->bufio)) {
+ 		ti->error = "Cannot initialize FEC bufio client";
+--- a/drivers/md/dm-verity-fec.h
++++ b/drivers/md/dm-verity-fec.h
+@@ -40,6 +40,7 @@ struct dm_verity_fec {
+ 	struct dm_dev *dev;	/* parity data device */
+ 	struct dm_bufio_client *data_bufio;	/* for data dev access */
+ 	struct dm_bufio_client *bufio;		/* for parity data access */
++	size_t io_size;		/* IO size for roots */
+ 	sector_t start;		/* parity data start in blocks */
+ 	sector_t blocks;	/* number of blocks covered */
+ 	sector_t rounds;	/* number of interleaving rounds */
 
 
