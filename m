@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C4E36B847
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C763036B846
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237482AbhDZRsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
+        id S237449AbhDZRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:47:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235584AbhDZRr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234754AbhDZRr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 13:47:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EA342613B2;
+Received: by mail.kernel.org (Postfix) with ESMTPS id A37C161185;
         Mon, 26 Apr 2021 17:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619459235;
-        bh=t6L+sC5Vr3ZziZ+vqTWovfRpM028shEMLNqe0TWZoDU=;
+        s=k20201202; t=1619459234;
+        bh=AkfP3c7uXWzzHU4ILsdwUMUtNDEsa+/IWcgMK4s9unY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HA/I1cCSUqzyGbbIB29DPGqoikyIHuyYR/UdxSzoT05CEa7lyzGRANJnMUuoJcMjv
-         vUasn1miR1D+t3fLAw5CQt9B3Qys5JL2sT8yRY9G9lhCToL29+sgX5JHLNp2mlxCgT
-         etSXHZ056P0GynQnD1yG5T1RvXetLZW0TuPx+QLX1/kDSJMdy/cod8l9kdTDImQq0z
-         i4tnmbc5U6mdX4k7l/6CLSHWcgOcsEcfz3QB+gTO0eVn0UKQ/hcRVU8gdiu45f2T0I
-         xT+RKJXh4hcsJIVzMu8mgYe1S476umQXDla45nnXyPrlRgajVqcSJAI2oR0Du2UMV6
-         E3PMyiJGg31QQ==
+        b=Me8Wkv1My1rPOYbgcAJZhXjfFCFG+sgvXhaCspQg+74gnCNphEjnmq5flUEHNTYZc
+         7GFM7qhJRb7GQs2WczH60RYxL2/VnU1ZoJkQ2UNt8mumrJXjy7qj0DfiGrHGJhg3WB
+         82Jg5UDzl4MkWQaeW6QMm5jO0oN6UBmzHZeIrTIk6m72DjlMQJCsSTZTPuWe6PRu33
+         tYqz6ZNWpZEjeh2AHKTtEXLDvzst18DBq+RHALRdlSIVShjBycY/zRQsxQDvcrUfFP
+         9JhXCdPFyaZ20OSh6YFVIBBfcBqHfImI57uxe1CCD4C3Ekik1TxkW3WhaNOHFVds87
+         7OfbbGUKCnTXg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E197D609AE;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 98C95609AE;
         Mon, 26 Apr 2021 17:47:14 +0000 (UTC)
-Subject: Re: [GIT PULL] Hyper-V commits for 5.13
+Subject: Re: [GIT PULL] xen: branch for v5.13-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210426172042.tzl7i3mdr6dc4iyp@liuwe-devbox-debian-v2>
-References: <20210426172042.tzl7i3mdr6dc4iyp@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210426172042.tzl7i3mdr6dc4iyp@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210426
-X-PR-Tracked-Commit-Id: 753ed9c95c37d058e50e7d42bbe296ee0bf6670d
+In-Reply-To: <20210426061618.22978-1-jgross@suse.com>
+References: <20210426061618.22978-1-jgross@suse.com>
+X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
+X-PR-Tracked-Message-Id: <20210426061618.22978-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.13-rc1-tag
+X-PR-Tracked-Commit-Id: f5079a9a2a31607a2343e544e9182ce35b030578
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4d480dbf21f3385e9957b1ee8dadee35548f4516
-Message-Id: <161945923491.30101.1618177739366309098.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8e47c5f0e23234659daea78256bc1b04ea019a4b
+Message-Id: <161945923456.30101.3675025824805536211.pr-tracker-bot@kernel.org>
 Date:   Mon, 26 Apr 2021 17:47:14 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 17:20:42 +0000:
+The pull request you sent on Mon, 26 Apr 2021 08:16:18 +0200:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210426
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.13-rc1-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4d480dbf21f3385e9957b1ee8dadee35548f4516
+https://git.kernel.org/torvalds/c/8e47c5f0e23234659daea78256bc1b04ea019a4b
 
 Thank you!
 
