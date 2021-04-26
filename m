@@ -2,156 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B6836B130
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0BE36B13B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbhDZKBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:01:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38364 "EHLO mx2.suse.de"
+        id S232907AbhDZKHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:07:48 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:47442 "EHLO wind.enjellic.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232328AbhDZKBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:01:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619431238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=236Xh/UNn0S/8u+6zQznzVUUtl8jlR4aS6Ek+3iM9ag=;
-        b=e3noeTC28z/Xri6GrVAsLQbb+19/ZXKcwiXykttGpO3/LQwVaTNdxg12/fw2LRPC+6t9IA
-        HcPkCQPLrE/HN8gkXcHFzww+HzN2AvJoWL+Y2kwYFA5bE5sc6iWvSNPVySXFy2EecsWSxC
-        0I4I24RVxxYVhLylKutG0yct0a6ntQA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EBD40AFE2;
-        Mon, 26 Apr 2021 10:00:37 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 12:00:35 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Samo =?utf-8?B?UG9nYcSNbmlr?= <samo_pogacnik@t-2.net>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-Message-ID: <YIaPQzktArmoWbLr@alley>
-References: <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
- <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
- <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
- <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
- <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
- <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
- <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
- <07c3c9015491ca9b42362098d5e90ca7480cf5ed.camel@t-2.net>
- <e7010c9e-1ac2-55a7-b505-802e03f13362@i-love.sakura.ne.jp>
- <9e8805a98d6c0d0f20e563c8e4db98b595826c13.camel@t-2.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S232367AbhDZKHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 06:07:47 -0400
+X-Greylist: delayed 1271 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Apr 2021 06:07:47 EDT
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 13Q9jds8008380;
+        Mon, 26 Apr 2021 04:45:39 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 13Q9jcsE008379;
+        Mon, 26 Apr 2021 04:45:38 -0500
+Date:   Mon, 26 Apr 2021 04:45:38 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: SGX feature extensions patch.
+Message-ID: <20210426094538.GA8264@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e8805a98d6c0d0f20e563c8e4db98b595826c13.camel@t-2.net>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Mon, 26 Apr 2021 04:45:39 -0500 (CDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2021-04-24 11:57:47, Samo Pogačnik wrote:
-> Dne 24.04.2021 (sob) ob 10:16 +0900 je Tetsuo Handa napisal(a):
-> > On 2021/04/24 4:47, Samo Pogačnik wrote:
-> > > At any point the tpk_buffer is potentially multiplexed/interleaved by parts
-> > > of
-> > > required output of any concurrent user, as buffs are being delivered by the
-> > > scheduled writes.
-> > 
-> > As long as one line is printed by one printk() call, CONFIG_PRINTK_CALLER=y is
-> > helpful enough to distinguish multilplexed/interleaved messages. I consider
-> > that
-> > ttyprintk offers additional advantage over printk() for allow buffering one
-> > line
-> > of message from userspace.
+Good morning, I hope the week is starting well for everyone.
 
-It does not matter how much buffering games you play. As long as you
-use printk() to store single lines into the kernel logbuffer they
-alway could be interleaved with lines from other processes/CPUs.
+With the SGX driver having been mainlined in the 5.11 release we will
+be maintaining and releasing our out-of-tree SGX feature extension
+patch for each kernel release.
 
-> > > 
-> > > As per user buffers look promising with output formatting, the FDs passing
-> > > between tasks lead to the same single buffer (Greg already mentioned that).
-> > 
-> > Those programs which use FD passing know what they are doing. If they still
-> > want
-> > one line of message printed via ttyprintk interface, they must do their
-> > buffering
-> > before trying to write() to ttyprintk's file descriptor.
+The patches will be available using the following URL format:
 
-Lines might get interleaved when using printk().
-What is special about messages passed via ttyprintk()?
-How many processes are using it?
-Do they print many lines?
-Is it really worth any added complexity?
+ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-MAJOR.MINOR.patch
 
+With the detached signature available via the following URL:
 
-> > Use of per "struct file" buffer gives those programs which does not use
-> > FD passing a guarantee that one line of message from those programs won't be
-> > multilplexed/interleaved (with the aid of CONFIG_PRINTK_CALLER=y).
+ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-MAJOR.MINOR.patch.asc
 
-How huge bugffer would be needed?
+The 5.11 patch and signature can thus be retrieved via the following
+URL's:
 
-IMHO, even a 80-bytes big per-task buffer is not acceptable. And even
-such a buffer would hold only 1-3 lines.
+ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-5.11.patch
 
-> I think i understand, what would you like to achieve, however implementation
-> wise there seems to be no reference point available in tty write operation that
-> would relate to its tty open/close operations (i.e. open() and close() provide
-> filp while write() does not - probably for a reason) or is there such a relation
-> available?
-<
-> On the other hand, my main concern is how to provide a reliable system wide
-> collection of all console output via ttyprintk console redirection, while normal
-> operation of system console is preserved (except its output being detoured via
-> printk and as such logged together with kernel output). Such logging is
-> particularly useful for after-the-fact inspection of system operation.
+ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-5.11.patch.asc
 
-I am not sure if I understand the problem. But why does ttyprintk need
-any buffer at all. AFAIK, the use-case is to pass any written data into the
-kernel logbuffer via printk()?
+I've included the public signing key that is being used for the
+signatures at the end of this e-mail.
 
-Why tpk_write() does not call printk() directly?
+In addition to implementing cryptographic access control policies, the
+feature extension patch allows the mainline driver to work on
+platforms that do not have Flexible Launch Control.
 
-If you call printk() directly, the caller_id would be from the process
-that really wrote the data/message.
+The changelog for the patch contains documentation for how to use the
+cryptographic access control policies, along with the rationale for
+enabling support for non-FLC platforms, which is basically the fact
+that with the mainline Linux driver there is very little hardware
+available to developers who would be interested in working with SGX on
+Linux.
 
-> That being said i am thinking about how to permanently enable this redirection
-> as early as possible (i.e. via kernel command line option). I had a working
-> prototype for that some time ago (never posted). Would anybody like to see such
-> functionality?
+The driver extensions are unit tested on both FLC and non-FLC
+hardware.
 
-Please, do not add any complex code if it does not cause real life
-problems.
+We would, of course, be interested in any productive suggestions,
+security issues or enhancement requests.  Depending on the trajectory
+of mainline development, we may add support for partial page
+initialization if that doesn't look like it is headed for mainline
+inclusion.
 
-There seems to be only few commits that suggest that anyone is using
-this driver and the latest is 7 year old.
+Best wishes for a productive week.
 
-+ (2014) acef6660d3aaf18813143
-	("ttyprintk: make the printk log level configurable")
-+ (2014) b24313a82cf24e9017067
-	("ttyprintk: Allow built as a module")
-+ (2014) 7d1c2858c49095ab748f5
-	("ttyprintk: Fix wrong tty_unregister_driver() call in the error path")
-+ (2014) db50d2f65b7c2bcdfb931
-	("drivers/char: don't use module_init in non-modular ttyprintk.c")
-+ (2013) b5325a02aa84c794cf520
-	("ttyprintk: Fix NULL pointer deref by setting tty_port ops
-	  after	initializing port")
-+ (2012) ee8b593affdf893012e57
-	("TTY: ttyprintk, don't touch behind tty->write_buf")
-+ (2012) f06fb543c1d0cbd721250
-	("TTY: ttyprintk, unregister tty driver on failure")
-+ (2012) 2f16669d322e05171c9e1
-	("TTY: remove re-assignments to tty_driver members")
-+ (2010) 24b4b67d17c308aaa956b
-	("add ttyprintk driver")
+Dr. Greg
 
-Best Regards,
-Petr
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+unEH7sy5Alwk3lu03EE2iJzcAsQ4jq3xYSt0nw==
+=WFeh
+-----END PGP PUBLIC KEY BLOCK-----
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"Heaven goes by favor.  If it went by merit, you would stay out and your
+ dog would go in."
+                                -- Mark Twain
