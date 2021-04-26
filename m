@@ -2,108 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D025736B4BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DD436B4C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhDZOUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233792AbhDZOUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:20:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3BA56101C;
-        Mon, 26 Apr 2021 14:19:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619446782;
-        bh=/Q3C+Yf/LH5vmVHv0+NtFuLk/XJ/KpuX0JQvBT1NiDs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IfFZC1sTriLI2UHnZdynbjCvY3wZY+lTDlPwmRsNvkQ8D1gn8m53T7X/0WltGXx+l
-         Z6LfX0gv+b4UWHf0wo9b1Po4B3G1pveAavsVfpBDNs24uU4BFHkZ1f7clX0foRVWQy
-         O+EbcD0OwmDFztxIbY8WZ2Vo3JCrkkJ2WSc+ULA1zxEIlZ4QGbCsCZBHyfIAE/L8Zo
-         DPH9ws/Uka4LoigEg40qzdLwWt5BjBKBVl0n74JycZSMz3Ef+f/NDga/3NsNogthMd
-         YZqMtfc/FY9xh6mBuPTvOa6OOU867I+ZSSDCJyHInarXcEGgVr/SLvRGn2Gno+GfVW
-         yS9jJRl982wiA==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 2/2] mm/mmzone.h: simplify is_highmem_idx()
-Date:   Mon, 26 Apr 2021 17:19:27 +0300
-Message-Id: <20210426141927.1314326-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210426141927.1314326-1-rppt@kernel.org>
-References: <20210426141927.1314326-1-rppt@kernel.org>
+        id S233814AbhDZOWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:22:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34410 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhDZOWD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:22:03 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619446880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MJ6EOI6m5aMtbVSyjGx8P9B6cH6gCK1DbxS5kxDcTwI=;
+        b=Qm6325BMyee6Edzoz1xvthynaLYkXLggmi0oO4aRuKO8nNMGIskj9zRTet9/4FEVuo7LM6
+        Ko3+9g+NRo3cnPSiiNsKnGzzWzNV13DjMuT4XFzNHGbMnbQyzbuLdygJmQBzzw+ylo+OjL
+        vKxFpPMHiA8xll1S5ZJLhuKrBTwv2mzxcjLVDY4zN9dpC98t/QH6zn9uBJJ99HhmYFefbs
+        4KbCbNwPLf7MDyXMM0Q4txG2vXKoJX42/RcqP5xyhYkbWWzt5uAHFwkwEZYA6rO3ut9WT6
+        Xu5A8pfYD5PufM8B2c9jXQZdaTwPGJlAMl2FAWzss9YieGOdplpRvdQN3pAlAw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619446880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MJ6EOI6m5aMtbVSyjGx8P9B6cH6gCK1DbxS5kxDcTwI=;
+        b=c7fOkmvGbRyRpgY6VCsiH/tbCpAMe/hN2vAOuS17HNIhTe2DUK89BNdoYoDe9LdUX7vBAM
+        SubDH6mOYy3QlkDA==
+To:     Hikaru Nishida <hikalium@chromium.org>, kvm@vger.kernel.org
+Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [RFC PATCH 6/6] x86/kvm: Add a guest side support for virtual suspend time injection
+In-Reply-To: <20210426090644.2218834-7-hikalium@chromium.org>
+References: <20210426090644.2218834-1-hikalium@chromium.org> <20210426090644.2218834-7-hikalium@chromium.org>
+Date:   Mon, 26 Apr 2021 16:21:20 +0200
+Message-ID: <87mttlt9cv.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Apr 26 2021 at 18:06, Hikaru Nishida wrote:
+> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
+> +/*
+> + * timekeeping_inject_suspend_time - Inject virtual suspend time
+> + * if it is requested by kvm host.
+> + * This function should be called under holding timekeeper_lock and
+> + * only from timekeeping_advance().
+> + */
+> +static void timekeeping_inject_virtual_suspend_time(struct timekeeper *tk)
+> +{
+> +	struct timespec64 delta;
+> +	u64 suspend_time;
+> +
+> +	suspend_time = kvm_get_suspend_time();
+> +	if (suspend_time <= tk->suspend_time_injected) {
+> +		/* Sufficient amount of suspend time is already injected. */
 
-There is a lot of historical ifdefery in is_highmem_idx() and its helper
-zone_movable_is_highmem() that was required because of two different paths
-for nodes and zones initialization that were selected at compile time.
+What's a sufficient amount of suspend time?
 
-Until commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP
-option") the movable_zone variable was only available for configurations
-that had CONFIG_HAVE_MEMBLOCK_NODE_MAP enabled so the test in
-zone_movable_is_highmem() used that variable only for such configurations.
-For other configurations the test checked if the index of ZONE_MOVABLE was
-greater by 1 than the index of ZONE_HIGMEM and then movable zone was
-considered a highmem zone. Needless to say, ZONE_MOVABLE - 1 equals
-ZONE_HIGHMEM by definition when CONFIG_HIGHMEM=y.
+> +		return;
+> +	}
+> +	delta = ns_to_timespec64(suspend_time - tk->suspend_time_injected);
+> +	__timekeeping_inject_sleeptime(tk, &delta);
+> +	tk->suspend_time_injected = suspend_time;
+> +}
+> +#endif
+>
+> +
+>  /*
+>   * timekeeping_advance - Updates the timekeeper to the current time and
+>   * current NTP tick length
+> @@ -2143,6 +2166,10 @@ static void timekeeping_advance(enum timekeeping_adv_mode mode)
+>  	/* Do some additional sanity checking */
+>  	timekeeping_check_update(tk, offset);
+>  
+> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
 
-Commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
-made movable_zone variable always available. Since this variable is set to
-ZONE_HIGHMEM if CONFIG_HIGHMEM is enabled and highmem zone is populated, it
-is enough to check whether
+There are better ways than slapping #ifdefs into the code.
 
-	zone_idx == ZONE_MOVABLE && movable_zone == ZONE_HIGMEM
+> +	timekeeping_inject_virtual_suspend_time(tk);
+> +#endif
 
-to test if zone index points to a highmem zone.
+So this is invoked on every tick? How is that justified?
 
-Remove zone_movable_is_highmem() that is not used anywhere except
-is_highmem_idx() and use the test above in is_highmem_idx() instead.
+The changelog is silent about this, but that's true for most of your
+changelogs as they describe what the patch is doing and not the WHY,
+which is the most important information. Also please do a
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- include/linux/mmzone.h | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+grep 'This patch' Documentation/process
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 0d53eba1c383..c2bfefd34b59 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -982,22 +982,11 @@ static inline void zone_set_nid(struct zone *zone, int nid) {}
- 
- extern int movable_zone;
- 
--#ifdef CONFIG_HIGHMEM
--static inline int zone_movable_is_highmem(void)
--{
--#ifdef CONFIG_NEED_MULTIPLE_NODES
--	return movable_zone == ZONE_HIGHMEM;
--#else
--	return (ZONE_MOVABLE - 1) == ZONE_HIGHMEM;
--#endif
--}
--#endif
--
- static inline int is_highmem_idx(enum zone_type idx)
- {
- #ifdef CONFIG_HIGHMEM
- 	return (idx == ZONE_HIGHMEM ||
--		(idx == ZONE_MOVABLE && zone_movable_is_highmem()));
-+		(idx == ZONE_MOVABLE && movable_zone == ZONE_HIGHMEM));
- #else
- 	return 0;
- #endif
--- 
-2.29.2
+the match there will lead you also to documentation about changelogs in
+general.
 
+Now to the overall approach, which works only for a subset of host
+systems:
+
+  Host resumes
+      timekeeping_resume()
+
+        delta = get_suspend_time_if_possible(); <----- !!
+
+        kvm_arch_timekeeping_inject_sleeptime(delta)
+            TSC offset adjustment on all vCPUs
+            and prepare for magic injection
+
+So this fails to work on host systems which cannot calculate the suspend
+time in timekeeping_resume() because the clocksource stops in suspend
+and some other source, e.g. RTC, is not accessible at that point in
+time. There is a world outside of x86.
+
+So on the host side the notification for the hypervisor has to be in
+__timekeeping_inject_sleeptime() obviously.
+
+Also I explicitely said hypervisor as we really don't want anything KVM
+only here because there are other hypervisors which might want to have
+the same functionality. We're not going to add a per hypervisor call
+just because.
+
+Now to the guest side:
+
+  Guest is unfrozen
+
+   clocksource in guest restarts at the point of freeze (TSC on x86)
+
+     All CLOCK ids except CLOCK_MONOTONIC continue from the state of
+     freeze up to the point where the first tick() after unfreeze
+     happens in the guest.
+     
+     Now that first tick does sleep time injection which makes all
+     clocks except CLOCK_MONOTONIC jump forward by the amount of time
+     which was spent in suspend on the host.
+
+     But why is this gap correct? The first tick after unfreeze might be
+     up to a jiffie away.
+
+Again the changelog is silent about this. 
+
+Also for the guest side there has to be a better way than lazily polling
+a potential suspend injection on every tick and imposing the overhead
+whether it's needed or not.
+
+That's a one off event and really should be handled by some one off
+injection mechanism which then invokes the existing
+timekeeping_inject_sleeptime64(). There is no need for special
+KVM/hypervisor magic in the core timekeeping code at all.
+
+Seriously, if the only way to handle one off event injection from
+hypervisor to guest is by polling, then there is a fundamental design
+flaw in KVM or whatever hypervisor.
+
+Thanks,
+
+        tglx
