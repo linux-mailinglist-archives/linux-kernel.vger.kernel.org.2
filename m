@@ -2,396 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE9936AA96
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC5C36AA99
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhDZCcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:32:06 -0400
-Received: from dispatch1-eu1.ppe-hosted.com ([185.132.181.6]:1820 "EHLO
+        id S231718AbhDZCdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 22:33:36 -0400
+Received: from dispatch1-eu1.ppe-hosted.com ([185.132.181.8]:5000 "EHLO
         dispatch1-eu1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231502AbhDZCcE (ORCPT
+        by vger.kernel.org with ESMTP id S231502AbhDZCde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:32:04 -0400
-X-Greylist: delayed 506 seconds by postgrey-1.27 at vger.kernel.org; Sun, 25 Apr 2021 22:32:03 EDT
-Received: from dispatch1-eu1.ppe-hosted.com (localhost.localdomain [127.0.0.1])
-        by dispatch1-eu1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 4B748165BA4;
-        Mon, 26 Apr 2021 02:22:55 +0000 (UTC)
+        Sun, 25 Apr 2021 22:33:34 -0400
 X-Virus-Scanned: Proofpoint Essentials engine
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com (mail-db5eur03lp2057.outbound.protection.outlook.com [104.47.10.57])
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01lp2050.outbound.protection.outlook.com [104.47.1.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1-eu1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id EEB164006C;
-        Mon, 26 Apr 2021 02:22:51 +0000 (UTC)
+        by mx1-eu1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 45B439C0061;
+        Mon, 26 Apr 2021 02:32:51 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YWVcn7ILhcQKxE4SabS9nJdpTTrJ/xkehvaVOHzQslwZavqwD3h0fUuJeYzct+YSGiKjgKmI/hOrL0Bv8TbutrV1InVq/yuGCBEs54kA7AJho0jfose1eBEJBp7RRTQTf52+yEtZoNtecMx+KKxSQLyxGPr3fAEC5UlCaWXh4AFOn0C4YkLWLW5+9gEpmyiu9RHz1CtZI8iHpCO37qthh4drzYnIeHvtp+UZiX51VkFtqGg0qwSHy0frDj5Nj9J/i6NBBdwn9vzZLkS1J0/dC4ntr1x6j4DOlsy6BNDAIXTFUV4RapFoE62Kv2++B4SRXdh+TlIAerFNABhzX+yGwg==
+ b=bCYOUJqUuBx60uXvIovac9sAhVuPzCqPIoor1VzWlzzd58aeit7a7PPfMU80dwqAvift8wxg4pZy26qTc8hHO+x1JeTkY9Y0iuWrRztEEBMhBBwKaXxqv4QcpmnODoj89sEute8C+7qItFATHDGVuoB4GgF3AhHmEjIdZgWMd5IsvvjY4NaPZKsqCelmBqaDFTEGiDCYH3eJEc/gOC1qolKHO0PDXqwiBXsPTYcgzVzYN9OSlQNeL9xoOU3cezmTcDe1R8a1RElr8l7t3XC7c18Q1305vqua6/6DJ2wgMFa8SMrI0ZHAwaRP5azChw88lAtSvy69fhbj4htWb2OwFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RAZApA+fFm+JuNDMB2h8/gtcKrAPXrqgd6SZ8sd6URc=;
- b=HdYS8NedWVr5FzYMLCGjSeWD5RslWXOVI39E0s7r8JcyPSfV9z92dXUF1wT3LTW+O+qlQP98+gHkEFeX84y4CjuXYg1QRsHEuOk1/4nGxBSNKMQxgv9eDhjHteI/D5zkrytmVHZL32pLs84YOuCTb1SmUAUe/7MPYzMHP5kRyDY+0WPR06+SlOw5gpRp/ctm9+hLE+1YGVT/UTBJgGcgiJFvLTayb8aSf+lsNuhkPMJlHJR8J8k0SpCkvwu2dvxhx/EIObEDNa7DRDT8qff+ECafZGsUhU/fT/sSEmXcihYpHiF01xjcg3oO7UPitYu2seRqLLlbY/IlBKetOkfQzw==
+ bh=uxP3EvnBcz8yC7zwc3IKcdZtX96VQ67KMJZ4f71/uSc=;
+ b=Wm3DdrbQgDjNN/biXF6yTpH7CpmmjM/TuCF6evEe6TE6gFNrCca+7AcBIPLfJrFTVsegPr5sro+CL9QsFsI9TL8V6vqyDq4cspqf3kKBYrVkeab23/r3GEGqbW1UXi83VznkpH43VNKezBeW+xwXEakDBR2JyEj51ChqCxe8biEcsS2CxHA1LIAut8LWKaq/HskUOYYMe3i8gJ8I4jRxy3PfWgfwSYQq/+nuUpsW84j/1VEmhz7+BfXhCnkQq7aDod3EVTB0SEIu7vUEzHMXVqg8xFD73zPmPE/QD/zWShY2fQsH7NXSGCwDzc7JOlPrVFDPZPuJ1Gng68SB+FCHkg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=drivenets.com; dmarc=pass action=none
  header.from=drivenets.com; dkim=pass header.d=drivenets.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=drivenets.onmicrosoft.com; s=selector2-drivenets-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RAZApA+fFm+JuNDMB2h8/gtcKrAPXrqgd6SZ8sd6URc=;
- b=WDhD0OGjfA8z3I7m4f4LFaHqMe6BKwOy57SRjCjLGFC1KCTCpgPJPoWEY8ou4agluW43y/2uVeAOi9dy9GZODM70tDeRi2lhscN5FRqA4UEtDSKWVGVsCHas8zNM/PePWp/7BXtiEN35KL3BexjFNHBGuiWXq1FLbRz1gPmXmIs=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=drivenets.com;
+ bh=uxP3EvnBcz8yC7zwc3IKcdZtX96VQ67KMJZ4f71/uSc=;
+ b=FEo4Ch7xeNe0JaWUx7CNPUrKeKEHrLKlnFd9w2vlRg/gJwnfqhHOH3m7HbHj94+J5QypsXJhe9gow3R8T3xfdIW+s1aK4JwdwQ001BukXYWt49Rz5MuQDy8VPPIaP+CMoDvUfHFNZWKgXJckc5G0f0VQpjy07/8z5gq7fnLMOEI=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=drivenets.com;
 Received: from AM7PR08MB5511.eurprd08.prod.outlook.com (2603:10a6:20b:10d::12)
- by AS8PR08MB5958.eurprd08.prod.outlook.com (2603:10a6:20b:299::16) with
+ by AS8PR08MB5991.eurprd08.prod.outlook.com (2603:10a6:20b:29f::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Mon, 26 Apr
- 2021 02:22:50 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22; Mon, 26 Apr
+ 2021 02:32:49 +0000
 Received: from AM7PR08MB5511.eurprd08.prod.outlook.com
  ([fe80::1b7:6f71:2dd8:a2b3]) by AM7PR08MB5511.eurprd08.prod.outlook.com
  ([fe80::1b7:6f71:2dd8:a2b3%6]) with mapi id 15.20.4065.026; Mon, 26 Apr 2021
- 02:22:50 +0000
+ 02:32:49 +0000
 From:   Leonard Crestez <lcrestez@drivenets.com>
-To:     Matt Mathis <mattmathis@google.com>,
-        Neal Cardwell <ncardwell@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Subject: Re: Fwd: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
+To:     Matt Mathis <mattmathis@google.com>
+Cc:     "Cc: Willem de Bruijn" <willemb@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Ilya Lesokhin <ilyal@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         David Ahern <dsahern@kernel.org>,
-        John Heffner <johnwheffner@gmail.com>,
         Soheil Hassas Yeganeh <soheil@google.com>,
         Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Leonard Crestez <cdleonard@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC] tcp: Consider mtu probing for tcp_xmit_size_goal
-Date:   Mon, 26 Apr 2021 05:22:29 +0300
-Message-Id: <c575e693788233edeb399d8f9b6d9217b3daed9b.1619403511.git.lcrestez@drivenets.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Yuchung Cheng <ycheng@google.com>,
+        John Heffner <johnwheffner@gmail.com>
+References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
+ <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
+ <CAH56bmDBGsHOSjJpo=TseUATOh0cZqTMFyFO1sqtQmMrTPHtrA@mail.gmail.com>
+ <CAH56bmCp8eRqsdoMTmAmCaEnubwEy317OJKQ9UjqMvDwrkcMdQ@mail.gmail.com>
+Message-ID: <bbefd183-83be-a165-6a82-53100b5ace70@drivenets.com>
+Date:   Mon, 26 Apr 2021 05:32:46 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
+In-Reply-To: <CAH56bmCp8eRqsdoMTmAmCaEnubwEy317OJKQ9UjqMvDwrkcMdQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [78.96.81.202]
-X-ClientProxiedBy: AM0PR06CA0132.eurprd06.prod.outlook.com
- (2603:10a6:208:ab::37) To AM7PR08MB5511.eurprd08.prod.outlook.com
+X-ClientProxiedBy: LO2P265CA0416.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a0::20) To AM7PR08MB5511.eurprd08.prod.outlook.com
  (2603:10a6:20b:10d::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from dnmacvm.dev.drivenets.net (78.96.81.202) by AM0PR06CA0132.eurprd06.prod.outlook.com (2603:10a6:208:ab::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Mon, 26 Apr 2021 02:22:49 +0000
+Received: from lcrestez-mac.local (78.96.81.202) by LO2P265CA0416.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Mon, 26 Apr 2021 02:32:48 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd43b248-6685-4281-b38d-08d9085a3057
-X-MS-TrafficTypeDiagnostic: AS8PR08MB5958:
-X-Microsoft-Antispam-PRVS: <AS8PR08MB59584F23D89494154711B749D5429@AS8PR08MB5958.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Office365-Filtering-Correlation-Id: bf63f416-9a2f-48aa-0c18-08d9085b958a
+X-MS-TrafficTypeDiagnostic: AS8PR08MB5991:
+X-Microsoft-Antispam-PRVS: <AS8PR08MB59910C4F3DC6890FB3DAAE9FD5429@AS8PR08MB5991.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7tUg642QyVAcNHkhbcZ1jTHZWxIpQhs/lXanXsJMPBgAuImKCo4NM6UU+V56qB/4IqjuPSBoZc6TzQQbawm5zdcuXRIJB/Y/ahE8qp6tHTWmIMvXqaccvW+0j5azCwNo70qmRCOjQcZ9BfL4t2/evSJEQYpxcUGESq4x+Q9S97oJU192/DzWosHcUAAMxGhsb+ikKPrByG6QoIVIfu0b72iMRp399c6kqxWFj+5nRVBt0XHmJ473+hZhImoPsEN9LD6fMWVG+2clu5QyrjYH8V6GoEgxW2dQXqR5W15wZCMjXCyt1WCWHaI7UrrR6r/RZOE3q2SlXizDk9A2auDiXXk0mZfxTuSr+OG+X+tn2RVzRW2ZfBA9WL2fkCpX06n+EMpgx9IKmPIjIH/sEr5LwEESsufcG9hTAW2Mh8cKcQyx5EUvsnQYEMZaVM4orHr1dIXuM2UbvxLyWnA+62y4/NDWvEhL7u/upnUF3qE/vjf9FZL+2yV8+X4BBmarTCTtBFaWKYxHbYVQl3vYYm/PR39UIVlYGOx63bXLwURQamWTGapWFNxPGvMakXj8+ZejvTmkg31xOlHsEWbPSamhIro4bek6yNeSjVaOxbcvvKm40BRkFjt8KiaSTGIeprzyzgazMOrdV00ybsUAU/rhMdsKgVn7BHEIeMCKY3751XVN8IMmFEj1F1AKjdTNsv50unkNQc6YIU9c1Rf7Np2v75wsj3lmqVefD2XdIPeWk5o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR08MB5511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(39830400003)(396003)(366004)(26005)(52116002)(956004)(66556008)(5660300002)(316002)(6512007)(16526019)(38350700002)(86362001)(6506007)(38100700002)(7416002)(186003)(2906002)(110136005)(6666004)(8676002)(83380400001)(8936002)(6486002)(66946007)(66476007)(36756003)(4326008)(2616005)(54906003)(478600001)(966005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?HQWURVRNsE0H3K0AK7HYKAH4pOyqklx01/QXkjyuogeRnVrKA1bNU+tkl914?=
- =?us-ascii?Q?OSSRsnsxS2HZm//5g8Pkxe/8R0slLy/0kTlyAlPZaCiIRCPCp7NDiC3xT3Bu?=
- =?us-ascii?Q?LHSP3U/V5tnoMNu2oRhaV82B8XnK1rDAROGUaTI36of7bLorMI6byULg+uXq?=
- =?us-ascii?Q?B/ZQskLVBAMTQt3NfPMqluTfTKCyO9lTAsn0SkKt0jo9vpqFlcMnsiWwDFl0?=
- =?us-ascii?Q?v3ggfBdEkwt+UqRafRhHr6L34mm0sEDy5imt6kLf7umQGZE0i/SaO6+KDmx+?=
- =?us-ascii?Q?dfn+awbmNpCaia1XWXVp7WrNFfICNl5rljy8pyYhDUMsCJfEO7XqdiTXjQp0?=
- =?us-ascii?Q?vw/5qk94cDJ8VaZEiXkepVFu7HSOAxqrFgxcEGx/jXVMFUF5GaN2K/b+h6R+?=
- =?us-ascii?Q?Z/pT5Oe9rWxsFznW8BEhHOT5EbZVQQyo4tCUVEW+YOVuSIWPb/dzRCXwifw9?=
- =?us-ascii?Q?sYDo0XHDS4EhYrsSt8UcOsfbrcX5KWD9r/IK2JQW670XAzDk4YeqTQElQiAW?=
- =?us-ascii?Q?y7O1swpdb4jr0vOcgpj27Cyh9lc1hoJUOas5ZaS74mz5ZB0YeXLPcU7E6qwm?=
- =?us-ascii?Q?Qxy3RdEYXh+mJeycC9zNnwM2rMQ6Xx4dp3kOgIb7n3aicMILVoZyv+WGFGNM?=
- =?us-ascii?Q?NtvtL0kNNsTr9ikZhhS613W5QDLUgjvzTIxgQSBO0Cy6ErsK70X5iZaa3BCQ?=
- =?us-ascii?Q?S9x70bdIElrcm2yAA5+rbbgE9zJKzAJtSupZzuzhKatyLRWSI0UeQK25eMhe?=
- =?us-ascii?Q?wCPo99JTwegwor88Fse+3uqLiQehEBVCxboK8wchJSg1H4g8aQCTqDIFSR89?=
- =?us-ascii?Q?lhu1Oram8mdHLRAu6FLduRDCRIaZeAnjCXJuBDR+3yqkorNqGD92Yj2iQdSj?=
- =?us-ascii?Q?tgE6F6pMyh/uZDODRgrW409ULcuENRfZXZ8MX5D6LbiT2DTpLYkz9v+r5evp?=
- =?us-ascii?Q?b5TomgNy2Xmp0Jfqrg+LY2oh7fbjexKIZD0afvhcUQXC7AAWhcay07yfLKBc?=
- =?us-ascii?Q?OUuaR3yC8sOrmuPv5v14Vmz0NIpDTvCabGlfCWdMP2FTBpRCYNMuAvtpUDsw?=
- =?us-ascii?Q?z75NjMmfhnh8oNjr8T78zJFpqJXE66zPMoTdJCivZ4EcARwDPtxer74h+wzw?=
- =?us-ascii?Q?ZDytpatQe3PqwP2KwzO6GDSL0DW2nfIW23JIjI4oe14Cny8nqPWkg3BTtW5M?=
- =?us-ascii?Q?F3UDyX5FCKgXHQPl2rSTZzfcm9+7Up0OTfuvJJY+raI6nInSjhBrj8Ij0RQx?=
- =?us-ascii?Q?5ioOuGSxSO3YD66rivBjN5QEAug1vF872H5vhClVUPUCzK10mLVi6oXOMoxN?=
- =?us-ascii?Q?XKuziWYrQnmECq9aLdpOBncF?=
+X-Microsoft-Antispam-Message-Info: lt4wSpqzmuQ8Bb8H5nvO/dyiM23iI3QvPfDvLeTLHhPMi3mM+4Y5sI+MKvsqt1LT3MaVpSSg4Qs9x0ctHr75OVAh+uMd6mVOiOwMQSEpByiXYYSl1exm/VJHJoXkZywm+eJqtcddaDVu70DkzGNjBJF6AB9lbM9Bt5NsyBsIV1z//XJUgFNS/iwkRNT/S0bVuF5HICoNAh4XRiHDCa26c4DXXEpg/bBGVNAZaxezs2ggWyU9FkyXo7PT1bO3IWX669SrnF+l1pmLQpziEMmpqcXSxn6tp7xZLjm+WUbKhGsgO/S2UHm7hjraTmXymEfGPwPOr4gSMxo/m8HPZzoJZ6w992qO5IbbrKLSIKXTsF7lQYfpp24b0lUvRlUGdpkUGZfUdTzpiC774FLMYm0n+YqPSP9GL/nC8Tfk6vHxdbRp/0ZiHjXYvqThU6/MAAnGH4Bd+ypFEqI83626rDcj21JsdlywoVVr1kkqgqvP7fmWxUu98WusYm3YNa/j/f3TsP2KV/tKSAynqIPmgMA4LY88Ju3Si55zm2F9Dw3ISnW8T4tVJ2MBCFdAK+BXAirO8qPizU5XW3nRGP2ceQjDo1N21pZElfLDukIaUcGxu6i0/+xuYEA76/KLKRlmwN1TtB6SaxtBFwRoPRy88f01ov4rp2Mxj+ZTOROhLMoopP4boouL6YTRHaqROLjn5t/EQD/l5/w1FjLr73ktLEDZpg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR08MB5511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(39830400003)(366004)(376002)(478600001)(86362001)(16526019)(52116002)(66946007)(31696002)(7416002)(38100700002)(6512007)(66476007)(2616005)(66556008)(38350700002)(36756003)(26005)(5660300002)(83380400001)(4326008)(186003)(31686004)(54906003)(6486002)(8676002)(6916009)(316002)(2906002)(8936002)(6506007)(53546011)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UkgzOE5ZT3F1dXBoQTV0NWpZd2N1NmFHc24xUjlDNWpPZ1ZUMWRTRlJPQUxB?=
+ =?utf-8?B?VkU4SXB6NE5EeTJWZGJLMW1JMVlIQjJnSDZwUUFPenZwcnA0QzNBUUlSeVdh?=
+ =?utf-8?B?dVBpekJ0VG9xQWUxcFNmS0hLbDZwblBtdGgzaEljNjJVR25yK2FjVkkzZlRl?=
+ =?utf-8?B?MzBURDFROVBZZXVVTVdJZE5XdGlwMXlHN0lvd3drcml2UUxYTHZKTDJ0T2ov?=
+ =?utf-8?B?OGZkNGcwNmQ0NS9hRjZYb2toODkxb2h1eFVoWnBqQkdvckV3Y09mRmpFRXZQ?=
+ =?utf-8?B?ZGJtLzZBYVJJODExRjV1Q2JaZ05uQXZmbGpNZEM4OEJYSHZjQ0JkSkhUa1Rv?=
+ =?utf-8?B?TldBT3Z5RVJTazIrNWRBVi96Z1NoQnFZR2FmRis1M2xxNHByZzIwTzlQZGFC?=
+ =?utf-8?B?c2dLU25Vc1h3b0FpVDJ0eGV2TklURForOHRQNEdabHp2SGNKMDB3OFUwL1dQ?=
+ =?utf-8?B?MStqMUluc2JYMmhZdG82OFdiSGc0aDBOMVFJOTJXSC9MUzN0bmM3czBNWTlo?=
+ =?utf-8?B?MmhqMjI2RERBcU1ONndBbTJNNlZmaitrVmI5bXZPZUZtRVc2MmNwNVByMTV1?=
+ =?utf-8?B?M1NWRzlhSk5vSFJRcDVtMHFhVVgrcHgyVS9LY1JPQk5qWkY2NFEwdE1oejlL?=
+ =?utf-8?B?bHE5c1c3ODgxeXJacGs0QVhrOGM0S2dpSUxmUXFKcStSMWZiY2NVVkNoMXpK?=
+ =?utf-8?B?QmdMczBBTUNrZ1JCZWpLN2hvK05vck0veWtzOVlWSnljU21CbG5BSUsyaUJa?=
+ =?utf-8?B?cnBsN3k3VUNmOUR1OWhBQ2duUllWT2FtNys4dzBaQlIzakVEQjJ1ZkFCMHM1?=
+ =?utf-8?B?QndveWJDUlFMb0pGVXFDTi82OXZKbDdoSWpuUXNVanpEZWo4ZHZIWE80OWEx?=
+ =?utf-8?B?bExmS1pHTGhCTkNtUDFNalJDRWNXT2NsWnlqekR4bTZPdDNEamYyZnh6VkdS?=
+ =?utf-8?B?M25MWGVQS2pEWjhVb3o5UDVqeUYwTXBLWWZRS0lpYnFuOUVIU2NwcmwvUUpH?=
+ =?utf-8?B?Q25OYy9tbEVzS3EvcmhOYU44alhJNU5GeXpJMUlOQnBFektOV20wK1ZqcVVo?=
+ =?utf-8?B?S2ZIR0IzdVlFbm4xRXM5eHM5L0hwTVE0ZEFNazBUQjJ4N21kR2hzQUNPbFlM?=
+ =?utf-8?B?R2V1ak5qMU1ZZ1psSVdOem5DYVk0ZW0rVWJIdWV1U09NVU90VlFCVUQvc09D?=
+ =?utf-8?B?SFRobkd0eEMvanRTaThUS09oMnFoblpGUUllai8rQStETElzbUtIZ3FxR24w?=
+ =?utf-8?B?dGlEZmtzM2lPQmFFNnRETHVDSlg3RFYydUdGcHFSOFpaZ0hWc0lnS2NjYzVM?=
+ =?utf-8?B?TFhoeFNUN21zNVFzaCtCdDlkSGhYc3p0Ymw0K1I2aEFRUFhFNU5QcVc3SjhU?=
+ =?utf-8?B?cW92dEFWSGNFbkpjUGFRVGtsQ3RtMkNsdDFGNXM3Z29GYmM4QTFXQ1RZWVI3?=
+ =?utf-8?B?Tzh6OU1xTFFqdlpwWHV3YlhZVldqRzJQZGJNY1JXTTBHNndRRHZGYUpaRE40?=
+ =?utf-8?B?NUZvZWxkRGNqV0wvM04yOHNWMlBvTnFTTTErRHNPRTV1U1c3a0puUHJTWjc1?=
+ =?utf-8?B?d0laRmNmcGJlcG1PSEpiUHVqeFI5NURiMDF0eUQ3MFVXck5pVmJkdTlLVEZn?=
+ =?utf-8?B?ZVJ2MlVRaDdKQjBuYnpuSzVtdmZKVUhJWmIyL3VtUHRzVE1uMm5xai9kbE1G?=
+ =?utf-8?B?RkNSMk43M1MwMUUrTzFWM00rK0FYRkZ0Yi9VczRjeHkzNUdYb1pvbm1OVXBs?=
+ =?utf-8?Q?kTUV4FFe6Cz12D4Byox3U9rQ0EqG8WtcP2vuaog?=
 X-OriginatorOrg: drivenets.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd43b248-6685-4281-b38d-08d9085a3057
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf63f416-9a2f-48aa-0c18-08d9085b958a
 X-MS-Exchange-CrossTenant-AuthSource: AM7PR08MB5511.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 02:22:50.4034
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 02:32:49.4400
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 662f82da-cf45-4bdf-b295-33b083f5d229
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6shM2dEKsnKfocLMSVIyIAHpiiENtSmtgW3r53WS/mw73IEFYy4VsGI0Mow9DgJjuyUqWudBTGVeQ4Bh/mxp3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB5958
-X-MDID: 1619403773-8bMHryy5dVWq
+X-MS-Exchange-CrossTenant-UserPrincipalName: wqR3diGWrwxFHR4Oxqht3zxiVdY1+mKef/RXn+I7NFGidYXXyCdlWtxxxBgK33QZ4w2u9bLijKrX8FumV/Cguw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB5991
+X-MDID: 1619404372-aMv_gfz2-x5w
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
-in order to accumulate enough data" but linux almost never does that.
+On 4/21/21 7:45 PM, Matt Mathis wrote:
+> (Resending in plain text mode)
+> 
+> Surely there is a way to adapt tcp_tso_should_defer(), it is trying to
+> solve a similar problem.
+> 
+> If I were to implement PLPMTUD today, I would more deeply entwine it
+> into TCP's support for TSO.  e.g. successful deferring segments
+> sometimes enables TSO and sometimes enables PLPMTUD.
 
-Linux checks for probe_size + (1 + retries) * mss_cache to be available
-in the send buffer and if that condition is not met it will send anyway
-using the current MSS. The feature can be made to work by sending very
-large chunks of data from userspace (for example 128k) but for small
-writes on fast links tcp mtu probes almost never happen.
+The mechanisms for delaying sending are difficult to understand, this 
+RFC just added a brand-new unrelated timer. Intertwining it with 
+existing mechanisms would indeed be better. On a closer look it seems 
+that they're not actually based on a timer but other heuristics.
 
-This patch tries to take mtu probe into account in tcp_xmit_size_goal, a
-function which otherwise attempts to accumulate a packet suitable for
-TSO. No delays are introduced beyond existing autocork heuristics.
+It seems that tcp_sendmsg will "tcp_push_one" once the skb at the head 
+of the queue reaches tcp_xmit_size_goal and tcp_xmit_size_goal does not 
+take mtu probing into account. In practice this would mean that 
+application-limited streams won't perform mtu probing unless a single 
+write is 5*mss + probe_size (1*mss over size_needed)
 
-Suggested-by: Matt Mathis <mattmathis@google.com>
-Signed-off-by: Leonard Crestez <lcrestez@drivenets.com>
----
- Documentation/networking/ip-sysctl.rst |  3 +++
- include/net/inet_connection_sock.h     |  7 +++++-
- include/net/netns/ipv4.h               |  1 +
- include/net/tcp.h                      |  3 +++
- net/ipv4/sysctl_net_ipv4.c             |  7 ++++++
- net/ipv4/tcp.c                         | 11 ++++++++-
- net/ipv4/tcp_output.c                  | 33 +++++++++++++++++++++++---
- 7 files changed, 60 insertions(+), 5 deletions(-)
+I sent a different RFC which tries to modify tcp_xmit_size_goal.
 
-Previously:
-https://lore.kernel.org/netdev/d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com/T/#u
+> But there is a deeper question:  John Heffner and I invested a huge
+> amount of energy in trying to make PLPMTUD work for opportunistic
+> Jumbo discovery, only to discover that we had moved the problem down
+> to the device driver/nic, were it isn't so readily solvable.
+> 
+> The driver needs to carve nic buffer memory before it can communicate
+> with a switch (to either ask or measure the MTU), and once it has done
+> that it needs to either re-carve the memory or run with suboptimal
+> carving.  Both of these are problematic.
+> 
+> There is also a problem that many link technologies will
+> non-deterministically deliver jumbo frames at greatly increased error
+> rates.   This issue requires a long conversation on it's own.
 
-diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-index c2ecc9894fd0..36b8964abbb3 100644
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -320,10 +320,13 @@ tcp_mtu_probe_floor - INTEGER
- 	If MTU probing is enabled this caps the minimum MSS used for search_low
- 	for the connection.
- 
- 	Default : 48
- 
-+tcp_mtu_probe_autocork - INTEGER
-+	Take into account mtu probe size when accumulating data via autocorking.
-+
- tcp_min_snd_mss - INTEGER
- 	TCP SYN and SYNACK messages usually advertise an ADVMSS option,
- 	as described in RFC 1122 and RFC 6691.
- 
- 	If this ADVMSS option is smaller than tcp_min_snd_mss,
-diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-index 3c8c59471bc1..19afcc7a4f4a 100644
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -123,15 +123,20 @@ struct inet_connection_sock {
- 		/* Range of MTUs to search */
- 		int		  search_high;
- 		int		  search_low;
- 
- 		/* Information on the current probe. */
--		u32		  probe_size:31,
-+		u32		  probe_size:30,
-+		/* Are we actively accumulating data for an mtu probe? */
-+				  wait_data:1,
- 		/* Is the MTUP feature enabled for this connection? */
- 				  enabled:1;
- 
- 		u32		  probe_timestamp;
-+
-+		/* Timer for wait_data */
-+		struct	  timer_list	wait_data_timer;
- 	} icsk_mtup;
- 	u32			  icsk_probes_tstamp;
- 	u32			  icsk_user_timeout;
- 
- 	u64			  icsk_ca_priv[104 / sizeof(u64)];
-diff --git a/include/net/netns/ipv4.h b/include/net/netns/ipv4.h
-index 87e1612497ea..2afe98422441 100644
---- a/include/net/netns/ipv4.h
-+++ b/include/net/netns/ipv4.h
-@@ -122,10 +122,11 @@ struct netns_ipv4 {
- #ifdef CONFIG_NET_L3_MASTER_DEV
- 	u8 sysctl_tcp_l3mdev_accept;
- #endif
- 	u8 sysctl_tcp_mtu_probing;
- 	int sysctl_tcp_mtu_probe_floor;
-+	int sysctl_tcp_mtu_probe_autocork;
- 	int sysctl_tcp_base_mss;
- 	int sysctl_tcp_min_snd_mss;
- 	int sysctl_tcp_probe_threshold;
- 	u32 sysctl_tcp_probe_interval;
- 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index eaea43afcc97..c3eaae3bf7d6 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -666,10 +666,11 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
- void tcp_initialize_rcv_mss(struct sock *sk);
- 
- int tcp_mtu_to_mss(struct sock *sk, int pmtu);
- int tcp_mss_to_mtu(struct sock *sk, int mss);
- void tcp_mtup_init(struct sock *sk);
-+int tcp_mtu_probe_size_needed(struct sock *sk);
- 
- static inline void tcp_bound_rto(const struct sock *sk)
- {
- 	if (inet_csk(sk)->icsk_rto > TCP_RTO_MAX)
- 		inet_csk(sk)->icsk_rto = TCP_RTO_MAX;
-@@ -1375,10 +1376,12 @@ static inline void tcp_slow_start_after_idle_check(struct sock *sk)
- 	s32 delta;
- 
- 	if (!sock_net(sk)->ipv4.sysctl_tcp_slow_start_after_idle || tp->packets_out ||
- 	    ca_ops->cong_control)
- 		return;
-+	if (inet_csk(sk)->icsk_mtup.wait_data)
-+		return;
- 	delta = tcp_jiffies32 - tp->lsndtime;
- 	if (delta > inet_csk(sk)->icsk_rto)
- 		tcp_cwnd_restart(sk, delta);
- }
- 
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index a62934b9f15a..e19176c17973 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -827,10 +827,17 @@ static struct ctl_table ipv4_net_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= &tcp_min_snd_mss_min,
- 		.extra2		= &tcp_min_snd_mss_max,
- 	},
-+	{
-+		.procname	= "tcp_mtu_probe_autocork",
-+		.data		= &init_net.ipv4.sysctl_tcp_mtu_probe_autocork,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
- 	{
- 		.procname	= "tcp_probe_threshold",
- 		.data		= &init_net.ipv4.sysctl_tcp_probe_threshold,
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index e14fd0c50c10..6341a87e9388 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -913,10 +913,11 @@ struct sk_buff *sk_stream_alloc_skb(struct sock *sk, int size, gfp_t gfp,
- }
- 
- static unsigned int tcp_xmit_size_goal(struct sock *sk, u32 mss_now,
- 				       int large_allowed)
- {
-+	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	u32 new_size_goal, size_goal;
- 
- 	if (!large_allowed)
- 		return mss_now;
-@@ -932,11 +933,19 @@ static unsigned int tcp_xmit_size_goal(struct sock *sk, u32 mss_now,
- 		tp->gso_segs = min_t(u16, new_size_goal / mss_now,
- 				     sk->sk_gso_max_segs);
- 		size_goal = tp->gso_segs * mss_now;
- 	}
- 
--	return max(size_goal, mss_now);
-+	size_goal = max(size_goal, mss_now);
-+
-+	if (unlikely(icsk->icsk_mtup.wait_data)) {
-+		int mtu_probe_size_needed = tcp_mtu_probe_size_needed(sk);
-+		if (mtu_probe_size_needed > 0)
-+			size_goal = max(size_goal, (u32)mtu_probe_size_needed);
-+	}
-+
-+	return size_goal;
- }
- 
- int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
- {
- 	int mss_now;
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index bde781f46b41..c15ed548a48a 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -2311,10 +2311,23 @@ static bool tcp_can_coalesce_send_queue_head(struct sock *sk, int len)
- 	}
- 
- 	return true;
- }
- 
-+int tcp_mtu_probe_size_needed(struct sock *sk)
-+{
-+	struct inet_connection_sock *icsk = inet_csk(sk);
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	int probe_size;
-+	int size_needed;
-+
-+	probe_size = tcp_mtu_to_mss(sk, (icsk->icsk_mtup.search_high + icsk->icsk_mtup.search_low) >> 1);
-+	size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
-+
-+	return size_needed;
-+}
-+
- /* Create a new MTU probe if we are ready.
-  * MTU probe is regularly attempting to increase the path MTU by
-  * deliberately sending larger packets.  This discovers routing
-  * changes resulting in larger path MTUs.
-  *
-@@ -2366,16 +2379,18 @@ static int tcp_mtu_probe(struct sock *sk)
- 		 */
- 		tcp_mtu_check_reprobe(sk);
- 		return -1;
- 	}
- 
-+	/* Can probe ever fit inside window? */
-+	if (tp->snd_wnd < size_needed)
-+		return -1;
-+
- 	/* Have enough data in the send queue to probe? */
- 	if (tp->write_seq - tp->snd_nxt < size_needed)
--		return -1;
-+		return net->ipv4.sysctl_tcp_mtu_probe_autocork ? 0 : -1;
- 
--	if (tp->snd_wnd < size_needed)
--		return -1;
- 	if (after(tp->snd_nxt + size_needed, tcp_wnd_end(tp)))
- 		return 0;
- 
- 	/* Do we need to wait to drain cwnd? With none in flight, don't stall */
- 	if (tcp_packets_in_flight(tp) + 2 > tp->snd_cwnd) {
-@@ -2596,28 +2611,40 @@ void tcp_chrono_stop(struct sock *sk, const enum tcp_chrono type)
-  * but cannot send anything now because of SWS or another problem.
-  */
- static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
- 			   int push_one, gfp_t gfp)
- {
-+	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
-+	struct net *net = sock_net(sk);
- 	struct sk_buff *skb;
- 	unsigned int tso_segs, sent_pkts;
- 	int cwnd_quota;
- 	int result;
- 	bool is_cwnd_limited = false, is_rwnd_limited = false;
- 	u32 max_segs;
- 
- 	sent_pkts = 0;
- 
- 	tcp_mstamp_refresh(tp);
-+	/*
-+	 * Waiting for tcp probe data also applies when push_one=1
-+	 * If user does many small writes we hold them until we have have enough
-+	 * for a probe.
-+	 */
- 	if (!push_one) {
- 		/* Do MTU probing. */
- 		result = tcp_mtu_probe(sk);
- 		if (!result) {
-+			if (net->ipv4.sysctl_tcp_mtu_probe_autocork)
-+				icsk->icsk_mtup.wait_data = true;
- 			return false;
- 		} else if (result > 0) {
-+			icsk->icsk_mtup.wait_data = false;
- 			sent_pkts = 1;
-+		} else {
-+			icsk->icsk_mtup.wait_data = false;
- 		}
- 	}
- 
- 	max_segs = tcp_tso_segs(sk, mss_now);
- 	while ((skb = tcp_send_head(sk))) {
+I'm looking to improve this for tunnels that don't correctly send ICMP 
+packet-too-big messages, the hardware is assumed to be fine.
 
-base-commit: 8203c7ce4ef2840929d38b447b4ccd384727f92b
--- 
-2.25.1
-
+--
+Regards,
+Leonard
