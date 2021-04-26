@@ -2,253 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFF836AA9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A258B36AA9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhDZCfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:35:14 -0400
-Received: from dispatch1-eu1.ppe-hosted.com ([185.132.181.8]:55093 "EHLO
-        dispatch1-eu1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231502AbhDZCfM (ORCPT
+        id S231719AbhDZCgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 22:36:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55348 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231502AbhDZCgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:35:12 -0400
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01lp2055.outbound.protection.outlook.com [104.47.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 25 Apr 2021 22:36:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619404520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s7PW6s4J2bNvRnUnBF2i7RyV+6QqItAZs9B9Txmx5bE=;
+        b=b42oRBbD7lCGwqiNzlbdjk6XiuNUM4xK/yjWaRgMHWyWNvXqKwHQsan2BGjlcQjj2cF4hv
+        Fvt+XumcCRFBVgeCFTdWH/mxtORJ4rPrk4BG8Vz7FA6TjKuM0TzHeW3COEKTsEyQcAWSJc
+        6r+8ikcx/Fi/5X3mJAIpQ8hthBMViFk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-gNPxyCq_Oqm8_xgFYAICyQ-1; Sun, 25 Apr 2021 22:35:17 -0400
+X-MC-Unique: gNPxyCq_Oqm8_xgFYAICyQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1-eu1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 299A98006E;
-        Mon, 26 Apr 2021 02:34:29 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n6MM3ZupdAqqO5Lrw1cVL0Hp15mracjBlCzljVwkmAUp072ManHvLFP2zZieb8ROQgrqGg4O5clTGAReBzs11C9Irf7JcjCItkcT/lAGtfeEIaxdBGt1L79ngSkSeESAPqukwsBHrWSlAjjOffwVyAoCqtQmbMHvjvRkZZStA5j5PLyEaP1mTwX/YeHUoREvenfG0WlR0/0yRYHDokjne9xMrcqIuhnViKcrW0yzhiY9+C64zf6VpGs6YCJKvmJyW5wcQn1SnsZ3XFfVcMiRppgRHYUIvkmO+4PLZ2L663mLT/umTboi1QTJfwHY/RO0keJoYAKygdeFh00u9Yci1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uzucKHPJmkB901NMa/FTiGc+7oSiG/+OExf6/c4Dg1g=;
- b=HYLw8vQCSQ18FUvn/mbvM1lFlj028S1H3HORW1ct/BY92BDl3MrpG09l6aCLHclCuMKQqxfJPDAar+icKgMa/nwqTLsRbssxma9RCh01A4hu820Kbet+pe0TdYz54Qy3Xzeb5uXzce8PJ+MkN+oI6c/Nbe79cJIFuYMOoW1jSrxf2y24my1WLacHROR0fFToIph9ZA41c+ySs26lkVnpLKTaK10mhwifovgyM+CySM9BLGqRuUgvOkkVeJKK/U7JeuceoH2t4F0jHlpWFtygb8PQH50L9/HVIT7upXmfQXR2LzR7mbWuzNAvitwXdPU1oMo2T6Tu5PlOFsr1+HSK0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=drivenets.com; dmarc=pass action=none
- header.from=drivenets.com; dkim=pass header.d=drivenets.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=drivenets.onmicrosoft.com; s=selector2-drivenets-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uzucKHPJmkB901NMa/FTiGc+7oSiG/+OExf6/c4Dg1g=;
- b=qHsW6ZuqJRnvGf0B9RNYCEyExlwm/C2o68NZ0T4HGp7Wl3B96mpdyw7r4Ow3yofGQeSyXXRWPXtmP7l8nYggZhf9DWV7in4nWAwOHWpW6hkDOPbW4jJoOmq3kL0H36RvQZCeSSbmpJEHrfdrbmQSg5zb1162my3I5bQwuOV4JoE=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=drivenets.com;
-Received: from AM7PR08MB5511.eurprd08.prod.outlook.com (2603:10a6:20b:10d::12)
- by AS8PR08MB5991.eurprd08.prod.outlook.com (2603:10a6:20b:29f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22; Mon, 26 Apr
- 2021 02:34:28 +0000
-Received: from AM7PR08MB5511.eurprd08.prod.outlook.com
- ([fe80::1b7:6f71:2dd8:a2b3]) by AM7PR08MB5511.eurprd08.prod.outlook.com
- ([fe80::1b7:6f71:2dd8:a2b3%6]) with mapi id 15.20.4065.026; Mon, 26 Apr 2021
- 02:34:28 +0000
-From:   Leonard Crestez <lcrestez@drivenets.com>
-Subject: Re: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
-To:     Neal Cardwell <ncardwell@google.com>
-Cc:     Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matt Mathis <mattmathis@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        John Heffner <johnwheffner@gmail.com>
-References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
- <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
-Message-ID: <50de1e9f-eed7-f827-77ea-708f4621e3d4@drivenets.com>
-Date:   Mon, 26 Apr 2021 05:34:25 +0300
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1047A1898296;
+        Mon, 26 Apr 2021 02:35:16 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-79.pek2.redhat.com [10.72.13.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 766845D74C;
+        Mon, 26 Apr 2021 02:35:10 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        "Zhu, Lingshan" <lingshan.zhu@intel.com>
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
+ <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
+ <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
+ <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+ <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
+ <20210425132523.GA43506@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <086936c8-adff-d4c2-469f-2df58c4db858@redhat.com>
+Date:   Mon, 26 Apr 2021 10:35:08 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.0
-In-Reply-To: <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [78.96.81.202]
-X-ClientProxiedBy: LNXP265CA0034.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5c::22) To AM7PR08MB5511.eurprd08.prod.outlook.com
- (2603:10a6:20b:10d::12)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lcrestez-mac.local (78.96.81.202) by LNXP265CA0034.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Mon, 26 Apr 2021 02:34:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 84290cce-deb1-41f9-1548-08d9085bd066
-X-MS-TrafficTypeDiagnostic: AS8PR08MB5991:
-X-Microsoft-Antispam-PRVS: <AS8PR08MB5991F467DBA90586FD2FECCCD5429@AS8PR08MB5991.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1Knvk61iwOR8HgoocEZNjj1fv5zcbj2407uDjF+zKXT68Dc8PwkuwDilygSCXlP7mZ4C7drWxDv/6m1HfB8AIoKgLJq+YPlDWKe6MAKB+786HCt7zpkHTqfLJzurJpPDr0Xcb9GxLHhWp4xXbv/JBykuHm8H11bMjfJZudww3AqkembtndoUOTKDeghJDm+JUlydpXCQqsZodJDt3E3Y4MLzr5YqYmCs2WyTFIILTZjKKHBtBYPeEqUiQ2q6CreS6yX/mpV3Nx2pRKDEttH0BRJvVi/QvaSGnFje7kF8sv+NWfN7aPGSNvFhiGbLLZc4lmQmS+7CQtzWlgqEk30KpwhpwywLOSHzqnE9ZvoPKXtYOBt52Ls83i7IEwsMW3/1ct+hfRFyqzjUhZUYp7KqoIm6HXo4LfEBbYdNUPfGynlAXiVL05YI15vKrrHL/2EeCTMAIEh/Q9c23CSB5M0QOv5iYiT3mOC8PoAdT7omFagRE0uaC57ue65N9vTwHqwoKI/XhuLpJ9OYpn8SSWam/ZnTghB8+dMbMnyZiCL5QvsPY39hR2ba8p/Ou3srhzezowurw0zXNizpkfo5AF1oktiVMHPeR0Chfx4szq5YAgoZ6p12+fmOGr8L7r5CbNcqVxRJ9kmaoNsrBW71zBEPwmOReIT/yxg1kJ1Q/3/VzRNo7xnAowG74Rc9NUULHs4/XX67+2MMZnMXRCDUpuOLkeL3Tjf0XkrXuUD9yyOWybXGamg+DgRK/WrRSgM0atNxmBXAH294vI+Ecw/rTw6qqyPfcs0zhZqg+cIUJXMd1Yk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR08MB5511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(39830400003)(366004)(376002)(966005)(478600001)(86362001)(16526019)(52116002)(66946007)(31696002)(7416002)(38100700002)(6512007)(66476007)(2616005)(66556008)(38350700002)(36756003)(26005)(5660300002)(83380400001)(4326008)(186003)(31686004)(54906003)(6486002)(8676002)(6916009)(316002)(2906002)(8936002)(6506007)(53546011)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ODRFWCtYcXBpZ0VlSnZhcjFSTkIvTms0Yml2MkVIbWxFYXJxMlBTM0VMUm9J?=
- =?utf-8?B?WHo1Zi9QQUEvRFI0MDY5VGw0dU9MZ0FXd04vV21GK0JBS2wyTjl3K0JQamdI?=
- =?utf-8?B?VEF3eWJ6NDI4OHJKOTZ6QXhkNmxLRTVucUw5eHJNQ2hMazFza1JZZDR2bW1S?=
- =?utf-8?B?NjJESTZTcmpBbGxOenB5N2VmNmxNV2tmbkdBdlRMa2VXZnpsWEkzQWdoaUFX?=
- =?utf-8?B?Qk1WdUgrVGtZQ0RhVWxRUWdzbWw2aFpFanBmM0dLRkJYZHRHZ0w0RFFFTlR0?=
- =?utf-8?B?UjQyNG15M3J5T0dmWkx3aDk3dFVzWkJZdFcvRVBPeGVEVzIwcEo3OGYrbWRM?=
- =?utf-8?B?cFZFZ2hQdVNwVDEyOTk4STVIaUt6TC9wdEdZbzJwdVdldE95WDdsWW9Ja0Fh?=
- =?utf-8?B?WjBmWFdVZ204a050RlhmQXpBUHhmYUdxOUVYMWVIeWpzT1BxTHpLWWdRQjdw?=
- =?utf-8?B?ZTZzRHA2OHVuU2JrTXE0cE1SdlNGU296VmdMNDFCNW5td0x3cVlMeERTQSt4?=
- =?utf-8?B?dTZEbUd3M0ZQREk0RDdMblFtZ1ZFUHFKUDBlS253aG9ZaXpLRld1dllrUzF4?=
- =?utf-8?B?azlhRjM5aXNvVDFDWkZUaXFLZGpzbWY1blByMGY2Um9qR1NkdU5CcWJ6QWtD?=
- =?utf-8?B?SkJFYnZ6enRZUE1lam9ReGYwSGJJQ0FFQ2UyZzBBWWZvTkFMRTduNjNsKzkr?=
- =?utf-8?B?aVYxM1VPaTJWWmY1SkEwZ2lGcWFOSVlxVElpb1Q0TEFFOGs5TjArVWlGRGRl?=
- =?utf-8?B?N3QvazU2NFN0TXR4azRWbXlJOUhXcmh3dEN2TmRZOHdvYy9mU2o3OU02ZnFm?=
- =?utf-8?B?RkR5eFBYTnZJT0IyRnpyQ0VsMWphNnkrb1NNSkJmR2RadlNFai9sWEovMUgz?=
- =?utf-8?B?QlNkSzNONEVFa0p0Qm9tSXZQMjA3UDNLUmJrRHZCTWZDT1RlOFJhVjdRa3Fh?=
- =?utf-8?B?aUhJUXM2TWJOUkZ2U2dOaUdFVTFxMDJRK0Y2OTUyME5reEhhVUs0MWh5ZHh1?=
- =?utf-8?B?cHNpZVFzcHpDQjNYVklYNWM4OWsvdHl2L24yQmlpc2U3NXhlWWYwL2RuZy82?=
- =?utf-8?B?ZU1mS3JlYlhXSlpyVFZwMDVxRjRCMVRaakhYMDIzYlVSdm5VMDM2dzhjUWVD?=
- =?utf-8?B?QWtmYUVFeGtCWGp2YnFCbERaMHNqZEc0dWphajg4bngyRDNYNFlCdUJOazRF?=
- =?utf-8?B?ZGEwN1pnMVd1VFdyR1U1d1ovdjV0N1I1d1J0Mm9rTVc2cVkwSGxpcHJZcWNV?=
- =?utf-8?B?ejBCeDZGek1qd1RMM2xrMzdENVM3MEhzVlhjUTBxZTY2eVJiQUxmTlVGQmpF?=
- =?utf-8?B?clNQdUZ6YzNJbVNjVkw0enBUVzJEZko0TlF4ckJoUU1BZ2Y4ZHpGWFhGNGVz?=
- =?utf-8?B?ZHVPVFZRWDd0enk2cG5NQjFMVDA5dWlyREZFVEozbFN4b2Y5aTlZekIrU3U3?=
- =?utf-8?B?WE8wQnZmaTFLb01BNVNhTlVRZitETERtUWFWWElldUp3MU9JRWVucVNiOU9E?=
- =?utf-8?B?S3ZXdEJwYzBEVkxJVmc4SFUrVkx3dHhkaUdndkZlNlJteDRoQ0hGRjJsZlZJ?=
- =?utf-8?B?S2pvM29HSTQ4d1ZjZWxGWnZlbTFZWjdwT1cweUVlSTBGN1hmdytJa2xZNy96?=
- =?utf-8?B?L1FGQU9YOHpJVHBDQlhDVFVJMnhsZERlSWN5OXZ2a1BpZzBwYnNzZHdFcmtr?=
- =?utf-8?B?NjdQYWxQWmMzUTh0Qmh5T1JDVTh1REFTa3lhZE5IanFVQVA4WHNiNFZiSmJz?=
- =?utf-8?Q?MeoKVgjMZLi6JrC3fAv1UToQ75qH423AEBMooeY?=
-X-OriginatorOrg: drivenets.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84290cce-deb1-41f9-1548-08d9085bd066
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR08MB5511.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 02:34:28.1720
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 662f82da-cf45-4bdf-b295-33b083f5d229
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bkPSVR9GtVL/zTiD1db6J6DlL2sF2cXaQClGnRkOFHTqz69Bh6ASkmI9XTFK6sMpu90efXZQtu67ypUDa3JnrA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB5991
-X-MDID: 1619404469-agaEpF7xxM3z
+In-Reply-To: <20210425132523.GA43506@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 3:47 PM, Neal Cardwell wrote:
-> On Wed, Apr 21, 2021 at 6:21 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+
+在 2021/4/25 下午9:25, Eli Cohen 写道:
+> On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
+>> 在 2021/4/22 下午4:39, Eli Cohen 写道:
+>>> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
+>>>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
+>>>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
+>>>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
+>>>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
+>>>>>>>> Implement mlx5_get_vq_notification() to return the doorbell address.
+>>>>>>>> Size is set to one system page as required.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>>>>>> ---
+>>>>>>>>      drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
+>>>>>>>>      drivers/vdpa/mlx5/core/resources.c | 1 +
+>>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+>>>>>>>>      3 files changed, 8 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>> index b6cc53ba980c..49de62cda598 100644
+>>>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+>>>>>>>>      	u32 pdn;
+>>>>>>>>      	struct mlx5_uars_page *uar;
+>>>>>>>>      	void __iomem *kick_addr;
+>>>>>>>> +	u64 phys_kick_addr;
+>>>>>>>>      	u16 uid;
+>>>>>>>>      	u32 null_mkey;
+>>>>>>>>      	bool valid;
+>>>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
+>>>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
+>>>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+>>>>>>>>      		goto err_key;
+>>>>>>>>      	kick_addr = mdev->bar_addr + offset;
+>>>>>>>> +	res->phys_kick_addr = kick_addr;
+>>>>>>>>      	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
+>>>>>>>>      	if (!res->kick_addr) {
+>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>> index 10c5fef3c020..680751074d2a 100644
+>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
+>>>>>>>>      static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+>>>>>>>>      {
+>>>>>>>> +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>>>>>>>>      	struct vdpa_notification_area ret = {};
+>>>>>>>> +	struct mlx5_vdpa_net *ndev;
+>>>>>>>> +
+>>>>>>>> +	ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>>>>>> +	ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+>>>>>>>> +	ret.size = PAGE_SIZE;
+>>>>>>> Note that the page will be mapped in to guest, so it's only safe if the
+>>>>>>> doorbeel exclusively own the page. This means if there're other registers in
+>>>>>>> the page, we can not let the doorbell bypass to work.
+>>>>>>>
+>>>>>>> So this is suspicious at least in the case of subfunction where we calculate
+>>>>>>> the bar length in mlx5_sf_dev_table_create() as:
+>>>>>>>
+>>>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
+>>>>>>>
+>>>>>>> It looks to me this can only work for the arch with PAGE_SIZE = 4096,
+>>>>>>> otherwise we can map more into the userspace(guest).
+>>>>>>>
+>>>>>> Correct, so I guess I should return here 4096.
+>>>> I'm not quite sure but since the calculation of the sf_bar_length is doen
+>>>> via a shift of 12, it might be correct.
+>>>>
+>>>> And please double check if the doorbell own the page exclusively.
+>>> I am checking if it is safe to map the any part of the SF's BAR to
+>>> userspace without harming other functions. If this is true, I will check
+>>> if I can return PAGE_SIZE without compromising security.
 >>
->> According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
->> in order to accumulate enough data" but linux almost never does that.
+>> It's usally not safe and a layer violation if other registers are placed at
+>> the same page.
 >>
->> Linux waits for probe_size + (1 + retries) * mss_cache to be available
->> in the send buffer and if that condition is not met it will send anyway
->> using the current MSS. The feature can be made to work by sending very
->> large chunks of data from userspace (for example 128k) but for small writes
->> on fast links probes almost never happen.
 >>
->> This patch tries to implement the "MAY" by adding an extra flag
->> "wait_data" to icsk_mtup which is set to 1 if a probe is possible but
->> insufficient data is available. Then data is held back in
->> tcp_write_xmit until a probe is sent, probing conditions are no longer
->> met, or 500ms pass.
+>>>    I think we may
+>>> need to extend struct vdpa_notification_area to contain another field
+>>> offset which indicates the offset from addr where the actual doorbell
+>>> resides.
 >>
->> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> The movitiaton of the current design is to be fit seamless into how Qemu
+>> model doorbell layouts currently:
 >>
->> ---
->>   Documentation/networking/ip-sysctl.rst |  4 ++
->>   include/net/inet_connection_sock.h     |  7 +++-
->>   include/net/netns/ipv4.h               |  1 +
->>   include/net/tcp.h                      |  2 +
->>   net/ipv4/sysctl_net_ipv4.c             |  7 ++++
->>   net/ipv4/tcp_ipv4.c                    |  1 +
->>   net/ipv4/tcp_output.c                  | 54 ++++++++++++++++++++++++--
->>   7 files changed, 71 insertions(+), 5 deletions(-)
+>> 1) page-per-vq, each vq has its own page aligned doorbell
+>> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
 >>
->> My tests are here: https://github.com/cdleonard/test-tcp-mtu-probing
+>> Only 1) is support in vhost-vDPA (and vhost-user) since it's rather simple
+>> and secure (page aligned) to be modelled and implemented via mmap().
 >>
->> This patch makes the test pass quite reliably with
->> ICMP_BLACKHOLE=1 TCP_MTU_PROBING=1 IPERF_WINDOW=256k IPERF_LEN=8k while
->> before it only worked with much higher IPERF_LEN=256k
+>> Exporting a complex layout is possbile but requires careful design.
 >>
->> In my loopback tests I also observed another issue when tcp_retries
->> increases because of SACKReorder. This makes the original problem worse
->> (since the retries amount factors in buffer requirement) and seems to be
->> unrelated issue. Maybe when loss happens due to MTU shrinkage the sender
->> sack logic is confused somehow?
+>> Actually, we had antoher option
 >>
->> I know it's towards the end of the cycle but this is mostly just intended for
->> discussion.
-> 
-> Thanks for raising the question of how to trigger PMTU probes more often!
-> 
-> AFAICT this approach would cause unacceptable performance impacts by
-> often injecting unnecessary 500ms delays when there is no need to do
-> so.
-> 
-> If the goal is to increase the frequency of PMTU probes, which seems
-> like a valid goal, I would suggest that we rethink the Linux heuristic
-> for triggering PMTU probes in the light of the fact that the loss
-> detection mechanism is now RACK-TLP, which provides quick recovery in
-> a much wider variety of scenarios.
+>> 3) shared doorbell: all virtqueue shares a single page aligned doorbell
+>>
+> This nearly matches we have in ConnectX devices. All the doorbells are
+> located at the same place. For 4K page size atchitectures it is aligned
+> to the start of the page. For larger page sizes it is not aligned.
+> If we don't allow to some offset within the page, it means that direct
+> doorbells will not work for 64K page size archs over ConnectX.
 
-> After all, https://tools.ietf.org/html/rfc4821#section-7.4 says:
-> 
->     In addition, the timely loss detection algorithms in most protocols
->     have pre-conditions that SHOULD be satisfied before sending a probe.
-> 
-> And we know that the "timely loss detection algorithms" have advanced
-> since this RFC was written in 2007. >
-> You mention:
->> Linux waits for probe_size + (1 + retries) * mss_cache to be available
-> 
-> The code in question seems to be:
-> 
->    size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
 
-As far as I understand this is meant to work with classical retransmit: 
-if 3 dupacks are received then the first segment is considered lost and 
-probe success or failure is can determine within roughly 1*rtt. RACK 
-marks segments as lost based on echoed timestamps so it doesn't need 
-multiple segments. The minimum time interval is only a little higher 
-(5/4 rtt). Is this correct?
+Right, just to clarify. This can still be model by the current 
+page-per-vq model. It means the doorbell will be mapped into different 
+pages for each virtqueue by Qemu. So from the view of Qemu or guest, 
+each virtqueue has its own doorbell in this case.
 
-> How about just changing this to:
-> 
->    size_needed = probe_size + tp->mss_cache;
-> 
-> The rationale would be that if that amount of data is available, then
-> the sender can send one probe and one following current-mss-size
-> packet. If the path MTU has not increased to allow the probe of size
-> probe_size to pass through the network, then the following
-> current-mss-size packet will likely pass through the network, generate
-> a SACK, and trigger a RACK fast recovery 1/4*min_rtt later, when the
-> RACK reorder timer fires.
 
-This appears to almost work except it stalls after a while. I spend some 
-time investigating it and it seems that cwnd is shrunk on mss increases 
-and does not go back up. This causes probes to be skipped because of a 
-"snd_cwnd < 11" condition.
+>
+>> This is not yet supported by Qemu.
 
-I don't undestand where that magical "11" comes from, could that be 
-shrunk. Maybe it's meant to only send probes when the cwnd is above the 
-default of 10? Then maybe mtu_probe_success shouldn't shrink mss below 
-what is required for an additional probe, or at least round-up.
 
-The shrinkage of cwnd is a problem with this "short probes" approach 
-because tcp_is_cwnd_limited returns false because tp->max_packets_out is 
-smaller (4). With longer probes tp->max_packets_out is larger (6) so 
-tcp_is_cwnd_limited returns true even for a cwnd of 10.
+For "not supported" I meant present this (doorbells sharing) layout to 
+guest.
 
-I'm testing using namespace-to-namespace loopback so my delays are close 
-to zero. I tried to introduce an artificial delay of 30ms (using tc 
-netem) and it works but 20ms does not.
+Thanks
 
-> A secondary rationale for this heuristic would be: if the flow never
-> accumulates roughly two packets worth of data, then does the flow
-> really need a bigger packet size?
 
-The problem is that "accumulating sufficient data" is an extremely fuzzy 
-concept. In particular it seems that at the same traffic level 
-performing shorter writes from userspace (2kb instead of 64k) can 
-prevent mtu probing entirely and this is unreasonable.
+>>
+>> Thanks
+>>
+>>
+>>>>>> I also think that the check in vhost_vdpa_mmap() should verify that the
+>>>>>> returned size is not smaller than PAGE_SIZE because the returned address
+>>>>> Actually I think it's ok since you verify the size equals vma->vm_end -
+>>>>> vma->vm_start which must be at least PAGE_SIZE.
+>>>> Yes.
+>>>>
+>>>> Thanks
+>>>>
+>>>>
+>>>>>> might just be aligned to PAGE_SIZE. I think this should be enoght but
+>>>>>> maybe also use the same logic in vhost_vdpa_fault().
 
---
-Regards,
-Leonard
