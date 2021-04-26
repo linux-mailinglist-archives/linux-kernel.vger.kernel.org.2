@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEAB36AD59
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190F136AD04
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhDZHd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45764 "EHLO mail.kernel.org"
+        id S232305AbhDZHcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232640AbhDZHdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:33:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DEAB611C1;
-        Mon, 26 Apr 2021 07:32:53 +0000 (UTC)
+        id S232280AbhDZHbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:31:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFDF613A9;
+        Mon, 26 Apr 2021 07:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422374;
-        bh=MoRLFFpyK/iWWZM50KKmAdqDGET9KE6d+VjM3fyyFy0=;
+        s=korg; t=1619422272;
+        bh=+dKzJ0svpQ8wz47I4efTJFPPg5dvuvwm6wV5wbsFGoQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CRZ/QKh+xHSM+YSzp7Jro3F3DTt2F1vPCxHjTIZPbSAcmZi/Al1GyOLSh3QIN9guH
-         6yMiHhLlpWfimdV8DRuMqHJk6pbTB6OIeC6xM6GoNl5Ro99aZcA4wMLwa9bwF/ZCTF
-         VX7hzvaIq/C/Gpkg3LZ432NOd6nLwDdCPEjbJx4A=
+        b=MybPnXaHuuVrb7KPZ7Ja9f2sOU+hUBdjr0voY46YQdlcBx947AfXnEIottE19uXvI
+         sheBxPi5eE60oJU/xv+UYhoLrc9PESw8ia/8EM8rP224jnPgOF/Nsnbpezvk1CxSac
+         vWYCGyG4TaTQUbAGScI+U5feOkJVDtJsHLJsE17Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 16/37] pcnet32: Use pci_resource_len to validate PCI resource
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 19/32] net: davicom: Fix regulator not turned off on failed probe
 Date:   Mon, 26 Apr 2021 09:29:17 +0200
-Message-Id: <20210426072817.805374478@linuxfoundation.org>
+Message-Id: <20210426072817.235253093@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
+References: <20210426072816.574319312@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 66c3f05ddc538ee796321210c906b6ae6fc0792a ]
+commit 31457db3750c0b0ed229d836f2609fdb8a5b790e upstream.
 
-pci_resource_start() is not a good indicator to determine if a PCI
-resource exists or not, since the resource may start at address 0.
-This is seen when trying to instantiate the driver in qemu for riscv32
-or riscv64.
+When the probe fails, we must disable the regulator that was previously
+enabled.
 
-pci 0000:00:01.0: reg 0x10: [io  0x0000-0x001f]
-pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x0000001f]
-...
-pcnet32: card has no PCI IO resources, aborting
+This patch is a follow-up to commit ac88c531a5b3
+("net: davicom: Fix regulator not turned off on failed probe") which missed
+one case.
 
-Use pci_resouce_len() instead.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/amd/pcnet32.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/davicom/dm9000.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/amd/pcnet32.c
-+++ b/drivers/net/ethernet/amd/pcnet32.c
-@@ -1493,8 +1493,7 @@ pcnet32_probe_pci(struct pci_dev *pdev,
- 	}
- 	pci_set_master(pdev);
+--- a/drivers/net/ethernet/davicom/dm9000.c
++++ b/drivers/net/ethernet/davicom/dm9000.c
+@@ -1484,8 +1484,10 @@ dm9000_probe(struct platform_device *pde
  
--	ioaddr = pci_resource_start(pdev, 0);
--	if (!ioaddr) {
-+	if (!pci_resource_len(pdev, 0)) {
- 		if (pcnet32_debug & NETIF_MSG_PROBE)
- 			pr_err("card has no PCI IO resources, aborting\n");
- 		return -ENODEV;
-@@ -1506,6 +1505,8 @@ pcnet32_probe_pci(struct pci_dev *pdev,
- 			pr_err("architecture does not support 32bit PCI busmaster DMA\n");
- 		return err;
- 	}
-+
-+	ioaddr = pci_resource_start(pdev, 0);
- 	if (!request_region(ioaddr, PCNET32_TOTAL_SIZE, "pcnet32_probe_pci")) {
- 		if (pcnet32_debug & NETIF_MSG_PROBE)
- 			pr_err("io address range already allocated\n");
+ 	/* Init network device */
+ 	ndev = alloc_etherdev(sizeof(struct board_info));
+-	if (!ndev)
+-		return -ENOMEM;
++	if (!ndev) {
++		ret = -ENOMEM;
++		goto out_regulator_disable;
++	}
+ 
+ 	SET_NETDEV_DEV(ndev, &pdev->dev);
+ 
 
 
