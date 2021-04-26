@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50BD36B88E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC8736B8AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhDZSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        id S237557AbhDZSFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234275AbhDZSD3 (ORCPT
+        with ESMTP id S234527AbhDZSEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:03:29 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83E8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:45 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id f70so4552332vke.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:45 -0700 (PDT)
+        Mon, 26 Apr 2021 14:04:24 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17EAC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:03:41 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so1406459wmb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:03:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BXFG3xn4dOG9yeCMA34oGw+1Bo4YlFmChtKcjrnxnS0=;
-        b=ly1Z0fmgtNX/YZCDrxWpjXgk7FDuRt0qSLRZ+B9RexLcWN9S/ypwhq+7Cb7gnA0tkk
-         lk/Pw4k5BYNba0UR1RAtGaE8ieocJNMuStrtRdaU6puIvmHTZsQ6QiCBgcxUC7wZuch2
-         Fl6TdpvCL1fafJJGKUFwLEmFql5NL7pWoH+/7B7xbDFv05SE96Rc7H9sfIecgI0hMh27
-         qJIaMbuSdTUfZ472AnAiHzXPQFtIrVgLFKEoZUbrmhbIcBE6JLxheMOy7pvU1QrzbdNb
-         gizKrTsRHBTHqGgE/stO1pFPXcYbQDiLrcu43Y6SUiv8dWsZzGliMH2sPy+rza4qqtV0
-         VDQg==
+        bh=z9wgVVjDAXXSJE2ca33a8jal0v2yahV0C8O37SZcpvQ=;
+        b=pFmvfHUw2Xc6IYETlM2LNNtATPOTQ7qOqODeMSW5rpBgjncMHgqe6irSOKEOei9ueF
+         8Fg0qy8zm0/2CZeZRz3bPZuNX4PtQZmWvgm2YXiJHd04qhm0nB7gZmZKmjqkhYGK1A+8
+         qaA40+XWCDSzNyo3lWRkGVmM5NW8sM/46hVfe3VDrmQkztlWr/gLFmWYkcz6fxRSqlK1
+         nk6Xmahbo1ODPRDT3+DUgHsPaPiKMfDQDjVKHjfKghPWBijfyLPPpNN0oFZHKBzVj3Ch
+         gAgQlhllqE4dhpHOX/WKq8jycyAfJT1bpXlbw+26SpZuCIhG8KHV0Kpb+nV74Cqbys+7
+         /Yuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=BXFG3xn4dOG9yeCMA34oGw+1Bo4YlFmChtKcjrnxnS0=;
-        b=sCP957MFR72Am2sy/Bv64JAohRhHm50wsBudWKHbGFQjQtj2dy4085Hvlw6UPfxa/y
-         ly/Z3uosnL511bTqEKeM/AyDEdtURc7tPSjqlVYKggFwMA75Ohs2Pj0Xqtj43yYwDYHb
-         EI09P01i6LujqSs22APs4atEFz+yK1ueAsLtaU1cHVBt6Wm5Yq9okueOPu+yN7YC9ClG
-         RWqBudant/szwuw6TXHOZ32ZeW133lX5MenpGU3BpLOSCs5kE1dx3LHoKMTJYJJrN+ED
-         KUpt1EsUAnA0JN6zQ9kOQwO+wrYT56p2idK6afv3tU+q+2BCN790ojpSlC7Ejkt5RYj9
-         4GEg==
-X-Gm-Message-State: AOAM531fwQqHbrM/Khg1RB+zu9A2cGDUFYwLtiTGBMgEmZjgkR/HPz1Y
-        hEWt6fWYxviY/U4vdlSF6N4rxOc6fWjUH+eplNw=
-X-Google-Smtp-Source: ABdhPJxLUHUXcZD23cV4s0IWNRL8o8ylIN58Qe90LgtsmythJI5/5rx4vU+HjkdQWyO1BlYxLWHDZs90fOT/gvAiWnQ=
-X-Received: by 2002:a1f:6e46:: with SMTP id j67mr6235869vkc.24.1619460165055;
- Mon, 26 Apr 2021 11:02:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=z9wgVVjDAXXSJE2ca33a8jal0v2yahV0C8O37SZcpvQ=;
+        b=DSJT47wqVc3vQQE2aIw+ROH1rNQ4+eZBvFGB+sQrM8Pcp6eoz99IV68VPGN+Urf3bw
+         nEtfg7zk61ksXRvabkSSXEuj3GMYMcQwHRxWyoeMK2CIb1b94xJPOTCvZDcAmHJQPmPf
+         7i739eXQa/cVfwhqKbuTOsDNgr9QDfHCZ9YytTPryK1svNAcWlYGQqlr/JL5LDKvg2gt
+         dNkTtryuKfp/todF+OVNZQbCGAjfGvj8I4Q4UiiuC4Vle3sokHC93YqSQ9YdujoBJX9r
+         2VKAA8wcc7NompKTP9MRmTdGHfOFa8z5G8DAJWU1rCA8taCRaqAv/dnZ7s0yRlDwfgHA
+         SU8Q==
+X-Gm-Message-State: AOAM5301gsZz56FNydvhoDJxwWUFXI7nZb1PqY2LR9F3shBxnRFcqNE6
+        PODX9e0YshulPO/Lp0moZMu1PA==
+X-Google-Smtp-Source: ABdhPJxJp+6XWXivaWJQgtNlleCFdrEv8YRWrei4fRGW/lK200EqgUguXQtGmn4s4C0b2JUb8aewUA==
+X-Received: by 2002:a05:600c:2148:: with SMTP id v8mr236741wml.167.1619460220445;
+        Mon, 26 Apr 2021 11:03:40 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:b76e:7362:77c0:ddc3? ([2a01:e0a:90c:e290:b76e:7362:77c0:ddc3])
+        by smtp.gmail.com with ESMTPSA id l9sm1096913wrz.7.2021.04.26.11.03.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 11:03:38 -0700 (PDT)
+Subject: Re: [PATCH] staging: media/meson: remove redundant dev_err call
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>, hverkuil@xs4all.nl,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-media@vger.kernel.org>,
+        "open list:MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS" 
+        <linux-amlogic@lists.infradead.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        "moderated list:ARM/Amlogic Meson SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com
+References: <20210407160921.GA1504294@LEGION>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <3fac78c4-189f-57cb-ca81-a97c918e2386@baylibre.com>
+Date:   Mon, 26 Apr 2021 20:03:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Received: by 2002:a67:f06:0:0:0:0:0 with HTTP; Mon, 26 Apr 2021 11:02:44 -0700 (PDT)
-Reply-To: inforproject013@gmail.com
-From:   ibrahim zufar <ibrahimzufar01247knha@gmail.com>
-Date:   Mon, 26 Apr 2021 18:02:44 +0000
-Message-ID: <CAMbL6E6tM71Hyyp1t8gyBS_CJi5P9XS3T5j468u2s21Sz9DNSg@mail.gmail.com>
-Subject: Dear Client
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210407160921.GA1504294@LEGION>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Client
+On 07/04/2021 18:09, Muhammad Usama Anjum wrote:
+> devm_ioremap_resource() prints error message in itself. Remove the
+> dev_err call to avoid redundant error message.
+> 
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> ---
+>  drivers/staging/media/meson/vdec/vdec.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+> index 5d4db7a5b4b5..e51d69c4729d 100644
+> --- a/drivers/staging/media/meson/vdec/vdec.c
+> +++ b/drivers/staging/media/meson/vdec/vdec.c
+> @@ -1008,17 +1008,13 @@ static int vdec_probe(struct platform_device *pdev)
+>  
+>  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dos");
+>  	core->dos_base = devm_ioremap_resource(dev, r);
+> -	if (IS_ERR(core->dos_base)) {
+> -		dev_err(dev, "Couldn't remap DOS memory\n");
+> +	if (IS_ERR(core->dos_base))
+>  		return PTR_ERR(core->dos_base);
+> -	}
+>  
+>  	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "esparser");
+>  	core->esparser_base = devm_ioremap_resource(dev, r);
+> -	if (IS_ERR(core->esparser_base)) {
+> -		dev_err(dev, "Couldn't remap ESPARSER memory\n");
+> +	if (IS_ERR(core->esparser_base))
+>  		return PTR_ERR(core->esparser_base);
+> -	}
+>  
+>  	core->regmap_ao =
+>  		syscon_regmap_lookup_by_phandle(dev->of_node,
+> 
 
-I sourced your email from a human resource profile database in the
-Chamber.
-
-furthermore content of your email from this DHL master card offices
-fund of $5.5 USD million after the board of directors meetings, the
-united nations government have decided to issue you your (ATM) valued
-at 5.5 million united states dollar. This is to bring to your notice
-that your valued sum of 5.5 million dollar has being credited into
-(ATM) master card and has been handle to the foreign remittance
-department to send it to you in your favor.
-
-With your (ATM) you will have access to make daily withdrawals of
-$10.000.00 united state dollars dailies as already programmed until
-you Withdraw your total sum in your (ATM) card which has registered in
-our system for payment record,
-
-as soon as we receive your information=E2=80=99s and your home address of y=
-our
-country as already programmed, we will send your (ATM) card through
-DHL courier service, we have received a signal from the Swiss world
-bank to infect your transfer to you within one week,
-
-we have just finished our annual general meeting with the central bank
-of America (boa). at the end of the board of directors meeting, we
-have concluded to immediately issue you as soon as possible,
-
-And your value sum has been credited into your (ATM) card account,
-which you will use to withdraw your fund in any part of the world, we
-have issued and credited your (ATM) card in your name, your (ATM) will
-be insure by the insurance company and send to you,
-
-Meanwhile I request on your return mail, kindly re-send me your data's
-information's:
-
-1. Your Name in Full:
-2. Your Address:
-3. You're Occupation:
-4. Your Nationality;
-5. Your City;
-6. You're Telephone with :
-7. Mobile number:
-8. Your Age:
-9. Your Gender:
-
-Through any available courier company of our choice,
-
-
-Director DHL service,
-Thanks,
-Mr.Ibrahim Zufar
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
