@@ -2,189 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910BB36B55C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E9236B55F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233851AbhDZPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:02:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:56475 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232575AbhDZPCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:02:16 -0400
-IronPort-SDR: zP8OGjWBBNa04L+CezcQ/h0G5aNILZSxOqXvNSZzUVxibBayauMUkPDgE2neC55vOyvKpCkGi1
- Ct27rbu2uLNQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="176464708"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="176464708"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 08:01:32 -0700
-IronPort-SDR: YtQF80EDZX8smam6eon7HIpAUQRiurysL9k4r0wrOzQQ71U1UMKUxh9vyqQrJfHKvtn/OEFkdK
- lUA0CQKvCdrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="429423454"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga008.jf.intel.com with ESMTP; 26 Apr 2021 08:01:28 -0700
-Date:   Mon, 26 Apr 2021 23:01:27 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        zhengjun.xing@intel.com,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
- pre-calibration drift
-Message-ID: <20210426150127.GB23119@shbuild999.sh.intel.com>
-References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
- <20210425224709.1312655-6-paulmck@kernel.org>
+        id S232575AbhDZPDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:03:35 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18541 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233573AbhDZPDY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 11:03:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619449362; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P+Q0gjVqnItHpKvn5/Y4qD5GvFZxA4F2pNTLT3bjqjw=;
+ b=VHHymdp5m74rEKnavRlLBEWOcV39HXJ3pInHHu4LuRwt8LOVaSSZ9JQBNSTXpvV/RpfvlyL2
+ A+P+fmup6PgYD0Z+Q+uld9xP1oj+0jyophuH2+BNe/uqeb9zGg00bep8JKosKkydKCxbtyk/
+ N+0FkDajzVltGcWySWTx0xTmRn0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6086d5d8215b831afbc6f146 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 15:01:44
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A1479C43460; Mon, 26 Apr 2021 15:01:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8CED0C433F1;
+        Mon, 26 Apr 2021 15:01:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210425224709.1312655-6-paulmck@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 26 Apr 2021 20:31:41 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     Sharat Masetty <smasetty@codeaurora.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Rob Clark <robdclark@chromium.org>
+Subject: Re: a6xx_gpu.c:undefined reference to `llcc_slice_deactivate'
+In-Reply-To: <202104261123.Dqr4uccM-lkp@intel.com>
+References: <202104261123.Dqr4uccM-lkp@intel.com>
+Message-ID: <a7fd62d1c8eb4f829708ab4c99c05f6a@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
-> Because the x86 tsc_early clocksource is given a quick and semi-accurate
-> calibration (by design!), it might have drift rates well in excess of
-> the 0.1% limit that is in the process of being adopted.
+On 2021-04-26 09:13, kernel test robot wrote:
+> tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> master
+> head:   9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+> commit: 474dadb8b0d557661cb3d1727f1ff2f82bac6b4c drm/msm/a6xx: Add
+> support for using system cache(LLC)
+> date:   5 months ago
+> config: arm64-randconfig-m031-20210426 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         #
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=474dadb8b0d557661cb3d1727f1ff2f82bac6b4c
+>         git remote add linus
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 474dadb8b0d557661cb3d1727f1ff2f82bac6b4c
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
+> W=1 ARCH=arm64
 > 
-> Therefore, add a max_drift field to the clocksource structure that, when
-> non-zero, specifies the maximum allowable drift rate in nanoseconds over
-> a half-second period.  The tsc_early clocksource initializes this to five
-> miliseconds, which corresponds to the 1% drift rate limit suggested by
-> Xing Zhengjun.  This max_drift field is intended only for early boot,
-> so clocksource_watchdog() splats if it encounters a non-zero value in
-> this field more than 60 seconds after boot, inspired by a suggestion by
-> Thomas Gleixner.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> This was tested by setting the clocksource_tsc ->max_drift field to 1,
-> which, as expected, resulted in a clock-skew event.
+> All errors (new ones prefixed by >>):
+> 
+>    aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+>    aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+>    aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in
+> function `a6xx_pm_suspend':
+>>> a6xx_gpu.c:(.text+0x92c): undefined reference to 
+>>> `llcc_slice_deactivate'
+>>> aarch64-linux-ld: a6xx_gpu.c:(.text+0x94c): undefined reference to 
+>>> `llcc_slice_deactivate'
+>    aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in
+> function `a6xx_pm_resume':
+>>> a6xx_gpu.c:(.text+0xb9c): undefined reference to 
+>>> `llcc_slice_activate'
+>>> aarch64-linux-ld: a6xx_gpu.c:(.text+0xbc0): undefined reference to 
+>>> `llcc_slice_activate'
+>>> aarch64-linux-ld: a6xx_gpu.c:(.text+0xc00): undefined reference to 
+>>> `llcc_get_slice_id'
+>    aarch64-linux-ld: a6xx_gpu.c:(.text+0xc8c): undefined reference to
+> `llcc_get_slice_id'
+>    aarch64-linux-ld: a6xx_gpu.c:(.text+0xccc): undefined reference to
+> `llcc_slice_activate'
+>    aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in
+> function `a6xx_destroy':
+>>> a6xx_gpu.c:(.text+0x5e54): undefined reference to `llcc_slice_putd'
+>>> aarch64-linux-ld: a6xx_gpu.c:(.text+0x5e74): undefined reference to 
+>>> `llcc_slice_putd'
+>    aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in
+> function `a6xx_gpu_init':
+>>> a6xx_gpu.c:(.text+0x60d0): undefined reference to `llcc_slice_getd'
+>>> aarch64-linux-ld: a6xx_gpu.c:(.text+0x60f4): undefined reference to 
+>>> `llcc_slice_getd'
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-We've run the same last for this v10, and those 'unstable' thing [1] can
-not be reproduced!
+Arnd's patch [1] should fix the issue.
 
-We've reported one case that tsc can be wrongly judged as 'unstable'
-by 'refined-jiffies' watchdog [1], while reducing the threshold could
-make it easier to be triggered.
-
-It could be reproduced on the a plaform with a 115200 serial console,
-and hpet been disabled (several x86 platforms has this), add 
-'initcall_debug' cmdline parameter to get more debug message, we can
-see:
-
-[    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
-[    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
-[    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
-[    1.134220] clocksource:                       No current clocksource.
-[    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
-
-[1]. https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/ 
-[2]. https://lore.kernel.org/lkml/20201126012421.GA92582@shbuild999.sh.intel.com/
+[1] 
+https://lore.kernel.org/lkml/20210103140407.3917405-1-arnd@kernel.org/
 
 Thanks,
-Feng
+Sai
 
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Mark Rutland <Mark.Rutland@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
-> Cc: Feng Tang <feng.tang@intel.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  arch/x86/kernel/tsc.c       |  1 +
->  include/linux/clocksource.h |  5 +++++
->  kernel/time/clocksource.c   | 19 ++++++++++++++++++-
->  3 files changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> index 56289170753c..7192b8950322 100644
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -1127,6 +1127,7 @@ static int tsc_cs_enable(struct clocksource *cs)
->  static struct clocksource clocksource_tsc_early = {
->  	.name			= "tsc-early",
->  	.rating			= 299,
-> +	.max_drift		= 5 * NSEC_PER_MSEC,
->  	.read			= read_tsc,
->  	.mask			= CLOCKSOURCE_MASK(64),
->  	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
-> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-> index 83a3ebff7456..07d25a158d7a 100644
-> --- a/include/linux/clocksource.h
-> +++ b/include/linux/clocksource.h
-> @@ -42,6 +42,10 @@ struct module;
->   * @shift:		Cycle to nanosecond divisor (power of two)
->   * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
->   * @maxadj:		Maximum adjustment value to mult (~11%)
-> + * @max_drift:		Maximum drift rate in nanoseconds per half second.
-> + *			Zero says to use default WATCHDOG_THRESHOLD.
-> + *			A non-zero value for ->max_drift more than 60 seconds after boot
-> + *			will result in a splat.
->   * @archdata:		Optional arch-specific data
->   * @max_cycles:		Maximum safe cycle value which won't overflow on
->   *			multiplication
-> @@ -93,6 +97,7 @@ struct clocksource {
->  	u32			shift;
->  	u64			max_idle_ns;
->  	u32			maxadj;
-> +	u32			max_drift;
->  #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
->  	struct arch_clocksource_data archdata;
->  #endif
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index f71f375df544..070b09dab815 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -126,6 +126,7 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
->   */
->  #define WATCHDOG_INTERVAL (HZ >> 1)
->  #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
-> +#define WATCHDOG_SYNC_FORGIVENESS (HZ * 60UL)
->  
->  /*
->   * Maximum permissible delay between two readouts of the watchdog
-> @@ -377,6 +378,7 @@ static void clocksource_watchdog(struct timer_list *unused)
->  	int next_cpu, reset_pending;
->  	int64_t wd_nsec, cs_nsec;
->  	struct clocksource *cs;
-> +	u32 md;
->  
->  	spin_lock(&watchdog_lock);
->  	if (!watchdog_running)
-> @@ -423,7 +425,22 @@ static void clocksource_watchdog(struct timer_list *unused)
->  			continue;
->  
->  		/* Check the deviation from the watchdog clocksource. */
-> -		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
-> +		if (!cs->max_drift) {
-> +			md = WATCHDOG_THRESHOLD;
-> +		} else {
-> +			static unsigned long first_jiffies;
-> +			static bool beenhere;
-> +
-> +			if (beenhere) {
-> +				WARN_ON_ONCE(time_after(jiffies,
-> +							first_jiffies + WATCHDOG_SYNC_FORGIVENESS));
-> +			} else {
-> +				beenhere = true;
-> +				first_jiffies = jiffies;
-> +			}
-> +			md = cs->max_drift;
-> +		}
-> +		if (abs(cs_nsec - wd_nsec) > md) {
->  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
->  				smp_processor_id(), cs->name);
->  			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
-> -- 
-> 2.31.1.189.g2e36527f23
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
