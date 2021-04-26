@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC0E36AEDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2191D36AD1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhDZHsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
+        id S232217AbhDZHce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233401AbhDZHj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6E50613B4;
-        Mon, 26 Apr 2021 07:37:27 +0000 (UTC)
+        id S232448AbhDZHc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:32:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F3961077;
+        Mon, 26 Apr 2021 07:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422648;
-        bh=/8UoeH+MZy6H1J45Kd5YEoVeCuR1QdR21CuuMzDvqCU=;
+        s=korg; t=1619422304;
+        bh=K2ef7W0qv6wVh1N/mhwiEy3smgYtVGKT/yQpNUmzJCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=utsqu87O1niAZE2zdDIeRkspo6oVARKFKeLND/1kootW79Nmua+zw2M9Zd8ttQGNV
-         W4gMNLFse86pchFlOYEaMbSoFpTOXmwWsWE5an+cLZI3YXaAAc6SCiT4ST3g1eQMpG
-         kJu/UIoIqfZrBMxX4bl7SosYJj3d8YaoslpWAf1Q=
+        b=DTCTpTsSXb4tIGyvyJABZCsRz0KLr1koFpNxRRVN28cASmuR/rs2A3FQ9ExpIsK7Z
+         nSzw97T8sbXLacUMgvYZLaoIsCAqNN7IkpXLJony3pdcLx65yxGZbng6h9FvCq+1bS
+         bjg9A7wR+Ov1uQ63n/RG4YH6lJRzey9IZGjqoPyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Luigi Rizzo <lrizzo@google.com>
-Subject: [PATCH 4.19 32/57] netfilter: nft_limit: avoid possible divide error in nft_limit_init
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <mawilcox@microsoft.com>
+Subject: [PATCH 4.4 31/32] overflow.h: Add allocation size calculation helpers
 Date:   Mon, 26 Apr 2021 09:29:29 +0200
-Message-Id: <20210426072821.672101571@linuxfoundation.org>
+Message-Id: <20210426072817.603584888@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
+References: <20210426072816.574319312@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +39,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit b895bdf5d643b6feb7c60856326dd4feb6981560 upstream.
+commit 610b15c50e86eb1e4b77274fabcaea29ac72d6a8 upstream.
 
-div_u64() divides u64 by u32.
+In preparation for replacing unchecked overflows for memory allocations,
+this creates helpers for the 3 most common calculations:
 
-nft_limit_init() wants to divide u64 by u64, use the appropriate
-math function (div64_u64)
+array_size(a, b): 2-dimensional array
+array3_size(a, b, c): 3-dimensional array
+struct_size(ptr, member, n): struct followed by n-many trailing members
 
-divide error: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8390 Comm: syz-executor188 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:div_u64_rem include/linux/math64.h:28 [inline]
-RIP: 0010:div_u64 include/linux/math64.h:127 [inline]
-RIP: 0010:nft_limit_init+0x2a2/0x5e0 net/netfilter/nft_limit.c:85
-Code: ef 4c 01 eb 41 0f 92 c7 48 89 de e8 38 a5 22 fa 4d 85 ff 0f 85 97 02 00 00 e8 ea 9e 22 fa 4c 0f af f3 45 89 ed 31 d2 4c 89 f0 <49> f7 f5 49 89 c6 e8 d3 9e 22 fa 48 8d 7d 48 48 b8 00 00 00 00 00
-RSP: 0018:ffffc90009447198 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000200000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff875152e6 RDI: 0000000000000003
-RBP: ffff888020f80908 R08: 0000200000000000 R09: 0000000000000000
-R10: ffffffff875152d8 R11: 0000000000000000 R12: ffffc90009447270
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  000000000097a300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200001c4 CR3: 0000000026a52000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nf_tables_newexpr net/netfilter/nf_tables_api.c:2675 [inline]
- nft_expr_init+0x145/0x2d0 net/netfilter/nf_tables_api.c:2713
- nft_set_elem_expr_alloc+0x27/0x280 net/netfilter/nf_tables_api.c:5160
- nf_tables_newset+0x1997/0x3150 net/netfilter/nf_tables_api.c:4321
- nfnetlink_rcv_batch+0x85a/0x21b0 net/netfilter/nfnetlink.c:456
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:580 [inline]
- nfnetlink_rcv+0x3af/0x420 net/netfilter/nfnetlink.c:598
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+Each of these return SIZE_MAX on overflow instead of wrapping around.
 
-Fixes: c26844eda9d4 ("netfilter: nf_tables: Fix nft limit burst handling")
-Fixes: 3e0f64b7dd31 ("netfilter: nft_limit: fix packet ratelimiting")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Diagnosed-by: Luigi Rizzo <lrizzo@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+(Additionally renames a variable named "array_size" to avoid future
+collision.)
+
+Co-developed-by: Matthew Wilcox <mawilcox@microsoft.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nft_limit.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/dm-table.c    |   10 +++---
+ include/linux/overflow.h |   73 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 78 insertions(+), 5 deletions(-)
 
---- a/net/netfilter/nft_limit.c
-+++ b/net/netfilter/nft_limit.c
-@@ -79,13 +79,13 @@ static int nft_limit_init(struct nft_lim
- 		return -EOVERFLOW;
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -516,14 +516,14 @@ static int adjoin(struct dm_table *table
+  * On the other hand, dm-switch needs to process bulk data using messages and
+  * excessive use of GFP_NOIO could cause trouble.
+  */
+-static char **realloc_argv(unsigned *array_size, char **old_argv)
++static char **realloc_argv(unsigned *size, char **old_argv)
+ {
+ 	char **argv;
+ 	unsigned new_size;
+ 	gfp_t gfp;
  
- 	if (pkts) {
--		tokens = div_u64(limit->nsecs, limit->rate) * limit->burst;
-+		tokens = div64_u64(limit->nsecs, limit->rate) * limit->burst;
+-	if (*array_size) {
+-		new_size = *array_size * 2;
++	if (*size) {
++		new_size = *size * 2;
+ 		gfp = GFP_KERNEL;
  	} else {
- 		/* The token bucket size limits the number of tokens can be
- 		 * accumulated. tokens_max specifies the bucket size.
- 		 * tokens_max = unit * (rate + burst) / rate.
- 		 */
--		tokens = div_u64(limit->nsecs * (limit->rate + limit->burst),
-+		tokens = div64_u64(limit->nsecs * (limit->rate + limit->burst),
- 				 limit->rate);
+ 		new_size = 8;
+@@ -531,8 +531,8 @@ static char **realloc_argv(unsigned *arr
+ 	}
+ 	argv = kmalloc(new_size * sizeof(*argv), gfp);
+ 	if (argv) {
+-		memcpy(argv, old_argv, *array_size * sizeof(*argv));
+-		*array_size = new_size;
++		memcpy(argv, old_argv, *size * sizeof(*argv));
++		*size = new_size;
  	}
  
+ 	kfree(old_argv);
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -202,4 +202,77 @@
+ 
+ #endif /* COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW */
+ 
++/**
++ * array_size() - Calculate size of 2-dimensional array.
++ *
++ * @a: dimension one
++ * @b: dimension two
++ *
++ * Calculates size of 2-dimensional array: @a * @b.
++ *
++ * Returns: number of bytes needed to represent the array or SIZE_MAX on
++ * overflow.
++ */
++static inline __must_check size_t array_size(size_t a, size_t b)
++{
++	size_t bytes;
++
++	if (check_mul_overflow(a, b, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
++/**
++ * array3_size() - Calculate size of 3-dimensional array.
++ *
++ * @a: dimension one
++ * @b: dimension two
++ * @c: dimension three
++ *
++ * Calculates size of 3-dimensional array: @a * @b * @c.
++ *
++ * Returns: number of bytes needed to represent the array or SIZE_MAX on
++ * overflow.
++ */
++static inline __must_check size_t array3_size(size_t a, size_t b, size_t c)
++{
++	size_t bytes;
++
++	if (check_mul_overflow(a, b, &bytes))
++		return SIZE_MAX;
++	if (check_mul_overflow(bytes, c, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
++static inline __must_check size_t __ab_c_size(size_t n, size_t size, size_t c)
++{
++	size_t bytes;
++
++	if (check_mul_overflow(n, size, &bytes))
++		return SIZE_MAX;
++	if (check_add_overflow(bytes, c, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
++/**
++ * struct_size() - Calculate size of structure with trailing array.
++ * @p: Pointer to the structure.
++ * @member: Name of the array member.
++ * @n: Number of elements in the array.
++ *
++ * Calculates size of memory needed for structure @p followed by an
++ * array of @n @member elements.
++ *
++ * Return: number of bytes needed or SIZE_MAX on overflow.
++ */
++#define struct_size(p, member, n)					\
++	__ab_c_size(n,							\
++		    sizeof(*(p)->member) + __must_be_array((p)->member),\
++		    sizeof(*(p)))
++
+ #endif /* __LINUX_OVERFLOW_H */
 
 
