@@ -2,97 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D796036AFB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A505436AFD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhDZI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 04:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhDZI0R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:26:17 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328B6C061574;
-        Mon, 26 Apr 2021 01:25:34 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w20so698436pge.13;
-        Mon, 26 Apr 2021 01:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jQWKwPGTMFGJm+uWgEIF87JnJjFNAJL/m8Q6ObzH+Yk=;
-        b=YTLVEqNZnFp898icZZIjFJYPF1GwzfEQ2oQbBZUDecL/Zs7+lYJjHRhYQlKttdHbR1
-         JRqITjQR4nTBHUtFNvt2t3SdZ2lvDCeTdZ0SJGM+DNI/KYpZBhTYFRMy2d+4iYp6Txr/
-         o9OlNjYjQL330HE9TVy26wcj9nCpenHBsy7C/PahCeuQE02XjeE/fD54gKI4sbloSBZ6
-         WuQ5rLHkso8g/Wx2up/GgsCXMVjlsb1h7M0rBQhXLyDubpqFdZJCnH/TL42iHPKKUDva
-         QAY0BtYv9Dbnewm6cuvyjTpkg67Oj+9G+iTnikXX15WvAYU+6g7k4IBdWThBTrIZAiHg
-         frCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jQWKwPGTMFGJm+uWgEIF87JnJjFNAJL/m8Q6ObzH+Yk=;
-        b=Q0nMAdTQE9XLm6lAiuoepqpcLFkI5e7BUkPGD+9dcA28FSvLrKNrEODuZdh8M7dgNi
-         E9ZKp3MZojlDCIpFtgUvoO+cBDHceOx0QZaDQyg+235R0iuWLhGqHoT1uynrzYciDQEC
-         ATvVLqNlZoIvVyUuOFCglq+dgwUvTWnpi90pcuNWOSqKNz0fJIoJh5eMhiX99I3dWm9B
-         A/XoWgcoxfmn9OyugzSNMMryso2CiUm0NQ7CbZdUbb+pOBLA6dHTUijNuP2S/+gAIx0N
-         Bz4LESj7ABSwqB8CHhmmpsQbsXFRs/GZbK9mNX5cg3bvltObOpEgPix37bOQRA58uUfY
-         mtIQ==
-X-Gm-Message-State: AOAM5323NL/4UpTHDS9KLPLc1o9yumwYi72jw3yJdN7VUoLnWQbjf/R+
-        wVVlSmbqPFKSriHajKjU+7I=
-X-Google-Smtp-Source: ABdhPJzg+FvvaI1gfWjnjrqTCUdrmfoILYPZaaXfOkn59Rn+vg5oqctdgdIKYxmDJjFpODrKYohpxQ==
-X-Received: by 2002:a63:3c59:: with SMTP id i25mr15573515pgn.366.1619425533827;
-        Mon, 26 Apr 2021 01:25:33 -0700 (PDT)
-Received: from soma ([121.99.145.49])
-        by smtp.gmail.com with ESMTPSA id n25sm10558132pff.154.2021.04.26.01.25.29
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Mon, 26 Apr 2021 01:25:33 -0700 (PDT)
-Received: by soma (sSMTP sendmail emulation); Mon, 26 Apr 2021 20:25:26 +1200
-Date:   Mon, 26 Apr 2021 20:25:26 +1200
-From:   Daniel Beer <dlbeer@gmail.com>
-To:     Ben Chuang <benchuanggli@gmail.com>
-Cc:     adrian.hunter@intel.com, ben.chuang@genesyslogic.com.tw,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        ulf.hansson@linaro.org
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: increase 1.8V regulator wait
-Message-ID: <20210426082526.GA16240@nyquist.nev>
-References: <20210424081652.GA16047@nyquist.nev>
- <20210426073251.7726-1-benchuanggli@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426073251.7726-1-benchuanggli@gmail.com>
+        id S232184AbhDZIkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 04:40:31 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:43080 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232326AbhDZIk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 04:40:28 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DFE2C203378;
+        Mon, 26 Apr 2021 10:39:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AB08F200620;
+        Mon, 26 Apr 2021 10:39:39 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5CD49402F3;
+        Mon, 26 Apr 2021 10:39:34 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_spdif: add support for enabling raw capture mode
+Date:   Mon, 26 Apr 2021 16:24:04 +0800
+Message-Id: <1619425444-8666-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 03:32:51PM +0800, Ben Chuang wrote:
-> > The driver currently waits 5ms after switching on the 1.8V regulator for
-> > it to become stable. Increasing this to 10ms gets rid of the warning
-> > about stability, but most cards still fail. Increasing it to 20ms gets
-> > some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
-> > doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
-> > cards work reliably.
-> 
-> If it is convenient, can you provide the appearance pictures and product
-> links of these two cards? We want to buy them.
+From: Viorel Suman <viorel.suman@nxp.com>
 
-Hi Ben,
+Since i.MX8MM SPDIF interface is able to capture raw data.
+Add support in SPDIF driver for this functionality.
 
-The first is a Samsung EVO microSDXC 32GB:
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_spdif.c | 67 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/fsl/fsl_spdif.h |  1 +
+ 2 files changed, 68 insertions(+)
 
-    https://www.samsung.com/nz/memory-storage/memory-card/evo-plus-microsd-card-95-mbs-sd-adapter-32gb-mb-mc32ga-apc/
-
-The second is an ADATA Premier Pro SDXC UHS-I U3 Class 10 (V30S) 128GB:
-
-    https://www.adata.com/us/consumer/289
-
-The images on those two pages match what I have in front of me here.
-
-Cheers,
-Daniel
-
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index c631de325a6e..2a76714eb8e6 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -49,6 +49,7 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
+  * @imx: for imx platform
+  * @shared_root_clock: flag of sharing a clock source with others;
+  *                     so the driver shouldn't set root clock rate
++ * @raw_capture_mode: if raw capture mode support
+  * @interrupts: interrupt number
+  * @tx_burst: tx maxburst size
+  * @rx_burst: rx maxburst size
+@@ -57,6 +58,7 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
+ struct fsl_spdif_soc_data {
+ 	bool imx;
+ 	bool shared_root_clock;
++	bool raw_capture_mode;
+ 	u32 interrupts;
+ 	u32 tx_burst;
+ 	u32 rx_burst;
+@@ -136,6 +138,7 @@ struct fsl_spdif_priv {
+ static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
+ 	.imx = false,
+ 	.shared_root_clock = false,
++	.raw_capture_mode = false,
+ 	.interrupts = 1,
+ 	.tx_burst = FSL_SPDIF_TXFIFO_WML,
+ 	.rx_burst = FSL_SPDIF_RXFIFO_WML,
+@@ -145,6 +148,7 @@ static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
+ static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
+ 	.imx = true,
+ 	.shared_root_clock = false,
++	.raw_capture_mode = false,
+ 	.interrupts = 1,
+ 	.tx_burst = FSL_SPDIF_TXFIFO_WML,
+ 	.rx_burst = FSL_SPDIF_RXFIFO_WML,
+@@ -154,6 +158,7 @@ static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
+ static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
+ 	.imx = true,
+ 	.shared_root_clock = true,
++	.raw_capture_mode = false,
+ 	.interrupts = 1,
+ 	.tx_burst = FSL_SPDIF_TXFIFO_WML,
+ 	.rx_burst = FSL_SPDIF_RXFIFO_WML,
+@@ -164,12 +169,23 @@ static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
+ static struct fsl_spdif_soc_data fsl_spdif_imx8qm = {
+ 	.imx = true,
+ 	.shared_root_clock = true,
++	.raw_capture_mode = false,
+ 	.interrupts = 2,
+ 	.tx_burst = 2,		/* Applied for EDMA */
+ 	.rx_burst = 2,		/* Applied for EDMA */
+ 	.tx_formats = SNDRV_PCM_FMTBIT_S24_LE,  /* Applied for EDMA */
+ };
+ 
++static struct fsl_spdif_soc_data fsl_spdif_imx8mm = {
++	.imx = true,
++	.shared_root_clock = false,
++	.raw_capture_mode = true,
++	.interrupts = 1,
++	.tx_burst = FSL_SPDIF_TXFIFO_WML,
++	.rx_burst = FSL_SPDIF_RXFIFO_WML,
++	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
++};
++
+ /* Check if clk is a root clock that does not share clock source with others */
+ static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
+ {
+@@ -846,6 +862,39 @@ static int fsl_spdif_tx_vbit_put(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
++static int fsl_spdif_rx_rcm_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
++	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
++	struct regmap *regmap = spdif_priv->regmap;
++	u32 val;
++
++	regmap_read(regmap, REG_SPDIF_SCR, &val);
++	val = (val & SCR_RAW_CAPTURE_MODE) ? 1 : 0;
++	ucontrol->value.integer.value[0] = val;
++
++	return 0;
++}
++
++static int fsl_spdif_rx_rcm_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
++	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
++	struct regmap *regmap = spdif_priv->regmap;
++	u32 val = (ucontrol->value.integer.value[0] ? SCR_RAW_CAPTURE_MODE : 0);
++
++	if (val)
++		cpu_dai->driver->capture.formats |= SNDRV_PCM_FMTBIT_S32_LE;
++	else
++		cpu_dai->driver->capture.formats &= ~SNDRV_PCM_FMTBIT_S32_LE;
++
++	regmap_update_bits(regmap, REG_SPDIF_SCR, SCR_RAW_CAPTURE_MODE, val);
++
++	return 0;
++}
++
+ /* DPLL lock information */
+ static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_info *uinfo)
+@@ -1029,6 +1078,19 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
+ 	},
+ };
+ 
++static struct snd_kcontrol_new fsl_spdif_ctrls_rcm[] = {
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = "IEC958 Raw Capture Mode",
++		.access = SNDRV_CTL_ELEM_ACCESS_READ |
++			SNDRV_CTL_ELEM_ACCESS_WRITE |
++			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
++		.info = snd_ctl_boolean_mono_info,
++		.get = fsl_spdif_rx_rcm_get,
++		.put = fsl_spdif_rx_rcm_put,
++	},
++};
++
+ static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct fsl_spdif_priv *spdif_private = snd_soc_dai_get_drvdata(dai);
+@@ -1038,6 +1100,10 @@ static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+ 
+ 	snd_soc_add_dai_controls(dai, fsl_spdif_ctrls, ARRAY_SIZE(fsl_spdif_ctrls));
+ 
++	if (spdif_private->soc->raw_capture_mode)
++		snd_soc_add_dai_controls(dai, fsl_spdif_ctrls_rcm,
++					 ARRAY_SIZE(fsl_spdif_ctrls_rcm));
++
+ 	/*Clear the val bit for Tx*/
+ 	regmap_update_bits(spdif_private->regmap, REG_SPDIF_SCR,
+ 			   SCR_VAL_MASK, SCR_VAL_CLEAR);
+@@ -1476,6 +1542,7 @@ static const struct of_device_id fsl_spdif_dt_ids[] = {
+ 	{ .compatible = "fsl,vf610-spdif", .data = &fsl_spdif_vf610, },
+ 	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
+ 	{ .compatible = "fsl,imx8qm-spdif", .data = &fsl_spdif_imx8qm, },
++	{ .compatible = "fsl,imx8mm-spdif", .data = &fsl_spdif_imx8mm, },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
+diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
+index d5f1dfd58740..bff8290e71f2 100644
+--- a/sound/soc/fsl/fsl_spdif.h
++++ b/sound/soc/fsl/fsl_spdif.h
+@@ -63,6 +63,7 @@
+ #define SCR_TXFIFO_FSEL_IF4		(0x1 << SCR_TXFIFO_FSEL_OFFSET)
+ #define SCR_TXFIFO_FSEL_IF8		(0x2 << SCR_TXFIFO_FSEL_OFFSET)
+ #define SCR_TXFIFO_FSEL_IF12		(0x3 << SCR_TXFIFO_FSEL_OFFSET)
++#define SCR_RAW_CAPTURE_MODE		BIT(14)
+ #define SCR_LOW_POWER			(1 << 13)
+ #define SCR_SOFT_RESET			(1 << 12)
+ #define SCR_TXFIFO_CTRL_OFFSET		10
 -- 
-Daniel Beer <dlbeer@gmail.com> http://dlbeer.co.nz/
-PGP: BA6E 0B26 1F89 246C E3F3  C910 1E58 C43A 160A 553B
+2.27.0
+
