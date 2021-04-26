@@ -2,114 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118E536BB53
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3C736BB56
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235899AbhDZVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:42:48 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:30664 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbhDZVmr (ORCPT
+        id S236565AbhDZVnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233257AbhDZVnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:42:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1619473326; x=1651009326;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=6wMQi3hPTyU7uHO5mf4w6uBJMxt+7jX0NytKW7NA7sc=;
-  b=QjZAmwK+gSUaJqXiGDN3pC6Wk3whL8hyMJZ/AAe2T5aidw6jshC4L0+/
-   W+TsZ7KU/naUkYLXi+TTtYqpMeAfMqnPRZq9Wn4zOyafmfDSmRCLQzxj8
-   INSF3yVI3gRY6Y+Up8Us5A2DCifNDs1ZgRE7AHlpyk64ykubN4SSXi12Z
-   I=;
-X-IronPort-AV: E=Sophos;i="5.82,252,1613433600"; 
-   d="scan'208";a="121715627"
-Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 26 Apr 2021 21:41:58 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 561FFA225F;
-        Mon, 26 Apr 2021 21:41:56 +0000 (UTC)
-Received: from u366d62d47e3651.ant.amazon.com (10.43.161.102) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 26 Apr 2021 21:41:50 +0000
-Date:   Mon, 26 Apr 2021 23:41:46 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Alexander Graf <graf@amazon.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Message-ID: <20210426213637.GA29911@u366d62d47e3651.ant.amazon.com>
-References: <20210423090333.21910-1-sidcha@amazon.de>
- <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
- <213887af-78b8-03ad-b3f9-c2194cb27b13@redhat.com>
- <ded8db53-0e58-654a-fff2-de536bcbc961@amazon.com>
- <45888d26-89d2-dba6-41cb-de2d58cd5345@redhat.com>
- <67ff6513-5275-a94d-ae63-f2fc47769dfc@amazon.com>
+        Mon, 26 Apr 2021 17:43:46 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5FDC061574;
+        Mon, 26 Apr 2021 14:43:03 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4FTdfs63PVzQk1C;
+        Mon, 26 Apr 2021 23:43:01 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1619473379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5ThGRYtIT0Xf5EcsvLom88a5OB6as8AShYIxI5j+0zI=;
+        b=BoY6pzyOol+4uR0XyRuiOYQE0uRUKZm7MsB7raTPrynmGusJ04t8QOkdnybImot6LkHJlH
+        9Bl/8UCCwd7SlPss0VGLi4VN/AHoaxXV+wl6TYMafcukOLAAkhAbmOnBT1ghfC/emTASRn
+        QQ8ydX+PxQwCHhIYkIehZ+ySvXib7+xdeYKzdevjxJ9xun8MNixeavi7WFepSIZ9mCdJ30
+        0rA5wXQ+83z4CwAf2cJ1LkC6LMjZUNNydfbf9g290yPx3aQanfFm2OzaTJ29M/DyVDTANA
+        RZHgVoma8qIRmVnZg4PhGakW0dE/oLK0XAnnnmfuQKyf8Y3Gv8lLC+BwpaWL6Q==
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
+        with ESMTP id zfk35RdLgCyX; Mon, 26 Apr 2021 23:42:57 +0200 (CEST)
+Subject: Re: [PATCH v2 3/3] MIPS: kernel: proc: add CPU option reporting
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210424215618.1017539-1-ilya.lipnitskiy@gmail.com>
+ <20210424215618.1017539-4-ilya.lipnitskiy@gmail.com>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <ae83282b-19e6-8b91-443b-40f393fb1433@hauke-m.de>
+Date:   Mon, 26 Apr 2021 23:42:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <67ff6513-5275-a94d-ae63-f2fc47769dfc@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.102]
-X-ClientProxiedBy: EX13D16UWB004.ant.amazon.com (10.43.161.170) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210424215618.1017539-4-ilya.lipnitskiy@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -4.28 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 12EE917FC
+X-Rspamd-UID: d5211b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCBBcHIgMjMsIDIwMjEgYXQgMTI6MTg6MzFQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYg
-d3JvdGU6Cj4gT24gMjMuMDQuMjEgMTI6MTUsIFBhb2xvIEJvbnppbmkgd3JvdGU6Cj4gPiBPbiAy
-My8wNC8yMSAxMTo1OCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4gPiA+ID4gSW4gdGhlb3J5IHVz
-ZXJzcGFjZSBkb2Vzbid0IGtub3cgaG93IEtWTSB3aXNoZXMgdG8gaW1wbGVtZW50IHRoZQo+ID4g
-PiA+IGh5cGVyY2FsbCBwYWdlLCBlc3BlY2lhbGx5IGlmIFhlbiBoeXBlcmNhbGxzIGFyZSBlbmFi
-bGVkIGFzIHdlbGwuCj4gPiA+IAo+ID4gPiBJJ20gbm90IHN1cmUgSSBhZ3JlZSB3aXRoIHRoYXQg
-c2VudGltZW50IDopLiBVc2VyIHNwYWNlIGlzIHRoZSBvbmUgdGhhdAo+ID4gPiBzZXRzIHRoZSB4
-ZW4gY29tcGF0IG1vZGUuIEFsbCB3ZSBuZWVkIHRvIGRvIGlzIGRlY2xhcmUgdGhlIE9SaW5nIGFz
-IHBhcnQKPiA+ID4gb2YgdGhlIEtWTSBBQkkuIFdoaWNoIHdlIGVmZmVjdGl2ZWx5IGFyZSBkb2lu
-ZyBhbHJlYWR5LCBiZWNhdXNlIGl0J3MKPiA+ID4gcGFydCBvZiB0aGUgQUJJIHRvIHRoZSBndWVz
-dCwgbm8/Cj4gPiAKPiA+IEdvb2QgcG9pbnQuwqAgQnV0IGl0IG1heSBjaGFuZ2UgaW4gdGhlIGZ1
-dHVyZSBiYXNlZCBvbiBLVk1fRU5BQkxFX0NBUCBvcgo+ID4gd2hhdGV2ZXIsIGFuZCBkdXBsaWNh
-dGluZyBjb2RlIGJldHdlZW4gdXNlcnNwYWNlIGFuZCBrZXJuZWwgaXMgdWdseS7CoCBXZQo+ID4g
-YWxyZWFkeSBoYXZlIHRvbyBtYW55IHVud3JpdHRlbiBjb252ZW50aW9ucyBhcm91bmQgQ1BVSUQs
-IE1TUnMsIGdldC9zZXQKPiA+IHN0YXRlIGlvY3RscywgZXRjLgo+IAo+IFllcywgSSBhZ3JlZS4g
-U28gd2UgY2FuIGp1c3QgZGVjbGFyZSB0aGF0IHRoZXJlIHdvbid0IGJlIGFueSBjaGFuZ2VzIHRv
-IHRoZQo+IGhjYWxsIHBhZ2UgaW4ta2VybmVsIGhhbmRsaW5nIGNvZGUgZ29pbmcgZm9yd2FyZCwg
-bm8/IDopCj4gCj4gSWYgeW91IHdhbnQgdG8gc3VwcG9ydCBhIG5ldyBDQVAsIHN1cHBvcnQgYW4g
-YWN0dWFsIG92ZXJsYXkgcGFnZSBmaXJzdCAtIGFuZAo+IHRodXMgYWN0dWFsbHkgcmVzcGVjdCB0
-aGUgVExGUy4KPiAKPiA+IFRoYXQgc2FpZCwgdGhpcyBkZWZpbml0ZWx5IHRpbHRzIHRoZSBiYWxh
-bmNlIGFnYWluc3QgYWRkaW5nIGFuIGlvY3RsIHRvCj4gPiB3cml0ZSB0aGUgaHlwZXJjYWxsIHBh
-Z2UgY29udGVudHMuwqAgVXNlcnNwYWNlIGNhbiBlaXRoZXIgdXNlIHRoZQo+ID4gS1ZNX1NFVF9N
-U1Igb3IgYXNzZW1ibGUgaXQgb24gaXRzIG93biwgYW5kIG9uZSBvZiB0aGUgdHdvIHNob3VsZCBi
-ZSBva2F5Lgo+IAo+IFNvdW5kcyBncmVhdC4gQW5kIGluIHRoZSBmdXR1cmUgaWYgd2UgbmVlZCB0
-byBtb3ZlIHRoZSBYZW4gb2Zmc2V0LCB3ZSBzaG91bGQKPiByYXRoZXIgbWFrZSB0aGUgWGVuIG9m
-ZnNldHRpbmcgYSBwYXJhbWV0ZXIgZnJvbSB1c2VyIHNwYWNlLgoKT2theSwgYXNzZW1ibGluZyB0
-aGUgaHlwZXJjYWxsIHBhZ2UgY29udGVudHMgaW4gdXNlciBzcGFjZSBpcyBwb3NzaWJsZQpidXQg
-ZG9lc24ndCBoZWxwIHVzIG11Y2g6CiAgMS4gSXQgaXMgYmVzdCB0byBrZWVwIHRoZSBpbnN0cnVj
-dGlvbiBwYXRjaGluZyBhdCBvbmUgcGxhY2U7IHRoZQogICAgIGtlcm5lbCBpcyBhbHJlYWR5IGRv
-aW5nIGl0ICh3aGljaCB3ZSBjYW5ub3QgcmVtb3ZlKS4KICAyLiBJdCBpcyBub3QgcG9zc2libGUg
-dG8gYXNzZW1ibGUgYWxsIG92ZXJsYXkgcGFnZXMgaW4gdXNlciBzcGFjZS4gRm9yCiAgICAgaW5z
-dGFuY2UsIHdlIGNhbm5vdCBhc3NlbWJsZSB0aGUgVlAgYXNzaXN0IHBhZ2UuIFRoZSBoeXBlcmNh
-bGwgY29kZQogICAgIHBhZ2UgaXMgcmVhbGx5IGEgc3BlY2lhbCBjYXNlLgoKU28gSSdkIHNpZGUg
-d2l0aCB0aGUgS1ZNX1NFVF9NU1IgYXBwcm9hY2ggYW5kIGhhdmUgYSBjb252ZW50aW9uIHRoYXQg
-YWxsCm92ZXJsYXkgcGFnZSByZXF1ZXN0cyB3b3VsZCBiZSB0cmFwcGVkIHRvIHVzZXIgc3BhY2Ug
-Zmlyc3QgLSB3aGVyZSB0aGUKcGFnZSBnZXQgb3ZlcmxhaWQgLSBhbmQgdGhlbiB1c2VyIHNwYWNl
-IGZvcndhcmRzIHRoZSBNU1Igd3JpdGUgdG8ga2VybmVsCnNvIGl0IGNhbiBkbyBhIGt2bV92Y3B1
-X3dyaXRlX2d1ZXN0KCkgaWYgbmVlZGVkLiBJTU8sIHRoaXMgYWxsb3dzIGJlc3QKZmxleGliaWxp
-dHkuCgp+IFNpZC4KCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3Jh
-dXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNj
-aGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxv
-dHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAy
-MzcgODc5CgoK
+On 4/24/21 11:56 PM, Ilya Lipnitskiy wrote:
+> From: Hauke Mehrtens <hauke@hauke-m.de>
+> 
+> Many MIPS CPUs have optional CPU features which are not activated for
+> all CPU cores. Print the CPU options, which are implemented in the core,
+> in /proc/cpuinfo. This makes it possible to see which features are
+> supported and which are not supported. This should cover all standard
+> MIPS extensions. Before, it only printed information about the main MIPS
+> ASEs.
+> 
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> 
+> Changes from original patch[0]:
+> - Remove cpu_has_6k_cache and cpu_has_8k_cache due to commit 6ce91ba8589a
+>    ("MIPS: Remove cpu_has_6k_cache and cpu_has_8k_cache in cpu_cache_init()")
+> - Add new options: mac2008_only, ftlbparex, gsexcex, mmid, mm_sysad,
+>    mm_full
+> - Use seq_puts instead of seq_printf as suggested by checkpatch
+> - Minor commit message reword
+> 
+> [0]: https://lore.kernel.org/linux-mips/20181223225224.23042-1-hauke@hauke-m.de/
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+
+Thanks for taking care of this patch.
+
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+
+> ---
+>   arch/mips/kernel/proc.c | 122 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 122 insertions(+)
+> 
+> diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+> index 7d8481d9acc3..376a6e2676e9 100644
+> --- a/arch/mips/kernel/proc.c
+> +++ b/arch/mips/kernel/proc.c
+> @@ -157,6 +157,128 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>   		seq_printf(m, "micromips kernel\t: %s\n",
+>   		      (read_c0_config3() & MIPS_CONF3_ISA_OE) ?  "yes" : "no");
+>   	}
+> +
+> +	seq_puts(m, "Options implemented\t:");
+> +	if (cpu_has_tlb)
+> +		seq_puts(m, " tlb");
+> +	if (cpu_has_ftlb)
+> +		seq_puts(m, " ftlb");
+> +	if (cpu_has_tlbinv)
+> +		seq_puts(m, " tlbinv");
+> +	if (cpu_has_segments)
+> +		seq_puts(m, " segments");
+> +	if (cpu_has_rixiex)
+> +		seq_puts(m, " rixiex");
+> +	if (cpu_has_ldpte)
+> +		seq_puts(m, " ldpte");
+> +	if (cpu_has_maar)
+> +		seq_puts(m, " maar");
+> +	if (cpu_has_rw_llb)
+> +		seq_puts(m, " rw_llb");
+> +	if (cpu_has_4kex)
+> +		seq_puts(m, " 4kex");
+> +	if (cpu_has_3k_cache)
+> +		seq_puts(m, " 3k_cache");
+> +	if (cpu_has_4k_cache)
+> +		seq_puts(m, " 4k_cache");
+> +	if (cpu_has_tx39_cache)
+> +		seq_puts(m, " tx39_cache");
+> +	if (cpu_has_octeon_cache)
+> +		seq_puts(m, " octeon_cache");
+> +	if (cpu_has_fpu)
+> +		seq_puts(m, " fpu");
+> +	if (cpu_has_32fpr)
+> +		seq_puts(m, " 32fpr");
+> +	if (cpu_has_cache_cdex_p)
+> +		seq_puts(m, " cache_cdex_p");
+> +	if (cpu_has_cache_cdex_s)
+> +		seq_puts(m, " cache_cdex_s");
+> +	if (cpu_has_prefetch)
+> +		seq_puts(m, " prefetch");
+> +	if (cpu_has_mcheck)
+> +		seq_puts(m, " mcheck");
+> +	if (cpu_has_ejtag)
+> +		seq_puts(m, " ejtag");
+> +	if (cpu_has_llsc)
+> +		seq_puts(m, " llsc");
+> +	if (cpu_has_guestctl0ext)
+> +		seq_puts(m, " guestctl0ext");
+> +	if (cpu_has_guestctl1)
+> +		seq_puts(m, " guestctl1");
+> +	if (cpu_has_guestctl2)
+> +		seq_puts(m, " guestctl2");
+> +	if (cpu_has_guestid)
+> +		seq_puts(m, " guestid");
+> +	if (cpu_has_drg)
+> +		seq_puts(m, " drg");
+> +	if (cpu_has_rixi)
+> +		seq_puts(m, " rixi");
+> +	if (cpu_has_lpa)
+> +		seq_puts(m, " lpa");
+> +	if (cpu_has_mvh)
+> +		seq_puts(m, " mvh");
+> +	if (cpu_has_vtag_icache)
+> +		seq_puts(m, " vtag_icache");
+> +	if (cpu_has_dc_aliases)
+> +		seq_puts(m, " dc_aliases");
+> +	if (cpu_has_ic_fills_f_dc)
+> +		seq_puts(m, " ic_fills_f_dc");
+> +	if (cpu_has_pindexed_dcache)
+> +		seq_puts(m, " pindexed_dcache");
+> +	if (cpu_has_userlocal)
+> +		seq_puts(m, " userlocal");
+> +	if (cpu_has_nofpuex)
+> +		seq_puts(m, " nofpuex");
+> +	if (cpu_has_vint)
+> +		seq_puts(m, " vint");
+> +	if (cpu_has_veic)
+> +		seq_puts(m, " veic");
+> +	if (cpu_has_inclusive_pcaches)
+> +		seq_puts(m, " inclusive_pcaches");
+> +	if (cpu_has_perf_cntr_intr_bit)
+> +		seq_puts(m, " perf_cntr_intr_bit");
+> +	if (cpu_has_ufr)
+> +		seq_puts(m, " ufr");
+> +	if (cpu_has_fre)
+> +		seq_puts(m, " fre");
+> +	if (cpu_has_cdmm)
+> +		seq_puts(m, " cdmm");
+> +	if (cpu_has_small_pages)
+> +		seq_puts(m, " small_pages");
+> +	if (cpu_has_nan_legacy)
+> +		seq_puts(m, " nan_legacy");
+> +	if (cpu_has_nan_2008)
+> +		seq_puts(m, " nan_2008");
+> +	if (cpu_has_ebase_wg)
+> +		seq_puts(m, " ebase_wg");
+> +	if (cpu_has_badinstr)
+> +		seq_puts(m, " badinstr");
+> +	if (cpu_has_badinstrp)
+> +		seq_puts(m, " badinstrp");
+> +	if (cpu_has_contextconfig)
+> +		seq_puts(m, " contextconfig");
+> +	if (cpu_has_perf)
+> +		seq_puts(m, " perf");
+> +	if (cpu_has_mac2008_only)
+> +		seq_puts(m, " mac2008_only");
+> +	if (cpu_has_ftlbparex)
+> +		seq_puts(m, " ftlbparex");
+> +	if (cpu_has_gsexcex)
+> +		seq_puts(m, " gsexcex");
+> +	if (cpu_has_shared_ftlb_ram)
+> +		seq_puts(m, " shared_ftlb_ram");
+> +	if (cpu_has_shared_ftlb_entries)
+> +		seq_puts(m, " shared_ftlb_entries");
+> +	if (cpu_has_mipsmt_pertccounters)
+> +		seq_puts(m, " mipsmt_pertccounters");
+> +	if (cpu_has_mmid)
+> +		seq_puts(m, " mmid");
+> +	if (cpu_has_mm_sysad)
+> +		seq_puts(m, " mm_sysad");
+> +	if (cpu_has_mm_full)
+> +		seq_puts(m, " mm_full");
+> +	seq_puts(m, "\n");
+> +
+>   	seq_printf(m, "shadow register sets\t: %d\n",
+>   		      cpu_data[n].srsets);
+>   	seq_printf(m, "kscratch registers\t: %d\n",
+> 
 
