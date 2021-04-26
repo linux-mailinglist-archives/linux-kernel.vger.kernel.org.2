@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228FA36B910
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBF436B912
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhDZShF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:37:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39516 "EHLO mail.kernel.org"
+        id S234993AbhDZShI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233842AbhDZShD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234108AbhDZShD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 14:37:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 706FC613C3;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C4A85613C5;
         Mon, 26 Apr 2021 18:36:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619462181;
-        bh=vS0HVzmmxn3SFna8GVj6KhMWZEDg6DWYQylmfZUFsSc=;
+        bh=rJeVm/zpsh8tav8MuWvTP/7kS2ryfPMPh0AdR3wlOU8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qG1XEuq2IAfDjDvP6n1x6qPG9qjNnVYznPW8ErBCWfg2nUnqpghHez1+Lb/MexVO0
-         OkcP8fWm6PV2bXU87/bPnBE0u9nEeERaOs88YIwcaroDI0VDcVCvu7q9sc+YVQ1vqB
-         9R6oS/hw3I9te08E31qIhuCpBg1jwVNcXcjitkgpDZtevuhZrRITEA2+bQ7+oMDKqK
-         yrXRrOyERI7Xq9wMkiiiW2O3mmqAPUdukKKlnRNA+ftxzZ1AlQOhT0ZA8eyXEI5WcU
-         TWHJ/at++eWC6zSjDlEo2K2ZF1KoARQh+UWZJERFeMhKU2yLE20UGiWDf7EcSaN8vO
-         0/jPuwQfgd8Fw==
+        b=mRvwgsN2nvhjnq8NQ1zq1c1yyucvkZvBgR7sGkJ/A9KwbLBxr14MerVj/xGetLG16
+         AnF0sIwrOAVY60LpRNLX6+v+mIx+0i22L4P/1IXG+NbMpSoumP77gYt5eqjkPKOxKq
+         5TcWv+L6VML6xxfwlA7Lqztt2lJKTAa8ze1X7UmEG8mqSWq3vxr1oKj2ir1mgVizBk
+         G9CseCGVSuguhhS54/jDBwGD5/Su9BCCmI++B/sPL6IRSkPM55EbS2t91ceUGUGGkA
+         VvJaj2ciCFk++ToTccDDTbS6cXiJXuCmOvvNfc2tW8kRQX9POmmwCnY2fdFRkSof0z
+         Mj0pDoaCGJfvw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 66012609AE;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BEC83609AE;
         Mon, 26 Apr 2021 18:36:21 +0000 (UTC)
-Subject: Re: [GIT PULL] platform-drivers-x86 for 5.13-1
+Subject: Re: [GIT PULL] Char/Misc driver changes for 5.13-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <9f212b4e-c153-8c68-15da-9474c41e0769@redhat.com>
-References: <9f212b4e-c153-8c68-15da-9474c41e0769@redhat.com>
+In-Reply-To: <YIa0d685cQZ7a2mR@kroah.com>
+References: <YIa0d685cQZ7a2mR@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <9f212b4e-c153-8c68-15da-9474c41e0769@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.13-1
-X-PR-Tracked-Commit-Id: e7882cd7aebe0696fbe178df1f30257e5729fdda
+X-PR-Tracked-Message-Id: <YIa0d685cQZ7a2mR@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.13-rc1
+X-PR-Tracked-Commit-Id: e2cb6b891ad2b8caa9131e3be70f45243df82a80
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 90035c28f17d59be660b9992757d09853ab203ec
-Message-Id: <161946218135.19244.15720585505054266224.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8e3a3249502d8ff92d73d827fb41dd44c5a16f76
+Message-Id: <161946218177.19244.12047241213413045106.pr-tracker-bot@kernel.org>
 Date:   Mon, 26 Apr 2021 18:36:21 +0000
-To:     Hans de Goede <hdegoede@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mark.gross@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 11:31:04 +0200:
+The pull request you sent on Mon, 26 Apr 2021 14:39:19 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.13-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.13-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/90035c28f17d59be660b9992757d09853ab203ec
+https://git.kernel.org/torvalds/c/8e3a3249502d8ff92d73d827fb41dd44c5a16f76
 
 Thank you!
 
