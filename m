@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1494136AD8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E623B36AD2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhDZHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:37:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
+        id S232513AbhDZHc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:32:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232885AbhDZHgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C74DA61364;
-        Mon, 26 Apr 2021 07:33:45 +0000 (UTC)
+        id S232499AbhDZHcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:32:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55B4F6105A;
+        Mon, 26 Apr 2021 07:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422426;
-        bh=bvdls4t8th6leIRkZnrx6Zf4Ki8gX2dLgJkvDOiN3uc=;
+        s=korg; t=1619422325;
+        bh=07caHPhzZxVAkO5mCF9RtGW81v4eRFptXroX2W2y9/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DSqym+WAqLgU8S5eiUtpiHlmdJyLnljvTiBYPBamjOxO1DAZh3i/mm9IDjblFSOfc
-         PqF+qVtAl28cVXAfHwTBb+VQSK+jEm/qi/IDk3SlfkDzXKIeulrb+dXlVfAXvky+kM
-         +EcmJkiaV5Ivo1v8shTMXwxGyQKUo+iNk3NgK87g=
+        b=MnnqOkOyfki57b4OW4Qq1o+z/nhJ6u9EFZFOWGlsdNRm8ZOe01ury57N4AfagL3RT
+         8cSERgWYrOjs0ALmq4eBXCl3rQnPW6sGrJpeCzoQ2qTFJxkQE2OdnngS/td2Cc+q+G
+         uS1GPrEYeyxTW0gwMO3+GsxHsNhn8YcTmgvmsqgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Tom Seewald <tseewald@gmail.com>,
-        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 24/37] usbip: add sysfs_lock to synchronize sysfs code paths
-Date:   Mon, 26 Apr 2021 09:29:25 +0200
-Message-Id: <20210426072818.070293810@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 28/32] ia64: fix discontig.c section mismatches
+Date:   Mon, 26 Apr 2021 09:29:26 +0200
+Message-Id: <20210426072817.512740533@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
+References: <20210426072816.574319312@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,150 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 4e9c93af7279b059faf5bb1897ee90512b258a12 upstream.
+[ Upstream commit e2af9da4f867a1a54f1252bf3abc1a5c63951778 ]
 
-Fuzzing uncovered race condition between sysfs code paths in usbip
-drivers. Device connect/disconnect code paths initiated through
-sysfs interface are prone to races if disconnect happens during
-connect and vice versa.
+Fix IA64 discontig.c Section mismatch warnings.
 
-This problem is common to all drivers while it can be reproduced easily
-in vhci_hcd. Add a sysfs_lock to usbip_device struct to protect the paths.
+When CONFIG_SPARSEMEM=y and CONFIG_MEMORY_HOTPLUG=y, the functions
+computer_pernodesize() and scatter_node_data() should not be marked as
+__meminit because they are needed after init, on any memory hotplug
+event.  Also, early_nr_cpus_node() is called by compute_pernodesize(),
+so early_nr_cpus_node() cannot be __meminit either.
 
-Use this in vhci_hcd to protect sysfs paths. For a complete fix, usip_host
-and usip-vudc drivers and the event handler will have to use this lock to
-protect the paths. These changes will be done in subsequent patches.
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x1612): Section mismatch in reference from the function arch_alloc_nodedata() to the function .meminit.text:compute_pernodesize()
+  The function arch_alloc_nodedata() references the function __meminit compute_pernodesize().
+  This is often because arch_alloc_nodedata lacks a __meminit annotation or the annotation of compute_pernodesize is wrong.
 
-Cc: stable@vger.kernel.org # 4.9.x
-Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/b6568f7beae702bbc236a545d3c020106ca75eac.1616807117.git.skhan@linuxfoundation.org
-Signed-off-by: Tom Seewald <tseewald@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x1692): Section mismatch in reference from the function arch_refresh_nodedata() to the function .meminit.text:scatter_node_data()
+  The function arch_refresh_nodedata() references the function __meminit scatter_node_data().
+  This is often because arch_refresh_nodedata lacks a __meminit annotation or the annotation of scatter_node_data is wrong.
+
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x1502): Section mismatch in reference from the function compute_pernodesize() to the function .meminit.text:early_nr_cpus_node()
+  The function compute_pernodesize() references the function __meminit early_nr_cpus_node().
+  This is often because compute_pernodesize lacks a __meminit annotation or the annotation of early_nr_cpus_node is wrong.
+
+Link: https://lkml.kernel.org/r/20210411001201.3069-1-rdunlap@infradead.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/usbip_common.h |    3 +++
- drivers/usb/usbip/vhci_hcd.c     |    1 +
- drivers/usb/usbip/vhci_sysfs.c   |   30 +++++++++++++++++++++++++-----
- 3 files changed, 29 insertions(+), 5 deletions(-)
+ arch/ia64/mm/discontig.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -278,6 +278,9 @@ struct usbip_device {
- 	/* lock for status */
- 	spinlock_t lock;
+diff --git a/arch/ia64/mm/discontig.c b/arch/ia64/mm/discontig.c
+index 878626805369..3b0c892953ab 100644
+--- a/arch/ia64/mm/discontig.c
++++ b/arch/ia64/mm/discontig.c
+@@ -99,7 +99,7 @@ static int __init build_node_maps(unsigned long start, unsigned long len,
+  * acpi_boot_init() (which builds the node_to_cpu_mask array) hasn't been
+  * called yet.  Note that node 0 will also count all non-existent cpus.
+  */
+-static int __meminit early_nr_cpus_node(int node)
++static int early_nr_cpus_node(int node)
+ {
+ 	int cpu, n = 0;
  
-+	/* mutex for synchronizing sysfs store paths */
-+	struct mutex sysfs_lock;
-+
- 	int sockfd;
- 	struct socket *tcp_socket;
+@@ -114,7 +114,7 @@ static int __meminit early_nr_cpus_node(int node)
+  * compute_pernodesize - compute size of pernode data
+  * @node: the node id.
+  */
+-static unsigned long __meminit compute_pernodesize(int node)
++static unsigned long compute_pernodesize(int node)
+ {
+ 	unsigned long pernodesize = 0, cpus;
  
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -907,6 +907,7 @@ static void vhci_device_init(struct vhci
- 	vdev->ud.side   = USBIP_VHCI;
- 	vdev->ud.status = VDEV_ST_NULL;
- 	spin_lock_init(&vdev->ud.lock);
-+	mutex_init(&vdev->ud.sysfs_lock);
- 
- 	INIT_LIST_HEAD(&vdev->priv_rx);
- 	INIT_LIST_HEAD(&vdev->priv_tx);
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -161,6 +161,8 @@ static int vhci_port_disconnect(struct v
- 
- 	usbip_dbg_vhci_sysfs("enter\n");
- 
-+	mutex_lock(&vdev->ud.sysfs_lock);
-+
- 	/* lock */
- 	spin_lock_irqsave(&vhci->lock, flags);
- 	spin_lock(&vdev->ud.lock);
-@@ -171,6 +173,7 @@ static int vhci_port_disconnect(struct v
- 		/* unlock */
- 		spin_unlock(&vdev->ud.lock);
- 		spin_unlock_irqrestore(&vhci->lock, flags);
-+		mutex_unlock(&vdev->ud.sysfs_lock);
- 
- 		return -EINVAL;
+@@ -411,7 +411,7 @@ static void __init reserve_pernode_space(void)
  	}
-@@ -181,6 +184,8 @@ static int vhci_port_disconnect(struct v
- 
- 	usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN);
- 
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+
- 	return 0;
  }
  
-@@ -309,30 +314,36 @@ static ssize_t store_attach(struct devic
- 	vhci = hcd_to_vhci(hcd);
- 	vdev = &vhci->vdev[rhport];
- 
-+	mutex_lock(&vdev->ud.sysfs_lock);
-+
- 	/* Extract socket from fd. */
- 	socket = sockfd_lookup(sockfd, &err);
- 	if (!socket) {
- 		dev_err(dev, "failed to lookup sock");
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 	if (socket->type != SOCK_STREAM) {
- 		dev_err(dev, "Expecting SOCK_STREAM - found %d",
- 			socket->type);
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 
- 	/* create threads before locking */
- 	tcp_rx = kthread_create(vhci_rx_loop, &vdev->ud, "vhci_rx");
- 	if (IS_ERR(tcp_rx)) {
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 	tcp_tx = kthread_create(vhci_tx_loop, &vdev->ud, "vhci_tx");
- 	if (IS_ERR(tcp_tx)) {
- 		kthread_stop(tcp_rx);
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 
- 	/* get task structs now */
-@@ -353,7 +364,8 @@ static ssize_t store_attach(struct devic
- 		kthread_stop_put(tcp_tx);
- 
- 		dev_err(dev, "port %d already used\n", rhport);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 
- 	dev_info(dev, "pdev(%u) rhport(%u) sockfd(%d)\n",
-@@ -378,7 +390,15 @@ static ssize_t store_attach(struct devic
- 
- 	rh_port_connect(vdev, speed);
- 
-+	dev_info(dev, "Device attached\n");
-+
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+
- 	return count;
-+
-+unlock_mutex:
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+	return err;
- }
- static DEVICE_ATTR(attach, S_IWUSR, NULL, store_attach);
- 
+-static void __meminit scatter_node_data(void)
++static void scatter_node_data(void)
+ {
+ 	pg_data_t **dst;
+ 	int node;
+-- 
+2.30.2
+
 
 
