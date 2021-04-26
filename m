@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C16136AED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3409136ADBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233659AbhDZHro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:47:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49330 "EHLO mail.kernel.org"
+        id S232941AbhDZHiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233020AbhDZHi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:38:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F10086137D;
-        Mon, 26 Apr 2021 07:36:20 +0000 (UTC)
+        id S232913AbhDZHgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41331613BB;
+        Mon, 26 Apr 2021 07:34:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422581;
-        bh=vexq6biuKCrPhpSSvklXRx2AKHq6uV5xEqsuRSIWA50=;
+        s=korg; t=1619422466;
+        bh=C6qUDGwnbP62CeFr17CGJZfay2WsnWnpgn67e8vL2kU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ctg3b7etQ57unzSUuugDnx5eXQSxyiE2JJvqCmQBc+uDfPPrg1MupGzxuZ0cYd2qV
-         dP4l3/gUB+iCF4SoeC2AeucQ1BENymNlgCSyMa/1kBZgoajGatAmhyhfrv/y7U1Nx2
-         1VUn83qmbkXp9bhLpuzML+jcDwSWzlfrlevV4zTM=
+        b=maAaixKkPPQ2l1hIkj9A5PZryUmRiz0R2i6FH9z3o1X1swXIMFERjiFHqRQzBXkTw
+         qMpZ3/zTBCODFHDB7YGDzBSosqvcsrhng4iOmt/NP82+XOqrKTefLmfKI0Bmi+4mMZ
+         KL9oUdYReibUvuO9njQeal/6PKn0CdkDUh6e/L0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/57] pcnet32: Use pci_resource_len to validate PCI resource
-Date:   Mon, 26 Apr 2021 09:29:18 +0200
-Message-Id: <20210426072821.301459356@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.14 23/49] arm64: fix inline asm in load_unaligned_zeropad()
+Date:   Mon, 26 Apr 2021 09:29:19 +0200
+Message-Id: <20210426072820.512718589@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Peter Collingbourne <pcc@google.com>
 
-[ Upstream commit 66c3f05ddc538ee796321210c906b6ae6fc0792a ]
+commit 185f2e5f51c2029efd9dd26cceb968a44fe053c6 upstream.
 
-pci_resource_start() is not a good indicator to determine if a PCI
-resource exists or not, since the resource may start at address 0.
-This is seen when trying to instantiate the driver in qemu for riscv32
-or riscv64.
+The inline asm's addr operand is marked as input-only, however in
+the case where an exception is taken it may be modified by the BIC
+instruction on the exception path. Fix the problem by using a temporary
+register as the destination register for the BIC instruction.
 
-pci 0000:00:01.0: reg 0x10: [io  0x0000-0x001f]
-pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x0000001f]
-...
-pcnet32: card has no PCI IO resources, aborting
-
-Use pci_resouce_len() instead.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Cc: stable@vger.kernel.org
+Link: https://linux-review.googlesource.com/id/I84538c8a2307d567b4f45bb20b715451005f9617
+Link: https://lore.kernel.org/r/20210401165110.3952103-1-pcc@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/amd/pcnet32.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/word-at-a-time.h |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
-index f5ad12c10934..da84660ceae1 100644
---- a/drivers/net/ethernet/amd/pcnet32.c
-+++ b/drivers/net/ethernet/amd/pcnet32.c
-@@ -1548,8 +1548,7 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	}
- 	pci_set_master(pdev);
+--- a/arch/arm64/include/asm/word-at-a-time.h
++++ b/arch/arm64/include/asm/word-at-a-time.h
+@@ -64,7 +64,7 @@ static inline unsigned long find_zero(un
+  */
+ static inline unsigned long load_unaligned_zeropad(const void *addr)
+ {
+-	unsigned long ret, offset;
++	unsigned long ret, tmp;
  
--	ioaddr = pci_resource_start(pdev, 0);
--	if (!ioaddr) {
-+	if (!pci_resource_len(pdev, 0)) {
- 		if (pcnet32_debug & NETIF_MSG_PROBE)
- 			pr_err("card has no PCI IO resources, aborting\n");
- 		err = -ENODEV;
-@@ -1562,6 +1561,8 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
- 			pr_err("architecture does not support 32bit PCI busmaster DMA\n");
- 		goto err_disable_dev;
- 	}
-+
-+	ioaddr = pci_resource_start(pdev, 0);
- 	if (!request_region(ioaddr, PCNET32_TOTAL_SIZE, "pcnet32_probe_pci")) {
- 		if (pcnet32_debug & NETIF_MSG_PROBE)
- 			pr_err("io address range already allocated\n");
--- 
-2.30.2
-
+ 	/* Load word from unaligned pointer addr */
+ 	asm(
+@@ -72,9 +72,9 @@ static inline unsigned long load_unalign
+ 	"2:\n"
+ 	"	.pushsection .fixup,\"ax\"\n"
+ 	"	.align 2\n"
+-	"3:	and	%1, %2, #0x7\n"
+-	"	bic	%2, %2, #0x7\n"
+-	"	ldr	%0, [%2]\n"
++	"3:	bic	%1, %2, #0x7\n"
++	"	ldr	%0, [%1]\n"
++	"	and	%1, %2, #0x7\n"
+ 	"	lsl	%1, %1, #0x3\n"
+ #ifndef __AARCH64EB__
+ 	"	lsr	%0, %0, %1\n"
+@@ -84,7 +84,7 @@ static inline unsigned long load_unalign
+ 	"	b	2b\n"
+ 	"	.popsection\n"
+ 	_ASM_EXTABLE(1b, 3b)
+-	: "=&r" (ret), "=&r" (offset)
++	: "=&r" (ret), "=&r" (tmp)
+ 	: "r" (addr), "Q" (*(unsigned long *)addr));
+ 
+ 	return ret;
 
 
