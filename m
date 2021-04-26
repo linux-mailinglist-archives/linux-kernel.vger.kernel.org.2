@@ -2,138 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AFE36AC9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD31036ACB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhDZHFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:05:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17817 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbhDZHFx (ORCPT
+        id S232125AbhDZHHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:07:34 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:17394 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232114AbhDZHH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:05:53 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FTG7731QYzBryB;
-        Mon, 26 Apr 2021 15:02:43 +0800 (CST)
-Received: from [10.174.176.174] (10.174.176.174) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 26 Apr 2021 15:05:08 +0800
-Subject: Re: [PATCH v5 4/4] mm/shmem: fix shmem_swapin() race with swapoff
-To:     Yu Zhao <yuzhao@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>, <dennis@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, <alexs@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "David Hildenbrand" <david@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210425095419.3830298-1-linmiaohe@huawei.com>
- <20210425095419.3830298-5-linmiaohe@huawei.com>
- <CAOUHufZbT06isT_TU=x8d3P+AEHG8W=xd9GyX_5GHPNBT9KT9g@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <2408403a-a0c3-b87e-b7ab-46cbaf35fb47@huawei.com>
-Date:   Mon, 26 Apr 2021 15:05:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 26 Apr 2021 03:07:29 -0400
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 13Q76IZo017712;
+        Mon, 26 Apr 2021 16:06:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 13Q76IZo017712
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1619420779;
+        bh=TQwmFx5qYzKQCr2bCLGzTGQ0ErVGGivC1LugG10SO70=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Px1iLyXhYx+tyTEyy/GWZ04rwR9kUXnBybL//ouGmPX0MAlcjfLSrYf31hy2gP9fn
+         QpFoMPDSQeqizb9ccBxUBU2smPOFlCh18D0LHKTulvOVhVPjl69l2HVAgz2mbIuIxN
+         T6nfpzRs6QBKAjGY/zevEK0iu6Hi1LjBm4EdSeB+O9HzkTdZrs/zuc6RwDuks0PyPr
+         eoba9j37aNtTOfnBiYzN8fsxWVAWo1LZ4UGlYDH1xp1VP6jgQU2OHCNTjBer76V9u9
+         M0MoP89hP4N9IfKlqneAEpT785PP7rSgAgDXi7EIXK2hzmrIPMok+BZ82WOWK88hUe
+         qZvovOE6WIETg==
+X-Nifty-SrcIP: [209.85.215.177]
+Received: by mail-pg1-f177.google.com with SMTP id p12so39455414pgj.10;
+        Mon, 26 Apr 2021 00:06:19 -0700 (PDT)
+X-Gm-Message-State: AOAM531p8s36x2SN9wpS57O4BG+2ENSN1i7gwtcV4uLy2n00q2vscnfB
+        PbkyhdJA6CZJKKzdt9Dq5zGnFSIQAtogFu0WTmo=
+X-Google-Smtp-Source: ABdhPJyosHZAAd3InPOj/5Dpnl4f158mJISS9oyu+OUE6N+z4fTrgTW5NL0STd4f5A1S+IXR2vEK2zu9ncn0dCCHUHw=
+X-Received: by 2002:a05:6a00:b4b:b029:276:6388:a3ac with SMTP id
+ p11-20020a056a000b4bb02902766388a3acmr4043608pfo.80.1619420778334; Mon, 26
+ Apr 2021 00:06:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOUHufZbT06isT_TU=x8d3P+AEHG8W=xd9GyX_5GHPNBT9KT9g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.174]
-X-CFilter-Loop: Reflected
+References: <YIRryUf6noodWiqe@smtp.gmail.com>
+In-Reply-To: <YIRryUf6noodWiqe@smtp.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 26 Apr 2021 16:05:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW+gfg@mail.gmail.com>
+Message-ID: <CAK7LNATsbkhYHk6NCZJCDrtT0NFfBwe_n9GRSrEvURaXaW+gfg@mail.gmail.com>
+Subject: Re: Running kunit_tool on unclean trees
+To:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+Cc:     kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andersonreisrosa@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/26 14:53, Yu Zhao wrote:
-> On Sun, Apr 25, 2021 at 3:54 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>
->> When I was investigating the swap code, I found the below possible race
->> window:
->>
->> CPU 1                                         CPU 2
->> -----                                         -----
->> shmem_swapin
->>   swap_cluster_readahead
->>     if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
->>                                               swapoff
->>                                                 ..
->>                                                 si->swap_file = NULL;
->>                                                 ..
->>     struct inode *inode = si->swap_file->f_mapping->host;[oops!]
->>
->> Close this race window by using get/put_swap_device() to guard against
->> concurrent swapoff.
->>
->> Fixes: 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or not")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  mm/shmem.c | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>
->> diff --git a/mm/shmem.c b/mm/shmem.c
->> index 26c76b13ad23..2dafd65b0b42 100644
->> --- a/mm/shmem.c
->> +++ b/mm/shmem.c
->> @@ -1696,6 +1696,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>         struct address_space *mapping = inode->i_mapping;
->>         struct shmem_inode_info *info = SHMEM_I(inode);
->>         struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
->> +       struct swap_info_struct *si;
->>         struct page *page;
->>         swp_entry_t swap;
->>         int error;
->> @@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>         swap = radix_to_swp_entry(*pagep);
->>         *pagep = NULL;
->>
->> +       /* Prevent swapoff from happening to us. */
->> +       si = get_swap_device(swap);
->> +       if (!si) {
->> +               error = EINVAL;
->> +               goto failed;
->> +       }
-> 
-> page is uninitialized?
-> 
+On Sun, Apr 25, 2021 at 4:05 AM Marcelo Schmitt
+<marcelo.schmitt1@gmail.com> wrote:
+>
+> Hi, a friend and I were chasing bug 205219 [1] listed in Bugzilla.
+> We step into something a little bit different when trying to reproduce
+> the buggy behavior. In our try, compilation failed with a message form
+> make asking us to clean the source tree. We couldn't run kunit_tool
+> after compiling the kernel for x86, as described by Ted in the
+> discussion pointed out by the bug report.
+>
+> Steps to reproduce:
+>
+> 0) Run kunit_tool
+> $ ./tools/testing/kunit/kunit.py run
+> Works fine with a clean tree.
+>
+> 1) Compile the kernel for some architecture (we did it for x86_64).
+>
+> 2) Run kunit_tool again
+> $ ./tools/testing/kunit/kunit.py run
+> Fails with a message form make asking us to clean the source tree.
 
-Sorry, my overlook! Compiler should have complained about it but there is none...
-Many thanks for pointing this out! Will fix it in next version.
+This is probably because
+tools/testing/kunit/kunit_kernel.py
+runs make with O= option.
 
->>         /* Look it up and read it in.. */
->>         page = lookup_swap_cache(swap, NULL, 0);
->>         if (!page) {
->> @@ -1765,6 +1772,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>         swap_free(swap);
->>
->>         *pagep = page;
->> +       if (si)
->> +               put_swap_device(si);
->>         return 0;
->>  failed:
->>         if (!shmem_confirm_swap(mapping, index, swap))
->> @@ -1775,6 +1784,9 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->>                 put_page(page);
->>         }
->>
->> +       if (si)
->> +               put_swap_device(si);
->> +
->>         return error;
->>  }
->>
->> --
->> 2.23.0
->>
->>
-> .
-> 
 
+
+> Removing the clean source tree check from the top-level Makefile gives
+> us a similar error to what was described in the bug report. We see that
+> after running `git clean -fdx` kunit_tool runs nicely again. However,
+> this is not a real solution since some kernel binaries are erased by git.
+>
+> We also had a look into the commit messages of Masahiro Yamada but
+> couldn't quite grasp why the check for the tree to be clean was added.
+> We could invest more time in this issue but actually don't know how to
+> proceed. We'd be glad to receive any comment about it. We could also try
+> something else if it's a too hard issue for beginners.
+
+I think you are talking about the following error message.
+
+***
+*** The source tree is not clean, please run 'make mrproper'
+*** in /home/masahiro/ref/linux
+***
+
+
+
+Kbuild checks if the source tree is clean
+before starting the out-of-tree build
+because the out-of-tree build relies on VPATH.
+
+This check has existed for a long time. (at least more than a decade)
+
+If Kbuild started the O= build with a dirty source tree,
+some stale generated source files would have been remaining.
+(some *.c and *.h are generated by scripts)
+
+Then, Kbuild would wrongly use stale source files in srctree
+instead of generating new ones in objtree.
+
+
+
+
+
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=205219
+>
+>
+> Best Regards,
+>
+> Marcelo
+
+
+
+--
+Best Regards
+Masahiro Yamada
