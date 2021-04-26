@@ -2,190 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899E336B4DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F6836B4E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233864AbhDZOad convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Apr 2021 10:30:33 -0400
-Received: from mail.savoirfairelinux.com ([208.88.110.44]:60568 "EHLO
-        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDZOac (ORCPT
+        id S233873AbhDZOaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDZOaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:30:32 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id A03A89C1737;
-        Mon, 26 Apr 2021 10:29:49 -0400 (EDT)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zfbcydaMuUS1; Mon, 26 Apr 2021 10:29:49 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 19F819C1747;
-        Mon, 26 Apr 2021 10:29:49 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id noh5Pjjh5SQc; Mon, 26 Apr 2021 10:29:49 -0400 (EDT)
-Received: from barbarian (unknown [192.168.51.254])
-        by mail.savoirfairelinux.com (Postfix) with ESMTPSA id F03DD9C1737;
-        Mon, 26 Apr 2021 10:29:48 -0400 (EDT)
-Message-ID: <67ab377328e1acc2374a43fff774be26018c5b3d.camel@savoirfairelinux.com>
-Subject: RE: uio: uio_pci_generic: add missing memory mappings
-From:   firas ashkar <firas.ashkar@savoirfairelinux.com>
-To:     mst@redhat.com
-Cc:     gregkh@linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 26 Apr 2021 10:29:48 -0400
-Organization: SavoirFaireLinux
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 26 Apr 2021 10:30:52 -0400
+Received: from office2.cesnet.cz (office2.cesnet.cz [IPv6:2001:718:1:101::144:244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C652EC061574;
+        Mon, 26 Apr 2021 07:30:10 -0700 (PDT)
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 2FEF4400052;
+        Mon, 26 Apr 2021 16:30:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1619447408;
+        bh=z/yOEdUwTqe7Cju7xA0JehEFyghVOswc8ZFTFwd6EF8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=BBFw8yxGZmeaYREMBrgWlQ/H2dmC+msbVUjiW8NOu1UF24FRfMOibXYkIxFCeISY8
+         2f8VnyzNS+K19xEv8bHbdlpKhsr0pNbULvoVZk2BYp1ulnlHuPtBDvlEhVTazm5JiA
+         YsDp1TPylKpEUujN7ohPYbOV5Ibn6VSUXoQVRpLDerN1/NWIR0gzVPD7oN7W8nMSkc
+         TJaosa/LEG33NAOJRzCvOo653L7+2GvX9noomOm76FiSPJxhrnacyExp9AUpjdwENe
+         hr8OULEFNV9otSaW/8Ws5d2lyP4k9Em8h0g3FFy9gNbcZIOJZJ7fS0Qs8R/KtB7C6o
+         QfSpPvR7/5DwQ==
+Received: by mail-pj1-f43.google.com with SMTP id y22-20020a17090a8b16b0290150ae1a6d2bso5413038pjn.0;
+        Mon, 26 Apr 2021 07:30:08 -0700 (PDT)
+X-Gm-Message-State: AOAM530aUs0RN1IiBbh/ekkOFKmzfem96724IqoBdA5J/8HTggnrWQ6C
+        trNpTWH0oxMB9xOO567H4yP5st8GF+Drex8l7TM=
+X-Google-Smtp-Source: ABdhPJzY2F0vV+ycVTFKY+kJGuUUHc0GtcAB5VoEXe9hpIaYhT8MhH60TMGn4A5B+R9c7aRnoY63edVwF3++c6ja3Z4=
+X-Received: by 2002:a17:902:b408:b029:ec:e879:bbd8 with SMTP id
+ x8-20020a170902b408b02900ece879bbd8mr13449009plr.65.1619447406799; Mon, 26
+ Apr 2021 07:30:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+References: <20210413025948.901867-1-kubernat@cesnet.cz> <250c1c16-541a-984f-c720-1a8b6176e97e@roeck-us.net>
+ <CABKa3npjrpq5Aw_Xqy3mFZtUHZcfB0YENxEDgo_MCwPUKqA4ww@mail.gmail.com> <20210426141745.GA257701@roeck-us.net>
+In-Reply-To: <20210426141745.GA257701@roeck-us.net>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Mon, 26 Apr 2021 16:29:55 +0200
+X-Gmail-Original-Message-ID: <CABKa3np=osah3zcNmwohL0h8sVOHYcGW6rNYhM=1OzrOiLo50A@mail.gmail.com>
+Message-ID: <CABKa3np=osah3zcNmwohL0h8sVOHYcGW6rNYhM=1OzrOiLo50A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-pls find attached a trivial but necessary patch, this change is based on [drivers/uio/uio_pdrv_genirq.c], 
-it adds missing memory resources/mappings from the underlying pci device, thus the userspace applications
-can memory map and directly access them. This patch also includes minor style changes.
+po 26. 4. 2021 v 16:18 odes=C3=ADlatel Guenter Roeck <linux@roeck-us.net> n=
+apsal:
+>
+> On Mon, Apr 26, 2021 at 02:46:27PM +0200, V=C3=A1clav Kubern=C3=A1t wrote=
+:
+> > Hello.
+> >
+> > I'm sending a new version of my patch on max31790. This new version
+> > fixes the cache issue and actually makes it work by setting
+> > .cache_type. You were right about the "yes/no" ranges, so I flipped
+> > those.
+> >
+> > By the way, it seems that the reason your reply got lost is because of
+> > weird addresses in the "Cc:" email field, they end with "cesnet.cz",
+> > so it could be that I'm sending email incorrectly. Let me know if I'm
+> > doing something wrong.
+> >
+>
+> Yes, the To: field of your series is either empty (for the first patch
+> of the series), or it is something like:
+>         To: unlisted-recipients: no To-header on input <;
+>
+> Also, you send your follow-up series as response of the previous series
+> which doesn't follow the guidance for submitting patches and may result
+> in the entire series getting lost.
+>
 
-The change was tested on following hardware: AltaData ARINC 429 MiniPCIE module on imx8qm-apalis-ixora-v1.2
-board.
+Sorry, I will fix my email-sending procedure. Should I resend the
+patch series without the In-Reply-To field?
 
-Signed-off-by: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
+V=C3=A1clav
 
--- 
-Firas Ashkar
-Developpeur Système Embarqué
-
-savoirfairelinux.com  | Montréal, Québec
-
-Tél.: +1 514 276 5468 ext. 118
-
-----------
-From 40fde25c762e4b7db211da56d8f2f8dd72c1e29c Mon Sep 17 00:00:00 2001
-From: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
-Date: Fri, 23 Apr 2021 10:38:28 -0400
-Subject: [PATCH 1/1] uio: uio_pci_generic: add memory mappings
-
-import memory resources from underlaying pci device, thus allowing
-userspace applications to memory map those resources.
-
-Signed-off-by: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
----
- drivers/uio/uio_pci_generic.c | 52 +++++++++++++++++++++++++++++------
- 1 file changed, 43 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/uio/uio_pci_generic.c
-b/drivers/uio/uio_pci_generic.c
-index c7d681fef198..809eca95b5bb 100644
---- a/drivers/uio/uio_pci_generic.c
-+++ b/drivers/uio/uio_pci_generic.c
-@@ -24,9 +24,9 @@
- #include <linux/slab.h>
- #include <linux/uio_driver.h>
- 
--#define DRIVER_VERSION	"0.01.0"
--#define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
--#define DRIVER_DESC	"Generic UIO driver for PCI 2.3 devices"
-+#define DRIVER_VERSION "0.01.0"
-+#define DRIVER_AUTHOR "Michael S. Tsirkin <mst@redhat.com>"
-+#define DRIVER_DESC "Generic UIO driver for PCI 2.3 devices"
- 
- struct uio_pci_generic_dev {
- 	struct uio_info info;
-@@ -56,7 +56,8 @@ static int release(struct uio_info *info, struct
-inode *inode)
- }
- 
- /* Interrupt handler. Read/modify/write the command register to
-disable
-- * the interrupt. */
-+ * the interrupt.
-+ */
- static irqreturn_t irqhandler(int irq, struct uio_info *info)
- {
- 	struct uio_pci_generic_dev *gdev =
-to_uio_pci_generic_dev(info);
-@@ -68,11 +69,12 @@ static irqreturn_t irqhandler(int irq, struct
-uio_info *info)
- 	return IRQ_HANDLED;
- }
- 
--static int probe(struct pci_dev *pdev,
--			   const struct pci_device_id *id)
-+static int probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
- 	struct uio_pci_generic_dev *gdev;
-+	struct uio_mem *uiomem;
- 	int err;
-+	int i;
- 
- 	err = pcim_enable_device(pdev);
- 	if (err) {
-@@ -84,7 +86,8 @@ static int probe(struct pci_dev *pdev,
- 	if (pdev->irq && !pci_intx_mask_supported(pdev))
- 		return -ENOMEM;
- 
--	gdev = devm_kzalloc(&pdev->dev, sizeof(struct
-uio_pci_generic_dev), GFP_KERNEL);
-+	gdev = devm_kzalloc(&pdev->dev, sizeof(struct
-uio_pci_generic_dev),
-+			    GFP_KERNEL);
- 	if (!gdev)
- 		return -ENOMEM;
- 
-@@ -97,8 +100,39 @@ static int probe(struct pci_dev *pdev,
- 		gdev->info.irq_flags = IRQF_SHARED;
- 		gdev->info.handler = irqhandler;
- 	} else {
--		dev_warn(&pdev->dev, "No IRQ assigned to device: "
--			 "no support for interrupts?\n");
-+		dev_warn(
-+			&pdev->dev,
-+			"No IRQ assigned to device: no support for
-interrupts?\n");
-+	}
-+
-+	uiomem = &gdev->info.mem[0];
-+	for (i = 0; i < MAX_UIO_MAPS; ++i) {
-+		struct resource *r = &pdev->resource[i];
-+
-+		if (r->flags != (IORESOURCE_SIZEALIGN |
-IORESOURCE_MEM))
-+			continue;
-+
-+		if (uiomem >= &gdev->info.mem[MAX_UIO_MAPS]) {
-+			dev_warn(
-+				&pdev->dev,
-+				"device has more than " __stringify(
-+					MAX_UIO_MAPS) " I/O memory
-resources.\n");
-+			break;
-+		}
-+
-+		uiomem->memtype = UIO_MEM_PHYS;
-+		uiomem->addr = r->start & PAGE_MASK;
-+		uiomem->offs = r->start & ~PAGE_MASK;
-+		uiomem->size =
-+			(uiomem->offs + resource_size(r) + PAGE_SIZE -
-1) &
-+			PAGE_MASK;
-+		uiomem->name = r->name;
-+		++uiomem;
-+	}
-+
-+	while (uiomem < &gdev->info.mem[MAX_UIO_MAPS]) {
-+		uiomem->size = 0;
-+		++uiomem;
- 	}
- 
- 	return devm_uio_register_device(&pdev->dev, &gdev->info);
--- 
-2.25.1
-
-
-
-
-          
-
+> Guenter
