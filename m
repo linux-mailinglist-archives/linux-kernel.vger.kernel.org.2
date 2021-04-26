@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4122836AABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF4B36AAC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhDZCmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:42:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231700AbhDZCms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:42:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A276761107;
-        Mon, 26 Apr 2021 02:42:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619404928;
-        bh=7+Fqg0IT+8ZOMQZtO2ypYlYAB+7yIbD8Q7oU3KiEamc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Is6+hyKIQlyZMBJ38jK24zG/MnIuWzHYq1SqMGKCQEYV42jgedGXF7/xfMJ2w1xhH
-         bouERckSvxvxReIecRuBOSYjg+q14ctuP0ATjWw7zO4ImixRYmwwuZtVOl8xnGEMmt
-         eWJTUAkwQ2hVRtffJpK5NuHa3p2EYRl46E8FOF8Cg4pBnE6CnPWQAclh+LWGNSDLZB
-         sYiRnZ5Rxxnno5q7kd2sTAZrFEalVfpEE1FpTJFudbItC56eNYyDs6PhquU0LoxthD
-         VT/bfgKcetcj9HGUWM69/wPLC1Oj3e2fjV+NYpnB4JmBUOAM2u2Pheh35O+9qnXoKH
-         IxZaH9hDPcGdg==
-Date:   Mon, 26 Apr 2021 10:42:03 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     devicetree@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: imx: add imx8mm gw7901 support
-Message-ID: <20210426024202.GH27585@dragon>
-References: <20210330151944.7368-1-tharvey@gateworks.com>
+        id S231720AbhDZCqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 22:46:24 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60295 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231530AbhDZCqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 22:46:22 -0400
+X-UUID: 8f7c3ba02493441191cd68fee9f0f7cf-20210426
+X-UUID: 8f7c3ba02493441191cd68fee9f0f7cf-20210426
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2069239074; Mon, 26 Apr 2021 10:45:37 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 26 Apr 2021 10:45:35 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 26 Apr 2021 10:45:34 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
+        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
+        <sean.wang@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v7 0/1] Mediatek pinctrl patch on mt8195 
+Date:   Mon, 26 Apr 2021 10:45:32 +0800
+Message-ID: <20210426024533.20840-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330151944.7368-1-tharvey@gateworks.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:19:43AM -0700, Tim Harvey wrote:
-> The Gateworks GW7901 is an ARM based single board computer (SBC)
-> featuring:
->  - i.MX8M Mini SoC
->  - LPDDR4 DRAM
->  - eMMC FLASH
->  - SPI FRAM
->  - Gateworks System Controller (GSC)
->  - Atmel ATECC Crypto Authentication
->  - USB 2.0
->  - Microchip GbE Switch
->  - Multiple multi-protocol RS232/RS485/RS422 Serial ports
->  - onboard 802.11ac WiFi / BT
->  - microSD socket
->  - miniPCIe socket with PCIe, USB 2.0 and dual SIM sockets
->  - Wide range DC power input
->  - 802.3at PoE
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+This series includes 1 patches:
+1.add pinctrl rsel setting on MT8195.
 
-Applied both, thanks.
+Changes in patch v7:
+1)add version in patch and fix spelling mistakes.
+
+Changes in patch v6:
+1)add "pintcrl: mediatek" as prefix.
+
+Changes in patch v5:
+1)document and driver patch are apploed.
+2)change '-EOPNOTSUPP' to '-ENOTSUPP'
+
+Changes in patch v4:
+1)fix pinctrl-mt8195.yaml warning error.
+2)remove pinctrl device node patch which is based on "mt8195.dtsi".
+
+Changes in patch v3:
+1)change '^pins' to '-pins$'.
+2)change 'state_0_node_a' to 'gpio_pin' which is defined in dts.
+3)change 'state_0_node_b' to 'i2c0_pin' which is defined in dts.
+4)reorder this series patches. change pinctrl file and binding document
+together in one patch.
+
+There are no changes in v1 & v2.
+
+
