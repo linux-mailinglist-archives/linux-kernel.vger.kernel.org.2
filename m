@@ -2,68 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAEA36AA60
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6F836AA61
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhDZBbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 21:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231663AbhDZBa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 21:30:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2104C6135F;
-        Mon, 26 Apr 2021 01:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619400616;
-        bh=kMA1CM3cbnfdnimBc+GZhNWNAA6x7qfdv/cRcUAsDgQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=l9ajjJq9sqxBXQVJjzTliIC5A6qdIW5FbQhjkiRzIleheH+17zgiH9fjK4Pr5D1YS
-         X0FtXURBrfDJ/5AkZsN38O+u0RBxjDAYZvci/ihnvldAP7xbHUFraTWcEk0Wl5GOvH
-         aGk4DelAE37aQyeHqXbSgKK/wmmfyNCvXMZ/PGxVVFdZj9QCdcbO6IHVAdk2OwD6LZ
-         vaMS3rEIjXhMvNIv9/nq29qpLeuQlMoMvWMjtJFj12ZEbwMiA6EUV/D01OPip/lsWT
-         cyz+0UJiWPfYHMYKmtsmCEitdqYruasG5DmLBn7Plm721mmTe4yQ4QOQN7GscdfvVe
-         bX3Px8tExv1Zw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 18F686094F;
-        Mon, 26 Apr 2021 01:30:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231636AbhDZBb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 21:31:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231530AbhDZBbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 21:31:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619400675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSS6BiOqp8JvHgJiETTDxrWSdTxLypre92kI0mHmhKM=;
+        b=aEoo8luCCTv6mtS28hITOIAv/I0dpRFy/kj5wbbiKzNn5QIbiyguU+AsxQMNdIDZfhc4dT
+        rC+lnw0GxwkGfCXZEqikoQ7vNaM0K25xINPcjZ+yLr9ncesbAbd4wrQ6xnpmSZBtr2VF8r
+        eJRaNf8jRr30SNXLHsrn/3whZg+iBn4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-tRYflDinMRuTunkiegw6FQ-1; Sun, 25 Apr 2021 21:31:13 -0400
+X-MC-Unique: tRYflDinMRuTunkiegw6FQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B33281746A;
+        Mon, 26 Apr 2021 01:31:11 +0000 (UTC)
+Received: from t490s.aquini.net (ovpn-112-122.phx2.redhat.com [10.3.112.122])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7779319D7D;
+        Mon, 26 Apr 2021 01:31:09 +0000 (UTC)
+Date:   Sun, 25 Apr 2021 21:31:07 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     chukaiping <chukaiping@baidu.com>
+Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
+        bhe@redhat.com, khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
+        mateusznosek0@gmail.com, sh_def@163.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm/compaction:let proactive compaction order
+ configurable
+Message-ID: <YIYX22JLVHN1PhGs@t490s.aquini.net>
+References: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] r8152: remove some bit operations
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161940061609.7794.12561749260438717374.git-patchwork-notify@kernel.org>
-Date:   Mon, 26 Apr 2021 01:30:16 +0000
-References: <1394712342-15778-362-Taiwan-albertk@realtek.com>
-In-Reply-To: <1394712342-15778-362-Taiwan-albertk@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Sat, 24 Apr 2021 14:09:03 +0800 you wrote:
-> Remove DELL_TB_RX_AGG_BUG and LENOVO_MACPASSTHRU flags of rtl8152_flags.
-> They are only set when initializing and wouldn't be change. It is enough
-> to record them with variables.
+On Sun, Apr 25, 2021 at 09:21:02AM +0800, chukaiping wrote:
+> Currently the proactive compaction order is fixed to
+> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+> normal 4KB memory, but it's too high for the machines with small
+> normal memory, for example the machines with most memory configured
+> as 1GB hugetlbfs huge pages. In these machines the max order of
+> free pages is often below 9, and it's always below 9 even with hard
+> compaction. This will lead to proactive compaction be triggered very
+> frequently. In these machines we only care about order of 3 or 4.
+> This patch export the oder to proc and let it configurable
+> by user, and the default value is still COMPACTION_HPAGE_ORDER.
 > 
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> Signed-off-by: chukaiping <chukaiping@baidu.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+
+Two minor nits on the commit log message: 
+* there seems to be a whitespage missing in your short log: 
+  "... mm/compaction:let ..."
+
+* has the path really been reported by a test robot?
+
+
+A note on the sysctl name, I'd suggest that it perhaps should reflect 
+the fact that we're adjusting the order for proactive compation.
+How about "proactive_compation_order"?
+
+Cheers,
+
 > ---
->  drivers/net/usb/r8152.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-
-Here is the summary with links:
-  - [net-next] r8152: remove some bit operations
-    https://git.kernel.org/netdev/net-next/c/9c68011bd7e4
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> 
+> Changes in v3:
+>     - change the min value of compaction_order to 1 because the fragmentation
+>       index of order 0 is always 0
+>     - move the definition of max_buddy_zone into #ifdef CONFIG_COMPACTION
+> 
+> Changes in v2:
+>     - fix the compile error in ia64 and powerpc, move the initialization
+>       of sysctl_compaction_order to kcompactd_init because 
+>       COMPACTION_HPAGE_ORDER is a variable in these architectures
+>     - change the hard coded max order number from 10 to MAX_ORDER - 1
+> 
+>  include/linux/compaction.h |    1 +
+>  kernel/sysctl.c            |   10 ++++++++++
+>  mm/compaction.c            |    9 ++++++---
+>  3 files changed, 17 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index ed4070e..151ccd1 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+>  #ifdef CONFIG_COMPACTION
+>  extern int sysctl_compact_memory;
+>  extern unsigned int sysctl_compaction_proactiveness;
+> +extern unsigned int sysctl_compaction_order;
+>  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>  			void *buffer, size_t *length, loff_t *ppos);
+>  extern int sysctl_extfrag_threshold;
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 62fbd09..e50f7d2 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -196,6 +196,7 @@ enum sysctl_writes_mode {
+>  #endif /* CONFIG_SCHED_DEBUG */
+>  
+>  #ifdef CONFIG_COMPACTION
+> +static int max_buddy_zone = MAX_ORDER - 1;
+>  static int min_extfrag_threshold;
+>  static int max_extfrag_threshold = 1000;
+>  #endif
+> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+>  		.extra2		= &one_hundred,
+>  	},
+>  	{
+> +		.procname       = "compaction_order",
+> +		.data           = &sysctl_compaction_order,
+> +		.maxlen         = sizeof(sysctl_compaction_order),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1         = SYSCTL_ONE,
+> +		.extra2         = &max_buddy_zone,
+> +	},
+> +	{
+>  		.procname	= "extfrag_threshold",
+>  		.data		= &sysctl_extfrag_threshold,
+>  		.maxlen		= sizeof(int),
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f447..70c0acd 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+>  
+>  /*
+>   * A zone's fragmentation score is the external fragmentation wrt to the
+> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
+> + * sysctl_compaction_order. It returns a value in the range [0, 100].
+>   */
+>  static unsigned int fragmentation_score_zone(struct zone *zone)
+>  {
+> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+> +	return extfrag_for_order(zone, sysctl_compaction_order);
+>  }
+>  
+>  /*
+>   * A weighted zone's fragmentation score is the external fragmentation
+> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
+> + * wrt to the sysctl_compaction_order scaled by the zone's size. It
+>   * returns a value in the range [0, 100].
+>   *
+>   * The scaling factor ensures that proactive compaction focuses on larger
+> @@ -2666,6 +2666,7 @@ static void compact_nodes(void)
+>   * background. It takes values in the range [0, 100].
+>   */
+>  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+> +unsigned int __read_mostly sysctl_compaction_order;
+>  
+>  /*
+>   * This is the entry point for compacting all nodes via
+> @@ -2958,6 +2959,8 @@ static int __init kcompactd_init(void)
+>  	int nid;
+>  	int ret;
+>  
+> +	sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
+> +
+>  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+>  					"mm/compaction:online",
+>  					kcompactd_cpu_online, NULL);
+> -- 
+> 1.7.1
+> 
 
