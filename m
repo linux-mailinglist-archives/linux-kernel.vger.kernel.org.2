@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD3936B909
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853D536B90C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhDZSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        id S234530AbhDZSgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbhDZSgS (ORCPT
+        with ESMTP id S234385AbhDZSgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:36:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14099C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=yIQ8r/6+4jmPXMKwK9VLxpJ4dQsyz8jNXuoO7X+Mvyw=; b=Pia2gB4XK5q4kSTSGciQOucVHK
-        v0ER2haHAO4Xtzlhyg9C3ZyyHhT+32Vr15SkVVjrFpmRy/iudnoEbULsFkJQG4ItMQd01cqjTv1eS
-        vjlJrB5SKu7kOsbpSPzY2+qE8S5OVt0Lx1OU86bBlfxUz0XM0/DpXO6IdTrAuxuQukv+5wKMOVwBm
-        Y5s1RX+iRho1HbWUEHsgkrcN+vwOAJx8kPw1AComAWoWEdNL3Fz4Ym37ylA+hROpAKmbrKdMtQ11e
-        wX823W6KgsHCjgm+GCnm3+sHWQBAx0LOmDa/vyGeZrPWqWzjAI6vSujf533OCl/RKecnTUuwsSC/0
-        qFQKz98w==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=casper.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb64q-005xso-6v; Mon, 26 Apr 2021 18:35:31 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Damien Lespiau <damien.lespiau@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm: i915: fix build when ACPI is disabled and BACKLIGHT=m
-Date:   Mon, 26 Apr 2021 11:35:16 -0700
-Message-Id: <20210426183516.18957-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 26 Apr 2021 14:36:46 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0BAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:36:05 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id gq23-20020a17090b1057b0290151869af68bso5700030pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=M4PRNZ6UFdUD7I69kTPP/tNKoFLbFxl7JYOSSrNLLac=;
+        b=cllrLqVU64S/FsTBgLwcU1JLdQwCtKY7Qh16AcqsehO8DgSzgYAHiXQquAg+MrcBJ8
+         VMXgswIGI8FDmSIKHG0umGXeHyUOYFxGWAm0fYsDM1fZlsYFlA2gL5whej9aKUNULf7J
+         om6rn76qKF1nSoQt6I5GNFkn0yB5vHEMBMtsA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=M4PRNZ6UFdUD7I69kTPP/tNKoFLbFxl7JYOSSrNLLac=;
+        b=kGRbGJXIoIK4f0zxn1W9AmbZTETHvtMjuaEm3yZ5P6TA/hg47JsHbRLDLxhLorB2bj
+         LbNENxyIxeiqoCKahzcV6isTUOIO9QITU4CHK/dtc88Rj9rmqEwQCXs1WhlYYocFz6Uz
+         sYXwNTeV3Jmmpm5imQxGywcBtIuZg4I2X4DZtgzI2aslN/Nd5C+/mFhO4kuG9gtXtme9
+         XfFYaIk0HwE+cWPPN/AoNY2+3chZq3L1mYAW6btfZlAOdYBkPohHKBmrT8rg+W4VDYxc
+         lZbjuHR6YHZHNJOJVk0T/sldSTWv/pvAeAsjKxgxDY/m5NVi4Vp1BqwWi7umlpbVJceV
+         cAvw==
+X-Gm-Message-State: AOAM530TWke0p9iJYNjYaYsvDejUaPlvWaKdYKgZXtYqG2PATGOckIUa
+        AXTNQhGzCBXh/kk7F1dU0A9RsQ==
+X-Google-Smtp-Source: ABdhPJxmf87ZpWLgN7nsKfNmzRCaUfjAb0nydUZ5Ni71x796SRfDbBB8AJhlhSlsrLX4Eid84TAfQg==
+X-Received: by 2002:a17:90a:1747:: with SMTP id 7mr22214011pjm.109.1619462164835;
+        Mon, 26 Apr 2021 11:36:04 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b25sm383286pfd.7.2021.04.26.11.36.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 11:36:04 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 11:36:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: [GIT PULL] overflow update for v5.13-rc1
+Message-ID: <202104261134.C4C4063@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_DRM_I915=y, CONFIG_ACPI is not set, and
-CONFIG_BACKLIGHT_CLASS_DEVICE=m, not due to I915 config,
-there are build errors trying to reference backlight_device_{un}register().
+Hi Linus,
 
-Changing the use of IS_ENABLED() to IS_REACHABLE() in intel_panel.[ch]
-fixes this.
+Please pull this overflow update for v5.13-rc1. I was expecting more
+in this tree for this cycle, but the other work has not yet landed for
+-next. As a result, only this single typo fix exists. Yay tiny pulls. :)
 
-ld: drivers/gpu/drm/i915/display/intel_panel.o: in function `intel_backlight_device_register':
-intel_panel.c:(.text+0x2ec1): undefined reference to `backlight_device_register'
-ld: drivers/gpu/drm/i915/display/intel_panel.o: in function `intel_backlight_device_unregister':
-intel_panel.c:(.text+0x2f93): undefined reference to `backlight_device_unregister'
+Thanks!
 
-ld: drivers/gpu/drm/i915/display/intel_panel.o: in function `intel_backlight_device_register':
-intel_panel.c:(.text+0x2ec1): undefined reference to `backlight_device_register'
-ld: drivers/gpu/drm/i915/display/intel_panel.o: in function `intel_backlight_device_unregister':
-intel_panel.c:(.text+0x2f93): undefined reference to `backlight_device_unregister'
+-Kees
 
-Fixes: 912e8b12eedb ("drm/i915: register backlight device also when backlight class is a module")
-Fixes: 44c1220a441c ("drm/i915: extract intel_panel.h from intel_drv.h")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Damien Lespiau <damien.lespiau@intel.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: intel-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
----
-Found in linux-next but applies to mainline (5.12).
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
- drivers/gpu/drm/i915/display/intel_panel.c |    2 +-
- drivers/gpu/drm/i915/display/intel_panel.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
---- linux-next-20210426.orig/drivers/gpu/drm/i915/display/intel_panel.c
-+++ linux-next-20210426/drivers/gpu/drm/i915/display/intel_panel.c
-@@ -1254,7 +1254,7 @@ void intel_panel_enable_backlight(const
- 	mutex_unlock(&dev_priv->backlight_lock);
- }
- 
--#if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
-+#if IS_REACHABLE(CONFIG_BACKLIGHT_CLASS_DEVICE)
- static u32 intel_panel_get_backlight(struct intel_connector *connector)
- {
- 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
---- linux-next-20210426.orig/drivers/gpu/drm/i915/display/intel_panel.h
-+++ linux-next-20210426/drivers/gpu/drm/i915/display/intel_panel.h
-@@ -54,7 +54,7 @@ u32 intel_panel_invert_pwm_level(struct
- u32 intel_panel_backlight_level_to_pwm(struct intel_connector *connector, u32 level);
- u32 intel_panel_backlight_level_from_pwm(struct intel_connector *connector, u32 val);
- 
--#if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
-+#if IS_REACHABLE(CONFIG_BACKLIGHT_CLASS_DEVICE)
- int intel_backlight_device_register(struct intel_connector *connector);
- void intel_backlight_device_unregister(struct intel_connector *connector);
- #else /* CONFIG_BACKLIGHT_CLASS_DEVICE */
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/overflow-v5.13-rc1
+
+for you to fetch changes up to 4578be130a6470d85ff05b13b75a00e6224eeeeb:
+
+  overflow: Correct check_shl_overflow() comment (2021-04-01 14:07:41 -0700)
+
+----------------------------------------------------------------
+overflow update for v5.13-rc1
+
+- Fix typo in check_shl_overflow() kern-dec (Keith Busch)
+
+----------------------------------------------------------------
+Keith Busch (1):
+      overflow: Correct check_shl_overflow() comment
+
+ include/linux/overflow.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+-- 
+Kees Cook
