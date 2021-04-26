@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027CE36AD0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F9936ADCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbhDZHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42562 "EHLO mail.kernel.org"
+        id S233113AbhDZHil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232280AbhDZHcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:32:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7736105A;
-        Mon, 26 Apr 2021 07:31:19 +0000 (UTC)
+        id S232918AbhDZHgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6E8613BF;
+        Mon, 26 Apr 2021 07:34:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422280;
-        bh=cozPDNfZ1ilLtxabbov4dYohEi27shFb6gSZS/63Wfc=;
+        s=korg; t=1619422476;
+        bh=Yh13L35ZM6esCqrd244WMvkZU0q1hVTkp93i3JHN/mU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DDxj4sPVSXEMxy2yHbXsnhWpZ+HI4bzrX1duMqEOSYBCcWCwBZ2zJ9iZjUlicZQBk
-         HQIke4+MMdtfJpwW1Po1JmWDl9GoFNArD+1z15JcYOa5MGYHdRvFM1+yEb4e4vLzm/
-         2Z+zzCXGTgwMCZIIaXmQ2/mHgoVs/fcjjuQCrYdM=
+        b=DasAxCReAqbPZGYrltsbxv4k2cXH8TLneQyl/AXlxfkREbZmhpoEmQlzwBTPBKj7z
+         cNuAkISpJMSHIHpGfodpiCqqmJN+OofkWV6QhODNPFHGeVdN3CTR2VROEGSm3wOfpM
+         QURft+5sZi+fiNyOADQdobxD8zaVy+xkUi7BlXFU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Tong Zhu <zhutong@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 04/32] ARM: dts: Fix moving mmc devices with aliases for omap4 & 5
+Subject: [PATCH 4.14 06/49] neighbour: Disregard DEAD dst in neigh_update
 Date:   Mon, 26 Apr 2021 09:29:02 +0200
-Message-Id: <20210426072816.749255331@linuxfoundation.org>
+Message-Id: <20210426072819.932473163@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Tong Zhu <zhutong@amazon.com>
 
-[ Upstream commit 77335a040178a0456d4eabc8bf17a7ca3ee4a327 ]
+[ Upstream commit d47ec7a0a7271dda08932d6208e4ab65ab0c987c ]
 
-Fix moving mmc devices with dts aliases as discussed on the lists.
-Without this we now have internal eMMC mmc1 show up as mmc2 compared
-to the earlier order of devices.
+After a short network outage, the dst_entry is timed out and put
+in DST_OBSOLETE_DEAD. We are in this code because arp reply comes
+from this neighbour after network recovers. There is a potential
+race condition that dst_entry is still in DST_OBSOLETE_DEAD.
+With that, another neighbour lookup causes more harm than good.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+In best case all packets in arp_queue are lost. This is
+counterproductive to the original goal of finding a better path
+for those packets.
+
+I observed a worst case with 4.x kernel where a dst_entry in
+DST_OBSOLETE_DEAD state is associated with loopback net_device.
+It leads to an ethernet header with all zero addresses.
+A packet with all zero source MAC address is quite deadly with
+mac80211, ath9k and 802.11 block ack.  It fails
+ieee80211_find_sta_by_ifaddr in ath9k (xmit.c). Ath9k flushes tx
+queue (ath_tx_complete_aggr). BAW (block ack window) is not
+updated. BAW logic is damaged and ath9k transmission is disabled.
+
+Signed-off-by: Tong Zhu <zhutong@amazon.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap4.dtsi | 5 +++++
- arch/arm/boot/dts/omap5.dtsi | 5 +++++
- 2 files changed, 10 insertions(+)
+ net/core/neighbour.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
-index 8a5628c4b135..656e35ec037d 100644
---- a/arch/arm/boot/dts/omap4.dtsi
-+++ b/arch/arm/boot/dts/omap4.dtsi
-@@ -21,6 +21,11 @@
- 		i2c1 = &i2c2;
- 		i2c2 = &i2c3;
- 		i2c3 = &i2c4;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
-+		mmc3 = &mmc4;
-+		mmc4 = &mmc5;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
-diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
-index 4c04389dab32..b61ea6ca59b3 100644
---- a/arch/arm/boot/dts/omap5.dtsi
-+++ b/arch/arm/boot/dts/omap5.dtsi
-@@ -26,6 +26,11 @@
- 		i2c2 = &i2c3;
- 		i2c3 = &i2c4;
- 		i2c4 = &i2c5;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
-+		mmc3 = &mmc4;
-+		mmc4 = &mmc5;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 20f6c634ad68..f9aa9912f940 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -1266,7 +1266,7 @@ int neigh_update(struct neighbour *neigh, const u8 *lladdr, u8 new,
+ 			 * we can reinject the packet there.
+ 			 */
+ 			n2 = NULL;
+-			if (dst) {
++			if (dst && dst->obsolete != DST_OBSOLETE_DEAD) {
+ 				n2 = dst_neigh_lookup_skb(dst, skb);
+ 				if (n2)
+ 					n1 = n2;
 -- 
 2.30.2
 
