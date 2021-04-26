@@ -2,132 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEC236ABD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 07:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740D636ABDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 07:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhDZFkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 01:40:36 -0400
-Received: from mga01.intel.com ([192.55.52.88]:29258 "EHLO mga01.intel.com"
+        id S231856AbhDZFmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 01:42:53 -0400
+Received: from mga01.intel.com ([192.55.52.88]:29378 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhDZFkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 01:40:35 -0400
-IronPort-SDR: 139w858mWYGkfMWXtpNSMBs0NLpsvalKNpW0S32yUv24U5ZRGHe16A2F0+0JtK560xgKnvweu5
- fXh/yvft9ypg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="216979245"
+        id S229517AbhDZFmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 01:42:51 -0400
+IronPort-SDR: 0pxT7pxUXoRvKNLHCQb2G1twLL+bfhyf/V24B2yH6G4hh5oOXOmo63LDhkIKWMpB+wmPvDGSiU
+ MRzSByUaEzYw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="216979434"
 X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
-   d="scan'208";a="216979245"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 22:39:51 -0700
-IronPort-SDR: biyUaBdAexN6+2TN5TJCfWhh2CjsjNSjzmviRAjwOv/w2fDrX2Lec5llX1X3FPcE+aAZteZp64
- YRaTuzBM6QTA==
+   d="scan'208";a="216979434"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 22:42:10 -0700
+IronPort-SDR: gBOqDw7/2Chzy7gwqQILvBiEHAKl1JMijeY+PVoXv0NbYYTg0U0T5r2b88E21VaVwOCKtbnN8H
+ o89/d/if5lWg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
-   d="scan'208";a="422503436"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 25 Apr 2021 22:39:48 -0700
-Subject: Re: [PATCH v1 2/3] perf session: Add swap operation for event
- TIME_CONV
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Steve MacLean <Steve.MacLean@Microsoft.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20210412083459.462817-1-leo.yan@linaro.org>
- <20210412083459.462817-3-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <1b4fa7c3-79cd-6f73-873e-4792b8a1b732@intel.com>
-Date:   Mon, 26 Apr 2021 08:40:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+   d="scan'208";a="604074913"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 25 Apr 2021 22:42:09 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lau0W-0005pG-Bf; Mon, 26 Apr 2021 05:42:08 +0000
+Date:   Mon, 26 Apr 2021 13:42:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.04.22a] BUILD SUCCESS
+ d7f746e89658d446157f3dc14d3a889457ed0bf8
+Message-ID: <608652a9.stPqMgUTookIPvuJ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210412083459.462817-3-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/21 11:34 am, Leo Yan wrote:
-> Since commit d110162cafc8 ("perf tsc: Support cap_user_time_short for
-> event TIME_CONV"), the event PERF_RECORD_TIME_CONV has extended the data
-> structure for clock parameters.
-> 
-> To be backwards-compatible, this patch adds a dedicated swap operation
-> for the event PERF_RECORD_TIME_CONV, based on checking the event size,
-> it can support both for the old and new event formats.
-> 
-> Fixes: d110162cafc8 ("perf tsc: Support cap_user_time_short for event TIME_CONV")
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/session.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 9a8808507bd9..afca3d5fc851 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -949,6 +949,26 @@ static void perf_event__stat_round_swap(union perf_event *event,
->  	event->stat_round.time = bswap_64(event->stat_round.time);
->  }
->  
-> +static void perf_event__time_conv_swap(union perf_event *event,
-> +				       bool sample_id_all __maybe_unused)
-> +{
-> +	size_t time_zero_size;
-> +
-> +	event->time_conv.time_shift = bswap_64(event->time_conv.time_shift);
-> +	event->time_conv.time_mult  = bswap_64(event->time_conv.time_mult);
-> +	event->time_conv.time_zero  = bswap_64(event->time_conv.time_zero);
-> +
-> +	time_zero_size = (void *)&event->time_conv.time_cycles - (void *)event;
-> +	if (event->header.size > time_zero_size) {
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.22a
+branch HEAD: d7f746e89658d446157f3dc14d3a889457ed0bf8  fixup! clocksource: Limit number of CPUs checked for clock synchronization
 
-I wonder if we could have a helper for this e.g. (untested)
+elapsed time: 724m
 
-#define event_contains(obj, mem) (obj.header.size > offsetof(typeof(obj), mem))
+configs tested: 124
+configs skipped: 2
 
-	if (event_contains(event->time_conv, time_cycles)) {
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+m68k                          hp300_defconfig
+mips                           gcw0_defconfig
+powerpc                      pcm030_defconfig
+sparc64                          alldefconfig
+arm                         vf610m4_defconfig
+sh                           se7619_defconfig
+sh                          r7780mp_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     tqm8555_defconfig
+microblaze                          defconfig
+mips                           ci20_defconfig
+arm                          moxart_defconfig
+arm                           spitz_defconfig
+arm                        cerfcube_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                    amigaone_defconfig
+xtensa                          iss_defconfig
+sh                             shx3_defconfig
+m68k                        m5307c3_defconfig
+arm                            pleb_defconfig
+m68k                             allmodconfig
+mips                           rs90_defconfig
+sh                            shmin_defconfig
+arm                          gemini_defconfig
+arm                           h5000_defconfig
+h8300                    h8300h-sim_defconfig
+powerpc                      pasemi_defconfig
+sh                   secureedge5410_defconfig
+arm                          simpad_defconfig
+m68k                            q40_defconfig
+powerpc                     powernv_defconfig
+powerpc                      katmai_defconfig
+mips                            gpr_defconfig
+powerpc                     tqm8560_defconfig
+arm                          lpd270_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210425
+x86_64               randconfig-a002-20210425
+x86_64               randconfig-a001-20210425
+x86_64               randconfig-a006-20210425
+x86_64               randconfig-a005-20210425
+x86_64               randconfig-a003-20210425
+i386                 randconfig-a005-20210425
+i386                 randconfig-a002-20210425
+i386                 randconfig-a001-20210425
+i386                 randconfig-a006-20210425
+i386                 randconfig-a004-20210425
+i386                 randconfig-a003-20210425
+x86_64               randconfig-a015-20210426
+x86_64               randconfig-a016-20210426
+x86_64               randconfig-a011-20210426
+x86_64               randconfig-a014-20210426
+x86_64               randconfig-a012-20210426
+x86_64               randconfig-a013-20210426
+i386                 randconfig-a014-20210426
+i386                 randconfig-a012-20210426
+i386                 randconfig-a011-20210426
+i386                 randconfig-a013-20210426
+i386                 randconfig-a015-20210426
+i386                 randconfig-a016-20210426
+i386                 randconfig-a012-20210425
+i386                 randconfig-a014-20210425
+i386                 randconfig-a011-20210425
+i386                 randconfig-a013-20210425
+i386                 randconfig-a015-20210425
+i386                 randconfig-a016-20210425
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> +		event->time_conv.time_cycles = bswap_64(event->time_conv.time_cycles);
-> +		event->time_conv.time_mask = bswap_64(event->time_conv.time_mask);
-> +		event->time_conv.cap_user_time_zero =
-> +			bswap_32(event->time_conv.cap_user_time_zero);
-> +		event->time_conv.cap_user_time_short =
-> +			bswap_32(event->time_conv.cap_user_time_short);
+clang tested configs:
+x86_64               randconfig-a015-20210425
+x86_64               randconfig-a016-20210425
+x86_64               randconfig-a011-20210425
+x86_64               randconfig-a014-20210425
+x86_64               randconfig-a013-20210425
+x86_64               randconfig-a012-20210425
 
-'struct perf_record_time_conv' contains bool, the sizeof which, AFAIK, is not defined.
-Is it really 4 bytes on your implementation?  It is only 1 byte with gcc on x86.
-
-Either way, you should change 'struct perf_record_time_conv' so it uses a type of known size.
-Since you are the only one using it, it should match your implementation.
-
-> +	}
-> +}
-> +
->  typedef void (*perf_event__swap_op)(union perf_event *event,
->  				    bool sample_id_all);
->  
-> @@ -985,7 +1005,7 @@ static perf_event__swap_op perf_event__swap_ops[] = {
->  	[PERF_RECORD_STAT]		  = perf_event__stat_swap,
->  	[PERF_RECORD_STAT_ROUND]	  = perf_event__stat_round_swap,
->  	[PERF_RECORD_EVENT_UPDATE]	  = perf_event__event_update_swap,
-> -	[PERF_RECORD_TIME_CONV]		  = perf_event__all64_swap,
-> +	[PERF_RECORD_TIME_CONV]		  = perf_event__time_conv_swap,
->  	[PERF_RECORD_HEADER_MAX]	  = NULL,
->  };
->  
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
