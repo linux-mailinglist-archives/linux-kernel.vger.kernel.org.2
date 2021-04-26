@@ -2,79 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6938636B244
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1105036B256
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhDZLTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232185AbhDZLTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:19:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E33761131;
-        Mon, 26 Apr 2021 11:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619435930;
-        bh=qs4Z74BgQgrjtyJP9H3ollB6/E8cZAm8W1oEEykMr98=;
-        h=Subject:From:To:Cc:Date:From;
-        b=WGTD/0MVt+VXgO2Bz0OiqQ5/YzzNOF+/TvbowX9/hwHIYtaJYwfXdx1B3L4w2DuWh
-         9GzSdWOrZZrY8qwdSABGdKQeqDWQK8ujF2i0Vn3peFBKnrbKyB0MvI3P4bj0gO3sJF
-         9YutoArQH5HFNmKV2xT30RmfWuaG8WbKnM17+WZKmRIfuNeNmWDwr0xGJj7cx+w4Pr
-         O1EDRzrjNPgf7NsXRx1OOPyUkY/nvMkkAToQE3Fuf72KQuCFWSxPOUeK940vvzFQ79
-         0nuGHhQ0Q6d3pB0it2ZEwjeTnlM/PXXERA5bDp807p01PqCulV53MuCtO8oeoqx4m1
-         pb5bEpXtG7S1Q==
-Message-ID: <2623d52cefb71fab85fbfbd0315ac48ac89e00ee.camel@kernel.org>
-Subject: [GIT PULL] file locking fixes for v5.13
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tian Tao <tiantao6@hisilicon.com>,
-        Luo Longjun <luolongjun@huawei.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bruce Fields <bfields@fieldses.org>
-Date:   Mon, 26 Apr 2021 07:18:48 -0400
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        id S231887AbhDZLaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:30:06 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23302 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229554AbhDZLaF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 07:30:05 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QBPA6t132771;
+        Mon, 26 Apr 2021 07:29:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=/qHO8gYWVWiijTjYukocta+N/QRWzwXBMwKqV8e4rSs=;
+ b=RypTNGqTF2vB7dWQRxNArlcT5XzLc1tOO94tpVwUKp10pLjHkLuROcvIuQEgpbVmTJom
+ WgUVjEREb3Lko9pBpUYF7ZZWHZedfM9m0T/NrCkMSXJ+eSV64smrGNZPNch9vWsJQok0
+ FRLPgY13X7pqEPhfMIaYCXNB81+sWdgdioqSuQxeccbVo3hprmJuISdNKEDkbX/79O/J
+ qjunH7ATqAjOk3Wx5jO5s20Z287Br/jUqvasCSph2FKmmXcogpfXIjAKyV5r/ntBieNW
+ GbSPbG1HJl8fGa3pBF1dOZPS7XY06TM/Gd/3b9sGaW/FUQOVgX2QUV43snMGOIUHxfRm vA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 385stkw5e8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 07:29:18 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13QBRN1U014586;
+        Mon, 26 Apr 2021 11:29:16 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 384akh8e3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 11:29:16 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13QBTCRM30867860
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Apr 2021 11:29:13 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D43754204B;
+        Mon, 26 Apr 2021 11:29:12 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A50D42049;
+        Mon, 26 Apr 2021 11:29:12 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.40.129])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 26 Apr 2021 11:29:12 +0000 (GMT)
+Date:   Mon, 26 Apr 2021 14:29:09 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Vladimir Isaev <Vladimir.Isaev@synopsys.com>
+Cc:     linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARC: Use max_high_pfn as a HIGHMEM zone border
+Message-ID: <YIakBTNpLsPJaj7i@linux.ibm.com>
+References: <20210426101004.42695-1-isaev@synopsys.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426101004.42695-1-isaev@synopsys.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: VjGorx5mtmwpxzP8K8upRwr2Xg7V1Bu0
+X-Proofpoint-GUID: VjGorx5mtmwpxzP8K8upRwr2Xg7V1Bu0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-26_03:2021-04-26,2021-04-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ clxscore=1011 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 adultscore=0 impostorscore=0 spamscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Hi,
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+On Mon, Apr 26, 2021 at 01:10:04PM +0300, Vladimir Isaev wrote:
+> Commit 4af22ded0ecf ("arc: fix memory initialization for systems with two
+> memory banks") fixed highmem, but not for PAE case when highmem is
+> actually bigger than lowmem.
+> 
+> Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/arc/mm/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
+> index ce07e697916c..59bad6f94105 100644
+> --- a/arch/arc/mm/init.c
+> +++ b/arch/arc/mm/init.c
+> @@ -157,7 +157,7 @@ void __init setup_arch_memory(void)
+>  	min_high_pfn = PFN_DOWN(high_mem_start);
+>  	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
+>  
+> -	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
+> +	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
 
-are available in the Git repository at:
+This is correct with PAE40, but it will break !PAE40 when "highmem" has
+lower addresses than lowmem.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git tags/locks-v5.13
+It rather should be something like:
 
-for you to fetch changes up to cbe6fc4e01421c890d74422cdd04c6b1c8f62dda:
+        if (IS_ENABLED(CONFIG_ARC_HAS_PAE40))
+                max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
+        else
+            	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
 
-  fs/locks: remove useless assignment in fcntl_getlk (2021-04-13 07:26:38 -0400)
 
-----------------------------------------------------------------
-When we reworked the blocked locks into a tree structure instead of a
-flat list a few releases ago, we lost the ability to see all of the file
-locks in /proc/locks. Luo's patch fixes it to dump out all of the
-blocked locks instead, which restores the full output.
+>  
+>  	high_memory = (void *)(min_high_pfn << PAGE_SHIFT);
+>  
+> -- 
+> 2.16.2
+> 
 
-This changes the format of /proc/locks as the blocked locks are shown at
-multiple levels of indentation now, but lslocks (the only common program
-I've ID'ed that scrapes this info) seems to be OK with that.
-
-Tian also contributed a small patch to remove a useless assignment.
-----------------------------------------------------------------
-Luo Longjun (1):
-      fs/locks: print full locks information
-
-Tian Tao (1):
-      fs/locks: remove useless assignment in fcntl_getlk
-
- fs/locks.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 56 insertions(+), 10 deletions(-)
-
-Thanks!
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Sincerely yours,
+Mike.
