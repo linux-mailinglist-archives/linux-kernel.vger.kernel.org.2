@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1456436B964
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447F136B967
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239086AbhDZSv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:51:27 -0400
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:41534 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239046AbhDZSvZ (ORCPT
+        id S239378AbhDZSxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:53:07 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:55109 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237631AbhDZSwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:51:25 -0400
-Received: by mail-pl1-f177.google.com with SMTP id e2so25124043plh.8;
-        Mon, 26 Apr 2021 11:50:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wn5pIko3dOXofM/RbH3aZI70BecBWmubQ/kDe1VUkfo=;
-        b=Tp0ywh5Uz47jy9EX8awoja4EKbqo1QTioQb+8acBEXeIX3TsQH+Sl4lxHkCoS25YJx
-         tQW1OVBa/yqCHnmJfnRDRM+wR9VsIu/8hQwRL2EZ24vcuC6L2JDiP06hg1x+YCHO3+BJ
-         k2xTKrN1CpzibcAbvoetYOa25dtoy6E3d91Xl7yrQHzGIbIItNXs4jrTIjV0wuMJLm4q
-         hm/e0TmyuSKvZVyesZJZnhh8yKVILVhKmPVO2yt7ZHgeFkQcAjEqdLHghXwHu+VegOWy
-         8VFoq+vO7CBOcwralLp7EM8UhrIPClXfKjHevnQPndWD3W31NCbYp0A7obcHR/O21fEz
-         pDnQ==
-X-Gm-Message-State: AOAM532nyciUTXwvGDWZi+dHbkTVWl59FBbs8HZdXbNhC6cdoB1zWNfO
-        lq9FMQVONLySaB1f+Js2fWzsskurrbxPIg==
-X-Google-Smtp-Source: ABdhPJyegXR5DFg1SodW3RL/mziuH29Sy6vHZzC77suWL4kugISgBTw5I/1Zk+IUtXfQWhoMw8XCow==
-X-Received: by 2002:a17:90a:9511:: with SMTP id t17mr505675pjo.235.1619463043268;
-        Mon, 26 Apr 2021 11:50:43 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id s32sm399847pfw.2.2021.04.26.11.50.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 11:50:42 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 7AD85403A2; Mon, 26 Apr 2021 18:50:41 +0000 (UTC)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk
-Cc:     bvanassche@acm.org, ming.lei@redhat.com, hch@infradead.org,
-        jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2] block: fix userspace documentation reference for del_gendisk()
-Date:   Mon, 26 Apr 2021 18:50:40 +0000
-Message-Id: <20210426185040.24580-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.23.0.rc1
+        Mon, 26 Apr 2021 14:52:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 073CC580B58;
+        Mon, 26 Apr 2021 14:51:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 26 Apr 2021 14:51:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=sImtnFIf2IiGLj1moI9Axaabj+1
+        /JIUf9WTF63IiVmI=; b=7VLdJfUUGvVQcSqhypULyrzoviMfJLOD8sJ0oV6jKOM
+        DreychR1086TvYsxPf2fXhedJhJq3kAJw7r8vXf+WFXLs+pcHkhPhrTsMm5lkbmU
+        rZr0NV+13i75V/xFaIILYYtRtQMiv5/vvffYp/32eeYdtgZN/XSv7KhOLzeZvsfn
+        lTyG/DmbZzRyIngMbDayAp/55lb8RZRJoB8uMlFgorzf0QgFxcnKDSU4VpuBXSH8
+        SDQsGEs1ASoz4xoHUBvdRBQGTXcrz77Qpcsr0IMnkpxJE3T7qgxWaHzGCy1URcOt
+        S7wW9aLc0H7IcYXXq25zWXgbuoDgiffDmwaIaSjvdxA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=sImtnF
+        If2IiGLj1moI9Axaabj+1/JIUf9WTF63IiVmI=; b=ZNQLyKaB+hPmesLsB5Gb5X
+        FaCa0ONSitPlEOSsHfBfsE9a/4IMCfWVlsy+EIKz90taXHrtOL5Q/Ocdu18c/uWg
+        duW1Ej1/K1O0/enz6zMe8baBG+3Bnl960exXDSrfe59KhZw1k85sjjjlkF8m7lz9
+        hgVQbBqImTu6t50sjMbFQMhUyCatd6wNDWUBOfuO3vGV+6wPadjyHDV6+JSywEZ2
+        bTMXErDJvMRxnVuVj211o2+xx9wndpcSzYggG5VbERxA+PQeJKUCtNoWCUvLIMi9
+        YxmvXN7XDpKYUE6bxvcPf+BM9PW7DASJ7+lpwoTgIOZRQZgwFg44G4kd28fEayng
+        ==
+X-ME-Sender: <xms:vAuHYB4Zxsdj7A-2mRFexalUWN5RaP_0fWTMFs8wv6E8RWWPk_H2-Q>
+    <xme:vAuHYO0mB57IUojXRiXPdGdiC2Isjepv8aC49f-Fa3-YUB4dLbTHj4QAM9n0hqgZ5
+    CRd5Rl7PRK5tURKLFs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddukedgudefvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
+    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
+    grthhtvghrnhepgeekfeejgeektdejgfefudelkeeuteejgefhhfeugffffeelheegieef
+    vdfgtefhnecukfhppedujeefrdefkedruddujedrkeehnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
+    rg
+X-ME-Proxy: <xmx:vAuHYFV2pb_T0tBrJxJDtTqZoKWT7pyknta59rMWrEUsMt7Lt3n_9A>
+    <xmx:vAuHYB6tys_XGS2yycR19zEZGqRy35u2fGzfts0FjhMA_pFAjYMsRw>
+    <xmx:vAuHYEKzezsxS_peONK4BaophQq9qDBw38Kzx4borrHiYudRdW6mkg>
+    <xmx:vAuHYITankRz_KyZaTPVA-yJkwqn_BOd4ZYRe2eIFdQsgVbL6PLENg>
+Received: from cisco (unknown [173.38.117.85])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 43CDC1080066;
+        Mon, 26 Apr 2021 14:51:39 -0400 (EDT)
+Date:   Mon, 26 Apr 2021 12:51:38 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Subject: Re: [PATCH RESEND 3/5] selftests/seccomp: Add test for wait killable
+ notifier
+Message-ID: <20210426185138.GA1605795@cisco>
+References: <20210426180610.2363-1-sargun@sargun.me>
+ <20210426180610.2363-4-sargun@sargun.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426180610.2363-4-sargun@sargun.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b5bd357cf8b ("block: add docs for gendisk / request_queue refcount
-helpers") has a typo where it references drivers for del_gendisk() when we
-instead meant userspace, as the reference is to the userspace experience.
-This fixes this.
+On Mon, Apr 26, 2021 at 11:06:08AM -0700, Sargun Dhillon wrote:
+> +TEST(user_notification_signal_wait_killable)
+> +{
+> +	pid_t pid;
+> +	long ret;
+> +	int status, listener, sk_pair[2];
+> +	struct seccomp_notif req = {
+> +		.flags = SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE,
+> +	};
+> +	struct seccomp_notif_resp resp = {};
+> +	char c;
+> +
+> +	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+> +	ASSERT_EQ(0, ret) {
+> +		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
+> +	}
+> +
+> +	ASSERT_EQ(socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair), 0);
+> +	ASSERT_EQ(fcntl(sk_pair[0], F_SETFL, O_NONBLOCK), 0);
+> +
+> +	listener = user_notif_syscall(__NR_gettid,
+> +				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
+> +	ASSERT_GE(listener, 0);
+> +
+> +	pid = fork();
+> +	ASSERT_GE(pid, 0);
+> +
+> +	if (pid == 0) {
+> +		close(sk_pair[0]);
+> +		handled = sk_pair[1];
+> +		if (signal(SIGUSR1, signal_handler) == SIG_ERR) {
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- block/genhd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I think here you want a write(handled, "x", 1), right?
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 39ca97b0edc6..e077adfcd1a2 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -594,8 +594,8 @@ EXPORT_SYMBOL(device_add_disk_no_queue_reg);
-  * with put_disk(), which should be called after del_gendisk(), if
-  * __device_add_disk() was used.
-  *
-- * Drivers exist which depend on the release of the gendisk to be synchronous,
-- * it should not be deferred.
-+ * Userspace software may depend on the release of the gendisk to be
-+ * synchronous, it should not be deferred.
-  *
-  * Context: can sleep
-  */
--- 
-2.29.2
-
+Tycho
