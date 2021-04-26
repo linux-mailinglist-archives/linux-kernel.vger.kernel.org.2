@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4C236B8B6
+	by mail.lfdr.de (Postfix) with ESMTP id EE8FA36B8B8
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhDZSH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234459AbhDZSHU (ORCPT
+        id S234608AbhDZSJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:09:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234690AbhDZSJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:07:20 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBF5C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:06:37 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id x7so56799847wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z/Kwipu1y6TOCAmGCH4eBv1sqy5s6UK9+gQOmGBdFDo=;
-        b=tFAA8OM1OMnP4mVo1BUP3TdeKSXg/EB0WafYRtzUUiTKjsWUSQ3QroqS/dybgZJz5x
-         0uistVBTmvOSdV/sjTYDOP5Va1MmX7/WqO0JJj+tBOPk5GLQHczf9D8P5whtygJ67rTY
-         Xn1LpQA4AeN6syvVSQIdFiCAapyOmzrQqelxryNExRsNAUxIlqXMJwYj+ns6o5CwHKK2
-         ylC+cLMlFFWQrWOfS5pjYnUnB/NhnEYOL62/OL4tMLc0yPxaXghMMP4NPRf4+0vQdGOq
-         o/LMILSLqmJbvcyuMj+8GgtaWJZ/8VgNqAKdegca6JMGKy9kxT/rfUr+s3QipNmawIWl
-         iCfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=z/Kwipu1y6TOCAmGCH4eBv1sqy5s6UK9+gQOmGBdFDo=;
-        b=Uz+GTtC7iFjaBFHUMA+TdjKw7TLuIlbx/fHmqvwT93OdE3K8OKPsmN1fKeHL0jELfr
-         SsOuqg1xJ6/xH2knqOpaDChLV92X6SY8ZNMB2vQnJQ+cWBlc6a6hesZdLAl66EojhkDN
-         LPeBD1UaYJfnuE+VZgeBokFSQtSMA4EdE0jZujBVqRaxmo1lJ+sdv+3Ijh1gYKX20jwT
-         crNxkG7G+fnFFcQA4ojwhBlf33gos+txj9328k76WOw0g5MQIMg/mAokCAtV+TTU/B7j
-         uy1d3gw7C7sZrR8GctiHOPwKaOUSFphpr3Eyf7qSQsNrth3S9WhK+UL7OkMdOrXTS4HJ
-         5A2w==
-X-Gm-Message-State: AOAM533p6xePo6CovbXOapYmOrSMaP1cPCWYIyqxZwz3m815Jyv9ZZf8
-        bSR6yc+xQtXXurP3mcycu4YBXg==
-X-Google-Smtp-Source: ABdhPJzgk2IzpTkyCjHJ4GcBEEoXLGQijoX+9t+CrvlLufNwU/zLqVZ2i9U0e2ub5m3mdqW1C5Dt0g==
-X-Received: by 2002:a5d:590a:: with SMTP id v10mr24510931wrd.306.1619460395637;
-        Mon, 26 Apr 2021 11:06:35 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:b76e:7362:77c0:ddc3? ([2a01:e0a:90c:e290:b76e:7362:77c0:ddc3])
-        by smtp.gmail.com with ESMTPSA id a9sm276663wmj.1.2021.04.26.11.06.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 11:06:33 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] dt-bindings: serial: amlogic,meson-uart: add
- fifo-size property
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        gregkh@linuxfoundation.org
-References: <20210325152410.1795557-1-narmstrong@baylibre.com>
- <20210325152410.1795557-2-narmstrong@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <39c92a23-e009-6bc2-a20b-9b0ab3e01c75@baylibre.com>
-Date:   Mon, 26 Apr 2021 20:06:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 26 Apr 2021 14:09:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619460509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A1r1y2XmXpPoWoQQIZR44ApqAwQCbrMIhs03n4zkI9M=;
+        b=PjgoSaV4PITRiz4sQcggQ6pic0/dANfMcTHYyfF+FfWXqMYB5cVNm17jYUCwfsZf1dqBSr
+        9peOSTu5VCYlECpMwq89hniDLjgiuwZNyr4H778QzpXPIPs5T+KtfxbP6cxfZue1lxSP78
+        wAIQgr9Ycqff1a+xppImjo1yeJiOelE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-s-SJ1R8rOjSd00roqxDARw-1; Mon, 26 Apr 2021 14:08:26 -0400
+X-MC-Unique: s-SJ1R8rOjSd00roqxDARw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 593816D4FA;
+        Mon, 26 Apr 2021 18:08:24 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9642F19C78;
+        Mon, 26 Apr 2021 18:08:17 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 251CE220BCF; Mon, 26 Apr 2021 14:08:17 -0400 (EDT)
+Date:   Mon, 26 Apr 2021 14:08:17 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu, jack@suse.cz,
+        slp@redhat.com, groug@kaod.org
+Subject: Re: [PATCH v4 1/3] dax: Add an enum for specifying dax wakup mode
+Message-ID: <20210426180817.GF1741690@redhat.com>
+References: <20210423130723.1673919-1-vgoyal@redhat.com>
+ <20210423130723.1673919-2-vgoyal@redhat.com>
+ <20210426134632.GM235567@casper.infradead.org>
+ <20210426175217.GD1741690@redhat.com>
+ <20210426180211.GP235567@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210325152410.1795557-2-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426180211.GP235567@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 25/03/2021 16:24, Neil Armstrong wrote:
-> On most of the Amlogic SoCs, the first UART controller in the "Everything-Else"
-> power domain has 128bytes of RX & TX FIFO, so add an optional property to describe
-> a different FIFO size from the other ports (64bytes).
+On Mon, Apr 26, 2021 at 07:02:11PM +0100, Matthew Wilcox wrote:
+> On Mon, Apr 26, 2021 at 01:52:17PM -0400, Vivek Goyal wrote:
+> > On Mon, Apr 26, 2021 at 02:46:32PM +0100, Matthew Wilcox wrote:
+> > > On Fri, Apr 23, 2021 at 09:07:21AM -0400, Vivek Goyal wrote:
+> > > > +enum dax_wake_mode {
+> > > > +	WAKE_NEXT,
+> > > > +	WAKE_ALL,
+> > > > +};
+> > > 
+> > > Why define them in this order when ...
+> > > 
+> > > > @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
+> > > >  	 * must be in the waitqueue and the following check will see them.
+> > > >  	 */
+> > > >  	if (waitqueue_active(wq))
+> > > > -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
+> > > > +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
+> > > 
+> > > ... they're used like this?  This is almost as bad as
+> > > 
+> > > enum bool {
+> > > 	true,
+> > > 	false,
+> > > };
+> > 
+> > Hi Matthew,
+> > 
+> > So you prefer that I should switch order of WAKE_NEXT and WAKE_ALL? 
+> > 
+> > enum dax_wake_mode {
+> > 	WAKE_ALL,
+> > 	WAKE_NEXT,
+> > };
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../devicetree/bindings/serial/amlogic,meson-uart.yaml      | 6 ++++++
->  1 file changed, 6 insertions(+)
+> That, yes.
 > 
-> diff --git a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> index 75ebc9952a99..8ece7f420c19 100644
-> --- a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> @@ -55,6 +55,12 @@ properties:
->        - const: pclk
->        - const: baud
->  
-> +
-> +  fifo-size:
-> +    description: The fifo size supported by the UART channel.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [64, 128]
-> +
->  required:
->    - compatible
->    - reg
+> > And then do following to wake task.
+> > 
+> > if (waitqueue_active(wq))
+> > 	__wake_up(wq, TASK_NORMAL, mode, &key);
 > 
+> No, the third argument to __wake_up() is a count, not an enum.  It just so
+> happens that '0' means 'all' and we only ever wake up 1 and not, say, 5.
+> So the logical way to define the enum is ALL, NEXT which _just happens
+> to match_ the usage of __wake_up().
 
+Ok, In that case, I will retain existing code.
 
-Is it ok with the generic fifo-size property ?
+__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
 
-Neil
+Vivek
+
