@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747EF36BC32
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BEF36BC41
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhDZXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234458AbhDZXlk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:41:40 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1457EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:40:58 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 35-20020a9d05260000b029029c82502d7bso22340848otw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=NEHpIT7JtAotWEAmzkKwy8vPNiQepRQjD2rlrKixEck=;
-        b=htJSDBHTfHv3U5av1DteYHnJDJNDUhM/OShaHprDGj0u3+edde0fgzoJhi6v3ZJUGN
-         d+d3OgU+6iGVw2wYgjMT5NUuCjcZX/NJ88+hsZCeceFr7SFBzBEAkJwIwfKakOnWZOCt
-         uNgsIqt7BRdvEgF27FFZI9YIr6XzlerGlJj/w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=NEHpIT7JtAotWEAmzkKwy8vPNiQepRQjD2rlrKixEck=;
-        b=G0GYcoQ5STh1s5wxgl3gpjel/jVulKDUwE/NdqQ6MF9ciDptmKqa2DUjjn40S3XgoV
-         bQtlay2MmYzYcbYLLqeXzCvnAavyKxnj8r6DJHEN3q92TNIDeIaSrnllnykY7gEYuNCx
-         Gni+IeUnEiU8bQGS/ksNKMgWysmLORH58M5HRXA+/anZ7dusUTogHErQfDghNxN051Xy
-         ocmsRQzQNjH90DE52dsAXus8wGqEaa1Z85K9HQb+2bbc7L5nz1Geh5/q+dEgVvESmqfg
-         t64sg43a/XxtDfw6lfYt17xKnx7a/p68C7CY8+0g8APLwUbSmYUfW3tSqgAHhqmAk0/X
-         14jQ==
-X-Gm-Message-State: AOAM530fPddpURbC8HLj4xZQHPHQNF6XBk5Nm6Jgill9JRV18wXsVP3T
-        yaU4leowsf+oY2BxuSUtBRL2e0ZvY9I0auY3QgJNSQ==
-X-Google-Smtp-Source: ABdhPJx87OTgMCGlnQEjvHG1bfaHrJ5Zbfuwn/xKmtbZFK2gWuancnL+IUbBA2+8/DPh25YEDdXNrFzZqEeWtunjfGI=
-X-Received: by 2002:a05:6830:1f02:: with SMTP id u2mr16559621otg.308.1619480457466;
- Mon, 26 Apr 2021 16:40:57 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Apr 2021 16:40:56 -0700
+        id S237764AbhDZXmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:42:49 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44229 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237368AbhDZXmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:42:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FThJ90PR9z9sW8;
+        Tue, 27 Apr 2021 09:42:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619480523;
+        bh=Zok7MXkWk3bshACCPzopjDVLxWZeZykxopB1VOLekZ8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hBhWNgs67BHjCCKzmuSrrkhSgEVHOAj4CZhP+8tILQo+ltuPJ79du1kZ6lsWVPVr0
+         Z0k1rXsXTIoFhepV7wA498lPVofHasjmx7GphFhBDqPDDuXAsLnfj3kSHM83CX1W9j
+         BfiMV8sBgyTY4f3DIhVxrIqKj6WyOzyRHRuNWu+VCoO7Caxfe2hMlBGhR5lgQkGMI6
+         i6o5kEs8uW8iXkJkSfOKnrEMST2IdqKJkw+PrKPAdIF9Zq4HLh3hly7hdj4Q5s34q0
+         KP38HtlaZSIMIHTDFC9sNcpFOsT6bWbvDjA/ZWEY+XKH8SyhbyWb3MOQzG7FilxUeb
+         xfQya4m+Zcj5A==
+Date:   Tue, 27 Apr 2021 09:42:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: linux-next: manual merge of the risc-v tree with Linus' tree
+Message-ID: <20210427094200.567d8555@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YIaePJGgD+FEQAUF@alley>
-References: <20210420215003.3510247-1-swboyd@chromium.org> <20210420215003.3510247-5-swboyd@chromium.org>
- <YIaePJGgD+FEQAUF@alley>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 26 Apr 2021 16:40:56 -0700
-Message-ID: <CAE-0n53bcJBe9h90_YkZbwREFPCoJKcEsAwZY5AkQh-SNBZXLw@mail.gmail.com>
-Subject: Re: [PATCH v5 04/13] dump_stack: Add vmlinux build ID to stack traces
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/xAV/fTavu==glZJoSlh3f1W";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Petr Mladek (2021-04-26 04:04:28)
-> On Tue 2021-04-20 14:49:54, Stephen Boyd wrote:
-> > Add the running kernel's build ID[1] to the stacktrace information
-> > header.  This makes it simpler for developers to locate the vmlinux with
-> > full debuginfo for a particular kernel stacktrace. Combined with
-> > scripts/decode_stracktrace.sh, a developer can download the correct
-> > vmlinux from a debuginfod[2] server and find the exact file and line
-> > number for the functions plus offsets in a stacktrace.
-> >
-> > diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-> > index f375900cf9ed..3b7a0ff4642f 100644
-> > --- a/include/linux/buildid.h
-> > +++ b/include/linux/buildid.h
-> > @@ -10,7 +10,11 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
-> >                  __u32 *size);
-> >  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size);
-> >
-> > +#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) || IS_ENABLED(CONFIG_CRASH_CORE)
->
-> Why is this enabled for CONFIG_CRASH_CORE, please?
->
-> Is some crash_core code going to printk it id even when
-> CONFIG_STACKTRACE_BUILD_ID is disabled?
->
-> Anyway, this condition should be added in the patch when a code is
-> really going to depend on it. Or the intention should be explained
-> in the commit message at least.
+--Sig_/xAV/fTavu==glZJoSlh3f1W
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sure I'll move the latter condition to the crash patch at the end.
+Hi all,
 
->
->
-> >  extern unsigned char vmlinux_build_id[BUILD_ID_SIZE_MAX];
-> >  void init_vmlinux_build_id(void);
-> > +#else
-> > +static inline void init_vmlinux_build_id(void) { }
-> > +#endif
->
-> Otherwise, the patch looks good to me.
->
+Today's linux-next merge of the risc-v tree got a conflict in:
 
-Thanks.
+  arch/riscv/kernel/setup.c
+
+between commit:
+
+  ce989f1472ae ("RISC-V: Fix out-of-bounds accesses in init_resources()")
+
+from Linus' tree and commit:
+
+  ffe0e5261268 ("RISC-V: Improve init_resources()")
+
+from the risc-v tree.
+
+I fixed it up (I used the latter since it fixed the same problem as the
+former but in a different way) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xAV/fTavu==glZJoSlh3f1W
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCHT8gACgkQAVBC80lX
+0Gwrtgf/an5h//L9fhbR5NovCRdJTcJp/5rpn7/0YZ5mhvEsTeV4nyk+oikwYgsV
+7HKGphlMRbn/Xw2GS/zDSBXAD9dZc62m80JD9tNqWSZ4i5xr5YATNOfpIMuUv1er
+L+iSWowCEPEBL5VuBc+uRNUibY29UKQZv+dZtg0bEpwEE5ZnotUDpDaVy6zSmwxX
+sgC5BUoz9eAzsW2Znf0FZIaY4S6wZzFKECgQHZ3Fuw779bJHi0gbdx8McwCDCrbX
+avkR/SoIXqdnBiKTd1BXM8yM7o+9Mew8tHg9Y2DIISDsW4fYAL+TeXNK8YT7he45
+zuHHeAWUTxnDL9hCE5A75YHpsjI2VA==
+=6Mm+
+-----END PGP SIGNATURE-----
+
+--Sig_/xAV/fTavu==glZJoSlh3f1W--
