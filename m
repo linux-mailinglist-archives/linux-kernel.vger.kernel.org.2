@@ -2,165 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD8636B380
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A4B36B383
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhDZMve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:51:34 -0400
-Received: from mail-eopbgr80074.outbound.protection.outlook.com ([40.107.8.74]:7720
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232107AbhDZMvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:51:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yn1hy4HuoypJMRSXA/wdlBkABqoGc3O/XUDfEawoSkWDHTm0Pk/OhUKQeu25Q/e1cOOxj92AzK5sWf43ZfRP4ZR3hYwGAa3nWNPVDJpnUPuwKow3nWnYsNymNorGe/OJ7jqVztcxdPtNAM2+mvyBpgVprjIdwC0hiWn4tRhnZVmicipc+7N9XpaFNM9cKWjaOuHry5IKlk6u8D/2v/9LuoxPbkaJQd8erfr5tzgmSOe9Mp2Y0z39zxhOkVXtiqEI6X50I3czYucCZguic1toriLMjV4IU5MLg+SkvEvQLf0LPxpBDAJpHZbLyYpyHTDMSlyRVX5jLCJQ2V3iTWdhVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JPTpNPSU1UX0aN43G+D6oq97mT7I2z7aw2ZUBxVycSQ=;
- b=Xr6wTGLDuVKEaNrKwBJg6XSIRvx/Wr3vluUR75UikwOAm0Rk/knIciYGLZo2PWVqL+fNoyrgv/1tNZ1OuUojQj3oxM5yRoA1GeaPmuKtgYwXQab3n0+20AO/8k5BnzJoIs2V2EEB12ZkCQsERZ3+VDAdqy6EzOcP+uhaa85NEpySJblFUFwkGG/LQ3EKKB+2n58ZAaEIrKsCd3RWV5gLEE72PIaeIjGm/wolnAasYeAD91Yq1XszB19F3C7nznQ6CiaB6ECJqjZEEuEkTQf35UrcEb2Vk7s609J5iuq3S7wiWGV/r/6F8+quG837HO/tmoXRSBuHrBiienp5ct/ggw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JPTpNPSU1UX0aN43G+D6oq97mT7I2z7aw2ZUBxVycSQ=;
- b=CyAWv6ALrMdT1b2tNv4gKdO4rAM1ekrhkqTgVtk4Rfc44ycZ9A69QRGWi6ZeKIcRAQnDgmwOabgLcAohGyVjzmt9oJC6CBd8huprj4wbsrDJ8I1jTQhNlNrk0Z7DwDgLXMhuai3LbEnx/QONCNebzqqiT7d9SMJnlchh2tpFNmU=
-Received: from AM0PR04MB4947.eurprd04.prod.outlook.com (2603:10a6:208:c8::16)
- by AM0PR0402MB3922.eurprd04.prod.outlook.com (2603:10a6:208:f::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Mon, 26 Apr
- 2021 12:50:47 +0000
-Received: from AM0PR04MB4947.eurprd04.prod.outlook.com
- ([fe80::c9b0:c412:80f0:4645]) by AM0PR04MB4947.eurprd04.prod.outlook.com
- ([fe80::c9b0:c412:80f0:4645%6]) with mapi id 15.20.4065.027; Mon, 26 Apr 2021
- 12:50:47 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of
- division or modulo by zero
-Thread-Topic: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of
- division or modulo by zero
-Thread-Index: AQHXOnDozEAqr+Jd7U+V+2HHvk8drarGcc0AgAAwVTCAAAkhgIAAAtswgAAK2ICAAAcqYA==
-Date:   Mon, 26 Apr 2021 12:50:47 +0000
-Message-ID: <AM0PR04MB4947C2088A8C4540AAB17E1392429@AM0PR04MB4947.eurprd04.prod.outlook.com>
-References: <20210426074935.11131-1-sherry.sun@nxp.com>
- <20210426074935.11131-2-sherry.sun@nxp.com> <YIZ0/vRLASlUph6x@kroah.com>
- <AM0PR04MB4947A9253CE547BEBE95BE8092429@AM0PR04MB4947.eurprd04.prod.outlook.com>
- <YIalMRdbAKZpIJWP@kroah.com>
- <AM0PR04MB49470E50CFAB8C36EABB241192429@AM0PR04MB4947.eurprd04.prod.outlook.com>
- <YIawr8i62pHfSacm@kroah.com>
-In-Reply-To: <YIawr8i62pHfSacm@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cd110d06-df04-49b4-8a0e-08d908b1e9d3
-x-ms-traffictypediagnostic: AM0PR0402MB3922:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR0402MB392270931C749BE60084717192429@AM0PR0402MB3922.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d6GiEZfrfiIMjtZn+I2FvitTzP6f60xsnRwH2X3Dlknx2D/8bI8FUeRMGnyuOl67228CEGuIthIwH5eNClrxVSnilVMj09gawKnTq3qoHkpl7SM77IHggU+twymfoNYQ04UwF5aB3mBaxajDUq0AHzytMTFMxa9lv//cGOzc4sCKcPsD5Kazfd06Nx/SF5eG/PbmjTI+RaZfclSyOv8HCLF+nVqEnd1SSunP+iK0p/DJUJJjJ5/zNKk70kGw6+RiPAIXcalNx2qRo7psxddAa+1NDiM/KD2Cp1v4AJjy/+rOnzeeDSIpr4j/T0t4wsh7Qe4GmD1szUvBJIyREwqyhjJz3auUdg/WNvygQ4fRruECsmIQH0m24srcIWehTMsq8+9ptyioQd1ilwhgD2IkkdV+80kXh5OaE7X7j6gYdXTB9TRpCRWC+Hwp8/lS5Xodnd15heieX5Q2Tm40LosCicmU0G/MscI+CRrUx34aAL9hjGx8LL5ayvJEYEaZ1iMzqF1oubjEOuDc0wVvgRHjdwaih1V0IU0C/urHLNEcktuGzrmRcFfGLAMo+e09Yj1FLHTbitenoww9KSTN05DY8F6Mi3LFHZZGd+HSHAY23hA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4947.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(44832011)(8936002)(8676002)(55016002)(498600001)(64756008)(186003)(2906002)(33656002)(9686003)(6916009)(4326008)(83380400001)(71200400001)(7696005)(26005)(5660300002)(6506007)(38100700002)(122000001)(66476007)(66446008)(54906003)(52536014)(66946007)(66556008)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?XxbnEkN6dpYuhyPoKN3klChtTPqXadegQY5hDU3hx1sCAXaY7hyIUJvkXM?=
- =?iso-8859-1?Q?zaZsRvXXIZETtvW75D02khf6S0n0Br0sYRobm3Q9WKt5uyTSgTftg4QWw2?=
- =?iso-8859-1?Q?yiU02rwJMZa/qp3DJrDBiHOO0ez8me1rkAxH1pWV5RtApQk3FUEOHEAgpF?=
- =?iso-8859-1?Q?oPzFIUZOS6I3lacmc1LxNzTAlG0Is/JhZbhOXwTes4VC8d1O1zU1IaDa4V?=
- =?iso-8859-1?Q?kUyCSfCeIVVeVO93JbtwzW6sz/6nmR18tXOlkzT8SrfEVLrLZYp3HzlS/D?=
- =?iso-8859-1?Q?lfGkLhMzJyiNxoxZqXJwsEHMwxLsBSzXCa2v/JtvihgDxGI4GqrcklI8De?=
- =?iso-8859-1?Q?z0ItyzBGL09u4vuUa4GSTgDsdkK0QHr6j9A5i4RKTWzR6y20Ygtln9WHgl?=
- =?iso-8859-1?Q?hpm4Qq7ZcVyOnfjK8in3tIpAE5QgluJlM4rHecR9vjudv0U59Yr03fNBxi?=
- =?iso-8859-1?Q?IJsUwuJm5bivoplkngUIPLwi4uryKGyfPCECYhqY6AuIj63LSRwGF2Pnd7?=
- =?iso-8859-1?Q?x/UUFSX0ybV3Pkz3vlQmUymL7RysIIohWcTUuj/t4yK2FkqPmPW4zDfc4p?=
- =?iso-8859-1?Q?rMmm5VF3842laV+5hNZ/6LNS9GArCGiLS4NyS/NayrV/ufh9ziaVtN3QPH?=
- =?iso-8859-1?Q?2lfO082et3FnutFt4uXQwzzZSagVl5hNR+JU+++ZAZ7lcF93Skn3P3gqjm?=
- =?iso-8859-1?Q?bxW+h3L3/qn6fyxlBpZMN7WHNP3wWU2CGYNLxT1DyPhfJN/IviA8oeCK0+?=
- =?iso-8859-1?Q?ruiVgQCops/SBqfPY9GZwdAZ0m69pHLMGJvEZ2IjqcQOQDKmAFj5zohROA?=
- =?iso-8859-1?Q?1roaQffLf62cj/OP4qZbuCAbvUz4bdP92G2XPX3Uv358JmV0i0YNCllCUJ?=
- =?iso-8859-1?Q?t38O9FRXG0m8zM6vtqO4aiPzbUBmPiF0Cs6d7KL/uPg/DldaGf1/JAFNLM?=
- =?iso-8859-1?Q?G/uxvJgjNOmSQSgyPijpUbctR+G5B7+vS5H2HQ2mZMSceNkwSFu/U176ju?=
- =?iso-8859-1?Q?urSqBL1xvjJEUAqtxO9YHSk3YjvSyHYr0t5sYh0bjRVQaqbBiAhLjkZedD?=
- =?iso-8859-1?Q?z/fWzZoZCQgyPpbRRf28QlecLv7lQS1vA51WYVLGPZOFGSEIHSQCitnVJn?=
- =?iso-8859-1?Q?NQpCo2eyoDSBkZwOs4jJAxJUfN2RKXCqytR+nUIFPrAcl80BWZkrVROoCT?=
- =?iso-8859-1?Q?TBrIK4/uHAiFpnOrREtJJaqbCt1Sj3nZD80S1IrSKES2+wbFrPhY+r9Zgz?=
- =?iso-8859-1?Q?rxh3gYe0UnXzkpbMi7i2mNLGZQWiRuTr6oPYsrsT71ooSB3UED4+k6RFzS?=
- =?iso-8859-1?Q?6hW2EPojv7JCifq0vA2wv6mVxRmpvSKE88oVjEhV/NCJeptx7P5xnsaJWz?=
- =?iso-8859-1?Q?8jdiqPhRdu?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S232364AbhDZMwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232107AbhDZMw2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:52:28 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DE9C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:51:45 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so5149352pjh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ie15wHFE76bzG+Wxt/79MF6wdJrWeejBS8p/vm45PF4=;
+        b=gPNn9QbO/x2+6+ep8RdXTKii7vY3o891ydwruA9Mm6Egq1iofqvwrGDQGksONOmTYT
+         5v3k+HL9xqzifguqnNkHS+barYyarLAA2VzXbA6EYbXg/XnjeofqJNlUbOcVtBNwjq4l
+         jJYYs/3rMbFtfzs3GB9HDme0TmX2IeJUY3c9IKhj9dQ1CUAXkpNdMhA0UAkMwl/KBXoY
+         xVL21lI7A5dx9B1U3AxhZ0qz9BVbrpqtaY0ZxiKLEdalJwvl+L9ZtgkksI35u5WdnPhf
+         B2Z6122xu3wCBnD22Gi6hr+l6+O0E6RYapnEAcLO/HaoapheFN9dVpvhYsnK7jMx628t
+         AoOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ie15wHFE76bzG+Wxt/79MF6wdJrWeejBS8p/vm45PF4=;
+        b=Yghw/9TndE7Ucl4Ll6q//ZYyMhxkqPyuqu9AdPXSNoMD+leWqg3TCzsESqISr1GLTQ
+         ovP89iUu7Gi/omoGErNiuVmKJiNjqtP8tZ533wLzO+vu+64Qk7aIk+JZm8l862tUA2EQ
+         KM0gAxecGmoUgtgStcfQFGL/S2hMkImoPnUJ+KaP2jPqLf5EUYKWwF7tCnXZo3/sjjgV
+         Hn2Ym3JsetCPAgqJ7wdYEHWuDSat8IacucKSb2Ss4lcOA1v+g1r+RYpyQ6T3paFauX8J
+         fUfk4+9boRzcSC0p5Ko4dYVapv8bpRrRTuKsP2skvTDhlbtYnHYXuqvrsRJVDU083hSZ
+         OD1A==
+X-Gm-Message-State: AOAM532yxqaWTmJd9UCu5r1m2iZWLLLDIs1hLetteJ5tr9thUF5BhQTh
+        i4FcjDSQuTRQaI1WyWWvkdoRBXY0ZlJaMQ==
+X-Google-Smtp-Source: ABdhPJycZeWxEAEMvutxAr4Nn+NLUpl9AyywYZpRHWrQ7XW+sELMqfLQLPVrKb5fPV4AKGvJR4VwCQ==
+X-Received: by 2002:a17:90a:9409:: with SMTP id r9mr21154964pjo.157.1619441504978;
+        Mon, 26 Apr 2021 05:51:44 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id u17sm11156058pfm.113.2021.04.26.05.51.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 05:51:44 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: Fix uninitialized variable up.resv
+To:     Colin King <colin.king@canonical.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210426094735.8320-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d65b1763-ac78-acd6-3b92-e28bd4402a75@kernel.dk>
+Date:   Mon, 26 Apr 2021 06:51:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB4947.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd110d06-df04-49b4-8a0e-08d908b1e9d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2021 12:50:47.3844
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 18kOVc9fWwJNejdQdXOJpx7uhIlwL7z8tPrgIem9IGg2HrIoagV3QrKYxxTFaycWLyA6RauXD7s+XYXBuIryKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3922
+In-Reply-To: <20210426094735.8320-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 4/26/21 3:47 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable up.resv is not initialized and is being checking for a
+> non-zero value in the call to _io_register_rsrc_update. Fix this by
+> explicitly setting the pointer to 0.
 
-> > > > >
-> > > >
-> > > > Thanks for the reviewing, yes, I have tested the patchset on the
-> > > > real
-> > > hardware.
-> > > >
-> > > > Seems the coverity check is static scan, so cannot judge if
-> > > > UARTBAUD
-> > > Register will be zero.
-> > > > I just found below statement in the uart reference manual: "When
-> > > > SBR is 1
-> > > - 8191, the baud rate equals "baud clock / ((OSR+1) =D7 SBR)"."
-> > > > Since I am not familiar with uart, do you mean that the value of
-> > > > UARTBAUD
-> > > Register will never be zero, so this case will not happen in real wor=
-d?
-> > >
-> > > Given that this never has happened with hardware for such an old
-> > > device, perhaps it is impossible.  But it would be good to check.
-> > >
-> > > > If yes, I will drop this patch.
-> > >
-> > > Handling "bad data" from hardware is never a bad idea, so I don't
-> > > necessarily want to drop this patch, I just want to try to figure
-> > > out if this is a "incase the hardware is broken/malicious" type of ch=
-ange,
-> vs.
-> > > a "this bug we are seeing in real hardware" type of change.
-> > >
-> >
-> > Yes, you are right, the probability of hardware happen in this case is =
-really
-> low. But we cannot guarantee that it will never happen.
-> > So will this check here be accepted? Thanks!
->=20
-> Please resubmit it with a better changelog description summarizing the
-> discussion here to make it more obvious why this change is needed.
->=20
+Thanks Colin, applied. I changed the pointer to variable while doing
+so.
 
-Sure, will send a V2 patch with a better commit description. Thanks!
+-- 
+Jens Axboe
 
-Best regards
-Sherry
-
-> thanks,
->=20
-> greg k-h
