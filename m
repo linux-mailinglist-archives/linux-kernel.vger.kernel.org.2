@@ -2,95 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863F136BB48
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E344836BB4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236532AbhDZVhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235538AbhDZVhh (ORCPT
+        id S235820AbhDZVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:40:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33914 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234123AbhDZVkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:37:37 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541B1C061574;
-        Mon, 26 Apr 2021 14:36:55 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y1so14030867plg.11;
-        Mon, 26 Apr 2021 14:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nnvTC2gtVVCd0mSMj/05A70ERgumEKKzDpQ3v91EDxU=;
-        b=YWk8pQm3q+fJ1BhihoU49PohuIVt+eUXRMMnY3MGJyINBA+oQ8B5Xm4QiN3MBMnP/7
-         fHBzTZU/y7vVgKNHH5rFbp+jDlnDnIaP/d/63+XbRdlvf8TkACT2UA0wdU+GWlsc/Njw
-         VY4a6LJtvyIp2zdhNjJcoLz10sojsANk0qOPyDJv7xP9+u75eJPCJKotHLo6q9t0E0J9
-         l9euNU22D/FJl/aVV9ZpScROMHnst+jG2gLwLZbsHKEL+7f+LJvACDOWjcwzZjGvyrSn
-         dZM1854yzYHKBjNd0PiUkU81/x56Qb2/gWedoABpEh8lrROgoEcIhh1XQLj220RTesAp
-         nUSQ==
+        Mon, 26 Apr 2021 17:40:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619473176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NHuvsACEl1CI5awLj29+rd0noL/P2DJNg9HAwjCVAH0=;
+        b=TbrJNG41Ppct9fyCdJon5s/Zabvkc5nMdZfvdT4V6km6vuR02ufoEYp7MO3AwDYCYzSJpw
+        FVC7WuaTrYr3UQIxAgF1mCEX2ySn/zQBEMpd+ZoOu4B16PBudNjNu8JaYoQnEwo2jU4G8q
+        9aV1D4hGqwIHpLRGsQknGP7id3dJ8Vk=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-zBSwnbBYNJu_5yj7YM55xw-1; Mon, 26 Apr 2021 17:39:34 -0400
+X-MC-Unique: zBSwnbBYNJu_5yj7YM55xw-1
+Received: by mail-yb1-f197.google.com with SMTP id u7-20020a259b470000b02904dca50820c2so35190114ybo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:39:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nnvTC2gtVVCd0mSMj/05A70ERgumEKKzDpQ3v91EDxU=;
-        b=kqlBLBsJcMgYJNGcx4FNgIgz8B5OAmt5ZLN7Z8PBnIPCb+k3/23H5kXSX9SjlIyKe9
-         LoSwmh+60cIx6DXiTnevUW3Gdk/o+OVIFwSp7LgMPyKi9JSCx6n3poUBm/ALGevSAm5/
-         E+79aD/wVxRCjK58Ezlxq1Q9tG5SU0uz+kXPRZ3bs4kgaRy6HE6+1Psy3yh+PqTC1zuX
-         AgSDZUz1RY/TXcSTWn4RpZKEIqUCkdff8JgXwufNl/US5Ckwi1o4IHktI1cB9CTa9RJe
-         rdF5AJyBMeo9givVj5pPBZhSnvfUpmDftSvib/l5H4aYUwsgRNvfsoUV+ktveu54j08F
-         bYfw==
-X-Gm-Message-State: AOAM532t27XBDnlz9fKJQRqWFiDfeVTmIjJl0YrFZj2LFGiVYw3njgdZ
-        YT6G4VXn6IiQZel9jB7pJp9xEVkETO8=
-X-Google-Smtp-Source: ABdhPJzjMdkrrpCMHW3hDXknHyl2LOjnQRzu8kaVy2jXo+ToqPsb7HuEEUo2/+DWqtz2/ef0kZ9tuQ==
-X-Received: by 2002:a17:90a:4313:: with SMTP id q19mr1262817pjg.158.1619473013925;
-        Mon, 26 Apr 2021 14:36:53 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id r1sm492609pjo.26.2021.04.26.14.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 14:36:53 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM STB AVS TMON
-        DRIVER), Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        linux-pm@vger.kernel.org (open list:BROADCOM STB AVS TMON DRIVER),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE)
-Subject: [PATCH] thermal: brcmstb_thermal: Interrupt is optional
-Date:   Mon, 26 Apr 2021 14:36:46 -0700
-Message-Id: <20210426213647.704823-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NHuvsACEl1CI5awLj29+rd0noL/P2DJNg9HAwjCVAH0=;
+        b=lVYRFDYyglOhRSR9tFFHf6XYRIy4Jr0iBsffoZM8EHhYIQX1lzJUVbPVhPD6x3WqUG
+         JqDv/dg1BN7aNtJiIyGzeHfgumyHYjN399CtKdsOtfjTyu8NtAyjCYLPGC9bi4dXjBdr
+         48Flxdm9Fh2QthB28Fay2EDzsMA51NyALn7bf5M+9VzU2bz+/1C6enmevBX8uEIahGQm
+         qPSiZOeICCMfD+JbSWik0sVw9WGwkn+cF85TBstfx/xuvKrkSlRdBq0owzqDIWHK3IKb
+         p9x7zICLTyJoXx+KPHxiwJEXZpKUDQNNBXbPrtrvwgYcClGiTdz/8K57CeIishRFh2En
+         QWYw==
+X-Gm-Message-State: AOAM530baWGfe+PrtaONr9Z5M3plxaqn3JgVuSmjEUkll7qDsl7Hkq64
+        PeoI1L8kY3VyF/Ox+yLga75uMSnG4HyoL3JyB6HylH6D5unb9X5IchDTMyMXLAvo0IONoLXhxET
+        iVaBNdBPJ8+/q2OBSY3WT4JuyEEtM/5lMDaOEl9TO
+X-Received: by 2002:a25:570b:: with SMTP id l11mr29088364ybb.335.1619473173578;
+        Mon, 26 Apr 2021 14:39:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/wXyKLI4TMmIO0Z2ws4xZcCt+U06V+2s2ssmR8wS8k2UbBaQ4UBIARhy5tO0ovMMwmoBxnLEWETwJaLxTado=
+X-Received: by 2002:a25:570b:: with SMTP id l11mr29088337ybb.335.1619473173244;
+ Mon, 26 Apr 2021 14:39:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+ <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk> <3545034.1619392490@warthog.procyon.org.uk>
+In-Reply-To: <3545034.1619392490@warthog.procyon.org.uk>
+From:   David Wysochanski <dwysocha@redhat.com>
+Date:   Mon, 26 Apr 2021 17:38:57 -0400
+Message-ID: <CALF+zOk84B5xFZ6kFMOQb8KYkxZgMFmSBboEfsgSFNL_N5uCyA@mail.gmail.com>
+Subject: Re: [PATCH] iov_iter: Four fixes for ITER_XARRAY
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs <linux-cachefs@redhat.com>,
+        linux-afs@lists.infradead.org,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize platform_get_irq_optional() to silence these messages:
+On Sun, Apr 25, 2021 at 7:15 PM David Howells <dhowells@redhat.com> wrote:
+>
+> Hi Al,
+>
+> I think this patch should include all the fixes necessary.  I could merge
+> it in, but I think it might be better to tag it on the end as an additional
+> patch.
+>
+> David
+> ---
+> iov_iter: Four fixes for ITER_XARRAY
+>
+> Fix four things[1] in the patch that adds ITER_XARRAY[2]:
+>
+>  (1) Remove the address_space struct predeclaration.  This is a holdover
+>      from when it was ITER_MAPPING.
+>
+>  (2) Fix _copy_mc_to_iter() so that the xarray segment updates count and
+>      iov_offset in the iterator before returning.
+>
+>  (3) Fix iov_iter_alignment() to not loop in the xarray case.  Because the
+>      middle pages are all whole pages, only the end pages need be
+>      considered - and this can be reduced to just looking at the start
+>      position in the xarray and the iteration size.
+>
+>  (4) Fix iov_iter_advance() to limit the size of the advance to no more
+>      than the remaining iteration size.
+>
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Link: https://lore.kernel.org/r/YIVrJT8GwLI0Wlgx@zeniv-ca.linux.org.uk [1]
+> Link: https://lore.kernel.org/r/161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk [2]
+> ---
+>  include/linux/uio.h |    1 -
+>  lib/iov_iter.c      |    5 +++++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/uio.h b/include/linux/uio.h
+> index 5f5ffc45d4aa..d3ec87706d75 100644
+> --- a/include/linux/uio.h
+> +++ b/include/linux/uio.h
+> @@ -10,7 +10,6 @@
+>  #include <uapi/linux/uio.h>
+>
+>  struct page;
+> -struct address_space;
+>  struct pipe_inode_info;
+>
+>  struct kvec {
+> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> index 44fa726a8323..61228a6c69f8 100644
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@ -791,6 +791,8 @@ size_t _copy_mc_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
+>                         curr_addr = (unsigned long) from;
+>                         bytes = curr_addr - s_addr - rem;
+>                         rcu_read_unlock();
+> +                       i->iov_offset += bytes;
+> +                       i->count -= bytes;
+>                         return bytes;
+>                 }
+>                 })
+> @@ -1147,6 +1149,7 @@ void iov_iter_advance(struct iov_iter *i, size_t size)
+>                 return;
+>         }
+>         if (unlikely(iov_iter_is_xarray(i))) {
+> +               size = min(size, i->count);
+>                 i->iov_offset += size;
+>                 i->count -= size;
+>                 return;
+> @@ -1346,6 +1349,8 @@ unsigned long iov_iter_alignment(const struct iov_iter *i)
+>                         return size | i->iov_offset;
+>                 return size;
+>         }
+> +       if (unlikely(iov_iter_is_xarray(i)))
+> +               return (i->xarray_start + i->iov_offset) | i->count;
+>         iterate_all_kinds(i, size, v,
+>                 (res |= (unsigned long)v.iov_base | v.iov_len, 0),
+>                 res |= v.bv_offset | v.bv_len,
+>
 
-brcmstb_thermal a581500.thermal: IRQ index 0 not found
+You can add
+Tested-by: Dave Wysochanski <dwysocha@redhat.com>
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/thermal/broadcom/brcmstb_thermal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/broadcom/brcmstb_thermal.c b/drivers/thermal/broadcom/brcmstb_thermal.c
-index 8df5edef1ded..0cedb8b4f00a 100644
---- a/drivers/thermal/broadcom/brcmstb_thermal.c
-+++ b/drivers/thermal/broadcom/brcmstb_thermal.c
-@@ -351,7 +351,7 @@ static int brcmstb_thermal_probe(struct platform_device *pdev)
- 
- 	priv->thermal = thermal;
- 
--	irq = platform_get_irq(pdev, 0);
-+	irq = platform_get_irq_optional(pdev, 0);
- 	if (irq >= 0) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						brcmstb_tmon_irq_thread,
--- 
-2.25.1
+I added this patch on top of your v7 series then added my current
+NFS patches to use netfs lib.
+I ran xfstests with fscache enabled on NFS versions (3, 4.0, 4.1, 4.2),
+as well as connectathon and some unit tests.
 
