@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD2836B9F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA8236B9F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240242AbhDZTYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:24:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28266 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239966AbhDZTYm (ORCPT
+        id S240294AbhDZTZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240250AbhDZTY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:24:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619465039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4SqDWTwGLz0yG83bRGbUR1MGHDhF5H6AJtqMldOHVmY=;
-        b=iPescA7+mdsUbYmNeIfUoXCyhDmro2YHWlD7D68Y9NRY0dIi4a1TXT9wm0ys3kb0JNcfEk
-        pYSdtGJ5dBkpmzO5baZ/NQyC4u4z4dXCKoHhRJlp8L/sJjjICMGiDKFRqpYPGZL/vK+j1E
-        fArWddvNPCgBES8OtvfG5Crk+xfMppI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-BAwWcPM1PsiTJg_KTP0EFA-1; Mon, 26 Apr 2021 15:23:54 -0400
-X-MC-Unique: BAwWcPM1PsiTJg_KTP0EFA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBE0418A08DD;
-        Mon, 26 Apr 2021 19:23:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 363631A353;
-        Mon, 26 Apr 2021 19:23:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk>
-References: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk> <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk> <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
+        Mon, 26 Apr 2021 15:24:58 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E96BC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:24:15 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z13so8957898lft.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:24:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r1+fehePF1LQa+ETT3QS1bc9x/S6CdwPnRCT51uHUm4=;
+        b=Iap4Uo88x+wPaxUmMexmQyhYyjf2sL25rylbPddEu+U/hlOmwkIefEtnY9a0lTsa+d
+         DUbgh7t+lOXHdq4VYz0VlwX3lCFYFB9Lm27pp+hlnNM+4iymjU+rWrmDC8hvTSBH4Wv2
+         1CkyEz7xj5NMP4EM/vwkZawFtnVeCrcaL9+ByUY9j70Rdaig1pbM0LyMSpkkbYp1A5lL
+         /mXaVwXO48K5isxqZhn8/7TsMvkeR+0Z9j4PvHF3GxA75g9scTENPeaggakn1ZRNx/nR
+         0GyKQl7X5aA60jsuye9ISomU28l0tO06+F4UFDCPU2V4zz1wWjvJKdL91tRtAT+Rq/2l
+         vsRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r1+fehePF1LQa+ETT3QS1bc9x/S6CdwPnRCT51uHUm4=;
+        b=RnS9gh3MErJByLUg/0TbPiNDo3IzCLqHEyhLn+ZBhynIRKAJSJeVCdmhDvLnCFfj21
+         SlbnMS6GFYlaYeCogA/ogeX3zBWX7hAfXkS3dDG1eVBjcTGGy420YN1I4Pm07gYaaObx
+         gs5azVrIGwOylPkHxvUe58CwO8jeeMlT9L8QjRk6gj6LpSZHexbSIkVkOf6qa/moxJ+D
+         Tq4FbQCI2DQauwRSen/TzHT+F/ZDRxcteZKsr3ngPtMO7v8JSkyn6MpGr4pKaQ1RX2N7
+         kBdi4KPTqKh2bmu1dynRUFTuzsv4L/KJj22JwpwInMQ192hHr2tXn/RPYNnUVYNHIA7u
+         bsGg==
+X-Gm-Message-State: AOAM531jlkkKzlbp78RoBT9vxnKm2RKnv+JYBy435Sz/587koiwMvy0V
+        m5qbrV8Y8yGFImweohSPKSeLduL6d4ag80ILT1yEsA==
+X-Google-Smtp-Source: ABdhPJwJX5X5pWKlvL6trEZIBhuyZeAVdXfLQCF7xC4WYagqNL7GOVc6hyzsmKqZsbWi0D4AiImpjViPhwh2JFpcLIw=
+X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr13515499lfs.358.1619465053738;
+ Mon, 26 Apr 2021 12:24:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3651950.1619465011.1@warthog.procyon.org.uk>
-Date:   Mon, 26 Apr 2021 20:23:31 +0100
-Message-ID: <3651951.1619465011@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210420192907.30880-1-longman@redhat.com> <20210420192907.30880-4-longman@redhat.com>
+In-Reply-To: <20210420192907.30880-4-longman@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 26 Apr 2021 12:24:02 -0700
+Message-ID: <CALvZod7_NtptXi=1QdfgyobL-bw72xGeZ9Sm3pn1pxtZ9crTow@mail.gmail.com>
+Subject: Re: [PATCH-next v5 3/4] mm/memcg: Improve refill_obj_stock() performance
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Tue, Apr 20, 2021 at 12:30 PM Waiman Long <longman@redhat.com> wrote:
+>
+> There are two issues with the current refill_obj_stock() code. First of
+> all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
+> atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
+> and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
+> be used again which leads to another call to drain_obj_stock() and
+> obj_cgroup_get() as well as atomically retrieve the available byte from
+> obj_cgroup. That is costly. Instead, we should just uncharge the excess
+> pages, reduce the stock bytes and be done with it. The drain_obj_stock()
+> function should only be called when obj_cgroup changes.
+>
+> Secondly, when charging an object of size not less than a page in
+> obj_cgroup_charge(), it is possible that the remaining bytes to be
+> refilled to the stock will overflow a page and cause refill_obj_stock()
+> to uncharge 1 page. To avoid the additional uncharge in this case,
+> a new overfill flag is added to refill_obj_stock() which will be set
+> when called from obj_cgroup_charge().
+>
+> A multithreaded kmalloc+kfree microbenchmark on a 2-socket 48-core
+> 96-thread x86-64 system with 96 testing threads were run.  Before this
+> patch, the total number of kilo kmalloc+kfree operations done for a 4k
+> large object by all the testing threads per second were 4,304 kops/s
+> (cgroup v1) and 8,478 kops/s (cgroup v2). After applying this patch, the
+> number were 4,731 (cgroup v1) and 418,142 (cgroup v2) respectively. This
+> represents a performance improvement of 1.10X (cgroup v1) and 49.3X
+> (cgroup v2).
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-> On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
-> > -#define iterate_all_kinds(i, n, v, I, B, K) {			\
-> > +#define iterate_xarray(i, n, __v, skip, STEP) {		\
-> > +	struct page *head = NULL;				\
-> > +	size_t wanted = n, seg, offset;				\
-> > +	loff_t start = i->xarray_start + skip;			\
-> > +	pgoff_t index = start >> PAGE_SHIFT;			\
-> > +	int j;							\
-> > +								\
-> > +	XA_STATE(xas, i->xarray, index);			\
-> > +								\
-> > +	rcu_read_lock();						\
-> > +	xas_for_each(&xas, head, ULONG_MAX) {				\
-> > +		if (xas_retry(&xas, head))				\
-> > +			continue;					\
-> 
-> OK, now I'm really confused; what's to guarantee that restart will not have
-> you hit the same entry more than once?  STEP might be e.g.
-> 
-> 		memcpy_to_page(v.bv_page, v.bv_offset,
-> 			       (from += v.bv_len) - v.bv_len, v.bv_len)
-> 
-> which is clearly not idempotent - from gets incremented, after all.
-> What am I missing here?
+After incorporating Roman's suggestion, you can add:
 
-I really need to defer this question to Willy, but as I understand it,
-xas_retry() only restarts the current iteration.  Referring to the comment on
-xas_reset():
-
- * Resets the error or walk state of the @xas so future walks of the
- * array will start from the root.  Use this if you have dropped the
- * xarray lock and want to reuse the xa_state.
-
-I think that the walk returns to the bottom of the tree and whilst xarray
-presents an interface that appears to be a contiguous array, it's actually a
-tree internally - and 'root' is the root of the tree, not the head of the
-array.
-
-Basically, I think it throws away its cached iteration state - which might
-have been modified - and rewalks the tree to get back to the same index.
-
-David
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
