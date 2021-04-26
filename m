@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4800B36AEF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D6536AEE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhDZHub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
+        id S233477AbhDZHsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233443AbhDZHlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:41:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71BE56137D;
-        Mon, 26 Apr 2021 07:39:09 +0000 (UTC)
+        id S232306AbhDZHjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 743CC613DC;
+        Mon, 26 Apr 2021 07:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422750;
-        bh=dQOG0laoapLFxO2rFa+JWZVS/IKfrplnybk3BUCUjbc=;
+        s=korg; t=1619422700;
+        bh=jWuPGdDi384ntnij8i0Gs8VGUiPDAgmsicEAbHG0cFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WHYAgau3JNlXHg1BA/dXRW+cA/jXispdEUpeBQ+R7qoA/djQEXb+2nc+HFAmS+iVw
-         ktD1Y+1iUIOX60OiWUdMB22+JHUngdiIdovC3ZpzjjFkxO9CA6YAs05UFm23pJV5OY
-         59B+zMBy9yEergp/ZGGFSCIAdKE30zDEgyg98Ewk=
+        b=ZNsanuxMTw5UtU24WSQ8ISiVw3ypt/waSWzXVlH3J2U8xv0cQ1tid9y29vr3qM1DW
+         SEn70mc7m0goMvvcqcXaBnd/PY6FRmwPmj/FfxTX6VIYMRDDfVGZm3ragNLI63riot
+         gRe/NUhlJETKKLfVLjS5FtGItAgORiDyEOiO8X+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ali Saidi <alisaidi@amazon.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
+        stable@vger.kernel.org, Michael Weiser <michael.weiser@gmx.de>,
+        Daniel Kulesz <kuleszdl@posteo.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 13/36] locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
+Subject: [PATCH 5.4 04/20] arm64: dts: allwinner: Revert SD card CD GPIO for Pine64-LTS
 Date:   Mon, 26 Apr 2021 09:29:55 +0200
-Message-Id: <20210426072819.244069774@linuxfoundation.org>
+Message-Id: <20210426072816.827065921@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ali Saidi <alisaidi@amazon.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896 ]
+[ Upstream commit 4d09ccc4a81e7de6b002482af554d8b5626f5041 ]
 
-While this code is executed with the wait_lock held, a reader can
-acquire the lock without holding wait_lock.  The writer side loops
-checking the value with the atomic_cond_read_acquire(), but only truly
-acquires the lock when the compare-and-exchange is completed
-successfully which isn’t ordered. This exposes the window between the
-acquire and the cmpxchg to an A-B-A problem which allows reads
-following the lock acquisition to observe values speculatively before
-the write lock is truly acquired.
+Commit 941432d00768 ("arm64: dts: allwinner: Drop non-removable from
+SoPine/LTS SD card") enabled the card detect GPIO for the SOPine module,
+along the way with the Pine64-LTS, which share the same base .dtsi.
 
-We've seen a problem in epoll where the reader does a xchg while
-holding the read lock, but the writer can see a value change out from
-under it.
+This was based on the observation that the Pine64-LTS has as "push-push"
+SD card socket, and that the schematic mentions the card detect GPIO.
 
-  Writer                                | Reader
-  --------------------------------------------------------------------------------
-  ep_scan_ready_list()                  |
-  |- write_lock_irq()                   |
-      |- queued_write_lock_slowpath()   |
-	|- atomic_cond_read_acquire()   |
-				        | read_lock_irqsave(&ep->lock, flags);
-     --> (observes value before unlock) |  chain_epi_lockless()
-     |                                  |    epi->next = xchg(&ep->ovflist, epi);
-     |                                  | read_unlock_irqrestore(&ep->lock, flags);
-     |                                  |
-     |     atomic_cmpxchg_relaxed()     |
-     |-- READ_ONCE(ep->ovflist);        |
+After having received two reports about failing SD card access with that
+patch, some more research and polls on that subject revealed that there
+are at least two different versions of the Pine64-LTS out there:
+- On some boards (including mine) the card detect pin is "stuck" at
+  high, regardless of an microSD card being inserted or not.
+- On other boards the card-detect is working, but is active-high, by
+  virtue of an explicit inverter circuit, as shown in the schematic.
 
-A core can order the read of the ovflist ahead of the
-atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
-semantics addresses this issue at which point the atomic_cond_read can
-be switched to use relaxed semantics.
+To cover all versions of the board out there, and don't take any chances,
+let's revert the introduction of the active-low CD GPIO, but let's use
+the broken-cd property for the Pine64-LTS this time. That should avoid
+regressions and should work for everyone, even allowing SD card changes
+now.
+The SOPine card detect has proven to be working, so let's keep that
+GPIO in place.
 
-Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
-Signed-off-by: Ali Saidi <alisaidi@amazon.com>
-[peterz: use try_cmpxchg()]
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steve Capper <steve.capper@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Tested-by: Steve Capper <steve.capper@arm.com>
+Fixes: 941432d00768 ("arm64: dts: allwinner: Drop non-removable from SoPine/LTS SD card")
+Reported-by: Michael Weiser <michael.weiser@gmx.de>
+Reported-by: Daniel Kulesz <kuleszdl@posteo.org>
+Suggested-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Tested-by: Michael Weiser <michael.weiser@gmx.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210414104740.31497-1-andre.przywara@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/qrwlock.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index fe9ca92faa2a..909b0bf22a1e 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -61,6 +61,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
-  */
- void queued_write_lock_slowpath(struct qrwlock *lock)
- {
-+	int cnts;
-+
- 	/* Put the writer into the wait queue */
- 	arch_spin_lock(&lock->wait_lock);
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts
+index 8d15164f2a3c..7eb252adf9f0 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dts
+@@ -13,5 +13,5 @@
+ };
  
-@@ -74,9 +76,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
- 
- 	/* When no more readers or writers, set the locked flag */
- 	do {
--		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
--	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
--					_QW_LOCKED) != _QW_WAITING);
-+		cnts = atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
-+	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
- unlock:
- 	arch_spin_unlock(&lock->wait_lock);
- }
+ &mmc0 {
+-	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 push-push switch */
++	broken-cd;		/* card detect is broken on *some* boards */
+ };
 -- 
 2.30.2
 
