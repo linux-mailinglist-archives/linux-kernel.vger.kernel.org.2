@@ -2,166 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2995136B077
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF2E36B086
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhDZJWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:22:38 -0400
-Received: from regular1.263xmail.com ([211.150.70.205]:59360 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbhDZJWg (ORCPT
+        id S232599AbhDZJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232140AbhDZJ1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:22:36 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id 6A2857D3;
-        Mon, 26 Apr 2021 17:21:37 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.151] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P2752T140649347385088S1619428893484164_;
-        Mon, 26 Apr 2021 17:21:35 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <0b6518d01a4b44141c73aba3d00c4597>
-X-RL-SENDER: cl@rock-chips.com
-X-SENDER: cl@rock-chips.com
-X-LOGIN-NAME: cl@rock-chips.com
-X-FST-TO: linux-watchdog@vger.kernel.org
-X-RCPT-COUNT: 30
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Cc:     cl@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
-        jagan@amarulasolutions.com, wens@csie.org, uwe@kleine-koenig.org,
-        mail@david-bauer.net, jbx6244@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] arm64: dts: rockchip: add core dtsi for RK3568 SoC
-To:     Marc Zyngier <maz@kernel.org>
-References: <20210425094216.25724-1-cl@rock-chips.com>
- <20210425094439.25895-1-cl@rock-chips.com> <87mttmslni.wl-maz@kernel.org>
-From:   =?UTF-8?B?6ZmI5Lqu?= <cl@rock-chips.com>
-Message-ID: <ee4172da-13a4-2a94-446f-cfdd937574c3@rock-chips.com>
-Date:   Mon, 26 Apr 2021 17:21:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 26 Apr 2021 05:27:36 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CFCAC061574;
+        Mon, 26 Apr 2021 02:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=3y42CmakslYKka++COtqrzGnC+kuMUtZxgSI
+        TRSHDZI=; b=P6lH5zwf9woLnFDupT9HKjCDRmDDCwJxmpbrdkyk5ZHuTci5X5kn
+        m4Ygxj868lFCQRKYOPeIK+WncbWAuug6RCugBGWlSK9Wzx1eWDgNJ7PdTy3d/Qu6
+        CmYiFIpWlWHaGSCrH9F5L2oyarTrzvXMuCEYlbksrcDy273/aTaoDt8=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 26 Apr
+ 2021 17:26:47 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Mon, 26 Apr 2021 17:26:47 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH v2] rdma/siw: Fix a use after free in siw_alloc_mr
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <YIZK4gb2qytVpMS0@unreal>
+References: <20210426011647.3561-1-lyl2019@mail.ustc.edu.cn>
+ <YIZK4gb2qytVpMS0@unreal>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-In-Reply-To: <87mttmslni.wl-maz@kernel.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Message-ID: <312624d5.60ea8.1790d80ae44.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygCnrJhXh4Zg4KBJAA--.7W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsDBlQhn6bROQAAsr
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-ÔÚ 2021/4/25 ÏÂÎç6:28, Marc Zyngier Ð´µÀ:
-> As I reviewed a previous version of this series, please have the
-> courtesy of cc'ing me on further revisions of this series.
-I am really sorry, i will add you to the cc list on further revisions.
->
-> On Sun, 25 Apr 2021 10:44:39 +0100,
-> <cl@rock-chips.com> wrote:
->> From: Liang Chen <cl@rock-chips.com>
->>
->> RK3568 is a high-performance and low power quad-core application processor
->> designed for personal mobile internet device and AIoT equipments. This patch
->> add basic core dtsi file for it.
->>
->> We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
->> kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
->> enalbe a special high-performacne PLL when high frequency is required. The
->> smci_clk code is in ATF, and clkid for cpu is 0, as below:
->>
->>      cpu0: cpu@0 {
->>          device_type = "cpu";
->>          compatible = "arm,cortex-a55";
->>          reg = <0x0 0x0>;
->>          clocks = <&scmi_clk 0>;
->>      };
->>
->> Signed-off-by: Liang Chen <cl@rock-chips.com>
->> ---
->>   .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3119 +++++++++++++++++
->>   arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  812 +++++
->>   2 files changed, 3931 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
->>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> [...]
->
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
->> new file mode 100644
->> index 000000000000..66cb50218ca1
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
->> @@ -0,0 +1,812 @@
-> [...]
->
->> +	timer {
->> +		compatible = "arm,armv8-timer";
->> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_HIGH>;
->> +		arm,no-tick-in-suspend;
-> My questions on this property still stand [1].
-
-Yes, rk3568 will lose the system counter in suspend mode, we must 
-retrieve system time from RTC.
-
-rk3588 will fix this issue.
-
->
->> +	};
->> +
->> +	xin24m: xin24m {
->> +		compatible = "fixed-clock";
->> +		clock-frequency = <24000000>;
->> +		clock-output-names = "xin24m";
->> +		#clock-cells = <0>;
->> +	};
->> +
->> +	xin32k: xin32k {
->> +		compatible = "fixed-clock";
->> +		clock-frequency = <32768>;
->> +		clock-output-names = "xin32k";
->> +		pinctrl-0 = <&clk32k_out0>;
->> +		pinctrl-names = "default";
->> +		#clock-cells = <0>;
->> +	};
->> +
->> +	gic: interrupt-controller@fd400000 {
->> +		compatible = "arm,gic-v3";
->> +		reg = <0x0 0xfd400000 0 0x10000>, /* GICD */
->> +		      <0x0 0xfd460000 0 0xc0000>; /* GICR */
->> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
->> +		interrupt-controller;
->> +		#interrupt-cells = <3>;
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
-> My request for a full description of the GICA region still stands [1].
-Thanks, i will test MSIs with "mbi-alias", then add relative property in 
-the next version.
->
-> Thanks,
->
-> 	M.
->
-> [1] https://lore.kernel.org/r/87o8e2sm1u.wl-maz@kernel.org
->
-
-
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5v
+dnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTA0LTI2IDEzOjA4
+OjUwICjmmJ/mnJ/kuIApDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1haWwu
+dXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogYm10QHp1cmljaC5pYm0uY29tLCBkbGVkZm9yZEByZWRo
+YXQuY29tLCBqZ2dAemllcGUuY2EsIGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnLCBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IOS4u+mimDogUmU6IFtQQVRDSCB2Ml0gcmRtYS9zaXc6
+IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIHNpd19hbGxvY19tcg0KPiANCj4gT24gU3VuLCBBcHIg
+MjUsIDIwMjEgYXQgMDY6MTY6NDdQTSAtMDcwMCwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiBPdXIg
+Y29kZSBhbmFseXplciByZXBvcnRlZCBhIHVhZi4NCj4gDQo+IENhbiB5b3UgcGxlYXNlIHNoYXJl
+IG1vcmUgZGV0YWlscyBhYm91dCB0aGlzICJjb2RlIGFuYWx5emVyIj8NCj4gDQo+IFRoYW5rcw0K
+PiANCj4gPiANCj4gPiBJbiBzaXdfYWxsb2NfbXIsIGl0IGNhbGxzIHNpd19tcl9hZGRfbWVtKG1y
+LC4uKS4gSW4gdGhlIGltcGxlbWVudGF0aW9uDQo+ID4gb2Ygc2l3X21yX2FkZF9tZW0oKSwgbWVt
+IGlzIGFzc2lnbmVkIHRvIG1yLT5tZW0gYW5kIHRoZW4gbWVtIGlzIGZyZWVkDQo+ID4gdmlhIGtm
+cmVlKG1lbSkgaWYgeGFfYWxsb2NfY3ljbGljKCkgZmFpbGVkLiBIZXJlLCBtci0+bWVtIHN0aWxs
+IHBvaW50DQo+ID4gdG8gYSBmcmVlZCBvYmplY3QuIEFmdGVyLCB0aGUgZXhlY3V0aW9uIGNvbnRp
+bnVlIHVwIHRvIHRoZSBlcnJfb3V0IGJyYW5jaA0KPiA+IG9mIHNpd19hbGxvY19tciwgYW5kIHRo
+ZSBmcmVlZCBtci0+bWVtIGlzIHVzZWQgaW4gc2l3X21yX2Ryb3BfbWVtKG1yKS4NCj4gPiANCj4g
+PiBNeSBwYXRjaCBtb3ZlcyAibXItPm1lbSA9IG1lbSIgYmVoaW5kIHRoZSBpZiAoeGFfYWxsb2Nf
+Y3ljbGljKC4uKTwwKSB7fQ0KPiA+IHNlY3Rpb24sIHRvIGF2b2lkIHRoZSB1YWYuDQo+ID4gDQo+
+ID4gRml4ZXM6IDIyNTEzMzRkY2FjOWUgKCJyZG1hL3NpdzogYXBwbGljYXRpb24gYnVmZmVyIG1h
+bmFnZW1lbnQiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51
+c3RjLmVkdS5jbj4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdf
+bWVtLmMgfCA0ICsrLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBk
+ZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3N3
+L3Npdy9zaXdfbWVtLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19tZW0uYw0KPiA+
+IGluZGV4IDM0YTkxMGNmMGVkYi4uOTZiMzhjZmJiNTEzIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZl
+cnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X21lbS5jDQo+ID4gKysrIGIvZHJpdmVycy9pbmZpbmli
+YW5kL3N3L3Npdy9zaXdfbWVtLmMNCj4gPiBAQCAtMTA2LDggKzEwNiw2IEBAIGludCBzaXdfbXJf
+YWRkX21lbShzdHJ1Y3Qgc2l3X21yICptciwgc3RydWN0IGliX3BkICpwZCwgdm9pZCAqbWVtX29i
+aiwNCj4gPiAgCW1lbS0+cGVybXMgPSByaWdodHMgJiBJV0FSUF9BQ0NFU1NfTUFTSzsNCj4gPiAg
+CWtyZWZfaW5pdCgmbWVtLT5yZWYpOw0KPiA+ICANCj4gPiAtCW1yLT5tZW0gPSBtZW07DQo+ID4g
+LQ0KPiA+ICAJZ2V0X3JhbmRvbV9ieXRlcygmbmV4dCwgNCk7DQo+ID4gIAluZXh0ICY9IDB4MDBm
+ZmZmZmY7DQo+ID4gIA0KPiA+IEBAIC0xMTYsNiArMTE0LDggQEAgaW50IHNpd19tcl9hZGRfbWVt
+KHN0cnVjdCBzaXdfbXIgKm1yLCBzdHJ1Y3QgaWJfcGQgKnBkLCB2b2lkICptZW1fb2JqLA0KPiA+
+ICAJCWtmcmVlKG1lbSk7DQo+ID4gIAkJcmV0dXJuIC1FTk9NRU07DQo+ID4gIAl9DQo+ID4gKw0K
+PiA+ICsJbXItPm1lbSA9IG1lbTsNCj4gPiAgCS8qIFNldCB0aGUgU1RhZyBpbmRleCBwYXJ0ICov
+DQo+ID4gIAltZW0tPnN0YWcgPSBpZCA8PCA4Ow0KPiA+ICAJbXItPmJhc2VfbXIubGtleSA9IG1y
+LT5iYXNlX21yLnJrZXkgPSBtZW0tPnN0YWc7DQo+ID4gLS0gDQo+ID4gMi4yNS4xDQo+ID4gDQo+
+ID4gDQoNClllcywgaSB3b3VsZCBsaWtlIHRvIHNoYXJlIHNvbWUgZGV0YWlscyBhYm91dCBpdCBh
+bHRob3VnaCBpdCBzdGlsbCBoYXMgbm8gbmFtZS4NCldlIGRlc2lnbmVkIHRoaXMgYW5hbHp5ZXIg
+YnkgYWRvcHQgYSBkZWVwIGxlYXJuaW5nIG1vZGVsIHRvIHJlY29nbml6ZSB0aGUNCm1lbW9yeSBh
+bGxvY2F0aW9uIGFuZCBkZWFsbG9jYXRpb24gaW4ga2VybmVsIGZpcnN0LiBBbmQgdGhlbiB1c2Ug
+Q2xhbmcgU3RhdGljDQpBbmFseXplciB0byBzY2FuIHRoZSBrZXJuZWwgY29kZS4=
