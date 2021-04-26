@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4C736B279
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633E236B27B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhDZLrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:47:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41333 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231903AbhDZLrH (ORCPT
+        id S232861AbhDZLrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhDZLrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:47:07 -0400
-X-UUID: 94edfb9fe81e4423bea3d297853337f0-20210426
-X-UUID: 94edfb9fe81e4423bea3d297853337f0-20210426
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1069741018; Mon, 26 Apr 2021 19:46:23 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Apr 2021 19:46:22 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Apr 2021 19:46:19 +0800
-From:   <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>
-Subject: [PATCH] i2c: mediatek: Rename i2c irq name
-Date:   Mon, 26 Apr 2021 19:46:15 +0800
-Message-ID: <1619437575-23482-1-git-send-email-qii.wang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Mon, 26 Apr 2021 07:47:43 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCD6C061574;
+        Mon, 26 Apr 2021 04:47:01 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id z14so3125439ioc.12;
+        Mon, 26 Apr 2021 04:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7CWCSDgIxEP9nExMiQ8gtfxRiziS98W5A2zeK4MEZOs=;
+        b=pVZIz4mrDyFn0QNuqWuNexCDE2SY1Rw0FX/KJdpqIqdOTY5W4Dup3WIh8WY0pXJc/k
+         IRevNbLm4DPVXDu04hk/iaS/QFIj8Kya1syrimkagRU0VXHMGsm3hHbDQXWh1qJodik1
+         Q32ZA/G1ATDYDg/f81Fb5uMBDQaOvmTsT4Ua9Q8VP4+KodhqtVOarxM6oGdfWez9R8uZ
+         DBGQCqKK/IUhaBYqZEflDVtZv5dt0REsm6LxAXCW30dNBf17eSuIJxFXA+52tuWnlF9a
+         LcNTp7957suwSeF51TKiwrGiQ/MA4FmYmSq4QJNyZBIILsXdYqyB9fC0FowkWNjn6XsU
+         x2Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7CWCSDgIxEP9nExMiQ8gtfxRiziS98W5A2zeK4MEZOs=;
+        b=E1LWki2XXvnkmZ5OUtO7N0pdgvqOM+GU9N2rpe8ptufz4YdYrthGkbnUJ5gLqqazXW
+         i+tQ2Nxa2KtI75lR9Cbi8eEVHM6Q2QBI1yQmr9VrC0OMQS1FOZyU5aNXc3BUjMGGo+Em
+         VCpN9PApBQOz9B0C4HIEiuUGjKiZBBwfvBdFL2lubLAe0moNi9hXeUU8vuyEBIAXNDpS
+         lOHHMQfdmwToCiXV2QDG0qWN9B0oDFDuzXECxwSwE16xbx8Tq+1cLGkYkXt3tsHOsTrb
+         /p2zqCJ1m4svMhW/eIA3nwsGj3RfIBFJcmXKjb0snIH9xSVOy3+UCTezTqtk/NGj2Lrt
+         NW0g==
+X-Gm-Message-State: AOAM5333tiLc0VCj9bWk4WevuXjNSvCUROVgCQH21C54VJHZmq4oyECH
+        /N3fBLVGaVg3B8RbhyGECkI=
+X-Google-Smtp-Source: ABdhPJxPkh2qqZZagWe0I5W6/yGxbOpR4Ir0nBSVpx85yhUqGmF97W9sxcamUQ+Ot1bMFhE7tpH1pQ==
+X-Received: by 2002:a05:6638:443:: with SMTP id r3mr15578383jap.43.1619437620683;
+        Mon, 26 Apr 2021 04:47:00 -0700 (PDT)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id y19sm6969683ili.51.2021.04.26.04.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 04:47:00 -0700 (PDT)
+From:   Tianling Shen <cnsztl@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Pavel Machek <pavel@ucw.cz>, Johan Jonker <jbx6244@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Marty Jones <mj8263788@gmail.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Tianling Shen <cnsztl@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: rename LED label for NanoPi R4S
+Date:   Mon, 26 Apr 2021 19:46:52 +0800
+Message-Id: <20210426114652.29542-1-cnsztl@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+However "sys" is not a valid function, and it is always on.
+Let's keep existing functions.
 
-Rename i2c irq name with dev_name() which can provide unique
-naming in /proc/interrupts for each instance of the I2C IP core.
+Fixes: db792e9adbf85f ("rockchip: rk3399: Add support for FriendlyARM NanoPi R4S")
 
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Suggested-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 5ddfa4e..ea337ba 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -1281,7 +1281,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+index fa5809887643..cef4d18b599d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+@@ -33,7 +33,7 @@
  
- 	ret = devm_request_irq(&pdev->dev, irq, mtk_i2c_irq,
- 			       IRQF_NO_SUSPEND | IRQF_TRIGGER_NONE,
--			       I2C_DRV_NAME, i2c);
-+			       dev_name(&pdev->dev), i2c);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev,
- 			"Request I2C IRQ %d fail\n", irq);
+ 		sys_led: led-sys {
+ 			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+-			label = "red:sys";
++			label = "red:power";
+ 			default-state = "on";
+ 		};
+ 
 -- 
-1.9.1
+2.17.1
 
