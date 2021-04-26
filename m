@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB54E36BA55
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED7F36BA5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241695AbhDZTxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241606AbhDZTxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:53:33 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A03C061574;
-        Mon, 26 Apr 2021 12:52:51 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb7Hl-008TqF-IE; Mon, 26 Apr 2021 19:52:49 +0000
-Date:   Mon, 26 Apr 2021 19:52:49 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
-Message-ID: <YIcaESRqrBRqD/EQ@zeniv-ca.linux.org.uk>
-References: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk>
- <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
- <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
- <3651951.1619465011@warthog.procyon.org.uk>
+        id S241767AbhDZTzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:55:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242197AbhDZTy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 15:54:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 25C7D613AB;
+        Mon, 26 Apr 2021 19:53:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619466827;
+        bh=BuuDPSZxLzXj95dQYHdbYsashZp/rgS3Wl/ecpDeREE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IjOoI6GlNgxg4PsD+PUU8X+NQy2XEV5U1+kuHOcTAUl2hZtbYDkR0na/VJFjC3FT9
+         HGdgvcrTYM4YMwgvgUxpbaN4mqvJbAUS8AU6XcCKnFZyBqWUh82CBxdDrhvJtbsZYK
+         JNnFUySw1ipsWzkOSFEpI8L447UcQxhhIqWEeVkYvnxYleNstolkTMAaI/y/obeM4c
+         LgACKTJnG6W2lGxhjvGA/VzXfv1RZ29MGjVOmUu1C7RVJFvJ9tYJlm7XWYYC+QqGb5
+         7nQg4gdUiBxdWEBVf4WhpkSG2oZc15H1yABgx3PWd8Fxtt4O0BOFZB48bYKYMjg2e1
+         F+EZXPWCSV3fw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 15FB3609D6;
+        Mon, 26 Apr 2021 19:53:47 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3651951.1619465011@warthog.procyon.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: davicom: Remove redundant assignment to ret
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161946682708.17823.1588898263426511226.git-patchwork-notify@kernel.org>
+Date:   Mon, 26 Apr 2021 19:53:47 +0000
+References: <1619347376-56140-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1619347376-56140-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:23:31PM +0100, David Howells wrote:
+Hello:
 
-> I really need to defer this question to Willy, but as I understand it,
-> xas_retry() only restarts the current iteration.  Referring to the comment on
-> xas_reset():
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Sun, 25 Apr 2021 18:42:56 +0800 you wrote:
+> Variable ret is set to zero but this value is never read as it is
+> overwritten with a new value later on, hence it is a redundant
+> assignment and can be removed.
 > 
->  * Resets the error or walk state of the @xas so future walks of the
->  * array will start from the root.  Use this if you have dropped the
->  * xarray lock and want to reuse the xa_state.
+> Cleans up the following clang-analyzer warning:
 > 
-> I think that the walk returns to the bottom of the tree and whilst xarray
-> presents an interface that appears to be a contiguous array, it's actually a
-> tree internally - and 'root' is the root of the tree, not the head of the
-> array.
+> drivers/net/ethernet/davicom/dm9000.c:1527:5: warning: Value stored to
+> 'ret' is never read [clang-analyzer-deadcode.DeadStores].
 > 
-> Basically, I think it throws away its cached iteration state - which might
-> have been modified - and rewalks the tree to get back to the same index.
+> [...]
 
-From RTFS(lib/xarray.c) that looks right.  Nevermind the question, then...
+Here is the summary with links:
+  - net: davicom: Remove redundant assignment to ret
+    https://git.kernel.org/netdev/net-next/c/9176e3802719
 
-Anyway, 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Reviewed-by: Al Viro <viro@zeniv.linux.org.uk>
 
-on the xarray-related bits (this patch + followups)
