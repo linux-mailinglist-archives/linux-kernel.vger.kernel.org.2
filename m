@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BFD36AF24
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D864E36AEE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhDZHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:54:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60040 "EHLO mail.kernel.org"
+        id S233746AbhDZHtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233819AbhDZHoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:44:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23DD8613D0;
-        Mon, 26 Apr 2021 07:40:36 +0000 (UTC)
+        id S232437AbhDZHjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6D79613DD;
+        Mon, 26 Apr 2021 07:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422837;
-        bh=ZSIV6EfmfdBbXH07lCCcvvGyqMlIcdnfqUW7qPzowoo=;
+        s=korg; t=1619422713;
+        bh=HYKxwTLN0oShRRBPQB5BGy/UE/OCRiHE9AFP81f2wH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hR+U8WsuVxQVZIYsspHoMv/NE9CVKQ5E4joGjH0xPltIportKxBfC96ZmX659aocg
-         5yIAHlamRrigoWzQPJxHR0WPhstMyuhkJOG20P29xf9eAb/X+fBeuapHN4uYqqTdXB
-         tqYWdXDwmzOnRYrpAe1IeoYYsPzN5HXSEIPQplS4=
+        b=ceJyU6Gg9cnZUSs/avDhdf8faWoX/zcKGdyRFwQoppMbD6g+pEY756CwpWRMCFH56
+         Hs/lIf6JUdDLqAFm5Ax52qmv4I687XSgUnTYSsCuChO5q6tuLxejBu1zUurw7b4pF2
+         lbSpqpS6G7fXg0iTBC66prpLSFezGrAdAdZ79bFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Drew Fustini <drew@beagleboard.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 12/41] pinctrl: core: Show pin numbers for the controllers with base = 0
-Date:   Mon, 26 Apr 2021 09:29:59 +0200
-Message-Id: <20210426072820.099698719@linuxfoundation.org>
+        stable@vger.kernel.org, Shou-Chieh Hsu <shouchieh@chromium.org>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 09/20] HID: google: add don USB id
+Date:   Mon, 26 Apr 2021 09:30:00 +0200
+Message-Id: <20210426072816.991866180@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
-References: <20210426072819.666570770@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Shou-Chieh Hsu <shouchieh@chromium.org>
 
-[ Upstream commit 482715ff0601c836152b792f06c353464d826b9b ]
+[ Upstream commit 36b87cf302a4f13f8b4344bcf98f67405a145e2f ]
 
-The commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-enabled GPIO pin number and label in debugfs for pin controller. However,
-it limited that feature to the chips where base is positive number. This,
-in particular, excluded chips where base is 0 for the historical or backward
-compatibility reasons. Refactor the code to include the latter as well.
+Add 1 additional hammer-like device.
 
-Fixes: f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-Cc: Drew Fustini <drew@beagleboard.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Drew Fustini <drew@beagleboard.org>
-Reviewed-by: Drew Fustini <drew@beagleboard.org>
-Link: https://lore.kernel.org/r/20210415130356.15885-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Shou-Chieh Hsu <shouchieh@chromium.org>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/core.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/hid/hid-google-hammer.c | 2 ++
+ drivers/hid/hid-ids.h           | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 9fc4433fece4..20b477cd5a30 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1604,8 +1604,8 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 	unsigned i, pin;
- #ifdef CONFIG_GPIOLIB
- 	struct pinctrl_gpio_range *range;
--	unsigned int gpio_num;
- 	struct gpio_chip *chip;
-+	int gpio_num;
- #endif
+diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
+index aeb351658ad3..505ed76a830e 100644
+--- a/drivers/hid/hid-google-hammer.c
++++ b/drivers/hid/hid-google-hammer.c
+@@ -467,6 +467,8 @@ static int hammer_probe(struct hid_device *hdev,
  
- 	seq_printf(s, "registered pins: %d\n", pctldev->desc->npins);
-@@ -1625,7 +1625,7 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 		seq_printf(s, "pin %d (%s) ", pin, desc->name);
  
- #ifdef CONFIG_GPIOLIB
--		gpio_num = 0;
-+		gpio_num = -1;
- 		list_for_each_entry(range, &pctldev->gpio_ranges, node) {
- 			if ((pin >= range->pin_base) &&
- 			    (pin < (range->pin_base + range->npins))) {
-@@ -1633,10 +1633,12 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 				break;
- 			}
- 		}
--		chip = gpio_to_chip(gpio_num);
--		if (chip && chip->gpiodev && chip->gpiodev->base)
--			seq_printf(s, "%u:%s ", gpio_num -
--				chip->gpiodev->base, chip->label);
-+		if (gpio_num >= 0)
-+			chip = gpio_to_chip(gpio_num);
-+		else
-+			chip = NULL;
-+		if (chip)
-+			seq_printf(s, "%u:%s ", gpio_num - chip->gpiodev->base, chip->label);
- 		else
- 			seq_puts(s, "0:? ");
- #endif
+ static const struct hid_device_id hammer_devices[] = {
++	{ HID_DEVICE(BUS_USB, HID_GROUP_GENERIC,
++		     USB_VENDOR_ID_GOOGLE, USB_DEVICE_ID_GOOGLE_DON) },
+ 	{ HID_DEVICE(BUS_USB, HID_GROUP_GENERIC,
+ 		     USB_VENDOR_ID_GOOGLE, USB_DEVICE_ID_GOOGLE_HAMMER) },
+ 	{ HID_DEVICE(BUS_USB, HID_GROUP_GENERIC,
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index d004f5645b30..d9e8105045a6 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -488,6 +488,7 @@
+ #define USB_DEVICE_ID_GOOGLE_MASTERBALL	0x503c
+ #define USB_DEVICE_ID_GOOGLE_MAGNEMITE	0x503d
+ #define USB_DEVICE_ID_GOOGLE_MOONBALL	0x5044
++#define USB_DEVICE_ID_GOOGLE_DON	0x5050
+ 
+ #define USB_VENDOR_ID_GOTOP		0x08f2
+ #define USB_DEVICE_ID_SUPER_Q2		0x007f
 -- 
 2.30.2
 
