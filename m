@@ -2,126 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238C536B122
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC14836B128
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhDZJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232333AbhDZJ5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:57:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B309B61103;
-        Mon, 26 Apr 2021 09:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619430984;
-        bh=5dnhKqlnt1tMhdnaH2csD5e6d46+28b304GMJrShDZc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n/EWF+O158O52xru7jbhVdaReN3VQQ1nLVOD5Dnol9yOMo4VVPH3n+1VHmWU1xacG
-         SohYr+hiM4kxnTYM/JA9X8OSJWmbrPRWvViaCLNSFrznvyHOOmYwR//iUTflcSWCay
-         18AukQMhdzQXarPjo9rltxSYX1+9Axpf8YSMrMOg=
-Date:   Mon, 26 Apr 2021 11:56:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba:
- Convert module from IDR to XArray
-Message-ID: <YIaORY3B6+6vMvFj@kroah.com>
-References: <20210426095015.18556-1-fmdefrancesco@gmail.com>
+        id S232890AbhDZJ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232173AbhDZJ7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:59:45 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0085C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:59:02 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id l2so2844511wrm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+nTBzmgMD86ImXMmoPl5Di6Ae0iGMljkfREQq3cZsyk=;
+        b=AEIsnJHXmaziJJTcgjFu6iegjOYSLr4FvBPv8J6WWXQxKc3lc6++Dy3OIInY1TdP/n
+         MLwhkUhLB4HB61oGv0Vc8PgQL+cvIZ0o3Apk6vGrtY25BHIgJJoMdFgao9oqWHJOQcFe
+         rdSVpyh7fixWesbou2peoQ28bg3JUeMSbErXv2EHJh79B+Nrf6LvpW7tfgbDO9tg19Fo
+         DPiALE+fVXvMDIHYe30066lKYfmo5V5WQVEdS4J6mv75o6GN443YeEaEa+aaC4kZnP3J
+         jyJcCw+LXQ2w4gUnZ0kPgsTl8YZNPTM1GyUhqsd13uQ6NzESdxMZse2nicVNzBYFSQ5m
+         vGBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=+nTBzmgMD86ImXMmoPl5Di6Ae0iGMljkfREQq3cZsyk=;
+        b=GcMfeJqy6/tqUiD0Cg6ZwYUa/eAWiHg4l0yUA1shEVP1sPL2m+MeoYd1v/fe0Pwjhy
+         8dti5D8Mi9DUiUrKg8q6gRr78UrBbgF/qfPLkxTXR/JbQSi1Xihada5hRlnAGDNZeOLF
+         sItZckPdiitqLJV6KVp0IgvmaDp7srbipkqV4+eyMPVoL87bbyeKnVA+X7Fa5jgvPRrn
+         NjlQgmPVA7QrboAxxJWV9HCNmVoq+y0wCcFltQh1J0g8duFd2qhzDTAFiIHTMTXHcipV
+         aAx8K9oFyPewVo7uMzX2wzMb5OfOwsL5exCN0xVCHB8f3fwWp9T4HoKovB+YxEN1wJED
+         nthw==
+X-Gm-Message-State: AOAM530U9LI1yRa2Cm58+5o+yZL4PaZLox+F33dvvl7yoFmWsHTsDT8t
+        Ce58b+3nSgx/UOykrqeh5e8XVA==
+X-Google-Smtp-Source: ABdhPJxYhyoXc/WYgqEkHVidVk+IAkNDRwY4zw/XR8iI1ER3qAtb06MVw/1o5q4L+sF01UOiVWbjng==
+X-Received: by 2002:adf:bc49:: with SMTP id a9mr22362575wrh.109.1619431141308;
+        Mon, 26 Apr 2021 02:59:01 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:b76e:7362:77c0:ddc3? ([2a01:e0a:90c:e290:b76e:7362:77c0:ddc3])
+        by smtp.gmail.com with ESMTPSA id g12sm7617152wmh.24.2021.04.26.02.58.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 02:59:00 -0700 (PDT)
+Subject: Re: [PATCH v13 0/4] drm/panfrost: Add support for mt8183 GPU
+To:     Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Cc:     fshao@chromium.org, hsinyi@chromium.org, hoegsberg@chromium.org,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        boris.brezillon@collabora.com, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20210421052855.1279713-1-drinkcat@chromium.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <c91746ce-88b6-5612-74a5-74600c7761e8@baylibre.com>
+Date:   Mon, 26 Apr 2021 11:58:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426095015.18556-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210421052855.1279713-1-drinkcat@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
-> Converted visorhba from IDR to XArray. The abstract data type XArray is
-> more memory-efficient, parallelisable and cache friendly. It takes 
-> advantage of RCU to perform lookups without locking.
+Hi,
+
+On 21/04/2021 07:28, Nicolas Boichat wrote:
+> Hi!
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
->  .../staging/unisys/visorhba/visorhba_main.c   | 107 +++++++-----------
->  1 file changed, 44 insertions(+), 63 deletions(-)
+> This is just a rebase of the v11, untested (but it seems like
+> Neil Armstrong recently tested it), with small changes in
+> binding and dts. v11 cover follows:
 > 
-> diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
-> index 4455d26f7c96..851e60ab0c46 100644
-> --- a/drivers/staging/unisys/visorhba/visorhba_main.c
-> +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
-> @@ -6,10 +6,10 @@
->  
->  #include <linux/debugfs.h>
->  #include <linux/kthread.h>
-> -#include <linux/idr.h>
->  #include <linux/module.h>
->  #include <linux/seq_file.h>
->  #include <linux/visorbus.h>
-> +#include <linux/xarray.h>
->  #include <scsi/scsi.h>
->  #include <scsi/scsi_host.h>
->  #include <scsi/scsi_cmnd.h>
-> @@ -23,6 +23,8 @@
->  #define MAX_PENDING_REQUESTS (MIN_NUMSIGNALS * 2)
->  #define VISORHBA_ERROR_COUNT 30
->  
-> +static DEFINE_XARRAY_ALLOC(xa_dtstr);
-> +
->  static struct dentry *visorhba_debugfs_dir;
->  
->  /* GUIDS for HBA channel type supported by this driver */
-> @@ -78,12 +80,6 @@ struct visorhba_devdata {
->  	unsigned int max_buff_len;
->  	int devnum;
->  	struct uiscmdrsp *cmdrsp;
-> -	/*
-> -	 * allows us to pass int handles back-and-forth between us and
-> -	 * iovm, instead of raw pointers
-> -	 */
-> -	struct idr idr;
-> -
->  	struct dentry *debugfs_dir;
->  	struct dentry *debugfs_info;
->  };
-> @@ -183,32 +179,16 @@ static struct uiscmdrsp *get_scsipending_cmdrsp(struct visorhba_devdata *ddata,
->  }
->  
->  /*
-> - * simple_idr_get - Associate a provided pointer with an int value
-> - *		    1 <= value <= INT_MAX, and return this int value;
-> - *		    the pointer value can be obtained later by passing
-> - *		    this int value to idr_find()
-> - * @idrtable: The data object maintaining the pointer<-->int mappings
-> - * @p:	      The pointer value to be remembered
-> - * @lock:     A spinlock used when exclusive access to idrtable is needed
-> - *
-> - * Return: The id number mapped to pointer 'p', 0 on failure
-> + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
-> + * @id: Pointer to ID
-> + * @entry: New entry
->   */
-> -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
-> -				   spinlock_t *lock)
-> +static int simple_xa_dtstr_get(u32 *id, void *entry)
+> Follow-up on the v5 [1], things have gotten significantly
+> better in the last year, thanks to the efforts on Bifrost
+> support by the Collabora team (and probably others I'm not
+> aware of).
+> 
+> I've been testing this series on a MT8183/kukui device, with a
+> chromeos-5.10 kernel [2], and got basic Chromium OS UI up with
+> mesa 20.3.2 (lots of artifacts though).
+> 
+> devfreq is currently not supported, as we'll need:
+>  - Clock core support for switching the GPU core clock (see 2/4).
+>  - Platform-specific handling of the 2-regulator (see 3/4).
+> 
+> Since the latter is easy to detect, patch 3/4 just disables
+> devfreq if the more than one regulator is specified in the
+> compatible matching table.
+> 
+> [1] https://patchwork.kernel.org/project/linux-mediatek/cover/20200306041345.259332-1-drinkcat@chromium.org/
+> [2] https://crrev.com/c/2608070
+> 
+> Changes in v13:
+>  - devfreq: Fix conflict resolution mistake when rebasing, didn't
+>    even compile. Oops.
+> 
+> Changes in v12:
+>  - binding: Fix min/maxItems logic (Rob Herring)
+>  - Add gpu node to mt8183-pumpkin.dts as well (Neil Armstrong).
+> 
+> Changes in v11:
+>  - binding: power-domain-names not power-domainS-names
+>  - mt8183*.dts: remove incorrect supply-names
+> 
+> Changes in v10:
+>  - Fix the binding to make sure sram-supply property can be provided.
+> 
+> Changes in v9:
+>  - Explain why devfreq needs to be disabled for GPUs with >1
+>    regulators.
+> 
+> Changes in v8:
+>  - Use DRM_DEV_INFO instead of ERROR
+> 
+> Changes in v7:
+>  - Fix GPU ID in commit message
+>  - Fix GPU ID in commit message
+> 
+> Changes in v6:
+>  - Rebased, actually tested with recent mesa driver.
+>  - Add gpu regulators to kukui dtsi as well.
+>  - Power domains are now attached to spm, not scpsys
+>  - Drop R-B.
+>  - devfreq: New change
+>  - Context conflicts, reflow the code.
+>  - Use ARRAY_SIZE for power domains too.
+> 
+> Changes in v5:
+>  - Rename "2d" power domain to "core2"
+>  - Rename "2d" power domain to "core2" (keep R-B again).
+>  - Change power domain name from 2d to core2.
+> 
+> Changes in v4:
+>  - Add power-domain-names description
+>    (kept Alyssa's reviewed-by as the change is minor)
+>  - Add power-domain-names to describe the 3 domains.
+>    (kept Alyssa's reviewed-by as the change is minor)
+>  - Add power domain names.
+> 
+> Changes in v3:
+>  - Match mt8183-mali instead of bifrost, as we require special
+>    handling for the 2 regulators and 3 power domains.
+> 
+> Changes in v2:
+>  - Use sram instead of mali_sram as SRAM supply name.
+>  - Rename mali@ to gpu@.
+> 
+> Nicolas Boichat (4):
+>   dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+>   arm64: dts: mt8183: Add node for the Mali GPU
+>   drm/panfrost: devfreq: Disable devfreq when num_supplies > 1
+>   drm/panfrost: Add mt8183-mali compatible string
+> 
+>  .../bindings/gpu/arm,mali-bifrost.yaml        |  30 ++++-
+>  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
+>  .../boot/dts/mediatek/mt8183-pumpkin.dts      |   5 +
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_devfreq.c   |   9 ++
+>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  10 ++
+>  7 files changed, 168 insertions(+), 1 deletion(-)
+> 
 
-What are you trying to really "get" here?  We shouldn't name the
-function based on the data type being used.  All we want is some sort of
-"token" or hash or something else?  It's hard to tell...
+Seems this version is ready to be applied if we get a review on the DT ?
 
->  {
-> -	int id;
-> -	unsigned long flags;
-> +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b, GFP_NOWAIT);
-> +	/* TODO: check for and manage errors */
+Mathias ? could you have a look ?
 
-That's a nice TODO, which means we really should not be considering this
-patch to be merged, right?
-
-thanks,
-
-greg k-h
+Neil
