@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B1236BC48
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA4836BC50
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237800AbhDZXnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
+        id S235573AbhDZXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237660AbhDZXnD (ORCPT
+        with ESMTP id S234275AbhDZXrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:43:03 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8851BC061760;
-        Mon, 26 Apr 2021 16:42:21 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id y62so7455610pfg.4;
-        Mon, 26 Apr 2021 16:42:21 -0700 (PDT)
+        Mon, 26 Apr 2021 19:47:15 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35C1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:46:32 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id a11so5394427ioo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:46:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VsQsmCAgJgJxoXWPONlyxJ9BGgILIRFdOhQAUEyo7tY=;
-        b=Xzd+Bu439mdjn8yl2z798jxgjLJIueP7r/oNdhZWpnH7fkdXHfiqEWPC3ud2fhIG3N
-         m0pkmEQiW1/MvVuNoZ/x++oXDuSSksOQO7p/hcRVEOJW2jOvXylXl0VkVX9ER5HyDNH5
-         vZ2UZS/griXQEZZ07FhXubjld5Y2CYmr7E2LEraJAYw/aAHTe2fbbANUnQhbNKnyZAzR
-         MSlYgq7wSLauROJmYGgt3dEQXoKqbQfr/CnqFwNw/SFx4JAOyIX/tPl/Z90pDJkMbKwI
-         1OP+FAnrRZR47uMu3B1J1CqCeL/1He7tP4S7cQOmus4c4Lvf/PlT31RhD6MHy/C4WpW7
-         e6pw==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JMBhcXT+HqfLp739NL+n0eO/wpxKpYbd0B0X7WUl5/o=;
+        b=E6j2YM6RMEQPoyRPWV9+wFEbEgT4CG/Ix+ual6y4Prl6ywU00IcDstS/3mH8X44/UW
+         dMXg1rY2mIaqRLe/0vX/PmDlM2XFf1kyp41SpJANDCdJv359H6MJLSFjfvmML5fP0Jjq
+         7wWSrOlCnW37MXVPNXG1tcBsJaXqLrVvhLm4Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VsQsmCAgJgJxoXWPONlyxJ9BGgILIRFdOhQAUEyo7tY=;
-        b=gZm5HGft/G+HCfW4cuJ7NusCFG9tq/rFe+Jj3uGxCAF8M6q6OreWtx3qZBhbucJ3c2
-         55njVbqP/qO2cKs1Byow8K9Jzp5grVsuAYi1JYwnKuhxoB29+Laii1k+CmlsvRJTb5Xf
-         WpuZ6vALh5/ErTh6OgI6VtMhevfTjC8fdEzoSndFssYU26Cp9sPOGqlz/1Sruc3bHHJQ
-         ETjwX0096HNbm7YHq3o+3MPIZXQVy4k5VRIk6TWGaY6dMvc7bpnVnN+NmTpKFnViS7sn
-         Jcolm6b0WIpFtCXD6+ClM4apIU8msJRZo6eKbhs06/kJ9gf1nipsBYd5EbI1u1RMGrxU
-         x2/A==
-X-Gm-Message-State: AOAM532kbL9RaLzTMmpBwNr93fLtMG5Asp8ZVl0KnXW4gb5zs2IB8iQp
-        nfidnoXt03ar/2JaZ8hBFo0=
-X-Google-Smtp-Source: ABdhPJygKGT7O/9kbsuo/ZEUwwEeZWZQv28qIldIprW6wlA3FY+XBIy2K9MxMTsdBqcdBIFAHcpJZQ==
-X-Received: by 2002:a65:43c9:: with SMTP id n9mr19035367pgp.19.1619480541011;
-        Mon, 26 Apr 2021 16:42:21 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id m7sm640828pfc.218.2021.04.26.16.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 16:42:20 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v10 4/4] MAINTAINERS: Add maintainer entry for zstd
-Date:   Mon, 26 Apr 2021 16:46:21 -0700
-Message-Id: <20210426234621.870684-5-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426234621.870684-1-nickrterrell@gmail.com>
-References: <20210426234621.870684-1-nickrterrell@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JMBhcXT+HqfLp739NL+n0eO/wpxKpYbd0B0X7WUl5/o=;
+        b=JgV83JCHal2cDY6eHsZJA6i5Br2ZDatzogsrHZFhuL3cTPieRUVBpFMamst6lDujSy
+         lRvYy7qhvMEVVUvZTIjpUJjXo21Fsh/9aek+zIOu7y+adY85OzYxSlZ+M3NSsf0JXuTr
+         wJIHrfHRU9oSqEWC2dMlrKDpyVZExnk0m1grEiBXLcj6aB55bs41TStu9eaSXzwG7baL
+         ZAWMPnolT80iVfVyTUkmVKZRQ/+eklNAsVdqA2nOUodnCsilzHSdlGYVgy7elyFZke+g
+         LpQPUHlDjMhlmV+q5zzMpZAjHaDHmZhWAKi3T/VPF/z8r9ds99qjPyfU7hjLqw/x6kgL
+         nU9A==
+X-Gm-Message-State: AOAM5328B5s7oFjNoEh/RHL8SMxveiwmQIthmDyp3p7ilRZoAylK4/jn
+        Yxm+itj0GS15bPvbeIg7u+60xg==
+X-Google-Smtp-Source: ABdhPJwr2vuKRfiqpdiaGQpdq9rnKG6vSBMF5mLPnoEflDFUtv8me6R4UiGiOOzDhd266+TQzRCOYg==
+X-Received: by 2002:a02:94e7:: with SMTP id x94mr18912173jah.106.1619480792161;
+        Mon, 26 Apr 2021 16:46:32 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u4sm601730iln.36.2021.04.26.16.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 16:46:31 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/36] 5.10.33-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210426072818.777662399@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c62dcf27-307c-228b-98c1-1641f4aeacfc@linuxfoundation.org>
+Date:   Mon, 26 Apr 2021 17:46:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Terrell <terrelln@fb.com>
+On 4/26/21 1:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.33 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.33-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Adds a maintainer entry for zstd listing myself as the maintainer for
-all zstd code, pointing to the upstream issues tracker for bugs, and
-listing my linux repo as the tree.
+Compiled and booted on my test system. No dmesg regressions.
 
-Signed-off-by: Nick Terrell <terrelln@fb.com>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fb2a3633b719..eb67c13ec36a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19890,6 +19890,18 @@ F:	Documentation/vm/zsmalloc.rst
- F:	include/linux/zsmalloc.h
- F:	mm/zsmalloc.c
- 
-+ZSTD
-+M:	Nick Terrell <terrelln@fb.com>
-+S:	Maintained
-+B:	https://github.com/facebook/zstd/issues
-+T:	git git://github.com/terrelln/linux.git
-+F:	include/linux/zstd*
-+F:	lib/zstd/
-+F:	lib/decompress_unzstd.c
-+F:	crypto/zstd.c
-+N:	zstd
-+K:	zstd
-+
- ZSWAP COMPRESSED SWAP CACHING
- M:	Seth Jennings <sjenning@redhat.com>
- M:	Dan Streetman <ddstreet@ieee.org>
--- 
-2.31.1
+thanks,
+-- Shuah
+
 
