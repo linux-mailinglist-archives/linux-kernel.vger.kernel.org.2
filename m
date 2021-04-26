@@ -2,93 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF57136B359
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7241F36B355
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbhDZMpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbhDZMpP (ORCPT
+        id S233345AbhDZMpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:45:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232059AbhDZMov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:45:15 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8106C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:44:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=t1M07dmc0X
-        SfEa2oDvK22eZQFb4J04a5FzYvFFyBYrs=; b=cDOcSZndW0THeDUdAI8bhVRHMf
-        Kdyk1JaB4qEvbBRSpEtn55UjvdOczXF54Smz6bWuIAl/fQk052hShSeNOir11kj6
-        pz5905jaJfC7UUgFkyuqoOJk/5CX+LpZIgerJlPpt/+3nk3O6DoTJVZo3I7lmN3Z
-        /1um/6XuIQO5pcBS4=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygB3fER+tYZgC8VKAA--.5358S4;
-        Mon, 26 Apr 2021 20:43:42 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        chris@chris-wilson.co.uk
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] drm/i9i5/gt: Fix a double free in gen8_preallocate_top_level_pdp
-Date:   Mon, 26 Apr 2021 05:43:40 -0700
-Message-Id: <20210426124340.4238-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 26 Apr 2021 08:44:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619441048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TSlotn4fBSdFFf3NHGJvYzieEsXBeHjCWbwR+pEgCSM=;
+        b=IDvUY6jOfjwl7qFQXDiidWQC/ldN23dhpADcL3/YJT4KLxFWDvYZjoWceLZD++cDXfYWUO
+        lAlflOly5AXVWaY3QBC/A8ZcxmSNih9ZW88ol6NZiMNxcSzuO7C3WNM5tDSyjeNclqjesq
+        6/+YX6MHAm9PjppsoH50z6/d9eUMLsw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-W1_il_x5O0-KQwH5hQ0CVw-1; Mon, 26 Apr 2021 08:44:07 -0400
+X-MC-Unique: W1_il_x5O0-KQwH5hQ0CVw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BB3587A83F;
+        Mon, 26 Apr 2021 12:44:03 +0000 (UTC)
+Received: from starship (unknown [10.40.192.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F70F6268B;
+        Mon, 26 Apr 2021 12:43:49 +0000 (UTC)
+Message-ID: <6d7146021f3435330b42f2e1b917d4b5dea00edc.camel@redhat.com>
+Subject: Re: [PATCH v2 0/9] KVM: my debug patch queue
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jessica Yu <jeyu@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        James Morse <james.morse@arm.com>
+Date:   Mon, 26 Apr 2021 15:43:48 +0300
+In-Reply-To: <cb7f918c-932f-d558-76ec-801ed8ed1f62@redhat.com>
+References: <20210401135451.1004564-1-mlevitsk@redhat.com>
+         <cb7f918c-932f-d558-76ec-801ed8ed1f62@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygB3fER+tYZgC8VKAA--.5358S4
-X-Coremail-Antispam: 1UD129KBjvJXoWrurWkXr48tF1fXr48WFy8Xwb_yoW8Jry5pw
-        43uFyYvrnYyr12ya13Xa1UZFySy343KrWrGayv9a1v9r13JFy7tr9YyrW8JFyUCr1xJryS
-        qF1xCrWfZFy7JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr4
-        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUhiSQUUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our code analyzer reported a double free bug.
+On Fri, 2021-04-02 at 10:38 -0700, Paolo Bonzini wrote:
+> On 01/04/21 15:54, Maxim Levitsky wrote:
+> > Hi!
+> > 
+> > I would like to publish two debug features which were needed for other stuff
+> > I work on.
+> > 
+> > One is the reworked lx-symbols script which now actually works on at least
+> > gdb 9.1 (gdb 9.2 was reported to fail to load the debug symbols from the kernel
+> > for some reason, not related to this patch) and upstream qemu.
+> 
+> Queued patches 2-5 for now.  6 is okay but it needs a selftest. (e.g. 
+> using KVM_VCPU_SET_EVENTS) and the correct name for the constant.
+Do you mean to add a kvm-unit-test or to add a test to kernel's kvm unit tests
+for this?
 
-In gen8_preallocate_top_level_pdp, pde and pde->pt.base are allocated
-via alloc_pd(vm) with one reference. If pin_pt_dma() failed, pde->pt.base
-is freed by i915_gem_object_put() with a reference dropped. Then free_pd
-calls free_px() defined in intel_ppgtt.c, which calls i915_gem_object_put()
-to put pde->pt.base again.
+Best regards,
+	Maxim Levitsky
 
-As pde->pt.base is protected by refcount, so the second put will not free
-pde->pt.base actually. But, maybe it is better to remove the first put?
-
-Fixes: 82adf901138cc ("drm/i915/gt: Shrink i915_page_directory's slab bucket")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/gpu/drm/i915/gt/gen8_ppgtt.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
-index 755522ced60d..3ae16945bd43 100644
---- a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
-+++ b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
-@@ -630,7 +630,6 @@ static int gen8_preallocate_top_level_pdp(struct i915_ppgtt *ppgtt)
- 
- 		err = pin_pt_dma(vm, pde->pt.base);
- 		if (err) {
--			i915_gem_object_put(pde->pt.base);
- 			free_pd(vm, pde);
- 			return err;
- 		}
--- 
-2.25.1
+> 
+> Paolo
+> 
+> > The other feature is the ability to trap all guest exceptions (on SVM for now)
+> > and see them in kvmtrace prior to potential merge to double/triple fault.
+> > 
+> > This can be very useful and I already had to manually patch KVM a few
+> > times for this.
+> > I will, once time permits, implement this feature on Intel as well.
+> > 
+> > V2:
+> > 
+> >   * Some more refactoring and workarounds for lx-symbols script
+> > 
+> >   * added KVM_GUESTDBG_BLOCKEVENTS flag to enable 'block interrupts on
+> >     single step' together with KVM_CAP_SET_GUEST_DEBUG2 capability
+> >     to indicate which guest debug flags are supported.
+> > 
+> >     This is a replacement for unconditional block of interrupts on single
+> >     step that was done in previous version of this patch set.
+> >     Patches to qemu to use that feature will be sent soon.
+> > 
+> >   * Reworked the the 'intercept all exceptions for debug' feature according
+> >     to the review feedback:
+> > 
+> >     - renamed the parameter that enables the feature and
+> >       moved it to common kvm module.
+> >       (only SVM part is currently implemented though)
+> > 
+> >     - disable the feature for SEV guests as was suggested during the review
+> >     - made the vmexit table const again, as was suggested in the review as well.
+> > 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+> > Maxim Levitsky (9):
+> >    scripts/gdb: rework lx-symbols gdb script
+> >    KVM: introduce KVM_CAP_SET_GUEST_DEBUG2
+> >    KVM: x86: implement KVM_CAP_SET_GUEST_DEBUG2
+> >    KVM: aarch64: implement KVM_CAP_SET_GUEST_DEBUG2
+> >    KVM: s390x: implement KVM_CAP_SET_GUEST_DEBUG2
+> >    KVM: x86: implement KVM_GUESTDBG_BLOCKEVENTS
+> >    KVM: SVM: split svm_handle_invalid_exit
+> >    KVM: x86: add force_intercept_exceptions_mask
+> >    KVM: SVM: implement force_intercept_exceptions_mask
+> > 
+> >   Documentation/virt/kvm/api.rst    |   4 +
+> >   arch/arm64/include/asm/kvm_host.h |   4 +
+> >   arch/arm64/kvm/arm.c              |   2 +
+> >   arch/arm64/kvm/guest.c            |   5 -
+> >   arch/s390/include/asm/kvm_host.h  |   4 +
+> >   arch/s390/kvm/kvm-s390.c          |   3 +
+> >   arch/x86/include/asm/kvm_host.h   |  12 ++
+> >   arch/x86/include/uapi/asm/kvm.h   |   1 +
+> >   arch/x86/kvm/svm/svm.c            |  87 +++++++++++--
+> >   arch/x86/kvm/svm/svm.h            |   6 +-
+> >   arch/x86/kvm/x86.c                |  14 ++-
+> >   arch/x86/kvm/x86.h                |   2 +
+> >   include/uapi/linux/kvm.h          |   1 +
+> >   kernel/module.c                   |   8 +-
+> >   scripts/gdb/linux/symbols.py      | 203 ++++++++++++++++++++----------
+> >   15 files changed, 272 insertions(+), 84 deletions(-)
+> > 
 
 
