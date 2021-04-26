@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E1636B1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF2A36B1BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhDZKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:41:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51002 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232656AbhDZKlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:41:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0C8BAD69;
-        Mon, 26 Apr 2021 10:40:23 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 12:40:26 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/boot for v5.13
-Message-ID: <YIaYmp9vs75H4xgk@zn.tnic>
+        id S233110AbhDZKlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:41:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37383 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232656AbhDZKlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 06:41:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619433633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bZZsUMt0KMjKP40YJJFPdYzvGN9VTk6y13Ps6YXhbp8=;
+        b=VwANrziXijNKq/3jslGg6lITcSbmyvOtWguwgAsq2J5p9y3SmcRAVO2UqOKYB29H8d09wV
+        igf0795fexMx3W6Q/WAaeiPE70efyxyV51iB9d51UlWE8509UqUBiUxunecdk8X8KwLFMx
+        X7YKSz1yktfpnKBHqcY+MBxIEbeg5iM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-Cp4z_yhXPE2ODPgvsI70Nw-1; Mon, 26 Apr 2021 06:40:32 -0400
+X-MC-Unique: Cp4z_yhXPE2ODPgvsI70Nw-1
+Received: by mail-ej1-f71.google.com with SMTP id ld21-20020a170906f955b029038f648a7175so353322ejb.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:40:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bZZsUMt0KMjKP40YJJFPdYzvGN9VTk6y13Ps6YXhbp8=;
+        b=gY5ziZhbELPO2NAJeLXBkzMkCtkRy5g/celtQB1B4gWpOPVDYHxzPBQjzUmIJTaWee
+         kmJoMu+Tfmvmy3B60N2bwLoVfjXznV1OlBl/xIXKXZqU1dQr5NFv5K5EIHe6Qqocm1ap
+         0C2Vicqo5NuKObzbRYHHcQi8z4v6nlU1RSselh4wTnUaukUgkMEALj7Q9TaTsY8BN8mP
+         3p54WwTtEPXiFEwt2bi+rHAtqVniPn93rtb/zPP9tPQUvbvHrKrxptTP1/X56IoDWmcD
+         2hba3NKd1V7Q/012NWuOP7Q7gXzpXXSNex3RiCngSsNJ5JL1xt8MdRCQkqXeTHTFLuSB
+         2dDA==
+X-Gm-Message-State: AOAM532Zc76v9SSCp1+ywbfNkjOAUM9Kh/5EmRVQBNoGUS4JZ4KeIbDb
+        Sz20dkCQmT2oIBjsyFbkFAdzzh8EWlHoAPbupb+ND5pzhqr9TQfBp1iYBU7sT2O1xRLfe7VN/1N
+        BP9N+C3JmlaFIiDGJxjwl5HDy
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr20979867edc.54.1619433630745;
+        Mon, 26 Apr 2021 03:40:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUlQIAYodwBzUUiJWgYEpzQujF933VDY95XxUTEaag8DV7wjbNaWtxum0gxZnhcW6tOwzmwg==
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr20979847edc.54.1619433630557;
+        Mon, 26 Apr 2021 03:40:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id g11sm14002799edw.37.2021.04.26.03.40.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 03:40:29 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] KVM: VMX: Invoke NMI handler via indirect call
+ instead of INTn
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <20200915191505.10355-1-sean.j.christopherson@intel.com>
+ <20200915191505.10355-3-sean.j.christopherson@intel.com>
+ <CAJhGHyBOLUeqnwx2X=WToE2oY8Zkqj_y4KZ0hoq-goe+UWcR9g@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bb2c2d93-8046-017a-5711-c61c8f1a4c09@redhat.com>
+Date:   Mon, 26 Apr 2021 12:40:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyBOLUeqnwx2X=WToE2oY8Zkqj_y4KZ0hoq-goe+UWcR9g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 26/04/21 11:33, Lai Jiangshan wrote:
+> When handle_interrupt_nmi_irqoff() is called, we may lose the
+> CPU-hidden-NMI-masked state due to IRET of #DB, #BP or other traps
+> between VMEXIT and handle_interrupt_nmi_irqoff().
+> 
+> But the NMI handler in the Linux kernel*expects*  the CPU-hidden-NMI-masked
+> state is still set in the CPU for no nested NMI intruding into the beginning
+> of the handler.
+> 
+> The original code "int $2" can provide the needed CPU-hidden-NMI-masked
+> when entering #NMI, but I doubt it about this change.
 
-please pull the changes to the x86 booting area for v5.13.
+How would "int $2" block NMIs?  The hidden effect of this change (and I 
+should have reviewed better the effect on the NMI entry code) is that 
+the call will not use the IST anymore.
 
-Thx.
+However, I'm not sure which of the two situations is better: entering 
+the NMI handler on the IST without setting the hidden NMI-blocked flag 
+could be a recipe for bad things as well.
 
----
+Paolo
 
-The following changes since commit 84196390620ac0e5070ae36af84c137c6216a7dc:
-
-  Merge tag 'selinux-pr-20210322' of git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux (2021-03-22 11:34:31 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_boot_for_v5.13
-
-for you to fetch changes up to c361e5d4d07d63768880e1994c7ed999b3a94cd9:
-
-  x86/setup: Move trim_snb_memory() later in setup_arch() to fix boot hangs (2021-04-14 08:16:48 +0200)
-
-----------------------------------------------------------------
-Consolidation and cleanup of the early memory reservations, along with a
-couple of gcc11 warning fixes.
-
-----------------------------------------------------------------
-Arnd Bergmann (2):
-      x86/boot/tboot: Avoid Wstringop-overread-warning
-      x86/boot/compressed: Avoid gcc-11 -Wstringop-overread warning
-
-Mike Rapoport (3):
-      x86/setup: Consolidate early memory reservations
-      x86/setup: Merge several reservations of start of memory
-      x86/setup: Move trim_snb_memory() later in setup_arch() to fix boot hangs
-
- arch/x86/boot/compressed/misc.c |   2 -
- arch/x86/kernel/setup.c         | 109 +++++++++++++++++++++-------------------
- arch/x86/kernel/tboot.c         |  44 +++++++++-------
- 3 files changed, 84 insertions(+), 71 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
