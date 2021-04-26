@@ -2,120 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFA536AC16
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 08:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72D236AC15
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 08:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhDZGTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 02:19:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:56908 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231806AbhDZGTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231909AbhDZGTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Apr 2021 02:19:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB11131B;
-        Sun, 25 Apr 2021 23:18:34 -0700 (PDT)
-Received: from [10.163.75.66] (unknown [10.163.75.66])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BA993F70D;
-        Sun, 25 Apr 2021 23:18:32 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mm/mmzone.h: simplify is_highmem_idx()
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210423203811.1247508-1-rppt@kernel.org>
- <20210423203811.1247508-3-rppt@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <df17080c-8867-259e-5a09-1f0ec053f68e@arm.com>
-Date:   Mon, 26 Apr 2021 11:49:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhDZGTP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 02:19:15 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B46C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 23:18:32 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 12so86276800lfq.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 23:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3/FI0KZmj3/CnqR1rFz6WI/MezYTXitzSUOb5NDvbRs=;
+        b=UH+91n2GgKGYLhNJGgbWrMmFMSQp7+hB3JdqzI4Z5Jpt48DTVc0Uc2QgUpeJ1cntOz
+         dv4+aLPU7I5FYp0feRXoQ4SXU+n0H55FzFX55kylUeOSDN29GvtzaRrydnWqJz/jBVNq
+         zxHjCv/F/bKptm6xJzyhUW4k2Zk8m0GgWo+GT1rWCODNSraG9D+NvQhLqyg/cqVnjNxx
+         CZG0H1Eni+ylpIxmj0iS+qRGM6sNz1rxuAcfoG2DjhzUHanGO29Lwga8fdgvpYTez5Rt
+         kfi2gWd1KKSgj5iRej3rY5aeZ/JPX+mb2BXKfV5Bh3p7OGbGbu9YIWTIhbLFECRgVZeQ
+         cxEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3/FI0KZmj3/CnqR1rFz6WI/MezYTXitzSUOb5NDvbRs=;
+        b=D/IGRbSnWe/dR17g7FfHQN9lc55daS+J9OOaPv3/0CWziHHb36GQnfhy/PHJgZl3en
+         X1UVzZcRcDD96wu+KJ+AzYpUiDzOTsXXeCtZEIwcXWxw/WfMYQuiBysdGAb6mXiX7wk9
+         p4BC0RGzzDnSo8JbeAweOznaccFWJr5XZEItatiuLoAm1BY6qj0zQmqXs/6zhiUCAfpe
+         9kpxWzRHI2bsmgTspmSuWlafBF7h+96s88jNvpfOyhNPVi7FXtjGnD/tB9pliS6t5Ahy
+         d7HMsE8IRcIeMNxcOAnOkeN3U+SUJ0MbawdYbzNPjchUjLOXjQziyxllp0O8qIrGUY1n
+         KjoA==
+X-Gm-Message-State: AOAM532Vf7iwaJqyc+IOqRirXj5d+PjEyLTaaFtx951Gm7MpF06ody22
+        i/+Rl9NgOaf6Kt9LrsSnzApS2Vfclh3vxw==
+X-Google-Smtp-Source: ABdhPJxdnk6vol2grAYYXH63/e4b+6M+0f15V1fJOR5NpMu07HNj6554KPRrwkxAZObzYkxVzgLIIQ==
+X-Received: by 2002:ac2:5dc9:: with SMTP id x9mr11800050lfq.215.1619417910333;
+        Sun, 25 Apr 2021 23:18:30 -0700 (PDT)
+Received: from [10.0.0.42] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id v8sm1413972ljn.17.2021.04.25.23.18.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Apr 2021 23:18:29 -0700 (PDT)
+To:     Mark Brown <broonie@kernel.org>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc:     alsa-devel@alsa-project.org, amistry@google.com,
+        nartemiev@google.com, Alexander.Deucher@amd.com,
+        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <20210423164617.GG5507@sirena.org.uk>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN
+ to dwc driver
+Message-ID: <e1268120-7a91-da49-0bb6-89d5cb4e2cce@gmail.com>
+Date:   Mon, 26 Apr 2021 09:19:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210423203811.1247508-3-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210423164617.GG5507@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/24/21 2:08 AM, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On 4/23/21 7:46 PM, Mark Brown wrote:
+> On Fri, Apr 23, 2021 at 09:54:38PM +0530, Vijendar Mukunda wrote:
 > 
-> There is a lot of historical ifdefery in is_highmem_idx() and its helper
-> zone_movable_is_highmem() that was required because of two different paths
-> for nodes and zones initialization that were selected at compile time.
+>> For CZ/StoneyRidge platforms, ACP DMA between ACP SRAM and
+>> I2S FIFO should be stopped before stopping I2S Controller DMA.
 > 
-> Until commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP
-> option") the movable_zone variable was only available for configurations
-> that had CONFIG_HAVE_MEMBLOCK_NODE_MAP enabled so the test in
-> zone_movable_is_highmem() used that variable only for such configurations.
-> For other configurations the test checked if the index of ZONE_MOVABLE was
-> greater by 1 than the index of ZONE_HIGMEM and then movable zone was
-> considered a highmem zone. Needless to say, ZONE_MOVABLE - 1 equals
-> ZONE_HIGMEM by definition when CONFIG_HIGHMEM=y.
+>> When DMA is progressing and stop request received, while DMA transfer
+>> ongoing between ACP SRAM and I2S FIFO, Stopping I2S DMA prior to ACP DMA
+>> stop resulting DMA Channel stop failure.
+> 
+> This again...  copying in Peter for the sequencing discussion.  If we
+> need to do this I'm not convinced that bodging it in the driver is a
+> good idea, and especially not deferring it outside of the trigger
+> operation - for example on a suspend or pause we won't actually do a
+> shutdown() so the trigger will end up not happening which seems like it
+> may cause problems.
 
-Right with CONFIG_HIGHMEM is enabled, ZONE_MOVABLE = ZONE_HIGHMEM + 1 holds
-always true from the very definition in enum zone_type { }.
+It will certainly leave the i2s running and can lead to hard to explain
+issues
 
-> 
-> Commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
-> made movable_zone variable always available. Since this variable is set to
-> ZONE_HIGHMEM if CONFIG_HIGHMEM is enabled and highmem zone is populated, it
-> is enough to check whether
-> 
-> 	zone_idx == ZONE_MOVABLE && movable_zone == ZONE_HIGMEM
+> We'd probably be better off with the core knowing
+> what's going on and being able to reorder the callbacks although
+> designing an interface for that seems a bit annoying.
 
-Right. A small nit. s/HIGMEM/HIGHMEM
+I agree, it would be better to have some sort of flag which tells the
+core that there is an integration issue between the DMA and peripheral.
+I believe this is only affecting playback?
 
+>> This issue can't be fixed in ACP DMA driver due to design constraint.
 > 
-> to test if zone index points to a highmem zone.
+> What is the design constraint here - can't we fix the design?  Or is it
+> a hardware design constraint (presumably broken signalling between the
+> I2S and DMA blocks)?
 
-If the CONFIG_HIGHMEM is enabled but ZONE_HIGHMEM is not populated, then
-movable_node would point to a zone below ZONE_HIGHMEM and is_highmem_idx()
-would also return false.
+From the description my guess is that stop on the DMA want to flush it's
+FIFO (complete the in progress packet, segment). Since the peripheral is
+stopped it will not pull in more data -> the DMA will time out internally.
 
-> 
-> Remove zone_movable_is_highmem() that is not used anywhere except
-> is_highmem_idx() and use the test above in is_highmem_idx() instead.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  include/linux/mmzone.h | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 3b2205741048..6a1ac643b65e 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -968,22 +968,11 @@ static inline void zone_set_nid(struct zone *zone, int nid) {}
->  
->  extern int movable_zone;
->  
-> -#ifdef CONFIG_HIGHMEM
-> -static inline int zone_movable_is_highmem(void)
-> -{
-> -#ifdef CONFIG_NEED_MULTIPLE_NODES
-> -	return movable_zone == ZONE_HIGHMEM;
-> -#else
-> -	return (ZONE_MOVABLE - 1) == ZONE_HIGHMEM;
-> -#endif
-> -}
-> -#endif
-> -
->  static inline int is_highmem_idx(enum zone_type idx)
->  {
->  #ifdef CONFIG_HIGHMEM
->  	return (idx == ZONE_HIGHMEM ||
-> -		(idx == ZONE_MOVABLE && zone_movable_is_highmem()));
-> +		(idx == ZONE_MOVABLE && movable_zone == ZONE_HIGHMEM));
->  #else
->  	return 0;
->  #endif
-> 
+The question: how the ACP DMA driver's terminate_all is implemented? It
+can not really wait for the DMA to stop, we can not use
+terminate_all_sync() in trigger, it must just set a stop bit and make
+sure at synchronize() time that it has stopped, right?
 
-LGTM.
+What happens if the time between the DMA stop and the DAI stop is less
+then it would take to flush the DMA FIFO? You would have the same issue,
+but in a rather hard to reproducible way?
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+As sidenote: TI's k3-udma initially had similar issue at the design
+phase on the playback side which got solved by a flush bit on the
+channel to detach it from the peripheral and set it to free run to drain
+w/o peripheral.
+On capture however I need to push a dummy 'drain' packet to flush out
+the data from the DMA (if the stop happens when we did not have active
+descriptor on the channel).
+
+With a flag to reorder the DMA/DAI stop sequence it might work most of
+the time, but imho it is going to introduce a nasty time-bomb of failure.
+Also your DAI will underflow instead of the DMA error.
+
+-- 
+Péter
