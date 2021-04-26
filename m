@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EE436B29A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C87936B29C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhDZL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231876AbhDZL54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:57:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C53A60FE6;
-        Mon, 26 Apr 2021 11:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619438234;
-        bh=YAMGLDr484gnwUvmIKxfN/VOkDFd46Y2bk2JtoZTrxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jY6inlmBl0DN2ZyWOs3VNzGPVKMDziPXKIzxbKn9SVs/bnRSAbA4RYJAEe+EsgI73
-         f1apQg9KsOuPHn9HvDNeOu0EcKrwv5TDmXlXzpcl3xsOhyJJlOSH6bcm+pfHAdh3SL
-         C4sC8hDQeVUz8RC6uRgc2AnfDvqudyLeNvG2blpWZnky0iliKU+QKnAgI8VQPJAzes
-         9RJ/bH7BmIbweBhqwu1tMEtg8ZQn8ks8Rw8B7hnKlCZGwm2jDgGxlHway26jWxlUBH
-         mUjm+KodlrjZXYBGEhPu766CVyTrspDe/y+GXlxt2e47xspeGAPvW7qRxqqw4E0tAa
-         dBQYOXiTKueBg==
-Date:   Mon, 26 Apr 2021 12:56:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Art Nikpal <email2tema@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>, jbrunet@baylibre.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Artem Lapkin <art@khadas.com>, nick@khadas.com,
-        Gouwa Wang <gouwa@khadas.com>
-Subject: Re: [PATCH] SPI: meson-spifc add missed calls to remove function
-Message-ID: <20210426115645.GB4590@sirena.org.uk>
-References: <20210423034247.992052-1-art@khadas.com>
- <20210423114735.GA5507@sirena.org.uk>
- <CAKaHn9+d5crmmG-aKyLuvyxk+A7aC9qqfX_3wuMXm50pg+pZ4w@mail.gmail.com>
+        id S233176AbhDZL6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232520AbhDZL6e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 07:58:34 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5026AC061574;
+        Mon, 26 Apr 2021 04:57:51 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id z13so6848571lft.1;
+        Mon, 26 Apr 2021 04:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YBKtnrfj870BpoCUOQjiddIh7BY+km8BeX1vkFj0/xI=;
+        b=cJ9ZWmarhUhMg1ePPcEAr0KgjhmQctpIGQQm4MOJfCv2ab64ezHhOFOFviKOZi3T8c
+         eufBi1WOYutCMn+pTxJiwg/oxyZR8yzbbq9WkYnmSwVCCw4q5JMVhUQTOCUiHqnNOX+Y
+         K5t/FXd7UkjnhYeTs6CCPN8bTjRltQnn8ffNW9pKF/Zlj3GkpeczbsVMzN7zstgojKF5
+         HjfHa7qf7t7VPGiSpFWCBi5mzao5Jmh7engnEOS5/zZtzPPEcqy5G6tBkSg5aRA7Surx
+         t7a2EQMPcq9Nu6ifZtSewfzT+3wCFwgrbalOyicfSCZ2UkqSzbDc5J2W+NjnDC/mTyMJ
+         k6Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YBKtnrfj870BpoCUOQjiddIh7BY+km8BeX1vkFj0/xI=;
+        b=HKmxslB/PmAE9GXARQ4vq/4nDHGSQBlSRp+5LFHLXDEpCznr21y0yuDiHKJOdIkxcD
+         eQvhzh5OtYD6TXZuU2xSMI+81X1LqjXchwAc7CxgSEYWRCoiU/lD/rU0NBbs/cm1TcUY
+         +A0t2F08mdNlWekGKu1gAOvraoz0GE9YOUDtKMMbp+zetDo7LWMqxkwBFUEv/iuHUBf1
+         kt3eOIs2u90r4tFg7zzG5rMsJ5O12cK/92egBw0bOvUxTMfPtwItyI9JVzjsL9IAOMl9
+         lBRQuz37yr8tBiaS+XYfsAlN5h8aMHk5zLiNWAUXtC143NotyiJkWi+yMl2YAi0BaqNU
+         i4Jw==
+X-Gm-Message-State: AOAM5309pyCQm9KMVCJEj+fo84ATRcGqdLBcLCtU8auYRKwhyvNlJzbR
+        v/2yIH70qVhXs1iBS2h1Mz9ovopNAZIROWF78XKGNivOQCw=
+X-Google-Smtp-Source: ABdhPJxYyCjyQ3QznO2LDzV1L7kVJnkLq69SknOB4w8dEIbkxurpH7brtrtdohewRvCPbZohZzbGTHvrEUDGqamIHYs=
+X-Received: by 2002:a19:50d:: with SMTP id 13mr12270824lff.443.1619438269845;
+ Mon, 26 Apr 2021 04:57:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
-Content-Disposition: inline
-In-Reply-To: <CAKaHn9+d5crmmG-aKyLuvyxk+A7aC9qqfX_3wuMXm50pg+pZ4w@mail.gmail.com>
-X-Cookie: Zeus gave Leda the bird.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210426074935.11131-1-sherry.sun@nxp.com> <20210426074935.11131-3-sherry.sun@nxp.com>
+ <YIZ1NvISshNHtX/Z@kroah.com> <AM0PR04MB4947DAD4EAA84FEAA5A2B28A92429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+In-Reply-To: <AM0PR04MB4947DAD4EAA84FEAA5A2B28A92429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 26 Apr 2021 08:57:38 -0300
+Message-ID: <CAOMZO5Bmv2CVZeJbwLhZcH7pb7Tb9FhCrPSjhkbaJO8vYtRHLw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tty: serial: fsl_lpuart: fix the potential bug of
+ dereference null return value
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sherry,
 
---NDin8bjvE/0mNLFQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Apr 26, 2021 at 8:39 AM Sherry Sun <sherry.sun@nxp.com> wrote:
 
-On Sat, Apr 24, 2021 at 07:57:19AM +0800, Art Nikpal wrote:
+> > > +   if (!sdata)
+> > > +           return -ENODEV;
+> >
+> > How can sdata be NULL?
+>
+> Is it possible that a case forgot to set sdata? Then the value will be NULL, such as { .compatible = "fsl,imx8qxp-lpuart",  }.
+> So I added the patch to avoid the kernel crash when run to sdata->reg_off directly. But I am not sure does it make sense.
 
-> > I would expect the driver to unregister the controller at the start of
-> > the remove function, suspend doesn't really make sense here
+sdata comes directly from of_device_get_match_data().
 
-> It's strange - But without spi_master_suspend i have randomly stucks when i
-> try unload this module - as was written before
-> i was test it (load/unload module in loop) and for me suspend make sense
-> here
-
-> If anybody has another solution - or real problem not here - please write
-> to me the right way!
-
-As I said above unregister the controller at the start of the remove
-function.
-
---NDin8bjvE/0mNLFQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCGqnwACgkQJNaLcl1U
-h9ChAQf6AzAWZAIxaf/Vi1T0miZmDkRpcCYrObYCduQZQzbR83zD+NtVRAQt5Hzd
-3TMxWVBMUD6hChyKOe4xA6ZfZQ8jh8s3LPNwTwCnBtrmpNPoovMkjAtB3xcXY0Qw
-vFonf9FoPRLLbjf63HL1qv4dHmxARdZZ4ZFS/fMx9670pPz1TlMwyVLzXw3iOycr
-9S2Gzap9QFqXP83avoh2cbxEgNRGlmN4OyNPx0fWYkvwx5vpQJ8/TZ4X9mO1Zi/q
-S7tS3jJW2UVtxHK3jXXSpqdr67o1+2YCRZwKReT0YPPQI9n689PAa1dmnxAMmoPg
-BIADUKIHULSv9i/fb0MGMkpRtdSTuQ==
-=kGPv
------END PGP SIGNATURE-----
-
---NDin8bjvE/0mNLFQ--
+This driver only runs on DT platforms and the only way of being probed
+is when a compatible string matches, so it is not possible that sdata
+can be NULL.
