@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE3136B467
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17E436B473
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233680AbhDZN7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 09:59:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhDZN7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:59:52 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C11C601FC;
-        Mon, 26 Apr 2021 13:59:09 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 09:59:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai+lkml@gmail.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v2 2/2] KVM: VMX: Invoke NMI handler via indirect call
- instead of INTn
-Message-ID: <20210426095907.698ec524@gandalf.local.home>
-In-Reply-To: <ace4c4d81ef0ee461ead6d046c3b3d7308dd32ae.camel@redhat.com>
-References: <20200915191505.10355-1-sean.j.christopherson@intel.com>
-        <20200915191505.10355-3-sean.j.christopherson@intel.com>
-        <CAJhGHyBOLUeqnwx2X=WToE2oY8Zkqj_y4KZ0hoq-goe+UWcR9g@mail.gmail.com>
-        <bb2c2d93-8046-017a-5711-c61c8f1a4c09@redhat.com>
-        <ace4c4d81ef0ee461ead6d046c3b3d7308dd32ae.camel@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233742AbhDZOC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:02:59 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21366 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDZOC6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:02:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1619445723; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=UGOk35mQQbE2f7UY1W3lZfCBuIr072oCYc/IG5TqfkW4dw/WQvrfLNfMswH5UZmK5QPRRjiDCrPEMkxLCnROWI10blqW9MtmCuqAQNyO/rsUxtJ3U2HtLK1iLy8vR71kLiXAu0tWY5p0wMtXkMHhXf1ZKiRh4atQSUcSXtsr1Fg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1619445723; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=rzsZ83jDBREjyjIqQHOvAx9cUe0wGukCjDAduzsjysY=; 
+        b=WDEDgpuwC8Dguh1O8y95T4TQB2sD6kAWDbd33kqEJR1XhVa7i7oyXtepLGXzCidFneOnrWJpKdH622LymDlGkAme/is5od+lY2yN31DTodjx4XFM/VIv3TNIsbZMiZDoylvp/gto88vF34QjVbcPcI7laOfC6IpNsOu23kEMwr0=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1619445723;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=rzsZ83jDBREjyjIqQHOvAx9cUe0wGukCjDAduzsjysY=;
+        b=jeK3yROBJkjiR2Ml4jEB8wPmQRugSoQqGg5/p6IZWle0F/gsF+1w1VuAcQwZSlIL
+        VE9syP7do0DOSWeBuA8hNUYIn0ZlLD1hznje6t68LulQYS810duCdKlpsArrXSmWSwQ
+        A1e/1rciwcvJA62tS8bHCcpJDbt0bgzxi+pRPTx0=
+Received: from anirudhrb.com (49.207.208.26 [49.207.208.26]) by mx.zohomail.com
+        with SMTPS id 1619445705390287.8470601189231; Mon, 26 Apr 2021 07:01:45 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 19:31:38 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Leonardo Antoniazzi <leoanto@aruba.it>, mail@anirudhrb.com
+Subject: Re: [PATCH] net: hso: fix NULL-deref on disconnect regression
+Message-ID: <YIbHwqG6eukP9uQg@anirudhrb.com>
+References: <20210426081149.10498-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426081149.10498-1-johan@kernel.org>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 14:44:49 +0300
-Maxim Levitsky <mlevitsk@redhat.com> wrote:
+On Mon, Apr 26, 2021 at 10:11:49AM +0200, Johan Hovold wrote:
+> Commit 8a12f8836145 ("net: hso: fix null-ptr-deref during tty device
+> unregistration") fixed the racy minor allocation reported by syzbot, but
+> introduced an unconditional NULL-pointer dereference on every disconnect
+> instead.
+> 
+> Specifically, the serial device table must no longer be accessed after
+> the minor has been released by hso_serial_tty_unregister().
+> 
+> Fixes: 8a12f8836145 ("net: hso: fix null-ptr-deref during tty device unregistration")
+> Cc: stable@vger.kernel.org
+> Cc: Anirudh Rayabharam <mail@anirudhrb.com>
+> Reported-by: Leonardo Antoniazzi <leoanto@aruba.it>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/net/usb/hso.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+> index 9bc58e64b5b7..3ef4b2841402 100644
+> --- a/drivers/net/usb/hso.c
+> +++ b/drivers/net/usb/hso.c
+> @@ -3104,7 +3104,7 @@ static void hso_free_interface(struct usb_interface *interface)
+>  			cancel_work_sync(&serial_table[i]->async_put_intf);
+>  			cancel_work_sync(&serial_table[i]->async_get_intf);
+>  			hso_serial_tty_unregister(serial);
+> -			kref_put(&serial_table[i]->ref, hso_serial_ref_free);
+> +			kref_put(&serial->parent->ref, hso_serial_ref_free);
+>  		}
+>  	}
 
-> On Mon, 2021-04-26 at 12:40 +0200, Paolo Bonzini wrote:
-> > On 26/04/21 11:33, Lai Jiangshan wrote:  
-> > > When handle_interrupt_nmi_irqoff() is called, we may lose the
-> > > CPU-hidden-NMI-masked state due to IRET of #DB, #BP or other traps
-> > > between VMEXIT and handle_interrupt_nmi_irqoff().
-> > > 
-> > > But the NMI handler in the Linux kernel*expects*  the CPU-hidden-NMI-masked
-> > > state is still set in the CPU for no nested NMI intruding into the beginning
-> > > of the handler.
+Ah, my bad. Thanks Johan for the fix!
 
-This is incorrect. The Linux kernel has for some time handled the case of
-nested NMIs. It had to, to implement the ftrace break point updates, as it
-would trigger an int3 in an NMI which would "unmask" the NMIs. It has also
-been a long time bug where a page fault could do the same (the reason you
-could never do a dump all tasks from NMI without triple faulting!).
+Reviewed-by: Anirudh Rayabharam <mail@anirudhrb.com>
 
-But that's been fixed a long time ago, and I even wrote an LWN article
-about it ;-)
-
- https://lwn.net/Articles/484932/
-
-The NMI handler can handle the case of nested NMIs, and implements a
-software "latch" to remember that another NMI is to be executed, if there
-is a nested one. And it does so after the first one has finished.
-
--- Steve
+	- Anirudh.
