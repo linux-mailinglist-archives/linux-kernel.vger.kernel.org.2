@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1290B36AB1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739D836AB1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhDZDe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 23:34:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54644 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbhDZDeZ (ORCPT
+        id S231705AbhDZDgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 23:36:36 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38186 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhDZDge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 23:34:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619408024; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4RaylY2/fjv4Zb1VLJVf7z2q10tFpluugdOZwxhSiFU=;
- b=R62xM7INeb8xpfgHoqN0K1Vy39obUz3YBP/sEKMOLeB4Di2/rEzKtD3WUrR6Wb64TOSvtIZB
- BUnogrfVATIKKK4N2jR2FQIsYtX2FC94MFj+SQof9Stz995IZPcHI86xj9Ra2fXQPFbWERf4
- 96RDk9rCcCIp1NJkWnfe+yoqTbI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60863484215b831afb4b673d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 03:33:24
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3CDEC43143; Mon, 26 Apr 2021 03:33:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24BADC433D3;
-        Mon, 26 Apr 2021 03:33:23 +0000 (UTC)
+        Sun, 25 Apr 2021 23:36:34 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id E74B31F41F55
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v6 00/10] MPEG-2 stateless API cleanup and destaging
+Date:   Mon, 26 Apr 2021 00:35:12 -0300
+Message-Id: <20210426033522.69395-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Apr 2021 11:33:23 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     asutoshd@codeaurora.org, ziqichen@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/3] scsi: ufs: Cancel rpm_dev_flush_recheck_work
- during system suspend
-In-Reply-To: <20210426031711epcms2p2b64c07ab98332429204dac7ba920abf2@epcms2p2>
-References: <1619403878-28330-3-git-send-email-cang@codeaurora.org>
- <1619403878-28330-1-git-send-email-cang@codeaurora.org>
- <CGME20210426022700epcas2p298d2b9e6dd30781db9bf1e998f80eca1@epcms2p2>
- <20210426031711epcms2p2b64c07ab98332429204dac7ba920abf2@epcms2p2>
-Message-ID: <f281cc9eea50cd05b7fe3fd6ddaf7474@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-26 11:17, Daejun Park wrote:
-> Hi Can Guo,
-> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 7ab6b12..090b654 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -9058,11 +9058,12 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->>         if (!hba->is_powered)
->>                 return 0;
->> 
->> +        cancel_delayed_work_sync(&hba->rpm_dev_flush_recheck_work);
->> +
->>         if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
->>              hba->curr_dev_pwr_mode) &&
->>             (ufs_get_pm_lvl_to_link_pwr_state(hba->spm_lvl) ==
->> -             hba->uic_link_state) &&
->> -             !hba->dev_info.b_rpm_dev_flush_capable)
-> I think it should not be removed.
-> It prevents power drain when runtime suspend and system suspend have 
-> same
-> power mode.
-> 
+Hi everyone,
 
-I will add it back in next ver.
+Here's another round addressing Hans' feedback. More details
+about this can be found in the previous cover letter [1]:
 
-Thanks,
-Can Guo
+[1] https://lore.kernel.org/linux-media/20210403180756.175881-11-ezequiel@collabora.com/T/
 
-> Thanks,
-> Daejun
+The documentation looks good, and so does pahole,
+but it's really easy to miss some detail in this series,
+so we'd appreciate if more people could take a look.
+
+v6: 
+* Reorder patch "media: controls: Log MPEG-2 stateless control in .std_log"
+  to avoid a new compile warning.
+* Remove "reserved" field in mpeg2 sequence control, noted by Hans.
+* Reorder "flags" field in mpeg2 picture control, noted by Hans.
+* Typos and comments fixes, noted by Hans.
+
+v5:
+* Rename "quantization" to "quantisation", so the terminology
+  matches the MPEG-2 specification.
+  This is the only change in v5, compared to v4.
+
+v4:
+* Rework and clarify quantization matrices control semantics.
+* Move reference buffer fields to the picture parameter control.
+* Remove slice parameters control. This can be added back in the
+  future if needed, but for now it's not used.
+  See patch 6/9 for details.
+* Destage the API.
+
+v3:
+* No API changes, just minor boilerplate fixes for the new
+  controls to be properly exposed, initialized and validated.
+
+v2:
+* Fixed bad use of boolean negation in a flag, which
+  was fortunately reported by 0day bot.
+
+Ezequiel Garcia (10):
+  media: uapi: mpeg2: Rename "quantization" to "quantisation"
+  media: uapi: mpeg2: rework quantisation matrices semantics
+  media: uapi: mpeg2: Cleanup flags
+  media: uapi: mpeg2: Split sequence and picture parameters
+  media: uapi: mpeg2: Move reference buffer fields
+  media: hantro/cedrus: Remove unneeded slice size and slice offset
+  media: uapi: mpeg2: Remove V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS
+  media: uapi: Move the MPEG-2 stateless control type out of staging
+  media: controls: Log MPEG-2 stateless control in .std_log
+  media: uapi: move MPEG-2 stateless controls out of staging
+
+ .../media/v4l/ext-ctrls-codec-stateless.rst   | 214 +++++++++++++++++
+ .../media/v4l/ext-ctrls-codec.rst             | 217 ------------------
+ .../media/v4l/pixfmt-compressed.rst           |  11 +-
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |  12 +
+ .../media/v4l/vidioc-queryctrl.rst            |  18 +-
+ .../media/videodev2.h.rst.exceptions          |   5 +-
+ drivers/media/v4l2-core/v4l2-ctrls.c          | 122 +++++++---
+ drivers/staging/media/hantro/hantro_drv.c     |   9 +-
+ .../media/hantro/hantro_g1_mpeg2_dec.c        | 110 ++++-----
+ drivers/staging/media/hantro/hantro_hw.h      |   2 +-
+ drivers/staging/media/hantro/hantro_mpeg2.c   |   2 +-
+ .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    | 106 ++++-----
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |  10 +-
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   5 +-
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |  10 +-
+ .../staging/media/sunxi/cedrus/cedrus_mpeg2.c |  97 +++-----
+ include/media/mpeg2-ctrls.h                   |  82 -------
+ include/media/v4l2-ctrls.h                    |  11 +-
+ include/uapi/linux/v4l2-controls.h            | 112 +++++++++
+ include/uapi/linux/videodev2.h                |   7 +
+ 20 files changed, 610 insertions(+), 552 deletions(-)
+ delete mode 100644 include/media/mpeg2-ctrls.h
+
+-- 
+2.30.0
+
