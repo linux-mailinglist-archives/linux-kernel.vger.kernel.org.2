@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E9536BADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C802236BADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbhDZUvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
+        id S234607AbhDZU4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhDZUvw (ORCPT
+        with ESMTP id S233483AbhDZU4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:51:52 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3522C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:51:09 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id t13so3636512pji.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:51:09 -0700 (PDT)
+        Mon, 26 Apr 2021 16:56:03 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E32C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:55:21 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 4so30454416lfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:55:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GfZ28xG1LoClNjK9zORUC9bqP2NN8/wKouX+5z7Zo3w=;
-        b=nSVH7aR/RecH79NB0jviClRfAsEHJIzCJct6w8QuVjmr6UlrPkEw2ZkQltf2Rvx8Jn
-         C7xrthGzou1ajumcguOKAac7+7Uh8HcIDH/uQHaeuwIDgRfvL7Jo/N77f64djYMA9Tnk
-         Az32x98ssHNtHC5vtgFcr9QB7wF8wzzF5PhbTpxOLVAtTlHA4QbRK061d8gc9b31tjjm
-         9Q2FqIQpCWUlwLQybC27vJ6ckTpL5neu8dT5sJz/IKjx26a5RrxCJ7IiBe+aFSzDx3N/
-         bWmH7oHGiBijbu6Q7eJPf4y3/1g9dWHfe4Drre8I8cVPzM1cmsz6iAeIULZqWf0QmTaZ
-         BUSA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zsvd/Qinp/p9KJ8WGTP8ln6jTc3txvxZQ3RZQL+RCH4=;
+        b=Mh6fPNjdra5N9zpGupgnZ3bI/RC5dvEZ3srZKHfmekX5dRYuOORb4UfOFcALxnlyQd
+         6aAaups4I/YbFe+8howGXUcciIhZfN2kkU/5WUuVH9hjTf0Q0IZvKrYaxGnVJoMP5oem
+         SL4I9MhJjUWCPb64VYzex6iw8haAk4vgPW0/c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GfZ28xG1LoClNjK9zORUC9bqP2NN8/wKouX+5z7Zo3w=;
-        b=rpk+eU03fyFTWH7nANX933WydLW6HRk7sm7flR0zMIIXN6U6x7X9wDehbvGXR77XqV
-         3thuMWrO8mSmiJkavUd08Oa2rVtFCVUsoLFE8Nshzi2juzVjNFGbFB4y+Dk/sHo8kJea
-         p597g2UW5BGqJuyVYqbO9e2jBUPcnEQwYRf2+oxKTka3GEsdaItBzT+Dfhp77Z9DcoFK
-         AIegL8dz5eHlk81M5Wq21oruLUUvN4EkeH0arwHofdV8zj07ePfL7GhRlj3Zd53iRF+b
-         UjADDnUanxGhfuFWRCTfKgKpmb3i9IaohY3aQEa9iLNn/SJujGkXHzRp7yK3XOFcfozJ
-         DaUA==
-X-Gm-Message-State: AOAM531POAXvSiFzoajeNMfRkxmHZ1gGd4rPgWrYjDVsfWOHD1yy0BxP
-        v/9wRJxJ/SqAd9g1As9blqbOmcA9IT8=
-X-Google-Smtp-Source: ABdhPJzjIhO9W+LdO4/ewPWbIQ5HTKm3AOI79j8wnZu9/osCbntT+BcVCuevfmIwIa3fEKZfELDv9w==
-X-Received: by 2002:a17:902:7804:b029:eb:66b0:73a7 with SMTP id p4-20020a1709027804b02900eb66b073a7mr20481216pll.68.1619470268744;
-        Mon, 26 Apr 2021 13:51:08 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id kk9sm448916pjb.23.2021.04.26.13.51.06
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zsvd/Qinp/p9KJ8WGTP8ln6jTc3txvxZQ3RZQL+RCH4=;
+        b=glu6kuUCT6pUmbbCv/CxdiHbAcK7ORuIA+Ke8w31SS6szmRXptAHRfIM6u/9iGnv+a
+         vxrrQsHBybRlnftvICXIve5RxRWGEm4BNHHP9hTHf2tdGy+ufyWl/fRr0V+fLKl36aZ4
+         9Z/28RsLn5eSjyqW6sIwqSTwX+gnZE64N+AtddyukU0DFh/6mBDZ2Mdr4657J2uOOR03
+         NaUwOPYxfhvFhntSbGqJQzfco13QfeOwSugvaFXpoeB80dSLzAKIU0ibDbSyAwp5558/
+         FOq66zWWS8fqaO4hVyQ92JZdxyKH+KXZOTgj4Xs9lCaPD/p9ihzF4FaA9JMZRMB3kdzF
+         +SrA==
+X-Gm-Message-State: AOAM533qyxGlM1wOBlhvCJ9Ox4D20aSDgTXZI6d9McxPkj9Fz5kb57Tj
+        ZUgryk2XtDEunkc0q9pRj4464OsBwlm1ss9x
+X-Google-Smtp-Source: ABdhPJzO6UMGEMKlKm6kTagqrO6KGrKOsqsWYSkN0o/8mqsoWWC9HK+gWB7Mt9FfYyg0l9W+yrz8JA==
+X-Received: by 2002:a05:6512:21cc:: with SMTP id d12mr13767228lft.512.1619470519777;
+        Mon, 26 Apr 2021 13:55:19 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id v8sm121072ljn.17.2021.04.26.13.55.19
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 13:51:07 -0700 (PDT)
-Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by
- default""
-To:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-References: <20210302211133.2244281-1-saravanak@google.com>
- <20210302211133.2244281-4-saravanak@google.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
-Date:   Mon, 26 Apr 2021 13:51:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 26 Apr 2021 13:55:19 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id y4so50125812lfl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:55:19 -0700 (PDT)
+X-Received: by 2002:a05:6512:3147:: with SMTP id s7mr13714445lfi.41.1619470518895;
+ Mon, 26 Apr 2021 13:55:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210302211133.2244281-4-saravanak@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1619466460.git.dsterba@suse.com>
+In-Reply-To: <cover.1619466460.git.dsterba@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 26 Apr 2021 13:55:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj1KRvb=hie1VUTGo1D_ckD+Suo0-M2Nh5Kek1Wu=2Ppw@mail.gmail.com>
+Message-ID: <CAHk-=wj1KRvb=hie1VUTGo1D_ckD+Suo0-M2Nh5Kek1Wu=2Ppw@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs updates for 5.13
+To:     David Sterba <dsterba@suse.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     David Sterba <dsterba@suse.cz>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+I've pulled this, but:
 
-Adding Sudeep and Christian, Al and Jim.
+On Mon, Apr 26, 2021 at 1:01 PM David Sterba <dsterba@suse.com> wrote:
+>
+> Matthew Wilcox (Oracle) (1):
+>       btrfs: add and use readahead_batch_length
 
-On 3/2/21 1:11 PM, Saravana Kannan wrote:
-> This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
-> 
-> Since all reported issues due to fw_devlink=on should be addressed by
-> this series, revert the revert. fw_devlink=on Take II.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+This one is buggy, or at least questionable.
 
-This change breaks booting on SCMI-based platforms such as ARCH_BRCMSTB.
-If I revert this change or boot with fw_devlink=permissive, then our
-systems boot again. From a quick look, the SCMI clock provider was never
-probed which means that our UART driver never got a chance to get its
-clock and we have no console -> timeout.
+Yes, yes, the function looks trivial. That doesn't make it right:
 
-Al, AFAICT you had started to analyze this before in the context of
-SCMI, do you mind sharing what you had found?
+  static inline loff_t readahead_batch_length(struct readahead_control *rac)
+  {
+          return rac->_batch_count * PAGE_SIZE;
+  }
 
-Saravana, is there any debugging output that we can help provide?
+the above does not get the types right, and silently does different
+typecasting than the code clearly intends from the return type of the
+function.
 
-Thank you!
--- 
-Florian
+It may not matter much in practice, but it's still wrong.
+
+               Linus
