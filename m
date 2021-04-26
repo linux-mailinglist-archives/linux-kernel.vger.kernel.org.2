@@ -2,1009 +2,796 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790F636AB31
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DF936AB3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhDZDhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 23:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231608AbhDZDhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 23:37:48 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CACC06138B;
-        Sun, 25 Apr 2021 20:37:07 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 993FC1F41F76
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v6 10/10] media: uapi: move MPEG-2 stateless controls out of staging
-Date:   Mon, 26 Apr 2021 00:35:22 -0300
-Message-Id: <20210426033522.69395-11-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210426033522.69395-1-ezequiel@collabora.com>
-References: <20210426033522.69395-1-ezequiel@collabora.com>
+        id S231734AbhDZDou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 23:44:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:6123 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231330AbhDZDor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 23:44:47 -0400
+IronPort-SDR: PEJzmwM4w9xwaCLA9JyTqiJF7tqZdbZ9qOfVbEGRiJMvY5J0QZ09eba0rblMk9o9Qd9J9h6Z8J
+ pKPh7AnttIxg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="216971148"
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="gz'50?scan'50,208,50";a="216971148"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 20:44:06 -0700
+IronPort-SDR: LwSBnrNJdukaCuYk5HeFzZMCjj5PWMjoz92xPr6GpC75s+rsNsiaO8sC/GoRLvuTO4BTgTDlT9
+ Q1BomAbwNT5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="gz'50?scan'50,208,50";a="447111494"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Apr 2021 20:44:04 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lasAF-0005nZ-RW; Mon, 26 Apr 2021 03:44:03 +0000
+Date:   Mon, 26 Apr 2021 11:43:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sharat Masetty <smasetty@codeaurora.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: a6xx_gpu.c:undefined reference to `llcc_slice_deactivate'
+Message-ID: <202104261123.Dqr4uccM-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="BOKacYhQ+x31HxR3"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until now, the MPEG-2 V4L2 API was not exported as a public API,
-and only defined in a private media header (media/mpeg2-ctrls.h).
 
-After reviewing the MPEG-2 specification in detail, and reworking
-the controls so they match the MPEG-2 semantics properly,
-we can consider it ready.
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+commit: 474dadb8b0d557661cb3d1727f1ff2f82bac6b4c drm/msm/a6xx: Add support for using system cache(LLC)
+date:   5 months ago
+config: arm64-randconfig-m031-20210426 (attached as .config)
+compiler: aarch64-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=474dadb8b0d557661cb3d1727f1ff2f82bac6b4c
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 474dadb8b0d557661cb3d1727f1ff2f82bac6b4c
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=arm64 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+   aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_pm_suspend':
+>> a6xx_gpu.c:(.text+0x92c): undefined reference to `llcc_slice_deactivate'
+>> aarch64-linux-ld: a6xx_gpu.c:(.text+0x94c): undefined reference to `llcc_slice_deactivate'
+   aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_pm_resume':
+>> a6xx_gpu.c:(.text+0xb9c): undefined reference to `llcc_slice_activate'
+>> aarch64-linux-ld: a6xx_gpu.c:(.text+0xbc0): undefined reference to `llcc_slice_activate'
+>> aarch64-linux-ld: a6xx_gpu.c:(.text+0xc00): undefined reference to `llcc_get_slice_id'
+   aarch64-linux-ld: a6xx_gpu.c:(.text+0xc8c): undefined reference to `llcc_get_slice_id'
+   aarch64-linux-ld: a6xx_gpu.c:(.text+0xccc): undefined reference to `llcc_slice_activate'
+   aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_destroy':
+>> a6xx_gpu.c:(.text+0x5e54): undefined reference to `llcc_slice_putd'
+>> aarch64-linux-ld: a6xx_gpu.c:(.text+0x5e74): undefined reference to `llcc_slice_putd'
+   aarch64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gpu.o: in function `a6xx_gpu_init':
+>> a6xx_gpu.c:(.text+0x60d0): undefined reference to `llcc_slice_getd'
+>> aarch64-linux-ld: a6xx_gpu.c:(.text+0x60f4): undefined reference to `llcc_slice_getd'
+
 ---
- .../media/v4l/ext-ctrls-codec-stateless.rst   | 214 +++++++++++++++++
- .../media/v4l/ext-ctrls-codec.rst             | 216 ------------------
- .../media/v4l/pixfmt-compressed.rst           |  10 +-
- .../media/v4l/vidioc-g-ext-ctrls.rst          |  12 +
- drivers/media/v4l2-core/v4l2-ctrls.c          |  12 +-
- drivers/staging/media/hantro/hantro_drv.c     |   6 +-
- .../media/hantro/hantro_g1_mpeg2_dec.c        |   6 +-
- .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |   6 +-
- drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +-
- .../staging/media/sunxi/cedrus/cedrus_dec.c   |   6 +-
- include/media/mpeg2-ctrls.h                   | 126 ----------
- include/media/v4l2-ctrls.h                    |   1 -
- include/uapi/linux/v4l2-controls.h            | 112 +++++++++
- include/uapi/linux/videodev2.h                |   3 +
- 14 files changed, 367 insertions(+), 369 deletions(-)
- delete mode 100644 include/media/mpeg2-ctrls.h
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-index 3fc04daa9ffb..eaaf96f5dde6 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-@@ -1244,3 +1244,217 @@ FWHT Flags
-     * - __u8
-       - ``padding[3]``
-       - Applications and drivers must set this to zero.
-+
-+.. _v4l2-codec-stateless-mpeg2:
-+
-+``V4L2_CID_STATELESS_MPEG2_SEQUENCE (struct)``
-+    Specifies the sequence parameters (as extracted from the bitstream) for the
-+    associated MPEG-2 slice data. This includes fields matching the syntax
-+    elements from the sequence header and sequence extension parts of the
-+    bitstream as specified by :ref:`mpeg2part2`.
-+
-+.. c:type:: v4l2_ctrl_mpeg2_sequence
-+
-+.. raw:: latex
-+
-+    \small
-+
-+.. cssclass:: longtable
-+
-+.. tabularcolumns:: |p{1.4cm}|p{6.5cm}|p{9.4cm}|
-+
-+.. flat-table:: struct v4l2_ctrl_mpeg2_sequence
-+    :header-rows:  0
-+    :stub-columns: 0
-+    :widths:       1 1 2
-+
-+    * - __u16
-+      - ``horizontal_size``
-+      - The width of the displayable part of the frame's luminance component.
-+    * - __u16
-+      - ``vertical_size``
-+      - The height of the displayable part of the frame's luminance component.
-+    * - __u32
-+      - ``vbv_buffer_size``
-+      - Used to calculate the required size of the video buffering verifier,
-+	defined (in bits) as: 16 * 1024 * vbv_buffer_size.
-+    * - __u16
-+      - ``profile_and_level_indication``
-+      - The current profile and level indication as extracted from the
-+	bitstream.
-+    * - __u8
-+      - ``chroma_format``
-+      - The chrominance sub-sampling format (1: 4:2:0, 2: 4:2:2, 3: 4:4:4).
-+    * - __u8
-+      - ``flags``
-+      - See :ref:`MPEG-2 Sequence Flags <mpeg2_sequence_flags>`.
-+
-+.. _mpeg2_sequence_flags:
-+
-+``MPEG-2 Sequence Flags``
-+
-+.. cssclass:: longtable
-+
-+.. flat-table::
-+    :header-rows:  0
-+    :stub-columns: 0
-+    :widths:       1 1 2
-+
-+    * - ``V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE``
-+      - 0x00000001
-+      - Indication that all the frames for the sequence are progressive instead
-+	of interlaced.
-+
-+.. raw:: latex
-+
-+    \normalsize
-+
-+``V4L2_CID_STATELESS_MPEG2_PICTURE (struct)``
-+    Specifies the picture parameters (as extracted from the bitstream) for the
-+    associated MPEG-2 slice data. This includes fields matching the syntax
-+    elements from the picture header and picture coding extension parts of the
-+    bitstream as specified by :ref:`mpeg2part2`.
-+
-+.. c:type:: v4l2_ctrl_mpeg2_picture
-+
-+.. raw:: latex
-+
-+    \small
-+
-+.. cssclass:: longtable
-+
-+.. tabularcolumns:: |p{1.0cm}|p{5.6cm}|p{10.7cm}|
-+
-+.. flat-table:: struct v4l2_ctrl_mpeg2_picture
-+    :header-rows:  0
-+    :stub-columns: 0
-+    :widths:       1 1 2
-+
-+    * - __u64
-+      - ``backward_ref_ts``
-+      - Timestamp of the V4L2 capture buffer to use as backward reference, used
-+        with B-coded and P-coded frames. The timestamp refers to the
-+	``timestamp`` field in struct :c:type:`v4l2_buffer`. Use the
-+	:c:func:`v4l2_timeval_to_ns()` function to convert the struct
-+	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
-+    * - __u64
-+      - ``forward_ref_ts``
-+      - Timestamp for the V4L2 capture buffer to use as forward reference, used
-+        with B-coded frames. The timestamp refers to the ``timestamp`` field in
-+	struct :c:type:`v4l2_buffer`. Use the :c:func:`v4l2_timeval_to_ns()`
-+	function to convert the struct :c:type:`timeval` in struct
-+	:c:type:`v4l2_buffer` to a __u64.
-+    * - __u32
-+      - ``flags``
-+      - See :ref:`MPEG-2 Picture Flags <mpeg2_picture_flags>`.
-+    * - __u8
-+      - ``f_code[2][2]``
-+      - Motion vector codes.
-+    * - __u8
-+      - ``picture_coding_type``
-+      - Picture coding type for the frame covered by the current slice
-+	(V4L2_MPEG2_PICTURE_CODING_TYPE_I, V4L2_MPEG2_PICTURE_CODING_TYPE_P or
-+	V4L2_MPEG2_PICTURE_CODING_TYPE_B).
-+    * - __u8
-+      - ``picture_structure``
-+      - Picture structure (1: interlaced top field, 2: interlaced bottom field,
-+	3: progressive frame).
-+    * - __u8
-+      - ``intra_dc_precision``
-+      - Precision of Discrete Cosine transform (0: 8 bits precision,
-+	1: 9 bits precision, 2: 10 bits precision, 3: 11 bits precision).
-+    * - __u8
-+      - ``reserved``
-+      - Applications and drivers must set this to zero.
-+
-+.. _mpeg2_picture_flags:
-+
-+``MPEG-2 Picture Flags``
-+
-+.. cssclass:: longtable
-+
-+.. flat-table::
-+    :header-rows:  0
-+    :stub-columns: 0
-+    :widths:       1 1 2
-+
-+    * - ``V4L2_MPEG2_PIC_FLAG_TOP_FIELD_FIRST``
-+      - 0x00000001
-+      - If set and it's an interlaced stream, top field is output first.
-+    * - ``V4L2_MPEG2_PIC_FLAG_FRAME_PRED_DCT``
-+      - 0x00000002
-+      - If set only frame-DCT and frame prediction are used.
-+    * - ``V4L2_MPEG2_PIC_FLAG_CONCEALMENT_MV``
-+      - 0x00000004
-+      -  If set motion vectors are coded for intra macroblocks.
-+    * - ``V4L2_MPEG2_PIC_FLAG_Q_SCALE_TYPE``
-+      - 0x00000008
-+      - This flag affects the inverse quantization process.
-+    * - ``V4L2_MPEG2_PIC_FLAG_INTRA_VLC``
-+      - 0x00000010
-+      - This flag affects the decoding of transform coefficient data.
-+    * - ``V4L2_MPEG2_PIC_FLAG_ALT_SCAN``
-+      - 0x00000020
-+      - This flag affects the decoding of transform coefficient data.
-+    * - ``V4L2_MPEG2_PIC_FLAG_REPEAT_FIRST``
-+      - 0x00000040
-+      - This flag affects the decoding process of progressive frames.
-+    * - ``V4L2_MPEG2_PIC_FLAG_PROGRESSIVE``
-+      - 0x00000080
-+      - Indicates whether the current frame is progressive.
-+
-+.. raw:: latex
-+
-+    \normalsize
-+
-+``V4L2_CID_STATELESS_MPEG2_QUANTISATION (struct)``
-+    Specifies quantisation matrices, in zigzag scanning order, for the
-+    associated MPEG-2 slice data. This control is initialized by the kernel
-+    to the matrices default values. If a bitstream transmits a user-defined
-+    quantisation matrices load, applications are expected to use this control.
-+    Applications are also expected to set the control loading the default
-+    values, if the quantisation matrices need to be reset, for instance on a
-+    sequence header. This process is specified by section 6.3.7.
-+    "Quant matrix extension" of the specification.
-+
-+.. c:type:: v4l2_ctrl_mpeg2_quantisation
-+
-+.. tabularcolumns:: |p{0.8cm}|p{8.0cm}|p{8.5cm}|
-+
-+.. cssclass:: longtable
-+
-+.. raw:: latex
-+
-+    \small
-+
-+.. flat-table:: struct v4l2_ctrl_mpeg2_quantisation
-+    :header-rows:  0
-+    :stub-columns: 0
-+    :widths:       1 1 2
-+
-+    * - __u8
-+      - ``intra_quantiser_matrix[64]``
-+      - The quantisation matrix coefficients for intra-coded frames, in zigzag
-+	scanning order. It is relevant for both luma and chroma components,
-+	although it can be superseded by the chroma-specific matrix for
-+	non-4:2:0 YUV formats.
-+    * - __u8
-+      - ``non_intra_quantiser_matrix[64]``
-+      - The quantisation matrix coefficients for non-intra-coded frames, in
-+	zigzag scanning order. It is relevant for both luma and chroma
-+	components, although it can be superseded by the chroma-specific matrix
-+	for non-4:2:0 YUV formats.
-+    * - __u8
-+      - ``chroma_intra_quantiser_matrix[64]``
-+      - The quantisation matrix coefficients for the chominance component of
-+	intra-coded frames, in zigzag scanning order. Only relevant for
-+	non-4:2:0 YUV formats.
-+    * - __u8
-+      - ``chroma_non_intra_quantiser_matrix[64]``
-+      - The quantisation matrix coefficients for the chrominance component of
-+	non-intra-coded frames, in zigzag scanning order. Only relevant for
-+	non-4:2:0 YUV formats.
-+
-+.. raw:: latex
-+
-+    \normalsize
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index af12c869e304..a580ea953c4e 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -1606,222 +1606,6 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
- ``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR (integer)``
-     Indicates bit rate (bps) for hierarchical coding layer 6 for H264 encoder.
- 
--.. _v4l2-mpeg-mpeg2:
--
--``V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE (struct)``
--    Specifies the sequence parameters (as extracted from the bitstream) for the
--    associated MPEG-2 slice data. This includes fields matching the syntax
--    elements from the sequence header and sequence extension parts of the
--    bitstream as specified by :ref:`mpeg2part2`.
--
--    .. note::
--
--       This compound control is not yet part of the public kernel API and
--       it is expected to change.
--
--.. c:type:: v4l2_ctrl_mpeg2_sequence
--
--.. cssclass:: longtable
--
--.. tabularcolumns:: |p{1.4cm}|p{6.5cm}|p{9.4cm}|
--
--.. flat-table:: struct v4l2_ctrl_mpeg2_sequence
--    :header-rows:  0
--    :stub-columns: 0
--    :widths:       1 1 2
--
--    * - __u16
--      - ``horizontal_size``
--      - The width of the displayable part of the frame's luminance component.
--    * - __u16
--      - ``vertical_size``
--      - The height of the displayable part of the frame's luminance component.
--    * - __u32
--      - ``vbv_buffer_size``
--      - Used to calculate the required size of the video buffering verifier,
--	defined (in bits) as: 16 * 1024 * vbv_buffer_size.
--    * - __u16
--      - ``profile_and_level_indication``
--      - The current profile and level indication as extracted from the
--	bitstream.
--    * - __u8
--      - ``chroma_format``
--      - The chrominance sub-sampling format (1: 4:2:0, 2: 4:2:2, 3: 4:4:4).
--    * - __u8
--      - ``flags``
--      - See :ref:`MPEG-2 Sequence Flags <mpeg2_sequence_flags>`.
--
--.. _mpeg2_sequence_flags:
--
--``MPEG-2 Sequence Flags``
--
--.. cssclass:: longtable
--
--.. flat-table::
--    :header-rows:  0
--    :stub-columns: 0
--    :widths:       1 1 2
--
--    * - ``V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE``
--      - 0x00000001
--      - Indication that all the frames for the sequence are progressive instead
--	of interlaced.
--
--``V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE (struct)``
--    Specifies the picture parameters (as extracted from the bitstream) for the
--    associated MPEG-2 slice data. This includes fields matching the syntax
--    elements from the picture header and picture coding extension parts of the
--    bitstream as specified by :ref:`mpeg2part2`.
--
--    .. note::
--
--       This compound control is not yet part of the public kernel API and
--       it is expected to change.
--
--.. c:type:: v4l2_ctrl_mpeg2_picture
--
--.. raw:: latex
--
--    \small
--
--.. cssclass:: longtable
--
--.. tabularcolumns:: |p{1.0cm}|p{5.6cm}|p{10.7cm}|
--
--.. flat-table:: struct v4l2_ctrl_mpeg2_picture
--    :header-rows:  0
--    :stub-columns: 0
--    :widths:       1 1 2
--
--    * - __u64
--      - ``backward_ref_ts``
--      - Timestamp of the V4L2 capture buffer to use as backward reference, used
--        with B-coded and P-coded frames. The timestamp refers to the
--	``timestamp`` field in struct :c:type:`v4l2_buffer`. Use the
--	:c:func:`v4l2_timeval_to_ns()` function to convert the struct
--	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
--    * - __u64
--      - ``forward_ref_ts``
--      - Timestamp for the V4L2 capture buffer to use as forward reference, used
--        with B-coded frames. The timestamp refers to the ``timestamp`` field in
--	struct :c:type:`v4l2_buffer`. Use the :c:func:`v4l2_timeval_to_ns()`
--	function to convert the struct :c:type:`timeval` in struct
--	:c:type:`v4l2_buffer` to a __u64.
--    * - __u32
--      - ``flags``
--      - See :ref:`MPEG-2 Picture Flags <mpeg2_picture_flags>`.
--    * - __u8
--      - ``f_code[2][2]``
--      - Motion vector codes.
--    * - __u8
--      - ``picture_coding_type``
--      - Picture coding type for the frame covered by the current slice
--	(V4L2_MPEG2_PICTURE_CODING_TYPE_I, V4L2_MPEG2_PICTURE_CODING_TYPE_P or
--	V4L2_MPEG2_PICTURE_CODING_TYPE_B).
--    * - __u8
--      - ``picture_structure``
--      - Picture structure (1: interlaced top field, 2: interlaced bottom field,
--	3: progressive frame).
--    * - __u8
--      - ``intra_dc_precision``
--      - Precision of Discrete Cosine transform (0: 8 bits precision,
--	1: 9 bits precision, 2: 10 bits precision, 3: 11 bits precision).
--    * - __u8
--      - ``reserved``
--      - Applications and drivers must set this to zero.
--
--
--.. _mpeg2_picture_flags:
--
--``MPEG-2 Picture Flags``
--
--.. cssclass:: longtable
--
--.. flat-table::
--    :header-rows:  0
--    :stub-columns: 0
--    :widths:       1 1 2
--
--    * - ``V4L2_MPEG2_PIC_FLAG_TOP_FIELD_FIRST``
--      - 0x00000001
--      - If set and it's an interlaced stream, top field is output first.
--    * - ``V4L2_MPEG2_PIC_FLAG_FRAME_PRED_DCT``
--      - 0x00000002
--      - If set only frame-DCT and frame prediction are used.
--    * - ``V4L2_MPEG2_PIC_FLAG_CONCEALMENT_MV``
--      - 0x00000004
--      -  If set motion vectors are coded for intra macroblocks.
--    * - ``V4L2_MPEG2_PIC_FLAG_Q_SCALE_TYPE``
--      - 0x00000008
--      - This flag affects the inverse quantization process.
--    * - ``V4L2_MPEG2_PIC_FLAG_INTRA_VLC``
--      - 0x00000010
--      - This flag affects the decoding of transform coefficient data.
--    * - ``V4L2_MPEG2_PIC_FLAG_ALT_SCAN``
--      - 0x00000020
--      - This flag affects the decoding of transform coefficient data.
--    * - ``V4L2_MPEG2_PIC_FLAG_REPEAT_FIRST``
--      - 0x00000040
--      - This flag affects the decoding process of progressive frames.
--    * - ``V4L2_MPEG2_PIC_FLAG_PROGRESSIVE``
--      - 0x00000080
--      - Indicates whether the current frame is progressive.
--
--.. raw:: latex
--
--    \normalsize
--
--``V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION (struct)``
--    Specifies quantisation matrices (as extracted from the bitstream) for the
--    associated MPEG-2 slice data.
--
--    .. note::
--
--       This compound control is not yet part of the public kernel API and
--       it is expected to change.
--
--.. c:type:: v4l2_ctrl_mpeg2_quantisation
--
--.. tabularcolumns:: |p{0.8cm}|p{8.0cm}|p{8.5cm}|
--
--.. cssclass:: longtable
--
--.. raw:: latex
--
--    \small
--
--.. flat-table:: struct v4l2_ctrl_mpeg2_quantisation
--    :header-rows:  0
--    :stub-columns: 0
--    :widths:       1 1 2
--
--    * - __u8
--      - ``intra_quantiser_matrix[64]``
--      - The quantisation matrix coefficients for intra-coded frames, in zigzag
--	scanning order. It is relevant for both luma and chroma components,
--	although it can be superseded by the chroma-specific matrix for
--	non-4:2:0 YUV formats.
--    * - __u8
--      - ``non_intra_quantiser_matrix[64]``
--      - The quantisation matrix coefficients for non-intra-coded frames, in
--	zigzag scanning order. It is relevant for both luma and chroma
--	components, although it can be superseded by the chroma-specific matrix
--	for non-4:2:0 YUV formats.
--    * - __u8
--      - ``chroma_intra_quantiser_matrix[64]``
--      - The quantisation matrix coefficients for the chominance component of
--	intra-coded frames, in zigzag scanning order. Only relevant for
--	non-4:2:0 YUV formats.
--    * - __u8
--      - ``chroma_non_intra_quantiser_matrix[64]``
--      - The quantisation matrix coefficients for the chrominance component of
--	non-intra-coded frames, in zigzag scanning order. Only relevant for
--	non-4:2:0 YUV formats.
--
--.. raw:: latex
--
--    \normalsize
--
- ``V4L2_CID_FWHT_I_FRAME_QP (integer)``
-     Quantization parameter for an I frame for FWHT. Valid range: from 1
-     to 31.
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst b/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
-index 6c10a062adac..0ede39907ee2 100644
---- a/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
-+++ b/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
-@@ -112,13 +112,13 @@ Compressed Formats
-       - 'MG2S'
-       - MPEG-2 parsed slice data, as extracted from the MPEG-2 bitstream.
- 	This format is adapted for stateless video decoders that implement a
--	MPEG-2 pipeline (using the :ref:`mem2mem` and :ref:`media-request-api`).
-+	MPEG-2 pipeline with the :ref:`stateless_decoder`.
- 	Metadata associated with the frame to decode is required to be passed
--	through the ``V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE`` and
--        ``V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE`` controls.
-+	through the ``V4L2_CID_STATELESS_MPEG2_SEQUENCE`` and
-+        ``V4L2_CID_STATELESS_MPEG2_PICTURE`` controls.
-         Quantisation matrices can optionally be specified through the
--	``V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION`` control.
--	See the :ref:`associated Codec Control IDs <v4l2-mpeg-mpeg2>`.
-+	``V4L2_CID_STATELESS_MPEG2_QUANTISATION`` control.
-+	See the :ref:`associated Codec Control IDs <v4l2-codec-stateless-mpeg2>`.
- 	Exactly one output and one capture buffer must be provided for use with
- 	this pixel format. The output buffer must contain the appropriate number
- 	of macroblocks to decode a full corresponding frame to the matching
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-index 3ba22983d21f..2d6bc8d94380 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-@@ -221,6 +221,18 @@ still cause this situation.
-       - ``p_vp8_frame``
-       - A pointer to a struct :c:type:`v4l2_ctrl_vp8_frame`. Valid if this control is
-         of type ``V4L2_CTRL_TYPE_VP8_FRAME``.
-+    * - struct :c:type:`v4l2_ctrl_mpeg2_sequence` *
-+      - ``p_mpeg2_sequence``
-+      - A pointer to a struct :c:type:`v4l2_ctrl_mpeg2_sequence`. Valid if this control is
-+        of type ``V4L2_CTRL_TYPE_MPEG2_SEQUENCE``.
-+    * - struct :c:type:`v4l2_ctrl_mpeg2_picture` *
-+      - ``p_mpeg2_picture``
-+      - A pointer to a struct :c:type:`v4l2_ctrl_mpeg2_picture`. Valid if this control is
-+        of type ``V4L2_CTRL_TYPE_MPEG2_PICTURE``.
-+    * - struct :c:type:`v4l2_ctrl_mpeg2_quantisation` *
-+      - ``p_mpeg2_quantisation``
-+      - A pointer to a struct :c:type:`v4l2_ctrl_mpeg2_quantisation`. Valid if this control is
-+        of type ``V4L2_CTRL_TYPE_MPEG2_QUANTISATION``.
-     * - struct :c:type:`v4l2_ctrl_hdr10_cll_info` *
-       - ``p_hdr10_cll``
-       - A pointer to a struct :c:type:`v4l2_ctrl_hdr10_cll_info`. Valid if this control is
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index a693ff8dc3dc..d4e2c7318ee6 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -977,9 +977,6 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
- 	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Frame LTR Index";
- 	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
--	case V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE:		return "MPEG-2 Sequence Header";
--	case V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE:			return "MPEG-2 Picture Header";
--	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION:		return "MPEG-2 Quantisation Matrices";
- 	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
- 	case V4L2_CID_FWHT_P_FRAME_QP:				return "FWHT P-Frame QP Value";
- 
-@@ -1228,6 +1225,9 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_STATELESS_H264_DECODE_PARAMS:		return "H264 Decode Parameters";
- 	case V4L2_CID_STATELESS_FWHT_PARAMS:			return "FWHT Stateless Parameters";
- 	case V4L2_CID_STATELESS_VP8_FRAME:			return "VP8 Frame Parameters";
-+	case V4L2_CID_STATELESS_MPEG2_SEQUENCE:			return "MPEG-2 Sequence Header";
-+	case V4L2_CID_STATELESS_MPEG2_PICTURE:			return "MPEG-2 Picture Header";
-+	case V4L2_CID_STATELESS_MPEG2_QUANTISATION:		return "MPEG-2 Quantisation Matrices";
- 
- 	/* Colorimetry controls */
- 	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
-@@ -1500,13 +1500,13 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
- 	case V4L2_CID_RDS_TX_ALT_FREQS:
- 		*type = V4L2_CTRL_TYPE_U32;
- 		break;
--	case V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE:
-+	case V4L2_CID_STATELESS_MPEG2_SEQUENCE:
- 		*type = V4L2_CTRL_TYPE_MPEG2_SEQUENCE;
- 		break;
--	case V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE:
-+	case V4L2_CID_STATELESS_MPEG2_PICTURE:
- 		*type = V4L2_CTRL_TYPE_MPEG2_PICTURE;
- 		break;
--	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION:
-+	case V4L2_CID_STATELESS_MPEG2_QUANTISATION:
- 		*type = V4L2_CTRL_TYPE_MPEG2_QUANTISATION;
- 		break;
- 	case V4L2_CID_STATELESS_FWHT_PARAMS:
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index f5fa7e0940c4..b48552bddb3a 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -289,17 +289,17 @@ static const struct hantro_ctrl controls[] = {
- 	}, {
- 		.codec = HANTRO_MPEG2_DECODER,
- 		.cfg = {
--			.id = V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE,
-+			.id = V4L2_CID_STATELESS_MPEG2_SEQUENCE,
- 		},
- 	}, {
- 		.codec = HANTRO_MPEG2_DECODER,
- 		.cfg = {
--			.id = V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE,
-+			.id = V4L2_CID_STATELESS_MPEG2_PICTURE,
- 		},
- 	}, {
- 		.codec = HANTRO_MPEG2_DECODER,
- 		.cfg = {
--			.id = V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION,
-+			.id = V4L2_CID_STATELESS_MPEG2_QUANTISATION,
- 		},
- 	}, {
- 		.codec = HANTRO_VP8_DECODER,
-diff --git a/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c b/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c
-index 6d89cae7df45..f565e37e397a 100644
---- a/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g1_mpeg2_dec.c
-@@ -83,7 +83,7 @@ hantro_g1_mpeg2_dec_set_quantisation(struct hantro_dev *vpu,
- {
- 	struct v4l2_ctrl_mpeg2_quantisation *q;
- 
--	q = hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION);
-+	q = hantro_get_ctrl(ctx, V4L2_CID_STATELESS_MPEG2_QUANTISATION);
- 	hantro_mpeg2_dec_copy_qtable(ctx->mpeg2_dec.qtable.cpu, q);
- 	vdpu_write_relaxed(vpu, ctx->mpeg2_dec.qtable.dma, G1_REG_QTABLE_BASE);
- }
-@@ -160,9 +160,9 @@ void hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx)
- 	hantro_start_prepare_run(ctx);
- 
- 	seq = hantro_get_ctrl(ctx,
--			      V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE);
-+			      V4L2_CID_STATELESS_MPEG2_SEQUENCE);
- 	pic = hantro_get_ctrl(ctx,
--			      V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE);
-+			      V4L2_CID_STATELESS_MPEG2_PICTURE);
- 
- 	reg = G1_REG_DEC_AXI_RD_ID(0) |
- 	      G1_REG_DEC_TIMEOUT_E(1) |
-diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c b/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c
-index d16d76760278..2527dce7eb18 100644
---- a/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c
-+++ b/drivers/staging/media/hantro/rk3399_vpu_hw_mpeg2_dec.c
-@@ -85,7 +85,7 @@ rk3399_vpu_mpeg2_dec_set_quantisation(struct hantro_dev *vpu,
- {
- 	struct v4l2_ctrl_mpeg2_quantisation *q;
- 
--	q = hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION);
-+	q = hantro_get_ctrl(ctx, V4L2_CID_STATELESS_MPEG2_QUANTISATION);
- 	hantro_mpeg2_dec_copy_qtable(ctx->mpeg2_dec.qtable.cpu, q);
- 	vdpu_write_relaxed(vpu, ctx->mpeg2_dec.qtable.dma, VDPU_REG_QTABLE_BASE);
- }
-@@ -162,9 +162,9 @@ void rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx)
- 	hantro_start_prepare_run(ctx);
- 
- 	seq = hantro_get_ctrl(ctx,
--			      V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE);
-+			      V4L2_CID_STATELESS_MPEG2_SEQUENCE);
- 	pic = hantro_get_ctrl(ctx,
--			      V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE);
-+			      V4L2_CID_STATELESS_MPEG2_PICTURE);
- 
- 	reg = VDPU_REG_DEC_ADV_PRE_DIS(0) |
- 	      VDPU_REG_DEC_SCMD_DIS(0) |
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/media/sunxi/cedrus/cedrus.c
-index 4430c8fa2cc7..fa348c09f844 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-@@ -31,19 +31,19 @@
- static const struct cedrus_control cedrus_controls[] = {
- 	{
- 		.cfg = {
--			.id	= V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE,
-+			.id	= V4L2_CID_STATELESS_MPEG2_SEQUENCE,
- 		},
- 		.codec		= CEDRUS_CODEC_MPEG2,
- 	},
- 	{
- 		.cfg = {
--			.id	= V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE,
-+			.id	= V4L2_CID_STATELESS_MPEG2_PICTURE,
- 		},
- 		.codec		= CEDRUS_CODEC_MPEG2,
- 	},
- 	{
- 		.cfg = {
--			.id	= V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION,
-+			.id	= V4L2_CID_STATELESS_MPEG2_QUANTISATION,
- 		},
- 		.codec		= CEDRUS_CODEC_MPEG2,
- 	},
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-index e98185c1f5a7..97e410d92506 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-@@ -41,11 +41,11 @@ void cedrus_device_run(void *priv)
- 	switch (ctx->src_fmt.pixelformat) {
- 	case V4L2_PIX_FMT_MPEG2_SLICE:
- 		run.mpeg2.sequence = cedrus_find_control_data(ctx,
--			V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE);
-+			V4L2_CID_STATELESS_MPEG2_SEQUENCE);
- 		run.mpeg2.picture = cedrus_find_control_data(ctx,
--			V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE);
-+			V4L2_CID_STATELESS_MPEG2_PICTURE);
- 		run.mpeg2.quantisation = cedrus_find_control_data(ctx,
--			V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION);
-+			V4L2_CID_STATELESS_MPEG2_QUANTISATION);
- 		break;
- 
- 	case V4L2_PIX_FMT_H264_SLICE:
-diff --git a/include/media/mpeg2-ctrls.h b/include/media/mpeg2-ctrls.h
-deleted file mode 100644
-index c4cf1af5b73b..000000000000
---- a/include/media/mpeg2-ctrls.h
-+++ /dev/null
-@@ -1,126 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * These are the MPEG2 state controls for use with stateless MPEG-2
-- * codec drivers.
-- *
-- * It turns out that these structs are not stable yet and will undergo
-- * more changes. So keep them private until they are stable and ready to
-- * become part of the official public API.
-- */
--
--#ifndef _MPEG2_CTRLS_H_
--#define _MPEG2_CTRLS_H_
--
--#define V4L2_CID_MPEG_VIDEO_MPEG2_QUANTISATION		(V4L2_CID_CODEC_BASE+251)
--#define V4L2_CID_MPEG_VIDEO_MPEG2_SEQUENCE		(V4L2_CID_CODEC_BASE+252)
--#define V4L2_CID_MPEG_VIDEO_MPEG2_PICTURE		(V4L2_CID_CODEC_BASE+253)
--
--/* enum v4l2_ctrl_type type values */
--#define V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE		0x0001
--
--/**
-- * struct v4l2_ctrl_mpeg2_sequence - MPEG-2 sequence header
-- *
-- * All the members on this structure match the sequence header and sequence
-- * extension syntaxes as specified by the MPEG-2 specification.
-- *
-- * Fields horizontal_size, vertical_size and vbv_buffer_size are a
-- * combination of respective _value and extension syntax elements,
-- * as described in section 6.3.3 "Sequence header".
-- *
-- * @horizontal_size: combination of elements horizontal_size_value and
-- * horizontal_size_extension.
-- * @vertical_size: combination of elements vertical_size_value and
-- * vertical_size_extension.
-- * @vbv_buffer_size: combination of elements vbv_buffer_size_value and
-- * vbv_buffer_size_extension.
-- * @profile_and_level_indication: see MPEG-2 specification.
-- * @chroma_format: see MPEG-2 specification.
-- * @flags: see V4L2_MPEG2_SEQ_FLAG_{}.
-- */
--struct v4l2_ctrl_mpeg2_sequence {
--	__u16	horizontal_size;
--	__u16	vertical_size;
--	__u32	vbv_buffer_size;
--	__u16	profile_and_level_indication;
--	__u8	chroma_format;
--	__u8	flags;
--};
--
--#define V4L2_MPEG2_PIC_CODING_TYPE_I			1
--#define V4L2_MPEG2_PIC_CODING_TYPE_P			2
--#define V4L2_MPEG2_PIC_CODING_TYPE_B			3
--#define V4L2_MPEG2_PIC_CODING_TYPE_D			4
--
--#define V4L2_MPEG2_PIC_TOP_FIELD			0x1
--#define V4L2_MPEG2_PIC_BOTTOM_FIELD			0x2
--#define V4L2_MPEG2_PIC_FRAME				0x3
--
--#define V4L2_MPEG2_PIC_FLAG_TOP_FIELD_FIRST		0x0001
--#define V4L2_MPEG2_PIC_FLAG_FRAME_PRED_DCT		0x0002
--#define V4L2_MPEG2_PIC_FLAG_CONCEALMENT_MV		0x0004
--#define V4L2_MPEG2_PIC_FLAG_Q_SCALE_TYPE		0x0008
--#define V4L2_MPEG2_PIC_FLAG_INTRA_VLC			0x0010
--#define V4L2_MPEG2_PIC_FLAG_ALT_SCAN			0x0020
--#define V4L2_MPEG2_PIC_FLAG_REPEAT_FIRST		0x0040
--#define V4L2_MPEG2_PIC_FLAG_PROGRESSIVE			0x0080
--
--/**
-- * struct v4l2_ctrl_mpeg2_picture - MPEG-2 picture header
-- *
-- * All the members on this structure match the picture header and picture
-- * coding extension syntaxes as specified by the MPEG-2 specification.
-- *
-- * @backward_ref_ts: timestamp of the V4L2 capture buffer to use as
-- * reference for backward prediction.
-- * @forward_ref_ts: timestamp of the V4L2 capture buffer to use as
-- * reference for forward prediction. These timestamp refers to the
-- * timestamp field in struct v4l2_buffer. Use v4l2_timeval_to_ns()
-- * to convert the struct timeval to a __u64.
-- * @flags: see V4L2_MPEG2_PIC_FLAG_{}.
-- * @f_code[2][2]: see MPEG-2 specification.
-- * @picture_coding_type: see MPEG-2 specification.
-- * @picture_structure: see V4L2_MPEG2_PIC_{}_FIELD.
-- * @intra_dc_precision: see MPEG-2 specification.
-- * @reserved: padding field. Should be zeroed by applications.
-- */
--struct v4l2_ctrl_mpeg2_picture {
--	__u64	backward_ref_ts;
--	__u64	forward_ref_ts;
--	__u32	flags;
--	__u8	f_code[2][2];
--	__u8	picture_coding_type;
--	__u8	picture_structure;
--	__u8	intra_dc_precision;
--	__u8	reserved;
--};
--
--/**
-- * struct v4l2_ctrl_mpeg2_quantisation - MPEG-2 quantisation
-- *
-- * Quantization matrices as specified by section 6.3.7
-- * "Quant matrix extension".
-- *
-- * @intra_quantiser_matrix: The quantisation matrix coefficients
-- * for intra-coded frames, in zigzag scanning order. It is relevant
-- * for both luma and chroma components, although it can be superseded
-- * by the chroma-specific matrix for non-4:2:0 YUV formats.
-- * @non_intra_quantiser_matrix: The quantisation matrix coefficients
-- * for non-intra-coded frames, in zigzag scanning order. It is relevant
-- * for both luma and chroma components, although it can be superseded
-- * by the chroma-specific matrix for non-4:2:0 YUV formats.
-- * @chroma_intra_quantiser_matrix: The quantisation matrix coefficients
-- * for the chominance component of intra-coded frames, in zigzag scanning
-- * order. Only relevant for 4:2:2 and 4:4:4 YUV formats.
-- * @chroma_non_intra_quantiser_matrix: The quantisation matrix coefficients
-- * for the chrominance component of non-intra-coded frames, in zigzag scanning
-- * order. Only relevant for 4:2:2 and 4:4:4 YUV formats.
-- */
--struct v4l2_ctrl_mpeg2_quantisation {
--	__u8	intra_quantiser_matrix[64];
--	__u8	non_intra_quantiser_matrix[64];
--	__u8	chroma_intra_quantiser_matrix[64];
--	__u8	chroma_non_intra_quantiser_matrix[64];
--};
--
--#endif
-diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 215e44172c66..575b59fbac77 100644
---- a/include/media/v4l2-ctrls.h
-+++ b/include/media/v4l2-ctrls.h
-@@ -17,7 +17,6 @@
-  * Include the stateless codec compound control definitions.
-  * This will move to the public headers once this API is fully stable.
-  */
--#include <media/mpeg2-ctrls.h>
- #include <media/hevc-ctrls.h>
- 
- /* forward references */
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index d43bec5f1afd..7c0cf9121669 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -1862,6 +1862,118 @@ struct v4l2_ctrl_vp8_frame {
- 	__u64 flags;
- };
- 
-+/* Stateless MPEG-2 controls */
-+
-+#define V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE	0x0001
-+
-+#define V4L2_CID_STATELESS_MPEG2_SEQUENCE (V4L2_CID_CODEC_STATELESS_BASE+220)
-+/**
-+ * struct v4l2_ctrl_mpeg2_sequence - MPEG-2 sequence header
-+ *
-+ * All the members on this structure match the sequence header and sequence
-+ * extension syntaxes as specified by the MPEG-2 specification.
-+ *
-+ * Fields horizontal_size, vertical_size and vbv_buffer_size are a
-+ * combination of respective _value and extension syntax elements,
-+ * as described in section 6.3.3 "Sequence header".
-+ *
-+ * @horizontal_size: combination of elements horizontal_size_value and
-+ * horizontal_size_extension.
-+ * @vertical_size: combination of elements vertical_size_value and
-+ * vertical_size_extension.
-+ * @vbv_buffer_size: combination of elements vbv_buffer_size_value and
-+ * vbv_buffer_size_extension.
-+ * @profile_and_level_indication: see MPEG-2 specification.
-+ * @chroma_format: see MPEG-2 specification.
-+ * @flags: see V4L2_MPEG2_SEQ_FLAG_{}.
-+ */
-+struct v4l2_ctrl_mpeg2_sequence {
-+	__u16	horizontal_size;
-+	__u16	vertical_size;
-+	__u32	vbv_buffer_size;
-+	__u16	profile_and_level_indication;
-+	__u8	chroma_format;
-+	__u8	flags;
-+};
-+
-+#define V4L2_MPEG2_PIC_CODING_TYPE_I			1
-+#define V4L2_MPEG2_PIC_CODING_TYPE_P			2
-+#define V4L2_MPEG2_PIC_CODING_TYPE_B			3
-+#define V4L2_MPEG2_PIC_CODING_TYPE_D			4
-+
-+#define V4L2_MPEG2_PIC_TOP_FIELD			0x1
-+#define V4L2_MPEG2_PIC_BOTTOM_FIELD			0x2
-+#define V4L2_MPEG2_PIC_FRAME				0x3
-+
-+#define V4L2_MPEG2_PIC_FLAG_TOP_FIELD_FIRST		0x0001
-+#define V4L2_MPEG2_PIC_FLAG_FRAME_PRED_DCT		0x0002
-+#define V4L2_MPEG2_PIC_FLAG_CONCEALMENT_MV		0x0004
-+#define V4L2_MPEG2_PIC_FLAG_Q_SCALE_TYPE		0x0008
-+#define V4L2_MPEG2_PIC_FLAG_INTRA_VLC			0x0010
-+#define V4L2_MPEG2_PIC_FLAG_ALT_SCAN			0x0020
-+#define V4L2_MPEG2_PIC_FLAG_REPEAT_FIRST		0x0040
-+#define V4L2_MPEG2_PIC_FLAG_PROGRESSIVE			0x0080
-+
-+#define V4L2_CID_STATELESS_MPEG2_PICTURE (V4L2_CID_CODEC_STATELESS_BASE+221)
-+/**
-+ * struct v4l2_ctrl_mpeg2_picture - MPEG-2 picture header
-+ *
-+ * All the members on this structure match the picture header and picture
-+ * coding extension syntaxes as specified by the MPEG-2 specification.
-+ *
-+ * @backward_ref_ts: timestamp of the V4L2 capture buffer to use as
-+ * reference for backward prediction.
-+ * @forward_ref_ts: timestamp of the V4L2 capture buffer to use as
-+ * reference for forward prediction. These timestamp refers to the
-+ * timestamp field in struct v4l2_buffer. Use v4l2_timeval_to_ns()
-+ * to convert the struct timeval to a __u64.
-+ * @flags: see V4L2_MPEG2_PIC_FLAG_{}.
-+ * @f_code: see MPEG-2 specification.
-+ * @picture_coding_type: see MPEG-2 specification.
-+ * @picture_structure: see V4L2_MPEG2_PIC_{}_FIELD.
-+ * @intra_dc_precision: see MPEG-2 specification.
-+ * @reserved: padding field. Should be zeroed by applications.
-+ */
-+struct v4l2_ctrl_mpeg2_picture {
-+	__u64	backward_ref_ts;
-+	__u64	forward_ref_ts;
-+	__u32	flags;
-+	__u8	f_code[2][2];
-+	__u8	picture_coding_type;
-+	__u8	picture_structure;
-+	__u8	intra_dc_precision;
-+	__u8	reserved;
-+};
-+
-+#define V4L2_CID_STATELESS_MPEG2_QUANTISATION (V4L2_CID_CODEC_STATELESS_BASE+222)
-+/**
-+ * struct v4l2_ctrl_mpeg2_quantisation - MPEG-2 quantisation
-+ *
-+ * Quantisation matrices as specified by section 6.3.7
-+ * "Quant matrix extension".
-+ *
-+ * @intra_quantiser_matrix: The quantisation matrix coefficients
-+ * for intra-coded frames, in zigzag scanning order. It is relevant
-+ * for both luma and chroma components, although it can be superseded
-+ * by the chroma-specific matrix for non-4:2:0 YUV formats.
-+ * @non_intra_quantiser_matrix: The quantisation matrix coefficients
-+ * for non-intra-coded frames, in zigzag scanning order. It is relevant
-+ * for both luma and chroma components, although it can be superseded
-+ * by the chroma-specific matrix for non-4:2:0 YUV formats.
-+ * @chroma_intra_quantiser_matrix: The quantisation matrix coefficients
-+ * for the chominance component of intra-coded frames, in zigzag scanning
-+ * order. Only relevant for 4:2:2 and 4:4:4 YUV formats.
-+ * @chroma_non_intra_quantiser_matrix: The quantisation matrix coefficients
-+ * for the chrominance component of non-intra-coded frames, in zigzag scanning
-+ * order. Only relevant for 4:2:2 and 4:4:4 YUV formats.
-+ */
-+struct v4l2_ctrl_mpeg2_quantisation {
-+	__u8	intra_quantiser_matrix[64];
-+	__u8	non_intra_quantiser_matrix[64];
-+	__u8	chroma_intra_quantiser_matrix[64];
-+	__u8	chroma_non_intra_quantiser_matrix[64];
-+};
-+
- #define V4L2_CID_COLORIMETRY_CLASS_BASE	(V4L2_CTRL_CLASS_COLORIMETRY | 0x900)
- #define V4L2_CID_COLORIMETRY_CLASS	(V4L2_CTRL_CLASS_COLORIMETRY | 1)
- 
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index d3bb18a3a51b..9260791b8438 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -1747,6 +1747,9 @@ struct v4l2_ext_control {
- 		struct v4l2_ctrl_h264_decode_params __user *p_h264_decode_params;
- 		struct v4l2_ctrl_fwht_params __user *p_fwht_params;
- 		struct v4l2_ctrl_vp8_frame __user *p_vp8_frame;
-+		struct v4l2_ctrl_mpeg2_sequence __user *p_mpeg2_sequence;
-+		struct v4l2_ctrl_mpeg2_picture __user *p_mpeg2_picture;
-+		struct v4l2_ctrl_mpeg2_quantisation __user *p_mpeg2_quantisation;
- 		void __user *ptr;
- 	};
- } __attribute__ ((packed));
--- 
-2.30.0
+--BOKacYhQ+x31HxR3
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+
+--BOKacYhQ+x31HxR3--
