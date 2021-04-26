@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC56E36AF0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861A436AF2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbhDZHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56166 "EHLO mail.kernel.org"
+        id S234957AbhDZHyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233348AbhDZHnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:43:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A84C6105A;
-        Mon, 26 Apr 2021 07:39:58 +0000 (UTC)
+        id S233987AbhDZHoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:44:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF7206140B;
+        Mon, 26 Apr 2021 07:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422798;
-        bh=1zFtDWAlhy8r55cLddWAqWsGkVgmwlVTnr5T3nlV8k4=;
+        s=korg; t=1619422861;
+        bh=FFoVKwFLreaTj0LAPzdMX0zxogpbj2fSJU4J/H0YkKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P5UTu/seKjqIJNnlxEBbr7RP2+zTWhR4idnoknBbvbueiiE5bl+vqcW9OLj23aWF7
-         He6Wwv2cEWbGuYA4O8RqLv7GofravDfp7K4o2szUxhGtKHofLa9pJ30GlIjvfCp9wq
-         2PhyUBIwe1yy2eTGqlSrJ+geZMm38ZanxtegjCM0=
+        b=uGV4FcwqKflnjye2YIZe3VUfkziYviTDf8AFuFET4JnGdy9ic5LewEZ3qBFUSQLRf
+         mPT8JZ0rBarT2gpbsC7Jqckgq7Dm/vxL/itnwp0hzoSZtkIatG5A1GuywTN5NDnmiM
+         GCnnIeyE0YUWbRen4IGgom/JDakfbF7UyNU+vEIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 25/36] ARM: dts: Fix swapped mmc order for omap3
+Subject: [PATCH 5.11 20/41] perf auxtrace: Fix potential NULL pointer dereference
 Date:   Mon, 26 Apr 2021 09:30:07 +0200
-Message-Id: <20210426072819.648831076@linuxfoundation.org>
+Message-Id: <20210426072820.365678962@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
+References: <20210426072819.666570770@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +47,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Leo Yan <leo.yan@linaro.org>
 
-[ Upstream commit a1ebdb3741993f853865d1bd8f77881916ad53a7 ]
+[ Upstream commit b14585d9f18dc617e975815570fe836be656b1da ]
 
-Also some omap3 devices like n900 seem to have eMMC and micro-sd swapped
-around with commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for
-drivers that existed in v4.4").
+In the function auxtrace_parse_snapshot_options(), the callback pointer
+"itr->parse_snapshot_options" can be NULL if it has not been set during
+the AUX record initialization.  This can cause tool crashing if the
+callback pointer "itr->parse_snapshot_options" is dereferenced without
+performing NULL check.
 
-Let's fix the issue with aliases as discussed on the mailing lists. While
-the mmc aliases should be board specific, let's first fix the issue with
-minimal changes.
+Add a NULL check for the pointer "itr->parse_snapshot_options" before
+invoke the callback.
 
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: d20031bb63dd6dde ("perf tools: Add AUX area tracing Snapshot Mode")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Link: http://lore.kernel.org/lkml/20210420151554.2031768-1-leo.yan@linaro.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap3.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/util/auxtrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
-index 9dcae1f2bc99..c5b9da0d7e6c 100644
---- a/arch/arm/boot/dts/omap3.dtsi
-+++ b/arch/arm/boot/dts/omap3.dtsi
-@@ -24,6 +24,9 @@
- 		i2c0 = &i2c1;
- 		i2c1 = &i2c2;
- 		i2c2 = &i2c3;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
+diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+index 2723082f3817..e7a071a15470 100644
+--- a/tools/perf/util/auxtrace.c
++++ b/tools/perf/util/auxtrace.c
+@@ -634,7 +634,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
+ 		break;
+ 	}
+ 
+-	if (itr)
++	if (itr && itr->parse_snapshot_options)
+ 		return itr->parse_snapshot_options(itr, opts, str);
+ 
+ 	pr_err("No AUX area tracing to snapshot\n");
 -- 
 2.30.2
 
