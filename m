@@ -2,63 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F7536BBD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DED36BBE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236678AbhDZWwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 18:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234767AbhDZWwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 18:52:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C400060FE3;
-        Mon, 26 Apr 2021 22:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619477487;
-        bh=Gr+9xNcXOfKgfJqgJX/i8LVqX5wv0wsXPLdQSO25qug=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nOWbobEwFX1rFXrY/8I1+gTKhfkOGfqolC+yLfNUmsGmHpaYn/5xrN2cGZ194XR6X
-         teOaGUu7G0qGP3M03sJRucYwoL/01jTiktMk68GmWKP1/FmTip7TF2ROL/UWO2I2VB
-         /q2I2rdUddwfBurqr4hEJD2t9cBvUwsnpqpC1mYDQOOFTuXAsxdeHM0Bzg/L2PfKAU
-         D+pnoPi+S/6l1bRblsiqgFhtbw9q91/DmXBTlucLtg/muDVDFsJ6xQpz2a0Ob+4MSQ
-         BREKwpFHuJ129Hk/zO7YDIEKdZ6xr4PbKQkK3ACJ2HarQljo7sV6ynRmvLxPC9sq5g
-         tF4EbIZ9PfNFg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BCAEA609AE;
-        Mon, 26 Apr 2021 22:51:27 +0000 (UTC)
-Subject: Re: [GIT PULL] Power management updates for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0iuTS8iDCUVQcqAB5N=8f6KkY00e-A+9Jtq7P3gzj=HmA@mail.gmail.com>
-References: <CAJZ5v0iuTS8iDCUVQcqAB5N=8f6KkY00e-A+9Jtq7P3gzj=HmA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0iuTS8iDCUVQcqAB5N=8f6KkY00e-A+9Jtq7P3gzj=HmA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.13-rc1
-X-PR-Tracked-Commit-Id: 59e2c959f20f9f255a42de52cde54a2962fb726f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5469f160e6bf38b84eb237055868286e629b8d44
-Message-Id: <161947748776.6408.15220602274569744550.pr-tracker-bot@kernel.org>
-Date:   Mon, 26 Apr 2021 22:51:27 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+        id S235301AbhDZXDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232022AbhDZXDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:03:31 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93310C061574;
+        Mon, 26 Apr 2021 16:02:49 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FTgQt2hDTz9sX2;
+        Tue, 27 Apr 2021 09:02:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619478166;
+        bh=5+7B/p7+zDr5e/IUFh4ZWXlObHNziLW/mUzAD8eFF6s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LYr3wjj0dXBUJ0fXm6gdRyF7T19aGjNCRdFkRs8LC+JcYVD/x2UxmlMNk8wvgJXL5
+         x2uzWTAaVjTokgC3jDOlbgeuGjUujfzn1f0pNQbWW6yHqtUcHTW8GiNsm/EyHTWpv0
+         CyJ9dRnEF6qFkqa8zWsCRiQm8C899sGxA7px3dNctmtd4JL2m2sVNY35Kqf5MPYjTM
+         XvrXa6DCQXZI8vyqdKRq2PTDY17b1LE+FGPVJp99WA5R+OY3Jt5fSMWKQ5IqO2r3i4
+         X+qGWEuTLuthOxGoo4uaApKW9SCbEBctNlwbQXy3uovSUZfPkornXMp0Sxd6YIyY+d
+         0V6+RvKWRLkPQ==
+Date:   Tue, 27 Apr 2021 09:02:45 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the kbuild tree with Linus' tree
+Message-ID: <20210427090245.42df6272@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/keV52pTvhC5ArZEcxHCrjPA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 20:27:20 +0200:
+--Sig_/keV52pTvhC5ArZEcxHCrjPA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.13-rc1
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5469f160e6bf38b84eb237055868286e629b8d44
+Today's linux-next merge of the kbuild tree got a conflict in:
 
-Thank you!
+  certs/.gitignore
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+between commit:
+
+  81f202315856 ("certs: add 'x509_revocation_list' to gitignore")
+
+from Linus' tree and commit:
+
+  8573271e6946 (".gitignore: prefix local generated files with a slash")
+
+from the kbuild tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc certs/.gitignore
+index 6cbd1f1a5837,5759643f638b..000000000000
+--- a/certs/.gitignore
++++ b/certs/.gitignore
+@@@ -1,3 -1,2 +1,3 @@@
+  # SPDX-License-Identifier: GPL-2.0-only
+- x509_certificate_list
+- x509_revocation_list
++ /x509_certificate_list
+++/x509_revocation_list
+
+--Sig_/keV52pTvhC5ArZEcxHCrjPA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCHRpUACgkQAVBC80lX
+0GzEOgf9HuEZNNZKBfTC2qMlgOOOuHLKQUNqfsOdY3cedbgJwitZi2TPBO92EBY/
+bWUshfJHSf1uu/DVdR0aoBLs8JC0yShx38OoBFrTLImITw2zYo8FW/xAaIclxKBs
+iHILuGSSmcbOhGqEv+SGki3Xgv9RfEhUyKA67gI4WE5lA4+LmxMCEGTEYto0lbbt
+AQLYlZ5sJ23eSyGBLtFCmzGLVSpJJRkjhgOpKAqrek0Yw/bYNhC0nUyh1Eoy829v
+jz+kcZn1k6Skw1moVAaGyZEE7GPq6CT/G9Y9sCTdnqOEm9FcPIne2RGdwbufl7M3
+XnM37QL4SoI5pyEdeSRYHof4iYtU1g==
+=5/Qo
+-----END PGP SIGNATURE-----
+
+--Sig_/keV52pTvhC5ArZEcxHCrjPA--
