@@ -2,112 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5AB36B08B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D579B36B091
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbhDZJ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:29:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43374 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232140AbhDZJ3T (ORCPT
+        id S232660AbhDZJat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:30:49 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:23499
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232103AbhDZJas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:29:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619429318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OtWVNId0H4MlH7zGbJHW4vVmuaAH+xdS1wmcTWoY6w0=;
-        b=cFoJNtfV3am5VWCqqkzEcndxZF7jzSfr5F0mbEB4yfdYsAU6Lx0ZTzmICstFSoSyZE/Aph
-        TbC0LkGjJBrwRlzY8aBrElV+4G8d08S+PYH8QvqkLq9QcBNck8YqTRCn0+3EZHNxTefkUt
-        UWfHBKaEImiJwaaQtvhyfTRSJvJEx5U=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-y7Cc08buN2WopIgMQ124aw-1; Mon, 26 Apr 2021 05:28:33 -0400
-X-MC-Unique: y7Cc08buN2WopIgMQ124aw-1
-Received: by mail-ed1-f69.google.com with SMTP id y10-20020a50f1ca0000b0290382d654f75eso22669060edl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:28:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OtWVNId0H4MlH7zGbJHW4vVmuaAH+xdS1wmcTWoY6w0=;
-        b=uOAEIrcoVm42ncPbwdpSROA0ynz4eZcD2+elRJ/1V95mFQwzSHc4q8rg6ovznTCOYe
-         QPLnGkZOBnRfTY4s6h7mO/xcU1Oq+IYynNfxS1mtjDD3xu5OOHnckQdQS/zvK61QFGRV
-         LsJF+1wZoh8nOCWGabJQg4ZdMcmKkibplqjzXHACLuLPW4Amv/vbaVtDRhFPw3wGHGZL
-         Kvus67VNehWtST/cyMnfE3f26xv1ATruZ4jKqjiwVJUnEKFZy2dJYEX6K46m59LwIWaS
-         3kuYDKYPDO1E7hYQ3ZONUtbuB9RHUrmzWGZzfAJQiLgXyO6FU8l6SO5XvqIWsqkcgW9N
-         dEAw==
-X-Gm-Message-State: AOAM531jFSs1FTpOomfro6Po2IrvqzpXvSd58tD0R2fiZVMHrVd9VGDj
-        3w+pfjuC8TB/LbqEBlw/rEGo5iKLKflarRINoBhrFUpLAqrzEA8DU2XDjRnutl6EYY0B749EDsa
-        8Crhmxeh4d6OfwHh/VnGJcWs2
-X-Received: by 2002:aa7:c4c1:: with SMTP id p1mr19783008edr.133.1619429311948;
-        Mon, 26 Apr 2021 02:28:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJytAfyLKl2YKK7lKos9PhDPbKzINP26aWILO7ar4wTBgQ7gjsJ4KrtD/Mf8e0g7fXX2pHMNmA==
-X-Received: by 2002:aa7:c4c1:: with SMTP id p1mr19783001edr.133.1619429311818;
-        Mon, 26 Apr 2021 02:28:31 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id b8sm14195751edu.41.2021.04.26.02.28.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 02:28:31 -0700 (PDT)
-Subject: Re: [PATCH] selftests: kvm: Fix the check of return value
-To:     Zhenzhong Duan <zhenzhong.duan@intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
-        shuah@kernel.org
-References: <20210426193138.118276-1-zhenzhong.duan@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0d23822d-1510-d615-c3bf-200b6636b766@redhat.com>
-Date:   Mon, 26 Apr 2021 11:28:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 26 Apr 2021 05:30:48 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Adni3r6PQeKGVXcBcTlijsMiAIKoaSvp033AA?=
+ =?us-ascii?q?3SlKJiB9WMqeisyogbA/3Rj7lD4eVBgb6Le9EYOHRm7R8oMw3JkJMd6ZLW3bkU?=
+ =?us-ascii?q?ahMY0K1+vf6hL6HSmWzIBg/IdmN5NzEdjhSWV95PyKhTWQN/YF7J25/LuzheHY?=
+ =?us-ascii?q?pk0dLz1CT6179Q92BkK6PyRNJTVuPpYyGJqC6scvnVPJEkg/Vci1CmIIWOLOvb?=
+ =?us-ascii?q?Tw+K7OWwIMBBIs9WC15w+A1biSKXWl9ysFXygK6bkv9nWtqX2b2pme?=
+X-IronPort-AV: E=Sophos;i="5.82,252,1613430000"; 
+   d="scan'208";a="379672947"
+Received: from yquem.paris.inria.fr ([128.93.101.33])
+  by mail3-relais-sop.national.inria.fr with ESMTP; 26 Apr 2021 11:30:00 +0200
+Received: by yquem.paris.inria.fr (Postfix, from userid 18041)
+        id 7C111A006F; Mon, 26 Apr 2021 11:30:00 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 11:30:00 +0200
+From:   Luc Maranget <Luc.Maranget@inria.fr>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     szyhb810501.student@sina.com, stern <stern@rowland.harvard.edu>,
+        "parri.andrea" <parri.andrea@gmail.com>, will <will@kernel.org>,
+        peterz <peterz@infradead.org>,
+        "boqun.feng" <boqun.feng@gmail.com>, npiggin <npiggin@gmail.com>,
+        dhowells <dhowells@redhat.com>,
+        "j.alglave" <j.alglave@ucl.ac.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Documentation/memory-barriers.txt: Is "stores are not
+ speculated" correct?
+Message-ID: <20210426093000.GA2583903@yquem.paris.inria.fr>
+References: <20210426022309.2333D4640475@webmail.sinamail.sina.com.cn>
+ <20210426035043.GW975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20210426193138.118276-1-zhenzhong.duan@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210426035043.GW975577@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/04/21 21:31, Zhenzhong Duan wrote:
-> In vm_vcpu_rm() and kvm_vm_release(), a stale return value is checked in
-> TEST_ASSERT macro.
+> On Mon, Apr 26, 2021 at 10:23:09AM +0800, szyhb810501.student@sina.com wrote:
+> > 
+> > Hello everyone, I have a question."Documentation/memory-barriers.txt"
+> > says:However, stores are not speculated.  This means that ordering -is-
+> > providedfor load-store control dependencies, as in the following example:
+> 	q = READ_ONCE(a);
+> 	if (q) {
+> 		WRITE_ONCE(b, 1);
+> 	}
+> > Is "stores are not speculated" correct? I
+> > think store instructions can be executed speculatively.
+> > "https://stackoverflow.com/questions/64141366/can-a-speculatively-executed-cpu-branch-contain-opcodes-that-access-ram"
+> > says:Store instructions can also be executed speculatively thanks to the
+> > store buffer. The actual execution of a store just writes the address and
+> > data into the store buffer.Commit to L1d cache happens some time after
+> > the store instruction retires from the ROB, i.e. when the store is known
+> > to be non-speculative, the associated store-buffer entry "graduates"
+> > and becomes eligible to commit to cache and become globally visible.
 > 
-> Fix it by assigning variable ret with correct return value.
+> >From the viewpoint of other CPUs, the store hasn't really happened
+> until it finds its way into a cacheline.  As you yourself note above,
+> if the store is still in the store buffer, it might be squashed when
+> speculation fails.
 > 
-> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@intel.com>
-> ---
->   tools/testing/selftests/kvm/lib/kvm_util.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> So Documentation/memory-barriers.txt and that stackoverflow entry are
+> not really in conflict, but are instead using words a bit differently
+> from each other.  The stackoverflow entry is considering a store to have
+> in some sense happened during a time when it might later be squashed.
+> In contrast, the Documentation/memory-barriers.txt document only considers
+> a store to have completed once it is visible outside of the CPU executing
+> that store.
 > 
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index b8849a1aca79..53d3a7eb0d47 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -514,7 +514,7 @@ static void vm_vcpu_rm(struct kvm_vm *vm, struct vcpu *vcpu)
->   	ret = munmap(vcpu->state, vcpu_mmap_sz());
->   	TEST_ASSERT(ret == 0, "munmap of VCPU fd failed, rc: %i "
->   		"errno: %i", ret, errno);
-> -	close(vcpu->fd);
-> +	ret = close(vcpu->fd);
->   	TEST_ASSERT(ret == 0, "Close of VCPU fd failed, rc: %i "
->   		"errno: %i", ret, errno);
->   
-> @@ -534,7 +534,7 @@ void kvm_vm_release(struct kvm_vm *vmp)
->   	TEST_ASSERT(ret == 0, "Close of vm fd failed,\n"
->   		"  vmp->fd: %i rc: %i errno: %i", vmp->fd, ret, errno);
->   
-> -	close(vmp->kvm_fd);
-> +	ret = close(vmp->kvm_fd);
->   	TEST_ASSERT(ret == 0, "Close of /dev/kvm fd failed,\n"
->   		"  vmp->kvm_fd: %i rc: %i errno: %i", vmp->kvm_fd, ret, errno);
->   }
+> So from a stackoverflow viewpoint, stores can be speculated, but until
+> they are finalized, they must be hidden from other CPUs.
 > 
+> >From a Documentation/memory-barriers.txt viewpoint, stores don't complete
+> until they update their cachelines, and stores may not be speculated.
+> Some of the actions that lead up to the completion of a store may be
+> speculated, but not the completion of the store itself.
+> 
+> Different words, but same effect.  Welcome to our world!  ;-)
+> 
+> 							Thanx, Paul
 
-Queued, thanks.
+Hi all,
 
-Paolo
+Here is a complement to Paul's excellent answer.
+
+The "CPU-local" speculation of stores can be observed
+by the following test (in C11)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+C PPOCA
+
+{}
+
+P0(volatile int* y, volatile int* x) {
+
+  atomic_store(x,1);
+  atomic_store(y,1);
+
+}
+
+P1(volatile int* z, volatile int* y, volatile int* x) {
+
+  int r1=-1; int r2=-1;
+  int r0 = atomic_load_explicit(y,memory_order_relaxed);
+  if (r0) {
+    atomic_store_explicit(z,1,memory_order_relaxed);
+    r1 = atomic_load_explicit(z,memory_order_relaxed);
+    r2 = atomic_load_explicit(x+(r1 & 128),memory_order_relaxed);
+  }
+
+}
+
+
+This is a variation on the MP test.
+
+Because of tht conditionnal "if (..) { S }" Statements "S" can be executed
+speculatively.
+
+More precisely, the store statement writes value 1 into the CPU local
+structure for variable z. The next load statement reads the value,
+and the last load statement can be peformed (speculatively)
+as its address is known.
+
+The resulting outcomme is observed for instance on a RaspBerry Pi3,
+see attached file.
+
+--Luc
 
