@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDB636B9FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17F536BA06
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240267AbhDZT3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236653AbhDZT3k (ORCPT
+        id S240340AbhDZTaW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Apr 2021 15:30:22 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35353 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240318AbhDZTaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:29:40 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2F9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:28:58 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ja3so10243212ejc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:28:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uPSGYcihSYfm5NnA+nu9YTkGLMVNgdMxJvMX/B7FahE=;
-        b=ctXrYWq3oz6pjzAXmFpyJd/LoD0/v+4tl7HlYy8uF5CLLgpv6M8UmNUPLsPomE0iA1
-         IbJjJZ6tjjLS4sM55IgbpW9yDGZzZn9pJHHIFxfMVa2gbPU25sdhChZCVgJUZyDvH62f
-         IvusHlYK/dmNk4ddrQjOcQclx+tRkOIOBAOx5eh9z4GyeD7KsOwiwr6GEsOB2U1r1ZLy
-         fu9vfUQP3WT+EHM1aJ8f2ZuYcJbO63u9p+9s7HLJ/tKORD6z95KhytxfMmgWW55FD4dh
-         hCnTI5CqbHAR0XGbUSFIdUl+yXW3JUsNHGjIphoFg2dAlbppxLp6deUJSN56Ovvet3sx
-         xZCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uPSGYcihSYfm5NnA+nu9YTkGLMVNgdMxJvMX/B7FahE=;
-        b=OWVYUuBpllja7c/73ZPtW8wihU8ZIrZO55qgWbRxPCZv/keL4i9G1Lygyea6Q0J1vQ
-         9IKzJkzUF5QK3ORLg+1nr6ZEYQgIs+xCf9Y+xquTU6eU/5dsoS1g0/ds6tnk5cItpddj
-         AymEVuLi6SpoM4kwIVICmD9yTzYaQ036ONjQ/Jw4bM1dm7hoRosEsLrMSa7ai4leavVL
-         rNZRP5/qdyHeU17oTYDHEUnRuiyv1Vy4XZaH/V4nhTb7maE2HCAzKd5CBOSxqegnAqMT
-         hrshY92nQ45GgO4nLr4fzNhdkOz8b3bDMM8xUCsjDU4C3Z7TCmbf+Qj1Wb4c1OFBREiO
-         ZMvQ==
-X-Gm-Message-State: AOAM530BEA4wKoftl/8jXYhm7NMU6iY9t47DH2+IkZ0vaPgV39dIobJI
-        iL7uBkEDpzCXlY0p0XB1hVQ=
-X-Google-Smtp-Source: ABdhPJxt5ijbkx1gr5nMUoX4S1ZPQTXA4JCK9wk3uzykoQlBO5tcNsIlVyD2cNLLFRGveTBeQRClDg==
-X-Received: by 2002:a17:906:cb88:: with SMTP id mf8mr20576558ejb.541.1619465336843;
-        Mon, 26 Apr 2021 12:28:56 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id p4sm807568ejr.81.2021.04.26.12.28.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 12:28:55 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Huang Rui <ray.huang@amd.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v3] drm/amd/amdgpu: Replace drm_modeset_lock_all with drm_modeset_lock
-Date:   Mon, 26 Apr 2021 21:28:51 +0200
-Message-Id: <20210426192851.30155-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 26 Apr 2021 15:30:14 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1lb6v6-0000rS-DQ; Mon, 26 Apr 2021 19:29:24 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id CA5CC5FDD5; Mon, 26 Apr 2021 12:29:22 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id C275E9FC56;
+        Mon, 26 Apr 2021 12:29:22 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     David Miller <davem@davemloft.net>
+cc:     jinyiting@huawei.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, netdev@vger.kernel.org, security@kernel.org,
+        linux-kernel@vger.kernel.org, xuhanbing@huawei.com,
+        wangxiaogang3@huawei.com
+Subject: Re: [PATCH] bonding: 3ad: Fix the conflict between bond_update_slave_arr and the state machine
+In-reply-to: <20210426.120822.232032630973964712.davem@davemloft.net>
+References: <1618994301-1186-1-git-send-email-jinyiting@huawei.com> <20210423.130748.1071901004935481894.davem@davemloft.net> <20034.1619450557@famine> <20210426.120822.232032630973964712.davem@davemloft.net>
+Comments: In-reply-to David Miller <davem@davemloft.net>
+   message dated "Mon, 26 Apr 2021 12:08:22 -0700."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Date:   Mon, 26 Apr 2021 12:29:22 -0700
+Message-ID: <31539.1619465362@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_modeset_lock_all() is not needed here, so it is replaced with
-drm_modeset_lock(). The crtc list around which we are looping never
-changes, therefore the only lock we need is to protect access to
-crtc->state.
+David Miller <davem@davemloft.net> wrote:
 
-Suggested-by: Daniel Vetter <daniel@ffwll.ch>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>From: Jay Vosburgh <jay.vosburgh@canonical.com>
+>Date: Mon, 26 Apr 2021 08:22:37 -0700
+>
+>> David Miller <davem@davemloft.net> wrote:
+>> 
+>>>From: jinyiting <jinyiting@huawei.com>
+>>>Date: Wed, 21 Apr 2021 16:38:21 +0800
+>>>
+>>>> The bond works in mode 4, and performs down/up operations on the bond
+>>>> that is normally negotiated. The probability of bond-> slave_arr is NULL
+>>>> 
+>>>> Test commands:
+>>>>    ifconfig bond1 down
+>>>>    ifconfig bond1 up
+>>>> 
+>>>> The conflict occurs in the following process：
+>>>> 
+>>>> __dev_open (CPU A)
+>>>> --bond_open
+>>>>   --queue_delayed_work(bond->wq,&bond->ad_work,0);
+>>>>   --bond_update_slave_arr
+>>>>     --bond_3ad_get_active_agg_info
+>>>> 
+>>>> ad_work(CPU B)
+>>>> --bond_3ad_state_machine_handler
+>>>>   --ad_agg_selection_logic
+>>>> 
+>>>> ad_work runs on cpu B. In the function ad_agg_selection_logic, all
+>>>> agg->is_active will be cleared. Before the new active aggregator is
+>>>> selected on CPU B, bond_3ad_get_active_agg_info failed on CPU A,
+>>>> bond->slave_arr will be set to NULL. The best aggregator in
+>>>> ad_agg_selection_logic has not changed, no need to update slave arr.
+>>>> 
+>>>> The conflict occurred in that ad_agg_selection_logic clears
+>>>> agg->is_active under mode_lock, but bond_open -> bond_update_slave_arr
+>>>> is inspecting agg->is_active outside the lock.
+>>>> 
+>>>> Also, bond_update_slave_arr is normal for potential sleep when
+>>>> allocating memory, so replace the WARN_ON with a call to might_sleep.
+>>>> 
+>>>> Signed-off-by: jinyiting <jinyiting@huawei.com>
+>>>> ---
+>>>> 
+>>>> Previous versions:
+>>>>  * https://lore.kernel.org/netdev/612b5e32-ea11-428e-0c17-e2977185f045@huawei.com/
+>>>> 
+>>>>  drivers/net/bonding/bond_main.c | 7 ++++---
+>>>>  1 file changed, 4 insertions(+), 3 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>>>> index 74cbbb2..83ef62d 100644
+>>>> --- a/drivers/net/bonding/bond_main.c
+>>>> +++ b/drivers/net/bonding/bond_main.c
+>>>> @@ -4406,7 +4404,9 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>>>>  	if (BOND_MODE(bond) == BOND_MODE_8023AD) {
+>>>>  		struct ad_info ad_info;
+>>>>  
+>>>> +		spin_lock_bh(&bond->mode_lock);
+>>>
+>>>The code paths that call this function with mode_lock held will now deadlock.
+>> 
+>> 	No path should be calling bond_update_slave_arr with mode_lock
+>> already held (it expects RTNL only); did you find one?
+>> 
+>> 	My concern is that there's something else that does the opposite
+>> order, i.e., mode_lock first, then RTNL, but I haven't found an example.
+>> 
+>
+>This patch is removing a lockdep assertion masking sure that mode_lock was held
+>when this function was called.  That should have been triggering all the time, right?
+
+	The line in question is:
+	
+#ifdef CONFIG_LOCKDEP
+	WARN_ON(lockdep_is_held(&bond->mode_lock));
+#endif
+
+	The WARN_ON is triggering if mode_lock is held, not asserting
+that mode_lock is held.  I think that's wrong anyway, since mode_lock
+could be held by some other thread, leading to false positives, thus the
+change to might_sleep.
+
+	-J
+
 ---
-
-Changes from v2: Drop file name from the Subject. Cc'ed all maintainers.
-Changes from v1: Removed unnecessary braces around single statement
-block.
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index 671ec1002230..adfeec2b17c0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -1439,17 +1439,15 @@ static int amdgpu_pmops_runtime_idle(struct device *dev)
- 	if (amdgpu_device_has_dc_support(adev)) {
- 		struct drm_crtc *crtc;
- 
--		drm_modeset_lock_all(drm_dev);
--
- 		drm_for_each_crtc(crtc, drm_dev) {
--			if (crtc->state->active) {
-+			drm_modeset_lock(&crtc->mutex, NULL);
-+			if (crtc->state->active)
- 				ret = -EBUSY;
-+			drm_modeset_unlock(&crtc->mutex);
-+			if (ret < 0)
- 				break;
--			}
- 		}
- 
--		drm_modeset_unlock_all(drm_dev);
--
- 	} else {
- 		struct drm_connector *list_connector;
- 		struct drm_connector_list_iter iter;
--- 
-2.31.1
-
+	-Jay Vosburgh, jay.vosburgh@canonical.com
