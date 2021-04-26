@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3E236B509
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0433236B515
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbhDZOjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:39:35 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:32850 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233825AbhDZOjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:39:33 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4AFD9A0040;
-        Mon, 26 Apr 2021 16:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 4AFD9A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1619447927; bh=6XnVk6uucelw2ilTlLHMXVhROA8TS7AQk5AvvyBmftc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gUvHkg/fJ+SwnkMUGiKgRcGrnu4U+4zEClSjWG12Pnr11QJyoYrjrsW+er01XwtWu
-         fz/3d2Em5SXNQWyw3dgTLQktu0rbY8BNbiGCDoOtcp2UfHlENf6bIikAshuKOq8Gmi
-         efyXknkBXi+JOSeotQadSw/YGYEjOdW02TeMeGvE=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Mon, 26 Apr 2021 16:38:42 +0200 (CEST)
-Subject: Re: [PATCH] sound/isa/sb/emu8000: Fix a use after free in
- snd_emu8000_create_mixer
-To:     Takashi Iwai <tiwai@suse.de>, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20210426131129.4796-1-lyl2019@mail.ustc.edu.cn>
- <s5ha6pl2kh8.wl-tiwai@suse.de>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <af5a6764-76ee-3184-2622-a756c23fbc98@perex.cz>
-Date:   Mon, 26 Apr 2021 16:38:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233968AbhDZOkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:40:40 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:24086 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233834AbhDZOke (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:40:34 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QEcHYb015831;
+        Mon, 26 Apr 2021 16:39:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=Mrzdfe9ktCTQYQLDD8T2tbI9uH3nTpSKWd9+g32O7fc=;
+ b=BDKfB89jXqMpRpbWK2/JaaFGTiohOwRluwHq3rBnl2EXWRxw2tYZxT3xP1k0b0gakxmO
+ iRR/RLsBmoWcm+o3kMPLwHtcuhts00vDoSXt4+pzFkty+VcQ/wPo/xZpK1+oOchEmOCI
+ yi3V5hFTS3j8F15a9Iup6Bw+pp9elJjLyOUGVOvJWoGPPrWdiz8/j+VUaCdLQ9NvqXhA
+ du3NtTfg6l3dbhsYrA5Y2KfZE5nKdc8SiWgZBn/sKU35KJqGOZFDWSIFeYdGbyuarc5i
+ LaPLcuiJHsnZGuPg6w8zWLFypj6czyXBmfl1P6yEs5TENHKXZM7VA8D5KSodAWjK7mVv 1A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 385b0xx7cy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 16:39:39 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 698C310002A;
+        Mon, 26 Apr 2021 16:39:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4C4AD2178E6;
+        Mon, 26 Apr 2021 16:39:38 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Apr 2021 16:39:37
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH 0/3] MTD: spinand: Add spi_mem_poll_status() support
+Date:   Mon, 26 Apr 2021 16:39:31 +0200
+Message-ID: <20210426143934.25275-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <s5ha6pl2kh8.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-26_07:2021-04-26,2021-04-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 26. 04. 21 v 16:23 Takashi Iwai napsal(a):
-> On Mon, 26 Apr 2021 15:11:29 +0200,
-> Lv Yunlong wrote:
->>
->> Our code analyzer reported a uaf.
->>
->> In snd_emu8000_create_mixer, the callee snd_ctl_add(..,emu->controls[i])
->> calls snd_ctl_add_replace(.., kcontrol,..). Inside snd_ctl_add_replace(),
->> if error happens, kcontrol will be freed by snd_ctl_free_one(kcontrol).
->> Then emu->controls[i] points to a freed memory, and the execution comes
->> to __error branch of snd_emu8000_create_mixer. The freed emu->controls[i]
->> is used in snd_ctl_remove(card, emu->controls[i]).
->>
->> My patch set emu->controls[i] to NULL if snd_ctl_add() failed to avoid
->> the uaf.
->>
->> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> 
-> Thanks, applied now.
-> 
-> The bug was hard to be seen due to the coding style, so we'd need a
-> cleanup, but it's a different story...
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-Yes, it would be better to assign the return value from snd_ctl_new1 to a
-local variable and set emu->controls[i] only when everything succeeds.
+This series adds support for the spi_mem_poll_status() spinand
+interface.
+Some QSPI controllers allows to poll automatically memory 
+status during operations (erase or write). This allows to 
+offload the CPU for this task.
+STM32 QSPI is supporting this feature, driver update are also
+part of this series.
 
-					Jaroslav
+Christophe Kerello (3):
+  spi: spi-mem: add automatic poll status functions
+  mtd: spinand: use the spi-mem poll status APIs
+  spi: stm32-qspi: add automatic poll status feature
+
+ drivers/mtd/nand/spi/core.c  | 22 ++++++++--
+ drivers/spi/spi-mem.c        | 34 +++++++++++++++
+ drivers/spi/spi-stm32-qspi.c | 80 ++++++++++++++++++++++++++++++++----
+ include/linux/mtd/spinand.h  |  1 +
+ include/linux/spi/spi-mem.h  |  8 ++++
+ 5 files changed, 133 insertions(+), 12 deletions(-)
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.17.1
+
