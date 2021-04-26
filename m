@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9CE36B4F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFAD36B4F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbhDZOdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDZOdh (ORCPT
+        id S233849AbhDZOeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:34:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34514 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDZOeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:33:37 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4AFF8C061574;
-        Mon, 26 Apr 2021 07:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=oTrHkGHNpd
-        lXGR6rvnn5CxbspkndmU94+AgUSlg0N6I=; b=eDVZ2SV9VDl9CELXhdy6iWmXyJ
-        mciwzpWUtnelUQrUDjBfc74eNAYI+JNrGxmjhKB19lzqKiMaIRhsbP2JMAzXwfxf
-        pHbH95zwdBRaU6JFAjWZRaRkZEfIUAnVkJavX8B3aLcCiLdCEUz2Z4H8QGgX1ebN
-        02nGG4HMeehJ+IRjY=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHTzf_zoZgi2hLAA--.6103S4;
-        Mon, 26 Apr 2021 22:32:32 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     axboe@kernel.dk, damien.lemoal@wdc.com, johannes.thumshirn@edc.com,
-        martin.petersen@oracle.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] drivers/block/null_blk/main: Fix a double free in null_init.
-Date:   Mon, 26 Apr 2021 07:32:29 -0700
-Message-Id: <20210426143229.7374-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 26 Apr 2021 10:34:13 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619447611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HBYyB3vvIvb1Q8KHDK6dR5Vt10a2wbXY0WlsmB3n/YQ=;
+        b=A5kWW7uU8iILvPl+ZvribH58/QsJxJD++jtP40Z0tF5SvHLnNm4dum+kI/hl/eBgOjo8x5
+        Tv1EQnOqmPdAqr9neRQi7n79yepIWQ/EjLcfFFby+Ar0Qo8OlINB8G5DcBIfk1yZqRewbc
+        7w3MPEaiT3XJR9G3HKd6QXBj1C2lujYpt7XmC4nQfZWry70ZRdpVa804/yPhsotQYfKff+
+        9TvhZkWFjka6lU+BrDaAeCd9hmNTbQF/SMjV9BEjrYKphyzNMcPktcOJ+83NncYTN2hzE9
+        E+QV63WhVyV4WmiUyKpwBLKU4L7yOfQZSQn7/Tnta/GuCpX1SQXUn8eiQ22pWg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619447611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HBYyB3vvIvb1Q8KHDK6dR5Vt10a2wbXY0WlsmB3n/YQ=;
+        b=x/QCNcFD18eEKYa/a5m4++kPQHrMTLJBcKnYR5alcXAr5lzNjn3GJHClyWg2ovqyfNc2CP
+        FbEVrsv9qn1/5zBQ==
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        "lkp\@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>
+Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec -14.4% regression
+In-Reply-To: <20210426140512.GA23119@shbuild999.sh.intel.com>
+References: <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com> <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1> <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com> <20210422074126.GA85095@shbuild999.sh.intel.com> <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1> <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1> <20210423061115.GA62813@shbuild999.sh.intel.com> <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1> <20210424122920.GB85095@shbuild999.sh.intel.com> <87pmyhte2q.ffs@nanos.tec.linutronix.de> <20210426140512.GA23119@shbuild999.sh.intel.com>
+Date:   Mon, 26 Apr 2021 16:33:31 +0200
+Message-ID: <87fszdt8sk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBHTzf_zoZgi2hLAA--.6103S4
-X-Coremail-Antispam: 1UD129KBjvdXoWruFy8Jr17Kw1rXF4UZw1xAFb_yoWkArb_uw
-        4Fyr4kXr45Jr1I9w13AF1UArySkr10gF48Xr1IqFn3Way7X3ZrXw17ZrWrCry7Kry7GFWa
-        y3yF9ry3ur4rCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxkIecxEwVAFwVW5XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUBT5QUUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In null_init, null_add_dev(dev) is called.
-In null_add_dev, it calls null_free_zoned_dev(dev) to free dev->zones
-via kvfree(dev->zones) in out_cleanup_zone branch and returns err.
-Then null_init accept the err code and then calls null_free_dev(dev).
+On Mon, Apr 26 2021 at 22:05, Feng Tang wrote:
+> On Mon, Apr 26, 2021 at 08:39:25PM +0800, Thomas Gleixner wrote:
+>> On Sat, Apr 24 2021 at 20:29, Feng Tang wrote:
+>> > On Fri, Apr 23, 2021 at 07:02:54AM -0700, Paul E. McKenney wrote:
+>> > And I'm eager to know if there is any real case of an unreliable tsc
+>> > on the 'large numbers' of x86 system which complies with our cpu feature
+>> > check. And if there is, my 2/2 definitely should be dropped.   
+>> 
+>> Nothing prevents BIOS tinkerers from trying to be 'smart'. My most
+>> recent encounter (3 month ago) was on a laptop where TSC drifted off on
+>> CPU0 very slowly, but was caught due to the TSC_ADJUST check in idle.
+>
+> Thanks for sharing the info! So this laptop can still work with the
+> tsc_adjust check and restore, without triggering the 'unstable' alarm.
+>
+> Why are those BIOSes playing the trick? Maybe some other OS has hard limit
+> for SMI's maxim handling time, so they try to hide the time?
 
-But in null_free_dev(dev), dev->zones is freed again by
-null_free_zoned_dev().
+Years ago someone admitted that it was the attempt to hide the
+(substantial) time wasted in SMIs from being detectable via tracing, but
+obviously that backfired because TSC got out of sync.
 
-My patch set dev->zones to NULL in null_free_zoned_dev() after
-kvfree(dev->zones) is called, to avoid the double free.
+Since then this has mostly vanished but for some reasons it's coming
+back every now and then. Rarely, but it happens still.
 
-Fixes: 2984c8684f962 ("nullb: factor disk parameters")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/block/null_blk/zoned.c | 1 +
- 1 file changed, 1 insertion(+)
+>> I'm still thinking about a solution to avoid that extra timer and the
+>> watchdog for these systems, but haven't found anything which I don't
+>> hate with a passion yet.
+>
+> I see. So should I hold my two patches (tsc_adjust timer and tsc watchdog
+> check lifting) for a while?
 
-diff --git a/drivers/block/null_blk/zoned.c b/drivers/block/null_blk/zoned.c
-index bfcab1c782b5..dae54dd1aeac 100644
---- a/drivers/block/null_blk/zoned.c
-+++ b/drivers/block/null_blk/zoned.c
-@@ -180,6 +180,7 @@ int null_register_zoned_dev(struct nullb *nullb)
- void null_free_zoned_dev(struct nullb_device *dev)
- {
- 	kvfree(dev->zones);
-+	dev->zones = NULL;
- }
- 
- int null_report_zones(struct gendisk *disk, sector_t sector,
--- 
-2.25.1
+I have them on my list anyway, but yes we want to avoid the timer
+because that's what the HPC / NOHZ full people are going to complain
+about anyway.
 
+Thanks,
 
+        tglx
