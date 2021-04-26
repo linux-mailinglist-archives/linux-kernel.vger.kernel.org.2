@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2056136BB93
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5685036BB87
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237328AbhDZWSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 18:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S234454AbhDZWQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 18:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234113AbhDZWSt (ORCPT
+        with ESMTP id S232116AbhDZWQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 18:18:49 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FADC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 15:18:07 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id z5so4725669qts.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 15:18:07 -0700 (PDT)
+        Mon, 26 Apr 2021 18:16:13 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA4AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 15:15:31 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id i22so5141632ila.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 15:15:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=akYRiibsBPZUQXPztVcueh6KuN2q86Ek+U4tZ6zTSgQ=;
-        b=eMuIfx/OuzlQock963Ne7pvsqDBMlHu4Bul4KdatGwo4eW5lpM3qm+GXJRqH36UAUC
-         ED9hfoCsQTABo+oZcDRLXNf1hKCIAyR8IlwDzGgmCklO1LoU82KRZgSDPIFo1ogddSIE
-         phjbfVkPkJSFdwv/UYwkQxgm594x76Itp27AOi5ilrN1UmC9dzhMDMkOPyvYjCBTOe9z
-         DndH/DumU8Bupo34HBIn6jp9GuQreGVKVGjXzkWrTlXC7dfPzBPIaiC/e1dvTBrVVJYE
-         bkKJFU8qCe3s91zPATaQg/da+SAXkwoNvxaeCqK9y2pkBtz1MRswVyw6S0MHhGg3pPhB
-         9o5w==
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=35JE14+U46LYE27Y6OGkQt/0x6BwuS4vBffRxgk3Bik=;
+        b=Pwf6jVJ8R2S4o1XwZ2UFmoLLEj98OH9UhK967+HXKQPF5cEHyeAfVpuSotNh0jUoTq
+         S6OR0N3aqSFQ5AbCkosdrTrR/iUQXM5NZfa2Tpdexe0PFKSWNDMal7ed6OLsV1nNxBeh
+         4HH/h/abhCmIuOOK9nqSSCw/rb7qD5p5V+KB0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=akYRiibsBPZUQXPztVcueh6KuN2q86Ek+U4tZ6zTSgQ=;
-        b=cOf9W510Yiz58Rd0WZEIwl9H7WZrCVCcMo1eK4GUDQdvjCDUlVNZzkgib+KxVMqZR7
-         70MjgN/a1ZbEK9mUGKnXK59wTsGRRL9b3vAWEwpzNN8lGAi+SPDGSCsfucsuPymZwy3g
-         5YoaGBo1ZIZu17yiYwGEpVGr8uuvWoae745X5mu76C77Bc80ea+DZvydayiFrw1+vwJ3
-         qnDECa1db+TuXLRCC+CxO+B8JNoIR1CZEiuNnsZEL7zYo7tcwDFIHdOdjpJGtdKRLRMs
-         T3P/fHH+toT9ftNAxzJXCj2yTUhX8ZHfb8UFGhgRkdHiNLoWWVNNi8jl3r+bSPsGiYox
-         Gdfw==
-X-Gm-Message-State: AOAM532AjJQSDHvSuu3OdgXJ0lmNAWrYbIcSd9/AeXn2G415MR5tlzya
-        vflPn6fOGYRUx5dyExdr6bJZp+xpVkIuUQ==
-X-Google-Smtp-Source: ABdhPJz5XQQ8dJqNBGZdU29rGTsf1sX4ajQMV6ehuxFRGx0Phrr7VXtO9HtEJdl7yTwzFxQGbk0DxQ==
-X-Received: by 2002:ac8:44d9:: with SMTP id b25mr3736979qto.257.1619475487144;
-        Mon, 26 Apr 2021 15:18:07 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.37.247])
-        by smtp.gmail.com with ESMTPSA id x20sm1374111qkf.42.2021.04.26.15.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 15:18:06 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     corbet@lwn.net, nathan@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH 3/3] Enlisted oprofile version line removed
-Date:   Tue, 27 Apr 2021 03:38:47 +0530
-Message-Id: <35c4436f0f1b3072d3016148ce1461905b6f782b.1619181632.git.unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1619181632.git.unixbhaskar@gmail.com>
-References: <cover.1619181632.git.unixbhaskar@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=35JE14+U46LYE27Y6OGkQt/0x6BwuS4vBffRxgk3Bik=;
+        b=daCNagTCwUh9+mUa4KxdbIZnXP3w8hZWmraRcBswyXnylSUlwztaeYC2xfEYBt/ew8
+         9AhdyJLo4xtPICB776GcYjxZ2QQGggVPNuYjn+polvk68JPqEsHUARVMCjRzbh189xmK
+         p5F3mGNDYE7dHhPBFiehikPB8rDmFFi1/KRCnUm6xTZpo94FrbKmiuV/DHnFpTWqB06Y
+         8MPWO6BWQPIhBijZnVpUqeowe68uCwF5B8cqVT6sfkcJ8VkT+nkgcfOFIkwwIziTUA/m
+         qyEBk9GWNFmA6eQwBXD9eScwBctYbPZSBTNCCY+6kSHqiZPlB8Qy9V+q8KjgPm4OFE0A
+         rE5g==
+X-Gm-Message-State: AOAM532MrKZ63G12miBmo2HIWRG1NS1EGE9qK5smIN/636KDTAFW5XCy
+        MelImq3DdcCuCPHiOwHi4LgDGw==
+X-Google-Smtp-Source: ABdhPJzD2GN88KsTOP4gOv5Ai8WTzKLO2wAKxc6jXZTCiQU2iXaipVDFRyZP1xUof74SRwkiOgz3sQ==
+X-Received: by 2002:a05:6e02:92c:: with SMTP id o12mr16072169ilt.256.1619475330555;
+        Mon, 26 Apr 2021 15:15:30 -0700 (PDT)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id h17sm490657ilh.55.2021.04.26.15.15.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 26 Apr 2021 15:15:30 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 22:15:28 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to
+ seccomp user notifier
+Message-ID: <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20210426180610.2363-1-sargun@sargun.me>
+ <20210426180610.2363-3-sargun@sargun.me>
+ <20210426190229.GB1605795@cisco>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426190229.GB1605795@cisco>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enlisted oprofile version line removed.
+On Mon, Apr 26, 2021 at 01:02:29PM -0600, Tycho Andersen wrote:
+> On Mon, Apr 26, 2021 at 11:06:07AM -0700, Sargun Dhillon wrote:
+> > @@ -1103,11 +1111,31 @@ static int seccomp_do_user_notification(int this_syscall,
+> >  	 * This is where we wait for a reply from userspace.
+> >  	 */
+> >  	do {
+> > +		interruptible = notification_interruptible(&n);
+> > +
+> >  		mutex_unlock(&match->notify_lock);
+> > -		err = wait_for_completion_interruptible(&n.ready);
+> > +		if (interruptible)
+> > +			err = wait_for_completion_interruptible(&n.ready);
+> > +		else
+> > +			err = wait_for_completion_killable(&n.ready);
+> >  		mutex_lock(&match->notify_lock);
+> > -		if (err != 0)
+> > +
+> > +		if (err != 0) {
+> > +			/*
+> > +			 * There is a race condition here where if the
+> > +			 * notification was received with the
+> > +			 * SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE flag, but a
+> > +			 * non-fatal signal was received before we could
+> > +			 * transition we could erroneously end our wait early.
+> > +			 *
+> > +			 * The next wait for completion will ensure the signal
+> > +			 * was not fatal.
+> > +			 */
+> > +			if (interruptible && !notification_interruptible(&n))
+> > +				continue;
+> 
+> I'm trying to understand how one would hit this race,
+> 
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Documentation/translations/it_IT/process/changes.rst | 1 -
- 1 file changed, 1 deletion(-)
+I'm thinking:
+P: Process that "generates" notification
+S: Supervisor
+U: User
 
-diff --git a/Documentation/translations/it_IT/process/changes.rst b/Documentation/translations/it_IT/process/changes.rst
-index cc883f8d96c4..87d081889bfc 100644
---- a/Documentation/translations/it_IT/process/changes.rst
-+++ b/Documentation/translations/it_IT/process/changes.rst
-@@ -51,7 +51,6 @@ quota-tools            3.09               quota -V
- PPP                    2.4.0              pppd --version
- nfs-utils              1.0.5              showmount --version
- procps                 3.2.0              ps --version
--oprofile               0.9                oprofiled --version
- udev                   081                udevd --version
- grub                   0.93               grub --version || grub-install --version
- mcelog                 0.6                mcelog --version
---
-2.26.3
+P: Generated notification
+S: ioctl(RECV...) // With wait_killable flag.
+...complete is called in the supervisor, but the P may not be woken up...
+U: kill -SIGTERM $P
+...signal gets delivered to p and causes wakeup and
+wait_for_completion_interruptible returns 1...
 
+Then you need to check the race
+> > @@ -1457,6 +1487,12 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
+> >  	unotif.pid = task_pid_vnr(knotif->task);
+> >  	unotif.data = *(knotif->data);
+> >  
+> > +	if (unotif.flags & SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE) {
+> > +		knotif->wait_killable = true;
+> > +		complete(&knotif->ready);
+> > +	}
+> > +
+> > +
+> >  	knotif->state = SECCOMP_NOTIFY_SENT;
+> >  	wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
+> >  	ret = 0;
+> 
+> Seems like the idea is that if someone does a ioctl(RECV, ...) twice
+> they'll hit it? But doesn't the test for NOTIFY_INIT and return
+> -ENOENT above this hunk prevent that?
+> 
+> Thanks,
+> 
+> Tycho
