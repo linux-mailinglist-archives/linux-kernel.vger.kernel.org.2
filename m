@@ -2,200 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDB636B0CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3FE36B0EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhDZJle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S232725AbhDZJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbhDZJld (ORCPT
+        with ESMTP id S232295AbhDZJpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:41:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821D7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ozwov2Jab0+sdWppm0QSKqpnQttHFNm7EGQNbnyhxZY=; b=ULR/QV59hqgaiNfhbThbBWZt4S
-        1KVQaAKaVIvC2aalfM18LzeQ/MrkCHswrlvtV2Qe7ci4VnBPv0+rK7tHpHPkzQ69O2DVAAymuX62+
-        m1Jt3x7khQ3xwzy//BvmZktV9aqGSJY/TGeS0Igi12Dv1VuH7YlqAOgiRTqae+3+Q0EWrhfa7MZjF
-        yea6nFjUQT/WAdRJyV1M4b0E2JrnTMcqHp5mRiQLghBJcce3l5HRAxvhn2KPXUazR9I7kn4C0KC8Y
-        WcXf/5uc0Kymd2ehQHfohiEFe0UjJPYAdFFOEFScmPMnBcWUKq16pxRmncvFuVBGBKDi3Wlqh2sXl
-        qt/p1ekg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1laxjT-007L12-DK; Mon, 26 Apr 2021 09:40:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2FAEB3002F1;
-        Mon, 26 Apr 2021 11:40:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 186252D193756; Mon, 26 Apr 2021 11:40:46 +0200 (CEST)
-Date:   Mon, 26 Apr 2021 11:40:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Lorenzo Colitti <lorenzo@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] hrtimer: Avoid double reprogramming in
- __hrtimer_start_range_ns()
-Message-ID: <YIaKnuZDfffmmAdM@hirez.programming.kicks-ass.net>
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
- <YHXRWoVIYLL4rYG9@kroah.com>
- <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
- <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
- <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com>
- <87eef5qbrx.ffs@nanos.tec.linutronix.de>
- <87v989topu.ffs@nanos.tec.linutronix.de>
+        Mon, 26 Apr 2021 05:45:23 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27717C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:44:41 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a12so13600079uak.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wdc4NGpyhSPI0l8P0rAkrFsxEyB9PvJbldlNpyk6qiw=;
+        b=Kl5/ZzkJ9EV2ugj/FBuCtAzsCK5u4BnciggCrSmn2qLVdL2oqJI9IwMYUo1b5kg20q
+         4Io75xTCjVechg87eHqaJhvHG5OCXDKz/HXK1tjdQifqLVvdqs7HRWksnM8QPyMQDfOR
+         Ew6YQLqhhC85vvhhfIU4qsm2LWg4OX66KhmIfUkH5bmdnLWD1dZ5f5/Ru9XLKIZFT3Ty
+         W7dSqpkR6DQFfQYhCfHTf4d151c9gE25JH6t22vV+vsvwXggW//4IjaDX4hclxtlCKTt
+         RPxwheSetgvl78CPkQ/51GHkU7x7zyscULwvJN86MJIdbGk3BIF/hgO91vOoMWBo4NIW
+         4ZDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wdc4NGpyhSPI0l8P0rAkrFsxEyB9PvJbldlNpyk6qiw=;
+        b=OxjrS5sbS0xf4q38rXrTcS7YP601y2vb5+/KhgLXf7GOERRJahjuWSvwdO12TmAdmG
+         Dyl4KQKS2BuH/XX8mMSiGq2kS8Xm4JcjBQnQyySSuD+QrnIqnNcYkr4StoylKfA9jog0
+         DHwufUdBS3OUBrxa1zJBxa8USrZOQEUj6Ju4kZphvdRT1iWWg/8W9vs30YkElqayIPKE
+         yvqZ8nEepcGOBWLdGvI+jptjT0zMFhrtPSgA59uJFRdFxkF8pEIVz/L7lyOLFhEFdzbr
+         HRR5pAq1n/JqriJkRxfrXFcVdIAVITti0uHUbV5Vf0mUZm18pQCGJjHoxWOP6KhjQpxN
+         AK0A==
+X-Gm-Message-State: AOAM531250flJxuIsgJiYQKjufZ144qZOBvOvb+toATZU25XHc+5UOHl
+        Ho9y6pQYCEDdSA4mrN09qjTboVHAio9QPvL7yQbkBQ==
+X-Google-Smtp-Source: ABdhPJxXSAA0ghiUOYW0SZ5vU/6S9+Kwa5/yEDnRiDEqeGQMWO1ZaO1iCxx+cGxz6cjwDs2ixcN1ykwBs+8ZvjhHPx8=
+X-Received: by 2002:a9f:37c8:: with SMTP id q66mr11124562uaq.129.1619430279926;
+ Mon, 26 Apr 2021 02:44:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v989topu.ffs@nanos.tec.linutronix.de>
+References: <20210425060207.2591-1-avri.altman@wdc.com>
+In-Reply-To: <20210425060207.2591-1-avri.altman@wdc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 26 Apr 2021 11:44:03 +0200
+Message-ID: <CAPDyKFpZhk-kDpuA1m-E4RXHMXbG72S=OW07XrLzP0-9Q_Gu9g@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] Do not flush cache when it is disabled
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 10:49:33AM +0200, Thomas Gleixner wrote:
-> If __hrtimer_start_range_ns() is invoked with an already armed hrtimer then
-> the timer has to be canceled first and then added back. If the timer is the
-> first expiring timer then on removal the clockevent device is reprogrammed
-> to the next expiring timer to avoid that the pending expiry fires needlessly.
-> 
-> If the new expiry time ends up to be the first expiry again then the clock
-> event device has to reprogrammed again.
-> 
-> Avoid this by checking whether the timer is the first to expire and in that
-> case, keep the timer on the current CPU and delay the reprogramming up to
-> the point where the timer has been enqueued again. 
-> 
-> Reported-by: Lorenzo Colitti <lorenzo@google.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  kernel/time/hrtimer.c |   60 ++++++++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 53 insertions(+), 7 deletions(-)
-> 
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -1030,12 +1030,13 @@ static void __remove_hrtimer(struct hrti
->   * remove hrtimer, called with base lock held
->   */
->  static inline int
-> -remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
-> +remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base,
-> +	       bool restart, bool keep_local)
->  {
->  	u8 state = timer->state;
->  
->  	if (state & HRTIMER_STATE_ENQUEUED) {
-> -		int reprogram;
-> +		bool reprogram;
->  
->  		/*
->  		 * Remove the timer and force reprogramming when high
-> @@ -1048,8 +1049,16 @@ remove_hrtimer(struct hrtimer *timer, st
->  		debug_deactivate(timer);
->  		reprogram = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
->  
-> +		/*
-> +		 * If the timer is not restarted then reprogramming is
-> +		 * required if the timer is local. If it is local and about
-> +		 * to be restarted, avoid programming it twice (on removal
-> +		 * and a moment later when it's requeued).
-> +		 */
->  		if (!restart)
->  			state = HRTIMER_STATE_INACTIVE;
-> +		else
-> +			reprogram &= !keep_local;
+On Sun, 25 Apr 2021 at 08:02, Avri Altman <avri.altman@wdc.com> wrote:
+>
+> v4 -> v5
+>  - patche "Update ext_csd.cache_ctrl if it was written" accepted
+>  - Add one more patch: "Add cache_enabled bus ops"
+>  - Add Acked-by tag
+>  - another rebase
+>
+> v3 -> v4
+>  - Attend Adrian's comments
+>  - Add Acked-by tag
+>
+> v2 -> v3:
+>  - rebase onto recent cache changes
+>
+> v1 -> v2:
+>  - Attend Adrian's comments
+>
+> Cache is a temporary storage space in an eMMC device. Volatile by
+> nature, the cache should in typical case reduce the access time compared
+> to an access to the main nonvolatile storage.
+>
+> Avri Altman (2):
+>   mmc: Add cache_enabled bus ops
+>   mmc: block: Issue flush only if allowed
+>
+>  drivers/mmc/core/block.c   | 9 +++++++++
+>  drivers/mmc/core/core.h    | 7 +++++++
+>  drivers/mmc/core/mmc.c     | 7 +++++++
+>  drivers/mmc/core/mmc_ops.c | 4 +---
+>  4 files changed, 24 insertions(+), 3 deletions(-)
+>
 
-			reprogram = reprogram && !keep_local;
+Normally, I would appreciate this split of the patches, but since
+these are material for stable kernels I decided to squash the patches.
 
-perhaps?
+I also took the opportunity of updating the commit message a bit and
+did a minor cleanup in the code. Please have a look at my next branch
+and yell at me if there is something you don't like.
 
->  
->  		__remove_hrtimer(timer, base, state, reprogram);
->  		return 1;
-> @@ -1103,9 +1112,31 @@ static int __hrtimer_start_range_ns(stru
->  				    struct hrtimer_clock_base *base)
->  {
->  	struct hrtimer_clock_base *new_base;
-> +	bool force_local, first;
->  
-> -	/* Remove an active timer from the queue: */
-> -	remove_hrtimer(timer, base, true);
-> +	/*
-> +	 * If the timer is on the local cpu base and is the first expiring
-> +	 * timer then this might end up reprogramming the hardware twice
-> +	 * (on removal and on enqueue). To avoid that by prevent the
-> +	 * reprogram on removal, keep the timer local to the current CPU
-> +	 * and enforce reprogramming after it is queued no matter whether
-> +	 * it is the new first expiring timer again or not.
-> +	 */
-> +	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
-> +	force_local &= base->cpu_base->next_timer == timer;
+So, applied for next and by adding a stable tag, thanks!
 
-Using bitwise ops on a bool is cute and all, but isn't that more
-readable when written like:
-
-	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases) &&
-		      base->cpu_base->next_timer == timer;
-
-
-> +
-> +	/*
-> +	 * Remove an active timer from the queue. In case it is not queued
-> +	 * on the current CPU, make sure that remove_hrtimer() updates the
-> +	 * remote data correctly.
-> +	 *
-> +	 * If it's on the current CPU and the first expiring timer, then
-> +	 * skip reprogramming, keep the timer local and enforce
-> +	 * reprogramming later if it was the first expiring timer.  This
-> +	 * avoids programming the underlying clock event twice (once at
-> +	 * removal and once after enqueue).
-> +	 */
-> +	remove_hrtimer(timer, base, true, force_local);
->  
->  	if (mode & HRTIMER_MODE_REL)
->  		tim = ktime_add_safe(tim, base->get_time());
-> @@ -1115,9 +1146,24 @@ static int __hrtimer_start_range_ns(stru
->  	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
->  
->  	/* Switch the timer base, if necessary: */
-> -	new_base = switch_hrtimer_base(timer, base, mode & HRTIMER_MODE_PINNED);
-> +	if (!force_local) {
-> +		new_base = switch_hrtimer_base(timer, base,
-> +					       mode & HRTIMER_MODE_PINNED);
-> +	} else {
-> +		new_base = base;
-> +	}
->  
-> -	return enqueue_hrtimer(timer, new_base, mode);
-> +	first = enqueue_hrtimer(timer, new_base, mode);
-> +	if (!force_local)
-> +		return first;
-> +
-> +	/*
-> +	 * Timer was forced to stay on the current CPU to avoid
-> +	 * reprogramming on removal and enqueue. Force reprogram the
-> +	 * hardware by evaluating the new first expiring timer.
-> +	 */
-> +	hrtimer_force_reprogram(new_base->cpu_base, 1);
-> +	return 0;
->  }
-
-There is an unfortunate amount of duplication between
-hrtimer_force_reprogram() and hrtimer_reprogram(). The obvious cleanups
-don't work however :/ Still, does that in_hrtirq optimization make sense
-to have in force_reprogram ?
-
-
+Kind regards
+Uffe
