@@ -2,143 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970BD36BC63
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C854336BC65
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhDZX51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhDZX5Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:57:25 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57728C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:56:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id i201-20020a25d1d20000b02904ed4c01f82bso13206609ybg.20
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=bLpFuVYdmPMnBYEaz/LwZMrDFGhW/UaBfFKC3wD97bw=;
-        b=jtFpzcZtBpvmVY1OQxFz99OaCQ/fGYvIQYAsMbBQWsumpBgVpO8xEj/8Mdu8/VKkAE
-         zv/RYjenlWm2FfayETY4b50Z3O3i0hYcGuoefZnBASscfpyqLwNzqaTwTkTIBZSxGjNe
-         ZAacjTRxdZGCkWPvLfYtKwRHc44z/0sWRzovy820iYr8jKjXq1CMgC13KUneGdQ4lpWi
-         CExeaHOA8ukZOnu1Ox3SV7z5J92DawYKeTbHgdJ+1l8JJQ8ck4o7S0tL2DrKMfBlLfIg
-         GpU2kgeQYxrQfXI1DXOGj7vF76v+WsV5c+ZyEdkTm+LwCYxQzHlexbPeJqOL5J34K0yc
-         pmcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=bLpFuVYdmPMnBYEaz/LwZMrDFGhW/UaBfFKC3wD97bw=;
-        b=AzgbhWnfPSOxx1i52zgIVlXJf5IfcgGfPWmYi3oJh+LOV4lJ9LGsqARJgTfmFKHU9b
-         yZkAH09Jp5zWxlrtKcwSkR7vOhNymWAyFroBAzu8Dt91w4rwzv5wwl0FhnxSlHjBJsQs
-         z51F2I9DrF5Yrh8PhWMoa+6c4vFlsl0xkfG/+jSB4y2CYdKTXA1ZNFbggCP1hBNt/Rp7
-         hsF/d3R8l/5T0lOwK69nZGPvy6ixtkW3W3me9VZzQUaxmMKATThSU/rYs3nSYCpcHwa4
-         U7cD1RCSCdeSzwO6coJl/KecpouWiacbo8zpCaqF/tEAennYFOL9Ve3kKUcm3YHNHv8c
-         Y8cg==
-X-Gm-Message-State: AOAM531xTAmofTPM/+YNFR0eAs5fVzQzocSVbvkboPvxXPbV6K/UW4qJ
-        me61E5zbwlpdSC5hWd6eYTPL3wT/kbH0BG4=
-X-Google-Smtp-Source: ABdhPJyssTCKXdLShQhExFAq2pBioU6ZEBWFFG5oiOoJL/kVfwi2w1LlaVZYGfaj8wii6xiRIYL8G7dgnUVa9Uc=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:d0ce:dc79:218:3f25])
- (user=saravanak job=sendgmr) by 2002:a25:d40d:: with SMTP id
- m13mr235353ybf.170.1619481402352; Mon, 26 Apr 2021 16:56:42 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 16:56:38 -0700
-Message-Id: <20210426235638.1285530-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH] spi: Fix spi device unregister flow
-From:   Saravana Kannan <saravanak@google.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        kernel-team@android.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S234873AbhDZX7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:59:54 -0400
+Received: from m12-13.163.com ([220.181.12.13]:51729 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232022AbhDZX7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:59:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=Pj5yLG1cBLVU5iC8Na
+        7OQPbY3S9U7b89hUWwACed168=; b=AH6sSiAmv9+EcPUt+XyBmW5lN+Xa6+CtNE
+        AcSpnQoHaplRN+ecv5/uML7CtMqlHykfXgSp29Xtai35cjI9ks7PDaVXy6iOC0OY
+        POTfEqKtDsg6Q5yrXSlTJ8nuJSriyMEoC25kPlecblSLPjIRh8B9nYpTrbks9HQb
+        YEgFT4kDA=
+Received: from localhost.localdomain (unknown [101.229.16.77])
+        by smtp9 (Coremail) with SMTP id DcCowAAHK328U4dg9aovHw--.40188S2;
+        Tue, 27 Apr 2021 07:59:00 +0800 (CST)
+From:   qhjindev <qhjin_dev@163.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, gustavoars@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qhjin_dev@163.com
+Subject: [PATCH] fddi/skfp: fix typo
+Date:   Tue, 27 Apr 2021 07:57:52 +0800
+Message-Id: <20210426235752.30816-1-qhjin_dev@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DcCowAAHK328U4dg9aovHw--.40188S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XF18XryrtF4UJF15ur43GFg_yoWxCrb_ua
+        1UGFnxZrWUCrsIqa1Fk3Z3A345KF4q934kA34agrW3AFnFyw1ay348Wr4xCrs8Zw45uF9r
+        CrZ8JF18A3sxKjkaLaAFLSUrUUUU8b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRNfOz7UUUUU==
+X-Originating-IP: [101.229.16.77]
+X-CM-SenderInfo: ptkmx0hbgh4qqrwthudrp/1tbiPQSAHFSIkMer8wAAs2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an SPI device is unregistered, the spi->controller->cleanup() is
-called in the device's release callback. That's wrong for a couple of
-reasons:
+change 'privae' to 'private'
 
-1. spi_dev_put() can be called before spi_add_device() is called. And
-   it's spi_add_device() that calls spi_setup(). This will cause clean()
-   to get called without the spi device ever being setup.
-
-2. There's no guarantee that the controller's driver would be present by
-   the time the spi device's release function gets called.
-
-3. It also causes "sleeping in atomic context" stack dump[1] when device
-   link deletion code does a put_device() on the spi device.
-
-Fix these issues by simply moving the cleanup from the device release
-callback to the actual spi_unregister_device() function.
-
-[1] - https://lore.kernel.org/lkml/CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com/
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: qhjindev <qhjin_dev@163.com>
 ---
- drivers/spi/spi.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/net/fddi/skfp/h/smc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index b08efe88ccd6..7d0d89172a1d 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -47,10 +47,6 @@ static void spidev_release(struct device *dev)
- {
- 	struct spi_device	*spi = to_spi_device(dev);
- 
--	/* spi controllers may cleanup for released devices */
--	if (spi->controller->cleanup)
--		spi->controller->cleanup(spi);
--
- 	spi_controller_put(spi->controller);
- 	kfree(spi->driver_override);
- 	kfree(spi);
-@@ -558,6 +554,12 @@ static int spi_dev_check(struct device *dev, void *data)
- 	return 0;
- }
- 
-+static void spi_cleanup(struct spi_device *spi)
-+{
-+	if (spi->controller->cleanup)
-+		spi->controller->cleanup(spi);
-+}
-+
- /**
-  * spi_add_device - Add spi_device allocated with spi_alloc_device
-  * @spi: spi_device to register
-@@ -622,11 +624,13 @@ int spi_add_device(struct spi_device *spi)
- 
- 	/* Device may be bound to an active driver when this returns */
- 	status = device_add(&spi->dev);
--	if (status < 0)
-+	if (status < 0) {
- 		dev_err(dev, "can't add %s, status %d\n",
- 				dev_name(&spi->dev), status);
--	else
-+		spi_cleanup(spi);
-+	} else {
- 		dev_dbg(dev, "registered child %s\n", dev_name(&spi->dev));
-+	}
- 
- done:
- 	mutex_unlock(&spi_add_lock);
-@@ -713,6 +717,8 @@ void spi_unregister_device(struct spi_device *spi)
- 	if (!spi)
- 		return;
- 
-+	spi_cleanup(spi);
-+
- 	if (spi->dev.of_node) {
- 		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
- 		of_node_put(spi->dev.of_node);
+diff --git a/drivers/net/fddi/skfp/h/smc.h b/drivers/net/fddi/skfp/h/smc.h
+index 706fa619b703..3814a2ff64ae 100644
+--- a/drivers/net/fddi/skfp/h/smc.h
++++ b/drivers/net/fddi/skfp/h/smc.h
+@@ -228,7 +228,7 @@ struct s_phy {
+ 	u_char timer1_exp ;
+ 	u_char timer2_exp ;
+ 	u_char pcm_pad1[1] ;
+-	int	cem_pst ;	/* CEM privae state; used for dual homing */
++	int	cem_pst ;	/* CEM private state; used for dual homing */
+ 	struct lem_counter lem ;
+ #ifdef	AMDPLC
+ 	struct s_plc	plc ;
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+2.17.1
+
 
