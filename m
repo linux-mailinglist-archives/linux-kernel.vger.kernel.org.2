@@ -2,77 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37E936AB07
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7887836AB0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhDZDT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 23:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        id S231800AbhDZDVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 23:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhDZDTz (ORCPT
+        with ESMTP id S231650AbhDZDVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 23:19:55 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802E2C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 20:19:13 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 10so2590700pfl.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 20:19:13 -0700 (PDT)
+        Sun, 25 Apr 2021 23:21:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07ADEC061760
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 20:20:25 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id c4so15276415wrt.8
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 20:20:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1idmU5oasi5s8yake1E5MV/fuZG36GG+m+QfyCDPPAg=;
-        b=FFBBiEbKdwEOvS0oHpkmceh8YwkI8JWzk9aEm6Q2tDb7iK0USLW0QEKvQG1ZV1P/N7
-         1ynXAijGp5Rvm//DBC+C5zYnIQmGDnQQMASRr8Tnlv271bcyXtY12nHSD+2I2PAl6+Ga
-         OkXJOSqpveQOemOW3Ls3p2DmZP5lUBE4R/ncQ=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A+O9XxSyRAxC04s135zV0ImqDIzVrFlS/3PdrRouQHM=;
+        b=tz057H0ZyVDZA4cz2Ph0/d0cDQLB20ImUcGHhlecr3NTGfQE0EVtrrle92XvODW3CP
+         SQ8sE1EdnY5psqwpYIIPbQ+4hjw5CArt0nfU8maG1GwJkA4Cl4cLSGP/FS4R/qCYbfLV
+         Xk5S8OEfeQd4xms8ondf7Bx8E+jsbTOPzyQtC8+7AyvxvgSSQ/aS3iqp0qgrflXyNI0f
+         /ILMdVMa41rChzyMEMaM/nUvemuLZg5PyL5pytZb2M6zuqEVBR+rA79auA2U1klA/9nM
+         huPH8+uou1uRkF44Na0JYeRJ/HXj3p+XrEsMQPqRjNX1y0s8ZGsIwmOnIzljpL0USf0g
+         XhIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1idmU5oasi5s8yake1E5MV/fuZG36GG+m+QfyCDPPAg=;
-        b=BjMBeklKxO56WvC+EXd3TNofSPXGgE9oCZ36nDiDPI/rBbwEtTg+0Z4cZRd7j58eMJ
-         FLfa+1JlGnwNr1SPPfNHivLyZQlWnAdRyXyOv44eQONFicJPe9sSw5lUSwwrdRWgGv/R
-         8vrIHJ0E0ptaAE8c9gjYeNQocalJC+1WEH1RbEbZ9M1VvvtaOyxxtotrg+hsiSn6Z0uG
-         FCppI7FRMxZpKU8to+PY9j2ZHHUOtT5T08LgSICrPfnyt+z+XCOhm41qzxE4P2jHYDtx
-         nOA6hpnAg8dPKYY5bRkVprnfiDoEMV0vpGtfj1Zj/xivRYAo2QpFKH0umwieIH1V3uIY
-         pvnQ==
-X-Gm-Message-State: AOAM531mCUFA+A5DSo+aBFD4odejunS2+OupFLyrvixBAW3LIg0KbKmy
-        DIPFwbfj3mdh6j0OEauvgKonww==
-X-Google-Smtp-Source: ABdhPJw2NvtElpce5Tsiply0Pczv0FCmrOEKJ1UaVHlZ+QzzAJJ0woA/MGNFNFMfXQxSQ5/2tsFmNg==
-X-Received: by 2002:a65:56cc:: with SMTP id w12mr14980759pgs.334.1619407153036;
-        Sun, 25 Apr 2021 20:19:13 -0700 (PDT)
-Received: from haraichi.dnlocal (113x36x239x145.ap113.ftth.ucom.ne.jp. [113.36.239.145])
-        by smtp.googlemail.com with ESMTPSA id s32sm96035pfw.2.2021.04.25.20.19.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Apr 2021 20:19:12 -0700 (PDT)
-From:   Kenta Ishiguro <kentaishiguro@sslab.ics.keio.ac.jp>
-To:     kernellwp@gmail.com
-Cc:     david@redhat.com, jmattson@google.com, joro@8bytes.org,
-        kentaishiguro@sslab.ics.keio.ac.jp, kono@sslab.ics.keio.ac.jp,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, pl@sslab.ics.keio.ac.jp, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com
-Subject: Re: [RFC PATCH 0/2] Mitigating Excessive Pause-Loop Exiting in VM-Agnostic KVM
-Date:   Mon, 26 Apr 2021 12:18:58 +0900
-Message-Id: <20210426031858.12003-1-kentaishiguro@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CANRm+CzoS=HhiHg6w6dy8P+r3POeP3uMZqFvJr4oHMa1aNJqxg@mail.gmail.com>
-References: <CANRm+CzoS=HhiHg6w6dy8P+r3POeP3uMZqFvJr4oHMa1aNJqxg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A+O9XxSyRAxC04s135zV0ImqDIzVrFlS/3PdrRouQHM=;
+        b=ee7YNkFSJXuFAeNnQjDcWqW9ULdm551zgqlAeXl0jisOJHRBHELzPzRjvNS2UBOGuI
+         1kU8XU1LCdJUTkxECWK+CeFEUZGTv4f3mFNI9daJDhxlYxZgnhR0GO1Dr7zKM5kgIAHG
+         LEOb+9bhaYC0j3jFX2UYttpjNE6UYX0izXRhIoznRYTW/lhdVb2sf/iCRsk6xkha50as
+         I2YA7Zo+N/9n/QFncgaVhQ5KefZklPxS8uUGcvrwIGGrfgCitZumxaEVZ4BZWzOOsFzL
+         r4tM9vkk5XYThVSyl6JzM/zGew9uU7SCu2rXDQtKC1dFjapvKHSUJck0eWpmjlpkdxf8
+         iTIQ==
+X-Gm-Message-State: AOAM533taD2l8hWeVs1XX29EyKGcb7xvmnqhZ5rlbvyYeaNuuqpyL94w
+        OTERTjFS0zin3WZZrNK6ZKxTDRI3PCHQ6LWD3Epv9g==
+X-Google-Smtp-Source: ABdhPJwei9VUtsJLBZyc0PgKIEMreSZc6VoK8XBJH+rMhh/h403LwXwyRD34IF06reumKVvxPXGYSIv/3Akqw7iHNRE=
+X-Received: by 2002:a5d:5903:: with SMTP id v3mr4103013wrd.405.1619407223551;
+ Sun, 25 Apr 2021 20:20:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
+ <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com> <50de1e9f-eed7-f827-77ea-708f4621e3d4@drivenets.com>
+In-Reply-To: <50de1e9f-eed7-f827-77ea-708f4621e3d4@drivenets.com>
+From:   Matt Mathis <mattmathis@google.com>
+Date:   Sun, 25 Apr 2021 20:20:11 -0700
+Message-ID: <CAH56bmA7bRwd5DVVA++jxZqoG2GVLSMb+g1iyN8zHgFFeP-BVQ@mail.gmail.com>
+Subject: Re: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
+To:     Leonard Crestez <lcrestez@drivenets.com>
+Cc:     Neal Cardwell <ncardwell@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Yuchung Cheng <ycheng@google.com>,
+        John Heffner <johnwheffner@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the reply.
+First RFC 4821 was finished in 2007, but most of the work was done
+several years earlier.   In the intervening years just about
+everything else in TCP has been overhauled.   The 11 packets was
+probably reasonable for Reno with early retransmit and non adaptive
+reordering.   These are archaic algorithms by today's standards.
 
-My question is about following scenario:
-1. running vCPU receives IPI and the vCPU's ipi_received gets true
-2. the vCPU responds to the IPI
-3. the vCPU exits
-4. the vCPU is preempted by KVM
-5. the vCPU is boosted, but it has already responded to the IPI
-6. the vCPU enters and the vCPU's ipi_received is cleaned
+You have two problems that you need to address:
+1) like TSO you need to hold back transmits that are otherwise
+eligible to be sent, such that you have enough data in the backlog to
+send a probe or TSO.
+2) you need to make sure that TCP recovers promptly when a probe is
+lost (which is the most common case).  This is not so hard on a well
+behaved network, but is likely to make your head hurt in the presence
+of reordering (e,g, ECMP w/o flow pinning).  RACK helps, I'm sure.
 
-In this case, I think the check of vcpu->preempted does not limit the candidate vCPUs.
+Thanks,
+--MM--
+The best way to predict the future is to create it.  - Alan Kay
 
+We must not tolerate intolerance;
+       however our response must be carefully measured:
+            too strong would be hypocritical and risks spiraling out of control;
+            too weak risks being mistaken for tacit approval.
+
+On Sun, Apr 25, 2021 at 7:34 PM Leonard Crestez <lcrestez@drivenets.com> wrote:
+>
+> On 4/21/21 3:47 PM, Neal Cardwell wrote:
+> > On Wed, Apr 21, 2021 at 6:21 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+> >>
+> >> According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
+> >> in order to accumulate enough data" but linux almost never does that.
+> >>
+> >> Linux waits for probe_size + (1 + retries) * mss_cache to be available
+> >> in the send buffer and if that condition is not met it will send anyway
+> >> using the current MSS. The feature can be made to work by sending very
+> >> large chunks of data from userspace (for example 128k) but for small writes
+> >> on fast links probes almost never happen.
+> >>
+> >> This patch tries to implement the "MAY" by adding an extra flag
+> >> "wait_data" to icsk_mtup which is set to 1 if a probe is possible but
+> >> insufficient data is available. Then data is held back in
+> >> tcp_write_xmit until a probe is sent, probing conditions are no longer
+> >> met, or 500ms pass.
+> >>
+> >> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+> >>
+> >> ---
+> >>   Documentation/networking/ip-sysctl.rst |  4 ++
+> >>   include/net/inet_connection_sock.h     |  7 +++-
+> >>   include/net/netns/ipv4.h               |  1 +
+> >>   include/net/tcp.h                      |  2 +
+> >>   net/ipv4/sysctl_net_ipv4.c             |  7 ++++
+> >>   net/ipv4/tcp_ipv4.c                    |  1 +
+> >>   net/ipv4/tcp_output.c                  | 54 ++++++++++++++++++++++++--
+> >>   7 files changed, 71 insertions(+), 5 deletions(-)
+> >>
+> >> My tests are here: https://github.com/cdleonard/test-tcp-mtu-probing
+> >>
+> >> This patch makes the test pass quite reliably with
+> >> ICMP_BLACKHOLE=1 TCP_MTU_PROBING=1 IPERF_WINDOW=256k IPERF_LEN=8k while
+> >> before it only worked with much higher IPERF_LEN=256k
+> >>
+> >> In my loopback tests I also observed another issue when tcp_retries
+> >> increases because of SACKReorder. This makes the original problem worse
+> >> (since the retries amount factors in buffer requirement) and seems to be
+> >> unrelated issue. Maybe when loss happens due to MTU shrinkage the sender
+> >> sack logic is confused somehow?
+> >>
+> >> I know it's towards the end of the cycle but this is mostly just intended for
+> >> discussion.
+> >
+> > Thanks for raising the question of how to trigger PMTU probes more often!
+> >
+> > AFAICT this approach would cause unacceptable performance impacts by
+> > often injecting unnecessary 500ms delays when there is no need to do
+> > so.
+> >
+> > If the goal is to increase the frequency of PMTU probes, which seems
+> > like a valid goal, I would suggest that we rethink the Linux heuristic
+> > for triggering PMTU probes in the light of the fact that the loss
+> > detection mechanism is now RACK-TLP, which provides quick recovery in
+> > a much wider variety of scenarios.
+>
+> > After all, https://tools.ietf.org/html/rfc4821#section-7.4 says:
+> >
+> >     In addition, the timely loss detection algorithms in most protocols
+> >     have pre-conditions that SHOULD be satisfied before sending a probe.
+> >
+> > And we know that the "timely loss detection algorithms" have advanced
+> > since this RFC was written in 2007. >
+> > You mention:
+> >> Linux waits for probe_size + (1 + retries) * mss_cache to be available
+> >
+> > The code in question seems to be:
+> >
+> >    size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
+>
+> As far as I understand this is meant to work with classical retransmit:
+> if 3 dupacks are received then the first segment is considered lost and
+> probe success or failure is can determine within roughly 1*rtt. RACK
+> marks segments as lost based on echoed timestamps so it doesn't need
+> multiple segments. The minimum time interval is only a little higher
+> (5/4 rtt). Is this correct?
+>
+> > How about just changing this to:
+> >
+> >    size_needed = probe_size + tp->mss_cache;
+> >
+> > The rationale would be that if that amount of data is available, then
+> > the sender can send one probe and one following current-mss-size
+> > packet. If the path MTU has not increased to allow the probe of size
+> > probe_size to pass through the network, then the following
+> > current-mss-size packet will likely pass through the network, generate
+> > a SACK, and trigger a RACK fast recovery 1/4*min_rtt later, when the
+> > RACK reorder timer fires.
+>
+> This appears to almost work except it stalls after a while. I spend some
+> time investigating it and it seems that cwnd is shrunk on mss increases
+> and does not go back up. This causes probes to be skipped because of a
+> "snd_cwnd < 11" condition.
+>
+> I don't undestand where that magical "11" comes from, could that be
+> shrunk. Maybe it's meant to only send probes when the cwnd is above the
+> default of 10? Then maybe mtu_probe_success shouldn't shrink mss below
+> what is required for an additional probe, or at least round-up.
+>
+> The shrinkage of cwnd is a problem with this "short probes" approach
+> because tcp_is_cwnd_limited returns false because tp->max_packets_out is
+> smaller (4). With longer probes tp->max_packets_out is larger (6) so
+> tcp_is_cwnd_limited returns true even for a cwnd of 10.
+>
+> I'm testing using namespace-to-namespace loopback so my delays are close
+> to zero. I tried to introduce an artificial delay of 30ms (using tc
+> netem) and it works but 20ms does not.
+>
+> > A secondary rationale for this heuristic would be: if the flow never
+> > accumulates roughly two packets worth of data, then does the flow
+> > really need a bigger packet size?
+>
+> The problem is that "accumulating sufficient data" is an extremely fuzzy
+> concept. In particular it seems that at the same traffic level
+> performing shorter writes from userspace (2kb instead of 64k) can
+> prevent mtu probing entirely and this is unreasonable.
+>
+> --
+> Regards,
+> Leonard
