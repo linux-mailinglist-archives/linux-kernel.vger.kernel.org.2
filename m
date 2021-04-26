@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B5036AEE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D5036AEFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233546AbhDZHsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:48:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56166 "EHLO mail.kernel.org"
+        id S233597AbhDZHuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:50:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233632AbhDZHjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD4AE613D2;
-        Mon, 26 Apr 2021 07:38:22 +0000 (UTC)
+        id S233484AbhDZHlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:41:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C26161263;
+        Mon, 26 Apr 2021 07:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422703;
-        bh=dQOG0laoapLFxO2rFa+JWZVS/IKfrplnybk3BUCUjbc=;
+        s=korg; t=1619422754;
+        bh=6v8gePp/8bRPStrNt0IOaXTQgKioOFc+AMGRHdCE9C0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOxL6PZmYsQi7xofhzvsIARGtU2MHzgBMnqSBuYf9OeZbqL2g6Vig6V8x/+bBngB4
-         Kcqa1mJvS50fTUBG3sY5iYXOBj3Ud+EHsAbB2++p0lI8Vxk4lsEfM/gHOnsRoIHOXq
-         GRAXAPHJs+QhPL16M+srhdWXn/gohehuVjVHjTZQ=
+        b=xCmDgDF+fJzJaYRqI49CD4HbHQ/YK8EQWp2SfGLhS7BYZQZJrgDu3P0ZJntQZI/qN
+         Br3svnUQrGDNhfRh1MsgRfXpxHTiyeaNGmssa8lsKl8PGb4vZt6yH143DnKjFC9/Gz
+         8QcF2iH4toKBstHSfTgW6id4pOMx9EIe2jGFg600=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ali Saidi <alisaidi@amazon.com>,
+        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/20] locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
-Date:   Mon, 26 Apr 2021 09:29:56 +0200
-Message-Id: <20210426072816.857926428@linuxfoundation.org>
+Subject: [PATCH 5.10 15/36] perf/x86/kvm: Fix Broadwell Xeon stepping in isolation_ucodes[]
+Date:   Mon, 26 Apr 2021 09:29:57 +0200
+Message-Id: <20210426072819.307837109@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
-References: <20210426072816.686976183@linuxfoundation.org>
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+References: <20210426072818.777662399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ali Saidi <alisaidi@amazon.com>
+From: Jim Mattson <jmattson@google.com>
 
-[ Upstream commit 84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896 ]
+[ Upstream commit 4b2f1e59229b9da319d358828cdfa4ddbc140769 ]
 
-While this code is executed with the wait_lock held, a reader can
-acquire the lock without holding wait_lock.  The writer side loops
-checking the value with the atomic_cond_read_acquire(), but only truly
-acquires the lock when the compare-and-exchange is completed
-successfully which isn’t ordered. This exposes the window between the
-acquire and the cmpxchg to an A-B-A problem which allows reads
-following the lock acquisition to observe values speculatively before
-the write lock is truly acquired.
+The only stepping of Broadwell Xeon parts is stepping 1. Fix the
+relevant isolation_ucodes[] entry, which previously enumerated
+stepping 2.
 
-We've seen a problem in epoll where the reader does a xchg while
-holding the read lock, but the writer can see a value change out from
-under it.
+Although the original commit was characterized as an optimization, it
+is also a workaround for a correctness issue.
 
-  Writer                                | Reader
-  --------------------------------------------------------------------------------
-  ep_scan_ready_list()                  |
-  |- write_lock_irq()                   |
-      |- queued_write_lock_slowpath()   |
-	|- atomic_cond_read_acquire()   |
-				        | read_lock_irqsave(&ep->lock, flags);
-     --> (observes value before unlock) |  chain_epi_lockless()
-     |                                  |    epi->next = xchg(&ep->ovflist, epi);
-     |                                  | read_unlock_irqrestore(&ep->lock, flags);
-     |                                  |
-     |     atomic_cmpxchg_relaxed()     |
-     |-- READ_ONCE(ep->ovflist);        |
+If a PMI arrives between kvm's call to perf_guest_get_msrs() and the
+subsequent VM-entry, a stale value for the IA32_PEBS_ENABLE MSR may be
+restored at the next VM-exit. This is because, unbeknownst to kvm, PMI
+throttling may clear bits in the IA32_PEBS_ENABLE MSR. CPUs with "PEBS
+isolation" don't suffer from this issue, because perf_guest_get_msrs()
+doesn't report the IA32_PEBS_ENABLE value.
 
-A core can order the read of the ovflist ahead of the
-atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
-semantics addresses this issue at which point the atomic_cond_read can
-be switched to use relaxed semantics.
-
-Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
-Signed-off-by: Ali Saidi <alisaidi@amazon.com>
-[peterz: use try_cmpxchg()]
+Fixes: 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary work in guest filtering")
+Signed-off-by: Jim Mattson <jmattson@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steve Capper <steve.capper@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Tested-by: Steve Capper <steve.capper@arm.com>
+Reviewed-by: Peter Shier <pshier@google.com>
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210422001834.1748319-1-jmattson@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/qrwlock.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/x86/events/intel/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index fe9ca92faa2a..909b0bf22a1e 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -61,6 +61,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
-  */
- void queued_write_lock_slowpath(struct qrwlock *lock)
- {
-+	int cnts;
-+
- 	/* Put the writer into the wait queue */
- 	arch_spin_lock(&lock->wait_lock);
- 
-@@ -74,9 +76,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
- 
- 	/* When no more readers or writers, set the locked flag */
- 	do {
--		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
--	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
--					_QW_LOCKED) != _QW_WAITING);
-+		cnts = atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
-+	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
- unlock:
- 	arch_spin_unlock(&lock->wait_lock);
- }
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index e7dc13fe5e29..0b9975200ae3 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4387,7 +4387,7 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 3, 0x07000009),
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 4, 0x0f000009),
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 5, 0x0e000002),
+-	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
++	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 1, 0x0b000014),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
 -- 
 2.30.2
 
