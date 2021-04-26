@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1506236B993
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A2D36B99D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239880AbhDZTDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:03:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239866AbhDZTDH (ORCPT
+        id S239092AbhDZTEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:04:00 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34497 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239897AbhDZTD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:03:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619463745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lUOmIfVKVmn7W2gLrr33NGKDnELSORbbbUBZA/ks9GQ=;
-        b=A2KUIkTmVsu09Tv8jmIbxmiKfIj5mSNZmhH3sZGug+MPbKuMqHAEDDiQ6Lo0JpcGDQJB1B
-        lacqkO2y2eJXWX5wsKVEwuOWW3LgOGdDPaw+nGg4GHeW7YV/9b0jFrZm6t3C1I6YqMiEF8
-        8bLJO9ReQzQhUQEHpc59LtGyobKYqAQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-5MeCUxOGM2-6fMla4thlMg-1; Mon, 26 Apr 2021 15:02:18 -0400
-X-MC-Unique: 5MeCUxOGM2-6fMla4thlMg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5D22107ACE8;
-        Mon, 26 Apr 2021 19:02:13 +0000 (UTC)
-Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6EBA4610A8;
-        Mon, 26 Apr 2021 19:02:13 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 13:02:12 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shanker R Donthineni <sdonthineni@nvidia.com>
-Cc:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH 1/1] PCI: Add pci reset quirk for Nvidia GPUs
-Message-ID: <20210426130212.4c2e78f2@redhat.com>
-In-Reply-To: <c758d8a8-4f8b-c505-118e-b364e93ae539@nvidia.com>
-References: <20210423145402.14559-1-sdonthineni@nvidia.com>
-        <ff4812ba-ec1d-9462-0cbd-029635af3267@kernel.org>
-        <20210423093701.594efd86@redhat.com>
-        <c758d8a8-4f8b-c505-118e-b364e93ae539@nvidia.com>
+        Mon, 26 Apr 2021 15:03:29 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6DD395803EE;
+        Mon, 26 Apr 2021 15:02:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 26 Apr 2021 15:02:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=jlblDGKKV68vfiveJhVJ8dGvoNh
+        vhfHu+cqRN1LYftE=; b=6uRE5o4evdjcVrMLLg4VChLZMlox1EIpQvg512h2ttT
+        0cqWGEvLxtWSle4WMHIY8HfsaN2BNM2yhGvTIukOVieT1x/yuHWJ0HIblahhREX1
+        lkYcwJX96BeASy2Y2Nvq7HdFQfPOflXr9aTGjE2O5unI12sFk3rnmhdYedZyC6Fy
+        f3gjfvvyh9cLGtq/oXnopjVQFWeZwY3fHE52WNglSTMrNS+AhvgGk8oHw62h2xO2
+        w84apisB9ajInCMevTFAp+8Y8F6nb2aV0V860VVhlG0QRDBsXyzPyghKOjP50Mjc
+        SOo9tbzDoO638yXZdTH4f58foIME3MXh+UvkbNLD5TA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jlblDG
+        KKV68vfiveJhVJ8dGvoNhvhfHu+cqRN1LYftE=; b=Oi6UozXjCLyKLEBgVVwTln
+        Q1JMo0Whhdo4r2iofXS5dE1si64zw18X60KHi8vWK5PQDfOteziedsVPUn/A7xXd
+        +SRHYy2sAS9FoiMEhSqGjPj26MBsAAi8urRc+nkMSvm1Z5e1Oe2kTZ8bbZ6er4bw
+        OYSSvbXPqr49fTqPxTuVCQ+D3ZgeBnTenFZwm4zwY+fbcTbiZi3TNlTmbC2V8U/Y
+        pGjMzNTHLqCf8moceRABm5m804MqElA8jqIKjaON+AvD9d2O1jHptaozyaQaSYdX
+        a6aPxNPC0O7y11uNT+u513SMvKv7TbAO630ry6WiF6+avnH6ZRlUkbnuOjpEF7Kw
+        ==
+X-ME-Sender: <xms:Rw6HYF2L0tpn99bjt9FuLyKQxCIQFIZwdSczZNsaAIL_zku247ts7A>
+    <xme:Rw6HYLymEf5utr8QOvYpRZxTaxBm6P1qAeArMz9lmHktKlpGQ9ohscati0kjecOw8
+    GMjxixxbX9iasZXfkM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddukedgudefgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
+    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
+    grthhtvghrnhepgeekfeejgeektdejgfefudelkeeuteejgefhhfeugffffeelheegieef
+    vdfgtefhnecukfhppedujeefrdefkedruddujedrkeehnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
+    rg
+X-ME-Proxy: <xmx:Rw6HYBhsGSkcyTKlD5Fv9pUCL1TA1wodniFJHxX8dzKpiwv8iC9FBw>
+    <xmx:Rw6HYOrZXsTfNoDXtlCSrbMbRkbbn_yJ63wa7n0udYb6_cp7fPF1LA>
+    <xmx:Rw6HYIjXx5oaxjlV__TBUoBHOgY529rU_i4XsRaxo0DAla0MzVjJIw>
+    <xmx:SA6HYDTQFnwT4NtSmpVb1ymkO8g2HmocMa9op_ID5_qt0rN0PXEhXA>
+Received: from cisco (unknown [173.38.117.85])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D31661080066;
+        Mon, 26 Apr 2021 15:02:30 -0400 (EDT)
+Date:   Mon, 26 Apr 2021 13:02:29 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to
+ seccomp user notifier
+Message-ID: <20210426190229.GB1605795@cisco>
+References: <20210426180610.2363-1-sargun@sargun.me>
+ <20210426180610.2363-3-sargun@sargun.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426180610.2363-3-sargun@sargun.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 16:45:15 -0500
-Shanker R Donthineni <sdonthineni@nvidia.com> wrote:
+On Mon, Apr 26, 2021 at 11:06:07AM -0700, Sargun Dhillon wrote:
+> @@ -1103,11 +1111,31 @@ static int seccomp_do_user_notification(int this_syscall,
+>  	 * This is where we wait for a reply from userspace.
+>  	 */
+>  	do {
+> +		interruptible = notification_interruptible(&n);
+> +
+>  		mutex_unlock(&match->notify_lock);
+> -		err = wait_for_completion_interruptible(&n.ready);
+> +		if (interruptible)
+> +			err = wait_for_completion_interruptible(&n.ready);
+> +		else
+> +			err = wait_for_completion_killable(&n.ready);
+>  		mutex_lock(&match->notify_lock);
+> -		if (err != 0)
+> +
+> +		if (err != 0) {
+> +			/*
+> +			 * There is a race condition here where if the
+> +			 * notification was received with the
+> +			 * SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE flag, but a
+> +			 * non-fatal signal was received before we could
+> +			 * transition we could erroneously end our wait early.
+> +			 *
+> +			 * The next wait for completion will ensure the signal
+> +			 * was not fatal.
+> +			 */
+> +			if (interruptible && !notification_interruptible(&n))
+> +				continue;
 
-> On 4/23/21 10:37 AM, Alex Williamson wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > On Fri, 23 Apr 2021 11:12:05 -0400
-> > Sinan Kaya <okaya@kernel.org> wrote:
-> > =20
-> >> +Alex,
-> >>
-> >> On 4/23/2021 10:54 AM, Shanker Donthineni wrote: =20
-> >>> +static int reset_nvidia_gpu_quirk(struct pci_dev *dev, int probe)
-> >>> +{
-> >>> +#ifdef CONFIG_ACPI
-> >>> +   acpi_handle handle =3D ACPI_HANDLE(&dev->dev);
-> >>> +
-> >>> +   /*
-> >>> +    * Check for the affected devices' ID range. If device is not in
-> >>> +    * the affected range, return -ENOTTY indicating no device
-> >>> +    * specific reset method is available.
-> >>> +    */
-> >>> +   if ((dev->device & 0xffc0) !=3D 0x2340)
-> >>> +           return -ENOTTY;
-> >>> +
-> >>> +   /*
-> >>> +    * Return -ENOTTY indicating no device-specific reset method if _=
-RST
-> >>> +    * method is not defined
-> >>> +    */
-> >>> +   if (!handle || !acpi_has_method(handle, "_RST"))
-> >>> +           return -ENOTTY;
-> >>> +
-> >>> +   /* Return 0 for probe phase indicating that we can reset this dev=
-ice */
-> >>> +   if (probe)
-> >>> +           return 0;
-> >>> +
-> >>> +   /* Invoke _RST() method to perform the device-specific reset */
-> >>> +   if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL)=
-)) {
-> >>> +           pci_warn(dev, "Failed to reset the device\n");
-> >>> +           return -EINVAL;
-> >>> +   }
-> >>> +   return 0;
-> >>> +#else
-> >>> +   return -ENOTTY;
-> >>> +#endif
-> >>> +} =20
-> >> Interesting, some pieces of this function (especially the ACPI _RST)
-> >> could be generalized. =20
-> > Agreed, we should add a new function level reset method for this rather
-> > than a device specific reset.  At that point the extent of the device
-> > specific quirk could be to restrict SBR. =20
-> Thanks Sinan/Alex, Agree ACPI _RST is a generic method applicable
-> to all PCI-ACPI-DEVICE objects. I'll define a new helper function
-> pci_dev_acpi_reset() and move common code to it. I've one question
-> before posting a v2 patch, should I call pci_dev_acpi_reset() from
-> the reset_nvidia_gpu_quirk() or always apply _RST method if exists?
->=20
-> Option-1:
-> static int reset_nvidia_gpu_quirk(struct pci_dev *dev, int probe)
-> {
->  =C2=A0=C2=A0=C2=A0 /* Check for the affected devices' ID range */
->  =C2=A0=C2=A0=C2=A0 if ((dev->device & 0xffc0) !=3D 0x2340)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOTTY;
->  =C2=A0=C2=A0=C2=A0 return pci_dev_acpi_reset(dev, probe);
-> }
->=20
-> OR
->=20
-> Option-2
-> int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-> {
->  =C2=A0=C2=A0 const struct pci_dev_reset_methods *i;
->=20
->  =C2=A0=C2=A0 if (!pci_dev_acpi_reset(dev, probe))
->  =C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->  =C2=A0=C2=A0 ...
-> }
+I'm trying to understand how one would hit this race,
 
-Not quite either actually.  I think this is a standard mechanism for
-firmware to provide a reset method for a device, so it should be called
-as a first-class mechanism from __pci_reset_function_locked() and
-pci_probe_reset_function() rather than from within the device specific
-callout.  pci_dev_specific_reset() should only handle our own software
-defined reset quirks for devices.  It seems like we should be able to
-safely probe any device for an ACPI device handle with _RST method
-support.
+> @@ -1457,6 +1487,12 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
+>  	unotif.pid = task_pid_vnr(knotif->task);
+>  	unotif.data = *(knotif->data);
+>  
+> +	if (unotif.flags & SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE) {
+> +		knotif->wait_killable = true;
+> +		complete(&knotif->ready);
+> +	}
+> +
+> +
+>  	knotif->state = SECCOMP_NOTIFY_SENT;
+>  	wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
+>  	ret = 0;
 
-I'd likely set the default priority of a a new acpi reset mechanism
-below our own software defined resets, but above hardware resets.  We
-should only need the PCI header fixup quirk for this device to set the
-NO_BUS_RESET flag, which would prevent userspace from re-prioritizing
-SBR reset when we consider proposals like the one from Amey to allow
-userspace policy management of reset mechanisms[1].
+Seems like the idea is that if someone does a ioctl(RECV, ...) twice
+they'll hit it? But doesn't the test for NOTIFY_INIT and return
+-ENOENT above this hunk prevent that?
 
-> >    It'd be useful to know what
-> > these devices are (not in pciids yet), why we expect to only see them in
-> > specific platforms (embedded device?), and the failure mode of the SBR.=
- =20
-> These are not plug-in PCIe GPU cards, will exist on upcoming
-> server baseboards. Triggering SBR without firmware notification
-> would leave the device inoperable for the current system boot.
-> It requires a system hard-reboot to get the GPU device back to
-> normal operating condition post-SBR.
+Thanks,
 
-Any such descriptions you can include in the quirk to disable SBR for
-this device, especially if you can share public code names, seems like
-it would only help people associate this support to the hardware that
-requires it.  Thanks,
-
-Alex
-
-[1]https://lore.kernel.org/linux-pci/20210409192324.30080-1-ameynarkhede03@=
-gmail.com/
-
+Tycho
