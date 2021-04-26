@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7AE36AD89
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C8436AE66
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhDZHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
+        id S233918AbhDZHoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:44:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232878AbhDZHgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 765EB61249;
-        Mon, 26 Apr 2021 07:33:36 +0000 (UTC)
+        id S233102AbhDZHig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:38:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E4FD613E2;
+        Mon, 26 Apr 2021 07:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422417;
-        bh=eCfEGQTovAKZ92NQC28F5QS3baM+7g1KYRai2o6cKcM=;
+        s=korg; t=1619422590;
+        bh=R5s4ffSklC3vBdRiBDaHTIwLvzzPImB8K1JtZzUEZm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rDHageYAKrCTRqLFta39zgugseUyoB8keUU/bwopOapWKl+G5AP38r+MA9Zw7Wxrn
-         AuVotmdXmYLY2jPEdt+y8FUMkwcp/9R/1OUkrJRaHLdYa35x+NNiCpLlCkB++nz63B
-         FOEpOsL59szyB/mX9F/9ZLwmcWLVy5BpUqWnoD9M=
+        b=xIGNmGw6mUKQ/g67zXsgjFYYJxNvzflHB7nvypu11R1YaYyEGNMVYKlQIRyq6b2Qm
+         yEhlqJoTEC2sw+eqby37PU6eSeNzoQX3YJWa7GD0WE+mOta4khXjshRx+plduqjli+
+         kfaqPW/WPB5MPD/9XRATiXpelN8QRSKOzJGNSIXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hristo Venev <hristo@venev.name>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 20/37] net: sit: Unregister catch-all devices
-Date:   Mon, 26 Apr 2021 09:29:21 +0200
-Message-Id: <20210426072817.942653452@linuxfoundation.org>
+        stable@vger.kernel.org, Ping Cheng <ping.cheng@wacom.com>,
+        Jason Gerecke <Jason.Gerecke@wacom.com>,
+        Juan Garrido <Juan.Garrido@wacom.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.19 25/57] HID: wacom: set EV_KEY and EV_ABS only for non-HID_GENERIC type of devices
+Date:   Mon, 26 Apr 2021 09:29:22 +0200
+Message-Id: <20210426072821.434418998@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hristo Venev <hristo@venev.name>
+From: Ping Cheng <pinglinux@gmail.com>
 
-commit 610f8c0fc8d46e0933955ce13af3d64484a4630a upstream.
+commit 276559d8d02c2709281578976ca2f53bc62063d4 upstream.
 
-A sit interface created without a local or a remote address is linked
-into the `sit_net::tunnels_wc` list of its original namespace. When
-deleting a network namespace, delete the devices that have been moved.
+Valid HID_GENERIC type of devices set EV_KEY and EV_ABS by wacom_map_usage.
+When *_input_capabilities are reached, those devices should already have
+their proper EV_* set. EV_KEY and EV_ABS only need to be set for
+non-HID_GENERIC type of devices in *_input_capabilities.
 
-The following script triggers a null pointer dereference if devices
-linked in a deleted `sit_net` remain:
+Devices that don't support HID descitoprs will pass back to hid-input for
+registration without being accidentally rejected by the introduction of
+patch: "Input: refuse to register absolute devices without absinfo"
 
-    for i in `seq 1 30`; do
-        ip netns add ns-test
-        ip netns exec ns-test ip link add dev veth0 type veth peer veth1
-        ip netns exec ns-test ip link add dev sit$i type sit dev veth0
-        ip netns exec ns-test ip link set dev sit$i netns $$
-        ip netns del ns-test
-    done
-    for i in `seq 1 30`; do
-        ip link del dev sit$i
-    done
-
-Fixes: 5e6700b3bf98f ("sit: add support of x-netns")
-Signed-off-by: Hristo Venev <hristo@venev.name>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6ecfe51b4082 ("Input: refuse to register absolute devices without absinfo")
+Signed-off-by: Ping Cheng <ping.cheng@wacom.com>
+Reviewed-by: Jason Gerecke <Jason.Gerecke@wacom.com>
+Tested-by: Juan Garrido <Juan.Garrido@wacom.com>
+CC: stable@vger.kernel.org
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/sit.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/wacom_wac.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -1799,9 +1799,9 @@ static void __net_exit sit_destroy_tunne
- 		if (dev->rtnl_link_ops == &sit_link_ops)
- 			unregister_netdevice_queue(dev, head);
+--- a/drivers/hid/wacom_wac.c
++++ b/drivers/hid/wacom_wac.c
+@@ -3528,8 +3528,6 @@ int wacom_setup_pen_input_capabilities(s
+ {
+ 	struct wacom_features *features = &wacom_wac->features;
  
--	for (prio = 1; prio < 4; prio++) {
-+	for (prio = 0; prio < 4; prio++) {
- 		int h;
--		for (h = 0; h < IP6_SIT_HASH_SIZE; h++) {
-+		for (h = 0; h < (prio ? IP6_SIT_HASH_SIZE : 1); h++) {
- 			struct ip_tunnel *t;
+-	input_dev->evbit[0] |= BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
+-
+ 	if (!(features->device_type & WACOM_DEVICETYPE_PEN))
+ 		return -ENODEV;
  
- 			t = rtnl_dereference(sitn->tunnels[prio][h]);
+@@ -3544,6 +3542,7 @@ int wacom_setup_pen_input_capabilities(s
+ 		return 0;
+ 	}
+ 
++	input_dev->evbit[0] |= BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
+ 	__set_bit(BTN_TOUCH, input_dev->keybit);
+ 	__set_bit(ABS_MISC, input_dev->absbit);
+ 
+@@ -3694,8 +3693,6 @@ int wacom_setup_touch_input_capabilities
+ {
+ 	struct wacom_features *features = &wacom_wac->features;
+ 
+-	input_dev->evbit[0] |= BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
+-
+ 	if (!(features->device_type & WACOM_DEVICETYPE_TOUCH))
+ 		return -ENODEV;
+ 
+@@ -3708,6 +3705,7 @@ int wacom_setup_touch_input_capabilities
+ 		/* setup has already been done */
+ 		return 0;
+ 
++	input_dev->evbit[0] |= BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
+ 	__set_bit(BTN_TOUCH, input_dev->keybit);
+ 
+ 	if (features->touch_max == 1) {
 
 
