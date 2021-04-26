@@ -2,113 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1914F36B2C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D6A36B2C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhDZMNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:13:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47536 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231550AbhDZMNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:13:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89E3CAB87;
-        Mon, 26 Apr 2021 12:12:22 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 14:12:20 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210426121220.GN15381@kitsune.suse.cz>
-References: <20210423130530.GA6564@kitsune.suse.cz>
- <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
+        id S233245AbhDZMNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:13:49 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48411 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhDZMNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:13:48 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lb06q-0001ta-9F; Mon, 26 Apr 2021 12:13:04 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdkfd: Fix spelling mistake "unregisterd" -> "unregistered"
+Date:   Mon, 26 Apr 2021 13:13:04 +0100
+Message-Id: <20210426121304.83256-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="osDK9TLjxFScVI/L"
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210426113215.GM15381@kitsune.suse.cz>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---osDK9TLjxFScVI/L
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+There is a spelling mistake in a pr_debug message. Fix it.
 
-On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > 
-> > > > 
-> > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > I see this build error in linux-next (config attached).
-> > > > > 
-> > > > > [ 4939s]   LD      vmlinux
-> > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > [ 4960s] make[1]: ***
-> > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > vmlinux] Error 255
-> > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> > > > 
-> > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > Could you try a later version of pahole?
-> > > 
-> > > Is this requireent new?
-> > > 
-> > > I have pahole 1.20, and master does build without problems.
-> > > 
-> > > If newer version is needed can a check be added?
-> > 
-> > With dwarves 1.21 some architectures are fixed and some report other
-> > missing symbol. Definitely an improvenent.
-> > 
-> > I see some new type support was added so it makes sense if that type is
-> > used the new dwarves are needed.
-> 
-> Ok, here is the current failure with dwarves 1.21 on 5.12:
-> 
-> [ 2548s]   LD      vmlinux
-> [ 2557s]   BTFIDS  vmlinux
-> [ 2557s] FAILED unresolved symbol vfs_truncate
-> [ 2558s] make[1]: ***
-> [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> vmlinux] Error 255
-> 
-> Any idea where this one is coming from?
-Attaching a complete config
-> 
-> Thanks
-> 
-> Michal
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---osDK9TLjxFScVI/L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=vanilla
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+index 4cc2539bed5b..e4ce97ab6e26 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+@@ -2286,7 +2286,7 @@ svm_range_restore_pages(struct amdgpu_device *adev, unsigned int pasid,
+ 		}
+ 		prange = svm_range_create_unregistered_range(adev, p, mm, addr);
+ 		if (!prange) {
+-			pr_debug("failed to create unregisterd range svms 0x%p address [0x%llx]\n",
++			pr_debug("failed to create unregistered range svms 0x%p address [0x%llx]\n",
+ 				 svms, addr);
+ 			mmap_write_downgrade(mm);
+ 			r = -EFAULT;
+-- 
+2.30.2
 
-CONFIG_LOCALVERSION="-vanilla"
-CONFIG_MODULES=y
-CONFIG_MODULE_SIG=y
-
---osDK9TLjxFScVI/L--
