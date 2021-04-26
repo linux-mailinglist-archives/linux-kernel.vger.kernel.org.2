@@ -2,77 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C5636BA22
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFE436BA25
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239868AbhDZTjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
+        id S238750AbhDZTj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236132AbhDZTjN (ORCPT
+        with ESMTP id S235128AbhDZTjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:39:13 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FB5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:38:31 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lb73s-000Mp5-Ue; Mon, 26 Apr 2021 21:38:29 +0200
-Message-ID: <54debab9a79df628cff86a637dde13c281001578.camel@sipsolutions.net>
-Subject: Re: [BISECTED] 5.12 hangs at reboot
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Harald Arnesen <harald@skogtun.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 26 Apr 2021 21:38:28 +0200
-In-Reply-To: <34d778fa-343f-912f-2fd7-a8ba49bd1b95@skogtun.org>
-References: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
-         <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
-         <34d778fa-343f-912f-2fd7-a8ba49bd1b95@skogtun.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 26 Apr 2021 15:39:24 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE629C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:38:42 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w6so25174471pfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:38:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ab2HES6R0vCLyUYQvcY8/tnqqG94WlRNIsnH2B1gsKI=;
+        b=ocwCBcwt2VCpKKeAqYQfJueYG8T5dZBsg0BzfmEJ4kC9MQSlmlps94SflUGmK2mVr/
+         WzULuKECHKMXaVeHed4EbwbPTktOzC/Pgk43oq9BfjiNl9DYJSHZ1DjOc/t8kknhwyos
+         MLA6+f66wmN8WT0jaM98sT3w7onjO+15DTtIVIU9N1eRRoPOc9oSYvB9YPwvlTSSN382
+         w/vLzw0csN6NyA/H8UVawatOlVRmxH5k629uNs1QdMfjlzpbu89hGYSXQs+rLnsaR5Y+
+         hKRsz7CWwC/aEpbIK3hfzxMLEx31bnYkEZGrBGbc5BwYLNwMwWnf/JocYnjRsdjsO1Ts
+         h9vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ab2HES6R0vCLyUYQvcY8/tnqqG94WlRNIsnH2B1gsKI=;
+        b=F105NYKM6OHpNNkpgLbrwb8v4L7BrCfPV7uSdIzQuXGB6np5nDQEX4XWP3OEi60+uo
+         QjQ9KJ11YC3ErH4NVWymEZNXEil0MmtEPdp4k30jAuzfRJomwNfBlXDehJz1lqluRold
+         /aZHBX+fljrDMewlXjERdlie7yDoFdCbdtsB72LQcvTpRQiCoiSpKNbF4o01gv1EItQg
+         /ICrOkp5f50wSHQwAZUsfFvo1ivxNm1NNjLU0vToDXD+qgkhZ6RctyuCp8g5ilFFJqJP
+         RR8S1Vh8oQH0roOjuXY7dC5goXd1Lc5bng5Af6lA/h3Cex1h4XIO03v2zQOeWI3+DS/k
+         dHLQ==
+X-Gm-Message-State: AOAM531tuxS75uApijjaVspd89LwuMbKr3s+0/CwwcVmNE7uQsE7+p7m
+        0x/ALh5XWeZIalhNNG+nBBv1sA==
+X-Google-Smtp-Source: ABdhPJztxC5SloYTECJjkMsRvF+ShsNNhZmA75v6JRX/HbJXKVDT7MiEtBeZrvKKaM/GdXl/GO+XxQ==
+X-Received: by 2002:a62:65c7:0:b029:278:e19f:f838 with SMTP id z190-20020a6265c70000b0290278e19ff838mr2848137pfb.64.1619465922089;
+        Mon, 26 Apr 2021 12:38:42 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id i18sm439912pfq.59.2021.04.26.12.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 12:38:41 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 19:38:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Reiji Watanabe <reijiw@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] KVM: x86: Tie Intel and AMD behavior for
+ MSR_TSC_AUX to guest CPU model
+Message-ID: <YIcWvcneHWA9OPxv@google.com>
+References: <20210423223404.3860547-1-seanjc@google.com>
+ <20210423223404.3860547-4-seanjc@google.com>
+ <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-26 at 19:29 +0000, Harald Arnesen wrote:
-> > Which implies that it's likely something fairly specific to  your
-> > setup (either the config or the hardware - or possibly Void Linux
-> > doing something other distros don't).
+On Sat, Apr 24, 2021, Reiji Watanabe wrote:
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -1610,6 +1610,29 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
+> >                  * invokes 64-bit SYSENTER.
+> >                  */
+> >                 data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
+> > +               break;
+> > +       case MSR_TSC_AUX:
+> > +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
+> > +                       return 1;
+> > +
+> > +               if (!host_initiated &&
+> > +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> > +                       return 1;
+> > +
+> > +               /*
+> > +                * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
+> > +                * incomplete and conflicting architectural behavior.  Current
+> > +                * AMD CPUs completely ignore bits 63:32, i.e. they aren't
+> > +                * reserved and always read as zeros.  Enforce Intel's reserved
+> > +                * bits check if and only if the guest CPU is Intel, and clear
+> > +                * the bits in all other cases.  This ensures cross-vendor
+> > +                * migration will provide consistent behavior for the guest.
+> > +                */
+> > +               if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
+> > +                       return 1;
+> > +
+> > +               data = (u32)data;
+> > +               break;
+> >         }
+> >
+> >         msr.data = data;
+> > @@ -1646,6 +1669,17 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+> >         if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
+> >                 return KVM_MSR_RET_FILTERED;
+> >
+> > +       switch (index) {
+> > +       case MSR_TSC_AUX:
+> > +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
+> > +                       return 1;
+> > +
+> > +               if (!host_initiated &&
+> > +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> > +                       return 1;
 > 
-> Init system is runit, not systemd? Could that affect something?
-
-Unlikely.
-
-> > Mind also attaching a dmesg of an affected kernel (or with the revert
-> > in place, I guess - it shouldn't matter until the reboot ;)
 > 
-> dmesg from 5.12 without the revert is attached.
-
-That's it? There it just hangs? Not even printing something about tasks
-getting stuck? Did you let it sit for a couple of (2-3) minutes to see
-the task stuck warnings?
-
-What's weird though is that this is evidently with mac80211 - so
-certainly all the patches I just sent out will do nothing for you, and
-something else is strange, because mac80211 I've definitely not just
-reviewed but also tested these code paths many times.
-
-Hmm. But yeah, either way, a lockdep report or stack dump will surely
-help. Perhaps something in the ath* driver you're using that I missed.
-
-> > There's a lockdep assertion there, but you don't seem to have lockdep
-> > enabled. So it be interesting to see what happens if you
-> > 
-> >  (a) enable lockdep
+> It looks Table 2-2 of the Intel SDM Vol4 (April 2021) says
+> TSC_AUX is supported:
 > 
-> Will report when I have tried it.
+>    If CPUID.80000001H:EDX[27] = 1 or CPUID.(EAX=7,ECX=0):ECX[22] = 1
+> 
+> Should we also check X86_FEATURE_RDPID before returning 1
+> due to no RDTSCP support ?
 
-Thanks.
+Yep.  VMX should also clear RDPID if the ENABLE_RDTSCP control isn't supported.
+That bug isn't fatal because KVM emulates RDPID on #UD, but it would be a
+notieable performance hit for the guest.
 
-johannes
+There is also a kernel bug lurking; vgetcpu_cpu_init() doesn't check
+X86_FEATURE_RDPID and will fail to initialize MSR_TSC_AUX if RDPID is supported
+but RDTSCP is not, and __getcpu() uses RDPID.  I'll verify that's broken and
+send a patch for that one too.
+
+> There doesn't seem to be a similar description in the APM though.
+
+AMD also documents this in Appendix E:
+
+  CPUID Fn0000_0007_EBX_x0 Structured Extended Feature Identifiers (ECX=0)
+  Bits   Field   Name
+  ...
+  22     RDPID   RDPID instruction and TSC_AUX MSR support.
+
 
