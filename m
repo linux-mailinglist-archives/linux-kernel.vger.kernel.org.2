@@ -2,187 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6F836AA61
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C1336AA64
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 03:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhDZBb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 21:31:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25540 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231530AbhDZBbz (ORCPT
+        id S231750AbhDZBcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 21:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhDZBck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 21:31:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619400675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CSS6BiOqp8JvHgJiETTDxrWSdTxLypre92kI0mHmhKM=;
-        b=aEoo8luCCTv6mtS28hITOIAv/I0dpRFy/kj5wbbiKzNn5QIbiyguU+AsxQMNdIDZfhc4dT
-        rC+lnw0GxwkGfCXZEqikoQ7vNaM0K25xINPcjZ+yLr9ncesbAbd4wrQ6xnpmSZBtr2VF8r
-        eJRaNf8jRr30SNXLHsrn/3whZg+iBn4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-tRYflDinMRuTunkiegw6FQ-1; Sun, 25 Apr 2021 21:31:13 -0400
-X-MC-Unique: tRYflDinMRuTunkiegw6FQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sun, 25 Apr 2021 21:32:40 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BC6C061574;
+        Sun, 25 Apr 2021 18:31:59 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B33281746A;
-        Mon, 26 Apr 2021 01:31:11 +0000 (UTC)
-Received: from t490s.aquini.net (ovpn-112-122.phx2.redhat.com [10.3.112.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7779319D7D;
-        Mon, 26 Apr 2021 01:31:09 +0000 (UTC)
-Date:   Sun, 25 Apr 2021 21:31:07 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     chukaiping <chukaiping@baidu.com>
-Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
-        bhe@redhat.com, khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
-        mateusznosek0@gmail.com, sh_def@163.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm/compaction:let proactive compaction order
- configurable
-Message-ID: <YIYX22JLVHN1PhGs@t490s.aquini.net>
-References: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FT6nS6T97z9sRf;
+        Mon, 26 Apr 2021 11:31:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619400717;
+        bh=Bw6NdBcT1NmzqVVWqJ2SQU5j6HEEWdlASd8IS32sOIQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hpUK47x1MoVyURO+2NAnUZdAGMsOL1TB65UQHaI812nc9foQnKSPi1bwSJuM33HFg
+         bURANkdzIac/nb9+4yFANlUMQEzLzn7HAo6SSRW1CQzSJvJjXPpMtqUCEcYhngbzVL
+         5HTGrH+mrGnkj7yXPLpvGGxE/30fe9hn6nnV0g9KLEWh56zIMN7yTOKFHokDGeKHfQ
+         yp9stOpMM399vYTQoEtv4tieeL89wbNEA+8LhG7IItVfzF/xtIedgIlDcNv4W+HFdb
+         gOVS8W6/3oFrmav4Is+lJh0cqFXy6x6/bN5VI1xeHHZpPrLsRpN0cSUwuFICVNZn7t
+         dAA/oyzmsil3A==
+Date:   Mon, 26 Apr 2021 11:31:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mmc tree
+Message-ID: <20210426113156.5e445705@canb.auug.org.au>
+In-Reply-To: <20210416134907.356dad53@canb.auug.org.au>
+References: <20210416134827.1f35b1cd@canb.auug.org.au>
+        <20210416134907.356dad53@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; boundary="Sig_/XDtYj_mm3YbLuK_cS_VZ7Fp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 09:21:02AM +0800, chukaiping wrote:
-> Currently the proactive compaction order is fixed to
-> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
-> normal 4KB memory, but it's too high for the machines with small
-> normal memory, for example the machines with most memory configured
-> as 1GB hugetlbfs huge pages. In these machines the max order of
-> free pages is often below 9, and it's always below 9 even with hard
-> compaction. This will lead to proactive compaction be triggered very
-> frequently. In these machines we only care about order of 3 or 4.
-> This patch export the oder to proc and let it configurable
-> by user, and the default value is still COMPACTION_HPAGE_ORDER.
-> 
-> Signed-off-by: chukaiping <chukaiping@baidu.com>
-> Reported-by: kernel test robot <lkp@intel.com>
+--Sig_/XDtYj_mm3YbLuK_cS_VZ7Fp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Two minor nits on the commit log message: 
-* there seems to be a whitespage missing in your short log: 
-  "... mm/compaction:let ..."
+Hi all,
 
-* has the path really been reported by a test robot?
+On Fri, 16 Apr 2021 13:49:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> This is actually just a warning.
+>=20
+> On Fri, 16 Apr 2021 13:48:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > After merging the mmc tree, today's linux-next build (x86_64 allmodconf=
+ig)
+> > failed like this:
+> >=20
+> > In file included from drivers/memstick/host/r592.h:13,
+> >                  from drivers/memstick/host/r592.c:21:
+> > drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
+> > include/linux/kfifo.h:588:1: warning: ignoring return value of '__kfifo=
+_uint_must_check_helper' declared with attribute 'warn_unused_result' [-Wun=
+used-result]
+> >   588 | __kfifo_uint_must_check_helper( \
+> >       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   589 | ({ \
+> >       | ~~~~
+> >   590 |  typeof((fifo) + 1) __tmp =3D (fifo); \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   591 |  typeof(__tmp->ptr) __buf =3D (buf); \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   592 |  unsigned long __n =3D (n); \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   593 |  const size_t __recsize =3D sizeof(*__tmp->rectype); \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   594 |  struct __kfifo *__kfifo =3D &__tmp->kfifo; \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   595 |  (__recsize) ?\
+> >       |  ~~~~~~~~~~~~~~
+> >   596 |  __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   597 |  __kfifo_out(__kfifo, __buf, __n); \
+> >       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   598 | }) \
+> >       | ~~~~
+> >   599 | )
+> >       | ~
+> > drivers/memstick/host/r592.c:367:2: note: in expansion of macro 'kfifo_=
+out'
+> >   367 |  kfifo_out(&dev->pio_fifo, buffer, 4);
+> >       |  ^~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   4b00ed3c5072 ("memstick: r592: remove unused variable") =20
 
+I am still getting this warning ...
 
-A note on the sysctl name, I'd suggest that it perhaps should reflect 
-the fact that we're adjusting the order for proactive compation.
-How about "proactive_compation_order"?
-
+--=20
 Cheers,
+Stephen Rothwell
 
-> ---
-> 
-> Changes in v3:
->     - change the min value of compaction_order to 1 because the fragmentation
->       index of order 0 is always 0
->     - move the definition of max_buddy_zone into #ifdef CONFIG_COMPACTION
-> 
-> Changes in v2:
->     - fix the compile error in ia64 and powerpc, move the initialization
->       of sysctl_compaction_order to kcompactd_init because 
->       COMPACTION_HPAGE_ORDER is a variable in these architectures
->     - change the hard coded max order number from 10 to MAX_ORDER - 1
-> 
->  include/linux/compaction.h |    1 +
->  kernel/sysctl.c            |   10 ++++++++++
->  mm/compaction.c            |    9 ++++++---
->  3 files changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index ed4070e..151ccd1 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
->  #ifdef CONFIG_COMPACTION
->  extern int sysctl_compact_memory;
->  extern unsigned int sysctl_compaction_proactiveness;
-> +extern unsigned int sysctl_compaction_order;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
->  extern int sysctl_extfrag_threshold;
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 62fbd09..e50f7d2 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -196,6 +196,7 @@ enum sysctl_writes_mode {
->  #endif /* CONFIG_SCHED_DEBUG */
->  
->  #ifdef CONFIG_COMPACTION
-> +static int max_buddy_zone = MAX_ORDER - 1;
->  static int min_extfrag_threshold;
->  static int max_extfrag_threshold = 1000;
->  #endif
-> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
->  		.extra2		= &one_hundred,
->  	},
->  	{
-> +		.procname       = "compaction_order",
-> +		.data           = &sysctl_compaction_order,
-> +		.maxlen         = sizeof(sysctl_compaction_order),
-> +		.mode           = 0644,
-> +		.proc_handler   = proc_dointvec_minmax,
-> +		.extra1         = SYSCTL_ONE,
-> +		.extra2         = &max_buddy_zone,
-> +	},
-> +	{
->  		.procname	= "extfrag_threshold",
->  		.data		= &sysctl_extfrag_threshold,
->  		.maxlen		= sizeof(int),
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index e04f447..70c0acd 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
->  
->  /*
->   * A zone's fragmentation score is the external fragmentation wrt to the
-> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-> + * sysctl_compaction_order. It returns a value in the range [0, 100].
->   */
->  static unsigned int fragmentation_score_zone(struct zone *zone)
->  {
-> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-> +	return extfrag_for_order(zone, sysctl_compaction_order);
->  }
->  
->  /*
->   * A weighted zone's fragmentation score is the external fragmentation
-> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-> + * wrt to the sysctl_compaction_order scaled by the zone's size. It
->   * returns a value in the range [0, 100].
->   *
->   * The scaling factor ensures that proactive compaction focuses on larger
-> @@ -2666,6 +2666,7 @@ static void compact_nodes(void)
->   * background. It takes values in the range [0, 100].
->   */
->  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
-> +unsigned int __read_mostly sysctl_compaction_order;
->  
->  /*
->   * This is the entry point for compacting all nodes via
-> @@ -2958,6 +2959,8 @@ static int __init kcompactd_init(void)
->  	int nid;
->  	int ret;
->  
-> +	sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
-> +
->  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
->  					"mm/compaction:online",
->  					kcompactd_cpu_online, NULL);
-> -- 
-> 1.7.1
-> 
+--Sig_/XDtYj_mm3YbLuK_cS_VZ7Fp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCGGAwACgkQAVBC80lX
+0GzoLAf+K8XbStnBqdLgx2dt3clW8VkIwEcUn2Lr4vLq6EkKXsEfuZ2gj89R4mg1
+ZjSTZiU8Es4pEZAJR9Ws9zPAlCIP/is2VZIOrT7ry9GnN0sCgUGDHRsE+s9D8bMU
+qZl1DW8RMrrHAVS67eGclawFPC/lJqV5LxjCdPDzEvwpDFzdXLuE6VuuGkBhr/+t
+Da4yPdFu5k5qxcMEM9xv6whlZOTgSr+jtddupecZsIkdILT26YHhD7Zir48PLt+c
+PDPf8s839QhW65W+WKUPPTf1Zv6FlHq12h353qLqp+vf3arBG77zECWVrHldlEIg
+f57IKfsHxKGPMeEbVJLko34eLXnz4Q==
+=HF7S
+-----END PGP SIGNATURE-----
+
+--Sig_/XDtYj_mm3YbLuK_cS_VZ7Fp--
