@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0369F36AF33
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756AE36AF48
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbhDZHzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
+        id S232917AbhDZH4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234092AbhDZHor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:44:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8153613E3;
-        Mon, 26 Apr 2021 07:41:21 +0000 (UTC)
+        id S234096AbhDZHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:44:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D07613DB;
+        Mon, 26 Apr 2021 07:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422882;
-        bh=cF9brIkzMn7X6OUeIYmyYlwPCL9kFNXn1fdTYvJB3R4=;
+        s=korg; t=1619422884;
+        bh=yYQ35UFsN6lIVZLWVcqNdSHHVQg1aI81kONed6NZS6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npXnzQ6ne4TEdqjsLQamYruR1wzHibNR+jRtU2DVsDZj3tfWlBKVigDUkRWWu1GZ/
-         54f4hcuqcKkaJbGXruql4S/6PBrdacjWKm0Rt/+mKBV7iTBY2xjBSLO7zCYvGzPZr7
-         cjpZjJ0kzfOg3UpjreuCIqXYoTi8gslzQD1eTYGk=
+        b=0lKHueayP+al12ZJJ0ricmwsQUlO/icO38PedONDNzPB0gImroaKfnHneyhfk3m68
+         /vjEFs61vcMyiHw5uE/lTYehpyCDvBFutg1Tbq0CRsPzCd0VXsS1t46h8Nh4tvZ4Qs
+         1P4dL5dECoXfogpQkhKJpyEW3xmfg3vTEm/sdZwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 08/41] KEYS: trusted: Fix TPM reservation for seal/unseal
-Date:   Mon, 26 Apr 2021 09:29:55 +0200
-Message-Id: <20210426072819.972833675@linuxfoundation.org>
+Subject: [PATCH 5.11 09/41] vdpa/mlx5: Set err = -ENOMEM in case dma_map_sg_attrs fails
+Date:   Mon, 26 Apr 2021 09:29:56 +0200
+Message-Id: <20210426072820.002618140@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
 References: <20210426072819.666570770@linuxfoundation.org>
@@ -40,43 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Eli Cohen <elic@nvidia.com>
 
-[ Upstream commit 9d5171eab462a63e2fbebfccf6026e92be018f20 ]
+[ Upstream commit be286f84e33da1a7f83142b64dbd86f600e73363 ]
 
-The original patch 8c657a0590de ("KEYS: trusted: Reserve TPM for seal
-and unseal operations") was correct on the mailing list:
+Set err = -ENOMEM if dma_map_sg_attrs() fails so the function reutrns
+error.
 
-https://lore.kernel.org/linux-integrity/20210128235621.127925-4-jarkko@kernel.org/
-
-But somehow got rebased so that the tpm_try_get_ops() in
-tpm2_seal_trusted() got lost.  This causes an imbalanced put of the
-TPM ops and causes oopses on TIS based hardware.
-
-This fix puts back the lost tpm_try_get_ops()
-
-Fixes: 8c657a0590de ("KEYS: trusted: Reserve TPM for seal and unseal operations")
-Reported-by: Mimi Zohar <zohar@linux.ibm.com>
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210411083646.910546-1-elic@nvidia.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/keys/trusted-keys/trusted_tpm2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vdpa/mlx5/core/mr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index e2a0ed5d02f0..c87c4df8703d 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -79,7 +79,7 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
- 	if (i == ARRAY_SIZE(tpm2_hash_map))
- 		return -EINVAL;
+diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+index d300f799efcd..aa656f57bf5b 100644
+--- a/drivers/vdpa/mlx5/core/mr.c
++++ b/drivers/vdpa/mlx5/core/mr.c
+@@ -273,8 +273,10 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
+ 	mr->log_size = log_entity_size;
+ 	mr->nsg = nsg;
+ 	mr->nent = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
+-	if (!mr->nent)
++	if (!mr->nent) {
++		err = -ENOMEM;
+ 		goto err_map;
++	}
  
--	rc = tpm_buf_init(&buf, TPM2_ST_SESSIONS, TPM2_CC_CREATE);
-+	rc = tpm_try_get_ops(chip);
- 	if (rc)
- 		return rc;
- 
+ 	err = create_direct_mr(mvdev, mr);
+ 	if (err)
 -- 
 2.30.2
 
