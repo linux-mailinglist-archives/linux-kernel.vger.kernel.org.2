@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF3C36BA95
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0748036BA98
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241724AbhDZUK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
+        id S241824AbhDZUMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241703AbhDZUKz (ORCPT
+        with ESMTP id S239591AbhDZUMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:10:55 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15AAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=skogtun.org
-        ; s=ds202012; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=AE0mY6Tahzy3s212z3qIjhJx3BZdiskA2UVQtuuLlmw=; b=O0dnpd+3yDPBhtaHZCT7GnJ2Eh
-        ZF/ObymHgT9tuYDAM1gaQCG8Z6kUihlDl13pTHYpz3FsHwNkJhoZ92n5nKAxK/Oh96HAK5UntzM+Z
-        ZielMYTJxvyOSaLw+mkQN/nT5fO1pl9csxeSQA9urGCtnFZa/O0CjTa3rpNexwxxoR3hjsdgDzRJ6
-        8MznPICQpa96wPbpTvbGJs4cPFGycQ7h06+7UEfe1UBZL6ohKwKAHyW+H0581oGrZiD2Bsv8HorXg
-        sJPfdcPX8qRlxI70mVLRuUzOp5eNdp274Yi4lU5rbB30aYPYheY4IoNc7g2wxCzAbJVaDManlciii
-        QEJ1zjbA==;
-Received: from [2a01:79c:cebf:7fb0::17] (port=39830)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <harald@skogtun.org>)
-        id 1lb7YZ-0006i5-BY; Mon, 26 Apr 2021 22:10:11 +0200
+        Mon, 26 Apr 2021 16:12:30 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC3EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:11:48 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lb7a6-000NRt-8D; Mon, 26 Apr 2021 22:11:46 +0200
+Message-ID: <bca302812cece1972bed7efe34a9d554b9e912ed.camel@sipsolutions.net>
 Subject: Re: [BISECTED] 5.12 hangs at reboot
+From:   Johannes Berg <johannes@sipsolutions.net>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     johannes.berg@intel.com,
+Cc:     Harald Arnesen <harald@skogtun.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 26 Apr 2021 22:11:45 +0200
+In-Reply-To: <CAHk-=wiwByiEUuO-NN=xHb4sxwCmP=tjB_vUHEebj8+-JGu8zg@mail.gmail.com> (sfid-20210426_215145_178898_2C6EEF9D)
 References: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
- <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
-From:   Harald Arnesen <harald@skogtun.org>
-Message-ID: <28e21004-13ff-9d5f-0c5d-4c1e79cf628a@skogtun.org>
-Date:   Mon, 26 Apr 2021 22:10:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+         <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
+         <34d778fa-343f-912f-2fd7-a8ba49bd1b95@skogtun.org>
+         <54debab9a79df628cff86a637dde13c281001578.camel@sipsolutions.net>
+         <CAHk-=wjvVMucgoAQKfi-x=jvYgKW1_LRmvnAfk3JGMkOSg9CQQ@mail.gmail.com>
+         <2cafd6d0c6378b36644d04fe263a53a866354574.camel@sipsolutions.net>
+         <CAHk-=wiwByiEUuO-NN=xHb4sxwCmP=tjB_vUHEebj8+-JGu8zg@mail.gmail.com>
+         (sfid-20210426_215145_178898_2C6EEF9D)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds [26.04.2021 20:59]:
-
-> There's a lockdep assertion there, but you don't seem to have lockdep
-> enabled. So it be interesting to see what happens if you
+On Mon, 2021-04-26 at 12:51 -0700, Linus Torvalds wrote:
+> On Mon, Apr 26, 2021 at 12:46 PM Johannes Berg
+> <johannes@sipsolutions.net> wrote:
+> > 
+> > Right. Maybe if it's modules, could try to remove them rather than
+> > reboot?
 > 
->  (a) enable lockdep
+> Yes, doing an 'rmmod ath9k'  (or whatever that module is called)
+> sounds like a good idea, it might trigger the same lockup.
+> 
+> In fact, that might be the reason Harald sees this - maybe Void Linux
+> tries to unload modules before rebooting, and other distros don't?
 
-At the risk of sounding stupid: where is this config option?
--- 
-Hilsen Harald
+Seems odd if they would, but maybe?
+
+I guess we're well into speculation here now - Harald, even taking a
+picture of a stack dump will help, I'll likely only need an indication
+where it's actually locking up, unless it's actually in
+cfg80211_destroy_iface_wk() itself, but I can't see how that'd be
+possible.
+
+Looks like with mac80211 this really should just go down into
+ieee80211_if_remove() and that looks OK.
+
+And it's coming from a work struct, so I thought maybe some flushing
+happened in a bad context, but that's only in wiphy_unregister(),
+without the lock(s) held around it, as it should be. I figured then
+maybe wiphy_unregister() could be called in a bad context, but then that
+would've deadlocked itself earlier, unrelated to the destroy_iface_wk().
+
+
+Oh, I have another idea - maybe void linux is using iwd instead of
+wpa_supplicant, and that insists on doing the netlink owner stuff so
+everything is deleted in case it crashes. But I've been looking at the
+code pretty much assuming that we get actual calls down, so ...
+
+
+Dunno. I don't see anything obvious right now, any additional
+information (stack dump, or lockdep report) would be great.
+
+johannes
+
