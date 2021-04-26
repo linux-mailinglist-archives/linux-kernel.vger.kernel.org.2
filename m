@@ -2,187 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150E636ACC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E6636ACC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhDZHRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbhDZHRx (ORCPT
+        id S232117AbhDZHR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:17:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60438 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232014AbhDZHRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 03:17:53 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D877C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:17:00 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id w3so82915582ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MH933JiX/H5vIrqO4AxOURlaNcW6gFjmPwklzI1FH0I=;
-        b=0jMzRzgE2kkoPMhWjrzPZDGwEhuG4SrR2M46DjrE2hcFtECln0zCGdsFIHAIk+lU8J
-         C/ofDwawrfFnQsRbEVwFk2oJrIP6NNtECIKxLOBg3Jx0IQ8xmfuO5qbrGHnTKWcxG3BP
-         jv7VSQzCLqlFGYxl5IGbDEetukm4DVndeNrr0BFKM4Qus5NMmL8pI/E7DGUYKkV/Ud08
-         WlXJcmsc7rFzz+o4bqXvppOaBCYe3OmISqDDKo+2clXRPnwjV3BKWWhIsb980vzfjnAU
-         InP8KodM2gBESaSibTvil3tI/5R7S7vyW72mElKABVS3PhGDvt2DH1GqIMlw0Op9PgQk
-         fvcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MH933JiX/H5vIrqO4AxOURlaNcW6gFjmPwklzI1FH0I=;
-        b=EW7LNX9wFyMcts1fLD773NhakTl4SrLuenllj1HlGPyKWP81TeW9bXE6OD/tf9s1S4
-         pk2Awc9TwIdkYTpRQVxQDz35+iSGL1+qMjhTMUmMTDG2/++UrjMl0bjflFea8XbMWzPb
-         RWHmLqiaM39c4ZmcUJbelNbsy9dgpruWFlERyLhFpuwKt97yx1di+oMMjjXKtuQByfLR
-         7bLrj1i9TOUf0kL85I0TR6VUHECNVq7pb6RGDYbZ5IvH0cms31ZU6p4n8tbKLhdUzOEN
-         zvoYg5rlh6l5QroPD4Tr20ej4U0TFYWOmXTceFhMpNsAHPDAFf+Jm8wOaaDFDXPhbUnv
-         pEiA==
-X-Gm-Message-State: AOAM532IU46/OiBRvscT0+j69V64Cp5/LHMyYzv+8XS77OILThqJ/R4w
-        EptG3nursDq0nafK2O9lM24FdstJjXUiklTC+lYrig==
-X-Google-Smtp-Source: ABdhPJxY8aQGlMeoZmTW3iZo4yxpbbqK8ctIDP9CUlsJ2+2Kgs9avQ0jY3hRJX2eCaEU3f5jCMkHZHFKbTM+mlpys2M=
-X-Received: by 2002:a17:906:7842:: with SMTP id p2mr17682145ejm.87.1619421419222;
- Mon, 26 Apr 2021 00:16:59 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619421419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AhfatZBafAaOFUgz+S6LTYdlaDzgBz9nm0hLzAFnykA=;
+        b=ZcvCttx8m3Vcg3X+GGjdPTuXdcI3xUWt/3Ym5EB0rc6HVD28GRKw8/u1+0JEaKbs8SqqjN
+        HF2a5iYTxV2jLbTJLpzJc8Vrcs3xWkwiXk5qFtikJ2ZRlX/2lkzn6VeBtkgaJXNbeD8bke
+        xF7zz/L5M7k1ibalhfj1bZZbtIJgGY8WqkBQfBo9vCtixPPMC8H993/2MLHtDi6wVX8BxA
+        0n3Tl3OOSpkkYR3sLuWR1mSekKFfWZGOeNeSzFp8fytBs4jLcgP/cvPhb8QrpuKMDD0LPD
+        gQKFV4UoVbCXAsvck19XfW8BX7+PDlI199rHA2DroJzmxnDlmN4ghNzbhTSQqg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619421419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AhfatZBafAaOFUgz+S6LTYdlaDzgBz9nm0hLzAFnykA=;
+        b=aHdWH83sU6KwRU2TLXnJhDFsv21n/5XEE3p/ZysvuJg0RSMM2rn0oWpP8JafQvuEivHs30
+        yrz6UMjcdILatEBQ==
+To:     Andi Kleen <ak@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        feng.tang@intel.com, zhengjun.xing@intel.com,
+        Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v10 clocksource 3/7] clocksource: Check per-CPU clock synchronization when marked unstable
+In-Reply-To: <20210426041235.GT1401198@tassilo.jf.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1> <20210425224709.1312655-3-paulmck@kernel.org> <20210426041235.GT1401198@tassilo.jf.intel.com>
+Date:   Mon, 26 Apr 2021 09:16:59 +0200
+Message-ID: <871raxv7kk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210423152333.6299-1-brgl@bgdev.pl> <CAHp75VcprveU4UiCeezJrnR5n3gWoP5dM1x6E7G1tE2HqOo8Rg@mail.gmail.com>
-In-Reply-To: <CAHp75VcprveU4UiCeezJrnR5n3gWoP5dM1x6E7G1tE2HqOo8Rg@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 26 Apr 2021 09:16:48 +0200
-Message-ID: <CAMRc=MdTYEyw_0Dmq_6fgtmwvKXS-bWe=VQGPDnOqw8L-S=5cA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sim: allocate IDA numbers earlier
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 5:40 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, Apr 23, 2021 at 6:24 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Instead of allocating the device ID number for gpio-sim platform devices
-> > when the associated configfs item is committed, do it already when the
-> > item is created. This way we can display the device name even when the
-> > chip is still pending. Once it's committed the user can easily identify
-> > the chip by its real device name. This will allow launching concurrent
-> > user-space test suites with gpio-sim.
->
-> Thanks!
-> With or without below comment addressed:
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->
-> > Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> > ---
-> > Hi all! This is a late one for which I'm sorry but I realized that this
-> > change will allow us to launch test-suites concurrently if we allow the
-> > user-space to read the device name before the device is created and then
-> > wait for this specific name to appear in a udev add event.
-> >
-> >  drivers/gpio/gpio-sim.c | 21 ++++++++++-----------
-> >  1 file changed, 10 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-> > index 92493b98c51b..2e2e6399e453 100644
-> > --- a/drivers/gpio/gpio-sim.c
-> > +++ b/drivers/gpio/gpio-sim.c
-> > @@ -409,6 +409,7 @@ struct gpio_sim_chip_config {
-> >          * item is 'live'.
-> >          */
-> >         struct platform_device *pdev;
-> > +       int id;
-> >
-> >         /*
-> >          * Each configfs filesystem operation is protected with the subsystem
-> > @@ -442,7 +443,7 @@ static ssize_t gpio_sim_config_dev_name_show(struct config_item *item,
-> >         if (pdev)
-> >                 ret = sprintf(page, "%s\n", dev_name(&pdev->dev));
-> >         else
-> > -               ret = sprintf(page, "none\n");
-> > +               ret = sprintf(page, "gpio-sim.%d\n", config->id);
->
-> Wondering if you need to have one place of definition, i.e. "gpio-sim" part.
->
+On Sun, Apr 25 2021 at 21:12, Andi Kleen wrote:
 
-I applied it as is for 5.13. Feel free to submit a patch if you think
-this is useful.
-
-Bart
-
-> >         mutex_unlock(&config->lock);
-> >
-> >         return ret;
-> > @@ -724,6 +725,7 @@ static void gpio_sim_chip_config_release(struct config_item *item)
-> >         struct gpio_sim_chip_config *config = to_gpio_sim_chip_config(item);
-> >
-> >         mutex_destroy(&config->lock);
-> > +       ida_free(&gpio_sim_ida, config->id);
-> >         kfree_strarray(config->line_names, config->num_line_names);
-> >         kfree(config);
-> >  }
-> > @@ -747,6 +749,12 @@ gpio_sim_config_make_item(struct config_group *group, const char *name)
-> >         if (!config)
-> >                 return ERR_PTR(-ENOMEM);
-> >
-> > +       config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
-> > +       if (config->id < 0) {
-> > +               kfree(config);
-> > +               return ERR_PTR(config->id);
-> > +       }
-> > +
-> >         config_item_init_type_name(&config->item, name,
-> >                                    &gpio_sim_chip_config_type);
-> >         config->num_lines = 1;
-> > @@ -781,18 +789,12 @@ static int gpio_sim_config_commit_item(struct config_item *item)
-> >                                                 config->line_names,
-> >                                                 config->num_line_names);
-> >
-> > -       pdevinfo.id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
-> > -       if (pdevinfo.id < 0) {
-> > -               mutex_unlock(&config->lock);
-> > -               return pdevinfo.id;
-> > -       }
-> > -
-> >         pdevinfo.name = "gpio-sim";
-> >         pdevinfo.properties = properties;
-> > +       pdevinfo.id = config->id;
-> >
-> >         pdev = platform_device_register_full(&pdevinfo);
-> >         if (IS_ERR(pdev)) {
-> > -               ida_free(&gpio_sim_ida, pdevinfo.id);
-> >                 mutex_unlock(&config->lock);
-> >                 return PTR_ERR(pdev);
-> >         }
-> > @@ -806,15 +808,12 @@ static int gpio_sim_config_commit_item(struct config_item *item)
-> >  static int gpio_sim_config_uncommit_item(struct config_item *item)
-> >  {
-> >         struct gpio_sim_chip_config *config = to_gpio_sim_chip_config(item);
-> > -       int id;
-> >
-> >         mutex_lock(&config->lock);
-> > -       id = config->pdev->id;
-> >         platform_device_unregister(config->pdev);
-> >         config->pdev = NULL;
-> >         mutex_unlock(&config->lock);
-> >
-> > -       ida_free(&gpio_sim_ida, id);
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.30.1
-> >
+> On Sun, Apr 25, 2021 at 03:47:04PM -0700, Paul E. McKenney wrote:
+>> Some sorts of per-CPU clock sources have a history of going out of
+>> synchronization with each other.  However, this problem has purportedy
+>> been solved in the past ten years.  Except that it is all too possible
+>> that the problem has instead simply been made less likely, which might
+>> mean that some of the occasional "Marking clocksource 'tsc' as unstable"
+>> messages might be due to desynchronization.  How would anyone know?
+>> 
+>> Therefore apply CPU-to-CPU synchronization checking to newly unstable
+>> clocksource that are marked with the new CLOCK_SOURCE_VERIFY_PERCPU flag.
+>> Lists of desynchronized CPUs are printed, with the caveat that if it
+>> is the reporting CPU that is itself desynchronized, it will appear that
+>> all the other clocks are wrong.  Just like in real life.
 >
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+> Well I could see this causing a gigantic flood of messages then.
+> Assume I have 300 cores, do I get all those messages 300 times repeated
+> then? If the console is slow this might end up taking a lot
+> of CPU time.
+
+Exactly 4 pr_warn() lines in dmesg which are emitted exactly once when
+the TSC deviates from the watchdog where three of them print a cpumask
+are really a gigantic flood of messsages.
+
+Thanks,
+
+        tglx
