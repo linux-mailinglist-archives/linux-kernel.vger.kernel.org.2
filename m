@@ -2,91 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3C136AAEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D69036AB05
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhDZDDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 23:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbhDZDDL (ORCPT
+        id S231758AbhDZDR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 23:17:58 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:39563 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231583AbhDZDR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 23:03:11 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B532AC061574;
-        Sun, 25 Apr 2021 20:02:30 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id v6so27355415oiv.3;
-        Sun, 25 Apr 2021 20:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4xPUGZimDzNyY7GGh6V9V3dfSgDQQTvrLy245+n3qqE=;
-        b=lUEBP+gSyEWrtjrL81MzStFV99XkFqJRmIMg8NNphYiGZMcXrcWOpSo3/szyGzDefK
-         OrK0i+/Cfa1UHoA9NZiQQZkdyromvBdmGy3DI7+79pqoc6qXK26FwtTEkS/rX3Gw9/od
-         cfYvLAErx/rs7XzvKrrGWanvo+gY/HTS71I/xX2wC+jBsRgbwab2S8i6ZXd/FKDqgwLa
-         ZVSeQqWmkHRCd8JHXsvX+zdI8slqp1p1ybLbwBLgBpWY+qhZKIhCQ26ACc7jtTn8V7cR
-         zWIyAUceGMAidNXquDsVrarpQjJNJReU4eAf+H2G0DRYdhL57GpM+CUPCMBHRM1t6zKQ
-         itow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4xPUGZimDzNyY7GGh6V9V3dfSgDQQTvrLy245+n3qqE=;
-        b=KVBSqSR5ja29JeOyaRhFE6TNURBlXcIoZSnxUkZVjpY+UQZYWxg6PNMm6mLFPq+6gE
-         TLMxvZqElhy+SM1d9YkaAQzess9U7oMBG5qyklY0xsXW4AZYikFqlz3kalbsP+j1p5m6
-         Ijp43t1TWNumpcWrEd0YgHcZj8c/0fSqXef7ZFEoubA91fNJM477ISR6Zwb09iwfRNOJ
-         IJc+P6bQYv5f0wZ09F/dSQQEmQLqO0T6Xgb5KpYWflYvr+D66qVXayi2SDwfBvCVzc9a
-         dlS2rCbyGmyY6FFhUJK28dk3ugII1Y52tDjcTV0Vt7bS1rxsy1Os97P8+y8GN1ipgpvo
-         lRKw==
-X-Gm-Message-State: AOAM531tFFWYteV+vEeZ/iAN+59Y0oKoYwahGg1FaZM66fkSVbZsNgph
-        SllOXUOofjdzr1sV+qf/xX7/gqXHnSYJAuOHWoM=
-X-Google-Smtp-Source: ABdhPJxRuv/1tGMRar3jx3XrNhXpMdL06sFnMVPMDkxTPwhdgRglyCvo15dnePO5mq3VZTHLsBWoOdrCu3P8Uj3yETI=
-X-Received: by 2002:aca:bb09:: with SMTP id l9mr10617660oif.33.1619406150187;
- Sun, 25 Apr 2021 20:02:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210421150831.60133-1-kentaishiguro@sslab.ics.keio.ac.jp>
- <YIBQmMih1sNb5/rg@google.com> <CANRm+CxMf=kwDRQE-BNbhgCARuV3fuKpDbEV2oWTeKuGhUYd+w@mail.gmail.com>
- <CAOOWTGJvFB_hgSUzaqNaNigdkRXFcaK37F9V7kmL3nCG+bFz5Q@mail.gmail.com>
-In-Reply-To: <CAOOWTGJvFB_hgSUzaqNaNigdkRXFcaK37F9V7kmL3nCG+bFz5Q@mail.gmail.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Mon, 26 Apr 2021 11:02:19 +0800
-Message-ID: <CANRm+CzoS=HhiHg6w6dy8P+r3POeP3uMZqFvJr4oHMa1aNJqxg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Mitigating Excessive Pause-Loop Exiting in
- VM-Agnostic KVM
-To:     Kenta Ishiguro <kentaishiguro@sslab.ics.keio.ac.jp>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Hildenbrand <david@redhat.com>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Aublin <pl@sslab.ics.keio.ac.jp>,
-        =?UTF-8?B?5rKz6YeO5YGl5LqM?= <kono@sslab.ics.keio.ac.jp>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 25 Apr 2021 23:17:57 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210426031714epoutp0264db66d7df8da255c835133bce01e957~5Sh4UOw5l2868728687epoutp02V
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:17:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210426031714epoutp0264db66d7df8da255c835133bce01e957~5Sh4UOw5l2868728687epoutp02V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619407034;
+        bh=jetcUXmyBIvfGxke4lcV/g8Ksv9OTamwlbKq7aTUCGk=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=smj0KJNcglSlCFETHIHw/7hKtIVS4kEXt1ekna5t0K1o/0MExK1xcq5D6kyrMyJWj
+         gisTKe/VtRlux45mvGAk+FVftFrqtoorZNw+BfVJS/wYNIRsQ0ZoYFnKBJtkKolQLT
+         E5eDi7axN2kyAQ4C9jVPhfnd7lyj0AZvRePFIpjk=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210426031713epcas2p25c9798e3d2dbcdbcb95c84e2de4dce05~5Sh3zpnbC2133921339epcas2p2F;
+        Mon, 26 Apr 2021 03:17:13 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.184]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4FT96w3Fhgz4x9Pp; Mon, 26 Apr
+        2021 03:17:12 +0000 (GMT)
+X-AuditID: b6c32a46-e01ff700000025de-ac-608630b804b1
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        45.57.09694.8B036806; Mon, 26 Apr 2021 12:17:12 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH v1 2/3] scsi: ufs: Cancel rpm_dev_flush_recheck_work
+ during system suspend
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "ziqichen@codeaurora.org" <ziqichen@codeaurora.org>,
+        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
+        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        open list <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1619403878-28330-3-git-send-email-cang@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210426031711epcms2p2b64c07ab98332429204dac7ba920abf2@epcms2p2>
+Date:   Mon, 26 Apr 2021 12:17:11 +0900
+X-CMS-MailID: 20210426031711epcms2p2b64c07ab98332429204dac7ba920abf2
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMJsWRmVeSWpSXmKPExsWy7bCmhe4Og7YEg55zQhYP5m1js9jbdoLd
+        4uXPq2wWBx92slh8Wr+M1eLarflsFi8PaVqsehBucfrZO3aLJ+tnMVssurGNyWLHdhGLy7vm
+        sFl0X9/BZrH8+D8mi49dsxktlm69CSRuPmd3EPLYtnsbq8flvl4mj02rOtk8Jiw6wOjRcnI/
+        i8f39R1sHh+f3mLx6NuyitHj8yY5j/YD3UwBXFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGm
+        ZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAPykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVS
+        C1JyCgwNC/SKE3OLS/PS9ZLzc60MDQyMTIEqE3Iyrv6fy1qwkq1i48EfLA2MH1m6GDk5JARM
+        JG7/2QRkc3EICexglOic38HWxcjBwSsgKPF3hzCIKSyQIHHsqRRIuZCAksT6i7PYQWxhAT2J
+        Ww/XMILYbAI6EtNP3AeLiwgsZpaY9tIExGYW+MokcaFVEWIVr8SM9qdQa6Ulti/fCtbLKeAi
+        0ftuNhtEXEPix7JeZghbVOLm6rfsMPb7Y/MZIWwRidZ7Z6FqBCUe/NwNFZeUOLb7AxOEXS+x
+        9c4vRpC3JAR6GCUO77zFCpHQl7jWsRHsCF4BX4kfPRALWARUJbZ82Q21zEXicNN2FogH5CW2
+        v53DDAoHZgFNifW79EFMCQFliSO3WGDeatj4mx2dzSzAJ9Fx+C9cfMe8J1CnqUms+7meaQKj
+        8ixEOM9CsmsWwq4FjMyrGMVSC4pz01OLjQqMkKN2EyM4dWu57WCc8vaD3iFGJg7GQ4wSHMxK
+        Irxsu1oThHhTEiurUovy44tKc1KLDzGaAn05kVlKNDkfmD3ySuINTY3MzAwsTS1MzYwslMR5
+        f6bWJQgJpCeWpGanphakFsH0MXFwSjUwOfrJiNRNjEg31H0W9HjexYlzC28UKR6+GlF3+Vh7
+        9pxDDHG/maKzt03L85yg2berhPN80ZYjnAvYpztHr10SNvtNw6112vddzed16Is4/k5bErnP
+        1SHks/USluJ3RssF+k44L1C6Xc5w+cyX/1PW8s/ZYTIxIerIR+uJCWIneV5/Mb4o9fSkeuq6
+        WF4ZjkOq1/UTUxq3vbP5uOMF477Wd686mUy1uDIP7dV3tTuS3qt9kdW+4pm0UoSAAG/tqr2G
+        yyqOn+iZoCy1/qn/iUUz+S/myhwuXvo2+jPDpMg0868XrKonVnJ5bO3/u7Pz0e9o75On/+pH
+        7ZAK2Tw77VrKJp70Oz7fpBjmy7oHzG7aocRSnJFoqMVcVJwIAA4uq/xmBAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210426022700epcas2p298d2b9e6dd30781db9bf1e998f80eca1
+References: <1619403878-28330-3-git-send-email-cang@codeaurora.org>
+        <1619403878-28330-1-git-send-email-cang@codeaurora.org>
+        <CGME20210426022700epcas2p298d2b9e6dd30781db9bf1e998f80eca1@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 at 10:56, Kenta Ishiguro
-<kentaishiguro@sslab.ics.keio.ac.jp> wrote:
->
-> Dear all,
->
-> Thank you for the insightful feedback.
->
-> Does Sean's suggested version of Wanpeng's patch mark a running vCPU as an IPI
-> receiver? If it's right, I think the candidate set of vCPUs for boost is
-> slightly different between using kvm_arch_interrupt_delivery and using boolean
-> ipi_received. In the version of using boolean ipi_received, vCPUs which
-> receive IPI while running are also candidates for a boost.
-> However, they likely have already responded to their IPI before they exit.
+Hi Can Guo,
 
-             if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
-+                !READ_ONCE(vcpu->ipi_received) &&
+>diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>index 7ab6b12..090b654 100644
+>--- a/drivers/scsi/ufs/ufshcd.c
+>+++ b/drivers/scsi/ufs/ufshcd.c
+>@@ -9058,11 +9058,12 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>         if (!hba->is_powered)
+>                 return 0;
+> 
+>+        cancel_delayed_work_sync(&hba->rpm_dev_flush_recheck_work);
+>+
+>         if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+>              hba->curr_dev_pwr_mode) &&
+>             (ufs_get_pm_lvl_to_link_pwr_state(hba->spm_lvl) ==
+>-             hba->uic_link_state) &&
+>-             !hba->dev_info.b_rpm_dev_flush_capable)
+I think it should not be removed.
+It prevents power drain when runtime suspend and system suspend have same
+power mode.
 
-There is a vcpu->preempted checking here.
-
-    Wanpeng
+Thanks,
+Daejun
