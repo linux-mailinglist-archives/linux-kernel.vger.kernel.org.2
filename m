@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C4C36AAC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3C136AAEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhDZCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:49:28 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:15211 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhDZCt1 (ORCPT
+        id S231725AbhDZDDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 23:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231530AbhDZDDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:49:27 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210426024844epoutp03990b5de1744c863c5b39fb2445546106~5SJAaKKOf0247602476epoutp03L
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:48:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210426024844epoutp03990b5de1744c863c5b39fb2445546106~5SJAaKKOf0247602476epoutp03L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619405324;
-        bh=4ob6MCI6cZXvhtmK5oTsjw66/FJrr0nc3ypW4cDAKUU=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=FlwbOHhQLsAqXRKx0Qa6+gJdzx4aq7gIV8ac9LbzMT8PTL3ar5A470sS460pwIwQA
-         qRrw8+rXg3qlraZpJ6jPlUsvdfbvPxkuIwaH1fYB77vTDGiDkvmhNJs9eRkxOO5klr
-         TKewMWqBaiNz5LVsC42Ca/8JkDx9HCQgE23eqauA=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210426024843epcas2p141f017287c214a2c4a2243638e306419~5SI-hbFlE1672616726epcas2p1e;
-        Mon, 26 Apr 2021 02:48:43 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.188]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4FT8V10s8Wz4x9Q0; Mon, 26 Apr
-        2021 02:48:41 +0000 (GMT)
-X-AuditID: b6c32a47-f61ff700000024d9-80-60862a0869bb
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FB.EE.09433.80A26806; Mon, 26 Apr 2021 11:48:40 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v32 0/4] scsi: ufs: Add Host Performance Booster
- Support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <b7f64b4dcd688b769f9ff8f9b4b378a2@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210426024840epcms2p7fa68f5abe64b031bbf67d0f69d88b7b5@epcms2p7>
-Date:   Mon, 26 Apr 2021 11:48:40 +0900
-X-CMS-MailID: 20210426024840epcms2p7fa68f5abe64b031bbf67d0f69d88b7b5
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA12Te0xTVxzHc+693BaSkguCHsABu2xGcJSWUXYEykwgswzcyJ6Ki3CFSyHr
-        K71lwRmR+ABEARc2xAYRWHjIq+CE1hImryEykGwIEybKMoiYiDLZzDpHN/pgmv33yTe/1/f3
-        O4ePe94nffnZKh2rVTEKmnQjugeDUSg/pCBNtPwwGs1Xd5Oot2CEhx5YpkhUsWLB0RNDgwt6
-        MBCMzP39JGqe/xgd/9pAoqrxfAyVlHWR6Jv+Dhz9emeVh+pud2OozFpIoO5VD3T9xiOAJs1V
-        JDr9k4lEjdetGKrvmgHo1LlWYtdm2eStRNlkaQkmu6qf48nO1vUB2bULrTzZiRvXCNlvi7OE
-        rPRKM5CtXvaXFfadxpLdUhQxWSyTwWoDWVW6OiNbJZfSie+nxqVKIkXiUPFO9AYdqGKUrJSO
-        T0oOfStbsW6TDvyMUeSsS8kMx9FhsTFadY6ODcxSczopzWoyFBqxWCPkGCWXo5IL09XKKLFI
-        FC5Zj0xTZF0obwOaedfcofNh+eAJWQxc+ZCKgMODA6AYuPE9KROAX5a28IoBny+gPOCaaZMt
-        ZhP1Hvy7v42wsSdFQ8MPep5DF8LZX1qBjUnqNXhu5J5d96IS4B/lLS62mji1RsLvR5pcHM0E
-        sLJwkXCwHzQ2dtmTXalYqL9Yhjv07fDPhhIne8OZlmXeBj8evggc7AVP3h13xnjAeUuPU/eB
-        wz0rmIOPwq47f9mNQeoMgINXZ51DhMHpok77EAJqD6xeGrVvgqBehWeKDc5C8fBYY7ddx6kA
-        aFyuwm1LwalgaDCH2RBSQXBoltiwld/5jPd/xil3WDS49p9uql5wjrYNtlsM2FkQpH++af0L
-        vfTPe9UAvBlsZjWcUs5y4ZrXX7ztZWB/8SG7TaByeUU4ADA+GACQj9NeAtJ8Ms1TkMEc+pzV
-        qlO1OQqWGwCSdZdf4L7e6er1L6PSpYol4ZGRop0SJIkMR/QWgYXNS/Ok5IyO/ZRlNax2Iw/j
-        u/rmYzsE9yp+Ptj+He9W/s1YpYgQavLmJm5/9WbBO++6N50CSVR6dPylrpfJHVzRzam+JUPa
-        6IFD+440l4W8bVVu3f5jZ2bIQkTHw28bjB0f5QaFHZvp8IF7k4X+/a2l5y2KCvczd1Ni8vwO
-        90pivJ7WpT8OuKLDxoqltfWKYe/6iIl/2uUHMutf+r0zYNrHGr2U0Ly62NkREyvf1mPcorS2
-        JU3s1xmfnZiYOl7C7KNKLaPagsQ4+Vazr6nq/nRZps/Yh65B1tqj0uhPmLldubyUp1hDlF9t
-        3N4mo8W8J2U2J+mVRws1HxypKS/xlx4e0uq8xhJ6x91GyVjBAplXmX2wPOrSfprgshhxCK7l
-        mH8BqLsPN3oEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217
-References: <b7f64b4dcd688b769f9ff8f9b4b378a2@codeaurora.org>
-        <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
-        <CGME20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p7>
+        Sun, 25 Apr 2021 23:03:11 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B532AC061574;
+        Sun, 25 Apr 2021 20:02:30 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id v6so27355415oiv.3;
+        Sun, 25 Apr 2021 20:02:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4xPUGZimDzNyY7GGh6V9V3dfSgDQQTvrLy245+n3qqE=;
+        b=lUEBP+gSyEWrtjrL81MzStFV99XkFqJRmIMg8NNphYiGZMcXrcWOpSo3/szyGzDefK
+         OrK0i+/Cfa1UHoA9NZiQQZkdyromvBdmGy3DI7+79pqoc6qXK26FwtTEkS/rX3Gw9/od
+         cfYvLAErx/rs7XzvKrrGWanvo+gY/HTS71I/xX2wC+jBsRgbwab2S8i6ZXd/FKDqgwLa
+         ZVSeQqWmkHRCd8JHXsvX+zdI8slqp1p1ybLbwBLgBpWY+qhZKIhCQ26ACc7jtTn8V7cR
+         zWIyAUceGMAidNXquDsVrarpQjJNJReU4eAf+H2G0DRYdhL57GpM+CUPCMBHRM1t6zKQ
+         itow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4xPUGZimDzNyY7GGh6V9V3dfSgDQQTvrLy245+n3qqE=;
+        b=KVBSqSR5ja29JeOyaRhFE6TNURBlXcIoZSnxUkZVjpY+UQZYWxg6PNMm6mLFPq+6gE
+         TLMxvZqElhy+SM1d9YkaAQzess9U7oMBG5qyklY0xsXW4AZYikFqlz3kalbsP+j1p5m6
+         Ijp43t1TWNumpcWrEd0YgHcZj8c/0fSqXef7ZFEoubA91fNJM477ISR6Zwb09iwfRNOJ
+         IJc+P6bQYv5f0wZ09F/dSQQEmQLqO0T6Xgb5KpYWflYvr+D66qVXayi2SDwfBvCVzc9a
+         dlS2rCbyGmyY6FFhUJK28dk3ugII1Y52tDjcTV0Vt7bS1rxsy1Os97P8+y8GN1ipgpvo
+         lRKw==
+X-Gm-Message-State: AOAM531tFFWYteV+vEeZ/iAN+59Y0oKoYwahGg1FaZM66fkSVbZsNgph
+        SllOXUOofjdzr1sV+qf/xX7/gqXHnSYJAuOHWoM=
+X-Google-Smtp-Source: ABdhPJxRuv/1tGMRar3jx3XrNhXpMdL06sFnMVPMDkxTPwhdgRglyCvo15dnePO5mq3VZTHLsBWoOdrCu3P8Uj3yETI=
+X-Received: by 2002:aca:bb09:: with SMTP id l9mr10617660oif.33.1619406150187;
+ Sun, 25 Apr 2021 20:02:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210421150831.60133-1-kentaishiguro@sslab.ics.keio.ac.jp>
+ <YIBQmMih1sNb5/rg@google.com> <CANRm+CxMf=kwDRQE-BNbhgCARuV3fuKpDbEV2oWTeKuGhUYd+w@mail.gmail.com>
+ <CAOOWTGJvFB_hgSUzaqNaNigdkRXFcaK37F9V7kmL3nCG+bFz5Q@mail.gmail.com>
+In-Reply-To: <CAOOWTGJvFB_hgSUzaqNaNigdkRXFcaK37F9V7kmL3nCG+bFz5Q@mail.gmail.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Mon, 26 Apr 2021 11:02:19 +0800
+Message-ID: <CANRm+CzoS=HhiHg6w6dy8P+r3POeP3uMZqFvJr4oHMa1aNJqxg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Mitigating Excessive Pause-Loop Exiting in
+ VM-Agnostic KVM
+To:     Kenta Ishiguro <kentaishiguro@sslab.ics.keio.ac.jp>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Hildenbrand <david@redhat.com>,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Pierre-Louis Aublin <pl@sslab.ics.keio.ac.jp>,
+        =?UTF-8?B?5rKz6YeO5YGl5LqM?= <kono@sslab.ics.keio.ac.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Can Guo,
+On Mon, 26 Apr 2021 at 10:56, Kenta Ishiguro
+<kentaishiguro@sslab.ics.keio.ac.jp> wrote:
+>
+> Dear all,
+>
+> Thank you for the insightful feedback.
+>
+> Does Sean's suggested version of Wanpeng's patch mark a running vCPU as an IPI
+> receiver? If it's right, I think the candidate set of vCPUs for boost is
+> slightly different between using kvm_arch_interrupt_delivery and using boolean
+> ipi_received. In the version of using boolean ipi_received, vCPUs which
+> receive IPI while running are also candidates for a boost.
+> However, they likely have already responded to their IPI before they exit.
 
->> 
->> HPB is shown to have a performance improvement of 58 - 67% for random 
->> read
->> workload. [1]
->> 
->> [1]:
->> https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
->> 
->> Daejun Park (4):
->>   scsi: ufs: Introduce HPB feature
->>   scsi: ufs: L2P map management for HPB read
->>   scsi: ufs: Prepare HPB read for cached sub-region
->>   scsi: ufs: Add HPB 2.0 support
->> 
->>  Documentation/ABI/testing/sysfs-driver-ufs |  162 ++
->>  drivers/scsi/ufs/Kconfig                   |    9 +
->>  drivers/scsi/ufs/Makefile                  |    1 +
->>  drivers/scsi/ufs/ufs-sysfs.c               |   22 +
->>  drivers/scsi/ufs/ufs.h                     |   54 +-
->>  drivers/scsi/ufs/ufshcd.c                  |   74 +-
->>  drivers/scsi/ufs/ufshcd.h                  |   29 +
->>  drivers/scsi/ufs/ufshpb.c                  | 2387 ++++++++++++++++++++
->>  drivers/scsi/ufs/ufshpb.h                  |  277 +++
->>  9 files changed, 3013 insertions(+), 2 deletions(-)
->>  create mode 100644 drivers/scsi/ufs/ufshpb.c
->>  create mode 100644 drivers/scsi/ufs/ufshpb.h
-> 
->To the entire series:
-> 
->Tested-by: Can Guo <cang@codeaurora.org>
+             if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
++                !READ_ONCE(vcpu->ipi_received) &&
 
-Thanks for testing the patch series. :)
+There is a vcpu->preempted checking here.
 
-Daejun
+    Wanpeng
