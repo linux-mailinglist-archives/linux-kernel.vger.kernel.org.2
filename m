@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA84836BBD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F7536BBD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbhDZWwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 18:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
+        id S236678AbhDZWwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 18:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhDZWwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234767AbhDZWwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 18:52:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 32EE36100B;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C400060FE3;
         Mon, 26 Apr 2021 22:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619477487;
-        bh=Ce9NV7ueSpTF49P0v2TlIxFknPleAIcsv+vrdZEw9tY=;
+        bh=Gr+9xNcXOfKgfJqgJX/i8LVqX5wv0wsXPLdQSO25qug=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dqppDYj5UdsMOcIvvGPJKEUmidOgde4eC9a4pWPYG9vSODO7rIOWto0uhNyXzXxHW
-         HD7cquv24uTHOef+SGZ6I4Q7x3bR6d8FqXCbFHyAq8hgf6SS+eiPRL7I2FGTyCnnvp
-         JjGSY6w10V5GeKB7+/UcJayeAvNm1Ph5Xd/bLvd2NENqP+1/I12yuegWykMMRwBw7x
-         KPCPMjxG6KUXkU07559kR7gsB6zIys76q+k0K5s3Foa3UQHcQkVA6gB5JEMg+M1xWw
-         dSy40HfMrX5HzzAGfWu08SV8W6aCuMIxNVgPlsu3JdLENiUCin/MS2m5s68/Fqz4qM
-         xDV5XMiDbL0GQ==
+        b=nOWbobEwFX1rFXrY/8I1+gTKhfkOGfqolC+yLfNUmsGmHpaYn/5xrN2cGZ194XR6X
+         teOaGUu7G0qGP3M03sJRucYwoL/01jTiktMk68GmWKP1/FmTip7TF2ROL/UWO2I2VB
+         /q2I2rdUddwfBurqr4hEJD2t9cBvUwsnpqpC1mYDQOOFTuXAsxdeHM0Bzg/L2PfKAU
+         D+pnoPi+S/6l1bRblsiqgFhtbw9q91/DmXBTlucLtg/muDVDFsJ6xQpz2a0Ob+4MSQ
+         BREKwpFHuJ129Hk/zO7YDIEKdZ6xr4PbKQkK3ACJ2HarQljo7sV6ynRmvLxPC9sq5g
+         tF4EbIZ9PfNFg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 28FF9609AE;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BCAEA609AE;
         Mon, 26 Apr 2021 22:51:27 +0000 (UTC)
-Subject: Re: [GIT PULL] hwmon updates for v5.13
+Subject: Re: [GIT PULL] Power management updates for v5.13-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210426174229.103899-1-linux@roeck-us.net>
-References: <20210426174229.103899-1-linux@roeck-us.net>
-X-PR-Tracked-List-Id: <linux-hwmon.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210426174229.103899-1-linux@roeck-us.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.13
-X-PR-Tracked-Commit-Id: 9049572fb145746725b198a19e27fa2671b80448
+In-Reply-To: <CAJZ5v0iuTS8iDCUVQcqAB5N=8f6KkY00e-A+9Jtq7P3gzj=HmA@mail.gmail.com>
+References: <CAJZ5v0iuTS8iDCUVQcqAB5N=8f6KkY00e-A+9Jtq7P3gzj=HmA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0iuTS8iDCUVQcqAB5N=8f6KkY00e-A+9Jtq7P3gzj=HmA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.13-rc1
+X-PR-Tracked-Commit-Id: 59e2c959f20f9f255a42de52cde54a2962fb726f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 47080f2286110c371b9cf75ac7b34a6f2f1cf4ba
-Message-Id: <161947748710.6408.16062485848450212079.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 5469f160e6bf38b84eb237055868286e629b8d44
+Message-Id: <161947748776.6408.15220602274569744550.pr-tracker-bot@kernel.org>
 Date:   Mon, 26 Apr 2021 22:51:27 +0000
-To:     Guenter Roeck <linux@roeck-us.net>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 10:42:29 -0700:
+The pull request you sent on Mon, 26 Apr 2021 20:27:20 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.13
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.13-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/47080f2286110c371b9cf75ac7b34a6f2f1cf4ba
+https://git.kernel.org/torvalds/c/5469f160e6bf38b84eb237055868286e629b8d44
 
 Thank you!
 
