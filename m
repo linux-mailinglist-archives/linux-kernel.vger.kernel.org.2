@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E6636BB3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C087A36BB42
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235626AbhDZVed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbhDZVec (ORCPT
+        id S235866AbhDZVfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:35:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30448 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233464AbhDZVf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:34:32 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDBAC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:48 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso6074095pjn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2gqjqGKMmdY1c54QBWMIfXnF5vggO77yZIZgJZZpaUI=;
-        b=PxGTyMuyRjj+Z4cDoYFCCiZh9bcZQ0ETOYy8cGS8urgBFIwH0N3lizGv9Kzkc/MUTF
-         ZMyPvvHBWSzWEgSI4L+sVYDBlrJfBiTgAJjY2eHBpOfh/FBEqOoTjTziFifbD866Auqx
-         18xJCGTRacDmbDbmZPe9YLwIUN6KTWVj2ilYM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2gqjqGKMmdY1c54QBWMIfXnF5vggO77yZIZgJZZpaUI=;
-        b=OCh1MVQ269RXUzHX7IvCdUBNdbXvhT89eg8OBtfV5G3BFSFZLMLJZZ4tZOonDkrj+y
-         YNs4LKKevj0txEqOn3W8a/Dca/s8skQm1PchzlE4kpd5iBzb6mVM5fnVnJj4Db1S9St9
-         QK2QT/EzsvLDJfqyvs/TpJhRCdkcd2rIGRR2qLo41xORdlC9tUVlyLqgJUFOzJYiCH4t
-         lvesdAUdjvKp2Jfnf/G0LOGQpegIia9QN1fkXLVqeEZRGlDPFeaRUKJWpciHRgR2ctE6
-         lhzGAJMfUxx5UeQouz9d69GSolrD3u2ncFYzFJYO31GyETGxXck7CsUDEqexPvOXLZsi
-         UhSA==
-X-Gm-Message-State: AOAM532kuHJbBCClTd5WV3pTRCa2tJlhUOQFQYEAvsApD9ffROZT4G11
-        EVq3KIgMLYydRABOE+QeinEOEA==
-X-Google-Smtp-Source: ABdhPJyFXC6sob9x+LwIedI3fkp8qCKwcb1urDmHU4J3LWavE7Dw52zZN8AEKXm4UIzmsTKo/q7sQQ==
-X-Received: by 2002:a17:90a:1990:: with SMTP id 16mr1243139pji.172.1619472828397;
-        Mon, 26 Apr 2021 14:33:48 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:3a16:de17:8721:d706])
-        by smtp.gmail.com with UTF8SMTPSA id r3sm12082473pgn.82.2021.04.26.14.33.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 14:33:47 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 14:33:46 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajeshwari <rkambl@codeaurora.org>
-Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanm@codeaurora.org, manafm@codeaurora.org
-Subject: Re: [PATCH V2 1/3] dt-bindings: thermal: tsens: Add compatible
- string to TSENS binding for SC7280
-Message-ID: <YIcxuqvCkqnyN6/S@google.com>
-References: <1619202177-13485-1-git-send-email-rkambl@codeaurora.org>
- <1619202177-13485-2-git-send-email-rkambl@codeaurora.org>
+        Mon, 26 Apr 2021 17:35:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619472886;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=03TKKwj7058DR07A93Ekn5vbCIyLZWTmg1O7UnNvmc0=;
+        b=ai4px1UvzOA4o5Drxa8/+hCuOvNvz0lyLx0UQdzjsOOyWB68cUOv+SZo9zxCYcCDZdXN81
+        8CzSIpjxsDlGcGffAkMd/od/eHjjCp8TdCRPsRj4KR72x9ZhID2Rc0FP4EH8go1lTNPIny
+        qBg4j1aKXgFwIaQIHTOkhb4wdajHrxE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355--Rs3JjTJOw6jyvQDOGJ0rw-1; Mon, 26 Apr 2021 17:34:42 -0400
+X-MC-Unique: -Rs3JjTJOw6jyvQDOGJ0rw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1FFEF83DD22;
+        Mon, 26 Apr 2021 21:34:41 +0000 (UTC)
+Received: from krava (unknown [10.40.193.34])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DFCA918BAA;
+        Mon, 26 Apr 2021 21:34:38 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 23:34:37 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v5 12/26] perf parse-events: Support event inside hybrid
+ pmu
+Message-ID: <YIcx7UtQnr+vc+qf@krava>
+References: <20210423053541.12521-1-yao.jin@linux.intel.com>
+ <20210423053541.12521-13-yao.jin@linux.intel.com>
+ <YIWWISXCQl7fPUFo@krava>
+ <cea88d03-f3bf-d9cd-57be-ad3f45d82eb1@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619202177-13485-2-git-send-email-rkambl@codeaurora.org>
+In-Reply-To: <cea88d03-f3bf-d9cd-57be-ad3f45d82eb1@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:52:55PM +0530, Rajeshwari wrote:
-> Added compatible string in TSENS dt-bindings for SC7280.
+On Mon, Apr 26, 2021 at 08:56:28AM +0800, Jin, Yao wrote:
+> Hi Jiri,
+> 
+> On 4/26/2021 12:17 AM, Jiri Olsa wrote:
+> > On Fri, Apr 23, 2021 at 01:35:27PM +0800, Jin Yao wrote:
+> > 
+> > SNIP
+> > 
+> > > +static int parse_events__inside_hybrid_pmu(struct parse_events_state *parse_state,
+> > > +					   struct list_head *list, char *name,
+> > > +					   struct list_head *head_config)
+> > > +{
+> > > +	struct parse_events_term *term;
+> > > +	int ret = -1;
+> > > +
+> > > +	if (parse_state->fake_pmu || !head_config || list_empty(head_config) ||
+> > > +	    !perf_pmu__is_hybrid(name)) {
+> > > +		return -1;
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * More than one term in list.
+> > > +	 */
+> > > +	if (head_config->next && head_config->next->next != head_config)
+> > > +		return -1;
+> > > +
+> > > +	term = list_first_entry(head_config, struct parse_events_term, list);
+> > > +	if (term && term->config && strcmp(term->config, "event")) {
+> > 
+> > so 'event' is set only for HW events, I don't see it being for other
+> > types.. also should the check be !strcmp ?
+> > 
+> 
+> For some HW events, such as branch-instructions, branch-misses and other HW
+> events which are defined under /sys/devices/cpu_core/events, the
+> term->config is "event". For these events, we don't need to do the second
+> parsing. So I just use 'strcmp(term->config, "event")' to avoid the second
+> parsing.
 
-nit: use present tense to describe what the patch does
+ah ok.. I thought it's the other way round
 
-> Signed-off-by: Rajeshwari <rkambl@codeaurora.org>
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> 
+> If we check with !strcmp, the second parsing will be executed but the result
+> after parsing should be empty.
+> 
+> > also please add some tests for cache events with pmu syntax
+> > 
+> 
+> OK, I will add new test case for that.
+
+thanks,
+jirka
+
