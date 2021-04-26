@@ -2,169 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B2B36AF16
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFE436AF3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhDZHx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
+        id S237700AbhDZH4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbhDZHn4 (ORCPT
+        with ESMTP id S234215AbhDZHpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:43:56 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20336C061756;
-        Mon, 26 Apr 2021 00:41:34 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id u3so4259279eja.12;
-        Mon, 26 Apr 2021 00:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c1vBPck8JU0pwgwWsq/snACpybxqrhklsB99FqhjoPI=;
-        b=btKhBB/tFIdFQPgrpPpl6N2mY5cxZFwqPqUxdsGBx0wugCltKIgoZqNWemwLRzgn67
-         XUBVcPTHxLGLYObb4I2rb5wpvfnA0eFEJTdsdUvrkheQyp/h4Q5sz9YT9cHnVLGPkX9d
-         Nh09oHnBnL0EYqayiSih9K7q7UtSXotDlmfEUjeaGEx9mo2XZvS51H8KuePo4zoc9WV6
-         I/s8zOAgoMPQ4UXlwFA1sC1tUmBiFfvq8ruQ6T/HSlBLEwpxkNBlWEwp0FPVQWEwTuPC
-         hCyRmKntWEx0JzG0yFTnUAfDOmVRnhoUNgKAaWdz8oZUWpg7rBly/txd7ozzKO5etZkQ
-         v92w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c1vBPck8JU0pwgwWsq/snACpybxqrhklsB99FqhjoPI=;
-        b=iyg1wbAOD3flO8t7IX1uy8rZy7rAepkKxG6N2UNIOFSK2SzYtiVGuRV3w1vYW4ousV
-         eWqKfGyzqgnDEsgYAnBzItgoOT4Z3RQaCthdHJNllSnWQGiVhiAidEAEeiPOXRsVp+Cv
-         kax4HyMENaWKkVA7UeRpFUfFlYwbLRMzoOcZj1D0p2Fd67MbNIXqd4F9jf0d79kE3jWI
-         9ZWRqYhumlflugyuXSOPqI/40QpKktwu91Y29ddREcKOrtub7nPIZuOe/kSLjdHKJoNG
-         Gv84YP2fqHhqsoQWARN7cWZsr69DLPZIIEQUklTPNwxKi4VvBmAlLuAs/qLTgqlWqIr6
-         /sKQ==
-X-Gm-Message-State: AOAM531YMl2IPqhG8+n+Bn5GbbtWcl5FeEaSyADHAmeKuhMkbOhUnhIr
-        /kOxrYKBYerF0z48QrYNNOskM/EVllk=
-X-Google-Smtp-Source: ABdhPJxUjB9yH2Enni4Q3e63AZXAGAWmsaB5WN2KunBgTRUHiE0T+mMvnnHhosoIzZ83Pa89llj2OQ==
-X-Received: by 2002:a17:906:524f:: with SMTP id y15mr16985419ejm.65.1619422892867;
-        Mon, 26 Apr 2021 00:41:32 -0700 (PDT)
-Received: from localhost (p2e5be10e.dip0.t-ipconnect.de. [46.91.225.14])
-        by smtp.gmail.com with ESMTPSA id c19sm13506940edu.20.2021.04.26.00.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 00:41:31 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 09:42:24 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Thierry Reding <treding@nvidia.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] drm/tegra: Get ref for DP AUX channel, not its ddc
- adapter
-Message-ID: <YIZu4PD6BmlGYXuc@orome.fritz.box>
-References: <20210423182146.185633-1-lyude@redhat.com>
- <20210423182146.185633-2-lyude@redhat.com>
+        Mon, 26 Apr 2021 03:45:01 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507D7C06134C;
+        Mon, 26 Apr 2021 00:43:15 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FTH1q1F9tz9sXG;
+        Mon, 26 Apr 2021 17:43:11 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619422992;
+        bh=bWgd1tMrP7+EuKXW8f+HrqUw7mP/XAMdLt441klf1W8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mXfLWyUkuzfAfnYzobmHYLpH/0/X3YCl9GMfnrBR/t7qTTAATMHommU8v0qTT1Pcu
+         wNpvvmnW8UTYm49t+IDGqS1+75QKoueYcnyHC0XOZ83WEtdWUEZR3CYYp2U0rZNP31
+         yyu8Fwxe5uxKZDnyZw5SFd9K534xNRu+vuKOvL/L2SuuDbV0NsdjpgQYAG2rTQttBM
+         iVbbuSU1Dxsc0o98Xjt4fb2WnVCxT+cnLsPfbIZawNgisV0licl6HpbZQ/PTZdTjfW
+         WRM/McteR0sFf9s48MNoFzqOL8nLF4hOgHru4c4XTKOzulto8khhc8Dm7tzWfuJhhN
+         cPwB9u7ZgNBlA==
+Date:   Mon, 26 Apr 2021 17:43:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus <torvalds@linux-foundation.org>,
+        Changheun Lee <nanich.lee@samsung.com>
+Subject: Re: linux-next: boot failure in today's linux-next
+Message-ID: <20210426174310.6f03345b@canb.auug.org.au>
+In-Reply-To: <20210426163606.36a97253@canb.auug.org.au>
+References: <20210426163606.36a97253@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cyYgln7x2rIbz3eF"
-Content-Disposition: inline
-In-Reply-To: <20210423182146.185633-2-lyude@redhat.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Type: multipart/signed; boundary="Sig_/duTEN4xOS/YRmTHNlZX.f4_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---cyYgln7x2rIbz3eF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/duTEN4xOS/YRmTHNlZX.f4_
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 23, 2021 at 02:21:45PM -0400, Lyude Paul wrote:
-> While we're taking a reference of the DDC adapter for a DP AUX channel in
-> tegra_sor_probe() because we're going to be using that adapter with the
-> SOR, now that we've moved where AUX registration happens the actual device
-> structure for the DDC adapter isn't initialized yet. Which means that we
-> can't really take a reference from it to try to keep it around anymore.
+Hi all,
+
+On Mon, 26 Apr 2021 16:36:06 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next build (ipowerpc_pseries_le_defconfig)
+> failed its qemu boot tests like this:
 >=20
-> This should be fine though, because we can just take a reference of its
-> parent instead.
+> [    1.833361][    T1] ibmvscsi 71000003: SRP_VERSION: 16.a
+> [    1.834439][    T1] ibmvscsi 71000003: Maximum ID: 64 Maximum LUN: 32 =
+Maximum Channel: 3
+> [    1.834683][    T1] scsi host0: IBM POWER Virtual SCSI Adapter 1.5.9
+> [    1.842605][    C0] ibmvscsi 71000003: partner initialization complete
+> [    1.844979][    C0] ibmvscsi 71000003: host srp version: 16.a, host pa=
+rtition qemu (0), OS 2, max io 2097152
+> [    1.845502][    C0] ibmvscsi 71000003: sent SRP login
+> [    1.845853][    C0] ibmvscsi 71000003: SRP_LOGIN succeeded
+> [    1.851447][    T1] BUG: Kernel NULL pointer dereference on write at 0=
+x00000390
+> [    1.851577][    T1] Faulting instruction address: 0xc00000000070386c
+> [    1.852171][    T1] Oops: Kernel access of bad area, sig: 11 [#1]
+> [    1.852324][    T1] LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 N=
+UMA pSeries
+> [    1.852689][    T1] Modules linked in:
+> [    1.853136][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0 #2
+> [    1.853555][    T1] NIP:  c00000000070386c LR: c000000000703a6c CTR: 0=
+000000000000000
+> [    1.853679][    T1] REGS: c0000000063a2f40 TRAP: 0380   Not tainted  (=
+5.12.0)
+> [    1.853870][    T1] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE> =
+ CR: 44002240  XER: 00000000
+> [    1.854305][    T1] CFAR: c000000000703a68 IRQMASK: 0=20
+> [    1.854305][    T1] GPR00: c000000000703a6c c0000000063a31e0 c00000000=
+146b200 c0000000080ca800=20
+> [    1.854305][    T1] GPR04: c000000006067380 c00c000000020180 000000000=
+0000024 0000000000008500=20
+> [    1.854305][    T1] GPR08: 0000000000000000 0000000000000000 000000000=
+0000000 0000000000000000=20
+> [    1.854305][    T1] GPR12: 0000000000002000 c000000001640000 c00000000=
+8068508 0000000000000020=20
+> [    1.854305][    T1] GPR16: 0000000000000000 0000000000000024 c00000000=
+0f85f78 c000000000f0d998=20
+> [    1.854305][    T1] GPR20: c0000000013b59e0 0000000000000003 c00000000=
+63a340c 0000000000000001=20
+> [    1.854305][    T1] GPR24: 0000000000000000 c0000000084a3000 c00000000=
+80ca800 c00c000000020180=20
+> [    1.854305][    T1] GPR28: 0000000000008500 c0000000080ca800 000000000=
+0000024 c000000006067380=20
+> [    1.855486][    T1] NIP [c00000000070386c] bio_add_hw_page+0x7c/0x240
+> [    1.856357][    T1] LR [c000000000703a6c] bio_add_pc_page+0x3c/0x70
+> [    1.856723][    T1] Call Trace:
+> [    1.856890][    T1] [c0000000063a31e0] [0000000000000c00] 0xc00 (unrel=
+iable)
+> [    1.857390][    T1] [c0000000063a3230] [c00000000070105c] bio_kmalloc+=
+0x3c/0xd0
+> [    1.857514][    T1] [c0000000063a3260] [c000000000713014] blk_rq_map_k=
+ern+0x164/0x4a0
+> [    1.857630][    T1] [c0000000063a32d0] [c0000000008e17dc] __scsi_execu=
+te+0x1cc/0x270
+> [    1.857746][    T1] [c0000000063a3350] [c0000000008e7bf0] scsi_probe_a=
+nd_add_lun+0x250/0xd90
+> [    1.857887][    T1] [c0000000063a34c0] [c0000000008e921c] __scsi_scan_=
+target+0x17c/0x630
+> [    1.858007][    T1] [c0000000063a35d0] [c0000000008e9900] scsi_scan_ch=
+annel+0x90/0xe0
+> [    1.858133][    T1] [c0000000063a3620] [c0000000008e9ba8] scsi_scan_ho=
+st_selected+0x138/0x1a0
+> [    1.858258][    T1] [c0000000063a3670] [c0000000008e9fec] scsi_scan_ho=
+st+0x2dc/0x320
+> [    1.858367][    T1] [c0000000063a3710] [c00000000091b2a0] ibmvscsi_pro=
+be+0xa70/0xa80
+> [    1.858487][    T1] [c0000000063a3800] [c0000000000eb8ac] vio_bus_prob=
+e+0x9c/0x460
+> [    1.858616][    T1] [c0000000063a38a0] [c0000000008979bc] really_probe=
++0x12c/0x6b0
+> [    1.858749][    T1] [c0000000063a3950] [c000000000897fd4] driver_probe=
+_device+0x94/0x130
+> [    1.858874][    T1] [c0000000063a3980] [c00000000089896c] device_drive=
+r_attach+0x11c/0x130
+> [    1.858999][    T1] [c0000000063a39c0] [c000000000898a38] __driver_att=
+ach+0xb8/0x1a0
+> [    1.859123][    T1] [c0000000063a3a10] [c0000000008941a8] bus_for_each=
+_dev+0xa8/0x130
+> [    1.859257][    T1] [c0000000063a3a70] [c000000000896ef4] driver_attac=
+h+0x34/0x50
+> [    1.859381][    T1] [c0000000063a3a90] [c000000000896510] bus_add_driv=
+er+0x170/0x2b0
+> [    1.859503][    T1] [c0000000063a3b20] [c000000000899b04] driver_regis=
+ter+0xb4/0x1c0
+> [    1.859626][    T1] [c0000000063a3b90] [c0000000000ea808] __vio_regist=
+er_driver+0x68/0x90
+> [    1.859754][    T1] [c0000000063a3bb0] [c0000000010cee74] ibmvscsi_mod=
+ule_init+0xa4/0xdc
+> [    1.859931][    T1] [c0000000063a3bf0] [c000000000012190] do_one_initc=
+all+0x60/0x2c0
+> [    1.860071][    T1] [c0000000063a3cc0] [c0000000010846e4] kernel_init_=
+freeable+0x300/0x3a0
+> [    1.860207][    T1] [c0000000063a3da0] [c000000000012764] kernel_init+=
+0x2c/0x168
+> [    1.860336][    T1] [c0000000063a3e10] [c00000000000d5ec] ret_from_ker=
+nel_thread+0x5c/0x70
+> [    1.860690][    T1] Instruction dump:
+> [    1.861072][    T1] fba10038 7cbb2b78 7c7d1b78 7cfc3b78 a1440048 2c2a0=
+000 4082008c a13f004a=20
+> [    1.861328][    T1] 7c095040 40810110 e93f0008 811f0028 <e9290390> e92=
+90050 812903d8 7d3e4850=20
+> [    1.863000][    T1] ---[ end trace c49ca2d91ee47d7f ]---
+> [    1.879456][    T1]=20
+> [    2.880941][    T1] Kernel panic - not syncing: Attempted to kill init=
+! exitcode=3D0x0000000b
 >=20
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Fixes: 39c17ae60ea9 ("drm/tegra: Don't register DP AUX channels before co=
-nnectors")
-> Cc: Lyude Paul <lyude@redhat.com>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-tegra@vger.kernel.org
-> ---
->  drivers/gpu/drm/tegra/sor.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> I don't know what caused this, but it is some change since Friday.
 >=20
-> diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-> index 7b88261f57bb..4e0e3a63e586 100644
-> --- a/drivers/gpu/drm/tegra/sor.c
-> +++ b/drivers/gpu/drm/tegra/sor.c
-> @@ -3739,11 +3739,11 @@ static int tegra_sor_probe(struct platform_device=
- *pdev)
->  		if (!sor->aux)
->  			return -EPROBE_DEFER;
-> =20
-> -		if (get_device(&sor->aux->ddc.dev)) {
-> -			if (try_module_get(sor->aux->ddc.owner))
-> +		if (get_device(sor->aux->dev)) {
-> +			if (try_module_get(sor->aux->dev->driver->owner))
->  				sor->output.ddc =3D &sor->aux->ddc;
->  			else
-> -				put_device(&sor->aux->ddc.dev);
-> +				put_device(sor->aux->dev);
->  		}
->  	}
+> I have left it like this.
 
-Unfortunately, I think it's a bit more subtle than that. The reason for
-this get_device()/try_module_get() dance was to mirror the behaviour of
-of_get_i2c_adapter_by_node() so that when we call i2c_put_adapter() in
-tegra_output_remove() we correctly decrease the reference count.
+Bisections leads to commit
 
-The above will increase the reference on the I2C adapter's parent while
-i2c_put_adapter() will then only decrease the reference on the I2C
-adapter, so I think effectively we'd be leaking a reference to the I2C
-adapter's parent.
+  42fb54fbc707 ("bio: limit bio max size")
 
-Also, since we didn't take a reference on the I2C adapter explicitly,
-releasing that reference in tegra_output_remove() might free the I2C
-adapter too early.
+from the block tree.  Reverting that commit on top of today's
+linux-next allows to the boot to work again.
 
-I wonder if perhaps it'd be easier to get rid of the struct tegra_output
-abstraction altogether and push this down into the individual drivers,
-even if that means a bit more code duplication. That's not the kind of
-quick fix to resolve this current situation, so perhaps as a stop-gap we
-just need to sprinkle a few more conditionals throughout tegra_output
-code. We could, for example, avoid calling i2c_put_adapter() in
-tegra_output_remove() for the DisplayPort cases and instead manually
-release the reference to the I2C adapter's parent in tegra_sor_remove().
-On top of your patch above that /should/ fix things properly for now.
+--=20
+Cheers,
+Stephen Rothwell
 
-Thierry
-
---cyYgln7x2rIbz3eF
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/duTEN4xOS/YRmTHNlZX.f4_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCGbtgACgkQ3SOs138+
-s6GwRg/9Fz0mMHegO0rimUIpYL7RJ0L1F7bH0RxDPapEknjZ3xf3NxdDOZT1Z92l
-5ZhInuo9EkAwfUm7MyFoatuRV2hc/Xk3ZXAcNaMHjuzhhZ/ixfAWllpOsk1lY5X6
-7NsXyALSj7U0FP+/gZaPsztz5xomCojRdmW0EsBKxGJNCP3ttcPUimx6zPr9ASkJ
-LHFVV3isrxA9cGIiM6qAPNLE/Gwp17++aME0sdjboqzXHINXCjgk7n55DJp8Ou2x
-LOJFq62NGbZqLYkKDuQq3A0hF08xpVMMvcONwtlJkgO0dIwH5LaDbhyC7Xaxv/zU
-TuBEcYDVijaLZxH7deQdVqSFeS8U/NWebN6hO4MWzZuVy8vVIzYXyH4ordrsUITQ
-N6x0c1tx2O+vEGJiNzVn35J9gxGIc2NjfH5JBVddszwNBLeZSs4ReAejpVa2E0Sk
-S55SnjSm/1B9UpPxmaic3p2cMRz0nS/GvdJ8i5uRDyC1fIRDLujPuoDA/p52AKNd
-pLCzK/4OFOd6akh4mhm0cjfB8SWwVqxvWqsGLsjeZNZSu74hz9xMaP4yPdzGsmJ7
-W94YOpvqEfLw5uFK1b8NdXlPEe5VVjj9yzQLocvbtobws9N6j1ydRh3zTtisd0RU
-y7DBKuFNGtaYWslW0zUhwGQbIbfv3vW8EeJ796x1iF+MFdAwV+4=
-=wpO5
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCGbw4ACgkQAVBC80lX
+0GzEuAf/fpxNnYqfWMnoNHCQV6Q09F/ta+k8JD8iYq+WlPvTKGNZCrdXBjna50H0
+4jautsuKua4a5d4VCds0WCDm9efzhU++X4x56JixoKk+S0iHDnM+F+V6wr0tfKi3
+GoGGjM34T6m8uJry4hhA6J3ul8qC6Tm/DSl1qScOCPPXhzWo2cFPlB2ZcBXUY9Ns
+13Gt0PoOh8aJ0lEdpIPXPhjDhXlEcxDhKZaHp2/ymDnR4DBmLy8YKo2v5jljj3LM
+FfvrCaIG1LGtlm/T/GycGns+I4ne/gkHnNzLTREeTyf3qxTPNIUBStRGUCxk3WwF
+RYZbAyzae1wwo0UZOoP8etF4S5hctQ==
+=qV1M
 -----END PGP SIGNATURE-----
 
---cyYgln7x2rIbz3eF--
+--Sig_/duTEN4xOS/YRmTHNlZX.f4_--
