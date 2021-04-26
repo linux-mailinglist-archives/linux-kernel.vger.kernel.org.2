@@ -2,103 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9866036B2FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9116D36B301
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhDZMYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233469AbhDZMYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233360AbhDZMYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 08:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233483AbhDZMX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:23:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 299D961175;
-        Mon, 26 Apr 2021 12:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619439794;
-        bh=8l8FMIOM/2AmqQe/W20ULO3diao9or5P/lxqzFaH1D4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DDp2o3LwlZAFrhIW/+K33VSj06yfrflBPXDdOg2PTN4hvF44A8jnrHqg0fhbzPHet
-         uBkCofrB3d5Owm2kLeKrpieMs0Th8X4ffJ5cRpBbDqdVAfZjBUStwWgFpTb658FYvK
-         hcVxeWzitYuYBqiDU8l+NS/k45ogXz92Qvag/Okc=
-Date:   Mon, 26 Apr 2021 14:23:11 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH 1/2] tty: serial: fsl_lpuart: fix the potential bug of
- division or modulo by zero
-Message-ID: <YIawr8i62pHfSacm@kroah.com>
-References: <20210426074935.11131-1-sherry.sun@nxp.com>
- <20210426074935.11131-2-sherry.sun@nxp.com>
- <YIZ0/vRLASlUph6x@kroah.com>
- <AM0PR04MB4947A9253CE547BEBE95BE8092429@AM0PR04MB4947.eurprd04.prod.outlook.com>
- <YIalMRdbAKZpIJWP@kroah.com>
- <AM0PR04MB49470E50CFAB8C36EABB241192429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2A4C061574;
+        Mon, 26 Apr 2021 05:23:32 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1lb0Gq-0000LU-Iv; Mon, 26 Apr 2021 14:23:24 +0200
+Date:   Mon, 26 Apr 2021 14:23:24 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: netfilter: Add RFC-7597 Section 5.1 PSID support
+Message-ID: <20210426122324.GA975@breakpoint.cc>
+References: <20210422023506.4651-1-Cole.Dishington@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM0PR04MB49470E50CFAB8C36EABB241192429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+In-Reply-To: <20210422023506.4651-1-Cole.Dishington@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:51:39AM +0000, Sherry Sun wrote:
-> Hi Greg,
+Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
+> This adds support for masquerading into a smaller subset of ports -
+> defined by the PSID values from RFC-7597 Section 5.1. This is part of
+> the support for MAP-E and Lightweight 4over6, which allows multiple
+> devices to share an IPv4 address by splitting the L4 port / id into
+> ranges.
 > 
-> > > > >  drivers/tty/serial/fsl_lpuart.c | 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/tty/serial/fsl_lpuart.c
-> > > > > b/drivers/tty/serial/fsl_lpuart.c index 794035041744..777d54b593f8
-> > > > > 100644
-> > > > > --- a/drivers/tty/serial/fsl_lpuart.c
-> > > > > +++ b/drivers/tty/serial/fsl_lpuart.c
-> > > > > @@ -2414,6 +2414,9 @@ lpuart32_console_get_options(struct
-> > > > > lpuart_port *sport, int *baud,
-> > > > >
-> > > > >  	bd = lpuart32_read(&sport->port, UARTBAUD);
-> > > > >  	bd &= UARTBAUD_SBR_MASK;
-> > > > > +	if (!bd)
-> > > > > +		return;
-> > > >
-> > > > How can this ever happen?
-> > > >
-> > > > Not to say this is a bad check, but it feels like this can't really
-> > > > happen in real life, what code patch could create this result?
-> > > >
-> > > > And have you tested this on real hardware?
-> > > >
-> > >
-> > > Thanks for the reviewing, yes, I have tested the patchset on the real
-> > hardware.
-> > >
-> > > Seems the coverity check is static scan, so cannot judge if UARTBAUD
-> > Register will be zero.
-> > > I just found below statement in the uart reference manual: "When SBR is 1
-> > - 8191, the baud rate equals "baud clock / ((OSR+1) × SBR)"."
-> > > Since I am not familiar with uart, do you mean that the value of UARTBAUD
-> > Register will never be zero, so this case will not happen in real word?
-> > 
-> > Given that this never has happened with hardware for such an old device,
-> > perhaps it is impossible.  But it would be good to check.
-> > 
-> > > If yes, I will drop this patch.
-> > 
-> > Handling "bad data" from hardware is never a bad idea, so I don't
-> > necessarily want to drop this patch, I just want to try to figure out if this is a
-> > "incase the hardware is broken/malicious" type of change, vs.
-> > a "this bug we are seeing in real hardware" type of change.
-> > 
+> Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+> Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+> Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+> Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+> Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+> Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+> ---
+>  include/net/netfilter/nf_conntrack.h          |   2 +
+>  .../netfilter/nf_conntrack_tuple_common.h     |   5 +
+>  include/uapi/linux/netfilter/nf_nat.h         |   3 +-
+>  net/netfilter/nf_nat_core.c                   | 101 ++++++++++++++++--
+>  net/netfilter/nf_nat_ftp.c                    |  23 ++--
+>  net/netfilter/nf_nat_helper.c                 |  15 ++-
+>  6 files changed, 120 insertions(+), 29 deletions(-)
 > 
-> Yes, you are right, the probability of hardware happen in this case is really low. But we cannot guarantee that it will never happen.
-> So will this check here be accepted? Thanks!
+> diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
+> index 439379ca9ffa..d63d38aa7188 100644
+> --- a/include/net/netfilter/nf_conntrack.h
+> +++ b/include/net/netfilter/nf_conntrack.h
+> @@ -92,6 +92,8 @@ struct nf_conn {
+>  	/* If we were expected by an expectation, this will be it */
+>  	struct nf_conn *master;
+>  
+> +	struct nf_nat_range2 *range;
 
-Please resubmit it with a better changelog description summarizing the
-discussion here to make it more obvious why this change is needed.
+Increasing nf_conn size should be avoided unless
+absolutely neccessary.
 
-thanks,
+> --- a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+> +++ b/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+> @@ -39,6 +39,11 @@ union nf_conntrack_man_proto {
+>  	struct {
+>  		__be16 key;	/* GRE key is 32bit, PPtP only uses 16bit */
+>  	} gre;
+> +	struct {
+> +		unsigned char psid_length;
+> +		unsigned char offset;
+> +		__be16 psid;
+> +	} psid;
 
-greg k-h
+This breaks the ABI, you cannot change these structures.
+
+This is the reason there is a 'struct nf_nat_range2', it wasn't
+possible to add to the existing 'struct nf_nat_range'.
+
+> diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+> index b7c3c902290f..7730ce4ca9a9 100644
+> --- a/net/netfilter/nf_nat_core.c
+> +++ b/net/netfilter/nf_nat_core.c
+> @@ -232,13 +232,33 @@ static bool nf_nat_inet_in_range(const struct nf_conntrack_tuple *t,
+>  static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
+>  			     enum nf_nat_manip_type maniptype,
+>  			     const union nf_conntrack_man_proto *min,
+> -			     const union nf_conntrack_man_proto *max)
+> +			     const union nf_conntrack_man_proto *max,
+> +			     bool is_psid)
+>  {
+
+...
+>  	__be16 port;
+>  
+> +	int m = 0;
+> +	u16 offset_mask = 0;
+> +	u16 psid_mask = 0;
+> +
+> +	/* In this case we are in PSID mode and the rules are all different */
+> +	if (is_psid) {
+> +		/* m = number of bits in each valid range */
+> +		m = 16 - min->psid.psid_length - min->psid.offset;
+> +		offset_mask = ((1 << min->psid.offset) - 1) <<
+> +				(16 - min->psid.offset);
+> +		psid_mask = ((1 << min->psid.psid_length) - 1) << m;
+> +	}
+
+...
+
+Is it really needed to place all of this in the nat core?
+
+The only thing that has to be done in the NAT core, afaics, is to
+suppress port reallocation attmepts when NF_NAT_RANGE_PSID is set.
+
+Is there a reason why nf_nat_masquerade_ipv4/6 can't be changed instead
+to do what you want?
+
+AFAICS its enough to set NF_NAT_RANGE_PROTO_SPECIFIED and init the
+upper/lower boundaries, i.e. change input given to nf_nat_setup_info().
+
+>  	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
+> +	if (range) {
+> +		if (!ct->range)
+> +			ct->range = kmalloc(sizeof(*ct->range), 0);
+
+If you absolutely have to store extra data in nf_conn, please extend
+struct nf_conn_nat, masquerade already stores the interface index, so
+you could place the psid len/offset there as well.
+
+> +	/* Find a port that matches the MASQ rule. */
+> +	nf_nat_l4proto_unique_tuple(&exp->tuple, ct->range,
+> +				    dir ? NF_NAT_MANIP_SRC : NF_NAT_MANIP_DST,
+> +				    ct);
+> +	port = ntohs(exp->tuple.dst.u.tcp.port);
+> +	nf_ct_expect_related(exp, 0);
+
+This removes there error check for nf_ct_expect_related(), why?
+
+Also, how is this going to be used?
+
+I see no changes to any of the nftables or iptables modules that would
+be needed for userspace to enable this feature.
