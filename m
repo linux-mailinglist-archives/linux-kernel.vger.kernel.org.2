@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327A536AD5A
+	by mail.lfdr.de (Postfix) with ESMTP id B654536AD5B
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhDZHeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:34:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45826 "EHLO mail.kernel.org"
+        id S232817AbhDZHeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:34:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232266AbhDZHdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:33:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22090611C9;
-        Mon, 26 Apr 2021 07:32:55 +0000 (UTC)
+        id S232257AbhDZHdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:33:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0384611BF;
+        Mon, 26 Apr 2021 07:32:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422376;
-        bh=nBhsgvgZR6awp7kCZkb1y1P8PSCCT1gbuYqv3EP7ny0=;
+        s=korg; t=1619422379;
+        bh=FOVNsP37ujZU56ZO0D/Mg7ahp3v4DxwECQ6+MyBv7tE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxQVHvyGEmbZer/jkiSg3dN1AtgtaOxNwxn5Rd9k63/dQhNXHOaABuM9cKi5a1hpl
-         l+r8Tsm380vnzLTF0OPWNOs9FD7J3wcniABIg6oAeCEz3nSbwErAV/uDPH9jzBTDZY
-         3DTTtghlrfY2gTBFKhC1xgOq+vtHzejFx1b4jIEE=
+        b=Lur5EpmLNh1/LlGkQqlEcI9SIjXnioAcCfCBePQfZ6AH/gjRkcbUWAcWrMDnMVnas
+         qIdDTHjnblQr5k6eCs01xWv+y6761v4ncLI2sG9TWmSnJoRtCKgx4MzC0iLrT3Xugb
+         4pY+4reR13s2S1yFx4CKh4jeT1Dsa3xS7VDOox7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Shuah Khan <skhan@linuxfoundation.org>,
         Tom Seewald <tseewald@gmail.com>,
         syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 25/37] usbip: stub-dev synchronize sysfs code paths
-Date:   Mon, 26 Apr 2021 09:29:26 +0200
-Message-Id: <20210426072818.102188378@linuxfoundation.org>
+Subject: [PATCH 4.9 26/37] usbip: vudc synchronize sysfs code paths
+Date:   Mon, 26 Apr 2021 09:29:27 +0200
+Message-Id: <20210426072818.135957668@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
 References: <20210426072817.245304364@linuxfoundation.org>
@@ -42,84 +42,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 9dbf34a834563dada91366c2ac266f32ff34641a upstream.
+commit bd8b82042269a95db48074b8bb400678dbac1815 upstream.
 
 Fuzzing uncovered race condition between sysfs code paths in usbip
 drivers. Device connect/disconnect code paths initiated through
 sysfs interface are prone to races if disconnect happens during
 connect and vice versa.
 
-Use sysfs_lock to protect sysfs paths in stub-dev.
+Use sysfs_lock to protect sysfs paths in vudc.
 
-Cc: stable@vger.kernel.org # 4.9.x
+Cc: stable@vger.kernel.org # 4.9.x # 4.14.x
 Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/2b182f3561b4a065bf3bf6dce3b0e9944ba17b3f.1616807117.git.skhan@linuxfoundation.org
+Link: https://lore.kernel.org/r/caabcf3fc87bdae970509b5ff32d05bb7ce2fb15.1616807117.git.skhan@linuxfoundation.org
 Signed-off-by: Tom Seewald <tseewald@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/stub_dev.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/usb/usbip/vudc_dev.c   |    1 +
+ drivers/usb/usbip/vudc_sysfs.c |    5 +++++
+ 2 files changed, 6 insertions(+)
 
---- a/drivers/usb/usbip/stub_dev.c
-+++ b/drivers/usb/usbip/stub_dev.c
-@@ -77,6 +77,7 @@ static ssize_t store_sockfd(struct devic
+--- a/drivers/usb/usbip/vudc_dev.c
++++ b/drivers/usb/usbip/vudc_dev.c
+@@ -582,6 +582,7 @@ static int init_vudc_hw(struct vudc *udc
+ 	init_waitqueue_head(&udc->tx_waitq);
  
- 		dev_info(dev, "stub up\n");
+ 	spin_lock_init(&ud->lock);
++	mutex_init(&ud->sysfs_lock);
+ 	ud->status = SDEV_ST_AVAILABLE;
+ 	ud->side = USBIP_VUDC;
  
-+		mutex_lock(&sdev->ud.sysfs_lock);
- 		spin_lock_irq(&sdev->ud.lock);
+--- a/drivers/usb/usbip/vudc_sysfs.c
++++ b/drivers/usb/usbip/vudc_sysfs.c
+@@ -125,6 +125,7 @@ static ssize_t store_sockfd(struct devic
+ 		dev_err(dev, "no device");
+ 		return -ENODEV;
+ 	}
++	mutex_lock(&udc->ud.sysfs_lock);
+ 	spin_lock_irqsave(&udc->lock, flags);
+ 	/* Don't export what we don't have */
+ 	if (!udc->driver || !udc->pullup) {
+@@ -200,6 +201,8 @@ static ssize_t store_sockfd(struct devic
  
- 		if (sdev->ud.status != SDEV_ST_AVAILABLE) {
-@@ -101,13 +102,13 @@ static ssize_t store_sockfd(struct devic
- 		tcp_rx = kthread_create(stub_rx_loop, &sdev->ud, "stub_rx");
- 		if (IS_ERR(tcp_rx)) {
- 			sockfd_put(socket);
--			return -EINVAL;
-+			goto unlock_mutex;
- 		}
- 		tcp_tx = kthread_create(stub_tx_loop, &sdev->ud, "stub_tx");
- 		if (IS_ERR(tcp_tx)) {
- 			kthread_stop(tcp_rx);
- 			sockfd_put(socket);
--			return -EINVAL;
-+			goto unlock_mutex;
- 		}
- 
- 		/* get task structs now */
-@@ -126,6 +127,8 @@ static ssize_t store_sockfd(struct devic
- 		wake_up_process(sdev->ud.tcp_rx);
- 		wake_up_process(sdev->ud.tcp_tx);
- 
-+		mutex_unlock(&sdev->ud.sysfs_lock);
+ 		wake_up_process(udc->ud.tcp_rx);
+ 		wake_up_process(udc->ud.tcp_tx);
 +
++		mutex_unlock(&udc->ud.sysfs_lock);
+ 		return count;
+ 
  	} else {
- 		dev_info(dev, "stub down\n");
- 
-@@ -136,6 +139,7 @@ static ssize_t store_sockfd(struct devic
- 		spin_unlock_irq(&sdev->ud.lock);
- 
- 		usbip_event_add(&sdev->ud, SDEV_EVENT_DOWN);
-+		mutex_unlock(&sdev->ud.sysfs_lock);
+@@ -220,6 +223,7 @@ static ssize_t store_sockfd(struct devic
  	}
  
- 	return count;
-@@ -144,6 +148,8 @@ sock_err:
- 	sockfd_put(socket);
- err:
- 	spin_unlock_irq(&sdev->ud.lock);
-+unlock_mutex:
-+	mutex_unlock(&sdev->ud.sysfs_lock);
- 	return -EINVAL;
- }
- static DEVICE_ATTR(usbip_sockfd, S_IWUSR, NULL, store_sockfd);
-@@ -309,6 +315,7 @@ static struct stub_device *stub_device_a
- 	sdev->ud.side		= USBIP_STUB;
- 	sdev->ud.status		= SDEV_ST_AVAILABLE;
- 	spin_lock_init(&sdev->ud.lock);
-+	mutex_init(&sdev->ud.sysfs_lock);
- 	sdev->ud.tcp_socket	= NULL;
- 	sdev->ud.sockfd		= -1;
+ 	spin_unlock_irqrestore(&udc->lock, flags);
++	mutex_unlock(&udc->ud.sysfs_lock);
  
+ 	return count;
+ 
+@@ -229,6 +233,7 @@ unlock_ud:
+ 	spin_unlock_irq(&udc->ud.lock);
+ unlock:
+ 	spin_unlock_irqrestore(&udc->lock, flags);
++	mutex_unlock(&udc->ud.sysfs_lock);
+ 
+ 	return ret;
+ }
 
 
