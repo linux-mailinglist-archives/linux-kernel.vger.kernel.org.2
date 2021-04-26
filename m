@@ -2,327 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C0B36B28E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3EB36B293
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhDZLy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhDZLy4 (ORCPT
+        id S233199AbhDZLzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:55:53 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:48402 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233176AbhDZLzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:54:56 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB509C061574;
-        Mon, 26 Apr 2021 04:54:14 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1lazoP-0000DT-H6; Mon, 26 Apr 2021 13:54:01 +0200
-Date:   Mon, 26 Apr 2021 13:54:01 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     fw@strlen.de, pablo@netfilter.org, kadlec@netfilter.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_conntrack: Add conntrack helper for
- ESP/IPsec
-Message-ID: <20210426115401.GB19277@breakpoint.cc>
-References: <20210414154021.GE14932@breakpoint.cc>
- <20210420223514.10827-1-Cole.Dishington@alliedtelesis.co.nz>
+        Mon, 26 Apr 2021 07:55:51 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 4676440343;
+        Mon, 26 Apr 2021 11:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1619438107; bh=DA2ZY5lyTI/sdOtQ7fWMHCqGBMTzx3lrxBPkt1Xvcio=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=Fz/EZZOtSwUPUZUtG+f9fqFhkZzZIiU1U8Zq6JKtqhMvHrRNYJYSFSykJSUmovBKN
+         61ZqyeteZU9V8WPC8nWr2o7oXqQrL/XVncC8qgC5/ySbtRWLB/FhQFQIi35qbZVcAP
+         L5jbJ+wp3UgTZAV1m7n0MNKvkkqBepEvmbcnpW+33DrICgLFU6GMBEUsOYIizpEpE9
+         o4OvpoTyDmnkiB+3ulX12hTV1POV+AMa4++wTHEgcQyxXOPovuw3AEyg9iQat/ZBBT
+         Z25UJyQbHFIm5ngpyY0I7Qs/aVFVXIVZLX3VEOw5lMnjPUIFOMMCaV+6gHae9cuyzo
+         B1iSJer3oYiog==
+Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 431B6A006A;
+        Mon, 26 Apr 2021 11:55:05 +0000 (UTC)
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2057.outbound.protection.outlook.com [104.47.37.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 31007800A8;
+        Mon, 26 Apr 2021 11:55:03 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=isaev@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="IEv4LxpX";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NG1KMYIGIiJVqfdc+7lRdniJ6M9I80U+KAxzKHREBqnYVAlYYaXoMPDJVyHp/jKXfR8MZel+fqRRZUh7SorMIgbfM8TE/NVF65Gkqus05pPeq8ud0Pm+ur3HvBwdace2NWlPgWHpWPhBL5ADFy3vA0rASdI1hCGlZALjWJpyCqq5YxHIrV9Zz76v3YFPXZ7A3LR0OfivVWiBPmh1FByrOolyX0h9QpbudDEPTKFfombfgcxPSw1L2aqnCixncr2/5e+sE2j1qtxcuKtfMRwbe4nl5CdOVfUVIpso8ubzlVja6XCHlQ/upBxoUQppD1orG2UTkJ7WjgubpDEG2bKpEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s/aExH5H//PCc7R9QgRmi0eN50zRcjNWnGbFhObQiUo=;
+ b=TNvJQ7UT7r9GJfBApYwgNU+SaC9gng3ASAkMYcE74mBTa8h2/CcQc2E2sL7L8qtI4Zi46HCYiumFUQ2TAEoKopEWwlj+wfu2TTw1j7ZEPN32BroYOrMiXwHUoBHWXFU4bUVUOTlH7dE3PCnss9j4p4zihcEEbLkITRni3eoS8OSz4R/MjUSsJfmN7xzlYXqdRdRMcaPnxUmI/+y+MooYeD8DYJDtQAZ25fxEPQKK8IccRPOG4MKsPaNq+GM/8LyblGtbhMIAFkVgpsYrBLa0P4UvZzv/5RevHb2DPrKkWQbMDldOk2TQm/wrZ53+kR7OD1/zeR2ttJUfaOKSDc55XQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s/aExH5H//PCc7R9QgRmi0eN50zRcjNWnGbFhObQiUo=;
+ b=IEv4LxpXXHxBx3awWhlz+/uuXA5MirGR8AbLvhPEXphfLjy571cNSDxpz07o0JrAAx4NxEpT2cRT9F4/GAnZWfKtk0pPW8DOveivuQJfvidTPXHNIyKMbj87zkkyrizPeeoLjC4VDXQUCR0uMdw+mvVH1bCmb2rHY48IsDp15Y0=
+Received: from BY5PR12MB4131.namprd12.prod.outlook.com (2603:10b6:a03:212::13)
+ by BY5PR12MB4292.namprd12.prod.outlook.com (2603:10b6:a03:212::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Mon, 26 Apr
+ 2021 11:55:01 +0000
+Received: from BY5PR12MB4131.namprd12.prod.outlook.com
+ ([fe80::3958:5a51:e148:b624]) by BY5PR12MB4131.namprd12.prod.outlook.com
+ ([fe80::3958:5a51:e148:b624%7]) with mapi id 15.20.4065.027; Mon, 26 Apr 2021
+ 11:55:01 +0000
+X-SNPS-Relay: synopsys.com
+From:   Vladimir Isaev <Vladimir.Isaev@synopsys.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+CC:     "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ARC: Use max_high_pfn as a HIGHMEM zone border
+Thread-Topic: [PATCH] ARC: Use max_high_pfn as a HIGHMEM zone border
+Thread-Index: AQHXOoRjvb0drZplskeVKb9Je5vvdKrGqbaAgAAGmEA=
+Date:   Mon, 26 Apr 2021 11:55:00 +0000
+Message-ID: <BY5PR12MB41318EB561C2E936B0371B5EDF429@BY5PR12MB4131.namprd12.prod.outlook.com>
+References: <20210426101004.42695-1-isaev@synopsys.com>
+ <YIakBTNpLsPJaj7i@linux.ibm.com>
+In-Reply-To: <YIakBTNpLsPJaj7i@linux.ibm.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcaXNhZXZcYXBw?=
+ =?us-ascii?Q?ZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5?=
+ =?us-ascii?Q?ZTM1Ylxtc2dzXG1zZy0zOGUwNzIwOS1hNjg2LTExZWItOTlhNS0wMGJiNjAz?=
+ =?us-ascii?Q?OWQxMWNcYW1lLXRlc3RcMzhlMDcyMGItYTY4Ni0xMWViLTk5YTUtMDBiYjYw?=
+ =?us-ascii?Q?MzlkMTFjYm9keS50eHQiIHN6PSI4MjkiIHQ9IjEzMjYzOTExNjk4NTA1OTM1?=
+ =?us-ascii?Q?MiIgaD0ibUlrc0piWWN0V0NUWUVoeFlEUk1lNGRUV2hnPSIgaWQ9IiIgYmw9?=
+ =?us-ascii?Q?IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBSFlJQUFBWVNE?=
+ =?us-ascii?Q?ZjdranJYQWN1ZVFmQ0Q5N1JDeTU1QjhJUDN0RUlOQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUhBQUFBQUdDQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QVFBQkFBQUFrSjV0ZndBQUFBQUFBQUFBQUFBQUFKNEFBQUJtQUdrQWJnQmhB?=
+ =?us-ascii?Q?RzRBWXdCbEFGOEFjQUJzQUdFQWJnQnVBR2tBYmdCbkFGOEFkd0JoQUhRQVpR?=
+ =?us-ascii?Q?QnlBRzBBWVFCeUFHc0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHWUFid0IxQUc0QVpBQnlBSGtBWHdCd0FH?=
+ =?us-ascii?Q?RUFjZ0IwQUc0QVpRQnlBSE1BWHdCbkFHWUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
+ =?us-ascii?Q?Q2VBQUFBWmdCdkFIVUFiZ0JrQUhJQWVRQmZBSEFBWVFCeUFIUUFiZ0JsQUhJ?=
+ =?us-ascii?Q?QWN3QmZBSE1BWVFCdEFITUFkUUJ1QUdjQVh3QmpBRzhBYmdCbUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQm1BRzhBZFFC?=
+ =?us-ascii?Q?dUFHUUFjZ0I1QUY4QWNBQmhBSElBZEFCdUFHVUFjZ0J6QUY4QWN3QnRBR2tB?=
+ =?us-ascii?Q?WXdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFIa0FYd0J3?=
+ =?us-ascii?Q?QUdFQWNnQjBBRzRBWlFCeUFITUFYd0J6QUhRQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFaZ0J2QUhVQWJnQmtBSElBZVFCZkFIQUFZUUJ5QUhRQWJnQmxB?=
+ =?us-ascii?Q?SElBY3dCZkFIUUFjd0J0QUdNQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCbUFHOEFk?=
+ =?us-ascii?Q?UUJ1QUdRQWNnQjVBRjhBY0FCaEFISUFkQUJ1QUdVQWNnQnpBRjhBZFFCdEFH?=
+ =?us-ascii?Q?TUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR2NBZEFCekFGOEFjQUJ5QUc4QVpB?=
+ =?us-ascii?Q?QjFBR01BZEFCZkFIUUFjZ0JoQUdrQWJnQnBBRzRBWndBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQWN3QmhBR3dBWlFCekFGOEFZUUJqQUdNQWJ3QjFBRzRBZEFC?=
+ =?us-ascii?Q?ZkFIQUFiQUJoQUc0QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ6QUdF?=
+ =?us-ascii?Q?QWJBQmxBSE1BWHdCeEFIVUFid0IwQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFITUFiZ0J3QUhNQVh3QnNBR2tB?=
+ =?us-ascii?Q?WXdCbEFHNEFjd0JsQUY4QWRBQmxBSElBYlFCZkFERUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFD?=
+ =?us-ascii?Q?QUFBQUFBQ2VBQUFBY3dCdUFIQUFjd0JmQUd3QWFRQmpBR1VBYmdCekFHVUFY?=
+ =?us-ascii?Q?d0IwQUdVQWNnQnRBRjhBY3dCMEFIVUFaQUJsQUc0QWRBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQjJB?=
+ =?us-ascii?Q?R2NBWHdCckFHVUFlUUIzQUc4QWNnQmtBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFFQUFBQUFBQUFBQWdBQUFBQUEiLz48L21ldGE+?=
+x-dg-rorf: true
+authentication-results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [178.71.48.167]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2f89ae65-3a3c-43ba-713f-08d908aa1f36
+x-ms-traffictypediagnostic: BY5PR12MB4292:
+x-microsoft-antispam-prvs: <BY5PR12MB42925D6FBC2410897ABD4FB1DF429@BY5PR12MB4292.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BjAgH7WVcxKJhJCmY7cDlLbS3/mr/unFj6skxn258mlgBXxZWa1fMf2hU3vC/mTNlSUqNkE8Eh5Efw76RntBk34fyeoE3H0CCxtOJuo9UdCL25amY4WBP6mR8B2rVckKibYxib/jQ5MUffYhoZzE+3NLShan0bZF15wh5hqU0UApVzCBu0dG/PFdNS+GPt3FR6GTYsbs1SScZUwdY/Wi39itloz9w5NIuPTam3CflvGr5pWX3X2l9P84yI1o9Vch/HFBQFxmzPDoNHJyJVKEKIe5Asf+EPvKpFDyEoVspWinJslWAXWFnoIpjxggDdkkqF9hG1YOOYXdgfyPkofHZ+4+Qkv/XIP/jcW6hAcTn8lU1bHJN4yeKir3kPn6pLIXpf7pCEqNL40Ujegjh1R+/knPssvXZoPplqmHmaCR71M5BgMmE11LxRWp8p+VVxnLx8dXcKQNtgtjy//OXUgEWNzKnICZ4XGf+ekZgm7kj2cGwAHxFDkD6HE32m7jCkTfm/jl46RFolI4lr6m089v9b//Z9t0LKiQX7ltfAjOboQI99VQ24LLDx4cc1iq8pyRQ/OvOf+OoJezydpg324kGCGIiSxKK2u+uVHufVjsmjk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4131.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(346002)(366004)(376002)(71200400001)(186003)(26005)(9686003)(4326008)(38100700002)(55016002)(122000001)(33656002)(6916009)(6506007)(316002)(76116006)(4744005)(66556008)(66476007)(8676002)(8936002)(64756008)(66946007)(66446008)(478600001)(5660300002)(7696005)(86362001)(2906002)(54906003)(53546011)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/WXJ+VoFMxFB82PhNX1UZVTGurKVMceILhfukQ0biNBnLB37nOrgcLvOLcq4?=
+ =?us-ascii?Q?ANgiVPYBtb+ZlRsLaob23+LMWc3OTCpvTor0d+pWfj7pj32U8WJ3e2S1AuGU?=
+ =?us-ascii?Q?+0kC8GlEosHnioB7GqgrZ0BFYXsFn8r/vELhmuj+8cF+csAU6zaJ4SPdcWvp?=
+ =?us-ascii?Q?aMNXI0YkaDZjVeJuw3pMQnbImTR7uxSR61THE5LCIrJf/qTmpKv3ZdHaskxF?=
+ =?us-ascii?Q?7h69tAxj255Uiglji6wuXvFhUwvso67J9WHVR6yNBlMtKVyPnVeAbm7Mgbsp?=
+ =?us-ascii?Q?9P9aQl4UI72YErCkG1IUQfRPukv9ohMPt7KgRSzfP/ia29bcorTBBc03uN0R?=
+ =?us-ascii?Q?io2d3I62kAKSncJO1D6PegOZUG+ijoU+u2hVq5l0Z9mYrqF0CmrzkpnfSPGA?=
+ =?us-ascii?Q?24n+kZ2Llclejsl73CoTu4ICRY16fsNefqvupZNYcnxsOC7E2wNZ/GAXd6LC?=
+ =?us-ascii?Q?9Pt7HbiKQcNgArjwe1aFQZelsoP0fa5dAlA8ZDl9JkRCwHBFBfZIRtz0Hyd/?=
+ =?us-ascii?Q?A4yU3kjToiQDZ51T6wpUJ6NXFMWFWLdbig5sTtkUKhozhTz2+vxqiDlhIXhj?=
+ =?us-ascii?Q?ZqjCxzWmBsA2jR3E0QAIvyx/lZt4bIbPqbbwaooHr3rgGW1XXGauNRLl+gmM?=
+ =?us-ascii?Q?OwYWOFlwP8314MZBmxE+m85AEXdDT8eZldj7R9QdXy1TbZMDK9UxIlq2pMlj?=
+ =?us-ascii?Q?9zvzBG3WcVUzs6nmu8BwQ5GaWHYrDqtt3sRAjQc62Zy/1f4+ZXmtIGTNF0gw?=
+ =?us-ascii?Q?UqUa6s3W1RvtF2lDnk+tUuaGn0HaGxaV6Fn91mbfnWZzAPUkNx1JygncPmWU?=
+ =?us-ascii?Q?5aRNThaMFflpc+1A3SArnuuMA/UgPtCThcSTM0b+5voEv1tsb1nkdB3YO214?=
+ =?us-ascii?Q?Dl9BkB+YIVG1dvwJcN8n4HDF+8LqH2qIorpaFCXT4Z1k2olfMyQaG0E2ap8E?=
+ =?us-ascii?Q?lbmSQvxtJGnm9+tQx3y+xazmZUoeXwMSnWHywPqWl7djZc+HEuboe9xBwRmY?=
+ =?us-ascii?Q?O2W3cNq2jAFaJc2l+ExpuUjVJvXiXFTUViCX/w4kWqAFXgEFZmt4nZE14S2c?=
+ =?us-ascii?Q?8SDSlP77i19WdCDb0/fw0GO7eGmmhMpfcBDqCfwZ+cmObCZuYGi4yRkz9dlg?=
+ =?us-ascii?Q?/VGVR8Fi9d8ilSt3+NRDMvZPb+/Q80Sba0/2yltN+CyGuRuFrLXgorUeylL5?=
+ =?us-ascii?Q?inp4SpzareL0yWAXk8+cJmQl3+mlmdwonvIrdjvwETA8g03STu56HYi8evIl?=
+ =?us-ascii?Q?bIeJxIFZHgK2mhB0s9ODjjXjRL16xkVEIwLYyNl3Wp3+8Bwq04zv268s/bh8?=
+ =?us-ascii?Q?bXK4WDR7N9kheCSJ4W/KZlx4?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420223514.10827-1-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4131.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f89ae65-3a3c-43ba-713f-08d908aa1f36
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2021 11:55:00.9485
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zLLTFj380K+O8mIwkbEn0XIEhAoGWwCk7n2D6LQyjIiuUkJHc+t+lwDQMx74T5Ot5jQeF3IPmsHsG/yDR2M39Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4292
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
-> @@ -90,6 +90,8 @@ enum ctattr_l4proto {
->  	CTA_PROTO_ICMPV6_ID,
->  	CTA_PROTO_ICMPV6_TYPE,
->  	CTA_PROTO_ICMPV6_CODE,
-> +	CTA_PROTO_SRC_ESP_ID,
-> +	CTA_PROTO_DST_ESP_ID,
->  	__CTA_PROTO_MAX
->  };
+Hi Mike,
 
+On Mon, April 26, 2021 2:29 PM, Mike Rapoport wrote:
+> On Mon, Apr 26, 2021 at 01:10:04PM +0300, Vladimir Isaev wrote:
+> > -	max_zone_pfn[ZONE_HIGHMEM] =3D min_low_pfn;
+> > +	max_zone_pfn[ZONE_HIGHMEM] =3D max_high_pfn;
+>=20
+> This is correct with PAE40, but it will break !PAE40 when "highmem" has l=
+ower
+> addresses than lowmem.
+>=20
+> It rather should be something like:
+>=20
+>         if (IS_ENABLED(CONFIG_ARC_HAS_PAE40))
+>                 max_zone_pfn[ZONE_HIGHMEM] =3D max_high_pfn;
+>         else
+>             	max_zone_pfn[ZONE_HIGHMEM] =3D min_low_pfn;
+>=20
 
-> diff --git a/net/netfilter/nf_conntrack_proto_esp.c b/net/netfilter/nf_conntrack_proto_esp.c
-> new file mode 100644
-> index 000000000000..f17ce8a9439f
-> --- /dev/null
-> +++ b/net/netfilter/nf_conntrack_proto_esp.c
-> @@ -0,0 +1,736 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * <:copyright-gpl
-> + * Copyright 2008 Broadcom Corp. All Rights Reserved.
-> + * Copyright (C) 2021 Allied Telesis Labs NZ
-> + *
-> + * This program is free software; you can distribute it and/or modify it
-> + * under the terms of the GNU General Public License (Version 2) as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope it will be useful, but WITHOUT
-> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-> + * for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program.
-> + * :>
-> + */
-> +/******************************************************************************
-> + * Filename:       nf_conntrack_proto_esp.c
-> + * Author:         Pavan Kumar
-> + * Creation Date:  05/27/04
-> + *
+Not sure if I understand why we should have min_low_pfn here. In !PAE40 cas=
+e max_high_pfn just will be smaller than min_low_pfn.
 
-Can you remove this changelog?  The history isn't relevant for upstream.
-You can add credits to the commit message if you like.
-
-> +	struct rhash_head lnode;
-> +	struct rhash_head rnode;
-> +	struct rhlist_head incmpl_rlist;
-> +
-> +	u16 esp_id;
-> +
-> +	u32 l_spi;
-> +	u32 r_spi;
-> +
-> +	u16 l3num;
-
-Minor nit: you can save a few bytes by placing the two u16 next to each
-other.
-
-> +	union nf_inet_addr l_ip;
-> +	union nf_inet_addr r_ip;
-> +
-> +	u32 alloc_time_jiffies;
-> +	struct net *net;
-> +};
-> +
-> +struct _esp_hkey {
-> +	u16 l3num;
-
-Nit: l3num can be u8.
-
-> +static inline void esp_ip_addr_set_any(int af, union nf_inet_addr *a)
-> +{
-> +	if (af == AF_INET6)
-> +		ipv6_addr_set(&a->in6, 0, 0, 0, 0);
-
-Alternative is a->in6 = IN6ADDR_ANY_INIT , up to you.
-
-You could also remove the if (af ... conditional and just zero
-everything.
-
-Also, with very few exceptions, we try to avoid 'inline' keyword in .c
-files.
-
-> +static inline void esp_ip_addr_copy(int af, union nf_inet_addr *dst,
-> +				    const union nf_inet_addr *src)
-> +{
-> +	if (af == AF_INET6)
-> +		ipv6_addr_prefix_copy(&dst->in6, &src->in6, 128);
-
-Alternative is to dst->in6 = src->in6.
-
-> +static inline void calculate_key(const u32 net_hmix, const u32 spi,
-> +				 const u16 l3num,
-
-l3num can be u8.
-
-> +int nf_conntrack_esp_init(void)
-> +{
-> +	int i;
-> +	int ret = 0;
-> +
-> +	spin_lock_bh(&esp_table_lock);
-
-This lock isn't needed.  There is no way this function
-can be executed concurrently.
-
-> +	/* Check if esphdr already associated with a pre-existing connection:
-> +	 *   if no, create a new connection, missing the r_spi;
-> +	 *   if yes, check if we have seen the source IP:
-> +	 *             if no, fill in r_spi in the pre-existing connection.
-> +	 */
-> +	spin_lock_bh(&esp_table_lock);
-
-Can you remove this lock?
-
-It would be very unfortunate if we lose rhashtable ability of parallel
-insert & lockless lookups.
-
-> +	esp_entry = search_esp_entry_by_spi(net, spi, tuple->src.l3num,
-> +					    &tuple->src.u3, &tuple->dst.u3);
-> +	if (!esp_entry) {
-> +		struct _esp_hkey key = {};
-> +		union nf_inet_addr any;
-> +		u32 net_hmix = net_hash_mix(net);
-> +		int err;
-> +
-> +		esp_entry = alloc_esp_entry(net);
-> +		if (!esp_entry) {
-> +			pr_debug("All esp connection slots in use\n");
-> +			spin_unlock_bh(&esp_table_lock);
-> +			return false;
-> +		}
-> +		esp_entry->l_spi = spi;
-> +		esp_entry->l3num = tuple->src.l3num;
-> +		esp_ip_addr_copy(esp_entry->l3num, &esp_entry->l_ip, &tuple->src.u3);
-> +		esp_ip_addr_copy(esp_entry->l3num, &esp_entry->r_ip, &tuple->dst.u3);
-> +
-> +		/* Add entries to the hash tables */
-> +
-> +		err = rhashtable_insert_fast(&ltable, &esp_entry->lnode, ltable_params);
-> +		if (err) {
-
-... without lock, this can fail with -EEXIST.
-
-You could remove the esp_table_lock and change the above
-rhashtable_insert_fast() to something like:
-
-esp_entry_old = rhashtable_lookup_get_insert_fast(&ltable, &esp_entry->lnode ltable_params);
-if (esp_entry_old) {
-	if (IS_ERR(esp_entry_old)) {
-		esp_table_free_entry_by_esp_id(net, esp_entry->esp_id);
-		return false;
-	}
-
-	esp_table_free_entry_by_esp_id(net, esp_entry->esp_id);
-	/* insertion raced, use existing entry */
-	esp_entry = esp_entry_old;
-}
-/* esp_entry_old == NULL -- insertion successful */
-
-This should allow removal of the esp_table_lock spinlock.
-
-> +#ifdef CONFIG_NF_CONNTRACK_PROCFS
-> +/* print private data for conntrack */
-> +static void esp_print_conntrack(struct seq_file *s, struct nf_conn *ct)
-> +{
-> +	seq_printf(s, "l_spi=%x, r_spi=%x ", ct->proto.esp.l_spi, ct->proto.esp.r_spi);
-
-Thanks, this looks good.
-
-> +			nf_conntrack_event_cache(IPCT_ASSURED, ct);
-> +
-> +			/* Retrieve SPIs of original and reply from esp_entry.
-> +			 * Both directions should contain the same esp_entry,
-> +			 * so just check the first one.
-> +			 */
-> +			tuple = nf_ct_tuple(ct, IP_CT_DIR_ORIGINAL);
-> +			esp_id = tuple->src.u.esp.id;
-> +			if (esp_id >= TEMP_SPI_START && esp_id <= TEMP_SPI_MAX) {
-> +				spin_lock_bh(&esp_table_lock);
-> +				esp_entry = esp_table[esp_id - TEMP_SPI_START];
-
-This esp_table[] has to be removed.
-
-1. It breaks netns isolation
-2. It forces contention on a single spinlock.
-
-As far as I understand, this table also serves as a resource limiter to
-avoid eating up too much resources.
-
-So, how about adding a espid bitmap to struct nf_conntrack_net?
-
-Something like this:
-
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -63,6 +63,9 @@ struct nf_conntrack_net {
- 	struct delayed_work ecache_dwork;
- 	struct netns_ct *ct_net;
- #endif
-+#ifdef CONFIG_NF_CT_PROTO_ESP
-+	DECLARE_BITMAP(esp_id_map, 1024);
-+#endif
- };
- 
- #include <linux/types.h>
-diff --git a/net/netfilter/nf_conntrack_proto_esp.c b/net/netfilter/nf_conntrack_proto_esp.c
-index f17ce8a9439f..ce4d5864c480 100644
---- a/net/netfilter/nf_conntrack_proto_esp.c
-+++ b/net/netfilter/nf_conntrack_proto_esp.c
-@@ -341,24 +340,28 @@ static void esp_table_free_entry_by_esp_id(struct net *net, u16 esp_id)
-  */
- struct _esp_table *alloc_esp_entry(struct net *net)
- {
--	int idx;
-+	struct nf_conntrack_net *cnet = net_generic(net, nf_conntrack_net_id);
- 	struct _esp_table *esp_entry = NULL;
-+	int idx;
- 
--	/* Find the first unused slot */
--	for (idx = 0; idx < ESP_MAX_CONNECTIONS; idx++) {
--		if (esp_table[idx])
--			continue;
-+again:
-+	idx = find_first_zero_bit(cnet->esp_id_map, 1024);
-+	if (idx >= 1024)
-+		return NULL;
- 
--		esp_table[idx] = kmalloc(sizeof(*esp_entry), GFP_ATOMIC);
--		if (!esp_table[idx])
--			return NULL;
--		memset(esp_table[idx], 0, sizeof(struct _esp_table));
--		esp_table[idx]->esp_id = idx + TEMP_SPI_START;
--		esp_table[idx]->alloc_time_jiffies = nfct_time_stamp;
--		esp_table[idx]->net = net;
--		esp_entry = esp_table[idx];
--		break;
-+	if (test_and_set_bit(cnet->esp_id_map, idx))
-+		goto again; /* raced */
-+
-+	esp_entry = kmalloc(sizeof(*esp_entry), GFP_ATOMIC);
-+	if (!esp_entry) {
-+		clear_bit(cnet->esp_id_map, idx);
-+		return NULL;
- 	}
-+
-+	esp_entry->esp_id = idx + TEMP_SPI_START;
-+	esp_entry->alloc_time_jiffies = nfct_time_stamp;
-+	esp_entry->net = net;
-+
- 	return esp_entry;
- }
-
-
-I have a few more concerns:
-
-AFAICS there is no guarantee that an allocated esp table entry is backed
-by a conntrack entry.
-
-So, there must be a way to reap all allocated esp_entry structs
-when a network namespace goes down.
-
-Perhaps you could add a pernet (nf_conntrack_net) spinlock+list head
-that appends each allocated entry to that list.
-
-Then, on conntrack removal, in addition to removal from the rhash
-tables, add a list_del().
-
-On network namespace destruction, walk this list and remove all
-remaining entries (those that are still around after removal of all
-the conntrack objects).
-
-Does that make sense to you?
-
-> +static int esp_tuple_to_nlattr(struct sk_buff *skb,
-> +			       const struct nf_conntrack_tuple *t)
-> +{
-> +	if (nla_put_be16(skb, CTA_PROTO_SRC_ESP_ID, t->src.u.esp.id) ||
-> +	    nla_put_be16(skb, CTA_PROTO_DST_ESP_ID, t->dst.u.esp.id))
-> +		goto nla_put_failure;
-
-This exposes the 16 bit kernel-generated IDs, right?
-Should this dump the real on-wire SPIs instead?
-
-Or is there are reason why the internal IDs need exposure?
+Thank you,
+Vladimir Isaev
