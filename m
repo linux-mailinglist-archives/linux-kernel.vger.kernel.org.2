@@ -2,66 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D21C36B05E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B9D36B068
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhDZJTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:19:42 -0400
-Received: from mga09.intel.com ([134.134.136.24]:55092 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232078AbhDZJTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:19:41 -0400
-IronPort-SDR: icjYzmBBcoVQtAz/wSZAwhYq+SssR1qroyqlmaWC0Hkh+ctUsFvd/IMf11Fh7MfqJQAa5GgetA
- rGpNu3ugKVpQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="196417474"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="196417474"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 02:18:59 -0700
-IronPort-SDR: gUc7e3gkI8Fyv0bXaNY1wSQeG2wcpR4s1OBErdbZZRNtUf088ofFUROUULEAZ3mHmbwcgZQ8tU
- YMeuNiiax4+w==
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="615320703"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 02:18:57 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 2EAEB203BC;
-        Mon, 26 Apr 2021 12:18:55 +0300 (EEST)
-Date:   Mon, 26 Apr 2021 12:18:55 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v3] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-Message-ID: <20210426091855.GT3@paasikivi.fi.intel.com>
-References: <20210421123718.GA4597@focaruja>
- <20210421131522.GI3596236@casper.infradead.org>
+        id S232524AbhDZJUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:20:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232103AbhDZJUk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:20:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619428799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u5y9MbpARwgkPq2SvXUNV26BaQxXBbXVOds45fh2m+E=;
+        b=dwY01GAoLtT0KTwnxQUdxcfjKA2ZxnhY5mFY/EFbPavj+HUDBxjOTKo/xjA6rodVXDNubY
+        sx6uDyVI4HWab9mpsLr7eeQxoqUoH7JuCGzrxck8geHGBm5NSQhb6trcMPya9XMwqYcMbz
+        NbduAKLzOeLkXUha1MXVL2waI7cmfu8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-nK9gDDOLNGuTQonoCzf9Ow-1; Mon, 26 Apr 2021 05:19:57 -0400
+X-MC-Unique: nK9gDDOLNGuTQonoCzf9Ow-1
+Received: by mail-ed1-f70.google.com with SMTP id u30-20020a50a41e0000b0290385504d6e4eso828305edb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:19:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u5y9MbpARwgkPq2SvXUNV26BaQxXBbXVOds45fh2m+E=;
+        b=Kmuj3PULNZZudFeuGpdMRNLswGEeoLt63yJO7AD12Ev6rTcX+mIV5YzanuZCP7yUJj
+         57eBRySW8vC/BVaqv3S9sFco84Qf5b6QRL1enV6XeCPW3usRtYQVgJvZTW8r3F47gZ7b
+         vQnBIa+O0WbQyGVYCVPIhlZCHMFhJb6x9bTURN90fPPp3Doea7XGedoAj3ijpQgILUOX
+         4TTod00AfSUSDccTUpWsiNRPKFR8Nqxkoc9v2SFaoC1QUo2EW+D3QS8CW1uHlh42OymD
+         cO+eh9Gp25UUpFa1gsUF/jviFcqPLry9tfMmjtWM+9ZV6I5A+dKiCo2Y+laatv51m8y5
+         B1nQ==
+X-Gm-Message-State: AOAM530oAhMhVd4RYchCosDij7HzE20Q2ejPsJxEmRgCDIkTo6l+l//V
+        gE5V81jA6fe0xSYCWS39STtJJMStF65osH2VsKyZ3PyyXJj0MHHXV3FE3Q2/dNANBBziqOXQQw7
+        UHe/a+pLZoPylLHOpl9Fh+HEmcmN6Ot495ZUkx0dW/GuR96/iwVYIUiF5aknB3iZqumWvIRiHLD
+        Ht
+X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr17498531eji.553.1619428796129;
+        Mon, 26 Apr 2021 02:19:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxrek5egfR4D2g9yAozsojjVO+x8fQ99nZX2lKb3Y8yfMfaH8gO6li+33RlkIEZlXkcEkau7A==
+X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr17498508eji.553.1619428795850;
+        Mon, 26 Apr 2021 02:19:55 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id cn10sm13624649edb.28.2021.04.26.02.19.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 02:19:55 -0700 (PDT)
+Subject: Re: [PATCH] KVM: VMX: Invert the inlining of MSR interception helpers
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210423221912.3857243-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <febab7f6-aab8-6278-5782-07d75dd40166@redhat.com>
+Date:   Mon, 26 Apr 2021 11:19:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421131522.GI3596236@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210423221912.3857243-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:15:22PM +0100, Matthew Wilcox wrote:
-> On Wed, Apr 21, 2021 at 09:37:18AM -0300, Aline Santana Cordeiro wrote:
-> > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
-> > -    u32 mbus_code);
-> > +const struct atomisp_format_bridge *
-> > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+On 24/04/21 00:19, Sean Christopherson wrote:
+> Invert the inline declarations of the MSR interception helpers between
+> the wrapper, vmx_set_intercept_for_msr(), and the core implementations,
+> vmx_{dis,en}able_intercept_for_msr().  Letting the compiler _not_
+> inline the implementation reduces KVM's code footprint by ~3k bytes.
 > 
-> As I said, better to break the 80 column rule than do this.
+> Back when the helpers were added in commit 904e14fb7cb9 ("KVM: VMX: make
+> MSR bitmaps per-VCPU"), both the wrapper and the implementations were
+> __always_inline because the end code distilled down to a few conditionals
+> and a bit operation.  Today, the implementations involve a variety of
+> checks and bit ops in order to support userspace MSR filtering.
+> 
+> Furthermore, the vast majority of calls to manipulate MSR interception
+> are not performance sensitive, e.g. vCPU creation and x2APIC toggling.
+> On the other hand, the one path that is performance sensitive, dynamic
+> LBR passthrough, uses the wrappers, i.e. is largely untouched by
+> inverting the inlining.
+> 
+> In short, forcing the low level MSR interception code to be inlined no
+> longer makes sense.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/vmx/vmx.c | 17 ++---------------
+>   arch/x86/kvm/vmx/vmx.h | 15 +++++++++++++--
+>   2 files changed, 15 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 6501d66167b8..b77bc72d97a4 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -362,8 +362,6 @@ static const struct kernel_param_ops vmentry_l1d_flush_ops = {
+>   module_param_cb(vmentry_l1d_flush, &vmentry_l1d_flush_ops, NULL, 0644);
+>   
+>   static u32 vmx_segment_access_rights(struct kvm_segment *var);
+> -static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
+> -							  u32 msr, int type);
+>   
+>   void vmx_vmexit(void);
+>   
+> @@ -3818,8 +3816,7 @@ static void vmx_set_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
+>   		__set_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
+>   }
+>   
+> -static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
+> -							  u32 msr, int type)
+> +void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>   	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
+> @@ -3864,8 +3861,7 @@ static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
+>   		vmx_clear_msr_bitmap_write(msr_bitmap, msr);
+>   }
+>   
+> -static __always_inline void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu,
+> -							 u32 msr, int type)
+> +void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>   	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
+> @@ -3898,15 +3894,6 @@ static __always_inline void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu,
+>   		vmx_set_msr_bitmap_write(msr_bitmap, msr);
+>   }
+>   
+> -void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu,
+> -						      u32 msr, int type, bool value)
+> -{
+> -	if (value)
+> -		vmx_enable_intercept_for_msr(vcpu, msr, type);
+> -	else
+> -		vmx_disable_intercept_for_msr(vcpu, msr, type);
+> -}
+> -
+>   static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
+>   {
+>   	u8 mode = 0;
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 19fe09fad2fe..008cb87ff088 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -392,8 +392,19 @@ void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp);
+>   bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
+>   int vmx_find_loadstore_msr_slot(struct vmx_msrs *m, u32 msr);
+>   void vmx_ept_load_pdptrs(struct kvm_vcpu *vcpu);
+> -void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu,
+> -	u32 msr, int type, bool value);
+> +
+> +void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type);
+> +void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type);
+> +
+> +static inline void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr,
+> +					     int type, bool value)
+> +{
+> +	if (value)
+> +		vmx_enable_intercept_for_msr(vcpu, msr, type);
+> +	else
+> +		vmx_disable_intercept_for_msr(vcpu, msr, type);
+> +}
+> +
+>   void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu);
+>   
+>   static inline u8 vmx_get_rvi(void)
+> 
 
-May depend on the maintainer, as well as other reviewers. It's a question
-of priorities.
+Queued (and pretty much closing the 5.13 kvm/next branch after this).
 
-I'd suggest otherwise.
+Paolo
 
--- 
-Sakari Ailus
