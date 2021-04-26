@@ -2,163 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025EF36B1D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD6336B1E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhDZKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:50:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45797 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbhDZKux (ORCPT
+        id S233120AbhDZKvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232823AbhDZKvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:50:53 -0400
-Received: from 1-171-221-133.dynamic-ip.hinet.net ([1.171.221.133] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1layoa-0008C2-78; Mon, 26 Apr 2021 10:50:09 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Dennis Li <Dennis.Li@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        shaoyunl <shaoyun.liu@amd.com>,
-        Wenhui Sheng <Wenhui.Sheng@amd.com>,
-        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] drm/amdgpu: Register VGA clients after init can no longer fail
-Date:   Mon, 26 Apr 2021 18:50:00 +0800
-Message-Id: <20210426105002.332935-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 26 Apr 2021 06:51:14 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB5AC061574;
+        Mon, 26 Apr 2021 03:50:28 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id r128so60594041lff.4;
+        Mon, 26 Apr 2021 03:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=liqi5FsD5cM7tPT6eP/6jHy/oHunqM3YiydXA1FG9JU=;
+        b=fsY8FjuXVfrZqSYjgY+KhyBZOxGtxHfbsf8hcDVWjb0dQrPICp8mER6gkpbptMsLGH
+         +073LRhLww1IKpugbUFN4satcakNyI+HAyXjee+TEtWxRJlbCbGvfOn1ik5oWP6KLAnQ
+         KYWwywBbG8a2bagpv77HPAvFrDs6G4GPbGa++gxsOdoTuWOCcZJyKhQVCMzUEJtyFPEQ
+         5HwrSJF4YXjY5Y7QfZ/ywqurOW/dDl/wdcEmYomCbWe3ti9KkClxhhH3/45zYlIqYVw2
+         3aVp/OhZVtWjj4wrQ9cTB3B4h6McW4WWQJ+YP/5kaewlXX46di7ODZBa+qSY8EoUlMYm
+         vv0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=liqi5FsD5cM7tPT6eP/6jHy/oHunqM3YiydXA1FG9JU=;
+        b=EHqIS4zZPAJvW5glW/CHjSFjzfp0se+hULBR6AedEDgpBkqGeNulMSed+0tIkQg6mP
+         QO0XWmEvM3yXLqoU3JggihzzF5g7RjngQn1t2+HiAiDiN7G5297oc4lR9BoZTGsnBywR
+         u9xBPe7qxfhvffWA/so2av9gJQDvadvzX3RPuaOjBFN8UTJTXYnGWkaaeJrsqJkXTG3c
+         Bb3GBM2YOgV1XaXVvR89G4Htj3Qdb/vIJncU7/4BVrlPZnkXjUZexZMQVgeu9oPUrg+o
+         3qVo+Xkk0O6n2DX/X3qj75B/o3HK1WaDXp3nZc57FdP1B5N3uhZJqiFcnGi5XJAGcSso
+         2NTg==
+X-Gm-Message-State: AOAM532X1EwM7Q/Xaau4JvzeGGVyxaPCfuAgNEqWvaEZCvUgI9NcXlXS
+        6OEh5EkDTAeeQaiuoqC5oqtjuqllIjygz1DSfkw=
+X-Google-Smtp-Source: ABdhPJxXaBli/4qy+O0K4m6qEGRvea6p7H65wZvL/NayD+TIB0Hroj4rg+AyWGGctaA+tLotR0jxc6yshTALvk6n150=
+X-Received: by 2002:a05:6512:131c:: with SMTP id x28mr12328260lfu.638.1619434227251;
+ Mon, 26 Apr 2021 03:50:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1619421491-31494-1-git-send-email-u0084500@gmail.com>
+ <1619421491-31494-4-git-send-email-u0084500@gmail.com> <20210426101955.uvuzzsiig27xyuxc@maple.lan>
+In-Reply-To: <20210426101955.uvuzzsiig27xyuxc@maple.lan>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Mon, 26 Apr 2021 18:50:15 +0800
+Message-ID: <CADiBU39F8+GM4z7xJPpDVS7riPGi02BrurvMmnHMEPeKBQJ_tg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v6 4/4] backlight: rt4831: Adds support for Richtek
+ RT4831 backlight
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an amdgpu device fails to init, it makes another VGA device cause
-kernel splat:
-kernel: amdgpu 0000:08:00.0: amdgpu: amdgpu_device_ip_init failed
-kernel: amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
-kernel: amdgpu: probe of 0000:08:00.0 failed with error -110
-...
-kernel: amdgpu 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
-kernel: BUG: kernel NULL pointer dereference, address: 0000000000000018
-kernel: #PF: supervisor read access in kernel mode
-kernel: #PF: error_code(0x0000) - not-present page
-kernel: PGD 0 P4D 0
-kernel: Oops: 0000 [#1] SMP NOPTI
-kernel: CPU: 6 PID: 1080 Comm: Xorg Tainted: G        W         5.12.0-rc8+ #12
-kernel: Hardware name: HP HP EliteDesk 805 G6/872B, BIOS S09 Ver. 02.02.00 12/30/2020
-kernel: RIP: 0010:amdgpu_device_vga_set_decode+0x13/0x30 [amdgpu]
-kernel: Code: 06 31 c0 c3 b8 ea ff ff ff 5d c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00 00 55 48 8b 87 90 06 00 00 48 89 e5 53 89 f3 <48> 8b 40 18 40 0f b6 f6 e8 40 58 39 fd 80 fb 01 5b 5d 19 c0 83 e0
-kernel: RSP: 0018:ffffae3c0246bd68 EFLAGS: 00010002
-kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-kernel: RDX: ffff8dd1af5a8560 RSI: 0000000000000000 RDI: ffff8dce8c160000
-kernel: RBP: ffffae3c0246bd70 R08: ffff8dd1af5985c0 R09: ffffae3c0246ba38
-kernel: R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000246
-kernel: R13: 0000000000000000 R14: 0000000000000003 R15: ffff8dce81490000
-kernel: FS:  00007f9303d8fa40(0000) GS:ffff8dd1af580000(0000) knlGS:0000000000000000
-kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-kernel: CR2: 0000000000000018 CR3: 0000000103cfa000 CR4: 0000000000350ee0
-kernel: Call Trace:
-kernel:  vga_arbiter_notify_clients.part.0+0x4a/0x80
-kernel:  vga_get+0x17f/0x1c0
-kernel:  vga_arb_write+0x121/0x6a0
-kernel:  ? apparmor_file_permission+0x1c/0x20
-kernel:  ? security_file_permission+0x30/0x180
-kernel:  vfs_write+0xca/0x280
-kernel:  ksys_write+0x67/0xe0
-kernel:  __x64_sys_write+0x1a/0x20
-kernel:  do_syscall_64+0x38/0x90
-kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-kernel: RIP: 0033:0x7f93041e02f7
-kernel: Code: 75 05 48 83 c4 58 c3 e8 f7 33 ff ff 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-kernel: RSP: 002b:00007fff60e49b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-kernel: RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f93041e02f7
-kernel: RDX: 000000000000000b RSI: 00007fff60e49b40 RDI: 000000000000000f
-kernel: RBP: 00007fff60e49b40 R08: 00000000ffffffff R09: 00007fff60e499d0
-kernel: R10: 00007f93049350b5 R11: 0000000000000246 R12: 000056111d45e808
-kernel: R13: 0000000000000000 R14: 000056111d45e7f8 R15: 000056111d46c980
-kernel: Modules linked in: nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_seq input_leds snd_seq_device snd_timer snd soundcore joydev kvm_amd serio_raw k10temp mac_hid hp_wmi ccp kvm sparse_keymap wmi_bmof ucsi_acpi efi_pstore typec_ucsi rapl typec video wmi sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath linear dm_mirror dm_region_hash dm_log hid_generic usbhid hid amdgpu drm_ttm_helper ttm iommu_v2 gpu_sched i2c_algo_bit drm_kms_helper syscopyarea sysfillrect crct10dif_pclmul sysimgblt crc32_pclmul fb_sys_fops ghash_clmulni_intel cec rc_core aesni_intel crypto_simd psmouse cryptd r8169 i2c_piix4 drm ahci xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic
-kernel: CR2: 0000000000000018
-kernel: ---[ end trace 76d04313d4214c51 ]---
+Hi,
 
-Commit 4192f7b57689 ("drm/amdgpu: unmap register bar on device init
-failure") makes amdgpu_driver_unload_kms() skips amdgpu_device_fini(),
-so the VGA clients remain registered. So when
-vga_arbiter_notify_clients() iterates over registered clients, it causes
-NULL pointer dereference.
+Daniel Thompson <daniel.thompson@linaro.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=
+=8826=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=886:19=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> On Mon, Apr 26, 2021 at 03:18:11PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > Adds support for Richtek RT4831 backlight.
+> >
+> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > ---
+> > Resend this v6 patch series to loop devicetree reviewers.
+> >
+> > For next, if the typo in Kconfig 'common' to 'commonly' can be added th=
+e below line
+> > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > ---
+>
+> This isn't the best way to handle feedback from multiple maintainers.
+>
+> It is great to see you are keeping track of feedback. However it doesn't
+> make sense to RESEND an old patchset and acknowledge that you haven't
+> fixed a typo yet.
+>
+> It would be better to fix the typo and to resend a v7.
+>
+You can refer to the below reply
+https://lkml.org/lkml/2021/4/23/229
 
-Since there's no reason to register VGA clients that early, so solve
-the issue by putting them after all the goto cleanups.
-
-v2:
- - Remove redundant vga_switcheroo cleanup in failed: label.
-
-Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failure")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 28 ++++++++++------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index b4ad1c055c70..7d3b54615147 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3410,19 +3410,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
- 	/* doorbell bar mapping and doorbell index init*/
- 	amdgpu_device_doorbell_init(adev);
- 
--	/* if we have > 1 VGA cards, then disable the amdgpu VGA resources */
--	/* this will fail for cards that aren't VGA class devices, just
--	 * ignore it */
--	if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
--		vga_client_register(adev->pdev, adev, NULL, amdgpu_device_vga_set_decode);
--
--	if (amdgpu_device_supports_px(ddev)) {
--		px = true;
--		vga_switcheroo_register_client(adev->pdev,
--					       &amdgpu_switcheroo_ops, px);
--		vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_pm_domain);
--	}
--
- 	if (amdgpu_emu_mode == 1) {
- 		/* post the asic on emulation mode */
- 		emu_soc_asic_init(adev);
-@@ -3619,6 +3606,19 @@ int amdgpu_device_init(struct amdgpu_device *adev,
- 	if (amdgpu_device_cache_pci_state(adev->pdev))
- 		pci_restore_state(pdev);
- 
-+	/* if we have > 1 VGA cards, then disable the amdgpu VGA resources */
-+	/* this will fail for cards that aren't VGA class devices, just
-+	 * ignore it */
-+	if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
-+		vga_client_register(adev->pdev, adev, NULL, amdgpu_device_vga_set_decode);
-+
-+	if (amdgpu_device_supports_px(ddev)) {
-+		px = true;
-+		vga_switcheroo_register_client(adev->pdev,
-+					       &amdgpu_switcheroo_ops, px);
-+		vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_pm_domain);
-+	}
-+
- 	if (adev->gmc.xgmi.pending_reset)
- 		queue_delayed_work(system_wq, &mgpu_info.delayed_reset_work,
- 				   msecs_to_jiffies(AMDGPU_RESUME_MS));
-@@ -3630,8 +3630,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
- 
- failed:
- 	amdgpu_vf_error_trans_all(adev);
--	if (px)
--		vga_switcheroo_fini_domain_pm_ops(adev->dev);
- 
- failed_unmap:
- 	iounmap(adev->rmmio);
--- 
-2.30.2
-
+>
+> Daniel.
+>
+>
+> >  drivers/video/backlight/Kconfig            |   8 ++
+> >  drivers/video/backlight/Makefile           |   1 +
+> >  drivers/video/backlight/rt4831-backlight.c | 203 +++++++++++++++++++++=
+++++++++
+> >  3 files changed, 212 insertions(+)
+> >  create mode 100644 drivers/video/backlight/rt4831-backlight.c
+> >
+> > diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/=
+Kconfig
+> > index d83c87b..de96441 100644
+> > --- a/drivers/video/backlight/Kconfig
+> > +++ b/drivers/video/backlight/Kconfig
+> > @@ -289,6 +289,14 @@ config BACKLIGHT_QCOM_WLED
+> >         If you have the Qualcomm PMIC, say Y to enable a driver for the
+> >         WLED block. Currently it supports PM8941 and PMI8998.
+> >
+> > +config BACKLIGHT_RT4831
+> > +     tristate "Richtek RT4831 Backlight Driver"
+> > +     depends on MFD_RT4831
+> > +     help
+> > +       This enables support for Richtek RT4831 Backlight driver.
+> > +       It's common used to drive the display WLED. There're four chann=
+els
+> > +       inisde, and each channel can provide up to 30mA current.
+> > +
+> >  config BACKLIGHT_SAHARA
+> >       tristate "Tabletkiosk Sahara Touch-iT Backlight Driver"
+> >       depends on X86
+> > diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight=
+/Makefile
+> > index 685f3f1..cae2c83 100644
+> > --- a/drivers/video/backlight/Makefile
+> > +++ b/drivers/video/backlight/Makefile
+> > @@ -49,6 +49,7 @@ obj-$(CONFIG_BACKLIGHT_PANDORA)             +=3D pand=
+ora_bl.o
+> >  obj-$(CONFIG_BACKLIGHT_PCF50633)     +=3D pcf50633-backlight.o
+> >  obj-$(CONFIG_BACKLIGHT_PWM)          +=3D pwm_bl.o
+> >  obj-$(CONFIG_BACKLIGHT_QCOM_WLED)    +=3D qcom-wled.o
+> > +obj-$(CONFIG_BACKLIGHT_RT4831)               +=3D rt4831-backlight.o
+> >  obj-$(CONFIG_BACKLIGHT_SAHARA)               +=3D kb3886_bl.o
+> >  obj-$(CONFIG_BACKLIGHT_SKY81452)     +=3D sky81452-backlight.o
+> >  obj-$(CONFIG_BACKLIGHT_TOSA)         +=3D tosa_bl.o
+> > diff --git a/drivers/video/backlight/rt4831-backlight.c b/drivers/video=
+/backlight/rt4831-backlight.c
+> > new file mode 100644
+> > index 00000000..42155c7
+> > --- /dev/null
+> > +++ b/drivers/video/backlight/rt4831-backlight.c
+> > @@ -0,0 +1,203 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +#include <dt-bindings/leds/rt4831-backlight.h>
+> > +#include <linux/backlight.h>
+> > +#include <linux/bitops.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/property.h>
+> > +#include <linux/regmap.h>
+> > +
+> > +#define RT4831_REG_BLCFG     0x02
+> > +#define RT4831_REG_BLDIML    0x04
+> > +#define RT4831_REG_ENABLE    0x08
+> > +
+> > +#define RT4831_BLMAX_BRIGHTNESS      2048
+> > +
+> > +#define RT4831_BLOVP_MASK    GENMASK(7, 5)
+> > +#define RT4831_BLOVP_SHIFT   5
+> > +#define RT4831_BLPWMEN_MASK  BIT(0)
+> > +#define RT4831_BLEN_MASK     BIT(4)
+> > +#define RT4831_BLCH_MASK     GENMASK(3, 0)
+> > +#define RT4831_BLDIML_MASK   GENMASK(2, 0)
+> > +#define RT4831_BLDIMH_MASK   GENMASK(10, 3)
+> > +#define RT4831_BLDIMH_SHIFT  3
+> > +
+> > +struct rt4831_priv {
+> > +     struct device *dev;
+> > +     struct regmap *regmap;
+> > +     struct backlight_device *bl;
+> > +};
+> > +
+> > +static int rt4831_bl_update_status(struct backlight_device *bl_dev)
+> > +{
+> > +     struct rt4831_priv *priv =3D bl_get_data(bl_dev);
+> > +     int brightness =3D backlight_get_brightness(bl_dev);
+> > +     unsigned int enable =3D brightness ? RT4831_BLEN_MASK : 0;
+> > +     u8 v[2];
+> > +     int ret;
+> > +
+> > +     if (brightness) {
+> > +             v[0] =3D (brightness - 1) & RT4831_BLDIML_MASK;
+> > +             v[1] =3D ((brightness - 1) & RT4831_BLDIMH_MASK) >> RT483=
+1_BLDIMH_SHIFT;
+> > +
+> > +             ret =3D regmap_raw_write(priv->regmap, RT4831_REG_BLDIML,=
+ v, sizeof(v));
+> > +             if (ret)
+> > +                     return ret;
+> > +     }
+> > +
+> > +     return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831=
+_BLEN_MASK, enable);
+> > +
+> > +}
+> > +
+> > +static int rt4831_bl_get_brightness(struct backlight_device *bl_dev)
+> > +{
+> > +     struct rt4831_priv *priv =3D bl_get_data(bl_dev);
+> > +     unsigned int val;
+> > +     u8 v[2];
+> > +     int ret;
+> > +
+> > +     ret =3D regmap_read(priv->regmap, RT4831_REG_ENABLE, &val);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (!(val & RT4831_BLEN_MASK))
+> > +             return 0;
+> > +
+> > +     ret =3D regmap_raw_read(priv->regmap, RT4831_REG_BLDIML, v, sizeo=
+f(v));
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret =3D (v[1] << RT4831_BLDIMH_SHIFT) + (v[0] & RT4831_BLDIML_MAS=
+K) + 1;
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static const struct backlight_ops rt4831_bl_ops =3D {
+> > +     .options =3D BL_CORE_SUSPENDRESUME,
+> > +     .update_status =3D rt4831_bl_update_status,
+> > +     .get_brightness =3D rt4831_bl_get_brightness,
+> > +};
+> > +
+> > +static int rt4831_parse_backlight_properties(struct rt4831_priv *priv,
+> > +                                          struct backlight_properties =
+*bl_props)
+> > +{
+> > +     struct device *dev =3D priv->dev;
+> > +     u8 propval;
+> > +     u32 brightness;
+> > +     unsigned int val =3D 0;
+> > +     int ret;
+> > +
+> > +     /* common properties */
+> > +     ret =3D device_property_read_u32(dev, "max-brightness", &brightne=
+ss);
+> > +     if (ret)
+> > +             brightness =3D RT4831_BLMAX_BRIGHTNESS;
+> > +
+> > +     bl_props->max_brightness =3D min_t(u32, brightness, RT4831_BLMAX_=
+BRIGHTNESS);
+> > +
+> > +     ret =3D device_property_read_u32(dev, "default-brightness", &brig=
+htness);
+> > +     if (ret)
+> > +             brightness =3D bl_props->max_brightness;
+> > +
+> > +     bl_props->brightness =3D min_t(u32, brightness, bl_props->max_bri=
+ghtness);
+> > +
+> > +     /* vendor properties */
+> > +     if (device_property_read_bool(dev, "richtek,pwm-enable"))
+> > +             val =3D RT4831_BLPWMEN_MASK;
+> > +
+> > +     ret =3D regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831=
+_BLPWMEN_MASK, val);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret =3D device_property_read_u8(dev, "richtek,bled-ovp-sel", &pro=
+pval);
+> > +     if (ret)
+> > +             propval =3D RT4831_BLOVPLVL_21V;
+> > +
+> > +     propval =3D min_t(u8, propval, RT4831_BLOVPLVL_29V);
+> > +     ret =3D regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831=
+_BLOVP_MASK,
+> > +                              propval << RT4831_BLOVP_SHIFT);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     ret =3D device_property_read_u8(dev, "richtek,channel-use", &prop=
+val);
+> > +     if (ret) {
+> > +             dev_err(dev, "richtek,channel-use DT property missing\n")=
+;
+> > +             return ret;
+> > +     }
+> > +
+> > +     if (!(propval & RT4831_BLCH_MASK)) {
+> > +             dev_err(dev, "No channel specified\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831=
+_BLCH_MASK, propval);
+> > +}
+> > +
+> > +static int rt4831_bl_probe(struct platform_device *pdev)
+> > +{
+> > +     struct rt4831_priv *priv;
+> > +     struct backlight_properties bl_props =3D { .type =3D BACKLIGHT_RA=
+W,
+> > +                                              .scale =3D BACKLIGHT_SCA=
+LE_LINEAR };
+> > +     int ret;
+> > +
+> > +     priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> > +     if (!priv)
+> > +             return -ENOMEM;
+> > +
+> > +     priv->dev =3D &pdev->dev;
+> > +
+> > +     priv->regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
+> > +     if (!priv->regmap) {
+> > +             dev_err(&pdev->dev, "Failed to init regmap\n");
+> > +             return -ENODEV;
+> > +     }
+> > +
+> > +     ret =3D rt4831_parse_backlight_properties(priv, &bl_props);
+> > +     if (ret) {
+> > +             dev_err(&pdev->dev, "Failed to parse backlight properties=
+\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     priv->bl =3D devm_backlight_device_register(&pdev->dev, pdev->nam=
+e, &pdev->dev, priv,
+> > +                                               &rt4831_bl_ops, &bl_pro=
+ps);
+> > +     if (IS_ERR(priv->bl)) {
+> > +             dev_err(&pdev->dev, "Failed to register backlight\n");
+> > +             return PTR_ERR(priv->bl);
+> > +     }
+> > +
+> > +     backlight_update_status(priv->bl);
+> > +     platform_set_drvdata(pdev, priv);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int rt4831_bl_remove(struct platform_device *pdev)
+> > +{
+> > +     struct rt4831_priv *priv =3D platform_get_drvdata(pdev);
+> > +     struct backlight_device *bl_dev =3D priv->bl;
+> > +
+> > +     bl_dev->props.brightness =3D 0;
+> > +     backlight_update_status(priv->bl);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct of_device_id __maybe_unused rt4831_bl_of_match[] =
+=3D {
+> > +     { .compatible =3D "richtek,rt4831-backlight", },
+> > +     {}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, rt4831_bl_of_match);
+> > +
+> > +static struct platform_driver rt4831_bl_driver =3D {
+> > +     .driver =3D {
+> > +             .name =3D "rt4831-backlight",
+> > +             .of_match_table =3D rt4831_bl_of_match,
+> > +     },
+> > +     .probe =3D rt4831_bl_probe,
+> > +     .remove =3D rt4831_bl_remove,
+> > +};
+> > +module_platform_driver(rt4831_bl_driver);
+> > +
+> > +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
+> > +MODULE_LICENSE("GPL v2");
+> > --
+> > 2.7.4
+> >
