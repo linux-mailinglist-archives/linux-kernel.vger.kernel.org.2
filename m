@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC07036B47A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C64136B47E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233748AbhDZOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:06:02 -0400
-Received: from mga12.intel.com ([192.55.52.136]:60594 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233720AbhDZOF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:05:58 -0400
-IronPort-SDR: RroM1/ceBrUJZxjLC9quLxg8aCgKfd1hn4uFtyYsvZ0O6Hg8P28UMc/9hZla2rn+auGoC11ida
- IF/o5+IvRY/w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175822019"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="175822019"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 07:05:17 -0700
-IronPort-SDR: QOJ9Wvja0C8wdUuxGOawy1dtz4M6jw5IIyYFuzYGoN1fdzWSvv+hr0/yoJ3zq0dRkGIIOGELhV
- TXbJ5Pk0pf4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="465123921"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga001.jf.intel.com with ESMTP; 26 Apr 2021 07:05:13 -0700
-Date:   Mon, 26 Apr 2021 22:05:12 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210426140512.GA23119@shbuild999.sh.intel.com>
-References: <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
- <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
- <20210423061115.GA62813@shbuild999.sh.intel.com>
- <20210423140254.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210424122920.GB85095@shbuild999.sh.intel.com>
- <87pmyhte2q.ffs@nanos.tec.linutronix.de>
+        id S233768AbhDZOHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhDZOHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:07:09 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 550FCC061574;
+        Mon, 26 Apr 2021 07:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=yHvzrd1ko8
+        bT/rLvfOe6xTk+KVZ/CieWVqR+uGCIwck=; b=fy3LYR0m4E/Dhy/FMGqzZYQ+Wq
+        LLKgXV6d5/mUyVopAHfORzZAnXdRcSN4/hvYIJRdhKMA5VGGnqtPSy4iuYKZ10K5
+        3z3XDJGYlPQhLoAgpW98/hkExXggFH1/Mme5nui+94czgWPVkilvo4CCveuhcbP6
+        8PBPFrXourOEOQhTo=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBXXzfYyIZgCUBLAA--.5813S4;
+        Mon, 26 Apr 2021 22:06:16 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        nareshkumar.pbs@broadcom.com, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] RDMA/bnxt_re/qplib_res: Fix a double free in bnxt_qplib_alloc_res
+Date:   Mon, 26 Apr 2021 07:06:14 -0700
+Message-Id: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmyhte2q.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBXXzfYyIZgCUBLAA--.5813S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7GFWrWFy5GF48tw4ftw1kXwb_yoW8Jry3pr
+        47Wr90kr98JFs2kF42q3yUCr45A3srJ34vgay2k3y3C3Z5Zas7tF1kGasrtF9IyFZ8Kr1I
+        kwnxXw4UKFy7uF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYZXODUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().
+Inside bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
+pci_iounmap() in unmap_io error branch. After the callee returns err code,
+bnxt_qplib_alloc_res calls bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl()
+in fail branch. Then dpit->dbr_bar_reg_iomem is freed in the second time by
+pci_iounmap().
 
-On Mon, Apr 26, 2021 at 08:39:25PM +0800, Thomas Gleixner wrote:
-> On Sat, Apr 24 2021 at 20:29, Feng Tang wrote:
-> > On Fri, Apr 23, 2021 at 07:02:54AM -0700, Paul E. McKenney wrote:
-> > And I'm eager to know if there is any real case of an unreliable tsc
-> > on the 'large numbers' of x86 system which complies with our cpu feature
-> > check. And if there is, my 2/2 definitely should be dropped.   
-> 
-> Nothing prevents BIOS tinkerers from trying to be 'smart'. My most
-> recent encounter (3 month ago) was on a laptop where TSC drifted off on
-> CPU0 very slowly, but was caught due to the TSC_ADJUST check in idle.
+My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by pci_iounmap()
+in the first time, to avoid the double free.
 
-Thanks for sharing the info! So this laptop can still work with the
-tsc_adjust check and restore, without triggering the 'unstable' alarm.
+Fixes: 1ac5a40479752 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Why are those BIOSes playing the trick? Maybe some other OS has hard limit
-for SMI's maxim handling time, so they try to hide the time?
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index fa7878336100..3ca47004b752 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -854,6 +854,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
+ 
+ unmap_io:
+ 	pci_iounmap(res->pdev, dpit->dbr_bar_reg_iomem);
++	dpit->dbr_bar_reg_iomem = NULL;
+ 	return -ENOMEM;
+ }
+ 
+-- 
+2.25.1
 
-> I'm still thinking about a solution to avoid that extra timer and the
-> watchdog for these systems, but haven't found anything which I don't
-> hate with a passion yet.
 
-I see. So should I hold my two patches (tsc_adjust timer and tsc watchdog
-check lifting) for a while?
-
-Thanks,
-Feng
-
-> Thanks,
-> 
->         tglx
