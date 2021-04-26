@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8008A36B8A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A65036B89A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236506AbhDZSFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:05:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:22347 "EHLO mga04.intel.com"
+        id S234651AbhDZSEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:04:47 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51109 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234480AbhDZSDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:03:45 -0400
-IronPort-SDR: Seaw6DDaFcgfIJWbOCBUJNgJXPY+g24ySl16A4aMcJ/NjP3fOVV9h6/tz5zHa7ufz1YHtLYLZ+
- o2/HPVJ9jsRQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="194263271"
+        id S234229AbhDZSDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 14:03:37 -0400
+IronPort-SDR: CYJ1pl1JvseSgS+8b0s+pdARu9s2ZbXdMD2GzyB+S/aFeC584C6uGHFzP6XBwwSObx/QvQ9lAm
+ /VHoF7E3J/YA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196440430"
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="194263271"
+   d="scan'208";a="196440430"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:55 -0700
-IronPort-SDR: Wp6nERpNgXJ0RPJu0MV38RUKJ03VS1th05mt1yPeJGFCEejXkMuqmzxG5F7YbrKx3GXNsuHJKA
- 7GkYUaSUdJiQ==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:54 -0700
+IronPort-SDR: /d8RFcZ9QatFRQrElpSTNu71bWHEzpbuVEHaBrjvs18AWw2naHZarkJYheSvXCpZr87O0Oynp3
+ IB35osaCJvKw==
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="447353428"
+   d="scan'208";a="447353431"
 Received: from ssumanpx-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.34.197])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:53 -0700
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:02:54 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -37,12 +37,11 @@ Cc:     Andi Kleen <ak@linux.intel.com>,
         Raj Ashok <ashok.raj@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2 23/32] x86/boot: Avoid unnecessary #VE during boot process
-Date:   Mon, 26 Apr 2021 11:01:50 -0700
-Message-Id: <b6e4ea3dfe6648e111e0d9dfcce4174672f8b823.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2 24/32] x86/topology: Disable CPU online/offline control for TDX guest
+Date:   Mon, 26 Apr 2021 11:01:51 -0700
+Message-Id: <8c859476363d43b0e5c3fd6ea3f7c250068b24d5.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -52,79 +51,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+As per Intel TDX Virtual Firmware Design Guide, sec 4.3.5 and
+sec 9.4, all unused CPUs are put in spinning state by
+TDVF until OS requests for CPU bring-up via mailbox address passed
+by ACPI MADT table. Since by default all unused CPUs are always in
+spinning state, there is no point in supporting dynamic CPU
+online/offline feature. So current generation of TDVF does not
+support CPU hotplug feature. It may be supported in next generation.
 
-Skip writing EFER during secondary_startup_64() if the current value is
-also the desired value. This avoids a #VE when running as a TDX guest,
-as the TDX-Module does not allow writes to EFER (even when writing the
-current, fixed value).
-
-Also, preserve CR4.MCE instead of clearing it during boot to avoid a #VE
-when running as a TDX guest. The TDX-Module (effectively part of the
-hypervisor) requires CR4.MCE to be set at all times and injects a #VE
-if the guest attempts to clear CR4.MCE.
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/boot/compressed/head_64.S |  5 ++++-
- arch/x86/kernel/head_64.S          | 13 +++++++++++--
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ arch/x86/kernel/tdx.c      | 14 ++++++++++++++
+ arch/x86/kernel/topology.c |  3 ++-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 37c2f37d4a0d..2d79e5f97360 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -622,7 +622,10 @@ SYM_CODE_START(trampoline_32bit_src)
- 	popl	%ecx
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 294dda5bf3f6..ab1efa4d10e9 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -316,6 +316,17 @@ static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
+ 	return insn.length;
+ }
  
- 	/* Enable PAE and LA57 (if required) paging modes */
--	movl	$X86_CR4_PAE, %eax
-+	movl	%cr4, %eax
-+	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
-+	andl	$X86_CR4_MCE, %eax
-+	orl	$X86_CR4_PAE, %eax
- 	testl	%edx, %edx
- 	jz	1f
- 	orl	$X86_CR4_LA57, %eax
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 04bddaaba8e2..92c77cf75542 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -141,7 +141,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 1:
++static int tdg_cpu_offline_prepare(unsigned int cpu)
++{
++	/*
++	 * Per Intel TDX Virtual Firmware Design Guide,
++	 * sec 4.3.5 and sec 9.4, Hotplug is not supported
++	 * in TDX platforms. So don't support CPU
++	 * offline feature once its turned on.
++	 */
++	return -EOPNOTSUPP;
++}
++
+ unsigned long tdg_get_ve_info(struct ve_info *ve)
+ {
+ 	u64 ret;
+@@ -410,5 +421,8 @@ void __init tdx_early_init(void)
+ 	pv_ops.irq.safe_halt = tdg_safe_halt;
+ 	pv_ops.irq.halt = tdg_halt;
  
- 	/* Enable PAE mode, PGE and LA57 */
--	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-+	movq	%cr4, %rcx
-+	/* Clearing CR4.MCE will #VE on TDX guests.  Leave it alone. */
-+	andl	$X86_CR4_MCE, %ecx
-+	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
- #ifdef CONFIG_X86_5LEVEL
- 	testl	$1, __pgtable_l5_enabled(%rip)
- 	jz	1f
-@@ -229,13 +232,19 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	/* Setup EFER (Extended Feature Enable Register) */
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
-+	movl    %eax, %edx
- 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
- 	btl	$20,%edi		/* No Execute supported? */
- 	jnc     1f
- 	btsl	$_EFER_NX, %eax
- 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
--1:	wrmsr				/* Make changes effective */
++	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdg:cpu_hotplug",
++			  NULL, tdg_cpu_offline_prepare);
++
+ 	pr_info("TDX guest is initialized\n");
+ }
+diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
+index f5477eab5692..d879ea96d79c 100644
+--- a/arch/x86/kernel/topology.c
++++ b/arch/x86/kernel/topology.c
+@@ -34,6 +34,7 @@
+ #include <linux/irq.h>
+ #include <asm/io_apic.h>
+ #include <asm/cpu.h>
++#include <asm/tdx.h>
  
-+	/* Skip the WRMSR if the current value matches the desired value. */
-+1:	cmpl	%edx, %eax
-+	je	1f
-+	xor	%edx, %edx
-+	wrmsr				/* Make changes effective */
-+1:
- 	/* Setup cr0 */
- 	movl	$CR0_STATE, %eax
- 	/* Make changes effective */
+ static DEFINE_PER_CPU(struct x86_cpu, cpu_devices);
+ 
+@@ -130,7 +131,7 @@ int arch_register_cpu(int num)
+ 			}
+ 		}
+ 	}
+-	if (num || cpu0_hotpluggable)
++	if ((num || cpu0_hotpluggable) && !is_tdx_guest())
+ 		per_cpu(cpu_devices, num).cpu.hotpluggable = 1;
+ 
+ 	return register_cpu(&per_cpu(cpu_devices, num).cpu, num);
 -- 
 2.25.1
 
