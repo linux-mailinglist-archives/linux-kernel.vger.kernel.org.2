@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3744136ABA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 06:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03CD36ABA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 06:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhDZE1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 00:27:43 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:54768 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhDZE1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 00:27:42 -0400
-Received: from localhost (kumbhalgarh.blr.asicdesigners.com [10.193.185.255])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 13Q4QqHB004459;
-        Sun, 25 Apr 2021 21:26:54 -0700
-Date:   Mon, 26 Apr 2021 09:56:53 +0530
-From:   Raju Rangoju <rajur@chelsio.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cxgb4: Remove redundant assignment to ret
-Message-ID: <20210426042648.GA12978@chelsio.com>
-References: <1619347023-49996-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S229921AbhDZEcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 00:32:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:28854 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhDZEc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 00:32:29 -0400
+IronPort-SDR: 0ZUfbXTmRsluleBRqL5otCPl7oASFOJCiLXjkk3Se+O0EQoJ/bXvknAOjDcVXbsjPV3Iff+2hg
+ inHpZw23A1ng==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="260231334"
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="scan'208";a="260231334"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 21:31:48 -0700
+IronPort-SDR: dGPfFBtPdG+Yzvcxoqtv+MD61plgBZu1WrnXC/1TiFwkOVYV+iml19s6f5K/KGHB42cEqs+tcC
+ nErdTUqT1C6A==
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="scan'208";a="429195229"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 21:31:48 -0700
+Date:   Sun, 25 Apr 2021 21:31:47 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET 0/5] perf report: Make --stat output more compact
+Message-ID: <20210426043147.GU1401198@tassilo.jf.intel.com>
+References: <20210423182813.1472902-1-namhyung@kernel.org>
+ <20210423184647.GN1401198@tassilo.jf.intel.com>
+ <CAM9d7ciy82RM4UDHeAXwu4p7nPSg58euNK=Kdb7E0mj06e10oQ@mail.gmail.com>
+ <20210423202024.GO1401198@tassilo.jf.intel.com>
+ <CAM9d7cjKdo6AKAL43-mp+hpx9m_8UU6j8Zy1RUZkLdh27bR_ig@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619347023-49996-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAM9d7cjKdo6AKAL43-mp+hpx9m_8UU6j8Zy1RUZkLdh27bR_ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, April 04/25/21, 2021 at 18:37:03 +0800, Jiapeng Chong wrote:
-> Variable ret is set to zero but this value is never read as it is
-> overwritten with a new value later on, hence it is a redundant
-> assignment and can be removed.
+> Hmm.. do you want something like this?
 > 
-> Cleans up the following clang-analyzer warning:
-> 
-> drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:3830:2: warning: Value stored
-> to 'ret' is never read [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/net/ethernet/chelsio/cxgb4/t4_hw.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-> index 80882cf..b9d2d58 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-> @@ -3827,8 +3827,8 @@ int t4_load_phy_fw(struct adapter *adap, int win,
->  		 FW_PARAMS_PARAM_X_V(FW_PARAMS_PARAM_DEV_PHYFW) |
->  		 FW_PARAMS_PARAM_Y_V(adap->params.portvec) |
->  		 FW_PARAMS_PARAM_Z_V(FW_PARAMS_PARAM_DEV_PHYFW_DOWNLOAD));
-> -	ret = t4_set_params_timeout(adap, adap->mbox, adap->pf, 0, 1,
-> -				    &param, &val, 30000);
+>              TOTAL events:      20064
+>               MMAP events:        239   ( 1.2%)
+>               COMM events:       1518   ( 7.6%)
+>               EXIT events:          1   (0.0%)
+>               FORK events:       1517   (7.6%)
+>             SAMPLE events:       4015   (20.0%)
+>              MMAP2 events:      12769   (63.6%)
 
-Thanks for reporting this. However, the return value of
-t4_set_params_timeout() needs to be handled and can not be ignored. Will
-send a patch to fix the issue soon.
+Yes that's it.
 
-> +	t4_set_params_timeout(adap, adap->mbox, adap->pf, 0, 1,
-> +			      &param, &val, 30000);
->  
->  	/* If we have version number support, then check to see that the new
->  	 * firmware got loaded properly.
-> -- 
-> 1.8.3.1
-> 
+Really shows how inefficient perf is for short measurement
+periods.
+
+-Andi
