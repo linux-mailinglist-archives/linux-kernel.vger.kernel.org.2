@@ -2,209 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A505436AFD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C1736AFC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhDZIkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 04:40:31 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:43080 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232326AbhDZIk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:40:28 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DFE2C203378;
-        Mon, 26 Apr 2021 10:39:43 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AB08F200620;
-        Mon, 26 Apr 2021 10:39:39 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5CD49402F3;
-        Mon, 26 Apr 2021 10:39:34 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_spdif: add support for enabling raw capture mode
-Date:   Mon, 26 Apr 2021 16:24:04 +0800
-Message-Id: <1619425444-8666-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S232356AbhDZIcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 04:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232271AbhDZIcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 04:32:23 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AA1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 01:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eL8XVt5BRAXJfIlJlROfambfX03idOf5Kja4deVFnSI=; b=KjSgFVgs4vdlEnsuZCVr+vw1oq
+        FdDpL42tXKuWdu/0Zw+rSK28+u3Nw5vk2+ZnmfYZfCMJDHf/VSl6FgWkOc3Z8Vnlp8eb8MqnJEn+E
+        3bU277HeR5d9gmy7N3m60IUmMjkDyQw5wFOxBVIzdrc+ErWfT/sXo+58R3bjuxGFuUP/YvqIii8Q2
+        FPezBobBWJeRlDKxPz9ksqDbFcADEpqIvd11xqDIgZYVb01zC20D0gX6M52me5pzaOocDyna1meNG
+        BvfLgxRTeTqgnK4Ga0mEr0uJvw5V0SiIBtVX3F53rDGDzb2HGUjR6ZzVD0PfUIdgsneHymPKgjQ3X
+        W9y5fIeg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1laweW-007DVe-1f; Mon, 26 Apr 2021 08:31:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23D21300212;
+        Mon, 26 Apr 2021 10:31:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D3DB3234E7138; Mon, 26 Apr 2021 10:31:34 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 10:31:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+Message-ID: <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net>
+References: <20210422120459.447350175@infradead.org>
+ <20210422123308.196692074@infradead.org>
+ <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viorel Suman <viorel.suman@nxp.com>
+On Fri, Apr 23, 2021 at 06:22:52PM -0700, Josh Don wrote:
+> Hi Peter,
+> 
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -186,12 +186,37 @@ int sysctl_sched_rt_runtime = 950000;
+> >
+> >  void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
+> >  {
+> > -       raw_spin_lock_nested(rq_lockp(rq), subclass);
+> > +       raw_spinlock_t *lock;
+> > +
+> > +       if (sched_core_disabled()) {
+> 
+> Nothing to stop sched_core from being enabled right here? Leading to
+> us potentially taking the wrong lock.
+> 
+> > +               raw_spin_lock_nested(&rq->__lock, subclass);
+> > +               return;
+> > +       }
+> > +
+> > +       for (;;) {
+> > +               lock = rq_lockp(rq);
+> > +               raw_spin_lock_nested(lock, subclass);
+> > +               if (likely(lock == rq_lockp(rq)))
+> > +                       return;
+> > +               raw_spin_unlock(lock);
+> > +       }
+> >  }
 
-Since i.MX8MM SPDIF interface is able to capture raw data.
-Add support in SPDIF driver for this functionality.
+Very good; something like the below seems to be the best I can make of
+it..
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 67 +++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_spdif.h |  1 +
- 2 files changed, 68 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index c631de325a6e..2a76714eb8e6 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -49,6 +49,7 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
-  * @imx: for imx platform
-  * @shared_root_clock: flag of sharing a clock source with others;
-  *                     so the driver shouldn't set root clock rate
-+ * @raw_capture_mode: if raw capture mode support
-  * @interrupts: interrupt number
-  * @tx_burst: tx maxburst size
-  * @rx_burst: rx maxburst size
-@@ -57,6 +58,7 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
- struct fsl_spdif_soc_data {
- 	bool imx;
- 	bool shared_root_clock;
-+	bool raw_capture_mode;
- 	u32 interrupts;
- 	u32 tx_burst;
- 	u32 rx_burst;
-@@ -136,6 +138,7 @@ struct fsl_spdif_priv {
- static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
- 	.imx = false,
- 	.shared_root_clock = false,
-+	.raw_capture_mode = false,
- 	.interrupts = 1,
- 	.tx_burst = FSL_SPDIF_TXFIFO_WML,
- 	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-@@ -145,6 +148,7 @@ static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
- static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
- 	.imx = true,
- 	.shared_root_clock = false,
-+	.raw_capture_mode = false,
- 	.interrupts = 1,
- 	.tx_burst = FSL_SPDIF_TXFIFO_WML,
- 	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-@@ -154,6 +158,7 @@ static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
- static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
- 	.imx = true,
- 	.shared_root_clock = true,
-+	.raw_capture_mode = false,
- 	.interrupts = 1,
- 	.tx_burst = FSL_SPDIF_TXFIFO_WML,
- 	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-@@ -164,12 +169,23 @@ static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
- static struct fsl_spdif_soc_data fsl_spdif_imx8qm = {
- 	.imx = true,
- 	.shared_root_clock = true,
-+	.raw_capture_mode = false,
- 	.interrupts = 2,
- 	.tx_burst = 2,		/* Applied for EDMA */
- 	.rx_burst = 2,		/* Applied for EDMA */
- 	.tx_formats = SNDRV_PCM_FMTBIT_S24_LE,  /* Applied for EDMA */
- };
- 
-+static struct fsl_spdif_soc_data fsl_spdif_imx8mm = {
-+	.imx = true,
-+	.shared_root_clock = false,
-+	.raw_capture_mode = true,
-+	.interrupts = 1,
-+	.tx_burst = FSL_SPDIF_TXFIFO_WML,
-+	.rx_burst = FSL_SPDIF_RXFIFO_WML,
-+	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
-+};
-+
- /* Check if clk is a root clock that does not share clock source with others */
- static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f732642e3e09..1a81e9cc9e5d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -290,6 +290,10 @@ static void sched_core_assert_empty(void)
+ static void __sched_core_enable(void)
  {
-@@ -846,6 +862,39 @@ static int fsl_spdif_tx_vbit_put(struct snd_kcontrol *kcontrol,
- 	return 0;
+ 	static_branch_enable(&__sched_core_enabled);
++	/*
++	 * Ensure raw_spin_rq_*lock*() have completed before flipping.
++	 */
++	synchronize_sched();
+ 	__sched_core_flip(true);
+ 	sched_core_assert_empty();
  }
- 
-+static int fsl_spdif_rx_rcm_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct regmap *regmap = spdif_priv->regmap;
-+	u32 val;
-+
-+	regmap_read(regmap, REG_SPDIF_SCR, &val);
-+	val = (val & SCR_RAW_CAPTURE_MODE) ? 1 : 0;
-+	ucontrol->value.integer.value[0] = val;
-+
-+	return 0;
-+}
-+
-+static int fsl_spdif_rx_rcm_put(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-+	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct regmap *regmap = spdif_priv->regmap;
-+	u32 val = (ucontrol->value.integer.value[0] ? SCR_RAW_CAPTURE_MODE : 0);
-+
-+	if (val)
-+		cpu_dai->driver->capture.formats |= SNDRV_PCM_FMTBIT_S32_LE;
-+	else
-+		cpu_dai->driver->capture.formats &= ~SNDRV_PCM_FMTBIT_S32_LE;
-+
-+	regmap_update_bits(regmap, REG_SPDIF_SCR, SCR_RAW_CAPTURE_MODE, val);
-+
-+	return 0;
-+}
-+
- /* DPLL lock information */
- static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_info *uinfo)
-@@ -1029,6 +1078,19 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
- 	},
- };
- 
-+static struct snd_kcontrol_new fsl_spdif_ctrls_rcm[] = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = "IEC958 Raw Capture Mode",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			SNDRV_CTL_ELEM_ACCESS_WRITE |
-+			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_ctl_boolean_mono_info,
-+		.get = fsl_spdif_rx_rcm_get,
-+		.put = fsl_spdif_rx_rcm_put,
-+	},
-+};
-+
- static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+@@ -449,16 +453,22 @@ void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
  {
- 	struct fsl_spdif_priv *spdif_private = snd_soc_dai_get_drvdata(dai);
-@@ -1038,6 +1100,10 @@ static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+ 	raw_spinlock_t *lock;
  
- 	snd_soc_add_dai_controls(dai, fsl_spdif_ctrls, ARRAY_SIZE(fsl_spdif_ctrls));
++	preempt_disable();
+ 	if (sched_core_disabled()) {
+ 		raw_spin_lock_nested(&rq->__lock, subclass);
++		/* preempt *MUST* still be disabled here */
++		preempt_enable_no_resched();
+ 		return;
+ 	}
  
-+	if (spdif_private->soc->raw_capture_mode)
-+		snd_soc_add_dai_controls(dai, fsl_spdif_ctrls_rcm,
-+					 ARRAY_SIZE(fsl_spdif_ctrls_rcm));
-+
- 	/*Clear the val bit for Tx*/
- 	regmap_update_bits(spdif_private->regmap, REG_SPDIF_SCR,
- 			   SCR_VAL_MASK, SCR_VAL_CLEAR);
-@@ -1476,6 +1542,7 @@ static const struct of_device_id fsl_spdif_dt_ids[] = {
- 	{ .compatible = "fsl,vf610-spdif", .data = &fsl_spdif_vf610, },
- 	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
- 	{ .compatible = "fsl,imx8qm-spdif", .data = &fsl_spdif_imx8qm, },
-+	{ .compatible = "fsl,imx8mm-spdif", .data = &fsl_spdif_imx8mm, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
-diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
-index d5f1dfd58740..bff8290e71f2 100644
---- a/sound/soc/fsl/fsl_spdif.h
-+++ b/sound/soc/fsl/fsl_spdif.h
-@@ -63,6 +63,7 @@
- #define SCR_TXFIFO_FSEL_IF4		(0x1 << SCR_TXFIFO_FSEL_OFFSET)
- #define SCR_TXFIFO_FSEL_IF8		(0x2 << SCR_TXFIFO_FSEL_OFFSET)
- #define SCR_TXFIFO_FSEL_IF12		(0x3 << SCR_TXFIFO_FSEL_OFFSET)
-+#define SCR_RAW_CAPTURE_MODE		BIT(14)
- #define SCR_LOW_POWER			(1 << 13)
- #define SCR_SOFT_RESET			(1 << 12)
- #define SCR_TXFIFO_CTRL_OFFSET		10
--- 
-2.27.0
-
+ 	for (;;) {
+ 		lock = __rq_lockp(rq);
+ 		raw_spin_lock_nested(lock, subclass);
+-		if (likely(lock == __rq_lockp(rq)))
++		if (likely(lock == __rq_lockp(rq))) {
++			/* preempt *MUST* still be disabled here */
++			preempt_enable_no_resched();
+ 			return;
++		}
+ 		raw_spin_unlock(lock);
+ 	}
+ }
+@@ -468,14 +478,20 @@ bool raw_spin_rq_trylock(struct rq *rq)
+ 	raw_spinlock_t *lock;
+ 	bool ret;
+ 
+-	if (sched_core_disabled())
+-		return raw_spin_trylock(&rq->__lock);
++	preempt_disable();
++	if (sched_core_disabled()) {
++		ret = raw_spin_trylock(&rq->__lock);
++		preempt_enable();
++		return ret;
++	}
+ 
+ 	for (;;) {
+ 		lock = __rq_lockp(rq);
+ 		ret = raw_spin_trylock(lock);
+-		if (!ret || (likely(lock == __rq_lockp(rq))))
++		if (!ret || (likely(lock == __rq_lockp(rq)))) {
++			preempt_enable();
+ 			return ret;
++		}
+ 		raw_spin_unlock(lock);
+ 	}
+ }
