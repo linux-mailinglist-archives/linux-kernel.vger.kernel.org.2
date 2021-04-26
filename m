@@ -2,117 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A772836B321
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D9C36B31C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhDZMej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:34:39 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17061 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233435AbhDZMeg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:34:36 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FTPQQ3VvCz19MM8;
-        Mon, 26 Apr 2021 20:31:26 +0800 (CST)
-Received: from huawei.com (10.175.104.170) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Mon, 26 Apr 2021
- 20:33:44 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <ying.huang@intel.com>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
-        <david@redhat.com>, <yuzhao@google.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v6 4/4] mm/shmem: fix shmem_swapin() race with swapoff
-Date:   Mon, 26 Apr 2021 20:33:16 +0800
-Message-ID: <20210426123316.806267-5-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210426123316.806267-1-linmiaohe@huawei.com>
-References: <20210426123316.806267-1-linmiaohe@huawei.com>
+        id S233386AbhDZMeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:34:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233407AbhDZMeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:34:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 396B260233;
+        Mon, 26 Apr 2021 12:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619440413;
+        bh=WvMI72dlNKXKfzflyxeqjv661v4Ptuau37HZFZ2JpCU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TwtJeLFjpMVq02zL6f76cEVapcwXwg7F7oL6Au9/efbENNz9p487RjgC1K0+H/hPo
+         njAjp5XPzRdiWqJB3KjMHZ/pBMGQwXe2vc9UsIKhZUSyhqJVfLb3KRmK/hrLAEM3tl
+         KdhfMDJeUg8F1bLvq8z6O9bIqDR80gquSkyrikymYcZ8xkeP2YyNU1JXsypS86Jcih
+         ybCZ/T3GpFu2sn3SM17EynT+MeDqoYbcILLbJ7tCZfPhIr6hN7w/wgrK7uNr04medK
+         e+qCIOm52KmIHG08YIF2jfq/uBi+jQRpYPsynW6sQOENwi1koIZgSWhV2ACv63YX00
+         veVJuoVy/KvMg==
+Date:   Mon, 26 Apr 2021 14:33:27 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 13/78] staging: media: hantro_drv: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210426143327.4f9fb6ea@coco.lan>
+In-Reply-To: <780afdc9b263928ed378dfbd3eaa8a5509a59a35.camel@collabora.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <0021158fb27035a56089683ee712fb3ed6f6032d.1619191723.git.mchehab+huawei@kernel.org>
+        <780afdc9b263928ed378dfbd3eaa8a5509a59a35.camel@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.170]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I was investigating the swap code, I found the below possible race
-window:
+Em Sat, 24 Apr 2021 20:23:53 -0300
+Ezequiel Garcia <ezequiel@collabora.com> escreveu:
 
-CPU 1                                         CPU 2
------                                         -----
-shmem_swapin
-  swap_cluster_readahead
-    if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
-                                              swapoff
-                                                ..
-                                                si->swap_file = NULL;
-                                                ..
-    struct inode *inode = si->swap_file->f_mapping->host;[oops!]
+> Hi Mauro,
+>=20
+> On Sat, 2021-04-24 at 08:44 +0200, Mauro Carvalho Chehab wrote:
+> > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to dea=
+l with usage counter")
+> > added pm_runtime_resume_and_get() in order to automatically handle
+> > dev->power.usage_count decrement on errors.
+> >=20
+> > Use the new API, in order to cleanup the error check logic.
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> > =C2=A0drivers/staging/media/hantro/hantro_drv.c | 2 +-
+> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/stagin=
+g/media/hantro/hantro_drv.c
+> > index 595e82a82728..3147dcbebeb9 100644
+> > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > @@ -155,7 +155,7 @@ static void device_run(void *priv)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D clk_bulk_enable=
+(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D pm_runtime_get_sync(=
+ctx->dev->dev);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D pm_runtime_resume_an=
+d_get(ctx->dev->dev);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret < 0)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;
+> > =C2=A0 =20
+>=20
+> Seems this one needs a different fix: err_cancel_job
+> will call hantro_job_finish which has a pm_runtime put.
 
-Close this race window by using get/put_swap_device() to guard against
-concurrent swapoff.
+Good point. Thanks for reviewing it!
 
-Fixes: 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or not")
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/shmem.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+It sounds that this is a place where the best seems
+to keep using pm_runtime_get_sync(), but let's at least add a
+comment explaining why it should be kept here. This should
+help to avoid people to copy-and-paste the code on situations
+where pm_runtime_resume_and_get() should be used instead.
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 26c76b13ad23..e5dd8fa51463 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1696,7 +1696,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 	struct address_space *mapping = inode->i_mapping;
- 	struct shmem_inode_info *info = SHMEM_I(inode);
- 	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
--	struct page *page;
-+	struct swap_info_struct *si;
-+	struct page *page = NULL;
- 	swp_entry_t swap;
- 	int error;
- 
-@@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 	swap = radix_to_swp_entry(*pagep);
- 	*pagep = NULL;
- 
-+	/* Prevent swapoff from happening to us. */
-+	si = get_swap_device(swap);
-+	if (!si) {
-+		error = EINVAL;
-+		goto failed;
-+	}
- 	/* Look it up and read it in.. */
- 	page = lookup_swap_cache(swap, NULL, 0);
- 	if (!page) {
-@@ -1765,6 +1772,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 	swap_free(swap);
- 
- 	*pagep = page;
-+	if (si)
-+		put_swap_device(si);
- 	return 0;
- failed:
- 	if (!shmem_confirm_swap(mapping, index, swap))
-@@ -1775,6 +1784,9 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 		put_page(page);
- 	}
- 
-+	if (si)
-+		put_swap_device(si);
+See enclosed patch.
+
+Thanks,
+Mauro
+
+[PATCH] media: hantro: document the usage of pm_runtime_get_sync()
+
+Despite other *_get()/*_put() functions, where usage count is
+incremented only if not errors, the pm_runtime_get_sync() has
+a different behavior, incrementing the counter *even* on
+errors.
+
+That's an error prone behavior, as people often forget to
+decrement the usage counter.
+
+However, the hantro driver depends on this behavior, as it
+will decrement the usage_count unconditionally at the m2m
+job finish time, which makes sense.
+
+So, intead of using the pm_runtime_resume_and_get() that
+would decrement the counter on error, keep the current
+API, but add a documentation explaining the rationale for
+keep using pm_runtime_get_sync().
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/me=
+dia/hantro/hantro_drv.c
+index 595e82a82728..96f940c1c85c 100644
+--- a/drivers/staging/media/hantro/hantro_drv.c
++++ b/drivers/staging/media/hantro/hantro_drv.c
+@@ -155,6 +155,13 @@ static void device_run(void *priv)
+ 	ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+ 	if (ret)
+ 		goto err_cancel_job;
 +
- 	return error;
- }
- 
--- 
-2.23.0
++	/*
++	 * The pm_runtime_get_sync() will increment dev->power.usage_count,
++	 * even on errors. That's the expected behavior here, since the
++	 * hantro_job_finish() function at the error handling code
++	 * will internally call pm_runtime_put_autosuspend().
++	 */
+ 	ret =3D pm_runtime_get_sync(ctx->dev->dev);
+ 	if (ret < 0)
+ 		goto err_cancel_job;
+
 
