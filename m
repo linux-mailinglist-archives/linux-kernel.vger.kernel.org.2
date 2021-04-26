@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3726636ADE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51D536AD6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhDZHkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:40:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
+        id S232905AbhDZHgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:36:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232700AbhDZHhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 152F7613C9;
-        Mon, 26 Apr 2021 07:35:03 +0000 (UTC)
+        id S232784AbhDZHeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:34:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EABBF61152;
+        Mon, 26 Apr 2021 07:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422504;
-        bh=EDj1gHlZSzYdYf98LrWwBli/46xSjlYyncHL60ccxE8=;
+        s=korg; t=1619422407;
+        bh=HGKoeYccslyDMJAjKQum+MqK9xLjwCuOgVCaBy/LkXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2327fmRoylbCzmGcUKQCOLW5mH9bqcnfCsoE497KPCFQbqu8svX4MbO0WQdzbW9y
-         EdGOusUQ9T2tF9J8dEVJUqRXwXzfb5O9b0JZhUSa2nrtMxvWbvU1H9I8Pw4RvT71qr
-         WM+G9lHZzrivMeSnTF0t7lT5qB+cv8qWSKSszLXU=
+        b=mKT9CpFSu2a8lNgicZgPkL76LbKigGWK/uqXGCbnpNbs3dHu+Bq88V3J1S88o+cAX
+         PiGcSY7fZ7OgzeX0W1X2dM4yXTC4r1d6/nytesuOqGC7OUDSY5ULdf6c/ZAVHNgGeB
+         hYSSRE0wVzrvc1pH1LDqY/yig7rtcdQmYa+7xu6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 40/49] HID: alps: fix error return code in alps_input_configured()
-Date:   Mon, 26 Apr 2021 09:29:36 +0200
-Message-Id: <20210426072821.089287977@linuxfoundation.org>
+        stable@vger.kernel.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 36/37] ia64: tools: remove duplicate definition of ia64_mf() on ia64
+Date:   Mon, 26 Apr 2021 09:29:37 +0200
+Message-Id: <20210426072818.480614303@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-[ Upstream commit fa8ba6e5dc0e78e409e503ddcfceef5dd96527f4 ]
+[ Upstream commit f4bf09dc3aaa4b07cd15630f2023f68cb2668809 ]
 
-When input_register_device() fails, no error return code is assigned.
-To fix this bug, ret is assigned with -ENOENT as error return code.
+The ia64_mf() macro defined in tools/arch/ia64/include/asm/barrier.h is
+already defined in <asm/gcc_intrin.h> on ia64 which causes libbpf
+failing to build:
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+    CC       /usr/src/linux/tools/bpf/bpftool//libbpf/staticobjs/libbpf.o
+  In file included from /usr/src/linux/tools/include/asm/barrier.h:24,
+                   from /usr/src/linux/tools/include/linux/ring_buffer.h:4,
+                   from libbpf.c:37:
+  /usr/src/linux/tools/include/asm/../../arch/ia64/include/asm/barrier.h:43: error: "ia64_mf" redefined [-Werror]
+     43 | #define ia64_mf()       asm volatile ("mf" ::: "memory")
+        |
+  In file included from /usr/include/ia64-linux-gnu/asm/intrinsics.h:20,
+                   from /usr/include/ia64-linux-gnu/asm/swab.h:11,
+                   from /usr/include/linux/swab.h:8,
+                   from /usr/include/linux/byteorder/little_endian.h:13,
+                   from /usr/include/ia64-linux-gnu/asm/byteorder.h:5,
+                   from /usr/src/linux/tools/include/uapi/linux/perf_event.h:20,
+                   from libbpf.c:36:
+  /usr/include/ia64-linux-gnu/asm/gcc_intrin.h:382: note: this is the location of the previous definition
+    382 | #define ia64_mf() __asm__ volatile ("mf" ::: "memory")
+        |
+  cc1: all warnings being treated as errors
+
+Thus, remove the definition from tools/arch/ia64/include/asm/barrier.h.
+
+Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-alps.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/arch/ia64/include/asm/barrier.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index ed9c0ea5b026..1bc6ad0339d2 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -429,6 +429,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
- 		ret = input_register_device(data->input2);
- 		if (ret) {
- 			input_free_device(input2);
-+			ret = -ENOENT;
- 			goto exit;
- 		}
- 	}
+diff --git a/tools/arch/ia64/include/asm/barrier.h b/tools/arch/ia64/include/asm/barrier.h
+index e4422b4b634e..94ae4a333a35 100644
+--- a/tools/arch/ia64/include/asm/barrier.h
++++ b/tools/arch/ia64/include/asm/barrier.h
+@@ -38,9 +38,6 @@
+  * sequential memory pages only.
+  */
+ 
+-/* XXX From arch/ia64/include/uapi/asm/gcc_intrin.h */
+-#define ia64_mf()       asm volatile ("mf" ::: "memory")
+-
+ #define mb()		ia64_mf()
+ #define rmb()		mb()
+ #define wmb()		mb()
 -- 
 2.30.2
 
