@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D973236B5C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B4C36B5C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhDZP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233674AbhDZP2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:28:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C6EB61076;
-        Mon, 26 Apr 2021 15:28:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619450882;
-        bh=AwhTbcawstyLCkCKuD8TwEtnhQvod3F3gZm+IW/Bb6I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dRmOo9ZVfxCtmfBY5Durmki5k7x6WWssiMaFS3cJxfhed9VJTllzhWaHAb5tArLjT
-         x/Vk2e1SXMq734AzV8ResxZtLdhvYHSvEqXcm7Mevh3lsx7pOEV6aNFWjidjF9SZ3w
-         yskZeVInlhAS2UbE1gcnSNHwRW+CsaEcoz2OFxT1dY4KlgYc4n6dw/jqltMGPsXNJN
-         VFX4UNzPOlrNxBPZLQYTmQWopzS1H3KWlY7lK9DTs/BsK5aQY49DvUulM7SPqHxV8q
-         pVal0imAxPwzOXKS3aSNln4VeOlEPi9Bgf0ta60E5acV6zpnuxlmE2zU9Uyj8K4F44
-         PcibNCL8XYtRw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D36E85C0121; Mon, 26 Apr 2021 08:28:01 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 08:28:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, feng.tang@intel.com,
-        zhengjun.xing@intel.com, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v10 clocksource 1/7] clocksource: Provide module
- parameters to inject delays in watchdog
-Message-ID: <20210426152801.GY975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
- <20210425224709.1312655-1-paulmck@kernel.org>
- <20210426040736.GS1401198@tassilo.jf.intel.com>
+        id S234052AbhDZP3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:29:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34852 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233674AbhDZP3U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 11:29:20 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619450918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gugWQa6xRv8Em7uLjQXQhkSCbIDH+ekIYoeqePadw8s=;
+        b=VyDVOWSdRtQ7Aq661DZ1DFIG7xLuI0Qtko0zlA1tvTdn5dgA6MDU5OSOXA6WzD3zdM5jdz
+        SSBIJcAJx7G1z4bqv28ySyTAHz0w74lY5tRD5goRFpMRW9qE0H01OKHg4MGUN2EAk3hIsv
+        QHslT40J6SeAp0wB6UCxgM2qPhBufToMCvUc3DEZ9vKCwYJ2fPGSqRCCqK+xXEWjANdQ5q
+        F0usAjgUhX7UMNV5G7T1dqRymq+v6kziF7jDTPOLw+NBXaXHvIbFYzT6cCZDuHTaIQh3v2
+        m2cxY44qWMR7G+vv/cAObc/L1mmFBi9izqO4ZnULgoQFqofgMFGdp6ch2EA5FA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619450918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gugWQa6xRv8Em7uLjQXQhkSCbIDH+ekIYoeqePadw8s=;
+        b=dCdD9MmU3F5zlLIIk3OWlsVE0CnjBSjm8vKhQ3xm1oImP7EsA5+i2BsEGirf0itNB0qGs8
+        oLMF0JShu1TqfjDA==
+To:     Feng Tang <feng.tang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early pre-calibration drift
+In-Reply-To: <20210426150127.GB23119@shbuild999.sh.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1> <20210425224709.1312655-6-paulmck@kernel.org> <20210426150127.GB23119@shbuild999.sh.intel.com>
+Date:   Mon, 26 Apr 2021 17:28:37 +0200
+Message-ID: <87a6plt68q.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426040736.GS1401198@tassilo.jf.intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 09:07:36PM -0700, Andi Kleen wrote:
+On Mon, Apr 26 2021 at 23:01, Feng Tang wrote:
+> On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> We've reported one case that tsc can be wrongly judged as 'unstable'
+> by 'refined-jiffies' watchdog [1], while reducing the threshold could
+> make it easier to be triggered.
+>
+> It could be reproduced on the a plaform with a 115200 serial console,
+> and hpet been disabled (several x86 platforms has this), add 
+> 'initcall_debug' cmdline parameter to get more debug message, we can
+> see:
+>
+> [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
+> [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+> [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+> [    1.134220] clocksource:                       No current clocksource.
+> [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
 
-[ . . . ]
+Yes, refined jiffies is the worst case.
 
-> > +	clocksource.inject_delay_period= [KNL]
-> > +			Number of calls to clocksource_watchdog() before
-> > +			delays are injected between reads from the
-> > +			two clocksources.  Values of zero disable this
-> > +			delay injection.  These delays can cause clocks
-> > +			to be marked unstable, so use of this parameter
-> > +			should therefore be avoided on production systems.
-> > +			Defaults to zero (disabled).
-> > +
-> > +	clocksource.inject_delay_repeat= [KNL]
-> > +			Number of repeated clocksource_watchdog() delay
-> > +			injections per period.	If inject_delay_period
-> > +			is five and inject_delay_repeat is three, there
-> > +			will be five delay-free reads followed by three
-> > +			delayed reads.
-> 
-> I'm not sure command line options are the right way to do this.
-> How about integrating it with the fault injection framework in debugfs.
-> 
-> This way syzkaller etc. can play with it, which long term would
-> give much better test coverage.
-> 
-> This wouldn't allow boot time coverage, but presumably that's not
-> too important here.
+Though the worst of everything is that any of this exists at all, but
+you knew that already :)
 
-Boot-time coverage is important, as we saw in kbuild test robot testing
-of v9 of this patchset, which triggered clocksource_tsc_early, but not
-clocksource_tsc.  Note that v10 avoids this triggering.
+Thanks,
 
-							Thanx, Paul
+        tglx
