@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402AD36AE6C
+	by mail.lfdr.de (Postfix) with ESMTP id E8ED736AE6E
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbhDZHo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:44:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
+        id S234297AbhDZHpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233205AbhDZHjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57936611C9;
-        Mon, 26 Apr 2021 07:36:44 +0000 (UTC)
+        id S233234AbhDZHjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEDCC613BA;
+        Mon, 26 Apr 2021 07:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422604;
-        bh=mQjJ6x20xtSCymemq+yGIgamS3EJ0KEd6zbDPnV6+DU=;
+        s=korg; t=1619422607;
+        bh=31+s/KCr6m3mGctz1HFYHwugCXG/IEIuwBDsIlfpqpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SajTRdFRlgC0qmWfUJbxZ2ppGXtvc3hKryP9tJ9CrxjWGzFEFKkyXGon47ZGgOOgf
-         OqWDmz+T6KBCrOxDVkeEd3wpwrHdL0pGG6gCghiNaWQ9gAwBYWzhOJ7XVn5+sECSy2
-         OpwydW66Fa0I4NqiTYsdpClKywSlMhT6ezL86pro=
+        b=gejeMi0+UmsezkQzmMIaiBKlbo4Hmv4qICnWGa77/Lw26rrJYJoCR5mdEAcZQkSCC
+         GtzAz4WGvL2JDm9y/eekhaWcnxv8K0M5rbng6CXRu8K+RZ2RdsbehJIk6rR5rHc3Lv
+         l2JiuDkcRiROQv7vpmIAAhSAKpazepgi6gKRMA7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 04/57] dmaengine: dw: Make it dependent to HAS_IOMEM
-Date:   Mon, 26 Apr 2021 09:29:01 +0200
-Message-Id: <20210426072820.723532700@linuxfoundation.org>
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 05/57] ARM: dts: Drop duplicate sha2md5_fck to fix clk_disable race
+Date:   Mon, 26 Apr 2021 09:29:02 +0200
+Message-Id: <20210426072820.753886770@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
 References: <20210426072820.568997499@linuxfoundation.org>
@@ -41,44 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 88cd1d6191b13689094310c2405394e4ce36d061 ]
+[ Upstream commit 140a776833957539c84301dbdb4c3013876de118 ]
 
-Some architectures do not provide devm_*() APIs. Hence make the driver
-dependent on HAVE_IOMEM.
+We have a duplicate legacy clock defined for sha2md5_fck that can
+sometimes race with clk_disable() with the dts configured clock
+for OMAP4_SHA2MD5_CLKCTRL when unused clocks are disabled during
+boot causing an "Unhandled fault: imprecise external abort".
 
-Fixes: dbde5c2934d1 ("dw_dmac: use devm_* functions to simplify code")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Link: https://lore.kernel.org/r/20210324141757.24710-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/dw/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/omap44xx-clocks.dtsi | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/dma/dw/Kconfig b/drivers/dma/dw/Kconfig
-index 04b9728c1d26..070860ec0ef1 100644
---- a/drivers/dma/dw/Kconfig
-+++ b/drivers/dma/dw/Kconfig
-@@ -8,6 +8,7 @@ config DW_DMAC_CORE
+diff --git a/arch/arm/boot/dts/omap44xx-clocks.dtsi b/arch/arm/boot/dts/omap44xx-clocks.dtsi
+index 279ff2f419df..c654588f9e8c 100644
+--- a/arch/arm/boot/dts/omap44xx-clocks.dtsi
++++ b/arch/arm/boot/dts/omap44xx-clocks.dtsi
+@@ -773,14 +773,6 @@
+ 		ti,max-div = <2>;
+ 	};
  
- config DW_DMAC
- 	tristate "Synopsys DesignWare AHB DMA platform driver"
-+	depends on HAS_IOMEM
- 	select DW_DMAC_CORE
- 	help
- 	  Support the Synopsys DesignWare AHB DMA controller. This
-@@ -16,6 +17,7 @@ config DW_DMAC
- config DW_DMAC_PCI
- 	tristate "Synopsys DesignWare AHB DMA PCI driver"
- 	depends on PCI
-+	depends on HAS_IOMEM
- 	select DW_DMAC_CORE
- 	help
- 	  Support the Synopsys DesignWare AHB DMA controller on the
+-	sha2md5_fck: sha2md5_fck@15c8 {
+-		#clock-cells = <0>;
+-		compatible = "ti,gate-clock";
+-		clocks = <&l3_div_ck>;
+-		ti,bit-shift = <1>;
+-		reg = <0x15c8>;
+-	};
+-
+ 	usb_phy_cm_clk32k: usb_phy_cm_clk32k@640 {
+ 		#clock-cells = <0>;
+ 		compatible = "ti,gate-clock";
 -- 
 2.30.2
 
