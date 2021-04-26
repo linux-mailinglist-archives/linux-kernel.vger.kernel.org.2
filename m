@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D40836AF4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906E636AF0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbhDZH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34610 "EHLO mail.kernel.org"
+        id S232079AbhDZHwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:52:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234286AbhDZHpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:45:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84877613F4;
-        Mon, 26 Apr 2021 07:42:07 +0000 (UTC)
+        id S233455AbhDZHnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:43:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D672D613E6;
+        Mon, 26 Apr 2021 07:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422928;
-        bh=1zFtDWAlhy8r55cLddWAqWsGkVgmwlVTnr5T3nlV8k4=;
+        s=korg; t=1619422806;
+        bh=Ps0B3DBQAkuw9+6CzzgVL4UeqH4Oy52Pq80amPQZY5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZWrU9gli4AHsFWrNITiRXBieTY7Ua9SGiTt9WnmmTcSEd6oLv5Grq2m4U32TGwZ//
-         5n7QIwrFB2BZYFjcyJFpXcjEBt6Jjdc3W/K1TJsWPT8YolXMEYRs4w74Q6UuF2Cu+k
-         jxJk2k9nhUc2RNbrAIs9hUXdRO4biojnKOU3DjuQ=
+        b=JQAACYmZ9s94k2z8xTriPY8yIrt+zOUMr7GYX3y/Pfh+W8Mi+fmvfjGG0AFw1g2T/
+         FpoZIajoW2rHDCb63+rtWMFiAeFcyS1CpSF1iqLzclNWzouGepdr7k/9mf3XbH2XJR
+         YXH7hSXqPJjeiruBu6Er7MWu9ZCrF6dZ0bX4eqRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 30/41] ARM: dts: Fix swapped mmc order for omap3
-Date:   Mon, 26 Apr 2021 09:30:17 +0200
-Message-Id: <20210426072820.718286025@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
+        Borislav Petkov <bp@suse.de>, Dave Young <dyoung@redhat.com>
+Subject: [PATCH 5.10 36/36] x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
+Date:   Mon, 26 Apr 2021 09:30:18 +0200
+Message-Id: <20210426072820.010598550@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
-References: <20210426072819.666570770@linuxfoundation.org>
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+References: <20210426072818.777662399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Mike Galbraith <efault@gmx.de>
 
-[ Upstream commit a1ebdb3741993f853865d1bd8f77881916ad53a7 ]
+commit 5849cdf8c120e3979c57d34be55b92d90a77a47e upstream.
 
-Also some omap3 devices like n900 seem to have eMMC and micro-sd swapped
-around with commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for
-drivers that existed in v4.4").
+Commit in Fixes: added support for kexec-ing a kernel on panic using a
+new system call. As part of it, it does prepare a memory map for the new
+kernel.
 
-Let's fix the issue with aliases as discussed on the mailing lists. While
-the mmc aliases should be board specific, let's first fix the issue with
-minimal changes.
+However, while doing so, it wrongly accesses memory it has not
+allocated: it accesses the first element of the cmem->ranges[] array in
+memmap_exclude_ranges() but it has not allocated the memory for it in
+crash_setup_memmap_entries(). As KASAN reports:
 
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
+  Write of size 8 at addr ffffc90000426008 by task kexec/1187
+
+  (gdb) list *crash_setup_memmap_entries+0x17e
+  0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
+  317                                      unsigned long long mend)
+  318     {
+  319             unsigned long start, end;
+  320
+  321             cmem->ranges[0].start = mstart;
+  322             cmem->ranges[0].end = mend;
+  323             cmem->nr_ranges = 1;
+  324
+  325             /* Exclude elf header region */
+  326             start = image->arch.elf_load_addr;
+  (gdb)
+
+Make sure the ranges array becomes a single element allocated.
+
+ [ bp: Write a proper commit message. ]
+
+Fixes: dd5f726076cc ("kexec: support for kexec on panic using new system call")
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Dave Young <dyoung@redhat.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/omap3.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kernel/crash.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
-index 9dcae1f2bc99..c5b9da0d7e6c 100644
---- a/arch/arm/boot/dts/omap3.dtsi
-+++ b/arch/arm/boot/dts/omap3.dtsi
-@@ -24,6 +24,9 @@
- 		i2c0 = &i2c1;
- 		i2c1 = &i2c2;
- 		i2c2 = &i2c3;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
--- 
-2.30.2
-
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct ki
+ 	struct crash_memmap_data cmd;
+ 	struct crash_mem *cmem;
+ 
+-	cmem = vzalloc(sizeof(struct crash_mem));
++	cmem = vzalloc(struct_size(cmem, ranges, 1));
+ 	if (!cmem)
+ 		return -ENOMEM;
+ 
 
 
