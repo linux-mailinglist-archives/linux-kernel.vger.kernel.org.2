@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C92636BAA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E665C36BAAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241757AbhDZUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:22:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49682 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238112AbhDZUWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:22:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C6A5AAEB6;
-        Mon, 26 Apr 2021 20:21:51 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B7D30DA7F9; Mon, 26 Apr 2021 22:19:29 +0200 (CEST)
-Date:   Mon, 26 Apr 2021 22:19:29 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-next] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210426201929.GI7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Khaled ROMDHANI <khaledromdhani216@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210423124201.11262-1-khaledromdhani216@gmail.com>
+        id S241873AbhDZUYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241600AbhDZUX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 16:23:59 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC04C061574;
+        Mon, 26 Apr 2021 13:23:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=skogtun.org
+        ; s=ds202012; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pECq693NLfz1M+nZ7gy7VWyiFp04Gu/D/8GHShtkwfw=; b=QMVmYBRm7X7IX2MnfSJzbVoGoq
+        RM9xtvzDrFlxMkQ3aN5pd7ZVbbWhb66jovqRuVj0UOZW+hXG+SOwxQzuKOcDy/Pk/pHto22iKAGB5
+        qtVleC79W7taE+VT7zau5WRcKzURt7J2L61ATZF3Bbuk8y7aEWPGaZ7Ywanot8Gr2wdvuHO/CbzOA
+        ABxdgG4bJSLPxgrKeBBfNj34lJuXJ7ZZ/Dw7LIuonMvQsv1lFLgHMHSyGX4aQK0oBApqxjK9QcEwY
+        znW36xVuuwsWT2fwqVEQ181aQHbF/w1owgGYKhG5P6uZbBVVxJu2eMOwLWhHjo1xmI162U/GXGjdY
+        uW3DGsTw==;
+Received: from [2a01:79c:cebf:7fb0::17] (port=39832)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <harald@skogtun.org>)
+        id 1lb7lB-0002St-Cq; Mon, 26 Apr 2021 22:23:13 +0200
+Subject: Re: [BISECTED] 5.12 hangs at reboot
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org
+References: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
+ <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
+ <6e1052a5506acb0c5ba3b4954f199ee0c494c1c3.camel@sipsolutions.net>
+From:   Harald Arnesen <harald@skogtun.org>
+Message-ID: <1bacfbe4-12ac-7ee2-59d1-7490d6cfe0f0@skogtun.org>
+Date:   Mon, 26 Apr 2021 22:23:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423124201.11262-1-khaledromdhani216@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <6e1052a5506acb0c5ba3b4954f199ee0c494c1c3.camel@sipsolutions.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 01:42:01PM +0100, Khaled ROMDHANI wrote:
-> The variable 'zone' is uninitialized which
-> introduce some build warning.
-> 
-> It is not always set or overwritten within
-> the function. So explicitly initialize it.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> ---
->  fs/btrfs/zoned.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 432509f4b3ac..42f99b25127f 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -136,7 +136,7 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
->   */
->  static inline u32 sb_zone_number(int shift, int mirror)
->  {
-> -	u64 zone;
-> +	u64 zone = 0;
+Johannes Berg [26.04.2021 21:19]:
 
-This is exactly same as v1
-https://lore.kernel.org/linux-btrfs/20210413130604.11487-1-khaledromdhani216@gmail.com/
+> Probably hardware (well, driver), cfg80211_destroy_ifaces() calls into
+> the driver.
+> 
+> Which wireless driver are you using? 
 
-It does fix the build warning but does not make sense in the code
-because it would would silently let mirror == 4 pass. I think there was
-enough feedback under the previous posts how to fix that properly.
+ath9k
+-- 
+Hilsen Harald
