@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F9836AEFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B5036AEE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhDZHue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60130 "EHLO mail.kernel.org"
+        id S233546AbhDZHsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233450AbhDZHlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:41:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D22AE6135F;
-        Mon, 26 Apr 2021 07:39:11 +0000 (UTC)
+        id S233632AbhDZHjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD4AE613D2;
+        Mon, 26 Apr 2021 07:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422752;
-        bh=NXGoH78Kp2eo148446i7uboIojbe33UGTo54o2XgmwE=;
+        s=korg; t=1619422703;
+        bh=dQOG0laoapLFxO2rFa+JWZVS/IKfrplnybk3BUCUjbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jaeWgMWjvT0GHYnckXGIJAkUL2lJumAYH0msuSBUWrzsu9f2f2y5AiDaOfgRuR19+
-         0EznC5bkYLPnIs/GH1lK9zlWE7Ai0jQE2fI7lPvwO2dUieN72sutuzqMKY6xHwA0Ed
-         G+j7SL7Ki4/+wdjfWyTWEEKrSCPywuZ0L7sbBHOI=
+        b=AOxL6PZmYsQi7xofhzvsIARGtU2MHzgBMnqSBuYf9OeZbqL2g6Vig6V8x/+bBngB4
+         Kcqa1mJvS50fTUBG3sY5iYXOBj3Ud+EHsAbB2++p0lI8Vxk4lsEfM/gHOnsRoIHOXq
+         GRAXAPHJs+QhPL16M+srhdWXn/gohehuVjVHjTZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org, Ali Saidi <alisaidi@amazon.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/36] perf/x86/intel/uncore: Remove uncore extra PCI dev HSWEP_PCI_PCU_3
+Subject: [PATCH 5.4 05/20] locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
 Date:   Mon, 26 Apr 2021 09:29:56 +0200
-Message-Id: <20210426072819.275725234@linuxfoundation.org>
+Message-Id: <20210426072816.857926428@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,157 +43,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Ali Saidi <alisaidi@amazon.com>
 
-[ Upstream commit 9d480158ee86ad606d3a8baaf81e6b71acbfd7d5 ]
+[ Upstream commit 84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896 ]
 
-There may be a kernel panic on the Haswell server and the Broadwell
-server, if the snbep_pci2phy_map_init() return error.
+While this code is executed with the wait_lock held, a reader can
+acquire the lock without holding wait_lock.  The writer side loops
+checking the value with the atomic_cond_read_acquire(), but only truly
+acquires the lock when the compare-and-exchange is completed
+successfully which isn’t ordered. This exposes the window between the
+acquire and the cmpxchg to an A-B-A problem which allows reads
+following the lock acquisition to observe values speculatively before
+the write lock is truly acquired.
 
-The uncore_extra_pci_dev[HSWEP_PCI_PCU_3] is used in the cpu_init() to
-detect the existence of the SBOX, which is a MSR type of PMON unit.
-The uncore_extra_pci_dev is allocated in the uncore_pci_init(). If the
-snbep_pci2phy_map_init() returns error, perf doesn't initialize the
-PCI type of the PMON units, so the uncore_extra_pci_dev will not be
-allocated. But perf may continue initializing the MSR type of PMON
-units. A null dereference kernel panic will be triggered.
+We've seen a problem in epoll where the reader does a xchg while
+holding the read lock, but the writer can see a value change out from
+under it.
 
-The sockets in a Haswell server or a Broadwell server are identical.
-Only need to detect the existence of the SBOX once.
-Current perf probes all available PCU devices and stores them into the
-uncore_extra_pci_dev. It's unnecessary.
-Use the pci_get_device() to replace the uncore_extra_pci_dev. Only
-detect the existence of the SBOX on the first available PCU device once.
+  Writer                                | Reader
+  --------------------------------------------------------------------------------
+  ep_scan_ready_list()                  |
+  |- write_lock_irq()                   |
+      |- queued_write_lock_slowpath()   |
+	|- atomic_cond_read_acquire()   |
+				        | read_lock_irqsave(&ep->lock, flags);
+     --> (observes value before unlock) |  chain_epi_lockless()
+     |                                  |    epi->next = xchg(&ep->ovflist, epi);
+     |                                  | read_unlock_irqrestore(&ep->lock, flags);
+     |                                  |
+     |     atomic_cmpxchg_relaxed()     |
+     |-- READ_ONCE(ep->ovflist);        |
 
-Factor out hswep_has_limit_sbox(), since the Haswell server and the
-Broadwell server uses the same way to detect the existence of the SBOX.
+A core can order the read of the ovflist ahead of the
+atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
+semantics addresses this issue at which point the atomic_cond_read can
+be switched to use relaxed semantics.
 
-Add some macros to replace the magic number.
-
-Fixes: 5306c31c5733 ("perf/x86/uncore/hsw-ep: Handle systems with only two SBOXes")
-Reported-by: Steve Wahl <steve.wahl@hpe.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
+Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+[peterz: use try_cmpxchg()]
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Steve Wahl <steve.wahl@hpe.com>
-Link: https://lkml.kernel.org/r/1618521764-100923-1-git-send-email-kan.liang@linux.intel.com
+Reviewed-by: Steve Capper <steve.capper@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Tested-by: Steve Capper <steve.capper@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 61 ++++++++++++----------------
- 1 file changed, 26 insertions(+), 35 deletions(-)
+ kernel/locking/qrwlock.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 7bdb1821215d..3112186a4f4b 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -1159,7 +1159,6 @@ enum {
- 	SNBEP_PCI_QPI_PORT0_FILTER,
- 	SNBEP_PCI_QPI_PORT1_FILTER,
- 	BDX_PCI_QPI_PORT2_FILTER,
--	HSWEP_PCI_PCU_3,
- };
- 
- static int snbep_qpi_hw_config(struct intel_uncore_box *box, struct perf_event *event)
-@@ -2816,22 +2815,33 @@ static struct intel_uncore_type *hswep_msr_uncores[] = {
- 	NULL,
- };
- 
--void hswep_uncore_cpu_init(void)
-+#define HSWEP_PCU_DID			0x2fc0
-+#define HSWEP_PCU_CAPID4_OFFET		0x94
-+#define hswep_get_chop(_cap)		(((_cap) >> 6) & 0x3)
-+
-+static bool hswep_has_limit_sbox(unsigned int device)
+diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+index fe9ca92faa2a..909b0bf22a1e 100644
+--- a/kernel/locking/qrwlock.c
++++ b/kernel/locking/qrwlock.c
+@@ -61,6 +61,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
+  */
+ void queued_write_lock_slowpath(struct qrwlock *lock)
  {
--	int pkg = boot_cpu_data.logical_proc_id;
-+	struct pci_dev *dev = pci_get_device(PCI_VENDOR_ID_INTEL, device, NULL);
-+	u32 capid4;
++	int cnts;
 +
-+	if (!dev)
-+		return false;
-+
-+	pci_read_config_dword(dev, HSWEP_PCU_CAPID4_OFFET, &capid4);
-+	if (!hswep_get_chop(capid4))
-+		return true;
+ 	/* Put the writer into the wait queue */
+ 	arch_spin_lock(&lock->wait_lock);
  
-+	return false;
-+}
-+
-+void hswep_uncore_cpu_init(void)
-+{
- 	if (hswep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
- 		hswep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
+@@ -74,9 +76,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
  
- 	/* Detect 6-8 core systems with only two SBOXes */
--	if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
--		u32 capid4;
--
--		pci_read_config_dword(uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3],
--				      0x94, &capid4);
--		if (((capid4 >> 6) & 0x3) == 0)
--			hswep_uncore_sbox.num_boxes = 2;
--	}
-+	if (hswep_has_limit_sbox(HSWEP_PCU_DID))
-+		hswep_uncore_sbox.num_boxes = 2;
- 
- 	uncore_msr_uncores = hswep_msr_uncores;
+ 	/* When no more readers or writers, set the locked flag */
+ 	do {
+-		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+-	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+-					_QW_LOCKED) != _QW_WAITING);
++		cnts = atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
++	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
+ unlock:
+ 	arch_spin_unlock(&lock->wait_lock);
  }
-@@ -3094,11 +3104,6 @@ static const struct pci_device_id hswep_uncore_pci_ids[] = {
- 		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
- 						   SNBEP_PCI_QPI_PORT1_FILTER),
- 	},
--	{ /* PCU.3 (for Capability registers) */
--		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2fc0),
--		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
--						   HSWEP_PCI_PCU_3),
--	},
- 	{ /* end: all zeroes */ }
- };
- 
-@@ -3190,27 +3195,18 @@ static struct event_constraint bdx_uncore_pcu_constraints[] = {
- 	EVENT_CONSTRAINT_END
- };
- 
-+#define BDX_PCU_DID			0x6fc0
-+
- void bdx_uncore_cpu_init(void)
- {
--	int pkg = topology_phys_to_logical_pkg(boot_cpu_data.phys_proc_id);
--
- 	if (bdx_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
- 		bdx_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
- 	uncore_msr_uncores = bdx_msr_uncores;
- 
--	/* BDX-DE doesn't have SBOX */
--	if (boot_cpu_data.x86_model == 86) {
--		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
- 	/* Detect systems with no SBOXes */
--	} else if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
--		struct pci_dev *pdev;
--		u32 capid4;
--
--		pdev = uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3];
--		pci_read_config_dword(pdev, 0x94, &capid4);
--		if (((capid4 >> 6) & 0x3) == 0)
--			bdx_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
--	}
-+	if ((boot_cpu_data.x86_model == 86) || hswep_has_limit_sbox(BDX_PCU_DID))
-+		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
-+
- 	hswep_uncore_pcu.constraints = bdx_uncore_pcu_constraints;
- }
- 
-@@ -3431,11 +3427,6 @@ static const struct pci_device_id bdx_uncore_pci_ids[] = {
- 		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
- 						   BDX_PCI_QPI_PORT2_FILTER),
- 	},
--	{ /* PCU.3 (for Capability registers) */
--		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x6fc0),
--		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
--						   HSWEP_PCI_PCU_3),
--	},
- 	{ /* end: all zeroes */ }
- };
- 
 -- 
 2.30.2
 
