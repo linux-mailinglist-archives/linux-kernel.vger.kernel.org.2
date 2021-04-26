@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE3736B7DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C3836B7DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235494AbhDZRP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S235619AbhDZRPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbhDZRPW (ORCPT
+        with ESMTP id S235497AbhDZRPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:15:22 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3677C061574;
-        Mon, 26 Apr 2021 10:14:39 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb4ob-008SGJ-Lx; Mon, 26 Apr 2021 17:14:33 +0000
-Date:   Mon, 26 Apr 2021 17:14:33 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iov_iter: Four fixes for ITER_XARRAY
-Message-ID: <YIb0+b7VJJrrofCB@zeniv-ca.linux.org.uk>
-References: <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
- <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
- <3545034.1619392490@warthog.procyon.org.uk>
+        Mon, 26 Apr 2021 13:15:35 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D62C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:14:53 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id gv2so18294030qvb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=GCAPi9gnTpy/8eag0I4x1AXUBjLbBBwgQYNygxMuoO4=;
+        b=JrAD5UkOrA3X0n82t+2R9ytotkGPQEtjGt3hV4uQSMyAXuoD296DrG4fHyjwR8j2lm
+         1l3YG588tbIBunoEB/hq4jTAj+9HJl9o61zX+wFXmYqjc7vk+zAVc+8Av20N7KnS7xTx
+         yvURegVw4tRVL3AA3lJxVpWS0/XUW0txzsM8KSjQ45hJsE+XZr1DSGxbeoA0UYhbYL+F
+         L3yJbJXw0Q6bPB1A1cgLzt5yCsOMVT7hg4XJssfEM967j3tRMGgxWpMOgbP4YNx2g633
+         3+tUIie57siT5qci4nrzunJvO+qQ+FDBwKCWfZu/tTBS9C2KJiszgsi8LFRNglx0h0yY
+         qUtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=GCAPi9gnTpy/8eag0I4x1AXUBjLbBBwgQYNygxMuoO4=;
+        b=QBl3MzFbdXvAbCs+cO47tz63XDRiBncuwFNbbh1SMpwnhSfYwI4tF1IDbMsfo+vgkr
+         BbdwZzqOyjmOtuEm/YBMGIFnY53qVKgNlQn846ECEUst4DpUVQSz1QpdZeR1SM7HpLuD
+         8Rd8+p6DbqWTFr2HKd3Io5Lpc0tZnX599LN0FnUgr5UZq3L99JFVE6Tdu8q5w3Zy1/vz
+         s7JkmOHyK75PKkMMHDBRgsEc8vjtKjPHEJ654NUZGglJWSJUS2T8OvXpG0Zbu5WR3Cgz
+         JGfcSn7PtnWI0cl1jb4lgJWAhFhWOxmoIId3R57rHMTxL+xaAHGOLw6DjNWlnUs544So
+         oWSw==
+X-Gm-Message-State: AOAM532uyLd5I2vveOH//YN5DfjViNdMCNtRFPiIJ8UHA22rHv2hIyIH
+        OgoZ0+isfSlqjPQFz5s8pWE=
+X-Google-Smtp-Source: ABdhPJyJTphILptsxX6CDcZ/C+LxSFiNDQ5oxTcc2pBYOVcGU91lMTL++lUrxjY2LN0cpxLsWii/Vg==
+X-Received: by 2002:a05:6214:268f:: with SMTP id gm15mr18723648qvb.62.1619457292919;
+        Mon, 26 Apr 2021 10:14:52 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id i127sm580873qke.71.2021.04.26.10.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 10:14:52 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 10:14:51 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     yury.norov@gmail.com
+Subject: wrong patch order
+Message-ID: <20210426171451.GA133505@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3545034.1619392490@warthog.procyon.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 12:14:50AM +0100, David Howells wrote:
-> Hi Al,
-> 
-> I think this patch should include all the fixes necessary.  I could merge
-> it in, but I think it might be better to tag it on the end as an additional
-> patch.
+Hi Andrew,
 
-Looks sane, but I wonder if it would've been better to deal with this
+In the next-20210426 I see the commit 7c3c0a5796a8 "h8300:
+rearrange headers inclusion order in asm/bitops" is applied after
+a54cbe7fa597 "lib: add fast path for find_next_*_bit()".
 
-> @@ -791,6 +791,8 @@ size_t _copy_mc_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
->  			curr_addr = (unsigned long) from;
->  			bytes = curr_addr - s_addr - rem;
->  			rcu_read_unlock();
-> +			i->iov_offset += bytes;
-> +			i->count -= bytes;
->  			return bytes;
->  		}
->  		})
+This may cause cause build failure for h8300 while bisecting.
 
-by having your iterator check the return value of X callback and, having
-decremented .bv_len by return value, broke out of the loop.
+Can you please change order of the patches so that 7c3c0a5796a8 would
+follow 68b80f24c2f6 "arch: rearrange headers inclusion order in
+asm/bitops for m68k and sh"? It's also possible to merge 7c3c0a5796a8
+and 68b80f24c2f6 because they address the same issue.
 
-       __label__ __bugger_off;
-
-       xas_for_each(&xas, head, ULONG_MAX) {                           \
-               if (xas_retry(&xas, head))                              \
-                       continue;                                       \
-               if (WARN_ON(xa_is_value(head)))                         \
-                       break;                                          \
-               if (WARN_ON(PageHuge(head)))                            \
-                       break;                                          \
-               for (j = (head->index < index) ? index - head->index : 0; \
-                    j < thp_nr_pages(head); j++) {                     \
-                       __v.bv_page = head + j;                         \
-
-			size_t left;
-
-                       offset = (i->xarray_start + skip) & ~PAGE_MASK; \
-                       seg = PAGE_SIZE - offset;                       \
-                       __v.bv_offset = offset;                         \
-                       __v.bv_len = min(n, seg);                       \
-
-                       left = (STEP);
-		       __v.bv_len -= left;
-
-                       n -= __v.bv_len;                                \
-                       skip += __v.bv_len;                             \
-
-		       if (!n || left)
-				goto __bugger_off;
-
-               }                                                       \
-               if (n == 0)                                             \
-                       break;                                          \
-       }                                                       \
-
-__bugger_off:
-
-
-Then rename iterate_and_advance() to __iterate_and_advance() and have
-#define iterate_and_advance(....., X) __iterate_and_advance(....., ((void)(X),0))
-with iterate_all_kinds() using iterate_xarray(....,((void)(X),0)
-
-Then _copy_mc_to_iter() could use __iterate_and_advance(), getting rid of
-the need of doing anything special in case of short copy.  OTOH, I can do
-that myself in a followup - not a problem.
+Thanks,
+Yury
