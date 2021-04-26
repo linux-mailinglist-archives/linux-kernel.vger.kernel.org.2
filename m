@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2ED36BA84
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED5536BA97
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241878AbhDZUCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241784AbhDZUBk (ORCPT
+        id S241810AbhDZUL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:11:59 -0400
+Received: from mailproxy01.manitu.net ([217.11.48.65]:51468 "EHLO
+        mailproxy01.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239591AbhDZUL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:01:40 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50E7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:00:56 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id h8so27078487edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AM0fccZ1AwBF12uWrMCL9HsNLQWbMQpNVOxxiq8KOiw=;
-        b=DDipI45QBFz2H8oTFqxGl+X7pU2DH5fwDU12H6PwnXQVPlR/C2RZIUwuyYASOrxXVg
-         G78QBdS4bBFvEkfgLHLPWJ55jc11FWQcEzHm8U7b2bzD/8mgn2zsJRgWYW/iuBr+QIed
-         aF6kP/EWIqEFwaytN93meLcqZjU2GBh/1ll03sprHBd6VH0WZ8Qe4NWV7+/TI3RQJ7HG
-         Va8h3/bLAfS3WZbJ0ACn9nGXrxtDZSheU6tZfDIeME6gALwDpzflWa3tCIg5CJuYlCi0
-         t24nxzIMAKOoICy8PP073QB/4nMR85/mnRvHsjiOGtTc0dgaZBRSc1NgHkMvIEeLy7rl
-         9X1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AM0fccZ1AwBF12uWrMCL9HsNLQWbMQpNVOxxiq8KOiw=;
-        b=iB5Bm4ZdTQXAXq3IN0eoD5Fm99TVGkwFbvyqIWW5KiUSUFBanhtlkReq7p2P6xR5iY
-         DRCICMvxu2gm5FmUKQbMn9vlA9Bgu1Gur2Q3AQv7d0QH8m7H9WQdjFyUImC0nYpvW0ZF
-         GGRGZAb6gzWcT8gOxrmXbU1CxqlxnnYgNwQbMEq7I33sOi9FVLw8wA+Wxro1kxuK7TFF
-         B7sJqyn9lBSU2KL014rIIjWwh9aPpcjDDU37CzdKgCabPSdVl6BJ4t/jcaK4BMsWhWKP
-         q7zrzpFBiB3f3SNBkLvDqG4MyPwaf8mrUM9rqa2jaiL/osMbxO0DE32vPcisk7IncZPd
-         EsNQ==
-X-Gm-Message-State: AOAM532rqNMB8Owf+WxXMD5Fcq6IeUyLjOQ3dhQKiisfYH0Xf95JbKg0
-        fhJkAz8ESGcoHTL4IJyAO9g=
-X-Google-Smtp-Source: ABdhPJwq9ywcI7jiZMwF35d5rctluJLoPNYS85cSjoBq6DhVzqMHeSFbWtK8+m4/N8QNKeU8jB9qoA==
-X-Received: by 2002:a50:fd07:: with SMTP id i7mr418582eds.92.1619467255643;
-        Mon, 26 Apr 2021 13:00:55 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id me3sm3386590ejb.49.2021.04.26.13.00.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 13:00:55 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2] drm/drm_file.c: Define drm_send_event_helper() as 'static'
-Date:   Mon, 26 Apr 2021 22:00:51 +0200
-Message-Id: <20210426200051.11530-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 26 Apr 2021 16:11:57 -0400
+X-Greylist: delayed 373 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Apr 2021 16:11:57 EDT
+Received: from [IPv6:2003:f7:f70f:8e00:7457:87a:58db:74be] (p200300f7f70f8e007457087a58db74be.dip0.t-ipconnect.de [IPv6:2003:f7:f70f:8e00:7457:87a:58db:74be])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: alexander@sosna.de)
+        by mailproxy01.manitu.net (Postfix) with ESMTPSA id C8655126002E;
+        Mon, 26 Apr 2021 22:04:56 +0200 (CEST)
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+From:   Alexander Sosna <alexander@sosna.de>
+Subject: [PATCH] Prevent OOM casualties by enforcing memcg limits
+Message-ID: <ea6db5cc-f862-7c4b-d872-acb29c2d8193@sosna.de>
+Date:   Mon, 26 Apr 2021 22:04:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_send_event_helper() has not prototype, it has internal linkage and
-therefore it should be defined with storage class 'static'.
+Before this commit memory cgroup limits were not enforced during
+allocation.  If a process within a cgroup tries to allocates more
+memory than allowed, the kernel will not prevent the allocation even if
+OVERCOMMIT_NEVER is set.  Than the OOM killer is activated to kill
+processes in the corresponding cgroup.  This behavior is not to be expected
+when setting OVERCOMMIT_NEVER (vm.overcommit_memory = 2) and it is a huge
+problem for applications assuming that the kernel will deny an allocation
+if not enough memory is available, like PostgreSQL.  To prevent this a
+check is implemented to not allow a process to allocate more memory than
+limited by it's cgroup.  This means a process will not be killed while
+accessing pages but will receive errors on memory allocation as
+appropriate.  This gives programs a chance to handle memory allocation
+failures gracefully instead of being reaped.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Signed-off-by: Alexander Sosna <alexander@sosna.de>
 
-Changes from v1: As suggested by Daniel Vetter, removed unnecessary
-kernel-doc comments.
-
- drivers/gpu/drm/drm_file.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-index 7efbccffc2ea..a32e0d4f3604 100644
---- a/drivers/gpu/drm/drm_file.c
-+++ b/drivers/gpu/drm/drm_file.c
-@@ -774,19 +774,15 @@ void drm_event_cancel_free(struct drm_device *dev,
- }
- EXPORT_SYMBOL(drm_event_cancel_free);
- 
--/**
-+/*
-  * drm_send_event_helper - send DRM event to file descriptor
-- * @dev: DRM device
-- * @e: DRM event to deliver
-- * @timestamp: timestamp to set for the fence event in kernel's CLOCK_MONOTONIC
-- * time domain
+diff --git a/mm/util.c b/mm/util.c
+index a8bf17f18a81..c84b83c532c6 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -853,6 +853,7 @@ EXPORT_SYMBOL_GPL(vm_memory_committed);
   *
-- * This helper function sends the event @e, initialized with
-+ * This helper function sends the event e, initialized with
-  * drm_event_reserve_init(), to its associated userspace DRM file.
-  * The timestamp variant of dma_fence_signal is used when the caller
-  * sends a valid timestamp.
-  */
--void drm_send_event_helper(struct drm_device *dev,
-+static void drm_send_event_helper(struct drm_device *dev,
- 			   struct drm_pending_event *e, ktime_t timestamp)
- {
- 	assert_spin_locked(&dev->event_lock);
--- 
-2.31.1
+  * Strict overcommit modes added 2002 Feb 26 by Alan Cox.
+  * Additional code 2002 Jul 20 by Robert Love.
++ * Code to enforce memory cgroup limits added 2021 by Alexander Sosna.
+  *
+  * cap_sys_admin is 1 if the process has admin privileges, 0 otherwise.
+  *
+@@ -891,6 +892,34 @@ int __vm_enough_memory(struct mm_struct *mm, long
+pages, int cap_sys_admin)
+ 		long reserve = sysctl_user_reserve_kbytes >> (PAGE_SHIFT - 10);
 
+ 		allowed -= min_t(long, mm->total_vm / 32, reserve);
++
++#ifdef CONFIG_MEMCG
++		/*
++		 * If we are in a memory cgroup we also evaluate if the cgroup
++		 * has enough memory to allocate a new virtual mapping.
++		 * This is how we can keep processes from exceeding their
++		 * limits and also prevent that the OOM killer must be
++		 * awakened.  This gives programs a chance to handle memory
++		 * allocation failures gracefully and not being reaped.
++		 * In the current version mem_cgroup_get_max() is used which
++		 * allows the processes to exceeded their memory limits if
++		 * enough SWAP is available.  If this is not intended we could
++		 * use READ_ONCE(memcg->memory.max) instead.
++		 *
++		 * This code is only reached if sysctl_overcommit_memory equals
++		 * OVERCOMMIT_NEVER, both other options are handled above.
++		 */
++		{
++			struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
++
++			if (memcg) {
++				long available = mem_cgroup_get_max(memcg)
++						- mem_cgroup_size(memcg);
++
++				allowed = min_t(long, available, allowed);
++			}
++		}
++#endif
+ 	}
+
+ 	if (percpu_counter_read_positive(&vm_committed_as) < allowed)
