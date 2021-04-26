@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCC836B918
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DC436B923
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235587AbhDZShW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:37:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234819AbhDZShE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:37:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 581C6613C9;
-        Mon, 26 Apr 2021 18:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619462182;
-        bh=1c6J+eMPRQqONY19TT9NzKWdXyxllZFWv0onM/b3eEA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=TFr7kF3wTmrJ/GRKllPIkIPjgrLDDcLtu5ontUdGZ3HO2XTRpYgaVF2uuJsz6eQq9
-         vO/XdeZqRzBNSbyC4stN7hHBLKK88lKbzG38HRX8HQ96H6+8qSO7DF7bW+iQoQgR4S
-         VBmECaLrA0Zr62ZsUa7gxGR8ROGL+PmN7GJB8QsUmxgiuUv1LOnyhjaUU7yRhYTqO+
-         Xi7TPe5HNYM70vNw2/uMEMDq5PFiH2WGPY8uSkMkX3D50EvZnlKgIQqNanEvgubNmd
-         JutX3HYGiC1nkOB5VF5ygMBNy5VKCjx7rRxKqsqEJIZ3WANzIZa9miST/c2oaudOAG
-         87c287aTnJUWQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 52C9E609B0;
-        Mon, 26 Apr 2021 18:36:22 +0000 (UTC)
-Subject: Re: [GIT PULL] USB/Thunderbolt driver updates for 5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIa5GtU/7FpKPUAN@kroah.com>
-References: <YIa5GtU/7FpKPUAN@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YIa5GtU/7FpKPUAN@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.13-rc1
-X-PR-Tracked-Commit-Id: caa93d9bd2d7ca7ffe5a23df9f003b81721c8e1b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ef1244124349fea36e4a7e260ecaf156b6b6b22a
-Message-Id: <161946218233.19244.12805459436155643190.pr-tracker-bot@kernel.org>
-Date:   Mon, 26 Apr 2021 18:36:22 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        id S235927AbhDZSkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238102AbhDZSjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 14:39:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648CAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=67Creo4gLYBxQ5qf1EsBIy56GvQMCAKhgqOjplxQ+n0=; b=tNMMxKClPJhYnpSnH/C/7EV1OS
+        Jq+zn7FW3Z2pImBVHwcPA1WtVjIgmxU1+Wh/j5ra78tTMpOJYoOgELlO9W1O3lPi18GUrrt36sDdU
+        gkuUtz6+sMxzL9ZOhaBstRpvMJB+3SHEAt/6nI6kxNFpjqCLJa2GlI3YV9qUCyZR6KbE06xvkSTPL
+        4bI1PKKmJr18/NHLP+4sBidxe2yGvv3BBtDCZHAGdXuILkG9MBFAf+sacC+kZ5iIKn279cW2yeoFb
+        Tt74WyT7+KkkHoTCT14HZ+HGncWqnRP3zV1gDARCzmfdBw8oKCF2u8YrmJ/gTwDHAovcd+xPmeTQm
+        Js9mEdtQ==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=casper.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lb67I-005xzJ-7h; Mon, 26 Apr 2021 18:37:58 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH -next RESEND] regulator: BD71815: select REGULATOR_ROHM to fix link errors
+Date:   Mon, 26 Apr 2021 11:37:52 -0700
+Message-Id: <20210426183752.19089-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 14:59:06 +0200:
+With REGULATOR_ROHM there are linker errors:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.13-rc1
+ld: drivers/regulator/bd71815-regulator.o: in function `set_hw_dvs_levels':
+bd71815-regulator.c:(.text+0xbb): undefined reference to `rohm_regulator_set_dvs_levels'
+ld: drivers/regulator/bd71815-regulator.o: in function `buck12_set_hw_dvs_levels':
+bd71815-regulator.c:(.text+0x33e): undefined reference to `rohm_regulator_set_dvs_levels'
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ef1244124349fea36e4a7e260ecaf156b6b6b22a
+Fixes: 1aad39001e851 ("regulator: Support ROHM BD71815 regulators")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+---
+Sorry about the Resend. I'm having some email problems.
 
-Thank you!
+ drivers/regulator/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--- linux-next-20210426.orig/drivers/regulator/Kconfig
++++ linux-next-20210426/drivers/regulator/Kconfig
+@@ -207,6 +207,7 @@ config REGULATOR_BD70528
+ config REGULATOR_BD71815
+ 	tristate "ROHM BD71815 Power Regulator"
+ 	depends on MFD_ROHM_BD71828
++	select REGULATOR_ROHM
+ 	help
+ 	  This driver supports voltage regulators on ROHM BD71815 PMIC.
+ 	  This will enable support for the software controllable buck
