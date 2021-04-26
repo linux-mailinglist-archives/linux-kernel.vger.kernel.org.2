@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A86536B966
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B8236B971
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239277AbhDZSwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:52:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22205 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239257AbhDZSwe (ORCPT
+        id S236484AbhDZSzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240656AbhDZSy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:52:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619463112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HfK9lfoYc+03KHKdRUvmbZAZpf80F/z+G4/xc8L1eD8=;
-        b=F7B3bs2ZxniFFcrCPI6MSgxCrYKQh+CHOn4VsCNwzB30bMBL2ditGS2HfbniVBKbMBWT4y
-        JG+7FAdqFqkJqjvm6f/xx/M2WyDrCDngX9r+9R4lMQOdNITK6FRVFsMgeeCz/LpfOhcxcv
-        gmI011e3fAL+iYufF/B7MhOwm9zTRBk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-p6Bc3WkVPaSfWewEvY2tTw-1; Mon, 26 Apr 2021 14:51:50 -0400
-X-MC-Unique: p6Bc3WkVPaSfWewEvY2tTw-1
-Received: by mail-qk1-f198.google.com with SMTP id e4-20020a37b5040000b02902df9a0070efso21344395qkf.18
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:51:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HfK9lfoYc+03KHKdRUvmbZAZpf80F/z+G4/xc8L1eD8=;
-        b=f8usDYbN4cO+j2cEem/BUlTCD+jpAzF+8t2C1QZCWoHQH9ad7zi0cbyzWR8futBtZ2
-         Mg+IW9uvpmYCQc6OYQUei6tVb70qR2A+wgGac7VyMFXkjH1zaR0+AmpSnDiND48pn6H2
-         HRZhpgD6slPpLg0j9fb6GegdWQeCuIo2A/cyaWnFaLwPt6MeUooKJAzU1+FKmIizN1/6
-         Dqa373gCbxDGvds2dxrJBjd567e+/2pkN8UiXF8U3Zlr/5lxn2S4/PfZSnTEqaGXiQqf
-         5fk7EOuzp2Yw6NHxq2qpabPq9BE64mWGJ13zJSyq2PU/KuyfDkJNhT1V6RDFYCVipZAV
-         Z0ug==
-X-Gm-Message-State: AOAM531dRvnhVf/gHS0vmOVnGNr7UmO3d3guf6nxD7fsMntEuD7YU1bp
-        7rImH4Mw/TuWUKbxpQx/aOsTwIuR0b+CXPXfj2DELlCGumZzUlETljINOBC/Kif/qwjjNT3gD6f
-        cea6Kbjb2NPSTDWEwFOaB4kAN
-X-Received: by 2002:a37:8181:: with SMTP id c123mr19150369qkd.287.1619463110180;
-        Mon, 26 Apr 2021 11:51:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzS8X/VzurSrpDlNhl+L1bACm1B5oJnNe8qn+lgbdD5zkt3ZBvGh0XvLtQ/7lrv2aslazYIJg==
-X-Received: by 2002:a37:8181:: with SMTP id c123mr19150347qkd.287.1619463109942;
-        Mon, 26 Apr 2021 11:51:49 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id e13sm13047982qtm.35.2021.04.26.11.51.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 11:51:49 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] locking/qrwlock: queued_write_lock_slowpath() cleanup
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Steve Capper <steve.capper@arm.com>
-References: <20210426185017.19815-1-longman@redhat.com>
-Message-ID: <e603e511-6d58-38ea-d936-ed2f4efafc41@redhat.com>
-Date:   Mon, 26 Apr 2021 14:51:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 26 Apr 2021 14:54:58 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7754AC061574;
+        Mon, 26 Apr 2021 11:54:16 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lb6N2-008TLy-M3; Mon, 26 Apr 2021 18:54:12 +0000
+Date:   Mon, 26 Apr 2021 18:54:12 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
+Message-ID: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk>
+References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+ <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210426185017.19815-1-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/21 2:50 PM, Waiman Long wrote:
-> Make the code more readable by replacing the atomic_cmpxchg_acquire()
-> by an equivalent atomic_try_cmpxchg_acquire() and change atomic_add()
-> to atomic_or().
->
-> For architectures that use qrwlock, I do not find one that has an
-> atomic_add() defined but not an atomic_or().  I guess it should be fine
-> by changing atomic_add() to atomic_or().
->
-> Note that the previous use of atomic_add() isn't wrong as only one
-> writer that is the wait_lock owner can set the waiting flag and the
-> flag will be cleared later on when acquiring the write lock.
->
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   kernel/locking/qrwlock.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-> index b94f3831e963..ec36b73f4733 100644
-> --- a/kernel/locking/qrwlock.c
-> +++ b/kernel/locking/qrwlock.c
-> @@ -66,12 +66,12 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
->   	arch_spin_lock(&lock->wait_lock);
->   
->   	/* Try to acquire the lock directly if no reader is present */
-> -	if (!atomic_read(&lock->cnts) &&
-> -	    (atomic_cmpxchg_acquire(&lock->cnts, 0, _QW_LOCKED) == 0))
-> +	if (!(cnts = atomic_read(&lock->cnts)) &&
-> +	    atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED))
->   		goto unlock;
->   
->   	/* Set the waiting flag to notify readers that a writer is pending */
-> -	atomic_add(_QW_WAITING, &lock->cnts);
-> +	atomic_or(_QW_WAITING, &lock->cnts);
->   
->   	/* When no more readers or writers, set the locked flag */
->   	do {
+On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
+> -#define iterate_all_kinds(i, n, v, I, B, K) {			\
+> +#define iterate_xarray(i, n, __v, skip, STEP) {		\
+> +	struct page *head = NULL;				\
+> +	size_t wanted = n, seg, offset;				\
+> +	loff_t start = i->xarray_start + skip;			\
+> +	pgoff_t index = start >> PAGE_SHIFT;			\
+> +	int j;							\
+> +								\
+> +	XA_STATE(xas, i->xarray, index);			\
+> +								\
+> +	rcu_read_lock();						\
+> +	xas_for_each(&xas, head, ULONG_MAX) {				\
+> +		if (xas_retry(&xas, head))				\
+> +			continue;					\
 
-Sorry, I missed the "v2" in the title.
+OK, now I'm really confused; what's to guarantee that restart will not have
+you hit the same entry more than once?  STEP might be e.g.
 
-Cheers,
-Longman
+		memcpy_to_page(v.bv_page, v.bv_offset,
+			       (from += v.bv_len) - v.bv_len, v.bv_len)
 
+which is clearly not idempotent - from gets incremented, after all.
+What am I missing here?
+
+> +		if (WARN_ON(xa_is_value(head)))				\
+> +			break;						\
+> +		if (WARN_ON(PageHuge(head)))				\
+> +			break;						\
+> +		for (j = (head->index < index) ? index - head->index : 0; \
+> +		     j < thp_nr_pages(head); j++) {			\
+> +			__v.bv_page = head + j;				\
+> +			offset = (i->xarray_start + skip) & ~PAGE_MASK;	\
+> +			seg = PAGE_SIZE - offset;			\
+> +			__v.bv_offset = offset;				\
+> +			__v.bv_len = min(n, seg);			\
+> +			(void)(STEP);					\
+> +			n -= __v.bv_len;				\
+> +			skip += __v.bv_len;				\
+> +			if (n == 0)					\
+> +				break;					\
+> +		}							\
+> +		if (n == 0)						\
+> +			break;						\
+> +	}							\
+> +	rcu_read_unlock();					\
+> +	n = wanted - n;						\
+> +}
