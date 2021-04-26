@@ -2,94 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E7F36B1D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AE836B1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhDZKqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:46:47 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:52756 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232422AbhDZKqp (ORCPT
+        id S233072AbhDZKu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:50:59 -0400
+Received: from smtpout1.mo3004.mail-out.ovh.net ([79.137.123.219]:54701 "EHLO
+        smtpout1.mo3004.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232422AbhDZKuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:46:45 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QAgMBq030924;
-        Mon, 26 Apr 2021 12:45:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=hcCxZtYxYxv8vj0tBPhmpxbvzi6xB/6A326+3anLC9U=;
- b=V9oGwPWe5yDcuCLDqRQQkAZOHnrKMoPcCX7Er+FGmB/izQST2yjk7IHn/O6UmXCqIZQj
- 1QufD9tmkCbxswZuWeb3aL/CzitjVbnIfNB5B++BZv+XJUR8HgqQJLYdZzGWVhRn4/Q3
- jfQqL66Rd2rd81NjOcsEc6w22+gESjJhfLIWdPV7Gmxcx6h7SAceUF3OQJe/aU/mEvlt
- Y7iUvQu01NUA5+pYLSGTv7cbFRxQLruyw8AfNcpsKzWhKWLMIAHkT6i8JO2QpPL2hsiH
- SwxSEAWOVXJkS6YtOIt56MxQ/DCyn68HGYg/kewro3LoE3SxtbHT14CjG+VkQzH3z8Zy 6w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 385gb2b81h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 12:45:52 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3BB49100034;
-        Mon, 26 Apr 2021 12:45:52 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2A1C9243D3A;
-        Mon, 26 Apr 2021 12:45:52 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Apr 2021 12:45:51
- +0200
-From:   <patrice.chotard@foss.st.com>
-To:     <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <alexandre.torgue@foss.st.com>
-CC:     <mcoquelin.stm32@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>
-Subject: [PATCH 1/1] ARM: dts: stm32: Configure qspi's mdma transfer to block for stm32mp151
-Date:   Mon, 26 Apr 2021 12:45:36 +0200
-Message-ID: <20210426104536.29576-1-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 26 Apr 2021 06:50:55 -0400
+Received: from pro2.mail.ovh.net (unknown [10.109.156.180])
+        by mo3004.mail-out.ovh.net (Postfix) with ESMTPS id 36AE823D295;
+        Mon, 26 Apr 2021 10:50:12 +0000 (UTC)
+Received: from localhost (89.70.221.198) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Apr
+ 2021 12:50:11 +0200
+Date:   Mon, 26 Apr 2021 12:46:06 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Lars-Peter Clausen <lars@metafoo.de>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH 2/3] iio: sps30: add support for serial interface
+Message-ID: <YIaZ7rfniLVgMHMh@arch>
+References: <20210425135546.57343-1-tomasz.duszynski@octakon.com>
+ <20210425135546.57343-3-tomasz.duszynski@octakon.com>
+ <6b00dc0d-f678-07e2-96be-35eeca90d799@metafoo.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-26_03:2021-04-26,2021-04-26 signatures=0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <6b00dc0d-f678-07e2-96be-35eeca90d799@metafoo.de>
+X-Originating-IP: [89.70.221.198]
+X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 11161045780033068116
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddukedgfeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjihesthdtredttddtjeenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucggtffrrghtthgvrhhnpedtheevtefhffduteejfedtkeeuheejgeejvdetfffgveekffefgeffueeghefgjeenucfkpheptddrtddrtddrtddpkeelrdejtddrvddvuddrudelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehrohgshhdoughtsehkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Sun, Apr 25, 2021 at 05:52:47PM +0200, Lars-Peter Clausen wrote:
+> On 4/25/21 3:55 PM, Tomasz Duszynski wrote:
+> > [...]
+> >
+> > +struct sps30_serial_priv {
+> > +	struct completion new_frame;
+> > +	char buf[SPS30_SERIAL_MAX_BUF_SIZE];
+> The driver uses char, but the serdev API uses unsigned char. Just to avoid
+> any surprises I'd use unsigned char for all the buffers in the driver as
+> well.
 
-Configure qspi's mdma from buffer transfer (max 128 bytes) to
-block transfer (max 64K bytes).
+Sure, will use unsigned variant consistently then.
 
-mtd_speedtest shows that write throughtput increases :
-  - from 734 to 782 KiB/s (~6.5%) with s25fl512s SPI-NOR.
-  - from 4848 to 5319 KiB/s (~9.72%) with Micron SPI-NAND.
+> > +	int num;
+> > +	unsigned int chksum;
+> > +	bool escaped;
+> > +	bool done;
+> > +};
+> > +
+> > +static int sps30_serial_xfer(struct sps30_state *state, const char *buf, int size)
+> > +{
+> > +	struct serdev_device *serdev = to_serdev_device(state->dev);
+> > +	struct sps30_serial_priv *priv = state->priv;
+> > +	int ret;
+> > +
+> > +	priv->num = 0;
+> > +	priv->chksum = 0;
+> > +	priv->escaped = false;
+> > +	priv->done = false;
+> Hm... no locking with regards to the serdev callback. I guess the assumption
+> is that we'll never receive any data without explicitly requesting it.
 
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Correct, sensor shouldn't put anything on the bus without explicic
+request. Nonetheless I added some flag just in case.
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 4b8031782555..cb326c1e12bc 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1358,8 +1358,8 @@
- 			reg = <0x58003000 0x1000>, <0x70000000 0x10000000>;
- 			reg-names = "qspi", "qspi_mm";
- 			interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>;
--			dmas = <&mdma1 22 0x2 0x100002 0x0 0x0>,
--			       <&mdma1 22 0x2 0x100008 0x0 0x0>;
-+			dmas = <&mdma1 22 0x2 0x10100002 0x0 0x0>,
-+			       <&mdma1 22 0x2 0x10100008 0x0 0x0>;
- 			dma-names = "tx", "rx";
- 			clocks = <&rcc QSPI_K>;
- 			resets = <&rcc QSPI_R>;
--- 
-2.17.1
+> > +
+> > +	ret = serdev_device_write(serdev, buf, size, SPS30_SERIAL_TIMEOUT);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +	if (ret != size)
+> > +		return -EIO;
+> > +
+> > +	ret = wait_for_completion_interruptible_timeout(&priv->new_frame, SPS30_SERIAL_TIMEOUT);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +	if (!ret)
+> > +		return -ETIMEDOUT;
+> > +
+> > +	return 0;
+> > +}
+> > [...]
+> > +static bool sps30_serial_frame_valid(struct sps30_state *state, const char *buf)
+> > +{
+> > +	struct sps30_serial_priv *priv = state->priv;
+> > +
+> > +	if ((priv->num < SPS30_SERIAL_FRAME_MIN_SIZE) ||
+> > +	    (priv->num != SPS30_SERIAL_FRAME_MIN_SIZE +
+> > +	     priv->buf[SPS30_SERIAL_FRAME_MISO_LEN_OFFSET])) {
+> > +		dev_err(state->dev, "frame has invalid number of bytes\n");
+> > +		return false;
+> > +	}
+> > +
+> > +	if ((priv->buf[SPS30_SERIAL_FRAME_ADR_OFFSET] != buf[SPS30_SERIAL_FRAME_ADR_OFFSET]) ||
+> > +	    (priv->buf[SPS30_SERIAL_FRAME_CMD_OFFSET] != buf[SPS30_SERIAL_FRAME_CMD_OFFSET])) {
+> > +		dev_err(state->dev, "frame has wrong ADR and CMD bytes\n");
+> > +		return false;
+> > +	}
+> > +
+> > +	if (priv->buf[SPS30_SERIAL_FRAME_MISO_STATE_OFFSET]) {
+> > +		dev_err(state->dev, "frame with non-zero state received (0x%02x)\n",
+> > +			priv->buf[SPS30_SERIAL_FRAME_MISO_STATE_OFFSET]);
+> > +		//return false;
+> What's with the out commented line?
 
+Good catch. This shouldn't be commented - not sure how that two slashes
+got here.
+
+> > +	}
+> > +
+> > +	if (priv->buf[priv->num - 2] != priv->chksum) {
+> > +		dev_err(state->dev, "frame integrity check failed\n");
+> > +		return false;
+> > +	}
+> > +
+> > +	return true;
+> > +}
+> > +
+> > +static int sps30_serial_command(struct sps30_state *state, char cmd, void *arg, int arg_size,
+> > +				void *rsp, int rsp_size)
+> > +{
+> > +	struct sps30_serial_priv *priv = state->priv;
+> > +	char buf[SPS30_SERIAL_MAX_BUF_SIZE];
+> > +	int ret, size;
+> > +
+> > +	size = sps30_serial_prep_frame(buf, cmd, arg, arg_size);
+> > +	ret = sps30_serial_xfer(state, buf, size);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (!sps30_serial_frame_valid(state, buf))
+> > +		return -EIO;
+> > +
+> > +	if (rsp) {
+> > +		rsp_size = clamp((int)priv->buf[SPS30_SERIAL_FRAME_MISO_LEN_OFFSET], 0, rsp_size);
+> If buf is unsigned char this can be a min_t(unsigned int, ...). And maybe
+> also make rsp_size unsigned int.
+
+Okay.
+
+> > +		memcpy(rsp, &priv->buf[SPS30_SERIAL_FRAME_MISO_DATA_OFFSET], rsp_size);
+> > +	}
+> > +
+> > +	return rsp_size;
+> > +}
+> > +
+> > +static int sps30_serial_receive_buf(struct serdev_device *serdev, const unsigned char *buf,
+> > +				    size_t size)
+> > +{
+> > +	struct iio_dev *indio_dev = dev_get_drvdata(&serdev->dev);
+> > +	struct sps30_serial_priv *priv;
+> > +	struct sps30_state *state;
+> > +	unsigned char byte;
+> > +	int i;
+> > +
+> > +	if (!indio_dev)
+> > +		return 0;
+>
+> > +
+> > +	state = iio_priv(indio_dev);
+> > +	priv = state->priv;
+> > +
+> > +	/* just in case device put some unexpected data on the bus */
+> > +	if (priv->done)
+> > +		return size;
+> > +
+> > +	/* wait for the start of frame */
+> > +	if (!priv->num && size && buf[0] != SPS30_SERIAL_SOF_EOF)
+> > +		return 1;
+> > +
+> > +	if (priv->num + size >= ARRAY_SIZE(priv->buf))
+> > +		size = ARRAY_SIZE(priv->buf) - priv->num;
+> > +
+> > +	for (i = 0; i < size; i++) {
+> > +		byte = buf[i];
+> > +		/* remove stuffed bytes on-the-fly */
+> > +		if (byte == SPS30_SERIAL_ESCAPE_CHAR) {
+> > +			priv->escaped = true;
+> > +			continue;
+> > +		}
+> > +
+> > +		byte = sps30_serial_get_byte(priv->escaped, byte);
+> > +		if (priv->escaped && !byte)
+> > +			dev_warn(state->dev, "unrecognized escaped char (0x%02x)\n", byte);
+> > +		priv->chksum += byte;
+> > +		/* incrementing here would complete rx just after reading SOF */
+> > +		priv->buf[priv->num] = byte;
+> > +
+> > +		if (priv->num++ && !priv->escaped && byte == SPS30_SERIAL_SOF_EOF) {
+>
+> This is a bit to tricky for my taste.
+>
+
+Less than ideal but didn't come up with anything better which is why I
+put extra comment a few lines above.
+
+> How about.
+>
+> priv->num++
+>
+> if (priv->num > 1 && ...)
+>
+
+Makes sense.
+
+> > +			/* SOF, EOF and checksum itself are not checksummed */
+> > +			priv->chksum -= 2 * SPS30_SERIAL_SOF_EOF + priv->buf[priv->num - 2];
+> > +			priv->chksum = (unsigned char)~priv->chksum;
+> To keep the whole checksum stuff simpler, maybe just compute it in
+> sps30_serial_frame_valid() over the whole set of data.
+
+Okay that fits there as well. Advantage here is chksum is computed on
+the fly though.
+
+> > +			priv->done = true;
+> > +			complete(&priv->new_frame);
+> > +			i++;
+> > +			break;
+> > +		}
+> > +
+> > +		priv->escaped = false;
+> > +	}
+> > +
+> > +	return i;
+> > +}
+> > [...]
+> > +static int sps30_serial_probe(struct serdev_device *serdev)
+> > +{
+> > [...]
+> > +	return sps30_probe(dev, KBUILD_MODNAME, priv, &sps30_serial_ops);
+> Usually the IIO device name should just be the part number. Ideally the
+> application should not care about the backend. I'd just pass "sps30" here
+> for the name.
+
+Fair enough.
+
+Thanks for review.
+
+> > +}
+>
+>
