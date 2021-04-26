@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC99536B8F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E2436B8F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234742AbhDZSdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
+        id S234795AbhDZSdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234725AbhDZSdN (ORCPT
+        with ESMTP id S234599AbhDZSdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:33:13 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C11C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:32:30 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id t22so5375890pgu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:32:30 -0700 (PDT)
+        Mon, 26 Apr 2021 14:33:37 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89D9C061756;
+        Mon, 26 Apr 2021 11:32:53 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id x54-20020a05683040b6b02902a527443e2fso1922839ott.1;
+        Mon, 26 Apr 2021 11:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=608m3Xdamr06ubRwsdIwgsL0Wv5IuSrSD4XZYOe3AIA=;
-        b=haK0MU9BR4DoHhZN5+KmeQHf+6zNNFdP0nVs+TRdlRsOw4atRLowzY8BEWl0htq4fW
-         WmyF0pM3/RTFTBu7yCn3E8IrS0GEW0bN9mPDdofNLH5JB6O2FzlZi5eSwSJQOysovK90
-         u0N4PoMl7QBtrI9SxCOJEvoN49B4qwqmZrQN4=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LBJ13CXgrIDSN0zPYCuxuooG6slCMerC/V2MccSdEfA=;
+        b=TIaFj6jxUpbbIppypOb4o7c27iVivaShkAF0ZYJ9tNyXc3CsBmzfwNvlhKESi3f+K3
+         +osKzSvvlVs6jX5Prpq8QWvbGK+z0XiZBL+l67IRPZZMpZoBJHwn03xZV//Kn+rgE3wk
+         Ok1kOzM8KByPNr4EDJh6LwtSfYkAvxlTc5ZP7pjeOEBZiqywddn+M6GYTKmSGhroLYIG
+         eNiSBaHGuewMC8Rp0bTykX1ct3LkSSUiSGKQP56FepI4M/HCUSrDp7lADsQxH5jSQ/wB
+         94/Zt8i1Fis2Ocnto899QcFKpsYQ/zavwQcjv1xSezk0lpk2m+snKD//V1+tUuPAzBAO
+         Ognw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=608m3Xdamr06ubRwsdIwgsL0Wv5IuSrSD4XZYOe3AIA=;
-        b=mYWYjwSTtwu9HvT0WgCy1Z8+sdkvbRQ3gsPuAqNn/t93iUH2Tcwtj0k/ZZE3N+C9Be
-         vIZbb4nONsR1ULwI0lAYk+Kxc//JX5YfzZULvTfnzQjEy+T0okZvXi+7um2+sfm8vO52
-         w/0wtmKyRhKqrMYNfvMHTpHtnuqxQU/izvsro/6BWANBf9uNhg1+y9SFg5NZtgUZuamA
-         v8DGP9ey5BY3KzdEKiHKnVmliLjQFsryoTe5v5lYI/VVizmdzVtGHWuvJMtn4u1kd/Ft
-         vS5MHQaRGfKi2lOgIeZa3ULyOcxO8BaDbr9SbIbidXI+pl32dBXZcY9zQ8PdYDBmLBqZ
-         Figw==
-X-Gm-Message-State: AOAM531e8Ua/t7xWNcUx3OwYWEN0giM2OO7MGz8faF5G4FLTVCOdnuSW
-        nHZvfNniYH9XDEW0kxHi4QQvWKXJeqGNjw==
-X-Google-Smtp-Source: ABdhPJwQvwYty5xrcCMg5pGaBH69FA1fyN0g5MWMkeOU1LLqdfVlkTINjsVsTuDzgii/2Pd+dr+A7A==
-X-Received: by 2002:a05:6a00:1c54:b029:261:fc0f:15f7 with SMTP id s20-20020a056a001c54b0290261fc0f15f7mr19016814pfw.30.1619461949838;
-        Mon, 26 Apr 2021 11:32:29 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a18sm6371183pgk.66.2021.04.26.11.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 11:32:29 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 11:32:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Mukesh Ojha <mojha@codeaurora.org>
-Subject: [GIT PULL] pstore update for v5.13-rc1
-Message-ID: <202104261131.DA983FFC3D@keescook>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LBJ13CXgrIDSN0zPYCuxuooG6slCMerC/V2MccSdEfA=;
+        b=kTNTNIh9mTD/L4QhQgYzyKAP8PPgrvq/yKQbfttTOlJ6HM1XQwv408qFNKCfaSdQpR
+         BajApTpEBcpCNJDQ6cgsHjJJ8/V2HU3nR9XsWxB67aj23caNyOQ2Y97ijFR+SrF7ZXwX
+         wbt3IMHMNdsKgahZAg+nVihcaqAwxq2OBHGz51dLhD9a4v3zP+z7Pf5VttnwoL5b0QFu
+         zjmG5GcVR/fC9nDuol0a04oQSfbZdNr91TbixsUZlW+zSI0fKnGsfUw5as+70KABkKfn
+         BV030MocTQ+QDwEVslKjfELDR/uSbVrVLaoKN3zXLXPxpOE20CNMq6BNVUp78MrKlNwn
+         h2Qw==
+X-Gm-Message-State: AOAM530hqA2B70wKq1HS7y6qFs0d9dFmB6ZIdvOms7JPN1qiBthG6AN/
+        ppUhSodHWJEYCG5vTS8M/GA=
+X-Google-Smtp-Source: ABdhPJwKwMAUriGwtOScGZKNNh7AOIs0AdZNGvbE88NQ9W52lXQqUmvM8yVMAa0v0YDnIS6QnS663A==
+X-Received: by 2002:a9d:3ed:: with SMTP id f100mr16881416otf.45.1619461973433;
+        Mon, 26 Apr 2021 11:32:53 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g3sm756757otq.50.2021.04.26.11.32.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 26 Apr 2021 11:32:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 26 Apr 2021 11:32:51 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/37] 4.9.268-rc1 review
+Message-ID: <20210426183251.GB204131@roeck-us.net>
+References: <20210426072817.245304364@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Apr 26, 2021 at 09:29:01AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.268 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+> 
+Build results:
+	total: 163 pass: 163 fail: 0
+Qemu test results:
+	total: 384 pass: 384 fail: 0
 
-Please pull this single pstore update for v5.13-rc1.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks!
-
--Kees
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.13-rc1
-
-for you to fetch changes up to 9d843e8fafc7c0b15d8f511d146c0c3d7c816634:
-
-  pstore: Add mem_type property DT parsing support (2021-03-31 10:06:23 -0700)
-
-----------------------------------------------------------------
-pstore update for v5.13-rc1
-
-- Add mem_type property to expand support for >2 memory types (Mukesh Ojha)
-
-----------------------------------------------------------------
-Mukesh Ojha (1):
-      pstore: Add mem_type property DT parsing support
-
- Documentation/admin-guide/ramoops.rst                  |  4 +++-
- .../devicetree/bindings/reserved-memory/ramoops.txt    | 10 ++++++++--
- fs/pstore/ram.c                                        |  7 ++++++-
- fs/pstore/ram_core.c                                   | 18 ++++++++++++++++--
- 4 files changed, 33 insertions(+), 6 deletions(-)
-
--- 
-Kees Cook
+Guenter
