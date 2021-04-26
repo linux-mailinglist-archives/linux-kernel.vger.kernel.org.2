@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC2036AD43
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9965D36AD0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhDZHdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44726 "EHLO mail.kernel.org"
+        id S232375AbhDZHcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:32:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232627AbhDZHdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:33:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26EF36105A;
-        Mon, 26 Apr 2021 07:32:29 +0000 (UTC)
+        id S232331AbhDZHcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:32:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 535FF61006;
+        Mon, 26 Apr 2021 07:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422349;
-        bh=LOlADFzhj9u7N+oW6X7MLeJkJfSO1cq7azF0vxb+kMc=;
+        s=korg; t=1619422282;
+        bh=o0maZVGYgCnzP4OfbpZ1TajAz/ChKWpbamAKFME+umo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d/IOn5us08ij8Hs3Suv/m35F6gGSavEn6ftxGt9XWXBiOuwBFpX+9i5kJWMxRJF8O
-         0+G5hYz6Y5Iegu6o9BpNnzCwbCcUG8Lb60z+EyuksUpqSe4l/f1Ipw5LZ6g7ACsZJR
-         sngTYPshNX9Xwt3+vVVXWGDBuAEPLyKCS/ygxR9Y=
+        b=cmokczdQCrLRCel0iaF8IJa5cHbbcg52hCEP1HCYZjmnESXmDs/yAPjNIeY8KFsaW
+         kOunV6YxpImhdLkXGUNOGi6HQT/uZRn51U0mJOmJYizibKyIleZmdb6S3zGEZJpU4+
+         a7n7frEofkL76f/GQlEQIzMSRCvxOX0Q5zg+6Rws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabian Vogt <fabian@ritter-vogt.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Wang Qing <wangqing@vivo.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 02/37] Input: nspire-keypad - enable interrupts only when opened
+Subject: [PATCH 4.4 05/32] arc: kernel: Return -EFAULT if copy_to_user() fails
 Date:   Mon, 26 Apr 2021 09:29:03 +0200
-Message-Id: <20210426072817.328747114@linuxfoundation.org>
+Message-Id: <20210426072816.782027860@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
+References: <20210426072816.574319312@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,119 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabian Vogt <fabian@ritter-vogt.de>
+From: Wang Qing <wangqing@vivo.com>
 
-[ Upstream commit 69d5ff3e9e51e23d5d81bf48480aa5671be67a71 ]
+[ Upstream commit 46e152186cd89d940b26726fff11eb3f4935b45a ]
 
-The driver registers an interrupt handler in _probe, but didn't configure
-them until later when the _open function is called. In between, the keypad
-can fire an IRQ due to touchpad activity, which the handler ignores. This
-causes the kernel to disable the interrupt, blocking the keypad from
-working.
+The copy_to_user() function returns the number of bytes remaining to be
+copied, but we want to return -EFAULT if the copy doesn't complete.
 
-Fix this by disabling interrupts before registering the handler.
-Additionally, disable them in _close, so that they're only enabled while
-open.
-
-Fixes: fc4f31461892 ("Input: add TI-Nspire keypad support")
-Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
-Link: https://lore.kernel.org/r/3383725.iizBOSrK1V@linux-e202.suse.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/nspire-keypad.c | 56 ++++++++++++++------------
- 1 file changed, 31 insertions(+), 25 deletions(-)
+ arch/arc/kernel/signal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/keyboard/nspire-keypad.c b/drivers/input/keyboard/nspire-keypad.c
-index 7abfd34eb87e..bcec72367c1d 100644
---- a/drivers/input/keyboard/nspire-keypad.c
-+++ b/drivers/input/keyboard/nspire-keypad.c
-@@ -96,9 +96,15 @@ static irqreturn_t nspire_keypad_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
+diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
+index 257b8699efde..639f39f39917 100644
+--- a/arch/arc/kernel/signal.c
++++ b/arch/arc/kernel/signal.c
+@@ -97,7 +97,7 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+ 			     sizeof(sf->uc.uc_mcontext.regs.scratch));
+ 	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+ 
+-	return err;
++	return err ? -EFAULT : 0;
  }
  
--static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
-+static int nspire_keypad_open(struct input_dev *input)
- {
-+	struct nspire_keypad *keypad = input_get_drvdata(input);
- 	unsigned long val = 0, cycles_per_us, delay_cycles, row_delay_cycles;
-+	int error;
-+
-+	error = clk_prepare_enable(keypad->clk);
-+	if (error)
-+		return error;
+ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
+@@ -111,7 +111,7 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
+ 				&(sf->uc.uc_mcontext.regs.scratch),
+ 				sizeof(sf->uc.uc_mcontext.regs.scratch));
+ 	if (err)
+-		return err;
++		return -EFAULT;
  
- 	cycles_per_us = (clk_get_rate(keypad->clk) / 1000000);
- 	if (cycles_per_us == 0)
-@@ -124,30 +130,6 @@ static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
- 	keypad->int_mask = 1 << 1;
- 	writel(keypad->int_mask, keypad->reg_base + KEYPAD_INTMSK);
- 
--	/* Disable GPIO interrupts to prevent hanging on touchpad */
--	/* Possibly used to detect touchpad events */
--	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
--	/* Acknowledge existing interrupts */
--	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
--
--	return 0;
--}
--
--static int nspire_keypad_open(struct input_dev *input)
--{
--	struct nspire_keypad *keypad = input_get_drvdata(input);
--	int error;
--
--	error = clk_prepare_enable(keypad->clk);
--	if (error)
--		return error;
--
--	error = nspire_keypad_chip_init(keypad);
--	if (error) {
--		clk_disable_unprepare(keypad->clk);
--		return error;
--	}
--
- 	return 0;
- }
- 
-@@ -155,6 +137,11 @@ static void nspire_keypad_close(struct input_dev *input)
- {
- 	struct nspire_keypad *keypad = input_get_drvdata(input);
- 
-+	/* Disable interrupts */
-+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
-+	/* Acknowledge existing interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_INT);
-+
- 	clk_disable_unprepare(keypad->clk);
- }
- 
-@@ -215,6 +202,25 @@ static int nspire_keypad_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	}
- 
-+	error = clk_prepare_enable(keypad->clk);
-+	if (error) {
-+		dev_err(&pdev->dev, "failed to enable clock\n");
-+		return error;
-+	}
-+
-+	/* Disable interrupts */
-+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
-+	/* Acknowledge existing interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_INT);
-+
-+	/* Disable GPIO interrupts to prevent hanging on touchpad */
-+	/* Possibly used to detect touchpad events */
-+	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
-+	/* Acknowledge existing GPIO interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
-+
-+	clk_disable_unprepare(keypad->clk);
-+
- 	input_set_drvdata(input, keypad);
- 
- 	input->id.bustype = BUS_HOST;
+ 	set_current_blocked(&set);
+ 	regs->bta	= uregs.scratch.bta;
 -- 
 2.30.2
 
