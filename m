@@ -2,202 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3B936B1B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7275336B1BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbhDZKkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232194AbhDZKkK (ORCPT
+        id S233070AbhDZKlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:41:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9146 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233050AbhDZKkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:40:10 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B72C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:39:28 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id j28so1093458edy.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gzHm2Q3m5eV6N16rIWqgxmdmJyqiVMUv0odqYwAOQNQ=;
-        b=UpGKxYZTYfaT1MCe+bXuvLXU2xxGlwemq1AZuAKSU97jwPrPiYg5ffkj00lGDG1eJw
-         GZxESO91tagyp80tGf6ndDaDmRvlfcsVjLw0OvT8qenKcB7lhwyV0ZlQO4RIIUNVE1GK
-         TIKMcdf9qIORVpthXZnGZVA4GlkmcSTu5FvzSpoYzUCARVGCRK7Cl5VBCck5AeKQi2hH
-         w9ZazKzeyXbMLq2hVRhg3cVi95PKeN9vDH3VQkKxn9PSzlAwA/acazumpND7gl0+YyZy
-         /ernYeqfEiJh66J6qOZtGgX77b5eM4mb3PDu3iHoRNd951tEdGpbCnCJaGFS2UrTDISV
-         s/ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gzHm2Q3m5eV6N16rIWqgxmdmJyqiVMUv0odqYwAOQNQ=;
-        b=uN18YNoL0S2SEOcPc/yNakwDbG0GMwCs9rkoKxq3JfYlJ8Fz87oLCVrFwpA4mvezK3
-         ApeQakTGJNuYpZ2k+NRVHt8GK/8FjdKKB+/m5XTvDUnkP+1HR+eO1eav3bariI5B4XP+
-         q5N1IzPfmX0Ygg/FlWpQnukzoO8GvgQaQ5IMOpl/ZVHXIXYSZ2KEA1T+cZyDcmgAlNnv
-         etzK6uiVYfuqj/5W0p22eAk5RXJbGq/RTCjO6Q73pliByGlAQ65rBW7RE0t9rHqvfHhb
-         ZUjd/ofmf+xmnp6u/2HE+3TRqBec92j63xtxlHe9BDgqhxbmcIkb+zfZYrcdAeKBvX2j
-         F3ww==
-X-Gm-Message-State: AOAM533Ft2g5197fo8Nz9knTvh3zPHHBTwD51isqy4zC3+oxv5o6mxCo
-        mCP65pNJvp1he9S7+91E1rA=
-X-Google-Smtp-Source: ABdhPJxPR9QPG3UeK+zaOlu4evCRetKoiS1xibepvH7xcBd/uQAy0GBKqZ6Xplz7t9X3ZFdNtZ7mtw==
-X-Received: by 2002:a50:ed0c:: with SMTP id j12mr13505252eds.12.1619433567449;
-        Mon, 26 Apr 2021 03:39:27 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id u6sm11251505ejn.14.2021.04.26.03.39.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 03:39:27 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba: Convert module from IDR to XArray
-Date:   Mon, 26 Apr 2021 12:39:25 +0200
-Message-ID: <70412520.S8q5jszebs@linux.local>
-In-Reply-To: <YIaORY3B6+6vMvFj@kroah.com>
-References: <20210426095015.18556-1-fmdefrancesco@gmail.com> <YIaORY3B6+6vMvFj@kroah.com>
+        Mon, 26 Apr 2021 06:40:55 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QAXB4n032175;
+        Mon, 26 Apr 2021 06:39:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=YV33U4MsIKsMOWjMTEzE+UkygN9rxeIPamVaxi8unD0=;
+ b=KmnR2IQ7nBgcEKc+NQP4ZfPVNJC87CuXytLO9SWweSQIyEas/Cn3ehuLFWo5ufhSN5S0
+ xWpUpY8miACJDxscdqMTH1TOMV5id9rVubQa+o/BqT4QmywAWdXTKj3re2U+Ex0nJuED
+ 8pRJc4twPSaAOyt95ATAz2OPStBulaDJJ0+q3nZx5MFckoDP906EAWb33jdPjAu3e76s
+ iFWI+KhZ5+iVgsjgN3CcnQR6cwhqUvggDNnsiVykuS+UzHunePZYOymAKTS3etuadBNK
+ 3Ri4r+UwyA4MSHMCeoX6WGabNnv3wTWq+Vobf3sJFO5ctknwxK2hA5nTSkNyAVfPixpw dw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 385q8aqw8e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 06:39:48 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13QAd6O5015852;
+        Mon, 26 Apr 2021 10:39:46 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akh8r49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Apr 2021 10:39:45 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13QAdh0Z11469284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Apr 2021 10:39:43 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ECE7C4C04E;
+        Mon, 26 Apr 2021 10:39:42 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D1E864C062;
+        Mon, 26 Apr 2021 10:39:40 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 26 Apr 2021 10:39:40 +0000 (GMT)
+Date:   Mon, 26 Apr 2021 16:09:40 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH 00/10] sched/fair: wake_affine improvements
+Message-ID: <20210426103940.GJ2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
+ <20210423082532.GA4239@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20210423082532.GA4239@techsingularity.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LRMwzKHVvMJq8A6potO_V-ftjgUOr3MQ
+X-Proofpoint-ORIG-GUID: LRMwzKHVvMJq8A6potO_V-ftjgUOr3MQ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-26_03:2021-04-26,2021-04-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 mlxscore=0 phishscore=0 suspectscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, April 26, 2021 11:56:21 AM CEST Greg Kroah-Hartman wrote:
-> On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
-> > Converted visorhba from IDR to XArray. The abstract data type XArray is
-> > more memory-efficient, parallelisable and cache friendly. It takes
-> > advantage of RCU to perform lookups without locking.
+* Mel Gorman <mgorman@techsingularity.net> [2021-04-23 09:25:32]:
+
+> On Thu, Apr 22, 2021 at 03:53:16PM +0530, Srikar Dronamraju wrote:
+> > Recently we found that some of the benchmark numbers on Power10 were lesser
+> > than expected. Some analysis showed that the problem lies in the fact that
+> > L2-Cache on Power10 is at core level i.e only 4 threads share the L2-cache.
 > > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >  .../staging/unisys/visorhba/visorhba_main.c   | 107 +++++++-----------
-> >  1 file changed, 44 insertions(+), 63 deletions(-)
-> > 
-> > diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c
-> > b/drivers/staging/unisys/visorhba/visorhba_main.c index 
-4455d26f7c96..851e60ab0c46
-> > 100644
-> > --- a/drivers/staging/unisys/visorhba/visorhba_main.c
-> > +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
-> > @@ -6,10 +6,10 @@
-> > 
-> >  #include <linux/debugfs.h>
-> >  #include <linux/kthread.h>
-> > 
-> > -#include <linux/idr.h>
-> > 
-> >  #include <linux/module.h>
-> >  #include <linux/seq_file.h>
-> >  #include <linux/visorbus.h>
-> > 
-> > +#include <linux/xarray.h>
-> > 
-> >  #include <scsi/scsi.h>
-> >  #include <scsi/scsi_host.h>
-> >  #include <scsi/scsi_cmnd.h>
-> > 
-> > @@ -23,6 +23,8 @@
-> > 
-> >  #define MAX_PENDING_REQUESTS (MIN_NUMSIGNALS * 2)
-> >  #define VISORHBA_ERROR_COUNT 30
-> > 
-> > +static DEFINE_XARRAY_ALLOC(xa_dtstr);
-> > +
-> > 
-> >  static struct dentry *visorhba_debugfs_dir;
-> >  
-> >  /* GUIDS for HBA channel type supported by this driver */
-> > 
-> > @@ -78,12 +80,6 @@ struct visorhba_devdata {
-> > 
-> >  	unsigned int max_buff_len;
-> >  	int devnum;
-> >  	struct uiscmdrsp *cmdrsp;
-> > 
-> > -	/*
-> > -	 * allows us to pass int handles back-and-forth between us and
-> > -	 * iovm, instead of raw pointers
-> > -	 */
-> > -	struct idr idr;
-> > -
-> > 
-> >  	struct dentry *debugfs_dir;
-> >  	struct dentry *debugfs_info;
-> >  
-> >  };
-> > 
-> > @@ -183,32 +179,16 @@ static struct uiscmdrsp 
-*get_scsipending_cmdrsp(struct
-> > visorhba_devdata *ddata,> 
-> >  }
-> >  
-> >  /*
-> > 
-> > - * simple_idr_get - Associate a provided pointer with an int value
-> > - *		    1 <= value <= INT_MAX, and return this int value;
-> > - *		    the pointer value can be obtained later by passing
-> > - *		    this int value to idr_find()
-> > - * @idrtable: The data object maintaining the pointer<-->int mappings
-> > - * @p:	      The pointer value to be remembered
-> > - * @lock:     A spinlock used when exclusive access to idrtable is needed
-> > - *
-> > - * Return: The id number mapped to pointer 'p', 0 on failure
-> > + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
-> > + * @id: Pointer to ID
-> > + * @entry: New entry
-> > 
-> >   */
-> > 
-> > -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
-> > -				   spinlock_t *lock)
-> > +static int simple_xa_dtstr_get(u32 *id, void *entry)
 > 
-> What are you trying to really "get" here?  We shouldn't name the
-> function based on the data type being used.  All we want is some sort of
-> "token" or hash or something else?  It's hard to tell...
+> I didn't get the chance to review this properly although I am suspicious
+> of tracking idle_core and updating that more frequently. It becomes a very
+> hot cache line that bounces. I did experiement with tracking an idle core
+> but the data either went stale too quickly or the updates incurred more
+> overhead than a reduced search saved.
 > 
-Sorry, I am so lazy that I just substituted the _idr_ in the old name with 
-_xa_dtstr_. Perhaps simple_entry_get() would be better. it deserves a v2.
->
-> >  {
-> > 
-> > -	int id;
-> > -	unsigned long flags;
-> > +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b, 
-GFP_NOWAIT);
-> > +	/* TODO: check for and manage errors */
-> 
-> That's a nice TODO, which means we really should not be considering this
-> patch to be merged, right?
->
-Right, lazy again :)
 
-The fact is that I was just interested in conversion from IDR to XArray 
-because this would be the main subject of the project I applied for the DRM 
-subsystem. Therefore, where I didn't find proper error checking and management 
-in the old code, I simply wrote some TODO. 
+This change does increase the number of times we read the idle-core.  There
+are also more places where we try to update the idle-core. However I feel
+the number of times, we actually update the idle-core now will be much
+lesser than previous, because we are mostly doing a conditional update. i.e
+we are updating the idle-core only if the waking up CPU happens to be part
+of our core.
 
-I suppose that some more knowledge of both Linux device drivers programming 
-and of that specific driver is needed to do proper management of errors in 
-order to unwind what is already done by the code and leave everything in a 
-consistent state. I'd left that work to Unisys developers, if you don't mind. 
-I'd prefer to simply remove those TODO from where I placed them. I hope that 
-you agree with me.
+Also if the system is mostly lightly loaded, we check for
+available_idle_cpu, so we may not look for an idle-core. If the system is
+running a CPU intensive task, then the idle-core will most likely to be -1.
+Its only the cases where the system utilization keeps swinging between
+lightly loaded to heavy load, that we would end up checking and setting
+idle-core.
 
-Thanks for your review,
+Do let me know your thoughts.
 
-Fabio 
-> 
-> thanks,
-> 
-> greg k-h
-
-
-
-
+-- 
+Thanks and Regards
+Srikar Dronamraju
