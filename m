@@ -2,111 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF4E36B81C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BDB36B821
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236434AbhDZRcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236264AbhDZRb7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:31:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAD0C061574;
-        Mon, 26 Apr 2021 10:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sEsgnbR9Bd5/MELEwxLgHOD1YuAgY9Prs8WjOgXrw04=; b=jWxiyEf1/h7v6v/zUTVDudlE8c
-        Sl5uCsPzX/1NTkE16ziM651qe8yFaVQbZrI7f6eKKvLoVA3E556OPEbCuCbWdfJUXvhgU4DPxol62
-        +QvztcslRjRM5965YaU5y8SojB5Kz0t9KJQyRBrxhd+MB40G+o60vRg9gxtSz96g/CcFItiMfVsF4
-        G24MGWDozUhuBA37bsu9p2b8z077z5JdnZuYMtyK4w6/E7/rpeRSsnl0V9mYhXZhkRE67D42a3dfW
-        +n0p2DySZx5Zmwncc8eu72X0T4FXF+sNZbl4i3zmT3HkBCl05qku4X7MtJvjIEcbUqemvsCfdg/U5
-        iCukrDtg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb54Y-005uHt-Bm; Mon, 26 Apr 2021 17:31:04 +0000
-Date:   Mon, 26 Apr 2021 18:31:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] scripts: kernel-doc: reduce repeated regex expressions
- into variables
-Message-ID: <20210426173102.GO235567@casper.infradead.org>
-References: <20210422191839.6119-1-yashsri421@gmail.com>
- <20210423132117.GB235567@casper.infradead.org>
- <6f76ddcb-7076-4c91-9c4c-995002c4cb91@gmail.com>
+        id S236708AbhDZRdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234754AbhDZRdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 13:33:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 571DF6101D;
+        Mon, 26 Apr 2021 17:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619458347;
+        bh=3gcDGsqtYznY2J6G8/OOhG+6Er20sOKCcXAp/WwEQ6s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PtY5d00F/sxz6eMNhq+j3wKjLV4ARzIEUJjXrP+N+/B10O4jujT2Ed9Xh9lIC9yVl
+         7K19B/KY7Ek59SrEs26OyA3x1MX6Q7VSr4nDup81VjPFz1Y02Vx/sfuuqyPkAc+WTP
+         hJyRrKZO6amS9JXcY0Of5eJVpuljp2u4nNLZ57Pmr4tvD7ZHUt5wrmRihu0/69COYP
+         pYYDLi2V9XIDSMVrLy3esFtu8cqx2mWl4/teZuE7021YPWXwrqoTyVc4X/0IEoCpAs
+         AyuK78afSQCdVECBDKetEt0wVJlcmS+OM31fgWW5fSQUjW5rDorDk5w8VadPQB7IrX
+         Al7rHUbMFrEYw==
+Date:   Mon, 26 Apr 2021 19:32:23 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 25/78] media: i2c: ccs-core: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210426193223.78bd06f3@coco.lan>
+In-Reply-To: <20210426142901.GX3@paasikivi.fi.intel.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <34da940f76da6c1d61a193409164070f47243b64.1619191723.git.mchehab+huawei@kernel.org>
+        <20210425185525.GS3@paasikivi.fi.intel.com>
+        <20210426160151.61ac6ef2@coco.lan>
+        <20210426140900.GW3@paasikivi.fi.intel.com>
+        <20210426161659.7b979c44@coco.lan>
+        <20210426142901.GX3@paasikivi.fi.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f76ddcb-7076-4c91-9c4c-995002c4cb91@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 05:27:34PM +0530, Aditya Srivastava wrote:
-> On 23/4/21 6:51 pm, Matthew Wilcox wrote:
-> > On Fri, Apr 23, 2021 at 12:48:39AM +0530, Aditya Srivastava wrote:
-> >> +my $pointer_function = qr{([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)};
+Em Mon, 26 Apr 2021 17:29:02 +0300
+Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
+
+> On Mon, Apr 26, 2021 at 04:16:59PM +0200, Mauro Carvalho Chehab wrote:
+> > Em Mon, 26 Apr 2021 17:09:00 +0300
+> > Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
+> >   
+> > > Hi Mauro,
+> > > 
+> > > On Mon, Apr 26, 2021 at 04:01:51PM +0200, Mauro Carvalho Chehab wrote:  
+> > > > Em Sun, 25 Apr 2021 21:55:25 +0300
+> > > > Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
+> > > >     
+> > > > > Hi Mauro,
+> > > > > 
+> > > > > Thanks for the patch.
+> > > > > 
+> > > > > On Sat, Apr 24, 2021 at 08:44:35AM +0200, Mauro Carvalho Chehab wrote:    
+> > > > > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > > > > added pm_runtime_resume_and_get() in order to automatically handle
+> > > > > > dev->power.usage_count decrement on errors.
+> > > > > > 
+> > > > > > Use the new API, in order to cleanup the error check logic.
+> > > > > > 
+> > > > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > > > ---
+> > > > > >  drivers/media/i2c/ccs/ccs-core.c | 11 +++++------
+> > > > > >  1 file changed, 5 insertions(+), 6 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
+> > > > > > index 9dc3f45da3dc..1441ddcc9b35 100644
+> > > > > > --- a/drivers/media/i2c/ccs/ccs-core.c
+> > > > > > +++ b/drivers/media/i2c/ccs/ccs-core.c
+> > > > > > @@ -1880,12 +1880,11 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
+> > > > > >  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
+> > > > > >  	int rval;
+> > > > > >  
+> > > > > > -	rval = pm_runtime_get_sync(&client->dev);
+> > > > > > -	if (rval < 0) {
+> > > > > > -		pm_runtime_put_noidle(&client->dev);
+> > > > > > -
+> > > > > > +	rval = pm_runtime_resume_and_get(&client->dev);
+> > > > > > +	if (rval < 0)
+> > > > > >  		return rval;
+> > > > > > -	} else if (!rval) {
+> > > > > > +
+> > > > > > +	if (!rval) {
+> > > > > >  		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
+> > > > > >  					       ctrl_handler);
+> > > > > >  		if (rval)
+> > > > > > @@ -3089,7 +3088,7 @@ static int __maybe_unused ccs_suspend(struct device *dev)
+> > > > > >  	bool streaming = sensor->streaming;
+> > > > > >  	int rval;
+> > > > > >  
+> > > > > > -	rval = pm_runtime_get_sync(dev);
+> > > > > > +	rval = pm_runtime_resume_and_get(dev);
+> > > > > >  	if (rval < 0) {
+> > > > > >  		pm_runtime_put_noidle(dev);      
+> > > > > 
+> > > > > You'll need to drop pm_runtime_put_noidle() here.    
+> > > > 
+> > > > OK!
+> > > > 
+> > > > ---
+> > > > 
+> > > > On a non-related issue at the same code, after the change, the
+> > > > suspend function will be:
+> > > > 
+> > > >   static int __maybe_unused ccs_suspend(struct device *dev)
+> > > >   {
+> > > >         struct i2c_client *client = to_i2c_client(dev);
+> > > >         struct v4l2_subdev *subdev = i2c_get_clientdata(client);
+> > > >         struct ccs_sensor *sensor = to_ccs_sensor(subdev);
+> > > >         bool streaming = sensor->streaming;
+> > > >         int rval;
+> > > > 
+> > > >         rval = pm_runtime_resume_and_get(dev);
+> > > >         if (rval < 0) 
+> > > >                 return -EAGAIN;
+> > > > 
+> > > >         if (sensor->streaming)
+> > > >                 ccs_stop_streaming(sensor);
+> > > > 
+> > > >         /* save state for resume */
+> > > >         sensor->streaming = streaming;
+> > > > 
+> > > >         return 0;
+> > > >   }
+> > > > 
+> > > > Not sure if "return -EAGAIN" is the right thing here. I mean,
+> > > > the PM runtime core has two error conditions that are independent
+> > > > on whatever the PM callback would be doing[1]:
+> > > > 
+> > > > 	        if (dev->power.runtime_error)
+> > > >                 retval = -EINVAL;
+> > > >         else if (dev->power.disable_depth > 0)
+> > > >                 retval = -EACCES;
+> > > > 
+> > > > It would be very unlikely that trying to suspend again would solve
+> > > > those conditions.
+> > > > 
+> > > > So, I guess that the right thing to do is to change the code
+> > > > to do, instead:
+> > > > 
+> > > >   static int __maybe_unused ccs_suspend(struct device *dev)
+> > > >   {
+> > > >         struct i2c_client *client = to_i2c_client(dev);
+> > > >         struct v4l2_subdev *subdev = i2c_get_clientdata(client);
+> > > >         struct ccs_sensor *sensor = to_ccs_sensor(subdev);
+> > > >         bool streaming = sensor->streaming;
+> > > >         int rval;
+> > > > 
+> > > >         rval = pm_runtime_resume_and_get(dev);
+> > > >         if (rval < 0) 
+> > > >                 return rval;
+> > > > 	...
+> > > >   }
+> > > > 
+> > > > 
+> > > > [1] see rpm_resume() code at drivers/base/power/runtime.c.    
+> > > 
+> > > Yeah, I agree. This code is one of the older parts the driver.
+> > > 
+> > > Please add:
+> > > 
+> > > Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > 
+> > > The same goes for the other sensor driver patches in the set you cc'd me,
+> > > i.e. patches 12, 15, 26, 28,32, 40, 45, 51, 53 and 55.  
 > > 
-> > Is that a pointer-to-function?  Or as people who write C usually call it,
-> > a function pointer?  Wouldn't it be better to call it $function_pointer?
+> > It probably makes sense to address the suspend/resume -EAGAIN
+> > return code on a separate patch series, before this one, as:
 > > 
-> Will do it.
+> > 1. this is unrelated to this change;
+> > 2. it is something that should be c/c to fixes. So, having it
+> >    before this series makes easier to apply there.  
 > 
-> >> @@ -1210,8 +1211,14 @@ sub dump_struct($$) {
-> >>      my $decl_type;
-> >>      my $members;
-> >>      my $type = qr{struct|union};
-> >> +    my $packed = qr{__packed};
-> >> +    my $aligned = qr{__aligned};
-> >> +    my $cacheline_aligned_in_smp = qr{____cacheline_aligned_in_smp};
-> >> +    my $cacheline_aligned = qr{____cacheline_aligned};
-> > 
-> > I don't think those four definitions actually simplify anything.
-> > 
-> >> +    my $attribute = qr{__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)}i;
-> > 
-> > ... whereas this one definitely does.
-> > 
-> >> -	$members =~ s/\s*__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)/ /gi;
-> >> -	$members =~ s/\s*__aligned\s*\([^;]*\)/ /gos;
-> >> -	$members =~ s/\s*__packed\s*/ /gos;
-> >> +	$members =~ s/\s*$attribute/ /gi;
-> >> +	$members =~ s/\s*$aligned\s*\([^;]*\)/ /gos;
-> > 
-> > Maybe put the \s*\([^;]*\) into $aligned?  Then it becomes a useful
-> > abstraction.
-> 
-> Actually, I had made these variables as they were repeated here and at
-> -    my $definition_body =
-> qr{\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*};
-> +    my $definition_body =
-> qr{\{(.*)\}(?:\s*(?:$packed|$aligned|$cacheline_aligned_in_smp|$cacheline_aligned|$attribute))*};
-> 
-> So, defining them at a place might help.
-> 
-> What do you think?
+> Sounds good to me. If you can submit a patch, please add my ack. :-)
 
-I don't think that seeing $packed is any easier to read than __packed.
-Indeed, I think it's harder, because now I have to look up what $packed
-is defined as.
+Sure. I'll work on such patch series.
 
-Defining a variable, say
-
-	$decorations = qr{__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\))}
-	(i didn't count brackets to be sure i got that right)
-
-would be helpful because then we could say:
-
-	my $definition_body = qr{\{(.*)\}...$decorations...
-
-and have a fighting chance of understanding what it means.
-
-Now, this other place we use it, we do the =~ operation a number of times.
-Is there a way to use the $decorations variable to do the same thing
-with a single operation?
-
+Thanks!
+Mauro
