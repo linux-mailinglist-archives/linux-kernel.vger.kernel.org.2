@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FD836AF13
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF77336AEF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhDZHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:53:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56258 "EHLO mail.kernel.org"
+        id S234190AbhDZHtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:49:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233742AbhDZHnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:43:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBDB9613C0;
-        Mon, 26 Apr 2021 07:40:12 +0000 (UTC)
+        id S232830AbhDZHlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:41:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1962361004;
+        Mon, 26 Apr 2021 07:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422813;
-        bh=/MryeiTXYPA/GZQ2I/xwcA7zqnRSNepmGJPr4dTkBoI=;
+        s=korg; t=1619422732;
+        bh=x2n7AHMk4xuQM/Nj3J0Y6kw8h5pEDWqP9+6+2bmkT/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p1rB5qyFpvFduvahYbV6Cnl3E07h5T5vtUzjT5Mmgnd/uqmE1v3Ilq/nFscP7Hbyb
-         laWZbdg+OG7To1cC7iPwGhYZWIKUnLCsIWtFFHjMGUWZgIm6LAsvX06Ovks569KJs0
-         vGol1Vo2XqCATwwhEsx9JaOWme2rP5uBP3tTzUGQ=
+        b=ZNeNgwjzVdjZ1CG3sZN+tMWWYw0U8waJmv305LKf7YoeQHScnX/I39eQ+TK2kDMvd
+         gSOHrdNU4Iki+ELYtK7h/3C5rw2QwJy3tiLXRVF6lrhZTUHIpzfmeQOG3lYUhqzbiO
+         OmXVxEqQ1b5tagnvCa4ayewax6dxcQpN9sP6qjQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 28/36] s390/entry: save the caller of psw_idle
+Subject: [PATCH 5.4 19/20] ia64: tools: remove duplicate definition of ia64_mf() on ia64
 Date:   Mon, 26 Apr 2021 09:30:10 +0200
-Message-Id: <20210426072819.747260525@linuxfoundation.org>
+Message-Id: <20210426072817.323224583@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
-References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-[ Upstream commit a994eddb947ea9ebb7b14d9a1267001699f0a136 ]
+[ Upstream commit f4bf09dc3aaa4b07cd15630f2023f68cb2668809 ]
 
-Currently psw_idle does not allocate a stack frame and does not
-save its r14 and r15 into the save area. Even though this is valid from
-call ABI point of view, because psw_idle does not make any calls
-explicitly, in reality psw_idle is an entry point for controlled
-transition into serving interrupts. So, in practice, psw_idle stack
-frame is analyzed during stack unwinding. Depending on build options
-that r14 slot in the save area of psw_idle might either contain a value
-saved by previous sibling call or complete garbage.
+The ia64_mf() macro defined in tools/arch/ia64/include/asm/barrier.h is
+already defined in <asm/gcc_intrin.h> on ia64 which causes libbpf
+failing to build:
 
-  [task    0000038000003c28] do_ext_irq+0xd6/0x160
-  [task    0000038000003c78] ext_int_handler+0xba/0xe8
-  [task   *0000038000003dd8] psw_idle_exit+0x0/0x8 <-- pt_regs
- ([task    0000038000003dd8] 0x0)
-  [task    0000038000003e10] default_idle_call+0x42/0x148
-  [task    0000038000003e30] do_idle+0xce/0x160
-  [task    0000038000003e70] cpu_startup_entry+0x36/0x40
-  [task    0000038000003ea0] arch_call_rest_init+0x76/0x80
+    CC       /usr/src/linux/tools/bpf/bpftool//libbpf/staticobjs/libbpf.o
+  In file included from /usr/src/linux/tools/include/asm/barrier.h:24,
+                   from /usr/src/linux/tools/include/linux/ring_buffer.h:4,
+                   from libbpf.c:37:
+  /usr/src/linux/tools/include/asm/../../arch/ia64/include/asm/barrier.h:43: error: "ia64_mf" redefined [-Werror]
+     43 | #define ia64_mf()       asm volatile ("mf" ::: "memory")
+        |
+  In file included from /usr/include/ia64-linux-gnu/asm/intrinsics.h:20,
+                   from /usr/include/ia64-linux-gnu/asm/swab.h:11,
+                   from /usr/include/linux/swab.h:8,
+                   from /usr/include/linux/byteorder/little_endian.h:13,
+                   from /usr/include/ia64-linux-gnu/asm/byteorder.h:5,
+                   from /usr/src/linux/tools/include/uapi/linux/perf_event.h:20,
+                   from libbpf.c:36:
+  /usr/include/ia64-linux-gnu/asm/gcc_intrin.h:382: note: this is the location of the previous definition
+    382 | #define ia64_mf() __asm__ volatile ("mf" ::: "memory")
+        |
+  cc1: all warnings being treated as errors
 
-So, to make a stacktrace nicer and actually point for the real caller of
-psw_idle in this frequently occurring case, make psw_idle save its r14.
+Thus, remove the definition from tools/arch/ia64/include/asm/barrier.h.
 
-  [task    0000038000003c28] do_ext_irq+0xd6/0x160
-  [task    0000038000003c78] ext_int_handler+0xba/0xe8
-  [task   *0000038000003dd8] psw_idle_exit+0x0/0x6 <-- pt_regs
- ([task    0000038000003dd8] arch_cpu_idle+0x3c/0xd0)
-  [task    0000038000003e10] default_idle_call+0x42/0x148
-  [task    0000038000003e30] do_idle+0xce/0x160
-  [task    0000038000003e70] cpu_startup_entry+0x36/0x40
-  [task    0000038000003ea0] arch_call_rest_init+0x76/0x80
-
-Reviewed-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/entry.S | 1 +
- 1 file changed, 1 insertion(+)
+ tools/arch/ia64/include/asm/barrier.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 71203324ff42..81c458e996d9 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -994,6 +994,7 @@ ENDPROC(ext_int_handler)
-  * Load idle PSW.
+diff --git a/tools/arch/ia64/include/asm/barrier.h b/tools/arch/ia64/include/asm/barrier.h
+index 4d471d9511a5..6fffe5682713 100644
+--- a/tools/arch/ia64/include/asm/barrier.h
++++ b/tools/arch/ia64/include/asm/barrier.h
+@@ -39,9 +39,6 @@
+  * sequential memory pages only.
   */
- ENTRY(psw_idle)
-+	stg	%r14,(__SF_GPRS+8*8)(%r15)
- 	stg	%r3,__SF_EMPTY(%r15)
- 	larl	%r1,.Lpsw_idle_exit
- 	stg	%r1,__SF_EMPTY+8(%r15)
+ 
+-/* XXX From arch/ia64/include/uapi/asm/gcc_intrin.h */
+-#define ia64_mf()       asm volatile ("mf" ::: "memory")
+-
+ #define mb()		ia64_mf()
+ #define rmb()		mb()
+ #define wmb()		mb()
 -- 
 2.30.2
 
