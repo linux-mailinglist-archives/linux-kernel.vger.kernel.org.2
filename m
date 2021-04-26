@@ -2,139 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975DC36B9D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD4636B9DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhDZTQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:16:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20968 "EHLO
+        id S240160AbhDZTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:17:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34843 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235389AbhDZTQ1 (ORCPT
+        by vger.kernel.org with ESMTP id S239485AbhDZTRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:16:27 -0400
+        Mon, 26 Apr 2021 15:17:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619464545;
+        s=mimecast20190719; t=1619464611;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NjlPen1encdZDkGM0wilUuVPtH5U8CDDV8DYPkgdQBU=;
-        b=i/jhZeHGBpZUzi72TqQ6dwfZSK4OhJIYhawDDlDroEkpOdwv7ORQZQK63e7G6x7qUJXNDT
-        9o2ocHbbwuu7/qPd3Lg4B/98Bw/Icip1P3Ml1XDzM4lNAqxxfFhkfa4e45J3/vAEnHFAzB
-        Y24bShZNYayCCITzaE+ElgJyI/8Vx70=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-497-vU9V_ZBoNhmexWeJXdMzUw-1; Mon, 26 Apr 2021 15:15:41 -0400
-X-MC-Unique: vU9V_ZBoNhmexWeJXdMzUw-1
-Received: by mail-qt1-f198.google.com with SMTP id 1-20020aed31010000b029019d1c685840so21955334qtg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:15:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=NjlPen1encdZDkGM0wilUuVPtH5U8CDDV8DYPkgdQBU=;
-        b=gbK99+JXNiLfEeC4QoPVfHXyT4Ay3XsHUUXxtIf3TCGreLHqf17ukaUq08wL+b2maX
-         mwLoYrGwqD952ZBPLk+4yoC6X5aWDAhSm6Y7fi4m0qzjQdAhKkkGeTXbAkgE2f/P4s2j
-         fME3hraOmFlWS0uSsz+2FwTG/PSeGeQ0RDFZ+weW4PILcQCD4/lqrV4Dvm8A0CPdFilo
-         C5gs//2zfvZ9v6F3430mVDCY/MIHPIo+aNzTIuoU6fe4/hPW1yw64Ya9XvGpGru0EtZl
-         OpTI5l9Yi3Z/MYITug3TMkMgMyIOSUBG3to/otk18wEq/wGDMC7eKz8QodBargYbqM+1
-         j+xA==
-X-Gm-Message-State: AOAM533WvRLRjHx+wF1TcRAYDOsjvuaZR7ujNaoyqOTxkFmUzv2vZf4F
-        6Dd3BcG4qWp8qk8PMikd3+gYITKzjVJfWondJHD4lJ2kitT0FxyZ5M1sgxsUaEOjKwnAoyEEibt
-        wwt8j40FXM9PwgeaTULU5amEd
-X-Received: by 2002:a37:de14:: with SMTP id h20mr18965536qkj.34.1619464540671;
-        Mon, 26 Apr 2021 12:15:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZYRAHl+eWnQtgdg3ck30c64eIGwlxsQ5wJdm+wrQWh9LXuumEJb2NQlXbEra5jinaPsZTlQ==
-X-Received: by 2002:a37:de14:: with SMTP id h20mr18965510qkj.34.1619464540455;
-        Mon, 26 Apr 2021 12:15:40 -0700 (PDT)
-Received: from [192.168.1.180] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id c15sm12638215qtg.31.2021.04.26.12.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 12:15:40 -0700 (PDT)
-Message-ID: <8114b7a1151edf52e3a20cf30d2673cd177191bf.camel@redhat.com>
-Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
-From:   Jeff Layton <jlayton@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 26 Apr 2021 15:15:39 -0400
-In-Reply-To: <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk>
-References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
-         <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
-         <YIcMVCkp4xswHolw@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        bh=+m/OUrHh3g4mK0h/qw2Ncm9r9mZhHFjbsMaT14s9/xM=;
+        b=MHbqJ0JNb6H+mQcyRoUxMcQc9mTIs7JFTyHSDn17sVZFNdY7D1ionsMoYuS87lYWK9VYJR
+        8EO4MR6lLAMt9Gzdgupwx3Q7EqfrI/DS0BxJWEM06igGQzTrkmHKhUVdA+Ina2r2IaVFQi
+        /40zU4LMctUVEFcWxSxhXQoR0NWVnQo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-131-UX4RxFe9MxCdOK3I904KJQ-1; Mon, 26 Apr 2021 15:16:47 -0400
+X-MC-Unique: UX4RxFe9MxCdOK3I904KJQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6137801814;
+        Mon, 26 Apr 2021 19:16:44 +0000 (UTC)
+Received: from krava (unknown [10.40.193.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B75985D9F0;
+        Mon, 26 Apr 2021 19:16:37 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 21:16:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+Message-ID: <YIcRlHQWWKbOlcXr@krava>
+References: <20210423130530.GA6564@kitsune.suse.cz>
+ <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
+ <20210423175528.GF6564@kitsune.suse.cz>
+ <20210425111545.GL15381@kitsune.suse.cz>
+ <20210426113215.GM15381@kitsune.suse.cz>
+ <20210426121220.GN15381@kitsune.suse.cz>
+ <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
+ <YIbkR6z6mxdNSzGO@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YIbkR6z6mxdNSzGO@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-26 at 18:54 +0000, Al Viro wrote:
-> On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
-> > -#define iterate_all_kinds(i, n, v, I, B, K) {			\
-> > +#define iterate_xarray(i, n, __v, skip, STEP) {		\
-> > +	struct page *head = NULL;				\
-> > +	size_t wanted = n, seg, offset;				\
-> > +	loff_t start = i->xarray_start + skip;			\
-> > +	pgoff_t index = start >> PAGE_SHIFT;			\
-> > +	int j;							\
-> > +								\
-> > +	XA_STATE(xas, i->xarray, index);			\
-> > +								\
-> > +	rcu_read_lock();						\
-> > +	xas_for_each(&xas, head, ULONG_MAX) {				\
-> > +		if (xas_retry(&xas, head))				\
-> > +			continue;					\
+On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
+> On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
+> > 
+> > 
+> > On 4/26/21 5:14 AM, Michal Suchánek wrote:
+> > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
+> > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
+> > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
+> > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
+> > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
+> > > > > > > > 
+> > > > > > > > 
+> > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
+> > > > > > > > > Hello,
+> > > > > > > > > 
+> > > > > > > > > I see this build error in linux-next (config attached).
+> > > > > > > > > 
+> > > > > > > > > [ 4939s]   LD      vmlinux
+> > > > > > > > > [ 4959s]   BTFIDS  vmlinux
+> > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
+> > > > > > > > > [ 4960s] make[1]: ***
+> > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
+> > > > > > > > > vmlinux] Error 255
+> > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
 > 
-> OK, now I'm really confused; what's to guarantee that restart will not have
-> you hit the same entry more than once?  STEP might be e.g.
+> this one was reported by Jesper and was fixed by upgrading pahole
+> that contains the new function generation fixes (v1.19)
 > 
-> 		memcpy_to_page(v.bv_page, v.bv_offset,
-> 			       (from += v.bv_len) - v.bv_len, v.bv_len)
+> > > > > > > > 
+> > > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
+> > > > > > > > Could you try a later version of pahole?
+> > > > > > > 
+> > > > > > > Is this requireent new?
+> > > > > > > 
+> > > > > > > I have pahole 1.20, and master does build without problems.
+> > > > > > > 
+> > > > > > > If newer version is needed can a check be added?
+> > > > > > 
+> > > > > > With dwarves 1.21 some architectures are fixed and some report other
+> > > > > > missing symbol. Definitely an improvenent.
+> > > > > > 
+> > > > > > I see some new type support was added so it makes sense if that type is
+> > > > > > used the new dwarves are needed.
+> > > > > 
+> > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
+> > > > > 
+> > > > > [ 2548s]   LD      vmlinux
+> > > > > [ 2557s]   BTFIDS  vmlinux
+> > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
+> > > > > [ 2558s] make[1]: ***
+> > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
+> > > > > vmlinux] Error 255
+> > 
+> > This is PPC64, from attached config:
+> >   CONFIG_PPC64=y
+> > I don't have environment to cross-compile for PPC64.
+> > Jiri, could you take a look? Thanks!
 > 
-> which is clearly not idempotent - from gets incremented, after all.
-> What am I missing here?
-> 
+> looks like vfs_truncate did not get into BTF data,
+> I'll try to reproduce
 
-Not sure I understand the issue you see. If xas_retry returns true,
-we'll restart, but we won't have called STEP yet for that entry. I
-don't see how we'd retry there and have an issue with idempotency.
+I can't reproduce the problem, in both cross build and native ppc,
+but the .config attached does not see complete, could you pelase
+resend?
 
-> > +		if (WARN_ON(xa_is_value(head)))				\
-> > +			break;						\
-> > +		if (WARN_ON(PageHuge(head)))				\
-> > +			break;						\
-> > +		for (j = (head->index < index) ? index - head->index : 0; \
-> > +		     j < thp_nr_pages(head); j++) {			\
-> > +			__v.bv_page = head + j;				\
-> > +			offset = (i->xarray_start + skip) & ~PAGE_MASK;	\
-> > +			seg = PAGE_SIZE - offset;			\
-> > +			__v.bv_offset = offset;				\
-> > +			__v.bv_len = min(n, seg);			\
-> > +			(void)(STEP);					\
-> > +			n -= __v.bv_len;				\
-> > +			skip += __v.bv_len;				\
-> > +			if (n == 0)					\
-> > +				break;					\
-> > +		}							\
-> > +		if (n == 0)						\
-> > +			break;						\
-> > +	}							\
-> > +	rcu_read_unlock();					\
-> > +	n = wanted - n;						\
-> > +}
-
+thanks,
+jirka
 
