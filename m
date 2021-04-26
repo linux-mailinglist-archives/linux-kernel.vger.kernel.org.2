@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33C436AA04
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 02:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF2B36AA08
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 02:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhDZA1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 20:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        id S231410AbhDZAcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 20:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbhDZA1q (ORCPT
+        with ESMTP id S231247AbhDZAcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 20:27:46 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2187BC061574;
-        Sun, 25 Apr 2021 17:27:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FT5LT5fDmz9sV5;
-        Mon, 26 Apr 2021 10:26:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619396819;
-        bh=FY6iPUabQ2q99PKDTsOxEdhhkevE6KRHUorFJx3o6fA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ElgIsEObHogFTBssY17uFl9XwoR6UF6OsoEiAxpH+gtNrRquuc9oKd+o1QT6ncv27
-         YqHLuBRpaj3rSHKbrJ2DxbhElJWemUiEU3hjqs7HtZe0o47/YiomPXiG6+p8yjgbvk
-         /lbTqjxuqARy5BpXYklRUEb/7/zNLJqF44zfHo2F4pFLFcLCpGB6sQYDOoRwbwbHK+
-         ODioguhdqS2mzakAI1NycW1qeh76rKiMzpfqo2jOdOe2GBMfcUpZndOEP2/OOtPL+B
-         kvqRqM/9jRbifypCSz9C9qYDiLijan3QkPDSVfuzmNHLGLZvafXyMo5yZPmJJ0N+d6
-         5hXR5NiqgK6GA==
-Date:   Mon, 26 Apr 2021 10:26:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: linux-next: manual merge of the net-next tree with the kbuild tree
-Message-ID: <20210426102656.69a85cbc@canb.auug.org.au>
+        Sun, 25 Apr 2021 20:32:21 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0671FC06138B
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 17:31:38 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id a36so51192512ljq.8
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 17:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xiJzJOLdknIj0RBYTk/1dN6htHjhW+TONZdztDGFbBU=;
+        b=Jdq7oZq6fxDOqg46MRmtQhPd4SrRlEoVknjUuOCN8BcuzP0XNt6vzVqFCgtk1RQnDo
+         aoNcId528WptBW8I/GRW0hTa2aXzAWWFwChG0KT+nxIMCls5G27DWJ1JE6OnT+o+2yLV
+         aQqNBLsysaitWjvDbKKJq91G8PTL4sGca2FUlg4KbpmK5vpAvTqmOQ/bOFj6yLDG/9mg
+         xjcfvDF0r9YdV+2/oWeKiDvthYWFkTUor+1dsPncf5EHnm3RR1SVKQAGE8Nxv0eVODnN
+         kn5XxNw2deklLmJjDafIhLdW0X2KtTmQhB1X51MPIrl0AaDBNZ16CsRhDmLQ7Rh7W3o8
+         lesQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xiJzJOLdknIj0RBYTk/1dN6htHjhW+TONZdztDGFbBU=;
+        b=OBjw57PBk6av9ZpAMRXC59ldofcRtpwHwkk1trD0Q55FoLI1o7FTzil7tasa8gPksW
+         1Py4kO1YJ3EZk5Nm6w2iXHJSrqAosndFiHABNSJYSXLx7/kha9AvaXK8Jx6Wc5rClf8/
+         FpXzru/rx0+6gN+f8C5L7l2mN8PyXqvje2LITxU021Mu2viB6eZFDT30wJ7NeUaCuDTD
+         S5+7SV0txjUFNoWg5df9bEzaY6KDwKaqIL6rqWshYt+PQKvhS0jBwi3nK6ikIDJyPBVp
+         C0NP+MZtp0Jg65Tx3VAEn0jQc5kCHCDV3VRP0oR01fux4Rist4cI/thDkmYVGYMxQduC
+         eCOQ==
+X-Gm-Message-State: AOAM530p8H2det+jxO5rVxJ6Ti6PyfyinuNP6jW51kXN1VpNivOCXsAY
+        gpmzTh2RbmHYOV0IIfMilA5tgVaMvRPZ8EYvJj/rag==
+X-Google-Smtp-Source: ABdhPJzMJggL0ZBTNgft14ZUf0CVG/24WpdjGgjRupl3gpl/UhKK6SN9IOAxYxBKJAnZm1R2/rMVeGJ9kPNWkYsj1cE=
+X-Received: by 2002:a2e:a54c:: with SMTP id e12mr11354812ljn.326.1619397097310;
+ Sun, 25 Apr 2021 17:31:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/h=i6GuxYzBzDQnib.1tDksa";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
+In-Reply-To: <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 26 Apr 2021 02:31:26 +0200
+Message-ID: <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/h=i6GuxYzBzDQnib.1tDksa
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 22, 2021 at 11:29 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
 
-Hi all,
+> > But as subsystem maintainer I'd like a clear picture of this wrapper
+> > overhead, what does it usually entail? A typical kernel API has
+> > vtable and a few variables, not much more than that.
+>
+> If you mean runtime-overhead, i.e. performance, it should be very
+> small or even zero. It should be possible to perform LTO across
+> languages too.
+>
+> If you mean source code overhead, or cognitive overhead, then it is
+> quite a bit, yes. Please see below.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Yeah that is what I mean :)
 
-  tools/testing/selftests/net/mptcp/mptcp_connect.sh
+> I hear you! I do not think it will take decades for kernel developers
+> to get up to speed, but I agree that having some help/backup is a very
+> good idea in the beginning.
+>
+> Our hope is that, if Rust advantages prove themselves, then it will
+> the subsystem maintainers the ones that will want to create and
+> maintain the wrappers so that drivers in their tree are easier to
+> maintain and less prone to mistakes ;-)
 
-between commit:
+I am not really convinced that (leaf) drivers is where Rust will
+help most.
 
-  31c330b346a6 ("kbuild: replace LANG=3DC with LC_ALL=3DC")
+As I mentioned in my mail to Wedson that I think things like network
+protocols that deal with abstract entities will have more "pure code"
+(not deal with machine registers, just RAM memory).
+File systems would be another example.
 
-from the kbuild tree and commit:
+I think the Rust proponents should be open to the fact that their
+work will eventually depend on themselves or someone else
+fixing a working compiler for the maintained architectures in
+the Linux kernel one way or the other, so they will be able to
+work with Rust project anywhere in the kernel.
 
-  5888a61cb4e0 ("selftests: mptcp: launch mptcp_connect with timeout")
+For example m68k is not going away. Avoiding this question
+of compiler support, just waiting and hoping that these old
+architectures will disappear is the wrong idea. The right idea
+is to recognize that LLVM and/or GCC Rust needs to
+support all these architectures so they can all use Rust.
+Someone needs to put in the effort.
 
-from the net-next tree.
+After all fixing that compiler support is an insignificant amount
+of work compared to what Rust in the core kernel will be.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/net/mptcp/mptcp_connect.sh
-index 1d2a6e7b877c,9236609731b1..000000000000
---- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-@@@ -273,7 -274,7 +274,7 @@@ check_mptcp_disabled(
-  	ip netns exec ${disabled_ns} sysctl -q net.mptcp.enabled=3D0
- =20
-  	local err=3D0
-- 	LC_ALL=3DC ip netns exec ${disabled_ns} ./mptcp_connect -t $timeout -p 1=
-0000 -s MPTCP 127.0.0.1 < "$cin" 2>&1 | \
- -	LANG=3DC ip netns exec ${disabled_ns} ./mptcp_connect -p 10000 -s MPTCP =
-127.0.0.1 < "$cin" 2>&1 | \
-++	LC_ALL=3DC ip netns exec ${disabled_ns} ./mptcp_connect -p 10000 -s MPTC=
-P 127.0.0.1 < "$cin" 2>&1 | \
-  		grep -q "^socket: Protocol not available$" && err=3D1
-  	ip netns delete ${disabled_ns}
- =20
-
---Sig_/h=i6GuxYzBzDQnib.1tDksa
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCGCNAACgkQAVBC80lX
-0Gz0Vgf+IsKIaB1CJc5jv6euAJZ1GVTmzTbEDPHZirm+/7vW75ZsMTz2C1wEKQFO
-gOwmgglCjprAioQXolEVC4tZj4vwxDkHC28vnY1JKjB0M2drzHrVv6Osf9/gRdZa
-hiQ/KzudfP8Gt0haGQbNWzOApgFjLCEA71C56IyOOC/gjfHw0kVStl0OGJCcLeOp
-BdJkrhCT9K9EG4h2a4eygC1HdVUYtaTl/BTwHWojnZ5tr1i3C4YIIUXkaQRkYyhs
-iOAYe6P9CD/eEqF1/D7j1PLljHQj+JYMvv4SVdiTEB5RMsQIaDVL+jEsImuMkRCQ
-YMiUfRWn7nzBFhKf3HvTdnBAyPVeDQ==
-=ntFK
------END PGP SIGNATURE-----
-
---Sig_/h=i6GuxYzBzDQnib.1tDksa--
+Yours,
+Linus Walleij
