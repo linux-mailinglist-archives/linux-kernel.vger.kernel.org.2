@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51C336AD0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70C536AD46
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhDZHcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:32:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42776 "EHLO mail.kernel.org"
+        id S232335AbhDZHdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:33:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232338AbhDZHcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:32:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AF4F611C1;
-        Mon, 26 Apr 2021 07:31:24 +0000 (UTC)
+        id S232650AbhDZHdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:33:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C4961041;
+        Mon, 26 Apr 2021 07:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422285;
-        bh=9H8SH642Tv0t3TrlVYrw0+U2J0GZT5kXkFw7TJAp/TM=;
+        s=korg; t=1619422352;
+        bh=vKweCKWSIkgNbcEEo2obRL3rL/LqXkVVwAvne2xhoAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dlpIeOaagbgHYfubl8IBGo+fJa45Zqu/c7/Y7zlR79BzI4HsUbRmMWnzX/Ddgusdi
-         qjjUR45thNj0KIFnOZshqO2r3MSTskDqDU4rtVc9j34dOTefTpmTe6xdHbWvzAUwP5
-         4VxcqnTNTQ1TDG6qwEUpHhsyfZKnOEB8rOb+z49g=
+        b=hfDiHAidk2UH9J+JN2Gn5B7aHYf6/FVaucFGx5ShVJxgN6c4dBJ+2ofTBtKz5cLNs
+         jO9Mb3kFwS7IWKmFhUQ5ONFrwLK/JBCy6jnTJQ8Um/lbOz9PvgcDnpZn8nyNvk7Mmz
+         4GSkyMWxSVA1jzezcCploy8qpCf0EueBrDMc0WFU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhu <zhutong@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 06/32] neighbour: Disregard DEAD dst in neigh_update
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 03/37] dmaengine: dw: Make it dependent to HAS_IOMEM
 Date:   Mon, 26 Apr 2021 09:29:04 +0200
-Message-Id: <20210426072816.812856038@linuxfoundation.org>
+Message-Id: <20210426072817.369583552@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhu <zhutong@amazon.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit d47ec7a0a7271dda08932d6208e4ab65ab0c987c ]
+[ Upstream commit 88cd1d6191b13689094310c2405394e4ce36d061 ]
 
-After a short network outage, the dst_entry is timed out and put
-in DST_OBSOLETE_DEAD. We are in this code because arp reply comes
-from this neighbour after network recovers. There is a potential
-race condition that dst_entry is still in DST_OBSOLETE_DEAD.
-With that, another neighbour lookup causes more harm than good.
+Some architectures do not provide devm_*() APIs. Hence make the driver
+dependent on HAVE_IOMEM.
 
-In best case all packets in arp_queue are lost. This is
-counterproductive to the original goal of finding a better path
-for those packets.
-
-I observed a worst case with 4.x kernel where a dst_entry in
-DST_OBSOLETE_DEAD state is associated with loopback net_device.
-It leads to an ethernet header with all zero addresses.
-A packet with all zero source MAC address is quite deadly with
-mac80211, ath9k and 802.11 block ack.  It fails
-ieee80211_find_sta_by_ifaddr in ath9k (xmit.c). Ath9k flushes tx
-queue (ath_tx_complete_aggr). BAW (block ack window) is not
-updated. BAW logic is damaged and ath9k transmission is disabled.
-
-Signed-off-by: Tong Zhu <zhutong@amazon.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: dbde5c2934d1 ("dw_dmac: use devm_* functions to simplify code")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Link: https://lore.kernel.org/r/20210324141757.24710-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/neighbour.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/dw/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 40d33431bc58..17997902d316 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -1234,7 +1234,7 @@ int neigh_update(struct neighbour *neigh, const u8 *lladdr, u8 new,
- 			 * we can reinject the packet there.
- 			 */
- 			n2 = NULL;
--			if (dst) {
-+			if (dst && dst->obsolete != DST_OBSOLETE_DEAD) {
- 				n2 = dst_neigh_lookup_skb(dst, skb);
- 				if (n2)
- 					n1 = n2;
+diff --git a/drivers/dma/dw/Kconfig b/drivers/dma/dw/Kconfig
+index e00c9b022964..6ea3e95c287b 100644
+--- a/drivers/dma/dw/Kconfig
++++ b/drivers/dma/dw/Kconfig
+@@ -11,6 +11,7 @@ config DW_DMAC_BIG_ENDIAN_IO
+ 
+ config DW_DMAC
+ 	tristate "Synopsys DesignWare AHB DMA platform driver"
++	depends on HAS_IOMEM
+ 	select DW_DMAC_CORE
+ 	select DW_DMAC_BIG_ENDIAN_IO if AVR32
+ 	default y if CPU_AT32AP7000
+@@ -21,6 +22,7 @@ config DW_DMAC
+ config DW_DMAC_PCI
+ 	tristate "Synopsys DesignWare AHB DMA PCI driver"
+ 	depends on PCI
++	depends on HAS_IOMEM
+ 	select DW_DMAC_CORE
+ 	help
+ 	  Support the Synopsys DesignWare AHB DMA controller on the
 -- 
 2.30.2
 
