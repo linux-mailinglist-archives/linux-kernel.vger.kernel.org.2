@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC6236BAC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969A636BAC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241800AbhDZUgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241643AbhDZUgd (ORCPT
+        id S241858AbhDZUiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:38:01 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:45932 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241297AbhDZUh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:36:33 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3078AC061756;
-        Mon, 26 Apr 2021 13:35:51 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x5so6937079wrv.13;
-        Mon, 26 Apr 2021 13:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/qpNf3s9s9yCF8SdS6sxdw81lzQb3WBRWXKQ4RBbloo=;
-        b=bouwjuXaDMt4okV9PCZWfpqZlinFD8VD1Q6xY2X9BUr7ryB8JgNgL34hB6ZwGAE6Tu
-         B3KTPeV4QhISB+Ge4PPodV3VmUwH7F5wgPhGI0VKoQn4UdY6w8QsmyMgQwyswGDMjHzT
-         1lGCkwE+Z/S68ktWxBxbKWrtMriTRG6FqJqs2HzBVtnDkXiTIy/a1NR7I0v7FfvLfvpT
-         hR6YyJvVbnWOP5V/Ig4FHu0P0iRXuZ0me6WCdQg+6l8OKW00+J9YuknsHWUV/wIxpWZz
-         TaQnqucRfWhANj2cf4QirKC6GLmzCey0UWCqT61Dj9gXtHpLNrfKR5veCYexQdDDTpnE
-         t6Ug==
+        Mon, 26 Apr 2021 16:37:59 -0400
+Received: by mail-io1-f72.google.com with SMTP id y15-20020a5d9b0f0000b02903e840cb5f09so29312508ion.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:37:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/qpNf3s9s9yCF8SdS6sxdw81lzQb3WBRWXKQ4RBbloo=;
-        b=neZSKagIZRSxfqT379Y6bpRpNxHHBXByrTxxL/4sNacIxDmVFjCzWlubMij/PxP6gX
-         rSmzdr4YU/+/4DbGDCURl8r9erxG2EUXbJGZ1+FHkfV3rT8j6ATQmAY6AaH0m5+lTptG
-         7xtnYGe8RKIyNZLVA6b07WpDFPudtOAX+LhwBNyoguLgd0lfrHqmeZqjaTq9+FdTQwZX
-         5rW8448hhIMc4gXombkX8dixrcEUfcL6StkYXZC2ANSGngt6hnVB2EWDqrxPD0lE14N7
-         UjbZkrQNjzkvIfhB0VYzNIUlL2YEZiHRnZHgDqq2ORC7Gw4XcDo6aILi6ac+f36PsHIZ
-         femA==
-X-Gm-Message-State: AOAM5332rd3psroYm08oiM2EJYe9EAA6xFQOK+d5xH7BOp4FuN2E2eSB
-        chAsSO/la3Ah82nDj5jtH3Gp7PFScuD9eQ==
-X-Google-Smtp-Source: ABdhPJxPhVBRO0cd+MfYQtCiDck7tsYJ/wlfphHLWLt6SfcsdPpHw7TcA0ldLSR0EtIKrtiLMc2AsA==
-X-Received: by 2002:adf:fbcc:: with SMTP id d12mr24991257wrs.151.1619469349956;
-        Mon, 26 Apr 2021 13:35:49 -0700 (PDT)
-Received: from debian (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
-        by smtp.gmail.com with ESMTPSA id g5sm1420351wrq.30.2021.04.26.13.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 13:35:49 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 21:35:47 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/57] 4.19.189-rc1 review
-Message-ID: <YIckI6fTgBux2VBB@debian>
-References: <20210426072820.568997499@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gD0jePeeRSuW3Us7tJA17C2eKRmazht2OsZnhiR008g=;
+        b=bOgPf7l4NRwRdmpzRHl9znkUL8iYNa0Btb/UQllDSAgpeuky+z2EJFq0PzYo/ADQWM
+         +jv3ZtVC1J4sVsVqZSqL4cj5PyslUt1qRS28qp1d4oh8kSAVDpwGg/9sJ7iAHPdR0NRp
+         TWrR/bvfLE718/IJIoumJrqzr1L9ESFVkTaJ8iJsRCO9LMp6j5JG4/SU4hKCghdM7mQj
+         bWRU2BCtjA1ty+bdakZdwAIqS1np0TG5oOiAStzs+AMVERlcWkAckW7srIB+DFy3VlcB
+         nXJ/1c0E2eX4Upw0IMhfd936Gn5AFOr5oZXeJuaOz5WnNeXlRrv0VRNMFTfStj41OukG
+         8XGQ==
+X-Gm-Message-State: AOAM530G4MYZ4riQ+2048XEq1Xuu5bwnZWGfuJiW0zlKSf0MLsffLr60
+        OFo2itw+wtABpeMMw5Vaxykh1bkWaJBXcBSVPvPDAXg0Um0t
+X-Google-Smtp-Source: ABdhPJxmcKChZ8aU2DWkS8AvpQu4OvKO9n2rt9jxvTP2OwD1YA9e6tmmDV+ZyorD7ARAA9gOsIyEVPjDi2itWvt7Nw2jndkvU64O
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+X-Received: by 2002:a02:c908:: with SMTP id t8mr18533787jao.78.1619469437584;
+ Mon, 26 Apr 2021 13:37:17 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 13:37:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008d4a9d05c0e61cb2@google.com>
+Subject: [syzbot] linux-next boot error: general protection fault in bio_add_hw_page
+From:   syzbot <syzbot+27916005c4a9d0d06bce@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hello,
 
-On Mon, Apr 26, 2021 at 09:28:57AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.189 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
-> Anything received after that time might be too late.
+syzbot found the following issue on:
 
-Build test:
-mips (gcc version 10.3.1 20210416): 63 configs -> no new failure
-arm (gcc version 10.3.1 20210416): 116 configs -> no new failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+HEAD commit:    3f1fee3e Add linux-next specific files for 20210426
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12103059d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=286cd40bcb4d1f3a
+dashboard link: https://syzkaller.appspot.com/bug?extid=27916005c4a9d0d06bce
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm: Booted on rpi3b. No regression.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27916005c4a9d0d06bce@syzkaller.appspotmail.com
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+general protection fault, probably for non-canonical address 0xdffffc00000000c5: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000628-0x000000000000062f]
+CPU: 0 PID: 86 Comm: kworker/u4:2 Not tainted 5.12.0-next-20210426-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound async_run_entry_fn
+RIP: 0010:bio_max_size block/bio.c:260 [inline]
+RIP: 0010:bio_full include/linux/bio.h:124 [inline]
+RIP: 0010:bio_full include/linux/bio.h:119 [inline]
+RIP: 0010:bio_add_hw_page+0x198/0x830 block/bio.c:778
+Code: 48 c1 e9 03 80 3c 01 00 0f 85 b1 05 00 00 48 b9 00 00 00 00 00 fc ff df 48 8b 43 08 48 8d b8 28 06 00 00 48 89 fe 48 c1 ee 03 <80> 3c 0e 00 0f 85 9d 05 00 00 48 8b 80 28 06 00 00 48 b9 00 00 00
+RSP: 0000:ffffc900010cf6a8 EFLAGS: 00010206
+RAX: 0000000000000000 RBX: ffff8880133ffc00 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 00000000000000c5 RDI: 0000000000000628
+RBP: 0000000000000024 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff83b75207 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88801b594560 R14: 0000000000000000 R15: ffffea00050de340
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000bc8e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ bio_add_pc_page+0xb8/0x100 block/bio.c:812
+ bio_map_kern block/blk-map.c:374 [inline]
+ blk_rq_map_kern+0x2bd/0x750 block/blk-map.c:642
+ __scsi_execute+0x4c1/0x600 drivers/scsi/scsi_lib.c:224
+ scsi_execute_req include/scsi/scsi_device.h:462 [inline]
+ scsi_probe_lun drivers/scsi/scsi_scan.c:610 [inline]
+ scsi_probe_and_add_lun+0x521/0x34e0 drivers/scsi/scsi_scan.c:1104
+ __scsi_scan_target+0x21f/0xdb0 drivers/scsi/scsi_scan.c:1578
+ scsi_scan_channel drivers/scsi/scsi_scan.c:1666 [inline]
+ scsi_scan_channel+0x148/0x1e0 drivers/scsi/scsi_scan.c:1642
+ scsi_scan_host_selected+0x2df/0x3b0 drivers/scsi/scsi_scan.c:1695
+ do_scsi_scan_host+0x1e8/0x260 drivers/scsi/scsi_scan.c:1834
+ do_scan_async+0x3e/0x500 drivers/scsi/scsi_scan.c:1844
+ async_run_entry_fn+0x9d/0x550 kernel/async.c:127
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Modules linked in:
+---[ end trace a9f7e41e48b80dca ]---
+RIP: 0010:bio_max_size block/bio.c:260 [inline]
+RIP: 0010:bio_full include/linux/bio.h:124 [inline]
+RIP: 0010:bio_full include/linux/bio.h:119 [inline]
+RIP: 0010:bio_add_hw_page+0x198/0x830 block/bio.c:778
+Code: 48 c1 e9 03 80 3c 01 00 0f 85 b1 05 00 00 48 b9 00 00 00 00 00 fc ff df 48 8b 43 08 48 8d b8 28 06 00 00 48 89 fe 48 c1 ee 03 <80> 3c 0e 00 0f 85 9d 05 00 00 48 8b 80 28 06 00 00 48 b9 00 00 00
+RSP: 0000:ffffc900010cf6a8 EFLAGS: 00010206
+RAX: 0000000000000000 RBX: ffff8880133ffc00 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 00000000000000c5 RDI: 0000000000000628
+RBP: 0000000000000024 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff83b75207 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff88801b594560 R14: 0000000000000000 R15: ffffea00050de340
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000bc8e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
---
-Regards
-Sudip
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
