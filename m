@@ -2,168 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4FB36B935
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E536136B93E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239431AbhDZSnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:43:41 -0400
-Received: from mga03.intel.com ([134.134.136.65]:54189 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239367AbhDZSn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:43:27 -0400
-IronPort-SDR: bZzHC+cYYM1S78+kdrso/Ki3rFnNxKnkDb6z9ZHYuAYtEpGzpiPmd2msgkWPUKzozvaSteD9/f
- HVg+X9SX4tfA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196446765"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="196446765"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:42:45 -0700
-IronPort-SDR: ujvtt69GWvDqQubvlFsSj2xst4Baw/+CCFWVdFoBWyUqNsowZ/aqhm+a21HPbtCU3WvQihg8pu
- qcKImtMcce0Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="525829952"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Apr 2021 11:42:44 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lb6Bv-000633-K8; Mon, 26 Apr 2021 18:42:43 +0000
-Date:   Tue, 27 Apr 2021 02:41:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- eb4fae8d3b9ed65099eea96665aa4a11e4862ac4
-Message-ID: <60870967.n1diyNKM2mxHFXZT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236840AbhDZSnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239391AbhDZSnd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 14:43:33 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1450C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:42:50 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id n2so85927835ejy.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/oHzY7EFmjXmbACcqlKjXXYBIu0vYraMFUksRGGqX5E=;
+        b=o7dc2KZctRLIt6MSgzsov3bvXxNCEw9okaGaWSiX1juvDf0KRbwD6SKGy/NjBbNWhD
+         oKUfynXkYHC0+tU4Ti4+OtWg85aiI9hQy5hm+lupD93K96MHfOzr3g8//Bzv1AwtsRxf
+         MK5IgFjT8VDunSN94j4bdZvZHQ/JDd3pvDy1D3cWxAAZKVfe1I2EopEbRkmMEDMyiwGf
+         1o93sVlVbYNeR6BmpMxrR9GeGl6mHnO2boSDmwPqeJmebhFJfeT24PNGjqFPPiwRCpSh
+         uAjNFfqXVfSI5tlClZ2SjJOtT/p3Vtk9ooiMWdjocm4Y+R2kMwFVFeqRd6RIjGAri7en
+         juKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/oHzY7EFmjXmbACcqlKjXXYBIu0vYraMFUksRGGqX5E=;
+        b=QQp4buS3qxX/bujs7rEwm7zyCKd8NdT/l+6wk7XbIDQbkToHb+d/BdS+6h+e7F+vbj
+         S+HJidoyWXWu3sMX9JA4wBhxJY7Oq0q3qqk1R6hztjU0ysEYX5eRjQCvbeRkd1Qq+bSk
+         Hgucpgiv+YH/JtIhzSUoCuiUGVnk0oEMWg+fe2F/qeb6stJjwP+j0zO8t4CIVfcG4f0s
+         1tWP4Rg1Djg3Z9Aj+43B8dmJmtBmatyCMlMiLAEh1BRxXrjA3IklmwO0dB1S0eFaA/We
+         vqMbqJ5sOS44OQ6PpMMV5iwEvlrqVgMij+qHFF8Y7QpgtOUAE5erx3WgAKOYcxOHohk5
+         nhyQ==
+X-Gm-Message-State: AOAM531kIISBAWCVFkgXnYMctNV9f8KfpvRH7jQU59+O9jQRL+X/qZDa
+        5mksLWytS5ZOo7DmoJLTcrY=
+X-Google-Smtp-Source: ABdhPJwsTbNTz8PNm+qJY1E7LQZUWJpgqKAJZpykcDUcH7PRF0lia3p4nUhaej0CaLLVK1x10UIt1g==
+X-Received: by 2002:a17:906:37c9:: with SMTP id o9mr19716700ejc.285.1619462569599;
+        Mon, 26 Apr 2021 11:42:49 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id l15sm417273edb.48.2021.04.26.11.42.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 11:42:48 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        David Kershner <david.kershner@unisys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v3] staging: unisys: visorhba: Convert module from IDR to XArray
+Date:   Mon, 26 Apr 2021 20:42:45 +0200
+Message-Id: <20210426184245.12269-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: eb4fae8d3b9ed65099eea96665aa4a11e4862ac4  Merge tag 'v5.12'
+Converted visorhba from IDR to XArray. The abstract data type XArray is
+more memory-efficient, parallelisable and cache friendly. It takes
+advantage of RCU to perform lookups without locking.
 
-elapsed time: 722m
-
-configs tested: 106
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                         tb0287_defconfig
-sh                          rsk7264_defconfig
-mips                     decstation_defconfig
-powerpc                   currituck_defconfig
-powerpc                     tqm8548_defconfig
-riscv                    nommu_k210_defconfig
-mips                      malta_kvm_defconfig
-openrisc                            defconfig
-sh                           se7712_defconfig
-powerpc                      walnut_defconfig
-mips                         bigsur_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                   lite5200b_defconfig
-mips                     loongson1c_defconfig
-arc                                 defconfig
-m68k                       m5475evb_defconfig
-sh                            titan_defconfig
-ia64                         bigsur_defconfig
-powerpc                     skiroot_defconfig
-arm                            lart_defconfig
-arm                            xcep_defconfig
-mips                             allmodconfig
-x86_64                              defconfig
-sh                            migor_defconfig
-arm                         socfpga_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      obs600_defconfig
-arm                       imx_v6_v7_defconfig
-arm                          gemini_defconfig
-powerpc                    adder875_defconfig
-sh                               j2_defconfig
-ia64                        generic_defconfig
-alpha                            allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210426
-i386                 randconfig-a002-20210426
-i386                 randconfig-a001-20210426
-i386                 randconfig-a006-20210426
-i386                 randconfig-a004-20210426
-i386                 randconfig-a003-20210426
-x86_64               randconfig-a015-20210426
-x86_64               randconfig-a016-20210426
-x86_64               randconfig-a011-20210426
-x86_64               randconfig-a014-20210426
-x86_64               randconfig-a012-20210426
-x86_64               randconfig-a013-20210426
-i386                 randconfig-a014-20210426
-i386                 randconfig-a012-20210426
-i386                 randconfig-a011-20210426
-i386                 randconfig-a013-20210426
-i386                 randconfig-a015-20210426
-i386                 randconfig-a016-20210426
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20210426
-x86_64               randconfig-a004-20210426
-x86_64               randconfig-a001-20210426
-x86_64               randconfig-a006-20210426
-x86_64               randconfig-a005-20210426
-x86_64               randconfig-a003-20210426
-
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Changes from v2: Some residual errors from v1 were not fixed in v2. Now
+they have been removed.
+Changes from v1: After a first review by Matthew Wilcox, who found a
+series of errors and gave suggestions on how to fix them, I rewrote a
+larger part of the patch.
+
+ .../staging/unisys/visorhba/visorhba_main.c   | 89 ++++++-------------
+ 1 file changed, 25 insertions(+), 64 deletions(-)
+
+diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
+index 4455d26f7c96..938a5081b835 100644
+--- a/drivers/staging/unisys/visorhba/visorhba_main.c
++++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+@@ -6,10 +6,10 @@
+ 
+ #include <linux/debugfs.h>
+ #include <linux/kthread.h>
+-#include <linux/idr.h>
+ #include <linux/module.h>
+ #include <linux/seq_file.h>
+ #include <linux/visorbus.h>
++#include <linux/xarray.h>
+ #include <scsi/scsi.h>
+ #include <scsi/scsi_host.h>
+ #include <scsi/scsi_cmnd.h>
+@@ -82,7 +82,7 @@ struct visorhba_devdata {
+ 	 * allows us to pass int handles back-and-forth between us and
+ 	 * iovm, instead of raw pointers
+ 	 */
+-	struct idr idr;
++	struct xarray xa;
+ 
+ 	struct dentry *debugfs_dir;
+ 	struct dentry *debugfs_info;
+@@ -182,71 +182,40 @@ static struct uiscmdrsp *get_scsipending_cmdrsp(struct visorhba_devdata *ddata,
+ 	return NULL;
+ }
+ 
+-/*
+- * simple_idr_get - Associate a provided pointer with an int value
+- *		    1 <= value <= INT_MAX, and return this int value;
+- *		    the pointer value can be obtained later by passing
+- *		    this int value to idr_find()
+- * @idrtable: The data object maintaining the pointer<-->int mappings
+- * @p:	      The pointer value to be remembered
+- * @lock:     A spinlock used when exclusive access to idrtable is needed
+- *
+- * Return: The id number mapped to pointer 'p', 0 on failure
+- */
+-static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+-				   spinlock_t *lock)
+-{
+-	int id;
+-	unsigned long flags;
+-
+-	idr_preload(GFP_KERNEL);
+-	spin_lock_irqsave(lock, flags);
+-	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
+-	spin_unlock_irqrestore(lock, flags);
+-	idr_preload_end();
+-	/* failure */
+-	if (id < 0)
+-		return 0;
+-	/* idr_alloc() guarantees > 0 */
+-	return (unsigned int)(id);
+-}
+-
+ /*
+  * setup_scsitaskmgmt_handles - Stash the necessary handles so that the
+  *				completion processing logic for a taskmgmt
+  *				cmd will be able to find who to wake up
+  *				and where to stash the result
+- * @idrtable: The data object maintaining the pointer<-->int mappings
+- * @lock:     A spinlock used when exclusive access to idrtable is needed
++ * @xa:       The data object maintaining the pointer<-->int mappings
+  * @cmdrsp:   Response from the IOVM
+  * @event:    The event handle to associate with an id
+  * @result:   The location to place the result of the event handle into
+  */
+-static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
+-				       struct uiscmdrsp *cmdrsp,
++static void setup_scsitaskmgmt_handles(struct xarray *xa, struct uiscmdrsp *cmdrsp,
+ 				       wait_queue_head_t *event, int *result)
+ {
+-	/* specify the event that has to be triggered when this */
+-	/* cmd is complete */
+-	cmdrsp->scsitaskmgmt.notify_handle =
+-		simple_idr_get(idrtable, event, lock);
+-	cmdrsp->scsitaskmgmt.notifyresult_handle =
+-		simple_idr_get(idrtable, result, lock);
++	u32 id;
++	int ret;
++
++	/* specify the event that has to be triggered when this cmd is complete */
++	id = (u32)cmdrsp->scsitaskmgmt.notify_handle;
++	ret = xa_alloc_irq(xa, &id, event, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
++	id = (u32)cmdrsp->scsitaskmgmt.notifyresult_handle;
++	ret = xa_alloc_irq(xa, &id, result, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
+ }
+ 
+ /*
+  * cleanup_scsitaskmgmt_handles - Forget handles created by
+  *				  setup_scsitaskmgmt_handles()
+- * @idrtable: The data object maintaining the pointer<-->int mappings
++ * @xa: The data object maintaining the pointer<-->int mappings
+  * @cmdrsp:   Response from the IOVM
+  */
+-static void cleanup_scsitaskmgmt_handles(struct idr *idrtable,
++static void cleanup_scsitaskmgmt_handles(struct xarray *xa,
+ 					 struct uiscmdrsp *cmdrsp)
+ {
+-	if (cmdrsp->scsitaskmgmt.notify_handle)
+-		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
+-	if (cmdrsp->scsitaskmgmt.notifyresult_handle)
+-		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
++	xa_erase(xa, cmdrsp->scsitaskmgmt.notify_handle);
++	xa_erase(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
+ }
+ 
+ /*
+@@ -273,8 +242,7 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
+ 	if (devdata->serverdown || devdata->serverchangingstate)
+ 		return FAILED;
+ 
+-	scsicmd_id = add_scsipending_entry(devdata, CMD_SCSITASKMGMT_TYPE,
+-					   NULL);
++	scsicmd_id = add_scsipending_entry(devdata, CMD_SCSITASKMGMT_TYPE, NULL);
+ 	if (scsicmd_id < 0)
+ 		return FAILED;
+ 
+@@ -284,8 +252,7 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
+ 
+ 	/* issue TASK_MGMT_ABORT_TASK */
+ 	cmdrsp->cmdtype = CMD_SCSITASKMGMT_TYPE;
+-	setup_scsitaskmgmt_handles(&devdata->idr, &devdata->privlock, cmdrsp,
+-				   &notifyevent, &notifyresult);
++	setup_scsitaskmgmt_handles(&devdata->xa, cmdrsp, &notifyevent, &notifyresult);
+ 
+ 	/* save destination */
+ 	cmdrsp->scsitaskmgmt.tasktype = tasktype;
+@@ -311,14 +278,14 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
+ 	dev_dbg(&scsidev->sdev_gendev,
+ 		"visorhba: taskmgmt type=%d success; result=0x%x\n",
+ 		 tasktype, notifyresult);
+-	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
++	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
+ 	return SUCCESS;
+ 
+ err_del_scsipending_ent:
+ 	dev_dbg(&scsidev->sdev_gendev,
+ 		"visorhba: taskmgmt type=%d not executed\n", tasktype);
+ 	del_scsipending_ent(devdata, scsicmd_id);
+-	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
++	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
+ 	return FAILED;
+ }
+ 
+@@ -654,13 +621,12 @@ DEFINE_SHOW_ATTRIBUTE(info_debugfs);
+  * Service Partition returned the result of the task management
+  * command. Wake up anyone waiting for it.
+  */
+-static void complete_taskmgmt_command(struct idr *idrtable,
+-				      struct uiscmdrsp *cmdrsp, int result)
++static void complete_taskmgmt_command(struct xarray *xa, struct uiscmdrsp *cmdrsp, int result)
+ {
+ 	wait_queue_head_t *wq =
+-		idr_find(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
++		xa_load(xa, cmdrsp->scsitaskmgmt.notify_handle);
+ 	int *scsi_result_ptr =
+-		idr_find(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
++		xa_load(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
+ 	if (unlikely(!(wq && scsi_result_ptr))) {
+ 		pr_err("visorhba: no completion context; cmd will time out\n");
+ 		return;
+@@ -708,8 +674,7 @@ static void visorhba_serverdown_complete(struct visorhba_devdata *devdata)
+ 			break;
+ 		case CMD_SCSITASKMGMT_TYPE:
+ 			cmdrsp = pendingdel->sent;
+-			complete_taskmgmt_command(&devdata->idr, cmdrsp,
+-						  TASK_MGMT_FAILED);
++			complete_taskmgmt_command(&devdata->xa, cmdrsp, TASK_MGMT_FAILED);
+ 			break;
+ 		default:
+ 			break;
+@@ -905,7 +870,7 @@ static void drain_queue(struct uiscmdrsp *cmdrsp,
+ 			if (!del_scsipending_ent(devdata,
+ 						 cmdrsp->scsitaskmgmt.handle))
+ 				break;
+-			complete_taskmgmt_command(&devdata->idr, cmdrsp,
++			complete_taskmgmt_command(&devdata->xa, cmdrsp,
+ 						  cmdrsp->scsitaskmgmt.result);
+ 		} else if (cmdrsp->cmdtype == CMD_NOTIFYGUEST_TYPE)
+ 			dev_err_once(&devdata->dev->device,
+@@ -1053,8 +1018,6 @@ static int visorhba_probe(struct visor_device *dev)
+ 	if (err)
+ 		goto err_debugfs_info;
+ 
+-	idr_init(&devdata->idr);
+-
+ 	devdata->cmdrsp = kmalloc(sizeof(*devdata->cmdrsp), GFP_ATOMIC);
+ 	visorbus_enable_channel_interrupts(dev);
+ 
+@@ -1096,8 +1059,6 @@ static void visorhba_remove(struct visor_device *dev)
+ 	scsi_remove_host(scsihost);
+ 	scsi_host_put(scsihost);
+ 
+-	idr_destroy(&devdata->idr);
+-
+ 	dev_set_drvdata(&dev->device, NULL);
+ 	debugfs_remove(devdata->debugfs_info);
+ 	debugfs_remove_recursive(devdata->debugfs_dir);
+-- 
+2.31.1
+
