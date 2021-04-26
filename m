@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0542536BB40
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E6636BB3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236364AbhDZVek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        id S235626AbhDZVed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235919AbhDZVei (ORCPT
+        with ESMTP id S234146AbhDZVec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:34:38 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E28C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:55 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id q192so13090708ybg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:55 -0700 (PDT)
+        Mon, 26 Apr 2021 17:34:32 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDBAC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:48 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso6074095pjn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:33:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YIDuPmzhPxytj5Fxz8H+t6WOGUUiRZKI+5N5FdxPWcA=;
-        b=f7Bsl2HRqgoSKtZA1OEo9CjCT7yvy46UVd9fQXeBhISTQCXh+fY6JC/QYdyS5RN/5S
-         2TlcOziMAURGHaOkKR+bkpj3IpNiBEM07P2e+N5/r/lzOIBlCsvPUq5oDJvtY6luCpLO
-         VgxFrD2QVn8Jd8DM/bbBKh+NDwDS3osI1AJncPFugFg8yMyqPX1bWqAHp1LyIcZfxGIt
-         TgdxdvWy52Dx0dO3Qvcezrw2YDP4fhJigpUS9jG78TGzHN+SonPtLHnt+CbfPZZfg1VH
-         VQRzjt/PWACZ8OM2Lbs3B/hIx3iJak8g87JjG+6bmfXK0Gtojx4tofqDdEGsMNLZ0gGH
-         Gr7Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2gqjqGKMmdY1c54QBWMIfXnF5vggO77yZIZgJZZpaUI=;
+        b=PxGTyMuyRjj+Z4cDoYFCCiZh9bcZQ0ETOYy8cGS8urgBFIwH0N3lizGv9Kzkc/MUTF
+         ZMyPvvHBWSzWEgSI4L+sVYDBlrJfBiTgAJjY2eHBpOfh/FBEqOoTjTziFifbD866Auqx
+         18xJCGTRacDmbDbmZPe9YLwIUN6KTWVj2ilYM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YIDuPmzhPxytj5Fxz8H+t6WOGUUiRZKI+5N5FdxPWcA=;
-        b=feYcDHTB/X3O+JrM8Hjjhef+zKgKYmUQc0uK9/8hoLLf5AWdTE4ESvMOv/ohK/uDSh
-         SO0xuJS5A6IwjKWzbHcb17ffFWCztUkd+u1cSV0A5ZvhKjxpzHV0/icoRtvx8kzQJmDf
-         DPklY879NPa6DuWY7pE0EytcODzpU6F5YHFrfMF0yFY+3nS0/JdhgTrGZO4c0a7G3VCE
-         jf8z4/C8MXEmOysw/ME1CXmWAb5GEUEgoaWi4DdjLdXHmhQEGCvkTQUvSzF5XhHIfOwZ
-         tS0G7Kr3B+phdR8G5I94X4M+uWoKpvzoGvDe63Em3+fGpEJOCUpOErxpuhtZCwvaW32H
-         mKPw==
-X-Gm-Message-State: AOAM5310p6vCkUxaGdD4XBAcLe4BO793W9raAM4yAKXDqx7FF1D/qDCA
-        Tv01drXN7aT0zt0EJcHolIUZkQGHiGsD7+fKWf4JGg==
-X-Google-Smtp-Source: ABdhPJwLl2VY0dtZA+suUEsn4n034jtV11uMqgYWkEuxAZMAl2kGLl4LAr2KIr24/m67fn946GYDX57/fmP//3k2dBk=
-X-Received: by 2002:a5b:a82:: with SMTP id h2mr1115898ybq.20.1619472834555;
- Mon, 26 Apr 2021 14:33:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2gqjqGKMmdY1c54QBWMIfXnF5vggO77yZIZgJZZpaUI=;
+        b=OCh1MVQ269RXUzHX7IvCdUBNdbXvhT89eg8OBtfV5G3BFSFZLMLJZZ4tZOonDkrj+y
+         YNs4LKKevj0txEqOn3W8a/Dca/s8skQm1PchzlE4kpd5iBzb6mVM5fnVnJj4Db1S9St9
+         QK2QT/EzsvLDJfqyvs/TpJhRCdkcd2rIGRR2qLo41xORdlC9tUVlyLqgJUFOzJYiCH4t
+         lvesdAUdjvKp2Jfnf/G0LOGQpegIia9QN1fkXLVqeEZRGlDPFeaRUKJWpciHRgR2ctE6
+         lhzGAJMfUxx5UeQouz9d69GSolrD3u2ncFYzFJYO31GyETGxXck7CsUDEqexPvOXLZsi
+         UhSA==
+X-Gm-Message-State: AOAM532kuHJbBCClTd5WV3pTRCa2tJlhUOQFQYEAvsApD9ffROZT4G11
+        EVq3KIgMLYydRABOE+QeinEOEA==
+X-Google-Smtp-Source: ABdhPJyFXC6sob9x+LwIedI3fkp8qCKwcb1urDmHU4J3LWavE7Dw52zZN8AEKXm4UIzmsTKo/q7sQQ==
+X-Received: by 2002:a17:90a:1990:: with SMTP id 16mr1243139pji.172.1619472828397;
+        Mon, 26 Apr 2021 14:33:48 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:3a16:de17:8721:d706])
+        by smtp.gmail.com with UTF8SMTPSA id r3sm12082473pgn.82.2021.04.26.14.33.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 14:33:47 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 14:33:46 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajeshwari <rkambl@codeaurora.org>
+Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, robh+dt@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanm@codeaurora.org, manafm@codeaurora.org
+Subject: Re: [PATCH V2 1/3] dt-bindings: thermal: tsens: Add compatible
+ string to TSENS binding for SC7280
+Message-ID: <YIcxuqvCkqnyN6/S@google.com>
+References: <1619202177-13485-1-git-send-email-rkambl@codeaurora.org>
+ <1619202177-13485-2-git-send-email-rkambl@codeaurora.org>
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
- <20210302211133.2244281-4-saravanak@google.com> <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
-In-Reply-To: <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 26 Apr 2021 14:33:18 -0700
-Message-ID: <CAGETcx_ayXd1uDR6WHWxLmskYwOSjyynNi3Rt8irRUrfnr266w@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by default""
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1619202177-13485-2-git-send-email-rkambl@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 1:51 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> Hi Saravana,
->
-> Adding Sudeep and Christian, Al and Jim.
->
-> On 3/2/21 1:11 PM, Saravana Kannan wrote:
-> > This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
-> >
-> > Since all reported issues due to fw_devlink=on should be addressed by
-> > this series, revert the revert. fw_devlink=on Take II.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
->
-> This change breaks booting on SCMI-based platforms such as ARCH_BRCMSTB.
-> If I revert this change or boot with fw_devlink=permissive, then our
-> systems boot again. From a quick look, the SCMI clock provider was never
-> probed which means that our UART driver never got a chance to get its
-> clock and we have no console -> timeout.
+On Fri, Apr 23, 2021 at 11:52:55PM +0530, Rajeshwari wrote:
+> Added compatible string in TSENS dt-bindings for SC7280.
 
-We explicitly landed changes to handle this condition. So we'll see if
-this is what is happening.
+nit: use present tense to describe what the patch does
 
-> Al, AFAICT you had started to analyze this before in the context of
-> SCMI, do you mind sharing what you had found?
->
-> Saravana, is there any debugging output that we can help provide?
+> Signed-off-by: Rajeshwari <rkambl@codeaurora.org>
 
-Thanks for the report. Couple of things that can help:
-1. Example DTS file (the final board file so that I can get the full DT view).
-2. Point out the UART device node and the SCMI device node that you
-suspect is causing the issue.
-3. Boot logs with dev_dbg changed to dev_info in device_link_add() and
-device_links_check_suppliers()
-
-Thanks,
-Saravana
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
