@@ -2,63 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C2736B211
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A101336B213
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhDZLKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:10:18 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52726 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232878AbhDZLKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:10:17 -0400
-Received: from zn.tnic (p200300ec2f074a004d23913e27e5ccbf.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:4a00:4d23:913e:27e5:ccbf])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E21441EC01A8;
-        Mon, 26 Apr 2021 13:09:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619435374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CHC8NRKX4UYeAuEI103O40JwXweNlUCZHygYxtOvqKM=;
-        b=Shl58S8Plz4TTJCXz2c6hxIdMB1rariZgaIpeB7MY+eD5VTYbu5gnp+rdMs2+Ats/4J1cv
-        wV3eVE4FGpMBV2lbbNPJDNYBxgub4+S5Pdbhi4uGTAucb2JEGxSLFu561vBsHbG12Cnk5c
-        DDTv4WC6wnlqn4Kdk2n59JgHIc6mHWQ=
-Date:   Mon, 26 Apr 2021 13:09:30 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     xuyihang <xuyihang@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] x86/apic: Force logial APIC ID in range from 0 to 8
-Message-ID: <YIafakDQEU7Fu26y@zn.tnic>
-References: <20210423075324.133463-1-xuyihang@huawei.com>
- <87czulwg55.ffs@nanos.tec.linutronix.de>
- <7ceb2fd5f8b3453b8ff5cf47e998ff03@huawei.com>
+        id S233146AbhDZLLE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Apr 2021 07:11:04 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46456 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232185AbhDZLLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 07:11:03 -0400
+Received: from mail-lf1-f71.google.com ([209.85.167.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1laz89-0002BT-CW
+        for linux-kernel@vger.kernel.org; Mon, 26 Apr 2021 11:10:21 +0000
+Received: by mail-lf1-f71.google.com with SMTP id p28-20020a056512329cb02901ae653ca592so9279732lfe.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 04:10:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xiDFWZDIwVOWhDf8JIJtdA0vE7Qg4WZABGwJr1mglyw=;
+        b=Zj4EG5EXpfreMGAFcEu+d7HL3IKvr8Girxhue9R7pYZOBa2mKKCn3zUS5iJmq4Fx6V
+         I6Rm21xAsTPo3/bwa/Oq7NAVVigXvUZq0APJZQTn4/ihag8hUkaxanBg5V24+dE3pi0o
+         ddZetAhfjLydHu9S462EeqGSD4TyN5hJ0HKX/RaU0ogSzZ+MiLWJ0yzeIs0bsxkTXJnW
+         XzrZqveNd/gUOmndSFe0FrIXIfNUBJV+LdNQeXSeGtm/CvquvC/Ms9GK8v58G6nS0/TR
+         JYQGSn9gQ2xoHOHDQo/9DtVuk+81e4xq01F6thueWz1LU0F2UB9kxNDZ24XGUkzCXDmU
+         mxKQ==
+X-Gm-Message-State: AOAM531pbX+60FUh2IlUO5s0koDmSTaa0xVYCs836MeEJWnvhh5RYIxJ
+        LIgdugo1ZKuekq3q/hWQfVWPK2iM/c5a1uGr/gEuE8KFETLTwUKBkcRrOrzTOGmPD+H/Y0UBO9T
+        gBM7a5R5r4L20qUxaD0UwxWfyqgdQsXrQMQmFwIQ7N6Sb30Ykvn0Ch1kfXA==
+X-Received: by 2002:ac2:4546:: with SMTP id j6mr307073lfm.290.1619435419363;
+        Mon, 26 Apr 2021 04:10:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2HuOs7hsFQWQ6DpfjtFI/lGLMD7R4zW0qG+mZ1QM088Bg0L5h31Ae1gJG1TKdvDNzcal21ao43zQupwhBKww=
+X-Received: by 2002:ac2:4546:: with SMTP id j6mr307063lfm.290.1619435419143;
+ Mon, 26 Apr 2021 04:10:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7ceb2fd5f8b3453b8ff5cf47e998ff03@huawei.com>
+References: <20210423044700.247359-1-kai.heng.feng@canonical.com> <YILAc6EhoWWhENq8@intel.com>
+In-Reply-To: <YILAc6EhoWWhENq8@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Mon, 26 Apr 2021 19:10:06 +0800
+Message-ID: <CAAd53p72Y8Rda0Hk3WReLKPGJe8rwc5X-Pi5cyCpRPAm8sVEzg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP
+ Workstation laptops
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 02:09:59AM +0000, xuyihang wrote:
-> Hi, I realize this problem only occur on kernel 3.10, and not on 4.18. Which leads me to this patch
-> (https://lore.kernel.org/patchwork/patch/855026/). flat_init_apic_ldr should not be called in this case.
-> 
+On Fri, Apr 23, 2021 at 8:41 PM Ville Syrjälä
+<ville.syrjala@linux.intel.com> wrote:
+>
+> On Fri, Apr 23, 2021 at 12:46:54PM +0800, Kai-Heng Feng wrote:
+> > On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+> > to discrete GFX after S3. This is not desirable, because userspace will
+> > treat connected display as a new one, losing display settings.
+> >
+> > The expected behavior is to let discrete GFX drives all external
+> > displays.
+> >
+> > The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+> > The method is inside the BXT _DSM, so add the _DSM and call it
+> > accordingly.
+> >
+> > I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
+> > regression was found.
+> >
+> > v2:
+> >  - Forward declare struct pci_dev.
+> >
+> > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+> > References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
+> >  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
+> >  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
+> >  3 files changed, 25 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> > index 833d0c1be4f1..c7b57c22dce3 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> > @@ -14,11 +14,16 @@
+> >
+> >  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
+> >  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
+> > +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
+> >
+> >  static const guid_t intel_dsm_guid =
+> >       GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+> >                 0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+> >
+> > +static const guid_t intel_bxt_dsm_guid =
+> > +     GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
+> > +               0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
+> > +
+>
+> I think this dsm is just supposed to be more or less an
+> alternative to the opregion SCI stuff. Why there are two
+> ways to do the same things I have no idea. The opregion
+> spec does not tell us such mundane details.
 
-This is not the first time people from Huawei are sending patches for
-some old kernel to the *upstream* kernel mailing list.
+Right now I think it's HP specific and from what I can see it doesn't
+touch opregion.
 
-You do know that we take patches only for the *upstream* kernel old
-kernels are someone else's problem, right?
+>
+> It's also not documented to do anything except list the
+> supported functions:
+> "Get BIOS Data Functions Supported “Function #0"
+>  This function can be called to discover which “_DSM” Functions are
+>  supported. It may only return success if the return value accurately
+>  lists supported Functions."
+>
+> But what you're apparently saying is that calling this changes
+> the behaviour of the system somehow? That is troubling.
 
--- 
-Regards/Gruss,
-    Boris.
+It flips a bit in BIOS-reserved Intel GPIO, and EC/hardware will
+change the MUX based on the GPIO bit.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+We can add a DMI check to match "HP" to minimize the potential
+regression factor.
+
+Kai-Heng
+
+>
+> --
+> Ville Syrjälä
+> Intel
