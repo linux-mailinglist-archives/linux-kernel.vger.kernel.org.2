@@ -2,432 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AE236B54F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EC236B554
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233930AbhDZO6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:58:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15746 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233825AbhDZO6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:58:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619449038; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/LyfcoIJMiGfkJ6thDU8dmZCRzZ/LfY+72d/pwZ3WiQ=;
- b=e59eT+MpVkDislIfHObALvPyAW5x9bUK+wVvBdF055wMuXBPvAitn6+PLCn4qfkHryVx6oGm
- M4XlQC1q+reEvqYss+qdigN7BwW5vZmIHNFIC0viJuZuvcJEIZzfYUFt/NnPMbXWe9kIoDVT
- UXbPxjv0AiEv+71bMxh51tNvi7Q=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6086d4c174f773a664f87424 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 14:57:04
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9D435C43144; Mon, 26 Apr 2021 14:57:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A6C2C433F1;
-        Mon, 26 Apr 2021 14:57:01 +0000 (UTC)
+        id S233925AbhDZO7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233573AbhDZO7b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:59:31 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0E9C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 07:58:49 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id y4so48516543lfl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 07:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yndiEwrMC6EsVM5lWWHwmBuUCeQneP83JQi4/a7Sns0=;
+        b=hdJIUXK1M5vKihZvBbiXxVX0zbGkiSwcYrjzWIXTnKNF2R6XKjotaa6NW1jSmBMfF+
+         RsKlFucuVmaWXbSvOfz4yHH8+EuIn1SrZH5GfT/IZq9GHu6kNtTjnkrIWtIk1ttbjpdn
+         nsTB/WR6BV5sAwk/nj9DVliUbezg1Vf2EEnBPknZIKVx9o/aShq4fyVYIv4DYoMmyR1F
+         IC7d67dmhq8GZa+ISk3ChXEbCx1EVrEV6KvOSTKspul4ngiF/JFE1n8SYBRMjjNsNXUI
+         tnOzqkNpvrdQFkZimYg6x+A/NI9TdGgl6+ZRuOoFJRgE0bK/w3poouEeR2qeW07FiIDz
+         si1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yndiEwrMC6EsVM5lWWHwmBuUCeQneP83JQi4/a7Sns0=;
+        b=R+E1HypnG6JB9SYhRXGuadQjOv/T9N0NXEH+IRCnRGggl//rh+m79oanUumQlB9Y2s
+         Pl3KVvWygsl9+xMHEbsflmMu4otcX4XyNW2M742akNoYrh/HiG58H3jMe5CBWfdi1vTf
+         bLIFzrGLKq+12OmQJKCwwYSaxy0LLVW7s2CAbw4JhcE7QT/QkgcgCbRL6ToYGLyFtgyP
+         sJto9DvREzmrKHGCmJ7shYwcetZFuxYjRwjoqF5SarDWakVX5meXqSy+ZvzwCsVvK/Vz
+         xsa0jjaVfPfgDeK+MH/uWIyUhaeeccBYgJyh1mkHMGHfb2kAy753TsRyJkyiN3KRt5nb
+         ujtg==
+X-Gm-Message-State: AOAM532ipokdIB4xXiXqKciw6QoU3qpDY1D5psSO6T5I2UbD/qV9mjCj
+        ZbqFh9Z+fdE64OfaJp1VFQ9L+S/zLF2IvHX7yuWpCQ==
+X-Google-Smtp-Source: ABdhPJykq8BT8Xool8/EA9WjJVaNg4H9xn+OkF2ZkZbIUAax5gzJyjZzkRGPIrsULgYBrZuDC6FIPowetgi7qiZomgc=
+X-Received: by 2002:a05:6512:78c:: with SMTP id x12mr13581962lfr.233.1619449128283;
+ Mon, 26 Apr 2021 07:58:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Apr 2021 20:27:01 +0530
-From:   rajeevny@codeaurora.org
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        mkrishn@codeaurora.org, linux-kernel@vger.kernel.org,
-        abhinavk@codeaurora.org, dianders@chromium.org,
-        seanpaul@chromium.org, kalyan_t@codeaurora.org,
-        hoegsberg@chromium.org, Lyude Paul <lyude@redhat.com>,
-        "Lankhorst, Maarten" <maarten.lankhorst@intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dave Airlie <airlied@gmail.com>,
-        intel-gfx@lists.freedesktop.org,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: [v3 2/2] backlight: Add DisplayPort aux backlight driver
-In-Reply-To: <87zgxl5qar.fsf@intel.com>
-References: <1619416756-3533-1-git-send-email-rajeevny@codeaurora.org>
- <1619416756-3533-3-git-send-email-rajeevny@codeaurora.org>
- <87zgxl5qar.fsf@intel.com>
-Message-ID: <9cb3f415fd46ef1040d13fcd99b5d5c5@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210425080902.11854-1-odin@uged.al>
+In-Reply-To: <20210425080902.11854-1-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 26 Apr 2021 16:58:36 +0200
+Message-ID: <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
+Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        cgroups@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-04-2021 15:19, Jani Nikula wrote:
-> On Mon, 26 Apr 2021, Rajeev Nandan <rajeevny@codeaurora.org> wrote:
->> Add backlight driver for the panels supporting backlight control
->> using DPCD registers on the DisplayPort aux channel.
-> 
-> No, please don't do this.
-> 
-> I wrote you last week in reply to v1 why I thought merging this would
-> not be a good idea [1]. Why have you sent two versions since then
-> without replying to me, or Cc'ing me or Lyude?
-> 
-> I think it's an even worse idea to merge this to
-> drivers/video/backlight. With DP AUX backlight you can't pretend it's
-> just an independent aux interface for backlight without everything else
-> around it. It's not independent of eDP, and exposing it as a direct
-> backlight sysfs interface bypasses the encoder.
-> 
-> And it still remains that there is existing DP AUX backlight code in
-> use, in the tree, with more features than this, with plans and
-> previously submitted patches to lift from one driver to drm core, and
-> with patches to add support to another driver.
-> 
-> I don't say this lightly, or very often at all, but,
-> 
-> NAK.
-> 
-> 
-> BR,
-> Jani.
-> 
-> 
-> [1] https://lore.kernel.org/dri-devel/871rb5bcf9.fsf@intel.com/
-> 
+On Sun, 25 Apr 2021 at 10:11, Odin Ugedal <odin@uged.al> wrote:
+>
+> TL;DR: Read the patch msg first; hopefully it makes sense. Feel free
+> to cc more relevant people, and (as I am pretty new to this) feedback
+> is highly appreciated!
+>
+> I thought it was smart to split the discussion of the patch and the issuse, so
+> here is some (wall of text, sorry) discussion around it:
+>
+> This patch fixes an extremely strange edge case, discovered more or less by
+> accident, where the fairness of the cfs scheduler get skewed quite
+> extensively. This often leads to two cgroups who are supposed to get
+> share cpu time 50/50, instead getting something like 90/10 or
+> even 99/1 (!!) in some rare cases (see below for example). I find this
+> edge case quite interesting, especially since I am able to so easily
+> reproduce it on all machines and all (4.8+) kernels.
+>
+> The issue can be easily reproduced on all kernels 4.8+, and afaik. most
+> "container runtimes" are affected. I do believe that I have wondered about
+> this issue earlier, but not actually understood what was causing it. There
+> is really (afaik.) no way to find the issue from userspace without using
+> a tracing tool like bpftrace. I am _sure_ this affects real production
+> environments _everywhere_, at least those running the normal container/using
+> cgroup tools together with cpu pinning; but verifying that the
+> fairness is skewed is quite hard, or more or less impossible in such cases,
+> especially when running multiple workloads simultaneously. I did inspect some
+> of my production servers, and found a set of this on multiple cgroups.
+>
+> It _is_ possible to read '/proc/sched_debug', but since that list only prints
+> the cfs_rq's from "leaf_cfs_rq_list", the cfs_rq's we are _really_ looking for,
+> are missing; making it look like the problem isn't becuase of cfs.
+>
+> I think the current patch is the best way solve the issue, but I will happily
+> discuss other possible solutions. One could also just "don't" propagate the
+> load to the task_group, but I think the current implementation on that part
+> is the correct way to do it. This is at least my best solution to avoid adding
+> logic to a "hotter" path that also would require more logic.
+>
+> The only thing I am thinking a bit about is if the cfs_rq (or one of its ancestors) is
+> throttled. In case the cfs_rq->throttled==1, I don't think we currently can skip, since
+> it only adds to the leaf_list in case (cfs_rq->nr_running >= 1), and the same applies for
+> (cfs_rq->throttle_count >= 1), since we cannot guarantee that it will be added again. Will
+> this code however interfere with the throttling mechanism? I have tested inserting new procs
+> to throttled cgroups (or children cgroups of throttled ones) with the patch applied,
+> and it works as I expect it to do (but other people might have more insight).
+>
+> Also, another solution may be to don't add the load before the task is actually
+> enqueued, avoiding this issue all together. But is that better (I assume that will
+> be more in the "hot path", and require quite a bit more code)?
+>
+> There may definetly be a better solution to this that I still haven't found, and that
+> other more experienced kernel devs see right away. :)
+>
+>
+> Also feel free to suggest additions/wording of the patch
+> message and title, and/or the comment in the code to make it more clear.
+>
+> This issue was introduced in 4.8, so all stable (4.9+) releases should probably
+> get this (the final solution at least), or?
+>
 
-Hi Jani,
+Have you been able to reproduce this on mainline ?
 
-Apologies for not acknowledging your comment on v1.
-I was looking here [1] for all the comments I would be receiving on
-my patches. I was not aware that the comments on the cover letter don't
-appear on this page. Also, I completely missed your mail.
-I will ensure such omissions don't happen again.
+>
+>
+> Below is various ways/scripts to reproduce - sorry this is so long (and
+> sorry for bash in general), but thought people might be interested in them:
+>
+> note: due to the nature of the issue, the "lost" load is different each time, so
+> the values change each time, and sometimes/often end up at ~50/50; but my testing
+> shows that it keep happening almost every time:
+>
+>
+> Example on cgruoup v1. Often results in 60/40 load:
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       18026 63.0  0.0   3676   100 pts/7    R+   13:09   0:06 stress --cpu 1
+> root       18036 36.6  0.0   3676   100 pts/7    R+   13:09   0:04 stress --cpu 1
 
-Keeping your comments in mind, I will look into Lyude's series and
-work upon my code.
+When running the script below on v5.12, I'm not able to reproduce your problem
 
-[1] https://patchwork.freedesktop.org/series/89085/
-
-Yours sincerely,
-Rajeev
-
-
->> 
->> Changes in v2:
->> - New (most of the code reused from drm_dp_aux_backlight.c of v1)
->> 
->> Changes in v3:
->> - Add missing ';' to fix module compilation (kernel test bot)
->> 
->> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
->> ---
->>  drivers/video/backlight/Kconfig            |   7 +
->>  drivers/video/backlight/Makefile           |   1 +
->>  drivers/video/backlight/dp_aux_backlight.c | 245 
->> +++++++++++++++++++++++++++++
->>  3 files changed, 253 insertions(+)
->>  create mode 100644 drivers/video/backlight/dp_aux_backlight.c
->> 
->> diff --git a/drivers/video/backlight/Kconfig 
->> b/drivers/video/backlight/Kconfig
->> index d83c87b..82c88f0 100644
->> --- a/drivers/video/backlight/Kconfig
->> +++ b/drivers/video/backlight/Kconfig
->> @@ -456,6 +456,13 @@ config BACKLIGHT_LED
->>  	  If you have a LCD backlight adjustable by LED class driver, say Y
->>  	  to enable this driver.
->> 
->> +config BACKLIGHT_DP_AUX
->> +       tristate "DisplayPort aux backlight driver"
->> +       depends on DRM && DRM_KMS_HELPER
->> +       help
->> +         If you have a panel backlight controlled by DPCD registers
->> +         on the DisplayPort aux channel, say Y to enable this driver.
->> +
->>  endif # BACKLIGHT_CLASS_DEVICE
->> 
->>  endmenu
->> diff --git a/drivers/video/backlight/Makefile 
->> b/drivers/video/backlight/Makefile
->> index 685f3f1..ba23c7c 100644
->> --- a/drivers/video/backlight/Makefile
->> +++ b/drivers/video/backlight/Makefile
->> @@ -57,3 +57,4 @@ obj-$(CONFIG_BACKLIGHT_WM831X)		+= wm831x_bl.o
->>  obj-$(CONFIG_BACKLIGHT_ARCXCNN) 	+= arcxcnn_bl.o
->>  obj-$(CONFIG_BACKLIGHT_RAVE_SP)		+= rave-sp-backlight.o
->>  obj-$(CONFIG_BACKLIGHT_LED)		+= led_bl.o
->> +obj-$(CONFIG_BACKLIGHT_DP_AUX)		+= dp_aux_backlight.o
->> diff --git a/drivers/video/backlight/dp_aux_backlight.c 
->> b/drivers/video/backlight/dp_aux_backlight.c
->> new file mode 100644
->> index 00000000..3398383
->> --- /dev/null
->> +++ b/drivers/video/backlight/dp_aux_backlight.c
->> @@ -0,0 +1,245 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Backlight driver to control the brightness over DisplayPort aux 
->> channel.
->> + */
->> +
->> +#include <linux/backlight.h>
->> +#include <linux/err.h>
->> +#include <linux/gpio/consumer.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <drm/drm_dp_helper.h>
->> +
->> +#define DP_AUX_MAX_BRIGHTNESS		0xffff
->> +
->> +/**
->> + * struct dp_aux_backlight - DisplayPort aux backlight data
->> + * @dev: pointer to our device.
->> + * @aux: the DisplayPort aux channel.
->> + * @enable_gpio: the backlight enable gpio.
->> + * @enabled: true if backlight is enabled else false.
->> + */
->> +struct dp_aux_backlight {
->> +	struct device *dev;
->> +	struct drm_dp_aux *aux;
->> +	struct gpio_desc *enable_gpio;
->> +	bool enabled;
->> +};
->> +
->> +static struct drm_dp_aux *i2c_to_aux(struct i2c_adapter *i2c)
->> +{
->> +	return container_of(i2c, struct drm_dp_aux, ddc);
->> +}
->> +
->> +static int dp_aux_backlight_enable(struct dp_aux_backlight *aux_bl)
->> +{
->> +	u8 val = 0;
->> +	int ret;
->> +
->> +	if (aux_bl->enabled)
->> +		return 0;
->> +
->> +	/* Set backlight control mode */
->> +	ret = drm_dp_dpcd_readb(aux_bl->aux, 
->> DP_EDP_BACKLIGHT_MODE_SET_REGISTER,
->> +				&val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	val &= ~DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
->> +	val |= DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
->> +	ret = drm_dp_dpcd_writeb(aux_bl->aux, 
->> DP_EDP_BACKLIGHT_MODE_SET_REGISTER,
->> +				 val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	/* Enable backlight */
->> +	ret = drm_dp_dpcd_readb(aux_bl->aux, 
->> DP_EDP_DISPLAY_CONTROL_REGISTER,
->> +				&val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	val |= DP_EDP_BACKLIGHT_ENABLE;
->> +	ret = drm_dp_dpcd_writeb(aux_bl->aux, 
->> DP_EDP_DISPLAY_CONTROL_REGISTER,
->> +				 val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	if (aux_bl->enable_gpio)
->> +		gpiod_set_value(aux_bl->enable_gpio, 1);
->> +
->> +	aux_bl->enabled = true;
->> +
->> +	return 0;
->> +}
->> +
->> +static int dp_aux_backlight_disable(struct dp_aux_backlight *aux_bl)
->> +{
->> +	u8 val = 0;
->> +	int ret;
->> +
->> +	if (!aux_bl->enabled)
->> +		return 0;
->> +
->> +	if (aux_bl->enable_gpio)
->> +		gpiod_set_value(aux_bl->enable_gpio, 0);
->> +
->> +	ret = drm_dp_dpcd_readb(aux_bl->aux, 
->> DP_EDP_DISPLAY_CONTROL_REGISTER,
->> +				&val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	val &= ~DP_EDP_BACKLIGHT_ENABLE;
->> +	ret = drm_dp_dpcd_writeb(aux_bl->aux, 
->> DP_EDP_DISPLAY_CONTROL_REGISTER,
->> +				 val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	aux_bl->enabled = false;
->> +
->> +	return 0;
->> +}
->> +
->> +static int dp_aux_backlight_update_status(struct backlight_device 
->> *bd)
->> +{
->> +	struct dp_aux_backlight *aux_bl = bl_get_data(bd);
->> +	u16 brightness = backlight_get_brightness(bd);
->> +	u8 val[2] = { 0x0 };
->> +	int ret = 0;
->> +
->> +	if (brightness > 0) {
->> +		val[0] = brightness >> 8;
->> +		val[1] = brightness & 0xff;
->> +		ret = drm_dp_dpcd_write(aux_bl->aux, 
->> DP_EDP_BACKLIGHT_BRIGHTNESS_MSB,
->> +					val, sizeof(val));
->> +		if (ret < 0)
->> +			return ret;
->> +
->> +		dp_aux_backlight_enable(aux_bl);
->> +	} else {
->> +		dp_aux_backlight_disable(aux_bl);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int dp_aux_backlight_get_brightness(struct backlight_device 
->> *bd)
->> +{
->> +	struct dp_aux_backlight *aux_bl = bl_get_data(bd);
->> +	u8 val[2] = { 0x0 };
->> +	int ret = 0;
->> +
->> +	if (backlight_is_blank(bd))
->> +		return 0;
->> +
->> +	ret = drm_dp_dpcd_read(aux_bl->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB,
->> +			       &val, sizeof(val));
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	return (val[0] << 8 | val[1]);
->> +}
->> +
->> +static const struct backlight_ops aux_bl_ops = {
->> +	.update_status = dp_aux_backlight_update_status,
->> +	.get_brightness = dp_aux_backlight_get_brightness,
->> +};
->> +
->> +
->> +static int dp_aux_backlight_probe(struct platform_device *pdev)
->> +{
->> +	struct dp_aux_backlight *aux_bl;
->> +	struct backlight_device *bd;
->> +	struct backlight_properties bl_props = { 0 };
->> +	struct device_node *np;
->> +	struct i2c_adapter *ddc;
->> +	int ret = 0;
->> +	u32 val;
->> +
->> +	aux_bl = devm_kzalloc(&pdev->dev, sizeof(*aux_bl), GFP_KERNEL);
->> +	if (!aux_bl)
->> +		return -ENOMEM;
->> +
->> +	aux_bl->dev = &pdev->dev;
->> +
->> +	np = of_parse_phandle(pdev->dev.of_node, "ddc-i2c-bus", 0);
->> +	if (!np) {
->> +		dev_err(&pdev->dev, "failed to get aux ddc I2C bus\n");
->> +		return -ENODEV;
->> +	}
->> +
->> +	ddc = of_find_i2c_adapter_by_node(np);
->> +	of_node_put(np);
->> +	if (!ddc)
->> +		return -EPROBE_DEFER;
->> +
->> +	aux_bl->aux = i2c_to_aux(ddc);
->> +	dev_dbg(&pdev->dev, "using dp aux %s\n", aux_bl->aux->name);
->> +
->> +	aux_bl->enable_gpio = devm_gpiod_get_optional(&pdev->dev, "enable",
->> +					     GPIOD_OUT_LOW);
->> +	if (IS_ERR(aux_bl->enable_gpio)) {
->> +		ret = PTR_ERR(aux_bl->enable_gpio);
->> +		goto free_ddc;
->> +	}
->> +
->> +	val = DP_AUX_MAX_BRIGHTNESS;
->> +	of_property_read_u32(pdev->dev.of_node, "max-brightness", &val);
->> +	if (val > DP_AUX_MAX_BRIGHTNESS)
->> +		val = DP_AUX_MAX_BRIGHTNESS;
->> +
->> +	bl_props.max_brightness = val;
->> +	bl_props.brightness = val;
->> +	bl_props.type = BACKLIGHT_RAW;
->> +	bd = devm_backlight_device_register(&pdev->dev, 
->> dev_name(&pdev->dev),
->> +					    &pdev->dev, aux_bl,
->> +					    &aux_bl_ops, &bl_props);
->> +	if (IS_ERR(bd)) {
->> +		ret = PTR_ERR(bd);
->> +		dev_err(&pdev->dev,
->> +			      "failed to register backlight (%d)\n", ret);
->> +		goto free_ddc;
->> +	}
->> +
->> +	platform_set_drvdata(pdev, bd);
->> +
->> +	return 0;
->> +
->> +free_ddc:
->> +	if (ddc)
->> +		put_device(&ddc->dev);
->> +
->> +	return ret;
->> +}
->> +
->> +static int dp_aux_backlight_remove(struct platform_device *pdev)
->> +{
->> +	struct backlight_device *bd = platform_get_drvdata(pdev);
->> +	struct dp_aux_backlight *aux_bl = bl_get_data(bd);
->> +	struct i2c_adapter *ddc = &aux_bl->aux->ddc;
->> +
->> +	if (ddc)
->> +		put_device(&ddc->dev);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id dp_aux_bl_of_match_table[] = {
->> +	{ .compatible = "dp-aux-backlight"},
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(of, dp_aux_bl_of_match_table);
->> +
->> +static struct platform_driver dp_aux_backlight_driver = {
->> +	.driver = {
->> +		.name = "dp-aux-backlight",
->> +		.of_match_table = dp_aux_bl_of_match_table,
->> +	},
->> +	.probe = dp_aux_backlight_probe,
->> +	.remove = dp_aux_backlight_remove,
->> +
->> +};
->> +module_platform_driver(dp_aux_backlight_driver);
->> +
->> +MODULE_DESCRIPTION("DisplayPort aux backlight driver");
->> +MODULE_LICENSE("GPL v2");
+> --- bash start
+> CGROUP_CPU=/sys/fs/cgroup/cpu/slice
+> CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
+> CPU=0
+>
+> function run_sandbox {
+>   local CG_CPUSET="$1"
+>   local CG_CPU="$2"
+>   local CMD="$3"
+>
+>   local PIPE="$(mktemp -u)"
+>   mkfifo "$PIPE"
+>   sh -c "read < $PIPE ; exec $CMD" &
+>   local TASK="$!"
+>   sleep .1
+>   mkdir -p "$CG_CPUSET"
+>   mkdir -p "$CG_CPU"
+>   tee "$CG_CPU"/cgroup.procs <<< "$TASK"
+>
+>   tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
+>
+>   tee "$PIPE" <<< sandox_done
+>   rm "$PIPE"
+> }
+>
+> mkdir -p "$CGROUP_CPU"
+> mkdir -p "$CGROUP_CPUSET"
+> tee "$CGROUP_CPUSET"/cpuset.cpus <<< "0"
+> tee "$CGROUP_CPUSET"/cpuset.mems <<< "0"
+>
+> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" "stress --cpu 1"
+> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" "stress --cpu 1"
+>
+> read # click enter to cleanup
+> killall stress
+> sleep .2
+> rmdir /sys/fs/cgroup/cpuset/slice/
+> rmdir /sys/fs/cgroup/cpu/slice/{cg-1,cg-2,}
+> --- bash end
+>
+> Example on cgroup v2 with sub cgroup (same as described in commit message),
+> where both should get 50/50, but instead getting 99% and 1% (!!).
+>
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
+> root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
+>
+> (in case of systemd on vg v2- make sure some slice/scope is delegated(?)/use
+> cpusets, otherwise systemd will fight you)
+> --- bash start
+> CGROUP_CPU=/sys/fs/cgroup/cpu/slice
+> CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
+> CPU=0
+>
+> function run_sandbox {
+>   local CG_CPUSET="$1"
+>   local CG_CPU="$2"
+>   local CMD="$3"
+>
+>   local PIPE="$(mktemp -u)"
+>   mkfifo "$PIPE"
+>   sh -c "read < $PIPE ; exec $CMD" &
+>   local TASK="$!"
+>   sleep .01
+>   mkdir -p "$CG_CPUSET"
+>   mkdir -p "$CG_CPU"
+>   tee "$CG_CPU"/cgroup.procs <<< "$TASK"
+>
+>   tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
+>
+>   tee "$PIPE" <<< sandox_done
+>   rm "$PIPE"
+> }
+>
+> mkdir -p "$CGROUP_CPU"
+> mkdir -p "$CGROUP_CPUSET"
+> tee "$CGROUP_CPUSET"/cpuset.cpus <<< "0"
+> tee "$CGROUP_CPUSET"/cpuset.mems <<< "0"
+>
+> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" "stress --cpu 1"
+> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" "stress --cpu 1"
+>
+> read # click enter to cleanup
+> killall stress
+> sleep .2
+> rmdir /sys/fs/cgroup/cpuset/slice/
+> rmdir /sys/fs/cgroup/cpu/slice/{cg-1,cg-2,}
+> --- bash end
+>
+>
+>
+> For those who only want to run docker stuff:
+> (on cgroup v1, you must use systemd driver)
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root        9291 60.1  0.0   7320    96 pts/0    R+   13:18   0:07 /usr/bin/stress --verbose --cpu 1
+> root        9388 45.5  0.0   7320    96 pts/0    R+   13:18   0:04 /usr/bin/stress --verbose --cpu 1
+> --- bash start
+> docker run --cpuset-cpus=0 --rm -it an-image-with-stress
+> docker run --cpuset-cpus=0 --rm -it an-image-with-stress
+> --- bash end
+>
+>
+> Here is a bpftrace script that can show what is happening (again. sorry for bash,
+> but bpftrace only allow constants as array indexes as of now, so this is the best I can do).
+> This script also needs bpftrace v0.13 (not released as of now, so currently you have
+> to compile master) or newer.
+>
+>
+> --- bash start
+> PROBE='kfunc:sched_group_set_shares{
+>   printf("cgroup: %s/%s\n",
+>     str(args->tg->css.cgroup->kn->parent->name),
+>     str(args->tg->css.cgroup->kn->name));
+>   printf(
+> "cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg\n"
+> );
+> }'
+> for i in $(seq 0 $(($(nproc)-1))); do
+>     PROBE="$PROBE""$(sed "s/cpu_nr/$i/" <<<' kfunc:sched_group_set_shares{
+>     printf("%-4d %-12llu %-13llu %-17llu %-11d %-16d %-20llu %d\n",
+>     cpu_nr,
+>     (args->tg->cfs_rq[cpu_nr])->load.weight,
+>     (args->tg->cfs_rq[cpu_nr])->avg.load_avg,
+>     (args->tg->cfs_rq[cpu_nr])->removed.load_avg,
+>     (args->tg->cfs_rq[cpu_nr])->removed.nr,
+>     (args->tg->cfs_rq[cpu_nr])->on_list,
+>     (args->tg->cfs_rq[cpu_nr])->tg_load_avg_contrib,
+>     args->tg->load_avg.counter
+>     );
+> }')"
+> done
+> PROBE="$PROBE"'kfunc:sched_group_set_shares{
+>   printf("\n");
+> }'
+>
+> bpftrace -e "$PROBE"
+> --- bash end
+>
+>
+> When running the bpftrace script when the sub cgroup example is running, and
+> executing (just setting the weight of the cgroup the same value as before, no change):
+>
+> --- bash start
+> tee /sys/fs/cgroup/slice/cg-1/sub/cpu.weight <<< 1
+> tee /sys/fs/cgroup/slice/cg-2/sub/cpu.weight <<< 10000
+> tee /sys/fs/cgroup/slice/cg-1/cpu.weight <<< 100
+> tee /sys/fs/cgroup/slice/cg-2/cpu.weight <<< 100
+> --- bash end
+>
+> the output is:
+>
+> --- output start
+> Attaching 6 probes...
+> cgroup: cg-1/sub
+> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
+> 0    1048576      1023          0                 0           1                1034                 1662
+> 1    0            0             0                 0           0                0                    1662
+> 2    0            0             0                 0           0                0                    1662
+> 3    0            628           628               1           0                628                  1662
+>
+> cgroup: cg-2/sub
+> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
+> 0    1048576      1023          0                 0           1                1023                 1830
+> 1    0            0             0                 0           0                0                    1830
+> 2    0            0             0                 0           0                0                    1830
+> 3    0            807           807               1           0                807                  1830
+>
+> cgroup: slice/cg-1
+> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
+> 0    6347         5             0                 0           1                5                    593
+> 1    0            0             0                 0           0                0                    593
+> 2    0            0             0                 0           0                0                    593
+> 3    0            5             0                 0           0                588                  593
+>
+> cgroup: slice/cg-2
+> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
+> 0    58642371     57263         0                 0           1                57909                58665
+> 1    0            0             0                 0           0                0                    58665
+> 2    0            0             0                 0           0                0                    58665
+> 3    0            75615         0                 0           0                756                  58665
+>
+> --- output end
+>
+> We can clearly see that both cg-1/sub and cg-2/sub have removed.nr==1 on cpu 3,
+> and therefore still contribute to the tg->load_avg. Since removed.on_list==0, the load would
+> never be "cleaned" up unless a new task starts on that cpu, but due to the cpuset, that would not
+> be the case. slice/cg-1 and slice/cg-2 also have load attached to cpu 3 that isn't removed (but
+> the patch will properly decay the load on them as well).
+>
+> With this path, all of these examples just end up sharing cpu time in a fair 50/50 way, as expected.
+>
+> Odin Ugedal (1):
+>   sched/fair: Fix unfairness caused by missing load decay
+>
+>  kernel/sched/fair.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> --
+> 2.31.1
+>
