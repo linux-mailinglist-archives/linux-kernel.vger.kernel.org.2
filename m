@@ -2,117 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E1736ACA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A8336ACAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbhDZHGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232020AbhDZHGx (ORCPT
+        id S232113AbhDZHHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:07:32 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:40614 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231907AbhDZHHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:06:53 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C498AC06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:06:11 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id m9so41821603wrx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 00:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5RuHvbrZHVloxRo7eENq0ZIryQnDTJP0ete42G83Dm0=;
-        b=rIb8+v2FAdA/HfhwuFQ6R8dphR1T0XKcem+hDmiyp8QJyiWsUG/VegWao1LxxolHOc
-         ctEIXLn6mFraIjAcGx8exbmzWC852dgXWwKnm3td7C06aBOHnlsNlS160CFJsN2ch7Vj
-         HWWjhQbqWx0x6IG9wItFTZ7CFHUw87oc7fyqNSc+/s7ZHgo7JuV9fKzCZn674JYEsCX6
-         +JY2w1OdFXrf2gQXf6S9eNPX7nVE/EMMHAlAlr+3OXLCHkZjMdIqHV0Zr7RTiOc+GI+a
-         gWafVirCtDjutoLU7lw5+fWllx0HFwPneUNauWgJcEPM4s8PQEDUE5Fz8Ws+QQ5hE5Rh
-         LJag==
+        Mon, 26 Apr 2021 03:07:08 -0400
+Received: by mail-ua1-f43.google.com with SMTP id 33so17259936uaa.7;
+        Mon, 26 Apr 2021 00:06:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5RuHvbrZHVloxRo7eENq0ZIryQnDTJP0ete42G83Dm0=;
-        b=KTimwhv917Pss5msHUBrjB3lzfGfJfMb2pnR/A8t+4vvmN7J7OPdkoQisr2muLKIvC
-         +a7OIvgQbvAoOqNooo8PMjji6wbjJSQNFiKv0a/JjslYlelRXJRU4r7fIOPAFQbo2u3X
-         e48bLWFCc85w08IpAsWW705qL3ygyyCLiyQ/zuk/5ezAcD4HRK+4wDUE4Mi9uzqZr/0g
-         vJXZpDUC7q+/FH8rzzFjMkr8pILhlqeI5UPdGjEZa4Po7AgOZ7QeUmoYj373cgCDOfLL
-         l1qb/IDtlLGLxTfx8AwAER5nps5FfXMpMBy+ChW9go3aRNxAqrGXtkOuCUENj7yt5cK9
-         +7Bg==
-X-Gm-Message-State: AOAM533r6XoaQ9hZ5CfyznTaQYpTKsZfbH950E478PA9P3FBtP54ZiVP
-        e93jjfpLC7PuX9D+19QQkBPVoA==
-X-Google-Smtp-Source: ABdhPJxQA11AMLyg/X551pHlVu8f4n+OUBOFc1FV8/qEkPz+6JKC49mgf31rgbpUC8pVKrxLOFj9Lw==
-X-Received: by 2002:a5d:4402:: with SMTP id z2mr20396301wrq.179.1619420770263;
-        Mon, 26 Apr 2021 00:06:10 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id 200sm16751584wmb.1.2021.04.26.00.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 00:06:09 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 08:06:07 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Timur Tabi <timur@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] firmware: replace HOTPLUG with UEVENT in FW_ACTION
- defines
-Message-ID: <20210426070607.GG6446@dell>
-References: <20210425020024.28057-1-shawn.guo@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NxKpBaqZsLjThpHjgG0iPAYuxf1rd8xygjZGBw1rDEM=;
+        b=B4SYrutweq3tiZq+crr4rQ5QNjxhjqix73nCnhnLcm0FIq8p57Fe0L/fkDBQSb+X4H
+         Hv3hnDFJcy7nvLVAq9kt4tc3IpAGuuBquceKrrhAyfm5PA39iEalfG6U9Xg3ld/FHJKl
+         f3NMRPtPSDl+rvMuVm5us+dPIKbXuxn7KAUg5BAWmofiLoQPoka8JUy+kUTUgoXSbShT
+         awAh8f7nNsjQpVRhiCTe2TFY1mWDXz8ynHkhK/zEG7MDrzv0i4Qya7JC9pUjmJ2lXaPL
+         JNmLL4auU02+DkzeZxLgmiwuVCpm1+Hit2IcekwRbi49pWUJUZ8C3HjUbYCnQwfWaAKI
+         bfWQ==
+X-Gm-Message-State: AOAM532P+LFTJohVtrxt3zBo25WB74ychDq9INHViwlcZW/O6V9sEdZe
+        fRm9BKQzpV9hxyZeUPAvG1GvnCdFwKnOxaDqhLE=
+X-Google-Smtp-Source: ABdhPJw6VQPZHcNgdUHX1pi07vEhOyTaZLo2ALg7j4KoO1/3EcUhOhXw0u7AfZlCHA4qkmFNAp/ncifXTc3ixsRCWs0=
+X-Received: by 2002:a9f:262c:: with SMTP id 41mr10707332uag.4.1619420787404;
+ Mon, 26 Apr 2021 00:06:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210425020024.28057-1-shawn.guo@linaro.org>
+References: <20210316133946.2376963-1-geert+renesas@glider.be> <20210425205717.GD10996@amd>
+In-Reply-To: <20210425205717.GD10996@amd>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 26 Apr 2021 09:06:16 +0200
+Message-ID: <CAMuHMdW_Mf49yLVt+BJjNNLi+H5C-qaaWFfjQNBr5iuSo25xZQ@mail.gmail.com>
+Subject: Re: [PATCH] leds: LEDS_BLINK_LGM should depend on X86
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Dan Murphy <dmurphy@ti.com>,
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Apr 2021, Shawn Guo wrote:
+Hi Pavel,
 
-> With commit 312c004d36ce ("[PATCH] driver core: replace "hotplug" by
-> "uevent"") already in the tree over a decade, update the name of
-> FW_ACTION defines to follow semantics, and reflect what the defines are
-> really meant for, i.e. whether or not generate user space event.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  drivers/dma/imx-sdma.c                      |  2 +-
->  drivers/media/platform/exynos4-is/fimc-is.c |  2 +-
+On Sun, Apr 25, 2021 at 10:57 PM Pavel Machek <pavel@ucw.cz> wrote:
+> > The Intel Lightning Mountain (LGM) Serial Shift Output controller (SSO)
+> > is only present on Intel Lightning Mountain SoCs.  Hence add a
+> > dependency on X86, to prevent asking the user about this driver when
+> > configuring a kernel without Intel Lightning Mountain platform support.
+> >
+> > While at it, merge the other dependencies into a single statement.
+> >
+> > Fixes: c3987cd2bca34ddf ("leds: lgm: Add LED controller driver for LGM SoC")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> This rejected, so I applied it by hand.
 
->  drivers/mfd/iqs62x.c                        |  2 +-
+Thank you!
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+> I'm deleting the Fixes tag --
+> we don't want this in stable.
 
->  drivers/misc/lattice-ecp3-config.c          |  2 +-
->  drivers/net/wireless/ti/wlcore/main.c       |  2 +-
->  drivers/platform/x86/dell/dell_rbu.c        |  2 +-
->  drivers/remoteproc/remoteproc_core.c        |  2 +-
->  drivers/scsi/lpfc/lpfc_init.c               |  2 +-
->  drivers/tty/serial/ucc_uart.c               |  2 +-
->  include/linux/firmware.h                    |  4 ++--
->  lib/test_firmware.c                         | 10 +++++-----
->  sound/soc/codecs/wm8958-dsp2.c              |  6 +++---
->  12 files changed, 19 insertions(+), 19 deletions(-)
+Why not? Shouldn't people running stable be shielded from useless
+questions while configuring their kernels?
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
