@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BDF36B1AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B555F36B1BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhDZKc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:32:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46548 "EHLO mx2.suse.de"
+        id S233026AbhDZKkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233072AbhDZKcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:32:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BE6A2B202;
-        Mon, 26 Apr 2021 10:31:32 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 12:31:35 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/sgx for v5.13
-Message-ID: <YIaWh9VSEMQnn5E2@zn.tnic>
+        id S233181AbhDZKjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 06:39:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E041260FE5;
+        Mon, 26 Apr 2021 10:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619433519;
+        bh=QWf2QF2tmOt45LbuGNFNJTJu2BK2aUi7N9rUAgMP8Ek=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=YhT+7SoxVvujIK56rCT/NOvSu7GAP0BQSGU6SjwIeNQ1H0uHrDoX6Gi4RfOg1tRRx
+         6IVrQDNB6FxGqP9HB+6/x8MgVn92EC7jjhSMp0tUsc+fXEcyO/vTp51nAWAg4Irihr
+         Xoa2CAqWa78p/dDr4M1NovwZC7tRHbqA9CuW7Mx21+y0CMOJeD9C55Oo3FrOSMI/+p
+         gdKsxnWz1Q+rxtmO5capC752pN9u8ufuBWVBt2Z+8NvaOvPYxsKuqL5J1weP/5O2gg
+         2PbpzQKgNofdz5UPw8rJWm40P2Ed1eWNIQMTfDIhWdS/M17vCR/E+RFCUjUJB9T9Sb
+         GcyfhXzZKrthw==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Ferry Toth <ftoth@exalondelft.nl>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 1/1] usb: dwc3: pci: Enable usb2-gadget-lpm-disable
+ for Intel Merrifield
+In-Reply-To: <20210425195452.94143-1-ftoth@exalondelft.nl>
+References: <20210425195452.94143-1-ftoth@exalondelft.nl>
+Date:   Mon, 26 Apr 2021 13:38:32 +0300
+Message-ID: <875z09l49j.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-please pull the SGX pile of updates for v5.13.
+Ferry Toth <ftoth@exalondelft.nl> writes:
 
-Thx.
+> On Intel Merrifield LPM is causing the host to reset port after a timeout.
+> By disabling LPM entirely this is prevented.
+>
+> Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merr=
+ifield")
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
----
+Acked-by: Felipe Balbi <balbi@kernel.org>
 
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
+=2D-=20
+balbi
 
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-are available in the Git repository at:
+-----BEGIN PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_v5.13
-
-for you to fetch changes up to 523caed9efbb049339706b124185c9358c1b6477:
-
-  x86/sgx: Mark sgx_vepc_vm_ops static (2021-04-12 19:48:32 +0200)
-
-----------------------------------------------------------------
-Add the guest side of SGX support in KVM guests. Work by Sean
-Christopherson, Kai Huang and Jarkko Sakkinen. Along with the usual
-fixes, cleanups and improvements.
-
-----------------------------------------------------------------
-Dave Hansen (1):
-      selftests/sgx: Improve error detection and messages
-
-Ira Weiny (1):
-      x86/sgx: Remove unnecessary kmap() from sgx_ioc_enclave_init()
-
-Jarkko Sakkinen (3):
-      x86/sgx: Replace section->init_laundry_list with sgx_dirty_page_list
-      x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()
-      x86/sgx: Do not update sgx_nr_free_pages in sgx_setup_epc_section()
-
-Kai Huang (4):
-      x86/cpufeatures: Make SGX_LC feature bit depend on SGX bit
-      x86/sgx: Wipe out EREMOVE from sgx_free_epc_page()
-      x86/sgx: Initialize virtual EPC driver even when SGX driver is disabled
-      x86/sgx: Add helper to update SGX_LEPUBKEYHASHn MSRs
-
-Sean Christopherson (10):
-      x86/cpufeatures: Add SGX1 and SGX2 sub-features
-      x86/sgx: Add SGX_CHILD_PRESENT hardware error code
-      x86/sgx: Introduce virtual EPC for use by KVM guests
-      x86/cpu/intel: Allow SGX virtualization without Launch Control support
-      x86/sgx: Expose SGX architectural definitions to the kernel
-      x86/sgx: Move ENCLS leaf definitions to sgx.h
-      x86/sgx: Add SGX2 ENCLS leaf definitions (EAUG, EMODPR and EMODT)
-      x86/sgx: Add encls_faulted() helper
-      x86/sgx: Add helpers to expose ECREATE and EINIT to KVM
-      x86/sgx: Move provisioning device creation out of SGX driver
-
-Tianjia Zhang (1):
-      selftests/sgx: Use getauxval() to simplify test code
-
-Wei Yongjun (1):
-      x86/sgx: Mark sgx_vepc_vm_ops static
-
- Documentation/x86/sgx.rst                          |  41 +++
- MAINTAINERS                                        |   1 +
- arch/x86/Kconfig                                   |   1 +
- arch/x86/include/asm/cpufeatures.h                 |   2 +
- .../{kernel/cpu/sgx/arch.h => include/asm/sgx.h}   |  50 ++-
- arch/x86/kernel/cpu/cpuid-deps.c                   |   3 +
- arch/x86/kernel/cpu/feat_ctl.c                     |  71 ++--
- arch/x86/kernel/cpu/scattered.c                    |   2 +
- arch/x86/kernel/cpu/sgx/Makefile                   |   1 +
- arch/x86/kernel/cpu/sgx/driver.c                   |  17 -
- arch/x86/kernel/cpu/sgx/encl.c                     |  33 +-
- arch/x86/kernel/cpu/sgx/encl.h                     |   1 +
- arch/x86/kernel/cpu/sgx/encls.h                    |  30 +-
- arch/x86/kernel/cpu/sgx/ioctl.c                    |  43 +--
- arch/x86/kernel/cpu/sgx/main.c                     | 264 ++++++++++-----
- arch/x86/kernel/cpu/sgx/sgx.h                      |  40 ++-
- arch/x86/kernel/cpu/sgx/virt.c                     | 376 +++++++++++++++++++++
- arch/x86/kvm/Kconfig                               |  12 +
- tools/testing/selftests/sgx/defines.h              |   2 +-
- tools/testing/selftests/sgx/load.c                 |  69 +++-
- tools/testing/selftests/sgx/main.c                 |  26 +-
- 21 files changed, 861 insertions(+), 224 deletions(-)
- rename arch/x86/{kernel/cpu/sgx/arch.h => include/asm/sgx.h} (89%)
- create mode 100644 arch/x86/kernel/cpu/sgx/virt.c
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmCGmCgRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQYg7BAAiaSBbiXDCsLe6vVQLjvhcEVJjB+xRLDL
+1bLNiMILGC7gq3vsNQwPaeDd2YtNGlcqnhXWCl5uIYwESZHj43oPKU9NIXLZ502s
+WSsINOjSoNPbrrt1zuVLJYiaA74mvA7JGIyfhFZwwECyUuHMtSUSu7aChcrFKSme
+7/QlnDDKTIbCBp52bKA3WWIYm4TxaQDQ6hFX1Nvh5TD2BOEdMQSxNmJAHxvvlKLq
+3VNu0WlaL4LjnZQjhN2dGq57pHVpp/OrHpeH16vNylGMKy2PNV82iAk6WxKfz3BV
+wOCGLqS6AFzgCJCy7TJveG1d3ttoDtRphY8Wodg7vqbyhnqv6EInbDG8LwZSd7FA
+u6c9Dz+nVEhO2nsXR8xjPOZrA1IkekiUSZb/AeWiHWcMt1mcEnHfYYB2wFokmDqg
+Aolk5F7DBiLpSCSTzFs/Y+IYCgjj2ohdKwW+J2Suxyh/EO5c7ZdXNyTepJDhXV3h
+pHYS4aRJgdDJgEhLNJyLtR96ax41WwvsmpAPRvVNhrtG1f37hyqxl7BiaPU/gDjh
+q1dlH7AFT71NoeOCzRWFsgILdUrRYQ9enBxSF4shlInCnWt0Jw5leL0h7VDwHPmw
+MvZ5SSvPI/bS95tyDDIpOOD1sb2HmQmsRXnj4OckjnpjiFgrmQh8636hOcDEqtya
+Flst+gs5QFE=
+=/AB+
+-----END PGP SIGNATURE-----
+--=-=-=--
