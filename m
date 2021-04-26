@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBE636AF26
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7FA36AEEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhDZHy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60148 "EHLO mail.kernel.org"
+        id S233850AbhDZHtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:49:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233841AbhDZHoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:44:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80D3D613EA;
-        Mon, 26 Apr 2021 07:40:50 +0000 (UTC)
+        id S232685AbhDZHk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:40:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEC12611CA;
+        Mon, 26 Apr 2021 07:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422851;
-        bh=dQOG0laoapLFxO2rFa+JWZVS/IKfrplnybk3BUCUjbc=;
+        s=korg; t=1619422718;
+        bh=6Qc/Da3dRb/UdVG4q50oDReBLc8kQByQo/gnEgPYf1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kOK23njsvY1ziOjoJcWtd0aF2Tz970btc6i9xc4vfI5PzzhwHBH88AG0pxR//tOgd
-         G9v8DV3lHkLxS1J4+pSBtJh6FjP+P/2/HGorsY/nhSR876QwgfA4MC4HzC4kpItpvQ
-         IvIpQLnNCRytukGv5CJw5z6vclZe+/hzpVjwjCdk=
+        b=BJrrDg6tNaf31WcvTb74QIEaUurH+UlfhN7FyKmqW21a/G0UzmCF4OcQrkBv6DjKp
+         /4zUUHm+eeJhmSni0xr8igdt0kqbUt5w/coJY3X4eGraq9zCmy9GAUifXG5BeuA8nf
+         ODJ/IB8ANY/45qx/o1bDi28L32Sy7QtPe863QRzo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ali Saidi <alisaidi@amazon.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 17/41] locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
+Subject: [PATCH 5.4 13/20] net: geneve: check skb is large enough for IPv4/IPv6 header
 Date:   Mon, 26 Apr 2021 09:30:04 +0200
-Message-Id: <20210426072820.270963381@linuxfoundation.org>
+Message-Id: <20210426072817.119888105@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
-References: <20210426072819.666570770@linuxfoundation.org>
+In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
+References: <20210426072816.686976183@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ali Saidi <alisaidi@amazon.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit 84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896 ]
+[ Upstream commit 6628ddfec7580882f11fdc5c194a8ea781fdadfa ]
 
-While this code is executed with the wait_lock held, a reader can
-acquire the lock without holding wait_lock.  The writer side loops
-checking the value with the atomic_cond_read_acquire(), but only truly
-acquires the lock when the compare-and-exchange is completed
-successfully which isn’t ordered. This exposes the window between the
-acquire and the cmpxchg to an A-B-A problem which allows reads
-following the lock acquisition to observe values speculatively before
-the write lock is truly acquired.
+Check within geneve_xmit_skb/geneve6_xmit_skb that sk_buff structure
+is large enough to include IPv4 or IPv6 header, and reject if not. The
+geneve_xmit_skb portion and overall idea was contributed by Eric Dumazet.
+Fixes a KMSAN-found uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
 
-We've seen a problem in epoll where the reader does a xchg while
-holding the read lock, but the writer can see a value change out from
-under it.
-
-  Writer                                | Reader
-  --------------------------------------------------------------------------------
-  ep_scan_ready_list()                  |
-  |- write_lock_irq()                   |
-      |- queued_write_lock_slowpath()   |
-	|- atomic_cond_read_acquire()   |
-				        | read_lock_irqsave(&ep->lock, flags);
-     --> (observes value before unlock) |  chain_epi_lockless()
-     |                                  |    epi->next = xchg(&ep->ovflist, epi);
-     |                                  | read_unlock_irqrestore(&ep->lock, flags);
-     |                                  |
-     |     atomic_cmpxchg_relaxed()     |
-     |-- READ_ONCE(ep->ovflist);        |
-
-A core can order the read of the ovflist ahead of the
-atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
-semantics addresses this issue at which point the atomic_cond_read can
-be switched to use relaxed semantics.
-
-Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
-Signed-off-by: Ali Saidi <alisaidi@amazon.com>
-[peterz: use try_cmpxchg()]
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steve Capper <steve.capper@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Tested-by: Steve Capper <steve.capper@arm.com>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/qrwlock.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/geneve.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index fe9ca92faa2a..909b0bf22a1e 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -61,6 +61,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
-  */
- void queued_write_lock_slowpath(struct qrwlock *lock)
- {
-+	int cnts;
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index c7ec3d24eabc..c33a08d65208 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -891,6 +891,9 @@ static int geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
+ 
++	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
++		return -EINVAL;
 +
- 	/* Put the writer into the wait queue */
- 	arch_spin_lock(&lock->wait_lock);
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+ 	rt = geneve_get_v4_rt(skb, dev, gs4, &fl4, info,
+ 			      geneve->info.key.tp_dst, sport);
+@@ -954,6 +957,9 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
  
-@@ -74,9 +76,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
- 
- 	/* When no more readers or writers, set the locked flag */
- 	do {
--		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
--	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
--					_QW_LOCKED) != _QW_WAITING);
-+		cnts = atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
-+	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
- unlock:
- 	arch_spin_unlock(&lock->wait_lock);
- }
++	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
++		return -EINVAL;
++
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+ 	dst = geneve_get_v6_dst(skb, dev, gs6, &fl6, info,
+ 				geneve->info.key.tp_dst, sport);
 -- 
 2.30.2
 
