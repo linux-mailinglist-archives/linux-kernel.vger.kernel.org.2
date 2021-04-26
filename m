@@ -2,98 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633E236B27B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D49836B280
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhDZLrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        id S232589AbhDZLuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhDZLrn (ORCPT
+        with ESMTP id S231864AbhDZLuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:47:43 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCD6C061574;
-        Mon, 26 Apr 2021 04:47:01 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id z14so3125439ioc.12;
-        Mon, 26 Apr 2021 04:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7CWCSDgIxEP9nExMiQ8gtfxRiziS98W5A2zeK4MEZOs=;
-        b=pVZIz4mrDyFn0QNuqWuNexCDE2SY1Rw0FX/KJdpqIqdOTY5W4Dup3WIh8WY0pXJc/k
-         IRevNbLm4DPVXDu04hk/iaS/QFIj8Kya1syrimkagRU0VXHMGsm3hHbDQXWh1qJodik1
-         Q32ZA/G1ATDYDg/f81Fb5uMBDQaOvmTsT4Ua9Q8VP4+KodhqtVOarxM6oGdfWez9R8uZ
-         DBGQCqKK/IUhaBYqZEflDVtZv5dt0REsm6LxAXCW30dNBf17eSuIJxFXA+52tuWnlF9a
-         LcNTp7957suwSeF51TKiwrGiQ/MA4FmYmSq4QJNyZBIILsXdYqyB9fC0FowkWNjn6XsU
-         x2Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7CWCSDgIxEP9nExMiQ8gtfxRiziS98W5A2zeK4MEZOs=;
-        b=E1LWki2XXvnkmZ5OUtO7N0pdgvqOM+GU9N2rpe8ptufz4YdYrthGkbnUJ5gLqqazXW
-         i+tQ2Nxa2KtI75lR9Cbi8eEVHM6Q2QBI1yQmr9VrC0OMQS1FOZyU5aNXc3BUjMGGo+Em
-         VCpN9PApBQOz9B0C4HIEiuUGjKiZBBwfvBdFL2lubLAe0moNi9hXeUU8vuyEBIAXNDpS
-         lOHHMQfdmwToCiXV2QDG0qWN9B0oDFDuzXECxwSwE16xbx8Tq+1cLGkYkXt3tsHOsTrb
-         /p2zqCJ1m4svMhW/eIA3nwsGj3RfIBFJcmXKjb0snIH9xSVOy3+UCTezTqtk/NGj2Lrt
-         NW0g==
-X-Gm-Message-State: AOAM5333tiLc0VCj9bWk4WevuXjNSvCUROVgCQH21C54VJHZmq4oyECH
-        /N3fBLVGaVg3B8RbhyGECkI=
-X-Google-Smtp-Source: ABdhPJxPkh2qqZZagWe0I5W6/yGxbOpR4Ir0nBSVpx85yhUqGmF97W9sxcamUQ+Ot1bMFhE7tpH1pQ==
-X-Received: by 2002:a05:6638:443:: with SMTP id r3mr15578383jap.43.1619437620683;
-        Mon, 26 Apr 2021 04:47:00 -0700 (PDT)
-Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
-        by smtp.googlemail.com with ESMTPSA id y19sm6969683ili.51.2021.04.26.04.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 04:47:00 -0700 (PDT)
-From:   Tianling Shen <cnsztl@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Pavel Machek <pavel@ucw.cz>, Johan Jonker <jbx6244@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Marty Jones <mj8263788@gmail.com>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Tianling Shen <cnsztl@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: rename LED label for NanoPi R4S
-Date:   Mon, 26 Apr 2021 19:46:52 +0800
-Message-Id: <20210426114652.29542-1-cnsztl@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 26 Apr 2021 07:50:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBC5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 04:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SYKQ9oCxcSWwe5wSwHhuDS6qiub6VAFCoqgUBic5noU=; b=JcaImW1gEK6h9q8tQwRD8bt6Vx
+        CMbiB9SUpKICdiMygGUpNyrxLl/zCXJQeqOQrL+hEipcnO64TKBBsz9v95ULi/qW5AqHcFNHtNcbj
+        7J+N9exjen/qSrf2/OAPlOzGUN9PPZOHvvNE72ytzOOj7gtT1+eI2YO0QEKoLQY6zXSOt0g/7etIU
+        sntT5M5TTJ5LwQG/UTONKMURpYasR+OlXF9PZ08uLil0la547od4+ZUqV1H7iUaybUnfzDT95jVYy
+        D04/oWWIMTgiyAYPG+627zGFyZcQXKQSFZ8E5Mt1okA0HKkfhy3vGTz4FY3J2vbZb1gDXI6KxUYgi
+        9pXu/WpQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lazja-005Z51-Dy; Mon, 26 Apr 2021 11:49:11 +0000
+Date:   Mon, 26 Apr 2021 12:49:02 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        David Kershner <david.kershner@unisys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba:
+ Convert module from IDR to XArray
+Message-ID: <20210426114902.GI235567@casper.infradead.org>
+References: <20210426095015.18556-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426095015.18556-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-However "sys" is not a valid function, and it is always on.
-Let's keep existing functions.
+On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
+>  #define VISORHBA_ERROR_COUNT 30
+>  
+> +static DEFINE_XARRAY_ALLOC(xa_dtstr);
+> +
+>  static struct dentry *visorhba_debugfs_dir;
+>  
+>  /* GUIDS for HBA channel type supported by this driver */
+> @@ -78,12 +80,6 @@ struct visorhba_devdata {
+>  	unsigned int max_buff_len;
+>  	int devnum;
+>  	struct uiscmdrsp *cmdrsp;
+> -	/*
+> -	 * allows us to pass int handles back-and-forth between us and
+> -	 * iovm, instead of raw pointers
+> -	 */
+> -	struct idr idr;
+> -
 
-Fixes: db792e9adbf85f ("rockchip: rk3399: Add support for FriendlyARM NanoPi R4S")
+Why did you change the driver from having one namespace per HBA to having
+a global namespace?
 
-Suggested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Tianling Shen <cnsztl@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  /*
+> - * simple_idr_get - Associate a provided pointer with an int value
+> - *		    1 <= value <= INT_MAX, and return this int value;
+> - *		    the pointer value can be obtained later by passing
+> - *		    this int value to idr_find()
+> - * @idrtable: The data object maintaining the pointer<-->int mappings
+> - * @p:	      The pointer value to be remembered
+> - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> - *
+> - * Return: The id number mapped to pointer 'p', 0 on failure
+> + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
+> + * @id: Pointer to ID
+> + * @entry: New entry
+>   */
+> -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+> -				   spinlock_t *lock)
+> +static int simple_xa_dtstr_get(u32 *id, void *entry)
+>  {
+> -	int id;
+> -	unsigned long flags;
+> +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b, GFP_NOWAIT);
+> +	/* TODO: check for and manage errors */
+>  
+> -	idr_preload(GFP_KERNEL);
+> -	spin_lock_irqsave(lock, flags);
+> -	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
+> -	spin_unlock_irqrestore(lock, flags);
+> -	idr_preload_end();
+> -	/* failure */
+> -	if (id < 0)
+> -		return 0;
+> -	/* idr_alloc() guarantees > 0 */
+> -	return (unsigned int)(id);
+> +	return ret;
+>  }
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-index fa5809887643..cef4d18b599d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-@@ -33,7 +33,7 @@
- 
- 		sys_led: led-sys {
- 			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
--			label = "red:sys";
-+			label = "red:power";
- 			default-state = "on";
- 		};
- 
--- 
-2.17.1
+I would think that this wrapper should probably be removed.  It'll almost
+certainly be better to inline the call to xa_alloc_irq() at the call
+sites.
 
+You've also changed the behaviour; it used to allocate an id between 1
+and INT_MAX; now it allocates an ID between 0 and UINT_MAX.  Maybe that's
+safe, but you need to argue for it in the changelog.
+
+And it shouldn't be using GFP_NOWAIT, but GFP_KERNEL, like the IDR code
+used to do.
+
+>  /*
+> @@ -216,22 +196,25 @@ static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+>   *				completion processing logic for a taskmgmt
+>   *				cmd will be able to find who to wake up
+>   *				and where to stash the result
+> - * @idrtable: The data object maintaining the pointer<-->int mappings
+> - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> + * @xa_dtstr: The data object maintaining the pointer<-->int mappings
+
+You added this in the documentation, but not in the function ...
+
+>   * @cmdrsp:   Response from the IOVM
+>   * @event:    The event handle to associate with an id
+>   * @result:   The location to place the result of the event handle into
+>   */
+> -static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
+> -				       struct uiscmdrsp *cmdrsp,
+> -				       wait_queue_head_t *event, int *result)
+> +static void setup_scsitaskmgmt_handles(struct uiscmdrsp *cmdrsp,
+> +				       wait_queue_head_t *event, u32 *result)
+>  {
+> -	/* specify the event that has to be triggered when this */
+> -	/* cmd is complete */
+> -	cmdrsp->scsitaskmgmt.notify_handle =
+> -		simple_idr_get(idrtable, event, lock);
+> -	cmdrsp->scsitaskmgmt.notifyresult_handle =
+> -		simple_idr_get(idrtable, result, lock);
+> +	void *entry;
+> +	int ret;
+> +
+> +	/* specify the event that has to be triggered when this cmd is complete */
+> +	entry = &cmdrsp->scsitaskmgmt.notify_handle;
+> +	ret = simple_xa_dtstr_get(result, entry);
+> +	/* TODO: Check for and manage errors */
+
+The prior code assigned the ID for 'event' to scsitaskmgmt.notify_handle.
+Now, you're allocating an ID for the address of scsitaskmgmt.notify_handle
+to 'result'.  That's clearly not right.
+
+> +	entry = &cmdrsp->scsitaskmgmt.notifyresult_handle;
+> +	ret = simple_xa_dtstr_get(result, entry);
+> +	/* TODO: Check for and manage errors */
+>  }
+>  
+>  /*
+> @@ -240,13 +223,17 @@ static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
+>   * @idrtable: The data object maintaining the pointer<-->int mappings
+>   * @cmdrsp:   Response from the IOVM
+>   */
+> -static void cleanup_scsitaskmgmt_handles(struct idr *idrtable,
+> -					 struct uiscmdrsp *cmdrsp)
+> +static void cleanup_scsitaskmgmt_handles(struct uiscmdrsp_scsitaskmgmt *scsitaskmgmt)
+>  {
+> -	if (cmdrsp->scsitaskmgmt.notify_handle)
+> -		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
+> -	if (cmdrsp->scsitaskmgmt.notifyresult_handle)
+> -		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
+> +	struct uiscmdrsp *cmdrsp;
+> +	unsigned long index;
+> +
+> +	xa_for_each(&xa_dtstr, index, cmdrsp) {
+> +		if (&cmdrsp->scsitaskmgmt != scsitaskmgmt)
+> +			continue;
+> +		xa_erase(&xa_dtstr, index);
+> +		kfree(cmdrsp);
+> +	}
+
+I suspect this is part of the same confusion, but the old code passed in an
+ID that we just looked up & removed.  You've changed that to iterate over
+all the entries and remove the ones that match ...
+
+> @@ -1096,7 +1077,7 @@ static void visorhba_remove(struct visor_device *dev)
+>  	scsi_remove_host(scsihost);
+>  	scsi_host_put(scsihost);
+>  
+> -	idr_destroy(&devdata->idr);
+> +	xa_destroy(&xa_dtstr);
+>  
+>  	dev_set_drvdata(&dev->device, NULL);
+>  	debugfs_remove(devdata->debugfs_info);
+
+What happens if you have two HBAs in the system, one is active and you
+remove the other one?
+
+More generally, the IDR required you call idr_destroy() to avoid leaking
+preallocated memory.  I changed that, but there are still many drivers
+that have unnecessary calls to idr_destroy().  It's good form to just
+delete them and not turn them into calls to xa_destroy().
