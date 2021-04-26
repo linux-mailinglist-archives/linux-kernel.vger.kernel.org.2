@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D6A36B2C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAA336B2CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhDZMNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:13:49 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48411 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbhDZMNs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:13:48 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lb06q-0001ta-9F; Mon, 26 Apr 2021 12:13:04 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amdkfd: Fix spelling mistake "unregisterd" -> "unregistered"
-Date:   Mon, 26 Apr 2021 13:13:04 +0100
-Message-Id: <20210426121304.83256-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S233267AbhDZMOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:14:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231550AbhDZMOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:14:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 009BE61178;
+        Mon, 26 Apr 2021 12:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619439229;
+        bh=3jTHsaN6ohRdOgJEHP9SWTgo6GOAMiOIw+coUfFMB6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EE4JGHF9yusSCOW1/++ZdJIBj33EDn3bHr1UzDxz5uuqO9S1me5qfJrBts4VmQtZb
+         hyPwP53XqKJDoD0mzg52RrBURcZH2OIjU0PhSRb6uK2hIHdc9v65NADPHOAG9GTNLe
+         PAR09iM1oriu09Ybk2+ZCb8iww8MbYWJitb+rzknZSN2yJquRUf3sd2Z4Ska19fkhb
+         RUYyAP5xRYFvPxtRy1nfqy+zQRALtqwCioJ4n/LtRcG6evtFpVkR9lYDFsb4OaMZRW
+         PgVGSoH7kjtegpV3xnQ9Aj5uTThlf3KINgPsmAoJTNi87leEeUIJSlQSYUd99MC5Ki
+         kJS8El89cWo0Q==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lb07i-0006G9-V9; Mon, 26 Apr 2021 14:13:59 +0200
+Date:   Mon, 26 Apr 2021 14:13:58 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: hiddev: return -ENOMEM when kmalloc failed
+Message-ID: <YIauhinYt+USHmaB@hovoldconsulting.com>
+References: <1619429726-54768-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1619429726-54768-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Apr 26, 2021 at 05:35:26PM +0800, Yang Li wrote:
+> The driver is using -1 instead of the -ENOMEM defined macro to
+> specify that a buffer allocation failed. Using the correct error
+> code is more intuitive.
+> 
+> Smatch tool warning:
+> drivers/hid/usbhid/hiddev.c:894 hiddev_connect() warn: returning -1
+> instead of -ENOMEM is sloppy
+> 
+> No functional change, just more standardized.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/hid/usbhid/hiddev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/usbhid/hiddev.c b/drivers/hid/usbhid/hiddev.c
+> index 45e0b1c..88020f3 100644
+> --- a/drivers/hid/usbhid/hiddev.c
+> +++ b/drivers/hid/usbhid/hiddev.c
+> @@ -891,7 +891,7 @@ int hiddev_connect(struct hid_device *hid, unsigned int force)
+>  	}
+>  
+>  	if (!(hiddev = kzalloc(sizeof(struct hiddev), GFP_KERNEL)))
+> -		return -1;
+> +		return -ENOMEM;
 
-There is a spelling mistake in a pr_debug message. Fix it.
+Please try to understand the code that you're changing based on feedback
+from some tool.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+All other error paths here return -1 and the return value of this
+function is only compared to zero.
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index 4cc2539bed5b..e4ce97ab6e26 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -2286,7 +2286,7 @@ svm_range_restore_pages(struct amdgpu_device *adev, unsigned int pasid,
- 		}
- 		prange = svm_range_create_unregistered_range(adev, p, mm, addr);
- 		if (!prange) {
--			pr_debug("failed to create unregisterd range svms 0x%p address [0x%llx]\n",
-+			pr_debug("failed to create unregistered range svms 0x%p address [0x%llx]\n",
- 				 svms, addr);
- 			mmap_write_downgrade(mm);
- 			r = -EFAULT;
--- 
-2.30.2
+How is changing only one of these paths an improvement in any way?
 
+>  
+>  	init_waitqueue_head(&hiddev->wait);
+>  	INIT_LIST_HEAD(&hiddev->list);
+
+Johan
