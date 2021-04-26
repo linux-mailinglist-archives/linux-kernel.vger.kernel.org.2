@@ -2,219 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA3D36B922
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4FB36B935
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238814AbhDZSkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238742AbhDZSkb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:40:31 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE23AC06175F;
-        Mon, 26 Apr 2021 11:39:47 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g14so7258639edy.6;
-        Mon, 26 Apr 2021 11:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QSLTTzQCC0wKi0r8S5pXPw/n2MOLQ2k6Ya29tOHfasw=;
-        b=L5qvJeF/iHzDDfrka+aNey3iWqselqqJTZ9ePE+2nUVz5FJtVvY1utJmJ+kGwxcIpN
-         nz9NZsnKV/NfxmDN1K2QGamiqNeDxtlfErrZMDFNk/WfiNKINc42PFS0LBUVu/Cr90fg
-         EyH3PknDwckxijWAKvyEe4BbfNZobgAwkZPOSHLHKT+HV2YkEqCdOhAhIEN6M7mjFZu4
-         geZBDtiPGw5IK1TpcS+RWDTuOmWrGBNoRgoxtW4StbXD+2SPXX2Yng/ZG4A16093jHyj
-         sSBU0Yrk52i1nNCOUMaTFu4aUTOYs+fdCsj3CNPXTfbXA/HD8i05lgv4WoT3mOeTbjTy
-         q6Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QSLTTzQCC0wKi0r8S5pXPw/n2MOLQ2k6Ya29tOHfasw=;
-        b=oWfDYnNvmX5XRcEao7HqPPD4CVGjYvZ0Tzk1alKmMxHUT4joZRbnS/uSvT6Z/pom4Q
-         /QtCXF6kG0XF1RaYEk3ujj0R7x2fHJcpKeorm9IL7Xye8tt70XMR/6yqOtH75HTFd8AC
-         mD6T4f0c/H+SRGgqYVdNAil7ucX1Y67e2D9jGuCFEtmgyUAt+HxgDJ+Hvk2HHbDLubvV
-         6SW8gugAur7RjYACSfzditsLS0b7dBpZEVwYe1jbiClL0t50Z2PS7NHq2vDR5IsxiCHp
-         v1yxiH2PQDPK9pCvWhJtMZFgyDMufgDAEELYFw2XWt0vLu/tmrx4L1WtHXWdf3UJGTY5
-         /TdQ==
-X-Gm-Message-State: AOAM532xutgkXnpvwPce5yRanjqbdEUV4l94r53MP/lUKx8A+MVhrpr2
-        AQshv5Rjem1yRxYRgacpIyw=
-X-Google-Smtp-Source: ABdhPJxXqqpz8mbWpXlVj9lOnOwGPuFhnSQkIKurLB0hpt8jIe/9DxwXBoMD66Z1diIswBA6AFBw9Q==
-X-Received: by 2002:aa7:c349:: with SMTP id j9mr83754edr.230.1619462386502;
-        Mon, 26 Apr 2021 11:39:46 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id r25sm458593edv.78.2021.04.26.11.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 11:39:46 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 21:39:44 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next, v2, 3/7] net: dsa: free skb->cb usage in core driver
-Message-ID: <20210426183944.4djc5dep62xz4gh6@skbuf>
-References: <20210426093802.38652-1-yangbo.lu@nxp.com>
- <20210426093802.38652-4-yangbo.lu@nxp.com>
- <20210426133846.GA22518@hoboy.vegasvil.org>
+        id S239431AbhDZSnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:43:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:54189 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239367AbhDZSn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 14:43:27 -0400
+IronPort-SDR: bZzHC+cYYM1S78+kdrso/Ki3rFnNxKnkDb6z9ZHYuAYtEpGzpiPmd2msgkWPUKzozvaSteD9/f
+ HVg+X9SX4tfA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196446765"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="196446765"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 11:42:45 -0700
+IronPort-SDR: ujvtt69GWvDqQubvlFsSj2xst4Baw/+CCFWVdFoBWyUqNsowZ/aqhm+a21HPbtCU3WvQihg8pu
+ qcKImtMcce0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="525829952"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Apr 2021 11:42:44 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lb6Bv-000633-K8; Mon, 26 Apr 2021 18:42:43 +0000
+Date:   Tue, 27 Apr 2021 02:41:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ eb4fae8d3b9ed65099eea96665aa4a11e4862ac4
+Message-ID: <60870967.n1diyNKM2mxHFXZT%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426133846.GA22518@hoboy.vegasvil.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 06:38:46AM -0700, Richard Cochran wrote:
-> On Mon, Apr 26, 2021 at 05:37:58PM +0800, Yangbo Lu wrote:
-> > @@ -624,7 +623,7 @@ static netdev_tx_t dsa_slave_xmit(struct sk_buff *skb, struct net_device *dev)
-> >  
-> >  	dev_sw_netstats_tx_add(dev, 1, skb->len);
-> >  
-> > -	DSA_SKB_CB(skb)->clone = NULL;
-> > +	memset(skb->cb, 0, 48);
-> 
-> Replace hard coded 48 with sizeof() please.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: eb4fae8d3b9ed65099eea96665aa4a11e4862ac4  Merge tag 'v5.12'
 
-You mean just a trivial change like this, right?
+elapsed time: 722m
 
-	memset(skb->cb, 0, sizeof(skb->cb));
+configs tested: 106
+configs skipped: 3
 
-And not what I had suggested in v1, which would have looked something
-like this:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
------------------------------[cut here]-----------------------------
-diff --git a/include/net/dsa.h b/include/net/dsa.h
-index e1a2610a0e06..c75b249e846f 100644
---- a/include/net/dsa.h
-+++ b/include/net/dsa.h
-@@ -92,6 +92,7 @@ struct dsa_device_ops {
- 	 */
- 	bool (*filter)(const struct sk_buff *skb, struct net_device *dev);
- 	unsigned int overhead;
-+	unsigned int skb_cb_size;
- 	const char *name;
- 	enum dsa_tag_protocol proto;
- 	/* Some tagging protocols either mangle or shift the destination MAC
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 2033d8bac23d..2230596b48b7 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -610,11 +610,14 @@ static int dsa_realloc_skb(struct sk_buff *skb, struct net_device *dev)
- static netdev_tx_t dsa_slave_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct dsa_slave_priv *p = netdev_priv(dev);
-+	const struct dsa_device_ops *tag_ops;
- 	struct sk_buff *nskb;
- 
- 	dev_sw_netstats_tx_add(dev, 1, skb->len);
- 
--	memset(skb->cb, 0, 48);
-+	tag_ops = p->dp->cpu_dp->tag_ops;
-+	if (tag_ops->skb_cb_size)
-+		memset(skb->cb, 0, tag_ops->skb_cb_size);
- 
- 	/* Handle tx timestamp if any */
- 	dsa_skb_tx_timestamp(p, skb);
-diff --git a/net/dsa/tag_sja1105.c b/net/dsa/tag_sja1105.c
-index 50496013cdb7..1b337fa104dc 100644
---- a/net/dsa/tag_sja1105.c
-+++ b/net/dsa/tag_sja1105.c
-@@ -365,6 +365,7 @@ static const struct dsa_device_ops sja1105_netdev_ops = {
- 	.overhead = VLAN_HLEN,
- 	.flow_dissect = sja1105_flow_dissect,
- 	.promisc_on_master = true,
-+	.skb_cb_size = sizeof(struct sja1105_skb_cb),
- };
- 
- MODULE_LICENSE("GPL v2");
------------------------------[cut here]-----------------------------
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+mips                         tb0287_defconfig
+sh                          rsk7264_defconfig
+mips                     decstation_defconfig
+powerpc                   currituck_defconfig
+powerpc                     tqm8548_defconfig
+riscv                    nommu_k210_defconfig
+mips                      malta_kvm_defconfig
+openrisc                            defconfig
+sh                           se7712_defconfig
+powerpc                      walnut_defconfig
+mips                         bigsur_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                   lite5200b_defconfig
+mips                     loongson1c_defconfig
+arc                                 defconfig
+m68k                       m5475evb_defconfig
+sh                            titan_defconfig
+ia64                         bigsur_defconfig
+powerpc                     skiroot_defconfig
+arm                            lart_defconfig
+arm                            xcep_defconfig
+mips                             allmodconfig
+x86_64                              defconfig
+sh                            migor_defconfig
+arm                         socfpga_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      obs600_defconfig
+arm                       imx_v6_v7_defconfig
+arm                          gemini_defconfig
+powerpc                    adder875_defconfig
+sh                               j2_defconfig
+ia64                        generic_defconfig
+alpha                            allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210426
+i386                 randconfig-a002-20210426
+i386                 randconfig-a001-20210426
+i386                 randconfig-a006-20210426
+i386                 randconfig-a004-20210426
+i386                 randconfig-a003-20210426
+x86_64               randconfig-a015-20210426
+x86_64               randconfig-a016-20210426
+x86_64               randconfig-a011-20210426
+x86_64               randconfig-a014-20210426
+x86_64               randconfig-a012-20210426
+x86_64               randconfig-a013-20210426
+i386                 randconfig-a014-20210426
+i386                 randconfig-a012-20210426
+i386                 randconfig-a011-20210426
+i386                 randconfig-a013-20210426
+i386                 randconfig-a015-20210426
+i386                 randconfig-a016-20210426
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-I wanted to see how badly impacted would the performance be, so I
-created an IPv4 forwarding setup on the NXP LS1021A-TSN board (gianfar +
-sja1105):
+clang tested configs:
+x86_64               randconfig-a002-20210426
+x86_64               randconfig-a004-20210426
+x86_64               randconfig-a001-20210426
+x86_64               randconfig-a006-20210426
+x86_64               randconfig-a005-20210426
+x86_64               randconfig-a003-20210426
 
-#!/bin/bash
-
-ETH0=swp3
-ETH1=swp2
-
-systemctl stop ptp4l # runs a BPF classifier on every packet
-systemctl stop phc2sys
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-ip addr flush $ETH0 && ip addr add 192.168.100.1/24 dev $ETH0 && ip link set $ETH0 up
-ip addr flush $ETH1 && ip addr add 192.168.200.1/24 dev $ETH1 && ip link set $ETH1 up
-
-arp -s 192.168.100.2 00:04:9f:06:00:09 dev $ETH0
-arp -s 192.168.200.2 00:04:9f:06:00:0a dev $ETH1
-
-ethtool --config-nfc eth2 flow-type ether dst 00:1f:7b:63:01:d4 m ff:ff:ff:ff:ff:ff action 0
-
-and I got the following results on 1 CPU, 64B UDP packets (yes, I know
-the baseline results suck, I haven't investigated why that is, but
-nonetheless, it should still be relevant as far as comparative results
-go):
-
-Unpatched net-next:
-proto 17:      65695 pkt/s
-proto 17:      65725 pkt/s
-proto 17:      65732 pkt/s
-proto 17:      65720 pkt/s
-proto 17:      65695 pkt/s
-proto 17:      65725 pkt/s
-proto 17:      65732 pkt/s
-proto 17:      65720 pkt/s
-
-
-After patch 1:
-proto 17:      72679 pkt/s
-proto 17:      72677 pkt/s
-proto 17:      72669 pkt/s
-proto 17:      72707 pkt/s
-proto 17:      72696 pkt/s
-proto 17:      72699 pkt/s
-
-After patch 2:
-proto 17:      72292 pkt/s
-proto 17:      72425 pkt/s
-proto 17:      72485 pkt/s
-proto 17:      72478 pkt/s
-
-After patch 4 (as 3 doesn't build):
-proto 17:      72437 pkt/s
-proto 17:      72510 pkt/s
-proto 17:      72479 pkt/s
-proto 17:      72499 pkt/s
-proto 17:      72497 pkt/s
-proto 17:      72427 pkt/s
-
-With the change I pasted above:
-proto 17:      71891 pkt/s
-proto 17:      71810 pkt/s
-proto 17:      71850 pkt/s
-proto 17:      71826 pkt/s
-proto 17:      71798 pkt/s
-proto 17:      71786 pkt/s
-proto 17:      71814 pkt/s
-proto 17:      71814 pkt/s
-proto 17:      72010 pkt/s
-
-So basically, not only are we better off just zero-initializing the
-complete skb->cb instead of looking up the tagger's skb_cb_size, but
-zero-initializing the skb->cb isn't even all that bad. Yangbo's change
-is an overall win anyway, all things considered. So just change the
-memset as Richard suggested, make sure all patches compile, and we
-should be good to go.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
