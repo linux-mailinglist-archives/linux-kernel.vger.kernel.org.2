@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01FC36B640
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6F236B643
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhDZP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:56:05 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53086 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbhDZPz6 (ORCPT
+        id S234238AbhDZP4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:56:16 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44792 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234108AbhDZP4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:55:58 -0400
+        Mon, 26 Apr 2021 11:56:00 -0400
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13QFt6oe122082;
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13QFt63b090813;
         Mon, 26 Apr 2021 10:55:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1619452506;
-        bh=jexecR9/N1z8Aia7OdaqZaMfzWK4vBKhV7ZDwuuuPdY=;
+        bh=dZEBOCb8zkzyKphePgQJZoFUsMXeLrk9vzCjyHPgLgA=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qNqo82ZOhTzSl77Ne7bRQvhNLIkzoAJIO/4/aSMyX0Bv3d9N+TycieR/M3sRnKi2D
-         RN0ze57zhghvPKk6yjdGlXgkX0XAWUqRE0frC/izj3qKr3B5gtHrskJmS7GiKglxDE
-         RO+qpZLPL/WP2WowAq/8XEmHB6Qf0dUR8Den37qc=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13QFt5E4096585
+        b=lROL9DeSnlvVZtrEAtQHeGNzHBPdbAm1DdYMzvPggoQEXhcKlKFSTrdDEbtgqG37O
+         oPokWySEnVFGaOLPm0u4SRd0Th1nKiaGXeGEwffDOhPuZAUg2M6CGDyoZORXn72zKE
+         bSMHA21K/2MxAz9vfodgaQ6vn8q4wcCUxwxhd26A=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13QFt5Sa096590
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
         Mon, 26 Apr 2021 10:55:06 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 26
  Apr 2021 10:55:05 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
  Frontend Transport; Mon, 26 Apr 2021 10:55:05 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13QFt5mr024694;
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13QFt54R104457;
         Mon, 26 Apr 2021 10:55:05 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
@@ -46,9 +46,9 @@ CC:     Philipp Zabel <p.zabel@pengutronix.de>,
         <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH V2 2/4] dt-bindings: clock: Convert ti,sci-clk to json schema
-Date:   Mon, 26 Apr 2021 10:54:55 -0500
-Message-ID: <20210426155457.21221-3-nm@ti.com>
+Subject: [PATCH V2 3/4] dt-bindings: soc: ti: Convert ti,sci-pm-domain to json schema
+Date:   Mon, 26 Apr 2021 10:54:56 -0500
+Message-ID: <20210426155457.21221-4-nm@ti.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210426155457.21221-1-nm@ti.com>
 References: <20210426155457.21221-1-nm@ti.com>
@@ -60,91 +60,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the ti,sci-clk to json schema for better checks and documentation.
+Convert the ti,sci-pm-domain to json schema for better checks and
+documentation.
 
 Differences being:
  - Drop consumer example as they are documented in the corresponding
    bindings themselves.
- - Standardize the node name as clock-controller rather than clocks as
-   it is more appropriate.
- - Drop phandle description for clock-cells as it is redundant.
+ - Drop phandle description for reset consumer or cell definition as it
+   is redundant.
 
 Signed-off-by: Nishanth Menon <nm@ti.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Reviewed-by: Tero Kristo <kristo@kernel.org>
 ---
 
 Changes since V1:
- * reviewed by from Tero
-   https://lore.kernel.org/linux-arm-kernel/56388707-c8d3-ebdf-77a2-c5a983856b4d@kernel.org/
+ * reviewed by from Tero and Rob
+    https://lore.kernel.org/linux-arm-kernel/20210421223627.GA1740013@robh.at.kernel.org/
+    https://lore.kernel.org/linux-arm-kernel/56388707-c8d3-ebdf-77a2-c5a983856b4d@kernel.org/
  * Updated commit message to drop the 'checkpatch warning'
- * Dropped reference to clock.yaml
 
-v1: https://lore.kernel.org/linux-arm-kernel/20210416063721.20538-3-nm@ti.com/
+v1: https://lore.kernel.org/linux-arm-kernel/20210416063721.20538-4-nm@ti.com/
 
- .../devicetree/bindings/clock/ti,sci-clk.txt  | 36 --------------
- .../devicetree/bindings/clock/ti,sci-clk.yaml | 49 +++++++++++++++++++
- 2 files changed, 49 insertions(+), 36 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/ti,sci-clk.txt
- create mode 100644 Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+ .../bindings/soc/ti/sci-pm-domain.txt         | 65 -------------------
+ .../bindings/soc/ti/sci-pm-domain.yaml        | 59 +++++++++++++++++
+ 2 files changed, 59 insertions(+), 65 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
 
-diff --git a/Documentation/devicetree/bindings/clock/ti,sci-clk.txt b/Documentation/devicetree/bindings/clock/ti,sci-clk.txt
+diff --git a/Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt b/Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
 deleted file mode 100644
-index 4e59dc6b1778..000000000000
---- a/Documentation/devicetree/bindings/clock/ti,sci-clk.txt
+index 6217e64309de..000000000000
+--- a/Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
 +++ /dev/null
-@@ -1,36 +0,0 @@
--Texas Instruments TI-SCI Clocks
--===============================
+@@ -1,65 +0,0 @@
+-Texas Instruments TI-SCI Generic Power Domain
+----------------------------------------------
 -
--All clocks on Texas Instruments' SoCs that contain a System Controller,
--are only controlled by this entity. Communication between a host processor
--running an OS and the System Controller happens through a protocol known
--as TI-SCI[1]. This clock implementation plugs into the common clock
--framework and makes use of the TI-SCI protocol on clock API requests.
+-Some TI SoCs contain a system controller (like the PMMC, etc...) that is
+-responsible for controlling the state of the IPs that are present.
+-Communication between the host processor running an OS and the system
+-controller happens through a protocol known as TI-SCI [1].
 -
 -[1] Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
 -
--Required properties:
---------------------
--- compatible: Must be "ti,k2g-sci-clk"
--- #clock-cells: Shall be 2.
--  In clock consumers, this cell represents the device ID and clock ID
--  exposed by the PM firmware. The list of valid values for the device IDs
--  and clocks IDs for 66AK2G SoC are documented at
--  http://processors.wiki.ti.com/index.php/TISCI#66AK2G02_Data
+-PM Domain Node
+-==============
+-The PM domain node represents the global PM domain managed by the PMMC, which
+-in this case is the implementation as documented by the generic PM domain
+-bindings in Documentation/devicetree/bindings/power/power-domain.yaml.  Because
+-this relies on the TI SCI protocol to communicate with the PMMC it must be a
+-child of the pmmc node.
 -
--Examples:
----------
+-Required Properties:
+---------------------
+-- compatible: should be "ti,sci-pm-domain"
+-- #power-domain-cells: Can be one of the following:
+-			1: Containing the device id of each node
+-			2: First entry should be device id
+-			   Second entry should be one of the floowing:
+-			   TI_SCI_PD_EXCLUSIVE: To allow device to be
+-						exclusively controlled by
+-						the requesting hosts.
+-			   TI_SCI_PD_SHARED: To allow device to be shared
+-					     by multiple hosts.
 -
--pmmc: pmmc {
--	compatible = "ti,k2g-sci";
+-Example (K2G):
+--------------
+-	pmmc: pmmc {
+-		compatible = "ti,k2g-sci";
+-		...
 -
--	k2g_clks: clocks {
--		compatible = "ti,k2g-sci-clk";
--		#clock-cells = <2>;
+-		k2g_pds: power-controller {
+-			compatible = "ti,sci-pm-domain";
+-			#power-domain-cells = <1>;
+-		};
 -	};
--};
 -
--uart0: serial@2530c00 {
--	compatible = "ns16550a";
--	clocks = <&k2g_clks 0x2c 0>;
--};
-diff --git a/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml b/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+-PM Domain Consumers
+-===================
+-Hardware blocks belonging to a PM domain should contain a "power-domains"
+-property that is a phandle pointing to the corresponding PM domain node
+-along with an index representing the device id to be passed to the PMMC
+-for device control.
+-
+-Required Properties:
+---------------------
+-- power-domains: phandle pointing to the corresponding PM domain node
+-		 and an ID representing the device.
+-
+-See http://processors.wiki.ti.com/index.php/TISCI#66AK2G02_Data for the list
+-of valid identifiers for k2g.
+-
+-Example (K2G):
+---------------------
+-	uart0: serial@2530c00 {
+-		compatible = "ns16550a";
+-		...
+-		power-domains = <&k2g_pds 0x002c>;
+-	};
+diff --git a/Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml b/Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
 new file mode 100644
-index 000000000000..0e370289a053
+index 000000000000..9e6cb4ee9755
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
-@@ -0,0 +1,49 @@
++++ b/Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+@@ -0,0 +1,59 @@
 +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/clock/ti,sci-clk.yaml#
++$id: http://devicetree.org/schemas/soc/ti/sci-pm-domain.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: TI-SCI clock controller node bindings
++title: TI-SCI generic power domain node bindings
 +
 +maintainers:
 +  - Nishanth Menon <nm@ti.com>
++
++allOf:
++  - $ref: /schemas/power/power-domain.yaml#
 +
 +description: |
 +  Some TI SoCs contain a system controller (like the Power Management Micro
@@ -153,25 +186,26 @@ index 000000000000..0e370289a053
 +  between the host processor running an OS and the system controller happens
 +  through a protocol called TI System Control Interface (TI-SCI protocol).
 +
-+  This clock controller node uses the TI SCI protocol to perform various clock
-+  management of various hardware modules (devices) present on the SoC. This
-+  node must be a child node of the associated TI-SCI system controller node.
++  This PM domain node represents the global PM domain managed by the TI-SCI
++  controller. Since this relies on the TI SCI protocol to communicate with
++  the TI-SCI controller, it must be a child of the TI-SCI controller node.
 +
 +properties:
-+  $nodename:
-+    pattern: "^clock-controller$"
-+
 +  compatible:
-+    const: ti,k2g-sci-clk
++    const: ti,sci-pm-domain
 +
-+  "#clock-cells":
-+    const: 2
++  "#power-domain-cells":
++    enum: [1, 2]
 +    description:
 +      The two cells represent values that the TI-SCI controller defines.
 +
 +      The first cell should contain the device ID.
 +
-+      The second cell should contain the clock ID.
++      The second cell, if cell-value is 2, should be one of the following
++      TI_SCI_PD_EXCLUSIVE - Allows the device to be exclusively controlled
++      or
++      TI_SCI_PD_SHARED - Allows the device to be shared by multiple hosts.
++      Please refer to dt-bindings/soc/ti,sci_pm_domain.h for the definitions.
 +
 +      Please see  http://processors.wiki.ti.com/index.php/TISCI for
 +      protocol documentation for the values to be used for different devices.
@@ -180,9 +214,15 @@ index 000000000000..0e370289a053
 +
 +examples:
 +  - |
-+    k3_clks: clock-controller {
-+        compatible = "ti,k2g-sci-clk";
-+        #clock-cells = <2>;
++    k2g_pds: power-controller {
++        compatible = "ti,sci-pm-domain";
++        #power-domain-cells = <1>;
++    };
++
++  - |
++    k3_pds: power-controller {
++        compatible = "ti,sci-pm-domain";
++        #power-domain-cells = <2>;
 +    };
 -- 
 2.31.0
