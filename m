@@ -2,234 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAFD36B5E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986CC36B5E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhDZPfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233674AbhDZPfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:35:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5757261076;
-        Mon, 26 Apr 2021 15:34:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619451278;
-        bh=nYfb459qFwWehbg682QkMMpTIrSHFTgfTvJhC2rPM4U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aWCuFGUK8yi1PFvfjGqucCiT0CIop6ymd3vSloQTA/ZK1ybT85ituwNSswELoRMnN
-         5JzTpJ55mTK7vMrO4LRixNOTykIPtRJ2BB9XZ11o9OQ7I1OrgxCUgH3CxI/R5PVnKK
-         myyWgQbY7J40LBO9FALlXz5KMZiOUEmTg31EdlN3dP4SMWsD6xuquq42epW1NpHchR
-         ZqzHr8Tt8fNP4bAsomU/kxeCBk0EqXQi02pEYLmgxteHZIz4ndvX6qbm7DlEZs4+wC
-         69yytJ+HzYrn8PD8fswkfr+zomiP2u1NThfG50jvwCPqvRiyvGTScIvCDpjRWM6Kb5
-         JY8RywMTGoG9Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D6B0A5C0121; Mon, 26 Apr 2021 08:34:37 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 08:34:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     maranget <luc.maranget@inria.fr>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, szyhb810501.student@sina.com,
-        stern <stern@rowland.harvard.edu>,
-        "parri.andrea" <parri.andrea@gmail.com>, will <will@kernel.org>,
-        peterz <peterz@infradead.org>,
-        "boqun.feng" <boqun.feng@gmail.com>, npiggin <npiggin@gmail.com>,
-        dhowells <dhowells@redhat.com>,
-        "j.alglave" <j.alglave@ucl.ac.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Documentation/memory-barriers.txt: Is "stores are not
- speculated" correct?
-Message-ID: <20210426153437.GZ975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210426022309.2333D4640475@webmail.sinamail.sina.com.cn>
- <20210426035043.GW975577@paulmck-ThinkPad-P17-Gen-1>
- <20210426093000.GA2583903@yquem.paris.inria.fr>
- <a1c077a9-cae3-724e-a2e5-832cf5a86708@infradead.org>
- <8846FB06-D0CD-4880-93A5-E6D959AF23C1@inria.fr>
+        id S234100AbhDZPhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233674AbhDZPhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 11:37:02 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12A1CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=8QYGljFb5E
+        AOcfFXhgSb6txhlNcsv6mgPjDeDUMQExc=; b=fPhnji76bGqvSDwYkVWRsB9sH/
+        MHR7E9iQgO02JHFHQrmDfz/xg/ddiRG62DFWu92MeDvqDg/5l7GiwXfBdk8hW9YX
+        FCXNzCIWlq13F7IOF937PeFjx/rziwsHDTD0KAi4ltJHE5LEuAGAcdW6OxdCnCsy
+        fkvksAmuVzrN2N494=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygB3fzfW3YZgnMRLAA--.6467S4;
+        Mon, 26 Apr 2021 23:35:50 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     siglesias@igalia.com, jens.taprogge@taprogge.org,
+        gregkh@linuxfoundation.org
+Cc:     industrypack-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] Staging:ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe
+Date:   Mon, 26 Apr 2021 08:35:47 -0700
+Message-Id: <20210426153547.9058-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8846FB06-D0CD-4880-93A5-E6D959AF23C1@inria.fr>
+X-CM-TRANSID: LkAmygB3fzfW3YZgnMRLAA--.6467S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyDWw48ur4fKryfGw4rZrb_yoW8GrWUpF
+        45A345Gr9xXa4rCF4IvFWDZF15Cw48t3sYk3yIk3y3ZFs3Wr1jkFs3AFyUXF48tw4rGF1x
+        XF1kt34UXF4UJwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_XrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUb_M3UUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 05:16:15PM +0200, maranget wrote:
-> 
-> 
-> > On 26 Apr 2021, at 17:13, Randy Dunlap <rdunlap@infradead.org> wrote:
-> > 
-> > On 4/26/21 2:30 AM, Luc Maranget wrote:
-> >>> On Mon, Apr 26, 2021 at 10:23:09AM +0800, szyhb810501.student@sina.com wrote:
-> >>>> 
-> >>>> Hello everyone, I have a question."Documentation/memory-barriers.txt"
-> >>>> says:However, stores are not speculated.  This means that ordering -is-
-> >>>> providedfor load-store control dependencies, as in the following example:
-> >>> 	q = READ_ONCE(a);
-> >>> 	if (q) {
-> >>> 		WRITE_ONCE(b, 1);
-> >>> 	}
-> >>>> Is "stores are not speculated" correct? I
-> >>>> think store instructions can be executed speculatively.
-> >>>> "https://stackoverflow.com/questions/64141366/can-a-speculatively-executed-cpu-branch-contain-opcodes-that-access-ram"
-> >>>> says:Store instructions can also be executed speculatively thanks to the
-> >>>> store buffer. The actual execution of a store just writes the address and
-> >>>> data into the store buffer.Commit to L1d cache happens some time after
-> >>>> the store instruction retires from the ROB, i.e. when the store is known
-> >>>> to be non-speculative, the associated store-buffer entry "graduates"
-> >>>> and becomes eligible to commit to cache and become globally visible.
-> >>> 
-> >>>> From the viewpoint of other CPUs, the store hasn't really happened
-> >>> until it finds its way into a cacheline.  As you yourself note above,
-> >>> if the store is still in the store buffer, it might be squashed when
-> >>> speculation fails.
-> >>> 
-> >>> So Documentation/memory-barriers.txt and that stackoverflow entry are
-> >>> not really in conflict, but are instead using words a bit differently
-> >>> from each other.  The stackoverflow entry is considering a store to have
-> >>> in some sense happened during a time when it might later be squashed.
-> >>> In contrast, the Documentation/memory-barriers.txt document only considers
-> >>> a store to have completed once it is visible outside of the CPU executing
-> >>> that store.
-> >>> 
-> >>> So from a stackoverflow viewpoint, stores can be speculated, but until
-> >>> they are finalized, they must be hidden from other CPUs.
-> >>> 
-> >>>> From a Documentation/memory-barriers.txt viewpoint, stores don't complete
-> >>> until they update their cachelines, and stores may not be speculated.
-> >>> Some of the actions that lead up to the completion of a store may be
-> >>> speculated, but not the completion of the store itself.
-> >>> 
-> >>> Different words, but same effect.  Welcome to our world!  ;-)
-> >>> 
-> >>> 							Thanx, Paul
-> >> 
-> >> Hi all,
-> >> 
-> >> Here is a complement to Paul's excellent answer.
-> >> 
-> >> The "CPU-local" speculation of stores can be observed
-> >> by the following test (in C11)
-> >> 
-> >> %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-> >> 
-> >> C PPOCA
-> >> 
-> >> {}
-> >> 
-> >> P0(volatile int* y, volatile int* x) {
-> >> 
-> >>  atomic_store(x,1);
-> >>  atomic_store(y,1);
-> >> 
-> >> }
-> >> 
-> >> P1(volatile int* z, volatile int* y, volatile int* x) {
-> >> 
-> >>  int r1=-1; int r2=-1;
-> >>  int r0 = atomic_load_explicit(y,memory_order_relaxed);
-> >>  if (r0) {
-> >>    atomic_store_explicit(z,1,memory_order_relaxed);
-> >>    r1 = atomic_load_explicit(z,memory_order_relaxed);
-> >>    r2 = atomic_load_explicit(x+(r1 & 128),memory_order_relaxed);
-> >>  }
-> >> 
-> >> }
-> >> 
-> >> 
-> >> This is a variation on the MP test.
-> >> 
-> >> Because of tht conditionnal "if (..) { S }" Statements "S" can be executed
-> >> speculatively.
-> >> 
-> >> More precisely, the store statement writes value 1 into the CPU local
-> >> structure for variable z. The next load statement reads the value,
-> >> and the last load statement can be peformed (speculatively)
-> >> as its address is known.
-> >> 
-> >> The resulting outcomme is observed for instance on a RaspBerry Pi3,
-> >> see attached file.
-> > 
-> > ?attached file?
-> > 
-> > -- 
-> > ~Randy
-> > 
-> 
-> Oups, sorry I forgot the attachement:
-> 
-> —Luc
+In the out_err_bus_register error branch of tpci200_pci_probe,
+tpci200->info->cfg_regs is freed by tpci200_uninstall()->
+tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
+in the first time.
 
-> Mon Apr 26 09:07:19 UTC 2021
-> %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-> % Results for PPOCA.litmus %
-> %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-> C PPOCA
-> 
-> {}
-> 
-> P0(volatile int* y, volatile int* x) {
-> 
->   atomic_store(x,1);
->   atomic_store(y,1);
-> 
-> }
-> 
-> P1(volatile int* z, volatile int* y, volatile int* x) {
-> 
->   int r1=-1; int r2=-1;
->   int r0 = atomic_load_explicit(y,memory_order_relaxed);
->   if (r0) {
->     atomic_store_explicit(z,1,memory_order_relaxed);
->     r1 = atomic_load_explicit(z,memory_order_relaxed);
->     r2 = atomic_load_explicit(x+(r1 & 128),memory_order_relaxed);
->   }
-> 
-> }
-> 
-> 
-> exists (1:r0=1 /\ 1:r1=1 /\ 1:r2=0)
-> 
-> Histogram (3 states)
-> 11057696:>1:r0=0; 1:r1=-1; 1:r2=-1;
-> 2     *>1:r0=1; 1:r1=1; 1:r2=0;
+But later, iounmap() is called to free tpci200->info->cfg_regs
+again.
 
-Fun!!!  ;-)
+My patch sets tpci200->info->cfg_regs to NULL after tpci200_uninstall()
+to avoid the double free.
 
-							Thanx, Paul
+Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the TPCI200 in big endian mode")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/ipack/carriers/tpci200.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> 8942302:>1:r0=1; 1:r1=1; 1:r2=1;
-> Ok
-> 
-> Witnesses
-> Positive: 2, Negative: 19999998
-> Condition exists (1:r0=1 /\ 1:r1=1 /\ 1:r2=0) is validated
-> Hash=bb2426936c19f1555410d1483dd31452
-> Observation PPOCA Sometimes 2 19999998
-> Time PPOCA 3.30
-> Revision 45690d9d0f7a956a6d3dbaf9e912efb22835756e, version 7.56+02~dev
-> Command line: litmus7 -mach vougeot -c11 true -o R.tar PPOCA.litmus
-> Parameters
-> #define SIZE_OF_TEST 10000
-> #define NUMBER_OF_RUN 100
-> #define AVAIL 4
-> #define STRIDE 1
-> #define MAX_LOOP 0
-> /* gcc options: -Wall -std=gnu11 -O2 -pthread */
-> /* barrier: userfence */
-> /* launch: changing */
-> /* affinity: none */
-> /* alloc: dynamic */
-> /* memory: direct */
-> /* stride: 1 */
-> /* safer: write */
-> /* preload: random */
-> /* speedcheck: no */
-> /* proc used: 4 */
-> GCC=gcc
-> LITMUSOPTS=-s 5k -r 2k -st 1
-> Mon Apr 26 09:07:23 UTC 2021
+diff --git a/drivers/ipack/carriers/tpci200.c b/drivers/ipack/carriers/tpci200.c
+index ec71063fff76..e1822e87ec3d 100644
+--- a/drivers/ipack/carriers/tpci200.c
++++ b/drivers/ipack/carriers/tpci200.c
+@@ -596,8 +596,11 @@ static int tpci200_pci_probe(struct pci_dev *pdev,
+ 
+ out_err_bus_register:
+ 	tpci200_uninstall(tpci200);
++	/* tpci200->info->cfg_regs is unmapped in tpci200_uninstall */
++	tpci200->info->cfg_regs = NULL;
+ out_err_install:
+-	iounmap(tpci200->info->cfg_regs);
++	if (tpci200->info->cfg_regs)
++		iounmap(tpci200->info->cfg_regs);
+ out_err_ioremap:
+ 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
+ out_err_pci_request:
+-- 
+2.25.1
 
-> 
-> 
 
