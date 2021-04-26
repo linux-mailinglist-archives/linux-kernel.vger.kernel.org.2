@@ -2,177 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E3436B4E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9CE36B4F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbhDZObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:31:22 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:60702 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233884AbhDZObV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:31:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619447429; bh=Inbt0Id184HS+3SGiT3lLvjT+nH9YAUuSWJJoO9mhDY=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=GRITIFBS7qBNvRhBKjagHeWEfp4XWGKuEDBxVSAtONY/hGZbTy23i8VwtQl3hzoDL
-         sFePlnm4NLWaiSByVrcYskAfGjk8AEetyCiJ0cv4+hoIN4ms6mDCouPCS+rQSZoT6v
-         Dj/0vtpp62d1OAKmnH8e9gA8tuD4CeA8ILxB1Yko=
-Received: by b-5.in.mailobj.net [192.168.90.15] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Mon, 26 Apr 2021 16:30:29 +0200 (CEST)
-X-EA-Auth: UsphZN1IEXvgssBLQ4zn+KLQbV+3wb6p+AFcq6FCeKZHKKwEhG+OjvXxBnXXB3REz0dnhkxjtwH4iz8wk7aqWiIlmkkbGp0P
-Date:   Mon, 26 Apr 2021 20:00:22 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v3 2/6] staging: media: atomisp: balance braces
- around if...else block
-Message-ID: <YIbOfjrPG+NIH4wV@192.168.1.8>
-References: <cover.1619199344.git.drv@mailo.com>
- <71220662c5facd746e56288cc74786c96fa3c5a7.1619199344.git.drv@mailo.com>
- <20210426095610.GA1418@agape.jhs>
+        id S233762AbhDZOdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDZOdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:33:37 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4AFF8C061574;
+        Mon, 26 Apr 2021 07:32:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=oTrHkGHNpd
+        lXGR6rvnn5CxbspkndmU94+AgUSlg0N6I=; b=eDVZ2SV9VDl9CELXhdy6iWmXyJ
+        mciwzpWUtnelUQrUDjBfc74eNAYI+JNrGxmjhKB19lzqKiMaIRhsbP2JMAzXwfxf
+        pHbH95zwdBRaU6JFAjWZRaRkZEfIUAnVkJavX8B3aLcCiLdCEUz2Z4H8QGgX1ebN
+        02nGG4HMeehJ+IRjY=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHTzf_zoZgi2hLAA--.6103S4;
+        Mon, 26 Apr 2021 22:32:32 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     axboe@kernel.dk, damien.lemoal@wdc.com, johannes.thumshirn@edc.com,
+        martin.petersen@oracle.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] drivers/block/null_blk/main: Fix a double free in null_init.
+Date:   Mon, 26 Apr 2021 07:32:29 -0700
+Message-Id: <20210426143229.7374-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426095610.GA1418@agape.jhs>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBHTzf_zoZgi2hLAA--.6103S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruFy8Jr17Kw1rXF4UZw1xAFb_yoWkArb_uw
+        4Fyr4kXr45Jr1I9w13AF1UArySkr10gF48Xr1IqFn3Way7X3ZrXw17ZrWrCry7Kry7GFWa
+        y3yF9ry3ur4rCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW5XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUBT5QUUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:56:11AM +0200, Fabio Aiuto wrote:
-> On Sun, Apr 25, 2021 at 02:12:20PM +0530, Deepak R Varma wrote:
-> > Balance braces around the if else blocks as per the code style guidelines.
-> > Resolves checkpatch script CHECK / WARNING feedback messages.
-> > 
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > ---
-> > 
-> > Changes since v2:
-> >    - None.
-> > Changes since v1:
-> >    - None.
-> > 
-> >  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
-> >  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
-> >  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
-> >  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
-> >  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
-> >  5 files changed, 12 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > index 6be3ee1d93a5..d68a2bcc9ae1 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > @@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
-> >  {
-> >  	int ret;
-> >  
-> > -	if (on == 0)
-> > +	if (on == 0) {
-> >  		return power_down(sd);
-> > -	else {
-> > +	} else {
-> >  		ret = power_up(sd);
-> >  		if (!ret)
-> >  			return gc0310_init(sd);
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > index 6ba4a8adff7c..e722c639b60d 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > @@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
-> >  {
-> >  	int ret;
-> >  
-> > -	if (on == 0)
-> > +	if (on == 0) {
-> >  		ret = power_down(sd);
-> > -	else {
-> > +	} else {
-> >  		ret = power_up(sd);
-> >  		if (!ret)
-> >  			ret = __gc2235_init(sd);
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> > index f5de81132177..465fc4468442 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> > @@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
-> >  
-> >  static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
-> >  {
-> > -	if (power == 0)
-> > +	if (power == 0) {
-> >  		return power_down(sd);
-> > -	else {
-> > +	} else {
-> >  		if (power_up(sd))
-> >  			return -EINVAL;
-> >  
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> > index c90730513438..92c52431bd8f 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> > @@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
-> >  	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
-> >  	if (ret)
-> >  		return ret;
-> > -	if (value) {
-> > +
-> > +	if (value)
-> >  		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
-> > -	} else {
-> > +	else
-> >  		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
-> > -	}
-> > +
-> 
-> Hi Deepak,
-> 
-> what you did above is not what is written in the commit message
-> description about. Here unneeded bracks are removed in both
-> branches, is not a matter of braces balancing.
+In null_init, null_add_dev(dev) is called.
+In null_add_dev, it calls null_free_zoned_dev(dev) to free dev->zones
+via kvfree(dev->zones) in out_cleanup_zone branch and returns err.
+Then null_init accept the err code and then calls null_free_dev(dev).
 
-Okay. I was thinking adding where necessary and removing where not
-would lead to expected balancing.
-I will send this as a separate patch in this patch set. Is it okay to
-add a new patch to the set now?
+But in null_free_dev(dev), dev->zones is freed again by
+null_free_zoned_dev().
 
-Thank you,
-deepak.
+My patch set dev->zones to NULL in null_free_zoned_dev() after
+kvfree(dev->zones) is called, to avoid the double free.
 
-> 
-> thank you,
-> 
-> fabio 
-> 
-> >  	ret = ov2680_write_reg(client, 1,
-> >  			       OV2680_FLIP_REG, val);
-> >  	if (ret)
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > index aec7392fd1de..d046a9804f63 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > @@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
-> >  {
-> >  	int ret;
-> >  
-> > -	if (on == 0)
-> > +	if (on == 0) {
-> >  		return power_down(sd);
-> > -	else {
-> > +	} else {
-> >  		ret = power_up(sd);
-> >  		if (!ret)
-> >  			return ov2722_init(sd);
-> > -- 
-> > 2.25.1
-> > 
-> > 
-> > 
-> > 
+Fixes: 2984c8684f962 ("nullb: factor disk parameters")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/block/null_blk/zoned.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/block/null_blk/zoned.c b/drivers/block/null_blk/zoned.c
+index bfcab1c782b5..dae54dd1aeac 100644
+--- a/drivers/block/null_blk/zoned.c
++++ b/drivers/block/null_blk/zoned.c
+@@ -180,6 +180,7 @@ int null_register_zoned_dev(struct nullb *nullb)
+ void null_free_zoned_dev(struct nullb_device *dev)
+ {
+ 	kvfree(dev->zones);
++	dev->zones = NULL;
+ }
+ 
+ int null_report_zones(struct gendisk *disk, sector_t sector,
+-- 
+2.25.1
 
 
