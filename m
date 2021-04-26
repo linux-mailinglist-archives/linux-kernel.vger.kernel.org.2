@@ -2,374 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AF036B308
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C4336B30A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbhDZMZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        id S233312AbhDZM0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbhDZMZo (ORCPT
+        with ESMTP id S232987AbhDZM03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:25:44 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F8FC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:25:01 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id y124-20020a1c32820000b029010c93864955so5069393wmy.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Z49sPbUyJLBw3vIXfagJy9E25mAYkGPG99Ouapgyrqk=;
-        b=OmvYwNKN2V1JiAenwB8IyW4fnW73NFsIhVUBUVIvJfYZAfnHPqxZnR5GPAf+I5HKYB
-         wQr1i8DrRmDYqtPf5PvyLqbGXSA+poJocqNNgaffZLjrtDPUSsBq7lGJbDhIQXkhkrLP
-         QyM2nnKKZK7Wf15Ct5ofcG7tLKncukOI7yLnSyz9GdGfwzMEW5l0l77o8bPcmZ6J03SZ
-         kRnnF2JJ660T9zcrYQq2kA5KvduTx6UxonyGI2e1gGWFaMWtZW9JLxfuOvyf3Kk1Wo4G
-         nSZailvOoA9pJ4ta0KmGlXMKxbp7Pa7wsrsSxboAytGFXff2YbdYpZbK2xou9TCudbft
-         HaMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Z49sPbUyJLBw3vIXfagJy9E25mAYkGPG99Ouapgyrqk=;
-        b=APfVd3vspr52/h3FzubF2n6I/QVYBDJXVA1waDShOS3qVr2o3InJ0if9d3Wbyx5xm/
-         4jTC/VkNIrl6QIRJ3ZACx2CQyasiWFud42sCticOFDX3d93f4X4ImJGzLRBgA4vlByrJ
-         y46dD7DFQHOQ1YW7Be1oII4icLj22R602iSPibDstZyzLxahtG1D/krZ9gSRg1qHoBRh
-         PlL6yu+VWi21oi9dGtc46nkkI25BauxXR2y0dRDkArafJiWTU3c7cS0l/dGf6VbvFCO4
-         1hC/vwEnH6JEe7FX5vphqfnb9wxgVv5PYh5J/kmOhV+NUZYpYgl21qy040QLfhr89gCw
-         xt6g==
-X-Gm-Message-State: AOAM530ozOtkYK6ZO74a0Na1ubr1u7Jc6OtVasXeDoY55eB/CTKpqJnW
-        q6vELfVDONbjTTz2pAGEgKYIsg==
-X-Google-Smtp-Source: ABdhPJxzplIQEMvuReMhR1l1SDGCHNbDGZJ7f/tkZ9kPHeb0JZTX1meucaQdzHYV4IBc7uyBYQz5PQ==
-X-Received: by 2002:a1c:ac41:: with SMTP id v62mr6073693wme.56.1619439900435;
-        Mon, 26 Apr 2021 05:25:00 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id g5sm20752559wrq.30.2021.04.26.05.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 05:24:59 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 13:24:57 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>, jingoohan1@gmail.com,
-        b.zolnierkie@samsung.com, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Mon, 26 Apr 2021 08:26:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB80C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=glS/FhcHv7ibmY+Bj2a0n4MdUkYg0DQAi/BSJX2IGnY=; b=Wtrdn54o/EtZjcDn/WQM5Vx8nd
+        aMHlnWN7EiAYeZiv3RbcoDKQWJj0FR4/XPQ6he3oc7geVAbSlEKPzsPfSIXYYzoUuPDh2/9HLYjOL
+        JedD+sfgjtqFliVxyau2UDkwq9LuyWMzx5k6HqJXt6raXYKYBGXmO2XGeIej+wSTLIdBhRAnNi77a
+        AV2xG8qLowTKbe3qAGguzrRGn0oowt5oANt/y9btUnWDenRSbY/miBhWo/1RDuSCLa8cdjVv5YiMb
+        aOx1esDKN9jNKCvJEffpC1iiFxsnpLJxCiKdYqPAir1f0AUBCnWPHVjl8jFHURbYLnuxhQrs/kVWB
+        3hREKErg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lb0Ij-005bAD-Fm; Mon, 26 Apr 2021 12:25:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E77803001D0;
+        Mon, 26 Apr 2021 14:25:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D0F7F2D193756; Mon, 26 Apr 2021 14:25:19 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 14:25:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Lorenzo Colitti <lorenzo@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
         lkml <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>
-Subject: Re: [RESEND PATCH v6 4/4] backlight: rt4831: Adds support for
- Richtek RT4831 backlight
-Message-ID: <20210426122457.j4vjvng6bgxbtpjk@maple.lan>
-References: <1619421491-31494-1-git-send-email-u0084500@gmail.com>
- <1619421491-31494-4-git-send-email-u0084500@gmail.com>
- <20210426101955.uvuzzsiig27xyuxc@maple.lan>
- <CADiBU39F8+GM4z7xJPpDVS7riPGi02BrurvMmnHMEPeKBQJ_tg@mail.gmail.com>
+        mikael.beckius@windriver.com,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] hrtimer: Avoid double reprogramming in
+ __hrtimer_start_range_ns()
+Message-ID: <YIaxL5zcpjbfR1gp@hirez.programming.kicks-ass.net>
+References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
+ <YHXRWoVIYLL4rYG9@kroah.com>
+ <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
+ <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
+ <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com>
+ <87eef5qbrx.ffs@nanos.tec.linutronix.de>
+ <87v989topu.ffs@nanos.tec.linutronix.de>
+ <YIaKnuZDfffmmAdM@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADiBU39F8+GM4z7xJPpDVS7riPGi02BrurvMmnHMEPeKBQJ_tg@mail.gmail.com>
+In-Reply-To: <YIaKnuZDfffmmAdM@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 06:50:15PM +0800, ChiYuan Huang wrote:
-> Hi,
-> 
-> Daniel Thompson <daniel.thompson@linaro.org> 於 2021年4月26日 週一 下午6:19寫道：
-> >
-> > On Mon, Apr 26, 2021 at 03:18:11PM +0800, cy_huang wrote:
-> > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > >
-> > > Adds support for Richtek RT4831 backlight.
-> > >
-> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-> > > ---
-> > > Resend this v6 patch series to loop devicetree reviewers.
-> > >
-> > > For next, if the typo in Kconfig 'common' to 'commonly' can be added the below line
-> > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-> > > ---
-> >
-> > This isn't the best way to handle feedback from multiple maintainers.
-> >
-> > It is great to see you are keeping track of feedback. However it doesn't
-> > make sense to RESEND an old patchset and acknowledge that you haven't
-> > fixed a typo yet.
-> >
-> > It would be better to fix the typo and to resend a v7.
->
-> You can refer to the below reply
-> https://lkml.org/lkml/2021/4/23/229
-
-Indeed.
-
-However that thread is ambiguous about resending with changes (PATCH v7)
-and resending without changes (PATCH RESEND v6). Given you said in March
-there was a v7 series coming, I think it would have been better to send a
-new version. 
-
-Don't worry about this too much. This is turning into quite a lot of
-fuss for a two letter typo. However it's very unusual to send out a
-patch (except perhaps an RFC) together with a comment listing what you
-need to fix next time around. It is pretty much always better to fix
-it first and then send it.
+On Mon, Apr 26, 2021 at 11:40:46AM +0200, Peter Zijlstra wrote:
+> There is an unfortunate amount of duplication between
+> hrtimer_force_reprogram() and hrtimer_reprogram(). The obvious cleanups
+> don't work however :/ Still, does that in_hrtirq optimization make sense
+> to have in force_reprogram ?
 
 
-Daniel.
+Something like so perhaps?
 
+---
+ kernel/time/hrtimer.c | 75 ++++++++++++++++++++++-----------------------------
+ 1 file changed, 32 insertions(+), 43 deletions(-)
 
-> > >  drivers/video/backlight/Kconfig            |   8 ++
-> > >  drivers/video/backlight/Makefile           |   1 +
-> > >  drivers/video/backlight/rt4831-backlight.c | 203 +++++++++++++++++++++++++++++
-> > >  3 files changed, 212 insertions(+)
-> > >  create mode 100644 drivers/video/backlight/rt4831-backlight.c
-> > >
-> > > diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-> > > index d83c87b..de96441 100644
-> > > --- a/drivers/video/backlight/Kconfig
-> > > +++ b/drivers/video/backlight/Kconfig
-> > > @@ -289,6 +289,14 @@ config BACKLIGHT_QCOM_WLED
-> > >         If you have the Qualcomm PMIC, say Y to enable a driver for the
-> > >         WLED block. Currently it supports PM8941 and PMI8998.
-> > >
-> > > +config BACKLIGHT_RT4831
-> > > +     tristate "Richtek RT4831 Backlight Driver"
-> > > +     depends on MFD_RT4831
-> > > +     help
-> > > +       This enables support for Richtek RT4831 Backlight driver.
-> > > +       It's common used to drive the display WLED. There're four channels
-> > > +       inisde, and each channel can provide up to 30mA current.
-> > > +
-> > >  config BACKLIGHT_SAHARA
-> > >       tristate "Tabletkiosk Sahara Touch-iT Backlight Driver"
-> > >       depends on X86
-> > > diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
-> > > index 685f3f1..cae2c83 100644
-> > > --- a/drivers/video/backlight/Makefile
-> > > +++ b/drivers/video/backlight/Makefile
-> > > @@ -49,6 +49,7 @@ obj-$(CONFIG_BACKLIGHT_PANDORA)             += pandora_bl.o
-> > >  obj-$(CONFIG_BACKLIGHT_PCF50633)     += pcf50633-backlight.o
-> > >  obj-$(CONFIG_BACKLIGHT_PWM)          += pwm_bl.o
-> > >  obj-$(CONFIG_BACKLIGHT_QCOM_WLED)    += qcom-wled.o
-> > > +obj-$(CONFIG_BACKLIGHT_RT4831)               += rt4831-backlight.o
-> > >  obj-$(CONFIG_BACKLIGHT_SAHARA)               += kb3886_bl.o
-> > >  obj-$(CONFIG_BACKLIGHT_SKY81452)     += sky81452-backlight.o
-> > >  obj-$(CONFIG_BACKLIGHT_TOSA)         += tosa_bl.o
-> > > diff --git a/drivers/video/backlight/rt4831-backlight.c b/drivers/video/backlight/rt4831-backlight.c
-> > > new file mode 100644
-> > > index 00000000..42155c7
-> > > --- /dev/null
-> > > +++ b/drivers/video/backlight/rt4831-backlight.c
-> > > @@ -0,0 +1,203 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +
-> > > +#include <dt-bindings/leds/rt4831-backlight.h>
-> > > +#include <linux/backlight.h>
-> > > +#include <linux/bitops.h>
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/property.h>
-> > > +#include <linux/regmap.h>
-> > > +
-> > > +#define RT4831_REG_BLCFG     0x02
-> > > +#define RT4831_REG_BLDIML    0x04
-> > > +#define RT4831_REG_ENABLE    0x08
-> > > +
-> > > +#define RT4831_BLMAX_BRIGHTNESS      2048
-> > > +
-> > > +#define RT4831_BLOVP_MASK    GENMASK(7, 5)
-> > > +#define RT4831_BLOVP_SHIFT   5
-> > > +#define RT4831_BLPWMEN_MASK  BIT(0)
-> > > +#define RT4831_BLEN_MASK     BIT(4)
-> > > +#define RT4831_BLCH_MASK     GENMASK(3, 0)
-> > > +#define RT4831_BLDIML_MASK   GENMASK(2, 0)
-> > > +#define RT4831_BLDIMH_MASK   GENMASK(10, 3)
-> > > +#define RT4831_BLDIMH_SHIFT  3
-> > > +
-> > > +struct rt4831_priv {
-> > > +     struct device *dev;
-> > > +     struct regmap *regmap;
-> > > +     struct backlight_device *bl;
-> > > +};
-> > > +
-> > > +static int rt4831_bl_update_status(struct backlight_device *bl_dev)
-> > > +{
-> > > +     struct rt4831_priv *priv = bl_get_data(bl_dev);
-> > > +     int brightness = backlight_get_brightness(bl_dev);
-> > > +     unsigned int enable = brightness ? RT4831_BLEN_MASK : 0;
-> > > +     u8 v[2];
-> > > +     int ret;
-> > > +
-> > > +     if (brightness) {
-> > > +             v[0] = (brightness - 1) & RT4831_BLDIML_MASK;
-> > > +             v[1] = ((brightness - 1) & RT4831_BLDIMH_MASK) >> RT4831_BLDIMH_SHIFT;
-> > > +
-> > > +             ret = regmap_raw_write(priv->regmap, RT4831_REG_BLDIML, v, sizeof(v));
-> > > +             if (ret)
-> > > +                     return ret;
-> > > +     }
-> > > +
-> > > +     return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831_BLEN_MASK, enable);
-> > > +
-> > > +}
-> > > +
-> > > +static int rt4831_bl_get_brightness(struct backlight_device *bl_dev)
-> > > +{
-> > > +     struct rt4831_priv *priv = bl_get_data(bl_dev);
-> > > +     unsigned int val;
-> > > +     u8 v[2];
-> > > +     int ret;
-> > > +
-> > > +     ret = regmap_read(priv->regmap, RT4831_REG_ENABLE, &val);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     if (!(val & RT4831_BLEN_MASK))
-> > > +             return 0;
-> > > +
-> > > +     ret = regmap_raw_read(priv->regmap, RT4831_REG_BLDIML, v, sizeof(v));
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     ret = (v[1] << RT4831_BLDIMH_SHIFT) + (v[0] & RT4831_BLDIML_MASK) + 1;
-> > > +
-> > > +     return ret;
-> > > +}
-> > > +
-> > > +static const struct backlight_ops rt4831_bl_ops = {
-> > > +     .options = BL_CORE_SUSPENDRESUME,
-> > > +     .update_status = rt4831_bl_update_status,
-> > > +     .get_brightness = rt4831_bl_get_brightness,
-> > > +};
-> > > +
-> > > +static int rt4831_parse_backlight_properties(struct rt4831_priv *priv,
-> > > +                                          struct backlight_properties *bl_props)
-> > > +{
-> > > +     struct device *dev = priv->dev;
-> > > +     u8 propval;
-> > > +     u32 brightness;
-> > > +     unsigned int val = 0;
-> > > +     int ret;
-> > > +
-> > > +     /* common properties */
-> > > +     ret = device_property_read_u32(dev, "max-brightness", &brightness);
-> > > +     if (ret)
-> > > +             brightness = RT4831_BLMAX_BRIGHTNESS;
-> > > +
-> > > +     bl_props->max_brightness = min_t(u32, brightness, RT4831_BLMAX_BRIGHTNESS);
-> > > +
-> > > +     ret = device_property_read_u32(dev, "default-brightness", &brightness);
-> > > +     if (ret)
-> > > +             brightness = bl_props->max_brightness;
-> > > +
-> > > +     bl_props->brightness = min_t(u32, brightness, bl_props->max_brightness);
-> > > +
-> > > +     /* vendor properties */
-> > > +     if (device_property_read_bool(dev, "richtek,pwm-enable"))
-> > > +             val = RT4831_BLPWMEN_MASK;
-> > > +
-> > > +     ret = regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831_BLPWMEN_MASK, val);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     ret = device_property_read_u8(dev, "richtek,bled-ovp-sel", &propval);
-> > > +     if (ret)
-> > > +             propval = RT4831_BLOVPLVL_21V;
-> > > +
-> > > +     propval = min_t(u8, propval, RT4831_BLOVPLVL_29V);
-> > > +     ret = regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831_BLOVP_MASK,
-> > > +                              propval << RT4831_BLOVP_SHIFT);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     ret = device_property_read_u8(dev, "richtek,channel-use", &propval);
-> > > +     if (ret) {
-> > > +             dev_err(dev, "richtek,channel-use DT property missing\n");
-> > > +             return ret;
-> > > +     }
-> > > +
-> > > +     if (!(propval & RT4831_BLCH_MASK)) {
-> > > +             dev_err(dev, "No channel specified\n");
-> > > +             return -EINVAL;
-> > > +     }
-> > > +
-> > > +     return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831_BLCH_MASK, propval);
-> > > +}
-> > > +
-> > > +static int rt4831_bl_probe(struct platform_device *pdev)
-> > > +{
-> > > +     struct rt4831_priv *priv;
-> > > +     struct backlight_properties bl_props = { .type = BACKLIGHT_RAW,
-> > > +                                              .scale = BACKLIGHT_SCALE_LINEAR };
-> > > +     int ret;
-> > > +
-> > > +     priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> > > +     if (!priv)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     priv->dev = &pdev->dev;
-> > > +
-> > > +     priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> > > +     if (!priv->regmap) {
-> > > +             dev_err(&pdev->dev, "Failed to init regmap\n");
-> > > +             return -ENODEV;
-> > > +     }
-> > > +
-> > > +     ret = rt4831_parse_backlight_properties(priv, &bl_props);
-> > > +     if (ret) {
-> > > +             dev_err(&pdev->dev, "Failed to parse backlight properties\n");
-> > > +             return ret;
-> > > +     }
-> > > +
-> > > +     priv->bl = devm_backlight_device_register(&pdev->dev, pdev->name, &pdev->dev, priv,
-> > > +                                               &rt4831_bl_ops, &bl_props);
-> > > +     if (IS_ERR(priv->bl)) {
-> > > +             dev_err(&pdev->dev, "Failed to register backlight\n");
-> > > +             return PTR_ERR(priv->bl);
-> > > +     }
-> > > +
-> > > +     backlight_update_status(priv->bl);
-> > > +     platform_set_drvdata(pdev, priv);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static int rt4831_bl_remove(struct platform_device *pdev)
-> > > +{
-> > > +     struct rt4831_priv *priv = platform_get_drvdata(pdev);
-> > > +     struct backlight_device *bl_dev = priv->bl;
-> > > +
-> > > +     bl_dev->props.brightness = 0;
-> > > +     backlight_update_status(priv->bl);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static const struct of_device_id __maybe_unused rt4831_bl_of_match[] = {
-> > > +     { .compatible = "richtek,rt4831-backlight", },
-> > > +     {}
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, rt4831_bl_of_match);
-> > > +
-> > > +static struct platform_driver rt4831_bl_driver = {
-> > > +     .driver = {
-> > > +             .name = "rt4831-backlight",
-> > > +             .of_match_table = rt4831_bl_of_match,
-> > > +     },
-> > > +     .probe = rt4831_bl_probe,
-> > > +     .remove = rt4831_bl_remove,
-> > > +};
-> > > +module_platform_driver(rt4831_bl_driver);
-> > > +
-> > > +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-> > > +MODULE_LICENSE("GPL v2");
-> > > --
-> > > 2.7.4
-> > >
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 5c9d968187ae..fb8d2c58443a 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -652,21 +652,27 @@ static inline int hrtimer_hres_active(void)
+ 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
+ }
+ 
+-/*
+- * Reprogram the event source with checking both queues for the
+- * next event
+- * Called with interrupts disabled and base->lock held
+- */
+ static void
+-hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
++__hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
++			  struct hrtimer *next_timer, ktime_t expires_next)
+ {
+-	ktime_t expires_next;
++	/*
++	 * If the hrtimer interrupt is running, then it will
++	 * reevaluate the clock bases and reprogram the clock event
++	 * device. The callbacks are always executed in hard interrupt
++	 * context so we don't need an extra check for a running
++	 * callback.
++	 */
++	if (cpu_base->in_hrtirq)
++		return;
+ 
+-	expires_next = hrtimer_update_next_event(cpu_base);
++	if (expires_next > cpu_base->expires_next)
++		return;
+ 
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
+ 
++	cpu_base->next_timer = next_timer;
+ 	cpu_base->expires_next = expires_next;
+ 
+ 	/*
+@@ -689,7 +695,23 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ 	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+ 		return;
+ 
+-	tick_program_event(cpu_base->expires_next, 1);
++	tick_program_event(expires_next, 1);
++}
++
++/*
++ * Reprogram the event source with checking both queues for the
++ * next event
++ * Called with interrupts disabled and base->lock held
++ */
++static void
++hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
++{
++	ktime_t expires_next;
++
++	expires_next = hrtimer_update_next_event(cpu_base);
++
++	__hrtimer_force_reprogram(cpu_base, skip_equal,
++				  cpu_base->next_timer, expires_next);
+ }
+ 
+ /* High resolution timer related functions */
+@@ -835,40 +857,7 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ 	if (base->cpu_base != cpu_base)
+ 		return;
+ 
+-	/*
+-	 * If the hrtimer interrupt is running, then it will
+-	 * reevaluate the clock bases and reprogram the clock event
+-	 * device. The callbacks are always executed in hard interrupt
+-	 * context so we don't need an extra check for a running
+-	 * callback.
+-	 */
+-	if (cpu_base->in_hrtirq)
+-		return;
+-
+-	if (expires >= cpu_base->expires_next)
+-		return;
+-
+-	/* Update the pointer to the next expiring timer */
+-	cpu_base->next_timer = timer;
+-	cpu_base->expires_next = expires;
+-
+-	/*
+-	 * If hres is not active, hardware does not have to be
+-	 * programmed yet.
+-	 *
+-	 * If a hang was detected in the last timer interrupt then we
+-	 * do not schedule a timer which is earlier than the expiry
+-	 * which we enforced in the hang detection. We want the system
+-	 * to make progress.
+-	 */
+-	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+-		return;
+-
+-	/*
+-	 * Program the timer hardware. We enforce the expiry for
+-	 * events which are already in the past.
+-	 */
+-	tick_program_event(expires, 1);
++	__hrtimer_force_reprogram(cpu_base, true, timer, expires);
+ }
+ 
+ /*
