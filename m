@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2191D36AD1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CCD36AE3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhDZHce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
+        id S232840AbhDZHnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:43:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232448AbhDZHc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:32:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F3961077;
-        Mon, 26 Apr 2021 07:31:43 +0000 (UTC)
+        id S233041AbhDZHh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:37:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F4B613D9;
+        Mon, 26 Apr 2021 07:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422304;
-        bh=K2ef7W0qv6wVh1N/mhwiEy3smgYtVGKT/yQpNUmzJCg=;
+        s=korg; t=1619422545;
+        bh=hbNxn91tB5WAKjcmUEBPZQNAWEj8RxqAKO99olmO4rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DTCTpTsSXb4tIGyvyJABZCsRz0KLr1koFpNxRRVN28cASmuR/rs2A3FQ9ExpIsK7Z
-         nSzw97T8sbXLacUMgvYZLaoIsCAqNN7IkpXLJony3pdcLx65yxGZbng6h9FvCq+1bS
-         bjg9A7wR+Ov1uQ63n/RG4YH6lJRzey9IZGjqoPyI=
+        b=inHm2jaBBhqjSQchECUthFKCVR6zU/7rlv+N2SdM489EIjVk2XlD2X+iOXXCaXBaJ
+         OMIbSo+5yc97IbKkFn2QNP7vk+U5eM9WTsy0wXShVqvRdMCPzoFlK5EgsezBJKu2q0
+         dbx2PMlYrD4XwqS6wet3XiRsBSFGVsJvP57XgIxw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <mawilcox@microsoft.com>
-Subject: [PATCH 4.4 31/32] overflow.h: Add allocation size calculation helpers
+        stable@vger.kernel.org, Lijun Pan <lijunp213@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 33/49] ibmvnic: remove duplicate napi_schedule call in open function
 Date:   Mon, 26 Apr 2021 09:29:29 +0200
-Message-Id: <20210426072817.603584888@linuxfoundation.org>
+Message-Id: <20210426072820.850598172@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,140 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Lijun Pan <lijunp213@gmail.com>
 
-commit 610b15c50e86eb1e4b77274fabcaea29ac72d6a8 upstream.
+commit 7c451f3ef676c805a4b77a743a01a5c21a250a73 upstream.
 
-In preparation for replacing unchecked overflows for memory allocations,
-this creates helpers for the 3 most common calculations:
+Remove the unnecessary napi_schedule() call in __ibmvnic_open() since
+interrupt_rx() calls napi_schedule_prep/__napi_schedule during every
+receive interrupt.
 
-array_size(a, b): 2-dimensional array
-array3_size(a, b, c): 3-dimensional array
-struct_size(ptr, member, n): struct followed by n-many trailing members
-
-Each of these return SIZE_MAX on overflow instead of wrapping around.
-
-(Additionally renames a variable named "array_size" to avoid future
-collision.)
-
-Co-developed-by: Matthew Wilcox <mawilcox@microsoft.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: ed651a10875f ("ibmvnic: Updated reset handling")
+Signed-off-by: Lijun Pan <lijunp213@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-table.c    |   10 +++---
- include/linux/overflow.h |   73 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 78 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -516,14 +516,14 @@ static int adjoin(struct dm_table *table
-  * On the other hand, dm-switch needs to process bulk data using messages and
-  * excessive use of GFP_NOIO could cause trouble.
-  */
--static char **realloc_argv(unsigned *array_size, char **old_argv)
-+static char **realloc_argv(unsigned *size, char **old_argv)
- {
- 	char **argv;
- 	unsigned new_size;
- 	gfp_t gfp;
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -898,11 +898,6 @@ static int __ibmvnic_open(struct net_dev
  
--	if (*array_size) {
--		new_size = *array_size * 2;
-+	if (*size) {
-+		new_size = *size * 2;
- 		gfp = GFP_KERNEL;
- 	} else {
- 		new_size = 8;
-@@ -531,8 +531,8 @@ static char **realloc_argv(unsigned *arr
- 	}
- 	argv = kmalloc(new_size * sizeof(*argv), gfp);
- 	if (argv) {
--		memcpy(argv, old_argv, *array_size * sizeof(*argv));
--		*array_size = new_size;
-+		memcpy(argv, old_argv, *size * sizeof(*argv));
-+		*size = new_size;
- 	}
+ 	netif_tx_start_all_queues(netdev);
  
- 	kfree(old_argv);
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -202,4 +202,77 @@
- 
- #endif /* COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW */
- 
-+/**
-+ * array_size() - Calculate size of 2-dimensional array.
-+ *
-+ * @a: dimension one
-+ * @b: dimension two
-+ *
-+ * Calculates size of 2-dimensional array: @a * @b.
-+ *
-+ * Returns: number of bytes needed to represent the array or SIZE_MAX on
-+ * overflow.
-+ */
-+static inline __must_check size_t array_size(size_t a, size_t b)
-+{
-+	size_t bytes;
-+
-+	if (check_mul_overflow(a, b, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
-+/**
-+ * array3_size() - Calculate size of 3-dimensional array.
-+ *
-+ * @a: dimension one
-+ * @b: dimension two
-+ * @c: dimension three
-+ *
-+ * Calculates size of 3-dimensional array: @a * @b * @c.
-+ *
-+ * Returns: number of bytes needed to represent the array or SIZE_MAX on
-+ * overflow.
-+ */
-+static inline __must_check size_t array3_size(size_t a, size_t b, size_t c)
-+{
-+	size_t bytes;
-+
-+	if (check_mul_overflow(a, b, &bytes))
-+		return SIZE_MAX;
-+	if (check_mul_overflow(bytes, c, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
-+static inline __must_check size_t __ab_c_size(size_t n, size_t size, size_t c)
-+{
-+	size_t bytes;
-+
-+	if (check_mul_overflow(n, size, &bytes))
-+		return SIZE_MAX;
-+	if (check_add_overflow(bytes, c, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
-+/**
-+ * struct_size() - Calculate size of structure with trailing array.
-+ * @p: Pointer to the structure.
-+ * @member: Name of the array member.
-+ * @n: Number of elements in the array.
-+ *
-+ * Calculates size of memory needed for structure @p followed by an
-+ * array of @n @member elements.
-+ *
-+ * Return: number of bytes needed or SIZE_MAX on overflow.
-+ */
-+#define struct_size(p, member, n)					\
-+	__ab_c_size(n,							\
-+		    sizeof(*(p)->member) + __must_be_array((p)->member),\
-+		    sizeof(*(p)))
-+
- #endif /* __LINUX_OVERFLOW_H */
+-	if (prev_state == VNIC_CLOSED) {
+-		for (i = 0; i < adapter->req_rx_queues; i++)
+-			napi_schedule(&adapter->napi[i]);
+-	}
+-
+ 	adapter->state = VNIC_OPEN;
+ 	return rc;
+ }
 
 
