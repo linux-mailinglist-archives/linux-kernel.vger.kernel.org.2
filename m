@@ -2,170 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3EB36B714
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C848D36B71A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234731AbhDZQlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:41:44 -0400
-Received: from mail-co1nam11on2060.outbound.protection.outlook.com ([40.107.220.60]:38747
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234726AbhDZQl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:41:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mZI/CiS4XrtkWV0v2dlWiCpFTnIjXJ6jaAjB7tGQDzwi6sjNxd/bE5+Zj+7P3aqMtF9VdEHtI8zufc2eg2mTjA3OA49gmJENyAVobvZ+hKC6eQtoQigdtywNotRIzqPdtF6nrO5tNjy18AXb0mJicSb+qIL68ilsO5kBlmmHQ5hfm5SFA8agyGxlmSJmMG00t1Dqysa9soUhMj00BF4Z6nCssPiRMTDWbTrEE/1IEPSQH05Du+O5ac7G2dYGbV1bup4WPXggpiyymrxTg39vE/7dMH8PSjvYmWGUv9bjtjwnwaBmJi+P/CT7A2r+nXH2mwM67su0KvrpmuvEupqT3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dAUmj5qZOFC/Om6b7ejlp3wiow/Gfc8xUNpBW5MbcuA=;
- b=YZAJMoEm+MofMdI1vmnZfRwHGZ7YOME05o/iNVkjYAnsi1v3d+7d1SVoqPq+VtZ2zKHmT7TMmcZ64v20Klkd46eV7apjGH6IEl2ZhaXiPIlhjVmQuy91anVcZ8g8rPN0A5cKWbZE0YU0+0yJSN9NYAZZW6ypp2zPUQM5XUKjkK/b600CeIz7onXigI0hOIKXxiGmDwpcb0ZjBRIwiSLkuzZkCvb7nzCuAbkae66V2Eq1Kq7n8Qel2Cf4+xHISqWG1FvFa24HQyjBT9rWZHL8KcYKFjSgtM4LWQyiiqAx31alVyASqrWcU2y0nu6qlSjbxnTU4hLAEmmOlqovVpLg6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dAUmj5qZOFC/Om6b7ejlp3wiow/Gfc8xUNpBW5MbcuA=;
- b=Byq+BhGnSLiLCWEV0co1lYh3VSlojcoGoH6bgzMxW8ksbORkIm9haUbhXfqdcv1ZBSJaotk7N6KZPaMulu6OGz7L78Wku9Hn0p+txuGZ7Zp+wO3RapXVwddV32OxskJ4KhFIVSMeAONIF0dEey1MdFUzDTHHQLSm9Q6l+K7uXb0=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB3435.namprd12.prod.outlook.com (2603:10b6:5:39::26) by
- DM5PR12MB1130.namprd12.prod.outlook.com (2603:10b6:3:75::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4065.23; Mon, 26 Apr 2021 16:40:43 +0000
-Received: from DM6PR12MB3435.namprd12.prod.outlook.com
- ([fe80::69b0:5e8d:c318:3f3b]) by DM6PR12MB3435.namprd12.prod.outlook.com
- ([fe80::69b0:5e8d:c318:3f3b%7]) with mapi id 15.20.4065.026; Mon, 26 Apr 2021
- 16:40:43 +0000
-Subject: Re: [v2 1/1] x86/cpufeatures: Implement Predictive Store Forwarding
- control.
-To:     Reiji Watanabe <reijiw@google.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
-References: <20210422171013.50207-1-rsaripal@amd.com>
- <20210422171013.50207-2-rsaripal@amd.com>
- <CAAeT=Fzji_=m45ycm_rS6dFcp1M3yWLQAY01-s=WG-gj4znOog@mail.gmail.com>
-From:   "Saripalli, RK" <rsaripal@amd.com>
-Message-ID: <e73b3ec8-bd8b-35eb-0adf-b292939e55ca@amd.com>
-Date:   Mon, 26 Apr 2021 11:40:40 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-In-Reply-To: <CAAeT=Fzji_=m45ycm_rS6dFcp1M3yWLQAY01-s=WG-gj4znOog@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.78.25]
-X-ClientProxiedBy: SN6PR01CA0030.prod.exchangelabs.com (2603:10b6:805:b6::43)
- To DM6PR12MB3435.namprd12.prod.outlook.com (2603:10b6:5:39::26)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.134.241] (165.204.78.25) by SN6PR01CA0030.prod.exchangelabs.com (2603:10b6:805:b6::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Mon, 26 Apr 2021 16:40:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aa3e3df8-735c-40f9-79b1-08d908d208e0
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1130:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB11307AC098F6B5D2394CA64A9B429@DM5PR12MB1130.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R2Oz5y9gL5u+luPNLqXAFQjRUsoop29Ptk7GNeuEYsQx2l8bhIT1UV35oLYJBOYXrgry4WUOqCoX5NAgW7e1HEpzWxKceSMB9UzRZ+FZO5320GhZ1pfpjglDw+3bV3fWKM8a8rCQBK1HtwjbKiwgb1giwa6cSY1f2RyJENaT4ciT9C0dUJa2xS9Ta33yEhHrys8Ixaugyr2yFKYmWS4gJooGnzNGpsW+gYf56YxGFFXuhkxs+9iB08RmOetgTEVtU/hZ4dH8UMhsDa6J/lVNwRo3wL/YCWv7GaQLtAR1sCLhjaqJQa11/QYt2TSwEkmVxsiEOdqvUwlZlNhiz5yeQNnfsL4hXD5akKSLMAuM+1UWLm5DYBdF1jdT7zYYZbnO2n9CGDQ5J4Prfgrj7parQ6gnZNvdE8A4G3C/KTlRuTnB9PvJORE1P1EwlCZx23AxnCQ3GupIiXz4FP8fD2KNruYnvlZCpYz6NwiEt1mjwU9Q1LurGZWJV82pUdGVVDozEjFfQchkax6oiuH3aWRXvgdCJRVgRoZrpPAT0gRoZ+E+vvJRlG2duthqH7Y15mY4m1VpHTztGx/QNkOQQK7mz9b1wMola0ClFhPzI1IVj6cwW11X26N/QSoFHOYbDlK18ZA2bgISH8WPPUCNKQ1jpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3435.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(316002)(186003)(16526019)(478600001)(5660300002)(26005)(2906002)(53546011)(6486002)(38100700002)(66946007)(31696002)(83380400001)(8936002)(31686004)(6916009)(8676002)(16576012)(66556008)(66476007)(4326008)(956004)(36756003)(2616005)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MFZSSVEzTDdXdnpjWFZYSFZEWWFzMSs3R3dETjI4Wmpub1BxMTI1WGJIY08w?=
- =?utf-8?B?QmR6QzY4K1VLNmE1OGprdDJNd3FOcTMwN0hoVnFQeStPVWwzdG55V2QwQ0tx?=
- =?utf-8?B?QzdhRDRJZzludVdISW5ISUhGdHpFODJOUkdFR1hERUFmL2dRTzRrT2pSSTcx?=
- =?utf-8?B?R2o2TllnOVpPZ1hiKzR3Y3YzK1ZndHRNa2VEbWNYOHN6ZFJHS0ZHU2hUM3ZF?=
- =?utf-8?B?VU51eFZZcTRYNFhHeU1HbHcxcXVHVkVzRnhQN2xZNkprTDF1dnk2cW90eE5D?=
- =?utf-8?B?QjFzMGg4WVAwTnc4bTFqSnp6a29XNkVCTnRqb3phaExzK05iekczWFJHWHJS?=
- =?utf-8?B?QUpJWW05dlExd3BEUjBEU0dCWHdPSzZUanAzMGl5R0FTK2FVTmR6WVN4akJD?=
- =?utf-8?B?QzJiRGtTb0dUZUZiQXhobnY4Ly9QcHRmM0xtOC9USklUWWFmdUlrajlRbjJE?=
- =?utf-8?B?VzhQaDNRNytvcWJKY0k0aDVocjVRemY2bU45TVl1bUhDY3ZYMUUrd2dqSWlS?=
- =?utf-8?B?ZjBvL1lNYmQ5WUE0L05EeEV1OHFLRmViUkJvYXRhZ3Y0bkppUzh5SGlvWFAz?=
- =?utf-8?B?UllSSDluMUJ3VWQxZHc5N3AwdU9ndTlNNktSYmNEUDVWSU5VYnI5eUdWUkVz?=
- =?utf-8?B?a2lqczNMRE1wb25rcjJmVzFoenpLdFNBTDFBcjkydUxHTm5QUHZSNnFteTl4?=
- =?utf-8?B?djdFZTFrNU8zOWxUS05XZXNqVjRkd1IwNEp4UlRrMW1PczF6K2NSVTYzUzRz?=
- =?utf-8?B?QWMvWFMxVFRGVW93QU9zRmQ5ZWdaL3JwVzh2eVd1R2hBZXV6NlZjZzNkRUJ3?=
- =?utf-8?B?RHB2d1V2eG9iM3didS9PeU5US1lpU1JySjRjSjFUcERjY3VrU0JHdXNvbThp?=
- =?utf-8?B?UVV4UDhxcmtuOStJRW42VEtRSUcrVHFKaXRNNXAzL0VEWmtKb1pDV09EbVFn?=
- =?utf-8?B?bUhvZkFHQUVnZ3VFekRXWnBGV2h2VEIxZmVVaEpnMVhOUFdNVi94Q3FrYnpT?=
- =?utf-8?B?TThhTi9DVTBoSkp6RjlvVFhlMWkvTGd4QmYvdjNqaDBzVERtVE11RDdRZm1Y?=
- =?utf-8?B?bnV0cTRsK0dDK2RjWVhwTmdxbXBucVdRNnR5TndUdE5jb08xbkYya2h4SEdM?=
- =?utf-8?B?NUg2eUpRWC9POGFoQ2hoK2VOT0N2Q1drUWlZRkpLalJIMWxEZ0lYZFZhTWR1?=
- =?utf-8?B?b1UrMU9GY01pNTBIcVZrM1BKTnkraytTSEFjVFhod2RHcExabU1CZk14bHMx?=
- =?utf-8?B?ejE5RHlOQSt6SklNR1MwbTB3QlpBa3Ezemw1czZKeWpub3k1ZUIwK080aElI?=
- =?utf-8?B?REpKOEhGVGN2MkIxL3NUUGwveWJnbm9ROGs2TVhFUmVtUTQ5N3AzdUg0K29x?=
- =?utf-8?B?ZEczRWdtc0g3K0dZaWtDY1h0WjlwR0ZKVWw1MTJuK01KejZKbFdNekdqcStp?=
- =?utf-8?B?UFJ0S2UzajNWeStaa3BkL2lpbkRJQWpVM1VYUWhCRUVxdTdrZE5sNEVhRXhw?=
- =?utf-8?B?U1lhY2NOZWQ2M2tuMnlqQ2xSTEpjM2ovd0Y4U1QwcHZhbnRaRVgxZkxmY3RX?=
- =?utf-8?B?dnJ4N20vaHE5YUhxaTR0ZTRwbHI2TlBQWFdUNmV4b20wSUdQeWc0cEU2cUZG?=
- =?utf-8?B?cXA4UllORzZMZGZrejEwZERjcTRPQjBqRm55OGF6UFd2SWpGY01JYkVnWmtH?=
- =?utf-8?B?cG4rSmptSUE1TEp5QWNEbkZzN083aG9OOW8wMldiRCtxRmV5QmpkRlRSU0RN?=
- =?utf-8?Q?tn1j+JRwe3/u915FTAO2DB/PTvRALO/iKfXx3sh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa3e3df8-735c-40f9-79b1-08d908d208e0
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3435.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 16:40:43.5788
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sXTyzo22ZiGrQHImmiP5TJoyuftZLvvYA8g7XBVuBVCBvvhR89M7k38sV8kMBzmUPW8dr2JeZ/g7b+VhAkkzHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1130
+        id S234588AbhDZQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:43:31 -0400
+Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:43362 "EHLO
+        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234576AbhDZQna (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 12:43:30 -0400
+Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
+        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FTW0Q3fFgz2Tdv;
+        Mon, 26 Apr 2021 18:42:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
+        s=smtp-out-2; t=1619455366;
+        bh=vAWvm4J8IUsdhtm3IvCqag1smIsdVKVd8tfu48VM2MY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=iLTvh2Rr8jICSgtByPtcQ+bBa1kItjmFp6orClC403YvKqzLjhr1HHjPMqAIiaLEF
+         sjlaPlZCNiPi6G/0A4gOhIP89/J7WjTbJ74Qiwn/qHuhmhbwHMs+Duyok6Y3fhLHqc
+         eZM/XBV8AcGEj34tzFRHfeiShJPcwDNhLLioUHhE=
+Received: from localhost (localhost [127.0.0.1])
+        by smtp-1.t-2.net (Postfix) with ESMTP id 4FTW0Q3TdHzTpmmq;
+        Mon, 26 Apr 2021 18:42:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at t-2.net
+Received: from smtp-1.t-2.net ([127.0.0.1])
+        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pO3ewzsYZ0oN; Mon, 26 Apr 2021 18:42:46 +0200 (CEST)
+Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-1.t-2.net (Postfix) with ESMTPS;
+        Mon, 26 Apr 2021 18:42:08 +0200 (CEST)
+Message-ID: <d4d0603716e5cb99a7a9a93d4f767278ac318557.camel@t-2.net>
+Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
+From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Date:   Mon, 26 Apr 2021 18:42:05 +0200
+In-Reply-To: <YIaPQzktArmoWbLr@alley>
+References: <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
+         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
+         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
+         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
+         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
+         <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
+         <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
+         <07c3c9015491ca9b42362098d5e90ca7480cf5ed.camel@t-2.net>
+         <e7010c9e-1ac2-55a7-b505-802e03f13362@i-love.sakura.ne.jp>
+         <9e8805a98d6c0d0f20e563c8e4db98b595826c13.camel@t-2.net>
+         <YIaPQzktArmoWbLr@alley>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/26/2021 11:28 AM, Reiji Watanabe wrote:
->> --- a/arch/x86/kernel/cpu/amd.c
->> +++ b/arch/x86/kernel/cpu/amd.c
->> @@ -1170,3 +1170,22 @@ void set_dr_addr_mask(unsigned long mask, int dr)
->>                 break;
->>         }
->>  }
->> +
->> +static int __init psf_cmdline(char *str)
->> +{
->> +       if (!boot_cpu_has(X86_FEATURE_PSFD))
->> +               return 0;
->> +
->> +       if (!str)
->> +               return -EINVAL;
->> +
->> +       if (!strcmp(str, "off")) {
->> +               x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
->> +               wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
->> +               setup_clear_cpu_cap(X86_FEATURE_PSFD);
+Dne 26.04.2021 (pon) ob 12:00 +0200 je Petr Mladek napisal(a):
+> On Sat 2021-04-24 11:57:47, Samo Pogačnik wrote:
+> > Dne 24.04.2021 (sob) ob 10:16 +0900 je Tetsuo Handa napisal(a):
+> > > On 2021/04/24 4:47, Samo Pogačnik wrote:
+> > > > At any point the tpk_buffer is potentially multiplexed/interleaved by
+> > > > parts
+> > > > of
+> > > > required output of any concurrent user, as buffs are being delivered by
+> > > > the
+> > > > scheduled writes.
+> > > 
+> > > As long as one line is printed by one printk() call,
+> > > CONFIG_PRINTK_CALLER=y is
+> > > helpful enough to distinguish multilplexed/interleaved messages. I
+> > > consider
+> > > that
+> > > ttyprintk offers additional advantage over printk() for allow buffering
+> > > one
+> > > line
+> > > of message from userspace.
 > 
-> Shouldn't X86_FEATURE_MSR_SPEC_CTRL be set if the CPU supports PSF ?
-> x86_spec_ctrl_setup_ap(), which is called on non-boot CPUs, doesn't
-> update MSR_IA32_SPEC_CTRL with x86_spec_ctrl_base not having
-> X86_FEATURE_MSR_SPEC_CTRL (i.e. if a CPU supports PSF but no other
-> existing feature that makes the kernel set X86_FEATURE_MSR_SPEC_CTRL).
+> It does not matter how much buffering games you play. As long as you
+> use printk() to store single lines into the kernel logbuffer they
+> alway could be interleaved with lines from other processes/CPUs.
 
-Reiji, that is a good catch. 
-This patch unconditionally sets to bit 7 even on machines where bit 7 is undefined thereby risking a kernel oops.
-I will fix this.
-
-I did test this code on a Milan machine and verified that with the setting to off, the SPEC_CTRL MSR was showing bit 7 set to 1 and with on setting SPEC_CTRL MSR bit 7 was cleared.
-I tested this with both spec_ctrl_bypass_disable kernel parameter and without. 
-I verified with {sudo modprobe msr; rdmsr -a 72 which dumps on all CPUs.
-But I may not have tested this patch on a non-Milan machine with both settings.
-I will make sure to test it on non-Milan machines before sending the next version out.
+Exactly. The only purpose of ttyprintk buffering is to mark any begining of
+lines occurring within the userspace-string written into ttyprintk TTY. The
+marked lines do not originate in the kernel source code, which is not obvious
+otherwise (imho this is importannt). Even the CONFIG_PRINTK_CALLER=y does not
+give this information, if the task ID printed does not live anymore.
 
 > 
-> Also, since check_bugs() reads the SPEC_CTRL MSR to account for reserved
-> bits which may have unknown bits to set x86_spec_ctrl_base
-> (if X86_FEATURE_MSR_SPEC_CTRL is set),
-> I'm wondering if psf_cmdline(), which is called earlier
-> than check_bugs(), should do the same instead of overwriting
-> it with x86_spec_ctrl_base | SPEC_CTRL_PSFD.
+> > > > 
+> > > > As per user buffers look promising with output formatting, the FDs
+> > > > passing
+> > > > between tasks lead to the same single buffer (Greg already mentioned
+> > > > that).
+> > > 
+> > > Those programs which use FD passing know what they are doing. If they
+> > > still
+> > > want
+> > > one line of message printed via ttyprintk interface, they must do their
+> > > buffering
+> > > before trying to write() to ttyprintk's file descriptor.
 > 
-Ok. I did not think of that path. I will go through that code and fix up the patch.
-> 
-> Thanks,
-> Reiji
-> 
+> Lines might get interleaved when using printk().
+> What is special about messages passed via ttyprintk()?
+They do not originate in the kernel code.
 
-Thanks,
-RK
+> How many processes are using it?
+In case of redirection any proces, that is writing to console.
+
+> Do they print many lines?
+?
+
+> Is it really worth any added complexity?
+No.
+
+> 
+> > On the other hand, my main concern is how to provide a reliable system wide
+> > collection of all console output via ttyprintk console redirection, while
+> > normal
+> > operation of system console is preserved (except its output being detoured
+> > via
+> > printk and as such logged together with kernel output). Such logging is
+> > particularly useful for after-the-fact inspection of system operation.
+> 
+> I am not sure if I understand the problem. But why does ttyprintk need
+> any buffer at all. AFAIK, the use-case is to pass any written data into the
+> kernel logbuffer via printk()?
+(see above - it is not something the kernel is telling you)
+> 
+> Why tpk_write() does not call printk() directly?
+(see above)
+> 
+> If you call printk() directly, the caller_id would be from the process
+> that really wrote the data/message.
+It can be a kernel-code originating message printk-ed on behalf of a user task
+or a kernel-code originating message on behalf of a kernel task. Or it may be a
+user-code originating message on behalf of its task, when printk-ed via
+ttyprintk.
+
+> 
+> > That being said i am thinking about how to permanently enable this
+> > redirection
+> > as early as possible (i.e. via kernel command line option). I had a working
+> > prototype for that some time ago (never posted). Would anybody like to see
+> > such
+> > functionality?
+> 
+> Please, do not add any complex code if it does not cause real life
+> problems.
+> 
+Noted, thanks.
+
+Best regards, Samo
+
+
