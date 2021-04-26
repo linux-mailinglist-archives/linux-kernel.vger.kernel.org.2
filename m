@@ -2,205 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D49836B280
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2815736B284
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhDZLuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhDZLuD (ORCPT
+        id S232967AbhDZLuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:50:16 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:41724 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232107AbhDZLuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:50:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBC5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 04:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SYKQ9oCxcSWwe5wSwHhuDS6qiub6VAFCoqgUBic5noU=; b=JcaImW1gEK6h9q8tQwRD8bt6Vx
-        CMbiB9SUpKICdiMygGUpNyrxLl/zCXJQeqOQrL+hEipcnO64TKBBsz9v95ULi/qW5AqHcFNHtNcbj
-        7J+N9exjen/qSrf2/OAPlOzGUN9PPZOHvvNE72ytzOOj7gtT1+eI2YO0QEKoLQY6zXSOt0g/7etIU
-        sntT5M5TTJ5LwQG/UTONKMURpYasR+OlXF9PZ08uLil0la547od4+ZUqV1H7iUaybUnfzDT95jVYy
-        D04/oWWIMTgiyAYPG+627zGFyZcQXKQSFZ8E5Mt1okA0HKkfhy3vGTz4FY3J2vbZb1gDXI6KxUYgi
-        9pXu/WpQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lazja-005Z51-Dy; Mon, 26 Apr 2021 11:49:11 +0000
-Date:   Mon, 26 Apr 2021 12:49:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba:
- Convert module from IDR to XArray
-Message-ID: <20210426114902.GI235567@casper.infradead.org>
-References: <20210426095015.18556-1-fmdefrancesco@gmail.com>
+        Mon, 26 Apr 2021 07:50:14 -0400
+Received: by mail-oi1-f176.google.com with SMTP id r186so28369596oif.8;
+        Mon, 26 Apr 2021 04:49:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p9F86T9h7602Fl6+TzddeYKXK/1gVrIGGZyfmSG1Vys=;
+        b=rocBFH0Voxw05QkB5MZ2+Xky9VIDX1u1p9TtuynPMHE2/2VXxeN9fffb93vQSxk/NN
+         CMsvP+2qK7lTP31MUKaO0lOHd+s6o34fPWiaxBGPAdIjZiBRvv2QqJ1KG6DID62ZulIA
+         HXQiJpJLid5526vZAfJtQ2c4IsacT1REU9ckRT9rjvpikhQ39dg47kptk+hm8bFYdod2
+         IYeR3tJhcvbTrs0APOqZiDlTLWITu57N09lMCy7GmWhGc6HMIRxgNtivSH+voZO71OVr
+         MvWHQue18ZRs+cMqgn2PwiD8XAEsZn2tl//yyL9v8iC3J7F9o6wisNP1MLPGjiSX0Iga
+         g+QQ==
+X-Gm-Message-State: AOAM530Gv7/U3GhTpX8aj1lt6pt9APKu5T7rdXknRZ5zdV5x4dLih0Ai
+        oC7hwtDsO/aB20Tw8RiRz1Wa51EANIniLEz2pX7ePBuI
+X-Google-Smtp-Source: ABdhPJx5GrUxGsRFl+KIvzoja/xec5WPmkW+zWyrx4LIdDd5Tsqd14K9KRuF2gYlrInb4Z/rfiXAnltwTjkg+C9MtLQ=
+X-Received: by 2002:a54:4501:: with SMTP id l1mr13347861oil.157.1619437770174;
+ Mon, 26 Apr 2021 04:49:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426095015.18556-1-fmdefrancesco@gmail.com>
+References: <20210424021631.1972022-1-rajatja@google.com> <20210424021631.1972022-2-rajatja@google.com>
+ <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com>
+In-Reply-To: <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 26 Apr 2021 13:49:15 +0200
+Message-ID: <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Rajat Jain <rajatja@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
->  #define VISORHBA_ERROR_COUNT 30
->  
-> +static DEFINE_XARRAY_ALLOC(xa_dtstr);
-> +
->  static struct dentry *visorhba_debugfs_dir;
->  
->  /* GUIDS for HBA channel type supported by this driver */
-> @@ -78,12 +80,6 @@ struct visorhba_devdata {
->  	unsigned int max_buff_len;
->  	int devnum;
->  	struct uiscmdrsp *cmdrsp;
-> -	/*
-> -	 * allows us to pass int handles back-and-forth between us and
-> -	 * iovm, instead of raw pointers
-> -	 */
-> -	struct idr idr;
-> -
+On Mon, Apr 26, 2021 at 11:17 AM Oliver Neukum <oneukum@suse.com> wrote:
+>
+> Am Freitag, den 23.04.2021, 19:16 -0700 schrieb Rajat Jain:
+> > Export the already available info, to the userspace via the
+> > device core, so that userspace can implement whatever policies it
+> > wants to, for external removable devices.
+>
+> Hi,
+>
+> is there a way to tell apart whether a device can undergo regular
+> surprise removal?
 
-Why did you change the driver from having one namespace per HBA to having
-a global namespace?
+PCI devices located under a removable parent can undergo surprise
+removal.  The ones on a Thunderbolt chain too.
 
->  /*
-> - * simple_idr_get - Associate a provided pointer with an int value
-> - *		    1 <= value <= INT_MAX, and return this int value;
-> - *		    the pointer value can be obtained later by passing
-> - *		    this int value to idr_find()
-> - * @idrtable: The data object maintaining the pointer<-->int mappings
-> - * @p:	      The pointer value to be remembered
-> - * @lock:     A spinlock used when exclusive access to idrtable is needed
-> - *
-> - * Return: The id number mapped to pointer 'p', 0 on failure
-> + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
-> + * @id: Pointer to ID
-> + * @entry: New entry
->   */
-> -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
-> -				   spinlock_t *lock)
-> +static int simple_xa_dtstr_get(u32 *id, void *entry)
->  {
-> -	int id;
-> -	unsigned long flags;
-> +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b, GFP_NOWAIT);
-> +	/* TODO: check for and manage errors */
->  
-> -	idr_preload(GFP_KERNEL);
-> -	spin_lock_irqsave(lock, flags);
-> -	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
-> -	spin_unlock_irqrestore(lock, flags);
-> -	idr_preload_end();
-> -	/* failure */
-> -	if (id < 0)
-> -		return 0;
-> -	/* idr_alloc() guarantees > 0 */
-> -	return (unsigned int)(id);
-> +	return ret;
->  }
+> Do we want that?
 
-I would think that this wrapper should probably be removed.  It'll almost
-certainly be better to inline the call to xa_alloc_irq() at the call
-sites.
-
-You've also changed the behaviour; it used to allocate an id between 1
-and INT_MAX; now it allocates an ID between 0 and UINT_MAX.  Maybe that's
-safe, but you need to argue for it in the changelog.
-
-And it shouldn't be using GFP_NOWAIT, but GFP_KERNEL, like the IDR code
-used to do.
-
->  /*
-> @@ -216,22 +196,25 @@ static unsigned int simple_idr_get(struct idr *idrtable, void *p,
->   *				completion processing logic for a taskmgmt
->   *				cmd will be able to find who to wake up
->   *				and where to stash the result
-> - * @idrtable: The data object maintaining the pointer<-->int mappings
-> - * @lock:     A spinlock used when exclusive access to idrtable is needed
-> + * @xa_dtstr: The data object maintaining the pointer<-->int mappings
-
-You added this in the documentation, but not in the function ...
-
->   * @cmdrsp:   Response from the IOVM
->   * @event:    The event handle to associate with an id
->   * @result:   The location to place the result of the event handle into
->   */
-> -static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
-> -				       struct uiscmdrsp *cmdrsp,
-> -				       wait_queue_head_t *event, int *result)
-> +static void setup_scsitaskmgmt_handles(struct uiscmdrsp *cmdrsp,
-> +				       wait_queue_head_t *event, u32 *result)
->  {
-> -	/* specify the event that has to be triggered when this */
-> -	/* cmd is complete */
-> -	cmdrsp->scsitaskmgmt.notify_handle =
-> -		simple_idr_get(idrtable, event, lock);
-> -	cmdrsp->scsitaskmgmt.notifyresult_handle =
-> -		simple_idr_get(idrtable, result, lock);
-> +	void *entry;
-> +	int ret;
-> +
-> +	/* specify the event that has to be triggered when this cmd is complete */
-> +	entry = &cmdrsp->scsitaskmgmt.notify_handle;
-> +	ret = simple_xa_dtstr_get(result, entry);
-> +	/* TODO: Check for and manage errors */
-
-The prior code assigned the ID for 'event' to scsitaskmgmt.notify_handle.
-Now, you're allocating an ID for the address of scsitaskmgmt.notify_handle
-to 'result'.  That's clearly not right.
-
-> +	entry = &cmdrsp->scsitaskmgmt.notifyresult_handle;
-> +	ret = simple_xa_dtstr_get(result, entry);
-> +	/* TODO: Check for and manage errors */
->  }
->  
->  /*
-> @@ -240,13 +223,17 @@ static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
->   * @idrtable: The data object maintaining the pointer<-->int mappings
->   * @cmdrsp:   Response from the IOVM
->   */
-> -static void cleanup_scsitaskmgmt_handles(struct idr *idrtable,
-> -					 struct uiscmdrsp *cmdrsp)
-> +static void cleanup_scsitaskmgmt_handles(struct uiscmdrsp_scsitaskmgmt *scsitaskmgmt)
->  {
-> -	if (cmdrsp->scsitaskmgmt.notify_handle)
-> -		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
-> -	if (cmdrsp->scsitaskmgmt.notifyresult_handle)
-> -		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
-> +	struct uiscmdrsp *cmdrsp;
-> +	unsigned long index;
-> +
-> +	xa_for_each(&xa_dtstr, index, cmdrsp) {
-> +		if (&cmdrsp->scsitaskmgmt != scsitaskmgmt)
-> +			continue;
-> +		xa_erase(&xa_dtstr, index);
-> +		kfree(cmdrsp);
-> +	}
-
-I suspect this is part of the same confusion, but the old code passed in an
-ID that we just looked up & removed.  You've changed that to iterate over
-all the entries and remove the ones that match ...
-
-> @@ -1096,7 +1077,7 @@ static void visorhba_remove(struct visor_device *dev)
->  	scsi_remove_host(scsihost);
->  	scsi_host_put(scsihost);
->  
-> -	idr_destroy(&devdata->idr);
-> +	xa_destroy(&xa_dtstr);
->  
->  	dev_set_drvdata(&dev->device, NULL);
->  	debugfs_remove(devdata->debugfs_info);
-
-What happens if you have two HBAs in the system, one is active and you
-remove the other one?
-
-More generally, the IDR required you call idr_destroy() to avoid leaking
-preallocated memory.  I changed that, but there are still many drivers
-that have unnecessary calls to idr_destroy().  It's good form to just
-delete them and not turn them into calls to xa_destroy().
+Do you mean surprise removal?  Yes, we do.
