@@ -2,163 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1240D36B8CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0939936B8CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhDZSTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S234432AbhDZSTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhDZSTF (ORCPT
+        with ESMTP id S234304AbhDZSTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:19:05 -0400
+        Mon, 26 Apr 2021 14:19:13 -0400
 Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAEFC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:18:21 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id g38so66024231ybi.12
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:18:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAD1C061574;
+        Mon, 26 Apr 2021 11:18:31 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id i4so28479264ybe.2;
+        Mon, 26 Apr 2021 11:18:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oxk441iU0wp7QI5uSmMi84qyuJ4uphlRd2RFq20rb5g=;
-        b=fCCr/nw130U0++Z0Ivdh5cPqDkXHWeQsmeWFwQD9nz4NkxrycmLKiQUAFXKoMFlqZx
-         qDEMWDw0v/cbIc0a8goTHlmnrZB6Cn9RHhHgvTC4tYhqM+ZCvQ4MJFU+WNJCkJQnBEW9
-         bsWQ+775cYJ0vHY8ed/UTIu5IqAqc4WiYqbvI+KLqgY/FdIGxj1oiJVUGM10BKBchfnI
-         kyjf9HUzrbLvG6aI2ZJaPstOkNLsVtLlH7F5hzlfXPUJW3W0YFd8UpigyoHMjBIyaTqK
-         F6s2oJeL1xEhoTLvtbYuIMWxtd/vCEbmbEv7s8sR3KPU8q9xHajibhc49Ror8dMvpOl9
-         eRjA==
+        bh=F7v36cla8caxpSLJhOMdKWfComHLfYG2gbSrAEkLrOw=;
+        b=A1AFfE+2fVystHL7B+p4dhFFNrnZRzFxxOsH2x/tAB1afo1nksfGMvGLn1CzpLOhw7
+         19f/dgMkIRmUHi3WS8dkILKMSRG+qdG31sqbBDqyBwZG1qaCKY5peThW0OKBOnXi7TJH
+         WH1X6CPUDOZ+Bxax1/I9FC8i61tBZ4AshhRhe6n6HLl5yoyo4VWOQiQZosSrzbQRcPTd
+         32G4FpKQ+WBP5lmdO8pZiF432W2/5wLwLNH7UwCt+dvOvQZi4WATaGbm736K8+7PRPuS
+         FBAPB0vtCUhsjHsm0BN4WeiPWwcqg56XUG0sd7/wG6A98/Gu3ZkKPjI+zQvbmw9B7ab9
+         qYMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oxk441iU0wp7QI5uSmMi84qyuJ4uphlRd2RFq20rb5g=;
-        b=E2vqVSCwS27xKsYpiYTGaLoUE6NRkU9iM5JvS/zLrTdxuTlYBsoenzZ4L1qT+Myh9P
-         QrrgaWnQ3mWQ2OXC2JarmImzw9CIbV7ibC/fieMXgt8bfZ749g0YQ4lxD9YdFheRCU//
-         c6yq8uBCXfC3qV+AvaZBsKsYTWz/Og4o5QUoy8E1JtT4If4kNOy4ZXnVtB0G87XHLVZJ
-         wVXaLGLjjjrwE1rZKragvB7KSeLEbemJiBKDZ2vGrF+LkAyeAvLnbLtfS7ZC8su5Meca
-         0/LlMuTc+YgKSdaCxNaEwzGubunBb1ueUcGK3TRy2aR7DGVnFcr4YiqY+Afd+Qt7LY1A
-         gbRQ==
-X-Gm-Message-State: AOAM532UjjCrp0gC+yNkkEJhxjF4ps/HwEFHsVy/0oIO1GzPJQ9/f6hh
-        3DUMnZxSOsQm19BTvBoGB+31DdgC7nwiSSzJeJ20BA==
-X-Google-Smtp-Source: ABdhPJxpKkzlxeFeOtzkL9KcfVeos0Z41kgtlmgxKrzK9GddPMejgPaMIQWIl+pLW3jEJCvWSVSH9ek3FFeVdL0Q7Q0=
-X-Received: by 2002:a25:e7c8:: with SMTP id e191mr24243893ybh.153.1619461100801;
- Mon, 26 Apr 2021 11:18:20 -0700 (PDT)
+        bh=F7v36cla8caxpSLJhOMdKWfComHLfYG2gbSrAEkLrOw=;
+        b=VjGnC53kr4tORdxtYCKL6v1GeX09+s3J6wp9Gnftd64juvIDAYd4L4a2ab3X7nnFr0
+         2lujqePoKySS+5JTx8bZ9CgFZUlAz4qSEzVyG1Le2Bf49V/MvOa+YewXfBynLRv984E1
+         L07yLkEvBRh/ZcZR+ynbEoHHul8JRMLzP4py0HCWnRyS+vDHwZloWuGdz+1cfUAWVOpL
+         dZ5drcSygKn1KtqiEP7Pt1BAA3PPRJJW7/OYs5dJZPoYzTKay1MoNHqbl0+TlQmk/yhl
+         1mEmSaFP+Y4dflMT8QhZadLYrWTOeYfnT0v/XvMakoslba48McU+5OdTG34D+6Bugb7o
+         qEAg==
+X-Gm-Message-State: AOAM530qi3wAbwWekk/zbk60vbmaFayoVtqICPKRC33PsK5TkEBS3B+7
+        wlvRpt29+x2HkXBFW+oXX3TXcPyBA2emBmc0ZOE=
+X-Google-Smtp-Source: ABdhPJwA9XaKpU2FfRTf3EhmwLejH/FxBtccngRqJlzoiX2mOvpdI80qCUc5w+8GSCrLHIisaBXYdcoD7eqCChWN91I=
+X-Received: by 2002:a25:7909:: with SMTP id u9mr25819339ybc.22.1619461110782;
+ Mon, 26 Apr 2021 11:18:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210426065618.588144-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20210426065618.588144-1-tudor.ambarus@microchip.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 26 Apr 2021 11:17:44 -0700
-Message-ID: <CAGETcx9LgyX-D1E0bb-JW=G6TTvr-KC+1-733uWppzGZnYaoxg@mail.gmail.com>
-Subject: Re: [PATCH v2] clk: Skip clk provider registration when np is NULL
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, nsaenz@kernel.org,
-        maxime@cerno.tech, Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Brown, Len" <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        guillaume.tucker@collabora.com,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com> <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
+In-Reply-To: <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 26 Apr 2021 20:18:19 +0200
+Message-ID: <CANiq72=VA_cH9yw_LZr3P+n1AsQEEhtY4xdk76jHgimTufHRsQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS <devicetre
-        e@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>, linux-rpi-kernel" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 11:56 PM Tudor Ambarus
-<tudor.ambarus@microchip.com> wrote:
+On Mon, Apr 26, 2021 at 2:31 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 >
-> commit 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
-> revealed that clk/bcm/clk-raspberrypi.c driver calls
-> devm_of_clk_add_hw_provider(), with a NULL dev->of_node, which resulted in a
-> NULL pointer dereference in of_clk_add_hw_provider() when calling
-> fwnode_dev_initialized().
+> I think the Rust proponents should be open to the fact that their
+> work will eventually depend on themselves or someone else
+> fixing a working compiler for the maintained architectures in
+> the Linux kernel one way or the other, so they will be able to
+> work with Rust project anywhere in the kernel.
 >
-> Returning 0 is reducing the if conditions in driver code and is being
-> consistent with the CONFIG_OF=n inline stub that returns 0 when CONFIG_OF
-> is disabled. The downside is that drivers will maybe register clkdev lookups
-> when they don't need to and waste some memory.
->
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Fixes: 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
-> Fixes: 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> ---
+> For example m68k is not going away. Avoiding this question
+> of compiler support, just waiting and hoping that these old
+> architectures will disappear is the wrong idea. The right idea
+> is to recognize that LLVM and/or GCC Rust needs to
+> support all these architectures so they can all use Rust.
+> Someone needs to put in the effort.
 
-Reviewed-by: Saravana Kannan <saravanak@google.com>
+The RFC does not avoid the question -- please note it explicitly
+mentions the architecture/platform support issue and the current
+dependency on LLVM, as well as the possible ways to solve it.
 
--Saravana
+We would love to not have that issue, of course, because that would
+enable Rust to be used in other parts of the kernel where it is likely
+to be quite useful too.
 
-> v2:
-> - s/return 0;/return; in void of_clk_del_provider()
-> - add second fixes tag and Stephen's R-b tag
-> The opinions on whether to return an error or zero were split. Returning 0
-> and skipping the logic was considered safer as we don't know for sure if
-> other drivers are affected. See:
-> https://lore.kernel.org/lkml/d24bebc5-0f78-021f-293f-e58defa32531@samsung.com/
-> https://lore.kernel.org/lkml/20210423171335.262316-1-tudor.ambarus@microchip.com/
->
->  drivers/clk/clk.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index a3b30f7de2ef..b47460b40d14 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -4552,6 +4552,9 @@ int of_clk_add_provider(struct device_node *np,
->         struct of_clk_provider *cp;
->         int ret;
->
-> +       if (!np)
-> +               return 0;
-> +
->         cp = kzalloc(sizeof(*cp), GFP_KERNEL);
->         if (!cp)
->                 return -ENOMEM;
-> @@ -4591,6 +4594,9 @@ int of_clk_add_hw_provider(struct device_node *np,
->         struct of_clk_provider *cp;
->         int ret;
->
-> +       if (!np)
-> +               return 0;
-> +
->         cp = kzalloc(sizeof(*cp), GFP_KERNEL);
->         if (!cp)
->                 return -ENOMEM;
-> @@ -4688,6 +4694,9 @@ void of_clk_del_provider(struct device_node *np)
->  {
->         struct of_clk_provider *cp;
->
-> +       if (!np)
-> +               return;
-> +
->         mutex_lock(&of_clk_mutex);
->         list_for_each_entry(cp, &of_clk_providers, link) {
->                 if (cp->node == np) {
-> --
-> 2.25.1
->
+But even if we did not have the issue today, it seems like starting
+with drivers and other "leaf" modules is a better approach. There are
+several reasons:
+
+  - If for reason reason we wanted to remove Rust from the kernel,
+then it would be easier to do so if only "leaf" bits had been written.
+
+  - We cannot compile the Rust support without nightly features yet,
+so it does not seem wise to make it a hard requirement right away.
+
+  - Kernel developers need time to learn a bit of Rust, thus writing
+subsystems or core pieces of the kernel in Rust would mean less people
+can understand them.
+
+Given that drivers are a big part of the new code introduced every
+release, that they are "leaf" modules and that in some cases they are
+only intended to be used with a given architecture, they seem like a
+good starting point.
+
+Cheers,
+Miguel
