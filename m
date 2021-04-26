@@ -2,160 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6049F36BC0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3100A36BC0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 01:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234671AbhDZX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 19:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        id S234910AbhDZXai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 19:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbhDZX2i (ORCPT
+        with ESMTP id S232235AbhDZXaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:28:38 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BCCC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:27:54 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id r12so86909816ejr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 16:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=vlMq+OnnkaeutSkOJCo2HWQTyPWbMfqniLhEvi6+JTw=;
-        b=PhAsPBcgEIif6QgM58SPw3LjlP/5Grg0OoaeI1HEM3jd+iyGQplCVgIx6ERbwVa7MD
-         gzvupdHqdeGkdaZ63g61IHarvQeWJus31cXq6Hfy2vUWlD3QOD7J7nXdpZ0QEdrIeGhh
-         1TOvT4Awq1hkJ5AfChigOftNwY8l4LJvr/1AtN6kdK35qiebtIiwpCe3YwA4XsA1DYVo
-         rXKrDpasXVO72gAiOeOCsxBnmbf11hFoE07S4k8Rnodd42J1Dq2/WvD2HFXs1oVOTeVy
-         chkDyvvyCIdl9YqOaHFu20SRKoTSxoSW/AhkYohIXPrWzvMx1GswEDYTNfoYhJq36pTt
-         uZZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=vlMq+OnnkaeutSkOJCo2HWQTyPWbMfqniLhEvi6+JTw=;
-        b=Ws9swBHph3w4dY6nO1HrtYJA/RLu2BvGIfcy+vwgjzWnLrDn9p/spmKAqMOmZ7W5JA
-         lh9Ftc1eT8bFr0VgMeX7UkXrPAiIrQAO6eCjfLGad0vuuiw5uG/TN4qIMF1+XSqPWBme
-         45t9J7+hn4l+Cy6GGeysSbJf7317XlnHs0FASXhmt+4KkTjN9jfJ9afNIwNF8talDEgU
-         XoSkILn6BFK8JkL67JHNYNDTOh5qqCRt9vsIIZJbz+mXAbczrHPQ0MzdLoBKRpfBtMue
-         qcEjpIFU7ShxhPjjule95BoRx4eT07kYZHAgLouZfaYEB84cdnsNMvcl0EAfWlhRyDEA
-         LkjQ==
-X-Gm-Message-State: AOAM532nBfRHEmpNBW9xnopTIWeBtcycdwHmgoYVym0N6ofQ/8ShM+Ha
-        JqNAYsZTjF3TB6fnDdN7yQMoEf9jkFRmgiZINnQL0lLGh/00
-X-Google-Smtp-Source: ABdhPJyWAhcjyTttA68bCC5z/U8kw7BEjKy0yIOfXVotmGpMpvUFJHY3UFsievc+TukYzQ2g+OFpJoHgeuClFwTTzvI=
-X-Received: by 2002:a17:906:608a:: with SMTP id t10mr21074575ejj.374.1619479673016;
- Mon, 26 Apr 2021 16:27:53 -0700 (PDT)
+        Mon, 26 Apr 2021 19:30:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AFAC061574;
+        Mon, 26 Apr 2021 16:29:53 -0700 (PDT)
+Received: from [IPv6:2804:14d:72b1:a2ff:e1:848c:62d:7304] (unknown [IPv6:2804:14d:72b1:a2ff:e1:848c:62d:7304])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dwlsalmeida)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 77E751F42341;
+        Tue, 27 Apr 2021 00:29:49 +0100 (BST)
+Subject: Re: [PATCH v6 00/10] MPEG-2 stateless API cleanup and destaging
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20210426033522.69395-1-ezequiel@collabora.com>
+From:   Daniel Almeida <daniel.almeida@collabora.com>
+Message-ID: <3bbb3836-802c-5535-005e-5079e8de064e@collabora.com>
+Date:   Mon, 26 Apr 2021 20:29:44 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 26 Apr 2021 19:27:42 -0400
-Message-ID: <CAHC9VhQc7GguPxuN0cU2D0960LBcDK6fW1fHWyMkQCyxNZ_9FA@mail.gmail.com>
-Subject: [GIT PULL] SELinux patches for v5.13
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210426033522.69395-1-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Ezequiel, thanks for all your hard work on this!
 
-Here is the SELinux pull request for v5.13, the highlights are below:
+On 26/04/2021 00:35, Ezequiel Garcia wrote:
+ > Hi everyone,
+ >
+ > Here's another round addressing Hans' feedback. More details
+ > about this can be found in the previous cover letter [1]:
+ >
+ > [1] 
+https://lore.kernel.org/linux-media/20210403180756.175881-11-ezequiel@collabora.com/T/
+ >
+ > The documentation looks good, and so does pahole,
+ > but it's really easy to miss some detail in this series,
+ > so we'd appreciate if more people could take a look.
+ >
+ > v6:
+ > * Reorder patch "media: controls: Log MPEG-2 stateless control in 
+.std_log"
+ >    to avoid a new compile warning.
+ > * Remove "reserved" field in mpeg2 sequence control, noted by Hans.
+ > * Reorder "flags" field in mpeg2 picture control, noted by Hans.
+ > * Typos and comments fixes, noted by Hans.
+ >
 
-* Add support for measuring the SELinux state and policy capabilities using IMA.
+I tested this series on rk3399 (rockpi4) + upcoming gstreamer v4l2 
+stateless mpeg2 decoder and it works just fine.
 
-* A handful of SELinux/NFS patches to compare the SELinux state of one
-mount with a set of mount options.  Olga goes into more detail in the
-patch descriptions, but this is important as it allows more
-flexibility when using NFS and SELinux context mounts.
+Tested-by: Daniel Almeida <daniel.almeida@collabora.com>
 
-* Properly differentiate between the subjective and objective LSM
-credentials; including support for the SELinux and Smack.  My clumsy
-attempt at a proper fix for AppArmor didn't quite pass muster so John
-is working on a proper AppArmor patch, in the meantime this set of
-patches shouldn't change the behavior of AppArmor in any way.  This
-change explains the bulk of the diffstate beyond security/.
 
-* Fix a problem where we were not properly terminating the permission
-list for two SELinux object classes.
-
-Everything has been tested against the selinux-testsuite and as of a
-few moments ago the tag applies cleanly to your tree; please merge
-this for v5.13.
-
-Thanks,
--Paul
-
---
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
- Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
-   tags/selinux-pr-20210426
-
-for you to fetch changes up to e4c82eafb609c2badc56f4e11bc50fcf44b8e9eb:
-
- selinux: add proper NULL termination to the secclass_map permissions
-   (2021-04-21 21:43:25 -0400)
-
-----------------------------------------------------------------
-selinux/stable-5.13 PR 20210426
-
-----------------------------------------------------------------
-Lakshmi Ramasubramanian (1):
-     selinux: measure state and policy capabilities
-
-Olga Kornievskaia (3):
-     lsm,selinux: add new hook to compare new mount to an existing mount
-     nfs: remove unneeded null check in nfs_fill_super()
-     nfs: account for selinux security context when deciding to share
-          superblock
-
-Paul Moore (4):
-     lsm: separate security_task_getsecid() into subjective and objective
-          variants
-     selinux: clarify task subjective and objective credentials
-     smack: differentiate between subjective and objective task credentials
-     selinux: add proper NULL termination to the secclass_map permissions
-
-Vivek Goyal (1):
-     selinux: Allow context mounts for unpriviliged overlayfs
-
-Xiong Zhenwu (2):
-     selinux: fix misspellings using codespell tool
-     selinux: fix misspellings using codespell tool
-
-drivers/android/binder.c              |  11 ++-
-fs/nfs/fs_context.c                   |   3 +
-fs/nfs/internal.h                     |   1 +
-fs/nfs/super.c                        |   6 +-
-include/linux/cred.h                  |   2 +-
-include/linux/lsm_hook_defs.h         |   6 +-
-include/linux/lsm_hooks.h             |  18 +++-
-include/linux/nfs_fs_sb.h             |   1 +
-include/linux/security.h              |  18 +++-
-kernel/audit.c                        |   4 +-
-kernel/auditfilter.c                  |   3 +-
-kernel/auditsc.c                      |   8 +-
-kernel/bpf/bpf_lsm.c                  |   3 +-
-net/netlabel/netlabel_unlabeled.c     |   2 +-
-net/netlabel/netlabel_user.h          |   2 +-
-security/apparmor/lsm.c               |   3 +-
-security/integrity/ima/ima_appraise.c |   2 +-
-security/integrity/ima/ima_main.c     |  14 +--
-security/security.c                   |  20 +++-
-security/selinux/hooks.c              | 170 ++++++++++++++++++++++++------
-security/selinux/ima.c                |  87 +++++++++++++++-
-security/selinux/include/classmap.h   |   5 +-
-security/selinux/include/ima.h        |   6 ++
-security/selinux/include/security.h   |   2 +-
-security/selinux/selinuxfs.c          |   6 ++
-security/selinux/ss/hashtab.c         |   2 +-
-security/selinux/ss/services.c        |   2 +-
-security/smack/smack.h                |  18 +++-
-security/smack/smack_lsm.c            |  39 +++++---
-29 files changed, 372 insertions(+), 92 deletions(-)
-
--- 
-paul moore
-www.paul-moore.com
+-- thanks
+-- Daniel
