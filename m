@@ -2,76 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039C636BBB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5915636BBB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 00:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236650AbhDZWdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 18:33:53 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59953 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhDZWdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 18:33:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FTfmh1yHSz9sW5;
-        Tue, 27 Apr 2021 08:33:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619476388;
-        bh=CPQGKb6+nPjswpmxOxgtGwfNtHrPMX/e4+KhDprN8a0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KbmJ5pXn5P9gehBI4PmMZAppRrsPzWJzd7Ki8M5LldJGeCQyxvnMenH8Tdvjlmkm6
-         rclVUtPGPabOOhjoVJTFXQ4dwNQRdJQl2+PetmGnOBxhCMPxBgnoTP7cjLyT+frsto
-         h+1mAqIkyF3QSip5VgOpD5B3jF+E4gK6uvMhQPsqxdQEqNjFXwmocnGjyNlxyeV404
-         w+lapnFmk0Igf9sFKNapm10RvmIh/y/iL7Okfhm6WSTQUHgUfoy7Ru2Z+FCYOF6K7N
-         hPHq9vyhj2Xf2cYv/wDmr2hxdddSLPL1nyRzbqNVn+ouv1VgjITsc5Zs5RpyIpw+/c
-         TjVOOeI6OtP+w==
-Date:   Tue, 27 Apr 2021 08:33:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Micah Morton <mortonm@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the safesetid tree
-Message-ID: <20210427083307.15c6cd15@canb.auug.org.au>
+        id S237138AbhDZWeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 18:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232161AbhDZWeP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 18:34:15 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3C2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 15:33:30 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lb9nE-008WA2-L9; Mon, 26 Apr 2021 22:33:28 +0000
+Date:   Mon, 26 Apr 2021 22:33:28 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] coredump-related stuff
+Message-ID: <YIc/uDc9dCe9KXq9@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qU3qX9ntsg=B5ISjo0TBXCK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qU3qX9ntsg=B5ISjo0TBXCK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+	Just a couple of patches this cycle; use of seek + write instead of
+expanding truncate and minor header cleanup
 
-Hi all,
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Commit
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-  290f1097a2bc ("LSM: SafeSetID: Fix code specification by scripts/checkpat=
-ch.pl")
+are available in the git repository at:
 
-is missing a Signed-off-by from its committer.
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.coredump
 
---=20
-Cheers,
-Stephen Rothwell
+for you to fetch changes up to a64b89088bb1413bb84424f0b16a4d1f9bb0e947:
 
---Sig_/qU3qX9ntsg=B5ISjo0TBXCK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+  coredump.h: move CONFIG_COREDUMP-only stuff inside the ifdef (2021-03-08 10:21:11 -0500)
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
+Al Viro (2):
+      coredump: don't bother with do_truncate()
+      coredump.h: move CONFIG_COREDUMP-only stuff inside the ifdef
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCHP6MACgkQAVBC80lX
-0GypiAf+NbBSNTW/de/UOK6Ra70USS7l2UxzP/szbqmwA0+x5sslV2eg3PVWxplw
-CeP1I+6tSAKmiGFTG7wDPxcF0RPvZpcW1EYjOi4PoB3I8HOSTO845uA/IVlALPge
-ueADPzn5kzKNTDJ2qm3UFkFkjKyrXEsyuOhR9qIkTs/njKusvQmZDHdqj0860eyZ
-bzb3knkg4DN30x03RyX1NxwB+RPvBmTLAuq/82em0lZniaHRHyDw64uKtq1igV2i
-oqTYwTWY0RF/kZLsp38kZC4WuvYztK5sry2XWgYFULFMZZInhxY2Y88r5zrAmkDk
-SoMWtVYf3D1SWVhd83ZxLRXH8hPuXg==
-=Rjo6
------END PGP SIGNATURE-----
-
---Sig_/qU3qX9ntsg=B5ISjo0TBXCK--
+ arch/powerpc/platforms/cell/spufs/coredump.c |  3 +-
+ fs/binfmt_elf.c                              |  4 +-
+ fs/binfmt_elf_fdpic.c                        |  3 +-
+ fs/coredump.c                                | 72 +++++++++++++++++-----------
+ include/linux/binfmts.h                      |  1 +
+ include/linux/coredump.h                     | 14 +++---
+ 6 files changed, 54 insertions(+), 43 deletions(-)
