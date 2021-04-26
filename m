@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1D636B882
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50BD36B88E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhDZSDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
+        id S234390AbhDZSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234156AbhDZSDH (ORCPT
+        with ESMTP id S234275AbhDZSD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:03:07 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6462C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:25 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n4-20020a05600c4f84b029013151278decso5516045wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:25 -0700 (PDT)
+        Mon, 26 Apr 2021 14:03:29 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83E8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:45 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id f70so4552332vke.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=sLlK+ON2myao5q9MqC74vluTzzv/E65V2uLXDsbBd8w=;
-        b=odSsjA7DE6yWqHSyV1bybw+NBOWM//WiFglqqplSGIZYPc4E6d1EjE7GG5gTaMMBQl
-         aDZzrD8DvjkY0PeQaQHmPSmXZx0+b4DERi3LLpX+fbDetMjCV14Np8sv5Is8RynkhV9O
-         88KnQQ2hNuG+zXGDbdrWLZBVnmxXHF9MROLGMJpWK3zapYOEsX0FoObt06n04Ik/OmnM
-         AEVIUPMaEuVakM1RHFfKq5AZ+xHQcADV9PK8/YQaKEbCcOPNn1MyLWwASODMRkCw7pCh
-         Tj4n2Yc7Hu7xEs9JJU/OOYFIUE/m3Ij4dV8ka94Kg/OLcQgYBiOTdEYaLbmBtFCl1WVj
-         ciXQ==
+        bh=BXFG3xn4dOG9yeCMA34oGw+1Bo4YlFmChtKcjrnxnS0=;
+        b=ly1Z0fmgtNX/YZCDrxWpjXgk7FDuRt0qSLRZ+B9RexLcWN9S/ypwhq+7Cb7gnA0tkk
+         lk/Pw4k5BYNba0UR1RAtGaE8ieocJNMuStrtRdaU6puIvmHTZsQ6QiCBgcxUC7wZuch2
+         Fl6TdpvCL1fafJJGKUFwLEmFql5NL7pWoH+/7B7xbDFv05SE96Rc7H9sfIecgI0hMh27
+         qJIaMbuSdTUfZ472AnAiHzXPQFtIrVgLFKEoZUbrmhbIcBE6JLxheMOy7pvU1QrzbdNb
+         gizKrTsRHBTHqGgE/stO1pFPXcYbQDiLrcu43Y6SUiv8dWsZzGliMH2sPy+rza4qqtV0
+         VDQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=sLlK+ON2myao5q9MqC74vluTzzv/E65V2uLXDsbBd8w=;
-        b=oYvUCmmupd77/d2iTvY45otwfYtJtArfBB4OOcnmNyjTxGZmuTh72vtxzcmbK6plKf
-         O818SVHzj+Dzgf7I/DfnMJ0nee67MQmDQVqjX0uNxDqq97PJ+Db9ddZxuy18eeqSNBOF
-         6dS+rqQ5cW2ObVHGpAZA+9cWTWBkdVSooBM84AeC2fZftOsbRelidOJijphQ7iqVY0MQ
-         mdNeFhI5onazYS9Ascw8ObZPrahtDq2Dc1+pJbtprDUDYnInTX6ALQXj1tRZ19B9GOTf
-         6kyfhjfbQXSG7oZcPxZ366RbqYjZ7qNZCe2W76QQtd5zhLz+m57jYD5WdBlw8FXNHYof
-         6Djg==
-X-Gm-Message-State: AOAM530mk6tBSbf1I0StlMvAZkGB2mFONghhfZcQ9BkX7AIFGwMpHfzr
-        YR69rJb8p9XnafatgSYKSNNk26YqOUluxUzp
-X-Google-Smtp-Source: ABdhPJxQ+jECyTT9SugB177/Zfsr9dZJkYoiQJ/ctFv5IJ0sEXY5KRrXUoUmj5l8ddjRhtm4NfLI7Q==
-X-Received: by 2002:a05:600c:2cd6:: with SMTP id l22mr14452735wmc.160.1619460144138;
-        Mon, 26 Apr 2021 11:02:24 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:b76e:7362:77c0:ddc3? ([2a01:e0a:90c:e290:b76e:7362:77c0:ddc3])
-        by smtp.gmail.com with ESMTPSA id a9sm265091wmj.1.2021.04.26.11.02.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 11:02:23 -0700 (PDT)
-Subject: Re: [PATCH -next] soc: amlogic: meson-clk-measure: remove redundant
- dev_err call in meson_msr_probe()
-To:     Qiheng Lin <linqiheng@huawei.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-References: <20210409110243.41-1-linqiheng@huawei.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <3299a54f-0aeb-3dfa-dedb-d32f87de5ae9@baylibre.com>
-Date:   Mon, 26 Apr 2021 20:02:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=BXFG3xn4dOG9yeCMA34oGw+1Bo4YlFmChtKcjrnxnS0=;
+        b=sCP957MFR72Am2sy/Bv64JAohRhHm50wsBudWKHbGFQjQtj2dy4085Hvlw6UPfxa/y
+         ly/Z3uosnL511bTqEKeM/AyDEdtURc7tPSjqlVYKggFwMA75Ohs2Pj0Xqtj43yYwDYHb
+         EI09P01i6LujqSs22APs4atEFz+yK1ueAsLtaU1cHVBt6Wm5Yq9okueOPu+yN7YC9ClG
+         RWqBudant/szwuw6TXHOZ32ZeW133lX5MenpGU3BpLOSCs5kE1dx3LHoKMTJYJJrN+ED
+         KUpt1EsUAnA0JN6zQ9kOQwO+wrYT56p2idK6afv3tU+q+2BCN790ojpSlC7Ejkt5RYj9
+         4GEg==
+X-Gm-Message-State: AOAM531fwQqHbrM/Khg1RB+zu9A2cGDUFYwLtiTGBMgEmZjgkR/HPz1Y
+        hEWt6fWYxviY/U4vdlSF6N4rxOc6fWjUH+eplNw=
+X-Google-Smtp-Source: ABdhPJxLUHUXcZD23cV4s0IWNRL8o8ylIN58Qe90LgtsmythJI5/5rx4vU+HjkdQWyO1BlYxLWHDZs90fOT/gvAiWnQ=
+X-Received: by 2002:a1f:6e46:: with SMTP id j67mr6235869vkc.24.1619460165055;
+ Mon, 26 Apr 2021 11:02:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210409110243.41-1-linqiheng@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a67:f06:0:0:0:0:0 with HTTP; Mon, 26 Apr 2021 11:02:44 -0700 (PDT)
+Reply-To: inforproject013@gmail.com
+From:   ibrahim zufar <ibrahimzufar01247knha@gmail.com>
+Date:   Mon, 26 Apr 2021 18:02:44 +0000
+Message-ID: <CAMbL6E6tM71Hyyp1t8gyBS_CJi5P9XS3T5j468u2s21Sz9DNSg@mail.gmail.com>
+Subject: Dear Client
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/2021 13:02, Qiheng Lin wrote:
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
-> ---
->  drivers/soc/amlogic/meson-clk-measure.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/soc/amlogic/meson-clk-measure.c b/drivers/soc/amlogic/meson-clk-measure.c
-> index e1957476a006..6dd190270123 100644
-> --- a/drivers/soc/amlogic/meson-clk-measure.c
-> +++ b/drivers/soc/amlogic/meson-clk-measure.c
-> @@ -626,10 +626,8 @@ static int meson_msr_probe(struct platform_device *pdev)
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	base = devm_ioremap_resource(&pdev->dev, res);
-> -	if (IS_ERR(base)) {
-> -		dev_err(&pdev->dev, "io resource mapping failed\n");
-> +	if (IS_ERR(base))
->  		return PTR_ERR(base);
-> -	}
->  
->  	priv->regmap = devm_regmap_init_mmio(&pdev->dev, base,
->  					     &meson_clk_msr_regmap_config);
-> 
-> 
-> _______________________________________________
-> linux-amlogic mailing list
-> linux-amlogic@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-amlogic
-> 
+Dear Client
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+I sourced your email from a human resource profile database in the
+Chamber.
+
+furthermore content of your email from this DHL master card offices
+fund of $5.5 USD million after the board of directors meetings, the
+united nations government have decided to issue you your (ATM) valued
+at 5.5 million united states dollar. This is to bring to your notice
+that your valued sum of 5.5 million dollar has being credited into
+(ATM) master card and has been handle to the foreign remittance
+department to send it to you in your favor.
+
+With your (ATM) you will have access to make daily withdrawals of
+$10.000.00 united state dollars dailies as already programmed until
+you Withdraw your total sum in your (ATM) card which has registered in
+our system for payment record,
+
+as soon as we receive your information=E2=80=99s and your home address of y=
+our
+country as already programmed, we will send your (ATM) card through
+DHL courier service, we have received a signal from the Swiss world
+bank to infect your transfer to you within one week,
+
+we have just finished our annual general meeting with the central bank
+of America (boa). at the end of the board of directors meeting, we
+have concluded to immediately issue you as soon as possible,
+
+And your value sum has been credited into your (ATM) card account,
+which you will use to withdraw your fund in any part of the world, we
+have issued and credited your (ATM) card in your name, your (ATM) will
+be insure by the insurance company and send to you,
+
+Meanwhile I request on your return mail, kindly re-send me your data's
+information's:
+
+1. Your Name in Full:
+2. Your Address:
+3. You're Occupation:
+4. Your Nationality;
+5. Your City;
+6. You're Telephone with :
+7. Mobile number:
+8. Your Age:
+9. Your Gender:
+
+Through any available courier company of our choice,
+
+
+Director DHL service,
+Thanks,
+Mr.Ibrahim Zufar
