@@ -2,171 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F5A36B508
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3E236B509
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbhDZOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47732 "EHLO mail.kernel.org"
+        id S233874AbhDZOjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:39:35 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:32850 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhDZOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55DF161026;
-        Mon, 26 Apr 2021 14:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619447925;
-        bh=9ZkP5XWMFSyQNawvCkw+V/jzWIibGz9/yts5jldzuGQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IaZRJFAyjEnHmdk+Sw7GRXoFoCfT+0R+3wcY8mkaEdaxEg0W5RbxbAOhtP1JLJa1M
-         v5Ro/g1l6MtUcg0Im03tX8EtuSWLU1oN3NOF+BISeTxD2S5G7PM1DUq1GslYf9xWMp
-         RlhzpUJYOLelDK5BbuHHSo9nnktMp/Z6WyfSOgdyJsiRQdUXchCnQVngp2Ar9zSnep
-         2QbxfaA5VONc+QA9uHCz5yUENI4xLV89gL5IWPwSlLjYdeBP/GDx/O5Hms2GMdIYHH
-         g8sD3QNhG7jxvFWddZsjdhtjz477EaItiY3LP/+nbpMpUf/0b0zpo8VjsUohwIOWSU
-         fzl2cTJJ24VWQ==
-Date:   Mon, 26 Apr 2021 16:38:40 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
- pm_runtime_resume_and_get()
-Message-ID: <20210426163840.67ea8af9@coco.lan>
-In-Reply-To: <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
-References: <cover.1619191723.git.mchehab+huawei@kernel.org>
-        <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
-        <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
-        <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S233825AbhDZOjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:39:33 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4AFD9A0040;
+        Mon, 26 Apr 2021 16:38:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 4AFD9A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1619447927; bh=6XnVk6uucelw2ilTlLHMXVhROA8TS7AQk5AvvyBmftc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gUvHkg/fJ+SwnkMUGiKgRcGrnu4U+4zEClSjWG12Pnr11QJyoYrjrsW+er01XwtWu
+         fz/3d2Em5SXNQWyw3dgTLQktu0rbY8BNbiGCDoOtcp2UfHlENf6bIikAshuKOq8Gmi
+         efyXknkBXi+JOSeotQadSw/YGYEjOdW02TeMeGvE=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Mon, 26 Apr 2021 16:38:42 +0200 (CEST)
+Subject: Re: [PATCH] sound/isa/sb/emu8000: Fix a use after free in
+ snd_emu8000_create_mixer
+To:     Takashi Iwai <tiwai@suse.de>, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20210426131129.4796-1-lyl2019@mail.ustc.edu.cn>
+ <s5ha6pl2kh8.wl-tiwai@suse.de>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <af5a6764-76ee-3184-2622-a756c23fbc98@perex.cz>
+Date:   Mon, 26 Apr 2021 16:38:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <s5ha6pl2kh8.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 24 Apr 2021 12:00:46 +0200
-Johan Hovold <johan@kernel.org> escreveu:
-
-> On Sat, Apr 24, 2021 at 10:24:54AM +0200, Jacopo Mondi wrote:
-> > Hi Mauro,
-> > 
-> > On Sat, Apr 24, 2021 at 08:44:48AM +0200, Mauro Carvalho Chehab wrote:  
-> > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > added pm_runtime_resume_and_get() in order to automatically handle
-> > > dev->power.usage_count decrement on errors.
-> > >
-> > > Use the new API, in order to cleanup the error check logic.
-> > >
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > Thanks
-> > Acked-by: Jacopo Mondi <jacopo@jmondi.org>
-> > 
-> > I should re-work the error handling sequence there on top of this
-> > patch as right now it's not the best, that 'done' label bothers me...
-> > anyway, for later.
-> >   
-> > > ---
-> > >  drivers/media/i2c/mt9m001.c | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/media/i2c/mt9m001.c b/drivers/media/i2c/mt9m001.c
-> > > index 3b0ba8ed5233..57e15a291ebd 100644
-> > > --- a/drivers/media/i2c/mt9m001.c
-> > > +++ b/drivers/media/i2c/mt9m001.c
-> > > @@ -217,9 +217,9 @@ static int mt9m001_s_stream(struct v4l2_subdev *sd, int enable)
-> > >  		goto done;
-> > >
-> > >  	if (enable) {
-> > > -		ret = pm_runtime_get_sync(&client->dev);
-> > > +		ret = pm_runtime_resume_and_get(&client->dev);
-> > >  		if (ret < 0)
-> > > -			goto put_unlock;
-> > > +			goto unlock;
-> > >
-> > >  		ret = mt9m001_apply_selection(sd);
-> > >  		if (ret)
-> > > @@ -247,6 +247,7 @@ static int mt9m001_s_stream(struct v4l2_subdev *sd, int enable)
-> > >
-> > >  put_unlock:
-> > >  	pm_runtime_put(&client->dev);
-> > > +unlock:
-> > >  	mutex_unlock(&mt9m001->mutex);
-> > >
-> > >  	return ret;
-> > > @@ -834,7 +835,7 @@ static int mt9m001_remove(struct i2c_client *client)
-> > >  {
-> > >  	struct mt9m001 *mt9m001 = to_mt9m001(client);
-> > >
-> > > -	pm_runtime_get_sync(&client->dev);
-> > > +	pm_runtime_resume_and_get(&client->dev);
-> > >
-> > >  	v4l2_async_unregister_subdev(&mt9m001->subdev);
-> > >  	media_entity_cleanup(&mt9m001->subdev.entity);  
+Dne 26. 04. 21 v 16:23 Takashi Iwai napsal(a):
+> On Mon, 26 Apr 2021 15:11:29 +0200,
+> Lv Yunlong wrote:
+>>
+>> Our code analyzer reported a uaf.
+>>
+>> In snd_emu8000_create_mixer, the callee snd_ctl_add(..,emu->controls[i])
+>> calls snd_ctl_add_replace(.., kcontrol,..). Inside snd_ctl_add_replace(),
+>> if error happens, kcontrol will be freed by snd_ctl_free_one(kcontrol).
+>> Then emu->controls[i] points to a freed memory, and the execution comes
+>> to __error branch of snd_emu8000_create_mixer. The freed emu->controls[i]
+>> is used in snd_ctl_remove(card, emu->controls[i]).
+>>
+>> My patch set emu->controls[i] to NULL if snd_ctl_add() failed to avoid
+>> the uaf.
+>>
+>> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 > 
-> I couldn't help looking at one more now that you got feedback on this
-> one.
+> Thanks, applied now.
 > 
-> Here you have the same problem as the one I reported earlier, in that
-> the usage count could end up negative on resume failure due to the later
-> put_noidle() call in remove().
+> The bug was hard to be seen due to the coding style, so we'd need a
+> cleanup, but it's a different story...
 
-I'll double-check this at the entire series. Different sensor
-drivers are handling this on different ways, which sounds
-bad, as they are meant to be independent on the media bridge
-driver.
+Yes, it would be better to assign the return value from snd_ctl_new1 to a
+local variable and set emu->controls[i] only when everything succeeds.
 
-> Also note that you're adding more lines than you're removing.
+					Jaroslav
 
-Ok, but the end goal is not really reducing the number of lines,
-but to have the code following the same pattern, and to avoid
-cut-and-paste errors when new drivers are written.
-
-The mt9m001 is one of the oldest sensor drivers, written a long time
-before the PM runtime core, written for the soc_camera driver, back
-in 2008. The port to use PM runtime isn't old:
-
-  commit 8fcfc491c6ca5887bb341b3a622cca3ed8e3c9f0
-  Author: Akinobu Mita <akinobu.mita@gmail.com>
-  Date:   Tue Jan 8 12:51:44 2019 -0200
-
-    media: mt9m001: switch s_power callback to runtime PM
-
-It was part of an attempt to recover the soc_camera sensor drives
-from staging. 
-
-Yet, the logic on this driver seems to be different than the
-one used on more modern I2C sensors. So, better to re-check
-everything.
-
-> I'd say this kind of mass-conversion is of questionable worth as
-> pm_runtime_resume_and_get() isn't necessarily an improvement (even if it
-> may have its use in some places).
-
-The main problem is that other parts of the driver's core APIs
-assume that get object methods will only increment the usage
-counter if no errors. The pm_runtime_get_sync() is an exception.
-
-Its name doesn't help at all: A function like that should, IMHO,
-be called, instead:
-
-	pm_runtime_inc_usage_count_and_try_to_resume().
-
-Or something similar, in order to make clearer that it always
-increment the usage count, no matter what. If possible, all drivers
-should get rid of it too (or alternatively add comments warning
-people that keeping the usage_count incremented is desired on the
-very specific places where it is really needed), as it is risky
-to use something that has a different usage_count increement behavior
-than other more usual *_get() functions.
-
-With regards to mass-fixing it, I've seen several patches seen
-to media fixing bugs due to the bad usage_count decrement logic.
-So, the best is to solve them all at once, and stop using
-pm_runtime_get_sync() inside the subsystem.
-
-Thanks,
-Mauro
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
