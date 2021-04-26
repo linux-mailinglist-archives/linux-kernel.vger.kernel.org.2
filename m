@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1455D36B026
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B5A36B02E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbhDZJCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:02:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232068AbhDZJCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:02:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4221061139;
-        Mon, 26 Apr 2021 09:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619427715;
-        bh=t3czjXocmQ55D2hIA7IF6tpRkkrO+CYu0SYiBaFbz1Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Rr+xnQ9bh2WK8O/8hfZ126rO6UOx2U5yz/82OPuEcM/63rxn3pZU2mIi1ZytNaPi1
-         Q0urBmzwLalR1PIiMmcY15FIdU8E4ejI2vORj0T6FlEN80iTP3D/u2Bo27vEzqrzqk
-         FKu4rfU+Xcud/PmQRq8m03q1Oe1sPuVlX/fUqIewk9S3jWYPS1U/VVtiTID74zAJHC
-         Z7Ue0v8s7ocR/1iFU3IInJt93pXxOO0nhkfX44LQUd2kEfKYXChwrwyrhE6O+YsgaS
-         zXTtRFA9tKHtIpoBj0G3yuioFLQX+N8l+sQ7PaghSC0iz9MDubGkwd8OScSSpunduO
-         KLBBRzRjEcVzw==
-Received: by mail-oi1-f180.google.com with SMTP id m13so55772353oiw.13;
-        Mon, 26 Apr 2021 02:01:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530zoz3k0y0lASOW1Ndd6QlxLdDmCad7xSdIaSIebmm9sNAZAoY+
-        31NQQPbUmlZEAYwRtwxUUYftBCIGDJIaaabIya4=
-X-Google-Smtp-Source: ABdhPJz490C9Bm6kCo7qnrhIQmJXGMOsL4UyybpS8HkW9UBlUjHlPJc3QUhNKE17yuV4sZvhQGWABW2vijsRIQpxtRs=
-X-Received: by 2002:aca:4056:: with SMTP id n83mr12587221oia.47.1619427714462;
- Mon, 26 Apr 2021 02:01:54 -0700 (PDT)
+        id S232412AbhDZJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:06:35 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:32808 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232068AbhDZJGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:06:33 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id CFB131C0B77; Mon, 26 Apr 2021 11:05:50 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 11:05:50 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/32] 4.4.268-rc1 review
+Message-ID: <20210426090550.GA15322@duo.ucw.cz>
+References: <20210426072816.574319312@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210425175734.1310191-1-masahiroy@kernel.org>
- <20210425175734.1310191-3-masahiroy@kernel.org> <20210426085836.GA5802@willie-the-truck>
-In-Reply-To: <20210426085836.GA5802@willie-the-truck>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 26 Apr 2021 11:01:43 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFe7wf_3jmoSAM98s+sZS4Ex4yyoXXiToR-EX8K0e-aNw@mail.gmail.com>
-Message-ID: <CAMj1kXFe7wf_3jmoSAM98s+sZS4Ex4yyoXXiToR-EX8K0e-aNw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] crypto: arm64: generate *.S by Perl at build time
- instead of shipping them
-To:     Will Deacon <will@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
+In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 at 10:58, Will Deacon <will@kernel.org> wrote:
->
-> [+Ard]
->
-> On Mon, Apr 26, 2021 at 02:57:33AM +0900, Masahiro Yamada wrote:
-> > Generate *.S by Perl like arch/{mips,x86}/crypto/Makefile.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  arch/arm64/crypto/Makefile                |    9 +-
-> >  arch/arm64/crypto/poly1305-core.S_shipped |  835 ---------
-> >  arch/arm64/crypto/sha256-core.S_shipped   | 2069 ---------------------
-> >  arch/arm64/crypto/sha512-core.S_shipped   | 1093 -----------
-> >  4 files changed, 3 insertions(+), 4003 deletions(-)
-> >  delete mode 100644 arch/arm64/crypto/poly1305-core.S_shipped
-> >  delete mode 100644 arch/arm64/crypto/sha256-core.S_shipped
-> >  delete mode 100644 arch/arm64/crypto/sha512-core.S_shipped
->
-> What's the advantage of removing the _shipped files? We included them
-> originally so that we didn't require perl for the kernel build -- is that no
-> longer an issue?
->
-> I guess I'm just missing the justification for the change.
 
-Removing 4000 lines of code is an improvement in itself, I suppose,
-but I have no preference either way,
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This is the start of the stable review cycle for the 4.4.268 release.
+> There are 32 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYIaCbgAKCRAw5/Bqldv6
+8iMVAJ4nKise4V2/RTUytX8V+8goz6LnTQCgkWoSLBEg0910RSp1i/xxyUK5ZcU=
+=clMJ
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
