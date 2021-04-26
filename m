@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EBE36AB5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 06:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BEF36AB5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 06:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhDZEHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 00:07:38 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:16745 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhDZEHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 00:07:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1619410016; x=1650946016;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yuoVX17p+FXB6MoHSoNBWTLSH/BOJ6lr2GX3BOd1FX4=;
-  b=WyNahNnmQRthOG4rJEO9b3BmfVFnJf+EB+uWy+1DA5iN/Q7UWl4FKIGO
-   ZzoK6vkdkeODOhW/HrlQ2P3ylp8JMp126yGEZ+bMQhZmgkRSwpwNqDO8n
-   4OSTOLwUUlERSi7uFEPFntU09KVZggIzXI/7kDjsMuEnv22RlD+bf7xru
-   9k9Jz9SvxkoIYuvwTR8rfScjOd+G+5oGJiALuX0O9phuGgdTaAXu8PgCf
-   1eYZvSNPG+IcMggdAUnb2AQ7mM0ts+nkOIbGv92qUIeBoQU6x6H47kQzo
-   RfeuA2MntCzxLk+hPJCx5x1wBYkKrCecXASsk3LUEx9IE/Faey1gzeVaE
-   w==;
-IronPort-SDR: aVeXbtIGlsb+qBx6OmyegshCWNfYEp8iumAYWYBfcNfbJaHp3HZVcBeuKQRGWH8cGrfjztM8P7
- MY5V3oLiYXJiSwc9KQFlz3OiPErblvBBat5nCxEAZTyqsgpClvACmRl4rlKFTyZvmbB1nQxsw5
- Rvuh95Y0E5HY1MgssDk+8FMrZhj5oWulbEgPZuRImLo9GFB8ZF+DdMAH75Fv6n36X6NFH7gPqJ
- I4NqDOiXqNUJaiJt7/Ipwo/cKhY3nkP8/84mNbOT8/pt2weHcq7QHPxGSt7CYXSH1r1gFbV1Yf
- 1nE=
-X-IronPort-AV: E=Sophos;i="5.82,251,1613458800"; 
-   d="scan'208";a="118330581"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Apr 2021 21:06:56 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 25 Apr 2021 21:06:56 -0700
-Received: from INB-LOAN0158.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sun, 25 Apr 2021 21:06:51 -0700
-Message-ID: <33503dd6d95bd1232fba24b38f66301916e62003.camel@microchip.com>
-Subject: Re: [PATCH v2 net-next 2/9] net: phy: Add support for LAN937x T1
- phy driver
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <netdev@vger.kernel.org>, <olteanv@gmail.com>,
-        <robh+dt@kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Date:   Mon, 26 Apr 2021 09:36:50 +0530
-In-Reply-To: <YIFv9Wcp94395Hbb@lunn.ch>
-References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
-         <20210422094257.1641396-3-prasanna.vengateshan@microchip.com>
-         <YIFv9Wcp94395Hbb@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        id S231609AbhDZEIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 00:08:20 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42951 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhDZEIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 00:08:19 -0400
+IronPort-SDR: FVURFWsILss3bDaCFGzMwCsrY5Hl7qbhZPy0qXk3Q9I8g5pYGzcu08Ux+UNbUNZg1sFKXklu7b
+ GIe4Q3F4CIZg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="194159729"
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="scan'208";a="194159729"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 21:07:37 -0700
+IronPort-SDR: dqyzByXavGFwoGvnU4/sBrLM6HqaZ1b7JjQnstiAUTMz5nM3KbDRaGp8dLrMxJ1GjDKrQ5GnRW
+ YVdTllLWTrHA==
+X-IronPort-AV: E=Sophos;i="5.82,251,1613462400"; 
+   d="scan'208";a="429191228"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 21:07:37 -0700
+Date:   Sun, 25 Apr 2021 21:07:36 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, feng.tang@intel.com,
+        zhengjun.xing@intel.com, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v10 clocksource 1/7] clocksource: Provide module
+ parameters to inject delays in watchdog
+Message-ID: <20210426040736.GS1401198@tassilo.jf.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-1-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425224709.1312655-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-22 at 14:45 +0200, Andrew Lunn wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
-> > +#define PORT_T1_PHY_RESET    BIT(15)
-> > +#define PORT_T1_PHY_LOOPBACK BIT(14)
-> > +#define PORT_T1_SPEED_100MBIT        BIT(13)
-> > +#define PORT_T1_POWER_DOWN   BIT(11)
-> > +#define PORT_T1_ISOLATE      BIT(10)
-> > +#define PORT_T1_FULL_DUPLEX  BIT(8)
-> 
-> These appear to be standard BMCR_ values. Please don't define your
-> own.
-> 
-> > +
-> > +#define REG_PORT_T1_PHY_BASIC_STATUS 0x01
-> > +
-> > +#define PORT_T1_MII_SUPPRESS_CAPABLE BIT(6)
-> > +#define PORT_T1_LINK_STATUS          BIT(2)
-> > +#define PORT_T1_EXTENDED_CAPABILITY  BIT(0)
-> > +
-> > +#define REG_PORT_T1_PHY_ID_HI 0x02
-> > +#define REG_PORT_T1_PHY_ID_LO 0x03
-> 
-> MII_PHYSID1 and MII_PHYSID2
-> 
-> Please go through all these #defines and replace them with the
-> standard ones Linux provides. You are obfusticating the code by not
-> using what people already know.
-Sure, i will review it for all the definitions.
+> occur between the reads of the two clocks.  Yes, interrupts are disabled
+> across those two reads, but there are no shortage of things that can
+> delay interrupts-disabled regions of code ranging from SMI handlers to
+> vCPU preemption.  It would be good to have some indication as to why
 
-> 
->       Andrew
+I assume vCPU preemption here refers to preempt RT? I didn't think
+a standard kernel could preempt when interrupt are disabled.
 
+>  
+> +	clocksource.inject_delay_period= [KNL]
+> +			Number of calls to clocksource_watchdog() before
+> +			delays are injected between reads from the
+> +			two clocksources.  Values of zero disable this
+> +			delay injection.  These delays can cause clocks
+> +			to be marked unstable, so use of this parameter
+> +			should therefore be avoided on production systems.
+> +			Defaults to zero (disabled).
+> +
+> +	clocksource.inject_delay_repeat= [KNL]
+> +			Number of repeated clocksource_watchdog() delay
+> +			injections per period.	If inject_delay_period
+> +			is five and inject_delay_repeat is three, there
+> +			will be five delay-free reads followed by three
+> +			delayed reads.
+
+I'm not sure command line options are the right way to do this.
+How about integrating it with the fault injection framework in debugfs.
+
+This way syzkaller etc. can play with it, which long term would
+give much better test coverage.
+
+This wouldn't allow boot time coverage, but presumably that's not
+too important here.
+
+-Andi
 
