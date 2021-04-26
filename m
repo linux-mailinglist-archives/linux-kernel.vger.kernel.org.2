@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CCD36AE3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D37A36AEC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhDZHnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:43:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
+        id S233141AbhDZHrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233041AbhDZHh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F4B613D9;
-        Mon, 26 Apr 2021 07:35:44 +0000 (UTC)
+        id S233524AbhDZHjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3522C61077;
+        Mon, 26 Apr 2021 07:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422545;
-        bh=hbNxn91tB5WAKjcmUEBPZQNAWEj8RxqAKO99olmO4rk=;
+        s=korg; t=1619422669;
+        bh=EvIaBCVx7dtkWEt7kx0Hmxu09OHgaBoPE8ereCmAfTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=inHm2jaBBhqjSQchECUthFKCVR6zU/7rlv+N2SdM489EIjVk2XlD2X+iOXXCaXBaJ
-         OMIbSo+5yc97IbKkFn2QNP7vk+U5eM9WTsy0wXShVqvRdMCPzoFlK5EgsezBJKu2q0
-         dbx2PMlYrD4XwqS6wet3XiRsBSFGVsJvP57XgIxw=
+        b=bWWtB1YNzdkeuaFAg9lzVRe7yDgwPVw/palnIf3cIJmtBqLE8KL8cj+iPifJvGDdO
+         AzLqFqeC46oIjELs+RMIvy9k4fZN5pCFcyHID2QZZUlr4ba89aka8YFig3gFInsosR
+         5vGDqYSXvwlwn/w4dv01JmO+ovTINiwuULZYrvxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <lijunp213@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 33/49] ibmvnic: remove duplicate napi_schedule call in open function
-Date:   Mon, 26 Apr 2021 09:29:29 +0200
-Message-Id: <20210426072820.850598172@linuxfoundation.org>
+Subject: [PATCH 4.19 33/57] net: davicom: Fix regulator not turned off on failed probe
+Date:   Mon, 26 Apr 2021 09:29:30 +0200
+Message-Id: <20210426072821.701850207@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <lijunp213@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 7c451f3ef676c805a4b77a743a01a5c21a250a73 upstream.
+commit 31457db3750c0b0ed229d836f2609fdb8a5b790e upstream.
 
-Remove the unnecessary napi_schedule() call in __ibmvnic_open() since
-interrupt_rx() calls napi_schedule_prep/__napi_schedule during every
-receive interrupt.
+When the probe fails, we must disable the regulator that was previously
+enabled.
 
-Fixes: ed651a10875f ("ibmvnic: Updated reset handling")
-Signed-off-by: Lijun Pan <lijunp213@gmail.com>
+This patch is a follow-up to commit ac88c531a5b3
+("net: davicom: Fix regulator not turned off on failed probe") which missed
+one case.
+
+Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/ethernet/davicom/dm9000.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -898,11 +898,6 @@ static int __ibmvnic_open(struct net_dev
+--- a/drivers/net/ethernet/davicom/dm9000.c
++++ b/drivers/net/ethernet/davicom/dm9000.c
+@@ -1482,8 +1482,10 @@ dm9000_probe(struct platform_device *pde
  
- 	netif_tx_start_all_queues(netdev);
+ 	/* Init network device */
+ 	ndev = alloc_etherdev(sizeof(struct board_info));
+-	if (!ndev)
+-		return -ENOMEM;
++	if (!ndev) {
++		ret = -ENOMEM;
++		goto out_regulator_disable;
++	}
  
--	if (prev_state == VNIC_CLOSED) {
--		for (i = 0; i < adapter->req_rx_queues; i++)
--			napi_schedule(&adapter->napi[i]);
--	}
--
- 	adapter->state = VNIC_OPEN;
- 	return rc;
- }
+ 	SET_NETDEV_DEV(ndev, &pdev->dev);
+ 
 
 
