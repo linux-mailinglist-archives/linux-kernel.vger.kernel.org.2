@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BEF36B8AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0410736B8B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbhDZSHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        id S234287AbhDZSHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234259AbhDZSHA (ORCPT
+        with ESMTP id S234294AbhDZSHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:07:00 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DD2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:06:18 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v20so2104051plo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:06:18 -0700 (PDT)
+        Mon, 26 Apr 2021 14:07:06 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA5EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:06:21 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso5764344pjs.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sargun.me; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XrSljs9p2akWCSedVPpNDBp3AdI7AQvDDvYRJ1g+BNw=;
-        b=hX1O4cmxzHz/96wKySXNVSy1o/tuOKNg/8w3w5HOz3YzxjR6S9pGew+OWoSnJQlFgQ
-         gnR+juglV+HGK3xVfQdnNeSyRhxGBEo3bgXf53IqqBNBiA7Fy1BJvRt3dU0/vz2fjWuS
-         45OHIPX6jweV+kHhQCnBZN+APHzihpt0M34v8=
+        bh=X6rX98hDfmwMvXNLYGLENiBjXrMNx3f1cVY9RbI6yg0=;
+        b=O7G+JeIXayDNkXmfUzuLpkBvyA0+i+YAiu+ONggStuJ90PCRVFHBB7ssGmkC7PLhqF
+         cx7xn5iiunf4FK4prQDhpUchjkMSnI3UvnO/fpLzIbU02VKtj55Vv7nCshDlIM68noVU
+         hd6Jh2LXxpFcZ/3dI0AxOV8kdGVf8fAR08+zI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XrSljs9p2akWCSedVPpNDBp3AdI7AQvDDvYRJ1g+BNw=;
-        b=M5KCrzJrZl72YXVPybiM5nHYnJTOc/6Av0fUMs74E30TgKFlVvhhh/X9YC2V4UiY4F
-         gE65/D7FeTB2Uv+mIu7Nw3N8hYasuLcS6E5BH6QJmTfp7D2AJWTkDpxSfICHwClmpXbv
-         ZGsSoXU4QRbA2W1aIbAgB3SlIUzStWGXv8MBm8Im1HtQhrasn+cGp50jxnoajvgbSHzT
-         EfJLHVR8wK6A0D4NwzCuvBE5LsuZ2raLT60HOAkJAjHbt1Lf4m7U2gYgWtO3TnM/Ap0s
-         e50YS8TQjKvCFn1tJbRtw3UujoQ5hYwoSytrhM0HOJ12YD9tHiI8kRzRW76zh1419VMQ
-         rLtQ==
-X-Gm-Message-State: AOAM5307d5fXa1kNqzmBofQkPlC7Oxul2ovUfBXCJ3l1ccywok2p6UPv
-        dfAtBm7ukudHzkO8t7cNMW+pzw==
-X-Google-Smtp-Source: ABdhPJz/Jxxy2ss20n/gYw5KrTowBECBp8mQNBFk6Vd+p+7JDws2uMYJI83Ssqwz3dgPHNb0PmJE8w==
-X-Received: by 2002:a17:90a:ea11:: with SMTP id w17mr365736pjy.6.1619460377881;
-        Mon, 26 Apr 2021 11:06:17 -0700 (PDT)
+        bh=X6rX98hDfmwMvXNLYGLENiBjXrMNx3f1cVY9RbI6yg0=;
+        b=CXf6QsnBAXzSccPJU55kET7PBJPiPKL6YK6Mk+82Ei+rUKRGZEBhkkeFHXtJcGiYgK
+         j9+vFtFl+Wg9AEFWIvdE5EhxOtCCeNGd0prH6hfOZA2mlDVAxwjhzQaZPaI+TT9j1hD8
+         +5G1V5bYcvfQR4OGAJXXDBkKC75+hFyGDpRQ5U9REWNgqhivfsFEb3BNguJ1U/RZ9cpD
+         NKshgMi4neKuFdRRRgIsfzAkjPl7QPnIN7IP8GNEn3nvDkIauY4sOgv8WVzJ+gftfN5R
+         bWMCA8XyaG+vM7BTLdoaeacSnSlT9XSFGXize0RVT9bI/p/bdZjZ+A9AEO96fMTCzrgd
+         kELw==
+X-Gm-Message-State: AOAM5338AP8SqEji7RiZQnI32mVj1YC1q/p3Lxyha/KVvdmVZV49nm5d
+        BNZjvCy8z1WRD2s+wPb/LDv+yA==
+X-Google-Smtp-Source: ABdhPJxac+qneaPoiDM++eOdU6qvTBl1VlpL4cLhCGu1W4aN2kj+jIllJrl+2QYEkF3ULEPQPY0arg==
+X-Received: by 2002:a17:90b:30c3:: with SMTP id hi3mr9150037pjb.235.1619460381235;
+        Mon, 26 Apr 2021 11:06:21 -0700 (PDT)
 Received: from ubuntu.netflix.com (136-25-20-203.cab.webpass.net. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id j7sm326835pfd.129.2021.04.26.11.06.15
+        by smtp.gmail.com with ESMTPSA id j7sm326835pfd.129.2021.04.26.11.06.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 11:06:17 -0700 (PDT)
+        Mon, 26 Apr 2021 11:06:20 -0700 (PDT)
 From:   Sargun Dhillon <sargun@sargun.me>
 To:     Kees Cook <keescook@chromium.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -57,9 +57,9 @@ Cc:     Sargun Dhillon <sargun@sargun.me>,
         Giuseppe Scrivano <gscrivan@redhat.com>,
         Andy Lutomirski <luto@amacapital.net>,
         Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
-Subject: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to seccomp user notifier
-Date:   Mon, 26 Apr 2021 11:06:07 -0700
-Message-Id: <20210426180610.2363-3-sargun@sargun.me>
+Subject: [PATCH RESEND 3/5] selftests/seccomp: Add test for wait killable notifier
+Date:   Mon, 26 Apr 2021 11:06:08 -0700
+Message-Id: <20210426180610.2363-4-sargun@sargun.me>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210426180610.2363-1-sargun@sargun.me>
 References: <20210426180610.2363-1-sargun@sargun.me>
@@ -69,181 +69,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user notifier feature allows for filtering of seccomp notifications in
-userspace. While the user notifier is handling the syscall, the notifying
-process can be preempted, thus ending the notification. This has become a
-growing problem, as Golang has adopted signal based async preemption[1]. In
-this, it will preempt every 10ms, thus leaving the supervisor less than
-10ms to respond to a given notification. If the syscall require I/O (mount,
-connect) on behalf of the process, it can easily take 10ms.
-
-This allows the supervisor to set a flag that moves the process into a
-state where it is only killable by terminating signals as opposed to all
-signals. The process can still be terminated before the supervisor receives
-the notification.
+This adds a test for the positive case of the wait killable notifier,
+in testing that when the feature is activated the process acts as
+expected -- in not terminating on a non-fatal signal, and instead
+queueing it up. There is already a test case for normal handlers
+and preemption.
 
 Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-
-[1]: https://github.com/golang/go/issues/24543
 ---
- .../userspace-api/seccomp_filter.rst          | 15 +++---
- include/uapi/linux/seccomp.h                  |  3 ++
- kernel/seccomp.c                              | 54 ++++++++++++++++---
- 3 files changed, 58 insertions(+), 14 deletions(-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 64 +++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-diff --git a/Documentation/userspace-api/seccomp_filter.rst b/Documentation/userspace-api/seccomp_filter.rst
-index bd9165241b6c..75de9400d56a 100644
---- a/Documentation/userspace-api/seccomp_filter.rst
-+++ b/Documentation/userspace-api/seccomp_filter.rst
-@@ -251,13 +251,14 @@ seccomp notification fd to receive a ``struct seccomp_notif``, which contains
- five members: the input length of the structure, a unique-per-filter ``id``,
- the ``pid`` of the task which triggered this request (which may be 0 if the
- task is in a pid ns not visible from the listener's pid namespace), a ``flags``
--member which for now only has ``SECCOMP_NOTIF_FLAG_SIGNALED``, representing
--whether or not the notification is a result of a non-fatal signal, and the
--``data`` passed to seccomp. Userspace can then make a decision based on this
--information about what to do, and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a
--response, indicating what should be returned to userspace. The ``id`` member of
--``struct seccomp_notif_resp`` should be the same ``id`` as in ``struct
--seccomp_notif``.
-+member and the ``data`` passed to seccomp. Upon receiving the notification,
-+the ``SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE`` flag may be set, which will
-+try to put the task into a state where it will only respond to fatal signals.
-+
-+Userspace can then make a decision based on this information about what to do,
-+and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
-+returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
-+be the same ``id`` as in ``struct seccomp_notif``.
- 
- It is worth noting that ``struct seccomp_data`` contains the values of register
- arguments to the syscall, but does not contain pointers to memory. The task's
-diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-index 6ba18b82a02e..bc7fc8b04749 100644
---- a/include/uapi/linux/seccomp.h
-+++ b/include/uapi/linux/seccomp.h
-@@ -70,6 +70,9 @@ struct seccomp_notif_sizes {
- 	__u16 seccomp_data;
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 98c3b647f54d..34140ce2ab21 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -235,6 +235,10 @@ struct seccomp_notif_addfd {
  };
+ #endif
  
-+/* Valid flags for struct seccomp_notif */
++#ifndef SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE
 +#define SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE	(1UL << 0) /* Prevent task from being interrupted */
++#endif
 +
- struct seccomp_notif {
+ struct seccomp_notif_addfd_small {
  	__u64 id;
- 	__u32 pid;
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 93684cc63285..b852e8617004 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -97,6 +97,8 @@ struct seccomp_knotif {
- 
- 	/* outstanding addfd requests */
- 	struct list_head addfd;
-+
-+	bool wait_killable;
- };
- 
- /**
-@@ -1073,6 +1075,11 @@ static void seccomp_handle_addfd(struct seccomp_kaddfd *addfd)
- 	complete(&addfd->completion);
+ 	char weird[4];
+@@ -4135,6 +4139,66 @@ TEST(user_notification_addfd_rlimit)
+ 	close(memfd);
  }
  
-+static bool notification_interruptible(struct seccomp_knotif *n)
++TEST(user_notification_signal_wait_killable)
 +{
-+	return !(n->state == SECCOMP_NOTIFY_SENT && n->wait_killable);
-+}
++	pid_t pid;
++	long ret;
++	int status, listener, sk_pair[2];
++	struct seccomp_notif req = {
++		.flags = SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE,
++	};
++	struct seccomp_notif_resp resp = {};
++	char c;
 +
- static int seccomp_do_user_notification(int this_syscall,
- 					struct seccomp_filter *match,
- 					const struct seccomp_data *sd)
-@@ -1082,6 +1089,7 @@ static int seccomp_do_user_notification(int this_syscall,
- 	long ret = 0;
- 	struct seccomp_knotif n = {};
- 	struct seccomp_kaddfd *addfd, *tmp;
-+	bool interruptible = true;
- 
- 	mutex_lock(&match->notify_lock);
- 	err = -ENOSYS;
-@@ -1103,11 +1111,31 @@ static int seccomp_do_user_notification(int this_syscall,
- 	 * This is where we wait for a reply from userspace.
- 	 */
- 	do {
-+		interruptible = notification_interruptible(&n);
-+
- 		mutex_unlock(&match->notify_lock);
--		err = wait_for_completion_interruptible(&n.ready);
-+		if (interruptible)
-+			err = wait_for_completion_interruptible(&n.ready);
-+		else
-+			err = wait_for_completion_killable(&n.ready);
- 		mutex_lock(&match->notify_lock);
--		if (err != 0)
-+
-+		if (err != 0) {
-+			/*
-+			 * There is a race condition here where if the
-+			 * notification was received with the
-+			 * SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE flag, but a
-+			 * non-fatal signal was received before we could
-+			 * transition we could erroneously end our wait early.
-+			 *
-+			 * The next wait for completion will ensure the signal
-+			 * was not fatal.
-+			 */
-+			if (interruptible && !notification_interruptible(&n))
-+				continue;
-+
- 			goto interrupted;
-+		}
- 
- 		addfd = list_first_entry_or_null(&n.addfd,
- 						 struct seccomp_kaddfd, list);
-@@ -1422,14 +1450,16 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
- 	struct seccomp_notif unotif;
- 	ssize_t ret;
- 
-+	ret = copy_from_user(&unotif, buf, sizeof(unotif));
-+	if (ret)
-+		return -EFAULT;
-+
- 	/* Verify that we're not given garbage to keep struct extensible. */
--	ret = check_zeroed_user(buf, sizeof(unotif));
--	if (ret < 0)
--		return ret;
--	if (!ret)
-+	if (unotif.flags & ~(SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE))
- 		return -EINVAL;
- 
--	memset(&unotif, 0, sizeof(unotif));
-+	if (unotif.id || unotif.pid)
-+		return -EINVAL;
- 
- 	ret = down_interruptible(&filter->notif->request);
- 	if (ret < 0)
-@@ -1457,6 +1487,12 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
- 	unotif.pid = task_pid_vnr(knotif->task);
- 	unotif.data = *(knotif->data);
- 
-+	if (unotif.flags & SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE) {
-+		knotif->wait_killable = true;
-+		complete(&knotif->ready);
++	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
++	ASSERT_EQ(0, ret) {
++		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
 +	}
 +
++	ASSERT_EQ(socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair), 0);
++	ASSERT_EQ(fcntl(sk_pair[0], F_SETFL, O_NONBLOCK), 0);
 +
- 	knotif->state = SECCOMP_NOTIFY_SENT;
- 	wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
- 	ret = 0;
-@@ -1477,6 +1513,10 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
- 		if (knotif) {
- 			knotif->state = SECCOMP_NOTIFY_INIT;
- 			up(&filter->notif->request);
++	listener = user_notif_syscall(__NR_gettid,
++				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
++	ASSERT_GE(listener, 0);
 +
-+			/* Wake the task to reset its state */
-+			if (knotif->wait_killable)
-+				complete(&knotif->ready);
- 		}
- 		mutex_unlock(&filter->notify_lock);
- 	}
++	pid = fork();
++	ASSERT_GE(pid, 0);
++
++	if (pid == 0) {
++		close(sk_pair[0]);
++		handled = sk_pair[1];
++		if (signal(SIGUSR1, signal_handler) == SIG_ERR) {
++			perror("signal");
++			exit(1);
++		}
++
++		ret = syscall(__NR_gettid);
++		exit(!(ret == 42));
++	}
++	close(sk_pair[1]);
++
++	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
++	EXPECT_EQ(kill(pid, SIGUSR1), 0);
++	/* Make sure we didn't get a signal */
++	EXPECT_EQ(read(sk_pair[0], &c, 1), -1);
++	/* Make sure the notification is still alive */
++	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ID_VALID, &req.id), 0);
++
++	resp.id = req.id;
++	resp.error = 0;
++	resp.val = 42;
++
++	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
++
++	EXPECT_EQ(waitpid(pid, &status, 0), pid);
++	EXPECT_EQ(true, WIFEXITED(status));
++	EXPECT_EQ(0, WEXITSTATUS(status));
++	/* Check we eventually received the signal */
++	EXPECT_EQ(read(sk_pair[0], &c, 1), 1);
++}
++
++
+ /*
+  * TODO:
+  * - expand NNP testing
 -- 
 2.25.1
 
