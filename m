@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A59E36B10F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AA436B115
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhDZJvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:51:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232239AbhDZJv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:51:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE98610A5;
-        Mon, 26 Apr 2021 09:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619430647;
-        bh=5HK7sHxtSNFTvEowRYNk3JfWcvB1OJlsfiq4lhdMea4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VwlwhaKhG0Sib4seccmy6Azz+GwQS6EmVmoqM5RFbKA13KYdW/XtmANzxcPc9ef55
-         NUU8ahsJp80dYw9dxvItK9tCdaSZq9du+Q5Anh95xOoT06Qz/9Z7al9sie7sX5gfUh
-         9n7mQaIGYfEtVN1KICrlKbxZ/SSTOjb8BdxTPzEk=
-Date:   Mon, 26 Apr 2021 11:50:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Leonardo Antoniazzi <leoanto@aruba.it>, linux-usb@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: hso: fix NULL-deref on disconnect regression
-Message-ID: <YIaM9B/UZ1qHAC9+@kroah.com>
-References: <20210426081149.10498-1-johan@kernel.org>
- <20210426112911.fb3593c3a9ecbabf98a13313@aruba.it>
- <YIaJcgmiJFERvbEF@hovoldconsulting.com>
+        id S232785AbhDZJyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:54:43 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38474 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232239AbhDZJym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:54:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 48C041C0B77; Mon, 26 Apr 2021 11:54:00 +0200 (CEST)
+Date:   Mon, 26 Apr 2021 11:53:59 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/57] 4.19.189-rc1 review
+Message-ID: <20210426095359.GA7866@duo.ucw.cz>
+References: <20210426072820.568997499@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
 Content-Disposition: inline
-In-Reply-To: <YIaJcgmiJFERvbEF@hovoldconsulting.com>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:35:46AM +0200, Johan Hovold wrote:
-> On Mon, Apr 26, 2021 at 11:29:11AM +0200, Leonardo Antoniazzi wrote:
-> > On Mon, 26 Apr 2021 10:11:49 +0200
-> > Johan Hovold <johan@kernel.org> wrote:
-> > 
-> > > Commit 8a12f8836145 ("net: hso: fix null-ptr-deref during tty device
-> > > unregistration") fixed the racy minor allocation reported by syzbot, but
-> > > introduced an unconditional NULL-pointer dereference on every disconnect
-> > > instead.
-> > > 
-> > > Specifically, the serial device table must no longer be accessed after
-> > > the minor has been released by hso_serial_tty_unregister().
-> > > 
-> > > Fixes: 8a12f8836145 ("net: hso: fix null-ptr-deref during tty device unregistration")
-> > > Cc: stable@vger.kernel.org
-> > > Cc: Anirudh Rayabharam <mail@anirudhrb.com>
-> > > Reported-by: Leonardo Antoniazzi <leoanto@aruba.it>
-> > > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > > ---
-> 
-> > the patch fix the problem
-> 
-> Thanks for confirming.
-> 
-> Next time, please keep the CC list intact when replying so that everyone
-> sees that you've tested it.
 
-Wonderful.  Johan, thanks for the quick fix.
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-netdev maintainers, mind if I take this fix through my tree to Linus
-this week, or can you all get it to him before -rc1 through the
-networking tree?
+Hi!
 
-thanks,
+> This is the start of the stable review cycle for the 4.19.189 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
 
-greg k-h
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYIaNtwAKCRAw5/Bqldv6
+8jQ6AKCoZl487bwSoO50kJbivGMaru/G3QCeIREShfEmmpvAixzXxrGj/l0YVcQ=
+=wD4H
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
