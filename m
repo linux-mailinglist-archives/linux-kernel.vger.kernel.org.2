@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE3736BB29
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CEE36BB2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhDZV0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        id S236202AbhDZV0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234217AbhDZV0T (ORCPT
+        with ESMTP id S234217AbhDZV0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:26:19 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEA2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:25:37 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id q192so13065163ybg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=508ovmXS8DpmpNPbL89LJR27EX3QMuO+O3AIb+NoGvQ=;
-        b=VTQ6bSOGVug3MmyZAeIZXQ8sbTxH+e90Ylebh+pSEzYa/AYQikD4zIVgKPmf20gLa8
-         Bbmkk+RSzFGuiXqWJeAbkwWEL7keR6g5gCKJQDpgOZ3yhVGCWpyu6UDhpvVKTrsUbnro
-         eYDUaAKyosYlZoSZ5ibWmoVum9ILLBpVZXgXFpDObvPuRgWAzYtjhBlCOeeR8BS4iYn1
-         Y0ssTZVjNGBclfyG1eyzIy+Z55j0Q3NdzzKA9otkvKIg2gAU0hxswK1MUH7glibSS5/z
-         97ASA+opSNFE4GPPSKsNoZJ2N2K87V+ND62TL34FWbT24IOrc30UMmUxll6HIRyN+dpu
-         yUEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=508ovmXS8DpmpNPbL89LJR27EX3QMuO+O3AIb+NoGvQ=;
-        b=Zavco7jmQ7qHnZMh+Srgh0bu+XWAhq5Mt3SVZv6IbWEY9NtrpmKgOOicNaYdlAtOYk
-         gxFqpAtdY/JxnmbmYuKE/+4cVGBCekjmBFmKZekReQFHbGsK8EQpoD8qBdIvhk1XV5s9
-         1CX02/2EcerX3+TbIEcRNS4YUXFw1puKT2jE43sWEeXe8tsxh85J8Qlk89Ddacq3MeZ2
-         0/yOerTsmGqLuPN8WuIiEtQT1W9TAB+c8LqG2P/GIeobLu8Maqf4VG3ZxRaUlCXsxkwC
-         gPCMiIItvGxQVpRoE0mlfnuMX7y+L2EdgW00V83deWiYXTY4/1jns8ibndpJZh32yV8U
-         Zb9A==
-X-Gm-Message-State: AOAM5315GBxauJbzEKE0L86HwrfnDWtTMUGhiqVRYOhqyRuIkM7UBLxz
-        UWW2zWqAOkeKuh5lt78s4Ok5Rk9TEOQApX1voKa1PQ==
-X-Google-Smtp-Source: ABdhPJz9Hft4UOIdQp2htw0zmi/yxVjNy/q9zcG3JEAGDJSbU0S1tQpnvZWHiqueTOsa/WB0ZFTWjQU/vr/xe6Frnrc=
-X-Received: by 2002:a5b:a82:: with SMTP id h2mr1073683ybq.20.1619472336867;
- Mon, 26 Apr 2021 14:25:36 -0700 (PDT)
+        Mon, 26 Apr 2021 17:26:34 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01387C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 14:25:51 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C9161891AE;
+        Tue, 27 Apr 2021 09:25:42 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1619472342;
+        bh=g2nmzz+iF9AnESqZRCU3eNTJ2vsNP4pPDFPWeqtXgQw=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=i7OGZ/jz4GL8AxW+dYkInYJapng7ijHut512W6M8pe0l0jtOD9wfnLdSOwewHjVUy
+         v8UVkOvmGwhzHpAm38UN27fLCGLJsin3HZNnx2xKt7+6ZzEp5elgaSggfhEECrzU95
+         Qj3WYtnBPwqsGmgE7kiQQLF1Oaa4PSQeOk1qTLhEeYmcb9qqGod8ozR5Sydwpar4fc
+         cg1i11IRXXytgdrRRkP2xpRxlLcA+Fzx4RsaHMMcZAqoIuWOiqQOsM52iZrgD6c/vH
+         tUBWs5ue4UX7i6ls46tjVBc9vfm9r4wr7zqoPT5NC+1V7jEDkrJmXpa1QaCFDpmJDE
+         yvNXLkIf2fCBg==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60872fd60001>; Tue, 27 Apr 2021 09:25:42 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 27 Apr 2021 09:25:42 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.015; Tue, 27 Apr 2021 09:25:42 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     =?utf-8?B?5pu554Wc?= <cao88yu@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "olteanv@gmail.com" <olteanv@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: mv88e6171r and mv88e6161 switch not working properly after commit
+ 0f3c66a3c7b4e8b9f654b3c998e9674376a51b0f
+Thread-Topic: mv88e6171r and mv88e6161 switch not working properly after
+ commit 0f3c66a3c7b4e8b9f654b3c998e9674376a51b0f
+Thread-Index: AQHXOBZmIGlhuMeONku8NdcHoOSOH6rGjBOA
+Date:   Mon, 26 Apr 2021 21:25:42 +0000
+Message-ID: <b5768b0e-1c11-b817-b66f-c565c0afb910@alliedtelesis.co.nz>
+References: <CACu-5+1X1y-DmbyqB4Tooj+DuARhK_V1F16Pa3hWNF9q0sexbg@mail.gmail.com>
+In-Reply-To: <CACu-5+1X1y-DmbyqB4Tooj+DuARhK_V1F16Pa3hWNF9q0sexbg@mail.gmail.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <90D1DE511086194F843E2EAD5EF635B8@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 26 Apr 2021 14:25:00 -0700
-Message-ID: <CAGETcx_4B9v-xF+pBCHSSOsEsKeYq=LqtTmGrMcsnNcY7aXT4w@mail.gmail.com>
-Subject: Re: Sleeping in atomic context on device release due to device links
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=myVwGOACAAAA:8 a=o6mhGMi_7v_8qPRsk9kA:9 a=QEXdDO2ut3YA:10 a=p5cQTkJONggA:10 a=PizmSyiMN4ROI5oN2gJl:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 10:08 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> Hi!
->
-> Is the below already fixed somewhere (v5.12 seems still has it)?
-> Or I missed something?
->
-> [  186.439095] BUG: sleeping function called from invalid context at
-> drivers/gpio/gpiolib.c:1952
-> [  186.451666] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
-> 119, name: kworker/0:2
-> [  186.463885] 2 locks held by kworker/0:2/119:
-> [  186.470831]  #0: ffff985d8110d338
-> ((wq_completion)rcu_gp){....}-{0:0}, at: process_one_work+0x1bc/0x4b0
-> [  186.484458]  #1: ffffb1a2c0367e70
-> ((work_completion)(&sdp->work)){....}-{0:0}, at:
-> process_one_work+0x1bc/0x4b
-> 0
-> [  186.498732] CPU: 0 PID: 119 Comm: kworker/0:2 Not tainted 5.12.0-rc8+ #168
-> [  186.508301] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
-> BIOS 542 2015.01.21:18.19.48
-> [  186.521000] Workqueue: rcu_gp srcu_invoke_callbacks
-> [  186.528515] Call Trace:
-> [  186.532288]  dump_stack+0x69/0x8e
-> [  186.536964]  ___might_sleep.cold+0x95/0xa2
-> [  186.543606]  gpiod_free_commit+0x25/0x170
-> [  186.550163]  gpiod_put+0x19/0x40
-> [  186.554728]  cleanup+0x1b/0x30 [spi_pxa2xx_platform]
-> [  186.562246]  spidev_release+0x24/0x50
-> [  186.567243]  device_release+0x34/0x90
-> [  186.572228]  kobject_put+0x86/0x1d0
-> [  186.577035]  __device_link_free_srcu+0x47/0x70
-> [  186.583942]  srcu_invoke_callbacks+0xc8/0x170
-> [  186.590720]  process_one_work+0x24d/0x4b0
-> [  186.597118]  worker_thread+0x55/0x3c0
-> [  186.602030]  ? rescuer_thread+0x390/0x390
-> [  186.608373]  kthread+0x137/0x150
-> [  186.612834]  ? __kthread_bind_mask+0x60/0x60
-> [  186.619446]  ret_from_fork+0x22/0x30
->
-
-This took a few hours to debug, but it looks like a SPI framework bug.
-Just that some device link code is exposing the bug.
-
-Basically calling the spi controller cleanup in the device's release
-op is wrong for many reasons. I'll send a patch for SPI later.
-
--Saravana
+SGksDQoNCk9uIDIzLzA0LzIxIDc6NTcgcG0sIOabueeFnCB3cm90ZToNCj4gSGksDQo+ICAgICAg
+SSd2ZSBjb25maXJtZWQgdGhhdCB0aGUgbXY4OGU2MTcxciBhbmQgbXY4OGU2MTYxIHN3aXRjaCBy
+dW4gaW50bw0KPiBNVFUgaXNzdWUgYWZ0ZXIgdGhhdCBjb21taXQgKGZyb20ga2VybmVsIDUuOS4w
+IHRvIGtlcm5lbCA1LjEyLXJjKToNClNvcnJ5IHRvIGhlYXIgdGhhdC4NCj4gY29tbWl0IDBmM2M2
+NmEzYzdiNGU4YjlmNjU0YjNjOTk4ZTk2NzQzNzZhNTFiMGYNCj4gQXV0aG9yOiBDaHJpcyBQYWNr
+aGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+DQo+IERhdGU6ICAgRnJpIEp1
+bCAyNCAxMToyMToyMCAyMDIwICsxMjAwDQo+DQo+ICAgICAgbmV0OiBkc2E6IG12ODhlNnh4eDog
+TVY4OEU2MDk3IGRvZXMgbm90IHN1cHBvcnQganVtYm8gY29uZmlndXJhdGlvbg0KPg0KPiAgICAg
+IFRoZSBNVjg4RTYwOTcgY2hpcCBkb2VzIG5vdCBzdXBwb3J0IGNvbmZpZ3VyaW5nIGp1bWJvIGZy
+YW1lcy4gUHJpb3IgdG8NCj4gICAgICBjb21taXQgNWY0MzY2NjYwZDY1IG9ubHkgdGhlIDYzNTIs
+IDYzNTEsIDYxNjUgYW5kIDYzMjAgY2hpcHMgY29uZmlndXJlZA0KPiAgICAgIGp1bWJvIG1vZGUu
+IFRoZSByZWZhY3RvciBhY2NpZGVudGFsbHkgYWRkZWQgdGhlIGZ1bmN0aW9uIGZvciB0aGUgNjA5
+Ny4NCj4gICAgICBSZW1vdmUgdGhlIGVycm9uZW91cyBmdW5jdGlvbiBwb2ludGVyIGFzc2lnbm1l
+bnQuDQo+DQpEbyB5b3UgbWVhbiBvbmUgb2YgdGhlIG90aGVyIGNvbW1pdHMgaW4gdGhhdCBzZXJp
+ZXM/IEkgdGhpbmsgcGVyaGFwcyB0aGUgDQo4OGU2MTYxIGlzIG1pc3NpbmcgZnJvbSBjb21taXQg
+MWJhZjBmYWMxMGZiICgibmV0OiBkc2E6IG12ODhlNnh4eDogVXNlIA0KY2hpcC13aWRlIG1heCBm
+cmFtZSBzaXplIGZvciBNVFUiKS4gSSB3YXMgZG9pbmcgdGhhdCBtb3N0bHkgZnJvbSB0aGUgDQpk
+YXRhc2hlZXRzIEkgaGFkIGF2YWlsYWJsZSBzbyBjb3VsZCBoYXZlIGVhc2lseSBtaXNzZWQgb25l
+Lg0KDQo+IEFmdGVyIG15IG1vZGlmeToNCj4NCj4gcmVtb3ZlDQo+IC5wb3J0X3NldF9qdW1ib19z
+aXplID0gbXY4OGU2MTY1X3BvcnRfc2V0X2p1bWJvX3NpemUsDQo+DQo+IGFkZA0KPiAuc2V0X21h
+eF9mcmFtZV9zaXplID0gbXY4OGU2MTg1X2cxX3NldF9tYXhfZnJhbWVfc2l6ZSwNCj4NCj4gVGhl
+IGlzc3VlIGlzIGdvbmUsIHNvIGNvdWxkIHlvdSBwbGVhc2UgY29tbWl0IGEgZml4IGZvciB0aGVz
+ZSB0d28gY2hpcHM/DQpJJ20gdHJhdmVsaW5nIHJpZ2h0IG5vdyBidXQgSSBzaG91bGQgYmUgYWJs
+ZSB0byB0YWtlIGEgbG9vayBuZXh0IHdlZWsgDQooYXNzdW1pbmcgc29tZW9uZSBlbHNlIGRvZXNu
+J3QgYmVhdCBtZSB0byBpdCkuDQo+IFBTOiB0aGVyZSBhcmUgc29tZSBtb3JlIGluZm8gb24gdGhp
+cyBwb3N0Og0KPiBodHRwczovL2ZvcnVtLmRvb3phbi5jb20vcmVhZC5waHA/MiwxMTk0NDkNCj4N
+Cj4NCj4gUmVnYXJkcyE=
