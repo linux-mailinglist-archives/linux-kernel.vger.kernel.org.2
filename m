@@ -2,152 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202C936B99F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1604736B9CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240005AbhDZTEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:04:55 -0400
-Received: from mail.savoirfairelinux.com ([208.88.110.44]:46586 "EHLO
-        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240143AbhDZTEg (ORCPT
+        id S240277AbhDZTJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240229AbhDZTJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:04:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 96F4E9C1604;
-        Mon, 26 Apr 2021 15:03:47 -0400 (EDT)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TfXJ-JMsE0YT; Mon, 26 Apr 2021 15:03:47 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 0A1829C1556;
-        Mon, 26 Apr 2021 15:03:47 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id CeQtMkjyRRcf; Mon, 26 Apr 2021 15:03:46 -0400 (EDT)
-Received: from barbarian.mtl.sfl (unknown [192.168.51.254])
-        by mail.savoirfairelinux.com (Postfix) with ESMTPSA id D506D9C0272;
-        Mon, 26 Apr 2021 15:03:46 -0400 (EDT)
-From:   Firas Ashkar <firas.ashkar@savoirfairelinux.com>
-To:     gregkh@linuxfoundation.org, mst@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] uio: uio_pci_generic: add memory mappings
-Date:   Mon, 26 Apr 2021 15:03:46 -0400
-Message-Id: <20210426190346.173919-1-firas.ashkar@savoirfairelinux.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        Mon, 26 Apr 2021 15:09:10 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F8FC061574;
+        Mon, 26 Apr 2021 12:08:28 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 99DD74F21C303;
+        Mon, 26 Apr 2021 12:08:26 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 12:08:22 -0700 (PDT)
+Message-Id: <20210426.120822.232032630973964712.davem@davemloft.net>
+To:     jay.vosburgh@canonical.com
+Cc:     jinyiting@huawei.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, netdev@vger.kernel.org, security@kernel.org,
+        linux-kernel@vger.kernel.org, xuhanbing@huawei.com,
+        wangxiaogang3@huawei.com
+Subject: Re: [PATCH] bonding: 3ad: Fix the conflict between
+ bond_update_slave_arr and the state machine
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20034.1619450557@famine>
+References: <1618994301-1186-1-git-send-email-jinyiting@huawei.com>
+        <20210423.130748.1071901004935481894.davem@davemloft.net>
+        <20034.1619450557@famine>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 26 Apr 2021 12:08:27 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-import memory resources from underlying pci device, thus allowing
-userspace applications to memory map those resources.
+From: Jay Vosburgh <jay.vosburgh@canonical.com>
+Date: Mon, 26 Apr 2021 08:22:37 -0700
 
-Signed-off-by: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
----
-:100644 100644 c7d681fef198 809eca95b5bb M	drivers/uio/uio_pci_generic.c
- drivers/uio/uio_pci_generic.c | 52 +++++++++++++++++++++++++++++------
- 1 file changed, 43 insertions(+), 9 deletions(-)
+> David Miller <davem@davemloft.net> wrote:
+> 
+>>From: jinyiting <jinyiting@huawei.com>
+>>Date: Wed, 21 Apr 2021 16:38:21 +0800
+>>
+>>> The bond works in mode 4, and performs down/up operations on the bond
+>>> that is normally negotiated. The probability of bond-> slave_arr is NULL
+>>> 
+>>> Test commands:
+>>>    ifconfig bond1 down
+>>>    ifconfig bond1 up
+>>> 
+>>> The conflict occurs in the following process：
+>>> 
+>>> __dev_open (CPU A)
+>>> --bond_open
+>>>   --queue_delayed_work(bond->wq,&bond->ad_work,0);
+>>>   --bond_update_slave_arr
+>>>     --bond_3ad_get_active_agg_info
+>>> 
+>>> ad_work(CPU B)
+>>> --bond_3ad_state_machine_handler
+>>>   --ad_agg_selection_logic
+>>> 
+>>> ad_work runs on cpu B. In the function ad_agg_selection_logic, all
+>>> agg->is_active will be cleared. Before the new active aggregator is
+>>> selected on CPU B, bond_3ad_get_active_agg_info failed on CPU A,
+>>> bond->slave_arr will be set to NULL. The best aggregator in
+>>> ad_agg_selection_logic has not changed, no need to update slave arr.
+>>> 
+>>> The conflict occurred in that ad_agg_selection_logic clears
+>>> agg->is_active under mode_lock, but bond_open -> bond_update_slave_arr
+>>> is inspecting agg->is_active outside the lock.
+>>> 
+>>> Also, bond_update_slave_arr is normal for potential sleep when
+>>> allocating memory, so replace the WARN_ON with a call to might_sleep.
+>>> 
+>>> Signed-off-by: jinyiting <jinyiting@huawei.com>
+>>> ---
+>>> 
+>>> Previous versions:
+>>>  * https://lore.kernel.org/netdev/612b5e32-ea11-428e-0c17-e2977185f045@huawei.com/
+>>> 
+>>>  drivers/net/bonding/bond_main.c | 7 ++++---
+>>>  1 file changed, 4 insertions(+), 3 deletions(-)
+>>> 
+>>> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>>> index 74cbbb2..83ef62d 100644
+>>> --- a/drivers/net/bonding/bond_main.c
+>>> +++ b/drivers/net/bonding/bond_main.c
+>>> @@ -4406,7 +4404,9 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>>>  	if (BOND_MODE(bond) == BOND_MODE_8023AD) {
+>>>  		struct ad_info ad_info;
+>>>  
+>>> +		spin_lock_bh(&bond->mode_lock);
+>>
+>>The code paths that call this function with mode_lock held will now deadlock.
+> 
+> 	No path should be calling bond_update_slave_arr with mode_lock
+> already held (it expects RTNL only); did you find one?
+> 
+> 	My concern is that there's something else that does the opposite
+> order, i.e., mode_lock first, then RTNL, but I haven't found an example.
+> 
 
-diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.=
-c
-index c7d681fef198..809eca95b5bb 100644
---- a/drivers/uio/uio_pci_generic.c
-+++ b/drivers/uio/uio_pci_generic.c
-@@ -24,9 +24,9 @@
- #include <linux/slab.h>
- #include <linux/uio_driver.h>
-=20
--#define DRIVER_VERSION	"0.01.0"
--#define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
--#define DRIVER_DESC	"Generic UIO driver for PCI 2.3 devices"
-+#define DRIVER_VERSION "0.01.0"
-+#define DRIVER_AUTHOR "Michael S. Tsirkin <mst@redhat.com>"
-+#define DRIVER_DESC "Generic UIO driver for PCI 2.3 devices"
-=20
- struct uio_pci_generic_dev {
- 	struct uio_info info;
-@@ -56,7 +56,8 @@ static int release(struct uio_info *info, struct inode =
-*inode)
- }
-=20
- /* Interrupt handler. Read/modify/write the command register to disable
-- * the interrupt. */
-+ * the interrupt.
-+ */
- static irqreturn_t irqhandler(int irq, struct uio_info *info)
- {
- 	struct uio_pci_generic_dev *gdev =3D to_uio_pci_generic_dev(info);
-@@ -68,11 +69,12 @@ static irqreturn_t irqhandler(int irq, struct uio_inf=
-o *info)
- 	return IRQ_HANDLED;
- }
-=20
--static int probe(struct pci_dev *pdev,
--			   const struct pci_device_id *id)
-+static int probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
- 	struct uio_pci_generic_dev *gdev;
-+	struct uio_mem *uiomem;
- 	int err;
-+	int i;
-=20
- 	err =3D pcim_enable_device(pdev);
- 	if (err) {
-@@ -84,7 +86,8 @@ static int probe(struct pci_dev *pdev,
- 	if (pdev->irq && !pci_intx_mask_supported(pdev))
- 		return -ENOMEM;
-=20
--	gdev =3D devm_kzalloc(&pdev->dev, sizeof(struct uio_pci_generic_dev), G=
-FP_KERNEL);
-+	gdev =3D devm_kzalloc(&pdev->dev, sizeof(struct uio_pci_generic_dev),
-+			    GFP_KERNEL);
- 	if (!gdev)
- 		return -ENOMEM;
-=20
-@@ -97,8 +100,39 @@ static int probe(struct pci_dev *pdev,
- 		gdev->info.irq_flags =3D IRQF_SHARED;
- 		gdev->info.handler =3D irqhandler;
- 	} else {
--		dev_warn(&pdev->dev, "No IRQ assigned to device: "
--			 "no support for interrupts?\n");
-+		dev_warn(
-+			&pdev->dev,
-+			"No IRQ assigned to device: no support for interrupts?\n");
-+	}
-+
-+	uiomem =3D &gdev->info.mem[0];
-+	for (i =3D 0; i < MAX_UIO_MAPS; ++i) {
-+		struct resource *r =3D &pdev->resource[i];
-+
-+		if (r->flags !=3D (IORESOURCE_SIZEALIGN | IORESOURCE_MEM))
-+			continue;
-+
-+		if (uiomem >=3D &gdev->info.mem[MAX_UIO_MAPS]) {
-+			dev_warn(
-+				&pdev->dev,
-+				"device has more than " __stringify(
-+					MAX_UIO_MAPS) " I/O memory resources.\n");
-+			break;
-+		}
-+
-+		uiomem->memtype =3D UIO_MEM_PHYS;
-+		uiomem->addr =3D r->start & PAGE_MASK;
-+		uiomem->offs =3D r->start & ~PAGE_MASK;
-+		uiomem->size =3D
-+			(uiomem->offs + resource_size(r) + PAGE_SIZE - 1) &
-+			PAGE_MASK;
-+		uiomem->name =3D r->name;
-+		++uiomem;
-+	}
-+
-+	while (uiomem < &gdev->info.mem[MAX_UIO_MAPS]) {
-+		uiomem->size =3D 0;
-+		++uiomem;
- 	}
-=20
- 	return devm_uio_register_device(&pdev->dev, &gdev->info);
---=20
-2.25.1
+This patch is removing a lockdep assertion masking sure that mode_lock was held
+when this function was called.  That should have been triggering all the time, right?
 
+Thanks.
