@@ -2,221 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AFB36B612
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8A636B625
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhDZPrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        id S234094AbhDZPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbhDZPrK (ORCPT
+        with ESMTP id S233919AbhDZPvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:47:10 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4637C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:46:27 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gq23-20020a17090b1057b0290151869af68bso5426996pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:46:27 -0700 (PDT)
+        Mon, 26 Apr 2021 11:51:36 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B113CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:50:53 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 26-20020a05600c22dab029013efd7879b8so3554560wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:50:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XboSkOHKR9/omD6ZttgG6rHiaNOqxSSs13MhhHHn3Q8=;
-        b=UEXS2RhtQolFovqX/XpJa76Q2uluJRmWviDsMo0fYexASUQ/ezJkgmKgTVryWlIjrz
-         chfHnMTbX7evnziBTSHx6XHxj8o3eTCPblueemJosyU0FVomdoyXVZPBp2UhyYQRZGsl
-         CZls1NpVRWdlhJe1h0KNqg7D10LOwJ8VGVNl2vTC49vo4Ab8Y1/2P3TU1YEyswdPWOHL
-         AbzL1D4gzqwF1nDF1A/WoR7eOL6T+dy0YXiYfW2Cl7eSiejrcjx7RfjriEPQoXVLIgtE
-         tPhiLqfy+Lq/zQvzSakB9skJqXWynsd9/ukdDmMD3FF7goWvCblhXgyYpSg3U5XxKGHv
-         394Q==
+        d=digitalocean.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Km0Bq3R/N9AvpuGgnL/lFxl1gODZc8gkQbufpXgHC40=;
+        b=UAOKvU2edQ0PDVaBHwkHuGVVd1/daI6nsmLcPnEw6ZTP/+mpzBuE0NxPLstzTLXmYD
+         Z0SCNsYVgLvtLfsknWx1a3xotrBLJ3ECy/ekSggNWxJrQ38vjfa/6GYLJBn8nT6ncKk2
+         fBEHhPNvnTqepiMDZKaT7tAiB5Nj5rgoVxdwU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XboSkOHKR9/omD6ZttgG6rHiaNOqxSSs13MhhHHn3Q8=;
-        b=CZmiaXZCStEEky2+lqQAsN1I/+AOSsNLU7V0lDbYYAIPz2wN7LP7ld3Yk59/Xw92Ij
-         agibDffX+9QMGBY0jf/nyHAgtMC8ae/OiSTBJtat4pMUNLVQioEu4/K05HcCbtG2RWlf
-         27EsZSmdAdTaOPq5bjFgpnxgGKmleWo3Cw3DKaPl6y+Xe7O37VFrQXTwf1YwrIH2jI4I
-         TEJYLNt1TwrJ7FD7BJEPgymHIHVwD5jbB1wTbRnIgl3SHRvFJZwhmtzaiPDxX14XFQp/
-         4NqphA+drgdFcuUFHWGzYk4Fe6tlWTv5q1XcJa49w2GJglWNA1PMgNJpJx8emw7oDxoE
-         8+pg==
-X-Gm-Message-State: AOAM531KVEUelmOhhOpvBt108Bb5r3Qvd5b1ksfSQbSVTIKzAfips4xo
-        YrYckVa33KJjl6p3sp+E7/2ykg==
-X-Google-Smtp-Source: ABdhPJy9MuB/wX9vtocSRPHn1bJgP98qSCnlf713nL2qGwOuiFCiq9/GIdHNktP7TMmxwgegzvZiwA==
-X-Received: by 2002:a17:902:e993:b029:ec:7cc0:9390 with SMTP id f19-20020a170902e993b02900ec7cc09390mr19195578plb.27.1619451987215;
-        Mon, 26 Apr 2021 08:46:27 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 20sm151931pfw.40.2021.04.26.08.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 08:46:26 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 09:46:23 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V5 0/8] remoteproc: imx_rproc: support i.MX7ULP/8MN/8MP
-Message-ID: <20210426154623.GA1390475@xps15>
-References: <1618971622-30539-1-git-send-email-peng.fan@oss.nxp.com>
- <20210422165634.GD1256950@xps15>
- <DB6PR0402MB2760E471A0391FF8A31980BA88459@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <CANLsYkwoS+3qYq=FHRLMjrJSr5cj_PiHaU+a+M17C+8-VJ+b9g@mail.gmail.com>
- <DB6PR0402MB2760EA88942E5549BA9CC4B588459@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Km0Bq3R/N9AvpuGgnL/lFxl1gODZc8gkQbufpXgHC40=;
+        b=rlxxAouLyShIAx1geTSvw/1ynPDihodRTndDcZCycs8vsyG3sA5W7Fi23LYzMAyOCp
+         PWenJw0nbclyG2PHMEsuzNUhTS+sjhUwFYKFhcdlqLIEttLS/sVwILUfLcxmhaoJDDpE
+         DuGxCKObR8WaEKn/x36R9YGjAtATmoYG7cclmA+hDYsDDHAfUqlPAdmXqjHrmTRLd8Gr
+         uqWIkm/h9HWefwDXd4r9hrHzC0hNJ0KAkmXmtU4nkcvlgBMw+1oITRnBnjll04GaE9Ih
+         W6OSRX3nCDfvcCxYDpYj+LMa29tT6sJtLIbxdR0x9npe34fmuN9k58btjtNrvyC5ze7D
+         oFRQ==
+X-Gm-Message-State: AOAM532cyjq9c/SzNTnwHOoGOw9fE2d2Ues220aZ/J+670yrEMWTAKUA
+        mXgKXPaL/TydoZEOG26Nz7q1waVUrIYLaGe4gBJiwA==
+X-Google-Smtp-Source: ABdhPJw2mvlc0/hKS3ChwH5XWhI/jZ7bos1kmxCGnZU332X2p5qVA0IMaz67QPNCucCwgzf5zdJOnBmbY2TEdpabSK8=
+X-Received: by 2002:a05:600c:2148:: with SMTP id v8mr21360151wml.167.1619452252389;
+ Mon, 26 Apr 2021 08:50:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB2760EA88942E5549BA9CC4B588459@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+From:   Patrick Mccormick <pmccormick@digitalocean.com>
+Date:   Mon, 26 Apr 2021 08:50:42 -0700
+Message-ID: <CAAjnzAn54_SOW2WDdh6Ji=n0q73iqMscUfmtoiHjzjZUBfW7sg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/36] 5.10.33-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 11:28:00PM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH V5 0/8] remoteproc: imx_rproc: support
-> > i.MX7ULP/8MN/8MP
-> > 
-> > On Thu, 22 Apr 2021 at 19:01, Peng Fan <peng.fan@nxp.com> wrote:
-> > >
-> > > Hi Mathieu,
-> > >
-> > > > Subject: Re: [PATCH V5 0/8] remoteproc: imx_rproc: support
-> > > > i.MX7ULP/8MN/8MP
-> > > >
-> > > > On Wed, Apr 21, 2021 at 10:20:14AM +0800, peng.fan@oss.nxp.com
-> > wrote:
-> > > > > From: Peng Fan <peng.fan@nxp.com>
-> > > > >
-> > > > > V5:
-> > > > >  Add R-b tag
-> > > > >  Move the change in detect mode of patch 5 to patch 7 Per
-> > > > > Mathieu's comments
-> > > > >
-> > > > > V4:
-> > > > >  Typo fix
-> > > > >  patch 4: take state as a check condition  patch 5: move regmap
-> > > > > lookup/attach to imx_rproc_detect_mode  patch 6: add
-> > > > > imx_rproc_clk_enable for optional clk  patch 8: use switch/case in
-> > > > > imx_rproc_detect_mode
-> > > > > V3:
-> > > > >  Add A-b tag for Patch 1/2
-> > > > >  Fix the checkpatch warning for Patch 6,8
-> > > > >
-> > > > > V2:
-> > > > >  Patch 1/8, use fsl as vendor, typo fix  Because patchset [1] has
-> > > > > v2 version, patch 5,6,7,8 are adapted that  change.
-> > > > >
-> > > > > This patchset is to support i.MX7ULP/8MN/8MP, also includes a
-> > > > > patch to parse fsl,auto-boot
-> > > > >
-> > > >
-> > > > One of the request I had from the last revision was to explicitly
-> > > > list what other patchset this work depends on and what branch it is
-> > > > based of, something I can't find here.
-> > >
-> > > Sorry, that patchset has been merged, so I remove that line.
-> > > I should mention that that patchset has been merged into Linux-next tree.
-> > >
-> > 
-> > And what branch this set should be applied to is missing.
-> 
-> I take latest linux-next/master for my upstream new feature work.
-> 
-> > 
-> > > >
-> > > > As such I am dropping this set and won't look at another revision
-> > > > before May 22nd.
-> > >
-> > > Ah. Is it just because that the dependency patchset not been mentioned
-> > > or you have issue applying the patchset that delay the patchset for one
-> > month?
-> > >
-> > 
-> > Both.
-> 
-> I replay my flow:
-> git fetch linux-next
-> git checkout linux-next/master -b master-next-4-24-2021
-> pwclient list -w "Peng Fan (OSS)" -s New | grep V5 | awk '{print $1}' | xargs -I {} pwclient git-am {}
-> 
-> It could successfully apply the patchset.
-> Applying patch #12215291 using 'git am'
-> Description: [V5,1/8] dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
-> Applying: dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
-> Applying patch #12215293 using 'git am'
-> Description: [V5,2/8] dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
-> Applying: dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
-> Applying patch #12215295 using 'git am'
-> Description: [V5,3/8] dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
-> Applying: dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
-> Applying patch #12215297 using 'git am'
-> Description: [V5,4/8] remoteproc: imx_rproc: parse fsl,auto-boot
-> Applying: remoteproc: imx_rproc: parse fsl,auto-boot
-> Applying patch #12215299 using 'git am'
-> Description: [V5,5/8] remoteproc: imx_rproc: initial support for mutilple start/stop method
-> Applying: remoteproc: imx_rproc: initial support for mutilple start/stop method
-> Applying patch #12215301 using 'git am'
-> Description: [V5,6/8] remoteproc: imx_rproc: make clk optional
-> Applying: remoteproc: imx_rproc: make clk optional
-> Applying patch #12215303 using 'git am'
-> Description: [V5,7/8] remoteproc: imx_rproc: support i.MX7ULP
-> Applying: remoteproc: imx_rproc: support i.MX7ULP
-> Applying patch #12215305 using 'git am'
-> Description: [V5,8/8] remoteproc: imx_rproc: support i.MX8MN/P
-> Applying: remoteproc: imx_rproc: support i.MX8MN/P
-> 
-> 
-> If anything wrong my work flow conflicts with Linux remoteproc subsystem upstream flow,
-> please correct me, and I'll follow.
-> 
-> Thanks for your time and patience on reviewing my patches. Sorry for the inconvince
-> that I bring in.
-> 
-> Anyway please share me your flow to apply patches, I will try to avoid unhappy things
-> in following patches. 
+We ran tests on this kernel version:
+
+Linux version 5.10.33-rc1-1-generic
+(root@9eabe40e-b732-44f1-4800-0b445d85332c) (gcc (Ubuntu
+7.3.0-27ubuntu1~18.04) 7.3.0, GNU ld (GNU Binutils for Ubuntu) 2.30)
+#0964102fc SMP Mon Apr 26 07:21:26 UTC 2021
+
+With this hardware:
+
+model name      : Intel(R) Xeon(R) Gold 6248 CPU @ 2.50GHz
+
+And there were no failures.
+
+Specific tests ran:
+
+1..40
+ok 1 ltp.py:LTP.test_nptl
+ok 2 ltp.py:LTP.test_math
+ok 3 ltp.py:LTP.test_dio
+ok 4 ltp.py:LTP.test_io
+ok 5 ltp.py:LTP.test_power_management_tests
+ok 6 ltp.py:LTP.test_can
+ok 7 ltp.py:LTP.test_input
+ok 8 ltp.py:LTP.test_hugetlb
+ok 9 ltp.py:LTP.test_ipc
+ok 10 ltp.py:LTP.test_uevent
+ok 11 ltp.py:LTP.test_smoketest
+ok 12 ltp.py:LTP.test_containers
+ok 13 ltp.py:LTP.test_filecaps
+ok 14 ltp.py:LTP.test_sched
+ok 15 ltp.py:LTP.test_hyperthreading
+ok 16 ltp.py:LTP.test_cap_bounds
+ok 17 /home/ci-hypervisor/.local/lib/python3.6/site-packages/fathom/tests/kpatch.sh
+ok 18 perf.py:PerfNonPriv.test_perf_help
+ok 19 perf.py:PerfNonPriv.test_perf_version
+ok 20 perf.py:PerfNonPriv.test_perf_list
+ok 21 perf.py:PerfPriv.test_perf_record
+ok 22 perf.py:PerfPriv.test_perf_cmd_kallsyms
+ok 23 perf.py:PerfPriv.test_perf_cmd_annotate
+ok 24 perf.py:PerfPriv.test_perf_cmd_evlist
+ok 25 perf.py:PerfPriv.test_perf_cmd_script
+ok 26 perf.py:PerfPriv.test_perf_stat
+ok 27 perf.py:PerfPriv.test_perf_bench
+ok 28 kselftest.py:kselftest.test_sysctl
+ok 29 kselftest.py:kselftest.test_size
+ok 30 kselftest.py:kselftest.test_sync
+ok 31 kselftest.py:kselftest.test_capabilities
+ok 32 kselftest.py:kselftest.test_x86
+ok 33 kselftest.py:kselftest.test_pidfd
+ok 34 kselftest.py:kselftest.test_membarrier
+ok 35 kselftest.py:kselftest.test_sigaltstack
+ok 36 kselftest.py:kselftest.test_tmpfs
+ok 37 kselftest.py:kselftest.test_user
+ok 38 kselftest.py:kselftest.test_sched
+ok 39 kselftest.py:kselftest.test_timens
+ok 40 kselftest.py:kselftest.test_timers
+
+Tested-By: Patrick McCormick <pmccormick@digitalocean.com>
+
+On Mon, Apr 26, 2021 at 12:44 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-
-All I asked is that you list the branch your work is based on _and_ any
-dependencies, something you did not do.
-
-I review hundreds of patchsets every year and knowing exactly how to work with a
-series goes a long way in saving precious time, time that can be used to
-review other people's submissions.
-
-I am not angry at you but at the same time I can't review your patches if you
-are not ready to help me do so.
- 
-> Thanks,
-> Peng.
-> 
-> > 
-> > > Thanks,
-> > > Peng.
-> > >
-> > > >
-> > > > > Peng Fan (8):
-> > > > >   dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
-> > > > >   dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
-> > > > >   dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
-> > > > >   remoteproc: imx_rproc: parse fsl,auto-boot
-> > > > >   remoteproc: imx_rproc: initial support for mutilple start/stop method
-> > > > >   remoteproc: imx_rproc: make clk optional
-> > > > >   remoteproc: imx_rproc: support i.MX7ULP
-> > > > >   remoteproc: imx_rproc: support i.MX8MN/P
-> > > > >
-> > > > >  .../bindings/remoteproc/fsl,imx-rproc.yaml    |  11 +-
-> > > > >  drivers/remoteproc/imx_rproc.c                | 196
-> > > > +++++++++++++++---
-> > > > >  2 files changed, 173 insertions(+), 34 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.30.0
-> > > > >
+> This is the start of the stable review cycle for the 5.10.33 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.33-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
+> -------------
+> Pseudo-Shortlog of commits:
+>
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>     Linux 5.10.33-rc1
+>
+> Mike Galbraith <efault@gmx.de>
+>     x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
+>
+> John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>     ia64: tools: remove duplicate definition of ia64_mf() on ia64
+>
+> Randy Dunlap <rdunlap@infradead.org>
+>     ia64: fix discontig.c section mismatches
+>
+> Randy Dunlap <rdunlap@infradead.org>
+>     csky: change a Kconfig symbol name to fix e1000 build error
+>
+> Arnd Bergmann <arnd@arndb.de>
+>     kasan: fix hwasan build for gcc
+>
+> Wan Jiabing <wanjiabing@vivo.com>
+>     cavium/liquidio: Fix duplicate argument
+>
+> Michael Brown <mbrown@fensystems.co.uk>
+>     xen-netback: Check for hotplug-status existence before watching
+>
+> Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+>     arm64: kprobes: Restore local irqflag if kprobes is cancelled
+>
+> Vasily Gorbik <gor@linux.ibm.com>
+>     s390/entry: save the caller of psw_idle
+>
+> Dinghao Liu <dinghao.liu@zju.edu.cn>
+>     dmaengine: tegra20: Fix runtime PM imbalance on error
+>
+> Phillip Potter <phil@philpotter.co.uk>
+>     net: geneve: check skb is large enough for IPv4/IPv6 header
+>
+> Tony Lindgren <tony@atomide.com>
+>     ARM: dts: Fix swapped mmc order for omap3
+>
+> Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>     dmaengine: xilinx: dpdma: Fix race condition in done IRQ
+>
+> Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>     dmaengine: xilinx: dpdma: Fix descriptor issuing on video group
+>
+> Shawn Guo <shawn.guo@linaro.org>
+>     soc: qcom: geni: shield geni_icc_get() for ACPI boot
+>
+> Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+>     HID: wacom: Assign boolean values to a bool variable
+>
+> Douglas Gilbert <dgilbert@interlog.com>
+>     HID cp2112: fix support for multiple gpiochips
+>
+> Jia-Ju Bai <baijiaju1990@gmail.com>
+>     HID: alps: fix error return code in alps_input_configured()
+>
+> Shou-Chieh Hsu <shouchieh@chromium.org>
+>     HID: google: add don USB id
+>
+> Zhen Lei <thunder.leizhen@huawei.com>
+>     perf map: Fix error return code in maps__clone()
+>
+> Leo Yan <leo.yan@linaro.org>
+>     perf auxtrace: Fix potential NULL pointer dereference
+>
+> Jim Mattson <jmattson@google.com>
+>     perf/x86/kvm: Fix Broadwell Xeon stepping in isolation_ucodes[]
+>
+> Kan Liang <kan.liang@linux.intel.com>
+>     perf/x86/intel/uncore: Remove uncore extra PCI dev HSWEP_PCI_PCU_3
+>
+> Ali Saidi <alisaidi@amazon.com>
+>     locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
+>
+> Daniel Borkmann <daniel@iogearbox.net>
+>     bpf: Tighten speculative pointer arithmetic mask
+>
+> Daniel Borkmann <daniel@iogearbox.net>
+>     bpf: Refactor and streamline bounds check into helper
+>
+> Andrei Matei <andreimatei1@gmail.com>
+>     bpf: Allow variable-offset stack access
+>
+> Yonghong Song <yhs@fb.com>
+>     bpf: Permits pointers on stack for helper calls
+>
+> Andre Przywara <andre.przywara@arm.com>
+>     arm64: dts: allwinner: Revert SD card CD GPIO for Pine64-LTS
+>
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>     pinctrl: core: Show pin numbers for the controllers with base = 0
+>
+> Christoph Hellwig <hch@lst.de>
+>     block: return -EBUSY when there are open partitions in blkdev_reread_part
+>
+> Yuanyuan Zhong <yzhong@purestorage.com>
+>     pinctrl: lewisburg: Update number of pins in community
+>
+> Eli Cohen <elic@nvidia.com>
+>     vdpa/mlx5: Set err = -ENOMEM in case dma_map_sg_attrs fails
+>
+> James Bottomley <James.Bottomley@HansenPartnership.com>
+>     KEYS: trusted: Fix TPM reservation for seal/unseal
+>
+> Tony Lindgren <tony@atomide.com>
+>     gpio: omap: Save and restore sysconfig
+>
+> Xie Yongji <xieyongji@bytedance.com>
+>     vhost-vdpa: protect concurrent access to vhost device iotlb
+>
+>
+> -------------
+>
+> Diffstat:
+>
+>  Makefile                                           |   4 +-
+>  arch/arm/boot/dts/omap3.dtsi                       |   3 +
+>  .../boot/dts/allwinner/sun50i-a64-pine64-lts.dts   |   2 +-
+>  arch/arm64/kernel/probes/kprobes.c                 |   6 +-
+>  arch/csky/Kconfig                                  |   2 +-
+>  arch/csky/include/asm/page.h                       |   2 +-
+>  arch/ia64/mm/discontig.c                           |   6 +-
+>  arch/s390/kernel/entry.S                           |   1 +
+>  arch/x86/events/intel/core.c                       |   2 +-
+>  arch/x86/events/intel/uncore_snbep.c               |  61 +-
+>  arch/x86/kernel/crash.c                            |   2 +-
+>  block/ioctl.c                                      |   2 +
+>  drivers/dma/tegra20-apb-dma.c                      |   4 +-
+>  drivers/dma/xilinx/xilinx_dpdma.c                  |  31 +-
+>  drivers/gpio/gpio-omap.c                           |   9 +
+>  drivers/hid/hid-alps.c                             |   1 +
+>  drivers/hid/hid-cp2112.c                           |  22 +-
+>  drivers/hid/hid-google-hammer.c                    |   2 +
+>  drivers/hid/hid-ids.h                              |   1 +
+>  drivers/hid/wacom_wac.c                            |   2 +-
+>  drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h |   2 +-
+>  drivers/net/geneve.c                               |   6 +
+>  drivers/net/xen-netback/xenbus.c                   |  12 +-
+>  drivers/pinctrl/core.c                             |  14 +-
+>  drivers/pinctrl/intel/pinctrl-lewisburg.c          |   6 +-
+>  drivers/soc/qcom/qcom-geni-se.c                    |   3 +
+>  drivers/vdpa/mlx5/core/mr.c                        |   4 +-
+>  drivers/vhost/vdpa.c                               |   6 +-
+>  include/linux/bpf.h                                |   5 +
+>  include/linux/bpf_verifier.h                       |   3 +-
+>  include/linux/platform_data/gpio-omap.h            |   3 +
+>  kernel/bpf/verifier.c                              | 774 ++++++++++++++++-----
+>  kernel/locking/qrwlock.c                           |   7 +-
+>  scripts/Makefile.kasan                             |  12 +-
+>  security/keys/trusted-keys/trusted_tpm2.c          |   2 +-
+>  tools/arch/ia64/include/asm/barrier.h              |   3 -
+>  tools/perf/util/auxtrace.c                         |   2 +-
+>  tools/perf/util/map.c                              |   7 +-
+>  38 files changed, 742 insertions(+), 294 deletions(-)
+>
+>
