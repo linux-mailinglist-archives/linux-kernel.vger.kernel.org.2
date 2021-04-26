@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A211F36AE9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE1036AE22
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbhDZHpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:45:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49780 "EHLO mail.kernel.org"
+        id S232776AbhDZHlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:41:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233325AbhDZHjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A41C613B0;
-        Mon, 26 Apr 2021 07:37:08 +0000 (UTC)
+        id S233003AbhDZHhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:37:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D761613C6;
+        Mon, 26 Apr 2021 07:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422629;
-        bh=HuyvIk4MZg4sYZzZMvpfWA/XRPjhPqXzTZ05GYnFL64=;
+        s=korg; t=1619422516;
+        bh=CKQFmNiXMmE0Ym4kaHjGIgk0DPl4tyRf9CxYv9Sp6Kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wnYZfzVuLJn+w0/Amlj3MQhyAZ/eYcqz1otlbdw2gIU19EfHl47E8kfpv8dTz8xha
-         22yJwBiDcvZXl0e64bWoV9prL8/OdXrcyadh4qiEQpgU/Lg9jRwgy4uJxAB6hc5nz3
-         cZFjmsd0jmPBzrqxXXPLu+e7TJDTxyL1HhWcvqc8=
+        b=anSZqcT2zssjUx6MwClRiS1eYwjU9x7DRLG1uN1M56vS8OUgm6XJ6xoaICzZ0jJpi
+         HQVS1i/UQX7Pgw/HogB65ewsw1UvJQPytsPMKavw6Es0gA1CGFgUQyBYrbHliGp3wb
+         otyfTfpGwNdz8+QmIwfMZ0zbE7UlLeICMdD/rUbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 42/57] net: phy: marvell: fix detection of PHY on Topaz switches
-Date:   Mon, 26 Apr 2021 09:29:39 +0200
-Message-Id: <20210426072821.988680984@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 44/49] s390/entry: save the caller of psw_idle
+Date:   Mon, 26 Apr 2021 09:29:40 +0200
+Message-Id: <20210426072821.228964689@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,160 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-commit 1fe976d308acb6374c899a4ee8025a0a016e453e upstream.
+[ Upstream commit a994eddb947ea9ebb7b14d9a1267001699f0a136 ]
 
-Since commit fee2d546414d ("net: phy: marvell: mv88e6390 temperature
-sensor reading"), Linux reports the temperature of Topaz hwmon as
-constant -75°C.
+Currently psw_idle does not allocate a stack frame and does not
+save its r14 and r15 into the save area. Even though this is valid from
+call ABI point of view, because psw_idle does not make any calls
+explicitly, in reality psw_idle is an entry point for controlled
+transition into serving interrupts. So, in practice, psw_idle stack
+frame is analyzed during stack unwinding. Depending on build options
+that r14 slot in the save area of psw_idle might either contain a value
+saved by previous sibling call or complete garbage.
 
-This is because switches from the Topaz family (88E6141 / 88E6341) have
-the address of the temperature sensor register different from Peridot.
+  [task    0000038000003c28] do_ext_irq+0xd6/0x160
+  [task    0000038000003c78] ext_int_handler+0xba/0xe8
+  [task   *0000038000003dd8] psw_idle_exit+0x0/0x8 <-- pt_regs
+ ([task    0000038000003dd8] 0x0)
+  [task    0000038000003e10] default_idle_call+0x42/0x148
+  [task    0000038000003e30] do_idle+0xce/0x160
+  [task    0000038000003e70] cpu_startup_entry+0x36/0x40
+  [task    0000038000003ea0] arch_call_rest_init+0x76/0x80
 
-This address is instead compatible with 88E1510 PHYs, as was used for
-Topaz before the above mentioned commit.
+So, to make a stacktrace nicer and actually point for the real caller of
+psw_idle in this frequently occurring case, make psw_idle save its r14.
 
-Create a new mapping table between switch family and PHY ID for families
-which don't have a model number. And define PHY IDs for Topaz and Peridot
-families.
+  [task    0000038000003c28] do_ext_irq+0xd6/0x160
+  [task    0000038000003c78] ext_int_handler+0xba/0xe8
+  [task   *0000038000003dd8] psw_idle_exit+0x0/0x6 <-- pt_regs
+ ([task    0000038000003dd8] arch_cpu_idle+0x3c/0xd0)
+  [task    0000038000003e10] default_idle_call+0x42/0x148
+  [task    0000038000003e30] do_idle+0xce/0x160
+  [task    0000038000003e70] cpu_startup_entry+0x36/0x40
+  [task    0000038000003ea0] arch_call_rest_init+0x76/0x80
 
-Create a new PHY ID and a new PHY driver for Topaz's internal PHY.
-The only difference from Peridot's PHY driver is the HWMON probing
-method.
-
-Prior this change Topaz's internal PHY is detected by kernel as:
-
-  PHY [...] driver [Marvell 88E6390] (irq=63)
-
-And afterwards as:
-
-  PHY [...] driver [Marvell 88E6341 Family] (irq=63)
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-BugLink: https://github.com/globalscaletechnologies/linux/issues/1
-Fixes: fee2d546414d ("net: phy: marvell: mv88e6390 temperature sensor reading")
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c |   30 +++++++++++++-----------------
- drivers/net/phy/marvell.c        |   28 +++++++++++++++++++++++++---
- include/linux/marvell_phy.h      |    5 +++--
- 3 files changed, 41 insertions(+), 22 deletions(-)
+ arch/s390/kernel/entry.S | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -2634,10 +2634,17 @@ unlock:
- 	return err;
- }
- 
-+/* prod_id for switch families which do not have a PHY model number */
-+static const u16 family_prod_id_table[] = {
-+	[MV88E6XXX_FAMILY_6341] = MV88E6XXX_PORT_SWITCH_ID_PROD_6341,
-+	[MV88E6XXX_FAMILY_6390] = MV88E6XXX_PORT_SWITCH_ID_PROD_6390,
-+};
-+
- static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
- {
- 	struct mv88e6xxx_mdio_bus *mdio_bus = bus->priv;
- 	struct mv88e6xxx_chip *chip = mdio_bus->chip;
-+	u16 prod_id;
- 	u16 val;
- 	int err;
- 
-@@ -2648,23 +2655,12 @@ static int mv88e6xxx_mdio_read(struct mi
- 	err = chip->info->ops->phy_read(chip, bus, phy, reg, &val);
- 	mutex_unlock(&chip->reg_lock);
- 
--	if (reg == MII_PHYSID2) {
--		/* Some internal PHYs don't have a model number. */
--		if (chip->info->family != MV88E6XXX_FAMILY_6165)
--			/* Then there is the 6165 family. It gets is
--			 * PHYs correct. But it can also have two
--			 * SERDES interfaces in the PHY address
--			 * space. And these don't have a model
--			 * number. But they are not PHYs, so we don't
--			 * want to give them something a PHY driver
--			 * will recognise.
--			 *
--			 * Use the mv88e6390 family model number
--			 * instead, for anything which really could be
--			 * a PHY,
--			 */
--			if (!(val & 0x3f0))
--				val |= MV88E6XXX_PORT_SWITCH_ID_PROD_6390 >> 4;
-+	/* Some internal PHYs don't have a model number. */
-+	if (reg == MII_PHYSID2 && !(val & 0x3f0) &&
-+	    chip->info->family < ARRAY_SIZE(family_prod_id_table)) {
-+		prod_id = family_prod_id_table[chip->info->family];
-+		if (prod_id)
-+			val |= prod_id >> 4;
- 	}
- 
- 	return err ? err : val;
---- a/drivers/net/phy/marvell.c
-+++ b/drivers/net/phy/marvell.c
-@@ -2329,9 +2329,30 @@ static struct phy_driver marvell_drivers
- 		.get_stats = marvell_get_stats,
- 	},
- 	{
--		.phy_id = MARVELL_PHY_ID_88E6390,
-+		.phy_id = MARVELL_PHY_ID_88E6341_FAMILY,
- 		.phy_id_mask = MARVELL_PHY_ID_MASK,
--		.name = "Marvell 88E6390",
-+		.name = "Marvell 88E6341 Family",
-+		.features = PHY_GBIT_FEATURES,
-+		.flags = PHY_HAS_INTERRUPT,
-+		.probe = m88e1510_probe,
-+		.config_init = &marvell_config_init,
-+		.config_aneg = &m88e6390_config_aneg,
-+		.read_status = &marvell_read_status,
-+		.ack_interrupt = &marvell_ack_interrupt,
-+		.config_intr = &marvell_config_intr,
-+		.did_interrupt = &m88e1121_did_interrupt,
-+		.resume = &genphy_resume,
-+		.suspend = &genphy_suspend,
-+		.read_page = marvell_read_page,
-+		.write_page = marvell_write_page,
-+		.get_sset_count = marvell_get_sset_count,
-+		.get_strings = marvell_get_strings,
-+		.get_stats = marvell_get_stats,
-+	},
-+	{
-+		.phy_id = MARVELL_PHY_ID_88E6390_FAMILY,
-+		.phy_id_mask = MARVELL_PHY_ID_MASK,
-+		.name = "Marvell 88E6390 Family",
- 		.features = PHY_GBIT_FEATURES,
- 		.flags = PHY_HAS_INTERRUPT,
- 		.probe = m88e6390_probe,
-@@ -2368,7 +2389,8 @@ static struct mdio_device_id __maybe_unu
- 	{ MARVELL_PHY_ID_88E1540, MARVELL_PHY_ID_MASK },
- 	{ MARVELL_PHY_ID_88E1545, MARVELL_PHY_ID_MASK },
- 	{ MARVELL_PHY_ID_88E3016, MARVELL_PHY_ID_MASK },
--	{ MARVELL_PHY_ID_88E6390, MARVELL_PHY_ID_MASK },
-+	{ MARVELL_PHY_ID_88E6341_FAMILY, MARVELL_PHY_ID_MASK },
-+	{ MARVELL_PHY_ID_88E6390_FAMILY, MARVELL_PHY_ID_MASK },
- 	{ }
- };
- 
---- a/include/linux/marvell_phy.h
-+++ b/include/linux/marvell_phy.h
-@@ -21,11 +21,12 @@
- #define MARVELL_PHY_ID_88E1545		0x01410ea0
- #define MARVELL_PHY_ID_88E3016		0x01410e60
- 
--/* The MV88e6390 Ethernet switch contains embedded PHYs. These PHYs do
-+/* These Ethernet switch families contain embedded PHYs, but they do
-  * not have a model ID. So the switch driver traps reads to the ID2
-  * register and returns the switch family ID
+diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+index e928c2af6a10..dd470f45c4b9 100644
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -967,6 +967,7 @@ ENTRY(ext_int_handler)
+  * Load idle PSW. The second "half" of this function is in .Lcleanup_idle.
   */
--#define MARVELL_PHY_ID_88E6390		0x01410f90
-+#define MARVELL_PHY_ID_88E6341_FAMILY	0x01410f41
-+#define MARVELL_PHY_ID_88E6390_FAMILY	0x01410f90
- 
- #define MARVELL_PHY_FAMILY_ID(id)	((id) >> 4)
- 
+ ENTRY(psw_idle)
++	stg	%r14,(__SF_GPRS+8*8)(%r15)
+ 	stg	%r3,__SF_EMPTY(%r15)
+ 	larl	%r1,.Lpsw_idle_lpsw+4
+ 	stg	%r1,__SF_EMPTY+8(%r15)
+-- 
+2.30.2
+
 
 
