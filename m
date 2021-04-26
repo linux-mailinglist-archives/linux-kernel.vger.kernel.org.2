@@ -2,60 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E3536B13D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AED36B148
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbhDZKIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:08:06 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:47212
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232249AbhDZKID (ORCPT
+        id S233005AbhDZKJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232541AbhDZKI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:08:03 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ASQxsOaCOEXuyQ/PlHelN55DYdL4zR+YMi2QD?=
- =?us-ascii?q?/UZ3VBBTb4ikh9mj9c5rsSPcpT4NVBgb8uyoF7KHRRrnn6JdwY5UBru6WRmjhW?=
- =?us-ascii?q?3AFuBfxK/D5xGlJCHk7O5a0s5bAs1DIfn9F0Jzg8q/wCTQKbYd6eKK+qypmuvS?=
- =?us-ascii?q?pk0FJT1CUK1u4xx0DQyWCCRNNWp7LKAkH5mR7NcvnVSdUEkQB/7WOlA4ReTZ4/?=
- =?us-ascii?q?XEmJX6CCR2ZSIP2U2+yQml77P3CHGjsys2WTkn+9gfzVQ=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,252,1613430000"; 
-   d="scan'208";a="379678700"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 12:07:20 +0200
-Date:   Mon, 26 Apr 2021 12:07:20 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba: Convert
- module from IDR to XArray
-In-Reply-To: <20210426095015.18556-1-fmdefrancesco@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104261205500.5891@hadrien>
-References: <20210426095015.18556-1-fmdefrancesco@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 26 Apr 2021 06:08:56 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27170C061756;
+        Mon, 26 Apr 2021 03:08:01 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id i129so2695794wma.3;
+        Mon, 26 Apr 2021 03:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0CxAJGsWfI6bvhx4b1S37+OR2+rBYziqOE1wt59EsZg=;
+        b=S5t3GYNrV+ALejk5CjzFyXgtMXkTv7+uQH07LQLfMYJY3aeSAqe3mhuv6BZ56SXfxn
+         jdbSofskOT2mc37i/0sTYu8fK9WmRHOzMhXP9x4vkhSDwplWxac1DY9cTo0RjnbnTPVi
+         QlqcZ4zGVZfiESfLMyizVFAbixj3MRKUd1fGSv+NcfDuovx8CaaPHylemxPUqT5VZ5ey
+         W6cTA/A0vLNpAE5xw93MaHckjX50TEvMK+QlMDT3eoJYLJf3TH+YX+QLYWLpHy+R3Jqg
+         LMPVG0XMmzhElR2Vze40vye9WSou6S0QI+jqexoOo4Jcj2V+bLhY1dNCUy1iXKv4epCc
+         QCXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0CxAJGsWfI6bvhx4b1S37+OR2+rBYziqOE1wt59EsZg=;
+        b=O05+RBW8lCbjT0vD/gSWZmjUamd5ppUNGzUF/Fc1JhQ4Mx6X7d7hib40qZImUz4xmW
+         3RE/F56GMgc/cCEpuL9LgZ5iYpcHyz+7ky41ZTKYeEIvcU5xUmNjl9YUtYISoC+3e8Qa
+         YK0ze75B2u7/fesq3CfjKxSw73/w8SA6HdEpZwaRtyp1v+b7Q+yUAMJQ+N97iV/TakPW
+         evxIZoQpyH1CKB5vqOx1c53enVUivgVn2wkn1FKJzETCoDe3cUUdy0dHOjrSbMlrw5bU
+         Q5/nQyWPhmaYDeyw42dXVOGMYEWkXUaEmALipDhbPFDQu08hdKpE64Qej5QevbTIUNn2
+         RTVg==
+X-Gm-Message-State: AOAM5335sw+HQUdWDq+dO1J1wiMvaorskYBJO1fgeV/tzJr3SheoEu6o
+        NuvRkecJ/iSnEaa2ODDECRalbyFifLg=
+X-Google-Smtp-Source: ABdhPJwXxNRZ4EIEH2sh8LmxS8Phmq2ir+hukGmNyHrZ1yVZC/dp7ISf+xGxF+GogBm3SA7COHBsgQ==
+X-Received: by 2002:a1c:9a95:: with SMTP id c143mr18905903wme.143.1619431679736;
+        Mon, 26 Apr 2021 03:07:59 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.129.131])
+        by smtp.gmail.com with ESMTPSA id a22sm19613170wrc.59.2021.04.26.03.07.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 03:07:59 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: Fix uninitialized variable up.resv
+To:     Colin Ian King <colin.king@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210426094735.8320-1-colin.king@canonical.com>
+ <ef9d0ed2-a8cd-fc4a-5b02-092d2c151313@gmail.com>
+ <b937f247-e5b2-0630-aa7a-72d495a20667@canonical.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <681850b0-fe2a-ae9e-a55b-6788fce71a8e@gmail.com>
+Date:   Mon, 26 Apr 2021 11:07:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <b937f247-e5b2-0630-aa7a-72d495a20667@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -273,8 +260,7 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
->  	if (devdata->serverdown || devdata->serverchangingstate)
->  		return FAILED;
->
-> -	scsicmd_id = add_scsipending_entry(devdata, CMD_SCSITASKMGMT_TYPE,
-> -					   NULL);
-> +	scsicmd_id = add_scsipending_entry(devdata, CMD_SCSITASKMGMT_TYPE, NULL);
->  	if (scsicmd_id < 0)
->  		return FAILED;
->
+On 4/26/21 11:01 AM, Colin Ian King wrote:
+> On 26/04/2021 10:59, Pavel Begunkov wrote:
+>> On 4/26/21 10:47 AM, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> The variable up.resv is not initialized and is being checking for a
+>>> non-zero value in the call to _io_register_rsrc_update. Fix this by
+>>> explicitly setting the pointer to 0.
+> 
+>                           ^^ s/pointer/variable/
+> 
+> Shall I send a V2?
 
-As far as I can see, this is just a whitespace change, so it shouldn't be
-in with the rest.  If you make whitspace changes, they should be in with
-the other code that you are changing.
+If you like, but if you don't want to resend it's not important, or
+Jens can edit it while applying.
 
-julia
+> 
+>>
+>> LGTM, thanks Colin
+>>
+>>
+>>> Addresses-Coverity: ("Uninitialized scalar variable)"
+>>> Fixes: c3bdad027183 ("io_uring: add generic rsrc update with tags")
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>> ---
+>>>  fs/io_uring.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>>> index f4ec092c23f4..63f610ee274b 100644
+>>> --- a/fs/io_uring.c
+>>> +++ b/fs/io_uring.c
+>>> @@ -5842,6 +5842,7 @@ static int io_files_update(struct io_kiocb *req, unsigned int issue_flags)
+>>>  	up.data = req->rsrc_update.arg;
+>>>  	up.nr = 0;
+>>>  	up.tags = 0;
+>>> +	up.resv = 0;
+>>>  
+>>>  	mutex_lock(&ctx->uring_lock);
+>>>  	ret = __io_register_rsrc_update(ctx, IORING_RSRC_FILE,
+>>>
+>>
+> 
+
+-- 
+Pavel Begunkov
