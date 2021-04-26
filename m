@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC5C36AA99
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFF836AA9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhDZCdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:33:36 -0400
-Received: from dispatch1-eu1.ppe-hosted.com ([185.132.181.8]:5000 "EHLO
+        id S231702AbhDZCfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 22:35:14 -0400
+Received: from dispatch1-eu1.ppe-hosted.com ([185.132.181.8]:55093 "EHLO
         dispatch1-eu1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231502AbhDZCde (ORCPT
+        by vger.kernel.org with ESMTP id S231502AbhDZCfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:33:34 -0400
+        Sun, 25 Apr 2021 22:35:12 -0400
 X-Virus-Scanned: Proofpoint Essentials engine
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01lp2050.outbound.protection.outlook.com [104.47.1.50])
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01lp2055.outbound.protection.outlook.com [104.47.1.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1-eu1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 45B439C0061;
-        Mon, 26 Apr 2021 02:32:51 +0000 (UTC)
+        by mx1-eu1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 299A98006E;
+        Mon, 26 Apr 2021 02:34:29 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bCYOUJqUuBx60uXvIovac9sAhVuPzCqPIoor1VzWlzzd58aeit7a7PPfMU80dwqAvift8wxg4pZy26qTc8hHO+x1JeTkY9Y0iuWrRztEEBMhBBwKaXxqv4QcpmnODoj89sEute8C+7qItFATHDGVuoB4GgF3AhHmEjIdZgWMd5IsvvjY4NaPZKsqCelmBqaDFTEGiDCYH3eJEc/gOC1qolKHO0PDXqwiBXsPTYcgzVzYN9OSlQNeL9xoOU3cezmTcDe1R8a1RElr8l7t3XC7c18Q1305vqua6/6DJ2wgMFa8SMrI0ZHAwaRP5azChw88lAtSvy69fhbj4htWb2OwFQ==
+ b=n6MM3ZupdAqqO5Lrw1cVL0Hp15mracjBlCzljVwkmAUp072ManHvLFP2zZieb8ROQgrqGg4O5clTGAReBzs11C9Irf7JcjCItkcT/lAGtfeEIaxdBGt1L79ngSkSeESAPqukwsBHrWSlAjjOffwVyAoCqtQmbMHvjvRkZZStA5j5PLyEaP1mTwX/YeHUoREvenfG0WlR0/0yRYHDokjne9xMrcqIuhnViKcrW0yzhiY9+C64zf6VpGs6YCJKvmJyW5wcQn1SnsZ3XFfVcMiRppgRHYUIvkmO+4PLZ2L663mLT/umTboi1QTJfwHY/RO0keJoYAKygdeFh00u9Yci1A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uxP3EvnBcz8yC7zwc3IKcdZtX96VQ67KMJZ4f71/uSc=;
- b=Wm3DdrbQgDjNN/biXF6yTpH7CpmmjM/TuCF6evEe6TE6gFNrCca+7AcBIPLfJrFTVsegPr5sro+CL9QsFsI9TL8V6vqyDq4cspqf3kKBYrVkeab23/r3GEGqbW1UXi83VznkpH43VNKezBeW+xwXEakDBR2JyEj51ChqCxe8biEcsS2CxHA1LIAut8LWKaq/HskUOYYMe3i8gJ8I4jRxy3PfWgfwSYQq/+nuUpsW84j/1VEmhz7+BfXhCnkQq7aDod3EVTB0SEIu7vUEzHMXVqg8xFD73zPmPE/QD/zWShY2fQsH7NXSGCwDzc7JOlPrVFDPZPuJ1Gng68SB+FCHkg==
+ bh=uzucKHPJmkB901NMa/FTiGc+7oSiG/+OExf6/c4Dg1g=;
+ b=HYLw8vQCSQ18FUvn/mbvM1lFlj028S1H3HORW1ct/BY92BDl3MrpG09l6aCLHclCuMKQqxfJPDAar+icKgMa/nwqTLsRbssxma9RCh01A4hu820Kbet+pe0TdYz54Qy3Xzeb5uXzce8PJ+MkN+oI6c/Nbe79cJIFuYMOoW1jSrxf2y24my1WLacHROR0fFToIph9ZA41c+ySs26lkVnpLKTaK10mhwifovgyM+CySM9BLGqRuUgvOkkVeJKK/U7JeuceoH2t4F0jHlpWFtygb8PQH50L9/HVIT7upXmfQXR2LzR7mbWuzNAvitwXdPU1oMo2T6Tu5PlOFsr1+HSK0Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=drivenets.com; dmarc=pass action=none
  header.from=drivenets.com; dkim=pass header.d=drivenets.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=drivenets.onmicrosoft.com; s=selector2-drivenets-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uxP3EvnBcz8yC7zwc3IKcdZtX96VQ67KMJZ4f71/uSc=;
- b=FEo4Ch7xeNe0JaWUx7CNPUrKeKEHrLKlnFd9w2vlRg/gJwnfqhHOH3m7HbHj94+J5QypsXJhe9gow3R8T3xfdIW+s1aK4JwdwQ001BukXYWt49Rz5MuQDy8VPPIaP+CMoDvUfHFNZWKgXJckc5G0f0VQpjy07/8z5gq7fnLMOEI=
+ bh=uzucKHPJmkB901NMa/FTiGc+7oSiG/+OExf6/c4Dg1g=;
+ b=qHsW6ZuqJRnvGf0B9RNYCEyExlwm/C2o68NZ0T4HGp7Wl3B96mpdyw7r4Ow3yofGQeSyXXRWPXtmP7l8nYggZhf9DWV7in4nWAwOHWpW6hkDOPbW4jJoOmq3kL0H36RvQZCeSSbmpJEHrfdrbmQSg5zb1162my3I5bQwuOV4JoE=
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=drivenets.com;
 Received: from AM7PR08MB5511.eurprd08.prod.outlook.com (2603:10a6:20b:10d::12)
  by AS8PR08MB5991.eurprd08.prod.outlook.com (2603:10a6:20b:29f::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22; Mon, 26 Apr
- 2021 02:32:49 +0000
+ 2021 02:34:28 +0000
 Received: from AM7PR08MB5511.eurprd08.prod.outlook.com
  ([fe80::1b7:6f71:2dd8:a2b3]) by AM7PR08MB5511.eurprd08.prod.outlook.com
  ([fe80::1b7:6f71:2dd8:a2b3%6]) with mapi id 15.20.4065.026; Mon, 26 Apr 2021
- 02:32:49 +0000
+ 02:34:28 +0000
 From:   Leonard Crestez <lcrestez@drivenets.com>
-Subject: Re: Fwd: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
-To:     Matt Mathis <mattmathis@google.com>
-Cc:     "Cc: Willem de Bruijn" <willemb@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Ilya Lesokhin <ilyal@mellanox.com>,
+Subject: Re: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Willem de Bruijn <willemb@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -57,122 +55,199 @@ Cc:     "Cc: Willem de Bruijn" <willemb@google.com>,
         David Ahern <dsahern@kernel.org>,
         Soheil Hassas Yeganeh <soheil@google.com>,
         Roopa Prabhu <roopa@cumulusnetworks.com>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matt Mathis <mattmathis@google.com>,
         Yuchung Cheng <ycheng@google.com>,
         John Heffner <johnwheffner@gmail.com>
 References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
  <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
- <CAH56bmDBGsHOSjJpo=TseUATOh0cZqTMFyFO1sqtQmMrTPHtrA@mail.gmail.com>
- <CAH56bmCp8eRqsdoMTmAmCaEnubwEy317OJKQ9UjqMvDwrkcMdQ@mail.gmail.com>
-Message-ID: <bbefd183-83be-a165-6a82-53100b5ace70@drivenets.com>
-Date:   Mon, 26 Apr 2021 05:32:46 +0300
+Message-ID: <50de1e9f-eed7-f827-77ea-708f4621e3d4@drivenets.com>
+Date:   Mon, 26 Apr 2021 05:34:25 +0300
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.0
-In-Reply-To: <CAH56bmCp8eRqsdoMTmAmCaEnubwEy317OJKQ9UjqMvDwrkcMdQ@mail.gmail.com>
+In-Reply-To: <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [78.96.81.202]
-X-ClientProxiedBy: LO2P265CA0416.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a0::20) To AM7PR08MB5511.eurprd08.prod.outlook.com
+X-ClientProxiedBy: LNXP265CA0034.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5c::22) To AM7PR08MB5511.eurprd08.prod.outlook.com
  (2603:10a6:20b:10d::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lcrestez-mac.local (78.96.81.202) by LO2P265CA0416.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Mon, 26 Apr 2021 02:32:48 +0000
+Received: from lcrestez-mac.local (78.96.81.202) by LNXP265CA0034.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25 via Frontend Transport; Mon, 26 Apr 2021 02:34:27 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bf63f416-9a2f-48aa-0c18-08d9085b958a
+X-MS-Office365-Filtering-Correlation-Id: 84290cce-deb1-41f9-1548-08d9085bd066
 X-MS-TrafficTypeDiagnostic: AS8PR08MB5991:
-X-Microsoft-Antispam-PRVS: <AS8PR08MB59910C4F3DC6890FB3DAAE9FD5429@AS8PR08MB5991.eurprd08.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <AS8PR08MB5991F467DBA90586FD2FECCCD5429@AS8PR08MB5991.eurprd08.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lt4wSpqzmuQ8Bb8H5nvO/dyiM23iI3QvPfDvLeTLHhPMi3mM+4Y5sI+MKvsqt1LT3MaVpSSg4Qs9x0ctHr75OVAh+uMd6mVOiOwMQSEpByiXYYSl1exm/VJHJoXkZywm+eJqtcddaDVu70DkzGNjBJF6AB9lbM9Bt5NsyBsIV1z//XJUgFNS/iwkRNT/S0bVuF5HICoNAh4XRiHDCa26c4DXXEpg/bBGVNAZaxezs2ggWyU9FkyXo7PT1bO3IWX669SrnF+l1pmLQpziEMmpqcXSxn6tp7xZLjm+WUbKhGsgO/S2UHm7hjraTmXymEfGPwPOr4gSMxo/m8HPZzoJZ6w992qO5IbbrKLSIKXTsF7lQYfpp24b0lUvRlUGdpkUGZfUdTzpiC774FLMYm0n+YqPSP9GL/nC8Tfk6vHxdbRp/0ZiHjXYvqThU6/MAAnGH4Bd+ypFEqI83626rDcj21JsdlywoVVr1kkqgqvP7fmWxUu98WusYm3YNa/j/f3TsP2KV/tKSAynqIPmgMA4LY88Ju3Si55zm2F9Dw3ISnW8T4tVJ2MBCFdAK+BXAirO8qPizU5XW3nRGP2ceQjDo1N21pZElfLDukIaUcGxu6i0/+xuYEA76/KLKRlmwN1TtB6SaxtBFwRoPRy88f01ov4rp2Mxj+ZTOROhLMoopP4boouL6YTRHaqROLjn5t/EQD/l5/w1FjLr73ktLEDZpg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR08MB5511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(39830400003)(366004)(376002)(478600001)(86362001)(16526019)(52116002)(66946007)(31696002)(7416002)(38100700002)(6512007)(66476007)(2616005)(66556008)(38350700002)(36756003)(26005)(5660300002)(83380400001)(4326008)(186003)(31686004)(54906003)(6486002)(8676002)(6916009)(316002)(2906002)(8936002)(6506007)(53546011)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UkgzOE5ZT3F1dXBoQTV0NWpZd2N1NmFHc24xUjlDNWpPZ1ZUMWRTRlJPQUxB?=
- =?utf-8?B?VkU4SXB6NE5EeTJWZGJLMW1JMVlIQjJnSDZwUUFPenZwcnA0QzNBUUlSeVdh?=
- =?utf-8?B?dVBpekJ0VG9xQWUxcFNmS0hLbDZwblBtdGgzaEljNjJVR25yK2FjVkkzZlRl?=
- =?utf-8?B?MzBURDFROVBZZXVVTVdJZE5XdGlwMXlHN0lvd3drcml2UUxYTHZKTDJ0T2ov?=
- =?utf-8?B?OGZkNGcwNmQ0NS9hRjZYb2toODkxb2h1eFVoWnBqQkdvckV3Y09mRmpFRXZQ?=
- =?utf-8?B?ZGJtLzZBYVJJODExRjV1Q2JaZ05uQXZmbGpNZEM4OEJYSHZjQ0JkSkhUa1Rv?=
- =?utf-8?B?TldBT3Z5RVJTazIrNWRBVi96Z1NoQnFZR2FmRis1M2xxNHByZzIwTzlQZGFC?=
- =?utf-8?B?c2dLU25Vc1h3b0FpVDJ0eGV2TklURForOHRQNEdabHp2SGNKMDB3OFUwL1dQ?=
- =?utf-8?B?MStqMUluc2JYMmhZdG82OFdiSGc0aDBOMVFJOTJXSC9MUzN0bmM3czBNWTlo?=
- =?utf-8?B?MmhqMjI2RERBcU1ONndBbTJNNlZmaitrVmI5bXZPZUZtRVc2MmNwNVByMTV1?=
- =?utf-8?B?M1NWRzlhSk5vSFJRcDVtMHFhVVgrcHgyVS9LY1JPQk5qWkY2NFEwdE1oejlL?=
- =?utf-8?B?bHE5c1c3ODgxeXJacGs0QVhrOGM0S2dpSUxmUXFKcStSMWZiY2NVVkNoMXpK?=
- =?utf-8?B?QmdMczBBTUNrZ1JCZWpLN2hvK05vck0veWtzOVlWSnljU21CbG5BSUsyaUJa?=
- =?utf-8?B?cnBsN3k3VUNmOUR1OWhBQ2duUllWT2FtNys4dzBaQlIzakVEQjJ1ZkFCMHM1?=
- =?utf-8?B?QndveWJDUlFMb0pGVXFDTi82OXZKbDdoSWpuUXNVanpEZWo4ZHZIWE80OWEx?=
- =?utf-8?B?bExmS1pHTGhCTkNtUDFNalJDRWNXT2NsWnlqekR4bTZPdDNEamYyZnh6VkdS?=
- =?utf-8?B?M25MWGVQS2pEWjhVb3o5UDVqeUYwTXBLWWZRS0lpYnFuOUVIU2NwcmwvUUpH?=
- =?utf-8?B?Q25OYy9tbEVzS3EvcmhOYU44alhJNU5GeXpJMUlOQnBFektOV20wK1ZqcVVo?=
- =?utf-8?B?S2ZIR0IzdVlFbm4xRXM5eHM5L0hwTVE0ZEFNazBUQjJ4N21kR2hzQUNPbFlM?=
- =?utf-8?B?R2V1ak5qMU1ZZ1psSVdOem5DYVk0ZW0rVWJIdWV1U09NVU90VlFCVUQvc09D?=
- =?utf-8?B?SFRobkd0eEMvanRTaThUS09oMnFoblpGUUllai8rQStETElzbUtIZ3FxR24w?=
- =?utf-8?B?dGlEZmtzM2lPQmFFNnRETHVDSlg3RFYydUdGcHFSOFpaZ0hWc0lnS2NjYzVM?=
- =?utf-8?B?TFhoeFNUN21zNVFzaCtCdDlkSGhYc3p0Ymw0K1I2aEFRUFhFNU5QcVc3SjhU?=
- =?utf-8?B?cW92dEFWSGNFbkpjUGFRVGtsQ3RtMkNsdDFGNXM3Z29GYmM4QTFXQ1RZWVI3?=
- =?utf-8?B?Tzh6OU1xTFFqdlpwWHV3YlhZVldqRzJQZGJNY1JXTTBHNndRRHZGYUpaRE40?=
- =?utf-8?B?NUZvZWxkRGNqV0wvM04yOHNWMlBvTnFTTTErRHNPRTV1U1c3a0puUHJTWjc1?=
- =?utf-8?B?d0laRmNmcGJlcG1PSEpiUHVqeFI5NURiMDF0eUQ3MFVXck5pVmJkdTlLVEZn?=
- =?utf-8?B?ZVJ2MlVRaDdKQjBuYnpuSzVtdmZKVUhJWmIyL3VtUHRzVE1uMm5xai9kbE1G?=
- =?utf-8?B?RkNSMk43M1MwMUUrTzFWM00rK0FYRkZ0Yi9VczRjeHkzNUdYb1pvbm1OVXBs?=
- =?utf-8?Q?kTUV4FFe6Cz12D4Byox3U9rQ0EqG8WtcP2vuaog?=
+X-Microsoft-Antispam-Message-Info: 1Knvk61iwOR8HgoocEZNjj1fv5zcbj2407uDjF+zKXT68Dc8PwkuwDilygSCXlP7mZ4C7drWxDv/6m1HfB8AIoKgLJq+YPlDWKe6MAKB+786HCt7zpkHTqfLJzurJpPDr0Xcb9GxLHhWp4xXbv/JBykuHm8H11bMjfJZudww3AqkembtndoUOTKDeghJDm+JUlydpXCQqsZodJDt3E3Y4MLzr5YqYmCs2WyTFIILTZjKKHBtBYPeEqUiQ2q6CreS6yX/mpV3Nx2pRKDEttH0BRJvVi/QvaSGnFje7kF8sv+NWfN7aPGSNvFhiGbLLZc4lmQmS+7CQtzWlgqEk30KpwhpwywLOSHzqnE9ZvoPKXtYOBt52Ls83i7IEwsMW3/1ct+hfRFyqzjUhZUYp7KqoIm6HXo4LfEBbYdNUPfGynlAXiVL05YI15vKrrHL/2EeCTMAIEh/Q9c23CSB5M0QOv5iYiT3mOC8PoAdT7omFagRE0uaC57ue65N9vTwHqwoKI/XhuLpJ9OYpn8SSWam/ZnTghB8+dMbMnyZiCL5QvsPY39hR2ba8p/Ou3srhzezowurw0zXNizpkfo5AF1oktiVMHPeR0Chfx4szq5YAgoZ6p12+fmOGr8L7r5CbNcqVxRJ9kmaoNsrBW71zBEPwmOReIT/yxg1kJ1Q/3/VzRNo7xnAowG74Rc9NUULHs4/XX67+2MMZnMXRCDUpuOLkeL3Tjf0XkrXuUD9yyOWybXGamg+DgRK/WrRSgM0atNxmBXAH294vI+Ecw/rTw6qqyPfcs0zhZqg+cIUJXMd1Yk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR08MB5511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(39830400003)(366004)(376002)(966005)(478600001)(86362001)(16526019)(52116002)(66946007)(31696002)(7416002)(38100700002)(6512007)(66476007)(2616005)(66556008)(38350700002)(36756003)(26005)(5660300002)(83380400001)(4326008)(186003)(31686004)(54906003)(6486002)(8676002)(6916009)(316002)(2906002)(8936002)(6506007)(53546011)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ODRFWCtYcXBpZ0VlSnZhcjFSTkIvTms0Yml2MkVIbWxFYXJxMlBTM0VMUm9J?=
+ =?utf-8?B?WHo1Zi9QQUEvRFI0MDY5VGw0dU9MZ0FXd04vV21GK0JBS2wyTjl3K0JQamdI?=
+ =?utf-8?B?VEF3eWJ6NDI4OHJKOTZ6QXhkNmxLRTVucUw5eHJNQ2hMazFza1JZZDR2bW1S?=
+ =?utf-8?B?NjJESTZTcmpBbGxOenB5N2VmNmxNV2tmbkdBdlRMa2VXZnpsWEkzQWdoaUFX?=
+ =?utf-8?B?Qk1WdUgrVGtZQ0RhVWxRUWdzbWw2aFpFanBmM0dLRkJYZHRHZ0w0RFFFTlR0?=
+ =?utf-8?B?UjQyNG15M3J5T0dmWkx3aDk3dFVzWkJZdFcvRVBPeGVEVzIwcEo3OGYrbWRM?=
+ =?utf-8?B?cFZFZ2hQdVNwVDEyOTk4STVIaUt6TC9wdEdZbzJwdVdldE95WDdsWW9Ja0Fh?=
+ =?utf-8?B?WjBmWFdVZ204a050RlhmQXpBUHhmYUdxOUVYMWVIeWpzT1BxTHpLWWdRQjdw?=
+ =?utf-8?B?ZTZzRHA2OHVuU2JrTXE0cE1SdlNGU296VmdMNDFCNW5td0x3cVlMeERTQSt4?=
+ =?utf-8?B?dTZEbUd3M0ZQREk0RDdMblFtZ1ZFUHFKUDBlS253aG9ZaXpLRld1dllrUzF4?=
+ =?utf-8?B?azlhRjM5aXNvVDFDWkZUaXFLZGpzbWY1blByMGY2Um9qR1NkdU5CcWJ6QWtD?=
+ =?utf-8?B?SkJFYnZ6enRZUE1lam9ReGYwSGJJQ0FFQ2UyZzBBWWZvTkFMRTduNjNsKzkr?=
+ =?utf-8?B?aVYxM1VPaTJWWmY1SkEwZ2lGcWFOSVlxVElpb1Q0TEFFOGs5TjArVWlGRGRl?=
+ =?utf-8?B?N3QvazU2NFN0TXR4azRWbXlJOUhXcmh3dEN2TmRZOHdvYy9mU2o3OU02ZnFm?=
+ =?utf-8?B?RkR5eFBYTnZJT0IyRnpyQ0VsMWphNnkrb1NNSkJmR2RadlNFai9sWEovMUgz?=
+ =?utf-8?B?QlNkSzNONEVFa0p0Qm9tSXZQMjA3UDNLUmJrRHZCTWZDT1RlOFJhVjdRa3Fh?=
+ =?utf-8?B?aUhJUXM2TWJOUkZ2U2dOaUdFVTFxMDJRK0Y2OTUyME5reEhhVUs0MWh5ZHh1?=
+ =?utf-8?B?cHNpZVFzcHpDQjNYVklYNWM4OWsvdHl2L24yQmlpc2U3NXhlWWYwL2RuZy82?=
+ =?utf-8?B?ZU1mS3JlYlhXSlpyVFZwMDVxRjRCMVRaakhYMDIzYlVSdm5VMDM2dzhjUWVD?=
+ =?utf-8?B?QWtmYUVFeGtCWGp2YnFCbERaMHNqZEc0dWphajg4bngyRDNYNFlCdUJOazRF?=
+ =?utf-8?B?ZGEwN1pnMVd1VFdyR1U1d1ovdjV0N1I1d1J0Mm9rTVc2cVkwSGxpcHJZcWNV?=
+ =?utf-8?B?ejBCeDZGek1qd1RMM2xrMzdENVM3MEhzVlhjUTBxZTY2eVJiQUxmTlVGQmpF?=
+ =?utf-8?B?clNQdUZ6YzNJbVNjVkw0enBUVzJEZko0TlF4ckJoUU1BZ2Y4ZHpGWFhGNGVz?=
+ =?utf-8?B?ZHVPVFZRWDd0enk2cG5NQjFMVDA5dWlyREZFVEozbFN4b2Y5aTlZekIrU3U3?=
+ =?utf-8?B?WE8wQnZmaTFLb01BNVNhTlVRZitETERtUWFWWElldUp3MU9JRWVucVNiOU9E?=
+ =?utf-8?B?S3ZXdEJwYzBEVkxJVmc4SFUrVkx3dHhkaUdndkZlNlJteDRoQ0hGRjJsZlZJ?=
+ =?utf-8?B?S2pvM29HSTQ4d1ZjZWxGWnZlbTFZWjdwT1cweUVlSTBGN1hmdytJa2xZNy96?=
+ =?utf-8?B?L1FGQU9YOHpJVHBDQlhDVFVJMnhsZERlSWN5OXZ2a1BpZzBwYnNzZHdFcmtr?=
+ =?utf-8?B?NjdQYWxQWmMzUTh0Qmh5T1JDVTh1REFTa3lhZE5IanFVQVA4WHNiNFZiSmJz?=
+ =?utf-8?Q?MeoKVgjMZLi6JrC3fAv1UToQ75qH423AEBMooeY?=
 X-OriginatorOrg: drivenets.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf63f416-9a2f-48aa-0c18-08d9085b958a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84290cce-deb1-41f9-1548-08d9085bd066
 X-MS-Exchange-CrossTenant-AuthSource: AM7PR08MB5511.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 02:32:49.4400
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 02:34:28.1720
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 662f82da-cf45-4bdf-b295-33b083f5d229
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wqR3diGWrwxFHR4Oxqht3zxiVdY1+mKef/RXn+I7NFGidYXXyCdlWtxxxBgK33QZ4w2u9bLijKrX8FumV/Cguw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: bkPSVR9GtVL/zTiD1db6J6DlL2sF2cXaQClGnRkOFHTqz69Bh6ASkmI9XTFK6sMpu90efXZQtu67ypUDa3JnrA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB5991
-X-MDID: 1619404372-aMv_gfz2-x5w
+X-MDID: 1619404469-agaEpF7xxM3z
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 7:45 PM, Matt Mathis wrote:
-> (Resending in plain text mode)
+On 4/21/21 3:47 PM, Neal Cardwell wrote:
+> On Wed, Apr 21, 2021 at 6:21 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+>>
+>> According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
+>> in order to accumulate enough data" but linux almost never does that.
+>>
+>> Linux waits for probe_size + (1 + retries) * mss_cache to be available
+>> in the send buffer and if that condition is not met it will send anyway
+>> using the current MSS. The feature can be made to work by sending very
+>> large chunks of data from userspace (for example 128k) but for small writes
+>> on fast links probes almost never happen.
+>>
+>> This patch tries to implement the "MAY" by adding an extra flag
+>> "wait_data" to icsk_mtup which is set to 1 if a probe is possible but
+>> insufficient data is available. Then data is held back in
+>> tcp_write_xmit until a probe is sent, probing conditions are no longer
+>> met, or 500ms pass.
+>>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>>
+>> ---
+>>   Documentation/networking/ip-sysctl.rst |  4 ++
+>>   include/net/inet_connection_sock.h     |  7 +++-
+>>   include/net/netns/ipv4.h               |  1 +
+>>   include/net/tcp.h                      |  2 +
+>>   net/ipv4/sysctl_net_ipv4.c             |  7 ++++
+>>   net/ipv4/tcp_ipv4.c                    |  1 +
+>>   net/ipv4/tcp_output.c                  | 54 ++++++++++++++++++++++++--
+>>   7 files changed, 71 insertions(+), 5 deletions(-)
+>>
+>> My tests are here: https://github.com/cdleonard/test-tcp-mtu-probing
+>>
+>> This patch makes the test pass quite reliably with
+>> ICMP_BLACKHOLE=1 TCP_MTU_PROBING=1 IPERF_WINDOW=256k IPERF_LEN=8k while
+>> before it only worked with much higher IPERF_LEN=256k
+>>
+>> In my loopback tests I also observed another issue when tcp_retries
+>> increases because of SACKReorder. This makes the original problem worse
+>> (since the retries amount factors in buffer requirement) and seems to be
+>> unrelated issue. Maybe when loss happens due to MTU shrinkage the sender
+>> sack logic is confused somehow?
+>>
+>> I know it's towards the end of the cycle but this is mostly just intended for
+>> discussion.
 > 
-> Surely there is a way to adapt tcp_tso_should_defer(), it is trying to
-> solve a similar problem.
+> Thanks for raising the question of how to trigger PMTU probes more often!
 > 
-> If I were to implement PLPMTUD today, I would more deeply entwine it
-> into TCP's support for TSO.  e.g. successful deferring segments
-> sometimes enables TSO and sometimes enables PLPMTUD.
-
-The mechanisms for delaying sending are difficult to understand, this 
-RFC just added a brand-new unrelated timer. Intertwining it with 
-existing mechanisms would indeed be better. On a closer look it seems 
-that they're not actually based on a timer but other heuristics.
-
-It seems that tcp_sendmsg will "tcp_push_one" once the skb at the head 
-of the queue reaches tcp_xmit_size_goal and tcp_xmit_size_goal does not 
-take mtu probing into account. In practice this would mean that 
-application-limited streams won't perform mtu probing unless a single 
-write is 5*mss + probe_size (1*mss over size_needed)
-
-I sent a different RFC which tries to modify tcp_xmit_size_goal.
-
-> But there is a deeper question:  John Heffner and I invested a huge
-> amount of energy in trying to make PLPMTUD work for opportunistic
-> Jumbo discovery, only to discover that we had moved the problem down
-> to the device driver/nic, were it isn't so readily solvable.
+> AFAICT this approach would cause unacceptable performance impacts by
+> often injecting unnecessary 500ms delays when there is no need to do
+> so.
 > 
-> The driver needs to carve nic buffer memory before it can communicate
-> with a switch (to either ask or measure the MTU), and once it has done
-> that it needs to either re-carve the memory or run with suboptimal
-> carving.  Both of these are problematic.
-> 
-> There is also a problem that many link technologies will
-> non-deterministically deliver jumbo frames at greatly increased error
-> rates.   This issue requires a long conversation on it's own.
+> If the goal is to increase the frequency of PMTU probes, which seems
+> like a valid goal, I would suggest that we rethink the Linux heuristic
+> for triggering PMTU probes in the light of the fact that the loss
+> detection mechanism is now RACK-TLP, which provides quick recovery in
+> a much wider variety of scenarios.
 
-I'm looking to improve this for tunnels that don't correctly send ICMP 
-packet-too-big messages, the hardware is assumed to be fine.
+> After all, https://tools.ietf.org/html/rfc4821#section-7.4 says:
+> 
+>     In addition, the timely loss detection algorithms in most protocols
+>     have pre-conditions that SHOULD be satisfied before sending a probe.
+> 
+> And we know that the "timely loss detection algorithms" have advanced
+> since this RFC was written in 2007. >
+> You mention:
+>> Linux waits for probe_size + (1 + retries) * mss_cache to be available
+> 
+> The code in question seems to be:
+> 
+>    size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
+
+As far as I understand this is meant to work with classical retransmit: 
+if 3 dupacks are received then the first segment is considered lost and 
+probe success or failure is can determine within roughly 1*rtt. RACK 
+marks segments as lost based on echoed timestamps so it doesn't need 
+multiple segments. The minimum time interval is only a little higher 
+(5/4 rtt). Is this correct?
+
+> How about just changing this to:
+> 
+>    size_needed = probe_size + tp->mss_cache;
+> 
+> The rationale would be that if that amount of data is available, then
+> the sender can send one probe and one following current-mss-size
+> packet. If the path MTU has not increased to allow the probe of size
+> probe_size to pass through the network, then the following
+> current-mss-size packet will likely pass through the network, generate
+> a SACK, and trigger a RACK fast recovery 1/4*min_rtt later, when the
+> RACK reorder timer fires.
+
+This appears to almost work except it stalls after a while. I spend some 
+time investigating it and it seems that cwnd is shrunk on mss increases 
+and does not go back up. This causes probes to be skipped because of a 
+"snd_cwnd < 11" condition.
+
+I don't undestand where that magical "11" comes from, could that be 
+shrunk. Maybe it's meant to only send probes when the cwnd is above the 
+default of 10? Then maybe mtu_probe_success shouldn't shrink mss below 
+what is required for an additional probe, or at least round-up.
+
+The shrinkage of cwnd is a problem with this "short probes" approach 
+because tcp_is_cwnd_limited returns false because tp->max_packets_out is 
+smaller (4). With longer probes tp->max_packets_out is larger (6) so 
+tcp_is_cwnd_limited returns true even for a cwnd of 10.
+
+I'm testing using namespace-to-namespace loopback so my delays are close 
+to zero. I tried to introduce an artificial delay of 30ms (using tc 
+netem) and it works but 20ms does not.
+
+> A secondary rationale for this heuristic would be: if the flow never
+> accumulates roughly two packets worth of data, then does the flow
+> really need a bigger packet size?
+
+The problem is that "accumulating sufficient data" is an extremely fuzzy 
+concept. In particular it seems that at the same traffic level 
+performing shorter writes from userspace (2kb instead of 64k) can 
+prevent mtu probing entirely and this is unreasonable.
 
 --
 Regards,
