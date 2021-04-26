@@ -2,442 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD6936AFDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A6C36AFE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhDZInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 04:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S232349AbhDZInU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 04:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhDZInE (ORCPT
+        with ESMTP id S232068AbhDZInS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:43:04 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C484FC061574;
-        Mon, 26 Apr 2021 01:42:22 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t3so1257934plz.1;
-        Mon, 26 Apr 2021 01:42:22 -0700 (PDT)
+        Mon, 26 Apr 2021 04:43:18 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064E1C061574;
+        Mon, 26 Apr 2021 01:42:37 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id x5so4605594wrv.13;
+        Mon, 26 Apr 2021 01:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=SdNK9zuL9sLWXs4fLfBIwQR1muVWTZ6w1pUTw5QSOAE=;
-        b=MUU+f1qBCp+szoFcF8vCwh+m2sWN9FFRIHtBUwrsQKhPmaLXJiCgOScL2InylY+x1i
-         QBdA3LhSnMD/iHJt7NNte3NmMLCMH24Pi+5/qxOxj+YOEt3K03Z9qH/IfwiwjG5PNlqo
-         0jsnZnSYKH6idrLg6/mYaTlv3wSVAZ9f3A/YeupKEOZvL2UO5GleCN4vTvXgp3EtnJ38
-         YzUAcZ3RINeDpmwN+qZEx2CV3VsyEbZWiEMXEtWROaxjzw/wv6BYaoEzsMCPdXVcLkgt
-         dhdIEOomkDtGw4wx85dRMO2DrVa3ViCinVIDNQR886L97WC5kt4hcART8V5Yoo5PrcdF
-         3huA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=x0l+sylJnU9lRBHIiEXDjoFBYeuoK3t6VPzwgyK8w94=;
+        b=olLH8+JAMGCpFq1of14t/FqYNibs78GaOrc/+4a/OG/qLoOE0XoeMqgoGiVLg1fu9R
+         0IebTP3Zt6nI7prMeowF7AriWCZWSYDaBnR2FdxV0QdiQ5CkfqTcl+CSNL7jGqHvBt3m
+         Ux9zpRfCGVxAFSYug+kI+fZ2XkZ3iW2586SGUhEvAFEw22GdX7WEnpLKPVl5iqPncKy6
+         5ibqOX0H2I2PexmbNubclVIwQwTguctGMHtIsKWZC2iOuSLVqevTEhz7T2kc5JY/cmSc
+         BsNNbSK0/86k/aNej30oWbb1zPUd1x+k9mU8Q+vyrycGR/+88Tk666ugt/MJwM6ufvl7
+         sJgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SdNK9zuL9sLWXs4fLfBIwQR1muVWTZ6w1pUTw5QSOAE=;
-        b=O9+ygbtbg1SsV1aTu7XyMGOD8POjE8Guq9wOClL/Gc+StIXd+Bw3MNstksqlsU0IFi
-         PSDn0p/gUNm/izhKuqeZJyvxFK/gfaFSdk/7wKaDvc8VvV+JKh0I5XhukeXmJasORhY9
-         xDQiEMLHhGTRKPKdDrfRvp2amarU0m+n8SPFw87Bu1Y668UvGWzgJLK32zgMjPMwFD1p
-         iaY/DcOgYcbBamxgJ8+Adv8zig/DtvEN/RMX2J+f8c9gjmsjFEQcyhbeH6O5BrMxV8Zz
-         qEo92EDOpuufdxI1XF7IIu3mfYe/w0R5yIWuFZcLw0FOtSleQlMXS1A45OenqSybB8+x
-         Zjfw==
-X-Gm-Message-State: AOAM531vnoI0IEQf8jgmupH0QCFeO2JCnUZn74msdcLPs+MCcnoOiGaB
-        AK2OkYoW8Y7tpOkUWV8cepQ=
-X-Google-Smtp-Source: ABdhPJyVKKP2g10UXrAO7hIcSxU/0WxU1OE+u7+NmXwyYDPJuCcjuT9xOtaepqgdH9JdH0am1+F/zg==
-X-Received: by 2002:a17:90a:5d0a:: with SMTP id s10mr19880228pji.170.1619426542161;
-        Mon, 26 Apr 2021 01:42:22 -0700 (PDT)
-Received: from localhost.localdomain ([115.72.73.233])
-        by smtp.gmail.com with ESMTPSA id t19sm16289500pjs.1.2021.04.26.01.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 01:42:21 -0700 (PDT)
-From:   tu pham <thanhtung1909@gmail.com>
-X-Google-Original-From: tu pham <tupham@silabs.com>
-To:     johan@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hung.Nguyen@silabs.com, Tung.Pham@silabs.com,
-        thanhtung1909@gmail.com, Pho Tran <pho.tran@silabs.com>
-Subject: [PATCH v11] USB: serial: cp210x: Add support for GPIOs on CP2108
-Date:   Mon, 26 Apr 2021 15:42:13 +0700
-Message-Id: <20210426084213.9823-1-tupham@silabs.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x0l+sylJnU9lRBHIiEXDjoFBYeuoK3t6VPzwgyK8w94=;
+        b=mWbeVDdiMeGJBt0wKvkEutwTfL12LQOQGcmuZozMaHiPxhHAIP3WMR46gEXugwQwHv
+         MaXItYedkFW46s7vC6mAzhleYUUhkQEqwLnQOjRILGSqalDfG5TtUV4Lgor9T8WyH5Us
+         Qu/pdmZjanec0ZbsCUrSkxGx/7HtLunWGPUKNltviMEHmZiPoZTsZCBribrGM7ovXWDk
+         wCgJDA2V7wZwHX928NuawzYqxKAE0lNweRbOr5YSKDV6sfuPOth5QLU9xZ4XeaM9iYvI
+         jDaYod0MOxxzghtECGz+U4wwo3I2aPDxKu8Pays2xbTi+Mwn5itAZEuC3aQ6+sLZn9oT
+         vizA==
+X-Gm-Message-State: AOAM5338RKKLTIKrARK+6gqZTzzxoMFCxPDGk0BeJrJtnCJxu3Q620Xe
+        QrqU94hJa2zlqIqbGn5BoVtUGCcf6gczmQ==
+X-Google-Smtp-Source: ABdhPJzKiJ8A1Ye/w5PdLqUNAtFrabYTo6fRsQDF4bHAc7PaE8mPuT7M6TRUm/NmDI8WxmlPb5ozFQ==
+X-Received: by 2002:a5d:47ad:: with SMTP id 13mr21837883wrb.56.1619426555502;
+        Mon, 26 Apr 2021 01:42:35 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f38:4600:2cb5:3b98:e61e:144f? (p200300ea8f3846002cb53b98e61e144f.dip0.t-ipconnect.de. [2003:ea:8f38:4600:2cb5:3b98:e61e:144f])
+        by smtp.googlemail.com with ESMTPSA id g1sm19140697wrd.69.2021.04.26.01.42.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 01:42:34 -0700 (PDT)
+Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210420075406.64105-1-acelan.kao@canonical.com>
+ <CANn89iJLSmtBNoDo8QJ6a0MzsHjdLB0Pf=cs9e4g8Y6-KuFiMQ@mail.gmail.com>
+ <20210420122715.2066b537@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFv23Q=ywiuZp7Y=bj=SAZmDdAnanAXA954hdO3GpkjmDo=RpQ@mail.gmail.com>
+ <c10a6c72-9db7-18c8-6b03-1f8c40b8fd87@gmail.com>
+ <CAFv23QkUsTf5M0MoUEFNYeFCtShAn3EmA3u8vXVeZyJa20Bx=g@mail.gmail.com>
+ <f06e0e2b-c6bb-ef5a-f629-d1ab82b7aee2@gmail.com>
+ <CAFv23Qnf3aJQyXyDbb_nvq2XU8t9Gy5sLFyzM251-FU_qBBUjw@mail.gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <9caae1c4-7132-4827-ef36-7aade74e4084@gmail.com>
+Date:   Mon, 26 Apr 2021 10:42:25 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAFv23Qnf3aJQyXyDbb_nvq2XU8t9Gy5sLFyzM251-FU_qBBUjw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pho Tran <pho.tran@silabs.com>
+On 26.04.2021 09:36, AceLan Kao wrote:
+> Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月25日 週日 上午4:07寫道：
+>>
+>> On 23.04.2021 05:42, AceLan Kao wrote:
+>>> Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月22日 週四 下午3:09寫道：
+>>>>
+>>>> On 22.04.2021 08:30, AceLan Kao wrote:
+>>>>> Yes, should add
+>>>>>
+>>>>> Fixes: 9474933caf21 ("igb: close/suspend race in netif_device_detach")
+>>>>> and also
+>>>>> Fixes: 9513d2a5dc7f ("igc: Add legacy power management support")
+>>>>>
+>>>> Please don't top-post. Apart from that:
+>>>> If the issue was introduced with driver changes, then adding a workaround
+>>>> in net core may not be the right approach.
+>>> It's hard to say who introduces this issue, we probably could point
+>>> our finger to below commit
+>>> bd869245a3dc net: core: try to runtime-resume detached device in __dev_open
+>>>
+>>> This calling path is not usual, in my case, the NIC is not plugged in
+>>> any Ethernet cable,
+>>> and we are doing networking tests on another NIC on the system. So,
+>>> remove the rtnl lock from igb driver will affect other scenarios.
+>>>
+>>>>
+>>>>> Jakub Kicinski <kuba@kernel.org> 於 2021年4月21日 週三 上午3:27寫道：
+>>>>>>
+>>>>>> On Tue, 20 Apr 2021 10:34:17 +0200 Eric Dumazet wrote:
+>>>>>>> On Tue, Apr 20, 2021 at 9:54 AM AceLan Kao <acelan.kao@canonical.com> wrote:
+>>>>>>>>
+>>>>>>>> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+>>>>>>>>
+>>>>>>>> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
+>>>>>>>> __dev_open() it calls pm_runtime_resume() to resume devices, and in
+>>>>>>>> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
+>>>>>>>> again. That leads to a recursive lock.
+>>>>>>>>
+>>>>>>>> It should leave the devices' resume function to decide if they need to
+>>>>>>>> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
+>>>>>>>> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
+>>>>>>>>
+>>>>>>>>
+>>>>>>>
+>>>>>>> Hi Acelan
+>>>>>>>
+>>>>>>> When was the bugg added ?
+>>>>>>> Please add a Fixes: tag
+>>>>>>
+>>>>>> For immediate cause probably:
+>>>>>>
+>>>>>> Fixes: 9474933caf21 ("igb: close/suspend race in netif_device_detach")
+>>>>>>
+>>>>>>> By doing so, you give more chances for reviewers to understand why the
+>>>>>>> fix is not risky,
+>>>>>>> and help stable teams work.
+>>>>>>
+>>>>>> IMO the driver lacks internal locking. Taking 看rtnl from resume is just
+>>>>>> one example, git history shows many more places that lacked locking and
+>>>>>> got papered over with rtnl here.
+>>>>
+>>
+>> You could alternatively try the following. It should avoid the deadlock,
+>> and when runtime-resuming if __IGB_DOWN is set all we do is marking the
+>> net_device as present (because of PCI D3 -> D0 transition).
+>> I do basically the same in r8169 and it works as intended.
+>>
+>> Disclaimer: I don't have an igb-driven device and therefore can't test
+>> the proposal.
+>>
+>> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+>> index 038a9fd1a..21436626a 100644
+>> --- a/drivers/net/ethernet/intel/igb/igb_main.c
+>> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+>> @@ -9300,6 +9300,14 @@ static int __maybe_unused igb_runtime_suspend(struct device *dev)
+>>
+>>  static int __maybe_unused igb_runtime_resume(struct device *dev)
+>>  {
+>> +       struct net_device *netdev = dev_get_drvdata(dev);
+>> +       struct igb_adapter *adapter = netdev_priv(netdev);
+>> +
+>> +       if (test_bit(__IGB_DOWN, &adapter->state)) {
+>> +               netif_device_attach(netdev);
+>> +               return 0;
+>> +       }
+>> +
+>>         return igb_resume(dev);
+>>  }
+>>
+>> --
+>> 2.31.1
+>>
+> 
+> Hi Heiner,
+> 
+> I encountered below error after applied your patch.
+> 
+Presumably similar changes are needed also for the runtime_suspend callback.
+If __IGB_DOWN is set, I think just the net_device needs to be detached.
 
-Similar to other CP210x devices, GPIO interfaces (gpiochip) should be
-supported for CP2108.
 
-CP2108 has 4 serial interfaces but only 1 set of GPIO pins are shared
-to all of those interfaces. So, just need to initialize GPIOs of CP2108
-with only one interface (I use interface 0). It means just only 1 gpiochip
-device file will be created for CP2108.
-
-CP2108 has 16 GPIOs, So data types of several variables need to be is u16
-instead of u8(in struct cp210x_serial_private). This doesn't affect other
-CP210x devices.
-
-Because CP2108 has 16 GPIO pins, the parameter passed by cp210x functions
-will be different from other CP210x devices. So need to check part number
-of the device to use correct data format  before sending commands to
-devices.
-
-Like CP2104, CP2108 have GPIO pins with configurable options. Therefore,
-should be mask all pins which are not in GPIO mode in cp2108_gpio_init()
-function.
-
-Signed-off-by: Pho Tran <pho.tran@silabs.com>
-Co-developed-by: Tung Pham <tung.pham@silabs.com>
----
-
-04/26/2021: Patch v10 Add Co-developed-by Tung Pham
-04/23/2021: Patch v9 Modified code according to comment of Johan:
-        1. Remove quad-port-config comment.
-        2. Move defice EF_IFC_GPIOs go after the quad-port-config 
-        structure with the other port config defines, add CP2108_ prefix.
-        3. Drop CP2108 Quad Port State structure sentence comment;
-         clear from the code.
-        4. remove Double new line.
-        5. Use lowercase pb for consistency.
-        6. Avoid // comments. CP2108 (uppercase P).
-        7. remove Double new line.
-        8. Lowercase ifc.
-        9. Just keep the current struct as is and add a second one for 16 bits
-         (e.g. struct cp210x_gpio_write16).
-        10. don't need both u16 buf, but it may be cleaner to use u8 buf[2] 
-        for the transfer buffer.
-        11. Add missing indentation.
-        12. Try to be consistent with capitalisation of CP210x.
-        13. Just do the read after the switch into a common u8 buf[2] and 
-        use the full length only for CP2108.
-        14. Add leak the PM counter reference here.
-        15. Change buf = le16_to_cpu(wbuf); to le16_to_cpup((__le16 *)buf).
-        16. Keep the original struct as is cp210x_gpio_write.
-        17. Add another one for cp2108 with a suitable suffix.
-        18. No need to do open-parenthesis alignment; two tabs is enough.
-        19. Random whitespace changes.
-        20. Change check enhancedfxn_ifc.
-        21. Remove case EF_IFC_GPIO_RS485_LOGIC.
-        22. Remove case EF_IFC_DYNAMIC_SUSPEND.
-        23. Correct typo: only.
-04/08/2021: Patch v8 Fixed build warning reported by kernel test robot
-with ARCH=i386
-04/05/2021: Patch v7 Modified commit message follow Greg's comment.
-04/05/2021: Patch v6 Fixed build warning reported by kernel test robot
-with ARCH=x86_64
-03/15/2021: Patch v5 Modified code according to comment of Johan:
-        1. Unified the handling of CP2108 and other types and
-        take care about endianness.
-        2. Used suitable types data for variable.
-        3. Fixed cp2108_gpio_init and add more detail on
-        commit message and comment.
-        4. Dropped some of the ones that don't add any value.
-        5. Changed how the altfunctions were detected and fixed the gpio_init
-         error handling.
-03/12/2021: Patch v4 used git send-mail instead of send patch by manual
-follow the instructions of Johan Hovold <johan@kernel.org>.
-03/05/2021: Patch v3 modified format and contents of changelog follow feedback
-from Johan Hovold <johan@kernel.org>.
-03/04/2021: Patch v2 modified format patch as comment from
-Johan Hovold <johan@kernel.org>:
-        1. Break commit message lines at 80 cols
-        2. Use kernel u8 and u16 instead of the c99 ones.
-03/01/2021: Initialed submission of patch "Make the CP210x driver work with
-GPIOs of CP2108.".
-
- drivers/usb/serial/cp210x.c | 211 +++++++++++++++++++++++++++++++-----
- 1 file changed, 182 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 7bec1e730b20..24cdf86ed23c 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -245,9 +245,9 @@ struct cp210x_serial_private {
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip	gc;
- 	bool			gpio_registered;
--	u8			gpio_pushpull;
--	u8			gpio_altfunc;
--	u8			gpio_input;
-+	u16			gpio_pushpull;
-+	u16			gpio_altfunc;
-+	u16			gpio_input;
- #endif
- 	u8			partnum;
- 	speed_t			min_speed;
-@@ -500,6 +500,50 @@ struct cp210x_single_port_config {
- 	u8	device_cfg;
- } __packed;
- 
-+/*
-+ * Quad Port Config definitions
-+ * Refer to https://www.silabs.com/documents/public/application-notes/an978-cp210x-usb-to-uart-api-specification.pdf
-+ * for more information.
-+ * CP210X_VENDOR_SPECIFIC, CP210X_GET_PORTCONFIG call reads these 0x49 bytes
-+ * on a CP2108 chip.
-+ */
-+struct cp210x_quad_port_state {
-+	__le16 gpio_mode_pb0;
-+	__le16 gpio_mode_pb1;
-+	__le16 gpio_mode_pb2;
-+	__le16 gpio_mode_pb3;
-+	__le16 gpio_mode_pb4;
-+
-+	__le16 gpio_lowpower_pb0;
-+	__le16 gpio_lowpower_pb1;
-+	__le16 gpio_lowpower_pb2;
-+	__le16 gpio_lowpower_pb3;
-+	__le16 gpio_lowpower_pb4;
-+
-+	__le16 gpio_latch_pb0;
-+	__le16 gpio_latch_pb1;
-+	__le16 gpio_latch_pb2;
-+	__le16 gpio_latch_pb3;
-+	__le16 gpio_latch_pb4;
-+};
-+
-+#define CP2108_EF_IFC_GPIO_TXLED		0x01
-+#define CP2108_EF_IFC_GPIO_RXLED		0x02
-+#define CP2108_EF_IFC_GPIO_RS485		0x04
-+#define CP2108_EF_IFC_GPIO_RS485_LOGIC 0x08
-+#define CP2108_EF_IFC_GPIO_CLOCK		0x10
-+#define CP2108_EF_IFC_DYNAMIC_SUSPEND	0x40
-+
-+/* CP2108 Quad Port Config structure */
-+struct cp210x_quad_port_config {
-+	struct cp210x_quad_port_state reset_state;
-+	struct cp210x_quad_port_state suspend_state;
-+	u8 ipdelay_ifc[4];
-+	u8 enhancedfxn_ifc[4];
-+	u8 enhancedfxn_device;
-+	u8 extclkfreq[4];
-+} __packed;
-+
- /* GPIO modes */
- #define CP210X_SCI_GPIO_MODE_OFFSET	9
- #define CP210X_SCI_GPIO_MODE_MASK	GENMASK(11, 9)
-@@ -510,6 +554,9 @@ struct cp210x_single_port_config {
- #define CP210X_GPIO_MODE_OFFSET		8
- #define CP210X_GPIO_MODE_MASK		GENMASK(11, 8)
- 
-+#define CP2108_GPIO_MODE_OFFSET		0
-+#define CP2108_GPIO_MODE_MASK		GENMASK(15, 0)
-+
- /* CP2105 port configuration values */
- #define CP2105_GPIO0_TXLED_MODE		BIT(0)
- #define CP2105_GPIO1_RXLED_MODE		BIT(1)
-@@ -526,7 +573,19 @@ struct cp210x_single_port_config {
- #define CP210X_2NCONFIG_GPIO_RSTLATCH_IDX	587
- #define CP210X_2NCONFIG_GPIO_CONTROL_IDX	600
- 
--/* CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these 0x2 bytes. */
-+/*
-+ * CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these
-+ * 0x04 bytes on CP2108.
-+ */
-+struct cp210x_gpio_write16 {
-+	__le16	mask;
-+	__le16	state;
-+};
-+
-+/*
-+ * CP210X_VENDOR_SPECIFIC, CP210X_WRITE_LATCH call writes these
-+ * 0x02 bytes on CP2102N, Cp2103, Cp2104 and CP2105.
-+ */
- struct cp210x_gpio_write {
- 	u8	mask;
- 	u8	state;
-@@ -1298,22 +1357,39 @@ static int cp210x_gpio_get(struct gpio_chip *gc, unsigned int gpio)
- 	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
- 	u8 req_type = REQTYPE_DEVICE_TO_HOST;
- 	int result;
--	u8 buf;
--
--	if (priv->partnum == CP210X_PARTNUM_CP2105)
--		req_type = REQTYPE_INTERFACE_TO_HOST;
-+	u8 buf[2];
- 
- 	result = usb_autopm_get_interface(serial->interface);
- 	if (result)
- 		return result;
-+	/*
-+	 * This function will be read latch value of gpio and storage to buf(16bit)
-+	 * where bit 0 is GPIO0, bit 1 is GPIO1, etc. Up to GPIOn where n is
-+	 * total number of GPIO pins the interface supports.
-+	 * Interfaces on CP2102N supports 7 GPIOs
-+	 * Interfaces on CP2103 amd CP2104 supports 4 GPIOs
-+	 * Enhanced interfaces on CP2105 support 3 GPIOs
-+	 * Standard interfaces on CP2105 support 4 GPIOs
-+	 * Interfaces on CP2108 supports 16 GPIOs
-+	 */
-+	if ((priv->partnum == CP210X_PARTNUM_CP2108) || (priv->partnum == CP210X_PARTNUM_CP2105)) {
-+	/*
-+	 * Request type to Read_Latch of CP2105 and CP2108
-+	 * is 0xc1 <REQTYPE_INTERFACE_TO_HOST>
-+	 */
-+		req_type = REQTYPE_INTERFACE_TO_HOST;
-+	}
- 
- 	result = cp210x_read_vendor_block(serial, req_type,
--					  CP210X_READ_LATCH, &buf, sizeof(buf));
--	usb_autopm_put_interface(serial->interface);
--	if (result < 0)
--		return result;
-+				CP210X_READ_LATCH, buf, 2);
- 
--	return !!(buf & BIT(gpio));
-+	if (result < 0){
-+		usb_autopm_put_interface(serial->interface);
-+		return result;
-+	}
-+	result = le16_to_cpup((__le16 *)buf);
-+	usb_autopm_put_interface(serial->interface);
-+	return !!(result & BIT(gpio));
- }
- 
- static void cp210x_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
-@@ -1321,37 +1397,51 @@ static void cp210x_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
- 	struct usb_serial *serial = gpiochip_get_data(gc);
- 	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
- 	struct cp210x_gpio_write buf;
-+	struct cp210x_gpio_write16 buf16;
-+	u16 wIndex;
- 	int result;
- 
--	if (value == 1)
-+	if (value == 1) {
- 		buf.state = BIT(gpio);
--	else
-+		buf16.state = cpu_to_le16(BIT(gpio));
-+	} else {
- 		buf.state = 0;
--
-+		buf16.state = 0;
-+	}
- 	buf.mask = BIT(gpio);
-+	buf16.mask = cpu_to_le16(BIT(gpio));
- 
- 	result = usb_autopm_get_interface(serial->interface);
- 	if (result)
- 		goto out;
- 
--	if (priv->partnum == CP210X_PARTNUM_CP2105) {
-+	switch (priv->partnum) {
-+	case CP210X_PARTNUM_CP2108:
- 		result = cp210x_write_vendor_block(serial,
--						   REQTYPE_HOST_TO_INTERFACE,
--						   CP210X_WRITE_LATCH, &buf,
--						   sizeof(buf));
--	} else {
--		u16 wIndex = buf.state << 8 | buf.mask;
--
-+						REQTYPE_HOST_TO_INTERFACE,
-+						CP210X_WRITE_LATCH, &buf16,
-+						sizeof(buf16));
-+		break;
-+	case CP210X_PARTNUM_CP2105:
-+		result = cp210x_write_vendor_block(serial,
-+						REQTYPE_HOST_TO_INTERFACE,
-+						CP210X_WRITE_LATCH, &buf,
-+						sizeof(buf));
-+		break;
-+	default:
-+		wIndex = buf.state << 8 | buf.mask;
- 		result = usb_control_msg(serial->dev,
--					 usb_sndctrlpipe(serial->dev, 0),
--					 CP210X_VENDOR_SPECIFIC,
--					 REQTYPE_HOST_TO_DEVICE,
--					 CP210X_WRITE_LATCH,
--					 wIndex,
--					 NULL, 0, USB_CTRL_SET_TIMEOUT);
-+						usb_sndctrlpipe(serial->dev, 0),
-+						CP210X_VENDOR_SPECIFIC,
-+						REQTYPE_HOST_TO_DEVICE,
-+						CP210X_WRITE_LATCH,
-+						wIndex,
-+						NULL, 0, USB_CTRL_SET_TIMEOUT);
-+		break;
- 	}
- 
- 	usb_autopm_put_interface(serial->interface);
-+
- out:
- 	if (result < 0) {
- 		dev_err(&serial->interface->dev, "failed to set GPIO value: %d\n",
-@@ -1420,6 +1510,60 @@ static int cp210x_gpio_set_config(struct gpio_chip *gc, unsigned int gpio,
- 	return -ENOTSUPP;
- }
- 
-+static int cp2108_gpio_init(struct usb_serial *serial)
-+{
-+	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-+	struct cp210x_quad_port_config config;
-+	u16 gpio_latch;
-+	u16 temp;
-+	int result;
-+	u8 i;
-+
-+	result = cp210x_read_vendor_block(serial, REQTYPE_DEVICE_TO_HOST,
-+					  CP210X_GET_PORTCONFIG, &config,
-+					  sizeof(config));
-+	if (result < 0)
-+		return result;
-+	priv->gc.ngpio = 16;
-+	temp = le16_to_cpu(config.reset_state.gpio_mode_pb1);
-+	priv->gpio_pushpull = (temp & CP2108_GPIO_MODE_MASK) >> CP2108_GPIO_MODE_OFFSET;
-+	temp = le16_to_cpu(config.reset_state.gpio_latch_pb1);
-+	gpio_latch = (temp & CP2108_GPIO_MODE_MASK) >> CP2108_GPIO_MODE_OFFSET;
-+	/*
-+	 * Mark all pins which are not in GPIO mode
-+	 * Refer to table 9.1: GPIO Mode alternate Functions on CP2108 datasheet:
-+	 * https://www.silabs.com/documents/public/data-sheets/cp2108-datasheet.pdf
-+	 * Alternate Functions of GPIO0 to GPIO3 is determine by enhancedfxn_ifc[0]
-+	 * and the same for other pins, enhancedfxn_ifc[1]: GPIO4 to GPIO7,
-+	 * enhancedfxn_ifc[2]: GPIO8 to GPIO11, enhancedfxn_ifc[3]: GPIO12 to GPIO15.
-+	 */
-+	for (i = 0; i < 4; i++) {
-+		if(config.enhancedfxn_ifc[i] & CP2108_EF_IFC_GPIO_TXLED)
-+			priv->gpio_altfunc |= BIT(i * 4);
-+		if(config.enhancedfxn_ifc[i] & CP2108_EF_IFC_GPIO_RXLED)
-+			priv->gpio_altfunc |= BIT((i * 4) + 1);
-+		if(config.enhancedfxn_ifc[i] & CP2108_EF_IFC_GPIO_RS485)
-+			priv->gpio_altfunc |= BIT((i * 4) + 2);
-+		if(config.enhancedfxn_ifc[i] & CP2108_EF_IFC_GPIO_CLOCK)
-+			priv->gpio_altfunc |= BIT((i * 4) + 3);
-+	}
-+	/*
-+	 * Like CP2102N, CP2108 has also no strict input and output pin
-+	 * modes.
-+	 * Do the same input mode emulation as CP2102N.
-+	 */
-+	for (i = 0; i < priv->gc.ngpio; ++i) {
-+		/*
-+		 * Set direction to "input" iff pin is open-drain and reset
-+		 * value is 1.
-+		 */
-+		if (!(priv->gpio_pushpull & BIT(i)) && (gpio_latch & BIT(i)))
-+			priv->gpio_input |= BIT(i);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * This function is for configuring GPIO using shared pins, where other signals
-  * are made unavailable by configuring the use of GPIO. This is believed to be
-@@ -1649,6 +1793,15 @@ static int cp210x_gpio_init(struct usb_serial *serial)
- 	case CP210X_PARTNUM_CP2102N_QFN20:
- 		result = cp2102n_gpioconf_init(serial);
- 		break;
-+	case CP210X_PARTNUM_CP2108:
-+		/*
-+		 * The GPIOs are not tied to any specific port so only register
-+		 * once for interface 0.
-+		 */
-+		if (cp210x_interface_num(serial) != 0)
-+			return 0;
-+		result = cp2108_gpio_init(serial);
-+		break;
- 	default:
- 		return 0;
- 	}
--- 
-2.17.1
+> [  121.489970] u kernel: ------------[ cut here ]------------
+> [  121.489979] u kernel: igb 0000:05:00.0: disabling already-disabled device
+> [  121.490008] u kernel: WARNING: CPU: 7 PID: 258 at
+> drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+> [  121.490028] u kernel: Modules linked in: rfcomm cmac algif_hash
+> algif_skcipher af_alg bnep btusb btrtl btbcm btintel bluetooth
+> ecdh_generic ecc joydev input_leds inte
+> l_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp
+> coretemp ath10k_pci ath10k_core kvm_intel ath mac80211 kvm
+> snd_sof_pci_intel_tgl snd_soc_acpi_intel_ma
+> tch snd_sof_intel_hda_common nls_iso8859_1 soundwire_intel
+> soundwire_generic_allocation soundwire_cadence soundwire_bus
+> snd_sof_pci snd_soc_acpi snd_sof snd_soc_core snd
+> _hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi
+> crct10dif_pclmul crc32_pclmul snd_sof_xtensa_dsp ghash_clmulni_intel
+> ledtrig_audio aesni_intel snd_hda_intel
+> libarc4 crypto_simd snd_intel_dspcfg snd_intel_sdw_acpi cryptd
+> snd_hda_codec cfg80211 mei_hdcp snd_hwdep snd_hda_core
+> intel_wmi_thunderbolt snd_pcm wmi_bmof snd_seq inte
+> l_cstate efi_pstore snd_timer snd_seq_device ee1004 mei_me snd mei
+> ucsi_acpi soundcore typec_ucsi typec wmi mac_hid acpi_pad acpi_tad
+> sch_fq_codel
+> [  121.490314] u kernel:  parport_pc ppdev lp parport ip_tables
+> x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456
+> async_raid6_recov async_memcpy async_
+> pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath
+> linear hid_generic usbhid hid i915 drm_kms_helper syscopyarea
+> sysfillrect sysimgblt fb_sys_fops cec rc
+> _core igb drm nvme e1000e nvme_core i2c_i801 dca i2c_smbus
+> i2c_algo_bit intel_lpss_pci intel_lpss ahci idma64 video xhci_pci
+> libahci virt_dma xhci_pci_renesas pinctrl_ti
+> gerlake
+> [  121.490508] u kernel: CPU: 7 PID: 258 Comm: kworker/7:2 Tainted: G
+>    U            5.12.0-rc7+ #79
+> [  121.490518] u kernel: Hardware name: Dell Inc. OptiPlex 7090/, BIOS
+> 0.12.80 02/23/2021
+> [  121.490525] u kernel: Workqueue: pm pm_runtime_work
+> [  121.490540] u kernel: RIP: 0010:pci_disable_device+0x91/0xb0
+> [  121.490550] u kernel: Code: 4d 85 e4 75 07 4c 8b a3 c8 00 00 00 48
+> 8d bb c8 00 00 00 e8 61 8d 17 00 4c 89 e2 48 c7 c7 60 5a e0 a5 48 89
+> c6 e8 9b a3 59 00 <0f> 0b eb 8
+> d 48 89 df e8 e3 fe ff ff 80 a3 49 0a 00 00 df 5b 41 5c
+> [  121.490558] u kernel: RSP: 0018:ffffb76b4169fc90 EFLAGS: 00010286
+> [  121.490569] u kernel: RAX: 0000000000000000 RBX: ffff9e2581ee6000
+> RCX: 0000000000000027
+> [  121.490576] u kernel: RDX: 0000000000000027 RSI: ffffffffa493bca0
+> RDI: ffff9e27073e89b8
+> [  121.490582] u kernel: RBP: ffffb76b4169fca0 R08: ffff9e27073e89b0
+> R09: 0000000000000000
+> [  121.490588] u kernel: R10: 0000000000000000 R11: 0000000000000001
+> R12: ffff9e2581af7c80
+> [  121.490594] u kernel: R13: ffff9e2581ee6000 R14: ffff9e25a0914000
+> R15: ffff9e25a0915280
+> [  121.490600] u kernel: FS:  0000000000000000(0000)
+> GS:ffff9e2707200000(0000) knlGS:0000000000000000
+> [  121.490608] u kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  121.490614] u kernel: CR2: 00007ff86ec8d024 CR3: 0000000189c28002
+> CR4: 0000000000770ee0
+> [  121.490621] u kernel: PKRU: 55555554
+> [  121.490626] u kernel: Call Trace:
+> [  121.490638] u kernel:  __igb_shutdown+0xf2/0x1c0 [igb]
+> [  121.490676] u kernel:  igb_runtime_suspend+0x1c/0x20 [igb]
+> [  121.490703] u kernel:  pci_pm_runtime_suspend+0x63/0x180
+> [  121.490715] u kernel:  ? pci_pm_runtime_resume+0x90/0x90
+> [  121.490727] u kernel:  __rpm_callback+0xc7/0x140
+> [  121.490740] u kernel:  rpm_callback+0x57/0x80
+> [  121.490750] u kernel:  ? pci_pm_runtime_resume+0x90/0x90
+> [  121.490759] u kernel:  rpm_suspend+0x119/0x640
+> [  121.490774] u kernel:  pm_runtime_work+0x64/0xc0
+> [  121.490784] u kernel:  process_one_work+0x2af/0x5d0
+> [  121.490803] u kernel:  worker_thread+0x4d/0x3e0
+> [  121.490814] u kernel:  ? process_one_work+0x5d0/0x5d0
+> [  121.490825] u kernel:  kthread+0x12a/0x160
+> [  121.490834] u kernel:  ? kthread_park+0x90/0x90
+> [  121.490844] u kernel:  ret_from_fork+0x1f/0x30
+> [  121.490867] u kernel: irq event stamp: 0[  121.490871] u kernel:
+> hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [  121.490916] u kernel: hardirqs last disabled at (0):
+> [<ffffffffa489ea44>] copy_process+0x714/0x1cc0
+> [  121.490929] u kernel: softirqs last  enabled at (0):
+> [<ffffffffa489ea44>] copy_process+0x714/0x1cc0
+> [  121.490938] u kernel: softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [  121.490949] u kernel: ---[ end trace a9c7ffc27c226979 ]---
+> 
 
