@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CF936BAED
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043BC36BAF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhDZVEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:04:46 -0400
-Received: from mail.efficios.com ([167.114.26.124]:54596 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhDZVEo (ORCPT
+        id S234968AbhDZVFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:05:35 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45920 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233483AbhDZVFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:04:44 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 48122336A25;
-        Mon, 26 Apr 2021 17:04:02 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TT8qq_pO4H4R; Mon, 26 Apr 2021 17:04:00 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B18E23365CB;
-        Mon, 26 Apr 2021 17:04:00 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B18E23365CB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1619471040;
-        bh=PJMFRcdlYlSTotth+bS33v5PRFTjXdp5c2MQmYDL5qg=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=PHgIIfXcgvUSY6fosk3/hP8KpDzcivD0zJTF4NXcOIP63f82+yelYvYben9Wflmim
-         5Df/9oeZ590NCpuj0PRMTXBP9SIPw0aIOgHDh1hBtzkKhw8q2QL1uKAERerixOVsrj
-         d9/TaqYWrEh/2DmvH6BvIhiBgIevNXMaHJT8aiEXZksb/XBE/DM8fnaoOZGFhxGWPk
-         O2dwwSb9aS+Ppp8tjrI4JGfg6jFOTdtdQzS/ZVDrv/9BivnxwFcS/QSvQwgI0Q2+Za
-         6F/Clf6o8mBrc/Jju8aFPHiysx3eQ9SdE/vZ6WpMCjtaxbyeXKIwUGdZ0Co9KU/1Zi
-         BPu9ZotGR00Uw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id HEWi4wfzbFc2; Mon, 26 Apr 2021 17:04:00 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9FE31336772;
-        Mon, 26 Apr 2021 17:04:00 -0400 (EDT)
-Date:   Mon, 26 Apr 2021 17:04:00 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <626936290.15030.1619471040515.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210426154539.GA5166@redhat.com>
-References: <20210426154539.GA5166@redhat.com>
-Subject: Re: [PATCH RESEND] ptrace: make ptrace() fail if the tracee changed
- its pid unexpectedly
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
-Thread-Index: DJ2l2EB58ssqB3CFC2OC8lQgmrnIXA==
+        Mon, 26 Apr 2021 17:05:30 -0400
+Received: by mail-oi1-f173.google.com with SMTP id n184so31749539oia.12;
+        Mon, 26 Apr 2021 14:04:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=9sYpBbEdCsZlXn6s0zm9BTjvqWIX5oqEQY81N9nJXUQ=;
+        b=oA/oNryQGgSFRdJnpVC4OEV7V+AuizHsv7SonOalZLPSBiyUmxDAiiwaDQ3j8IQDax
+         ot+XwDbQK4w7z1XcOBMgy9jZ7B+wV375lR/R+jmWb0gRuoe2ir3qaCQwa+d/l1rrxfPd
+         NqZbYJ1Zk3LrM3MxyES/Kmfno3nKVHMF6sza+tyw3O7C348XeXzmr8rNvhaNSmdLaJaP
+         EsYoE1keSOI7EI83XWS/NQcXtbhIjKI2EeWDcf2kH+0Vr8zFwPJozUASrE1aCHThC3is
+         tNRtbWnSmvEG9ZRZ/uAh3DyQT7w84OREjIR5LS+C30EugkL2RZXuXD/oMrVsIjFS1xTY
+         9kLQ==
+X-Gm-Message-State: AOAM533f7k89hUoN39ZUECDIeyHKtTUzjI6qWkPZLi3+UTuXJE2TZPCJ
+        R4h1ubFr9+rykyRPY52+Qw==
+X-Google-Smtp-Source: ABdhPJzKYcM9Xr8ii7oWngd0BsINs7L82hbm7wSvPZPLlsusNDqVR+RyLs2yFTyFBTRoVpprcsa/ew==
+X-Received: by 2002:aca:5789:: with SMTP id l131mr707651oib.164.1619471087324;
+        Mon, 26 Apr 2021 14:04:47 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i13sm3749245otp.41.2021.04.26.14.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 14:04:46 -0700 (PDT)
+Received: (nullmailer pid 4086058 invoked by uid 1000);
+        Mon, 26 Apr 2021 21:04:43 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     dianders@chromium.org, dri-devel@lists.freedesktop.org,
+        hoegsberg@chromium.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        abhinavk@codeaurora.org, mkrishn@codeaurora.org,
+        seanpaul@chromium.org, devicetree@vger.kernel.org,
+        kalyan_t@codeaurora.org
+In-Reply-To: <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
+References: <1619416756-3533-1-git-send-email-rajeevny@codeaurora.org> <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
+Subject: Re: [v3 1/2] dt-bindings: backlight: add DisplayPort aux backlight
+Date:   Mon, 26 Apr 2021 16:04:43 -0500
+Message-Id: <1619471083.447682.4086057.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 26, 2021, at 11:45 AM, Oleg Nesterov oleg@redhat.com wrote:
+On Mon, 26 Apr 2021 11:29:15 +0530, Rajeev Nandan wrote:
+> Add bindings for DisplayPort aux backlight driver.
+> 
+> Changes in v2:
+> - New
+> 
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> ---
+>  .../bindings/leds/backlight/dp-aux-backlight.yaml  | 49 ++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
+> 
 
-> Suppose we have 2 threads, the group-leader L and a sub-theread T,
-> both parked in ptrace_stop(). Debugger tries to resume both threads
-> and does
-> 
->	ptrace(PTRACE_CONT, T);
->	ptrace(PTRACE_CONT, L);
-> 
-> If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
-> resume the old leader L, it resumes the post-exec thread T which was
-> actually now stopped in PTHREAD_EVENT_EXEC. In this case the
-> PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
-> tracee changed its pid.
-> 
-> This patch makes ptrace() fail in this case until debugger does wait()
-> and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
-> ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
-> 
-> The patch doesn't add the new PTRACE_ option to not complicate the API,
-> and I _hope_ this won't cause any noticeable regression:
-> 
->	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
->	  and the tracer does a ptrace request without having consumed
->	  the exec event, it's 100% sure that the thread the ptracer
->	  thinks it is targeting does not exist anymore, or isn't the
->	  same as the one it thinks it is targeting.
-> 
->	- To some degree this patch adds nothing new. In the scenario
->	  above ptrace(L) can fail with -ESRCH if it is called after the
->	  execing sub-thread wakes the leader up and before it "steals"
->	  the leader's pid.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Hi Oleg,
+yamllint warnings/errors:
 
-Is this something that should also target stable kernels ? AFAIU this change
-won't break debuggers more that they are already in this scenario. Or maybe
-it makes them fail in more obvious ways ?
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.example.dts:22.38-39 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1414: dt_binding_check] Error 2
 
-Thanks,
+See https://patchwork.ozlabs.org/patch/1470203
 
-Mathieu
- 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
