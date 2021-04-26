@@ -2,154 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A884E36B6E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D9636B6EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhDZQef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        id S234395AbhDZQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbhDZQee (ORCPT
+        with ESMTP id S233934AbhDZQhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:34:34 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C202BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:33:52 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id g1so340705qtq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:33:52 -0700 (PDT)
+        Mon, 26 Apr 2021 12:37:50 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B4BC061574;
+        Mon, 26 Apr 2021 09:37:08 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id f29so3292020pgm.8;
+        Mon, 26 Apr 2021 09:37:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ugedal.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iYU3lzuppVdnEjezXpekUf6VbkMAR7oBXDRRTrFeQac=;
-        b=jVGo1Sa7XqGytV84u+6tnD2lIJ5BIT515J9lY+r5N7g7tb6GMJ+I2jHONXmQ1B042J
-         MZIDK39PFTvXH8G7ug+0q16h499bgj2xWLUx67SSayZtvHeSXcPspOGV8oXbGoMN/Icn
-         kNZCA4EUvNoTTQkseZojDQ5Vr85IP+YEVPRSqchTyYRc05oJuMwWEyZko4nMI9yXXSkK
-         ZtCurqx+TqG6unHNVxSRdgJSQ83pfp9V55jImmSlQW+3e0DwzdHwLG3KEXmYhTgCAyOk
-         TrhzhZ9J2kX6TgupXj4JKis1fsvw/A4O/SynfoJA0iEXAE7miKKa+uvsbXUr8E9A/eA+
-         p6Ug==
+         :cc:content-transfer-encoding;
+        bh=+/iTa4OuZ1fhB1XiuuLXaVmaDURW/cQEPNzkVKGmiJA=;
+        b=C0DdN7nb1qzQbwhWq5zM1TwIvG3ImbgowzRkbKmBoiN0/hHBxnSEl4gTgI4ZmwZO3n
+         DAgGBU0BI1wVsaUfAx7Vfu5EJgqXdNYEuHdeVbqUmO0EvhcOcM3V0wzXils0r/ppewtz
+         VIiSLVQgexKuCJVTXikSbfWExM9P2X3UGENHJLb6E0OcrZyLt3NyplfQ4WEocdH9msWA
+         m744GtlRmCUz+lMdL794xx4WINpDCjyDlTgyOP5Ky9ce0/XACPyzlGZBnyp1xBEcOBZ1
+         JnLczUoC+FaS+/ap5A+x8V9zM8V2I0g5nHgJTS/MFJMa6f4PI/3bp1Aec7YLuaa4VC/t
+         6+tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iYU3lzuppVdnEjezXpekUf6VbkMAR7oBXDRRTrFeQac=;
-        b=caMFMqrhym6svPZqzZE5IMlTWgQIIJf/QbTLAUNqjkQiHQNYoFvmiaWn+3J03I3un/
-         xgQCdvVaCvyypTdqZi3pKF34Rzj7nkVYjyYiLlMVvZTWPDnglrFT8A1Ej/FSWA4/DjMQ
-         GsuJXNG5uOaqqx7ZVfdESR+e9dhcRfrnycsD2MwAN1li6/GjrbmbyKhLX/HJ31+YV3AY
-         wPCXTL7eOu4yqFHpNi//o60JhwU130aBEub94/dmtyjkSDBZvtCuxJjnvXmXuJXZFh+S
-         TOTeGnaDJW0j8Bk6NtN8V6qLZzRYFG0Mkyoz/HX9SiDAsbSVt6XqB9q27IhpLT7GD7EZ
-         CyVg==
-X-Gm-Message-State: AOAM533v6s2mcJAlfr8P+CGovLMRBnMyrpQVSLDadEpTNNaiJAej+C24
-        XgJSWT6S4Gs8B+032jOG/X1Q47uyF+f0rXJa+9ydCA==
-X-Google-Smtp-Source: ABdhPJzLtXr1ZQA0v3QyjQYI8b3zo2ESFH+f2ELt5p1N8zh+x1m+Nqg1SEfAf/YRH5k2xRSaWPj0ZZJmbwDN6WJ0PMw=
-X-Received: by 2002:ac8:5f93:: with SMTP id j19mr5527591qta.49.1619454831756;
- Mon, 26 Apr 2021 09:33:51 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+/iTa4OuZ1fhB1XiuuLXaVmaDURW/cQEPNzkVKGmiJA=;
+        b=jcU4U24ruu3UBRPOzh/yDOoA38OwDYmR5eua3MAD0rHczT4Y9CCLIy1ENO57TWNlVJ
+         IXtmv1kZzyAKDnvITtGiZlX7vhpF1eQLFW/AQpRgVRwd45QypQj5X5mjTcrMSQvkO5oR
+         JoNnW06t6g+xurreq3to96NCE7YQxGArkTqwZmaXdvHnY+xrk/CVDGghdlIvb5Fs7Qzk
+         lj/WLHm4D+5FjeUxp1Fv8hiEoXbR2gOWaEJdNIlHUBcAtH3nYfAUxBKXhCH6DTJjkGpV
+         s0RqN4DlNeWf2wXS6h3NQNqFj3YgdWqC8/dTKiuj10mvZ/54Nw5DvwpQvLzgVWFBspsi
+         +OPQ==
+X-Gm-Message-State: AOAM533i/jkvFWA+WUu58yXJH0jsgl/ZvsrnLkKzGSL0E58x0BNXxZlU
+        vWNrT/gGRq6DkmjREWfouqZGpmS/GgtsGlP9C1Q=
+X-Google-Smtp-Source: ABdhPJzGC+pT48WdGbwS7hgmLLK9XqjzTfFlfkQ3CyaGclckYi81ts7/6zdlw4+pnkAYZETSSkfj7mxmAFGGx+XjXoo=
+X-Received: by 2002:a63:4a23:: with SMTP id x35mr17319569pga.270.1619455028028;
+ Mon, 26 Apr 2021 09:37:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-In-Reply-To: <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-From:   Odin Ugedal <odin@ugedal.com>
-Date:   Mon, 26 Apr 2021 18:33:19 +0200
-Message-ID: <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210411150623.8367-1-hcvcastro@gmail.com> <CAEc3jaAADGuPDwGLM6HskLq-OiecbV-76JbMe6yambVAT=h=bw@mail.gmail.com>
+ <CAF44FUyskn-g+MUYONMXYZ8dUiGFd0GF1wkkPQwd34ikbet_Fg@mail.gmail.com>
+In-Reply-To: <CAF44FUyskn-g+MUYONMXYZ8dUiGFd0GF1wkkPQwd34ikbet_Fg@mail.gmail.com>
+From:   Roderick Colenbrander <thunderbird2k@gmail.com>
+Date:   Mon, 26 Apr 2021 09:36:56 -0700
+Message-ID: <CAEc3jaB+wNp1Fa-_P=XcYxRNL+L4z_M_wsW6iODyyHz90Xq-vw@mail.gmail.com>
+Subject: Re: [PATCH] drivers/hid: avoid invalid denominator
+To:     Henry Castro <hcvcastro@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hm, I'm a little confused then. The Shanwan gamepad is a Dualshock 3
+clone (nickname 'sixaxis'), so should not go through the DualShock 4
+paths. Can you double check what the vendor / device id for this
+device are? Are you seeing specific errors or warnings from the driver
+in the kernel logs?
 
+I have been considering how to better handle some of these clones
+devices, while also not polluting the code too much. If this device is
+indeed a clone DualShock 4. I am more leaning towards finding out
+sooner during device creation. Perhaps should not even create a motion
+sensor device if the data will be none anyway... Hm, not sure what I
+prefer yet.
 
-> Have you been able to reproduce this on mainline ?
+Thanks,
+Roderick
 
-Yes. I have been debugging and testing with v5.12-rc8. After I found
-the suspected
-commit in ~v4.8, I compiled both the v4.4.267 and v4.9.267, and was able to
-successfully reproduce it on v4.9.267 and not on v4.4.267. It is also
-reproducible
-on 5.11.16-arch1-1 that my distro ships, and it is reproducible on all
-the machines
-I have tested.
-
-> When running the script below on v5.12, I'm not able to reproduce your problem
-
-v5.12 is pretty fresh, so I have not tested on anything before v5.12-rc8. I did
-compile v5.12.0 now, and I am able to reproduce it there as well.
-
-Which version did you try (the one for cgroup v1 or v2)? And/or did you try
-to run the inspection bpftrace script? If you tested the cg v1
-version, it will often
-end up at 50/50, 51/49 etc., and sometimes 60/40+-, making it hard to
-verify without inspection.
-
-I have attached a version of the "sub cgroup" example for cgroup v1,
-that also force
-the process to start on cpu 1 (CPU_ME), and sends it over to cpu 0
-(CPU) after attaching
-to the new cgroup. That will make it evident each time. This example should also
-always end up with 50/50 per stress process, but "always" ends up more
-like 99/1.
-
-Can you confirm if you are able to reproduce with this version?
-
---- bash start
-CGROUP_CPU=/sys/fs/cgroup/cpu/slice
-CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
-CGROUP_CPUSET_ME=/sys/fs/cgroup/cpuset/me
-CPU=0
-CPU_ME=1
-
-function run_sandbox {
-  local CG_CPUSET="$1"
-  local CG_CPU="$2"
-  local INNER_SHARES="$3"
-  local CMD="$4"
-
-  local PIPE="$(mktemp -u)"
-  mkfifo "$PIPE"
-  sh -c "read < $PIPE ; exec $CMD" &
-  local TASK="$!"
-  sleep .1
-  mkdir -p "$CG_CPUSET"
-  mkdir -p "$CG_CPU"/sub
-  tee "$CG_CPU"/sub/cgroup.procs <<< "$TASK"
-  tee "$CG_CPU"/sub/cpu.shares <<< "$INNER_SHARES"
-
-  tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
-
-  tee "$PIPE" <<< sandox_done
-  rm "$PIPE"
-}
-
-mkdir -p "$CGROUP_CPU"
-mkdir -p "$CGROUP_CPUSET"
-mkdir -p "$CGROUP_CPUSET_ME"
-
-tee "$CGROUP_CPUSET"/cpuset.cpus <<< "$CPU"
-tee "$CGROUP_CPUSET"/cpuset.mems <<< "$CPU"
-
-tee "$CGROUP_CPUSET_ME"/cpuset.cpus <<< "$CPU_ME"
-echo $$ | tee "$CGROUP_CPUSET_ME"/cgroup.procs
-
-run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" 50000 "stress --cpu 1"
-run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" 2     "stress --cpu 1"
-
-read # click enter to cleanup and stop all stress procs
-killall stress
-sleep .2
-rmdir /sys/fs/cgroup/cpuset/slice/
-rmdir /sys/fs/cgroup/cpu/slice/{cg-{1,2}{/sub,},}
---- bash end
-
-
-Thanks
-Odin
+On Sun, Apr 25, 2021 at 9:39 AM Henry Castro <hcvcastro@gmail.com> wrote:
+>
+> Hi,
+>
+> I was trying to play some old games from Retroarch, and I plugged
+> my "SHANWAN PS3 GamePad", but it begin to vibrate and I could
+> not play the games, So I started to investigate and read the source
+> code, and get the code to bypass the check, and suddenly I got
+> a panic crash.  So I found the issue, and I added the patch, finally
+> got working, and I played my favorite old games.
+>
+> So it happens in PS3 clone device I think, but I have to tweak the code
+> probably is safe under the condition you mention in PS4 DualShock,
+> but it is good as a prevention, if someone is testing and debugging
+> the driver.
+>
+> Regards
+> Henry
+>
+> El s=C3=A1b, 24 abr 2021 a las 17:11, Roderick Colenbrander (<thunderbird=
+2k@gmail.com>) escribi=C3=B3:
+>>
+>> Hi Henry,
+>>
+>> Thanks for your patch. In what case has this been an issue? Or was it
+>> more theoretical.
+>>
+>> During normal operation this condition should never be triggered for a
+>> DualShock 4 when calibration succeeds. If it doesn't succeed the
+>> device is not registered. We had an issue recently with the DS4 dongle
+>> where the calibration data was 0, which was due to a race condition
+>> with Steam, but that was resolved recently.
+>>
+>> Thanks,
+>> Roderick
+>>
+>> On Sun, Apr 11, 2021 at 10:19 AM Henry Castro <hcvcastro@gmail.com> wrot=
+e:
+>> >
+>> > Avoid a potential panic in case wrong denominator
+>> > is given.
+>> >
+>> > Signed-off-by: Henry Castro <hcvcastro@gmail.com>
+>> > ---
+>> >  drivers/hid/hid-sony.c | 13 +++++++++----
+>> >  1 file changed, 9 insertions(+), 4 deletions(-)
+>> >
+>> > diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
+>> > index 8319b0ce385a..67b45d82cc3b 100644
+>> > --- a/drivers/hid/hid-sony.c
+>> > +++ b/drivers/hid/hid-sony.c
+>> > @@ -1134,11 +1134,16 @@ static void dualshock4_parse_report(struct son=
+y_sc *sc, u8 *rd, int size)
+>> >                  * Note: we swap numerator 'x' and 'numer' in mult_fra=
+c for
+>> >                  *       precision reasons so we don't need 64-bit.
+>> >                  */
+>> > -               int calib_data =3D mult_frac(calib->sens_numer,
+>> > -                                          raw_data - calib->bias,
+>> > -                                          calib->sens_denom);
+>> > +               if (calib->sens_denom !=3D 0) {
+>> > +                       int calib_data =3D mult_frac(calib->sens_numer=
+,
+>> > +                                                  raw_data - calib->b=
+ias,
+>> > +                                                  calib->sens_denom);
+>> > +
+>> > +                       input_report_abs(sc->sensor_dev, calib->abs_co=
+de, calib_data);
+>> > +               } else {
+>> > +                       hid_warn(sc->hdev, "DualShock 4 parse report, =
+avoid invalid denominator");
+>> > +               }
+>> >
+>> > -               input_report_abs(sc->sensor_dev, calib->abs_code, cali=
+b_data);
+>> >                 offset +=3D 2;
+>> >         }
+>> >         input_sync(sc->sensor_dev);
+>> > --
+>> > 2.20.1
+>> >
