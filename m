@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7BE36B7F1
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAE436B7F0
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbhDZRUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:20:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60374 "EHLO mail.kernel.org"
+        id S235997AbhDZRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:20:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235324AbhDZRUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235310AbhDZRUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Apr 2021 13:20:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D3047613AE;
+Received: by mail.kernel.org (Postfix) with ESMTPS id A827E61185;
         Mon, 26 Apr 2021 17:19:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619457560;
-        bh=sK/Nuw7HBxhAcqc4xphjKKfVc7lkhds+FQ3UWumrvqw=;
+        bh=GC/kq7rrB10IEWK2dxPFAwgfj32eVS67wGUWT9dgC/k=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nJdpwOunlTycIDm7IMH5dGefn2Tp9FR26GneSjtDMNHbsmpF9i6EIjpHG7nNQC9FQ
-         ww/8ICrXzSvnGjCC2gBFsMNPcZVjjvryjBdOkKm7QSiaLwN60qwR3d4L6yztg6x4eA
-         6uWwbzERfbzs0f5HpDCY/fF3dfiDNOlTg0yFJ9RUAFrCja3oYVTuzwKQInd8jGXXBT
-         cQgz1NyAr0dVsiJEjbOtCzwNceLEwMEhmuwnuFFgkUxb2SqDAKsOgWNbqTVX0c7F1H
-         GO3Ju380J3tvF+UxhcjKu54m0hyPW1RwcCn38ii3XeO61SMcQJWL0MQB5lsxK5pyBY
-         3mlxEbB5A5TLQ==
+        b=kP4sZ4P8OyT6pmzbZFALCKICjKse3EdvB7YjfceSnmH+cWNO9UzI4cmhbeyhF0LWT
+         C5bKqzf7yz+jpnrmbweY/5Z+/nyshtgUQL9cn0tdPR9aqOf8CIULwoIHfvUXElsiko
+         RnBrZw0dtedqKeu6rqe4x/DhPv9Oj4NDum1/HqbdEnzZK2sWiMviUUnoeu90c95mVW
+         KypD0myZr7AhvvksDmCOkm6iAi8XH/sd9sHpUnAh3PF4T74KvR2Uu1mtarDCpcgRE5
+         BzZn2vqNWik2EX+0HHcC/ZkPACUuLiqjsNYoRh2FQ6PsyazmkrkNiBEmUcHE/91DFu
+         zJlfir6u4/TBg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CAD226094F;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A1F42609B0;
         Mon, 26 Apr 2021 17:19:20 +0000 (UTC)
-Subject: Re: [GIT pull] x86/entry for v5.13-rc1
+Subject: Re: [GIT pull] x86/apic for v5.13-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <161943945423.1498.14173718925126273942.tglx@nanos>
-References: <161943945302.1498.9201552430413038175.tglx@nanos> <161943945423.1498.14173718925126273942.tglx@nanos>
+In-Reply-To: <161943945302.1498.9201552430413038175.tglx@nanos>
+References: <161943945302.1498.9201552430413038175.tglx@nanos>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <161943945423.1498.14173718925126273942.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-entry-2021-04-26
-X-PR-Tracked-Commit-Id: 70918779aec9bd01d16f4e6e800ffe423d196021
+X-PR-Tracked-Message-Id: <161943945302.1498.9201552430413038175.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-apic-2021-04-26
+X-PR-Tracked-Commit-Id: 9a98bc2cf08a095367449b3548c3d9ad4ad2cd20
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eea2647e74cd7bd5d04861ce55fa502de165de14
-Message-Id: <161945756082.14705.14345676075211218024.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6f78c2a7b7219bc2e455250365f438621e5819d0
+Message-Id: <161945756065.14705.799151246767789693.pr-tracker-bot@kernel.org>
 Date:   Mon, 26 Apr 2021 17:19:20 +0000
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -46,12 +46,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 12:17:34 -0000:
+The pull request you sent on Mon, 26 Apr 2021 12:17:33 -0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-entry-2021-04-26
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-apic-2021-04-26
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eea2647e74cd7bd5d04861ce55fa502de165de14
+https://git.kernel.org/torvalds/c/6f78c2a7b7219bc2e455250365f438621e5819d0
 
 Thank you!
 
