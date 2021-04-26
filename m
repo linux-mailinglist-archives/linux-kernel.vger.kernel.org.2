@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F3936AE60
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5866036ADB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbhDZHoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46770 "EHLO mail.kernel.org"
+        id S232634AbhDZHiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233065AbhDZHi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:38:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1877611C0;
-        Mon, 26 Apr 2021 07:36:13 +0000 (UTC)
+        id S232869AbhDZHgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 569C561004;
+        Mon, 26 Apr 2021 07:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422574;
-        bh=sfvPGL1+xjrI8Ql7xV105n6ykfu9JIjG03xKjTjvr6c=;
+        s=korg; t=1619422458;
+        bh=S9j2j3t4tF2/8xQSthAg9QuWfEmYK7JBs2DtGb+LQoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=APsi9uftE2n7/HBfO2ExLPRFP2n5RnLdik6to/7A0+xWHOCq4zfwWUu5WvEwAr9gw
-         dn9XcryI2hFQmTQSDaMFNGlOvGoUHO9FBnwfTs3KJ/yKqJGiz4GNfCHNKTfSyN4Qcy
-         p7HQ8kKkS97GeRVc4d03bJ3WwMIjnj7ZmKIYdphU=
+        b=ioEmqgvxfprInbTtMpX/7OUIUXtgNL94O/P7FbS9+RS8FjP8IXx+juOWGjp6h3v6u
+         pfEV/ZgjQHSpmVa1EZok1A1pme9SHchfhdipzrBffCab8NMmYP2B/HYc1MXkSSwD3E
+         v9rVpk5fXugPE2NwM743EMEO9Aw04xPBqYLuNrMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/57] net: ieee802154: stop dump llsec seclevels for monitors
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.14 20/49] Input: i8042 - fix Pegatron C15B ID entry
 Date:   Mon, 26 Apr 2021 09:29:16 +0200
-Message-Id: <20210426072821.228203026@linuxfoundation.org>
+Message-Id: <20210426072820.417323643@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 4c9b4f55ad1f5a4b6206ac4ea58f273126d21925 ]
+commit daa58c8eec0a65ac8e2e77ff3ea8a233d8eec954 upstream.
 
-This patch stops dumping llsec seclevels for monitors which we don't
-support yet. Otherwise we will access llsec mib which isn't initialized
-for monitors.
+The Zenbook Flip entry that was added overwrites a previous one
+because of a typo:
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-13-aahringo@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In file included from drivers/input/serio/i8042.h:23,
+                 from drivers/input/serio/i8042.c:131:
+drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
+  591 |                 .matches = {
+      |                            ^
+drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
+
+Add the missing separator between the two.
+
+Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Link: https://lore.kernel.org/r/20210323130623.2302402-1-arnd@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ieee802154/nl802154.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/input/serio/i8042-x86ia64io.h |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index eaeff7c08bdf..29916f8cfdc3 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -2048,6 +2048,11 @@ nl802154_dump_llsec_seclevel(struct sk_buff *skb, struct netlink_callback *cb)
- 	if (err)
- 		return err;
- 
-+	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR) {
-+		err = skb->len;
-+		goto out_err;
-+	}
-+
- 	if (!wpan_dev->netdev) {
- 		err = -EINVAL;
- 		goto out_err;
--- 
-2.30.2
-
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -592,6 +592,7 @@ static const struct dmi_system_id i8042_
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
+ 		},
++	}, {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
 
 
