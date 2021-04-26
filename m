@@ -2,146 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFE436BA25
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D395436BA27
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238750AbhDZTj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S239262AbhDZTkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235128AbhDZTjY (ORCPT
+        with ESMTP id S233755AbhDZTkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:39:24 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE629C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:38:42 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id w6so25174471pfc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:38:42 -0700 (PDT)
+        Mon, 26 Apr 2021 15:40:02 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0AAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:39:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id r128so63051086lff.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:39:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ab2HES6R0vCLyUYQvcY8/tnqqG94WlRNIsnH2B1gsKI=;
-        b=ocwCBcwt2VCpKKeAqYQfJueYG8T5dZBsg0BzfmEJ4kC9MQSlmlps94SflUGmK2mVr/
-         WzULuKECHKMXaVeHed4EbwbPTktOzC/Pgk43oq9BfjiNl9DYJSHZ1DjOc/t8kknhwyos
-         MLA6+f66wmN8WT0jaM98sT3w7onjO+15DTtIVIU9N1eRRoPOc9oSYvB9YPwvlTSSN382
-         w/vLzw0csN6NyA/H8UVawatOlVRmxH5k629uNs1QdMfjlzpbu89hGYSXQs+rLnsaR5Y+
-         hKRsz7CWwC/aEpbIK3hfzxMLEx31bnYkEZGrBGbc5BwYLNwMwWnf/JocYnjRsdjsO1Ts
-         h9vA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TLJVtvvBoq/yqMsEsQp2CVsNqoS4kEVzTchedKnBltY=;
+        b=NxuUruDr2lHnywJ3Z+r1UAHxMhgCb3UXfYiRrhPJNqo/FGK2U0yh4/vlZZ85hcv7nA
+         3HvU6GlJWZRop3dtZzBjGWObyYxvKgpbeCBjOIoUeouS04fHBeKbz6C8bj89JWN2R32/
+         AsOVH7NQyCezbLTnpC+iiKrKnd9al2JuP18Ek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ab2HES6R0vCLyUYQvcY8/tnqqG94WlRNIsnH2B1gsKI=;
-        b=F105NYKM6OHpNNkpgLbrwb8v4L7BrCfPV7uSdIzQuXGB6np5nDQEX4XWP3OEi60+uo
-         QjQ9KJ11YC3ErH4NVWymEZNXEil0MmtEPdp4k30jAuzfRJomwNfBlXDehJz1lqluRold
-         /aZHBX+fljrDMewlXjERdlie7yDoFdCbdtsB72LQcvTpRQiCoiSpKNbF4o01gv1EItQg
-         /ICrOkp5f50wSHQwAZUsfFvo1ivxNm1NNjLU0vToDXD+qgkhZ6RctyuCp8g5ilFFJqJP
-         RR8S1Vh8oQH0roOjuXY7dC5goXd1Lc5bng5Af6lA/h3Cex1h4XIO03v2zQOeWI3+DS/k
-         dHLQ==
-X-Gm-Message-State: AOAM531tuxS75uApijjaVspd89LwuMbKr3s+0/CwwcVmNE7uQsE7+p7m
-        0x/ALh5XWeZIalhNNG+nBBv1sA==
-X-Google-Smtp-Source: ABdhPJztxC5SloYTECJjkMsRvF+ShsNNhZmA75v6JRX/HbJXKVDT7MiEtBeZrvKKaM/GdXl/GO+XxQ==
-X-Received: by 2002:a62:65c7:0:b029:278:e19f:f838 with SMTP id z190-20020a6265c70000b0290278e19ff838mr2848137pfb.64.1619465922089;
-        Mon, 26 Apr 2021 12:38:42 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id i18sm439912pfq.59.2021.04.26.12.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 12:38:41 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 19:38:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Reiji Watanabe <reijiw@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] KVM: x86: Tie Intel and AMD behavior for
- MSR_TSC_AUX to guest CPU model
-Message-ID: <YIcWvcneHWA9OPxv@google.com>
-References: <20210423223404.3860547-1-seanjc@google.com>
- <20210423223404.3860547-4-seanjc@google.com>
- <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TLJVtvvBoq/yqMsEsQp2CVsNqoS4kEVzTchedKnBltY=;
+        b=CHAXcLG8qbt/m36RnICkvmwcrPrNdX0SFlP5yZRb3AbJB+aYppOQFzbUelZOM7tyPq
+         itJ5MhNVPydJw6AgTQaW5YLzydo/BzrbwATyUE5HQK/Tm3a1NQgUxjKiyK4tYhSxcGdU
+         88WBYCEYLQsXvZkTzm0Y6kktygUyqiaDBksCr8KEfKyYmF5GhDNg/sXHLDiEALSKdZFf
+         2hxQSBXR74P7BGXOKLAe5ARwbUoWudMiiSORpb/Zpbi6WRy7ChoIu+wYVCb1OR9b7ng5
+         GXmQ8UjgLe9hY1bRJJexanLYc9dkZ68Bg/fzbMUpAnCEqo60kiScbsBw00otiT/FfAqv
+         7rkg==
+X-Gm-Message-State: AOAM5306isPBRI5B23CnsO+678l0JMZXJAr79d4EBxp/PiJeVnqfNyIL
+        iT2Us4v84zAPxqkGktwxREmMrxmqZ0pJF+yH
+X-Google-Smtp-Source: ABdhPJyhJfww/0bNim93oXroK8sgsY5A4bz3cbBWQTWKOT1/3oZ6pR9Y6dQjOybmLZI0JqKOyKNJ1A==
+X-Received: by 2002:a05:6512:2027:: with SMTP id s7mr13373252lfs.587.1619465958248;
+        Mon, 26 Apr 2021 12:39:18 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id u16sm102328lja.48.2021.04.26.12.39.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 12:39:17 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id b38so24356228ljf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:39:17 -0700 (PDT)
+X-Received: by 2002:a2e:1406:: with SMTP id u6mr13608357ljd.61.1619465957464;
+ Mon, 26 Apr 2021 12:39:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com>
+References: <CAK8P3a2RjRSjTcmwVf3VHy2CUB2HBj5AaJTx=1NSYuA_Qy4E-w@mail.gmail.com>
+In-Reply-To: <CAK8P3a2RjRSjTcmwVf3VHy2CUB2HBj5AaJTx=1NSYuA_Qy4E-w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 26 Apr 2021 12:39:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgDQ23kEkVVhjwcVPkQCDUVmJJdhO_HtjaRRCv_mtZgag@mail.gmail.com>
+Message-ID: <CAHk-=wgDQ23kEkVVhjwcVPkQCDUVmJJdhO_HtjaRRCv_mtZgag@mail.gmail.com>
+Subject: Re: [GIT PULL 0/6] ARM SoC branches for 5.13
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021, Reiji Watanabe wrote:
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -1610,6 +1610,29 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
-> >                  * invokes 64-bit SYSENTER.
-> >                  */
-> >                 data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
-> > +               break;
-> > +       case MSR_TSC_AUX:
-> > +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
-> > +                       return 1;
-> > +
-> > +               if (!host_initiated &&
-> > +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> > +                       return 1;
-> > +
-> > +               /*
-> > +                * Per Intel's SDM, bits 63:32 are reserved, but AMD's APM has
-> > +                * incomplete and conflicting architectural behavior.  Current
-> > +                * AMD CPUs completely ignore bits 63:32, i.e. they aren't
-> > +                * reserved and always read as zeros.  Enforce Intel's reserved
-> > +                * bits check if and only if the guest CPU is Intel, and clear
-> > +                * the bits in all other cases.  This ensures cross-vendor
-> > +                * migration will provide consistent behavior for the guest.
-> > +                */
-> > +               if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
-> > +                       return 1;
-> > +
-> > +               data = (u32)data;
-> > +               break;
-> >         }
-> >
-> >         msr.data = data;
-> > @@ -1646,6 +1669,17 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
-> >         if (!host_initiated && !kvm_msr_allowed(vcpu, index, KVM_MSR_FILTER_READ))
-> >                 return KVM_MSR_RET_FILTERED;
-> >
-> > +       switch (index) {
-> > +       case MSR_TSC_AUX:
-> > +               if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
-> > +                       return 1;
-> > +
-> > +               if (!host_initiated &&
-> > +                   !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> > +                       return 1;
-> 
-> 
-> It looks Table 2-2 of the Intel SDM Vol4 (April 2021) says
-> TSC_AUX is supported:
-> 
->    If CPUID.80000001H:EDX[27] = 1 or CPUID.(EAX=7,ECX=0):ECX[22] = 1
-> 
-> Should we also check X86_FEATURE_RDPID before returning 1
-> due to no RDTSCP support ?
+On Mon, Apr 26, 2021 at 8:53 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> Here are six branches for the SoC tree [...]
 
-Yep.  VMX should also clear RDPID if the ENABLE_RDTSCP control isn't supported.
-That bug isn't fatal because KVM emulates RDPID on #UD, but it would be a
-notieable performance hit for the guest.
+Ok, all merged. Please do check my conflict resolutions - not because
+I think there is anything wrong there, but simply because the arm side
+doesn't get the same build coverage testing when I merge.
 
-There is also a kernel bug lurking; vgetcpu_cpu_init() doesn't check
-X86_FEATURE_RDPID and will fail to initialize MSR_TSC_AUX if RDPID is supported
-but RDTSCP is not, and __getcpu() uses RDPID.  I'll verify that's broken and
-send a patch for that one too.
+All but the two first had some fairly trivial conflicts with the other
+trees I've been merging today.
 
-> There doesn't seem to be a similar description in the APM though.
-
-AMD also documents this in Appendix E:
-
-  CPUID Fn0000_0007_EBX_x0 Structured Extended Feature Identifiers (ECX=0)
-  Bits   Field   Name
-  ...
-  22     RDPID   RDPID instruction and TSC_AUX MSR support.
-
-
+              Linus
