@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FF436AD20
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE64336AD66
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhDZHch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43548 "EHLO mail.kernel.org"
+        id S232191AbhDZHgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:36:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232457AbhDZHc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:32:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6390F613AA;
-        Mon, 26 Apr 2021 07:31:46 +0000 (UTC)
+        id S232733AbhDZHdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:33:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A12326105A;
+        Mon, 26 Apr 2021 07:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422307;
-        bh=fHFOnsQLMFscmjvYwSOF2A1HDpCLUbB0mNtgYqTTizk=;
+        s=korg; t=1619422390;
+        bh=EDj1gHlZSzYdYf98LrWwBli/46xSjlYyncHL60ccxE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OzAgeSoDImfRpPI+egokIY2ESJ1m/xQpqECJ8wfs5cayX16w+2kvroiQOg9yu4CHC
-         k87J6raMoTjrJ2ZIjr56xHURK8JblV+Z4sn6B+4rLTZD1xQJAy7DIbdCfrreFTmmkS
-         TKK+laeyXkUiLhL1fAf99zShwVpT8rc3M0HhZv0A=
+        b=CDbiPbK0/gT5tlT7ATkNopDMWd935W0sSnac6Koqt0Bz8LvJhlcuD7451f0KA92dh
+         RB2VwJQqWAb755QFULTLpfReWEoS4tqKHwqyZiJwvG4JhH+JyOe6JcNXq9wyf+oTka
+         pPe6RxT8NYYHZO69+kGDwUUqzmh0rxcSaUhS7BJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
-        Borislav Petkov <bp@suse.de>, Dave Young <dyoung@redhat.com>
-Subject: [PATCH 4.4 32/32] x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
-Date:   Mon, 26 Apr 2021 09:29:30 +0200
-Message-Id: <20210426072817.638830875@linuxfoundation.org>
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 30/37] HID: alps: fix error return code in alps_input_configured()
+Date:   Mon, 26 Apr 2021 09:29:31 +0200
+Message-Id: <20210426072818.273795807@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.574319312@linuxfoundation.org>
-References: <20210426072816.574319312@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <efault@gmx.de>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-commit 5849cdf8c120e3979c57d34be55b92d90a77a47e upstream.
+[ Upstream commit fa8ba6e5dc0e78e409e503ddcfceef5dd96527f4 ]
 
-Commit in Fixes: added support for kexec-ing a kernel on panic using a
-new system call. As part of it, it does prepare a memory map for the new
-kernel.
+When input_register_device() fails, no error return code is assigned.
+To fix this bug, ret is assigned with -ENOENT as error return code.
 
-However, while doing so, it wrongly accesses memory it has not
-allocated: it accesses the first element of the cmem->ranges[] array in
-memmap_exclude_ranges() but it has not allocated the memory for it in
-crash_setup_memmap_entries(). As KASAN reports:
-
-  BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
-  Write of size 8 at addr ffffc90000426008 by task kexec/1187
-
-  (gdb) list *crash_setup_memmap_entries+0x17e
-  0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
-  317                                      unsigned long long mend)
-  318     {
-  319             unsigned long start, end;
-  320
-  321             cmem->ranges[0].start = mstart;
-  322             cmem->ranges[0].end = mend;
-  323             cmem->nr_ranges = 1;
-  324
-  325             /* Exclude elf header region */
-  326             start = image->arch.elf_load_addr;
-  (gdb)
-
-Make sure the ranges array becomes a single element allocated.
-
- [ bp: Write a proper commit message. ]
-
-Fixes: dd5f726076cc ("kexec: support for kexec on panic using new system call")
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Dave Young <dyoung@redhat.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/crash.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/hid/hid-alps.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -23,6 +23,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
-+#include <linux/overflow.h>
- 
- #include <asm/processor.h>
- #include <asm/hardirq.h>
-@@ -572,7 +573,7 @@ int crash_setup_memmap_entries(struct ki
- 	struct crash_memmap_data cmd;
- 	struct crash_mem *cmem;
- 
--	cmem = vzalloc(sizeof(struct crash_mem));
-+	cmem = vzalloc(struct_size(cmem, ranges, 1));
- 	if (!cmem)
- 		return -ENOMEM;
- 
+diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+index ed9c0ea5b026..1bc6ad0339d2 100644
+--- a/drivers/hid/hid-alps.c
++++ b/drivers/hid/hid-alps.c
+@@ -429,6 +429,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
+ 		ret = input_register_device(data->input2);
+ 		if (ret) {
+ 			input_free_device(input2);
++			ret = -ENOENT;
+ 			goto exit;
+ 		}
+ 	}
+-- 
+2.30.2
+
 
 
