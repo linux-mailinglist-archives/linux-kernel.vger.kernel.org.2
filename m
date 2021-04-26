@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF6D36AECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A2736AD50
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhDZHr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
+        id S232312AbhDZHdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:33:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232834AbhDZHhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1B43613DC;
-        Mon, 26 Apr 2021 07:35:53 +0000 (UTC)
+        id S232638AbhDZHdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:33:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2F261004;
+        Mon, 26 Apr 2021 07:32:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422554;
-        bh=6o24duZ6hXoAbegvgGj0veBvO8I3e5q3d3Bt1Mer7BA=;
+        s=korg; t=1619422363;
+        bh=uAAUyMljlcrTr7L/lCee6dkkMCsypVanYPJhHqDkpug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IZgRas12PWdlroUyVXNe1k6ZaHzfyTbVtJjVrZgQDBQzB54NO+srZCXQlQakcBP6Z
-         4oxsfeHs0eUguAPW1RXLqrnW1lX5eAODn5F0PR1KibJnf8HVVKIFm1N0ru6sxhCagW
-         yi5oDg9EChzX9g+SYYZpW663UuiowlJ3Fs8Bm27Y=
+        b=jCRtcKbq32WT+vOhgm9MVczSS4hsDyuwBEl1FLOwUmhgU/M60XrCaT2zuM4+A1DFq
+         vc7mvCFw9+95R07iAU+m7JAF7MQz47JO1pMA/UQrk9Basecu46q0c3v1X1XGgbvtTf
+         rHuEHDStftXJqGQj/F4ss+WMMZZbdlY4xiAWLEMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/57] drm/msm: Fix a5xx/a6xx timestamps
+Subject: [PATCH 4.9 07/37] ARM: keystone: fix integer overflow warning
 Date:   Mon, 26 Apr 2021 09:29:08 +0200
-Message-Id: <20210426072820.950223400@linuxfoundation.org>
+Message-Id: <20210426072817.492926959@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 9fbd3088351b92e8c2cef6e37a39decb12a8d5bb ]
+[ Upstream commit 844b85dda2f569943e1e018fdd63b6f7d1d6f08e ]
 
-They were reading a counter that was configured to ALWAYS_COUNT (ie.
-cycles that the GPU is doing something) rather than ALWAYS_ON.  This
-isn't the thing that userspace is looking for.
+clang warns about an impossible condition when building with 32-bit
+phys_addr_t:
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Acked-by: Jordan Crouse <jordan@cosmicpenguin.net>
-Message-Id: <20210325012358.1759770-2-robdclark@gmail.com>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+arch/arm/mach-keystone/keystone.c:79:16: error: result of comparison of constant 51539607551 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+            mem_end   > KEYSTONE_HIGH_PHYS_END) {
+            ~~~~~~~   ^ ~~~~~~~~~~~~~~~~~~~~~~
+arch/arm/mach-keystone/keystone.c:78:16: error: result of comparison of constant 34359738368 with expression of type 'phys_addr_t' (aka 'unsigned int') is always true [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (mem_start < KEYSTONE_HIGH_PHYS_START ||
+            ~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+
+Change the temporary variable to a fixed-size u64 to avoid the warning.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
+Link: https://lore.kernel.org/r/20210323131814.2751750-1-arnd@kernel.org'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 4 ++--
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/mach-keystone/keystone.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index 776bbe9775e9..ba513018534e 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -1194,8 +1194,8 @@ static int a5xx_pm_suspend(struct msm_gpu *gpu)
- 
- static int a5xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
+diff --git a/arch/arm/mach-keystone/keystone.c b/arch/arm/mach-keystone/keystone.c
+index 84613abf35a3..79ff5b953431 100644
+--- a/arch/arm/mach-keystone/keystone.c
++++ b/arch/arm/mach-keystone/keystone.c
+@@ -65,7 +65,7 @@ static void __init keystone_init(void)
+ static long long __init keystone_pv_fixup(void)
  {
--	*value = gpu_read64(gpu, REG_A5XX_RBBM_PERFCTR_CP_0_LO,
--		REG_A5XX_RBBM_PERFCTR_CP_0_HI);
-+	*value = gpu_read64(gpu, REG_A5XX_RBBM_ALWAYSON_COUNTER_LO,
-+		REG_A5XX_RBBM_ALWAYSON_COUNTER_HI);
+ 	long long offset;
+-	phys_addr_t mem_start, mem_end;
++	u64 mem_start, mem_end;
  
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index c629f742a1d1..c280fdc44939 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -713,8 +713,8 @@ static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
- 	/* Force the GPU power on so we can read this register */
- 	a6xx_gmu_set_oob(&a6xx_gpu->gmu, GMU_OOB_GPU_SET);
+ 	mem_start = memblock_start_of_DRAM();
+ 	mem_end = memblock_end_of_DRAM();
+@@ -78,7 +78,7 @@ static long long __init keystone_pv_fixup(void)
+ 	if (mem_start < KEYSTONE_HIGH_PHYS_START ||
+ 	    mem_end   > KEYSTONE_HIGH_PHYS_END) {
+ 		pr_crit("Invalid address space for memory (%08llx-%08llx)\n",
+-		        (u64)mem_start, (u64)mem_end);
++		        mem_start, mem_end);
+ 		return 0;
+ 	}
  
--	*value = gpu_read64(gpu, REG_A6XX_RBBM_PERFCTR_CP_0_LO,
--		REG_A6XX_RBBM_PERFCTR_CP_0_HI);
-+	*value = gpu_read64(gpu, REG_A6XX_CP_ALWAYS_ON_COUNTER_LO,
-+		REG_A6XX_CP_ALWAYS_ON_COUNTER_HI);
- 
- 	a6xx_gmu_clear_oob(&a6xx_gpu->gmu, GMU_OOB_GPU_SET);
- 	return 0;
 -- 
 2.30.2
 
