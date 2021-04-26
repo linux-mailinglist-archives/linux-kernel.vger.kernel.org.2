@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D69036AB05
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37E936AB07
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 05:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbhDZDR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 23:17:58 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:39563 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbhDZDR5 (ORCPT
+        id S231773AbhDZDT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 23:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhDZDTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 23:17:57 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210426031714epoutp0264db66d7df8da255c835133bce01e957~5Sh4UOw5l2868728687epoutp02V
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:17:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210426031714epoutp0264db66d7df8da255c835133bce01e957~5Sh4UOw5l2868728687epoutp02V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619407034;
-        bh=jetcUXmyBIvfGxke4lcV/g8Ksv9OTamwlbKq7aTUCGk=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=smj0KJNcglSlCFETHIHw/7hKtIVS4kEXt1ekna5t0K1o/0MExK1xcq5D6kyrMyJWj
-         gisTKe/VtRlux45mvGAk+FVftFrqtoorZNw+BfVJS/wYNIRsQ0ZoYFnKBJtkKolQLT
-         E5eDi7axN2kyAQ4C9jVPhfnd7lyj0AZvRePFIpjk=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210426031713epcas2p25c9798e3d2dbcdbcb95c84e2de4dce05~5Sh3zpnbC2133921339epcas2p2F;
-        Mon, 26 Apr 2021 03:17:13 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.184]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4FT96w3Fhgz4x9Pp; Mon, 26 Apr
-        2021 03:17:12 +0000 (GMT)
-X-AuditID: b6c32a46-e01ff700000025de-ac-608630b804b1
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        45.57.09694.8B036806; Mon, 26 Apr 2021 12:17:12 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: [PATCH v1 2/3] scsi: ufs: Cancel rpm_dev_flush_recheck_work
- during system suspend
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "ziqichen@codeaurora.org" <ziqichen@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        open list <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <1619403878-28330-3-git-send-email-cang@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210426031711epcms2p2b64c07ab98332429204dac7ba920abf2@epcms2p2>
-Date:   Mon, 26 Apr 2021 12:17:11 +0900
-X-CMS-MailID: 20210426031711epcms2p2b64c07ab98332429204dac7ba920abf2
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMJsWRmVeSWpSXmKPExsWy7bCmhe4Og7YEg55zQhYP5m1js9jbdoLd
-        4uXPq2wWBx92slh8Wr+M1eLarflsFi8PaVqsehBucfrZO3aLJ+tnMVssurGNyWLHdhGLy7vm
-        sFl0X9/BZrH8+D8mi49dsxktlm69CSRuPmd3EPLYtnsbq8flvl4mj02rOtk8Jiw6wOjRcnI/
-        i8f39R1sHh+f3mLx6NuyitHj8yY5j/YD3UwBXFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGm
-        ZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAPykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVS
-        C1JyCgwNC/SKE3OLS/PS9ZLzc60MDQyMTIEqE3Iyrv6fy1qwkq1i48EfLA2MH1m6GDk5JARM
-        JG7/2QRkc3EICexglOic38HWxcjBwSsgKPF3hzCIKSyQIHHsqRRIuZCAksT6i7PYQWxhAT2J
-        Ww/XMILYbAI6EtNP3AeLiwgsZpaY9tIExGYW+MokcaFVEWIVr8SM9qdQa6Ulti/fCtbLKeAi
-        0ftuNhtEXEPix7JeZghbVOLm6rfsMPb7Y/MZIWwRidZ7Z6FqBCUe/NwNFZeUOLb7AxOEXS+x
-        9c4vRpC3JAR6GCUO77zFCpHQl7jWsRHsCF4BX4kfPRALWARUJbZ82Q21zEXicNN2FogH5CW2
-        v53DDAoHZgFNifW79EFMCQFliSO3WGDeatj4mx2dzSzAJ9Fx+C9cfMe8J1CnqUms+7meaQKj
-        8ixEOM9CsmsWwq4FjMyrGMVSC4pz01OLjQqMkKN2EyM4dWu57WCc8vaD3iFGJg7GQ4wSHMxK
-        Irxsu1oThHhTEiurUovy44tKc1KLDzGaAn05kVlKNDkfmD3ySuINTY3MzAwsTS1MzYwslMR5
-        f6bWJQgJpCeWpGanphakFsH0MXFwSjUwOfrJiNRNjEg31H0W9HjexYlzC28UKR6+GlF3+Vh7
-        9pxDDHG/maKzt03L85yg2berhPN80ZYjnAvYpztHr10SNvtNw6112vddzed16Is4/k5bErnP
-        1SHks/USluJ3RssF+k44L1C6Xc5w+cyX/1PW8s/ZYTIxIerIR+uJCWIneV5/Mb4o9fSkeuq6
-        WF4ZjkOq1/UTUxq3vbP5uOMF477Wd686mUy1uDIP7dV3tTuS3qt9kdW+4pm0UoSAAG/tqr2G
-        yyqOn+iZoCy1/qn/iUUz+S/myhwuXvo2+jPDpMg0868XrKonVnJ5bO3/u7Pz0e9o75On/+pH
-        7ZAK2Tw77VrKJp70Oz7fpBjmy7oHzG7aocRSnJFoqMVcVJwIAA4uq/xmBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210426022700epcas2p298d2b9e6dd30781db9bf1e998f80eca1
-References: <1619403878-28330-3-git-send-email-cang@codeaurora.org>
-        <1619403878-28330-1-git-send-email-cang@codeaurora.org>
-        <CGME20210426022700epcas2p298d2b9e6dd30781db9bf1e998f80eca1@epcms2p2>
+        Sun, 25 Apr 2021 23:19:55 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802E2C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 20:19:13 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 10so2590700pfl.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 20:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1idmU5oasi5s8yake1E5MV/fuZG36GG+m+QfyCDPPAg=;
+        b=FFBBiEbKdwEOvS0oHpkmceh8YwkI8JWzk9aEm6Q2tDb7iK0USLW0QEKvQG1ZV1P/N7
+         1ynXAijGp5Rvm//DBC+C5zYnIQmGDnQQMASRr8Tnlv271bcyXtY12nHSD+2I2PAl6+Ga
+         OkXJOSqpveQOemOW3Ls3p2DmZP5lUBE4R/ncQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1idmU5oasi5s8yake1E5MV/fuZG36GG+m+QfyCDPPAg=;
+        b=BjMBeklKxO56WvC+EXd3TNofSPXGgE9oCZ36nDiDPI/rBbwEtTg+0Z4cZRd7j58eMJ
+         FLfa+1JlGnwNr1SPPfNHivLyZQlWnAdRyXyOv44eQONFicJPe9sSw5lUSwwrdRWgGv/R
+         8vrIHJ0E0ptaAE8c9gjYeNQocalJC+1WEH1RbEbZ9M1VvvtaOyxxtotrg+hsiSn6Z0uG
+         FCppI7FRMxZpKU8to+PY9j2ZHHUOtT5T08LgSICrPfnyt+z+XCOhm41qzxE4P2jHYDtx
+         nOA6hpnAg8dPKYY5bRkVprnfiDoEMV0vpGtfj1Zj/xivRYAo2QpFKH0umwieIH1V3uIY
+         pvnQ==
+X-Gm-Message-State: AOAM531mCUFA+A5DSo+aBFD4odejunS2+OupFLyrvixBAW3LIg0KbKmy
+        DIPFwbfj3mdh6j0OEauvgKonww==
+X-Google-Smtp-Source: ABdhPJw2NvtElpce5Tsiply0Pczv0FCmrOEKJ1UaVHlZ+QzzAJJ0woA/MGNFNFMfXQxSQ5/2tsFmNg==
+X-Received: by 2002:a65:56cc:: with SMTP id w12mr14980759pgs.334.1619407153036;
+        Sun, 25 Apr 2021 20:19:13 -0700 (PDT)
+Received: from haraichi.dnlocal (113x36x239x145.ap113.ftth.ucom.ne.jp. [113.36.239.145])
+        by smtp.googlemail.com with ESMTPSA id s32sm96035pfw.2.2021.04.25.20.19.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Apr 2021 20:19:12 -0700 (PDT)
+From:   Kenta Ishiguro <kentaishiguro@sslab.ics.keio.ac.jp>
+To:     kernellwp@gmail.com
+Cc:     david@redhat.com, jmattson@google.com, joro@8bytes.org,
+        kentaishiguro@sslab.ics.keio.ac.jp, kono@sslab.ics.keio.ac.jp,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, pl@sslab.ics.keio.ac.jp, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com
+Subject: Re: [RFC PATCH 0/2] Mitigating Excessive Pause-Loop Exiting in VM-Agnostic KVM
+Date:   Mon, 26 Apr 2021 12:18:58 +0900
+Message-Id: <20210426031858.12003-1-kentaishiguro@sslab.ics.keio.ac.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CANRm+CzoS=HhiHg6w6dy8P+r3POeP3uMZqFvJr4oHMa1aNJqxg@mail.gmail.com>
+References: <CANRm+CzoS=HhiHg6w6dy8P+r3POeP3uMZqFvJr4oHMa1aNJqxg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Can Guo,
+Thank you for the reply.
 
->diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->index 7ab6b12..090b654 100644
->--- a/drivers/scsi/ufs/ufshcd.c
->+++ b/drivers/scsi/ufs/ufshcd.c
->@@ -9058,11 +9058,12 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->         if (!hba->is_powered)
->                 return 0;
-> 
->+        cancel_delayed_work_sync(&hba->rpm_dev_flush_recheck_work);
->+
->         if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
->              hba->curr_dev_pwr_mode) &&
->             (ufs_get_pm_lvl_to_link_pwr_state(hba->spm_lvl) ==
->-             hba->uic_link_state) &&
->-             !hba->dev_info.b_rpm_dev_flush_capable)
-I think it should not be removed.
-It prevents power drain when runtime suspend and system suspend have same
-power mode.
+My question is about following scenario:
+1. running vCPU receives IPI and the vCPU's ipi_received gets true
+2. the vCPU responds to the IPI
+3. the vCPU exits
+4. the vCPU is preempted by KVM
+5. the vCPU is boosted, but it has already responded to the IPI
+6. the vCPU enters and the vCPU's ipi_received is cleaned
 
-Thanks,
-Daejun
+In this case, I think the check of vcpu->preempted does not limit the candidate vCPUs.
+
