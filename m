@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D5836ADFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7D936AE70
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhDZHkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:40:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46674 "EHLO mail.kernel.org"
+        id S234381AbhDZHpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:45:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232974AbhDZHhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C91613C4;
-        Mon, 26 Apr 2021 07:35:08 +0000 (UTC)
+        id S233281AbhDZHjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A135F613C0;
+        Mon, 26 Apr 2021 07:37:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422509;
-        bh=PTaWnzysfU8knv+bT5y96I/WFz6a6NS7eOcE9s32omg=;
+        s=korg; t=1619422627;
+        bh=mVyWi9XG90EchzaJQHS0kyf10Ks7lxWF4bcLEboImsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pccz9lQm1bnpQ9EYsz8IkGbXafY8zlarSwCD39Ouv86ixa3Q9Fr5CebZ+0zdbHv76
-         uwqc6q3pA40TO43lwvaBEZOWxde+sj3ruvwLljM1SlnKARtcRUFcXdoV1K+pDkCICT
-         yNbf1mCBgC1H/1uZtHf02SDFdkNTwe8HWAHN224g=
+        b=G9U90dhuu5mSHgXfEKz5ECKfqpf0gMdI4o8vuUOEupLW78nds/C1agFTTXFZIgMxP
+         12FJJL73JnEQDrKEY7txXChCDlg12aIw6Dwf2Jy3wPY2HZBUkHae5Mqnv1dy6oQ7fH
+         91SjCtr3/fJqHtrR8VSUZNt/BZ3PPgMDy9GkUi6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 42/49] ARM: dts: Fix swapped mmc order for omap3
+        stable@vger.kernel.org, Fredrik Strupe <fredrik@strupe.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.19 41/57] ARM: 9071/1: uprobes: Dont hook on thumb instructions
 Date:   Mon, 26 Apr 2021 09:29:38 +0200
-Message-Id: <20210426072821.157247655@linuxfoundation.org>
+Message-Id: <20210426072821.955543477@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-[ Upstream commit a1ebdb3741993f853865d1bd8f77881916ad53a7 ]
+commit d2f7eca60b29006285d57c7035539e33300e89e5 upstream.
 
-Also some omap3 devices like n900 seem to have eMMC and micro-sd swapped
-around with commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for
-drivers that existed in v4.4").
+Since uprobes is not supported for thumb, check that the thumb bit is
+not set when matching the uprobes instruction hooks.
 
-Let's fix the issue with aliases as discussed on the mailing lists. While
-the mmc aliases should be board specific, let's first fix the issue with
-minimal changes.
+The Arm UDF instructions used for uprobes triggering
+(UPROBE_SWBP_ARM_INSN and UPROBE_SS_ARM_INSN) coincidentally share the
+same encoding as a pair of unallocated 32-bit thumb instructions (not
+UDF) when the condition code is 0b1111 (0xf). This in effect makes it
+possible to trigger the uprobes functionality from thumb, and at that
+using two unallocated instructions which are not permanently undefined.
 
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Cc: stable@vger.kernel.org
+Fixes: c7edc9e326d5 ("ARM: add uprobes support")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/omap3.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/probes/uprobes/core.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
-index bdaf30c8c405..21eef1679d08 100644
---- a/arch/arm/boot/dts/omap3.dtsi
-+++ b/arch/arm/boot/dts/omap3.dtsi
-@@ -23,6 +23,9 @@
- 		i2c0 = &i2c1;
- 		i2c1 = &i2c2;
- 		i2c2 = &i2c3;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
--- 
-2.30.2
-
+--- a/arch/arm/probes/uprobes/core.c
++++ b/arch/arm/probes/uprobes/core.c
+@@ -207,7 +207,7 @@ unsigned long uprobe_get_swbp_addr(struc
+ static struct undef_hook uprobes_arm_break_hook = {
+ 	.instr_mask	= 0x0fffffff,
+ 	.instr_val	= (UPROBE_SWBP_ARM_INSN & 0x0fffffff),
+-	.cpsr_mask	= MODE_MASK,
++	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
+ 	.cpsr_val	= USR_MODE,
+ 	.fn		= uprobe_trap_handler,
+ };
+@@ -215,7 +215,7 @@ static struct undef_hook uprobes_arm_bre
+ static struct undef_hook uprobes_arm_ss_hook = {
+ 	.instr_mask	= 0x0fffffff,
+ 	.instr_val	= (UPROBE_SS_ARM_INSN & 0x0fffffff),
+-	.cpsr_mask	= MODE_MASK,
++	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
+ 	.cpsr_val	= USR_MODE,
+ 	.fn		= uprobe_trap_handler,
+ };
 
 
