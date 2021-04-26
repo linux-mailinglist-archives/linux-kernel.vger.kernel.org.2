@@ -2,162 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D9636B6EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561D336B729
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234395AbhDZQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        id S234552AbhDZQp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbhDZQhu (ORCPT
+        with ESMTP id S233736AbhDZQpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:37:50 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B4BC061574;
-        Mon, 26 Apr 2021 09:37:08 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id f29so3292020pgm.8;
-        Mon, 26 Apr 2021 09:37:08 -0700 (PDT)
+        Mon, 26 Apr 2021 12:45:51 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C4DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:45:08 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id p12so40422881pgj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:45:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+/iTa4OuZ1fhB1XiuuLXaVmaDURW/cQEPNzkVKGmiJA=;
-        b=C0DdN7nb1qzQbwhWq5zM1TwIvG3ImbgowzRkbKmBoiN0/hHBxnSEl4gTgI4ZmwZO3n
-         DAgGBU0BI1wVsaUfAx7Vfu5EJgqXdNYEuHdeVbqUmO0EvhcOcM3V0wzXils0r/ppewtz
-         VIiSLVQgexKuCJVTXikSbfWExM9P2X3UGENHJLb6E0OcrZyLt3NyplfQ4WEocdH9msWA
-         m744GtlRmCUz+lMdL794xx4WINpDCjyDlTgyOP5Ky9ce0/XACPyzlGZBnyp1xBEcOBZ1
-         JnLczUoC+FaS+/ap5A+x8V9zM8V2I0g5nHgJTS/MFJMa6f4PI/3bp1Aec7YLuaa4VC/t
-         6+tw==
+         :cc;
+        bh=w+xLIOm1aUR+ojar7SxT7aE31iJaS6lTTL9NFfLTdqs=;
+        b=ctSitjX8LR7O2ZMk4lsR8Irz6egx7wTYNYpP5lwZVohPuAIjgk70gq0rLgnAswDS5J
+         OwrGL0fnjKjd/25GMaUPOEt1BY6NfF//O6cQPXnTolYLDRghV+Gs0xVvNzh51W3LGUxd
+         u8ZH2pOBpUkLUeomCja6RAPBZaNGl3ag01nF0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+/iTa4OuZ1fhB1XiuuLXaVmaDURW/cQEPNzkVKGmiJA=;
-        b=jcU4U24ruu3UBRPOzh/yDOoA38OwDYmR5eua3MAD0rHczT4Y9CCLIy1ENO57TWNlVJ
-         IXtmv1kZzyAKDnvITtGiZlX7vhpF1eQLFW/AQpRgVRwd45QypQj5X5mjTcrMSQvkO5oR
-         JoNnW06t6g+xurreq3to96NCE7YQxGArkTqwZmaXdvHnY+xrk/CVDGghdlIvb5Fs7Qzk
-         lj/WLHm4D+5FjeUxp1Fv8hiEoXbR2gOWaEJdNIlHUBcAtH3nYfAUxBKXhCH6DTJjkGpV
-         s0RqN4DlNeWf2wXS6h3NQNqFj3YgdWqC8/dTKiuj10mvZ/54Nw5DvwpQvLzgVWFBspsi
-         +OPQ==
-X-Gm-Message-State: AOAM533i/jkvFWA+WUu58yXJH0jsgl/ZvsrnLkKzGSL0E58x0BNXxZlU
-        vWNrT/gGRq6DkmjREWfouqZGpmS/GgtsGlP9C1Q=
-X-Google-Smtp-Source: ABdhPJzGC+pT48WdGbwS7hgmLLK9XqjzTfFlfkQ3CyaGclckYi81ts7/6zdlw4+pnkAYZETSSkfj7mxmAFGGx+XjXoo=
-X-Received: by 2002:a63:4a23:: with SMTP id x35mr17319569pga.270.1619455028028;
- Mon, 26 Apr 2021 09:37:08 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=w+xLIOm1aUR+ojar7SxT7aE31iJaS6lTTL9NFfLTdqs=;
+        b=pn2ToIXRa6H/+D10W5NSg9bmeTUZbIjIwpY4fcCycYa9gzLbPekcDn4x0KZ4PjGTnn
+         cGu05k6WFw6xHrLhcgCrx/CIZafpgj18GhiaPZH2EJ2jmMF1+tIQKLolULDsqmX7vxwl
+         xxDkYlNNOy7YDrOw05bUW7XAew1Ch/ZVUhx7IymYFaPgYU/+iOmLdWevxp+FxGKC3/Xm
+         TOTzhQXJvpO/YDvQMJSm2Ijel8IULn47z3S95PJNXWBD7g35GqKFdpklmW3vHz5b6SdR
+         3ZoGwhfABsyfVN8ekUj10qjiaBl3Lcque+SoJk+GC3JewNv6uQELlotEeDE8RumIV9Yz
+         gk3A==
+X-Gm-Message-State: AOAM5312w75O8yPDGA/WFbUVNHVLNqWyquwALTf9TZx/HTG/uhntFSLc
+        f22jR8+I/YoKJGisDVsOcaoYL9XAah7QWg==
+X-Google-Smtp-Source: ABdhPJzAOKjGNE4bViuybRm/6etqZimZ3kCs4nB8FEkgWh+PhE3ENOVS7SUZl2umw4YB94t5McpJfg==
+X-Received: by 2002:a63:488:: with SMTP id 130mr17225314pge.359.1619455507312;
+        Mon, 26 Apr 2021 09:45:07 -0700 (PDT)
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com. [209.85.210.182])
+        by smtp.gmail.com with ESMTPSA id u7sm188317pjx.8.2021.04.26.09.45.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 09:45:07 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id m11so39361400pfc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:45:06 -0700 (PDT)
+X-Received: by 2002:a5d:8c82:: with SMTP id g2mr15143365ion.34.1619455049397;
+ Mon, 26 Apr 2021 09:37:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210411150623.8367-1-hcvcastro@gmail.com> <CAEc3jaAADGuPDwGLM6HskLq-OiecbV-76JbMe6yambVAT=h=bw@mail.gmail.com>
- <CAF44FUyskn-g+MUYONMXYZ8dUiGFd0GF1wkkPQwd34ikbet_Fg@mail.gmail.com>
-In-Reply-To: <CAF44FUyskn-g+MUYONMXYZ8dUiGFd0GF1wkkPQwd34ikbet_Fg@mail.gmail.com>
-From:   Roderick Colenbrander <thunderbird2k@gmail.com>
-Date:   Mon, 26 Apr 2021 09:36:56 -0700
-Message-ID: <CAEc3jaB+wNp1Fa-_P=XcYxRNL+L4z_M_wsW6iODyyHz90Xq-vw@mail.gmail.com>
-Subject: Re: [PATCH] drivers/hid: avoid invalid denominator
-To:     Henry Castro <hcvcastro@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210422081508.3942748-1-tientzu@chromium.org>
+ <20210422081508.3942748-6-tientzu@chromium.org> <c9abca62-328d-d0d6-a8a6-a67475171f92@arm.com>
+In-Reply-To: <c9abca62-328d-d0d6-a8a6-a67475171f92@arm.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Tue, 27 Apr 2021 00:37:18 +0800
+X-Gmail-Original-Message-ID: <CALiNf2_tffc65PhLxCr3-+gmVYKGO2HjYiJVkBNa5U5HYdi9pg@mail.gmail.com>
+Message-ID: <CALiNf2_tffc65PhLxCr3-+gmVYKGO2HjYiJVkBNa5U5HYdi9pg@mail.gmail.com>
+Subject: Re: [PATCH v5 05/16] swiotlb: Add restricted DMA pool initialization
+To:     Steven Price <steven.price@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hm, I'm a little confused then. The Shanwan gamepad is a Dualshock 3
-clone (nickname 'sixaxis'), so should not go through the DualShock 4
-paths. Can you double check what the vendor / device id for this
-device are? Are you seeing specific errors or warnings from the driver
-in the kernel logs?
+On Fri, Apr 23, 2021 at 7:34 PM Steven Price <steven.price@arm.com> wrote:
+>
+> On 22/04/2021 09:14, Claire Chang wrote:
+> > Add the initialization function to create restricted DMA pools from
+> > matching reserved-memory nodes.
+> >
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > ---
+> >   include/linux/device.h  |  4 +++
+> >   include/linux/swiotlb.h |  3 +-
+> >   kernel/dma/swiotlb.c    | 80 +++++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 86 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/device.h b/include/linux/device.h
+> > index 38a2071cf776..4987608ea4ff 100644
+> > --- a/include/linux/device.h
+> > +++ b/include/linux/device.h
+> > @@ -416,6 +416,7 @@ struct dev_links_info {
+> >    * @dma_pools:      Dma pools (if dma'ble device).
+> >    * @dma_mem:        Internal for coherent mem override.
+> >    * @cma_area:       Contiguous memory area for dma allocations
+> > + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
+> >    * @archdata:       For arch-specific additions.
+> >    * @of_node:        Associated device tree node.
+> >    * @fwnode: Associated device node supplied by platform firmware.
+> > @@ -521,6 +522,9 @@ struct device {
+> >   #ifdef CONFIG_DMA_CMA
+> >       struct cma *cma_area;           /* contiguous memory area for dma
+> >                                          allocations */
+> > +#endif
+> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> > +     struct io_tlb_mem *dma_io_tlb_mem;
+> >   #endif
+> >       /* arch specific additions */
+> >       struct dev_archdata     archdata;
+> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > index 216854a5e513..03ad6e3b4056 100644
+> > --- a/include/linux/swiotlb.h
+> > +++ b/include/linux/swiotlb.h
+> > @@ -72,7 +72,8 @@ extern enum swiotlb_force swiotlb_force;
+> >    *          range check to see if the memory was in fact allocated by this
+> >    *          API.
+> >    * @nslabs: The number of IO TLB blocks (in groups of 64) between @start and
+> > - *           @end. This is command line adjustable via setup_io_tlb_npages.
+> > + *           @end. For default swiotlb, this is command line adjustable via
+> > + *           setup_io_tlb_npages.
+> >    * @used:   The number of used IO TLB block.
+> >    * @list:   The free list describing the number of free entries available
+> >    *          from each index.
+> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > index 57a9adb920bf..ffbb8724e06c 100644
+> > --- a/kernel/dma/swiotlb.c
+> > +++ b/kernel/dma/swiotlb.c
+> > @@ -39,6 +39,13 @@
+> >   #ifdef CONFIG_DEBUG_FS
+> >   #include <linux/debugfs.h>
+> >   #endif
+> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> > +#include <linux/io.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_fdt.h>
+> > +#include <linux/of_reserved_mem.h>
+> > +#include <linux/slab.h>
+> > +#endif
+> >
+> >   #include <asm/io.h>
+> >   #include <asm/dma.h>
+> > @@ -681,3 +688,76 @@ static int __init swiotlb_create_default_debugfs(void)
+> >   late_initcall(swiotlb_create_default_debugfs);
+> >
+> >   #endif
+> > +
+> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> > +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+> > +                                 struct device *dev)
+> > +{
+> > +     struct io_tlb_mem *mem = rmem->priv;
+> > +     unsigned long nslabs = rmem->size >> IO_TLB_SHIFT;
+> > +
+> > +     if (dev->dma_io_tlb_mem)
+> > +             return 0;
+> > +
+> > +     /* Since multiple devices can share the same pool, the private data,
+> > +      * io_tlb_mem struct, will be initialized by the first device attached
+> > +      * to it.
+> > +      */
+> > +     if (!mem) {
+> > +             mem = kzalloc(struct_size(mem, slots, nslabs), GFP_KERNEL);
+> > +             if (!mem)
+> > +                     return -ENOMEM;
+> > +#ifdef CONFIG_ARM
+> > +             if (!PageHighMem(pfn_to_page(PHYS_PFN(rmem->base)))) {
+> > +                     kfree(mem);
+> > +                     return -EINVAL;
+> > +             }
+> > +#endif /* CONFIG_ARM */
+> > +             swiotlb_init_io_tlb_mem(mem, rmem->base, nslabs, false);
+> > +
+> > +             rmem->priv = mem;
+> > +     }
+> > +
+> > +#ifdef CONFIG_DEBUG_FS
+> > +     if (!io_tlb_default_mem->debugfs)
+> > +             io_tlb_default_mem->debugfs =
+> > +                     debugfs_create_dir("swiotlb", NULL);
+>
+> At this point it's possible for io_tlb_default_mem to be NULL, leading
+> to a splat.
 
-I have been considering how to better handle some of these clones
-devices, while also not polluting the code too much. If this device is
-indeed a clone DualShock 4. I am more leaning towards finding out
-sooner during device creation. Perhaps should not even create a motion
-sensor device if the data will be none anyway... Hm, not sure what I
-prefer yet.
+Thanks for pointing this out.
 
-Thanks,
-Roderick
+>
+> But even then if it's not and we have the situation where debugfs==NULL
+> then the debugfs_create_dir() here will cause a subsequent attempt in
+> swiotlb_create_debugfs() to fail (directory already exists) leading to
+> mem->debugfs being assigned an error value. I suspect the creation of
+> the debugfs directory needs to be separated from io_tlb_default_mem
+> being set.
 
-On Sun, Apr 25, 2021 at 9:39 AM Henry Castro <hcvcastro@gmail.com> wrote:
+debugfs creation should move into the if (!mem) {...} above to avoid
+duplication.
+I think having a separated struct dentry pointer for the default
+debugfs should be enough?
+
+if (!debugfs)
+    debugfs = debugfs_create_dir("swiotlb", NULL);
+swiotlb_create_debugfs(mem, rmem->name, debugfs);
+
 >
-> Hi,
+> Other than that I gave this series a go with our prototype of Arm's
+> Confidential Computer Architecture[1] - since the majority of the
+> guest's memory is protected from the host the restricted DMA pool allows
+> (only) a small area to be shared with the host.
 >
-> I was trying to play some old games from Retroarch, and I plugged
-> my "SHANWAN PS3 GamePad", but it begin to vibrate and I could
-> not play the games, So I started to investigate and read the source
-> code, and get the code to bypass the check, and suddenly I got
-> a panic crash.  So I found the issue, and I added the patch, finally
-> got working, and I played my favorite old games.
+> After fixing (well hacking round) the above it all seems to be working
+> fine with virtio drivers.
 >
-> So it happens in PS3 clone device I think, but I have to tweak the code
-> probably is safe under the condition you mention in PS4 DualShock,
-> but it is good as a prevention, if someone is testing and debugging
-> the driver.
+> Thanks,
 >
-> Regards
-> Henry
+> Steve
 >
-> El s=C3=A1b, 24 abr 2021 a las 17:11, Roderick Colenbrander (<thunderbird=
-2k@gmail.com>) escribi=C3=B3:
->>
->> Hi Henry,
->>
->> Thanks for your patch. In what case has this been an issue? Or was it
->> more theoretical.
->>
->> During normal operation this condition should never be triggered for a
->> DualShock 4 when calibration succeeds. If it doesn't succeed the
->> device is not registered. We had an issue recently with the DS4 dongle
->> where the calibration data was 0, which was due to a race condition
->> with Steam, but that was resolved recently.
->>
->> Thanks,
->> Roderick
->>
->> On Sun, Apr 11, 2021 at 10:19 AM Henry Castro <hcvcastro@gmail.com> wrot=
-e:
->> >
->> > Avoid a potential panic in case wrong denominator
->> > is given.
->> >
->> > Signed-off-by: Henry Castro <hcvcastro@gmail.com>
->> > ---
->> >  drivers/hid/hid-sony.c | 13 +++++++++----
->> >  1 file changed, 9 insertions(+), 4 deletions(-)
->> >
->> > diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
->> > index 8319b0ce385a..67b45d82cc3b 100644
->> > --- a/drivers/hid/hid-sony.c
->> > +++ b/drivers/hid/hid-sony.c
->> > @@ -1134,11 +1134,16 @@ static void dualshock4_parse_report(struct son=
-y_sc *sc, u8 *rd, int size)
->> >                  * Note: we swap numerator 'x' and 'numer' in mult_fra=
-c for
->> >                  *       precision reasons so we don't need 64-bit.
->> >                  */
->> > -               int calib_data =3D mult_frac(calib->sens_numer,
->> > -                                          raw_data - calib->bias,
->> > -                                          calib->sens_denom);
->> > +               if (calib->sens_denom !=3D 0) {
->> > +                       int calib_data =3D mult_frac(calib->sens_numer=
-,
->> > +                                                  raw_data - calib->b=
-ias,
->> > +                                                  calib->sens_denom);
->> > +
->> > +                       input_report_abs(sc->sensor_dev, calib->abs_co=
-de, calib_data);
->> > +               } else {
->> > +                       hid_warn(sc->hdev, "DualShock 4 parse report, =
-avoid invalid denominator");
->> > +               }
->> >
->> > -               input_report_abs(sc->sensor_dev, calib->abs_code, cali=
-b_data);
->> >                 offset +=3D 2;
->> >         }
->> >         input_sync(sc->sensor_dev);
->> > --
->> > 2.20.1
->> >
+> [1]
+> https://www.arm.com/why-arm/architecture/security-features/arm-confidential-compute-architecture
