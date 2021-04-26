@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5613636BA4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C209636BA4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 21:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241665AbhDZTuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 15:50:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36680 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241238AbhDZTuf (ORCPT
+        id S241678AbhDZTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 15:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241076AbhDZTw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:50:35 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QJaONP139849;
-        Mon, 26 Apr 2021 15:49:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=nLW8yqCLPoKnkpov57uBXMJZwao/yMKymkGF07mYGII=;
- b=XzsEN6TOlQQYwErcJY3JyglCULqJk7TjlK1Mj0xFmJrDKGQX8P3qK/jJ22Cx4RpO1iCI
- 2USoSDC3Aa3oRtpwBS6EF24ISsPktWdT7AwUdRRZUpbZnMo2oCfgEkJ2KiMNvZ91mSoH
- YrGzh1bi5KoyZMoHGP5ljdiuTNvoeFLX63nAR1+CWhWtI/TdhxG1y3xEwJEdSnWVmFF0
- J5eojAwmkn0OEjnDPjUiNwdaBnMpFYE4yRs3lRipL6o4s0nj0EB/7f1AJC/UnfMeLVmv
- 5FwG5i/dNjoWWr7Te4PFF4Abme/nsR1FjNfTkpgIK9JtXQoAy5luaIEcScfhCbJmSZN0 Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38625xk58w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 15:49:49 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13QJcVv6001453;
-        Mon, 26 Apr 2021 15:49:48 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38625xk585-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 15:49:48 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13QJf5KR000332;
-        Mon, 26 Apr 2021 19:49:46 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 384ay8ghmb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 19:49:45 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13QJnI0s24576286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Apr 2021 19:49:18 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7836AE053;
-        Mon, 26 Apr 2021 19:49:42 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DAFD3AE045;
-        Mon, 26 Apr 2021 19:49:40 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.108.190])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 26 Apr 2021 19:49:40 +0000 (GMT)
-Message-ID: <a69b29c5be3d523dae0febe672693601b794bee6.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 04/12] ima: Move ima_reset_appraise_flags() call to
- post hooks
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 26 Apr 2021 15:49:39 -0400
-In-Reply-To: <d4aba724-2935-467b-e57c-cd961112190b@schaufler-ca.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
-         <20210407105252.30721-5-roberto.sassu@huawei.com>
-         <d4aba724-2935-467b-e57c-cd961112190b@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Y3RRMTC_MA1EoB3w6hQjt0t-ESX4JkOw
-X-Proofpoint-GUID: U6NDY0Wwrbt2jrs_iS9_P6UP6wGEr7Xv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-26_09:2021-04-26,2021-04-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104260150
+        Mon, 26 Apr 2021 15:52:27 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB81FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:51:45 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z13so9074035lft.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rMzvlHcDZyhFhuFU4LQVJZGANy7uL1sDW1lbqH0JzZs=;
+        b=N2Fr6hWobaYu03YnQPm2YLWVZI7Bx2LGRe8vIt/dwM5N8Rlkyh/l4kBKX+wWWmmFGT
+         XyzIWofq/mFKqqtpyemWJR2+gwWrBSJkxj7tKycN6O2wqW6MdVxAY5xDxvGVLMr/LRLb
+         1T3DIji8d+PN7Pj0RGGQINRTQFeshpbcg8RI8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rMzvlHcDZyhFhuFU4LQVJZGANy7uL1sDW1lbqH0JzZs=;
+        b=Qg8h+/OxyQdj/nJrbvSEqcCEFZhSCyqOQdPpwKM4BptEm0YI6WTDm419d317uW/2Y2
+         wJEAEfRZfquYQM+JCsFgJoq1JYbOQzKDEEHDFFEp2CyjsK1LE+5iKsmPembvGh5iBodg
+         SpqTbUJqxIfn89JMkkcOjkQwhpiiFDSzAhm07y+0o+dBudUUfeEuy2BHm3nKiH6S/Vzl
+         P/v5aHvyXdATrI4oihGE7mj4gM1PWeO+1x80cBPWCJRhoqsxZCxqGq5WgBx7w1JzdU2q
+         r7ZpdTtah3BffGAe9Va8L3Iky3Cu/ngGpDctCmR0zI9MRHVegvqtXBWCpRYxSeYRQtdx
+         ORZg==
+X-Gm-Message-State: AOAM532pwFHfj54l0O3EGXa7T86jgIE44v2ecWpKuW46DX3Xr9XW1+c5
+        9o7e9I+FJ73g4g+CClQW0ntQV2sVJAYNxvVd
+X-Google-Smtp-Source: ABdhPJyNTs3p6+g+OfXPwJ1IglZWBUI/5k4nNb6Xps0LOSF7oWtAOf2HfeRaDHJCNKPlO602qb49gw==
+X-Received: by 2002:a19:ee0b:: with SMTP id g11mr14144784lfb.455.1619466704168;
+        Mon, 26 Apr 2021 12:51:44 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id q187sm106314ljq.7.2021.04.26.12.51.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 12:51:43 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id o16so65534257ljp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 12:51:43 -0700 (PDT)
+X-Received: by 2002:a2e:954a:: with SMTP id t10mr13455344ljh.411.1619466703312;
+ Mon, 26 Apr 2021 12:51:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
+ <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
+ <34d778fa-343f-912f-2fd7-a8ba49bd1b95@skogtun.org> <54debab9a79df628cff86a637dde13c281001578.camel@sipsolutions.net>
+ <CAHk-=wjvVMucgoAQKfi-x=jvYgKW1_LRmvnAfk3JGMkOSg9CQQ@mail.gmail.com> <2cafd6d0c6378b36644d04fe263a53a866354574.camel@sipsolutions.net>
+In-Reply-To: <2cafd6d0c6378b36644d04fe263a53a866354574.camel@sipsolutions.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 26 Apr 2021 12:51:27 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiwByiEUuO-NN=xHb4sxwCmP=tjB_vUHEebj8+-JGu8zg@mail.gmail.com>
+Message-ID: <CAHk-=wiwByiEUuO-NN=xHb4sxwCmP=tjB_vUHEebj8+-JGu8zg@mail.gmail.com>
+Subject: Re: [BISECTED] 5.12 hangs at reboot
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Harald Arnesen <harald@skogtun.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-07 at 09:17 -0700, Casey Schaufler wrote:
-> > diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-> > index 565e33ff19d0..1f029e4c8d7f 100644
-> > --- a/security/integrity/ima/ima_appraise.c
-> > +++ b/security/integrity/ima/ima_appraise.c
-> > @@ -577,21 +577,40 @@ int ima_inode_setxattr(struct dentry *dentry, const char *xattr_name,
-> >       if (result == 1) {
-> >               if (!xattr_value_len || (xvalue->type >= IMA_XATTR_LAST))
-> >                       return -EINVAL;
-> > -             ima_reset_appraise_flags(d_backing_inode(dentry),
-> > -                     xvalue->type == EVM_IMA_XATTR_DIGSIG);
-> >               result = 0;
-> >       }
-> >       return result;
-> >  }
-> >  
-> > +void ima_inode_post_setxattr(struct dentry *dentry, const char *xattr_name,
-> > +                          const void *xattr_value, size_t xattr_value_len)
-> > +{
-> > +     const struct evm_ima_xattr_data *xvalue = xattr_value;
-> > +     int result;
-> > +
-> > +     result = ima_protect_xattr(dentry, xattr_name, xattr_value,
-> > +                                xattr_value_len);
-> > +     if (result == 1)
-> > +             ima_reset_appraise_flags(d_backing_inode(dentry),
-> > +                     xvalue->type == EVM_IMA_XATTR_DIGSIG);
-> > +}
-> > +
-> 
-> Now you're calling ima_protect_xattr() twice for each setxattr.
-> Is that safe? Is it performant? Does it matter?
+On Mon, Apr 26, 2021 at 12:46 PM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> Right. Maybe if it's modules, could try to remove them rather than
+> reboot?
 
-The first time the call to ima_protect_xattr() prevents the
-security.ima from being inappropriately modified.  The second time it
-resets the cached status flags.  From a performance perspective,
-unnecessarily re-calcuating the file hash is worse than rechecking the
-security xattr string.
- 
-Mimi
+Yes, doing an 'rmmod ath9k'  (or whatever that module is called)
+sounds like a good idea, it might trigger the same lockup.
 
+In fact, that might be the reason Harald sees this - maybe Void Linux
+tries to unload modules before rebooting, and other distros don't?
+
+Unloading modules doesn't tend to get a lot of testing, it's a fairly
+unusual operation (and not one that is guaranteed to be safe - yes we
+do basic module refcounting, but it's very basic indeed, not full).
+
+               Linus
