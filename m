@@ -2,347 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EC236B554
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910BB36B55C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhDZO7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233573AbhDZO7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:59:31 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0E9C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 07:58:49 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id y4so48516543lfl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 07:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yndiEwrMC6EsVM5lWWHwmBuUCeQneP83JQi4/a7Sns0=;
-        b=hdJIUXK1M5vKihZvBbiXxVX0zbGkiSwcYrjzWIXTnKNF2R6XKjotaa6NW1jSmBMfF+
-         RsKlFucuVmaWXbSvOfz4yHH8+EuIn1SrZH5GfT/IZq9GHu6kNtTjnkrIWtIk1ttbjpdn
-         nsTB/WR6BV5sAwk/nj9DVliUbezg1Vf2EEnBPknZIKVx9o/aShq4fyVYIv4DYoMmyR1F
-         IC7d67dmhq8GZa+ISk3ChXEbCx1EVrEV6KvOSTKspul4ngiF/JFE1n8SYBRMjjNsNXUI
-         tnOzqkNpvrdQFkZimYg6x+A/NI9TdGgl6+ZRuOoFJRgE0bK/w3poouEeR2qeW07FiIDz
-         si1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yndiEwrMC6EsVM5lWWHwmBuUCeQneP83JQi4/a7Sns0=;
-        b=R+E1HypnG6JB9SYhRXGuadQjOv/T9N0NXEH+IRCnRGggl//rh+m79oanUumQlB9Y2s
-         Pl3KVvWygsl9+xMHEbsflmMu4otcX4XyNW2M742akNoYrh/HiG58H3jMe5CBWfdi1vTf
-         bLIFzrGLKq+12OmQJKCwwYSaxy0LLVW7s2CAbw4JhcE7QT/QkgcgCbRL6ToYGLyFtgyP
-         sJto9DvREzmrKHGCmJ7shYwcetZFuxYjRwjoqF5SarDWakVX5meXqSy+ZvzwCsVvK/Vz
-         xsa0jjaVfPfgDeK+MH/uWIyUhaeeccBYgJyh1mkHMGHfb2kAy753TsRyJkyiN3KRt5nb
-         ujtg==
-X-Gm-Message-State: AOAM532ipokdIB4xXiXqKciw6QoU3qpDY1D5psSO6T5I2UbD/qV9mjCj
-        ZbqFh9Z+fdE64OfaJp1VFQ9L+S/zLF2IvHX7yuWpCQ==
-X-Google-Smtp-Source: ABdhPJykq8BT8Xool8/EA9WjJVaNg4H9xn+OkF2ZkZbIUAax5gzJyjZzkRGPIrsULgYBrZuDC6FIPowetgi7qiZomgc=
-X-Received: by 2002:a05:6512:78c:: with SMTP id x12mr13581962lfr.233.1619449128283;
- Mon, 26 Apr 2021 07:58:48 -0700 (PDT)
+        id S233851AbhDZPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:02:17 -0400
+Received: from mga17.intel.com ([192.55.52.151]:56475 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232575AbhDZPCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 11:02:16 -0400
+IronPort-SDR: zP8OGjWBBNa04L+CezcQ/h0G5aNILZSxOqXvNSZzUVxibBayauMUkPDgE2neC55vOyvKpCkGi1
+ Ct27rbu2uLNQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="176464708"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="176464708"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 08:01:32 -0700
+IronPort-SDR: YtQF80EDZX8smam6eon7HIpAUQRiurysL9k4r0wrOzQQ71U1UMKUxh9vyqQrJfHKvtn/OEFkdK
+ lUA0CQKvCdrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="429423454"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga008.jf.intel.com with ESMTP; 26 Apr 2021 08:01:28 -0700
+Date:   Mon, 26 Apr 2021 23:01:27 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
+ pre-calibration drift
+Message-ID: <20210426150127.GB23119@shbuild999.sh.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-6-paulmck@kernel.org>
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al>
-In-Reply-To: <20210425080902.11854-1-odin@uged.al>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 26 Apr 2021 16:58:36 +0200
-Message-ID: <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        cgroups@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425224709.1312655-6-paulmck@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Apr 2021 at 10:11, Odin Ugedal <odin@uged.al> wrote:
->
-> TL;DR: Read the patch msg first; hopefully it makes sense. Feel free
-> to cc more relevant people, and (as I am pretty new to this) feedback
-> is highly appreciated!
->
-> I thought it was smart to split the discussion of the patch and the issuse, so
-> here is some (wall of text, sorry) discussion around it:
->
-> This patch fixes an extremely strange edge case, discovered more or less by
-> accident, where the fairness of the cfs scheduler get skewed quite
-> extensively. This often leads to two cgroups who are supposed to get
-> share cpu time 50/50, instead getting something like 90/10 or
-> even 99/1 (!!) in some rare cases (see below for example). I find this
-> edge case quite interesting, especially since I am able to so easily
-> reproduce it on all machines and all (4.8+) kernels.
->
-> The issue can be easily reproduced on all kernels 4.8+, and afaik. most
-> "container runtimes" are affected. I do believe that I have wondered about
-> this issue earlier, but not actually understood what was causing it. There
-> is really (afaik.) no way to find the issue from userspace without using
-> a tracing tool like bpftrace. I am _sure_ this affects real production
-> environments _everywhere_, at least those running the normal container/using
-> cgroup tools together with cpu pinning; but verifying that the
-> fairness is skewed is quite hard, or more or less impossible in such cases,
-> especially when running multiple workloads simultaneously. I did inspect some
-> of my production servers, and found a set of this on multiple cgroups.
->
-> It _is_ possible to read '/proc/sched_debug', but since that list only prints
-> the cfs_rq's from "leaf_cfs_rq_list", the cfs_rq's we are _really_ looking for,
-> are missing; making it look like the problem isn't becuase of cfs.
->
-> I think the current patch is the best way solve the issue, but I will happily
-> discuss other possible solutions. One could also just "don't" propagate the
-> load to the task_group, but I think the current implementation on that part
-> is the correct way to do it. This is at least my best solution to avoid adding
-> logic to a "hotter" path that also would require more logic.
->
-> The only thing I am thinking a bit about is if the cfs_rq (or one of its ancestors) is
-> throttled. In case the cfs_rq->throttled==1, I don't think we currently can skip, since
-> it only adds to the leaf_list in case (cfs_rq->nr_running >= 1), and the same applies for
-> (cfs_rq->throttle_count >= 1), since we cannot guarantee that it will be added again. Will
-> this code however interfere with the throttling mechanism? I have tested inserting new procs
-> to throttled cgroups (or children cgroups of throttled ones) with the patch applied,
-> and it works as I expect it to do (but other people might have more insight).
->
-> Also, another solution may be to don't add the load before the task is actually
-> enqueued, avoiding this issue all together. But is that better (I assume that will
-> be more in the "hot path", and require quite a bit more code)?
->
-> There may definetly be a better solution to this that I still haven't found, and that
-> other more experienced kernel devs see right away. :)
->
->
-> Also feel free to suggest additions/wording of the patch
-> message and title, and/or the comment in the code to make it more clear.
->
-> This issue was introduced in 4.8, so all stable (4.9+) releases should probably
-> get this (the final solution at least), or?
->
+Hi Paul,
 
-Have you been able to reproduce this on mainline ?
+On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> Because the x86 tsc_early clocksource is given a quick and semi-accurate
+> calibration (by design!), it might have drift rates well in excess of
+> the 0.1% limit that is in the process of being adopted.
+> 
+> Therefore, add a max_drift field to the clocksource structure that, when
+> non-zero, specifies the maximum allowable drift rate in nanoseconds over
+> a half-second period.  The tsc_early clocksource initializes this to five
+> miliseconds, which corresponds to the 1% drift rate limit suggested by
+> Xing Zhengjun.  This max_drift field is intended only for early boot,
+> so clocksource_watchdog() splats if it encounters a non-zero value in
+> this field more than 60 seconds after boot, inspired by a suggestion by
+> Thomas Gleixner.
+> 
+> This was tested by setting the clocksource_tsc ->max_drift field to 1,
+> which, as expected, resulted in a clock-skew event.
 
->
->
-> Below is various ways/scripts to reproduce - sorry this is so long (and
-> sorry for bash in general), but thought people might be interested in them:
->
-> note: due to the nature of the issue, the "lost" load is different each time, so
-> the values change each time, and sometimes/often end up at ~50/50; but my testing
-> shows that it keep happening almost every time:
->
->
-> Example on cgruoup v1. Often results in 60/40 load:
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root       18026 63.0  0.0   3676   100 pts/7    R+   13:09   0:06 stress --cpu 1
-> root       18036 36.6  0.0   3676   100 pts/7    R+   13:09   0:04 stress --cpu 1
+We've run the same last for this v10, and those 'unstable' thing [1] can
+not be reproduced!
 
-When running the script below on v5.12, I'm not able to reproduce your problem
+We've reported one case that tsc can be wrongly judged as 'unstable'
+by 'refined-jiffies' watchdog [1], while reducing the threshold could
+make it easier to be triggered.
 
-> --- bash start
-> CGROUP_CPU=/sys/fs/cgroup/cpu/slice
-> CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
-> CPU=0
->
-> function run_sandbox {
->   local CG_CPUSET="$1"
->   local CG_CPU="$2"
->   local CMD="$3"
->
->   local PIPE="$(mktemp -u)"
->   mkfifo "$PIPE"
->   sh -c "read < $PIPE ; exec $CMD" &
->   local TASK="$!"
->   sleep .1
->   mkdir -p "$CG_CPUSET"
->   mkdir -p "$CG_CPU"
->   tee "$CG_CPU"/cgroup.procs <<< "$TASK"
->
->   tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
->
->   tee "$PIPE" <<< sandox_done
->   rm "$PIPE"
-> }
->
-> mkdir -p "$CGROUP_CPU"
-> mkdir -p "$CGROUP_CPUSET"
-> tee "$CGROUP_CPUSET"/cpuset.cpus <<< "0"
-> tee "$CGROUP_CPUSET"/cpuset.mems <<< "0"
->
-> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" "stress --cpu 1"
-> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" "stress --cpu 1"
->
-> read # click enter to cleanup
-> killall stress
-> sleep .2
-> rmdir /sys/fs/cgroup/cpuset/slice/
-> rmdir /sys/fs/cgroup/cpu/slice/{cg-1,cg-2,}
-> --- bash end
->
-> Example on cgroup v2 with sub cgroup (same as described in commit message),
-> where both should get 50/50, but instead getting 99% and 1% (!!).
->
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
-> root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
->
-> (in case of systemd on vg v2- make sure some slice/scope is delegated(?)/use
-> cpusets, otherwise systemd will fight you)
-> --- bash start
-> CGROUP_CPU=/sys/fs/cgroup/cpu/slice
-> CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
-> CPU=0
->
-> function run_sandbox {
->   local CG_CPUSET="$1"
->   local CG_CPU="$2"
->   local CMD="$3"
->
->   local PIPE="$(mktemp -u)"
->   mkfifo "$PIPE"
->   sh -c "read < $PIPE ; exec $CMD" &
->   local TASK="$!"
->   sleep .01
->   mkdir -p "$CG_CPUSET"
->   mkdir -p "$CG_CPU"
->   tee "$CG_CPU"/cgroup.procs <<< "$TASK"
->
->   tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
->
->   tee "$PIPE" <<< sandox_done
->   rm "$PIPE"
-> }
->
-> mkdir -p "$CGROUP_CPU"
-> mkdir -p "$CGROUP_CPUSET"
-> tee "$CGROUP_CPUSET"/cpuset.cpus <<< "0"
-> tee "$CGROUP_CPUSET"/cpuset.mems <<< "0"
->
-> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" "stress --cpu 1"
-> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" "stress --cpu 1"
->
-> read # click enter to cleanup
-> killall stress
-> sleep .2
-> rmdir /sys/fs/cgroup/cpuset/slice/
-> rmdir /sys/fs/cgroup/cpu/slice/{cg-1,cg-2,}
-> --- bash end
->
->
->
-> For those who only want to run docker stuff:
-> (on cgroup v1, you must use systemd driver)
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root        9291 60.1  0.0   7320    96 pts/0    R+   13:18   0:07 /usr/bin/stress --verbose --cpu 1
-> root        9388 45.5  0.0   7320    96 pts/0    R+   13:18   0:04 /usr/bin/stress --verbose --cpu 1
-> --- bash start
-> docker run --cpuset-cpus=0 --rm -it an-image-with-stress
-> docker run --cpuset-cpus=0 --rm -it an-image-with-stress
-> --- bash end
->
->
-> Here is a bpftrace script that can show what is happening (again. sorry for bash,
-> but bpftrace only allow constants as array indexes as of now, so this is the best I can do).
-> This script also needs bpftrace v0.13 (not released as of now, so currently you have
-> to compile master) or newer.
->
->
-> --- bash start
-> PROBE='kfunc:sched_group_set_shares{
->   printf("cgroup: %s/%s\n",
->     str(args->tg->css.cgroup->kn->parent->name),
->     str(args->tg->css.cgroup->kn->name));
->   printf(
-> "cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg\n"
-> );
-> }'
-> for i in $(seq 0 $(($(nproc)-1))); do
->     PROBE="$PROBE""$(sed "s/cpu_nr/$i/" <<<' kfunc:sched_group_set_shares{
->     printf("%-4d %-12llu %-13llu %-17llu %-11d %-16d %-20llu %d\n",
->     cpu_nr,
->     (args->tg->cfs_rq[cpu_nr])->load.weight,
->     (args->tg->cfs_rq[cpu_nr])->avg.load_avg,
->     (args->tg->cfs_rq[cpu_nr])->removed.load_avg,
->     (args->tg->cfs_rq[cpu_nr])->removed.nr,
->     (args->tg->cfs_rq[cpu_nr])->on_list,
->     (args->tg->cfs_rq[cpu_nr])->tg_load_avg_contrib,
->     args->tg->load_avg.counter
->     );
-> }')"
-> done
-> PROBE="$PROBE"'kfunc:sched_group_set_shares{
->   printf("\n");
-> }'
->
-> bpftrace -e "$PROBE"
-> --- bash end
->
->
-> When running the bpftrace script when the sub cgroup example is running, and
-> executing (just setting the weight of the cgroup the same value as before, no change):
->
-> --- bash start
-> tee /sys/fs/cgroup/slice/cg-1/sub/cpu.weight <<< 1
-> tee /sys/fs/cgroup/slice/cg-2/sub/cpu.weight <<< 10000
-> tee /sys/fs/cgroup/slice/cg-1/cpu.weight <<< 100
-> tee /sys/fs/cgroup/slice/cg-2/cpu.weight <<< 100
-> --- bash end
->
-> the output is:
->
-> --- output start
-> Attaching 6 probes...
-> cgroup: cg-1/sub
-> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
-> 0    1048576      1023          0                 0           1                1034                 1662
-> 1    0            0             0                 0           0                0                    1662
-> 2    0            0             0                 0           0                0                    1662
-> 3    0            628           628               1           0                628                  1662
->
-> cgroup: cg-2/sub
-> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
-> 0    1048576      1023          0                 0           1                1023                 1830
-> 1    0            0             0                 0           0                0                    1830
-> 2    0            0             0                 0           0                0                    1830
-> 3    0            807           807               1           0                807                  1830
->
-> cgroup: slice/cg-1
-> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
-> 0    6347         5             0                 0           1                5                    593
-> 1    0            0             0                 0           0                0                    593
-> 2    0            0             0                 0           0                0                    593
-> 3    0            5             0                 0           0                588                  593
->
-> cgroup: slice/cg-2
-> cpu  load.weight  avg.load_avg  removed.load_avg  removed.nr  removed.on_list  tg_load_avg_contrib  tg->load_avg
-> 0    58642371     57263         0                 0           1                57909                58665
-> 1    0            0             0                 0           0                0                    58665
-> 2    0            0             0                 0           0                0                    58665
-> 3    0            75615         0                 0           0                756                  58665
->
-> --- output end
->
-> We can clearly see that both cg-1/sub and cg-2/sub have removed.nr==1 on cpu 3,
-> and therefore still contribute to the tg->load_avg. Since removed.on_list==0, the load would
-> never be "cleaned" up unless a new task starts on that cpu, but due to the cpuset, that would not
-> be the case. slice/cg-1 and slice/cg-2 also have load attached to cpu 3 that isn't removed (but
-> the patch will properly decay the load on them as well).
->
-> With this path, all of these examples just end up sharing cpu time in a fair 50/50 way, as expected.
->
-> Odin Ugedal (1):
->   sched/fair: Fix unfairness caused by missing load decay
->
->  kernel/sched/fair.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> --
-> 2.31.1
->
+It could be reproduced on the a plaform with a 115200 serial console,
+and hpet been disabled (several x86 platforms has this), add 
+'initcall_debug' cmdline parameter to get more debug message, we can
+see:
+
+[    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
+[    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+[    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+[    1.134220] clocksource:                       No current clocksource.
+[    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
+
+[1]. https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/ 
+[2]. https://lore.kernel.org/lkml/20201126012421.GA92582@shbuild999.sh.intel.com/
+
+Thanks,
+Feng
+
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Mark Rutland <Mark.Rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+> Cc: Feng Tang <feng.tang@intel.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  arch/x86/kernel/tsc.c       |  1 +
+>  include/linux/clocksource.h |  5 +++++
+>  kernel/time/clocksource.c   | 19 ++++++++++++++++++-
+>  3 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 56289170753c..7192b8950322 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -1127,6 +1127,7 @@ static int tsc_cs_enable(struct clocksource *cs)
+>  static struct clocksource clocksource_tsc_early = {
+>  	.name			= "tsc-early",
+>  	.rating			= 299,
+> +	.max_drift		= 5 * NSEC_PER_MSEC,
+>  	.read			= read_tsc,
+>  	.mask			= CLOCKSOURCE_MASK(64),
+>  	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+> index 83a3ebff7456..07d25a158d7a 100644
+> --- a/include/linux/clocksource.h
+> +++ b/include/linux/clocksource.h
+> @@ -42,6 +42,10 @@ struct module;
+>   * @shift:		Cycle to nanosecond divisor (power of two)
+>   * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
+>   * @maxadj:		Maximum adjustment value to mult (~11%)
+> + * @max_drift:		Maximum drift rate in nanoseconds per half second.
+> + *			Zero says to use default WATCHDOG_THRESHOLD.
+> + *			A non-zero value for ->max_drift more than 60 seconds after boot
+> + *			will result in a splat.
+>   * @archdata:		Optional arch-specific data
+>   * @max_cycles:		Maximum safe cycle value which won't overflow on
+>   *			multiplication
+> @@ -93,6 +97,7 @@ struct clocksource {
+>  	u32			shift;
+>  	u64			max_idle_ns;
+>  	u32			maxadj;
+> +	u32			max_drift;
+>  #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
+>  	struct arch_clocksource_data archdata;
+>  #endif
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index f71f375df544..070b09dab815 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -126,6 +126,7 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
+>   */
+>  #define WATCHDOG_INTERVAL (HZ >> 1)
+>  #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
+> +#define WATCHDOG_SYNC_FORGIVENESS (HZ * 60UL)
+>  
+>  /*
+>   * Maximum permissible delay between two readouts of the watchdog
+> @@ -377,6 +378,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+>  	int next_cpu, reset_pending;
+>  	int64_t wd_nsec, cs_nsec;
+>  	struct clocksource *cs;
+> +	u32 md;
+>  
+>  	spin_lock(&watchdog_lock);
+>  	if (!watchdog_running)
+> @@ -423,7 +425,22 @@ static void clocksource_watchdog(struct timer_list *unused)
+>  			continue;
+>  
+>  		/* Check the deviation from the watchdog clocksource. */
+> -		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
+> +		if (!cs->max_drift) {
+> +			md = WATCHDOG_THRESHOLD;
+> +		} else {
+> +			static unsigned long first_jiffies;
+> +			static bool beenhere;
+> +
+> +			if (beenhere) {
+> +				WARN_ON_ONCE(time_after(jiffies,
+> +							first_jiffies + WATCHDOG_SYNC_FORGIVENESS));
+> +			} else {
+> +				beenhere = true;
+> +				first_jiffies = jiffies;
+> +			}
+> +			md = cs->max_drift;
+> +		}
+> +		if (abs(cs_nsec - wd_nsec) > md) {
+>  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+>  				smp_processor_id(), cs->name);
+>  			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+> -- 
+> 2.31.1.189.g2e36527f23
