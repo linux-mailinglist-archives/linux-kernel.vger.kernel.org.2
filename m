@@ -2,119 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452CB36B1B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3B936B1B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbhDZKkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        id S232800AbhDZKkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232194AbhDZKj7 (ORCPT
+        with ESMTP id S232194AbhDZKkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:39:59 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9EAC061574;
-        Mon, 26 Apr 2021 03:39:15 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id r128so60549943lff.4;
-        Mon, 26 Apr 2021 03:39:15 -0700 (PDT)
+        Mon, 26 Apr 2021 06:40:10 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B72C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:39:28 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j28so1093458edy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hiUwGg544H+HpznYYXJv68XSHdlUYpy5D+8CQkUlj0U=;
-        b=qNnxpBlS2UY6t+013G1lfx4Z4IYDbYK1qSBayYhJ0rWUUigAidudrl5Hao04sR4Qiv
-         2tEuDkxpY1D5hWmx/f7npFZA068qtEZu0VIWMt6BXlHiWEOTM8yO7GP50o77cZTiI5cB
-         Vrc0WHumBQJjSRbu8dt98YxMdrj+iYGYbxE7C5PApceYxB4+E85yisYG6LkXFcVQVYZ8
-         JfYnvXuX7vCP+Hnd54uOblrUUzo1g2ZA6RTcVDnvod47+VblmU+z2w7TKkdAbRxxXLf2
-         4VtIWm7DPP9pURGmWKr/VQUdGiLxPuGD+47yra9ZQj3X3TgjRDG4ugE/qtcynceWHBaQ
-         517A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gzHm2Q3m5eV6N16rIWqgxmdmJyqiVMUv0odqYwAOQNQ=;
+        b=UpGKxYZTYfaT1MCe+bXuvLXU2xxGlwemq1AZuAKSU97jwPrPiYg5ffkj00lGDG1eJw
+         GZxESO91tagyp80tGf6ndDaDmRvlfcsVjLw0OvT8qenKcB7lhwyV0ZlQO4RIIUNVE1GK
+         TIKMcdf9qIORVpthXZnGZVA4GlkmcSTu5FvzSpoYzUCARVGCRK7Cl5VBCck5AeKQi2hH
+         w9ZazKzeyXbMLq2hVRhg3cVi95PKeN9vDH3VQkKxn9PSzlAwA/acazumpND7gl0+YyZy
+         /ernYeqfEiJh66J6qOZtGgX77b5eM4mb3PDu3iHoRNd951tEdGpbCnCJaGFS2UrTDISV
+         s/ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hiUwGg544H+HpznYYXJv68XSHdlUYpy5D+8CQkUlj0U=;
-        b=mqm1+pE6ATGEaCF8zR47DL3waJNb5ntLXpGEHewW7+YtxB8a4TfdT7Gsjr/FjM1vXQ
-         EoT4GwaFTNmc575atqyTkxEcoy6qy5WFrybAR7KV62yDBbz6G7CYt/V8nR+YSxRW4D7c
-         zKs8+9D9s+DrxCs7Z3uhpyrLzHbO2DLeMvsvzK71ttDs0Z155I34FS9cCHacTGDaJmrZ
-         Ln2b3qSa6nemHnUTCZI4EnwdlUkty+HJE+ySB6w787gRfmnbgSK63eAemSpLuDVlTALV
-         wDSJgHYbyD1OtJPl0NuOM4VY6gR/U1/6UlnrdGxRKOca8jTcLe/73KorWkKkeAVauX/B
-         pBAw==
-X-Gm-Message-State: AOAM530ZBDzygfFYepQR9A2MVrnvC6fOvL+trYuCibhwsshRTarWbGUC
-        mQojy79rVBFwZ9iEefHnSyBUw9n/k1iNrYfvWqc=
-X-Google-Smtp-Source: ABdhPJxP0wgBv+BXU3aQlZWWWwAZg71hs0fFXOXF55vd+8peBeYGKvnojsRq/fmLNFf2geu6+Mge6SXeoEzR5mf+kHA=
-X-Received: by 2002:a19:b81:: with SMTP id 123mr12252945lfl.553.1619433553826;
- Mon, 26 Apr 2021 03:39:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gzHm2Q3m5eV6N16rIWqgxmdmJyqiVMUv0odqYwAOQNQ=;
+        b=uN18YNoL0S2SEOcPc/yNakwDbG0GMwCs9rkoKxq3JfYlJ8Fz87oLCVrFwpA4mvezK3
+         ApeQakTGJNuYpZ2k+NRVHt8GK/8FjdKKB+/m5XTvDUnkP+1HR+eO1eav3bariI5B4XP+
+         q5N1IzPfmX0Ygg/FlWpQnukzoO8GvgQaQ5IMOpl/ZVHXIXYSZ2KEA1T+cZyDcmgAlNnv
+         etzK6uiVYfuqj/5W0p22eAk5RXJbGq/RTCjO6Q73pliByGlAQ65rBW7RE0t9rHqvfHhb
+         ZUjd/ofmf+xmnp6u/2HE+3TRqBec92j63xtxlHe9BDgqhxbmcIkb+zfZYrcdAeKBvX2j
+         F3ww==
+X-Gm-Message-State: AOAM533Ft2g5197fo8Nz9knTvh3zPHHBTwD51isqy4zC3+oxv5o6mxCo
+        mCP65pNJvp1he9S7+91E1rA=
+X-Google-Smtp-Source: ABdhPJxPR9QPG3UeK+zaOlu4evCRetKoiS1xibepvH7xcBd/uQAy0GBKqZ6Xplz7t9X3ZFdNtZ7mtw==
+X-Received: by 2002:a50:ed0c:: with SMTP id j12mr13505252eds.12.1619433567449;
+        Mon, 26 Apr 2021 03:39:27 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id u6sm11251505ejn.14.2021.04.26.03.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 03:39:27 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        David Kershner <david.kershner@unisys.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba: Convert module from IDR to XArray
+Date:   Mon, 26 Apr 2021 12:39:25 +0200
+Message-ID: <70412520.S8q5jszebs@linux.local>
+In-Reply-To: <YIaORY3B6+6vMvFj@kroah.com>
+References: <20210426095015.18556-1-fmdefrancesco@gmail.com> <YIaORY3B6+6vMvFj@kroah.com>
 MIME-Version: 1.0
-References: <20210319051627.814-1-cnsztl@gmail.com> <161640742725.808893.3666594351389773587.b4-ty@sntech.de>
- <20210425213321.GF10996@amd>
-In-Reply-To: <20210425213321.GF10996@amd>
-From:   Tianling Shen <cnsztl@gmail.com>
-Date:   Mon, 26 Apr 2021 18:39:03 +0800
-Message-ID: <CAOP2_ThcRMkgSm872q2By=gALoK-qAjq92FtNQkDO999pZR8kg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        David Bauer <mail@david-bauer.net>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Monday, April 26, 2021 11:56:21 AM CEST Greg Kroah-Hartman wrote:
+> On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
+> > Converted visorhba from IDR to XArray. The abstract data type XArray is
+> > more memory-efficient, parallelisable and cache friendly. It takes
+> > advantage of RCU to perform lookups without locking.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> >  .../staging/unisys/visorhba/visorhba_main.c   | 107 +++++++-----------
+> >  1 file changed, 44 insertions(+), 63 deletions(-)
+> > 
+> > diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c
+> > b/drivers/staging/unisys/visorhba/visorhba_main.c index 
+4455d26f7c96..851e60ab0c46
+> > 100644
+> > --- a/drivers/staging/unisys/visorhba/visorhba_main.c
+> > +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+> > @@ -6,10 +6,10 @@
+> > 
+> >  #include <linux/debugfs.h>
+> >  #include <linux/kthread.h>
+> > 
+> > -#include <linux/idr.h>
+> > 
+> >  #include <linux/module.h>
+> >  #include <linux/seq_file.h>
+> >  #include <linux/visorbus.h>
+> > 
+> > +#include <linux/xarray.h>
+> > 
+> >  #include <scsi/scsi.h>
+> >  #include <scsi/scsi_host.h>
+> >  #include <scsi/scsi_cmnd.h>
+> > 
+> > @@ -23,6 +23,8 @@
+> > 
+> >  #define MAX_PENDING_REQUESTS (MIN_NUMSIGNALS * 2)
+> >  #define VISORHBA_ERROR_COUNT 30
+> > 
+> > +static DEFINE_XARRAY_ALLOC(xa_dtstr);
+> > +
+> > 
+> >  static struct dentry *visorhba_debugfs_dir;
+> >  
+> >  /* GUIDS for HBA channel type supported by this driver */
+> > 
+> > @@ -78,12 +80,6 @@ struct visorhba_devdata {
+> > 
+> >  	unsigned int max_buff_len;
+> >  	int devnum;
+> >  	struct uiscmdrsp *cmdrsp;
+> > 
+> > -	/*
+> > -	 * allows us to pass int handles back-and-forth between us and
+> > -	 * iovm, instead of raw pointers
+> > -	 */
+> > -	struct idr idr;
+> > -
+> > 
+> >  	struct dentry *debugfs_dir;
+> >  	struct dentry *debugfs_info;
+> >  
+> >  };
+> > 
+> > @@ -183,32 +179,16 @@ static struct uiscmdrsp 
+*get_scsipending_cmdrsp(struct
+> > visorhba_devdata *ddata,> 
+> >  }
+> >  
+> >  /*
+> > 
+> > - * simple_idr_get - Associate a provided pointer with an int value
+> > - *		    1 <= value <= INT_MAX, and return this int value;
+> > - *		    the pointer value can be obtained later by passing
+> > - *		    this int value to idr_find()
+> > - * @idrtable: The data object maintaining the pointer<-->int mappings
+> > - * @p:	      The pointer value to be remembered
+> > - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> > - *
+> > - * Return: The id number mapped to pointer 'p', 0 on failure
+> > + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
+> > + * @id: Pointer to ID
+> > + * @entry: New entry
+> > 
+> >   */
+> > 
+> > -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+> > -				   spinlock_t *lock)
+> > +static int simple_xa_dtstr_get(u32 *id, void *entry)
+> 
+> What are you trying to really "get" here?  We shouldn't name the
+> function based on the data type being used.  All we want is some sort of
+> "token" or hash or something else?  It's hard to tell...
+> 
+Sorry, I am so lazy that I just substituted the _idr_ in the old name with 
+_xa_dtstr_. Perhaps simple_entry_get() would be better. it deserves a v2.
+>
+> >  {
+> > 
+> > -	int id;
+> > -	unsigned long flags;
+> > +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b, 
+GFP_NOWAIT);
+> > +	/* TODO: check for and manage errors */
+> 
+> That's a nice TODO, which means we really should not be considering this
+> patch to be merged, right?
+>
+Right, lazy again :)
 
-On Mon, Apr 26, 2021 at 5:33 AM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > > Changes in v6:
-> > > - Fixed format of LED nodes
-> > >
-> > > Changes in v5:
-> > > - Dropped the empty PCIe node
-> > > - Dropped useless `/delete-property/`
-> > > - Renamed LED nodes
-> > >
-> > > [...]
-> >
-> > Applied, thanks!
-> >
-> > [1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
-> >       commit: 1003888415e83e15ddb63d1d96189b4f2c5f1d48
-> > [2/2] rockchip: rk3399: Add support for FriendlyARM NanoPi R4S
-> >       commit: db792e9adbf85ffc9d6b0b060ac3c8e3148c8992
->
-> Sorry for late review, but:
->
->
-> +                       label = "red:sys";
->
-> This should be red:power based on the discussion in earlier threads.
+The fact is that I was just interested in conversion from IDR to XArray 
+because this would be the main subject of the project I applied for the DRM 
+subsystem. Therefore, where I didn't find proper error checking and management 
+in the old code, I simply wrote some TODO. 
 
-However based on the introduction from FriendlyELEC[1], this is not
-the "power" lamp...
-"LEDs: 1 x power LED and 3 x GPIO Controlled LED (SYS, LAN, WAN)"
+I suppose that some more knowledge of both Linux device drivers programming 
+and of that specific driver is needed to do proper management of errors in 
+order to unwind what is already done by the code and leave everything in a 
+consistent state. I'd left that work to Unisys developers, if you don't mind. 
+I'd prefer to simply remove those TODO from where I placed them. I hope that 
+you agree with me.
 
-1. https://wiki.friendlyarm.com/wiki/index.php/NanoPi_R4S#Hardware_Spec
+Thanks for your review,
 
-Thanks,
-Tianling.
+Fabio 
+> 
+> thanks,
+> 
+> greg k-h
 
->
-> Thanks,
->                                                                         Pavel
-> --
-> http://www.livejournal.com/~pavelmachek
+
+
+
