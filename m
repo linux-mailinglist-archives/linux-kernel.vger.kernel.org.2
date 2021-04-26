@@ -2,92 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C64136B47E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B79A36B485
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbhDZOHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbhDZOHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:07:09 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 550FCC061574;
-        Mon, 26 Apr 2021 07:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=yHvzrd1ko8
-        bT/rLvfOe6xTk+KVZ/CieWVqR+uGCIwck=; b=fy3LYR0m4E/Dhy/FMGqzZYQ+Wq
-        LLKgXV6d5/mUyVopAHfORzZAnXdRcSN4/hvYIJRdhKMA5VGGnqtPSy4iuYKZ10K5
-        3z3XDJGYlPQhLoAgpW98/hkExXggFH1/Mme5nui+94czgWPVkilvo4CCveuhcbP6
-        8PBPFrXourOEOQhTo=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBXXzfYyIZgCUBLAA--.5813S4;
-        Mon, 26 Apr 2021 22:06:16 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        nareshkumar.pbs@broadcom.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] RDMA/bnxt_re/qplib_res: Fix a double free in bnxt_qplib_alloc_res
-Date:   Mon, 26 Apr 2021 07:06:14 -0700
-Message-Id: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S233702AbhDZOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:09:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:1518 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230250AbhDZOJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:09:45 -0400
+IronPort-SDR: A40B67Z/BRDGJxldXgb3rrLwOp0RyoXjFB2UyexJ2sDFy5psG5I6xfUiMu00dZL/UiWgYyJyjV
+ KnaRRej3RJTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="257643897"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="257643897"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 07:09:03 -0700
+IronPort-SDR: F8yl2V3nfTHNNGhj1ljAmRMkkyjfXcv3fcAFa8dnqQDMUodPkAeAvq8rWL79Q42HIVJetJYqJf
+ RGjyEkyIelEQ==
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="392774488"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 07:09:02 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 38B1A20207;
+        Mon, 26 Apr 2021 17:09:00 +0300 (EEST)
+Date:   Mon, 26 Apr 2021 17:09:00 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 25/78] media: i2c: ccs-core: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210426140900.GW3@paasikivi.fi.intel.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <34da940f76da6c1d61a193409164070f47243b64.1619191723.git.mchehab+huawei@kernel.org>
+ <20210425185525.GS3@paasikivi.fi.intel.com>
+ <20210426160151.61ac6ef2@coco.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBXXzfYyIZgCUBLAA--.5813S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7GFWrWFy5GF48tw4ftw1kXwb_yoW8Jry3pr
-        47Wr90kr98JFs2kF42q3yUCr45A3srJ34vgay2k3y3C3Z5Zas7tF1kGasrtF9IyFZ8Kr1I
-        kwnxXw4UKFy7uF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr4
-        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYZXODUUUU
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426160151.61ac6ef2@coco.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().
-Inside bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
-pci_iounmap() in unmap_io error branch. After the callee returns err code,
-bnxt_qplib_alloc_res calls bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl()
-in fail branch. Then dpit->dbr_bar_reg_iomem is freed in the second time by
-pci_iounmap().
+Hi Mauro,
 
-My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by pci_iounmap()
-in the first time, to avoid the double free.
+On Mon, Apr 26, 2021 at 04:01:51PM +0200, Mauro Carvalho Chehab wrote:
+> Em Sun, 25 Apr 2021 21:55:25 +0300
+> Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
+> 
+> > Hi Mauro,
+> > 
+> > Thanks for the patch.
+> > 
+> > On Sat, Apr 24, 2021 at 08:44:35AM +0200, Mauro Carvalho Chehab wrote:
+> > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > added pm_runtime_resume_and_get() in order to automatically handle
+> > > dev->power.usage_count decrement on errors.
+> > > 
+> > > Use the new API, in order to cleanup the error check logic.
+> > > 
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  drivers/media/i2c/ccs/ccs-core.c | 11 +++++------
+> > >  1 file changed, 5 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
+> > > index 9dc3f45da3dc..1441ddcc9b35 100644
+> > > --- a/drivers/media/i2c/ccs/ccs-core.c
+> > > +++ b/drivers/media/i2c/ccs/ccs-core.c
+> > > @@ -1880,12 +1880,11 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
+> > >  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
+> > >  	int rval;
+> > >  
+> > > -	rval = pm_runtime_get_sync(&client->dev);
+> > > -	if (rval < 0) {
+> > > -		pm_runtime_put_noidle(&client->dev);
+> > > -
+> > > +	rval = pm_runtime_resume_and_get(&client->dev);
+> > > +	if (rval < 0)
+> > >  		return rval;
+> > > -	} else if (!rval) {
+> > > +
+> > > +	if (!rval) {
+> > >  		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
+> > >  					       ctrl_handler);
+> > >  		if (rval)
+> > > @@ -3089,7 +3088,7 @@ static int __maybe_unused ccs_suspend(struct device *dev)
+> > >  	bool streaming = sensor->streaming;
+> > >  	int rval;
+> > >  
+> > > -	rval = pm_runtime_get_sync(dev);
+> > > +	rval = pm_runtime_resume_and_get(dev);
+> > >  	if (rval < 0) {
+> > >  		pm_runtime_put_noidle(dev);  
+> > 
+> > You'll need to drop pm_runtime_put_noidle() here.
+> 
+> OK!
+> 
+> ---
+> 
+> On a non-related issue at the same code, after the change, the
+> suspend function will be:
+> 
+>   static int __maybe_unused ccs_suspend(struct device *dev)
+>   {
+>         struct i2c_client *client = to_i2c_client(dev);
+>         struct v4l2_subdev *subdev = i2c_get_clientdata(client);
+>         struct ccs_sensor *sensor = to_ccs_sensor(subdev);
+>         bool streaming = sensor->streaming;
+>         int rval;
+> 
+>         rval = pm_runtime_resume_and_get(dev);
+>         if (rval < 0) 
+>                 return -EAGAIN;
+> 
+>         if (sensor->streaming)
+>                 ccs_stop_streaming(sensor);
+> 
+>         /* save state for resume */
+>         sensor->streaming = streaming;
+> 
+>         return 0;
+>   }
+> 
+> Not sure if "return -EAGAIN" is the right thing here. I mean,
+> the PM runtime core has two error conditions that are independent
+> on whatever the PM callback would be doing[1]:
+> 
+> 	        if (dev->power.runtime_error)
+>                 retval = -EINVAL;
+>         else if (dev->power.disable_depth > 0)
+>                 retval = -EACCES;
+> 
+> It would be very unlikely that trying to suspend again would solve
+> those conditions.
+> 
+> So, I guess that the right thing to do is to change the code
+> to do, instead:
+> 
+>   static int __maybe_unused ccs_suspend(struct device *dev)
+>   {
+>         struct i2c_client *client = to_i2c_client(dev);
+>         struct v4l2_subdev *subdev = i2c_get_clientdata(client);
+>         struct ccs_sensor *sensor = to_ccs_sensor(subdev);
+>         bool streaming = sensor->streaming;
+>         int rval;
+> 
+>         rval = pm_runtime_resume_and_get(dev);
+>         if (rval < 0) 
+>                 return rval;
+> 	...
+>   }
+> 
+> 
+> [1] see rpm_resume() code at drivers/base/power/runtime.c.
 
-Fixes: 1ac5a40479752 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
- 1 file changed, 1 insertion(+)
+Yeah, I agree. This code is one of the older parts the driver.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index fa7878336100..3ca47004b752 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -854,6 +854,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
- 
- unmap_io:
- 	pci_iounmap(res->pdev, dpit->dbr_bar_reg_iomem);
-+	dpit->dbr_bar_reg_iomem = NULL;
- 	return -ENOMEM;
- }
- 
+Please add:
+
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+The same goes for the other sensor driver patches in the set you cc'd me,
+i.e. patches 12, 15, 26, 28,32, 40, 45, 51, 53 and 55.
+
 -- 
-2.25.1
+Kind regards,
 
-
+Sakari Ailus
