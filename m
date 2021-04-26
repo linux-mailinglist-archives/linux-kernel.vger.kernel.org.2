@@ -2,340 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172D536B8DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6C436B8E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234484AbhDZSZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:25:51 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:45840 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbhDZSZu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:25:50 -0400
-Received: by mail-ot1-f44.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so47893449otf.12;
-        Mon, 26 Apr 2021 11:25:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=KMCt5AdBW7mmXPSQ6Q38ATS9byQNi7Tz5p4WwkBd5XM=;
-        b=EQSuwHMF7geTkp5jtqpX5b6FXnr39Kki1cZFOVTE2M884BRMNxhVJF5vyBZuB7nVLg
-         6ZOaMzLvq9piC+KRmstaUweE2v2zwG8NfTxUUG3wFYFi8E5CQkeUDeDHJI+EGmERxJGJ
-         aG7YrC1o3GXVT0Pg+HSFWR/ChS691wBNda+yP76UjLnBL2jxVD3VY4mJYjoio1smeJQQ
-         /cl9LX/049b/krmkgDAjpQiUBUA9gyu5oDJEaYTdjm/lAohlQLfdStqGPBaK3BWueBsA
-         0p4g4j3REwnSB+gbUKHRCoT8+nDOp0snCyiJNPhgSitesRJz48aXzs+MVBJDZFPEF1tU
-         /Auw==
-X-Gm-Message-State: AOAM530WJJsTA+67w9qy4Y4BhFZD4pM0N5SftbDHZ0Sa8N0BeWPnaSf4
-        QKz9C6Q8jiJ0U+aOg0donxAPpStlQdMzyXTEoTP0co/8W4Q=
-X-Google-Smtp-Source: ABdhPJyXnTQiW7PL9bYS4frf85uxsHl9DEdVhl1j3IzEELlAVWO0ZjFwrWhbZkSZzR2a45eC4fM02GXYYQY5S8umfzc=
-X-Received: by 2002:a9d:5a7:: with SMTP id 36mr16073239otd.321.1619461506733;
- Mon, 26 Apr 2021 11:25:06 -0700 (PDT)
+        id S234313AbhDZS1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:27:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233842AbhDZS1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 14:27:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B10661164;
+        Mon, 26 Apr 2021 18:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619461613;
+        bh=L9UA7FVEIduqR9ypDh7kLwmWnB+xYgumIc8eA/tIxEw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CXWczh6voQNTJqoWnOeaLH8xQNl6J0BsKLZNmGyDGzKrbaEstetXzyw/iFG2qgtCn
+         3MHAL16V0KjIYURwdLVgQuge8K8gpjCwcvZiolIQKFWujXdJouidHiFfF3cZ4thf1i
+         htYJlO2GuefdRfZoPGMNeuwbMMTkSJHCtXWDGLBNyEMtaL296zhZn5wAFtlz9Bi/rq
+         yWdoI0h+u0QeRqRnDepw5h8mJlMfXJpg0ULNtxJCFwMzF7UrrMcLObozjcFWk8MQOB
+         RO+k5MbAX3yfkIIaSLIu8hK3WamHD/CF2S/tWmTNYZwvCLZ3XwL9p5z80Rix53SZdG
+         SvlXyXSrVt+Mg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D2A015C06D0; Mon, 26 Apr 2021 11:26:52 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 11:26:52 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
+ pre-calibration drift
+Message-ID: <20210426182652.GE975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-6-paulmck@kernel.org>
+ <20210426150127.GB23119@shbuild999.sh.intel.com>
+ <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210426153605.GB89018@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 26 Apr 2021 20:24:55 +0200
-Message-ID: <CAJZ5v0jdRxPj-tJaxbOYHXk505NoG1EefSJUmtgso9KGAm3rzg@mail.gmail.com>
-Subject: [GIT PULL] ACPI updates for v5.13-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426153605.GB89018@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Please pull from the tag
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.13-rc1
-
-with top-most commit b6237f61fc9ca79b8771a4fa412d2c630c9f8d2b
-
- Merge branch 'acpi-misc'
-
-on top of commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88
-
- Linux 5.12-rc8
-
-to receive ACPI updates for 5.13-rc1.
-
-These update the ACPICA code in the kernel to the most recent
-upstream revision including (but not limited to) new material
-introduced in the 6.4 version of the spec, update message printing
-in the ACPI-related code, address a few issues and clean up code in
-a number of places.
-
-Specifics:
-
- - Update ACPICA code in the kernel to upstream revision 20210331
-   including the following changes:
-
-   * Add parsing for IVRS IVHD 40h and device entry F0h (Alexander
-     Monakov).
-
-   * Add new CEDT table for CXL 2.0 and iASL support for it (Ben
-     Widawsky, Bob Moore).
-
-   * NFIT: add Location Cookie field (Bob Moore).
-
-   * HMAT: add new fields/flags (Bob Moore).
-
-   * Add new flags in SRAT (Bob Moore).
-
-   * PMTT: add new fields/structures (Bob Moore).
-
-   * Add CSI2Bus resource template (Bob Moore).
-
-   * iASL: Decode subtable type field for VIOT (Bob Moore).
-
-   * Fix various typos and spelling mistakes (Colin Ian King).
-
-   * Add new predefined objects _BPC, _BPS, and _BPT (Erik Kaneda).
-
-   * Add USB4 capabilities UUID (Erik Kaneda).
-
-   * Add CXL ACPI device ID and _CBR object (Erik Kaneda).
-
-   * MADT: add Multiprocessor Wakeup Structure (Erik Kaneda).
-
-   * PCCT: add support for subtable type 5 (Erik Kaneda).
-
-   * PPTT: add new version of subtable type 1 (Erik Kaneda).
-
-   * Add SDEV secure access components (Erik Kaneda).
-
-   * Add support for PHAT table (Erik Kaneda).
-
-   * iASL: Add definitions for the VIOT table (Jean-Philippe Brucker).
-
-   * acpisrc: Add missing conversion for VIOT support (Jean-Philippe
-     Brucker).
-
-   * IORT: Updates for revision E.b (Shameer Kolothum).
-
- - Rearrange message printing in ACPI-related code to avoid using the
-   ACPICA's internal message printing macros outside ACPICA and do
-   some related code cleanups (Rafael Wysocki).
-
- - Modify the device enumeration code to turn off all of the unused
-   ACPI power resources at the end (Rafael Wysocki).
-
- - Change the ACPI power resources handling code to turn off unused
-   ACPI power resources without checking their status which should
-   not be necessary by the spec (Rafael Wysocki).
-
- - Add empty stubs for CPPC-related functions to be used when
-   CONFIG_ACPI_CPPC_LIB is not set (Rafael Wysocki).
-
- - Simplify device enumeration code (Rafael Wysocki).
-
- - Change device enumeration code to use match_string() for string
-   matching (Andy Shevchenko).
-
- - Modify irqresource_disabled() to retain the resource flags that
-   have been set already (Angela Czubak).
-
- - Add native backlight whitelist entry for GA401/GA502/GA503 (Luke
-   Jones).
-
- - Modify the ACPI backlight driver to let the native backlight
-   handling take over on hardware-reduced systems (Hans de Goede).
-
- - Introduce acpi_dev_get() and switch over the ACPI core code to
-   using it (Andy Shevchenko).
-
- - Use kobj_attribute as callback argument instead of a local struct
-   type in the CPPC library code (Nathan Chancellor).
-
- - Drop unneeded initialization of a static variable from the ACPI
-   processor driver (Tian Tao).
-
- - Drop unnecessary local variable assignment from the ACPI APEI
-   code (Colin Ian King).
-
- - Document for_each_acpi_dev_match() macro (Andy Shevchenko).
-
- - Address assorted coding style issues in multiple places (Xiaofei
-   Tan).
-
- - Capitalize TLAs in a few comments (Andy Shevchenko).
-
- - Correct assorted typos in comments (Tom Saeger).
-
-Thanks!
-
-
----------------
-
-Alexander Monakov (1):
-      ACPICA: Add parsing for IVRS IVHD 40h and device entry F0h
-
-Andy Shevchenko (4):
-      ACPI: scan: Utilize match_string() API
-      ACPI: bus: Introduce acpi_dev_get() and reuse it in ACPI code
-      ACPI: utils: Document for_each_acpi_dev_match() macro
-      ACPI: utils: Capitalize abbreviations in the comments
-
-Angela Czubak (1):
-      resource: Prevent irqresource_disabled() from erasing flags
-
-Ben Widawsky (1):
-      ACPICA: CXL 2.0: CEDT: Add new CEDT table
-
-Bob Moore (8):
-      ACPICA: ACPI 6.4: NFIT: add Location Cookie field
-      ACPICA: ACPI 6.4: HMAT: add new fields/flags
-      ACPICA: ACPI 6.4: Add new flags in SRAT
-      ACPICA: ACPI 6.4: PMTT: add new fields/structures
-      ACPICA: ACPI 6.4: add CSI2Bus resource template
-      ACPICA: iASL: Add support for CEDT table
-      ACPICA: iASL: Decode subtable type field for VIOT
-      ACPICA: Update version to 20210331
-
-Colin Ian King (2):
-      ACPICA: Tree-wide: fix various typos and spelling mistakes
-      ACPI: APEI: remove redundant assignment to variable rc
-
-Erik Kaneda (8):
-      ACPICA: ACPI 6.4: Add new predefined objects _BPC, _BPS, and _BPT
-      ACPICA: ACPI 6.4: add USB4 capabilities UUID
-      ACPICA: ACPI 6.4: add CXL ACPI device ID and _CBR object
-      ACPICA: ACPI 6.4: MADT: add Multiprocessor Wakeup Structure
-      ACPICA: ACPI 6.4: PCCT: add support for subtable type 5
-      ACPICA: ACPI 6.4: PPTT: add new version of subtable type 1
-      ACPICA: ACPI 6.4: add SDEV secure access components
-      ACPICA: ACPI 6.4: add support for PHAT table
-
-Hans de Goede (2):
-      ACPI: utils: Add acpi_reduced_hardware() helper
-      ACPI: video: Check LCD flag on ACPI-reduced-hardware devices
-
-Jean-Philippe Brucker (2):
-      ACPICA: iASL: Add definitions for the VIOT table
-      ACPICA: acpisrc: Add missing conversion for VIOT support
-
-Luke D Jones (1):
-      ACPI: video: use native backlight for GA401/GA502/GA503
-
-Nathan Chancellor (1):
-      ACPI: CPPC: Replace cppc_attr with kobj_attribute
-
-Rafael J. Wysocki (21):
-      ACPI: PCI: IRQ: Consolidate printing diagnostic messages
-      ACPI: PCI: Replace ACPI_DEBUG_PRINT() and ACPI_EXCEPTION()
-      ACPI: PCI: Drop ACPI_PCI_COMPONENT that is not used any more
-      ACPI: PCI: Replace direct printk() invocations in pci_link.c
-      ACPI: processor: idle: Drop extra prefix from pr_notice()
-      ACPI: processor: Get rid of ACPICA message printing
-      ACPI: HED: Drop unused ACPI_MODULE_NAME() definition
-      ACPI: sysfs: Get rid of ACPICA message printing
-      ACPI: Drop unused ACPI_*_COMPONENT definitions and update documentation
-      ACPI: processor: perflib: Eliminate redundant status check
-      ACPI: utils: Introduce acpi_evaluation_failure_warn()
-      IIO: acpi-als: Get rid of ACPICA message printing
-      hwmon: acpi_power_meter: Get rid of ACPICA message printing
-      ACPI: scan: Turn off unused power resources during initialization
-      ACPI: power: Turn off unused power resources unconditionally
-      ACPI: CPPC: Add empty stubs of functions for CONFIG_ACPI_CPPC_LIB unset
-      ACPI: scan: Fold acpi_bus_type_and_status() into its caller
-      ACPI: scan: Rearrange checks in acpi_bus_check_add()
-      ACPI: scan: Drop sta argument from acpi_add_single_object()
-      ACPI: scan: Drop sta argument from acpi_init_device_object()
-      ACPI: scan: Call acpi_get_object_info() from acpi_set_pnp_ids()
-
-Shameer Kolothum (1):
-      ACPICA: IORT: Updates for revision E.b
-
-Tian Tao (1):
-      ACPI: processor: Remove initialization of static variable
-
-Tom Saeger (1):
-      ACPI: fix various typos in comments
-
-Xiaofei Tan (13):
-      ACPI: AC: fix some coding style issues
-      ACPI: APD: fix a block comment align issue
-      ACPI: processor: fix some coding style issues
-      ACPI: ipmi: remove useless return statement for void function
-      ACPI: LPSS: add a missed blank line after declarations
-      ACPI: acpi_pad: add a missed blank line after declarations
-      ACPI: battery: fix some coding style issues
-      ACPI: button: fix some coding style issues
-      ACPI: CPPC: fix some coding style issues
-      ACPI: custom_method: fix a coding style issue
-      ACPI: PM: add a missed blank line after declarations
-      ACPI: sysfs: fix some coding style issues
-      ACPI: dock: fix some coding style issues
-
----------------
-
- Documentation/admin-guide/kernel-parameters.txt |   4 +-
- Documentation/firmware-guide/acpi/debug.rst     |  36 ++--
- drivers/acpi/ac.c                               |  30 +--
- drivers/acpi/acpi_apd.c                         |   8 +-
- drivers/acpi/acpi_ipmi.c                        |   1 -
- drivers/acpi/acpi_lpss.c                        |   2 +
- drivers/acpi/acpi_pad.c                         |   4 +
- drivers/acpi/acpi_processor.c                   |  51 ++---
- drivers/acpi/acpi_video.c                       |  43 +++--
- drivers/acpi/acpica/acpredef.h                  |  15 ++
- drivers/acpi/acpica/acresrc.h                   |   4 +
- drivers/acpi/acpica/acutils.h                   |   1 +
- drivers/acpi/acpica/amlresrc.h                  |  19 +-
- drivers/acpi/acpica/rscalc.c                    |   4 +-
- drivers/acpi/acpica/rsdump.c                    |   8 +
- drivers/acpi/acpica/rsdumpinfo.c                |  26 +++
- drivers/acpi/acpica/rsinfo.c                    |   6 +-
- drivers/acpi/acpica/rslist.c                    |   9 +-
- drivers/acpi/acpica/rsmisc.c                    |  19 ++
- drivers/acpi/acpica/rsserial.c                  |  75 ++++++++
- drivers/acpi/acpica/utresdecode.c               |  10 +-
- drivers/acpi/acpica/utresrc.c                   |   1 +
- drivers/acpi/apei/einj.c                        |   1 -
- drivers/acpi/apei/erst.c                        |   2 +-
- drivers/acpi/apei/hest.c                        |   2 +-
- drivers/acpi/battery.c                          |  63 ++++---
- drivers/acpi/button.c                           |   9 +-
- drivers/acpi/cppc_acpi.c                        |  96 +++++-----
- drivers/acpi/custom_method.c                    |   2 +-
- drivers/acpi/device_pm.c                        |   3 +
- drivers/acpi/device_sysfs.c                     |  19 +-
- drivers/acpi/dock.c                             |   7 +-
- drivers/acpi/glue.c                             |   8 +-
- drivers/acpi/hed.c                              |   1 -
- drivers/acpi/internal.h                         |   4 +-
- drivers/acpi/nfit/core.c                        |   2 +-
- drivers/acpi/numa/hmat.c                        |   2 +-
- drivers/acpi/pci_irq.c                          |  34 +---
- drivers/acpi/pci_link.c                         | 164 +++++++---------
- drivers/acpi/pmic/intel_pmic_chtcrc.c           |   2 +-
- drivers/acpi/power.c                            |  18 +-
- drivers/acpi/processor_driver.c                 |   6 +-
- drivers/acpi/processor_idle.c                   |  38 ++--
- drivers/acpi/processor_pdc.c                    |   7 +-
- drivers/acpi/processor_perflib.c                |  50 +++--
- drivers/acpi/processor_throttling.c             | 102 +++++-----
- drivers/acpi/resource.c                         |   2 +-
- drivers/acpi/scan.c                             | 178 +++++++-----------
- drivers/acpi/sleep.h                            |   1 -
- drivers/acpi/sysfs.c                            |  14 +-
- drivers/acpi/utils.c                            |  37 +++-
- drivers/acpi/video_detect.c                     |  24 +++
- drivers/hwmon/acpi_power_meter.c                |  29 ++-
- drivers/iio/light/acpi-als.c                    |   4 +-
- include/acpi/acoutput.h                         |   2 +-
- include/acpi/acpi_bus.h                         |  20 ++
- include/acpi/acpi_drivers.h                     |  12 --
- include/acpi/acpixf.h                           |   2 +-
- include/acpi/acrestyp.h                         |   9 +-
- include/acpi/actbl1.h                           |  54 +++++-
- include/acpi/actbl2.h                           | 240 +++++++++++++++++++++---
- include/acpi/actbl3.h                           |  70 ++++++-
- include/acpi/acuuid.h                           |   1 +
- include/acpi/cppc_acpi.h                        |  40 ++++
- include/acpi/platform/acgcc.h                   |   2 +-
- include/linux/acpi.h                            |  10 +
- include/linux/ioport.h                          |   2 +-
- tools/power/acpi/common/cmfsize.c               |   2 +-
- 68 files changed, 1127 insertions(+), 646 deletions(-)
+On Mon, Apr 26, 2021 at 11:36:05PM +0800, Feng Tang wrote:
+> On Mon, Apr 26, 2021 at 08:25:29AM -0700, Paul E. McKenney wrote:
+> > On Mon, Apr 26, 2021 at 11:01:27PM +0800, Feng Tang wrote:
+> > > Hi Paul,
+> > > 
+> > > On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> > > > Because the x86 tsc_early clocksource is given a quick and semi-accurate
+> > > > calibration (by design!), it might have drift rates well in excess of
+> > > > the 0.1% limit that is in the process of being adopted.
+> > > > 
+> > > > Therefore, add a max_drift field to the clocksource structure that, when
+> > > > non-zero, specifies the maximum allowable drift rate in nanoseconds over
+> > > > a half-second period.  The tsc_early clocksource initializes this to five
+> > > > miliseconds, which corresponds to the 1% drift rate limit suggested by
+> > > > Xing Zhengjun.  This max_drift field is intended only for early boot,
+> > > > so clocksource_watchdog() splats if it encounters a non-zero value in
+> > > > this field more than 60 seconds after boot, inspired by a suggestion by
+> > > > Thomas Gleixner.
+> > > > 
+> > > > This was tested by setting the clocksource_tsc ->max_drift field to 1,
+> > > > which, as expected, resulted in a clock-skew event.
+> > > 
+> > > We've run the same last for this v10, and those 'unstable' thing [1] can
+> > > not be reproduced!
+> > 
+> > Good to hear!  ;-)
+> > 
+> > > We've reported one case that tsc can be wrongly judged as 'unstable'
+> > > by 'refined-jiffies' watchdog [1], while reducing the threshold could
+> > > make it easier to be triggered.
+> > > 
+> > > It could be reproduced on the a plaform with a 115200 serial console,
+> > > and hpet been disabled (several x86 platforms has this), add 
+> > > 'initcall_debug' cmdline parameter to get more debug message, we can
+> > > see:
+> > > 
+> > > [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
+> > > [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+> > > [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+> > > [    1.134220] clocksource:                       No current clocksource.
+> > > [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
+> > 
+> > Just to make sure I understand: "could be reproduced" as in this is the
+> > result from v9, and v10 avoids this, correct?
+> 
+> Sorry I didn't make it clear. This is a rarely happened case, and can
+> be reproduced with upstream kerenl, which has 62.5 ms threshold. 6/7 &
+> 7/7 patch of reducing the threshold can make it easier to be triggered.
+
+Ah, OK, so this could be considered to be a benefit of this series, then.
+
+Does this happen only for tsc-early, or for tsc as well?
+
+Has it already been triggered on v10 of this series?  (I understand that
+it certainly should be easier to trigger, just curious whether this has
+already happened.)
+
+							Thanx, Paul
