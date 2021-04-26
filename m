@@ -2,194 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AC436B698
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8500D36B69D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhDZQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:17:26 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30026 "EHLO m43-7.mailgun.net"
+        id S234425AbhDZQSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:18:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234170AbhDZQRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:17:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619453804; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=fnSv2x/M6lmyI3dMHHLz1XBQjVyPXD5z6FVrB+7BHQ0=; b=jNyDNFwhKXnPhExcMIPScXnuqQawv43gNnaqkUFWY0rnfLIYXbgjiZfdpn255NZDWNpaXdJg
- a650WBFx+LJ1EKNXGfvjzpQ0ghBBXxBkbJt4z3vcXtj32HC8/qvA1Cn+drfK2weQlzhdnrnm
- NMhE9h3ST+pxhWZFapcBdKuMkik=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6086e75b2cc44d3aea10338b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 16:16:27
- GMT
-Sender: eberman=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28F95C43217; Mon, 26 Apr 2021 16:16:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.119.201] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: eberman)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 227E4C433D3;
-        Mon, 26 Apr 2021 16:16:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 227E4C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
-Subject: Re: [RESEND v2] Kbuild: Update config_data.gz only if KCONFIG_CONFIG
- materially changed
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthias Maennich <maennich@google.com>,
-        Trilok Soni <tsoni@codeaurora.org>
-References: <1619197235-13860-1-git-send-email-eberman@codeaurora.org>
- <CAK7LNASzP-pMu7Yd6nkoV_mxOUeouYNLW_xZUy94E_WCdjJ5PA@mail.gmail.com>
-From:   Elliot Berman <eberman@codeaurora.org>
-Message-ID: <42674c78-28d7-35b5-5e01-07dec7eed938@codeaurora.org>
-Date:   Mon, 26 Apr 2021 09:16:24 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S234229AbhDZQSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 12:18:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E58CF61131;
+        Mon, 26 Apr 2021 16:17:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619453870;
+        bh=Vg7NsLqhVvyWjB6uIqGWiDftBlhQvk42ntCP6iU+jzY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jxZVpuUuwssCT/T3XGnCbB7025lIEKbfSEoS/sjk3tiLd7526vkjm9F6NLgabRa69
+         TuJv6kGikyRjsE6dFFukoS7RoRYBF9ho5H49nK7H7uEYA5IZb/yGntYYiuk37yqe1N
+         cEv8MoN2zBRKccQffyLX8Dta7OMuMjmZoK2lZgPU=
+Date:   Mon, 26 Apr 2021 18:17:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     linux-serial@vger.kernel.org,
+        syzbot+4c7f1a69dfe24c6b3aeb@syzkaller.appspotmail.com,
+        syzbot+92f32d4e21fb246d31a2@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Caleb Connolly <caleb@connolly.tech>
+Subject: Re: [PATCH] serial: 8250: fix NULL pointer dereference in
+ serial8250_do_startup()
+Message-ID: <YIbnq2ljdQzaN8gy@kroah.com>
+References: <00000000000044a65205994a7e13@google.com>
+ <20210426161433.20829-1-vegard.nossum@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNASzP-pMu7Yd6nkoV_mxOUeouYNLW_xZUy94E_WCdjJ5PA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426161433.20829-1-vegard.nossum@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/24/2021 11:50 PM, Masahiro Yamada wrote:
-> On Sat, Apr 24, 2021 at 2:02 AM Elliot Berman <eberman@codeaurora.org> wrote:
+On Mon, Apr 26, 2021 at 06:14:33PM +0200, Vegard Nossum wrote:
+> Syzbot reported a crash, here reproduced on a recent mainline kernel:
 > 
+>   BUG: kernel NULL pointer dereference, address: 0000000000000005
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 120cf067 P4D 120cf067 PUD 135d4067 PMD 0
+>   Oops: 0000 [#1] PREEMPT SMP KASAN
+>   CPU: 2 PID: 4830 Comm: a.out Not tainted 5.12.0-rc7+ #209
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+>   RIP: 0010:mem16_serial_in+0x83/0xa0
+>   [...]
+>     Call Trace:
+>     serial8250_do_startup+0x475/0x1e40
+>     serial8250_startup+0x5c/0x80
+>     uart_startup+0x360/0x870
+>     uart_set_info_user+0x13a3/0x1c30
+>     tty_ioctl+0x711/0x14f0
+>     __x64_sys_ioctl+0x193/0x200
+>     do_syscall_64+0x2d/0x70
+>     entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> Sorry for the delay.
+> A more readable reproducer is:
+> 
+>   #include <sys/ioctl.h>
+>   #include <fcntl.h>
+> 
+>   #include <linux/serial.h>
+> 
+>   #ifndef SERIAL_IO_MEM16
+>   #define SERIAL_IO_MEM16 7
+>   #endif
+> 
+>   int main(int argc, char *argv[])
+>   {
+>           int fd = open("/dev/ttyS3", O_RDONLY);
+> 
+>           struct serial_struct ss = {};
+>           ss.type = 0x10;
+>           ss.baud_base = 0x7fffffff;
+>           ss.io_type = SERIAL_IO_MEM16;
+>           ioctl(fd, TIOCSSERIAL, &ss);
+> 
+>           return 0;
+>   }
+> 
+> ioctl(TIOCSSERIAL) attempts to configure the serial port, but when
+> requesting io_type SERIAL_IO_MEM*/UPIO_MEM* it goes on to dereference
+> ->membase in serial8250_do_startup().
+> 
+> I propose this fix, which will fail validation of the TIOCSSERIAL request
+> if you request a memory-based or io-based io_type when the underlying port
+> has no valid ->membase or ->iobase, respectively.
+> 
+> As far as I can tell, this driver was written to support being able to
+> switch between the two IO types for a given port (assuming the underlying
+> driver supports it); see serial8250_do_startup()/set_io_from_upio().
+> 
+> I'm also adding a couple of WARN_ON_ONCE()s which are technically
+> redundant, but which could help somebody else if they come across a
+> similar issue in the future.
+> 
+> Reported-by: syzbot+4c7f1a69dfe24c6b3aeb@syzkaller.appspotmail.com
+> Cc: Peter Hurley <peter@hurleysoftware.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-serial@vger.kernel.org
+> Cc: Caleb Connolly <caleb@connolly.tech>
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> ---
+>  drivers/tty/serial/8250/8250_port.c | 43 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> index b0af13074cd36..aec3abff8e48e 100644
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -455,6 +455,33 @@ static void io_serial_out(struct uart_port *p, int offset, int value)
+>  
+>  static int serial8250_default_handle_irq(struct uart_port *port);
+>  
+> +static int needs_membase(int iotype)
+> +{
+> +	switch (iotype) {
+> +	case UPIO_MEM:
+> +	case UPIO_MEM16:
+> +	case UPIO_MEM32:
+> +	case UPIO_MEM32BE:
+> +#ifdef CONFIG_SERIAL_8250_RT288X
+> +	case UPIO_AU:
+> +#endif
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int needs_iobase(int iotype)
+> +{
+> +	switch (iotype) {
+> +	case UPIO_HUB6:
+> +	case UPIO_PORT:
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static void set_io_from_upio(struct uart_port *p)
+>  {
+>  	struct uart_8250_port *up = up_to_u8250p(p);
+> @@ -2151,6 +2178,11 @@ int serial8250_do_startup(struct uart_port *port)
+>  	unsigned char lsr, iir;
+>  	int retval;
+>  
+> +	if (WARN_ON_ONCE(needs_membase(port->iotype) && !port->membase))
+> +		return -ENODEV;
+> +	if (WARN_ON_ONCE(needs_iobase(port->iotype) && !port->iobase))
+> +		return -ENODEV;
 
-No problem!
+These WARN_ON() will still trigger syzbot.  Are you sure you tested this
+and had syzbot verify it?
 
-> 
-> This patch is over-engineering.
+thanks,
 
-I thought so, too.
-
-> 
-> I will apply this.
-> https://patchwork.kernel.org/project/linux-kbuild/patch/20210425062407.1183801-5-masahiroy@kernel.org/
-> 
-> The 'cmp' command is not expensive.
-> md5sum is unneeded.
-
-Thanks!
-
-> 
->> If you update the timestamp of KCONFIG_CONFIG without actually changing
->> anything, config_data.gz is re-generated and causes vmlinux to re-link.
->> When Link Time Optimization is enabled, unnecessary re-linking of
->> vmlinux is highly desirable since it adds several minutes to build time.
->>
->> Avoid touching config_data.gz by using a script to compare the existing
->> config_data.gz, KCONFIG_CONFIG, or script itself to update only if any
->> is mismatched.  The script follows gen_kheaders.sh approach for
->> determing in update is needed. The script intentionally avoids
->> re-compressing KCONFIG_CONFIG.
->>
->> The .config can be touched, for instance, by a build script which
->> installs the default defconfig and then applies a defconfig fragment on
->> top.
->>
->> For a simple example on my x86 machine, I modified x86 default defconfig to set
->> CONFIG_IKCONFIG=y and run:
->>    make -j50 defconfig tiny.config vmlinux
->>    make -j50 defconfig tiny.config vmlinux
->> With this patch, vmlinux is not re-built as a result of config_data.gz
->> change.
->>
->> Changes in v2:
->>   - Use md5 checksum to compare .config instead of gzip'ing again
->>
->> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
->> ---
->>   kernel/.gitignore         |  1 +
->>   kernel/Makefile           |  4 +++-
->>   kernel/gen_config_data.sh | 31 +++++++++++++++++++++++++++++++
->>   3 files changed, 35 insertions(+), 1 deletion(-)
->>   create mode 100755 kernel/gen_config_data.sh
->>
->> diff --git a/kernel/.gitignore b/kernel/.gitignore
->> index 78701ea..a191136 100644
->> --- a/kernel/.gitignore
->> +++ b/kernel/.gitignore
->> @@ -1,4 +1,5 @@
->>   # SPDX-License-Identifier: GPL-2.0-only
->> +config_data.gz.md5
->>   kheaders.md5
->>   timeconst.h
->>   hz.bc
->> diff --git a/kernel/Makefile b/kernel/Makefile
->> index 320f1f3..0784bf3d 100644
->> --- a/kernel/Makefile
->> +++ b/kernel/Makefile
->> @@ -139,8 +139,10 @@ obj-$(CONFIG_SCF_TORTURE_TEST) += scftorture.o
->>   $(obj)/configs.o: $(obj)/config_data.gz
->>
->>   targets += config_data.gz
->> +quiet_cmd_genicfg = CHK     $(obj)/config_data.gz
->> +      cmd_genicfg = $(CONFIG_SHELL) $(srctree)/kernel/gen_config_data.sh $@ $<
->>   $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
->> -       $(call if_changed,gzip)
->> +       $(call cmd,genicfg)
->>
->>   $(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
->>
->> diff --git a/kernel/gen_config_data.sh b/kernel/gen_config_data.sh
->> new file mode 100755
->> index 00000000..e9ff193
->> --- /dev/null
->> +++ b/kernel/gen_config_data.sh
->> @@ -0,0 +1,31 @@
->> +#!/bin/sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +
->> +# This script generates a compressed version of .config, if its checksum has changed
->> +set -e
->> +
->> +this_file="$(readlink -f "$0")"
->> +outfile=$1
->> +infile=$2
->> +
->> +config_md5="$(md5sum $infile | cut -d ' ' -f1)"
->> +# Any changes to this script will also cause a rebuild of config_data.
->> +this_file_md5="$(md5sum $sfile | cut -d ' ' -f1)"
->> +if [ -f $outfile ]; then outfile_md5="$(md5sum $outfile | cut -d ' ' -f1)"; fi
->> +
->> +if [ -f $outfile.md5 ] &&
->> +       [ "$(head -n 1 $outfile.md5)" = "$config_md5" ] &&
->> +       [ "$(head -n 2 $outfile.md5 | tail -n 1)" = "$this_file_md5" ] &&
->> +       [ "$(tail -n 1 $outfile.md5)" = "$outfile_md5" ]; then
->> +               exit
->> +fi
->> +
->> +if [ "${quiet}" != "silent_" ]; then
->> +       echo "  GEN     $outfile"
->> +fi
->> +
->> +${KGZIP} -c -n -f -9 $infile > $outfile
->> +
->> +echo "$config_md5" > $outfile.md5
->> +echo "$this_file_md5" >> $outfile.md5
->> +echo "$(md5sum $outfile | cut -d ' ' -f1)" >> $outfile.md5
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
->>
-> 
-> 
+greg k-h
