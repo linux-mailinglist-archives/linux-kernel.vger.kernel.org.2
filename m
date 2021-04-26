@@ -2,214 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C673A36B808
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0803536B80A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235728AbhDZRX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        id S235825AbhDZRZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbhDZRX1 (ORCPT
+        with ESMTP id S235241AbhDZRZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:23:27 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D295FC061574;
-        Mon, 26 Apr 2021 10:22:43 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id n2so3552394wrm.0;
-        Mon, 26 Apr 2021 10:22:43 -0700 (PDT)
+        Mon, 26 Apr 2021 13:25:09 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D8EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:24:25 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id 66so28635765vsk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=g5ISx3ZFufig4gVWW7AEl+hfObZvr1QFht5u3c6PaWQ=;
-        b=WinhkBt3HrjbxFH7MkFPXJt70xlZRcSr+UoYuzdd6S/TOpr5tKwHSF1Ipl6uZXFxzt
-         OH0gbFlw0NthX9FamnTeIISKPqSl6ihrGIwtcb4we3MOjcNHFqIxjUe4jAP99pYRyRcz
-         +2RHCVkih1XuCK/gPqSS12dGNZvFgi4JrS0brOYCQhGyAHcuNdAkCYoPsL0HcHF2hd0p
-         OVZRizgLnoSlG8whGR5Dv0UeJRJSgMRnW7Ur3uBgMYSl8XjAswbj7CyxK7cjdNfVEeOQ
-         AGiR1B6o6u4jF8VNWmz9XjVZkGLcdshdnWJvdGgoaV/tm/E4CEnauM9Vdh/AG+N0GzeY
-         YJ0w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nFoayYppu/XPpzfTAr4b3cv0yWnD0jbL4+Ih3zwmTOE=;
+        b=j9VaMQH4Vv3//heVBPqkuRLtLnxrsi/cEXXiXk8BZ43exlwgDkflEWNwfzuiL28UR4
+         9mT02If5rDug6x9vOb68tgsY54huyXplSbX2Dva2lVaPlqPUiZlK5GKw6MD2ASpO71L1
+         VLEwv5MhxpYulhr8kHBG8tNbRKYp0geOfLriuWf5Jgx2G9YTuGgP6GVO8bqEep57WJoj
+         UtDoPLQzOhaYBHz/1b2b66QtebqKw7HUseVlDbeEbocrDiY3D2GyMbVb8qBZsPmD6Ev1
+         5+PrYAtJJpPrnJKmGrj3ckY6AP2HvjmeeeiIHP/5qz25wnQy5IjQ+83adI6XWPeW2bsL
+         zQxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g5ISx3ZFufig4gVWW7AEl+hfObZvr1QFht5u3c6PaWQ=;
-        b=MYYcpzkhVTL6WtpuO+RqNcO4+6Gg1nEEzmUBRr1/4RPfQ69jatDsldeQcHgqfovuoy
-         AY5c9+uYNojJiMPGVRobd6zcxPvFJdG1BpqdMik4OLBnsbcvzG8WF9u03BjYUzY6910A
-         owd0tnvUHaUyXwDzDFaRYxISSfJG2PzLWv7ZGKjtq0mgaXgoZU+hXrhFKqSoeyUOHySk
-         hkV/4/ychGOkjgHyVw2C18Dz3hP4tNFrLnmZN3gorj6Rmb6QdNpWhBTmD4nPtBFUOvyc
-         4me0GAt2ClPN9cumEPBulK1MsZU3smUFvUUx1d1sXzaBECgHPHiPrjVjYAtLoGZHyIta
-         CJ/Q==
-X-Gm-Message-State: AOAM530ZqOF8q6qgWdD2NHeEHYVTB9X0YvJN206e5MTJC+oIphzxlLz7
-        8xgF4cYFxu7SsHRGC5dLKWE=
-X-Google-Smtp-Source: ABdhPJz14BukFC3vUHYMTTqKZJulA0hhVx6VfLnchhTPquG4dlpmuyvbAVdsx9kKw+p4vXSYAMjgKg==
-X-Received: by 2002:a5d:58d8:: with SMTP id o24mr10850742wrf.288.1619457762602;
-        Mon, 26 Apr 2021 10:22:42 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.25])
-        by smtp.gmail.com with ESMTPSA id p5sm5987373wma.45.2021.04.26.10.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 10:22:42 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 19:22:39 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v3 2/6] staging: media: atomisp: balance braces
- around if...else block
-Message-ID: <20210426172238.GA1409@agape.jhs>
-References: <cover.1619199344.git.drv@mailo.com>
- <71220662c5facd746e56288cc74786c96fa3c5a7.1619199344.git.drv@mailo.com>
- <20210426095610.GA1418@agape.jhs>
- <YIbOfjrPG+NIH4wV@192.168.1.8>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nFoayYppu/XPpzfTAr4b3cv0yWnD0jbL4+Ih3zwmTOE=;
+        b=VAPM4L0nRmZYYQAbfcga520Q/OAlE7v7PWBpKkeI9LeoXC8pKBcfzyIBeaPCGN3vA+
+         DYVJy6ExK1tGoQhtdqsXvM4M/jH/ERV9gCHCCc1wlW5VslEHNpCv+//CEkXXMa6KtcKd
+         bCCTS3foPe70062CH+eBzwQPctkq5W/OGaVwpmDM+FqoG6mazTJ8B7IDhgmBNebbD9ZL
+         aWsR7NLf1TWEo9GnRoG764F6ofhSyydgkbcZUu5GPKkzYfAOx6MQybaPsw0y/NcaNhIl
+         y3JTio8w/4kUCW2Dacd8hh0ODpeRR5KbccLKC9Qe2/8QD1Ix2IXAZkzJ6iHzxcyXYmWT
+         ksJw==
+X-Gm-Message-State: AOAM531HLG75J28vEQw9jUXJM5qlodJgTKo1pScbHVrabJlYU4hVn6p3
+        DkMrf4KmDfY35tMhQU/ZbC1GAlPINsFwo/ljdkWTag==
+X-Google-Smtp-Source: ABdhPJx7RRQUWohPru1KlZUjdZ23TjBu17Nk/B5ZiNMICedbqxTZtYL/kZq43WqNcpcq0qj4kfsQkixku0ihFc2Yuqc=
+X-Received: by 2002:a05:6102:418:: with SMTP id d24mr4755091vsq.54.1619457864670;
+ Mon, 26 Apr 2021 10:24:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIbOfjrPG+NIH4wV@192.168.1.8>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
+ <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
+ <50de1e9f-eed7-f827-77ea-708f4621e3d4@drivenets.com> <CADVnQykBebycW1XcvD=NGan+BrJ3N1m5Q-pWs5vyYNmQQLjrBw@mail.gmail.com>
+ <5af52ab4-237f-8646-76e4-5e24236d9b4a@drivenets.com>
+In-Reply-To: <5af52ab4-237f-8646-76e4-5e24236d9b4a@drivenets.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Mon, 26 Apr 2021 13:24:07 -0400
+Message-ID: <CADVnQykNRumYbEj4s-NV=BQLqVAbR2An4rLVZft4gq_E-JdNug@mail.gmail.com>
+Subject: Re: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
+To:     Leonard Crestez <lcrestez@drivenets.com>
+Cc:     Matt Mathis <mattmathis@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuchung Cheng <ycheng@google.com>,
+        John Heffner <johnwheffner@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:00:22PM +0530, Deepak R Varma wrote:
-> On Mon, Apr 26, 2021 at 11:56:11AM +0200, Fabio Aiuto wrote:
-> > On Sun, Apr 25, 2021 at 02:12:20PM +0530, Deepak R Varma wrote:
-> > > Balance braces around the if else blocks as per the code style guidelines.
-> > > Resolves checkpatch script CHECK / WARNING feedback messages.
-> > > 
-> > > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > > ---
-> > > 
-> > > Changes since v2:
-> > >    - None.
-> > > Changes since v1:
-> > >    - None.
-> > > 
-> > >  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
-> > >  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
-> > >  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
-> > >  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
-> > >  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
-> > >  5 files changed, 12 insertions(+), 11 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > > index 6be3ee1d93a5..d68a2bcc9ae1 100644
-> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > > @@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
-> > >  {
-> > >  	int ret;
-> > >  
-> > > -	if (on == 0)
-> > > +	if (on == 0) {
-> > >  		return power_down(sd);
-> > > -	else {
-> > > +	} else {
-> > >  		ret = power_up(sd);
-> > >  		if (!ret)
-> > >  			return gc0310_init(sd);
-> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > > index 6ba4a8adff7c..e722c639b60d 100644
-> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > > @@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
-> > >  {
-> > >  	int ret;
-> > >  
-> > > -	if (on == 0)
-> > > +	if (on == 0) {
-> > >  		ret = power_down(sd);
-> > > -	else {
-> > > +	} else {
-> > >  		ret = power_up(sd);
-> > >  		if (!ret)
-> > >  			ret = __gc2235_init(sd);
-> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> > > index f5de81132177..465fc4468442 100644
-> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> > > @@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
-> > >  
-> > >  static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
-> > >  {
-> > > -	if (power == 0)
-> > > +	if (power == 0) {
-> > >  		return power_down(sd);
-> > > -	else {
-> > > +	} else {
-> > >  		if (power_up(sd))
-> > >  			return -EINVAL;
-> > >  
-> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> > > index c90730513438..92c52431bd8f 100644
-> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> > > @@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
-> > >  	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
-> > >  	if (ret)
-> > >  		return ret;
-> > > -	if (value) {
-> > > +
-> > > +	if (value)
-> > >  		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
-> > > -	} else {
-> > > +	else
-> > >  		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
-> > > -	}
-> > > +
-> > 
-> > Hi Deepak,
-> > 
-> > what you did above is not what is written in the commit message
-> > description about. Here unneeded bracks are removed in both
-> > branches, is not a matter of braces balancing.
-> 
-> Okay. I was thinking adding where necessary and removing where not
-> would lead to expected balancing.
-> I will send this as a separate patch in this patch set. Is it okay to
-> add a new patch to the set now?
+On Mon, Apr 26, 2021 at 1:09 PM Leonard Crestez <lcrestez@drivenets.com> wrote:
+>
+> On 26.04.2021 18:59, Neal Cardwell wrote:
+> > On Sun, Apr 25, 2021 at 10:34 PM Leonard Crestez <lcrestez@drivenets.com> wrote:
+> >> On 4/21/21 3:47 PM, Neal Cardwell wrote:
+> >>> On Wed, Apr 21, 2021 at 6:21 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+>
+> >>> If the goal is to increase the frequency of PMTU probes, which seems
+> >>> like a valid goal, I would suggest that we rethink the Linux heuristic
+> >>> for triggering PMTU probes in the light of the fact that the loss
+> >>> detection mechanism is now RACK-TLP, which provides quick recovery in
+> >>> a much wider variety of scenarios.
+> >>
+> >>> You mention:
+> >>>> Linux waits for probe_size + (1 + retries) * mss_cache to be available
+> >>>
+> >>> The code in question seems to be:
+> >>>
+> >>>     size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
+> >>> How about just changing this to:
+> >>>
+> >>>     size_needed = probe_size + tp->mss_cache;
+> >>>
+> >>> The rationale would be that if that amount of data is available, then
+> >>> the sender can send one probe and one following current-mss-size
+> >>> packet. If the path MTU has not increased to allow the probe of size
+> >>> probe_size to pass through the network, then the following
+> >>> current-mss-size packet will likely pass through the network, generate
+> >>> a SACK, and trigger a RACK fast recovery 1/4*min_rtt later, when the
+> >>> RACK reorder timer fires.
+> >>
+> >> This appears to almost work except it stalls after a while. I spend some
+> >> time investigating it and it seems that cwnd is shrunk on mss increases
+> >> and does not go back up. This causes probes to be skipped because of a
+> >> "snd_cwnd < 11" condition.
+> >>
+> >> I don't undestand where that magical "11" comes from, could that be
+> >> shrunk. Maybe it's meant to only send probes when the cwnd is above the
+> >> default of 10? Then maybe mtu_probe_success shouldn't shrink mss below
+> >> what is required for an additional probe, or at least round-up.
+> >>
+> >> The shrinkage of cwnd is a problem with this "short probes" approach
+> >> because tcp_is_cwnd_limited returns false because tp->max_packets_out is
+> >> smaller (4). With longer probes tp->max_packets_out is larger (6) so
+> >> tcp_is_cwnd_limited returns true even for a cwnd of 10.
+> >>
+> >> I'm testing using namespace-to-namespace loopback so my delays are close
+> >> to zero. I tried to introduce an artificial delay of 30ms (using tc
+> >> netem) and it works but 20ms does not.
+> >
+> > I agree the magic 11 seems outdated and unnecessarily high, given RACK-TLP.
+> >
+> > I think it would be fine to change the magic 11 to a magic
+> > (TCP_FASTRETRANS_THRESH+1), aka 3+1=4:
+> >
+> >    - tp->snd_cwnd < 11 ||
+> >    + p->snd_cwnd < (TCP_FASTRETRANS_THRESH + 1) ||
+> >
+> > As long as the cwnd is >= TCP_FASTRETRANS_THRESH+1 then the sender
+> > should usually be able to send the 1 probe packet and then 3
+> > additional packets beyond the probe, and in the common case (with no
+> > reordering) then with failed probes this should allow the sender to
+> > quickly receive 3 SACKed segments and enter fast recovery quickly.
+> > Even if the sender doesn't have 3 additional packets, or if reordering
+> > has been detected, then RACK-TLP should be able to start recovery
+> > quickly (5/4*RTT if there is at least one SACK, or 2*RTT for a TLP if
+> > there is no SACK).
+>
+> As far as I understand tp->reordering is a dynamic evaluation of the
+> fastretrans threshold to deal with environments with lots of reordering.
+> Your suggestion seems equivalent to the current size_needed calculation
+> except using packets instead of bytes.
+>
+> Wouldn't it be easier to drop the "11" check and just verify that
+> size_needed fits into cwnd as bytes?
 
-yes, a patchset from vN to v(N + 1) is allowed to increase in patch number,
-at least in my experience.
+Yes, that sounds good to me (dropping the "11" check in favor of
+verifying that size_needed fits into the cwnd).
 
-> 
-> Thank you,
-> deepak.
-> 
-> > 
-> > thank you,
-> > 
-> > fabio 
-> > 
-> > >  	ret = ov2680_write_reg(client, 1,
-> > >  			       OV2680_FLIP_REG, val);
-> > >  	if (ret)
-> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > > index aec7392fd1de..d046a9804f63 100644
-> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > > @@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
-> > >  {
-> > >  	int ret;
-> > >  
-> > > -	if (on == 0)
-> > > +	if (on == 0) {
-> > >  		return power_down(sd);
-> > > -	else {
-> > > +	} else {
-> > >  		ret = power_up(sd);
-> > >  		if (!ret)
-> > >  			return ov2722_init(sd);
-> > > -- 
-> > > 2.25.1
-> > > 
-> > > 
-> > > 
-> > > 
-> 
-> 
-
-thank you,
-
-fabio
+neal
