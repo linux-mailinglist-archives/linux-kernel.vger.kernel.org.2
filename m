@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5836736B14F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAEF36B156
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhDZKLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:11:41 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48872 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232178AbhDZKLj (ORCPT
+        id S233079AbhDZKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:11:56 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44777 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233072AbhDZKLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:11:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UWpp.OX_1619431850;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWpp.OX_1619431850)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Apr 2021 18:10:57 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] caif: Remove redundant variable expectlen
-Date:   Mon, 26 Apr 2021 18:10:49 +0800
-Message-Id: <1619431849-85597-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 26 Apr 2021 06:11:51 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1layCo-0003XV-9l; Mon, 26 Apr 2021 10:11:06 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] serial: meson: remove redundant initialization of variable id
+Date:   Mon, 26 Apr 2021 11:11:06 +0100
+Message-Id: <20210426101106.9122-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable expectlen is being assigned a value from a calculation
-however the variable is never read, so this redundant variable
-can be removed.
+From: Colin Ian King <colin.king@canonical.com>
 
-Cleans up the following clang-analyzer warning:
+The variable id being initialized with a value that is never read
+and it is being updated later with a new value. The initialization is
+redundant and can be removed. Since id is just being used in a for-loop
+inside a local scope, move the declaration of id to that scope.
 
-net/caif/cfserl.c:126:5: warning: Value stored to 'expectlen' is never
-read [clang-analyzer-deadcode.DeadStores].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- net/caif/cfserl.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/tty/serial/meson_uart.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/caif/cfserl.c b/net/caif/cfserl.c
-index e11725a..fef72e6 100644
---- a/net/caif/cfserl.c
-+++ b/net/caif/cfserl.c
-@@ -123,7 +123,6 @@ static int cfserl_receive(struct cflayer *l, struct cfpkt *newpkt)
- 				if (pkt != NULL)
- 					cfpkt_destroy(pkt);
- 				layr->incomplete_frm = NULL;
--				expectlen = 0;
- 				spin_unlock(&layr->sync);
- 				return -EPROTO;
- 			}
+diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
+index 529cd0289056..d7f55031b2cf 100644
+--- a/drivers/tty/serial/meson_uart.c
++++ b/drivers/tty/serial/meson_uart.c
+@@ -716,12 +716,13 @@ static int meson_uart_probe(struct platform_device *pdev)
+ 	struct resource *res_mem, *res_irq;
+ 	struct uart_port *port;
+ 	int ret = 0;
+-	int id = -1;
+ 
+ 	if (pdev->dev.of_node)
+ 		pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
+ 
+ 	if (pdev->id < 0) {
++		int id;
++
+ 		for (id = AML_UART_PORT_OFFSET; id < AML_UART_PORT_NUM; id++) {
+ 			if (!meson_ports[id]) {
+ 				pdev->id = id;
 -- 
-1.8.3.1
+2.30.2
 
