@@ -2,82 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1B136A9F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 01:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B865736A9FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 02:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhDYX6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 19:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
+        id S231444AbhDZABI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 20:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbhDYX6k (ORCPT
+        with ESMTP id S231330AbhDZABG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 19:58:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04728C061574;
-        Sun, 25 Apr 2021 16:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=z5G/dHyVh1dT5W5QVYbtCd25tzIkokFqAw96MLvxJV8=; b=AKZRrwvB48cKrrWpby4azeqrip
-        mjTqOVC/L4lkiALke8ZeuKnZ7Nz0CidPxOcjaCbGRJP6Rvbj1DNfGIOUjABhGyz5zt0oA9cYpLsEa
-        J9kjvJCuOwCNeknUWNGXUwSyRKBBehIpNFWb7D/4t57/3sn5+EW1GMAqrnCZYCqZj1xpqR//fB7M/
-        DlTdnTTkgzKxzHpIZyy2IWTfAf86ARZ8kXhA8ULPWJ5VNIwzqyLQfRuQO/y8IgEevUdzxlKF7MKRA
-        suY7/GHFf2Bi9YqdcuZ9/ECCzsX1kqE1K4VjNhdoQSMZYRsn14Bg8aOW1rseyyTvI/Hj9UjozxBQ0
-        sYdpKD4g==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1laodO-006UVF-JN; Sun, 25 Apr 2021 23:57:55 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] alpha: csum_partial_copy.c: add function prototypes from <net/checksum.h>
-Date:   Sun, 25 Apr 2021 16:57:49 -0700
-Message-Id: <20210425235749.19113-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 25 Apr 2021 20:01:06 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AE4C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 17:00:25 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id m13so54859145oiw.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Apr 2021 17:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EqVn2NQF0n5BpttiBW8koHwFVqrvCouVBVXT/eQcKLM=;
+        b=qalPi7RjMUVUaSor9kV3M6kqnCSiidqKhApIRgfExLW5jh5+F6FmT3fNKXiqxX7Xbf
+         NJa1wqxZgXItSncv4TW8rNIOALH/ywRh3GWOyNZ+5uSlXMorYh81/h7VFHESU5akr82H
+         vfo4YCiZnTth3Q1toYgtpMm5p8n1XWx/h3+kqFsxqZZqlIHUxUcDf91cKGcWu1pYvKA4
+         dbgdtdNFGyQ3+n/QikJx38ieLrOW1Ob9ZDDjK6KlZaNf1kA7rZHIKoJJZCUe0zzIDJLR
+         XnZW8wD7R6PtJDoYWsOZxFFzvplHI8aia/gXAtd3KQpCCuq8W02X2+0jihs6SStqjbNU
+         9MPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EqVn2NQF0n5BpttiBW8koHwFVqrvCouVBVXT/eQcKLM=;
+        b=IytnuQ0w3yqBppBZEXUYMMMsmfADomLTlaY2KIAespcZYM8Q1VMacEuLteOwtzMhOt
+         mry17+z9SlTYxljBHehg9vQs5O6KSE0X7WVKKTAzyL7+Cb8PBg1mqL/kLWS09TMVnrLP
+         oZvIy9Io3n9fQIdAQHWyxSzIk5shgeS2h+0X511+8YhotxeFNbMEPzi09DZuLwEdxruz
+         GBoA+ntX1cyyoY/14KCRFtQFs0DeBxeiK91vOYkOdzTy0gklUCop6lBU9fP77qQ+GttD
+         awrYzwThGF3cM0dkTz8ofbXVIfQoQhH2J9AOYWTyT8r1dFcumFafWW+gFAjah7p3PD53
+         fkGA==
+X-Gm-Message-State: AOAM5319cSdHu1EjilFJre+QiLc9dp9AcqHa/L7eqg9ItiZgSbAfKfZt
+        rSuskz6UCSS/C9EbueHyuhfVDXf2R7g=
+X-Google-Smtp-Source: ABdhPJzr2X89hLn4t8hFmRDYHVWkJTxS7Xz5lNEd7Gzal8dzWgNccYlxbl76q3iirJECH0u/dJJn1w==
+X-Received: by 2002:aca:b387:: with SMTP id c129mr11085004oif.30.1619395224809;
+        Sun, 25 Apr 2021 17:00:24 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t9sm3072054otl.5.2021.04.25.17.00.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 25 Apr 2021 17:00:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 25 Apr 2021 17:00:23 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.12
+Message-ID: <20210426000023.GA116328@roeck-us.net>
+References: <CAHk-=wj3ANm8QrkC7GTAxQyXyurS0_yxMR3WwjhD9r7kTiOSTw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj3ANm8QrkC7GTAxQyXyurS0_yxMR3WwjhD9r7kTiOSTw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "no previous prototype" W=1 warnings from the kernel test robot:
+On Sun, Apr 25, 2021 at 02:06:35PM -0700, Linus Torvalds wrote:
+> Thanks to everybody who made last week very calm indeed, which just
+> makes me feel much happier about the final 5.12 release.
+> 
+> Both the shortlog (appended) and the diffstat are absolutely tiny, and
+> it's mainly just a random collection of small fixes in various areas:
+> arm64 devicetree files, some x86 perf event fixes (and a couple of
+> tooling ones), various minor driver fixes (amd and i915 gpu fixes
+> stand out, but honestly, that's not because they are big, but because
+> the rest is even smaller), a couple of small reverts, and a few
+> locking fixes (one kvm serialization fix, one memory ordering fix for
+> rwlocks).
+> 
+> Anyway, this obviously means that I'll start the merge window for 5.13
+> tomorrow. But I'd ask that even developers champing at the bit to get
+> their shiny new code merged please spend a bit of time running and
+> checking out 5.12.
+> 
+> Despite the extra week, this was actually a fairly small release
+> overall.  Judging by linux-next, 5.13 will be making up for it.
+> 
 
-../arch/alpha/lib/csum_partial_copy.c:349:1: error: no previous prototype for 'csum_and_copy_from_user' [-Werror=missing-prototypes]
-  349 | csum_and_copy_from_user(const void __user *src, void *dst, int len)
-      | ^~~~~~~~~~~~~~~~~~~~~~~
-../arch/alpha/lib/csum_partial_copy.c:358:1: error: no previous prototype for 'csum_partial_copy_nocheck' [-Werror=missing-prototypes]
-  358 | csum_partial_copy_nocheck(const void *src, void *dst, int len)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+I wonder if it makes sense to report the status of -next at the beginning
+of a commit window on a regular basis.
 
-Fixes: 808b49da54e6 ("alpha: turn csum_partial_copy_from_user() into csum_and_copy_from_user()")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: linux-alpha@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
-Adding the header file suggested by Al.
+For next-20210423:
 
- arch/alpha/lib/csum_partial_copy.c |    1 +
- 1 file changed, 1 insertion(+)
+Build results:
+	total: 151 pass: 149 fail: 2
+Failed builds:
+	csky:tinyconfig
+	mips:allnoconfig
+Qemu test results:
+	total: 461 pass: 440 fail: 21
+Failed tests:
+	arm:raspi2:multi_v7_defconfig:net,usb:bcm2836-rpi-2-b:initrd
+	arm:raspi2:multi_v7_defconfig:sd:net,usb:bcm2836-rpi-2-b:rootfs
+	mipsel:mips32r6-generic:malta_32r6_defconfig:nocd:smp:net,pcnet:ide:rootfs
+	<all riscv32>
 
---- linux-next-20210423.orig/arch/alpha/lib/csum_partial_copy.c
-+++ linux-next-20210423/arch/alpha/lib/csum_partial_copy.c
-@@ -13,6 +13,7 @@
- #include <linux/types.h>
- #include <linux/string.h>
- #include <linux/uaccess.h>
-+#include <net/checksum.h>
- 
- 
- #define ldq_u(x,y) \
+Let's see how many of those problems find their way into mainline.
+
+Guenter
