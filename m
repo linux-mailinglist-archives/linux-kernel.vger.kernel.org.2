@@ -2,139 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6733C36B5EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDA636B5F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhDZPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:38:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:25864 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233829AbhDZPiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:38:14 -0400
-IronPort-SDR: 0Ps1ud8W/vAJpOFy7l9sVU/LcIfNMT2oGcMzF7mkEOyqDPypU4teQfk9WELc6DIDCFqPZ7Cwf1
- 4vaOvDg5PMeA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="193167198"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="193167198"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 08:37:33 -0700
-IronPort-SDR: xbpSw5gqLmsvik3kUAvICs6QTJ8iOjAx+3jhnjyKWKR1Zq0EvL4hrJJfNsMCyiavtIARNI+cLT
- b/GHLOZwtzfg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="422699105"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by fmsmga008.fm.intel.com with SMTP; 26 Apr 2021 08:37:26 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 26 Apr 2021 18:37:25 +0300
-Date:   Mon, 26 Apr 2021 18:37:25 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP
- Workstation laptops
-Message-ID: <YIbeNYRbNsVcmyZi@intel.com>
-References: <20210423044700.247359-1-kai.heng.feng@canonical.com>
- <YILAc6EhoWWhENq8@intel.com>
- <CAAd53p72Y8Rda0Hk3WReLKPGJe8rwc5X-Pi5cyCpRPAm8sVEzg@mail.gmail.com>
+        id S234081AbhDZPla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233829AbhDZPl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 11:41:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6098C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:40:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CoxNInOjZOCOyMvfvquIsyQ8wWfp8Kl8mw++g1dHGiY=; b=lEz+5hJKS15Nvyz9HeU2ArQu9t
+        UJ7zK37zfzyvD+0OTzLyc/+EQkqOmNAPuuD3o2QCHAdlQYQJ0dajRGAXjXLBollfSE3nlQfIuPwG1
+        Ev1rpoNR2mZfbKrsGhiGXT1WUCT9tWm6bzAzr/yk03Awz9EqOmP5Ez1QObzsINWV4xggzIuDn3okP
+        KfGiRswsbsE2MiIGsxjFmSvyeDanc0jrrf47pcsLDsjFzonpFBFgQB8a5qLSNSpmvFQZ80lYKw3ag
+        pyodFzxBicGEFlu6u5Wxy96Oxa+fRtNHjqy+bATLepP7JWWbUqnlbPB0ORTF7ICW4i9zvdK84iDN5
+        AjmOCbFw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lb3LR-005msd-Lj; Mon, 26 Apr 2021 15:40:26 +0000
+Date:   Mon, 26 Apr 2021 16:40:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [RFC PATCH] f2fs: restructure f2fs page.private layout
+Message-ID: <20210426154021.GN235567@casper.infradead.org>
+References: <20210426100908.109435-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p72Y8Rda0Hk3WReLKPGJe8rwc5X-Pi5cyCpRPAm8sVEzg@mail.gmail.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <20210426100908.109435-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 07:10:06PM +0800, Kai-Heng Feng wrote:
-> On Fri, Apr 23, 2021 at 8:41 PM Ville Syrjälä
-> <ville.syrjala@linux.intel.com> wrote:
-> >
-> > On Fri, Apr 23, 2021 at 12:46:54PM +0800, Kai-Heng Feng wrote:
-> > > On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
-> > > to discrete GFX after S3. This is not desirable, because userspace will
-> > > treat connected display as a new one, losing display settings.
-> > >
-> > > The expected behavior is to let discrete GFX drives all external
-> > > displays.
-> > >
-> > > The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
-> > > The method is inside the BXT _DSM, so add the _DSM and call it
-> > > accordingly.
-> > >
-> > > I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
-> > > regression was found.
-> > >
-> > > v2:
-> > >  - Forward declare struct pci_dev.
-> > >
-> > > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
-> > > References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > ---
-> > >  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
-> > >  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
-> > >  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
-> > >  3 files changed, 25 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-> > > index 833d0c1be4f1..c7b57c22dce3 100644
-> > > --- a/drivers/gpu/drm/i915/display/intel_acpi.c
-> > > +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-> > > @@ -14,11 +14,16 @@
-> > >
-> > >  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
-> > >  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
-> > > +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
-> > >
-> > >  static const guid_t intel_dsm_guid =
-> > >       GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
-> > >                 0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
-> > >
-> > > +static const guid_t intel_bxt_dsm_guid =
-> > > +     GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
-> > > +               0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
-> > > +
-> >
-> > I think this dsm is just supposed to be more or less an
-> > alternative to the opregion SCI stuff. Why there are two
-> > ways to do the same things I have no idea. The opregion
-> > spec does not tell us such mundane details.
+On Mon, Apr 26, 2021 at 06:09:08PM +0800, Chao Yu wrote:
+> Restruct f2fs page private layout for below reasons:
 > 
-> Right now I think it's HP specific and from what I can see it doesn't
-> touch opregion.
+> There are some cases that f2fs wants to set a flag in a page to
+> indicate a specified status of page:
+> a) page is in transaction list for atomic write
+> b) page contains dummy data for aligned write
+> c) page is migrating for GC
+> d) page contains inline data for inline inode flush
+> e) page is verified in merkle tree for fsverity
 
-It's part of the opregion spec.
+hm, why do you need to record that?  I would have thought that if a file
+is marked as being protected by the merkle tree then any pages read in
+would be !uptodate until the merkle tree verification had happened.
 
+> f) page is dirty and has filesystem/inode reference count for writeback
+> g) page is temporary and has decompress io context reference for compression
 > 
-> >
-> > It's also not documented to do anything except list the
-> > supported functions:
-> > "Get BIOS Data Functions Supported “Function #0"
-> >  This function can be called to discover which “_DSM” Functions are
-> >  supported. It may only return success if the return value accurately
-> >  lists supported Functions."
-> >
-> > But what you're apparently saying is that calling this changes
-> > the behaviour of the system somehow? That is troubling.
+> There are existed places in page structure we can use to store
+> f2fs private status/data:
+> - page.flags: PG_checked, PG_private
+> - page.private
 > 
-> It flips a bit in BIOS-reserved Intel GPIO, and EC/hardware will
-> change the MUX based on the GPIO bit.
+> However it was a mess when we using them, which may cause potential
+> confliction:
+> 		page.private	PG_private	PG_checked
+> a)		-1		set
+> b)		-2
+> c), d), e)					set
+> f)		0		set
+> g)		pointer		set
 > 
-> We can add a DMI check to match "HP" to minimize the potential
-> regression factor.
+> The other problem is page.flags has no free slot, if we can avoid set
+> zero to page.private and set PG_private flag, then we use non-zero value
+> to indicate PG_private status, so that we may have chance to reclaim
+> PG_private slot for other usage. [1]
+> 
+> So in this patch let's restructure f2fs' page.private as below:
+> 
+> Layout A: lowest bit should be 1
+> | bit0 = 1 | bit1 | bit2 | ... | bit MAX | private data .... |
+>  bit 0	PAGE_PRIVATE_NOT_POINTER
+>  bit 1	PAGE_PRIVATE_ATOMIC_WRITE
+>  bit 2	PAGE_PRIVATE_DUMMY_WRITE
+>  bit 3	PAGE_PRIVATE_ONGOING_MIGRATION
+>  bit 4	PAGE_PRIVATE_INLINE_INODE
+>  bit 5	PAGE_PRIVATE_REF_RESOURCE
+>  bit 6-	f2fs private data
+> 
+> Layout B: lowest bit should be 0
+>  page.private is a wrapped pointer.
+> 
+> After the change:
+> 		page.private	PG_private	PG_checked
+> a)		11		set
+> b)		101
+> c)		1001
+> d)		10001
+> e)						set
+> f)		100001		set
+> g)		pointer		set
 
-I'm rather thinking that calling it always may be the right thing to do,
-assuming Windows does it as well. Maybe more vendors use it to backdoor in
-random junk like this :(
+Mmm ... this isn't enough to let us remove PG_private.  We'd need PG_private
+to be set for b,c,d as well.
 
--- 
-Ville Syrjälä
-Intel
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index 817d0bcb5c67..e393a67a023c 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -444,7 +444,11 @@ static int f2fs_set_meta_page_dirty(struct page *page)
+>  	if (!PageDirty(page)) {
+>  		__set_page_dirty_nobuffers(page);
+>  		inc_page_count(F2FS_P_SB(page), F2FS_DIRTY_META);
+> -		f2fs_set_page_private(page, 0);
+> +		set_page_private_reference(page);
+> +		if (!PagePrivate(page)) {
+> +			SetPagePrivate(page);
+> +			get_page(page);
+> +		}
+
+I'm not a big fan of this pattern (which seems to be repeated quite often)
+I think it should be buried within set_page_private_reference().  Also,
+are the states abcdf all mutually exclusive, or can a page be in states
+(eg) b and d at the same time?
+
+> -		if (IS_DUMMY_WRITTEN_PAGE(page)) {
+> -			set_page_private(page, (unsigned long)NULL);
+> +		if (page_private_dummy(page)) {
+> +			clear_page_private_dummy(page);
+>  			ClearPagePrivate(page);
+
+I think the ClearPagePrivate should be buried in the page_private_dummy()
+macro too ... and shouldn't there be a put_page() for this too?
+
