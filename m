@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A9736B87E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1D636B882
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 20:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234142AbhDZSDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 14:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S234181AbhDZSDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 14:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233919AbhDZSDF (ORCPT
+        with ESMTP id S234156AbhDZSDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 14:03:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0152AC061574;
+        Mon, 26 Apr 2021 14:03:07 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6462C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:25 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n4-20020a05600c4f84b029013151278decso5516045wmq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 11:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sLlK+ON2myao5q9MqC74vluTzzv/E65V2uLXDsbBd8w=;
+        b=odSsjA7DE6yWqHSyV1bybw+NBOWM//WiFglqqplSGIZYPc4E6d1EjE7GG5gTaMMBQl
+         aDZzrD8DvjkY0PeQaQHmPSmXZx0+b4DERi3LLpX+fbDetMjCV14Np8sv5Is8RynkhV9O
+         88KnQQ2hNuG+zXGDbdrWLZBVnmxXHF9MROLGMJpWK3zapYOEsX0FoObt06n04Ik/OmnM
+         AEVIUPMaEuVakM1RHFfKq5AZ+xHQcADV9PK8/YQaKEbCcOPNn1MyLWwASODMRkCw7pCh
+         Tj4n2Yc7Hu7xEs9JJU/OOYFIUE/m3Ij4dV8ka94Kg/OLcQgYBiOTdEYaLbmBtFCl1WVj
+         ciXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=sLlK+ON2myao5q9MqC74vluTzzv/E65V2uLXDsbBd8w=;
+        b=oYvUCmmupd77/d2iTvY45otwfYtJtArfBB4OOcnmNyjTxGZmuTh72vtxzcmbK6plKf
+         O818SVHzj+Dzgf7I/DfnMJ0nee67MQmDQVqjX0uNxDqq97PJ+Db9ddZxuy18eeqSNBOF
+         6dS+rqQ5cW2ObVHGpAZA+9cWTWBkdVSooBM84AeC2fZftOsbRelidOJijphQ7iqVY0MQ
+         mdNeFhI5onazYS9Ascw8ObZPrahtDq2Dc1+pJbtprDUDYnInTX6ALQXj1tRZ19B9GOTf
+         6kyfhjfbQXSG7oZcPxZ366RbqYjZ7qNZCe2W76QQtd5zhLz+m57jYD5WdBlw8FXNHYof
+         6Djg==
+X-Gm-Message-State: AOAM530mk6tBSbf1I0StlMvAZkGB2mFONghhfZcQ9BkX7AIFGwMpHfzr
+        YR69rJb8p9XnafatgSYKSNNk26YqOUluxUzp
+X-Google-Smtp-Source: ABdhPJxQ+jECyTT9SugB177/Zfsr9dZJkYoiQJ/ctFv5IJ0sEXY5KRrXUoUmj5l8ddjRhtm4NfLI7Q==
+X-Received: by 2002:a05:600c:2cd6:: with SMTP id l22mr14452735wmc.160.1619460144138;
         Mon, 26 Apr 2021 11:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PWkah+fwPe33ZZcVqLDlcUWqo58D207f7qzlEj7nZwY=; b=GCyXjZT/CpYO/4ULivAxhOfL2e
-        t0+fXiuhp77Toc2bpsmMyGA5pKlvXqdOCQ6BY6f9QcP7f02vrnAGfLg/qTL3PqwbxefsOH5XwkviN
-        NGsMJi1ldPNllb+6J6c3TQhT0VsyOM8pqoJ6n4WgGNpxLiF05zsb2N7BNR5LSpzTiwLzL4L+2XP8j
-        szX8OM40R/GksXzf/AZUIdGzO6iVgiyvWY+IEYZpWbUVY8OmfA+xG7HSQof2Yn3OokpD+UCJpUbei
-        eOAVq+Twf6Xf8U2cVBFX3h4rvP1hzJixGETipmVcMHFX16aMbfe3yMQgr5SHicD71ImR99HvawHwx
-        2YsP+Oag==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb5Yh-005wFT-Uj; Mon, 26 Apr 2021 18:02:15 +0000
-Date:   Mon, 26 Apr 2021 19:02:11 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, jack@suse.cz,
-        slp@redhat.com, groug@kaod.org
-Subject: Re: [PATCH v4 1/3] dax: Add an enum for specifying dax wakup mode
-Message-ID: <20210426180211.GP235567@casper.infradead.org>
-References: <20210423130723.1673919-1-vgoyal@redhat.com>
- <20210423130723.1673919-2-vgoyal@redhat.com>
- <20210426134632.GM235567@casper.infradead.org>
- <20210426175217.GD1741690@redhat.com>
+Received: from ?IPv6:2a01:e0a:90c:e290:b76e:7362:77c0:ddc3? ([2a01:e0a:90c:e290:b76e:7362:77c0:ddc3])
+        by smtp.gmail.com with ESMTPSA id a9sm265091wmj.1.2021.04.26.11.02.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 11:02:23 -0700 (PDT)
+Subject: Re: [PATCH -next] soc: amlogic: meson-clk-measure: remove redundant
+ dev_err call in meson_msr_probe()
+To:     Qiheng Lin <linqiheng@huawei.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+References: <20210409110243.41-1-linqiheng@huawei.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <3299a54f-0aeb-3dfa-dedb-d32f87de5ae9@baylibre.com>
+Date:   Mon, 26 Apr 2021 20:02:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426175217.GD1741690@redhat.com>
+In-Reply-To: <20210409110243.41-1-linqiheng@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 01:52:17PM -0400, Vivek Goyal wrote:
-> On Mon, Apr 26, 2021 at 02:46:32PM +0100, Matthew Wilcox wrote:
-> > On Fri, Apr 23, 2021 at 09:07:21AM -0400, Vivek Goyal wrote:
-> > > +enum dax_wake_mode {
-> > > +	WAKE_NEXT,
-> > > +	WAKE_ALL,
-> > > +};
-> > 
-> > Why define them in this order when ...
-> > 
-> > > @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
-> > >  	 * must be in the waitqueue and the following check will see them.
-> > >  	 */
-> > >  	if (waitqueue_active(wq))
-> > > -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
-> > > +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
-> > 
-> > ... they're used like this?  This is almost as bad as
-> > 
-> > enum bool {
-> > 	true,
-> > 	false,
-> > };
+On 09/04/2021 13:02, Qiheng Lin wrote:
+> There is a error message within devm_ioremap_resource
+> already, so remove the dev_err call to avoid redundant
+> error message.
 > 
-> Hi Matthew,
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+> ---
+>  drivers/soc/amlogic/meson-clk-measure.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> So you prefer that I should switch order of WAKE_NEXT and WAKE_ALL? 
+> diff --git a/drivers/soc/amlogic/meson-clk-measure.c b/drivers/soc/amlogic/meson-clk-measure.c
+> index e1957476a006..6dd190270123 100644
+> --- a/drivers/soc/amlogic/meson-clk-measure.c
+> +++ b/drivers/soc/amlogic/meson-clk-measure.c
+> @@ -626,10 +626,8 @@ static int meson_msr_probe(struct platform_device *pdev)
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	base = devm_ioremap_resource(&pdev->dev, res);
+> -	if (IS_ERR(base)) {
+> -		dev_err(&pdev->dev, "io resource mapping failed\n");
+> +	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+> -	}
+>  
+>  	priv->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+>  					     &meson_clk_msr_regmap_config);
 > 
-> enum dax_wake_mode {
-> 	WAKE_ALL,
-> 	WAKE_NEXT,
-> };
+> 
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+> 
 
-That, yes.
-
-> And then do following to wake task.
-> 
-> if (waitqueue_active(wq))
-> 	__wake_up(wq, TASK_NORMAL, mode, &key);
-
-No, the third argument to __wake_up() is a count, not an enum.  It just so
-happens that '0' means 'all' and we only ever wake up 1 and not, say, 5.
-So the logical way to define the enum is ALL, NEXT which _just happens
-to match_ the usage of __wake_up().
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
