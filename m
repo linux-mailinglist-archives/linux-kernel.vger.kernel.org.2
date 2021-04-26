@@ -2,197 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7E636B06F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FCF36B071
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhDZJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:22:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:46859 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232080AbhDZJWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:22:11 -0400
-IronPort-SDR: M/X21t4Ebd5m/BkXUHqaeYNX+2YMWBE71Fi/p+gdUzK4/6PAfX0RCcVALCcIOFO3MwDY3TUaJt
- BHNXPs+R0HGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="260258419"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="260258419"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 02:21:29 -0700
-IronPort-SDR: V36vqNipvCb4hLh8Agj1I/onW7FoBa41BGbkDhZJYgKIMsa7LyJqlCgaVCY1H8xd0AmRMNrKX7
- OXd4qxOQBHHQ==
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="424858152"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 02:21:28 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 1B2AF203BC;
-        Mon, 26 Apr 2021 12:21:26 +0300 (EEST)
-Date:   Mon, 26 Apr 2021 12:21:26 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
-Message-ID: <20210426092125.GU3@paasikivi.fi.intel.com>
-References: <20210422103037.GA239298@localhost>
+        id S232627AbhDZJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:22:22 -0400
+Received: from mail-dm6nam12on2073.outbound.protection.outlook.com ([40.107.243.73]:49792
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232364AbhDZJWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:22:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DlTZ7yi4QbwZLNJVWs9r0+tN0aF2n8Z+FCAEHn/ueZ1umroMAxehPWQ4KBS4DFFIMug2pARTPEkPnn/y0FVB/gChz54+ZcNJOnyEAP1G2pxyUQNEwG/ogWSLXRLUhACXHg9KCZcJq256GPs0l+2ZeK1rHSL1yZXNktx6dYyrfF1dP9pWcbBiTBSu65YK4Ahu9VkMsu/lntaRGCoYZAWjbaofOmfKDdq8Pjwz81tv7BOG4hmGviBdXhPegcrMRAdt3AGPTqqL0T0Jw2cDgYdMchfyirKZziEoQ6wfOPCcuP0ENIrVsjrf3H3JQGOVHMMV6NiYzBRhp/rQLgDuE0eV4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cJkXbQ1WQ7mBCrgxjaqNVe4r1ks4dGd/D6n9OTywAoc=;
+ b=FEJT38tZZlsdoQ0G8I/sTTkC4Y4NooZ7mnqskrQ1iFp3PXx+UWB1eWOUlrviQXyDpaveQqCAgWencF6bPcdiPzuiYaRJs7nsJydDzEYwNLBQmLLvCsA52ZNJhxnlWdYMLr9gXf9g1Vo3wjKdLFjLdcPdscyCkX+qEcST5t9MNh4xfIdF78DzpYL9me85hQ/t+4iDzvD2mxIEGNpfHvowXSFINWdW2y6ElMUwkp2fOFBO8B5tqv3pAdUX72b/XVK3G9+7GO7Jy4UoEEcYFiudE8PJk8KqEcCyzIywScV+bk+sWYdKOK+W5mqJ7zETiLGFdBJYf5vzVl3OZuClDp0bRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cJkXbQ1WQ7mBCrgxjaqNVe4r1ks4dGd/D6n9OTywAoc=;
+ b=iMssWuxxw0Iy7bc4+Lg3MhmX4O9GpVIPd0WqbKhCtxCH7DlZvWktOJo6MC4DbZXjFY6b2RHH964HyK4NIMHTReymAmuNw2S255gx1au5pQB/ra5OvFBThK3EVcNBdqYuGKRxDAgxM1IZC9za0ueIi/to1kBZu368wNbJ3ekEqVs=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18) by MWHPR11MB1631.namprd11.prod.outlook.com
+ (2603:10b6:301:10::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.24; Mon, 26 Apr
+ 2021 09:21:38 +0000
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::c156:455d:860e:ba87]) by MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::c156:455d:860e:ba87%4]) with mapi id 15.20.4065.027; Mon, 26 Apr 2021
+ 09:21:38 +0000
+Subject: Re: [PATCH] alpha: Add syscall_get_return_value()
+To:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        paul@paul-moore.com, eparis@redhat.com, linux-audit@redhat.com,
+        rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210423103533.30121-3-zhe.he@windriver.com>
+ <20210426091629.45020-1-zhe.he@windriver.com>
+From:   He Zhe <zhe.he@windriver.com>
+Message-ID: <255b68e5-e90e-26a9-fadd-6c8fd6fa3db5@windriver.com>
+Date:   Mon, 26 Apr 2021 17:21:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210426091629.45020-1-zhe.he@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR02CA0165.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::25) To MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422103037.GA239298@localhost>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.175] (60.247.85.82) by HK2PR02CA0165.apcprd02.prod.outlook.com (2603:1096:201:1f::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Mon, 26 Apr 2021 09:21:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c6a57e9b-3b91-48c4-d9c4-08d90894b190
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1631:
+X-Microsoft-Antispam-PRVS: <MWHPR11MB1631CF451DE25D6D69AC62428F429@MWHPR11MB1631.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:660;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ac67/DIJQ2AKRlJT1Lv2d45qf/a4aovjrl83UQoo/wEoRK6P6PShjjbGL8+2aJ3SQePQQjY+mY5A9oOS/WkmaG9bG0l2LC9WhgSXPU21S8al42RtbEjl70q1s8w+KT/fWy4EiSZ1bAzXulR8Hrc811x4muiDx/SLvYORZhxm/7RQucHnpKVsf+n6hm+ZbidBdYbMVCpARj8mzNZOKjPcvijwuqjZ7lpgf6tCXN3p9upqOTKLJNj8LURI5Uhf4A7Ap+dqB54DgOqvVT8W9EwoCr1eQJm2xvUUbFcSxug1pAOEMDpsADAqFd3e/+zX4eBWVER+e1cPLhUIh9YcF/6as81bahkmjGbwsU58TCWAMAGzRDwcrlFGFlh8akhWcLZi79WgErcz3+gwqszmRkXqYyLmybocUcmzqPiyRqdlE34b6ziJfJkL1V7ZtLKeT7bwV/vmOxWXYT5di/3Eu9cCAMVkkIi7ejxSCTnCLrCz5S+euDLil3B+UvdMP+h/RztYGueqh/cOWNvTpZdj6pl+3tDVxMqC9Nvu5u8hcZXma97qW1B4qMpHBlQghTzq0IzIsDrMBnmDimAyQgPYby/+GDQt1Q/jxE0kSnqsezU1jDSBgyY33BR2NFNL8jlcDRLIX0NlbhYY/nEYrlaaXbO78IAEpr/C7UwtrS4A09eK3hpCe2TYitbn5ODgnUYe+52AXxVCsq369v4nmM62tAz7OOd55nGnoIOVur5VlE/RNmFMYfuJM8Rsehwh0ULZMdBUJ09R7qajTDBlgsoTmFtUJgtc4hJcYhyY3ymQOz8EuWkIPx1Qgra2XG/EKVy8hu7/un6gyVO067Qzuj+MbDMbbIy7sVEzlK51mzrZyOKHqD4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(346002)(39840400004)(366004)(316002)(186003)(956004)(6706004)(26005)(5660300002)(16526019)(2616005)(8936002)(7416002)(66556008)(66476007)(6666004)(6486002)(478600001)(66946007)(2906002)(31696002)(966005)(4744005)(16576012)(921005)(36756003)(38350700002)(31686004)(38100700002)(52116002)(8676002)(86362001)(53546011)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R1Y5T2FZNlRTeHVEYlN5UXFyTVRKa3JOU082YUswOHhJa2F1UXFGQnA1Ukwy?=
+ =?utf-8?B?bUlEMlc0Rmt6WDNwMFd0cnpjci9kWUZmTmQzTFM1aDVaSnpwQ2thZVRLdGNT?=
+ =?utf-8?B?S2F1MVd1RDV2RWc1V3hJV3llVjF2TGsrcjlNdmlSVVE1QnR0YzY4NHVRUHh3?=
+ =?utf-8?B?UDFZUFlLQU1TUUNjVWpSanllMFdEWHVrcVJVdjJhaW84QXFTd1JBL3hEMEJZ?=
+ =?utf-8?B?cjJEU0x4NkJmQitIdXpyS1RxU2JZL0sxL1ZPalVFSm95OTcxZEticmpRN0Rx?=
+ =?utf-8?B?c1BoeG9tZ0J1em9icDE4elJIUUplbHZkTVZGNUhOZDd6K3B3YjgxNFE2MkxM?=
+ =?utf-8?B?TVVoeWVUekJXdndOV3U2am5nMlc0L2g2N0x1VFRNcno4WUdWUThBWFp1TFNr?=
+ =?utf-8?B?Q1F2NmtKTElUMEJGR0l4VGJsOXh5ektqMjZEbVZ3V0U4ekRJNDJqWG1Qa3cx?=
+ =?utf-8?B?ZHJWd200OUZtNHdlcUhHZDA4UC9DelhQdlJmRUp2ZmJsTGR5UG1XaFd1L2U2?=
+ =?utf-8?B?ZlNrSE56WURlVUJGT3RFSFhGWERtQ2RPQmlhUUdtbTdrQW84QXdzbEtaQUhz?=
+ =?utf-8?B?RnA5Vjh1QldEYzJjekVZYU91ZDVHZ0NyTS9LWjJ3ODJGV0NxRllmcVB4QWlJ?=
+ =?utf-8?B?NE1pQ3c3NXVHOWV6WFVUeDN0ZmVtRUVxYlE5M1Vmb0R1UWxUV1ZKWVhZeEZH?=
+ =?utf-8?B?eFVLWHFINWlIcUZFaHpOWVk4VEF2aFRaV3dGYU5yakU1MjRGVHc5UWp6dmdN?=
+ =?utf-8?B?TmtHUXhqZmZqMlBYS1daUHVDWE1tSXdrVkg0R2E5anNXdGVTWXNtaFR5L1NT?=
+ =?utf-8?B?TGgvd1pIVlhEaFJCT3UrRHVvbkFCK1NCR2JvS2pHZGVRMWVjUm9NbkNyNGRl?=
+ =?utf-8?B?amNyb1FTU1ZMRmozSmxmWlhHMVBzVCtoaWdZY2JYTEVLb0ZWd3JzNm1oYnZl?=
+ =?utf-8?B?aUhPRDJNZkFxODJiRWZ2dUd5L2RyNWZnSi9mUDhvS01DT3crWWhQeEhrMTM1?=
+ =?utf-8?B?Y3doQTBZVE9PWWxGa2FDaytOMjhldVMzTjdDK3lMUEVPaThuaG5zRFBNZVI2?=
+ =?utf-8?B?S0RiNllWRWliTTI5NkhNQUl3a056dzVFVzYwbGxwcXY1L1JGa2tkakZUMkJ4?=
+ =?utf-8?B?LzRZVllmQ051Z0hnUnFsc2xYL1BIb2tOVzFjV1NTelRBQ0QwV1A3VXE5T3p6?=
+ =?utf-8?B?aHl5QW5HK2N4Y2xXa0phajBHRW5jdzMvTzBUbzZhWjVtU1E3WlRBVGFhK1Fk?=
+ =?utf-8?B?NytrT0tPSmFkVzh2WUgwVGlnclREU0dWZXEvd0M4SldUZkl0UlFKWkl4cTkx?=
+ =?utf-8?B?ZVVzMmZNK2JSQWUxRXVXdkpBcDdhZUFRcGdQdXMyQ1psdzhQY1JKMDN6TVRE?=
+ =?utf-8?B?dndlbGxKM3pmakVDbnFETEtiZUQ3VnVFbnZzalBmdmN1LzVabEgzMkdOeG5z?=
+ =?utf-8?B?VDlJT29PMUUzN3BZKzZYUEJkUWtRV05UelVuNmJXVVQzdXVZTjFreFJJM0N5?=
+ =?utf-8?B?Y2cvL1dOYjAyTHo3NE9LdVB3blNXRjFHUGtKbW83T3IyZDBqS0NxaUc0V2s1?=
+ =?utf-8?B?TWlWVFdDckdIbzNBcUIzQm5TNkdqTGFQcENNOTVlWkVVaUpUSXdLL1AzM1RZ?=
+ =?utf-8?B?WCt2YlRQK3BkY2F1V0tjd0Z5cU0wVnBqTGdjeTBxZ3VrVjBzcjQ4Q3NMS2Iv?=
+ =?utf-8?B?R0l4cE9iWHVGNGxuejFTbEIwcTZ1ZjVXTkVSdC9KNzNrRmJjWXFwYXRlZGZv?=
+ =?utf-8?Q?5d/Pv0DDTaRCgOfPNRuD9uRW7gtcqTrmYIIftsG?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6a57e9b-3b91-48c4-d9c4-08d90894b190
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2351.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 09:21:37.8127
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7hQuPaFDTMtGQYF5e9A/4BYAzzjxV9qNJ8guCWrF83An5O5VTLpUTs7C0m0/x9F5NCaeGshI9fq7RQtL1Rkx1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1631
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Deepak,
+This is depended by https://lore.kernel.org/lkml/20210423103533.30121-3-zhe.he@windriver.com/
 
-Thanks for the patch.
+Thanks,
+Zhe
 
-On Thu, Apr 22, 2021 at 04:00:37PM +0530, Deepak R Varma wrote:
-> It is recommended to use driver model diagnostic macros dev_*() instead
-> of pr_*() since the former ensures that the log messages are always
-> associated with the corresponding device and driver.
-> 
-> Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> Signed-off-by: Deepak R Varma <drv@mailo.com>
+On 4/26/21 5:16 PM, He Zhe wrote:
+> audit now reuquires syscall_get_return_value instead of regs_return_value
+> to retrieve syscall return code . Other architectures that support audit
+> have already define this function.
+>
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
 > ---
-> 
-> Note: There are few more pr_into() calls that I have not replaced since
-> they are very basic (entry and exit) and temporary. They can be removed 
-> if the APIs are fully tested. See this example:
-> 	pr_info("%s S\n", __func__);
-> 
-> Let me know if I should remove them and resubmit this patch.
+>  arch/alpha/include/asm/syscall.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/alpha/include/asm/syscall.h b/arch/alpha/include/asm/syscall.h
+> index 11c688c1d7ec..f21babaeed85 100644
+> --- a/arch/alpha/include/asm/syscall.h
+> +++ b/arch/alpha/include/asm/syscall.h
+> @@ -9,4 +9,10 @@ static inline int syscall_get_arch(struct task_struct *task)
+>  	return AUDIT_ARCH_ALPHA;
+>  }
+>  
+> +static inline long syscall_get_return_value(struct task_struct *task,
+> +					    struct pt_regs *regs)
+> +{
+> +	return regs->r0;
+> +}
+> +
+>  #endif	/* _ASM_ALPHA_SYSCALL_H */
 
-Most probably leftovers from development time. I think these could be
-removed but perhaps by a separate patch.
-
-> 
-> 
->  .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
->  1 file changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> index 7e4e123fdb52..27153ec6f65e 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> @@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  	/* pixel clock calculattion */
->  	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
->  	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
-> -	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
-> +	dev_info(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
-
-Over 80; please wrap. The same for the rest of such lines.
-
->  
->  	/* get integration time */
->  	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
-> @@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  	if (ret)
->  		return ret;
->  	buf->crop_horizontal_start = val | (reg_val & 0xFF);
-> -	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
-> +	dev_info(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
->  
->  	/* Getting crop_vertical_start */
->  	ret =  gc0310_read_reg(client, GC0310_8BIT,
-> @@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  	if (ret)
->  		return ret;
->  	buf->crop_vertical_start = val | (reg_val & 0xFF);
-> -	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
-> +	dev_info(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
->  
->  	/* Getting output_width */
->  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> @@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  	if (ret)
->  		return ret;
->  	buf->output_width = val | (reg_val & 0xFF);
-> -	pr_info("output_width=%d\n", buf->output_width);
-> +	dev_info(&client->dev, "output_width=%d\n", buf->output_width);
->  
->  	/* Getting output_height */
->  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> @@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  	if (ret)
->  		return ret;
->  	buf->output_height = val | (reg_val & 0xFF);
-> -	pr_info("output_height=%d\n", buf->output_height);
-> +	dev_info(&client->dev, "output_height=%d\n", buf->output_height);
->  
->  	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
->  	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
-> -	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
-> -	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
-> +	dev_info(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
-> +	dev_info(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
->  
->  	/* Getting line_length_pck */
->  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> @@ -389,8 +389,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  		return ret;
->  	sh_delay = reg_val;
->  	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
-> -	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
-> -		sh_delay, buf->line_length_pck);
-> +	dev_info(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
-> +		 sh_delay, buf->line_length_pck);
->  
->  	/* Getting frame_length_lines */
->  	ret = gc0310_read_reg(client, GC0310_8BIT,
-> @@ -404,8 +404,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
->  		return ret;
->  	vert_blanking = val | (reg_val & 0xFF);
->  	buf->frame_length_lines = buf->output_height + vert_blanking;
-> -	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
-> -		buf->frame_length_lines);
-> +	dev_info(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
-> +		 buf->frame_length_lines);
->  
->  	buf->binning_factor_x = res->bin_factor_x ?
->  				res->bin_factor_x : 1;
-> @@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
->  		dgain = gain / 2;
->  	}
->  
-> -	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
-> +	dev_info(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
->  
->  	/* set analog gain */
->  	ret = gc0310_write_reg(client, GC0310_8BIT,
-> @@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
->  	struct i2c_client *client = v4l2_get_subdevdata(sd);
->  	int ret;
->  
-> -	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
-> +	dev_info(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
->  
->  	/* set exposure */
->  	ret = gc0310_write_reg(client, GC0310_8BIT,
-> @@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
->  		return -ENODEV;
->  	}
->  	id = ((((u16)high) << 8) | (u16)low);
-> -	pr_info("sensor ID = 0x%x\n", id);
-> +	dev_info(&client->dev, "sensor ID = 0x%x\n", id);
->  
->  	if (id != GC0310_ID) {
->  		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
-> @@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
->  	struct i2c_client *client = v4l2_get_subdevdata(sd);
->  	int ret;
->  
-> -	pr_info("%s S enable=%d\n", __func__, enable);
-> +	dev_info(&client->dev, "%s S enable=%d\n", __func__, enable);
->  	mutex_lock(&dev->input_lock);
->  
->  	if (enable) {
-
--- 
-Kind regards,
-
-Sakari Ailus
