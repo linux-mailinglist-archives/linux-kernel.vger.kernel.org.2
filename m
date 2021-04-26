@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30B036B01C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1455D36B026
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbhDZJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbhDZJAm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:00:42 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B08EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:00:00 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n4-20020a05600c4f84b029013151278decso4651753wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wK4naeGRGIl4BeVrASMOqtpAgrHp/pNm7sHfLvwF54E=;
-        b=PxPgVAAlZnvmzStiU1Z2deNohrwVw0X40mkVaV5Dq++W4KUpFPpjbJRe3083M7Ot+H
-         lqshyPaVezPvFlcko9PPpEM044pqnQpU+E/CDNjsZgdrTXaQMxznBiJPMs11EU+ZRXHf
-         OYogvGpLKSuQTfe9+y+cSxRXTHYk0kRxwDsWpUMTzInl31/ixU5KS6jBtCBHWyjPgVVC
-         bgJg2foLb1QS1nkMelHIiHoeOJ2pAAXt6b6AjnVx7wnKyp2rg45F4dMnVo4K2SY69Zxk
-         KErBSB7657iBNUe0wwQ8NrBl9Arwvg8BJV39MCQG6swugUV62CVtmSOppVmy8CTkYgVL
-         ApOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wK4naeGRGIl4BeVrASMOqtpAgrHp/pNm7sHfLvwF54E=;
-        b=IEnI2qO/BPVdI3WMr2DFpqlzLtYv3CWNaWZTtbUUV7AtDZY/v7OE5Tt4H9YQyOr9/3
-         GmXpa3IA2humsa6aXsznI1r2y4awoMJtLKQSZqdaYTh/+F193hHD4YgSzLLhoZU+bT3p
-         APDMhHvFRnPmo0LjwvwgNjw+kX4WmtRj3FQEVf8zlHYbzW53Fg4UsL4wuDsvtF2Nl7Mj
-         63Vyw8SvOl4k3w4f4n6CtKSvwyIQRIGb8pNV3sRGk10NXPug/SQTJHHxpP0dLfmdJJgW
-         8wsTZg2a6SxZR74EtCwLBp6bJ6tmsQ/W7dgZ9/E76E7WzOSAJkcIiV9oP0KxnrYVnW3z
-         dSAQ==
-X-Gm-Message-State: AOAM533ul0yuIAWCI94vbmBR4h7O5gOe7l4A26l1XfsCS4S5pTiwKyZ5
-        U4qow7l23PKU3iWWYHYDDrYvmQ==
-X-Google-Smtp-Source: ABdhPJxPh52ELMKYVm/zy7jHFJaZ7+FE2YzMfYoin2xOlvx6NK/M9aoy18apnORVu6H2+WHFd+k4UA==
-X-Received: by 2002:a1c:1bd1:: with SMTP id b200mr7437687wmb.3.1619427598897;
-        Mon, 26 Apr 2021 01:59:58 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:b76e:7362:77c0:ddc3? ([2a01:e0a:90c:e290:b76e:7362:77c0:ddc3])
-        by smtp.gmail.com with ESMTPSA id h10sm19945297wrt.40.2021.04.26.01.59.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 01:59:58 -0700 (PDT)
-Subject: Re: [PATCH] drm: bridge: add missing word in Analogix help text
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Torsten Duwe <duwe@suse.de>, Maxime Ripard <maxime@cerno.tech>
-References: <20210424061817.7339-1-rdunlap@infradead.org>
- <ecbe576f-1a96-a873-3716-6fa478a8269e@baylibre.com>
- <CAG3jFyv1kc3+B6SkVwdV7gNV+HUEWMAjmH8GSXaw8rDcHLadeQ@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <481c3f44-1686-2c58-29fa-c71fec520ba7@baylibre.com>
-Date:   Mon, 26 Apr 2021 10:59:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232254AbhDZJCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232068AbhDZJCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:02:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4221061139;
+        Mon, 26 Apr 2021 09:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619427715;
+        bh=t3czjXocmQ55D2hIA7IF6tpRkkrO+CYu0SYiBaFbz1Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Rr+xnQ9bh2WK8O/8hfZ126rO6UOx2U5yz/82OPuEcM/63rxn3pZU2mIi1ZytNaPi1
+         Q0urBmzwLalR1PIiMmcY15FIdU8E4ejI2vORj0T6FlEN80iTP3D/u2Bo27vEzqrzqk
+         FKu4rfU+Xcud/PmQRq8m03q1Oe1sPuVlX/fUqIewk9S3jWYPS1U/VVtiTID74zAJHC
+         Z7Ue0v8s7ocR/1iFU3IInJt93pXxOO0nhkfX44LQUd2kEfKYXChwrwyrhE6O+YsgaS
+         zXTtRFA9tKHtIpoBj0G3yuioFLQX+N8l+sQ7PaghSC0iz9MDubGkwd8OScSSpunduO
+         KLBBRzRjEcVzw==
+Received: by mail-oi1-f180.google.com with SMTP id m13so55772353oiw.13;
+        Mon, 26 Apr 2021 02:01:55 -0700 (PDT)
+X-Gm-Message-State: AOAM530zoz3k0y0lASOW1Ndd6QlxLdDmCad7xSdIaSIebmm9sNAZAoY+
+        31NQQPbUmlZEAYwRtwxUUYftBCIGDJIaaabIya4=
+X-Google-Smtp-Source: ABdhPJz490C9Bm6kCo7qnrhIQmJXGMOsL4UyybpS8HkW9UBlUjHlPJc3QUhNKE17yuV4sZvhQGWABW2vijsRIQpxtRs=
+X-Received: by 2002:aca:4056:: with SMTP id n83mr12587221oia.47.1619427714462;
+ Mon, 26 Apr 2021 02:01:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFyv1kc3+B6SkVwdV7gNV+HUEWMAjmH8GSXaw8rDcHLadeQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210425175734.1310191-1-masahiroy@kernel.org>
+ <20210425175734.1310191-3-masahiroy@kernel.org> <20210426085836.GA5802@willie-the-truck>
+In-Reply-To: <20210426085836.GA5802@willie-the-truck>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 26 Apr 2021 11:01:43 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFe7wf_3jmoSAM98s+sZS4Ex4yyoXXiToR-EX8K0e-aNw@mail.gmail.com>
+Message-ID: <CAMj1kXFe7wf_3jmoSAM98s+sZS4Ex4yyoXXiToR-EX8K0e-aNw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] crypto: arm64: generate *.S by Perl at build time
+ instead of shipping them
+To:     Will Deacon <will@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/04/2021 09:42, Robert Foss wrote:
-> 
-> 
-> On Mon, Apr 26, 2021, 09:15 Neil Armstrong <narmstrong@baylibre.com <mailto:narmstrong@baylibre.com>> wrote:
-> 
-> 
-> 
->     Le 24/04/2021 à 08:18, Randy Dunlap a écrit :
->     > Insert a missing word "power" in Kconfig help text.
->     >
->     > Fixes: 6aa192698089 ("drm/bridge: Add Analogix anx6345 support")
->     > Signed-off-by: Randy Dunlap <rdunlap@infradead.org <mailto:rdunlap@infradead.org>>
->     > Cc: Andrzej Hajda <a.hajda@samsung.com <mailto:a.hajda@samsung.com>>
->     > Cc: Neil Armstrong <narmstrong@baylibre.com <mailto:narmstrong@baylibre.com>>
->     > Cc: Robert Foss <robert.foss@linaro.org <mailto:robert.foss@linaro.org>>
->     > Cc: David Airlie <airlied@linux.ie <mailto:airlied@linux.ie>>
->     > Cc: Daniel Vetter <daniel@ffwll.ch <mailto:daniel@ffwll.ch>>
->     > Cc: dri-devel@lists.freedesktop.org <mailto:dri-devel@lists.freedesktop.org>
->     > Cc: Icenowy Zheng <icenowy@aosc.io <mailto:icenowy@aosc.io>>
->     > Cc: Vasily Khoruzhick <anarsoul@gmail.com <mailto:anarsoul@gmail.com>>
->     > Cc: Torsten Duwe <duwe@suse.de <mailto:duwe@suse.de>>
->     > Cc: Maxime Ripard <maxime@cerno.tech>
->     > ---
->     >  drivers/gpu/drm/bridge/analogix/Kconfig |    2 +-
->     >  1 file changed, 1 insertion(+), 1 deletion(-)
->     >
->     > --- linux-next-20210423.orig/drivers/gpu/drm/bridge/analogix/Kconfig
->     > +++ linux-next-20210423/drivers/gpu/drm/bridge/analogix/Kconfig
->     > @@ -6,7 +6,7 @@ config DRM_ANALOGIX_ANX6345
->     >       select DRM_KMS_HELPER
->     >       select REGMAP_I2C
->     >       help
->     > -       ANX6345 is an ultra-low Full-HD DisplayPort/eDP
->     > +       ANX6345 is an ultra-low power Full-HD DisplayPort/eDP
->     >         transmitter designed for portable devices. The
->     >         ANX6345 transforms the LVTTL RGB output of an
->     >         application processor to eDP or DisplayPort.
->     >
-> 
->     Reviewed-by: Neil Armstrong <narmstrongt@baylibre.com <mailto:narmstrongt@baylibre.com>>
-> 
-> 
-> I think a typo in the email snuck in ;)
-> 
+On Mon, 26 Apr 2021 at 10:58, Will Deacon <will@kernel.org> wrote:
+>
+> [+Ard]
+>
+> On Mon, Apr 26, 2021 at 02:57:33AM +0900, Masahiro Yamada wrote:
+> > Generate *.S by Perl like arch/{mips,x86}/crypto/Makefile.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  arch/arm64/crypto/Makefile                |    9 +-
+> >  arch/arm64/crypto/poly1305-core.S_shipped |  835 ---------
+> >  arch/arm64/crypto/sha256-core.S_shipped   | 2069 ---------------------
+> >  arch/arm64/crypto/sha512-core.S_shipped   | 1093 -----------
+> >  4 files changed, 3 insertions(+), 4003 deletions(-)
+> >  delete mode 100644 arch/arm64/crypto/poly1305-core.S_shipped
+> >  delete mode 100644 arch/arm64/crypto/sha256-core.S_shipped
+> >  delete mode 100644 arch/arm64/crypto/sha512-core.S_shipped
+>
+> What's the advantage of removing the _shipped files? We included them
+> originally so that we didn't require perl for the kernel build -- is that no
+> longer an issue?
+>
+> I guess I'm just missing the justification for the change.
 
-Ah ah indeed !
-
-Reviewed-by: Neil Armstrong <narmstrongt@baylibre.com>
+Removing 4000 lines of code is an improvement in itself, I suppose,
+but I have no preference either way,
