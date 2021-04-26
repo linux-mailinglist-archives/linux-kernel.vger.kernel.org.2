@@ -2,186 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B9D36B068
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7E636B06F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhDZJUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:20:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33130 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232103AbhDZJUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:20:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619428799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5y9MbpARwgkPq2SvXUNV26BaQxXBbXVOds45fh2m+E=;
-        b=dwY01GAoLtT0KTwnxQUdxcfjKA2ZxnhY5mFY/EFbPavj+HUDBxjOTKo/xjA6rodVXDNubY
-        sx6uDyVI4HWab9mpsLr7eeQxoqUoH7JuCGzrxck8geHGBm5NSQhb6trcMPya9XMwqYcMbz
-        NbduAKLzOeLkXUha1MXVL2waI7cmfu8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-nK9gDDOLNGuTQonoCzf9Ow-1; Mon, 26 Apr 2021 05:19:57 -0400
-X-MC-Unique: nK9gDDOLNGuTQonoCzf9Ow-1
-Received: by mail-ed1-f70.google.com with SMTP id u30-20020a50a41e0000b0290385504d6e4eso828305edb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 02:19:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u5y9MbpARwgkPq2SvXUNV26BaQxXBbXVOds45fh2m+E=;
-        b=Kmuj3PULNZZudFeuGpdMRNLswGEeoLt63yJO7AD12Ev6rTcX+mIV5YzanuZCP7yUJj
-         57eBRySW8vC/BVaqv3S9sFco84Qf5b6QRL1enV6XeCPW3usRtYQVgJvZTW8r3F47gZ7b
-         vQnBIa+O0WbQyGVYCVPIhlZCHMFhJb6x9bTURN90fPPp3Doea7XGedoAj3ijpQgILUOX
-         4TTod00AfSUSDccTUpWsiNRPKFR8Nqxkoc9v2SFaoC1QUo2EW+D3QS8CW1uHlh42OymD
-         cO+eh9Gp25UUpFa1gsUF/jviFcqPLry9tfMmjtWM+9ZV6I5A+dKiCo2Y+laatv51m8y5
-         B1nQ==
-X-Gm-Message-State: AOAM530oAhMhVd4RYchCosDij7HzE20Q2ejPsJxEmRgCDIkTo6l+l//V
-        gE5V81jA6fe0xSYCWS39STtJJMStF65osH2VsKyZ3PyyXJj0MHHXV3FE3Q2/dNANBBziqOXQQw7
-        UHe/a+pLZoPylLHOpl9Fh+HEmcmN6Ot495ZUkx0dW/GuR96/iwVYIUiF5aknB3iZqumWvIRiHLD
-        Ht
-X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr17498531eji.553.1619428796129;
-        Mon, 26 Apr 2021 02:19:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxrek5egfR4D2g9yAozsojjVO+x8fQ99nZX2lKb3Y8yfMfaH8gO6li+33RlkIEZlXkcEkau7A==
-X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr17498508eji.553.1619428795850;
-        Mon, 26 Apr 2021 02:19:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id cn10sm13624649edb.28.2021.04.26.02.19.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 02:19:55 -0700 (PDT)
-Subject: Re: [PATCH] KVM: VMX: Invert the inlining of MSR interception helpers
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210423221912.3857243-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <febab7f6-aab8-6278-5782-07d75dd40166@redhat.com>
-Date:   Mon, 26 Apr 2021 11:19:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232580AbhDZJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:22:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46859 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232080AbhDZJWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:22:11 -0400
+IronPort-SDR: M/X21t4Ebd5m/BkXUHqaeYNX+2YMWBE71Fi/p+gdUzK4/6PAfX0RCcVALCcIOFO3MwDY3TUaJt
+ BHNXPs+R0HGw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9965"; a="260258419"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="260258419"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 02:21:29 -0700
+IronPort-SDR: V36vqNipvCb4hLh8Agj1I/onW7FoBa41BGbkDhZJYgKIMsa7LyJqlCgaVCY1H8xd0AmRMNrKX7
+ OXd4qxOQBHHQ==
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="424858152"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 02:21:28 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 1B2AF203BC;
+        Mon, 26 Apr 2021 12:21:26 +0300 (EEST)
+Date:   Mon, 26 Apr 2021 12:21:26 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
+Message-ID: <20210426092125.GU3@paasikivi.fi.intel.com>
+References: <20210422103037.GA239298@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20210423221912.3857243-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422103037.GA239298@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/04/21 00:19, Sean Christopherson wrote:
-> Invert the inline declarations of the MSR interception helpers between
-> the wrapper, vmx_set_intercept_for_msr(), and the core implementations,
-> vmx_{dis,en}able_intercept_for_msr().  Letting the compiler _not_
-> inline the implementation reduces KVM's code footprint by ~3k bytes.
+Hi Deepak,
+
+Thanks for the patch.
+
+On Thu, Apr 22, 2021 at 04:00:37PM +0530, Deepak R Varma wrote:
+> It is recommended to use driver model diagnostic macros dev_*() instead
+> of pr_*() since the former ensures that the log messages are always
+> associated with the corresponding device and driver.
 > 
-> Back when the helpers were added in commit 904e14fb7cb9 ("KVM: VMX: make
-> MSR bitmaps per-VCPU"), both the wrapper and the implementations were
-> __always_inline because the end code distilled down to a few conditionals
-> and a bit operation.  Today, the implementations involve a variety of
-> checks and bit ops in order to support userspace MSR filtering.
-> 
-> Furthermore, the vast majority of calls to manipulate MSR interception
-> are not performance sensitive, e.g. vCPU creation and x2APIC toggling.
-> On the other hand, the one path that is performance sensitive, dynamic
-> LBR passthrough, uses the wrappers, i.e. is largely untouched by
-> inverting the inlining.
-> 
-> In short, forcing the low level MSR interception code to be inlined no
-> longer makes sense.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> Signed-off-by: Deepak R Varma <drv@mailo.com>
 > ---
->   arch/x86/kvm/vmx/vmx.c | 17 ++---------------
->   arch/x86/kvm/vmx/vmx.h | 15 +++++++++++++--
->   2 files changed, 15 insertions(+), 17 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 6501d66167b8..b77bc72d97a4 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -362,8 +362,6 @@ static const struct kernel_param_ops vmentry_l1d_flush_ops = {
->   module_param_cb(vmentry_l1d_flush, &vmentry_l1d_flush_ops, NULL, 0644);
->   
->   static u32 vmx_segment_access_rights(struct kvm_segment *var);
-> -static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
-> -							  u32 msr, int type);
->   
->   void vmx_vmexit(void);
->   
-> @@ -3818,8 +3816,7 @@ static void vmx_set_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
->   		__set_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
->   }
->   
-> -static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
-> -							  u32 msr, int type)
-> +void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
-> @@ -3864,8 +3861,7 @@ static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
->   		vmx_clear_msr_bitmap_write(msr_bitmap, msr);
->   }
->   
-> -static __always_inline void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu,
-> -							 u32 msr, int type)
-> +void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
-> @@ -3898,15 +3894,6 @@ static __always_inline void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu,
->   		vmx_set_msr_bitmap_write(msr_bitmap, msr);
->   }
->   
-> -void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu,
-> -						      u32 msr, int type, bool value)
-> -{
-> -	if (value)
-> -		vmx_enable_intercept_for_msr(vcpu, msr, type);
-> -	else
-> -		vmx_disable_intercept_for_msr(vcpu, msr, type);
-> -}
-> -
->   static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
->   {
->   	u8 mode = 0;
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 19fe09fad2fe..008cb87ff088 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -392,8 +392,19 @@ void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp);
->   bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
->   int vmx_find_loadstore_msr_slot(struct vmx_msrs *m, u32 msr);
->   void vmx_ept_load_pdptrs(struct kvm_vcpu *vcpu);
-> -void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu,
-> -	u32 msr, int type, bool value);
-> +
-> +void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type);
-> +void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type);
-> +
-> +static inline void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr,
-> +					     int type, bool value)
-> +{
-> +	if (value)
-> +		vmx_enable_intercept_for_msr(vcpu, msr, type);
-> +	else
-> +		vmx_disable_intercept_for_msr(vcpu, msr, type);
-> +}
-> +
->   void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu);
->   
->   static inline u8 vmx_get_rvi(void)
+> Note: There are few more pr_into() calls that I have not replaced since
+> they are very basic (entry and exit) and temporary. They can be removed 
+> if the APIs are fully tested. See this example:
+> 	pr_info("%s S\n", __func__);
 > 
+> Let me know if I should remove them and resubmit this patch.
 
-Queued (and pretty much closing the 5.13 kvm/next branch after this).
+Most probably leftovers from development time. I think these could be
+removed but perhaps by a separate patch.
 
-Paolo
+> 
+> 
+>  .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> index 7e4e123fdb52..27153ec6f65e 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> @@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  	/* pixel clock calculattion */
+>  	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
+>  	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
+> -	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
+> +	dev_info(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
 
+Over 80; please wrap. The same for the rest of such lines.
+
+>  
+>  	/* get integration time */
+>  	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
+> @@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  	if (ret)
+>  		return ret;
+>  	buf->crop_horizontal_start = val | (reg_val & 0xFF);
+> -	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
+> +	dev_info(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
+>  
+>  	/* Getting crop_vertical_start */
+>  	ret =  gc0310_read_reg(client, GC0310_8BIT,
+> @@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  	if (ret)
+>  		return ret;
+>  	buf->crop_vertical_start = val | (reg_val & 0xFF);
+> -	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
+> +	dev_info(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
+>  
+>  	/* Getting output_width */
+>  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> @@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  	if (ret)
+>  		return ret;
+>  	buf->output_width = val | (reg_val & 0xFF);
+> -	pr_info("output_width=%d\n", buf->output_width);
+> +	dev_info(&client->dev, "output_width=%d\n", buf->output_width);
+>  
+>  	/* Getting output_height */
+>  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> @@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  	if (ret)
+>  		return ret;
+>  	buf->output_height = val | (reg_val & 0xFF);
+> -	pr_info("output_height=%d\n", buf->output_height);
+> +	dev_info(&client->dev, "output_height=%d\n", buf->output_height);
+>  
+>  	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
+>  	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
+> -	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
+> -	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
+> +	dev_info(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
+> +	dev_info(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
+>  
+>  	/* Getting line_length_pck */
+>  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> @@ -389,8 +389,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  		return ret;
+>  	sh_delay = reg_val;
+>  	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
+> -	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
+> -		sh_delay, buf->line_length_pck);
+> +	dev_info(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
+> +		 sh_delay, buf->line_length_pck);
+>  
+>  	/* Getting frame_length_lines */
+>  	ret = gc0310_read_reg(client, GC0310_8BIT,
+> @@ -404,8 +404,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+>  		return ret;
+>  	vert_blanking = val | (reg_val & 0xFF);
+>  	buf->frame_length_lines = buf->output_height + vert_blanking;
+> -	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
+> -		buf->frame_length_lines);
+> +	dev_info(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
+> +		 buf->frame_length_lines);
+>  
+>  	buf->binning_factor_x = res->bin_factor_x ?
+>  				res->bin_factor_x : 1;
+> @@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
+>  		dgain = gain / 2;
+>  	}
+>  
+> -	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
+> +	dev_info(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
+>  
+>  	/* set analog gain */
+>  	ret = gc0310_write_reg(client, GC0310_8BIT,
+> @@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+>  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+>  	int ret;
+>  
+> -	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
+> +	dev_info(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
+>  
+>  	/* set exposure */
+>  	ret = gc0310_write_reg(client, GC0310_8BIT,
+> @@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
+>  		return -ENODEV;
+>  	}
+>  	id = ((((u16)high) << 8) | (u16)low);
+> -	pr_info("sensor ID = 0x%x\n", id);
+> +	dev_info(&client->dev, "sensor ID = 0x%x\n", id);
+>  
+>  	if (id != GC0310_ID) {
+>  		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
+> @@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
+>  	struct i2c_client *client = v4l2_get_subdevdata(sd);
+>  	int ret;
+>  
+> -	pr_info("%s S enable=%d\n", __func__, enable);
+> +	dev_info(&client->dev, "%s S enable=%d\n", __func__, enable);
+>  	mutex_lock(&dev->input_lock);
+>  
+>  	if (enable) {
+
+-- 
+Kind regards,
+
+Sakari Ailus
