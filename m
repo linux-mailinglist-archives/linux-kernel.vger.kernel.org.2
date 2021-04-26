@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E0636AEDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C6036AEFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhDZHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56422 "EHLO mail.kernel.org"
+        id S233039AbhDZHuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:50:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233610AbhDZHjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:39:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E44F613DB;
-        Mon, 26 Apr 2021 07:38:15 +0000 (UTC)
+        id S232818AbhDZHls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:41:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 234D66139A;
+        Mon, 26 Apr 2021 07:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422696;
-        bh=3qZ3T9kPAnKtnT8A0CWerrwoNYFH0QEcKuS+VNkTW+4=;
+        s=korg; t=1619422747;
+        bh=Yp/Dn6YPe9deaZVZZDbQgUsvMe6Z6wOXD18+LL8Ya68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xRovMvP4jCVrSYEL7UgnqyQUfFkmcqqatCXM45qApfE+WI8/2LTFdl0rkjRT019IU
-         2fcXgZk1MGPzHL++CPMSSIXCQAxEge1l1Li/wWYUwi4ZIRu/43JjvORaDxq0V01n70
-         Q4HZzhUnxfXRWJfYqWkOqQi53PUQLoZkCzWPn5AM=
+        b=Z2Gzmw440APq7NWyZuQsJn6Hh8TXKVvmlQlVhZKYxAhrl2kRM34NY6EjnT+gerTMF
+         pRhOySC4KFoQbhFChYKB7J4OYJj5fL/kNl1lSCtz3KF/2n//JvzPRLyCdXTM5xagyS
+         m3Nh2TywIaFmWuuzVbzS+k9pnI10ULMOxFMjV428=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Piotr Krysiuk <piotras@gmail.com>,
+        Benedict Schlueter <benedict.schlueter@rub.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 02/20] gpio: omap: Save and restore sysconfig
-Date:   Mon, 26 Apr 2021 09:29:53 +0200
-Message-Id: <20210426072816.767113942@linuxfoundation.org>
+Subject: [PATCH 5.10 12/36] bpf: Tighten speculative pointer arithmetic mask
+Date:   Mon, 26 Apr 2021 09:29:54 +0200
+Message-Id: <20210426072819.211919290@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072816.686976183@linuxfoundation.org>
-References: <20210426072816.686976183@linuxfoundation.org>
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+References: <20210426072818.777662399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,116 +43,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit ddd8d94ca31e768c76cf8bfe34ba7b10136b3694 ]
+[ Upstream commit 7fedb63a8307dda0ec3b8969a3b233a1dd7ea8e0 ]
 
-As we are using cpu_pm to save and restore context, we must also save and
-restore the GPIO sysconfig register. This is needed because we are not
-calling PM runtime functions at all with cpu_pm.
+This work tightens the offset mask we use for unprivileged pointer arithmetic
+in order to mitigate a corner case reported by Piotr and Benedict where in
+the speculative domain it is possible to advance, for example, the map value
+pointer by up to value_size-1 out-of-bounds in order to leak kernel memory
+via side-channel to user space.
 
-We need to save the sysconfig on idle as it's value can get reconfigured by
-PM runtime and can be different from the init time value. Device specific
-flags like "ti,no-idle-on-init" can affect the init value.
+Before this change, the computed ptr_limit for retrieve_ptr_limit() helper
+represents largest valid distance when moving pointer to the right or left
+which is then fed as aux->alu_limit to generate masking instructions against
+the offset register. After the change, the derived aux->alu_limit represents
+the largest potential value of the offset register which we mask against which
+is just a narrower subset of the former limit.
 
-Fixes: b764a5863fd8 ("gpio: omap: Remove custom PM calls and use cpu_pm instead")
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Adam Ford <aford173@gmail.com>
-Cc: Andreas Kemnade <andreas@kemnade.info>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Acked-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+For minimal complexity, we call sanitize_ptr_alu() from 2 observation points
+in adjust_ptr_min_max_vals(), that is, before and after the simulated alu
+operation. In the first step, we retieve the alu_state and alu_limit before
+the operation as well as we branch-off a verifier path and push it to the
+verification stack as we did before which checks the dst_reg under truncation,
+in other words, when the speculative domain would attempt to move the pointer
+out-of-bounds.
+
+In the second step, we retrieve the new alu_limit and calculate the absolute
+distance between both. Moreover, we commit the alu_state and final alu_limit
+via update_alu_sanitation_state() to the env's instruction aux data, and bail
+out from there if there is a mismatch due to coming from different verification
+paths with different states.
+
+Reported-by: Piotr Krysiuk <piotras@gmail.com>
+Reported-by: Benedict Schlueter <benedict.schlueter@rub.de>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Tested-by: Benedict Schlueter <benedict.schlueter@rub.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-omap.c                | 9 +++++++++
- include/linux/platform_data/gpio-omap.h | 3 +++
- 2 files changed, 12 insertions(+)
+ kernel/bpf/verifier.c | 73 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 44 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-index d0f27084a942..ce6954390cfd 100644
---- a/drivers/gpio/gpio-omap.c
-+++ b/drivers/gpio/gpio-omap.c
-@@ -29,6 +29,7 @@
- #define OMAP4_GPIO_DEBOUNCINGTIME_MASK 0xFF
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1b97fd364ce2..b9180509917e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5674,7 +5674,7 @@ static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
+ 	bool off_is_neg = off_reg->smin_value < 0;
+ 	bool mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
+ 			    (opcode == BPF_SUB && !off_is_neg);
+-	u32 off, max = 0, ptr_limit = 0;
++	u32 max = 0, ptr_limit = 0;
  
- struct gpio_regs {
-+	u32 sysconfig;
- 	u32 irqenable1;
- 	u32 irqenable2;
- 	u32 wake_en;
-@@ -1058,6 +1059,7 @@ static void omap_gpio_init_context(struct gpio_bank *p)
- 	const struct omap_gpio_reg_offs *regs = p->regs;
- 	void __iomem *base = p->base;
+ 	if (!tnum_is_const(off_reg->var_off) &&
+ 	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
+@@ -5683,26 +5683,18 @@ static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
+ 	switch (ptr_reg->type) {
+ 	case PTR_TO_STACK:
+ 		/* Offset 0 is out-of-bounds, but acceptable start for the
+-		 * left direction, see BPF_REG_FP.
++		 * left direction, see BPF_REG_FP. Also, unknown scalar
++		 * offset where we would need to deal with min/max bounds is
++		 * currently prohibited for unprivileged.
+ 		 */
+ 		max = MAX_BPF_STACK + mask_to_left;
+-		/* Indirect variable offset stack access is prohibited in
+-		 * unprivileged mode so it's not handled here.
+-		 */
+-		off = ptr_reg->off + ptr_reg->var_off.value;
+-		if (mask_to_left)
+-			ptr_limit = MAX_BPF_STACK + off;
+-		else
+-			ptr_limit = -off - 1;
++		ptr_limit = -(ptr_reg->var_off.value + ptr_reg->off);
+ 		break;
+ 	case PTR_TO_MAP_VALUE:
+ 		max = ptr_reg->map_ptr->value_size;
+-		if (mask_to_left) {
+-			ptr_limit = ptr_reg->umax_value + ptr_reg->off;
+-		} else {
+-			off = ptr_reg->smin_value + ptr_reg->off;
+-			ptr_limit = ptr_reg->map_ptr->value_size - off - 1;
+-		}
++		ptr_limit = (mask_to_left ?
++			     ptr_reg->smin_value :
++			     ptr_reg->umax_value) + ptr_reg->off;
+ 		break;
+ 	default:
+ 		return REASON_TYPE;
+@@ -5757,10 +5749,12 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+ 			    struct bpf_insn *insn,
+ 			    const struct bpf_reg_state *ptr_reg,
+ 			    const struct bpf_reg_state *off_reg,
+-			    struct bpf_reg_state *dst_reg)
++			    struct bpf_reg_state *dst_reg,
++			    struct bpf_insn_aux_data *tmp_aux,
++			    const bool commit_window)
+ {
++	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
+ 	struct bpf_verifier_state *vstate = env->cur_state;
+-	struct bpf_insn_aux_data *aux = cur_aux(env);
+ 	bool off_is_neg = off_reg->smin_value < 0;
+ 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
+ 	u8 opcode = BPF_OP(insn->code);
+@@ -5779,18 +5773,33 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+ 	if (vstate->speculative)
+ 		goto do_sim;
  
-+	p->context.sysconfig	= readl_relaxed(base + regs->sysconfig);
- 	p->context.ctrl		= readl_relaxed(base + regs->ctrl);
- 	p->context.oe		= readl_relaxed(base + regs->direction);
- 	p->context.wake_en	= readl_relaxed(base + regs->wkup_en);
-@@ -1077,6 +1079,7 @@ static void omap_gpio_restore_context(struct gpio_bank *bank)
- 	const struct omap_gpio_reg_offs *regs = bank->regs;
- 	void __iomem *base = bank->base;
+-	alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
+-	alu_state |= ptr_is_dst_reg ?
+-		     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
+-
+ 	err = retrieve_ptr_limit(ptr_reg, off_reg, &alu_limit, opcode);
+ 	if (err < 0)
+ 		return err;
  
-+	writel_relaxed(bank->context.sysconfig, base + regs->sysconfig);
- 	writel_relaxed(bank->context.wake_en, base + regs->wkup_en);
- 	writel_relaxed(bank->context.ctrl, base + regs->ctrl);
- 	writel_relaxed(bank->context.leveldetect0, base + regs->leveldetect0);
-@@ -1104,6 +1107,10 @@ static void omap_gpio_idle(struct gpio_bank *bank, bool may_lose_context)
- 
- 	bank->saved_datain = readl_relaxed(base + bank->regs->datain);
- 
-+	/* Save syconfig, it's runtime value can be different from init value */
-+	if (bank->loses_context)
-+		bank->context.sysconfig = readl_relaxed(base + bank->regs->sysconfig);
++	if (commit_window) {
++		/* In commit phase we narrow the masking window based on
++		 * the observed pointer move after the simulated operation.
++		 */
++		alu_state = tmp_aux->alu_state;
++		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
++	} else {
++		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
++		alu_state |= ptr_is_dst_reg ?
++			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
++	}
 +
- 	if (!bank->enabled_non_wakeup_gpios)
- 		goto update_gpio_context_count;
+ 	err = update_alu_sanitation_state(aux, alu_state, alu_limit);
+ 	if (err < 0)
+ 		return err;
+ do_sim:
++	/* If we're in commit phase, we're done here given we already
++	 * pushed the truncated dst_reg into the speculative verification
++	 * stack.
++	 */
++	if (commit_window)
++		return 0;
++
+ 	/* Simulate and find potential out-of-bounds access under
+ 	 * speculative execution from truncation as a result of
+ 	 * masking when off was not within expected range. If off
+@@ -5933,6 +5942,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
+ 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
+ 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
++	struct bpf_insn_aux_data tmp_aux = {};
+ 	u8 opcode = BPF_OP(insn->code);
+ 	u32 dst = insn->dst_reg;
+ 	int ret;
+@@ -5999,12 +6009,15 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 	/* pointer types do not carry 32-bit bounds at the moment. */
+ 	__mark_reg32_unbounded(dst_reg);
  
-@@ -1259,6 +1266,7 @@ static int gpio_omap_cpu_notifier(struct notifier_block *nb,
+-	switch (opcode) {
+-	case BPF_ADD:
+-		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
++	if (sanitize_needed(opcode)) {
++		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
++				       &tmp_aux, false);
+ 		if (ret < 0)
+ 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
++	}
  
- static const struct omap_gpio_reg_offs omap2_gpio_regs = {
- 	.revision =		OMAP24XX_GPIO_REVISION,
-+	.sysconfig =		OMAP24XX_GPIO_SYSCONFIG,
- 	.direction =		OMAP24XX_GPIO_OE,
- 	.datain =		OMAP24XX_GPIO_DATAIN,
- 	.dataout =		OMAP24XX_GPIO_DATAOUT,
-@@ -1282,6 +1290,7 @@ static const struct omap_gpio_reg_offs omap2_gpio_regs = {
++	switch (opcode) {
++	case BPF_ADD:
+ 		/* We can take a fixed offset as long as it doesn't overflow
+ 		 * the s32 'off' field
+ 		 */
+@@ -6055,10 +6068,6 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 		}
+ 		break;
+ 	case BPF_SUB:
+-		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
+-		if (ret < 0)
+-			return sanitize_err(env, insn, ret, off_reg, dst_reg);
+-
+ 		if (dst_reg == off_reg) {
+ 			/* scalar -= pointer.  Creates an unknown scalar */
+ 			verbose(env, "R%d tried to subtract pointer from scalar\n",
+@@ -6141,6 +6150,12 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
  
- static const struct omap_gpio_reg_offs omap4_gpio_regs = {
- 	.revision =		OMAP4_GPIO_REVISION,
-+	.sysconfig =		OMAP4_GPIO_SYSCONFIG,
- 	.direction =		OMAP4_GPIO_OE,
- 	.datain =		OMAP4_GPIO_DATAIN,
- 	.dataout =		OMAP4_GPIO_DATAOUT,
-diff --git a/include/linux/platform_data/gpio-omap.h b/include/linux/platform_data/gpio-omap.h
-index 8b30b14b47d3..f377817ce75c 100644
---- a/include/linux/platform_data/gpio-omap.h
-+++ b/include/linux/platform_data/gpio-omap.h
-@@ -85,6 +85,7 @@
-  * omap2+ specific GPIO registers
-  */
- #define OMAP24XX_GPIO_REVISION		0x0000
-+#define OMAP24XX_GPIO_SYSCONFIG		0x0010
- #define OMAP24XX_GPIO_IRQSTATUS1	0x0018
- #define OMAP24XX_GPIO_IRQSTATUS2	0x0028
- #define OMAP24XX_GPIO_IRQENABLE2	0x002c
-@@ -108,6 +109,7 @@
- #define OMAP24XX_GPIO_SETDATAOUT	0x0094
+ 	if (sanitize_check_bounds(env, insn, dst_reg) < 0)
+ 		return -EACCES;
++	if (sanitize_needed(opcode)) {
++		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
++				       &tmp_aux, true);
++		if (ret < 0)
++			return sanitize_err(env, insn, ret, off_reg, dst_reg);
++	}
  
- #define OMAP4_GPIO_REVISION		0x0000
-+#define OMAP4_GPIO_SYSCONFIG		0x0010
- #define OMAP4_GPIO_EOI			0x0020
- #define OMAP4_GPIO_IRQSTATUSRAW0	0x0024
- #define OMAP4_GPIO_IRQSTATUSRAW1	0x0028
-@@ -148,6 +150,7 @@
- #ifndef __ASSEMBLER__
- struct omap_gpio_reg_offs {
- 	u16 revision;
-+	u16 sysconfig;
- 	u16 direction;
- 	u16 datain;
- 	u16 dataout;
+ 	return 0;
+ }
 -- 
 2.30.2
 
