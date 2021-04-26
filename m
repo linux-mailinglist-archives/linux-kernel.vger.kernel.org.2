@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA5B36ADB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C16136AED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhDZHiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50384 "EHLO mail.kernel.org"
+        id S233659AbhDZHro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:47:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232876AbhDZHgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:36:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78329613B4;
-        Mon, 26 Apr 2021 07:34:23 +0000 (UTC)
+        id S233020AbhDZHi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:38:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F10086137D;
+        Mon, 26 Apr 2021 07:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422464;
-        bh=8b/UESAFuM/D3n30GmOT9CfrfzYYQIk1UcWOMukmSqI=;
+        s=korg; t=1619422581;
+        bh=vexq6biuKCrPhpSSvklXRx2AKHq6uV5xEqsuRSIWA50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qlheE1cTXJvpDb8B26AKDQwHFpro0vduEijBzn+1dJMsIOQVpKDsXm/nd5xSl+dyx
-         IcdyNQpdYB2E2ytQqhfH0ZgvUZYvRI5yZcCIG+PvYt8gabTmYJoGrAXRQKo3/8WKi8
-         UzkzhPEvM8jehATptcEWDUug0jOscZ8el5P0w/O8=
+        b=ctg3b7etQ57unzSUuugDnx5eXQSxyiE2JJvqCmQBc+uDfPPrg1MupGzxuZ0cYd2qV
+         dP4l3/gUB+iCF4SoeC2AeucQ1BENymNlgCSyMa/1kBZgoajGatAmhyhfrv/y7U1Nx2
+         1VUn83qmbkXp9bhLpuzML+jcDwSWzlfrlevV4zTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 22/49] readdir: make sure to verify directory entry for legacy interfaces too
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 21/57] pcnet32: Use pci_resource_len to validate PCI resource
 Date:   Mon, 26 Apr 2021 09:29:18 +0200
-Message-Id: <20210426072820.480252806@linuxfoundation.org>
+Message-Id: <20210426072821.301459356@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 0c93ac69407d63a85be0129aa55ffaec27ffebd3 upstream.
+[ Upstream commit 66c3f05ddc538ee796321210c906b6ae6fc0792a ]
 
-This does the directory entry name verification for the legacy
-"fillonedir" (and compat) interface that goes all the way back to the
-dark ages before we had a proper dirent, and the readdir() system call
-returned just a single entry at a time.
+pci_resource_start() is not a good indicator to determine if a PCI
+resource exists or not, since the resource may start at address 0.
+This is seen when trying to instantiate the driver in qemu for riscv32
+or riscv64.
 
-Nobody should use this interface unless you still have binaries from
-1991, but let's do it right.
+pci 0000:00:01.0: reg 0x10: [io  0x0000-0x001f]
+pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x0000001f]
+...
+pcnet32: card has no PCI IO resources, aborting
 
-This came up during discussions about unsafe_copy_to_user() and proper
-checking of all the inputs to it, as the networking layer is looking to
-use it in a few new places.  So let's make sure the _old_ users do it
-all right and proper, before we add new ones.
+Use pci_resouce_len() instead.
 
-See also commit 8a23eb804ca4 ("Make filldir[64]() verify the directory
-entry filename is valid") which did the proper modern interfaces that
-people actually use. It had a note:
-
-    Note that I didn't bother adding the checks to any legacy interfaces
-    that nobody uses.
-
-which this now corrects.  Note that we really don't care about POSIX and
-the presense of '/' in a directory entry, but verify_dirent_name() also
-ends up doing the proper name length verification which is what the
-input checking discussion was about.
-
-[ Another option would be to remove the support for this particular very
-  old interface: any binaries that use it are likely a.out binaries, and
-  they will no longer run anyway since we removed a.out binftm support
-  in commit eac616557050 ("x86: Deprecate a.out support").
-
-  But I'm not sure which came first: getdents() or ELF support, so let's
-  pretend somebody might still have a working binary that uses the
-  legacy readdir() case.. ]
-
-Link: https://lore.kernel.org/lkml/CAHk-=wjbvzCAhAtvG0d81W5o0-KT5PPTHhfJ5ieDFq+bGtgOYg@mail.gmail.com/
-Acked-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/readdir.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/amd/pcnet32.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/readdir.c
-+++ b/fs/readdir.c
-@@ -133,6 +133,9 @@ static int fillonedir(struct dir_context
+diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
+index f5ad12c10934..da84660ceae1 100644
+--- a/drivers/net/ethernet/amd/pcnet32.c
++++ b/drivers/net/ethernet/amd/pcnet32.c
+@@ -1548,8 +1548,7 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 	pci_set_master(pdev);
  
- 	if (buf->result)
- 		return -EINVAL;
-+	buf->result = verify_dirent_name(name, namlen);
-+	if (buf->result < 0)
-+		return buf->result;
- 	d_ino = ino;
- 	if (sizeof(d_ino) < sizeof(ino) && d_ino != ino) {
- 		buf->result = -EOVERFLOW;
-@@ -392,6 +395,9 @@ static int compat_fillonedir(struct dir_
- 
- 	if (buf->result)
- 		return -EINVAL;
-+	buf->result = verify_dirent_name(name, namlen);
-+	if (buf->result < 0)
-+		return buf->result;
- 	d_ino = ino;
- 	if (sizeof(d_ino) < sizeof(ino) && d_ino != ino) {
- 		buf->result = -EOVERFLOW;
+-	ioaddr = pci_resource_start(pdev, 0);
+-	if (!ioaddr) {
++	if (!pci_resource_len(pdev, 0)) {
+ 		if (pcnet32_debug & NETIF_MSG_PROBE)
+ 			pr_err("card has no PCI IO resources, aborting\n");
+ 		err = -ENODEV;
+@@ -1562,6 +1561,8 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			pr_err("architecture does not support 32bit PCI busmaster DMA\n");
+ 		goto err_disable_dev;
+ 	}
++
++	ioaddr = pci_resource_start(pdev, 0);
+ 	if (!request_region(ioaddr, PCNET32_TOTAL_SIZE, "pcnet32_probe_pci")) {
+ 		if (pcnet32_debug & NETIF_MSG_PROBE)
+ 			pr_err("io address range already allocated\n");
+-- 
+2.30.2
+
 
 
