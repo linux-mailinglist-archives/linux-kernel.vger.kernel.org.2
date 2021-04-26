@@ -2,65 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC4836BA8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D6E36BA90
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238187AbhDZUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:09:20 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:35583 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241831AbhDZUJQ (ORCPT
+        id S241809AbhDZUKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:10:10 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:35800 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241724AbhDZUKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:09:16 -0400
-Received: by mail-pl1-f173.google.com with SMTP id e9so12582754plj.2;
-        Mon, 26 Apr 2021 13:08:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Hyk3lvkrPdI5SNyvZXdyJdqKQ+8w1wWQadJx7Y3qHPg=;
-        b=qt66dBkhxI1p7yZrbe8Uz//4XsxdITGIgQYWV2MHcp5RbIlg7c/L8i0k+FDyHCJr86
-         3wJByVOC+EFxrVTc9uZz/v+LwXk1AMhMY7V+OImJOg2tbdlkZBPQwGNnYjMIbSIA2FOT
-         6AiRgy2X5y4Xe8Znp1TztdQqO/FhdfhccvoTaYNu5NRRfyK/fOKb7JqFQHPN4EQChlFH
-         EvZY12SVwgorG/OdhCiNSqIW2MTfgxkNyZX40DfwUIVQVF84wEukJJLIPOeoRgFfbNIu
-         vIV/JJWF/n+jYQOSkUHNPA6n6peDEKCllz1wlh1gbnf+2xW6Bn/Vr28yNoVAyxM7fPPn
-         INXg==
-X-Gm-Message-State: AOAM531yA6MtoLs47S0GxeUf1uRw8uHKwCtHQhd25JpilN+D38pfGZMo
-        Os9/u98Uro2Vm8WtrHQ0EnYdhpSKSgk3MQ==
-X-Google-Smtp-Source: ABdhPJzBFD+vYRsnFCKO5TD2Wtp3X486CNfga2x3VSWLWTcdYdXxmwHbtvvm05DgceJVysoeiFNJ7w==
-X-Received: by 2002:a17:902:ed42:b029:ec:a711:25c7 with SMTP id y2-20020a170902ed42b02900eca71125c7mr19925258plb.58.1619467713031;
-        Mon, 26 Apr 2021 13:08:33 -0700 (PDT)
-Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id f18sm442659pfc.196.2021.04.26.13.08.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 13:08:32 -0700 (PDT)
-Subject: Re: [PATCH v2] block: fix userspace documentation reference for
- del_gendisk()
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk
-Cc:     ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210426185040.24580-1-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <2a3d62fd-af5c-ff9b-00cf-3d32405d0daa@acm.org>
-Date:   Mon, 26 Apr 2021 13:08:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210426185040.24580-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Mon, 26 Apr 2021 16:10:07 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id C73E84F48ADC4;
+        Mon, 26 Apr 2021 13:09:23 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 13:09:19 -0700 (PDT)
+Message-Id: <20210426.130919.1291678249925211750.davem@davemloft.net>
+To:     gregkh@linuxfoundation.org
+Cc:     johan@kernel.org, leoanto@aruba.it, linux-usb@vger.kernel.org,
+        kuba@kernel.org, mail@anirudhrb.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: hso: fix NULL-deref on disconnect regression
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <YIaM9B/UZ1qHAC9+@kroah.com>
+References: <20210426112911.fb3593c3a9ecbabf98a13313@aruba.it>
+        <YIaJcgmiJFERvbEF@hovoldconsulting.com>
+        <YIaM9B/UZ1qHAC9+@kroah.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 26 Apr 2021 13:09:24 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/21 11:50 AM, Luis Chamberlain wrote:
-> Commit b5bd357cf8b ("block: add docs for gendisk / request_queue refcount
-> helpers") has a typo where it references drivers for del_gendisk() when we
-> instead meant userspace, as the reference is to the userspace experience.
-> This fixes this.
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Mon, 26 Apr 2021 11:50:44 +0200
 
-Thanks!
+> netdev maintainers, mind if I take this fix through my tree to Linus
+> this week, or can you all get it to him before -rc1 through the
+> networking tree?
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+I tossed this into net-next so Linus will see it later this week.
+
+Thanks.
