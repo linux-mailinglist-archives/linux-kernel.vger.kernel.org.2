@@ -2,166 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C848D36B71A
+	by mail.lfdr.de (Postfix) with ESMTP id 0E71C36B719
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234588AbhDZQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:43:31 -0400
-Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:43362 "EHLO
-        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234576AbhDZQna (ORCPT
+        id S234472AbhDZQnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:43:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21138 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234403AbhDZQnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:43:30 -0400
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FTW0Q3fFgz2Tdv;
-        Mon, 26 Apr 2021 18:42:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1619455366;
-        bh=vAWvm4J8IUsdhtm3IvCqag1smIsdVKVd8tfu48VM2MY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=iLTvh2Rr8jICSgtByPtcQ+bBa1kItjmFp6orClC403YvKqzLjhr1HHjPMqAIiaLEF
-         sjlaPlZCNiPi6G/0A4gOhIP89/J7WjTbJ74Qiwn/qHuhmhbwHMs+Duyok6Y3fhLHqc
-         eZM/XBV8AcGEj34tzFRHfeiShJPcwDNhLLioUHhE=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FTW0Q3TdHzTpmmq;
-        Mon, 26 Apr 2021 18:42:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pO3ewzsYZ0oN; Mon, 26 Apr 2021 18:42:46 +0200 (CEST)
-Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Mon, 26 Apr 2021 18:42:08 +0200 (CEST)
-Message-ID: <d4d0603716e5cb99a7a9a93d4f767278ac318557.camel@t-2.net>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Mon, 26 Apr 2021 18:42:05 +0200
-In-Reply-To: <YIaPQzktArmoWbLr@alley>
-References: <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
-         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
-         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-         <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
-         <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
-         <07c3c9015491ca9b42362098d5e90ca7480cf5ed.camel@t-2.net>
-         <e7010c9e-1ac2-55a7-b505-802e03f13362@i-love.sakura.ne.jp>
-         <9e8805a98d6c0d0f20e563c8e4db98b595826c13.camel@t-2.net>
-         <YIaPQzktArmoWbLr@alley>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 26 Apr 2021 12:43:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619455354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BJxzv5jKNQktybLPgY590umZq9XnypXNfHP7076nH64=;
+        b=aTmlduUdgTCpfiM+b1W4zGk5cLXWf2u1JbZeXuwMkDGDUqsve2bLWVcmpQtBB4jqipPp+U
+        jld455ZequpVXj7RVRcjjh3doeRcSm5URI4lMCgYWxok09mv6ozWm/f1ahikN1LMNkXCxO
+        eJUhALmLlNXErhCI5JwCZ90z9bCUAB8=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-MCWOGxNoOoGJ3NQI6elQYA-1; Mon, 26 Apr 2021 12:42:32 -0400
+X-MC-Unique: MCWOGxNoOoGJ3NQI6elQYA-1
+Received: by mail-io1-f70.google.com with SMTP id v3-20020a5d90430000b02903da4a3efc9dso28749958ioq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 09:42:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BJxzv5jKNQktybLPgY590umZq9XnypXNfHP7076nH64=;
+        b=lRN5KQbG+WtaB8WSHdrWeIlg/zqUOcBWUMiulRDYfSIBK1eY8KA8dpGawhs5EpS6qi
+         fj2srJnzj7agJVRSKa/VAJJ/4zeCCkfuZB2eJluxTBjzMzMqHwCOYAgOEST3E1FhOxrM
+         kFPCYnl6M35hAG8eE4ymrC9TMnKo7khQXODSrMWOJHSlLuEvJ+vYbhNB7enYm0Tbs0cs
+         y/yfjGOcUiNUoSDWzmx4Q5+NSo0r7cv0iCImvvs3+RhA7gC7e/UsfuQHpSISiK11aygc
+         7Zmk9dhNomaezFERrEii89k5/+c1GmZnmYFnzBL+v4n36Aal33BXalWEkYge830/sY2f
+         Zp0A==
+X-Gm-Message-State: AOAM533P28thSPp8EpQmfrYforf+Zgo55B2OEBPfDLlVknM+Uqxp444v
+        fwOw6K63yMPaYZASKyIgSCtVmLjJ4KelW8MBbjsut9IeSiD+vlyp5tWA8DQasStzJHjvg/YPSoX
+        RII3yT/XFUVARdASCCZu0abP8
+X-Received: by 2002:a92:bf11:: with SMTP id z17mr15070653ilh.146.1619455351946;
+        Mon, 26 Apr 2021 09:42:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyD8S2SaijrAd62taudrpY7FzMTTsRwm3xCUxNYbDsm3mc+yVBtLie0n3zLxCerfxoxSBh27Q==
+X-Received: by 2002:a92:bf11:: with SMTP id z17mr15070638ilh.146.1619455351776;
+        Mon, 26 Apr 2021 09:42:31 -0700 (PDT)
+Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
+        by smtp.gmail.com with ESMTPSA id v8sm181953ilq.0.2021.04.26.09.42.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 09:42:31 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 11:42:29 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     bigeasy@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Chunyu Hu <chuhu@redhat.com>
+Subject: Re: [RT PATCH] locking/rwsem-rt: Remove might_sleep() in __up_read()
+Message-ID: <20210426164229.mbrsrjpmmhp7ehna@halaneylaptop>
+References: <20210406221952.50399-1-ahalaney@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406221952.50399-1-ahalaney@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 26.04.2021 (pon) ob 12:00 +0200 je Petr Mladek napisal(a):
-> On Sat 2021-04-24 11:57:47, Samo Pogačnik wrote:
-> > Dne 24.04.2021 (sob) ob 10:16 +0900 je Tetsuo Handa napisal(a):
-> > > On 2021/04/24 4:47, Samo Pogačnik wrote:
-> > > > At any point the tpk_buffer is potentially multiplexed/interleaved by
-> > > > parts
-> > > > of
-> > > > required output of any concurrent user, as buffs are being delivered by
-> > > > the
-> > > > scheduled writes.
-> > > 
-> > > As long as one line is printed by one printk() call,
-> > > CONFIG_PRINTK_CALLER=y is
-> > > helpful enough to distinguish multilplexed/interleaved messages. I
-> > > consider
-> > > that
-> > > ttyprintk offers additional advantage over printk() for allow buffering
-> > > one
-> > > line
-> > > of message from userspace.
+On Tue, Apr 06, 2021 at 05:19:52PM -0500, Andrew Halaney wrote:
+> There's no chance of sleeping here, the reader is giving up the
+> lock and possibly waking up the writer who is waiting on it.
 > 
-> It does not matter how much buffering games you play. As long as you
-> use printk() to store single lines into the kernel logbuffer they
-> alway could be interleaved with lines from other processes/CPUs.
+> Reported-by: Chunyu Hu <chuhu@redhat.com>
+> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> ---
+> Hello,
+> 
+> I ran into a warning caused by this, and I think the warning is
+> incorrect. Please let me know if I'm wrong!
+> I'm working off of linux-5.12.y-rt, but this applies cleanly to older
+> stable branches as well.
+> 
+> Thanks,
+> Andrew
+> 
+>  kernel/locking/rwsem-rt.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/kernel/locking/rwsem-rt.c b/kernel/locking/rwsem-rt.c
+> index 274172d5bb3a..b61edc4dcb73 100644
+> --- a/kernel/locking/rwsem-rt.c
+> +++ b/kernel/locking/rwsem-rt.c
+> @@ -198,7 +198,6 @@ void __up_read(struct rw_semaphore *sem)
+>  	if (!atomic_dec_and_test(&sem->readers))
+>  		return;
+>  
+> -	might_sleep();
+>  	raw_spin_lock_irq(&m->wait_lock);
+>  	/*
+>  	 * Wake the writer, i.e. the rtmutex owner. It might release the
+> -- 
+> 2.30.2
+> 
 
-Exactly. The only purpose of ttyprintk buffering is to mark any begining of
-lines occurring within the userspace-string written into ttyprintk TTY. The
-marked lines do not originate in the kernel source code, which is not obvious
-otherwise (imho this is importannt). Even the CONFIG_PRINTK_CALLER=y does not
-give this information, if the task ID printed does not live anymore.
+Just a gentle follow up, any feedback?
 
-> 
-> > > > 
-> > > > As per user buffers look promising with output formatting, the FDs
-> > > > passing
-> > > > between tasks lead to the same single buffer (Greg already mentioned
-> > > > that).
-> > > 
-> > > Those programs which use FD passing know what they are doing. If they
-> > > still
-> > > want
-> > > one line of message printed via ttyprintk interface, they must do their
-> > > buffering
-> > > before trying to write() to ttyprintk's file descriptor.
-> 
-> Lines might get interleaved when using printk().
-> What is special about messages passed via ttyprintk()?
-They do not originate in the kernel code.
-
-> How many processes are using it?
-In case of redirection any proces, that is writing to console.
-
-> Do they print many lines?
-?
-
-> Is it really worth any added complexity?
-No.
-
-> 
-> > On the other hand, my main concern is how to provide a reliable system wide
-> > collection of all console output via ttyprintk console redirection, while
-> > normal
-> > operation of system console is preserved (except its output being detoured
-> > via
-> > printk and as such logged together with kernel output). Such logging is
-> > particularly useful for after-the-fact inspection of system operation.
-> 
-> I am not sure if I understand the problem. But why does ttyprintk need
-> any buffer at all. AFAIK, the use-case is to pass any written data into the
-> kernel logbuffer via printk()?
-(see above - it is not something the kernel is telling you)
-> 
-> Why tpk_write() does not call printk() directly?
-(see above)
-> 
-> If you call printk() directly, the caller_id would be from the process
-> that really wrote the data/message.
-It can be a kernel-code originating message printk-ed on behalf of a user task
-or a kernel-code originating message on behalf of a kernel task. Or it may be a
-user-code originating message on behalf of its task, when printk-ed via
-ttyprintk.
-
-> 
-> > That being said i am thinking about how to permanently enable this
-> > redirection
-> > as early as possible (i.e. via kernel command line option). I had a working
-> > prototype for that some time ago (never posted). Would anybody like to see
-> > such
-> > functionality?
-> 
-> Please, do not add any complex code if it does not cause real life
-> problems.
-> 
-Noted, thanks.
-
-Best regards, Samo
-
+Thanks,
+Andrew
 
