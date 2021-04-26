@@ -2,92 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F6836B4E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E3436B4E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233873AbhDZOaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDZOaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:30:52 -0400
-Received: from office2.cesnet.cz (office2.cesnet.cz [IPv6:2001:718:1:101::144:244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C652EC061574;
-        Mon, 26 Apr 2021 07:30:10 -0700 (PDT)
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by office2.cesnet.cz (Postfix) with ESMTPSA id 2FEF4400052;
-        Mon, 26 Apr 2021 16:30:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
-        s=office2-2020; t=1619447408;
-        bh=z/yOEdUwTqe7Cju7xA0JehEFyghVOswc8ZFTFwd6EF8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc;
-        b=BBFw8yxGZmeaYREMBrgWlQ/H2dmC+msbVUjiW8NOu1UF24FRfMOibXYkIxFCeISY8
-         2f8VnyzNS+K19xEv8bHbdlpKhsr0pNbULvoVZk2BYp1ulnlHuPtBDvlEhVTazm5JiA
-         YsDp1TPylKpEUujN7ohPYbOV5Ibn6VSUXoQVRpLDerN1/NWIR0gzVPD7oN7W8nMSkc
-         TJaosa/LEG33NAOJRzCvOo653L7+2GvX9noomOm76FiSPJxhrnacyExp9AUpjdwENe
-         hr8OULEFNV9otSaW/8Ws5d2lyP4k9Em8h0g3FFy9gNbcZIOJZJ7fS0Qs8R/KtB7C6o
-         QfSpPvR7/5DwQ==
-Received: by mail-pj1-f43.google.com with SMTP id y22-20020a17090a8b16b0290150ae1a6d2bso5413038pjn.0;
-        Mon, 26 Apr 2021 07:30:08 -0700 (PDT)
-X-Gm-Message-State: AOAM530aUs0RN1IiBbh/ekkOFKmzfem96724IqoBdA5J/8HTggnrWQ6C
-        trNpTWH0oxMB9xOO567H4yP5st8GF+Drex8l7TM=
-X-Google-Smtp-Source: ABdhPJzY2F0vV+ycVTFKY+kJGuUUHc0GtcAB5VoEXe9hpIaYhT8MhH60TMGn4A5B+R9c7aRnoY63edVwF3++c6ja3Z4=
-X-Received: by 2002:a17:902:b408:b029:ec:e879:bbd8 with SMTP id
- x8-20020a170902b408b02900ece879bbd8mr13449009plr.65.1619447406799; Mon, 26
- Apr 2021 07:30:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210413025948.901867-1-kubernat@cesnet.cz> <250c1c16-541a-984f-c720-1a8b6176e97e@roeck-us.net>
- <CABKa3npjrpq5Aw_Xqy3mFZtUHZcfB0YENxEDgo_MCwPUKqA4ww@mail.gmail.com> <20210426141745.GA257701@roeck-us.net>
-In-Reply-To: <20210426141745.GA257701@roeck-us.net>
-From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
-Date:   Mon, 26 Apr 2021 16:29:55 +0200
-X-Gmail-Original-Message-ID: <CABKa3np=osah3zcNmwohL0h8sVOHYcGW6rNYhM=1OzrOiLo50A@mail.gmail.com>
-Message-ID: <CABKa3np=osah3zcNmwohL0h8sVOHYcGW6rNYhM=1OzrOiLo50A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        id S233888AbhDZObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:31:22 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:60702 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233884AbhDZObV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:31:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619447429; bh=Inbt0Id184HS+3SGiT3lLvjT+nH9YAUuSWJJoO9mhDY=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=GRITIFBS7qBNvRhBKjagHeWEfp4XWGKuEDBxVSAtONY/hGZbTy23i8VwtQl3hzoDL
+         sFePlnm4NLWaiSByVrcYskAfGjk8AEetyCiJ0cv4+hoIN4ms6mDCouPCS+rQSZoT6v
+         Dj/0vtpp62d1OAKmnH8e9gA8tuD4CeA8ILxB1Yko=
+Received: by b-5.in.mailobj.net [192.168.90.15] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Mon, 26 Apr 2021 16:30:29 +0200 (CEST)
+X-EA-Auth: UsphZN1IEXvgssBLQ4zn+KLQbV+3wb6p+AFcq6FCeKZHKKwEhG+OjvXxBnXXB3REz0dnhkxjtwH4iz8wk7aqWiIlmkkbGp0P
+Date:   Mon, 26 Apr 2021 20:00:22 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH RESEND v3 2/6] staging: media: atomisp: balance braces
+ around if...else block
+Message-ID: <YIbOfjrPG+NIH4wV@192.168.1.8>
+References: <cover.1619199344.git.drv@mailo.com>
+ <71220662c5facd746e56288cc74786c96fa3c5a7.1619199344.git.drv@mailo.com>
+ <20210426095610.GA1418@agape.jhs>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426095610.GA1418@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-po 26. 4. 2021 v 16:18 odes=C3=ADlatel Guenter Roeck <linux@roeck-us.net> n=
-apsal:
->
-> On Mon, Apr 26, 2021 at 02:46:27PM +0200, V=C3=A1clav Kubern=C3=A1t wrote=
-:
-> > Hello.
-> >
-> > I'm sending a new version of my patch on max31790. This new version
-> > fixes the cache issue and actually makes it work by setting
-> > .cache_type. You were right about the "yes/no" ranges, so I flipped
-> > those.
-> >
-> > By the way, it seems that the reason your reply got lost is because of
-> > weird addresses in the "Cc:" email field, they end with "cesnet.cz",
-> > so it could be that I'm sending email incorrectly. Let me know if I'm
-> > doing something wrong.
-> >
->
-> Yes, the To: field of your series is either empty (for the first patch
-> of the series), or it is something like:
->         To: unlisted-recipients: no To-header on input <;
->
-> Also, you send your follow-up series as response of the previous series
-> which doesn't follow the guidance for submitting patches and may result
-> in the entire series getting lost.
->
+On Mon, Apr 26, 2021 at 11:56:11AM +0200, Fabio Aiuto wrote:
+> On Sun, Apr 25, 2021 at 02:12:20PM +0530, Deepak R Varma wrote:
+> > Balance braces around the if else blocks as per the code style guidelines.
+> > Resolves checkpatch script CHECK / WARNING feedback messages.
+> > 
+> > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > ---
+> > 
+> > Changes since v2:
+> >    - None.
+> > Changes since v1:
+> >    - None.
+> > 
+> >  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
+> >  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
+> >  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+> >  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
+> >  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
+> >  5 files changed, 12 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > index 6be3ee1d93a5..d68a2bcc9ae1 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > @@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
+> >  {
+> >  	int ret;
+> >  
+> > -	if (on == 0)
+> > +	if (on == 0) {
+> >  		return power_down(sd);
+> > -	else {
+> > +	} else {
+> >  		ret = power_up(sd);
+> >  		if (!ret)
+> >  			return gc0310_init(sd);
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > index 6ba4a8adff7c..e722c639b60d 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > @@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
+> >  {
+> >  	int ret;
+> >  
+> > -	if (on == 0)
+> > +	if (on == 0) {
+> >  		ret = power_down(sd);
+> > -	else {
+> > +	} else {
+> >  		ret = power_up(sd);
+> >  		if (!ret)
+> >  			ret = __gc2235_init(sd);
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> > index f5de81132177..465fc4468442 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> > @@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
+> >  
+> >  static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
+> >  {
+> > -	if (power == 0)
+> > +	if (power == 0) {
+> >  		return power_down(sd);
+> > -	else {
+> > +	} else {
+> >  		if (power_up(sd))
+> >  			return -EINVAL;
+> >  
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> > index c90730513438..92c52431bd8f 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+> > @@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
+> >  	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
+> >  	if (ret)
+> >  		return ret;
+> > -	if (value) {
+> > +
+> > +	if (value)
+> >  		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
+> > -	} else {
+> > +	else
+> >  		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
+> > -	}
+> > +
+> 
+> Hi Deepak,
+> 
+> what you did above is not what is written in the commit message
+> description about. Here unneeded bracks are removed in both
+> branches, is not a matter of braces balancing.
 
-Sorry, I will fix my email-sending procedure. Should I resend the
-patch series without the In-Reply-To field?
+Okay. I was thinking adding where necessary and removing where not
+would lead to expected balancing.
+I will send this as a separate patch in this patch set. Is it okay to
+add a new patch to the set now?
 
-V=C3=A1clav
+Thank you,
+deepak.
 
-> Guenter
+> 
+> thank you,
+> 
+> fabio 
+> 
+> >  	ret = ov2680_write_reg(client, 1,
+> >  			       OV2680_FLIP_REG, val);
+> >  	if (ret)
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+> > index aec7392fd1de..d046a9804f63 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+> > @@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
+> >  {
+> >  	int ret;
+> >  
+> > -	if (on == 0)
+> > +	if (on == 0) {
+> >  		return power_down(sd);
+> > -	else {
+> > +	} else {
+> >  		ret = power_up(sd);
+> >  		if (!ret)
+> >  			return ov2722_init(sd);
+> > -- 
+> > 2.25.1
+> > 
+> > 
+> > 
+> > 
+
+
