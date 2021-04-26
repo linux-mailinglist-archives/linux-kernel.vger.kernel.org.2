@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7CF36AE4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E82636AED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhDZHnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:43:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50384 "EHLO mail.kernel.org"
+        id S233174AbhDZHrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232411AbhDZHhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C70EC613F1;
-        Mon, 26 Apr 2021 07:35:46 +0000 (UTC)
+        id S233083AbhDZHi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:38:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D1861364;
+        Mon, 26 Apr 2021 07:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422547;
-        bh=gBR1+DPpBGuIw+kUtmqj1EMCH9aDNO5QTwwOUiwajX4=;
+        s=korg; t=1619422586;
+        bh=+aeO+f+Y2ffOCXajMAx0E9n74vMRNP/r8MCf0cTWVPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZjScUmDJxTUbKQfOW3DwHeEx3YlGS0TzohLdrLP2EEAmx18B68qw+WL8LhT2ho51M
-         cCSPNw4xVEyJcEPQ10l9/rzdM7hHCmfH1Lijs4ahJio0R9/j9nXY1+nDIwCVSjn7GI
-         Eb2zScxxQR8L0MFP5LMvMcQAWwN+ie8n7UDih6Og=
+        b=1gJLh15v6jjeghFiS91SD2egtniTPRP/ooH4LwSODWljrCvmcQAsIBM5+ThDQ33Wz
+         QmmGUmzCTJYDx2dkz0q4tdkDQw/H5/7dxiNiciyrmQIH7Vdgp7N2l+Uk3TLA3Z85io
+         cUNEjB2m2EmylQDDxdPdoGOS+0JGueaewZH1rAVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 4.14 24/49] arm64: alternatives: Move length validation in alternative_{insn, endif}
+        stable@vger.kernel.org, Caleb Connolly <caleb@connolly.tech>,
+        Andi Shyti <andi@etezian.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 23/57] Input: s6sy761 - fix coordinate read bit shift
 Date:   Mon, 26 Apr 2021 09:29:20 +0200
-Message-Id: <20210426072820.550184467@linuxfoundation.org>
+Message-Id: <20210426072821.364580076@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+References: <20210426072820.568997499@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,74 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Caleb Connolly <caleb@connolly.tech>
 
-commit 22315a2296f4c251fa92aec45fbbae37e9301b6c upstream.
+commit 30b3f68715595dee7fe4d9bd91a2252c3becdf0a upstream.
 
-After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-set atomically"), LLVM's integrated assembler fails to build entry.S:
+The touch coordinate register contains the following:
 
-<instantiation>:5:7: error: expected assembly-time absolute expression
- .org . - (664b-663b) + (662b-661b)
-      ^
-<instantiation>:6:7: error: expected assembly-time absolute expression
- .org . - (662b-661b) + (664b-663b)
-      ^
+        byte 3             byte 2             byte 1
++--------+--------+ +-----------------+ +-----------------+
+|        |        | |                 | |                 |
+| X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
+|        |        | |                 | |                 |
++--------+--------+ +-----------------+ +-----------------+
 
-The root cause is LLVM's assembler has a one-pass design, meaning it
-cannot figure out these instruction lengths when the .org directive is
-outside of the subsection that they are in, which was changed by the
-.arch_extension directive added in the above commit.
+Bytes 2 and 1 need to be shifted left by 4 bits, the least significant
+nibble of each is stored in byte 3. Currently they are only
+being shifted by 3 causing the reported coordinates to be incorrect.
 
-Apply the same fix from commit 966a0acce2fc ("arm64/alternatives: move
-length validation inside the subsection") to the alternative_endif
-macro, shuffling the .org directives so that the length validation
-happen will always happen in the same subsections. alternative_insn has
-not shown any issue yet but it appears that it could have the same issue
-in the future so just preemptively change it.
+This matches downstream examples, and has been confirmed on my
+device (OnePlus 7 Pro).
 
-Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
-Cc: <stable@vger.kernel.org> # 5.8.x
-Link: https://github.com/ClangBuiltLinux/linux/issues/1347
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20210414000803.662534-1-nathan@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: 0145a7141e59 ("Input: add support for the Samsung S6SY761 touchscreen")
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+Reviewed-by: Andi Shyti <andi@etezian.org>
+Link: https://lore.kernel.org/r/20210305185710.225168-1-caleb@connolly.tech
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/alternative.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/input/touchscreen/s6sy761.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/include/asm/alternative.h
-+++ b/arch/arm64/include/asm/alternative.h
-@@ -114,9 +114,9 @@ void apply_alternatives(void *start, siz
- 	.popsection
- 	.subsection 1
- 663:	\insn2
--664:	.previous
--	.org	. - (664b-663b) + (662b-661b)
-+664:	.org	. - (664b-663b) + (662b-661b)
- 	.org	. - (662b-661b) + (664b-663b)
-+	.previous
- 	.endif
- .endm
+--- a/drivers/input/touchscreen/s6sy761.c
++++ b/drivers/input/touchscreen/s6sy761.c
+@@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(s
+ 	u8 major = event[4];
+ 	u8 minor = event[5];
+ 	u8 z = event[6] & S6SY761_MASK_Z;
+-	u16 x = (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
+-	u16 y = (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
++	u16 x = (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
++	u16 y = (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
  
-@@ -186,11 +186,11 @@ void apply_alternatives(void *start, siz
-  */
- .macro alternative_endif
- 664:
-+	.org	. - (664b-663b) + (662b-661b)
-+	.org	. - (662b-661b) + (664b-663b)
- 	.if .Lasm_alt_mode==0
- 	.previous
- 	.endif
--	.org	. - (664b-663b) + (662b-661b)
--	.org	. - (662b-661b) + (664b-663b)
- .endm
+ 	input_mt_slot(sdata->input, tid);
  
- /*
 
 
