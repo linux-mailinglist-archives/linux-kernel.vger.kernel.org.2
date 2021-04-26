@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7170136B4D3
+	by mail.lfdr.de (Postfix) with ESMTP id ED6AB36B4D4
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 16:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbhDZO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 10:27:39 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:53055 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDZO1j (ORCPT
+        id S233837AbhDZO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 10:27:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34468 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhDZO1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:27:39 -0400
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4FTRzY6r3wzymk;
-        Tue, 27 Apr 2021 00:26:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1619447216;
-        bh=M7hahHb9ZVwRs1gsNFLeF9qcPe2Uxmrhxr11CvVxURM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YYMNZxTKWf3mGo7kZl2wPMlKKQmoso7z0n0aDHoxjFybRBwYdcVd7My4Q9m7TOcEt
-         11V9ZZXlnS9siZy9ZEblHBCne2XvpgHifgHpvLuWdkv4p0Ojlo7MDEhAmQIudSpirF
-         vGymv+zPH/13rTs4bahKRBlEi6iBawq0EJBuxZ0UAfhrVwW+5OaJghGTmVFqt6CguW
-         IuWP+OtZZA2TU1BW5miw/ZJXD505o+I60jvcf1xUd8f3qWCl16boFlpWmAiXWnedWf
-         BafxNcY/grUUJRXTYFSohRZ0l1Yc41kmHWhx+TJik3gCTjPWpYpkA4o9isityHAmjC
-         eXi2l0nWQpblA==
-Date:   Tue, 27 Apr 2021 00:26:48 +1000
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@linuxdriverproject.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, Mark Brown <broonie@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [GIT PULL] Staging/IIO driver updates for 5.13-rc1
-Message-ID: <20210427002648.22459fa7@elm.ozlabs.ibm.com>
-In-Reply-To: <YIa2ErYuJyCfSkS+@kroah.com>
-References: <YIa2ErYuJyCfSkS+@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 26 Apr 2021 10:27:50 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619447228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H/+k3N8n6/WIVCQu+lly6Hn9RW/dNcFcUW7Skdd63yY=;
+        b=3oFSsIXbq7VNt/K6ZtQ5HZEiJUl9D+BNR34FO4CbOzC8p2hpIeNQ4CxoUygWuLruM2+MBd
+        kAu85LRaj/bmHD6O0PObm973VNWEgwfIZM/fz9BqTBftgXHsqCJx8nQ2QTJT0EauDEXTbD
+        +Y0gcOz6UytzkmJWZOHCdwwFmbpWipOAb8U34N7RjSnmtKQAOBXA85C3cNlrEJRJhjXgnb
+        eJnbrNV/qJcJsWhZYs1JgdEsCu/vePkP5Xd2njipxxaviQpq0+Ty0fXgHVh5oVBMlXTog8
+        1WOdJgi4glg7ZdBNtRJhW2KuW2t4dD1zcI28Brr/jwfKfQnZwiV2Hv408JIytQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619447228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H/+k3N8n6/WIVCQu+lly6Hn9RW/dNcFcUW7Skdd63yY=;
+        b=bta4INy9h/vbbhRmuKW/y9z6XYWf6g1F1/3c6MCvGGxQmML75ocG2dIa867/Fr3+YtAmZi
+        PQrLtrUlLPf46MDA==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Lorenzo Colitti <lorenzo@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        mikael.beckius@windriver.com,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()
+In-Reply-To: <YIa0qWdxM7vIsf/4@hirez.programming.kicks-ass.net>
+References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com> <YHXRWoVIYLL4rYG9@kroah.com> <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com> <87r1jbv6jc.ffs@nanos.tec.linutronix.de> <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com> <87eef5qbrx.ffs@nanos.tec.linutronix.de> <87v989topu.ffs@nanos.tec.linutronix.de> <YIaKnuZDfffmmAdM@hirez.programming.kicks-ass.net> <87sg3dtedf.ffs@nanos.tec.linutronix.de> <YIa0qWdxM7vIsf/4@hirez.programming.kicks-ass.net>
+Date:   Mon, 26 Apr 2021 16:27:08 +0200
+Message-ID: <87k0opt937.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LIWecum9MUpAsQRxcfBxnbs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LIWecum9MUpAsQRxcfBxnbs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 26 2021 at 14:40, Peter Zijlstra wrote:
 
-Hi Greg,
-
-On Mon, 26 Apr 2021 14:46:10 +0200 Greg KH <gregkh@linuxfoundation.org> wro=
-te:
+> On Mon, Apr 26, 2021 at 02:33:00PM +0200, Thomas Gleixner wrote:
 >
-> All of these have been in linux-next for a while with no reported
-> issues.
+>> >> +	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
+>> >> +	force_local &= base->cpu_base->next_timer == timer;
+>> >
+>> > Using bitwise ops on a bool is cute and all, but isn't that more
+>> > readable when written like:
+>> >
+>> > 	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases) &&
+>> > 		      base->cpu_base->next_timer == timer;
+>> >
+>> 
+>> Which results in an extra conditional branch.
+>
+> Srlsy, compiler not smart enough?
 
-There was just these:
-
-https://lore.kernel.org/linux-next/20210329165525.32d51a3a@canb.auug.org.au/
-
-https://lore.kernel.org/linux-next/20210331175151.67fcfe4d@canb.auug.org.au/
-
-(the scmi tree commit mentioned in the latter is now in the arm-soc tree)
-
-Not issues as such, but worth mentioning the conflicts and resolutions.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LIWecum9MUpAsQRxcfBxnbs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCGzakACgkQAVBC80lX
-0GyzKAgAobiMi+YHh7vVuIiLauo/vRee40i+Lm+a+SJSKfhdPXDBuvPnOxrtIHqr
-6LUTkJ1yNu9Ne28RAeucxkkoQXnK9j2euF/NlUA/Yxg8ISgMbLkvy0k7lNBayZdj
-TIR+0b//4ZhMR37vn2EpO+INCK1OUx42L4hGboUgxrTo0Io/8r4Cn3ZLfTC2UQO5
-IYXjpZBNRsVqs63+BliOa8gZvZ3d4bVGVeITlR2nQZUlP6cGJHSkxp0pZcYAvSi9
-Iu7rCpxkR1PrTH4U6PR5xsMVREzUNUk5YcKLfj/hgjKmLJHAOTw0IKaz3L9rY+u2
-5Lm1vdd76PsfuVNRPT0iSxFxxhbcSA==
-=LO1A
------END PGP SIGNATURE-----
-
---Sig_/LIWecum9MUpAsQRxcfBxnbs--
+gcc 8.3 is definitely not ...
