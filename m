@@ -2,201 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A258B36AA9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F8336AAA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 04:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhDZCgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Apr 2021 22:36:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55348 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231502AbhDZCgC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Apr 2021 22:36:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619404520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s7PW6s4J2bNvRnUnBF2i7RyV+6QqItAZs9B9Txmx5bE=;
-        b=b42oRBbD7lCGwqiNzlbdjk6XiuNUM4xK/yjWaRgMHWyWNvXqKwHQsan2BGjlcQjj2cF4hv
-        Fvt+XumcCRFBVgeCFTdWH/mxtORJ4rPrk4BG8Vz7FA6TjKuM0TzHeW3COEKTsEyQcAWSJc
-        6r+8ikcx/Fi/5X3mJAIpQ8hthBMViFk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-gNPxyCq_Oqm8_xgFYAICyQ-1; Sun, 25 Apr 2021 22:35:17 -0400
-X-MC-Unique: gNPxyCq_Oqm8_xgFYAICyQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S231696AbhDZChv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Apr 2021 22:37:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:46098 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231530AbhDZChu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Apr 2021 22:37:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619404630; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=rsusBFynYMc4f0Jht6fW5/fzJpjFLTCG4xMf4yJ/72Q=;
+ b=glXtV0Nkwes6J6ABXb2sXE6OjE50Eesavj9a9hFhD2MiDfYao7bUE9l9yZzfxpbIpuZfzXEu
+ NKorQNNAC1Owp3ohjOoF/kJ5KwPpV0g4Xx1uzsvfw/9D1tO0nndGSzGnhZ6OwAViP3RINqXV
+ 4HHiC0iA5NtEyZvCnip++5GoHKA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6086274674f773a664dfd50c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 02:36:54
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62186C4323A; Mon, 26 Apr 2021 02:36:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1047A1898296;
-        Mon, 26 Apr 2021 02:35:16 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-79.pek2.redhat.com [10.72.13.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 766845D74C;
-        Mon, 26 Apr 2021 02:35:10 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Zhu, Lingshan" <lingshan.zhu@intel.com>
-References: <20210421104145.115907-1-elic@nvidia.com>
- <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
- <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
- <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
- <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
- <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
- <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
- <20210425132523.GA43506@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <086936c8-adff-d4c2-469f-2df58c4db858@redhat.com>
-Date:   Mon, 26 Apr 2021 10:35:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94729C433F1;
+        Mon, 26 Apr 2021 02:36:51 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210425132523.GA43506@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 26 Apr 2021 10:36:51 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Subject: Re: [PATCH v32 0/4] scsi: ufs: Add Host Performance Booster Support
+In-Reply-To: <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
+References: <CGME20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
+ <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
+Message-ID: <b7f64b4dcd688b769f9ff8f9b4b378a2@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-31 09:15, Daejun Park wrote:
+> Changelog:
+> 
+> v31 -> v32
+> Delete unused parameter of unmap API.
+> 
+> v30 -> v31
+> Delete unnecessary debug message.
+> 
+> v29 -> v30
+> 1. Add support to reuse bio of pre-request.
+> 2. Delete unreached code in the ufshpb_issue_map_req.
+> 
+> v28 -> v29
+> 1. Remove unused variable that reported by kernel test robot.
+> 
+> v27 -> v28
+> 1. Fix wrong return value of ufshpb_prep.
+> 
+> v26 -> v27
+> 1. Fix wrong refernce of sense buffer in pre_req complete function.
+> 2. Fix read_id error.
+> 3. Fix chunk size checking for HPB 1.0.
+> 4. Mute unnecessary messages before HPB initialization.
+> 
+> v25 -> v26
+> 1. Fix wrong chunk size checking for HPB 1.0.
+> 2. Fix wrong max data size for HPB single command.
+> 3. Fix typo error.
+> 
+> v24 -> v25
+> 1. Change write buffer API for unmap region.
+> 2. Add checking hpb_enable for avoiding unnecessary memory allocation.
+> 3. Change pr_info to dev_info.
+> 4. Change default requeue timeout value for HPB read.
+> 5. Fix wrong offset manipulation on ufshpb_prep_entry.
+> 
+> v23 -> v24
+> 1. Fix build error reported by kernel test robot.
+> 
+> v22 -> v23
+> 1. Add support compatibility of HPB 1.0.
+> 2. Fix read id for single HPB read command.
+> 3. Fix number of pre-allocated requests for write buffer.
+> 4. Add fast path for response UPIU that has same LUN in sense data.
+> 5. Remove WARN_ON for preventing kernel crash.
+> 7. Fix wrong argument for read buffer command.
+> 
+> v21 -> v22
+> 1. Add support processing response UPIU in suspend state.
+> 2. Add support HPB hint from other LU.
+> 3. Add sending write buffer with 0x03 after HPB init.
+> 
+> v20 -> v21
+> 1. Add bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD attr. and fHPBen flag support.
+> 
+> v19 -> v20
+> 1. Add documentation for sysfs entries of hpb->stat.
+> 2. Fix read buffer command for under-sized sub-region.
+> 3. Fix wrong condition checking for kick map work.
+> 4. Delete redundant response UPIU checking.
+> 5. Add LUN checking in response UPIU.
+> 6. Fix possible deadlock problem due to runtime PM.
+> 7. Add instant changing of sub-region state from response UPIU.
+> 8. Fix endian problem in prefetched PPN.
+> 9. Add JESD220-3A (HPB v2.0) support.
+> 
+> v18 -> 19
+> 1. Fix null pointer error when printing sysfs from non-HPB LU.
+> 2. Apply HPB read opcode in lrbp->cmd->cmnd (from Can Guo's review).
+> 3. Rebase the patch on 5.12/scsi-queue.
+> 
+> v17 -> v18
+> Fix build error which reported by kernel test robot.
+> 
+> v16 -> v17
+> 1. Rename hpb_state_lock to rgn_state_lock and move it to corresponding
+> patch.
+> 2. Remove redundant information messages.
+> 
+> v15 -> v16
+> 1. Add missed sysfs ABI documentation.
+> 
+> v14 -> v15
+> 1. Remove duplicated sysfs ABI entries in documentation.
+> 2. Add experiment result of HPB performance testing with iozone.
+> 
+> v13 -> v14
+> 1. Cleanup codes by commentted in Greg's review.
+> 2. Add documentation for sysfs entries (from Greg's review).
+> 3. Add experiment result of HPB performance testing.
+> 
+> v12 -> v13
+> 1. Cleanup codes by comments from Can Guo.
+> 2. Add HPB related descriptor/flag/attributes in sysfs.
+> 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
+> 
+> v11 -> v12
+> 1. Fixed to return error value when HPB fails to initialize pinned 
+> active
+> region.
+> 2. Fixed to disable HPB feature if HPB fails to allocate essential 
+> memory
+> and workqueue.
+> 3. Fixed to change proper sub-region state when region is already 
+> evicted.
+> 
+> v10 -> v11
+> Add a newline at end the last line on Kconfig file.
+> 
+> v9 -> v10
+> 1. Fixed 64-bit division error
+> 2. Fixed problems commentted in Bart's review.
+> 
+> v8 -> v9
+> 1. Change sysfs initialization.
+> 2. Change reading descriptor during HPB initialization
+> 3. Fixed problems commentted in Bart's review.
+> 4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
+> 
+> v7 -> v8
+> Remove wrongly added tags.
+> 
+> v6 -> v7
+> 1. Remove UFS feature layer.
+> 2. Cleanup for sparse error.
+> 
+> v5 -> v6
+> Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+> 
+> v4 -> v5
+> Delete unused macro define.
+> 
+> v3 -> v4
+> 1. Cleanup.
+> 
+> v2 -> v3
+> 1. Add checking input module parameter value.
+> 2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+> 3. Cleanup for unused variables and label.
+> 
+> v1 -> v2
+> 1. Change the full boilerplate text to SPDX style.
+> 2. Adopt dynamic allocation for sub-region data structure.
+> 3. Cleanup.
+> 
+> NAND flash memory-based storage devices use Flash Translation Layer 
+> (FTL)
+> to translate logical addresses of I/O requests to corresponding flash
+> memory addresses. Mobile storage devices typically have RAM with
+> constrained size, thus lack in memory to keep the whole mapping table.
+> Therefore, mapping tables are partially retrieved from NAND flash on
+> demand, causing random-read performance degradation.
+> 
+> To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+> (Host Performance Booster) which uses host system memory as a cache for 
+> the
+> FTL mapping table. By using HPB, FTL data can be read from host memory
+> faster than from NAND flash memory.
+> 
+> The current version only supports the DCM (device control mode).
+> This patch consists of 3 parts to support HPB feature.
+> 
+> 1) HPB probe and initialization process
+> 2) READ -> HPB READ using cached map information
+> 3) L2P (logical to physical) map management
+> 
+> In the HPB probe and init process, the device information of the UFS is
+> queried. After checking supported features, the data structure for the 
+> HPB
+> is initialized according to the device information.
+> 
+> A read I/O in the active sub-region where the map is cached is changed 
+> to
+> HPB READ by the HPB.
+> 
+> The HPB manages the L2P map using information received from the
+> device. For active sub-region, the HPB caches through ufshpb_map
+> request. For the in-active region, the HPB discards the L2P map.
+> When a write I/O occurs in an active sub-region area, associated dirty
+> bitmap checked as dirty for preventing stale read.
+> 
+> HPB is shown to have a performance improvement of 58 - 67% for random 
+> read
+> workload. [1]
+> 
+> [1]:
+> https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+> 
+> Daejun Park (4):
+>   scsi: ufs: Introduce HPB feature
+>   scsi: ufs: L2P map management for HPB read
+>   scsi: ufs: Prepare HPB read for cached sub-region
+>   scsi: ufs: Add HPB 2.0 support
+> 
+>  Documentation/ABI/testing/sysfs-driver-ufs |  162 ++
+>  drivers/scsi/ufs/Kconfig                   |    9 +
+>  drivers/scsi/ufs/Makefile                  |    1 +
+>  drivers/scsi/ufs/ufs-sysfs.c               |   22 +
+>  drivers/scsi/ufs/ufs.h                     |   54 +-
+>  drivers/scsi/ufs/ufshcd.c                  |   74 +-
+>  drivers/scsi/ufs/ufshcd.h                  |   29 +
+>  drivers/scsi/ufs/ufshpb.c                  | 2387 ++++++++++++++++++++
+>  drivers/scsi/ufs/ufshpb.h                  |  277 +++
+>  9 files changed, 3013 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/scsi/ufs/ufshpb.c
+>  create mode 100644 drivers/scsi/ufs/ufshpb.h
 
-在 2021/4/25 下午9:25, Eli Cohen 写道:
-> On Thu, Apr 22, 2021 at 04:59:11PM +0800, Jason Wang wrote:
->> 在 2021/4/22 下午4:39, Eli Cohen 写道:
->>> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
->>>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
->>>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
->>>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
->>>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
->>>>>>>> Implement mlx5_get_vq_notification() to return the doorbell address.
->>>>>>>> Size is set to one system page as required.
->>>>>>>>
->>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
->>>>>>>> ---
->>>>>>>>      drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
->>>>>>>>      drivers/vdpa/mlx5/core/resources.c | 1 +
->>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
->>>>>>>>      3 files changed, 8 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>> index b6cc53ba980c..49de62cda598 100644
->>>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
->>>>>>>>      	u32 pdn;
->>>>>>>>      	struct mlx5_uars_page *uar;
->>>>>>>>      	void __iomem *kick_addr;
->>>>>>>> +	u64 phys_kick_addr;
->>>>>>>>      	u16 uid;
->>>>>>>>      	u32 null_mkey;
->>>>>>>>      	bool valid;
->>>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
->>>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
->>>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
->>>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
->>>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
->>>>>>>>      		goto err_key;
->>>>>>>>      	kick_addr = mdev->bar_addr + offset;
->>>>>>>> +	res->phys_kick_addr = kick_addr;
->>>>>>>>      	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
->>>>>>>>      	if (!res->kick_addr) {
->>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>> index 10c5fef3c020..680751074d2a 100644
->>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
->>>>>>>>      static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
->>>>>>>>      {
->>>>>>>> +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->>>>>>>>      	struct vdpa_notification_area ret = {};
->>>>>>>> +	struct mlx5_vdpa_net *ndev;
->>>>>>>> +
->>>>>>>> +	ndev = to_mlx5_vdpa_ndev(mvdev);
->>>>>>>> +	ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
->>>>>>>> +	ret.size = PAGE_SIZE;
->>>>>>> Note that the page will be mapped in to guest, so it's only safe if the
->>>>>>> doorbeel exclusively own the page. This means if there're other registers in
->>>>>>> the page, we can not let the doorbell bypass to work.
->>>>>>>
->>>>>>> So this is suspicious at least in the case of subfunction where we calculate
->>>>>>> the bar length in mlx5_sf_dev_table_create() as:
->>>>>>>
->>>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
->>>>>>>
->>>>>>> It looks to me this can only work for the arch with PAGE_SIZE = 4096,
->>>>>>> otherwise we can map more into the userspace(guest).
->>>>>>>
->>>>>> Correct, so I guess I should return here 4096.
->>>> I'm not quite sure but since the calculation of the sf_bar_length is doen
->>>> via a shift of 12, it might be correct.
->>>>
->>>> And please double check if the doorbell own the page exclusively.
->>> I am checking if it is safe to map the any part of the SF's BAR to
->>> userspace without harming other functions. If this is true, I will check
->>> if I can return PAGE_SIZE without compromising security.
->>
->> It's usally not safe and a layer violation if other registers are placed at
->> the same page.
->>
->>
->>>    I think we may
->>> need to extend struct vdpa_notification_area to contain another field
->>> offset which indicates the offset from addr where the actual doorbell
->>> resides.
->>
->> The movitiaton of the current design is to be fit seamless into how Qemu
->> model doorbell layouts currently:
->>
->> 1) page-per-vq, each vq has its own page aligned doorbell
->> 2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
->>
->> Only 1) is support in vhost-vDPA (and vhost-user) since it's rather simple
->> and secure (page aligned) to be modelled and implemented via mmap().
->>
->> Exporting a complex layout is possbile but requires careful design.
->>
->> Actually, we had antoher option
->>
->> 3) shared doorbell: all virtqueue shares a single page aligned doorbell
->>
-> This nearly matches we have in ConnectX devices. All the doorbells are
-> located at the same place. For 4K page size atchitectures it is aligned
-> to the start of the page. For larger page sizes it is not aligned.
-> If we don't allow to some offset within the page, it means that direct
-> doorbells will not work for 64K page size archs over ConnectX.
+To the entire series:
 
-
-Right, just to clarify. This can still be model by the current 
-page-per-vq model. It means the doorbell will be mapped into different 
-pages for each virtqueue by Qemu. So from the view of Qemu or guest, 
-each virtqueue has its own doorbell in this case.
-
-
->
->> This is not yet supported by Qemu.
-
-
-For "not supported" I meant present this (doorbells sharing) layout to 
-guest.
-
-Thanks
-
-
->>
->> Thanks
->>
->>
->>>>>> I also think that the check in vhost_vdpa_mmap() should verify that the
->>>>>> returned size is not smaller than PAGE_SIZE because the returned address
->>>>> Actually I think it's ok since you verify the size equals vma->vm_end -
->>>>> vma->vm_start which must be at least PAGE_SIZE.
->>>> Yes.
->>>>
->>>> Thanks
->>>>
->>>>
->>>>>> might just be aligned to PAGE_SIZE. I think this should be enoght but
->>>>>> maybe also use the same logic in vhost_vdpa_fault().
-
+Tested-by: Can Guo <cang@codeaurora.org>
