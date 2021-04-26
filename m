@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482E136AE2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878D836AEF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhDZHlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
+        id S232964AbhDZHuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233010AbhDZHhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DD20613D3;
-        Mon, 26 Apr 2021 07:35:22 +0000 (UTC)
+        id S233385AbhDZHlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:41:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BBCE61364;
+        Mon, 26 Apr 2021 07:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422523;
-        bh=lnysf96Opzj0ZpAgpynl12FghCRqEvkaUKfn4+Gt+9s=;
+        s=korg; t=1619422739;
+        bh=KRszy/i013GujNJoflbqZBSQ6qHoXX96rklqcJo6ZDY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iD+sfnS3d512oFCyVslw9qzhkP81VkuBtsj0+GiGcTdLdnCtryc/71DbEX68UjFxt
-         L6CyTY+JUtqkN0jjTeCLPqgz18KOs4T29LDxb0AcCA22In6XoX8qqR8NzYILrPZudl
-         ytnA4KmJ9VvJl2/LZY0GctIYp6QoEo4DrGoHz6OI=
+        b=jGzP20nyos22I1IQa8yU6lqDlN4HKH2ijPqlR2bo1qP6PfqpqtPucQ9k3/rhU9Inp
+         1EpCHVEI+3jLOLsJANxPDKjAyIv3BxaNzfaqfoJb+WRC+J3vwf5PVlF/n9Rh8HT1K4
+         76ot2GAYxhdUSljFi3LlWR9NjNXQdy4d6jhcfuqE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 47/49] ia64: fix discontig.c section mismatches
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 5.10 01/36] vhost-vdpa: protect concurrent access to vhost device iotlb
 Date:   Mon, 26 Apr 2021 09:29:43 +0200
-Message-Id: <20210426072821.332507431@linuxfoundation.org>
+Message-Id: <20210426072818.838649279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-References: <20210426072819.721586742@linuxfoundation.org>
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+References: <20210426072818.777662399@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,73 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit e2af9da4f867a1a54f1252bf3abc1a5c63951778 ]
+commit a9d064524fc3cf463b3bb14fa63de78aafb40dab upstream.
 
-Fix IA64 discontig.c Section mismatch warnings.
+Protect vhost device iotlb by vhost_dev->mutex. Otherwise,
+it might cause corruption of the list and interval tree in
+struct vhost_iotlb if userspace sends the VHOST_IOTLB_MSG_V2
+message concurrently.
 
-When CONFIG_SPARSEMEM=y and CONFIG_MEMORY_HOTPLUG=y, the functions
-computer_pernodesize() and scatter_node_data() should not be marked as
-__meminit because they are needed after init, on any memory hotplug
-event.  Also, early_nr_cpus_node() is called by compute_pernodesize(),
-so early_nr_cpus_node() cannot be __meminit either.
-
-  WARNING: modpost: vmlinux.o(.text.unlikely+0x1612): Section mismatch in reference from the function arch_alloc_nodedata() to the function .meminit.text:compute_pernodesize()
-  The function arch_alloc_nodedata() references the function __meminit compute_pernodesize().
-  This is often because arch_alloc_nodedata lacks a __meminit annotation or the annotation of compute_pernodesize is wrong.
-
-  WARNING: modpost: vmlinux.o(.text.unlikely+0x1692): Section mismatch in reference from the function arch_refresh_nodedata() to the function .meminit.text:scatter_node_data()
-  The function arch_refresh_nodedata() references the function __meminit scatter_node_data().
-  This is often because arch_refresh_nodedata lacks a __meminit annotation or the annotation of scatter_node_data is wrong.
-
-  WARNING: modpost: vmlinux.o(.text.unlikely+0x1502): Section mismatch in reference from the function compute_pernodesize() to the function .meminit.text:early_nr_cpus_node()
-  The function compute_pernodesize() references the function __meminit early_nr_cpus_node().
-  This is often because compute_pernodesize lacks a __meminit annotation or the annotation of early_nr_cpus_node is wrong.
-
-Link: https://lkml.kernel.org/r/20210411001201.3069-1-rdunlap@infradead.org
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4c8cf318("vhost: introduce vDPA-based backend")
+Cc: stable@vger.kernel.org
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Link: https://lore.kernel.org/r/20210412095512.178-1-xieyongji@bytedance.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/ia64/mm/discontig.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/vhost/vdpa.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/ia64/mm/discontig.c b/arch/ia64/mm/discontig.c
-index 9b2d994cddf6..99b59a7ec187 100644
---- a/arch/ia64/mm/discontig.c
-+++ b/arch/ia64/mm/discontig.c
-@@ -100,7 +100,7 @@ static int __init build_node_maps(unsigned long start, unsigned long len,
-  * acpi_boot_init() (which builds the node_to_cpu_mask array) hasn't been
-  * called yet.  Note that node 0 will also count all non-existent cpus.
-  */
--static int __meminit early_nr_cpus_node(int node)
-+static int early_nr_cpus_node(int node)
- {
- 	int cpu, n = 0;
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -749,9 +749,11 @@ static int vhost_vdpa_process_iotlb_msg(
+ 	const struct vdpa_config_ops *ops = vdpa->config;
+ 	int r = 0;
  
-@@ -115,7 +115,7 @@ static int __meminit early_nr_cpus_node(int node)
-  * compute_pernodesize - compute size of pernode data
-  * @node: the node id.
-  */
--static unsigned long __meminit compute_pernodesize(int node)
-+static unsigned long compute_pernodesize(int node)
- {
- 	unsigned long pernodesize = 0, cpus;
++	mutex_lock(&dev->mutex);
++
+ 	r = vhost_dev_check_owner(dev);
+ 	if (r)
+-		return r;
++		goto unlock;
  
-@@ -412,7 +412,7 @@ static void __init reserve_pernode_space(void)
+ 	switch (msg->type) {
+ 	case VHOST_IOTLB_UPDATE:
+@@ -772,6 +774,8 @@ static int vhost_vdpa_process_iotlb_msg(
+ 		r = -EINVAL;
+ 		break;
  	}
- }
++unlock:
++	mutex_unlock(&dev->mutex);
  
--static void __meminit scatter_node_data(void)
-+static void scatter_node_data(void)
- {
- 	pg_data_t **dst;
- 	int node;
--- 
-2.30.2
-
+ 	return r;
+ }
 
 
