@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D1A36B129
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9D936B12C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhDZJ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:59:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37470 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232943AbhDZJ7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:59:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 71CB1B1A6;
-        Mon, 26 Apr 2021 09:59:08 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 11:59:07 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/misc for v5.13
-Message-ID: <YIaO65uYSqiK+tWf@zn.tnic>
+        id S232981AbhDZKAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232345AbhDZKAC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 06:00:02 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38018C061574;
+        Mon, 26 Apr 2021 02:59:20 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n127so17827569wmb.5;
+        Mon, 26 Apr 2021 02:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=k/HVo1sdMZ3lHA1hW8YpJjolWFsIMPFvy/KkOasa9DQ=;
+        b=OflZgQ6LhG2mIhJYkEZExU3b4QpdeJzCDW48ELFyPi8jhi8YvnwO6d/n9YBaB/wgxt
+         0NMhUV1Qyh5o2o6ZDcg0XSDdMsdzQXHwT8tFR5LWE01OuAyuA1qFYEACUB66Wbf9N1B+
+         T7+Rv3ZuZUdXJ/rjo9C/p3PIKltoIMCJajbPQQD8z64p/UmoEZ/8SKqS//fSICO7y8sL
+         qj/y/2UjaGncN+xo9N7XkZwrqUqQIl4KqKXi2+uAQ3J/VyrdTbw0riaqt4R+sbMjn6BT
+         RHIeCfDKwF4lrajMa/bILMM6yCzy/g26GIwGJZLR/LTEAbFvAlD4NghChQDM1DVL04wl
+         8wjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k/HVo1sdMZ3lHA1hW8YpJjolWFsIMPFvy/KkOasa9DQ=;
+        b=MfXF+X0lA4mrP6cIsiEJpVAeoE9KK8k1J7UZyr7jIbZeu+nVFEyTTMuvN6kvX9uAsw
+         59i17UX3KGVnyhO5/JhJBd9QhKiW6IyQXUa8b7J3mMZmPTW/zKz+lllmIQ5eineR7O1i
+         a/ru9cOWJE1cCWi5sn+/QkmsA7iIM1lazsIzj2vAwkkDhoVPbFdGQsLXA93DMoumueR4
+         DFXyv5pxstPEtap4ZFNWPZ+CNpEdVaafggxXg7U2CqD6V5pYmB3OfI9PzVcSqWBF7Iib
+         jm4mOEo2FqDotavoHoTRpL8LWds5QKcE9Tf2pQY2zEmrIEKiq13Q/oUVfENFyhLEY4eH
+         ft0A==
+X-Gm-Message-State: AOAM531I+sRwJrji9wNyIfOK5q/zOVN7iVI+AQnMEKSjfbz7Nb8CigSb
+        IF4iBb4S0e5zDffCiRbB8xvEygDS+/M=
+X-Google-Smtp-Source: ABdhPJwcWlVYuR2sHgjF8N+b6Up7P+Yv60myleEG16/Rq0Vg5KjgsXXgX5dS2NZktsUGZA8rFy2ZpQ==
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr20237745wmq.97.1619431158793;
+        Mon, 26 Apr 2021 02:59:18 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.129.131])
+        by smtp.gmail.com with ESMTPSA id f8sm16843957wmc.8.2021.04.26.02.59.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Apr 2021 02:59:18 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: Fix uninitialized variable up.resv
+To:     Colin King <colin.king@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210426094735.8320-1-colin.king@canonical.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <ef9d0ed2-a8cd-fc4a-5b02-092d2c151313@gmail.com>
+Date:   Mon, 26 Apr 2021 10:59:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
+In-Reply-To: <20210426094735.8320-1-colin.king@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 4/26/21 10:47 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable up.resv is not initialized and is being checking for a
+> non-zero value in the call to _io_register_rsrc_update. Fix this by
+> explicitly setting the pointer to 0.
 
-please pull the x86 miscellaneous pile for v5.13.
+LGTM, thanks Colin
 
-Thx.
 
----
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_misc_for_v5.13
-
-for you to fetch changes up to f281854fa743f3474b2d0d69533301f48cf0e184:
-
-  tools/x86/kcpuid: Add AMD leaf 0x8000001E (2021-03-18 11:36:14 +0100)
-
-----------------------------------------------------------------
-A new kcpuid tool to dump the raw CPUID leafs of a CPU. It has the CPUID
-bit definitions in a separate csv file which allows for adding support
-for new CPUID leafs and bits without having to update the tool. The main
-use case for the tool is hw enablement on preproduction x86 hw.
-
-----------------------------------------------------------------
-Andy Lutomirski (1):
-      selftests/x86: Add a missing .note.GNU-stack section to thunks_32.S
-
-Borislav Petkov (3):
-      tools/x86/kcpuid: Add AMD Secure Encryption leaf
-      tools/x86/kcpuid: Check last token too
-      tools/x86/kcpuid: Add AMD leaf 0x8000001E
-
-Feng Tang (1):
-      tools/x86: Add a kcpuid tool to show raw CPU features
-
- tools/arch/x86/kcpuid/Makefile          |  24 ++
- tools/arch/x86/kcpuid/cpuid.csv         | 400 +++++++++++++++++++
- tools/arch/x86/kcpuid/kcpuid.c          | 657 ++++++++++++++++++++++++++++++++
- tools/testing/selftests/x86/thunks_32.S |   2 +
- 4 files changed, 1083 insertions(+)
- create mode 100644 tools/arch/x86/kcpuid/Makefile
- create mode 100644 tools/arch/x86/kcpuid/cpuid.csv
- create mode 100644 tools/arch/x86/kcpuid/kcpuid.c
+> Addresses-Coverity: ("Uninitialized scalar variable)"
+> Fixes: c3bdad027183 ("io_uring: add generic rsrc update with tags")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/io_uring.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index f4ec092c23f4..63f610ee274b 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -5842,6 +5842,7 @@ static int io_files_update(struct io_kiocb *req, unsigned int issue_flags)
+>  	up.data = req->rsrc_update.arg;
+>  	up.nr = 0;
+>  	up.tags = 0;
+> +	up.resv = 0;
+>  
+>  	mutex_lock(&ctx->uring_lock);
+>  	ret = __io_register_rsrc_update(ctx, IORING_RSRC_FILE,
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Pavel Begunkov
