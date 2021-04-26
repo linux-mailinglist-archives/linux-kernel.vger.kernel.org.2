@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E9636B5B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B803336B5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 17:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhDZPZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 11:25:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55689 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233573AbhDZPZ1 (ORCPT
+        id S234001AbhDZPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 11:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233573AbhDZPZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:25:27 -0400
-Received: from 1-171-221-133.dynamic-ip.hinet.net ([1.171.221.133] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lb361-0006QB-RA; Mon, 26 Apr 2021 15:24:26 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Imre Deak <imre.deak@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Karthik B S <karthik.b.s@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3] drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops
-Date:   Mon, 26 Apr 2021 23:24:10 +0800
-Message-Id: <20210426152420.359402-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 26 Apr 2021 11:25:12 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EE9C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:24:31 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 5-20020a9d09050000b029029432d8d8c5so26488421otp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 08:24:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XlOp4aQv5AKhOkuF/Zfl9vY9MXO0fLaz7BoffX5QRNw=;
+        b=YwgACdhtaGPKcEkNRqu5UjdGP0cJ0mCIt/1EnwC0Q4Q9n+sDjAwUC4eJHVxr/bUVfd
+         QyVMzpmJJTuAOLqPkcFN2akmL6oPD6pruQEJe4G6c0oHCHMQKqjyxuDrqlqJFby0J6UA
+         aQQf+8UHfwnzJPZ1sIKSG0tYd/8ie7cY56WCRg0cN17tZ4lMjQubPRORcdMRRazsHoGW
+         QfhscTHMfBt+ABKuB/aNdy8kFwSD+UUCQh+D0mZpNDbwGIDRtBEjI6FhNMnR+JUBANDF
+         c+S0vUDcSViaHUdXbfYLVmnjMXwWxKKQyDT81ksz+uIbA2oRiBQDWcp2e2b+8eazxvQn
+         cz+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XlOp4aQv5AKhOkuF/Zfl9vY9MXO0fLaz7BoffX5QRNw=;
+        b=N2nAi0I0xOa5KykgEk3zJOZA3eEJ98ZJd7AqPcNm/GFTT+q4HGNVWBTokEsfSsQbUK
+         oiGEgBNL35BZkKohuNQTAzPrbwcCaqpCiclhIdliiR+eT7/xRMX8F8/GEIpLSAQWfhxe
+         vDF3zpm3LGV7nOMgSQV21yBZJq8nFZTskkIWm0rENnrJmw0uZJBKC/qUyPB7bR0Z1oGw
+         FaV9DzRqx7Dydu+MduC0ixu4f3tb1zjCtamDE9ZOijfJid5B02qdWHzzCkBqjzQrlIaB
+         5S5mXUDRQT8TX1p6GtGBEaiv6h0ASubCddZrnmQ01HIcrAx3+gMiX5+Ad5YAUvBQEojs
+         KPvg==
+X-Gm-Message-State: AOAM530EAUotMeJKxKaP07PZ/M3iCUpZbjkiNUGZ8m95Qx63dpDccIMe
+        46RBPDxbmXTzlai9UCzSVN45vQ==
+X-Google-Smtp-Source: ABdhPJybRS10zd3ziRCBWMIWxM8vfG2fUnQW0ZWT1rN5dJNV1jqUEeZhOYkifFnnHBA3sRhipClJxg==
+X-Received: by 2002:a9d:2030:: with SMTP id n45mr15978588ota.98.1619450670244;
+        Mon, 26 Apr 2021 08:24:30 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n37sm3537816otn.9.2021.04.26.08.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 08:24:29 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 10:24:27 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: Introduce single-PWM of_xlate function
+Message-ID: <20210426152427.GG1908499@yoga>
+References: <20210423213304.1371143-1-bjorn.andersson@linaro.org>
+ <20210424113204.besr7gye2htzkbkr@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210424113204.besr7gye2htzkbkr@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
-to discrete GFX after S3. This is not desirable, because userspace will
-treat connected display as a new one, losing display settings.
+On Sat 24 Apr 06:32 CDT 2021, Uwe Kleine-K?nig wrote:
 
-The expected behavior is to let discrete GFX drives all external
-displays.
+> Hello,
+> 
+> On Fri, Apr 23, 2021 at 04:33:04PM -0500, Bjorn Andersson wrote:
+> > The existing pxa driver and the upcoming addition of PWM support in the
+> > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> > thereby a need for a of_xlate function with the period as its single
+> > argument.
+> > 
+> > Introduce a common helper function in the core that can be used as
+> > of_xlate by such drivers and migrate the pxa driver to use this.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> I'm OK with the idea as such. I'd like to see the semantic expanded a
+> bit however such that the function can parse
+> 
+> 	pwms = <&mypwm 50000>;
+> 
+> and also
+> 
+> 	pwms = <&mypwm 500000 PWM_POLARITY_INVERTED>;
+> 
+> . You suggetion only covers the former.
 
-The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
-The method is inside the another _DSM, so add the _DSM and call it
-accordingly.
+One concern though is that a single-channel pwm with the optional flag
+would syntactically be indistinguishable from a multi-channel property
+without flags. Presumably the values are out of range though, so I
+suppose there's no problem in practice.
 
-I also tested some MUX-less and iGPU only laptops with that _DSM, no
-regression was found.
+Please let me know if you think there's any merit to this concern and
+I'll respin the patch accordingly.
 
-v3:
- - Remove BXT from names.
- - Change the parameter type.
- - Fold the function into intel_modeset_init_hw().
+Thanks,
+Bjorn
 
-v2:
- - Forward declare struct pci_dev.
+> 
+> See
+> https://lore.kernel.org/r/20210315111124.2475274-2-u.kleine-koenig@pengutronix.de
+> for my first attempt to unify of_pwm_xlate_with_flags and
+> of_pwm_simple_xlate accordingly.
+> 
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
-References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_acpi.c    | 18 ++++++++++++++++++
- drivers/gpu/drm/i915/display/intel_acpi.h    |  3 +++
- drivers/gpu/drm/i915/display/intel_display.c |  2 ++
- 3 files changed, 23 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-index 833d0c1be4f1..d008d3976261 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.c
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-@@ -13,12 +13,17 @@
- #include "intel_display_types.h"
- 
- #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
-+#define INTEL_DSM_FN_PLATFORM_MUX_ENABLE 0 /* No args */
- #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
- 
- static const guid_t intel_dsm_guid =
- 	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
- 		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
- 
-+static const guid_t intel_dsm_guid2 =
-+	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
-+		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
-+
- static char *intel_dsm_port_name(u8 id)
- {
- 	switch (id) {
-@@ -176,6 +181,19 @@ void intel_unregister_dsm_handler(void)
- {
- }
- 
-+void intel_dsm_enable_mux(struct drm_i915_private *i915)
-+{
-+	struct pci_dev *pdev = i915->drm.pdev;
-+	acpi_handle dhandle;
-+
-+	dhandle = ACPI_HANDLE(&pdev->dev);
-+	if (!dhandle)
-+		return;
-+
-+	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
-+			  INTEL_DSM_FN_PLATFORM_MUX_ENABLE, NULL);
-+}
-+
- /*
-  * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
-  * Attached to the Display Adapter).
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
-index e8b068661d22..def013cf6308 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.h
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.h
-@@ -11,11 +11,14 @@ struct drm_i915_private;
- #ifdef CONFIG_ACPI
- void intel_register_dsm_handler(void);
- void intel_unregister_dsm_handler(void);
-+void intel_dsm_enable_mux(struct drm_i915_private *i915);
- void intel_acpi_device_id_update(struct drm_i915_private *i915);
- #else
- static inline void intel_register_dsm_handler(void) { return; }
- static inline void intel_unregister_dsm_handler(void) { return; }
- static inline
-+void intel_dsm_enable_mux(struct drm_i915_private *i915) { return; }
-+static inline
- void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
- #endif /* CONFIG_ACPI */
- 
-diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-index a10e26380ef3..d79dae370b20 100644
---- a/drivers/gpu/drm/i915/display/intel_display.c
-+++ b/drivers/gpu/drm/i915/display/intel_display.c
-@@ -11472,6 +11472,8 @@ void intel_modeset_init_hw(struct drm_i915_private *i915)
- {
- 	struct intel_cdclk_state *cdclk_state;
- 
-+	intel_dsm_enable_mux(i915);
-+
- 	if (!HAS_DISPLAY(i915))
- 		return;
- 
--- 
-2.30.2
 
