@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808B936B3F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0100B36B3F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 15:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhDZNRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 09:17:05 -0400
+        id S233528AbhDZNRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 09:17:13 -0400
 Received: from mga12.intel.com ([192.55.52.136]:57069 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233647AbhDZNRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:17:01 -0400
-IronPort-SDR: jIjORq9T4PayNXasO5IJvWLldPDCDdkRplpQodQQJ7VbqZX5CmhpP9corbDo6/uyElkzeGEt+i
- k78zwocGZnFg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175815567"
+        id S233681AbhDZNRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 09:17:04 -0400
+IronPort-SDR: 9I4YsrYDNGl5cx1/4mO1AKWKT917TPUYbfDzmwb/n5qpgJdGYXpIJgjs7N5Z0apvDN+00wZWrw
+ 7LpMtr0QnlmQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175815578"
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="175815567"
+   d="scan'208";a="175815578"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 06:16:20 -0700
-IronPort-SDR: 6o7YnBkd7JFtQIuBafBfbbYk0eiVNlO5HAD2uGmxMdIF1aMz/casjEAPxMc2PCcLGfKC62ESva
- LcXbJgCFZh/g==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 06:16:23 -0700
+IronPort-SDR: dUv2hXBlipOkNxj/sz89W016dA108S/2yS/xWwTtwNHlyH+6mRv2s+pcbaYmRYb/vZ9RrnxL5I
+ oam00rEJ8TSw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="424903142"
+   d="scan'208";a="424903151"
 Received: from nntpdsd52-165.inn.intel.com ([10.125.52.165])
-  by orsmga007.jf.intel.com with ESMTP; 26 Apr 2021 06:16:17 -0700
+  by orsmga007.jf.intel.com with ESMTP; 26 Apr 2021 06:16:20 -0700
 From:   alexander.antonov@linux.intel.com
 To:     peterz@infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     alexander.shishkin@linux.intel.com, kan.liang@linux.intel.com,
         ak@linux.intel.com, steve.wahl@hpe.com, kyle.meyer@hpe.com,
         alexander.antonov@linux.intel.com,
         alexey.v.bayduraev@linux.intel.com
-Subject: [PATCH 1/3] perf/x86/intel/uncore: Generalize I/O stacks to PMON mapping procedure
-Date:   Mon, 26 Apr 2021 16:16:12 +0300
-Message-Id: <20210426131614.16205-2-alexander.antonov@linux.intel.com>
+Subject: [PATCH 2/3] perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on SNR
+Date:   Mon, 26 Apr 2021 16:16:13 +0300
+Message-Id: <20210426131614.16205-3-alexander.antonov@linux.intel.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20210426131614.16205-1-alexander.antonov@linux.intel.com>
 References: <20210426131614.16205-1-alexander.antonov@linux.intel.com>
@@ -45,107 +45,165 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-Currently I/O stacks to IIO PMON mapping is available on Skylake servers
-only and need to make code more general to easily enable further platforms.
-So, introduce get_topology() callback in struct intel_uncore_type which
-allows to move common code to separate function and make mapping procedure
-more general.
+I/O stacks to PMON mapping on Skylake server relies on topology information
+from CPU_BUS_NO MSR but this approach is not applicable for SNR and ICX.
+Mapping on these platforms can be gotten by reading SAD_CONTROL_CFG CSR
+from Mesh2IIO device with 0x09a2 DID.
+SAD_CONTROL_CFG CSR contains stack IDs in its own notation which are
+statically mapped on IDs in PMON notation.
+
+The map for Snowridge:
+
+Stack Name         | CBDMA/DMI | PCIe Gen 3 | DLB | NIS | QAT
+SAD_CONTROL_CFG ID |     0     |      1     |  2  |  3  |  4
+PMON ID            |     1     |      4     |  3  |  2  |  0
+
+This patch enables I/O stacks to IIO PMON mapping on Snowridge.
+Mapping is exposed through attributes /sys/devices/uncore_iio_<pmu_idx>/dieX,
+where dieX is file which holds "Segment:Root Bus" for PCIe root port which
+can be monitored by that IIO PMON block. Example for Snowridge:
+
+==> /sys/devices/uncore_iio_0/die0 <==
+0000:f3
+==> /sys/devices/uncore_iio_1/die0 <==
+0000:00
+==> /sys/devices/uncore_iio_2/die0 <==
+0000:eb
+==> /sys/devices/uncore_iio_3/die0 <==
+0000:e3
+==> /sys/devices/uncore_iio_4/die0 <==
+0000:14
+
+Mapping for Icelake server will be enabled in the follow-up patch.
 
 Cc: Steve Wahl <steve.wahl@hpe.com>
 Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
 ---
- arch/x86/events/intel/uncore.h       |  1 +
- arch/x86/events/intel/uncore_snbep.c | 26 ++++++++++++++++++++------
- 2 files changed, 21 insertions(+), 6 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 96 ++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
-diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 96569dc2119d..d91733337f94 100644
---- a/arch/x86/events/intel/uncore.h
-+++ b/arch/x86/events/intel/uncore.h
-@@ -92,6 +92,7 @@ struct intel_uncore_type {
- 	/*
- 	 * Optional callbacks for managing mapping of Uncore units to PMONs
- 	 */
-+	int (*get_topology)(struct intel_uncore_type *type);
- 	int (*set_mapping)(struct intel_uncore_type *type);
- 	void (*cleanup_mapping)(struct intel_uncore_type *type);
- };
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index acc3c0e52f4d..72970b4c907b 100644
+index 72970b4c907b..9d75da6d9c75 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3689,12 +3689,19 @@ static inline u8 skx_iio_stack(struct intel_uncore_pmu *pmu, int die)
- }
+@@ -348,6 +348,13 @@
+ #define SKX_M2M_PCI_PMON_CTR0		0x200
+ #define SKX_M2M_PCI_PMON_BOX_CTL	0x258
  
- static umode_t
--skx_iio_mapping_visible(struct kobject *kobj, struct attribute *attr, int die)
-+pmu_iio_mapping_visible(struct kobject *kobj, struct attribute *attr,
-+			 int die, int zero_bus_pmu)
- {
- 	struct intel_uncore_pmu *pmu = dev_to_uncore_pmu(kobj_to_dev(kobj));
- 
--	/* Root bus 0x00 is valid only for die 0 AND pmu_idx = 0. */
--	return (!skx_iio_stack(pmu, die) && pmu->pmu_idx) ? 0 : attr->mode;
-+	return (!skx_iio_stack(pmu, die) && pmu->pmu_idx != zero_bus_pmu) ? 0 : attr->mode;
-+}
++/* Memory Map registers device ID */
++#define SNR_ICX_MESH2IIO_MMAP_DID		0x9a2
++#define SNR_ICX_SAD_CONTROL_CFG		0x3f4
 +
++/* Getting I/O stack id in SAD_COTROL_CFG notation */
++#define SAD_CONTROL_STACK_ID(data)		(((data) >> 4) & 0x7)
++
+ /* SNR Ubox */
+ #define SNR_U_MSR_PMON_CTR0			0x1f98
+ #define SNR_U_MSR_PMON_CTL0			0x1f91
+@@ -4414,6 +4421,91 @@ static const struct attribute_group snr_uncore_iio_format_group = {
+ 	.attrs = snr_uncore_iio_formats_attr,
+ };
+ 
 +static umode_t
-+skx_iio_mapping_visible(struct kobject *kobj, struct attribute *attr, int die)
++snr_iio_mapping_visible(struct kobject *kobj, struct attribute *attr, int die)
 +{
-+	/* Root bus 0x00 is valid only for pmu_idx = 0. */
-+	return pmu_iio_mapping_visible(kobj, attr, die, 0);
- }
- 
- static ssize_t skx_iio_mapping_show(struct device *dev,
-@@ -3779,7 +3786,8 @@ static const struct attribute_group *skx_iio_attr_update[] = {
- 	NULL,
- };
- 
--static int skx_iio_set_mapping(struct intel_uncore_type *type)
-+static int
-+pmu_iio_set_mapping(struct intel_uncore_type *type, struct attribute_group *ag)
- {
- 	char buf[64];
- 	int ret;
-@@ -3787,7 +3795,7 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
- 	struct attribute **attrs = NULL;
- 	struct dev_ext_attribute *eas = NULL;
- 
--	ret = skx_iio_get_topology(type);
-+	ret = type->get_topology(type);
- 	if (ret < 0)
- 		goto clear_attr_update;
- 
-@@ -3814,7 +3822,7 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
- 		eas[die].var = (void *)die;
- 		attrs[die] = &eas[die].attr.attr;
- 	}
--	skx_iio_mapping_group.attrs = attrs;
-+	ag->attrs = attrs;
- 
- 	return 0;
- err:
-@@ -3828,6 +3836,11 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
- 	return ret;
- }
- 
-+static int skx_iio_set_mapping(struct intel_uncore_type *type)
-+{
-+	return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
++	/* Root bus 0x00 is valid only for pmu_idx = 1. */
++	return pmu_iio_mapping_visible(kobj, attr, die, 1);
 +}
 +
- static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
- {
- 	struct attribute **attr = skx_iio_mapping_group.attrs;
-@@ -3858,6 +3871,7 @@ static struct intel_uncore_type skx_uncore_iio = {
- 	.ops			= &skx_uncore_iio_ops,
- 	.format_group		= &skx_uncore_iio_format_group,
- 	.attr_update		= skx_iio_attr_update,
-+	.get_topology		= skx_iio_get_topology,
- 	.set_mapping		= skx_iio_set_mapping,
- 	.cleanup_mapping	= skx_iio_cleanup_mapping,
++static struct attribute_group snr_iio_mapping_group = {
++	.is_visible	= snr_iio_mapping_visible,
++};
++
++static const struct attribute_group *snr_iio_attr_update[] = {
++	&snr_iio_mapping_group,
++	NULL,
++};
++
++static int sad_cfg_iio_topology(struct intel_uncore_type *type, u8 *sad_pmon_mapping)
++{
++	u32 sad_cfg;
++	int die, stack_id, ret = -EPERM;
++	struct pci_dev *dev = NULL;
++
++	type->topology = kcalloc(uncore_max_dies(), sizeof(*type->topology),
++				 GFP_KERNEL);
++	if (!type->topology)
++		return -ENOMEM;
++
++	while ((dev = pci_get_device(PCI_VENDOR_ID_INTEL, SNR_ICX_MESH2IIO_MMAP_DID, dev))) {
++		ret = pci_read_config_dword(dev, SNR_ICX_SAD_CONTROL_CFG, &sad_cfg);
++		if (ret) {
++			ret = pcibios_err_to_errno(ret);
++			break;
++		}
++
++		die = uncore_pcibus_to_dieid(dev->bus);
++		stack_id = SAD_CONTROL_STACK_ID(sad_cfg);
++		if (die < 0 || stack_id >= type->num_boxes) {
++			ret = -EPERM;
++			break;
++		}
++
++		/* Convert stack id from SAD_CONTROL to PMON notation. */
++		stack_id = sad_pmon_mapping[stack_id];
++
++		((u8 *)&(type->topology[die].configuration))[stack_id] = dev->bus->number;
++		type->topology[die].segment = pci_domain_nr(dev->bus);
++	}
++
++	if (ret) {
++		kfree(type->topology);
++		type->topology = NULL;
++	}
++
++	return ret;
++}
++
++/*
++ * SNR has a static mapping of stack IDs from SAD_CONTROL_CFG notation to PMON
++ */
++enum {
++	SNR_QAT_PMON_ID,
++	SNR_CBDMA_DMI_PMON_ID,
++	SNR_NIS_PMON_ID,
++	SNR_DLB_PMON_ID,
++	SNR_PCIE_GEN3_PMON_ID
++};
++
++static u8 snr_sad_pmon_mapping[] = {
++	SNR_CBDMA_DMI_PMON_ID,
++	SNR_PCIE_GEN3_PMON_ID,
++	SNR_DLB_PMON_ID,
++	SNR_NIS_PMON_ID,
++	SNR_QAT_PMON_ID
++};
++
++static int snr_iio_get_topology(struct intel_uncore_type *type)
++{
++	return sad_cfg_iio_topology(type, snr_sad_pmon_mapping);
++}
++
++static int snr_iio_set_mapping(struct intel_uncore_type *type)
++{
++	return pmu_iio_set_mapping(type, &snr_iio_mapping_group);
++}
++
+ static struct intel_uncore_type snr_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -4427,6 +4519,10 @@ static struct intel_uncore_type snr_uncore_iio = {
+ 	.msr_offset		= SNR_IIO_MSR_OFFSET,
+ 	.ops			= &ivbep_uncore_msr_ops,
+ 	.format_group		= &snr_uncore_iio_format_group,
++	.attr_update		= snr_iio_attr_update,
++	.get_topology		= snr_iio_get_topology,
++	.set_mapping		= snr_iio_set_mapping,
++	.cleanup_mapping	= skx_iio_cleanup_mapping,
  };
+ 
+ static struct intel_uncore_type snr_uncore_irp = {
 -- 
 2.21.3
 
