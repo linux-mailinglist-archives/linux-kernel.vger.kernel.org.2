@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCB736AD55
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8931436ADA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbhDZHdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
+        id S232366AbhDZHhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:37:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232298AbhDZHd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:33:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 782F161077;
-        Mon, 26 Apr 2021 07:32:45 +0000 (UTC)
+        id S232302AbhDZHgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E2C613A9;
+        Mon, 26 Apr 2021 07:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422365;
-        bh=4ha8hzvQewrAkYWKaJdNQ2KOkMlMHpc8eBqJkj1wlRY=;
+        s=korg; t=1619422442;
+        bh=fh1+CkwaMcx6qd70/4Lg+uH0X42cRjIcO52Pdp0GE3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQLlQizy5JneRgp8Q5NUFTYcBrmVMjAgokR8+rUbMTVPl/ccn361/WMNK6vULHyai
-         8VszEZidG7JegdEuD+03IDXOSpaIbmjm4BOpdp4Q6GuEYG7I5sskkLbXmqjIk+lSK6
-         56WGvsuwxVCcpLjyaylMnUpl1pvbffWPEgam1iCA=
+        b=paFt5vo0k22xeGqBGeOX5BO166Kgmjg4scz877sTnpM5JcdZSxOdhbi42SVYXdayo
+         uwa/BTou63uaklVQucgM0vRgh63F8pkxOKgxo0oIYYg/ky4MVFsJaFZ1/crVcseaV0
+         bflBLl8esAyW631YcGIfR5Qo1RGUgXLoH6tfcJT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/37] ASoC: fsl_esai: Fix TDM slot setup for I2S mode
-Date:   Mon, 26 Apr 2021 09:29:09 +0200
-Message-Id: <20210426072817.532903014@linuxfoundation.org>
+Subject: [PATCH 4.14 14/49] net: ieee802154: forbid monitor for add llsec devkey
+Date:   Mon, 26 Apr 2021 09:29:10 +0200
+Message-Id: <20210426072820.208292608@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-References: <20210426072817.245304364@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shiyan <shc_work@mail.ru>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit e7a48c710defa0e0fef54d42b7d9e4ab596e2761 ]
+[ Upstream commit a347b3b394868fef15b16f143719df56184be81d ]
 
-When using the driver in I2S TDM mode, the fsl_esai_startup()
-function rewrites the number of slots previously set by the
-fsl_esai_set_dai_tdm_slot() function to 2.
-To fix this, let's use the saved slot count value or, if TDM
-is not used and the number of slots is not set, the driver will use
-the default value (2), which is set by fsl_esai_probe().
+This patch forbids to add llsec devkey for monitor interfaces which we
+don't support yet. Otherwise we will access llsec mib which isn't
+initialized for monitors.
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20210402081405.9892-1-shc_work@mail.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210405003054.256017-11-aahringo@redhat.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ net/ieee802154/nl802154.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index fa64cc2b1729..94bf497092b2 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -495,11 +495,13 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
- 				   ESAI_SAICR_SYNC, esai_priv->synchronous ?
- 				   ESAI_SAICR_SYNC : 0);
+diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+index 6d9fc2947dd8..eaeff7c08bdf 100644
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -1936,6 +1936,9 @@ static int nl802154_add_llsec_devkey(struct sk_buff *skb, struct genl_info *info
+ 	struct ieee802154_llsec_device_key key;
+ 	__le64 extended_addr;
  
--		/* Set a default slot number -- 2 */
-+		/* Set slots count */
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
--				   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(2));
-+				   ESAI_xCCR_xDC_MASK,
-+				   ESAI_xCCR_xDC(esai_priv->slots));
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
--				   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(2));
-+				   ESAI_xCCR_xDC_MASK,
-+				   ESAI_xCCR_xDC(esai_priv->slots));
- 	}
- 
- 	return 0;
++	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
++		return -EOPNOTSUPP;
++
+ 	if (!info->attrs[NL802154_ATTR_SEC_DEVKEY] ||
+ 	    nla_parse_nested(attrs, NL802154_DEVKEY_ATTR_MAX,
+ 			     info->attrs[NL802154_ATTR_SEC_DEVKEY],
 -- 
 2.30.2
 
