@@ -2,145 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5489A36B2D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC2536B2D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhDZMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:16:33 -0400
-Received: from mail-bn7nam10on2063.outbound.protection.outlook.com ([40.107.92.63]:13793
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231550AbhDZMQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:16:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W2Qyb0Nc2k2pD+ZSvLx+FurlZasZ6sFyeaLM9VP9P1dZconM5x3OwbIkers3QxyFxOkQ+cmzodFfbkZETQy4v46iICciDdOkOW+yKavWrr7x6clNMQlBQQRPKJ022njGRlxpQ8+hNykMMyvkvCJNESxx6oCjEpcd9hSAg1Wugju1FjXMubXDaTEVIpN5wNNbf/aScECbDV6daES0akPAanjBjKPYVaFEBHLZ7D4whIa3ED7BCdB8hH61Qjooc+n6BoTdOISPJdHTCtvEBQdp8+3jcNN+k5Yo3QjQuThWqrrXX2S9B6EQWzynlqjr5o92ZMCl/0VX6NNBwXCYlbRQbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I7T72pKvXFV1eQrIIzFdrRrbVYOZQWfBovVqCPpHgIw=;
- b=kZhiNSszg0AIjCGe0KgZJll96PXyuBx3CsaqQCsmwalT31y9Aj8TKsEqm3Eej5LLWuiSPt1KCpgEZvK1LyhNMlQn6lJt09fju2hEyniwfQ4r4jGFTcSI+sydeuu3LAslFyH6NwrIgQcyhDL18ZJOtj+UHksCuQLf7PSG2tFDZNEb7ff3Kplte7Vn9BoFgIyM1Q5vF/XbTLRGk/vaMYOb5bz/P1u08mZj8b8ZRI1Px3C7YqEt7LA2aq1I3lSL2cwvVhux3KsDgGx0HSKjSjp2X7jyMDc/cA9Uj2gDhlVoPV6lxwlAhFzzfQwXUGD37Bh2dcaxDsImh1Zk/HMge7C9ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I7T72pKvXFV1eQrIIzFdrRrbVYOZQWfBovVqCPpHgIw=;
- b=tEBRBQvRK2QoTPJDs61z5RKMOO4dk1CCMeuyelsAsG+falx/0r9DC0iehMjxSHtTtocxaKh/hPICD1PRM58081owO2+hUtwnkAW02mnx2oLBba47Kvp9ez/tSp8+7Ic4G3jFP3tzcm2wy+9uFyub4ZYEJqHGaKcZuLb42Vr5IgY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1463.namprd12.prod.outlook.com (2603:10b6:910:e::19)
- by CY4PR12MB1543.namprd12.prod.outlook.com (2603:10b6:910:c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Mon, 26 Apr
- 2021 12:15:48 +0000
-Received: from CY4PR12MB1463.namprd12.prod.outlook.com
- ([fe80::a457:1047:3886:4630]) by CY4PR12MB1463.namprd12.prod.outlook.com
- ([fe80::a457:1047:3886:4630%9]) with mapi id 15.20.4065.026; Mon, 26 Apr 2021
- 12:15:48 +0000
-Subject: Re: [PATCH][next] drm/amdkfd: Fix spelling mistake "unregisterd" ->
- "unregistered"
-To:     Colin King <colin.king@canonical.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210426121304.83256-1-colin.king@canonical.com>
-From:   Nirmoy <nirmodas@amd.com>
-Message-ID: <196cd921-6078-fb64-682c-5962310947f4@amd.com>
-Date:   Mon, 26 Apr 2021 14:15:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210426121304.83256-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [217.86.97.47]
-X-ClientProxiedBy: PR0P264CA0153.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1b::21) To CY4PR12MB1463.namprd12.prod.outlook.com
- (2603:10b6:910:e::19)
+        id S233282AbhDZMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233262AbhDZMQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:16:46 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E466FC061756;
+        Mon, 26 Apr 2021 05:16:04 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id d15so12528625ljo.12;
+        Mon, 26 Apr 2021 05:16:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9Aur93L6w9/5uDCnG3cRoYh62EILBVncupYganBLwm4=;
+        b=F3R6RPhYXVICKhct7f8L96mfQbCFMH5Xzp/fVam33NSBaDWvJD+d0YWpQkW64nV7gx
+         I8YkEbPUD2hS7QNQ6Ch6MW+36MsV7PrRZzWq87+3IgW/zXUo4uXvK03HQ3khUp9jUx0/
+         V3XCQbKE3uTSqPaFhOKIPXQo+PBgR/I8xosUNJGhj42qrcVyd98eSU6VHA25jHJjhOQx
+         Tmsc5uI5JNwkC8C9x4iee0bkrjgN2Pge1ffq+vBFtjye1n5Vs/21lKDJ0uGIPCkfIPdS
+         H+4MSJc+HkoePpTSIAewg5PUVaoKjgj7Et02DmK6eLo92K5TKHvuX4VV3VSaGXWOmMwH
+         XIWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9Aur93L6w9/5uDCnG3cRoYh62EILBVncupYganBLwm4=;
+        b=CrAiuL0IXUB75roBhyYuBc6qWw0K+/FcPezldRJh0f79zk27TnwJOmeZxdGUIx6Q1t
+         uLB9XAq68/Q1p/wnEEuv47tO27miC06d/UQuNab2Y1hnnrQMQ8rjkNtKbSyOIY5B4aQo
+         Mao2t01ukQDEuPdYJcdQzmiFoDMKMxDfm6E4ESj0Lw7EQgytGdGgQcXg3+XjTSwcX6Oa
+         QruOHhGO+b4HhvZ9dBRnOj9iguLQeasplRvQHm2UBvu6+H9oMRNA8NfIgdzPC+wjPDZO
+         NpmrwLr5u3uHC4LZQMfbmb0AtvY8cMx/TLchJJy3lAXEhgv6G78N6wcqscHfVnTGW9nQ
+         lkPg==
+X-Gm-Message-State: AOAM5334+U071ljhhJdiJHwZaE7fDVn6vhC/C9T5Yx4w3V752X218LjK
+        ASgHaSCguKDkW3RHpglSg8i3pqisQVEhJ+CU1Pk9KmVU1GM=
+X-Google-Smtp-Source: ABdhPJyM6O4Gkw7A9l0U0LeD/osYPrsps4xfL835FgFR952mtEfN2e5JtSFum+QMXZGWCCNluUtWFEFxBywsoo05KbY=
+X-Received: by 2002:a2e:990b:: with SMTP id v11mr12700046lji.53.1619439363473;
+ Mon, 26 Apr 2021 05:16:03 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.178.87] (217.86.97.47) by PR0P264CA0153.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1b::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Mon, 26 Apr 2021 12:15:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3ce0fed6-189d-487a-83e6-08d908ad0642
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1543:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR12MB15432170FCF45D1CA828B4D98B429@CY4PR12MB1543.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1/ZbYEmqPSpyx13/JR546odn/imTUuTQpq9UbmmCBck3XEdYKxTy7HJ5Q3OybsRqaafpYnc773/Svs4BFe/p8IdgaKCELPEHMaCn91Dd+8ku0PTx+qVWUQP+T046JB+ZMZcwh9ME8jlE8zCQoTQA7iOLRgCn2O2fJ0PDZc7yuHcGfkN8DBcEFTJPgxtxtBfYE4KAv06ocdEPCIFv9tvnre3oJY9u1wEJbcRPBtOjOEnQNh2jWDQq7KbctASSkh5D4O5B92II+5R3pmEdML+KjLxwZQk6CW6sBNiBgsj20zckjMXQsWLl6j8VDYuNYxpKx/m1aVnq1DIFgeQBkH9xhUteml01LIx7UAP4i7M5u9ppFlhN4RpFy3A4kkw05x+bzaIuuauANXNcfAMsqTjnd09NEoTUSEto6kMdMpEISV/8qtXyVB0DXXRQ/rigPK/fkxL9+4QqlD4HAJIUxy8JZQDF/w7uBcgXmLasMVBCLJKpLu3B1+fxW+ftYAHsFgScheRy6YYAnhRwkB4veg2XZuspHdniGLHBDxJU4m/f/n9YDDalYf0sojiQUfDOAkThlCQbpnYR3dXJ5TNJwDp6vBNDdetuGvpv52HhhVhsYYDtK43d/v94QE3HUeRC1VISlsEe+TEOOZeoAZ5IRBieRUzWN6GhUyUgH7oMByim60nVgQFl1wblDQGHHh7Fy89Yt087P3MsJGiIuD6s/DxUHrUvnoD6xC4Y9qKwfQxVuas=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1463.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(366004)(136003)(6486002)(31686004)(8676002)(2906002)(316002)(6666004)(4744005)(31696002)(38100700002)(53546011)(66476007)(5660300002)(66556008)(66946007)(83380400001)(110136005)(8936002)(16576012)(38350700002)(478600001)(36756003)(956004)(16526019)(186003)(4326008)(2616005)(52116002)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cTFpT2NnU2xWRzd5bk1SbGN3MGJkcVIrbWtlTnNxZm5mR3l1OU4rNGhIMGY4?=
- =?utf-8?B?cHkzK3FtVDlZVTZlN0NNK25xRUo0TkQ2cVJ2RHBRczhSNkcxcytKeUR5WFlp?=
- =?utf-8?B?Y1J4UzQ5M0hWRlIzcEN1M1dhR3JqNUU1Q1BmRE93UU4wWFpGVHYrZ2JzSThq?=
- =?utf-8?B?TmxGMnhlTUdMOW1NNnZZVG8rZlpabFNUZkxlSndkeEp6NXJuY1FEbG1jMGx1?=
- =?utf-8?B?TkJrZ3RUK0tjL1VrSXNDMExBM0ZkUVpxR2VqaTU5TC93WXZHaWN6VUJYK1dL?=
- =?utf-8?B?ajNCM1J6YlFMTFBSSExYY2hKeTh5MVcxUS9nMEZ1aklPY09lV2JIWmxQVTVa?=
- =?utf-8?B?KytlTXd4TkFsNS9EalVtU05xNlVTR1A0VW5yMm1TVE5jZVFVangyY2hBajgv?=
- =?utf-8?B?VzNSNWhFMGtUTG8rdFJQYmxFYUhYaEVYSkt0M01uT0UxRGY5b0dySE1lcXhT?=
- =?utf-8?B?K29RUnRJRWMvRHdPYWYwallxYVNkalMva29FSzkwVCtLamdjVERnN0VVL3NJ?=
- =?utf-8?B?enJ3ejhJOVRxMFRDY2Rkc1NDeldTcThlN0Y3RmFkWi9tVHFoalhSU3lqWExY?=
- =?utf-8?B?RXRzZ1RCbEtUcVFCeTlWOW9xcWg5RTRiUDBHRHVNNGxxMzdJM1dCekxoWEhJ?=
- =?utf-8?B?R1h3c3c3NW92UHhuRHYzTTN4dlhYWFBrL3BsazFsTHBmWGpnMTBJZnliMWxM?=
- =?utf-8?B?bFV5S0hBeHBteGtxK2N6VjJjbDNsVjFwLzNhNk9Db1Q4aUtUTFBCb1hqSzBI?=
- =?utf-8?B?WVR5TlB1SmJzNUwxZ052Rm03ZW9EczBpcWFyKzFYMmpGcGU3dldrd0NWVDhP?=
- =?utf-8?B?SURweWN5akhhZUUyblVGb1NZR1pORG10Q2lkSXpyY2RuQTBlWnl6bnZRbzRN?=
- =?utf-8?B?ZTdYTDBjdE9BNUhQenRBTWlNKzZYcmFULy9vRWhmZmRzbGlnQ1lsODJ0WFBR?=
- =?utf-8?B?Mm8zY0l6NThsaHhHYUFCVzhyY0lDQnJWbkdWWTY1SGdoK0QwdzBVaTJubDll?=
- =?utf-8?B?bDNqZmVwbFRTMlo4T0h5WDBsRVc5bGF2RVNjMXo1Zm9LcHpoeGhnWHl4T3hB?=
- =?utf-8?B?Z2d6b2xrQzJ4clNDZGRhMU1JSnVES3lNSEhrb3UxeUFQQzIza0pVWlgzcEdj?=
- =?utf-8?B?RG9SQ3R3dUxsVFF5cnVwcXZFV1QyK3Nrc3FBRjE4Si92TktVMmNXbmZBenlv?=
- =?utf-8?B?YnJncVpPcFNINkdJOHdmTEw1TEp0U2dZbWFWWlFYZFRwREJoL3pBREMzSUpJ?=
- =?utf-8?B?VXhIRFZwaGhBbWZiTDhyNEhiWjRad2lBM1I4d2FGTWtxYlFKTVR6VzdoMTY2?=
- =?utf-8?B?VThOQWdUVm5FNUpiM0grcUtERk5COG9qRjh3eWpkaFpGNzZmaDV6Ulg1Qjgy?=
- =?utf-8?B?TTEvL2dUaFUzUGpjRXo1OTl3WDd1aEtqdjRVUFNETUlraEk4MlpNcWZMU0xK?=
- =?utf-8?B?OGt6dFc4ckUrNU83QXdWS2lvQlhMVzV0VEFCc0JOa0JkaXJqQ095YVJuMWhE?=
- =?utf-8?B?aEFSQkd5NWUzVmdmZXB5MVFRMHdlS0VReTMvamZXQmRYSHBueU5meVYxZFN5?=
- =?utf-8?B?OWhuT2syZjhYSExpc3lVOHNPUUJLclpHeVJON0U5REVGZUtXYTVEQUVSeHNO?=
- =?utf-8?B?WDNUc0JRZitRNFN5bHlPL09SWDc4bTIzMDBRT1R5MjJ0V2VmN282cjFyajl6?=
- =?utf-8?B?bnIybW0xd0VDK2wvaGJGbUtkQzN2T2hJRGZaQmdVZkdnZjRCREJOL0NRcm8w?=
- =?utf-8?Q?0Qpw2tAiexWEqTRFYh3yPmkpDmr9c/i2drDjmmi?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ce0fed6-189d-487a-83e6-08d908ad0642
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1463.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2021 12:15:48.0401
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BvypGcNKko+3ZGf3a/LlFpYt4zIBnI7YAWxFANE03hb1NBD06GB21gmb2ZCWB6V02FteO4ktGI+WBvruurGZrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1543
+References: <20210426074935.11131-1-sherry.sun@nxp.com> <20210426074935.11131-3-sherry.sun@nxp.com>
+ <YIZ1NvISshNHtX/Z@kroah.com> <AM0PR04MB4947DAD4EAA84FEAA5A2B28A92429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+ <CAOMZO5Bmv2CVZeJbwLhZcH7pb7Tb9FhCrPSjhkbaJO8vYtRHLw@mail.gmail.com> <AM0PR04MB49472A690A93C06CE27FFC4692429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+In-Reply-To: <AM0PR04MB49472A690A93C06CE27FFC4692429@AM0PR04MB4947.eurprd04.prod.outlook.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 26 Apr 2021 09:15:51 -0300
+Message-ID: <CAOMZO5DXLoy-PRQW0sYXf+eDOZ1=XqKsC-hcNWMKLg9K2oGQQg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tty: serial: fsl_lpuart: fix the potential bug of
+ dereference null return value
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Nirmoy Das <nirmoy.das@amd.com>
+On Mon, Apr 26, 2021 at 9:09 AM Sherry Sun <sherry.sun@nxp.com> wrote:
 
-On 4/26/21 2:13 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a pr_debug message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-> index 4cc2539bed5b..e4ce97ab6e26 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-> @@ -2286,7 +2286,7 @@ svm_range_restore_pages(struct amdgpu_device *adev, unsigned int pasid,
->   		}
->   		prange = svm_range_create_unregistered_range(adev, p, mm, addr);
->   		if (!prange) {
-> -			pr_debug("failed to create unregisterd range svms 0x%p address [0x%llx]\n",
-> +			pr_debug("failed to create unregistered range svms 0x%p address [0x%llx]\n",
->   				 svms, addr);
->   			mmap_write_downgrade(mm);
->   			r = -EFAULT;
+> Thanks for your reply.
+> I guess you mean the of_match_table will not be NULL since it contains co=
+mpatible, right?
+> But for the lpuart data -- struct lpuart_soc_data, won=E2=80=99t it meet =
+the NULL case? such as { .compatible =3D "fsl,imx8qxp-lpuart",  }.
+> Here of_device_id won=E2=80=99t be NULL, but lpuart_soc_data Is NULL.
+
+In linux-next we have:
+
+static const struct of_device_id lpuart_dt_ids[] =3D {
+{ .compatible =3D "fsl,vf610-lpuart", .data =3D &vf_data, },
+{ .compatible =3D "fsl,ls1021a-lpuart", .data =3D &ls1021a_data, },
+{ .compatible =3D "fsl,ls1028a-lpuart", .data =3D &ls1028a_data, },
+{ .compatible =3D "fsl,imx7ulp-lpuart", .data =3D &imx7ulp_data, },
+{ .compatible =3D "fsl,imx8qxp-lpuart", .data =3D &imx8qxp_data, },
+{ /* sentinel */ }
+};
+
+All compatible entries have a .data field populated.
+
+How sdata can be NULL?
