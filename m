@@ -2,191 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9594136B123
+	by mail.lfdr.de (Postfix) with ESMTP id 238C536B122
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232789AbhDZJ6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbhDZJ5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:57:42 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9D0C061574;
-        Mon, 26 Apr 2021 02:56:15 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id h4so46138863wrt.12;
-        Mon, 26 Apr 2021 02:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fFrpLw8QRN6vigSnYp4kRiIX6O8iZ1qdCoLeSD99j/E=;
-        b=UiEbq31xW2yfzewFdiGOSvdnzzU6gwgQVDxyFgADH4SPXqxFMyLJixhfCzNDXTtDfc
-         pwWWi6aH52QE6G0CbN9XhZJPUUD8Aifh8hnJBWgr9qWp+TDxtPWc/dGnZBJrATrd+ziY
-         sEIFzL32gpG0FuhVgMyAhl+cDBceXNQAhTYs7SSKpT1d1NI+pXSSZbEudhuXA7f5t1Ac
-         PXiifXApotpnd5iPe8KL5/cLQo/OpN3lVFTTTatB+GL5QjzItLhOga6tt4HlFgaCp6Cp
-         XoI4FTTrBBjxmL+MqNR5kSEg/7akCSPUBNCHa5W5lQLiTI67ZbWoadBO6Vs+FFsUzbv3
-         ctkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fFrpLw8QRN6vigSnYp4kRiIX6O8iZ1qdCoLeSD99j/E=;
-        b=n//+ugT01sGzOoMo4HcmVcPf/HIHMrBuJiCjUa+FY+BjDv5r1aZ1xq3aL01C2u3ZUG
-         ffF74Iy85kZ1iFxWIbFNxFaQiH5Bexm0LJaIEqTa138Uy7I6hEqtTi1VRMqJv9nD9uJt
-         aAUHKOuJ6mKn0Us3MgvScCf+BfkD0ls8wWoFZwYfvMzzSRhGAdpMIEYsCgZ2yVzonutS
-         WSshyUvtHBd+HAiHSS9m5hLnrzTRovG+J/Iokok1bNVBLUi25JeQADmzl5QO+7cxd8sV
-         lDOB5EYfPYroPIP4rF34dXHUbA/Vb77xFv76vwkSPfF4JsY1s8zX4FFCcwtp8CM9XAd4
-         8jZA==
-X-Gm-Message-State: AOAM532GllIeW3bhhQjHpJGLgAa3qeMdoC6u7TfJEwge5jszJkgcxZfp
-        vgy419svrLqQfDFUzXlUfTU=
-X-Google-Smtp-Source: ABdhPJwyZo7M9v9oTq0MC2DAArmuW17pnDqMMx5MQN3viGqRyyswS0Esyw61bJbNTggDDszdzo8IYA==
-X-Received: by 2002:a5d:414c:: with SMTP id c12mr21939668wrq.392.1619430974371;
-        Mon, 26 Apr 2021 02:56:14 -0700 (PDT)
-Received: from agape.jhs ([5.171.73.32])
-        by smtp.gmail.com with ESMTPSA id l20sm18251702wmg.33.2021.04.26.02.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 02:56:14 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 11:56:11 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v3 2/6] staging: media: atomisp: balance braces
- around if...else block
-Message-ID: <20210426095610.GA1418@agape.jhs>
-References: <cover.1619199344.git.drv@mailo.com>
- <71220662c5facd746e56288cc74786c96fa3c5a7.1619199344.git.drv@mailo.com>
+        id S232306AbhDZJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:57:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232333AbhDZJ5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:57:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B309B61103;
+        Mon, 26 Apr 2021 09:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619430984;
+        bh=5dnhKqlnt1tMhdnaH2csD5e6d46+28b304GMJrShDZc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n/EWF+O158O52xru7jbhVdaReN3VQQ1nLVOD5Dnol9yOMo4VVPH3n+1VHmWU1xacG
+         SohYr+hiM4kxnTYM/JA9X8OSJWmbrPRWvViaCLNSFrznvyHOOmYwR//iUTflcSWCay
+         18AukQMhdzQXarPjo9rltxSYX1+9Axpf8YSMrMOg=
+Date:   Mon, 26 Apr 2021 11:56:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        David Kershner <david.kershner@unisys.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba:
+ Convert module from IDR to XArray
+Message-ID: <YIaORY3B6+6vMvFj@kroah.com>
+References: <20210426095015.18556-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71220662c5facd746e56288cc74786c96fa3c5a7.1619199344.git.drv@mailo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210426095015.18556-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 02:12:20PM +0530, Deepak R Varma wrote:
-> Balance braces around the if else blocks as per the code style guidelines.
-> Resolves checkpatch script CHECK / WARNING feedback messages.
+On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
+> Converted visorhba from IDR to XArray. The abstract data type XArray is
+> more memory-efficient, parallelisable and cache friendly. It takes 
+> advantage of RCU to perform lookups without locking.
 > 
-> Signed-off-by: Deepak R Varma <drv@mailo.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
+>  .../staging/unisys/visorhba/visorhba_main.c   | 107 +++++++-----------
+>  1 file changed, 44 insertions(+), 63 deletions(-)
 > 
-> Changes since v2:
->    - None.
-> Changes since v1:
->    - None.
-> 
->  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
->  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
->  5 files changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> index 6be3ee1d93a5..d68a2bcc9ae1 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> @@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
->  {
->  	int ret;
+> diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
+> index 4455d26f7c96..851e60ab0c46 100644
+> --- a/drivers/staging/unisys/visorhba/visorhba_main.c
+> +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+> @@ -6,10 +6,10 @@
 >  
-> -	if (on == 0)
-> +	if (on == 0) {
->  		return power_down(sd);
-> -	else {
-> +	} else {
->  		ret = power_up(sd);
->  		if (!ret)
->  			return gc0310_init(sd);
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> index 6ba4a8adff7c..e722c639b60d 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> @@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
->  {
->  	int ret;
+>  #include <linux/debugfs.h>
+>  #include <linux/kthread.h>
+> -#include <linux/idr.h>
+>  #include <linux/module.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/visorbus.h>
+> +#include <linux/xarray.h>
+>  #include <scsi/scsi.h>
+>  #include <scsi/scsi_host.h>
+>  #include <scsi/scsi_cmnd.h>
+> @@ -23,6 +23,8 @@
+>  #define MAX_PENDING_REQUESTS (MIN_NUMSIGNALS * 2)
+>  #define VISORHBA_ERROR_COUNT 30
 >  
-> -	if (on == 0)
-> +	if (on == 0) {
->  		ret = power_down(sd);
-> -	else {
-> +	} else {
->  		ret = power_up(sd);
->  		if (!ret)
->  			ret = __gc2235_init(sd);
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> index f5de81132177..465fc4468442 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> @@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
->  
->  static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
->  {
-> -	if (power == 0)
-> +	if (power == 0) {
->  		return power_down(sd);
-> -	else {
-> +	} else {
->  		if (power_up(sd))
->  			return -EINVAL;
->  
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> index c90730513438..92c52431bd8f 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-> @@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
->  	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
->  	if (ret)
->  		return ret;
-> -	if (value) {
+> +static DEFINE_XARRAY_ALLOC(xa_dtstr);
 > +
-> +	if (value)
->  		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
-> -	} else {
-> +	else
->  		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
-> -	}
-> +
-
-Hi Deepak,
-
-what you did above is not what is written in the commit message
-description about. Here unneeded bracks are removed in both
-branches, is not a matter of braces balancing.
-
-thank you,
-
-fabio 
-
->  	ret = ov2680_write_reg(client, 1,
->  			       OV2680_FLIP_REG, val);
->  	if (ret)
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> index aec7392fd1de..d046a9804f63 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> @@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
->  {
->  	int ret;
+>  static struct dentry *visorhba_debugfs_dir;
 >  
-> -	if (on == 0)
-> +	if (on == 0) {
->  		return power_down(sd);
-> -	else {
-> +	} else {
->  		ret = power_up(sd);
->  		if (!ret)
->  			return ov2722_init(sd);
-> -- 
-> 2.25.1
-> 
-> 
-> 
-> 
+>  /* GUIDS for HBA channel type supported by this driver */
+> @@ -78,12 +80,6 @@ struct visorhba_devdata {
+>  	unsigned int max_buff_len;
+>  	int devnum;
+>  	struct uiscmdrsp *cmdrsp;
+> -	/*
+> -	 * allows us to pass int handles back-and-forth between us and
+> -	 * iovm, instead of raw pointers
+> -	 */
+> -	struct idr idr;
+> -
+>  	struct dentry *debugfs_dir;
+>  	struct dentry *debugfs_info;
+>  };
+> @@ -183,32 +179,16 @@ static struct uiscmdrsp *get_scsipending_cmdrsp(struct visorhba_devdata *ddata,
+>  }
+>  
+>  /*
+> - * simple_idr_get - Associate a provided pointer with an int value
+> - *		    1 <= value <= INT_MAX, and return this int value;
+> - *		    the pointer value can be obtained later by passing
+> - *		    this int value to idr_find()
+> - * @idrtable: The data object maintaining the pointer<-->int mappings
+> - * @p:	      The pointer value to be remembered
+> - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> - *
+> - * Return: The id number mapped to pointer 'p', 0 on failure
+> + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
+> + * @id: Pointer to ID
+> + * @entry: New entry
+>   */
+> -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+> -				   spinlock_t *lock)
+> +static int simple_xa_dtstr_get(u32 *id, void *entry)
+
+What are you trying to really "get" here?  We shouldn't name the
+function based on the data type being used.  All we want is some sort of
+"token" or hash or something else?  It's hard to tell...
+
+>  {
+> -	int id;
+> -	unsigned long flags;
+> +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b, GFP_NOWAIT);
+> +	/* TODO: check for and manage errors */
+
+That's a nice TODO, which means we really should not be considering this
+patch to be merged, right?
+
+thanks,
+
+greg k-h
