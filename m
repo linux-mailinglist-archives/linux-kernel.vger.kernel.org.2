@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C87936B29C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D80736B29F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 13:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhDZL6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 07:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
+        id S233217AbhDZL6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 07:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbhDZL6e (ORCPT
+        with ESMTP id S232520AbhDZL6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 07:58:34 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5026AC061574;
-        Mon, 26 Apr 2021 04:57:51 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id z13so6848571lft.1;
-        Mon, 26 Apr 2021 04:57:51 -0700 (PDT)
+        Mon, 26 Apr 2021 07:58:40 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3605C061574;
+        Mon, 26 Apr 2021 04:57:58 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id y62so6130968pfg.4;
+        Mon, 26 Apr 2021 04:57:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YBKtnrfj870BpoCUOQjiddIh7BY+km8BeX1vkFj0/xI=;
-        b=cJ9ZWmarhUhMg1ePPcEAr0KgjhmQctpIGQQm4MOJfCv2ab64ezHhOFOFviKOZi3T8c
-         eufBi1WOYutCMn+pTxJiwg/oxyZR8yzbbq9WkYnmSwVCCw4q5JMVhUQTOCUiHqnNOX+Y
-         K5t/FXd7UkjnhYeTs6CCPN8bTjRltQnn8ffNW9pKF/Zlj3GkpeczbsVMzN7zstgojKF5
-         HjfHa7qf7t7VPGiSpFWCBi5mzao5Jmh7engnEOS5/zZtzPPEcqy5G6tBkSg5aRA7Surx
-         t7a2EQMPcq9Nu6ifZtSewfzT+3wCFwgrbalOyicfSCZ2UkqSzbDc5J2W+NjnDC/mTyMJ
-         k6Yw==
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=E/PWuyhNDls998sTdAd0TWsdtA9IVZe7POWkE3jrtSQ=;
+        b=UwrLo6hVylCpXHhQRRIb7xN0KG6oew7i7JRH/BOkzM848UEmC9V7mhGUNSkJkWvXKB
+         XBujN5lNbZEfTXVNtUedP9zMFDWkrfMpGmyLOtYQQxqZ71rV8UR3DNk86Kg6c7DTKHBQ
+         lEFeQltOI3DcnjgZzfNNfh4AWVOWgh79R65aDcSS2OhiYo8yaoNyaEZR4KQM+KqKobrA
+         cfbb5xw3u7IKeLiFNObuwXqpzUHgN6/2/DNnb3nsjKSUFTs5D0tfLsb796WeCW6DGQ/f
+         IrsSN2WrWDRnmNWy8/qpVad6qES8k7URXk6j59q+bcd2+4Inxlhp1+hlUcdN5cjYg0JL
+         iidA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YBKtnrfj870BpoCUOQjiddIh7BY+km8BeX1vkFj0/xI=;
-        b=HKmxslB/PmAE9GXARQ4vq/4nDHGSQBlSRp+5LFHLXDEpCznr21y0yuDiHKJOdIkxcD
-         eQvhzh5OtYD6TXZuU2xSMI+81X1LqjXchwAc7CxgSEYWRCoiU/lD/rU0NBbs/cm1TcUY
-         +A0t2F08mdNlWekGKu1gAOvraoz0GE9YOUDtKMMbp+zetDo7LWMqxkwBFUEv/iuHUBf1
-         kt3eOIs2u90r4tFg7zzG5rMsJ5O12cK/92egBw0bOvUxTMfPtwItyI9JVzjsL9IAOMl9
-         lBRQuz37yr8tBiaS+XYfsAlN5h8aMHk5zLiNWAUXtC143NotyiJkWi+yMl2YAi0BaqNU
-         i4Jw==
-X-Gm-Message-State: AOAM5309pyCQm9KMVCJEj+fo84ATRcGqdLBcLCtU8auYRKwhyvNlJzbR
-        v/2yIH70qVhXs1iBS2h1Mz9ovopNAZIROWF78XKGNivOQCw=
-X-Google-Smtp-Source: ABdhPJxYyCjyQ3QznO2LDzV1L7kVJnkLq69SknOB4w8dEIbkxurpH7brtrtdohewRvCPbZohZzbGTHvrEUDGqamIHYs=
-X-Received: by 2002:a19:50d:: with SMTP id 13mr12270824lff.443.1619438269845;
- Mon, 26 Apr 2021 04:57:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210426074935.11131-1-sherry.sun@nxp.com> <20210426074935.11131-3-sherry.sun@nxp.com>
- <YIZ1NvISshNHtX/Z@kroah.com> <AM0PR04MB4947DAD4EAA84FEAA5A2B28A92429@AM0PR04MB4947.eurprd04.prod.outlook.com>
-In-Reply-To: <AM0PR04MB4947DAD4EAA84FEAA5A2B28A92429@AM0PR04MB4947.eurprd04.prod.outlook.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 26 Apr 2021 08:57:38 -0300
-Message-ID: <CAOMZO5Bmv2CVZeJbwLhZcH7pb7Tb9FhCrPSjhkbaJO8vYtRHLw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] tty: serial: fsl_lpuart: fix the potential bug of
- dereference null return value
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=E/PWuyhNDls998sTdAd0TWsdtA9IVZe7POWkE3jrtSQ=;
+        b=HjoBqU0a8Cz78zf4rs0O267kGg4vTgWbwYiTe4mFcjnn4FoSh7VCA7XMR4+pB1js8m
+         hAPq8wb8quYFORyiiSPRg5K0pC4wI/1hKWPe+kLG3BAlekU3M1S42tOrDOc63Ush6OZf
+         yBjjUzlPhlPd4uK4ALj/aB6hoDhMFfny4RDMmKB3o4CzzDLWhDXzzqmBbaqN5mh1gTT6
+         tOZWjRRM71plNrWVyFnrQFeqZxJxjZrNCZ5VWgH0E93gbDVXsOhyxeAUpN4ZOk2u/2It
+         Ho2MFbYMsYVEJj6wnVY1rBzdQL8sehE6PDKhhjxiZj3ROaznVNCmsYhDfxpCBFswHiSI
+         gijw==
+X-Gm-Message-State: AOAM531QIWADvtM1g2iBuE7/99umkgZ75XYy2Bs7WfvwsSPA8ee2U4Gb
+        9kjo/oUsssORwio7ko5d1qzuMQV5s7j9y29MGNA=
+X-Google-Smtp-Source: ABdhPJwAKrQ3op6LCr2b6YpHqvFIL/1+K+HWp/AbVtwM5/2hGy6Era9IoN4N3ZkK6iXXMhbBdze6Eg==
+X-Received: by 2002:aa7:8d5a:0:b029:227:7b07:7d8b with SMTP id s26-20020aa78d5a0000b02902277b077d8bmr16954913pfe.26.1619438277841;
+        Mon, 26 Apr 2021 04:57:57 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id j10sm11466867pfn.207.2021.04.26.04.57.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 04:57:57 -0700 (PDT)
+Message-ID: <6086aac5.1c69fb81.a2f79.195b@mx.google.com>
+Date:   Mon, 26 Apr 2021 04:57:57 -0700 (PDT)
+X-Google-Original-Date: Mon, 26 Apr 2021 11:57:56 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
+Subject: RE: [PATCH 5.11 00/41] 5.11.17-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sherry,
+On Mon, 26 Apr 2021 09:29:47 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.11.17 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.17-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-On Mon, Apr 26, 2021 at 8:39 AM Sherry Sun <sherry.sun@nxp.com> wrote:
+5.11.17-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-> > > +   if (!sdata)
-> > > +           return -ENODEV;
-> >
-> > How can sdata be NULL?
->
-> Is it possible that a case forgot to set sdata? Then the value will be NULL, such as { .compatible = "fsl,imx8qxp-lpuart",  }.
-> So I added the patch to avoid the kernel crash when run to sdata->reg_off directly. But I am not sure does it make sense.
-
-sdata comes directly from of_device_get_match_data().
-
-This driver only runs on DT platforms and the only way of being probed
-is when a compatible string matches, so it is not possible that sdata
-can be NULL.
