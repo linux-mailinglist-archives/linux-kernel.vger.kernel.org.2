@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF6536AF50
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139D036AF36
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 10:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhDZH5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60076 "EHLO mail.kernel.org"
+        id S236701AbhDZHzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:55:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234335AbhDZHpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:45:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93E8C61404;
-        Mon, 26 Apr 2021 07:42:15 +0000 (UTC)
+        id S234121AbhDZHot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:44:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16DA5613D9;
+        Mon, 26 Apr 2021 07:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422936;
-        bh=QQpF9z+ZTPzjlkgV2lwczH4mcDIjUkqrOmE6/yfrle0=;
+        s=korg; t=1619422889;
+        bh=1H3mngB1wziDnZrSCLkVf32m5DqRuWUfzlvhLfR7xXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LHi81Po26xJt0qU206Y1pCQtgxlGfD7rjwTUZyWXyjfB7rmKPANgmyYI+L8t4Hc8d
-         DQ80i9zVpGjK9SeFUyM1Sq0ttASsvhmDv4LsteDF1VXnfSKb8yPylUxZDViHsw/OsV
-         HL/3BcIDlEPjLKyzKmatw+Q+3lhuZneOdSH942Io=
+        b=FC8YO2dzfcAq2wksa7Uzoj/Xikn6hlcCKExUIzfl8LsjT1t82M/ZWqKIZ/Yci6Tbb
+         y8aobhjqtpLCz/yn5gXpEmsbGw2lizLVuJrfZfhi6dhqK3NuoCS5spKQUSCnCSCYRr
+         /EVT2OCJH8IGkIt48GsSWIKjlWDt3hUXdaDaliwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luke D Jones <luke@ljones.dev>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
         Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 23/41] HID: asus: Add support for 2021 ASUS N-Key keyboard
-Date:   Mon, 26 Apr 2021 09:30:10 +0200
-Message-Id: <20210426072820.476400260@linuxfoundation.org>
+Subject: [PATCH 5.11 24/41] HID: alps: fix error return code in alps_input_configured()
+Date:   Mon, 26 Apr 2021 09:30:11 +0200
+Message-Id: <20210426072820.507321836@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426072819.666570770@linuxfoundation.org>
 References: <20210426072819.666570770@linuxfoundation.org>
@@ -39,48 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke D Jones <luke@ljones.dev>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 9a0b44fbfea1932196a4879b44a37dd182e984c5 ]
+[ Upstream commit fa8ba6e5dc0e78e409e503ddcfceef5dd96527f4 ]
 
-Some new 2021 version of ASUS gamer laptops are using an updated
-N-Key keyboard with the PID of 0x19b6. This version is using the
-same init sequence and brightness control as the 0x1866 keyboard.
+When input_register_device() fails, no error return code is assigned.
+To fix this bug, ret is assigned with -ENOENT as error return code.
 
-Signed-off-by: Luke D Jones <luke@ljones.dev>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-asus.c | 3 +++
- drivers/hid/hid-ids.h  | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/hid/hid-alps.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
-index 1dfe184ebf5a..2ab22b925941 100644
---- a/drivers/hid/hid-asus.c
-+++ b/drivers/hid/hid-asus.c
-@@ -1221,6 +1221,9 @@ static const struct hid_device_id asus_devices[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_ASUSTEK,
- 	    USB_DEVICE_ID_ASUSTEK_ROG_NKEY_KEYBOARD),
- 	  QUIRK_USE_KBD_BACKLIGHT | QUIRK_ROG_NKEY_KEYBOARD },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_ASUSTEK,
-+	    USB_DEVICE_ID_ASUSTEK_ROG_NKEY_KEYBOARD2),
-+	  QUIRK_USE_KBD_BACKLIGHT | QUIRK_ROG_NKEY_KEYBOARD },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_ASUSTEK,
- 		USB_DEVICE_ID_ASUSTEK_T100TA_KEYBOARD),
- 	  QUIRK_T100_KEYBOARD | QUIRK_NO_CONSUMER_USAGES },
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 570bd0103a86..09d049986516 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -191,6 +191,7 @@
- #define USB_DEVICE_ID_ASUSTEK_ROG_KEYBOARD2 0x1837
- #define USB_DEVICE_ID_ASUSTEK_ROG_KEYBOARD3 0x1822
- #define USB_DEVICE_ID_ASUSTEK_ROG_NKEY_KEYBOARD	0x1866
-+#define USB_DEVICE_ID_ASUSTEK_ROG_NKEY_KEYBOARD2	0x19b6
- #define USB_DEVICE_ID_ASUSTEK_FX503VD_KEYBOARD	0x1869
+diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+index 3feaece13ade..6b665931147d 100644
+--- a/drivers/hid/hid-alps.c
++++ b/drivers/hid/hid-alps.c
+@@ -761,6 +761,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
  
- #define USB_VENDOR_ID_ATEN		0x0557
+ 		if (input_register_device(data->input2)) {
+ 			input_free_device(input2);
++			ret = -ENOENT;
+ 			goto exit;
+ 		}
+ 	}
 -- 
 2.30.2
 
