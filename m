@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC36C36AE68
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D41336ADC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhDZHoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
+        id S232801AbhDZHie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:38:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233002AbhDZHix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:38:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 086A461004;
-        Mon, 26 Apr 2021 07:36:41 +0000 (UTC)
+        id S232912AbhDZHgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFD17613B2;
+        Mon, 26 Apr 2021 07:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422602;
-        bh=PPU4ilJqp3HeDG6UzQX6JP8FDgG9WymlY38IJz/wTwA=;
+        s=korg; t=1619422471;
+        bh=vkV34FM6761YRz5Fm5iyW5C9HbhFmXJFqazH5TguhvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kcw9ICWx2BydfIyOTazmXoQX+9zyxw1BPW/ujTQsgN4zqoBkDsIEfsCg0Wd3b1DG4
-         uSGDz32ctMAr9PcMHgtYH/tpE1nQrf0YGJS5crDf5UkFvC3ffgV9AILGOe2FuhW9Tv
-         Gs58xU2wH0Qi5MBYVL8Rq5nVBX6gm4NswHvuk+A8=
+        b=Tb9mS3Hs0Ku3+LGnVplSQ893QOpaheLssidcTZD4dYyIK5LtRU9sSxa7EwBykB3B6
+         XuO5nhMMjxrBYHaTvgBW5p47kC9/0DPJxJj3lZLKqx56XBTmGGNV2Zy2JPoFC0phzH
+         lBCd+ykF3sxlPzdVWbx1odCYwgV52tNecUtW9IlU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/57] gpio: sysfs: Obey valid_mask
+Subject: [PATCH 4.14 04/49] ARM: dts: Fix moving mmc devices with aliases for omap4 & 5
 Date:   Mon, 26 Apr 2021 09:29:00 +0200
-Message-Id: <20210426072820.688904546@linuxfoundation.org>
+Message-Id: <20210426072819.864712192@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+References: <20210426072819.721586742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 23cf00ddd2e1aacf1873e43f5e0c519c120daf7a ]
+[ Upstream commit 77335a040178a0456d4eabc8bf17a7ca3ee4a327 ]
 
-Do not allow exporting GPIOs which are set invalid
-by the driver's valid mask.
+Fix moving mmc devices with dts aliases as discussed on the lists.
+Without this we now have internal eMMC mmc1 show up as mmc2 compared
+to the earlier order of devices.
 
-Fixes: 726cb3ba4969 ("gpiolib: Support 'gpio-reserved-ranges' property")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpiolib-sysfs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/boot/dts/omap4.dtsi | 5 +++++
+ arch/arm/boot/dts/omap5.dtsi | 5 +++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index 3dbaf489a8a5..e0ccc79b239a 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -462,6 +462,8 @@ static ssize_t export_store(struct class *class,
- 	long			gpio;
- 	struct gpio_desc	*desc;
- 	int			status;
-+	struct gpio_chip	*gc;
-+	int			offset;
- 
- 	status = kstrtol(buf, 0, &gpio);
- 	if (status < 0)
-@@ -473,6 +475,12 @@ static ssize_t export_store(struct class *class,
- 		pr_warn("%s: invalid GPIO %ld\n", __func__, gpio);
- 		return -EINVAL;
- 	}
-+	gc = desc->gdev->chip;
-+	offset = gpio_chip_hwgpio(desc);
-+	if (!gpiochip_line_is_valid(gc, offset)) {
-+		pr_warn("%s: GPIO %ld masked\n", __func__, gpio);
-+		return -EINVAL;
-+	}
- 
- 	/* No extra locking here; FLAG_SYSFS just signifies that the
- 	 * request and export were done by on behalf of userspace, so
+diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
+index 28d10abd8b04..09129365c0e1 100644
+--- a/arch/arm/boot/dts/omap4.dtsi
++++ b/arch/arm/boot/dts/omap4.dtsi
+@@ -22,6 +22,11 @@
+ 		i2c1 = &i2c2;
+ 		i2c2 = &i2c3;
+ 		i2c3 = &i2c4;
++		mmc0 = &mmc1;
++		mmc1 = &mmc2;
++		mmc2 = &mmc3;
++		mmc3 = &mmc4;
++		mmc4 = &mmc5;
+ 		serial0 = &uart1;
+ 		serial1 = &uart2;
+ 		serial2 = &uart3;
+diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
+index bc3f53c79e9d..9786baf7f9c4 100644
+--- a/arch/arm/boot/dts/omap5.dtsi
++++ b/arch/arm/boot/dts/omap5.dtsi
+@@ -25,6 +25,11 @@
+ 		i2c2 = &i2c3;
+ 		i2c3 = &i2c4;
+ 		i2c4 = &i2c5;
++		mmc0 = &mmc1;
++		mmc1 = &mmc2;
++		mmc2 = &mmc3;
++		mmc3 = &mmc4;
++		mmc4 = &mmc5;
+ 		serial0 = &uart1;
+ 		serial1 = &uart2;
+ 		serial2 = &uart3;
 -- 
 2.30.2
 
