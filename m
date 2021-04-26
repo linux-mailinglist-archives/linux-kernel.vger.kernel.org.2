@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E305F36B80E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D0E36B818
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235973AbhDZR1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        id S236198AbhDZRba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235241AbhDZR1T (ORCPT
+        with ESMTP id S235550AbhDZRb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:27:19 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8EAC061574;
-        Mon, 26 Apr 2021 10:26:36 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v20so2040924plo.10;
-        Mon, 26 Apr 2021 10:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cLCIZh+uto70g/NGlh3JaxgO0+JUYsKVcdMpfP2tX1Y=;
-        b=bm26pDCR6Vqr1uEpGAWtGBxWON02GY6aLnHsiiwzctRfHXLhOm/E79PV0HBK+RWmlZ
-         n3fIHi+4vNr779nEdSSEM5+pFprfWWtzuwODZ3rv8Ba74A7r0WDsTzbYlsfVKd6WBe7L
-         Y5oP6xWB94rzCBo1/Gl3bOJUCoapszjHbu1arFMgtoGBTvCmBujz2h8iWjJi4Gsq2Ayl
-         p9SfESj8lpLbXi29dZTuT4wPj1p/BSeBqkSFKFFXLvCeyazceDKcgcDnTiUep0eQ1uPi
-         01GD2M3L8LNDNoUCwA0k5YH3cuXHFM2Jb3+6mp/l95x/wMsUxPDG5RlLSGkYZemCxqq3
-         7vDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cLCIZh+uto70g/NGlh3JaxgO0+JUYsKVcdMpfP2tX1Y=;
-        b=Nyy21XrAzwGh3z8X1L42v4xPx79FwZgZ9dZ4prOZxpmZAHPhPgOyizq9yLtbAuUrfD
-         S+R+HSqXOKBPYJp6uKYOm8cSBuG0INXsWuAXLrPrRLV/6VKei1M0dd+dHv6sDpFdmY7I
-         yUrL8KfayfSvXvEEPn/EzbUTUCnAYm82PyRQJhrQHbtEtD3Y8QnJpsFbtXQ3yakMHdPX
-         aSouc27HeSu+JuwlbRJBiYMexz/Dj1ZiVDVnDo/MyHYTkQLNmHyKKVcKv5CDCioZx21d
-         i0D0Bj/SXJQg7HhfuvORHz6orcbZpEeSkcuMPfzMeMB2T9ufPRFargPsnoYeJToVMZAt
-         wyxg==
-X-Gm-Message-State: AOAM533OVw2KUFl1jnp3MDLwW+h7iGYTFRkdC/+ynof9qlP11EU80nOg
-        s30OUzI1CL8DbKbFdKfNVxvv0376+k8=
-X-Google-Smtp-Source: ABdhPJwJK9jk8v4MENSbXY+EcbigbNrZrf36mSDMYE9ZZrqxR1zBQlc+qYbO0Trd0YFcSP0XPXOb8g==
-X-Received: by 2002:a17:90a:ea11:: with SMTP id w17mr186661pjy.6.1619457995937;
-        Mon, 26 Apr 2021 10:26:35 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id t19sm343056pjs.1.2021.04.26.10.26.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 10:26:35 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/37] 4.9.268-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210426072817.245304364@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <4eebc3d4-23f6-f8ce-470c-14996525c2aa@gmail.com>
-Date:   Mon, 26 Apr 2021 10:26:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 26 Apr 2021 13:31:28 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24328C061574;
+        Mon, 26 Apr 2021 10:30:47 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lb54G-008SNi-Lj; Mon, 26 Apr 2021 17:30:44 +0000
+Date:   Mon, 26 Apr 2021 17:30:44 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     haosdent <haosdent@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        zhengyu.duan@shopee.com, Haosong Huang <huangh@sea.com>
+Subject: Re: NULL pointer dereference when access /proc/net
+Message-ID: <YIb4xIU6x5BLe0wd@zeniv-ca.linux.org.uk>
+References: <CAFt=RON+KYYf5yt9vM3TdOSn4zco+3XtFyi3VDRr1vbQUBPZ0g@mail.gmail.com>
+ <YIWd7v1U/dGivmSE@zeniv-ca.linux.org.uk>
+ <CAFt=RONcpvvk5=8GLTvG44=6wKwiYPH7oG4YULfcP+J=x8OW-w@mail.gmail.com>
+ <YIWlOlss7usVnvme@zeniv-ca.linux.org.uk>
+ <CAFt=ROOi+bi_N4NEkDQxagNwnoqM0zYR+sxiag7r2poNVW9u+w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFt=ROOi+bi_N4NEkDQxagNwnoqM0zYR+sxiag7r2poNVW9u+w@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/21 12:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.268 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Apr 27, 2021 at 01:16:44AM +0800, haosdent wrote:
+> > really should not assume ->d_inode stable
 > 
-> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
-> Anything received after that time might be too late.
+> Hi, Alexander, sorry to disturb you again. Today I try to check what
+> `dentry->d_inode` and `nd->link_inode` looks like when `dentry` is
+> already been killed in `__dentry_kill`.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.268-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
+> ```
+> nd->last.name: net/sockstat, dentry->d_lockref.count: -128,
+> dentry->d_inode: (nil), nd->link_inode: 0xffffffffab299966
+> nd->last.name: net/sockstat, dentry->d_lockref.count: -128,
+> dentry->d_inode: (nil), nd->link_inode: 0xffffffffab299966
+> nd->last.name: net/sockstat, dentry->d_lockref.count: -128,
+> dentry->d_inode: (nil), nd->link_inode: 0xffffffffab299966
+> ```
 > 
-> thanks,
-> 
-> greg k-h
+> It looks like `dentry->d_inode` could be NULL while `nd->link_inode`
+> is always has value.
+> But this make me confuse, by right `nd->link_inode` is get from
+> `dentry->d_inode`, right?
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+It's sampled from there, yes.  And in RCU mode there's nothing to
+prevent a previously positive dentry from getting negative and/or
+killed.  ->link_inode (used to - it's gone these days) go with
+->seq, which had been sampled from dentry->d_seq before fetching
+->d_inode and then verified to have ->d_seq remain unchanged.
+That gives you "dentry used to have this inode at the time it
+had this d_seq", and that's what gets used to validate the sucker
+when we switch to non-RCU mode (look at legitimize_links()).
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+IOW, we know that
+	* at some point during the pathwalk that sucker had this inode
+	* the inode won't get freed until we drop out of RCU mode
+	* if we need to go to non-RCU (and thus grab dentry references)
+while we still need that inode, we will verify that nothing has happened
+to that link (same ->d_seq, so it still refers to the same inode) and
+grab dentry reference, making sure it won't go away or become negative
+under us.  Or we'll fail (in case something _has_ happened to dentry)
+and repeat the entire thing in non-RCU mode.
