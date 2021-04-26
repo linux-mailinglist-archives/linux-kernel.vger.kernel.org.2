@@ -2,106 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8E536B695
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AC436B698
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 18:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhDZQQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 12:16:59 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7890 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234351AbhDZQQy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:16:54 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QG2uBI170971;
-        Mon, 26 Apr 2021 12:16:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=E0kz0EJfOSMbctgZHIbPrtsz8wCykbYF4ml7+FBNOuY=;
- b=WO80uvnYRYqyv+Q6od0ijlVE5L6kICg88586ylX/pdgSA6W29I8sa0/mwkHcbrlB6ywy
- YjZ4J7pJZkzzbtz9tTf1Ie+QEoMmRjAeBqdRYipvJ/N5ckl934Fn/oH5oo2jQ7lUT1DV
- /C9vXZu+0Gl7pife8m7eSi7YzXdL2cHcrTITIV8yzMPeVPXODDa6bE5n8m1ynIa+fnyi
- crmIwR969sK/WYte6NoLz1FO6w/gBXfP3UD6hMb3Y9EoyNpIguado18CQqF+rPg3eheZ
- J7BlTAOh+xKpulAAxf4Dyhq1RIPbuZverTCVzCY2jkTCBZYVpW9U2aDzJJKXmb89OM14 og== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 385xg15n5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 12:16:03 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13QGEmO5021241;
-        Mon, 26 Apr 2021 16:16:02 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 384gjxrf19-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Apr 2021 16:16:01 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13QGFwre40239400
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Apr 2021 16:15:58 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B57D942042;
-        Mon, 26 Apr 2021 16:15:58 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB22E42041;
-        Mon, 26 Apr 2021 16:15:57 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.40.129])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 26 Apr 2021 16:15:57 +0000 (GMT)
-Date:   Mon, 26 Apr 2021 19:15:55 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Vladimir Isaev <Vladimir.Isaev@synopsys.com>
-Cc:     "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARC: Use max_high_pfn as a HIGHMEM zone border
-Message-ID: <YIbnO3BhOeUSRU0E@linux.ibm.com>
-References: <20210426101004.42695-1-isaev@synopsys.com>
- <YIakBTNpLsPJaj7i@linux.ibm.com>
- <BY5PR12MB41318EB561C2E936B0371B5EDF429@BY5PR12MB4131.namprd12.prod.outlook.com>
+        id S234418AbhDZQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 12:17:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30026 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234170AbhDZQRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 12:17:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619453804; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=fnSv2x/M6lmyI3dMHHLz1XBQjVyPXD5z6FVrB+7BHQ0=; b=jNyDNFwhKXnPhExcMIPScXnuqQawv43gNnaqkUFWY0rnfLIYXbgjiZfdpn255NZDWNpaXdJg
+ a650WBFx+LJ1EKNXGfvjzpQ0ghBBXxBkbJt4z3vcXtj32HC8/qvA1Cn+drfK2weQlzhdnrnm
+ NMhE9h3ST+pxhWZFapcBdKuMkik=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6086e75b2cc44d3aea10338b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Apr 2021 16:16:27
+ GMT
+Sender: eberman=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28F95C43217; Mon, 26 Apr 2021 16:16:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.119.201] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 227E4C433D3;
+        Mon, 26 Apr 2021 16:16:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 227E4C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
+Subject: Re: [RESEND v2] Kbuild: Update config_data.gz only if KCONFIG_CONFIG
+ materially changed
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Maennich <maennich@google.com>,
+        Trilok Soni <tsoni@codeaurora.org>
+References: <1619197235-13860-1-git-send-email-eberman@codeaurora.org>
+ <CAK7LNASzP-pMu7Yd6nkoV_mxOUeouYNLW_xZUy94E_WCdjJ5PA@mail.gmail.com>
+From:   Elliot Berman <eberman@codeaurora.org>
+Message-ID: <42674c78-28d7-35b5-5e01-07dec7eed938@codeaurora.org>
+Date:   Mon, 26 Apr 2021 09:16:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB41318EB561C2E936B0371B5EDF429@BY5PR12MB4131.namprd12.prod.outlook.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BLF-7QuEMiNJAE9cDSBetA1gurf1Ts6J
-X-Proofpoint-ORIG-GUID: BLF-7QuEMiNJAE9cDSBetA1gurf1Ts6J
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-26_08:2021-04-26,2021-04-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- phishscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
- malwarescore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=887 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104260122
+In-Reply-To: <CAK7LNASzP-pMu7Yd6nkoV_mxOUeouYNLW_xZUy94E_WCdjJ5PA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:55:00AM +0000, Vladimir Isaev wrote:
-> Hi Mike,
-> 
-> On Mon, April 26, 2021 2:29 PM, Mike Rapoport wrote:
-> > On Mon, Apr 26, 2021 at 01:10:04PM +0300, Vladimir Isaev wrote:
-> > > -	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
-> > > +	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
-> > 
-> > This is correct with PAE40, but it will break !PAE40 when "highmem" has lower
-> > addresses than lowmem.
-> > 
-> > It rather should be something like:
-> > 
-> >         if (IS_ENABLED(CONFIG_ARC_HAS_PAE40))
-> >                 max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
-> >         else
-> >             	max_zone_pfn[ZONE_HIGHMEM] = min_low_pfn;
-> > 
-> 
-> Not sure if I understand why we should have min_low_pfn here. In !PAE40
-> case max_high_pfn just will be smaller than min_low_pfn.
 
-Hmm, actually, you are right. This should be fine.
 
--- 
-Sincerely yours,
-Mike.
+On 4/24/2021 11:50 PM, Masahiro Yamada wrote:
+> On Sat, Apr 24, 2021 at 2:02 AM Elliot Berman <eberman@codeaurora.org> wrote:
+> 
+> 
+> Sorry for the delay.
+
+No problem!
+
+> 
+> This patch is over-engineering.
+
+I thought so, too.
+
+> 
+> I will apply this.
+> https://patchwork.kernel.org/project/linux-kbuild/patch/20210425062407.1183801-5-masahiroy@kernel.org/
+> 
+> The 'cmp' command is not expensive.
+> md5sum is unneeded.
+
+Thanks!
+
+> 
+>> If you update the timestamp of KCONFIG_CONFIG without actually changing
+>> anything, config_data.gz is re-generated and causes vmlinux to re-link.
+>> When Link Time Optimization is enabled, unnecessary re-linking of
+>> vmlinux is highly desirable since it adds several minutes to build time.
+>>
+>> Avoid touching config_data.gz by using a script to compare the existing
+>> config_data.gz, KCONFIG_CONFIG, or script itself to update only if any
+>> is mismatched.  The script follows gen_kheaders.sh approach for
+>> determing in update is needed. The script intentionally avoids
+>> re-compressing KCONFIG_CONFIG.
+>>
+>> The .config can be touched, for instance, by a build script which
+>> installs the default defconfig and then applies a defconfig fragment on
+>> top.
+>>
+>> For a simple example on my x86 machine, I modified x86 default defconfig to set
+>> CONFIG_IKCONFIG=y and run:
+>>    make -j50 defconfig tiny.config vmlinux
+>>    make -j50 defconfig tiny.config vmlinux
+>> With this patch, vmlinux is not re-built as a result of config_data.gz
+>> change.
+>>
+>> Changes in v2:
+>>   - Use md5 checksum to compare .config instead of gzip'ing again
+>>
+>> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+>> ---
+>>   kernel/.gitignore         |  1 +
+>>   kernel/Makefile           |  4 +++-
+>>   kernel/gen_config_data.sh | 31 +++++++++++++++++++++++++++++++
+>>   3 files changed, 35 insertions(+), 1 deletion(-)
+>>   create mode 100755 kernel/gen_config_data.sh
+>>
+>> diff --git a/kernel/.gitignore b/kernel/.gitignore
+>> index 78701ea..a191136 100644
+>> --- a/kernel/.gitignore
+>> +++ b/kernel/.gitignore
+>> @@ -1,4 +1,5 @@
+>>   # SPDX-License-Identifier: GPL-2.0-only
+>> +config_data.gz.md5
+>>   kheaders.md5
+>>   timeconst.h
+>>   hz.bc
+>> diff --git a/kernel/Makefile b/kernel/Makefile
+>> index 320f1f3..0784bf3d 100644
+>> --- a/kernel/Makefile
+>> +++ b/kernel/Makefile
+>> @@ -139,8 +139,10 @@ obj-$(CONFIG_SCF_TORTURE_TEST) += scftorture.o
+>>   $(obj)/configs.o: $(obj)/config_data.gz
+>>
+>>   targets += config_data.gz
+>> +quiet_cmd_genicfg = CHK     $(obj)/config_data.gz
+>> +      cmd_genicfg = $(CONFIG_SHELL) $(srctree)/kernel/gen_config_data.sh $@ $<
+>>   $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
+>> -       $(call if_changed,gzip)
+>> +       $(call cmd,genicfg)
+>>
+>>   $(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
+>>
+>> diff --git a/kernel/gen_config_data.sh b/kernel/gen_config_data.sh
+>> new file mode 100755
+>> index 00000000..e9ff193
+>> --- /dev/null
+>> +++ b/kernel/gen_config_data.sh
+>> @@ -0,0 +1,31 @@
+>> +#!/bin/sh
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +
+>> +# This script generates a compressed version of .config, if its checksum has changed
+>> +set -e
+>> +
+>> +this_file="$(readlink -f "$0")"
+>> +outfile=$1
+>> +infile=$2
+>> +
+>> +config_md5="$(md5sum $infile | cut -d ' ' -f1)"
+>> +# Any changes to this script will also cause a rebuild of config_data.
+>> +this_file_md5="$(md5sum $sfile | cut -d ' ' -f1)"
+>> +if [ -f $outfile ]; then outfile_md5="$(md5sum $outfile | cut -d ' ' -f1)"; fi
+>> +
+>> +if [ -f $outfile.md5 ] &&
+>> +       [ "$(head -n 1 $outfile.md5)" = "$config_md5" ] &&
+>> +       [ "$(head -n 2 $outfile.md5 | tail -n 1)" = "$this_file_md5" ] &&
+>> +       [ "$(tail -n 1 $outfile.md5)" = "$outfile_md5" ]; then
+>> +               exit
+>> +fi
+>> +
+>> +if [ "${quiet}" != "silent_" ]; then
+>> +       echo "  GEN     $outfile"
+>> +fi
+>> +
+>> +${KGZIP} -c -n -f -9 $infile > $outfile
+>> +
+>> +echo "$config_md5" > $outfile.md5
+>> +echo "$this_file_md5" >> $outfile.md5
+>> +echo "$(md5sum $outfile | cut -d ' ' -f1)" >> $outfile.md5
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
+> 
+> 
