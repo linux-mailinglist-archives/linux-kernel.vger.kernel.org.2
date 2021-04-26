@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EED36AE64
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7AE36AD89
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhDZHoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:44:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
+        id S232644AbhDZHhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:37:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233100AbhDZHif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:38:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02DA661263;
-        Mon, 26 Apr 2021 07:36:27 +0000 (UTC)
+        id S232878AbhDZHgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:36:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 765EB61249;
+        Mon, 26 Apr 2021 07:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422588;
-        bh=S9j2j3t4tF2/8xQSthAg9QuWfEmYK7JBs2DtGb+LQoc=;
+        s=korg; t=1619422417;
+        bh=eCfEGQTovAKZ92NQC28F5QS3baM+7g1KYRai2o6cKcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XfhHH+lAICsRv5WaKqmOSk6Qe0pT6skULzIzo3pg0iNVZ7RpQo87w9V9D1fykxpJg
-         k8lEnUd6+vkNLPRMzrVtT+MxzmkFtZjmT0OEisnPV1vcAI7CPLI7E5TkD7PJVpQbh1
-         UW0pAcXfor4dypEIAkadX3ackbbQVwysQTAsIPB0=
+        b=rDHageYAKrCTRqLFta39zgugseUyoB8keUU/bwopOapWKl+G5AP38r+MA9Zw7Wxrn
+         AuVotmdXmYLY2jPEdt+y8FUMkwcp/9R/1OUkrJRaHLdYa35x+NNiCpLlCkB++nz63B
+         FOEpOsL59szyB/mX9F/9ZLwmcWLVy5BpUqWnoD9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.19 24/57] Input: i8042 - fix Pegatron C15B ID entry
+        stable@vger.kernel.org, Hristo Venev <hristo@venev.name>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 20/37] net: sit: Unregister catch-all devices
 Date:   Mon, 26 Apr 2021 09:29:21 +0200
-Message-Id: <20210426072821.397565284@linuxfoundation.org>
+Message-Id: <20210426072817.942653452@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
-References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
+References: <20210426072817.245304364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Hristo Venev <hristo@venev.name>
 
-commit daa58c8eec0a65ac8e2e77ff3ea8a233d8eec954 upstream.
+commit 610f8c0fc8d46e0933955ce13af3d64484a4630a upstream.
 
-The Zenbook Flip entry that was added overwrites a previous one
-because of a typo:
+A sit interface created without a local or a remote address is linked
+into the `sit_net::tunnels_wc` list of its original namespace. When
+deleting a network namespace, delete the devices that have been moved.
 
-In file included from drivers/input/serio/i8042.h:23,
-                 from drivers/input/serio/i8042.c:131:
-drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
-  591 |                 .matches = {
-      |                            ^
-drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
+The following script triggers a null pointer dereference if devices
+linked in a deleted `sit_net` remain:
 
-Add the missing separator between the two.
+    for i in `seq 1 30`; do
+        ip netns add ns-test
+        ip netns exec ns-test ip link add dev veth0 type veth peer veth1
+        ip netns exec ns-test ip link add dev sit$i type sit dev veth0
+        ip netns exec ns-test ip link set dev sit$i netns $$
+        ip netns del ns-test
+    done
+    for i in `seq 1 30`; do
+        ip link del dev sit$i
+    done
 
-Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Link: https://lore.kernel.org/r/20210323130623.2302402-1-arnd@kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 5e6700b3bf98f ("sit: add support of x-netns")
+Signed-off-by: Hristo Venev <hristo@venev.name>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    1 +
- 1 file changed, 1 insertion(+)
+ net/ipv6/sit.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -592,6 +592,7 @@ static const struct dmi_system_id i8042_
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
- 		},
-+	}, {
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -1799,9 +1799,9 @@ static void __net_exit sit_destroy_tunne
+ 		if (dev->rtnl_link_ops == &sit_link_ops)
+ 			unregister_netdevice_queue(dev, head);
+ 
+-	for (prio = 1; prio < 4; prio++) {
++	for (prio = 0; prio < 4; prio++) {
+ 		int h;
+-		for (h = 0; h < IP6_SIT_HASH_SIZE; h++) {
++		for (h = 0; h < (prio ? IP6_SIT_HASH_SIZE : 1); h++) {
+ 			struct ip_tunnel *t;
+ 
+ 			t = rtnl_dereference(sitn->tunnels[prio][h]);
 
 
