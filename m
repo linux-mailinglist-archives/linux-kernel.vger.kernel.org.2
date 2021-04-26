@@ -2,232 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D86336B854
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D28A36B85A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237560AbhDZRvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237467AbhDZRvU (ORCPT
+        id S237637AbhDZRxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:53:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36076 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236741AbhDZRxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:51:20 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF862C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:50:38 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id s14so22585932pjl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=h9LWCOWHC0GMijbiMtiImgD8ClqnZSAqZ11QuJHpVYk=;
-        b=x+SV7A/FAHaPR7u2hfg9wJuW/1PCQpCTHkIC7ZUGfn3XDVyYZIS+7nUQ0jSbszDFF8
-         SYvTrRxtrGSYG9B6JEnCyn55lNzNFAnqp30/PhB/6kclCbRbntHDAAunE6nbgSuEVQUD
-         7TtW1nvu9l1X0uhwaouiN6PpBEANjB+EZV1cEGG/z0dyhmtzWsFKoRvv5cMx6DAPJpLE
-         3qA4uPl3hBxrdntdK+gjkcIT4APhYI9RVLuNc55yfLlkIgbEBMqMjXNryBZQaJSWBShR
-         jfiXGK4x5GD7DuOD0eVel9kxjNUSzd8l6rwND7yC35tJm2fgftzzDVIHENqstdOU0reN
-         E89g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h9LWCOWHC0GMijbiMtiImgD8ClqnZSAqZ11QuJHpVYk=;
-        b=XPiJCTZ84RhWG/xD3Up+L064SyCc84V2CCiDnhGJZ33WB4QYfsXdzhhlaaaAc4jdwR
-         XfQ1tXvZfb1OWI36do2OIJUAOJqG/c+6rWh9X3r+8Tow5Bl3gHDf50WE689c+RpA09dM
-         f86VRGRb1HXtR5G5Z0JcZEEKwmIpdoM5EXlWKdXFTDxVfb3bi2ywTgB72tOw2d/A+nPi
-         irbl8B6TeEXh4ylVssJoEEd2jzpjOLLtSAOb0ma84TqW2xORHdyiylZ9euEGmdb+Kq6c
-         AykKKYh03TuAB5enmzNR4J8xnz4AUdw8wKpv1jy2KOPyWoQu69BcjznXrHu1Yi8ozLj8
-         /QMw==
-X-Gm-Message-State: AOAM530tKaN5VsUYzub3+S/bgjz53PnbpeDXVlFpjn0xVbM9hunko6ZE
-        UjAGsimC68SEZxQb0hKyOFE8s2OphegKRg==
-X-Google-Smtp-Source: ABdhPJyJSPXoiamrAB1ba5fIYxxiXandhSynW2tRTPiMYBBfIC9rMJz+SxO5CtsFO2VcrFAi6vU+Rg==
-X-Received: by 2002:a17:90a:e643:: with SMTP id ep3mr263249pjb.194.1619459438062;
-        Mon, 26 Apr 2021 10:50:38 -0700 (PDT)
-Received: from localhost ([2406:7400:73:bf98:cdf4:fbe8:4446:3272])
-        by smtp.gmail.com with ESMTPSA id r3sm306586pfl.159.2021.04.26.10.50.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Apr 2021 10:50:37 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 23:20:32 +0530
-From:   bkkarthik <bkkarthik@pesu.pes.edu>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Anupama K Patil <anupamakpatil123@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching
- devices
-Message-ID: <20210426175031.w26ovnffjiow346h@burgerking>
-References: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
- <YIZJwkux0ghJ8k9d@unreal>
+        Mon, 26 Apr 2021 13:53:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619459548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vWzRnpXVlW5LRY1iXXQRwUChafBizRadg9HN9FqtYdM=;
+        b=SCFhA+uoCb0E4zQoeATV2aNiV+atxRueRVliGseUOxwBy1jcrrDvWKQhgCl+hUvX3nc2XA
+        bP0iKgf993L0/+/13hnj0BCAciNyC4qH8nd+cPORhvPc2gkJhTJAEHeJfyZvXL8BTREbr6
+        l25anFCTPtyCn8Uo/tpFFdo6lpyKcZE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-xCDh-EyJNauYWT0Sm-_tng-1; Mon, 26 Apr 2021 13:52:26 -0400
+X-MC-Unique: xCDh-EyJNauYWT0Sm-_tng-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2EB1C87A83E;
+        Mon, 26 Apr 2021 17:52:25 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2695C5D6A1;
+        Mon, 26 Apr 2021 17:52:18 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 9EF97220BCF; Mon, 26 Apr 2021 13:52:17 -0400 (EDT)
+Date:   Mon, 26 Apr 2021 13:52:17 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu, jack@suse.cz,
+        slp@redhat.com, groug@kaod.org
+Subject: Re: [PATCH v4 1/3] dax: Add an enum for specifying dax wakup mode
+Message-ID: <20210426175217.GD1741690@redhat.com>
+References: <20210423130723.1673919-1-vgoyal@redhat.com>
+ <20210423130723.1673919-2-vgoyal@redhat.com>
+ <20210426134632.GM235567@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lavq234wszdgqeqb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIZJwkux0ghJ8k9d@unreal>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20210426134632.GM235567@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 26, 2021 at 02:46:32PM +0100, Matthew Wilcox wrote:
+> On Fri, Apr 23, 2021 at 09:07:21AM -0400, Vivek Goyal wrote:
+> > +enum dax_wake_mode {
+> > +	WAKE_NEXT,
+> > +	WAKE_ALL,
+> > +};
+> 
+> Why define them in this order when ...
+> 
+> > @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
+> >  	 * must be in the waitqueue and the following check will see them.
+> >  	 */
+> >  	if (waitqueue_active(wq))
+> > -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
+> > +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
+> 
+> ... they're used like this?  This is almost as bad as
+> 
+> enum bool {
+> 	true,
+> 	false,
+> };
 
---lavq234wszdgqeqb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Matthew,
 
-On 21/04/26 08:04AM, Leon Romanovsky wrote:
-> On Sun, Apr 25, 2021 at 01:13:01AM +0530, Anupama K Patil wrote:
-> > isapnp_proc_init() does not look at the return value from
-> > isapnp_proc_attach_device(). Check for this return value in
-> > isapnp_proc_detach_device().
-> >=20
-> > Cleanup in isapnp_proc_detach_device and
-> > isapnp_proc_detach_bus() for cleanup.
-> >=20
-> > Changed sprintf() to the kernel-space function scnprintf() as it returns
-> > the actual number of bytes written.
-> >=20
-> > Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
-> > save memory.
->=20
-> What exactly do you fix for such an old code?
+So you prefer that I should switch order of WAKE_NEXT and WAKE_ALL? 
 
-I was not aware that this code is so old. This fix was made after checkpatc=
-h reported assignment inside an if-statement.
-Please ignore this patch if th change is not necessary as the code is proba=
-bly not being used anywhere :)
+enum dax_wake_mode {
+	WAKE_ALL,
+	WAKE_NEXT,
+};
 
-Maybe the code has to be marked as obsolete in the MAINTAINERS file to prev=
-ent patches being sent?
 
->=20
-> >=20
-> > Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
-> > Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
-> > ---
-> >  drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
-> >  1 file changed, 30 insertions(+), 10 deletions(-)
-> >=20
-> > diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
-> > index 785a796430fa..46ebc24175b7 100644
-> > --- a/drivers/pnp/isapnp/proc.c
-> > +++ b/drivers/pnp/isapnp/proc.c
-> > @@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_o=
-ps =3D {
-> >  	.proc_read	=3D isapnp_proc_bus_read,
-> >  };
-> > =20
-> > +static int isapnp_proc_detach_device(struct pnp_dev *dev)
-> > +{
-> > +	proc_remove(dev->procent);
-> > +	dev->procent =3D NULL;
-> > +	return 0;
-> > +}
-> > +
-> > +static int isapnp_proc_detach_bus(struct pnp_card *bus)
-> > +{
-> > +	proc_remove(bus->procdir);
-> > +	return 0;
-> > +}
->=20
-> Please don't add one line functions that are called only once and have
-> return value that no one care about it.
+And then do following to wake task.
 
-These were only intended for a clean-up job, the idea of this function came=
- from how PCI handles procfs.
-Maybe those should be changed?
+if (waitqueue_active(wq))
+	__wake_up(wq, TASK_NORMAL, mode, &key);
 
-thanks,
+I am fine with this if you like this better.
 
-karthik
+Or you are suggesting that don't introduce "enum dax_wake_mode" to
+begin with.
 
->=20
-> Thanks
->=20
-> > +
-> >  static int isapnp_proc_attach_device(struct pnp_dev *dev)
-> >  {
-> >  	struct pnp_card *bus =3D dev->card;
-> > -	struct proc_dir_entry *de, *e;
-> >  	char name[16];
-> > =20
-> > -	if (!(de =3D bus->procdir)) {
-> > -		sprintf(name, "%02x", bus->number);
-> > -		de =3D bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-> > -		if (!de)
-> > +	if (!bus->procdir) {
-> > +		scnprintf(name, 16, "%02x", bus->number);
-> > +		bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-> > +		if (!bus->procdir)
-> >  			return -ENOMEM;
-> >  	}
-> > -	sprintf(name, "%02x", dev->number);
-> > -	e =3D dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, de,
-> > +	scnprintf(name, 16, "%02x", dev->number);
-> > +	dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, bus->procd=
-ir,
-> >  					    &isapnp_proc_bus_proc_ops, dev);
-> > -	if (!e)
-> > +	if (!dev->procent) {
-> > +		isapnp_proc_detach_bus(bus);
-> >  		return -ENOMEM;
-> > -	proc_set_size(e, 256);
-> > +	}
-> > +	proc_set_size(dev->procent, 256);
-> >  	return 0;
-> >  }
-> > =20
-> >  int __init isapnp_proc_init(void)
-> >  {
-> >  	struct pnp_dev *dev;
-> > +	int dev_attach;
-> > =20
-> >  	isapnp_proc_bus_dir =3D proc_mkdir("bus/isapnp", NULL);
-> >  	protocol_for_each_dev(&isapnp_protocol, dev) {
-> > -		isapnp_proc_attach_device(dev);
-> > +		dev_attach =3D isapnp_proc_attach_device(dev);
-> > +		if (!dev_attach) {
-> > +			pr_info("procfs: pnp: Unable to attach the device, not enough memor=
-y");
-> > +			isapnp_proc_detach_device(dev);
-> > +			return -ENOMEM;
-> > +		}
-> >  	}
-> >  	return 0;
-> >  }
-> > --=20
-> > 2.25.1
-> >=20
->=20
->=20
->=20
-> > _______________________________________________
-> > Kernelnewbies mailing list
-> > Kernelnewbies@kernelnewbies.org
-> > https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
->=20
+Vivek
 
---lavq234wszdgqeqb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEIRwfsurAmIAiSNrGB1QtCt0juC0FAmCG/WcACgkQB1QtCt0j
-uC11vwwAi4ARtpvImmmTw+EvCLEVfj2smNdk3Gxx11VQqDO/9k0Ab/+gmuQabNQO
-etGO9SKLY11b2jXhOAklk+O+2aHx7zqcBS+3svTAo591Oy9VYhwE9OsTjG51zQTK
-x+wS9NtJyLG3YgrAjRhfeNs+eu3iYO5R3NPP2TEkESFND0B/T66oZ/0/++Idu8tj
-pDtWG7ga1DaQrCrMTSBKYIa4pSFDCS3u0trAzvduBhPWDXaXaeGTwjO/a9Wc5RgL
-DxkKUQc7RmBOFKr/HjgKOqsbMnDU5c29LZTkka3ZuXq2/2+KXCqHppBdI04ksJad
-aZDS2oz3Xc4NrbhR9bW/Q0KaYDwJYXt4SEooS34BKNazq3GvHvVcjfF7ItbQKhqk
-74+QgEzhwiaj38fF00OHOu/ygrg6n20QJgsEfpiR7Q2XeABakKkSOXp/9QWZkwKq
-0/nQubSy7ANQNZpeVW18dwU71eeAV6D3mi7lZTD+FaHJfkOsh0qKfLDs7qTi0MnF
-1nX5yucQ
-=SNr5
------END PGP SIGNATURE-----
-
---lavq234wszdgqeqb--
