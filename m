@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7271836B38A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3C836B38C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhDZMyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:54:14 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:42551 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233528AbhDZMyC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:54:02 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 3496D221;
-        Mon, 26 Apr 2021 08:53:19 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 26 Apr 2021 08:53:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=H3Ty7Phe+sDnO2HQcSm0sxQT9dD
-        B5XC7OPmO4cgKZHk=; b=CD1SS36pkAU2XF7yJ3FZL2qJlbStfWDtilPJ/ZvLe9B
-        sSKglEkxM5IR4q9e4csbldzvEeeQo2CqSxV8Q5a4m/BOFbd6v5ldS5xpIZO0cVR3
-        0YXYmQisYsM0jvf7IPbNzhw9KE4f3Iuw0DH6XgrbUqGK+NQnvWYicat/VsBkO+Lv
-        mYMlT4SMbKBqN9g2S1beHjMDOWpuXggxEbbMwBcfb9935ngBMIZmfjgNAh9QflCx
-        DcYvlAT8KJTJQsoD0St8cK0NynDIG4Hhbu2dTljDNEn8mQG7mio6FuDKPFHEVJmR
-        9jtkyzkW80mZysilDz7jMptjCPzGKUhErJdnPngMAJw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=H3Ty7P
-        he+sDnO2HQcSm0sxQT9dDB5XC7OPmO4cgKZHk=; b=FVxC5zPPQTe4/2Cx4CrAik
-        9g6QWI7Y15h4JZDz2oCLmjvffdVhE0I244UzGQiyuPUtAXkvBs3D7dDZcGWq+Epj
-        353rBRgoyWQKdO/z2ju+tT3rJHsCvYiFrWKhsJzKPvP6L/J/fZ9U4882ynCvPvHa
-        QlGv+KPEIKqTm0TKIpJXZU5+4RIdjTaHjaP2vVjaiCFXSfUQv5ZUirEhSCsmWDh/
-        KISRWNkI05E8hEnR7nfbzvZU39HWL5je9uSCXR+0bZnbsctLTP2mjdUXBsQ4UnN/
-        Z7eht5K39frtUzZURur7cSUSJ4dnquqIFhwotXsP+frEwgcPAZW/JwIgP3ttVCZw
-        ==
-X-ME-Sender: <xms:vreGYBHcPeo9z3hKoJcfn-jS34SSgNQ6Nh0TWTNtciNOO39bbKX2nw>
-    <xme:vreGYGUVsDWF8DaSHA_IYA870V6CZuNVwxmc2s-a_OOfSbEh1LLcJode2VPbyZf01
-    mE9aNEwHbF-Cg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddukedgheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:vreGYDIyrlUG1D2FbdNZY_-0BhDvz5y6O68KGYX5Z1mOnVPFKhs2Tg>
-    <xmx:vreGYHG3P-P2gtVXqsvTW-G8phDFVd-lQowGi1ykFLahwSuCAe1qTQ>
-    <xmx:vreGYHVlYFdVjQKXAyojLz63iUu1ijmldZ1Xe3SE7UZiWAyIB0fKhA>
-    <xmx:vreGYNddjRZRzjMmkrKYKDw-sKAuQ0Qw3ARVg5IVEgcT2noxoNC4Eg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 26 Apr 2021 08:53:17 -0400 (EDT)
-Date:   Mon, 26 Apr 2021 14:53:15 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the usb tree
-Message-ID: <YIa3u0RCcOf+tZMu@kroah.com>
-References: <20210426224413.2ce59504@canb.auug.org.au>
+        id S233580AbhDZMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233506AbhDZMyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:54:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B404F6101C;
+        Mon, 26 Apr 2021 12:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619441601;
+        bh=XP6V8WLfk/IYQoiDyR+sBWHoz1XSEonoi2ElBSLzOiQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PK9WGFtsvPdFRa4NWm3H1olA57WQGtdSXd6JX6aijtAdDDGbuIOaIBn4E21I3w4tV
+         dwrDfdXcs68Vxo9JQ71zr4jfKTOjd/sUX5P4vR505Gleij7m7liXbJN431fzLRHjAg
+         ba2AWvfRAEwkWTS4ipcz+kHpPHJcl/1/jb/Fgxd8Ikl7aGmTXcEX4nNOOy79SFg6HM
+         X+OtZYZBoiES+UNUXeZBkrE74JrbTqyOPtlvW7tm8Ot8DRw6LDZ1lA6F1xHoa9tBLz
+         Xyi1Blw6rUmW5w0jjKkhWXPMRGV24bNkNwtDXUMLQJ+JaU75jpV/XL92GeQqL/r0Ld
+         seee8mmtBH1WQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0CBDE40647; Mon, 26 Apr 2021 09:53:18 -0300 (-03)
+Date:   Mon, 26 Apr 2021 09:53:17 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET 0/5] perf report: Make --stat output more compact
+Message-ID: <YIa3vXJrVwN44mjx@kernel.org>
+References: <20210423182813.1472902-1-namhyung@kernel.org>
+ <20210423184647.GN1401198@tassilo.jf.intel.com>
+ <CAM9d7ciy82RM4UDHeAXwu4p7nPSg58euNK=Kdb7E0mj06e10oQ@mail.gmail.com>
+ <20210423202024.GO1401198@tassilo.jf.intel.com>
+ <CAM9d7cjKdo6AKAL43-mp+hpx9m_8UU6j8Zy1RUZkLdh27bR_ig@mail.gmail.com>
+ <20210426043147.GU1401198@tassilo.jf.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210426224413.2ce59504@canb.auug.org.au>
+In-Reply-To: <20210426043147.GU1401198@tassilo.jf.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 10:44:13PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the usb tree, today's linux-next build (htlmdocs) produced
-> this warning:
-> 
-> Documentation/driver-api/usb/writing_usb_driver.rst:129: WARNING: undefined label: usb_header
-> 
-> Presumably introduced by commit
-> 
->   caa93d9bd2d7 ("usb: Fix up movement of USB core kerneldoc location")
+Em Sun, Apr 25, 2021 at 09:31:47PM -0700, Andi Kleen escreveu:
+> > Hmm.. do you want something like this?
 
-Ugh, we'll get this right yet, there's been updates posted, I'll pick
-them up after 5.13-rc1 is out.
+> >              TOTAL events:      20064
+> >               MMAP events:        239   ( 1.2%)
+> >               COMM events:       1518   ( 7.6%)
+> >               EXIT events:          1   (0.0%)
+> >               FORK events:       1517   (7.6%)
+> >             SAMPLE events:       4015   (20.0%)
+> >              MMAP2 events:      12769   (63.6%)
+ 
+> Yes that's it.
+ 
+> Really shows how inefficient perf is for short measurement
+> periods.
 
-thanks!
+Brainstorming a bit:
 
-greg k-h
+Yeah, I wonder if we could have a new mode where 'perf daemon' collects
+the !SAMPLE records and then a 'perf record' would collect just
+PERF_RECORD_SAMPLEs, and then 'perf report' would merge things up.
+
+A perf.data file cap for the 'perf daemon' would mean that when a 'perf
+report' result looks interesting, one could press a hotkey and generate
+a complete perf.data file with the !SAMPLE records needed to have it
+self sufficient.
+
+Additionally maybe we could have 'perf daemon' providing a interface to
+resolve samples, returning unresolved ones for older stuff.
+
+wdyt?
+
+- Arnaldo
