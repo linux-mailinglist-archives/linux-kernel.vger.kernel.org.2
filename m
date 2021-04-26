@@ -2,92 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C802236BADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40CB36BAE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 22:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234607AbhDZU4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 16:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhDZU4D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 16:56:03 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E32C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:55:21 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 4so30454416lfp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zsvd/Qinp/p9KJ8WGTP8ln6jTc3txvxZQ3RZQL+RCH4=;
-        b=Mh6fPNjdra5N9zpGupgnZ3bI/RC5dvEZ3srZKHfmekX5dRYuOORb4UfOFcALxnlyQd
-         6aAaups4I/YbFe+8howGXUcciIhZfN2kkU/5WUuVH9hjTf0Q0IZvKrYaxGnVJoMP5oem
-         SL4I9MhJjUWCPb64VYzex6iw8haAk4vgPW0/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zsvd/Qinp/p9KJ8WGTP8ln6jTc3txvxZQ3RZQL+RCH4=;
-        b=glu6kuUCT6pUmbbCv/CxdiHbAcK7ORuIA+Ke8w31SS6szmRXptAHRfIM6u/9iGnv+a
-         vxrrQsHBybRlnftvICXIve5RxRWGEm4BNHHP9hTHf2tdGy+ufyWl/fRr0V+fLKl36aZ4
-         9Z/28RsLn5eSjyqW6sIwqSTwX+gnZE64N+AtddyukU0DFh/6mBDZ2Mdr4657J2uOOR03
-         NaUwOPYxfhvFhntSbGqJQzfco13QfeOwSugvaFXpoeB80dSLzAKIU0ibDbSyAwp5558/
-         FOq66zWWS8fqaO4hVyQ92JZdxyKH+KXZOTgj4Xs9lCaPD/p9ihzF4FaA9JMZRMB3kdzF
-         +SrA==
-X-Gm-Message-State: AOAM533qyxGlM1wOBlhvCJ9Ox4D20aSDgTXZI6d9McxPkj9Fz5kb57Tj
-        ZUgryk2XtDEunkc0q9pRj4464OsBwlm1ss9x
-X-Google-Smtp-Source: ABdhPJzO6UMGEMKlKm6kTagqrO6KGrKOsqsWYSkN0o/8mqsoWWC9HK+gWB7Mt9FfYyg0l9W+yrz8JA==
-X-Received: by 2002:a05:6512:21cc:: with SMTP id d12mr13767228lft.512.1619470519777;
-        Mon, 26 Apr 2021 13:55:19 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id v8sm121072ljn.17.2021.04.26.13.55.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 13:55:19 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id y4so50125812lfl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 13:55:19 -0700 (PDT)
-X-Received: by 2002:a05:6512:3147:: with SMTP id s7mr13714445lfi.41.1619470518895;
- Mon, 26 Apr 2021 13:55:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1619466460.git.dsterba@suse.com>
-In-Reply-To: <cover.1619466460.git.dsterba@suse.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 26 Apr 2021 13:55:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj1KRvb=hie1VUTGo1D_ckD+Suo0-M2Nh5Kek1Wu=2Ppw@mail.gmail.com>
-Message-ID: <CAHk-=wj1KRvb=hie1VUTGo1D_ckD+Suo0-M2Nh5Kek1Wu=2Ppw@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs updates for 5.13
-To:     David Sterba <dsterba@suse.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     David Sterba <dsterba@suse.cz>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234690AbhDZU6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 16:58:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233971AbhDZU6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 16:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E867661107;
+        Mon, 26 Apr 2021 20:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619470649;
+        bh=wDOfCFkgJhSONK05d8lIA3HBqMPh05si1kwOhpGJ83E=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Y2nb2ZGz8oClzWVZcgQp1vCHqNK/d0/5+MIiRBbW5g4FgVVcJiKBID28LtTG4T842
+         pJKjgaJQS3GG5SEK3uD1UMaN6LijZsDd5lMi9516Rfz0idiJyf81Voqclj+lLuZ9dl
+         lPBzPFo+10+ZS06ezIU6ASWFmpLeoNxG8XvtrlnVJzz0kvgWFRfdjCX75Z4lLHd5/M
+         j0tJ2qz5PXZxkB8QCYG+guGOHJMLKQz4bxAc7GyCGVEYe2lQLFdabNrRepXwgcFHbX
+         97NmjZ9ebwR5lT8ADTlKFIYpU3cIHJA+v6yo0iUPIQBCoOI3u726jVwQlcrD4Z/LOG
+         FR9W29J7IfaVA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E2933609B0;
+        Mon, 26 Apr 2021 20:57:28 +0000 (UTC)
+Subject: Re: [GIT PULL] file locking fixes for v5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <2623d52cefb71fab85fbfbd0315ac48ac89e00ee.camel@kernel.org>
+References: <2623d52cefb71fab85fbfbd0315ac48ac89e00ee.camel@kernel.org>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <2623d52cefb71fab85fbfbd0315ac48ac89e00ee.camel@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git tags/locks-v5.13
+X-PR-Tracked-Commit-Id: cbe6fc4e01421c890d74422cdd04c6b1c8f62dda
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: befbfe07e646d9ffc5be1e2c943aefa5e23bf3b8
+Message-Id: <161947064892.16410.15388113234248183084.pr-tracker-bot@kernel.org>
+Date:   Mon, 26 Apr 2021 20:57:28 +0000
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Luo Longjun <luolongjun@huawei.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bruce Fields <bfields@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've pulled this, but:
+The pull request you sent on Mon, 26 Apr 2021 07:18:48 -0400:
 
-On Mon, Apr 26, 2021 at 1:01 PM David Sterba <dsterba@suse.com> wrote:
->
-> Matthew Wilcox (Oracle) (1):
->       btrfs: add and use readahead_batch_length
+> git://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git tags/locks-v5.13
 
-This one is buggy, or at least questionable.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/befbfe07e646d9ffc5be1e2c943aefa5e23bf3b8
 
-Yes, yes, the function looks trivial. That doesn't make it right:
+Thank you!
 
-  static inline loff_t readahead_batch_length(struct readahead_control *rac)
-  {
-          return rac->_batch_count * PAGE_SIZE;
-  }
-
-the above does not get the types right, and silently does different
-typecasting than the code clearly intends from the return type of the
-function.
-
-It may not matter much in practice, but it's still wrong.
-
-               Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
