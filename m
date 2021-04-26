@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7E236BAF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818ED36BAFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 23:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237117AbhDZVGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 17:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234864AbhDZVGM (ORCPT
+        id S237288AbhDZVHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 17:07:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47769 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234275AbhDZVHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 17:06:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73094C061574;
-        Mon, 26 Apr 2021 14:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=o18bPOCg8Vev9yuxfiIQ9pnCFydFMd9gnR+8URq20pU=; b=aA7GIIBmhj69nk9f8lfNZc8zkr
-        5zF4hx0WTkHLfrb5XFPHrapGUOHJSsiEpPHNZfjTpxnPrD60NLHlmgequhbVCXmHY/Hv97bsICynK
-        UekEa0IzQecG1Da3h6+YMyfH86t8D0denvfuxJzv2sBS6YJC72Cpde6t/XWBdHJCs5k/sQ7T+CO1J
-        KlNO5IS2gUB8CB4vQnBaEC5NU3OnDYKCHZ+rKkVMfdgIiZMOrbWVl9e53/eeUOeQbN+fHkzXjRlPi
-        Q5RiAbJg405juMTyNTpUSzwaq5otGlGKorPsJHzMbzwiwe8qNUasCIah1u68OLkHFQ6kBtaxJT5oZ
-        jrhCKFsA==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb8Pk-00665i-7r; Mon, 26 Apr 2021 21:05:09 +0000
-Subject: Re: ingenic-adc.c:undefined reference to `clk_get_parent'
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-References: <202103162301.oomY9NwI-lkp@intel.com>
- <ac51550d-c72e-4a85-ed0e-a4cddbf495be@infradead.org>
- <CAHp75VdZ6v7zV4_4YJ-rXAE2_ZLZw04AHib1yGPiwYS_JYYGOg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8a41b718-a6f6-6b7f-1699-18ab619884c3@infradead.org>
-Date:   Mon, 26 Apr 2021 14:05:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 26 Apr 2021 17:07:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619471194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IoprxGl2uK6k56hNY9CDxe9Gob3U7ejqWda/scDa68M=;
+        b=BSG+FQcPL1rKANBx8xAwzC0Y+rhK1aKnOeeFdP5UHB0XP3mF49K7aXHk4inxIp+rraZNMK
+        G8IeExS5Fd4TqW6QRih2NCOMElrEhXGYSq3ulPYVPRFnUlfOnTOQADBdHJMKgfSYl8ItIG
+        Tf9afdFxni5lhHeVfJABp4YwKI37rFA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-XW_eethqPa-CB163_frKsg-1; Mon, 26 Apr 2021 17:06:32 -0400
+X-MC-Unique: XW_eethqPa-CB163_frKsg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3DDA1B18BC1;
+        Mon, 26 Apr 2021 21:06:29 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-20.rdu2.redhat.com [10.10.112.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BD605D9DE;
+        Mon, 26 Apr 2021 21:06:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+In-Reply-To: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cachefs@redhat.com, Jeff Layton <jlayton@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        v9fs-developer@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-afs@lists.infradead.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] netfs: Miscellaneous fixes
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdZ6v7zV4_4YJ-rXAE2_ZLZw04AHib1yGPiwYS_JYYGOg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3726523.1619471123.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+From:   David Howells <dhowells@redhat.com>
+Date:   Mon, 26 Apr 2021 22:06:24 +0100
+Message-ID: <3726642.1619471184@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/21 1:22 AM, Andy Shevchenko wrote:
-> On Mon, Apr 26, 2021 at 8:43 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> [add linux-clk + maintainers]
->>
->> On 3/16/21 8:54 AM, kernel test robot wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   1a4431a5db2bf800c647ee0ed87f2727b8d6c29c
->>> commit: a07a4fe5ff460e99293c0d682421920d54e31d7f iio:adc:ingenic: drop of_match_ptr protection and include mod_devicetable.h
->>> date:   8 months ago
->>> config: mips-randconfig-p001-20210316 (attached as .config)
->>> compiler: mips-linux-gcc (GCC) 9.3.0
->>> reproduce (this is a W=1 build):
->>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>         chmod +x ~/bin/make.cross
->>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a07a4fe5ff460e99293c0d682421920d54e31d7f
->>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>         git fetch --no-tags linus master
->>>         git checkout a07a4fe5ff460e99293c0d682421920d54e31d7f
->>>         # save the attached .config to linux build tree
->>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>    mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
->>>>> ingenic-adc.c:(.text+0x8c): undefined reference to `clk_get_parent'
->>>    mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
->>>    ingenic-adc.c:(.text+0x164): undefined reference to `clk_get_parent'
->>
->> Hi,
->>
->> My guess (analysis) suggests that this problem is due to
->> a difference in when clk_get_parent() is available between
->> <linux/clk.h> where it depends on CONFIG_HAVE_CLK and
->> drivers/clk/clk.c, which is built iff CONFIG_COMMON_CLK.
->>
->> Any comments/suggestions?
-> 
-> I haven't looked into it, but IIRC MIPS has its own clock API
-> implementation (or I mixed it with another arch?) and that's the root
-> of many issues like this around the kernel.
+    =
 
+Fix some miscellaneous things in the new netfs lib[1]:
 
-Thanks. I do see that (MIPS) CONFIG_RA7 and CONFIG_RALINK
-provide their own clk_get_parent(), but neither of those is
-enabled in the kernel config file.
+ (1) The kerneldoc for netfs_readpage() shouldn't say netfs_page().
 
-I'll post some kind of patch later today.
+ (2) netfs_readpage() can get an integer overflow on 32-bit when it
+     multiplies page_index(page) by PAGE_SIZE.  It should use
+     page_offset() instead.
 
--- 
-~Randy
+ (3) netfs_write_begin() should also use page_offset() to avoid the same
+     overflow.
+
+ (4) Use page_mapping() in netfs_write_begin() rather than page->mapping.
+
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Link: https://lore.kernel.org/r/161789062190.6155.12711584466338493050.stg=
+it@warthog.procyon.org.uk/ [1]
+---
+ fs/netfs/read_helper.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index 1d3b50c5db6d..568e26352309 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -933,7 +933,7 @@ void netfs_readahead(struct readahead_control *ractl,
+ EXPORT_SYMBOL(netfs_readahead);
+ =
+
+ /**
+- * netfs_page - Helper to manage a readpage request
++ * netfs_readpage - Helper to manage a readpage request
+  * @file: The file to read from
+  * @page: The page to read
+  * @ops: The network filesystem's operations for the helper to use
+@@ -968,7 +968,7 @@ int netfs_readpage(struct file *file,
+ 		return -ENOMEM;
+ 	}
+ 	rreq->mapping	=3D page_file_mapping(page);
+-	rreq->start	=3D page_index(page) * PAGE_SIZE;
++	rreq->start	=3D page_offset(page);
+ 	rreq->len	=3D thp_size(page);
+ =
+
+ 	if (ops->begin_cache_operation) {
+@@ -1105,8 +1105,8 @@ int netfs_write_begin(struct file *file, struct addr=
+ess_space *mapping,
+ 	rreq =3D netfs_alloc_read_request(ops, netfs_priv, file);
+ 	if (!rreq)
+ 		goto error;
+-	rreq->mapping		=3D page->mapping;
+-	rreq->start		=3D page->index * PAGE_SIZE;
++	rreq->mapping		=3D page_file_mapping(page);
++	rreq->start		=3D page_offset(page);
+ 	rreq->len		=3D thp_size(page);
+ 	rreq->no_unlock_page	=3D page->index;
+ 	__set_bit(NETFS_RREQ_NO_UNLOCK_PAGE, &rreq->flags);
 
