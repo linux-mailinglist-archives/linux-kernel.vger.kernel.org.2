@@ -2,106 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF2A36B1BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC77B36B1C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 12:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhDZKlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 06:41:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37383 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232656AbhDZKlP (ORCPT
+        id S232773AbhDZKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 06:43:00 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:3162 "EHLO
+        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232194AbhDZKm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:41:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619433633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bZZsUMt0KMjKP40YJJFPdYzvGN9VTk6y13Ps6YXhbp8=;
-        b=VwANrziXijNKq/3jslGg6lITcSbmyvOtWguwgAsq2J5p9y3SmcRAVO2UqOKYB29H8d09wV
-        igf0795fexMx3W6Q/WAaeiPE70efyxyV51iB9d51UlWE8509UqUBiUxunecdk8X8KwLFMx
-        X7YKSz1yktfpnKBHqcY+MBxIEbeg5iM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-Cp4z_yhXPE2ODPgvsI70Nw-1; Mon, 26 Apr 2021 06:40:32 -0400
-X-MC-Unique: Cp4z_yhXPE2ODPgvsI70Nw-1
-Received: by mail-ej1-f71.google.com with SMTP id ld21-20020a170906f955b029038f648a7175so353322ejb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 03:40:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bZZsUMt0KMjKP40YJJFPdYzvGN9VTk6y13Ps6YXhbp8=;
-        b=gY5ziZhbELPO2NAJeLXBkzMkCtkRy5g/celtQB1B4gWpOPVDYHxzPBQjzUmIJTaWee
-         kmJoMu+Tfmvmy3B60N2bwLoVfjXznV1OlBl/xIXKXZqU1dQr5NFv5K5EIHe6Qqocm1ap
-         0C2Vicqo5NuKObzbRYHHcQi8z4v6nlU1RSselh4wTnUaukUgkMEALj7Q9TaTsY8BN8mP
-         3p54WwTtEPXiFEwt2bi+rHAtqVniPn93rtb/zPP9tPQUvbvHrKrxptTP1/X56IoDWmcD
-         2hba3NKd1V7Q/012NWuOP7Q7gXzpXXSNex3RiCngSsNJ5JL1xt8MdRCQkqXeTHTFLuSB
-         2dDA==
-X-Gm-Message-State: AOAM532Zc76v9SSCp1+ywbfNkjOAUM9Kh/5EmRVQBNoGUS4JZ4KeIbDb
-        Sz20dkCQmT2oIBjsyFbkFAdzzh8EWlHoAPbupb+ND5pzhqr9TQfBp1iYBU7sT2O1xRLfe7VN/1N
-        BP9N+C3JmlaFIiDGJxjwl5HDy
-X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr20979867edc.54.1619433630745;
-        Mon, 26 Apr 2021 03:40:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUlQIAYodwBzUUiJWgYEpzQujF933VDY95XxUTEaag8DV7wjbNaWtxum0gxZnhcW6tOwzmwg==
-X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr20979847edc.54.1619433630557;
-        Mon, 26 Apr 2021 03:40:30 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id g11sm14002799edw.37.2021.04.26.03.40.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Apr 2021 03:40:29 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] KVM: VMX: Invoke NMI handler via indirect call
- instead of INTn
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20200915191505.10355-1-sean.j.christopherson@intel.com>
- <20200915191505.10355-3-sean.j.christopherson@intel.com>
- <CAJhGHyBOLUeqnwx2X=WToE2oY8Zkqj_y4KZ0hoq-goe+UWcR9g@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bb2c2d93-8046-017a-5711-c61c8f1a4c09@redhat.com>
-Date:   Mon, 26 Apr 2021 12:40:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 26 Apr 2021 06:42:57 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AyA29FKGjWNd2RwvOpLqECceALOonbusQ8zAX?=
+ =?us-ascii?q?/mp2TgFYddHdqtC2kJ0gpHvJoRsYRX1Io7u9EYaaR3e0z/RIyKkXeYyvRQz3/F?=
+ =?us-ascii?q?avRbsC0aLH4xnNXxLz7fRc06AISdkaNPTVAUJhhcj3pCmUeuxB/PC9/KqlhfjT?=
+ =?us-ascii?q?wh5WJGlXQppt4AtjBgGQHlcefngkObMCCJGe6sBbzgDPRV0raK2AakUtY/LOvJ?=
+ =?us-ascii?q?nimp7gfHc9dnwawTjLvHeT5Ln2HwPw5HojejlEqI1MzVT4?=
+X-IronPort-AV: E=Sophos;i="5.82,252,1613430000"; 
+   d="scan'208";a="379682631"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 12:42:14 +0200
+Date:   Mon, 26 Apr 2021 12:42:14 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        David Kershner <david.kershner@unisys.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [Outreachy kernel] [RFC PATCH] staging: unisys: visorhba: Convert
+ module from IDR to XArray
+In-Reply-To: <70412520.S8q5jszebs@linux.local>
+Message-ID: <alpine.DEB.2.22.394.2104261241000.7906@hadrien>
+References: <20210426095015.18556-1-fmdefrancesco@gmail.com> <YIaORY3B6+6vMvFj@kroah.com> <70412520.S8q5jszebs@linux.local>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <CAJhGHyBOLUeqnwx2X=WToE2oY8Zkqj_y4KZ0hoq-goe+UWcR9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/04/21 11:33, Lai Jiangshan wrote:
-> When handle_interrupt_nmi_irqoff() is called, we may lose the
-> CPU-hidden-NMI-masked state due to IRET of #DB, #BP or other traps
-> between VMEXIT and handle_interrupt_nmi_irqoff().
-> 
-> But the NMI handler in the Linux kernel*expects*  the CPU-hidden-NMI-masked
-> state is still set in the CPU for no nested NMI intruding into the beginning
-> of the handler.
-> 
-> The original code "int $2" can provide the needed CPU-hidden-NMI-masked
-> when entering #NMI, but I doubt it about this change.
 
-How would "int $2" block NMIs?  The hidden effect of this change (and I 
-should have reviewed better the effect on the NMI entry code) is that 
-the call will not use the IST anymore.
 
-However, I'm not sure which of the two situations is better: entering 
-the NMI handler on the IST without setting the hidden NMI-blocked flag 
-could be a recipe for bad things as well.
+On Mon, 26 Apr 2021, Fabio M. De Francesco wrote:
 
-Paolo
+> On Monday, April 26, 2021 11:56:21 AM CEST Greg Kroah-Hartman wrote:
+> > On Mon, Apr 26, 2021 at 11:50:15AM +0200, Fabio M. De Francesco wrote:
+> > > Converted visorhba from IDR to XArray. The abstract data type XArray is
+> > > more memory-efficient, parallelisable and cache friendly. It takes
+> > > advantage of RCU to perform lookups without locking.
+> > >
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > >
+> > >  .../staging/unisys/visorhba/visorhba_main.c   | 107 +++++++-----------
+> > >  1 file changed, 44 insertions(+), 63 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c
+> > > b/drivers/staging/unisys/visorhba/visorhba_main.c index
+> 4455d26f7c96..851e60ab0c46
+> > > 100644
+> > > --- a/drivers/staging/unisys/visorhba/visorhba_main.c
+> > > +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+> > > @@ -6,10 +6,10 @@
+> > >
+> > >  #include <linux/debugfs.h>
+> > >  #include <linux/kthread.h>
+> > >
+> > > -#include <linux/idr.h>
+> > >
+> > >  #include <linux/module.h>
+> > >  #include <linux/seq_file.h>
+> > >  #include <linux/visorbus.h>
+> > >
+> > > +#include <linux/xarray.h>
+> > >
+> > >  #include <scsi/scsi.h>
+> > >  #include <scsi/scsi_host.h>
+> > >  #include <scsi/scsi_cmnd.h>
+> > >
+> > > @@ -23,6 +23,8 @@
+> > >
+> > >  #define MAX_PENDING_REQUESTS (MIN_NUMSIGNALS * 2)
+> > >  #define VISORHBA_ERROR_COUNT 30
+> > >
+> > > +static DEFINE_XARRAY_ALLOC(xa_dtstr);
+> > > +
+> > >
+> > >  static struct dentry *visorhba_debugfs_dir;
+> > >
+> > >  /* GUIDS for HBA channel type supported by this driver */
+> > >
+> > > @@ -78,12 +80,6 @@ struct visorhba_devdata {
+> > >
+> > >  	unsigned int max_buff_len;
+> > >  	int devnum;
+> > >  	struct uiscmdrsp *cmdrsp;
+> > >
+> > > -	/*
+> > > -	 * allows us to pass int handles back-and-forth between us and
+> > > -	 * iovm, instead of raw pointers
+> > > -	 */
+> > > -	struct idr idr;
+> > > -
+> > >
+> > >  	struct dentry *debugfs_dir;
+> > >  	struct dentry *debugfs_info;
+> > >
+> > >  };
+> > >
+> > > @@ -183,32 +179,16 @@ static struct uiscmdrsp
+> *get_scsipending_cmdrsp(struct
+> > > visorhba_devdata *ddata,>
+> > >  }
+> > >
+> > >  /*
+> > >
+> > > - * simple_idr_get - Associate a provided pointer with an int value
+> > > - *		    1 <= value <= INT_MAX, and return this int value;
+> > > - *		    the pointer value can be obtained later by passing
+> > > - *		    this int value to idr_find()
+> > > - * @idrtable: The data object maintaining the pointer<-->int mappings
+> > > - * @p:	      The pointer value to be remembered
+> > > - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> > > - *
+> > > - * Return: The id number mapped to pointer 'p', 0 on failure
+> > > + * simple_xa_dtstr_get - Store a pointer to xa_dtstr xarray
+> > > + * @id: Pointer to ID
+> > > + * @entry: New entry
+> > >
+> > >   */
+> > >
+> > > -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+> > > -				   spinlock_t *lock)
+> > > +static int simple_xa_dtstr_get(u32 *id, void *entry)
+> >
+> > What are you trying to really "get" here?  We shouldn't name the
+> > function based on the data type being used.  All we want is some sort of
+> > "token" or hash or something else?  It's hard to tell...
+> >
+> Sorry, I am so lazy that I just substituted the _idr_ in the old name with
+> _xa_dtstr_. Perhaps simple_entry_get() would be better. it deserves a v2.
+> >
+> > >  {
+> > >
+> > > -	int id;
+> > > -	unsigned long flags;
+> > > +	int ret = xa_alloc_irq(&xa_dtstr, id, entry, xa_limit_32b,
+> GFP_NOWAIT);
+> > > +	/* TODO: check for and manage errors */
+> >
+> > That's a nice TODO, which means we really should not be considering this
+> > patch to be merged, right?
+> >
+> Right, lazy again :)
+>
+> The fact is that I was just interested in conversion from IDR to XArray
+> because this would be the main subject of the project I applied for the DRM
+> subsystem. Therefore, where I didn't find proper error checking and management
+> in the old code, I simply wrote some TODO.
+>
+> I suppose that some more knowledge of both Linux device drivers programming
+> and of that specific driver is needed to do proper management of errors in
+> order to unwind what is already done by the code and leave everything in a
+> consistent state. I'd left that work to Unisys developers, if you don't mind.
+> I'd prefer to simply remove those TODO from where I placed them. I hope that
+> you agree with me.
 
+I don't know the details of this code, but normally the code is written so
+that it is only what is done in the current function that has to be
+unwound.  Perhaps it is possible to find what to do by looking at similar
+code in other drivers.  It is better to do the whole thing than to leave
+the code partly done.
+
+julia
