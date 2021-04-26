@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4D736B0BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30B436B0BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 11:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbhDZJgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 05:36:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232685AbhDZJgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 05:36:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7EF46103E;
-        Mon, 26 Apr 2021 09:35:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619429735;
-        bh=bLpWGYOQ2/M+ci5Sjuq25051I+IODYqeokzOZ36nF9o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ELRro1aqNRHwkv3KvqoNQ0Rl3kdWm1zeHFWfKZE/H7+mNlU5SwEghQ1xYhwZ+/eOA
-         HYDFfGeY5F5VBxvyMppJrxg11d/jo9T6Q91CEyOKSfIGtUMh08bIadA6ryO7AFMRa0
-         RKJnBILHgbUg64CjoqoTgoS/lTF2ZNuM/fN3mABK1BqoAMM8TM0sIhJmqaxc+frkoT
-         ZGhq6gntykkgXryFV6+2StcDX//W4x02FczsLjHnzID4r+rn6VHSolBeybt93RGD3T
-         BHCWEecm+AL9UXBvlenkpQOJlAfqYGE8lDg7lLbHhFYWMXMJWa4gfzx+3hGpKwtGGL
-         gOyymuXHDar6w==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1laxec-00045S-7F; Mon, 26 Apr 2021 11:35:46 +0200
-Date:   Mon, 26 Apr 2021 11:35:46 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Leonardo Antoniazzi <leoanto@aruba.it>
-Cc:     linux-usb@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: hso: fix NULL-deref on disconnect regression
-Message-ID: <YIaJcgmiJFERvbEF@hovoldconsulting.com>
-References: <20210426081149.10498-1-johan@kernel.org>
- <20210426112911.fb3593c3a9ecbabf98a13313@aruba.it>
+        id S232743AbhDZJhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 05:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232068AbhDZJg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 05:36:59 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C196C061574;
+        Mon, 26 Apr 2021 02:36:18 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id n21so7221398eji.1;
+        Mon, 26 Apr 2021 02:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=z9OfI7Gg8z0z7FNzTAb0WQZ6OZrp5p/pY11xr6JmEak=;
+        b=LtY+4GWa+gPJ2svm57w5ffrD9eqlgxCDKoAEcGY4NSEtNZKaCTYMcIOv/Qj5tq/hju
+         PUpBoPpLl+RMj3WzUmaehVmqEQsdMMaCtArV5P3i3TZekW8c5KhzmjQOz2bd+oateLPK
+         5Xzq1THHEAZdnKqtMGtiPA94T4NEZsjHPdBgLz5/SC2EncFdrsGF6IZU6C/0yyqdiVH0
+         dRQvz08GiQdv6vo6yoxJEqI4tE7FtrBA3S3te1p9naPx+os3Zl8p/U3fcU7fmTqpwH0O
+         bMYi/VFjGCzzpyog4Och8f4/mWPQtrMeZeZGuxNG6DHPElKPtdMRGdtwgnsnfzxq6KUe
+         B5QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=z9OfI7Gg8z0z7FNzTAb0WQZ6OZrp5p/pY11xr6JmEak=;
+        b=C94S1iNxSgVNVCJIJfyZtSHpiS4fsqK2F08OocPKcOsPVELI5vVJXW1A4szCXlzQIg
+         IgkIn6opwvCWFwN0EQKbqVT8SLo/s557/w8ydORgwwPzYKcTWc/mwmk7a6mL4bi6hDnU
+         c28CNJi3vSpJv/yv5FC+M5DSg1Gj9PYV2AwFTzlVWh3vVTKwWfHR8w5UFD5J4Hs1CaX4
+         fuhWANgVZdG6c4Qpjv6n9HEuIWtvDwfhFFXcV2jKy7aMxnwhmnGqmiKKzd67nfpKxbOE
+         jBYieFw8qc3zPknd5lRzHvu+1gDFte/b3txdxFuULf6PrnWOHZ5oejDqHjBKZJQ9+m3q
+         fPog==
+X-Gm-Message-State: AOAM533d6prQzqTcC0j724ygwboOoBdKLU7wi+jRFgJ/5GZ3J/gEPZWG
+        scXyt+8iQmXCVIe1qDhRfvg=
+X-Google-Smtp-Source: ABdhPJxnCx9QHe/B4XTJXqdM2K58vPYypO29YzrRVPEdHIir1aXHX2bUyGXZ/K62pLLHSwikGCSB/Q==
+X-Received: by 2002:a17:906:b191:: with SMTP id w17mr17828574ejy.200.1619429777239;
+        Mon, 26 Apr 2021 02:36:17 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id r18sm11155609ejd.106.2021.04.26.02.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 02:36:16 -0700 (PDT)
+Message-ID: <4140ef6b0fa84a5096a697ce4afea51b16e53045.camel@gmail.com>
+Subject: Re: [PATCH RESEND v3] mmc-utils: Re-submit of the erase command
+ addition plus remval of MMC_IOC_MULTI_CMD ifndef for erase. Re-committing
+ the change per request by Avir.
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "luserhker@gmail.com" <luserhker@gmail.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "kenny.gibbons@oracle.com" <kenny.gibbons@oracle.com>,
+        "kimito.sakata@oracle.com" <kimito.sakata@oracle.com>,
+        "rkamdar@micron.com" <rkamdar@micron.com>,
+        "chris@printf.net" <chris@printf.net>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
+Date:   Mon, 26 Apr 2021 11:36:15 +0200
+In-Reply-To: <DM6PR04MB6575ABF56616177093F75D80FC459@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210422161255.4610-1-luserhker@gmail.com>
+         <DM6PR04MB657557ACD70FF26950CF0B0AFC459@DM6PR04MB6575.namprd04.prod.outlook.com>
+         <DM6PR04MB6575ABF56616177093F75D80FC459@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426112911.fb3593c3a9ecbabf98a13313@aruba.it>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:29:11AM +0200, Leonardo Antoniazzi wrote:
-> On Mon, 26 Apr 2021 10:11:49 +0200
-> Johan Hovold <johan@kernel.org> wrote:
+On Fri, 2021-04-23 at 05:31 +0000, Avri Altman wrote:
+> +Bean
 > 
-> > Commit 8a12f8836145 ("net: hso: fix null-ptr-deref during tty device
-> > unregistration") fixed the racy minor allocation reported by syzbot, but
-> > introduced an unconditional NULL-pointer dereference on every disconnect
-> > instead.
-> > 
-> > Specifically, the serial device table must no longer be accessed after
-> > the minor has been released by hso_serial_tty_unregister().
-> > 
-> > Fixes: 8a12f8836145 ("net: hso: fix null-ptr-deref during tty device unregistration")
-> > Cc: stable@vger.kernel.org
-> > Cc: Anirudh Rayabharam <mail@anirudhrb.com>
-> > Reported-by: Leonardo Antoniazzi <leoanto@aruba.it>
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > ---
+> > > From: Kimito Sakata <kimito.sakata@oracle.com>
+> > > 
+> > > Signed-off-by: Kimito Sakata <
+> > > ksakata@Kimitos-MBP.hsd1.co.comcast.net>
+> > Hi Kimito,
+> > Please use a proper subject and commit log body.
+> > If you don't understand the difference between those two - please
+> > ask.
+> > Also for consistency, you might want to use your oracle mail for
+> > your Signed-
+> > off-by tag.
+> > You need to change your git configs for that.
+> Also, can you refer to this patch submitted by Bean - 
+> https://www.spinics.net/lists/linux-mmc/msg63582.html
+> Are you co-developing this together?
+> 
+> Thanks,
+> Avri
+> 
+> > Thanks,
+> > Avri
+> 
 
-> the patch fix the problem
+Kimito,
+If you need my support as before. ping me.
 
-Thanks for confirming.
+Bean
 
-Next time, please keep the CC list intact when replying so that everyone
-sees that you've tested it.
-
-Johan
