@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B159836B349
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CEB36B34B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 14:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhDZMlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 08:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233428AbhDZMlH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:41:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AA3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 05:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TRdEA94ZdhMo/6RApbudBekxefiDgCx+6J5g2PdXH4M=; b=SXXQ7MEls1rxUUukRaqj5tuilg
-        20fQsDjwOrbxG42KiTS29OxS5UU3RpNUkDvFf8zA32XSgOLu9GJDD1U7S1Fn6IkMCbGQBPeiaff2U
-        pXinHSUOtlB2v4FNiKPDJhL2M1jlNO8ESkwlZqsBCg+ptBOaz/L23+ClfhWqCoxTMRqugzAp4BnSP
-        /3XN5vaTAHvcAraktb5rglgGEA4x18usHb7GwHyvgXviblBUN/obXqFbuPN3+ujcj89XgG9JnNn0d
-        4a9WBr3r5D0nQquv7h8Z/LfySY1W5jDxbAGskgHpSV3+QXEsIOUJANlsgiOts85WAQgRe2g03vQIT
-        sfpCwxMw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lb0X3-005c5S-OU; Mon, 26 Apr 2021 12:40:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S233524AbhDZMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 08:41:18 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36543 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233426AbhDZMlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 08:41:17 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58C473001D0;
-        Mon, 26 Apr 2021 14:40:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3E7B62D1F890B; Mon, 26 Apr 2021 14:40:09 +0200 (CEST)
-Date:   Mon, 26 Apr 2021 14:40:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Lorenzo Colitti <lorenzo@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] hrtimer: Avoid double reprogramming in
- __hrtimer_start_range_ns()
-Message-ID: <YIa0qWdxM7vIsf/4@hirez.programming.kicks-ass.net>
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
- <YHXRWoVIYLL4rYG9@kroah.com>
- <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
- <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
- <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com>
- <87eef5qbrx.ffs@nanos.tec.linutronix.de>
- <87v989topu.ffs@nanos.tec.linutronix.de>
- <YIaKnuZDfffmmAdM@hirez.programming.kicks-ass.net>
- <87sg3dtedf.ffs@nanos.tec.linutronix.de>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FTPcv06FXz9sWH;
+        Mon, 26 Apr 2021 22:40:30 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619440831;
+        bh=srHTDLaE6/Ax1kqLp1QD3/Nh8xnjaKoB07fux3jx/qU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rarFuZHTCg0UBSNl1vtQgW/AFfjAtFil/lPbROchDj8mwyN+0ddxbLQnnSPXysC2F
+         QTv5o1YocK6vzh3WR3DuabViU3rNpcvnyGm3IZqr5Iy0IEwTv5i8Xk8s9/WlpZ9HFD
+         IgsywdMqmk4am8VtNtD8Psu4cV4lJWdVB9seaJafM/5PpDSqY6CZzMf+I7zWcTxEwB
+         FdQDiTnmlAmdDDa6d9sLCgPOz43kWm/Zg4lqujM1ufVxhF0OVRBSQizwuD2sbchQOk
+         z7CEtlGbfSRed8l2HEUIEYXLhnLNlg4GUi5EWllK8OvZ2dSRlrVL0K06roj5mvpLUh
+         XNvMBoKrddHNQ==
+Date:   Mon, 26 Apr 2021 22:40:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Nirmoy Das <nirmoy.das@amd.com>, Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210426224030.38cc5597@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg3dtedf.ffs@nanos.tec.linutronix.de>
+Content-Type: multipart/signed; boundary="Sig_/64QnA8A9i5OXeIl/i.JV95s";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 02:33:00PM +0200, Thomas Gleixner wrote:
+--Sig_/64QnA8A9i5OXeIl/i.JV95s
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> >> +	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
-> >> +	force_local &= base->cpu_base->next_timer == timer;
-> >
-> > Using bitwise ops on a bool is cute and all, but isn't that more
-> > readable when written like:
-> >
-> > 	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases) &&
-> > 		      base->cpu_base->next_timer == timer;
-> >
-> 
-> Which results in an extra conditional branch.
+Hi all,
 
-Srlsy, compiler not smart enough?
+After merging the amdgpu tree, today's linux-next build (htmldocs)
+produced this warning:
+
+drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:2808: warning: Excess function param=
+eter 'vm_context' description in 'amdgpu_vm_init'
+
+Introduced by commit
+
+  a35455d065c5 ("drm/amdgpu: cleanup amdgpu_vm_init()")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/64QnA8A9i5OXeIl/i.JV95s
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCGtL4ACgkQAVBC80lX
+0Gw47Af+OwAda/DiGGP/iwUPDOXVAqfSO03ntNgfE8mzEv6D/VcOMx8M2J0xq9WJ
+0qd/zpgPDhDw7cA9+qSDBMD82RmJ0OW3/tYPSa9Pw+eMpOFoG4hgS5TefyDk1VmQ
+M8+ie+ZXlKjSsyKKE1tX8P7CbaHePMN5LkqlmxCvf822LL2X85vkt5sWnyvDHdEa
+aSMCzQYIZsPj9P/PRwj3mdRtZuDxTkW/TY8yTS5py4NPlgyb/O32xrUn8XgHBHBK
+189wjAYbROJLh7GmLcy5qSWMvOkXShRxVMZbC9zQcxiTcYb0nMqjfmmc4AK4+Chk
+blEaPYyp34VnEWuCfW7Etv8IGmSLUA==
+=KJgL
+-----END PGP SIGNATURE-----
+
+--Sig_/64QnA8A9i5OXeIl/i.JV95s--
