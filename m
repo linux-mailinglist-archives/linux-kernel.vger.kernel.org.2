@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D0F36AE28
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482E136AE2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 09:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhDZHlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 03:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50350 "EHLO mail.kernel.org"
+        id S232484AbhDZHlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 03:41:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233004AbhDZHhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:37:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA1A613D2;
-        Mon, 26 Apr 2021 07:35:20 +0000 (UTC)
+        id S233010AbhDZHhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 03:37:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DD20613D3;
+        Mon, 26 Apr 2021 07:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619422521;
-        bh=fRKMYZvYhGVmJMK3RmuKLhM0C0YEvl0xVllUaPM6n1k=;
+        s=korg; t=1619422523;
+        bh=lnysf96Opzj0ZpAgpynl12FghCRqEvkaUKfn4+Gt+9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q6RwdHDs5H9fcO/yY/4JGFIs8uDaRIJyeJv7ROty6cGYm47DIXc6HB2xe2XjRXCbU
-         1nBRH4xvOgd+unar0dQBnHFhbxUmByvaEo+TQkplNFwOuqmAlamKMucG/mm0I27X9U
-         hiw98H3nMuu8eUa0/UsfbYlHYQSoSJed6zgMGJpg=
+        b=iD+sfnS3d512oFCyVslw9qzhkP81VkuBtsj0+GiGcTdLdnCtryc/71DbEX68UjFxt
+         L6CyTY+JUtqkN0jjTeCLPqgz18KOs4T29LDxb0AcCA22In6XoX8qqR8NzYILrPZudl
+         ytnA4KmJ9VvJl2/LZY0GctIYp6QoEo4DrGoHz6OI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wan Jiabing <wanjiabing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 46/49] cavium/liquidio: Fix duplicate argument
-Date:   Mon, 26 Apr 2021 09:29:42 +0200
-Message-Id: <20210426072821.300321435@linuxfoundation.org>
+Subject: [PATCH 4.14 47/49] ia64: fix discontig.c section mismatches
+Date:   Mon, 26 Apr 2021 09:29:43 +0200
+Message-Id: <20210426072821.332507431@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
 References: <20210426072819.721586742@linuxfoundation.org>
@@ -40,38 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wan Jiabing <wanjiabing@vivo.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 416dcc5ce9d2a810477171c62ffa061a98f87367 ]
+[ Upstream commit e2af9da4f867a1a54f1252bf3abc1a5c63951778 ]
 
-Fix the following coccicheck warning:
+Fix IA64 discontig.c Section mismatch warnings.
 
-./drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h:413:6-28:
-duplicated argument to & or |
+When CONFIG_SPARSEMEM=y and CONFIG_MEMORY_HOTPLUG=y, the functions
+computer_pernodesize() and scatter_node_data() should not be marked as
+__meminit because they are needed after init, on any memory hotplug
+event.  Also, early_nr_cpus_node() is called by compute_pernodesize(),
+so early_nr_cpus_node() cannot be __meminit either.
 
-The CN6XXX_INTR_M1UPB0_ERR here is duplicate.
-Here should be CN6XXX_INTR_M1UNB0_ERR.
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x1612): Section mismatch in reference from the function arch_alloc_nodedata() to the function .meminit.text:compute_pernodesize()
+  The function arch_alloc_nodedata() references the function __meminit compute_pernodesize().
+  This is often because arch_alloc_nodedata lacks a __meminit annotation or the annotation of compute_pernodesize is wrong.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x1692): Section mismatch in reference from the function arch_refresh_nodedata() to the function .meminit.text:scatter_node_data()
+  The function arch_refresh_nodedata() references the function __meminit scatter_node_data().
+  This is often because arch_refresh_nodedata lacks a __meminit annotation or the annotation of scatter_node_data is wrong.
+
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x1502): Section mismatch in reference from the function compute_pernodesize() to the function .meminit.text:early_nr_cpus_node()
+  The function compute_pernodesize() references the function __meminit early_nr_cpus_node().
+  This is often because compute_pernodesize lacks a __meminit annotation or the annotation of early_nr_cpus_node is wrong.
+
+Link: https://lkml.kernel.org/r/20210411001201.3069-1-rdunlap@infradead.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/ia64/mm/discontig.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h b/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h
-index b248966837b4..7aad40b2aa73 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h
-+++ b/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h
-@@ -412,7 +412,7 @@
- 	   | CN6XXX_INTR_M0UNWI_ERR             \
- 	   | CN6XXX_INTR_M1UPB0_ERR             \
- 	   | CN6XXX_INTR_M1UPWI_ERR             \
--	   | CN6XXX_INTR_M1UPB0_ERR             \
-+	   | CN6XXX_INTR_M1UNB0_ERR             \
- 	   | CN6XXX_INTR_M1UNWI_ERR             \
- 	   | CN6XXX_INTR_INSTR_DB_OF_ERR        \
- 	   | CN6XXX_INTR_SLIST_DB_OF_ERR        \
+diff --git a/arch/ia64/mm/discontig.c b/arch/ia64/mm/discontig.c
+index 9b2d994cddf6..99b59a7ec187 100644
+--- a/arch/ia64/mm/discontig.c
++++ b/arch/ia64/mm/discontig.c
+@@ -100,7 +100,7 @@ static int __init build_node_maps(unsigned long start, unsigned long len,
+  * acpi_boot_init() (which builds the node_to_cpu_mask array) hasn't been
+  * called yet.  Note that node 0 will also count all non-existent cpus.
+  */
+-static int __meminit early_nr_cpus_node(int node)
++static int early_nr_cpus_node(int node)
+ {
+ 	int cpu, n = 0;
+ 
+@@ -115,7 +115,7 @@ static int __meminit early_nr_cpus_node(int node)
+  * compute_pernodesize - compute size of pernode data
+  * @node: the node id.
+  */
+-static unsigned long __meminit compute_pernodesize(int node)
++static unsigned long compute_pernodesize(int node)
+ {
+ 	unsigned long pernodesize = 0, cpus;
+ 
+@@ -412,7 +412,7 @@ static void __init reserve_pernode_space(void)
+ 	}
+ }
+ 
+-static void __meminit scatter_node_data(void)
++static void scatter_node_data(void)
+ {
+ 	pg_data_t **dst;
+ 	int node;
 -- 
 2.30.2
 
