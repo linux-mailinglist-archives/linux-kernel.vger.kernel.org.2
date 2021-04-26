@@ -2,131 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1CD36B789
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A70936B78A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Apr 2021 19:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235384AbhDZRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 13:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235079AbhDZRGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 13:06:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FB1261026;
-        Mon, 26 Apr 2021 17:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619456748;
-        bh=D36H//TAB02VktKEaoh4tKmvan9tPn6r7pdbQfpUrm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LgEJr4Ew7kpTXELanpa6X550y3BJ6xqPCv6fogOlO3WLoiKINPRp/pdTiHxn3+vad
-         6EAtygNE89NOWRhopyAguQW3Pus5j9g+jhbNnzy7/birFl6h43brCBRxfi2Hvg8Sik
-         Ipg1RFZIvYalaa8tGvCjDnYwAE/l5NadXLUgIlj0=
-Date:   Mon, 26 Apr 2021 19:05:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jubin Zhong <zhongjubin@huawei.com>
-Subject: Re: [PATCH 020/190] Revert "PCI: Fix pci_create_slot() reference
- count leak"
-Message-ID: <YIby6bWKOz88N3Oy@kroah.com>
-References: <20210421130105.1226686-21-gregkh@linuxfoundation.org>
- <20210422044331.GA2907704@bjorn-Precision-5520>
+        id S235107AbhDZRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 13:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234657AbhDZRHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 13:07:11 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C270BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 10:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=8m/TwbehZa
+        6wECfAhJjbtNgNzvieIOLX32ZTiJHI7ec=; b=ZQVsScQTf6/kJSVghSkLNBrcM0
+        Gtub8j/oJFfjX3yKp5CdnhYMPoF7tBc2zPYXbausHUn4CZe7DW1H1ZJva4CznvB4
+        Dy/b43irO43I3UhhbHyOQIXWyxSQ0bE1cVLvJf9us/ZVO0C2iRlAgtMiPr+ksBKW
+        gPEa+nWY6xq7MudJc=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHT0cR84ZgqjhMAA--.336S4;
+        Tue, 27 Apr 2021 01:06:25 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] misc/libmasm/module: Fix two use after free in ibmasm_init_one
+Date:   Mon, 26 Apr 2021 10:06:20 -0700
+Message-Id: <20210426170620.10546-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422044331.GA2907704@bjorn-Precision-5520>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBHT0cR84ZgqjhMAA--.336S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFWUCrW8tryDWr4DWFW3KFg_yoW8Cr4DpF
+        W5Xa1qkrW8Ar4DAa1DtryDXa4UGrWkKa90g3y7Ca47Xr90vr9YyF1vkFyUZryUJFWkXayr
+        Jr45Jw48Z3WDZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8v
+        x2IErcIFxwCY02Avz4vE14v_GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JUeyIUUUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:43:31PM -0500, Bjorn Helgaas wrote:
-> [+cc Jiri, Jubin (author of 4684709bf81a)]
-> 
-> On Wed, Apr 21, 2021 at 02:58:15PM +0200, Greg Kroah-Hartman wrote:
-> > This reverts commit 8a94644b440eef5a7b9c104ac8aa7a7f413e35e5.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: https
-> > Cc: Qiushi Wu <wu000273@umn.edu>
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Please do not apply this revert.
-> 
-> Prior to 8a94644b440e ("PCI: Fix pci_create_slot() reference count
-> leak"), we essentially had this:
-> 
->   err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
->   if (err)
->     kfree(slot);
->     return ERR_PTR(err);
-> 
->   INIT_LIST_HEAD(&slot->list);
->   list_add(&slot->list, &parent->slots);
-> 
-> That was incorrect because if kobject_init_and_add() fails,
-> kobject_put() must be called to clean up the object (per the function
-> comment).  For pci_slot_ktype, the release function is
-> pci_slot_release():
-> 
->   pci_slot_release
->     list_del(&slot->list);
->     kfree(slot);
-> 
-> After 8a94644b440e, we had:
-> 
->   err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
->   if (err)
->     kobject_put(&slot->kobj);
->     return ERR_PTR(err);
-> 
->   INIT_LIST_HEAD(&slot->list);
->   list_add(&slot->list, &parent->slots);
-> 
-> This fixed one bug but exposed another: we correctly clean up the
-> object by calling kobject_put() which calls pci_slot_release(), but 
-> that dereferences slot->list, which hasn't been initialized yet.
-> 
-> But 4684709bf81a ("PCI: Fix pci_slot_release() NULL pointer
-> dereference") fixed that problem by making it this:
-> 
->   INIT_LIST_HEAD(&slot->list);
->   list_add(&slot->list, &parent->slots);
->   err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
->   if (err)
->     kobject_put(&slot->kobj);
->     return ERR_PTR(err);
-> 
-> This correctly initializes slot->list and cleans up if
-> kobject_init_and_add() fails.
-> 
-> But if we apply this revert, we'll have this:
-> 
->   INIT_LIST_HEAD(&slot->list);
->   list_add(&slot->list, &parent->slots);
->   err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
->   if (err)
->     kfree(slot);
->     return ERR_PTR(err);
-> 
-> Now we kfree(slot), but we don't call kobject_put(), so we don't
-> remove it from the list, so the list is now corrupted because one of
-> its entries has been deallocated.
+In ibmasm_init_one, it calls ibmasm_init_remote_input_dev().
+Inside ibmasm_init_remote_input_dev, mouse_dev and keybd_dev are
+allocated by input_allocate_device(), and assigned to
+sp->remote.mouse_dev and sp->remote.keybd_dev respectively.
 
-Thanks for the review, I have now dropped this revert.
+In the err_free_devices error branch of ibmasm_init_one,
+mouse_dev and keybd_dev are freed by input_free_device(), and return
+error. Then the execution runs into error_send_message error branch
+of ibmasm_init_one, where ibmasm_free_remote_input_dev(sp) is called
+to unregister the freed sp->remote.mouse_dev and sp->remote.keybd_dev.
 
-greg k-h
+My patch add a "error_init_remote" label to handle the error of
+ibmasm_init_remote_input_dev(), to avoid the uaf bugs.
+
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/misc/ibmasm/module.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/ibmasm/module.c b/drivers/misc/ibmasm/module.c
+index 4edad6c445d3..dc8a06c06c63 100644
+--- a/drivers/misc/ibmasm/module.c
++++ b/drivers/misc/ibmasm/module.c
+@@ -111,7 +111,7 @@ static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	result = ibmasm_init_remote_input_dev(sp);
+ 	if (result) {
+ 		dev_err(sp->dev, "Failed to initialize remote queue\n");
+-		goto error_send_message;
++		goto error_init_remote;
+ 	}
+ 
+ 	result = ibmasm_send_driver_vpd(sp);
+@@ -131,8 +131,9 @@ static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	return 0;
+ 
+ error_send_message:
+-	disable_sp_interrupts(sp->base_address);
+ 	ibmasm_free_remote_input_dev(sp);
++error_init_remote:
++	disable_sp_interrupts(sp->base_address);
+ 	free_irq(sp->irq, (void *)sp);
+ error_request_irq:
+ 	iounmap(sp->base_address);
+-- 
+2.25.1
+
+
