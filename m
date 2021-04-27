@@ -2,91 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EBF36CA5E
+	by mail.lfdr.de (Postfix) with ESMTP id 98E6A36CA5F
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236579AbhD0Rb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:31:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41348 "EHLO mail.kernel.org"
+        id S238182AbhD0RcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:32:00 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60178 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235593AbhD0Rbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:31:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 206A0613E5;
-        Tue, 27 Apr 2021 17:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619544668;
-        bh=/rQqaMen4CdzB60Rxa/kOLj5DJX3AW+xBuggzpn42zs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hFGxdMN0uYeFwxePEQT/CMAzyaqOIxnFp5LCIbIl2bmX+obM6+y0ZB+275hyV43U9
-         MgO7g/tTL85HaVZS/2Z/k4izVarIR4YnYzR7PHy54pxESnaRLM50DGNdIKyiAPYPFZ
-         q4EXVkmcA+8ahsVLlE7G22+jmPupou7uQxNxsi2A=
-Date:   Tue, 27 Apr 2021 19:31:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 138/190] Revert "net: liquidio: fix a NULL pointer
- dereference"
-Message-ID: <YIhKWhNzv9zIMQJ1@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-139-gregkh@linuxfoundation.org>
+        id S230219AbhD0Rb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:31:56 -0400
+Received: from zn.tnic (p200300ec2f0c5e0085f018e791730569.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:5e00:85f0:18e7:9173:569])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D612A1EC046E;
+        Tue, 27 Apr 2021 19:31:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619544672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iIQmBI+Zo3BhMV/gviAp3eIvYdirpGxvrasft61aLUs=;
+        b=dTzAlnNA1z73ZlcP8IgG4voK33h2ynjN4Nzgfza5WCYqVpGapyfC5U4Y66Iw/sW+LPx7VK
+        2m1TgfhI0djwxM04fpJhE/9B+VrVloQ6pA9Sn0g8im6F4p38Ir5FK3AOLmOD0AxYUQojxL
+        IR5B4SDcRtoFud7fv7nJdxuRmIeKyqM=
+Date:   Tue, 27 Apr 2021 19:31:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?Q?J=C3=BCrgen?= Gross <jgross@suse.com>
+Subject: Re: [RFC v2 01/32] x86/paravirt: Introduce CONFIG_PARAVIRT_XL
+Message-ID: <YIhKXcNuinL0ar0O@zn.tnic>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <4f8c9559dd04d8e8485c419c5ebc9471613f7928.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-139-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4f8c9559dd04d8e8485c419c5ebc9471613f7928.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:13PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit fe543b2f174f34a7a751aa08b334fe6b105c4569.
++ Jürgen.
+
+On Mon, Apr 26, 2021 at 11:01:28AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 > 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
+> Split off halt paravirt calls from CONFIG_PARAVIRT_XXL into
+> a separate config option. It provides a middle ground for
+> not-so-deep paravirtulized environments.
+
+Please introduce a spellchecker into your patch creation workflow.
+
+Also, what does "not-so-deep" mean?
+
+> CONFIG_PARAVIRT_XL will be used by TDX that needs couple of paravirt
+> calls that were hidden under CONFIG_PARAVIRT_XXL, but the rest of the
+> config would be a bloat for TDX.
+
+Used how? Why is it bloat for TDX?
+
+I'm sure that'll become clear in the remainder of the patches but you
+should state it here so that it is clear why you're doing what you're
+doing.
+
 > 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
->  drivers/net/ethernet/cavium/liquidio/lio_main.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  arch/x86/Kconfig                      |  4 +++
+>  arch/x86/boot/compressed/misc.h       |  1 +
+>  arch/x86/include/asm/irqflags.h       | 38 +++++++++++++++------------
+>  arch/x86/include/asm/paravirt.h       | 22 +++++++++-------
+>  arch/x86/include/asm/paravirt_types.h |  3 ++-
+>  arch/x86/kernel/paravirt.c            |  4 ++-
+>  arch/x86/mm/mem_encrypt_identity.c    |  1 +
+>  7 files changed, 44 insertions(+), 29 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-> index 7c5af4beedc6..6fa570068648 100644
-> --- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
-> +++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-> @@ -1166,11 +1166,6 @@ static void send_rx_ctrl_cmd(struct lio *lio, int start_stop)
->  	sc = (struct octeon_soft_command *)
->  		octeon_alloc_soft_command(oct, OCTNET_CMD_SIZE,
->  					  16, 0);
-> -	if (!sc) {
-> -		netif_info(lio, rx_err, lio->netdev,
-> -			   "Failed to allocate octeon_soft_command\n");
-> -		return;
-> -	}
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 2792879d398e..6b4b682af468 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -783,8 +783,12 @@ config PARAVIRT
+>  	  over full virtualization.  However, when run without a hypervisor
+>  	  the kernel is theoretically slower and slightly larger.
 >  
->  	ncmd = (union octnet_cmd *)sc->virtdptr;
+> +config PARAVIRT_XL
+> +	bool
+> +
+>  config PARAVIRT_XXL
+>  	bool
+> +	select PARAVIRT_XL
+>  
+>  config PARAVIRT_DEBUG
+>  	bool "paravirt-ops debugging"
+> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+> index 901ea5ebec22..4b84abe43765 100644
+> --- a/arch/x86/boot/compressed/misc.h
+> +++ b/arch/x86/boot/compressed/misc.h
+> @@ -9,6 +9,7 @@
+>   * paravirt and debugging variants are added.)
+>   */
+>  #undef CONFIG_PARAVIRT
+> +#undef CONFIG_PARAVIRT_XL
+>  #undef CONFIG_PARAVIRT_XXL
+
+So what happens if someone else needs even less pv and defines
+CONFIG_PARAVIRT_L. Or _M? Or _S?
+
+Are we going to teleport into a clothing store each time we look at
+paravirt now? :)
+
+So before this goes out of hand let's define explicitly, pls, what
+XXL means and XL. And rename them. They could be called PARAVIRT_FULL
+and PARAVIRT_HLT as apparently that thing is exposing only the PV ops
+related to HLT.
+
+Or something to that effect.
+
+Dunno, maybe Jürgen has a better idea, leaving in the rest quoted for him.
+
+Thx.
+
+>  #undef CONFIG_PARAVIRT_SPINLOCKS
+>  #undef CONFIG_KASAN
+> diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
+> index 144d70ea4393..1688841893d7 100644
+> --- a/arch/x86/include/asm/irqflags.h
+> +++ b/arch/x86/include/asm/irqflags.h
+> @@ -59,27 +59,11 @@ static inline __cpuidle void native_halt(void)
+>  
+>  #endif
+>  
+> -#ifdef CONFIG_PARAVIRT_XXL
+> +#ifdef CONFIG_PARAVIRT_XL
+>  #include <asm/paravirt.h>
+>  #else
+>  #ifndef __ASSEMBLY__
+>  #include <linux/types.h>
+> -
+> -static __always_inline unsigned long arch_local_save_flags(void)
+> -{
+> -	return native_save_fl();
+> -}
+> -
+> -static __always_inline void arch_local_irq_disable(void)
+> -{
+> -	native_irq_disable();
+> -}
+> -
+> -static __always_inline void arch_local_irq_enable(void)
+> -{
+> -	native_irq_enable();
+> -}
+> -
+>  /*
+>   * Used in the idle loop; sti takes one instruction cycle
+>   * to complete:
+> @@ -97,6 +81,26 @@ static inline __cpuidle void halt(void)
+>  {
+>  	native_halt();
+>  }
+> +#endif /* !__ASSEMBLY__ */
+> +#endif /* CONFIG_PARAVIRT_XL */
+> +
+> +#ifndef CONFIG_PARAVIRT_XXL
+> +#ifndef __ASSEMBLY__
+> +
+> +static __always_inline unsigned long arch_local_save_flags(void)
+> +{
+> +	return native_save_fl();
+> +}
+> +
+> +static __always_inline void arch_local_irq_disable(void)
+> +{
+> +	native_irq_disable();
+> +}
+> +
+> +static __always_inline void arch_local_irq_enable(void)
+> +{
+> +	native_irq_enable();
+> +}
+>  
+>  /*
+>   * For spinlocks, etc:
+> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+> index 4abf110e2243..2dbb6c9c7e98 100644
+> --- a/arch/x86/include/asm/paravirt.h
+> +++ b/arch/x86/include/asm/paravirt.h
+> @@ -84,6 +84,18 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
+>  	PVOP_VCALL1(mmu.exit_mmap, mm);
+>  }
+>  
+> +#ifdef CONFIG_PARAVIRT_XL
+> +static inline void arch_safe_halt(void)
+> +{
+> +	PVOP_VCALL0(irq.safe_halt);
+> +}
+> +
+> +static inline void halt(void)
+> +{
+> +	PVOP_VCALL0(irq.halt);
+> +}
+> +#endif
+> +
+>  #ifdef CONFIG_PARAVIRT_XXL
+>  static inline void load_sp0(unsigned long sp0)
+>  {
+> @@ -145,16 +157,6 @@ static inline void __write_cr4(unsigned long x)
+>  	PVOP_VCALL1(cpu.write_cr4, x);
+>  }
+>  
+> -static inline void arch_safe_halt(void)
+> -{
+> -	PVOP_VCALL0(irq.safe_halt);
+> -}
+> -
+> -static inline void halt(void)
+> -{
+> -	PVOP_VCALL0(irq.halt);
+> -}
+> -
+>  static inline void wbinvd(void)
+>  {
+>  	PVOP_VCALL0(cpu.wbinvd);
+> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+> index de87087d3bde..5261fba47ba5 100644
+> --- a/arch/x86/include/asm/paravirt_types.h
+> +++ b/arch/x86/include/asm/paravirt_types.h
+> @@ -177,7 +177,8 @@ struct pv_irq_ops {
+>  	struct paravirt_callee_save save_fl;
+>  	struct paravirt_callee_save irq_disable;
+>  	struct paravirt_callee_save irq_enable;
+> -
+> +#endif
+> +#ifdef CONFIG_PARAVIRT_XL
+>  	void (*safe_halt)(void);
+>  	void (*halt)(void);
+>  #endif
+> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+> index c60222ab8ab9..d6d0b363fe70 100644
+> --- a/arch/x86/kernel/paravirt.c
+> +++ b/arch/x86/kernel/paravirt.c
+> @@ -322,9 +322,11 @@ struct paravirt_patch_template pv_ops = {
+>  	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
+>  	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(native_irq_disable),
+>  	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(native_irq_enable),
+> +#endif /* CONFIG_PARAVIRT_XXL */
+> +#ifdef CONFIG_PARAVIRT_XL
+>  	.irq.safe_halt		= native_safe_halt,
+>  	.irq.halt		= native_halt,
+> -#endif /* CONFIG_PARAVIRT_XXL */
+> +#endif /* CONFIG_PARAVIRT_XL */
+>  
+>  	/* Mmu ops. */
+>  	.mmu.flush_tlb_user	= native_flush_tlb_local,
+> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+> index 6c5eb6f3f14f..20d0cb116557 100644
+> --- a/arch/x86/mm/mem_encrypt_identity.c
+> +++ b/arch/x86/mm/mem_encrypt_identity.c
+> @@ -24,6 +24,7 @@
+>   * be extended when new paravirt and debugging variants are added.)
+>   */
+>  #undef CONFIG_PARAVIRT
+> +#undef CONFIG_PARAVIRT_XL
+>  #undef CONFIG_PARAVIRT_XXL
+>  #undef CONFIG_PARAVIRT_SPINLOCKS
 >  
 > -- 
-> 2.31.1
+> 2.25.1
 > 
 
-While this does keep the immediate "NULL dereference" from happening, it
-does not properly propagate the error back to the callers, AND it does
-not fix this same identical issue in the
-drivers/net/ethernet/cavium/liquidio/lio_vf_main.c for some reason.  I
-will revert this and fix up both files properly in a later on patch.
+-- 
+Regards/Gruss,
+    Boris.
 
-thanks,
-
-greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
