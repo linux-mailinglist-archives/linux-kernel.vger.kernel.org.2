@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C0636CADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C918F36CAE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238868AbhD0SG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236552AbhD0SG1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:06:27 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A47C061574;
-        Tue, 27 Apr 2021 11:05:44 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 124so14025785lff.5;
-        Tue, 27 Apr 2021 11:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=voehpRrgPSUyKAUYqMCooYCC9snBLdd6zp79y1bt9aU=;
-        b=LXUImeXNzzBi3a2W//2YnoQbN9d8sMAeTW8gAjiIk0GVXqo1YUx3iMua+u/ZY4vg3N
-         DCf5T6XxXeebuGhZk9sujNmaemA9YRIob4U8GPmvP7EYTo71DLFzs2Nz2gYZjrR7n2oS
-         v6ywlfFAYrlyWbWiV1zGb3NH1Z/0sixxh5Vy867684O0ohAzOX2rSg8ZB9IVT+a2ylsB
-         fjkNIlzemow8mRzubWbpcGNaZaGEz/a4xjUDo+/15dSKCW5yXMrA/GgvKAFTW48rH0aH
-         MbdY8J7DsBsj4sILhSFQIhazG9O1ojPRbViKLHPk1MbbJi5IkiRiL6Fs0wowRHPZHeF6
-         +WgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=voehpRrgPSUyKAUYqMCooYCC9snBLdd6zp79y1bt9aU=;
-        b=HodtMskljA7eHJJLsziFVFTsKHLpLA1mdy/Ptopiy6PRxdzwho4GXX4KuUOx79AI8M
-         5UOiZt4cYRVD9sjsPXCutMG4Q7VJgPyYybwda6MEQljthHH5hb/gcE6TWbu/KGfoH2p+
-         JbPcQstIX6ubZgCyek1bB41HxSg2l2+3dUPAtlxjGiHzfACzewrJM7Dgb8swDhyYiQlm
-         hpMX2a8dHU/pBGu9YTVMqKM9OS1nzMHP9plVLncEHj0ob8EhIeF1MMfpWnY/TJTsqtKk
-         dsu6oCGPs20FScxzVl8zGxyb4NvXdaCN2k0Uu3dm6hfv9d97TOkVQN7teCkesRWOQJkZ
-         DAFQ==
-X-Gm-Message-State: AOAM532BaVnDtX3jx/wBnWfiopTxs+HB100US4vEAB4Cfzvcv9krtJaX
-        ndZCGCfisKH+F2kaoIrdt7POI6cxLSfjQSMH13E=
-X-Google-Smtp-Source: ABdhPJzw72zeE2/7nP38aq6iRM+kP7rwVWlTw2BFQDLCGuSlHWkgR+cxnHReunB+w6mVyCpN1/L+jYKxKRLjFJ8WRwU=
-X-Received: by 2002:ac2:510d:: with SMTP id q13mr18081232lfb.75.1619546742689;
- Tue, 27 Apr 2021 11:05:42 -0700 (PDT)
-MIME-Version: 1.0
+        id S238088AbhD0SH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235505AbhD0SH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C939061153;
+        Tue, 27 Apr 2021 18:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619546833;
+        bh=8x24zzddogj013oYLRSBQe2TVlrwjfhBzEdbJOrDgSQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TLPkL4/Umw90RxwnDHja17rwmR8wukBNRNDi0ggmNNH+gW3QLwYquU/qAIUWqyzNq
+         BcdNRp+lfWlzM4lK9n+xesH1DCP9aKcy7OtaiF9rCsz8W4YKh+TpgU3/LKs5BOoSGa
+         6eI8hm5Xy+a462mWJq9cwRuqnAfLgmyuCatD3pKg=
+Date:   Tue, 27 Apr 2021 20:07:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 171/190] Revert "net: stmicro: fix a missing check of
+ clk_prepare"
+Message-ID: <YIhSzrjLbGqPsfRV@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-67-gregkh@linuxfoundation.org> <YIhQsRZ9LgZKlkPw@kroah.com>
-In-Reply-To: <YIhQsRZ9LgZKlkPw@kroah.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 27 Apr 2021 11:05:30 -0700
-Message-ID: <CAADnVQKrsue+0tCCjU9wzGALPqWZXF2vxUH1hJuF7uJkf5x+oQ@mail.gmail.com>
-Subject: Re: [PATCH 066/190] Revert "bpf: Remove unnecessary assertion on fp_old"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ <20210421130105.1226686-172-gregkh@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-172-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 10:59 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Apr 21, 2021 at 02:59:01PM +0200, Greg Kroah-Hartman wrote:
-> > This reverts commit 5bf2fc1f9c88397b125d5ec5f65b1ed9300ba59d.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Aditya Pakki <pakki001@umn.edu>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: https
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  kernel/bpf/core.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 75244ecb2389..da29211ea5d8 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -230,6 +230,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
-> >       struct bpf_prog *fp;
-> >       u32 pages;
-> >
-> > +     BUG_ON(fp_old == NULL);
-> > +
-> >       size = round_up(size, PAGE_SIZE);
-> >       pages = size / PAGE_SIZE;
-> >       if (pages <= fp_old->pages)
-> > --
-> > 2.31.1
-> >
->
-> The original commit here is correct, I'll drop this revert.
+On Wed, Apr 21, 2021 at 03:00:46PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit f86a3b83833e7cfe558ca4d70b64ebc48903efec.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+> index 0e1ca2cba3c7..0e86553fc06f 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+> @@ -50,9 +50,7 @@ static int sun7i_gmac_init(struct platform_device *pdev, void *priv)
+>  		gmac->clk_enabled = 1;
+>  	} else {
+>  		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
+> -		ret = clk_prepare(gmac->tx_clk);
+> -		if (ret)
+> -			return ret;
+> +		clk_prepare(gmac->tx_clk);
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.31.1
+> 
 
-Yes. No need to revert. The original commit removed BUG_ON and it's fine.
-Thanks for checking.
+The original commit here can cause a memory leak so I will keep this
+revert and submit a change that fixes this up properly.
+
+thanks,
+
+greg k-h
