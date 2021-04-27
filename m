@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1ED36BD6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A436BD7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbhD0Cip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:38:45 -0400
-Received: from smtprelay0232.hostedemail.com ([216.40.44.232]:50332 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230516AbhD0Cin (ORCPT
+        id S234438AbhD0CqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:46:05 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16160 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhD0CqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:38:43 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 33C11100E7B40;
-        Tue, 27 Apr 2021 02:38:00 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 86D9220D75C;
-        Tue, 27 Apr 2021 02:37:58 +0000 (UTC)
-Message-ID: <561f49745182ce6a13a2456e263c1b0cc572ab27.camel@perches.com>
-Subject: Re: [PATCH] nvmem: qfprom: minor nit fixes, no functional change
-From:   Joe Perches <joe@perches.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>
-Date:   Mon, 26 Apr 2021 19:37:56 -0700
-In-Reply-To: <CAD=FV=WHqoeFsqq09fz_r_viBnKuwiTyAez7VaU5ZBFu71fWvg@mail.gmail.com>
-References: <1619161503-8784-1-git-send-email-rnayak@codeaurora.org>
-         <73945e7037ab61eb34a2a1af05aa3eef75c8f836.camel@perches.com>
-         <CAD=FV=WHqoeFsqq09fz_r_viBnKuwiTyAez7VaU5ZBFu71fWvg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 26 Apr 2021 22:46:03 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FTmJ54s1Mzmdsx;
+        Tue, 27 Apr 2021 10:42:13 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.201.183) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 27 Apr 2021 10:45:09 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <vincent.guittot@linaro.org>, <mingo@redhat.com>,
+        <peterz@infradead.org>, <dietmar.eggemann@arm.com>,
+        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>
+CC:     <valentin.schneider@arm.com>, <juri.lelli@redhat.com>,
+        <bristot@redhat.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <xuwei5@huawei.com>,
+        <prime.zeng@hisilicon.com>, <guodong.xu@linaro.org>,
+        <yangyicong@huawei.com>, <liguozhu@hisilicon.com>,
+        <linuxarm@openeuler.org>, <wanghuiqiang@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        "Yongjia Xie" <xieyongjia1@huawei.com>
+Subject: [PATCH] sched/fair: don't use waker's cpu if the waker of sync wake-up is interrupt
+Date:   Tue, 27 Apr 2021 14:37:58 +1200
+Message-ID: <20210427023758.4048-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 86D9220D75C
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: igam89qcp9iuit83uui8a77ow3e636gd
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19Vwk0sMy3DaV+hd2AEPXdA9q/yCizhwUc=
-X-HE-Tag: 1619491078-953317
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.183]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-26 at 08:11 -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Fri, Apr 23, 2021 at 8:13 AM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Fri, 2021-04-23 at 12:35 +0530, Rajendra Nayak wrote:
-> > > Fix a missed newline, and update a comment which is stale
-> > > after the merge of '5a1bea2a: nvmem: qfprom: Add support for fuse
-> > > blowing on sc7280'
-> > > No other functional change in this patch.
-> > []
-> > > diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
-> > []
-> > > @@ -195,7 +196,7 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
-> > >       }
-> > > 
-> > >       /*
-> > > -      * Hardware requires 1.8V min for fuse blowing; this may be
-> > > +      * Hardware requires a min voltage for fuse blowing; this may be
-> > >        * a rail shared do don't specify a max--regulator constraints
-> > 
-> >                          so don't?
-> > 
-> > >        * will handle.
-> > >        */
-> > 
-> > but the comment doesn't make much overall sense to me.
-> 
-> What part of it doesn't make sense, exactly?
+a severe qperf performance decrease was reported in the below use case:
+For a hardware with 2 NUMA nodes, node0 has cpu0-31, node1 has cpu32-63.
+Ethernet is located in node1.
 
-max--regulator
+Run the below commands:
+$ taskset -c 32-63 stress -c 32 &
+$ qperf 192.168.50.166 tcp_lat
+tcp_lat:
+	latency = 2.95ms.
+Normally the latency should be less than 20us. But in the above test,
+latency increased dramatically to 2.95ms.
 
-I think that should be something like:
+This is caused by ping-pong of qperf between node0 and node1. Since it
+is a sync wake-up and waker's nr_running == 1, WAKE_AFFINE will pull
+qperf to node1, but LB will soon migrate qperf back to node0.
+Not like a normal sync wake-up coming from a task, the waker in the above
+test is an interrupt and nr_running happens to be 1 since stress starts
+32 threads on node1 with 32 cpus.
 
-	Hardware requires a minimum voltage for fuse blowing.
-	This may be a shared rail so don't specify a maximum.
-	Regulator constraints will handle (what exactly, it?)
+Testing also shows the performance of qperf won't drop if the number
+of threads are increased to 64, 96 or larger values:
+$ taskset -c 32-63 stress -c 96 &
+$ qperf 192.168.50.166 tcp_lat
+tcp_lat:
+	latency = 14.7us.
 
+Obviously "-c 96" makes "cpu_rq(this_cpu)->nr_running == 1" false in
+wake_affine_idle() so WAKE_AFFINE won't pull qperf to node1.
+
+To fix this issue, this patch checks the waker of sync wake-up is a task
+but not an interrupt. In this case, the waker will schedule out and give
+CPU to wakee.
+
+Reported-by: Yongjia Xie <xieyongjia1@huawei.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ kernel/sched/fair.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6d73bdbb2d40..8ad2d732033d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5829,7 +5829,12 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
+ 	if (available_idle_cpu(this_cpu) && cpus_share_cache(this_cpu, prev_cpu))
+ 		return available_idle_cpu(prev_cpu) ? prev_cpu : this_cpu;
+ 
+-	if (sync && cpu_rq(this_cpu)->nr_running == 1)
++	/*
++	 * If this is a sync wake-up and the only running thread is just
++	 * waker, thus, waker is not interrupt, we assume wakee will get
++	 * the cpu of waker soon
++	 */
++	if (sync && cpu_rq(this_cpu)->nr_running == 1 && in_task())
+ 		return this_cpu;
+ 
+ 	if (available_idle_cpu(prev_cpu))
+-- 
+2.25.1
 
