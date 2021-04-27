@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA9236BF07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D1536BF08
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhD0FyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 01:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhD0FyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:54:09 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBE1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:53:26 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y62so7980622pfg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ahbz/au3UbZNosIsF6EFm5aomtTD02orvpaKrCQHc40=;
-        b=LWUJHbOKgdtJ6oX6D83nOjdlgK4s7GNJtDAuLp8ylGAzyCM6UBb/jzFgeJ7DGAbpJP
-         DNd4vPaxPeiZXGX2WcIkffpVjQzwZ0a+WdyQspUanrHBH9B3DQvKHXAFXog1GY+Jg+I4
-         4uTRNikVtyX498tn5gK2eSioOe9mcDzsmfo+U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ahbz/au3UbZNosIsF6EFm5aomtTD02orvpaKrCQHc40=;
-        b=c/p2Stmv53ilMnO5dOYaU5V8PKMUcR7l437SfBAqvbXBzohXsF9F2Y+z1WYr4Vu87H
-         brYEDzN5pEvzkZ0tMeKSg97Yk1sjRi9i3ZKxLiLDsnqBWsDb2SH3uxk606WfDviy+3wn
-         CeWjS2tGTB8oKkX1//e6AoSgnJHuJgGngEj3FsLwtkGjomp8LoJsc4aGWaN75KU4xmVO
-         Lqg0b+kSbyfuNI4WxG1yiAv0r1N1EHrgeuesDOPTHFkq5zwVyrMeXJ6E7iK3jIjNSvGo
-         za1/itqbB+Dum9Wos6aLBNQeBhldQIy2zYI3zUjGgovDOA/NOfKFpltIcnfYCxSSepo/
-         UW+Q==
-X-Gm-Message-State: AOAM5312iA8oj7hAIfcsU2hls+/rDlc94UpmcG0PlTlWoLSmZ4wDijGa
-        DV0OyaGFVwGrDgTUyMpSAhUlAQ==
-X-Google-Smtp-Source: ABdhPJzrGiIV8MdRDA3kGoxL5uIu6D4c5p2fXonC3FcGnjrTM+5T9wK9n28nao14b4ww4VXQLrSlMw==
-X-Received: by 2002:aa7:864b:0:b029:272:947e:85d7 with SMTP id a11-20020aa7864b0000b0290272947e85d7mr13782076pfo.45.1619502806391;
-        Mon, 26 Apr 2021 22:53:26 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:3984:c4f5:8612:6b3e])
-        by smtp.gmail.com with ESMTPSA id b25sm1367457pfd.7.2021.04.26.22.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 22:53:25 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/bridge: anx7625: Fix power on delay
-Date:   Tue, 27 Apr 2021 13:53:20 +0800
-Message-Id: <20210427055320.32404-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+        id S230128AbhD0F4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 01:56:21 -0400
+Received: from mout.gmx.net ([212.227.17.21]:60501 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhD0F4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 01:56:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619502876;
+        bh=4SozHBhMS5Q8Rjl3HiUYSX1YMImtT3zCoY8k6axU3iM=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=ECNROBuCdUH/MSwQlGMNlObOQEafMHP7tGoJgY3Aho+Zsq9AzMnKz+NFLOeORGatx
+         dCiZW1S6wpi9HYROFcgmI9UCx2XdWCjid+nuDe9XFotjQJBtvLIzU67nmWdPgkBC+c
+         6PvX7BCIFWu1/+udYDU43thxn2RTAWN/jMV/WrLk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.83]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MA7KU-1llgoL4AH4-00Ba33; Tue, 27
+ Apr 2021 07:54:36 +0200
+Message-ID: <3fe7113cc87ac89077b55ca55bda2b99729f13c8.camel@gmx.de>
+Subject: Re: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+ wake-up is interrupt
+From:   Mike Galbraith <efault@gmx.de>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+Cc:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "xieyongjia (A)" <xieyongjia1@huawei.com>
+Date:   Tue, 27 Apr 2021 07:54:32 +0200
+In-Reply-To: <d057eb13ec4e4643b314dd1652ffa9d4@hisilicon.com>
+References: <20210427023758.4048-1-song.bao.hua@hisilicon.com>
+         <9a6cadd9b65068b52c95adc44119bd09c6a4f9d7.camel@gmx.de>
+         <d057eb13ec4e4643b314dd1652ffa9d4@hisilicon.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VGkbZIHqRz2YuSWjg2sJQ4r3WPhkq+LeT9fZwooJyCuvehLif6G
+ cW0g4T5gMpqWhN1hw29A5ogOBhZkjUX2lo+VKpo48gD1AGoCbbQ7jhrf8qRWYMI8E8zWtz2
+ Oe2ia1DGrJsHL2VsC6dIAIZYkz3wLaZqCW5zzwzgBzvAd29GoKiPVIAxfspbUg+Fw2KPqNJ
+ sDKVPgRI9RR7LK8U9t/Wg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2/fobH0T9/c=:ii2hab9nNDI0n1MjFDiepJ
+ 7gDuCQYhVP7+jc7rpTprjR8UXwtN5mlANMDN+7dIWli4Z6XapT91m32KpKxxt8G+DbKjgtbkw
+ RBsIECTenGuwGuTZo1yJa4cn3r/J/3Pl7pW1oQ9N8IhS/IqK6M962kYTOLG5ViOmaUrVWjX3S
+ FDKt+HREzVlqBtB6qgr+y66GNH9jogJWPiaxo3aBtAOhKWb7r9WvDzjU/81o5XUQ5RBKBjwZs
+ aMcUV2FsdC9msYVJGhBk21iAlPjvpUVvUWgEewYq1JD1xIJvZKNlWWKD0U3+Bs3PNUONa/Mhh
+ 5mbLIpIYxwwEEZjTQN6LJONaSTRCRQAnw7WPbnHsLkR+8JhAfMgyfxfLF4Tz45yYqrtQCdzA4
+ FCM7i/9flTk7IReaKnTIBkfCK+fAgoCPiRqLfw05IRobEClC3MNxlQ/A10dXGK8b+K73z78ch
+ gUGemYJz5GGXRMgcRVdeRB/IKnGVQBmHzG8Ob1UZnCXSK8IiN07Lo3MvZiqlxzP1xytDMI9+c
+ OSDlvY143giwKsTxKV+oppuqI5Vqgrt5Hbuqofw5bFvgSDbPhB9+Xgm9wrCifwTXrdWMBZQLv
+ hvPRzWIImgx43gcVUE8a4nBeadL8z5pPQEkb1/IC9U3C2VFxj0zE6jO00Y5kv0Gb17g8xXfV/
+ YY2Sr5wxjw7lnUuXrF2JGDPMDyjw77qQ5f3pOHCUQVJz3dXXqxN/4bFpAseX4qv/CkFRENOha
+ j/9acOz3tw3bGs98FJw5+aO7f04baD8aOnEpjLMsCdLp23c7rWuhloJvOsGyC1nFP45gink8O
+ 09XRq+UTPYdRCnsa5VGG2TYZ24Zj1CQV/Acb03Ph+IbHVOzUTS2ZWhkbYcxhHgK8bkM6/bYsD
+ byLqm0KNEq/LJOBAkM+amEW63exyVpS7YyHAxfKikN52KwkUuN8UUTY35p3BLKpjXKUYhwRH8
+ h/HAJhDduaZiIBRczw+pE+aqNvxMk9WtZnk3ImNbRVVcOZjWT/2tY2PbRwJE0ZTvTBqeOLVNm
+ 6lmwCnidDVg0btuiPXiVxlTPRgeddCoL6LLeFPEKviY3E68AAEq6gTW2weL3J0DSNfx8WpH1B
+ 0UBUe5aIiTCEVrkpSU02/VqfY5+k9HWiDw3fOD2GcEkvNtQNuLsX4KWd4O0NwC4a38MsSgQkv
+ Q1C9HkZAGQaihsJy2OV91RKZAX+ODCFnvNAnEq1jnnp61xP3JyjTxlQdRvI/2/c57tAw0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From anx7625 spec, the delay between powering on power supplies and gpio
-should be larger than 10ms.
+On Tue, 2021-04-27 at 04:44 +0000, Song Bao Hua (Barry Song) wrote:
+>
+>
+> I agree sync hint might have been overused by other kernel subsystem.
+> But this patch will at least fix a case: sync waker is interrupt,
+> in this case, the existing task has nothing to do with waker and wakee,
+> so this case should be excluded from wake_affine_idle().
 
-Fixes: 6c744983004e ("drm/bridge: anx7625: disable regulators when power off")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I long ago tried filtering interrupt wakeups, and met some surprises.
+Wakeup twiddling always managing to end up being a rob Peter to pay
+Paul operation despite our best efforts, here's hoping that your pile
+of stolen cycles is small enough to escape performance bot notice :)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 23283ba0c4f9..0a8db745cfd5 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -893,7 +893,7 @@ static void anx7625_power_on(struct anx7625_data *ctx)
- 		usleep_range(2000, 2100);
- 	}
- 
--	usleep_range(4000, 4100);
-+	usleep_range(10000, 11000);
- 
- 	/* Power on pin enable */
- 	gpiod_set_value(ctx->pdata.gpio_p_on, 1);
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+	-Mike
 
