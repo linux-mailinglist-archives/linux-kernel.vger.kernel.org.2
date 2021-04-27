@@ -2,114 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5283136CF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15C736CF50
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239513AbhD0XGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 19:06:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237670AbhD0XGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56B9F613FB
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 23:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619564758;
-        bh=bFq91+wLKJQRSGqSZUDMiKbKQv489DmBnnoPHMaipC0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F9g7ogeuaeGuK8E6M4wsY/KsStsmoCvnPTUbJxNEnBWJ/hbepbbxwg7rklNeKZay5
-         y69N2IeNEHdmcvMQuWNRzVInKLsg9eUVyD5uyfvRTuoSbu5707hOsIPY+LvtfPlAJK
-         0+GJuQCk+K+GJcKcpklvO/0tUkhfDQYrcSKYi/cOiUg+nwtOKTHbFkRLDmAuoQe5ZC
-         XOdQkNdztiqwenZI/2yMVqKq6qlKcI407Qmk55uJj9/vDZRhrVbKchXXWWP4NX7B/J
-         2H/hFN/ywykL9UE3y7Lbl9CtRTXL9YM+tiigSU266+hhpz6Y/5bk6egP5CLm+MCRC1
-         2hiA4c6pFprnA==
-Received: by mail-lf1-f49.google.com with SMTP id x19so65792592lfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 16:05:58 -0700 (PDT)
-X-Gm-Message-State: AOAM532Nyx9vAQj91fUbvEn4O99EwJlGhdiSJwLx9vZB2iaYmDK7I42C
-        1BToHQuEgqZU06R8RXtbJtKQ8CNgS7XUvzGC/fNWGA==
-X-Google-Smtp-Source: ABdhPJxsZ6v+mxsUFoXzh/FT+O/MG75upEAO8bufMjCXZ7qFIi7idLgKAL2HtVk+t5jLV9YS690ht3reB3J1AkFH/04=
-X-Received: by 2002:a05:6512:21c2:: with SMTP id d2mr17768323lft.424.1619564756699;
- Tue, 27 Apr 2021 16:05:56 -0700 (PDT)
+        id S239424AbhD0XPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 19:15:45 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:36772 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236547AbhD0XPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:15:44 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id F0A2A1F426AB
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
+        Peter Oskolkov <posk@posk.io>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH v3 00/13] Add futex2 syscalls
+Date:   Tue, 27 Apr 2021 20:12:35 -0300
+Message-Id: <20210427231248.220501-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 28 Apr 2021 01:05:45 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
-Message-ID: <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:34 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Apr 27, 2021 at 10:09 AM Brendan Jackman <jackmanb@google.com> wrote:
-> >
-> > One of our benchmarks running in (Google-internal) CI pushes data
-> > through the ringbuf faster than userspace is able to consume
-> > it. In this case it seems we're actually able to get >INT_MAX entries
-> > in a single ringbuf_buffer__consume call. ASAN detected that cnt
-> > overflows in this case.
-> >
-> > Fix by just setting a limit on the number of entries that can be
-> > consumed.
-> >
-> > Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >  tools/lib/bpf/ringbuf.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> > index e7a8d847161f..445a21df0934 100644
-> > --- a/tools/lib/bpf/ringbuf.c
-> > +++ b/tools/lib/bpf/ringbuf.c
-> > @@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
-> >         do {
-> >                 got_new_data = false;
-> >                 prod_pos = smp_load_acquire(r->producer_pos);
-> > -               while (cons_pos < prod_pos) {
-> > +               /* Don't read more than INT_MAX, or the return vale won't make sense. */
-> > +               while (cons_pos < prod_pos && cnt < INT_MAX) {
->
-> ring_buffer__pool() is assumed to not return until all the enqueued
-> messages are consumed. That's the requirement for the "adaptive"
-> notification scheme to work properly. So this will break that and
-> cause the next ring_buffer__pool() to never wake up.
->
-> We could use __u64 internally and then cap it to INT_MAX on return
-> maybe? But honestly, this sounds like an artificial corner case, if
-> you are producing data faster than you can consume it and it goes
-> beyond INT_MAX, something is seriously broken in your application and
+Hi,
 
-Disclaimer: I don't know what Brendan's benchmark is actually doing
+This patch series introduces the futex2 syscalls.
 
-That said, I have seen similar boundaries being reached when
-doing process monitoring and then a kernel gets compiled (esp. with ccache)
-and generates a large amount of process events in a very short span of time.
-Another example is when someone runs a short process in a tight while loop.
+* What happened to the current futex()?
 
-I agree it's a matter of tuning, but since these corner cases can be
-easily triggered
-even on real (non CI) systems no matter how much one tunes, I wouldn't
-really call it artificial :)
+For some years now, developers have been trying to add new features to
+futex, but maintainers have been reluctant to accept then, given the
+multiplexed interface full of legacy features and tricky to do big
+changes. Some problems that people tried to address with patchsets are:
+NUMA-awareness[0], smaller sized futexes[1], wait on multiple futexes[2].
+NUMA, for instance, just doesn't fit the current API in a reasonable
+way. Considering that, it's not possible to merge new features into the
+current futex.
 
-- KP
+ ** The NUMA problem
 
-> you have more important things to handle :)
->
-> >                         len_ptr = r->data + (cons_pos & r->mask);
-> >                         len = smp_load_acquire(len_ptr);
-> >
-> > --
-> > 2.31.1.498.g6c1eba8ee3d-goog
-> >
+ At the current implementation, all futex kernel side infrastructure is
+ stored on a single node. Given that, all futex() calls issued by
+ processors that aren't located on that node will have a memory access
+ penalty when doing it.
+
+ ** The 32bit sized futex problem
+
+ Embedded systems or anything with memory constrains would benefit of
+ using smaller sizes for the futex userspace integer. Also, a mutex
+ implementation can be done using just three values, so 8 bits is enough
+ for various scenarios.
+
+ ** The wait on multiple problem
+
+ The use case lies in the Wine implementation of the Windows NT interface
+ WaitMultipleObjects. This Windows API function allows a thread to sleep
+ waiting on the first of a set of event sources (mutexes, timers, signal,
+ console input, etc) to signal.  Considering this is a primitive
+ synchronization operation for Windows applications, being able to quickly
+ signal events on the producer side, and quickly go to sleep on the
+ consumer side is essential for good performance of those running over Wine.
+
+[0] https://lore.kernel.org/lkml/20160505204230.932454245@linutronix.de/
+[1] https://lore.kernel.org/lkml/20191221155659.3159-2-malteskarupke@web.de/
+[2] https://lore.kernel.org/lkml/20200213214525.183689-1-andrealmeid@collabora.com/
+
+* The solution
+
+As proposed by Peter Zijlstra and Florian Weimer[3], a new interface
+is required to solve this, which must be designed with those features in
+mind. futex2() is that interface. As opposed to the current multiplexed
+interface, the new one should have one syscall per operation. This will
+allow the maintainability of the API if it gets extended, and will help
+users with type checking of arguments.
+
+In particular, the new interface is extended to support the ability to
+wait on any of a list of futexes at a time, which could be seen as a
+vectored extension of the FUTEX_WAIT semantics.
+
+[3] https://lore.kernel.org/lkml/20200303120050.GC2596@hirez.programming.kicks-ass.net/
+
+* The interface
+
+The new interface can be seen in details in the following patches, but
+this is a high level summary of what the interface can do:
+
+ - Supports wake/wait semantics, as in futex()
+ - Supports requeue operations, similarly as FUTEX_CMP_REQUEUE, but with
+   individual flags for each address
+ - Supports waiting for a vector of futexes, using a new syscall named
+   futex_waitv()
+ - Supports variable sized futexes (8bits, 16bits, 32bits and 64bits)
+ - Supports NUMA-awareness operations, where the user can specify on
+   which memory node would like to operate
+
+* Implementation
+
+The internal implementation follows a similar design to the original futex.
+Given that we want to replicate the same external behavior of current
+futex, this should be somewhat expected. For some functions, like the
+init and the code to get a shared key, I literally copied code and
+comments from kernel/futex.c. I decided to do so instead of exposing the
+original function as a public function since in that way we can freely
+modify our implementation if required, without any impact on old futex.
+Also, the comments precisely describes the details and corner cases of
+the implementation.
+
+Each patch contains a brief description of implementation, but patch 6
+"docs: locking: futex2: Add documentation" adds a more complete document
+about it.
+
+* The patchset
+
+This patchset can be also found at my git tree:
+
+https://gitlab.collabora.com/tonyk/linux/-/tree/futex2-dev
+
+  - Patch 1: Implements wait/wake, and the basics foundations of futex2
+
+  - Patches 2-4: Implement the remaining features (shared, waitv, requeue).
+
+  - Patch 5:  Adds the x86_x32 ABI handling. I kept it in a separated
+    patch since I'm not sure if x86_x32 is still a thing, or if it should
+    return -ENOSYS.
+
+  - Patch 6: Add a documentation file which details the interface and
+    the internal implementation.
+
+  - Patches 7-13: Selftests for all operations along with perf
+    support for futex2.
+
+  - Patch 14: While working on porting glibc for futex2, I found out
+    that there's a futex_wake() call at the user thread exit path, if
+    that thread was created with clone(..., CLONE_CHILD_SETTID, ...). In
+    order to make pthreads work with futex2, it was required to add
+    this patch. Note that this is more a proof-of-concept of what we
+    will need to do in future, rather than part of the interface and
+    shouldn't be merged as it is.
+
+* Testing:
+
+This patchset provides selftests for each operation and their flags.
+Along with that, the following work was done:
+
+ ** Stability
+
+ To stress the interface in "real world scenarios":
+
+ - glibc[4]: nptl's low level locking was modified to use futex2 API
+   (except for robust and PI things). All relevant nptl/ tests passed.
+
+ - Wine[5]: Proton/Wine was modified in order to use futex2() for the
+   emulation of Windows NT sync mechanisms based on futex, called "fsync".
+   Triple-A games with huge CPU's loads and tons of parallel jobs worked
+   as expected when compared with the previous FUTEX_WAIT_MULTIPLE
+   implementation at futex(). Some games issue 42k futex2() calls
+   per second.
+
+ - Full GNU/Linux distro: I installed the modified glibc in my host
+   machine, so all pthread's programs would use futex2(). After tweaking
+   systemd[6] to allow futex2() calls at seccomp, everything worked as
+   expected (web browsers do some syscall sandboxing and need some
+   configuration as well).
+
+ - perf: The perf benchmarks tests can also be used to stress the
+   interface, and they can be found in this patchset.
+
+ ** Performance
+
+ - For comparing futex() and futex2() performance, I used the artificial
+   benchmarks implemented at perf (wake, wake-parallel, hash and
+   requeue). The setup was 200 runs for each test and using 8, 80, 800,
+   8000 for the number of threads, Note that for this test, I'm not using
+   patch 14 ("kernel: Enable waitpid() for futex2") , for reasons explained
+   at "The patchset" section.
+
+ - For the first three ones, I measured an average of 4% gain in
+   performance. This is not a big step, but it shows that the new
+   interface is at least comparable in performance with the current one.
+
+ - For requeue, I measured an average of 21% decrease in performance
+   compared to the original futex implementation. This is expected given
+   the new design with individual flags. The performance trade-offs are
+   explained at patch 4 ("futex2: Implement requeue operation").
+
+[4] https://gitlab.collabora.com/tonyk/glibc/-/tree/futex2
+[5] https://gitlab.collabora.com/tonyk/wine/-/tree/proton_5.13
+[6] https://gitlab.collabora.com/tonyk/systemd
+
+* FAQ
+
+ ** "Where's the code for NUMA and FUTEX_8/16/64?"
+
+ The current code is already complex enough to take some time for
+ review, so I believe it's better to split that work out to a future
+ iteration of this patchset. Besides that, this RFC is the core part of the
+ infrastructure, and the following features will not pose big design
+ changes to it, the work will be more about wiring up the flags and
+ modifying some functions.
+
+ ** "Where's the PI/robust stuff?"
+
+ As said by Peter Zijlstra at [3], all those new features are related to
+ the "simple" futex interface, that doesn't use PI or robust. Do we want
+ to have this complexity at futex2() and if so, should it be part of
+ this patchset or can it be future work?
+
+Thanks,
+	André
+
+* Changelog
+
+Changes from v2:
+- API now supports 64bit futexes, in addition to 8, 16 and 32.
+- This API change will break the glibc[4] and Proton[5] ports for now.
+- Refactored futex2_wait and futex2_waitv selftests
+v2: https://lore.kernel.org/lkml/20210304004219.134051-1-andrealmeid@collabora.com/
+
+Changes from v1:
+- Unified futex_set_timer_and_wait and __futex_wait code
+- Dropped _carefull from linked list function calls
+- Fixed typos on docs patch
+- uAPI flags are now added as features are introduced, instead of all flags
+  in patch 1
+- Removed struct futex_single_waiter in favor of an anon struct
+v1: https://lore.kernel.org/lkml/20210215152404.250281-1-andrealmeid@collabora.com/
+
+André Almeida (13):
+  futex2: Implement wait and wake functions
+  futex2: Add support for shared futexes
+  futex2: Implement vectorized wait
+  futex2: Implement requeue operation
+  futex2: Add compatibility entry point for x86_x32 ABI
+  docs: locking: futex2: Add documentation
+  selftests: futex2: Add wake/wait test
+  selftests: futex2: Add timeout test
+  selftests: futex2: Add wouldblock test
+  selftests: futex2: Add waitv test
+  selftests: futex2: Add requeue test
+  perf bench: Add futex2 benchmark tests
+  kernel: Enable waitpid() for futex2
+
+ Documentation/locking/futex2.rst              |  198 +++
+ Documentation/locking/index.rst               |    1 +
+ MAINTAINERS                                   |    2 +-
+ arch/arm/tools/syscall.tbl                    |    4 +
+ arch/arm64/include/asm/unistd.h               |    2 +-
+ arch/arm64/include/asm/unistd32.h             |    8 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |    4 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |    4 +
+ fs/inode.c                                    |    1 +
+ include/linux/compat.h                        |   26 +
+ include/linux/fs.h                            |    1 +
+ include/linux/syscalls.h                      |   17 +
+ include/uapi/asm-generic/unistd.h             |   14 +-
+ include/uapi/linux/futex.h                    |   31 +
+ init/Kconfig                                  |    7 +
+ kernel/Makefile                               |    1 +
+ kernel/fork.c                                 |    2 +
+ kernel/futex2.c                               | 1252 +++++++++++++++++
+ kernel/sys_ni.c                               |    9 +
+ tools/arch/x86/include/asm/unistd_64.h        |   12 +
+ tools/include/uapi/asm-generic/unistd.h       |   11 +-
+ .../arch/x86/entry/syscalls/syscall_64.tbl    |    4 +
+ tools/perf/bench/bench.h                      |    4 +
+ tools/perf/bench/futex-hash.c                 |   24 +-
+ tools/perf/bench/futex-requeue.c              |   57 +-
+ tools/perf/bench/futex-wake-parallel.c        |   41 +-
+ tools/perf/bench/futex-wake.c                 |   37 +-
+ tools/perf/bench/futex.h                      |   47 +
+ tools/perf/builtin-bench.c                    |   18 +-
+ .../selftests/futex/functional/.gitignore     |    3 +
+ .../selftests/futex/functional/Makefile       |    6 +-
+ .../futex/functional/futex2_requeue.c         |  164 +++
+ .../selftests/futex/functional/futex2_wait.c  |  195 +++
+ .../selftests/futex/functional/futex2_waitv.c |  154 ++
+ .../futex/functional/futex_wait_timeout.c     |   58 +-
+ .../futex/functional/futex_wait_wouldblock.c  |   33 +-
+ .../testing/selftests/futex/functional/run.sh |    6 +
+ .../selftests/futex/include/futex2test.h      |  112 ++
+ 38 files changed, 2518 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/locking/futex2.rst
+ create mode 100644 kernel/futex2.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_requeue.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_wait.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_waitv.c
+ create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+
+-- 
+2.31.1
+
