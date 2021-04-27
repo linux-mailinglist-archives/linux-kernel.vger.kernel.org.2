@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6935836CEB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0C936CEB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239381AbhD0Wk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:40:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56422 "EHLO mail.kernel.org"
+        id S237890AbhD0Wmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:42:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59672 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238548AbhD0Wky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:40:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 845AE61404;
-        Tue, 27 Apr 2021 22:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619563210;
-        bh=6uvEgWmSuI3CiTQgqx2XsEl8TVLiLcygDlDXC0plN6Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PZAVerXYjeUe4GYtFKYrqTushQZzvbwbf19uumPcw5QlmAkpWuqAzN/q0f2/qNxpG
-         +DnJzB6QwAiuuA+KaRw+yQ5O4fFb8XEWCdlY/9d7WstpaBNnxxYXuoJtc/NSBgvgE+
-         3/jB+MyRdOboPzx6glJ6Ip3Qb/UHSisuZ4OUwfcORLLq++wTMMiXU/aL3N6AmPjo0g
-         mOBwkWAiLSxWPuh9Fsbvoj9iaC5TeVjMxBoPOHFhnev/7jJyBgbEuV6E1FMfyEfE3Q
-         P8Zvgm99miL7QeBLdCAamZbG/Bp0mWD5PC2wp0v2nfd0ombel/YcI5Of7VME+0cpXH
-         81TtKqdsx3MOA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7967F60A24;
-        Tue, 27 Apr 2021 22:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236936AbhD0Wmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 18:42:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 27BDDAEF5;
+        Tue, 27 Apr 2021 22:42:08 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH] dt-binding: interrupt-controller: Add missing interrupts property
+Date:   Wed, 28 Apr 2021 00:42:00 +0200
+Message-Id: <20210427224201.32285-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net:nfc:digital: Fix a double free in digital_tg_recv_dep_req
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161956321049.28898.4886085211372158981.git-patchwork-notify@kernel.org>
-Date:   Tue, 27 Apr 2021 22:40:10 +0000
-References: <20210427162258.7238-1-lyl2019@mail.ustc.edu.cn>
-In-Reply-To: <20210427162258.7238-1-lyl2019@mail.ustc.edu.cn>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Interrupts property is required, so add it.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ .../bindings/interrupt-controller/idt,32434-pic.yaml          | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Tue, 27 Apr 2021 09:22:58 -0700 you wrote:
-> In digital_tg_recv_dep_req, it calls nfc_tm_data_received(..,resp).
-> If nfc_tm_data_received() failed, the callee will free the resp via
-> kfree_skb() and return error. But in the exit branch, the resp
-> will be freed again.
-> 
-> My patch sets resp to NULL if nfc_tm_data_received() failed, to
-> avoid the double free.
-> 
-> [...]
-
-Here is the summary with links:
-  - net:nfc:digital: Fix a double free in digital_tg_recv_dep_req
-    https://git.kernel.org/netdev/net-next/c/75258586793e
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml b/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
+index df5d8d1ead70..160ff4b07cac 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
+@@ -22,6 +22,9 @@ properties:
+   reg:
+     maxItems: 1
+ 
++  interrupts:
++    maxItems: 1
++
+   interrupt-controller: true
+ 
+ required:
+@@ -29,6 +32,7 @@ required:
+   - compatible
+   - reg
+   - interrupt-controller
++  - interrupts
+ 
+ additionalProperties: false
+ 
+-- 
+2.29.2
 
