@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B5E36C8F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F0D36C8FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238081AbhD0P6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:58:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47948 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234932AbhD0P6B (ORCPT
+        id S238208AbhD0P6p convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 11:58:45 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2932 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234932AbhD0P6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:58:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619539038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UeRAYJi3jVz2RcJA5cfm9/ZZeziOqivA1BEyk0ctB+8=;
-        b=cPw5KuU5YKX57TvUkrq0W/Bm1Zp2yUw19CrCFDBBWUqu0InCoXXYyHPmCB7U4z3hTqjVb/
-        jJIDvQMPlki2zShs2iuAJm81/wRHJBrZev6SBDZYVo879CqQPJXgrsugNhkOXGp6U/KjKc
-        QYmQkK4MA7xKhhZl65RZhyDexxCjqV0=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-XAHGXNG5MBKa3o_3KR_qHg-1; Tue, 27 Apr 2021 11:57:16 -0400
-X-MC-Unique: XAHGXNG5MBKa3o_3KR_qHg-1
-Received: by mail-qt1-f198.google.com with SMTP id z5-20020a05622a0285b02901b943be06b5so15493693qtw.17
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:57:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UeRAYJi3jVz2RcJA5cfm9/ZZeziOqivA1BEyk0ctB+8=;
-        b=ZHETwTSYDoE0VuVYASehpVZ69tg9v0arnOYNLMA1qJlTNdHekupcHxWIN52ZGYE/4R
-         xNMD/M7LVv1MNdcPAj6JE4eQe/lILGgviwnkok0PpyvUjoIr0/gfSE+Pn2clFwmTx0cA
-         BSlWd7DKv9u4IMRQIaVoZpWE0hEcU5N5Sm37WSeb0mu50BYprnXUp+QCr1gRUeIb7tAn
-         PtpVGFqyoLV1j7Gfutvid93OJhCDPat3jIrdZUQWajUIfxAmrdLxFFO1IFVNfvMr2+zM
-         PzgGEmXHBGIbE5mw2sZOzkzFggMIppIAeb6QXrXtFNBX8coTZZ1MXN89CSf1PtPTaFeQ
-         GjsA==
-X-Gm-Message-State: AOAM532cijVSNLM4uX/kMPJ4qNyi0h2J76s1fJYap0t4BrEbR27u8612
-        ZhxjQBLJR/hS9gHEsoXUND3LWKBSEfgpJjlSZU3z9LuiqiZU/mEwfmeNkEWzRFAgxW93NKWv6uB
-        a2nJV/5rGtKCnKVCc8r+kzHMs
-X-Received: by 2002:a37:9305:: with SMTP id v5mr23224456qkd.223.1619539036073;
-        Tue, 27 Apr 2021 08:57:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwt9C9yyPCKjs/11oWJ2ljp8cgvSKc3nf/K+fOGkHMK5svdKo+b6nP8QjYAWsUrtuDALqrP7A==
-X-Received: by 2002:a37:9305:: with SMTP id v5mr23224422qkd.223.1619539035849;
-        Tue, 27 Apr 2021 08:57:15 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id h62sm2925543qkf.116.2021.04.27.08.57.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 08:57:15 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 11:57:13 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4 04/10] userfaultfd/shmem: support minor fault
- registration for shmem
-Message-ID: <20210427155713.GC6820@xz-x1>
-References: <20210420220804.486803-1-axelrasmussen@google.com>
- <20210420220804.486803-5-axelrasmussen@google.com>
- <alpine.LSU.2.11.2104261920110.2998@eggly.anvils>
+        Tue, 27 Apr 2021 11:58:43 -0400
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FV5qn3nlRz74dD9;
+        Tue, 27 Apr 2021 23:52:21 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 27 Apr 2021 17:57:58 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Tue, 27 Apr 2021 17:57:58 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+Thread-Topic: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+Thread-Index: AQHXEdMA2oN9D131skWV9JJ8Z5VEUap1limAgFHPEQCAAOj3gIAAYluAgAAixgA=
+Date:   Tue, 27 Apr 2021 15:57:57 +0000
+Message-ID: <d783e2703248463f9af68e155ee65c38@huawei.com>
+References: <20210305151923.29039-1-roberto.sassu@huawei.com>
+         <20210305151923.29039-5-roberto.sassu@huawei.com>
+         <c3bb1069-c732-d3cf-0dde-7a83b3f31871@schaufler-ca.com>
+         <93858a47a29831ca782c8388faaa43c8ffc3f5cd.camel@linux.ibm.com>
+         <7a39600c24a740838dca24c20af92c1a@huawei.com>
+ <d047d1347e7104162e0e36eb57ade6bba914ea2d.camel@linux.ibm.com>
+In-Reply-To: <d047d1347e7104162e0e36eb57ade6bba914ea2d.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2104261920110.2998@eggly.anvils>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 07:23:57PM -0700, Hugh Dickins wrote:
-> On Tue, 20 Apr 2021, Axel Rasmussen wrote:
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Tuesday, April 27, 2021 5:35 PM
+> On Tue, 2021-04-27 at 09:25 +0000, Roberto Sassu wrote:
+> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > Sent: Monday, April 26, 2021 9:49 PM
+> > > On Fri, 2021-03-05 at 09:30 -0800, Casey Schaufler wrote:
 > 
-> > This patch allows shmem-backed VMAs to be registered for minor faults.
-> > Minor faults are appropriately relayed to userspace in the fault path,
-> > for VMAs with the relevant flag.
-> > 
-> > This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
-> > minor faults, though, so userspace doesn't yet have a way to resolve
-> > such faults.
-> > 
-> > Acked-by: Peter Xu <peterx@redhat.com>
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > > > However ...
+> > > >
+> > > > The special casing of IMA and EVM in security.c is getting out of
+> > > > hand, and appears to be unnecessary. By my count there are 9 IMA
+> > > > hooks and 5 EVM hooks that have been hard coded. Adding this IMA
+> > > > hook makes 10. It would be really easy to register IMA and EVM as
+> > > > security modules. That would remove the dependency they currently
+> > > > have on security sub-system approval for changes like this one.
+> > > > I know there has been resistance to "IMA as an LSM" in the past,
+> > > > but it's pretty hard to see how it wouldn't be a win.
 > 
-> And if this "04/10" had been numbered 03/10, I would have said
-> Acked-by: Hugh Dickins <hughd@google.com>
+> It sholdn't be one way.  Are you willing to also make the existing
+> IMA/EVM hooks that are not currently security hooks, security hooks
+> too?   And accept any new IMA/EVM hooks would result in new security
+> hooks?  Are you also willing to add dependency tracking between LSMs?
+
+I already have a preliminary branch where IMA/EVM are full LSMs.
+
+Indeed, the biggest problem would be to have the new hooks
+accepted. I can send the patch set for evaluation to see what
+people think.
+
+> > > Somehow I missed the new "lsm=" boot command line option, which
+> > > dynamically allows enabling/disabling LSMs, being upstreamed.  This
+> > > would be one of the reasons for not making IMA/EVM full LSMs.
+> >
+> > Hi Mimi
+> >
+> > one could argue why IMA/EVM should receive a special
+> > treatment. I understand that this was a necessity without
+> > LSM stacking. Now that LSM stacking is available, I don't
+> > see any valid reason why IMA/EVM should not be managed
+> > by the LSM infrastructure.
+> >
+> > > Both IMA and EVM file data/metadata is persistent across boots.  If
+> > > either one or the other is not enabled the file data hash or file
+> > > metadata HMAC will not properly be updated, potentially preventing the
+> > > system from booting when re-enabled.  Re-enabling IMA and EVM would
+> > > require "fixing" the mutable file data hash and HMAC, without any
+> > > knowledge of what the "fixed" values should be.  Dave Safford referred
+> > > to this as "blessing" the newly calculated values.
+> >
+> > IMA/EVM can be easily disabled in other ways, for example
+> > by moving the IMA policy or the EVM keys elsewhere.
 > 
-> Just read the comment above: "so userspace doesn't yet have a way to
-> resolve such faults" - if it doesn't by this stage, we're in trouble.
+> Dynamically disabling IMA/EVM is very different than removing keys and
+> preventing the system from booting.  Restoring the keys should result
+> in being able to re-boot the system.  Re-enabling IMA/EVM, requires re-
+> labeling the filesystem in "fix" mode, which "blesses" any changes made
+> when IMA/EVM were not enabled.
 
-Right, so merging the two patches might be easier.  Even if we don't merge
-them, we'll need to touch up the commit message since at least above paragraph
-is not true anymore as we've already have UFFDIO_CONTINUE.  Thanks,
+Uhm, I thought that if you move the HMAC key for example
+and you boot the system, you invalidate all files that change,
+because the HMAC is not updated.
 
--- 
-Peter Xu
+> > Also other LSMs rely on a dynamic and persistent state
+> > (for example for file transitions in SELinux), which cannot be
+> > trusted anymore if LSMs are even temporarily disabled.
+> 
+> Your argument is because this is a problem for SELinux, make it also a
+> problem for IMA/EVM too?!   ("Two wrongs make a right")
 
+To me it seems reasonable to give the ability to people to
+disable the LSMs if they want to do so, and at the same time
+to try to prevent accidental disable when the LSMs should be
+enabled.
+
+> > If IMA/EVM have to be enabled to prevent misconfiguration,
+> > I think the same can be achieved if they are full LSMs, for
+> > example by preventing that the list of enabled LSMs changes
+> > at run-time.
+> 
+> That ship sailed when "security=" was deprecated in favor of "lsm="
+> support, which dynamically enables/disables LSMs at runtime.
+
+Maybe this possibility can be disabled with a new kernel option.
+I will think a more concrete solution.
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
