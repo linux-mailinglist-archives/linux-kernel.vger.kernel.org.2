@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D576336CA77
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6339036CA7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238544AbhD0Rib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:38:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45372 "EHLO mail.kernel.org"
+        id S238604AbhD0Rjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238090AbhD0Ri1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:38:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2CB88613EA;
-        Tue, 27 Apr 2021 17:37:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619545064;
-        bh=RQdMAEO3oXx4DEMHbYFsowUfeaQT8887QGr6LNHI7os=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dlMlcJoyJsFzGciIn6uCuJDRsEuYp+NFi5L39FGn/iLRvLfoBWGc/MPU7FNo8yOf4
-         chSMJqIswU0p1BO0ErYQXCtI5P2inEZp11dQGJ7FQiu9UqBytTN6q+boo55JWyft62
-         q/lV5Z2FNZifq/btzBcO5BH8BP4g+miwx0TLryDx8a+31gwXY5SIgUwC8mE6U9LVML
-         DPFb2CK8uLzZzfCSzEO76l8N/mQLt+u4oSHrtyvTfQPIh/2XdwJEgCmYPgK6Ab1qi7
-         sFXiEXcPys0PQmyPoqHYrmrqqCV5+NVCNiyF8oG29vrOASsNDi+tsP8fOsM/GZjWUa
-         yYvJGPBZeGL6A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 25C4A609CC;
-        Tue, 27 Apr 2021 17:37:44 +0000 (UTC)
-Subject: Re: [GIT PULL] CFI on arm64 series for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <202104261141.5B699FE@keescook>
-References: <202104261141.5B699FE@keescook>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <202104261141.5B699FE@keescook>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/cfi-v5.13-rc1
-X-PR-Tracked-Commit-Id: 9186ad8e66bab6a1edc66a939dd56c4638cda948
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 57fa2369ab17d67e6232f85b868652fbf4407206
-Message-Id: <161954506414.13735.12787763491949694074.pr-tracker-bot@kernel.org>
-Date:   Tue, 27 Apr 2021 17:37:44 +0000
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Ben Dai <ben.dai@unisoc.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jack Pham <jackp@codeaurora.org>, Jessica Yu <jeyu@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
+        id S236172AbhD0Rju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D95B5611C1;
+        Tue, 27 Apr 2021 17:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619545147;
+        bh=PDbravuOdO9syip5pU1yrhdo/z/qPNqCTz4Vb4pPvv8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jlrT+fWUY5/aKi8qT8x0IWB1sW/opIuudCiuM6WPRcRMRWRssh5u9vClEPIo9Wjs6
+         dW60wUiVqtOIbSt0xlH5wwtSVcaAnSr0zrVYWIsSmA8gYfXiekwyi9d0YK4mx2DyRP
+         8GBxOlV5T/6vZV7Hiwhn1S0R4Us8lVpdtUEOrdtQ=
+Date:   Tue, 27 Apr 2021 19:39:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 077/190] Revert "rapidio: fix a NULL pointer dereference
+ when create_workqueue() fails"
+Message-ID: <YIhMOAn3XxlB5m2m@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-78-gregkh@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-78-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 12:12:21 -0700:
+On Wed, Apr 21, 2021 at 02:59:12PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 23015b22e47c5409620b1726a677d69e5cd032ba.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Alexandre Bounine <alex.bou9@gmail.com>
+> Cc: Matt Porter <mporter@kernel.crashing.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/rapidio/rio_cm.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
+> index 50ec53d67a4c..e6c16f04f2b4 100644
+> --- a/drivers/rapidio/rio_cm.c
+> +++ b/drivers/rapidio/rio_cm.c
+> @@ -2138,14 +2138,6 @@ static int riocm_add_mport(struct device *dev,
+>  	mutex_init(&cm->rx_lock);
+>  	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
+>  	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
+> -	if (!cm->rx_wq) {
+> -		riocm_error("failed to allocate IBMBOX_%d on %s",
+> -			    cmbox, mport->name);
+> -		rio_release_outb_mbox(mport, cmbox);
+> -		kfree(cm);
+> -		return -ENOMEM;
+> -	}
+> -
+>  	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
+>  
+>  	cm->tx_slot = 0;
+> -- 
+> 2.31.1
+> 
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/cfi-v5.13-rc1
+This patch has a memory leak on the error path here, it does not clean
+up everything properly.  So I'll keep the revert and fix it up properly
+in a follow-on patch.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/57fa2369ab17d67e6232f85b868652fbf4407206
+thanks,
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+greg k-h
