@@ -2,156 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763EC36BCE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4339036BCE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbhD0BOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 21:14:43 -0400
-Received: from mga05.intel.com ([192.55.52.43]:37532 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232022AbhD0BOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 21:14:42 -0400
-IronPort-SDR: Ku/WFkZcRW6NR1Dj1BY6G0A8dMlh6nY5eR3kUXlJp79c724kyVpvMHVVF0vrijJp5EXIQzWgFH
- TBRYnMVXYC5w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="281760714"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="281760714"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 18:14:00 -0700
-IronPort-SDR: 10PoMiAItFcTT27cVjl3secmZUDE4uIq3Ld7KlDidgNMbYlBtY0Kk9CxOVW6Jn0NZULdZGRaZg
- VHTp4mPBAVrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="429606418"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga008.jf.intel.com with ESMTP; 26 Apr 2021 18:13:56 -0700
-Date:   Tue, 27 Apr 2021 09:13:55 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        zhengjun.xing@intel.com,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
- pre-calibration drift
-Message-ID: <20210427011355.GC89018@shbuild999.sh.intel.com>
-References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
- <20210425224709.1312655-6-paulmck@kernel.org>
- <20210426150127.GB23119@shbuild999.sh.intel.com>
- <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
- <20210426153605.GB89018@shbuild999.sh.intel.com>
- <20210426182652.GE975577@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426182652.GE975577@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S235972AbhD0BSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 21:18:14 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:35929 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233916AbhD0BSN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 21:18:13 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 23BC75C019F;
+        Mon, 26 Apr 2021 21:17:30 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 26 Apr 2021 21:17:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=EqlXC5QCJVyxuYSkaKuNoI5/S7ZixI8
+        WET/kD4zMQE4=; b=t67BWMxBZ017WFGgFfktYcx8B7O3DWtPM/56AW+b1bGd5pw
+        DqWs6NObelbDErvGiu3zSwLhp6Qz4CNnQNSzTE0Y/Ds+IjCg6JQ2y0FhH3aC9Gng
+        8gCXF+FSCoTblmZ5FTReBJTpxfys0bubU5u2Sp/nMXAz9xgh9Q/SrJC3V3g+p4Yv
+        xTzr5UQa9OihhGz3EtYYKsYleYuNbF9BKWrRMtY6UsF+Cy+AbqAnG15InBg1J89a
+        DkXsC2XrNCemgv+XKexDLVyyWLPygkYezyG263QbPalc0WwYufm6AAcAFPMX0auh
+        NC9VcTSvrgP2H3BnSDr76b1egBJexusxLovXDMQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=EqlXC5
+        QCJVyxuYSkaKuNoI5/S7ZixI8WET/kD4zMQE4=; b=jov++051zpecKsRF+8iRbE
+        Uq2IQ9hZ7LKJ42RakyYDE2XxH8pivmDVPWZNZPkhEHkHdgA9uG//MDAeXPO3N0Yd
+        5glFu6E6ftzt6Ks31ofV4H9/JfZBQTjv3/Lr7lYkHrIiI8IokocmH9CRzncFGM4P
+        aDIlH0UR9JJBfKfLb90bZd99zU3CYQQm5W+tNERwS5ZjrUlQ2+nglU0M5lQ399Wa
+        H2or/VqRkXYamzeNPSguiX9HOvhNH5cKBoErFNfBokFcyzmVOv7jgJYjElHTaspo
+        vwezyUkU2BNereIwif52uXwrGkinbasmu4yfV1oRypsE240bqZaR+8YPuxzeweBg
+        ==
+X-ME-Sender: <xms:KWaHYGfeHH6dLgi9rDU1YggPko1zFQLTnLQRh4VnPFuAf6GksPSJ2A>
+    <xme:KWaHYANYBUOvE9mOg4pm1beDhujfwO5e9QUU8SRuEnin9_zO1Ol1dyVX7iwJcR-L_
+    UNAp63Zk6Ae93vn9Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduledgjeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:KWaHYHiDfQrZvxWOqR0rfIkENTlzx5N91sTXn8rvlUVlfte79WHvWg>
+    <xmx:KWaHYD82EsPVpynUiGR45s0UjrIJQjxP8bMXSLXo_Uu2EPb78LEshg>
+    <xmx:KWaHYCt31Ushe1kXvbPdZ6Yj5UxR6jmMA_oAaPZeMXr2gxBvMptHBQ>
+    <xmx:KmaHYGirKlGQujUPf47_1n5CNkjLlnmdNBvOv2EyfbYJrvvf1ar8bQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 57E85A00079; Mon, 26 Apr 2021 21:17:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
+Mime-Version: 1.0
+Message-Id: <3cb5cc18-fc03-46d7-be3d-3d132b42c82b@www.fastmail.com>
+In-Reply-To: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
+References: <1619353584-8196-1-git-send-email-jrdr.linux@gmail.com>
+Date:   Tue, 27 Apr 2021 10:47:09 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Souptick Joarder" <jrdr.linux@gmail.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] pinctrl: aspeed: Fix minor documentation error
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:26:52AM -0700, Paul E. McKenney wrote:
-> On Mon, Apr 26, 2021 at 11:36:05PM +0800, Feng Tang wrote:
-> > On Mon, Apr 26, 2021 at 08:25:29AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Apr 26, 2021 at 11:01:27PM +0800, Feng Tang wrote:
-> > > > Hi Paul,
-> > > > 
-> > > > On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
-> > > > > Because the x86 tsc_early clocksource is given a quick and semi-accurate
-> > > > > calibration (by design!), it might have drift rates well in excess of
-> > > > > the 0.1% limit that is in the process of being adopted.
-> > > > > 
-> > > > > Therefore, add a max_drift field to the clocksource structure that, when
-> > > > > non-zero, specifies the maximum allowable drift rate in nanoseconds over
-> > > > > a half-second period.  The tsc_early clocksource initializes this to five
-> > > > > miliseconds, which corresponds to the 1% drift rate limit suggested by
-> > > > > Xing Zhengjun.  This max_drift field is intended only for early boot,
-> > > > > so clocksource_watchdog() splats if it encounters a non-zero value in
-> > > > > this field more than 60 seconds after boot, inspired by a suggestion by
-> > > > > Thomas Gleixner.
-> > > > > 
-> > > > > This was tested by setting the clocksource_tsc ->max_drift field to 1,
-> > > > > which, as expected, resulted in a clock-skew event.
-> > > > 
-> > > > We've run the same last for this v10, and those 'unstable' thing [1] can
-> > > > not be reproduced!
-> > > 
-> > > Good to hear!  ;-)
-> > > 
-> > > > We've reported one case that tsc can be wrongly judged as 'unstable'
-> > > > by 'refined-jiffies' watchdog [1], while reducing the threshold could
-> > > > make it easier to be triggered.
-> > > > 
-> > > > It could be reproduced on the a plaform with a 115200 serial console,
-> > > > and hpet been disabled (several x86 platforms has this), add 
-> > > > 'initcall_debug' cmdline parameter to get more debug message, we can
-> > > > see:
-> > > > 
-> > > > [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
-> > > > [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
-> > > > [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
-> > > > [    1.134220] clocksource:                       No current clocksource.
-> > > > [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
-> > > 
-> > > Just to make sure I understand: "could be reproduced" as in this is the
-> > > result from v9, and v10 avoids this, correct?
-> > 
-> > Sorry I didn't make it clear. This is a rarely happened case, and can
-> > be reproduced with upstream kerenl, which has 62.5 ms threshold. 6/7 &
-> > 7/7 patch of reducing the threshold can make it easier to be triggered.
+
+
+On Sun, 25 Apr 2021, at 21:56, Souptick Joarder wrote:
+> Kernel test robot throws below warning ->
 > 
-> Ah, OK, so this could be considered to be a benefit of this series, then.
+> drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c:2705: warning: This comment
+> starts with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+> drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c:2614: warning: This comment
+> starts with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+> drivers/pinctrl/aspeed/pinctrl-aspeed.c:111: warning: This comment
+> starts with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
+> drivers/pinctrl/aspeed/pinmux-aspeed.c:24: warning: This comment starts
+> with '/**', but isn't a kernel-doc comment. Refer
+> Documentation/doc-guide/kernel-doc.rst
 > 
-> Does this happen only for tsc-early, or for tsc as well?
+> Fix minor documentation error.
 > 
-> Has it already been triggered on v10 of this series?  (I understand that
-> it certainly should be easier to trigger, just curious whether this has
-> already happened.)
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
 
-Yes, it has. The upper log is from v10 (actually it's the 'dev' branch
-of your linux-rcu git, which I didn't find obvious difference) on a
-client platform 
-
- [    1.134214] clocksource:    'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
- [    1.134217] clocksource:    'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
-
-The deviation is 7537855 ns (7.5 ms). And as said before, it needs many
-pre-conditions to be triggered.
-
-Also I found the debug patch is useful, which prints out the direct
-nanoseconds info when 'unstable' is detected.
-
-kernel/time/clocksource.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index a374cf7b6336..5370f0c84981 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -443,10 +443,10 @@ static void clocksource_watchdog(struct timer_list *unused)
- 		if (abs(cs_nsec - wd_nsec) > md) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
--			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
--				watchdog->name, wdnow, wdlast, watchdog->mask);
--			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
--				cs->name, csnow, cslast, cs->mask);
-+			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
-+				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
-+			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
-+				cs->name, cs_nsec, csnow, cslast, cs->mask);
- 			if (curr_clocksource == cs)
- 				pr_warn("                      '%s' is current clocksource.\n", cs->name);
- 			else if (curr_clocksource)
--- 
-2.27.0
-
-Thanks,
-Feng
-
-
-
-> 
-> 							Thanx, Paul
+Acked-by: Andrew Jeffery <andrew@aj.id.au>
