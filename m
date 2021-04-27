@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69FD936CBD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7871E36CBF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238911AbhD0To0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238671AbhD0ToZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:44:25 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4700C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:43:39 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id b14so4059555qvf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pMOFBLR9bPrFoZFV8TQo6qdI8xIDUT5QowoTJPAfwoI=;
-        b=M20T+1aMae4u0P7fbin4a8R02TMD5t96H2aiOMf8qw2rTRAo2RugFe0ku6l9VPeevP
-         xZtgBQRLaSsu9aYFKNdNDSiFe3aolwh10xjABQqThOUIndi0+s4d+Eo1XLPCXC3nfxUm
-         lD1alvOMjEL0+ef6cYE7iSz2VLoq5w2e7VmYnhskgoJag9ZejVAXw548Sw3tJzTwQ1LK
-         Hq28R0ucjVcFeEwJijDgtLouLoL1kPblKx+vhiQSapRdIiXAHGIAof9xt+quTVbA5Swo
-         WJ9Cx6H5u7fywz1Osz6ow6XWlpeS1lNkpzj+0hZhr2dKqs99inl2pJxQ1Z2SVZi0WDJl
-         pNzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pMOFBLR9bPrFoZFV8TQo6qdI8xIDUT5QowoTJPAfwoI=;
-        b=FYS/skMMkgkYmg2bH98YtHvHfDx6ZRXwPMh7OU1AFxQo/+HfeB/5mNc3ilj+fjASUk
-         hq42WTtNLxMG1yvyPcL4alN8PlMQs/3Vo4P7y/vA+b8yOu3uaQ842zXOm5nQtBW2IM/K
-         eiKEsBovG9RAmztJDYcgKuUKsBt35NfqCBqk5loG+hZ7J9mOQQfKrgf3dJAm2yXu9a+i
-         0ce6x/qz2XSS/gdiz9t1gwBFdIFVUwvQ3kJ7oHOtS5G/85lSBb8dSfAVyylwP5I2h37W
-         oxAWn51NNgOkOw0GPw40Sz4Tetm0dL48oxM/gnwZTxvf9UtAUaWCTF99xhP4a/uXQggp
-         mYiA==
-X-Gm-Message-State: AOAM530vBadm3fXN5yijuRB9sX+7Iq4tfagt/CtlCkGfpN05fXvD9HcI
-        UPTZUJ0T9Wo7Ji7g1F/cmdFhUw==
-X-Google-Smtp-Source: ABdhPJzaHrq9X7iYnbBeG48woUZiUTHE+b/d9aEc9zMuai3hrX463cNK4Akxfstc2Wbz1Cy4s9UnAQ==
-X-Received: by 2002:a0c:e8c4:: with SMTP id m4mr2551153qvo.21.1619552619024;
-        Tue, 27 Apr 2021 12:43:39 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id y26sm688104qtf.66.2021.04.27.12.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 12:43:38 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lbTcP-00Dh5j-HM; Tue, 27 Apr 2021 16:43:37 -0300
-Date:   Tue, 27 Apr 2021 16:43:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 11/16] iommu/dma: Support PCI P2PDMA pages in dma-iommu
- map_sg
-Message-ID: <20210427194337.GT2047089@ziepe.ca>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-12-logang@deltatee.com>
+        id S238883AbhD0Tqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:46:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235661AbhD0Tqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:46:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD8C611F2;
+        Tue, 27 Apr 2021 19:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619552748;
+        bh=LDoohEnCArlGbum8fJyPABYpTo/IiOc7gWRCmRENEKk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=P6EaCGT/1tkDXdwDRUEY2vhTWX1m+SMp/BC74NckIuFC3v52raY7xWHQJXhbwF6FC
+         1oIkAOqxAY2PspZWRW1Nf/SB0VXMIR17dorDxV1tN9tL1Z+fkpyj1PVC9mICvAqw2R
+         2SADRJxZmjuFQGI9SX+gi16LHTbQdq936nnHSjjw2oWO9E78aU6Ib6kn9UY8YmRP0g
+         6YXVqpzpBlX91HsXDQGVRnfG3omFaTieOBP8z0Znu7ztm/LKedkUZJw/IdV/BfYDuM
+         VyCIS2E6hkCMfDmm1i/tBS8xuJlyX2mmiq6qR6N1hoEnURQIrPTsnGOJxg1mef+/EL
+         Y6FLqYORW4mfQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Balazs Scheidler <bazsi77@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] netfilter: nft_socket: fix an unused variable warning
+Date:   Tue, 27 Apr 2021 21:45:18 +0200
+Message-Id: <20210427194528.2325108-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408170123.8788-12-logang@deltatee.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:01:18AM -0600, Logan Gunthorpe wrote:
-> When a PCI P2PDMA page is seen, set the IOVA length of the segment
-> to zero so that it is not mapped into the IOVA. Then, in finalise_sg(),
-> apply the appropriate bus address to the segment. The IOVA is not
-> created if the scatterlist only consists of P2PDMA pages.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I expect P2P to work with systems that use ATS, so we'd want to see
-those systems have the IOMMU programmed with the bus address.
+The variable is only used in an #ifdef, causing a harmless warning:
 
-Is it OK like this because the other logic prohibits all PCI cases
-that would lean on the IOMMU, like ATS, hairpinning through the root
-port, or transiting the root complex?
+net/netfilter/nft_socket.c: In function 'nft_socket_init':
+net/netfilter/nft_socket.c:137:27: error: unused variable 'level' [-Werror=unused-variable]
+  137 |         unsigned int len, level;
+      |                           ^~~~~
 
-If yes, the code deserves a big comment explaining this is incomplete,
-and I'd want to know we can finish this to include ATS at least based
-on this series.
+Move it into the same #ifdef block.
 
-Jason
+Fixes: e0bb96db96f8 ("netfilter: nft_socket: add support for cgroupsv2")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ net/netfilter/nft_socket.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+index 9c169d100651..f9c5ff6024e0 100644
+--- a/net/netfilter/nft_socket.c
++++ b/net/netfilter/nft_socket.c
+@@ -134,7 +134,7 @@ static int nft_socket_init(const struct nft_ctx *ctx,
+ 			   const struct nlattr * const tb[])
+ {
+ 	struct nft_socket *priv = nft_expr_priv(expr);
+-	unsigned int len, level;
++	unsigned int len;
+ 
+ 	if (!tb[NFTA_SOCKET_DREG] || !tb[NFTA_SOCKET_KEY])
+ 		return -EINVAL;
+@@ -160,7 +160,9 @@ static int nft_socket_init(const struct nft_ctx *ctx,
+ 		len = sizeof(u32);
+ 		break;
+ #ifdef CONFIG_CGROUPS
+-	case NFT_SOCKET_CGROUPV2:
++	case NFT_SOCKET_CGROUPV2: {
++		unsigned int level;
++
+ 		if (!tb[NFTA_SOCKET_LEVEL])
+ 			return -EINVAL;
+ 
+@@ -171,6 +173,7 @@ static int nft_socket_init(const struct nft_ctx *ctx,
+ 		priv->level = level;
+ 		len = sizeof(u64);
+ 		break;
++	}
+ #endif
+ 	default:
+ 		return -EOPNOTSUPP;
+-- 
+2.29.2
+
