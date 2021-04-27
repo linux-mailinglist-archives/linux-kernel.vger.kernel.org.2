@@ -2,166 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D69736BF0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7CF36BF14
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhD0GCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 02:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        id S229633AbhD0GDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhD0GCH (ORCPT
+        with ESMTP id S229578AbhD0GDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:02:07 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4863C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:01:22 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id m9so45407364wrx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:01:22 -0700 (PDT)
+        Tue, 27 Apr 2021 02:03:52 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADB6AC061574;
+        Mon, 26 Apr 2021 23:03:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V788y0c+X/a1zmRPAQAXGKRnxOC2AaVnSQkeOdvO5LI=;
-        b=tnW9bOiTFXPdF5WqGiM1bx3GweauOGsZgLIXJirpLSfLqj14Q9Pe/UOlTG0Vwsf+PS
-         eYwZmaMxTyPKnvnlWVbEwGY/GsxPcC76DX/CexpPZlM8luIkEShUH3OgBhUzY2v3zJgf
-         dxAZA3ZbmExm7jNMA3v9edYryBIZDXaR7gGDJuVWz/F6naoK9onAtJgLg2vmkXrFdCns
-         c8bbc/3XB6dsZiaL7CssoZhS5S/6VrOp9QZDw6St/ExqVv1jvTbBFss7sEz53aMAlwM0
-         dgJt2L97DBdoLgo3Oo7ITi5k1qcOX5CxamQSeyFaQgAP731aDuRy0fHogvKCiBaiPg8y
-         aZGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V788y0c+X/a1zmRPAQAXGKRnxOC2AaVnSQkeOdvO5LI=;
-        b=CAu+ZKHlQP1McmRabIVUcUWoEMrHN5jkywz4lnmqIXcYy/eT3TfaoLANdTKE512iPc
-         14gARelACOL0ewT2GQI9SdYSr49aEp7vcATr9eAWwBGTWmGI0xxN9hP5z77wmK9uAEET
-         s9MT8E1IARr4sqxKbX0lzgFyPpL4tEDRHzshas9TPYiSMGUtX5DzF7KFGlBGMlANkZ07
-         Q3Ife3/oBnj+P2ufWQISqcBzGVQsHKYZB+VsMENM7Ai1SgZoZGp4ENHScq88kuFd2q4T
-         0l2X2JH+fpjdgwFsX5M0PHDmklwhJosS1VudVfiXPnSmIWpvyoi+nAZzibGHnnzLmBTI
-         SBwQ==
-X-Gm-Message-State: AOAM533//lrKZFlT//V0U8FlG2mFbKRJkJiyCUAs8QM1wSEdjyuruRhu
-        Sl0zyHMl+AnAXr1g8BNk77wflHQv3tEsXhajfa9i5Q==
-X-Google-Smtp-Source: ABdhPJwk/5A/pxkyur4hIjIrmR7tCVZaRwKqnd5AmklHqVov2deqZIaDvFuOFFB8FvsspJDazxupGWPv/FRiFupz7Zs=
-X-Received: by 2002:adf:f6c8:: with SMTP id y8mr6962352wrp.325.1619503281250;
- Mon, 26 Apr 2021 23:01:21 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=v7OI+JeiSL
+        NOWCbMsyFE1LhROWob97JvYTX1veuCAAU=; b=ZWfrAn0f2Fhph6gtaTWDkhOFOM
+        ySQ67mX//jP5+bixOfxos2EB/JBehAvPUrRuyAWGRt2RqpqDGaSpsFFBA3/KJuUW
+        EbzF1JBtKyxpLO9aPjYXVGPDTMpSp2Er7gBNHVFfWK0SNieQefIa/N5nxQNEZjRW
+        SN74mnNbxUzG5ngqY=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHz68RqYdgrVNQAA--.2285S4;
+        Tue, 27 Apr 2021 14:02:57 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH v2] media:exynos4-is: Fix a use after free in isp_video_release
+Date:   Mon, 26 Apr 2021 23:02:55 -0700
+Message-Id: <20210427060255.3318-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop> <5b988c4e-25e9-f2b9-b08d-35bc37a245e4@sifive.com>
-In-Reply-To: <5b988c4e-25e9-f2b9-b08d-35bc37a245e4@sifive.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 27 Apr 2021 11:31:09 +0530
-Message-ID: <CAAhSdy2g13XkeiG4-=0pHVw9Oq5zAeseM2LgxHf6daXD+qnc1Q@mail.gmail.com>
-Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygDHz68RqYdgrVNQAA--.2285S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw1UXFWfZF4rtF13tr4ktFb_yoWkurX_Z3
+        48KFn7Xry5tr4jy3WqyFn5ZrW0yrZ8Xa93CanagFW2y3yUAFWxtF4qkrWfu3ZrGa17GFZ8
+        Jrs8XF4UCr93CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjylk7UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
+In isp_video_release, file->private_data is freed via
+_vb2_fop_release()->v4l2_fh_release(). But the freed
+file->private_data is still used in v4l2_fh_is_singular_file()
+->v4l2_fh_is_singular(file->private_data), which is a use
+after free bug.
 
-Looks like it will take more time for KVM RISC-V to be merged under arch/riscv.
+My patch set file->private_data to NULL after _vb2_fop_release()
+to avoid the use after free.
 
-Let's go ahead with your suggestion of having KVM RISC-V under drivers/staging
-so that development is not blocked.
+Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/media/platform/exynos4-is/fimc-isp-video.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I will send-out v18 series which will add KVM RISC-V under the staging
-directory.
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+index 612b9872afc8..2e04589068b4 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+@@ -315,7 +315,8 @@ static int isp_video_release(struct file *file)
+ 	}
+ 
+ 	_vb2_fop_release(file, NULL);
+-
++	file->private_data = NULL;
++
+ 	if (v4l2_fh_is_singular_file(file)) {
+ 		fimc_pipeline_call(&ivc->ve, close);
+ 
+-- 
+2.25.1
 
-Should we target Linux-5.14 ?
 
-Regards,
-Anup
-
-On Tue, Apr 27, 2021 at 11:13 AM Paul Walmsley <paul.walmsley@sifive.com> wrote:
->
-> On Fri, 9 Apr 2021, Palmer Dabbelt wrote:
->
-> > On Wed, 31 Mar 2021 02:21:58 PDT (-0700), pbonzini@redhat.com wrote:
-> >
-> > > Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
-> > > drivers/staging/riscv/kvm?
-> >
-> > I'm certainly ready to drop my objections to merging the code based on
-> > it targeting a draft extension, but at a bare minimum I want to get a
-> > new policy in place that everyone can agree to for merging code.  I've
-> > tried to draft up a new policy a handful of times this week, but I'm not
-> > really quite sure how to go about this: ultimately trying to build
-> > stable interfaces around an unstable ISA is just a losing battle.  I've
-> > got a bunch of stuff going on right now, but I'll try to find some time
-> > to actually sit down and finish one.
-> >
-> > I know it might seem odd to complain about how slowly things are going
-> > and then throw up another roadblock, but I really do think this is a
-> > very important thing to get right.  I'm just not sure how we're going to
-> > get anywhere with RISC-V without someone providing stability, so I want
-> > to make sure that whatever we do here can be done reliably.  If we don't
-> > I'm worried the vendors are just going to go off and do their own
-> > software stacks, which will make getting everyone back on the same page
-> > very difficult.
->
-> I sympathize with Paolo, Anup, and others also.  Especially Anup, who has
-> been updating and carrying the hypervisor patches for a long time now.
-> And also Greentime, who has been carrying the V extension patches.  The
-> RISC-V hypervisor specification, like several other RISC-V draft
-> specifications, is taking longer to transition to the officially "frozen"
-> stage than almost anyone in the RISC-V community would like.
->
-> Since we share this frustration, the next questions are:
->
-> - What are the root causes of the problem?
->
-> - What's the right forum to address the root causes?
->
-> To me, the root causes of the problems described in this thread aren't
-> with the arch/riscv kernel maintenance guidelines, but rather with the
-> RISC-V specification process itself.  And the right forum to address
-> issues with the RISC-V specification process is with RISC-V International
-> itself: the mailing lists, the participants, and the board of directors.
-> Part of the challenge -- not simply with RISC-V, but with the Linux kernel
-> or any other community -- is to ensure that incentives (and disincentives)
-> are aligned with the appropriately responsible parts of the community.
-> And when it comes to specification development, the right focus to align
-> those incentives and disincentives is on RISC-V International.
->
-> The arch/riscv patch acceptance guidelines are simply intended to ensure
-> that the definition of what is and isn't RISC-V remains clear and
-> unambiguous.  Even though the guidelines can result in short-term pain,
-> the intention is to promote long-term stability and sustainable
-> maintainability - particularly since the specifications get baked into
-> hardware.  We've observed that attempting to chase draft specifications
-> can cause significant churn: for example, the history of the RISC-V vector
-> specification illustrates how a draft extension can undergo major,
-> unexpected revisions throughout its journey towards ratification.  One of
-> our responsibilities as kernel developers is to minimize that churn - not
-> simply for our own sanity, or for the usability of RISC-V, but to ensure
-> that we remain members in good standing of the broader kernel community.
-> Those of us who were around for the ARM32 and ARM SoC kernel accelerando
-> absorbed strong lessons in maintainability, and I doubt anyone here is
-> interested in re-learning those the hard way.
->
-> RVI states that the association is open to community participation.  The
-> organizations that have joined RVI, I believe, have a strong stake in the
-> health of the RISC-V ecosystem, just as the folks have here in this
-> discussion.  If the goal really is to get quality specifications out the
-> door faster, then let's focus the energy towards building consensus
-> towards improving the process at RISC-V International.  If that's
-> possible, the benefits won't only accrue to Linux developers, but to the
-> entire RISC-V hardware and software development community at large.  If
-> nothing else, it will be an interesting test of whether RISC-V
-> International can take action to address these concerns and balance them
-> with those of other stakeholders in the process.
->
->
-> - Paul
