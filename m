@@ -2,65 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A416F36BF4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9316936BF4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbhD0Gai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 02:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        id S234644AbhD0Gam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhD0Gah (ORCPT
+        with ESMTP id S234556AbhD0Gal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:30:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E88C061574;
-        Mon, 26 Apr 2021 23:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r/PKhDSOpuWVr+iFptHfckso/hHr0MElpssnEZU9ivc=; b=t9mh6FBuC9Q6m6Enq+ly4WxESH
-        mT9pTb/kWbZcUPQ/2+eQFn4c3qeB+Uacs9KFcE/oh+/JwyoYXcZvkoaxwwT7pieJlc35Qe1JIbm6r
-        ZOGJAr21vCmO7XF/wZXQAEuEpS7JVCSOWlWyK2YKeFvrI65uv0DV7Q7soPVHJ3RS7RSRr4dWwTA60
-        pPffe0QyygoYiTTiltxuCTKdm1XUCP8UaZm3fdB0oXG6/32cJMkIT9eYHRIbWYmInYJXXBGDo7OZT
-        w4bTgXAYjwnJAVam9HyTeanfOzo4t1YlNvSLe6ACMjwSPdPnHSwL+aY1POS5JqZR2WFT1gZcb2FwG
-        I8/7E5ww==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbHDX-006ZEG-GN; Tue, 27 Apr 2021 06:29:12 +0000
-Date:   Tue, 27 Apr 2021 07:29:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
-        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v8 4/4] fs: unicode: Add utf8 module and a unicode layer
-Message-ID: <20210427062907.GA1564326@infradead.org>
-References: <20210423205136.1015456-1-shreeya.patel@collabora.com>
- <20210423205136.1015456-5-shreeya.patel@collabora.com>
+        Tue, 27 Apr 2021 02:30:41 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8F5C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:29:58 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id o5so59026872qkb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:29:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/pV0AqXqbkthcwk38nLrMq1WVbt4ZRnRJR4uUDC7/ME=;
+        b=LtDpQqhqRKg1LRrtuXslfNLH06XS3SHGL9cCs8S3kZEwfU5eTHjLzs0OzeRM5EF10c
+         S67kZcrBH0t/iesFTHoQiBzEThBqwY0mW/paDJ7Tu/hbKKLPfbGDCFYxkwQgOEaejDot
+         3wLqdp2bRQOqL2Zk0JGdW1NqJazdjWJ9NLsDT3KM0Z2bmzmzy8uv5yzPv0cvmCVmtb67
+         59nQfRu4YKXM3NY/tdlfKESTQ29rEjHtQZh83psbcOSg9ho0Pf61O7k+PZQhxgQJLYPj
+         ub2S14D82/4NZXeJyjyE66oyEHrR8cq81GMDIw8yluLM0IsuZjZADBWZTx/yyn6icyih
+         uySA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/pV0AqXqbkthcwk38nLrMq1WVbt4ZRnRJR4uUDC7/ME=;
+        b=qlUdBPBO73frEPaN87AUmJn5pbg5Ya8588G5iRd+CgbNBDbxGnbn72GQEhNxAfySTP
+         cQ3sAmW0Nr+H7PtM/LCi6wjoHvE9fhHluVepDZvp8bHevEDNCwbj7XQ3/fXmt4JZfkZN
+         CdDnp0wCwjMu3UV96HuJKVHTLqTwmx8st8vwgPUpYodQfW4rL6XIGmfwMSB/qH1dVuuU
+         q4TiD9LsuQbaV8tVJgdZscNcXhMG57IkOaGGkBVZCAkDtrfxRk/wpXPwSJ8LXhkAQOqX
+         zdjrU4siVHXDPv0uWOhh40aY0YuAWA7fR17KvTA4q4kAKmaeZp5+9uvcfmMU0LKxAvg3
+         raMg==
+X-Gm-Message-State: AOAM531mTmvhBW+rh9Vqc4vUZKiy/bNL+wM67y0/Z345Xx5inZokjw7j
+        CKOO52fz7N7wgB0TYbNWFDumrFfAuKrCfXoVA1ETHQ==
+X-Google-Smtp-Source: ABdhPJxcsBydfmT6CZ7+3NAVrZkaZgOaWm1qGfP6YqLXcJtvGOQAQ3vF/Xnv4j286mRezb1Vtgyx1G7mSO4SapbWyiQ=
+X-Received: by 2002:a37:8f06:: with SMTP id r6mr21527712qkd.424.1619504997400;
+ Mon, 26 Apr 2021 23:29:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423205136.1015456-5-shreeya.patel@collabora.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <00000000000022ebeb05bc39f582@google.com> <e939af11-7ce8-46af-8c76-651add0ae56bn@googlegroups.com>
+In-Reply-To: <e939af11-7ce8-46af-8c76-651add0ae56bn@googlegroups.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 27 Apr 2021 08:29:46 +0200
+Message-ID: <CACT4Y+aPRCZcLvkuWgK=A_rR0PqdEAM+xssWU4N7hNRSm9=mSA@mail.gmail.com>
+Subject: Re: KASAN: null-ptr-deref Write in io_uring_cancel_sqpoll
+To:     Palash Oswal <oswalpalash@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 02:21:36AM +0530, Shreeya Patel wrote:
-> utf8data.h_shipped has a large database table which is an auto-generated
-> decodification trie for the unicode normalization functions.
-> We can avoid carrying this large table in the kernel unless it is required
-> by the filesystem during boot process.
-> 
-> Hence, make UTF-8 encoding loadable by converting it into a module and
-> also add built-in UTF-8 support option for compiling it into the
-> kernel whenever required by the filesystem.
+On Mon, Apr 26, 2021 at 5:58 PM Palash Oswal <oswalpalash@gmail.com> wrote:
+> On Friday, February 26, 2021 at 3:03:16 PM UTC+5:30 syzbot wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit: d01f2f7e Add linux-next specific files for 20210226
+>> git tree: linux-next
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D108dc5a8d000=
+00
+>> kernel config: https://syzkaller.appspot.com/x/.config?x=3Da1746d2802a82=
+a05
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dbe51ca5a4d97f0=
+17cd50
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the com=
+mit:
+>> Reported-by: syzbot+be51ca...@syzkaller.appspotmail.com
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux=
+/instrumented.h:101 [inline]
+>> BUG: KASAN: null-ptr-deref in atomic_inc include/asm-generic/atomic-inst=
+rumented.h:240 [inline]
+>> BUG: KASAN: null-ptr-deref in io_uring_cancel_sqpoll+0x2c7/0x450 fs/io_u=
+ring.c:8871
+>> Write of size 4 at addr 0000000000000110 by task iou-sqp-19439/19447
+>>
+>> CPU: 0 PID: 19447 Comm: iou-sqp-19439 Not tainted 5.11.0-next-20210226-s=
+yzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS =
+Google 01/01/2011
+>> Call Trace:
+>> __dump_stack lib/dump_stack.c:79 [inline]
+>> dump_stack+0xfa/0x151 lib/dump_stack.c:120
+>> __kasan_report mm/kasan/report.c:403 [inline]
+>> kasan_report.cold+0x5f/0xd8 mm/kasan/report.c:416
+>> check_region_inline mm/kasan/generic.c:180 [inline]
+>> kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
+>> instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>> atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+>> io_uring_cancel_sqpoll+0x2c7/0x450 fs/io_uring.c:8871
+>> io_sq_thread+0x1109/0x1ae0 fs/io_uring.c:6782
+>> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> Kernel panic - not syncing: panic_on_warn set ...
+>> CPU: 0 PID: 19447 Comm: iou-sqp-19439 Tainted: G B 5.11.0-next-20210226-=
+syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS =
+Google 01/01/2011
+>> Call Trace:
+>> __dump_stack lib/dump_stack.c:79 [inline]
+>> dump_stack+0xfa/0x151 lib/dump_stack.c:120
+>> panic+0x306/0x73d kernel/panic.c:231
+>> end_report mm/kasan/report.c:102 [inline]
+>> end_report.cold+0x5a/0x5a mm/kasan/report.c:88
+>> __kasan_report mm/kasan/report.c:406 [inline]
+>> kasan_report.cold+0x6a/0xd8 mm/kasan/report.c:416
+>> check_region_inline mm/kasan/generic.c:180 [inline]
+>> kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
+>> instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>> atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+>> io_uring_cancel_sqpoll+0x2c7/0x450 fs/io_uring.c:8871
+>> io_sq_thread+0x1109/0x1ae0 fs/io_uring.c:6782
+>> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>> Kernel Offset: disabled
+>> Rebooting in 86400 seconds..
+>>
+>>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzk...@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+>
+> My syzkaller instance reported a syz-repro for this bug:
+> Syzkaller reproducer: # {Threaded:true Collide:true Repeat:true RepeatTim=
+es:0 Procs:2 Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Le=
+ak:false NetInjection:true NetDevices:true NetReset:true Cgroups:true Binfm=
+tMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false USB:false VhciInjecti=
+on:false Wifi:false IEEE802154:false Sysctl:true UseTmpDir:true HandleSegv:=
+true Repro:false Trace:false}
+> r0 =3D fsmount(0xffffffffffffffff, 0x1, 0xc)
+> syz_io_uring_setup(0x329b, &(0x7f0000000080)=3D{0x0, 0x850e, 0x2, 0x2, 0x=
+1b4}, &(0x7f0000ffc000/0x4000)=3Dnil, &(0x7f0000ffa000/0x4000)=3Dnil, 0x0, =
+0x0)
+> syz_io_uring_setup(0x3de2, &(0x7f0000001480)=3D{0x0, 0x4f62, 0x4, 0x2, 0x=
+75}, &(0x7f0000ffb000/0x3000)=3Dnil, &(0x7f0000ffd000/0x3000)=3Dnil, 0x0, 0=
+x0)
+> fsetxattr$trusted_overlay_nlink(r0, &(0x7f0000000140), 0x0, 0x0, 0x0)
+>
+> I'm working to get a c reproducer for it that is consistent. This syz-rep=
+ro does not produce a working reproducer for me just yet.
+> Initial suspicion is that io_sq_thread_stop sets set_bit(IO_SQ_THREAD_SHO=
+ULD_STOP, &sqd->state);
+> And subsequently after a return from fork, where the process receives a S=
+IGKILL and io_uring_cancel_sqpoll(ctx) is called with a NULL ctx in io_sq_t=
+hread(). I haven't connected all of the dots yet, working on it.
 
-The way this is implemement looks rather awkward.
-
-Given that the large memory usage is for a data table and not for code,
-why not treat is as a firmware blob and load it using request_firmware?
++kernel lists and syzbot email
+(almost nobody is reading syzkaller-bugs@ itself)
