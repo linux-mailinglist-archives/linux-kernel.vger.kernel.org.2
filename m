@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7E636C6A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278BE36C6BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236307AbhD0NFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:05:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235426AbhD0NFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:05:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB6261164;
-        Tue, 27 Apr 2021 13:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619528658;
-        bh=tlheHvM//3dXredeBdTckKtkZE7FU+y90X93KD4Z160=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lyJRYX60lhAIW+h8cY2Zcecha2sbNSwmFXauc2Pn0JNk9bw4tEtO6uADwLZfR0fA+
-         DXzpcOO96eG9r8QOT18pSTVpf8QqRdsz5b0AUMyzV9ukzwa/MMdnf+ZMcSUAdOpbcc
-         So+sm5K0aLdWFVRBZKo4KWIvYt0fQ0Epn65QS0uo=
-Date:   Tue, 27 Apr 2021 15:04:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 010/190] Revert "media: camss: Fix a reference count
- leak."
-Message-ID: <YIgLz1AX+0+CSDYU@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-11-gregkh@linuxfoundation.org>
- <CAG3jFytfaOoJihOyxjMjzRqUOCR+fKhO_nPxVnO62Up0gvoGWg@mail.gmail.com>
+        id S236293AbhD0NJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236412AbhD0NJO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:09:14 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFE0C061574;
+        Tue, 27 Apr 2021 06:08:29 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id x7so59369603wrw.10;
+        Tue, 27 Apr 2021 06:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bJvGh786pSp2+xw3WDqNmNqzwSTVt/HxDfR6swJxO7U=;
+        b=fbX8M4MqzmIkM9qDTRgc5EzsDkrUI0Azseg5GVTTKdgikdabvyqQSI5C5bilUR/xEA
+         T8lBtrqy4rTEh40PCxq5ynTSYpWF6RCzL6IRfNr/yEDDV8x2gb6/T5lYFPFlihNX7Y/t
+         o/N43VG+cnkSLeyID+GwzZDx4UOIVNOdBp7cWv7u0vjgLOVZtRTssXAt8P+n0VVZh8p3
+         JwyZ9TYIQulx/N6JWidn92mfFuFMGpWf2iEEUZ2qPYj0ynkMsldgdmzO5w2+CJx937Pv
+         GVN8qwVX+gzGGKjDWFbt5hdrGynp/JLMuED0D2CJfpPGb+tDrzbqyHGLTW7H6Qnp0r0Q
+         HpxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bJvGh786pSp2+xw3WDqNmNqzwSTVt/HxDfR6swJxO7U=;
+        b=S1TNYuMzsEtNQ1GFKCj6L8oatBByMeXOf1bWltnh7jXhPtGw+j4xJgcpp2lmmg4uKR
+         pVq6EuRjF8WOb5WpqQK4qov+2P72qAAXq45EPTVrsH7Hf/00xToSonMRWDp+pYRg+VYU
+         tpSsfvKf7bD0yOyjnsVOoiaKUtzPB2XAQ/caMacS/p1J+M8aUVKUOKARpTpr/JG/EPAZ
+         PSLWqcvV+1xqayJqllRmCOlreAa0HjV4sH07ILhpKspPrRkDL2cXrsX6rhg3BBPCHDl7
+         VEnoPGFauKlQqehHTZBepisBxtpOKYu4Qp8U0d6iI11oPNNiKmArYKbo9tAeCql4U3Tn
+         in4w==
+X-Gm-Message-State: AOAM5321FTi7nktE/n8kCXa9BUp90hhQ++kG2yyc27d3wNVle/0pvaU+
+        +bvmjRox/4gVNk2F+PY3sX4/zhVxZOo=
+X-Google-Smtp-Source: ABdhPJzOFW0aS5C+74hkZzL1CAWbA01ZyOn9wZWdt0HgHK5C6Sp5UO0iMAA6u/ozFtZbZC3sCiwxGA==
+X-Received: by 2002:a05:6000:2ad:: with SMTP id l13mr28691618wry.417.1619528908268;
+        Tue, 27 Apr 2021 06:08:28 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.129.131])
+        by smtp.gmail.com with ESMTPSA id i2sm1005054wro.0.2021.04.27.06.08.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 06:08:27 -0700 (PDT)
+Subject: Re: [PATCH 5.13] io_uring: Check current->io_uring in
+ io_uring_cancel_sqpoll
+To:     Palash Oswal <hello@oswalpalash.com>
+Cc:     axboe@kernel.dk, dvyukov@google.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oswalpalash@gmail.com,
+        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org
+References: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
+ <20210427125148.21816-1-hello@oswalpalash.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <b62f1985-f336-d0ec-bcdc-5dac16fb760b@gmail.com>
+Date:   Tue, 27 Apr 2021 14:08:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG3jFytfaOoJihOyxjMjzRqUOCR+fKhO_nPxVnO62Up0gvoGWg@mail.gmail.com>
+In-Reply-To: <20210427125148.21816-1-hello@oswalpalash.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 05:43:45PM +0200, Robert Foss wrote:
-> Hi Greg,
+On 4/27/21 1:51 PM, Palash Oswal wrote:
+> syzkaller identified KASAN: null-ptr-deref Write in
+> io_uring_cancel_sqpoll on v5.12
 > 
-> Thanks for taking for preventing this type of abuse.
+> io_uring_cancel_sqpoll is called by io_sq_thread before calling
+> io_uring_alloc_task_context. This leads to current->io_uring being
+> NULL. io_uring_cancel_sqpoll should not have to deal with threads
+> where current->io_uring is NULL.
 > 
-> On Wed, 21 Apr 2021 at 15:03, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This reverts commit d0675b67b42eb4f1a840d1513b5b00f78312f833.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Qiushi Wu <wu000273@umn.edu>
-> > Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> 
-> I think this patch is good, NAK.
+> In order to cast a wider safety net, perform input sanitisation
+> directly in io_uring_cancel_sqpoll and return for NULL value of
+> current->io_uring.
 
-I'll drop this from the series, thank you for the review.
+Looks good to me, but better to add a comment why it can be ignored,
+e.g. "can skip it as it couldn't have submitted requests without tctx"
 
-greg k-h
+Also a nit: s/current->io_uring/tctx/
+
+> 
+> Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Palash Oswal <hello@oswalpalash.com>
+> ---
+>  fs/io_uring.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index dff34975d86b..eccad51b7954 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -8998,6 +8998,8 @@ static void io_uring_cancel_sqpoll(struct io_ring_ctx *ctx)
+>  	s64 inflight;
+>  	DEFINE_WAIT(wait);
+>  
+> +	if (!current->io_uring)
+> +		return;
+>  	WARN_ON_ONCE(!sqd || ctx->sq_data->thread != current);
+>  
+>  	atomic_inc(&tctx->in_idle);
+> 
+
+-- 
+Pavel Begunkov
