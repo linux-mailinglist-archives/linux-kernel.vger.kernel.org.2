@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DA636C688
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE42436C68C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhD0M5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:57:53 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:39665 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbhD0M5r (ORCPT
+        id S236373AbhD0M6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:58:00 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:36641 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236225AbhD0M5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:57:47 -0400
-Received: by mail-oo1-f54.google.com with SMTP id g9-20020a4ad3090000b02901ec6daba49aso6221379oos.6;
-        Tue, 27 Apr 2021 05:57:04 -0700 (PDT)
+        Tue, 27 Apr 2021 08:57:51 -0400
+Received: by mail-oi1-f172.google.com with SMTP id i26so4290683oii.3;
+        Tue, 27 Apr 2021 05:57:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=IwnIBjLdvQmLQ0XqV1p9WKPPT/x2JWfWX4PnoAgtDII=;
-        b=E7KIkj+Vke7y67rKLSGizli6IzrGPkM8pOS5XS2hKMusuwIOSh8BY2w+nmGNn5CaHJ
-         DIwAxecQZUPOF/Lqbq7XPXf7Ax7HwiM2eBf/Tz188cXtSRvr/8had3iJJbXFdSJUNkM/
-         Prdn1zZJ5r1Iiv0cQNRtORLBaxT70RLcPovuCxxGsk0G65I44SzA90kaaShUv9z6PS6Q
-         u3scB6eYRDqm8VxgL+ShrEpHsEFKkt6Ci1Gp/HD/kySdZHpkL4seYBJD1YYqLvrU9JDn
-         C7bHGrLrGOD7eLs4oBbnnnrQyQZuHZFEZyyTWkCE2D+g/W/Vqun+lh4TNXiZXO8IdhZB
-         7DKg==
-X-Gm-Message-State: AOAM533HtNtgbod3CKId5Few2xdD9m/9zgfhzzl0QNSkCVhANwcV3JSe
-        BDE90jiUBwYoB+KCL9tGNfFyzoAJLg==
-X-Google-Smtp-Source: ABdhPJxhZcKv8RAuk4y95GPOowmjvGK1lNeyXZ7wllksdOUf1Kza3OfMNNbRMLkG1Hxzef46g9vRxg==
-X-Received: by 2002:a4a:ae01:: with SMTP id z1mr18029118oom.87.1619528224137;
-        Tue, 27 Apr 2021 05:57:04 -0700 (PDT)
+        bh=rFoPXvGb1JtyBzu9l/r6cY4fSMekVIRELQco4ayK1NI=;
+        b=CNAc+/18BknFkSuBWnSev6GhO9S8IyMddNeRoqD7gW8rQpnnqxCnFtXMfBBm0tvXC6
+         nB/OI90Kc4EUydXwQGWHMObpX6c3NKjWwZUFM+uEmTIIKlOpZlQ5ZE1PKYMzbYztVTxr
+         2an9WYy8C6d5UTpqICndG687WxS4nOmYcOEh58du8zTUN338pagbKu+YYzInb/fZQSaX
+         N/mPQM6wWaIC+25S29pftAH03WsyLMHSkC1gbQhnr94KaHyA6jB2cItHyU3KS8oP0DJ+
+         BUoFLAWNPzGfTbhwp1R5P9xfrJcqjG1eiW/I4Wb5C0TY5p8SEHsQ4hZb2UDJPIOVPk0u
+         UiZw==
+X-Gm-Message-State: AOAM533eAikCl54RpfNzx9VAxep5BFP7N2OW4SYvQPGk7ygJN4Dkfchj
+        bpRYjg/t28eFOkkgyphVXw==
+X-Google-Smtp-Source: ABdhPJwM44JxerROpT3ApIxLaKblGtdBJU69E/VgkkOIh7U3tZybzktLqkK+0Ia1ylvgSnPtle4f+w==
+X-Received: by 2002:a05:6808:1cc:: with SMTP id x12mr3296849oic.114.1619528226258;
+        Tue, 27 Apr 2021 05:57:06 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c26sm1286316otl.61.2021.04.27.05.57.03
+        by smtp.gmail.com with ESMTPSA id z197sm3737837oia.3.2021.04.27.05.57.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 05:57:03 -0700 (PDT)
-Received: (nullmailer pid 1346445 invoked by uid 1000);
+        Tue, 27 Apr 2021 05:57:05 -0700 (PDT)
+Received: (nullmailer pid 1346448 invoked by uid 1000);
         Tue, 27 Apr 2021 12:57:01 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Nandor Han <nandor.han@vaisala.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, srinivas.kandagatla@linaro.org
-In-Reply-To: <942aacf1c51861e5a09db6a6d322666709695df2.1619511801.git.nandor.han@vaisala.com>
-References: <cover.1619511801.git.nandor.han@vaisala.com> <942aacf1c51861e5a09db6a6d322666709695df2.1619511801.git.nandor.han@vaisala.com>
-Subject: Re: [PATCH 1/4] dt-bindings: nvmem: Add bootcount-nvmem
+To:     Fenglin Wu <fenglinw@codeaurora.org>
+Cc:     collinsd@codeaurora.org, linux-pwm@vger.kernel.org,
+        subbaram@codeaurora.org, linux-kernel@vger.kernel.org,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, aghayal@codeaurora.org,
+        devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>
+In-Reply-To: <20210427102247.822-2-fenglinw@codeaurora.org>
+References: <20210427102247.822-1-fenglinw@codeaurora.org> <20210427102247.822-2-fenglinw@codeaurora.org>
+Subject: Re: [PATCH 1/2] dt-bindings: pwm: add bindings for PWM modules inside QCOM PMICs
 Date:   Tue, 27 Apr 2021 07:57:01 -0500
-Message-Id: <1619528221.583004.1346444.nullmailer@robh.at.kernel.org>
+Message-Id: <1619528221.595166.1346447.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Apr 2021 11:26:31 +0300, Nandor Han wrote:
-> Documents the device tree bindings for `bootcount-nvmem` driver.
+On Tue, 27 Apr 2021 18:22:09 +0800, Fenglin Wu wrote:
+> Add bindings for QCOM PMIC PWM modules which are accessed through SPMI
+> bus.
 > 
-> Signed-off-by: Nandor Han <nandor.han@vaisala.com>
+> Signed-off-by: Fenglin Wu <fenglinw@codeaurora.org>
 > ---
->  .../bindings/nvmem/bootcount-nvmem.yaml       | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
+>  .../devicetree/bindings/pwm/pwm-qcom.yaml          | 51 ++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-qcom.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/pwm/pwm-qcom.yaml:29:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/nvmem/bootcount-nvmem.example.dts:34.1-2 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/nvmem/bootcount-nvmem.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1414: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/pwm-qcom.yaml: Additional properties are not allowed ('Properties' was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/pwm-qcom.yaml: Additional properties are not allowed ('Properties' was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/pwm-qcom.yaml: 'anyOf' conditional failed, one must be fixed:
+	'properties' is a required property
+	'patternProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/pwm-qcom.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/pwm/pwm-qcom.yaml
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dts:21.13-28: Warning (reg_format): /example-0/pwms@e800:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml: example-0: pwms@e800:reg:0: [59392] is too short
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/pwm/pwm-qcom.example.dt.yaml:0:0: /example-0/pwms@e800: failed to match any schema with compatible: ['qcom,pwm']
 
-See https://patchwork.ozlabs.org/patch/1470591
+See https://patchwork.ozlabs.org/patch/1470623
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
