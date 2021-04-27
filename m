@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480E036BD1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4392536BD22
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhD0CHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
+        id S235534AbhD0CHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhD0CHA (ORCPT
+        with ESMTP id S231408AbhD0CHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:07:00 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A1EC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:06:17 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u16so41067905oiu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:06:17 -0700 (PDT)
+        Mon, 26 Apr 2021 22:07:47 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03911C061574;
+        Mon, 26 Apr 2021 19:07:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=RjRLRjt6DksoCv/KudQEO4D/bl6V4MEpJxlivb+MQoM=;
-        b=jdV/vIAUyUYepkvyJNWXc3rT8qZiyIJAwkvhMcd+315lRZ7zAiBI7zwh312YsV9EWr
-         CXUhCmMf29fQrxt9oEQW12yvBYikgQKfnLYZjsmv4T3T70UD2SIFDZp6Uh9YjgSjL6iR
-         BKktWs8jn3BGR8MX0WOfS8ty3VTSKAVdrLfiWt2aiA0DzKIAh198wP4KlIP9bk3MXU3z
-         iJwMo0CcJSeuAn5Wss+Ccq74lMS4hQSKoRxRT5LU8/Oq36/JBdHBNdFRwWRnJ8u9kw0M
-         bMjeV7ArPu4oPxPVf26HVS+tLLLMO9J8yPnkGZYKmouGME+1P7qPmik3YycN6FtwOWcY
-         QIJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=RjRLRjt6DksoCv/KudQEO4D/bl6V4MEpJxlivb+MQoM=;
-        b=LbS4FSEJhHFKZg1hPEalMxj84LU7xsmNGPdXL/FSrBod5veFfvTMp2cLCJzPYAvwWi
-         ea3hHIiAs/rSRXkjS8MoK0g4+wm8rocKUdnwt3s6BAg95xJbJC/NrtqLJPDHfIAcYjBQ
-         jhDBnnjh/u+2Z2G39pddDG6+ngGyzuu/zlqYZptv8h6Zlql3or5Qph7ly7dLz+nqckk1
-         sLHvsTT/XiP0JMXNN5U6giKdL8IzP5j2X7naFnA+BhzJJkeOhgcCFyr/Whq0r6tW/s63
-         f6IwB1GEHGUN+W/u1sUDIYKjm0djc/v2/rHreDnCXYiN78IEQ8hFKas/icjpBZNjWaVJ
-         6mlw==
-X-Gm-Message-State: AOAM532vXR3htJQ8f0/SO97EUxWdfy+AKv+DCKl2OSLq1H+7g6fDvg8F
-        T/gx55xCNwZJIKuKIf92tWZ73A==
-X-Google-Smtp-Source: ABdhPJymXV9swDliPd/VmVska6RbWioEMytEv11iIxTdOsGriU6E6s+aROVttE2bhkJcD8ehfB9fIA==
-X-Received: by 2002:aca:90b:: with SMTP id 11mr1437534oij.77.1619489176268;
-        Mon, 26 Apr 2021 19:06:16 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h28sm404479oof.47.2021.04.26.19.06.14
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 26 Apr 2021 19:06:15 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 19:05:55 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4 01/10] userfaultfd/hugetlbfs: avoid including
- userfaultfd_k.h in hugetlb.h
-In-Reply-To: <20210420220804.486803-2-axelrasmussen@google.com>
-Message-ID: <alpine.LSU.2.11.2104261858130.2998@eggly.anvils>
-References: <20210420220804.486803-1-axelrasmussen@google.com> <20210420220804.486803-2-axelrasmussen@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID;
+        bh=yINMv3uOqWN+slcpRlNpznilpHkVL0ty48AwqG03qjg=; b=p4VlS5B95/um1
+        NrGUlSKRw2hI1wXC2oKwHdsdXEoSdDP2NtpftEq0wVfii68EhB/dTTM6GmUemjKX
+        KmNekcLiNSz39T681Ku3DVlfVMsDcttGxs5V38SLsAuOGn2NT5/fIQ9XSUb9HGRD
+        /fSmG7LaS9F7fcoc2roMLi3IFVa1Oc=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Tue, 27 Apr
+ 2021 10:06:54 +0800 (GMT+08:00)
+X-Originating-IP: [104.245.96.151]
+Date:   Tue, 27 Apr 2021 10:06:54 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [BUG] net:ipv6/ip6_tunnel:  A double free in ip6_tnl_start_xmit
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+X-SendMailWithSms: false
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <4072c4bc.6242b.17911144f20.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygCHj5u+cYdgy85OAA--.6W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsEBlQhn6cVyAABsZ
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021, Axel Rasmussen wrote:
+Hi, maintainer.
+    Our code analyzer reported a double free bug,
+and it is a little difficult for me to fix the intricate bug.
 
-> Minimizing header file inclusion is desirable. In this case, we can do
-> so just by forward declaring the enumeration our signature relies upon.
-> 
-> Reviewed-by: Peter Xu <peterx@redhat.com>
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+File: net/ipv6/ip6_tunnel.c
 
-Acked-by: Hugh Dickins <hughd@google.com>
+ In ip6_tnl_start_xmit, it calls ipxip6_tnl_xmit() and then
+ipxip6_tnl_xmit calls ip6_tnl_xmit(). The skb could be freed
+at line 1,213 via consume_skb(skb). If ip6_tnl_xmit() returns
+an error code, the tx_err branch of ip6_tnl_start_xmit will free
+the skb again.
 
-> ---
->  include/linux/hugetlb.h | 4 +++-
->  mm/hugetlb.c            | 1 +
->  2 files changed, 4 insertions(+), 1 deletion(-)
+Issue: e7bb18e6c8b7e ("ip6_tunnel: simplify transmit path")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
