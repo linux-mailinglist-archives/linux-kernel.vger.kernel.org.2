@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F7C36CB86
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B152F36CB8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237640AbhD0TOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhD0TOt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:14:49 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EB5C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:14:04 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j10so2194655lfb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AB1V5oTeJ2WhmRUJ2GQVF15rRhUULVDZ8xbuGavAGZA=;
-        b=I8zIhzF4xgs5c9h1B1B6xucfwUSXsJCLvkzdvgFByQMkD/6NohNVrRzONOvdpaA7Yt
-         9flVvqBihPi+J/VFGoIeA+5FWdpIVgL4jXedmK4WaWIH6QSYY/Y099cYHSbZZCZnSX/e
-         eAs+KD+7AF7yVcTjiL8nPKQRhuRs2KHwUSfcRs+EAXl8dZw79iBX5mr8sTM/RHfgLjGv
-         c7S/fgXvQ7rOqxXwwX9eqRS+KymuHnsiiMELAfJoasgxe1gH9JkpBWGmbQ+ySfwQc0IF
-         mFQcSyMPUoDIAnzO0u7bBbiuDv+PCAICjPvJ73Pftnqtcsf6KfhM4VKGU49R2y5NaR0B
-         oNTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AB1V5oTeJ2WhmRUJ2GQVF15rRhUULVDZ8xbuGavAGZA=;
-        b=fn7XRDqTZm1JRqT5iQXE4JcbWrnISMk2zdPO9L70vhbGSD+210hC4rG20h3JOrAqJL
-         5fIyRxV7AalDk42QtcBQxmfFatNt6pQ/aYAftbgEoKNJeZAQwvxVdnxSgJJZe+r+v/5y
-         1VUm4pNI91KG3uNFpRRTTWWbDV9+1jodu3st5WkF43clu3yMCwPFG6or1FxxYEizSgJw
-         ykCMB11/bEsA9m+gCatZtW7Y8iOloX+XrKtQQiCdVdukzZKxt37kK3rYRJKJCET4CKZc
-         GbvwZOyASVLWzvWnHpWZomt4DJJ1xgrAsD5zL9q2nx3tl9ANm2cZSvoke6LSQBlHjRfS
-         bxHA==
-X-Gm-Message-State: AOAM532051XVQhKrOkraRQqn+TjSUouCZN3w12Q3DPri82DX1w5+qEJr
-        zEB8mGzmcX1EDK33O2IPhZeEPshLdnDIsg2x7gqUHg==
-X-Google-Smtp-Source: ABdhPJykOuvO+JF+ov+nYGOflfc88og8ntGA+7tM52OJQhzJrCmQGKukRAhEsqS2SSb9bsrTAuPydW4Pn7czvNa/p20=
-X-Received: by 2002:ac2:46ed:: with SMTP id q13mr17241394lfo.543.1619550842376;
- Tue, 27 Apr 2021 12:14:02 -0700 (PDT)
+        id S237091AbhD0TS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:18:57 -0400
+Received: from mga02.intel.com ([134.134.136.20]:9028 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236327AbhD0TS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:18:56 -0400
+IronPort-SDR: kyvqSWjgEsfoAviJaFODORTyNV/woCFsfsWX60DzQD3ds5PjKzbeqksMTw3AfuVPlXMYvLowlZ
+ AjPtbf8h4ZZA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="183714965"
+X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
+   d="scan'208";a="183714965"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:18:11 -0700
+IronPort-SDR: hhiPByXCUgJ0qam0xQ08fAXfcR2Ud0vR8cbsAe5q03nrfz4tphEq1KZDQgLdgDF+onkmXKKG2F
+ 1OhUwdw+jCSw==
+X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
+   d="scan'208";a="386253902"
+Received: from mchintha-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.5.143])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:18:10 -0700
+Subject: Re: [RFC v2 05/32] x86/tdx: Add __tdcall() and __tdvmcall() helper
+ functions
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <2f81f67efdf8c68838cdfbb2314e98747cf70120.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <c2edea0c-8de7-3bd3-1dbe-66b585d78e03@intel.com>
+ <f310c626-5fd9-7fd3-23fa-e319c0f2aa98@linux.intel.com>
+ <33af5bd4-7ada-8450-5a86-90023145d481@intel.com>
+ <849d8039-b43c-0790-be1c-aaac8c06608a@linux.intel.com>
+ <2f26e352-99e4-8531-221a-eb9641c67ec0@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <95444e56-a674-1152-3039-4e425e5f5a72@linux.intel.com>
+Date:   Tue, 27 Apr 2021 12:18:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210427183755.2790654-1-trix@redhat.com>
-In-Reply-To: <20210427183755.2790654-1-trix@redhat.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Apr 2021 12:13:50 -0700
-Message-ID: <CAKwvOdmj5YvWZZWwcq1G7JgRALwPbqwiROiedMeEbBst2sGeiQ@mail.gmail.com>
-Subject: Re: [PATCH] samples/landlock: fix path_list memory leak
-To:     Tom Rix <trix@redhat.com>
-Cc:     mic@digikod.net, Nathan Chancellor <nathan@kernel.org>,
-        linux-security-module@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2f26e352-99e4-8531-221a-eb9641c67ec0@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:38 AM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> Clang static analysis reports this error
->
-> sandboxer.c:134:8: warning: Potential leak of memory
->   pointed to by 'path_list'
->         ret = 0;
->               ^
-> path_list is allocated in parse_path() but never freed.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  samples/landlock/sandboxer.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/samples/landlock/sandboxer.c b/samples/landlock/sandboxer.c
-> index 7a15910d2171..4629d011ed61 100644
-> --- a/samples/landlock/sandboxer.c
-> +++ b/samples/landlock/sandboxer.c
-> @@ -134,6 +134,8 @@ static int populate_ruleset(
->         ret = 0;
->
->  out_free_name:
-> +       if (path_list)
-> +               free(path_list);
+Hi Dave,
 
-I don't think the conditional is even necessary? By our first `goto
-out_free_name;`, `parse_path` has already been called/memory for
-`path_list` has already been allocated. `parse_path` doesn't check
-whether `malloc` has failed.
+On 4/27/21 7:29 AM, Dave Hansen wrote:
+>> Do we need to rename the helper functions ?
+>>
+>> tdvmcall(), tdvmcall_out_r11()
+> Yes.
+> 
+>> Also what about output structs?
+>>
+>> struct tdcall_output
+>> struct tdvmcall_output
+> Yes, they need sane, straightforward names which are not confusing too.
+> 
 
->         free(env_path_name);
->         return ret;
->  }
-> --
-> 2.26.3
->
+Following is the rename diff. Please let me know if you agree with the
+names used.
+
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 6c3c71bb57a0..95a6a6c6061a 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+
+-struct tdcall_output {
++struct tdx_module_output {
+         u64 rcx;
+         u64 rdx;
+         u64 r8;
+@@ -19,7 +19,7 @@ struct tdcall_output {
+         u64 r11;
+  };
+
+-struct tdvmcall_output {
++struct tdx_hypercall_output {
+         u64 r11;
+         u64 r12;
+         u64 r13;
+@@ -33,12 +33,12 @@ bool is_tdx_guest(void);
+  void __init tdx_early_init(void);
+
+  /* Helper function used to communicate with the TDX module */
+-u64 __tdcall(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+-            struct tdcall_output *out);
++u64 __tdx_module_call(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
++                     struct tdx_module_output *out);
+
+  /* Helper function used to request services from VMM */
+-u64 __tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
+-              struct tdvmcall_output *out);
++u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
++                   struct tdx_hypercall_output *out);
+
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -8,11 +8,11 @@
+  /*
+   * Wrapper for use case that checks for error code and print warning message.
+   */
+-static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
++static inline u64 tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
+  {
+         u64 err;
+
+-       err = __tdvmcall(fn, r12, r13, r14, r15, NULL);
++       err = __tdx_hypercall(fn, r12, r13, r14, r15, NULL);
+
+         if (err)
+                 pr_warn_ratelimited("TDVMCALL fn:%llx failed with err:%llx\n",
+@@ -24,13 +24,14 @@ static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
+  /*
+   * Wrapper for the semi-common case where we need single output value (R11).
+   */
+-static inline u64 tdvmcall_out_r11(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
++static inline u64 tdx_hypercall_out_r11(u64 fn, u64 r12, u64 r13,
++                                       u64 r14, u64 r15)
 
 
 -- 
-Thanks,
-~Nick Desaulniers
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
