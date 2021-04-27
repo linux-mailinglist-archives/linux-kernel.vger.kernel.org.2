@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35FE36CB80
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1DC36CB83
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236775AbhD0TMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhD0TMs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:12:48 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581AEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:12:05 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id p17so5527445plf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:12:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+SROfjuDf0LvnCgRM16+n6964r7e8cgU3/0ENTxesNQ=;
-        b=lTEqBuj+nVbGPVu8/uF08bM5OB0fBAGKcFrX5ZyGjgnBpDwkl7BzvdT+RwRhGZzPfe
-         RxU3qoJcWVbz4h1nM0Rnwqk3VOxuy1/DbkqCzudiATVfPiUxk6AdKXC23gW1aXwBT//D
-         TGnQsjInr0CNB9kWpQs9CwVmyJniMH7SZpDa8lUKBJAgpSmt3+BVL/3ZMJh3eYrg+V2y
-         AiggLKzxpiBb0GqiCzHcypwtg4GncxIppvkn1R3WFEHbdk6WxBJtKgyKFinuK73K67eE
-         QS8jYYmG/+rhTqeKkuKF2EIqAjwHyd4IMOxAJ05kp+BzEJZbRX+RubssHw4bpVq3azjS
-         eTog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+SROfjuDf0LvnCgRM16+n6964r7e8cgU3/0ENTxesNQ=;
-        b=ghq0baglmIo+LIKGoFN6XctARIhi6Mf6hQSiTq6lEvsG3E0NMpszUBOLWQSF0aqSU9
-         BxYMhMzIjkTvhgPHky6kUt1zmMOcP4wODvrJSCdz/GrLh7+h5r6uvPXQEJGxGSr4ag0n
-         KyBw0TQ3B9tQOQgS6A+Um9KT77/pYw0ZNBOWUrl/EDZq8c0mDxmwEgZfaH+TnGW6/dEX
-         Q+YBSQmSGmbgQoEQuqiXMs8LvHan3waJVjKLlJ/+awnzOqo+dUuWzXDdoJ+uXuuc+Z2P
-         /KzeJ+iDBGku/w12fqDiK/2QfdMffPtccLCeY/D6IDl/DihDFJG2/4poLZEmmZXJWPlt
-         d2rw==
-X-Gm-Message-State: AOAM533+ZgVUlVxCZbIAdf3jQEuTPkeAAOTPBOET1bkE8MAMVjMLgX1G
-        iv8pWfIp89mlP695dqxS5G2zRPFh9fnuNg==
-X-Google-Smtp-Source: ABdhPJzcStLi1h7eE+Z2wOdg2Jmaq3PfNgkRNJlHpssKF2f3V0yCK/CgtPVt68V+d5Ejs8lrEPZi9Q==
-X-Received: by 2002:a17:903:2288:b029:eb:6ca4:6493 with SMTP id b8-20020a1709032288b02900eb6ca46493mr26053305plh.85.1619550724769;
-        Tue, 27 Apr 2021 12:12:04 -0700 (PDT)
-Received: from user ([2001:4490:4409:fe15:9fd0:fa2c:4efc:28b5])
-        by smtp.gmail.com with ESMTPSA id d1sm2790990pjs.12.2021.04.27.12.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 12:12:04 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 00:41:56 +0530
-From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     fabioaiuto83@gmail.com, john.oldman@polehill.co.uk,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        insafonov@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: rtl8723bs: os_dep: remove unneeded variable ret
-Message-ID: <20210427191156.GA11046@user>
-References: <20210418164813.GA57451@user>
- <YIE2o/T9rKgm7TWm@kroah.com>
+        id S236889AbhD0TOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:14:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:8751 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230219AbhD0TO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:14:29 -0400
+IronPort-SDR: cV1K1I54DsI4oiyibkpbXgUSW2tGpYaSu9jDrp/9RgJ1VuesNqVtroKLSyuR8aa+NrjvY8V/V4
+ iFV3COVKUVlg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="217288757"
+X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
+   d="scan'208";a="217288757"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:13:42 -0700
+IronPort-SDR: +rOSHwtLe8CEYYVmyPnlHC5j9E/FP9srmO0txOhRNV0IkwGLgyM/mDHNBL1w06oGeUgKRA70Hb
+ qY9z8QiVHApg==
+X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
+   d="scan'208";a="457801829"
+Received: from aimam2-mobl1.amr.corp.intel.com (HELO [10.212.7.187]) ([10.212.7.187])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:13:41 -0700
+Subject: Re: sound/soc/sof/intel/byt.c:1057: undefined reference to
+ `sof_acpi_probe'
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+References: <202104271905.1C7oj9q3-lkp@intel.com>
+ <1d9958ea-aaae-0e45-7009-f12e4a4ae325@linux.intel.com>
+ <CAK8P3a0k2rk=eN1v1JcpeXOm6kU+MJDKESyyC2AQ7CJVfREFFw@mail.gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <fddb59dd-8bf2-7f2c-7388-fab0475482e4@linux.intel.com>
+Date:   Tue, 27 Apr 2021 14:13:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIE2o/T9rKgm7TWm@kroah.com>
+In-Reply-To: <CAK8P3a0k2rk=eN1v1JcpeXOm6kU+MJDKESyyC2AQ7CJVfREFFw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 10:41:07AM +0200, Greg KH wrote:
-> On Sun, Apr 18, 2021 at 10:18:13PM +0530, Saurav Girepunje wrote:
-> > Fix the following coccicheck warning:
-> > 
-> > drivers/staging/rtl8723bs/os_dep/os_intfs.c:1156:5-8:
-> > Unneeded variable: "ret". Return "0" on line 1199
-> > 
-> > Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
-> > ---
-> >  drivers/staging/rtl8723bs/os_dep/os_intfs.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> > index 1f34cb2e367c..920ec25c9a4f 100644
-> > --- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> > +++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-> > @@ -1153,7 +1153,6 @@ int rtw_suspend_common(struct adapter *padapter)
-> >  	struct pwrctrl_priv *pwrpriv = dvobj_to_pwrctl(psdpriv);
-> >  	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> >  
-> > -	int ret = 0;
-> >  	unsigned long start_time = jiffies;
-> >  
-> >  	DBG_871X_LEVEL(_drv_always_, " suspend start\n");
-> > @@ -1196,7 +1195,7 @@ int rtw_suspend_common(struct adapter *padapter)
-> >  
-> >  exit:
-> >  
-> > -	return ret;
-> > +	return 0;
-> >  }
-> >  
-> >  static int rtw_resume_process_normal(struct adapter *padapter)
-> > -- 
-> > 2.25.1
-> > 
-> > 
-> 
-> If this function can only ever return 0, why is it returning anything at
-> all?  Please fix it up to not do that.
-> 
-> thanks,
-> 
-> greg k-h
 
-Yes,this function always return 0. Function return type could be change
-to void. I will send another patch.
+
+>>>      ld: sound/soc/sof/intel/byt.o: in function `sof_baytrail_probe':
+>>>>> sound/soc/sof/intel/byt.c:1057: undefined reference to `sof_acpi_probe'
+>>>>> ld: sound/soc/sof/intel/byt.o:(.data+0x44): undefined reference to `sof_acpi_remove'
+>>>>> ld: sound/soc/sof/intel/byt.o:(.data+0x94): undefined reference to `sof_acpi_pm'
+>>
+>> Ack, this is again the partition between Baytrail and Merrifield that's
+>> problematic in the corner case where ACPI is compiled as module and PCI
+>> as built-in. It's a bit academic since the PCI probe wouldn't work, but
+>> still it's not well partitioned.
+>>
+>> I've been wanting to change this for a while, and split the common atom
+>> parts from the ACPI/PCI parts. I guess it's time to fix this for good.
+> 
+> I wonder why I never see these in randconfig builds here. I can reproduce it
+> with the .config from the link above though, and I see these relevant config
+> lines:
+> 
+> CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL=y
+> CONFIG_SND_SOC_SOF_INTEL_ATOM_HIFI_EP=y
+> CONFIG_SND_SOC_SOF_MERRIFIELD=y
+> CONFIG_SND_SOC_SOF_ACPI=m
+> CONFIG_SND_SOC_SOF_ACPI_DEV=m
+> CONFIG_SND_SOC_SOF_BAYTRAIL=m
+
+yes, we end-up with a bad configuration with BAYTRAIL as m and 
+Merrifield as y. That's broken since they share the same file.
+
+> An easy workaround would be to move the first 500 or so lines of
+> sound/soc/sof/intel/byt.c into a separate file and #include that from
+> distinct baytrail and merrifield modules, at the cost of a bit of
+> object code duplication and a somewhat dirty hack.
+
+I have a fix being tested here:
+https://github.com/thesofproject/linux/pull/2874
+
+The idea is what you suggested, move the common parts to a new file but 
+I used an 'atom' module instead #include to avoid duplication. The 
+exported functions are namespaced to avoid polluting the global symbol map.
+
+The only other change needed is in the Makefile, We already have 
+CONFIG_SND_SOC_SOF_INTEL_ATOM_HIFI_EP in the Kconfig and that can be 
+used for this module.
+
+> Another option would be a Kconfig hack to prevent the broken
+> configuration, such as
+> 
+> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+> index eebe784ff652..b2039b4af9cf 100644
+> --- a/sound/soc/sof/intel/Kconfig
+> +++ b/sound/soc/sof/intel/Kconfig
+> @@ -85,6 +85,8 @@ config SND_SOC_SOF_MERRIFIELD
+>          tristate "SOF support for Tangier/Merrifield"
+>          default SND_SOC_SOF_PCI
+>          select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
+> +       # Merrifield can't be built-in if snd-sof-acpi-intel-byt.ko is a module
+> +       depends on SND_SOC_SOF_BAYTRAIL || !SND_SOC_SOF_BAYTRAIL
+>          help
+>            This adds support for Sound Open Firmware for Intel(R) platforms
+>            using the Tangier/Merrifield processors.
+
+It'd rather do this the right way with a proper code partitioning, I was 
+tempted to do it multiple times and I've had it with this code.
