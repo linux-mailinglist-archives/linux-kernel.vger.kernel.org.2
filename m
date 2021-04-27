@@ -2,60 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179F036C45E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78A136C43D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhD0Kun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:50:43 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:51934 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235593AbhD0Kum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:50:42 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BA02F1A0A59;
-        Tue, 27 Apr 2021 12:49:58 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 72C7E1A0A89;
-        Tue, 27 Apr 2021 12:49:56 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0468140287;
-        Tue, 27 Apr 2021 12:49:52 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, broonie@kernel.org
-Subject: [PATCH 2/2] ALSA: pcm: Extend the constraint table for 705.6kHz and 768KHz rate
-Date:   Tue, 27 Apr 2021 18:34:23 +0800
-Message-Id: <1619519663-10406-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1619519663-10406-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1619519663-10406-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S238654AbhD0KgW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 06:36:22 -0400
+Received: from mail-vs1-f49.google.com ([209.85.217.49]:36834 "EHLO
+        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239366AbhD0KfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:35:21 -0400
+Received: by mail-vs1-f49.google.com with SMTP id k124so29830268vsk.3;
+        Tue, 27 Apr 2021 03:34:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S0cJtJfc534Em5VnHNzsiz6oCj7KRpx2g8W8LK2sYfU=;
+        b=YMHISJQw3EzyLp/seKWlOOIYJwk9bwgZN1oPnb48I0mp1cDgampmTrhHbMCj2q+AH9
+         fZFxR+88qF/ptVBAF6vBEwIKR67hiJELkP4MyDVzjhfCe4crKYnzdkDzpGfYBUq4hkSX
+         LBi28eMFdLyRADaj6xxvfzTxct6WTA+69msOEuXBJ9uzX6LH+RJPRpa+zmOxYLXvI/cP
+         uGZzSAPB23n4x6Kdmiv5mYbEqZEm5hf4At8h4dL91sqtucvDahFhli+Y94WRdhqtOb8q
+         me4p5FRTjJWRJG7nyMLFmrDWkodBmC5/GNSOjF4JFQZ80f3P9sqU4Hy2ECdkOqtfAle6
+         mrxA==
+X-Gm-Message-State: AOAM531zbpAvH58aZSj/HFh0a/UfL70CgE0z+ArVP42Jb4q6mbY9BRNT
+        JxdgqQfyO1+zM7TooObruRzHwPoPKoHbpDWFNnICVzDM
+X-Google-Smtp-Source: ABdhPJwMaT63hz5rFbbWxt3corYksraj1MZ36zfgaDtOrUqvChKXeNvWs9w4pVdaXjDdqymixFHz3lbdGePYuG17oG4=
+X-Received: by 2002:a67:fc57:: with SMTP id p23mr17130308vsq.40.1619519678259;
+ Tue, 27 Apr 2021 03:34:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1619519080.git.mchehab+huawei@kernel.org> <85d92ba9e709ef00673a3e0e11769b121745e9cb.1619519080.git.mchehab+huawei@kernel.org>
+In-Reply-To: <85d92ba9e709ef00673a3e0e11769b121745e9cb.1619519080.git.mchehab+huawei@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Apr 2021 12:34:27 +0200
+Message-ID: <CAMuHMdWARHzOYud0_Evvbia2FLGS6djHVcC8HOGxRjCcHFRYgg@mail.gmail.com>
+Subject: Re: [PATCH v3 78/79] media: rcar-vin: use pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some high resolution codecs support 705.6KHz and 768KHz rates
-so extend the constraint table for 705.6kHz and 768KHz rate
+On Tue, Apr 27, 2021 at 12:28 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+>
+> Use the new API, in order to cleanup the error check logic.
+>
+> Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/core/pcm_native.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 17a85f4815d5..3e03f34cf3e2 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2370,7 +2370,8 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
- 
- static const unsigned int rates[] = {
- 	5512, 8000, 11025, 16000, 22050, 32000, 44100,
--	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000
-+	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000,
-+	705600, 768000
- };
- 
- const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
+> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> @@ -408,6 +408,12 @@ static void rcsi2_enter_standby(struct rcar_csi2 *priv)
+>
+>  static void rcsi2_exit_standby(struct rcar_csi2 *priv)
+>  {
+> +       /*
+> +        * The code at rcsi2_enter_standby() assumes
+> +        * inconditionally that PM runtime usage count was
+
+unconditionally
+
+> +        * incremented. So, it shouldn't use pm_runtime_resume_and_get()
+> +        * here.
+> +        */
+>         pm_runtime_get_sync(priv->dev);
+>         reset_control_deassert(priv->rstc);
+>  }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
