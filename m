@@ -2,126 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC3336C61A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18EB36C61F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236154AbhD0MeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:34:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38078 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236025AbhD0MeQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:34:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619526813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rAZOEw5kyolSBTQNCRpWBawO5YE3hHJy2M4opdsr4O8=;
-        b=gbvZ/9O6dgLNarRv4NRsX0zZlaV9VBrfqe5vrhWN7duDTsS3bqlazb7Ku3Nt+9vgU9PnHs
-        bSaZyjqoja6vXk59Qkx61tHnzjKcAenbsIFdsnNh6IpGjPIAm7pFPH5NtP1mQgSy808I95
-        mkIeuF9zpSedjRn62EKFuw9fYHs+66o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-Fn1v6tzAOJa83HGLpr1BjQ-1; Tue, 27 Apr 2021 08:33:30 -0400
-X-MC-Unique: Fn1v6tzAOJa83HGLpr1BjQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 750CA8189C4;
-        Tue, 27 Apr 2021 12:33:29 +0000 (UTC)
-Received: from krava (unknown [10.40.192.237])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A3E2060CC6;
-        Tue, 27 Apr 2021 12:33:27 +0000 (UTC)
-Date:   Tue, 27 Apr 2021 14:33:26 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "acme@redhat.com" <acme@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>
-Subject: Re: [PATCH v5 5/5] perf-stat: introduce bpf_counter_ops->disable()
-Message-ID: <YIgElir6KJCoygX5@krava>
-References: <20210425214333.1090950-1-song@kernel.org>
- <20210425214333.1090950-6-song@kernel.org>
- <YIcwRj4WtsZln4SR@krava>
- <CDBE5630-F7F0-494D-BFA8-33742D831C2D@fb.com>
+        id S236273AbhD0Mf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235428AbhD0Mf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90CBE60FDB;
+        Tue, 27 Apr 2021 12:34:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619526883;
+        bh=2u2zN97nbfniLslz6+tVNkTFqx3EDnz7hhOVKt92qRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sKzOuoFEa/Wvf/ILU8eTcUFqo+b4qV0l1RKh9EhORzhyatWwOH4rvATRmwObNkF0c
+         bNEX5xgvL3ug7N5JpnVzytvoMP/twQvedUN7z2g8T4aMGKjkiv7kUBVEi+xh34aG/e
+         8qsI+9KrRkgQe9JlOQrC7IONDp8fLnLQsZmrCocRtXgd9VNgIiWhAUDiafc0V3xPeD
+         FYotF73zLpWUNEUls2dIAi0CKlDUvlSs0bRhwL+HAokEZIVi7RaR4Us6/ee/evpezL
+         54ZRi70XgRnQumI0zsliwvG7z9CZRXMtfjryoF2ZfnC10Z4H5YkL/18IR/f1otNKUh
+         e8GWYFESdmQWQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lbMvY-0002Wx-DN; Tue, 27 Apr 2021 14:34:57 +0200
+Date:   Tue, 27 Apr 2021 14:34:56 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 17/78] staging: media: vde: use
+ pm_runtime_resume_and_get()
+Message-ID: <YIgE8PfASn6nua5B@hovoldconsulting.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <0eeb886803679cd908cb4576d35b2314993abd2c.1619191723.git.mchehab+huawei@kernel.org>
+ <2349831b-e7cd-d38d-fc19-5fabf06f773e@gmail.com>
+ <20210427112250.5d40c4f4@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CDBE5630-F7F0-494D-BFA8-33742D831C2D@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210427112250.5d40c4f4@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 10:18:57PM +0000, Song Liu wrote:
+On Tue, Apr 27, 2021 at 11:22:50AM +0200, Mauro Carvalho Chehab wrote:
+> Hi Dmitry,
 > 
+> Em Sat, 24 Apr 2021 10:35:22 +0300
+> Dmitry Osipenko <digetx@gmail.com> escreveu:
 > 
-> > On Apr 26, 2021, at 2:27 PM, Jiri Olsa <jolsa@redhat.com> wrote:
+> > 24.04.2021 09:44, Mauro Carvalho Chehab пишет:
+> > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > added pm_runtime_resume_and_get() in order to automatically handle
+> > > dev->power.usage_count decrement on errors.
+> > > 
+> > > Use the new API, in order to cleanup the error check logic.
+> > > 
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  drivers/staging/media/tegra-vde/vde.c | 16 ++++++++++------
+> > >  1 file changed, 10 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
+> > > index 28845b5bafaf..8936f140a246 100644
+> > > --- a/drivers/staging/media/tegra-vde/vde.c
+> > > +++ b/drivers/staging/media/tegra-vde/vde.c
+> > > @@ -775,9 +775,9 @@ static int tegra_vde_ioctl_decode_h264(struct tegra_vde *vde,
+> > >  	if (ret)
+> > >  		goto release_dpb_frames;
+> > >  
+> > > -	ret = pm_runtime_get_sync(dev);
+> > > +	ret = pm_runtime_resume_and_get(dev);
+> > >  	if (ret < 0)
+> > > -		goto put_runtime_pm;
+> > > +		goto unlock;
+> > >  
+> > >  	/*
+> > >  	 * We rely on the VDE registers reset value, otherwise VDE
+> > > @@ -843,6 +843,8 @@ static int tegra_vde_ioctl_decode_h264(struct tegra_vde *vde,
+> > >  put_runtime_pm:
+> > >  	pm_runtime_mark_last_busy(dev);
+> > >  	pm_runtime_put_autosuspend(dev);
+> > > +
+> > > +unlock:
+> > >  	mutex_unlock(&vde->lock);
+> > >  
+> > >  release_dpb_frames:
+> > > @@ -1069,8 +1071,8 @@ static int tegra_vde_probe(struct platform_device *pdev)
+> > >  	 * power-cycle it in order to put hardware into a predictable lower
+> > >  	 * power state.
+> > >  	 */
+> > > -	pm_runtime_get_sync(dev);
+> > > -	pm_runtime_put(dev);
+> > > +	if (pm_runtime_resume_and_get(dev) >= 0)
+> > > +		pm_runtime_put(dev);
+> > >  
+> > >  	return 0;
+> > >  
+> > > @@ -1088,8 +1090,9 @@ static int tegra_vde_remove(struct platform_device *pdev)
+> > >  {
+> > >  	struct tegra_vde *vde = platform_get_drvdata(pdev);
+> > >  	struct device *dev = &pdev->dev;
+> > > +	int ret;
+> > >  
+> > > -	pm_runtime_get_sync(dev);
+> > > +	ret = pm_runtime_resume_and_get(dev);
+> > >  	pm_runtime_dont_use_autosuspend(dev);
+> > >  	pm_runtime_disable(dev);
+> > >  
+> > > @@ -1097,7 +1100,8 @@ static int tegra_vde_remove(struct platform_device *pdev)
+> > >  	 * Balance RPM state, the VDE power domain is left ON and hardware
+> > >  	 * is clock-gated. It's safe to reboot machine now.
+> > >  	 */
+> > > -	pm_runtime_put_noidle(dev);
+> > > +	if (ret >= 0)
+> > > +		pm_runtime_put_noidle(dev);
+> > >  	clk_disable_unprepare(vde->clk);
+> > >  
+> > >  	misc_deregister(&vde->miscdev);
+> > >   
 > > 
-> > On Sun, Apr 25, 2021 at 02:43:33PM -0700, Song Liu wrote:
+> > Hello Mauro,
 > > 
-> > SNIP
-> > 
-> >> +static inline int bpf_counter__disable(struct evsel *evsel __maybe_unused)
-> >> +{
-> >> +	return 0;
-> >> +}
-> >> +
-> >> static inline int bpf_counter__read(struct evsel *evsel __maybe_unused)
-> >> {
-> >> 	return -EAGAIN;
-> >> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> >> index d29a8a118973c..e71041c890102 100644
-> >> --- a/tools/perf/util/evlist.c
-> >> +++ b/tools/perf/util/evlist.c
-> >> @@ -17,6 +17,7 @@
-> >> #include "evsel.h"
-> >> #include "debug.h"
-> >> #include "units.h"
-> >> +#include "bpf_counter.h"
-> >> #include <internal/lib.h> // page_size
-> >> #include "affinity.h"
-> >> #include "../perf.h"
-> >> @@ -421,6 +422,9 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
-> >> 	if (affinity__setup(&affinity) < 0)
-> >> 		return;
-> >> 
-> >> +	evlist__for_each_entry(evlist, pos)
-> >> +		bpf_counter__disable(pos);
-> > 
-> > I was wondering why you don't check evsel__is_bpf like
-> > for the enable case.. and realized that we don't skip
-> > bpf evsels in __evlist__enable and __evlist__disable
-> > like we do in read_affinity_counters
-> > 
-> > so I guess there's extra affinity setup and bunch of
-> > wrong ioctls being called?
-> 
-> We actually didn't do wrong ioctls because the following check:
-> 
->        if (... || !pos->core.fd)
->                 continue;
-> 
-> in __evlist__enable and __evlist__disable. That we don't allocate 
-> core.fd for is_bpf events. 
-> 
-> It is probably good to be more safe with an extra check of 
-> evsel__is_bpf(). But it is not required with current code. 
+> > Thank you very much for the patch. It looks to me that the original
+> > variant was a bit simpler, this patch adds more code lines without
+> > changing the previous behaviour. Or am I missing something?
 
-hum, but it will do all the affinity setup no? for no reason,
-if there's no non-bpb event
+I agree, the above does not look like an improvement at all.
 
-jirka
+> While on several places the newer code is simpler, the end goal here is
+> to replace all occurrences of pm_runtime_get_sync() from the media 
+> subsystem, due to the number of problems we're having with this:
+> 
+> 1. despite its name, this is actually a PM runtime resume call,
+>    but some developers didn't seem to realize that, as I got this
+>    pattern on some drivers:
+> 
+>         pm_runtime_get_sync(&client->dev);
+>         pm_runtime_disable(&client->dev);
+>         pm_runtime_set_suspended(&client->dev);
+>         pm_runtime_put_noidle(&client->dev);
+> 
+>    It makes no sense to resume PM just to suspend it again ;-)
 
-> 
-> Thanks,
-> Song
-> 
-> [...]
-> 
+It very well may. You're resuming the device and leaving it a defined
+power state before balancing the PM count, cleaning up and unbinding the
+driver.
 
+>    The name of the new variant is a lot clearer:
+> 	pm_runtime_resume_and_get()
+
+For people not used to the API perhaps.
+
+> 2. Usual *_get() methods only increment their use count on success,
+>    but pm_runtime_get_sync() increments it unconditionally. Due to
+>    that, several drivers were mistakenly not calling
+>    pm_runtime_put_noidle() when it fails;
+
+As I mentioned elsewhere, all pm_runtime_get calls increment the usage
+count so the API is consistent.
+ 
+> 3. Consistency: we did similar changes subsystem wide with
+>    for instance strlcpy() and strcpy() that got replaced by
+>    strscpy(). Having all drivers using the same known-to-be-safe
+>    methods is a good thing;
+
+There's no know-to-be safe API. People will find ways to get this wrong
+too.
+
+And the old interface isn't going away from the kernel even if you
+manage to not use it in media.
+
+> 4. Prevent newer drivers to copy-and-paste a code that it would
+>    be easier to break if they don't truly understand what's behind
+>    the scenes.
+
+Johan
