@@ -2,258 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF2336CAD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A714736CAD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhD0SEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S238488AbhD0SEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237634AbhD0SE2 (ORCPT
+        with ESMTP id S236817AbhD0SEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:04:28 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0BDC061574;
-        Tue, 27 Apr 2021 11:03:43 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 130so26649863ybd.10;
-        Tue, 27 Apr 2021 11:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iE0Swjr1Aj6+bOUe7NqE4bb/En2P6kGs3Fyx7kqH9kE=;
-        b=Xa0T2VIffFZ+upfCxkvL46v6K49zaumIwbQW5f62sr/kAqZCPgT9h7CoMSvzqu0AXF
-         QRQDihKusTdQdmrc5P++Va5PYWwZGpwZ5NlAN6XLNnGjL1eXRo6oCI49upS8c8pm2ATx
-         3AzqwjUp8PVEDg/TeMbrrZBZM/QfWwvIIZwe5BVwzVcalbXTalneIo79Ayts/3w9/qo8
-         s88XhitASerxUvRLLg5viQXxb35ScQNMn6UfdJFRovFEg0+wHkQPE1XSWyhPyTHclGHe
-         aLMhTrpk3u9fWBBHS8TU0ylno9qEFbLg0y1SFLCTuo0QnXRhgyrutXTrYA1XpwXjCL8p
-         Qz3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iE0Swjr1Aj6+bOUe7NqE4bb/En2P6kGs3Fyx7kqH9kE=;
-        b=iBcGZC4uRnvbRVnD0Lrxp2qpBLuJRayrIZd1Nl/Fz3IK0mGA+GBAL94tpHWnTzgdUZ
-         1QulTenY703do2H4HKyZ7JNlFsxeBodt547RdH0sHncIcvlcMjZlK7uHxuio48p/o+Bu
-         BwXV7lNbPnEXyzo0HsqaZ3+hMPBFVF6Yd2cROxdrx4NpWJNmX49b6w+qEN736AUoGocy
-         Du8qJBbWQYtJ3C75oJLMYJW/xQ8fwDTD/KZ6YDWavEyFMAFLQRmZNP5HwmE9LAFZsCfp
-         jcqfi+ZsHiF51rjKnzcS2XnN9CZx3QH3H8MBsqMfRYJS9JWTo++mKLhERLWNvU3ZNSqh
-         ebyQ==
-X-Gm-Message-State: AOAM531qrgju3C3wcIEencUL9yCRmT+jJlePmSN6pSMVhzpRpyuqLWb8
-        oGFpOCVh9HSpMpJabterzx+uB84RJGfJP6PSppk=
-X-Google-Smtp-Source: ABdhPJxM8/vsNsjDPIiYOhpatZds3oSCky1ZvTjXkh87OakPAkV6fTesNgIEaFzTM7eru+GL8+fOjRqBBq3u6RdrBEk=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr34103990ybz.260.1619546622575;
- Tue, 27 Apr 2021 11:03:42 -0700 (PDT)
+        Tue, 27 Apr 2021 14:04:40 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A203C061574;
+        Tue, 27 Apr 2021 11:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=E7zb0oK3WjxUHxPQ/MvMrL1VfGxeoNA00qBLofYv7W8=; b=FrlrztJ1WNAkAfDrZuXxjpvtq
+        PoOdbfxaFe4N5vi6/eA2wJPuQZNGs2b/oYKFHGtXcRDAO0wTPiaobXRSE8kIbZGGTRzubW9yGuYu4
+        p05trRy9CsroIfNM8Ig7D6abiqyr1uUMi8egibQpoIV8/Ogw0IHJEwfR5QoAwNH9frxpNKuwrH2aE
+        MEwL2J7JQOLY2ITNGhWV8Jr5pGazh6tOLDJorVFu9Ap9atJuwK3vL5yO3VSJTYXPykF2lnYB4xLcG
+        5mSXlgZaG+WsJ5uSoBFwUoQdbGg5vLyTHAgR6pLb2e15pLSnF1gJL8c+rtxeBOGNWLFnPvJOIPhwB
+        Ouc3pju9A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52796)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lbS3v-0001pa-0i; Tue, 27 Apr 2021 19:03:55 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lbS3u-0004mx-Nj; Tue, 27 Apr 2021 19:03:54 +0100
+Date:   Tue, 27 Apr 2021 19:03:54 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH] clk: <linux/clk.h>: correct clk_get_parent()
+ documentation
+Message-ID: <20210427180354.GV1463@shell.armlinux.org.uk>
+References: <20210427031342.5333-1-rdunlap@infradead.org>
+ <20210427093809.GU1463@shell.armlinux.org.uk>
+ <9574eefa-84ed-8674-f575-be47d2a51a1c@infradead.org>
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
- <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
- <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
- <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
- <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com>
- <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk> <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
-In-Reply-To: <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Apr 2021 11:03:31 -0700
-Message-ID: <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Florent Revest <revest@chromium.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9574eefa-84ed-8674-f575-be47d2a51a1c@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 2:51 AM Florent Revest <revest@chromium.org> wrote:
->
-> On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
-> >
-> > On 26/04/2021 23.08, Florent Revest wrote:
-> > > On Mon, Apr 26, 2021 at 6:19 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > >>
-> > >> On Mon, Apr 26, 2021 at 3:10 AM Florent Revest <revest@chromium.org> wrote:
-> > >>>
-> > >>> On Sat, Apr 24, 2021 at 12:38 AM Andrii Nakryiko
-> > >>> <andrii.nakryiko@gmail.com> wrote:
-> > >>>>
-> > >>>> On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
-> > >>>>>
-> > >>>>> The "positive" part tests all format specifiers when things go well.
-> > >>>>>
-> > >>>>> The "negative" part makes sure that incorrect format strings fail at
-> > >>>>> load time.
-> > >>>>>
-> > >>>>> Signed-off-by: Florent Revest <revest@chromium.org>
-> > >>>>> ---
-> > >>>>>  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
-> > >>>>>  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
-> > >>>>>  .../bpf/progs/test_snprintf_single.c          |  20 +++
-> > >>>>>  3 files changed, 218 insertions(+)
-> > >>>>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > >>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
-> > >>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> > >>>>>
-> > >>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > >>>>> new file mode 100644
-> > >>>>> index 000000000000..a958c22aec75
-> > >>>>> --- /dev/null
-> > >>>>> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > >>>>> @@ -0,0 +1,125 @@
-> > >>>>> +// SPDX-License-Identifier: GPL-2.0
-> > >>>>> +/* Copyright (c) 2021 Google LLC. */
-> > >>>>> +
-> > >>>>> +#include <test_progs.h>
-> > >>>>> +#include "test_snprintf.skel.h"
-> > >>>>> +#include "test_snprintf_single.skel.h"
-> > >>>>> +
-> > >>>>> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-> > >>>>> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-> > >>>>> +
-> > >>>>> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-> > >>>>> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-> > >>>>> +
-> > >>>>> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
-> > >>>>> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
-> > >>>>> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-> > >>>>> +
-> > >>>>> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-> > >>>>> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-> > >>>>> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-> > >>>>> +
-> > >>>>> +#define EXP_STR_OUT  "str1 longstr"
-> > >>>>> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-> > >>>>> +
-> > >>>>> +#define EXP_OVER_OUT "%over"
-> > >>>>> +#define EXP_OVER_RET 10
-> > >>>>> +
-> > >>>>> +#define EXP_PAD_OUT "    4 000"
-> > >>>>
-> > >>>> Roughly 50% of the time I get failure for this test case:
-> > >>>>
-> > >>>> test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
-> > >>>> 0000' != expected '    4 000'
-> > >>>>
-> > >>>> Re-running this test case immediately passes. Running again most
-> > >>>> probably fails. Please take a look.
-> > >>>
-> > >>> Do you have more information on how to reproduce this ?
-> > >>> I spinned up a VM at 87bd9e602 with ./vmtest -s and then run this script:
-> > >>>
-> > >>> #!/bin/sh
-> > >>> for i in `seq 1000`
-> > >>> do
-> > >>>   ./test_progs -t snprintf
-> > >>>   if [ $? -ne 0 ];
-> > >>>   then
-> > >>>     echo FAILURE
-> > >>>     exit 1
-> > >>>   fi
-> > >>> done
-> > >>>
-> > >>> The thousand executions passed.
-> > >>>
-> > >>> This is a bit concerning because your unexpected_pad_out seems to have
-> > >>> an extra '0' so it ends up with strlen(pad_out)=11 but
-> > >>> sizeof(pad_out)=10. The actual string writing is not really done by
-> > >>> our helper code but by the snprintf implementation (str and str_size
-> > >>> are only given to snprintf()) so I'd expect the truncation to work
-> > >>> well there. I'm a bit puzzled
-> > >>
-> > >> I'm puzzled too, have no idea. I also can't repro this with vmtest.sh.
-> > >> But I can quite reliably reproduce with my local ArchLinux-based qemu
-> > >> image with different config (see [0] for config itself). So please try
-> > >> with my config and see if that helps to repro. If not, I'll have to
-> > >> debug it on my own later.
-> > >>
-> > >>   [0] https://gist.github.com/anakryiko/4b6ae21680842bdeacca8fa99d378048
-> > >
-> > > I tried that config on the same commit 87bd9e602 (bpf-next/master)
-> > > with my debian-based qemu image and I still can't reproduce the issue
-> > > :| If I can be of any help let me know, I'd be happy to help
-> > >
-> >
-> > It's not really clear to me if this is before or after the rewrite to
-> > use bprintf, but regardless, in those two patches this caught my attention:
->
-> I tried to reproduce Andrii's bug both before and after the bprintf
-> rewrite but I think he meant before.
+On Tue, Apr 27, 2021 at 10:07:04AM -0700, Randy Dunlap wrote:
+> On 4/27/21 2:38 AM, Russell King - ARM Linux admin wrote:
+> > On Mon, Apr 26, 2021 at 08:13:42PM -0700, Randy Dunlap wrote:
+> >> Make the kernel-doc return value agree with both the stub implementation
+> >> in <linux/clk.h> and the non-stub function in drivers/clk/clk.c.
+> >>
+> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> >> Cc: Russell King <linux@armlinux.org.uk>
+> >> Cc: linux-clk@vger.kernel.org
+> >> ---
+> >> There are several drivers that call clk_get_parent() and use its
+> >> return value as though it returns an ERR_PTR(). I am working on a
+> >> patch series to fix those.
+> > 
+> > The whole premise of the CLK API is that:
+> > 
+> > - clk values that IS_ERR() returns true are errors
+> > - clk values that IS_ERR() returns false are valid
+> > 
+> > and that is that - nice, simple, easy to understand. So the
+> > documentation is correct. If clk_get_parent() needs to return an
+> > error, it does so by returning an error-pointer, not by returning
+> > NULL.
+> 
+> Hm, so the 6 drivers that do this are OK then, if
+> clk_get_parent() returns NULL?
+> 
+> 
+> 	parent = clk_get_parent(clk);
+> 	if (IS_ERR(parent)) {
+> 		dev_err(cpu_dev, "Cannot get parent clock for CPU0\n");
+> 		clk_put(clk);
+> 		return PTR_ERR(parent);
+> 	}
+> 
+> 	/* Get parent CPU frequency */
+> 	base_frequency =  clk_get_rate(parent);
+> 
+> boom?
 
-I'm running on the latest bpf-next master, but I don't think it's
-related to bprintf change.
+As I say, the premise is that only clocks where IS_ERR(clk) is true
+are an error. Everything else must be treated as an acceptable clock.
 
->
-> >         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
-> > -       enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
-> > +       u32 *bin_args;
-> >         static char buf[BPF_TRACE_PRINTK_SIZE];
-> >         unsigned long flags;
-> >         int ret;
-> >
-> > -       ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
-> > -                                MAX_TRACE_PRINTK_VARARGS);
-> > +       ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
-> > +                                 MAX_TRACE_PRINTK_VARARGS);
-> >         if (ret < 0)
-> >                 return ret;
-> >
-> > -       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
-> > -               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
-> > -       /* snprintf() will not append null for zero-length strings */
-> > -       if (ret == 0)
-> > -               buf[0] = '\0';
-> > +       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> >
-> >         raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> >         trace_bpf_trace_printk(buf);
-> >         raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
-> >
-> > Why isn't the write to buf[] protected by that spinlock? Or put another
-> > way, what protects buf[] from concurrent writes?
->
-> You're right, that is a bug, I missed that buf was static and thought
-> it was just on the stack. That snprintf call should be after the
-> raw_spin_lock_irqsave. I'll send a patch. Thank you Rasmus. (before my
-> snprintf series, there was a vsprintf after the raw_spin_lock_irqsave)
+Sometimes the NULL clock is used for "I don't have a clock", and that
+must not cause the API to go "boom".
 
-Can you please also clean up unnecessary ()s you added in at least a
-few places. Thanks.
+In the case of the CCF implementation, clk_get_rate(NULL) will return
+0.
 
->
-> > Probably the test cases are not run in parallel, but this is the kind of
-> > thing that would give those symptoms.
->
-> I think it's a separate issue from what Andrii reported though because
-> the flaky test exercises the bpf_snprintf helper and this buf spinlock
-> bug you just found only affects the bpf_trace_printk helper.
->
-> That being said, it does smell a little bit like a concurrency issue
-> too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
-> attaches to all syscall entries and most likely gets executed many
-> more times than necessary and probably on parallel CPUs. The "pad_out"
-> buffer they write to is unique and not locked so maybe the test's
-> userspace reads pad_out while another CPU is writing on it and if the
-> string output goes through a stage where it is "    4 0000" before
-> being "    4 000", we might read at the wrong time. That being said, I
-> would find it weird that this happens as much as 50% of the time and
-> always specifically on that test case.
->
-> Andrii could you maybe try changing the prog type to
-> "tp/syscalls/sys_enter_nanosleep" on the machine where you can
-> reproduce this bug ?
-
-Yes, it helps. I can't repro it easily anymore. I think the right fix,
-though, should be to filter by tid, not change the tracepoint.
-
-I think what's happening is we see the string right before bstr_printf
-does zero-termination with end[-1] = '\0'; So in some cases we see
-truncated string, in others we see untruncated one.
-
->
-> > Rasmus
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
