@@ -2,486 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C8A36C43C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3191A36C45D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238181AbhD0KgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:36:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61640 "EHLO m43-7.mailgun.net"
+        id S235567AbhD0Kuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:50:39 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51900 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239157AbhD0KfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:35:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619519665; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=nC4C2IB5erzBJVqHDdraduo6HP21TniBpJNuGOb1cIQ=; b=eUnmvQHT6rfBlBWF0FhBPkuRPVjWhT5B2A8OJ8CoXZB5AnqdCjjLwz23FMEJPIJ5mKnnAzd9
- UscczGyr4oO7sR9wgA5D9OY9quYbafOySbX2tHSvpOcbAGOZRibfmy9mkQFb5tBVB7b0l2M7
- w0PmUspsd5Wkw7TZmeuXvi24Alk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6087e898215b831afb430e91 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Apr 2021 10:34:00
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BEEE8C43149; Tue, 27 Apr 2021 10:33:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10C13C43217;
-        Tue, 27 Apr 2021 10:33:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10C13C43217
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v2 6/6] clk: qcom: Add video clock controller driver for SC7280
-Date:   Tue, 27 Apr 2021 16:03:10 +0530
-Message-Id: <1619519590-3019-7-git-send-email-tdas@codeaurora.org>
+        id S230365AbhD0Kui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:50:38 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B56251A164A;
+        Tue, 27 Apr 2021 12:49:54 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6DDC51A0A59;
+        Tue, 27 Apr 2021 12:49:52 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3F03E4029D;
+        Tue, 27 Apr 2021 12:49:49 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, broonie@kernel.org
+Subject: [PATCH 1/2] ALSA: pcm: Add support for 705.6KHz and 768KHz sample rate
+Date:   Tue, 27 Apr 2021 18:34:22 +0800
+Message-Id: <1619519663-10406-1-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1619519590-3019-1-git-send-email-tdas@codeaurora.org>
-References: <1619519590-3019-1-git-send-email-tdas@codeaurora.org>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the video clock controller found on SC7280
-based devices. This would allow video drivers to probe and
-control their clocks.
+Some high resolution codecs support 705.6KHz and 768KHz rates.
+So extend supported sample rate to 768kHz in pcm.h.
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- drivers/clk/qcom/Kconfig          |   8 +
- drivers/clk/qcom/Makefile         |   1 +
- drivers/clk/qcom/videocc-sc7280.c | 372 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 381 insertions(+)
- create mode 100644 drivers/clk/qcom/videocc-sc7280.c
+ include/sound/pcm.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 13fb381..ad85e6d 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -403,6 +403,14 @@ config SC_VIDEOCC_7180
- 	  Say Y if you want to support video devices and functionality such as
- 	  video encode and decode.
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2e1200d17d0c..88056824ffec 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -121,6 +121,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
+ #define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
+ #define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
++#define SNDRV_PCM_RATE_705600		(1<<15)		/* 705600Hz */
++#define SNDRV_PCM_RATE_768000		(1<<16)		/* 768000Hz */
  
-+config SC_VIDEOCC_7280
-+	tristate "SC7280 Video Clock Controller"
-+	select SC_GCC_7280
-+	help
-+	  Support for the video clock controller on SC7280 devices.
-+	  Say Y if you want to support video devices and functionality such as
-+	  video encode and decode.
-+
- config SDM_CAMCC_845
- 	tristate "SDM845 Camera Clock Controller"
- 	select SDM_GCC_845
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index c84a31d..d87c2ed 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -65,6 +65,7 @@ obj-$(CONFIG_SC_GPUCC_7280) += gpucc-sc7280.o
- obj-$(CONFIG_SC_LPASS_CORECC_7180) += lpasscorecc-sc7180.o
- obj-$(CONFIG_SC_MSS_7180) += mss-sc7180.o
- obj-$(CONFIG_SC_VIDEOCC_7180) += videocc-sc7180.o
-+obj-$(CONFIG_SC_VIDEOCC_7280) += videocc-sc7280.o
- obj-$(CONFIG_SDM_CAMCC_845) += camcc-sdm845.o
- obj-$(CONFIG_SDM_DISPCC_845) += dispcc-sdm845.o
- obj-$(CONFIG_SDM_GCC_660) += gcc-sdm660.o
-diff --git a/drivers/clk/qcom/videocc-sc7280.c b/drivers/clk/qcom/videocc-sc7280.c
-new file mode 100644
-index 0000000..3387154
---- /dev/null
-+++ b/drivers/clk/qcom/videocc-sc7280.c
-@@ -0,0 +1,372 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#include <dt-bindings/clock/qcom,videocc-sc7280.h>
-+
-+#include "clk-alpha-pll.h"
-+#include "clk-branch.h"
-+#include "clk-rcg.h"
-+#include "common.h"
-+#include "reset.h"
-+#include "gdsc.h"
-+
-+enum {
-+	P_BI_TCXO,
-+	P_SLEEP_CLK,
-+	P_VIDEO_PLL0_OUT_EVEN,
-+};
-+
-+static struct pll_vco lucid_vco[] = {
-+	{ 249600000, 2000000000, 0 },
-+};
-+
-+/* 400MHz Configuration */
-+static const struct alpha_pll_config video_pll0_config = {
-+	.l = 0x14,
-+	.alpha = 0xD555,
-+	.config_ctl_val = 0x20485699,
-+	.config_ctl_hi_val = 0x00002261,
-+	.config_ctl_hi1_val = 0x329A299C,
-+	.user_ctl_val = 0x00000001,
-+	.user_ctl_hi_val = 0x00000805,
-+	.user_ctl_hi1_val = 0x00000000,
-+};
-+
-+static struct clk_alpha_pll video_pll0 = {
-+	.offset = 0x0,
-+	.vco_table = lucid_vco,
-+	.num_vco = ARRAY_SIZE(lucid_vco),
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
-+	.clkr = {
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_pll0",
-+			.parent_data = &(const struct clk_parent_data){
-+				.fw_name = "bi_tcxo",
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_alpha_pll_lucid_ops,
-+		},
-+	},
-+};
-+
-+static const struct parent_map video_cc_parent_map_0[] = {
-+	{ P_BI_TCXO, 0 },
-+	{ P_VIDEO_PLL0_OUT_EVEN, 3 },
-+};
-+
-+static const struct clk_parent_data video_cc_parent_data_0[] = {
-+	{ .fw_name = "bi_tcxo" },
-+	{ .hw = &video_pll0.clkr.hw },
-+};
-+
-+static const struct parent_map video_cc_parent_map_1[] = {
-+	{ P_SLEEP_CLK, 0 },
-+};
-+
-+static const struct clk_parent_data video_cc_parent_data_1[] = {
-+	{ .fw_name = "sleep_clk" },
-+};
-+
-+static const struct parent_map video_cc_parent_map_2[] = {
-+	{ P_BI_TCXO, 0 },
-+};
-+
-+static const struct clk_parent_data video_cc_parent_data_2_ao[] = {
-+	{ .fw_name = "bi_tcxo_ao" },
-+};
-+
-+static const struct freq_tbl ftbl_video_cc_iris_clk_src[] = {
-+	F(133333333, P_VIDEO_PLL0_OUT_EVEN, 3, 0, 0),
-+	F(240000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
-+	F(335000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
-+	F(424000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
-+	F(460000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 video_cc_iris_clk_src = {
-+	.cmd_rcgr = 0x1000,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_0,
-+	.freq_tbl = ftbl_video_cc_iris_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_iris_clk_src",
-+		.parent_data = video_cc_parent_data_0,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_0),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_shared_ops,
-+	},
-+};
-+
-+static const struct freq_tbl ftbl_video_cc_sleep_clk_src[] = {
-+	F(32000, P_SLEEP_CLK, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 video_cc_sleep_clk_src = {
-+	.cmd_rcgr = 0x701c,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_1,
-+	.freq_tbl = ftbl_video_cc_sleep_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_sleep_clk_src",
-+		.parent_data = video_cc_parent_data_1,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_1),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static const struct freq_tbl ftbl_video_cc_xo_clk_src[] = {
-+	F(19200000, P_BI_TCXO, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 video_cc_xo_clk_src = {
-+	.cmd_rcgr = 0x7000,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_2,
-+	.freq_tbl = ftbl_video_cc_xo_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_xo_clk_src",
-+		.parent_data = video_cc_parent_data_2_ao,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_2_ao),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_branch video_cc_iris_ahb_clk = {
-+	.halt_reg = 0x5004,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0x5004,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_iris_ahb_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&video_cc_iris_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs0_axi_clk = {
-+	.halt_reg = 0x800c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x800c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs0_axi_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs0_core_clk = {
-+	.halt_reg = 0x3010,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.hwcg_reg = 0x3010,
-+	.hwcg_bit = 1,
-+	.clkr = {
-+		.enable_reg = 0x3010,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs0_core_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&video_cc_iris_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvsc_core_clk = {
-+	.halt_reg = 0x2014,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x2014,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvsc_core_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&video_cc_iris_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvsc_ctl_axi_clk = {
-+	.halt_reg = 0x8004,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x8004,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvsc_ctl_axi_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_sleep_clk = {
-+	.halt_reg = 0x7034,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x7034,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_sleep_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&video_cc_sleep_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_venus_ahb_clk = {
-+	.halt_reg = 0x801c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x801c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_venus_ahb_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_xo_clk = {
-+	.halt_reg = 0x7018,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x7018,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_xo_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&video_cc_xo_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct gdsc mvs0_gdsc = {
-+	.gdscr = 0x3004,
-+	.pd = {
-+		.name = "mvs0_gdsc",
-+	},
-+	.pwrsts = PWRSTS_OFF_ON,
-+	.flags = HW_CTRL | RETAIN_FF_ENABLE,
-+};
-+
-+static struct gdsc mvsc_gdsc = {
-+	.gdscr = 0x2004,
-+	.pd = {
-+		.name = "mvsc_gdsc",
-+	},
-+	.flags = RETAIN_FF_ENABLE,
-+	.pwrsts = PWRSTS_OFF_ON,
-+};
-+
-+static struct clk_regmap *video_cc_sc7280_clocks[] = {
-+	[VIDEO_CC_IRIS_AHB_CLK] = &video_cc_iris_ahb_clk.clkr,
-+	[VIDEO_CC_IRIS_CLK_SRC] = &video_cc_iris_clk_src.clkr,
-+	[VIDEO_CC_MVS0_AXI_CLK] = &video_cc_mvs0_axi_clk.clkr,
-+	[VIDEO_CC_MVS0_CORE_CLK] = &video_cc_mvs0_core_clk.clkr,
-+	[VIDEO_CC_MVSC_CORE_CLK] = &video_cc_mvsc_core_clk.clkr,
-+	[VIDEO_CC_MVSC_CTL_AXI_CLK] = &video_cc_mvsc_ctl_axi_clk.clkr,
-+	[VIDEO_CC_SLEEP_CLK] = &video_cc_sleep_clk.clkr,
-+	[VIDEO_CC_SLEEP_CLK_SRC] = &video_cc_sleep_clk_src.clkr,
-+	[VIDEO_CC_VENUS_AHB_CLK] = &video_cc_venus_ahb_clk.clkr,
-+	[VIDEO_CC_XO_CLK] = &video_cc_xo_clk.clkr,
-+	[VIDEO_CC_XO_CLK_SRC] = &video_cc_xo_clk_src.clkr,
-+	[VIDEO_PLL0] = &video_pll0.clkr,
-+};
-+
-+static struct gdsc *video_cc_sc7280_gdscs[] = {
-+	[MVS0_GDSC] = &mvs0_gdsc,
-+	[MVSC_GDSC] = &mvsc_gdsc,
-+};
-+
-+static const struct regmap_config video_cc_sc7280_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = 0xb000,
-+	.fast_io = true,
-+};
-+
-+static const struct qcom_cc_desc video_cc_sc7280_desc = {
-+	.config = &video_cc_sc7280_regmap_config,
-+	.clks = video_cc_sc7280_clocks,
-+	.num_clks = ARRAY_SIZE(video_cc_sc7280_clocks),
-+	.gdscs = video_cc_sc7280_gdscs,
-+	.num_gdscs = ARRAY_SIZE(video_cc_sc7280_gdscs),
-+};
-+
-+static const struct of_device_id video_cc_sc7280_match_table[] = {
-+	{ .compatible = "qcom,sc7280-videocc" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, video_cc_sc7280_match_table);
-+
-+static int video_cc_sc7280_probe(struct platform_device *pdev)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = qcom_cc_map(pdev, &video_cc_sc7280_desc);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	clk_lucid_pll_configure(&video_pll0, regmap, &video_pll0_config);
-+
-+	return qcom_cc_really_probe(pdev, &video_cc_sc7280_desc, regmap);
-+}
-+
-+static struct platform_driver video_cc_sc7280_driver = {
-+	.probe = video_cc_sc7280_probe,
-+	.driver = {
-+		.name = "video_cc-sc7280",
-+		.of_match_table = video_cc_sc7280_match_table,
-+	},
-+};
-+
-+static int __init video_cc_sc7280_init(void)
-+{
-+	return platform_driver_register(&video_cc_sc7280_driver);
-+}
-+subsys_initcall(video_cc_sc7280_init);
-+
-+static void __exit video_cc_sc7280_exit(void)
-+{
-+	platform_driver_unregister(&video_cc_sc7280_driver);
-+}
-+module_exit(video_cc_sc7280_exit);
-+
-+MODULE_DESCRIPTION("QTI VIDEO_CC sc7280 Driver");
-+MODULE_LICENSE("GPL v2");
+ #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
+ #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
+@@ -136,6 +138,9 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
+ 					 SNDRV_PCM_RATE_352800|\
+ 					 SNDRV_PCM_RATE_384000)
++#define SNDRV_PCM_RATE_8000_768000	(SNDRV_PCM_RATE_8000_768000|\
++					 SNDRV_PCM_RATE_705600|\
++					 SNDRV_PCM_RATE_768000)
+ #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
+ #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
+ #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
 -- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
+2.27.0
 
