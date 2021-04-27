@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBBE36C7DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5267D36C7DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbhD0Oji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236427AbhD0Ojg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236570AbhD0Ojg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Apr 2021 10:39:36 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B82C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:38:52 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:91bb:828d:42f8:4e5f])
-        by michel.telenet-ops.be with bizsmtp
-        id xqek2400M2ZBlDX06qekl9; Tue, 27 Apr 2021 16:38:45 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lbOrM-000t7I-A9; Tue, 27 Apr 2021 16:38:44 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lbOrL-00GAse-Kz; Tue, 27 Apr 2021 16:38:43 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Mark Brown <broonie@kernel.org>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] spi: altera: Make SPI_ALTERA_CORE invisible
-Date:   Tue, 27 Apr 2021 16:38:42 +0200
-Message-Id: <f0cb8e66baba4506db6f42fca74dc51b76883507.1619534253.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236144AbhD0Ojf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 10:39:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1D961159;
+        Tue, 27 Apr 2021 14:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619534331;
+        bh=XZLmlODuqxc+kF3P1e5ZRsnmBLARkp4iqXMtgysBUY8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HQi2uAmtBQBPVqZX8KQmzeN0FL2FKZDusPK0wyrFaPMGhKAvHIiKfW+qHsi1u/rIU
+         K3UyS3jy1aBOLEdgKgn5HvjgPsgvsxnncLQwKlFf+ukwPBRcDShcdwveaRCDetc/6M
+         rPQz9MuoJ/x844Frg2iR/CI9p9OWaupaWY32Jp5c=
+Date:   Tue, 27 Apr 2021 16:38:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 109/190] Revert "usb: sierra: fix a missing check of
+ device_create_file"
+Message-ID: <YIgh+dlg3sqaeeRY@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-110-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-110-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SPI_ALTERA_CORE config symbol controls compilation of the Altera SPI
-Controller core code.  It is already selected by all of its users, so
-there is no reason to make it visible, unless compile-testing.
+On Wed, Apr 21, 2021 at 02:59:44PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 1a137b47ce6bd4f4b14662d2f5ace913ea7ffbf8.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/usb/storage/sierra_ms.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/storage/sierra_ms.c b/drivers/usb/storage/sierra_ms.c
+> index b9f78ef3edc3..0f5c9cd8535f 100644
+> --- a/drivers/usb/storage/sierra_ms.c
+> +++ b/drivers/usb/storage/sierra_ms.c
+> @@ -190,6 +190,8 @@ int sierra_ms_init(struct us_data *us)
+>  		kfree(swocInfo);
+>  	}
+>  complete:
+> -	return device_create_file(&us->pusb_intf->dev, &dev_attr_truinst);
+> +	result = device_create_file(&us->pusb_intf->dev, &dev_attr_truinst);
+> +
+> +	return 0;
+>  }
+>  
+> -- 
+> 2.31.1
 
-Fixes: b0c3d9354de1f87e ("spi: altera: separate core code from platform code")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/spi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The original change here was correct, now dropping this patch.
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 7f03d1e50361ea94..17a55214e66ad928 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -65,7 +65,7 @@ config SPI_ALTERA
- 	  This is the driver for the Altera SPI Controller.
- 
- config SPI_ALTERA_CORE
--	tristate "Altera SPI Controller core code"
-+	tristate "Altera SPI Controller core code" if COMPILE_TEST
- 	select REGMAP
- 	help
- 	  "The core code for the Altera SPI Controller"
--- 
-2.25.1
-
+greg k-h
+> 
