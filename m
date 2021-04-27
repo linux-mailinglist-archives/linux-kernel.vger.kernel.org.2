@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF21D36BD34
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B9236BD36
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234469AbhD0CUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbhD0CUp (ORCPT
+        id S235337AbhD0CVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:21:08 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:49497 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232159AbhD0CVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:20:45 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89A6C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:20:02 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d12so5134832qtr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Pnjy0987JUk+XLq8j9TrVexd3W3Gw7OXJFli75KyJ+4=;
-        b=u64LXe7Cb+0e8JDoca4bg7GXvns1jVhNN/1lrHEK6AA0rHZtcLkcX3be1h7jskVl31
-         fE25+77GZ9g/Dc4UE0PHM6PbWpyK94nJXiHFVI2S9vzugysoYgwhzfIbV0AqEOEQcd0u
-         4+TlPstRSAiJQsm55Z6xOyzKXlcAFoB+1oztR/mueVwrjc0Oapr5vAmogWbYlqxSEqZU
-         TO+bOlio/PqbIqWfzTi3jGzHbVkEpvdfVj+Khpyuk9J5Vl8o+xolrF3N3mQRdqfjhQe4
-         wJvTUoTHPmjWaYTgeqHslGJuIT9SVI/R24WrDMy5psIDPMJ7Y6QncSSQKmkKOEn9ye9w
-         wPcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Pnjy0987JUk+XLq8j9TrVexd3W3Gw7OXJFli75KyJ+4=;
-        b=W+p7PuWM3U3DmC4gnDqWlZNbjnNAJs1oVIaAfqeWyuESBb7u/5cMM1eI+eqLyn+EYm
-         e1ZODNF3yOyYOqyY2Wj73Lss0qwXzYyog29qN3O2Wx7KNrGg33FA4fC0r4bsf7Ks3hlv
-         xvNAVRmAbNTL9q+oafv3cx6Zmgqbj4sCl7ki7pYHNT1qC4io6X9jDe80V6fIElL7MXno
-         8f7+is/HhU5fNn0/oKmLiarPAP314ZbfVevD+j3nXaiO3YzFWtF874KNSLEddV5eB97P
-         S2XVCS1VzzWpEBXv5hMdiRTWMPJVebEcvDOysMPGXIZNwGag2KKHltae9TC5Ayj4n/+o
-         mwzw==
-X-Gm-Message-State: AOAM532n/VJVs7/LCuKV1HkfZdzDgi3l6qnUdm5yD5n74rfGH0B/ovHm
-        cbXXQD1tCFiRqkw432nyhVcsoA==
-X-Google-Smtp-Source: ABdhPJxyAyKDzzCT+LoVorKFwJsNfqzw1n6Udw1ypZ16lcbMZ2s8WnBbaReftHIWcDVX8txvy6ZvyQ==
-X-Received: by 2002:a05:622a:245:: with SMTP id c5mr10322745qtx.350.1619490001558;
-        Mon, 26 Apr 2021 19:20:01 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 185sm1855770qko.99.2021.04.26.19.19.59
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 26 Apr 2021 19:20:01 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 19:19:58 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4 03/10] userfaultfd/shmem: support UFFDIO_CONTINUE for
- shmem
-In-Reply-To: <20210420220804.486803-4-axelrasmussen@google.com>
-Message-ID: <alpine.LSU.2.11.2104261906390.2998@eggly.anvils>
-References: <20210420220804.486803-1-axelrasmussen@google.com> <20210420220804.486803-4-axelrasmussen@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 26 Apr 2021 22:21:06 -0400
+X-Originating-IP: 68.203.5.165
+Received: from tacos.lan (cpe-68-203-5-165.austin.res.rr.com [68.203.5.165])
+        (Authenticated sender: frank@zago.net)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 165E71C0004;
+        Tue, 27 Apr 2021 02:20:20 +0000 (UTC)
+From:   Frank Zago <frank@zago.net>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        frank zago <frank@zago.net>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] iio: core: fix list breakage in iio_device_unregister()
+Date:   Mon, 26 Apr 2021 21:20:16 -0500
+Message-Id: <20210427022017.19314-1-frank@zago.net>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021, Axel Rasmussen wrote:
+From: frank zago <frank@zago.net>
 
-> With this change, userspace can resolve a minor fault within a
-> shmem-backed area with a UFFDIO_CONTINUE ioctl. The semantics for this
-> match those for hugetlbfs - we look up the existing page in the page
-> cache, and install a PTE for it.
-> 
-> This commit introduces a new helper: mcopy_atomic_install_pte.
-> 
-> Why handle UFFDIO_CONTINUE for shmem in mm/userfaultfd.c, instead of in
-> shmem.c? The existing userfault implementation only relies on shmem.c
-> for VM_SHARED VMAs. However, minor fault handling / CONTINUE work just
-> fine for !VM_SHARED VMAs as well. We'd prefer to handle CONTINUE for
-> shmem in one place, regardless of shared/private (to reduce code
-> duplication).
-> 
-> Why add a new mcopy_atomic_install_pte helper? A problem we have with
-> continue is that shmem_mcopy_atomic_pte() and mcopy_atomic_pte() are
-> *close* to what we want, but not exactly. We do want to setup the PTEs
-> in a CONTINUE operation, but we don't want to e.g. allocate a new page,
-> charge it (e.g. to the shmem inode), manipulate various flags, etc. Also
-> we have the problem stated above: shmem_mcopy_atomic_pte() and
-> mcopy_atomic_pte() both handle one-half of the problem (shared /
-> private) continue cares about. So, introduce mcontinue_atomic_pte(), to
-> handle all of the shmem continue cases. Introduce the helper so it
-> doesn't duplicate code with mcopy_atomic_pte().
-> 
-> In a future commit, shmem_mcopy_atomic_pte() will also be modified to
-> use this new helper. However, since this is a bigger refactor, it seems
-> most clear to do it as a separate change.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+The ioctl handlers are unlinked and freed in
+iio_buffers_free_sysfs_and_mask(). Do not break the list prematurely.
 
-If this "03/10" had been numbered 04/10, I would have said
-Acked-by: Hugh Dickins <hughd@google.com>
+This fixes the following GPF when a client module is removed:
 
-But I find this new ordering incomprehensible - I'm surprised that it
-even builds this way around (if it does): this patch is so much about
-what has been enabled in "04/10" (references to UFFDIO_CONTINUE shmem
-VMAs etc).
+[  157.007865] general protection fault, probably for non-canonical address 0xdead000000000100: 0000 [#1] SMP NOPTI
+[  157.007876] CPU: 6 PID: 2353 Comm: rmmod Not tainted 5.12.0+ #29
+[  157.007882] ...
+[  157.007886] RIP: 0010:iio_device_ioctl_handler_unregister+0xd/0x30 [industrialio]
+[  157.007904] Code: 00 48 89 77 08 48 89 3e 48 89 e5 48 89 46 08 48 89 30 5d c3 66 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 8b 47 08 48 8b 17 55 <48> 89 42 08 48 89 10 48 89 e5 48 b8 00 01
+ 00 00 00 00 ad de 5d 48
+[  157.007910] RSP: 0018:ffffa9b840a57d70 EFLAGS: 00010202
+[  157.007916] RAX: dead000000000122 RBX: ffff95484e9a8000 RCX: 0000000000000000
+[  157.007920] RDX: dead000000000100 RSI: 0000000000000246 RDI: ffff9548489a2360
+[  157.007923] RBP: ffffa9b840a57da0 R08: 0000000000000000 R09: ffffa9b840a57d18
+[  157.007926] R10: 0000000000000000 R11: ffff95489f3e5180 R12: ffff95484e9a8000
+[  157.007929] R13: ffff95484e9a8390 R14: ffff95484e9a8000 R15: 0000000000000000
+[  157.007933] FS:  00007fd35bd18540(0000) GS:ffff954b4eb80000(0000) knlGS:0000000000000000
+[  157.007937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  157.007941] CR2: 000055e1e29d4818 CR3: 000000010ae76000 CR4: 00000000003506e0
+[  157.007945] Call Trace:
+[  157.007950]  ? iio_buffers_free_sysfs_and_mask+0x2a/0xb0 [industrialio]
+[  157.007965]  iio_device_unregister+0xba/0xc0 [industrialio]
+[  157.007978]  tcs3472_remove+0x1e/0x90 [tcs3472]
+[  157.007984]  i2c_device_remove+0x2b/0xa0
+[  157.007993]  __device_release_driver+0x181/0x240
+[  157.008000]  driver_detach+0xd5/0x120
+[  157.008005]  bus_remove_driver+0x5c/0xe0
+[  157.008010]  driver_unregister+0x31/0x50
+[  157.008014]  i2c_del_driver+0x46/0x70
+[  157.008020]  tcs3472_driver_exit+0x10/0x5dd [tcs3472]
+[  157.008026]  __do_sys_delete_module.constprop.0+0x183/0x290
+[  157.008033]  ? exit_to_user_mode_prepare+0x37/0x1c0
+[  157.008041]  __x64_sys_delete_module+0x12/0x20
+[  157.008045]  do_syscall_64+0x40/0xb0
+[  157.008052]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  157.008058] RIP: 0033:0x7fd35be5aceb
+[  157.008063] Code: 73 01 c3 48 8b 0d 7d 91 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4d 91 0c 00 f7 d8 64 89 01 48
+[  157.008068] RSP: 002b:00007ffe90b07478 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+[  157.008073] RAX: ffffffffffffffda RBX: 000055e1e29ca770 RCX: 00007fd35be5aceb
+[  157.008076] RDX: 000000000000000a RSI: 0000000000000800 RDI: 000055e1e29ca7d8
+[  157.008079] RBP: 00007ffe90b074d8 R08: 0000000000000000 R09: 0000000000000000
+[  157.008081] R10: 00007fd35bed5ac0 R11: 0000000000000206 R12: 00007ffe90b076b0
+[  157.008084] R13: 00007ffe90b08807 R14: 000055e1e29ca2a0 R15: 000055e1e29ca770
+[  157.008089] Modules linked in: tcs3472(-) industrialio_triggered_buffer kfifo_buf industrialio ch341_buses binfmt_misc snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core snd_pcm wmi_bmof snd_seq snd_timer snd_seq_device input_leds rapl snd ccp k10temp soundcore wmi mac_hid sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 dm_crypt hid_generic usbhid hid radeon i2c_algo_bit drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core drm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel r8169 crypto_simd cryptd ahci i2c_piix4 xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic [last unloaded: tcs3472]
+[  157.008167] ---[ end trace c8eef7a3c5a40ff0 ]---
 
-Does Peter still think this way round is better? If he does, then we
-shall have to compromise by asking you just to squash the two together.
+Signed-off-by: frank zago <frank@zago.net>
+---
+ drivers/iio/industrialio-core.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> ---
->  mm/userfaultfd.c | 172 ++++++++++++++++++++++++++++++++++-------------
->  1 file changed, 127 insertions(+), 45 deletions(-)
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index d92c58a94fe4..9e59f5da3d28 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1926,9 +1926,6 @@ EXPORT_SYMBOL(__iio_device_register);
+  **/
+ void iio_device_unregister(struct iio_dev *indio_dev)
+ {
+-	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+-	struct iio_ioctl_handler *h, *t;
+-
+ 	cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
+ 
+ 	mutex_lock(&indio_dev->info_exist_lock);
+@@ -1939,9 +1936,6 @@ void iio_device_unregister(struct iio_dev *indio_dev)
+ 
+ 	indio_dev->info = NULL;
+ 
+-	list_for_each_entry_safe(h, t, &iio_dev_opaque->ioctl_handlers, entry)
+-		list_del(&h->entry);
+-
+ 	iio_device_wakeup_eventset(indio_dev);
+ 	iio_buffer_wakeup_poll(indio_dev);
+ 
+-- 
+2.27.0
+
