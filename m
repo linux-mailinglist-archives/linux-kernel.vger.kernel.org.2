@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4271736C692
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A5036C697
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236249AbhD0M74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:59:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235426AbhD0M7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:59:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E52B61078;
-        Tue, 27 Apr 2021 12:59:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619528351;
-        bh=ESKTBZsp+jdcnnEU+hs5tiFXVi31SwaiDmt++kqSFSQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aJ4DHVKUW7CgxJukxkD/A53N+16wSq4QSOABZo2cB1X9ZwUToUB7V9J9wO3pBj+eb
-         VqcDVENvIPsDw0JeB1AEv1s2pmU6Xzxdj99b2nl2nyAwQpBvulTi8YOjjrmE4XjE2n
-         ClTzqymidbpgO/hLGBh+msRGZWFpmtTC6FXa3Fmk=
-Date:   Tue, 27 Apr 2021 14:59:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 095/190] Revert "rtlwifi: fix a potential NULL pointer
- dereference"
-Message-ID: <YIgKnKwtiUUCxX2d@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-96-gregkh@linuxfoundation.org>
- <20210427010457.rk7t6p2zs3d2eudn@bryanbrattlof.com>
+        id S236388AbhD0NAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:00:36 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39635 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236121AbhD0NAe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:00:34 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-127--hFiMNP-PnSmH-CCHA4ytg-1; Tue, 27 Apr 2021 13:59:47 +0100
+X-MC-Unique: -hFiMNP-PnSmH-CCHA4ytg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 27 Apr 2021 13:59:46 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 27 Apr 2021 13:59:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Oliver Neukum' <oneukum@suse.com>,
+        "'Rafael J. Wysocki'" <rafael@kernel.org>
+CC:     Rajat Jain <rajatja@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, "Bjorn Helgaas" <helgaas@kernel.org>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Subject: RE: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+Thread-Topic: [PATCH v2 2/2] pci: Support "removable" attribute for PCI
+ devices
+Thread-Index: AQHXOpI8ukue0tNuwUC9JgKnmYtYG6rGwqQQgAFxHQCAAB7esA==
+Date:   Tue, 27 Apr 2021 12:59:45 +0000
+Message-ID: <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com>
+References: <20210424021631.1972022-1-rajatja@google.com>
+         <20210424021631.1972022-2-rajatja@google.com>
+         <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com>
+         <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
+         <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com>
+ <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
+In-Reply-To: <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427010457.rk7t6p2zs3d2eudn@bryanbrattlof.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:21:49AM +0000, Bryan Brattlof wrote:
-> On Wed, Apr 21, 2021 at 02:59:30PM +0200, Greg Kroah-Hartman wrote:
-> >
-> >This reverts commit 765976285a8c8db3f0eb7f033829a899d0c2786e.
-> >
-> >Commits from @umn.edu addresses have been found to be submitted in "bad
-> >faith" to try to test the kernel community's ability to review "known
-> >malicious" changes.  The result of these submissions can be found in a
-> >paper published at the 42nd IEEE Symposium on Security and Privacy
-> >entitled, "Open Source Insecurity: Stealthily Introducing
-> >Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> >of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> >Because of this, all submissions from this group must be reverted from
-> >the kernel tree and will need to be re-reviewed again to determine if
-> >they actually are a valid fix.  Until that work is complete, remove this
-> >change to ensure that no problems are being introduced into the
-> >codebase.
-> >
-> >Cc: Kangjie Lu <kjlu@umn.edu>
-> >Cc: Kalle Valo <kvalo@codeaurora.org>
-> >Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >---
-> > drivers/net/wireless/realtek/rtlwifi/base.c | 5 -----
-> > 1 file changed, 5 deletions(-)
-> >
-> >diff --git a/drivers/net/wireless/realtek/rtlwifi/base.c b/drivers/net/wireless/realtek/rtlwifi/base.c
-> >index 6e8bd99e8911..1d067536889e 100644
-> >--- a/drivers/net/wireless/realtek/rtlwifi/base.c
-> >+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
-> >@@ -452,11 +452,6 @@ static void _rtl_init_deferred_work(struct ieee80211_hw *hw)
-> > 	/* <2> work queue */
-> > 	rtlpriv->works.hw = hw;
-> > 	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
-> >-	if (unlikely(!rtlpriv->works.rtl_wq)) {
-> >-		pr_err("Failed to allocate work queue\n");
-> >-		return;
-> >-	}
-> >-
-> >
-> 
-> Hey Greg!
-> 
-> If you're still working on this series, this patch looks to be a 
-> legitimate fix for the potential NULL pointer.
-> 
-> However we should probably inform 'rtw_init_core()' of this failure in 
-> addition to printing about it.
-> 
-> Do you want to apply this revert and I send a fix after this has made 
-> its way through?
+RnJvbTogT2xpdmVyIE5ldWt1bQ0KPiBTZW50OiAyNyBBcHJpbCAyMDIxIDEzOjAwDQo+IA0KPiBB
+bSBNb250YWcsIGRlbiAyNi4wNC4yMDIxLCAxMzowMSArMDAwMCBzY2hyaWViIERhdmlkIExhaWdo
+dDoNCj4gPiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraQ0KPiA+ID4gU2VudDogMjYgQXByaWwgMjAy
+MSAxMjo0OQ0KPiA+ID4NCj4gPiA+IE9uIE1vbiwgQXByIDI2LCAyMDIxIGF0IDExOjE3IEFNIE9s
+aXZlciBOZXVrdW0gPG9uZXVrdW1Ac3VzZS5jb20+IHdyb3RlOg0KPiA+ID4gPiBBbSBGcmVpdGFn
+LCBkZW4gMjMuMDQuMjAyMSwgMTk6MTYgLTA3MDAgc2NocmllYiBSYWphdCBKYWluOg0KPiA+ID4g
+PiA+IEV4cG9ydCB0aGUgYWxyZWFkeSBhdmFpbGFibGUgaW5mbywgdG8gdGhlIHVzZXJzcGFjZSB2
+aWEgdGhlDQo+ID4gPiA+ID4gZGV2aWNlIGNvcmUsIHNvIHRoYXQgdXNlcnNwYWNlIGNhbiBpbXBs
+ZW1lbnQgd2hhdGV2ZXIgcG9saWNpZXMgaXQNCj4gPiA+ID4gPiB3YW50cyB0bywgZm9yIGV4dGVy
+bmFsIHJlbW92YWJsZSBkZXZpY2VzLg0KPiA+ID4gPg0KPiA+ID4gPiBIaSwNCj4gPiA+ID4NCj4g
+PiA+ID4gaXMgdGhlcmUgYSB3YXkgdG8gdGVsbCBhcGFydCB3aGV0aGVyIGEgZGV2aWNlIGNhbiB1
+bmRlcmdvIHJlZ3VsYXINCj4gPiA+ID4gc3VycHJpc2UgcmVtb3ZhbD8NCj4gPiA+DQo+ID4gPiBQ
+Q0kgZGV2aWNlcyBsb2NhdGVkIHVuZGVyIGEgcmVtb3ZhYmxlIHBhcmVudCBjYW4gdW5kZXJnbyBz
+dXJwcmlzZQ0KPiA+ID4gcmVtb3ZhbC4gIFRoZSBvbmVzIG9uIGEgVGh1bmRlcmJvbHQgY2hhaW4g
+dG9vLg0KPiA+ID4NCj4gPiA+ID4gRG8gd2Ugd2FudCB0aGF0Pw0KPiA+ID4NCj4gPiA+IERvIHlv
+dSBtZWFuIHN1cnByaXNlIHJlbW92YWw/ICBZZXMsIHdlIGRvLg0KPiA+DQo+ID4gQWx3YXlzIGJl
+ZW4gdHJ1ZSAtIHRoaW5rIG9mIGNhcmRidXMgKFBDSSBwY21jaWEpIGNhcmRzIHdpdGgNCj4gPiBQ
+Q0kgYnJpZGdlcyB0byBleHRlcm5hbCBQQ0kgZXhwYW5zaW9uIGNoYXNzaXMgY29udGFpbmluZw0K
+PiA+IGFkZGl0aW9uYWwgUENJIHNsb3RzLg0KPiA+IFRoZSBjYXJkYnVzIGNhcmQgaXMgaG90IHJl
+bW92YWJsZS4NCj4gDQo+IEhpLA0KPiANCj4gdGhhdCBpcyB0cnVlIGZvciB0aG9zZSBvcHRpb25z
+LCBidXQgbm90IGZvciB0aGUgc3R5bGUNCj4gb2YgUENJIGhvdHBsdWcgd2hpY2ggcmVxdWlyZXMg
+eW91IHRvIHB1c2ggYSBidXR0b24gYW5kIHdhaXQNCj4gZm9yIHRoZSBibGlua2luZyBsaWdodC4N
+Cg0KVHJ1ZSwgSSByZW1lbWJlciBzb21lIG9mIHRob3NlIFBDSSBob3RwbHVnIGNoYXNzaXMgZnJv
+bSAyNSB5ZWFycyBhZ28uDQpJU1RSIHdlIGRpZCBnZXQgdGhlIHJlbW92YWwgZXZlbnRzIHdvcmtp
+bmcgKFNWUjQvVW5peHdhcmUpIGJ1dCBJDQpkb24ndCByZW1lbWJlciB0aGUgcmVsZXZhbnQgY2hh
+c3NpcyBldmVyIGJlaW5nIHNvbGQuDQpJbiBzcGl0ZSBvZiB0aGUgbWFya2V0aW5nIGh5cGUgSSBz
+dXNwZWN0IGl0IHdhcyBvbmx5IGV2ZXIgcG9zc2libGUNCnRvIHJlbW92ZSBhIGNvbXBsZXRlbHkg
+d29ya2luZyBib2FyZCBhbmQgcmVwbGFjZSBpdCB3aXRoIGFuDQpleGFjdGx5IGVxdWl2YWxlbnQg
+b25lLg0KDQpJbiBhbnkgY2FzZSB0aG9zZSBjaGFzc2lzIGFyZSBub3QgJ3N1cnByaXNlIHJlbW92
+YWwnLg0KDQpNb3JlIG1vZGVybiBkcml2ZXJzIGFyZSBsZXNzIGxpa2VseSB0byBjcmFzaCAoYW5k
+IGJ1cm4/KSB3aGVuDQphIFBDSSByZWFkIHJldHVybnMgfjB1Lg0KQnV0IEkgc3VzcGVjdCBhbiBh
+d2Z1bCBsb3QgcmVhbGx5IGRvbid0IGhhbmRsZSBzdXJwcmlzZSByZW1vdmFsDQp2ZXJ5IHdlbGwg
+YXQgYWxsLg0KDQpIb3cgbWFueSBlbnN1cmUgdGhhdCBhIH4wdSByZXNwb25zZSBmcm9tIGV2ZXJ5
+IFBDSShlKSB3b250DQpjYXVzZSBzb21lIGtpbmQgb2YgZ3JpZWY/DQooV2UndmUgYmVlbiB0aGVy
+ZSBkdWUgdG8gYSBidWdneSBmcGdhIG5vdCByZXNwb25kaW5nIHRvIG5vbi1jb25maWcNCmN5Y2xl
+cy4pDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkg
+Um9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlv
+biBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-I'll keep this revert as the "unlikely()" should never be used for
-something trivial like this (the compiler and CPU does a better job),
-and printing an error message also doesn't help much.
-
-I'll fix this up with a "simpler" version that does this properly by
-propagating the error backwards...
-
-thanks,
-
-greg k-h
