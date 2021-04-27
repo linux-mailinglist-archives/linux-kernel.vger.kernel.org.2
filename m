@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8916436CB1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9390536CB1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbhD0ScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        id S238565AbhD0Scd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236279AbhD0ScV (ORCPT
+        with ESMTP id S236279AbhD0Sca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:32:21 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7FFC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:31:37 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id h36so41010487lfv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:31:37 -0700 (PDT)
+        Tue, 27 Apr 2021 14:32:30 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC907C061574;
+        Tue, 27 Apr 2021 11:31:45 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id n2so90871909ejy.7;
+        Tue, 27 Apr 2021 11:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gZr+uThAt0ciiksb5ytQDUkfPwWrBd07uVSgmxyj1eE=;
-        b=gXB/ev241A+ABixVHuF9uRXX2mdp46DZLus2UrKHidpghpb8UTG1oK9rLlZSG14lu2
-         oyJS2lcfpHAvsJ/yLkCwJ206dAagh8K5AtMj9DZ2VaOEmTqTjgd/6PzhpBp/fJYskUja
-         4roVrTYHPkKU2t6wth7V8TjlUfD6U7WLpwahk=
+        bh=yP8Pg85AED61BqhqzNQSCQ0faSITOU8hZLsSfGgXVOI=;
+        b=Fy0hFkhHdXOk6yDtyoFq2hpSjC2aPWKhwCUYU4Ngri+zPpxVzbpyewbCqH3tjAkYbq
+         5S8mka9eS6l+NXKKHoWG1iHDryXEx4R2QbJetJE5k6O50085xzoUwcNZOjri6P/lGsBs
+         6JJ8Fzjavcm+8S/wfKBz13ODN4crmC4es63WQug0kl7D2TJeofmlbj5wLY5z1M5DqLIL
+         SZG+sHGcDVqFrLEGGVrMOnW2Zrq9sX/NLH737S2vncdlREg0/yu2VD2zVNIJvATYEZeg
+         vj3aOqpICxCKlUrUufYUBN99s7ux4VYxk3qk/km3vALkxhGTQVRYRD6S549mn9GBBYFR
+         rMQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gZr+uThAt0ciiksb5ytQDUkfPwWrBd07uVSgmxyj1eE=;
-        b=N01cO+Mh/WYsSNtnm0tyzx4WokOBAAD3kHeMBMHq8iqmmcbIo0knT9eJtab5OngNYG
-         bfyAyLlGAAK2hEFfuwuDs1Br7x4F9CAJXYwDUaCuuPoqwjYfDd0tZbl834DjzlWj4sf4
-         R/+ry5DesMOS+NRu4aZKofwgLCQJcoWK1QfJtmClp+s/LnJyNaTfa/PXh69p2ysZKczB
-         pTO7TAlFSnrnwqERMgyIh99KmXRj7orJ9AYQ4cxOG3SnjFbY6K2NuXCPjrwVIsh0OmKs
-         URR9KqUkzOYYwwyOn/4SxtOL9BR0yywUNNQrWaY2k1PXrFy7ko95f0eJh85m+yvqpj4Z
-         nplw==
-X-Gm-Message-State: AOAM530ZqgMp1XrAJITr0GtogtEHpk9IEJBxV6MR6K9kPampDYQL5jT4
-        EoNjw5rqGBl40srkhndvYarZOJvtdzbeYG+W
-X-Google-Smtp-Source: ABdhPJwjk26eeJKpPiFTuQHLKZd0WcgB70PswtkJW8Pj31IGqdyJqjbGzauK204FbvhNbhQEzMjgZw==
-X-Received: by 2002:a19:c7c5:: with SMTP id x188mr5322699lff.313.1619548295520;
-        Tue, 27 Apr 2021 11:31:35 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id j18sm597021ljc.132.2021.04.27.11.31.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 11:31:35 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id s9so11399389ljj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:31:34 -0700 (PDT)
-X-Received: by 2002:a2e:880f:: with SMTP id x15mr15839732ljh.507.1619548294774;
- Tue, 27 Apr 2021 11:31:34 -0700 (PDT)
+        bh=yP8Pg85AED61BqhqzNQSCQ0faSITOU8hZLsSfGgXVOI=;
+        b=Kn1cHmQZElgBxwvaqupIJ97T8piNwkpjzh9/0erbecWNhG11n/w1aEjPkqTiGeeQnG
+         utV5vxCM/ineUxwDL7GV0B+BRNO4Q8rVS1/Bfffp6R5XbLIt92usz8NKwn6pdoprwNUN
+         Fk/zjeqme+IAmBQKLxpmisIj7aIAr4j29SAI33hmkNhyXVSWJWeyPMtdmeuA+15+DmVk
+         JR82dM2djTiWgPJtm/CFl/+uyUtrEJnQjUaZjkgTiGVN+fc+7xP5uaH0ua/1cT2ioHEC
+         NudjbAPJ7b+v+WjetL8d/fcO1xCrV0GDh+7MavhdjJGWEkaiMCtNv5Bb5PidSl9ftjwp
+         1rxA==
+X-Gm-Message-State: AOAM53027e+kgBv5x2sD+j4BOhCy2ljC8wHmICh9TFbJPY3JKaaMlyO5
+        GW/NzFttDmzOIy7aKTdd7ub1XbGhnByZJcWVx9w=
+X-Google-Smtp-Source: ABdhPJxt3MTXfyv2Bb27hy8HvPNMjivT0PcIdJJZ28HezJTgD7aAL2CIuSK4XOFdNJe4UW7aoMyJeUd6XUwDEuHlVuw=
+X-Received: by 2002:a17:907:765b:: with SMTP id kj27mr9390423ejc.537.1619548304673;
+ Tue, 27 Apr 2021 11:31:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <YIdByy4WJcXTN7Wy@zeniv-ca.linux.org.uk>
-In-Reply-To: <YIdByy4WJcXTN7Wy@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 27 Apr 2021 11:31:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whNdEKs-LoF9DKYW8k5Eg2rPjqqWf047TxAY3+v4W=iRQ@mail.gmail.com>
-Message-ID: <CAHk-=whNdEKs-LoF9DKYW8k5Eg2rPjqqWf047TxAY3+v4W=iRQ@mail.gmail.com>
-Subject: Re: [git pull] fileattr series from Miklos
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
+References: <20210426101106.9122-1-colin.king@canonical.com>
+In-Reply-To: <20210426101106.9122-1-colin.king@canonical.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 27 Apr 2021 20:31:33 +0200
+Message-ID: <CAFBinCBh1_s7NDpOZjuO3hKcvimwiD+2X15JY3CqeDKg8wemSQ@mail.gmail.com>
+Subject: Re: [PATCH] serial: meson: remove redundant initialization of
+ variable id
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 3:42 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Mon, Apr 26, 2021 at 12:11 PM Colin King <colin.king@canonical.com> wrote:
 >
->         The branch is straight from Miklos' tree (it's #fileattr_v6 there),
-> sat merged into vfs.git #for-next for a while.  Not sure what's the normal
-> way to do pull requests in situations like that - do you prefer a reference
-> to my tree (as below) or to mszeredi/vfs.git?
-
-This is fine. The only downside here is that there was no signed tag,
-which I would have preferred - either from you or from Milkos.
-
-We've had this a couple of times before, and I've started trying to
-"document" it with a "Pull X from Y via Z" thing. See for example
-
-   git show 836d7f0572ca 70cd33d34c60
-
-which is a similar kind of thing where Borislav just forwarded Ard's
-work (and it has happened in the past a couple of times without those
-kinds of notices).
-
-Btw, unrelated to that, this pull request got a conflict with
-
-  64708539cd23 ("btrfs: use btrfs_inode_lock/btrfs_inode_unlock inode
-lock helpers")
-
-which I think I sorted out correctly (the "inode_lock()" is now done
-by the VFS layer for the fileattr things, and the btrfs use of
-"btrfs_inode_lock/btrfs_inode_unlock" ended up being undone). But just
-to be safe I'm cc'ing the btrfs people involved. Please double-check
-that I didn't screw something up.
-
-(Note: it doesn't show up as a conflict in the merge itself, because
-each piece was a straight "take the case from one side or the other",
-and in this case "take it from the fileattr" side meant that the
-inode_[un]lock -> btrfs_inode_[un]lock conversion for the fileattr
-cases just went away).
-
-                 Linus
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable id being initialized with a value that is never read
+> and it is being updated later with a new value. The initialization is
+> redundant and can be removed. Since id is just being used in a for-loop
+> inside a local scope, move the declaration of id to that scope.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
