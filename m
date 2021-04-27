@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B27B36C7B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D2236C7B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237264AbhD0O0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
+        id S238226AbhD0O0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 10:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236358AbhD0O0i (ORCPT
+        with ESMTP id S236358AbhD0O0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:26:38 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1E2C061574;
-        Tue, 27 Apr 2021 07:25:55 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id a12so1650301pfc.7;
-        Tue, 27 Apr 2021 07:25:55 -0700 (PDT)
+        Tue, 27 Apr 2021 10:26:48 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0361C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:04 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id n2so6521707wrm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XmqaGzesN0SmjSrY2Dk2eAML4vSg4n/rnT2eDpt7oE8=;
-        b=gyoHtAVkWeSljBk3I4Fm/iWJ1oEDShb2O6IQZuvtpuEIotkDCihu0N0ry1Dly1xbWk
-         WysUQmGz8yyKtrb3YNV5Iu9AWue5dk7/MjeVx7pvshB2ePojDSqzT2SfRja6mbDxP9b7
-         dhNr6gixva6IQTiAyAw075WxrJTbPWuK4bNa8215fygmo0UXXGxmVqU5V+JSO7SzCC39
-         B7tXOpLgm/GS/4Wvy674FNxQr5W0i/8JQnSphkOMQntE3DLzv8rNZKnTnzrrZXwAtHvq
-         DA8a3NM+xyGDWdFDBAqhZJimeB6CJEhZwi0639MlG4vuouClefRpWDti3gCkpSFMX+WQ
-         d9/Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RwMvEObyLlKjSGQB/9hmAtzJSE09xxj6MxSNgN4PmDg=;
+        b=agw3pihNfoQx/rmG9lGzHPRnpPYrXsNJpXdMOjbVUrgEvLtwFuHTcLG/Sfu43S8NBu
+         nvBbsuzaPjVoYOG+SJ+dVtTSdPN9fLNrfAULOBwFmVUvZCvMjPOfOByQJCzOldf+issf
+         7/tOx35F9DuZZJ+Q3T/4qYAPalHVxeYaNJPEvtrrmgw+DoX9Hty1rBdNgDfV8nQekwdJ
+         wgcO4IYJrXCH1m1X0u5vTuCHeQYufzi499D6xFPXFhQLVRk3sJh2ZnIaceBGm/zsqNLU
+         joy+IaBjekSq5EIx9r90YBcHNel+cn0r1JgvRfRFHGX2y66eauywKyGOqlwqizVpt2cW
+         TTJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XmqaGzesN0SmjSrY2Dk2eAML4vSg4n/rnT2eDpt7oE8=;
-        b=KQIPSdpQoX7bsOUn6yggyRjB6HIwKsh1mcWplyIIstWnIaTE7Udqh8ekneQtYqmaCy
-         xBr3l45JsoIky6zgiUYnSFzBsgmMCB6Dy1dcb0ZhNGMoFQ5h+pXCCxs5ZoFI0eB78ziS
-         d/GQg4KIEjgD2oGQsMd3j9VAuxyTt/6rJjL+krsw5wVG76fKF4jT5cm5owALWrJtGoeg
-         csNasy5zNnRrp/inMRv7XVBrqlG7DCIPyrOPMgaM/WSUy+1AblHr37n4q61ccaH1Pm+7
-         hwe51GThywlPsohiFb4gpK5qFHSEvDshzfv3Qq5o5Wa9UJgnTKP4Nr0NWvjZKdGKpH8L
-         gNUA==
-X-Gm-Message-State: AOAM5336HkiS9ktYCe8KhIM415hRsKJXeqvYYHpGU63Kl0efhVBWILEf
-        G7ElRKPNuiMulKGCA7xTlQ19pkntYzJ6qpfVhJo=
-X-Google-Smtp-Source: ABdhPJyDSass2cwQdgjSYcJZZ8XxP7imOdvRKXttGEUgkWl2Jnc6Pdlnlq3Hs6f3TgzXXhKR47PECohr3AF1CtMUrsU=
-X-Received: by 2002:a63:a847:: with SMTP id i7mr21790345pgp.203.1619533554990;
- Tue, 27 Apr 2021 07:25:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RwMvEObyLlKjSGQB/9hmAtzJSE09xxj6MxSNgN4PmDg=;
+        b=S38eb4Efz26G/Fy7Mn4vr0fYE3BqEmT4u2HI/yv5mJHrzx31cYw0SR5N5U3jpqZRxo
+         zs63iC36wD33qwuZfbUW5nvd5oRkm/4Nx9x6Xd5Co5aTUyd7Rkp7soOiceLVXuKj+yFi
+         TGuV/oun3e7yBj+XhsTh6VtyQbZywQx7dgXyLlceqFZPAFN/N4bnQgniiCsBv7R4DT6g
+         avtE2/jjDHmNatXB0a/uEVjnowdBBaj52BrkY09kIsw9+bFLvpg1LE7rShrBVvQ2VWL/
+         0i8fKWwlLMBuwuAK+d+ahMUFyv29G9yZujkFmxqlWP+sKcEHP0YFBkoQnMTdvpKAW7PL
+         fIBA==
+X-Gm-Message-State: AOAM532jVcP4CAZ1FkRocv9zwaqGDLEStINCOlsfbC0m6Vf/Hhfiw8Et
+        Gee8IMO7GXlFJO/rmojiR1M=
+X-Google-Smtp-Source: ABdhPJwO1y9ZUdpol4SaeaOvTVLho4jSt7rEK8qX01Ic5QLYtfAmkg67iQrVra9g3IPmDXAJH/Jn6A==
+X-Received: by 2002:adf:ea06:: with SMTP id q6mr5891373wrm.34.1619533563597;
+        Tue, 27 Apr 2021 07:26:03 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.92])
+        by smtp.gmail.com with ESMTPSA id d5sm4182448wrv.43.2021.04.27.07.26.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 07:26:03 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 16:26:00 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
+        rcy@google.com, gregkh@linuxfoundation.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging:gasket:core: Fix a double free in
+ gasket_enable_device
+Message-ID: <20210427142559.GD1399@agape.jhs>
+References: <20210427141129.6207-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
-References: <bug-212379-6385@https.bugzilla.kernel.org/> <bug-212379-6385-VMOjMpWM97@https.bugzilla.kernel.org/>
- <YIc40YXZh4plkhnc@zn.tnic> <CAHp75VfYKcYjiafFRmb8nBLeJ3VOs0wu6OxhysE31UStQNroiw@mail.gmail.com>
-In-Reply-To: <CAHp75VfYKcYjiafFRmb8nBLeJ3VOs0wu6OxhysE31UStQNroiw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Apr 2021 17:25:39 +0300
-Message-ID: <CAHp75VfMfghCWo_47FhtUGU_qt+Jzaz1kqY4+=oZgbzazyfPUA@mail.gmail.com>
-Subject: Re: [Bug 212379] AMD GPIO chip IRQs stops working (ELN4690, WCOM51C7, BMA250E)
-To:     Borislav Petkov <bp@alien8.de>, Coiby Xu <coiby.xu@gmail.com>,
-        Ken Xue <Ken.Xue@amd.com>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Daniel Drake <drake@endlessm.com>
-Cc:     vectorflaredesigns@gmail.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427141129.6207-1-lyl2019@mail.ustc.edu.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 5:10 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> +Cc: authors and contents per driver source code along with Coiby who
-> fixed touchpad issues in the past in the same driver.
->
-> On Tue, Apr 27, 2021 at 1:04 AM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > Switching to mail...
-> >
-> > On Mon, Apr 26, 2021 at 09:04:38PM +0000, bugzilla-daemon@bugzilla.kernel.org wrote:
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=212379
-> > >
-> > > --- Comment #15 from Austin Kilgore (vectorflaredesigns@gmail.com) ---
-> > > Is this ever going to get looked at?
-> > >
-> > > Did I need to @ mention someone? Honestly asking since I don't know what to do.
-> > > I don't even know who needs to be told to take a look at this.
-> > >
-> > > Like I said, if this bug report is lacking information just let me know and
-> > > I'll test, check, or upload whatever is needed. It's really important to me
-> > > that this gets fixed.
-> > >
-> > > --
-> >
-> > Grepping through the tree, "amd_gpio" sounds like
-> > drivers/pinctrl/pinctrl-amd.c so maybe Linus might have an idea, CCed.
-> >
-> > @Linus, the bugzilla entry has some more info on what happens.
-> >
-> > @Austin: in the future, please do not CC everyone including the
-> > postmaster on your bug. Now you're mass-spamming 50+ people
-> > unnecessarily.
+Hi Lv,
 
-Looking into history of changes it might be related to (Cc Daniel as well):
+I fear gasket is no more on staging tree, I think it's no more on
+kernel. Try fetch again from remote.
 
-commit d21b8adbd475dba19ac2086d3306327b4a297418
-Author: Daniel Drake <drake@endlessm.com>
-Date:   Wed Aug 14 17:05:40 2019 +0800
+On Tue, Apr 27, 2021 at 07:11:29AM -0700, Lv Yunlong wrote:
+> In gasket_enable_device, it calls gasket_interrupt_init().
+> Inside gasket_interrupt_init, interrupt_data is allocated via
+> kzalloc() and then is assigned to gasket_dev->interrupt_data.
+> If the later two kzalloc() failed, interrupt_data will be freed
+> and gasket_dev->interrupt_data will point to a freed memory.
+> 
+> After gasket_enable_device received the error, the freed
+> gasket_dev->interrupt_data is freed again in
+> gasket_interrupt_cleanup(gasket_dev).
+> 
+> My patch moves the "gasket_dev->interrupt_data = interrupt_data"
+> assignment behind the later kzalloc() all successd, to avoid
+> gasket_dev->interrupt_data pointing to a freed memory
+> 
+> Fixes: 80666096eb78f ("staging: gasket: core: remove static function forward declarations")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/staging/gasket/gasket_interrupt.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/gasket/gasket_interrupt.c b/drivers/staging/gasket/gasket_interrupt.c
+> index 864342acfd86..d4993d7abb87 100644
+> --- a/drivers/staging/gasket/gasket_interrupt.c
+> +++ b/drivers/staging/gasket/gasket_interrupt.c
+> @@ -322,7 +322,6 @@ int gasket_interrupt_init(struct gasket_dev *gasket_dev)
+>  	interrupt_data = kzalloc(sizeof(*interrupt_data), GFP_KERNEL);
+>  	if (!interrupt_data)
+>  		return -ENOMEM;
+> -	gasket_dev->interrupt_data = interrupt_data;
+>  	interrupt_data->name = driver_desc->name;
+>  	interrupt_data->type = driver_desc->interrupt_type;
+>  	interrupt_data->pci_dev = gasket_dev->pci_dev;
+> @@ -349,6 +348,8 @@ int gasket_interrupt_init(struct gasket_dev *gasket_dev)
+>  		return -ENOMEM;
+>  	}
+>  
+> +	gasket_dev->interrupt_data = interrupt_data;
+> +
+>  	switch (interrupt_data->type) {
+>  	case PCI_MSIX:
+>  		ret = gasket_interrupt_msix_init(interrupt_data);
+> -- 
+> 2.25.1
+> 
+> 
+> 
 
-   pinctrl: amd: disable spurious-firing GPIO IRQs
+thank you,
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+fabio
