@@ -2,124 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D2236C7B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E119C36C7B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238226AbhD0O0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
+        id S238374AbhD0O1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 10:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236358AbhD0O0s (ORCPT
+        with ESMTP id S238265AbhD0O06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:26:48 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0361C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:04 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id n2so6521707wrm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:04 -0700 (PDT)
+        Tue, 27 Apr 2021 10:26:58 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AF2C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:15 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id t18so2095783wry.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RwMvEObyLlKjSGQB/9hmAtzJSE09xxj6MxSNgN4PmDg=;
-        b=agw3pihNfoQx/rmG9lGzHPRnpPYrXsNJpXdMOjbVUrgEvLtwFuHTcLG/Sfu43S8NBu
-         nvBbsuzaPjVoYOG+SJ+dVtTSdPN9fLNrfAULOBwFmVUvZCvMjPOfOByQJCzOldf+issf
-         7/tOx35F9DuZZJ+Q3T/4qYAPalHVxeYaNJPEvtrrmgw+DoX9Hty1rBdNgDfV8nQekwdJ
-         wgcO4IYJrXCH1m1X0u5vTuCHeQYufzi499D6xFPXFhQLVRk3sJh2ZnIaceBGm/zsqNLU
-         joy+IaBjekSq5EIx9r90YBcHNel+cn0r1JgvRfRFHGX2y66eauywKyGOqlwqizVpt2cW
-         TTJA==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=tsLEq65WPKHRwU8rIMWjygbXMsjIHkGUMZ3Ia5QeHAw=;
+        b=vxoNyU80KxxiBotb0lzjxlUzkwvkfWvuC8wvl+fAljbT8jvboVaOZTyTmoBBkVYEy8
+         ODF18O5VwyagVT62PXJy8ixj23oSXmuh1KLUwKFguIPsnOLkhWeWUapx3ecC6VOb9UpO
+         VclnghnBwzwggXYn/U8vznLQeKPRibZYBIl7aIqvEU2gPrjUG0nFbAo3w9VfsAKbB7hB
+         qPmOZDXpkvZWQxouq7kGlCKcM/DGcjs++xKMIx+COAJqRPPI4J4iQ0bVFs10x0XSbz/m
+         6DstotHlMNmCPVtifdBKbg5L7BDZ2JC3cLpY1c6gmLD2+z5m2nVeY4CCzdkVTNy6sjtu
+         jnmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RwMvEObyLlKjSGQB/9hmAtzJSE09xxj6MxSNgN4PmDg=;
-        b=S38eb4Efz26G/Fy7Mn4vr0fYE3BqEmT4u2HI/yv5mJHrzx31cYw0SR5N5U3jpqZRxo
-         zs63iC36wD33qwuZfbUW5nvd5oRkm/4Nx9x6Xd5Co5aTUyd7Rkp7soOiceLVXuKj+yFi
-         TGuV/oun3e7yBj+XhsTh6VtyQbZywQx7dgXyLlceqFZPAFN/N4bnQgniiCsBv7R4DT6g
-         avtE2/jjDHmNatXB0a/uEVjnowdBBaj52BrkY09kIsw9+bFLvpg1LE7rShrBVvQ2VWL/
-         0i8fKWwlLMBuwuAK+d+ahMUFyv29G9yZujkFmxqlWP+sKcEHP0YFBkoQnMTdvpKAW7PL
-         fIBA==
-X-Gm-Message-State: AOAM532jVcP4CAZ1FkRocv9zwaqGDLEStINCOlsfbC0m6Vf/Hhfiw8Et
-        Gee8IMO7GXlFJO/rmojiR1M=
-X-Google-Smtp-Source: ABdhPJwO1y9ZUdpol4SaeaOvTVLho4jSt7rEK8qX01Ic5QLYtfAmkg67iQrVra9g3IPmDXAJH/Jn6A==
-X-Received: by 2002:adf:ea06:: with SMTP id q6mr5891373wrm.34.1619533563597;
-        Tue, 27 Apr 2021 07:26:03 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.92])
-        by smtp.gmail.com with ESMTPSA id d5sm4182448wrv.43.2021.04.27.07.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 07:26:03 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 16:26:00 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
-        rcy@google.com, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging:gasket:core: Fix a double free in
- gasket_enable_device
-Message-ID: <20210427142559.GD1399@agape.jhs>
-References: <20210427141129.6207-1-lyl2019@mail.ustc.edu.cn>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=tsLEq65WPKHRwU8rIMWjygbXMsjIHkGUMZ3Ia5QeHAw=;
+        b=SbgEjyLlI/TgOqsdT/ZnG/mEAxr9fvsAcDSrYRlAnBNY29oiTX7az7qzngGXZWvXrh
+         QbIwGBewCdapnWe11/+1UpA/0n0dZCSyKPuKhwmotvjidsWJX3rptiKvMYeqXENhfmtt
+         8fXYrUn+XCPeQe6z7FY+psl770ja+abdVY6d2aJx5IJtrpstNy0PruHlD0cYE6z4YCKN
+         Q0959CkrAVHMvD5RhsHE0frJgY1P3lkio0pjnqVfADQRf5Ytr/rCTVsGVfiZzB4xUc5r
+         pP3Nqbcv2OFdpCf7R1qJbuMs8EwAy5PsIKKf5y9JiI62OTMGiLMgSrJ6F/QRxyULbXrq
+         Hmqg==
+X-Gm-Message-State: AOAM5325xMke4oGHRIpBQt4m1Vsgzzqxwd5M2qKuXtMwSfRKTKAyiPzm
+        BOQ+S4NqF9Z4mCKELpGtRYIL+Q==
+X-Google-Smtp-Source: ABdhPJwec6hRUNjWSCxJ83wJL/+1rOqso5Ax4Ulzh5tpeJnc5TPLZU2HmP4+HzqqbtHxvWskg3j1Cg==
+X-Received: by 2002:adf:9011:: with SMTP id h17mr29521491wrh.384.1619533573779;
+        Tue, 27 Apr 2021 07:26:13 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:9db3:7ea6:7c21:e08])
+        by smtp.gmail.com with ESMTPSA id x25sm2853368wmj.34.2021.04.27.07.26.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 27 Apr 2021 07:26:13 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 16:26:11 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load
+ decay
+Message-ID: <20210427142611.GA22056@vingu-book>
+References: <20210425080902.11854-1-odin@uged.al>
+ <20210425080902.11854-2-odin@uged.al>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210427141129.6207-1-lyl2019@mail.ustc.edu.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210425080902.11854-2-odin@uged.al>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lv,
+Le dimanche 25 avril 2021 à 10:09:02 (+0200), Odin Ugedal a écrit :
+> This fixes an issue where old load on a cfs_rq is not properly decayed,
+> resulting in strange behavior where fairness can decrease drastically.
+> Real workloads with equally weighted control groups have ended up
+> getting a respective 99% and 1%(!!) of cpu time.
+> 
+> When an idle task is attached to a cfs_rq by attaching a pid to a cgroup,
+> the old load of the task is attached to the new cfs_rq and sched_entity by
+> attach_entity_cfs_rq. If the task is then moved to another cpu (and
+> therefore cfs_rq) before being enqueued/woken up, the load will be moved
+> to cfs_rq->removed from the sched_entity. Such a move will happen when
+> enforcing a cpuset on the task (eg. via a cgroup) that force it to move.
 
-I fear gasket is no more on staging tree, I think it's no more on
-kernel. Try fetch again from remote.
+Would be good to mention that the problem happens only if the new cfs_rq has
+been removed from the leaf_cfs_rq_list because its PELT metrics were already
+null. In such case __update_blocked_fair() never updates the blocked load of
+the new cfs_rq and never propagate the removed load in the hierarchy.
 
-On Tue, Apr 27, 2021 at 07:11:29AM -0700, Lv Yunlong wrote:
-> In gasket_enable_device, it calls gasket_interrupt_init().
-> Inside gasket_interrupt_init, interrupt_data is allocated via
-> kzalloc() and then is assigned to gasket_dev->interrupt_data.
-> If the later two kzalloc() failed, interrupt_data will be freed
-> and gasket_dev->interrupt_data will point to a freed memory.
 > 
-> After gasket_enable_device received the error, the freed
-> gasket_dev->interrupt_data is freed again in
-> gasket_interrupt_cleanup(gasket_dev).
+> The load will however not be removed from the task_group itself, making
+> it look like there is a constant load on that cfs_rq. This causes the
+> vruntime of tasks on other sibling cfs_rq's to increase faster than they
+> are supposed to; causing severe fairness issues. If no other task is
+> started on the given cfs_rq, and due to the cpuset it would not happen,
+> this load would never be properly unloaded. With this patch the load
+> will be properly removed inside update_blocked_averages. This also
+> applies to tasks moved to the fair scheduling class and moved to another
+> cpu, and this path will also fix that. For fork, the entity is queued
+> right away, so this problem does not affect that.
 > 
-> My patch moves the "gasket_dev->interrupt_data = interrupt_data"
-> assignment behind the later kzalloc() all successd, to avoid
-> gasket_dev->interrupt_data pointing to a freed memory
+> For a simple cgroup hierarchy (as seen below) with two equally weighted
+> groups, that in theory should get 50/50 of cpu time each, it often leads
+> to a load of 60/40 or 70/30.
 > 
-> Fixes: 80666096eb78f ("staging: gasket: core: remove static function forward declarations")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> parent/
+>   cg-1/
+>     cpu.weight: 100
+>     cpuset.cpus: 1
+>   cg-2/
+>     cpu.weight: 100
+>     cpuset.cpus: 1
+> 
+> If the hierarchy is deeper (as seen below), while keeping cg-1 and cg-2
+> equally weighted, they should still get a 50/50 balance of cpu time.
+> This however sometimes results in a balance of 10/90 or 1/99(!!) between
+> the task groups.
+> 
+> $ ps u -C stress
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
+> root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
+> 
+> parent/
+>   cg-1/
+>     cpu.weight: 100
+>     sub-group/
+>       cpu.weight: 1
+>       cpuset.cpus: 1
+>   cg-2/
+>     cpu.weight: 100
+>     sub-group/
+>       cpu.weight: 10000
+>       cpuset.cpus: 1
+> 
+> This can be reproduced by attaching an idle process to a cgroup and
+> moving it to a given cpuset before it wakes up. The issue is evident in
+> many (if not most) container runtimes, and has been reproduced
+> with both crun and runc (and therefore docker and all its "derivatives"),
+> and with both cgroup v1 and v2.
+> 
+> Fixes: 3d30544f0212 ("sched/fair: Apply more PELT fixes")
+
+The fix tag should be :
+Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
+
+This patch re-introduced the del of idle cfs_rq from leaf_cfs_rq_list in order to
+skip useless update of blocked load.
+
+
+> Signed-off-by: Odin Ugedal <odin@uged.al>
 > ---
->  drivers/staging/gasket/gasket_interrupt.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  kernel/sched/fair.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> diff --git a/drivers/staging/gasket/gasket_interrupt.c b/drivers/staging/gasket/gasket_interrupt.c
-> index 864342acfd86..d4993d7abb87 100644
-> --- a/drivers/staging/gasket/gasket_interrupt.c
-> +++ b/drivers/staging/gasket/gasket_interrupt.c
-> @@ -322,7 +322,6 @@ int gasket_interrupt_init(struct gasket_dev *gasket_dev)
->  	interrupt_data = kzalloc(sizeof(*interrupt_data), GFP_KERNEL);
->  	if (!interrupt_data)
->  		return -ENOMEM;
-> -	gasket_dev->interrupt_data = interrupt_data;
->  	interrupt_data->name = driver_desc->name;
->  	interrupt_data->type = driver_desc->interrupt_type;
->  	interrupt_data->pci_dev = gasket_dev->pci_dev;
-> @@ -349,6 +348,8 @@ int gasket_interrupt_init(struct gasket_dev *gasket_dev)
->  		return -ENOMEM;
->  	}
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 794c2cb945f8..ad7556f99b4a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10916,6 +10916,19 @@ static void attach_task_cfs_rq(struct task_struct *p)
 >  
-> +	gasket_dev->interrupt_data = interrupt_data;
+>  	if (!vruntime_normalized(p))
+>  		se->vruntime += cfs_rq->min_vruntime;
 > +
->  	switch (interrupt_data->type) {
->  	case PCI_MSIX:
->  		ret = gasket_interrupt_msix_init(interrupt_data);
+> +	/*
+> +	 * Make sure the attached load will decay properly
+> +	 * in case the task is moved to another cpu before
+> +	 * being queued.
+> +	 */
+> +	if (!task_on_rq_queued(p)) {
+> +		for_each_sched_entity(se) {
+> +			if (se->on_rq)
+> +				break;
+> +			list_add_leaf_cfs_rq(cfs_rq_of(se));
+> +		}
+> +	}
+
+propagate_entity_cfs_rq() already goes across the tg tree to
+propagate the attach/detach.
+
+would be better to call list_add_leaf_cfs_rq(cfs_rq)  inside this function
+instead of looping twice the tg tree. Something like:
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 33b1ee31ae0f..18441ce7316c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11026,10 +11026,10 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
+        for_each_sched_entity(se) {
+                cfs_rq = cfs_rq_of(se);
+
+-               if (cfs_rq_throttled(cfs_rq))
+-                       break;
++               if (!cfs_rq_throttled(cfs_rq))
++                       update_load_avg(cfs_rq, se, UPDATE_TG);
+
+-               update_load_avg(cfs_rq, se, UPDATE_TG);
++               list_add_leaf_cfs_rq(cfs_rq);
+        }
+ }
+ #else
+
+
+>
+>  }
+>  
+>  static void switched_from_fair(struct rq *rq, struct task_struct *p)
 > -- 
-> 2.25.1
+> 2.31.1
 > 
-> 
-> 
-
-thank you,
-
-fabio
