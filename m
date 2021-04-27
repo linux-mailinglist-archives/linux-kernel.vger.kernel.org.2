@@ -2,146 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CADF36C9D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058F536C9DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237702AbhD0Q5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237928AbhD0Q5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:57:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA2D61026;
-        Tue, 27 Apr 2021 16:56:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619542617;
-        bh=CtQkbacxtNcZEAEFulRLv7kO9okSffwvgKae5i4McZI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KWTyXLo8ZPShbNJh1KEOpwzrj/b0pLO477G+6qQxka0YCjzdfIkR0thZ/+ymLSFql
-         qXCg/JiMaCicZnymt+2RX4sYy9Hj4H6N82K+bfe5GzRwmfsV4IX9xx/91iWCgkyZ7B
-         HEvWbFOcEjZZii4EaIGmBn6+QjYElEgX/w8BilpQ=
-Date:   Tue, 27 Apr 2021 18:56:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Wenwen Wang <wang6495@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 185/190] Revert "net: cxgb3_main: fix a missing-check bug"
-Message-ID: <YIhCV9zg2OgW0kN3@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-186-gregkh@linuxfoundation.org>
+        id S238240AbhD0Q7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238134AbhD0Q6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:58:36 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC57C061761
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 09:57:52 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id c3so3902099ils.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 09:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AfWvlXdic+4MOs0KOPuGPjE9kmD8XQr/sjmlrkTPLaI=;
+        b=V8ZOgRJcn6Dtqzn/dNTeT1u9mccvCFMWItwlB2UU5IVebFRpf/CJ71oNx7sVg0gTxn
+         D5QqGQXHstJUFYUStJ6czBmZ5CVbVKd68zvdjnQN0+nn6k8spWRQg3ZN7hButLBVmrkd
+         P1MDMudaGLf3+9zuwY8ZNeRQKEyHpqW3V3aCC0uIRCK/1HCaAzUuTyKbou4oHr50bPfa
+         YPzAtJHZwnrp7epFgbmMoOkqVtlH4iiovgBMyUhDoYOdMTUgzCSkjgSkc05mSJZLjATs
+         GXnDvOYHzpyTJUrMKD0nW67S6wLNYpiHRMkDClN/cndD1/qRlKFgvyLf7CYSGi8lGL66
+         jzVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AfWvlXdic+4MOs0KOPuGPjE9kmD8XQr/sjmlrkTPLaI=;
+        b=YU6Q67T17p2c9M7fWy1HR+y+aEI0OPWiK2cF25+7mKYDUgE5xM05+BItEiQyE6iQ+c
+         zeOuccog8yhgLoTRYX6lDPpt6IxkXfnlRvpLz4hLwPS0IKlynadfMGdqDUc3TMZXV9Mb
+         PVOKLF2EQQDzZRLOYwOurA5Dl3DtuKleo69YoQcm9D01QnNf3FQK9RBdoMmdCDoYOax8
+         PPR8qnI7ryCjK1/0lpgYJIOHbUaihAtfX/ouf0gWXyI56T8cHPZySg/ilfPi0Q0AdDb/
+         QdP9m/dtq1Km8p07JPyF6jZtmnpLsVAt+axH2K7a2yWT3qvcUbHcWazazgK+f6DfBuFm
+         T+cQ==
+X-Gm-Message-State: AOAM532btRilIHM4P8l+c1nhfx066NIqZolK3qxrVri1Na+AZ8SJGdFy
+        TZhHkLLTEzh3JPL9YzKL9cEfeUPQUnQz6SXcVT+tyA==
+X-Google-Smtp-Source: ABdhPJwGFKRq3YkbLr0YvaOXUWBlmiWFSZOzKAFBSpiZs1nWwxElMS0Tlq3jxLLjVUri2MfWpajIppi1lnvNcSqEz38=
+X-Received: by 2002:a05:6e02:1d06:: with SMTP id i6mr19319768ila.165.1619542671555;
+ Tue, 27 Apr 2021 09:57:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-186-gregkh@linuxfoundation.org>
+References: <20210420220804.486803-1-axelrasmussen@google.com>
+ <20210420220804.486803-4-axelrasmussen@google.com> <alpine.LSU.2.11.2104261906390.2998@eggly.anvils>
+ <20210427155414.GB6820@xz-x1>
+In-Reply-To: <20210427155414.GB6820@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 27 Apr 2021 09:57:16 -0700
+Message-ID: <CAJHvVciNrE_F0B0nu=Mib6LhcFhL8+qgO-yiKNsJuBjOMkn5+g@mail.gmail.com>
+Subject: Re: [PATCH v4 03/10] userfaultfd/shmem: support UFFDIO_CONTINUE for shmem
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:01:00PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 2c05d88818ab6571816b93edce4d53703870d7ae.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c | 17 -----------------
->  1 file changed, 17 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c b/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
-> index 84ad7261e243..cc6314aa0154 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
-> @@ -2157,8 +2157,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EPERM;
->  		if (copy_from_user(&t, useraddr, sizeof(t)))
->  			return -EFAULT;
-> -		if (t.cmd != CHELSIO_SET_QSET_PARAMS)
-> -			return -EINVAL;
->  		if (t.qset_idx >= SGE_QSETS)
->  			return -EINVAL;
->  		if (!in_range(t.intr_lat, 0, M_NEWTIMER) ||
-> @@ -2258,9 +2256,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  		if (copy_from_user(&t, useraddr, sizeof(t)))
->  			return -EFAULT;
->  
-> -		if (t.cmd != CHELSIO_GET_QSET_PARAMS)
-> -			return -EINVAL;
-> -
->  		/* Display qsets for all ports when offload enabled */
->  		if (test_bit(OFFLOAD_DEVMAP_BIT, &adapter->open_device_map)) {
->  			q1 = 0;
-> @@ -2306,8 +2301,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EBUSY;
->  		if (copy_from_user(&edata, useraddr, sizeof(edata)))
->  			return -EFAULT;
-> -		if (edata.cmd != CHELSIO_SET_QSET_NUM)
-> -			return -EINVAL;
->  		if (edata.val < 1 ||
->  			(edata.val > 1 && !(adapter->flags & USING_MSIX)))
->  			return -EINVAL;
-> @@ -2348,8 +2341,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EPERM;
->  		if (copy_from_user(&t, useraddr, sizeof(t)))
->  			return -EFAULT;
-> -		if (t.cmd != CHELSIO_LOAD_FW)
-> -			return -EINVAL;
->  		/* Check t.len sanity ? */
->  		fw_data = memdup_user(useraddr + sizeof(t), t.len);
->  		if (IS_ERR(fw_data))
-> @@ -2373,8 +2364,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EBUSY;
->  		if (copy_from_user(&m, useraddr, sizeof(m)))
->  			return -EFAULT;
-> -		if (m.cmd != CHELSIO_SETMTUTAB)
-> -			return -EINVAL;
->  		if (m.nmtus != NMTUS)
->  			return -EINVAL;
->  		if (m.mtus[0] < 81)	/* accommodate SACK */
-> @@ -2416,8 +2405,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EBUSY;
->  		if (copy_from_user(&m, useraddr, sizeof(m)))
->  			return -EFAULT;
-> -		if (m.cmd != CHELSIO_SET_PM)
-> -			return -EINVAL;
->  		if (!is_power_of_2(m.rx_pg_sz) ||
->  			!is_power_of_2(m.tx_pg_sz))
->  			return -EINVAL;	/* not power of 2 */
-> @@ -2453,8 +2440,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EIO;	/* need the memory controllers */
->  		if (copy_from_user(&t, useraddr, sizeof(t)))
->  			return -EFAULT;
-> -		if (t.cmd != CHELSIO_GET_MEM)
-> -			return -EINVAL;
->  		if ((t.addr & 7) || (t.len & 7))
->  			return -EINVAL;
->  		if (t.mem_id == MEM_CM)
-> @@ -2507,8 +2492,6 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
->  			return -EAGAIN;
->  		if (copy_from_user(&t, useraddr, sizeof(t)))
->  			return -EFAULT;
-> -		if (t.cmd != CHELSIO_SET_TRACE_FILTER)
-> -			return -EINVAL;
->  
->  		tp = (const struct trace_params *)&t.sip;
->  		if (t.config_tx)
-> -- 
-> 2.31.1
-> 
+I'd prefer to keep them separate, as they are not tiny patches (they
+are roughly +200/-150 each). And, they really are quite independent -
+at least in the sense that I can reorder them via rebase with no
+conflicts, and the code builds at each commit in either orientation. I
+think this implies they're easier to review separately, rather than
+squashed.
 
-The original commit looks correct, dropping this revert.
+I don't have a strong feeling about the order. I slightly prefer
+swapping them compared to this v4 series: first introduce minor
+faults, then introduce CONTINUE.
 
-greg k-h
+Since Peter also has no strong opinion, and Hugh it sounds like you
+prefer it the other way around, I'll swap them as we had in some
+previous version of this series: first introduce minor faults, then
+introduce CONTINUE.
+
+On Tue, Apr 27, 2021 at 8:54 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Mon, Apr 26, 2021 at 07:19:58PM -0700, Hugh Dickins wrote:
+> > On Tue, 20 Apr 2021, Axel Rasmussen wrote:
+> >
+> > > With this change, userspace can resolve a minor fault within a
+> > > shmem-backed area with a UFFDIO_CONTINUE ioctl. The semantics for this
+> > > match those for hugetlbfs - we look up the existing page in the page
+> > > cache, and install a PTE for it.
+> > >
+> > > This commit introduces a new helper: mcopy_atomic_install_pte.
+> > >
+> > > Why handle UFFDIO_CONTINUE for shmem in mm/userfaultfd.c, instead of in
+> > > shmem.c? The existing userfault implementation only relies on shmem.c
+> > > for VM_SHARED VMAs. However, minor fault handling / CONTINUE work just
+> > > fine for !VM_SHARED VMAs as well. We'd prefer to handle CONTINUE for
+> > > shmem in one place, regardless of shared/private (to reduce code
+> > > duplication).
+> > >
+> > > Why add a new mcopy_atomic_install_pte helper? A problem we have with
+> > > continue is that shmem_mcopy_atomic_pte() and mcopy_atomic_pte() are
+> > > *close* to what we want, but not exactly. We do want to setup the PTEs
+> > > in a CONTINUE operation, but we don't want to e.g. allocate a new page,
+> > > charge it (e.g. to the shmem inode), manipulate various flags, etc. Also
+> > > we have the problem stated above: shmem_mcopy_atomic_pte() and
+> > > mcopy_atomic_pte() both handle one-half of the problem (shared /
+> > > private) continue cares about. So, introduce mcontinue_atomic_pte(), to
+> > > handle all of the shmem continue cases. Introduce the helper so it
+> > > doesn't duplicate code with mcopy_atomic_pte().
+> > >
+> > > In a future commit, shmem_mcopy_atomic_pte() will also be modified to
+> > > use this new helper. However, since this is a bigger refactor, it seems
+> > > most clear to do it as a separate change.
+> > >
+> > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> >
+> > If this "03/10" had been numbered 04/10, I would have said
+> > Acked-by: Hugh Dickins <hughd@google.com>
+> >
+> > But I find this new ordering incomprehensible - I'm surprised that it
+> > even builds this way around (if it does): this patch is so much about
+> > what has been enabled in "04/10" (references to UFFDIO_CONTINUE shmem
+> > VMAs etc).
+> >
+> > Does Peter still think this way round is better? If he does, then we
+> > shall have to compromise by asking you just to squash the two together.
+>
+> Hi, Hugh, Axel,
+>
+> I have no strong opinion. To me, UFFDIO_CONTINUE can be introduced earlier like
+> this. As long as we don't enable the feature (which is done in the next patch),
+> no one will be able to call it, then it looks clean.  Merging them also looks
+> good to me.
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
