@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A5036C697
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D8036C699
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236388AbhD0NAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:00:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39635 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236121AbhD0NAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:00:34 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-127--hFiMNP-PnSmH-CCHA4ytg-1; Tue, 27 Apr 2021 13:59:47 +0100
-X-MC-Unique: -hFiMNP-PnSmH-CCHA4ytg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 27 Apr 2021 13:59:46 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Tue, 27 Apr 2021 13:59:45 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Oliver Neukum' <oneukum@suse.com>,
-        "'Rafael J. Wysocki'" <rafael@kernel.org>
-CC:     Rajat Jain <rajatja@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, "Bjorn Helgaas" <helgaas@kernel.org>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Subject: RE: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
-Thread-Topic: [PATCH v2 2/2] pci: Support "removable" attribute for PCI
- devices
-Thread-Index: AQHXOpI8ukue0tNuwUC9JgKnmYtYG6rGwqQQgAFxHQCAAB7esA==
-Date:   Tue, 27 Apr 2021 12:59:45 +0000
-Message-ID: <b5e031652f144ab6accbe553566676c9@AcuMS.aculab.com>
-References: <20210424021631.1972022-1-rajatja@google.com>
-         <20210424021631.1972022-2-rajatja@google.com>
-         <d53c72949d81db9f092a9aecb49bf56b47727738.camel@suse.com>
-         <CAJZ5v0iNrSFjhmTE8K-JrO07kJon3ikhatbg0Jg2hs+x-frDJg@mail.gmail.com>
-         <79b994f2476249498797e1784f735fd7@AcuMS.aculab.com>
- <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
-In-Reply-To: <21c6b5002c5ad36cd7fe0bb849f5eba12a614bca.camel@suse.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S236413AbhD0NBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235489AbhD0NAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:00:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F461613C9;
+        Tue, 27 Apr 2021 13:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619528411;
+        bh=Rv1K3gZweFvD9zEFesfROB43qcPpdVCY0NFUafBE8nQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FzDpq2lnE+9NxmcFjSG5hRsXPLI2NIGOZIq9+lMm57Ny0Xf5uihDx+SM7XlrbxTWl
+         n+5EmwEyIpdNkpzy8TIezn1n2onK0Dk6b/JbjZA3FubMEq7/E6oFDSqSOPkH9ShF6N
+         +MmzJxmChlJCXgGFiokTNMsQlhtl4c3x7uWCPYoU=
+Date:   Tue, 27 Apr 2021 15:00:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 046/190] Revert "net/mlx4_core: fix a memory leak bug."
+Message-ID: <YIgK2Hbnmxz2dPCe@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-47-gregkh@linuxfoundation.org>
+ <1027d8d1-5cea-0a04-4974-3f9672ff7d4e@gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1027d8d1-5cea-0a04-4974-3f9672ff7d4e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogT2xpdmVyIE5ldWt1bQ0KPiBTZW50OiAyNyBBcHJpbCAyMDIxIDEzOjAwDQo+IA0KPiBB
-bSBNb250YWcsIGRlbiAyNi4wNC4yMDIxLCAxMzowMSArMDAwMCBzY2hyaWViIERhdmlkIExhaWdo
-dDoNCj4gPiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraQ0KPiA+ID4gU2VudDogMjYgQXByaWwgMjAy
-MSAxMjo0OQ0KPiA+ID4NCj4gPiA+IE9uIE1vbiwgQXByIDI2LCAyMDIxIGF0IDExOjE3IEFNIE9s
-aXZlciBOZXVrdW0gPG9uZXVrdW1Ac3VzZS5jb20+IHdyb3RlOg0KPiA+ID4gPiBBbSBGcmVpdGFn
-LCBkZW4gMjMuMDQuMjAyMSwgMTk6MTYgLTA3MDAgc2NocmllYiBSYWphdCBKYWluOg0KPiA+ID4g
-PiA+IEV4cG9ydCB0aGUgYWxyZWFkeSBhdmFpbGFibGUgaW5mbywgdG8gdGhlIHVzZXJzcGFjZSB2
-aWEgdGhlDQo+ID4gPiA+ID4gZGV2aWNlIGNvcmUsIHNvIHRoYXQgdXNlcnNwYWNlIGNhbiBpbXBs
-ZW1lbnQgd2hhdGV2ZXIgcG9saWNpZXMgaXQNCj4gPiA+ID4gPiB3YW50cyB0bywgZm9yIGV4dGVy
-bmFsIHJlbW92YWJsZSBkZXZpY2VzLg0KPiA+ID4gPg0KPiA+ID4gPiBIaSwNCj4gPiA+ID4NCj4g
-PiA+ID4gaXMgdGhlcmUgYSB3YXkgdG8gdGVsbCBhcGFydCB3aGV0aGVyIGEgZGV2aWNlIGNhbiB1
-bmRlcmdvIHJlZ3VsYXINCj4gPiA+ID4gc3VycHJpc2UgcmVtb3ZhbD8NCj4gPiA+DQo+ID4gPiBQ
-Q0kgZGV2aWNlcyBsb2NhdGVkIHVuZGVyIGEgcmVtb3ZhYmxlIHBhcmVudCBjYW4gdW5kZXJnbyBz
-dXJwcmlzZQ0KPiA+ID4gcmVtb3ZhbC4gIFRoZSBvbmVzIG9uIGEgVGh1bmRlcmJvbHQgY2hhaW4g
-dG9vLg0KPiA+ID4NCj4gPiA+ID4gRG8gd2Ugd2FudCB0aGF0Pw0KPiA+ID4NCj4gPiA+IERvIHlv
-dSBtZWFuIHN1cnByaXNlIHJlbW92YWw/ICBZZXMsIHdlIGRvLg0KPiA+DQo+ID4gQWx3YXlzIGJl
-ZW4gdHJ1ZSAtIHRoaW5rIG9mIGNhcmRidXMgKFBDSSBwY21jaWEpIGNhcmRzIHdpdGgNCj4gPiBQ
-Q0kgYnJpZGdlcyB0byBleHRlcm5hbCBQQ0kgZXhwYW5zaW9uIGNoYXNzaXMgY29udGFpbmluZw0K
-PiA+IGFkZGl0aW9uYWwgUENJIHNsb3RzLg0KPiA+IFRoZSBjYXJkYnVzIGNhcmQgaXMgaG90IHJl
-bW92YWJsZS4NCj4gDQo+IEhpLA0KPiANCj4gdGhhdCBpcyB0cnVlIGZvciB0aG9zZSBvcHRpb25z
-LCBidXQgbm90IGZvciB0aGUgc3R5bGUNCj4gb2YgUENJIGhvdHBsdWcgd2hpY2ggcmVxdWlyZXMg
-eW91IHRvIHB1c2ggYSBidXR0b24gYW5kIHdhaXQNCj4gZm9yIHRoZSBibGlua2luZyBsaWdodC4N
-Cg0KVHJ1ZSwgSSByZW1lbWJlciBzb21lIG9mIHRob3NlIFBDSSBob3RwbHVnIGNoYXNzaXMgZnJv
-bSAyNSB5ZWFycyBhZ28uDQpJU1RSIHdlIGRpZCBnZXQgdGhlIHJlbW92YWwgZXZlbnRzIHdvcmtp
-bmcgKFNWUjQvVW5peHdhcmUpIGJ1dCBJDQpkb24ndCByZW1lbWJlciB0aGUgcmVsZXZhbnQgY2hh
-c3NpcyBldmVyIGJlaW5nIHNvbGQuDQpJbiBzcGl0ZSBvZiB0aGUgbWFya2V0aW5nIGh5cGUgSSBz
-dXNwZWN0IGl0IHdhcyBvbmx5IGV2ZXIgcG9zc2libGUNCnRvIHJlbW92ZSBhIGNvbXBsZXRlbHkg
-d29ya2luZyBib2FyZCBhbmQgcmVwbGFjZSBpdCB3aXRoIGFuDQpleGFjdGx5IGVxdWl2YWxlbnQg
-b25lLg0KDQpJbiBhbnkgY2FzZSB0aG9zZSBjaGFzc2lzIGFyZSBub3QgJ3N1cnByaXNlIHJlbW92
-YWwnLg0KDQpNb3JlIG1vZGVybiBkcml2ZXJzIGFyZSBsZXNzIGxpa2VseSB0byBjcmFzaCAoYW5k
-IGJ1cm4/KSB3aGVuDQphIFBDSSByZWFkIHJldHVybnMgfjB1Lg0KQnV0IEkgc3VzcGVjdCBhbiBh
-d2Z1bCBsb3QgcmVhbGx5IGRvbid0IGhhbmRsZSBzdXJwcmlzZSByZW1vdmFsDQp2ZXJ5IHdlbGwg
-YXQgYWxsLg0KDQpIb3cgbWFueSBlbnN1cmUgdGhhdCBhIH4wdSByZXNwb25zZSBmcm9tIGV2ZXJ5
-IFBDSShlKSB3b250DQpjYXVzZSBzb21lIGtpbmQgb2YgZ3JpZWY/DQooV2UndmUgYmVlbiB0aGVy
-ZSBkdWUgdG8gYSBidWdneSBmcGdhIG5vdCByZXNwb25kaW5nIHRvIG5vbi1jb25maWcNCmN5Y2xl
-cy4pDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkg
-Um9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlv
-biBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Mon, Apr 26, 2021 at 02:18:37PM +0300, Tariq Toukan wrote:
+> 
+> 
+> On 4/21/2021 3:58 PM, Greg Kroah-Hartman wrote:
+> > This reverts commit febfd9d3c7f74063e8e630b15413ca91b567f963.
+> > 
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > Cc: Qiushi Wu <wu000273@umn.edu>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >   drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+> > index f6cfec81ccc3..380e027ba5df 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx4/fw.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+> > @@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
+> >   		if (err) {
+> >   			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
+> >   				 err);
+> > -			goto out;
+> > +			return;
+> >   		}
+> >   		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
+> >   		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+> > 
+> 
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> 
+> The original commit febfd9d3c7f74063e8e630b15413ca91b567f963 is a bad
+> commit. Not to be re-submitted.
 
+Thanks for the review, will keep!
+
+greg k-h
