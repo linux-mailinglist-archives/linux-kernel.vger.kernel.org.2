@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CBB36C1B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B1236C1BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbhD0J1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 05:27:39 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16161 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhD0J1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 05:27:38 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FTxCQ4Gh6zpbrF;
-        Tue, 27 Apr 2021 17:23:46 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 27 Apr 2021 17:26:50 +0800
-Subject: Re: [PATCH 4.14 00/49] 4.14.232-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210426072819.721586742@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <7dd80877-3a9e-2435-ae85-9eb0747797f9@huawei.com>
-Date:   Tue, 27 Apr 2021 17:26:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S235174AbhD0Jbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 05:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230316AbhD0Jbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 05:31:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6658613BC;
+        Tue, 27 Apr 2021 09:30:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619515862;
+        bh=wwdocN+FFNO7ugt/9z3SiJCzGGGQpkTsBljNkYzdRsc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dR+eRUUcFpK7r3Qo3uMIc89WSn+V7tyH+0fKhATah0oY8qwXPKKIcMoDR0TqWJxTs
+         4OuaQI7kmex4sPg8XSzBZ73DSWcXLaaRm+6dF3BuoWLDeGMO49BFvieaqwl4fBViot
+         hgpZveuEPLA9kiaLDEEz/3Sdqk4ofewrIDhYu7EZJqilkKf6143HgVByg5YHRM22kN
+         ItCWCT0uoAQYx56BlKs2SDX1QRKLKAFX3MT/jJiqoz/Fkjo59cE8XGjtix1OpbTGga
+         mG1W746ovMPtbkkyxUbKWBWApKyoHXBdn6sUdh87o1J7Mj04R3JL/In/U8JfHfjVZQ
+         VXliqcie3Qa3A==
+Date:   Tue, 27 Apr 2021 11:30:55 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 58/78] media: exynos-gsc: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210427113055.745d0560@coco.lan>
+In-Reply-To: <ee7b580a-d5bc-bdbf-3efc-c9d8f43316db@samsung.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <CGME20210424064556eucas1p1e89378837c377168c9782b4172e70482@eucas1p1.samsung.com>
+        <9c7d683907b9f9cf4a99f57f978671ec7f5a1dbc.1619191723.git.mchehab+huawei@kernel.org>
+        <ee7b580a-d5bc-bdbf-3efc-c9d8f43316db@samsung.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Tue, 27 Apr 2021 10:18:12 +0200
+Sylwester Nawrocki <s.nawrocki@samsung.com> escreveu:
 
-
-On 2021/4/26 15:28, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.232 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:
+> > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > added pm_runtime_resume_and_get() in order to automatically handle
+> > dev->power.usage_count decrement on errors.
+> > 
+> > Use the new API, in order to cleanup the error check logic.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/media/platform/exynos-gsc/gsc-core.c | 3 +--
+> >  drivers/media/platform/exynos-gsc/gsc-m2m.c  | 2 +-
+> >  2 files changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+> > index 9f41c2e7097a..9d5841194f6b 100644
+> > --- a/drivers/media/platform/exynos-gsc/gsc-core.c
+> > +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+> > @@ -1210,7 +1210,7 @@ static int gsc_remove(struct platform_device *pdev)
+> >  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
+> >  	int i;
+> >  
+> > -	pm_runtime_get_sync(&pdev->dev);
+> > +	pm_runtime_resume_and_get(&pdev->dev);
+> >  
+> >  	gsc_unregister_m2m_device(gsc);
+> >  	v4l2_device_unregister(&gsc->v4l2_dev);
+> > @@ -1219,7 +1219,6 @@ static int gsc_remove(struct platform_device *pdev)
+> >  	for (i = 0; i < gsc->num_clocks; i++)
+> >  		clk_disable_unprepare(gsc->clock[i]);
+> >  
+> > -	pm_runtime_put_noidle(&pdev->dev);  
 > 
-> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.232-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> If we do this then the device usage count will not get decremented
+> after the pm_runtime_resume_and_get() call above and after driver
+> unload/load cycle it will not be possible to suspend the device.
+> I wouldn't be changing anything in gsc_remove(), pm_runtime_get_sync()
+> works better in that case.
 
-Tested on x86 for 4.14.232-rc1,
+Good point.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.14.y
-Version: 4.14.232-rc1
-Commit: 3ac46322bf509c3f3735c8287d28702ee6172b6e
-Compiler: gcc version 7.3.0 (GCC)
+Actually, I don't see any reason why to call a PM resume
+function - either being pm_runtime_get_sync() or
+pm_runtime_resume_and_get().
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 6251
-passed: 6251
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+The code there could simply be:
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+    static int gsc_remove(struct platform_device *pdev)
+    {
+        struct gsc_dev *gsc = platform_get_drvdata(pdev);
+        int i;
+
+        gsc_unregister_m2m_device(gsc);
+        v4l2_device_unregister(&gsc->v4l2_dev);
+
+        vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+        for (i = 0; i < gsc->num_clocks; i++)
+                clk_disable_unprepare(gsc->clock[i]);
+
+        pm_runtime_disable(&pdev->dev);
+
+        dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
+        return 0;
+    }
+
+Eventually also adding:
+	pm_runtime_suspended(&pdev->dev);
+
+just after pm_runtime_disable().
+
+Regards,
+Mauro
