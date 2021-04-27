@@ -2,113 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C2936C447
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C57A36C44B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237968AbhD0KiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235370AbhD0Khl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:37:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31ADF61164;
-        Tue, 27 Apr 2021 10:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619519812;
-        bh=Pa3agcyz2NtuVM1ilvYU8h7J+lPkNnKb5CQvR3SYI/E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=B69cMouiuHpSe3mPDuw5C/o/LAejhv6XpeioJvn43Fi9BaGuINCYDnxYJxIM7Z6vK
-         spCHxaebUv6lD1tQ+6sfbV6jsPsjv4O8W20DWiTUJENniNfVUUke9Tf3UJCbHdne6c
-         0Nz04k1X8tjjjJRJunAR2+dGqWOrWJv+qLvHqrKeLkwzgaRtsa7yiQ5b2vDrUE3tDo
-         SsAwPAEiqs8KFgEql5pf263/Jhe7I9eyOnqybU45DXaKCqKHvZ24al0CY6W6bnZ5tA
-         fGHjqLt5jJs3NtaEa25WlwKMbukhgtOwMfxywljAWXj1xmm+Hk8wBv0+CyIERDeNN0
-         Ap9jC7LXEF/ig==
-Subject: Re: [PATCH v2] media:exynos4-is: Fix a use after free in
- isp_video_release
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org
-References: <20210427060255.3318-1-lyl2019@mail.ustc.edu.cn>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <a56d14d8-5be6-24ff-24f1-80274320dfe5@kernel.org>
-Date:   Tue, 27 Apr 2021 12:36:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235819AbhD0Kk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235755AbhD0Kk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:40:57 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B684AC061574;
+        Tue, 27 Apr 2021 03:40:12 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 12so92685578lfq.13;
+        Tue, 27 Apr 2021 03:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xvhwewPL3C0UjcOHd+QXOzMItbY0AkXlRWPtFoN6OHY=;
+        b=ibIOQAeGtqcrfPKVr8TVA50kIyzQZdD6xNy8AsaxOZ84egAcbeTj0TghFbEwctr6NI
+         uhEWtLwyOWsYJ4/O2t4jwLDL3FSQeYtn1/y0I7H721fFkQG6pk9JVYpoXAevyLpdtAGJ
+         yzslufotAM5sbtYYsZVgG4u6e89N3vNRsgHUAiUNqdTTnoDq2wrIGgdtVP5OjfU+bZ0G
+         d7c/4rAyJRyl5kXFwvjjSeohNbwLVYHFnltRpjPkzcW3mYLBBXlj9DJ10yHT2CMTAsA2
+         e4iq8Ho8RdrEHeRDBd9K0Cg5wd/EEFBMPlB1gbGrZhY7aTCf0XBAQGWMXHF8Hi/EE+jl
+         dZmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xvhwewPL3C0UjcOHd+QXOzMItbY0AkXlRWPtFoN6OHY=;
+        b=qf90eio8HowOFl0AKaYqkRcsIUDtj/pBk2o4kWx3aMmvlae3tBKyXbUGAAkNFw8xoS
+         hKzQZPtqdnh539HXD0gIkQtlS1wxBdVSAxome2oPFxr71YXxK6jvlSSs1ankTZQz8Nat
+         PC3DDdNEYaYRVTJZSrbEx3JSKRxnWuf3QaW5qReJOZimQWOzVLic1T+aOTNzaxh0nWtU
+         ebbKSGKOOd0CWinAgOwCS23lctY4qBFL4x5hl3fYkPh2jf8l4r3rX/eI5QL9jGkrfHtl
+         M03jx4ozXBE+Myx9TWHolxKxQU8COBVVpjLll9tBvEENSJo6rKD81PQmQ6hxk/sdaEo4
+         QhWg==
+X-Gm-Message-State: AOAM5338TOp3xUY5EDuzbLQtHr5iWD8IutTXtmvjmmQ6r04tp9T5+3fA
+        WuFmCqhgrMsSt0FjfkaoPjNufEGAzgwtUDMbsqQ=
+X-Google-Smtp-Source: ABdhPJw5pW1PN4nky3oRnaLB5fO2j7LNViEhBqi3B3M37v6X45Fm7nlvuurm1/cbr3PnK03igGM8Gitq9GoTdgVOoTs=
+X-Received: by 2002:a05:6512:3b89:: with SMTP id g9mr15453703lfv.499.1619520011115;
+ Tue, 27 Apr 2021 03:40:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210427060255.3318-1-lyl2019@mail.ustc.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00000000000022ebeb05bc39f582@google.com> <e939af11-7ce8-46af-8c76-651add0ae56bn@googlegroups.com>
+ <CACT4Y+aPRCZcLvkuWgK=A_rR0PqdEAM+xssWU4N7hNRSm9=mSA@mail.gmail.com>
+ <CAGyP=7fBRPc+qH9UvhGhid9j-B2PeYhQ4bbde_Vg72Mnx9z75Q@mail.gmail.com> <dba3f0a9-cb5d-a162-b696-864295259581@gmail.com>
+In-Reply-To: <dba3f0a9-cb5d-a162-b696-864295259581@gmail.com>
+From:   Palash Oswal <oswalpalash@gmail.com>
+Date:   Tue, 27 Apr 2021 16:09:59 +0530
+Message-ID: <CAGyP=7e6xiNVEV6Bc21i0v+e9GWmm2UdTbhDzyNTmMY4Pa=_ng@mail.gmail.com>
+Subject: Re: KASAN: null-ptr-deref Write in io_uring_cancel_sqpoll
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.04.2021 08:02, Lv Yunlong wrote:
-> In isp_video_release, file->private_data is freed via
-> _vb2_fop_release()->v4l2_fh_release(). But the freed
-> file->private_data is still used in v4l2_fh_is_singular_file()
-> ->v4l2_fh_is_singular(file->private_data), which is a use
-> after free bug.
-> 
-> My patch set file->private_data to NULL after _vb2_fop_release()
-> to avoid the use after free.
-> 
-> Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->   drivers/media/platform/exynos4-is/fimc-isp-video.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-> index 612b9872afc8..2e04589068b4 100644
-> --- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-> +++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-> @@ -315,7 +315,8 @@ static int isp_video_release(struct file *file)
->   	}
->   
->   	_vb2_fop_release(file, NULL);
-> -
-> +	file->private_data = NULL;
+On Tue, Apr 27, 2021 at 2:07 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> io_sq_offload_create() {
+>     ...
+>     ret = io_uring_alloc_task_context(tsk, ctx);
+>     wake_up_new_task(tsk);
+>     if (ret)
+>         goto err;
+> }
+>
+> Shouldn't happen unless offload create has failed. Just add
+> a return in *cancel_sqpoll() for this case. It's failing
+> so no requests has been submitted and no cancellation is needed.
 
->   	if (v4l2_fh_is_singular_file(file)) {
->   		fimc_pipeline_call(&ivc->ve, close);
->   
+io_uring_cancel_sqpoll can be called by two flows:
+1. io_uring_task_cancel() -> io_sqpoll_cancel_sync() ->
+io_uring_cancel_sqpoll ;  which properly sanitises current->io_uring
+to be non NULL. (
+https://elixir.bootlin.com/linux/v5.12/source/include/linux/io_uring.h#L21
+)
+2. io_sq_offload_create -> io_sq_thread -> io_uring_cancel_sqpoll ;
+which does not check the value of current->io_uring
 
-Thank you for the patch. To ensure the pipeline stop call is done
-only when the last file handle is released we would need something
-as below.
+In the second flow,
+https://elixir.bootlin.com/linux/v5.12/source/fs/io_uring.c#L7970
+The initialization of current->io_uring (i.e
+io_uring_alloc_task_context() ) happens after calling io_sq_thread.
+And, therefore io_uring_cancel_sqpoll receives a NULL value for
+current->io_uring.
 
---------8<---------
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c 
-b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index 612b9872afc8..3335fec509cb 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-@@ -306,17 +306,20 @@ static int isp_video_release(struct file *file)
-         struct fimc_is_video *ivc = &isp->video_capture;
-         struct media_entity *entity = &ivc->ve.vdev.entity;
-         struct media_device *mdev = entity->graph_obj.mdev;
-+       bool is_singular_file;
+The backtrace from the crash confirms the second scenario:
+[   70.661551] ==================================================================
+[   70.662764] BUG: KASAN: null-ptr-deref in io_uring_cancel_sqpoll+0x203/0x350
+[   70.663834] Write of size 4 at addr 0000000000000060 by task iou-sqp-750/755
+[   70.664025]
+[   70.664025] CPU: 1 PID: 755 Comm: iou-sqp-750 Not tainted 5.12.0 #101
+[   70.664025] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-1 04/01/2014
+[   70.664025] Call Trace:
+[   70.664025]  dump_stack+0xe9/0x168
+[   70.664025]  ? io_uring_cancel_sqpoll+0x203/0x350
+[   70.664025]  __kasan_report+0x166/0x1c0
+[   70.664025]  ? io_uring_cancel_sqpoll+0x203/0x350
+[   70.664025]  kasan_report+0x4f/0x70
+[   70.664025]  kasan_check_range+0x2f3/0x340
+[   70.664025]  __kasan_check_write+0x14/0x20
+[   70.664025]  io_uring_cancel_sqpoll+0x203/0x350
+[   70.664025]  ? io_sq_thread_unpark+0xd0/0xd0
+[   70.664025]  ? mutex_lock+0xbb/0x130
+[   70.664025]  ? init_wait_entry+0xe0/0xe0
+[   70.664025]  ? wait_for_completion_killable_timeout+0x20/0x20
+[   70.664025]  io_sq_thread+0x174c/0x18c0
+[   70.664025]  ? io_rsrc_put_work+0x380/0x380
+[   70.664025]  ? init_wait_entry+0xe0/0xe0
+[   70.664025]  ? _raw_spin_lock_irq+0xa5/0x180
+[   70.664025]  ? _raw_spin_lock_irqsave+0x190/0x190
+[   70.664025]  ? calculate_sigpending+0x6b/0xa0
+[   70.664025]  ? io_rsrc_put_work+0x380/0x380
+[   70.664025]  ret_from_fork+0x22/0x30
 
-         mutex_lock(&isp->video_lock);
+We might want to add additional validation before calling
+io_uring_cancel_sqpoll. I did verify that the reproducer stopped
+producing the bug after the following change.
+---
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index dff34975d86b..36fc9abe8022 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6832,8 +6832,10 @@ static int io_sq_thread(void *data)
+                timeout = jiffies + sqd->sq_thread_idle;
+        }
 
--       if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
-+       is_singular_file = v4l2_fh_is_singular_file(file);
-+
-+       if (is_singular_file && ivc->streaming) {
-                 media_pipeline_stop(entity);
-                 ivc->streaming = 0;
-         }
-
-         _vb2_fop_release(file, NULL);
-
--       if (v4l2_fh_is_singular_file(file)) {
-+       if (is_singular_file) {
-                 fimc_pipeline_call(&ivc->ve, close);
-
-                 mutex_lock(&mdev->graph_mutex);
---------8<---------
-
-Regards,
-Sylwester
+-       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+-               io_uring_cancel_sqpoll(ctx);
++       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
++               if (current->io_uring)
++                       io_uring_cancel_sqpoll(ctx);
++       }
+        sqd->thread = NULL;
+        list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+                io_ring_set_wakeup_flag(ctx);
