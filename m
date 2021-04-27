@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D65A36C825
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB0436C828
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238578AbhD0O6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:58:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
+        id S238633AbhD0O7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 10:59:18 -0400
+Received: from void.so ([95.85.17.176]:13300 "EHLO void.so"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236173AbhD0O6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2987761131;
-        Tue, 27 Apr 2021 14:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619535488;
-        bh=7kiAK0hH+Ic9Dn5pkyTBq9Vmhy5TBHc/i5nANk+/S8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fA8tkl+Eqk9UKTB6NndeCJlOUT5UyoLaXqoRDs0UClBGeVlCgNEteg1wrIYzwCKeO
-         ig4/CCRaeDiOVdwGmgFCzy46CW9rWnd63rK1p/Bg9t9M4HCuzNsCOjual/aJ/b7oK9
-         rPtf/TT9hrYLVKN/diyg7nqSjUfUPhuBwlRzEHus=
-Date:   Tue, 27 Apr 2021 16:58:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tyler Hicks <code@tyhicks.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Aditya Pakki <pakki001@umn.edu>
-Subject: Re: [PATCH 053/190] Revert "ecryptfs: replace BUG_ON with error
- handling code"
-Message-ID: <YIgmfj5C24bCfsap@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-54-gregkh@linuxfoundation.org>
- <YIBM8hiBLFO+JJr/@zeniv-ca.linux.org.uk>
- <20210421161329.GD4991@sequoia>
+        id S236173AbhD0O7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 10:59:10 -0400
+Received: from void.so (localhost [127.0.0.1])
+        by void.so (Postfix) with ESMTP id CF9CB2B2FBA;
+        Tue, 27 Apr 2021 17:58:23 +0300 (MSK)
+Received: from void.so ([127.0.0.1])
+        by void.so (void.so [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+        id pQ3HAm4e1keW; Tue, 27 Apr 2021 17:58:23 +0300 (MSK)
+Received: from mx.void.so (localhost [127.0.0.1])
+        by void.so (Postfix) with ESMTPA id 9D82F2B2FB9;
+        Tue, 27 Apr 2021 17:58:22 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=void.so; s=mail;
+        t=1619535503; bh=qKNua5KhGqsJ/P0wyBQaiw9GM/Sjie/sLfhRTHM+6fE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=mCxZVq9KNHoB9uxnBS10wKtL9SmftuxjrB9VzWp4GiPxDZ0zVK0q5VmbKtPFVQTg/
+         vtYBw+5Q8SQahC40fNNIVzWCVN1UV64BB+9A1nKVUTVe9bZLC7uOqnrVquSu4RxC1V
+         2xs03yOVXv2cwPVfl1w40y4uFak28tnHSaeBJXtA=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421161329.GD4991@sequoia>
+Date:   Tue, 27 Apr 2021 17:58:22 +0300
+From:   Void <mail@void.so>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ido Schimmel <idosch@nvidia.com>
+Subject: Re: [PATCH v4 net-next] net: multipath routing: configurable seed
+In-Reply-To: <e5e46b25-065f-7c56-3c31-6b9cc130510d@gmail.com>
+References: <YILPPCyMjlnhPmEN@rnd>
+ <93ca6644-fc5a-0977-db7d-16779ebd320c@gmail.com> <YIfcfEiym5PKAe0w@rnd>
+ <e5e46b25-065f-7c56-3c31-6b9cc130510d@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <21a2fb1925b215cc48ab8e2f783a7de7@void.so>
+X-Sender: mail@void.so
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:13:29AM -0500, Tyler Hicks wrote:
-> On 2021-04-21 16:04:02, Al Viro wrote:
-> > On Wed, Apr 21, 2021 at 02:58:48PM +0200, Greg Kroah-Hartman wrote:
-> > > This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
-> > > 
-> > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > faith" to try to test the kernel community's ability to review "known
-> > > malicious" changes.  The result of these submissions can be found in a
-> > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > > 
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove this
-> > > change to ensure that no problems are being introduced into the
-> > > codebase.
-> > 
-> > FWIW, commit message on the original (
-> > ecryptfs: replace BUG_ON with error handling code
-> > 
-> > In crypt_scatterlist, if the crypt_stat argument is not set up
-> > correctly, the kernel crashes. Instead, by returning an error code
-> > upstream, the error is handled safely.
-> > 
-> > The issue is detected via a static analysis tool written by us.
-> > 
-> > Fixes: 237fead619984 (ecryptfs: fs/Makefile and fs/Kconfig)
-> > Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-> > Signed-off-by: Tyler Hicks <code@tyhicks.com>
-> > )
-> > really stinks.  First, the analysis: condition being tested is
-> > (!crypt_stat || !crypt_stat->tfm
-> >                || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
-> > and their patch replaces BUG_ON() with return of -EINVAL.  So the
-> > only thing their tool had detected the presence of BUG_ON().
-> > Was it grep, by any chance?  
-> > 
-> > IOW, the commit message is "we'd found BUG_ON(); let's replace it
-> > with returning some error value and hope everything works.  Whaddya
-> > mean, how do we know?  Our tool [git grep BUG_ON, that is] says
-> > it's there and look, it *is* there, so if it's ever reached there'll
-> > be trouble.  What, assertion that returning an error will be handled
-> > safely?   'Cuz we saiz so, that's why"
-> > 
-> > 
-> > It *is* functionally harmless, AFAICS, but only because the condition
-> > is really impossible.  However,
-> > 	* it refers to vague (s)tool they'd produced, nevermind that
-> > all they really do is "find BUG_ON(), replace with returning an error".
-> > 	* unlike BUG_ON(), the replacement does *NOT* document the
-> > fact that condition should be impossible.
-> > IMO either should be sufficient for rejecting the patch.
+On 2021-04-27 17:27, David Ahern wrote:
+> On 4/27/21 3:42 AM, Pavel Balaev wrote:
+>> After running "scripts/checkpatch.pl" I got warnings about alignment.
+>> So I run checkpatch.pl --fix and fixed alignment as a script did.
+>> So warnings goes away. I don't get the rules of alignment, can you
+>> tell me the right way?
 > 
-> I agree that it was not a malicious change. There are other places
-> within the same function that return -EINVAL and the expectation is that
-> errors from this function should be handled safely.
-> 
-> That said, I can find no real-world reports of this BUG_ON() ever being
-> a problem and I don't think that there's any actual need for this
-> change. So, I'm alright with it being reverted considering the
-> circumstances.
-> 
->  Acked-by: Tyler Hicks <code@tyhicks.com>
+> I don't see any statements under Documentation/process; not sure where
+> it is explicitly stated. You can get the general idea by following the
+> surrounding code and then let checkpatch correct from there.
+I create 3 patches and check it:
 
-Thanks for the review, I've update the commit log message and added your
-ack here.
+./scripts/checkpatch.pl 
+0001-net-ipv4-multipath-routing-configurable-seed.patch
+total: 0 errors, 0 warnings, 0 checks, 186 lines checked
 
-greg k-h
+0001-net-ipv4-multipath-routing-configurable-seed.patch has no obvious 
+style problems and is ready for submission.
+./scripts/checkpatch.pl 
+0002-net-ipv6-multipath-routing-configurable-seed.patch
+total: 0 errors, 0 warnings, 0 checks, 151 lines checked
+
+0002-net-ipv6-multipath-routing-configurable-seed.patch has no obvious 
+style problems and is ready for submission.
+./scripts/checkpatch.pl 
+0003-selftests-net-forwarding-configurable-seed-tests.patch
+WARNING: added, moved or deleted file(s), does MAINTAINERS need 
+updating?
+#76:
+new file mode 100755
+
+total: 0 errors, 1 warnings, 394 lines checked
+
+No alignment warnings at all.
