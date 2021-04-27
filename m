@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2898436C49D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E071A36C4A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbhD0LIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235611AbhD0LIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235748AbhD0LI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:08:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235592AbhD0LIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Apr 2021 07:08:19 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A942BC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:07:17 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 77BFB4199E;
-        Tue, 27 Apr 2021 11:07:13 +0000 (UTC)
-Subject: Re: [PATCH] irqchip: APPLE_AIC should depend on ARCH_APPLE
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <f37e8daea37d50651d2164b0b3dad90780188548.1618316398.git.geert+renesas@glider.be>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <26a1ca39-5c60-b54c-d3fc-df1a7cc38818@marcan.st>
-Date:   Tue, 27 Apr 2021 20:07:10 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14609613BF;
+        Tue, 27 Apr 2021 11:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619521642;
+        bh=BRo/eDbvQlGm4UOtynp97IJmtV6Q9jckxoge1aD3P8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jh9JnGp093zCnvaYasdWoryRUgj3/L5MRDmtQuQg+BjWAOQ5OEKlzlzlPzObTz7JH
+         VbDJ1wAQrKlzmrXhiU8SgoM45udYfooPBeyhxbiU1X+pP71xcuOFSxzRHtud+Rj1Yz
+         hgjA3Lg0mDE/PVEvfTG0zXZmwOvFuEt3V2SijFM0=
+Date:   Tue, 27 Apr 2021 13:07:19 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] fbtft: Replace custom ->reset() with generic one
+Message-ID: <YIfwZ/oPVB9splQq@kroah.com>
+References: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <f37e8daea37d50651d2164b0b3dad90780188548.1618316398.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/2021 21.21, Geert Uytterhoeven wrote:
-> The Apple Interrupt Controller is only present on Apple Silicon SoCs.
-> Hence add a dependency on ARCH_APPLE, to prevent asking the user about
-> this driver when configuring a kernel without Apple Silicon SoC support.
+On Fri, Apr 16, 2021 at 05:20:41PM +0300, Andy Shevchenko wrote:
+> The custom ->reset() repeats the generic one, replace it.
 > 
-> Drop the default, as ARCH_APPLE already selects APPLE_AIC.
+> Note, in newer kernels the context of the function is a sleeping one,
+> it's fine to switch over to the sleeping functions. Keeping the reset
+> line asserted longer than 20 microseconds is also okay, it's an idling
+> state of the hardware.
 > 
-> Fixes: 76cde26394114f6a ("irqchip/apple-aic: Add support for the Apple Interrupt Controller")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->   drivers/irqchip/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+> Fixes: b2ebd4be6fa1 ("staging: fbtft: add fb_agm1264k-fl driver")
 
-Makes sense. Thanks!
+What does this "fix"?  A bug or just a "it shouldn't have been done this
+way"?
 
-Acked-by: Hector Martin <marcan@marcan.st>
+And as others pointed out, if you could put "staging: fbtft:" as a
+prefix here, that would be much better.
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+thanks,
+
+greg k-h
