@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B52836BFBF
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7A836BFBE
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbhD0HH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:07:29 -0400
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:46636 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234899AbhD0HG7 (ORCPT
+        id S234970AbhD0HHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:07:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21489 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230255AbhD0HGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:06:59 -0400
-Received: by mail-ua1-f47.google.com with SMTP id v23so18338609uaq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 00:05:55 -0700 (PDT)
+        Tue, 27 Apr 2021 03:06:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619507154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hU0X065Jts3zXqonmt3u6RVQ5smooOA0uzd+qO/RgE8=;
+        b=F3HkEco0mDg5/e4f/JKkjEhqJNcTmi/jhHoA0esjXi0T6iSG4IH94s1pmyUGBLzx+wgicg
+        77jLN6C9n6ob72CjlJBkZJeRAvni+khzvDMLi/jha5pqRxaSDtJPrkaZzky/NWBWwa71CB
+        /2LBpsv1fCLVbvT3CxKNj3ox2A89RqI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-bWCu3qYZMJC297-0zLiG0A-1; Tue, 27 Apr 2021 03:05:52 -0400
+X-MC-Unique: bWCu3qYZMJC297-0zLiG0A-1
+Received: by mail-ej1-f70.google.com with SMTP id e18-20020a17090681d2b0290384d9ff1359so1968516ejx.16
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 00:05:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1yWrCnxspOEU09ohpANK8EFv8WKUiN9EYVnjphWtMlw=;
-        b=t/v4BSL6nC1kIammWV8vnPz/mLlTUtGKlCc5/qCKmvIHOqQfp69YbO/stlL0RHLReR
-         Gv+lrnhNsk8kgjleud/ma5QsGFbHm56JvqKafo2uGDrY4JDKVYeqtfV8uagqxV+DxuPy
-         19nWhGe7S0GXGKKHyUjdIqnX06ukwrVGXfM7IEPQWBGv+lP6KL8v7wbIDf5hOj7hch5m
-         biNcCrCvrpT/Yg2xiBPAXMgMXPyI7vmS0H59ztDYPDi1MDkbWrjVi7AI/5AHI8xO5xwq
-         52x+nlF3r4m90Hiiv9CNLFCI9yHJJqlbE+7792X+LFwlSTMZIIuC+V7nOr/Lmm/NOoXn
-         Q12Q==
-X-Gm-Message-State: AOAM533fBIZOwP6ZxRw8qneB2ixV82yrbd2b42kwYb59zSQ+B80/h716
-        M5Jpc+j0Pu+JaXI9zUrHvuUkMh3YyJOCRVkRIZ8=
-X-Google-Smtp-Source: ABdhPJxIjPDCSt0n7tNtaZ/I7xFzjpALnneQCrum1cB6Xma8lOonZOpN7Ic3AsV6H0XDYOo0EAzHSCJg0j/fbCH5gKY=
-X-Received: by 2002:ab0:6306:: with SMTP id a6mr16002889uap.2.1619507155105;
- Tue, 27 Apr 2021 00:05:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hU0X065Jts3zXqonmt3u6RVQ5smooOA0uzd+qO/RgE8=;
+        b=JpbMmenqtwT7dk8uqAzfuWycu+0zLfS7NYnSC3L9nPgdMdqDLwIHeA6SgOOVrGMlNX
+         vOFQLvq819SA4lRm4g+77bTMzGJQ3d5QjTAFCp4pAYUv8sRlyVbvQQIBZKBYe9AUNOlY
+         wDjjWbISTWip3fpDSjgZ6jbGk0Ts8xJ6Ly8y8bQg0NOtl0wGXpuxdi8+NxYqjG7jYIvB
+         SirX0SgbNlwuj1JcMvo0HpdGVP84Ae46ERCwUOXkAIiuqRRS2UfGcEhec2WWGsubtnnA
+         eZDImjjF2BaLpsUGe+qT0ikHN0FDrTkyo4Nj9yOMtQgM9XFvIyH1BnYjZxQb6FHQFltJ
+         60xw==
+X-Gm-Message-State: AOAM532AfTBblpHkMOd62t41yUUpsm+HdrIYOTC3yxORbG+ZEprLW5Md
+        XlM8gpAuXF2y3kHAcubelZ7Vkx1Tr717DKw3ZUpxn2jTtyHSmUdySwKOO9kIHrB9Z8D33+IMHLk
+        NTwNw5iXyYnaH7/Bp/Tz9Uxl4
+X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr22253868ejc.326.1619507151322;
+        Tue, 27 Apr 2021 00:05:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZ7hxv9V3N9QTnZlvdRwBjGOXQZdA7OUgnCOqig0VsESbZiuwiXd/zr94sDLdsUQMotZjtOA==
+X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr22253845ejc.326.1619507151124;
+        Tue, 27 Apr 2021 00:05:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id 16sm12846449ejw.0.2021.04.27.00.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 00:05:50 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] KVM: VMX: Invoke NMI handler via indirect call
+ instead of INTn
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20200915191505.10355-1-sean.j.christopherson@intel.com>
+ <20200915191505.10355-3-sean.j.christopherson@intel.com>
+ <CAJhGHyBOLUeqnwx2X=WToE2oY8Zkqj_y4KZ0hoq-goe+UWcR9g@mail.gmail.com>
+ <bb2c2d93-8046-017a-5711-c61c8f1a4c09@redhat.com>
+ <CAJhGHyDrAwKO1iht=d0j+OKD1U7e1fzLminudxo2sPHbF53TKQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2fd450a9-0f59-8d88-d4bc-431245f3b565@redhat.com>
+Date:   Tue, 27 Apr 2021 09:05:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
- <20210302211133.2244281-4-saravanak@google.com> <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
- <CAGETcx_ayXd1uDR6WHWxLmskYwOSjyynNi3Rt8irRUrfnr266w@mail.gmail.com> <23ab7a11-330c-4d3d-00c1-984c5248464e@gmail.com>
-In-Reply-To: <23ab7a11-330c-4d3d-00c1-984c5248464e@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Apr 2021 09:05:43 +0200
-Message-ID: <CAMuHMdXS+GO=E26vaeNvQ+L7zm=mOK0FXoWGL79adL+9Hx1E3A@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by default""
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJhGHyDrAwKO1iht=d0j+OKD1U7e1fzLminudxo2sPHbF53TKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On 27/04/21 02:54, Lai Jiangshan wrote:
+> The C NMI handler can handle the case of nested NMIs, which is useful
+> here.  I think we should change it to call the C NMI handler directly
+> here as Andy Lutomirski suggested:
 
-On Mon, Apr 26, 2021 at 11:48 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> On 4/26/21 2:33 PM, Saravana Kannan wrote:
-> > On Mon, Apr 26, 2021 at 1:51 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >> On 3/2/21 1:11 PM, Saravana Kannan wrote:
-> >>> This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
-> >>>
-> >>> Since all reported issues due to fw_devlink=on should be addressed by
-> >>> this series, revert the revert. fw_devlink=on Take II.
-> >>>
-> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >>
-> >> This change breaks booting on SCMI-based platforms such as ARCH_BRCMSTB.
-> >> If I revert this change or boot with fw_devlink=permissive, then our
-> >> systems boot again. From a quick look, the SCMI clock provider was never
-> >> probed which means that our UART driver never got a chance to get its
-> >> clock and we have no console -> timeout.
-> >
-> > We explicitly landed changes to handle this condition. So we'll see if
-> > this is what is happening.
-> >
-> >> Al, AFAICT you had started to analyze this before in the context of
-> >> SCMI, do you mind sharing what you had found?
-> >>
-> >> Saravana, is there any debugging output that we can help provide?
-> >
-> > Thanks for the report. Couple of things that can help:
-> > 1. Example DTS file (the final board file so that I can get the full DT view).
->
-> Attached BCX972160DV.dts which is one such system.
->
-> > 2. Point out the UART device node and the SCMI device node that you
-> > suspect is causing the issue.
->
-> The SCMI provider node is brcm_scmi@0 and its sub-node protocol@14 is
-> the clock provider. The UART node is /rdb/serial@840c000.
+Great, can you send a patch?
 
-I guess dependencies on SCMI sub-nodes are not handled correctly?
+Paolo
 
-Gr{oetje,eeting}s,
+> On Mon, Apr 26, 2021 at 11:09 PM Andy Lutomirski <luto@amacapital.net> wrote:
+>> The C NMI code has its own reentrancy protection and has for years.
+>> It should work fine for this use case.
+> 
+> I think this is the right way.
+> 
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
