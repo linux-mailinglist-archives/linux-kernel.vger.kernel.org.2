@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154F236C6E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F47836C6E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236345AbhD0NTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
+        id S236410AbhD0NU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:20:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235875AbhD0NTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:19:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB579613B0;
-        Tue, 27 Apr 2021 13:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619529512;
-        bh=LWjtx1WQZ8AKHRGhYes2jCOqJ26s9v2b9O0/NeUEk8g=;
+        id S236001AbhD0NU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:20:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C76B8600CC;
+        Tue, 27 Apr 2021 13:19:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619529584;
+        bh=Ie48lGinW5GRBhoMFVQnXcPzZEu+eS+IAT7HtMWqlGU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u740M1fN7z/w2G5QCSYJ90lBSKMo6zBq889I3ePN3wL+/hteNyww280mHh6xU/ULG
-         nI1eaX0ApQhwFSKFHcavIjr5AOjbkvL/nihBp9o1ycglsQLYEtPcDZYq87NZyNUznx
-         yad4P4DxzSY5mDNX2LcfXv4Hcz/9J33leAyHFRjD2+f7Eu/QXJIUnuEg/bjOanaMhO
-         eGHOc5YC6Vo5wwcxgsyA8m1d17E8VAvtaCTXJH9MtHg70Yu6/GfV/9IckN5Z3BCLX7
-         +89EEJ/KDI5B6T8fRWK1YVnvYh9Q+H5g2LZfM67ZhBzONLOHd2xvQhVEFEZZ+O2qJ3
-         8fPB45ejz1Byg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lbNbx-0002i9-MA; Tue, 27 Apr 2021 15:18:46 +0200
-Date:   Tue, 27 Apr 2021 15:18:45 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Julia Lawall <Julia.Lawall@inria.fr>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] coccinelle: api: semantic patch to use
- pm_runtime_resume_and_get
-Message-ID: <YIgPNRiaz2Jup+PT@hovoldconsulting.com>
-References: <20210426185404.2466195-1-Julia.Lawall@inria.fr>
+        b=w/gu7E85VT3W+NW60jdMXyPnt/VS4MdLJhYo/HJAzujvzApHH6sfHN1+zYpVszZFn
+         5wNSgvXkjrpzj8vXmKduyLBm3aO8TffSZPOAWDjeeW1frj7Kr0sAqCb0eZK1imBhJK
+         rFdmJPXKbwmE89CPieyLss45tq2nKoFhYVOXDuWg=
+Date:   Tue, 27 Apr 2021 15:19:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: Re: [PATCH 152/190] Revert "media: usb: gspca: add a missed check
+ for goto_low_power"
+Message-ID: <YIgPbVT+Tj1F9KRE@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-153-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210426185404.2466195-1-Julia.Lawall@inria.fr>
+In-Reply-To: <20210421130105.1226686-153-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:54:04PM +0200, Julia Lawall wrote:
-> pm_runtime_get_sync keeps a reference count on failure, which can lead
-> to leaks.  pm_runtime_resume_and_get drops the reference count in the
-> failure case.  This rule very conservatively follows the definition of
-> pm_runtime_resume_and_get to address the cases where the reference
-> count is unlikely to be needed in the failure case.
+On Wed, Apr 21, 2021 at 03:00:27PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 5b711870bec4dc9a6d705d41e127e73944fa3650.
 > 
-> pm_runtime_resume_and_get was introduced in
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
-> deal with usage counter")
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 > 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/media/usb/gspca/cpia1.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
+> index a4f7431486f3..d93d384286c1 100644
+> --- a/drivers/media/usb/gspca/cpia1.c
+> +++ b/drivers/media/usb/gspca/cpia1.c
+> @@ -1424,7 +1424,6 @@ static int sd_config(struct gspca_dev *gspca_dev,
+>  {
+>  	struct sd *sd = (struct sd *) gspca_dev;
+>  	struct cam *cam;
+> -	int ret;
+>  
+>  	sd->mainsFreq = FREQ_DEF == V4L2_CID_POWER_LINE_FREQUENCY_60HZ;
+>  	reset_camera_params(gspca_dev);
+> @@ -1436,10 +1435,7 @@ static int sd_config(struct gspca_dev *gspca_dev,
+>  	cam->cam_mode = mode;
+>  	cam->nmodes = ARRAY_SIZE(mode);
+>  
+> -	ret = goto_low_power(gspca_dev);
+> -	if (ret)
+> -		gspca_err(gspca_dev, "Cannot go to low power mode: %d\n",
+> -			  ret);
+> +	goto_low_power(gspca_dev);
+>  	/* Check the firmware version. */
+>  	sd->params.version.firmwareVersion = 0;
+>  	get_version_information(gspca_dev);
+> -- 
+> 2.31.1
+> 
 
-As I've said elsewhere, not sure trying to do a mass conversion of this
-is a good idea. People may not be used to the interface, but it is
-consistent and has its use. The recent flurry of conversions show that
-those also risk introducing new bugs in code that is currently tested
-and correct.
+The original commit here did nothing useful, so I am going to keep this
+revert.
 
-By giving the script kiddies another toy like this, the influx of broken
-patches is just bound to increase.
-
-Would also be good to CC the PM maintainer on this issue.
-
-Johan
+greg k-h
