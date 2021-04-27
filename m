@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016F436C6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114C136C6F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236351AbhD0NWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:22:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236008AbhD0NWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:22:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CDAE6103E;
-        Tue, 27 Apr 2021 13:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619529732;
-        bh=AezlWqwbEGtZqPVHShwtEtBb13X2UisKWaxEjAcpl5E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KCIzamMePfwJpjx+LELtJgLwQ+D/nN99Z9r7ewUiF6RlW5lN4v+FmrSeOwjSXWPBz
-         fvNRq2DDHrHxUzTCOAR2S8LZMoCk7aWw3Juu0PeDqlDI+8KLL+x3/qCmvLbiSzB+EH
-         Dfr3zZUTAP6EJvN3z3axXA0mKpRTg3WlXzal3yQo=
-Date:   Tue, 27 Apr 2021 15:22:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: Re: [PATCH 151/190] Revert "media: gspca: Check the return value of
- write_bridge for timeout"
-Message-ID: <YIgQAYjYQU08gpoI@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-152-gregkh@linuxfoundation.org>
+        id S237835AbhD0NXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:23:37 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:40888 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237359AbhD0NXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:23:34 -0400
+Received: by mail-ot1-f46.google.com with SMTP id g4-20020a9d6b040000b029029debbbb3ecso22283005otp.7;
+        Tue, 27 Apr 2021 06:22:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dL9fHLMOaZnrAAxMCEfFxqWkDZJNdUJTbPFfIJXD5Io=;
+        b=L6ECgGYSQWE9cZUfBpQsyfrkAeXLNZVUsPjpjpmP4sZGZztbzwsgYIG404QzXjNVqw
+         9omf+Ld31cXgr/4zLsts1k7tJhDPd0BzQ5y1iKwLd1T3lxUFRS8N7CFCIzI+DUZd4zkF
+         R3z4N0iKmmiUBoTgUNyWPSv02OdRZLhSCj1HeE39VprNhmGmBSUnzfwmxd1kywciiQtO
+         TP63Bt4ln3NhmHyAwZiOTHleDEbvNYFOiUo0P8N5tEMQSjF7206YbspGBaUxmSBp60Cz
+         eQRVDmcinGCZwh9Yhd4TBgEIdW9gSiuFTT8WkPb+wc2EHBxVO3o2OuiUWgueB5mU2wyX
+         5wTw==
+X-Gm-Message-State: AOAM5338pdBsxoAR97kfGrarh+cwDF/kN/no2vuRmpmaA3macZVEtgEv
+        FZ/f9Ph3va63IvlXBunY8Hx8UWJufgUrZ3VI+WAHtJUVAZs=
+X-Google-Smtp-Source: ABdhPJxmXYPD3RQ2P5xNJi5j79vzmnSUWEqyteq6fgG1zY+79QF9i5W3aX0H8ATySWs1Y1UpcIwSg5jPRLZV9GYVTQM=
+X-Received: by 2002:a05:6830:2458:: with SMTP id x24mr8607052otr.206.1619529770539;
+ Tue, 27 Apr 2021 06:22:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-152-gregkh@linuxfoundation.org>
+References: <20210426185404.2466195-1-Julia.Lawall@inria.fr> <YIgPNRiaz2Jup+PT@hovoldconsulting.com>
+In-Reply-To: <YIgPNRiaz2Jup+PT@hovoldconsulting.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 27 Apr 2021 15:22:39 +0200
+Message-ID: <CAJZ5v0gdBC+zEADs52GnR55Df8gPwG=CF5K_2SRrtoYQXZ-DxA@mail.gmail.com>
+Subject: Re: [PATCH v2] coccinelle: api: semantic patch to use pm_runtime_resume_and_get
+To:     Johan Hovold <johan@kernel.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:26PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit a21a0eb56b4e8fe4a330243af8030f890cde2283.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/media/usb/gspca/m5602/m5602_po1030.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-> index d680b777f097..7bdbb8065146 100644
-> --- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
-> +++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-> @@ -154,7 +154,6 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
->  
->  int po1030_probe(struct sd *sd)
->  {
-> -	int rc = 0;
->  	u8 dev_id_h = 0, i;
->  	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
->  
-> @@ -174,14 +173,11 @@ int po1030_probe(struct sd *sd)
->  	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
->  		u8 data = preinit_po1030[i][2];
->  		if (preinit_po1030[i][0] == SENSOR)
-> -			rc |= m5602_write_sensor(sd,
-> +			m5602_write_sensor(sd,
->  				preinit_po1030[i][1], &data, 1);
->  		else
-> -			rc |= m5602_write_bridge(sd, preinit_po1030[i][1],
-> -						data);
-> +			m5602_write_bridge(sd, preinit_po1030[i][1], data);
->  	}
-> -	if (rc < 0)
-> -		return rc;
->  
->  	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
->  		return -ENODEV;
-> -- 
-> 2.31.1
-> 
+On Tue, Apr 27, 2021 at 3:18 PM Johan Hovold <johan@kernel.org> wrote:
+>
+> On Mon, Apr 26, 2021 at 08:54:04PM +0200, Julia Lawall wrote:
+> > pm_runtime_get_sync keeps a reference count on failure, which can lead
+> > to leaks.  pm_runtime_resume_and_get drops the reference count in the
+> > failure case.  This rule very conservatively follows the definition of
+> > pm_runtime_resume_and_get to address the cases where the reference
+> > count is unlikely to be needed in the failure case.
+> >
+> > pm_runtime_resume_and_get was introduced in
+> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
+> > deal with usage counter")
+> >
+> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+>
+> As I've said elsewhere, not sure trying to do a mass conversion of this
+> is a good idea.
 
-You do not OR error values together and expect the end result to be
-anything sane, so I am keeping this revert as it is incorrect.
+No, it isn't.
 
-thanks,
+> People may not be used to the interface, but it is
+> consistent and has its use. The recent flurry of conversions show that
+> those also risk introducing new bugs in code that is currently tested
+> and correct.
+>
+> By giving the script kiddies another toy like this, the influx of broken
+> patches is just bound to increase.
+>
+> Would also be good to CC the PM maintainer on this issue.
 
-greg k-h
+There are many call sites in the kernel where replacing
+pm_runtime_get_sync() with pm_runtime_resume_and_get() mechanically
+would introduce an error, so please don't do that.
+
+Every such replacement should be reviewed by the people familiar with
+the code in question.
+
+Thanks,
+Rafael
