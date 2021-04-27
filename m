@@ -2,147 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C506B36C230
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511B636C1F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235267AbhD0JzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 05:55:00 -0400
-Received: from void.so ([95.85.17.176]:22813 "EHLO void.so"
+        id S235265AbhD0Jn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 05:43:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230341AbhD0Jy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 05:54:59 -0400
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Apr 2021 05:54:58 EDT
-Received: from void.so (localhost [127.0.0.1])
-        by void.so (Postfix) with ESMTP id 09D262B2FBA;
-        Tue, 27 Apr 2021 12:44:16 +0300 (MSK)
-Received: from void.so ([127.0.0.1])
-        by void.so (void.so [127.0.0.1]) (amavisd-new, port 10024) with LMTP
-        id Oi39z_JHYqM4; Tue, 27 Apr 2021 12:44:11 +0300 (MSK)
-Received: from rnd (unknown [91.244.183.205])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by void.so (Postfix) with ESMTPSA id 1F42D2B2FB9;
-        Tue, 27 Apr 2021 12:44:10 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=void.so; s=mail;
-        t=1619516651; bh=udsMXhoCPIqP09TaGi8Jjej4w+1ijnRhTTeyhYR6ZMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=VYt/9ZQIhAJBl2nAa1cgTOHPDqShBi5Ei+cvze9QbyTQiJKhr0ByCRKo2sytBdrZr
-         SHrcV5aGliuiLisT9gMLxqXOjvSOhRdftMyNahoCo+8A1fVkPqF/Bcw9ITPq8yT11e
-         Qq0hWeYR3q0b+PseMIWH8ixQKdvyFcZRQDT77A0A=
-Date:   Tue, 27 Apr 2021 12:42:20 +0300
-From:   Pavel Balaev <mail@void.so>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ido Schimmel <idosch@nvidia.com>
-Subject: Re: [PATCH v4 net-next] net: multipath routing: configurable seed
-Message-ID: <YIfcfEiym5PKAe0w@rnd>
-References: <YILPPCyMjlnhPmEN@rnd>
- <93ca6644-fc5a-0977-db7d-16779ebd320c@gmail.com>
+        id S231148AbhD0JnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 05:43:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FAB8613B4;
+        Tue, 27 Apr 2021 09:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619516561;
+        bh=cCsXwAcyngCcHKVryOwBkBlvyM5OFInMmuy/vcrTNbE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nQGPC/YzQ6tBi9NYQj7e1e3N9EvP/zd2pgL+xJTQv4ISAw6LyoJPePKAYDS7toc5M
+         FpMFunG31iGzpi8VAfxovcPQ6wuiDwsLJMxyidG5y2+lNmox3P53N4sQcq6Qj+0DXl
+         A6LNrlH2alTv6uTfbOzsHqN9vimhJHfWUvCjG+CfeYmw65w/99ptJV9adTnVj38fCG
+         JxKFC3qn40GIe03j1dh/8AxcIwpi/d9rcwo1941UokGkbDcylwNkVXxOqcUUn8WTOt
+         Hb8hFysO4iPPK3k73ptjYPXUXJ4I29stGLn6330dW1NAkgUavwYw+vy63iwpyNSZG7
+         yfxoXb1zW2fcA==
+Date:   Tue, 27 Apr 2021 11:42:35 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 58/78] media: exynos-gsc: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210427114235.45a7b2a4@coco.lan>
+In-Reply-To: <20210427113055.745d0560@coco.lan>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <CGME20210424064556eucas1p1e89378837c377168c9782b4172e70482@eucas1p1.samsung.com>
+        <9c7d683907b9f9cf4a99f57f978671ec7f5a1dbc.1619191723.git.mchehab+huawei@kernel.org>
+        <ee7b580a-d5bc-bdbf-3efc-c9d8f43316db@samsung.com>
+        <20210427113055.745d0560@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <93ca6644-fc5a-0977-db7d-16779ebd320c@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 09:21:53PM -0600, David Ahern wrote:
-> On 4/23/21 6:44 AM, Balaev Pavel wrote:
-> > Ability for a user to assign seed value to multipath route hashes.
-> > Now kernel uses random seed value to prevent hash-flooding DoS attacks;
-> > however, it disables some use cases, f.e:
-> > 
-> > +-------+        +------+        +--------+
-> > |       |-eth0---| FW0  |---eth0-|        |
-> > |       |        +------+        |        |
-> > |  GW0  |ECMP                ECMP|  GW1   |
-> > |       |        +------+        |        |
-> > |       |-eth1---| FW1  |---eth1-|        |
-> > +-------+        +------+        +--------+
-> > 
-> > In this use case, two ECMP routers balance traffic between two firewalls.
-> > If some flow transmits a response over a different channel than request,
-> > such flow will be dropped, because keep-state rules are created on
-> > the other firewall.
-> > 
-> > This patch adds sysctl variable: net.ipv4|ipv6.fib_multipath_hash_seed.
-> > User can set the same seed value on GW0 and GW1 for traffic to be
-> > mirror-balanced. By default, random value is used.
-> > 
-> > Signed-off-by: Balaev Pavel <balaevpa@infotecs.ru>
-> > ---
-> >  Documentation/networking/ip-sysctl.rst        |  14 +
-> >  include/net/flow_dissector.h                  |   4 +
-> >  include/net/netns/ipv4.h                      |   2 +
-> >  include/net/netns/ipv6.h                      |   3 +
-> >  net/core/flow_dissector.c                     |   9 +
-> >  net/ipv4/route.c                              |  10 +-
-> >  net/ipv4/sysctl_net_ipv4.c                    |  97 +++++
-> >  net/ipv6/route.c                              |  10 +-
-> >  net/ipv6/sysctl_net_ipv6.c                    |  96 +++++
-> >  .../testing/selftests/net/forwarding/Makefile |   1 +
-> >  tools/testing/selftests/net/forwarding/lib.sh |  41 +++
-> >  .../net/forwarding/router_mpath_seed.sh       | 347 ++++++++++++++++++
-> >  12 files changed, 632 insertions(+), 2 deletions(-)
-> >  create mode 100755 tools/testing/selftests/net/forwarding/router_mpath_seed.sh
-> 
-> this really needs to be multiple patches. At a minimum 1 for ipv4, 1 for
-> ipv6 and 1 for the test script (thank you for adding that).
-> 
-> [ cc'ed Ido since most of the tests under
-> tools/testing/selftests/net/forwarding come from him and team ]
+Em Tue, 27 Apr 2021 11:30:55 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-OK, I will create 3 patches. Thanks for the advice.
-
+> Em Tue, 27 Apr 2021 10:18:12 +0200
+> Sylwester Nawrocki <s.nawrocki@samsung.com> escreveu:
+> 
+> > On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:  
+> > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > added pm_runtime_resume_and_get() in order to automatically handle
+> > > dev->power.usage_count decrement on errors.
+> > > 
+> > > Use the new API, in order to cleanup the error check logic.
+> > > 
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  drivers/media/platform/exynos-gsc/gsc-core.c | 3 +--
+> > >  drivers/media/platform/exynos-gsc/gsc-m2m.c  | 2 +-
+> > >  2 files changed, 2 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+> > > index 9f41c2e7097a..9d5841194f6b 100644
+> > > --- a/drivers/media/platform/exynos-gsc/gsc-core.c
+> > > +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+> > > @@ -1210,7 +1210,7 @@ static int gsc_remove(struct platform_device *pdev)
+> > >  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
+> > >  	int i;
+> > >  
+> > > -	pm_runtime_get_sync(&pdev->dev);
+> > > +	pm_runtime_resume_and_get(&pdev->dev);
+> > >  
+> > >  	gsc_unregister_m2m_device(gsc);
+> > >  	v4l2_device_unregister(&gsc->v4l2_dev);
+> > > @@ -1219,7 +1219,6 @@ static int gsc_remove(struct platform_device *pdev)
+> > >  	for (i = 0; i < gsc->num_clocks; i++)
+> > >  		clk_disable_unprepare(gsc->clock[i]);
+> > >  
+> > > -	pm_runtime_put_noidle(&pdev->dev);    
 > > 
-> > diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-> > index 9701906f6..d1a67e6fe 100644
-> > --- a/Documentation/networking/ip-sysctl.rst
-> > +++ b/Documentation/networking/ip-sysctl.rst
-> > @@ -100,6 +100,20 @@ fib_multipath_hash_policy - INTEGER
-> >  	- 1 - Layer 4
-> >  	- 2 - Layer 3 or inner Layer 3 if present
-> >  
-> > +fib_multipath_hash_seed - STRING
-> > +	Controls seed value for multipath route hashes. By default
-> > +	random value is used. Only valid for kernels built with
-> > +	CONFIG_IP_ROUTE_MULTIPATH enabled.
-> > +
-> > +	Valid format: two hex values set off with comma or "random"
-> > +	keyword.
-> > +
-> > +	Example to generate the seed value::
-> > +
-> > +		RAND=$(openssl rand -hex 16) && echo "${RAND:0:16},${RAND:16:16}"
-> > +
-> > +	Default: "random"
-> > +
-> >  fib_sync_mem - UNSIGNED INTEGER
-> >  	Amount of dirty memory from fib entries that can be backlogged before
-> >  	synchronize_rcu is forced.
-> > diff --git a/include/net/flow_dissector.h b/include/net/flow_dissector.h
-> > index ffd386ea0..2bd4e28de 100644
-> > --- a/include/net/flow_dissector.h
-> > +++ b/include/net/flow_dissector.h
-> > @@ -348,6 +348,10 @@ static inline bool flow_keys_have_l4(const struct flow_keys *keys)
-> >  }
-> >  
-> >  u32 flow_hash_from_keys(struct flow_keys *keys);
-> > +#ifdef CONFIG_IP_ROUTE_MULTIPATH
-> > +u32 flow_multipath_hash_from_keys(struct flow_keys *keys,
-> > +			   const siphash_key_t *seed);
+> > If we do this then the device usage count will not get decremented
+> > after the pm_runtime_resume_and_get() call above and after driver
+> > unload/load cycle it will not be possible to suspend the device.
+> > I wouldn't be changing anything in gsc_remove(), pm_runtime_get_sync()
+> > works better in that case.  
 > 
-> column alignment looks off here ^^^^ and a few other places; please
-> correct in the next version.
+> Good point.
 > 
-After running "scripts/checkpatch.pl" I got warnings about alignment.
-So I run checkpatch.pl --fix and fixed alignment as a script did.
-So warnings goes away. I don't get the rules of alignment, can you 
-tell me the right way?
+> Actually, I don't see any reason why to call a PM resume
+> function - either being pm_runtime_get_sync() or
+> pm_runtime_resume_and_get().
+> 
+> The code there could simply be:
+> 
+>     static int gsc_remove(struct platform_device *pdev)
+>     {
+>         struct gsc_dev *gsc = platform_get_drvdata(pdev);
+>         int i;
+> 
+>         gsc_unregister_m2m_device(gsc);
+>         v4l2_device_unregister(&gsc->v4l2_dev);
+> 
+>         vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+>         for (i = 0; i < gsc->num_clocks; i++)
+>                 clk_disable_unprepare(gsc->clock[i]);
+> 
+>         pm_runtime_disable(&pdev->dev);
+> 
+>         dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
+>         return 0;
+>     }
+> 
+> Eventually also adding:
+> 	pm_runtime_suspended(&pdev->dev);
+
+In time: I actually meant:
+
+	pm_runtime_set_suspended(&pdev->dev);
+
+but after double-checking the PM runtime code, it sounds to me that
+just calling pm_runtime_disable() would be enough. Not 100% sure
+here. Btw, some media drivers call it after pm_runtime_disable(),
+while others don't do.
+
+Thanks,
+Mauro
