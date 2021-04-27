@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4CF36C72D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF0A36C730
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237219AbhD0Noa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:44:30 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:59145 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236269AbhD0No2 (ORCPT
+        id S238202AbhD0NpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:45:13 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:59280
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236228AbhD0NpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:44:28 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 2DA2322235;
-        Tue, 27 Apr 2021 15:43:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619531024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ze37HUrwcuaMM/+Jzy68z8algoMq0xuZK6yTkRT4q8M=;
-        b=kjI5xZWwFd2IVvSaXVY2fvDhN/Wtg11m4WXlgu9YGwKstX3v4SodNqo5eFvRQ0qJmXdEX/
-        JSwoVVTOnEgtzjHklTev48pVZP3/CoQ8Vh2byAOApYJL12U8+F37vqnxIoJvNVbebzloCI
-        WROTvUuE83KYkhVODGdu5F8SZLvIaAQ=
+        Tue, 27 Apr 2021 09:45:11 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AC6bClq7Om2nDflsMnwPXwA7XdLJzesId70hD?=
+ =?us-ascii?q?6mlaQ3VuGPCwvcaogfgdyFvQgDEeRHkvlbm7Scu9aFnb8oN45pRUAKe6UGDdyQ?=
+ =?us-ascii?q?iVBaxr8IeK+VPdMgLk8Oo178pdWoxfLPG1MlRgl8b952CDc+oI5NWc6qiniaP/?=
+ =?us-ascii?q?4h5WIj1CUK1r4wdnBgvzKCQfeCB9GZE7GJCAj/AqmxOcfx0sBfiTOmMIRKzqqd?=
+ =?us-ascii?q?HNifvdACI7Ow=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,254,1613430000"; 
+   d="scan'208";a="379815543"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 15:44:25 +0200
+Date:   Tue, 27 Apr 2021 15:44:25 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Johan Hovold <johan@kernel.org>
+cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] coccinelle: api: semantic patch to use
+ pm_runtime_resume_and_get
+In-Reply-To: <YIgPNRiaz2Jup+PT@hovoldconsulting.com>
+Message-ID: <alpine.DEB.2.22.394.2104271542170.5173@hadrien>
+References: <20210426185404.2466195-1-Julia.Lawall@inria.fr> <YIgPNRiaz2Jup+PT@hovoldconsulting.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Apr 2021 15:43:42 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     kernelci-results@groups.io, broonie@kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: broonie-sound/for-next bisection:
- baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
-In-Reply-To: <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
-References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
- <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
- <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
- <20210426144242.GF4590@sirena.org.uk>
- <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
- <20210427101926.GA4605@sirena.org.uk>
- <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Am 2021-04-27 14:51, schrieb Guillaume Tucker:
-> +Heiko +Michael
-> 
-> On 27/04/2021 11:19, Mark Brown wrote:
->> On Tue, Apr 27, 2021 at 07:28:34AM +0900, Kuninori Morimoto wrote:
->> 
->>>>> If so, all sai1 - sai6 are using "fsl,vf610-sai",
->>>>> all saiX doesn't have .name. I think it should have different name.
->>>>> In your case, at least, sai5 / sai6 needs to have
->> 
->>>> You could send a patch along with re-adding the three patches I 
->>>> dropped?
->> 
->>> Thanks, I can do it.
->>> But I want to confirm above first.
->>> Let's keep Guillaume's happiness :)
->> 
->> This board is in the Kontron lab - KernelCI is just reporting results
->> from it, we'd need to connect with someone from Kontron for system
->> specific questions.  Guillaume, I don't know what e-mail they wanted 
->> to
->> be used here?
-> 
-> 
-> We can have KernelCI tests re-run with extra kernel patches in
-> any lab, but yes for discussing actual changes related to the
-> platform it's best to ask Kontron folks directly.
-> 
-> Heiko, Michael, is this something you can please help with?
 
-Sure, just put me on CC and I can test the patches manually.
+On Tue, 27 Apr 2021, Johan Hovold wrote:
 
--michael
+> On Mon, Apr 26, 2021 at 08:54:04PM +0200, Julia Lawall wrote:
+> > pm_runtime_get_sync keeps a reference count on failure, which can lead
+> > to leaks.  pm_runtime_resume_and_get drops the reference count in the
+> > failure case.  This rule very conservatively follows the definition of
+> > pm_runtime_resume_and_get to address the cases where the reference
+> > count is unlikely to be needed in the failure case.
+> >
+> > pm_runtime_resume_and_get was introduced in
+> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
+> > deal with usage counter")
+> >
+> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+>
+> As I've said elsewhere, not sure trying to do a mass conversion of this
+> is a good idea. People may not be used to the interface, but it is
+> consistent and has its use. The recent flurry of conversions show that
+> those also risk introducing new bugs in code that is currently tested
+> and correct.
+
+I looked some of the patches you commented on, and this rule would not
+have transformed those cases.  This rule is very restricted to ensure that
+the transformed code follows the behavior of the new function.
+
+>
+> By giving the script kiddies another toy like this, the influx of broken
+> patches is just bound to increase.
+>
+> Would also be good to CC the PM maintainer on this issue.
+
+Sure, I can resend with Rafael in CC.
+
+julia
