@@ -2,134 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4217636C988
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D097636C987
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237535AbhD0Qfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237407AbhD0Qft (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:35:49 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90669C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 09:35:04 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id b9so8185722iod.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 09:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=INHOzD23PluMifB464PN3y3YCplArL1gtSHLIv2/4JU=;
-        b=XoZF0rMHVUDwD8/V3ZaMnpFrCUzlDeaxMJtq6++MJ9jF5ZWA3V8SUFzQn4RDwb8Lkm
-         QQU4mpE/WKOlTiUpcQpEjyWqO3LCJn1lk/T7UZusGYcp3Q0RQFFLEBcHT10Vy7ER/Krp
-         Sfgvxkz8NRGLI1Fxh+yS75N4rrdcJdojdlilo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=INHOzD23PluMifB464PN3y3YCplArL1gtSHLIv2/4JU=;
-        b=hrsm5TvqlwEoYMXa6HIs+nQoNLcNs6zCKjxOLjPCeSb3X3pKIdPbleKYzI/qMi4urN
-         6jKaeNMe13SuFeskgdATwc19KskBHqVO0VMMZpxES1pHhUnTn3fQm6FLh2YWJLXNz5DI
-         mfhdOJAOLjC1mSJxxZO+CyzWDzioxhHGKVdLNiXR82Aaxhg7Qng1NnaDT7tqquJ8Odsf
-         hEu86qtnF6gEz7k36AVr9s5UzAiquH25kvNTn4rGhcr04XmceSkhk7sIqQAltq3VgPpi
-         GMMLhH7q3luFzx3KToq2VsQFGu6hSeanOsTbtO4TnpzjbnBtFOU+Z4G0yaDKOI3/1O/m
-         Fs7g==
-X-Gm-Message-State: AOAM533XefJvVU12LmOlFLnx7a4I0SOgA7iBZOEa3jgINveEec0CfALk
-        DDsWEOu5XRbofEOx6FIYtqDoymRRBlQzAl/Pzpjmag==
-X-Google-Smtp-Source: ABdhPJzQns1HjP3hSguwiYnNN8zYmAtz0ZNRJCCQEjDVSMXuKi29IJ4y6tTcPiOgDQhO69i9e8pkcNn6c00dltZYxsU=
-X-Received: by 2002:a05:6638:35ab:: with SMTP id v43mr22446989jal.65.1619541303738;
- Tue, 27 Apr 2021 09:35:03 -0700 (PDT)
+        id S237487AbhD0Qfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236606AbhD0Qfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A87A7613CA;
+        Tue, 27 Apr 2021 16:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619541285;
+        bh=K31Hq1a37anITaJoL/GTuv5AShH7McwCTuWq17PbdbE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pzQl4eHKGt2SHGjSMCpMKi5Y9jGhUTG8231pMdQiI4GfKaKWr9PMSqMbklV9IfFKn
+         UCGV7hImCrBNM1VgQPo8ROjT+8aPvXWpglIpUOiamWVJQhCU+LFTQv+KIte1QZd8UC
+         TEefAiGJhK1Y/IaaNq6kU0qe+DZaIivND+s1Op90=
+Date:   Tue, 27 Apr 2021 18:34:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 078/190] Revert "ASoC: cs43130: fix a NULL pointer
+ dereference"
+Message-ID: <YIg9ImoNlfuQNOFX@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-79-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210426180610.2363-1-sargun@sargun.me> <20210426180610.2363-3-sargun@sargun.me>
- <20210426190229.GB1605795@cisco> <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
- <20210427134853.GA1746081@cisco>
-In-Reply-To: <20210427134853.GA1746081@cisco>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Tue, 27 Apr 2021 09:34:26 -0700
-Message-ID: <CAMp4zn8MPvkWmt6Yqo+nQCd-HRNRc_=rVYAAF4LjvY2F7-OdGQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to seccomp
- user notifier
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-79-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 6:48 AM Tycho Andersen <tycho@tycho.pizza> wrote:
->
-> On Mon, Apr 26, 2021 at 10:15:28PM +0000, Sargun Dhillon wrote:
-> > On Mon, Apr 26, 2021 at 01:02:29PM -0600, Tycho Andersen wrote:
-> > > On Mon, Apr 26, 2021 at 11:06:07AM -0700, Sargun Dhillon wrote:
-> > > > @@ -1103,11 +1111,31 @@ static int seccomp_do_user_notification(int this_syscall,
-> > > >    * This is where we wait for a reply from userspace.
-> > > >    */
-> > > >   do {
-> > > > +         interruptible = notification_interruptible(&n);
-> > > > +
-> > > >           mutex_unlock(&match->notify_lock);
-> > > > -         err = wait_for_completion_interruptible(&n.ready);
-> > > > +         if (interruptible)
-> > > > +                 err = wait_for_completion_interruptible(&n.ready);
-> > > > +         else
-> > > > +                 err = wait_for_completion_killable(&n.ready);
-> > > >           mutex_lock(&match->notify_lock);
-> > > > -         if (err != 0)
-> > > > +
-> > > > +         if (err != 0) {
-> > > > +                 /*
-> > > > +                  * There is a race condition here where if the
-> > > > +                  * notification was received with the
-> > > > +                  * SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE flag, but a
-> > > > +                  * non-fatal signal was received before we could
-> > > > +                  * transition we could erroneously end our wait early.
-> > > > +                  *
-> > > > +                  * The next wait for completion will ensure the signal
-> > > > +                  * was not fatal.
-> > > > +                  */
-> > > > +                 if (interruptible && !notification_interruptible(&n))
-> > > > +                         continue;
-> > >
-> > > I'm trying to understand how one would hit this race,
-> > >
-> >
-> > I'm thinking:
-> > P: Process that "generates" notification
-> > S: Supervisor
-> > U: User
-> >
-> > P: Generated notification
-> > S: ioctl(RECV...) // With wait_killable flag.
-> > ...complete is called in the supervisor, but the P may not be woken up...
-> > U: kill -SIGTERM $P
-> > ...signal gets delivered to p and causes wakeup and
-> > wait_for_completion_interruptible returns 1...
-> >
-> > Then you need to check the race
->
-> I see, thanks. This seems like a consequence of having the flag be
-> per-RECV-call vs. per-filter. Seems like it might be simpler to have
-> it be per-filter?
->
-> Tycho
+On Wed, Apr 21, 2021 at 02:59:13PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit a2be42f18d409213bb7e7a736e3ef6ba005115bb.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  sound/soc/codecs/cs43130.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+> index 80bc7c10ed75..c2b6f0ae6d57 100644
+> --- a/sound/soc/codecs/cs43130.c
+> +++ b/sound/soc/codecs/cs43130.c
+> @@ -2319,8 +2319,6 @@ static int cs43130_probe(struct snd_soc_component *component)
+>  			return ret;
+>  
+>  		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
+> -		if (!cs43130->wq)
+> -			return -ENOMEM;
+>  		INIT_WORK(&cs43130->work, cs43130_imp_meas);
+>  	}
+>  
+> -- 
+> 2.31.1
+> 
 
-You're right.
+The original patch here is not correct, lots of resources are allocated
+and files created that are not unwound.  I will keep this revert and fix
+it up "properly".
 
-I think an alternative solution would be to make it on a per-action
-basis, and in the filter have a different action for non-preemptible
-user notifications.
+thanks,
 
-Since you can only install one filter, I do not think we want to make
-it so we do it on a entire filter basis, in case a filter handles a combination
-of preemptible and non-preemptible syscalls. For example if you mix
-mount and accept.
+greg k-h
