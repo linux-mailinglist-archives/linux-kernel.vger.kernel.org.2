@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D67236C635
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D87136C639
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236284AbhD0Mmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235410AbhD0Mma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:42:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D47613BD;
-        Tue, 27 Apr 2021 12:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619527306;
-        bh=D/57EnUGbaoqCDHbcC6Bq25ljG5GmSHvIXMqeF1SSak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TZ1JIi0NUvBneAgEQhhsycSWjkAqJEVYp4BKtndgkjfVmTX2eIYOfg5VCdlGFImK9
-         OR/Hh14dI9F+YkxMImzBFTr2KTRD4nrus1jJ7lx1dhUXbkQK63rbRHrRRZlne0+s/V
-         pAsaKpQ9hp4iAuGh0r+vYmYLsTPWZPC/KdY6xlAM=
-Date:   Tue, 27 Apr 2021 14:41:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        Marco Cesati <marcocesati@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [v2] staging: rtl8723bs: avoid bogus gcc warning
-Message-ID: <YIgGiMFvXlM4MYiK@kroah.com>
-References: <20210422152648.2891996-1-arnd@kernel.org>
- <YIfaLbsAUjs86418@kroah.com>
- <CAK8P3a1N-JV-yJSVCXT__Aqdkj6LgdHqemPo2=7iZg+-EL32KA@mail.gmail.com>
+        id S236315AbhD0Mnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235501AbhD0Mno (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:43:44 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34CAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:43:00 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id a22-20020a05600c2256b0290142870824e9so1008676wmm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sQtkoa8nt/6X+kphKb37Kf/4r12w9grvZXTPGm25gY0=;
+        b=GOuWS3W4d4Llb3YmmZ+x62c0Cszu7i5TSOpZas6ntQe3DIfQMGsa+eyzOtpl6sPHzj
+         KJpoZoasVZhuqGST3LyyWSKG9jok9FrAQoCHKcpmIWwpVmlYK2wf5quJCxid7dmjIdC0
+         PFqos0XJPhnpY5kpziLDRy5E1Uy8ryGdERORZQJ3VQDsKoxar242uMHeDM0iFKP4wv6k
+         1qIAlDQi5Wq3PTpr7hmSmoPW1zZWHw0uPZgDxbAk9P41/t8mp070in6oirEHE9ZnN1SM
+         k6Fvyid31YwhsamnjK/9x/U0GjVBYOQshY4VmnvrXvsegCqQZ2DobLIypwd/AkqLneHZ
+         D4cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sQtkoa8nt/6X+kphKb37Kf/4r12w9grvZXTPGm25gY0=;
+        b=X23w4/2pTJ2vvsa56dpEVYYewsh0LORpDaDbv/IbkrBANjdoIouT8NM5q/7p74p0H/
+         191ItmN45KZo/+VYIXwqhczvbt57un0eiuME7qrziMNc+/yW6aaggEUf2DzpGMfX47ni
+         WWOZUhtBhW11s8v2WebHoQ4Fy7zANdiTH3PdxL6KEExbI9rvAW517FWTDhbERqIBt7x1
+         bbzLtq9falAgWxnqx0aXXFxhIFqa2IcI3p+CloasuxEFbepe/ep9qFToff6i6/rwWO6m
+         VhAxRUfQ1RGldTiPTqx0h7eKQAJVNCp0SwuKLSKCzu1yOq5bS0O0xZiiu8VFI1vEE3lq
+         yMow==
+X-Gm-Message-State: AOAM530VwQLyqqsM+ArclvVqkTq0LSiAUuQ/PEfqM5VyEMRi8q/OQvJs
+        Cak8pp9JKTpPe5d7SzVj1fc=
+X-Google-Smtp-Source: ABdhPJyBcGBVAC+T03DaBKMkroUTCDux2+Ph7KSA7cPWHpewt1h4cGHMxshP2AZvO/MhUhUpwxC8qg==
+X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr4057682wmh.174.1619527379642;
+        Tue, 27 Apr 2021 05:42:59 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.92])
+        by smtp.gmail.com with ESMTPSA id c15sm4009645wrr.3.2021.04.27.05.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 05:42:59 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 14:42:56 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     joe@perches.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/50] staging: rtl8723bs: remove all remaining debug
+ macros in rtw_debug.h
+Message-ID: <20210427124255.GB1399@agape.jhs>
+References: <cover.1619254603.git.fabioaiuto83@gmail.com>
+ <YIfwL3s5hdRTCNrm@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1N-JV-yJSVCXT__Aqdkj6LgdHqemPo2=7iZg+-EL32KA@mail.gmail.com>
+In-Reply-To: <YIfwL3s5hdRTCNrm@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:59:32PM +0200, Arnd Bergmann wrote:
-> On Tue, Apr 27, 2021 at 11:33 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Apr 22, 2021 at 05:26:19PM +0200, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > gcc gets confused by some of the type casts and produces an
-> > > apparently senseless warning about an out-of-bound memcpy to
-> > > an unrelated array in the same structure:
-> > >
-> > > drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c: In function 'rtw_cfg80211_ap_set_encryption':
-> > > cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
-> > > In file included from drivers/staging/rtl8723bs/include/drv_types.h:32,
-> > >                  from drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:10:
-> > > drivers/staging/rtl8723bs/include/rtw_security.h:98:15: note: at offset [184, 4264] into destination object 'dot11AuthAlgrthm' of size 4
-> > >    98 |         u32   dot11AuthAlgrthm;         /*  802.11 auth, could be open, shared, 8021x and authswitch */
-> > >       |               ^~~~~~~~~~~~~~~~
-> > > cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
-> > > drivers/staging/rtl8723bs/include/rtw_security.h:98:15: note: at offset [264, 4344] into destination object 'dot11AuthAlgrthm' of size 4
-> > >
-> > > This is a known gcc bug, and the patch here is only a workaround,
-> > > but the approach of using a temporary variable to hold a pointer
-> > > to the key also improves readability in addition to avoiding the
-> > > warning, so overall this should still help.
-> >
-> > What version of gcc causes this?  Should this go into 5.13-final and be
-> > backported?  Or is this only showing up on "unreleased" versions of gcc
-> > and it is safe to wait until 5.14?
+On Tue, Apr 27, 2021 at 01:06:23PM +0200, Greg KH wrote:
+> On Sat, Apr 24, 2021 at 11:01:43AM +0200, Fabio Aiuto wrote:
+> > This patchset removes all remaining debug macros in rtw_debug.h
+> > 
+> > DBG_871X_SEL macro is replaced with netdev_dbg() for it does
+> > a raw printk call which is not best recommended for a driver.
+> > 
+> > @@
+> > expression sel;
+> > expression list args;
+> > identifier padapter;
+> > identifier func;
+> > @@
+> > 
+> > func(..., struct adapter *padapter, ...) {
+> >         <...
+> > -       DBG_871X_SEL(sel, args);
+> > +       netdev_dbg(padapter->pnetdev, args);
+> >         ...>
+> > 
+> > unused _DBG_871X_LEVEL macro declaration is removed.
+> > 
+> > Beautified register dump in core/rtw_debug.c 
+> > 
+> > Some code cleaning is done and all other private component tracing
+> > macros are removed.
 > 
-> As I understand, this is related to
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99673
+> Nice work, thanks for doing all of this!  Now queued up for 5.14-rc1.
 > 
-> gcc-11.1.0 has now been released and it produces this warning.
+> greg k-h
 
-What's the odds we can get gcc to fix their bug, as it's not a kernel
-issue?  :)
+thank you all for helping me,
 
-thanks,
-
-greg k-h
+fabio
