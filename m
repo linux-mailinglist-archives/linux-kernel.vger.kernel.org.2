@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763B336BD3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96EB36BD44
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhD0CXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:23:52 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43599 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232680AbhD0CXs (ORCPT
+        id S234790AbhD0CYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234093AbhD0CYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:23:48 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 39081580493;
-        Mon, 26 Apr 2021 22:23:05 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Mon, 26 Apr 2021 22:23:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=wrMlmdamjsm6ICSrAXC+epu0/cW9QhG
-        KJrdRhGJ+ItA=; b=urK9NpgqzzUKvit8H8SNBKWG5tIlGLCM67BMahNNhErXZOR
-        5P06UHKMU+fbwfzowrghd5D0K6bF5pwzNYPWf7LFCcDDZpLA5uLJAcWULIIb1xoG
-        +JzM0JnGMG08vOvPAwvHEifMYMIu+OpwfdcAyEegPphRwc921SUbTyL1efOhur++
-        vinJNFJF2AjRk6A2e/QxgyVc3KDRrZjiYM6jcvj3WkO+hGCo7U9k268wI5wj0+Ge
-        DAoI2RN4FDjTssSp2uAb3GBBQhJ0ORY1yZWsByvs947L1+PD1sIKL+2Sa9zn47PY
-        J/ohd+ylsDVdWNBZqTdOZWpcWZyF8ivuvfmlnvA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wrMlmd
-        amjsm6ICSrAXC+epu0/cW9QhGKJrdRhGJ+ItA=; b=FCQvKHNuLK7uxaOV1ITjLI
-        bahAtvx+rK/IORmdZRjfRpChnu1ysmixmtU0sAwIVx2gpkf9Vzd1qztA+MN6PJtX
-        ha9hSOSTG16Z+TSUlX03D62AItNswSpZgbzLfHZzOWWdXiO8WU6XqjacQfJV2bbB
-        GguGJHIrZWpNQa7a/24W4IOBSIjl+m6Z0gE5nOEiVN3caIMw642OQmpOnuoJ8ebb
-        SSClrdxfjgTbAdkCJIz1+/UaC4r0IrjW7nC1TU/KyDGGSAuxOs3Vh9gs+TaN9txy
-        uVsXqEML/ZPG/3x6PqmReK9edOUTx9Ir+yjePphInAJH3leLR7JlU5PimO2dyHfQ
-        ==
-X-ME-Sender: <xms:hnWHYBBB9WYlIQ61BEFE3GcRafvZj-JRiMZ9PSBOJTvv3pSuzDjUpg>
-    <xme:hnWHYPgvl1Faql7KMbS3MayWRoikNE1aQtFJdcAximt6owpAjdKQbWpV392z-CHoE
-    S_GiAy6-pVA0hShhQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduledgkeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:hnWHYMmUeNKeh56DmE7DUuK3G9BJ00YGxHLuq4lEpIpn4XrEf4NQBg>
-    <xmx:hnWHYLxbM68hFL9O2TZplGIQc0t5vCF1uua5RNSiez-y-_2XJnTvmw>
-    <xmx:hnWHYGS73JJdFEChCFIYj069L9ZZZEiWH-rRQmMI0zhfcIz8JjkJpQ>
-    <xmx:iXWHYADyirFufMoXNX0TYqWYKNW_rCHOY0UctE8GtBn19aDpixm3EQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8ACE6A00079; Mon, 26 Apr 2021 22:23:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
-Mime-Version: 1.0
-Message-Id: <dd4286c6-c856-40c4-b1f8-060f76258d57@www.fastmail.com>
-In-Reply-To: <20210421135500.3518661-1-arnd@kernel.org>
-References: <20210421135500.3518661-1-arnd@kernel.org>
-Date:   Tue, 27 Apr 2021 11:52:41 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Stefan M Schaeckeler" <sschaeck@cisco.com>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        "Tony Luck" <tony.luck@intel.com>, "Joel Stanley" <joel@jms.id.au>,
-        "Troy Lee" <troy_lee@aspeedtech.com>
-Cc:     "Arnd Bergmann" <arnd@arndb.de>,
-        "James Morse" <james.morse@arm.com>,
-        "Robert Richter" <rric@kernel.org>,
-        "Krzysztof Kozlowski" <krzk@kernel.org>,
-        "Liu Shixin" <liushixin2@huawei.com>, linux-edac@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH]_EDAC/aspeed:_use_proper_format_string_for_printing?=
- =?UTF-8?Q?_resource?=
-Content-Type: text/plain
+        Mon, 26 Apr 2021 22:24:45 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5C0C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:24:02 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id z2so21680863qkb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=aBj4f1ka2nJ/gpsa6TStMHZaqIrVKG/e6xHVPE7SPEE=;
+        b=E+NwonMupVGezKMvjZ7hJwuZQ7V76KMT7a8ypVkX65/bszqV5hRAaSxib3pmK+eJfD
+         tllgqMWe4sbOvxMl7aM71A2JNBTaV6C4u83GRHWJqFYRE+VJcoLkL7QAEEBwq7WiVHci
+         mu8D0PyYgzY4sbwCSW2vC8nYPq0r6pbav55Ns7BukgH1UbnMxFMMxgilLzeSqlIlSofA
+         3UlLDdRyR+qwsj8qMAj7iuK0XWKe4Kx+CdfPJfaJCYsTqCzkbIHOIzVefh0TzQ5jTOs1
+         AwC2bB4Nfm5aVbPV4Fja3J0XyP69U0AMxou0bN2hbN9ScZn/sFvBlmLvq/CUoguRbXC8
+         Mh2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=aBj4f1ka2nJ/gpsa6TStMHZaqIrVKG/e6xHVPE7SPEE=;
+        b=BMXnaFWKCnycfYjJL9ARtXjExlydlA3ISVhGQ4KIa623j+gL7FiieCzUa7XWLgIlhb
+         JJI0zqPHGbWBN8qMW0nWJXpaHrQaZuMa3erliSgLRiTc4Oi4b7ibSLeMY2OlvMYSE+nO
+         EY2PoZ2xauzlTSo0L9bRure3Aqh1wAxXUt3VQk3yJpSWWlXmuez7GA4oGAjloLmaw7Qy
+         LJKRaTcb94FkZOOgxdwKLQQudQoCtWgGhJf6aQNAhss8Ug7VN7FPI/EZTBgnOfeS86uR
+         w/0cuDCsbrkQTUCcm3T7n3hcmCxjU2IcE13eCMJEyIuYcVkmiPuS7QTlWi0fjzEK3T36
+         bMgw==
+X-Gm-Message-State: AOAM532zDSrlH9p9nkWyTPdsyRp2cEi99cZJ0IryVpDSQ8i8v/g3P7XV
+        1z9yVjEZZr/rZNCjAPZopkUkzA==
+X-Google-Smtp-Source: ABdhPJwLO4HFCK9suHur0GwSkoyOuSg6kDjsLGyUYf2tfkko0tHuU3kIyVhh7klL0KlXz4P9U6ePlg==
+X-Received: by 2002:a37:5b84:: with SMTP id p126mr21326713qkb.142.1619490241227;
+        Mon, 26 Apr 2021 19:24:01 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id i2sm13728602qtg.0.2021.04.26.19.23.58
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 26 Apr 2021 19:24:00 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 19:23:57 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4 04/10] userfaultfd/shmem: support minor fault registration
+ for shmem
+In-Reply-To: <20210420220804.486803-5-axelrasmussen@google.com>
+Message-ID: <alpine.LSU.2.11.2104261920110.2998@eggly.anvils>
+References: <20210420220804.486803-1-axelrasmussen@google.com> <20210420220804.486803-5-axelrasmussen@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 20 Apr 2021, Axel Rasmussen wrote:
 
+> This patch allows shmem-backed VMAs to be registered for minor faults.
+> Minor faults are appropriately relayed to userspace in the fault path,
+> for VMAs with the relevant flag.
+> 
+> This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
+> minor faults, though, so userspace doesn't yet have a way to resolve
+> such faults.
+> 
+> Acked-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-On Wed, 21 Apr 2021, at 23:24, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> On ARMv7, resource_size_t can be 64-bit, which breaks printing
-> it as %x:
-> 
-> drivers/edac/aspeed_edac.c: In function 'init_csrows':
-> drivers/edac/aspeed_edac.c:257:28: error: format '%x' expects argument 
-> of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 
-> 'long long unsigned int'} [-Werror=format=]
->   257 |         dev_dbg(mci->pdev, "dt: /memory node resources: first 
-> page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
-> 
-> Use the special %pR format string to pretty-print the entire
-> resource instead.
-> 
-> Fixes: edfc2d73ca45 ("EDAC/aspeed: Add support for AST2400 and AST2600")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+And if this "04/10" had been numbered 03/10, I would have said
+Acked-by: Hugh Dickins <hughd@google.com>
+
+Just read the comment above: "so userspace doesn't yet have a way to
+resolve such faults" - if it doesn't by this stage, we're in trouble.
+
 > ---
->  drivers/edac/aspeed_edac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
-> index a46da56d6d54..6bd5f8815919 100644
-> --- a/drivers/edac/aspeed_edac.c
-> +++ b/drivers/edac/aspeed_edac.c
-> @@ -254,8 +254,8 @@ static int init_csrows(struct mem_ctl_info *mci)
->  		return rc;
->  	}
->  
-> -	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
-> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
-> -		r.start, resource_size(&r), PAGE_SHIFT);
-> +	dev_dbg(mci->pdev, "dt: /memory node resources: first page %pR, PAGE_SHIFT macro=0x%x\n",
-
-Could probably drop the "first page " as well, but it's a dev_dbg() and not a big deal.
-
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+>  fs/userfaultfd.c                 |  6 +++---
+>  include/uapi/linux/userfaultfd.h |  7 ++++++-
+>  mm/memory.c                      |  8 +++++---
+>  mm/shmem.c                       | 12 +++++++++++-
+>  4 files changed, 25 insertions(+), 8 deletions(-)
