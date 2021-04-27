@@ -2,156 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4619036CB9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA17E36CB9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238618AbhD0TZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:25:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35618 "EHLO mail.kernel.org"
+        id S236479AbhD0T2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:28:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235563AbhD0TY4 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:24:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BBC1613F4;
-        Tue, 27 Apr 2021 19:24:12 +0000 (UTC)
+        id S235563AbhD0T2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:28:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4899613F6;
+        Tue, 27 Apr 2021 19:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619551452;
-        bh=nUcQgzFrXvLoVtK/WRCzyBpanEbNK+FnqFAf7DNEjAI=;
+        s=k20201202; t=1619551645;
+        bh=zODLgaHDmvG4j+p01pswoad3NugaCPrLy4HTzlU8D54=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oCoF92ZD0vmnpPGehs99wLLmyfTRZaH2The2kM/kUSKxqXLzu/gzh66botWAq7hI7
-         kA441SThV0hQ6YsBkSMzM1cI6vuZJdHJuaVBvyfvK7JN3McZfB5KQ5m1myTBIeCCYr
-         qW7AQzCS0N3TFYsVq0FP1wMV4OOeM+e/Dizb2E/aSWz9WKwaK37Y81petnRbHTrHPN
-         ocmBPtqbLjK7EkltmlUopYf2/5R+vvd55a7lqHDI1iHhjBIqw62i1N4Civuzi19CUS
-         HvOZDw7xrEdjDWKC1EQ5YTzLTjwC48ITIoQdLqT0zoXpRyzbpgXQHr+f7pTMYaO3iP
-         KHPBtWNYqZ1+A==
+        b=tPdHSJYUrzZXRrBNAweKWhOs+1WcH0Cz8K9syNgDU//9YMirmPLIzn9wO79ETLGhN
+         l04LK/nWw1h3R77uBQ7Q/p6x8oGxTeN9RaFh+sSHMGF//W/b+lwkI78f9hh+nhAhpm
+         g+TQz4vvjfaqpYCM5YK09+Mu2oT6CEyiJ7KzFNvgKPbCT7hUFM70PMzuOBF2nhHtIk
+         fzFw97FuoNbF9ugfEpPh0OPYv8F04SPJrs2XowMoD5MT/BtzKMN7inFRSYnjDPXY9p
+         qWUgvXcLW2gpZo/9GhYnD8sh0oL0JtCRGe8xsP5lU8MD0WobYP3j8hhBZ+Fd9ZtBGr
+         U7ljp30XIq23A==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 978FB40647; Tue, 27 Apr 2021 16:24:09 -0300 (-03)
-Date:   Tue, 27 Apr 2021 16:24:09 -0300
+        id 4B59C40647; Tue, 27 Apr 2021 16:27:22 -0300 (-03)
+Date:   Tue, 27 Apr 2021 16:27:22 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v6 01/26] tools headers uapi: Update tools's copy of
- linux/perf_event.h
-Message-ID: <YIhk2XkvUcoIPbgc@kernel.org>
-References: <20210427070139.25256-1-yao.jin@linux.intel.com>
- <20210427070139.25256-2-yao.jin@linux.intel.com>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@redhat.com,
+        namhyung@kernel.org, jolsa@kernel.org, songliubraving@fb.com
+Subject: Re: [PATCH v5 5/5] perf-stat: introduce bpf_counter_ops->disable()
+Message-ID: <YIhlmhyBPxTOZRZa@kernel.org>
+References: <20210425214333.1090950-1-song@kernel.org>
+ <20210425214333.1090950-6-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427070139.25256-2-yao.jin@linux.intel.com>
+In-Reply-To: <20210425214333.1090950-6-song@kernel.org>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 27, 2021 at 03:01:14PM +0800, Jin Yao escreveu:
-> To get the changes in:
-> 
-> Liang Kan's patch
-> [PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-> 
-> Kan's patch is upstreamed yet but perf/core branch doesn't have it
-> at this moment. But next perf tool patches need this interface for
-> hybrid support.
-> 
-> This patch can be removed after Kan's patch is merged in perf/core
-> branch.
+Em Sun, Apr 25, 2021 at 02:43:33PM -0700, Song Liu escreveu:
+> Introduce bpf_counter_ops->disable(), which is used stop counting the
+> event.
 
-Nope, it is already in tip/perf/core as:
+[acme@five perf]$ perf test -v python
+Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
+19: 'import perf' in python                                         :
+--- start ---
+test child forked, pid 1497924
+python usage test: "echo "import sys ; sys.path.append('/tmp/build/perf/python'); import perf" | '/usr/bin/python3' "
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ImportError: /tmp/build/perf/python/perf.cpython-39-x86_64-linux-gnu.so: undefined symbol: bpf_counter__disable
+test child finished with -1
+---- end ----
+'import perf' in python: FAILED!
+[acme@five perf]$
 
-  55bcf6ef314ae8ba ("perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE")
+I'll fix this up in my local tree, if you need to respin, please pick
+patches from tmp.perf/core, will refresh it later today.
 
-And your patch, the one below, shouldn't include the kernel file, i.e. include/uapi/linux/perf_event.h
-as tooling only uses the one in tools/include/uapi/linux/perf_event.h.
-
-Leave the perf tool build warning there, as soon as both acme/perf/core
-and tip/perf/core hit torvalds/master, all gets solved.
-
-So I'm removing it here in addition to updating the commit log message.
-
-Ah good news, the test builds passed in all my test build containers.
-
-I'll refresh tmp.perf/core once I update these messages, etc. So that we
-can continue from there in case you need to respin a v7.
-
-Thanks,
-
-- Arnaldo.
-
-
+- Arnaldo
  
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Song Liu <song@kernel.org>
 > ---
-> v6:
->  - No update.
+>  tools/perf/util/bpf_counter.c | 26 ++++++++++++++++++++++++++
+>  tools/perf/util/bpf_counter.h |  7 +++++++
+>  tools/perf/util/evlist.c      |  4 ++++
+>  3 files changed, 37 insertions(+)
 > 
-> v5:
->  - Update the commit message to mention that Kan's patch is
->    upstreamed but not merged to perf/core branch.
-> 
-> v4:
->  - Updated by Kan's latest patch,
->    '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE'
-> 
->  include/uapi/linux/perf_event.h       | 15 +++++++++++++++
->  tools/include/uapi/linux/perf_event.h | 15 +++++++++++++++
->  2 files changed, 30 insertions(+)
-> 
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index ad15e40d7f5d..14332f4cf816 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -37,6 +37,21 @@ enum perf_type_id {
->  	PERF_TYPE_MAX,				/* non-ABI */
->  };
+> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> index f179f57430253..ddb52f748c8e8 100644
+> --- a/tools/perf/util/bpf_counter.c
+> +++ b/tools/perf/util/bpf_counter.c
+> @@ -215,6 +215,17 @@ static int bpf_program_profiler__enable(struct evsel *evsel)
+>  	return 0;
+>  }
 >  
-> +/*
-> + * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-> + * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
-> + *					AA: hardware event ID
-> + *					EEEEEEEE: PMU type ID
-> + * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
-> + *					BB: hardware cache ID
-> + *					CC: hardware cache op ID
-> + *					DD: hardware cache op result ID
-> + *					EEEEEEEE: PMU type ID
-> + * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
-> + */
-> +#define PERF_PMU_TYPE_SHIFT		32
-> +#define PERF_HW_EVENT_MASK		0xffffffff
+> +static int bpf_program_profiler__disable(struct evsel *evsel)
+> +{
+> +	struct bpf_counter *counter;
 > +
->  /*
->   * Generalized performance event event_id types, used by the
->   * attr.event_id parameter of the sys_perf_event_open()
-> diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-> index ad15e40d7f5d..14332f4cf816 100644
-> --- a/tools/include/uapi/linux/perf_event.h
-> +++ b/tools/include/uapi/linux/perf_event.h
-> @@ -37,6 +37,21 @@ enum perf_type_id {
->  	PERF_TYPE_MAX,				/* non-ABI */
->  };
+> +	list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
+> +		assert(counter->skel != NULL);
+> +		bpf_prog_profiler_bpf__detach(counter->skel);
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int bpf_program_profiler__read(struct evsel *evsel)
+>  {
+>  	// perf_cpu_map uses /sys/devices/system/cpu/online
+> @@ -280,6 +291,7 @@ static int bpf_program_profiler__install_pe(struct evsel *evsel, int cpu,
+>  struct bpf_counter_ops bpf_program_profiler_ops = {
+>  	.load       = bpf_program_profiler__load,
+>  	.enable	    = bpf_program_profiler__enable,
+> +	.disable    = bpf_program_profiler__disable,
+>  	.read       = bpf_program_profiler__read,
+>  	.destroy    = bpf_program_profiler__destroy,
+>  	.install_pe = bpf_program_profiler__install_pe,
+> @@ -627,6 +639,12 @@ static int bperf__enable(struct evsel *evsel)
+>  	return 0;
+>  }
 >  
-> +/*
-> + * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-> + * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
-> + *					AA: hardware event ID
-> + *					EEEEEEEE: PMU type ID
-> + * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
-> + *					BB: hardware cache ID
-> + *					CC: hardware cache op ID
-> + *					DD: hardware cache op result ID
-> + *					EEEEEEEE: PMU type ID
-> + * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
-> + */
-> +#define PERF_PMU_TYPE_SHIFT		32
-> +#define PERF_HW_EVENT_MASK		0xffffffff
+> +static int bperf__disable(struct evsel *evsel)
+> +{
+> +	evsel->follower_skel->bss->enabled = 0;
+> +	return 0;
+> +}
 > +
->  /*
->   * Generalized performance event event_id types, used by the
->   * attr.event_id parameter of the sys_perf_event_open()
+>  static int bperf__read(struct evsel *evsel)
+>  {
+>  	struct bperf_follower_bpf *skel = evsel->follower_skel;
+> @@ -768,6 +786,7 @@ static int bperf__destroy(struct evsel *evsel)
+>  struct bpf_counter_ops bperf_ops = {
+>  	.load       = bperf__load,
+>  	.enable     = bperf__enable,
+> +	.disable    = bperf__disable,
+>  	.read       = bperf__read,
+>  	.install_pe = bperf__install_pe,
+>  	.destroy    = bperf__destroy,
+> @@ -806,6 +825,13 @@ int bpf_counter__enable(struct evsel *evsel)
+>  	return evsel->bpf_counter_ops->enable(evsel);
+>  }
+>  
+> +int bpf_counter__disable(struct evsel *evsel)
+> +{
+> +	if (bpf_counter_skip(evsel))
+> +		return 0;
+> +	return evsel->bpf_counter_ops->disable(evsel);
+> +}
+> +
+>  int bpf_counter__read(struct evsel *evsel)
+>  {
+>  	if (bpf_counter_skip(evsel))
+> diff --git a/tools/perf/util/bpf_counter.h b/tools/perf/util/bpf_counter.h
+> index cb9c532e0a079..d6d907c3dcf92 100644
+> --- a/tools/perf/util/bpf_counter.h
+> +++ b/tools/perf/util/bpf_counter.h
+> @@ -18,6 +18,7 @@ typedef int (*bpf_counter_evsel_install_pe_op)(struct evsel *evsel,
+>  struct bpf_counter_ops {
+>  	bpf_counter_evsel_target_op load;
+>  	bpf_counter_evsel_op enable;
+> +	bpf_counter_evsel_op disable;
+>  	bpf_counter_evsel_op read;
+>  	bpf_counter_evsel_op destroy;
+>  	bpf_counter_evsel_install_pe_op install_pe;
+> @@ -32,6 +33,7 @@ struct bpf_counter {
+>  
+>  int bpf_counter__load(struct evsel *evsel, struct target *target);
+>  int bpf_counter__enable(struct evsel *evsel);
+> +int bpf_counter__disable(struct evsel *evsel);
+>  int bpf_counter__read(struct evsel *evsel);
+>  void bpf_counter__destroy(struct evsel *evsel);
+>  int bpf_counter__install_pe(struct evsel *evsel, int cpu, int fd);
+> @@ -51,6 +53,11 @@ static inline int bpf_counter__enable(struct evsel *evsel __maybe_unused)
+>  	return 0;
+>  }
+>  
+> +static inline int bpf_counter__disable(struct evsel *evsel __maybe_unused)
+> +{
+> +	return 0;
+> +}
+> +
+>  static inline int bpf_counter__read(struct evsel *evsel __maybe_unused)
+>  {
+>  	return -EAGAIN;
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index d29a8a118973c..e71041c890102 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -17,6 +17,7 @@
+>  #include "evsel.h"
+>  #include "debug.h"
+>  #include "units.h"
+> +#include "bpf_counter.h"
+>  #include <internal/lib.h> // page_size
+>  #include "affinity.h"
+>  #include "../perf.h"
+> @@ -421,6 +422,9 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+>  	if (affinity__setup(&affinity) < 0)
+>  		return;
+>  
+> +	evlist__for_each_entry(evlist, pos)
+> +		bpf_counter__disable(pos);
+> +
+>  	/* Disable 'immediate' events last */
+>  	for (imm = 0; imm <= 1; imm++) {
+>  		evlist__for_each_cpu(evlist, i, cpu) {
 > -- 
-> 2.17.1
+> 2.30.2
 > 
 
 -- 
