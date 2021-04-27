@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B6236C6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA27E36C69C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236285AbhD0NIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:08:44 -0400
-Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:53914 "EHLO
-        hel-mailgw-01.vaisala.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235446AbhD0NIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:08:43 -0400
-X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Apr 2021 09:08:43 EDT
-Received: from HEL-SMTP.corp.vaisala.com (HEL-SMTP.corp.vaisala.com [172.24.1.225])
-        by hel-mailgw-01.vaisala.com (Postfix) with ESMTP id D6AF8601EE1A;
-        Tue, 27 Apr 2021 15:59:30 +0300 (EEST)
-Received: from localhost.localdomain ([172.24.253.155]) by HEL-SMTP.corp.vaisala.com over TLS secured channel with Microsoft SMTPSVC(8.5.9600.16384);
-         Tue, 27 Apr 2021 15:59:37 +0300
-Subject: Re: [PATCH 1/4] dt-bindings: nvmem: Add bootcount-nvmem
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, srinivas.kandagatla@linaro.org
-References: <cover.1619511801.git.nandor.han@vaisala.com>
- <942aacf1c51861e5a09db6a6d322666709695df2.1619511801.git.nandor.han@vaisala.com>
- <1619528221.583004.1346444.nullmailer@robh.at.kernel.org>
-From:   Nandor Han <nandor.han@vaisala.com>
-Message-ID: <e7b2fb04-4c36-3e09-5d62-e1bfd38e134e@vaisala.com>
-Date:   Tue, 27 Apr 2021 15:59:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236445AbhD0NBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:01:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235446AbhD0NBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:01:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48B33613DA
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619528461;
+        bh=sMMeX2PJBF6m8rhX79ZC4RUHtpZBjUk0ZeG/LM2gpVQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IgJi/PjtxUvkLHLdapC86+0IyRGH7XvEKprW7GejBSssd6hL8aFXd0FbHC0N6uAxS
+         fFtZN88HEroYq4dWYL8j62WHIFWR6yZCo6uVgxeGl0d2DI8/6uXi9ZPjYNAjyE2Sj/
+         DasibyaxchU3GYfQkNgW5tYW19GntGvaq3rJ699ENdGPkuqRd0lMZ27tpBTrEjjR+S
+         kfn9PCQFXh4XZJdOQ1vhFEsl4nP8UVrZFO5nHi225Ng2xfCWWIzZFHHqtTIYq6s9kx
+         UYD3rLfMXXtc3zsQ/jiGTxG0nJP8MZvmU21CaV4R0SEdZHH+zPEnD9RfIiX0IADRSl
+         26WesdaiYI8kA==
+Received: by mail-wm1-f50.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so7059195wmq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 06:01:01 -0700 (PDT)
+X-Gm-Message-State: AOAM533w0upxmr35Sg39FANiNJ7JwwwEDRexN8WyqvC09cfEm+KAgmxJ
+        cn5O3WAR7jDag6TFMNV3wOaTTGaTNxe3o4jQrF4=
+X-Google-Smtp-Source: ABdhPJzWued0Rb/h+zEDra2lvsobjBacdViv7NvecpuHwCUC+7jhVY9MepeuKnu3kpaptlruxLb9OPFvyQJYWLjnGKk=
+X-Received: by 2002:a1c:6382:: with SMTP id x124mr4264396wmb.142.1619528458888;
+ Tue, 27 Apr 2021 06:00:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1619528221.583004.1346444.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-OriginalArrivalTime: 27 Apr 2021 12:59:37.0710 (UTC) FILETIME=[2DD098E0:01D73B65]
+References: <20210422152648.2891996-1-arnd@kernel.org> <YIfaLbsAUjs86418@kroah.com>
+ <CAK8P3a1N-JV-yJSVCXT__Aqdkj6LgdHqemPo2=7iZg+-EL32KA@mail.gmail.com> <YIgGiMFvXlM4MYiK@kroah.com>
+In-Reply-To: <YIgGiMFvXlM4MYiK@kroah.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Apr 2021 15:00:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1TN6r6p=2ZTQ_3f=5hK7n31VwzagCiy7ukG4Occ_3GYA@mail.gmail.com>
+Message-ID: <CAK8P3a1TN6r6p=2ZTQ_3f=5hK7n31VwzagCiy7ukG4Occ_3GYA@mail.gmail.com>
+Subject: Re: [PATCH] [v2] staging: rtl8723bs: avoid bogus gcc warning
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Marco Cesati <marcocesati@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, 27 Apr 2021 11:26:31 +0300, Nandor Han wrote:
->> Documents the device tree bindings for `bootcount-nvmem` driver.
->>
->> Signed-off-by: Nandor Han <nandor.han@vaisala.com>
->> ---
->>   .../bindings/nvmem/bootcount-nvmem.yaml       | 72 +++++++++++++++++++
->>   1 file changed, 72 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/nvmem/bootcount-nvmem.example.dts:34.1-2 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/nvmem/bootcount-nvmem.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1414: dt_binding_check] Error 2
-> 
-> See https://patchwork.ozlabs.org/patch/1470591
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+On Tue, Apr 27, 2021 at 2:42 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Tue, Apr 27, 2021 at 01:59:32PM +0200, Arnd Bergmann wrote:
+> > On Tue, Apr 27, 2021 at 11:33 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
 
-Thanks for the quick feedback Rob.
+> > >
+> > > What version of gcc causes this?  Should this go into 5.13-final and be
+> > > backported?  Or is this only showing up on "unreleased" versions of gcc
+> > > and it is safe to wait until 5.14?
+> >
+> > As I understand, this is related to
+> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99673
+> >
+> > gcc-11.1.0 has now been released and it produces this warning.
+>
+> What's the odds we can get gcc to fix their bug, as it's not a kernel
+> issue?  :)
 
-I did run some checks, maybe not well enough.
-I will have a look to your suggestions.
+I think there is a high chance it will get fixed in gcc-11.2 or 12.1, but
+anyone using gcc-11.1 will still have the problem.
 
-Regards,
-    Nandor
+        Arnd
