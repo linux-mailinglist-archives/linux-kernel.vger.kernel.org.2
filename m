@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D87136C639
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7061D36C63C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbhD0Mnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235501AbhD0Mno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:43:44 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34CAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:43:00 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a22-20020a05600c2256b0290142870824e9so1008676wmm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sQtkoa8nt/6X+kphKb37Kf/4r12w9grvZXTPGm25gY0=;
-        b=GOuWS3W4d4Llb3YmmZ+x62c0Cszu7i5TSOpZas6ntQe3DIfQMGsa+eyzOtpl6sPHzj
-         KJpoZoasVZhuqGST3LyyWSKG9jok9FrAQoCHKcpmIWwpVmlYK2wf5quJCxid7dmjIdC0
-         PFqos0XJPhnpY5kpziLDRy5E1Uy8ryGdERORZQJ3VQDsKoxar242uMHeDM0iFKP4wv6k
-         1qIAlDQi5Wq3PTpr7hmSmoPW1zZWHw0uPZgDxbAk9P41/t8mp070in6oirEHE9ZnN1SM
-         k6Fvyid31YwhsamnjK/9x/U0GjVBYOQshY4VmnvrXvsegCqQZ2DobLIypwd/AkqLneHZ
-         D4cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sQtkoa8nt/6X+kphKb37Kf/4r12w9grvZXTPGm25gY0=;
-        b=X23w4/2pTJ2vvsa56dpEVYYewsh0LORpDaDbv/IbkrBANjdoIouT8NM5q/7p74p0H/
-         191ItmN45KZo/+VYIXwqhczvbt57un0eiuME7qrziMNc+/yW6aaggEUf2DzpGMfX47ni
-         WWOZUhtBhW11s8v2WebHoQ4Fy7zANdiTH3PdxL6KEExbI9rvAW517FWTDhbERqIBt7x1
-         bbzLtq9falAgWxnqx0aXXFxhIFqa2IcI3p+CloasuxEFbepe/ep9qFToff6i6/rwWO6m
-         VhAxRUfQ1RGldTiPTqx0h7eKQAJVNCp0SwuKLSKCzu1yOq5bS0O0xZiiu8VFI1vEE3lq
-         yMow==
-X-Gm-Message-State: AOAM530VwQLyqqsM+ArclvVqkTq0LSiAUuQ/PEfqM5VyEMRi8q/OQvJs
-        Cak8pp9JKTpPe5d7SzVj1fc=
-X-Google-Smtp-Source: ABdhPJyBcGBVAC+T03DaBKMkroUTCDux2+Ph7KSA7cPWHpewt1h4cGHMxshP2AZvO/MhUhUpwxC8qg==
-X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr4057682wmh.174.1619527379642;
-        Tue, 27 Apr 2021 05:42:59 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.92])
-        by smtp.gmail.com with ESMTPSA id c15sm4009645wrr.3.2021.04.27.05.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 05:42:59 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 14:42:56 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     joe@perches.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/50] staging: rtl8723bs: remove all remaining debug
- macros in rtw_debug.h
-Message-ID: <20210427124255.GB1399@agape.jhs>
-References: <cover.1619254603.git.fabioaiuto83@gmail.com>
- <YIfwL3s5hdRTCNrm@kroah.com>
+        id S236380AbhD0Mn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235501AbhD0Mny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:43:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF12B613E7;
+        Tue, 27 Apr 2021 12:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619527391;
+        bh=SBMydSe5kp0Nvgawklzbas5ZKFW7/l9q/mwcw/UIYvg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tcCcL8zMkgC8pv252U5tCzY3Tm3yP2HdRGj/OeMsM1bNsd18U2dl4OqwuGyAlNxj7
+         024V3mj3y76NbjSso7Te5ghR9tM8mYwuKAsqT4Amte3CZMN7koTxUBlusaHVsIoi1I
+         a5EfPyJYWxcR5RHAUc0BCNjI7IuEimi/GWPZJF3ahHD3aRdFbyqe7rWkZUEnPTYTCb
+         qetEiZmBNTKvHguc2b/2LfKpRtCbNhKo44GrFFMpY7pSQL5R3ENf7PTZ89lMrD6ro3
+         lJXI36nP6oNz6Nvv4RgKfRDr+pcUIgixZGjrTEnpTkFmxhA/avDfBM9aVU7w8eDN1I
+         E+jV2A4R3joqw==
+Received: by mail-ot1-f49.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso140686otn.3;
+        Tue, 27 Apr 2021 05:43:11 -0700 (PDT)
+X-Gm-Message-State: AOAM53171ipa5SOisc/M+av1ZxPBMDt84Wksit/qGqCu0nETq/mLgMHB
+        6YzYSziKCQwECeFCclNgVk+zLJNCkQ+bY4lbFM0=
+X-Google-Smtp-Source: ABdhPJyMQx/FiPIphY9VMEFj2ndPnbvhQmyfgZo7N2J+0K29BHhLG6JADN95Yku1nh8g4dEjFjn+rj6sR32e1BR8hfk=
+X-Received: by 2002:a05:6830:4d1:: with SMTP id s17mr18536402otd.108.1619527390973;
+ Tue, 27 Apr 2021 05:43:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIfwL3s5hdRTCNrm@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210427120607.2646166-1-arei@altlinux.org>
+In-Reply-To: <20210427120607.2646166-1-arei@altlinux.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 27 Apr 2021 14:42:59 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGm9d7SdBoozEoOP4G6ETmNiZR8kum91RVc_4eUTroE2w@mail.gmail.com>
+Message-ID: <CAMj1kXGm9d7SdBoozEoOP4G6ETmNiZR8kum91RVc_4eUTroE2w@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Relocate the kernel relative to a DRAM base.
+To:     Nikita Ermakov <arei@altlinux.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:06:23PM +0200, Greg KH wrote:
-> On Sat, Apr 24, 2021 at 11:01:43AM +0200, Fabio Aiuto wrote:
-> > This patchset removes all remaining debug macros in rtw_debug.h
-> > 
-> > DBG_871X_SEL macro is replaced with netdev_dbg() for it does
-> > a raw printk call which is not best recommended for a driver.
-> > 
-> > @@
-> > expression sel;
-> > expression list args;
-> > identifier padapter;
-> > identifier func;
-> > @@
-> > 
-> > func(..., struct adapter *padapter, ...) {
-> >         <...
-> > -       DBG_871X_SEL(sel, args);
-> > +       netdev_dbg(padapter->pnetdev, args);
-> >         ...>
-> > 
-> > unused _DBG_871X_LEVEL macro declaration is removed.
-> > 
-> > Beautified register dump in core/rtw_debug.c 
-> > 
-> > Some code cleaning is done and all other private component tracing
-> > macros are removed.
-> 
-> Nice work, thanks for doing all of this!  Now queued up for 5.14-rc1.
-> 
-> greg k-h
+On Tue, 27 Apr 2021 at 14:07, Nikita Ermakov <arei@altlinux.org> wrote:
+>
+> Try to get the base of the DRAM from a DTB to use it as a lowest address
+> in physical memory to relocate the kernel. If it is not possible to
+> obtain the base from a /memory node of the DTB let's make an assumption
+> that the DRAM base at the beginning of the memory.
+>
 
-thank you all for helping me,
+Why?
 
-fabio
+> Signed-off-by: Nikita Ermakov <arei@altlinux.org>
+> ---
+>  drivers/firmware/efi/libstub/riscv-stub.c | 39 ++++++++++++++++++++++-
+>  1 file changed, 38 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/efi/libstub/riscv-stub.c b/drivers/firmware/efi/libstub/riscv-stub.c
+> index 380e4e251399..1b5944276e1a 100644
+> --- a/drivers/firmware/efi/libstub/riscv-stub.c
+> +++ b/drivers/firmware/efi/libstub/riscv-stub.c
+> @@ -46,6 +46,39 @@ static u32 get_boot_hartid_from_fdt(void)
+>         return fdt32_to_cpu(*prop);
+>  }
+>
+> +static unsigned long get_dram_base_from_fdt(void)
+> +{
+> +       const void *fdt;
+> +       int node, len;
+> +       const fdt32_t *addr_cells;
+> +       const void *prop;
+> +
+> +       fdt = get_efi_config_table(DEVICE_TREE_GUID);
+> +       if (!fdt)
+> +               return ULONG_MAX;
+> +
+> +       node = fdt_path_offset(fdt, "/");
+> +       if (node < 0)
+> +               return ULONG_MAX;
+> +
+> +       addr_cells = fdt_getprop((void *)fdt, node, "#address-cells", &len);
+> +       if (!addr_cells)
+> +               return ULONG_MAX;
+> +
+> +       node = fdt_path_offset(fdt, "/memory");
+> +       if (node < 0)
+> +               return ULONG_MAX;
+> +
+> +       prop = fdt_getprop((void *)fdt, node, "reg", &len);
+> +       if (!prop)
+> +               return ULONG_MAX;
+> +
+> +       if (fdt32_to_cpu(*addr_cells) > 1)
+> +               return fdt64_to_cpu(*((fdt64_t *)prop));
+> +       else
+> +               return fdt32_to_cpu(*((fdt32_t *)prop));
+> +}
+> +
+>  efi_status_t check_platform_features(void)
+>  {
+>         hartid = get_boot_hartid_from_fdt();
+> @@ -97,7 +130,11 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+>          * lowest possible memory region as long as the address and size meets
+>          * the alignment constraints.
+>          */
+> -       preferred_addr = MIN_KIMG_ALIGN;
+> +       preferred_addr = get_dram_base_from_fdt();
+> +       if (preferred_addr == ULONG_MAX)
+> +               preferred_addr = MIN_KIMG_ALIGN;
+> +       else
+> +               preferred_addr += MIN_KIMG_ALIGN;
+>         status = efi_relocate_kernel(image_addr, kernel_size, *image_size,
+>                                      preferred_addr, MIN_KIMG_ALIGN, 0x0);
+>
+> --
+> 2.29.3
+>
