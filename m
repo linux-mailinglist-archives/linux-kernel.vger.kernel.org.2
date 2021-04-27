@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF2A36CAA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE20F36CA9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238873AbhD0Rw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:52:56 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50516 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238394AbhD0Rwy (ORCPT
+        id S238606AbhD0Rwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230219AbhD0Rwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:52:54 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13RHpwwq032788;
-        Tue, 27 Apr 2021 12:51:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1619545918;
-        bh=WxlZWJTNgIPhmFWeaV5D6iM6qCshbWaA6MZx0N0wYgo=;
-        h=From:To:CC:Subject:Date;
-        b=At3DWtXS3WOCHtkd7QNtdKC/TGhwqRiUMhbQceBMovoJYLkU/PdU8hN5+LBy9RCvu
-         /3Wezww83LCezS18M+ZMvRfRL+MIdZjxSlZCNQm2QsVkqsF+KBVIJrJC1+mIUHyNOF
-         86wCABDA6E0kY0b5eAkk2MNbWvvXN2QHC0eUhaMM=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13RHpwPX078303
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Apr 2021 12:51:58 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 27
- Apr 2021 12:51:58 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 27 Apr 2021 12:51:58 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13RHptMR026486;
-        Tue, 27 Apr 2021 12:51:56 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] arm64: dts: ti: j7200-main: Mark Main NAVSS as dma-coherent
-Date:   Tue, 27 Apr 2021 23:21:30 +0530
-Message-ID: <20210427175130.29451-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 27 Apr 2021 13:52:31 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2280C061574;
+        Tue, 27 Apr 2021 10:51:46 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id y62so9269467pfg.4;
+        Tue, 27 Apr 2021 10:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=a/5CsXBnVimZy8HnpUcxEPFFOPqaMrP+1LxMMqVDo5A=;
+        b=NiD+DxYp4gyiGQt3ICe7L6JDCnUMARVG+ajmTQyDznI1ulpO8GLGMq/pACk75qm4Ae
+         A0Gt3jxbCDujtj/oh2cRPKyZGF76Cg6UkK84Z7ugC7zubLcrp+n/9EzbxPRXWMFYMg3H
+         LQUAUJl5/bQjQqe0xAXQ5wtQ9Fo3auhPAg4L1YwetOPc12pbaIsNss1OuRRg7u0UnYWD
+         OAeQV1R1ngBLLbggspOwgObMZhJ1LXdXmknBRs+qTLct6/yRZIidnpOORNnVOCHxEW/3
+         mtoz2zLAA7zuJ6bhvCHSHA0djno6JZLcAcXl3iPfr9aSuyqpQzMoh4VCO9Ofc5WR+ERl
+         pYTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a/5CsXBnVimZy8HnpUcxEPFFOPqaMrP+1LxMMqVDo5A=;
+        b=LpW8nzQscQ83sHR/qutwUbnAfJ17YTbKU47svIrL2y4oqghBEdoMtTMsXCFicvgm5f
+         FlRyZkfVWcCsIUKfzRYsdq6iUiI9YK/MDOomHSm+RRm7YTHeZsVsa71Kd0XuAmnjjNwy
+         xB3+n6myUqPOQWUR9E19QLDr13dSxtgS8q1lPHr0Tu0GFI8vPddXSBoGVrFQRjiFTZo9
+         f7NpOuGqu+VlcpawyvsfI6YZYEnoOkuIygp+uaKUVLpxKdSUWFi9uwBzhdTxKo7qBHad
+         mDW3GG0GG97meUkjz8udCMnRxj5gk8VtnzuXhxHMsYg+vJng8XO1Wp0IU8IQooOa5C2Q
+         vRdg==
+X-Gm-Message-State: AOAM531cOio0ZmE1F887X5S82GN3vMaYrzQFk7QpAMfJ3G6rYUPJz9TR
+        +MwUVFIJzgQkGpXPV+tpC0AMqbKmlR0=
+X-Google-Smtp-Source: ABdhPJzlpctZCi186q7X4+olIf7dZ/AjbaRCgLWw6YfXUHoqWWxCvfupkP9pEHJXiBMtZNUYZliw6g==
+X-Received: by 2002:aa7:9af8:0:b029:25b:7027:9992 with SMTP id y24-20020aa79af80000b029025b70279992mr23889196pfp.12.1619545906333;
+        Tue, 27 Apr 2021 10:51:46 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id h21sm2456833pfo.211.2021.04.27.10.51.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 10:51:45 -0700 (PDT)
+From:   Jim Quinlan <jim2101024@gmail.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v1 0/4] PCI: brcmstb: Add panic handler and shutdown func
+Date:   Tue, 27 Apr 2021 13:51:35 -0400
+Message-Id: <20210427175140.17800-1-jim2101024@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traffic through main NAVSS interconnect is coherent wrt ARM caches on
-J7200 SoC.  Add missing dma-coherent property to main_navss node.
+v1 -- These commits were part of a previous pullreq but have
+      been split off because they are unrelated to said pullreq's
+      other more complex commits.
 
-Also add dma-ranges to be consistent with mcu_navss node.
+Jim Quinlan (4):
+  PCI: brcmstb: Check return value of clk_prepare_enable()
+  PCI: brcmstb: Give 7216 SOCs their own config type
+  PCI: brcmstb: Add panic/die handler to RC driver
+  PCI: brcmstb: add shutdown call to driver
 
-Fixes: d361ed88455fe ("arm64: dts: ti: Add support for J7200 SoC")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pci/controller/pcie-brcmstb.c | 145 +++++++++++++++++++++++++-
+ 1 file changed, 143 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index f86c493a44f1c..a6826f1888ef0 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -85,6 +85,8 @@ main_navss: bus@30000000 {
- 		#size-cells = <2>;
- 		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
- 		ti,sci-dev-id = <199>;
-+		dma-coherent;
-+		dma-ranges;
- 
- 		main_navss_intr: interrupt-controller1 {
- 			compatible = "ti,sci-intr";
 -- 
-2.31.1
+2.17.1
 
