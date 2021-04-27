@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5A936C401
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697D236C3F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238504AbhD0Kc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48246 "EHLO mail.kernel.org"
+        id S238343AbhD0Kbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237792AbhD0K21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FA7661413;
+        id S235770AbhD0K2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73FC66140F;
         Tue, 27 Apr 2021 10:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619519236;
-        bh=Q1WsziPcbnwAb2cpqQFZbO8zttZnZQq1oIpn6yJZI+I=;
+        bh=HzlriyHzqlZAHsYOJEVourXS9CSW2DolwRX6O+Dbyqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=unDnKlP9o6a+vxQh5qp31nQEN88CtW9mWtX/Ua4La5wmjMW1KGY78blmf7pj1Wyzu
-         qOd5WCV5sohjttf/sTUtf/TFTmUB7bVJS60pepQ3fMX8QkcX166Y1a0xMCkZlVDm9g
-         6FK7Q97cE9jt2NrzFL1Znnbw60l7ea7hOWisMYSG1QCZV2IVSqS2r62lZ5FWloprq5
-         ubcfvLclPeOS5Cr6TkAs9PqHcykmOSm9xjyMvLsp+5caennZjML9l+hWjfMbDF2j0n
-         Z9vVkjalJG50mw6RGDcTxUSSfXV+z9OBGleyf9GzxMqu0VvA3W0f3PyAI7IG/GmKoN
-         x8KFr3FfvGuZw==
+        b=HxVP4KEkcKlNvIkQOkmBxLuatgvSRun1ZqFvIYnxgCB/3a7y570rBkCO09tODIHe3
+         ZE9I2P7BPtdg/pzsuKQ48T9XwJlMQ/RvX9MIHqQcjTlUnGR6ESI2k2CRiYxjbg7x33
+         SgNWhDzVC/jQ1yxmFFgrj4hGryrt0y+GFNjyI6n9YhGwtT5A7fHIR31ZlIv1FU1YE+
+         ZhUXWPCLN0eyqiW/xAARYZsg2AZzVNgQUQb7EqGjNNWSUstlHqHnt44+86lbmdUTLS
+         Pt/K5vVh6gI61Bpw+wJ8zDMOaJEtKZf1Z4zVwq005d9Uf2VHRk2kL9O8FnGl8YPutX
+         QYPVLG6GBYJLA==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lbKvz-000o2q-KC; Tue, 27 Apr 2021 12:27:15 +0200
+        id 1lbKvz-000o2w-P3; Tue, 27 Apr 2021 12:27:15 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH v3 75/79] media: sunxi: use pm_runtime_resume_and_get()
-Date:   Tue, 27 Apr 2021 12:27:05 +0200
-Message-Id: <f1901bc5c3e2a6e88e678f5763b97509cc706bf5.1619519080.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v3 77/79] media: vsp1: use pm_runtime_resume_and_get()
+Date:   Tue, 27 Apr 2021 12:27:07 +0200
+Message-Id: <a1470adef5eb86291f8fe72c9270ae54b84d6b28.1619519080.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
 References: <cover.1619519080.git.mchehab+huawei@kernel.org>
@@ -57,34 +56,27 @@ Use the new API, in order to cleanup the error check logic.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/platform/vsp1/vsp1_drv.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
-index 4785faddf630..54b909987caa 100644
---- a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
-+++ b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
-@@ -206,9 +206,9 @@ static int sun4i_csi_open(struct file *file)
- 	if (ret)
+diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+index aa66e4f5f3f3..c2bdb6629657 100644
+--- a/drivers/media/platform/vsp1/vsp1_drv.c
++++ b/drivers/media/platform/vsp1/vsp1_drv.c
+@@ -561,11 +561,9 @@ int vsp1_device_get(struct vsp1_device *vsp1)
+ {
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(vsp1->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(vsp1->dev);
++	ret = pm_runtime_resume_and_get(vsp1->dev);
++	if (ret < 0)
  		return ret;
+-	}
  
--	ret = pm_runtime_get_sync(csi->dev);
-+	ret = pm_runtime_resume_and_get(csi->dev);
- 	if (ret < 0)
--		goto err_pm_put;
-+		goto err_unlock;
- 
- 	ret = v4l2_pipeline_pm_get(&csi->vdev.entity);
- 	if (ret)
-@@ -227,6 +227,8 @@ static int sun4i_csi_open(struct file *file)
- 
- err_pm_put:
- 	pm_runtime_put(csi->dev);
-+
-+err_unlock:
- 	mutex_unlock(&csi->lock);
- 
- 	return ret;
+ 	return 0;
+ }
 -- 
 2.30.2
 
