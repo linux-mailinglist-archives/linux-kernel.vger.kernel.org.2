@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4CD36C8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD6A36C8C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbhD0Pcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53272 "EHLO mail.kernel.org"
+        id S237856AbhD0Pgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:36:33 -0400
+Received: from mx0.infotecs.ru ([91.244.183.115]:56210 "EHLO mx0.infotecs.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236721AbhD0Pcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:32:53 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01B1760BBB;
-        Tue, 27 Apr 2021 15:32:08 +0000 (UTC)
-Date:   Tue, 27 Apr 2021 11:32:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH] tracing: Map all PIDs to command lines
-Message-ID: <20210427113207.3c601884@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236254AbhD0Pgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:36:31 -0400
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+        by mx0.infotecs.ru (Postfix) with ESMTP id 67595108A04B;
+        Tue, 27 Apr 2021 18:35:43 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 67595108A04B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+        t=1619537743; bh=KxbNYGfPwQJcQ49DgL87484lXfDTpag3H+aJRE9b52A=;
+        h=Date:From:To:CC:Subject:From;
+        b=i8CVO9rhOWeVh49XeEzit6nvpzMcwRong51cFMxFHl6ieEKJnVh4YpJIhpxmAIob0
+         nx3DnpvxwEqzgiHPsRAh3LFwQbuB3txPz4t7LC4qdVbeKheniNNL1iC3WOhQvq+SKB
+         OB61Bzcs3E8wer6D85LNFa59UDI/nkAYnO7DP0Oo=
+Received: from msk-exch-02.infotecs-nt (autodiscover.iitrust.ru [10.0.7.192])
+        by mx0.infotecs-nt (Postfix) with ESMTP id 647D4316F917;
+        Tue, 27 Apr 2021 18:35:43 +0300 (MSK)
+Date:   Tue, 27 Apr 2021 18:33:54 +0300
+From:   Pavel Balaev <balaevpa@infotecs.ru>
+To:     <netdev@vger.kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>
+Subject: [PATCH v5 net-next 0/3] net: multipath routing: configurable seed
+Message-ID: <YIgu4hLNSa69/oFZ@rnd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+X-Originating-IP: [11.0.8.107]
+X-EXCLAIMER-MD-CONFIG: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 163354 [Apr 27 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: BalaevPA@infotecs.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 443 443 d64ad0ad6f66abd85f8fb55fe5d831fdcc4c44a0, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/04/27 12:22:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/27 11:47:00 #16580367
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+This is the fifth version of the mpath seed series.
 
-The default max PID is set by PID_MAX_DEFAULT, and the tracing
-infrastructure uses this number to map PIDs to the comm names of the
-tasks, such output of the trace can show names from the recorded PIDs in
-the ring buffer. This mapping is also exported to user space via the
-"saved_cmdlines" file in the tracefs directory.
+This patch series adds ability for a user to assign seed value
+to multipath route hashes.
 
-But currently the mapping expects the PIDs to be less than
-PID_MAX_DEFAULT, which is the default maximum and not the real maximum.
-Recently, systemd will increases the maximum value of a PID on the system,
-and when tasks are traced that have a PID higher than PID_MAX_DEFAULT, its
-comm is not recorded. This leads to the entire trace to have "<...>" as
-the comm name, which is pretty useless.
+changes v4:
+- patch was splited to patch series
+- remove CONFIG_IP_ROUTE_MULTIPATH define from flow_multipath_hash_from_keys(),
+  it used in both IPv4/IPv6 protos.
 
-Instead, keep the array mapping the size of PID_MAX_DEFAULT, but instead
-of just mapping the index to the comm, map a mask of the PID
-(PID_MAX_DEFAULT - 1) to the comm, and find the full PID from the
-map_cmdline_to_pid array (that already exists).
+The mainlining discussion history of this branch:
+v4: https://lore.kernel.org/netdev/21a2fb1925b215cc48ab8e2f783a7de7@void.so
 
-This bug goes back to the beginning of ftrace, but hasn't been an issue
-until user space started increasing the maximum value of PIDs.
+Balaev Pavel (3):
+      net/ipv4: multipath routing: configurable seed
+      net/ipv6: multipath routing: configurable seed
+      selftests/net/forwarding: configurable seed tests
 
-Cc: stable@vger.kernel.org
-Fixes: bc0c38d139ec7 ("ftrace: latency tracer infrastructure")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace.c | 41 +++++++++++++++--------------------------
- 1 file changed, 15 insertions(+), 26 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c0c9aa5cd8e2..67c01dc5cdeb 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2390,14 +2390,13 @@ static void tracing_stop_tr(struct trace_array *tr)
- 
- static int trace_save_cmdline(struct task_struct *tsk)
- {
--	unsigned pid, idx;
-+	unsigned tpid, idx;
- 
- 	/* treat recording of idle task as a success */
- 	if (!tsk->pid)
- 		return 1;
- 
--	if (unlikely(tsk->pid > PID_MAX_DEFAULT))
--		return 0;
-+	tpid = tsk->pid & (PID_MAX_DEFAULT - 1);
- 
- 	/*
- 	 * It's not the end of the world if we don't get
-@@ -2408,26 +2407,15 @@ static int trace_save_cmdline(struct task_struct *tsk)
- 	if (!arch_spin_trylock(&trace_cmdline_lock))
- 		return 0;
- 
--	idx = savedcmd->map_pid_to_cmdline[tsk->pid];
-+	idx = savedcmd->map_pid_to_cmdline[tpid];
- 	if (idx == NO_CMDLINE_MAP) {
- 		idx = (savedcmd->cmdline_idx + 1) % savedcmd->cmdline_num;
- 
--		/*
--		 * Check whether the cmdline buffer at idx has a pid
--		 * mapped. We are going to overwrite that entry so we
--		 * need to clear the map_pid_to_cmdline. Otherwise we
--		 * would read the new comm for the old pid.
--		 */
--		pid = savedcmd->map_cmdline_to_pid[idx];
--		if (pid != NO_CMDLINE_MAP)
--			savedcmd->map_pid_to_cmdline[pid] = NO_CMDLINE_MAP;
--
--		savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
--		savedcmd->map_pid_to_cmdline[tsk->pid] = idx;
--
-+		savedcmd->map_pid_to_cmdline[tpid] = idx;
- 		savedcmd->cmdline_idx = idx;
- 	}
- 
-+	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
- 	set_cmdline(idx, tsk->comm);
- 
- 	arch_spin_unlock(&trace_cmdline_lock);
-@@ -2438,6 +2426,7 @@ static int trace_save_cmdline(struct task_struct *tsk)
- static void __trace_find_cmdline(int pid, char comm[])
- {
- 	unsigned map;
-+	int tpid;
- 
- 	if (!pid) {
- 		strcpy(comm, "<idle>");
-@@ -2449,16 +2438,16 @@ static void __trace_find_cmdline(int pid, char comm[])
- 		return;
- 	}
- 
--	if (pid > PID_MAX_DEFAULT) {
--		strcpy(comm, "<...>");
--		return;
-+	tpid = pid & (PID_MAX_DEFAULT - 1);
-+	map = savedcmd->map_pid_to_cmdline[tpid];
-+	if (map != NO_CMDLINE_MAP) {
-+		tpid = savedcmd->map_cmdline_to_pid[map];
-+		if (tpid == pid) {
-+			strlcpy(comm, get_saved_cmdlines(map), TASK_COMM_LEN);
-+			return;
-+		}
- 	}
--
--	map = savedcmd->map_pid_to_cmdline[pid];
--	if (map != NO_CMDLINE_MAP)
--		strlcpy(comm, get_saved_cmdlines(map), TASK_COMM_LEN);
--	else
--		strcpy(comm, "<...>");
-+	strcpy(comm, "<...>");
- }
- 
- void trace_find_cmdline(int pid, char comm[])
--- 
-2.29.2
-
+ Documentation/networking/ip-sysctl.rst             |  14 +
+ include/net/flow_dissector.h                       |   2 +
+ include/net/netns/ipv4.h                           |   2 +
+ include/net/netns/ipv6.h                           |   3 +
+ net/core/flow_dissector.c                          |   7 +
+ net/ipv4/route.c                                   |  10 +-
+ net/ipv4/sysctl_net_ipv4.c                         |  97 ++++++
+ net/ipv6/route.c                                   |  10 +-
+ net/ipv6/sysctl_net_ipv6.c                         |  96 ++++++
+ tools/testing/selftests/net/forwarding/Makefile    |   1 +
+ tools/testing/selftests/net/forwarding/lib.sh      |  28 ++
+ .../net/forwarding/router_mpath_seed.sh (new +x)   | 347 +++++++++++++++++++++
+ 12 files changed, 615 insertions(+), 2 deletions(-)
