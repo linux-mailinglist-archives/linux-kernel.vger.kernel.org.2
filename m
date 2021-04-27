@@ -2,54 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B318636CC0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F4B36CC0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238855AbhD0T6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:58:16 -0400
-Received: from verein.lst.de ([213.95.11.211]:46599 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235719AbhD0T6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:58:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id F007B68B05; Tue, 27 Apr 2021 21:57:27 +0200 (CEST)
-Date:   Tue, 27 Apr 2021 21:57:27 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
-Message-ID: <20210427195727.GA9661@lst.de>
-References: <20210427025805.GD3122264@magnolia> <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
+        id S238915AbhD0UAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 16:00:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43414 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235719AbhD0UA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 16:00:28 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619553583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kWb+u5lHbSE2K4wZrJfb4KDMLjOmVqGo2GjajvJMOFI=;
+        b=vlxMA+PWBbA1ChYXEUqvHEsTzGqVNdA9qLzzXZ71HumV2VTWmn5kSlPbyffgTwXYhbQYBr
+        juY2JCOZoCWI1UCpIYR4ktd52zlUW186FaoXvZqbYXrEZfiKSL+8pNB7rIETNCQNf1yxNK
+        AX7wk+jnLZX0nO1qOWsa5vP5ZYTX52AFlaPdPBjQndT3RXtxyUkSzMgmBWOIzAwOG/UnDR
+        3Wimxrj9LrigQ8DdutnRUqGSfAo8386igvT7K8VXODQ9wDWiKKwtPP5yteRx4MIp/wWNT3
+        l5v1YyypoZG9ER/v9vQ2IMC7h8WHDDrzv1cHyBy2tAuvfZNIuJ4aI2NFSC81fQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619553583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kWb+u5lHbSE2K4wZrJfb4KDMLjOmVqGo2GjajvJMOFI=;
+        b=TEHEYt+XG/QKqlwfJOzEnMg+4+iyczXBlI2bspQMRi5u2LzBGFxZ+zb+Pv8auts+Mn7Sf9
+        MvLK0AyQ8v2y58BA==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [patch 8/8] hrtimer: Avoid more SMP function calls in clock_was_set()
+In-Reply-To: <20210427151125.GA171315@fuller.cnet>
+References: <20210427082537.611978720@linutronix.de> <20210427083724.840364566@linutronix.de> <20210427151125.GA171315@fuller.cnet>
+Date:   Tue, 27 Apr 2021 21:59:43 +0200
+Message-ID: <877dkno5w0.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 12:40:09PM -0700, Linus Torvalds wrote:
-> We have '%pD' for printing a filename. It may not be perfect (by
-> default it only prints one component, you can do "%pD4" to show up to
-> four components), but it should "JustWork(tm)".
-> 
-> And if it doesn't, we should fix it.
-> 
-> So instead of having a kmalloc/kfree for the path buffer, I think you
-> should have been able to just do
-> 
->     pr_err("swapon: file %pD4 %s\n", isi->file, str);
-> 
-> and be done with it.
+On Tue, Apr 27 2021 at 12:11, Marcelo Tosatti wrote:
+> On Tue, Apr 27, 2021 at 10:25:45AM +0200, Thomas Gleixner wrote:
+> Consider
+>
+>
+> hrtimer_interrupt
+> in_hrtirq = 1
+> __run_hrtimer
+> raw_spin_unlock_irqrestore(&cpu_base->lock, flags)
+> 								settimeofday
+> 								clock_was_set
+> 								lock cpu_base->lock
+> 								update_needs_ipi returns false
+> continue to process hrtimers with stale base->offset
 
-I'm aware of %pD, but 4 components here are not enough.  People
-need to distinguish between xfstests runs and something real in
-the system for these somewhat scary sounding messages.
+Bah. I somehow convinced myself that hrtimer_interrupt() rechecks the
+offset before clearing in_hrtirq, but that's not true. It does so when
+reprogramming fails, but not for the regular case.
+
+Lemme stare at it some more.
+
+Thanks,
+
+        tglx
