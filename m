@@ -2,152 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBFA36CA8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8353D36CA93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbhD0Ros (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238296AbhD0Roq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81EE6613E5;
-        Tue, 27 Apr 2021 17:44:00 +0000 (UTC)
-Date:   Tue, 27 Apr 2021 18:43:58 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 1/6] arm64: mte: Sync tags for pages where PTE is
- untagged
-Message-ID: <20210427174357.GA17872@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-2-steven.price@arm.com>
+        id S238183AbhD0RsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230219AbhD0RsJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:48:09 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A136C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:47:23 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id a4so60359329wrr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=4YNKwrbSH5Rvo37rqzZa8T4Lub6eWYDT8GYlkyyDYk0=;
+        b=C8dHAVl38Pf5OiBKnYeqR4yQrqD3SxvRYXRFscwQp+Y91UOh/+OhBTX/3SrTyoPY1y
+         ZSPDZv6w2LW6rRRKMGC0huKX+E3+8hXOM76CD01PuQsRXoN7/meuUpr8kqnVv9wXuBx/
+         okw/ifFFZfN/609mLVtLB6gUlUkfE2Ogw5VyJ7nrZQGEAoNV3dWPtCmFMPB/znpan7oa
+         sXxgRB1+t7zd8fZ+asmw+JmuXszcAWTWG7IPftOHLlCiWBkBJtkLFUPBOh5rVkp1J9aq
+         9Ywtk99SKMA3ImR2uQSNhQXtL+OpKLodxC+tlJd1V8IowrfL2LlRUgdfval3sxqnhKmp
+         obmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=4YNKwrbSH5Rvo37rqzZa8T4Lub6eWYDT8GYlkyyDYk0=;
+        b=pY/yreyuQZBwsK9q3CziTWEM1K2FZ7s2hNLDZ5ApOYtVGStTVlKFwacS/UZFM9ET14
+         BENW8L05DCzhRWHQVSC5wjbZjfNrYbvCU3A+WKymbuIQOb+/0fADA1PHvbnonWBdfhCd
+         R1BzeK992FzDelQDRzHngHFgx2sW4NDAVe1vmytKmKGUdODBLiANkC6OILZJyfn+ithA
+         4vPaCQhrl2ycgsrOV1R54pNXB0Agb1Jqj3U0VhCrhh9sxo9QxdIkfUMLh2xe0FJqBCkq
+         gb7wdRo4FLkI55vfiuYbHNoS3w5a2ghMaV7VXDezyRyZo7RP2cItw9adVEFnzm01vw1d
+         xa6Q==
+X-Gm-Message-State: AOAM533WAvHK21a8f4fXozjSymEsjTbFhdhn3GWU6Lnp8hGPNIqkxLdR
+        22Wh6s84XAjhKkqlTFKjFO0r1OZ3gznIkpfD
+X-Google-Smtp-Source: ABdhPJyQWagRbNKnvuALypImjKzksqcPDteX3KMtMJwu1zocATBGwcgBG9ry/MFwPzFudi0zE5RVxg==
+X-Received: by 2002:adf:f8c8:: with SMTP id f8mr16769606wrq.267.1619545641745;
+        Tue, 27 Apr 2021 10:47:21 -0700 (PDT)
+Received: from ubuntu (host86-178-35-221.range86-178.btcentralplus.com. [86.178.35.221])
+        by smtp.gmail.com with ESMTPSA id i2sm2335534wro.0.2021.04.27.10.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 10:47:21 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 10:47:19 -0700
+From:   Iain Craig <coldcity@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: mt7621-pci: fix a multiple assignment code style
+ issue
+Message-ID: <20210427174719.GA14124@ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416154309.22129-2-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:43:04PM +0100, Steven Price wrote:
-> A KVM guest could store tags in a page even if the VMM hasn't mapped
-> the page with PROT_MTE. So when restoring pages from swap we will
-> need to check to see if there are any saved tags even if !pte_tagged().
-> 
-> However don't check pages which are !pte_valid_user() as these will
-> not have been swapped out.
+avoid multiple assignments while setting pcie->io members to NULL.
 
-You should remove the pte_valid_user() mention from the commit log as
-well.
+Signed-off-by: Iain Craig <coldcity@gmail.com>
+---
+ drivers/staging/mt7621-pci/pci-mt7621.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index e17b96d0e4b5..cf4b52a33b3c 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->  		__sync_icache_dcache(pte);
->  
->  	if (system_supports_mte() &&
-> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
-> +	    pte_present(pte) && (pte_val(pte) & PTE_USER) && !pte_special(pte))
-
-I would add a pte_user() macro here or, if we restore the tags only when
-the page is readable, use pte_access_permitted(pte, false). Also add a
-comment why we do this.
-
-There's also the pte_user_exec() case which may not have the PTE_USER
-set (exec-only permission) but I don't think it matters. We don't do tag
-checking on instruction fetches, so if the user adds a PROT_READ to it,
-it would go through set_pte_at() again. I'm not sure KVM does anything
-special with exec-only mappings at stage 2, I suspect they won't be
-accessible by the guest (but needs checking).
-
->  		mte_sync_tags(ptep, pte);
->  
->  	__check_racy_pte_update(mm, ptep, pte);
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index b3c70a612c7a..e016ab57ea36 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -26,17 +26,23 @@ u64 gcr_kernel_excl __ro_after_init;
->  
->  static bool report_fault_once = true;
->  
-> -static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
-> +static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
-> +			       bool pte_is_tagged)
->  {
->  	pte_t old_pte = READ_ONCE(*ptep);
->  
->  	if (check_swap && is_swap_pte(old_pte)) {
->  		swp_entry_t entry = pte_to_swp_entry(old_pte);
->  
-> -		if (!non_swap_entry(entry) && mte_restore_tags(entry, page))
-> +		if (!non_swap_entry(entry) && mte_restore_tags(entry, page)) {
-> +			set_bit(PG_mte_tagged, &page->flags);
->  			return;
-> +		}
->  	}
->  
-> +	if (!pte_is_tagged || test_and_set_bit(PG_mte_tagged, &page->flags))
-> +		return;
-
-I don't think we need another test_bit() here, it was done in the
-caller (bar potential races which need more thought).
-
-> +
->  	page_kasan_tag_reset(page);
->  	/*
->  	 * We need smp_wmb() in between setting the flags and clearing the
-> @@ -54,11 +60,13 @@ void mte_sync_tags(pte_t *ptep, pte_t pte)
->  	struct page *page = pte_page(pte);
->  	long i, nr_pages = compound_nr(page);
->  	bool check_swap = nr_pages == 1;
-> +	bool pte_is_tagged = pte_tagged(pte);
->  
->  	/* if PG_mte_tagged is set, tags have already been initialised */
->  	for (i = 0; i < nr_pages; i++, page++) {
-> -		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> -			mte_sync_page_tags(page, ptep, check_swap);
-> +		if (!test_bit(PG_mte_tagged, &page->flags))
-> +			mte_sync_page_tags(page, ptep, check_swap,
-> +					   pte_is_tagged);
->  	}
->  }
-
-You were right in the previous thread that if we have a race, it's
-already there even without your patches KVM patches.
-
-If it's the same pte in a multithreaded app, we should be ok as the core
-code holds the ptl (the arch code also holds the mmap_lock during
-exception handling but only as a reader, so you can have multiple
-holders).
-
-If there are multiple ptes to the same page, for example mapped with
-MAP_ANONYMOUS | MAP_SHARED, metadata recovery is done via
-arch_swap_restore() before we even set the pte and with the page locked.
-So calling lock_page() again in mte_restore_tags() would deadlock.
-
-I can see that do_swap_page() also holds the page lock around
-set_pte_at(), so I think we are covered.
-
-Any other scenario I may have missed? My understanding is that if the
-pte is the same, we have the ptl. Otherwise we have the page lock for
-shared pages.
-
+diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
+index 115250115f10..f3b5b8ac03b5 100644
+--- a/drivers/staging/mt7621-pci/pci-mt7621.c
++++ b/drivers/staging/mt7621-pci/pci-mt7621.c
+@@ -306,7 +306,9 @@ static int mt7621_pci_parse_request_of_pci_ranges(struct pci_host_bridge *host)
+ 	 * resource manually instead.
+ 	 */
+ 	pcie->io.name = node->full_name;
+-	pcie->io.parent = pcie->io.child = pcie->io.sibling = NULL;
++	pcie->io.parent = NULL;
++	pcie->io.child = NULL;
++	pcie->io.sibling = NULL;
+ 	for_each_of_pci_range(&parser, &range) {
+ 		switch (range.flags & IORESOURCE_TYPE_BITS) {
+ 		case IORESOURCE_IO:
 -- 
-Catalin
+2.25.1
+
