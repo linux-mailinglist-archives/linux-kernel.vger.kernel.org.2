@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBBC36CA01
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD31E36CA06
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236485AbhD0REm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236124AbhD0REj (ORCPT
+        id S237893AbhD0RFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:05:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236433AbhD0RFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:04:39 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751CCC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:03:56 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id t21so9482415iob.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GR5JD0ns+pkMtnVUKEORcsBQhRfif8pxVKBIY8qVHxA=;
-        b=QmLHoLcsn+BCVDfzUQrjwg8Xy2xVvUXFxBBU5ft+H64o4TFVvBIXxXHuqOMECGEcTO
-         dtvozDEMUp4GFivPJePB0PbkV52eNybLkucfQwmJgQrhAYuEEpl8ey6u5rr7froL9831
-         wYVyAxisrA82rOkudABuC3U8PenfOlk7D+S7mAqWQheynJuG+L6t550RQN2xH3AtQmcj
-         YZOVPtow4jaHCIeBDjTYIj5/8GSNps1Fuw/jToYXPcH3cgKCRyqq/rZVHA/3bXXQ2Nve
-         2ueglmp/SjvnojiN9svPkpekJLSz97FI7Aop3wlrKzIy55Bwfsy6mB/auPJu3BpBHN4P
-         BL/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GR5JD0ns+pkMtnVUKEORcsBQhRfif8pxVKBIY8qVHxA=;
-        b=lsf8Axpuo9LqZGhz+fHImtm8zMl5AXGDgM45jB+SBJJQ4dqHVGRzL319VauRGJ1jk4
-         NzwWsl2ymUS3ReiVQCdCuaOJYfhZ3stUN7Ey/PPyUPoFcLT6sXsdHJZsoqUokqjan7UC
-         GBSigBoxzFkOP9hJFcUHiH9n4LMZsK5x6F206zpo5fTpdXld/ZbUwEfvFo1wJbJJVY1P
-         UbiQgrv6yUjWa6SlwsyujV99IPZxrQqXFjXtfEFX2uVacddKByQfn78PNPQMny5G7AO1
-         LnPb6DivXpUhHi0wSEB8lrdNunr8LO5fb4pyol26RQ/8KS9eukuXAY6BgObKGMo6Nago
-         SYvg==
-X-Gm-Message-State: AOAM530qFQkTXriCYZpVz4CRa1eLUX/19LjO8ezrGvZEThTDuyk8e0jc
-        3bNHh2sEbkiEqx66mQ6y4qkw0ZaAjnZXU6KJ3jUTEw==
-X-Google-Smtp-Source: ABdhPJwulj3vaxVO0sHbkW6fF/E/7qJzf+HEs1+HRhzpNXwno9kM3bLiLURQiT9BXMHQwBaFd9a8rHY/eeZXQQ4/jXo=
-X-Received: by 2002:a5d:9682:: with SMTP id m2mr20925814ion.20.1619543035845;
- Tue, 27 Apr 2021 10:03:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210420220804.486803-1-axelrasmussen@google.com>
- <20210420220804.486803-5-axelrasmussen@google.com> <alpine.LSU.2.11.2104261920110.2998@eggly.anvils>
- <20210427155713.GC6820@xz-x1>
-In-Reply-To: <20210427155713.GC6820@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 27 Apr 2021 10:03:20 -0700
-Message-ID: <CAJHvVciKEu3F3mF3-1AC0hR5FgkKHWdHQvSkKJLwibjsW9Zb0g@mail.gmail.com>
-Subject: Re: [PATCH v4 04/10] userfaultfd/shmem: support minor fault
- registration for shmem
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
+        Tue, 27 Apr 2021 13:05:04 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13RH3dhG169480;
+        Tue, 27 Apr 2021 13:03:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=qxfc2vA5E+xspz4sZeH8i/Bh65VF/GUF/+47fezkICE=;
+ b=WguKdcS+eIRu30lAwessbcUQZ30/DunGY06poKOcgrt5OyExO4z5Vi3m38S8zSVIY6VT
+ Gu2GqeII4EYXmNBQYvgUiCn1owJTaYP6hTMCb0ORenGg8oAsmtRiTlZWLb8+7Dwr4lDo
+ uhJHfT59lMpoV/z6jIvhTA6uytaHjLxnXGgSbAj3XDEztQMXGBRoYkfqLYdcITguODXi
+ 9CbipsUGj6tYSf/X3QzIsepbSWbWxedKdvk0qRY6GubtzQTUUrLmmJLEWI5y29cBnnO/
+ VRq6W855L6I8sgcdw8AVx/cQV9xnhjitEk+wp1VqM+S3Df+xekzFZVNHtSEYyEAlaA2+ +A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 386jn4s4r9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 13:03:42 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13RH3fWX169670;
+        Tue, 27 Apr 2021 13:03:41 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 386jn4s4ks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 13:03:41 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13RGvvvD008144;
+        Tue, 27 Apr 2021 17:03:26 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03dal.us.ibm.com with ESMTP id 384ay94j55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 17:03:26 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13RH3Qap37814708
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Apr 2021 17:03:26 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 039AEBE051;
+        Tue, 27 Apr 2021 17:03:26 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96919BE054;
+        Tue, 27 Apr 2021 17:03:25 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.93.36])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Apr 2021 17:03:25 +0000 (GMT)
+Message-ID: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
+Subject: PPC476 hangs during tlb flush after calling /init in crash kernel
+ with linux 5.4+
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, christophe.leroy@csgroup.eu,
+        npiggin@gmail.com, miltonm@us.ibm.com
+Date:   Tue, 27 Apr 2021 12:03:25 -0500
+Organization: IBM
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kpToib2mmTJ-mihH_LrQVsg2OsPGlM3b
+X-Proofpoint-ORIG-GUID: bt6YRBpiq8HgoNdAE3rmdn9q1n6NT-Tm
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-27_10:2021-04-27,2021-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104270115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah yes, I should have modified the commit message when I swapped them
-the first time - sorry for overlooking it.
+Hi all,
 
-As I said in the other thread, unless someone strongly objects I'll
-just re-order them the other way around, minor faults first and then
-CONTINUE, which resolves this concern at least.
+I'm having a problem in simulation and hardware where my PPC476
+processor stops executing instructions after callling /init. In my case
+this is a bash script. The code descends to flush the TLB, and
+somewhere in the loop in _tlbil_pid, the PC goes to
+InstructionTLBError47x but does not go any further. This only occurs in
+the crash kernel environment, which is using the same kernel,
+initramfs, and init script as the main kernel, which executed fine. I
+do not see this problem with linux 4.19 or 3.10. I do see it with 5.4
+and 5.10. I see a fair amount of refactoring in the PPC memory
+management area between 4.19 and 5.4. Can anyone point me in a
+direction to debug this further? My stack trace is below as I can run
+gdb in simulation.
 
-I'm not too worried about leaving them split. Clearly we'll never
-release a kernel with one but not the other. So the only scenario I
-can imagine is, bisecting. But, bisecting across the range where UFFD
-shmem minor faults were introduced, if you're using that feature,
-won't really work out well no matter what we do. If you aren't using
-this feature explicitly, then any of the configurations we've talked
-about are fine.
+Thanks,
+Eddie
 
-On Tue, Apr 27, 2021 at 8:57 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Mon, Apr 26, 2021 at 07:23:57PM -0700, Hugh Dickins wrote:
-> > On Tue, 20 Apr 2021, Axel Rasmussen wrote:
-> >
-> > > This patch allows shmem-backed VMAs to be registered for minor faults.
-> > > Minor faults are appropriately relayed to userspace in the fault path,
-> > > for VMAs with the relevant flag.
-> > >
-> > > This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
-> > > minor faults, though, so userspace doesn't yet have a way to resolve
-> > > such faults.
-> > >
-> > > Acked-by: Peter Xu <peterx@redhat.com>
-> > > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> >
-> > And if this "04/10" had been numbered 03/10, I would have said
-> > Acked-by: Hugh Dickins <hughd@google.com>
-> >
-> > Just read the comment above: "so userspace doesn't yet have a way to
-> > resolve such faults" - if it doesn't by this stage, we're in trouble.
->
-> Right, so merging the two patches might be easier.  Even if we don't merge
-> them, we'll need to touch up the commit message since at least above paragraph
-> is not true anymore as we've already have UFFDIO_CONTINUE.  Thanks,
->
-> --
-> Peter Xu
->
+
+#0  _tlbil_pid () at
+/usr/src/kernel/arch/powerpc/mm/nohash/tlb_low.S:123
+#1  0xca014864 in local_flush_tlb_mm (mm=<optimized out>)
+    at /usr/src/kernel/arch/powerpc/mm/nohash/tlb.c:201
+#2  tlb_flush (tlb=<optimized out>)
+    at /usr/src/kernel/arch/powerpc/mm/nohash/tlb.c:395
+#3  0xca161e48 in tlb_flush_mmu_tlbonly (tlb=<optimized out>)
+    at /usr/src/kernel/include/asm-generic/tlb.h:408
+#4  tlb_flush_mmu_tlbonly (tlb=<optimized out>)
+    at /usr/src/kernel/include/asm-generic/tlb.h:403
+#5  tlb_flush_mmu (tlb=0xcec2fd18) at
+/usr/src/kernel/mm/mmu_gather.c:190
+#6  0xca161fa8 in tlb_finish_mmu (tlb=0xcec2fd18, start=<optimized
+out>,
+    end=<optimized out>) at /usr/src/kernel/mm/mmu_gather.c:272
+#7  0xca18e070 in shift_arg_pages (shift=<optimized out>,
+vma=<optimized out>)
+    at /usr/src/kernel/fs/exec.c:678
+#8  setup_arg_pages (bprm=0xcef1a000, stack_top=<optimized out>,
+    executable_stack=<optimized out>) at /usr/src/kernel/fs/exec.c:768
+#9  0xca1f617c in load_elf_binary (bprm=0xcef1a000)
+    at /usr/src/kernel/fs/binfmt_elf.c:867
+#10 0xca18f3d4 in search_binary_handler (bprm=<optimized out>)
+    at /usr/src/kernel/fs/exec.c:1691
+#11 0xca1f458c in next_terminator (last=<optimized out>,
+first=<optimized out>)
+    at /usr/src/kernel/fs/binfmt_script.c:29
+#12 load_script (bprm=0xcef1a000) at
+/usr/src/kernel/fs/binfmt_script.c:83
+#13 0xca18f3d4 in search_binary_handler (bprm=<optimized out>)
+    at /usr/src/kernel/fs/exec.c:1691
+#14 0xca190104 in acct_arg_size (bprm=<optimized out>, pages=<optimized
+out>)
+    at /usr/src/kernel/fs/exec.c:187
+#15 __do_execve_file (fd=<optimized out>, filename=0xcec98000,
+argv=...,
+    envp=..., flags=<optimized out>, file=<optimized out>)
+    at /usr/src/kernel/fs/exec.c:1872
+#16 0xca19059c in __read_once_size (size=<optimized out>,
+res=<optimized out>, p=<optimized out>) at
+/usr/src/kernel/include/linux/compiler.h:235
+#17 set_dumpable (mm=<optimized out>, value=<optimized out>) at
+/usr/src/kernel/fs/exec.c:1983
+
