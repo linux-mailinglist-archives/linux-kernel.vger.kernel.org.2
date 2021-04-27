@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180E136C3F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3434836C405
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238645AbhD0Kby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:31:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48152 "EHLO mail.kernel.org"
+        id S238723AbhD0KdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235777AbhD0K2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0DA6141D;
+        id S237831AbhD0K21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8752D61419;
         Tue, 27 Apr 2021 10:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619519236;
-        bh=4l0wYnfzYi1h956EsgOdlzJmS/W0qfvo5eSm9fSkn9o=;
+        s=k20201202; t=1619519237;
+        bh=GlCvanyZeZRx9KVkDMbg84X3Nl/epjQxFII8vak4mR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OgcqVxZPSgZY7w2zf8AmOvN23IiVtNmHB0YnDlrUO11w4OUcFW7xpl14zNN3ExSWK
-         dLxQgyBtbZ79yz8XwJt1UHId/8CNpQPc3urkAieF/tMtUo8BgyrnCDvYJY5QuFr3pM
-         WGiO6sU7NfgoLkkYw4gwdlXLfz8ym4BB+GJBQWdZLmepKvlveH+YED92kXRrZhWvHG
-         YuDZlkb4QoDymTVgSrY1YYQTk6DsoXSIySWrO7/JdBjxsdnld9sOztceHLI0mzwgqg
-         hyO4fRQhg1f98yyMXxN9yxy4r2Jd2ky0zZu2Ktedyz0acVbS8i41MnnBIS/0pCCUD/
-         1u6AdDcgUsrTA==
+        b=YRuN6RmqcFQodREOCRy+jAcix/qZjUy416To91BdxH5zMoHBcQmajEmfcEo6zn/MV
+         phXYNvAGOksmNSCVaFYle9I0HA7uZN26uSislFBXRhQwtl22fl/PNT5MnL/c6IDOvg
+         DRYKld857KFGysrlb5dBhBZyQ8hsFcWZwmVxc5nE2iJddSdgjGfbxAI4kQGVFQLr6H
+         klaPwaqqIHm5czFctc9hMQrrfr+QmZDLzmg/2PyNR9x0qsFnEBoQuEwWsygAqTmciH
+         CrkkScMkh9ds1nVM6h72+WHtIEv0DEs8v+ub9VB9d2+s7kRdWLtOIbqNaUwQtdvY0l
+         C8xePLL40BXPA==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lbKvz-000o2Y-5O; Tue, 27 Apr 2021 12:27:15 +0200
+        id 1lbKvz-000o2h-Cy; Tue, 27 Apr 2021 12:27:15 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v3 69/79] media: rcar-fcp: use pm_runtime_resume_and_get()
-Date:   Tue, 27 Apr 2021 12:26:59 +0200
-Message-Id: <912eebdb622ebcf20c7c8887ee68b9e5a5201cce.1619519080.git.mchehab+huawei@kernel.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v3 72/79] media: s5p-mfc: use pm_runtime_resume_and_get()
+Date:   Tue, 27 Apr 2021 12:27:02 +0200
+Message-Id: <828322e0f8b06ef2962b64a6f6f1b368eaecf7a0.1619519080.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
 References: <cover.1619519080.git.mchehab+huawei@kernel.org>
@@ -53,29 +54,30 @@ dev->power.usage_count decrement on errors.
 
 Use the new API, in order to cleanup the error check logic.
 
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/media/platform/rcar-fcp.c | 6 ++----
+ drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/rcar-fcp.c b/drivers/media/platform/rcar-fcp.c
-index 5c03318ae07b..de76af58013c 100644
---- a/drivers/media/platform/rcar-fcp.c
-+++ b/drivers/media/platform/rcar-fcp.c
-@@ -101,11 +101,9 @@ int rcar_fcp_enable(struct rcar_fcp_device *fcp)
- 	if (!fcp)
- 		return 0;
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c b/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
+index 62d2320a7218..88b7d33c9197 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
+@@ -78,11 +78,9 @@ int s5p_mfc_power_on(void)
+ {
+ 	int i, ret = 0;
  
--	ret = pm_runtime_get_sync(fcp->dev);
+-	ret = pm_runtime_get_sync(pm->device);
 -	if (ret < 0) {
--		pm_runtime_put_noidle(fcp->dev);
-+	ret = pm_runtime_resume_and_get(fcp->dev);
+-		pm_runtime_put_noidle(pm->device);
++	ret = pm_runtime_resume_and_get(pm->device);
 +	if (ret < 0)
  		return ret;
 -	}
  
- 	return 0;
- }
+ 	/* clock control */
+ 	for (i = 0; i < pm->num_clocks; i++) {
 -- 
 2.30.2
 
