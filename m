@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECC636C3DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2870936C393
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238461AbhD0KaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48270 "EHLO mail.kernel.org"
+        id S238213AbhD0K2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:28:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235596AbhD0K2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FCF161400;
-        Tue, 27 Apr 2021 10:27:16 +0000 (UTC)
+        id S235517AbhD0K2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B303613D0;
+        Tue, 27 Apr 2021 10:27:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619519236;
-        bh=WbRKhLLskO1RYUogcibQypEKrmLpBP5nHtIha3xX034=;
+        bh=Brp5bgVOD7UqAef4tVuj+33Q8jgTwnd/UQoPNRzNrhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pztCD5s6it4yKv4ZyOriU2MAs88ON/p9id0SD4J0Tv/V0rwdvq/zaEqKbRBaWYoiv
-         jHTFxaXZgY3iRvQhKTJA+vAYjyhGf7pfZlrhXom//FzC3+6uK3f+yzKcHg1esax10R
-         CvCe7j1/Qoqnl6ARzMIKRooVOYddGnFlrmRdkV+rxf8bMFFETm/uOozASatERWbTIg
-         Tgf7qAJLJ1APVWrgQu3bKUg79c/uc88aTjMYN/QUzJRXf+5vIEXLvQP4VANHKSSeBQ
-         eO6OsaIlojASKu99Xd22jSYdx3qon7LfKfCruGz9WSpZoy/z20QUJqTrUKvG7JR6pi
-         2cbQmW82b9jUw==
+        b=e6fyJt/1tyQ+bKXpDrQhcZ2T+6eCV2UdjdMUSlzUshM/+lUly7WUAndQ07uDq81c4
+         3BDo2YsAh9mlufH5zkddHpySwopBKA9CwmUfvK/IPLvO/8Ux03j3Fe3v1dJd3Hgqm8
+         1Zsw5WvJ4XAg1xQjDhzOd2aZVs4yvcxoYiT8q5bAewCKTsp+0wgfliR0TA7oMsxy4Y
+         QvwvMxwjynnbek0QBSHJoA8zpXMOro/I7kJ/P2XrloADUpW8I8DRdDwWtnp+S/SbWb
+         b5Z+H4wxqip4ikECiIgHW/T7hPTXN6f6DBwbu6cRbvtmuPtkhALg35NvY9QZsWCpnF
+         k98sbx5cJ/Zng==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lbKvw-000o0T-B0; Tue, 27 Apr 2021 12:27:12 +0200
+        id 1lbKvw-000o0c-Gf; Tue, 27 Apr 2021 12:27:12 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v3 26/79] staging: media: csi: use pm_runtime_resume_and_get()
-Date:   Tue, 27 Apr 2021 12:26:16 +0200
-Message-Id: <cd75876041417b2ac5c3496b88d2cace6c7243a7.1619519080.git.mchehab+huawei@kernel.org>
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v3 29/79] media: i2c: ccs-core: use pm_runtime_resume_and_get()
+Date:   Tue, 27 Apr 2021 12:26:19 +0200
+Message-Id: <b605d9efaf6ae9535a7c348e9972af2f6c873a12.1619519080.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
 References: <cover.1619519080.git.mchehab+huawei@kernel.org>
@@ -58,25 +54,45 @@ Use the new API, in order to cleanup the error check logic.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/media/tegra-video/csi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/i2c/ccs/ccs-core.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/staging/media/tegra-video/csi.c b/drivers/staging/media/tegra-video/csi.c
-index 033a6935c26d..e938bf4c48b6 100644
---- a/drivers/staging/media/tegra-video/csi.c
-+++ b/drivers/staging/media/tegra-video/csi.c
-@@ -298,10 +298,9 @@ static int tegra_csi_enable_stream(struct v4l2_subdev *subdev)
- 	struct tegra_csi *csi = csi_chan->csi;
- 	int ret, err;
+diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
+index b05f409014b2..8cce80557128 100644
+--- a/drivers/media/i2c/ccs/ccs-core.c
++++ b/drivers/media/i2c/ccs/ccs-core.c
+@@ -1880,12 +1880,11 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
+ 	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
+ 	int rval;
  
--	ret = pm_runtime_get_sync(csi->dev);
-+	ret = pm_runtime_resume_and_get(csi->dev);
- 	if (ret < 0) {
- 		dev_err(csi->dev, "failed to get runtime PM: %d\n", ret);
--		pm_runtime_put_noidle(csi->dev);
- 		return ret;
- 	}
+-	rval = pm_runtime_get_sync(&client->dev);
+-	if (rval < 0) {
+-		pm_runtime_put_noidle(&client->dev);
+-
++	rval = pm_runtime_resume_and_get(&client->dev);
++	if (rval < 0)
+ 		return rval;
+-	} else if (!rval) {
++
++	if (!rval) {
+ 		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
+ 					       ctrl_handler);
+ 		if (rval)
+@@ -3089,12 +3088,9 @@ static int __maybe_unused ccs_suspend(struct device *dev)
+ 	bool streaming = sensor->streaming;
+ 	int rval;
  
+-	rval = pm_runtime_get_sync(dev);
+-	if (rval < 0) {
+-		pm_runtime_put_noidle(dev);
+-
++	rval = pm_runtime_resume_and_get(dev);
++	if (rval < 0)
+ 		return rval;
+-	}
+ 
+ 	if (sensor->streaming)
+ 		ccs_stop_streaming(sensor);
 -- 
 2.30.2
 
