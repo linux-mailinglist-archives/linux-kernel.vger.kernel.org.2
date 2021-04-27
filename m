@@ -2,117 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3656F36C597
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F11536C59B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236715AbhD0LvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:51:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:32785 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhD0Lu6 (ORCPT
+        id S237373AbhD0Lve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:51:34 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:24605 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235570AbhD0Lvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:50:58 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lbMEI-0001uB-Sh; Tue, 27 Apr 2021 11:50:14 +0000
-Subject: Re: [PATCH][next] gpio: sim: Fix dereference of free'd pointer config
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210427102427.11066-1-colin.king@canonical.com>
- <CAMpxmJX-Qkn_REScDJqHvBL6J8veFmzM5o2hmZVOu=iTAu1PUg@mail.gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <a5359f24-28e8-ebd6-4451-18027e82814d@canonical.com>
-Date:   Tue, 27 Apr 2021 12:50:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 27 Apr 2021 07:51:31 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210427115046euoutp01b182fcdb02130caf6a62f92587ef14a1~5tLjPlM3x3094730947euoutp01_
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:50:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210427115046euoutp01b182fcdb02130caf6a62f92587ef14a1~5tLjPlM3x3094730947euoutp01_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619524246;
+        bh=UO1dMcdSXAEl4nrOCrzKqU/g4oobdVaFvyoCv16LG8c=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=eGZNgVq5fnE7nMAHpDFjjFFXh2UelzaPC0uQzJpdKwqHGGccpKi3mHLgAH6aLwaft
+         IiafuHQH77P5amcK2XUd/Q3O73AZngket9JRtsgwzOrUwuN+ymJUymudiLALdiyBPt
+         7ftSQQ7mS9JSbXg/NCCLz98NeHVnEcQ3U98a8FJc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210427115046eucas1p17691dc61986249cbaf34eb0e5f754683~5tLi2ZABM2021820218eucas1p17;
+        Tue, 27 Apr 2021 11:50:46 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 5F.8E.09444.69AF7806; Tue, 27
+        Apr 2021 12:50:46 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210427115045eucas1p23bff0f9ec1887dfe81be7fe05b2a7c41~5tLiUW9ZZ0672806728eucas1p2v;
+        Tue, 27 Apr 2021 11:50:45 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210427115045eusmtrp128e5cd9b8110334e7f866064d34ae956~5tLiTh_-X0367503675eusmtrp15;
+        Tue, 27 Apr 2021 11:50:45 +0000 (GMT)
+X-AuditID: cbfec7f4-dd5ff700000024e4-0c-6087fa966cfe
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 56.1A.08705.59AF7806; Tue, 27
+        Apr 2021 12:50:45 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210427115045eusmtip1040b1157583ded2ca21e782098052c4d~5tLhpLILu0264402644eusmtip10;
+        Tue, 27 Apr 2021 11:50:45 +0000 (GMT)
+Subject: Re: [PATCH 58/78] media: exynos-gsc: use
+ pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <5f6088c7-c839-f097-737f-b4234c413eac@samsung.com>
+Date:   Tue, 27 Apr 2021 13:50:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMpxmJX-Qkn_REScDJqHvBL6J8veFmzM5o2hmZVOu=iTAu1PUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210427114235.45a7b2a4@coco.lan>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se1BMYRjG5zvn7C22Oa3YV27Nat1mbIpyZsgww8wyY1zGjKnQ7nIk2rC7
+        US4J2ZSwI4pkukwjmrCO2lZJ5LIRLbqrVGoallzadUlIu4fRf7/3eZ/39s3Hx0XFHC9+RJSO
+        1kQpIyVcN8L0sN86M+1HomJWm0VE3TQ6eNTzc20EZbUaeRTT1cChakszuVSKsZhDnbXexqh7
+        159glD67lkt1nq9H1EXmJ7ZwhNzclofkCfd7OXKmIIkrv5F3QG5nJsoff7HzVnJD3OZvoiMj
+        dtEa3wUKty1Ztgp8R9H4mA7jDTwepYmTkYAP5Bz4+sqKOVlEXkKgL5cnI7chdiA4k9TPZRN2
+        BB+61/4r+NbDYKwpH0H9s0KcDT4jyKl6QThdo8gVwHT1cJzsSQZAsy3JNQInX2Pw1DDByVzS
+        D44/OIGcLCQXQEPuL5efIKWgr2h19RlNbgRrVz2P9XjAo3PdLl1A+oLZ1Mhje4rhZXfW3/6T
+        oKQ307UQkIkCKL+XymHXXgx575pxlkeBzVLEY3k8VKemEGzBYQQpZS08NjAgaLdkI9Y1D1pr
+        fgw9Bn9oxHS4VurLyotAb0jlOWUg3aGp14Ndwh1OmdJxVhbCUb2IdfvAQEE6xrIXHOseJAxI
+        kjHstIxh52QMOyfj/9xsRBQgMR2tVYfTWv8oerdMq1Rro6PCZRu3qxk09LOqf1scZpRv+yyr
+        RBgfVSLg4xJPIbf0iEIk3KSM3UNrtodpoiNpbSUaxyckYqGqqDBMRIYrdfQ2mt5Ba/5lMb7A
+        Kx6bGRxaoPI3ZHvZpY/LmLurHokbF/W9kJagkFulb/tHPgi5XLi0Iya2Ig6pQ/oqTtAN5bp2
+        Kub0mDt9+xPsOql7x/sIVaguf+zg7C9vvGenmRcaqg62fJIG9T7c0FzXmDvtatG+y/4flzYv
+        X985+WSCyaLQl6+9MhjWIvTRn6pb134ptDjn/LXnwYvbd77tHB2/dYlHkGnXxTgmKCBRstmW
+        5aGuD9R8mHp3IFlsNnpKvCN6MqtleY5a3afW6ODcuLJY1d5MJXXo+1OBu/rk/Q1Zilvpy34d
+        r5u7pipg9e+mkpu6IG9hqrH148imfQN79Koz7/36p7ySBTpMkc/qaoIDqy7USAjtFqXfDFyj
+        Vf4Bt2bmC8gDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xu7pTf7UnGMy9p2exc8MXdouLM++y
+        WJw/v4HdYtPja6wWl3fNYbPo2bCV1WLG+X1MFoc3nmGyaFtwmc3i4eyrjBbLNv1hcuD22HF3
+        CaNHy5G3rB6bVnWyeWxeUu/xeZOcx6mvn9kD2KL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxM
+        LPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mua/2s9csEWm4sGGzcwNjNPEuxg5OSQETCS+P9vE
+        1MXIxSEksJRRYsGJzexdjBxACSmJ+S1KEDXCEn+udbFB1LxnlNiz+wYjSEJYwFfiY+sPVhBb
+        RMBU4uarTrBBzALPmCQWXdwB1fGYSeLVswfsIFVsAoYSvUf7wLp5Bewkri36C9bNIqAq0bb/
+        DguILSqQLLH692ZWiBpBiZMzn4DFOQX0JXZsuw42h1lAXeLPvEvMELa4xK0n85kgbHmJ7W/n
+        ME9gFJqFpH0WkpZZSFpmIWlZwMiyilEktbQ4Nz232FCvODG3uDQvXS85P3cTIzBOtx37uXkH
+        47xXH/UOMTJxMB5ilOBgVhLhZdvVmiDEm5JYWZValB9fVJqTWnyI0RTon4nMUqLJ+cBEkVcS
+        b2hmYGpoYmZpYGppZqwkzrt17pp4IYH0xJLU7NTUgtQimD4mDk6pBqbSrxmvf6fPnLWNo3L7
+        1r1RMjbzjETutNX3GIo9XBN7IuRCZoNUgrhweIaVy9nzr3RlSqJnP798t9BXX3XKLesvbjwZ
+        Std0RP8LxZ/7qv3p+weXnVaf3il8bMyY6l234tclx4MShSJ7j2qbfPkVrib77ZBzXkyNi7nq
+        q7uWEmuiODXu6GVsf8QuYCBzfn1JGovlg3PzBaZIse29lLk5L3bGplOr1pv3RFxxKOooTFnz
+        iqtWZ0l4vIu8FUP3hnD20LpZloIlcyLcpxpmvdA7Un2JLfff86PB+Yr7clqkX32WXHi1VOrz
+        lPX136OXu72rWica9jFwwVzhI1efZFYzVk/bsWxx3QnNqUfbn2u8fKLEUpyRaKjFXFScCAAV
+        8rrkXAMAAA==
+X-CMS-MailID: 20210427115045eucas1p23bff0f9ec1887dfe81be7fe05b2a7c41
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210424064556eucas1p1e89378837c377168c9782b4172e70482
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210424064556eucas1p1e89378837c377168c9782b4172e70482
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <CGME20210424064556eucas1p1e89378837c377168c9782b4172e70482@eucas1p1.samsung.com>
+        <9c7d683907b9f9cf4a99f57f978671ec7f5a1dbc.1619191723.git.mchehab+huawei@kernel.org>
+        <ee7b580a-d5bc-bdbf-3efc-c9d8f43316db@samsung.com>
+        <20210427113055.745d0560@coco.lan> <20210427114235.45a7b2a4@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/04/2021 12:33, Bartosz Golaszewski wrote:
-> On Tue, Apr 27, 2021 at 12:24 PM Colin King <colin.king@canonical.com> wrote:
+On 27.04.2021 11:42, Mauro Carvalho Chehab wrote:
+> Em Tue, 27 Apr 2021 11:30:55 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> 
+>> Em Tue, 27 Apr 2021 10:18:12 +0200
+>> Sylwester Nawrocki <s.nawrocki@samsung.com> escreveu:
 >>
->> From: Colin Ian King <colin.king@canonical.com>
+>>> On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:  
+>>>> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+>>>> added pm_runtime_resume_and_get() in order to automatically handle
+>>>> dev->power.usage_count decrement on errors.
+>>>>
+>>>> Use the new API, in order to cleanup the error check logic.
+>>>>
+>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>>> ---
+>>>>  drivers/media/platform/exynos-gsc/gsc-core.c | 3 +--
+>>>>  drivers/media/platform/exynos-gsc/gsc-m2m.c  | 2 +-
+>>>>  2 files changed, 2 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+>>>> index 9f41c2e7097a..9d5841194f6b 100644
+>>>> --- a/drivers/media/platform/exynos-gsc/gsc-core.c
+>>>> +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+>>>> @@ -1210,7 +1210,7 @@ static int gsc_remove(struct platform_device *pdev)
+>>>>  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
+>>>>  	int i;
+>>>>  
+>>>> -	pm_runtime_get_sync(&pdev->dev);
+>>>> +	pm_runtime_resume_and_get(&pdev->dev);
+>>>>  
+>>>>  	gsc_unregister_m2m_device(gsc);
+>>>>  	v4l2_device_unregister(&gsc->v4l2_dev);
+>>>> @@ -1219,7 +1219,6 @@ static int gsc_remove(struct platform_device *pdev)
+>>>>  	for (i = 0; i < gsc->num_clocks; i++)
+>>>>  		clk_disable_unprepare(gsc->clock[i]);
+>>>>  
+>>>> -	pm_runtime_put_noidle(&pdev->dev);    
+>>>
+>>> If we do this then the device usage count will not get decremented
+>>> after the pm_runtime_resume_and_get() call above and after driver
+>>> unload/load cycle it will not be possible to suspend the device.
+>>> I wouldn't be changing anything in gsc_remove(), pm_runtime_get_sync()
+>>> works better in that case.  
 >>
->> The error return of config->id dereferences the kfree'd object config.
->> Fix this by using a temporary variable for the id to avoid this issue.
+>> Good point.
 >>
->> Addresses-Coverity: ("Read from pointer aftyer free")
->> Fixes: a49d14276ac4 ("gpio: sim: allocate IDA numbers earlier")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/gpio/gpio-sim.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
+>> Actually, I don't see any reason why to call a PM resume
+>> function - either being pm_runtime_get_sync() or
+>> pm_runtime_resume_and_get().
 >>
->> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
->> index 2e2e6399e453..7bba5783a043 100644
->> --- a/drivers/gpio/gpio-sim.c
->> +++ b/drivers/gpio/gpio-sim.c
->> @@ -751,8 +751,10 @@ gpio_sim_config_make_item(struct config_group *group, const char *name)
+>> The code there could simply be:
 >>
->>         config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
->>         if (config->id < 0) {
->> +               int id = config->id;
->> +
->>                 kfree(config);
->> -               return ERR_PTR(config->id);
->> +               return ERR_PTR(id);
->>         }
+>>     static int gsc_remove(struct platform_device *pdev)
+>>     {
+>>         struct gsc_dev *gsc = platform_get_drvdata(pdev);
+>>         int i;
 >>
->>         config_item_init_type_name(&config->item, name,
->> --
->> 2.30.2
+>>         gsc_unregister_m2m_device(gsc);
+>>         v4l2_device_unregister(&gsc->v4l2_dev);
 >>
+>>         vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+>>         for (i = 0; i < gsc->num_clocks; i++)
+>>                 clk_disable_unprepare(gsc->clock[i]);
+>>
+>>         pm_runtime_disable(&pdev->dev);
+>>
+>>         dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
+>>         return 0;
+>>     }
+>>
+>> Eventually also adding:
+>> 	pm_runtime_suspended(&pdev->dev);
 > 
-> Thanks! Can you do something like this:
+> In time: I actually meant:
 > 
-> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-> index 2e2e6399e453..b21541c0b700 100644
-> --- a/drivers/gpio/gpio-sim.c
-> +++ b/drivers/gpio/gpio-sim.c
-> @@ -744,20 +744,22 @@ static struct config_item *
->  gpio_sim_config_make_item(struct config_group *group, const char *name)
->  {
->   struct gpio_sim_chip_config *config;
-> + int id;
+> 	pm_runtime_set_suspended(&pdev->dev);
 > 
->   config = kzalloc(sizeof(*config), GFP_KERNEL);
->   if (!config)
->   return ERR_PTR(-ENOMEM);
-> 
-> - config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
-> - if (config->id < 0) {
-> + id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
-> + if (id < 0) {
->   kfree(config);
-> - return ERR_PTR(config->id);
-> + return ERR_PTR(id);
->   }
-> 
->   config_item_init_type_name(&config->item, name,
->      &gpio_sim_chip_config_type);
->   config->num_lines = 1;
-> + config->id = id;
->   mutex_init(&config->lock);
-> 
->   return &config->item;
-> 
-> 
-> I think this looks more elegant without the local variable inside the if.
+> but after double-checking the PM runtime code, it sounds to me that
+> just calling pm_runtime_disable() would be enough. Not 100% sure
+> here. Btw, some media drivers call it after pm_runtime_disable(),
+> while others don't do.
 
-OK, good idea, V2 sent.
-> 
-> Bart
-> 
+I think if the device is brought into suspended state (e.g. by
+disabling clocks as above) the pm_runtime_set_suspended() call
+should be there. IOW a following sequence: 
 
+	pm_runtime_disable(dev);
+	if (!pm_runtime_status_suspended(dev))
+		/* put device into suspended state (disable clocks, 
+		  voltage regulators, assert GPIOs, etc. */
+	pm_runtime_set_suspended(dev);
+
+--
+Regards,
+Sylwester
