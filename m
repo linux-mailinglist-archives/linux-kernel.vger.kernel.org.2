@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889E736C57E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225E436C582
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhD0LrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        id S235988AbhD0Lrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhD0LrB (ORCPT
+        with ESMTP id S230365AbhD0Lrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:47:01 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1682C061574;
-        Tue, 27 Apr 2021 04:46:18 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id e15so4386989pfv.10;
-        Tue, 27 Apr 2021 04:46:18 -0700 (PDT)
+        Tue, 27 Apr 2021 07:47:47 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D634CC061574;
+        Tue, 27 Apr 2021 04:47:03 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id n138so93367221lfa.3;
+        Tue, 27 Apr 2021 04:47:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iMMjjV+PTIV4vm6/IEmRAWhSVzJiCXiZU3/huO/x0nI=;
-        b=ZJ5BlTICDUmG7DguAEd0jOWxjwIIhOaHp4R6eP8WhcGhNHC51J05uSg8I6KYz03BN7
-         Gjdaf+CiMhQyG6HVJLl+RLDlLuxIyFICDTrM2iBH78c57SiT4P/QFvk4NhlTMWy0zsrz
-         YZCmbyMFpX9+/2dUK3valgqZBYVthS6aZBo9554CiRGCJ93prSUyJSVjSbJq3pg/Kts7
-         ZwIvwzkOgnEHhx+38D5EslxeSIcZNyFn/4If/iTP/5JwzQ6HQxGV1NL7yO9utIdh9fwP
-         OIRyaTMRRni21LQU12CZ8qc3FLxRIDbNEbCf7SRpr2TRSPXm7b1fmptX1R4tYhEdtzTm
-         Rkzg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6mN7UJosAzy0Fgag1DI+J5II0Cv8JwYcpqR0ZdaZ6Pw=;
+        b=VXVdlKxet0oHyPdjnO6HFu2QcGCTj2OnpNUQBPewkERKV+sw2dsktG1hLLOs3DcZaO
+         9DOXKyYVY6Tza+Oa/28VnQIzzIzhF2iS6NwC91VoSxakURxdNl3e2QqsRBj1NBRCZkwI
+         edbTrVaohbDwNfjnP8OUaT/PNSySXJdBF0wLnz/EPNa5DOaZhXwbWlrDuKzgVuPNwiDD
+         2Zdpm0gQ+laaB0mM1y4PZOUmOYhtytVWEnFv88OojOpD3ngTCQTKjrnLE8Q6NbEPBWQS
+         oNfsAvXkSyXdQlDMnf66Ju89qCVFs0AiOCZDF/iVmjAZJXhgeASyrIYcCc8REWBl2hxo
+         r5VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iMMjjV+PTIV4vm6/IEmRAWhSVzJiCXiZU3/huO/x0nI=;
-        b=t48Bke7wBSXBXf059TFLxzyN2cGWPLsyv+6zzXWze3bQcDXSbsXmp4ZiojOvdRG+Is
-         2xFaQkU2ZdW1hxGhKGJ+xLD5Q+Ml7vAzmRqCdivOqAdHi8nngfydDG451Vxqk9yjEkWB
-         D8fOprzZIskJa2VPxdDnBnGyS9Q1p7bqN3zZ9wkM6tMoQ2Pq72W2QEuq4cGjxuL2tyqb
-         EqlhSRHcATFckB25ZkII565MU9uCAT05hTNcGxVgn8k9yKVHz19o+5Xh6gA73EJ8XKb1
-         PQY+CKWbm8uPnBXANLudPfrUB+sYDQpyqVLSjWopT8Pf7VIUXfmpYlYaMpk933YMQiyH
-         crUw==
-X-Gm-Message-State: AOAM531MzrHEVSyWnqz5kJuZpM2gJlSAYk9pdcbfQhZ6aUy1n6EZ5vih
-        /CP89cjwbu5Xrdd+wJdOsZpf4v3MXBORunGPSdQ=
-X-Google-Smtp-Source: ABdhPJyGaaSUm4K/1Z1ekcXcdw6ghOy8irdARQN0sjPb9GGewDmareqf3Qe4B4ZpG2WE8B1kUCUoVXdCRvOb+eKZlf4=
-X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
- n15-20020a62e50f0000b02902148e4aae46mr22977757pff.73.1619523978223; Tue, 27
- Apr 2021 04:46:18 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6mN7UJosAzy0Fgag1DI+J5II0Cv8JwYcpqR0ZdaZ6Pw=;
+        b=Cla9HqcPT0NCHpcRPnz1rX6/1ah6Lo2Gs2oUMODbxYHq4xvO3yoLIrhLR35MB8XFxY
+         h392OzxVG+CeSnG8O9sD3BmfR4SUYfBIu7CKpvswRsdg7YFZv+O33vPuVvFjumdzJI00
+         YCFP/grMz4f4pXy10Nf3F1iGeaevsbrjYkCt8ajFexj5Q2/UXxfIVrV+8Ar6r28Y6zp7
+         Gd4u5u64r6E55VtOm9vlzouXGo4OOJdnlIDWhqEzvBUv1v4Kx+L9nNtzR4zHw1NIaiD8
+         rsGdDKesK6XREBPttrYvUrPVtMxWOoHGkmNakK2Pp7md3GtXDeWEFYxLbucxmtTc9usJ
+         O8pQ==
+X-Gm-Message-State: AOAM5318D1pVFj844fxj6N2aWqaP/fROmeejb57g5qYOXj8vq8jgR6ai
+        H0vWZzrULE6sl3Ch8oIed3Z2y3W7ih0=
+X-Google-Smtp-Source: ABdhPJx6kko3TABajn1fiMhwaIKekxa1aDYYmrMmB2KvhSCMsDtZmlLmkmnRpfkACnQvOdILCmZEfA==
+X-Received: by 2002:a19:a40a:: with SMTP id q10mr16261069lfc.302.1619524022256;
+        Tue, 27 Apr 2021 04:47:02 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-102.dynamic.spd-mgts.ru. [109.252.193.102])
+        by smtp.googlemail.com with ESMTPSA id i8sm363303ljb.43.2021.04.27.04.47.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 04:47:01 -0700 (PDT)
+Subject: Re: [PATCH v3 25/79] staging: media: vde: use
+ pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+ <d7fb2d00224d37ba1c6c6e9b73609af95c886844.1619519080.git.mchehab+huawei@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2e8bdea5-b2a7-df95-9d93-7c1f2df6158d@gmail.com>
+Date:   Tue, 27 Apr 2021 14:47:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Apr 2021 14:46:02 +0300
-Message-ID: <CAHp75VeiHsk15QoG3X-OV8V8jqzCNeKkif9V=cx4nvKVHaKbKA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d7fb2d00224d37ba1c6c6e9b73609af95c886844.1619519080.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 9:25 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Set of cleanups here and there related to the SPI PXA2xx driver.
-> On top of them, adding the special type for Intel Merrifield.
+27.04.2021 13:26, Mauro Carvalho Chehab пишет:
+> @@ -1088,8 +1090,9 @@ static int tegra_vde_remove(struct platform_device *pdev)
+>  {
+>  	struct tegra_vde *vde = platform_get_drvdata(pdev);
+>  	struct device *dev = &pdev->dev;
+> +	int ret;
+>  
+> -	pm_runtime_get_sync(dev);
+> +	ret = pm_runtime_resume_and_get(dev);
 
-Mark, are you accepting patches for v5.14 now, or should I resend
-after v5.13-rc1 is out?
+Should be cleaner to return error directly here, IMO.
 
-(I have few more in my queue :-)
+>  	pm_runtime_dont_use_autosuspend(dev);
+>  	pm_runtime_disable(dev);
+>  
+> @@ -1097,7 +1100,8 @@ static int tegra_vde_remove(struct platform_device *pdev)
+>  	 * Balance RPM state, the VDE power domain is left ON and hardware
+>  	 * is clock-gated. It's safe to reboot machine now.
+>  	 */
+> -	pm_runtime_put_noidle(dev);
+> +	if (ret >= 0)
+> +		pm_runtime_put_noidle(dev);
+>  	clk_disable_unprepare(vde->clk);
 
-> In v2:
-> - cover letter (Mark)
-> - drop moving the header in patch 5 (Mark)
->
-> Andy Shevchenko (14):
->   spi: pxa2xx: Use one point of return when ->probe() fails
->   spi: pxa2xx: Utilize MMIO and physical base from struct ssp_device
->   spi: pxa2xx: Utilize struct device from struct ssp_device
->   spi: pxa2xx: Replace header inclusions by forward declarations
->   spi: pxa2xx: Unify ifdeffery used in the headers
->   spi: pxa2xx: Group Intel Quark specific definitions
->   spi: pxa2xx: Introduce int_stop_and_reset() helper
->   spi: pxa2xx: Reuse int_error_stop() in pxa2xx_spi_slave_abort()
->   spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in the driver
->   spi: pxa2xx: Extract pxa2xx_spi_update() helper
->   spi: pxa2xx: Extract clear_SSCR1_bits() helper
->   spi: pxa2xx: Extract read_SSSR_bits() helper
->   spi: pxa2xx: Constify struct driver_data parameter
->   spi: pxa2xx: Introduce special type for Merrifield SPIs
->
->  drivers/spi/spi-pxa2xx-dma.c   |  37 +++----
->  drivers/spi/spi-pxa2xx-pci.c   |   4 +-
->  drivers/spi/spi-pxa2xx.c       | 190 +++++++++++++++++----------------
->  drivers/spi/spi-pxa2xx.h       |  52 ++++-----
->  include/linux/pxa2xx_ssp.h     |  42 +++++++-
->  include/linux/spi/pxa2xx_spi.h |   9 +-
->  sound/soc/pxa/pxa-ssp.c        |  16 ---
->  7 files changed, 185 insertions(+), 165 deletions(-)
->
-> --
-> 2.30.2
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
