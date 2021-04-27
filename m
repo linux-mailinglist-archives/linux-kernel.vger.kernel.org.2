@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E700536C858
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC23836C85F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238659AbhD0PJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:09:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:53850 "EHLO foss.arm.com"
+        id S238691AbhD0PKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:10:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236710AbhD0PJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:09:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B288931B;
-        Tue, 27 Apr 2021 08:08:54 -0700 (PDT)
-Received: from [10.57.61.101] (unknown [10.57.61.101])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 053013F73B;
-        Tue, 27 Apr 2021 08:08:52 -0700 (PDT)
-Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
- pm_runtime_get_sync()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
- <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
-Date:   Tue, 27 Apr 2021 16:08:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S235466AbhD0PKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:10:13 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 796A9613E2;
+        Tue, 27 Apr 2021 15:09:28 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 11:09:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
+        dietmar.eggemann@arm.com, greg@kroah.com,
+        gregkh@linuxfoundation.org, joshdon@google.com,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        valentin.schneider@arm.com, vincent.guittot@linaro.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: sched: Move SCHED_DEBUG sysctl to debugfs
+Message-ID: <20210427110926.24f41fbb@gandalf.local.home>
+In-Reply-To: <20210427145925.5246-1-borntraeger@de.ibm.com>
+References: <20210412102001.287610138@infradead.org>
+        <20210427145925.5246-1-borntraeger@de.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-27 11:27, Mauro Carvalho Chehab wrote:
-> Despite other *_get()/*_put() functions, where usage count is
-> incremented only if not errors, the pm_runtime_get_sync() has
-> a different behavior, incrementing the counter *even* on
-> errors.
-> 
-> That's an error prone behavior, as people often forget to
-> decrement the usage counter.
-> 
-> However, the hantro driver depends on this behavior, as it
-> will decrement the usage_count unconditionally at the m2m
-> job finish time, which makes sense.
-> 
-> So, intead of using the pm_runtime_resume_and_get() that
-> would decrement the counter on error, keep the current
-> API, but add a documentation explaining the rationale for
-> keep using pm_runtime_get_sync().
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 595e82a82728..96f940c1c85c 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -155,6 +155,13 @@ static void device_run(void *priv)
->   	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
->   	if (ret)
->   		goto err_cancel_job;
+On Tue, 27 Apr 2021 16:59:25 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-..except this can also cause the same pm_runtime_put_autosuspend() call 
-without even reaching the "matching" get below, so rather than some kind 
-of cleverness it seems more like it's just broken :/
-
-Robin.
-
-> +
-> +	/*
-> +	 * The pm_runtime_get_sync() will increment dev->power.usage_count,
-> +	 * even on errors. That's the expected behavior here, since the
-> +	 * hantro_job_finish() function at the error handling code
-> +	 * will internally call pm_runtime_put_autosuspend().
-> +	 */
->   	ret = pm_runtime_get_sync(ctx->dev->dev);
->   	if (ret < 0)
->   		goto err_cancel_job;
+> Peter,
 > 
+> I just realized that we moved away sysctl tunabled to debugfs in next.
+> We have seen several cases where it was benefitial to set
+> sched_migration_cost_ns to a lower value. For example with KVM I can
+> easily get 50% more transactions with 50000 instead of 500000. 
+> Until now it was possible to use tuned or /etc/sysctl.conf to set
+> these things permanently. 
+> 
+> Given that some people do not want to have debugfs mounted all the time
+> I would consider this a regression. The sysctl tunable was always 
+> available.
+> 
+> I am ok with the "informational" things being in debugfs, but not
+> the tunables. So how do we proceed here?
+
+Should there be a schedfs created?
+
+This is the reason I created the tracefs file system, was to get the
+tracing code out of debugfs, as debugfs is a catch all for everything and
+can lead to poor and insecure interfaces that people do not want to add on
+systems that they still want tracing on.
+
+Or perhaps we should add a "tunefs" for tunables that are stable interfaces
+that should not be in /proc but also not in debugfs.
+
+-- Steve
+
