@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A812C36C459
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFCF36C45B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbhD0KsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:48:21 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:29356 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhD0KsS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:48:18 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210427104734euoutp013f264297a35c486cbc1cd647ccfc2d7e~5sUW6zPsu2699326993euoutp01C
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:47:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210427104734euoutp013f264297a35c486cbc1cd647ccfc2d7e~5sUW6zPsu2699326993euoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619520454;
-        bh=V622SrPPFmIy1V6bcn7pkxIde3kMy91ETgSjyHGa6Cw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Lef71eWzquCMnRJPJSCHiAWdev4XmSsDZzQhJeVD4+7U5IElEPIzmI8KC3k9evcHO
-         lqojCP7QX0F+KIlCYIMUhhzSdzlLyYD/cA1+7vS5EbOIGD4Rk1smMhHYWPaOPH6RIs
-         Daq5Gsc33Fazlan4xTGZjI5LVXEMgcr1PIrHXP8A=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210427104733eucas1p24d7df6da5cde799771531742edcc1289~5sUWgAcXn2179321793eucas1p2c;
-        Tue, 27 Apr 2021 10:47:33 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id B5.28.09439.5CBE7806; Tue, 27
-        Apr 2021 11:47:33 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210427104733eucas1p156e0f6c6e13f82584b471c37e5493663~5sUWAiHqn2380423804eucas1p1-;
-        Tue, 27 Apr 2021 10:47:33 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210427104733eusmtrp24d4bc735249b8e4d421fd0f3158945db~5sUV-xQ7I0359703597eusmtrp2f;
-        Tue, 27 Apr 2021 10:47:33 +0000 (GMT)
-X-AuditID: cbfec7f5-c1bff700000024df-78-6087ebc53196
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F5.90.08705.4CBE7806; Tue, 27
-        Apr 2021 11:47:32 +0100 (BST)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210427104732eusmtip1cdf0c5e5d139a850b32e85990dcc4992~5sUVPui_d2324223242eusmtip1j;
-        Tue, 27 Apr 2021 10:47:32 +0000 (GMT)
-Subject: Re: [PATCH v3 63/79] media: exynos-gsc: use
- pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <dafff234-b575-9c84-b5bb-d7e6e912a5f3@samsung.com>
-Date:   Tue, 27 Apr 2021 12:47:31 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.10.0
+        id S235457AbhD0KuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:50:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230365AbhD0KuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:50:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 800A3611BE;
+        Tue, 27 Apr 2021 10:49:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619520563;
+        bh=IynpH/1tZ1nW6uCOBCWBcA5G5XhdF8ILsL5RRo+T+rA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kCZkWgNR7EUi6Vrj/X8aDl3mt046jiqPhrVvAxguXOa9QB+z/JAo/Y24oKGLaxKVB
+         SIiRW3cvOOHeoOIDledUTYnby6pd/0mw/fnp8cripxbX/yczVYeJMabawfS3+gNXc9
+         lpfxnCErRzhhe2DHMGbZ0qE6RHgTyInBmU0HVqg7zuAmuKtQOIZ8maul8RMgLfFk0G
+         1Z+fKR/k7z1WSA/yWx4NWbwM+CybubU4LUTHr2S+yqeuWZLKA3+wH7M3CB5bkqv9MZ
+         l9hdBQvMU2K/UfWzZ+n+H0Qo/UfigG3tmS5rFWsBHk+i87HnbNdkhjUpmD3A/yt1pO
+         SwQzKqop4hmVA==
+Date:   Tue, 27 Apr 2021 11:48:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: Fix spi device unregister flow
+Message-ID: <20210427104851.GC4605@sirena.org.uk>
+References: <20210426235638.1285530-1-saravanak@google.com>
+ <CAHp75VeNZ4-TgkevNF5tgmB1eU9E77RNsPWRABp6PvC6eGpQrQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <5a8d3ca13956feb5e611cb1fe08195966be5edf2.1619519080.git.mchehab+huawei@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGKsWRmVeSWpSXmKPExsWy7djP87pHX7cnGMy7I2+xc8MXdouLM++y
-        WJw/v4HdYtPja6wWl3fNYbPo2bCV1WLG+X1MFoc3nmGyaFtwmc3i4eyrjBbLNv1hcuD22HF3
-        CaNHy5G3rB6bVnWyeWxeUu/xeZOcx6mvn9kD2KK4bFJSczLLUov07RK4MjZcvM1acIG54uD1
-        F2wNjF3MXYycHBICJhK3dx9k7GLk4hASWMEo0bbsGxuE84VR4vDkLlYI5zOjxIITT9hgWrau
-        fcEOkVjOKPF2zgMmCOcjo8TjKbPBqoQFgiR+HjoOtkREwFTi5qtOJhCbWeARk8TZCbIgNpuA
-        oUTv0T6g5RwcvAJ2EpM2BIOEWQRUJfYv6QcrFxVIljj/+Co7iM0rIChxcuYTFhCbUyBB4siq
-        JSwQI8Ulbj2ZDzVeXmL72znMIPdICLRzSvTs3McIcbWLxOWO41AfCEu8Or6FHcKWkfi/cz4T
-        REMzo0TP7tvsEM4ERon7xxdAdVtL3Dn3iw3kUmYBTYn1u/Qhwo4SbZumsIOEJQT4JG68FYQ4
-        gk9i0rbpzBBhXomONiGIahWJ36umM0HYUhLdT/6zTGBUmoXktVlI3pmF5J1ZCHsXMLKsYhRP
-        LS3OTU8tNs5LLdcrTswtLs1L10vOz93ECExap/8d/7qDccWrj3qHGJk4GA8xSnAwK4nwsu1q
-        TRDiTUmsrEotyo8vKs1JLT7EKM3BoiTOu2vrmnghgfTEktTs1NSC1CKYLBMHp1QDk0qy56qX
-        C/+c+peannpEc/X16RujJcWOXZOJfXhn/+Lit/WX5dlqn/VtuVfTydiVq6u3hXO5ki6Xj1pm
-        3c6nCxbfqzUTnd/9JaZYo8qedxvjhNORSy893/5m1UvVNqvd/Ad6+Xhu96Uq1Ss8/nCdRber
-        xfMxz6UGgQ9NJxSNtrXMXc367lp8kLmd/wN1pWO2zy8lXcxp815QfrR00nrTf/tcEhn3aCVm
-        pvJec6l2OLjSeFKQt/ZGh387T36QWWa0mUXtGjfXx7SHl6VURBJPqnkUPcpvf9B8RGN3e9TJ
-        xToNHyQVdsk56Hn6ztLSaOrQUfKv7vta+pCFy1LX1m+Kv+HySXXzD/q+uJhRvbleiaU4I9FQ
-        i7moOBEAie2Q3skDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7pHXrcnGHy8Y2Wxc8MXdouLM++y
-        WJw/v4HdYtPja6wWl3fNYbPo2bCV1WLG+X1MFoc3nmGyaFtwmc3i4eyrjBbLNv1hcuD22HF3
-        CaNHy5G3rB6bVnWyeWxeUu/xeZOcx6mvn9kD2KL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxM
-        LPUMjc1jrYxMlfTtbFJSczLLUov07RL0MjZcvM1acIG54uD1F2wNjF3MXYycHBICJhJb175g
-        72Lk4hASWMoocXFXL2MXIwdQQkpifosSRI2wxJ9rXWwQNe8ZJW49O88IkhAWCJL4eeg42CAR
-        AVOJm686mUCKmAWeMUksurgDquMZo0TL1AawKjYBQ4neo31gG3gF7CQmbQgGCbMIqErsX9LP
-        BGKLCiRLrP69mRXE5hUQlDg58wkLiM0pkCBxZNUSMJtZQF3iz7xLzBC2uMStJ/OZIGx5ie1v
-        5zBPYBSahaR9FpKWWUhaZiFpWcDIsopRJLW0ODc9t9hQrzgxt7g0L10vOT93EyMwSrcd+7l5
-        B+O8Vx/1DjEycTAeYpTgYFYS4WXb1ZogxJuSWFmVWpQfX1Sak1p8iNEU6J+JzFKiyfnANJFX
-        Em9oZmBqaGJmaWBqaWasJM67de6aeCGB9MSS1OzU1ILUIpg+Jg5OqQam0Nvz7xsrCq/NupW8
-        NkOw8517cprxacOl7jI7N7+Z+slGxHGxzpM5oY2zXlb2pIdc59Lla1aSbGtrDSiR+CJ1Z8m6
-        pdr/+60X7X7KOD/0q/+1z9t+X98t9u5Uwpz3WocW8zb90P/v4JDJvjBjFntnmsqCN3MO7mJp
-        EZI+1BS3a8rsZrZFBxWPdy1jmH0u8/cnQaFLHNHWKhs7bXq/BzPteTs5zzyqKvfYlS+MjPy/
-        Ajw3P+tWWrfxkPjbKSZ7O5Z/X8+yPTupcLKeY31kt6q21eENe46YBGef+aJeZrvIit36L5e9
-        VdYNjZs1V6S3sq3yj33MzahiqsrYtbIzNKDQxbOYe/9+Jo77ewo+6KgqsRRnJBpqMRcVJwIA
-        JJZT4FsDAAA=
-X-CMS-MailID: 20210427104733eucas1p156e0f6c6e13f82584b471c37e5493663
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210427102804eucas1p175159e50b5d3431e6b0cffea7d52aaed
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210427102804eucas1p175159e50b5d3431e6b0cffea7d52aaed
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
-        <CGME20210427102804eucas1p175159e50b5d3431e6b0cffea7d52aaed@eucas1p1.samsung.com>
-        <5a8d3ca13956feb5e611cb1fe08195966be5edf2.1619519080.git.mchehab+huawei@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eHhjakXzOLJAF9wJ"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeNZ4-TgkevNF5tgmB1eU9E77RNsPWRABp6PvC6eGpQrQ@mail.gmail.com>
+X-Cookie: Don't feed the bats tonight.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.04.2021 12:26, Mauro Carvalho Chehab wrote:
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
-> 
-> Use the new API, in order to cleanup the error check logic.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+--eHhjakXzOLJAF9wJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 27, 2021 at 09:52:48AM +0300, Andy Shevchenko wrote:
+> +Cc Lukas
+
+The cleanup callback has been in release() since the framework was
+merged AFAICT.
+
+--eHhjakXzOLJAF9wJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCH7BMACgkQJNaLcl1U
+h9CF8wf7BURoXLMYVywhkygz0iKZ9Xze/7xlPD0oYbX4+PrmOs4si7yFfJ2qhhvk
+Z8D6ueLlYp3+YvoNglU5Y5laqgr8qCkzU2XlhomcMRVwy6iTjq63SF5CXgMH+xYE
+l6h49/4g3gPb6kXVPAPPJJ51yKmtYhpCZUXQ75CoxQs1mumadPlXfgNhU/bmNRsI
+CAMq4KkqiB9wF23QyrUngcscq2k5bcizXLDqw8j6b5ctjCMaHwJydqTpxyIIZ//9
+kAayA7U/MmSKYwsoMmAyqFwpy2ikNlRkIDUH5Dhq1+dCBh67sgjCqSUC/8jIOr7q
+LIN+kgWRo6dmPhk2WoDF7dwW+n2Zfg==
+=LOiQ
+-----END PGP SIGNATURE-----
+
+--eHhjakXzOLJAF9wJ--
