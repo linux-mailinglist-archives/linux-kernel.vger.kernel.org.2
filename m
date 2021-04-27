@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCFA36BE8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C6236BE90
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhD0Enw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 00:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhD0Enu (ORCPT
+        id S234737AbhD0EpS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 00:45:18 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3408 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhD0EpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:43:50 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E8FC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 21:43:07 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id b21so1671673plz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 21:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L/KHE0b9yQxhmyIXZE35ERgi0XKeQwuyEqiuqSbm+MM=;
-        b=hffZSpoCi3KBvwODP+2t/DdtmbubisXWP0vnNWLRWS4Y/Cp0n9d0WpV6sq3QbgYxTt
-         v04oTjIB7J5TO/GSu15NOFMLDsSwfiKYjzpbyaOsvBmjEHgVkOqQF5i2dBUDZeX0y9EW
-         VxVvpQ7Bfg5S5DathfiHWZJpH7cwdeI2VJ4/E5C0fzhTj3uLoECi+A6New3KuKzxdksc
-         zh6Ve1N+SZS75XoEiNKEQxAvI7IP/NiFdw5C4E3okszmEUzfivA/upj/nDLNi73Rs1Pl
-         lekPrYW/SgMVlu3IpvYype2JS4iIOV5tSaN936p/YyXn0fCFNx2wFzaVfzT4XHTrex/k
-         ZfIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L/KHE0b9yQxhmyIXZE35ERgi0XKeQwuyEqiuqSbm+MM=;
-        b=PEMr3msLv0Hxz8GhEs4cO7+vJLXgPjfPI1LHQTIBGrICKNDwU2P3LbY2dCUG8hcTby
-         votwPbXkLJ9gewc27i+58RbK5YoP+nC16gbeYTT6QqToqweAjOr23vP05ws7wo7n6a0X
-         JD56e5nqnL5QP1PcgpnXifgo60mj5rAw4WU/nj3x3URPAmMek6eVvkgBOh8znHjq74MY
-         7beBjGqMA0GvsvTDS+scocIisgVnfafOI6kvBfIsf9H9Y587HzT8EqkLp/7vaYeXSb7C
-         XIDQ+kVTOKkcuTbRg0AJ0ocF3vcKTBxdhQrJ/8pqy9uAqKnlbu1nGQS3lsfi0Hri3LhM
-         19ww==
-X-Gm-Message-State: AOAM533sLAxgOxq7tB6BL/OtN8vK69spswX4OxIHMTDNEVPxY5cIaS5u
-        f8vfh5LKGaXzRBqhbFjAUCGf09XmGX47TaLAlCeamg==
-X-Google-Smtp-Source: ABdhPJzlYEz8sQBUvV3rf/9X99n4H6YdHBdvYc8i2an4oSSdUGuNcOJET6+rM2jmO4S1D9sfNFjzfQmSui3IwTaoq2g=
-X-Received: by 2002:a17:902:654b:b029:ec:a435:5b5c with SMTP id
- d11-20020a170902654bb02900eca4355b5cmr23318742pln.42.1619498587057; Mon, 26
- Apr 2021 21:43:07 -0700 (PDT)
+        Tue, 27 Apr 2021 00:45:16 -0400
+Received: from dggeml702-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FTpxd5d6Mz5sbc;
+        Tue, 27 Apr 2021 12:41:25 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
+ dggeml702-chm.china.huawei.com (10.3.17.135) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 27 Apr 2021 12:44:32 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 27 Apr 2021 12:44:31 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Tue, 27 Apr 2021 12:44:32 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mike Galbraith <efault@gmx.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "xieyongjia (A)" <xieyongjia1@huawei.com>
+Subject: RE: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+ wake-up is interrupt
+Thread-Topic: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+ wake-up is interrupt
+Thread-Index: AQHXOw9dc8i42PiGaEKAYTXwXtRa3KrHPV0AgACFWFA=
+Date:   Tue, 27 Apr 2021 04:44:32 +0000
+Message-ID: <d057eb13ec4e4643b314dd1652ffa9d4@hisilicon.com>
+References: <20210427023758.4048-1-song.bao.hua@hisilicon.com>
+ <9a6cadd9b65068b52c95adc44119bd09c6a4f9d7.camel@gmx.de>
+In-Reply-To: <9a6cadd9b65068b52c95adc44119bd09c6a4f9d7.camel@gmx.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.183]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210423223404.3860547-1-seanjc@google.com> <20210423223404.3860547-4-seanjc@google.com>
- <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com> <YIcWvcneHWA9OPxv@google.com>
-In-Reply-To: <YIcWvcneHWA9OPxv@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 26 Apr 2021 21:42:51 -0700
-Message-ID: <CAAeT=FzVDFVCjYAZyc+QXwtLeOW5UR6AsYZwNT6kFbOwnn=xFQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] KVM: x86: Tie Intel and AMD behavior for
- MSR_TSC_AUX to guest CPU model
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > It looks Table 2-2 of the Intel SDM Vol4 (April 2021) says
-> > TSC_AUX is supported:
+
+
+> -----Original Message-----
+> From: Mike Galbraith [mailto:efault@gmx.de]
+> Sent: Tuesday, April 27, 2021 4:22 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> vincent.guittot@linaro.org; mingo@redhat.com; peterz@infradead.org;
+> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> mgorman@suse.de
+> Cc: valentin.schneider@arm.com; juri.lelli@redhat.com; bristot@redhat.com;
+> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; xuwei (O)
+> <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; wanghuiqiang
+> <wanghuiqiang@huawei.com>; xieyongjia (A) <xieyongjia1@huawei.com>
+> Subject: Re: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+> wake-up is interrupt
+> 
+> On Tue, 2021-04-27 at 14:37 +1200, Barry Song wrote:
 > >
-> >    If CPUID.80000001H:EDX[27] = 1 or CPUID.(EAX=7,ECX=0):ECX[22] = 1
-> >
-> > Should we also check X86_FEATURE_RDPID before returning 1
-> > due to no RDTSCP support ?
->
-> Yep.  VMX should also clear RDPID if the ENABLE_RDTSCP control isn't supported.
-> That bug isn't fatal because KVM emulates RDPID on #UD, but it would be a
-> notieable performance hit for the guest.
+> > To fix this issue, this patch checks the waker of sync wake-up is a task
+> > but not an interrupt. In this case, the waker will schedule out and give
+> > CPU to wakee.
+> 
+> That rash "the waker will schedule out" assumption, ie this really
+> really is a synchronous wakeup, may be true in your particular case,
 
-Thank you so much for the confirmation and the information.
-Understood.
+Hi Mike,
 
+For my particular case, sync hint is used by interrupt but not task.
+so "the waker will schedule out" is false because the existing task
+is relevant at all.
 
-> There is also a kernel bug lurking; vgetcpu_cpu_init() doesn't check
-> X86_FEATURE_RDPID and will fail to initialize MSR_TSC_AUX if RDPID is supported
-> but RDTSCP is not, and __getcpu() uses RDPID.  I'll verify that's broken and
-> send a patch for that one too.
+Here the description "the waker will schedule out" is just copying
+the general idea of sync wake-up though the real code might overuse
+this hint.
 
-I don't find vgetcpu_cpu_init() or __getcpu() in
-https://github.com/torvalds/linux.
-I would assume you meant setup_getcpu() and vdso_read_cpunode() instead (?).
+> but the sync hint is so overused as to be fairly meaningless. We've
+> squabbled with it repeatedly over the years because of that.  It really
+> should either become more of a communication of intent than it
+> currently is, or just go away.
 
+I agree sync hint might have been overused by other kernel subsystem.
+But this patch will at least fix a case: sync waker is interrupt,
+in this case, the existing task has nothing to do with waker and wakee,
+so this case should be excluded from wake_affine_idle().
 
-> AMD also documents this in Appendix E:
->
->   CPUID Fn0000_0007_EBX_x0 Structured Extended Feature Identifiers (ECX=0)
->   Bits   Field   Name
->   ...
->   22     RDPID   RDPID instruction and TSC_AUX MSR support.
+> 
+> I'd argue for go away, simply because there is no way for the kernel to
+> know that there isn't more work directly behind any particular wakeup.
 
-Thank you.  I overlooked that...
+To some extent, "go way" might be a good choice. But this is a more
+aggressive action. For those cases waker will really scheduler out,
+wakee won't be able to take the advantage of getting the idle cpu
+of waker.
 
+> 
+> Take a pipe, does shoving some bits through a pipe mean you have no
+> further use of your CPU?  IFF you're doing nothing but playing ping-
+> pong, sure it does, but how many real proggies have zero overlap among
+> its threads of execution?  The mere notion of threaded apps having no
+> overlap *to be converted to throughput* is dainbramaged, which should
+> be the death knell of the sync wakeup hint.  Threaded apps can't do
+> stuff like, oh, networking, which uses the sync hint heavily, without
+> at least to some extent defeating the purpose of threading if we were
+> to take the hint seriously.  Heck, just look at the beauty (gak) of
+> wake_wide().  It was born specifically to combat the pure-evil side of
+> the sync wakeup hint.
 
-Regards,
-Reiji
+As above, removing the code of migrating wakee to the cpu of sync waker
+could be an option, but needs more investigations.
+
+> 
+> Bah, 'nuff "Danger Will Robinson, that thing will *eat you*!!" ;-)
+> 
+> 	-Mike
+
+Thanks
+Barry
