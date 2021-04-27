@@ -2,312 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ADD36CB48
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C827836CB29
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236890AbhD0StV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:49:21 -0400
-Received: from mx-out.tlen.pl ([193.222.135.158]:33122 "EHLO mx-out.tlen.pl"
+        id S238903AbhD0SfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:35:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235974AbhD0StS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:49:18 -0400
-Received: (wp-smtpd smtp.tlen.pl 35945 invoked from network); 27 Apr 2021 20:33:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1619548408; bh=NS3BxI4uZDwsHBHnYgklyfy26nY9bsujkvflz4Xv7Qk=;
-          h=From:To:Cc:Subject;
-          b=LLwCkaNiNDB0JCJmJgrbT39EwIuXiX/QbjC4pTya5OKbKE0wkMzagVXxyhkddgZyQ
-           lgvik77uSYHG1qabbnq0TTUqJNIqPxmTleyXfo2ZUjqxcGVWp6DW9gKk51Tdj68Tqc
-           L9ubbtaW0fojw0N+x0fhHPsV3gBW1kcI7GrPe/RM=
-Received: from 89-64-46-199.dynamic.chello.pl (HELO localhost.localdomain) (arek_koz@o2.pl@[89.64.46.199])
-          (envelope-sender <arek_koz@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <linux-kernel@vger.kernel.org>; 27 Apr 2021 20:33:28 +0200
-From:   "Arkadiusz Kozdra (Arusekk)" <arek_koz@o2.pl>
+        id S236651AbhD0SfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:35:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D365761029;
+        Tue, 27 Apr 2021 18:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619548469;
+        bh=3gsB7rNmaJUC8iR7C3ear1cgA2aZu64+qFTQi/cM1wY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mWa5t9yDf8V99RnXQKZya1G7Rxj3s//7G+2yr9vRp1GZMhZEOnJKLuCcQAMQtjrjK
+         DGszFRJqE/HFR3x/9oYcgVUwVycgbpPauS3tuxgvZbv/FAuW3B0IKMoOXzqsDlkUs9
+         6uWodv9o044TMLApozYFqHhtcItmBbC+G4ZqJoHU=
+Date:   Tue, 27 Apr 2021 20:34:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org,
-        "Arkadiusz Kozdra (Arusekk)" <arek_koz@o2.pl>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] proc: Use seq_read_iter where possible
-Date:   Tue, 27 Apr 2021 20:34:15 +0200
-Message-Id: <20210427183414.12499-1-arek_koz@o2.pl>
-X-Mailer: git-send-email 2.31.1
+Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 131/190] Revert "net: 8390: fix potential NULL pointer
+ dereferences"
+Message-ID: <YIhZMvRebkNu/B8C@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-132-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 53da6af5e6ff36288411c5fc49c71474
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [oZNE]                               
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-132-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since seq_read_iter looks mature enough to be used for all procfs files,
-re-allow applications to perform zero-copy data forwarding from them.
-According to the sendfile(2) man-page, it is still enough for the file
-being read to support mmap-like operations, and the proc files support
-memory mapping, so returning -EINVAL was an inconsistency.
+On Wed, Apr 21, 2021 at 03:00:06PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit c7cbc3e937b885c9394bf9d0ca21ceb75c2ac262.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/net/ethernet/8390/pcnet_cs.c | 10 ----------
+>  1 file changed, 10 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/8390/pcnet_cs.c b/drivers/net/ethernet/8390/pcnet_cs.c
+> index 9d3b1e0e425c..0a408fa2b7a4 100644
+> --- a/drivers/net/ethernet/8390/pcnet_cs.c
+> +++ b/drivers/net/ethernet/8390/pcnet_cs.c
+> @@ -289,11 +289,6 @@ static struct hw_info *get_hwinfo(struct pcmcia_device *link)
+>  
+>      virt = ioremap(link->resource[2]->start,
+>  	    resource_size(link->resource[2]));
+> -    if (unlikely(!virt)) {
+> -	    pcmcia_release_window(link, link->resource[2]);
+> -	    return NULL;
+> -    }
+> -
+>      for (i = 0; i < NR_INFO; i++) {
+>  	pcmcia_map_mem_page(link, link->resource[2],
+>  		hw_info[i].offset & ~(resource_size(link->resource[2])-1));
+> @@ -1430,11 +1425,6 @@ static int setup_shmem_window(struct pcmcia_device *link, int start_pg,
+>      /* Try scribbling on the buffer */
+>      info->base = ioremap(link->resource[3]->start,
+>  			resource_size(link->resource[3]));
+> -    if (unlikely(!info->base)) {
+> -	    ret = -ENOMEM;
+> -	    goto failed;
+> -    }
+> -
+>      for (i = 0; i < (TX_PAGES<<8); i += 2)
+>  	__raw_writew((i>>1), info->base+offset+i);
+>      udelay(100);
+> -- 
+> 2.31.1
+> 
 
-Some executable-inspecting tools rely on patching entry point
-instructions with minimal machine code that uses sendfile to read
-/proc/self/maps to stdout.  The sendfile call allows them to do it
-faster and without excessive allocations.
+This change causes a memory leak on the error path, so I will keep the
+revert.
 
-This is inspired by the series by Cristoph Hellwig (linked).
+But really, a pcmcia card with a failed ioremap() call?  That can never
+happen here, so I'll just keep it reverted, it's not worth touching
+again.
 
-Link: https://lore.kernel.org/lkml/20201104082738.1054792-1-hch@lst.de/
-Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Arkadiusz Kozdra (Arusekk) <arek_koz@o2.pl>
----
- fs/proc/array.c      |  9 +++++----
- fs/proc/base.c       | 36 ++++++++++++++++++++++++------------
- fs/proc/fd.c         |  3 ++-
- fs/proc/proc_net.c   |  4 ++--
- fs/proc/task_mmu.c   | 12 ++++++++----
- fs/proc/task_nommu.c |  3 ++-
- 6 files changed, 43 insertions(+), 24 deletions(-)
+thanks,
 
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index bb87e4d89cd8..3c3da655a6d0 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -797,9 +797,10 @@ static int children_seq_open(struct inode *inode, struct file *file)
- }
- 
- const struct file_operations proc_tid_children_operations = {
--	.open    = children_seq_open,
--	.read    = seq_read,
--	.llseek  = seq_lseek,
--	.release = seq_release,
-+	.open		= children_seq_open,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
-+	.llseek		= seq_lseek,
-+	.release	= seq_release,
- };
- #endif /* CONFIG_PROC_CHILDREN */
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 3851bfcdba56..b9921a0c2d3d 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -535,7 +535,8 @@ static ssize_t lstats_write(struct file *file, const char __user *buf,
- 
- static const struct file_operations proc_lstats_operations = {
- 	.open		= lstats_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.write		= lstats_write,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
-@@ -784,7 +785,8 @@ static int proc_single_open(struct inode *inode, struct file *filp)
- 
- static const struct file_operations proc_single_file_operations = {
- 	.open		= proc_single_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
- };
-@@ -1473,7 +1475,8 @@ static int sched_open(struct inode *inode, struct file *filp)
- 
- static const struct file_operations proc_pid_sched_operations = {
- 	.open		= sched_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.write		= sched_write,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
-@@ -1548,7 +1551,8 @@ static int sched_autogroup_open(struct inode *inode, struct file *filp)
- 
- static const struct file_operations proc_pid_sched_autogroup_operations = {
- 	.open		= sched_autogroup_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.write		= sched_autogroup_write,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
-@@ -1651,7 +1655,8 @@ static int timens_offsets_open(struct inode *inode, struct file *filp)
- 
- static const struct file_operations proc_timens_offsets_operations = {
- 	.open		= timens_offsets_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.write		= timens_offsets_write,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
-@@ -1708,7 +1713,8 @@ static int comm_open(struct inode *inode, struct file *filp)
- 
- static const struct file_operations proc_pid_set_comm_operations = {
- 	.open		= comm_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.write		= comm_write,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
-@@ -2497,7 +2503,8 @@ static int proc_timers_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations proc_timers_operations = {
- 	.open		= proc_timers_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= seq_release_private,
- };
-@@ -2589,7 +2596,8 @@ static int timerslack_ns_open(struct inode *inode, struct file *filp)
- 
- static const struct file_operations proc_pid_set_timerslack_ns_operations = {
- 	.open		= timerslack_ns_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.write		= timerslack_ns_write,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
-@@ -3041,7 +3049,8 @@ static int proc_projid_map_open(struct inode *inode, struct file *file)
- static const struct file_operations proc_uid_map_operations = {
- 	.open		= proc_uid_map_open,
- 	.write		= proc_uid_map_write,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_id_map_release,
- };
-@@ -3049,7 +3058,8 @@ static const struct file_operations proc_uid_map_operations = {
- static const struct file_operations proc_gid_map_operations = {
- 	.open		= proc_gid_map_open,
- 	.write		= proc_gid_map_write,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_id_map_release,
- };
-@@ -3057,7 +3067,8 @@ static const struct file_operations proc_gid_map_operations = {
- static const struct file_operations proc_projid_map_operations = {
- 	.open		= proc_projid_map_open,
- 	.write		= proc_projid_map_write,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_id_map_release,
- };
-@@ -3108,7 +3119,8 @@ static int proc_setgroups_release(struct inode *inode, struct file *file)
- static const struct file_operations proc_setgroups_operations = {
- 	.open		= proc_setgroups_open,
- 	.write		= proc_setgroups_write,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_setgroups_release,
- };
-diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index 07fc4fad2602..9fa169f05548 100644
---- a/fs/proc/fd.c
-+++ b/fs/proc/fd.c
-@@ -77,7 +77,8 @@ static int seq_fdinfo_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations proc_fdinfo_file_operations = {
- 	.open		= seq_fdinfo_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
- };
-diff --git a/fs/proc/proc_net.c b/fs/proc/proc_net.c
-index 15c2e55d2ed2..a223480189f9 100644
---- a/fs/proc/proc_net.c
-+++ b/fs/proc/proc_net.c
-@@ -76,7 +76,7 @@ static int seq_release_net(struct inode *ino, struct file *f)
- 
- static const struct proc_ops proc_net_seq_ops = {
- 	.proc_open	= seq_open_net,
--	.proc_read	= seq_read,
-+	.proc_read_iter	= seq_read_iter,
- 	.proc_write	= proc_simple_write,
- 	.proc_lseek	= seq_lseek,
- 	.proc_release	= seq_release_net,
-@@ -188,7 +188,7 @@ static int single_release_net(struct inode *ino, struct file *f)
- 
- static const struct proc_ops proc_net_single_ops = {
- 	.proc_open	= single_open_net,
--	.proc_read	= seq_read,
-+	.proc_read_iter	= seq_read_iter,
- 	.proc_write	= proc_simple_write,
- 	.proc_lseek	= seq_lseek,
- 	.proc_release	= single_release_net,
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index e862cab69583..7655f5018945 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -351,7 +351,8 @@ static int pid_maps_open(struct inode *inode, struct file *file)
- 
- const struct file_operations proc_pid_maps_operations = {
- 	.open		= pid_maps_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read    = generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_map_release,
- };
-@@ -1009,14 +1010,16 @@ static int smaps_rollup_release(struct inode *inode, struct file *file)
- 
- const struct file_operations proc_pid_smaps_operations = {
- 	.open		= pid_smaps_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read    = generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_map_release,
- };
- 
- const struct file_operations proc_pid_smaps_rollup_operations = {
- 	.open		= smaps_rollup_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read    = generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= smaps_rollup_release,
- };
-@@ -1947,7 +1950,8 @@ static int pid_numa_maps_open(struct inode *inode, struct file *file)
- 
- const struct file_operations proc_pid_numa_maps_operations = {
- 	.open		= pid_numa_maps_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read    = generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= proc_map_release,
- };
-diff --git a/fs/proc/task_nommu.c b/fs/proc/task_nommu.c
-index a6d21fc0033c..d17f929ad8a7 100644
---- a/fs/proc/task_nommu.c
-+++ b/fs/proc/task_nommu.c
-@@ -295,7 +295,8 @@ static int pid_maps_open(struct inode *inode, struct file *file)
- 
- const struct file_operations proc_pid_maps_operations = {
- 	.open		= pid_maps_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read    = generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= map_release,
- };
--- 
-2.31.1
-
+greg k-h
