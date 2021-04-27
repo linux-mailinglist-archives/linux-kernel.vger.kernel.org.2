@@ -2,76 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C2736C781
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C232636C783
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238263AbhD0OGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236074AbhD0OGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:06:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9542B613DE
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:05:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619532350;
-        bh=fy3CYi7BqJJdl/r3iPs3eZ4UiVL7usbFkRW1ao2uWt0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ao8V084H63JV4GUymCNWzXeX2/V89RTI0OQYLL35lB33h2i/jZ0PZ9APIFoXFhdJa
-         t9C1iSZApnBzeoOCLzaeDk8uikyQIymIi02WavTFBBirCwS/KMBv+d6slirb0XLmIE
-         MGNJbB8hipSKnvKdWyqHy74xl+95ZZw3Wnn7M98bTrrNVqPPjVZbPCOqzoKbyYk2W1
-         YHMxOTeT6MlY7XDEqL1RTHnQD9Gq08c76/gOqupTVVQgnNjlXnM+CdOZHZlCgpKqwZ
-         omDHZ3YgttgRWFw8gFKp2Gj7/6vYnv4IGKC6O7xMp0NBLWvaWUuJUCQYb98yeGbwiH
-         Wcdt2Kx37+PvA==
-Received: by mail-ed1-f45.google.com with SMTP id g10so2140579edb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:05:50 -0700 (PDT)
-X-Gm-Message-State: AOAM532mip1fVtzB4QLARNE/mS8sFjk8daRwaalAgwLs0ZjxpX/vdZYX
-        S+zcuW4gxcXY5x1LTJgXiw9OgJ1ymHS+9gzB+g==
-X-Google-Smtp-Source: ABdhPJzYJHjginYKmJvGlKi37gvPyFmM2boVwhYaPwHwlMcARmiUe3NWgzmG3JK4LvfqVZViFmgeZQbfrs8FcpV7hog=
-X-Received: by 2002:a05:6402:1a52:: with SMTP id bf18mr4609112edb.289.1619532349176;
- Tue, 27 Apr 2021 07:05:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427134852.1411642-1-robh@kernel.org> <20210427135506.GC37475@C02TD0UTHF1T.local>
-In-Reply-To: <20210427135506.GC37475@C02TD0UTHF1T.local>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 27 Apr 2021 09:05:37 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+s+9TVBaeGjRxKa+-DKJqO_ZUUJGgYsJOv5xauMDUgpA@mail.gmail.com>
-Message-ID: <CAL_Jsq+s+9TVBaeGjRxKa+-DKJqO_ZUUJGgYsJOv5xauMDUgpA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: perf: Ensure EL0 access is disabled at reset
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
+        id S238309AbhD0OH1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 10:07:27 -0400
+Received: from mail.savoirfairelinux.com ([208.88.110.44]:50842 "EHLO
+        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236074AbhD0OH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 10:07:26 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id 7D1749C1498;
+        Tue, 27 Apr 2021 10:06:41 -0400 (EDT)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 5_2dxyO4_oUn; Tue, 27 Apr 2021 10:06:40 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.savoirfairelinux.com (Postfix) with ESMTP id EB6E19C14A7;
+        Tue, 27 Apr 2021 10:06:39 -0400 (EDT)
+X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id LVTXpMiwd0MI; Tue, 27 Apr 2021 10:06:39 -0400 (EDT)
+Received: from barbarian (unknown [192.168.51.254])
+        by mail.savoirfairelinux.com (Postfix) with ESMTPSA id CAF099C1498;
+        Tue, 27 Apr 2021 10:06:39 -0400 (EDT)
+Message-ID: <878b461c295c084aa7152b56668b3e61aa78f744.camel@savoirfairelinux.com>
+Subject: Re: [PATCH] uio: uio_pci_generic: add memory mappings
+From:   firas ashkar <firas.ashkar@savoirfairelinux.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mst@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 27 Apr 2021 10:06:39 -0400
+In-Reply-To: <YIetS88K/xLGHlXB@kroah.com>
+References: <20210426190346.173919-1-firas.ashkar@savoirfairelinux.com>
+         <YIetS88K/xLGHlXB@kroah.com>
+Organization: SavoirFaireLinux
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 8:55 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Apr 27, 2021 at 08:48:52AM -0500, Rob Herring wrote:
-> > The ER, SW, and EN bits in the PMUSERENR_EL0 register are UNKNOWN at
-> > reset and the register is never initialized, so EL0 access could be
-> > enabled by default on some implementations. Let's initialize
-> > PMUSERENR_EL0 to a known state with EL0 access disabled.
->
-> We reset PMUSERENR_EL0 via the reset_pmuserenr_el0 macro, called from
-> __cpu_setup when a CPU is onlined and from cpu_do_resume() when a CPU
-> returns from a context-destructive idle state. We do it there so that
-> it's handled even if a kernel isn't built with perf support.
+Hi,
+The reason for these extra changes is the result of running 
+fashkar@barbarian:~/Downloads/linux_mainline$ clang-format -style=file
+-i drivers/uio/uio_pci_generic.c
 
-Indeed.
+fashkar@barbarian:~/Downloads/linux_mainline$ ./scripts/checkpatch.pl
+0001-uio-uio_pci_generic-add-memory-mappings.patch
 
-> AFAICT, that *should* do the right thing -- are you seeing UNKNOWN
-> values, or was this found by inspection?
+i shall undo those changes and retry again, ty
+-- 
+Firas Ashkar
+Developpeur Système Embarqué
 
-Inspection. Sorry for the noise.
+savoirfairelinux.com  | Montréal, Québec
 
-Rob
+Tél.: +1 514 276 5468 ext. 118
+
+
+
+          
+
+On Tue, 2021-04-27 at 08:20 +0200, Greg KH wrote:
+> On Mon, Apr 26, 2021 at 03:03:46PM -0400, Firas Ashkar wrote:
+> > import memory resources from underlying pci device, thus allowing
+> > userspace applications to memory map those resources.
+> 
+> You also did other things in this patch that have nothing to do with
+> this change, why?
+> 
+> Always describe what your patch does properly, otherwise we have to
+> ignore it.
+> 
+> > Signed-off-by: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
+> > ---
+> > :100644 100644 c7d681fef198 809eca95b5bb M	drivers/uio/uio_pci_gen
+> > eric.c
+> >  drivers/uio/uio_pci_generic.c | 52 +++++++++++++++++++++++++++++
+> > ------
+> >  1 file changed, 43 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/uio/uio_pci_generic.c
+> > b/drivers/uio/uio_pci_generic.c
+> > index c7d681fef198..809eca95b5bb 100644
+> > --- a/drivers/uio/uio_pci_generic.c
+> > +++ b/drivers/uio/uio_pci_generic.c
+> > @@ -24,9 +24,9 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/uio_driver.h>
+> >  
+> > -#define DRIVER_VERSION	"0.01.0"
+> > -#define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
+> > -#define DRIVER_DESC	"Generic UIO driver for PCI 2.3
+> > devices"
+> > +#define DRIVER_VERSION "0.01.0"
+> > +#define DRIVER_AUTHOR "Michael S. Tsirkin <mst@redhat.com>"
+> > +#define DRIVER_DESC "Generic UIO driver for PCI 2.3 devices"
+> 
+> Like this, why change these lines???
+> 
+> thanks,
+> 
+> greg k-h
+
