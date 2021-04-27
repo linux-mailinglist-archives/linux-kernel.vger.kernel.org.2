@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8BE36C971
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0200536C973
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237184AbhD0Q2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:28:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54806 "EHLO mail.kernel.org"
+        id S237509AbhD0Q2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236320AbhD0Q2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:28:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFC6B61027;
-        Tue, 27 Apr 2021 16:27:47 +0000 (UTC)
+        id S236611AbhD0Q2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:28:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67B68613C3;
+        Tue, 27 Apr 2021 16:28:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619540868;
-        bh=W5pR/71DZ/WXJxkbx3oO+qOOtw4XbCmoiSmRbZsN1Cw=;
+        s=korg; t=1619540883;
+        bh=/KJYPm/wrYlkkqWrqGN0PXa+Acd6GABMwF2WkDuFnEA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Iqgwz6K2rSTB0IffkAwMNVGj2ZKfPkp9yomqvZlScPdRztRLOrObRtK7SVJGWie+u
-         fZinibWHhrrFIx9vPhME4u2klb3SzkxFLDSWq5ANN6z9NTRJ952I00eQ6PIHZCSM0A
-         0jQS8itAXaD71gazs4/U+PRFDjFih8daimK/fceM=
-Date:   Tue, 27 Apr 2021 18:27:45 +0200
+        b=m8/NDkOnrYCcwgiA3fXUIvkSZSIuHK1pohpJu5ZphcW12ueFR2YUrMs3xroYSwh95
+         uOO2Aix8QdmbWlg8sjnweE9wkSPoQk2fDLeP6NC/EgAHOyr3LtCPLWdragKyD4u+5n
+         6VDr7/CZRdBYXP1NZsf8VYWU++6s77Rxz6X22kio=
+Date:   Tue, 27 Apr 2021 18:28:00 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>, Heiko Stuebner <heiko@sntech.de>,
+Cc:     Qiushi Wu <wu000273@umn.edu>, Jon Hunter <jonathanh@nvidia.com>,
         Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 027/190] Revert "ASoC: rockchip: Fix a reference count
- leak."
-Message-ID: <YIg7gWWkgqnj1S/K@kroah.com>
+Subject: Re: [PATCH 030/190] Revert "ASoC: tegra: Fix reference count leaks."
+Message-ID: <YIg7kH1X0qk8hidp@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-28-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-31-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-28-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-31-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:58:22PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit f141a422159a199f4c8dedb7e0df55b3b2cf16cd.
+On Wed, Apr 21, 2021 at 02:58:25PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit deca195383a6085be62cb453079e03e04d618d6e.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -56,19 +55,20 @@ On Wed, Apr 21, 2021 at 02:58:22PM +0200, Greg Kroah-Hartman wrote:
 > codebase.
 > 
 > Cc: Qiushi Wu <wu000273@umn.edu>
-> Cc: Heiko Stuebner <heiko@sntech.de>
+> Cc: Jon Hunter <jonathanh@nvidia.com>
 > Cc: https
 > Cc: Mark Brown <broonie@kernel.org>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  sound/soc/rockchip/rockchip_pdm.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  sound/soc/tegra/tegra30_ahub.c | 4 +---
+>  sound/soc/tegra/tegra30_i2s.c  | 4 +---
+>  2 files changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-> index 9295d648624e..c52e1dbf6dbe 100644
-> --- a/sound/soc/rockchip/rockchip_pdm.c
-> +++ b/sound/soc/rockchip/rockchip_pdm.c
-> @@ -590,10 +590,8 @@ static int rockchip_pdm_resume(struct device *dev)
+> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+> index 9ef05ca4f6c4..b116b05e4e72 100644
+> --- a/sound/soc/tegra/tegra30_ahub.c
+> +++ b/sound/soc/tegra/tegra30_ahub.c
+> @@ -657,10 +657,8 @@ static int tegra30_ahub_resume(struct device *dev)
 >  	int ret;
 >  
 >  	ret = pm_runtime_get_sync(dev);
@@ -77,8 +77,24 @@ On Wed, Apr 21, 2021 at 02:58:22PM +0200, Greg Kroah-Hartman wrote:
 > +	if (ret < 0)
 >  		return ret;
 > -	}
+>  	ret = regcache_sync(ahub->regmap_ahub);
+>  	ret |= regcache_sync(ahub->regmap_apbif);
+>  	pm_runtime_put(dev);
+> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+> index 6740df541508..3187a0f0c07a 100644
+> --- a/sound/soc/tegra/tegra30_i2s.c
+> +++ b/sound/soc/tegra/tegra30_i2s.c
+> @@ -567,10 +567,8 @@ static int tegra30_i2s_resume(struct device *dev)
+>  	int ret;
 >  
->  	ret = regcache_sync(pdm->regmap);
+>  	ret = pm_runtime_get_sync(dev);
+> -	if (ret < 0) {
+> -		pm_runtime_put(dev);
+> +	if (ret < 0)
+>  		return ret;
+> -	}
+>  	ret = regcache_sync(i2s->regmap);
+>  	pm_runtime_put(dev);
 >  
 > -- 
 > 2.31.1
