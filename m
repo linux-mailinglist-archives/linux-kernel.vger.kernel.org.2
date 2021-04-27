@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9585836CA6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BAB36CA75
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238357AbhD0RgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:36:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
+        id S238336AbhD0Ri2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:38:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236552AbhD0RgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:36:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79946613C0;
-        Tue, 27 Apr 2021 17:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619544926;
-        bh=St/R/NgBFC3E+s6k8isalj1onhFmupPEuGd6tFnOZCo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2l1nBntZ1ipLUYMSI19gjJusgnAwGqzeSl0OMk4JapHDO5/JQko9CrspcBGBlXjdZ
-         YtixNj1I8JedFMjZHcLpLQihG7ir5/M8jm+eADs6yn4KhtZI1uTKP+m5W6OsI6QxoI
-         EFLBFrDSvFljGI6gbmWMX5HAi6+VHSRPaeJPTfRM=
-Date:   Tue, 27 Apr 2021 19:35:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 099/190] Revert "omapfb: Fix potential NULL pointer
- dereference in kmalloc"
-Message-ID: <YIhLXCVUh+TsmlaT@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-100-gregkh@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-100-gregkh@linuxfoundation.org>
+        id S235647AbhD0Ri1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:38:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AC42D61090;
+        Tue, 27 Apr 2021 17:37:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619545063;
+        bh=b4c12OjJrQTxrSqCX3KK+h7C5KY1S2GHZY+5jS6idCM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=eRsD4wWfPjFsivPUgyPJPe1TUxQRMd02Lt1E7B5/jqKSOuk50BvfiolnKkzTKQ1IN
+         pvMhDmagCpUDbRLh7QIbvhHDO96H1t99dOsHqM/dK9CZlZaIc2ljCOqd8KEngQrDD7
+         BI3exn7zdljjlKAPKGZo9idRLQj7a0LmzojKrXWbPKlUR+2B9VTYVMivstNItMpQT0
+         dDtwrUEzInkjZjwAVpJXVQBqablwHVPWBKzsDgoDRfVex2WA9ujtgJlT/hNheN49lV
+         ZqLBlLfvRLmW1PSCeSGZ6aujoy5478awFnKb5aaEG4onsXLuZTicG/KZS+LDVLj9K9
+         jk7D4tJHQ4/pw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A6362609CC;
+        Tue, 27 Apr 2021 17:37:43 +0000 (UTC)
+Subject: Re: [GIT PULL] pstore update for v5.13-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <202104261131.DA983FFC3D@keescook>
+References: <202104261131.DA983FFC3D@keescook>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <202104261131.DA983FFC3D@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.13-rc1
+X-PR-Tracked-Commit-Id: 9d843e8fafc7c0b15d8f511d146c0c3d7c816634
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 288321a9c65192878446a00acaa9f6c3ca9bb1f5
+Message-Id: <161954506367.13735.3556100160228493496.pr-tracker-bot@kernel.org>
+Date:   Tue, 27 Apr 2021 17:37:43 +0000
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Mukesh Ojha <mojha@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:34PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 31fa6e2ae65feed0de10823c5d1eea21a93086c9.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/video/fbdev/omap2/omapfb/dss/omapdss-boot-init.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/omapdss-boot-init.c b/drivers/video/fbdev/omap2/omapfb/dss/omapdss-boot-init.c
-> index 0ae0cab252d3..05d87dcbdd8b 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/omapdss-boot-init.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/omapdss-boot-init.c
-> @@ -100,8 +100,6 @@ static void __init omapdss_omapify_node(struct device_node *node)
->  
->  	new_len = prop->length + strlen(prefix) * num_strs;
->  	new_compat = kmalloc(new_len, GFP_KERNEL);
-> -	if (!new_compat)
-> -		return;
->  
->  	omapdss_prefix_strcpy(new_compat, new_len, prop->value, prop->length);
->  
-> -- 
-> 2.31.1
-> 
+The pull request you sent on Mon, 26 Apr 2021 11:32:28 -0700:
 
-Original looks correct, I'll drop this revert.
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.13-rc1
 
-greg k-h
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/288321a9c65192878446a00acaa9f6c3ca9bb1f5
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
