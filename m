@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7CF36BF14
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366B836BF16
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbhD0GDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 02:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhD0GDw (ORCPT
+        id S230169AbhD0GF7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 02:05:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3957 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhD0GF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:03:52 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADB6AC061574;
-        Mon, 26 Apr 2021 23:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=v7OI+JeiSL
-        NOWCbMsyFE1LhROWob97JvYTX1veuCAAU=; b=ZWfrAn0f2Fhph6gtaTWDkhOFOM
-        ySQ67mX//jP5+bixOfxos2EB/JBehAvPUrRuyAWGRt2RqpqDGaSpsFFBA3/KJuUW
-        EbzF1JBtKyxpLO9aPjYXVGPDTMpSp2Er7gBNHVFfWK0SNieQefIa/N5nxQNEZjRW
-        SN74mnNbxUzG5ngqY=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHz68RqYdgrVNQAA--.2285S4;
-        Tue, 27 Apr 2021 14:02:57 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH v2] media:exynos4-is: Fix a use after free in isp_video_release
-Date:   Mon, 26 Apr 2021 23:02:55 -0700
-Message-Id: <20210427060255.3318-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 27 Apr 2021 02:05:57 -0400
+Received: from dggeml763-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FTrlQ4Zhwz5vms;
+        Tue, 27 Apr 2021 14:02:42 +0800 (CST)
+Received: from dggpemm000002.china.huawei.com (7.185.36.174) by
+ dggeml763-chm.china.huawei.com (10.1.199.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 27 Apr 2021 14:05:10 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm000002.china.huawei.com (7.185.36.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 27 Apr 2021 14:05:09 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Tue, 27 Apr 2021 14:05:09 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mike Galbraith <efault@gmx.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "xieyongjia (A)" <xieyongjia1@huawei.com>
+Subject: RE: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+ wake-up is interrupt
+Thread-Topic: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+ wake-up is interrupt
+Thread-Index: AQHXOw9dc8i42PiGaEKAYTXwXtRa3KrHPV0AgACFWFD//5SmAIAAhgYg
+Date:   Tue, 27 Apr 2021 06:05:09 +0000
+Message-ID: <6c91195a6de9423abc78e8f85efc2780@hisilicon.com>
+References: <20210427023758.4048-1-song.bao.hua@hisilicon.com>
+         <9a6cadd9b65068b52c95adc44119bd09c6a4f9d7.camel@gmx.de>
+         <d057eb13ec4e4643b314dd1652ffa9d4@hisilicon.com>
+ <3fe7113cc87ac89077b55ca55bda2b99729f13c8.camel@gmx.de>
+In-Reply-To: <3fe7113cc87ac89077b55ca55bda2b99729f13c8.camel@gmx.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.183]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygDHz68RqYdgrVNQAA--.2285S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw1UXFWfZF4rtF13tr4ktFb_yoWkurX_Z3
-        48KFn7Xry5tr4jy3WqyFn5ZrW0yrZ8Xa93CanagFW2y3yUAFWxtF4qkrWfu3ZrGa17GFZ8
-        Jrs8XF4UCr93CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUjylk7UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In isp_video_release, file->private_data is freed via
-_vb2_fop_release()->v4l2_fh_release(). But the freed
-file->private_data is still used in v4l2_fh_is_singular_file()
-->v4l2_fh_is_singular(file->private_data), which is a use
-after free bug.
-
-My patch set file->private_data to NULL after _vb2_fop_release()
-to avoid the use after free.
-
-Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/media/platform/exynos4-is/fimc-isp-video.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index 612b9872afc8..2e04589068b4 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-@@ -315,7 +315,8 @@ static int isp_video_release(struct file *file)
- 	}
- 
- 	_vb2_fop_release(file, NULL);
--
-+	file->private_data = NULL;
-+
- 	if (v4l2_fh_is_singular_file(file)) {
- 		fimc_pipeline_call(&ivc->ve, close);
- 
--- 
-2.25.1
 
 
+> -----Original Message-----
+> From: Mike Galbraith [mailto:efault@gmx.de]
+> Sent: Tuesday, April 27, 2021 5:55 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> vincent.guittot@linaro.org; mingo@redhat.com; peterz@infradead.org;
+> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> mgorman@suse.de
+> Cc: valentin.schneider@arm.com; juri.lelli@redhat.com; bristot@redhat.com;
+> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; xuwei (O)
+> <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; wanghuiqiang
+> <wanghuiqiang@huawei.com>; xieyongjia (A) <xieyongjia1@huawei.com>
+> Subject: Re: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
+> wake-up is interrupt
+> 
+> On Tue, 2021-04-27 at 04:44 +0000, Song Bao Hua (Barry Song) wrote:
+> >
+> >
+> > I agree sync hint might have been overused by other kernel subsystem.
+> > But this patch will at least fix a case: sync waker is interrupt,
+> > in this case, the existing task has nothing to do with waker and wakee,
+> > so this case should be excluded from wake_affine_idle().
+> 
+> I long ago tried filtering interrupt wakeups, and met some surprises.
+> Wakeup twiddling always managing to end up being a rob Peter to pay
+> Paul operation despite our best efforts, here's hoping that your pile
+> of stolen cycles is small enough to escape performance bot notice :)
+
+Would you like to share the link you did before to filter interrupt
+wakeups?
+
+The wake up path has hundreds of lines of code, so I don't expect that
+reading preempt_count will cause visible performance losses to bot. But
+who knows :-)
+
+> 
+> 	-Mike
+
+Thanks
+Barry
