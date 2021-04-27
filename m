@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1735F36C048
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A1A36C04D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234991AbhD0Hkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:40:53 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:34128 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236277AbhD0HjJ (ORCPT
+        id S235137AbhD0HlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:41:03 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:54889 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235009AbhD0Hky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:39:09 -0400
-Received: from localhost (unknown [192.168.167.70])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C60AAC81E1;
-        Tue, 27 Apr 2021 15:38:23 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P26232T140422993086208S1619509101181570_;
-        Tue, 27 Apr 2021 15:38:23 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5a7cc61b9ed6016aa573b9a5f15c5883>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 8
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     heiko@sntech.de, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@esmil.dk, Jon Lin <jon.lin@rock-chips.com>
-Subject: [PATCH v2 8/8] spi: rockchip: Support SPI_CS_HIGH
-Date:   Tue, 27 Apr 2021 15:38:20 +0800
-Message-Id: <20210427073820.31797-3-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210427073820.31797-1-jon.lin@rock-chips.com>
-References: <20210427073733.31419-1-jon.lin@rock-chips.com>
- <20210427073820.31797-1-jon.lin@rock-chips.com>
+        Tue, 27 Apr 2021 03:40:54 -0400
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210427074009epoutp035bb84009777fcc3db9ea9639676db13a~5pwukFz3u2723227232epoutp03e
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:40:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210427074009epoutp035bb84009777fcc3db9ea9639676db13a~5pwukFz3u2723227232epoutp03e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619509209;
+        bh=PrsfVE4deZ/xb+RnXu0vDm3K/Nkxr6m3k4bSEBKWYBE=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=YICT8Q6K7SyYiCrHki1+253HIy39S6j02daOrhe1RMD+AmtVb2VGHjDHUmgHmvhU3
+         ufyiCEfVJznDaNCJp5eJiGnZCTl8RFPRYkdph4zAQ9YjL8IoTrgmXjXk6k/bVmAAku
+         oNUBE3vPmDP/PRGiqG43tRCoq4VMJPDR2kCSpslI=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
+        20210427074008epcas3p267f57edbd4cd25a7ccdfbfeaffec0294~5pwuGZvLJ0697306973epcas3p2h;
+        Tue, 27 Apr 2021 07:40:08 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4FTtvr6Y7kz4x9Pv; Tue, 27 Apr 2021 07:40:08 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: [PATCH] scsi: ufs: Fix a typo in ufs-sysfs.c
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "huyue2@yulong.com" <huyue2@yulong.com>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Daejun Park <daejun7.park@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1381713434.61619509208911.JavaMail.epsvc@epcpadp3>
+Date:   Tue, 27 Apr 2021 16:38:42 +0900
+X-CMS-MailID: 20210427073842epcms2p1efa82e558171ad06c9398ea7c364e7dc
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210427073842epcms2p1efa82e558171ad06c9398ea7c364e7dc
+References: <CGME20210427073842epcms2p1efa82e558171ad06c9398ea7c364e7dc@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add standard spi-cs-high support
-2.Refer to spi-controller.yaml for details
+Change 'ufschd' to 'ufshcd'.
 
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+Fix the following typo:
+
+ ufschd_uic_link_state_to_string() -> ufshcd_uic_link_state_to_string()
+ ufschd_ufs_dev_pwr_mode_to_string() -> ufshcd_ufs_dev_pwr_mode_to_string()
+
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
 ---
- drivers/spi/spi-rockchip.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufs-sysfs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index 2b68691157d0..9d60c1b275e8 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -108,6 +108,8 @@
- #define CR0_OPM_MASTER				0x0
- #define CR0_OPM_SLAVE				0x1
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index d7c3cff9662f..5d0e98a05ada 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -9,7 +9,7 @@
+ #include "ufs.h"
+ #include "ufs-sysfs.h"
  
-+#define CR0_SOI_OFFSET				23
-+
- #define CR0_MTM_OFFSET				0x21
- 
- /* Bit fields in SER, 2bit */
-@@ -238,7 +240,7 @@ static void rockchip_spi_set_cs(struct spi_device *spi, bool enable)
+-static const char *ufschd_uic_link_state_to_string(
++static const char *ufshcd_uic_link_state_to_string(
+ 			enum uic_link_state state)
  {
- 	struct spi_controller *ctlr = spi->controller;
- 	struct rockchip_spi *rs = spi_controller_get_devdata(ctlr);
--	bool cs_asserted = !enable;
-+	bool cs_asserted = spi->mode & SPI_CS_HIGH ? enable : !enable;
+ 	switch (state) {
+@@ -21,7 +21,7 @@ static const char *ufschd_uic_link_state_to_string(
+ 	}
+ }
  
- 	/* Return immediately for no-op */
- 	if (cs_asserted == rs->cs_asserted[spi->chip_select])
-@@ -509,6 +511,8 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	cr0 |= (spi->mode & 0x3U) << CR0_SCPH_OFFSET;
- 	if (spi->mode & SPI_LSB_FIRST)
- 		cr0 |= CR0_FBM_LSB << CR0_FBM_OFFSET;
-+	if (spi->mode & SPI_CS_HIGH)
-+		cr0 |= BIT(spi->chip_select) << CR0_SOI_OFFSET;
+-static const char *ufschd_ufs_dev_pwr_mode_to_string(
++static const char *ufshcd_ufs_dev_pwr_mode_to_string(
+ 			enum ufs_dev_pwr_mode state)
+ {
+ 	switch (state) {
+@@ -81,7 +81,7 @@ static ssize_t rpm_target_dev_state_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
  
- 	if (xfer->rx_buf && xfer->tx_buf)
- 		cr0 |= CR0_XFM_TR << CR0_XFM_OFFSET;
-@@ -787,7 +791,7 @@ static int rockchip_spi_probe(struct platform_device *pdev)
+-	return sysfs_emit(buf, "%s\n", ufschd_ufs_dev_pwr_mode_to_string(
++	return sysfs_emit(buf, "%s\n", ufshcd_ufs_dev_pwr_mode_to_string(
+ 			ufs_pm_lvl_states[hba->rpm_lvl].dev_state));
+ }
  
- 	ctlr->auto_runtime_pm = true;
- 	ctlr->bus_num = pdev->id;
--	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST;
-+	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST | SPI_CS_HIGH;
- 	if (slave_mode) {
- 		ctlr->mode_bits |= SPI_NO_CS;
- 		ctlr->slave_abort = rockchip_spi_slave_abort;
+@@ -90,7 +90,7 @@ static ssize_t rpm_target_link_state_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 
+-	return sysfs_emit(buf, "%s\n", ufschd_uic_link_state_to_string(
++	return sysfs_emit(buf, "%s\n", ufshcd_uic_link_state_to_string(
+ 			ufs_pm_lvl_states[hba->rpm_lvl].link_state));
+ }
+ 
+@@ -113,7 +113,7 @@ static ssize_t spm_target_dev_state_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 
+-	return sysfs_emit(buf, "%s\n", ufschd_ufs_dev_pwr_mode_to_string(
++	return sysfs_emit(buf, "%s\n", ufshcd_ufs_dev_pwr_mode_to_string(
+ 				ufs_pm_lvl_states[hba->spm_lvl].dev_state));
+ }
+ 
+@@ -122,7 +122,7 @@ static ssize_t spm_target_link_state_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 
+-	return sysfs_emit(buf, "%s\n", ufschd_uic_link_state_to_string(
++	return sysfs_emit(buf, "%s\n", ufshcd_uic_link_state_to_string(
+ 				ufs_pm_lvl_states[hba->spm_lvl].link_state));
+ }
+ 
 -- 
 2.17.1
-
 
 
