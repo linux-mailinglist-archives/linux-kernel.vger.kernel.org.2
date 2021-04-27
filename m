@@ -2,108 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AFA36CD5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9BF36CD77
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238822AbhD0U60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 16:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        id S239228AbhD0VAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 17:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237009AbhD0U6Y (ORCPT
+        with ESMTP id S239159AbhD0VA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:58:24 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC8AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:57:40 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id g10so3656814edb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:57:40 -0700 (PDT)
+        Tue, 27 Apr 2021 17:00:27 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E9DC061761
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:59:41 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id n74so570721vkc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5mcuDXZg50oHuBsNQdQxM5CN9VGwiDIz4IEF7rEKvL4=;
-        b=LwiSk0gcQuTgh0shmC1wawB6cPEsfHSoPh9yM/jbcsDjoMB7x29BSL6Hs+5Kbue6uZ
-         reHQ7lyfMO3rdelk1z9jevpglP1I1GCM5RFdQXVq1yn2uNf5VMbKMK9upmijcbTFaA8+
-         sPZ4Fu5XcJCE4M4wjpky2fuVz7gjU0VGgtfE4ozoiJv8QGxxvWWnK9tun1BFAznA3r4k
-         3xTxut6vgkRSEc9Iocgte4Y0wpEU/Cazo3aRSi1UBRlgpHGypibF5QYTZh0L+Ri+dfFM
-         33OK6Ci37IL8SLUPA+lQvjNd36ohl+dMF/F67oX5s1vpn/WrR8cDE2XSlwqGst8HrYLG
-         YwKA==
+        bh=0HWA17end2mHSBOn8PRau19glHvfoApvxJN4UI4e4wY=;
+        b=kNKfv+4q0saGnCORBqm46p0HV1suwevJ9JVbPHr0+XvghY79DC/iZyAPTAZbGnYyB8
+         GsVoDslhO3CtPXFtTJFi8d1kjKlo2fdd+BnIhvpxoI/3fiArqjvd8lbpl2ml1sEICYXP
+         ArM0dSMfhO+OfBda5w/pxnXXTSJrti8/o5grX+0Alm+E4ao5/e7iFcRAsR/HXGQSsKLW
+         odKQ7BvNIdD3QU7i1+UGWnBK/FnqkXdmn8fzWb1jS03ngBVhozHK2YuHtBb+GRFpu2Ix
+         suwhUMmpONeubCHP/XZzACwfqYPDObWb9XpRXIhHBbRzW5nQukERhg6w6j0Bwwje4P1r
+         Mnmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5mcuDXZg50oHuBsNQdQxM5CN9VGwiDIz4IEF7rEKvL4=;
-        b=L+KX9a5xsaV5b8XXweyCqiy2ud8OZdeUDkXDtYyAlnH8G5n6Lmtl0Fwcq8WP7DPRLa
-         Ej9VHXNAtp76cGTOz01jzO2hw2z3mkSdEPPUEsIi7qodXjxxcFb4k/pJNSgvzF0XJoF4
-         LasSSsicNXhEhsUbxqUcvJrFH1yP1tE05JR7Ws4GjBy2i1NZXsl83rDfyIK8ulFD9w0T
-         5I9mU2JnoCCnk8EXv/e4VXESHxaOf1/dwJFPxAVSewCize3iVopG8pa7uNtXNOEMN6pv
-         C7g1VoQJHuIfTrP7vvj/DE8iU5EcjMautKiPyWyZLHOX2+ac7HA/MxS9X/Oz+7+XvWof
-         BhAA==
-X-Gm-Message-State: AOAM531rv5ccmEP69Ut0lKchyg5pK+n30cc7fUpU0B53pJTVYHHiB+oT
-        avVTgIcbzPguFCoTibcuTgdRJjyNYP/h6Y8UCZQ=
-X-Google-Smtp-Source: ABdhPJwoqgdpHEb6Ku8QnZR6UAedR1QS5GfyNbMw4h6sPbSV4b2heZyqiGZUEsc0tnF7zmHyF0QrpUxkK3x0othw1fM=
-X-Received: by 2002:a05:6402:1907:: with SMTP id e7mr6677629edz.313.1619557059450;
- Tue, 27 Apr 2021 13:57:39 -0700 (PDT)
+        bh=0HWA17end2mHSBOn8PRau19glHvfoApvxJN4UI4e4wY=;
+        b=HGWxa2Te+KfkUWrwZb1KGt2Vht2ilvWEk+h48snhhjb8PNZyTo7ovYqkW4fhlm23x/
+         Pfsxp+OSbBtU84Gwb1oBMdvEo9Hw2ZF67dfyNdF0xdPXoUIJPP9lmO7RHWcGbtvIeaSc
+         VL3SIOoQ8hie3Pon2QGZVneC/kAurLAsOQkkZ+4QUIThsvkKdJud62XARG9RWukyoGhm
+         szN7CG4iKto12LA3+PTMm0astXi9xN37FUREUMMWzlezSC/JtE9jFK7Jbnx9Iy6aywER
+         SPosm3GN9MnJClIYp/a1OEqFRgXcclur9JmC/mjPU6NWJFtfMd5RAxgA1gsmGq9vuUZs
+         4P9Q==
+X-Gm-Message-State: AOAM532zqqO+ksVZNjwDdqFli2l22qwJyYVVxjr9mO9zKyLtWA4uwVQd
+        28Y7atFV3wBV3ZLVyDhvr8x67cUCfrmy49L436Pv3w==
+X-Google-Smtp-Source: ABdhPJxMa8QlbqFVlyqY8hHnMQk9ocnkufGFrjkph7CyO1dQzyOGO3Wvrfuhmg+RWEuWS6Q7zIqJ4mhoHMxQkSMikXM=
+X-Received: by 2002:a05:6122:2ad:: with SMTP id 13mr20756635vkq.11.1619557179939;
+ Tue, 27 Apr 2021 13:59:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210427133214.2270207-1-linmiaohe@huawei.com> <20210427133214.2270207-2-linmiaohe@huawei.com>
-In-Reply-To: <20210427133214.2270207-2-linmiaohe@huawei.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 27 Apr 2021 13:57:27 -0700
-Message-ID: <CAHbLzkoPA475tiopHwDxcJGoRRCk6O3++7i30r3Ozh6uLDeR5w@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm/huge_memory.c: remove dedicated macro HPAGE_CACHE_INDEX_MASK
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        william.kucharski@oracle.com, Matthew Wilcox <willy@infradead.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        aneesh.kumar@linux.ibm.com, Ralph Campbell <rcampbell@nvidia.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+References: <20210420220804.486803-1-axelrasmussen@google.com>
+ <20210420220804.486803-4-axelrasmussen@google.com> <alpine.LSU.2.11.2104261906390.2998@eggly.anvils>
+ <20210427155414.GB6820@xz-x1> <CAJHvVciNrE_F0B0nu=Mib6LhcFhL8+qgO-yiKNsJuBjOMkn5+g@mail.gmail.com>
+ <20210427180314.GD6820@xz-x1> <CAJHvVciMU=TDGxArtEQSq3n5DCLfYNWh7bVX_8dQL_dht4Q73w@mail.gmail.com>
+ <20210427204250.GG6820@xz-x1>
+In-Reply-To: <20210427204250.GG6820@xz-x1>
+From:   Hugh Dickins <hughd@google.com>
+Date:   Tue, 27 Apr 2021 13:59:12 -0700
+Message-ID: <CANsGZ6YRucupVi8Hhu=4Y7yhoY+eFr0YVahLSXpSC2-AikX4qQ@mail.gmail.com>
+Subject: Re: [PATCH v4 03/10] userfaultfd/shmem: support UFFDIO_CONTINUE for shmem
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-FSDevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 6:32 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Tue, Apr 27, 2021 at 1:42 PM Peter Xu <peterx@redhat.com> wrote:
+> On Tue, Apr 27, 2021 at 01:29:14PM -0700, Axel Rasmussen wrote:
+> > On Tue, Apr 27, 2021 at 11:03 AM Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > On Tue, Apr 27, 2021 at 09:57:16AM -0700, Axel Rasmussen wrote:
+> > > > I'd prefer to keep them separate, as they are not tiny patches (they
+> > > > are roughly +200/-150 each). And, they really are quite independent -
+> > > > at least in the sense that I can reorder them via rebase with no
+> > > > conflicts, and the code builds at each commit in either orientation. I
+> > > > think this implies they're easier to review separately, rather than
+> > > > squashed.
+> > > >
+> > > > I don't have a strong feeling about the order. I slightly prefer
+> > > > swapping them compared to this v4 series: first introduce minor
+> > > > faults, then introduce CONTINUE.
+> > > >
+> > > > Since Peter also has no strong opinion, and Hugh it sounds like you
+> > > > prefer it the other way around, I'll swap them as we had in some
+> > > > previous version of this series: first introduce minor faults, then
+> > > > introduce CONTINUE.
+> > >
+> > > Yes I have no strong opinion, but that's probably the least I prefer. :-)
+> > >
+> > > Because you'll declare UFFD_FEATURE_MINOR_SHMEM and enable this feature without
+> > > the feature being completely implemented (without UFFDIO_CONTINUE, it's not
+> > > complete since no one will be able to resolve that minor fault).
+> > >
+> > > Not a big deal anyway, but since we're at it... Basically I think three things
+> > > to do for minor shmem support:
+> > >
+> > >   (1) UFFDIO_CONTINUE (resolving path)
+> > >   (2) Handle fault path for shmem minor fault (faulting path)
+> > >   (3) Enablement of UFFD_FEATURE_MINOR_SHMEM (from which point, user can detect
+> > >       and enable it)
+> > >
+> > > I have no preference on how you'd like to merge these steps (right now you did
+> > > 1 first, then 2+3 later; or as Hugh suggested do 1+2+3 together), but I'd still
+> > > hope item 3 should always be the last, if possible...
+> >
+> > In that case, I'll split the patch which adds the faulting path in
+> > two: add the faulting path hook and registration mode, and then in a
+> > separate commit advertise the feature flag as available.
+> >
+> > Then I'll order them like so, which I think is the order Hugh finds
+> > more natural:
+> > 1. MInor fault registration / faulting path
+> > 2. CONTINUE ioctl to resolve the faults
+> > 3. Advertise the feature as supported
+> >
+> > Sound okay?
 >
-> Rewrite the pgoff checking logic to remove macro HPAGE_CACHE_INDEX_MASK
-> which is only used here to simplify the code.
+> Good to me, thanks Axel.
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
-
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/huge_mm.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index 9626fda5efce..0a526f211fec 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -152,15 +152,13 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
->
->  bool transparent_hugepage_enabled(struct vm_area_struct *vma);
->
-> -#define HPAGE_CACHE_INDEX_MASK (HPAGE_PMD_NR - 1)
-> -
->  static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
->                 unsigned long haddr)
->  {
->         /* Don't have to check pgoff for anonymous vma */
->         if (!vma_is_anonymous(vma)) {
-> -               if (((vma->vm_start >> PAGE_SHIFT) & HPAGE_CACHE_INDEX_MASK) !=
-> -                       (vma->vm_pgoff & HPAGE_CACHE_INDEX_MASK))
-> +               if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-> +                               HPAGE_PMD_NR))
->                         return false;
->         }
->
-> --
-> 2.23.0
->
->
+Okay.
