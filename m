@@ -2,216 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E119C36C7B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058A836C7B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238374AbhD0O1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
+        id S236428AbhD0O2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 10:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238265AbhD0O06 (ORCPT
+        with ESMTP id S236220AbhD0O2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:26:58 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AF2C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:15 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id t18so2095783wry.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:26:15 -0700 (PDT)
+        Tue, 27 Apr 2021 10:28:03 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E78C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:27:19 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g10so2233665edb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=tsLEq65WPKHRwU8rIMWjygbXMsjIHkGUMZ3Ia5QeHAw=;
-        b=vxoNyU80KxxiBotb0lzjxlUzkwvkfWvuC8wvl+fAljbT8jvboVaOZTyTmoBBkVYEy8
-         ODF18O5VwyagVT62PXJy8ixj23oSXmuh1KLUwKFguIPsnOLkhWeWUapx3ecC6VOb9UpO
-         VclnghnBwzwggXYn/U8vznLQeKPRibZYBIl7aIqvEU2gPrjUG0nFbAo3w9VfsAKbB7hB
-         qPmOZDXpkvZWQxouq7kGlCKcM/DGcjs++xKMIx+COAJqRPPI4J4iQ0bVFs10x0XSbz/m
-         6DstotHlMNmCPVtifdBKbg5L7BDZ2JC3cLpY1c6gmLD2+z5m2nVeY4CCzdkVTNy6sjtu
-         jnmw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XhBitAfO+lUdqM+KJ5MLv9MizE/aYLsi5KapnflyV6M=;
+        b=KWA947vQLRv7xZCkUeZaOWisLCCsiTm4TDd55+Pt8S8J+1thJssD1ct2oyhINnY2p5
+         L2cE8lYSFhJv+UgLpIG6pXsYHWAZHWJkD4IsYMD0m0G74OwTLwUuh6WXxZjIABbznsEz
+         Qlh9TWE1JIHIqrbaIET1a6CENH4VhqsRDjjSU6Lc57vZNGGobICtBPj9vC7MwB7uLDp5
+         7bZDjXoZTGwGGCagc1hQ6ddlwvGzv/4kf760ZaLl13kAqjP8A17A+wEAZCqyqOd93OjN
+         e8/s/wCFizy5DZnC07tHZEOQP4DL4M7/zwZb9UnSmvmwmbHG6bQXaEEUyDcgweZdcuI7
+         /I5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=tsLEq65WPKHRwU8rIMWjygbXMsjIHkGUMZ3Ia5QeHAw=;
-        b=SbgEjyLlI/TgOqsdT/ZnG/mEAxr9fvsAcDSrYRlAnBNY29oiTX7az7qzngGXZWvXrh
-         QbIwGBewCdapnWe11/+1UpA/0n0dZCSyKPuKhwmotvjidsWJX3rptiKvMYeqXENhfmtt
-         8fXYrUn+XCPeQe6z7FY+psl770ja+abdVY6d2aJx5IJtrpstNy0PruHlD0cYE6z4YCKN
-         Q0959CkrAVHMvD5RhsHE0frJgY1P3lkio0pjnqVfADQRf5Ytr/rCTVsGVfiZzB4xUc5r
-         pP3Nqbcv2OFdpCf7R1qJbuMs8EwAy5PsIKKf5y9JiI62OTMGiLMgSrJ6F/QRxyULbXrq
-         Hmqg==
-X-Gm-Message-State: AOAM5325xMke4oGHRIpBQt4m1Vsgzzqxwd5M2qKuXtMwSfRKTKAyiPzm
-        BOQ+S4NqF9Z4mCKELpGtRYIL+Q==
-X-Google-Smtp-Source: ABdhPJwec6hRUNjWSCxJ83wJL/+1rOqso5Ax4Ulzh5tpeJnc5TPLZU2HmP4+HzqqbtHxvWskg3j1Cg==
-X-Received: by 2002:adf:9011:: with SMTP id h17mr29521491wrh.384.1619533573779;
-        Tue, 27 Apr 2021 07:26:13 -0700 (PDT)
-Received: from vingu-book ([2a01:e0a:f:6020:9db3:7ea6:7c21:e08])
-        by smtp.gmail.com with ESMTPSA id x25sm2853368wmj.34.2021.04.27.07.26.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Apr 2021 07:26:13 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 16:26:11 +0200
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load
- decay
-Message-ID: <20210427142611.GA22056@vingu-book>
-References: <20210425080902.11854-1-odin@uged.al>
- <20210425080902.11854-2-odin@uged.al>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XhBitAfO+lUdqM+KJ5MLv9MizE/aYLsi5KapnflyV6M=;
+        b=R4WkZcJKXnQLDzeRVXBWtrMyIfH1QKSMqp8d+3ZFh2YsvCFbxRW38uuYbyd6vpleOa
+         +y5maOzoGgJRBclP3CaVgq14Y7r6zD9VWrZ1O3wJZVAmDZ5AOfkIzwyxGnjz5wxyCA5k
+         rerv+mEfcAi8F8wIYfvYZDS198w3pNcLMV0js+A1VemCbjGHcpLb75LBT0YI1U8+boTt
+         p/UUwyrHxGLnK3biSPSuXR5sXpMdHgtD6+7Pq4vTljoK537jrs/MFBoAYJ+s1U9GqEDT
+         gVixjo20vXbJ54ExvMH7uNK/ywU18mBGaalWy0GJ0Po0uyNh5KQDMl6df09VLD9dsayw
+         5vow==
+X-Gm-Message-State: AOAM532cA1tFNsCZYnpaScHdO7g8IESsdzo0P4ViLAI9iLem/hT9KG+B
+        XVbIWdSNUmWTQsD+Nu9WCAAqymNMC2K5aGDM
+X-Google-Smtp-Source: ABdhPJzzJ7U1fG4jXRugSSn8ZlDLAhaAmqgrY9J9E2jjYa+S8TN7ccJLWkmQGUyuAa0xFt0k+tqNsw==
+X-Received: by 2002:a05:6402:6cf:: with SMTP id n15mr4612569edy.51.1619533638415;
+        Tue, 27 Apr 2021 07:27:18 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id x7sm40122ejc.116.2021.04.27.07.27.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 07:27:17 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        David Kershner <david.kershner@unisys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [Outreachy kernel] [PATCH v4] staging: unisys: visorhba: Convert module from IDR to XArray
+Date:   Tue, 27 Apr 2021 16:27:16 +0200
+Message-ID: <47635779.DuUUcalshs@linux.local>
+In-Reply-To: <20210427140755.GC1399@agape.jhs>
+References: <20210427132522.14547-1-fmdefrancesco@gmail.com> <20210427140755.GC1399@agape.jhs>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210425080902.11854-2-odin@uged.al>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le dimanche 25 avril 2021 à 10:09:02 (+0200), Odin Ugedal a écrit :
-> This fixes an issue where old load on a cfs_rq is not properly decayed,
-> resulting in strange behavior where fairness can decrease drastically.
-> Real workloads with equally weighted control groups have ended up
-> getting a respective 99% and 1%(!!) of cpu time.
+On Tuesday, April 27, 2021 4:07:56 PM CEST Fabio Aiuto wrote:
+> Hi Fabio,
 > 
-> When an idle task is attached to a cfs_rq by attaching a pid to a cgroup,
-> the old load of the task is attached to the new cfs_rq and sched_entity by
-> attach_entity_cfs_rq. If the task is then moved to another cpu (and
-> therefore cfs_rq) before being enqueued/woken up, the load will be moved
-> to cfs_rq->removed from the sched_entity. Such a move will happen when
-> enforcing a cpuset on the task (eg. via a cgroup) that force it to move.
-
-Would be good to mention that the problem happens only if the new cfs_rq has
-been removed from the leaf_cfs_rq_list because its PELT metrics were already
-null. In such case __update_blocked_fair() never updates the blocked load of
-the new cfs_rq and never propagate the removed load in the hierarchy.
-
+> On Tue, Apr 27, 2021 at 03:25:22PM +0200, Fabio M. De Francesco wrote:
+> > Converted visorhba from IDR to XArray. The abstract data type XArray is
+> > more memory-efficient, parallelisable and cache friendly. It takes
+> > advantage of RCU to perform lookups without locking.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> > Changes from v3: Matthew Wilcox found that the XArray was not
+> > initialized: now it is. Changed types handles from u64 to u32 because
+> > they can't work as arguments of xa_alloc_irq() and u32 is enough large
+> > for storing XArray indexes.
+> > Changes from v2: Some residual errors from v1 were not fixed in v2. Now
+> > they have been removed.
+> > Changes from v1: After a first review by Matthew Wilcox, who found a
+> > series of errors and gave suggestions on how to fix them, I rewrote a
+> > larger part of the patch.
+> > 
+> >  drivers/staging/unisys/include/iochannel.h    |  4 +-
+> >  .../staging/unisys/visorhba/visorhba_main.c   | 89 ++++++-------------
+> >  2 files changed, 28 insertions(+), 65 deletions(-)
+> > 
+> > diff --git a/drivers/staging/unisys/include/iochannel.h
+> > b/drivers/staging/unisys/include/iochannel.h index 
+9ef812c0bc42..fac89eac148b 100644
+> > --- a/drivers/staging/unisys/include/iochannel.h
+> > +++ b/drivers/staging/unisys/include/iochannel.h
+> > @@ -474,8 +474,8 @@ struct uiscmdrsp_scsitaskmgmt {
+> > 
+> >  	enum task_mgmt_types tasktype;
+> >  	struct uisscsi_dest vdest;
+> >  	u64 handle;
+> > 
+> > -	u64 notify_handle;
+> > -	u64 notifyresult_handle;
+> > +	u32 notify_handle;
+> > +	u32 notifyresult_handle;
+> > 
+> >  	char result;
+> >  
+> >  #define TASK_MGMT_FAILED 0
+> > 
+> > diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c
+> > b/drivers/staging/unisys/visorhba/visorhba_main.c index 
+4455d26f7c96..2b6cde254f17
+> > 100644
+> > --- a/drivers/staging/unisys/visorhba/visorhba_main.c
+> > +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+> > @@ -6,10 +6,10 @@
+> > 
+> >  #include <linux/debugfs.h>
+> >  #include <linux/kthread.h>
+> > 
+> > -#include <linux/idr.h>
+> > 
+> >  #include <linux/module.h>
+> >  #include <linux/seq_file.h>
+> >  #include <linux/visorbus.h>
+> > 
+> > +#include <linux/xarray.h>
+> > 
+> >  #include <scsi/scsi.h>
+> >  #include <scsi/scsi_host.h>
+> >  #include <scsi/scsi_cmnd.h>
+> > 
+> > @@ -82,7 +82,7 @@ struct visorhba_devdata {
+> > 
+> >  	 * allows us to pass int handles back-and-forth between us and
+> >  	 * iovm, instead of raw pointers
+> >  	 */
+> > 
+> > -	struct idr idr;
+> > +	struct xarray xa;
+> > 
+> >  	struct dentry *debugfs_dir;
+> >  	struct dentry *debugfs_info;
+> > 
+> > @@ -182,71 +182,40 @@ static struct uiscmdrsp 
+*get_scsipending_cmdrsp(struct
+> > visorhba_devdata *ddata,> 
+> >  	return NULL;
+> >  
+> >  }
+> > 
+> > -/*
+> > - * simple_idr_get - Associate a provided pointer with an int value
+> > - *		    1 <= value <= INT_MAX, and return this int value;
+> > - *		    the pointer value can be obtained later by passing
+> > - *		    this int value to idr_find()
+> > - * @idrtable: The data object maintaining the pointer<-->int mappings
+> > - * @p:	      The pointer value to be remembered
+> > - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> > - *
+> > - * Return: The id number mapped to pointer 'p', 0 on failure
+> > - */
+> > -static unsigned int simple_idr_get(struct idr *idrtable, void *p,
+> > -				   spinlock_t *lock)
+> > -{
+> > -	int id;
+> > -	unsigned long flags;
+> > -
+> > -	idr_preload(GFP_KERNEL);
+> > -	spin_lock_irqsave(lock, flags);
+> > -	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
+> > -	spin_unlock_irqrestore(lock, flags);
+> > -	idr_preload_end();
+> > -	/* failure */
+> > -	if (id < 0)
+> > -		return 0;
+> > -	/* idr_alloc() guarantees > 0 */
+> > -	return (unsigned int)(id);
+> > -}
+> > -
+> > 
+> >  /*
+> >  
+> >   * setup_scsitaskmgmt_handles - Stash the necessary handles so that the
+> >   *				completion processing logic for 
+a taskmgmt
+> >   *				cmd will be able to find who to 
+wake up
+> >   *				and where to stash the result
+> > 
+> > - * @idrtable: The data object maintaining the pointer<-->int mappings
+> > - * @lock:     A spinlock used when exclusive access to idrtable is needed
+> > + * @xa:       The data object maintaining the pointer<-->int mappings
+> > 
+> >   * @cmdrsp:   Response from the IOVM
+> >   * @event:    The event handle to associate with an id
+> >   * @result:   The location to place the result of the event handle into
+> >   */
+> > 
+> > -static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t 
+*lock,
+> > -				       struct uiscmdrsp *cmdrsp,
+> > +static void setup_scsitaskmgmt_handles(struct xarray *xa, struct 
+uiscmdrsp *cmdrsp,
+> > 
+> >  				       wait_queue_head_t *event, 
+int *result)
+> >  
+> >  {
+> > 
+> > -	/* specify the event that has to be triggered when this */
+> > -	/* cmd is complete */
+> > -	cmdrsp->scsitaskmgmt.notify_handle =
+> > -		simple_idr_get(idrtable, event, lock);
+> > -	cmdrsp->scsitaskmgmt.notifyresult_handle =
+> > -		simple_idr_get(idrtable, result, lock);
+> > +	int ret;
+> > +	u32 *id;
+> > +
+> > +	/* specify the event that has to be triggered when this cmd is 
+complete */
+> > +	id = &cmdrsp->scsitaskmgmt.notify_handle;
+> > +	ret = xa_alloc_irq(xa, id, event, XA_LIMIT(1, INT_MAX), 
+GFP_KERNEL);
+> > +	id = &cmdrsp->scsitaskmgmt.notifyresult_handle;
+> > +	ret = xa_alloc_irq(xa, id, result, XA_LIMIT(1, INT_MAX), 
+GFP_KERNEL);
+> > 
+> >  }
+> >  
+> >  /*
+> >  
+> >   * cleanup_scsitaskmgmt_handles - Forget handles created by
+> >   *				  setup_scsitaskmgmt_handles()
+> > 
+> > - * @idrtable: The data object maintaining the pointer<-->int mappings
+> > + * @xa: The data object maintaining the pointer<-->int mappings
+> > 
+> >   * @cmdrsp:   Response from the IOVM
+> >   */
+> > 
+> > -static void cleanup_scsitaskmgmt_handles(struct idr *idrtable,
+> > +static void cleanup_scsitaskmgmt_handles(struct xarray *xa,
+> > 
+> >  					 struct uiscmdrsp 
+*cmdrsp)
+> >  
+> >  {
+> > 
+> > -	if (cmdrsp->scsitaskmgmt.notify_handle)
+> > -		idr_remove(idrtable, cmdrsp-
+>scsitaskmgmt.notify_handle);
+> > -	if (cmdrsp->scsitaskmgmt.notifyresult_handle)
+> > -		idr_remove(idrtable, cmdrsp-
+>scsitaskmgmt.notifyresult_handle);
+> > +	xa_erase(xa, cmdrsp->scsitaskmgmt.notify_handle);
+> > +	xa_erase(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
+> > 
+> >  }
 > 
-> The load will however not be removed from the task_group itself, making
-> it look like there is a constant load on that cfs_rq. This causes the
-> vruntime of tasks on other sibling cfs_rq's to increase faster than they
-> are supposed to; causing severe fairness issues. If no other task is
-> started on the given cfs_rq, and due to the cpuset it would not happen,
-> this load would never be properly unloaded. With this patch the load
-> will be properly removed inside update_blocked_averages. This also
-> applies to tasks moved to the fair scheduling class and moved to another
-> cpu, and this path will also fix that. For fork, the entity is queued
-> right away, so this problem does not affect that.
-> 
-> For a simple cgroup hierarchy (as seen below) with two equally weighted
-> groups, that in theory should get 50/50 of cpu time each, it often leads
-> to a load of 60/40 or 70/30.
-> 
-> parent/
->   cg-1/
->     cpu.weight: 100
->     cpuset.cpus: 1
->   cg-2/
->     cpu.weight: 100
->     cpuset.cpus: 1
-> 
-> If the hierarchy is deeper (as seen below), while keeping cg-1 and cg-2
-> equally weighted, they should still get a 50/50 balance of cpu time.
-> This however sometimes results in a balance of 10/90 or 1/99(!!) between
-> the task groups.
-> 
-> $ ps u -C stress
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root       18568  1.1  0.0   3684   100 pts/12   R+   13:36   0:00 stress --cpu 1
-> root       18580 99.3  0.0   3684   100 pts/12   R+   13:36   0:09 stress --cpu 1
-> 
-> parent/
->   cg-1/
->     cpu.weight: 100
->     sub-group/
->       cpu.weight: 1
->       cpuset.cpus: 1
->   cg-2/
->     cpu.weight: 100
->     sub-group/
->       cpu.weight: 10000
->       cpuset.cpus: 1
-> 
-> This can be reproduced by attaching an idle process to a cgroup and
-> moving it to a given cpuset before it wakes up. The issue is evident in
-> many (if not most) container runtimes, and has been reproduced
-> with both crun and runc (and therefore docker and all its "derivatives"),
-> and with both cgroup v1 and v2.
-> 
-> Fixes: 3d30544f0212 ("sched/fair: Apply more PELT fixes")
-
-The fix tag should be :
-Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-
-This patch re-introduced the del of idle cfs_rq from leaf_cfs_rq_list in order to
-skip useless update of blocked load.
-
-
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> ---
->  kernel/sched/fair.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 794c2cb945f8..ad7556f99b4a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10916,6 +10916,19 @@ static void attach_task_cfs_rq(struct task_struct *p)
->  
->  	if (!vruntime_normalized(p))
->  		se->vruntime += cfs_rq->min_vruntime;
-> +
-> +	/*
-> +	 * Make sure the attached load will decay properly
-> +	 * in case the task is moved to another cpu before
-> +	 * being queued.
-> +	 */
-> +	if (!task_on_rq_queued(p)) {
-> +		for_each_sched_entity(se) {
-> +			if (se->on_rq)
-> +				break;
-> +			list_add_leaf_cfs_rq(cfs_rq_of(se));
-> +		}
-> +	}
-
-propagate_entity_cfs_rq() already goes across the tg tree to
-propagate the attach/detach.
-
-would be better to call list_add_leaf_cfs_rq(cfs_rq)  inside this function
-instead of looping twice the tg tree. Something like:
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 33b1ee31ae0f..18441ce7316c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11026,10 +11026,10 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
-        for_each_sched_entity(se) {
-                cfs_rq = cfs_rq_of(se);
-
--               if (cfs_rq_throttled(cfs_rq))
--                       break;
-+               if (!cfs_rq_throttled(cfs_rq))
-+                       update_load_avg(cfs_rq, se, UPDATE_TG);
-
--               update_load_avg(cfs_rq, se, UPDATE_TG);
-+               list_add_leaf_cfs_rq(cfs_rq);
-        }
- }
- #else
-
-
+> why were the conditions removed before each entry deletion?
 >
->  }
->  
->  static void switched_from_fair(struct rq *rq, struct task_struct *p)
-> -- 
-> 2.31.1
+No reason at all. I unwittingly removed them while deleting idr_remove() 
+calls.  I'll restore them.
 > 
+> >  /*
+> > 
+> > @@ -273,8 +242,7 @@ static int forward_taskmgmt_command(enum 
+task_mgmt_types tasktype,
+> > 
+> >  	if (devdata->serverdown || devdata->serverchangingstate)
+> >  	
+> >  		return FAILED;
+> > 
+> > -	scsicmd_id = add_scsipending_entry(devdata, CMD_SCSITASKMGMT_TYPE,
+> > -					   NULL);
+> > +	scsicmd_id = add_scsipending_entry(devdata, CMD_SCSITASKMGMT_TYPE, 
+NULL);
+> > 
+> >  	if (scsicmd_id < 0)
+> >  	
+> >  		return FAILED;
+> 
+> this is a code format change, maybe this go in a separate patch?
+>
+Yes, I forgot to restore the previous format. Julia also pointed it out a few 
+days ago.
+
+Thanks,
+
+Fabio
+> 
+> > @@ -284,8 +252,7 @@ static int forward_taskmgmt_command(enum 
+task_mgmt_types tasktype,
+> > 
+> >  	/* issue TASK_MGMT_ABORT_TASK */
+> >  	cmdrsp->cmdtype = CMD_SCSITASKMGMT_TYPE;
+> > 
+> > -	setup_scsitaskmgmt_handles(&devdata->idr, &devdata->privlock, 
+cmdrsp,
+> > -				   &notifyevent, &notifyresult);
+> > +	setup_scsitaskmgmt_handles(&devdata->xa, cmdrsp, &notifyevent, 
+&notifyresult);
+> > 
+> >  	/* save destination */
+> >  	cmdrsp->scsitaskmgmt.tasktype = tasktype;
+> > 
+> > @@ -311,14 +278,14 @@ static int forward_taskmgmt_command(enum 
+task_mgmt_types
+> > tasktype,> 
+> >  	dev_dbg(&scsidev->sdev_gendev,
+> >  	
+> >  		"visorhba: taskmgmt type=%d success; result=0x%x\n",
+> >  		
+> >  		 tasktype, notifyresult);
+> > 
+> > -	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
+> > +	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
+> > 
+> >  	return SUCCESS;
+> >  
+> >  err_del_scsipending_ent:
+> >  	dev_dbg(&scsidev->sdev_gendev,
+> >  	
+> >  		"visorhba: taskmgmt type=%d not executed\n", tasktype);
+> >  	
+> >  	del_scsipending_ent(devdata, scsicmd_id);
+> > 
+> > -	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
+> > +	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
+> > 
+> >  	return FAILED;
+> >  
+> >  }
+> > 
+> > @@ -654,13 +621,12 @@ DEFINE_SHOW_ATTRIBUTE(info_debugfs);
+> > 
+> >   * Service Partition returned the result of the task management
+> >   * command. Wake up anyone waiting for it.
+> >   */
+> > 
+> > -static void complete_taskmgmt_command(struct idr *idrtable,
+> > -				      struct uiscmdrsp *cmdrsp, 
+int result)
+> > +static void complete_taskmgmt_command(struct xarray *xa, struct uiscmdrsp 
+*cmdrsp,
+> > int result)> 
+> >  {
+> >  
+> >  	wait_queue_head_t *wq =
+> > 
+> > -		idr_find(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
+> > +		xa_load(xa, cmdrsp->scsitaskmgmt.notify_handle);
+> > 
+> >  	int *scsi_result_ptr =
+> > 
+> > -		idr_find(idrtable, cmdrsp-
+>scsitaskmgmt.notifyresult_handle);
+> > +		xa_load(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
+> > 
+> >  	if (unlikely(!(wq && scsi_result_ptr))) {
+> >  	
+> >  		pr_err("visorhba: no completion context; cmd will time 
+out\n");
+> >  		return;
+> > 
+> > @@ -708,8 +674,7 @@ static void visorhba_serverdown_complete(struct 
+visorhba_devdata
+> > *devdata)> 
+> >  			break;
+> >  		
+> >  		case CMD_SCSITASKMGMT_TYPE:
+> >  			cmdrsp = pendingdel->sent;
+> > 
+> > -			complete_taskmgmt_command(&devdata->idr, 
+cmdrsp,
+> > -						  
+TASK_MGMT_FAILED);
+> > +			complete_taskmgmt_command(&devdata->xa, 
+cmdrsp, TASK_MGMT_FAILED);
+> > 
+> >  			break;
+> >  		
+> >  		default:
+> >  			break;
+> > 
+> > @@ -905,7 +870,7 @@ static void drain_queue(struct uiscmdrsp *cmdrsp,
+> > 
+> >  			if (!del_scsipending_ent(devdata,
+> >  			
+> >  						 cmdrsp-
+>scsitaskmgmt.handle))
+> >  				
+> >  				break;
+> > 
+> > -			complete_taskmgmt_command(&devdata->idr, 
+cmdrsp,
+> > +			complete_taskmgmt_command(&devdata->xa, 
+cmdrsp,
+> > 
+> >  						  cmdrsp-
+>scsitaskmgmt.result);
+> >  		
+> >  		} else if (cmdrsp->cmdtype == CMD_NOTIFYGUEST_TYPE)
+> >  		
+> >  			dev_err_once(&devdata->dev->device,
+> > 
+> > @@ -1053,7 +1018,7 @@ static int visorhba_probe(struct visor_device *dev)
+> > 
+> >  	if (err)
+> >  	
+> >  		goto err_debugfs_info;
+> > 
+> > -	idr_init(&devdata->idr);
+> > +	xa_init(&devdata->xa);
+> > 
+> >  	devdata->cmdrsp = kmalloc(sizeof(*devdata->cmdrsp), GFP_ATOMIC);
+> >  	visorbus_enable_channel_interrupts(dev);
+> > 
+> > @@ -1096,8 +1061,6 @@ static void visorhba_remove(struct visor_device 
+*dev)
+> > 
+> >  	scsi_remove_host(scsihost);
+> >  	scsi_host_put(scsihost);
+> > 
+> > -	idr_destroy(&devdata->idr);
+> > -
+> > 
+> >  	dev_set_drvdata(&dev->device, NULL);
+> >  	debugfs_remove(devdata->debugfs_info);
+> >  	debugfs_remove_recursive(devdata->debugfs_dir);
+> 
+> thank you,
+> 
+> fabio
+
+
+
+
