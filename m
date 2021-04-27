@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6026336CEA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE9636CEA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239020AbhD0Whe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        id S239160AbhD0Whi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238797AbhD0Whc (ORCPT
+        with ESMTP id S238797AbhD0Whe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:37:32 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2991C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:46 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 7-20020a5b01070000b02904ed6442e5f6so16176057ybx.23
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:46 -0700 (PDT)
+        Tue, 27 Apr 2021 18:37:34 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54522C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:49 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id a7-20020a62bd070000b029025434d5ead4so21548933pff.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Y8ULK4WwYoTcErFzD8U7DpN6B10FYVsEEpVfzScuJlc=;
-        b=WVq8MsDkNtUfNVyp+bs9PvhqgqX5BckvCjwHHBkHNrInXaqfhVhtQlDrok6zJDcxqS
-         BIFhZthAH4c5PsSuIrwti22XDPVQ0XMZfWL0MFTTWhoxaQnSl3MTMi74B3LoCzVXYv3P
-         5L72cEW9AXTQwtZM2Jd9ymLgJ6Yz7MCYLHGJ0C9AqodJBXPxs8u0aUtB3VAWqtkXxAc/
-         xUaYCf8RcFRwbv+CRFR5LxxCcFwEnt9I1C+migtuAz+IPPimNaMkgBwmO0gRfFmtn4CU
-         TnWKorqPYTR4FTCqSsYIpsMzlHl5D/wiDJTsnN4qG8xzQRpnZLygFO7kV+6CDccdOFWh
-         6fWA==
+        bh=dtfxclLFIBm6xVbo9OSqpPdh4KZCVh7xSZdF1u0sKXc=;
+        b=eTO7SN1Gt4G354q/wrJKcHjRQS9pdTQywJzItPU2gesfRRbz0NV1NLuLguHnL54ljX
+         VQwKBJ+WMYwKFZz7quFU1558YIGkHdw+ODQ/LAWrSNlxbd8Txsg5FR+Cjad3SoSM2WbV
+         lpjXQDRYn6oDIKe1hfvdcxhqFkQjeCWmid8tS7oqOxqEZhbv8UFvEi2sHouTLgm9dHSq
+         aoXTY/wxRPoi3Vin2stzZkptZC6pAZRHfwODV1YNU0U/Um2nYcUnDZjFoVA0T7Corg9W
+         LYwoKgPdKmaUZ18xF5XsOMzPW5qSTetg4CbYD3iuN9tkMkl79iuVXq1va9vho25oVFmI
+         mnoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Y8ULK4WwYoTcErFzD8U7DpN6B10FYVsEEpVfzScuJlc=;
-        b=JeHkm91u5myVG/N6higx9LFJYZR1niGrQ1zDBnN1WPPc/omtXIIy/uy73LYNx0invy
-         8gmtdeqbse4i68mCi+DW/kf9xcqA2Lg1dBaguyNuwb8c0u+btF7d9bSQUmSXfy8Q0N3c
-         iVcIuoIzrt84LuCC9N9a/TNI4XeuEhCcv8l3YRIq/bfP0b37DCmTaQGZ9/NJ2vfjwWHm
-         eD676inVDOAF6M7ROr9vrCQi5q8R2DHJET860myEfysbQAYlIgCg2ETyH9gqVoDldfjy
-         xDnVQFYIsfxFenDwixt/Xr7Mo/VtDo7tqVvzwCPXbp7UubSuOcgLVP/gAVoyziHnvC0l
-         9rZw==
-X-Gm-Message-State: AOAM531dQBxe90Kbiqw3T63peQt4rqeCcS0str7LLQerTUCG89ohBnSz
-        EGrOeyTV+ltUmap8De0p/BLInpvJnMwB/qEzwIpIxy5/6XvbOmCLh3qyVQqj3Jw+nQXE44x/WqM
-        AzoDtF3d2kNZdG9cssnPaN2/1YikEehPZuS8jLPBoHml1aU5MqHiNXlrOX6dCjIlGZc3o0HY5
-X-Google-Smtp-Source: ABdhPJzIv6KiFuFYaHtzUXidZsSKOm+bQHFRyYycbWtur/Sruv8TBwpKwk7zPfLyKzen5CndaH0iIhEoF/Af
+        bh=dtfxclLFIBm6xVbo9OSqpPdh4KZCVh7xSZdF1u0sKXc=;
+        b=Fu6ZmoX49qn+Y1tJXYBRtU15e07utBdqdVXO7nECHJGLRb6WCL9fxkDzBnZpx/k0Eo
+         cmMhGvS4JNQzA7gBdA8bE8j2wRK41kyLDJnp9E+2FGHLWqh/DtueFGyIzupbIJ1E2PaI
+         nAaz8lmnIQDKbVeC1F0D6TpY6Mji5B3QDkjeqlHOb/PS7ch9prq3Btw0YsrzHOkjgEEH
+         4EVX6iVViHawrqyL3Y3Na7qhF/GWYXllV0F0hCIvfEmIwz90bm9CDsC4TLqrOWlAITh6
+         tcJ9vf+Z2//EMZxO9LBCNCVbRXfW/142ZkC6cH5DkApqqk5gc2Pqqj1vWqoCsIeiTg6O
+         C9sA==
+X-Gm-Message-State: AOAM532jKWfsNzHNErBu5LbmTCxWb/+OPYGWts9aL2GHRprnFKtptkEr
+        SqpI6iUD1v8koQmTX3GbWW6XVg5jKE5bQIo+eSYtM9HicpVhg+dURSo+vRm4IwlH/5d04pml92M
+        3rpMXP8QF3fgTtldxNaQ9Xb7ooHutiAM5YG7L4mQeRIwE3JWSlxF0Z1/1G3nyeg8SzT89bx9O
+X-Google-Smtp-Source: ABdhPJwkKEJR2YImyKXGXiLxtnPy1zYqJmYxDX+MkuJ+PbPovvbvJVTuQikpN4iWhxlo+YFxHFyUrNaLNAhF
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:d0b5:c590:c6b:bd9c])
- (user=bgardon job=sendgmr) by 2002:a25:5d1:: with SMTP id 200mr17623998ybf.251.1619563006048;
- Tue, 27 Apr 2021 15:36:46 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 15:36:32 -0700
+ (user=bgardon job=sendgmr) by 2002:a62:1b4d:0:b029:253:ccef:409d with SMTP id
+ b74-20020a621b4d0000b0290253ccef409dmr25212067pfb.4.1619563008656; Tue, 27
+ Apr 2021 15:36:48 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 15:36:33 -0700
 In-Reply-To: <20210427223635.2711774-1-bgardon@google.com>
-Message-Id: <20210427223635.2711774-4-bgardon@google.com>
+Message-Id: <20210427223635.2711774-5-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210427223635.2711774-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH 3/6] KVM: x86/mmu: Deduplicate rmap freeing in allocate_memslot_rmap
+Subject: [PATCH 4/6] KVM: x86/mmu: Factor out allocating memslot rmap
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -70,59 +71,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Small code deduplication. No functional change expected.
+Small refactor to facilitate allocating rmaps for all memslots at once.
+
+No functional change expected.
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/x86.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ arch/x86/kvm/x86.c | 41 ++++++++++++++++++++++++++++++++---------
+ 1 file changed, 32 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index cf3b67679cf0..5bcf07465c47 100644
+index 5bcf07465c47..fc32a7dbe4c4 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -10818,17 +10818,23 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
- 	kvm_hv_destroy_vm(kvm);
+@@ -10842,10 +10842,37 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 	kvm_page_track_free_memslot(slot);
  }
  
--void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-+static void free_memslot_rmap(struct kvm_memory_slot *slot)
- {
- 	int i;
- 
- 	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
- 		kvfree(slot->arch.rmap[i]);
- 		slot->arch.rmap[i] = NULL;
-+	}
-+}
- 
--		if (i == 0)
--			continue;
-+void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
++static int alloc_memslot_rmap(struct kvm_memory_slot *slot,
++			      unsigned long npages)
 +{
 +	int i;
 +
++	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
++		int lpages;
++		int level = i + 1;
++
++		lpages = gfn_to_index(slot->base_gfn + npages - 1,
++				      slot->base_gfn, level) + 1;
++
++		slot->arch.rmap[i] =
++			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
++				 GFP_KERNEL_ACCOUNT);
++		if (!slot->arch.rmap[i])
++			goto out_free;
++	}
++
++	return 0;
++
++out_free:
 +	free_memslot_rmap(slot);
++	return -ENOMEM;
++}
++
+ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+ 				      unsigned long npages)
+ {
+ 	int i;
++	int r;
  
-+	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
- 		kvfree(slot->arch.lpage_info[i - 1]);
- 		slot->arch.lpage_info[i - 1] = NULL;
- 	}
-@@ -10894,12 +10900,9 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 	return 0;
+ 	/*
+ 	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
+@@ -10854,7 +10881,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+ 	 */
+ 	memset(&slot->arch, 0, sizeof(slot->arch));
  
- out_free:
 -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
--		kvfree(slot->arch.rmap[i]);
--		slot->arch.rmap[i] = NULL;
++	r = alloc_memslot_rmap(slot, npages);
++	if (r)
++		return r;
++
++	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+ 		struct kvm_lpage_info *linfo;
+ 		unsigned long ugfn;
+ 		int lpages;
+@@ -10863,14 +10894,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+ 		lpages = gfn_to_index(slot->base_gfn + npages - 1,
+ 				      slot->base_gfn, level) + 1;
+ 
+-		slot->arch.rmap[i] =
+-			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+-				 GFP_KERNEL_ACCOUNT);
+-		if (!slot->arch.rmap[i])
+-			goto out_free;
 -		if (i == 0)
 -			continue;
-+	free_memslot_rmap(slot);
- 
-+	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
- 		kvfree(slot->arch.lpage_info[i - 1]);
- 		slot->arch.lpage_info[i - 1] = NULL;
- 	}
+-
+ 		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
+ 		if (!linfo)
+ 			goto out_free;
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
