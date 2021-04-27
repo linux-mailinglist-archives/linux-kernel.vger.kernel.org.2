@@ -2,72 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1F036C52C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98DD36C531
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbhD0LfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhD0LfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:35:14 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FBEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:34:31 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id n127so19806088wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=z9C6sQ611y/zGRe/UW7/e4zr9l8XoO00RXrJcagkHXI=;
-        b=ADceqTv77JagwuFR5s9XYfyWOZzLEa1itzG63x+/awj4LHL6EimuX3bNg/jqkU679E
-         mKYqV/UOts733gmwYFpMRjNgmhi2N/F64p3P3rqX/Uh5do7cQ7vlossntalvaozE7NGz
-         kf/KxYbXgYme8cHq/udvl2WQPFNraJMgMh5PWGdoZ2XI/Lb1WUhJVPFqjXfS8Ex1etJR
-         vnz6sdSPEJYuc+LL2v0LHFIgtyGkM3GysbI39aqeENl2J24DoRvo1T/0CK25s4cqrKdC
-         f7wIbcrSWQ8GvgsAEhmJ9tc7sjf5CdBnZgX8IDpB5GZNfz+WJ536dSma3F9vkDZXxIA6
-         LA1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=z9C6sQ611y/zGRe/UW7/e4zr9l8XoO00RXrJcagkHXI=;
-        b=VHL9RD2aaOJ7JZYAt21/ylQ/shVUqSZGmQRikUf6Uog76yBtQqlnqz7CWCj3a21Bz5
-         +wxMtsQAGzi46BQ172CdYzXh8qf1cgbvcODWmjfCBe474AlbBjkbFGLMt68K0QxhGLmU
-         NJfsrBt/07RPrJuFZl/4HS6UUDRVna7yytJ4ELWqb2HWskTj7DyII1Mu2RpOa/AwCd7q
-         25vFUoiBywtZ6nYGPmvV8iCAsdNB8/bxbTw09rl8SERDxm2x7y76aVR7GA/y7cwjUbG+
-         S5NhUJsgylfNRgJ6RpL7ParxFFiaHGefW20eS3e38xvgQorhjHUvpsxUcplXttPXts2C
-         q+zA==
-X-Gm-Message-State: AOAM532gbeNetubTt1LdMMEdx31qN8a7LE5d7FMfe0Sy08yFdZMBRgyh
-        TX/1ND6lsW70355ARNrDxT0=
-X-Google-Smtp-Source: ABdhPJxx8bbd49gBf2BOW+mAj9jkSpFMqNRJrMWmqgLw490R5M0aOVJ384sGI0gsYJgtbMJNzHybmw==
-X-Received: by 2002:a1c:f402:: with SMTP id z2mr3883978wma.21.1619523269928;
-        Tue, 27 Apr 2021 04:34:29 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id k10sm2989203wmf.0.2021.04.27.04.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 04:34:29 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 13:34:27 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: dma-api debugfs directory is not created since debugfs is not
- initialized
-Message-ID: <YIf2w1navFNeYjMS@Red>
+        id S235943AbhD0Lgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:36:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:51174 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235225AbhD0Lge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 07:36:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5514D6E;
+        Tue, 27 Apr 2021 04:35:50 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3997B3F694;
+        Tue, 27 Apr 2021 04:35:45 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 3/4] scheduler: scan idle cpu in cluster for tasks
+ within one LLC
+To:     Barry Song <song.bao.hua@hisilicon.com>,
+        tim.c.chen@linux.intel.com, catalin.marinas@arm.com,
+        will@kernel.org, rjw@rjwysocki.net, vincent.guittot@linaro.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com,
+        lenb@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de
+Cc:     msys.mizuma@gmail.com, valentin.schneider@arm.com,
+        gregkh@linuxfoundation.org, jonathan.cameron@huawei.com,
+        juri.lelli@redhat.com, mark.rutland@arm.com, sudeep.holla@arm.com,
+        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        x86@kernel.org, xuwei5@huawei.com, prime.zeng@hisilicon.com,
+        guodong.xu@linaro.org, yangyicong@huawei.com,
+        liguozhu@hisilicon.com, linuxarm@openeuler.org, hpa@zytor.com
+References: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
+ <20210420001844.9116-4-song.bao.hua@hisilicon.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <80f489f9-8c88-95d8-8241-f0cfd2c2ac66@arm.com>
+Date:   Tue, 27 Apr 2021 13:35:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210420001844.9116-4-song.bao.hua@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On 20/04/2021 02:18, Barry Song wrote:
 
-I try to debug some DMA problem on next-20210427, and so I have enabled CONFIG_DMA_API_DEBUG=y.
-But the dma-api directory does show up in debugfs, but lot of other directory exists in it.
+[...]
 
-After debugging it seems due to commit 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-Reverting the commit permit to "dma-api" debugfs to be found. (but seems not the right way to fix it).
+> @@ -5786,11 +5786,12 @@ static void record_wakee(struct task_struct *p)
+>   * whatever is irrelevant, spread criteria is apparent partner count exceeds
+>   * socket size.
+>   */
+> -static int wake_wide(struct task_struct *p)
+> +static int wake_wide(struct task_struct *p, int cluster)
+>  {
+>  	unsigned int master = current->wakee_flips;
+>  	unsigned int slave = p->wakee_flips;
+> -	int factor = __this_cpu_read(sd_llc_size);
+> +	int factor = cluster ? __this_cpu_read(sd_cluster_size) :
+> +		__this_cpu_read(sd_llc_size);
 
-Regards
+I don't see that the wake_wide() change has any effect here. None of the
+sched domains has SD_BALANCE_WAKE set so a wakeup (WF_TTWU) can never
+end up in the slow path.
+Have you seen a diff when running your `lmbench stream` workload in what
+wake_wide() returns when you use `sd cluster size` instead of `sd llc
+size` as factor?
+
+I guess for you,  wakeups are now subdivided into faster (cluster = 4
+CPUs) and fast (llc = 24 CPUs) via sis(), not into fast (sis()) and slow
+(find_idlest_cpu()).
+
+>  
+>  	if (master < slave)
+>  		swap(master, slave);
+
+[...]
+
+> @@ -6745,6 +6748,12 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>  	int want_affine = 0;
+>  	/* SD_flags and WF_flags share the first nibble */
+>  	int sd_flag = wake_flags & 0xF;
+> +	/*
+> +	 * if cpu and prev_cpu share LLC, consider cluster sibling rather
+> +	 * than llc. this is typically true while tasks are bound within
+> +	 * one numa
+> +	 */
+> +	int cluster = sched_cluster_active() && cpus_share_cache(cpu, prev_cpu, 0);
+
+So you changed from scanning cluster before LLC to scan either cluster
+or LLC.
+
+And this is based on whether `this_cpu` and `prev_cpu` are sharing LLC
+or not. So you only see an effect when running the workload with
+`numactl -N X ...`.
+
+>  
+>  	if (wake_flags & WF_TTWU) {
+>  		record_wakee(p);
+> @@ -6756,7 +6765,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>  			new_cpu = prev_cpu;
+>  		}
+>  
+> -		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
+> +		want_affine = !wake_wide(p, cluster) && cpumask_test_cpu(cpu, p->cpus_ptr);
+>  	}
+>  
+>  	rcu_read_lock();
+> @@ -6768,7 +6777,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>  		if (want_affine && (tmp->flags & SD_WAKE_AFFINE) &&
+>  		    cpumask_test_cpu(prev_cpu, sched_domain_span(tmp))) {
+>  			if (cpu != prev_cpu)
+> -				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync);
+> +				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync, cluster);
+>  
+>  			sd = NULL; /* Prefer wake_affine over balance flags */
+>  			break;
+> @@ -6785,7 +6794,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>  		new_cpu = find_idlest_cpu(sd, p, cpu, prev_cpu, sd_flag);
+>  	} else if (wake_flags & WF_TTWU) { /* XXX always ? */
+>  		/* Fast path */
+> -		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
+> +		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu, cluster);
+>  
+>  		if (want_affine)
+>  			current->recent_used_cpu = cpu;
+
+[...]
