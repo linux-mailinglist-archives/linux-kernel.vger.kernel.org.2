@@ -2,66 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B33736C334
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D0C36C339
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235380AbhD0KZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:25:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58499 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235351AbhD0KZN (ORCPT
+        id S235450AbhD0KZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:25:51 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:57758 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230365AbhD0KZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:25:13 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lbKtH-0003oc-Dr; Tue, 27 Apr 2021 10:24:27 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] gpio: sim: Fix dereference of free'd pointer config
-Date:   Tue, 27 Apr 2021 11:24:27 +0100
-Message-Id: <20210427102427.11066-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 27 Apr 2021 06:25:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UWzIRcK_1619519088;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWzIRcK_1619519088)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 27 Apr 2021 18:25:01 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     santosh.shilimkar@oracle.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        inux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] rds: Remove redundant assignment to nr_sig
+Date:   Tue, 27 Apr 2021 18:24:47 +0800
+Message-Id: <1619519087-55904-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Variable nr_sig is being assigned a value however the assignment is
+never read, so this redundant assignment can be removed.
 
-The error return of config->id dereferences the kfree'd object config.
-Fix this by using a temporary variable for the id to avoid this issue.
+Cleans up the following clang-analyzer warning:
 
-Addresses-Coverity: ("Read from pointer aftyer free")
-Fixes: a49d14276ac4 ("gpio: sim: allocate IDA numbers earlier")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+net/rds/ib_send.c:297:2: warning: Value stored to 'nr_sig' is never read
+[clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/gpio/gpio-sim.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/rds/ib_send.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-index 2e2e6399e453..7bba5783a043 100644
---- a/drivers/gpio/gpio-sim.c
-+++ b/drivers/gpio/gpio-sim.c
-@@ -751,8 +751,10 @@ gpio_sim_config_make_item(struct config_group *group, const char *name)
+diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
+index 92b4a86..4190b90 100644
+--- a/net/rds/ib_send.c
++++ b/net/rds/ib_send.c
+@@ -294,7 +294,6 @@ void rds_ib_send_cqe_handler(struct rds_ib_connection *ic, struct ib_wc *wc)
  
- 	config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
- 	if (config->id < 0) {
-+		int id = config->id;
-+
- 		kfree(config);
--		return ERR_PTR(config->id);
-+		return ERR_PTR(id);
- 	}
+ 	rds_ib_ring_free(&ic->i_send_ring, completed);
+ 	rds_ib_sub_signaled(ic, nr_sig);
+-	nr_sig = 0;
  
- 	config_item_init_type_name(&config->item, name,
+ 	if (test_and_clear_bit(RDS_LL_SEND_FULL, &conn->c_flags) ||
+ 	    test_bit(0, &conn->c_map_queued))
 -- 
-2.30.2
+1.8.3.1
 
