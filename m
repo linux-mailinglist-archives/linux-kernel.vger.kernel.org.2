@@ -2,118 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366B836BF16
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EA136BF23
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhD0GF7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 02:05:59 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3957 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhD0GF5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:05:57 -0400
-Received: from dggeml763-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FTrlQ4Zhwz5vms;
-        Tue, 27 Apr 2021 14:02:42 +0800 (CST)
-Received: from dggpemm000002.china.huawei.com (7.185.36.174) by
- dggeml763-chm.china.huawei.com (10.1.199.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Apr 2021 14:05:10 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm000002.china.huawei.com (7.185.36.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 27 Apr 2021 14:05:09 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Tue, 27 Apr 2021 14:05:09 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Mike Galbraith <efault@gmx.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>
-CC:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        wanghuiqiang <wanghuiqiang@huawei.com>,
-        "xieyongjia (A)" <xieyongjia1@huawei.com>
-Subject: RE: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
- wake-up is interrupt
-Thread-Topic: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
- wake-up is interrupt
-Thread-Index: AQHXOw9dc8i42PiGaEKAYTXwXtRa3KrHPV0AgACFWFD//5SmAIAAhgYg
-Date:   Tue, 27 Apr 2021 06:05:09 +0000
-Message-ID: <6c91195a6de9423abc78e8f85efc2780@hisilicon.com>
-References: <20210427023758.4048-1-song.bao.hua@hisilicon.com>
-         <9a6cadd9b65068b52c95adc44119bd09c6a4f9d7.camel@gmx.de>
-         <d057eb13ec4e4643b314dd1652ffa9d4@hisilicon.com>
- <3fe7113cc87ac89077b55ca55bda2b99729f13c8.camel@gmx.de>
-In-Reply-To: <3fe7113cc87ac89077b55ca55bda2b99729f13c8.camel@gmx.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.183]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231631AbhD0GL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhD0GL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 02:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35F51613B4;
+        Tue, 27 Apr 2021 06:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619503874;
+        bh=+uKxx7pcWNI1KVq9j120Buam3AqeRoA/M5qay05sy6c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O27G2KCDFMyTbKa5QdyfFAD1hFoGuALd39WkENjKHvEbQnGZ7UHx3dfFxBj4zsOif
+         vkc1vJEk74jQqaPFQVVJcls1V/2kj00OnKIeqCJpRn+uzFocJ63UYib37xezJJoHQZ
+         TK3cTz7A6M71yT5ATejpwuJ6NSrebuPCdUmYf5Eg=
+Date:   Tue, 27 Apr 2021 08:11:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     David Miller <davem@davemloft.net>
+Cc:     johan@kernel.org, leoanto@aruba.it, linux-usb@vger.kernel.org,
+        kuba@kernel.org, mail@anirudhrb.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: hso: fix NULL-deref on disconnect regression
+Message-ID: <YIeq/fjbzqJkjVaH@kroah.com>
+References: <20210426112911.fb3593c3a9ecbabf98a13313@aruba.it>
+ <YIaJcgmiJFERvbEF@hovoldconsulting.com>
+ <YIaM9B/UZ1qHAC9+@kroah.com>
+ <20210426.130919.1291678249925211750.davem@davemloft.net>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426.130919.1291678249925211750.davem@davemloft.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Mike Galbraith [mailto:efault@gmx.de]
-> Sent: Tuesday, April 27, 2021 5:55 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> vincent.guittot@linaro.org; mingo@redhat.com; peterz@infradead.org;
-> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> mgorman@suse.de
-> Cc: valentin.schneider@arm.com; juri.lelli@redhat.com; bristot@redhat.com;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; xuwei (O)
-> <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
-> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; wanghuiqiang
-> <wanghuiqiang@huawei.com>; xieyongjia (A) <xieyongjia1@huawei.com>
-> Subject: Re: [PATCH] sched/fair: don't use waker's cpu if the waker of sync
-> wake-up is interrupt
+On Mon, Apr 26, 2021 at 01:09:19PM -0700, David Miller wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Date: Mon, 26 Apr 2021 11:50:44 +0200
 > 
-> On Tue, 2021-04-27 at 04:44 +0000, Song Bao Hua (Barry Song) wrote:
-> >
-> >
-> > I agree sync hint might have been overused by other kernel subsystem.
-> > But this patch will at least fix a case: sync waker is interrupt,
-> > in this case, the existing task has nothing to do with waker and wakee,
-> > so this case should be excluded from wake_affine_idle().
+> > netdev maintainers, mind if I take this fix through my tree to Linus
+> > this week, or can you all get it to him before -rc1 through the
+> > networking tree?
 > 
-> I long ago tried filtering interrupt wakeups, and met some surprises.
-> Wakeup twiddling always managing to end up being a rob Peter to pay
-> Paul operation despite our best efforts, here's hoping that your pile
-> of stolen cycles is small enough to escape performance bot notice :)
+> I tossed this into net-next so Linus will see it later this week.
 
-Would you like to share the link you did before to filter interrupt
-wakeups?
+Wonderful, thanks!
 
-The wake up path has hundreds of lines of code, so I don't expect that
-reading preempt_count will cause visible performance losses to bot. But
-who knows :-)
-
-> 
-> 	-Mike
-
-Thanks
-Barry
+greg k-h
