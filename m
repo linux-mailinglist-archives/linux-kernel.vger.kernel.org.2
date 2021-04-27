@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E9E36BEE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E9436BEEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhD0FcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 01:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S230306AbhD0FhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 01:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhD0FcI (ORCPT
+        with ESMTP id S229578AbhD0FhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:32:08 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DB6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:31:17 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id z13so10820318lft.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:31:17 -0700 (PDT)
+        Tue, 27 Apr 2021 01:37:08 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B03C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:36:23 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so6607540pjv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4jLMeSiD6Y5YsMzqdnzEiur6mPosjCpX1GBqmXNpNtw=;
-        b=S2vrtE4NPlJkvLXARFdUv7pWBArnN+pP4X+Xq/14n8oW49uUvqGrNrC+YRfecR75gx
-         lC4UW9HmEIg5kubGyZz8652u9F5Z8r3qfL/0O2o4PQMdsqwcxZ2+fetvrKAe6C+Pudn0
-         WWSYOQzIX2Op2sjXDFKAAX7nWEJaobKfq1bQMeV8tquAsyd26woo/lhAu7tyCxiXybUm
-         1zkdEVYYq965SnYjCGl3a9d7pAjNdazFcL8PwgTG0rHWdsvH2d9+1Oa3fXPIJW2Ah9Pt
-         VngLuiZCQWoFkCg+ZG5++P3xCDwEDI5SAbz/rhEitPjANO7Mfw3R0rmUUYXQ++JR7Ydy
-         Rx9A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aTHnAMIQD5s8JadjAbGJIjLqhqT66XAtuscyCUM1Exg=;
+        b=iDVXwOEZxmA8fOzgfknudnogPZoKYmxt3u8dTcHSHwypV0CykQKeRziphRLC3veOyJ
+         AnOIFpfBBOdlNpdVwEX7841ZSHmTd/+D00vrCuLcizuefC4WPLuMgL6v9IyHllx2fhBm
+         qc1fJPhDE1Z3eibkPtW/NYxlStO0vq/IeLVNc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4jLMeSiD6Y5YsMzqdnzEiur6mPosjCpX1GBqmXNpNtw=;
-        b=mHv2LwxGORacvRjPDb1Alkk5NCbEWJDrWz6rpCrOqX5jAQnluL8qZc/M/IydekVdQq
-         h8Npxrm1MMrwpQSxfjKNPJP+16RWq/AObz3JmoLME3rAuHkp7xHLwjrGuPLsbjbLF3tG
-         tbMYLpx21n+QAqmLtoL74ohJOyWWM7wG6AQzcQPp3+TJjTv31JvwPTdErgvWSRU4MStb
-         dB+U0GBbxzv9Aj1p9IzpATwTpOM6JwrVSzSUgtpHja8cTggrE480rhAzfGiSRNRtgFTi
-         DxaGPxbXwynUj8PEGAy80Gba4v2FOyCRbZTeNw3w6nw6k97RjvULrszgyrjLfFdOhQ3g
-         qG9Q==
-X-Gm-Message-State: AOAM533bj1VuMtQ7OU2IneDAmPS9iqP1dtpZsC4WD9/ixN5HBmatPDmy
-        Id8Dre7UXLBksQJNgN1SEhe52fWylHFUGNWfObU=
-X-Google-Smtp-Source: ABdhPJyrbZfZM2SHQIqhG6K8SX3CtUI/adyr+X7KIXKFEJ49Z3LSNWLgqP47lpNbqOnme1Whu5m4aRfaryAvGsLBRT0=
-X-Received: by 2002:a19:f504:: with SMTP id j4mr2400245lfb.307.1619501475555;
- Mon, 26 Apr 2021 22:31:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aTHnAMIQD5s8JadjAbGJIjLqhqT66XAtuscyCUM1Exg=;
+        b=qJh5a1YkeAN8t9HCGHKz4wROIfSPd3D5xv7Fv6ZxY3jjqVkQiMAaalfefDY/JyK9y8
+         0hosDoJehAGas+blIJD/gK2IEPcF/MQ1Uui01RP9CvtxaCczP2wjA0aJLPWXHj5bKttk
+         pb/zMu+tQ51EDDvDNW4fcTl/CjwObSPH9yzI6E9uy91HoIL5V4PxfvrQE2RXO2DLSL0f
+         m5YKpcYWiDCeuwgetLRh/XtHrt5GyGadFeJJI6ulkbhcrdV4AHmecV6J7AeEcAJ6Nj7h
+         UC9wNBMVxCGIOSItANclZCLrWAXAZyb0uRISZyLfhkPOAyK9WKyjC4qWrMnUTPMnLFAs
+         0MXw==
+X-Gm-Message-State: AOAM532gwSfoOy3cdM9t7gvKEytbN0GTic/RJOw2veUqZvvKnUzAZXCX
+        JkKs3XiNSe+skB2Gt4/HeX2Pdg==
+X-Google-Smtp-Source: ABdhPJwhDlroLXq4uzG2AtyLbgaJBtpApsdyh91sUIMYLFNmkYl6oY9Myfj40DiDCM4x+JYA/8iPoA==
+X-Received: by 2002:a17:90a:5907:: with SMTP id k7mr3159032pji.197.1619501782729;
+        Mon, 26 Apr 2021 22:36:22 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:3984:c4f5:8612:6b3e])
+        by smtp.gmail.com with ESMTPSA id gc15sm993529pjb.2.2021.04.26.22.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 22:36:22 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v20 0/5] add power control in i2c
+Date:   Tue, 27 Apr 2021 13:36:12 +0800
+Message-Id: <20210427053617.27972-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 MIME-Version: 1.0
-References: <1619491400-1904-1-git-send-email-sxwjean@me.com>
- <20210427025358.GV235567@casper.infradead.org> <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
- <20210427033632.GW235567@casper.infradead.org> <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
-In-Reply-To: <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Tue, 27 Apr 2021 13:30:48 +0800
-Message-ID: <CAEVVKH-7qRVRKsFmzc9NnhS8Lae5Yq=WhSparOmR3dZmD3PkAw@mail.gmail.com>
-Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Xiongwei Song <sxwjean@me.com>, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mattew,
+Although in the most platforms, the power of eeprom
+and i2c are alway on, some platforms disable the
+eeprom and i2c power in order to meet low power request.
 
-One more thing I should explain, the kmalloc_order() appends the
-__GFP_COMP flags,
-not by the caller.
+This patch add the pm_runtime ops to control power to
+support all platforms.
 
-void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
-{
-...........................................................
+Changes since v19:
+ - resend v19 with fix tag added.
 
-flags |= __GFP_COMP;
-page = alloc_pages(flags, order);
-...........................................................
-return ret;
-}
-EXPORT_SYMBOL(kmalloc_order);
+Changes since v18:
+ - Fix a function name conflict with drivers/gpu/drm/i915/selftests/i915_gem.c
 
-#ifdef CONFIG_TRACING
-void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
-{
-void *ret = kmalloc_order(size, flags, order);
-trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
-return ret;
-}
-EXPORT_SYMBOL(kmalloc_order_trace);
-#endif
+Changes since v17:
+ - Add a patch to fix unbalanced regulator disabling.
+ - Add dts patch.
+
+Changes since v16:
+ - request regulator in device instead of in the core.
+ - control regulator only if it's provided.
+
+Changes since v15:
+ - Squash the fix[1] for v15.
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
+
+Changes since v14:
+ - change the return value in normal condition
+ - access the variable after NULL pointer checking
+ - add ack tag
+
+Changes since v13:
+ - fixup some logic error
+
+Changes since v12:
+ - rebase onto v5.7-rc1
+ - change the property description in binding
+
+Changes since v11:
+ - use suspend_late/resume_early instead of suspend/resume
+ - rebase onto v5.6-rc1
+
+Changes since v10:
+ - fixup some worng codes
+
+Changes since v9:
+ - fixup build error
+ - remove redundant code
+
+Changes since v8:
+ - fixup some wrong code
+ - remove redundant message
+
+[... snip ...]
 
 
-Regards,
-Xiongwei
+Bibby Hsieh (1):
+  i2c: core: support bus regulator controlling in adapter
 
-On Tue, Apr 27, 2021 at 12:11 PM Xiongwei Song <sxwjean@gmail.com> wrote:
->
-> On Tue, Apr 27, 2021 at 11:36 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 11:29:32AM +0800, Xiongwei Song wrote:
-> > > On Tue, Apr 27, 2021 at 10:54 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Tue, Apr 27, 2021 at 10:43:20AM +0800, Xiongwei Song wrote:
-> > > > > From: Xiongwei Song <sxwjean@gmail.com>
-> > > > >
-> > > > > When calling kmalloc_order, the flags should include __GFP_COMP here,
-> > > > > so that trace_malloc can trace the precise flags.
-> > > >
-> > > > I suppose that depends on your point of view.
-> > > Correct.
-> > >
-> > > Should we report the
-> > > > flags used by the caller, or the flags that we used to allocate memory?
-> > > > And why does it matter?
-> > > When I capture kmem:kmalloc events on my env with perf:
-> > > (perf record -p my_pid -e kmem:kmalloc)
-> > > I got the result below:
-> > >      0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000
-> > > bytes_req=10176 bytes_alloc=16384
-> > > gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-> >
-> > Hmm ... if you have a lot of allocations about this size, that would
-> > argue in favour of adding a kmem_cache of 10880 [*] bytes.  That way,
-> > we'd get 3 allocations per 32kB instead of 2.
-> I understand you. But I don't think our process needs this size. This size
-> may be a bug in our code or somewhere, I don't know the RC for now.
->
-> > [*] 32768 / 3, rounded down to a 64 byte cacheline
-> >
-> > But I don't understand why this confused you.  Your caller at
-> > ffffffff851d0cb0 didn't specify __GFP_COMP.  I'd be more confused if
-> > this did report __GFP_COMP.
-> >
-> I just wanted to save some time when debugging.
->
-> Regards
+Hsin-Yi Wang (4):
+  dt-binding: i2c: mt65xx: add vbus-supply property
+  i2c: mediatek: mt65xx: add optional vbus-supply
+  misc: eeprom: at24: check suspend status before disable regulator
+  arm64: dts: mt8183: add supply name for eeprom
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  1 +
+ .../dts/mediatek/mt8183-kukui-kakadu.dtsi     |  4 +
+ .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  4 +
+ .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  4 +
+ drivers/i2c/busses/i2c-mt65xx.c               |  7 ++
+ drivers/i2c/i2c-core-base.c                   | 88 +++++++++++++++++++
+ drivers/misc/eeprom/at24.c                    |  6 +-
+ include/linux/i2c.h                           |  2 +
+ 8 files changed, 114 insertions(+), 2 deletions(-)
+
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
