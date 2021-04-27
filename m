@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471A736C8B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD2036C8B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237465AbhD0Pe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229571AbhD0Pe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:34:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB75560FE3;
-        Tue, 27 Apr 2021 15:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619537653;
-        bh=nRjupLfRtOC1jx4QARvFWp92/DopAWZE+CYvOd1QYs4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Xf7xrFh15+85qDBGqvjtGZcA6XAk5idTyN4iVWB48cXzrK1wlXyVc9fouKZpB7AjH
-         Jju0aYIUHCE1wy6WooMwCPVUeU0XUTFgWWc2B6rxq66IPYL0EjamfS70sXohNoCjQu
-         NnnZvlExEMa0rr0Gn+7tchsamcn0byq8AZWrmucpVvK6eA+nRoQriSQi2F5cDM7ZSD
-         WRrLRplQZVpE/CgPnxzjtuGINBoM4Kj4DmyYSlEj2Fphte4bBeR/TcFlnXQ17+WxLD
-         LZYSucpWRR0mxfQQWuN/FQm/zphGSBo/NYdKMb7+S+x6RRgGZwtIsbY9qUJpjY3tTI
-         1eeJ5KyxyiIFg==
-Received: by mail-ej1-f42.google.com with SMTP id u3so11436171eja.12;
-        Tue, 27 Apr 2021 08:34:13 -0700 (PDT)
-X-Gm-Message-State: AOAM532iqrXoapJsBe9LuTEK2lEATrhXWyQUQYo0tbP9hDbzIo07FJ+e
-        aVIBv1zFZJwVuvdHeNKBNsuaVikVrBvrkNcgDw==
-X-Google-Smtp-Source: ABdhPJwN/fh94a1wvQ0KAftdjjUovYxqjRpSBzYoykWjVdlI+hza7uurmQ86UUDbKXyp07MoytDPBVCc0xoBWlV1ncY=
-X-Received: by 2002:a17:906:b0cb:: with SMTP id bk11mr2818134ejb.310.1619537652286;
- Tue, 27 Apr 2021 08:34:12 -0700 (PDT)
+        id S237667AbhD0Pfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhD0Pfc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:35:32 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC336C061574;
+        Tue, 27 Apr 2021 08:34:48 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id h15so7675464wre.11;
+        Tue, 27 Apr 2021 08:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FDAFvGPq6M9RVg8MpP4qaKMb1OEi5PqKteG0o+lAPY8=;
+        b=OxPUzvzgu+DTH6rA2wGRrP6kgpvMBwZhsBXxOgdUxdxiFrjRV6hl9d4BCeriRTL0dq
+         Vc4witzcE4yh6CwReCfI2YVK7aBDiZoQhjvPYfmSnc2LQNUFZYldj3921eub/TmoHHUZ
+         A6bk2VPecdN0EpLJ/YXQmd2ACXuee68LsdtTwa6rfbZz3Ov7WtWlWlvf8uF8lHMkXY+j
+         OQblEpTxaR7gX7A22DVdB9BjSZmpC0tqDh2OKvI3Yi/Z4Qwr7qJkLHKvj7i070oDGbdj
+         EWME+VBJlnytQRd/J9wlMzQkqwBqWUKs6w+p2X0TrcUj5ShDJn2icgj6aLA8DG14O0TF
+         NJRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FDAFvGPq6M9RVg8MpP4qaKMb1OEi5PqKteG0o+lAPY8=;
+        b=AzkC91VyXURAXxzCXHUHHYrrEpZAZRNXGiunQM8rQ/GM6nF1DnY/jyS+4X7a/KMCZ9
+         IeBOBvCtcRic6QCgdi7TVZ5Y2ddsNiZgBicEc4M/LBi3OmhPkFK954egLDoF59y14i6M
+         ouYVSfy29s9nnnAoVyAsN/vY80m8CDLbd+KxmZvdA6+Qc3Y3yDwCJXthJiO/l/TRpSLY
+         hBM5dqOUKHiO8NF/z5GlNHW2zehdmjV0RopIoxoI7M2AkVs20IZexHGPd08BG1Yh5y/c
+         b7ikkGqlQ7vnCNEeLiwOllM4Sr3alTT5NLHnBWLtPzyX23I7mkFMXoNc28HaoWXbeYfj
+         c88Q==
+X-Gm-Message-State: AOAM531eBbs9XGfwv/GCQ5HINTYfNjvtOrnzBxAeks1aOzPZRIyrsFmc
+        XbmUtcZrTj24yQhlbB4QZE4=
+X-Google-Smtp-Source: ABdhPJyBXPBds+pY9vPjPP1EWpfT/0m142c1RFp20ioGRL1PVc/ibFMWinEZX4UGdF51tL1fwhKncQ==
+X-Received: by 2002:adf:9d48:: with SMTP id o8mr29720116wre.183.1619537687420;
+        Tue, 27 Apr 2021 08:34:47 -0700 (PDT)
+Received: from yaviniv.e18.physik.tu-muenchen.de (dhcp-138-246-3-172.dynamic.eduroam.mwn.de. [138.246.3.172])
+        by smtp.gmail.com with ESMTPSA id l8sm268920wme.18.2021.04.27.08.34.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 08:34:46 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:34:39 +0200
+From:   Andrei Rabusov <arabusov@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/36] 5.10.33-rc1 review
+Message-ID: <YIgvD+TnjnpkCmlE@yaviniv.e18.physik.tu-muenchen.de>
+References: <20210426072818.777662399@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210427044948.12596-1-hsinyi@chromium.org> <20210427044948.12596-2-hsinyi@chromium.org>
-In-Reply-To: <20210427044948.12596-2-hsinyi@chromium.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 27 Apr 2021 23:34:01 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__6agGjApVEkAyhPdV46qTjWdHODBGD_VQcYf5PRhF-hA@mail.gmail.com>
-Message-ID: <CAAOTY__6agGjApVEkAyhPdV46qTjWdHODBGD_VQcYf5PRhF-hA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] drm/mediatek: init panel orientation property
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Sean Paul <sean@poorly.run>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Hsin-Yi:
+On Mon, Apr 26, 2021 at 09:29:42AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.33 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.33-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Hsin-Yi Wang <hsinyi@chromium.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=8827=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8812:49=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Init panel orientation property after connector is initialized. Let the
-> panel driver decides the orientation value later.
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index ae403c67cbd9..0bd27872f2a4 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -964,6 +964,7 @@ static int mtk_dsi_encoder_init(struct drm_device *dr=
-m, struct mtk_dsi *dsi)
->                 ret =3D PTR_ERR(dsi->connector);
->                 goto err_cleanup_encoder;
->         }
-> +       drm_connector_init_panel_orientation_property(dsi->connector);
+I tested 5.10.33-rc1 on i686 and x86_64. Works fine for me.
 
-Process the return value.
+        The short outlook of the test results:
 
-Regards,
-Chun-Kuang.
+ +------------+---------------+-----------+---------------+
+ |            |               |           |   selftests   |
+ |  arch/cfg  |    compile    |    boot   |  [ok/not ok]  |
+ |------------+---------------+-----------+---------------+
+ | i686 lmc*  |      yes      |    yes    |   [1433/82]   | 
+ |------------+---------------+-----------+---------------+
+ | x86_64 lmc |      yes      |    yes    |   [1573/74]   | 
+ |------------+---------------+-----------+---------------+
+ | x86_64+tun |      yes      |    yes    |   [1575/73]   | 
+ +------------+---------------+-----------+---------------+
 
->         drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
->
->         return 0;
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+Tested-by: Andrei Rabusov <arabusov@gmail.com>
