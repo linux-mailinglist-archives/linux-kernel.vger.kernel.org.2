@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55E236CB8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5200E36CB93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237973AbhD0TUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhD0TUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:20:37 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D31C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:19:53 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id u20so69482518lja.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/oXvf0Y9xKsBQGdqsEuYClY3Pkmd+9qguv7EcU4aiIo=;
-        b=Dx3Y56VbKgFgUrstq1ky2UIXs9PsSpZBJgv1C37e2dncPMk3I5YxdCD3X0FVfDk2/O
-         Uctl1yEmo+L8MhpjyksfLV6sCxwlQRO+LeQ49mlmuxoLzzTZm4hc5axPlIuEzB9qKbj/
-         MGSh1qXgKiXHRCovvuHs9/vA7TSsnRakCuVJMdHYX0oAXhAjJo5x0ikpGGmXvAdxayc5
-         6nN+U0sHspDZBL7FpP5ZJmaQ2C4zh2p8ragm3Jdo06ngrnODmoA+3xCxsHIXrGvDBnpN
-         6OR669qVPjj+Wmt+UqhS50JtwTlmDD+PBdommCz9s9lLHJzvMGHIF/cJP0g1DRSuyIrT
-         t7gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/oXvf0Y9xKsBQGdqsEuYClY3Pkmd+9qguv7EcU4aiIo=;
-        b=dm0tAZbGG9SuMak+hItUvndYTxApCUd9tgZTCxa68xw8jrr9JniD6pqpCgHZOZ7PaB
-         cvclTOAFVsckE5o+jpONE345ECbYLKSZf6yjlog+xsR92JzTxf6Cq+G51cYCWx8rHu35
-         r94K8rmoVot/H5kN92zrdVaw3vJiFJ9RpmRT3AMNqCNTLnKPa9+XdlL95u7RrQ7oqQtT
-         6KGnHdfmBpkH5DBstXozsPs6DvKEqrt1RbO46SVUUpMM8tX4t7cA3A1Kte57uERA5j0G
-         gpZHsBWiZlGChjTOXea6cIHNfOv+oqLudqpYF0pWlNxFN3EK4YuVCmqDKngmXVUnHjYp
-         cjbg==
-X-Gm-Message-State: AOAM530HFZUdq0YAj1j4fVbZgVEUHd3OE+qMrUBrLUw0Z95farqEKETd
-        YOV5NjLsv5hGk2bYc8JxFgCgaY0nZxi3UutoKOzAcg==
-X-Google-Smtp-Source: ABdhPJzoVWo2a1QQrSEEIoTA6iMfQHDAjbB4tcdrT7Iw3P4nRvxG1z9n4PxqdaYCSFAlSuCNEwPcufxfjPmIf0ZD/QM=
-X-Received: by 2002:a2e:9cc1:: with SMTP id g1mr18263376ljj.0.1619551191581;
- Tue, 27 Apr 2021 12:19:51 -0700 (PDT)
+        id S238116AbhD0TVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:21:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:21388 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235563AbhD0TVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:21:02 -0400
+IronPort-SDR: T7eNHeGzOk34aySvSE5sm9AylAdbkKs0vFLcNd0CBosNYN8M58AkcB7OIh3IxxTg1RGNnm4+9a
+ sFZl9sMya7Zw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="257879553"
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="257879553"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:20:16 -0700
+IronPort-SDR: bqoTuU7mCW7j0HQquS41AWdTDBgHrP+j1Kfddj99AbSghVK/T8CsBuUstpKc5TlkwdDqr4PJI8
+ W8KSZN93Yw4Q==
+X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
+   d="scan'208";a="526207138"
+Received: from westbren-mobl2.amr.corp.intel.com (HELO [10.254.36.49]) ([10.254.36.49])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:20:14 -0700
+Subject: Re: [RFC v2 05/32] x86/tdx: Add __tdcall() and __tdvmcall() helper
+ functions
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <2f81f67efdf8c68838cdfbb2314e98747cf70120.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <c2edea0c-8de7-3bd3-1dbe-66b585d78e03@intel.com>
+ <f310c626-5fd9-7fd3-23fa-e319c0f2aa98@linux.intel.com>
+ <33af5bd4-7ada-8450-5a86-90023145d481@intel.com>
+ <849d8039-b43c-0790-be1c-aaac8c06608a@linux.intel.com>
+ <2f26e352-99e4-8531-221a-eb9641c67ec0@intel.com>
+ <95444e56-a674-1152-3039-4e425e5f5a72@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3a7c0bba-cc43-e4ba-f7fe-43c8627c2fc2@intel.com>
+Date:   Tue, 27 Apr 2021 12:20:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210427183624.2790305-1-trix@redhat.com>
-In-Reply-To: <20210427183624.2790305-1-trix@redhat.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Apr 2021 12:19:40 -0700
-Message-ID: <CAKwvOd=LSs6gdGj-FAuCTrPrH6ik6PVxYX+_tFK9G1OW0vdMAA@mail.gmail.com>
-Subject: Re: [PATCH] bus: fsl-mc: fix improper free of mc_dev
-To:     Tom Rix <trix@redhat.com>
-Cc:     stuyoder@gmail.com, laurentiu.tudor@nxp.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <95444e56-a674-1152-3039-4e425e5f5a72@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:36 AM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> Clang static analysis reports this error
->
-> fsl-mc-bus.c:891:2: warning: Attempt to free released memory
->         kfree(mc_dev);
->         ^~~~~~~~~~~~~
->
-> In this block of code
->
-> if (strcmp(obj_desc->type, "dprc") == 0) {
-> ..
->   mc_bus = kzalloc(..)
->   mc_dev = &mc_bus->mc_dev;
+On 4/27/21 12:18 PM, Kuppuswamy, Sathyanarayanan wrote:
+> Following is the rename diff. Please let me know if you agree with the
+> names used.
 
-Thanks for the patch.
-
-Aren't the allocations for mc_bus and mc_dev mutually exclusive based
-on that conditional? If so...
-
->
-> mc_dev is not alloc-ed, so it should not be freed.
-> Old handler triggers a false positive from checkpatch, so add a
-> comment and change logic a bit.
->
-> Fixes: a042fbed0290 ("staging: fsl-mc: simplify couple of deallocations")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/bus/fsl-mc/fsl-mc-bus.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
-> index 380ad1fdb745..fb3e1d8a7f63 100644
-> --- a/drivers/bus/fsl-mc/fsl-mc-bus.c
-> +++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
-> @@ -887,8 +887,10 @@ int fsl_mc_device_add(struct fsl_mc_obj_desc *obj_desc,
->
->  error_cleanup_dev:
->         kfree(mc_dev->regions);
-> +       /* mc_dev is only allocated when it is not part of mc_bus */
-> +       if (!mc_bus)
-> +               kfree(mc_dev);
->         kfree(mc_bus);
-> -       kfree(mc_dev);
-
-The error handling here seems quite wrong (regardless of your patch).
-mc_dev->regions is allocated by fsl_mc_device_get_mmio_regions() IIUC.
-Wouldn't the first `goto error_cleanup_dev;` taken end up passing an
-uninitialized pointer to kfree()?
-
-what if `strcmp(obj_desc->type, "dprc") == 0` is false? We allocate
-`mc_dev`, but then call kfree on `mc_bus`?
-
-I think it would be safer to locally save the result of
-`strcmp(obj_desc->type, "dprc") == 0`, then check that throughout this
-function, including the error handling at the end, or use multiple
-labels to unwind the allocations correctly.
-
->
->         return error;
->  }
-
-> --
-
-
---
-Thanks,
-~Nick Desaulniers
+Look fine at a glance, but the real key is how they look when they get used.
