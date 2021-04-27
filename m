@@ -2,63 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0C936CEB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3601536CEB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbhD0Wmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:42:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59672 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236936AbhD0Wmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:42:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27BDDAEF5;
-        Tue, 27 Apr 2021 22:42:08 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH] dt-binding: interrupt-controller: Add missing interrupts property
-Date:   Wed, 28 Apr 2021 00:42:00 +0200
-Message-Id: <20210427224201.32285-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
+        id S237086AbhD0Wns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:43:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44798 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235422AbhD0Wnq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 18:43:46 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13RMZSnc151986;
+        Tue, 27 Apr 2021 18:42:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=ruAZPEzTR+4YVIRfRCnw1Uz68JCGk128IOc9g3VyJyE=;
+ b=MYUj8/FCXw2rGK9WRR7NLraqjBU66ESHNNUubfA1yPvyT7bRcuxDPigrvMenZah11sb3
+ RhjAOjMEiJKYQ3aWIByh4dS3JbngB00WjeSOC4CAVNgAKZn0oui7i15tNsP0c7kHAx4n
+ aHYy2NaGTfbhIjhOAZn4U+N7U5+SMUWguTB4TrhnDF3aUYvEfwWQ3EHicKXKumjk4bZZ
+ P6a/6Sfu76DNuWWSxIGz2t8wsydwrXH8ANS5VGooRzdeHc5aaNTk77BPs1sOIhDIIoK0
+ 6rYj7ivAvkwrRpuHc3XxnqAFopY5zreWBSjYdCTRzGl3tRiy/8h2iLXQyPb4faWY6BrZ Vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 386tbft0uy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 18:42:37 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13RMZweq156200;
+        Tue, 27 Apr 2021 18:42:36 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 386tbft0up-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 18:42:36 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13RMeaL1011078;
+        Tue, 27 Apr 2021 22:42:35 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01wdc.us.ibm.com with ESMTP id 384ay9gpyp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 22:42:35 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13RMgYZg10486764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Apr 2021 22:42:34 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44AA8124083;
+        Tue, 27 Apr 2021 22:42:34 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DFD912407B;
+        Tue, 27 Apr 2021 22:42:33 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.93.36])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Apr 2021 22:42:33 +0000 (GMT)
+Message-ID: <2f7587b1986d597a63169567124438325cbedfd7.camel@linux.ibm.com>
+Subject: Re: PPC476 hangs during tlb flush after calling /init in crash
+ kernel with linux 5.4+
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, npiggin@gmail.com,
+        miltonm@us.ibm.com
+Date:   Tue, 27 Apr 2021 17:42:32 -0500
+In-Reply-To: <a24e9e0d-1d4f-506b-9303-4b995815d3c4@csgroup.eu>
+References: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
+         <a24e9e0d-1d4f-506b-9303-4b995815d3c4@csgroup.eu>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LuXX_Tvi81UzGjkSjbHWnPTgBsTK_7SV
+X-Proofpoint-ORIG-GUID: d9Hpr1QGdG5PGt2vCxCITze9-gFqLPGG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-27_13:2021-04-27,2021-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ suspectscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104270151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Interrupts property is required, so add it.
+On Tue, 2021-04-27 at 19:26 +0200, Christophe Leroy wrote:
+> Hi Eddies,
+> 
+> Le 27/04/2021 à 19:03, Eddie James a écrit :
+> > Hi all,
+> > 
+> > I'm having a problem in simulation and hardware where my PPC476
+> > processor stops executing instructions after callling /init. In my
+> > case
+> > this is a bash script. The code descends to flush the TLB, and
+> > somewhere in the loop in _tlbil_pid, the PC goes to
+> > InstructionTLBError47x but does not go any further. This only
+> > occurs in
+> > the crash kernel environment, which is using the same kernel,
+> > initramfs, and init script as the main kernel, which executed fine.
+> > I
+> > do not see this problem with linux 4.19 or 3.10. I do see it with
+> > 5.4
+> > and 5.10. I see a fair amount of refactoring in the PPC memory
+> > management area between 4.19 and 5.4. Can anyone point me in a
+> > direction to debug this further? My stack trace is below as I can
+> > run
+> > gdb in simulation.
+> 
+> Can you bisect to pin point the culprit commit ?
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- .../bindings/interrupt-controller/idt,32434-pic.yaml          | 4 ++++
- 1 file changed, 4 insertions(+)
+Hi, thanks for your prompt reply.
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml b/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
-index df5d8d1ead70..160ff4b07cac 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
-@@ -22,6 +22,9 @@ properties:
-   reg:
-     maxItems: 1
- 
-+  interrupts:
-+    maxItems: 1
-+
-   interrupt-controller: true
- 
- required:
-@@ -29,6 +32,7 @@ required:
-   - compatible
-   - reg
-   - interrupt-controller
-+  - interrupts
- 
- additionalProperties: false
- 
--- 
-2.29.2
+Good idea! I have bisected to:
+
+commit 9e849f231c3c72d4c3c1b07c9cd19ae789da0420 (b8-bad,
+refs/bisect/bad)
+Author: Christophe Leroy <christophe.leroy@c-s.fr>
+Date:   Thu Feb 21 19:08:40 2019 +0000
+
+    powerpc/mm/32s: use generic mmu_mapin_ram() for all blocks.
+    
+    Now that mmu_mapin_ram() is able to handle other blocks
+    than the one starting at 0, the WII can use it for all
+    its blocks.
+    
+    Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+    Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+
+I also confirmed that reverting this commit resolves the issue in 5.4+.
+
+Now, I don't understand why this is problematic or what is really
+happening... Reverting is probably not the desired solution.
+
+Thanks
+Eddie
+
+
+> 
+> Assuming the problem is in arch/powerpc/ , you should get the result
+> in approx 10 steps:
+> 
+> [root@po15610vm linux-powerpc]# git bisect start -- arch/powerpc/
+> [root@po15610vm linux-powerpc]# git bisect bad v5.4
+> [root@po15610vm linux-powerpc]# git bisect good v4.19
+> Bisecting: 964 revisions left to test after this (roughly 10 steps)
+> 
+> 
+> Christophe
 
