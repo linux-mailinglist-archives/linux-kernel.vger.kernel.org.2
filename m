@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D87A36CBBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941F936CBC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237840AbhD0TgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235661AbhD0TgX (ORCPT
+        id S238526AbhD0TiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:38:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43018 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235661AbhD0Th4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:36:23 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B00C061574;
-        Tue, 27 Apr 2021 12:35:38 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id v191so312748pfc.8;
-        Tue, 27 Apr 2021 12:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZMPrTbpcRPZqLLWfJUV6/8gKwil/V2GxAivfmlOoGDU=;
-        b=Fo3ZZx2whMOA0w3yRY3563soue/j2+CXIv8haxx8QIgXXkkVtxvvi45s73nOgknLx1
-         rvrzZnf55N4G28TWARtQKtNc3guhKts3JLb6n+CEWIIBn/rh/qOBNe9ZvNT5jixYaL6t
-         +VJ/FE4amGmMkcmc113faY3jB+wIYJyEKjF8f7TFuAacca3+QIs7JikmfgOOHvsHC/0X
-         sJNmn4VpWDvXafeyYnzfXVDnbAOkYziogAW0/JIzdsh+8bnP+7uxCqAQJ/N0K8J2ckVw
-         QiOP4maXBsz1acPZA54JA9Kl8Hzzci19rXDb+s/LxckRqrFmbHVJkJX7KHFXkchW9x57
-         BlmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZMPrTbpcRPZqLLWfJUV6/8gKwil/V2GxAivfmlOoGDU=;
-        b=XLeMtTirLBbpEXXwzvHkKEzpedoWQhFXEam4/l3hisbvtHSfw8KTo6DGpLQnDjRL3r
-         n0CN7QhIrm0Uo0r7mbNNUhsbIdZytsoWFQW3COI70Xo5W4qTrMtiLr0qZOGYgD2nojPE
-         pzT0y6QiHyXG9/maZxsLGTxqwDt1l3dsaXpYo/XwJ3sIp3hYiHb6qDDQcNdk5EWupZdj
-         zxrZYwCEHiiHyA47clIS8IBxwNOu42QaJZc+ZixBQu4HYyzUSn2AqcWsjHR/1r07sGUq
-         I2Bbb7fIUvZnHw54Ldma9oj3AXcB1Q0YnIYL7RgNUvFdO2NYghYHh3gxN0f4eFrAXbN5
-         E/pw==
-X-Gm-Message-State: AOAM530Bb/WzFqMj1mBt/u8XmoQo/lXjWXHzQDPMbb82a605pD7HZEig
-        qZWcZHEE9HEycN7EII6t90TwXYjZMg0=
-X-Google-Smtp-Source: ABdhPJxOyxXu3eWopTKSKy1TEPelHm7VC8hk6tUk0rppNeruFZfSxf9pW4kyeSEpztKiG08TcD1RHw==
-X-Received: by 2002:a65:6216:: with SMTP id d22mr22642011pgv.87.1619552137521;
-        Tue, 27 Apr 2021 12:35:37 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o127sm3292967pfd.147.2021.04.27.12.35.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 12:35:36 -0700 (PDT)
-Subject: Re: [PATCH v1 4/4] PCI: brcmstb: add shutdown call to driver
-To:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210427175140.17800-1-jim2101024@gmail.com>
- <20210427175140.17800-5-jim2101024@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <3a5a67e0-4554-f581-91b2-a8098814a9e9@gmail.com>
-Date:   Tue, 27 Apr 2021 12:35:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Tue, 27 Apr 2021 15:37:56 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619552232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ot3CX42DdeSAWCrHpKWnb8PLwfyj5Nk4Iu25OpQHJ+o=;
+        b=PV/CdW8tLiAAH7Ne3YiOX/ggBfcEMdH/U2/ik4DL53XI0TJHDRyWNZQUNP32JYAZv6DUsv
+        gOAIHaWLNsv8l/+0L7BBz25kQVZ6Eij/jgBc9XqnMbrcibs/o8O8RxeQoaOcsE510Tt8Bk
+        jQsrchfqhHM39danXhl9Pd1VR5WsilSWOd78GxJC4rm7u9D8do1VSSvYwiFczqYRNqebv7
+        w/fzuo+1vqI7bQrXWap0WSA7BuQ+6Z2ljwxAFOyWHjhrgw1BZi5ZRmSPmTvbNttbMTXxcT
+        BSCh9CFY62jCRgFS9Vsh+oaTyDgUma1k/B94h950cybjgD2nOTIBd7LPivhV+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619552232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ot3CX42DdeSAWCrHpKWnb8PLwfyj5Nk4Iu25OpQHJ+o=;
+        b=elbh7KiE73tjeIgfFriSiKWEbwpfgLRdVTW287uCTJD1PJqhgTlt5vqy6/JMvzv7KTbZqu
+        Y4DUBWFf7nntKADA==
+To:     kernel test robot <oliver.sang@intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, x86@kernel.org
+Subject: Re: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2% regression
+In-Reply-To: <87fszcnecr.ffs@nanos.tec.linutronix.de>
+References: <87fszcnecr.ffs@nanos.tec.linutronix.de>
+Date:   Tue, 27 Apr 2021 21:37:11 +0200
+Message-ID: <87czufo6xk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210427175140.17800-5-jim2101024@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27 2021 at 13:42, Thomas Gleixner wrote:
+> On Tue, Apr 27 2021 at 17:00, kernel test robot wrote:
+>> FYI, we noticed a -5.2% regression of will-it-scale.per_thread_ops due to commit:
+>>
+>> commit: cbe16f35bee6880becca6f20d2ebf6b457148552 ("genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()")
+>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>
+> this is the second report in the last week which makes not a lot of sense.
+> And this oneis makes absolutely no sense at all.
+>
+> This commit affects request_irq() and the related variants and has
+> exactly ZERO influence on anything related to that test case simply
+> because.
+>
+> I seriously have to ask the question whether this test infrastructure is
+> actually measuring what it claims to measure.
+>
+> As this commit clearly _cannot_ have the 'measured' side effect, this
+> points to some serious issue in the tests or the test infrastructure
+> itself.
 
+Just to illustrate the issue:
 
-On 4/27/2021 10:51 AM, Jim Quinlan wrote:
-> The shutdown() call is similar to the remove() call except the former does
-> not need to invoke pci_{stop,remove}_root_bus(), and besides, errors occur
-> if it does.
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+I ran the will-it-scale getppid1 test manually against plain v5.12 and
+against v5.12 + cherrypicked cbe16f35be, i.e. the "offending" commit.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+The result for a full run is just in the noise:
+
+    average:    < 0.1%
+    minimum:     -0.22%
+    maximum:      0.29%
+
+IOW very far away from -5.2%.
+
+That's an order of magnitude off.
+
+And no, I'm not going to run that lkp-test muck simply because it's
+unusable and the test result of will-it-scale itself is clear enough.
+
+Thanks,
+
+        tglx
+
