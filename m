@@ -2,173 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7D236BE3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C4E36BE42
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhD0ERY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 00:17:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39916 "EHLO mga12.intel.com"
+        id S229693AbhD0ETo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 00:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhD0ERX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:17:23 -0400
-IronPort-SDR: DUstfOxXSem1gPueCPy654qYeYCFh5K77HARtq5DpsriRTKfWZh0BTjyOqaat1GZs6ece7DsIz
- le37GN9jR0pg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175928738"
-X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="175928738"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 21:16:41 -0700
-IronPort-SDR: +40CvS75PKWM4tV8O8DHYzgESztfpEXzbOjcYeng09MYe9xLybNkGozvhN0zXv7maTKCgsD+IE
- PWB08AUE3khw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="422905716"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Apr 2021 21:16:37 -0700
-Date:   Tue, 27 Apr 2021 12:16:37 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        zhengjun.xing@intel.com,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
- pre-calibration drift
-Message-ID: <20210427041637.GA66694@shbuild999.sh.intel.com>
-References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
- <20210425224709.1312655-6-paulmck@kernel.org>
- <20210426150127.GB23119@shbuild999.sh.intel.com>
- <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
- <20210426153605.GB89018@shbuild999.sh.intel.com>
- <20210426182652.GE975577@paulmck-ThinkPad-P17-Gen-1>
- <20210427011355.GC89018@shbuild999.sh.intel.com>
- <20210427034640.GF975577@paulmck-ThinkPad-P17-Gen-1>
+        id S229490AbhD0ETm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 00:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F5376101B;
+        Tue, 27 Apr 2021 04:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619497139;
+        bh=phUkD5R4YFn2qjCnUc+u7gzmJYeDBiXnaqgZgTqXPYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U0J2hDcxul1U/sSEqJyjFGSLmz4KOQbE8gfSaGI18Dsu+tWFV3A9oSKYQq/g08wwq
+         0YEDnkRNRrdNfcSY0Py71mjqODV6OoaO/mjrbcjWGFZg4mYYGS/omLN1CNyKfKqkjv
+         uGhbjeWIZ9s5mj0/wtDt6COtTQtlpztKZJQ/P3gHtPtoF0vJcZ0b7C+Th3M6eSAd0K
+         TDqcQWC9bC54/gCPteSYDfGoOYU5ZJgaNHf4hUmRC/uHZhjv458JeS6jTdSu0vaQA2
+         dAZf1Ms17hHhduEpVPV4CiuRF380KA44g3eEdRKH96J84x1jg2yK9fvZFNycnDgIDU
+         NX/5cY3ofz1Kg==
+Date:   Tue, 27 Apr 2021 07:18:55 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     bkkarthik <bkkarthik@pesu.pes.edu>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Anupama K Patil <anupamakpatil123@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adam <developer@arusty.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernelnewbies@kernelnewbies.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] drivers: pnp: proc.c: Removed unnecessary varibles
+Message-ID: <YIeQrwnAYMh2SV3g@unreal>
+References: <20210422180322.7wlyg63kv3n2k6id@ubuntu>
+ <ea09f455-a00f-a13d-29d8-e3f9790dba56@linuxfoundation.org>
+ <YIZIHR0ZQPXFkOH1@unreal>
+ <CAJZ5v0gRv-1qYiN8EXx12iOiJvX7ORzqQfHvtWDnZLtpg6Aijg@mail.gmail.com>
+ <YIa3H6kGFXiqWRtg@unreal>
+ <20210426175254.g63l272o4hnagcs2@burgerking>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427034640.GF975577@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210426175254.g63l272o4hnagcs2@burgerking>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:46:40PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 27, 2021 at 09:13:55AM +0800, Feng Tang wrote:
-> > On Mon, Apr 26, 2021 at 11:26:52AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Apr 26, 2021 at 11:36:05PM +0800, Feng Tang wrote:
-> > > > On Mon, Apr 26, 2021 at 08:25:29AM -0700, Paul E. McKenney wrote:
-> > > > > On Mon, Apr 26, 2021 at 11:01:27PM +0800, Feng Tang wrote:
-> > > > > > Hi Paul,
-> > > > > > 
-> > > > > > On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
-> > > > > > > Because the x86 tsc_early clocksource is given a quick and semi-accurate
-> > > > > > > calibration (by design!), it might have drift rates well in excess of
-> > > > > > > the 0.1% limit that is in the process of being adopted.
-> > > > > > > 
-> > > > > > > Therefore, add a max_drift field to the clocksource structure that, when
-> > > > > > > non-zero, specifies the maximum allowable drift rate in nanoseconds over
-> > > > > > > a half-second period.  The tsc_early clocksource initializes this to five
-> > > > > > > miliseconds, which corresponds to the 1% drift rate limit suggested by
-> > > > > > > Xing Zhengjun.  This max_drift field is intended only for early boot,
-> > > > > > > so clocksource_watchdog() splats if it encounters a non-zero value in
-> > > > > > > this field more than 60 seconds after boot, inspired by a suggestion by
-> > > > > > > Thomas Gleixner.
-> > > > > > > 
-> > > > > > > This was tested by setting the clocksource_tsc ->max_drift field to 1,
-> > > > > > > which, as expected, resulted in a clock-skew event.
-> > > > > > 
-> > > > > > We've run the same last for this v10, and those 'unstable' thing [1] can
-> > > > > > not be reproduced!
-> > > > > 
-> > > > > Good to hear!  ;-)
-> > > > > 
-> > > > > > We've reported one case that tsc can be wrongly judged as 'unstable'
-> > > > > > by 'refined-jiffies' watchdog [1], while reducing the threshold could
-> > > > > > make it easier to be triggered.
-> > > > > > 
-> > > > > > It could be reproduced on the a plaform with a 115200 serial console,
-> > > > > > and hpet been disabled (several x86 platforms has this), add 
-> > > > > > 'initcall_debug' cmdline parameter to get more debug message, we can
-> > > > > > see:
-> > > > > > 
-> > > > > > [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
-> > > > > > [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
-> > > > > > [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
-> > > > > > [    1.134220] clocksource:                       No current clocksource.
-> > > > > > [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
-> > > > > 
-> > > > > Just to make sure I understand: "could be reproduced" as in this is the
-> > > > > result from v9, and v10 avoids this, correct?
-> > > > 
-> > > > Sorry I didn't make it clear. This is a rarely happened case, and can
-> > > > be reproduced with upstream kerenl, which has 62.5 ms threshold. 6/7 &
-> > > > 7/7 patch of reducing the threshold can make it easier to be triggered.
-> > > 
-> > > Ah, OK, so this could be considered to be a benefit of this series, then.
-> > > 
-> > > Does this happen only for tsc-early, or for tsc as well?
-> > > 
-> > > Has it already been triggered on v10 of this series?  (I understand that
-> > > it certainly should be easier to trigger, just curious whether this has
-> > > already happened.)
-> > 
-> > Yes, it has. The upper log is from v10 (actually it's the 'dev' branch
-> > of your linux-rcu git, which I didn't find obvious difference) on a
-> > client platform 
-> > 
-> >  [    1.134214] clocksource:    'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
-> >  [    1.134217] clocksource:    'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
-> > 
-> > The deviation is 7537855 ns (7.5 ms). And as said before, it needs many
-> > pre-conditions to be triggered.
-> > 
-> > Also I found the debug patch is useful, which prints out the direct
-> > nanoseconds info when 'unstable' is detected.
+On Mon, Apr 26, 2021 at 11:22:54PM +0530, bkkarthik wrote:
+> On 21/04/26 03:50PM, Leon Romanovsky wrote:
+> > On Mon, Apr 26, 2021 at 02:00:58PM +0200, Rafael J. Wysocki wrote:
+> > > On Mon, Apr 26, 2021 at 6:57 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Fri, Apr 23, 2021 at 03:08:03PM -0600, Shuah Khan wrote:
+> > > > > On 4/22/21 12:03 PM, Anupama K Patil wrote:
+> > > > > > de, e are two variables of the type 'struct proc_dir_entry'
+> > > > > > which can be removed to save memory. This also fixes a coding style
+> > > > > > issue reported by checkpatch where we are suggested to make assignment
+> > > > > > outside the if statement.
+> > > > > >
+> > > > >
+> > > > > Sounds like a reasonable change.
+> > > >
+> > > > It is unclear how much changes to ISA code are welcomed.
 > 
-> Looks good to me!
-> 
-> If you give me a Signed-off-by, I would be happy to queue it.
+> If changes to ISA code aren't welcomed, should these be marked obsolete in the MAINTIANERS file?
 
-Sure, here it is. thanks!
+I think so, but think that "Odd Fixes" better describes that Rafael wrote.
 
-- Feng
-
-From ff23cc5589c84c4d5f9a009867f21ac5ce96c9e3 Mon Sep 17 00:00:00 2001
-From: Feng Tang <feng.tang@intel.com>
-Date: Tue, 27 Apr 2021 12:14:30 +0800
-Subject: [PATCH] clocksource: print deviation in nanoseconds for unstable case
-
-Currently when an unstable clocksource is detected, the raw counter
-of that clocksource and watchdog will be printed, which can only be
-understood after some math calculation. So print the existing delta
-in nanoseconds for easier check.
-
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
- kernel/time/clocksource.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index a374cf7..5370f0c 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -443,10 +443,10 @@ static void clocksource_watchdog(struct timer_list *unused)
- 		if (abs(cs_nsec - wd_nsec) > md) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
--			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
--				watchdog->name, wdnow, wdlast, watchdog->mask);
--			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
--				cs->name, csnow, cslast, cs->mask);
-+			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
-+				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
-+			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
-+				cs->name, cs_nsec, csnow, cslast, cs->mask);
- 			if (curr_clocksource == cs)
- 				pr_warn("                      '%s' is current clocksource.\n", cs->name);
- 			else if (curr_clocksource)
--- 
-2.7.4
-
+Thanks
