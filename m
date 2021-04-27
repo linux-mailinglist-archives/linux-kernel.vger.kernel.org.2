@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A700A36BC96
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288DF36BCB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbhD0AUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 20:20:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58866 "EHLO mail.kernel.org"
+        id S234769AbhD0Amb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 20:42:31 -0400
+Received: from m12-12.163.com ([220.181.12.12]:45062 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234700AbhD0AUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 20:20:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6842D61178;
-        Tue, 27 Apr 2021 00:19:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1619482779;
-        bh=fDEJVTUnri24E7Jrh06sk0QoFFdDc0lOuKpF38xaBIg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X/6GdL0/Rgg9fAEYmiTXIB9D+9ercaOzhrjB/u+ZQBEhWuFiz1JUrwk4NWKcml7+c
-         STEB8ib07nE7S1yB8Ha/XeboKDRvwyFdati/6pJbeQIt7ORQsyN0LlLHyCL/PRDkCr
-         JA6iQg0hdaUEyDE3sKeUuXiIpmt+Td0dPDtvwNWQ=
-Date:   Mon, 26 Apr 2021 17:19:38 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: wrong patch order
-Message-Id: <20210426171938.60060f21f03963e2bf374e03@linux-foundation.org>
-In-Reply-To: <20210426171451.GA133505@yury-ThinkPad>
-References: <20210426171451.GA133505@yury-ThinkPad>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232022AbhD0Ama (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 20:42:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=QKZP24SX5N2Yt0Y0mx
+        ulfm78SXUMh/K6XKGcvOfKd00=; b=VtrVWDJp/OUfXK87jurMonJM29YXSIy5TS
+        tFB36QfVuCbQ39CyYsLBsAG5xQujet46aYWxQMpyUVfKvfkh3O3zgNZOCi+qAlBK
+        l4Ewy1iACzpOHVJ187QY9LlLRXBGBqmGf2E7FI3N7Vg0bHSfGKrR8qyIvVZLqbAT
+        VVly4YbzI=
+Received: from localhost.localdomain (unknown [101.229.16.77])
+        by smtp8 (Coremail) with SMTP id DMCowACn8yiKXYdgUgNhAw--.27679S2;
+        Tue, 27 Apr 2021 08:40:50 +0800 (CST)
+From:   qhjindev <qhjin_dev@163.com>
+To:     pshelar@ovn.org
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org,
+        qhjin_dev@163.com
+Subject: [PATCH] openvswitch: fix typo
+Date:   Tue, 27 Apr 2021 08:40:33 +0800
+Message-Id: <20210427004033.944-1-qhjin_dev@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DMCowACn8yiKXYdgUgNhAw--.27679S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RJUUUUUUUU
+X-Originating-IP: [101.229.16.77]
+X-CM-SenderInfo: ptkmx0hbgh4qqrwthudrp/1tbi8BKBHFuobjxrzQAAs4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 10:14:51 -0700 Yury Norov <yury.norov@gmail.com> wrote:
+change 'subsytem' to 'subsystem'
 
-> Hi Andrew,
-> 
-> In the next-20210426 I see the commit 7c3c0a5796a8 "h8300:
-> rearrange headers inclusion order in asm/bitops" is applied after
-> a54cbe7fa597 "lib: add fast path for find_next_*_bit()".
-> 
-> This may cause cause build failure for h8300 while bisecting.
-> 
-> Can you please change order of the patches so that 7c3c0a5796a8 would
-> follow 68b80f24c2f6 "arch: rearrange headers inclusion order in
-> asm/bitops for m68k and sh"? It's also possible to merge 7c3c0a5796a8
-> and 68b80f24c2f6 because they address the same issue.
+Signed-off-by: qhjindev <qhjin_dev@163.com>
+---
+ net/openvswitch/vport.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I renamed
-lib-add-fast-path-for-find_first__bit-and-find_last_bit-fix.patch to
-arch-rearrange-headers-inclusion-order-in-asm-bitops-for-m68k-and-sh-fix.patch
-and queued it immediately after
-arch-rearrange-headers-inclusion-order-in-asm-bitops-for-m68k-and-sh.patch,
-as a fix against
-arch-rearrange-headers-inclusion-order-in-asm-bitops-for-m68k-and-sh.patch,
-to be folded into
-arch-rearrange-headers-inclusion-order-in-asm-bitops-for-m68k-and-sh.patch
+diff --git a/net/openvswitch/vport.h b/net/openvswitch/vport.h
+index 1eb7495ac5b4..8a930ca6d6b1 100644
+--- a/net/openvswitch/vport.h
++++ b/net/openvswitch/vport.h
+@@ -20,7 +20,7 @@
+ struct vport;
+ struct vport_parms;
+ 
+-/* The following definitions are for users of the vport subsytem: */
++/* The following definitions are for users of the vport subsystem: */
+ 
+ int ovs_vport_init(void);
+ void ovs_vport_exit(void);
+-- 
+2.17.1
 
-tools-disable-wno-type-limits.patch
-tools-bitmap-sync-function-declarations-with-the-kernel.patch
-tools-sync-bitmap_last_word_mask-macro-with-the-kernel.patch
-arch-rearrange-headers-inclusion-order-in-asm-bitops-for-m68k-and-sh.patch
-arch-rearrange-headers-inclusion-order-in-asm-bitops-for-m68k-and-sh-fix.patch
-lib-extend-the-scope-of-small_const_nbits-macro.patch
-tools-sync-small_const_nbits-macro-with-the-kernel.patch
-lib-inline-_find_next_bit-wrappers.patch
-tools-sync-find_next_bit-implementation.patch
-lib-add-fast-path-for-find_next__bit.patch
-lib-add-fast-path-for-find_first__bit-and-find_last_bit.patch
-tools-sync-lib-find_bit-implementation.patch
-maintainers-add-entry-for-the-bitmap-api.patch
 
