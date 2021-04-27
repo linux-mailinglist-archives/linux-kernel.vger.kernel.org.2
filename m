@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0376236C414
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC3636C40A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238898AbhD0Keb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:34:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238179AbhD0K2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFFF0610FA;
-        Tue, 27 Apr 2021 10:27:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619519262;
-        bh=PkbpQPCMTjoIh2VV3B0ik4ihg1MqxO//wd5qNPWSajQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=esm7a4wIjmb0MYb1yVcV+YdpeaSw5kx5CkV6TUm2Bs5dAYuArnS2g3WjhzEtSN6Sb
-         Uu8smaSC5Mr1KTantZ8agoaf3Rp6m3I7PEeuPqGnPMwdb70HixfuLbf/UVvT+9iy1t
-         Jx8gF+DcoGNGsVQjs7G6ZHc8Llahu2VgNDoiq4MwHyDwkiziwLeqcsfkleel55lRGk
-         6ZICk8TooqPKjx7RV6K7nQIwKFFmxMT/SFmOoRsk6vKtc0Smt9X8ynIuNwSJ6AwSMh
-         Fl0IXRfeLvpxS+WnjmvU0xFRw8iNpslScEJdQhutNdr/R6Z07FpmkGXs9tje18yoBO
-         xmistmWvDYsRw==
-Date:   Tue, 27 Apr 2021 11:27:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Stephen Boyd <sboyd@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] ASoC: da7219: properly get clk from the provider
-Message-ID: <20210427102711.GB4605@sirena.org.uk>
-References: <20210421120512.413057-1-jbrunet@baylibre.com>
- <20210421120512.413057-6-jbrunet@baylibre.com>
- <69eaa840-ed77-fc01-2925-7e5e9998e80f@linux.intel.com>
- <1j7dkon8jy.fsf@starbuckisacylon.baylibre.com>
- <1jim48jdee.fsf@starbuckisacylon.baylibre.com>
+        id S238598AbhD0Kdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:33:33 -0400
+Received: from mail-vs1-f49.google.com ([209.85.217.49]:40644 "EHLO
+        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235488AbhD0K2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:32 -0400
+Received: by mail-vs1-f49.google.com with SMTP id o192so13820178vsd.7;
+        Tue, 27 Apr 2021 03:27:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zGrRlHhBlZKiN3l1LVzj1AyBNlaPvvMY2uCc5XB9HbI=;
+        b=Em2Llgd3Av902Yh/E35ENt3MMM/jV6oKSK/q20NZzJEhL5HUom5qv3ej5h9NW8Q8HT
+         t7fN5q2FPuPyGncmxhYStrDHcEHM99dMbvhc85H9vSs/Y/Jz/S5XDHTa/1LOHA3jdvXu
+         7WMfuSwU9HMsN4JiMCSSPyUaH8XGaucdz5zARkZidfUujBBwvmv9q/SdD2ARG2cbDxcZ
+         jmGqECC7WWeyTTgbBqQXdwWWH3GGqsGQ4Q2GpqT22ycb8LV+Me01D03QNpcC4+wwcojL
+         OlZnajNNY93iMYW0erlOJxtXEsKsiBpyIzL/o1vhWw49F6ud62kc7/T/w3Xe+/lzluhq
+         2QTA==
+X-Gm-Message-State: AOAM530EN9UVmEYsVFqxeG8E9sNvO5DyfIbC4ufxmYjB21m6AsxVMpZF
+        HgL11dRNp3S0xVZRmyegs4kR+0WQTltiwoxMSAw=
+X-Google-Smtp-Source: ABdhPJy1KHqYPXES3KEM++BD7a0+6SLRBJgtYlFRVah9A5YadG00cG6x+2o8QX7KgmlMEQ2lwcMBHxFvkFoLvoF2+P0=
+X-Received: by 2002:a67:f614:: with SMTP id k20mr3002133vso.42.1619519268545;
+ Tue, 27 Apr 2021 03:27:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
-Content-Disposition: inline
-In-Reply-To: <1jim48jdee.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: Don't feed the bats tonight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210421140334.3847155-1-arnd@kernel.org>
+In-Reply-To: <20210421140334.3847155-1-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Apr 2021 12:27:37 +0200
+Message-ID: <CAMuHMdUGKMktTWtaXr8jK9x-D5YZ1yXQ-ZJjQ193oAKPAt+3JQ@mail.gmail.com>
+Subject: Re: [PATCH] PCI/VPD: fix unused pci_vpd_set_size function warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 21, 2021 at 8:56 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The only user of this function is now in an #ifdef, causing
+> a warning when that symbol is not defined:
+>
+> drivers/pci/vpd.c:289:13: error: 'pci_vpd_set_size' defined but not used [-Werror=unused-function]
+>   289 | static void pci_vpd_set_size(struct pci_dev *dev, size_t len)
+>
+> Move the function into that #ifdef block.
+>
+> Fixes: f349223f076e ("PCI/VPD: Remove pci_set_vpd_size()")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On Tue, Apr 27, 2021 at 11:16:25AM +0200, Jerome Brunet wrote:
+Gr{oetje,eeting}s,
 
-> Mark, at this point I think it would be best to revert patches 1 and 5
-> while we work this out in CCF. The other patches are not affected.
-> Sorry for the mess.
+                        Geert
 
-Sure, can someone send a patch with a changelog explaining the issue
-please?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---mojUlQ0s9EVzWg2t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCH5v4ACgkQJNaLcl1U
-h9CrLwf/SCo0dRr48IRNPpomWWQ9h2CLsqPKI+ft4yDGNCxY6gQG7+oWDQFDFC/n
-c/XxNm9Y6rf/Ml13SMpKz1Qi4ioqJz43A3wubc0RO3aBJVNBHs6wIs7ht8LRRStf
-B2t7nBwNu0WW+8CRj09hqEBiFmhriNQ0r356ieWk49L15xbDf5G8xZhj+PG4vRXR
-6NC6XnoGclZrHR1M5ttkvPlEMPnaAkMPZcrREYue6SCXFTPDSgnZ1+sWA8TGIBjn
-R23roMb9m8TrOZ8wp6acDw00F2F+yd1dUBhoHh/cw44jCquBh9hqpthMOq6kOM8L
-iqPMWM3C+rDnpTFoff26DDm2vV8vxw==
-=dm6N
------END PGP SIGNATURE-----
-
---mojUlQ0s9EVzWg2t--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
