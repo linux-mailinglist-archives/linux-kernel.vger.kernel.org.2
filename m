@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDB136BDBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD0F36BDB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234447AbhD0DbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 23:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbhD0Day (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 23:30:54 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF160C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 20:30:10 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x19so61136985lfa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 20:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1/f4JVixSDUtfY05Md2NUGmbhN57QIb2bgma7dK5cAU=;
-        b=Haegntx8II71fsjo5ukch+sUDr23zEkF/J/qNEpVmmL/ZqvcJAgbctNfGpJt84CeSZ
-         s+F+HfGj+q1ifZqOPXfc+7VWk5hLwGqnU8juAJQQfH+Xn5SKE0vNWjJdFF5F1QR2Q/w1
-         OyfyMhebqHwHBl5HlBwQEW7CiLECAp9E8DHt1Hzwf0Lo/swVjRdh/XAcGcADCZfF+nsq
-         PIbUmWmumb6wh3R4L9iBUBN63IqsRpM/GOmJWWH/YmHgpdzE9nYmZXpAvI4IEc2ps2UZ
-         94b2pzL49zWIfq5Mtd9HSyL7gDz9sBK3YyJjVSkvX4lFchmQ3JmTgAHc3iFQnYcWeSE7
-         6rKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1/f4JVixSDUtfY05Md2NUGmbhN57QIb2bgma7dK5cAU=;
-        b=ahHU5M+uPotS2DinoYP5NY9bJ5O0OlrPGKox9rMUPpUi+JKiqTpWiDh09GgdAKYbLG
-         C/JzIsmnYQvGQ/xIfcvPrtF81MqDcVmpddmtaKq/X0tvTevvPUGW2Tqn7rt+DJbY26tz
-         bCOLaqh9r+XO/IrHvkVZYNURyQaG4n68EFyJrRwSCYVlcKeo87x4tXbmrKJ/gu93mten
-         M1kOaq5gDtI5k0VbxDx2R0LWaNjegH2hGS3fnZEB3PWpUYCkKtIq4+v2orSvFDqeeOwb
-         l1bTHy4Pn1gVVP+IlGtz30MQuHEXoSUZGhwaVCOyH50EisWpygCfWoZariBX32sFHOwR
-         kCzQ==
-X-Gm-Message-State: AOAM5331HDOqiSQqPoe62morwKCBTaG+IEOYNJF+XcBb0nz4wpPv/wgo
-        +hPGZE7zPWLLL7VWwiiN9Q9gquQJy4f0Km8YnlKA8SJn24DVMw==
-X-Google-Smtp-Source: ABdhPJwb20u/69HZE27J3wrxf12je+L3qCbCg+Zfj/Sb+4NGCjbGt7tjCcSB/OyfAvpYJdy0V+aO3Y7OdXWGS7TK7Xo=
-X-Received: by 2002:a19:f504:: with SMTP id j4mr2105098lfb.307.1619494208480;
- Mon, 26 Apr 2021 20:30:08 -0700 (PDT)
+        id S234140AbhD0DaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 23:30:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:43350 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhD0DaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 23:30:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AFA3D6E;
+        Mon, 26 Apr 2021 20:29:25 -0700 (PDT)
+Received: from [10.163.75.249] (unknown [10.163.75.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C18FB3F694;
+        Mon, 26 Apr 2021 20:29:23 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH 1/6] mm: Make __dump_page static
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+References: <20210416231531.2521383-1-willy@infradead.org>
+ <20210416231531.2521383-2-willy@infradead.org>
+Message-ID: <10b90e32-972a-2a55-082c-b576aa5c569d@arm.com>
+Date:   Tue, 27 Apr 2021 09:00:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1619491400-1904-1-git-send-email-sxwjean@me.com> <20210427025358.GV235567@casper.infradead.org>
-In-Reply-To: <20210427025358.GV235567@casper.infradead.org>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Tue, 27 Apr 2021 11:29:32 +0800
-Message-ID: <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Xiongwei Song <sxwjean@me.com>, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210416231531.2521383-2-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 10:54 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Apr 27, 2021 at 10:43:20AM +0800, Xiongwei Song wrote:
-> > From: Xiongwei Song <sxwjean@gmail.com>
-> >
-> > When calling kmalloc_order, the flags should include __GFP_COMP here,
-> > so that trace_malloc can trace the precise flags.
->
-> I suppose that depends on your point of view.
-Correct.
 
-Should we report the
-> flags used by the caller, or the flags that we used to allocate memory?
-> And why does it matter?
-When I capture kmem:kmalloc events on my env with perf:
-(perf record -p my_pid -e kmem:kmalloc)
-I got the result below:
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca4000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca8000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a6f80000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a6f84000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a6f88000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a6f8c000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
-     0.07%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4c80000
-bytes_req=10176 bytes_alloc=16384
-gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
 
-The value of gfp_flags made me confused, I spent some time to find out
-which trace_malloc
-is here. So I think we should append __GFP_COMP.
+On 4/17/21 4:45 AM, Matthew Wilcox (Oracle) wrote:
+> The only caller of __dump_page() now opencodes dump_page(), so
+> remove it as an externally visible symbol.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/linux/mmdebug.h | 3 +--
+>  mm/debug.c              | 2 +-
+>  mm/page_alloc.c         | 3 +--
+>  3 files changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
+> index 5d0767cb424a..1935d4c72d10 100644
+> --- a/include/linux/mmdebug.h
+> +++ b/include/linux/mmdebug.h
+> @@ -9,8 +9,7 @@ struct page;
+>  struct vm_area_struct;
+>  struct mm_struct;
+>  
+> -extern void dump_page(struct page *page, const char *reason);
+> -extern void __dump_page(struct page *page, const char *reason);
+> +void dump_page(struct page *page, const char *reason);
+>  void dump_vma(const struct vm_area_struct *vma);
+>  void dump_mm(const struct mm_struct *mm);
+>  
+> diff --git a/mm/debug.c b/mm/debug.c
+> index 0bdda8407f71..84cdcd0f7bd3 100644
+> --- a/mm/debug.c
+> +++ b/mm/debug.c
+> @@ -42,7 +42,7 @@ const struct trace_print_flags vmaflag_names[] = {
+>  	{0, NULL}
+>  };
+>  
+> -void __dump_page(struct page *page, const char *reason)
+> +static void __dump_page(struct page *page, const char *reason)
+>  {
+>  	struct page *head = compound_head(page);
+>  	struct address_space *mapping;
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 5a35f21b57c6..0152670c6f04 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -658,8 +658,7 @@ static void bad_page(struct page *page, const char *reason)
+>  
+>  	pr_alert("BUG: Bad page state in process %s  pfn:%05lx\n",
+>  		current->comm, page_to_pfn(page));
+> -	__dump_page(page, reason);
+> -	dump_page_owner(page);
+> +	dump_page(page, reason);
+>  
+>  	print_modules();
+>  	dump_stack();
+> 
 
-Regards
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
