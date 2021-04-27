@@ -2,74 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E0236CC56
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF4236CC63
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238951AbhD0UdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 16:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235416AbhD0UdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:33:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A496A6112F;
-        Tue, 27 Apr 2021 20:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619555560;
-        bh=4gt03mTcqQmbSZtAfLXQq5ZIUn/1FOWKVpj8VYzvF7g=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mOxujVs+Fgdau8zdzq2K7vxHteNdW5KCJuRzEsR8YYeriMrhVkzvzDNyU5+/IxFA7
-         cdsQbsLF4MDnqVfszzqMfvFb9OYmy/llYn9s9GfwJIhnyJ9Vff+V8Hn0shWQOvJA15
-         LjVBtvcXuezv92O3MEdBRbUwCNKFtSjFNL5ZCz4YKcHKAUttZ2d+xhCafVJPOGzEBe
-         Yvka5WEvVjUNJ6HUlMy5NBj6H0BayaR0FTNgGckNHWK/43xJXuHwtV35tduX99wWxx
-         ZlAnxBys7tfYfUE4hUuOOxg7mqfIqTIGDdN2t4SjVflaCO7l1ycaXYVJdwGE56Bgvv
-         Zb2IE2IWrjvZw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 98538609B0;
-        Tue, 27 Apr 2021 20:32:40 +0000 (UTC)
-Subject: Re: [GIT PULL] Network fs helper library & fscache kiocb API
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <3779937.1619478404@warthog.procyon.org.uk>
-References: <3779937.1619478404@warthog.procyon.org.uk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <3779937.1619478404@warthog.procyon.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/netfs-lib-20210426
-X-PR-Tracked-Commit-Id: 53b776c77aca99b663a5512a04abc27670d61058
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 820c4bae40cb56466cfed6409e00d0f5165a990c
-Message-Id: <161955556055.29692.16460754787055823751.pr-tracker-bot@kernel.org>
-Date:   Tue, 27 Apr 2021 20:32:40 +0000
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cachefs@redhat.com, linux-cifs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net
+        id S238919AbhD0UgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 16:36:17 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:54170 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237055AbhD0UgO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 16:36:14 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 12F3763E81;
+        Tue, 27 Apr 2021 22:34:50 +0200 (CEST)
+Date:   Tue, 27 Apr 2021 22:35:25 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balazs Scheidler <bazsi77@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] netfilter: nft_socket: fix an unused variable warning
+Message-ID: <20210427203525.GA14154@salvia>
+References: <20210427194528.2325108-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210427194528.2325108-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 27 Apr 2021 00:06:44 +0100:
+On Tue, Apr 27, 2021 at 09:45:18PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The variable is only used in an #ifdef, causing a harmless warning:
+> 
+> net/netfilter/nft_socket.c: In function 'nft_socket_init':
+> net/netfilter/nft_socket.c:137:27: error: unused variable 'level' [-Werror=unused-variable]
+>   137 |         unsigned int len, level;
+>       |                           ^~~~~
+> 
+> Move it into the same #ifdef block.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/netfs-lib-20210426
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/820c4bae40cb56466cfed6409e00d0f5165a990c
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Applied, thanks Arnd.
