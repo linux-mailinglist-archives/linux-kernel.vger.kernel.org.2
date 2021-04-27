@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCDE36C9EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DB136C9EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238011AbhD0RBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236647AbhD0RAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:00:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 514AA61165;
-        Tue, 27 Apr 2021 17:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619542803;
-        bh=uW/820nOgA6vr/HbEDoEb84/ezgMtg3O0P9vdlhKkXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=srib0Xb1p++VfBaEj1wsBcW69R8klwQXc3wpZtTIfgtnNqPUKoBYKxZ/U9KlgZXL5
-         Bbn4jaAmbz5fZuelqjjfEmZYxREe3UOpNS7cWHWJkpSmUWLOTay+QMpzEL9jGO5WG+
-         r+rJ61ueo4KNbijKFxnBHZRerMU6QCviZ1GILtSM=
-Date:   Tue, 27 Apr 2021 19:00:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 175/190] Revert "ipv6/route: Add a missing check on
- proc_dointvec"
-Message-ID: <YIhDEacGUekcE1Dx@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-176-gregkh@linuxfoundation.org>
+        id S238806AbhD0RBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237946AbhD0RAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:00:54 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DAEC061574;
+        Tue, 27 Apr 2021 10:00:10 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id m9so47462146wrx.3;
+        Tue, 27 Apr 2021 10:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p7dGgXSikaYUsY1yMu1X7zpaE+PGIoIuI+9TbGbxFDs=;
+        b=Z+76bRFlmbrOFYVE+awuR0dIFUs+Fr+vYvOgUpbzSPFOCWhz8VXyzUPeD2VtH+gm/8
+         6aYFr9rd6wa3EMx0NHPDSKiN+0xGJDajGNYOajbTMOJo5OZcEVQDNqnn9Rar12lFMKhP
+         DfrzX8KoL1WHwFQdxgUKYOTtAfa14U9HiCIBXUlV7oD2i5i9egeX6SQUqjoVz21VV7I/
+         Q5r4EmANIPAQrS7yyoVXXHUY0ko4bnn2LRzhww/e8i1KaCfrSbjVopJUza3zL0rqhKzG
+         PRWhrPtthinUQ47CkykhegQS16AaQkTDnDTNnzKA1aFdUBxC7pc1PnzQkMknZtGdMLJq
+         Iccg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p7dGgXSikaYUsY1yMu1X7zpaE+PGIoIuI+9TbGbxFDs=;
+        b=Yf+QmdjAzXO4YGT2u4Og8viITTzzXB0eWJa7tIyIJhZdYHq3Q9U/40E0hKFcxEpMIG
+         XVUBie1Twp/ShiwSU1jy/pjTqaN9RSMYnmRRCeqNkZKDi+5nA0855XZNB18OzeaeI6/e
+         3PyztKfAPbbebHwBxFw/XjNmwU6WyrcXPXZqsOmjqi/ZHUbrJqrdWf04AVL/dK1FJTK5
+         Y97iTVtYWp7f+xhJP3NIVTi7O76L9+32higT5zkKfkT0rIcTTq+hsdn2i4nVejmJaJQQ
+         XR9SgUoUJ1L9QO6S27poALKEPJsu0VwAz44SaShpDrRm43ok3ouyEoJifpYNA7cYywJ8
+         ZSLA==
+X-Gm-Message-State: AOAM533+uVByGIjExIpdqpJ7V0BunNn/ddRunmOwSHDJdk6FCMhzRcEY
+        TT7LpaeU0scri5wPQOwAxbYREWz8mU4=
+X-Google-Smtp-Source: ABdhPJxfKcKDT2v4rajFmcELvVywyaj1JXc+52c7lp2slstb1ViVxljWM4yKzsaxnR4mnmONEe/2BQ==
+X-Received: by 2002:a5d:480b:: with SMTP id l11mr8006864wrq.242.1619542808559;
+        Tue, 27 Apr 2021 10:00:08 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.129.131])
+        by smtp.gmail.com with ESMTPSA id l12sm5680439wrq.36.2021.04.27.10.00.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 10:00:07 -0700 (PDT)
+Subject: Re: [PATCH 5.13] io_uring: Check current->io_uring in
+ io_uring_cancel_sqpoll
+To:     Jens Axboe <axboe@kernel.dk>, Palash Oswal <hello@oswalpalash.com>
+Cc:     dvyukov@google.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oswalpalash@gmail.com,
+        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org
+References: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
+ <20210427125148.21816-1-hello@oswalpalash.com>
+ <decd444f-701d-6960-0648-b145b6fcccfb@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <8204f859-7249-580e-9cb1-7e255dbcb982@gmail.com>
+Date:   Tue, 27 Apr 2021 18:00:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-176-gregkh@linuxfoundation.org>
+In-Reply-To: <decd444f-701d-6960-0648-b145b6fcccfb@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:50PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit f0fb9b288d0a7e9cc324ae362e2dfd2cc2217ded.
+On 4/27/21 2:37 PM, Jens Axboe wrote:
+> On 4/27/21 6:51 AM, Palash Oswal wrote:
+>> syzkaller identified KASAN: null-ptr-deref Write in
+>> io_uring_cancel_sqpoll on v5.12
+>>
+>> io_uring_cancel_sqpoll is called by io_sq_thread before calling
+>> io_uring_alloc_task_context. This leads to current->io_uring being
+>> NULL. io_uring_cancel_sqpoll should not have to deal with threads
+>> where current->io_uring is NULL.
+>>
+>> In order to cast a wider safety net, perform input sanitisation
+>> directly in io_uring_cancel_sqpoll and return for NULL value of
+>> current->io_uring.
 > 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  net/ipv6/route.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-> index 373d48073106..0e85741423d7 100644
-> --- a/net/ipv6/route.c
-> +++ b/net/ipv6/route.c
-> @@ -6169,16 +6169,12 @@ static int ipv6_sysctl_rtcache_flush(struct ctl_table *ctl, int write,
->  {
->  	struct net *net;
->  	int delay;
-> -	int ret;
->  	if (!write)
->  		return -EINVAL;
->  
->  	net = (struct net *)ctl->extra1;
->  	delay = net->ipv6.sysctl.flush_delay;
-> -	ret = proc_dointvec(ctl, write, buffer, lenp, ppos);
-> -	if (ret)
-> -		return ret;
-> -
-> +	proc_dointvec(ctl, write, buffer, lenp, ppos);
->  	fib6_run_gc(delay <= 0 ? 0 : (unsigned long)delay, net, delay > 0);
->  	return 0;
->  }
-> -- 
-> 2.31.1
-> 
+> Thanks applied - I augmented the commit message a bit.
 
-Original looks correct, dropping this revert.
+btw, does it fixes the replied before syz report? Should 
+syz fix or tag it if so.
+Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
 
-greg k-h
+-- 
+Pavel Begunkov
