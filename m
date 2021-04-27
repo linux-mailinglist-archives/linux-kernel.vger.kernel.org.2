@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67F736C82F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCCB36C830
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236074AbhD0PBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:01:16 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22686 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236710AbhD0PBO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:01:14 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13REX77C150032;
-        Tue, 27 Apr 2021 10:59:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=+QlamBl19HO/Z+/EikQ6Mdam0domaFKqNPPFu7gdiHg=;
- b=Fla/1GQ052qfVp80lcNJgB52juyMtdxf7DoNbSbDGYfCt9Mg9l/a/Z9B+a4cY7Sul7CA
- ywlQZ9nrkkSAK+XSb8tbw/p7RnOL6sUgeyr1DBD1Y6SnfzTrjsv7vEa0URi3DNpAGc/p
- NltUxHwIBw/LICmCEBs2aEuQ5XG6/Iz0UoHooNpQOGkTarbLq6E8jmOwzilJBBVi+oCG
- YS4cmxFmMf89tVLL/RjjK+Ec98cudUkRrRbMmK0/42WJzNraGW5G6jQgr+zZt6rRK888
- +SRzzep2ZpNQY0TQ8F8xO3r2V1vBUChMLj0COjjpczYI0cZA3aq+RYa8cQKf4td13BdJ SA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 386cf38bj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 10:59:32 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13REYJGJ154559;
-        Tue, 27 Apr 2021 10:59:32 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 386cf38bh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 10:59:32 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13REw7Od006549;
-        Tue, 27 Apr 2021 14:59:29 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 384gjxrr9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 14:59:29 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13REx1YU34668996
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Apr 2021 14:59:02 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21F1A11C050;
-        Tue, 27 Apr 2021 14:59:26 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DEC711C04C;
-        Tue, 27 Apr 2021 14:59:26 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 27 Apr 2021 14:59:26 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 25651)
-        id C0F6CE028D; Tue, 27 Apr 2021 16:59:25 +0200 (CEST)
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-To:     peterz@infradead.org
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        greg@kroah.com, gregkh@linuxfoundation.org, joshdon@google.com,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com
-Subject: Re: sched: Move SCHED_DEBUG sysctl to debugfs
-Date:   Tue, 27 Apr 2021 16:59:25 +0200
-Message-Id: <20210427145925.5246-1-borntraeger@de.ibm.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210412102001.287610138@infradead.org>
-References: <20210412102001.287610138@infradead.org>
+        id S238473AbhD0PBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:01:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236534AbhD0PB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:01:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26DF261131;
+        Tue, 27 Apr 2021 15:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619535641;
+        bh=bZSDzIrPnzA88AECriBmOcbuFWjzIAAagpJSP19FlSM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tDFj5qfvg/9wVwukdmeHn5UQU/CW+i0Si8WSQyGAB7TKpadEhbwqo6S72APC6w+nq
+         5ITXqOev0/OM0H4Vjm3L5ZaRU45bZrnj5p1KOMM71gX0tuGYkDoSXRnYsqRaHu5ezb
+         ATFVLDNlklutTjxNQZToETuCJ7qF/lcHQ3S/Gjik=
+Date:   Tue, 27 Apr 2021 17:00:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 097/190] Revert "video: imsttfb: fix potential NULL
+ pointer dereferences"
+Message-ID: <YIgnFyk3DP8xq1Q2@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-98-gregkh@linuxfoundation.org>
+ <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eKX2-Ma5Wve74Wy6SnaoNJ_DMaO9FzIX
-X-Proofpoint-ORIG-GUID: oKwvlBcQkWFx-YEwG_gOPg9dEDJ3vNAT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-27_08:2021-04-27,2021-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=823 bulkscore=0 spamscore=0 mlxscore=0 adultscore=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 clxscore=1011
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104270105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
+On Wed, Apr 21, 2021 at 09:13:29PM -0500, Rob Herring wrote:
+> On Wed, Apr 21, 2021 at 8:05 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
+> >
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> >
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> >
+> > Cc: Kangjie Lu <kjlu@umn.edu>
+> > Cc: Aditya Pakki <pakki001@umn.edu>
+> > Cc: Finn Thain <fthain@telegraphics.com.au>
+> > Cc: Rob Herring <robh@kernel.org>
+> 
+> Sigh, get_maintainers.pl likes to punish people for treewide clean-ups...
+> 
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/video/fbdev/imsttfb.c | 5 -----
+> >  1 file changed, 5 deletions(-)
+> >
+> > diff --git a/drivers/video/fbdev/imsttfb.c b/drivers/video/fbdev/imsttfb.c
+> > index 3ac053b88495..e04411701ec8 100644
+> > --- a/drivers/video/fbdev/imsttfb.c
+> > +++ b/drivers/video/fbdev/imsttfb.c
+> > @@ -1512,11 +1512,6 @@ static int imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >         info->fix.smem_start = addr;
+> >         info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
+> >                                             0x400000 : 0x800000);
+> > -       if (!info->screen_base) {
+> > -               release_mem_region(addr, size);
+> > -               framebuffer_release(info);
+> > -               return -ENOMEM;
+> > -       }
+> 
+> The original change appears to be valid, but incomplete...
+> 
+> >         info->fix.mmio_start = addr + 0x800000;
+> >         par->dc_regs = ioremap(addr + 0x800000, 0x1000);
+> 
+> ...because what about cleanup when this ioremap fails.
+> 
+> >         par->cmap_regs_phys = addr + 0x840000;
+> 
+> Then again, if anyone really cared about this driver and h/w (a
+> PowerMac era PCI display card), it would not still be using fbdev and
+> would use devm_* apis.
 
-I just realized that we moved away sysctl tunabled to debugfs in next.
-We have seen several cases where it was benefitial to set
-sched_migration_cost_ns to a lower value. For example with KVM I can
-easily get 50% more transactions with 50000 instead of 500000. 
-Until now it was possible to use tuned or /etc/sysctl.conf to set
-these things permanently. 
+Thanks for the review, I've updated the changelog to reflect this mess :)
 
-Given that some people do not want to have debugfs mounted all the time
-I would consider this a regression. The sysctl tunable was always 
-available.
-
-I am ok with the "informational" things being in debugfs, but not
-the tunables. So how do we proceed here?
-
-Christian
+greg k-h
