@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CF936C410
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5A036C40B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237731AbhD0KeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48158 "EHLO mail.kernel.org"
+        id S238765AbhD0Kdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:33:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238041AbhD0K2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D40A56144F;
+        id S237999AbhD0K2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFD3061443;
         Tue, 27 Apr 2021 10:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619519237;
-        bh=8oeNDL2f6ftikmJG74aEJuwd7JVkpDOtWW3l23y+D78=;
+        bh=nPYpAR91E3rgdblnM1RIaAoqqFVi+fAvcFwJJ6A4j/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c41tK+hscMgweL5Tlc0xkZrqp+yUtOdrcR/Kg2lLf3eIS92zsZTGNnWf+tk6urkpk
-         JrZ0t8aKAoHDk+srLB4vvpFJmwbcLnUC0kvHfzZRdBd35ZHOkWTbNg4FgXanjYAYCz
-         RZlX9LnEcm3Fix01yMLebNo3/SqZtaGGn2ThLliJAi9TsedgkDXIqwRKO5c+JV8OCJ
-         TJ2pGPlwQnGluhO+FUBgzJ6XYzuJCBcQi+WFYkNaLTrMNTTHsr867S15W7ZaxJvVeS
-         jetPTi09m/tRgUmkUDa67Xi+tJW7am2MIq4lrYKh0EBw+Tjf5IkjzFA/FRy/UvojeZ
-         Gi5TpPPVA+38w==
+        b=b0Nt8VqlPtaZy9yemo4qCkgWmuuP7AEJmdQPTgtLLoJ/84eCKQwHVhyfd+18d8XMi
+         F0jMoCB9z982bvvJwdLzo6PYHORbcNsX17SQVArVUi0jo70cDp1XFBKzg4AKXy8mjA
+         U5mVuR+nwTevQ2/PnlAuI8mErhAEpouttMCCJE8Hg6Mbq4QfFq6ZDgkdlLC9T8eIfA
+         sbXiesKBInS5uLlO7pCzT1m2+nZw3GXtAK3HNxcC788xE01k+MF3rEkevSyisMWcOu
+         XhiMztLj5SeWk9A0e8QG1Jd+aF3o2N40YC4O9LHzBHs46jxWwQEYUwKQBDeHMgIlb3
+         uzRfcMNx7n0Mw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lbKvw-000o0l-MR; Tue, 27 Apr 2021 12:27:12 +0200
+        id 1lbKvw-000o0u-S3; Tue, 27 Apr 2021 12:27:12 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
         linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v3 32/79] media: i2c: dw9807-vcm: use pm_runtime_resume_and_get()
-Date:   Tue, 27 Apr 2021 12:26:22 +0200
-Message-Id: <601909851ba888278067e163ea0905b443869ccf.1619519080.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 35/79] media: i2c: imx219: use pm_runtime_resume_and_get()
+Date:   Tue, 27 Apr 2021 12:26:25 +0200
+Message-Id: <b699e30328abbfb952e3b64a948b90bb5243ec11.1619519080.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
 References: <cover.1619519080.git.mchehab+huawei@kernel.org>
@@ -54,30 +54,27 @@ Use the new API, in order to cleanup the error check logic.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/media/i2c/dw9807-vcm.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/media/i2c/imx219.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/i2c/dw9807-vcm.c b/drivers/media/i2c/dw9807-vcm.c
-index 438a44b76da8..95e06f13bc9e 100644
---- a/drivers/media/i2c/dw9807-vcm.c
-+++ b/drivers/media/i2c/dw9807-vcm.c
-@@ -130,15 +130,7 @@ static const struct v4l2_ctrl_ops dw9807_vcm_ctrl_ops = {
+diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+index 1054ffedaefd..74a0bf9b088b 100644
+--- a/drivers/media/i2c/imx219.c
++++ b/drivers/media/i2c/imx219.c
+@@ -1035,11 +1035,9 @@ static int imx219_start_streaming(struct imx219 *imx219)
+ 	const struct imx219_reg_list *reg_list;
+ 	int ret;
  
- static int dw9807_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
- {
--	int rval;
--
--	rval = pm_runtime_get_sync(sd->dev);
--	if (rval < 0) {
--		pm_runtime_put_noidle(sd->dev);
--		return rval;
+-	ret = pm_runtime_get_sync(&client->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(&client->dev);
++	ret = pm_runtime_resume_and_get(&client->dev);
++	if (ret < 0)
+ 		return ret;
 -	}
--
--	return 0;
-+	return pm_runtime_resume_and_get(sd->dev);
- }
  
- static int dw9807_close(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+ 	/* Apply default values of current mode */
+ 	reg_list = &imx219->mode->reg_list;
 -- 
 2.30.2
 
