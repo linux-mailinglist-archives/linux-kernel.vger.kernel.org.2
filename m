@@ -2,178 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D857536BEFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ED436BF02
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhD0Fht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 01:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        id S230347AbhD0FoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 01:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhD0Fho (ORCPT
+        with ESMTP id S229535AbhD0FoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:37:44 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B962EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:37:01 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 3so3686636qvp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:37:01 -0700 (PDT)
+        Tue, 27 Apr 2021 01:44:06 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9413C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:43:23 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id x54-20020a05683040b6b02902a527443e2fso3238195ott.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m/sVwM7mlL1vef64jKYNZVvCyWcLNvFInf/73n/TBts=;
-        b=PKaZLvcNX4PV92l/t7cs/baPXjtiubKcLhrEB1/sunq5Z9NjonEB8PugVNlOXKcGm+
-         vzAeZFgKDG9zI5Cqy/Ml/t3AkGKXSLDX+rzg57UlFiY1v175qzlDQRasmytW8mnL2gnM
-         ajUwOgXxYTJwW3uuQhkRuvfRR9pdObOczzUck=
+        d=sifive.com; s=google;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=SBoQA4Uv7DLmSIXEW0MEX4XHroR9+cpW7ygxQxARLAo=;
+        b=kHaLqDb9tPK/cTtDQL0jqdvZRKyp6ozWs6a07TXO50e4DzhJRW54tzEwyPqkOd+Idu
+         Xvl17n/e7iD87kfE0YkYBAdQLD9mL5bOeEh5hkOL3zP+TpdiDzWhOD887gBXvphNHgRc
+         zzt/V0DygwckYPy3lCMyBQOeeuJcoWVX2mb9IrgiC/AZDMAZ7Vq4r8dkJKLuK9F3iYr3
+         Tn9H5Cs3VmpFCzOXzTTYLxmWedMHZ8xc6BXzyy1FvNTr3qFh9SCzxyNamEvwADo1s6yF
+         m1y3o5G1g2oX+iwea+tzpr+bLoNX2MPGWXtjaSDEFs8iuygZGozipJ7ADWhxAF3H/jHV
+         FLBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m/sVwM7mlL1vef64jKYNZVvCyWcLNvFInf/73n/TBts=;
-        b=PXgn0cYPkJz26WQ9Z9mXyoqnWivkJyR2v8ksy+80wgee8bgAR0+k0QD7TNxqBcFnwU
-         VxOwdswUidRovONUTNWc0vGbubuiEIKGmNKyw2m/zcTRGZ8v8YinMX1i1jaJkGdTO8Pi
-         leeGQFXjpI0l3FbdzbZXSwA/bX3+Xb0EZwPtAZzCiW9Dnu64fBkfpPLH1Mrxeuhx3g43
-         j+1jHfwtSz6XKiqRZDZSpLNdrngEzr6sx+vVJZmniUIpTzAMPSVtF6E8ACcJfONmLMTw
-         uy/CL8ZpmRuLHkKamB3SlVSWac8rOQTphfgkJ9x+RYumXdAJxYgROBCnQ/phSPbsoPR2
-         3uvQ==
-X-Gm-Message-State: AOAM530NVjeoI+QSas7XleQ0gTHesv6jgRUrZ7bFi76drDf4sOcjk0bM
-        AZZ5r/KrRudQfF3YjxRgD6z4ew5J+I/bXsRgY7ODOg==
-X-Google-Smtp-Source: ABdhPJyPq+CxXEJEKWRRUlFjFTiNpahHVs5q+n7DnlnaaBgZzzyMcypXe5v++ODUr/sAZDvlhXQnmvQWs3dRRZEseMY=
-X-Received: by 2002:a0c:ef06:: with SMTP id t6mr9732026qvr.17.1619501820512;
- Mon, 26 Apr 2021 22:37:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=SBoQA4Uv7DLmSIXEW0MEX4XHroR9+cpW7ygxQxARLAo=;
+        b=oK4l3mXlDnBRvI8zqZi2ILcJ5mvL6sRQXhJKj6ubvkxkpHVq0cqaJWfYi7e6HMLMO6
+         KKKZufNGF5JRb4xUiSG7oenNfc88YzLcKfJHBb4h7WiBG2w96CqHzeRpAYc/TOJrPZ9a
+         Ot0A3H2YcbvhtFFBNfElq/YzVdTNF5FYhF5duLmnQd/+Tvwp5a5Zy5+UZL1fTjLeY2l2
+         1vjA5H6GNdpjfhh4dbdmfOqcBu7grYFJUwSPOeNUdWzlbeHUBftq0jL1KlTBYHUJNchO
+         RP12sF/8rtozciqBaiIqAIebRKfEjVZLIjEvx/X41THauOLbVWVGUIyt7vjiZni4McIi
+         03sw==
+X-Gm-Message-State: AOAM531m9/iakO+buUJpfQfF4jwIn1XoMQXRwFjSyTzXyeXocpkVRKoQ
+        vACaFfgm8Goiyf30TWoK19pcsw==
+X-Google-Smtp-Source: ABdhPJya10WMSePhh0RjJp+JfqVWDnjJc4mpDe4nyTacE//ULLCUor9Qa2qpxCv7Y/GWwHemTSmQeA==
+X-Received: by 2002:a9d:7b42:: with SMTP id f2mr4567984oto.267.1619502203160;
+        Mon, 26 Apr 2021 22:43:23 -0700 (PDT)
+Received: from localhost ([2601:8c4:0:1be::1e4])
+        by smtp.gmail.com with ESMTPSA id g3sm1097006otq.50.2021.04.26.22.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 22:43:19 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 22:43:18 -0700 (PDT)
+From:   Paul Walmsley <paul.walmsley@sifive.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+cc:     pbonzini@redhat.com, anup@brainfault.org,
+        Anup Patel <Anup.Patel@wdc.com>, aou@eecs.berkeley.edu,
+        graf@amazon.com, Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
+In-Reply-To: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop>
+Message-ID: <5b988c4e-25e9-f2b9-b08d-35bc37a245e4@sifive.com>
+References: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-References: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn> <YIeYUD5iWv/TI3PH@unreal>
-In-Reply-To: <YIeYUD5iWv/TI3PH@unreal>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Tue, 27 Apr 2021 11:06:24 +0530
-Message-ID: <CANjDDBivHfZheoiiq-WxwAM2MEaeSaF_p2hXA1WR4AqiH32bpg@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/bnxt_re/qplib_res: Fix a double free in bnxt_qplib_alloc_res
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000c4477205c0eda643"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000c4477205c0eda643
-Content-Type: text/plain; charset="UTF-8"
+On Fri, 9 Apr 2021, Palmer Dabbelt wrote:
 
-On Tue, Apr 27, 2021 at 10:21 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Mon, Apr 26, 2021 at 07:06:14AM -0700, Lv Yunlong wrote:
-> > In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().
-> > Inside bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
-> > pci_iounmap() in unmap_io error branch. After the callee returns err code,
-> > bnxt_qplib_alloc_res calls bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl()
-> > in fail branch. Then dpit->dbr_bar_reg_iomem is freed in the second time by
-> > pci_iounmap().
-> >
-> > My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by pci_iounmap()
-> > in the first time, to avoid the double free.
-> >
-> > Fixes: 1ac5a40479752 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> > Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
->
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Acked-By: Devesh Sharma <devesh.sharma@broadcom.com>
+> On Wed, 31 Mar 2021 02:21:58 PDT (-0700), pbonzini@redhat.com wrote:
+> 
+> > Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
+> > drivers/staging/riscv/kvm?
+> 
+> I'm certainly ready to drop my objections to merging the code based on 
+> it targeting a draft extension, but at a bare minimum I want to get a 
+> new policy in place that everyone can agree to for merging code.  I've 
+> tried to draft up a new policy a handful of times this week, but I'm not 
+> really quite sure how to go about this: ultimately trying to build 
+> stable interfaces around an unstable ISA is just a losing battle.  I've 
+> got a bunch of stuff going on right now, but I'll try to find some time 
+> to actually sit down and finish one.
+> 
+> I know it might seem odd to complain about how slowly things are going 
+> and then throw up another roadblock, but I really do think this is a 
+> very important thing to get right.  I'm just not sure how we're going to 
+> get anywhere with RISC-V without someone providing stability, so I want 
+> to make sure that whatever we do here can be done reliably.  If we don't 
+> I'm worried the vendors are just going to go off and do their own 
+> software stacks, which will make getting everyone back on the same page 
+> very difficult.
+
+I sympathize with Paolo, Anup, and others also.  Especially Anup, who has 
+been updating and carrying the hypervisor patches for a long time now.  
+And also Greentime, who has been carrying the V extension patches.  The 
+RISC-V hypervisor specification, like several other RISC-V draft 
+specifications, is taking longer to transition to the officially "frozen" 
+stage than almost anyone in the RISC-V community would like.
+
+Since we share this frustration, the next questions are: 
+
+- What are the root causes of the problem?  
+
+- What's the right forum to address the root causes?
+
+To me, the root causes of the problems described in this thread aren't 
+with the arch/riscv kernel maintenance guidelines, but rather with the 
+RISC-V specification process itself.  And the right forum to address 
+issues with the RISC-V specification process is with RISC-V International 
+itself: the mailing lists, the participants, and the board of directors.  
+Part of the challenge -- not simply with RISC-V, but with the Linux kernel 
+or any other community -- is to ensure that incentives (and disincentives) 
+are aligned with the appropriately responsible parts of the community.  
+And when it comes to specification development, the right focus to align 
+those incentives and disincentives is on RISC-V International.
+
+The arch/riscv patch acceptance guidelines are simply intended to ensure 
+that the definition of what is and isn't RISC-V remains clear and 
+unambiguous.  Even though the guidelines can result in short-term pain, 
+the intention is to promote long-term stability and sustainable 
+maintainability - particularly since the specifications get baked into 
+hardware.  We've observed that attempting to chase draft specifications 
+can cause significant churn: for example, the history of the RISC-V vector 
+specification illustrates how a draft extension can undergo major, 
+unexpected revisions throughout its journey towards ratification.  One of 
+our responsibilities as kernel developers is to minimize that churn - not 
+simply for our own sanity, or for the usability of RISC-V, but to ensure 
+that we remain members in good standing of the broader kernel community.  
+Those of us who were around for the ARM32 and ARM SoC kernel accelerando 
+absorbed strong lessons in maintainability, and I doubt anyone here is 
+interested in re-learning those the hard way.
+
+RVI states that the association is open to community participation.  The 
+organizations that have joined RVI, I believe, have a strong stake in the 
+health of the RISC-V ecosystem, just as the folks have here in this 
+discussion.  If the goal really is to get quality specifications out the 
+door faster, then let's focus the energy towards building consensus 
+towards improving the process at RISC-V International.  If that's 
+possible, the benefits won't only accrue to Linux developers, but to the 
+entire RISC-V hardware and software development community at large.  If 
+nothing else, it will be an interesting test of whether RISC-V 
+International can take action to address these concerns and balance them 
+with those of other stakeholders in the process.
 
 
--- 
--Regards
-Devesh
-
---000000000000c4477205c0eda643
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN97jaN29ALuGPiYfFQI6gjLyXyb
-877onUleEliZ8khtMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDQyNzA1MzcwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCO/zZiMxXtihrDspYRMRk2Q+nf3FZXdVYpPdgXZlfhXeLR
-3EeJpOO5rvXImCgQaynXAzYHo/5kamhGaYSralZYB8dNvjUI2jDWVbcCC+IAMo4CCuZQIIxCchwJ
-jb4W3seyixQhmdaAq8lFQRz10a/mVD+aZct8dSWRWWACgVftimnqMTe5JqOvUWNjysYZH0oFSavc
-dwMydQhvQuF92f74pk+WwZOnLBjPPCG4vDgK5bJc0aq2qKDcxbZOoF2r0NPHC1VAvDXEaR/E0ULH
-cFqjzW2bpjgZFLqLL0mNDmyK0ZlUjN7hRgV2GzkTPWvJ5kSbRKSkiDg5kGvnypUtYx5H
---000000000000c4477205c0eda643--
+- Paul
