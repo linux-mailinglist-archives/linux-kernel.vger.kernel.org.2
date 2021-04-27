@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEA036BEF8
+	by mail.lfdr.de (Postfix) with ESMTP id E65E136BEF9
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhD0Fh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 01:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
+        id S234567AbhD0Fha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 01:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbhD0FhP (ORCPT
+        with ESMTP id S232329AbhD0FhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:37:15 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5405CC06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:36:31 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id m12so837384pgr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:36:31 -0700 (PDT)
+        Tue, 27 Apr 2021 01:37:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26012C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:36:33 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id h11so947180pfn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 22:36:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oOSiNAIFbF5oM0OgD4JWcfn+rkikH5kg1ZaUYL3whtQ=;
-        b=VOWdUtYAgwq1bQG3/NsqLEKs/W1eKLs6RW9BQiWCYyD/Rfqvg890AjJ+GEoGMq5OrA
-         AJ5KHj4U1HvetQeuUVJVOIRQXy84KxIekLczgZ69sB4zUtPWSuutk3TpnMuHMTjWm4+8
-         h8G+8PZFnH5Rm1K+s/a+i9Kx1KocC5TA7BsS0=
+        bh=DmgNhZA8y9OcAqQz4ZmmKKT0ZJqTstchwxs60f43ujM=;
+        b=WcmtSLpGOQppOkaIFOJglGs6qgpdhC0GBDegcigac4xtnNSkBc9/CcqiQgJ3WbKILE
+         Gs2oyMEkt+e4hyjxptvTbycReZ/0RwvAPQoZlwAZ8sZ8XbK2+xHnKRKUYQC2mDqLEl+w
+         5J/SbXVbV6dmGGuYilQX3FBKckI+jX+WUcTww=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oOSiNAIFbF5oM0OgD4JWcfn+rkikH5kg1ZaUYL3whtQ=;
-        b=MqTkifUx3ElJ8CVVE9kkF3rSr4WrxkTRsIMK6ha6bS7xuBd0/G/hEtEhvDmhSjljcr
-         UOEf4eacoW5CDnojXlebf7HKaKE+uFptbKKB9kYmPSVHgvwyxyWZrh1+4cLAu0LEg4ev
-         1LSS/xqeTqCej8NBngT+b30Zre/qZI/TjyKRc9Mdga59p5bq1hvRW91VxGo7F4afpovn
-         l30TdUg8eHdxmmj9VHOhAIqwU8RrmaNRsNle4aBZqYyWaIGQIPXUTnDpq8vXF0NCWnOb
-         lrW/Y1ge3HWdc9yNzz8MRlH1/YMeyLcWlWzakQFHH2kgh1hvjLn+kZ7+wTmSn6q8uXNf
-         /2qQ==
-X-Gm-Message-State: AOAM533z/+9FKRHOLwFE+mKe122VEoisV04W2ZujXUvxr8+UFB4SB8ma
-        8ujYI+nTyAxjxGyvFLDja7YIWg==
-X-Google-Smtp-Source: ABdhPJyrLflzW+OohhHuQBd5kScDJnTZGVrPGqJeEKaquqlC5N0ZXttwfYEPggjDOml6EKMuunb2XA==
-X-Received: by 2002:aa7:82ce:0:b029:242:deb4:9442 with SMTP id f14-20020aa782ce0000b0290242deb49442mr21579555pfn.73.1619501790821;
-        Mon, 26 Apr 2021 22:36:30 -0700 (PDT)
+        bh=DmgNhZA8y9OcAqQz4ZmmKKT0ZJqTstchwxs60f43ujM=;
+        b=PqVn4fqeytO3YSlWonf08wRzyWcuDItCqgOXBqXn/T6U6T+2UIB8dPfRNF9vpE22jv
+         PqYftf0W8Q+VHN+ZjRWaU8xVXWtRVQ7yuDKJL7E4WGFJhyMjrlqv+9II71ku00/cJD5T
+         /xaYi6OitQA81cR5EMP6SxR9FxOgfgCYM/WCvM/hdThB6y/XkbtN3KYa4ihJddBzP1wX
+         CO296Oi+kgU24tOEA9ix/6CWjY5JhumVRnXLg/0BopsKxuR36AtJ5FBaWWgpR3aYfQbD
+         N4QEsEWzToGMUGoHtVtwrBJfAwHWcohMah879PFicbfB+aJKMIZgxBQ60vSBxzcgPvuG
+         4kgQ==
+X-Gm-Message-State: AOAM531ix7sBPs95q2351gRsLGorQ6IomBTnlzIORl0/0UVQjwSQ6AH8
+        Y1tAKVk6BZNMgJ39R6quEgO4eg==
+X-Google-Smtp-Source: ABdhPJyK6HPDL2dVl6Wi0k4rLfJc5+VoFT3tTwCq+4rkqx1pDkHVS+yVt1cvCRJAGH6jG1yUhZdMcQ==
+X-Received: by 2002:a65:6414:: with SMTP id a20mr19805719pgv.96.1619501793489;
+        Mon, 26 Apr 2021 22:36:33 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:3984:c4f5:8612:6b3e])
-        by smtp.gmail.com with ESMTPSA id gc15sm993529pjb.2.2021.04.26.22.36.28
+        by smtp.gmail.com with ESMTPSA id gc15sm993529pjb.2.2021.04.26.22.36.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 22:36:30 -0700 (PDT)
+        Mon, 26 Apr 2021 22:36:33 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Wolfram Sang <wsa@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Bibby Hsieh <bibby.hsieh@mediatek.com>,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v20 3/5] i2c: mediatek: mt65xx: add optional vbus-supply
-Date:   Tue, 27 Apr 2021 13:36:15 +0800
-Message-Id: <20210427053617.27972-4-hsinyi@chromium.org>
+Subject: [PATCH v20 4/5] misc: eeprom: at24: check suspend status before disable regulator
+Date:   Tue, 27 Apr 2021 13:36:16 +0800
+Message-Id: <20210427053617.27972-5-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 In-Reply-To: <20210427053617.27972-1-hsinyi@chromium.org>
 References: <20210427053617.27972-1-hsinyi@chromium.org>
@@ -70,32 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vbus-supply which provides power to SCL/SDA. Pass this regulator
-into core so it can be turned on/off for low power mode support.
+cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
+regulator in runtime suspend. If runtime suspend is called before
+regulator disable, it will results in regulator unbalanced disabling.
 
+Fixes: cd5676db0574 ("misc: eeprom: at24: support pm_runtime control")
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/misc/eeprom/at24.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 2ffd2f354d0a..82f2b6716005 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -1215,6 +1215,13 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 	i2c->adap.quirks = i2c->dev_comp->quirks;
- 	i2c->adap.timeout = 2 * HZ;
- 	i2c->adap.retries = 1;
-+	i2c->adap.bus_regulator = devm_regulator_get_optional(&pdev->dev, "vbus");
-+	if (IS_ERR(i2c->adap.bus_regulator)) {
-+		if (PTR_ERR(i2c->adap.bus_regulator) == -ENODEV)
-+			i2c->adap.bus_regulator = NULL;
-+		else
-+			return PTR_ERR(i2c->adap.bus_regulator);
-+	}
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 926408b41270..7a6f01ace78a 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client *client)
+ 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+ 	if (IS_ERR(at24->nvmem)) {
+ 		pm_runtime_disable(dev);
+-		regulator_disable(at24->vcc_reg);
++		if (!pm_runtime_status_suspended(dev))
++			regulator_disable(at24->vcc_reg);
+ 		return PTR_ERR(at24->nvmem);
+ 	}
  
- 	ret = mtk_i2c_parse_dt(pdev->dev.of_node, i2c);
- 	if (ret)
+@@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client *client)
+ 	err = at24_read(at24, 0, &test_byte, 1);
+ 	if (err) {
+ 		pm_runtime_disable(dev);
+-		regulator_disable(at24->vcc_reg);
++		if (!pm_runtime_status_suspended(dev))
++			regulator_disable(at24->vcc_reg);
+ 		return -ENODEV;
+ 	}
+ 
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
