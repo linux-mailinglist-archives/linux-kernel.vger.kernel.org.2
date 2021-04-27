@@ -2,163 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B9136C6CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C68636C6D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237884AbhD0NPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236959AbhD0NOw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:14:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA753613D0;
-        Tue, 27 Apr 2021 13:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619529249;
-        bh=x6RKmLsto5X/verU2yL8j9BN2Rr9H32IO58Jepb9G80=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mGySASVSQHGfN97jT36/oY4u49bOeSkTkParcoSb/xOfTrBpdDrpQ+MGjcP9jStIv
-         rWfJyYaPhSBFv55tjEv11UYf+hHnMprdOty+Dnr6I6jF5gWhbyvjuTFnRl8ZRivAfD
-         ZxNrGn7qsr+KKxXbQXBGIWksCanU3N09ySWASNaMQ5QEaqzJPoCR9lCdcFM6xeJ6n/
-         TtBcyNQMtxZ+E82xFczr9r3uZOu9tl4si9FdTNe+/D19duJsikG0bFtsd1miE6kooV
-         zWFJkvQmkYdIsWrIFg4gTczOKLsovSe3gsTmRqND02ZBCBKdciI5aWKq65Hm7OUDYD
-         bm4f90lxM5+ZA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2D52540647; Tue, 27 Apr 2021 10:14:06 -0300 (-03)
-Date:   Tue, 27 Apr 2021 10:14:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v6 00/26] perf tool: AlderLake hybrid support series 1
-Message-ID: <YIgOHc1pnoyQASUJ@kernel.org>
-References: <20210427070139.25256-1-yao.jin@linux.intel.com>
- <YIgIiZVxOWdYTwef@krava>
+        id S238157AbhD0NQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:16:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235489AbhD0NQA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:16:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619529317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y6H84GJnAeW5Ki6EBx9km44PwX2+BvONGaZl7eHFjHc=;
+        b=S+czmyoRO2pMVv+IuXiITPHUaBKYXjPKkPJpLi87NHbqxaobIV0LWGFlDkTvNZ3wd4z4Hn
+        KId0IB7mOtPwavH6MIgdNKuN6okoR/K0AuvQTjcA75H8Pd0JPBZgnZN8xQxrXzIycer57g
+        09D3CdopGElmJvTGdW+Ke5mbMpmcAQA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-4e4MrcP5NGefOCkCzR12zg-1; Tue, 27 Apr 2021 09:15:15 -0400
+X-MC-Unique: 4e4MrcP5NGefOCkCzR12zg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5175801AC1;
+        Tue, 27 Apr 2021 13:15:13 +0000 (UTC)
+Received: from krava (unknown [10.40.192.237])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A648B19718;
+        Tue, 27 Apr 2021 13:15:11 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 15:15:10 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET v2 0/6] perf report: Make --stat output more compact
+Message-ID: <YIgOXhhbe9qwOSgd@krava>
+References: <20210427013717.1651674-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIgIiZVxOWdYTwef@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210427013717.1651674-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 27, 2021 at 02:50:17PM +0200, Jiri Olsa escreveu:
-> On Tue, Apr 27, 2021 at 03:01:13PM +0800, Jin Yao wrote:
-> > AlderLake uses a hybrid architecture utilizing Golden Cove cores
-> > (core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
-> > event list. Some events are available on core cpu, some events
-> > are available on atom cpu and some events can be available on both.
-> > 
-> > Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
-> > /sys/devices/cpu_core
-> > /sys/devices/cpu_atom
-> > 
-> > cat /sys/devices/cpu_core/cpus
-> > 0-15
-> > 
-> > cat /sys/devices/cpu_atom/cpus
-> > 16-23
-> > 
-> > In this example, core cpus are 0-15 and atom cpus are 16-23.
-> > 
-> > To enable a core only event or atom only event:
-> > 
-> >         cpu_core/<event name>/
-> > or
-> >         cpu_atom/<event name>/
-> > 
-> > Count the 'cycles' event on core cpus.
-> > 
-> >   # perf stat -e cpu_core/cycles/ -a -- sleep 1
-> > 
-> >    Performance counter stats for 'system wide':
-> > 
-> >       12,853,951,349      cpu_core/cycles/
-> > 
-> >          1.002581249 seconds time elapsed
-> > 
-> > If one event is available on both atom cpu and core cpu, two events
-> > are created automatically.
-> > 
-> >   # perf stat -e cycles -a -- sleep 1
-> > 
-> >    Performance counter stats for 'system wide':
-> > 
-> >       12,856,467,438      cpu_core/cycles/
-> >        6,404,634,785      cpu_atom/cycles/
-> > 
-> >          1.002453013 seconds time elapsed
-> > 
-> > Group is supported if the events are from same pmu, otherwise a warning
-> > is displayed and disable grouping automatically.
-> > 
-> >   # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
-> > 
-> >    Performance counter stats for 'system wide':
-> > 
-> >       12,863,866,968      cpu_core/cycles/
-> >          554,795,017      cpu_core/instructions/
-> > 
-> >          1.002616117 seconds time elapsed
-> > 
-> >   # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
-> >   WARNING: events in group from different hybrid PMUs!
-> >   WARNING: grouped events cpus do not match, disabling group:
-> >     anon group { cpu_core/cycles/, cpu_atom/instructions/ }
-> > 
-> >    Performance counter stats for 'system wide':
-> > 
-> >            6,283,970      cpu_core/cycles/
-> >              765,635      cpu_atom/instructions/
-> > 
-> >          1.003959036 seconds time elapsed
-> > 
-> > Note that, since the whole patchset for AlderLake hybrid support is very
-> > large (40+ patches). For simplicity, it's splitted into several patch
-> > series.
-> > 
-> > The patch series 1 only supports the basic functionality. The advanced
-> > supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
-> > will be added in follow-up patch series.
-> > 
-> > The perf tool codes can also be found at:
-> > https://github.com/yaoj/perf.git
+On Mon, Apr 26, 2021 at 06:37:11PM -0700, Namhyung Kim wrote:
+> Hello,
 > 
-> hi,
-> did you update the branch for v6? I think I can't see
-> the new update there
+> This patchset changes the output of perf report --stat.
+> 
+> Changes from v1)
+>  * fix build error in TUI  (Jiri)
+>  * print percentage of each event  (Andi)
+> 
+> 
+> The perf report --stat shows event statistics like below:
+> 
+>   $ perf report --stat
+> 
+>   Aggregated stats:
+>              TOTAL events:      20064
+>               MMAP events:        239
+>               LOST events:          0
+>               COMM events:       1518
+>               EXIT events:          1
+>           THROTTLE events:          0
+>         UNTHROTTLE events:          0
+>               FORK events:       1517
+>               READ events:          0
+>             SAMPLE events:       4015
+>              MMAP2 events:      12769
+>                AUX events:          0
+>       ITRACE_START events:          0
+>       LOST_SAMPLES events:          0
+>             SWITCH events:          0
+>    SWITCH_CPU_WIDE events:          0
+>         NAMESPACES events:          0
+>            KSYMBOL events:          0
+>          BPF_EVENT events:          0
+>             CGROUP events:          0
+>          TEXT_POKE events:          0
+>               ATTR events:          0
+>         EVENT_TYPE events:          0
+>       TRACING_DATA events:          0
+>           BUILD_ID events:          0
+>     FINISHED_ROUND events:          2
+>           ID_INDEX events:          0
+>      AUXTRACE_INFO events:          0
+>           AUXTRACE events:          0
+>     AUXTRACE_ERROR events:          0
+>         THREAD_MAP events:          1
+>            CPU_MAP events:          1
+>        STAT_CONFIG events:          0
+>               STAT events:          0
+>         STAT_ROUND events:          0
+>       EVENT_UPDATE events:          0
+>          TIME_CONV events:          1
+>            FEATURE events:          0
+>         COMPRESSED events:          0
+> 
+> But it's too long and mostly 0 so we can make it more compact.  Also
+> perf report -D has similar output at the end with each event's sample
+> count.  It'd be better if we can have the same output in both case.
+> 
+> So I added --skip-empty (and --no-skip-empty automatically) to suppres
+> the 0 output and add the event stats like below.
+> 
+>   $ perf report --stat --skip-empty
+>   
+>   Aggregated stats:
+>              TOTAL events:      20064
+>               MMAP events:        239  ( 1.2%)
+>               COMM events:       1518  ( 7.6%)
+>               EXIT events:          1  ( 0.0%)
+>               FORK events:       1517  ( 7.6%)
+>             SAMPLE events:       4015  (20.0%)
+>              MMAP2 events:      12769  (63.6%)
+>     FINISHED_ROUND events:          2  ( 0.0%)
+>         THREAD_MAP events:          1  ( 0.0%)
+>            CPU_MAP events:          1  ( 0.0%)
+>          TIME_CONV events:          1  ( 0.0%)
+>   cycles stats:
+>             SAMPLE events:       2475
+>   instructions stats:
+>             SAMPLE events:       1540
+> 
+> 
+> And I make it enabled by default with a new config option
+> report.skip-empty to change the behavior if needed.
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (6):
+>   perf top: Use evlist->events_stat to count events
+>   perf hists: Split hists_stats from events_stats
+>   perf report: Show event sample counts in --stat output
+>   perf report: Add --skip-empty option to suppress 0 event stat
+>   perf report: Make --skip-empty as default
+>   perf report: Print percentage of each event statistics
 
-I'm putting it in my tmp.perf/core while I'm testing it and you
-reviewing, I'll  do some reviewing as well, now it applied ok:
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-[acme@five perf]$        git am ./v6_20210427_yao_jin_perf_tool_alderlake_hybrid_support_series_1.mbx
-Applying: tools headers uapi: Update tools's copy of linux/perf_event.h
-Applying: perf jevents: Support unit value "cpu_core" and "cpu_atom"
-Applying: perf pmu: Simplify arguments of __perf_pmu__new_alias
-Applying: perf pmu: Save pmu name
-Applying: perf pmu: Save detected hybrid pmus to a global pmu list
-Applying: perf pmu: Add hybrid helper functions
-Applying: perf stat: Uniquify hybrid event name
-Applying: perf parse-events: Create two hybrid hardware events
-Applying: perf parse-events: Create two hybrid cache events
-Applying: perf parse-events: Create two hybrid raw events
-Applying: perf parse-events: Compare with hybrid pmu name
-Applying: perf parse-events: Support event inside hybrid pmu
-Applying: perf record: Create two hybrid 'cycles' events by default
-Applying: perf stat: Add default hybrid events
-Applying: perf stat: Filter out unmatched aggregation for hybrid event
-Applying: perf stat: Warn group events from different hybrid PMU
-Applying: perf record: Uniquify hybrid event name
-Applying: perf tests: Add hybrid cases for 'Parse event definition strings' test
-Applying: perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
-Applying: perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
-Applying: perf tests: Support 'Track with sched_switch' test for hybrid
-Applying: perf tests: Support 'Parse and process metrics' test for hybrid
-Applying: perf tests: Support 'Session topology' test for hybrid
-Applying: perf tests: Support 'Convert perf time to TSC' test for hybrid
-Applying: perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
-Applying: perf Documentation: Document intel-hybrid support
-[acme@five perf]$
+thanks,
+jirka
+
