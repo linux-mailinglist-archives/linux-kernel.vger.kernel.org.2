@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B1636C3DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F113636C3E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238395AbhD0Kam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:30:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48158 "EHLO mail.kernel.org"
+        id S235591AbhD0KbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:31:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235620AbhD0K2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 659AF61402;
+        id S235760AbhD0K2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85C9861403;
         Tue, 27 Apr 2021 10:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619519236;
-        bh=0+qUTNue9hnyAq3YJfJJPyrh70EsjiwzWG3y47ywjxU=;
+        bh=28FtFakpR3rMJfq6Bb1gqJsNDZKdyp2sz2lduteJODo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CG6OQuMRDw4aL2HhzULba78FW659ajYzPkJNTcHUqo287goY+/lJ3wQBhkvs2X5eV
-         qpp6o/vZbM+/BzyQLcLujpLxk1gRqDGU3mpek3cYRVj+v/pkrktoIDZXaz2gscBFYU
-         5P2qxTopAlj2zc7c4DmRZIQ/OsEwaTXLcps8i+N1oo+8i8mA/diO315zfH8CLiH8z2
-         vDZGzJT3KiXtijUulAetuz4+NpzyDMt1OSJ3eZmjrrOTYB0zq+HhYXE7acR+QMOGcZ
-         8i3gmVMbmWEMN8knz+Fl6gGelGaxPU6EzE6p2sk1PbxCX1wcB6B3wM1g379vZ2qkk1
-         4xJQGRj1YURng==
+        b=qExp0FjGxpnACO9FE+WZ4p4ujgxUWvBJQFjsBQF9PfwZrt8LMRzT4PZo2gfG1jIwu
+         9CkbNT3pxVOmfhAW5zxySoZ+fU1ZwpQal9JTYMA9uOAe/DOjy5mK0LgN/WoPZAsJ+8
+         2gNl9EVI7jWEaf0qo0HujPNlmtiEjxO2f72OMtLad359YolUwZ46E+lqvttuAydLg8
+         np/Sx8jRVYYaMQKYfMY1U8rIMf2b5gqa/XCXa4maHNOHk8pReTs6g5v7KrgAy+pwzp
+         btOkgdI4qD60efWfRJVK28nIebJnbZ8/cRDz/uW8RIC8c1YjWdYgwNmnnLr8Asa1Rd
+         Ag2NR7tEeNGBw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lbKvw-000o0i-KY; Tue, 27 Apr 2021 12:27:12 +0200
+        id 1lbKvw-000o0o-OL; Tue, 27 Apr 2021 12:27:12 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v3 31/79] media: i2c: dw9768: use pm_runtime_resume_and_get()
-Date:   Tue, 27 Apr 2021 12:26:21 +0200
-Message-Id: <351643aad80075ea3bebcfa431479156d8b92ebf.1619519080.git.mchehab+huawei@kernel.org>
+        Shawn Tu <shawnx.tu@intel.com>, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v3 33/79] media: i2c: hi556: use pm_runtime_resume_and_get()
+Date:   Tue, 27 Apr 2021 12:26:23 +0200
+Message-Id: <ffe331db9c54f86c80131a436cecd63578c07d9b.1619519080.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
 References: <cover.1619519080.git.mchehab+huawei@kernel.org>
@@ -54,30 +54,24 @@ Use the new API, in order to cleanup the error check logic.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/media/i2c/dw9768.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/media/i2c/hi556.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/dw9768.c b/drivers/media/i2c/dw9768.c
-index 8b8cb4b077b5..c086580efac7 100644
---- a/drivers/media/i2c/dw9768.c
-+++ b/drivers/media/i2c/dw9768.c
-@@ -374,15 +374,7 @@ static const struct v4l2_ctrl_ops dw9768_ctrl_ops = {
+diff --git a/drivers/media/i2c/hi556.c b/drivers/media/i2c/hi556.c
+index 6f05c1138e3b..627ccfa34835 100644
+--- a/drivers/media/i2c/hi556.c
++++ b/drivers/media/i2c/hi556.c
+@@ -813,9 +813,8 @@ static int hi556_set_stream(struct v4l2_subdev *sd, int enable)
  
- static int dw9768_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
- {
--	int ret;
--
--	ret = pm_runtime_get_sync(sd->dev);
--	if (ret < 0) {
--		pm_runtime_put_noidle(sd->dev);
--		return ret;
--	}
--
--	return 0;
-+	return pm_runtime_resume_and_get(sd->dev);
- }
- 
- static int dw9768_close(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+ 	mutex_lock(&hi556->mutex);
+ 	if (enable) {
+-		ret = pm_runtime_get_sync(&client->dev);
++		ret = pm_runtime_resume_and_get(&client->dev);
+ 		if (ret < 0) {
+-			pm_runtime_put_noidle(&client->dev);
+ 			mutex_unlock(&hi556->mutex);
+ 			return ret;
+ 		}
 -- 
 2.30.2
 
