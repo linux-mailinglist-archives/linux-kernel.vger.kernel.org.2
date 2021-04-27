@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF5E36CF00
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8C636CF07
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbhD0W7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235395AbhD0W7J (ORCPT
+        id S239270AbhD0XAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 19:00:34 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:42800 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235382AbhD0XAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:59:09 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFD5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:58:25 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id j7so33996079pgi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j981qgFtuq6fxvASGv/oGF89vtoeN/Z0NvemUV1hOwQ=;
-        b=eMNwqZvisi/AEYs+s/j2rYEwpIK7mfT3y2VNF93m2aZf6cv/xm3EqCRd1YYQiLu+Ig
-         +Eo2YaS7O6RGHL5PfjWD8W4UbrOhrlUY4J9PeNEhX+m+sLXto+2lCuLamJHySwM0uB25
-         cOoKplxtQYeXK691N+YX9kf7MWv8Z85+u6P40=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j981qgFtuq6fxvASGv/oGF89vtoeN/Z0NvemUV1hOwQ=;
-        b=deRdZA2CHNZ0YlC17a/avdxzmzhi/BD/OHJ8IrMZB6bWXOg8wex9N+7/4qu3S2pIvQ
-         9Bn+MsUZobQifjB5FUPFdipJGOXEzNm5S7LdP4UBYmEkBOHmxmqfGbXAZNrJofduenqo
-         x910d+hmEcutDdXebguICyNjCPSrZW5AWMmBesHpTqdKlucaz2Xsd9bxxrqoQjn5TwZ2
-         bgsIPC018CJfJn8zFOp5TJMBJsCUgcwqwEfbOmqOnPtPsdN6uMzItGItDSwUbep6UakK
-         trMXZxpmzcNhG9keYWi/gTx0TKlwwtJiNa87oDlpqmcR2zUkfi0cS3PktSeynUHSS3lh
-         Np3A==
-X-Gm-Message-State: AOAM533LRf4G7lv8vnITSJ94q0jKwf3tiaDh0FHlxSEpiu9ACGAy2i7F
-        X/4guff6jkWFI3NsJzOxtcdCJQ==
-X-Google-Smtp-Source: ABdhPJz2smX0IXcQ12KDTvvczsej3/4e1ExBTvxs12ZncPpHAXGAlCAocFZngK+A9ulNrmxn+uRjiA==
-X-Received: by 2002:a63:ff22:: with SMTP id k34mr23954095pgi.336.1619564305243;
-        Tue, 27 Apr 2021 15:58:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id fy1sm3353275pjb.14.2021.04.27.15.58.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 15:58:24 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 15:58:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
-Message-ID: <202104271557.412DD365A@keescook>
-References: <20210423205159.830854-1-morbo@google.com>
+        Tue, 27 Apr 2021 19:00:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=yfDJcXRXLcFqUpWKFnDEug6ObcuKDigbRQxLqk4fhDY=; b=sbQMyumPhi9BO3PW7BbH7jx3Mv
+        vyQd71v56wBfsn24nwtkY+oIQgX3d3l1Ef2xR/D7FmPPejRkZzxHW3lZYylXqntM3wayVT8xUbSON
+        pRu0g92wUrYkY4mSSqIOYl5nF3ZdzT0niosmL6qBWRsJuD7/K/AvnuHQmjnHK7oloxX99WCDjqOI0
+        cg5+SNiz8HchO6MM165oba4v51OTzr/KDIokovNCY/DFWZ7sMQFW03g7hYFCoWTz3ocn/dosmVMEZ
+        sGBSFJDc2fGekrXGh7GNV2q3EeYZREtOFpzZ4vfUtHADST8VMXbeGXWLL0y5KZxGTJ2ejJzeaB2up
+        1+e2wlfw==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lbWg7-0002nw-DI; Tue, 27 Apr 2021 16:59:40 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-12-logang@deltatee.com>
+ <20210427194337.GT2047089@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <4e2537b1-21f3-f726-07bb-91d086e6d124@deltatee.com>
+Date:   Tue, 27 Apr 2021 16:59:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423205159.830854-1-morbo@google.com>
+In-Reply-To: <20210427194337.GT2047089@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH 11/16] iommu/dma: Support PCI P2PDMA pages in dma-iommu
+ map_sg
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 01:51:59PM -0700, Bill Wendling wrote:
-> The arm64 assembler in binutils 2.32 and above generates a program
-> property note in a note section, .note.gnu.property, to encode used x86
-> ISAs and features. But the kernel linker script only contains a single
-> NOTE segment:
-> 
->   PHDRS
->   {
->     text    PT_LOAD    FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
->     dynamic PT_DYNAMIC FLAGS(4);               /* PF_R */
->     note    PT_NOTE    FLAGS(4);               /* PF_R */
->   }
-> 
-> The NOTE segment generated by the vDSO linker script is aligned to 4 bytes.
-> But the .note.gnu.property section must be aligned to 8 bytes on arm64.
-> 
->   $ readelf -n vdso64.so
-> 
->   Displaying notes found in: .note
->     Owner                Data size      Description
->     Linux                0x00000004     Unknown note type: (0x00000000)
->      description data: 06 00 00 00
->   readelf: Warning: note with invalid namesz and/or descsz found at offset 0x20
->   readelf: Warning:  type: 0x78, namesize: 0x00000100, descsize: 0x756e694c, alignment: 8
-> 
-> Since the note.gnu.property section in the vDSO is not checked by the
-> dynamic linker, discard the .note.gnu.property sections in the vDSO.
-> 
-> Similar to commit 4caffe6a28d31 ("x86/vdso: Discard .note.gnu.property
-> sections in vDSO"), but for arm64.
-> 
-> Signed-off-by: Bill Wendling <morbo@google.com>
 
-Seems good to me. If we ever need the BTI markings, etc, for the vDSO,
-we can revisit it then.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+On 2021-04-27 1:43 p.m., Jason Gunthorpe wrote:
+> On Thu, Apr 08, 2021 at 11:01:18AM -0600, Logan Gunthorpe wrote:
+>> When a PCI P2PDMA page is seen, set the IOVA length of the segment
+>> to zero so that it is not mapped into the IOVA. Then, in finalise_sg(),
+>> apply the appropriate bus address to the segment. The IOVA is not
+>> created if the scatterlist only consists of P2PDMA pages.
+> 
+> I expect P2P to work with systems that use ATS, so we'd want to see
+> those systems have the IOMMU programmed with the bus address.
 
--Kees
+Oh, the paragraph you quote isn't quite as clear as it could be. The bus
+address is only used in specific circumstances depending on how the
+P2PDMA core code figures the addresses should be mapped (see the
+documentation for (upstream_bridge_distance()). The P2PDMA code
+currently doesn't have any provisions for ATS (I haven't had access to
+any such hardware) but I'm sure it wouldn't be too hard to add.
 
--- 
-Kees Cook
+Logan
