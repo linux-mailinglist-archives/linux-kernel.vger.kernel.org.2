@@ -2,167 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7328B36BD58
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F51136BD5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhD0CdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:33:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17818 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhD0CdU (ORCPT
+        id S234162AbhD0CeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233361AbhD0CeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:33:20 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FTm276dwwz7vsT;
-        Tue, 27 Apr 2021 10:30:07 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 27 Apr
- 2021 10:32:30 +0800
-Subject: Re: [RFC PATCH] f2fs: restructure f2fs page.private layout
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <jaegeuk@kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20210426100908.109435-1-yuchao0@huawei.com>
- <20210426154021.GN235567@casper.infradead.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <498cdef5-a528-1b65-4af8-906ae2ac3cac@huawei.com>
-Date:   Tue, 27 Apr 2021 10:32:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 26 Apr 2021 22:34:13 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC62EC061574;
+        Mon, 26 Apr 2021 19:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=Igzk5PmTAU
+        DER6EmI3hYvYH4ERMb9GrQy7aidDxiQFs=; b=FA6GD9/9E2kcl9yj0RPl1R/6sn
+        sSinb3yQKUVmUL6H+C0tj5+MFgP5oTPuYqqmVc8PmJE9iWXmaQZXLjLCJg1HIzma
+        eavNyJB6NjvCJkgV6hkyCHjtfIZY4dZQ/8Dl0ZL26B37BaH3I4zaTD/cX7NcTvtb
+        unEPr/axciZ49WqfA=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnL6_ud4dgFftOAA--.758S4;
+        Tue, 27 Apr 2021 10:33:18 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] media:exynos4-is: Fix a use after free in isp_video_release
+Date:   Mon, 26 Apr 2021 19:33:15 -0700
+Message-Id: <20210427023315.4537-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210426154021.GN235567@casper.infradead.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygAnL6_ud4dgFftOAA--.758S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw1UXFWfZF4rtF13tr4ktFb_yoWkCFc_u3
+        48KFnrWrZ5tw4jy3WqyFn5ZrWFyrZ8Xa93CanagFW2y34UAF4xtF4qkrWI93ZrGa17GFZ8
+        Jrs8XF1UCr93CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbBMKJUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/26 23:40, Matthew Wilcox wrote:
-> On Mon, Apr 26, 2021 at 06:09:08PM +0800, Chao Yu wrote:
->> Restruct f2fs page private layout for below reasons:
->>
->> There are some cases that f2fs wants to set a flag in a page to
->> indicate a specified status of page:
->> a) page is in transaction list for atomic write
->> b) page contains dummy data for aligned write
->> c) page is migrating for GC
->> d) page contains inline data for inline inode flush
->> e) page is verified in merkle tree for fsverity
-> 
-> hm, why do you need to record that?  I would have thought that if a file
-> is marked as being protected by the merkle tree then any pages read in
-> would be !uptodate until the merkle tree verification had happened.
+In isp_video_release, file->private_data is freed via
+_vb2_fop_release()->v4l2_fh_release(). But the freed
+file->private_data is still used in v4l2_fh_is_singular_file()
+->v4l2_fh_is_singular(filp->private_data), which is a use
+after free bug.
 
-I should describe more clearly about the page, the page is belong to merkle
-tree, rather than the one contains user data, for more details:
+My patch set file->private_data to NULL after _vb2_fop_release()
+to avoid the use after free.
 
-https://elixir.bootlin.com/linux/latest/source/fs/verity/verify.c#L69
+Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/media/platform/exynos4-is/fimc-isp-video.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
->> f) page is dirty and has filesystem/inode reference count for writeback
->> g) page is temporary and has decompress io context reference for compression
->>
->> There are existed places in page structure we can use to store
->> f2fs private status/data:
->> - page.flags: PG_checked, PG_private
->> - page.private
->>
->> However it was a mess when we using them, which may cause potential
->> confliction:
->> 		page.private	PG_private	PG_checked
->> a)		-1		set
->> b)		-2
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+index 612b9872afc8..f414493258ad 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+@@ -315,6 +315,7 @@ static int isp_video_release(struct file *file)
+ 	}
+ 
+ 	_vb2_fop_release(file, NULL);
++	filp->private_data = NULL;
+ 
+ 	if (v4l2_fh_is_singular_file(file)) {
+ 		fimc_pipeline_call(&ivc->ve, close);
+-- 
+2.25.1
 
-Sorry,
 
-b) should have set PG_private.
-
->> c), d), e)					set
->> f)		0		set
->> g)		pointer		set
->>
->> The other problem is page.flags has no free slot, if we can avoid set
->> zero to page.private and set PG_private flag, then we use non-zero value
->> to indicate PG_private status, so that we may have chance to reclaim
->> PG_private slot for other usage. [1]
->>
->> So in this patch let's restructure f2fs' page.private as below:
->>
->> Layout A: lowest bit should be 1
->> | bit0 = 1 | bit1 | bit2 | ... | bit MAX | private data .... |
->>   bit 0	PAGE_PRIVATE_NOT_POINTER
->>   bit 1	PAGE_PRIVATE_ATOMIC_WRITE
->>   bit 2	PAGE_PRIVATE_DUMMY_WRITE
->>   bit 3	PAGE_PRIVATE_ONGOING_MIGRATION
->>   bit 4	PAGE_PRIVATE_INLINE_INODE
->>   bit 5	PAGE_PRIVATE_REF_RESOURCE
->>   bit 6-	f2fs private data
->>
->> Layout B: lowest bit should be 0
->>   page.private is a wrapped pointer.
->>
->> After the change:
->> 		page.private	PG_private	PG_checked
->> a)		11		set
->> b)		101
-
-ditto,
-
->> c)		1001
->> d)		10001
->> e)						set
->> f)		100001		set
->> g)		pointer		set
-> 
-> Mmm ... this isn't enough to let us remove PG_private.  We'd need PG_private
-> to be set for b,c,d as well.
-
-I can try to add PG_private for c) and d).
-
-> 
->> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->> index 817d0bcb5c67..e393a67a023c 100644
->> --- a/fs/f2fs/checkpoint.c
->> +++ b/fs/f2fs/checkpoint.c
->> @@ -444,7 +444,11 @@ static int f2fs_set_meta_page_dirty(struct page *page)
->>   	if (!PageDirty(page)) {
->>   		__set_page_dirty_nobuffers(page);
->>   		inc_page_count(F2FS_P_SB(page), F2FS_DIRTY_META);
->> -		f2fs_set_page_private(page, 0);
->> +		set_page_private_reference(page);
->> +		if (!PagePrivate(page)) {
->> +			SetPagePrivate(page);
->> +			get_page(page);
->> +		}
-> 
-> I'm not a big fan of this pattern (which seems to be repeated quite often)
-> I think it should be buried within set_page_private_reference().  Also,
-
-Let me check how to avoid duplicated codes.
-
-> are the states abcdf all mutually exclusive, or can a page be in states
-> (eg) b and d at the same time?
-
-Not all states are mutually exclusive, e.g a) and f) are mutually exclusive.
-
-> 
->> -		if (IS_DUMMY_WRITTEN_PAGE(page)) {
->> -			set_page_private(page, (unsigned long)NULL);
->> +		if (page_private_dummy(page)) {
->> +			clear_page_private_dummy(page);
->>   			ClearPagePrivate(page);
-> 
-> I think the ClearPagePrivate should be buried in the page_private_dummy()
-> macro too ... and shouldn't there be a put_page() for this too?
-
-b) and g) are allocated from mempool, should we add one extra reference
-count for them after set PG_private?
-
-Thanks,
-
-> 
-> .
-> 
