@@ -2,106 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCCB36C830
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B3136C86E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238473AbhD0PBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:01:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236534AbhD0PB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:01:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26DF261131;
-        Tue, 27 Apr 2021 15:00:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619535641;
-        bh=bZSDzIrPnzA88AECriBmOcbuFWjzIAAagpJSP19FlSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tDFj5qfvg/9wVwukdmeHn5UQU/CW+i0Si8WSQyGAB7TKpadEhbwqo6S72APC6w+nq
-         5ITXqOev0/OM0H4Vjm3L5ZaRU45bZrnj5p1KOMM71gX0tuGYkDoSXRnYsqRaHu5ezb
-         ATFVLDNlklutTjxNQZToETuCJ7qF/lcHQ3S/Gjik=
-Date:   Tue, 27 Apr 2021 17:00:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 097/190] Revert "video: imsttfb: fix potential NULL
- pointer dereferences"
-Message-ID: <YIgnFyk3DP8xq1Q2@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-98-gregkh@linuxfoundation.org>
- <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
+        id S237517AbhD0PN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:13:26 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:31896
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235466AbhD0PNY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:13:24 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AeBYrFK+ZqKpHeebpqA9uk+GUdb1zdoIgy1kn?=
+ =?us-ascii?q?xilNYDZSddGVkN3rge8S0gX6hC1UVHYrn92BP6foewKhybde544NMbC+GBT3oW?=
+ =?us-ascii?q?fAFvAe0aLO4R3FXwL/8/NQzs5bHZRWJf/RKRxBjcj86BSlCNpI+ri62Y2hmOu2?=
+ =?us-ascii?q?9QYXcShGa7t46R14FwacFQlQQhRHCpoyHIed4M0CmjzIQwVvUu2VHX8ANtKzwO?=
+ =?us-ascii?q?HjsJ79exYJC1oG5WC1/FaVwZr7FxTd4RsESTNIxt4ZgAz4ujf07KmirP23oyW0?=
+ =?us-ascii?q?vwS4gvg46biRqOdrPtCGicQeN1zX+36VTblmMofy2gwdkaWF7kosmtWJngwpNc?=
+ =?us-ascii?q?Zy7H2UXma7p3LWqnPd+Qdr1H/41UXdu3Hqpsv0SVsBa/Z8uQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,254,1613430000"; 
+   d="scan'208";a="379825595"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 27 Apr 2021 17:12:39 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v4] coccinelle: api: semantic patch to use pm_runtime_resume_and_get
+Date:   Tue, 27 Apr 2021 16:19:45 +0200
+Message-Id: <20210427141946.2478411-1-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:13:29PM -0500, Rob Herring wrote:
-> On Wed, Apr 21, 2021 at 8:05 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Kangjie Lu <kjlu@umn.edu>
-> > Cc: Aditya Pakki <pakki001@umn.edu>
-> > Cc: Finn Thain <fthain@telegraphics.com.au>
-> > Cc: Rob Herring <robh@kernel.org>
-> 
-> Sigh, get_maintainers.pl likes to punish people for treewide clean-ups...
-> 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  drivers/video/fbdev/imsttfb.c | 5 -----
-> >  1 file changed, 5 deletions(-)
-> >
-> > diff --git a/drivers/video/fbdev/imsttfb.c b/drivers/video/fbdev/imsttfb.c
-> > index 3ac053b88495..e04411701ec8 100644
-> > --- a/drivers/video/fbdev/imsttfb.c
-> > +++ b/drivers/video/fbdev/imsttfb.c
-> > @@ -1512,11 +1512,6 @@ static int imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >         info->fix.smem_start = addr;
-> >         info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
-> >                                             0x400000 : 0x800000);
-> > -       if (!info->screen_base) {
-> > -               release_mem_region(addr, size);
-> > -               framebuffer_release(info);
-> > -               return -ENOMEM;
-> > -       }
-> 
-> The original change appears to be valid, but incomplete...
-> 
-> >         info->fix.mmio_start = addr + 0x800000;
-> >         par->dc_regs = ioremap(addr + 0x800000, 0x1000);
-> 
-> ...because what about cleanup when this ioremap fails.
-> 
-> >         par->cmap_regs_phys = addr + 0x840000;
-> 
-> Then again, if anyone really cared about this driver and h/w (a
-> PowerMac era PCI display card), it would not still be using fbdev and
-> would use devm_* apis.
+pm_runtime_get_sync keeps a reference count on failure, which can lead
+to leaks.  pm_runtime_resume_and_get drops the reference count in the
+failure case.  This rule very conservatively follows the definition of
+pm_runtime_resume_and_get to address the cases where the reference
+count is unlikely to be needed in the failure case.  Specifically, the
+change is only done when pm_runtime_get_sync is followed immediately
+by an if and when the branch of the if is immediately a call to
+pm_runtime_put_noidle (like in the definition of
+pm_runtime_resume_and_get) or something that is likely a print
+statement followed by a pm_runtime_put_noidle call.  The patch
+case appears somewhat more complicated, because it also deals with the
+cases where {}s need to be removed.
 
-Thanks for the review, I've updated the changelog to reflect this mess :)
+pm_runtime_resume_and_get was introduced in
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
+deal with usage counter")
 
-greg k-h
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+---
+v4: s/pm_runtime_resume_and_get/pm_runtime_put_noidle/ as noted by John Hovold
+v3: add the people who signed off on commit dd8088d5a896, expand the log message
+v2: better keyword
+
+ scripts/coccinelle/api/pm_runtime_resume_and_get.cocci |  153 +++++++++++++++++
+ 1 file changed, 153 insertions(+)
+
+diff --git a/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
+new file mode 100644
+index 000000000000..3387cb606f9b
+--- /dev/null
++++ b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Use pm_runtime_resume_and_get.
++/// pm_runtime_get_sync keeps a reference count on failure,
++/// which can lead to leaks.  pm_runtime_resume_and_get
++/// drops the reference count in the failure case.
++/// This rule addresses the cases where the reference count
++/// is unlikely to be needed in the failure case.
++///
++// Confidence: High
++// Copyright: (C) 2021 Julia Lawall, Inria
++// URL: https://coccinelle.gitlabpages.inria.fr/website
++// Options: --include-headers --no-includes
++// Keywords: pm_runtime_get_sync
++
++virtual patch
++virtual context
++virtual org
++virtual report
++
++@r0 depends on patch && !context && !org && !report@
++expression ret,e;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++-     if (ret < 0)
++-             pm_runtime_put_noidle(e);
++
++@r1 depends on patch && !context && !org && !report@
++expression ret,e;
++statement S1,S2;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0)
++-     {
++-             pm_runtime_put_noidle(e);
++	      S1
++-     }
++      else S2
++
++@r2 depends on patch && !context && !org && !report@
++expression ret,e;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0) {
++-             pm_runtime_put_noidle(e);
++	      ...
++      } else S
++
++@r3 depends on patch && !context && !org && !report@
++expression ret,e;
++identifier f;
++constant char[] c;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0)
++-     {
++              f(...,c,...);
++-             pm_runtime_put_noidle(e);
++-     }
++      else S
++
++@r4 depends on patch && !context && !org && !report@
++expression ret,e;
++identifier f;
++constant char[] c;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0) {
++              f(...,c,...);
++-             pm_runtime_put_noidle(e);
++	      ...
++      } else S
++
++// ----------------------------------------------------------------------------
++
++@r2_context depends on !patch && (context || org || report)@
++statement S;
++expression e, ret;
++position j0, j1;
++@@
++
++*     ret@j0 = pm_runtime_get_sync(e);
++      if (ret < 0) {
++*             pm_runtime_put_noidle@j1(e);
++	      ...
++      } else S
++
++@r3_context depends on !patch && (context || org || report)@
++identifier f;
++statement S;
++constant char []c;
++expression e, ret;
++position j0, j1;
++@@
++
++*     ret@j0 = pm_runtime_get_sync(e);
++      if (ret < 0) {
++              f(...,c,...);
++*             pm_runtime_put_noidle@j1(e);
++	      ...
++      } else S
++
++// ----------------------------------------------------------------------------
++
++@script:python r2_org depends on org@
++j0 << r2_context.j0;
++j1 << r2_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync"
++coccilib.org.print_todo(j0[0], msg)
++coccilib.org.print_link(j1[0], "")
++
++@script:python r3_org depends on org@
++j0 << r3_context.j0;
++j1 << r3_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync"
++coccilib.org.print_todo(j0[0], msg)
++coccilib.org.print_link(j1[0], "")
++
++// ----------------------------------------------------------------------------
++
++@script:python r2_report depends on report@
++j0 << r2_context.j0;
++j1 << r2_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync on line %s." % (j0[0].line)
++coccilib.report.print_report(j0[0], msg)
++
++@script:python r3_report depends on report@
++j0 << r3_context.j0;
++j1 << r3_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync on %s." % (j0[0].line)
++coccilib.report.print_report(j0[0], msg)
++
+
