@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BF636CA63
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409BB36CA67
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhD0ReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42774 "EHLO mail.kernel.org"
+        id S238216AbhD0Rf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhD0ReU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:34:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 206B7613C0;
-        Tue, 27 Apr 2021 17:33:35 +0000 (UTC)
+        id S230219AbhD0Rf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:35:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BA92611C1;
+        Tue, 27 Apr 2021 17:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619544816;
-        bh=Mn4aRqN72i4AwLxFlGfAdoAsZ5Ijyi1NHaS6dvgfVIo=;
+        s=korg; t=1619544883;
+        bh=t9CBCqKbukMpYL5bAz907pUSdbug1Nr9jXv8HMncGxE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=11G1xwAhhsWTcF7bNJoNKy10czMd7oJg1UnjwOxHPqidgI19dNkrWnjEOs2kowvRq
-         A5MGWiD5PSPp2VrNgpASRZM1bWxzlfIGIEay2Tc5jKnjzRSj3wo25LkkJ2V+htfqlI
-         HojZMaFp3weMS39UY3UOgtk9k8qMZRNGVE9e5jnU=
-Date:   Tue, 27 Apr 2021 19:33:34 +0200
+        b=cUeXGQXew2h2VV9iwblM0+NgTgbVoQ0+gVP/RwEzKf6RIwazQfAv1q4q3BtLA1Za5
+         7jMvnIUXSNH2rOGxE3OCIxPixOEjquxMbC5rfHbro+/CuDRnrUTUxuXiG6AkDcDVQF
+         KOJyL9FVkYasIJ5rr1B68rVbe8rfFH5yps5y8rSo=
+Date:   Tue, 27 Apr 2021 19:34:41 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 124/190] Revert "spi : spi-topcliff-pch: Fix to handle
- empty DMA buffers"
-Message-ID: <YIhK7gCvjuy2KgVX@kroah.com>
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 071/190] Revert "pppoe: remove redundant BUG_ON() check
+ in pppoe_pernet"
+Message-ID: <YIhLMcU71EKGi+qE@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-125-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-72-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-125-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-72-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:59PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit f37d8e67f39e6d3eaf4cc5471e8a3d21209843c6.
+On Wed, Apr 21, 2021 at 02:59:06PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 02a896ca84874bbfcedc006303f2951dda89b298.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -55,62 +56,29 @@ On Wed, Apr 21, 2021 at 02:59:59PM +0200, Greg Kroah-Hartman wrote:
 > codebase.
 > 
 > Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Mark Brown <broonie@kernel.org>
+> Cc: David S. Miller <davem@davemloft.net>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/spi/spi-topcliff-pch.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
+>  drivers/net/ppp/pppoe.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
-> index b459e369079f..12d749e9436b 100644
-> --- a/drivers/spi/spi-topcliff-pch.c
-> +++ b/drivers/spi/spi-topcliff-pch.c
-> @@ -1290,27 +1290,18 @@ static void pch_free_dma_buf(struct pch_spi_board_data *board_dat,
->  				  dma->rx_buf_virt, dma->rx_buf_dma);
->  }
+> diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+> index d7f50b835050..803a4fe1ca18 100644
+> --- a/drivers/net/ppp/pppoe.c
+> +++ b/drivers/net/ppp/pppoe.c
+> @@ -119,6 +119,8 @@ static inline bool stage_session(__be16 sid)
 >  
-> -static int pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
-> +static void pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
->  			      struct pch_spi_data *data)
+>  static inline struct pppoe_net *pppoe_pernet(struct net *net)
 >  {
->  	struct pch_spi_dma_ctrl *dma;
-> -	int ret;
->  
->  	dma = &data->dma;
-> -	ret = 0;
->  	/* Get Consistent memory for Tx DMA */
->  	dma->tx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
->  				PCH_BUF_SIZE, &dma->tx_buf_dma, GFP_KERNEL);
-> -	if (!dma->tx_buf_virt)
-> -		ret = -ENOMEM;
-> -
->  	/* Get Consistent memory for Rx DMA */
->  	dma->rx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
->  				PCH_BUF_SIZE, &dma->rx_buf_dma, GFP_KERNEL);
-> -	if (!dma->rx_buf_virt)
-> -		ret = -ENOMEM;
-> -
-> -	return ret;
+> +	BUG_ON(!net);
+> +
+>  	return net_generic(net, pppoe_net_id);
 >  }
 >  
->  static int pch_spi_pd_probe(struct platform_device *plat_dev)
-> @@ -1387,9 +1378,7 @@ static int pch_spi_pd_probe(struct platform_device *plat_dev)
->  
->  	if (use_dma) {
->  		dev_info(&plat_dev->dev, "Use DMA for data transfers\n");
-> -		ret = pch_alloc_dma_buf(board_dat, data);
-> -		if (ret)
-> -			goto err_spi_register_master;
-> +		pch_alloc_dma_buf(board_dat, data);
->  	}
->  
->  	ret = spi_register_master(master);
 > -- 
 > 2.31.1
 > 
 
-THis looks correct, so I'll drop the revert.
-
-thanks,
+THe original here was correct so I'll drop this revert.
 
 greg k-h
