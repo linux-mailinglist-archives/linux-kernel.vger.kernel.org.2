@@ -2,151 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C59936C10E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AF036C113
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhD0Ihn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S235201AbhD0IiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbhD0Ihl (ORCPT
+        with ESMTP id S234775AbhD0IiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:37:41 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC67C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 01:36:57 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id o1so1985582qta.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 01:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ugedal.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zh33Yh7lW0dlBQiRgpyt2psV9Y8igA+5UjDIZx32BfY=;
-        b=R80hr1wa0Mn4k9VnGUbjc2R4cixMJ5ZgNIsARabk5tPMu6Xepea/w5ho7Xc+BrYwxe
-         RzVMetIIjm8bZYHV94xbetqPI3rgYcmAT7Nrf8Dq39rGvxBcqXoeXnQ7GesBx3HvsUES
-         y8tiElerXVsLUim5FOz5JOxbTJoBMrtc63Y/8T+OOTjI7PYvJ0/xb4rO/cOynbxkZZUf
-         EyqUNqvy6ym8veTJ9KzmuW0L/PJlrPuQ9zJAejiUYWsuDsIUEffKgPUIlE7cYyTAucyZ
-         MW76yf/Qz4jtb3+hk6kV9THp4URfVjGSiTN+UZmk55DKeUifX6PsQ7ZTvUmp9qKKJ+Gl
-         J5yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zh33Yh7lW0dlBQiRgpyt2psV9Y8igA+5UjDIZx32BfY=;
-        b=CNWFA7X8GUb4nuMLlDhQrmBK4DsOCdCFclYECVNN2rqO/mYRIiRJV6gWxZzLIB+T2C
-         t/fmV9lkuh76wGhLIt3goeXl8tho+xD6SNlTjhdR1Vgx7zQazWL8AMk8XF0t7Vn53uJ4
-         HxsYFFhXSf0z2thPUTEOp280q9H9TjVkt2yPMvzBOZZoFmFcDRtboScB+J/rexw+HTIh
-         /X9DQIsOz6QA3S7do3w6/5y+QfZfaqS70qGVRKjGDufiJF32hFczX2nQAImWWgGZE/hq
-         CWs3KN+2TaiLqIuAMcO89im+7zG53tIFUJBji6DTNJL3TTS01BabJ39/LiW5mgLUBboZ
-         GHAA==
-X-Gm-Message-State: AOAM531edW6S/xOkwD4EwpVzBkuwBGlZlNIUNmaJhx3p5sn9Fr41hFZz
-        XaZHFmZCL4nKAo7TUHJ29c5CaZFAsvbBm+zp0M0HFg==
-X-Google-Smtp-Source: ABdhPJxwEQoqK1+7Zd5/B+YbEcN+q2Fk1MdLCZD6xZP6/yvGxn2Ab8Yj5PTWp5aDdVqeHgbeEB+SAwGmx28MYqZ/ug8=
-X-Received: by 2002:a05:622a:14c9:: with SMTP id u9mr20628968qtx.313.1619512616470;
- Tue, 27 Apr 2021 01:36:56 -0700 (PDT)
+        Tue, 27 Apr 2021 04:38:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B138DC061574;
+        Tue, 27 Apr 2021 01:37:27 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 125B81F420C0
+Received: by earth.universe (Postfix, from userid 1000)
+        id 47EB63C0C96; Tue, 27 Apr 2021 10:37:21 +0200 (CEST)
+Date:   Tue, 27 Apr 2021 10:37:21 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     skakit@codeaurora.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 3/4] dt-bindings: power: reset: qcom-pon: Convert qcom
+ PON binding to yaml
+Message-ID: <20210427083721.heavcdadeb4ajkk2@earth.universe>
+References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
+ <1617881469-31965-4-git-send-email-skakit@codeaurora.org>
+ <20210408130001.k3qbq3vvwkiyykzv@earth.universe>
+ <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
+ <322cbdbb022fec3f43c1cbe13c532dd3@codeaurora.org>
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-In-Reply-To: <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-From:   Odin Ugedal <odin@ugedal.com>
-Date:   Tue, 27 Apr 2021 10:36:23 +0200
-Message-ID: <CAFpoUr2t0OXLJZi9wJzYg2uOhSLfwRa7sxCxxWzriJgXDsgEdA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2rgim6enrvdoc4yo"
+Content-Disposition: inline
+In-Reply-To: <322cbdbb022fec3f43c1cbe13c532dd3@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also, instead of bpftrace, one can look at the /proc/sched_debug file,
-and infer from there.
 
-Something like:
+--2rgim6enrvdoc4yo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$ cat /proc/sched_debug | grep ":/slice" -A 28 | egrep "(:/slice)|load_avg"
+Hi,
 
-gives me the output (when one stress proc gets 99%, and the other one 1%):
+On Tue, Apr 27, 2021 at 11:45:44AM +0530, skakit@codeaurora.org wrote:
+> Hi Sebastian,
+>=20
+> On 2021-04-09 13:48, skakit@codeaurora.org wrote:
+> > Hi Sebastian,
+> >=20
+> > On 2021-04-08 18:30, Sebastian Reichel wrote:
+> > > Hi,
+> > >=20
+> > > On Thu, Apr 08, 2021 at 05:01:08PM +0530, satya priya wrote:
+> > > > Convert qcom PON binding from .txt to .yaml format.
+> > > >=20
+> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > > > ---
+> > >=20
+> > > Thanks for doing this.
+> > >=20
+> > > > Changes in V2:
+> > > >  - As per Rob's comments, converted the main PON binding and
+> > > > added in V2.
+> > > >=20
+> [...]
+> > > > +  reg:
+> > > > +    description: Specifies the physical address of the pon register
+> > >=20
+> > > That description is obvious and pointless. Instead add
+> > >=20
+> > > maxItems: 1
+> > >=20
+> >=20
+> > Okay.
+> >=20
+> > > > +  pwrkey:
+> > > > +    type: object
+> > > > +    $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
+> > > > +
+> > > > +  resin:
+> > > > +    type: object
+> > > > +    $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +
+> > > > +additionalProperties: true
+> > >=20
+> > > Instead of allowing arbitrary properties, only valid modes
+> > > should be allowed. So drop additionalProperties and do this
+> > > instead:
+> > >=20
+> > > allOf:
+> > >   - $ref: reboot-mode.yaml#
+> > >=20
+> > > unevaluatedProperties: false
+> > >=20
+> >=20
+> > Okay.
+>=20
+> I am not able to use 'allOf' to refer reboot-mode.yaml as some of the
+> properties do not match with reboot-mode.yaml properties. Can we use oneOf
+> like below?
+>=20
+> oneOf:
+>   - $ref: "reboot-mode.yaml#"
+>   - $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
 
-cfs_rq[0]:/slice/cg-2/sub
-  .load_avg                      : 1023
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 1035
-  .tg_load_avg                   : 1870
-  .se->avg.load_avg              : 56391
-cfs_rq[0]:/slice/cg-1/sub
-  .load_avg                      : 1023
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 1024
-  .tg_load_avg                   : 1847
-  .se->avg.load_avg              : 4
-cfs_rq[0]:/slice/cg-1
-  .load_avg                      : 4
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 4
-  .tg_load_avg                   : 794
-  .se->avg.load_avg              : 5
-cfs_rq[0]:/slice/cg-2
-  .load_avg                      : 56401
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 56700
-  .tg_load_avg                   : 57496
-  .se->avg.load_avg              : 1008
-cfs_rq[0]:/slice
-  .load_avg                      : 1015
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 1009
-  .tg_load_avg                   : 2314
-  .se->avg.load_avg              : 447
+That does not make sense.
 
+The reference to reboot-mode.yaml is needed because it adds valid
+mode properties, so that you can set unevaluatedProperties to false.
+You need it at the root of the PON binding. They are not added to
+the required list, so it's fine if not all of them are used. Also
+there can (and usually is) more than one mode, so using oneOf is not
+ok.
 
-As can be seen here, no other cfs_rq for the relevant cgroups are
-"active" and listed, but they still contribute to eg. the "tg_load_avg". In this
-example, "cfs_rq[0]:/slice/cg-1" has a load_avg of 4, and contributes with 4 to
-tg_load_avg.  However, the total total tg_load_avg is 794. That means
-that the other 790 have to come from somewhere, and in this example,
-they come from the cfs_rq on another cpu.
+Last but not least the pwrkey reference is needed to describe
+specific nodes (resin, pwrkey) and should not appear at the root
+of the PON binding.
 
-Hopefully that clarified a bit.
+> Also, If I drop additionalProperties I am getting below error.
+>=20
+> kernel/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml:
+> 'additionalProperties' is a required property
 
-For reference, here is the output when the issue is not occuring:
-cfs_rq[1]:/slice/cg-2/sub
-  .load_avg                      : 1024
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 1039
-  .tg_load_avg                   : 1039
-  .se->avg.load_avg              : 1
-cfs_rq[1]:/slice/cg-1/sub
-  .load_avg                      : 1023
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 1034
-  .tg_load_avg                   : 1034
-  .se->avg.load_avg              : 49994
-cfs_rq[1]:/slice/cg-1
-  .load_avg                      : 49998
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 49534
-  .tg_load_avg                   : 49534
-  .se->avg.load_avg              : 1023
-cfs_rq[1]:/slice/cg-2
-  .load_avg                      : 1
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 1
-  .tg_load_avg                   : 1
-  .se->avg.load_avg              : 1023
-cfs_rq[1]:/slice
-  .load_avg                      : 2048
-  .removed.load_avg              : 0
-  .tg_load_avg_contrib           : 2021
-  .tg_load_avg                   : 2021
-  .se->avg.load_avg              : 1023
+You need to add 'unevaluatedProperties: false'. It is basically
+the same as 'additionalProperties: false', but also accepts
+properties from the referenced bindings.
 
+Thanks,
 
-Odin
+-- Sebastian
+
+--2rgim6enrvdoc4yo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCHzTkACgkQ2O7X88g7
++prPrg//efsuw8HLbsVcR6nNH4YV+LTidTL+eexOC+TERQ3PzNJ5WhgZVIIhoC2w
+Pw+rJB4cpECMQmzAWXRu1/epxDLTJHaXpTXcKbTBiSqOpymHH2ank79oPULvXUVC
+Dp87HiVHuRdWxHMSkjI6Qk+LT+IDFzSq5yoLlWz+WNbPi9W6zdTTEyLE8y3Dbl8w
+8IPgXbKvrBOKXn5l9crp+3e10Uj9b0V8yS7l59ktl/vDN+v+5gUp/TgD+72EI0ki
+R7pndz39RW0SuYtMhvPBwSapTf01584iXv7DVrqgWXg35ZKrjmZoSG8RzjHedMV1
+Humx7DA8j6/EKT+4zKJbR1T4OD2bpseEUlNscinPgxwZQSu1jgJmCU/BUM/unJd1
+kmo44QrDvu4SyLAi6WCZN8Q0tL/Bmq6+i1x9lPqBXJQl92I1Ih00nu03PRxa7pIo
+X0WJY14bz4v85L2v1G9pDyxWddNYWNGALmATtCgI+NefkRBYWG6fEtfQ19gphssV
+qG799/zp7pJ4L/4DFsAWowJiYqLQd2efA+hX7P2WONxd2GzzqOrEb1yePgDBd/d0
+Lzd/TcVF2vuSDi6uqUhfU7s3goM2bJjSyyUL6b7IchM1hpYdyBW8QVnzPENSzsgf
+1vK+pUoc+AKCO/t73Ye0EWs3hjMuoINFlhE1Tzz0nxi+5bPN9YM=
+=TXUJ
+-----END PGP SIGNATURE-----
+
+--2rgim6enrvdoc4yo--
