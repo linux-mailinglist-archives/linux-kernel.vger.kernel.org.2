@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33DB36C889
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C863F36C88F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238679AbhD0PT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:19:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60450 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237656AbhD0PTZ (ORCPT
+        id S238650AbhD0PVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236663AbhD0PVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:19:25 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 132381F4265E
-Message-ID: <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
-Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
- pm_runtime_get_sync()
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Date:   Tue, 27 Apr 2021 12:18:32 -0300
-In-Reply-To: <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
-         <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
-         <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Tue, 27 Apr 2021 11:21:10 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808CFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:20:27 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id c18so49771637iln.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y+3S/Ke4S6+BJfOGg0qG6LOy1Ai6SNSUzROT5871JP4=;
+        b=XhtEu50m4SNDxMMlj2Qgjkyisnk+vyOC+Kykp75IsezRlaqS9NzgLY00neE39leHwe
+         tXCh9VD2qY5Pz0jC2rbqhfrCfRECn1EYBv6EbeE1GtICTGqWqKZF/W5Z9XovgmfVgcIl
+         agq+QYupvX7mKWHTQhRddAP9Gq2R4mJiTIW6Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y+3S/Ke4S6+BJfOGg0qG6LOy1Ai6SNSUzROT5871JP4=;
+        b=uPnHtEm4I5Kdja4b7N9UaUjqL6B4rY9eWmLInTf7UHlRghe3Fm0JIeGaAnHRic43ca
+         BFWgOhDo0sjZgQraZwnW7M93430hSHxhnLdBTbmNl6ZVhcbvHU8YI99O9Ek+W4AlC3rQ
+         ZhTexN2MeUQM0Ea+GM1sQ/sjrkl8I107rVLWbjHtb+99Vv2+2QyDQjay8+glKERR3hjf
+         tQ2XdLcWxYjlmGrU2vwb5spTG5sjsh2quNh483CSYHTqeHb+aU4X2G5s6ltwxk2Lw7Uy
+         GNe9j31OHKaQlkFtUpqbROl0w32SU6PeyNXpDe+FHvrP2JhryqkkEU6DfY/QQ9nMjkFZ
+         bNVw==
+X-Gm-Message-State: AOAM533sseDp0y13WSVo3PEkQ3K/2WBzKrDWES3K2j3DIx4l6HCYjZ3F
+        edaMcrYEJ2vm5ftc4fUwts72MY/vcNgn9r2/84aPZQ==
+X-Google-Smtp-Source: ABdhPJzUVzNRTwQW7ow2d0IynxZz565aonzrsvvp2GTwJLJ3xr0Dqt4cepa6//a3ihU0mG2057i+m6LHDOrTKb3giYw=
+X-Received: by 2002:a92:ce90:: with SMTP id r16mr19368951ilo.220.1619536826986;
+ Tue, 27 Apr 2021 08:20:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210427112958.773132-1-revest@chromium.org> <CAADnVQJGMU2OAA4cRuD=LmfF3Wn5z0hqo1Uz9nx-K_KWuCA70A@mail.gmail.com>
+In-Reply-To: <CAADnVQJGMU2OAA4cRuD=LmfF3Wn5z0hqo1Uz9nx-K_KWuCA70A@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 27 Apr 2021 17:20:16 +0200
+Message-ID: <CABRcYmLphttpFGdwq6YCboc_=dwkgpVAOf+Ni9NRiPioqRCokw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Lock bpf_trace_printk's tmp buf before it
+ is written to
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-04-27 at 16:08 +0100, Robin Murphy wrote:
-> On 2021-04-27 11:27, Mauro Carvalho Chehab wrote:
-> > Despite other *_get()/*_put() functions, where usage count is
-> > incremented only if not errors, the pm_runtime_get_sync() has
-> > a different behavior, incrementing the counter *even* on
-> > errors.
-> > 
-> > That's an error prone behavior, as people often forget to
-> > decrement the usage counter.
-> > 
-> > However, the hantro driver depends on this behavior, as it
-> > will decrement the usage_count unconditionally at the m2m
-> > job finish time, which makes sense.
-> > 
-> > So, intead of using the pm_runtime_resume_and_get() that
-> > would decrement the counter on error, keep the current
-> > API, but add a documentation explaining the rationale for
-> > keep using pm_runtime_get_sync().
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >   drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> > index 595e82a82728..96f940c1c85c 100644
-> > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > @@ -155,6 +155,13 @@ static void device_run(void *priv)
-> >         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> >         if (ret)
-> >                 goto err_cancel_job;
-> 
-> ..except this can also cause the same pm_runtime_put_autosuspend() call 
-> without even reaching the "matching" get below, so rather than some kind 
-> of cleverness it seems more like it's just broken :/
-> 
+On Tue, Apr 27, 2021 at 5:08 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Apr 27, 2021 at 4:30 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > bpf_trace_printk uses a shared static buffer to hold strings before they
+> > are printed. A recent refactoring moved the locking of that buffer after
+> > it gets filled by mistake.
+> >
+> > Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
+> > Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+>
+> Applied.
 
-Indeed, I was trying to find time to cook a quick patch, but kept
-getting preempted.
+Thanks!
 
-Feel free to submit a fix for this, otherwise, I'll try to find
-time later this week.
+> Pls send v2 of bstr_printf series as soon as possible. Thanks!
 
-Thanks,
-Ezequiel
-
+Sure, I just assumed there would be more reviews on v1. The feedback
+I'll address is only about the commit description wording but I can
+send a v2 today.
