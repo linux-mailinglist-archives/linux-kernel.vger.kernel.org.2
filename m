@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A5336C577
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889E736C57E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236013AbhD0Lo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:44:26 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60776 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhD0LoZ (ORCPT
+        id S235705AbhD0LrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230365AbhD0LrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:44:25 -0400
-Received: from ip5f5bf209.dynamic.kabel-deutschland.de ([95.91.242.9] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lbM7w-0001JU-VF; Tue, 27 Apr 2021 11:43:41 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] fs mapping helpers update
-Date:   Tue, 27 Apr 2021 13:43:32 +0200
-Message-Id: <20210427114332.1713512-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210427113845.1712549-1-christian.brauner@ubuntu.com>
-References: <20210427113845.1712549-1-christian.brauner@ubuntu.com>
+        Tue, 27 Apr 2021 07:47:01 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1682C061574;
+        Tue, 27 Apr 2021 04:46:18 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id e15so4386989pfv.10;
+        Tue, 27 Apr 2021 04:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iMMjjV+PTIV4vm6/IEmRAWhSVzJiCXiZU3/huO/x0nI=;
+        b=ZJ5BlTICDUmG7DguAEd0jOWxjwIIhOaHp4R6eP8WhcGhNHC51J05uSg8I6KYz03BN7
+         Gjdaf+CiMhQyG6HVJLl+RLDlLuxIyFICDTrM2iBH78c57SiT4P/QFvk4NhlTMWy0zsrz
+         YZCmbyMFpX9+/2dUK3valgqZBYVthS6aZBo9554CiRGCJ93prSUyJSVjSbJq3pg/Kts7
+         ZwIvwzkOgnEHhx+38D5EslxeSIcZNyFn/4If/iTP/5JwzQ6HQxGV1NL7yO9utIdh9fwP
+         OIRyaTMRRni21LQU12CZ8qc3FLxRIDbNEbCf7SRpr2TRSPXm7b1fmptX1R4tYhEdtzTm
+         Rkzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iMMjjV+PTIV4vm6/IEmRAWhSVzJiCXiZU3/huO/x0nI=;
+        b=t48Bke7wBSXBXf059TFLxzyN2cGWPLsyv+6zzXWze3bQcDXSbsXmp4ZiojOvdRG+Is
+         2xFaQkU2ZdW1hxGhKGJ+xLD5Q+Ml7vAzmRqCdivOqAdHi8nngfydDG451Vxqk9yjEkWB
+         D8fOprzZIskJa2VPxdDnBnGyS9Q1p7bqN3zZ9wkM6tMoQ2Pq72W2QEuq4cGjxuL2tyqb
+         EqlhSRHcATFckB25ZkII565MU9uCAT05hTNcGxVgn8k9yKVHz19o+5Xh6gA73EJ8XKb1
+         PQY+CKWbm8uPnBXANLudPfrUB+sYDQpyqVLSjWopT8Pf7VIUXfmpYlYaMpk933YMQiyH
+         crUw==
+X-Gm-Message-State: AOAM531MzrHEVSyWnqz5kJuZpM2gJlSAYk9pdcbfQhZ6aUy1n6EZ5vih
+        /CP89cjwbu5Xrdd+wJdOsZpf4v3MXBORunGPSdQ=
+X-Google-Smtp-Source: ABdhPJyGaaSUm4K/1Z1ekcXcdw6ghOy8irdARQN0sjPb9GGewDmareqf3Qe4B4ZpG2WE8B1kUCUoVXdCRvOb+eKZlf4=
+X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
+ n15-20020a62e50f0000b02902148e4aae46mr22977757pff.73.1619523978223; Tue, 27
+ Apr 2021 04:46:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Apr 2021 14:46:02 +0300
+Message-ID: <CAHp75VeiHsk15QoG3X-OV8V8jqzCNeKkif9V=cx4nvKVHaKbKA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Apr 23, 2021 at 9:25 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Set of cleanups here and there related to the SPI PXA2xx driver.
+> On top of them, adding the special type for Intel Merrifield.
 
-/* Summary */
-This adds kernel-doc to all new idmapping helpers and improves their naming
-which was triggered by a discussion with some fs developers. Some of the names
-are based on suggestions by Vivek and Al. We also remove the open-coded
-permission checking in a few places with simple helpers. Overall this should
-lead to more clarity make it easier to maintain.
+Mark, are you accepting patches for v5.14 now, or should I resend
+after v5.13-rc1 is out?
 
-The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
+(I have few more in my queue :-)
 
-  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
+> In v2:
+> - cover letter (Mark)
+> - drop moving the header in patch 5 (Mark)
+>
+> Andy Shevchenko (14):
+>   spi: pxa2xx: Use one point of return when ->probe() fails
+>   spi: pxa2xx: Utilize MMIO and physical base from struct ssp_device
+>   spi: pxa2xx: Utilize struct device from struct ssp_device
+>   spi: pxa2xx: Replace header inclusions by forward declarations
+>   spi: pxa2xx: Unify ifdeffery used in the headers
+>   spi: pxa2xx: Group Intel Quark specific definitions
+>   spi: pxa2xx: Introduce int_stop_and_reset() helper
+>   spi: pxa2xx: Reuse int_error_stop() in pxa2xx_spi_slave_abort()
+>   spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in the driver
+>   spi: pxa2xx: Extract pxa2xx_spi_update() helper
+>   spi: pxa2xx: Extract clear_SSCR1_bits() helper
+>   spi: pxa2xx: Extract read_SSSR_bits() helper
+>   spi: pxa2xx: Constify struct driver_data parameter
+>   spi: pxa2xx: Introduce special type for Merrifield SPIs
+>
+>  drivers/spi/spi-pxa2xx-dma.c   |  37 +++----
+>  drivers/spi/spi-pxa2xx-pci.c   |   4 +-
+>  drivers/spi/spi-pxa2xx.c       | 190 +++++++++++++++++----------------
+>  drivers/spi/spi-pxa2xx.h       |  52 ++++-----
+>  include/linux/pxa2xx_ssp.h     |  42 +++++++-
+>  include/linux/spi/pxa2xx_spi.h |   9 +-
+>  sound/soc/pxa/pxa-ssp.c        |  16 ---
+>  7 files changed, 185 insertions(+), 165 deletions(-)
+>
+> --
+> 2.30.2
+>
 
-are available in the Git repository at:
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.idmapped.helpers.v5.13
-
-for you to fetch changes up to db998553cf11dd697485ac6142adbb35d21fff10:
-
-  fs: introduce two inode i_{u,g}id initialization helpers (2021-03-23 11:15:26 +0100)
-
-/* Testing */
-All patches are based on v5.12-rc4 and have been sitting in linux-next. No
-build failures or warnings were observed. All old and new tests are passing.
-
-ubuntu@f2-vm:~/src/git/xfstests$ sudo ./check -g idmapped
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 f2-vm 5.12.0-rc6-idmapped-cfebad8730dd #387 SMP PREEMPT Tue Apr 27 10:39:29 UTC 2021
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/loop1
-MOUNT_OPTIONS -- /dev/loop1 /mnt/scratch
-
-generic/633 files ...  27s
-xfs/152 files ...  68s
-xfs/153 files ...  36s
-Ran: generic/633 xfs/152 xfs/153
-Passed all 3 tests
-
-/* Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with current
-mainline.
-
-(Note, in case you care about this at all I changed my tag naming pattern
- simply because I ran into limitations with branch naming in git using "/"
- separators and I like to have a 1:1 correspondence between the branch and the
- tag name.)
-
-Please consider pulling these changes from the signed fs.idmapped.helpers.v5.13 tag.
-
-----------------------------------------------------------------
-fs.idmapped.helpers.v5.13
-
-----------------------------------------------------------------
-Christian Brauner (4):
-      fs: document mapping helpers
-      fs: document and rename fsid helpers
-      fs: introduce fsuidgid_has_mapping() helper
-      fs: introduce two inode i_{u,g}id initialization helpers
-
- fs/ext4/ialloc.c     |   2 +-
- fs/inode.c           |   4 +-
- fs/namei.c           |  11 ++---
- fs/xfs/xfs_inode.c   |  10 ++---
- fs/xfs/xfs_symlink.c |   4 +-
- include/linux/fs.h   | 124 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- 6 files changed, 135 insertions(+), 20 deletions(-)
+-- 
+With Best Regards,
+Andy Shevchenko
