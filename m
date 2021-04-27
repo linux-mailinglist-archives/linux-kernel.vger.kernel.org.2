@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A4136C90C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FBE36C912
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237306AbhD0QHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42656 "EHLO mail.kernel.org"
+        id S237341AbhD0QKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:10:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:23756 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233501AbhD0QHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:07:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED1861004;
-        Tue, 27 Apr 2021 16:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619539610;
-        bh=OlGgPoXFiwlxIxkP58geOzu4Y+BRna2BMKK6Be9F+PU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ReqCNCiFnmkUA+jpoOFgSEWc0P9AxwTpEhiNPMdpZZYmzCxSHPvtLDqYiUwOBjS/U
-         9bSfBvO/nRDfTPwPlP1wi3pVBpEWW7DVYL1twQbsf8qKNIXfKcenlB9I1XXzdScAje
-         wx4J3BhLbGuv2PXl7LjM+/Oul0maskZUmiCQwviI=
-Date:   Tue, 27 Apr 2021 18:06:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Firas Ashkar <firas.ashkar@savoirfairelinux.com>
-Cc:     mst@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uio: uio_pci_generic: add memory resource mappings
-Message-ID: <YIg2lz3y5XkT0Pva@kroah.com>
-References: <20210427150646.3074218-1-firas.ashkar@savoirfairelinux.com>
+        id S237348AbhD0QKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:10:08 -0400
+IronPort-SDR: vrr7cCXOxYT0S3kOvDreJqIurMRM+mpOn0xjTmjmg7QS8K/QDRDl8yBvBy9JaTQTzz8E/dHoe3
+ slC4vwIRB8KA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="196094128"
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="196094128"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 09:07:46 -0700
+IronPort-SDR: 3wcT/Byeu1MUJsZ776C9zShn2ZqWjTq98GQ4fc63QMx0DeXzdokEAqOLdVkHIiX0q3XtEIEHYm
+ Q/IRl+QFJDHQ==
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="387373390"
+Received: from snekkala-mobl2.amr.corp.intel.com (HELO [10.209.154.74]) ([10.209.154.74])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 09:07:43 -0700
+Subject: Re: sound/soc/sof/intel/byt.c:1057: undefined reference to
+ `sof_acpi_probe'
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.de>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Brown <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+References: <202104271905.1C7oj9q3-lkp@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <1d9958ea-aaae-0e45-7009-f12e4a4ae325@linux.intel.com>
+Date:   Tue, 27 Apr 2021 11:07:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427150646.3074218-1-firas.ashkar@savoirfairelinux.com>
+In-Reply-To: <202104271905.1C7oj9q3-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:06:46AM -0400, Firas Ashkar wrote:
-> import memory resources from underlying pci device, thus allowing
-> userspace applications to memory map those resources.
+
+
+On 4/27/21 6:10 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   4a0225c3d208cfa6e4550f2210ffd9114a952a81
+> commit: 8d4ba1be3d2257606e04aff412829d8972670750 ASoC: SOF: pci: split PCI into different drivers
+> date:   8 weeks ago
+> config: i386-randconfig-r024-20210426 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8d4ba1be3d2257606e04aff412829d8972670750
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout 8d4ba1be3d2257606e04aff412829d8972670750
+>          # save the attached .config to linux build tree
+>          make W=1 W=1 ARCH=i386
 > 
-> Signed-off-by: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     ld: sound/soc/sof/intel/byt.o: in function `sof_baytrail_probe':
+>>> sound/soc/sof/intel/byt.c:1057: undefined reference to `sof_acpi_probe'
+>>> ld: sound/soc/sof/intel/byt.o:(.data+0x44): undefined reference to `sof_acpi_remove'
+>>> ld: sound/soc/sof/intel/byt.o:(.data+0x94): undefined reference to `sof_acpi_pm'
+
+Ack, this is again the partition between Baytrail and Merrifield that's 
+problematic in the corner case where ACPI is compiled as module and PCI 
+as built-in. It's a bit academic since the PCI probe wouldn't work, but 
+still it's not well partitioned.
+
+I've been wanting to change this for a while, and split the common atom 
+parts from the ACPI/PCI parts. I guess it's time to fix this for good.
+
+> vim +1057 sound/soc/sof/intel/byt.c
+> 
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1032
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1033  static int sof_baytrail_probe(struct platform_device *pdev)
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1034  {
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1035  	struct device *dev = &pdev->dev;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1036  	const struct sof_dev_desc *desc;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1037  	const struct acpi_device_id *id;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1038  	int ret;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1039
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1040  	id = acpi_match_device(dev->driver->acpi_match_table, dev);
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1041  	if (!id)
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1042  		return -ENODEV;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1043
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1044  	ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1045  	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1046  		dev_dbg(dev, "SOF ACPI driver not selected, aborting probe\n");
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1047  		return -ENODEV;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1048  	}
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1049
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1050  	desc = device_get_match_data(&pdev->dev);
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1051  	if (!desc)
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1052  		return -ENODEV;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1053
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1054  	if (desc == &sof_acpi_baytrail_desc && soc_intel_is_byt_cr(pdev))
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1055  		desc = &sof_acpi_baytrailcr_desc;
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1056
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01 @1057  	return sof_acpi_probe(pdev, desc);
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1058  }
+> 8a49cd11e68ed0 Arnd Bergmann 2021-03-01  1059
+> 
+> :::::: The code at line 1057 was first introduced by commit
+> :::::: 8a49cd11e68ed0e6a687de04d25c06553bf96b0c ASoC: SOF: ACPI: avoid reverse module dependency
+> 
+> :::::: TO: Arnd Bergmann <arnd@arndb.de>
+> :::::: CC: Takashi Iwai <tiwai@suse.de>
+> 
 > ---
-> :100644 100644 c7d681fef198 efc43869131d M	drivers/uio/uio_pci_generic.c
->  drivers/uio/uio_pci_generic.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 > 
-> diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
-> index c7d681fef198..efc43869131d 100644
-> --- a/drivers/uio/uio_pci_generic.c
-> +++ b/drivers/uio/uio_pci_generic.c
-> @@ -72,7 +72,9 @@ static int probe(struct pci_dev *pdev,
->  			   const struct pci_device_id *id)
->  {
->  	struct uio_pci_generic_dev *gdev;
-> +	struct uio_mem *uiomem;
->  	int err;
-> +	int i;
->  
->  	err = pcim_enable_device(pdev);
->  	if (err) {
-> @@ -101,6 +103,36 @@ static int probe(struct pci_dev *pdev,
->  			 "no support for interrupts?\n");
->  	}
->  
-> +	uiomem = &gdev->info.mem[0];
-> +	for (i = 0; i < MAX_UIO_MAPS; ++i) {
-> +		struct resource *r = &pdev->resource[i];
-> +
-> +		if (r->flags != (IORESOURCE_SIZEALIGN | IORESOURCE_MEM))
-> +			continue;
-> +
-> +		if (uiomem >= &gdev->info.mem[MAX_UIO_MAPS]) {
-> +			dev_warn(
-> +				&pdev->dev,
-> +				"device has more than " __stringify(
-> +					MAX_UIO_MAPS) " I/O memory resources.\n");
-> +			break;
-> +		}
-> +
-> +		uiomem->memtype = UIO_MEM_PHYS;
-> +		uiomem->addr = r->start & PAGE_MASK;
-> +		uiomem->offs = r->start & ~PAGE_MASK;
-> +		uiomem->size =
-> +			(uiomem->offs + resource_size(r) + PAGE_SIZE - 1) &
-> +			PAGE_MASK;
-> +		uiomem->name = r->name;
-> +		++uiomem;
-> +	}
-> +
-> +	while (uiomem < &gdev->info.mem[MAX_UIO_MAPS]) {
-> +		uiomem->size = 0;
-> +		++uiomem;
-> +	}
-> +
->  	return devm_uio_register_device(&pdev->dev, &gdev->info);
->  }
->  
-> -- 
-> 2.25.1
-> 
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
