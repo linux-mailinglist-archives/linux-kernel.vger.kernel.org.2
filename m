@@ -2,258 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0959836CA58
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EBF36CA5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238021AbhD0RaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:30:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54940 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230219AbhD0RaK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:30:10 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13RH2xLi158032;
-        Tue, 27 Apr 2021 13:28:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qaRL0GcX5mJv9z9wY5Pv7EzCSvAUx3eMqPNJKQ4864Y=;
- b=oaQIX0VTcTVVruSyVFEizSmgRB0db1I5XNh0DlqzkUTSS0fP2UnrJxDcHqaRIJII2bbq
- JFZAVeBdc7dDNQWDw+2cZDE6I4tD36W7qflZ668pBO8+RXGjJZGOg54ryF0v1engAHgb
- IUDR6BXXRHYDXFZdR6XR6yuukwMD8PsLOqI7P/gtHSh/uabUt3AuDrIKJ2NIiOHXttA8
- b7iOJ6F9wLIDlcUxKj8EzIihKI6HYvG6HK/Jzfja7812lpafdHnLuX1wx5y2rbYEsElc
- xRxCPcBDc7fzrSmmoE2qkhFQRC45y+abQojUG00aplua+pbmP7niToSS7T0hkneA7u0N uA== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 386pf690vb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 13:28:57 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13RHRlGr020226;
-        Tue, 27 Apr 2021 17:28:55 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 384ay8gtnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 17:28:55 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13RHSpLQ38404402
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Apr 2021 17:28:52 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1069AE055;
-        Tue, 27 Apr 2021 17:28:51 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D187AE051;
-        Tue, 27 Apr 2021 17:28:51 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.169.209])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Apr 2021 17:28:51 +0000 (GMT)
-Subject: Re: [PATCH] pseries/drmem: update LMBs after LPM
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210427150113.14368-1-ldufour@linux.ibm.com>
- <8b36065d-e4b4-bc0c-cf69-f01c91e49061@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <c80a76eb-1e10-95f7-def1-5eb26d66efb2@linux.ibm.com>
-Date:   Tue, 27 Apr 2021 19:28:51 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        id S236579AbhD0Rb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235593AbhD0Rbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:31:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 206A0613E5;
+        Tue, 27 Apr 2021 17:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619544668;
+        bh=/rQqaMen4CdzB60Rxa/kOLj5DJX3AW+xBuggzpn42zs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hFGxdMN0uYeFwxePEQT/CMAzyaqOIxnFp5LCIbIl2bmX+obM6+y0ZB+275hyV43U9
+         MgO7g/tTL85HaVZS/2Z/k4izVarIR4YnYzR7PHy54pxESnaRLM50DGNdIKyiAPYPFZ
+         q4EXVkmcA+8ahsVLlE7G22+jmPupou7uQxNxsi2A=
+Date:   Tue, 27 Apr 2021 19:31:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 138/190] Revert "net: liquidio: fix a NULL pointer
+ dereference"
+Message-ID: <YIhKWhNzv9zIMQJ1@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-139-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <8b36065d-e4b4-bc0c-cf69-f01c91e49061@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: z-QlqJK8TqS3fpFTjLusOkS7sZIzjQ4K
-X-Proofpoint-GUID: z-QlqJK8TqS3fpFTjLusOkS7sZIzjQ4K
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-27_10:2021-04-27,2021-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 bulkscore=0 suspectscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104270115
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-139-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 27/04/2021 à 19:01, Tyrel Datwyler a écrit :
-> On 4/27/21 8:01 AM, Laurent Dufour wrote:
->> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
->> updated by the hypervisor in the case the NUMA topology of the LPAR's
->> memory is updated.
->>
->> This is caught by the kernel, but the memory's node is updated because
->> there is no way to move a memory block between nodes.
->>
->> If later a memory block is added or removed, drmem_update_dt() is called
->> and it is overwriting the DT node to match the added or removed LMB. But
->> the LMB's associativity node has not been updated after the DT node update
->> and thus the node is overwritten by the Linux's topology instead of the
->> hypervisor one.
->>
->> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
->> updated to force an update of the LMB's associativity.
->>
->> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->> ---
->>   arch/powerpc/include/asm/drmem.h          |  1 +
->>   arch/powerpc/mm/drmem.c                   | 48 +++++++++++++++++++++++
->>   arch/powerpc/platforms/pseries/mobility.c |  9 +++++
->>   3 files changed, 58 insertions(+)
->>
->> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
->> index bf2402fed3e0..55c2c25085b0 100644
->> --- a/arch/powerpc/include/asm/drmem.h
->> +++ b/arch/powerpc/include/asm/drmem.h
->> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
->>   int __init
->>   walk_drmem_lmbs_early(unsigned long node, void *data,
->>   		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
->> +void drmem_update_lmbs(void);
->>   #endif
->>
->>   static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
->> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
->> index 9af3832c9d8d..46074bdfdb3c 100644
->> --- a/arch/powerpc/mm/drmem.c
->> +++ b/arch/powerpc/mm/drmem.c
->> @@ -307,6 +307,54 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
->>   	return ret;
->>   }
->>
->> +/*
->> + * Update the LMB associativity index.
->> + */
->> +static int update_lmb(struct drmem_lmb *updated_lmb,
->> +		      __maybe_unused const __be32 **usm,
->> +		      __maybe_unused void *data)
->> +{
->> +	struct drmem_lmb *lmb;
->> +
->> +	/*
->> +	 * Brut force there may be better way to fetch the LMB
->> +	 */
->> +	for_each_drmem_lmb(lmb) {
->> +		if (lmb->drc_index != updated_lmb->drc_index)
->> +			continue;
->> +
->> +		lmb->aa_index = updated_lmb->aa_index;
->> +		break;
->> +	}
->> +	return 0;
->> +}
->> +
->> +/*
->> + * Update the LMB associativity index.
->> + *
->> + * This needs to be called when the hypervisor is updating the
->> + * dynamic-reconfiguration-memory node property.
->> + */
->> +void drmem_update_lmbs(void)
->> +{
->> +	struct device_node *node;
->> +	const __be32 *prop;
->> +
->> +	node = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
->> +	if (!node)
->> +		return;
->> +
->> +	prop = of_get_property(node, "ibm,dynamic-memory", NULL);
->> +	if (prop) {
->> +		__walk_drmem_v1_lmbs(prop, NULL, NULL, update_lmb);
->> +	} else {
->> +		prop = of_get_property(node, "ibm,dynamic-memory-v2", NULL);
->> +		if (prop)
->> +			__walk_drmem_v2_lmbs(prop, NULL, NULL, update_lmb);
->> +	}
->> +
->> +	of_node_put(node);
->> +}
->>   #endif
->>
->>   static int init_drmem_lmb_size(struct device_node *dn)
->> diff --git a/arch/powerpc/platforms/pseries/mobility.c b/arch/powerpc/platforms/pseries/mobility.c
->> index ea4d6a660e0d..c68eccc6e8df 100644
->> --- a/arch/powerpc/platforms/pseries/mobility.c
->> +++ b/arch/powerpc/platforms/pseries/mobility.c
->> @@ -25,6 +25,7 @@
->>
->>   #include <asm/machdep.h>
->>   #include <asm/rtas.h>
->> +#include <asm/drmem.h>
->>   #include "pseries.h"
->>   #include "../../kernel/cacheinfo.h"
->>
->> @@ -237,6 +238,7 @@ int pseries_devicetree_update(s32 scope)
->>   	__be32 *data;
->>   	int update_nodes_token;
->>   	int rc;
->> +	bool drmem_updated = false;
->>
->>   	update_nodes_token = rtas_token("ibm,update-nodes");
->>   	if (update_nodes_token == RTAS_UNKNOWN_SERVICE)
->> @@ -271,6 +273,10 @@ int pseries_devicetree_update(s32 scope)
->>   					continue;
->>   				}
->>
->> +				if (!strcmp(np->full_name,
->> +					    "ibm,dynamic-reconfiguration-memory"))
->> +					drmem_updated = true;
+On Wed, Apr 21, 2021 at 03:00:13PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit fe543b2f174f34a7a751aa08b334fe6b105c4569.
 > 
-> Is there a reason that we can't use the existing pseries_memory_notifier()
-> callback in pseries/hotplug-memory.c to trigger the drmem_update_lmbs() when
-> either the ibm,dynamic-memory or ibm,dynamic-memory-v2 properties are updated?
-
-Thanks a lot Tyrel!
-
-That's far more elegant, I'll send a v2 soon.
-
-Laurent.
-
-> Something like:
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 > 
-> static int pseries_memory_notifier(struct notifier_block *nb,
->                                     unsigned long action, void *data)
-> {
->          struct of_reconfig_data *rd = data;
->          int err = 0;
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
 > 
->          switch (action) {
->          case OF_RECONFIG_ATTACH_NODE:
->                  err = pseries_add_mem_node(rd->dn);
->                  break;
->          case OF_RECONFIG_DETACH_NODE:
->                  err = pseries_remove_mem_node(rd->dn);
->                  break;
-> 	case OF_RECONFIG_UPDATE_PROPERTY:
-> 		if (!strcmp(rd->dn->full_name, "ibm,dynamic-reconfiguration-memory"));
-> 			drmem_update_lmbs(rd->prop);
-> 		break;
->          }
->          return notifier_from_errno(err);
-> }
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/net/ethernet/cavium/liquidio/lio_main.c | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> Your drmem_update_lmbs() would need to be updated to take a property and to
-> check the property name against ibm,dyanmic-memory[-v2].
-> 
-> -Tyrel
-> 
->> +
->>   				switch (action) {
->>   				case DELETE_DT_NODE:
->>   					delete_dt_node(np);
->> @@ -293,6 +299,9 @@ int pseries_devicetree_update(s32 scope)
->>   	} while (rc == 1);
->>
->>   	kfree(rtas_buf);
->> +
->> +	if (drmem_updated)
->> +		drmem_update_lmbs();
->>   	return rc;
->>   }
->>
+> diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
+> index 7c5af4beedc6..6fa570068648 100644
+> --- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
+> +++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
+> @@ -1166,11 +1166,6 @@ static void send_rx_ctrl_cmd(struct lio *lio, int start_stop)
+>  	sc = (struct octeon_soft_command *)
+>  		octeon_alloc_soft_command(oct, OCTNET_CMD_SIZE,
+>  					  16, 0);
+> -	if (!sc) {
+> -		netif_info(lio, rx_err, lio->netdev,
+> -			   "Failed to allocate octeon_soft_command\n");
+> -		return;
+> -	}
+>  
+>  	ncmd = (union octnet_cmd *)sc->virtdptr;
+>  
+> -- 
+> 2.31.1
 > 
 
+While this does keep the immediate "NULL dereference" from happening, it
+does not properly propagate the error back to the callers, AND it does
+not fix this same identical issue in the
+drivers/net/ethernet/cavium/liquidio/lio_vf_main.c for some reason.  I
+will revert this and fix up both files properly in a later on patch.
+
+thanks,
+
+greg k-h
