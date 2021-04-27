@@ -2,115 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6E236CC06
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B318636CC0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238142AbhD0Tzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235719AbhD0Tzm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:55:42 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2D7C06175F;
-        Tue, 27 Apr 2021 12:54:59 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id v191so345267pfc.8;
-        Tue, 27 Apr 2021 12:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=afoI4FuwTfrW6Z0hEFugsdIW4PHlren6vrmAD+HRX5I=;
-        b=XdmV3R4myyB0wfVtF2TSwjjYj73NP2+ZgRS6oYfw0kHGB9HC7orxGQFm2pp/bae30P
-         +oPTn+Bxjdu/46Q/7nli79ONM9lpasJ1bhguHMhI/aEj+6z46RrWK4hqhaUdeDW+G62B
-         JX1UrFr/GDZEmXYkRKIXiuCKxBVlEPx+b2yDb3YvKinpZ+4V2TxDswiT4tn+6FEWl87Z
-         pSKCczVuvZ5imuUQfQ8ZgkE/RCWpg4oGRjymdGOGv8uFGVJWKbYoVz47B/f9p2PRn20/
-         e/2Jcd+edwdtSa9ysX4myE572LIx0ophMwx1Hpbsvvc0UGvjKH/fTlkeAMYksICY9/m4
-         nBhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=afoI4FuwTfrW6Z0hEFugsdIW4PHlren6vrmAD+HRX5I=;
-        b=QskoJJ2FfW639s3Sk+IaBXulvvgcpHPOf533PKUGLLhlKlSA3aGQSEIkzmPuvZ8Zcq
-         JgAFydGt++xfMfw6o5yaf1zA0KTJDA899S4/SboUktZBrLAhAk77YYpWbauifKLdfTNf
-         SxonTFEDnvfGvGUBq40FVDe/IWcZscf6vVj8TlFQetBStYjB8FsWKTLT62u+mISxuhOo
-         56qVPGkH81wnrdZCfFm0IPykYNJBCbQmdDtBhmTQXVunK5XorMni+TZxSNEYqspvQ4SH
-         u5k80rDfQGxB10lJQ8tqW6clNBOVuOinxEsZJqgM9HYF+nU/yESEWiLFXhTONXgSsgKd
-         7IYw==
-X-Gm-Message-State: AOAM5304Wp7uXXtIEQgFGNSDhgmmtZs/+BV3vcGx5RZuvsFJCtrYXfz/
-        dCvdofes617C931jaf7EECU0AxT1LHLekw==
-X-Google-Smtp-Source: ABdhPJxr+Gi/fH9i5uoPwpCusU2t0LPExJAdJfmub2rirPN9/jUFKYoUKTFbKtoZkGDtFL++Bw7jwg==
-X-Received: by 2002:a63:150c:: with SMTP id v12mr23654133pgl.344.1619553298674;
-        Tue, 27 Apr 2021 12:54:58 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:2d50:30a4:47de:1dd6? ([2001:df0:0:200c:2d50:30a4:47de:1dd6])
-        by smtp.gmail.com with ESMTPSA id a7sm3116794pjm.0.2021.04.27.12.54.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 12:54:58 -0700 (PDT)
-Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
- driver
-To:     Finn Thain <fthain@fastmail.com.au>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Joshua Thompson <funaho@jurai.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
- <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
- <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
- <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
- <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
-Date:   Wed, 28 Apr 2021 07:54:52 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S238855AbhD0T6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:58:16 -0400
+Received: from verein.lst.de ([213.95.11.211]:46599 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235719AbhD0T6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:58:14 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id F007B68B05; Tue, 27 Apr 2021 21:57:27 +0200 (CEST)
+Date:   Tue, 27 Apr 2021 21:57:27 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
+Message-ID: <20210427195727.GA9661@lst.de>
+References: <20210427025805.GD3122264@magnolia> <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
+On Tue, Apr 27, 2021 at 12:40:09PM -0700, Linus Torvalds wrote:
+> We have '%pD' for printing a filename. It may not be perfect (by
+> default it only prints one component, you can do "%pD4" to show up to
+> four components), but it should "JustWork(tm)".
+> 
+> And if it doesn't, we should fix it.
+> 
+> So instead of having a kmalloc/kfree for the path buffer, I think you
+> should have been able to just do
+> 
+>     pr_err("swapon: file %pD4 %s\n", isi->file, str);
+> 
+> and be done with it.
 
-On 27/04/21 3:47 pm, Finn Thain wrote:
-> On Tue, 27 Apr 2021, Michael Schmitz wrote:
->
->> On 26/04/21 7:37 pm, Finn Thain wrote:
->>> Was macide the only IDE driver in Debian/m68k kernels without a libata
->>> alternative? If so, this patch would allow you to finally drop
->>> CONFIG_IDE.
->>>
->> There's still q40ide.c (ISA IDE interface, byte-swapped, so would need
->> treatment similar to Falcon IDE). Hasn't been updated to a platform
->> device yet.
->>
-> AIUI, q40 support is not included in Debian/m68k kernel builds.
-I see.
-> I wonder whether q40 could re-use the pata_falcon driver . I suppose
-
-I'm pretty sure it could, but there is no reason why it would have to be 
-crippled in that way. Interrupts should work perfectly fine with IDE on 
-Q40.
-
-There is another reason why using the same module binary for both might 
-fail - the awkward address translation code in io_mm.h. Not certain at 
-all whether we can even have Q40 and Atari in the same kernel binary...
-
-> pata_falcon_set_mode() would be undesirable on q40 (?) It could be made
-
-Not sure what the defaults are - pata_buddha.c and pata_gayle.c use the 
-same code in their _set_mode(). I suspect we'd need it for Q40, too.
-
-Cheers,
-
-     Michael
-
-
+I'm aware of %pD, but 4 components here are not enough.  People
+need to distinguish between xfstests runs and something real in
+the system for these somewhat scary sounding messages.
