@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE8E36C4DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BD536C4E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237485AbhD0LRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        id S237994AbhD0LRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235965AbhD0LQv (ORCPT
+        with ESMTP id S235999AbhD0LQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:16:51 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C931EC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:16:07 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id a12so1304231pfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:16:07 -0700 (PDT)
+        Tue, 27 Apr 2021 07:16:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96E6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:16:10 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso7018920pjs.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:16:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6wyv4G/lQ/EHY+nAhCaUf35r1FQBf2AesHuDPMoclw8=;
-        b=EbDbUiG+s/5bKjIABss2BCP8TiPWspaaME+mSIBSYp3DybGob+DWyGvrhulQRVeADI
-         rAg5U8NNWmpFbJk532ChdfH6hzLsJZ6kGlsdiWvKCO4RPDDodrz7wm6lKyScbKYpERGd
-         9YJG/n/VxxcJ9zfCW6bpu+qkojFg1iJ4FoI/I=
+        bh=NeuaYr+AFNS6zFyhjEclvaB+RiQlE5bnT3MqlgX4tYM=;
+        b=NM92KqfkwK8D3MAj2A2IAOebWPxBDpy9nSUs6JX+LRjwpxE0EIEV6xkPFinBPMwPcJ
+         7z4RGCGDQ1uTLDWFAbWnbv131GzqbJY3okRp8m3cMGKPOVIsWF3TlS8P+ko8Pe8XwWgf
+         4/Ju9NNy1J/ngY8tL+zqPRbuxYBveekRdsRnA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6wyv4G/lQ/EHY+nAhCaUf35r1FQBf2AesHuDPMoclw8=;
-        b=UHlZdSj8AeOV6VvNFO1DwjU52EPqACS8RpG5hlzywHVqgY0OEwOeiUJPqkTASUwmgM
-         TOt9fB+79M1QwUi+0COKsSPCT6skWkQJNVKaG5xdD+rtM2WFgORI/6OVRriuPiKiuwqi
-         8DNfpRC7/mqlifDMfAJ0zHJai4VZg0rmJk78RMwfmCHrW2CFMa419nVy/H8TBcMGVhn0
-         hexAJhjTAnetqj/mDBMa09TOIwjUBaveg1+AgZgyIE+zHuOuRRZEcx8wD6FETpwnfMTQ
-         9kP3uUFW/8lei+EAQy86lNt4C8ijWv6vihQt+cKqgzaGucG2Ob6h0Bg9S7oqtmQph6ao
-         3PTw==
-X-Gm-Message-State: AOAM5328QN2vWHbEe2XQpBp4GUoKF3BoRjW8AKY5Kj2IOFdC1ojwsmyS
-        qpCtbJf9sKYQLjmqZEbccYqMvA==
-X-Google-Smtp-Source: ABdhPJxaFfZSnDofdrzYmCyzQRCADWHb3fdCONPpxa6HA2xpTld/7zf54fUs0nthxozgfrBcJR/Cqg==
-X-Received: by 2002:a05:6a00:170c:b029:225:8851:5b3c with SMTP id h12-20020a056a00170cb029022588515b3cmr22453831pfc.0.1619522167429;
-        Tue, 27 Apr 2021 04:16:07 -0700 (PDT)
+        bh=NeuaYr+AFNS6zFyhjEclvaB+RiQlE5bnT3MqlgX4tYM=;
+        b=ACcj6hXhL4ddxIJGOzXL7EymgEBYsU9pAAM4w0Fv29v7rIAmS+GRHt8KnoeHyBAocQ
+         C0i8nJQlzBQ1R4uS7hjcVLLYQ/g5tr0VToVK50t5R8tatA9U9+LsRLiiO+hUGOb8Z/rU
+         s7/n5F8al6ix4AzrHkKwxOd8HEz8dmFktJOlVR0IcSdpw3yI05n+LNCzefdgT9ho6V8z
+         D+S4k1BwqTUoBCVfjt9VutcPzqmwDFQfS2QaczbdLB6cA/j0STqv1sRADqxUyxfXqqLi
+         0sislVfwNAqsFHkrTRM0UUJ6klqsDJ1HZXFUC1wpXUxe6729nikd1UsqQqJZPXiKumnM
+         zwHw==
+X-Gm-Message-State: AOAM531BlQFk/DrBC31Ve2SaR1tF/lQayleMImmeZ6mgG2GSaNa0uGqq
+        XtKGZLcQKN36MDL0EfJLWrPhrQ==
+X-Google-Smtp-Source: ABdhPJyutim3aaPgcxoEFFLupS3n22kco1aCh6AI2C6Fs/kJN99bNeQBf5nXs1moTycGo7zNU8lGPg==
+X-Received: by 2002:a17:902:9a0a:b029:e6:bf00:8a36 with SMTP id v10-20020a1709029a0ab02900e6bf008a36mr24255695plp.51.1619522170256;
+        Tue, 27 Apr 2021 04:16:10 -0700 (PDT)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:b182:d363:32d0:53a2])
-        by smtp.gmail.com with ESMTPSA id c21sm2347210pfc.165.2021.04.27.04.16.04
+        by smtp.gmail.com with ESMTPSA id c21sm2347210pfc.165.2021.04.27.04.16.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 04:16:07 -0700 (PDT)
+        Tue, 27 Apr 2021 04:16:09 -0700 (PDT)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -54,11 +54,10 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
-        Hirokazu Honda <hiroh@chromium.org>,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v4 11/15] media: mtk-vcodec: vdec: Support H264 profile control
-Date:   Tue, 27 Apr 2021 20:15:22 +0900
-Message-Id: <20210427111526.1772293-12-acourbot@chromium.org>
+Subject: [PATCH v4 12/15] media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
+Date:   Tue, 27 Apr 2021 20:15:23 +0900
+Message-Id: <20210427111526.1772293-13-acourbot@chromium.org>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 In-Reply-To: <20210427111526.1772293-1-acourbot@chromium.org>
 References: <20210427111526.1772293-1-acourbot@chromium.org>
@@ -68,39 +67,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hirokazu Honda <hiroh@chromium.org>
+Calling S_FMT or TRY_FMT on the OUTPUT queue should adjust the
+resolution to the limits supported by the hardware. Until now this was
+only done on the CAPTURE queue, which could make clients believe that
+unsupported resolutions can be used when they set the coded size on the
+OUTPUT queue.
 
-Add H264 profiles supported by the MediaTek 8173 decoder.
+In the case of the stateless decoder, the problem was even bigger since
+subsequently calling G_FMT on the CAPTURE queue would result in the
+unclamped resolution being returned, further inducing the client into
+error.
 
-Signed-off-by: Hirokazu Honda <hiroh@chromium.org>
-[acourbot: fix commit log a bit]
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- .../platform/mtk-vcodec/mtk_vcodec_dec_stateful.c     | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-index c5538fcfc9a5..d815125c81a4 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-@@ -611,7 +611,16 @@ static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_ctx *ctx)
- 				V4L2_CID_MPEG_VIDEO_VP9_PROFILE,
- 				V4L2_MPEG_VIDEO_VP9_PROFILE_0,
- 				0, V4L2_MPEG_VIDEO_VP9_PROFILE_0);
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+index 4ef4b68ec9bd..0fafe8f9e1b9 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+@@ -223,19 +223,19 @@ static int vidioc_try_fmt(struct v4l2_format *f,
+ 
+ 	pix_fmt_mp->field = V4L2_FIELD_NONE;
+ 
++	pix_fmt_mp->width = clamp(pix_fmt_mp->width,
++				MTK_VDEC_MIN_W,
++				MTK_VDEC_MAX_W);
++	pix_fmt_mp->height = clamp(pix_fmt_mp->height,
++				MTK_VDEC_MIN_H,
++				MTK_VDEC_MAX_H);
++
+ 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+ 		pix_fmt_mp->num_planes = 1;
+ 		pix_fmt_mp->plane_fmt[0].bytesperline = 0;
+ 	} else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+ 		int tmp_w, tmp_h;
+ 
+-		pix_fmt_mp->height = clamp(pix_fmt_mp->height,
+-					MTK_VDEC_MIN_H,
+-					MTK_VDEC_MAX_H);
+-		pix_fmt_mp->width = clamp(pix_fmt_mp->width,
+-					MTK_VDEC_MIN_W,
+-					MTK_VDEC_MAX_W);
 -
-+	/*
-+	 * H264. Baseline / Extended decoding is not supported.
-+	 */
-+	v4l2_ctrl_new_std_menu(&ctx->ctrl_hdl,
-+			&mtk_vcodec_dec_ctrl_ops,
-+			V4L2_CID_MPEG_VIDEO_H264_PROFILE,
-+			V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
-+			BIT(V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE) |
-+			BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
-+			V4L2_MPEG_VIDEO_H264_PROFILE_MAIN);
- 	if (ctx->ctrl_hdl.error) {
- 		mtk_v4l2_err("Adding control failed %d",
- 				ctx->ctrl_hdl.error);
+ 		/*
+ 		 * Find next closer width align 64, heign align 64, size align
+ 		 * 64 rectangle
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
