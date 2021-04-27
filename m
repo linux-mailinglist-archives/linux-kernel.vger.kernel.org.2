@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D5C36CAB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3828E36CAB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236761AbhD0R5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:57:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58156 "EHLO mail.kernel.org"
+        id S238067AbhD0R7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhD0R5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:57:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC0D60FDB;
-        Tue, 27 Apr 2021 17:56:50 +0000 (UTC)
+        id S230219AbhD0R6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:58:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D12D613C0;
+        Tue, 27 Apr 2021 17:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619546211;
-        bh=CLsSmbPTVRvVMX8uRj7Bl5HbFdXWRbxGbg3Fz7lyRZw=;
+        s=korg; t=1619546291;
+        bh=UGJqCc4+/xgm/VnWrKNR8nxLugg0ogLVphDp7bF+svo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W3R7hZLMhkC9gsRyPdz7KsDOMUxK185cs2Acli3/TgZ3Dx9xQDrk2kd7VhdGjHwLP
-         +qkr4fjzOfFKWBePJ9ayRPsgtYo+oO2nw3vnz3dbnbsT4v49dzBQYNrwDDcqv8ex/5
-         H9M8eam+asNCjuhesxZ8xKX6TH79XaRYfnT10X5A=
-Date:   Tue, 27 Apr 2021 19:56:48 +0200
+        b=MPAvxUaVRE6lRm/otvyVZ8f72iM5jCTEgLXDbIm3NB9MULNL5lfwVVR0mkWeci/il
+         CG8qcPpLJ4TnE4k32Uh7GIKMuzk6VZAkKm6ilogZlLqGcadOSAjzSvX//WFTuvUmx/
+         WjkKWES3onlTvpwbndbqsiHPYdAWN7P/XwpDuIyI=
+Date:   Tue, 27 Apr 2021 19:58:09 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 068/190] Revert "fore200e: Fix incorrect checks of NULL
- pointer dereference"
-Message-ID: <YIhQYJancyH7NhBt@kroah.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH 066/190] Revert "bpf: Remove unnecessary assertion on
+ fp_old"
+Message-ID: <YIhQsRZ9LgZKlkPw@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-69-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-67-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-69-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-67-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:03PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit bbd20c939c8aa3f27fa30e86691af250bf92973a.
+On Wed, Apr 21, 2021 at 02:59:01PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 5bf2fc1f9c88397b125d5ec5f65b1ed9300ba59d.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -56,79 +56,31 @@ On Wed, Apr 21, 2021 at 02:59:03PM +0200, Greg Kroah-Hartman wrote:
 > codebase.
 > 
 > Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: https
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/atm/fore200e.c | 25 +++++++------------------
->  1 file changed, 7 insertions(+), 18 deletions(-)
+>  kernel/bpf/core.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
-> index 495fd0a1f040..e83286e3216e 100644
-> --- a/drivers/atm/fore200e.c
-> +++ b/drivers/atm/fore200e.c
-> @@ -1412,14 +1412,12 @@ fore200e_open(struct atm_vcc *vcc)
->  static void
->  fore200e_close(struct atm_vcc* vcc)
->  {
-> +    struct fore200e*        fore200e = FORE200E_DEV(vcc->dev);
->      struct fore200e_vcc*    fore200e_vcc;
-> -    struct fore200e*        fore200e;
->      struct fore200e_vc_map* vc_map;
->      unsigned long           flags;
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 75244ecb2389..da29211ea5d8 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -230,6 +230,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
+>  	struct bpf_prog *fp;
+>  	u32 pages;
 >  
->      ASSERT(vcc);
-> -    fore200e = FORE200E_DEV(vcc->dev);
-> -
->      ASSERT((vcc->vpi >= 0) && (vcc->vpi < 1<<FORE200E_VPI_BITS));
->      ASSERT((vcc->vci >= 0) && (vcc->vci < 1<<FORE200E_VCI_BITS));
->  
-> @@ -1464,10 +1462,10 @@ fore200e_close(struct atm_vcc* vcc)
->  static int
->  fore200e_send(struct atm_vcc *vcc, struct sk_buff *skb)
->  {
-> -    struct fore200e*        fore200e;
-> -    struct fore200e_vcc*    fore200e_vcc;
-> +    struct fore200e*        fore200e     = FORE200E_DEV(vcc->dev);
-> +    struct fore200e_vcc*    fore200e_vcc = FORE200E_VCC(vcc);
->      struct fore200e_vc_map* vc_map;
-> -    struct host_txq*        txq;
-> +    struct host_txq*        txq          = &fore200e->host_txq;
->      struct host_txq_entry*  entry;
->      struct tpd*             tpd;
->      struct tpd_haddr        tpd_haddr;
-> @@ -1480,18 +1478,9 @@ fore200e_send(struct atm_vcc *vcc, struct sk_buff *skb)
->      unsigned char*          data;
->      unsigned long           flags;
->  
-> -    if (!vcc)
-> -        return -EINVAL;
-> -
-> -    fore200e = FORE200E_DEV(vcc->dev);
-> -    fore200e_vcc = FORE200E_VCC(vcc);
-> -
-> -    if (!fore200e)
-> -        return -EINVAL;
-> -
-> -    txq = &fore200e->host_txq;
-> -    if (!fore200e_vcc)
-> -        return -EINVAL;
-> +    ASSERT(vcc);
-> +    ASSERT(fore200e);
-> +    ASSERT(fore200e_vcc);
->  
->      if (!test_bit(ATM_VF_READY, &vcc->flags)) {
->  	DPRINTK(1, "VC %d.%d.%d not ready for tx\n", vcc->itf, vcc->vpi, vcc->vpi);
+> +	BUG_ON(fp_old == NULL);
+> +
+>  	size = round_up(size, PAGE_SIZE);
+>  	pages = size / PAGE_SIZE;
+>  	if (pages <= fp_old->pages)
 > -- 
 > 2.31.1
 > 
 
-Wow, the names in this code bring back memories...
-
-Anyway, the original looks correct, but could have been written a lot
-better, it's quite "twisty" for something that should have been very
-simple to make "obvious".
-
-I'll drop this revert.
+The original commit here is correct, I'll drop this revert.
 
 thanks,
 
