@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB8036C573
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA13F36C578
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhD0LnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhD0LnT (ORCPT
+        id S236054AbhD0Lok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:44:40 -0400
+Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:39884 "EHLO
+        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230365AbhD0Loj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:43:19 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E214C061574;
-        Tue, 27 Apr 2021 04:42:36 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id m11so747569pfc.11;
-        Tue, 27 Apr 2021 04:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wpk0SlupheQG7tbcO3ObJ3Bj5cU326C9p8KvsS434dI=;
-        b=kl9gXoRV3PyjeOmmdEfnAXKMGSi2g+d66eMeoMGPZlouQKiQUfxwZ7br1TxePCh6iL
-         rfLMbWK3uG0/5fDD4aNjWi9MVMwXTGKh5AMWUJVHLskQZQ88igM+UFORqX7z2GPooL2B
-         Zv8G9DT4xl33tofF/+bNSMJHG33lf5sRpUTi8OHJm89vaSaNTmT+OSZpqg+545wq62ZK
-         CCNhOuBaZT1+sH7nzY+hN4K36zaFopAoQpfMt3wApw+IanU9EX2lcMtsU5ZoAO8srFPP
-         w4P409G9KN5stmo3mD3nigfc3BlSJ6zjMF6REIkyQkyZnsReGw4XRMuCBs2nxxECyLgL
-         8zuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wpk0SlupheQG7tbcO3ObJ3Bj5cU326C9p8KvsS434dI=;
-        b=CuywpTrdj5JsEnLs3OttPMs1gxufK7G82AbnECI+PiYkvW1IcovTesXNXVADFlA776
-         ZkXRrhCPZcz+AHSQ1olccTtH7gwL5uzgtROgNWHrEbDdbmuO02mqL67LPWvL/ti3xQ+i
-         qJuEUZXrVFAFAVlj0WaKhAj39uPMQStEyRg222G9MH3QpF40GsWCc20/wh0nZ85Ap0w/
-         vaOko3oR9O3eQmEDWKQGu3gIQs5F744XJoIhsjYIY7KSmNiko5tiTv3SVRK8gIn5lRtV
-         6Kddq4624o9r67GZT9IuaAX1G2vRIuQuNT9RawY+vQeAmk83A4TzaLtZORwZJygGDnD7
-         m++w==
-X-Gm-Message-State: AOAM532xMlGrvcXrviP2tBAGfY2iELMZrJyKxBwF5sUCoGMfXx2WBuhm
-        BohZo7uN0qm2mMvsu273F5cg+voHOfIrUIOaVH4=
-X-Google-Smtp-Source: ABdhPJzUlO+owwhKnnkcWN+K5NzW6e5+uAtFlm6ppXR6oTfeXGvMcdFh/l3dmjGXKjl1qf6m4dcKmbgHSLqBzkB6vu8=
-X-Received: by 2002:a63:a847:: with SMTP id i7mr21138054pgp.203.1619523755454;
- Tue, 27 Apr 2021 04:42:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210426235638.1285530-1-saravanak@google.com>
- <CAHp75VeNZ4-TgkevNF5tgmB1eU9E77RNsPWRABp6PvC6eGpQrQ@mail.gmail.com> <20210427104851.GC4605@sirena.org.uk>
-In-Reply-To: <20210427104851.GC4605@sirena.org.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Apr 2021 14:42:19 +0300
-Message-ID: <CAHp75VdpC687cHezCy5nP6BRYo-dS8COYvBBvu02f6W_dS6JEg@mail.gmail.com>
-Subject: Re: [PATCH] spi: Fix spi device unregister flow
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Tue, 27 Apr 2021 07:44:39 -0400
+Received: from smtp-1.t-2.net (smtp-1.t-2.net [84.255.208.30])
+        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FV0K70vqXz2Tf6;
+        Tue, 27 Apr 2021 13:43:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
+        s=smtp-out-2; t=1619523835;
+        bh=IZcnfQ6CgXTBAgvjaUPyN1vA4boGqLo0EvUWEcb9U6g=;
+        h=Subject:From:To:Cc:Date;
+        b=pCwv/djdWkn5/1LNMKEe1+RXus3UZ/MajHiyb4TK/K56gADuvJiZUjbRUXM5rU+kM
+         aST+Z5QXRwQuX6SStz4Svzk3ExoIZxXA1Ebzv9L+Ly/e0q2KANEl0LAntpJA94wENF
+         dU2mu8SJVC9Zswbii7vGR/j6SNiaHQor5TD9NHHs=
+Received: from localhost (localhost [127.0.0.1])
+        by smtp-1.t-2.net (Postfix) with ESMTP id 4FV0K70nl3zTbSqM;
+        Tue, 27 Apr 2021 13:43:55 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at t-2.net
+Received: from smtp-1.t-2.net ([127.0.0.1])
+        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id AdLptnJ0iltf; Tue, 27 Apr 2021 13:43:54 +0200 (CEST)
+Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-1.t-2.net (Postfix) with ESMTPS;
+        Tue, 27 Apr 2021 13:43:27 +0200 (CEST)
+Message-ID: <1502946c760b1aae3ad9cffcf4ea3b9f37206585.camel@t-2.net>
+Subject: [PATCH 2/2] Removed unnecessary TTY ioctl callback
+From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 27 Apr 2021 13:43:26 +0200
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 1:49 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Apr 27, 2021 at 09:52:48AM +0300, Andy Shevchenko wrote:
-> > +Cc Lukas
->
-> The cleanup callback has been in release() since the framework was
-> merged AFAICT.
+It turns-out, that TIOCCONS is completely handled in tty_io.c, so
+the current local ioctl callback is of no real use.
 
-Yep.
+Signed-off-by: Samo Pogačnik <samo_pogacnik@t-2.net>
+---
+ drivers/char/ttyprintk.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
 
-Personally it feels to me wrong to require device_release() being
-atomic. It might be that I missed something in documentation or
-somewhere else that suggests the opposite.
-But let's wait for other comments if any.
-
+diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+index 6f616cb7c..99364edf2 100644
+--- a/drivers/char/ttyprintk.c
++++ b/drivers/char/ttyprintk.c
+@@ -109,7 +109,6 @@ static int tpk_write(struct tty_struct *tty,
+ 	unsigned long flags;
+ 	int ret;
+ 
+-
+ 	/* exclusive use of tpk_printk within this tty */
+ 	spin_lock_irqsave(&tpkp->spinlock, flags);
+ 	ret = tpk_printk(buf, count);
+@@ -126,27 +125,6 @@ static int tpk_write_room(struct tty_struct *tty)
+ 	return TPK_MAX_ROOM;
+ }
+ 
+-/*
+- * TTY operations ioctl function.
+- */
+-static int tpk_ioctl(struct tty_struct *tty,
+-			unsigned int cmd, unsigned long arg)
+-{
+-	struct ttyprintk_port *tpkp = tty->driver_data;
+-
+-	if (!tpkp)
+-		return -EINVAL;
+-
+-	switch (cmd) {
+-	/* Stop TIOCCONS */
+-	case TIOCCONS:
+-		return -EOPNOTSUPP;
+-	default:
+-		return -ENOIOCTLCMD;
+-	}
+-	return 0;
+-}
+-
+ /*
+  * TTY operations hangup function.
+  */
+@@ -176,7 +154,6 @@ static const struct tty_operations ttyprintk_ops = {
+ 	.close = tpk_close,
+ 	.write = tpk_write,
+ 	.write_room = tpk_write_room,
+-	.ioctl = tpk_ioctl,
+ 	.hangup = tpk_hangup,
+ };
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
+
