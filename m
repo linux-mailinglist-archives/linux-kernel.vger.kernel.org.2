@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D7236CB0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8916436CB1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbhD0SWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:22:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235647AbhD0SWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:22:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C7E6610A5;
-        Tue, 27 Apr 2021 18:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619547711;
-        bh=W/lR0B3B/jG31hu8CSs1S2F5UKwfxbYKEgGBGRZCgH0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CQtTtNzSBNbGTcAG+wzKWNkFEEJ+bDwqDIxlhxkNul6Cdge21LkceU1QTa17ufT8H
-         cXXNHowXH85yDMqrVfqgO4ijCTh8zbLaehcebsnMq+hAoBnBzcgeNBG8BiLskM7W06
-         pF/pVVHuQE4mgV3KrJGlG672SzxUxa8DlKOnVsm8=
-Date:   Tue, 27 Apr 2021 20:21:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 133/190] Revert "net: qlogic: fix a potential NULL
- pointer dereference"
-Message-ID: <YIhWPUJgRoh7ENjU@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-134-gregkh@linuxfoundation.org>
+        id S236829AbhD0ScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236279AbhD0ScV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:32:21 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7FFC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:31:37 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id h36so41010487lfv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gZr+uThAt0ciiksb5ytQDUkfPwWrBd07uVSgmxyj1eE=;
+        b=gXB/ev241A+ABixVHuF9uRXX2mdp46DZLus2UrKHidpghpb8UTG1oK9rLlZSG14lu2
+         oyJS2lcfpHAvsJ/yLkCwJ206dAagh8K5AtMj9DZ2VaOEmTqTjgd/6PzhpBp/fJYskUja
+         4roVrTYHPkKU2t6wth7V8TjlUfD6U7WLpwahk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gZr+uThAt0ciiksb5ytQDUkfPwWrBd07uVSgmxyj1eE=;
+        b=N01cO+Mh/WYsSNtnm0tyzx4WokOBAAD3kHeMBMHq8iqmmcbIo0knT9eJtab5OngNYG
+         bfyAyLlGAAK2hEFfuwuDs1Br7x4F9CAJXYwDUaCuuPoqwjYfDd0tZbl834DjzlWj4sf4
+         R/+ry5DesMOS+NRu4aZKofwgLCQJcoWK1QfJtmClp+s/LnJyNaTfa/PXh69p2ysZKczB
+         pTO7TAlFSnrnwqERMgyIh99KmXRj7orJ9AYQ4cxOG3SnjFbY6K2NuXCPjrwVIsh0OmKs
+         URR9KqUkzOYYwwyOn/4SxtOL9BR0yywUNNQrWaY2k1PXrFy7ko95f0eJh85m+yvqpj4Z
+         nplw==
+X-Gm-Message-State: AOAM530ZqgMp1XrAJITr0GtogtEHpk9IEJBxV6MR6K9kPampDYQL5jT4
+        EoNjw5rqGBl40srkhndvYarZOJvtdzbeYG+W
+X-Google-Smtp-Source: ABdhPJwjk26eeJKpPiFTuQHLKZd0WcgB70PswtkJW8Pj31IGqdyJqjbGzauK204FbvhNbhQEzMjgZw==
+X-Received: by 2002:a19:c7c5:: with SMTP id x188mr5322699lff.313.1619548295520;
+        Tue, 27 Apr 2021 11:31:35 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id j18sm597021ljc.132.2021.04.27.11.31.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 11:31:35 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id s9so11399389ljj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:31:34 -0700 (PDT)
+X-Received: by 2002:a2e:880f:: with SMTP id x15mr15839732ljh.507.1619548294774;
+ Tue, 27 Apr 2021 11:31:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-134-gregkh@linuxfoundation.org>
+References: <YIdByy4WJcXTN7Wy@zeniv-ca.linux.org.uk>
+In-Reply-To: <YIdByy4WJcXTN7Wy@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 27 Apr 2021 11:31:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whNdEKs-LoF9DKYW8k5Eg2rPjqqWf047TxAY3+v4W=iRQ@mail.gmail.com>
+Message-ID: <CAHk-=whNdEKs-LoF9DKYW8k5Eg2rPjqqWf047TxAY3+v4W=iRQ@mail.gmail.com>
+Subject: Re: [git pull] fileattr series from Miklos
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:08PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit eb32cfcdef2305dc0e44a65d42801315669bb27e.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/net/ethernet/qlogic/qla3xxx.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-> index 214e347097a7..50dbb8205e6c 100644
-> --- a/drivers/net/ethernet/qlogic/qla3xxx.c
-> +++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-> @@ -3863,12 +3863,6 @@ static int ql3xxx_probe(struct pci_dev *pdev,
->  	netif_stop_queue(ndev);
->  
->  	qdev->workqueue = create_singlethread_workqueue(ndev->name);
-> -	if (!qdev->workqueue) {
-> -		unregister_netdev(ndev);
-> -		err = -ENOMEM;
-> -		goto err_out_iounmap;
-> -	}
-> -
->  	INIT_DELAYED_WORK(&qdev->reset_work, ql_reset_work);
->  	INIT_DELAYED_WORK(&qdev->tx_timeout_work, ql_tx_timeout_work);
->  	INIT_DELAYED_WORK(&qdev->link_state_work, ql_link_state_machine_work);
-> -- 
-> 2.31.1
-> 
+On Mon, Apr 26, 2021 at 3:42 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>         The branch is straight from Miklos' tree (it's #fileattr_v6 there),
+> sat merged into vfs.git #for-next for a while.  Not sure what's the normal
+> way to do pull requests in situations like that - do you prefer a reference
+> to my tree (as below) or to mszeredi/vfs.git?
 
-Ideally you would have added a new goto tag and put the
-unregister_netdev() call in that, but the logic here still seems to be
-correct, so I'll drop this revert.
+This is fine. The only downside here is that there was no signed tag,
+which I would have preferred - either from you or from Milkos.
 
-greg k-h
+We've had this a couple of times before, and I've started trying to
+"document" it with a "Pull X from Y via Z" thing. See for example
+
+   git show 836d7f0572ca 70cd33d34c60
+
+which is a similar kind of thing where Borislav just forwarded Ard's
+work (and it has happened in the past a couple of times without those
+kinds of notices).
+
+Btw, unrelated to that, this pull request got a conflict with
+
+  64708539cd23 ("btrfs: use btrfs_inode_lock/btrfs_inode_unlock inode
+lock helpers")
+
+which I think I sorted out correctly (the "inode_lock()" is now done
+by the VFS layer for the fileattr things, and the btrfs use of
+"btrfs_inode_lock/btrfs_inode_unlock" ended up being undone). But just
+to be safe I'm cc'ing the btrfs people involved. Please double-check
+that I didn't screw something up.
+
+(Note: it doesn't show up as a conflict in the merge itself, because
+each piece was a straight "take the case from one side or the other",
+and in this case "take it from the fileattr" side meant that the
+inode_[un]lock -> btrfs_inode_[un]lock conversion for the fileattr
+cases just went away).
+
+                 Linus
