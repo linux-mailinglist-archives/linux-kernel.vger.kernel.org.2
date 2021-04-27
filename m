@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3828E36CAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B746936CAB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238067AbhD0R7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
+        id S236670AbhD0R7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhD0R6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:58:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D12D613C0;
-        Tue, 27 Apr 2021 17:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619546291;
-        bh=UGJqCc4+/xgm/VnWrKNR8nxLugg0ogLVphDp7bF+svo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MPAvxUaVRE6lRm/otvyVZ8f72iM5jCTEgLXDbIm3NB9MULNL5lfwVVR0mkWeci/il
-         CG8qcPpLJ4TnE4k32Uh7GIKMuzk6VZAkKm6ilogZlLqGcadOSAjzSvX//WFTuvUmx/
-         WjkKWES3onlTvpwbndbqsiHPYdAWN7P/XwpDuIyI=
-Date:   Tue, 27 Apr 2021 19:58:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH 066/190] Revert "bpf: Remove unnecessary assertion on
- fp_old"
-Message-ID: <YIhQsRZ9LgZKlkPw@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-67-gregkh@linuxfoundation.org>
+        id S230219AbhD0R7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 325AA60BBB;
+        Tue, 27 Apr 2021 17:58:47 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 18:58:44 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+Message-ID: <20210427175844.GB17872@arm.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-6-steven.price@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-67-gregkh@linuxfoundation.org>
+In-Reply-To: <20210416154309.22129-6-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:01PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 5bf2fc1f9c88397b125d5ec5f65b1ed9300ba59d.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: https
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  kernel/bpf/core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 75244ecb2389..da29211ea5d8 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -230,6 +230,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->  	struct bpf_prog *fp;
->  	u32 pages;
+On Fri, Apr 16, 2021 at 04:43:08PM +0100, Steven Price wrote:
+> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> index 24223adae150..2b85a047c37d 100644
+> --- a/arch/arm64/include/uapi/asm/kvm.h
+> +++ b/arch/arm64/include/uapi/asm/kvm.h
+> @@ -184,6 +184,20 @@ struct kvm_vcpu_events {
+>  	__u32 reserved[12];
+>  };
 >  
-> +	BUG_ON(fp_old == NULL);
-> +
->  	size = round_up(size, PAGE_SIZE);
->  	pages = size / PAGE_SIZE;
->  	if (pages <= fp_old->pages)
-> -- 
-> 2.31.1
-> 
+> +struct kvm_arm_copy_mte_tags {
+> +	__u64 guest_ipa;
+> +	__u64 length;
+> +	union {
+> +		void __user *addr;
+> +		__u64 padding;
+> +	};
+> +	__u64 flags;
+> +	__u64 reserved[2];
+> +};
 
-The original commit here is correct, I'll drop this revert.
+I know Marc asked for some reserved space in here but I'm not sure it's
+the right place. And what's with the union of a 64-bit pointer and
+64-bit padding, it doesn't change any layout? Maybe add the two reserved
+values to the union in case we want to store something else in the
+future.
 
-thanks,
+Or maybe I'm missing something, I haven't checked how other KVM ioctls
+work.
 
-greg k-h
+-- 
+Catalin
