@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4691936C1AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CBB36C1B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbhD0J0G convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 05:26:06 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2921 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhD0JZy (ORCPT
+        id S235222AbhD0J1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 05:27:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16161 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhD0J1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 05:25:54 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FTx0s5fX5z77b5Y;
-        Tue, 27 Apr 2021 17:14:37 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Apr 2021 11:25:09 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Tue, 27 Apr 2021 11:25:09 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
- post hooks
-Thread-Topic: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
- post hooks
-Thread-Index: AQHXEdMA2oN9D131skWV9JJ8Z5VEUap1limAgFHPEQCAAOj3gA==
-Date:   Tue, 27 Apr 2021 09:25:09 +0000
-Message-ID: <7a39600c24a740838dca24c20af92c1a@huawei.com>
-References: <20210305151923.29039-1-roberto.sassu@huawei.com>
-         <20210305151923.29039-5-roberto.sassu@huawei.com>
-         <c3bb1069-c732-d3cf-0dde-7a83b3f31871@schaufler-ca.com>
- <93858a47a29831ca782c8388faaa43c8ffc3f5cd.camel@linux.ibm.com>
-In-Reply-To: <93858a47a29831ca782c8388faaa43c8ffc3f5cd.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 27 Apr 2021 05:27:38 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FTxCQ4Gh6zpbrF;
+        Tue, 27 Apr 2021 17:23:46 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 27 Apr 2021 17:26:50 +0800
+Subject: Re: [PATCH 4.14 00/49] 4.14.232-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210426072819.721586742@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <7dd80877-3a9e-2435-ae85-9eb0747797f9@huawei.com>
+Date:   Tue, 27 Apr 2021 17:26:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210426072819.721586742@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Monday, April 26, 2021 9:49 PM
-> On Fri, 2021-03-05 at 09:30 -0800, Casey Schaufler wrote:
-> > On 3/5/2021 7:19 AM, Roberto Sassu wrote:
-> > > ima_inode_setxattr() and ima_inode_removexattr() hooks are called before
-> an
-> > > operation is performed. Thus, ima_reset_appraise_flags() should not be
-> > > called there, as flags might be unnecessarily reset if the operation is
-> > > denied.
-> > >
-> > > This patch introduces the post hooks ima_inode_post_setxattr() and
-> > > ima_inode_post_removexattr(), and adds the call to
-> > > ima_reset_appraise_flags() in the new functions.
-> >
-> > I don't see anything wrong with this patch in light of the way
-> > IMA and EVM have been treated to date.
-> >
-> > However ...
-> >
-> > The special casing of IMA and EVM in security.c is getting out of
-> > hand, and appears to be unnecessary. By my count there are 9 IMA
-> > hooks and 5 EVM hooks that have been hard coded. Adding this IMA
-> > hook makes 10. It would be really easy to register IMA and EVM as
-> > security modules. That would remove the dependency they currently
-> > have on security sub-system approval for changes like this one.
-> > I know there has been resistance to "IMA as an LSM" in the past,
-> > but it's pretty hard to see how it wouldn't be a win.
+
+
+On 2021/4/26 15:28, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.232 release.
+> There are 49 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Somehow I missed the new "lsm=" boot command line option, which
-> dynamically allows enabling/disabling LSMs, being upstreamed.  This
-> would be one of the reasons for not making IMA/EVM full LSMs.
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.232-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Hi Mimi
+Tested on x86 for 4.14.232-rc1,
 
-one could argue why IMA/EVM should receive a special
-treatment. I understand that this was a necessity without
-LSM stacking. Now that LSM stacking is available, I don't
-see any valid reason why IMA/EVM should not be managed
-by the LSM infrastructure.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.232-rc1
+Commit: 3ac46322bf509c3f3735c8287d28702ee6172b6e
+Compiler: gcc version 7.3.0 (GCC)
 
-> Both IMA and EVM file data/metadata is persistent across boots.  If
-> either one or the other is not enabled the file data hash or file
-> metadata HMAC will not properly be updated, potentially preventing the
-> system from booting when re-enabled.  Re-enabling IMA and EVM would
-> require "fixing" the mutable file data hash and HMAC, without any
-> knowledge of what the "fixed" values should be.  Dave Safford referred
-> to this as "blessing" the newly calculated values.
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 6251
+passed: 6251
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-IMA/EVM can be easily disabled in other ways, for example
-by moving the IMA policy or the EVM keys elsewhere.
-
-Also other LSMs rely on a dynamic and persistent state
-(for example for file transitions in SELinux), which cannot be
-trusted anymore if LSMs are even temporarily disabled.
-
-If IMA/EVM have to be enabled to prevent misconfiguration,
-I think the same can be achieved if they are full LSMs, for
-example by preventing that the list of enabled LSMs changes
-at run-time.
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
