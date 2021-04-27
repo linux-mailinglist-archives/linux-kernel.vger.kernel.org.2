@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA6036CA07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14C636CA0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237816AbhD0RF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236169AbhD0RFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:05:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF3D61177;
-        Tue, 27 Apr 2021 17:04:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619543081;
-        bh=bDhGZGKzReNUbTyG1hR+JHWjRGrBy35sBAmxQVkNJKk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pqPpOETXZy3Ne2Hi7XU4A7XGzqREah/tYFCCliMt7fYQWGJzkPvdzqRYt6HEf7/tq
-         5b6swoPwstEY3CWdJKpCdL020KYhCZgoKdWB6QJjrUMbfnfRmi+WsWk76ISuiFHSD9
-         JL0LiEnU6kg0AnBw5/XN3QrVEoKTq93BAv45Q+zg=
-Date:   Tue, 27 Apr 2021 19:04:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH 145/190] Revert "leds: lp5523: fix a missing check of
- return value of lp55xx_read"
-Message-ID: <YIhEJxEbOSzCm1+Z@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-146-gregkh@linuxfoundation.org>
+        id S236332AbhD0RIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236279AbhD0RIJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:08:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2546BC061574;
+        Tue, 27 Apr 2021 10:07:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=2Z+EfoLqOBtnltnlA2u82HBsjGCzlQ5xCYdLzak28VE=; b=j/w/B0X+MzMF/1PAxftgLNIxOH
+        b/BwpYu8Rw4erCBS29WORYMPsE/VL0ITbRt30JGfvHjcBInMBeEfGDOaG7NIEJs2MJdjTK5SGYrGx
+        Rir55JAp3v9Qpy3rFmVKMiFgLOmtwV2+JlhMomnPcOkdCcDQDS8v+7pO+D/I4ysAoR0ftlAn8PlxL
+        7sOqMj6SApj4AUvnJLWWiTD5FR+yq+4oqgoc7ysFIP7rb9zkComXbyAfJTvAxxF6SD8ufiYnmuiHn
+        n1zzE4A4pG7QwKXPSLL3ogJZW1Aq4Vy3/QQfyE7ZiDT4mlwR29LxEp/B2Flp1UVBMbKCd9knLCuhf
+        a5gUNcXg==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbRAx-007B32-8f; Tue, 27 Apr 2021 17:07:12 +0000
+Subject: Re: [PATCH] clk: <linux/clk.h>: correct clk_get_parent()
+ documentation
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <20210427031342.5333-1-rdunlap@infradead.org>
+ <20210427093809.GU1463@shell.armlinux.org.uk>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9574eefa-84ed-8674-f575-be47d2a51a1c@infradead.org>
+Date:   Tue, 27 Apr 2021 10:07:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-146-gregkh@linuxfoundation.org>
+In-Reply-To: <20210427093809.GU1463@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:20PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
+On 4/27/21 2:38 AM, Russell King - ARM Linux admin wrote:
+> On Mon, Apr 26, 2021 at 08:13:42PM -0700, Randy Dunlap wrote:
+>> Make the kernel-doc return value agree with both the stub implementation
+>> in <linux/clk.h> and the non-stub function in drivers/clk/clk.c.
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Russell King <linux@armlinux.org.uk>
+>> Cc: linux-clk@vger.kernel.org
+>> ---
+>> There are several drivers that call clk_get_parent() and use its
+>> return value as though it returns an ERR_PTR(). I am working on a
+>> patch series to fix those.
 > 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
+> The whole premise of the CLK API is that:
 > 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
+> - clk values that IS_ERR() returns true are errors
+> - clk values that IS_ERR() returns false are valid
 > 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/leds/leds-lp5523.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
-> index fc433e63b1dc..5036d7d5f3d4 100644
-> --- a/drivers/leds/leds-lp5523.c
-> +++ b/drivers/leds/leds-lp5523.c
-> @@ -305,9 +305,7 @@ static int lp5523_init_program_engine(struct lp55xx_chip *chip)
->  
->  	/* Let the programs run for couple of ms and check the engine status */
->  	usleep_range(3000, 6000);
-> -	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
-> -	if (ret)
-> -		return ret;
-> +	lp55xx_read(chip, LP5523_REG_STATUS, &status);
->  	status &= LP5523_ENG_STATUS_MASK;
->  
->  	if (status != LP5523_ENG_STATUS_MASK) {
-> -- 
-> 2.31.1
-> 
+> and that is that - nice, simple, easy to understand. So the
+> documentation is correct. If clk_get_parent() needs to return an
+> error, it does so by returning an error-pointer, not by returning
+> NULL.
 
-The original commit here did not unwind things properly, so I'll keep
-the revert and create a correct fix for this later.
+Hm, so the 6 drivers that do this are OK then, if
+clk_get_parent() returns NULL?
 
-thanks,
 
-greg k-h
+	parent = clk_get_parent(clk);
+	if (IS_ERR(parent)) {
+		dev_err(cpu_dev, "Cannot get parent clock for CPU0\n");
+		clk_put(clk);
+		return PTR_ERR(parent);
+	}
+
+	/* Get parent CPU frequency */
+	base_frequency =  clk_get_rate(parent);
+
+boom?
+
+-- 
+~Randy
+
