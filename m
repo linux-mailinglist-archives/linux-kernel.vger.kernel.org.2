@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29A436BD7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9167336BD6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhD0CqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:46:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16160 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhD0CqD (ORCPT
+        id S234131AbhD0Co0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:44:26 -0400
+Received: from pv50p00im-ztdg10022001.me.com ([17.58.6.58]:59640 "EHLO
+        pv50p00im-ztdg10022001.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232295AbhD0CoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:46:03 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FTmJ54s1Mzmdsx;
-        Tue, 27 Apr 2021 10:42:13 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.201.183) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 27 Apr 2021 10:45:09 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <vincent.guittot@linaro.org>, <mingo@redhat.com>,
-        <peterz@infradead.org>, <dietmar.eggemann@arm.com>,
-        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>
-CC:     <valentin.schneider@arm.com>, <juri.lelli@redhat.com>,
-        <bristot@redhat.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <xuwei5@huawei.com>,
-        <prime.zeng@hisilicon.com>, <guodong.xu@linaro.org>,
-        <yangyicong@huawei.com>, <liguozhu@hisilicon.com>,
-        <linuxarm@openeuler.org>, <wanghuiqiang@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "Yongjia Xie" <xieyongjia1@huawei.com>
-Subject: [PATCH] sched/fair: don't use waker's cpu if the waker of sync wake-up is interrupt
-Date:   Tue, 27 Apr 2021 14:37:58 +1200
-Message-ID: <20210427023758.4048-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.201.183]
-X-CFilter-Loop: Reflected
+        Mon, 26 Apr 2021 22:44:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1619491422; bh=zwZm+iDbKecQVi47Pk7oEQ5PMltYN64tGoJ4C40Spps=;
+        h=From:To:Subject:Date:Message-Id;
+        b=y7fF6x2Ddk9Ziiqxq8/0R6k1SW8AMir95ovaql+t/AhtGr+7FosEBYny+8xnjU0qO
+         ozNWHwivXpGfHLYB+Hjl3Ozoryxf2cW1FQpOO4BfJGXLQm1koYxBT16qGrEd0bDL+j
+         hEFV6VTtYQZapVV9UNxor9l9kcG4Wd4oP79qqreqW9vxeA3LQzQlDgBUulGvRFxMB+
+         03leRsbDZLRYYHWZ5dTXqo3n1Had5I3qL6H5tTGQ3vYgVR+CkLOUeIi4uP/zgSgIPL
+         1Lygy2VShxX1eJ3e/vh9jQM3US9IudTfn4h2CKogaefXz9g1N1klmmyEg2PNBkFWh4
+         16WzRT/77lrIg==
+Received: from pek-xsong2-d1.wrs.com (unknown [60.247.85.82])
+        by pv50p00im-ztdg10022001.me.com (Postfix) with ESMTPSA id AD486A03F9;
+        Tue, 27 Apr 2021 02:43:37 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH] mm: append __GFP_COMP flag for trace_malloc
+Date:   Tue, 27 Apr 2021 10:43:20 +0800
+Message-Id: <1619491400-1904-1-git-send-email-sxwjean@me.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-27_01:2021-04-26,2021-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=388 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2104270017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-a severe qperf performance decrease was reported in the below use case:
-For a hardware with 2 NUMA nodes, node0 has cpu0-31, node1 has cpu32-63.
-Ethernet is located in node1.
+From: Xiongwei Song <sxwjean@gmail.com>
 
-Run the below commands:
-$ taskset -c 32-63 stress -c 32 &
-$ qperf 192.168.50.166 tcp_lat
-tcp_lat:
-	latency = 2.95ms.
-Normally the latency should be less than 20us. But in the above test,
-latency increased dramatically to 2.95ms.
+When calling kmalloc_order, the flags should include __GFP_COMP here,
+so that trace_malloc can trace the precise flags.
 
-This is caused by ping-pong of qperf between node0 and node1. Since it
-is a sync wake-up and waker's nr_running == 1, WAKE_AFFINE will pull
-qperf to node1, but LB will soon migrate qperf back to node0.
-Not like a normal sync wake-up coming from a task, the waker in the above
-test is an interrupt and nr_running happens to be 1 since stress starts
-32 threads on node1 with 32 cpus.
-
-Testing also shows the performance of qperf won't drop if the number
-of threads are increased to 64, 96 or larger values:
-$ taskset -c 32-63 stress -c 96 &
-$ qperf 192.168.50.166 tcp_lat
-tcp_lat:
-	latency = 14.7us.
-
-Obviously "-c 96" makes "cpu_rq(this_cpu)->nr_running == 1" false in
-wake_affine_idle() so WAKE_AFFINE won't pull qperf to node1.
-
-To fix this issue, this patch checks the waker of sync wake-up is a task
-but not an interrupt. In this case, the waker will schedule out and give
-CPU to wakee.
-
-Reported-by: Yongjia Xie <xieyongjia1@huawei.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 ---
- kernel/sched/fair.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ mm/slab_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6d73bdbb2d40..8ad2d732033d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5829,7 +5829,12 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
- 	if (available_idle_cpu(this_cpu) && cpus_share_cache(this_cpu, prev_cpu))
- 		return available_idle_cpu(prev_cpu) ? prev_cpu : this_cpu;
- 
--	if (sync && cpu_rq(this_cpu)->nr_running == 1)
-+	/*
-+	 * If this is a sync wake-up and the only running thread is just
-+	 * waker, thus, waker is not interrupt, we assume wakee will get
-+	 * the cpu of waker soon
-+	 */
-+	if (sync && cpu_rq(this_cpu)->nr_running == 1 && in_task())
- 		return this_cpu;
- 
- 	if (available_idle_cpu(prev_cpu))
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 585a6f9..c23e1e8 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -928,7 +928,7 @@ EXPORT_SYMBOL(kmalloc_order);
+ void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
+ {
+ 	void *ret = kmalloc_order(size, flags, order);
+-	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
++	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags | __GFP_COMP);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(kmalloc_order_trace);
 -- 
-2.25.1
+2.7.4
 
