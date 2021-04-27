@@ -2,148 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFC936C125
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7522036C12D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhD0IkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhD0IkH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:40:07 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD9CC061574;
-        Tue, 27 Apr 2021 01:39:23 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c19so4982451pfv.2;
-        Tue, 27 Apr 2021 01:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WbD3QVbXZu3WNT1Bk5QSK4arbQcsJJhMykackKFFxrs=;
-        b=LMCCQWlhSuuqDiNjoQlZFEsiCaZD5ahO6hrZdrZ1vLgzmHjYaQwTpd3I5JV4kOHo3B
-         Dt7fbmaM4y2YRG/2ep+RMdGS6Ug5/wSikua5SkBJ8EiJjgh683WLHPrnST0yj3DMY6cf
-         kxXdpvriQHWq16JpjtYQDqIZXgFtDwDbEKmazJkGrvCgZFQDoIOI4Qrws62nqikDfi9C
-         sDTlb9+8O3Ho5aVzQxJ7nJQcAo8FIi1Sp8gdqhBLBZgqcwFY8htPLW1HW8GsqP2K36QI
-         vNx6VCG9hPXtO8sdaiq690Qn5hVM3NqG+7AdzkMlhxV8BipkqY32Sa5vJJlG0rMgqTqU
-         880A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WbD3QVbXZu3WNT1Bk5QSK4arbQcsJJhMykackKFFxrs=;
-        b=NhZf45/hL4wJigpOD0qh+FjgHO+0WJYSKbTbO4PQGSOkK2uj+Xh5kvAC2Anf5m/WAt
-         qqwAuhkdKTn5SULAh6BycMzF30mvuQJngxlh08KnnfUOpHzV59BMS3tyc5aPSzvHSlDs
-         PMsTkNjVydM5yg7FkJ1//+IH+6SnV7OySPLBUs+xxg/Sh90OSH+17PhXi9mljOTdIaHs
-         cCHxZduCPE4Ah/lLBNbFcOfWxlF4cd1fWbuNUarALyAGFx52qyGDOW4AYyFDdgx+4/CY
-         EIKEmgDGPoVOwHSqJHd1QMEZYBaSR3Tm0YA/nAAUxlqhtte2HP+YNBc0dSw96/4VtW3a
-         FB2A==
-X-Gm-Message-State: AOAM533z/rY7ckT/UCkOOe3jSFP2+0kfA3WiCnz6rD03c84WAaOTh/QD
-        Df/C7vPJj6d+ziXrL8wEAZN/KAO7eNDmINjl7H0=
-X-Google-Smtp-Source: ABdhPJwBTRVgWc9tF+yqjNvYtqkQUx6Ee/MwFxPcbVWb/QYygiRoBKQmN8ENn07b7VZqh8TVAYoYcCj/SUuDJM1DPPk=
-X-Received: by 2002:a65:5a4d:: with SMTP id z13mr20821633pgs.4.1619512762749;
- Tue, 27 Apr 2021 01:39:22 -0700 (PDT)
+        id S235028AbhD0IqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:46:11 -0400
+Received: from mga01.intel.com ([192.55.52.88]:16739 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229487AbhD0IqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 04:46:09 -0400
+IronPort-SDR: OMWkYDGjt/LxppJ3zsJTXN8IjJLlg9esSbblAgihHQad024EQJ4Gi27uVKE6xe4FeIsrnhPUKz
+ UkWuJ0e/gIvQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="217179726"
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="217179726"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 01:45:26 -0700
+IronPort-SDR: OG9ab/gCwcLz+4i8DJjBybAC0UhDkAEnESMlBxalB40WjB8GRSsa83ZjC0icr0i4V7be276nkR
+ kiSbYlZfTbjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="526029226"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga001.fm.intel.com with ESMTP; 27 Apr 2021 01:45:22 -0700
+Date:   Tue, 27 Apr 2021 16:45:22 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        0day robot <lkp@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel-team@fb.com, neeraju@codeaurora.org, zhengjun.xing@intel.com
+Subject: Re: [clocksource]  8c30ace35d:
+ WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
+Message-ID: <20210427084522.GB65970@shbuild999.sh.intel.com>
+References: <20210425224709.1312655-6-paulmck@kernel.org>
+ <20210427072702.GC32408@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-References: <1619080202-31924-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1619080202-31924-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <CAHp75VfCbbnN-TBJiYFb=6Rhf30jA-Hz1p1UORsubF7UG6-ATw@mail.gmail.com>
- <DM5PR02MB3877B234F85F3B4887DF3A95BD429@DM5PR02MB3877.namprd02.prod.outlook.com>
- <CAHp75VfugGqLNU8LKJ_K3dPr=-eh6LHx75eV=33jH9OnryBoGA@mail.gmail.com>
- <d1220d39-4be4-a375-042f-e7bb0264ed35@xilinx.com> <CAHp75Vejqe3r6s5eoOfza0DjXEwN-hK73FWkxx6VNpx0y1ms2w@mail.gmail.com>
- <180ca47b-d627-2d7b-1d18-5557bfcf5875@xilinx.com>
-In-Reply-To: <180ca47b-d627-2d7b-1d18-5557bfcf5875@xilinx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Apr 2021 11:39:06 +0300
-Message-ID: <CAHp75Ve1MY6wms7d1e2cByzV0Zy-rRs-qNMk=6X_fw=zu4rbgw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Sai Krishna Potthuri <lakshmis@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        git <git@xilinx.com>,
-        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427072702.GC32408@xsang-OptiPlex-9020>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 10:38 AM Michal Simek <michal.simek@xilinx.com> wro=
-te:
-> On 4/27/21 9:31 AM, Andy Shevchenko wrote:
-> > On Tue, Apr 27, 2021 at 10:23 AM Michal Simek <michal.simek@xilinx.com>=
- wrote:
-> >> On 4/26/21 4:04 PM, Andy Shevchenko wrote:
-> >>> On Mon, Apr 26, 2021 at 4:20 PM Sai Krishna Potthuri
-> >>> <lakshmis@xilinx.com> wrote:
-> >>>>> From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >>>>> Sent: Friday, April 23, 2021 9:24 PM
-> >>>>> On Thu, Apr 22, 2021 at 11:31 AM Sai Krishna Potthuri
-> >>>>> <lakshmi.sai.krishna.potthuri@xilinx.com> wrote:
+On Tue, Apr 27, 2021 at 03:27:02PM +0800, kernel test robot wrote:
+> 
+> 
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 8c30ace35da3b362089f5c903144d762a065b58a ("[PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early pre-calibration drift")
+> url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210426-064834
+> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
+> 
+> in testcase: boot
+> 
+> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> [   70.350923] WARNING: CPU: 0 PID: 1 at kernel/time/clocksource.c:435 clocksource_watchdog (kbuild/src/x86_64/kernel/time/clocksource.c:435) 
+> [   70.353152] Modules linked in:
+> [   70.354074] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc3-00031-g8c30ace35da3 #2
+> [   70.356180] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [   70.358471] RIP: 0010:clocksource_watchdog (kbuild/src/x86_64/kernel/time/clocksource.c:435) 
 
-...
+Some log extraced from the attached dmesg.xz:
 
-> >>>>>> +       help
-> >>>>>> +         This selects the pinctrl driver for Xilinx ZynqMP platfo=
-rm.
-> >>>>>> +         This driver will query the pin information from the firm=
-ware
-> >>>>>> +         and allow configuring the pins.
-> >>>>>> +         Configuration can include the mux function to select on =
-those
-> >>>>>> +         pin(s)/group(s), and various pin configuration parameter=
-s
-> >>>>>> +         such as pull-up, slew rate, etc.
-> >>>>>
-> >>>>> Missed module name.
-> >>>> Is this (module name) a configuration option in Kconfig?
-> >>>
-> >>> It's a text in a free form that sheds light on how the module will be
-> >>> named in case the user will choose "m".
-> >>
-> >> Is this described somewhere in documentation that module name should b=
-e
-> >> the part of symbol description? I was looking at pinctrl Kconfig and I
-> >> can't see any description like this there that's why I want to double
-> >> check.
-> >
-> > I dunno if it is described, the group of maintainers require that for s=
-ome time.
-> > I personally found this as a good practice.
->
-> I don't think it is a big deal to add it but it is a question if this
-> information is useful because module names should correspond target in
-> Makefile which can be considered as additional information.
+[    8.376387] clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x26d347b2dd9, max_idle_ns: 440795223616 ns
+[    8.890982] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1911260446275000 ns
+[    9.132146] clocksource: Switched to clocksource kvm-clock
+[   10.324011] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
 
-For you as a *developer* =E2=80=94 yes, for me as a *user* =E2=80=94 no. Yo=
-u are
-telling me something like "hey, if you want to know more you must dig
-into kernel sources". No, this is not how we should treat users,
-should we?
+[   10.397945] Trying to unpack rootfs image as initramfs...
+[   70.350923] WARNING: CPU: 0 PID: 1 at kernel/time/clocksource.c:435 clocksource_watchdog+0x3b8/0x4c0
+[  199.544368] Freeing initrd memory: 592780K
 
+[  199.551256] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x26d347b2dd9, max_idle_ns: 440795223616 ns
 
-> >> Also if this is a rule checkpatch should be extended to checking this.
-> >
-> > There was a discussion at some point to add a check that help
-> > description shouldn't be less than 3 lines. Not sure what the outcome
-> > of it.
->
-> This check is likely there because I have definitely seen these messages
-> coming but never seen any name checking.
+Seems the initramfs took too long time, and exceeds the 60
+seconds of WATCHDOG_SYNC_FORGIVENESS time, which triggers
+the warning.
 
-Yeah, it was about insisting developers to be more verbose in the help
-descriptions, but the name is, as I said, an activity "de facto"
-rather than "de jure". Just look around for the latest new driver
-contributions (I follow IIO, I2C, SPI, GPIO, pin control) for how they
-provide their help descriptions (I admit that not everybody follows
-that practice).
+Also I asked Oliver about the reproduce rate, and he said the
+warning was seen only once for all around 100 boot tests. From
+other good boot logs, the initramfs unpacking usually only takes
+about 20 seconds. 
 
---=20
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Feng
+
+> [   70.382655]  <IRQ>
+> [   70.386145] call_timer_fn (kbuild/src/x86_64/arch/x86/include/asm/jump_label.h:25 kbuild/src/x86_64/include/linux/jump_label.h:200 kbuild/src/x86_64/include/trace/events/timer.h:125 kbuild/src/x86_64/kernel/time/timer.c:1432) 
+> [   70.387393] run_timer_softirq (kbuild/src/x86_64/kernel/time/timer.c:1477 kbuild/src/x86_64/kernel/time/timer.c:1745 kbuild/src/x86_64/kernel/time/timer.c:1721 kbuild/src/x86_64/kernel/time/timer.c:1758) 
+> [   70.389855] __do_softirq (kbuild/src/x86_64/arch/x86/include/asm/jump_label.h:25 kbuild/src/x86_64/include/linux/jump_label.h:200 kbuild/src/x86_64/include/trace/events/irq.h:142 kbuild/src/x86_64/kernel/softirq.c:346) 
+> [   70.390965] irq_exit_rcu (kbuild/src/x86_64/kernel/softirq.c:221 kbuild/src/x86_64/kernel/softirq.c:422 kbuild/src/x86_64/kernel/softirq.c:434) 
+> [   70.392198] sysvec_apic_timer_interrupt (kbuild/src/x86_64/arch/x86/kernel/apic/apic.c:1100 (discriminator 14)) 
+> [   70.393575]  </IRQ>
+> [   70.394355] asm_sysvec_apic_timer_interrupt (kbuild/src/x86_64/arch/x86/include/asm/idtentry.h:632) 
+> [   70.395968] RIP: 0010:__memcpy (kbuild/src/x86_64/arch/x86/lib/memcpy_64.S:39) 
+> [ 70.397140] Code: 84 00 00 00 00 00 66 90 48 89 fe 48 c7 c7 7e 0a a2 a7 e9 f1 fe ff ff cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
+> [   70.404945] RSP: 0000:ffffb8e500013ae8 EFLAGS: 00010246
+> [   70.406424] RAX: ffff9fc255c00000 RBX: 0000000000001000 RCX: 0000000000000200
+> [   70.408416] RDX: 0000000000000000 RSI: ffff9fc2423e4bb0 RDI: ffff9fc255c00000
+> [   70.410277] RBP: ffff9fc255c00000 R08: ffff9fc140000000 R09: 0000000000004bb0
+> [   70.412300] R10: ffff9fc2402a3180 R11: 0000000000000000 R12: 0000000000001000
+> [   70.414194] R13: ffffb8e500013c08 R14: 0000000000001000 R15: ffffe73dc0000000
+> [   70.416239] iov_iter_copy_from_user_atomic (kbuild/src/x86_64/lib/iov_iter.c:991 (discriminator 10)) 
+> [   70.417718] generic_perform_write (kbuild/src/x86_64/mm/filemap.c:3586) 
+> [   70.419241] __generic_file_write_iter (kbuild/src/x86_64/mm/filemap.c:3705) 
+> [   70.420517] generic_file_write_iter (kbuild/src/x86_64/include/linux/fs.h:780 kbuild/src/x86_64/mm/filemap.c:3737) 
+> [   70.421643] __kernel_write (kbuild/src/x86_64/fs/read_write.c:550 (discriminator 1)) 
+> [   70.422769] kernel_write (kbuild/src/x86_64/include/linux/fs.h:2903 kbuild/src/x86_64/fs/read_write.c:580 kbuild/src/x86_64/fs/read_write.c:569) 
+> [   70.423999] ? write_buffer (kbuild/src/x86_64/init/initramfs.c:436) 
+> [   70.425104] xwrite+0x31/0x62 
+> [   70.426262] do_copy (kbuild/src/x86_64/init/initramfs.c:394) 
+> [   70.427333] ? write_buffer (kbuild/src/x86_64/init/initramfs.c:436) 
+> [   70.428395] write_buffer (kbuild/src/x86_64/init/initramfs.c:430 (discriminator 1)) 
+> [   70.429461] flush_buffer (kbuild/src/x86_64/init/initramfs.c:442) 
+> [   70.430523] ? initrd_load (kbuild/src/x86_64/init/initramfs.c:44) 
+> [   70.431700] __gunzip (kbuild/src/x86_64/lib/decompress_inflate.c:161) 
+> [   70.432696] ? bunzip2 (kbuild/src/x86_64/lib/decompress_inflate.c:39) 
+> [   70.433760] ? __gunzip (kbuild/src/x86_64/lib/decompress_inflate.c:207) 
+> [   70.434841] gunzip (kbuild/src/x86_64/lib/decompress_inflate.c:207) 
+> [   70.435927] ? initrd_load (kbuild/src/x86_64/init/initramfs.c:44) 
+> [   70.437032] unpack_to_rootfs (kbuild/src/x86_64/init/initramfs.c:500) 
+> [   70.438284] ? initrd_load (kbuild/src/x86_64/init/initramfs.c:44) 
+> [   70.439507] ? reserve_initrd_mem (kbuild/src/x86_64/init/initramfs.c:662) 
+> [   70.440794] populate_rootfs (kbuild/src/x86_64/init/initramfs.c:676) 
+> [   70.441946] ? reserve_initrd_mem (kbuild/src/x86_64/init/initramfs.c:662) 
+> [   70.443386] do_one_initcall (kbuild/src/x86_64/init/main.c:1226) 
+> [   70.444562] ? rcu_read_lock_sched_held (kbuild/src/x86_64/include/linux/lockdep.h:278 kbuild/src/x86_64/kernel/rcu/update.c:125) 
+> [   70.445893] kernel_init_freeable (kbuild/src/x86_64/init/main.c:1298 kbuild/src/x86_64/init/main.c:1315 kbuild/src/x86_64/init/main.c:1335 kbuild/src/x86_64/init/main.c:1537) 
+> [   70.447344] ? rest_init (kbuild/src/x86_64/init/main.c:1421) 
+> [   70.448383] kernel_init (kbuild/src/x86_64/init/main.c:1426) 
+> [   70.449219] ret_from_fork (kbuild/src/x86_64/arch/x86/entry/entry_64.S:300) 
+> [   70.450175] irq event stamp: 2300500
+> [   70.451358] hardirqs last enabled at (2300510): console_unlock (kbuild/src/x86_64/arch/x86/include/asm/irqflags.h:45 (discriminator 1) kbuild/src/x86_64/arch/x86/include/asm/irqflags.h:80 (discriminator 1) kbuild/src/x86_64/arch/x86/include/asm/irqflags.h:145 (discriminator 1) kbuild/src/x86_64/kernel/printk/printk.c:2605 (discriminator 1)) 
+> [   70.453717] hardirqs last disabled at (2300519): console_unlock (kbuild/src/x86_64/kernel/printk/printk.c:2520 (discriminator 1)) 
+> [   70.456262] softirqs last enabled at (2299674): __do_softirq (kbuild/src/x86_64/arch/x86/include/asm/preempt.h:27 kbuild/src/x86_64/kernel/softirq.c:373) 
+> [   70.458585] softirqs last disabled at (2299819): irq_exit_rcu (kbuild/src/x86_64/kernel/softirq.c:221 kbuild/src/x86_64/kernel/softirq.c:422 kbuild/src/x86_64/kernel/softirq.c:434) 
+> [   70.461343] ---[ end trace 5049069f8395a579 ]---
+> [  199.544368] Freeing initrd memory: 592780K
+> [  199.545765] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+> [  199.547432] software IO TLB: mapped [mem 0x00000000bbfe0000-0x00000000bffe0000] (64MB)
+> [  199.550168] kvm: no hardware support
+> [  199.551256] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x26d347b2dd9, max_idle_ns: 440795223616 ns
+> [  199.563791] Initialise system trusted keyrings
+> [  199.565211] Key type blacklist registered
