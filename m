@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAD236C9A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6A036C9A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236638AbhD0Qn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34544 "EHLO mail.kernel.org"
+        id S236305AbhD0Qnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:43:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:54934 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229678AbhD0Qn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:43:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8831613D9;
-        Tue, 27 Apr 2021 16:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619541764;
-        bh=nfsUE5d9WGKYmNSPIsfCuFsBlRL9oUOT0wcmmvAMiW8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OPKpLHrNtK82CvfJn2HXFtAfG5GPTciVrqiyMuyH7WIWB3iLjN/GKMoTroiGxZgOs
-         UCoR2GuBhN6h3FsJziR/H5uZ6irkCelXs5f+Cs3suZ0zDMnvRbCG0isYTVwTulJb5/
-         3i7c4HemgmPoiR9HbP5iyFn5jZXF5nyB6PIcd7bY=
-Date:   Tue, 27 Apr 2021 18:42:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>, Avri Altman <avri.altman@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH 118/190] Revert "scsi: ufs: fix a missing check of
- devm_reset_control_get"
-Message-ID: <YIg/AqwxTgJsbrVs@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-119-gregkh@linuxfoundation.org>
+        id S236975AbhD0Qnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:43:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DF52D6E;
+        Tue, 27 Apr 2021 09:42:56 -0700 (PDT)
+Received: from bogus (unknown [10.57.61.96])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 97A353F73B;
+        Tue, 27 Apr 2021 09:42:54 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:42:52 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by
+ default""
+Message-ID: <20210427164252.xwyxfhhiqluitgfb@bogus>
+References: <20210302211133.2244281-4-saravanak@google.com>
+ <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
+ <CAGETcx_ayXd1uDR6WHWxLmskYwOSjyynNi3Rt8irRUrfnr266w@mail.gmail.com>
+ <23ab7a11-330c-4d3d-00c1-984c5248464e@gmail.com>
+ <20210427074807.GI43717@e120937-lin>
+ <CA+-6iNz_kL0DnbRb0A=WSSLK0mnqw35S47TDXq5rhwXL_VWdPg@mail.gmail.com>
+ <20210427141116.GJ43717@e120937-lin>
+ <20210427151042.j7hku7pxqz56uyt6@bogus>
+ <0887ce92-e9d8-47ec-0077-4c1f2fd46f87@gmail.com>
+ <CAGETcx9rcrdzt0QqSNDEsMN4Gfay8kryNjTktAuyBEQX74S9Vg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-119-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGETcx9rcrdzt0QqSNDEsMN4Gfay8kryNjTktAuyBEQX74S9Vg@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:53PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 63a06181d7ce169d09843645c50fea1901bc9f0a.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Avri Altman <avri.altman@wdc.com>
-> Cc: Martin K. Petersen <martin.petersen@oracle.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/scsi/ufs/ufs-hisi.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-hisi.c b/drivers/scsi/ufs/ufs-hisi.c
-> index 0aa58131e791..7d1e07a9d9dd 100644
-> --- a/drivers/scsi/ufs/ufs-hisi.c
-> +++ b/drivers/scsi/ufs/ufs-hisi.c
-> @@ -468,10 +468,6 @@ static int ufs_hisi_init_common(struct ufs_hba *hba)
->  	ufshcd_set_variant(hba, host);
->  
->  	host->rst  = devm_reset_control_get(dev, "rst");
-> -	if (IS_ERR(host->rst)) {
-> -		dev_err(dev, "%s: failed to get reset control\n", __func__);
-> -		return PTR_ERR(host->rst);
-> -	}
->  
->  	ufs_hisi_set_pm_lvl(hba);
->  
-> -- 
-> 2.31.1
-> 
+On Tue, Apr 27, 2021 at 09:28:16AM -0700, Saravana Kannan wrote:
+> On Tue, Apr 27, 2021 at 9:25 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
 
-This commit is incorrect, it does not properly clean up on the error
-path, so I'll keep the revert and fix it up properly.
+[...]
 
-thanks,
+> > Right, unfortunately, short of having some special casing for SCMI and
+> > checking that if we have both an "arm,smc-id" and "mboxes" phandle we
+> > should prefer the former, there is not probably much that can be done
+> > here. Do we want to do that?
+>
+> Definite no for special casing per device nodes in fw_devlink code :)
+>
 
-greg k-h
+Thanks for the confirmation, but I had already assumed so with 100% certainty
+in my last reply 😄.
+
+--
+Regards,
+Sudeep
