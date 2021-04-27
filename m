@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EC036CE67
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21ECD36CE7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhD0WFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        id S236935AbhD0WMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236965AbhD0WFf (ORCPT
+        with ESMTP id S236448AbhD0WMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:05:35 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23700C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:04:52 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id m11so1167706pfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tvy9sjWqnF7JDLiqaC+vIZWUwHqerNYoWSgKZH8wt6M=;
-        b=me1+oJICsXM/Honee56OF6na2Z0Qe5yGdxkxw7as4C5ZgfzMtjQlpHfnmNak4ps01w
-         DxFLH3IDfdqPaUuCb9yLX6dg3RNuritgPghiVHkqFJHFBJvS+CHD7DR+MB4LVcq6YZdD
-         iFC35b73L3K0ItwA2PUAQsTkcLCacyl0w2WtTs3iLRB4d4Jw75w0wSxcbsSOpDooGsQr
-         NOO1CCqzrxph4RjD11FMIiiOYGTm3xlf9u7EovjM6KmpPhK8t5O85LZN1OB7aQpX5hlW
-         hGPrprBRcItrz4FhcKYLiwtGPoo28sIbRahPRTA5i5vcRS4YmFC8VtHoW8uAv/KNZAaY
-         NrMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tvy9sjWqnF7JDLiqaC+vIZWUwHqerNYoWSgKZH8wt6M=;
-        b=tlokcYkI7FsTAahhWHetqFgCYckH74tIrgV8PtNP+Uvg2GJPGhAXyXxzl/LuvvQ9Dj
-         y4LT/+lpFVywV001ITAlFrKFcPWccqohXUaoc9iS9zGGqPYuPWbgx0FEFKOeYuTSTtuP
-         cV8Unp46qxT4RDquzRaFA8mNTWoOeqQbod0NOEBbOWOVDtNqez94v5+poYOsUyiw9Tsf
-         BMSlmXFCJvdK30ndCY9TnhNrPUgX2lAd+V/v20LxCm8V2ia99SH2U6Lntn/VXbKQLwA5
-         5vgH2qW/HbDz64VCO3XySQ6+zAqbr9ITwntSJSMV3j9eL0jOrVMtxMXskLQfD3Nw2tTZ
-         tAWQ==
-X-Gm-Message-State: AOAM5302BW44e0zMAjWID0lYtFnaPwnuyhOd/ceaBznRZiATjdniIU0j
-        uLzFrJk5p36sXeaJn3xVcqfTTw==
-X-Google-Smtp-Source: ABdhPJzyI0QDlQb9VCOlfpWW47x4/lUh4o18JWTGrDq9omVNi86NR1NQOYD6sx1HCX1/v89M9XzJIA==
-X-Received: by 2002:a63:144e:: with SMTP id 14mr23922285pgu.53.1619561091467;
-        Tue, 27 Apr 2021 15:04:51 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id in1sm2965300pjb.23.2021.04.27.15.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 15:04:50 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 22:04:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
-        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org
-Subject: Re: [PATCH v2 1/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-Message-ID: <YIiKf21hqOo4W17H@google.com>
-References: <20210421173716.1577745-1-pbonzini@redhat.com>
- <20210421173716.1577745-2-pbonzini@redhat.com>
+        Tue, 27 Apr 2021 18:12:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B63C061574;
+        Tue, 27 Apr 2021 15:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=8S51hkxlGcSMjLm7YwZm1jMdNJla3qEcWOkEj52n5Mg=; b=TJ3lx1bhRLgSaWyeCUnhNQzcHi
+        trKFahM2pKL7Twf30KHwsodJCQDar8WQxdynQbhOUI/zcj26Muje6vDEMC45KyxDkXHb4v9Oj7S3x
+        /YNuiThGs0H8I5dcCEFLjD8SLCLh7+2dBbxEuGg7yqRdU3DwYVZ7EnqJ/E7MO5dMW0X+GoivUK1HV
+        bF70x1WWyQDkLSOib+IbR+KCXi+I5gtqIyfAsn4pTgpKCEiwZNtLyExaQIs8PipmE85oG7Rafgt2g
+        8hDWfAjT9W0z00dUDJQ0ne+g1yYp8AjDK39UZl2KiHMDxJd8Rh6Md7RgKkoA4MKJ8W6jRhFFGAov3
+        H/fAyK3w==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbVuA-007Tyw-P8; Tue, 27 Apr 2021 22:10:13 +0000
+Subject: Re: [GIT PULL][PATCH v10 0/4] Update to zstd-1.4.10
+To:     Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Sterba <dsterba@suse.cz>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Felix Handte <felixh@fb.com>,
+        Eric Biggers <ebiggers@kernel.org>
+References: <20210426234621.870684-1-nickrterrell@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <10397ef2-119d-b065-2e82-cac1d800dfd0@infradead.org>
+Date:   Tue, 27 Apr 2021 15:09:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421173716.1577745-2-pbonzini@redhat.com>
+In-Reply-To: <20210426234621.870684-1-nickrterrell@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021, Paolo Bonzini wrote:
-> @@ -8334,6 +8350,26 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->  		kvm_sched_yield(vcpu, a0);
->  		ret = 0;
->  		break;
-> +	case KVM_HC_PAGE_ENC_STATUS: {
-> +		u64 gpa = a0, npages = a1, enc = a2;
+On 4/26/21 4:46 PM, Nick Terrell wrote:
+> From: Nick Terrell <terrelln@fb.com>
+> 
+> Please pull from
+> 
+>   git@github.com:terrelln/linux.git tags/v10-zstd-1.4.10
+> 
+> to get these changes. Alternatively the patchset is included.
+> 
+> This patchset lists me as the maintainer for zstd and upgrades the zstd library
+> to the latest upstream release. The current zstd version in the kernel is a
+> modified version of upstream zstd-1.3.1. At the time it was integrated, zstd
+> wasn't ready to be used in the kernel as-is. But, it is now possible to use
+> upstream zstd directly in the kernel.
 
-newline
+Hi Nick,
 
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS)
-> +		    || !(vcpu->kvm->arch.hypercall_exit_enabled & (1 << KVM_HC_PAGE_ENC_STATUS)))
+Several of the source (.c, .h) files use comments blocks that
+begin with "/**", which means "this is the beginning of a kernel-doc
+comment" when in the kernel source tree. However, they are not in
+kernel-doc format.
 
-|| on previous line, pretty please :-)
+During the automatic generation from upstream zstd, please find a way
+to change /** to /*.
 
-> +			break;
-> +
-> +		ret = -KVM_EINVAL;
-> +		if (!PAGE_ALIGNED(gpa) || !npages ||
-> +		    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa))
-> +			break;
-> +
-> +		vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
-> +		vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
-> +		vcpu->run->hypercall.args[0]  = gpa;
-> +		vcpu->run->hypercall.args[1]  = npages;
-> +		vcpu->run->hypercall.args[2]  = enc;
-> +		vcpu->run->hypercall.longmode = op_64_bit;
-> +		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
-> +		return 0;
-> +	}
->  	default:
->  		ret = -KVM_ENOSYS;
->  		break;
+This does need to slow down the acceptance of this patch series IMO.
+
+
+thanks.
+-- 
+~Randy
+
