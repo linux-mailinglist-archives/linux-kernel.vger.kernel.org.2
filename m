@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6B836C915
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB81936C917
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbhD0QLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44274 "EHLO mail.kernel.org"
+        id S237598AbhD0QQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:16:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237348AbhD0QKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:10:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A91446113D;
-        Tue, 27 Apr 2021 16:09:55 +0000 (UTC)
+        id S237503AbhD0QMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:12:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0F10613E7;
+        Tue, 27 Apr 2021 16:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619539796;
-        bh=37hH6Rz86qxtU96vdEiaHVP25zIDIraai92kl1VJv+c=;
+        s=korg; t=1619539888;
+        bh=sWfj4/YD88XWP9TQDYozP4U5HS1T7QaBgPwNmFATYlU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ely7iI8RrigdHzjHrsk2RcAcs5Dmcpuo+2/zDOq7vIlmSKauCMJ5OBcfNsE4LiLPh
-         em85pDuYEu7tTTVnjjus0v1qw9Y+IwLww9KTC1Bq2H3I3LP7D1mcz9WA/Eba3/yc//
-         D2hwMdIBcmrgocezqyQftAq9aUZU/6hwu+7S2IHE=
-Date:   Tue, 27 Apr 2021 18:09:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ashish Kalra <eashishkalra@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Abheek Dhawan <adawesomeguy222@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Waiman Long <longman@redhat.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: wlan-ng: silence incorrect type in argument
- 1 (different address spaces) warningJoe Perches <joe@perches.com>,
-Message-ID: <YIg3UcWgwElAsUnI@kroah.com>
-References: <20210427144556.GA19024@ashish>
+        b=o/h88WMzn2Ywa8/GnKK3jD2ZlBO2/j1LOTfWQgTjEPBBkT4eyKI/wwEltGRpRePzC
+         vCM5/OsTz8kNQZxkdocoiwlmHts4u1jeeM9lMnhOEupaiEnSRYVO9QXfHwAvnd+SDR
+         fUoD5mTKkuDUCstHbVcxug8Q8se//4XkI04Qqpds=
+Date:   Tue, 27 Apr 2021 18:11:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 167/190] Revert "gdrom: fix a memory leak bug"
+Message-ID: <YIg3rBvkLzgHkZr2@kroah.com>
+References: <20210421130105.1226686-168-gregkh@linuxfoundation.org>
+ <23ffd3c5-0095-6a95-8c30-2b6f67377ce7@axentia.se>
+ <14bdfbee-b8b9-d8ac-de34-b6d852d1485b@kernel.dk>
+ <YIgLIscB1I8MxkWP@kroah.com>
+ <5a55e8d4-e9b6-1854-51bc-afacd3ca097c@axentia.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427144556.GA19024@ashish>
+In-Reply-To: <5a55e8d4-e9b6-1854-51bc-afacd3ca097c@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 02:45:56PM +0000, Ashish Kalra wrote:
-> Abheek Dhawan <adawesomeguy222@gmail.com>,
-> Johannes Weiner <hannes@cmpxchg.org>,
-> Romain Perier <romain.perier@gmail.com>,
-> Waiman Long <longman@redhat.com>,
-> Allen Pais <apais@linux.microsoft.com>,
-> Ivan Safonov <insafonov@gmail.com>,
-> linux-staging@lists.linux.dev,
-> linux-kernel@vger.kernel.org
+On Tue, Apr 27, 2021 at 04:03:01PM +0200, Peter Rosin wrote:
+> On 2021-04-27 15:01, Greg KH wrote:
+> > On Fri, Apr 23, 2021 at 08:20:30AM -0600, Jens Axboe wrote:
+> >> On 4/22/21 3:29 PM, Peter Rosin wrote:
+> >>>> This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
+> >>>
+> >>> The reverted patch looks fishy.
+> >>>
+> >>> gc.cd_info is kzalloc:ed on probe. In case probe fails after this allocation, the
+> >>> memory is kfree:d but the variable is NOT zeroed out.
+> >>>
+> >>> AFAICT, the above leads to a double-free on exit by the added line.
+> >>>
+> >>> I believe gd.cd_info should be kfree:d on remove instead.
+> >>>
+> >>> However, might not gc.toc also be kfree:d twice for similar reasons?
+> >>>
+> >>> I could easily be mistaken.
+> >>
+> >> >From taking a quick look the other day, that's my conclusion too. I
+> >> don't think the patch is correct, but I don't think the surrounding code
+> >> is correct right now either.
+> > 
+> > Thanks for the review from both of you, I'll keep this commit in the
+> > tree.
+> Err, which commit is "this" and what tree are you keeping it in? I
+> think you mean that you are keeping the revert in your tree with
+> reverts, and not that you mean that we should keep the original
+> commit in Linus' tree.
 
-Why is this here in the email body?
+That is correct, I will be keeping this revert in my tree.
 
-> Upon running sparse, "warning: incorrect type in argument 1 (different
-> address spaces) is brought to notice for this file.let's correct data type for
-> variable data adding __user to make it cleaner and silence the Sparse
-> warning. This is version 2 of the patch, version 1 can be found at
-> https://lkml.org/lkml/2021/4/20/203
+> In any case, I'd think that the original memory leak is somewhat
+> better than the introduced double-free and therefore the revert
+> should be done.
 
-Always use lore.kernel.org links, not a random other site that we have
-no idea who runs it.
-
-And no need to say this in that form, please list below the --- line
-what changed from v1.
+Will do that.
 
 thanks,
 
