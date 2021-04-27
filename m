@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2215736C356
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E441C36C33E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbhD0K2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235372AbhD0K17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:27:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC675613C3;
-        Tue, 27 Apr 2021 10:27:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619519236;
-        bh=cJU/MoL9RhqbU2INYkiDGdONljhoe6cy+RDqPfC2nLY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qKyPAg+L9jydgdJExnqviwybORcKu++MgkXDF6vU8hl4oJf8lHDcHKq8Z46M9XNkK
-         7z0lY6LwCFVzKvH8CjFNPgGl8blzyTmt5QM2ZkDNj8Mffs92orv4YA5/wkjuGnYwyb
-         fCN+2Q6G0rJiYt+/1/x11Wny1TVxsuLmGqb772VvdRP1EYpMuQ5pRAQr7Psc4Ti6Bw
-         LsgRaZrTMKgO+ssXZfN9Mi6HTFlh5gwsO/jr27zn6HM0Ia0RAEWej19JHGSRNLOyvR
-         uY9/l/WA6Dn/pcSrlujL8VPuw8TA7rfCeeBGBxDkkNigGa02noa9bD74E8VdH0VH42
-         myKziTQR7lDSw==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lbKvx-000o1L-Cq; Tue, 27 Apr 2021 12:27:13 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v3 44/79] media: i2c: ov13858: use pm_runtime_resume_and_get()
-Date:   Tue, 27 Apr 2021 12:26:34 +0200
-Message-Id: <32de6ac2a1ae6f62f38ee22e606af0990b3f2d24.1619519080.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+        id S235398AbhD0K13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:27:29 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:43223 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230341AbhD0K1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:27:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UWzF1d5_1619519195;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWzF1d5_1619519195)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 27 Apr 2021 18:26:41 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     perex@perex.cz
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ALSA: usb-audio: Remove redundant assignment to len
+Date:   Tue, 27 Apr 2021 18:26:34 +0800
+Message-Id: <1619519194-57806-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-added pm_runtime_resume_and_get() in order to automatically handle
-dev->power.usage_count decrement on errors.
+Variable len is set to zero but this value is never read as it is
+overwritten with a new value later on, hence it is a redundant
+assignment and can be removed.
 
-Use the new API, in order to cleanup the error check logic.
+Cleans up the following clang-analyzer warning:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+sound/usb/mixer.c:2713:3: warning: Value stored to 'len' is never read
+[clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/media/i2c/ov13858.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/usb/mixer.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/i2c/ov13858.c b/drivers/media/i2c/ov13858.c
-index 4a2885ff0cbe..9598c0b19603 100644
---- a/drivers/media/i2c/ov13858.c
-+++ b/drivers/media/i2c/ov13858.c
-@@ -1472,11 +1472,9 @@ static int ov13858_set_stream(struct v4l2_subdev *sd, int enable)
- 	}
- 
- 	if (enable) {
--		ret = pm_runtime_get_sync(&client->dev);
--		if (ret < 0) {
--			pm_runtime_put_noidle(&client->dev);
-+		ret = pm_runtime_resume_and_get(&client->dev);
-+		if (ret < 0)
- 			goto err_unlock;
--		}
- 
- 		/*
- 		 * Apply default & customized values
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b004b2e..937bc17 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2710,7 +2710,6 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ #define MAX_ITEM_NAME_LEN	64
+ 	for (i = 0; i < desc->bNrInPins; i++) {
+ 		struct usb_audio_term iterm;
+-		len = 0;
+ 		namelist[i] = kmalloc(MAX_ITEM_NAME_LEN, GFP_KERNEL);
+ 		if (!namelist[i]) {
+ 			err = -ENOMEM;
 -- 
-2.30.2
+1.8.3.1
 
