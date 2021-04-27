@@ -2,60 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D0C36C339
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0DC36C380
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235450AbhD0KZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:25:51 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:57758 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230365AbhD0KZq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:25:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UWzIRcK_1619519088;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWzIRcK_1619519088)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 27 Apr 2021 18:25:01 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     santosh.shilimkar@oracle.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        inux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] rds: Remove redundant assignment to nr_sig
-Date:   Tue, 27 Apr 2021 18:24:47 +0800
-Message-Id: <1619519087-55904-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S235601AbhD0K2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235435AbhD0K2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04262613C7;
+        Tue, 27 Apr 2021 10:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619519236;
+        bh=/e5UeIJiSAmhayjaD9UYfjSrnpizVQ2PnDpNxKl2/+A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KkykQfPooUdW8MA0VwbO7dz14rqXn1dm5gOHEOLQDuawdcXjO5xbUgaP+Y8iOQLhV
+         psz+0pguVumRSPLnBiZ67uXgvvVt310sGRRbHlWP+ctgzGkgDrQk1v1zwO6Q56cRGD
+         eeRpgu6PJFTQSZsKbxzxDREwWzL4XF2fSXMzRTKr8qd5AftNMhHOVneQh2L6aag6jH
+         cAckoUc83ZHnFUG61QCWJR788Urg6EEMDkc1AEARvq97cF1v2AL+zraQvR8juS9yH/
+         ukQIin8P3zAnAsRFJnGfJ9fbLIqfBmdvZFbTGsoRfQde7qGv/mayieWt99cRuaCY+L
+         etRezsYsMlM+A==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lbKvu-000nzG-Ro; Tue, 27 Apr 2021 12:27:10 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v3 01/79] media: venus: fix PM runtime logic at venus_sys_error_handler()
+Date:   Tue, 27 Apr 2021 12:25:51 +0200
+Message-Id: <6d463d21f0dd55c3d84db0458c7a5c4e0d7c5bc1.1619519080.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable nr_sig is being assigned a value however the assignment is
-never read, so this redundant assignment can be removed.
+The venus_sys_error_handler() assumes that pm_runtime was
+able to resume, as it does things like:
 
-Cleans up the following clang-analyzer warning:
+	while (pm_runtime_active(core->dev_dec) || pm_runtime_active(core->dev_enc))
+		msleep(10);
 
-net/rds/ib_send.c:297:2: warning: Value stored to 'nr_sig' is never read
-[clang-analyzer-deadcode.DeadStores].
+Well, if, for whatever reason, this won't happen, the routine
+won't do what's expected. So, check for the returned error
+condition, warning if it returns an error.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Fixes: af2c3834c8ca ("[media] media: venus: adding core part and helper functions")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- net/rds/ib_send.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/media/platform/qcom/venus/core.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
-index 92b4a86..4190b90 100644
---- a/net/rds/ib_send.c
-+++ b/net/rds/ib_send.c
-@@ -294,7 +294,6 @@ void rds_ib_send_cqe_handler(struct rds_ib_connection *ic, struct ib_wc *wc)
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 54bac7ec14c5..c80c27c87ccc 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -84,7 +84,11 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 			container_of(work, struct venus_core, work.work);
+ 	int ret = 0;
  
- 	rds_ib_ring_free(&ic->i_send_ring, completed);
- 	rds_ib_sub_signaled(ic, nr_sig);
--	nr_sig = 0;
+-	pm_runtime_get_sync(core->dev);
++	ret = pm_runtime_get_sync(core->dev);
++	if (WARN_ON(ret < 0)) {
++		pm_runtime_put_noidle(core->dev);
++		return;
++	}
  
- 	if (test_and_clear_bit(RDS_LL_SEND_FULL, &conn->c_flags) ||
- 	    test_bit(0, &conn->c_map_queued))
+ 	hfi_core_deinit(core, true);
+ 
+@@ -106,9 +110,13 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 
+ 	hfi_reinit(core);
+ 
+-	pm_runtime_get_sync(core->dev);
++	ret = pm_runtime_get_sync(core->dev);
++	if (WARN_ON(ret < 0)) {
++		pm_runtime_put_noidle(core->dev);
++		return;
++	}
+ 
+-	ret |= venus_boot(core);
++	ret = venus_boot(core);
+ 	ret |= hfi_core_resume(core, true);
+ 
+ 	enable_irq(core->irq);
 -- 
-1.8.3.1
+2.30.2
 
