@@ -2,153 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CEF36BF0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D69736BF0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhD0F5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 01:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S230257AbhD0GCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhD0F5u (ORCPT
+        with ESMTP id S229535AbhD0GCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:57:50 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA81C061574;
-        Mon, 26 Apr 2021 22:57:06 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id z14so5988323ioc.12;
-        Mon, 26 Apr 2021 22:57:06 -0700 (PDT)
+        Tue, 27 Apr 2021 02:02:07 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4863C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:01:22 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id m9so45407364wrx.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8Z6J1GraQteFf4f1Kc+mAC+MgzcboSWCNdwYiT3xVpQ=;
-        b=e8mtQE1L2sL0RTH5Hok1wFOmv/DUKnWoUGk68S8LPgYQs/72wT2Y26euaaVCijKziU
-         SpE9/9YQYbk5kC1GN4xt0GNJ678iLq1DnRcHK8oAA5+wLUxoKkfjbMestEBfS4189Eec
-         JMY4HCv+fTtzIIIo+k9EnKQ9bZlQUKndn6o0O03TdKiXrhp132aOZA2yzjVlYEyWuPqe
-         kLkB6XOAzn/BSrSNjreY1Bwk36vIETe5sV9wLSg6mcdm8WxmYsrFhCnTpX7PoYK9lFkD
-         TLZwerJhSZr56cpdFhi7J0C4DclRYuTvkHtcDoo2FXG20w7bNf3xzSq8aU+fGSrctyCW
-         VpYA==
+        bh=V788y0c+X/a1zmRPAQAXGKRnxOC2AaVnSQkeOdvO5LI=;
+        b=tnW9bOiTFXPdF5WqGiM1bx3GweauOGsZgLIXJirpLSfLqj14Q9Pe/UOlTG0Vwsf+PS
+         eYwZmaMxTyPKnvnlWVbEwGY/GsxPcC76DX/CexpPZlM8luIkEShUH3OgBhUzY2v3zJgf
+         dxAZA3ZbmExm7jNMA3v9edYryBIZDXaR7gGDJuVWz/F6naoK9onAtJgLg2vmkXrFdCns
+         c8bbc/3XB6dsZiaL7CssoZhS5S/6VrOp9QZDw6St/ExqVv1jvTbBFss7sEz53aMAlwM0
+         dgJt2L97DBdoLgo3Oo7ITi5k1qcOX5CxamQSeyFaQgAP731aDuRy0fHogvKCiBaiPg8y
+         aZGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8Z6J1GraQteFf4f1Kc+mAC+MgzcboSWCNdwYiT3xVpQ=;
-        b=k5+roDofPquYsPjOmd0DVr72mpfLMR8LROd1f+LWlW+woeKIrKerWoDRMSum1X8I2v
-         GFk5m2kfkzWxB1Wyegx6olZ+xE5v7OW4Gdacmy866FoX0cC5+g83Rf8/cJ1fkkJUBSPG
-         hDwATCCY0OCm0FASuxhb3hHZV58+JJ5c/K5iUIGYWyBJTjxZCRqYyaExzti2qH5OnmIl
-         JidLXrrVjN1wTmMmxe08TumsKGoiY9PpKxZkh8qqYiBGctdo0Z4fS1/6zac/uMZurfrE
-         eaFBzldBoW60XiocCgF60ZdPDosHgXg4q0jMYlDgD5I9oBo3rX6PUlO3psT3LkFQledY
-         wNKw==
-X-Gm-Message-State: AOAM533OKoaEmIT+mw5gC+XwCemj7VBLtobRR6y41XTc4R/TghKDmQJl
-        fAeNUXuRAL8+PnU58zpJqBCBkk/IZi0VBMuTlUo=
-X-Google-Smtp-Source: ABdhPJzorSmvhiHI0jjQtj/73v7KNl7LRR1mcxhJo/nLCvnyV8whvjK4sNKJwhHiHGDQi/5JjNXYqNHp/PWwYUfqV0w=
-X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr19828850jak.91.1619503026094;
- Mon, 26 Apr 2021 22:57:06 -0700 (PDT)
+        bh=V788y0c+X/a1zmRPAQAXGKRnxOC2AaVnSQkeOdvO5LI=;
+        b=CAu+ZKHlQP1McmRabIVUcUWoEMrHN5jkywz4lnmqIXcYy/eT3TfaoLANdTKE512iPc
+         14gARelACOL0ewT2GQI9SdYSr49aEp7vcATr9eAWwBGTWmGI0xxN9hP5z77wmK9uAEET
+         s9MT8E1IARr4sqxKbX0lzgFyPpL4tEDRHzshas9TPYiSMGUtX5DzF7KFGlBGMlANkZ07
+         Q3Ife3/oBnj+P2ufWQISqcBzGVQsHKYZB+VsMENM7Ai1SgZoZGp4ENHScq88kuFd2q4T
+         0l2X2JH+fpjdgwFsX5M0PHDmklwhJosS1VudVfiXPnSmIWpvyoi+nAZzibGHnnzLmBTI
+         SBwQ==
+X-Gm-Message-State: AOAM533//lrKZFlT//V0U8FlG2mFbKRJkJiyCUAs8QM1wSEdjyuruRhu
+        Sl0zyHMl+AnAXr1g8BNk77wflHQv3tEsXhajfa9i5Q==
+X-Google-Smtp-Source: ABdhPJwk/5A/pxkyur4hIjIrmR7tCVZaRwKqnd5AmklHqVov2deqZIaDvFuOFFB8FvsspJDazxupGWPv/FRiFupz7Zs=
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr6962352wrp.325.1619503281250;
+ Mon, 26 Apr 2021 23:01:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210326015229.141-1-alistair@alistair23.me> <20210326015229.141-7-alistair@alistair23.me>
- <YGI5or9QsfbONo2e@google.com>
-In-Reply-To: <YGI5or9QsfbONo2e@google.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Tue, 27 Apr 2021 15:56:40 +1000
-Message-ID: <CAKmqyKPOnUOH7idpKa62fSgj2SVSFZLuenGS-LfHJ9uOqPZBpg@mail.gmail.com>
-Subject: Re: [PATCH v4 07/10] Input: wacom_i2c - Add support for reset control
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        linux-input@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair@alistair22.me>
+References: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop> <5b988c4e-25e9-f2b9-b08d-35bc37a245e4@sifive.com>
+In-Reply-To: <5b988c4e-25e9-f2b9-b08d-35bc37a245e4@sifive.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 27 Apr 2021 11:31:09 +0530
+Message-ID: <CAAhSdy2g13XkeiG4-=0pHVw9Oq5zAeseM2LgxHf6daXD+qnc1Q@mail.gmail.com>
+Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 6:33 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Alistair,
->
-> On Thu, Mar 25, 2021 at 09:52:27PM -0400, Alistair Francis wrote:
-> > From: Alistair Francis <alistair@alistair22.me>
-> >
-> > Signed-off-by: Alistair Francis <alistair@alistair22.me>
-> > ---
-> > v4:
-> >  - Initial commit
-> >
-> >  drivers/input/touchscreen/wacom_i2c.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> > index 84c7ccb737bd..28004b1180c9 100644
-> > --- a/drivers/input/touchscreen/wacom_i2c.c
-> > +++ b/drivers/input/touchscreen/wacom_i2c.c
-> > @@ -55,6 +55,7 @@ struct wacom_features {
-> >  struct wacom_i2c {
-> >       struct i2c_client *client;
-> >       struct input_dev *input;
-> > +     struct reset_control *rstc;
-> >       struct touchscreen_properties props;
-> >       u8 data[WACOM_QUERY_SIZE];
-> >       bool prox;
-> > @@ -175,6 +176,8 @@ static int wacom_i2c_open(struct input_dev *dev)
-> >       struct wacom_i2c *wac_i2c = input_get_drvdata(dev);
-> >       struct i2c_client *client = wac_i2c->client;
-> >
-> > +     reset_control_reset(wac_i2c->rstc);
->
-> Why does this device need to be reset on every open compared to doing it
-> in probe?
->
-> > +
-> >       enable_irq(client->irq);
-> >
-> >       return 0;
-> > @@ -193,6 +196,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
-> >  {
-> >       struct wacom_i2c *wac_i2c;
-> >       struct input_dev *input;
-> > +     struct reset_control *rstc;
-> >       struct wacom_features features = { 0 };
-> >       int error;
-> >
-> > @@ -201,6 +205,12 @@ static int wacom_i2c_probe(struct i2c_client *client,
-> >               return -EIO;
-> >       }
-> >
-> > +     rstc = devm_reset_control_get_optional_exclusive(&client->dev, NULL);
-> > +     if (IS_ERR(rstc)) {
-> > +             dev_err(&client->dev, "Failed to get reset control before init\n");
-> > +             return PTR_ERR(rstc);
-> > +     }
->
-> I think majority users will have this controller reset line connected to
-> a GPIO. I briefly looked into reset controller code and I do not see it
-> supporting this case. How is this device connected on your board?
+Hi Paolo,
 
-That's a good question. I am going to drop this patch as I'm not
-convinced it's required.
+Looks like it will take more time for KVM RISC-V to be merged under arch/riscv.
 
-Alistair
+Let's go ahead with your suggestion of having KVM RISC-V under drivers/staging
+so that development is not blocked.
 
+I will send-out v18 series which will add KVM RISC-V under the staging
+directory.
+
+Should we target Linux-5.14 ?
+
+Regards,
+Anup
+
+On Tue, Apr 27, 2021 at 11:13 AM Paul Walmsley <paul.walmsley@sifive.com> wrote:
 >
-> > +
-> >       error = wacom_query_device(client, &features);
-> >       if (error)
-> >               return error;
-> > @@ -214,6 +224,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
-> >
-> >       wac_i2c->client = client;
-> >       wac_i2c->input = input;
-> > +     wac_i2c->rstc = rstc;
-> >
-> >       input->name = "Wacom I2C Digitizer";
-> >       input->id.bustype = BUS_I2C;
-> > --
-> > 2.31.0
-> >
+> On Fri, 9 Apr 2021, Palmer Dabbelt wrote:
 >
-> Thanks.
+> > On Wed, 31 Mar 2021 02:21:58 PDT (-0700), pbonzini@redhat.com wrote:
+> >
+> > > Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
+> > > drivers/staging/riscv/kvm?
+> >
+> > I'm certainly ready to drop my objections to merging the code based on
+> > it targeting a draft extension, but at a bare minimum I want to get a
+> > new policy in place that everyone can agree to for merging code.  I've
+> > tried to draft up a new policy a handful of times this week, but I'm not
+> > really quite sure how to go about this: ultimately trying to build
+> > stable interfaces around an unstable ISA is just a losing battle.  I've
+> > got a bunch of stuff going on right now, but I'll try to find some time
+> > to actually sit down and finish one.
+> >
+> > I know it might seem odd to complain about how slowly things are going
+> > and then throw up another roadblock, but I really do think this is a
+> > very important thing to get right.  I'm just not sure how we're going to
+> > get anywhere with RISC-V without someone providing stability, so I want
+> > to make sure that whatever we do here can be done reliably.  If we don't
+> > I'm worried the vendors are just going to go off and do their own
+> > software stacks, which will make getting everyone back on the same page
+> > very difficult.
 >
-> --
-> Dmitry
+> I sympathize with Paolo, Anup, and others also.  Especially Anup, who has
+> been updating and carrying the hypervisor patches for a long time now.
+> And also Greentime, who has been carrying the V extension patches.  The
+> RISC-V hypervisor specification, like several other RISC-V draft
+> specifications, is taking longer to transition to the officially "frozen"
+> stage than almost anyone in the RISC-V community would like.
+>
+> Since we share this frustration, the next questions are:
+>
+> - What are the root causes of the problem?
+>
+> - What's the right forum to address the root causes?
+>
+> To me, the root causes of the problems described in this thread aren't
+> with the arch/riscv kernel maintenance guidelines, but rather with the
+> RISC-V specification process itself.  And the right forum to address
+> issues with the RISC-V specification process is with RISC-V International
+> itself: the mailing lists, the participants, and the board of directors.
+> Part of the challenge -- not simply with RISC-V, but with the Linux kernel
+> or any other community -- is to ensure that incentives (and disincentives)
+> are aligned with the appropriately responsible parts of the community.
+> And when it comes to specification development, the right focus to align
+> those incentives and disincentives is on RISC-V International.
+>
+> The arch/riscv patch acceptance guidelines are simply intended to ensure
+> that the definition of what is and isn't RISC-V remains clear and
+> unambiguous.  Even though the guidelines can result in short-term pain,
+> the intention is to promote long-term stability and sustainable
+> maintainability - particularly since the specifications get baked into
+> hardware.  We've observed that attempting to chase draft specifications
+> can cause significant churn: for example, the history of the RISC-V vector
+> specification illustrates how a draft extension can undergo major,
+> unexpected revisions throughout its journey towards ratification.  One of
+> our responsibilities as kernel developers is to minimize that churn - not
+> simply for our own sanity, or for the usability of RISC-V, but to ensure
+> that we remain members in good standing of the broader kernel community.
+> Those of us who were around for the ARM32 and ARM SoC kernel accelerando
+> absorbed strong lessons in maintainability, and I doubt anyone here is
+> interested in re-learning those the hard way.
+>
+> RVI states that the association is open to community participation.  The
+> organizations that have joined RVI, I believe, have a strong stake in the
+> health of the RISC-V ecosystem, just as the folks have here in this
+> discussion.  If the goal really is to get quality specifications out the
+> door faster, then let's focus the energy towards building consensus
+> towards improving the process at RISC-V International.  If that's
+> possible, the benefits won't only accrue to Linux developers, but to the
+> entire RISC-V hardware and software development community at large.  If
+> nothing else, it will be an interesting test of whether RISC-V
+> International can take action to address these concerns and balance them
+> with those of other stakeholders in the process.
+>
+>
+> - Paul
