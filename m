@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43AD36C75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451CE36C765
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236435AbhD0N4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:56:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:53136 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236470AbhD0Nzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:55:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D12AD6E;
-        Tue, 27 Apr 2021 06:55:12 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.31.135])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92B363F70D;
-        Tue, 27 Apr 2021 06:55:09 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 14:55:06 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH] arm64: perf: Ensure EL0 access is disabled at reset
-Message-ID: <20210427135506.GC37475@C02TD0UTHF1T.local>
-References: <20210427134852.1411642-1-robh@kernel.org>
+        id S236525AbhD0N6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236074AbhD0N6G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:58:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691C3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 06:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2EZ9wMn5IsrCWzyEdIPf+KOdPnl6OIWHe1m9e0dWRa8=; b=kBL8O9EWg/3wmo7Rz/ngkPBWvv
+        /lDdibrv2XDWvOvRxeCuN6GBui4ZCegmuOEt0hj4oRbjRSHiTPOYscLy22+WWBpi1LG0CIpEEPe/7
+        PE/hqkFuZJMa5lxF32I8uQp7pKtZP1a0AEIHL2W5P3KUOVoozDSosJw+GVBzTpzEn6JcTEEe0suNG
+        WnbpyRZEhUIpLmlyraJE3EoJ/VQIt2/S/9h/6uxmSQ52AvaIzhBVgkQPwgHaB+ARVtkYARELujmYf
+        BbW9WvwIPcb5CTXNnHIIljHUtpXGDHSXlmh/kXYAdlQfueNAJ+Xf/oUBv5I+WzIPJmfHIzVcIJRkZ
+        zZe9U5nA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbOC6-006zBS-0S; Tue, 27 Apr 2021 13:56:33 +0000
+Date:   Tue, 27 Apr 2021 14:56:05 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        David Kershner <david.kershner@unisys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [Outreachy kernel] [PATCH v4] staging: unisys: visorhba: Convert
+ module from IDR to XArray
+Message-ID: <20210427135605.GZ235567@casper.infradead.org>
+References: <20210427132522.14547-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427134852.1411642-1-robh@kernel.org>
+In-Reply-To: <20210427132522.14547-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 08:48:52AM -0500, Rob Herring wrote:
-> The ER, SW, and EN bits in the PMUSERENR_EL0 register are UNKNOWN at
-> reset and the register is never initialized, so EL0 access could be
-> enabled by default on some implementations. Let's initialize
-> PMUSERENR_EL0 to a known state with EL0 access disabled.
-
-We reset PMUSERENR_EL0 via the reset_pmuserenr_el0 macro, called from
-__cpu_setup when a CPU is onlined and from cpu_do_resume() when a CPU
-returns from a context-destructive idle state. We do it there so that
-it's handled even if a kernel isn't built with perf support.
-
-AFAICT, that *should* do the right thing -- are you seeing UNKNOWN
-values, or was this found by inspection?
-
-Thanks,
-Mark.
-
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  arch/arm64/kernel/perf_event.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> index 4658fcf88c2b..c32778ae5117 100644
-> --- a/arch/arm64/kernel/perf_event.c
-> +++ b/arch/arm64/kernel/perf_event.c
-> @@ -450,6 +450,11 @@ static inline void armv8pmu_pmcr_write(u32 val)
->  	write_sysreg(val, pmcr_el0);
->  }
+On Tue, Apr 27, 2021 at 03:25:22PM +0200, Fabio M. De Francesco wrote:
+> +++ b/drivers/staging/unisys/include/iochannel.h
+> @@ -474,8 +474,8 @@ struct uiscmdrsp_scsitaskmgmt {
+>  	enum task_mgmt_types tasktype;
+>  	struct uisscsi_dest vdest;
+>  	u64 handle;
+> -	u64 notify_handle;
+> -	u64 notifyresult_handle;
+> +	u32 notify_handle;
+> +	u32 notifyresult_handle;
+>  	char result;
 >  
-> +static void armv8pmu_clear_pmuserenr(void)
-> +{
-> +	write_sysreg(0, pmuserenr_el0);
-> +}
-> +
->  static inline int armv8pmu_has_overflowed(u32 pmovsr)
+>  #define TASK_MGMT_FAILED 0
+
+I'm scared of this change.  Read the top of the file:
+
+ * Everything needed for IOPart-GuestPart communication is define in
+ * this file. Note: Everything is OS-independent because this file is
+ * used by Windows, Linux and possible EFI drivers.
+
+I don't know that you can make any changes to this file.
+
+> +static void setup_scsitaskmgmt_handles(struct xarray *xa, struct uiscmdrsp *cmdrsp,
+>  				       wait_queue_head_t *event, int *result)
 >  {
->  	return pmovsr & ARMV8_PMU_OVERFLOWED_MASK;
-> @@ -933,6 +938,9 @@ static void armv8pmu_reset(void *info)
->  	armv8pmu_disable_counter(U32_MAX);
->  	armv8pmu_disable_intens(U32_MAX);
->  
-> +	/* User access is unknown at reset. */
-> +	armv8pmu_clear_pmuserenr();
+> -	/* specify the event that has to be triggered when this */
+> -	/* cmd is complete */
+> -	cmdrsp->scsitaskmgmt.notify_handle =
+> -		simple_idr_get(idrtable, event, lock);
+> -	cmdrsp->scsitaskmgmt.notifyresult_handle =
+> -		simple_idr_get(idrtable, result, lock);
+> +	int ret;
+> +	u32 *id;
 > +
->  	/* Clear the counters we flip at guest entry/exit */
->  	kvm_clr_pmu_events(U32_MAX);
->  
-> -- 
-> 2.27.0
-> 
+> +	/* specify the event that has to be triggered when this cmd is complete */
+> +	id = &cmdrsp->scsitaskmgmt.notify_handle;
+> +	ret = xa_alloc_irq(xa, id, event, XA_LIMIT(1, INT_MAX), GFP_KERNEL);
+
+You're still not handling the error here.
+
