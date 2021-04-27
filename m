@@ -2,168 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD69836C4F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D04436C4FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbhD0LVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhD0LVK (ORCPT
+        id S235891AbhD0LWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:22:24 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:56444 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235428AbhD0LWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:21:10 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C948C061574;
-        Tue, 27 Apr 2021 04:20:27 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so6869032wmq.4;
-        Tue, 27 Apr 2021 04:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tLUK+to67j3VH5Q3cisiMaMP2hacGQgyvcke7kzJD2E=;
-        b=HrDP9ObVQBISF9ALP2txkaG2y+7IHney6wrbY3sQqoA3YnGAdmBOHHbehgA69Bpq5t
-         cwNxs5Os1fD0slKEH0esZgVAObvdu7npczNztb0UTpzXCuCfGMn/zMnvMv+nzZ7Nm2L8
-         OjoC2WgYccltmIlyf1EYtk4dO+f5K/vFfEFaAA/owg/25hdbNI0B3ogl72nWJNEmyS2t
-         5LZATTNAjmuUxnlgiG6wPNbAHD7molqVrHd0Jp3dYzRV35l2cgEhrkMdf9v1s5d4wC0n
-         JUjkRtUx83dYybtCM+HX7aFOmH9zE5KJwhSmKD413+8LGXcvrrsO9JoMVoZwH0i2pXX/
-         uapg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tLUK+to67j3VH5Q3cisiMaMP2hacGQgyvcke7kzJD2E=;
-        b=qUg1/aOMTMz5mq4Vvciy8ZrvYYVZrcjT1XYKYVc5cJ2/9YmNI9990caKGGkCF5CSDP
-         x0m8htJhdAmwwNyd6QVVcoI5+5py/mfL5zm859wGXlNEU3Kynp9ZbYHTtP7d+mM1Sm6C
-         TB7BF9xj834TBwCs+P2tAwpRaGffCbEgDEmn8s6wxa6txg7kYuzAYbllRJTeMRDb3sxP
-         qp6uRv5X8gqPXbC+3U+VNpmDMs2Vf8eyO/eknYYkmH7JPa7qvewXxTK4o4WyNViysc9c
-         oYpp61vSVYZjMRE2WFJfoei1jBJqH3eJEXorfJW3sOc5n+qc04ui9aWxozjmQklZv5Bq
-         cXMA==
-X-Gm-Message-State: AOAM532etMo+sS2siCZBQYp++CBc/8TnbFPFs6aGo3lUc3SL4FnLtZ8f
-        7SGJz1XRXBlvQLX4IjjhRFc=
-X-Google-Smtp-Source: ABdhPJxsyyc1OOZ1qaNf9SWQ50u5uViJcH76iIWQmlooycEmtS6eb175LlEZR6O8HIGYd0WwSvLYOA==
-X-Received: by 2002:a1c:7e45:: with SMTP id z66mr23988766wmc.126.1619522425812;
-        Tue, 27 Apr 2021 04:20:25 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.129.131])
-        by smtp.gmail.com with ESMTPSA id h9sm20573625wmb.35.2021.04.27.04.20.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 04:20:25 -0700 (PDT)
-Subject: Re: KASAN: null-ptr-deref Write in io_uring_cancel_sqpoll
-To:     Palash Oswal <oswalpalash@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, Jens Axboe <axboe@kernel.dk>,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
-References: <00000000000022ebeb05bc39f582@google.com>
- <e939af11-7ce8-46af-8c76-651add0ae56bn@googlegroups.com>
- <CACT4Y+aPRCZcLvkuWgK=A_rR0PqdEAM+xssWU4N7hNRSm9=mSA@mail.gmail.com>
- <CAGyP=7fBRPc+qH9UvhGhid9j-B2PeYhQ4bbde_Vg72Mnx9z75Q@mail.gmail.com>
- <dba3f0a9-cb5d-a162-b696-864295259581@gmail.com>
- <CAGyP=7e6xiNVEV6Bc21i0v+e9GWmm2UdTbhDzyNTmMY4Pa=_ng@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
-Date:   Tue, 27 Apr 2021 12:20:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Tue, 27 Apr 2021 07:22:19 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210427112135euoutp0169d50ed92862ca3e276ea919747d1ed5~5syDywWt53249232492euoutp01l
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:21:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210427112135euoutp0169d50ed92862ca3e276ea919747d1ed5~5syDywWt53249232492euoutp01l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619522495;
+        bh=2YZn6o3y8BH3IKN5MJ2e/CSLk54m5sRY+yaEQo7nwww=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=jT675MYa+zjcNpqF7TCbNtcML6lETm4yrACeeL1Gp2AFITKhcnyrowLClDN3Hx1X9
+         rFrwJ51PMgzRplELZTsMTnoP5MKI4kxyXU2dH4mc6QDErze/Re39V3pvN7jcXB9DlO
+         CPE7Nx4QaqjkSe3sgm1/eYDVAkUmX2/xPHM6foNc=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210427112134eucas1p245f66fe93e1dbeed80130c9bc482b074~5syDR9tey2817828178eucas1p2p;
+        Tue, 27 Apr 2021 11:21:34 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 72.20.09452.EB3F7806; Tue, 27
+        Apr 2021 12:21:34 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210427112133eucas1p2128f988e825385cc2b75d5c0aac0f1a8~5syClIf_n2818228182eucas1p2p;
+        Tue, 27 Apr 2021 11:21:33 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210427112133eusmtrp14836b0b52e9f6471a30050b1ca3d06e6~5syCi6tX71945419454eusmtrp1h;
+        Tue, 27 Apr 2021 11:21:33 +0000 (GMT)
+X-AuditID: cbfec7f2-ab7ff700000024ec-d2-6087f3be64e9
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 99.C5.08705.DB3F7806; Tue, 27
+        Apr 2021 12:21:33 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210427112132eusmtip15c408780ca6f11ec5aaa3af97045764e~5syBwPg7F0375803758eusmtip1P;
+        Tue, 27 Apr 2021 11:21:32 +0000 (GMT)
+Subject: Re: [PATCH v3 06/79] media: exynos-gsc: don't resume at remove time
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <5aab0e11-6818-990b-f583-35036c1bb740@samsung.com>
+Date:   Tue, 27 Apr 2021 13:21:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAGyP=7e6xiNVEV6Bc21i0v+e9GWmm2UdTbhDzyNTmMY4Pa=_ng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <a561d9eb253076cbcb9debe5fcbd3c949d5023d2.1619519080.git.mchehab+huawei@kernel.org>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djPc7r7PrcnGCw4L2Wxc8MXdouLM++y
+        WJw/v4HdYtPja6wWl3fNYbPo2bCV1WLG+X1MFoc3nmGyaFtwmc3i4eyrjBbLNv1hcuD22HF3
+        CaNHy5G3rB6bVnWyeWxeUu/xeZOcx6mvn9kD2KK4bFJSczLLUov07RK4Mk7evs1UsJ2n4tWj
+        FuYGxvVcXYycHBICJhLzFq9g7mLk4hASWMEo0fhmBguE84VRYmrDBjYI5zOjxJ2NrxlhWnYd
+        +MkEkVjOKHHl5S92COcjo8SnmS2sIFXCAj4SX588ZQaxRQRMJW6+6mQCsZkFHjFJnJ0gC2Kz
+        CRhK9B7tA5vKK2An8eLEXbB6FgFViffrl7CD2KICyRLnH19lh6gRlDg58wkLiM0pkCDRvmQV
+        O8RMcYlbT+ZDzZeX2P52DthDEgLdnBKNt5vYIc52kTjcdZsJwhaWeHV8C1RcRuL05B4WiIZm
+        Rome3bfZIZwJjBL3jy+Aetpa4s65X8DQ4ABaoSmxfpc+RNhR4tKiSUwgYQkBPokbbwUhjuCT
+        mLRtOjNEmFeio00IolpF4veq6VAnSEl0P/nPMoFRaRaS12YheWcWkndmIexdwMiyilE8tbQ4
+        Nz212DAvtVyvODG3uDQvXS85P3cTIzBtnf53/NMOxrmvPuodYmTiYDzEKMHBrCTCy7arNUGI
+        NyWxsiq1KD++qDQntfgQozQHi5I476rZa+KFBNITS1KzU1MLUotgskwcnFINTKEVHmc37KvN
+        figcIPPx0vvKRk6DDXvnZUQa3Pqv2JMq+ab4AEP+F4EdOSbVEwoOC5qcD161fcXElDl+CtJy
+        1xul5slssv9VxPFj88El6bNVJ/yTlVD1Tm55xzbtTPbZk1xq8wrecJTNU7LhORbr+6v5U2+j
+        m3q4d+ePrY410yZe33qy4mdZ24TT2S2fpLS0yhMW5Ct2TOU+vcY70uXnYel027iS43ntW+fe
+        3MH88v33HTeklaNkZpQ5bt2/cp7joaesnzgcmhYvnlE//cXPnswHFrsFNJSll+/et/PzvALm
+        3QXNnQXvL3be/7z7bd2x1ih+BZmWP5ff/bWNTdR96n07beWHYl7XqRktS4zv7VRiKc5INNRi
+        LipOBAC5P5SmygMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xu7p7P7cnGLzu1LTYueELu8XFmXdZ
+        LM6f38BusenxNVaLy7vmsFn0bNjKajHj/D4mi8MbzzBZtC24zGbxcPZVRotlm/4wOXB77Li7
+        hNGj5chbVo9NqzrZPDYvqff4vEnO49TXz+wBbFF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYm
+        lnqGxuaxVkamSvp2NimpOZllqUX6dgl6GSdv32Yq2M5T8epRC3MD43quLkZODgkBE4ldB34y
+        dTFycQgJLGWU2Pang7GLkQMoISUxv0UJokZY4s+1LjaImveMEo837WIHSQgL+Eh8ffKUGcQW
+        ETCVuPmqE2wQs8AzJolFF3dAdTxjlNjytJsVpIpNwFCi92gfI4jNK2An8eLEXbBuFgFViffr
+        l4BNFRVIllj9ezMrRI2gxMmZT1hAbE6BBIn2JavAapgF1CX+zLvEDGGLS9x6Mp8JwpaX2P52
+        DvMERqFZSNpnIWmZhaRlFpKWBYwsqxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQLjdNuxn5t3
+        MM579VHvECMTB+MhRgkOZiURXrZdrQlCvCmJlVWpRfnxRaU5qcWHGE2B/pnILCWanA9MFHkl
+        8YZmBqaGJmaWBqaWZsZK4rxb566JFxJITyxJzU5NLUgtgulj4uCUamBqOzTnfNF1rQPRczZ/
+        e1E6c4Fz1yO3+ZWvT0zcUd69L/DxmsprqntXbXEt/fe4zvHmesNvpdufvhLT696e5m3+R0zd
+        j29GmM7V5mlmu77bl738s9Bg87wlbmXqgRyv9ftNjm85Zlvi68+W+uTlcqeG1tsel6etNmpi
+        ET++Id/l+yadgNxtL4PXb/OvE16+/uHldJUGhuvxmwsPrDtv5tLHUuKRklbxgufH+7xLa4o3
+        q2k57agyXbtEP2DbIp7DVXKKooVVOitev0jtfPh1OU8X72L9fNdtp/7UO7t/7K4r2XLw46ZT
+        xxoiN96cPeXGsotGb27+fL6E/cQK+Zmyq7+UfbUsE7J7ppn48vXHg99Z7yqxFGckGmoxFxUn
+        AgDm6e+lXAMAAA==
+X-CMS-MailID: 20210427112133eucas1p2128f988e825385cc2b75d5c0aac0f1a8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210427102744eucas1p208d6f3801db6b5180e7364efc0cd83d2
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210427102744eucas1p208d6f3801db6b5180e7364efc0cd83d2
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+        <CGME20210427102744eucas1p208d6f3801db6b5180e7364efc0cd83d2@eucas1p2.samsung.com>
+        <a561d9eb253076cbcb9debe5fcbd3c949d5023d2.1619519080.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 11:39 AM, Palash Oswal wrote:
-> On Tue, Apr 27, 2021 at 2:07 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> io_sq_offload_create() {
->>     ...
->>     ret = io_uring_alloc_task_context(tsk, ctx);
->>     wake_up_new_task(tsk);
->>     if (ret)
->>         goto err;
->> }
->>
->> Shouldn't happen unless offload create has failed. Just add
->> a return in *cancel_sqpoll() for this case. It's failing
->> so no requests has been submitted and no cancellation is needed.
+On 27.04.2021 12:25, Mauro Carvalho Chehab wrote:
+> Calling pm_runtime_get_sync() at driver's removal time is not
+> needed, as this will resume PM runtime. Also, the PM runtime
+> code at pm_runtime_disable() already calls it, if it detects
+> the need.
 > 
-> io_uring_cancel_sqpoll can be called by two flows:
-> 1. io_uring_task_cancel() -> io_sqpoll_cancel_sync() ->
-> io_uring_cancel_sqpoll ;  which properly sanitises current->io_uring
-> to be non NULL. (
-> https://elixir.bootlin.com/linux/v5.12/source/include/linux/io_uring.h#L21
-> )
-> 2. io_sq_offload_create -> io_sq_thread -> io_uring_cancel_sqpoll ;
-> which does not check the value of current->io_uring
+> So, simplify the code by getting rid of that.
 > 
-> In the second flow,
-> https://elixir.bootlin.com/linux/v5.12/source/fs/io_uring.c#L7970
-> The initialization of current->io_uring (i.e
-> io_uring_alloc_task_context() ) happens after calling io_sq_thread.
-> And, therefore io_uring_cancel_sqpoll receives a NULL value for
-> current->io_uring.
-
-Right, exactly as I wrote in the previous message. And still placing
-the check in io_uring_cancel_sqpoll() is a better (safer) option.
-
-Just send a patch for 5.13 and mark it stable
-
-> 
-> The backtrace from the crash confirms the second scenario:
-> [   70.661551] ==================================================================
-> [   70.662764] BUG: KASAN: null-ptr-deref in io_uring_cancel_sqpoll+0x203/0x350
-> [   70.663834] Write of size 4 at addr 0000000000000060 by task iou-sqp-750/755
-> [   70.664025]
-> [   70.664025] CPU: 1 PID: 755 Comm: iou-sqp-750 Not tainted 5.12.0 #101
-> [   70.664025] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS 1.14.0-1 04/01/2014
-> [   70.664025] Call Trace:
-> [   70.664025]  dump_stack+0xe9/0x168
-> [   70.664025]  ? io_uring_cancel_sqpoll+0x203/0x350
-> [   70.664025]  __kasan_report+0x166/0x1c0
-> [   70.664025]  ? io_uring_cancel_sqpoll+0x203/0x350
-> [   70.664025]  kasan_report+0x4f/0x70
-> [   70.664025]  kasan_check_range+0x2f3/0x340
-> [   70.664025]  __kasan_check_write+0x14/0x20
-> [   70.664025]  io_uring_cancel_sqpoll+0x203/0x350
-> [   70.664025]  ? io_sq_thread_unpark+0xd0/0xd0
-> [   70.664025]  ? mutex_lock+0xbb/0x130
-> [   70.664025]  ? init_wait_entry+0xe0/0xe0
-> [   70.664025]  ? wait_for_completion_killable_timeout+0x20/0x20
-> [   70.664025]  io_sq_thread+0x174c/0x18c0
-> [   70.664025]  ? io_rsrc_put_work+0x380/0x380
-> [   70.664025]  ? init_wait_entry+0xe0/0xe0
-> [   70.664025]  ? _raw_spin_lock_irq+0xa5/0x180
-> [   70.664025]  ? _raw_spin_lock_irqsave+0x190/0x190
-> [   70.664025]  ? calculate_sigpending+0x6b/0xa0
-> [   70.664025]  ? io_rsrc_put_work+0x380/0x380
-> [   70.664025]  ret_from_fork+0x22/0x30
-> 
-> We might want to add additional validation before calling
-> io_uring_cancel_sqpoll. I did verify that the reproducer stopped
-> producing the bug after the following change.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index dff34975d86b..36fc9abe8022 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -6832,8 +6832,10 @@ static int io_sq_thread(void *data)
->                 timeout = jiffies + sqd->sq_thread_idle;
->         }
+>  drivers/media/platform/exynos-gsc/gsc-core.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> -       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
-> -               io_uring_cancel_sqpoll(ctx);
-> +       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
-> +               if (current->io_uring)
-> +                       io_uring_cancel_sqpoll(ctx);
-> +       }
->         sqd->thread = NULL;
->         list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
->                 io_ring_set_wakeup_flag(ctx);
-> 
+> diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+> index 9f41c2e7097a..70e86cdc1012 100644
+> --- a/drivers/media/platform/exynos-gsc/gsc-core.c
+> +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+> @@ -1210,8 +1210,6 @@ static int gsc_remove(struct platform_device *pdev)
+>  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
+>  	int i;
+>  
+> -	pm_runtime_get_sync(&pdev->dev);
+> -
+>  	gsc_unregister_m2m_device(gsc);
+>  	v4l2_device_unregister(&gsc->v4l2_dev);
+>  
+> @@ -1219,7 +1217,6 @@ static int gsc_remove(struct platform_device *pdev)
+>  	for (i = 0; i < gsc->num_clocks; i++)
+>  		clk_disable_unprepare(gsc->clock[i]);
+>  
+> -	pm_runtime_put_noidle(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
 
--- 
-Pavel Begunkov
+This will result in unbalanced clk_disable_unprepare() calls when 
+the device is not runtime PM active at the time of gsc_remove() call. 
+I think we need to first disable runtime PM for the device and then 
+disable the clocks only when pm_runtime_status_suspended(&pdev->dev)
+returns false.
+
+
+Thanks,
+Sylwester
