@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF9736CAF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FEB36CAF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238416AbhD0SPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:15:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39910 "EHLO mail.kernel.org"
+        id S236795AbhD0SRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:17:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhD0SPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:15:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B99F613EA;
-        Tue, 27 Apr 2021 18:14:46 +0000 (UTC)
+        id S235647AbhD0SRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:17:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 140D6610A5;
+        Tue, 27 Apr 2021 18:17:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619547286;
-        bh=p9VYaptoIh7qUXpbZLLRQsuXGmczzPkzM8cN3UCnuUQ=;
+        s=korg; t=1619547422;
+        bh=LumwNqHLJauMnAldWDWcGSi2oYMHXUaUXCIN5hjti64=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JgmIMoHUa6FeBEEZtPQkp101shNytCAmGV4+18SLe9AmN00KNbL8RV30emx+P6osY
-         o/dnGgyKngAoxIta1rage2Vqoo542Oz+iPHwz0ZYg2cYrAdK0ih7bo9shfynR0GQg+
-         vPC6BxdbWSBwORfdPzZGSPnaoNB597PJ+07Ooeu4=
-Date:   Tue, 27 Apr 2021 20:14:44 +0200
+        b=v/wSnG0xJn1BzLKxXYxy7mB4j6BsRFPM+BU0Iz48tD/EayfBVX3zfAY2p0+aEwAMr
+         VMQxTj/0B/cr60KFc/cAHLiexBUfYj0pckTx4glIKwCvixzJKIieQsNHeTW2Dm7Mxk
+         TiuiHbB848zC9w/px/cLMA0TFrkZ4Six56HNWPkk=
+Date:   Tue, 27 Apr 2021 20:17:00 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>, Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 163/190] Revert "dmaengine: mv_xor: Fix a missing check
- in mv_xor_channel_add"
-Message-ID: <YIhUlJ/06/A8m9Ft@kroah.com>
+Cc:     Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH 144/190] Revert "misc/ics932s401: Add a missing check to
+ i2c_smbus_read_word_data"
+Message-ID: <YIhVHBSIaxHFqniM@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-164-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-145-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-164-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-145-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:38PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 7c97381e7a9a5ec359007c0d491a143e3d9f787c.
+On Wed, Apr 21, 2021 at 03:00:19PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit b05ae01fdb8966afff5b153e7a7ee24684745e2d.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -55,32 +55,30 @@ On Wed, Apr 21, 2021 at 03:00:38PM +0200, Greg Kroah-Hartman wrote:
 > codebase.
 > 
 > Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/dma/mv_xor.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  drivers/misc/ics932s401.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/drivers/dma/mv_xor.c b/drivers/dma/mv_xor.c
-> index 23b232b57518..78bd52565571 100644
-> --- a/drivers/dma/mv_xor.c
-> +++ b/drivers/dma/mv_xor.c
-> @@ -1144,10 +1144,7 @@ mv_xor_channel_add(struct mv_xor_device *xordev,
->  		 dma_has_cap(DMA_MEMCPY, dma_dev->cap_mask) ? "cpy " : "",
->  		 dma_has_cap(DMA_INTERRUPT, dma_dev->cap_mask) ? "intr " : "");
+> diff --git a/drivers/misc/ics932s401.c b/drivers/misc/ics932s401.c
+> index 2bdf560ee681..733e5c2b57ce 100644
+> --- a/drivers/misc/ics932s401.c
+> +++ b/drivers/misc/ics932s401.c
+> @@ -133,8 +133,6 @@ static struct ics932s401_data *ics932s401_update_device(struct device *dev)
+>  	 */
+>  	for (i = 0; i < NUM_MIRRORED_REGS; i++) {
+>  		temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
+> -		if (temp < 0)
+> -			data->regs[regs_to_copy[i]] = 0;
+>  		data->regs[regs_to_copy[i]] = temp >> 8;
+>  	}
 >  
-> -	ret = dma_async_device_register(dma_dev);
-> -	if (ret)
-> -		goto err_free_irq;
-> -
-> +	dma_async_device_register(dma_dev);
->  	return mv_chan;
->  
->  err_free_irq:
 > -- 
 > 2.31.1
 > 
 
-The original commit here is correct, I will drop this revert.
+While ackward, the original looks good enough for now, so I'll drop this
+revert.
 
 greg k-h
