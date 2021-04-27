@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC3636C40A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C06436C416
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238598AbhD0Kdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:33:33 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:40644 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235488AbhD0K2c (ORCPT
+        id S238974AbhD0Kei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:34:38 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:42309 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238388AbhD0K3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:32 -0400
-Received: by mail-vs1-f49.google.com with SMTP id o192so13820178vsd.7;
-        Tue, 27 Apr 2021 03:27:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zGrRlHhBlZKiN3l1LVzj1AyBNlaPvvMY2uCc5XB9HbI=;
-        b=Em2Llgd3Av902Yh/E35ENt3MMM/jV6oKSK/q20NZzJEhL5HUom5qv3ej5h9NW8Q8HT
-         t7fN5q2FPuPyGncmxhYStrDHcEHM99dMbvhc85H9vSs/Y/Jz/S5XDHTa/1LOHA3jdvXu
-         7WMfuSwU9HMsN4JiMCSSPyUaH8XGaucdz5zARkZidfUujBBwvmv9q/SdD2ARG2cbDxcZ
-         jmGqECC7WWeyTTgbBqQXdwWWH3GGqsGQ4Q2GpqT22ycb8LV+Me01D03QNpcC4+wwcojL
-         OlZnajNNY93iMYW0erlOJxtXEsKsiBpyIzL/o1vhWw49F6ud62kc7/T/w3Xe+/lzluhq
-         2QTA==
-X-Gm-Message-State: AOAM530EN9UVmEYsVFqxeG8E9sNvO5DyfIbC4ufxmYjB21m6AsxVMpZF
-        HgL11dRNp3S0xVZRmyegs4kR+0WQTltiwoxMSAw=
-X-Google-Smtp-Source: ABdhPJy1KHqYPXES3KEM++BD7a0+6SLRBJgtYlFRVah9A5YadG00cG6x+2o8QX7KgmlMEQ2lwcMBHxFvkFoLvoF2+P0=
-X-Received: by 2002:a67:f614:: with SMTP id k20mr3002133vso.42.1619519268545;
- Tue, 27 Apr 2021 03:27:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210421140334.3847155-1-arnd@kernel.org>
-In-Reply-To: <20210421140334.3847155-1-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Apr 2021 12:27:37 +0200
-Message-ID: <CAMuHMdUGKMktTWtaXr8jK9x-D5YZ1yXQ-ZJjQ193oAKPAt+3JQ@mail.gmail.com>
-Subject: Re: [PATCH] PCI/VPD: fix unused pci_vpd_set_size function warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 27 Apr 2021 06:29:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UWzGZ.v_1619519304;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWzGZ.v_1619519304)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 27 Apr 2021 18:28:30 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     borisp@nvidia.com
+Cc:     john.fastabend@gmail.com, daniel@iogearbox.net, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] net/tls: Remove redundant initialization of record
+Date:   Tue, 27 Apr 2021 18:28:22 +0800
+Message-Id: <1619519302-59518-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 8:56 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The only user of this function is now in an #ifdef, causing
-> a warning when that symbol is not defined:
->
-> drivers/pci/vpd.c:289:13: error: 'pci_vpd_set_size' defined but not used [-Werror=unused-function]
->   289 | static void pci_vpd_set_size(struct pci_dev *dev, size_t len)
->
-> Move the function into that #ifdef block.
->
-> Fixes: f349223f076e ("PCI/VPD: Remove pci_set_vpd_size()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+record is being initialized to ctx->open_record but this is never
+read as record is overwritten later on.  Remove the redundant
+initialization.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Cleans up the following clang-analyzer warning:
 
-Gr{oetje,eeting}s,
+net/tls/tls_device.c:421:26: warning: Value stored to 'record' during
+its initialization is never read [clang-analyzer-deadcode.DeadStores].
 
-                        Geert
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ net/tls/tls_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index d9cd229..72227fe 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -418,7 +418,7 @@ static int tls_push_data(struct sock *sk,
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+ 	struct tls_prot_info *prot = &tls_ctx->prot_info;
+ 	struct tls_offload_context_tx *ctx = tls_offload_ctx_tx(tls_ctx);
+-	struct tls_record_info *record = ctx->open_record;
++	struct tls_record_info *record;
+ 	int tls_push_record_flags;
+ 	struct page_frag *pfrag;
+ 	size_t orig_size = size;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.8.3.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
