@@ -2,265 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F3136BD0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480E036BD1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233980AbhD0B7k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Apr 2021 21:59:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43361 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbhD0B7j (ORCPT
+        id S233957AbhD0CHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232295AbhD0CHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 21:59:39 -0400
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <chia-lin.kao@canonical.com>)
-        id 1lbD03-0001FG-KB
-        for linux-kernel@vger.kernel.org; Tue, 27 Apr 2021 01:58:55 +0000
-Received: by mail-wr1-f71.google.com with SMTP id s9-20020a5d51090000b02901028ea30da6so19871696wrt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 18:58:55 -0700 (PDT)
+        Mon, 26 Apr 2021 22:07:00 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A1EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:06:17 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id u16so41067905oiu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:06:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=RjRLRjt6DksoCv/KudQEO4D/bl6V4MEpJxlivb+MQoM=;
+        b=jdV/vIAUyUYepkvyJNWXc3rT8qZiyIJAwkvhMcd+315lRZ7zAiBI7zwh312YsV9EWr
+         CXUhCmMf29fQrxt9oEQW12yvBYikgQKfnLYZjsmv4T3T70UD2SIFDZp6Uh9YjgSjL6iR
+         BKktWs8jn3BGR8MX0WOfS8ty3VTSKAVdrLfiWt2aiA0DzKIAh198wP4KlIP9bk3MXU3z
+         iJwMo0CcJSeuAn5Wss+Ccq74lMS4hQSKoRxRT5LU8/Oq36/JBdHBNdFRwWRnJ8u9kw0M
+         bMjeV7ArPu4oPxPVf26HVS+tLLLMO9J8yPnkGZYKmouGME+1P7qPmik3YycN6FtwOWcY
+         QIJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SegCM0fzCCeR6I4h8MfS8WByjjQM/1Q3Jo9+FK9tSYA=;
-        b=p05ktu4oQD8Mq1cU9Ff83AAxnnLI/qF0lq0C096WtmWeXI2IwvvbKu3/yp11Ou3M6X
-         X/6FaRWUvpvC8W2OAH4DX1fvPpznS3xp7zQazoQ8ajhhBbhNVvEydlkXI6h/71DkHnFO
-         AV3sGCRKHZlPIR7cUqxxfCZgD68Bccfs0ognck4psrGxdP5H4ntMV/yrPg4PWM0quuaU
-         V/X8TjfgtdVc2nOX0p4tKgK10EReD6PNX6hZ8D7v8TFnKMjezbWe3J/i3hPjf6dYCKf8
-         azDGzxCvXZrMEYPUOQY0Akr1rpzqrQZCT3gqSAEVNhRuwl6kX/R7Jn94QqLt7fI52D6n
-         DYKQ==
-X-Gm-Message-State: AOAM532kop/hVIRk9qmW3QCOQ0pCQytxI8X1gPyl+G1dvOOKClr20KwI
-        DOtAuOIeCLQvdxRzdi4Ztx7Og0hG9qO+w2Wtau0Hrrevyz88V2/eqow4BI8fbtEUpzrhtPTrkl8
-        zAIf0OyB3yXcHKV2MF3x7RPkPnwRcP+4vAuVJy2h7hVb7uxm9T+NPYmMtFw==
-X-Received: by 2002:a5d:47cc:: with SMTP id o12mr26226786wrc.227.1619488735124;
-        Mon, 26 Apr 2021 18:58:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaIDjRHLSoCzrNb5kg+s918hpbd2sSMuVdE5Dzu/+ISFGopXFCuhsg/wmfP4UZcqM4Ia3T8yHqcZaGgUqByWE=
-X-Received: by 2002:a5d:47cc:: with SMTP id o12mr26226767wrc.227.1619488734797;
- Mon, 26 Apr 2021 18:58:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=RjRLRjt6DksoCv/KudQEO4D/bl6V4MEpJxlivb+MQoM=;
+        b=LbS4FSEJhHFKZg1hPEalMxj84LU7xsmNGPdXL/FSrBod5veFfvTMp2cLCJzPYAvwWi
+         ea3hHIiAs/rSRXkjS8MoK0g4+wm8rocKUdnwt3s6BAg95xJbJC/NrtqLJPDHfIAcYjBQ
+         jhDBnnjh/u+2Z2G39pddDG6+ngGyzuu/zlqYZptv8h6Zlql3or5Qph7ly7dLz+nqckk1
+         sLHvsTT/XiP0JMXNN5U6giKdL8IzP5j2X7naFnA+BhzJJkeOhgcCFyr/Whq0r6tW/s63
+         f6IwB1GEHGUN+W/u1sUDIYKjm0djc/v2/rHreDnCXYiN78IEQ8hFKas/icjpBZNjWaVJ
+         6mlw==
+X-Gm-Message-State: AOAM532vXR3htJQ8f0/SO97EUxWdfy+AKv+DCKl2OSLq1H+7g6fDvg8F
+        T/gx55xCNwZJIKuKIf92tWZ73A==
+X-Google-Smtp-Source: ABdhPJymXV9swDliPd/VmVska6RbWioEMytEv11iIxTdOsGriU6E6s+aROVttE2bhkJcD8ehfB9fIA==
+X-Received: by 2002:aca:90b:: with SMTP id 11mr1437534oij.77.1619489176268;
+        Mon, 26 Apr 2021 19:06:16 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h28sm404479oof.47.2021.04.26.19.06.14
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 26 Apr 2021 19:06:15 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 19:05:55 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4 01/10] userfaultfd/hugetlbfs: avoid including
+ userfaultfd_k.h in hugetlb.h
+In-Reply-To: <20210420220804.486803-2-axelrasmussen@google.com>
+Message-ID: <alpine.LSU.2.11.2104261858130.2998@eggly.anvils>
+References: <20210420220804.486803-1-axelrasmussen@google.com> <20210420220804.486803-2-axelrasmussen@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <20210420075406.64105-1-acelan.kao@canonical.com>
- <CANn89iJLSmtBNoDo8QJ6a0MzsHjdLB0Pf=cs9e4g8Y6-KuFiMQ@mail.gmail.com>
- <20210420122715.2066b537@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFv23Q=ywiuZp7Y=bj=SAZmDdAnanAXA954hdO3GpkjmDo=RpQ@mail.gmail.com>
- <c10a6c72-9db7-18c8-6b03-1f8c40b8fd87@gmail.com> <CAFv23QkUsTf5M0MoUEFNYeFCtShAn3EmA3u8vXVeZyJa20Bx=g@mail.gmail.com>
- <f06e0e2b-c6bb-ef5a-f629-d1ab82b7aee2@gmail.com> <CAFv23Qnf3aJQyXyDbb_nvq2XU8t9Gy5sLFyzM251-FU_qBBUjw@mail.gmail.com>
- <9caae1c4-7132-4827-ef36-7aade74e4084@gmail.com>
-In-Reply-To: <9caae1c4-7132-4827-ef36-7aade74e4084@gmail.com>
-From:   AceLan Kao <acelan.kao@canonical.com>
-Date:   Tue, 27 Apr 2021 09:58:44 +0800
-Message-ID: <CAFv23Q=p+XM-p75RE--EHqkqtwqH743nTdb_-PSKpXbfAjpbrw@mail.gmail.com>
-Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got another issue ticket with the same dump_stack with igc NIC.
-To fix this on the device side would lead to many other issues and we
-have to check on the device side if the calling path contains
-rtnl_lock already.
-I still think we should not keep rtnl locked when calling functions
-outside of network stack.
+On Tue, 20 Apr 2021, Axel Rasmussen wrote:
 
-Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月26日 週一 下午4:42寫道：
->
-> On 26.04.2021 09:36, AceLan Kao wrote:
-> > Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月25日 週日 上午4:07寫道：
-> >>
-> >> On 23.04.2021 05:42, AceLan Kao wrote:
-> >>> Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月22日 週四 下午3:09寫道：
-> >>>>
-> >>>> On 22.04.2021 08:30, AceLan Kao wrote:
-> >>>>> Yes, should add
-> >>>>>
-> >>>>> Fixes: 9474933caf21 ("igb: close/suspend race in netif_device_detach")
-> >>>>> and also
-> >>>>> Fixes: 9513d2a5dc7f ("igc: Add legacy power management support")
-> >>>>>
-> >>>> Please don't top-post. Apart from that:
-> >>>> If the issue was introduced with driver changes, then adding a workaround
-> >>>> in net core may not be the right approach.
-> >>> It's hard to say who introduces this issue, we probably could point
-> >>> our finger to below commit
-> >>> bd869245a3dc net: core: try to runtime-resume detached device in __dev_open
-> >>>
-> >>> This calling path is not usual, in my case, the NIC is not plugged in
-> >>> any Ethernet cable,
-> >>> and we are doing networking tests on another NIC on the system. So,
-> >>> remove the rtnl lock from igb driver will affect other scenarios.
-> >>>
-> >>>>
-> >>>>> Jakub Kicinski <kuba@kernel.org> 於 2021年4月21日 週三 上午3:27寫道：
-> >>>>>>
-> >>>>>> On Tue, 20 Apr 2021 10:34:17 +0200 Eric Dumazet wrote:
-> >>>>>>> On Tue, Apr 20, 2021 at 9:54 AM AceLan Kao <acelan.kao@canonical.com> wrote:
-> >>>>>>>>
-> >>>>>>>> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
-> >>>>>>>>
-> >>>>>>>> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
-> >>>>>>>> __dev_open() it calls pm_runtime_resume() to resume devices, and in
-> >>>>>>>> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
-> >>>>>>>> again. That leads to a recursive lock.
-> >>>>>>>>
-> >>>>>>>> It should leave the devices' resume function to decide if they need to
-> >>>>>>>> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
-> >>>>>>>> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> Hi Acelan
-> >>>>>>>
-> >>>>>>> When was the bugg added ?
-> >>>>>>> Please add a Fixes: tag
-> >>>>>>
-> >>>>>> For immediate cause probably:
-> >>>>>>
-> >>>>>> Fixes: 9474933caf21 ("igb: close/suspend race in netif_device_detach")
-> >>>>>>
-> >>>>>>> By doing so, you give more chances for reviewers to understand why the
-> >>>>>>> fix is not risky,
-> >>>>>>> and help stable teams work.
-> >>>>>>
-> >>>>>> IMO the driver lacks internal locking. Taking 看rtnl from resume is just
-> >>>>>> one example, git history shows many more places that lacked locking and
-> >>>>>> got papered over with rtnl here.
-> >>>>
-> >>
-> >> You could alternatively try the following. It should avoid the deadlock,
-> >> and when runtime-resuming if __IGB_DOWN is set all we do is marking the
-> >> net_device as present (because of PCI D3 -> D0 transition).
-> >> I do basically the same in r8169 and it works as intended.
-> >>
-> >> Disclaimer: I don't have an igb-driven device and therefore can't test
-> >> the proposal.
-> >>
-> >> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-> >> index 038a9fd1a..21436626a 100644
-> >> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> >> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> >> @@ -9300,6 +9300,14 @@ static int __maybe_unused igb_runtime_suspend(struct device *dev)
-> >>
-> >>  static int __maybe_unused igb_runtime_resume(struct device *dev)
-> >>  {
-> >> +       struct net_device *netdev = dev_get_drvdata(dev);
-> >> +       struct igb_adapter *adapter = netdev_priv(netdev);
-> >> +
-> >> +       if (test_bit(__IGB_DOWN, &adapter->state)) {
-> >> +               netif_device_attach(netdev);
-> >> +               return 0;
-> >> +       }
-> >> +
-> >>         return igb_resume(dev);
-> >>  }
-> >>
-> >> --
-> >> 2.31.1
-> >>
-> >
-> > Hi Heiner,
-> >
-> > I encountered below error after applied your patch.
-> >
-> Presumably similar changes are needed also for the runtime_suspend callback.
-> If __IGB_DOWN is set, I think just the net_device needs to be detached.
->
->
-> > [  121.489970] u kernel: ------------[ cut here ]------------
-> > [  121.489979] u kernel: igb 0000:05:00.0: disabling already-disabled device
-> > [  121.490008] u kernel: WARNING: CPU: 7 PID: 258 at
-> > drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-> > [  121.490028] u kernel: Modules linked in: rfcomm cmac algif_hash
-> > algif_skcipher af_alg bnep btusb btrtl btbcm btintel bluetooth
-> > ecdh_generic ecc joydev input_leds inte
-> > l_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp
-> > coretemp ath10k_pci ath10k_core kvm_intel ath mac80211 kvm
-> > snd_sof_pci_intel_tgl snd_soc_acpi_intel_ma
-> > tch snd_sof_intel_hda_common nls_iso8859_1 soundwire_intel
-> > soundwire_generic_allocation soundwire_cadence soundwire_bus
-> > snd_sof_pci snd_soc_acpi snd_sof snd_soc_core snd
-> > _hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi
-> > crct10dif_pclmul crc32_pclmul snd_sof_xtensa_dsp ghash_clmulni_intel
-> > ledtrig_audio aesni_intel snd_hda_intel
-> > libarc4 crypto_simd snd_intel_dspcfg snd_intel_sdw_acpi cryptd
-> > snd_hda_codec cfg80211 mei_hdcp snd_hwdep snd_hda_core
-> > intel_wmi_thunderbolt snd_pcm wmi_bmof snd_seq inte
-> > l_cstate efi_pstore snd_timer snd_seq_device ee1004 mei_me snd mei
-> > ucsi_acpi soundcore typec_ucsi typec wmi mac_hid acpi_pad acpi_tad
-> > sch_fq_codel
-> > [  121.490314] u kernel:  parport_pc ppdev lp parport ip_tables
-> > x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456
-> > async_raid6_recov async_memcpy async_
-> > pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath
-> > linear hid_generic usbhid hid i915 drm_kms_helper syscopyarea
-> > sysfillrect sysimgblt fb_sys_fops cec rc
-> > _core igb drm nvme e1000e nvme_core i2c_i801 dca i2c_smbus
-> > i2c_algo_bit intel_lpss_pci intel_lpss ahci idma64 video xhci_pci
-> > libahci virt_dma xhci_pci_renesas pinctrl_ti
-> > gerlake
-> > [  121.490508] u kernel: CPU: 7 PID: 258 Comm: kworker/7:2 Tainted: G
-> >    U            5.12.0-rc7+ #79
-> > [  121.490518] u kernel: Hardware name: Dell Inc. OptiPlex 7090/, BIOS
-> > 0.12.80 02/23/2021
-> > [  121.490525] u kernel: Workqueue: pm pm_runtime_work
-> > [  121.490540] u kernel: RIP: 0010:pci_disable_device+0x91/0xb0
-> > [  121.490550] u kernel: Code: 4d 85 e4 75 07 4c 8b a3 c8 00 00 00 48
-> > 8d bb c8 00 00 00 e8 61 8d 17 00 4c 89 e2 48 c7 c7 60 5a e0 a5 48 89
-> > c6 e8 9b a3 59 00 <0f> 0b eb 8
-> > d 48 89 df e8 e3 fe ff ff 80 a3 49 0a 00 00 df 5b 41 5c
-> > [  121.490558] u kernel: RSP: 0018:ffffb76b4169fc90 EFLAGS: 00010286
-> > [  121.490569] u kernel: RAX: 0000000000000000 RBX: ffff9e2581ee6000
-> > RCX: 0000000000000027
-> > [  121.490576] u kernel: RDX: 0000000000000027 RSI: ffffffffa493bca0
-> > RDI: ffff9e27073e89b8
-> > [  121.490582] u kernel: RBP: ffffb76b4169fca0 R08: ffff9e27073e89b0
-> > R09: 0000000000000000
-> > [  121.490588] u kernel: R10: 0000000000000000 R11: 0000000000000001
-> > R12: ffff9e2581af7c80
-> > [  121.490594] u kernel: R13: ffff9e2581ee6000 R14: ffff9e25a0914000
-> > R15: ffff9e25a0915280
-> > [  121.490600] u kernel: FS:  0000000000000000(0000)
-> > GS:ffff9e2707200000(0000) knlGS:0000000000000000
-> > [  121.490608] u kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  121.490614] u kernel: CR2: 00007ff86ec8d024 CR3: 0000000189c28002
-> > CR4: 0000000000770ee0
-> > [  121.490621] u kernel: PKRU: 55555554
-> > [  121.490626] u kernel: Call Trace:
-> > [  121.490638] u kernel:  __igb_shutdown+0xf2/0x1c0 [igb]
-> > [  121.490676] u kernel:  igb_runtime_suspend+0x1c/0x20 [igb]
-> > [  121.490703] u kernel:  pci_pm_runtime_suspend+0x63/0x180
-> > [  121.490715] u kernel:  ? pci_pm_runtime_resume+0x90/0x90
-> > [  121.490727] u kernel:  __rpm_callback+0xc7/0x140
-> > [  121.490740] u kernel:  rpm_callback+0x57/0x80
-> > [  121.490750] u kernel:  ? pci_pm_runtime_resume+0x90/0x90
-> > [  121.490759] u kernel:  rpm_suspend+0x119/0x640
-> > [  121.490774] u kernel:  pm_runtime_work+0x64/0xc0
-> > [  121.490784] u kernel:  process_one_work+0x2af/0x5d0
-> > [  121.490803] u kernel:  worker_thread+0x4d/0x3e0
-> > [  121.490814] u kernel:  ? process_one_work+0x5d0/0x5d0
-> > [  121.490825] u kernel:  kthread+0x12a/0x160
-> > [  121.490834] u kernel:  ? kthread_park+0x90/0x90
-> > [  121.490844] u kernel:  ret_from_fork+0x1f/0x30
-> > [  121.490867] u kernel: irq event stamp: 0[  121.490871] u kernel:
-> > hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> > [  121.490916] u kernel: hardirqs last disabled at (0):
-> > [<ffffffffa489ea44>] copy_process+0x714/0x1cc0
-> > [  121.490929] u kernel: softirqs last  enabled at (0):
-> > [<ffffffffa489ea44>] copy_process+0x714/0x1cc0
-> > [  121.490938] u kernel: softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > [  121.490949] u kernel: ---[ end trace a9c7ffc27c226979 ]---
-> >
->
+> Minimizing header file inclusion is desirable. In this case, we can do
+> so just by forward declaring the enumeration our signature relies upon.
+> 
+> Reviewed-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+
+Acked-by: Hugh Dickins <hughd@google.com>
+
+> ---
+>  include/linux/hugetlb.h | 4 +++-
+>  mm/hugetlb.c            | 1 +
+>  2 files changed, 4 insertions(+), 1 deletion(-)
