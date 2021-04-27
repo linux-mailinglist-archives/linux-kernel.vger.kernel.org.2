@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7844F36C329
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F45636C32E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhD0KVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236735AbhD0KUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:20:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB4D611ED;
-        Tue, 27 Apr 2021 10:19:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619518797;
-        bh=Y1Sf0bjD5hEhEnLL4TFrISbrwe7DqxOPsCTILOOKIc8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i+W4G3Wt3ezZF1DPhgVS8L0osuBSYKgvXTFNxPRwd2su++/HqqeCZYvXKLXmymz7w
-         6gbrlpW6pvoICl+ktRH3yavDILTeFMBvtZvICRhr1zfTllPEWdy4D+UwHd/icWf4MS
-         1TslGw713EaPmxXHQMqrGFN2N1N9icLKrR7KWUpVIgl9js4BW/es4DX1BqmRunx/eT
-         gIDh9KBNRgu458IeAQi5YjZwImKmv45BiLAQcSwJ9BUzFjlXY1fEgqATlI8lTTtVzc
-         nzuC59Df87iNHbtFwVhnBFsB6A+QOjoMnlSef04EJCsoUAIWTn3ymyYFpIMmpJVME1
-         c4Tv9AYBuhRYQ==
-Date:   Tue, 27 Apr 2021 11:19:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        kernelci-results@groups.io, alsa-devel@alsa-project.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: broonie-sound/for-next bisection:
- baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
-Message-ID: <20210427101926.GA4605@sirena.org.uk>
-References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
- <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
- <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
- <20210426144242.GF4590@sirena.org.uk>
- <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+        id S235315AbhD0KZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:25:06 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:36695 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237740AbhD0KYf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:24:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619519032; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Pyfm1pM0srPnnI8uYQKfJWlpQqpKFiXu5zRYYRmRtXk=; b=fTucSSqXqG5OmAIcQxlYpc4M8ICUBlXH6t0nPnjr59XZZmyU+n4rW6NE0SuV9OtaojerW8it
+ TIG4x877bou6/1yK0w45LgMqQelLpQGj1iNAdtV8vDodydd/Blnqxj0SiGATOcXa81TCrkmv
+ eGwNHDhbsXB9Y4AyOEVwP+tRk50=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6087e623a817abd39aa0ef8a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Apr 2021 10:23:31
+ GMT
+Sender: fenglinw=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E01C8C433F1; Tue, 27 Apr 2021 10:23:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from fenglinw02.ap.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: fenglinw)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9CF7C433D3;
+        Tue, 27 Apr 2021 10:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A9CF7C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=fenglinw@codeaurora.org
+From:   Fenglin Wu <fenglinw@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     subbaram@codeaurora.org, collinsd@codeaurora.org,
+        aghayal@codeaurora.org, fenglinw@codeaurora.org
+Subject: [PATCH 0/2] Add QCOM PMIC PWM driver
+Date:   Tue, 27 Apr 2021 18:22:08 +0800
+Message-Id: <20210427102247.822-1-fenglinw@codeaurora.org>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-In-Reply-To: <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Don't feed the bats tonight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add PWM driver to support PWM modules inside QCOM PMIC chips which are accessed
+through SPMI bus. Normally, there would be multiple PWM modules with adjacent
+address spaces present in one PMIC chip, and each PWM module has 0x100 size of
+address space. With this driver, a pwm_chip with multiple pwm_device individuals
+is created, and each pwm_device individual is corresponding to one PWM module.
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fenglin Wu (2):
+  dt-bindings: pwm: add bindings for PWM modules inside QCOM PMICs
+  pwm: pwm-qcom: add driver for PWM modules in QCOM PMICs
 
-On Tue, Apr 27, 2021 at 07:28:34AM +0900, Kuninori Morimoto wrote:
+ .../devicetree/bindings/pwm/pwm-qcom.yaml          |  51 ++
+ drivers/pwm/Kconfig                                |   9 +
+ drivers/pwm/Makefile                               |   1 +
+ drivers/pwm/pwm-qcom.c                             | 585 +++++++++++++++++++++
+ 4 files changed, 646 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/pwm-qcom.yaml
+ create mode 100644 drivers/pwm/pwm-qcom.c
 
-> > > If so, all sai1 - sai6 are using "fsl,vf610-sai",
-> > > all saiX doesn't have .name. I think it should have different name.
-> > > In your case, at least, sai5 / sai6 needs to have
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
 
-> > You could send a patch along with re-adding the three patches I dropped?
-
-> Thanks, I can do it.
-> But I want to confirm above first.
-> Let's keep Guillaume's happiness :)
-
-This board is in the Kontron lab - KernelCI is just reporting results
-=66rom it, we'd need to connect with someone from Kontron for system
-specific questions.  Guillaume, I don't know what e-mail they wanted to
-be used here?
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCH5S0ACgkQJNaLcl1U
-h9CVnAf+OzAymrPGqi74AroobdIikqiR4xtw2bKKWThMR3fGvwPaQtbr6qtmLwoY
-n96fzVSW/xSOiZ4oMSvbT+eO3ZO89M1ecPNxROmwkErYOqH8yZZ/Rja26bBNX5zm
-UN/nsMq8b3qcFhrMKfxQf0yDxWLOwxDNGOt21SlbRcztz3xJYDFU/iom5j946UbO
-7Zeg+aqzP3KyHwUjyBdyuA8TfJ2k0Dpv4uL5K+Nk4/0/wKtUJf/hdmtFOyNej2GZ
-EpX64Wy+uu83WSQ9tgjsVmxQun4TJw4KgVPKxk0m6uPnxe1NODim67sxCo1F2z12
-PQAcIhsegTpqWM4b3lVMQKekQ5Ux5Q==
-=tr2h
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
