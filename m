@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD31E36CA06
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE0436CA05
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237893AbhD0RFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:05:09 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39270 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236433AbhD0RFE (ORCPT
+        id S236693AbhD0RFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235512AbhD0RFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:05:04 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13RH3dhG169480;
-        Tue, 27 Apr 2021 13:03:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : content-type : mime-version :
- content-transfer-encoding; s=pp1;
- bh=qxfc2vA5E+xspz4sZeH8i/Bh65VF/GUF/+47fezkICE=;
- b=WguKdcS+eIRu30lAwessbcUQZ30/DunGY06poKOcgrt5OyExO4z5Vi3m38S8zSVIY6VT
- Gu2GqeII4EYXmNBQYvgUiCn1owJTaYP6hTMCb0ORenGg8oAsmtRiTlZWLb8+7Dwr4lDo
- uhJHfT59lMpoV/z6jIvhTA6uytaHjLxnXGgSbAj3XDEztQMXGBRoYkfqLYdcITguODXi
- 9CbipsUGj6tYSf/X3QzIsepbSWbWxedKdvk0qRY6GubtzQTUUrLmmJLEWI5y29cBnnO/
- VRq6W855L6I8sgcdw8AVx/cQV9xnhjitEk+wp1VqM+S3Df+xekzFZVNHtSEYyEAlaA2+ +A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 386jn4s4r9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 13:03:42 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13RH3fWX169670;
-        Tue, 27 Apr 2021 13:03:41 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 386jn4s4ks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 13:03:41 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13RGvvvD008144;
-        Tue, 27 Apr 2021 17:03:26 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03dal.us.ibm.com with ESMTP id 384ay94j55-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Apr 2021 17:03:26 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13RH3Qap37814708
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Apr 2021 17:03:26 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 039AEBE051;
-        Tue, 27 Apr 2021 17:03:26 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 96919BE054;
-        Tue, 27 Apr 2021 17:03:25 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.93.36])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Apr 2021 17:03:25 +0000 (GMT)
-Message-ID: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
-Subject: PPC476 hangs during tlb flush after calling /init in crash kernel
- with linux 5.4+
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, miltonm@us.ibm.com
-Date:   Tue, 27 Apr 2021 12:03:25 -0500
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        Tue, 27 Apr 2021 13:05:01 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D823DC061574;
+        Tue, 27 Apr 2021 10:04:17 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id t18so2636278wry.1;
+        Tue, 27 Apr 2021 10:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EVsEChLdWoFL+wsmaTrHSUndg2V44Glyh6M+8T9aF4I=;
+        b=aV6PPsqxSMZoNx0kbAB2N60Ob182OJmGe8Q8ldE6uo3LbB4Lj4UOIyxl9hCgQJqLZF
+         A7Pi4QwjqxCoNZe/zOglV/yTStKP7m4Grv3v1We2NnhdV8E1K9fDuVfa796D65Z4uajN
+         IJ7+DXz+4Y4eKFuolh2XNOuVJk2mV+JCNKDrvxQwrrhgPDmRPo8k95iXBg8o9W7NTLA+
+         31iwzJObIalGxyXvKba9rn3HzFfxL5AbRBN8CxF2/JNMYsm8jjuFDCKpqWr3x9TKXxdS
+         tnYry4VBkWQejhJVicqPjIaMZF0ffMSObs5Xga3A005Ef14gazAfu3VW5vQ4IHwBDvE7
+         +FCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EVsEChLdWoFL+wsmaTrHSUndg2V44Glyh6M+8T9aF4I=;
+        b=fGWLpPqnRJxW93CIeZpctuEiah4UWQABAOs6ZEn6s9bxeedD9nNJsxj9qAJeO5Ak3I
+         F5Qks9oms3IGMJAlIme6HkFfuTZn2MMJmqOZgWCNgM6W8xJTD8fK3ygNLBwurhLpanl1
+         LI2jVHmRGUQIgF+ye7z6jB5kkisSugLgWH+qWbdpzdu0dXrDFG99UOnouPkPfwqiqTRv
+         rq0TuBciiVYp6SvIdSmpzsNYEeborinTcW3d1SLwAww3HZIGIC38uQjXzaADj1D9eELD
+         vvDrM/4IgqW0e1oG0t/W26RUZPghVpL8MDfEpxWnCWRap3zMnMkNhbrfCRf4Gb4vOKBX
+         udAQ==
+X-Gm-Message-State: AOAM531A0bHLCmyWM9MtCsOl1wDKAQw4rMl/8W5c3HFYY0svioG/rzY1
+        gTZhMcJcf4Lc7fRvXeZYQxA0uRjwx/A=
+X-Google-Smtp-Source: ABdhPJyHJS/OFuTk0fO4l/8cp+BwLNfYXXfTjhBGPNX3i3SKZHy9c7Xp9zSVcywoOMWzB2E9zIkZVQ==
+X-Received: by 2002:adf:fdcd:: with SMTP id i13mr29934671wrs.185.1619543056463;
+        Tue, 27 Apr 2021 10:04:16 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.129.131])
+        by smtp.gmail.com with ESMTPSA id i11sm4986224wrx.47.2021.04.27.10.04.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 10:04:16 -0700 (PDT)
+Subject: Re: [PATCH 5.13] io_uring: Check current->io_uring in
+ io_uring_cancel_sqpoll
+To:     Jens Axboe <axboe@kernel.dk>, Palash Oswal <hello@oswalpalash.com>
+Cc:     dvyukov@google.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oswalpalash@gmail.com,
+        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org
+References: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
+ <20210427125148.21816-1-hello@oswalpalash.com>
+ <decd444f-701d-6960-0648-b145b6fcccfb@kernel.dk>
+ <8204f859-7249-580e-9cb1-7e255dbcb982@gmail.com>
+ <de97e0f0-1c47-1a96-eb24-e62c37d2a06b@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <964956e9-e75a-257c-ac9e-4365b2be0020@gmail.com>
+Date:   Tue, 27 Apr 2021 18:04:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <de97e0f0-1c47-1a96-eb24-e62c37d2a06b@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: kpToib2mmTJ-mihH_LrQVsg2OsPGlM3b
-X-Proofpoint-ORIG-GUID: bt6YRBpiq8HgoNdAE3rmdn9q1n6NT-Tm
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-27_10:2021-04-27,2021-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 phishscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104270115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On 4/27/21 6:00 PM, Jens Axboe wrote:
+> On 4/27/21 11:00 AM, Pavel Begunkov wrote:
+>> On 4/27/21 2:37 PM, Jens Axboe wrote:
+>>> On 4/27/21 6:51 AM, Palash Oswal wrote:
+>>>> syzkaller identified KASAN: null-ptr-deref Write in
+>>>> io_uring_cancel_sqpoll on v5.12
+>>>>
+>>>> io_uring_cancel_sqpoll is called by io_sq_thread before calling
+>>>> io_uring_alloc_task_context. This leads to current->io_uring being
+>>>> NULL. io_uring_cancel_sqpoll should not have to deal with threads
+>>>> where current->io_uring is NULL.
+>>>>
+>>>> In order to cast a wider safety net, perform input sanitisation
+>>>> directly in io_uring_cancel_sqpoll and return for NULL value of
+>>>> current->io_uring.
+>>>
+>>> Thanks applied - I augmented the commit message a bit.
+>>
+>> btw, does it fixes the replied before syz report? Should 
+>> syz fix or tag it if so.
+>> Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
+> 
+> That tag was already there.
 
-I'm having a problem in simulation and hardware where my PPC476
-processor stops executing instructions after callling /init. In my case
-this is a bash script. The code descends to flush the TLB, and
-somewhere in the loop in _tlbil_pid, the PC goes to
-InstructionTLBError47x but does not go any further. This only occurs in
-the crash kernel environment, which is using the same kernel,
-initramfs, and init script as the main kernel, which executed fine. I
-do not see this problem with linux 4.19 or 3.10. I do see it with 5.4
-and 5.10. I see a fair amount of refactoring in the PPC memory
-management area between 4.19 and 5.4. Can anyone point me in a
-direction to debug this further? My stack trace is below as I can run
-gdb in simulation.
+Oh, right, missed it
 
-Thanks,
-Eddie
-
-
-#0  _tlbil_pid () at
-/usr/src/kernel/arch/powerpc/mm/nohash/tlb_low.S:123
-#1  0xca014864 in local_flush_tlb_mm (mm=<optimized out>)
-    at /usr/src/kernel/arch/powerpc/mm/nohash/tlb.c:201
-#2  tlb_flush (tlb=<optimized out>)
-    at /usr/src/kernel/arch/powerpc/mm/nohash/tlb.c:395
-#3  0xca161e48 in tlb_flush_mmu_tlbonly (tlb=<optimized out>)
-    at /usr/src/kernel/include/asm-generic/tlb.h:408
-#4  tlb_flush_mmu_tlbonly (tlb=<optimized out>)
-    at /usr/src/kernel/include/asm-generic/tlb.h:403
-#5  tlb_flush_mmu (tlb=0xcec2fd18) at
-/usr/src/kernel/mm/mmu_gather.c:190
-#6  0xca161fa8 in tlb_finish_mmu (tlb=0xcec2fd18, start=<optimized
-out>,
-    end=<optimized out>) at /usr/src/kernel/mm/mmu_gather.c:272
-#7  0xca18e070 in shift_arg_pages (shift=<optimized out>,
-vma=<optimized out>)
-    at /usr/src/kernel/fs/exec.c:678
-#8  setup_arg_pages (bprm=0xcef1a000, stack_top=<optimized out>,
-    executable_stack=<optimized out>) at /usr/src/kernel/fs/exec.c:768
-#9  0xca1f617c in load_elf_binary (bprm=0xcef1a000)
-    at /usr/src/kernel/fs/binfmt_elf.c:867
-#10 0xca18f3d4 in search_binary_handler (bprm=<optimized out>)
-    at /usr/src/kernel/fs/exec.c:1691
-#11 0xca1f458c in next_terminator (last=<optimized out>,
-first=<optimized out>)
-    at /usr/src/kernel/fs/binfmt_script.c:29
-#12 load_script (bprm=0xcef1a000) at
-/usr/src/kernel/fs/binfmt_script.c:83
-#13 0xca18f3d4 in search_binary_handler (bprm=<optimized out>)
-    at /usr/src/kernel/fs/exec.c:1691
-#14 0xca190104 in acct_arg_size (bprm=<optimized out>, pages=<optimized
-out>)
-    at /usr/src/kernel/fs/exec.c:187
-#15 __do_execve_file (fd=<optimized out>, filename=0xcec98000,
-argv=...,
-    envp=..., flags=<optimized out>, file=<optimized out>)
-    at /usr/src/kernel/fs/exec.c:1872
-#16 0xca19059c in __read_once_size (size=<optimized out>,
-res=<optimized out>, p=<optimized out>) at
-/usr/src/kernel/include/linux/compiler.h:235
-#17 set_dumpable (mm=<optimized out>, value=<optimized out>) at
-/usr/src/kernel/fs/exec.c:1983
-
+-- 
+Pavel Begunkov
