@@ -2,140 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A549036CA55
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0959836CA58
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237722AbhD0R3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhD0R3Q (ORCPT
+        id S238021AbhD0RaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:30:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54940 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230219AbhD0RaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:29:16 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0673C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:28:32 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 66so21205379qkf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=U3dO6tQm7GZr9mjL5K7Pz/58Q8JHzrXPoB5wA7AxijE=;
-        b=wViiZ0csC3vl2T3W49g+9acdPoj/XxXfPY+XdKIF/IBOj1MPV+/biQcY3l+IeyAEaZ
-         Qnb329Wi0SC66kFdSxolZHJe81xpUqp8yGgknAoGORKDX39tN2R3YL8kMfGFka2SCtkI
-         yWE+zw5tQ9xoH/KDbaeQX5YPEFHBMf8EgSct2ftTwwK9YTmFQ02f5oBt4sKf30+yr0Fh
-         jNydbCXM0VH+ISh1epHsMlE1dC3wKv9yNYiB2KicKF9mq4L/Zs4oPKtpS+E3iLwwpyMf
-         F1F1u7nrxyPM+uDLpa+HvdhVelOXz6ZsRWXX+f+KXIEB2hnjLab6tvMvBkOiInVnWEcs
-         v6kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U3dO6tQm7GZr9mjL5K7Pz/58Q8JHzrXPoB5wA7AxijE=;
-        b=mGhYyoXlcaEah/5VpgIKwn3SKXYJ7i/D//KdAktcPs6xeLSrQxP5A3PFBrmqES/lBS
-         whuF1V2FF5hvkUQfxn2ViTmYq3jQCr0DmbxUyF0h1X2wq6i2E1Tck273mQeeqD8FoLRM
-         ci8dIMCAPnA8WuruOSMf7rzV7/zeMYTd6w9bb6bWMgi9yJRJBMp2xCUFQg39U3K4Fm/Z
-         kenNl38L4IJeSkW2GV09X6e5WRt0EIrIPOyX3xEiTLKYaIwl5WUpItElY1BzaZgHM9CV
-         ES5P4DHi1AjZMtd9jq502b6cCljTroDSzlm4QAYsbRMHhFIqSH+xfMYuSLLPpr7QZ4x0
-         5G3g==
-X-Gm-Message-State: AOAM533rU7bCnZeLAZvvU80hLKtu3C0kzngTlv8cMjz1LyjQeuZ1HVRh
-        bk2tYbP3ENqzhW4nEtZ+YP9/Sw==
-X-Google-Smtp-Source: ABdhPJy26Ni7id6SqqT6SDDQ/Afp5GwN/IHESlD4OZclMF5M6/SYUVdM25sD9XvCvUS4IIs7+x8b/g==
-X-Received: by 2002:a37:90a:: with SMTP id 10mr24004370qkj.396.1619544511990;
-        Tue, 27 Apr 2021 10:28:31 -0700 (PDT)
-Received: from iron-maiden.localnet ([73.251.9.172])
-        by smtp.gmail.com with ESMTPSA id y23sm3289387qkb.47.2021.04.27.10.28.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 10:28:31 -0700 (PDT)
-From:   bilbao@vt.edu
-To:     Carlos Bilbao <bilbao@vt.edu>, tglx@linutronix.de,
-        mingo@redhat.com, peterz@infradead.org, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] Fixed typo in Documentation/x86/x86_64/5level-paging.rst
-Date:   Tue, 27 Apr 2021 13:28:29 -0400
-Message-ID: <2599991.mvXUDI8C0e@iron-maiden>
-In-Reply-To: <871raveno6.fsf@meer.lwn.net>
-References: <CACbHsvSta2hogK0E4AKCxsUF3bFrdQTAA-mp2MvO6Q7+rQuKCg@mail.gmail.com> <871raveno6.fsf@meer.lwn.net>
+        Tue, 27 Apr 2021 13:30:10 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13RH2xLi158032;
+        Tue, 27 Apr 2021 13:28:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qaRL0GcX5mJv9z9wY5Pv7EzCSvAUx3eMqPNJKQ4864Y=;
+ b=oaQIX0VTcTVVruSyVFEizSmgRB0db1I5XNh0DlqzkUTSS0fP2UnrJxDcHqaRIJII2bbq
+ JFZAVeBdc7dDNQWDw+2cZDE6I4tD36W7qflZ668pBO8+RXGjJZGOg54ryF0v1engAHgb
+ IUDR6BXXRHYDXFZdR6XR6yuukwMD8PsLOqI7P/gtHSh/uabUt3AuDrIKJ2NIiOHXttA8
+ b7iOJ6F9wLIDlcUxKj8EzIihKI6HYvG6HK/Jzfja7812lpafdHnLuX1wx5y2rbYEsElc
+ xRxCPcBDc7fzrSmmoE2qkhFQRC45y+abQojUG00aplua+pbmP7niToSS7T0hkneA7u0N uA== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 386pf690vb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 13:28:57 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13RHRlGr020226;
+        Tue, 27 Apr 2021 17:28:55 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 384ay8gtnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 17:28:55 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13RHSpLQ38404402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Apr 2021 17:28:52 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E1069AE055;
+        Tue, 27 Apr 2021 17:28:51 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D187AE051;
+        Tue, 27 Apr 2021 17:28:51 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.169.209])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Apr 2021 17:28:51 +0000 (GMT)
+Subject: Re: [PATCH] pseries/drmem: update LMBs after LPM
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210427150113.14368-1-ldufour@linux.ibm.com>
+ <8b36065d-e4b4-bc0c-cf69-f01c91e49061@linux.ibm.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <c80a76eb-1e10-95f7-def1-5eb26d66efb2@linux.ibm.com>
+Date:   Tue, 27 Apr 2021 19:28:51 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <8b36065d-e4b4-bc0c-cf69-f01c91e49061@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: z-QlqJK8TqS3fpFTjLusOkS7sZIzjQ4K
+X-Proofpoint-GUID: z-QlqJK8TqS3fpFTjLusOkS7sZIzjQ4K
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-27_10:2021-04-27,2021-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 bulkscore=0 suspectscore=0
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104270115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jon, thanks a lot for your feedback, it was instructive. I attach changelog and the patch as plain text below. 
-
-I fix two typos in the documentation (Documentation/x86/x86_64/5level-paging.rst), changing 'paing' for 
-'paging' and using the right verbal form for plural on 'some vendors offer'. 
-
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
- Documentation/x86/x86_64/5level-paging.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/x86/x86_64/5level-paging.rst b/Documentation/x86/x86_64/5level-paging.rst
-index 44856417e6a5..b792bbdc0b01 100644
---- a/Documentation/x86/x86_64/5level-paging.rst
-+++ b/Documentation/x86/x86_64/5level-paging.rst
-@@ -6,9 +6,9 @@
- 
- Overview
- ========
--Original x86-64 was limited by 4-level paing to 256 TiB of virtual address
-+Original x86-64 was limited by 4-level paging to 256 TiB of virtual address
- space and 64 TiB of physical address space. We are already bumping into
--this limit: some vendors offers servers with 64 TiB of memory today.
-+this limit: some vendors offer servers with 64 TiB of memory today.
- 
- To overcome the limitation upcoming hardware will introduce support for
- 5-level paging. It is a straight-forward extension of the current page
--- 
-2.25.1
-
-On Tuesday, April 27, 2021 11:45:45 AM EDT Jonathan Corbet wrote:
-> Carlos Bilbao <bilbao@vt.edu> writes:
-> > Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
-> > ---
-> > 
-> >  Documentation/x86/x86_64/5level-paging.rst | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/x86/x86_64/5level-paging.rst
-> > b/Documentation/x86/x86_64/5level-paging.rst
-> > index 44856417e6a5..b792bbdc0b01 100644
-> > --- a/Documentation/x86/x86_64/5level-paging.rst
-> > +++ b/Documentation/x86/x86_64/5level-paging.rst
-> > @@ -6,9 +6,9 @@
-> > 
-> >  Overview
-> >  ========
-> > 
-> > -Original x86-64 was limited by 4-level paing to 256 TiB of virtual
-> > address
-> > +Original x86-64 was limited by 4-level paging to 256 TiB of virtual
-> > address> 
-> >  space and 64 TiB of physical address space. We are already bumping into
-> > 
-> > -this limit: some vendors offers servers with 64 TiB of memory today.
-> > +this limit: some vendors offer servers with 64 TiB of memory today.
+Le 27/04/2021 à 19:01, Tyrel Datwyler a écrit :
+> On 4/27/21 8:01 AM, Laurent Dufour wrote:
+>> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
+>> updated by the hypervisor in the case the NUMA topology of the LPAR's
+>> memory is updated.
+>>
+>> This is caught by the kernel, but the memory's node is updated because
+>> there is no way to move a memory block between nodes.
+>>
+>> If later a memory block is added or removed, drmem_update_dt() is called
+>> and it is overwriting the DT node to match the added or removed LMB. But
+>> the LMB's associativity node has not been updated after the DT node update
+>> and thus the node is overwritten by the Linux's topology instead of the
+>> hypervisor one.
+>>
+>> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
+>> updated to force an update of the LMB's associativity.
+>>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>   arch/powerpc/include/asm/drmem.h          |  1 +
+>>   arch/powerpc/mm/drmem.c                   | 48 +++++++++++++++++++++++
+>>   arch/powerpc/platforms/pseries/mobility.c |  9 +++++
+>>   3 files changed, 58 insertions(+)
+>>
+>> diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
+>> index bf2402fed3e0..55c2c25085b0 100644
+>> --- a/arch/powerpc/include/asm/drmem.h
+>> +++ b/arch/powerpc/include/asm/drmem.h
+>> @@ -111,6 +111,7 @@ int drmem_update_dt(void);
+>>   int __init
+>>   walk_drmem_lmbs_early(unsigned long node, void *data,
+>>   		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
+>> +void drmem_update_lmbs(void);
+>>   #endif
+>>
+>>   static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
+>> diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+>> index 9af3832c9d8d..46074bdfdb3c 100644
+>> --- a/arch/powerpc/mm/drmem.c
+>> +++ b/arch/powerpc/mm/drmem.c
+>> @@ -307,6 +307,54 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
+>>   	return ret;
+>>   }
+>>
+>> +/*
+>> + * Update the LMB associativity index.
+>> + */
+>> +static int update_lmb(struct drmem_lmb *updated_lmb,
+>> +		      __maybe_unused const __be32 **usm,
+>> +		      __maybe_unused void *data)
+>> +{
+>> +	struct drmem_lmb *lmb;
+>> +
+>> +	/*
+>> +	 * Brut force there may be better way to fetch the LMB
+>> +	 */
+>> +	for_each_drmem_lmb(lmb) {
+>> +		if (lmb->drc_index != updated_lmb->drc_index)
+>> +			continue;
+>> +
+>> +		lmb->aa_index = updated_lmb->aa_index;
+>> +		break;
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +/*
+>> + * Update the LMB associativity index.
+>> + *
+>> + * This needs to be called when the hypervisor is updating the
+>> + * dynamic-reconfiguration-memory node property.
+>> + */
+>> +void drmem_update_lmbs(void)
+>> +{
+>> +	struct device_node *node;
+>> +	const __be32 *prop;
+>> +
+>> +	node = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
+>> +	if (!node)
+>> +		return;
+>> +
+>> +	prop = of_get_property(node, "ibm,dynamic-memory", NULL);
+>> +	if (prop) {
+>> +		__walk_drmem_v1_lmbs(prop, NULL, NULL, update_lmb);
+>> +	} else {
+>> +		prop = of_get_property(node, "ibm,dynamic-memory-v2", NULL);
+>> +		if (prop)
+>> +			__walk_drmem_v2_lmbs(prop, NULL, NULL, update_lmb);
+>> +	}
+>> +
+>> +	of_node_put(node);
+>> +}
+>>   #endif
+>>
+>>   static int init_drmem_lmb_size(struct device_node *dn)
+>> diff --git a/arch/powerpc/platforms/pseries/mobility.c b/arch/powerpc/platforms/pseries/mobility.c
+>> index ea4d6a660e0d..c68eccc6e8df 100644
+>> --- a/arch/powerpc/platforms/pseries/mobility.c
+>> +++ b/arch/powerpc/platforms/pseries/mobility.c
+>> @@ -25,6 +25,7 @@
+>>
+>>   #include <asm/machdep.h>
+>>   #include <asm/rtas.h>
+>> +#include <asm/drmem.h>
+>>   #include "pseries.h"
+>>   #include "../../kernel/cacheinfo.h"
+>>
+>> @@ -237,6 +238,7 @@ int pseries_devicetree_update(s32 scope)
+>>   	__be32 *data;
+>>   	int update_nodes_token;
+>>   	int rc;
+>> +	bool drmem_updated = false;
+>>
+>>   	update_nodes_token = rtas_token("ibm,update-nodes");
+>>   	if (update_nodes_token == RTAS_UNKNOWN_SERVICE)
+>> @@ -271,6 +273,10 @@ int pseries_devicetree_update(s32 scope)
+>>   					continue;
+>>   				}
+>>
+>> +				if (!strcmp(np->full_name,
+>> +					    "ibm,dynamic-reconfiguration-memory"))
+>> +					drmem_updated = true;
 > 
-> So this seems like a good change, but I need to make a couple of
-> requests:
-> 
->  - Please include a changelog, even with relatively simple patches like
->    this.
-> 
->  - Patches should be sent as plain text, inline in the mail - not as
->    attachments and *certainly* not as HTML.  Have a look at
->    Documentation/process/email-clients.rst if you need some guidance on
->    configuring your email setup.
-> 
-> Thanks,
-> 
-> jon
+> Is there a reason that we can't use the existing pseries_memory_notifier()
+> callback in pseries/hotplug-memory.c to trigger the drmem_update_lmbs() when
+> either the ibm,dynamic-memory or ibm,dynamic-memory-v2 properties are updated?
 
+Thanks a lot Tyrel!
 
+That's far more elegant, I'll send a v2 soon.
 
+Laurent.
+
+> Something like:
+> 
+> static int pseries_memory_notifier(struct notifier_block *nb,
+>                                     unsigned long action, void *data)
+> {
+>          struct of_reconfig_data *rd = data;
+>          int err = 0;
+> 
+>          switch (action) {
+>          case OF_RECONFIG_ATTACH_NODE:
+>                  err = pseries_add_mem_node(rd->dn);
+>                  break;
+>          case OF_RECONFIG_DETACH_NODE:
+>                  err = pseries_remove_mem_node(rd->dn);
+>                  break;
+> 	case OF_RECONFIG_UPDATE_PROPERTY:
+> 		if (!strcmp(rd->dn->full_name, "ibm,dynamic-reconfiguration-memory"));
+> 			drmem_update_lmbs(rd->prop);
+> 		break;
+>          }
+>          return notifier_from_errno(err);
+> }
+> 
+> Your drmem_update_lmbs() would need to be updated to take a property and to
+> check the property name against ibm,dyanmic-memory[-v2].
+> 
+> -Tyrel
+> 
+>> +
+>>   				switch (action) {
+>>   				case DELETE_DT_NODE:
+>>   					delete_dt_node(np);
+>> @@ -293,6 +299,9 @@ int pseries_devicetree_update(s32 scope)
+>>   	} while (rc == 1);
+>>
+>>   	kfree(rtas_buf);
+>> +
+>> +	if (drmem_updated)
+>> +		drmem_update_lmbs();
+>>   	return rc;
+>>   }
+>>
+> 
 
