@@ -2,111 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B3C36CF0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D1636CF49
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237958AbhD0XCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 19:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235540AbhD0XCB (ORCPT
+        id S239344AbhD0XOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 19:14:51 -0400
+Received: from dd20004.kasserver.com ([85.13.150.92]:59908 "EHLO
+        dd20004.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236547AbhD0XOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:02:01 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF92CC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 16:01:15 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id z2so24801288qkb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 16:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jxr5SslTLaxp6nme+gpuPJSYdMGk5MPmebdD3HwlPqc=;
-        b=mWCFLORk/JSO5hvqnSM+Tr4f5WX2JQQfM5zw3lnOqv2hI8yuK2QY2VRA4xKcfW/BBW
-         7+hygn+gIdSUDWbWnu44e9xclJztFIqbTsp/9qMdRnWE354rUiO+6MGPtD09gFGZBaIy
-         IMQtx4otwgxXJNa3cuXWog1ddYlO1lhhAgdkSaV16Mkmlj4d+AO8D+3Vib+IKn1kpnJh
-         zB2E3oZUgKt5cnT7CqrKn19BnZSeoH4IVay80i46FytArqMCxbMFWeL7/z8Zhyn6aK1Z
-         E+x0lqdvTXIEAWW5guabHeXg9VXM3pblwMdsknuFsYDM3IU6oHqS3nkBUCZzVKmLg6Hk
-         fKBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jxr5SslTLaxp6nme+gpuPJSYdMGk5MPmebdD3HwlPqc=;
-        b=RX2VT/UMbE81xGjgYbAiL+2g6jttp38Uok9SOfNfkMAdnIHnX8pG94tM9BmmGNTEqc
-         gxTKFU7cavSgAnKY4UyMONKyiY8dr3iGWzSO+BBYeAJc0LSVe5913LLWCZ/eg6LuBJDu
-         nGNXA/OEIc9Ga+bTBlOgChjVVHKGgjFnhzJnB4DmzjijY6RHFYjsDHLNc9ouS3k01CXu
-         aI7z6gCt/tknPaIo+e6252mDi00QEkMyaaiQ0zhwYQVAdyGp+Tzd3QQMQm07PQ/VizkE
-         /z2W7NgOnVAnEZTLwcdD3YfzFTEQBp3nkRrz2zaxqN5WKKVKOUyPqwM1K4h2NTcYL0wQ
-         xfhw==
-X-Gm-Message-State: AOAM5330aVazSLVGnUl6Pr+AY4XAHfarrS1DciN8+J0lcvB5pxRxyeQs
-        ewoyVxMjK9U5BJwMZLgHdypSAQ==
-X-Google-Smtp-Source: ABdhPJzddRKTQchhnx30/Xg2SkamnN6ck8rs0UJ921MDl2H1WKlMVuDanOHHUjSuQhUcGpmIX430Sg==
-X-Received: by 2002:a37:a5cb:: with SMTP id o194mr13564100qke.303.1619564475032;
-        Tue, 27 Apr 2021 16:01:15 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id t23sm3730974qkg.61.2021.04.27.16.01.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 16:01:14 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lbWhd-00Dl5Q-Jp; Tue, 27 Apr 2021 20:01:13 -0300
-Date:   Tue, 27 Apr 2021 20:01:13 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 05/16] dma-mapping: Introduce dma_map_sg_p2pdma()
-Message-ID: <20210427230113.GV2047089@ziepe.ca>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-6-logang@deltatee.com>
- <20210427193157.GQ2047089@ziepe.ca>
- <3c9ba6df-750a-3847-f1fc-8e41f533d1a2@deltatee.com>
+        Tue, 27 Apr 2021 19:14:48 -0400
+X-Greylist: delayed 455 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Apr 2021 19:14:46 EDT
+Received: from timo-desktop.lan.xusig.net (i59F5205F.versanet.de [89.245.32.95])
+        by dd20004.kasserver.com (Postfix) with ESMTPSA id 320575458868;
+        Wed, 28 Apr 2021 01:06:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silentcreek.de;
+        s=kas202012291009; t=1619564785;
+        bh=KTmAKZe1QU9CWTUWzvq+taFcNdmDF1IaeY/2hBlJl/o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I1OrQ3FPJ37iyguIGG9SRw1g6510jpBKXWy7ijohO+hM2+CmIeKsGBBVJsKVnlUGV
+         4TptB6l1p+/GY374PiHI+9tLhsIX5nXvx+eiWTUJzEicUrcXrGmWNTyIxe/PTyBkGE
+         yw6ZHOBpPDm3e0H4eyKevt8jjmGRV4a+ppw5wKVVJf59z+Ja9BH/3Tq8ugSQOn8oDh
+         ujpdyCIke0Ll+r3nnstxiYYCdwual47Am4YvVD8vAp/U+gMY5NotH37nqaaj6NARBX
+         /NdmuJz1vHCNDBisOF72U+qbaXXe37iJQ+so1Ot2HJundx95dvRMvR+mYWcK+Uhtj0
+         0Zb/bBFSzHR9A==
+From:   Timo Sigurdsson <public_timo.s@silentcreek.de>
+To:     axboe@kernel.dk, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, linux-ide@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     oliver@schinagl.nl, stable@vger.kernel.org,
+        Timo Sigurdsson <public_timo.s@silentcreek.de>
+Subject: [PATCH] ata: ahci_sunxi: Disable DIPM
+Date:   Wed, 28 Apr 2021 01:05:37 +0200
+Message-Id: <20210427230537.21423-1-public_timo.s@silentcreek.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c9ba6df-750a-3847-f1fc-8e41f533d1a2@deltatee.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 04:55:45PM -0600, Logan Gunthorpe wrote:
+DIPM is unsupported or broken on sunxi. Trying to enable the power
+management policy med_power_with_dipm on an Allwinner A20 SoC based board
+leads to immediate I/O errors and the attached SATA disk disappears from
+the /dev filesystem. A reset (power cycle) is required to make the SATA
+controller or disk work again. The A10 and A20 SoC data sheets and manuals
+don't mention DIPM at all [1], so it's fair to assume that it's simply not
+supported. But even if it were, it should be considered broken and best be
+disabled in the ahci_sunxi driver.
 
-> > Also, I see only 8 users of this function. How about just fix them all
-> > to support negative returns and use this as the p2p API instead of
-> > adding new API?
-> 
-> Well there might be 8 users of dma_map_sg_attrs() but there are a very
-> large number of dma_map_sg(). Seems odd to me to single out the first as
-> requiring these changes, but leave the latter.
+Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
 
-At a high level I'm OK with it. dma_map_sg_attrs() is the extra
-extended version of dma_map_sg(), it already has a different
-signature, a different return code is not out of the question.
+[1] https://github.com/allwinner-zh/documents/tree/master/
 
-dma_map_sg() is just the simple easy to use interface that can't do
-advanced stuff.
+Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+---
+ drivers/ata/ahci_sunxi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I'm not that opposed to this. But it will make this series a fair bit
-> longer to change the 8 map_sg_attrs() usages.
+diff --git a/drivers/ata/ahci_sunxi.c b/drivers/ata/ahci_sunxi.c
+index cb69b737cb49..56b695136977 100644
+--- a/drivers/ata/ahci_sunxi.c
++++ b/drivers/ata/ahci_sunxi.c
+@@ -200,7 +200,7 @@ static void ahci_sunxi_start_engine(struct ata_port *ap)
+ }
+ 
+ static const struct ata_port_info ahci_sunxi_port_info = {
+-	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ,
++	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ | ATA_FLAG_NO_DIPM,
+ 	.pio_mask	= ATA_PIO4,
+ 	.udma_mask	= ATA_UDMA6,
+ 	.port_ops	= &ahci_platform_ops,
+-- 
+2.26.2
 
-Yes, but the result seems much nicer to not grow the DMA API further.
-
-Jason
