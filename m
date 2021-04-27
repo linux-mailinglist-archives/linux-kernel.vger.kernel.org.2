@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0718C36C324
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7844F36C329
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhD0KUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:20:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34658 "EHLO mail.kernel.org"
+        id S235761AbhD0KVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:21:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236047AbhD0KPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:15:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 359A36196E;
-        Tue, 27 Apr 2021 10:13:54 +0000 (UTC)
+        id S236735AbhD0KUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB4D611ED;
+        Tue, 27 Apr 2021 10:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619518434;
-        bh=9XhzsT7qorzb0O8m+AZfDrHyIqnxWFrm1sswMUzcdRI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=homNswZsvi3mGrB+l98sroFS+C/F69CJQA+9KlUyxudW74Xi+ByY6ffj9t9pty0oW
-         FYXGAGj4eQvOAlOjxHYdmWM7AfKSOtbfXnvOoKlORsojpR0Srlv/xGdiLrTZWhnQhq
-         21ZL05Qiwme2NsO12Oq5nal3qRX+lK7scfhjCNDDm8Micc1frReWiNqg4jR1xgxQy8
-         7/958He9RkPM/f9Njh/2KDGtyHv++RK5fa5eI2aZL1sBez0PzbgpA4tOhDsf/x9pPC
-         lzut5TGIjsXxw9UAWXjvu7Vc8BRNzyE5omQiYa0pNduj9esu1e0x8IHZjYKwvlLj5z
-         iV7WA6drJOYyQ==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lbKj2-000j8P-Cq; Tue, 27 Apr 2021 12:13:52 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 79/79] media: hantro: document the usage of pm_runtime_get_sync()
-Date:   Tue, 27 Apr 2021 12:13:46 +0200
-Message-Id: <29a5f9cf9680a36fc1f6277364aa7c53776ed0cc.1619518193.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1619518193.git.mchehab+huawei@kernel.org>
-References: <cover.1619518193.git.mchehab+huawei@kernel.org>
+        s=k20201202; t=1619518797;
+        bh=Y1Sf0bjD5hEhEnLL4TFrISbrwe7DqxOPsCTILOOKIc8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i+W4G3Wt3ezZF1DPhgVS8L0osuBSYKgvXTFNxPRwd2su++/HqqeCZYvXKLXmymz7w
+         6gbrlpW6pvoICl+ktRH3yavDILTeFMBvtZvICRhr1zfTllPEWdy4D+UwHd/icWf4MS
+         1TslGw713EaPmxXHQMqrGFN2N1N9icLKrR7KWUpVIgl9js4BW/es4DX1BqmRunx/eT
+         gIDh9KBNRgu458IeAQi5YjZwImKmv45BiLAQcSwJ9BUzFjlXY1fEgqATlI8lTTtVzc
+         nzuC59Df87iNHbtFwVhnBFsB6A+QOjoMnlSef04EJCsoUAIWTn3ymyYFpIMmpJVME1
+         c4Tv9AYBuhRYQ==
+Date:   Tue, 27 Apr 2021 11:19:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io, alsa-devel@alsa-project.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+Message-ID: <20210427101926.GA4605@sirena.org.uk>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+ <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+In-Reply-To: <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: Don't feed the bats tonight.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Despite other *_get()/*_put() functions, where usage count is
-incremented only if not errors, the pm_runtime_get_sync() has
-a different behavior, incrementing the counter *even* on
-errors.
 
-That's an error prone behavior, as people often forget to
-decrement the usage counter.
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, the hantro driver depends on this behavior, as it
-will decrement the usage_count unconditionally at the m2m
-job finish time, which makes sense.
+On Tue, Apr 27, 2021 at 07:28:34AM +0900, Kuninori Morimoto wrote:
 
-So, intead of using the pm_runtime_resume_and_get() that
-would decrement the counter on error, keep the current
-API, but add a documentation explaining the rationale for
-keep using pm_runtime_get_sync().
+> > > If so, all sai1 - sai6 are using "fsl,vf610-sai",
+> > > all saiX doesn't have .name. I think it should have different name.
+> > > In your case, at least, sai5 / sai6 needs to have
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> > You could send a patch along with re-adding the three patches I dropped?
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 595e82a82728..96f940c1c85c 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -155,6 +155,13 @@ static void device_run(void *priv)
- 	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
- 	if (ret)
- 		goto err_cancel_job;
-+
-+	/*
-+	 * The pm_runtime_get_sync() will increment dev->power.usage_count,
-+	 * even on errors. That's the expected behavior here, since the
-+	 * hantro_job_finish() function at the error handling code
-+	 * will internally call pm_runtime_put_autosuspend().
-+	 */
- 	ret = pm_runtime_get_sync(ctx->dev->dev);
- 	if (ret < 0)
- 		goto err_cancel_job;
--- 
-2.30.2
+> Thanks, I can do it.
+> But I want to confirm above first.
+> Let's keep Guillaume's happiness :)
 
+This board is in the Kontron lab - KernelCI is just reporting results
+=66rom it, we'd need to connect with someone from Kontron for system
+specific questions.  Guillaume, I don't know what e-mail they wanted to
+be used here?
+
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCH5S0ACgkQJNaLcl1U
+h9CVnAf+OzAymrPGqi74AroobdIikqiR4xtw2bKKWThMR3fGvwPaQtbr6qtmLwoY
+n96fzVSW/xSOiZ4oMSvbT+eO3ZO89M1ecPNxROmwkErYOqH8yZZ/Rja26bBNX5zm
+UN/nsMq8b3qcFhrMKfxQf0yDxWLOwxDNGOt21SlbRcztz3xJYDFU/iom5j946UbO
+7Zeg+aqzP3KyHwUjyBdyuA8TfJ2k0Dpv4uL5K+Nk4/0/wKtUJf/hdmtFOyNej2GZ
+EpX64Wy+uu83WSQ9tgjsVmxQun4TJw4KgVPKxk0m6uPnxe1NODim67sxCo1F2z12
+PQAcIhsegTpqWM4b3lVMQKekQ5Ux5Q==
+=tr2h
+-----END PGP SIGNATURE-----
+
+--RnlQjJ0d97Da+TV1--
