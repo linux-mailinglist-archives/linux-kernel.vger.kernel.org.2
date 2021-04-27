@@ -2,130 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6566436C159
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70D836C117
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhD0I4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        id S235255AbhD0Iil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235062AbhD0I4F (ORCPT
+        with ESMTP id S235236AbhD0Iij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:56:05 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9F7C061574;
-        Tue, 27 Apr 2021 01:55:23 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id h20so30497884plr.4;
-        Tue, 27 Apr 2021 01:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PzcggadyhDBPR7CkYxhgm2opVcnUll8pyqBD4JcyorE=;
-        b=i+DQQFnEX+WO8dczKbJtcvwM9Ge3MHWQDobm2okSjgTjr1DwlhkC+2PMnHHJlzUVDm
-         D+AhAlpfliuJMBKgI2F2fT1hwDkL/srtNNe8Z//OPpVcZqy/KMtOq5fG94rLTFbIaJQB
-         6oL2WxwJiUvl+q1jiiP84TeE3S2EugTsGzCuAlWACJdRDsCbzAIZZQd3p0MhosI0ht66
-         hwHGDYJbZWmWsJdR7sfiFhPh0KWNFMv+wjgxmXeefyRS5rGnMcS5Oe+q62RcE83DsW5o
-         jegpCuPMr8VXHCENK+wTu8XQOun0C22cSkdi9XvOhMwDWYawYjlIEyJhW+A4on/xDdG/
-         37uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PzcggadyhDBPR7CkYxhgm2opVcnUll8pyqBD4JcyorE=;
-        b=b3LGY8VBG/Yd3k8qPXRNzECBRzGCVSdOT8BfmemoRnIso/GDY3T/ylo9nDvC/5D+qT
-         LAAnsaToc6i9BbSIqsvOs51ug7zMeaWUIApXRn9hjKWYiqefceogPsLd/2O+yFqhIChs
-         oYuqyOx9tYyGIGMJ6ZbmumLNznmfzjHor0my0BWEsDCubvUI8Z/zdGtrF9V1Vw8IutP2
-         rDCuiaLoI3y8jNhNYVQIeVSSpIkwlFvU5Rpv4dcRSX7dK8xjnVliVJVi9IUxQXnBz2Kv
-         ciKcnB0eihyy/XOSYfFcDGafpDzqTFDKEtQgNeGvOAqwNBOhqkD7VFr/cHHG1t17M6O5
-         jLCw==
-X-Gm-Message-State: AOAM5306GipJMJYhL23MxpScNb62Fu2ENR+0D8xLbgeZshKFQL6MAj6X
-        Ry2U443eRik2UZS2by0inrmwCVdUFAQ=
-X-Google-Smtp-Source: ABdhPJyOS6jgcGOoHxz9iMFlZYdGZEV1pN/pf/U6LGC8G2QVEYcaApYs5/cNBh0xMUv+XJfrulkQsQ==
-X-Received: by 2002:a17:90a:352:: with SMTP id 18mr25304776pjf.223.1619513722745;
-        Tue, 27 Apr 2021 01:55:22 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id e8sm1912910pfv.177.2021.04.27.01.55.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Apr 2021 01:55:22 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH 4/4] KVM/VMX: Fold handle_interrupt_nmi_irqoff() into its solo caller
-Date:   Tue, 27 Apr 2021 07:09:49 +0800
-Message-Id: <20210426230949.3561-5-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210426230949.3561-1-jiangshanlai@gmail.com>
-References: <20210426230949.3561-1-jiangshanlai@gmail.com>
+        Tue, 27 Apr 2021 04:38:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAA8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 01:37:56 -0700 (PDT)
+Message-Id: <20210427082537.611978720@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619512673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aXdWCEcQvvSrnJB84jIhU9qLz/MW/rYJ6ms9LSSpAWs=;
+        b=CHpYTT4/cEBqcOm2u2DOAS5kxzEtXJd7dtZl5vCS10HZ33qQHNJxuCA3cd4aUzEEfpOIKV
+        toMx7xES7SwYwR0hJheEHd4QC3PB99IIfDTMvsKjFKXT3gc63fDgZnqwNxfIaehQqv74Br
+        eQ20uGtdvxFnGG0DMWVRAPILudmeeKtpRXkxC2IHSCehRyYyfIomc7oHKjpKfiBcnF36Ax
+        9l37HEiFdR9YrMZ/0Oovh0OA0q+XVuGOX19MwJBGymPxlNA3jkFnpScqwlxMkDexJVqzSk
+        zGkkEOCvzFv+U0YTw/FRoZqfuRV+snniNyw7Tmlyu4NFOF4yZKDz9OFZX3phvA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619512673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aXdWCEcQvvSrnJB84jIhU9qLz/MW/rYJ6ms9LSSpAWs=;
+        b=vEhu4ivPipBoE86F3WJyVtE+wuFrw5YojQ3B984Azz2zGJ9JFZ3DJx1gOdfRSKUuQqSNR9
+        yV3yJ+8ypGhIE4Dw==
+Date:   Tue, 27 Apr 2021 10:25:37 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        John Stultz <john.stultz@linaro.org>
+Subject: [patch 0/8] hrtimers: Overhaul the clock_was_set() logic
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
-
-The function handle_interrupt_nmi_irqoff() is called only once and
-it doesn't handle for NMI, so its name is outdated.
-
-Cc: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/kvm/vmx/vmx.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 96e59d912637..92c22211203e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6396,16 +6396,6 @@ static void vmx_apicv_post_state_restore(struct kvm_vcpu *vcpu)
- 
- void vmx_do_interrupt_nmi_irqoff(unsigned long entry);
- 
--static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
--{
--	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
--	gate_desc *desc = (gate_desc *)host_idt_base + vector;
--
--	kvm_before_interrupt(vcpu);
--	vmx_do_interrupt_nmi_irqoff(gate_offset(desc));
--	kvm_after_interrupt(vcpu);
--}
--
- static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
- {
- 	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
-@@ -6427,12 +6417,19 @@ static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
- static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
- {
- 	u32 intr_info = vmx_get_intr_info(vcpu);
-+	unsigned int vector;
-+	gate_desc *desc;
- 
- 	if (WARN_ONCE(!is_external_intr(intr_info),
- 	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
- 		return;
- 
--	handle_interrupt_nmi_irqoff(vcpu, intr_info);
-+	vector = intr_info & INTR_INFO_VECTOR_MASK;
-+	desc = (gate_desc *)host_idt_base + vector;
-+
-+	kvm_before_interrupt(vcpu);
-+	vmx_do_interrupt_nmi_irqoff(gate_offset(desc));
-+	kvm_after_interrupt(vcpu);
- }
- 
- static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
--- 
-2.19.1.6.gb485710b
-
+QSByZWNlbnQgcGF0Y2ggZnJvbSBNYXJjZWxvIHRvIGF2b2lkIElQSXMgd2hlbiB0aGUgY2xvY2sg
+d2FzIHNldAoKICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwNDA3MTM1MzAxLkdBMTY5
+ODVAZnVsbGVyLmNuZXQKCm1hZGUgbWUgbG9vayBkZWVwZXIgaW50byB0aGlzLgoKVGhhdCBtZWNo
+YW5pc20gaGFzIGNhdWdodCBzb21lIGR1c3QgYW5kIGJpdHJvdCBvdmVyIHRpbWUgYW5kIGp1c3Qg
+bWFraW5nCmNsb2NrX3dhc19zZXQoKSBhIGxpdHRsZSBiaXQgc21hcnRlciBkb2VzIG5vdCBtYWtl
+IHRoZSBjb2RlIGFueSBiZXR0ZXIuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBhZGRyZXNzZXMgdGhp
+cyBieToKCiAtIEZpeGluZyB0aGUgY2FzZXMgd2hlcmUgdGhlIGNsb2NrX3dhc19zZXQoKSBoYW5k
+bGluZyBpcyBpbmNvcnJlY3QKICAgZGVwZW5kaW5nIG9uIGNvbmZpZ3VyYXRpb24gb3IgcnVudGlt
+ZSBjb25kaXRpb25zLgoKIC0gRGlzdGFuZ2xlIHRoZSByZXN1bWUgbm90aWZpY2F0aW9uIGFuZCB0
+aGUgY2xvY2std2FzLXNldCBtZWNoYW5pc20KICAgdG8gcHJlcGFyZSBmb3IgSVBJIGF2b2lkYW5j
+ZQoKIC0gQWRvcHQgTWFyY2VsbydzIHBhdGNoIHRvIHRoZSBtb2RpZmllZCBjb2RlIGFuZCBhZGQg
+c29tZSBtb3JlIHNtYXJ0cyBvbgogICB0b3AuCgpUaGUgc2VyaWVzIGlzIGFsc28gYXZhaWxhYmxl
+IGZyb20gZ2l0OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9n
+aXQvdGdseC9kZXZlbC5naXQgaHJ0aW1lcgoKVGhhbmtzLAoKCXRnbHgKLS0tCiBmcy90aW1lcmZk
+LmMgICAgICAgICAgICAgICAgfCAgIDE2ICsrKwogaW5jbHVkZS9saW51eC9ocnRpbWVyLmggICAg
+IHwgICAgOCAtCiBrZXJuZWwvdGltZS9ocnRpbWVyLmMgICAgICAgfCAgMjE3ICsrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tCiBrZXJuZWwvdGltZS90aWNrLWNvbW1v
+bi5jICAgfCAgICA3ICsKIGtlcm5lbC90aW1lL3RpY2staW50ZXJuYWwuaCB8ICAgMTIgKysKIGtl
+cm5lbC90aW1lL3RpbWVrZWVwaW5nLmMgICB8ICAgMzYgKysrKy0tLQogNiBmaWxlcyBjaGFuZ2Vk
+LCAyMTkgaW5zZXJ0aW9ucygrKSwgNzcgZGVsZXRpb25zKC0pCg==
