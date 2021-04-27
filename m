@@ -2,116 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278BE36C6BB
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0C536C6BC
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236293AbhD0NJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236412AbhD0NJO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:09:14 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFE0C061574;
-        Tue, 27 Apr 2021 06:08:29 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x7so59369603wrw.10;
-        Tue, 27 Apr 2021 06:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bJvGh786pSp2+xw3WDqNmNqzwSTVt/HxDfR6swJxO7U=;
-        b=fbX8M4MqzmIkM9qDTRgc5EzsDkrUI0Azseg5GVTTKdgikdabvyqQSI5C5bilUR/xEA
-         T8lBtrqy4rTEh40PCxq5ynTSYpWF6RCzL6IRfNr/yEDDV8x2gb6/T5lYFPFlihNX7Y/t
-         o/N43VG+cnkSLeyID+GwzZDx4UOIVNOdBp7cWv7u0vjgLOVZtRTssXAt8P+n0VVZh8p3
-         JwyZ9TYIQulx/N6JWidn92mfFuFMGpWf2iEEUZ2qPYj0ynkMsldgdmzO5w2+CJx937Pv
-         GVN8qwVX+gzGGKjDWFbt5hdrGynp/JLMuED0D2CJfpPGb+tDrzbqyHGLTW7H6Qnp0r0Q
-         HpxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bJvGh786pSp2+xw3WDqNmNqzwSTVt/HxDfR6swJxO7U=;
-        b=S1TNYuMzsEtNQ1GFKCj6L8oatBByMeXOf1bWltnh7jXhPtGw+j4xJgcpp2lmmg4uKR
-         pVq6EuRjF8WOb5WpqQK4qov+2P72qAAXq45EPTVrsH7Hf/00xToSonMRWDp+pYRg+VYU
-         tpSsfvKf7bD0yOyjnsVOoiaKUtzPB2XAQ/caMacS/p1J+M8aUVKUOKARpTpr/JG/EPAZ
-         PSLWqcvV+1xqayJqllRmCOlreAa0HjV4sH07ILhpKspPrRkDL2cXrsX6rhg3BBPCHDl7
-         VEnoPGFauKlQqehHTZBepisBxtpOKYu4Qp8U0d6iI11oPNNiKmArYKbo9tAeCql4U3Tn
-         in4w==
-X-Gm-Message-State: AOAM5321FTi7nktE/n8kCXa9BUp90hhQ++kG2yyc27d3wNVle/0pvaU+
-        +bvmjRox/4gVNk2F+PY3sX4/zhVxZOo=
-X-Google-Smtp-Source: ABdhPJzOFW0aS5C+74hkZzL1CAWbA01ZyOn9wZWdt0HgHK5C6Sp5UO0iMAA6u/ozFtZbZC3sCiwxGA==
-X-Received: by 2002:a05:6000:2ad:: with SMTP id l13mr28691618wry.417.1619528908268;
-        Tue, 27 Apr 2021 06:08:28 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.129.131])
-        by smtp.gmail.com with ESMTPSA id i2sm1005054wro.0.2021.04.27.06.08.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 06:08:27 -0700 (PDT)
-Subject: Re: [PATCH 5.13] io_uring: Check current->io_uring in
- io_uring_cancel_sqpoll
-To:     Palash Oswal <hello@oswalpalash.com>
-Cc:     axboe@kernel.dk, dvyukov@google.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oswalpalash@gmail.com,
-        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org
-References: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
- <20210427125148.21816-1-hello@oswalpalash.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <b62f1985-f336-d0ec-bcdc-5dac16fb760b@gmail.com>
-Date:   Tue, 27 Apr 2021 14:08:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236376AbhD0NJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:09:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236513AbhD0NJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:09:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03010613D8;
+        Tue, 27 Apr 2021 13:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619528912;
+        bh=VbAxQ31vJ4gdsEWVNHQrObuMdXN/9zd1tfbPW06W+X4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oAsorCsNEnkq9sNwvadrCywyNBGIZ3DtgQIVL/DUjppu1+y4XDQetmnkF5eci+hPZ
+         eqk7CduU6OmGj81SBADCNBp0/+/VGucT2664+Uda03s8qMav31XunIAtX96CLYsuP+
+         wxSP+ULr5ekpKh5c+AxFXneqcQzKshPnogHdr6o4=
+Date:   Tue, 27 Apr 2021 15:08:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kangjie Lu <kjlu@umn.edu>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>
+Subject: Re: [PATCH 073/190] Revert "media: rcar_drif: fix a memory
+ disclosure"
+Message-ID: <YIgMzeQjMPzRqEAb@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-74-gregkh@linuxfoundation.org>
+ <CAMuHMdVFf3_jo+oGPm4THhan3bVZx99omkG1LnAp=B4JTKhChA@mail.gmail.com>
+ <YICXdauWkNRezHgX@pendragon.ideasonboard.com>
+ <CAMuHMdXN_j49MeEv2wUW5JOeYbJYU7Gj1FtEv7s744mo0x1rWA@mail.gmail.com>
+ <c8dbe373-8910-5b34-ce71-cad1bcab2d71@xs4all.nl>
+ <20210422110336.1d67678d@coco.lan>
+ <OSAPR01MB2737433383EBC530F27333CDC2469@OSAPR01MB2737.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210427125148.21816-1-hello@oswalpalash.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OSAPR01MB2737433383EBC530F27333CDC2469@OSAPR01MB2737.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 1:51 PM, Palash Oswal wrote:
-> syzkaller identified KASAN: null-ptr-deref Write in
-> io_uring_cancel_sqpoll on v5.12
+On Thu, Apr 22, 2021 at 09:21:13AM +0000, Fabrizio Castro wrote:
+> Dear All,
 > 
-> io_uring_cancel_sqpoll is called by io_sq_thread before calling
-> io_uring_alloc_task_context. This leads to current->io_uring being
-> NULL. io_uring_cancel_sqpoll should not have to deal with threads
-> where current->io_uring is NULL.
+> > From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Sent: 22 April 2021 10:04
+> > Subject: Re: [PATCH 073/190] Revert "media: rcar_drif: fix a memory
+> > disclosure"
+> > 
+> > Em Thu, 22 Apr 2021 09:29:36 +0200
+> > Hans Verkuil <hverkuil-cisco@xs4all.nl> escreveu:
+> > 
+> > > On 22/04/2021 08:57, Geert Uytterhoeven wrote:
+> > > > Hi Laurent,
+> > > >
+> > > > On Wed, Apr 21, 2021 at 11:22 PM Laurent Pinchart
+> > > > <laurent.pinchart@ideasonboard.com> wrote:
+> > > >> On Wed, Apr 21, 2021 at 08:58:22PM +0200, Geert Uytterhoeven wrote:
+> > > >>> On Wed, Apr 21, 2021 at 3:06 PM Greg Kroah-Hartman wrote:
+> > > >>>> This reverts commit d39083234c60519724c6ed59509a2129fd2aed41.
+> > > >>>>
+> > > >>>> Commits from @umn.edu addresses have been found to be submitted in
+> > "bad
+> > > >>>> faith" to try to test the kernel community's ability to review
+> > "known
+> > > >>>> malicious" changes.  The result of these submissions can be found
+> > in a
+> > > >>>> paper published at the 42nd IEEE Symposium on Security and Privacy
+> > > >>>> entitled, "Open Source Insecurity: Stealthily Introducing
+> > > >>>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu
+> > (University
+> > > >>>> of Minnesota) and Kangjie Lu (University of Minnesota).
+> > > >>>>
+> > > >>>> Because of this, all submissions from this group must be reverted
+> > from
+> > > >>>> the kernel tree and will need to be re-reviewed again to determine
+> > if
+> > > >>>> they actually are a valid fix.  Until that work is complete, remove
+> > this
+> > > >>>> change to ensure that no problems are being introduced into the
+> > > >>>> codebase.
+> > > >>>>
+> > > >>>> Cc: Kangjie Lu <kjlu@umn.edu>
+> > > >>>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > >>>> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > > >>>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > > >>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > >>>
+> > > >>> Upon a second look, I still see nothing wrong with the original
+> > commit.
+> > > >>> However, as I'm no v4l expert, I'd like to defer to the experts for
+> > final
+> > > >>> judgement.
+> > > >>
+> > > >> It seems fine to me, but it also seems unneeded, as the V4L2 core
+> > clears
+> > > >> the whole f->fmt union before calling this operation. The revert will
+> > > >> this improve performance very slightly.
+> > > >
+> > > > Hmm, that means very recent commit f12b81e47f48940a ("media: core
+> > > > headers: fix kernel-doc warnings") is not fully correct, as it added
+> > > > kerneldoc stating this is the responsibility of the driver:
+> > > >
+> > > > + * @reserved:          drivers and applications must zero this array
+> > >
+> > > Actually, it is the V4L2 core used by the driver that zeroes this. So
+> > > drivers don't need to do this, it's done for them. It used to be the
+> > > responsibility of the driver itself, but this was all moved to the core
+> > > framework a long time ago since, duh!, drivers always forgot this :-)
+> > >
+> > > >
+> > > > Anyway, it doesn't look like this umn.edu patch introduced a bug.
+> > >
+> > > I haven't seen any bugs introduced by the media patches from umn.edu.
+> > 
+> > Hi Greg,
+> > 
+> > I also double-checked all media revert patches from:
+> > 
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
+> > umn.edu-reverts
+> > 
+> > currently on this patch:
+> > 	6f4747a872ad Revert "ethtool: fix a potential missing-check bug"
+> > 
+> > That's a summary of what I found:
+> > 
+> > All of those should be dropped from your tree:
+> > 
+> > 	84fdb5856edd	Revert "media: si2165: fix a missing check of
+> > return value"
+> > 	867043f2206e	Revert "media: video-mux: fix null pointer
+> > dereferences"
+> > 	78ae4b621297	Revert "media: cx231xx: replace BUG_ON with
+> > recovery code"
+> > 	5be328a55817	Revert "media: saa7146: Avoid using BUG_ON as an
+> > assertion"
+> > 	81ce83158d22	Revert "media: davinci/vpfe_capture.c: Avoid
+> > BUG_ON for register failure"
+> > 	3319b39504b8	Revert "media: media/saa7146: fix incorrect
+> > assertion in saa7146_buffer_finish"
+> > 	b393f7cb29a2	Revert "media: rcar-vin: Fix a reference count
+> > leak."
+> > 	197bc5d03682	Revert "media: rcar-vin: Fix a reference count
+> > leak."
+> > 	2fd9cf68bbb6	Revert "media: rockchip/rga: Fix a reference count
+> > leak."
+> > 	d1e4614eca24	Revert "media: platform: fcp: Fix a reference
+> > count leak."
+> > 	416e8a6ae07f	Revert "media: camss: Fix a reference count leak."
+> > 	06b793ae497b	Revert "media: s5p-mfc: Fix a reference count
+> > leak"
+> > 	8f9fc14a7cc9	Revert "media: stm32-dcmi: Fix a reference count
+> > leak"
+> > 	556e1f86ba24	Revert "media: ti-vpe: Fix a missing check and
+> > reference count leak"
+> > 	5f5b1722ad0d	Revert "media: exynos4-is: Fix a reference count
+> > leak"
+> > 	f4c758c6c1cb	Revert "media: exynos4-is: Fix a reference count
+> > leak due to pm_runtime_get_sync"
+> > 	beb717878c73	Revert "media: exynos4-is: Fix several reference
+> > count leaks due to pm_runtime_get_sync
+> > 	7066ec748bfd	Revert "media: sti: Fix reference count leaks"
+> > 	cdd117093b19	Revert "media: st-delta: Fix reference count leak
+> > in delta_run_work"
+> > 
+> > As, after my re-check, they all seem to be addressing real issues. So,
+> > NACK on those.
+> > 
+> > This patch (073/190):
+> > 
+> > 	899ab4671bc0	Revert "media: rcar_drif: fix a memory disclosure"
+> > 
+> > While it doesn't hurt, it is useless, as the media core already
+> > prevents memory disclosure. So, it should be reverted.
+> > 
+> > So, for patch 073/190:
+> > 
+> > Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > 
-> In order to cast a wider safety net, perform input sanitisation
-> directly in io_uring_cancel_sqpoll and return for NULL value of
-> current->io_uring.
+> I agree, this patch should be reverted.
+> 
+> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-Looks good to me, but better to add a comment why it can be ignored,
-e.g. "can skip it as it couldn't have submitted requests without tctx"
+Thanks for the review, I've now dropped the media patches listed above,
+and kept this one and added both of your r-b to it.
 
-Also a nit: s/current->io_uring/tctx/
-
-> 
-> Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Palash Oswal <hello@oswalpalash.com>
-> ---
->  fs/io_uring.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index dff34975d86b..eccad51b7954 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -8998,6 +8998,8 @@ static void io_uring_cancel_sqpoll(struct io_ring_ctx *ctx)
->  	s64 inflight;
->  	DEFINE_WAIT(wait);
->  
-> +	if (!current->io_uring)
-> +		return;
->  	WARN_ON_ONCE(!sqd || ctx->sq_data->thread != current);
->  
->  	atomic_inc(&tctx->in_idle);
-> 
-
--- 
-Pavel Begunkov
+greg k-h
