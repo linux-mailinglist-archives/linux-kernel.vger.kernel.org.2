@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AB736CDC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 23:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E1936CDC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 23:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238992AbhD0VRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 17:17:00 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:50945 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237057AbhD0VQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 17:16:58 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13RLFkI1925360
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 27 Apr 2021 14:15:46 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13RLFkI1925360
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021032801; t=1619558148;
-        bh=OH6Ee28eLwng9NYWF9RLVZIFXvtSO6Pwr8F3RrF9GlY=;
-        h=To:From:Subject:Date:From;
-        b=Uw7v2h3EZN0hAByfXfQ8XoYHYhJJuNog0vbYT4rVplgAKQwOmnarEEgHAZfL0zH2W
-         bW0ndvcZtdJ1T5ZSDX49A2zC4kIU3eVR0yE8+FIlh+EJCNcnRScOlJ/X4UFyOUq3U6
-         OJOncIDGsrNDDcOzzCpJA3vWsxYfjYzfMGlFuVlggyg6KJBu8jP/+VWTgQtOWDpMJ4
-         Z1TTdlMgOvA9ArNivwStWxkxacleOqqmCC/BIazPMGvqb9nXutfSgaCf6YbaeJ58hz
-         xuabJOpU2mDs5ZQF9xCBaA443vuH6ny7xF1V3zq7ecBGGyhlEQLSFGKPpJqVuIljOF
-         cnZwghlWsv2MQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        oleg@redhat.com, Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Subject: pt_regs->ax == -ENOSYS
-Message-ID: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
-Date:   Tue, 27 Apr 2021 14:15:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239024AbhD0VSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 17:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235440AbhD0VSG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 17:18:06 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1717C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:17:22 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id t21so506253plo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=XbRRcvWtbGF+CXX7u5Y0A9sQh6iONvsr9rd1ZAKg3XY=;
+        b=UtILF44U19VkaoEiGDi9OShFkD7bzH4fJN1MkP5DYN9zhH4WHrPwMevEvR6cDn3Oga
+         9kCh7jd4IIHZkbsjX8ZM3P1Qa+PDdQTl+NyOHxuY7UWjw044vyXpevDXg7mOD07tJOnB
+         tK0VGTI9YBYXjao0f6/hiLhL/xKnPLeGlb1eM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=XbRRcvWtbGF+CXX7u5Y0A9sQh6iONvsr9rd1ZAKg3XY=;
+        b=GCsCe9XHGWgjomDMkehAtIvPH2AENMQbxM4WLu6cc1QgszYu7m6gnitzxYEpRt1UY3
+         Nu5AiJVE+oSmpJe8baqhmc2Cg2QoZOAjzuCDXbGi+UzkqefT5GTDN8m0DnPq1NQQemeJ
+         w2ZbLcKTdlJ4vUZPHJrdLFsHGq0babNS9PrsIim6NzCZPatrlqfrTT37KKkN25DWqK8j
+         MWiOXr6t2I6uwxTicc1VR/w1IJzc/o0CQwuBrNqzuZ+mMPsAmDhd9HiDBwx2azxxT6bv
+         JXcxn3O6gKZdacCzHiruK08TO1ub4szVRy98e1NzSlZ6oumE7zQf1BcuGEyYJ1NDtOTy
+         5BKg==
+X-Gm-Message-State: AOAM533cloT0it79IiYGksVtNlodiHQGzisQkOE6bwKeE629Tsu6nNgv
+        DytRE+JBUW1BjO2Z0kfosbr8iOtqlYknKHR7suAPtvH3CS8v3TZJqg3xpekmdJ/xVTR1jyjm16F
+        Aag9pWVSeB8If9l/F9+iUqMTlyduJMxqM3G3eFIdYb2V4MEtNmU+Ej/h8/UsgKTg47wQn0/WDAX
+        IgjIY=
+X-Google-Smtp-Source: ABdhPJzUUjmUDa213znjd+f8UAm8nhL+UqNmb0iztAu/bvvHnfeemYa+VEqOxSmrsE4qR9Nmj3TEWA==
+X-Received: by 2002:a17:90a:cb0e:: with SMTP id z14mr308571pjt.128.1619558241876;
+        Tue, 27 Apr 2021 14:17:21 -0700 (PDT)
+Received: from cork (c-73-93-175-39.hsd1.ca.comcast.net. [73.93.175.39])
+        by smtp.gmail.com with ESMTPSA id r1sm3194263pjo.26.2021.04.27.14.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 14:17:21 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 14:16:50 -0700
+From:   =?iso-8859-1?Q?J=F6rn?= Engel <joern@purestorage.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: sched: wakeup setting TIF_NEED_RESCHED too frequently
+Message-ID: <YIh/QubidJcE5IIv@cork>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to stomp out some possible cargo cult programming?
+I came across something that looks wrong and is certainly inefficient.
+Here is a trace of what happened.  Kernel was 5.4, so not too ancient.
 
-In the process of going through the various entry code paths, I have to 
-admit to being a bit confused why pt_regs->ax is set to -ENOSYS very 
-early in the system call path.
+ + nanoseconds before present
+ |       + 0 for voluntary (going to sleep), 1 for involuntary (TASK_RUNNING)
+ |       |    + PID of prev task
+ |       |    |      + PID of next task
+ |       |    |      |    + RT priority
+ |       |    |      |    |  + comm
+ v       v    v      v    v  v
+8729751  0   6893   6894  0 one
+8723802  0   6894 106051  0 one
+8718671  1 106051   6899  0 other
+8711411  0   6899   6900  0 one
+8705643  0   6900   6902  0 one
+8699444  0   6902   6903  0 one
+8693987  0   6903   6906  0 one
+8687832  0   6906   6904  0 one
+8681188  0   6904   6901  0 one
+8674083  0   6901 106051  0 one
+8639249  1 106051   6893  0 other
+8631961  0   6893   6894  0 one
+8626684  0   6894 106051  0 one
+8623375  1 106051   6899  0 other
+8617434  0   6899   6900  0 one
+8612341  0   6900   6901  0 one
+8607215  0   6901   6902  0 one
+8600824  0   6902   6903  0 one
+8595214  0   6903   6906  0 one
+8590161  0   6906   6904  0 one
+8584825  0   6904 106051  0 one
+8465395  1 106051   6893  0 other
+8358696  0   6893   6903  0 one
 
-What is perhaps even more confusing is:
+The "one" process seems to frequently wake a bunch of threads that
+do very little work before going back to sleep.  Clearly inefficient,
+but we are not interested in userspace problems here.  The "other"
+process has a thread that would like to continue running, but only gets
+to run for very short periods, 3.3µs in one case.  That also seems
+inefficient and looks like either a scheduler or debatable policy.
 
-__visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned long nr)
-{
-         nr = syscall_enter_from_user_mode(regs, nr);
+My rule of thumb for task switch overhead is 1-3µs.  Probably 1µs for
+the raw switch, plus another 2µs for cold cache effects.  If we want to
+amortize that overhead a bit, time slices should be in the region of
+1ms, give or take.  I would also be happy if the "one" process would
+have to wait 1ms before the woken threads actually get to run.  So in my
+book the observed behaviour is wrong, but opinions may differ.
 
-         instrumentation_begin();
-         if (likely(nr < NR_syscalls)) {
-                 nr = array_index_nospec(nr, NR_syscalls);
-                 regs->ax = sys_call_table[nr](regs);
-#ifdef CONFIG_X86_X32_ABI
-         } else if (likely((nr & __X32_SYSCALL_BIT) &&
-                           (nr & ~__X32_SYSCALL_BIT) < X32_NR_syscalls)) {
-                 nr = array_index_nospec(nr & ~__X32_SYSCALL_BIT,
-                                         X32_NR_syscalls);
-                 regs->ax = x32_sys_call_table[nr](regs);
-#endif
-         }
-         instrumentation_end();
-         syscall_exit_to_user_mode(regs);
-}
-#endif
+Anyway, trying to find a cause, I noticed the following call chain:
+	set_nr_if_polling()
+	ttwu_queue_remote()
+	ttwu_queue()
+	try_to_wake_up()
+	default_wake_function()
+	curr->func()
+	__wake_up_common()
+	__wake_up_common_lock()
+	__wake_up()
+	wake_up()
 
-Now, unless I'm completely out to sea, it seems to me that if 
-syscall_enter_from_user_mode() changes the system call number to an 
-invalid number and pt_regs->ax to !-ENOSYS then the system call will 
-return a different value(!) depending on if it is out of range for the 
-table (whatever was poked into pt_regs->ax) or if it corresponds to a 
-hole in the table. This seems to me at least to be The Wrong Thing.
+Call chain above is manually created from source code.  Closest sample I
+caught with instrumentation is missing the leaf calls after
+try_to_wake_up():
+	_raw_spin_unlock_irqrestore+0x1f/0x40
+	try_to_wake_up+0x425/0x5e0
+	wake_up_q+0x3f/0x80
+	futex_wake+0x159/0x180
+	do_futex+0xcd/0xba0
 
-Calling regs->ax = sys_ni_syscall() in an else clause would arguably be 
-the right thing here, except possibly in the case where nr (or (int)nr, 
-see below) == -1 or < 0.
+Afaics, the result is us setting TIF_NEED_RESCHED on any wakeup, unless
+wake_list is already populated.  Is that actually intentional?  And is
+that useful for performance of latency?  I think it isn't, but I am
+probably missing something here.
 
-Now, syscall_get_nr() returns the low 32 bits of the system call number 
-unconditionally. There are places where we look at the sign of this 
-number, which means that 0xffffffff7fffffff is "positive" and 
-0x7fffffffffffffff is "negative". We have gone back and forth more than 
-once on if we should look at %rax or just %eax on a system call... I 
-have to admit that the current design makes me a bit nervous.
+Jörn
 
-Finally, can anything bad happen in some weird corner case inside one of 
-the syscall_*_mode() calls or after an interrupt if someone tries to 
-call syscall(-1) or another negative number?
-
-Food for thought or just my not being up to date?
-
-Thanks,
-
-	-hpa
-
+--
+With a PC, I always felt limited by the software available. On Unix,
+I am limited only by my knowledge.
+-- Peter J. Schoenster
