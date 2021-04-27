@@ -2,198 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5245336BE3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7D236BE3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234406AbhD0EOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 00:14:21 -0400
-Received: from mail-db8eur05on2047.outbound.protection.outlook.com ([40.107.20.47]:22753
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229526AbhD0EOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:14:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=erLlCDmbEObEBX5L08U8gtYTonzIfOBisGYfDtgpZYQGuPNApWzRqZ6htSGRhHnHqSVUOdGaKoYj0Zacb0OA47dOG9dKJeV2KvMBf7Jl9Lw5uL2Boyjmh8/Jj9UTwumL6PbyDRkGFP1egQe+K3qetyXl9Zvrl/4HxCSJtr3BxaFflqZRxXEoAJ6Y0X0RzSb/4uWLRk3Us9LNN+RTnbaJpcl6Wamh8GzOUlDMwZy6tqHUgKq67K1q7U8yDGU8YAW9YBBsN0tTw2pHtda6DbFqVTqfoZ5OXFD7d9250/NKmF3+TaSku9TfVAZxqUWJFnDD47j5Z0AweoGBpu3Jc+Theg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=isfOKK35SWabvE7FzXNZnSala3Mk2ZDnIJAu949g898=;
- b=j1PRdxorLKCUseXTIyK0mshMOFA7OUoGqfDBLxMqdIVLU/4R5UkU/elIGwC410ltTrW3Xblw5LhMfCK8OV/DwIdQ9FMY5GWIKL2RuRIzU61y1vmrPX34SHFjqKgoL8u8BqCPHK3446mOpBjQg1c5H6TwmtsYN9JR/i2n39JoTdBrR7CqOq9Q4z8MOy+iOd3EyX1Cx9JHupvRFtv0V3x5Pq7e4d0KoWzVSYRjEs1D4JP6M+C74xomyasF1CKeL1VbF34TgX8K1PZz2eeiNtV0cUiIgyQMDxMdQp7wu4cGOeg2Lnf8vNRBdMGeBiMhEAlG7HThBYnKkxMezUoLDUu+qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=isfOKK35SWabvE7FzXNZnSala3Mk2ZDnIJAu949g898=;
- b=FtUWwTENm24eXOSs/phde+W4u4CmZjt0aYrH5Z5/BHON66marxDxCpEaq0ovD0S/GvJG1K2DJgpvZz/XmyddDsNV8HcgGMTrhoh1KwIvLcxJJwnaWqGAyuNN3xSsp3ta2n0PSgPmARGik99wFN3op6lNJZJDJcXTLbd5pln2yEQ=
-Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
- by AM6PR04MB5191.eurprd04.prod.outlook.com (2603:10a6:20b:1::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Tue, 27 Apr
- 2021 04:13:36 +0000
-Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
- ([fe80::358e:fb22:2f7c:2777]) by AM7PR04MB6885.eurprd04.prod.outlook.com
- ([fe80::358e:fb22:2f7c:2777%3]) with mapi id 15.20.4065.027; Tue, 27 Apr 2021
- 04:13:36 +0000
-From:   "Y.b. Lu" <yangbo.lu@nxp.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [net-next, v2, 3/7] net: dsa: free skb->cb usage in core driver
-Thread-Topic: [net-next, v2, 3/7] net: dsa: free skb->cb usage in core driver
-Thread-Index: AQHXOn8Jr4d6SG7MRkyMg7TxAYZcc6rHG5mAgACmd8A=
-Date:   Tue, 27 Apr 2021 04:13:36 +0000
-Message-ID: <AM7PR04MB6885CBAB63363CA93E50A207F8419@AM7PR04MB6885.eurprd04.prod.outlook.com>
-References: <20210426093802.38652-1-yangbo.lu@nxp.com>
- <20210426093802.38652-4-yangbo.lu@nxp.com>
- <20210426181637.2rneohfxkrvwctf2@skbuf>
-In-Reply-To: <20210426181637.2rneohfxkrvwctf2@skbuf>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b594d9bb-baa4-41ac-d766-08d90932d431
-x-ms-traffictypediagnostic: AM6PR04MB5191:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB5191D97CBC4F516BB2C8ED76F8419@AM6PR04MB5191.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: b6/V2WeMMjff78djcD+/LhTkE/7JHTQBe82D60MxNrMh5PdzJ0c6RIEibwzUx7JHlOQBtQZOrnO0R0v7bsKy4S7V3fB8ZQr38zVQRw79O5PTlrItzpvqYkf0rCRwbvkvw5SkvsdbMwqHWW782XVYkeSk92GO/ylesG+rtZjXTTjI5fvDHBpFGN9ubzYAewarXbwe8atnvxPV3kK3IvBSZIujYHhYRH7Ypi2JnEztazcxoAXusCesPfJLXe/g4+LwCxfwg4t8GHaqIYaiVdykjqSOwjsi4SFgffpX0bPN0EgwXRSzETa9KTQY/q07xEJc2OxhARF9+FwbXqv7neq2yTUxHQ0S8MU6BwlyOs804OAhMhraLXWolPdYSJ8nd5aSyqYw4Rm367YgM/NuxgdTr+SS0l4GAFHYPVQBJmKbkfL9JVaAumc0lb+/5DCqsW/aevKFhgL9gThU5AW6kcwWn3IWUQYlgPiuQQ7t6ow7xHBJq3bRzxzyM9dqaewdE3ScCnWnzsU4YvoTmSHh0YODLVL2i1BUDqdEpNx/zj4Mo7WPIUSACzsU1UeuxPSYgCWw6TQF3n2g7dxhzu5rHMBKUiVrzqhqRwW20IqzYYeV3Hs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66446008)(66476007)(64756008)(66556008)(83380400001)(26005)(66946007)(76116006)(33656002)(54906003)(4326008)(86362001)(110136005)(122000001)(38100700002)(8936002)(55016002)(2906002)(186003)(5660300002)(8676002)(7416002)(52536014)(6506007)(498600001)(71200400001)(7696005)(53546011)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?U1NReFY1UGpCVER6WFNaMEt1dkMrdHViT3JqYm1EbHdQc254TVhudUhwKytq?=
- =?utf-8?B?MFI2UTRtY2JPTnlrb1Nnc0lnb0FOMDNKd1l0MExwZGVEcUpLWStRSEdQbFZO?=
- =?utf-8?B?ZThDbWk1cjI3aDFDUHZlZVdBcnp0ekZPNVdibWpnRVlWNmFrMXE2dlkrTG4v?=
- =?utf-8?B?S0JBVm5yQ3duUTM2Z3g1bnF1U1pwMHZwNHNqVi8xQ2tMeEgvN0ltQ1MvRW4y?=
- =?utf-8?B?Y2hkbndOVVc5MURWM0JIeGZ0MzFxMk5vTGxLZW8wYjc3STdSeEhWMGdNL283?=
- =?utf-8?B?Q0hkeHowdnBhL3pGLzU3L3N2dzJaNU5rZ0tsSzJ6MkNSaTZreHpKajFtSEk0?=
- =?utf-8?B?Y3dzNFU1THkvRmpTb0VJakI0dk5tTElpcXd3Ykh1ajJvN3RQZGhPUm15dnhq?=
- =?utf-8?B?Z014RE50V2FMdFBVeTJsZGhUUHpvRlc3TmNTOVZnLzhiS3hNblZJV1hKK1hN?=
- =?utf-8?B?NER5SnNrcDZKUWZUaENrSVNWK2RrUnl1VGtFTWZBMWh3akx0VFBveWx3YVRG?=
- =?utf-8?B?L2Rid29yTG5JY3o3cW5Gc1JkSG1ndVRvTVF1OE9jamRLbG9FbTFVTUxrVEJ5?=
- =?utf-8?B?a05Cb2pzMHNZVEhUOUJjNlYrT3ZHVS94SEwveVdtc0JPV09KS3g5MWNRbDVY?=
- =?utf-8?B?aHlidzlBNmVMeTZld2FvanlDcDdmUDNDMmk5emtRN1Rxc01TWXlDVDNlZng4?=
- =?utf-8?B?aXJVTlo4OWZINXo1MGh1Z2RwY2w0Y1QrazNEMnJKVEJ4cUk3c3NDMkc4MmNq?=
- =?utf-8?B?QlZiWC9yVFFmSmlxMVdaTGRxNGZTWkpDQnhNUUVOWU9Kb3psWmQ3K3BFcHA0?=
- =?utf-8?B?dEV4SUxKS3ZBQzJRQlFBbkdCNDhEZjhkcUNQazdNVTdDQytDTUFYN3hmdnRk?=
- =?utf-8?B?S1NpODFDTTBDbEVHRlUvcGlFdzMxMkNkRGVVaEE2WmZyR050YUE2L0ZiVkZp?=
- =?utf-8?B?WjgxSEp6cEcwRHlqczE2VGRZVU03TmhxaFFjS0ptNGh5bEVQVXBNR1RHSllV?=
- =?utf-8?B?alpyWFpoWnd4eEVWd2dWanVJZjcxa2hZTG4xNUlPcFVVeE43ME1XVGxTUUh6?=
- =?utf-8?B?WXloc1Y4QnpXZUo4ZGN3NXEwMHlLVXFtVWUzb25SaGhpTUFOZHovb2M5dTRi?=
- =?utf-8?B?d25ncTdpTTVNRy95V2FvM0pIOUdoYU1iYnc3ZUc2bkNuZmpzOG9LY3hZaFQ5?=
- =?utf-8?B?a0l5QWFtRFc1R21IdTRjdHpTZ09mamhtRFhhNGdhMi9nMTNHUTVWNDhmd1Zz?=
- =?utf-8?B?dDU1bjJxWFIvK2xYdmZrT3h3UUVEdGlsOHNMck5raHhBOGYyTWpBamptUXdT?=
- =?utf-8?B?Z3l2azN0YkJnVUxWMC9wd2kzbDhIcXlBUnhkQmR1bVFhdklJVWlUdWxRdGIr?=
- =?utf-8?B?dXZMY3Q4YkJhTXdZUU9YRVVVVUI0YW4wVkEyMm5PemVJRjFpZlpkYlV0WSsw?=
- =?utf-8?B?eEFVd3Znc25UejJoVlFWL1RtdmdFeG42MnhNSitoNTlhMUc2S002dzhCdGNF?=
- =?utf-8?B?MHhuTFpqeFBpU2s1MmptVFFQRDBtQktwL3NPTktXUHRRdTZsUDNBU0lQc0Zk?=
- =?utf-8?B?dldmcGk0OUZncm1oNjhPdTZOSnliczJjQW52UEpmOG8rc3FPSU9sSWpIZlhW?=
- =?utf-8?B?aVhUR3hwV24xMHVVaUg2ZFFlZCtJOXhYcU4wZnU4dWNFSzB3Snc5VVZOSFgx?=
- =?utf-8?B?UlV5bm93WWxVc3F5c3J2OW1nSFc3RTU2VndMeGlPRFh3eGYzL1p0L3VId2FF?=
- =?utf-8?Q?Tp2O/AwId55F/43jouuef0YIcSBF1AaStqLHKaV?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229665AbhD0ERY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 00:17:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:39916 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhD0ERX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 00:17:23 -0400
+IronPort-SDR: DUstfOxXSem1gPueCPy654qYeYCFh5K77HARtq5DpsriRTKfWZh0BTjyOqaat1GZs6ece7DsIz
+ le37GN9jR0pg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175928738"
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="175928738"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 21:16:41 -0700
+IronPort-SDR: +40CvS75PKWM4tV8O8DHYzgESztfpEXzbOjcYeng09MYe9xLybNkGozvhN0zXv7maTKCgsD+IE
+ PWB08AUE3khw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="422905716"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Apr 2021 21:16:37 -0700
+Date:   Tue, 27 Apr 2021 12:16:37 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
+ pre-calibration drift
+Message-ID: <20210427041637.GA66694@shbuild999.sh.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-6-paulmck@kernel.org>
+ <20210426150127.GB23119@shbuild999.sh.intel.com>
+ <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210426153605.GB89018@shbuild999.sh.intel.com>
+ <20210426182652.GE975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210427011355.GC89018@shbuild999.sh.intel.com>
+ <20210427034640.GF975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b594d9bb-baa4-41ac-d766-08d90932d431
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2021 04:13:36.2109
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ndYHGsVNL2piyLZY4apNu/7PYAVIQPom71dUTovwSLYgNL+cTtmoU8ClbLWwMNE/4yevPi7ylpUSOfv0azLD/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5191
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427034640.GF975577@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVmxhZGltaXIgT2x0ZWFu
-IDxvbHRlYW52QGdtYWlsLmNvbT4NCj4gU2VudDogMjAyMeW5tDTmnIgyN+aXpSAyOjE3DQo+IFRv
-OiBZLmIuIEx1IDx5YW5nYm8ubHVAbnhwLmNvbT4NCj4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5v
-cmc7IFJpY2hhcmQgQ29jaHJhbiA8cmljaGFyZGNvY2hyYW5AZ21haWwuY29tPjsNCj4gVmxhZGlt
-aXIgT2x0ZWFuIDx2bGFkaW1pci5vbHRlYW5AbnhwLmNvbT47IERhdmlkIFMgLiBNaWxsZXINCj4g
-PGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPjsg
-Sm9uYXRoYW4gQ29yYmV0DQo+IDxjb3JiZXRAbHduLm5ldD47IEt1cnQgS2FuemVuYmFjaCA8a3Vy
-dEBsaW51dHJvbml4LmRlPjsgQW5kcmV3IEx1bm4NCj4gPGFuZHJld0BsdW5uLmNoPjsgVml2aWVu
-IERpZGVsb3QgPHZpdmllbi5kaWRlbG90QGdtYWlsLmNvbT47IEZsb3JpYW4NCj4gRmFpbmVsbGkg
-PGYuZmFpbmVsbGlAZ21haWwuY29tPjsgQ2xhdWRpdSBNYW5vaWwgPGNsYXVkaXUubWFub2lsQG54
-cC5jb20+Ow0KPiBBbGV4YW5kcmUgQmVsbG9uaSA8YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5j
-b20+Ow0KPiBVTkdMaW51eERyaXZlckBtaWNyb2NoaXAuY29tOyBsaW51eC1kb2NAdmdlci5rZXJu
-ZWwub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBb
-bmV0LW5leHQsIHYyLCAzLzddIG5ldDogZHNhOiBmcmVlIHNrYi0+Y2IgdXNhZ2UgaW4gY29yZSBk
-cml2ZXINCj4gDQo+IE9uIE1vbiwgQXByIDI2LCAyMDIxIGF0IDA1OjM3OjU4UE0gKzA4MDAsIFlh
-bmdibyBMdSB3cm90ZToNCj4gPiBGcmVlIHNrYi0+Y2IgdXNhZ2UgaW4gY29yZSBkcml2ZXIgYW5k
-IGxldCBkZXZpY2UgZHJpdmVycyBkZWNpZGUgdG8gdXNlDQo+ID4gb3Igbm90LiBUaGUgcmVhc29u
-IGhhdmluZyBhIERTQV9TS0JfQ0Ioc2tiKS0+Y2xvbmUgd2FzIGJlY2F1c2UNCj4gPiBkc2Ffc2ti
-X3R4X3RpbWVzdGFtcCgpIHdoaWNoIG1heSBzZXQgdGhlIGNsb25lIHBvaW50ZXIgd2FzIGNhbGxl
-ZA0KPiA+IGJlZm9yZSBwLT54bWl0KCkgd2hpY2ggd291bGQgdXNlIHRoZSBjbG9uZSBpZiBhbnks
-IGFuZCB0aGUgZGV2aWNlDQo+ID4gZHJpdmVyIGhhcyBubyB3YXkgdG8gaW5pdGlhbGl6ZSB0aGUg
-Y2xvbmUgcG9pbnRlci4NCj4gPg0KPiA+IEFsdGhvdWdoIGZvciBub3cgcHV0dGluZyBtZW1zZXQo
-c2tiLT5jYiwgMCwgNDgpIGF0IGJlZ2lubmluZyBvZg0KPiA+IGRzYV9zbGF2ZV94bWl0KCkgYnkg
-dGhpcyBwYXRjaCBpcyBub3QgdmVyeSBnb29kLCB0aGVyZSBpcyBzdGlsbCB3YXkgdG8NCj4gPiBp
-bXByb3ZlIHRoaXMuIE90aGVyd2lzZSwgc29tZSBvdGhlciBuZXcgZmVhdHVyZXMsIGxpa2Ugb25l
-LXN0ZXANCj4gPiB0aW1lc3RhbXAgd2hpY2ggbmVlZHMgYSBmbGFnIG9mIHNrYiBtYXJrZWQgaW4g
-ZHNhX3NrYl90eF90aW1lc3RhbXAoKSwNCj4gPiBhbmQgaGFuZGxlcyBhcyBvbmUtc3RlcCB0aW1l
-c3RhbXAgaW4gcC0+eG1pdCgpIHdpbGwgZmFjZSBzYW1lDQo+ID4gc2l0dWF0aW9uLg0KPiA+DQo+
-ID4gU2lnbmVkLW9mZi1ieTogWWFuZ2JvIEx1IDx5YW5nYm8ubHVAbnhwLmNvbT4NCj4gPiAtLS0N
-Cj4gPiBDaGFuZ2VzIGZvciB2MjoNCj4gPiAJLSBBZGRlZCB0aGlzIHBhdGNoLg0KPiA+IC0tLQ0K
-PiA+ICBkcml2ZXJzL25ldC9kc2Evb2NlbG90L2ZlbGl4LmMgICAgICAgICB8ICAxICsNCj4gPiAg
-ZHJpdmVycy9uZXQvZHNhL3NqYTExMDUvc2phMTEwNV9tYWluLmMgfCAgMiArLQ0KPiA+IGRyaXZl
-cnMvbmV0L2RzYS9zamExMTA1L3NqYTExMDVfcHRwLmMgIHwgIDQgKysrLQ0KPiA+ICBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9tc2NjL29jZWxvdC5jICAgICB8ICA2ICsrKy0tLQ0KPiA+ICBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9tc2NjL29jZWxvdF9uZXQuYyB8ICAyICstDQo+ID4gIGluY2x1ZGUvbGlu
-dXgvZHNhL3NqYTExMDUuaCAgICAgICAgICAgIHwgIDMgKystDQo+ID4gIGluY2x1ZGUvbmV0L2Rz
-YS5oICAgICAgICAgICAgICAgICAgICAgIHwgMTQgLS0tLS0tLS0tLS0tLS0NCj4gPiAgaW5jbHVk
-ZS9zb2MvbXNjYy9vY2Vsb3QuaCAgICAgICAgICAgICAgfCAgOCArKysrKysrKw0KPiA+ICBuZXQv
-ZHNhL3NsYXZlLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAzICstLQ0KPiA+ICBuZXQvZHNh
-L3RhZ19vY2Vsb3QuYyAgICAgICAgICAgICAgICAgICB8ICA4ICsrKystLS0tDQo+ID4gIG5ldC9k
-c2EvdGFnX29jZWxvdF84MDIxcS5jICAgICAgICAgICAgIHwgIDggKysrKy0tLS0NCj4gPiAgMTEg
-ZmlsZXMgY2hhbmdlZCwgMjggaW5zZXJ0aW9ucygrKSwgMzEgZGVsZXRpb25zKC0pDQo+ID4NCj4g
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZHNhL29jZWxvdC9mZWxpeC5jDQo+ID4gYi9kcml2
-ZXJzL25ldC9kc2Evb2NlbG90L2ZlbGl4LmMgaW5kZXggZDY3OWYwMjNkYzAwLi44OTgwZDU2ZWU3
-OTMNCj4gPiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25ldC9kc2Evb2NlbG90L2ZlbGl4LmMN
-Cj4gPiArKysgYi9kcml2ZXJzL25ldC9kc2Evb2NlbG90L2ZlbGl4LmMNCj4gPiBAQCAtMTQwMyw2
-ICsxNDAzLDcgQEAgc3RhdGljIGJvb2wgZmVsaXhfdHh0c3RhbXAoc3RydWN0IGRzYV9zd2l0Y2gN
-Cj4gPiAqZHMsIGludCBwb3J0LA0KPiA+DQo+ID4gIAlpZiAob2NlbG90LT5wdHAgJiYgb2NlbG90
-X3BvcnQtPnB0cF9jbWQgPT0NCj4gSUZIX1JFV19PUF9UV09fU1RFUF9QVFApIHsNCj4gPiAgCQlv
-Y2Vsb3RfcG9ydF9hZGRfdHh0c3RhbXBfc2tiKG9jZWxvdCwgcG9ydCwgY2xvbmUpOw0KPiA+ICsJ
-CU9DRUxPVF9TS0JfQ0Ioc2tiKS0+Y2xvbmUgPSBjbG9uZTsNCj4gPiAgCQlyZXR1cm4gdHJ1ZTsN
-Cj4gPiAgCX0NCj4gPg0KPiANCj4gVWgtb2gsIHRoaXMgcGF0Y2ggZmFpbHMgdG8gYnVpbGQ6DQo+
-IA0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gLi9pbmNsdWRlL3NvYy9tc2NjL29jZWxvdF92Y2Fw
-Lmg6OTowLA0KPiAgICAgICAgICAgICAgICAgIGZyb20gZHJpdmVycy9uZXQvZHNhL29jZWxvdC9m
-ZWxpeC5jOjk6DQo+IGRyaXZlcnMvbmV0L2RzYS9vY2Vsb3QvZmVsaXguYzogSW4gZnVuY3Rpb24g
-4oCYZmVsaXhfdHh0c3RhbXDigJk6DQo+IGRyaXZlcnMvbmV0L2RzYS9vY2Vsb3QvZmVsaXguYzox
-NDA2OjE3OiBlcnJvcjog4oCYc2ti4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbg0KPiB0aGlz
-IGZ1bmN0aW9uKQ0KPiAgICBPQ0VMT1RfU0tCX0NCKHNrYiktPmNsb25lID0gY2xvbmU7DQo+ICAg
-ICAgICAgICAgICAgICAgXg0KPiAuL2luY2x1ZGUvc29jL21zY2Mvb2NlbG90Lmg6Njk4OjI5OiBu
-b3RlOiBpbiBkZWZpbml0aW9uIG9mIG1hY3JvDQo+IOKAmE9DRUxPVF9TS0JfQ0LigJkNCj4gICAo
-KHN0cnVjdCBvY2Vsb3Rfc2tiX2NiICopKChza2IpLT5jYikpDQo+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgXn5+DQo+IGRyaXZlcnMvbmV0L2RzYS9vY2Vsb3QvZmVsaXguYzoxNDA2OjE3
-OiBub3RlOiBlYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcw0KPiByZXBvcnRlZCBvbmx5IG9u
-Y2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbg0KPiAgICBPQ0VMT1RfU0tCX0NCKHNr
-YiktPmNsb25lID0gY2xvbmU7DQo+ICAgICAgICAgICAgICAgICAgXg0KPiAuL2luY2x1ZGUvc29j
-L21zY2Mvb2NlbG90Lmg6Njk4OjI5OiBub3RlOiBpbiBkZWZpbml0aW9uIG9mIG1hY3JvDQo+IOKA
-mE9DRUxPVF9TS0JfQ0LigJkNCj4gICAoKHN0cnVjdCBvY2Vsb3Rfc2tiX2NiICopKChza2IpLT5j
-YikpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+DQo+IA0KPiBJdCBkZXBlbmRz
-IG9uIGNoYW5nZXMgbWFkZSBpbiBwYXRjaCAzLg0KDQpPaC4uIFRoYXQncyBhIHNlcXVlbmNlIHBy
-b2JsZW0uDQpJIHN3aXRjaGVkIHBhdGNoICMzIGFuZCBwYXRjaCAjNCB3aXRoIHJlYmFzaW5nIHRv
-IGZpeCB1cCBpbiB2MyB2ZXJzaW9uLg0KVGhhbmtzLg0K
+On Mon, Apr 26, 2021 at 08:46:40PM -0700, Paul E. McKenney wrote:
+> On Tue, Apr 27, 2021 at 09:13:55AM +0800, Feng Tang wrote:
+> > On Mon, Apr 26, 2021 at 11:26:52AM -0700, Paul E. McKenney wrote:
+> > > On Mon, Apr 26, 2021 at 11:36:05PM +0800, Feng Tang wrote:
+> > > > On Mon, Apr 26, 2021 at 08:25:29AM -0700, Paul E. McKenney wrote:
+> > > > > On Mon, Apr 26, 2021 at 11:01:27PM +0800, Feng Tang wrote:
+> > > > > > Hi Paul,
+> > > > > > 
+> > > > > > On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> > > > > > > Because the x86 tsc_early clocksource is given a quick and semi-accurate
+> > > > > > > calibration (by design!), it might have drift rates well in excess of
+> > > > > > > the 0.1% limit that is in the process of being adopted.
+> > > > > > > 
+> > > > > > > Therefore, add a max_drift field to the clocksource structure that, when
+> > > > > > > non-zero, specifies the maximum allowable drift rate in nanoseconds over
+> > > > > > > a half-second period.  The tsc_early clocksource initializes this to five
+> > > > > > > miliseconds, which corresponds to the 1% drift rate limit suggested by
+> > > > > > > Xing Zhengjun.  This max_drift field is intended only for early boot,
+> > > > > > > so clocksource_watchdog() splats if it encounters a non-zero value in
+> > > > > > > this field more than 60 seconds after boot, inspired by a suggestion by
+> > > > > > > Thomas Gleixner.
+> > > > > > > 
+> > > > > > > This was tested by setting the clocksource_tsc ->max_drift field to 1,
+> > > > > > > which, as expected, resulted in a clock-skew event.
+> > > > > > 
+> > > > > > We've run the same last for this v10, and those 'unstable' thing [1] can
+> > > > > > not be reproduced!
+> > > > > 
+> > > > > Good to hear!  ;-)
+> > > > > 
+> > > > > > We've reported one case that tsc can be wrongly judged as 'unstable'
+> > > > > > by 'refined-jiffies' watchdog [1], while reducing the threshold could
+> > > > > > make it easier to be triggered.
+> > > > > > 
+> > > > > > It could be reproduced on the a plaform with a 115200 serial console,
+> > > > > > and hpet been disabled (several x86 platforms has this), add 
+> > > > > > 'initcall_debug' cmdline parameter to get more debug message, we can
+> > > > > > see:
+> > > > > > 
+> > > > > > [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
+> > > > > > [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+> > > > > > [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+> > > > > > [    1.134220] clocksource:                       No current clocksource.
+> > > > > > [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
+> > > > > 
+> > > > > Just to make sure I understand: "could be reproduced" as in this is the
+> > > > > result from v9, and v10 avoids this, correct?
+> > > > 
+> > > > Sorry I didn't make it clear. This is a rarely happened case, and can
+> > > > be reproduced with upstream kerenl, which has 62.5 ms threshold. 6/7 &
+> > > > 7/7 patch of reducing the threshold can make it easier to be triggered.
+> > > 
+> > > Ah, OK, so this could be considered to be a benefit of this series, then.
+> > > 
+> > > Does this happen only for tsc-early, or for tsc as well?
+> > > 
+> > > Has it already been triggered on v10 of this series?  (I understand that
+> > > it certainly should be easier to trigger, just curious whether this has
+> > > already happened.)
+> > 
+> > Yes, it has. The upper log is from v10 (actually it's the 'dev' branch
+> > of your linux-rcu git, which I didn't find obvious difference) on a
+> > client platform 
+> > 
+> >  [    1.134214] clocksource:    'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+> >  [    1.134217] clocksource:    'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+> > 
+> > The deviation is 7537855 ns (7.5 ms). And as said before, it needs many
+> > pre-conditions to be triggered.
+> > 
+> > Also I found the debug patch is useful, which prints out the direct
+> > nanoseconds info when 'unstable' is detected.
+> 
+> Looks good to me!
+> 
+> If you give me a Signed-off-by, I would be happy to queue it.
+
+Sure, here it is. thanks!
+
+- Feng
+
+From ff23cc5589c84c4d5f9a009867f21ac5ce96c9e3 Mon Sep 17 00:00:00 2001
+From: Feng Tang <feng.tang@intel.com>
+Date: Tue, 27 Apr 2021 12:14:30 +0800
+Subject: [PATCH] clocksource: print deviation in nanoseconds for unstable case
+
+Currently when an unstable clocksource is detected, the raw counter
+of that clocksource and watchdog will be printed, which can only be
+understood after some math calculation. So print the existing delta
+in nanoseconds for easier check.
+
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ kernel/time/clocksource.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index a374cf7..5370f0c 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -443,10 +443,10 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 		if (abs(cs_nsec - wd_nsec) > md) {
+ 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+ 				smp_processor_id(), cs->name);
+-			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+-				watchdog->name, wdnow, wdlast, watchdog->mask);
+-			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
+-				cs->name, csnow, cslast, cs->mask);
++			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
++				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
++			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
++				cs->name, cs_nsec, csnow, cslast, cs->mask);
+ 			if (curr_clocksource == cs)
+ 				pr_warn("                      '%s' is current clocksource.\n", cs->name);
+ 			else if (curr_clocksource)
+-- 
+2.7.4
+
