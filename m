@@ -2,127 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7061D36C63C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF7936C63F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236380AbhD0Mn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235501AbhD0Mny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:43:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF12B613E7;
-        Tue, 27 Apr 2021 12:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619527391;
-        bh=SBMydSe5kp0Nvgawklzbas5ZKFW7/l9q/mwcw/UIYvg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tcCcL8zMkgC8pv252U5tCzY3Tm3yP2HdRGj/OeMsM1bNsd18U2dl4OqwuGyAlNxj7
-         024V3mj3y76NbjSso7Te5ghR9tM8mYwuKAsqT4Amte3CZMN7koTxUBlusaHVsIoi1I
-         a5EfPyJYWxcR5RHAUc0BCNjI7IuEimi/GWPZJF3ahHD3aRdFbyqe7rWkZUEnPTYTCb
-         qetEiZmBNTKvHguc2b/2LfKpRtCbNhKo44GrFFMpY7pSQL5R3ENf7PTZ89lMrD6ro3
-         lJXI36nP6oNz6Nvv4RgKfRDr+pcUIgixZGjrTEnpTkFmxhA/avDfBM9aVU7w8eDN1I
-         E+jV2A4R3joqw==
-Received: by mail-ot1-f49.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso140686otn.3;
-        Tue, 27 Apr 2021 05:43:11 -0700 (PDT)
-X-Gm-Message-State: AOAM53171ipa5SOisc/M+av1ZxPBMDt84Wksit/qGqCu0nETq/mLgMHB
-        6YzYSziKCQwECeFCclNgVk+zLJNCkQ+bY4lbFM0=
-X-Google-Smtp-Source: ABdhPJyMQx/FiPIphY9VMEFj2ndPnbvhQmyfgZo7N2J+0K29BHhLG6JADN95Yku1nh8g4dEjFjn+rj6sR32e1BR8hfk=
-X-Received: by 2002:a05:6830:4d1:: with SMTP id s17mr18536402otd.108.1619527390973;
- Tue, 27 Apr 2021 05:43:10 -0700 (PDT)
+        id S236183AbhD0Mpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235489AbhD0Mps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:45:48 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34DBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:45:03 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id a13so14174141ljp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TEm1bQ6boYn9sgOS7se993fi5zEhbGrHhlvchnybY1c=;
+        b=ZOP3CuV9lm4JC9hbdhoneZV5TmJGTQ20+43Fum9sENKQjXmwR45lPpH2pS1VdEgW7o
+         jpZjGn7f6hNmHXEGsPxFEcrI+Y4UpG/MVFzS3FkghOgUfFKhlPnOIsMYO18LFBwUD4Fp
+         14CfnLN14sIuqpuACpr1uktBNYBKpxjmYVBVY/pNncs3TVldalChwmNE37FEbDej5/1W
+         Fwd8OM6ZV/jt2UT69cN7Rc/hJcq5zzLXxxgTjz+1dnF+XqSB9ZKLG/Xmbbqore5sXSQe
+         i/xsR0lNzZk1pXpDCzwNZIzuzkXjnCdyV6JtQFgjfZzSG6hHVYAtXaO6xcevQYlpxdFr
+         cGfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TEm1bQ6boYn9sgOS7se993fi5zEhbGrHhlvchnybY1c=;
+        b=WEZjmlUpFhsDAGjIoLJkgsUs1zoSxDppgEIk5I+Vz0zj2QSI3z0ozmB2vfGkv9h/X3
+         5hRM29R42d7H2Y+14BtESPS2kxF1fzQhHI6h3AsLwo8SpLuQwfMPrUtynfuydNBeuYSG
+         CZbd/NN52lv7u6tkM5j0+cQsycmV8Z9Pq2WP9/wlsiniogM+5udpxE1iYn2iGe3txx2h
+         hzOUdZNcZenYzIUNo7C4UdsirFTHSijrqPISnE6i6xwFFp0yah0wupLDrwXeAzMXl0Qw
+         /WQvjlAlTSWSzNY21E9K6huNjYS5XzyjFbsW1nqNu+buJ/vGTHDnxVkMTIYQVRxdQy+m
+         tsWQ==
+X-Gm-Message-State: AOAM533/k1j5DGc36P0n7kJh2MerRnNsskEGTClYnievPYa0OSvAR8nm
+        946gTFGOR5ssM8BIwMnLsTtgGGOIS2prMm4h9xs1vQ==
+X-Google-Smtp-Source: ABdhPJz4nD06WqG22LxTr5qqg6p1P9JYn7CA/1voVL9vrgN0Btux1M/e7ILM8YZP4PIcV0hwNpEM2KhJQaT3yf78xbM=
+X-Received: by 2002:a05:651c:612:: with SMTP id k18mr16523306lje.445.1619527502059;
+ Tue, 27 Apr 2021 05:45:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210427120607.2646166-1-arei@altlinux.org>
-In-Reply-To: <20210427120607.2646166-1-arei@altlinux.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 27 Apr 2021 14:42:59 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGm9d7SdBoozEoOP4G6ETmNiZR8kum91RVc_4eUTroE2w@mail.gmail.com>
-Message-ID: <CAMj1kXGm9d7SdBoozEoOP4G6ETmNiZR8kum91RVc_4eUTroE2w@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Relocate the kernel relative to a DRAM base.
-To:     Nikita Ermakov <arei@altlinux.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
+ <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com>
+ <CAKfTPtCdJC2-jxJn82Z4GSsHu0e49pKL4DT0GWk5vKXnyn1Gog@mail.gmail.com> <CAFpoUr2PmOzOfE4+zBP5HGzEypj-7BhStjUoCVChPt-yT_s2EA@mail.gmail.com>
+In-Reply-To: <CAFpoUr2PmOzOfE4+zBP5HGzEypj-7BhStjUoCVChPt-yT_s2EA@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 27 Apr 2021 14:44:50 +0200
+Message-ID: <CAKfTPtBnDsRcQNz3pA13KwakODYHBiS8XkAQMepOog1h5ocECA@mail.gmail.com>
+Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
+To:     Odin Ugedal <odin@ugedal.com>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Apr 2021 at 14:07, Nikita Ermakov <arei@altlinux.org> wrote:
+On Tue, 27 Apr 2021 at 13:24, Odin Ugedal <odin@ugedal.com> wrote:
 >
-> Try to get the base of the DRAM from a DTB to use it as a lowest address
-> in physical memory to relocate the kernel. If it is not possible to
-> obtain the base from a /memory node of the DTB let's make an assumption
-> that the DRAM base at the beginning of the memory.
+> Hi,
 >
+> > I wanted to say one v5.12-rcX version to make sure this is still a
+> > valid problem on latest version
+>
+> Ahh, I see. No problem. :) Thank you so much for taking the time to
+> look at this!
+>
+> > I confirm that I can see a ratio of 4ms vs 204ms running time with the
+> > patch below.
+>
+> (I assume you talk about the bash code for reproducing, not the actual
+> sched patch.)
 
-Why?
+yes sorry
 
-> Signed-off-by: Nikita Ermakov <arei@altlinux.org>
-> ---
->  drivers/firmware/efi/libstub/riscv-stub.c | 39 ++++++++++++++++++++++-
->  1 file changed, 38 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/firmware/efi/libstub/riscv-stub.c b/drivers/firmware/efi/libstub/riscv-stub.c
-> index 380e4e251399..1b5944276e1a 100644
-> --- a/drivers/firmware/efi/libstub/riscv-stub.c
-> +++ b/drivers/firmware/efi/libstub/riscv-stub.c
-> @@ -46,6 +46,39 @@ static u32 get_boot_hartid_from_fdt(void)
->         return fdt32_to_cpu(*prop);
->  }
+> > But when I look more deeply in my trace (I have
+> > instrumented the code), it seems that the 2 stress-ng don't belong to
+> > the same cgroup but remained in cg-1 and cg-2 which explains such
+> > running time difference.
 >
-> +static unsigned long get_dram_base_from_fdt(void)
-> +{
-> +       const void *fdt;
-> +       int node, len;
-> +       const fdt32_t *addr_cells;
-> +       const void *prop;
-> +
-> +       fdt = get_efi_config_table(DEVICE_TREE_GUID);
-> +       if (!fdt)
-> +               return ULONG_MAX;
-> +
-> +       node = fdt_path_offset(fdt, "/");
-> +       if (node < 0)
-> +               return ULONG_MAX;
-> +
-> +       addr_cells = fdt_getprop((void *)fdt, node, "#address-cells", &len);
-> +       if (!addr_cells)
-> +               return ULONG_MAX;
-> +
-> +       node = fdt_path_offset(fdt, "/memory");
-> +       if (node < 0)
-> +               return ULONG_MAX;
-> +
-> +       prop = fdt_getprop((void *)fdt, node, "reg", &len);
-> +       if (!prop)
-> +               return ULONG_MAX;
-> +
-> +       if (fdt32_to_cpu(*addr_cells) > 1)
-> +               return fdt64_to_cpu(*((fdt64_t *)prop));
-> +       else
-> +               return fdt32_to_cpu(*((fdt32_t *)prop));
-> +}
-> +
->  efi_status_t check_platform_features(void)
->  {
->         hartid = get_boot_hartid_from_fdt();
-> @@ -97,7 +130,11 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
->          * lowest possible memory region as long as the address and size meets
->          * the alignment constraints.
->          */
-> -       preferred_addr = MIN_KIMG_ALIGN;
-> +       preferred_addr = get_dram_base_from_fdt();
-> +       if (preferred_addr == ULONG_MAX)
-> +               preferred_addr = MIN_KIMG_ALIGN;
-> +       else
-> +               preferred_addr += MIN_KIMG_ALIGN;
->         status = efi_relocate_kernel(image_addr, kernel_size, *image_size,
->                                      preferred_addr, MIN_KIMG_ALIGN, 0x0);
+> (mail reply number two to your previous mail might also help surface it)
 >
-> --
-> 2.29.3
+> Not sure if I have stated it correctly, or if we are talking about the
+> same thing. It _is_ the intention that the two procs should not be in the
+> same cgroup. In the same way as people create "containers", each proc runs
+> in a separate cgroup in the example. The issue is not the balancing
+> between the procs
+> themselves, but rather cgroups/sched_entities inside the cgroup hierarchy.
+> (due to the fact that the vruntime of those sched_entities end up
+> being calculated with more load than they are supposed to).
 >
+> If you have any thought about the phrasing of the patch itself to make it
+> easier to understand, feel free to suggest.
+>
+> Given the last cgroup v1 script, I get this:
+>
+> - cat /proc/<stress-pid-1>/cgroup | grep cpu
+> 11:cpu,cpuacct:/slice/cg-1/sub
+> 3:cpuset:/slice
+>
+> - cat /proc/<stress-pid-2>/cgroup | grep cpu
+> 11:cpu,cpuacct:/slice/cg-2/sub
+> 3:cpuset:/slice
+>
+>
+> The cgroup hierarchy will then roughly be like this (using cgroup v2 terms,
+> becuase I find them easier to reason about):
+>
+> slice/
+>   cg-1/
+>     cpu.shares: 100
+>     sub/
+>       cpu.weight: 1
+>       cpuset.cpus: 1
+>       cgroup.procs - stress process 1 here
+>   cg-2/
+>     cpu.weight: 100
+>     sub/
+>       cpu.weight: 10000
+>       cpuset.cpus: 1
+>       cgroup.procs - stress process 2 here
+>
+> This should result in 50/50 due to the fact that cg-1 and cg-2 both have a
+> weight of 100, and "live" inside the /slice cgroup. The inner weight should not
+> matter, since there is only one cgroup at that level.
+>
+> > So your script doesn't reproduce the bug you
+> > want to highlight. That being said, I can also see a diff between the
+> > contrib of the cpu0 in the tg_load. I'm going to look further
+>
+> There can definitely be some other issues involved, and I am pretty sure
+> you have way more knowledge about the scheduler than me... :) However,
+> I am pretty sure that it is in fact showing the issue I am talking about,
+> and applying the patch does indeed make it impossible to reproduce it
+> on my systems.
+
+Your script is correct. I was wrongly interpreting my trace. I have
+been able to reproduce your problem and your analysis is correct. Let
+me continue on the patch itself
+
+>
+> Odin
