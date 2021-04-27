@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A2436CB95
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D32C36CB98
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238239AbhD0TXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        id S238555AbhD0TXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhD0TXB (ORCPT
+        with ESMTP id S235563AbhD0TXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:23:01 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB86C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:17 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id b17so6038928pgh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:17 -0700 (PDT)
+        Tue, 27 Apr 2021 15:23:19 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88781C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:35 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id i22so7642318ila.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=LY3gFeU1q8iFKq/jC5H7kixgFmtS9nXWZUQKza2+nQs=;
-        b=ejLPFi54AqigD8xCtEcI/bn70WATJRYG2As1qBC+YuXQm1SWv9m/hdgTmS4XanEjDa
-         HETTiVSvoPYLGmWkamYz8vD2hCsgq6UA08Quwf3V4hfiqAAFKfczCF5Q4cLDB7I0uJok
-         4QZgWpSJFOMS3zB+nE7AkDBWoirqoJka4Zhg7FYqrkU+Xp/ymomR10ZcbzEsdbdxkqwH
-         RQPJUPC63PiEOAeeh+Du2ean63zb8FaKjsHoE2hfuZothOtvyZMOIMa+Ofi17rq8Nraf
-         PdgSyfF5M6Xu4E2ZXQDga2ZCjH8TmPzoAnQ/aQWJ9OtfZTR6+GLV0dt45U8SgGzn6Rl2
-         GYuw==
+        bh=9A9KdhpIimzuD5OzCChHO2CjGhCpPan1yRAo2/CAv+c=;
+        b=KmmcN+wJO4XJEW8i1n4M8fdsVxKICGd+cicWY6PhIyfMntf61DWDbN0lYONPfv7avX
+         7FxH4J1DcHU+d/BPW07cIeL7M0+KsL2H3xjnwnUShzOsbwp4p1Mstgek0/DJDywqlAvj
+         pvQ4AeQxgT8d2B9boE2xCyb2V/QcKRwgqazkbOV36nIXZRCI1I41ENBc9O94GPWzuGWn
+         ZoVb91ruebPuMOxROumRJF1bkL3LMcW5p3RL67vEkcYBqN+97GnMi303v4vqdgIYcysj
+         J3wZPapZMjRdKb47N21dcq6V8IXSfFXXFfDtIZJD9rm1L4Cs5YgpeYsNB9gao99MRN+M
+         bnKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LY3gFeU1q8iFKq/jC5H7kixgFmtS9nXWZUQKza2+nQs=;
-        b=TOilWPBQUe4sYFp25ZLIsfdnlWSpWf/q/K8yDFEVAbu9CvxscgnjD2gbGj+vYmtrr2
-         ZtVa0q2KX4TafBw4Emyl9+4pykMCxwfIVYYqqgqRZ8D2bkR7y3fdG8aCHRi0aiSBsskD
-         FCju/rLe9usZzhk3OQSR/QKaHtIEEZW8OjnwomCJ9UvJ1gKs+aUDS42G43lM4512c3ZC
-         zNlz9Nz4kVdmoBGlpn9jND3iMFfrtgZAwOYtHrub3+kttRY1jugCmklBEZ25zBCrrfsg
-         vs9dLFzdVXAZnyA+p3cuTcK/4+NrRLknOgHPCNHR52l57PoQgXCLx4K/BU7jKmXMxCoi
-         AEkw==
-X-Gm-Message-State: AOAM5317/wYmGOt5eHFGRGzhUtKtuR4kM46ZfJhYfgYDK9MoRROKTNl8
-        r9RafQXS6x+pFgEAU9KzbU4=
-X-Google-Smtp-Source: ABdhPJwaL7+AZ4DCM1AlZRGBZKnB963269r6QYz20bya8l+XEOVQPhiKTwF8Nzzoxn6QFE093IBHbw==
-X-Received: by 2002:a63:e509:: with SMTP id r9mr23769212pgh.384.1619551336543;
-        Tue, 27 Apr 2021 12:22:16 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:c54e:55f9:7bf8:7932])
-        by smtp.gmail.com with ESMTPSA id f15sm461778pgv.5.2021.04.27.12.22.14
+        bh=9A9KdhpIimzuD5OzCChHO2CjGhCpPan1yRAo2/CAv+c=;
+        b=XiyBBT0PRbzOWuGjbRvImIv4wm0bPnLtt3EoNTfI3NN4JG2jB/SFMWMQUShe+tcihz
+         DnlJ0JS+J/dkTkKSQdhoXRH6mdOhAYYKpecVM/HyVaSQGQzN2CVa6o3e9AuCrpDdf86Y
+         sBLT1qv8qdN9xi/ogGSsaWaS8IZHPBR10iEKWua1Fdj3mDHyODQxufs2itGCzNPRAOsO
+         UEaX5SnlyRTBb9dFXbZdBIxrMgRw5O1fMGupu1jpWdtJfVT65jWvlW2Xg0TlYvSCKQqB
+         kUWT7e5QE4gxuAgnC0shg21S4AzogqabPUQ+AWA/E58wyCAS3kKbkvFWzxBVmOUb8v3D
+         NGsA==
+X-Gm-Message-State: AOAM532QCwUFjqXpERG5gQgZlYiioTbGyaBFH/Wc1s7GkcuHYZaykgPP
+        QTWWkGVIP1V9eYjbCp4jun3N3w==
+X-Google-Smtp-Source: ABdhPJx4F96uXqpXKJbkwUaij1OmBpJfBrZ4CVUAcProKFEqjv4XzeMalTF3wkg8sv23tVBPaKB/YA==
+X-Received: by 2002:a05:6e02:13ca:: with SMTP id v10mr18478934ilj.191.1619551354939;
+        Tue, 27 Apr 2021 12:22:34 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d2sm1817918ile.18.2021.04.27.12.22.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 12:22:14 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 12:22:12 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
-Subject: Re: [PATCH 157/190] Revert "Input: ad7879 - add check for read
- errors in interrupt"
-Message-ID: <YIhkZOWJiOlDJCYS@google.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-158-gregkh@linuxfoundation.org>
- <YIBa5X+5g/qNL+N8@google.com>
- <YIhB7rvHlFDew00z@kroah.com>
+        Tue, 27 Apr 2021 12:22:34 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lbTI0-00Dglq-Rs; Tue, 27 Apr 2021 16:22:32 -0300
+Date:   Tue, 27 Apr 2021 16:22:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 05/16] dma-mapping: Introduce dma_map_sg_p2pdma()
+Message-ID: <20210427192232.GO2047089@ziepe.ca>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-6-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIhB7rvHlFDew00z@kroah.com>
+In-Reply-To: <20210408170123.8788-6-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 06:55:10PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 21, 2021 at 10:03:33AM -0700, Dmitry Torokhov wrote:
-> > Hi Greg,
-> > 
-> > On Wed, Apr 21, 2021 at 03:00:32PM +0200, Greg Kroah-Hartman wrote:
-> > > This reverts commit e85bb0beb6498c0dffe18a2f1f16d575bc175c32.
-> > > 
-> > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > faith" to try to test the kernel community's ability to review "known
-> > > malicious" changes.  The result of these submissions can be found in a
-> > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > > 
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove this
-> > > change to ensure that no problems are being introduced into the
-> > > codebase.
-> > 
-> > This one looks really OK to me and does not have to be reverted (unless
-> > Aditya will come clean and show the error introduced?).
+On Thu, Apr 08, 2021 at 11:01:12AM -0600, Logan Gunthorpe wrote:
+> dma_map_sg() either returns a positive number indicating the number
+> of entries mapped or zero indicating that resources were not available
+> to create the mapping. When zero is returned, it is always safe to retry
+> the mapping later once resources have been freed.
 > 
-> I'll drop this revert, but it isn't usually good to be calling printk()
-> from an irq.
+> Once P2PDMA pages are mixed into the SGL there may be pages that may
+> never be successfully mapped with a given device because that device may
+> not actually be able to access those pages. Thus, multiple error
+> conditions will need to be distinguished to determine weather a retry
+> is safe.
+> 
+> Introduce dma_map_sg_p2pdma[_attrs]() with a different calling
+> convention from dma_map_sg(). The function will return a positive
+> integer on success or a negative errno on failure.
+> 
+> ENOMEM will be used to indicate a resource failure and EREMOTEIO to
+> indicate that a P2PDMA page is not mappable.
+> 
+> The __DMA_ATTR_PCI_P2PDMA attribute is introduced to inform the lower
+> level implementations that P2PDMA pages are allowed and to warn if a
+> caller introduces them into the regular dma_map_sg() interface.
 
-How else do you suggest we tell that something is wrong when
-communicating with the device? For these types of devices the
-communication is essentially unsolicited so we can't pass failure to a
-caller to deal with it (i.e. unlike USB there is no URB posted that we
-could fail and use as a mechanism to signal error to some other layer)
-and while we could invent "something went wrong" input event so far
-there was no interest in having anything like that.
+So this new API is all about being able to return an error code
+because auditing the old API is basically terrifying?
 
-I'd suggest sending KOBJ_ERROR uevent when a device driver detects
-anomaly in the device it controls, but I wonder how systemd would react
-given past experiences with KOBJ_BIND/KOBJ_UNBIND.
+OK, but why name everything new P2PDMA? It seems nicer to give this
+some generic name and have some general program to gradually deprecate
+normal non-error-capable dma_map_sg() ?
 
-The message is ratelimited so it will not overfill the logs...
+I think that will raise less questions when subsystem people see the
+changes, as I was wondering why RW was being moved to use what looked
+like a p2pdma only API.
 
-Thanks.
+dma_map_sg_or_err() would have been clearer
 
--- 
-Dmitry
+The flag is also clearer as to the purpose if it is named
+__DMA_ATTR_ERROR_ALLOWED
+
+Jason
