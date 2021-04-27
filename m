@@ -2,263 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECC936BD96
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119E036BDA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhD0C7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhD0C7v (ORCPT
+        id S234183AbhD0DI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 23:08:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16491 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhD0DI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:59:51 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A340C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:59:09 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q136so37755587qka.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 19:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=IbFDaC8Buo1vCSozpF9/8vShIeKDcGpQ6TZhRKWQtpk=;
-        b=p/OZAP2wW2pos3c1TaSkgF7ku6Q7o3HYN0rTeqA14Ez9VhLkSFfVFJ6t8aMVKRdP1X
-         jCs2exfnGgZgzvQgNiR1wRAuAVVHnr6/dQHwC/N3LB8j4bzocHp1K03mmDmwIXYQhb9d
-         i4r32Aeh2Um2THqtgUTjAkoZ2Q6HUSPOSAzg3omSULUhi+efXH+UbaCX+M6w9AAHVGMi
-         YUh8j0wLKWmF2jZAumovoqwGrQVa6Q2X3XlBpGKNfZ6j7m5jFMzt2MY2YaslwfKKOhQa
-         3Yo/38XK/75BrM9AWGa2HicRAa6kp1ZKSyqmrRXY9hXKlt1DCVvmenUtJ1TRkw8Kba53
-         N6fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=IbFDaC8Buo1vCSozpF9/8vShIeKDcGpQ6TZhRKWQtpk=;
-        b=hsP2pRNjpSOUZ7fv1lkXONbWZDvStrB9qiHKK7Wv2jMQBHg7f4CM9QHWlVM8gAePEb
-         zujBmbZZ8OPunzWotveJWuP5RmE8TxwoK4dyHTt6hgjR0ssOdTD911GiG+nZraVO5Q+i
-         CSH3Jki2F8kwFUizE1w6hPIdB9wQ9RQqdbudR4epeAa0ufjOSSc2dTHRlQhsK0erCb36
-         LiCUuxLD1KFV42A+c8HW0deZXXtg9W4od81q6wz6M+jSIO9VTiqQuRpr5a8m5dGTXcch
-         1G/1hSlqPeQU1VxuizrQDV9X9oRQjeTp97+Yul4621nuTOKvsvarPV2f2xGBLacNKWqZ
-         SDKA==
-X-Gm-Message-State: AOAM532UIMEFaprh6ZfNLXcNfZeXp1egXJF8wNmB4j347BQTluiysQ/i
-        QET1b18eSFJc4slkkrjt784fug==
-X-Google-Smtp-Source: ABdhPJwySG9y8XrA8jj4O3XKDMDff3AJpgG4hntUMfwbHFRSt75oMeFyOpoRwifv0r3xez8KH8xfsw==
-X-Received: by 2002:a37:e06:: with SMTP id 6mr21145584qko.373.1619492347903;
-        Mon, 26 Apr 2021 19:59:07 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 7sm7937758qtu.38.2021.04.26.19.59.05
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 26 Apr 2021 19:59:07 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 19:59:04 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Peter Xu <peterx@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4 09/10] userfaultfd/shmem: modify shmem_mcopy_atomic_pte
- to use install_pte()
-In-Reply-To: <20210421010205.GH4440@xz-x1>
-Message-ID: <alpine.LSU.2.11.2104261927570.2998@eggly.anvils>
-References: <20210420220804.486803-1-axelrasmussen@google.com> <20210420220804.486803-10-axelrasmussen@google.com> <20210421010205.GH4440@xz-x1>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 26 Apr 2021 23:08:27 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FTmph64zqzvTF3;
+        Tue, 27 Apr 2021 11:05:16 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 27 Apr 2021 11:07:34 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v2] f2fs: compress: remove unneed check condition
+Date:   Tue, 27 Apr 2021 11:07:30 +0800
+Message-ID: <20210427030730.90331-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021, Peter Xu wrote:
-> On Tue, Apr 20, 2021 at 03:08:03PM -0700, Axel Rasmussen wrote:
-> > In a previous commit, we added the mcopy_atomic_install_pte() helper.
-> > This helper does the job of setting up PTEs for an existing page, to map
-> > it into a given VMA. It deals with both the anon and shmem cases, as
-> > well as the shared and private cases.
-> > 
-> > In other words, shmem_mcopy_atomic_pte() duplicates a case it already
-> > handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
-> > directly, to reduce code duplication.
-> > 
-> > This requires that we refactor shmem_mcopy_atomic_pte() a bit:
-> > 
-> > Instead of doing accounting (shmem_recalc_inode() et al) part-way
-> > through the PTE setup, do it beforehand. This frees up
-> > mcopy_atomic_install_pte() from having to care about this accounting,
-> > but it does mean we need to clean it up if we get a failure afterwards
-> > (shmem_uncharge()).
-> > 
-> > We can *almost* use shmem_charge() to do this, reducing code
-> > duplication. But, it does `inode->i_mapping->nrpages++`, which would
-> > double-count since shmem_add_to_page_cache() also does this.
-> 
-> Missing to mention the lru_cache_add() replacement comment as Hugh commented on
-> this?
+This patch changes as below:
+- remove unneeded check condition in __cluster_may_compress()
+- rename __cluster_may_compress() to cluster_has_invalid_data() for
+better readability
+- add cp_error check in f2fs_write_compressed_pages() like we did
+in f2fs_write_single_data_page()
 
-Yes, please add that mention.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- rename function for better readability
+- add cp_error check in f2fs_write_compressed_pages()
+ fs/f2fs/compress.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-And personally, I'd much prefer this and the Doc commit,
-the non-selftest commits, to be moved up before the selftests.
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 6e46a00c1930..53f78befed8f 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -888,9 +888,8 @@ bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index)
+ 	return is_page_in_cluster(cc, index);
+ }
+ 
+-static bool __cluster_may_compress(struct compress_ctx *cc)
++static bool cluster_has_invalid_data(struct compress_ctx *cc)
+ {
+-	struct f2fs_sb_info *sbi = F2FS_I_SB(cc->inode);
+ 	loff_t i_size = i_size_read(cc->inode);
+ 	unsigned nr_pages = DIV_ROUND_UP(i_size, PAGE_SIZE);
+ 	int i;
+@@ -898,18 +897,13 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
+ 	for (i = 0; i < cc->cluster_size; i++) {
+ 		struct page *page = cc->rpages[i];
+ 
+-		f2fs_bug_on(sbi, !page);
+-
+-		if (unlikely(f2fs_cp_error(sbi)))
+-			return false;
+-		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+-			return false;
++		f2fs_bug_on(F2FS_I_SB(cc->inode), !page);
+ 
+ 		/* beyond EOF */
+ 		if (page->index >= nr_pages)
+-			return false;
++			return true;
+ 	}
+-	return true;
++	return false;
+ }
+ 
+ static int __f2fs_cluster_blocks(struct compress_ctx *cc, bool compr)
+@@ -985,7 +979,7 @@ static bool cluster_may_compress(struct compress_ctx *cc)
+ 		return false;
+ 	if (unlikely(f2fs_cp_error(F2FS_I_SB(cc->inode))))
+ 		return false;
+-	return __cluster_may_compress(cc);
++	return !cluster_has_invalid_data(cc);
+ }
+ 
+ static void set_cluster_writeback(struct compress_ctx *cc)
+@@ -1232,6 +1226,12 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	loff_t psize;
+ 	int i, err;
+ 
++	/* we should bypass data pages to proceed the kworkder jobs */
++	if (unlikely(f2fs_cp_error(sbi))) {
++		mapping_set_error(cc->rpages[0]->mapping, -EIO);
++		goto out_free;
++	}
++
+ 	if (IS_NOQUOTA(inode)) {
+ 		/*
+ 		 * We need to wait for node_write to avoid block allocation during
+-- 
+2.29.2
 
-The selftest situation is confusing at present, since Peter's series
-got dropped as [to-be-updated] from mmotm, so we're waiting for those
-updates to be added back to mmotm before this series can go in.
-
-(But akpm will be busy with merge window stuff at present:
-now is not the time to be adding or re-adding a series.)
-
-> 
-> > 
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-
-Peter raised a good point below, so no Ack from me yet.
-
-> > ---
-> >  include/linux/userfaultfd_k.h |  5 ++++
-> >  mm/shmem.c                    | 53 ++++++++---------------------------
-> >  mm/userfaultfd.c              | 17 ++++-------
-> >  3 files changed, 22 insertions(+), 53 deletions(-)
-> > 
-> > diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-> > index 794d1538b8ba..39c094cc6641 100644
-> > --- a/include/linux/userfaultfd_k.h
-> > +++ b/include/linux/userfaultfd_k.h
-> > @@ -53,6 +53,11 @@ enum mcopy_atomic_mode {
-> >  	MCOPY_ATOMIC_CONTINUE,
-> >  };
-> >  
-> > +extern int mcopy_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-> > +				    struct vm_area_struct *dst_vma,
-> > +				    unsigned long dst_addr, struct page *page,
-> > +				    bool newly_allocated, bool wp_copy);
-> > +
-> >  extern ssize_t mcopy_atomic(struct mm_struct *dst_mm, unsigned long dst_start,
-> >  			    unsigned long src_start, unsigned long len,
-> >  			    bool *mmap_changing, __u64 mode);
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index 30c0bb501dc9..9bfa80fcd414 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -2378,10 +2378,8 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> >  	struct address_space *mapping = inode->i_mapping;
-> >  	gfp_t gfp = mapping_gfp_mask(mapping);
-> >  	pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
-> > -	spinlock_t *ptl;
-> >  	void *page_kaddr;
-> >  	struct page *page;
-> > -	pte_t _dst_pte, *dst_pte;
-> >  	int ret;
-> >  	pgoff_t max_off;
-> >  
-> > @@ -2391,8 +2389,10 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> >  
-> >  	if (!*pagep) {
-> >  		page = shmem_alloc_page(gfp, info, pgoff);
-> > -		if (!page)
-> > -			goto out_unacct_blocks;
-> > +		if (!page) {
-> > +			shmem_inode_unacct_blocks(inode, 1);
-> > +			goto out;
-> > +		}
-> >  
-> >  		if (!zeropage) {	/* COPY */
-> >  			page_kaddr = kmap_atomic(page);
-> > @@ -2432,59 +2432,28 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> >  	if (ret)
-> >  		goto out_release;
-> >  
-> > -	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
-> > -	if (dst_vma->vm_flags & VM_WRITE)
-> > -		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
-> > -	else {
-> > -		/*
-> > -		 * We don't set the pte dirty if the vma has no
-> > -		 * VM_WRITE permission, so mark the page dirty or it
-> > -		 * could be freed from under us. We could do it
-> > -		 * unconditionally before unlock_page(), but doing it
-> > -		 * only if VM_WRITE is not set is faster.
-> > -		 */
-> > -		set_page_dirty(page);
-> > -	}
-> > -
-> > -	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
-> > -
-> > -	ret = -EFAULT;
-> > -	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> > -	if (unlikely(pgoff >= max_off))
-> > -		goto out_release_unlock;
-> > -
-> > -	ret = -EEXIST;
-> > -	if (!pte_none(*dst_pte))
-> > -		goto out_release_unlock;
-> > -
-> > -	lru_cache_add(page);
-> > -
-> >  	spin_lock_irq(&info->lock);
-> >  	info->alloced++;
-> >  	inode->i_blocks += BLOCKS_PER_PAGE;
-> >  	shmem_recalc_inode(inode);
-> >  	spin_unlock_irq(&info->lock);
-
-I think it's best to move that info->locked block down to above the
-new SetPageDirty(), where we know we have succeeded, because...
-
-> >  
-> > -	inc_mm_counter(dst_mm, mm_counter_file(page));
-> > -	page_add_file_rmap(page, false);
-> > -	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
-> > +	ret = mcopy_atomic_install_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
-> > +				       page, true, false);
-> > +	if (ret)
-> > +		goto out_release_uncharge;
-> >  
-> > -	/* No need to invalidate - it was non-present before */
-> > -	update_mmu_cache(dst_vma, dst_addr, dst_pte);
-> > -	pte_unmap_unlock(dst_pte, ptl);
-> > +	SetPageDirty(page);
-> >  	unlock_page(page);
-> >  	ret = 0;
-> >  out:
-> >  	return ret;
-> > -out_release_unlock:
-> > -	pte_unmap_unlock(dst_pte, ptl);
-> > -	ClearPageDirty(page);
-> > +out_release_uncharge:
-> >  	delete_from_page_cache(page);
-> > +	shmem_uncharge(inode, 1);
-> >  out_release:
-> >  	unlock_page(page);
-> >  	put_page(page);
-> > -out_unacct_blocks:
-> 
-> Will all the "goto out_release" miss one call to shmem_inode_unacct_blocks()?
-
-Good catch, yes.
-
-Which is why I suggest above to move the info->locked block down:
-then you can forget about using shmem_uncharge(), and just use
-shmem_inode_unacct_blocks() directly in all cases that need it here.
-
-(But I notice the commit message refers to shmem_uncharge(), so that
-will need adjusting. shmem_uncharge() is more of a hack than a proper
-interface, introduced to manage certain THP split/collapse cases.)
-
-> 
-> > -	shmem_inode_unacct_blocks(inode, 1);
-> >  	goto out;
-> >  }
-> >  #endif /* CONFIG_USERFAULTFD */
