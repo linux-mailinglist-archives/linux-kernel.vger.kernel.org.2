@@ -2,213 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D886436CD07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D2736CD0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbhD0UrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 16:47:14 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31782 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239394AbhD0Uqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:46:36 -0400
-IronPort-SDR: Pd2J7z9M3T0ne7v5OF+Gr0fM0qEhmmWEnOwHAoJladbkTJcQ6ZuQJnYOZTDS6fLSXSkXTAx7eT
- QIULjITpphAQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="281922506"
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="281922506"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 13:44:26 -0700
-IronPort-SDR: xWB2H/oAI2gkiea5eIHtXHrJcmmmzHjfnM/w0JGR3fwufgi1UErfUQeXDwBL4TzugG+6o0qqyj
- zJ4vZYmADzSQ==
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="465623580"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 13:44:25 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH v26 30/30] mm: Introduce PROT_SHADOW_STACK for shadow stack
-Date:   Tue, 27 Apr 2021 13:43:15 -0700
-Message-Id: <20210427204315.24153-31-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210427204315.24153-1-yu-cheng.yu@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+        id S239142AbhD0UsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 16:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239141AbhD0Urk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 16:47:40 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F41C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:46:36 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u21so91404933ejo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N7anHoC9geqIkxnuhdLcMLt4gZDNLzLFNeoRehcS0eM=;
+        b=VGtpo6qcu9pwPNSpCONhtfXzC1L4N3ADxE8GLhYafQrTehJfXYTbV/mVQF1uo8bCHd
+         7qdI4XOn9t1qBaG9UN+htWrWmQkEEn5BpVHxmdm9cU+52a63OBb62IeUjMOyH/new9yy
+         +E9DgX96XW4QOXIh8k6jJJMYqTS51fpyK2cWJpiDLKeJUQEmWSvOo2mbuRUHArQ2zmwz
+         /iodnOSZ4X9lEnAlRvl+dZYttq3OyeXJH0k7irNum+AFbUN8q+arGPVMdqylpEfL5xD0
+         C2LrPTIxj1BaQLHteLZ8VUMfLAMAgwc0mAHJQnjmoDUzrNsMFu8tElVJf8w8OhK+zMzN
+         bcqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N7anHoC9geqIkxnuhdLcMLt4gZDNLzLFNeoRehcS0eM=;
+        b=dY2wNdQwxmrrqgaeeRr6IPRegGH7CDKLobi9Fs33RFhtKHCmG8as0lHWnZqyz5eCFY
+         Cz5Dn0CZNqsm/nDWyMRTFzXwAakATJRnsi5sDcydDW3gtc4n9rH2inoCLIs65IFXadn1
+         oQ5X3e6f3Eb/qXYP+Ke8TdWdQ1Vjc2iYe3Du+SHyP5gKNBW3SdHeDhWf9RdPml8x/vs2
+         gJdK8w2N79DphNxuqcTkr0K6IjzEV6NhJp0o/pCQw7ca6HrX7kVvbsklyKIXUEMyAL6q
+         3sFqo2v5m26ZvT36K4PE7EqgLu7ZnzfX2tVsmUfMpa5iziil77IgXPu0aC0q8qchFnLC
+         NKfg==
+X-Gm-Message-State: AOAM532+zrCyglPMaYQVrfWy4Kf1XOp4tZlL4g32i7veJvXW34RMgw0m
+        4o8WMgNpKDyKNWsJ+QNpiJ+qZ+JhPRRYYBzWUeSL/60sjsg=
+X-Google-Smtp-Source: ABdhPJxXo2gK1QGVsMN3JZqRTR6rlQ4Uj9PKOZ1UWnsXGw4hbPccVrX2oBup0LddQn8xy3zYV6h7JlOmwcpwbjmdj7M=
+X-Received: by 2002:a17:906:3b13:: with SMTP id g19mr14421196ejf.238.1619556394715;
+ Tue, 27 Apr 2021 13:46:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210427133214.2270207-1-linmiaohe@huawei.com> <20210427133214.2270207-3-linmiaohe@huawei.com>
+In-Reply-To: <20210427133214.2270207-3-linmiaohe@huawei.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 27 Apr 2021 13:46:23 -0700
+Message-ID: <CAHbLzkp4ggaFo_6Ot9Uu+2fF0md63HDY+m8U7m9ZAN-yS-N+yQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm/huge_memory.c: use page->deferred_list
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+        william.kucharski@oracle.com, Matthew Wilcox <willy@infradead.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        aneesh.kumar@linux.ibm.com, Ralph Campbell <rcampbell@nvidia.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are three possible options to create a shadow stack allocation API:
-an arch_prctl, a new syscall, or adding PROT_SHADOW_STACK to mmap() and
-mprotect().  Each has its advantages and compromises.
+On Tue, Apr 27, 2021 at 6:32 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> Now that we can represent the location of ->deferred_list instead of
+> ->mapping + ->index, make use of it to improve readability.
 
-An arch_prctl() is the least intrusive.  However, the existing x86
-arch_prctl() takes only two parameters.  Multiple parameters must be
-passed in a memory buffer.  There is a proposal to pass more parameters in
-registers [1], but no active discussion on that.
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-A new syscall minimizes compatibility issues and offers an extensible frame
-work to other architectures, but this will likely result in some overlap of
-mmap()/mprotect().
-
-The introduction of PROT_SHADOW_STACK to mmap()/mprotect() takes advantage
-of existing APIs.  The x86-specific PROT_SHADOW_STACK is translated to
-VM_SHADOW_STACK and a shadow stack mapping is created without reinventing
-the wheel.  There are potential pitfalls though.  The most obvious one
-would be using this as a bypass to shadow stack protection.  However, the
-attacker would have to get to the syscall first.
-
-[1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
-
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
-v26:
-- Change PROT_SHSTK to PROT_SHADOW_STACK.
-- Remove (vm_flags & VM_SHARED) check, since it is covered by
-  !vma_is_anonymous().
-
-v24:
-- Update arch_calc_vm_prot_bits(), leave PROT* checking to
-  arch_validate_prot().
-- Update arch_validate_prot(), leave vma flags checking to
-  arch_validate_flags().
-- Add arch_validate_flags().
-
- arch/x86/include/asm/mman.h      | 60 +++++++++++++++++++++++++++++++-
- arch/x86/include/uapi/asm/mman.h |  2 ++
- include/linux/mm.h               |  1 +
- 3 files changed, 62 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
-index 629f6c81263a..fbb90f1b02c0 100644
---- a/arch/x86/include/asm/mman.h
-+++ b/arch/x86/include/asm/mman.h
-@@ -20,11 +20,69 @@
- 		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
- 		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
- 
--#define arch_calc_vm_prot_bits(prot, key) (		\
-+#define pkey_vm_prot_bits(prot, key) (			\
- 		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
- 		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
- 		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
- 		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-+#else
-+#define pkey_vm_prot_bits(prot, key) (0)
- #endif
- 
-+static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
-+						   unsigned long pkey)
-+{
-+	unsigned long vm_prot_bits = pkey_vm_prot_bits(prot, pkey);
-+
-+	if (prot & PROT_SHADOW_STACK)
-+		vm_prot_bits |= VM_SHADOW_STACK;
-+
-+	return vm_prot_bits;
-+}
-+
-+#define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
-+
-+#ifdef CONFIG_X86_SHADOW_STACK
-+static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
-+{
-+	unsigned long valid = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM |
-+			      PROT_SHADOW_STACK;
-+
-+	if (prot & ~valid)
-+		return false;
-+
-+	if (prot & PROT_SHADOW_STACK) {
-+		if (!current->thread.cet.shstk_size)
-+			return false;
-+
-+		/*
-+		 * A shadow stack mapping is indirectly writable by only
-+		 * the CALL and WRUSS instructions, but not other write
-+		 * instructions).  PROT_SHADOW_STACK and PROT_WRITE are
-+		 * mutually exclusive.
-+		 */
-+		if (prot & PROT_WRITE)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+#define arch_validate_prot arch_validate_prot
-+
-+static inline bool arch_validate_flags(struct vm_area_struct *vma, unsigned long vm_flags)
-+{
-+	/*
-+	 * Shadow stack must be anonymous and not shared.
-+	 */
-+	if ((vm_flags & VM_SHADOW_STACK) && !vma_is_anonymous(vma))
-+		return false;
-+
-+	return true;
-+}
-+
-+#define arch_validate_flags(vma, vm_flags) arch_validate_flags(vma, vm_flags)
-+
-+#endif /* CONFIG_X86_SHADOW_STACK */
-+
- #endif /* _ASM_X86_MMAN_H */
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index f28fa4acaeaf..4c36b263cf0a 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -4,6 +4,8 @@
- 
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- 
-+#define PROT_SHADOW_STACK	0x10	/* shadow stack pages */
-+
- #include <asm-generic/mman.h>
- 
- #endif /* _UAPI_ASM_X86_MMAN_H */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1ccec5cc399b..9a7652eea207 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -342,6 +342,7 @@ extern unsigned int kobjsize(const void *objp);
- 
- #if defined(CONFIG_X86)
- # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
-+# define VM_ARCH_CLEAR	VM_SHADOW_STACK
- #elif defined(CONFIG_PPC)
- # define VM_SAO		VM_ARCH_1	/* Strong Access Ordering (powerpc) */
- #elif defined(CONFIG_PARISC)
--- 
-2.21.0
-
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/huge_memory.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 63ed6b25deaa..76ca1eb2a223 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2868,7 +2868,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>         /* Take pin on all head pages to avoid freeing them under us */
+>         list_for_each_safe(pos, next, &ds_queue->split_queue) {
+> -               page = list_entry((void *)pos, struct page, mapping);
+> +               page = list_entry((void *)pos, struct page, deferred_list);
+>                 page = compound_head(page);
+>                 if (get_page_unless_zero(page)) {
+>                         list_move(page_deferred_list(page), &list);
+> @@ -2883,7 +2883,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>         spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>
+>         list_for_each_safe(pos, next, &list) {
+> -               page = list_entry((void *)pos, struct page, mapping);
+> +               page = list_entry((void *)pos, struct page, deferred_list);
+>                 if (!trylock_page(page))
+>                         goto next;
+>                 /* split_huge_page() removes page from list on success */
+> --
+> 2.23.0
+>
+>
