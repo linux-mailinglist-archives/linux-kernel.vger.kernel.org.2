@@ -2,159 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352DE36C99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB69A36C9A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237992AbhD0Qky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:40:54 -0400
-Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:6318
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237796AbhD0Qkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:40:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RmASETcHAvoVd+Qk53dUuUGIB4qWowI5b4Ku4hWkXRM3WfwPvLH+rE8Rvg+wFN8TOZxr1jcsxIh8G3eqs1cptP0RyP/2dTc6fUJDo+hbBwAHyZ7aBlNTk3m86zKf/WEu2yJ7oQhG2RG5Xl5wOq92OPo9FIEyMPrlnDLpR9mDEHhMCtGe39mt7B9bcGy2vNO2YLn6iNQgMUUOBNNx9DkeXcBluSIjRJ8dU7WV6f20Z3na38O2EZy7UTtzVFlPuS3FDELZAdNLuUc6hUXsQn0CizlyiGEfSOTBb0krdNZSpW2Q5ovhQG3rUpm8ktykaAzt2XY2qRGrYZFyPawO4ypnRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nCBSDtTz9Mi9G/WR1q00RSBZ0mrGjOiilxBNVEhL9Dc=;
- b=McfrlmmtzXol7/2nnwIskYKUTbx9P8g5zHkdnEx0VFV97meHllZL38L9PVtBad+WVkYjzffJqAyx4evz9dX9NdOn7iaIV46wlFoB1ny8y9EJFPO2gCfKCogs4LDf/YM/4KxB3UPj6A4BTUXCXwC/W4wmZfkfWogqVDA6aciACBcCynwxw3zAZwi1NYfKfZPsqYtMNM6l5YhvvwqTjuEMPvSS2HUWLsr9LqtY3s/AH3GKayB5bWL51BuRBp8mbqdocfRJnZPIcw2muEopD3WJELqHviMzzmMFlIe++hY9f/F+r7ridBjWp9/tKgkquxVG9R1ulo18KBJGk+MMMpI+nA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nCBSDtTz9Mi9G/WR1q00RSBZ0mrGjOiilxBNVEhL9Dc=;
- b=Bxd7u7/6xqV8QR/QYST/eDZZKz3gjc0z4SYiGkg2i4CtpUfOqYzQSebbg+b1ov3hgo/qy618v9UK+V4KhUAjalvwjtCQwyLYGyc8ntUkY4g4UM2wd7hReZ6B/PIsQbyBtDcxBCnBw1r0vx9FZVWgLuo1yzmSADibQzCM7wjwmVhjBJ1WBAdegmRqbLORop4aQKBc2zF+TzX0Cia/OtV72kuI+76j4kBdXObW0q23OwkZ+o/TQaFmqF55sLu1HDo4kO6uIKfhflu4vgEdSQmupZIe2WnwJ4VQD1XQzSn8/EzrnsiNMYQ/17qX6XvtmKiIl5ugTe9bMylISpYNnnnH+g==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2581.namprd12.prod.outlook.com (2603:10b6:4:b2::36) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.26; Tue, 27 Apr
- 2021 16:39:56 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Tue, 27 Apr 2021
- 16:39:56 +0000
-Date:   Tue, 27 Apr 2021 13:39:54 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210427163954.GC1370958@nvidia.com>
-References: <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <20210422175715.GA1370958@nvidia.com>
- <20210422133747.23322269@redhat.com>
- <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <MWHPR11MB1886A98D9176B5571530EF1D8C459@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YIec/Rt7OxvfFw7W@yekko.fritz.box>
+        id S236641AbhD0Qlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:41:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236320AbhD0Qlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:41:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C559613DD;
+        Tue, 27 Apr 2021 16:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619541649;
+        bh=Xqft6fFtT30czxnZmwg0eAaySlbowflX/wgVV4JUfGw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mDooBA3QmBeBLaAkij42NLD/mnxf+rbpveWlbW0c5HIdlKzTsfil4QTuU7c9hw543
+         d9LdYRC1VQrCwqRI2PPc5fj5UghoCGV/9J8dA2Kt0u6cjKOWKVSsX20mqkJ5tnwPAD
+         koMhO3cigVGhICoxHVoWFdoXTMYAfLrsIqFYWubM=
+Date:   Tue, 27 Apr 2021 18:40:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Aditya Pakki <pakki001@umn.edu>, kjlu@umn.edu, wu000273@umn.edu,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Enrico Weigelt <info@metux.net>,
+        "Andrew F. Davis" <afd@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 021/190] Revert "omapfb: fix multiple reference count
+ leaks due to pm_runtime_get_sync"
+Message-ID: <YIg+juEMf1odL1g4@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-22-gregkh@linuxfoundation.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIec/Rt7OxvfFw7W@yekko.fritz.box>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR05CA0051.namprd05.prod.outlook.com
- (2603:10b6:610:38::28) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR05CA0051.namprd05.prod.outlook.com (2603:10b6:610:38::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.16 via Frontend Transport; Tue, 27 Apr 2021 16:39:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lbQkc-00DZci-4Y; Tue, 27 Apr 2021 13:39:54 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2bb06bc4-d9af-42e5-070a-08d9099b16d7
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2581:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB258158B33EE6B4B8F46B1E8FC2419@DM5PR12MB2581.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CEibGDpBtb2aawuBuQisgBfGXGHMfMeuDG75xx7ZToszIitU0npWefZqt5asA/HPtGLYv1DFog0n9irOANQKIJf1xdSQe4Wl7KnTn4o/5O7zZcsFRc1gOx+MmCeezy71bmtPpN/CyShHg1rVJThewAByyytJEEcyXjMh8em7dY/+w8u7gDLc6fjS06khZqWZuoQkrmWpI/Rmlj18pXtnEt0Hin9QI+a/fJ5tPG/tdHL43ERN6rJYbFyxoFye7Dh7MViQP5EFpo7aoGRyIYZF9e7P0CI6/JtdKh+9Wky2r/+K/OL76KUW7al810ngIL8MsrNlpwVXhFAx7acYHJDtiusAADY5FMdnaLDqod3DrfwoXMEaF+b3xBHjJmW4Ed+W5ipboYVW2EROOwvPZTufOK2gW+abdid2Jl+l6qi6UreNhALWYMSS2bIGIsxhdyJDpQVkN5MbJCaNhFXWOTIED3VUsJ4GI4DhFnWHYFAH1kfGmoZ0t0R7h+rALBNuN1lFTQE/9OJRrXRHF7OyeTUpPSaSxRPMHXSrkFx5l9ABj03rB3CUZ7XlSFZOcF1JYVGGaw8EBS4KReznIAjBxNcKURaiYXEkH5HEBPly+9u9CHQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(376002)(136003)(39860400002)(38100700002)(186003)(8936002)(2616005)(1076003)(426003)(66476007)(66556008)(26005)(8676002)(66946007)(5660300002)(7416002)(9786002)(2906002)(9746002)(4326008)(36756003)(6916009)(478600001)(316002)(54906003)(86362001)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?wSpayi0ox2nw91PnJ5bwbb4Srn3eodiu4PiXilByVMpEq1oNSZkvDprGBhCv?=
- =?us-ascii?Q?ykjoQXbCqnrpzQeqrRyz4xABKFzpbf6kvW3Kr57RCzGEmuBQbyPsAfNTciG/?=
- =?us-ascii?Q?IHEpMbftYmqMXBdb5D0+kJj/ZPt+86WaL8LYEEdP0dLB0hBfOc+s5R5oV7MT?=
- =?us-ascii?Q?ptgGzPzUC7edvuahO/7rV2vk8Pl2zKfoJ9IKs0kc++HtHLHj55wybBAQ94mU?=
- =?us-ascii?Q?vZatpupZ6ZLHSfAv4tBL4O/oAhXl2fxnGV6Mb+zRPKsCe5KGxc+O/+nI4Dn+?=
- =?us-ascii?Q?jkaaZlDmKfZsgq/z9w5kyKpuvsnmv1pSDYy6P9MQzcSXUJTue/pe5UzV5WZs?=
- =?us-ascii?Q?nXARyQqN2+rqoZAkGO/rVDVl3I4+eSVeY8qbDWNjtjQa7H1QDRJOrGRZJnaR?=
- =?us-ascii?Q?wIdXV+atN0nN6sGBZR6cKEAgGDGd5raGIgIg6CCLATN7RlEgNrYMQpNeXuys?=
- =?us-ascii?Q?O9qSeu4Izz79BNRarYhxRwarwuitLBzCLbq40LHPQPZXeIiZfCJXudLkdUcr?=
- =?us-ascii?Q?oipuIu5WVbXz0RsWqurFol5Y4+F0cbKaAsOmPr9UTtNyT3ZmmeUkbEX8NGbF?=
- =?us-ascii?Q?6uKFeovcboXY5nk07yZDM7IYcTkzHqY1EBWSQSukPQHvperq7vvvIQ3McNh2?=
- =?us-ascii?Q?GugtUftg1j2YbkBwUS0i1CnIFO7KQc0Kff+K2tqyDuISNw48BguNQY0P6zk3?=
- =?us-ascii?Q?PIqBdwDYfVTyuIB04CintFNinGfBQqfoKsIMGYdTmPn1unrqD3pvL4wQBBY2?=
- =?us-ascii?Q?/DrrvKck25UiiiIBKiAhfoE0eN8g9YdXFarirP0zfuXBQee2+D8QQ+qjXn/9?=
- =?us-ascii?Q?70zvrIMFyUxGHhPVVUs/THEsN1Ou8X/jdEfmMSbNqbo6VYF/xmLfs2LvMR2+?=
- =?us-ascii?Q?pcMEypGU6mRJKblPs1tYDf5yql9AkN0R2yHniL7KM5IGpMM8GITljuV4h9+m?=
- =?us-ascii?Q?qWn5tlqNGiMf9P30MBBC0Hoe884AonADgE+bmNsNw7t4cjGYVur48+mRdY2a?=
- =?us-ascii?Q?E3CcDXf2lYXUqQetVDm/PgSbBT+0D77oOcI6OPhBGvla9Wr8gOfsirk1fTgd?=
- =?us-ascii?Q?zdWVKm7UKubI1/kUPXYPzevetD3ON7r1BODbyCHAHBa7P3A0aKC0WT/66hN8?=
- =?us-ascii?Q?XzzZhQvyyyTpa0gnf+vaPhImSaLuctgVS4srcX0H6FXHu274AOAYf6DMJKOr?=
- =?us-ascii?Q?melIuFn8A2If+N/7bnQRwLQWR7SNE8Wh6uVIjuHzRQxMgEwxtcB1P0Kt1QUr?=
- =?us-ascii?Q?eM6Rg7E9/uyUHlXq2ccbBlXip9S1oh4jraM8Jg0zFKcRgUj4yNhppfotc0/t?=
- =?us-ascii?Q?2yq6zV2jOCSAGOcELoAywFrv?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bb06bc4-d9af-42e5-070a-08d9099b16d7
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 16:39:56.0795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m0xDPGnTNw7K4hU43ptUgHQXCCsWZv31a7t4B0ZO061cW5t4wr5ZU4weEQs6rEgG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2581
+In-Reply-To: <20210421130105.1226686-22-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 03:11:25PM +1000, David Gibson wrote:
-
-> > So your proposal sort of moves the entire container/group/domain 
-> > managment into /dev/ioasid and then leaves vfio only provide device
-> > specific uAPI. An ioasid represents a page table (address space), thus 
-> > is equivalent to the scope of VFIO container.
+On Wed, Apr 21, 2021 at 02:58:16PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 78c2ce9bde70be5be7e3615a2ae7024ed8173087.
 > 
-> Right.  I don't really know how /dev/iosasid is supposed to work, and
-> so far I don't see how it conceptually differs from a container.  What
-> is it adding?
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: kjlu@umn.edu
+> Cc: wu000273@umn.edu
+> Cc: Allison Randal <allison@lohutok.net>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Enrico Weigelt <info@metux.net>
+> Cc: "Andrew F. Davis" <afd@ti.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: Alexios Zavras <alexios.zavras@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: YueHaibing <yuehaibing@huawei.com>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: https
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/video/fbdev/omap2/omapfb/dss/dispc.c | 7 ++-----
+>  drivers/video/fbdev/omap2/omapfb/dss/dsi.c   | 7 ++-----
+>  drivers/video/fbdev/omap2/omapfb/dss/dss.c   | 7 ++-----
+>  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c | 5 ++---
+>  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c | 5 ++---
+>  drivers/video/fbdev/omap2/omapfb/dss/venc.c  | 7 ++-----
+>  6 files changed, 12 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dispc.c b/drivers/video/fbdev/omap2/omapfb/dss/dispc.c
+> index b2d6e6df2161..285d33ce1e11 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/dispc.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/dispc.c
+> @@ -520,11 +520,8 @@ int dispc_runtime_get(void)
+>  	DSSDBG("dispc_runtime_get\n");
+>  
+>  	r = pm_runtime_get_sync(&dispc.pdev->dev);
+> -	if (WARN_ON(r < 0)) {
+> -		pm_runtime_put_sync(&dispc.pdev->dev);
+> -		return r;
+> -	}
+> -	return 0;
+> +	WARN_ON(r < 0);
+> +	return r < 0 ? r : 0;
+>  }
+>  EXPORT_SYMBOL(dispc_runtime_get);
+>  
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
+> index daa313f14335..bfa27672fe27 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
+> @@ -1137,11 +1137,8 @@ static int dsi_runtime_get(struct platform_device *dsidev)
+>  	DSSDBG("dsi_runtime_get\n");
+>  
+>  	r = pm_runtime_get_sync(&dsi->pdev->dev);
+> -	if (WARN_ON(r < 0)) {
+> -		pm_runtime_put_sync(&dsi->pdev->dev);
+> -		return r;
+> -	}
+> -	return 0;
+> +	WARN_ON(r < 0);
+> +	return r < 0 ? r : 0;
+>  }
+>  
+>  static void dsi_runtime_put(struct platform_device *dsidev)
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dss.c b/drivers/video/fbdev/omap2/omapfb/dss/dss.c
+> index a6b1c1598040..bfc5c4c5a26a 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/dss.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/dss.c
+> @@ -768,11 +768,8 @@ int dss_runtime_get(void)
+>  	DSSDBG("dss_runtime_get\n");
+>  
+>  	r = pm_runtime_get_sync(&dss.pdev->dev);
+> -	if (WARN_ON(r < 0)) {
+> -		pm_runtime_put_sync(&dss.pdev->dev);
+> -		return r;
+> -	}
+> -	return 0;
+> +	WARN_ON(r < 0);
+> +	return r < 0 ? r : 0;
+>  }
+>  
+>  void dss_runtime_put(void)
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
+> index 800bd108e834..e8ccb2f5ea70 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
+> @@ -39,10 +39,9 @@ static int hdmi_runtime_get(void)
+>  	DSSDBG("hdmi_runtime_get\n");
+>  
+>  	r = pm_runtime_get_sync(&hdmi.pdev->dev);
+> -	if (WARN_ON(r < 0)) {
+> -		pm_runtime_put_sync(&hdmi.pdev->dev);
+> +	WARN_ON(r < 0);
+> +	if (r < 0)
+>  		return r;
+> -	}
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
+> index 2c03608addcd..bb59367b69c4 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
+> @@ -43,10 +43,9 @@ static int hdmi_runtime_get(void)
+>  	DSSDBG("hdmi_runtime_get\n");
+>  
+>  	r = pm_runtime_get_sync(&hdmi.pdev->dev);
+> -	if (WARN_ON(r < 0)) {
+> -		pm_runtime_put_sync(&hdmi.pdev->dev);
+> +	WARN_ON(r < 0);
+> +	if (r < 0)
+>  		return r;
+> -	}
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/venc.c b/drivers/video/fbdev/omap2/omapfb/dss/venc.c
+> index 905d642ff9ed..b9e722542afb 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/venc.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/venc.c
+> @@ -348,11 +348,8 @@ static int venc_runtime_get(void)
+>  	DSSDBG("venc_runtime_get\n");
+>  
+>  	r = pm_runtime_get_sync(&venc.pdev->dev);
+> -	if (WARN_ON(r < 0)) {
+> -		pm_runtime_put_sync(&venc.pdev->dev);
+> -		return r;
+> -	}
+> -	return 0;
+> +	WARN_ON(r < 0);
+> +	return r < 0 ? r : 0;
+>  }
+>  
+>  static void venc_runtime_put(void)
+> -- 
+> 2.31.1
+> 
 
-There are three motivating topics:
- 1) /dev/vfio/vfio is only usable by VFIO and we have many interesting
-    use cases now where we need the same thing usable outside VFIO
- 2) /dev/vfio/vfio does not support modern stuff like PASID and
-    updating to support that is going to be a big change, like adding
-    multiple IOASIDs so they can be modeled as as a tree inside a
-    single FD
- 3) I understand there is some desire to revise the uAPI here a bit,
-    ie Alex mentioned the poor mapping performance.
+Messy and no one can hit this, but it looks semi-correct so I'll keep
+this and drop my revert.
 
-I would say it is not conceptually different from what VFIO calls a
-container, it is just a different uAPI with the goal to be cross
-subsystem.
+thanks,
 
-Jason
+greg k-h
