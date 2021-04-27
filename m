@@ -2,186 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C17E36C490
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC07B36C491
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbhD0LC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:02:27 -0400
-Received: from mailproxy05.manitu.net ([217.11.48.69]:53358 "EHLO
-        mailproxy05.manitu.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbhD0LCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:02:22 -0400
-Received: from [IPv6:2003:f7:f70f:8e00:7457:87a:58db:74be] (p200300f7f70f8e007457087a58db74be.dip0.t-ipconnect.de [IPv6:2003:f7:f70f:8e00:7457:87a:58db:74be])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: alexander@sosna.de)
-        by mailproxy05.manitu.net (Postfix) with ESMTPSA id 850A91B616DE;
-        Tue, 27 Apr 2021 13:01:34 +0200 (CEST)
-Subject: Re: [PATCH] Prevent OOM casualties by enforcing memcg limits
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Chris Down <chris@chrisdown.name>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <ea6db5cc-f862-7c4b-d872-acb29c2d8193@sosna.de>
- <YIdWMC/iAdanDjLh@chrisdown.name>
- <410a58ba-d746-4ed6-a660-98b5f99258c3@sosna.de>
- <YIfGbd4wupW4mdHy@dhcp22.suse.cz>
-From:   Alexander Sosna <alexander@sosna.de>
-Message-ID: <c7e0a2f9-0b83-2d9b-8ec1-8141d5dca554@sosna.de>
-Date:   Tue, 27 Apr 2021 13:01:33 +0200
+        id S235736AbhD0LCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:02:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51606 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235372AbhD0LC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 07:02:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 67672B16D;
+        Tue, 27 Apr 2021 11:01:42 +0000 (UTC)
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@linux.ie, jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+        arc_sung@aspeedtech.com
+References: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
+ <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v5] drm/ast: Fixed CVE for DP501
+Message-ID: <2662b502-edbe-b79b-b458-dbabafe6ca3c@suse.de>
+Date:   Tue, 27 Apr 2021 13:01:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YIfGbd4wupW4mdHy@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="srJtaTwXFNDP0DD96H2XQtdUKY4K48tYC"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.04.21 10:08, Michal Hocko wrote:
-> On Tue 27-04-21 08:37:30, Alexander Sosna wrote:
->> Hi Chris,
->>
->> Am 27.04.21 um 02:09 schrieb Chris Down:
->>> Hi Alexander,
->>>
->>> Alexander Sosna writes:
->>>> Before this commit memory cgroup limits were not enforced during
->>>> allocation.  If a process within a cgroup tries to allocates more
->>>> memory than allowed, the kernel will not prevent the allocation even if
->>>> OVERCOMMIT_NEVER is set.  Than the OOM killer is activated to kill
->>>> processes in the corresponding cgroup.
->>>
->>> Unresolvable cgroup overages are indifferent to vm.overcommit_memory,
->>> since exceeding memory.max is not overcommitment, it's just a natural
->>> consequence of the fact that allocation and reclaim are not atomic
->>> processes. Overcommitment, on the other hand, is about the bounds of
->>> available memory at the global resource level.
->>>
->>>> This behavior is not to be expected
->>>> when setting OVERCOMMIT_NEVER (vm.overcommit_memory = 2) and it is a huge
->>>> problem for applications assuming that the kernel will deny an allocation
->>>> if not enough memory is available, like PostgreSQL.  To prevent this a
->>>> check is implemented to not allow a process to allocate more memory than
->>>> limited by it's cgroup.  This means a process will not be killed while
->>>> accessing pages but will receive errors on memory allocation as
->>>> appropriate.  This gives programs a chance to handle memory allocation
->>>> failures gracefully instead of being reaped.
->>>
->>> We don't guarantee that vm.overcommit_memory 2 means "no OOM killer". It
->>> can still happen for a bunch of reasons, so I really hope PostgreSQL
->>> isn't relying on that.
->>>
->>> Could you please be more clear about the "huge problem" being solved
->>> here? I'm not seeing it.
->>
->> let me explain the problem I encounter and why I fell down the mm rabbit
->> hole.  It is not a PostgreSQL specific problem but that's where I run
->> into it.  PostgreSQL forks a backend for each client connection.  All
->> backends have shared memory as well as local work memory.  When a
->> backend needs more dynamic work_mem to execute a query, new memory
->> is allocated.  It is normal that such an allocation can fail.  If the
->> backend gets an ENOMEM the current query is rolled back an all dynamic
->> work_mem is freed. The RDBMS stays operational an no other query is
->> disturbed.
-> 
-> I am afraid the kernel MM implementation has never been really
-> compatible with such a memory allocation model. Linux has always
-> preferred to pretend there is always memory available and rather reclaim
-> memory - including by killing some processes - rather than fail the
-> allocation eith ENOMEM. Overcommit configuration (especially
-> OVERCOMMIT_NEVER) is an attempt to somehow mitigate this ambitious
-> memory allocation approach but in reality this has turned out a)
-> unreliable and b) unsuable with modern userspace which relies on
-> considerable virtual memory overcommit.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--srJtaTwXFNDP0DD96H2XQtdUKY4K48tYC
+Content-Type: multipart/mixed; boundary="8qCX6uppK8rnciD4GO6kmb5p7e0PLlmVm";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: airlied@linux.ie, jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+ arc_sung@aspeedtech.com
+Message-ID: <2662b502-edbe-b79b-b458-dbabafe6ca3c@suse.de>
+Subject: Re: [PATCH v5] drm/ast: Fixed CVE for DP501
+References: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
+ <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
+In-Reply-To: <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
 
-Thank you for taking the time to discuss this issue with me.  I agree
-that the kernel and a lot of software prefers to pretend there is more
-memory than there really is.  It was also never possible to assume that
-the OOM killer is fully absent.  I'm running production Linux systems
-for quite a while now and without memory cgroups involved
-OVERCOMMIT_NEVER does a pretty good job.  I can't even remember the last
-time the OOM killer caused me any problems on a properly configured
-database server.  This is what I would like and what users should be
-able to expect for the use with cgroup memory limits as well.
+--8qCX6uppK8rnciD4GO6kmb5p7e0PLlmVm
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Please correct me if I am wrong, but "modern userspace which relies on
-considerable virtual memory overcommit" should not rely on the kernel to
-overcommit memory when OVERCOMMIT_NEVER is explicitly set.
+Hi
 
->> When running in a memory cgroup - for example via systemd or on k8s -
->> the kernel will not return ENOMEM even if the cgroup's memory limit is
->> exceeded.
-> 
-> Yes, memcg doesn't change the overal approach. It just restricts the
-> existing semantic with a smaller memory limit. Also overcommit heuristic
-> has never been implemented for memory controllers.
-> 
->> Instead the OOM killer is awakened and kills processes in the
->> violating cgroup.  If any backend is killed with SIGKILL the shared
->> memory of the whole cluster is deemed potentially corrupted and
->> PostgreSQL needs to do an emergency restart.  This cancels all operation
->> on all backends and it entails a potentially lengthy recovery process.
->> Therefore the behavior is quite "costly".
-> 
-> One way around that would be to use high limit rather than hard limit
-> and pro-actively watch for memory utilization and communicate that back
-> to the application to throttle its workers. I can see how that
-> 
->> I totally understand that vm.overcommit_memory 2 does not mean "no OOM
->> killer". IMHO it should mean "no OOM killer if we can avoid it" and I
-> 
-> I do not see how it can ever promise anything like that. Memory
-> consumption by kernel subsystems cannot be predicted at the time virtual
-> memory allocated from the userspace. Not only it cannot be predicted but
-> it is also highly impractical to force kernel allocations - necessary
-> for the OS operation - to fail just because userspace has reserved
-> virtual memory. So this all is just a heuristic to help in some
-> extreme cases but overall I consider OVERCOMMIT_NEVER as impractical to
-> say the least.
+Am 21.04.21 um 10:58 schrieb KuoHsiang Chou:
+> [Bug][DP501]
+> If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
+> CVE_2019_6260 item3, and then the monitor's EDID is unable read through=
 
-I'm not fully able to follow you why we need to let kernel allocations
-fail here.  Yes, if you run a system to a point where the kernel can't
-free enough memory, invasive decisions have to be made.  Think of an
-application server running multiple applications in memcgs each with its
-limits way below the available resources.  Why is it preferable to
-SIGKILL a process rather than just deny the limit exceeding malloc, when
-OVERCOMMIT_NEVER is set of cause?
+> Parade DP501.
+> The reason is the DP501's FW is mapped to BMC addressing space rather
+> than Host addressing space.
+> The resolution is that using "pci_iomap_range()" maps to DP501's FW tha=
+t
+> stored on the end of FB (Frame Buffer).
+> In this case, FrameBuffer reserves the last 2MB used for the image of
+> DP501.
+>=20
 
->> would highly appreciate if the kernel would use a less invasive means
->> whenever possible.  I guess this might also be the expectation by many
->> other users.  In my described case - which is a real pain for me - it is
->> quite easy to tweak the kernel behavior in order to handle this and
->> other similar situations with less casualties.  This is why I send a
->> patch instead of starting a theoretical discussion.
-> 
-> I am pretty sure that many users would agree with you on that but the
-> matter of fact is that a different approach has been chosen
-> historically. We can argue whether this has been a good or bad design
-> decision but I do not see that to change without a lot of fallouts. Btw.
-> a strong memory reservation approach can be found with hugetlb pages and
-> this one has turned out to be very tricky both from implementation and
-> userspace usage POV. Needless to say that it operates on a single
-> purpose preallocated memory pool and it would be quite reasonable to
-> expect the complexity would grow with more users of the pool which is
-> the general case for general purpose memory allocator.
+Your patches are missing a short changelog, so that reviewers can see=20
+what changed between versions. Anyway, I merged your patch into=20
+drm-misc-next now. Thanks for the fix.
 
-The history is very interesting and needs to be taken into
-consideration.  What drives me is to help myself and all other Linux
-user to run workloads like RDBMS reliable, even in modern environments
-like k8s which make use of memory cgroups.  I see a gain for the
-community to develop a reliable and easy available solution, even if my
-current approach might be amateurish and is not the right answer.  Could
-you elaborate on where you see "a lot of fallouts"?  overcommit_memory 2
-is only set when needed for the desired workload.
 
-If the gain is worth it one could implement an overcommit_memory 3 in
-order to set this behavior, overcommit_memory needs to be explicitly set
-by the sysadmin anyways.
+More generally speaking, the DP501 code needs a major refactoring. It's=20
+currently bolted onto the regular VGA connector code. It should rather=20
+be a separate connector or a DRM bridge. I always wanted to work on=20
+this, but don't have a device for testing. If I'd provide patches, would =
 
->> What do you think is necessary to get this to an approvable quality?
-> 
-> See my other reply.
+you be in a position to test them?
+
+Best regards
+Thomas
+
+
+> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>   drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++--------=
+-
+>   drivers/gpu/drm/ast/ast_drv.h   |  12 +++
+>   drivers/gpu/drm/ast/ast_main.c  |  11 ++-
+>   3 files changed, 125 insertions(+), 37 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_=
+dp501.c
+> index 88121c0e0..cd93c44f2 100644
+> --- a/drivers/gpu/drm/ast/ast_dp501.c
+> +++ b/drivers/gpu/drm/ast/ast_dp501.c
+> @@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr=
+, u32 size)
+>   	u32 i, data;
+>   	u32 boot_address;
+>=20
+> +	if (ast->config_mode !=3D ast_use_p2a)
+> +		return false;
+> +
+>   	data =3D ast_mindwm(ast, 0x1e6e2100) & 0x01;
+>   	if (data) {
+>   		boot_address =3D get_fw_base(ast);
+> @@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)=
+
+>   	u8 *fw_addr =3D NULL;
+>   	u8 jreg;
+>=20
+> +	if (ast->config_mode !=3D ast_use_p2a)
+> +		return false;
+> +
+>   	data =3D ast_mindwm(ast, 0x1e6e2100) & 0x01;
+>   	if (!data) {
+>=20
+> @@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
+>   	struct ast_private *ast =3D to_ast_private(dev);
+>   	u32 boot_address, offset, data;
+>   	u8 linkcap[4], linkrate, linklanes, maxclk =3D 0xff;
+> +	u32 *plinkcap;
+>=20
+> -	boot_address =3D get_fw_base(ast);
+> -
+> -	/* validate FW version */
+> -	offset =3D 0xf000;
+> -	data =3D ast_mindwm(ast, boot_address + offset);
+> -	if ((data & 0xf0) !=3D 0x10) /* version: 1x */
+> -		return maxclk;
+> -
+> -	/* Read Link Capability */
+> -	offset  =3D 0xf014;
+> -	*(u32 *)linkcap =3D ast_mindwm(ast, boot_address + offset);
+> -	if (linkcap[2] =3D=3D 0) {
+> -		linkrate =3D linkcap[0];
+> -		linklanes =3D linkcap[1];
+> -		data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklanes=
+);
+> -		if (data > 0xff)
+> -			data =3D 0xff;
+> -		maxclk =3D (u8)data;
+> +	if (ast->config_mode =3D=3D ast_use_p2a) {
+> +		boot_address =3D get_fw_base(ast);
+> +
+> +		/* validate FW version */
+> +		offset =3D AST_DP501_GBL_VERSION;
+> +		data =3D ast_mindwm(ast, boot_address + offset);
+> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1) =
+/* version: 1x */
+> +			return maxclk;
+> +
+> +		/* Read Link Capability */
+> +		offset  =3D AST_DP501_LINKRATE;
+> +		plinkcap =3D (u32 *)linkcap;
+> +		*plinkcap  =3D ast_mindwm(ast, boot_address + offset);
+> +		if (linkcap[2] =3D=3D 0) {
+> +			linkrate =3D linkcap[0];
+> +			linklanes =3D linkcap[1];
+> +			data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklane=
+s);
+> +			if (data > 0xff)
+> +				data =3D 0xff;
+> +			maxclk =3D (u8)data;
+> +		}
+> +	} else {
+> +		if (!ast->dp501_fw_buf)
+> +			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
+> +
+> +		/* dummy read */
+> +		offset =3D 0x0000;
+> +		data =3D readl(ast->dp501_fw_buf + offset);
+> +
+> +		/* validate FW version */
+> +		offset =3D AST_DP501_GBL_VERSION;
+> +		data =3D readl(ast->dp501_fw_buf + offset);
+> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1) =
+/* version: 1x */
+> +			return maxclk;
+> +
+> +		/* Read Link Capability */
+> +		offset =3D AST_DP501_LINKRATE;
+> +		plinkcap =3D (u32 *)linkcap;
+> +		*plinkcap =3D readl(ast->dp501_fw_buf + offset);
+> +		if (linkcap[2] =3D=3D 0) {
+> +			linkrate =3D linkcap[0];
+> +			linklanes =3D linkcap[1];
+> +			data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklane=
+s);
+> +			if (data > 0xff)
+> +				data =3D 0xff;
+> +			maxclk =3D (u8)data;
+> +		}
+>   	}
+>   	return maxclk;
+>   }
+> @@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, =
+u8 *ediddata)
+>   {
+>   	struct ast_private *ast =3D to_ast_private(dev);
+>   	u32 i, boot_address, offset, data;
+> +	u32 *pEDIDidx;
+>=20
+> -	boot_address =3D get_fw_base(ast);
+> -
+> -	/* validate FW version */
+> -	offset =3D 0xf000;
+> -	data =3D ast_mindwm(ast, boot_address + offset);
+> -	if ((data & 0xf0) !=3D 0x10)
+> -		return false;
+> -
+> -	/* validate PnP Monitor */
+> -	offset =3D 0xf010;
+> -	data =3D ast_mindwm(ast, boot_address + offset);
+> -	if (!(data & 0x01))
+> -		return false;
+> +	if (ast->config_mode =3D=3D ast_use_p2a) {
+> +		boot_address =3D get_fw_base(ast);
+>=20
+> -	/* Read EDID */
+> -	offset =3D 0xf020;
+> -	for (i =3D 0; i < 128; i +=3D 4) {
+> -		data =3D ast_mindwm(ast, boot_address + offset + i);
+> -		*(u32 *)(ediddata + i) =3D data;
+> +		/* validate FW version */
+> +		offset =3D AST_DP501_GBL_VERSION;
+> +		data =3D ast_mindwm(ast, boot_address + offset);
+> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)
+> +			return false;
+> +
+> +		/* validate PnP Monitor */
+> +		offset =3D AST_DP501_PNPMONITOR;
+> +		data =3D ast_mindwm(ast, boot_address + offset);
+> +		if (!(data & AST_DP501_PNP_CONNECTED))
+> +			return false;
+> +
+> +		/* Read EDID */
+> +		offset =3D AST_DP501_EDID_DATA;
+> +		for (i =3D 0; i < 128; i +=3D 4) {
+> +			data =3D ast_mindwm(ast, boot_address + offset + i);
+> +			pEDIDidx =3D (u32 *)(ediddata + i);
+> +			*pEDIDidx =3D data;
+> +		}
+> +	} else {
+> +		if (!ast->dp501_fw_buf)
+> +			return false;
+> +
+> +		/* dummy read */
+> +		offset =3D 0x0000;
+> +		data =3D readl(ast->dp501_fw_buf + offset);
+> +
+> +		/* validate FW version */
+> +		offset =3D AST_DP501_GBL_VERSION;
+> +		data =3D readl(ast->dp501_fw_buf + offset);
+> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)
+> +			return false;
+> +
+> +		/* validate PnP Monitor */
+> +		offset =3D AST_DP501_PNPMONITOR;
+> +		data =3D readl(ast->dp501_fw_buf + offset);
+> +		if (!(data & AST_DP501_PNP_CONNECTED))
+> +			return false;
+> +
+> +		/* Read EDID */
+> +		offset =3D AST_DP501_EDID_DATA;
+> +		for (i =3D 0; i < 128; i +=3D 4) {
+> +			data =3D readl(ast->dp501_fw_buf + offset + i);
+> +			pEDIDidx =3D (u32 *)(ediddata + i);
+> +			*pEDIDidx =3D data;
+> +		}
+>   	}
+>=20
+>   	return true;
+> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
+v.h
+> index e82ab8628..911f9f414 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.h
+> +++ b/drivers/gpu/drm/ast/ast_drv.h
+> @@ -150,6 +150,7 @@ struct ast_private {
+>=20
+>   	void __iomem *regs;
+>   	void __iomem *ioregs;
+> +	void __iomem *dp501_fw_buf;
+>=20
+>   	enum ast_chip chip;
+>   	bool vga2_clone;
+> @@ -325,6 +326,17 @@ int ast_mode_config_init(struct ast_private *ast);=
+
+>   #define AST_MM_ALIGN_SHIFT 4
+>   #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
+>=20
+> +#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
+> +#define AST_DP501_FW_VERSION_1		BIT(4)
+> +#define AST_DP501_PNP_CONNECTED		BIT(1)
+> +
+> +#define AST_DP501_DEFAULT_DCLK	65
+> +
+> +#define AST_DP501_GBL_VERSION	0xf000
+> +#define AST_DP501_PNPMONITOR	0xf010
+> +#define AST_DP501_LINKRATE	0xf014
+> +#define AST_DP501_EDID_DATA	0xf020
+> +
+>   int ast_mm_init(struct ast_private *ast);
+>=20
+>   /* ast post */
+> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
+ain.c
+> index 0ac3c2039..3976a2587 100644
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -99,7 +99,7 @@ static void ast_detect_config_mode(struct drm_device =
+*dev, u32 *scu_rev)
+>   	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+>   		/* Double check it's actually working */
+>   		data =3D ast_read32(ast, 0xf004);
+> -		if (data !=3D 0xFFFFFFFF) {
+> +		if ((data !=3D 0xFFFFFFFF) && (data !=3D 0x00)) {
+>   			/* P2A works, grab silicon revision */
+>   			ast->config_mode =3D ast_use_p2a;
+>=20
+> @@ -411,6 +411,7 @@ struct ast_private *ast_device_create(const struct =
+drm_driver *drv,
+>   		return ast;
+>   	dev =3D &ast->base;
+>=20
+> +	dev->pdev =3D pdev;
+>   	pci_set_drvdata(pdev, dev);
+>=20
+>   	ast->regs =3D pci_iomap(pdev, 1, 0);
+> @@ -450,6 +451,14 @@ struct ast_private *ast_device_create(const struct=20
+drm_driver *drv,
+>   	if (ret)
+>   		return ERR_PTR(ret);
+>=20
+> +	/* map reserved buffer */
+> +	ast->dp501_fw_buf =3D NULL;
+> +	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
+> +		ast->dp501_fw_buf =3D pci_iomap_range(dev->pdev, 0, dev->vram_mm->vr=
+am_size, 0);
+> +		if (!ast->dp501_fw_buf)
+> +			drm_info(dev, "failed to map reserved buffer!\n");
+> +	}
+> +
+>   	ret =3D ast_mode_config_init(ast);
+>   	if (ret)
+>   		return ERR_PTR(ret);
+> --
+> 2.18.4
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--8qCX6uppK8rnciD4GO6kmb5p7e0PLlmVm--
+
+--srJtaTwXFNDP0DD96H2XQtdUKY4K48tYC
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCH7xUFAwAAAAAACgkQlh/E3EQov+A6
+XxAAxxthqqoX6DngW2u2+QEOGJd+xpO9aTH4mCzCKPzEcW1t7PEx441DE7Cq8OB04H+I0o7X5Gar
+qSQTdwbkldXSD4QfwL2jhbsLrGaNiAai9UJY+l+vZL0F/H9uUhQmJdVwaUfIBVpIqRwsexNzYDd/
+bOdqxAK96C2iIEtHBnccontTabXpktreghbn/1kQV3DiHix36uq7uJ6/HJjolZG08BdCtYP7h9+7
+4xYmygf4a0Gvoq6+3VM2yELD/U06CKCg7Ja+xlST58b0kTcCs7pBHfNImq2EHcY+uAb5XLpL/H0G
+GvrTesxlHKYVqZl3g5FThNXxTkoyF9SL2SW89bR1jT+2Jlp7nh1wVq6d0OswvQm59oOURR/6n7/h
+22ymuYbcETgnpem8YS1Sp7WYmc9hAaQpDJJXIMpu3gBCMlH5KjZIQQBpaSNkfm/kmgaNDxZ8ywId
+B67sExT35VtHo/wsdWVJ8IzcRroQgoc/KVbiCvgj2+Y0vQmcpNsgBMpgbQrhVVUqulvj8Acg7g2i
+53DwAhgAPZDAuhbFFeK1Gp15VEnSjwwgkf3EmuQBFPx7XYjwtf0x3QrYJQSPghmJyILpEX/TkFjD
+VoNw2L0t11XQ9PwdkRJztiYepitQD88U75Qh/UAB7GzB65Yje3exVn3PvGGkrIOfdn2GwvKTrUpV
+R3Y=
+=KcS8
+-----END PGP SIGNATURE-----
+
+--srJtaTwXFNDP0DD96H2XQtdUKY4K48tYC--
