@@ -2,159 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792DC36BD8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FAE36BD8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbhD0CzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:55:16 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:51136 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbhD0CzO (ORCPT
+        id S234303AbhD0C4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhD0C4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:55:14 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13R2sQE7114760;
-        Tue, 27 Apr 2021 02:54:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=v2djfT00+wZTk76aEJ6mLIt9ruPJ8adwKrnWLn98ThU=;
- b=xJA1iwEFkEFNn2A6I6zu5i5atQNDZzQxaG+6Ue95hLeDtgxkgfwCX6xoGsLobBuAC8Zj
- v9d3lEoe/M9cDuf7KA/Z+LdC+A9WLIjQHEIBdn4SBXpmG9y89n6IdqgUfT2eUGly2R8Z
- QOc4oxGHqLoRL+SgcYE4hqhpn9SF814Ip4A1PvyxT5WbERLG5E//J1c78IyvHlDmbGyR
- pZLDiManRVzxMFiIhz+Exg0BdITh1CMKviGn865aI4cQ/uVx0ldYEZpPgGIqeXYJuRBv
- Mqs1xnPHHUquWpFz/Pvk03cOWbqyr40nFDz7QclX3KV0vfINySoIuPYB3BkPsXWaqIuM bA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 385afpv02q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Apr 2021 02:54:27 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13R2oR75115251;
-        Tue, 27 Apr 2021 02:54:27 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by aserp3030.oracle.com with ESMTP id 3849ce2p1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Apr 2021 02:54:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ge1n9swTkBzUnwZHJTPOHyUpPqX4i9LgezisdhLqNxvMD7NjI6d4odmeNgIVu39GLkaM9yRFGVCUjh9CTOJpP8ICCUA554oKbAeCR+huCqYvt5UHjmtQCnAt1BuLZXNBbsEM/Jcj/ZkoCrv2WMnuLlYmORP45K+7APB/r90rFQ4x1wmBPWxAuzGZ7tgWj+wDT1PRm2IYhnXucvpJWB428QnRboV1irSx7LdW4GKlFN4n94veM/NPNUlZgG0kwiK9mpYZqJY08TOh1g9ep0MxphmKYTmcnZ8vgQ9GII2WJqqIc8W7paPJzQdHF1AdhfkWVSVn43oV6YpvKTium1UaKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v2djfT00+wZTk76aEJ6mLIt9ruPJ8adwKrnWLn98ThU=;
- b=dlElsgeEW1j5WAeuNvNesEz2M3lfoYC/yWckzhTWMSl87F12q8PbQ70Prvc4lnSMsIMo9t4br09mAG6ZO8xxrnuqQp+7ycXBZ2ZAEboRX0wl4qOXnCMXRELm7q2DY/susdTZehyrNYiN0TWbEBUViyj8WbR+AYrBONqfnRKAp+Uj/WB8xh+sbOkFuF6xyNy5j0ZOXvSPRqus+xGcqAwsFvnrVmaMDI5nO88+s2dLrbm7UB0777SCoOofdHXkG4qIDHFgjeki/QVN98BoT/iOjlnHkfNZgRnoSIOkkG8HeA2QADbt14vpSieA5MeVk6+SFW0tGP8qeeFhSc4Wiz0w/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 26 Apr 2021 22:56:07 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 096F0C061574;
+        Mon, 26 Apr 2021 19:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v2djfT00+wZTk76aEJ6mLIt9ruPJ8adwKrnWLn98ThU=;
- b=Lxt5tJv53v70RaTZV9xI9Td3okG6/WJsqVMWa6KI7Z49jMLzUo6cLeGVbmJLimSzpbYT65E50V9U1yqnk+VHFojgs30ja7pm3DA6kGprlD6Ay5kbQL9QJfDs1Iez4Jy9G2GDgHdljLOvB6sRU2cWmqvEiWI/ut4Oxh/otBfLVho=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4439.namprd10.prod.outlook.com (2603:10b6:510:41::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Tue, 27 Apr
- 2021 02:54:25 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688%4]) with mapi id 15.20.4065.027; Tue, 27 Apr 2021
- 02:54:25 +0000
-To:     Colin King <colin.king@canonical.com>
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: megaraid_mbox: remove redundant initialization of
- pointer mbox
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq17dkoo2so.fsf@ca-mkp.ca.oracle.com>
-References: <20210420104919.376734-1-colin.king@canonical.com>
-Date:   Mon, 26 Apr 2021 22:54:22 -0400
-In-Reply-To: <20210420104919.376734-1-colin.king@canonical.com> (Colin King's
-        message of "Tue, 20 Apr 2021 11:49:19 +0100")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SA0PR11CA0190.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::15) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID;
+        bh=L4kfcrc85nJywNTxQJ9ULzn904QQW3nv4pDzdVyLdWA=; b=IM09J8pKq1VV8
+        ofMedyYnlwj2tQYrRL0LnIYLyQrg2BcbupMuXBG3w/b2EEyk3zkA4q06GLKCPWQs
+        WpG4LjCNh/5ocWM92Nb6kgkyGrTqAmXVknzNYpQrN3WTYP6+4SlRFlOW/qm/cgYn
+        CZrssgniRRhuHYTXLkE6lLgLP7ayow=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Tue, 27 Apr
+ 2021 10:55:06 +0800 (GMT+08:00)
+X-Originating-IP: [104.245.96.151]
+Date:   Tue, 27 Apr 2021 10:55:06 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     benve@cisco.com, _govind@gmx.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [BUG] ethernet:enic: A use after free bug in enic_hard_start_xmit
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+X-SendMailWithSms: false
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA0PR11CA0190.namprd11.prod.outlook.com (2603:10b6:806:1bc::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22 via Frontend Transport; Tue, 27 Apr 2021 02:54:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4fc38d87-7e68-4830-f564-08d90927c45b
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4439:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4439E6DADB4F9208F030C7028E419@PH0PR10MB4439.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XcqSlyptkqfKF10EVuX5xuUeVBs+q+aFgg3BMuyKF6cQN8qMMVXujWRGZJNgucPMoODWy+t40VUFckHiugB0lpC5m74y3t8m3Hhy5JxuU+L98Qkyo2yLgYS3byi2QWOGMiqrjZ6ImcLqyjtwvyWqC1SH/7aFg7XkSTMggk9PACoJy7p0So0dV0NnARiuSTQJX8CQR6+n2ecl/qOpVqPp6IaCplEQHfe3QJccveEIXRKeIFAogngNI79OqkTc0FWswRTfbwE0rFToeI57DiQhbG8qr/MHIgmCqAEJIKUu57vnJOGWpsLKE64Ei8faVg5VUz3xpMIHuCPg+SygCSR5WpbKSxLsYn1B1rfyAsfSltlrjkmhYwXSunnHKW2l2Jt4V/wGEUBHjJa1UoNAwV0vVMlCb636UQEvkNyN6bFjmzzHEHnMbODxkoto3dVVX8/3gvnvioHUgtgNN61PnqJawqG7dzm4RW6C27OwNIcyF6grF7MjAt304hy3Jl2V6VfdMe+HvX4f9nQZ7nAvOAZ+gcdxjPpa0yiYHVxc7u29q+Ysgf4fLn7andEni5AMXc5vfTaFV6JSUawOoIXQNodFXLrXnqOGT3Zh/c0uJxgtCQGtWqL7bCAVbavs4W2JeMZItg1f98R7rT/xlNzQen9VSOl+++zEpRNn8y7rO9wwwds=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(39860400002)(346002)(396003)(2906002)(8936002)(4326008)(8676002)(86362001)(66476007)(36916002)(956004)(5660300002)(6916009)(66556008)(186003)(16526019)(38100700002)(316002)(38350700002)(66946007)(26005)(55016002)(7696005)(478600001)(52116002)(54906003)(558084003)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bo/bIsosIlo3iQFuSP4ELfPmUnoGFhqSe3/0eTXcgIJL/FC+mZcQkolsBSQg?=
- =?us-ascii?Q?GDdH+PocpoNAURLIWBSBaVrqjbmIHOai4gXvMnj6ge8niT+VcRm11YkEDSrh?=
- =?us-ascii?Q?0bGJ5fmOn52TzkPmskW/gCLbTGePDRTfA82glpNdnUxpcnDxj3Rxjqoy4vu5?=
- =?us-ascii?Q?E1AcTqRuZ1JXAmdIp9wMBisZF2b7T3t3goYq5t795908P8q6McczTw1NnU1e?=
- =?us-ascii?Q?TziSzu7wfmomdH/7NZdTkj8zVJHjjeEqySAVJE/ySpzYXUTSxperNcGKDrNO?=
- =?us-ascii?Q?1sNJGR3Nm2zhYXQoMq0RnrNy1YTMVEWiFoK9CGOW/9taVP4t+/9K8X+8njFZ?=
- =?us-ascii?Q?imwWnOpP2126lz8ZttcfoqvV91rIQrEGAFZGLcjLSc4Cpt103NA6BJTjOfZq?=
- =?us-ascii?Q?ziKtNLSwoFKF06CV3CIGjsTUAnXAL5CsqYJe3Xb+HJNIVGlvdr3p6/hwqxav?=
- =?us-ascii?Q?JLtg6Q43ZL2N5+xhbowIHFSTca0dAqVCcfe8yVqAQwUFPI1/L2k0cUhso3Qn?=
- =?us-ascii?Q?GlK8zEcgYweyOzoj1Jmsab+qrvLGn9IKwZkdUCsNJLk2ZOc3lSQSeLYqMh7d?=
- =?us-ascii?Q?iAvGxxMHR3HM58M6lVD4NXyusE74D3WRoxy5tO9alVa+ULTZiRwCVqVCrlBy?=
- =?us-ascii?Q?TaIhfTeHzIegOdouX+xOSw09I6XzyhCqzuvah/mceVktpeoNESrdDk3g4qji?=
- =?us-ascii?Q?smCwsSNY0KB7BE+rQEKNJ4EJMy6mr0R8oBcrK3ideOOVJCGaKQqqVeHcQ7Z3?=
- =?us-ascii?Q?muP7fpV6GVGxexP0HsNTIc4neY+yJKBqz5GzOKQmUyzBJ8PYXz0u9uG/RMn1?=
- =?us-ascii?Q?QMMqgpOHdX5O2ho6jUurZdckQKtHrYMpz5U7I1LldaOKNAT3KBe8m030DnF4?=
- =?us-ascii?Q?kdoTdsHGdIOSwWbPvZttu2ntvNuQnfyJZYOcY6wdO30tpq3dSsbewNtse65K?=
- =?us-ascii?Q?gBcH/4b3hGKSkoWlG7CEnmtpOrpl5MA55YzEpORSQ3b4dvaYzNhOTKcuOD3j?=
- =?us-ascii?Q?i5vN2ZRVEiVFN2iC2/9zltjpnVUiQ5eF9ex9Ze9jwbr5t8WCFT2Zr7sS2rLZ?=
- =?us-ascii?Q?k1kSzFTTYOTyWrm6JvluCJulbC5JsWdL2upUG78fxC5LISKRE3uVurR35JSm?=
- =?us-ascii?Q?BIWHFbGC311Yw1wy9nDgMI630Cifg3ga418pv0rO9QK7m1OWsn4Yg3CXm4Ml?=
- =?us-ascii?Q?h+z4+OV0cpzBXI+kyCaZnGIuTe/cHVOkwj7moXwf2FlB9Xmr5tU6sTTfM/BB?=
- =?us-ascii?Q?fkOBqXBAEGK1xfAnJfED2wZolJUTFrTpHiUIRRm8/X07VeU/A9nMRO4czk1s?=
- =?us-ascii?Q?D4bPmmpEILuEROZ/UKkU5DKN?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fc38d87-7e68-4830-f564-08d90927c45b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 02:54:25.3595
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lxlTbuFGGdNHe+YbpCRx/2Ta/Y6Zo9Jnk+7f0PCOmkBk+roZh8lvxvYoEseX3lj/UsS/bazDCrXgIqWjJaPl9dcVahhdKFrY6jQWpC2hrfk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4439
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9966 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- adultscore=0 mlxscore=0 spamscore=0 phishscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104270018
-X-Proofpoint-ORIG-GUID: QRq2HTMirWgx1mzPxiE5-CoMuhCfWdV5
-X-Proofpoint-GUID: QRq2HTMirWgx1mzPxiE5-CoMuhCfWdV5
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9966 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
- clxscore=1011 suspectscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104270019
+Message-ID: <65becad9.62766.17911406ff0.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygDHeO4KfYdgmhxPAA--.1W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsEBlQhn6cdfAABsl
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, maintainers.
+    Our code analyzer reported a uaf bug, but it is a little
+difficult for me to fix it directly.
 
-Colin,
+File: drivers/net/ethernet/cisco/enic/enic_main.c
+In enic_hard_start_xmit, it calls enic_queue_wq_skb(). Inside
+enic_queue_wq_skb, if some error happens, the skb will be freed
+by dev_kfree_skb(skb). But the freed skb is still used in 
+skb_tx_timestamp(skb).
 
-> The pointer mbox is being initialized with a value that is never read
-> and it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
+```
+	enic_queue_wq_skb(enic, wq, skb);// skb could freed here
 
-Applied to 5.14/scsi-staging, thanks!
+	if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
+		netif_tx_stop_queue(txq);
+	skb_tx_timestamp(skb); // freed skb is used here.
+```
+Bug introduced by fb7516d42478e ("enic: add sw timestamp support").
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks for your time, looking forwarding to your reply.
+Lv Yunlong <lyl2019@mail.ustc.edu.cn>
