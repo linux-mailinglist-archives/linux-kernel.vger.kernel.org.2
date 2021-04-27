@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0A536CBF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8C436CBF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbhD0Tqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235661AbhD0Tqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:46:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E71C6023B;
-        Tue, 27 Apr 2021 19:45:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619552759;
-        bh=xLX5Y1/h9Ll5Xq3l/iKgtd536wc5fsuPUiC9i35GC2E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r4uY2em21Cu3E3S8kfddwM0mxkRxB9zBBQRGyyb7mSCF9MrLOo+kvN00n9VCLj8WN
-         8c3ZCrGMVzcdnz8Ms05Uksdy6/xGONCIhNaAdG5F7Qw0ZEJP99TsPjg/FERUtkddZ1
-         hjY0xnBpwNzPmkAWx+bHwgxPHGE/ksoIXzqLPo6otOLWj2s8UE4LMdUyiO5kpfZwXy
-         bObx/C9cMN5fjE//6/FrvYX6jU2sn+PR8/ZF17cxVNSJJDtT+eX6KiBZEj8an4eIcG
-         7ic2zr4fZW505hvMnXlekVtU+tM7QevYQI10b94RGuQ2TmwoPXdCRC9ECebHxTA09q
-         UwcJoHFyeB/hw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Balazs Scheidler <bazsi77@gmail.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] netfilter: nft_socket: fix build with CONFIG_SOCK_CGROUP_DATA=n
-Date:   Tue, 27 Apr 2021 21:45:19 +0200
-Message-Id: <20210427194528.2325108-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210427194528.2325108-1-arnd@kernel.org>
-References: <20210427194528.2325108-1-arnd@kernel.org>
+        id S238666AbhD0Tq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235661AbhD0TqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:46:25 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00712C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:45:41 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id t22so7847125pgu.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=POiC7h/F8qpkmD5ylKPAvYAOcZ8fi4a52UGHvA+ZtQ4=;
+        b=TeJuSOXojjbA1rVQyoZwAOnynby0MYLM2ZDasr1NI4HtlJ0bAOOggGnpJkFpmAidHM
+         BNmz4OwVy5fQbJBJ3VBLTcUNUdNg+RtN8KrvMoKILiN/Qa5AJAvd0ejQBKL2n5YQARxM
+         zAocbM+Ji7OLgNvuVRKqJsONC9x5DGCDy5eXIE8JeY96PqdvcZjdUsGGtNkIE0+926QF
+         5UH7J6Icn6E3WPSfvn6LlmVvg1+Uj5OfK5hIVXQILATxLKsHv5yEZk8nfHme7AGBb5tK
+         lqw4T4ae9B307cVNcykwyeGQE88RVwL674HBbl0A/261/FYpWsoiFlKcFq1g2x8mEF+/
+         ZXBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=POiC7h/F8qpkmD5ylKPAvYAOcZ8fi4a52UGHvA+ZtQ4=;
+        b=UVWVfZ09uLvlCUdtUhu/SsM/EUpNRqhKzO9XL083lvI29rQ8O3D8KTg4qRcySNrslN
+         ZCk0S9x4JwQ7FMR5Rl9WVAcRnX1lGW8k3Fj5wkVzXW2PTLIAfGONDhsD5uvYPL7gtXow
+         Fox3nnV4BAbuDRgb7TWB/it4Eb8fSyhJIYKigPs9r2b+gwWHNHU1uDVVmvxOwxUFhvRz
+         r+R3S3HcMwu2wt2VElg//MVGmDZ9DSt3WX6A1RILQM/LP1kCHlEoTfVnwylbS+3qJfwo
+         jKB05L863g0lBNNRxfwIG2oblVjvLWQlRFYh+xrY63ty7mbjNNCZn2Q/UbeiWCNuBcUa
+         fx2A==
+X-Gm-Message-State: AOAM5320IkuMbjsP49vcXEyg3AqusFc89uczErNUTXAgfDRZyI3IBomz
+        bL0D2eqdrM0ec9vKQ8tpCEg=
+X-Google-Smtp-Source: ABdhPJzvWZFCer3sa4EycqmukaIrqOzHyO/TpDSj7iuOddThtjgV7E5pj7tkfJu+kXwrYC8GLg9ryw==
+X-Received: by 2002:a05:6a00:24cd:b029:27c:bbd5:1660 with SMTP id d13-20020a056a0024cdb029027cbbd51660mr296433pfv.40.1619552741431;
+        Tue, 27 Apr 2021 12:45:41 -0700 (PDT)
+Received: from user ([2001:4490:4409:fe15:9fd0:fa2c:4efc:28b5])
+        by smtp.gmail.com with ESMTPSA id n11sm3392269pff.96.2021.04.27.12.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 12:45:40 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 01:15:33 +0530
+From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        hello@bryanbrattlof.com, hdegoede@redhat.com,
+        saurav.girepunje@google.com, john.oldman@polehill.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: rtl8723bs: os_dep: remove multiple return
+Message-ID: <20210427194533.GC11046@user>
+References: <20210418173233.GA59153@user>
+ <20210420110609.GD1981@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420110609.GD1981@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Apr 20, 2021 at 02:06:09PM +0300, Dan Carpenter wrote:
+> On Sun, Apr 18, 2021 at 11:02:33PM +0530, Saurav Girepunje wrote:
+> > on sdio_intf.c rtw_sdio_suspend call we have multiple
+> > return which can replace by goto exit. As in all the places
+> > return value is 0.
+> > 
+> > Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
+> > ---
+> >  drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+> > index a9a9631dd23c..3e566cf97f6e 100644
+> > --- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+> > +++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+> > @@ -445,14 +445,17 @@ static int rtw_sdio_suspend(struct device *dev)
+> >  	struct debug_priv *pdbgpriv = &psdpriv->drv_dbg;
+> >  
+> >  	if (padapter->bDriverStopped)
+> > -		return 0;
+> > +		goto exit;
+> >  
+> >  	if (pwrpriv->bInSuspend) {
+> >  		pdbgpriv->dbg_suspend_error_cnt++;
+> > -		return 0;
+> > +		goto exit;
+> >  	}
+> >  
+> > -	return rtw_suspend_common(padapter);
+> > +	rtw_suspend_common(padapter);
+> 
+> Also it's weird that your previous patch made rtw_suspend_common()
+> return zero unconditionally.  But now we're modifying the only caller to
+> not check the return.  Just make rtw_suspend_common() void and change
+> this to:
+> 
+> 	rtw_suspend_common(padapter);
+> 
+> 	return 0;
+> 
+> regards,
+> dan carpenter
+>
 
-In some configurations, the sock_cgroup_ptr() function is not available:
-
-net/netfilter/nft_socket.c: In function 'nft_sock_get_eval_cgroupv2':
-net/netfilter/nft_socket.c:47:16: error: implicit declaration of function 'sock_cgroup_ptr'; did you mean 'obj_cgroup_put'? [-Werror=implicit-function-declaration]
-   47 |         cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-      |                ^~~~~~~~~~~~~~~
-      |                obj_cgroup_put
-net/netfilter/nft_socket.c:47:14: error: assignment to 'struct cgroup *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-   47 |         cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-      |              ^
-
-Change the caller to match the same #ifdef check, only calling it
-when the function is defined.
-
-Fixes: e0bb96db96f8 ("netfilter: nft_socket: add support for cgroupsv2")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I don't actually know what the right fix is for this, I only checked
-that my patch fixes the build failure. Is is possible that the function
-should always be defined.
-
-Please make sure you review carefully before applying.
----
- net/netfilter/nft_socket.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
-index f9c5ff6024e0..d601974c9d2e 100644
---- a/net/netfilter/nft_socket.c
-+++ b/net/netfilter/nft_socket.c
-@@ -34,7 +34,7 @@ static void nft_socket_wildcard(const struct nft_pktinfo *pkt,
- 	}
- }
- 
--#ifdef CONFIG_CGROUPS
-+#ifdef CONFIG_SOCK_CGROUP_DATA
- static noinline bool
- nft_sock_get_eval_cgroupv2(u32 *dest, const struct nft_pktinfo *pkt, u32 level)
- {
-@@ -106,7 +106,7 @@ static void nft_socket_eval(const struct nft_expr *expr,
- 		}
- 		nft_socket_wildcard(pkt, regs, sk, dest);
- 		break;
--#ifdef CONFIG_CGROUPS
-+#ifdef CONFIG_SOCK_CGROUP_DATA
- 	case NFT_SOCKET_CGROUPV2:
- 		if (!nft_sock_get_eval_cgroupv2(dest, pkt, priv->level)) {
- 			regs->verdict.code = NFT_BREAK;
--- 
-2.29.2
-
+Sure, rtw_suspend_common always return 0. It should be void.
+I will merge and resend the patch.
