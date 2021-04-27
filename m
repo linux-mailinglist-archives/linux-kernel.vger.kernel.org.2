@@ -2,114 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119E036BDA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F6036BDA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhD0DI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 23:08:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16491 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhD0DI1 (ORCPT
+        id S233824AbhD0DOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 23:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhD0DOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 23:08:27 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FTmph64zqzvTF3;
-        Tue, 27 Apr 2021 11:05:16 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 27 Apr 2021 11:07:34 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2] f2fs: compress: remove unneed check condition
-Date:   Tue, 27 Apr 2021 11:07:30 +0800
-Message-ID: <20210427030730.90331-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 26 Apr 2021 23:14:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B52C061574;
+        Mon, 26 Apr 2021 20:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=CgpK97dwQ7jxO/6Xiazk1B15iaHiHK4/6xEOZQpL8nc=; b=esSVxOBZiXjZRu/R53mWWIlSVr
+        qTS4lxp3siZv6iEuYOLEAvQKD3PFP7ycbteCBLz7722M7K2ljd8WFZrPE/4q+xKwbfsWLUaju91Dl
+        CxLfS0yvfW4nK1zOWgcbKwyiFOWG1Z0kWpbUrk60dh1hFoG7YZ2nDopoHwhkvYioK6f6rU22kme7d
+        5xixmRVko7OY6QqUIhhgP5tv5b5QE+t2q+RkBIlIi6zdjpu14XQxqhLwvqhHDExSNvbeg7MzehRrL
+        ZEeNe0oD9qZApHO/w7/zruuHpyHJOXOEUGOaud4gyW2/YeUiZ6Y4LpwUKLVoQpFHBBySLerbda9Ne
+        zN59SHGg==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=casper.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbEAV-006PF2-A5; Tue, 27 Apr 2021 03:13:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org
+Subject: [PATCH] clk: <linux/clk.h>: correct clk_get_parent() documentation
+Date:   Mon, 26 Apr 2021 20:13:42 -0700
+Message-Id: <20210427031342.5333-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes as below:
-- remove unneeded check condition in __cluster_may_compress()
-- rename __cluster_may_compress() to cluster_has_invalid_data() for
-better readability
-- add cp_error check in f2fs_write_compressed_pages() like we did
-in f2fs_write_single_data_page()
+Make the kernel-doc return value agree with both the stub implementation
+in <linux/clk.h> and the non-stub function in drivers/clk/clk.c.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-clk@vger.kernel.org
 ---
-v2:
-- rename function for better readability
-- add cp_error check in f2fs_write_compressed_pages()
- fs/f2fs/compress.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+There are several drivers that call clk_get_parent() and use its
+return value as though it returns an ERR_PTR(). I am working on a
+patch series to fix those.
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 6e46a00c1930..53f78befed8f 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -888,9 +888,8 @@ bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index)
- 	return is_page_in_cluster(cc, index);
- }
- 
--static bool __cluster_may_compress(struct compress_ctx *cc)
-+static bool cluster_has_invalid_data(struct compress_ctx *cc)
- {
--	struct f2fs_sb_info *sbi = F2FS_I_SB(cc->inode);
- 	loff_t i_size = i_size_read(cc->inode);
- 	unsigned nr_pages = DIV_ROUND_UP(i_size, PAGE_SIZE);
- 	int i;
-@@ -898,18 +897,13 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
- 	for (i = 0; i < cc->cluster_size; i++) {
- 		struct page *page = cc->rpages[i];
- 
--		f2fs_bug_on(sbi, !page);
--
--		if (unlikely(f2fs_cp_error(sbi)))
--			return false;
--		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
--			return false;
-+		f2fs_bug_on(F2FS_I_SB(cc->inode), !page);
- 
- 		/* beyond EOF */
- 		if (page->index >= nr_pages)
--			return false;
-+			return true;
- 	}
--	return true;
-+	return false;
- }
- 
- static int __f2fs_cluster_blocks(struct compress_ctx *cc, bool compr)
-@@ -985,7 +979,7 @@ static bool cluster_may_compress(struct compress_ctx *cc)
- 		return false;
- 	if (unlikely(f2fs_cp_error(F2FS_I_SB(cc->inode))))
- 		return false;
--	return __cluster_may_compress(cc);
-+	return !cluster_has_invalid_data(cc);
- }
- 
- static void set_cluster_writeback(struct compress_ctx *cc)
-@@ -1232,6 +1226,12 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 	loff_t psize;
- 	int i, err;
- 
-+	/* we should bypass data pages to proceed the kworkder jobs */
-+	if (unlikely(f2fs_cp_error(sbi))) {
-+		mapping_set_error(cc->rpages[0]->mapping, -EIO);
-+		goto out_free;
-+	}
-+
- 	if (IS_NOQUOTA(inode)) {
- 		/*
- 		 * We need to wait for node_write to avoid block allocation during
--- 
-2.29.2
+ include/linux/clk.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+--- linux-next-20210426.orig/include/linux/clk.h
++++ linux-next-20210426/include/linux/clk.h
+@@ -744,8 +744,8 @@ int clk_set_parent(struct clk *clk, stru
+  * clk_get_parent - get the parent clock source for this clock
+  * @clk: clock source
+  *
+- * Returns struct clk corresponding to parent clock source, or
+- * valid IS_ERR() condition containing errno.
++ * Return: &struct clk corresponding to parent clock source, or
++ * %NULL if clk is %NULL.
+  */
+ struct clk *clk_get_parent(struct clk *clk);
+ 
