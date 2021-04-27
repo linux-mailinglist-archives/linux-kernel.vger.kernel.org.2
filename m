@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBD736C997
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F3836C996
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237727AbhD0QkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:40:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:54874 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237685AbhD0QkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237708AbhD0QkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Apr 2021 12:40:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92E80D6E;
-        Tue, 27 Apr 2021 09:39:35 -0700 (PDT)
-Received: from bogus (unknown [10.57.61.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8DE463F73B;
-        Tue, 27 Apr 2021 09:39:33 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 17:39:13 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by
- default""
-Message-ID: <20210427163913.svx2w2mxo4w3is32@bogus>
-References: <20210302211133.2244281-1-saravanak@google.com>
- <20210302211133.2244281-4-saravanak@google.com>
- <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
- <CAGETcx_ayXd1uDR6WHWxLmskYwOSjyynNi3Rt8irRUrfnr266w@mail.gmail.com>
- <23ab7a11-330c-4d3d-00c1-984c5248464e@gmail.com>
- <20210427074807.GI43717@e120937-lin>
- <CA+-6iNz_kL0DnbRb0A=WSSLK0mnqw35S47TDXq5rhwXL_VWdPg@mail.gmail.com>
- <20210427141116.GJ43717@e120937-lin>
- <20210427151042.j7hku7pxqz56uyt6@bogus>
- <0887ce92-e9d8-47ec-0077-4c1f2fd46f87@gmail.com>
+Received: from mail.kernel.org ([198.145.29.99]:60940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237450AbhD0QkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:40:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B0E6613EA;
+        Tue, 27 Apr 2021 16:39:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619541571;
+        bh=eAoA7nn9uHMS+HdlmGEPB1MJqO8agIH1aMugwNGZwkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bqXI5izwuv+XdEROF/iOr0mpSaju2Uw3slLLUpUETltAxtHYBUfGoCQIEmtbpuY5A
+         S8NlLfV0E5ghOuUBh8hHsCfaZA1WvB8nlrSjkuan6d+KQDQwug5aUiRgffZEZw6oGf
+         EI5nLEQHhG/uykTYQrISMN9EL+U95YUQNnUJI8Nc=
+Date:   Tue, 27 Apr 2021 18:39:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Qiushi Wu <wu000273@umn.edu>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 034/190] Revert "efi/esrt: Fix reference count leak in
+ esre_create_sysfs_entry."
+Message-ID: <YIg+QUwh+wQze4+Z@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-35-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0887ce92-e9d8-47ec-0077-4c1f2fd46f87@gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20210421130105.1226686-35-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 09:24:55AM -0700, Florian Fainelli wrote:
+On Wed, Apr 21, 2021 at 02:58:29PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 4ddf4739be6e375116c375f0a68bf3893ffcee21.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Qiushi Wu <wu000273@umn.edu>
+> Cc: https
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/firmware/efi/esrt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/efi/esrt.c b/drivers/firmware/efi/esrt.c
+> index d5915272141f..e3d692696583 100644
+> --- a/drivers/firmware/efi/esrt.c
+> +++ b/drivers/firmware/efi/esrt.c
+> @@ -181,7 +181,7 @@ static int esre_create_sysfs_entry(void *esre, int entry_num)
+>  		rc = kobject_init_and_add(&entry->kobj, &esre1_ktype, NULL,
+>  					  "entry%d", entry_num);
+>  		if (rc) {
+> -			kobject_put(&entry->kobj);
+> +			kfree(entry);
+>  			return rc;
+>  		}
+>  	}
+> -- 
+> 2.31.1
+> 
 
-[...]
+Looks correct so I'm dropping the revert.
 
-> This is a self inflicted problem that we have in that the bootloader
-> provides a Device Tree to the kernel which is massaged in different ways
-> and intends to stay backwards compatible as much as possible. And indeed
-> after removing the 'mboxes' property gets us going with fw_devlink=on.
->
-
-I assume the bootloader checks the presence of SMC support and modifies
-the DT node accordingly. Can't it remove the mbox properties as it make
-no sense with SMC compatible ? However ...
-
-> >
-> > 2. IIUC, the fw_devlink might use information from DT to establish the
-> >    dependency and having mailbox information in this context may be
-> >    considered wrong as there is no dependency if it is using SMC.
->
-> Right, unfortunately, short of having some special casing for SCMI and
-> checking that if we have both an "arm,smc-id" and "mboxes" phandle we
-> should prefer the former, there is not probably much that can be done
-> here. Do we want to do that?
-
-I *think* we could do that in the SCMI drivers, but:
-1. I am not sure if that helps fw_devlinks if they are deriving the info
-   purely based on DT
-2. I am also afraid that someone might come up with exactly opposite
-   requirement that let us prefer mailbox over SMC as they would use
-   SMC only if h/w lacks proper mailbox support. I fear that we will get
-   into rabbit hole trying to do something like that.
-
---
-Regards,
-Sudeep
+greg k-h
