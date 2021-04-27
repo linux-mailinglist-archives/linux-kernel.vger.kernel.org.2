@@ -2,207 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A1936C216
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EFB36C21A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbhD0Ju5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 05:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
+        id S235299AbhD0Jvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 05:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhD0Juz (ORCPT
+        with ESMTP id S235078AbhD0Jvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 05:50:55 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80329C061574;
-        Tue, 27 Apr 2021 02:50:12 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lbKM1-000e2r-08; Tue, 27 Apr 2021 11:50:05 +0200
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-wireless@vger.kernel.org
-Cc:     Harald Arnesen <harald@skogtun.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>, stable@vger.kernel.org
-Subject: [PATCH] cfg80211: fix locking in netlink owner interface destruction
-Date:   Tue, 27 Apr 2021 11:49:52 +0200
-Message-Id: <20210427114946.aa0879857e8f.I846942fa5fc6ec92cda98f663df323240c49893a@changeid>
-X-Mailer: git-send-email 2.30.2
+        Tue, 27 Apr 2021 05:51:49 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3396C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 02:51:04 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id i22so6289991ila.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 02:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aDl/UXnOxJXHbpPYkD239oBJgYN5fLw9tXUol5cebbY=;
+        b=lA9Y46DE6biGEjXcRc2JhpZ0jcr+XDCHlb6R3JEq0p3iKM9oZELRw4DS+/Kb2mpnhG
+         ouaoaWUh5RY/UNh1/XhM9iKh7ctmyVC31PJqQFQcUi3u39LG3nieDj20j3LleFSLC07E
+         LuOXh02JA/eIjPHqPTWIhj0L34Gzt2sM58z4g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aDl/UXnOxJXHbpPYkD239oBJgYN5fLw9tXUol5cebbY=;
+        b=puBUujgcMV9xAwsfVVNeIH5xEwZCf9bAyGVx8/OZ1iFFaMqmKySpCiGaIjVnD6rrGZ
+         BUmIMt8TqUO03cU9ATcALALGG7ib8mjD0YHSSelGwmyjiF3F6wKvjSFRfJ2+/wPzWbxj
+         uk2iiCnbPxhJiadNL1IwgKeExMIE8HJh44Hv1Y4EKnVGJTIqp+NCMsVYfUdtyMtpmE5V
+         wRCmAPi4uAVtZnMYkdpy7Z55qjn1bSxY/VOGWD9fwkP71Z+34tEWglGq3aiqYb4rGMdm
+         5weJ9GNH/sBaPg5PG8s/lvlA8Z6QsMSC96+bmlqf/MCrYusnOx9uxDlvxhXc8M2jgfpD
+         OchA==
+X-Gm-Message-State: AOAM530Jb3FeNF6T0wAh4+Et6lDTTv/m6uvdOsrhEBiDLH4ygc/KJDJP
+        BIFYGrhy+BpgiYJvXfrz6EM2ZE9tGim8E6fS/nRajg==
+X-Google-Smtp-Source: ABdhPJyO5xfobk05xEXt4d5x/yAsLG+beOBSh3CwzZyJGkGJVazVRDmc8upeL+ZH97GhEEnLT6EJWSkinIOOsnfUWq4=
+X-Received: by 2002:a05:6e02:1caf:: with SMTP id x15mr18457508ill.89.1619517064365;
+ Tue, 27 Apr 2021 02:51:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
+ <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
+ <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
+ <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
+ <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com> <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk>
+In-Reply-To: <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 27 Apr 2021 11:50:53 +0200
+Message-ID: <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 26/04/2021 23.08, Florent Revest wrote:
+> > On Mon, Apr 26, 2021 at 6:19 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Mon, Apr 26, 2021 at 3:10 AM Florent Revest <revest@chromium.org> wrote:
+> >>>
+> >>> On Sat, Apr 24, 2021 at 12:38 AM Andrii Nakryiko
+> >>> <andrii.nakryiko@gmail.com> wrote:
+> >>>>
+> >>>> On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
+> >>>>>
+> >>>>> The "positive" part tests all format specifiers when things go well.
+> >>>>>
+> >>>>> The "negative" part makes sure that incorrect format strings fail at
+> >>>>> load time.
+> >>>>>
+> >>>>> Signed-off-by: Florent Revest <revest@chromium.org>
+> >>>>> ---
+> >>>>>  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
+> >>>>>  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
+> >>>>>  .../bpf/progs/test_snprintf_single.c          |  20 +++
+> >>>>>  3 files changed, 218 insertions(+)
+> >>>>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+> >>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+> >>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
+> >>>>>
+> >>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> >>>>> new file mode 100644
+> >>>>> index 000000000000..a958c22aec75
+> >>>>> --- /dev/null
+> >>>>> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> >>>>> @@ -0,0 +1,125 @@
+> >>>>> +// SPDX-License-Identifier: GPL-2.0
+> >>>>> +/* Copyright (c) 2021 Google LLC. */
+> >>>>> +
+> >>>>> +#include <test_progs.h>
+> >>>>> +#include "test_snprintf.skel.h"
+> >>>>> +#include "test_snprintf_single.skel.h"
+> >>>>> +
+> >>>>> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
+> >>>>> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
+> >>>>> +
+> >>>>> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
+> >>>>> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
+> >>>>> +
+> >>>>> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
+> >>>>> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
+> >>>>> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
+> >>>>> +
+> >>>>> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
+> >>>>> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
+> >>>>> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
+> >>>>> +
+> >>>>> +#define EXP_STR_OUT  "str1 longstr"
+> >>>>> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
+> >>>>> +
+> >>>>> +#define EXP_OVER_OUT "%over"
+> >>>>> +#define EXP_OVER_RET 10
+> >>>>> +
+> >>>>> +#define EXP_PAD_OUT "    4 000"
+> >>>>
+> >>>> Roughly 50% of the time I get failure for this test case:
+> >>>>
+> >>>> test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
+> >>>> 0000' != expected '    4 000'
+> >>>>
+> >>>> Re-running this test case immediately passes. Running again most
+> >>>> probably fails. Please take a look.
+> >>>
+> >>> Do you have more information on how to reproduce this ?
+> >>> I spinned up a VM at 87bd9e602 with ./vmtest -s and then run this script:
+> >>>
+> >>> #!/bin/sh
+> >>> for i in `seq 1000`
+> >>> do
+> >>>   ./test_progs -t snprintf
+> >>>   if [ $? -ne 0 ];
+> >>>   then
+> >>>     echo FAILURE
+> >>>     exit 1
+> >>>   fi
+> >>> done
+> >>>
+> >>> The thousand executions passed.
+> >>>
+> >>> This is a bit concerning because your unexpected_pad_out seems to have
+> >>> an extra '0' so it ends up with strlen(pad_out)=11 but
+> >>> sizeof(pad_out)=10. The actual string writing is not really done by
+> >>> our helper code but by the snprintf implementation (str and str_size
+> >>> are only given to snprintf()) so I'd expect the truncation to work
+> >>> well there. I'm a bit puzzled
+> >>
+> >> I'm puzzled too, have no idea. I also can't repro this with vmtest.sh.
+> >> But I can quite reliably reproduce with my local ArchLinux-based qemu
+> >> image with different config (see [0] for config itself). So please try
+> >> with my config and see if that helps to repro. If not, I'll have to
+> >> debug it on my own later.
+> >>
+> >>   [0] https://gist.github.com/anakryiko/4b6ae21680842bdeacca8fa99d378048
+> >
+> > I tried that config on the same commit 87bd9e602 (bpf-next/master)
+> > with my debian-based qemu image and I still can't reproduce the issue
+> > :| If I can be of any help let me know, I'd be happy to help
+> >
+>
+> It's not really clear to me if this is before or after the rewrite to
+> use bprintf, but regardless, in those two patches this caught my attention:
 
-Harald Arnesen reported [1] a deadlock at reboot time, and after
-he captured a stack trace a picture developed of what's going on:
+I tried to reproduce Andrii's bug both before and after the bprintf
+rewrite but I think he meant before.
 
-The distribution he's using is using iwd (not wpa_supplicant) to
-manage wireless. iwd will usually use the "socket owner" option
-when it creates new interfaces, so that they're automatically
-destroyed when it quits (unexpectedly or otherwise). This is also
-done by wpa_supplicant, but it doesn't do it for the normal one,
-only for additional ones, which is different with iwd.
+>         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
+> -       enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
+> +       u32 *bin_args;
+>         static char buf[BPF_TRACE_PRINTK_SIZE];
+>         unsigned long flags;
+>         int ret;
+>
+> -       ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
+> -                                MAX_TRACE_PRINTK_VARARGS);
+> +       ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
+> +                                 MAX_TRACE_PRINTK_VARARGS);
+>         if (ret < 0)
+>                 return ret;
+>
+> -       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
+> -               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
+> -       /* snprintf() will not append null for zero-length strings */
+> -       if (ret == 0)
+> -               buf[0] = '\0';
+> +       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+>
+>         raw_spin_lock_irqsave(&trace_printk_lock, flags);
+>         trace_bpf_trace_printk(buf);
+>         raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+>
+> Why isn't the write to buf[] protected by that spinlock? Or put another
+> way, what protects buf[] from concurrent writes?
 
-Anyway, during shutdown, iwd quits while the netdev is still UP,
-i.e. IFF_UP is set. This causes the stack trace that Linus so
-nicely transcribed from the pictures:
+You're right, that is a bug, I missed that buf was static and thought
+it was just on the stack. That snprintf call should be after the
+raw_spin_lock_irqsave. I'll send a patch. Thank you Rasmus. (before my
+snprintf series, there was a vsprintf after the raw_spin_lock_irqsave)
 
-cfg80211_destroy_iface_wk() takes wiphy_lock
- -> cfg80211_destroy_ifaces()
-  ->ieee80211_del_iface
-    ->ieeee80211_if_remove
-      ->cfg80211_unregister_wdev
-        ->unregister_netdevice_queue
-          ->dev_close_many
-            ->__dev_close_many
-              ->raw_notifier_call_chain
-                ->cfg80211_netdev_notifier_call
-and that last call tries to take wiphy_lock again.
+> Probably the test cases are not run in parallel, but this is the kind of
+> thing that would give those symptoms.
 
-In commit a05829a7222e ("cfg80211: avoid holding the RTNL when
-calling the driver") I had taken into account the possibility of
-recursing from cfg80211 into cfg80211_netdev_notifier_call() via
-the network stack, but only for NETDEV_UNREGISTER, not for what
-happens here, NETDEV_GOING_DOWN and NETDEV_DOWN notifications.
+I think it's a separate issue from what Andrii reported though because
+the flaky test exercises the bpf_snprintf helper and this buf spinlock
+bug you just found only affects the bpf_trace_printk helper.
 
-Additionally, while this worked still back in commit 78f22b6a3a92
-("cfg80211: allow userspace to take ownership of interfaces"), it
-missed another corner case: unregistering a netdev will cause
-dev_close() to be called, and thus stop wireless operations (e.g.
-disconnecting), but there are some types of virtual interfaces in
-wifi that don't have a netdev - for that we need an additional
-call to cfg80211_leave().
+That being said, it does smell a little bit like a concurrency issue
+too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
+attaches to all syscall entries and most likely gets executed many
+more times than necessary and probably on parallel CPUs. The "pad_out"
+buffer they write to is unique and not locked so maybe the test's
+userspace reads pad_out while another CPU is writing on it and if the
+string output goes through a stage where it is "    4 0000" before
+being "    4 000", we might read at the wrong time. That being said, I
+would find it weird that this happens as much as 50% of the time and
+always specifically on that test case.
 
-So, to fix this mess, change cfg80211_destroy_ifaces() to not
-require the wiphy_lock(), but instead make it acquire it, but
-only after it has actually closed all the netdevs on the list,
-and then call cfg80211_leave() as well before removing them
-from the driver, to fix the second issue. The locking change in
-this requires modifying the nl80211 call to not get the wiphy
-lock passed in, but acquire it by itself after flushing any
-potentially pending destruction requests.
+Andrii could you maybe try changing the prog type to
+"tp/syscalls/sys_enter_nanosleep" on the machine where you can
+reproduce this bug ?
 
-[1] https://lore.kernel.org/r/09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org
-
-Cc: stable@vger.kernel.org # 5.12
-Reported-by: Harald Arnesen <harald@skogtun.org>
-Fixes: 776a39b8196d ("cfg80211: call cfg80211_destroy_ifaces() with wiphy lock held")
-Fixes: 78f22b6a3a92 ("cfg80211: allow userspace to take ownership of interfaces")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-Linus, I'll send this the regular way, just CC'ing you since
-you were involved in the debug.
----
- net/wireless/core.c    | 21 +++++++++++++++++----
- net/wireless/nl80211.c | 24 +++++++++++++++++++-----
- 2 files changed, 36 insertions(+), 9 deletions(-)
-
-diff --git a/net/wireless/core.c b/net/wireless/core.c
-index a2785379df6e..589ee5a69a2e 100644
---- a/net/wireless/core.c
-+++ b/net/wireless/core.c
-@@ -332,14 +332,29 @@ static void cfg80211_event_work(struct work_struct *work)
- void cfg80211_destroy_ifaces(struct cfg80211_registered_device *rdev)
- {
- 	struct wireless_dev *wdev, *tmp;
-+	bool found = false;
- 
- 	ASSERT_RTNL();
--	lockdep_assert_wiphy(&rdev->wiphy);
- 
-+	list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
-+		if (wdev->nl_owner_dead) {
-+			if (wdev->netdev)
-+				dev_close(wdev->netdev);
-+			found = true;
-+		}
-+	}
-+
-+	if (!found)
-+		return;
-+
-+	wiphy_lock(&rdev->wiphy);
- 	list_for_each_entry_safe(wdev, tmp, &rdev->wiphy.wdev_list, list) {
--		if (wdev->nl_owner_dead)
-+		if (wdev->nl_owner_dead) {
-+			cfg80211_leave(rdev, wdev);
- 			rdev_del_virtual_intf(rdev, wdev);
-+		}
- 	}
-+	wiphy_unlock(&rdev->wiphy);
- }
- 
- static void cfg80211_destroy_iface_wk(struct work_struct *work)
-@@ -350,9 +365,7 @@ static void cfg80211_destroy_iface_wk(struct work_struct *work)
- 			    destroy_work);
- 
- 	rtnl_lock();
--	wiphy_lock(&rdev->wiphy);
- 	cfg80211_destroy_ifaces(rdev);
--	wiphy_unlock(&rdev->wiphy);
- 	rtnl_unlock();
- }
- 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index b1df42e4f1eb..a5224da63832 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -3929,7 +3929,7 @@ static int nl80211_set_interface(struct sk_buff *skb, struct genl_info *info)
- 	return err;
- }
- 
--static int nl80211_new_interface(struct sk_buff *skb, struct genl_info *info)
-+static int _nl80211_new_interface(struct sk_buff *skb, struct genl_info *info)
- {
- 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
- 	struct vif_params params;
-@@ -3938,9 +3938,6 @@ static int nl80211_new_interface(struct sk_buff *skb, struct genl_info *info)
- 	int err;
- 	enum nl80211_iftype type = NL80211_IFTYPE_UNSPECIFIED;
- 
--	/* to avoid failing a new interface creation due to pending removal */
--	cfg80211_destroy_ifaces(rdev);
--
- 	memset(&params, 0, sizeof(params));
- 
- 	if (!info->attrs[NL80211_ATTR_IFNAME])
-@@ -4028,6 +4025,21 @@ static int nl80211_new_interface(struct sk_buff *skb, struct genl_info *info)
- 	return genlmsg_reply(msg, info);
- }
- 
-+static int nl80211_new_interface(struct sk_buff *skb, struct genl_info *info)
-+{
-+	struct cfg80211_registered_device *rdev = info->user_ptr[0];
-+	int ret;
-+
-+	/* to avoid failing a new interface creation due to pending removal */
-+	cfg80211_destroy_ifaces(rdev);
-+
-+	wiphy_lock(&rdev->wiphy);
-+	ret = _nl80211_new_interface(skb, info);
-+	wiphy_unlock(&rdev->wiphy);
-+
-+	return ret;
-+}
-+
- static int nl80211_del_interface(struct sk_buff *skb, struct genl_info *info)
- {
- 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
-@@ -15040,7 +15052,9 @@ static const struct genl_small_ops nl80211_small_ops[] = {
- 		.doit = nl80211_new_interface,
- 		.flags = GENL_UNS_ADMIN_PERM,
- 		.internal_flags = NL80211_FLAG_NEED_WIPHY |
--				  NL80211_FLAG_NEED_RTNL,
-+				  NL80211_FLAG_NEED_RTNL |
-+				  /* we take the wiphy mutex later ourselves */
-+				  NL80211_FLAG_NO_WIPHY_MTX,
- 	},
- 	{
- 		.cmd = NL80211_CMD_DEL_INTERFACE,
--- 
-2.30.2
-
+> Rasmus
