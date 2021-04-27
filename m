@@ -2,60 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E441C36C33E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7327236C343
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhD0K13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:27:29 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:43223 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230341AbhD0K1Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:27:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UWzF1d5_1619519195;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWzF1d5_1619519195)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 27 Apr 2021 18:26:41 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     perex@perex.cz
-Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] ALSA: usb-audio: Remove redundant assignment to len
-Date:   Tue, 27 Apr 2021 18:26:34 +0800
-Message-Id: <1619519194-57806-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S235543AbhD0K2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230341AbhD0K17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:27:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1CB0610FA;
+        Tue, 27 Apr 2021 10:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619519235;
+        bh=YsKm6VExyywU3b8QQMpE5e+1XH7hFzOYFX2Hhhvq5XQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S/jSXaeignl5yQptqhqn6VFiVIyxAcohR9PcwKFr49o5PfzpcVyfoZ9Dk4RIYzLrD
+         +4KNqMpJJtVsxeB2hQ+SQBi2GuYYoobs6t7ofORvrvIQ6fxgFk8p/+dO2Z/T0hjkLE
+         LSTBiYAk8pdIZ5D83wHg53iuZLgHEMvCA2tsCMO11lZKQTThqzqzynTDcsCh5oQsyp
+         fhpqFQZhhUf4V7OTPCZIJKYH8l29Er78iUGNc7nRWQskaKA73QLFVSSRYa5qIHXt6p
+         ibXygGUxh/ZxlX/GDaFQrC/J4zsymW3NEtPUJi6lIbVsfK4WdhdxLQ9cufpSMFXr6e
+         doL2c+hplSkPQ==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lbKvx-000o1O-Ee; Tue, 27 Apr 2021 12:27:13 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v3 45/79] media: i2c: ov2659: use pm_runtime_resume_and_get()
+Date:   Tue, 27 Apr 2021 12:26:35 +0200
+Message-Id: <8a210791fe9934553e17fa87f7dda955c6c2a03f.1619519080.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable len is set to zero but this value is never read as it is
-overwritten with a new value later on, hence it is a redundant
-assignment and can be removed.
+Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+added pm_runtime_resume_and_get() in order to automatically handle
+dev->power.usage_count decrement on errors.
 
-Cleans up the following clang-analyzer warning:
+Use the new API, in order to cleanup the error check logic.
 
-sound/usb/mixer.c:2713:3: warning: Value stored to 'len' is never read
-[clang-analyzer-deadcode.DeadStores].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- sound/usb/mixer.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/media/i2c/ov2659.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index b004b2e..937bc17 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2710,7 +2710,6 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
- #define MAX_ITEM_NAME_LEN	64
- 	for (i = 0; i < desc->bNrInPins; i++) {
- 		struct usb_audio_term iterm;
--		len = 0;
- 		namelist[i] = kmalloc(MAX_ITEM_NAME_LEN, GFP_KERNEL);
- 		if (!namelist[i]) {
- 			err = -ENOMEM;
+diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
+index 42f64175a6df..a3c8eae68486 100644
+--- a/drivers/media/i2c/ov2659.c
++++ b/drivers/media/i2c/ov2659.c
+@@ -1186,11 +1186,9 @@ static int ov2659_s_stream(struct v4l2_subdev *sd, int on)
+ 		goto unlock;
+ 	}
+ 
+-	ret = pm_runtime_get_sync(&client->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(&client->dev);
++	ret = pm_runtime_resume_and_get(&client->dev);
++	if (ret < 0)
+ 		goto unlock;
+-	}
+ 
+ 	ret = ov2659_init(sd, 0);
+ 	if (!ret)
 -- 
-1.8.3.1
+2.30.2
 
