@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F3036C5D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B082C36C5DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235732AbhD0MML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:12:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42662 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235446AbhD0MMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:12:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619525484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c0RAXz6OXOLLqupoEAR85Dz1rfZqBTn70Dv5cEBj8/0=;
-        b=BZ2GdgVJsRFp+hXFd2BRtWV0mZ548UknXT9704FS+7BxIsBR9njow2drpQcRvYItyqHeuJ
-        xhd7aIzD5LepFw8Gi1mIYk2VjMzW4wEU4nIRB8y+/2Bv6/5y06UrMUH1yr42XfCfVNX6Ro
-        DzUWcId93eRUgTHImwUaB310ujOhrkw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C9DD0B195;
-        Tue, 27 Apr 2021 12:11:24 +0000 (UTC)
-Date:   Tue, 27 Apr 2021 14:11:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alexander Sosna <alexander@sosna.de>
-Cc:     Chris Down <chris@chrisdown.name>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Prevent OOM casualties by enforcing memcg limits
-Message-ID: <YIf/bOhWIKPuwIzg@dhcp22.suse.cz>
-References: <ea6db5cc-f862-7c4b-d872-acb29c2d8193@sosna.de>
- <YIdWMC/iAdanDjLh@chrisdown.name>
- <410a58ba-d746-4ed6-a660-98b5f99258c3@sosna.de>
- <YIfGbd4wupW4mdHy@dhcp22.suse.cz>
- <c7e0a2f9-0b83-2d9b-8ec1-8141d5dca554@sosna.de>
+        id S235969AbhD0MND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235410AbhD0MM4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:12:56 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D793C061574;
+        Tue, 27 Apr 2021 05:12:13 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id b17so5174903pgh.7;
+        Tue, 27 Apr 2021 05:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gtxfnCE0QB9Perajd4AHYu0QLVv0yXPd0ZkZWcVU9UY=;
+        b=Uo7o1Rism3BXnTjuhVg/Hhi8CFeeCVqGRpKmE3+Xjhb8hvVD7mJMvjR2+Q9y7BwftO
+         yGk6G0Qsv392sHufj4bpRKYofXihWmmJGRUYFu9jpaSgQFcClbAo2BUvuH5L7uQ+hXPS
+         01xiBkh02OQIJk3ZJyMAcFLWmNE6czbZOzXN1uKWOSJgJy5s9zdjID78pPRYWCT//p9m
+         +jLY+0f3u5kR28DSy5bFsP1LQ5YcmU/g0j7YngTH0TA1UuQ+iR/7D9PWpyd1voqw3QUF
+         Fx6zq/qaQ6DvRZMiv9dUsI/m1L4FsHCUNXt2sxPrNSuRU+SBWAHW4xG9M7BKIz9i/eY9
+         s2iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gtxfnCE0QB9Perajd4AHYu0QLVv0yXPd0ZkZWcVU9UY=;
+        b=DpiT3h/4xqrDaC5T+QL+1atkO8Luff1bLEsgcg/Inz7ysicgBJOeaNpboT71NIp04f
+         9kepBo7q/05axzELnLuxbBq2q1XrW+HqDp7EAyzEzlI90ep9yGXQir9vjQK8NfbxvT4u
+         psua73pVRO9oAVqzW3DHpqDBzGQsMk4+CmXBPPHBfhg0DRRLvDHzGwT5blkF9pK4fgW9
+         lqZUl8rmKUmBPOVRuhh8ujrbyYLfBZ1+D4Y+R2Nxx8J9MaEFI8VDezz1gkARTtNdGOhr
+         oPfiJZW2i9Hr2SQ2qF6HFYedajk4JL+qcNmYjunq1bVAQSebZ2OYnQGp5Xrt4bHoQhqb
+         gXhA==
+X-Gm-Message-State: AOAM531KKdNEO7OOq9jrW0aC6z2wsN+u7Y7W74VlD5VBIkNn/6zHk3lw
+        NkSy5sOUpKOLBUNRKq3RUAcD2iBXyB1CKKNSJPBDCdeyHGw=
+X-Google-Smtp-Source: ABdhPJwB0KFp3aPcr9ubVL4K7W7pZVG44ylohvnpZsNXTA956q7/R/lVe92blxdHi0UbNm6GZsuss9s8maJ0/McZJOQ=
+X-Received: by 2002:a62:5c6:0:b029:24d:e97f:1b1d with SMTP id
+ 189-20020a6205c60000b029024de97f1b1dmr23090847pff.40.1619525532759; Tue, 27
+ Apr 2021 05:12:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c7e0a2f9-0b83-2d9b-8ec1-8141d5dca554@sosna.de>
+References: <20210427114950.12739-1-colin.king@canonical.com>
+In-Reply-To: <20210427114950.12739-1-colin.king@canonical.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Apr 2021 15:11:56 +0300
+Message-ID: <CAHp75VeFmgOM_APt=pStkU03mP02VgCw0q31bpY7dFnJhKLn8w@mail.gmail.com>
+Subject: Re: [PATCH][next][V2] gpio: sim: Fix dereference of free'd pointer config
+To:     Colin King <colin.king@canonical.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 27-04-21 13:01:33, Alexander Sosna wrote:
-[...]
-> Please correct me if I am wrong, but "modern userspace which relies on
-> considerable virtual memory overcommit" should not rely on the kernel to
-> overcommit memory when OVERCOMMIT_NEVER is explicitly set.
+On Tue, Apr 27, 2021 at 2:49 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The error return of config->id dereferences the kfree'd object config.
+> Fix this by using a temporary variable for the id to avoid this issue.
 
-Correct. Which makes it application very limited from my experience.
+Thanks!
+I'm wondering how I missed this... Nevertheless
 
-> >> When running in a memory cgroup - for example via systemd or on k8s -
-> >> the kernel will not return ENOMEM even if the cgroup's memory limit is
-> >> exceeded.
-> > 
-> > Yes, memcg doesn't change the overal approach. It just restricts the
-> > existing semantic with a smaller memory limit. Also overcommit heuristic
-> > has never been implemented for memory controllers.
-> > 
-> >> Instead the OOM killer is awakened and kills processes in the
-> >> violating cgroup.  If any backend is killed with SIGKILL the shared
-> >> memory of the whole cluster is deemed potentially corrupted and
-> >> PostgreSQL needs to do an emergency restart.  This cancels all operation
-> >> on all backends and it entails a potentially lengthy recovery process.
-> >> Therefore the behavior is quite "costly".
-> > 
-> > One way around that would be to use high limit rather than hard limit
-> > and pro-actively watch for memory utilization and communicate that back
-> > to the application to throttle its workers. I can see how that
-> > 
-> >> I totally understand that vm.overcommit_memory 2 does not mean "no OOM
-> >> killer". IMHO it should mean "no OOM killer if we can avoid it" and I
-> > 
-> > I do not see how it can ever promise anything like that. Memory
-> > consumption by kernel subsystems cannot be predicted at the time virtual
-> > memory allocated from the userspace. Not only it cannot be predicted but
-> > it is also highly impractical to force kernel allocations - necessary
-> > for the OS operation - to fail just because userspace has reserved
-> > virtual memory. So this all is just a heuristic to help in some
-> > extreme cases but overall I consider OVERCOMMIT_NEVER as impractical to
-> > say the least.
-> 
-> I'm not fully able to follow you why we need to let kernel allocations
-> fail here.  Yes, if you run a system to a point where the kernel can't
-> free enough memory, invasive decisions have to be made.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-OK. But then I do not see what "no OOM killer if we can avoid it" is
-suppose to mean. There are only 2 ways around that. Either start
-failing allocations or reclaim by tearing down processes as all other
-means of memory reclaim have been already exercised.
+> Addresses-Coverity: ("Read from pointer aftyer free")
 
-> Think of an
-> application server running multiple applications in memcgs each with its
-> limits way below the available resources.  Why is it preferable to
-> SIGKILL a process rather than just deny the limit exceeding malloc, when
-> OVERCOMMIT_NEVER is set of cause?
+after
 
-Because the actual physical memory allocation for malloc might (and
-usually does) happen much later than the virtual memory allocated for it
-(brk or mmap). Memory requirements could have changed considerably
-between the two events. An allocation struggling to make a forward
-progress might be for a completely different purpose than the overcommit
-accounted one. Does this make more sense now?
+> Fixes: a49d14276ac4 ("gpio: sim: allocate IDA numbers earlier")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+> V2: Don't make id local to the if statement to improve coding style.
+>     Thanks to Bartosz Golaszewski for this improvement suggestion.
+> ---
+>  drivers/gpio/gpio-sim.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> index 2e2e6399e453..b21541c0b700 100644
+> --- a/drivers/gpio/gpio-sim.c
+> +++ b/drivers/gpio/gpio-sim.c
+> @@ -744,20 +744,22 @@ static struct config_item *
+>  gpio_sim_config_make_item(struct config_group *group, const char *name)
+>  {
+>         struct gpio_sim_chip_config *config;
+> +       int id;
+>
+>         config = kzalloc(sizeof(*config), GFP_KERNEL);
+>         if (!config)
+>                 return ERR_PTR(-ENOMEM);
+>
+> -       config->id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
+> -       if (config->id < 0) {
+> +       id = ida_alloc(&gpio_sim_ida, GFP_KERNEL);
+> +       if (id < 0) {
+>                 kfree(config);
+> -               return ERR_PTR(config->id);
+> +               return ERR_PTR(id);
+>         }
+>
+>         config_item_init_type_name(&config->item, name,
+>                                    &gpio_sim_chip_config_type);
+>         config->num_lines = 1;
+> +       config->id = id;
+>         mutex_init(&config->lock);
+>
+>         return &config->item;
+> --
+> 2.30.2
+>
 
-> >> would highly appreciate if the kernel would use a less invasive means
-> >> whenever possible.  I guess this might also be the expectation by many
-> >> other users.  In my described case - which is a real pain for me - it is
-> >> quite easy to tweak the kernel behavior in order to handle this and
-> >> other similar situations with less casualties.  This is why I send a
-> >> patch instead of starting a theoretical discussion.
-> > 
-> > I am pretty sure that many users would agree with you on that but the
-> > matter of fact is that a different approach has been chosen
-> > historically. We can argue whether this has been a good or bad design
-> > decision but I do not see that to change without a lot of fallouts. Btw.
-> > a strong memory reservation approach can be found with hugetlb pages and
-> > this one has turned out to be very tricky both from implementation and
-> > userspace usage POV. Needless to say that it operates on a single
-> > purpose preallocated memory pool and it would be quite reasonable to
-> > expect the complexity would grow with more users of the pool which is
-> > the general case for general purpose memory allocator.
-> 
-> The history is very interesting and needs to be taken into
-> consideration.  What drives me is to help myself and all other Linux
-> user to run workloads like RDBMS reliable, even in modern environments
-> like k8s which make use of memory cgroups.  I see a gain for the
-> community to develop a reliable and easy available solution, even if my
-> current approach might be amateurish and is not the right answer.
 
-Well, I am afraid that a reliable and easy solutions would be extremely
-hard to find. A memcg aware overcommit policy is certainly possible but
-as I've said it would require an additional accounting, it would be
-quite unreliable - especially with small limits where the mapped (and
-accounted) address space is not predominant. A lack of background
-reclaim (kswapd in the global case) would result in ENOMEM reported even
-though there is reclaimable memory to satisfy the reserved address space
-etc.
-
-> Could
-> you elaborate on where you see "a lot of fallouts"?  overcommit_memory 2
-> is only set when needed for the desired workload.
-
-My above comment was more general to the approach Linux is embracing
-overcommit and relies on oom killer to handle fallouts. This to change
-would lead to lot of fallouts. E.g. many syscalls returning unexpected
-and unhandled ENOMEM etc.
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
