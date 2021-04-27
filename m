@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98DD36C531
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B484D36C533
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235943AbhD0Lgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:36:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:51174 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235225AbhD0Lge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:36:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5514D6E;
-        Tue, 27 Apr 2021 04:35:50 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3997B3F694;
-        Tue, 27 Apr 2021 04:35:45 -0700 (PDT)
-Subject: Re: [RFC PATCH v6 3/4] scheduler: scan idle cpu in cluster for tasks
- within one LLC
-To:     Barry Song <song.bao.hua@hisilicon.com>,
-        tim.c.chen@linux.intel.com, catalin.marinas@arm.com,
-        will@kernel.org, rjw@rjwysocki.net, vincent.guittot@linaro.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com,
-        lenb@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de
-Cc:     msys.mizuma@gmail.com, valentin.schneider@arm.com,
-        gregkh@linuxfoundation.org, jonathan.cameron@huawei.com,
-        juri.lelli@redhat.com, mark.rutland@arm.com, sudeep.holla@arm.com,
-        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        x86@kernel.org, xuwei5@huawei.com, prime.zeng@hisilicon.com,
-        guodong.xu@linaro.org, yangyicong@huawei.com,
-        liguozhu@hisilicon.com, linuxarm@openeuler.org, hpa@zytor.com
-References: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
- <20210420001844.9116-4-song.bao.hua@hisilicon.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <80f489f9-8c88-95d8-8241-f0cfd2c2ac66@arm.com>
-Date:   Tue, 27 Apr 2021 13:35:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235985AbhD0Lgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235353AbhD0Lgx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 07:36:53 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C36C061574;
+        Tue, 27 Apr 2021 04:36:09 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id h11so1513874pfn.0;
+        Tue, 27 Apr 2021 04:36:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IUY3136rBJHpdsy9gPF9r8TyfY75qqRWpCu4OCSUOq8=;
+        b=bG/0/0eul04k7Doe4nJU88gQzunUd9A7KmdMfs0AhebThhMuiODFaYVfGwDMhH0pa8
+         WZzQj1mQBTkC+0SAZok5cEUaUhYuPL7qo/5zk1o4DoEzLxpIR4vREk+R0GHBqenhzfnV
+         L8i1MC9XqjVaqSyxI9k7sZQ6fTVw40/HgnjW9k5IQUnc0LprXZ3GOHMzEQXSi/zy4HLC
+         jXl+nglVnNwTQ8NbdZU1cbsLdbYOvaBPKnx5God93EaIPi0FY3rgjCcGeqjbugmCoD2/
+         3dRRAu6lGMSNk4zwHXNHbjC/JM2+x/StNXgcbwzUfJ5oqJjZ1+BeFZ3uMAiBjphsuejr
+         X/Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IUY3136rBJHpdsy9gPF9r8TyfY75qqRWpCu4OCSUOq8=;
+        b=ZscWcNW2PPik5eEACBWZsNf6ROMzZVGNPbPedHXpJf7JvLSRsOsRvHMjW1bWfQMvxJ
+         ABKcn6JPwQPyE06MEer1ppivYCTRqb/f39uB9JXuweGgwNU4mQBY+cQ2GnKK2ZzPoNXn
+         US4DLycqJPwwJFMb/mMWtijthNmwcOQjtbhuVs1OnwQBQcP4rNxOsdQs6Wn/PRy8nhA4
+         dy+zhcXrLdXCVVwKuqJ679bYpJizQpc9llvsBpsuGuH82Gy0zzhxB95FFvon4meHcN1n
+         czWT6PH64TYfJofq7cd2bP/B0MnDzfIAveEY49o05lkyhKXOMAQdHhKlChXuvZjY9QxP
+         WigA==
+X-Gm-Message-State: AOAM532aGiGR9XO9m1QbLrwLIpjHEwkQlWh1/xqSHiXr4SrnYHxl7Hmn
+        NNSh1kvmcP8Y2FbB/258JYI=
+X-Google-Smtp-Source: ABdhPJxhLOOyz8sHhOudu4oWpIBS9v6uWoB1Y11kfFa0J1ct2QY3nMIGqEORflL0FNyuCiMwlqowyA==
+X-Received: by 2002:a63:be08:: with SMTP id l8mr10314932pgf.438.1619523369049;
+        Tue, 27 Apr 2021 04:36:09 -0700 (PDT)
+Received: from atulu-nitro ([2401:4900:2328:eaea:1419:503d:c39f:5ab1])
+        by smtp.gmail.com with ESMTPSA id mr3sm2100856pjb.20.2021.04.27.04.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 04:36:08 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:05:59 +0530
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, brookebasile@gmail.com,
+        ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: Memory leak in ath9k_hif_usb_dealloc_tx_urbs()
+Message-ID: <20210427113559.GA7527@atulu-nitro>
+References: <20200911071427.32354-1-brookebasile@gmail.com>
+ <20210330193652.10642-1-paskripkin@gmail.com>
+ <YGQWf1lP4ZOUFiG5@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210420001844.9116-4-song.bao.hua@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGQWf1lP4ZOUFiG5@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 02:18, Barry Song wrote:
+On Wed, Mar 31, 2021 at 08:28:15AM +0200, Greg KH wrote:
+> On Tue, Mar 30, 2021 at 10:36:52PM +0300, Pavel Skripkin wrote:
+> > Hi!
+> > 
+> > I did some debugging on this
+> > https://syzkaller.appspot.com/bug?id=3ea507fb3c47426497b52bd82b8ef0dd5b6cc7ee
+> > and, I believe, I recognized the problem. The problem appears in case of
+> > ath9k_htc_hw_init() fail. In case of this fail all tx_buf->urb krefs will be
+> > initialized to 1, but in free function:
+> > 
+> > static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+> > 
+> > ....
+> > 
+> > static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+> > {
+> >     ...
+> > 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+> > 				 &hif_dev->tx.tx_buf, list) {
+> > 		usb_get_urb(tx_buf->urb);
+> > 		...
+> > 		usb_free_urb(tx_buf->urb);
+> > 		...
+> > 		}
+> > 
+> > Krefs are incremented and then decremented, that means urbs won't be freed.
+> > I found your patch and I can't properly understand why You added usb_get_urb(tx_buf->urb).
+> > Can You explain please, I believe this will help me or somebody to fix this ussue :)
+> 
+> I think almost everyone who has looked into this has given up due to the
+> mess of twisty-passages here with almost no real-world benefits for
+> unwinding them :)
 
-[...]
+Just wanted to confirm, what is the status of this bug then, as in is it
+invalid (not sure if that's the correct word)? I happened to stumble
+across the same syzkaller bug report Pavel posted above, in the morning.
+Saw that there has been no patch tests/fixes on this yet according to
+syzkaller. Spent a couple of hours going through it before sending a
+test patch to syzbot which returned an "OK" (and the patch is exactly
+what Pavel pointed out, I simply removed the `usb_get_urb()`). Before
+sending anything to the mailing list, I made sure to search all the
+relavant networking lists to see if this topic had been brought up (learnt
+to do this from my preious mistakes of sending already accepted patches) and
+luckily I found this.
 
-> @@ -5786,11 +5786,12 @@ static void record_wakee(struct task_struct *p)
->   * whatever is irrelevant, spread criteria is apparent partner count exceeds
->   * socket size.
->   */
-> -static int wake_wide(struct task_struct *p)
-> +static int wake_wide(struct task_struct *p, int cluster)
->  {
->  	unsigned int master = current->wakee_flips;
->  	unsigned int slave = p->wakee_flips;
-> -	int factor = __this_cpu_read(sd_llc_size);
-> +	int factor = cluster ? __this_cpu_read(sd_cluster_size) :
-> +		__this_cpu_read(sd_llc_size);
+Syzbot has had 380 crashes caused by this bug, with the latest being
+today. So I wanted to confirm what should be done be about this bug. 
 
-I don't see that the wake_wide() change has any effect here. None of the
-sched domains has SD_BALANCE_WAKE set so a wakeup (WF_TTWU) can never
-end up in the slow path.
-Have you seen a diff when running your `lmbench stream` workload in what
-wake_wide() returns when you use `sd cluster size` instead of `sd llc
-size` as factor?
-
-I guess for you,  wakeups are now subdivided into faster (cluster = 4
-CPUs) and fast (llc = 24 CPUs) via sis(), not into fast (sis()) and slow
-(find_idlest_cpu()).
-
->  
->  	if (master < slave)
->  		swap(master, slave);
-
-[...]
-
-> @@ -6745,6 +6748,12 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  	int want_affine = 0;
->  	/* SD_flags and WF_flags share the first nibble */
->  	int sd_flag = wake_flags & 0xF;
-> +	/*
-> +	 * if cpu and prev_cpu share LLC, consider cluster sibling rather
-> +	 * than llc. this is typically true while tasks are bound within
-> +	 * one numa
-> +	 */
-> +	int cluster = sched_cluster_active() && cpus_share_cache(cpu, prev_cpu, 0);
-
-So you changed from scanning cluster before LLC to scan either cluster
-or LLC.
-
-And this is based on whether `this_cpu` and `prev_cpu` are sharing LLC
-or not. So you only see an effect when running the workload with
-`numactl -N X ...`.
-
->  
->  	if (wake_flags & WF_TTWU) {
->  		record_wakee(p);
-> @@ -6756,7 +6765,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			new_cpu = prev_cpu;
->  		}
->  
-> -		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
-> +		want_affine = !wake_wide(p, cluster) && cpumask_test_cpu(cpu, p->cpus_ptr);
->  	}
->  
->  	rcu_read_lock();
-> @@ -6768,7 +6777,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  		if (want_affine && (tmp->flags & SD_WAKE_AFFINE) &&
->  		    cpumask_test_cpu(prev_cpu, sched_domain_span(tmp))) {
->  			if (cpu != prev_cpu)
-> -				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync);
-> +				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync, cluster);
->  
->  			sd = NULL; /* Prefer wake_affine over balance flags */
->  			break;
-> @@ -6785,7 +6794,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  		new_cpu = find_idlest_cpu(sd, p, cpu, prev_cpu, sd_flag);
->  	} else if (wake_flags & WF_TTWU) { /* XXX always ? */
->  		/* Fast path */
-> -		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
-> +		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu, cluster);
->  
->  		if (want_affine)
->  			current->recent_used_cpu = cpu;
-
-[...]
+Thank you!
+Atul
