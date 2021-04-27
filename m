@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC92236C759
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E783336C75B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238293AbhD0Nyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:54:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53344 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236516AbhD0Nyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:54:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619531627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=i9xQmDCeivVgWpnOYZBsW4xYs30EqI+Ven3RmapyFIo=;
-        b=SHDSC5PP1QhaySFNnBycmnembRGUG+RoG5jqnlNQWDQuaspcyHXeWCfFHyxQdSqYhYhA0f
-        cRrfj82CeJQm4HgLS6VaRvLsfIQOyO5oUsmaI11d0Enpj04PN2yTB7ssw0nx6ye6OiB5Pw
-        hFwS0Gf+PnmIN05oS/EUTbcos8/xbXA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EB12B1A5;
-        Tue, 27 Apr 2021 13:53:47 +0000 (UTC)
-Date:   Tue, 27 Apr 2021 15:53:46 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] printk for 5.13
-Message-ID: <YIgXasI86BwJvQ0Z@alley>
+        id S235652AbhD0NzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:55:07 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46548 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236872AbhD0Nym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:54:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9C3D71C0B79; Tue, 27 Apr 2021 15:53:56 +0200 (CEST)
+Date:   Tue, 27 Apr 2021 15:53:56 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     =?utf-8?B?eXVlY2hhby56aGFvKOi1tei2iui2hSk=?= 
+        <yuechao.zhao@advantech.com.cn>
+Cc:     "345351830@qq.com" <345351830@qq.com>,
+        =?utf-8?B?UmFpbmJvdy5aaGFuZyjlvLXnjokp?= 
+        <Rainbow.Zhang@advantech.com.cn>,
+        =?utf-8?B?eXVueGlhLmxpKOadjuS6kemcnik=?= 
+        <yunxia.li@advantech.com.cn>,
+        =?utf-8?B?SmlhLlN1aSjotL7nnaIp?= <Jia.Sui@advantech.com.cn>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: Re: [v2,1/1] adv_mix955x is a scheme that multiplexes
+ PCA9554/PCA9555 into LED and GPIO
+Message-ID: <20210427135356.GA2426@duo.ucw.cz>
+References: <tencent_17A7BBC4D15D331C1A25B4075294E5D67706@qq.com>
+ <cb03b75a018e4bec83eac6898eb1d2af@ACNMB2.ACN.ADVANTECH.CORP>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
 Content-Disposition: inline
-User-Agent: NeoMutt/20170912 (1.9.0)
+In-Reply-To: <cb03b75a018e4bec83eac6898eb1d2af@ACNMB2.ACN.ADVANTECH.CORP>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-please pull the latest printk changes from
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.13
+On Tue 2021-04-27 08:32:05, yuechao.zhao(=E8=B5=B5=E8=B6=8A=E8=B6=85) wrote:
+> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+>=20
+> With this driver, we can multiplex PCA9554/PCA9555 into LED and GPIO base=
+d on the ACPI data of BIOS.
+>=20
+> Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+> Signed-off-by: Sui Jia <jia.sui@advantech.com.cn>
 
-==============================
+Please Cc LED drivers to the LED maintainers...
 
-- Stop synchronizing kernel log buffer readers by logbuf_lock.
-  As a result, the access to the buffer is fully lockless now.
+> +
+> +static inline u8 amix955x_set_bit(u8 val, int led_id, enum AMIX955X_LED=
+=20
+> +state) {
+> +	led_id %=3D BANK_SIZE;
+> +
+> +	switch (state) {
+> +	case AMIX955X_LED_ON:
+> +		val &=3D ~(1 << led_id); //Clear bit
+> +		break;
+> +	case AMIX955X_LED_OFF:
+> +		val |=3D 1 << led_id; //Set bit
+> +		break;
+> +	}
+> +
+> +	return val;
 
-  Note that printk() itself still uses locks because it tries to
-  flush the messages to the console immediately. Also the per-CPU
-  temporary buffers are still there because they prevent infinite
-  recursion and serialize backtraces from NMI. All this is going
-  to change in the future.
+Please check CodingStyle, avoid useless comments and check word
+wrapping in your email settings.
 
-- kmsg_dump API rework and cleanup as a side effect of
-  the logbuf_lock removal.
+Best regards,
+								Pavel
 
-- Make bstr_printf() aware that %pf and %pF formats could
-  deference the given pointer.
+--=20
+http://www.livejournal.com/~pavelmachek
 
-- Show also page flags by %pGp format.
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-- Clarify the documentation for plain pointer printing.
+-----BEGIN PGP SIGNATURE-----
 
-- Do not show no_hash_pointers warning multiple times.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYIgXdAAKCRAw5/Bqldv6
+8n36AKCAyk/FV6UAhuTMTRVivRmq2huMAACfa69qtKio3k+F86vekm0Ukg2KABc=
+=asyZ
+-----END PGP SIGNATURE-----
 
-- Update Senozhatsky email address.
-
-- Some clean up.
-
-----------------------------------------------------------------
-Bhaskar Chowdhury (1):
-      kernel/printk.c: Fixed mundane typos
-
-John Ogness (15):
-      um: synchronize kmsg_dumper
-      mtd: mtdoops: synchronize kmsg_dumper
-      printk: limit second loop of syslog_print_all
-      printk: kmsg_dump: remove unused fields
-      printk: refactor kmsg_dump_get_buffer()
-      printk: consolidate kmsg_dump_get_buffer/syslog_print_all code
-      printk: introduce CONSOLE_LOG_MAX
-      printk: use seqcount_latch for clear_seq
-      printk: use atomic64_t for devkmsg_user.seq
-      printk: add syslog_lock
-      printk: kmsg_dumper: remove @active field
-      printk: introduce a kmsg_dump iterator
-      printk: remove logbuf_lock
-      printk: kmsg_dump: remove _nolock() variants
-      printk: console: remove unnecessary safe buffer usage
-
-Marco Elver (1):
-      lib/vsprintf: do not show no_hash_pointers message multiple times
-
-Petr Mladek (2):
-      Merge branch 'for-5.13-vsprintf-pgp' into for-linus
-      Merge branch 'printk-rework' into for-linus
-
-Rasmus Villemoes (2):
-      printk: rename vprintk_func to vprintk
-      lib/vsprintf.c: remove leftover 'f' and 'F' cases from bstr_printf()
-
-Sergey Senozhatsky (1):
-      MAINTAINERS: update Senozhatsky email address
-
-Vlastimil Babka (1):
-      printk: clarify the documentation for plain pointer printing
-
-Yafang Shao (3):
-      mm, slub: use pGp to print page flags
-      mm, slub: don't combine pr_err with INFO
-      vsprintf: dump full information of page flags in pGp
-
- Documentation/core-api/printk-formats.rst |  28 +-
- MAINTAINERS                               |   8 +-
- arch/powerpc/kernel/nvram_64.c            |   8 +-
- arch/powerpc/xmon/xmon.c                  |   6 +-
- arch/um/kernel/kmsg_dump.c                |  13 +-
- drivers/hv/vmbus_drv.c                    |   4 +-
- drivers/mtd/mtdoops.c                     |  17 +-
- fs/pstore/platform.c                      |   5 +-
- include/linux/kmsg_dump.h                 |  47 ++-
- kernel/debug/kdb/kdb_main.c               |  10 +-
- kernel/printk/internal.h                  |   7 +-
- kernel/printk/printk.c                    | 478 +++++++++++++++---------------
- kernel/printk/printk_safe.c               |  30 +-
- lib/test_printf.c                         |  90 +++++-
- lib/vsprintf.c                            |  78 ++++-
- mm/slub.c                                 |  13 +-
- 16 files changed, 502 insertions(+), 340 deletions(-)
+--r5Pyd7+fXNt84Ff3--
