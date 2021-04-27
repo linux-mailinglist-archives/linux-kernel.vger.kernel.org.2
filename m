@@ -2,110 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804A736BCEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2B836BCF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235290AbhD0BWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 21:22:41 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:30412 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhD0BWk (ORCPT
+        id S235627AbhD0BiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 21:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233916AbhD0BiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 21:22:40 -0400
-Date:   Tue, 27 Apr 2021 01:21:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1619486515;
-        bh=GkamwvI1sTILaPhsP/F3zjMbVJYsi0uLKbqbp36xmkI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nDsjBoOtId8LlwDAkbgf3loR5WVTORsFO9tNr0L57YdRBen5xTDtQiIV1jgmPV+HS
-         qfNuHRGVYjXZTZkz6eLos6EqfegILR7IZYoxRjLbTj0GtCm8DoQJUh091HUGPLDw4e
-         ns+xrL7snLb1BZeQktXEprZkDeKLoPDZIuxMXE6F5uT6+UwvUMjA1hSF6yrq9pvu9I
-         fu+AlZe+O7RBWytG9EwDg31oxVwlgq6N5j/P+20Q8RykrVzQlP+ZPPj9M8Hv5JE6YI
-         p8VoV1YuBiKdNw9sC5iQPHHJxbh0h3cdi/wwYqMFqRGF/Z3rKvC4yvfSeUfQSgtCuE
-         SKxrJmNjqjJ+A==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH 095/190] Revert "rtlwifi: fix a potential NULL pointer dereference"
-Message-ID: <20210427010457.rk7t6p2zs3d2eudn@bryanbrattlof.com>
-In-Reply-To: <20210421130105.1226686-96-gregkh@linuxfoundation.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-96-gregkh@linuxfoundation.org>
+        Mon, 26 Apr 2021 21:38:04 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA229C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 18:37:21 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id v20so3718086qkv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 18:37:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FJWJCHhnqSjdmTRAsm6adaBw4EEr/lvQQJJiey1u4/U=;
+        b=d6HQzQUTpAetxSdGmQHEjd+KRyVq2LDyZVdO3wU2V9zmKXozbdaFzQXvOmoN6TyVh2
+         La4fgit0IgVTUHEKt8WDEG8XtWTLqJ7GU/przYelBeoor9/pICMraSRZE2VBrhGK48jZ
+         yffEf56I5tlTo2//f+luuzUoBOtcWMiRMnRFl17z4xgMvbFdI1rQ7MyqkhGjLR/i/Coz
+         RP5MQcO64avBZK0LWuTwulTXmI1c0ykxXRxpevjsSLKkm9Fm8fvZ64BapcwCAHPh3G2r
+         hqYqvDv5UIUuAc9P5t6h2cRc0FHOZRiKjgfR/PA/5ZEslUxLvEcqBz2zFlIt5SXMvVVx
+         9tbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=FJWJCHhnqSjdmTRAsm6adaBw4EEr/lvQQJJiey1u4/U=;
+        b=Tuov1pOw+tlqmJeSubdvx+4PxbdPYH2PkTZqU9K8flFFTgbiYr8loXp0oH0dDwWeCA
+         /tnzhc5LIjOWR9v18U5gh29smnHMQbICzxRhyRSyM3cML/OeHMVTgfcOQJuVubE7SMZF
+         RGLabouFxoRx/eO7XEzAf4F3ObBJq2rG4WqLF9pE2HEKK52QffQrXqaO/6VnDlBOccut
+         VugsIAKIXDC3sVmK9QWTuIm8z7B9dxGATIpdod2NcZxiWcDD9E7ItEqSVadUPVZWeLWN
+         DdqJ+fMlHo339iO557yubzHum1ZP1xueX5SZ3S8//6U9pfGtmFsm3JekO6fJH2+tv7Ft
+         UwBw==
+X-Gm-Message-State: AOAM532puh/ARqR68CAc4Cuwo+o0h1Gn/TCK/AHngprOz+HTCNbkP9fM
+        DSkFv3DoxyVB5DlC6IbxADo=
+X-Google-Smtp-Source: ABdhPJxbiGmytNY7EERI+24RsuqkHMYe3a3G/X/UatHSu/dFJ3ICg7By6dXUshcS703Tqd9yOuhsrg==
+X-Received: by 2002:ae9:e8c6:: with SMTP id a189mr20868360qkg.463.1619487441099;
+        Mon, 26 Apr 2021 18:37:21 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([50.238.223.130])
+        by smtp.gmail.com with ESMTPSA id q67sm1858622qkb.89.2021.04.26.18.37.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 18:37:20 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCHSET v2 0/6] perf report: Make --stat output more compact
+Date:   Mon, 26 Apr 2021 18:37:11 -0700
+Message-Id: <20210427013717.1651674-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:30PM +0200, Greg Kroah-Hartman wrote:
->
->This reverts commit 765976285a8c8db3f0eb7f033829a899d0c2786e.
->
->Commits from @umn.edu addresses have been found to be submitted in "bad
->faith" to try to test the kernel community's ability to review "known
->malicious" changes.  The result of these submissions can be found in a
->paper published at the 42nd IEEE Symposium on Security and Privacy
->entitled, "Open Source Insecurity: Stealthily Introducing
->Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
->of Minnesota) and Kangjie Lu (University of Minnesota).
->
->Because of this, all submissions from this group must be reverted from
->the kernel tree and will need to be re-reviewed again to determine if
->they actually are a valid fix.  Until that work is complete, remove this
->change to ensure that no problems are being introduced into the
->codebase.
->
->Cc: Kangjie Lu <kjlu@umn.edu>
->Cc: Kalle Valo <kvalo@codeaurora.org>
->Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->---
-> drivers/net/wireless/realtek/rtlwifi/base.c | 5 -----
-> 1 file changed, 5 deletions(-)
->
->diff --git a/drivers/net/wireless/realtek/rtlwifi/base.c b/drivers/net/wir=
-eless/realtek/rtlwifi/base.c
->index 6e8bd99e8911..1d067536889e 100644
->--- a/drivers/net/wireless/realtek/rtlwifi/base.c
->+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
->@@ -452,11 +452,6 @@ static void _rtl_init_deferred_work(struct ieee80211_=
-hw *hw)
-> =09/* <2> work queue */
-> =09rtlpriv->works.hw =3D hw;
-> =09rtlpriv->works.rtl_wq =3D alloc_workqueue("%s", 0, 0, rtlpriv->cfg->na=
-me);
->-=09if (unlikely(!rtlpriv->works.rtl_wq)) {
->-=09=09pr_err("Failed to allocate work queue\n");
->-=09=09return;
->-=09}
->-
->
+Hello,
 
-Hey Greg!
+This patchset changes the output of perf report --stat.
 
-If you're still working on this series, this patch looks to be a=20
-legitimate fix for the potential NULL pointer.
+Changes from v1)
+ * fix build error in TUI  (Jiri)
+ * print percentage of each event  (Andi)
 
-However we should probably inform 'rtw_init_core()' of this failure in=20
-addition to printing about it.
 
-Do you want to apply this revert and I send a fix after this has made=20
-its way through?
+The perf report --stat shows event statistics like below:
 
---
-~Bryan
+  $ perf report --stat
 
->
-> =09INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
-> =09=09=09  rtl_watchdog_wq_callback);
-> =09INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
->--
->2.31.1
->
+  Aggregated stats:
+             TOTAL events:      20064
+              MMAP events:        239
+              LOST events:          0
+              COMM events:       1518
+              EXIT events:          1
+          THROTTLE events:          0
+        UNTHROTTLE events:          0
+              FORK events:       1517
+              READ events:          0
+            SAMPLE events:       4015
+             MMAP2 events:      12769
+               AUX events:          0
+      ITRACE_START events:          0
+      LOST_SAMPLES events:          0
+            SWITCH events:          0
+   SWITCH_CPU_WIDE events:          0
+        NAMESPACES events:          0
+           KSYMBOL events:          0
+         BPF_EVENT events:          0
+            CGROUP events:          0
+         TEXT_POKE events:          0
+              ATTR events:          0
+        EVENT_TYPE events:          0
+      TRACING_DATA events:          0
+          BUILD_ID events:          0
+    FINISHED_ROUND events:          2
+          ID_INDEX events:          0
+     AUXTRACE_INFO events:          0
+          AUXTRACE events:          0
+    AUXTRACE_ERROR events:          0
+        THREAD_MAP events:          1
+           CPU_MAP events:          1
+       STAT_CONFIG events:          0
+              STAT events:          0
+        STAT_ROUND events:          0
+      EVENT_UPDATE events:          0
+         TIME_CONV events:          1
+           FEATURE events:          0
+        COMPRESSED events:          0
+
+But it's too long and mostly 0 so we can make it more compact.  Also
+perf report -D has similar output at the end with each event's sample
+count.  It'd be better if we can have the same output in both case.
+
+So I added --skip-empty (and --no-skip-empty automatically) to suppres
+the 0 output and add the event stats like below.
+
+  $ perf report --stat --skip-empty
+  
+  Aggregated stats:
+             TOTAL events:      20064
+              MMAP events:        239  ( 1.2%)
+              COMM events:       1518  ( 7.6%)
+              EXIT events:          1  ( 0.0%)
+              FORK events:       1517  ( 7.6%)
+            SAMPLE events:       4015  (20.0%)
+             MMAP2 events:      12769  (63.6%)
+    FINISHED_ROUND events:          2  ( 0.0%)
+        THREAD_MAP events:          1  ( 0.0%)
+           CPU_MAP events:          1  ( 0.0%)
+         TIME_CONV events:          1  ( 0.0%)
+  cycles stats:
+            SAMPLE events:       2475
+  instructions stats:
+            SAMPLE events:       1540
+
+
+And I make it enabled by default with a new config option
+report.skip-empty to change the behavior if needed.
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (6):
+  perf top: Use evlist->events_stat to count events
+  perf hists: Split hists_stats from events_stats
+  perf report: Show event sample counts in --stat output
+  perf report: Add --skip-empty option to suppress 0 event stat
+  perf report: Make --skip-empty as default
+  perf report: Print percentage of each event statistics
+
+ tools/perf/Documentation/perf-config.txt |  5 ++++
+ tools/perf/Documentation/perf-report.txt |  3 ++
+ tools/perf/builtin-annotate.c            |  6 ++--
+ tools/perf/builtin-report.c              | 38 ++++++++++++++++++++----
+ tools/perf/builtin-top.c                 | 20 +++++--------
+ tools/perf/tests/hists_filter.c          | 14 ++++-----
+ tools/perf/ui/browsers/hists.c           | 17 ++++++-----
+ tools/perf/ui/stdio/hist.c               | 15 ++++++++--
+ tools/perf/util/events_stats.h           | 13 +++++---
+ tools/perf/util/hist.c                   | 26 +++++++++++-----
+ tools/perf/util/hist.h                   |  7 +++--
+ tools/perf/util/session.c                |  5 ++--
+ tools/perf/util/session.h                |  3 +-
+ 13 files changed, 118 insertions(+), 54 deletions(-)
+
+base-commit: 4c391ea001cb2e7bd9a691a886c0dcb030c1791c
+-- 
+2.31.1.527.g47e6f16901-goog
 
