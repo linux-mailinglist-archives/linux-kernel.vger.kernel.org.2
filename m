@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9167336BD6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D591A36BD6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhD0Co0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:44:26 -0400
-Received: from pv50p00im-ztdg10022001.me.com ([17.58.6.58]:59640 "EHLO
-        pv50p00im-ztdg10022001.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232295AbhD0CoZ (ORCPT
+        id S233976AbhD0CoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:44:21 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16159 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhD0CoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:44:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1619491422; bh=zwZm+iDbKecQVi47Pk7oEQ5PMltYN64tGoJ4C40Spps=;
-        h=From:To:Subject:Date:Message-Id;
-        b=y7fF6x2Ddk9Ziiqxq8/0R6k1SW8AMir95ovaql+t/AhtGr+7FosEBYny+8xnjU0qO
-         ozNWHwivXpGfHLYB+Hjl3Ozoryxf2cW1FQpOO4BfJGXLQm1koYxBT16qGrEd0bDL+j
-         hEFV6VTtYQZapVV9UNxor9l9kcG4Wd4oP79qqreqW9vxeA3LQzQlDgBUulGvRFxMB+
-         03leRsbDZLRYYHWZ5dTXqo3n1Had5I3qL6H5tTGQ3vYgVR+CkLOUeIi4uP/zgSgIPL
-         1Lygy2VShxX1eJ3e/vh9jQM3US9IudTfn4h2CKogaefXz9g1N1klmmyEg2PNBkFWh4
-         16WzRT/77lrIg==
-Received: from pek-xsong2-d1.wrs.com (unknown [60.247.85.82])
-        by pv50p00im-ztdg10022001.me.com (Postfix) with ESMTPSA id AD486A03F9;
-        Tue, 27 Apr 2021 02:43:37 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH] mm: append __GFP_COMP flag for trace_malloc
-Date:   Tue, 27 Apr 2021 10:43:20 +0800
-Message-Id: <1619491400-1904-1-git-send-email-sxwjean@me.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-27_01:2021-04-26,2021-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=388 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2104270017
+        Mon, 26 Apr 2021 22:44:20 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FTmG55rt0zmdtg;
+        Tue, 27 Apr 2021 10:40:29 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 27 Apr
+ 2021 10:43:34 +0800
+Subject: Re: [PATCH] f2fs: compress: remove unneed check condition
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210421083941.66371-1-yuchao0@huawei.com>
+ <YID1sqemJVeBcdqD@google.com>
+ <2c6f17e6-ef23-f313-5df2-6bd63d7df2b1@huawei.com>
+ <YIS8KHf9VPxZl85b@google.com>
+ <5d7de7c7-5cc5-c342-3652-ab904b3e43b2@huawei.com>
+ <YIbyxNAaaWUiVDT9@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <5d7fcb3c-b0a7-178c-0f5c-5b12e21cb5f0@huawei.com>
+Date:   Tue, 27 Apr 2021 10:43:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <YIbyxNAaaWUiVDT9@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+On 2021/4/27 1:05, Jaegeuk Kim wrote:
+> On 04/25, Chao Yu wrote:
+>> On 2021/4/25 8:47, Jaegeuk Kim wrote:
+>>> On 04/22, Chao Yu wrote:
+>>>> On 2021/4/22 12:04, Jaegeuk Kim wrote:
+>>>>> On 04/21, Chao Yu wrote:
+>>>>>> In only call path of __cluster_may_compress(), __f2fs_write_data_pages()
+>>>>>> has checked SBI_POR_DOING condition, and also cluster_may_compress()
+>>>>>> has checked CP_ERROR_FLAG condition, so remove redundant check condition
+>>>>>> in __cluster_may_compress() for cleanup.
+>>>>>
+>>>>> I think cp_error can get any time without synchronization. Is it safe to say
+>>>>> it's redundant?
+>>>>
+>>>> Yes,
+>>>>
+>>>> But no matter how late we check cp_error, cp_error can happen after our
+>>>> check points, it won't cause regression if we remove cp_error check there,
+>>>> because for compress write, it uses OPU, it won't overwrite any existed data
+>>>> in device.
+>>>>
+>>>> Seems it will be more appropriate to check cp_error in
+>>>> f2fs_write_compressed_pages() like we did in f2fs_write_single_data_page()
+>>>> rather than in __cluster_may_compress().
+>>>>
+>>>> BTW, shouldn't we rename __cluster_may_compress() to
+>>>> cluster_beyond_filesize() for better readability?
+>>>
+>>> f2fs_cluster_has_data()?
+>>
+>> Maybe cluster_has_invalid_data()? which indicates there is invalid data
+>> beyond filesize.
+> 
+> BTW, we can compress it with zero data?
 
-When calling kmalloc_order, the flags should include __GFP_COMP here,
-so that trace_malloc can trace the precise flags.
+I doubt it will cause unnecessary overhead for below condition?
+- write 1GB data into file
+- truncate file to 0
+- writeback 1GB compressed cluster contains zero data
 
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
- mm/slab_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 585a6f9..c23e1e8 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -928,7 +928,7 @@ EXPORT_SYMBOL(kmalloc_order);
- void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
- {
- 	void *ret = kmalloc_order(size, flags, order);
--	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
-+	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags | __GFP_COMP);
- 	return ret;
- }
- EXPORT_SYMBOL(kmalloc_order_trace);
--- 
-2.7.4
-
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>>>> ---
+>>>>>>     fs/f2fs/compress.c | 5 -----
+>>>>>>     1 file changed, 5 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>>>>> index 3c9d797dbdd6..532c311e3a89 100644
+>>>>>> --- a/fs/f2fs/compress.c
+>>>>>> +++ b/fs/f2fs/compress.c
+>>>>>> @@ -906,11 +906,6 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
+>>>>>>     		f2fs_bug_on(sbi, !page);
+>>>>>> -		if (unlikely(f2fs_cp_error(sbi)))
+>>>>>> -			return false;
+>>>>>> -		if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+>>>>>> -			return false;
+>>>>>> -
+>>>>>>     		/* beyond EOF */
+>>>>>>     		if (page->index >= nr_pages)
+>>>>>>     			return false;
+>>>>>> -- 
+>>>>>> 2.29.2
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
