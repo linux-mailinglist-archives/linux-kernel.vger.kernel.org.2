@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3A236CEFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086F936CF01
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239307AbhD0W5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:57:06 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:42750 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239079AbhD0W5F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:57:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=wchQRjaAM+wKsrfBxsOPGilEcofAMBFmBR5ncEuDJho=; b=EZ9ht7CInMnHYcsaW5R8aYmMj8
-        09YKECmF6J1dtTcoVOL5n2vPnyFNuRfpmprAgXcM6moL4NCgJapVcFrAT1GmK88ZLOtBdgfU20kW0
-        RY5WUjwcQBwsrdUL/HEpU3IS5o0FdSpggofru2z8+77w/Q3RnCRgS0wmH1jea1qn6LdToqi4OZ/4X
-        rrypsgRTfhC4D/uJIb+BWvm1Uqf3s8+RISCE2/zVjkKMttAX0hK4dVgX2qSTi/K1a5II8R6cm3X27
-        wVPZcln5l7w31LXIB1N6D4Cr8zR08kHA3166WgpMkT/o5LCOPvawHT2vKIJITGvqFOCPEE8VRwxVk
-        JkwiHqmg==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lbWcl-0002mT-O1; Tue, 27 Apr 2021 16:56:12 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-10-logang@deltatee.com>
- <20210427193351.GR2047089@ziepe.ca> <20210427194013.GS2047089@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <9835b877-25ba-83f8-ed39-999cfc1ad415@deltatee.com>
-Date:   Tue, 27 Apr 2021 16:56:11 -0600
+        id S239079AbhD0W7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:59:16 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:51513 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236547AbhD0W7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 18:59:11 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13RMw8s9941858
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 27 Apr 2021 15:58:09 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13RMw8s9941858
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021032801; t=1619564293;
+        bh=BKXnXbtnLAZiK4ZaeAicI6A/g8pOK30QDSs2ImWpeVQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=M9JZEPiEXKQaxG0i128nVah5nnl2dSyxxAIZ2p5b3CY7sHSS3izuaHRWmbN9nscjq
+         bSKxdpCAr7/Kf3Kl0+fQdIiFGkHCc0u9BtKmJeXZNznsJF9bjOKDvzXcxOsMb7XqX2
+         hOe+uWW/UMOdGcsUIzd/vi/5j3yES46AWtvUlU1jBROXiea4567PNJWpLYoZMFqVgL
+         NMq2J5zJlGm1UXU8D+4P9OvfHXbui5e/dqwEuSS2UJ/GtF2AnUjpobB7awcvvFRRIa
+         ES5ti8RR6LeopN+oxl78/X8W0BVsZoLB2U25rzepimjXABo8RQGHyqoN5+CXbp11qq
+         +xPVahT1CiYuA==
+Subject: Re: pt_regs->ax == -ENOSYS
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        oleg@redhat.com, Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>
+References: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
+ <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <06a5e088-b0e6-c65e-73e6-edc740aa4256@zytor.com>
+Date:   Tue, 27 Apr 2021 15:58:03 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210427194013.GS2047089@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH 09/16] dma-direct: Support PCI P2PDMA pages in dma-direct
- map_sg
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+In-Reply-To: <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-04-27 1:40 p.m., Jason Gunthorpe wrote:
-> On Tue, Apr 27, 2021 at 04:33:51PM -0300, Jason Gunthorpe wrote:
->> On Thu, Apr 08, 2021 at 11:01:16AM -0600, Logan Gunthorpe wrote:
->>> Add PCI P2PDMA support for dma_direct_map_sg() so that it can map
->>> PCI P2PDMA pages directly without a hack in the callers. This allows
->>> for heterogeneous SGLs that contain both P2PDMA and regular pages.
->>>
->>> SGL segments that contain PCI bus addresses are marked with
->>> sg_mark_pci_p2pdma() and are ignored when unmapped.
->>>
->>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->>>  kernel/dma/direct.c | 25 ++++++++++++++++++++++---
->>>  1 file changed, 22 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
->>> index 002268262c9a..108dfb4ecbd5 100644
->>> +++ b/kernel/dma/direct.c
->>> @@ -13,6 +13,7 @@
->>>  #include <linux/vmalloc.h>
->>>  #include <linux/set_memory.h>
->>>  #include <linux/slab.h>
->>> +#include <linux/pci-p2pdma.h>
->>>  #include "direct.h"
->>>  
->>>  /*
->>> @@ -387,19 +388,37 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
->>>  	struct scatterlist *sg;
->>>  	int i;
->>>  
->>> -	for_each_sg(sgl, sg, nents, i)
->>> +	for_each_sg(sgl, sg, nents, i) {
->>> +		if (sg_is_pci_p2pdma(sg)) {
->>> +			sg_unmark_pci_p2pdma(sg);
+On 4/27/21 2:28 PM, Andy Lutomirski wrote:
+> 
+>> On Apr 27, 2021, at 2:15 PM, H. Peter Anvin <hpa@zytor.com> wrote:
 >>
->> This doesn't seem nice, the DMA layer should only alter the DMA
->> portion of the SG, not the other portions. Is it necessary?
+>> ﻿Trying to stomp out some possible cargo cult programming?
+>>
+>> In the process of going through the various entry code paths, I have to admit to being a bit confused why pt_regs->ax is set to -ENOSYS very early in the system call path.
+>>
 > 
-> Oh, I got it completely wrong what this is for.
+> It has to get set to _something_, and copying orig_ax seems perhaps silly.  There could also be code that relies on ptrace poking -1 into the nr resulting in -ENOSYS.
 > 
-> This should be named sg_dma_mark_pci_p2p() and similar for other
-> functions to make it clear it is part of the DMA side of the SG
-> interface (eg it is like sg_dma_address, sg_dma_len, etc)
 
-Fair point. Yes, I'll rename this for the next version.
+Yeah. I obviously ran into this working on the common entry-exit code 
+for FRED; the frame has annoyingly different formats because of this, 
+and I wanted to avoid slowing down the system call path.
 
-Logan
+>> What is perhaps even more confusing is:
+>>
+>> __visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned long nr)
+>> {
+>>         nr = syscall_enter_from_user_mode(regs, nr);
+>>
+>>         instrumentation_begin();
+>>         if (likely(nr < NR_syscalls)) {
+>>                 nr = array_index_nospec(nr, NR_syscalls);
+>>                 regs->ax = sys_call_table[nr](regs);
+>> #ifdef CONFIG_X86_X32_ABI
+>>         } else if (likely((nr & __X32_SYSCALL_BIT) &&
+>>                           (nr & ~__X32_SYSCALL_BIT) < X32_NR_syscalls)) {
+>>                 nr = array_index_nospec(nr & ~__X32_SYSCALL_BIT,
+>>                                         X32_NR_syscalls);
+>>                 regs->ax = x32_sys_call_table[nr](regs);
+>> #endif
+>>         }
+>>         instrumentation_end();
+>>         syscall_exit_to_user_mode(regs);
+>> }
+>> #endif
+>>
+>> Now, unless I'm completely out to sea, it seems to me that if syscall_enter_from_user_mode() changes the system call number to an invalid number and pt_regs->ax to !-ENOSYS then the system call will return a different value(!) depending on if it is out of range for the table (whatever was poked into pt_regs->ax) or if it corresponds to a hole in the table. This seems to me at least to be The Wrong Thing.
+> 
+> I think you’re right.
+> 
+>>
+>> Calling regs->ax = sys_ni_syscall() in an else clause would arguably be the right thing here, except possibly in the case where nr (or (int)nr, see below) == -1 or < 0.
+> 
+> I think the check should be -1 for 64 bit but (u32)nr == (u32)-1 for the 32-bit path. Does that seem reasonable?
+
+I'm thinking overall that depending on 64-bit %rax is once again a 
+mistake; I realize that the assembly code that did that kept breaking 
+because people messed with it, but we still have:
+
+/*
+  * Only the low 32 bits of orig_ax are meaningful, so we return int.
+  * This importantly ignores the high bits on 64-bit, so comparisons
+  * sign-extend the low 32 bits.
+  */
+static inline int syscall_get_nr(struct task_struct *task, struct 
+pt_regs *regs)
+{
+         return regs->orig_ax;
+}
+
+"Different interpretation of the same data" is a notorious security 
+trap. Zero-extending orig_ax would cause different behavior on 32 and 64 
+bits and differ from the above, so I'm thinking that just once and for 
+all defining the system call number as a signed int for all the x86 ABIs 
+would be the sanest.
+
+It still doesn't really answer the question if "movq $-1,%rax; syscall" 
+or "movl $-1,%eax; syscall" could somehow cause bad things to happen, 
+though, which makes me a little bit nervous still.
+
+	-hpa
