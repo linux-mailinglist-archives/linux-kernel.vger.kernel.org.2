@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF1C36C72B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4CF36C72D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236402AbhD0No3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:44:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235652AbhD0No1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B73A613DC;
-        Tue, 27 Apr 2021 13:43:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619531023;
-        bh=MFivWNS26TlQym+r2UF3qt75YdRBAPlO0U25snR/4Dk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=09F7v2mrmTa5ItQLgTsrBUvda07fM8Kkjpg0qb/EA2YVXuzm02ExpkzLxyMaFJEww
-         gHO3OhYfrXNlXUb/eY9Wzk5v7jQ9uquFdxZXZn9b8O74/4RDgmQwYCkleR4nstyTbH
-         +pQFxrnuWHUlKzEXCLaHNYdATaIYam7uZ4+y/cC8=
-Date:   Tue, 27 Apr 2021 15:43:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH 074/190] Revert "drm/gma500: fix memory disclosures due
- to uninitialized bytes"
-Message-ID: <YIgVDakyru+kuhoV@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-75-gregkh@linuxfoundation.org>
- <CAKMK7uF6sWeKX0DAaXoT9=xkD9eAAjHtkE0gn+v9YxmYAd3vdg@mail.gmail.com>
+        id S237219AbhD0Noa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:44:30 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:59145 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236269AbhD0No2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:44:28 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2DA2322235;
+        Tue, 27 Apr 2021 15:43:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619531024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ze37HUrwcuaMM/+Jzy68z8algoMq0xuZK6yTkRT4q8M=;
+        b=kjI5xZWwFd2IVvSaXVY2fvDhN/Wtg11m4WXlgu9YGwKstX3v4SodNqo5eFvRQ0qJmXdEX/
+        JSwoVVTOnEgtzjHklTev48pVZP3/CoQ8Vh2byAOApYJL12U8+F37vqnxIoJvNVbebzloCI
+        WROTvUuE83KYkhVODGdu5F8SZLvIaAQ=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uF6sWeKX0DAaXoT9=xkD9eAAjHtkE0gn+v9YxmYAd3vdg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Apr 2021 15:43:42 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     kernelci-results@groups.io, broonie@kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+In-Reply-To: <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+ <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+ <20210427101926.GA4605@sirena.org.uk>
+ <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 07:51:49PM +0200, Daniel Vetter wrote:
-> On Wed, Apr 21, 2021 at 3:06 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This reverts commit ec3b7b6eb8c90b52f61adff11b6db7a8db34de19.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Kangjie Lu <kjlu@umn.edu>
-> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Cc: https
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> gma500 is dead enough I'm not going to spend a single cycle thinking
-> whether this fixes anything or not and hence whether the revert is ok
-> or not.
+Hi,
 
-Sounds good to me, I'll keep the reverts.
+Am 2021-04-27 14:51, schrieb Guillaume Tucker:
+> +Heiko +Michael
+> 
+> On 27/04/2021 11:19, Mark Brown wrote:
+>> On Tue, Apr 27, 2021 at 07:28:34AM +0900, Kuninori Morimoto wrote:
+>> 
+>>>>> If so, all sai1 - sai6 are using "fsl,vf610-sai",
+>>>>> all saiX doesn't have .name. I think it should have different name.
+>>>>> In your case, at least, sai5 / sai6 needs to have
+>> 
+>>>> You could send a patch along with re-adding the three patches I 
+>>>> dropped?
+>> 
+>>> Thanks, I can do it.
+>>> But I want to confirm above first.
+>>> Let's keep Guillaume's happiness :)
+>> 
+>> This board is in the Kontron lab - KernelCI is just reporting results
+>> from it, we'd need to connect with someone from Kontron for system
+>> specific questions.  Guillaume, I don't know what e-mail they wanted 
+>> to
+>> be used here?
+> 
+> 
+> We can have KernelCI tests re-run with extra kernel patches in
+> any lab, but yes for discussing actual changes related to the
+> platform it's best to ask Kontron folks directly.
+> 
+> Heiko, Michael, is this something you can please help with?
 
-greg k-h
+Sure, just put me on CC and I can test the patches manually.
+
+-michael
