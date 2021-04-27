@@ -2,156 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E071B36BF78
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB7C36BF7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhD0Gxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 02:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
+        id S234257AbhD0Gyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhD0Gxr (ORCPT
+        with ESMTP id S229547AbhD0Gyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:53:47 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DCCC061574;
-        Mon, 26 Apr 2021 23:53:05 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so6694869pjv.1;
-        Mon, 26 Apr 2021 23:53:05 -0700 (PDT)
+        Tue, 27 Apr 2021 02:54:53 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCE0C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:54:10 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c19so4809371pfv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AdW+5T+k5u7cNZysyil9KyXcGibUka0VOAb1DAnUCrs=;
-        b=qrDHn7yNVUu8BEEAQsysRKJZL6qa99so4j7pM/pOggWZ4LP5VXqr7Eq6uVPDmDHFwc
-         8X8nuRKF7jthk7QSwiqu+zMMwBypxSEJsVnluYFx4mJjgK+GfTxiR7ctodLMwgfAXClb
-         muFf4/2SHjGHseh4FFvms9SpYnddVAiD5iRQ5HYvGF5Kw7vJq5rOsdWX4b1XrFcAhAkl
-         crQ+Z/RgSynsVb28RZha9z9T/EFcSDMp9TuzZ5Pwm/i2nI/Zvq2B5J2y3wN+g5zl0UiN
-         d4ge/7FQ7PBCPesnZ2i4oDb7OdXTPS9AwsdLfpq0ktPzYnYnkGW8Ak/cjUqKm+EP/dvB
-         mRYA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ErHb2UxiQfgQZ/ewBfhdnjrWohZ6K0IW4TbbehTLjM=;
+        b=z8FINm7JzZ7mOIY207onvpiJiRHsqMx3cgxfVTWFDeYAOxZD6NZTiZfNuQix4h8GLq
+         qlfQgRxGlV2amtvUxeWhQ0lHKR5URWBq8eqpgm5cyFoEtqf7Nh+rzxnZbDKIZYDSuP66
+         CKMf5TD6+OJSY4aNvZZ731quzwXWBRiFM86YtIcUB2e6CkwBrr+oRvBOaMt8vAO8MZji
+         xY32Ycz9ab6mEgcPt41aTA9jsCYBLi8BX5ga/iX31JNY+5zsaBKvGji9YyGLS/wLlt7D
+         g2l0++gQ4vE6m2CpYIPl8mGdocH7D8hyfXxmvGdmKkix51Dx/LXaFx8mY4oWgm/Z11mg
+         zG4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AdW+5T+k5u7cNZysyil9KyXcGibUka0VOAb1DAnUCrs=;
-        b=uL9j26sigGo3AsRUxkik3Kn0PKwqbtRqtDDbVQ4uAQc4JB9EosWpgXtK1uw8bOv+1P
-         71Tg2KjPIsisOXcEQXc3HZ8iWggQXzpTQKsn9KoFm2vy98OIKtggCNZMJI82A9WBccAE
-         W/Q1K53EoO3DfKPPIBo8k4nIMR7HbnQ3IZ7FwA53UDXxt53pQYnf9HZnf528hx4A7gns
-         Yu4iycYyK0sfhPZbRqd4eHYh97w7N+1XuUdClMKujwJZNo5CXskvMr5T4FRhS/Y0/nCT
-         mx97MI6EfXJ+sr2lA3HG+q/05/cFK6tOcRauOSbSZ+mUAoj8WK5hjJVcnbbu50fAh9qK
-         0HHw==
-X-Gm-Message-State: AOAM531SowQsn/4QWucowZluLxxXec595T5moZEOCmQ0zIPWuKomBHft
-        qZZVZNe8kuCSEJLEA7DFl362ZGLmUwkoau2Ckbc=
-X-Google-Smtp-Source: ABdhPJzuBzukcIOSpxqHPoqUr3O6O1Ei2aTHW1grEeudTbKwMG+Sy86hIoi/z014iz8+SFMl6x59BRkGXYbU5VPg5sM=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr22536493plq.17.1619506384517; Mon, 26
- Apr 2021 23:53:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ErHb2UxiQfgQZ/ewBfhdnjrWohZ6K0IW4TbbehTLjM=;
+        b=mNcnIAmFETmdB8ux6Hx/QDH9d+mB7feYt7QRvKurqLU/BY5mKpp/0RHSE+QvA+24la
+         6EWepR8ZNJr2dzZn7nblIVRPDXyUlq1EQGAc5ZGg3/TcryOE2vVWS1kzodMJ8e5mAg58
+         d8DtglszgjncLLn6P6b5/DjplSIpzhF5fOm9AFVn5dxoseHemIrtk3vYuotHfSksbi0Z
+         6En017RM7vHLqrJRIthPth2jc4KlLaOdkjEfPjcKbqZZBDmBaVwCjOuKZk7aimNrFiTh
+         1DHN0vgV7V0UIJW1+03qXYlqcHp9NjR3YU0xSO3ueSuVIJc9+Wlsoexq/1OwUb7oaKfW
+         xvxg==
+X-Gm-Message-State: AOAM5329BcQFSUUQs+1kSSbtjqJy9MNEfLLLd7oj+E4iB/1w+9Xj7aoh
+        faRLUklfICXzN8wVPq5/4FRiyh5esXPI
+X-Google-Smtp-Source: ABdhPJyN/iMyGzYhoKtt2AZ6j9sSZ2wGju5d+9jIOuwLSOVH+gsKreOKWYuwn/wxUXipbt6BkIXA+g==
+X-Received: by 2002:a62:2cb:0:b029:259:feaa:75e7 with SMTP id 194-20020a6202cb0000b0290259feaa75e7mr21289983pfc.24.1619506450351;
+        Mon, 26 Apr 2021 23:54:10 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:6d89:3c72:ece6:56fb:d9ac:583c])
+        by smtp.gmail.com with ESMTPSA id x22sm13391986pgx.19.2021.04.26.23.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 23:54:09 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     vkoul@kernel.org, kishon@ti.com, robh+dt@kernel.org
+Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/3] Add support for PCIe PHY in SDX55
+Date:   Tue, 27 Apr 2021 12:23:57 +0530
+Message-Id: <20210427065400.18958-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210426235638.1285530-1-saravanak@google.com>
-In-Reply-To: <20210426235638.1285530-1-saravanak@google.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Apr 2021 09:52:48 +0300
-Message-ID: <CAHp75VeNZ4-TgkevNF5tgmB1eU9E77RNsPWRABp6PvC6eGpQrQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: Fix spi device unregister flow
-To:     Saravana Kannan <saravanak@google.com>,
-        Lukas Wunner <lukas@wunner.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Lukas
+Hi,
 
-On Tue, Apr 27, 2021 at 2:56 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> When an SPI device is unregistered, the spi->controller->cleanup() is
-> called in the device's release callback. That's wrong for a couple of
-> reasons:
->
-> 1. spi_dev_put() can be called before spi_add_device() is called. And
->    it's spi_add_device() that calls spi_setup(). This will cause clean()
->    to get called without the spi device ever being setup.
->
-> 2. There's no guarantee that the controller's driver would be present by
->    the time the spi device's release function gets called.
->
-> 3. It also causes "sleeping in atomic context" stack dump[1] when device
->    link deletion code does a put_device() on the spi device.
->
-> Fix these issues by simply moving the cleanup from the device release
-> callback to the actual spi_unregister_device() function.
->
-> [1] - https://lore.kernel.org/lkml/CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com/
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/spi/spi.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index b08efe88ccd6..7d0d89172a1d 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -47,10 +47,6 @@ static void spidev_release(struct device *dev)
->  {
->         struct spi_device       *spi = to_spi_device(dev);
->
-> -       /* spi controllers may cleanup for released devices */
-> -       if (spi->controller->cleanup)
-> -               spi->controller->cleanup(spi);
-> -
->         spi_controller_put(spi->controller);
->         kfree(spi->driver_override);
->         kfree(spi);
-> @@ -558,6 +554,12 @@ static int spi_dev_check(struct device *dev, void *data)
->         return 0;
->  }
->
-> +static void spi_cleanup(struct spi_device *spi)
-> +{
-> +       if (spi->controller->cleanup)
-> +               spi->controller->cleanup(spi);
-> +}
-> +
->  /**
->   * spi_add_device - Add spi_device allocated with spi_alloc_device
->   * @spi: spi_device to register
-> @@ -622,11 +624,13 @@ int spi_add_device(struct spi_device *spi)
->
->         /* Device may be bound to an active driver when this returns */
->         status = device_add(&spi->dev);
-> -       if (status < 0)
-> +       if (status < 0) {
->                 dev_err(dev, "can't add %s, status %d\n",
->                                 dev_name(&spi->dev), status);
-> -       else
-> +               spi_cleanup(spi);
-> +       } else {
->                 dev_dbg(dev, "registered child %s\n", dev_name(&spi->dev));
-> +       }
->
->  done:
->         mutex_unlock(&spi_add_lock);
-> @@ -713,6 +717,8 @@ void spi_unregister_device(struct spi_device *spi)
->         if (!spi)
->                 return;
->
-> +       spi_cleanup(spi);
-> +
->         if (spi->dev.of_node) {
->                 of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
->                 of_node_put(spi->dev.of_node);
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+This series adds support for PCIe PHY found in Qualcomm SDX55 platform.
+The PHY version is v4.20 which has different register offsets compared with
+previous v4.0x versions. So separate defines are introducted to handle the
+differences.
 
+This series has been tested on Telit FN980 EVB with an out of tree PCIe Endpoint
+driver.
+
+Thanks,
+Mani
+
+Manivannan Sadhasivam (3):
+  dt-bindings: phy: qcom,qmp: Add binding for SDX55 PCIe PHY
+  phy: qcom-qmp: Use phy_status field for the status bit offset
+  phy: qcom-qmp: Add support for SDX55 QMP PCIe PHY
+
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml |   2 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c           | 160 +++++++++++++++++-
+ drivers/phy/qualcomm/phy-qcom-qmp.h           |  64 ++++++-
+ 3 files changed, 224 insertions(+), 2 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
