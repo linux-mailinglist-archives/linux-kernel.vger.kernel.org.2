@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288DF36BCB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC68C36BCB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhD0Amb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 20:42:31 -0400
-Received: from m12-12.163.com ([220.181.12.12]:45062 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232022AbhD0Ama (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 20:42:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=QKZP24SX5N2Yt0Y0mx
-        ulfm78SXUMh/K6XKGcvOfKd00=; b=VtrVWDJp/OUfXK87jurMonJM29YXSIy5TS
-        tFB36QfVuCbQ39CyYsLBsAG5xQujet46aYWxQMpyUVfKvfkh3O3zgNZOCi+qAlBK
-        l4Ewy1iACzpOHVJ187QY9LlLRXBGBqmGf2E7FI3N7Vg0bHSfGKrR8qyIvVZLqbAT
-        VVly4YbzI=
-Received: from localhost.localdomain (unknown [101.229.16.77])
-        by smtp8 (Coremail) with SMTP id DMCowACn8yiKXYdgUgNhAw--.27679S2;
-        Tue, 27 Apr 2021 08:40:50 +0800 (CST)
-From:   qhjindev <qhjin_dev@163.com>
-To:     pshelar@ovn.org
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org,
-        qhjin_dev@163.com
-Subject: [PATCH] openvswitch: fix typo
-Date:   Tue, 27 Apr 2021 08:40:33 +0800
-Message-Id: <20210427004033.944-1-qhjin_dev@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DMCowACn8yiKXYdgUgNhAw--.27679S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RJUUUUUUUU
-X-Originating-IP: [101.229.16.77]
-X-CM-SenderInfo: ptkmx0hbgh4qqrwthudrp/1tbi8BKBHFuobjxrzQAAs4
+        id S235293AbhD0Apc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 20:45:32 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:14774 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232022AbhD0Apb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 20:45:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619484289; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=2oFWwVlXd7oXH1Kc6McDOccmtkDTHXqlLlQPjQCAzwE=; b=Vw6IipRetjUPcdreQzaMpN4XmZtxrORNuNKk8lwFx0HIvqPS0KCcWUzK+CEBp1dKWhFj8Nqb
+ 3cQdhiy+jwZaZPrxA5/j+JcqY+Gio/EIMNLFsteB0qU82kIqsSW9v13Im+8+N1K4bAlWjDi2
+ O2G74RwMeAbdOqj4xIBAGWxVssY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60875e7d74f773a6641ced92 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Apr 2021 00:44:45
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8A79BC4338A; Tue, 27 Apr 2021 00:44:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9789EC433F1;
+        Tue, 27 Apr 2021 00:44:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9789EC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH] bus: mhi: core: Validate channel ID when processing
+ command completions
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
+References: <1619481538-4435-1-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <dc9cbecc-c868-09b5-6486-e9f0389e5d7b@codeaurora.org>
+Date:   Mon, 26 Apr 2021 17:44:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1619481538-4435-1-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 'subsytem' to 'subsystem'
 
-Signed-off-by: qhjindev <qhjin_dev@163.com>
----
- net/openvswitch/vport.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/openvswitch/vport.h b/net/openvswitch/vport.h
-index 1eb7495ac5b4..8a930ca6d6b1 100644
---- a/net/openvswitch/vport.h
-+++ b/net/openvswitch/vport.h
-@@ -20,7 +20,7 @@
- struct vport;
- struct vport_parms;
- 
--/* The following definitions are for users of the vport subsytem: */
-+/* The following definitions are for users of the vport subsystem: */
- 
- int ovs_vport_init(void);
- void ovs_vport_exit(void);
+On 4/26/21 4:58 PM, Bhaumik Bhatt wrote:
+> MHI reads the channel ID from the event ring element sent by the
+> device which can be any value between 0 and 255. In order to
+> prevent any out of bound accesses, add a check against the maximum
+> number of channels supported by the controller and those channels
+> not configured yet so as to skip processing of that event ring
+> element.
+> 
+> Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+
 -- 
-2.17.1
-
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
