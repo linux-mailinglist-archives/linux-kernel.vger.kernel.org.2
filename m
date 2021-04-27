@@ -2,109 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F9436C9E2
+	by mail.lfdr.de (Postfix) with ESMTP id F10E336C9E4
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238279AbhD0Q73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:59:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
+        id S238741AbhD0Q7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:59:33 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55026 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237720AbhD0Q71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA6561165;
-        Tue, 27 Apr 2021 16:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619542723;
-        bh=wERojalQ9dUWLbKBoiBa7cXRmoy3rgdT4eSYH2cRmew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KIETlKK7KKOunXOjbqIpzyBvi8EU4ZAuTAlTLc9pJwDh29Q0TBzwoslu1BNB3LG4A
-         EsJWhSxHGJP8aQrOZK3wDbKx6lbZeHBkGEzkS7S0csRsHXiSk1817nIdOk7j4Uz7ZG
-         furEgWnId4H6BiyflxCW5pmiYw8YVj8nA3Je7dkM=
-Date:   Tue, 27 Apr 2021 18:58:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH 181/190] Revert "dm ioctl: harden copy_params()'s
- copy_from_user() from malicious users"
-Message-ID: <YIhCwe+FVtgm0LlD@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-182-gregkh@linuxfoundation.org>
+        id S238110AbhD0Q73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:59:29 -0400
+Received: from zn.tnic (p200300ec2f0c5e0085f018e791730569.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:5e00:85f0:18e7:9173:569])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EF26C1EC046E;
+        Tue, 27 Apr 2021 18:58:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619542725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lz3XSWEbf7jwA4LTaOYIQoyDisqfXg243NLJRhz6mzo=;
+        b=Ht+705dCSPNBGI6RRwsNQUtroQ4dTA1OvVv+n8qThewcXxJUFIiGaL7XrEVMZcQIIyeeQI
+        0EmgRWNg0G0EqrlE+RuAcDpkNnn8qirJiUZsELpCc9U/qNEqO7p50p4TfSuvmrF/l30v4t
+        /sUoaTdCmM9hgUmCYl7jOhkLtwJLfNI=
+Date:   Tue, 27 Apr 2021 18:58:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, tglx@linutronix.de, jroedel@suse.de,
+        thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, pbonzini@redhat.com
+Subject: Re: [PATCH 1/3] x86/sev-es: Rename sev-es.{ch} to sev.{ch}
+Message-ID: <YIhCwtMA6WnDNvxt@zn.tnic>
+References: <20210427111636.1207-1-brijesh.singh@amd.com>
+ <20210427111636.1207-2-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-182-gregkh@linuxfoundation.org>
+In-Reply-To: <20210427111636.1207-2-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:56PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 800a7340ab7dd667edf95e74d8e4f23a17e87076.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: stable@vger.kernel.org
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: Mike Snitzer <snitzer@redhat.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/md/dm-ioctl.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-> index 1ca65b434f1f..820342de92cd 100644
-> --- a/drivers/md/dm-ioctl.c
-> +++ b/drivers/md/dm-ioctl.c
-> @@ -1747,7 +1747,8 @@ static void free_params(struct dm_ioctl *param, size_t param_size, int param_fla
->  }
->  
->  static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl *param_kernel,
-> -		       int ioctl_flags, struct dm_ioctl **param, int *param_flags)
-> +		       int ioctl_flags,
-> +		       struct dm_ioctl **param, int *param_flags)
->  {
->  	struct dm_ioctl *dmi;
->  	int secure_data;
-> @@ -1788,13 +1789,18 @@ static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl *param_kern
->  
->  	*param_flags |= DM_PARAMS_MALLOC;
->  
-> -	/* Copy from param_kernel (which was already copied from user) */
-> -	memcpy(dmi, param_kernel, minimum_data_size);
-> -
-> -	if (copy_from_user(&dmi->data, (char __user *)user + minimum_data_size,
-> -			   param_kernel->data_size - minimum_data_size))
-> +	if (copy_from_user(dmi, user, param_kernel->data_size))
->  		goto bad;
-> +
->  data_copied:
-> +	/*
-> +	 * Abort if something changed the ioctl data while it was being copied.
-> +	 */
-> +	if (dmi->data_size != param_kernel->data_size) {
-> +		DMERR("rejecting ioctl: data size modified while processing parameters");
-> +		goto bad;
-> +	}
-> +
->  	/* Wipe the user buffer so we do not return it to userspace */
->  	if (secure_data && clear_user(user, param_kernel->data_size))
->  		goto bad;
-> -- 
-> 2.31.1
-> 
+On Tue, Apr 27, 2021 at 06:16:34AM -0500, Brijesh Singh wrote:
+> The SEV-SNP builds upon the SEV-ES functionality while adding new hardware
+> protection. Version 2 of the GHCB specification adds new NAE events that
+> are SEV-SNP specific. Rename the sev-es.{ch} to sev.{ch} so that we can
+> consolidate all the SEV-ES and SEV-SNP in a one place.
 
-Original looks correct, dropping this commit now.
+No "we":
 
-greg k-h
+... so that all SEV* functionality can be consolidated in one place."
+
+Rest looks good.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
