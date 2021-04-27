@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C9636C120
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC5A36C11B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbhD0Iiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:38:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39574 "EHLO
+        id S235447AbhD0IjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:39:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39588 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235304AbhD0Iim (ORCPT
+        with ESMTP id S235239AbhD0Iio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:38:42 -0400
-Message-Id: <20210427083724.542646194@linutronix.de>
+        Tue, 27 Apr 2021 04:38:44 -0400
+Message-Id: <20210427083724.637378509@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619512679;
+        s=2020; t=1619512680;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ZfQPUmFK3i1rendKXuXOwZFwcyhEqPqcrvIv3liPQ4M=;
-        b=1ITDX4YkLMthIK9c/TRUNUUlvSJFYZyTFWr+7c2gokcDCXyzeqaGsXbfRGpnas9iFcb6kr
-        jjNTn+fqVyiSQ+T5lrgg7ojsJFJLTxxChIrrls0BVpZAF84fGMZz2wqmYxOpPCP2qYzLMS
-        dgajNJ54K3dYhXLy3t3nagt99aka7TIRafOv907fJzbzqgO+6tBg6hl2Z6rDnw8zycexl6
-        jCmTBM6fCezt0+xx1C5gQwXpcYI+q+3RJ2Tn7ICtEwlvpDYUixyBher7Q0NJArGpgMjTZO
-        cAozYN+l/lCXWhk3Bb37ygT1o+AOjSTvVO2ieQd3oaqg8SMbtf//b/kyD/CsTw==
+        bh=tQTgltj9Y5rN8zCs/ZTYEajzd/sZ+4+33frM4mAoVbY=;
+        b=ERGdw73e8eTAnJrMVTZ/biEUw5WX8e9vUfz540o5fAyNXlnQ663Dhi5XR7lOzl5CYJ1U+8
+        9qbo6dz0+JUbPX1/A6b3PouPVV+Gx/Bzg0tKGuAMJfeajb2GHnD+n/jl22rEVPl6m4Xl6+
+        8IrGQT4fm5gR23zBRAUJqEdJvggUIwah1OM98XOYusrq8NnVtmQg0hWBxQYJBnJkLggyP7
+        EqVojZaUN32tSKDrlmQFLf4NMn0LPcyZDMa/vQ0i0My0RewjwfGo5FJ23UC4+MQQ5rRw7G
+        o6QeM8I4xxbsZ0WfJifj4nI7B8zMBK82T02XNMix8ZGa9F+j9qFiv++FdslMNA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619512679;
+        s=2020e; t=1619512680;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ZfQPUmFK3i1rendKXuXOwZFwcyhEqPqcrvIv3liPQ4M=;
-        b=WQkOeGrSJ8+XuT5DB5vFu/QTqUpGWV84Rycb05FyYBBB9/pQPAbfJxGObL5BJNr2qxlTXM
-        ZBlBXTkKaOf4A/BA==
-Date:   Tue, 27 Apr 2021 10:25:42 +0200
+        bh=tQTgltj9Y5rN8zCs/ZTYEajzd/sZ+4+33frM4mAoVbY=;
+        b=wW5CGWROG0rA3MEVOdeaN+A0XaQbpUDueMS3eXKNcMH+mBAq9ovjBKVRDu3tKPEOJ4muG7
+        jAtDYkOV6JjySyCQ==
+Date:   Tue, 27 Apr 2021 10:25:43 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
@@ -44,7 +44,7 @@ Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
         Alex Belits <abelits@marvell.com>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         John Stultz <john.stultz@linaro.org>
-Subject: [patch 5/8] time/timekeeping: Avoid invoking clock_was_set() twice
+Subject: [patch 6/8] hrtimer: Add bases argument to clock_was_set()
 References: <20210427082537.611978720@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,81 +53,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_adjtimex() might end up scheduling a delayed clock_was_set() via
-timekeeping_advance() and then invoke clock_was_set() directly which is
-pointless.
+clock_was_set() unconditionaly invokes retrigger_next_event() on all online
+CPUs. This was necessary because that mechanism was also used for resume
+from suspend to idle which is not longer the case.
 
-Make timekeeping_advance() return whether an invocation of clock_was_set()
-is required and handle it at the call sites which allows do_adjtimex() to
-issue a single direct call if required.
+The bases arguments allows the callers of clock_was_set() to hand in a mask
+which tells clock_was_set() which of the hrtimer clock bases are affected
+by the clock setting. This mask will be used in the next step to check
+whether a CPU base has timers queued on a clock base affected by the event
+and avoid the SMP function call if there are none.
+
+Add a @bases argument, provide defines for the active bases masking and
+fixup all callsites.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/time/timekeeping.c |   18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ kernel/time/hrtimer.c       |    4 ++--
+ kernel/time/tick-internal.h |    9 ++++++++-
+ kernel/time/timekeeping.c   |   14 +++++++-------
+ 3 files changed, 17 insertions(+), 10 deletions(-)
 
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -894,7 +894,7 @@ static void hrtimer_reprogram(struct hrt
+  * in the tick, which obviously might be stopped, so this has to bring out
+  * the remote CPU which might sleep in idle to get this sorted.
+  */
+-void clock_was_set(void)
++void clock_was_set(unsigned int bases)
+ {
+ 	if (!hrtimer_hres_active() && !tick_nohz_active)
+ 		goto out_timerfd;
+@@ -908,7 +908,7 @@ void clock_was_set(void)
+ 
+ static void clock_was_set_work(struct work_struct *work)
+ {
+-	clock_was_set();
++	clock_was_set(CLOCK_SET_WALL);
+ }
+ 
+ static DECLARE_WORK(hrtimer_work, clock_was_set_work);
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@ -165,7 +165,14 @@ DECLARE_PER_CPU(struct hrtimer_cpu_base,
+ extern u64 get_next_timer_interrupt(unsigned long basej, u64 basem);
+ void timer_clear_idle(void);
+ 
+-void clock_was_set(void);
++#define CLOCK_SET_WALL							\
++	(BIT(HRTIMER_BASE_REALTIME) | BIT(HRTIMER_BASE_REALTIME_SOFT) |	\
++	 BIT(HRTIMER_BASE_TAI) | BIT(HRTIMER_BASE_TAI_SOFT))
++
++#define CLOCK_SET_BOOT							\
++	(BIT(HRTIMER_BASE_BOOTTIME) | BIT(HRTIMER_BASE_BOOTTIME_SOFT))
++
++void clock_was_set(unsigned int bases);
+ void clock_was_set_delayed(void);
+ 
+ void hrtimers_resume_local(void);
 --- a/kernel/time/timekeeping.c
 +++ b/kernel/time/timekeeping.c
-@@ -2126,7 +2126,7 @@ static u64 logarithmic_accumulation(stru
-  * timekeeping_advance - Updates the timekeeper to the current time and
-  * current NTP tick length
-  */
--static void timekeeping_advance(enum timekeeping_adv_mode mode)
-+static bool timekeeping_advance(enum timekeeping_adv_mode mode)
- {
- 	struct timekeeper *real_tk = &tk_core.timekeeper;
- 	struct timekeeper *tk = &shadow_timekeeper;
-@@ -2197,9 +2197,8 @@ static void timekeeping_advance(enum tim
+@@ -1322,8 +1322,8 @@ int do_settimeofday64(const struct times
  	write_seqcount_end(&tk_core.seq);
- out:
  	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
--	if (clock_set)
--		/* Have to call _delayed version, since in irq context*/
--		clock_was_set_delayed();
-+
-+	return !!clock_set;
+ 
+-	/* signal hrtimers about time change */
+-	clock_was_set();
++	/* Signal hrtimers about time change */
++	clock_was_set(CLOCK_SET_WALL);
+ 
+ 	if (!ret)
+ 		audit_tk_injoffset(ts_delta);
+@@ -1370,8 +1370,8 @@ error: /* even if we error out, we forwa
+ 	write_seqcount_end(&tk_core.seq);
+ 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
+ 
+-	/* signal hrtimers about time change */
+-	clock_was_set();
++	/* Signal hrtimers about time change */
++	clock_was_set(CLOCK_SET_WALL);
+ 
+ 	return ret;
  }
+@@ -1735,8 +1735,8 @@ void timekeeping_inject_sleeptime64(cons
+ 	write_seqcount_end(&tk_core.seq);
+ 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
  
- /**
-@@ -2208,7 +2207,8 @@ static void timekeeping_advance(enum tim
-  */
- void update_wall_time(void)
- {
--	timekeeping_advance(TK_ADV_TICK);
-+	if (timekeeping_advance(TK_ADV_TICK))
-+		clock_was_set_delayed();
+-	/* signal hrtimers about time change */
+-	clock_was_set();
++	/* Signal hrtimers about time change */
++	clock_was_set(CLOCK_SET_WALL | CLOCK_SET_BOOT);
  }
+ #endif
  
- /**
-@@ -2388,8 +2388,9 @@ int do_adjtimex(struct __kernel_timex *t
- {
- 	struct timekeeper *tk = &tk_core.timekeeper;
- 	struct audit_ntp_data ad;
--	unsigned long flags;
-+	bool clock_set = false;
- 	struct timespec64 ts;
-+	unsigned long flags;
- 	s32 orig_tai, tai;
- 	int ret;
+@@ -2429,7 +2429,7 @@ int do_adjtimex(struct __kernel_timex *t
+ 		clock_set |= timekeeping_advance(TK_ADV_FREQ);
  
-@@ -2424,6 +2425,7 @@ int do_adjtimex(struct __kernel_timex *t
- 	if (tai != orig_tai) {
- 		__timekeeping_set_tai_offset(tk, tai);
- 		timekeeping_update(tk, TK_MIRROR | TK_CLOCK_WAS_SET);
-+		clock_set = true;
- 	}
- 	tk_update_leap_state(tk);
- 
-@@ -2434,9 +2436,9 @@ int do_adjtimex(struct __kernel_timex *t
- 
- 	/* Update the multiplier immediately if frequency was set directly */
- 	if (txc->modes & (ADJ_FREQUENCY | ADJ_TICK))
--		timekeeping_advance(TK_ADV_FREQ);
-+		clock_set |= timekeeping_advance(TK_ADV_FREQ);
- 
--	if (tai != orig_tai)
-+	if (clock_set)
- 		clock_was_set();
+ 	if (clock_set)
+-		clock_was_set();
++		clock_was_set(CLOCK_REALTIME);
  
  	ntp_notify_cmos_timer();
+ 
 
