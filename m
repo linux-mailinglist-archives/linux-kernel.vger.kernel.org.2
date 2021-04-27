@@ -2,85 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D82C36C80B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781FB36C811
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238582AbhD0Oyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:54:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238362AbhD0Oyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:54:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA0C7613DC;
-        Tue, 27 Apr 2021 14:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619535244;
-        bh=bZXe+RVa/zhAqQzqMP53+krkWI37IFZjwq9cKyWcFqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ExFZKDzf6e76EpzK6kxiZCUyuw+vyz2ztxSt3Bh/imtoqOQVLAA9sS87AuMEYJcPk
-         SIsGSjxTqXIVbF0mlpNs2y90WOxAAW5Cee24L1nRDO5vyopdvqlxkmiJ8mzvIRaHuf
-         HTFtXl6QZU7BKp3Qme1IaWQ3gbYpOyT8qDRwBWD8=
-Date:   Tue, 27 Apr 2021 16:54:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        oss-drivers@netronome.com,
-        Simon Horman <simon.horman@netronome.com>
-Subject: Re: [PATCH 050/190] Revert "nfp: abm: fix a memory leak bug"
-Message-ID: <YIgliviAfp9Chzsa@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-51-gregkh@linuxfoundation.org>
- <20210421090315.11cc4eaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S238611AbhD0Ozv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 10:55:51 -0400
+Received: from mail-bn7nam10on2075.outbound.protection.outlook.com ([40.107.92.75]:27361
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236144AbhD0Ozu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 10:55:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CxE6wy+s2QBbajI3Y+u0Fi0UI11PYXc6oPHBOTKtEHpgJwhDmxTPU1JYIRh5TM+zqsWwr7eou/ULrpTz6VL+hSopY0DjuYemHfTNDseQi/sV5c3QBi3++seNrn1IvbEnfZcLoIrrmqGy2ZJ8LiN2m0NBE5ysp0o9D1aoDRc9pc/HeN1VvyHZR75iSSUGD7A2IknC7rtvwd7N3pDQr3qzUCn8ifL/Ur0naA2AFc6tzRgNTQW1uRQuAWMjMH4IR/ldJP1Dp2Urcyp8Ne8Ek9MRw3v3KWimpLJiCEGPduHBwPKARlDY98W7di5WsS1TRxAM8g5EnB68ZW5WiNIyceRRKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7gSWfNWx6o2Nsy43Jh+oVhKz85/9gJzAmAM+rNhel/U=;
+ b=MIjjRyroOSUSVbzQFpC6AjzRpgJRrm37orE3i5q8Gdv77HjwS3qPNfbZ0zNVw1nRLcoiiu5MDju8XfnE/J9wWi8uqWpW57u8qNVd7qJVCb0rbe0rFKe/6uwshtUFeAruauQ11Ootgxx9V8eEhmXOyfcdN/J7OhnBRyEOr8ibDw4WzXp6MguP0gWSizc7VG2poTN7731w6G2Jnm49h5up0SZe4a3uMucJkYIAwaw0tMb8LKI7IOhCHjP5l1swDrtxoE9dsO90SZXaTtvwg0/9dHfE8Jv7ujtkhukrDWYvVUBpnWgAuWdaSuIT78RrU/fSG5ALkwCLRupwMy0W73u7Rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7gSWfNWx6o2Nsy43Jh+oVhKz85/9gJzAmAM+rNhel/U=;
+ b=Y5bJdAa03Mtsp7BAi+PJ8O4Xubk7trzj34U2POTiB+4PKQpP1NXpj8Pn7OWxaxK7SMTaWCgK7rxG8u0HGuoz5gCjS/65vqQjOuINjmhMXH1iSLgZWwze1gTKiuIzYL/bHPDLuvbZvOLaXsuZ67tHbTLxFhLDGgwqtDgF12RUdIDv8VHTELL4m5h37GMTMInEvzMEcJrzpuosB2uU1vls05SffedqQ8ycyMGpXRLpE5y9PxJkJxH6wVTptjkzLWId4DWxVUd5NGamSbUt05Mz8CJT34HWH+mKV89FFwX6knPrPS5kzY/8w+QtHB5QlMe2fOGWenXraxHb1to+91JW/w==
+Received: from MW4PR03CA0056.namprd03.prod.outlook.com (2603:10b6:303:8e::31)
+ by DM6PR12MB4316.namprd12.prod.outlook.com (2603:10b6:5:21a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Tue, 27 Apr
+ 2021 14:55:05 +0000
+Received: from CO1NAM11FT030.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8e:cafe::79) by MW4PR03CA0056.outlook.office365.com
+ (2603:10b6:303:8e::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22 via Frontend
+ Transport; Tue, 27 Apr 2021 14:55:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT030.mail.protection.outlook.com (10.13.174.125) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Tue, 27 Apr 2021 14:55:05 +0000
+Received: from [10.20.22.163] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Apr
+ 2021 14:55:04 +0000
+Subject: Re: [PATCH v2 1/2] PCI: Add support for a functional level reset
+ based on _RST method
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sinan Kaya <okaya@kernel.org>,
+        Vikram Sethi <vsethi@nvidia.com>
+References: <20210427022802.21458-1-sdonthineni@nvidia.com>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <1cc3cad6-c100-5fe7-6fa2-664108c985e2@nvidia.com>
+Date:   Tue, 27 Apr 2021 09:55:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421090315.11cc4eaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210427022802.21458-1-sdonthineni@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 588d630e-3826-4d3e-77f9-08d9098c719d
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4316:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4316C034839D8B3864D1BCACC7419@DM6PR12MB4316.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C94GSWNUDFSX/rFgfe0ssyl9mSc/eXMK6IuQ+Ov3OLhoEBJnDwW4tr/DoXF02eIsXWqIaSIBeFC21FTjKbpDuAvYcWXG4OgC0MhGosDPbSizIV+A0siMc77P9Y48bG5nJsalCaxi/u85TGXJPXYzYnzN9VG58XgV8uwrHBwBgYPTaZ2jRdoOTbcyIqWEDTKBMKokt33MJUzvmq7yaHy4o0R6f2zLqfjkoVME30UM9k+wV9N7OBWcXaLpt3ohILuhUmIfx/DHdrqRVUW8vmw1E6nvS6DNLyZSDPswRQnsXcL7u+RiveHaKVccFHVXcNhT0qHaltRf97etJ+QXR/q71kRdbi5x/m43NMLS9Rs4G6LDAYkq1gEkbUwr9QltdL4rpICEgNrC/SZsxckVtH29bVwWN8RzYgdaDuwaGA687X9B+oaf2LLl3fajRcs08nk4OxLbzBIcnwC+n0xDptJ1fVIntv9qWZ/UwI3pkBL0iSm6EgbsuLj+P5znpK+6zDJmkdiFEtBEKQq30wdkfD5RVT13CJGoIWhgLR2pFAR9PBDXF3X3tGk9c9ewUh8WTShj/2UF9r19KjO8fdt7fK9FUSkY3FuOCEmlt7bqoWMwKCixcdQZBXhNCvL1qinqqI8UrbO88u4R9GzQvKKHS+6h3eOmFt+o5cfV5kVawlE4677xw2J3reUzXAaqhSIDPZBo
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(36840700001)(46966006)(7636003)(356005)(107886003)(426003)(2616005)(2906002)(36860700001)(53546011)(83380400001)(36756003)(86362001)(31696002)(70206006)(70586007)(5660300002)(82740400003)(186003)(16526019)(4326008)(316002)(8936002)(478600001)(8676002)(31686004)(47076005)(16576012)(36906005)(6916009)(82310400003)(54906003)(26005)(336012)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 14:55:05.4683
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 588d630e-3826-4d3e-77f9-08d9098c719d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT030.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4316
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:03:15AM -0700, Jakub Kicinski wrote:
-> On Wed, 21 Apr 2021 14:58:45 +0200 Greg Kroah-Hartman wrote:
-> > This reverts commit bd4af432cc71b5fbfe4833510359a6ad3ada250d.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: Qiushi Wu <wu000273@umn.edu>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  drivers/net/ethernet/netronome/nfp/abm/main.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/netronome/nfp/abm/main.c b/drivers/net/ethernet/netronome/nfp/abm/main.c
-> > index bdbf0726145e..341773b43a4d 100644
-> > --- a/drivers/net/ethernet/netronome/nfp/abm/main.c
-> > +++ b/drivers/net/ethernet/netronome/nfp/abm/main.c
-> > @@ -283,7 +283,6 @@ nfp_abm_vnic_set_mac(struct nfp_pf *pf, struct nfp_abm *abm, struct nfp_net *nn,
-> >  	if (!nfp_nsp_has_hwinfo_lookup(nsp)) {
-> >  		nfp_warn(pf->cpp, "NSP doesn't support PF MAC generation\n");
-> >  		eth_hw_addr_random(nn->dp.netdev);
-> > -		nfp_nsp_close(nsp);
-> >  		return;
-> >  	}
-> >  
-> 
-> This one still looks correct to me :S
+Typo in the commit text  will post v3.
 
-Thanks for the review, now dropped.
+On 4/26/21 9:28 PM, Shanker Donthineni wrote:
+> The _RST is a standard method specified in the ACPI specification. It
+> provides a function level reset when it is described in the acpi_device
+> context associated with PCI-device.
+>
+> Implement a new reset function pci_dev_acpi_reset() for probing RST
+> method and execute if it is defined in the firmware.
+>
+> The ACPI based reset is called after the device-specific reset and
+> before standard PCI hardware resets.
+>
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+>  drivers/pci/pci.c | 35 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+>
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 16a17215f633..6dadb19848c2 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5054,6 +5054,35 @@ static void pci_dev_restore(struct pci_dev *dev)
+>  		err_handler->reset_done(dev);
+>  }
+>  
+> +/**
+> + * pci_dev_acpi_reset - do a function level reset using _RST method
+> + * @dev: device to reset
+> + * @probe: check if _RST method is included in the acpi_device context.
+> + */
+> +static int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
+> +{
+> +#ifdef CONFIG_ACPI
+> +	acpi_handle handle = ACPI_HANDLE(&dev->dev);
+> +
+> +	/* Return -ENOTTY if _RST method is not included in the dev context */
+> +	if (!handle || !acpi_has_method(handle, "_RST"))
+> +		return -ENOTTY;
+> +
+> +	/* Return 0 for probe phase indicating that we can reset this device */
+> +	if (probe)
+> +		return 0;
+> +
+> +	/* Invoke _RST() method to perform a function level reset */
+> +	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
+> +		pci_warn(dev, "Failed to reset the device\n");
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +#else
+> +	return -ENOTTY;
+> +#endif
+> +}
+> +
+>  /**
+>   * __pci_reset_function_locked - reset a PCI device function while holding
+>   * the @dev mutex lock.
+> @@ -5089,6 +5118,9 @@ int __pci_reset_function_locked(struct pci_dev *dev)
+>  	 * reset mechanisms might be broken on the device.
+>  	 */
+>  	rc = pci_dev_specific_reset(dev, 0);
+> +	if (rc != -ENOTTY)
+> +		return rc;
+> +	rc = pci_dev_acpi_reset(dev, 0);
+>  	if (rc != -ENOTTY)
+>  		return rc;
+>  	if (pcie_has_flr(dev)) {
+> @@ -5127,6 +5159,9 @@ int pci_probe_reset_function(struct pci_dev *dev)
+>  	might_sleep();
+>  
+>  	rc = pci_dev_specific_reset(dev, 1);
+> +	if (rc != -ENOTTY)
+> +		return rc;
+> +	rc = pci_dev_acpi_reset(dev, 1);
+>  	if (rc != -ENOTTY)
+>  		return rc;
+>  	if (pcie_has_flr(dev))
 
-greg k-h
