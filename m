@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A3036CBD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6191736CBFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238676AbhD0TlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
+        id S238962AbhD0Tq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238813AbhD0TlN (ORCPT
+        with ESMTP id S235661AbhD0Tqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:41:13 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBADC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:40:28 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id d15so18290036ljo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:40:28 -0700 (PDT)
+        Tue, 27 Apr 2021 15:46:55 -0400
+X-Greylist: delayed 331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 27 Apr 2021 12:46:12 PDT
+Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D936C061574;
+        Tue, 27 Apr 2021 12:46:12 -0700 (PDT)
+X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
+Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
+        id 5AD575726; Tue, 27 Apr 2021 21:40:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d1qy5wxeRoVOmQDNZKC3zuT1I7B8Wmbsg1PWKuM1gGo=;
-        b=KQMj4gOjxXdq3F3sCekOUpnM5wUKPyax2VsvJVD3UzXPCmwhInGgQ3fsNWZv9jhWkS
-         qBZ/uIkzoLhC494xEh1cVAGnDJC5c8kGoJZeHTrYfBs91mJHMHPmbcTgI3U2IIDIAWEt
-         WCscorxAa8dU8ukT54NW+qyPhOwFaTMq+lo1M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d1qy5wxeRoVOmQDNZKC3zuT1I7B8Wmbsg1PWKuM1gGo=;
-        b=CFHJjKszrTZCmG0WzBBPeI0MZ4wPvnbue0ZS+TJSTg3ceIkxmQ4K1jAT7aScMfiD5S
-         xci/le8n+uYrgdm96HjtlvDH6imaXfxzZsIZs/T10N5kAYgxfszdwOtOGgz9ACkbVDOX
-         qXO0WADzvpkdCn/DOoNVe1nU1hwH/BCYLTyON/GROQae4f2VnOtHV4Aovg4HRSqzfopN
-         S0YsRG7lFtz9lEqtJ9V1wdnrQgISMXoYBjXJES7Cm6TQYOnfHu1+pzueUXDKI3D32zq3
-         ES7lOiEDCDYkfcNHc5LzVsKCv83p47AWVxDaRH4ejwIf0AYaemjUuJoEJDQUWhFY91a4
-         Q0pg==
-X-Gm-Message-State: AOAM533SDrZySzQVRx9FwqjjwF3AxZO+QN1eisEcA1nBtrITJ4j8ma5f
-        scWgGgoPYHsV6BQDSZotaAwwwIahDnnLC820
-X-Google-Smtp-Source: ABdhPJxjsy7rdJqeepMq+6DsN3eL7fO/OT5IljrmTYEBvQVCv0ScPphXQAO9So+ezmJXM/YLn4XdCw==
-X-Received: by 2002:a05:651c:321:: with SMTP id b1mr18180128ljp.67.1619552426303;
-        Tue, 27 Apr 2021 12:40:26 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id u10sm170113lfq.243.2021.04.27.12.40.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 12:40:25 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 124so14417888lff.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:40:25 -0700 (PDT)
-X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr17323063lfu.201.1619552425277;
- Tue, 27 Apr 2021 12:40:25 -0700 (PDT)
+        d=valentin-vidic.from.hr; s=2020; t=1619552430;
+        bh=l0jf3je7Taq6bjLlRaBk8R2JjLc/aoQA0pAo1/ZWMFg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JWI/hwNGbVtZ9vXHXZUDL94f3QGd/JcWsUyJxn/0M5uR6KyCiQaToVR9t+NnZxvR8
+         aLcGJleyCchUcdVdMi1JFgseJ9hJMvCFFQZZmZiN+mavJJi2jmVL7XkBbGNPm+xY3a
+         UnFbbAxu3SsDpHgHTUz7Xfqz+YZ339UG4CxDnyzKM21UD6k6+dNzH18l5CaHKhIcIJ
+         nuxyLgTBLXJi2N8gcLHlvjEkTCTLlpl84Ma3xjP16vRvABx4sa17F5zPmG1u94fIYL
+         RsVwZx66sBv8eKAiiHFMTVGDoLb0c8unXyBwCchQYFrVVIIklTM+riJ8fCNCKsc4Hz
+         1PohB0Bp65yHCTnS0bYzmfx9YO0n84ToEiZyzYgzfnpU2s5rUdfypKH5sKn6Otz/mN
+         ZwF4OdJ9nq7WoqlaPid828qgrEK0D7vtLAv2mrNtVtS826zSRop99d5K+koRT2FLWO
+         MCYVMaOhBfHFTeWBTG1KysEwCr9LMrkqVASnwv6FdM7jwhtGtY6/Zod5lT4lHtRntq
+         nFbpvV4XrLMkN7EZTaVMSR5FCJRUpu5P6n1BGgw6wDXEF+Y2rIP4yLigb3pP0LV4tv
+         h4Y2dxaf0Bcc4HajUeTTpZgj5lnuXD21t3KsWtRtX1AnBTHxG/OpA3ZyRvAEtJXKi4
+         DCiJ2eoFZie7cA1IKsaMG254=
+From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
+        Benjamin Zimmermann <dave@oss.volkswagen.com>,
+        debian-s390@lists.debian.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Subject: [PATCH v2] s390/sclp_vt220: Fix console name to match device
+Date:   Tue, 27 Apr 2021 21:40:10 +0200
+Message-Id: <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
+References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
 MIME-Version: 1.0
-References: <20210427025805.GD3122264@magnolia>
-In-Reply-To: <20210427025805.GD3122264@magnolia>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 27 Apr 2021 12:40:09 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
-Message-ID: <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
-Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
-To:     "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 7:58 PM Darrick J. Wong <djwong@kernel.org> wrote:
->
-> Please pull this single patch to the iomap code for 5.13-rc1, which
-> augments what gets logged when someone tries to swapon an unacceptable
-> swap file.  (Yes, this is a continuation of the swapfile drama from last
-> season...)
+Console name reported in /proc/consoles:
 
-Hmm. I've pulled this, but that "iomap_swapfile_fail()" thing seems a
-bit silly to me.
+  ttyS1                -W- (EC p  )    4:65
 
-We have '%pD' for printing a filename. It may not be perfect (by
-default it only prints one component, you can do "%pD4" to show up to
-four components), but it should "JustWork(tm)".
+does not match the char device name:
 
-And if it doesn't, we should fix it.
+  crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
 
-So instead of having a kmalloc/kfree for the path buffer, I think you
-should have been able to just do
+so debian-installer inside a QEMU s390x instance gets confused and fails
+to start with the following error:
 
-    pr_err("swapon: file %pD4 %s\n", isi->file, str);
+  steal-ctty: No such file or directory
 
-and be done with it.
+Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+---
+ v2: also update preferred console for VT220 case
 
-And no, we don't have a ton of %pD users, so if it's ugly or buggy
-when the file is NULL, or has problems with more (of fewer) than four
-path components, let's just fix that (added Jia He and Al Viro to
-participants, they've been the two people doing %pd and %pD - for
-'struct dentry *' and 'struct file *' respectively).
+ arch/s390/kernel/setup.c       | 2 +-
+ drivers/s390/char/sclp_vt220.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-                Linus
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index 72134f9f6ff5..3ec6ca9c26c0 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -165,7 +165,7 @@ static void __init set_preferred_console(void)
+ 	else if (CONSOLE_IS_3270)
+ 		add_preferred_console("tty3270", 0, NULL);
+ 	else if (CONSOLE_IS_VT220)
+-		add_preferred_console("ttyS", 1, NULL);
++		add_preferred_console("ttysclp", 0, NULL);
+ 	else if (CONSOLE_IS_HVC)
+ 		add_preferred_console("hvc", 0, NULL);
+ }
+diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
+index 047f812d1a1c..71ed1bf15598 100644
+--- a/drivers/s390/char/sclp_vt220.c
++++ b/drivers/s390/char/sclp_vt220.c
+@@ -35,8 +35,8 @@
+ #define SCLP_VT220_MINOR		65
+ #define SCLP_VT220_DRIVER_NAME		"sclp_vt220"
+ #define SCLP_VT220_DEVICE_NAME		"ttysclp"
+-#define SCLP_VT220_CONSOLE_NAME		"ttyS"
+-#define SCLP_VT220_CONSOLE_INDEX	1	/* console=ttyS1 */
++#define SCLP_VT220_CONSOLE_NAME		"ttysclp"
++#define SCLP_VT220_CONSOLE_INDEX	0	/* console=ttysclp0 */
+ 
+ /* Representation of a single write request */
+ struct sclp_vt220_request {
+-- 
+2.20.1
+
