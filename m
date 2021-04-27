@@ -2,126 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D32C36CB98
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4619036CB9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238555AbhD0TXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhD0TXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:23:19 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88781C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:35 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id i22so7642318ila.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9A9KdhpIimzuD5OzCChHO2CjGhCpPan1yRAo2/CAv+c=;
-        b=KmmcN+wJO4XJEW8i1n4M8fdsVxKICGd+cicWY6PhIyfMntf61DWDbN0lYONPfv7avX
-         7FxH4J1DcHU+d/BPW07cIeL7M0+KsL2H3xjnwnUShzOsbwp4p1Mstgek0/DJDywqlAvj
-         pvQ4AeQxgT8d2B9boE2xCyb2V/QcKRwgqazkbOV36nIXZRCI1I41ENBc9O94GPWzuGWn
-         ZoVb91ruebPuMOxROumRJF1bkL3LMcW5p3RL67vEkcYBqN+97GnMi303v4vqdgIYcysj
-         J3wZPapZMjRdKb47N21dcq6V8IXSfFXXFfDtIZJD9rm1L4Cs5YgpeYsNB9gao99MRN+M
-         bnKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9A9KdhpIimzuD5OzCChHO2CjGhCpPan1yRAo2/CAv+c=;
-        b=XiyBBT0PRbzOWuGjbRvImIv4wm0bPnLtt3EoNTfI3NN4JG2jB/SFMWMQUShe+tcihz
-         DnlJ0JS+J/dkTkKSQdhoXRH6mdOhAYYKpecVM/HyVaSQGQzN2CVa6o3e9AuCrpDdf86Y
-         sBLT1qv8qdN9xi/ogGSsaWaS8IZHPBR10iEKWua1Fdj3mDHyODQxufs2itGCzNPRAOsO
-         UEaX5SnlyRTBb9dFXbZdBIxrMgRw5O1fMGupu1jpWdtJfVT65jWvlW2Xg0TlYvSCKQqB
-         kUWT7e5QE4gxuAgnC0shg21S4AzogqabPUQ+AWA/E58wyCAS3kKbkvFWzxBVmOUb8v3D
-         NGsA==
-X-Gm-Message-State: AOAM532QCwUFjqXpERG5gQgZlYiioTbGyaBFH/Wc1s7GkcuHYZaykgPP
-        QTWWkGVIP1V9eYjbCp4jun3N3w==
-X-Google-Smtp-Source: ABdhPJx4F96uXqpXKJbkwUaij1OmBpJfBrZ4CVUAcProKFEqjv4XzeMalTF3wkg8sv23tVBPaKB/YA==
-X-Received: by 2002:a05:6e02:13ca:: with SMTP id v10mr18478934ilj.191.1619551354939;
-        Tue, 27 Apr 2021 12:22:34 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id d2sm1817918ile.18.2021.04.27.12.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 12:22:34 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lbTI0-00Dglq-Rs; Tue, 27 Apr 2021 16:22:32 -0300
-Date:   Tue, 27 Apr 2021 16:22:32 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 05/16] dma-mapping: Introduce dma_map_sg_p2pdma()
-Message-ID: <20210427192232.GO2047089@ziepe.ca>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-6-logang@deltatee.com>
+        id S238618AbhD0TZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235563AbhD0TY4 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:24:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BBC1613F4;
+        Tue, 27 Apr 2021 19:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619551452;
+        bh=nUcQgzFrXvLoVtK/WRCzyBpanEbNK+FnqFAf7DNEjAI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oCoF92ZD0vmnpPGehs99wLLmyfTRZaH2The2kM/kUSKxqXLzu/gzh66botWAq7hI7
+         kA441SThV0hQ6YsBkSMzM1cI6vuZJdHJuaVBvyfvK7JN3McZfB5KQ5m1myTBIeCCYr
+         qW7AQzCS0N3TFYsVq0FP1wMV4OOeM+e/Dizb2E/aSWz9WKwaK37Y81petnRbHTrHPN
+         ocmBPtqbLjK7EkltmlUopYf2/5R+vvd55a7lqHDI1iHhjBIqw62i1N4Civuzi19CUS
+         HvOZDw7xrEdjDWKC1EQ5YTzLTjwC48ITIoQdLqT0zoXpRyzbpgXQHr+f7pTMYaO3iP
+         KHPBtWNYqZ1+A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 978FB40647; Tue, 27 Apr 2021 16:24:09 -0300 (-03)
+Date:   Tue, 27 Apr 2021 16:24:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v6 01/26] tools headers uapi: Update tools's copy of
+ linux/perf_event.h
+Message-ID: <YIhk2XkvUcoIPbgc@kernel.org>
+References: <20210427070139.25256-1-yao.jin@linux.intel.com>
+ <20210427070139.25256-2-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408170123.8788-6-logang@deltatee.com>
+In-Reply-To: <20210427070139.25256-2-yao.jin@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:01:12AM -0600, Logan Gunthorpe wrote:
-> dma_map_sg() either returns a positive number indicating the number
-> of entries mapped or zero indicating that resources were not available
-> to create the mapping. When zero is returned, it is always safe to retry
-> the mapping later once resources have been freed.
+Em Tue, Apr 27, 2021 at 03:01:14PM +0800, Jin Yao escreveu:
+> To get the changes in:
 > 
-> Once P2PDMA pages are mixed into the SGL there may be pages that may
-> never be successfully mapped with a given device because that device may
-> not actually be able to access those pages. Thus, multiple error
-> conditions will need to be distinguished to determine weather a retry
-> is safe.
+> Liang Kan's patch
+> [PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
 > 
-> Introduce dma_map_sg_p2pdma[_attrs]() with a different calling
-> convention from dma_map_sg(). The function will return a positive
-> integer on success or a negative errno on failure.
+> Kan's patch is upstreamed yet but perf/core branch doesn't have it
+> at this moment. But next perf tool patches need this interface for
+> hybrid support.
 > 
-> ENOMEM will be used to indicate a resource failure and EREMOTEIO to
-> indicate that a P2PDMA page is not mappable.
+> This patch can be removed after Kan's patch is merged in perf/core
+> branch.
+
+Nope, it is already in tip/perf/core as:
+
+  55bcf6ef314ae8ba ("perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE")
+
+And your patch, the one below, shouldn't include the kernel file, i.e. include/uapi/linux/perf_event.h
+as tooling only uses the one in tools/include/uapi/linux/perf_event.h.
+
+Leave the perf tool build warning there, as soon as both acme/perf/core
+and tip/perf/core hit torvalds/master, all gets solved.
+
+So I'm removing it here in addition to updating the commit log message.
+
+Ah good news, the test builds passed in all my test build containers.
+
+I'll refresh tmp.perf/core once I update these messages, etc. So that we
+can continue from there in case you need to respin a v7.
+
+Thanks,
+
+- Arnaldo.
+
+
+ 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+> v6:
+>  - No update.
 > 
-> The __DMA_ATTR_PCI_P2PDMA attribute is introduced to inform the lower
-> level implementations that P2PDMA pages are allowed and to warn if a
-> caller introduces them into the regular dma_map_sg() interface.
+> v5:
+>  - Update the commit message to mention that Kan's patch is
+>    upstreamed but not merged to perf/core branch.
+> 
+> v4:
+>  - Updated by Kan's latest patch,
+>    '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE'
+> 
+>  include/uapi/linux/perf_event.h       | 15 +++++++++++++++
+>  tools/include/uapi/linux/perf_event.h | 15 +++++++++++++++
+>  2 files changed, 30 insertions(+)
+> 
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index ad15e40d7f5d..14332f4cf816 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -37,6 +37,21 @@ enum perf_type_id {
+>  	PERF_TYPE_MAX,				/* non-ABI */
+>  };
+>  
+> +/*
+> + * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
+> + * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
+> + *					AA: hardware event ID
+> + *					EEEEEEEE: PMU type ID
+> + * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
+> + *					BB: hardware cache ID
+> + *					CC: hardware cache op ID
+> + *					DD: hardware cache op result ID
+> + *					EEEEEEEE: PMU type ID
+> + * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
+> + */
+> +#define PERF_PMU_TYPE_SHIFT		32
+> +#define PERF_HW_EVENT_MASK		0xffffffff
+> +
+>  /*
+>   * Generalized performance event event_id types, used by the
+>   * attr.event_id parameter of the sys_perf_event_open()
+> diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+> index ad15e40d7f5d..14332f4cf816 100644
+> --- a/tools/include/uapi/linux/perf_event.h
+> +++ b/tools/include/uapi/linux/perf_event.h
+> @@ -37,6 +37,21 @@ enum perf_type_id {
+>  	PERF_TYPE_MAX,				/* non-ABI */
+>  };
+>  
+> +/*
+> + * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
+> + * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
+> + *					AA: hardware event ID
+> + *					EEEEEEEE: PMU type ID
+> + * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
+> + *					BB: hardware cache ID
+> + *					CC: hardware cache op ID
+> + *					DD: hardware cache op result ID
+> + *					EEEEEEEE: PMU type ID
+> + * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
+> + */
+> +#define PERF_PMU_TYPE_SHIFT		32
+> +#define PERF_HW_EVENT_MASK		0xffffffff
+> +
+>  /*
+>   * Generalized performance event event_id types, used by the
+>   * attr.event_id parameter of the sys_perf_event_open()
+> -- 
+> 2.17.1
+> 
 
-So this new API is all about being able to return an error code
-because auditing the old API is basically terrifying?
+-- 
 
-OK, but why name everything new P2PDMA? It seems nicer to give this
-some generic name and have some general program to gradually deprecate
-normal non-error-capable dma_map_sg() ?
-
-I think that will raise less questions when subsystem people see the
-changes, as I was wondering why RW was being moved to use what looked
-like a p2pdma only API.
-
-dma_map_sg_or_err() would have been clearer
-
-The flag is also clearer as to the purpose if it is named
-__DMA_ATTR_ERROR_ALLOWED
-
-Jason
+- Arnaldo
