@@ -2,326 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917CB36C6D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B9136C6CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238136AbhD0NPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237872AbhD0NPE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:15:04 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC164C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 06:14:20 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so964039pjn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 06:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JwE6GlNiQGl/c5cM4U9EoSDDHFJeDp318GJ6u5EXBkI=;
-        b=LjYqWnArFsnwEAosqYbuGmYYOFsAtgGW5ytu7jA+j+Epy4DCTJoddB9AwfBt7TaTpy
-         928hH0YaFc33NK7WLIFa5frWxmNh3j96OyRiSyQo+ngM8ycuG7jtGoUnJXyYrNa+sc/j
-         GBgZGJ4t4BOyKSBCx3PFqf+O3az01oaSRhzec=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JwE6GlNiQGl/c5cM4U9EoSDDHFJeDp318GJ6u5EXBkI=;
-        b=Nt4iWVwBQ3E+HLJtEETl4zk17v3PnvCJyTHPCBQtmTv9DwWgKFJ2lNP5IUoNY9HSxV
-         g/gFiPWWbU5K4fqmMLq4BplOrBW1fWYPQsF40rcIG+U0Y8+KP8UT05D/+8DO8e4JdVHC
-         geQTMKg42cB03ot1OyZwlR4w5EfxuB/S0gzGwVLS33O/roZlTIihnSCrX0Kjnlr+pOHD
-         xfBro0OinbYLUAnItRFLAXaH29Qe7/hBda6zNGtv8NjGpwbKE7Tcbm0lFtRXTcifTNny
-         3f9PJ8vUavJeDPrJxiBlIeQcxSOyeYxtBfRQD8cRHfCRSzxb5upCkjz42Y2QTCY5wHkt
-         BpHg==
-X-Gm-Message-State: AOAM531NlgzKoC6jZAIzeq2S879UrXm4ZaiNkgcONV2ZUox5gKl3EdzQ
-        cdjjU9ayio0fpa/NhdgbMOE9CA==
-X-Google-Smtp-Source: ABdhPJz0+ATaSAbvojRSuCdWLZ1yF6Ouctbge3vlX2i5R3taAb2KszwaZA0j//pRalbiO/kD+CQloQ==
-X-Received: by 2002:a17:902:36b:b029:ed:4645:2ed1 with SMTP id 98-20020a170902036bb02900ed46452ed1mr6985099pld.16.1619529260324;
-        Tue, 27 Apr 2021 06:14:20 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:8192:3566:9cd4:8ed7])
-        by smtp.gmail.com with ESMTPSA id c8sm2755313pfp.160.2021.04.27.06.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 06:14:19 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-Date:   Tue, 27 Apr 2021 22:13:43 +0900
-Message-Id: <20210427131344.139443-9-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-In-Reply-To: <20210427131344.139443-1-senozhatsky@chromium.org>
-References: <20210427131344.139443-1-senozhatsky@chromium.org>
+        id S237884AbhD0NPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236959AbhD0NOw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:14:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA753613D0;
+        Tue, 27 Apr 2021 13:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619529249;
+        bh=x6RKmLsto5X/verU2yL8j9BN2Rr9H32IO58Jepb9G80=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mGySASVSQHGfN97jT36/oY4u49bOeSkTkParcoSb/xOfTrBpdDrpQ+MGjcP9jStIv
+         rWfJyYaPhSBFv55tjEv11UYf+hHnMprdOty+Dnr6I6jF5gWhbyvjuTFnRl8ZRivAfD
+         ZxNrGn7qsr+KKxXbQXBGIWksCanU3N09ySWASNaMQ5QEaqzJPoCR9lCdcFM6xeJ6n/
+         TtBcyNQMtxZ+E82xFczr9r3uZOu9tl4si9FdTNe+/D19duJsikG0bFtsd1miE6kooV
+         zWFJkvQmkYdIsWrIFg4gTczOKLsovSe3gsTmRqND02ZBCBKdciI5aWKq65Hm7OUDYD
+         bm4f90lxM5+ZA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2D52540647; Tue, 27 Apr 2021 10:14:06 -0300 (-03)
+Date:   Tue, 27 Apr 2021 10:14:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v6 00/26] perf tool: AlderLake hybrid support series 1
+Message-ID: <YIgOHc1pnoyQASUJ@kernel.org>
+References: <20210427070139.25256-1-yao.jin@linux.intel.com>
+ <YIgIiZVxOWdYTwef@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIgIiZVxOWdYTwef@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for new noncontiguous DMA API, which
-requires allocators to have two execution branches: one
-for the current API, and one for the new one.
+Em Tue, Apr 27, 2021 at 02:50:17PM +0200, Jiri Olsa escreveu:
+> On Tue, Apr 27, 2021 at 03:01:13PM +0800, Jin Yao wrote:
+> > AlderLake uses a hybrid architecture utilizing Golden Cove cores
+> > (core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
+> > event list. Some events are available on core cpu, some events
+> > are available on atom cpu and some events can be available on both.
+> > 
+> > Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
+> > /sys/devices/cpu_core
+> > /sys/devices/cpu_atom
+> > 
+> > cat /sys/devices/cpu_core/cpus
+> > 0-15
+> > 
+> > cat /sys/devices/cpu_atom/cpus
+> > 16-23
+> > 
+> > In this example, core cpus are 0-15 and atom cpus are 16-23.
+> > 
+> > To enable a core only event or atom only event:
+> > 
+> >         cpu_core/<event name>/
+> > or
+> >         cpu_atom/<event name>/
+> > 
+> > Count the 'cycles' event on core cpus.
+> > 
+> >   # perf stat -e cpu_core/cycles/ -a -- sleep 1
+> > 
+> >    Performance counter stats for 'system wide':
+> > 
+> >       12,853,951,349      cpu_core/cycles/
+> > 
+> >          1.002581249 seconds time elapsed
+> > 
+> > If one event is available on both atom cpu and core cpu, two events
+> > are created automatically.
+> > 
+> >   # perf stat -e cycles -a -- sleep 1
+> > 
+> >    Performance counter stats for 'system wide':
+> > 
+> >       12,856,467,438      cpu_core/cycles/
+> >        6,404,634,785      cpu_atom/cycles/
+> > 
+> >          1.002453013 seconds time elapsed
+> > 
+> > Group is supported if the events are from same pmu, otherwise a warning
+> > is displayed and disable grouping automatically.
+> > 
+> >   # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
+> > 
+> >    Performance counter stats for 'system wide':
+> > 
+> >       12,863,866,968      cpu_core/cycles/
+> >          554,795,017      cpu_core/instructions/
+> > 
+> >          1.002616117 seconds time elapsed
+> > 
+> >   # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
+> >   WARNING: events in group from different hybrid PMUs!
+> >   WARNING: grouped events cpus do not match, disabling group:
+> >     anon group { cpu_core/cycles/, cpu_atom/instructions/ }
+> > 
+> >    Performance counter stats for 'system wide':
+> > 
+> >            6,283,970      cpu_core/cycles/
+> >              765,635      cpu_atom/instructions/
+> > 
+> >          1.003959036 seconds time elapsed
+> > 
+> > Note that, since the whole patchset for AlderLake hybrid support is very
+> > large (40+ patches). For simplicity, it's splitted into several patch
+> > series.
+> > 
+> > The patch series 1 only supports the basic functionality. The advanced
+> > supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
+> > will be added in follow-up patch series.
+> > 
+> > The perf tool codes can also be found at:
+> > https://github.com/yaoj/perf.git
+> 
+> hi,
+> did you update the branch for v6? I think I can't see
+> the new update there
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-[hch: untested conversion to the ne API]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- .../common/videobuf2/videobuf2-dma-contig.c   | 140 +++++++++++++++---
- 1 file changed, 116 insertions(+), 24 deletions(-)
+I'm putting it in my tmp.perf/core while I'm testing it and you
+reviewing, I'll  do some reviewing as well, now it applied ok:
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 1e218bc440c6..40eaaef1565b 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -17,6 +17,7 @@
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-+#include <linux/highmem.h>
- 
- #include <media/videobuf2-v4l2.h>
- #include <media/videobuf2-dma-contig.h>
-@@ -42,6 +43,7 @@ struct vb2_dc_buf {
- 	struct dma_buf_attachment	*db_attach;
- 
- 	struct vb2_buffer		*vb;
-+	bool				coherent_mem;
- };
- 
- /*********************************************/
-@@ -78,14 +80,22 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
- static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
- {
- 	struct vb2_dc_buf *buf = buf_priv;
--	struct dma_buf_map map;
--	int ret;
- 
--	if (!buf->vaddr && buf->db_attach) {
--		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
--		buf->vaddr = ret ? NULL : map.vaddr;
-+	if (buf->vaddr)
-+		return buf->vaddr;
-+
-+	if (buf->db_attach) {
-+		struct dma_buf_map map;
-+
-+		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-+			buf->vaddr = map.vaddr;
-+
-+		return buf->vaddr;
- 	}
- 
-+	/* Non-coherent memory */
-+	buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size, buf->dma_sgt);
-+
- 	return buf->vaddr;
- }
- 
-@@ -101,13 +111,26 @@ static void vb2_dc_prepare(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	/* This takes care of DMABUF and user-enforced cache sync hint */
- 	if (buf->vb->skip_cache_sync_on_prepare)
- 		return;
- 
-+	/*
-+	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-+	 * and non-coherent MMAP buffers.
-+	 */
-+	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
-+		return;
-+
- 	if (!sgt)
- 		return;
- 
-+	/* For both USERPTR and non-coherent MMAP */
- 	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
-+
-+	/* Non-coherent MMAP only */
-+	if (!buf->coherent_mem && buf->vaddr)
-+		flush_kernel_vmap_range(buf->vaddr, buf->size);
- }
- 
- static void vb2_dc_finish(void *buf_priv)
-@@ -115,19 +138,46 @@ static void vb2_dc_finish(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	/* This takes care of DMABUF and user-enforced cache sync hint */
- 	if (buf->vb->skip_cache_sync_on_finish)
- 		return;
- 
-+	/*
-+	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-+	 * and non-coherent MMAP buffers.
-+	 */
-+	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
-+		return;
-+
- 	if (!sgt)
- 		return;
- 
-+	/* For both USERPTR and non-coherent MMAP */
- 	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
-+
-+	/* Non-coherent MMAP only */
-+	if (!buf->coherent_mem && buf->vaddr)
-+		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
- }
- 
- /*********************************************/
- /*        callbacks for MMAP buffers         */
- /*********************************************/
- 
-+static void __vb2_dc_put(struct vb2_dc_buf *buf)
-+{
-+	if (buf->coherent_mem) {
-+		dma_free_attrs(buf->dev, buf->size, buf->cookie,
-+			       buf->dma_addr, buf->attrs);
-+		return;
-+	}
-+
-+	if (buf->vaddr)
-+		dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
-+	dma_free_noncontiguous(buf->dev, buf->size,
-+			       buf->dma_sgt, buf->dma_addr);
-+}
-+
- static void vb2_dc_put(void *buf_priv)
- {
- 	struct vb2_dc_buf *buf = buf_priv;
-@@ -139,17 +189,52 @@ static void vb2_dc_put(void *buf_priv)
- 		sg_free_table(buf->sgt_base);
- 		kfree(buf->sgt_base);
- 	}
--	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
--		       buf->attrs);
-+	__vb2_dc_put(buf);
- 	put_device(buf->dev);
- 	kfree(buf);
- }
- 
-+static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
-+{
-+	struct vb2_queue *q = buf->vb->vb2_queue;
-+
-+	buf->cookie = dma_alloc_attrs(buf->dev,
-+				      buf->size,
-+				      &buf->dma_addr,
-+				      GFP_KERNEL | q->gfp_flags,
-+				      buf->attrs);
-+	if (!buf->cookie)
-+		return -ENOMEM;
-+	if ((q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-+		buf->vaddr = buf->cookie;
-+	return 0;
-+}
-+
-+static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-+{
-+	struct vb2_queue *q = buf->vb->vb2_queue;
-+
-+	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-+					       buf->size,
-+					       buf->dma_dir,
-+					       GFP_KERNEL | q->gfp_flags,
-+					       buf->attrs);
-+	if (!buf->dma_sgt)
-+		return -ENOMEM;
-+	/*
-+	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
-+	 * bit is cleared) we perform dma_vmap_noncontiguous() later, in
-+	 * vb2_dc_vadd().
-+	 */
-+	return 0;
-+}
-+
- static void *vb2_dc_alloc(struct vb2_buffer *vb,
- 			  struct device *dev,
- 			  unsigned long size)
- {
- 	struct vb2_dc_buf *buf;
-+	int ret;
- 
- 	if (WARN_ON(!dev))
- 		return ERR_PTR(-EINVAL);
-@@ -159,27 +244,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
- 		return ERR_PTR(-ENOMEM);
- 
- 	buf->attrs = vb->vb2_queue->dma_attrs;
--	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
--				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
--				      buf->attrs);
--	if (!buf->cookie) {
--		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
--		kfree(buf);
--		return ERR_PTR(-ENOMEM);
--	}
--
--	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
--		buf->vaddr = buf->cookie;
-+	buf->dma_dir = vb->vb2_queue->dma_dir;
-+	buf->vb = vb;
-+	buf->coherent_mem = vb->vb2_queue->coherent_mem;
- 
-+	buf->size = size;
- 	/* Prevent the device from being released while the buffer is used */
- 	buf->dev = get_device(dev);
--	buf->size = size;
--	buf->dma_dir = vb->vb2_queue->dma_dir;
-+
-+	if (buf->coherent_mem)
-+		ret = vb2_dc_alloc_coherent(buf);
-+	else
-+		ret = vb2_dc_alloc_non_coherent(buf);
-+
-+	if (ret) {
-+		dev_err(dev, "dma alloc of size %ld failed\n", size);
-+		kfree(buf);
-+		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	buf->handler.refcount = &buf->refcount;
- 	buf->handler.put = vb2_dc_put;
- 	buf->handler.arg = buf;
--	buf->vb = vb;
- 
- 	refcount_set(&buf->refcount, 1);
- 
-@@ -196,9 +282,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
- 		return -EINVAL;
- 	}
- 
--	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
--		buf->dma_addr, buf->size, buf->attrs);
--
-+	if (buf->coherent_mem)
-+		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
-+				     buf->size, buf->attrs);
-+	else
-+		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
-+					     buf->dma_sgt);
- 	if (ret) {
- 		pr_err("Remapping memory failed, error: %d\n", ret);
- 		return ret;
-@@ -390,6 +479,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
- 	int ret;
- 	struct sg_table *sgt;
- 
-+	if (!buf->coherent_mem)
-+		return buf->dma_sgt;
-+
- 	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
- 	if (!sgt) {
- 		dev_err(buf->dev, "failed to alloc sg table\n");
--- 
-2.31.1.498.g6c1eba8ee3d-goog
-
+[acme@five perf]$        git am ./v6_20210427_yao_jin_perf_tool_alderlake_hybrid_support_series_1.mbx
+Applying: tools headers uapi: Update tools's copy of linux/perf_event.h
+Applying: perf jevents: Support unit value "cpu_core" and "cpu_atom"
+Applying: perf pmu: Simplify arguments of __perf_pmu__new_alias
+Applying: perf pmu: Save pmu name
+Applying: perf pmu: Save detected hybrid pmus to a global pmu list
+Applying: perf pmu: Add hybrid helper functions
+Applying: perf stat: Uniquify hybrid event name
+Applying: perf parse-events: Create two hybrid hardware events
+Applying: perf parse-events: Create two hybrid cache events
+Applying: perf parse-events: Create two hybrid raw events
+Applying: perf parse-events: Compare with hybrid pmu name
+Applying: perf parse-events: Support event inside hybrid pmu
+Applying: perf record: Create two hybrid 'cycles' events by default
+Applying: perf stat: Add default hybrid events
+Applying: perf stat: Filter out unmatched aggregation for hybrid event
+Applying: perf stat: Warn group events from different hybrid PMU
+Applying: perf record: Uniquify hybrid event name
+Applying: perf tests: Add hybrid cases for 'Parse event definition strings' test
+Applying: perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
+Applying: perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
+Applying: perf tests: Support 'Track with sched_switch' test for hybrid
+Applying: perf tests: Support 'Parse and process metrics' test for hybrid
+Applying: perf tests: Support 'Session topology' test for hybrid
+Applying: perf tests: Support 'Convert perf time to TSC' test for hybrid
+Applying: perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
+Applying: perf Documentation: Document intel-hybrid support
+[acme@five perf]$
