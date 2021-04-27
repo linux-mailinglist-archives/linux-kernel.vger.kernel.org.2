@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB6736CBA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F0736CBA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238635AbhD0T31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        id S238685AbhD0TaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238438AbhD0T3Z (ORCPT
+        with ESMTP id S235686AbhD0TaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:29:25 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D4DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:28:41 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id l21so17528717iob.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:28:40 -0700 (PDT)
+        Tue, 27 Apr 2021 15:30:11 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78B7C061756;
+        Tue, 27 Apr 2021 12:29:27 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id a12so2262487pfc.7;
+        Tue, 27 Apr 2021 12:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DYcG+6Y4wulABOgwFwb1rxhdjQCINJ8GzZ3NxIxoP+4=;
-        b=d1W1Aqvy0WDQgLHfXd6KVJkwoZwwpQfM3q3r5Boe9IMOb1Ks78SGk5p7ivRqzqy7BA
-         gSU82n1JTpmb9daPjD5Irwhh8B8KTsNa9G4UpI9HD9aQfAMHpjP5UnmkWK6P30EssgPr
-         qJxOA1NOdKo9K00d+kPRugkI7hzjIwbR6beAJw47nAWJhCVUyqPECz8ykdHt9yMZoQDf
-         ogK6wY42jY6a/WZjKm0cnc2nvFx8F0yTrlY8RDJ+yRE9tNcvkLbJZ6C9WY9hob38kSQH
-         OkOHfjfKQxlSWxbGIOGwjc5CcjsPzLBsDhznnnN1CnbOGBl9wX3p6dSPxI4qPEJLDYmB
-         oq4g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=4DnDRAFKRSlzBzYaivgjtMj5wX1pqux3PzUstCHe6KE=;
+        b=BJ0bqGD8MnjBlehJ3RU4NzEVMGbtX/qpT5wYt8CP2afSy2MZcwNDHieJSEEM5Lg0c9
+         uScbs4PNygryH15EVVuS+mxcccHjOeNJYC9mjAePpSua+0jxDkWhwL0p/YRaEA3N8O6/
+         FE7hIyMF9zr69mdHJw/N+j0AMykr/u0WhuyEsRyljYaJ/IR619g8Oe4/OXaIeegz+wth
+         RMK8f+2XADN13ckRvaehiICCApPnizze+rD4rj/wAIFqwAd//1ASSvL2ARoAQc1h2Dx3
+         htsG4CBeez1H+RzRqO52VEnERgS1HNFpZv8XR9g1o8hlFKYezFWPufJo2bPoVUl9+Sxy
+         G9iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DYcG+6Y4wulABOgwFwb1rxhdjQCINJ8GzZ3NxIxoP+4=;
-        b=s5ZqvS0D83F3YJlCJzoMj4XMk+JimORg6SKZQFMmMFFa22abnP1FOijhivH/ctD39P
-         1iouAj8IcezU076pBoJs0dRmsbEYhWfE+RdKb6lK/rqftf4K8FZXJ0H5EFGgZ715jkBz
-         gVFMsOITdAV0mEgb/LVFLpVdYwXHnB0iNttReaoZ0ZBhk0sKvuwnnKrrDhhm7yKAzBjY
-         mA5bSMx7FI6RW/QqltJ7WWl0hwqqGDF0Z4KKTsOAqH3CPMOpO3p1TSWqZPuGBWNVHu5U
-         P74MKpfFLCwY4qEBHpxvm18HQfgsj6YDFRkcRLEwqKcrJPM9jAH5+z0RFC/+aBJNRzCo
-         hLeA==
-X-Gm-Message-State: AOAM532jIVT238+UNpd4D5Wi3MxLiSL1pcTOIAitJgoePEcjgIE/cIrK
-        CUSploieMWgILo416gFUI/nBdA==
-X-Google-Smtp-Source: ABdhPJwQwDDELwuTsaB4Sx8qcFBGHVeacGfq4J3MKE4o16MniIdqkGIoAquFFRl+dmeSeAYT8wzXKQ==
-X-Received: by 2002:a6b:3bcd:: with SMTP id i196mr20979811ioa.121.1619551720518;
-        Tue, 27 Apr 2021 12:28:40 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id d16sm1715512ils.48.2021.04.27.12.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 12:28:39 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lbTNu-00DgsM-R2; Tue, 27 Apr 2021 16:28:38 -0300
-Date:   Tue, 27 Apr 2021 16:28:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=4DnDRAFKRSlzBzYaivgjtMj5wX1pqux3PzUstCHe6KE=;
+        b=XPiO9k1PvlhXuEC2esXdX+Z8k05SL613It+eRXVLrnW3iUWpTGjFDMk66n0nX44eYu
+         yd/NR3PUoeTXvFTVGhlenWsHI/W8fdRRUg7Tv5rqkNN2p3kicL0dtalbEmI9Awj6GSGQ
+         +/T4wUuEzxG5L6+9jYSf6Qi9VTgBeWE3wYscwYamzOH+/5aII9lMMxcWnkgfpv9pkixr
+         TZ52HnlSLv6smpdw0T684WlOc4WF+zPawFnLhqOAs8GcaQqOV6zpmIlI9x4UWrbvfNKT
+         h6FgoBDQwUl5yVbRZHkjTzF80Nka8u0IsWKTRX4d5ohqsMfo2TT+FSx5PVkncP69GLwD
+         KPQA==
+X-Gm-Message-State: AOAM5320lvAg/wQWcCEZdH7DpMl4DVkRbryJOfO0DxhV/gd5xpg1LCRg
+        s5LXWrabZhdhe3i7KCaAg58jZEVDU1VRzA==
+X-Google-Smtp-Source: ABdhPJw9e+tGS96lq3oOZM/s//+pqsPvbTeG8lwZt6ks9l/bAzVja8Dc+WiCSP/HaeSr+dgWtdBX0A==
+X-Received: by 2002:a63:f90d:: with SMTP id h13mr5623041pgi.18.1619551767150;
+        Tue, 27 Apr 2021 12:29:27 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:2d50:30a4:47de:1dd6? ([2001:df0:0:200c:2d50:30a4:47de:1dd6])
+        by smtp.gmail.com with ESMTPSA id k15sm3263204pfi.0.2021.04.27.12.29.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 12:29:26 -0700 (PDT)
+Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
+ driver
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Finn Thain <fthain@fastmail.com.au>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 00/16] Add new DMA mapping operation for P2PDMA
-Message-ID: <20210427192838.GP2047089@ziepe.ca>
-References: <20210408170123.8788-1-logang@deltatee.com>
+        Joshua Thompson <funaho@jurai.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org
+References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
+ <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
+ <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
+ <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
+ <dbd5ddaa-c0ee-5aad-20d9-7fae5e2618af@gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <7c5eae75-d1de-171a-07ad-9c34ec7325b2@gmail.com>
+Date:   Wed, 28 Apr 2021 07:29:20 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408170123.8788-1-logang@deltatee.com>
+In-Reply-To: <dbd5ddaa-c0ee-5aad-20d9-7fae5e2618af@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:01:07AM -0600, Logan Gunthorpe wrote:
-> Hi,
-> 
-> This patchset continues my work to to add P2PDMA support to the common
-> dma map operations. This allows for creating SGLs that have both P2PDMA
-> and regular pages which is a necessary step to allowing P2PDMA pages in
-> userspace.
-> 
-> The earlier RFC[1] generated a lot of great feedback and I heard no show
-> stopping objections. Thus, I've incorporated all the feedback and have
-> decided to post this as a proper patch series with hopes of eventually
-> getting it in mainline.
+On 27/04/21 8:11 pm, Sergei Shtylyov wrote:
+> On 27.04.2021 4:51, Michael Schmitz wrote:
 >
-> I'm happy to do a few more passes if anyone has any further feedback
-> or better ideas.
+>>> Was macide the only IDE driver in Debian/m68k kernels without a libata
+>>> alternative? If so, this patch would allow you to finally drop 
+>>> CONFIG_IDE.
+>>>
+>> There's still q40ide.c (ISA IDE interface, byte-swapped, so would 
+>> need treatment similar to Falcon IDE). Hasn't been updated to a 
+>> platform device yet.
+>
+>    ISA drivers shouldn't be "updated" to the platform drivers. But I 
+> don't see 'struct isa_driver' there either...
 
-For the user of the DMA API the idea seems reasonable enough, the next
-steps to integrate with pin_user_pages() seem fairly straightfoward
-too
+My bad - while the Q40 has ISA slots, IDE isn't connected to the ISA 
+bus. Got confused by the base address range matching what I remember 
+from ISA cards...
 
-Was there no feedback on this at all?
+Cheers,
 
-Jason
+     Michael
+
+
