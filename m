@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4F036BE15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740A036BE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhD0EAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 00:00:30 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:34037 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229455AbhD0EA3 (ORCPT
+        id S234728AbhD0EMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 00:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232157AbhD0EMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:00:29 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 78E3E5C019E;
-        Mon, 26 Apr 2021 23:59:46 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Mon, 26 Apr 2021 23:59:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=eZfNkGx2BMSMQ83oloGLPtdwxAJCowu
-        oCAnvMoQdjj8=; b=bCVM03l4/97d497QZGfYgytoNBX+T1CreC0zTE0q6c0+9wZ
-        mEGA4RTEYR+eTwIllHD5sJ3k1BsNcy4B7NDmvbtYqm+gd2nbsE+RU4/xD96BnD9j
-        LGzCxHzTYCQQTk2NONoSTkzzIh+x8DwvuQ/xJ4wGTVkr0tjXi8CSwovp6oZXW7wm
-        sk08hWJfC09ydM3Pwqf9YEIJP+qYDUvOUaNLXI4rnHvjrSDrwN1RHww1wH9ZxdWe
-        R8OBPUy78pvC8TktsOLmV06fOIyQ7kyoK3BwjMNWKQ9Tmse9YVHQn9UcojbsHoa+
-        6N40imzKpA6fk6x6jKdfgrbK0zcHpiyxKoDkmyQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=eZfNkG
-        x2BMSMQ83oloGLPtdwxAJCowuoCAnvMoQdjj8=; b=X0aOk0FLR+JJ2vqD5oDaKr
-        Uritv7xfbgFrUCSGTg+8bCS+WsyTL0rMyPLn0u1IehKhwBRKFsNp4oGvthlkXj9/
-        3afjivUZqn3NOVqvUL9o4BgmIQsx7OAdDx0z8He8SOux9HPnvBQHUsR6/w6C1Uv1
-        pCVuWd+JB0wC4Y6dWvZtfHAP2SFgVzwlqkNN6QAvHU5m5rJj4ftfuo0+n9B2L1+N
-        ez8Ts7Jt93j38xNFOotRSbbk869kTAesLvUiQOsVBuarMTieipjT7qGD1Vq1lMoB
-        YIkf/u3+VVmnpE8xxZtQKrbTDJ0papDJYtZ/3GD9vcbORF9mJdoVLYVEHdLMmyxQ
-        ==
-X-ME-Sender: <xms:MIyHYLL89azaxFjwekkmWWjoOpLxc6CMprgVNyoDI2-YsdQmcd0dKA>
-    <xme:MIyHYPKf0j0_tyVmd5aE9W-mXaJVVmM-xuD0VBMcSpCtl_Px32EoQXF354BbC8daP
-    M0XJ36L0nrO6NTUnw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduledguddtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedv
-    hefhveeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:MIyHYDve2dQUlUboid9PDA4PTLOVOpqrsBANN4bmZnGbUYjbFAbx9Q>
-    <xmx:MIyHYEYNtKviYmJndPX21uzTgIpm88701W5ffmOjJA8wwv9r3nhrgw>
-    <xmx:MIyHYCZPYgw7pKFv6K6MIP8smjnu8oJ7lbaazwKspQpqRjadZ0MjXw>
-    <xmx:MoyHYJzbJlkBhIZImGFb55oIa0jpv7oSRBAyowe0jM_AtAXkQ1yvyg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 07EF0A0007A; Mon, 26 Apr 2021 23:59:44 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
-Mime-Version: 1.0
-Message-Id: <201d989f-882f-4b73-ab06-5085f99301ed@www.fastmail.com>
-In-Reply-To: <20210416075113.18047-1-zev@bewilderbeest.net>
-References: <20210416075113.18047-1-zev@bewilderbeest.net>
-Date:   Tue, 27 Apr 2021 13:29:22 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zev@bewilderbeest.net>,
-        "Joel Stanley" <joel@jms.id.au>
-Cc:     openbmc@lists.ozlabs.org, "Rob Herring" <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: aspeed: update e3c246d4i vuart properties
-Content-Type: text/plain
+        Tue, 27 Apr 2021 00:12:30 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811ECC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 21:11:45 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id w9so7749800lfr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 21:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xSbYF6YmB+6Po+HsrmYDOpI6TtqeP+AMbaRD22AzlKI=;
+        b=iO53A6Zb7PcYh/T3a3JH5aBVwk/mWU8zPtZ8LHjq9CDwqrY+wgUIAUI6GCtNGett3a
+         9YOBhkdQdORaqDS3iFyB3RMzMUmhtr2omR3et0XpSA/u3QFySPS5NAea3FD+yBBJfPAz
+         XQjxXHd2nMnStBxUsFB3oG8sFNsxdXB79p7s+A7Swiov76ZdY19a2qVwLWKbrX59bmcG
+         D/u4diG6TLNnEeBncOIyM/khN/IsvyFRC+hiFBsuNTySOj+dZFhuI2DIQAkc1mt7nkFZ
+         NnXMW58mxx50adoY8y2IfFS9jD95YBPJlWezY4lEwImRbZwptzfRBpuSoY6k1auXMGEu
+         rTGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xSbYF6YmB+6Po+HsrmYDOpI6TtqeP+AMbaRD22AzlKI=;
+        b=WBA+Uac9+b2KGvt/v7U34GeJNzem9obZg0001buir+fwb+R4hwFhAffZVB/oqCfxvk
+         KcI5u3MHDHI9msVtRYHcn384ZootOz4DHimNCrTII03F4r+9dx3YWN7D9rJi8E1+Mq6C
+         fEs/imOhOSIvHG7xWH0xdQw6PQSLxU4Lv8cX+ikZx70GxPGTnf8tTT03WOOFWj+Swupx
+         Y7Fo/8VzSFFUli8SH2QPlJCqfzSDPVnVknXm37z82HSrCpn3ar3WhsfwTjlyM/0Ociov
+         IyYwT6JzKGyc3FGNgpKSiTsGWjcw26IFrVCj0va6TtD6A1k8QnMkvN/8IXr8I8AXFwr4
+         AkxQ==
+X-Gm-Message-State: AOAM531OpvTlY8f7vM2OPwO3zx+yPrYqlGDaiK1S/xznOJrSF667uv/U
+        x+vesVlmlRJpv2tfzBk1wKl4Zsgl9KgMEhZ/aY8=
+X-Google-Smtp-Source: ABdhPJzYfDrrUdy6qUwDE9BULCvak/gZnwodwRAHBNJNzbbB0BEKQTUbuz7dtVc9efTktTYSbkx2W2Cf7qK/GtnjvCk=
+X-Received: by 2002:ac2:5042:: with SMTP id a2mr14687807lfm.650.1619496703957;
+ Mon, 26 Apr 2021 21:11:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <1619491400-1904-1-git-send-email-sxwjean@me.com>
+ <20210427025358.GV235567@casper.infradead.org> <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
+ <20210427033632.GW235567@casper.infradead.org>
+In-Reply-To: <20210427033632.GW235567@casper.infradead.org>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Tue, 27 Apr 2021 12:11:17 +0800
+Message-ID: <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
+Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Xiongwei Song <sxwjean@me.com>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27, 2021 at 11:36 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Apr 27, 2021 at 11:29:32AM +0800, Xiongwei Song wrote:
+> > On Tue, Apr 27, 2021 at 10:54 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Tue, Apr 27, 2021 at 10:43:20AM +0800, Xiongwei Song wrote:
+> > > > From: Xiongwei Song <sxwjean@gmail.com>
+> > > >
+> > > > When calling kmalloc_order, the flags should include __GFP_COMP here,
+> > > > so that trace_malloc can trace the precise flags.
+> > >
+> > > I suppose that depends on your point of view.
+> > Correct.
+> >
+> > Should we report the
+> > > flags used by the caller, or the flags that we used to allocate memory?
+> > > And why does it matter?
+> > When I capture kmem:kmalloc events on my env with perf:
+> > (perf record -p my_pid -e kmem:kmalloc)
+> > I got the result below:
+> >      0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000
+> > bytes_req=10176 bytes_alloc=16384
+> > gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
+>
+> Hmm ... if you have a lot of allocations about this size, that would
+> argue in favour of adding a kmem_cache of 10880 [*] bytes.  That way,
+> we'd get 3 allocations per 32kB instead of 2.
+I understand you. But I don't think our process needs this size. This size
+may be a bug in our code or somewhere, I don't know the RC for now.
 
+> [*] 32768 / 3, rounded down to a 64 byte cacheline
+>
+> But I don't understand why this confused you.  Your caller at
+> ffffffff851d0cb0 didn't specify __GFP_COMP.  I'd be more confused if
+> this did report __GFP_COMP.
+>
+I just wanted to save some time when debugging.
 
-On Fri, 16 Apr 2021, at 17:21, Zev Weiss wrote:
-> This device-tree was merged with a provisional vuart IRQ-polarity
-> property that was still under review and ended up taking a somewhat
-> different form.  This patch updates it to match the final form of the
-> new vuart properties, which additionally allow specifying the SIRQ
-> number and LPC address.
-> 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Regards
