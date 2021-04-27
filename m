@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21EB36C11A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C9636C120
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhD0Iiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:38:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39562 "EHLO
+        id S235330AbhD0Iiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:38:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39574 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235257AbhD0Iil (ORCPT
+        with ESMTP id S235304AbhD0Iim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:38:41 -0400
-Message-Id: <20210427083724.442224402@linutronix.de>
+        Tue, 27 Apr 2021 04:38:42 -0400
+Message-Id: <20210427083724.542646194@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619512678;
+        s=2020; t=1619512679;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=za9/LpdcR7YbczNQL1q4eFoq0olLXl6oLIbI/NgZucM=;
-        b=eo3zRyjk5B8V1DenZ8SBH+rx1lpm9Oo1QK5zIet7ERyb8s9KbIp141wBE1JocbiKixuaoZ
-        +hKCLOJrcl7tItCV0ICv9JFWenwDkQJthnQnF1VPnQounFstVGHASxWSmXh1JquiyxWM/Z
-        lCygh9gRwqEFfeI/3k3J7PeVsW3/r+Mjc9Uwrhu64iMvTt5fzM9MPNtZFdhpLolbXFRUNX
-        BRf0XKSn8JNJOtgB6+gaz7749cLXbtLYPTK7nwhgbXIM8Vw/r4T1Hp6bVcaK+GpXEWtmbz
-        WWDPKY2v2XQHoIIsHrD99Dfv/zEv4AXvD4/vMvhqhQDG7Ke82ReYtjjhZGWt7w==
+        bh=ZfQPUmFK3i1rendKXuXOwZFwcyhEqPqcrvIv3liPQ4M=;
+        b=1ITDX4YkLMthIK9c/TRUNUUlvSJFYZyTFWr+7c2gokcDCXyzeqaGsXbfRGpnas9iFcb6kr
+        jjNTn+fqVyiSQ+T5lrgg7ojsJFJLTxxChIrrls0BVpZAF84fGMZz2wqmYxOpPCP2qYzLMS
+        dgajNJ54K3dYhXLy3t3nagt99aka7TIRafOv907fJzbzqgO+6tBg6hl2Z6rDnw8zycexl6
+        jCmTBM6fCezt0+xx1C5gQwXpcYI+q+3RJ2Tn7ICtEwlvpDYUixyBher7Q0NJArGpgMjTZO
+        cAozYN+l/lCXWhk3Bb37ygT1o+AOjSTvVO2ieQd3oaqg8SMbtf//b/kyD/CsTw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619512678;
+        s=2020e; t=1619512679;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=za9/LpdcR7YbczNQL1q4eFoq0olLXl6oLIbI/NgZucM=;
-        b=brsdFASCE5TiZLAc7vQHtmjOD5vC1UT9/lNPPZZpKu/Z056YHd0gtlLkGhtdeeXnEdpE6B
-        p00jCRntlANPGpAA==
-Date:   Tue, 27 Apr 2021 10:25:41 +0200
+        bh=ZfQPUmFK3i1rendKXuXOwZFwcyhEqPqcrvIv3liPQ4M=;
+        b=WQkOeGrSJ8+XuT5DB5vFu/QTqUpGWV84Rycb05FyYBBB9/pQPAbfJxGObL5BJNr2qxlTXM
+        ZBlBXTkKaOf4A/BA==
+Date:   Tue, 27 Apr 2021 10:25:42 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
@@ -44,7 +44,7 @@ Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
         Alex Belits <abelits@marvell.com>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         John Stultz <john.stultz@linaro.org>
-Subject: [patch 4/8] timekeeping: Distangle resume and clock-was-set events
+Subject: [patch 5/8] time/timekeeping: Avoid invoking clock_was_set() twice
 References: <20210427082537.611978720@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,111 +53,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resuming timekeeping is a clock-was-set event and uses the clock-was-set
-notification mechanism. This is in the way of making the clock-was-set
-update for hrtimers selective so unnecessary IPIs are avoided when a CPU
-base does not have timers queued which are affected by the clock setting.
+do_adjtimex() might end up scheduling a delayed clock_was_set() via
+timekeeping_advance() and then invoke clock_was_set() directly which is
+pointless.
 
-Distangle it by invoking hrtimer_resume() on each unfreezing CPU and invoke
-the new timerfd_resume() function from timekeeping_resume() which is the
-only place where this is needed.
-
-Rename hrtimer_resume() to hrtimer_resume_local() to reflect the change.
-
-With this the clock_was_set*() functions are not longer required to IPI all
-CPUs unconditionally and can get some smarts to avoid them.
+Make timekeeping_advance() return whether an invocation of clock_was_set()
+is required and handle it at the call sites which allows do_adjtimex() to
+issue a single direct call if required.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/hrtimer.h     |    1 -
- kernel/time/hrtimer.c       |   15 ++++++---------
- kernel/time/tick-common.c   |    7 +++++++
- kernel/time/tick-internal.h |    2 ++
- kernel/time/timekeeping.c   |    4 +++-
- 5 files changed, 18 insertions(+), 11 deletions(-)
+ kernel/time/timekeeping.c |   18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -354,7 +354,6 @@ extern void timerfd_resume(void);
- static inline void timerfd_clock_was_set(void) { }
- static inline void timerfd_resume(void) { }
- #endif
--extern void hrtimers_resume(void);
- 
- DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
- 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -914,8 +914,8 @@ static void clock_was_set_work(struct wo
- static DECLARE_WORK(hrtimer_work, clock_was_set_work);
- 
- /*
-- * Called from timekeeping and resume code to reprogram the hrtimer
-- * interrupt device on all cpus and to notify timerfd.
-+ * Called from timekeeping code to reprogram the hrtimer interrupt device
-+ * on all cpus and to notify timerfd.
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -2126,7 +2126,7 @@ static u64 logarithmic_accumulation(stru
+  * timekeeping_advance - Updates the timekeeper to the current time and
+  * current NTP tick length
   */
- void clock_was_set_delayed(void)
+-static void timekeeping_advance(enum timekeeping_adv_mode mode)
++static bool timekeeping_advance(enum timekeeping_adv_mode mode)
  {
-@@ -923,18 +923,15 @@ void clock_was_set_delayed(void)
- }
- 
- /*
-- * During resume we might have to reprogram the high resolution timer
-- * interrupt on all online CPUs.  However, all other CPUs will be
-- * stopped with IRQs interrupts disabled so the clock_was_set() call
-- * must be deferred.
-+ * Called during resume either directly from via timekeeping_resume()
-+ * or in the case of s2idle from tick_unfreeze() to ensure that the
-+ * hrtimers are up to date.
-  */
--void hrtimers_resume(void)
-+void hrtimers_resume_local(void)
- {
- 	lockdep_assert_irqs_disabled();
- 	/* Retrigger on the local CPU */
- 	retrigger_next_event(NULL);
--	/* And schedule a retrigger for all others */
--	clock_was_set_delayed();
- }
- 
- /*
---- a/kernel/time/tick-common.c
-+++ b/kernel/time/tick-common.c
-@@ -475,6 +475,13 @@ void tick_resume_local(void)
- 		else
- 			tick_resume_oneshot();
- 	}
+ 	struct timekeeper *real_tk = &tk_core.timekeeper;
+ 	struct timekeeper *tk = &shadow_timekeeper;
+@@ -2197,9 +2197,8 @@ static void timekeeping_advance(enum tim
+ 	write_seqcount_end(&tk_core.seq);
+ out:
+ 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
+-	if (clock_set)
+-		/* Have to call _delayed version, since in irq context*/
+-		clock_was_set_delayed();
 +
-+	/*
-+	 * Ensure that hrtimers are up to date and the clockevents device
-+	 * is reprogrammed correctly when high resolution timers are
-+	 * enabled.
-+	 */
-+	hrtimers_resume_local();
++	return !!clock_set;
  }
  
  /**
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -167,3 +167,5 @@ void timer_clear_idle(void);
- 
- void clock_was_set(void);
- void clock_was_set_delayed(void);
-+
-+void hrtimers_resume_local(void);
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -1799,8 +1799,10 @@ void timekeeping_resume(void)
- 
- 	touch_softlockup_watchdog();
- 
-+	/* Resume the clockevent device(s) and hrtimers */
- 	tick_resume();
--	hrtimers_resume();
-+	/* Notify timerfd as resume is equivalent to clock_was_set() */
-+	timerfd_resume();
+@@ -2208,7 +2207,8 @@ static void timekeeping_advance(enum tim
+  */
+ void update_wall_time(void)
+ {
+-	timekeeping_advance(TK_ADV_TICK);
++	if (timekeeping_advance(TK_ADV_TICK))
++		clock_was_set_delayed();
  }
  
- int timekeeping_suspend(void)
+ /**
+@@ -2388,8 +2388,9 @@ int do_adjtimex(struct __kernel_timex *t
+ {
+ 	struct timekeeper *tk = &tk_core.timekeeper;
+ 	struct audit_ntp_data ad;
+-	unsigned long flags;
++	bool clock_set = false;
+ 	struct timespec64 ts;
++	unsigned long flags;
+ 	s32 orig_tai, tai;
+ 	int ret;
+ 
+@@ -2424,6 +2425,7 @@ int do_adjtimex(struct __kernel_timex *t
+ 	if (tai != orig_tai) {
+ 		__timekeeping_set_tai_offset(tk, tai);
+ 		timekeeping_update(tk, TK_MIRROR | TK_CLOCK_WAS_SET);
++		clock_set = true;
+ 	}
+ 	tk_update_leap_state(tk);
+ 
+@@ -2434,9 +2436,9 @@ int do_adjtimex(struct __kernel_timex *t
+ 
+ 	/* Update the multiplier immediately if frequency was set directly */
+ 	if (txc->modes & (ADJ_FREQUENCY | ADJ_TICK))
+-		timekeeping_advance(TK_ADV_FREQ);
++		clock_set |= timekeeping_advance(TK_ADV_FREQ);
+ 
+-	if (tai != orig_tai)
++	if (clock_set)
+ 		clock_was_set();
+ 
+ 	ntp_notify_cmos_timer();
 
