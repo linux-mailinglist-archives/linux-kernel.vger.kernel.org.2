@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD8736CA3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2836736CA3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237471AbhD0RU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:20:57 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:45815 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbhD0RUy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236599AbhD0RUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:20:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235647AbhD0RUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Apr 2021 13:20:54 -0400
-Received: from [192.168.100.1] ([82.142.25.254]) by mrelayeu.kundenserver.de
- (mreue107 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1M734j-1lfaFZ2MSF-008WxH; Tue, 27 Apr 2021 19:20:02 +0200
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFF80613DC;
+        Tue, 27 Apr 2021 17:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619544009;
+        bh=zTDfkBlhzaw3mRPFZOF8YBGAy6SJ6egNfmcUdq7dV7E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r/A22uVISgT59GGjSXX5oORcYXIWLPfUzpCb1ND+S5HVrjtZJcAyYJm7CUZZLx6QJ
+         y1zERveu++1+6qbdNnjDcBmxUVaYxh3PyR5ULG0I0YNT5Qm1zBesvF6tj0gCeXQ5v8
+         HqP0ROUfcYTv0pr4uavOlR5idc6Wgy8NqAfcYwLw=
+Date:   Tue, 27 Apr 2021 19:20:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20210323221430.3735147-1-laurent@vivier.eu>
- <20210323221430.3735147-3-laurent@vivier.eu>
-From:   Laurent Vivier <laurent@vivier.eu>
-Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-Message-ID: <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
-Date:   Tue, 27 Apr 2021 19:20:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Cc:     Kangjie Lu <kjlu@umn.edu>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Mukesh Ojha <mojha@codeaurora.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH 110/190] Revert "scsi: qla4xxx: fix a potential NULL
+ pointer dereference"
+Message-ID: <YIhHx42O3FTsL3MS@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-111-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210323221430.3735147-3-laurent@vivier.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:sX/rtXIi5HFyO2slzgGBdwOV7llxl+jRhOcOSfVR/K7V+VwTuh2
- LA58ztWttzkC7r2JvDXEVGtGXL1ohfdKM60o8U8qodVdzvPyxw8zOc3V3CZgCbTRVGPH6D9
- hFGX1RQ+o9dMEUaoyzUNqHRsjQPE41l91WR57IIjQekH+RI6S/6ODdhzfNYiHIa36wWczkf
- SCzPppAA/Yh+EGOlceaSQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yUxnXIozo6I=:p0EVhQjNOZDnM482R7yLcD
- bXyTB6w1Ic4udfkVni3NQhO96qucqDWGHT65AEKlHS8digfPxaNTI1PXjQ7sXvovydXz/zgZF
- 72VuT8Xd6MQid4LcImTWG28Po73Z/mjFaS9EowGp2l9pzdXMqJJR9Gh9oX1cxPtaw4KLSq2ra
- Zjf7lRWoe9zG02Enopq6yARGC1yJ2V9XtOw2T1bMEukgwwxBCIjFwGJ42UIrmChGL/ZqMzOVI
- D+ejKvU7ICKBCtkri4OHu9s5GNN9iG9jE30xQJSiUC65EADzc65nxmAnbir5FSMidvPBxkplZ
- 1I9a0+/6pkV3npxBNcVOkIS8VElEDXKUBWUwlMIdaE6LvsWcP91C4hALWeJxhtzVnYUX42JYl
- Q7oRI1BNPPh2JguG1hRwFih3F9zY5kEJbZia0Lu/k+ivcJf+wM9HPI6tm1Rk7uKfBP2NDW1xy
- lPTI5REihWKrFRzUOR4uCM1jzNcLjGg6lEKyeqt09jBrLikeTVTK8oW2vqoVfbiU6Z0VrUaZz
- sUrxvmbAKFBu6nrOdQqKF8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-111-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Le 23/03/2021 à 23:14, Laurent Vivier a écrit :
-> This machine allows to have up to 3.2 GiB and 128 Virtio devices.
+On Wed, Apr 21, 2021 at 02:59:45PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit fba1bdd2a9a93f3e2181ec1936a3c2f6b37e7ed6.
 > 
-> It is based on android goldfish devices.
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 > 
-> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Manish Rangankar <mrangankar@marvell.com>
+> Cc: Mukesh Ojha <mojha@codeaurora.org>
+> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  arch/m68k/Kbuild                           |   1 +
->  arch/m68k/Kconfig.machine                  |  17 +++
->  arch/m68k/configs/virt_defconfig           |  93 ++++++++++++++++
->  arch/m68k/include/asm/irq.h                |   3 +-
->  arch/m68k/include/asm/pgtable_mm.h         |   7 ++
->  arch/m68k/include/asm/setup.h              |  44 ++++++--
->  arch/m68k/include/asm/virt.h               |  26 +++++
->  arch/m68k/include/uapi/asm/bootinfo-virt.h |  18 ++++
->  arch/m68k/include/uapi/asm/bootinfo.h      |   1 +
->  arch/m68k/kernel/Makefile                  |   1 +
->  arch/m68k/kernel/head.S                    |  30 ++++++
->  arch/m68k/kernel/setup_mm.c                |   9 ++
->  arch/m68k/mm/kmap.c                        |  20 ++--
->  arch/m68k/virt/Makefile                    |   6 ++
->  arch/m68k/virt/config.c                    | 118 +++++++++++++++++++++
->  arch/m68k/virt/ints.c                      | 110 +++++++++++++++++++
->  arch/m68k/virt/platform.c                  |  80 ++++++++++++++
->  arch/m68k/virt/timer.c                     |  91 ++++++++++++++++
->  18 files changed, 658 insertions(+), 17 deletions(-)
->  create mode 100644 arch/m68k/configs/virt_defconfig
->  create mode 100644 arch/m68k/include/asm/virt.h
->  create mode 100644 arch/m68k/include/uapi/asm/bootinfo-virt.h
->  create mode 100644 arch/m68k/virt/Makefile
->  create mode 100644 arch/m68k/virt/config.c
->  create mode 100644 arch/m68k/virt/ints.c
->  create mode 100644 arch/m68k/virt/platform.c
->  create mode 100644 arch/m68k/virt/timer.c
+>  drivers/scsi/qla4xxx/ql4_os.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
+> index 7bd9a4a04ad5..5cb0dfe7a83b 100644
+> --- a/drivers/scsi/qla4xxx/ql4_os.c
+> +++ b/drivers/scsi/qla4xxx/ql4_os.c
+> @@ -3229,8 +3229,6 @@ static int qla4xxx_conn_bind(struct iscsi_cls_session *cls_session,
+>  	if (iscsi_conn_bind(cls_session, cls_conn, is_leading))
+>  		return -EINVAL;
+>  	ep = iscsi_lookup_endpoint(transport_fd);
+> -	if (!ep)
+> -		return -EINVAL;
+>  	conn = cls_conn->dd_data;
+>  	qla_conn = conn->dd_data;
+>  	qla_conn->qla_ep = ep->dd_data;
+> -- 
+> 2.31.1
 > 
 
-As 5.12 has been released, is this possible to consider having this new machine in the next release?
+Looks to be correct.  Odd that you do not have to "unbind" after calling
+iscsi_conn_bind(), but hey, it's scsi functions, they are always odd :)
 
-All changes are contained under arch/m68k and protected by the CONFIG_VIRT flag. This should not
-have any impact on the other m68k machines. In any case, I'll be able to maintain the machine and
-fix any problem.
+I'll drop this revert.
 
-Thanks,
-Laurent
+greg k-h
