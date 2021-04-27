@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6A636C9F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADBA36C9F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238110AbhD0RBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236502AbhD0RBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:01:46 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87637C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:01:00 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id a11so7915653ioo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VQWN2MoFbn+ZbCk3aYL+k6MgSUCrIcFC3HaPv/js1xI=;
-        b=OaOMNgPxt/xHeJgQVxLE6f72BpwsMmGEJih3XGIyAjUwveuQuWYqu3MUwp1RDIDDYu
-         j18lhg451O/piqwlezSI4e4g7ypGmhg8lB9h6Yrbce47IQ1EJyjjCDsUgBf3A4O8vHVD
-         5AB/qq/lKfpd0xUkoF23qnpHg7tB6gRt8w7Hg/kiMCNl3bncwew6mS7Ma5/kMSlQiU50
-         2cGgPmp770CSqthj01CndSCdD7LQEErsmYgTK0gZ24POEzU2Aua4ftJIJl0T0CFonMdh
-         lPnCIJd77o7djc/Db4PEjZqLGj+ujNQe1IYvgLjX7Sjt8xrTZ5Dx6yZW2HOLgYhLvljK
-         N0mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VQWN2MoFbn+ZbCk3aYL+k6MgSUCrIcFC3HaPv/js1xI=;
-        b=g4ATLEf+fOgL7IhQtw48lxjN++3Ti8gd/hjnjWohW+/ugOV4bsAhZOa2TbocowMUNu
-         YzBZQBAkk9ig6X6OfxZ77JujuCCBAZkPPiV/tFOi9ViRAZS3s0kDsTdR/rbOREtslYcv
-         HXxHLUefYRgHBT4IOdsLPMZdSiiOuKsj/755cqzn6tuXcyWaCumZ0nQiD79gSNYIm6VS
-         E1UYA2Ap3aA/22VsaT/syrxn+1WkJc+1t7D9qUIh+fBWXlhsvBQmdPvHN4san5VAxPJx
-         23mhSsUOtv3Cu0x01pl1FpKOhp0ThR0k0V8HifXqkhXJOJ6Hj+DM4AVgIjH9jH8mp4wK
-         8rlw==
-X-Gm-Message-State: AOAM5321Tgug6lLb1egYhwjjjis5y3m5WJXs+j076iMRerGpSvdo/LHH
-        mrpVbDR4ZkOpjDjWU6u8owDTmw==
-X-Google-Smtp-Source: ABdhPJwXKXj//hDEP/+qXuNdiHIhM4QvOLWkMCd7LmQgFDvUZ28eQJWewPRtGPpUytn/c7kDSg0X0g==
-X-Received: by 2002:a5e:880c:: with SMTP id l12mr20315619ioj.195.1619542859956;
-        Tue, 27 Apr 2021 10:00:59 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l8sm198227ioq.35.2021.04.27.10.00.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 10:00:59 -0700 (PDT)
-Subject: Re: [PATCH 5.13] io_uring: Check current->io_uring in
- io_uring_cancel_sqpoll
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Palash Oswal <hello@oswalpalash.com>
-Cc:     dvyukov@google.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oswalpalash@gmail.com,
-        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org
-References: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
- <20210427125148.21816-1-hello@oswalpalash.com>
- <decd444f-701d-6960-0648-b145b6fcccfb@kernel.dk>
- <8204f859-7249-580e-9cb1-7e255dbcb982@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <de97e0f0-1c47-1a96-eb24-e62c37d2a06b@kernel.dk>
-Date:   Tue, 27 Apr 2021 11:00:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S238739AbhD0RB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236627AbhD0RBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC90C611BE;
+        Tue, 27 Apr 2021 17:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619542866;
+        bh=S3gUgdJcABjJDvT2NBvgDp0veoEblOH4MylJRtAx4f8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mw+7aw0IDmiwxZQ+1M6EVos1qcvBxrz7Yt7Pog3HewGXCsiUoxpJZpdEeJVl28CUp
+         QlwIOsXoQSsxEEeVFHehW3wK1Rwbz9ap9vVl9tl00aMJ7vPkYU9JYsp5i3E/Zg/MC3
+         hGxb33a4vGQ8nfE5st/mTYg/ml3f1jCPAPPinXos=
+Date:   Tue, 27 Apr 2021 19:01:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 174/190] Revert "net: chelsio: Add a missing check on
+ cudg_get_buffer"
+Message-ID: <YIhDUCiM52t1OdY8@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-175-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <8204f859-7249-580e-9cb1-7e255dbcb982@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-175-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 11:00 AM, Pavel Begunkov wrote:
-> On 4/27/21 2:37 PM, Jens Axboe wrote:
->> On 4/27/21 6:51 AM, Palash Oswal wrote:
->>> syzkaller identified KASAN: null-ptr-deref Write in
->>> io_uring_cancel_sqpoll on v5.12
->>>
->>> io_uring_cancel_sqpoll is called by io_sq_thread before calling
->>> io_uring_alloc_task_context. This leads to current->io_uring being
->>> NULL. io_uring_cancel_sqpoll should not have to deal with threads
->>> where current->io_uring is NULL.
->>>
->>> In order to cast a wider safety net, perform input sanitisation
->>> directly in io_uring_cancel_sqpoll and return for NULL value of
->>> current->io_uring.
->>
->> Thanks applied - I augmented the commit message a bit.
+On Wed, Apr 21, 2021 at 03:00:49PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit ca19fcb6285bfce1601c073bf4b9d2942e2df8d9.
 > 
-> btw, does it fixes the replied before syz report? Should 
-> syz fix or tag it if so.
-> Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
+> index 23a2ebdfd503..c7378da78a83 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
+> @@ -1638,10 +1638,6 @@ int cudbg_collect_hw_sched(struct cudbg_init *pdbg_init,
+>  
+>  	rc = cudbg_get_buff(pdbg_init, dbg_buff, sizeof(struct cudbg_hw_sched),
+>  			    &temp_buff);
+> -
+> -	if (rc)
+> -		return rc;
+> -
+>  	hw_sched_buff = (struct cudbg_hw_sched *)temp_buff.data;
+>  	hw_sched_buff->map = t4_read_reg(padap, TP_TX_MOD_QUEUE_REQ_MAP_A);
+>  	hw_sched_buff->mode = TIMERMODE_G(t4_read_reg(padap, TP_MOD_CONFIG_A));
+> -- 
+> 2.31.1
+> 
 
-That tag was already there.
+Original looks correct, dropping this revert.
 
--- 
-Jens Axboe
-
+greg k-h
