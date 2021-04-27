@@ -2,174 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0835736CA41
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179DC36CA0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237894AbhD0RWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:22:32 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37555 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235777AbhD0RWE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:22:04 -0400
-X-Greylist: delayed 784 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Apr 2021 13:22:04 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 35B56ED0;
-        Tue, 27 Apr 2021 13:08:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 27 Apr 2021 13:08:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=dpGNdB47HMr5A69m6IUz+7x1trW
-        JQi1zXaT6OT2QXA4=; b=PXT+9VIDs49kPYTvrSz7FM5f52topR9XxP6s1r8vuky
-        Kt4mYJx7BwwDAI3y1GRkdLqelmRNI98CnTN8Qs8xfTGRC+xLbMjSpT7wOc6SepR9
-        1vA1Ny3lW9L3y9Qh6bgBPAImWOJAol4KwubCGx0icPIcr0O5jswkQEAK9XW3/jv4
-        1UWH/iAKReo4b2lWH/mnCcoK4oxeCMP3llycSwTnIe98z7nkfV1JcoM+3GKnvap0
-        j2WQ9IcF12oeQHoYgzGuWbbyaLAymqDbHpEnumcvHCjiAhDumxDmi4X7fxOvQLuT
-        AE4pTRCGqOEf/2WrnPJgKHr/mwSZ0yIiQ2tyF96DjBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=dpGNdB
-        47HMr5A69m6IUz+7x1trWJQi1zXaT6OT2QXA4=; b=kpT0hcz8VM2PoNbz9AF9k0
-        iWcgJ6rDbRZ8H/Bg3gECnFJCaBOAkSwwYzkwv1A/z8BZGLSZl0rNt3M0WRxdZb24
-        URgu5Hot1wwouS39Bhn3VMRrt7ibC3xu975bCyRtnrUqOyY+406HcgX8egS4Di/K
-        5HbjssSpaVhGA1W6vsdVfaObK1XxZysUrDFL6UpRuxJMdUAwriVy1uXbtTnlCLw5
-        u0v83XYikpKsHVM20tHklTIH5/TyY94OV+f8nSs74NiO8fJJeqXl8kZXmE/jvEmC
-        rGmMTyMWDMBuXRC6n8sdoOtg0IZG33CpecosKo0Od1nfQujMKkfXICYowb1TQeNg
-        ==
-X-ME-Sender: <xms:8ESIYI8uvaD7iiFRgrvJzwO-_weub7lGvqzQ1GpDyfQnAIRtuDJDiA>
-    <xme:8ESIYAtpK547yQGq-c_Pyfx62v4aCKy5daGwFiwJz3K_pLTXH6wVcUYjbp7jSwC-l
-    rzCxqB3j1-mPcHu-D8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvtddgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnhepgeekfeejgeektdejgfefudelkeeuteejgefhhfeugffffeelheegieef
-    vdfgtefhnecukfhppedujeefrdefkedruddujedrkedtnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
-    rg
-X-ME-Proxy: <xmx:8ESIYODzX7D_vX0KASKjHdztk6L5GmwmoczCu6Ushlv533ayINg86A>
-    <xmx:8ESIYIeCWaXZfizAqSor6qLfgWZ8x2YFEdrTfvdqeIyx_Dgzx-Uj8Q>
-    <xmx:8ESIYNOhGXX5YLzmHehje95NTyu5OINC4d9LTBKQQJ2aMBlOsES5dA>
-    <xmx:8USIYGiUc0H1ZMr4VMrXLh2tFIQTaxkyf7y-Al_-QSLXk0xdUDvq_ES5hxY>
-Received: from cisco (unknown [173.38.117.80])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 27 Apr 2021 13:07:59 -0400 (EDT)
-Date:   Tue, 27 Apr 2021 11:07:53 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
-        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
-        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
-Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to
- seccomp user notifier
-Message-ID: <20210427170753.GA1786245@cisco>
-References: <20210426180610.2363-1-sargun@sargun.me>
- <20210426180610.2363-3-sargun@sargun.me>
- <20210426190229.GB1605795@cisco>
- <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
- <20210427134853.GA1746081@cisco>
- <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+        id S236124AbhD0RID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:08:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235512AbhD0RHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:07:55 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D032261289;
+        Tue, 27 Apr 2021 17:07:10 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 18:07:55 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Tomas Melin <tomas.melin@vaisala.com>
+Cc:     devicetree@vger.kernel.org, andy.shevchenko@gmail.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/2] iio: accel: sca3300: Accelerometer support and
+ binding doc
+Message-ID: <20210427180755.001f3d46@jic23-huawei>
+In-Reply-To: <20210426081041.59807-1-tomas.melin@vaisala.com>
+References: <20210426081041.59807-1-tomas.melin@vaisala.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 09:23:42AM -0700, Andy Lutomirski wrote:
-> On Tue, Apr 27, 2021 at 6:48 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> >
-> > On Mon, Apr 26, 2021 at 10:15:28PM +0000, Sargun Dhillon wrote:
-> > > On Mon, Apr 26, 2021 at 01:02:29PM -0600, Tycho Andersen wrote:
-> > > > On Mon, Apr 26, 2021 at 11:06:07AM -0700, Sargun Dhillon wrote:
-> > > > > @@ -1103,11 +1111,31 @@ static int seccomp_do_user_notification(int this_syscall,
-> > > > >    * This is where we wait for a reply from userspace.
-> > > > >    */
-> > > > >   do {
-> > > > > +         interruptible = notification_interruptible(&n);
-> > > > > +
-> > > > >           mutex_unlock(&match->notify_lock);
-> > > > > -         err = wait_for_completion_interruptible(&n.ready);
-> > > > > +         if (interruptible)
-> > > > > +                 err = wait_for_completion_interruptible(&n.ready);
-> > > > > +         else
-> > > > > +                 err = wait_for_completion_killable(&n.ready);
-> > > > >           mutex_lock(&match->notify_lock);
-> > > > > -         if (err != 0)
-> > > > > +
-> > > > > +         if (err != 0) {
-> > > > > +                 /*
-> > > > > +                  * There is a race condition here where if the
-> > > > > +                  * notification was received with the
-> > > > > +                  * SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE flag, but a
-> > > > > +                  * non-fatal signal was received before we could
-> > > > > +                  * transition we could erroneously end our wait early.
-> > > > > +                  *
-> > > > > +                  * The next wait for completion will ensure the signal
-> > > > > +                  * was not fatal.
-> > > > > +                  */
-> > > > > +                 if (interruptible && !notification_interruptible(&n))
-> > > > > +                         continue;
-> > > >
-> > > > I'm trying to understand how one would hit this race,
-> > > >
-> > >
-> > > I'm thinking:
-> > > P: Process that "generates" notification
-> > > S: Supervisor
-> > > U: User
-> > >
-> > > P: Generated notification
-> > > S: ioctl(RECV...) // With wait_killable flag.
-> > > ...complete is called in the supervisor, but the P may not be woken up...
-> > > U: kill -SIGTERM $P
-> > > ...signal gets delivered to p and causes wakeup and
-> > > wait_for_completion_interruptible returns 1...
-> > >
-> > > Then you need to check the race
-> >
-> > I see, thanks. This seems like a consequence of having the flag be
-> > per-RECV-call vs. per-filter. Seems like it might be simpler to have
-> > it be per-filter?
-> >
-> 
-> Backing up a minute, how is the current behavior not a serious
-> correctness issue?  I can think of two scenarios that seem entirely
-> broken right now:
-> 
-> 1. Process makes a syscall that is not permitted to return -EINTR.  It
-> gets a signal and returns -EINTR when user notifiers are in use.
-> 
-> 2. Process makes a syscall that is permitted to return -EINTR.  But
-> -EINTR for IO means "I got interrupted and *did not do the IO*".
-> Nevertheless, the syscall returns -EINTR and the IO is done.
-> 
-> ISTM the current behavior is severely broken, and the new behavior
-> isn't *that* much better since it simply ignores signals and can't
-> emulate -EINTR (or all the various restart modes, sigh).  Surely the
-> right behavior is to have the seccomped process notice that it got a
-> signal and inform the monitor of that fact so that the monitor can
-> take appropriate action.
+On Mon, 26 Apr 2021 11:10:39 +0300
+Tomas Melin <tomas.melin@vaisala.com> wrote:
 
-This doesn't help your case (2) though, since the IO could be done
-before the supervisor gets the notification.
+> Patch series adds driver and dt-binding for Murata SCA3300 accelerometer.
+> 
+> Device is a 3-axis Accelerometer with digital SPI interface.
+> 
+> Patches are tested and based on linux-next.
+> 
+Very nice.
 
-> IOW, I don't think that the current behavior *or* the patched opt-in
-> behavior is great.  I think we would do better to have the filter
-> indicate that it is signal-aware and to document that non-signal-aware
-> filters cannot behave correctly with respect to signals.
+Series applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to poke at it.  As we are mid merge window I won't push
+this out anywhere that will turn up in linux-next until rc1 is out.
 
-I think it would be hard to make a signal-aware filter, it really does
-feel like the only thing to do is a killable wait.
+Thanks,
 
-Tycho
+Jonathan
+
+> Changes V5:
+> Addressed comments from Andy Shevchenko
+> - Reversed xtree declaration fix
+> - Add clarifying comment and spacing
+> 
+> Changes V4:
+> Addressed comments from Andy Shevchenko
+> - Regrouped and renamed #define statements
+> - Added cacheline alignment for tx/rx buffers
+> - Changed irq handler print to be ratelimited
+> - Commented use of goto in irq handler
+> - Removed redundant 0x0 value
+> - Spacing errors fixed
+> - Removed redundant return statement
+> 
+> Changes V3:
+> Addressed comments from Jonathan Cameron and Andy Shevchenko
+> - Grouped include statements
+> - Revised SCA* define naming and grouped statements
+> - Changed to GENMASK() for masks
+> - Indentation fix for ACCEL_CHANNEL define
+> - Remove field declarations using default values
+> - Change to if(ret) style for checking return values
+> - Add defined mask value SCA3300_MASK_STATUS for return status
+> - Remove redundant casts
+> - Clarify comment wording
+> - Refactor to remove variable idx and redundant else branches
+> - Unify sleep in device init, separate sleeps not needed since operation mode change dropped
+> - Drop redundant memory allocation error message in probe
+> - dev.parent is set by iio core, removed from driver probe
+> - Drop of_match_ptr()
+> 
+> 
+> Changes V2:
+> Addressed comments from Jonathan Cameron
+> - Add manufacturer name to dt-binding file
+> - Update spdx license statement for dt-bindings
+> - Remove murata,opmode devicetree property in favor of driver scale + frequency properties
+> - Add copyright year for driver
+> - Remove X_READ and X_WRITE defines
+> - Add _available sysfs attributes
+> - Fix errors in documentation formatting
+> - Use ARRAY_SIZE where applicable
+> - Use get/put_unaligned_be16() helpers where applicable
+> - Factor out error handling to separate function
+> - Return only negative values from transfer function
+> - Fix INFO_SCALE to return multiplier instead of inverted value
+> - Change INFO_SCALE values to be actual scale instead of mode value
+> - Do not provide INFO_PROCESSED values for user space
+> - Add error message for failed data read in irq handler
+> - Move trigger handler timestamping as part of pushing data to buffers
+> - Document startup sequence, providing reference to data sheet section
+> - Convert iio_triggered_buffer_setup to devm_iio_triggered_buffer_setup,
+> making remove() obsolete
+> 
+> Tomas Melin (2):
+>   dt-bindings: iio: accel: Add SCA3300 documentation
+>   iio: accel: Add driver for Murata SCA3300 accelerometer
+> 
+>  .../bindings/iio/accel/murata,sca3300.yaml    |  44 ++
+>  drivers/iio/accel/Kconfig                     |  13 +
+>  drivers/iio/accel/Makefile                    |   1 +
+>  drivers/iio/accel/sca3300.c                   | 472 ++++++++++++++++++
+>  4 files changed, 530 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/murata,sca3300.yaml
+>  create mode 100644 drivers/iio/accel/sca3300.c
+> 
+
