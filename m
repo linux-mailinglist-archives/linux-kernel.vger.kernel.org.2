@@ -2,126 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BF436BFF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D94A36BFF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhD0HQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:16:49 -0400
-Received: from mailoutvs4.siol.net ([185.57.226.195]:52826 "EHLO mail.siol.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229988AbhD0HQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:16:46 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id C89C9522CEF;
-        Tue, 27 Apr 2021 09:16:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id CxEoLfVWkIxP; Tue, 27 Apr 2021 09:16:01 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 43406524694;
-        Tue, 27 Apr 2021 09:16:01 +0200 (CEST)
-Received: from kista.localdomain (cpe-86-58-17-133.cable.triera.net [86.58.17.133])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 45BCD522CEF;
-        Tue, 27 Apr 2021 09:16:00 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc:     mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        ezequiel@collabora.com, benjamin.gaignard@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH] media: hevc: Fix dependent slice segment flags
-Date:   Tue, 27 Apr 2021 09:15:54 +0200
-Message-Id: <20210427071554.2222625-1-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.31.1
+        id S234892AbhD0HQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234854AbhD0HQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 03:16:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC2AC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 00:16:11 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lbHx0-0002Yq-DQ; Tue, 27 Apr 2021 09:16:06 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3096:2dba:77f2:d86d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CB116617B7D;
+        Tue, 27 Apr 2021 07:16:04 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 09:16:03 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Patrick Menschel <menschel.p@posteo.de>
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] can-isotp: Add error message if txqueuelen is too
+ small
+Message-ID: <20210427071603.gkq27ogz6ocgroov@pengutronix.de>
+References: <20210427052150.2308-1-menschel.p@posteo.de>
+ <20210427052150.2308-4-menschel.p@posteo.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="go3puuwkybw3wygt"
+Content-Disposition: inline
+In-Reply-To: <20210427052150.2308-4-menschel.p@posteo.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dependent slice segment flag for PPS control is misnamed. It should have
-"enabled" at the end. It only tells if this flag is present in slice
-header or not and not the actual value.
 
-Fix this by renaming the PPS flag and introduce another flag for slice
-control which tells actual value.
+--go3puuwkybw3wygt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
- drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
- include/media/hevc-ctrls.h                                | 3 ++-
- 3 files changed, 8 insertions(+), 4 deletions(-)
+On 27.04.2021 05:21:49, Patrick Menschel wrote:
+> This patch adds an additional error message in
+> case that txqueuelen is set too small and
+> advices the user to increase txqueuelen.
+>=20
+> This is likely to happen even with small transfers if
+> txqueuelen is at default value 10 frames.
+>=20
+> Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
+> ---
+>  net/can/isotp.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/net/can/isotp.c b/net/can/isotp.c
+> index 2075d8d9e..d08f95bfd 100644
+> --- a/net/can/isotp.c
+> +++ b/net/can/isotp.c
+> @@ -797,10 +797,12 @@ static enum hrtimer_restart isotp_tx_timer_handler(=
+struct hrtimer *hrtimer)
+>  		can_skb_set_owner(skb, sk);
+> =20
+>  		can_send_ret =3D can_send(skb, 1);
+> -		if (can_send_ret)
+> +		if (can_send_ret) {
+>  			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
+>  				       __func__, ERR_PTR(can_send_ret));
+> -
+> +			if (can_send_ret =3D=3D -ENOBUFS)
+> +				pr_notice_once("can-isotp: tx queue is full, increasing txqueuelen m=
+ay prevent this error");
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/=
-Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 7b90cb939e9d..5ed343ddd1ea 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -3059,7 +3059,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     :stub-columns: 0
-     :widths:       1 1 2
-=20
--    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
-       - 0x00000001
-       -
-     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
-@@ -3274,6 +3274,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_EN=
-ABLED``
-       - 0x00000100
-       -
-+    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+      - 0x00000200
-+      -
-=20
- .. raw:: latex
-=20
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/s=
-taging/media/sunxi/cedrus/cedrus_h265.c
-index 397a4ba5df4c..6821e3d05d34 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-@@ -479,8 +479,8 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
- 				slice_params->flags);
-=20
- 	reg |=3D VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDEN=
-T_SLICE_SEGMENT,
--				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
--				pps->flags);
-+				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
-+				slice_params->flags);
-=20
- 	/* FIXME: For multi-slice support. */
- 	reg |=3D VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PI=
-C;
-diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-index b713eeed1915..dc964ff7cd29 100644
---- a/include/media/hevc-ctrls.h
-+++ b/include/media/hevc-ctrls.h
-@@ -83,7 +83,7 @@ struct v4l2_ctrl_hevc_sps {
- 	__u64	flags;
- };
-=20
--#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
-+#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
- #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
- #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
- #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
-@@ -166,6 +166,7 @@ struct v4l2_hevc_pred_weight_table {
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED (1U=
-LL << 7)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENAB=
-LED (1ULL << 8)
-+#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
-=20
- struct v4l2_ctrl_hevc_slice_params {
- 	__u32	bit_size;
+I've added the missing "\n" at the end while applying the patch to
+linux-can-next/testing.
+
+regards,
+Marc
+
 --=20
-2.31.1
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
+--go3puuwkybw3wygt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCHujEACgkQqclaivrt
+76mr8wf9EVENJ78T4lguUJ71dKwE6aqZrnqn++Ox6wQ0YDrR4H3lvUIYUI+pMdPj
+iHiDFR24o7GCavl8IlYSn3kWerJde2Eu83fKbGTcPYmm8fwnz5rb4Faov6788+AP
+POoDWA/xWy9jrv9hH/qKJzDThIYPO5F0h2SG6onKxd8DqH9fXgt7Kd/MPZvky8XO
+2PAvunpoe4L+puALGd89lGruX4riudiYa4KhVqrAuq/bmpbunSqRndKvhkEjKu6K
+JpimtWnrhXwuSYWZw5pSpVl51H0mxLZPUUeOnNNHyoLbe0zyR3mxXoYPdltVB/aS
+foCp+x8x+qouMFD2hmW8kDtgYee/4Q==
+=Y6Hk
+-----END PGP SIGNATURE-----
+
+--go3puuwkybw3wygt--
