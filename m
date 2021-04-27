@@ -2,140 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B152F36CB8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55E236CB8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237091AbhD0TS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:18:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:9028 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236327AbhD0TS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:18:56 -0400
-IronPort-SDR: kyvqSWjgEsfoAviJaFODORTyNV/woCFsfsWX60DzQD3ds5PjKzbeqksMTw3AfuVPlXMYvLowlZ
- AjPtbf8h4ZZA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="183714965"
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="183714965"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:18:11 -0700
-IronPort-SDR: hhiPByXCUgJ0qam0xQ08fAXfcR2Ud0vR8cbsAe5q03nrfz4tphEq1KZDQgLdgDF+onkmXKKG2F
- 1OhUwdw+jCSw==
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="386253902"
-Received: from mchintha-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.5.143])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:18:10 -0700
-Subject: Re: [RFC v2 05/32] x86/tdx: Add __tdcall() and __tdvmcall() helper
- functions
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <2f81f67efdf8c68838cdfbb2314e98747cf70120.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <c2edea0c-8de7-3bd3-1dbe-66b585d78e03@intel.com>
- <f310c626-5fd9-7fd3-23fa-e319c0f2aa98@linux.intel.com>
- <33af5bd4-7ada-8450-5a86-90023145d481@intel.com>
- <849d8039-b43c-0790-be1c-aaac8c06608a@linux.intel.com>
- <2f26e352-99e4-8531-221a-eb9641c67ec0@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <95444e56-a674-1152-3039-4e425e5f5a72@linux.intel.com>
-Date:   Tue, 27 Apr 2021 12:18:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237973AbhD0TUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235563AbhD0TUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:20:37 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D31C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:19:53 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u20so69482518lja.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:19:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/oXvf0Y9xKsBQGdqsEuYClY3Pkmd+9qguv7EcU4aiIo=;
+        b=Dx3Y56VbKgFgUrstq1ky2UIXs9PsSpZBJgv1C37e2dncPMk3I5YxdCD3X0FVfDk2/O
+         Uctl1yEmo+L8MhpjyksfLV6sCxwlQRO+LeQ49mlmuxoLzzTZm4hc5axPlIuEzB9qKbj/
+         MGSh1qXgKiXHRCovvuHs9/vA7TSsnRakCuVJMdHYX0oAXhAjJo5x0ikpGGmXvAdxayc5
+         6nN+U0sHspDZBL7FpP5ZJmaQ2C4zh2p8ragm3Jdo06ngrnODmoA+3xCxsHIXrGvDBnpN
+         6OR669qVPjj+Wmt+UqhS50JtwTlmDD+PBdommCz9s9lLHJzvMGHIF/cJP0g1DRSuyIrT
+         t7gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/oXvf0Y9xKsBQGdqsEuYClY3Pkmd+9qguv7EcU4aiIo=;
+        b=dm0tAZbGG9SuMak+hItUvndYTxApCUd9tgZTCxa68xw8jrr9JniD6pqpCgHZOZ7PaB
+         cvclTOAFVsckE5o+jpONE345ECbYLKSZf6yjlog+xsR92JzTxf6Cq+G51cYCWx8rHu35
+         r94K8rmoVot/H5kN92zrdVaw3vJiFJ9RpmRT3AMNqCNTLnKPa9+XdlL95u7RrQ7oqQtT
+         6KGnHdfmBpkH5DBstXozsPs6DvKEqrt1RbO46SVUUpMM8tX4t7cA3A1Kte57uERA5j0G
+         gpZHsBWiZlGChjTOXea6cIHNfOv+oqLudqpYF0pWlNxFN3EK4YuVCmqDKngmXVUnHjYp
+         cjbg==
+X-Gm-Message-State: AOAM530HFZUdq0YAj1j4fVbZgVEUHd3OE+qMrUBrLUw0Z95farqEKETd
+        YOV5NjLsv5hGk2bYc8JxFgCgaY0nZxi3UutoKOzAcg==
+X-Google-Smtp-Source: ABdhPJzoVWo2a1QQrSEEIoTA6iMfQHDAjbB4tcdrT7Iw3P4nRvxG1z9n4PxqdaYCSFAlSuCNEwPcufxfjPmIf0ZD/QM=
+X-Received: by 2002:a2e:9cc1:: with SMTP id g1mr18263376ljj.0.1619551191581;
+ Tue, 27 Apr 2021 12:19:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2f26e352-99e4-8531-221a-eb9641c67ec0@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210427183624.2790305-1-trix@redhat.com>
+In-Reply-To: <20210427183624.2790305-1-trix@redhat.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 27 Apr 2021 12:19:40 -0700
+Message-ID: <CAKwvOd=LSs6gdGj-FAuCTrPrH6ik6PVxYX+_tFK9G1OW0vdMAA@mail.gmail.com>
+Subject: Re: [PATCH] bus: fsl-mc: fix improper free of mc_dev
+To:     Tom Rix <trix@redhat.com>
+Cc:     stuyoder@gmail.com, laurentiu.tudor@nxp.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+On Tue, Apr 27, 2021 at 11:36 AM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> Clang static analysis reports this error
+>
+> fsl-mc-bus.c:891:2: warning: Attempt to free released memory
+>         kfree(mc_dev);
+>         ^~~~~~~~~~~~~
+>
+> In this block of code
+>
+> if (strcmp(obj_desc->type, "dprc") == 0) {
+> ..
+>   mc_bus = kzalloc(..)
+>   mc_dev = &mc_bus->mc_dev;
 
-On 4/27/21 7:29 AM, Dave Hansen wrote:
->> Do we need to rename the helper functions ?
->>
->> tdvmcall(), tdvmcall_out_r11()
-> Yes.
-> 
->> Also what about output structs?
->>
->> struct tdcall_output
->> struct tdvmcall_output
-> Yes, they need sane, straightforward names which are not confusing too.
-> 
+Thanks for the patch.
 
-Following is the rename diff. Please let me know if you agree with the
-names used.
+Aren't the allocations for mc_bus and mc_dev mutually exclusive based
+on that conditional? If so...
 
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 6c3c71bb57a0..95a6a6c6061a 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
+>
+> mc_dev is not alloc-ed, so it should not be freed.
+> Old handler triggers a false positive from checkpatch, so add a
+> comment and change logic a bit.
+>
+> Fixes: a042fbed0290 ("staging: fsl-mc: simplify couple of deallocations")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/bus/fsl-mc/fsl-mc-bus.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
+> index 380ad1fdb745..fb3e1d8a7f63 100644
+> --- a/drivers/bus/fsl-mc/fsl-mc-bus.c
+> +++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
+> @@ -887,8 +887,10 @@ int fsl_mc_device_add(struct fsl_mc_obj_desc *obj_desc,
+>
+>  error_cleanup_dev:
+>         kfree(mc_dev->regions);
+> +       /* mc_dev is only allocated when it is not part of mc_bus */
+> +       if (!mc_bus)
+> +               kfree(mc_dev);
+>         kfree(mc_bus);
+> -       kfree(mc_dev);
 
--struct tdcall_output {
-+struct tdx_module_output {
-         u64 rcx;
-         u64 rdx;
-         u64 r8;
-@@ -19,7 +19,7 @@ struct tdcall_output {
-         u64 r11;
-  };
+The error handling here seems quite wrong (regardless of your patch).
+mc_dev->regions is allocated by fsl_mc_device_get_mmio_regions() IIUC.
+Wouldn't the first `goto error_cleanup_dev;` taken end up passing an
+uninitialized pointer to kfree()?
 
--struct tdvmcall_output {
-+struct tdx_hypercall_output {
-         u64 r11;
-         u64 r12;
-         u64 r13;
-@@ -33,12 +33,12 @@ bool is_tdx_guest(void);
-  void __init tdx_early_init(void);
+what if `strcmp(obj_desc->type, "dprc") == 0` is false? We allocate
+`mc_dev`, but then call kfree on `mc_bus`?
 
-  /* Helper function used to communicate with the TDX module */
--u64 __tdcall(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
--            struct tdcall_output *out);
-+u64 __tdx_module_call(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
-+                     struct tdx_module_output *out);
+I think it would be safer to locally save the result of
+`strcmp(obj_desc->type, "dprc") == 0`, then check that throughout this
+function, including the error handling at the end, or use multiple
+labels to unwind the allocations correctly.
 
-  /* Helper function used to request services from VMM */
--u64 __tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
--              struct tdvmcall_output *out);
-+u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
-+                   struct tdx_hypercall_output *out);
+>
+>         return error;
+>  }
 
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -8,11 +8,11 @@
-  /*
-   * Wrapper for use case that checks for error code and print warning message.
-   */
--static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
-+static inline u64 tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
-  {
-         u64 err;
-
--       err = __tdvmcall(fn, r12, r13, r14, r15, NULL);
-+       err = __tdx_hypercall(fn, r12, r13, r14, r15, NULL);
-
-         if (err)
-                 pr_warn_ratelimited("TDVMCALL fn:%llx failed with err:%llx\n",
-@@ -24,13 +24,14 @@ static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
-  /*
-   * Wrapper for the semi-common case where we need single output value (R11).
-   */
--static inline u64 tdvmcall_out_r11(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
-+static inline u64 tdx_hypercall_out_r11(u64 fn, u64 r12, u64 r13,
-+                                       u64 r14, u64 r15)
+> --
 
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+--
+Thanks,
+~Nick Desaulniers
