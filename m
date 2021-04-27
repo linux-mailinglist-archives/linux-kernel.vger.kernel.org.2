@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B6F36CA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CF236CA14
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhD0RJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236030AbhD0RJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A894613D0;
-        Tue, 27 Apr 2021 17:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619543307;
-        bh=z5l0Ap7tYFWvNSbJC70dTHA0dhNT8U2X3UyK31gw0Xs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JHRvrp9/IL+WgsTnaD0Dgv/aO6r2V67IdeGJpVAnsVQ1mdYVbALVGMtCYrQFUuHHM
-         sOEtS5cFsSPELWGd476LF10CR0PIWVLvEWC2MNjUm0qhpKFJVEe17u1dHYbNsUsI9M
-         6KNUhGtndfr3pX/8CVzj3pDxfn4g6/Lvga+rFrgM=
-Date:   Tue, 27 Apr 2021 19:08:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 129/190] Revert "qlcnic: Avoid potential NULL pointer
- dereference"
-Message-ID: <YIhFCfs0jIRMRgdr@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-130-gregkh@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-130-gregkh@linuxfoundation.org>
+        id S236627AbhD0RKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235512AbhD0RKR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:10:17 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CBBC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:09:31 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id 65-20020adf82c70000b0290107593a42c3so9413412wrc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=mu8pX+qKetUtW12TmI9eJNbJjh/oUdlMUUsluEXLfvw=;
+        b=WCpOjzlkH6FzzoyCziZGd4rXEDGbXBj/lLhRUgVLmERfRaWHFdc+72dNdyUlitF6ya
+         Nh8THY92dUXL/RvjEgqfQZ9SErCn8xmPd3WWoYF+5/4Rra53oi45hgR/ApWgIePwMj55
+         ysdigqlMn0S1XDUQBMGGBjgKFgl4WU13YwTB3jrJ62wP35NPLYqeb0tZ75jA0bTU1xLw
+         DCiMn9dWs10Ozf9ohr0Ciwl4AFL37PuqEvcTkXuXcrRVdmsvTXuX1P/7hgR83jRv9f3x
+         rv8y0fNjNI53NJp90tYLcd4w+M1F8i4BUZrlucc/19+VxwtTC5OuMonAPcACXvOsshed
+         ArNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=mu8pX+qKetUtW12TmI9eJNbJjh/oUdlMUUsluEXLfvw=;
+        b=HR4rpJSZxdpCxRhOZpUqyRdquVLJDQ4XtKnl0xPZp+cMVsYh1Dpc//OiGkPXtPVHQz
+         WRKUMJSem+7skxfNiYhfQKMw7AqptuyB/6zfp5s/O7Ocxzb8bS/tF5oCodGZ6CgOhEdn
+         fOx8oCvOrLypg7GIiTx39GM7pkLQ7DWYgjG6EikXAgGKzYROuDv/Gq0xQECM6jWat7eN
+         UAQEYH5e5K2MbUr1X52R4LFZRCMITZ735XFxdP9lH746Tsgqy0k4MJ38Zj1cbBrvImBe
+         mCWhG9zbTmro4qok0Emlg8Qvy7yQnfIQuQQljquZfxPVV+tcJEaF53hPL9shW/ETqerS
+         VXIg==
+X-Gm-Message-State: AOAM5329TIzJxD0znkGERxB3ccxGS/oZjfILstT4+Ap6yS4yusyG6zGc
+        yCAAUr0KgekD26iHTrgwu2OXJXVEnPJZJA==
+X-Google-Smtp-Source: ABdhPJyefHhcmwYReiM2A2TwzgIWtD0xJux9CmXCPPb97LV9WTjsEUBW+WDFYB4DSs6Bi2ggVQYpKTRblq6tYg==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:c5c1:: with SMTP id
+ n1mr5257391wmk.83.1619543369004; Tue, 27 Apr 2021 10:09:29 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:08:59 +0000
+Message-Id: <20210427170859.579924-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:04PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 5bf7295fe34a5251b1d241b9736af4697b590670.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-> index d8a3ecaed3fc..985cf8cb2ec0 100644
-> --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-> +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-> @@ -1047,8 +1047,6 @@ int qlcnic_do_lb_test(struct qlcnic_adapter *adapter, u8 mode)
->  
->  	for (i = 0; i < QLCNIC_NUM_ILB_PKT; i++) {
->  		skb = netdev_alloc_skb(adapter->netdev, QLCNIC_ILB_PKT_SIZE);
-> -		if (!skb)
-> -			break;
->  		qlcnic_create_loopback_buff(skb->data, adapter->mac_addr);
->  		skb_put(skb, QLCNIC_ILB_PKT_SIZE);
->  		adapter->ahw->diag_cnt = 0;
-> -- 
-> 2.31.1
-> 
+One of our benchmarks running in (Google-internal) CI pushes data
+through the ringbuf faster than userspace is able to consume
+it. In this case it seems we're actually able to get >INT_MAX entries
+in a single ringbuf_buffer__consume call. ASAN detected that cnt
+overflows in this case.
 
-This commit does not properly detect if an error happens because the
-logic after this loop will not detect that there was a failed
-allocation.  I will keep this revert and fix it up properly later.
+Fix by just setting a limit on the number of entries that can be
+consumed.
 
-thanks,
+Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ tools/lib/bpf/ringbuf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index e7a8d847161f..445a21df0934 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
+ 	do {
+ 		got_new_data = false;
+ 		prod_pos = smp_load_acquire(r->producer_pos);
+-		while (cons_pos < prod_pos) {
++		/* Don't read more than INT_MAX, or the return vale won't make sense. */
++		while (cons_pos < prod_pos && cnt < INT_MAX) {
+ 			len_ptr = r->data + (cons_pos & r->mask);
+ 			len = smp_load_acquire(len_ptr);
+
+--
+2.31.1.498.g6c1eba8ee3d-goog
+
