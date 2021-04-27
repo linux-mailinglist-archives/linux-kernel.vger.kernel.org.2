@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2B936C89A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC4B36C8A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237473AbhD0PYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
+        id S236928AbhD0PaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235974AbhD0PYp (ORCPT
+        with ESMTP id S235974AbhD0PaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:24:45 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2316C061574;
-        Tue, 27 Apr 2021 08:24:01 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2so1583992lft.4;
-        Tue, 27 Apr 2021 08:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lNaL2ah9NrBs3NDJvQ4orDYg/Cctii97cMTyLokVUCg=;
-        b=Kd62gvXLZUR2IXlsCrX1HKZGYfrGx72EWmaB1FFh5h6NlYYZZ83k1vWhGN8xgbqKxd
-         Rje0uad3OiRr22xFme2GDS7eyS58bRN1BJxnJMsz5ymZ+i726AIRgBCSj3NSQ6gDJv5f
-         jL5dzh9hj/KKfsJs+tbHPjxCVilkQY/J4pHstHvchVp++BznEhgQYwWK2tN398cd5A2M
-         vBq/OM9sleEDS09P9Cl+pV7yqP/dGbNMr/lWV2DS5IcfQJ4r/1IGJzDEYQh7xM8R5jG0
-         9OKHwYVCUFL2+5azg6So7AapqhdaEEfGQlh1U+iJM5nHB1L4uVN4/8x4vZ2s1zY0RyVP
-         wTLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lNaL2ah9NrBs3NDJvQ4orDYg/Cctii97cMTyLokVUCg=;
-        b=rVnnFH/g/cRpr+eDC37TuuZBuKUmEHu+wpE+BQwzxLMAPcuYJM/lBq0uzpIjKLUtvp
-         46W7WJwTJTzKFh/M+eUcuZXUyMpsI1hCzudM+fywS8+mifRitdRpxvc/1f0u4Mx+DzNq
-         TG1MFyTqJbSYPHS5XZe64wTOKGRBglk9lFuBIziM/LknbFs506E87jM7327htjIJSIOP
-         wWXezmEBUbvBjr1tkD5v0xiGktL+Q2hz6rgNFlOWO/MotztZ8c6e2yVwTAikLgiB8EFC
-         1jHx+Sh8hV//2km2hJogr3Y50x9JQIKNt5ygit/8boW9kYPmAcO+IyB2NUUg+TEF+oxe
-         II6g==
-X-Gm-Message-State: AOAM5319aFTeXOvrdhNFfHST6KKjrPnE510MnyzoqgHjF9y3cUGD4yoy
-        mUW4gG22WnwVsm+rpWDEbl5v7rpEWaliqTZyaP8=
-X-Google-Smtp-Source: ABdhPJw14yxccZCo8NYGNc8jPl6BevtjVSDyr8P+MPJE0WXuVms8XC7tO81Hkf7WAUBK9rdTHBLpTqF64okpoePAdBk=
-X-Received: by 2002:a19:f615:: with SMTP id x21mr17900348lfe.540.1619537040146;
- Tue, 27 Apr 2021 08:24:00 -0700 (PDT)
+        Tue, 27 Apr 2021 11:30:22 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFB5C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:29:38 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 22EF422258;
+        Tue, 27 Apr 2021 17:29:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619537376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iEVFDUINoOm1rLf1JpF4YSna7leXoZim54DERO49TZg=;
+        b=L4N6lp0+PC1eCnVBMbtTlBBkb+IzG0TBsOvw84xVahqO+Sh7B/0/M9CY15dE/d80zOyPbe
+        xPQyAn33WuYdxKv0CcnDut2h1bdBkOToAcYb8hue/Muh7BERXKSAYvreEiwaIUTzbXMmlE
+        I4JIhiY7P7Ly+JZ4CHEa9PAlxOeT6ts=
 MIME-Version: 1.0
-References: <20210427112958.773132-1-revest@chromium.org> <CAADnVQJGMU2OAA4cRuD=LmfF3Wn5z0hqo1Uz9nx-K_KWuCA70A@mail.gmail.com>
- <CABRcYmLphttpFGdwq6YCboc_=dwkgpVAOf+Ni9NRiPioqRCokw@mail.gmail.com>
-In-Reply-To: <CABRcYmLphttpFGdwq6YCboc_=dwkgpVAOf+Ni9NRiPioqRCokw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 27 Apr 2021 08:23:48 -0700
-Message-ID: <CAADnVQKimq9NGvpO3_Nrwa6YRHcPdXvtx5BHbvYsfHnW+wkgBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Lock bpf_trace_printk's tmp buf before it
- is written to
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Apr 2021 17:29:35 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+In-Reply-To: <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+ <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+ <20210427101926.GA4605@sirena.org.uk>
+ <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
+ <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
+ <20210427135703.GH4605@sirena.org.uk>
+ <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 8:20 AM Florent Revest <revest@chromium.org> wrote:
->
-> On Tue, Apr 27, 2021 at 5:08 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 4:30 AM Florent Revest <revest@chromium.org> wrote:
-> > >
-> > > bpf_trace_printk uses a shared static buffer to hold strings before they
-> > > are printed. A recent refactoring moved the locking of that buffer after
-> > > it gets filled by mistake.
-> > >
-> > > Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
-> > > Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > Signed-off-by: Florent Revest <revest@chromium.org>
-> >
-> > Applied.
->
-> Thanks!
->
-> > Pls send v2 of bstr_printf series as soon as possible. Thanks!
->
-> Sure, I just assumed there would be more reviews on v1. The feedback
-> I'll address is only about the commit description wording but I can
-> send a v2 today.
+Am 2021-04-27 16:16, schrieb Michael Walle:
+> Am 2021-04-27 15:57, schrieb Mark Brown:
+>> On Tue, Apr 27, 2021 at 03:43:42PM +0200, Michael Walle wrote:
+>>> Am 2021-04-27 14:51, schrieb Guillaume Tucker:
+>>> > On 27/04/2021 11:19, Mark Brown wrote:
+>>> > > On Tue, Apr 27, 2021 at 07:28:34AM +0900, Kuninori Morimoto wrote:
+>> 
+>>> > > > > > If so, all sai1 - sai6 are using "fsl,vf610-sai",
+>>> > > > > > all saiX doesn't have .name. I think it should have different name.
+>>> > > > > > In your case, at least, sai5 / sai6 needs to have
+> 
+> Where does that (null) come from? I've briefly tried the following
+> patch and I'd assume I get a duplicate for "abc-wm8904-hifi", but I 
+> still
+> get the old (null)-wm8904-hifi.
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index 407a45e48eee..36280008b5c6 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -1081,6 +1081,7 @@ static int fsl_sai_probe(struct platform_device 
+> *pdev)
+>         sai->cpu_dai_drv.symmetric_rate = 1;
+>         sai->cpu_dai_drv.symmetric_channels = 1;
+>         sai->cpu_dai_drv.symmetric_sample_bits = 1;
+> +       sai->cpu_dai_drv.name = "abc";
+> 
+>         if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
+>             of_find_property(np, "fsl,sai-asynchronous", NULL)) {
 
-Yes. Please.
+Ok here it is whats going on:
+We have a simple-audio-card. We use
+freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts. The codec name is
+parsed correctly and set to either f140000.audio-controller or
+f150000.audio-controller. Thus have different names. _But_ later
+asoc_simple_canonicalize_cpu() will reset the dai_name pointer to
+NULL in simple_parse_node() if "single" is 1 and then we end up
+having two links with the same name.
+
+Which begs the two questions:
+  (1) What is "single" actually and when should it be 1?
+  (2) If single is 1, then the sysfs file will be named 
+"(null)-codec-name".
+      Do we want that?
+
+I guess there is a reason for it to be set to NULL, see [1].
+
+-michael
+
+[1] 
+https://elixir.bootlin.com/linux/v5.12/source/sound/soc/generic/simple-card-utils.c#L420
