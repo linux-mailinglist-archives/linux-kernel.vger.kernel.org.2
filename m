@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A70E36CFBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3C836CFC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239531AbhD0Xyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 19:54:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236805AbhD0Xyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:54:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8260613C2;
-        Tue, 27 Apr 2021 23:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619567631;
-        bh=jZ19EiK9skSybp7j1AN/MwtGxlp4/wzv2VevVR1REHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ajUIM8BSWPOPpXkp05FLSOSel/aMN0GcZu5zdY7V1Dn6NICZeVeFwRw2ZPXFwA9Qg
-         8TsDHy42vbCjpCQL8llRtX7xEPOXzUdaOmVdmlKaRYgmlajbZSTpwyzLGUCzccyJWG
-         7GPSsgDJF9n66rHvYw0w3QVRWwcPOdb95uB6/ao+tk0FIKL7zJtNO8QPYiuEbmyBSq
-         P6xo22t2C133oH8akS/w8L4EFNp/kN2/RYvqJeBpQg6YN0XPuWoze30tzM+AUVf30E
-         blyc/zij3X1QwmN89jKO9DEdGNHa17JTnGRAGZGveKrvRoiLzPuFHW94B6ZHQ2GT+J
-         fgFQVNW82QQwQ==
-Date:   Wed, 28 Apr 2021 02:53:48 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
-        jsnitsel@redhat.com, ml.linux@elloe.vision,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] tpm: Use a threaded interrupt handler
-Message-ID: <YIikDCTBcMMxjots@kernel.org>
-References: <1619394440-30646-1-git-send-email-LinoSanfilippo@gmx.de>
- <1619394440-30646-2-git-send-email-LinoSanfilippo@gmx.de>
+        id S239429AbhD1AAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:00:04 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:57323 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230368AbhD1AAD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:00:03 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 96598FBC;
+        Tue, 27 Apr 2021 19:59:18 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 27 Apr 2021 19:59:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=7PlEZIPtWb8lX8kqZl8nkTHj6R
+        v/c5CDk9SJykONV3o=; b=VfYCtGvkbmsX3y1ZzaEmBj/hWm5LeDnUDTj5CeFVDk
+        jFEkxc3SJ/vzZdH0iMKIVcRAnfeEs3CuovHWFNZur0UF0v1VCq3ssHldkmpTsS1J
+        XC/XnYCJJZEi0aoub7HtIpJvAMTL/hweBof22mRUfzVt+gdo06LD8nIPaXJUd/ro
+        AMAeTKYY7PyvPVTW3jRHz0ZfI59MsBNK++coob06i2WE8CUeeR/TjEZmOTOxeJFR
+        wn23F1JMK0hbqZ/mrXD/M423pnzx6Zf8+zI2Gvi1frGwVwv/Y7x/vSn3+ScuWmc4
+        HgPm/ZZYoLB2iJ7tqsb5lDmi/r2MPXlhvcC36XjsWarg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=7PlEZIPtWb8lX8kqZ
+        l8nkTHj6Rv/c5CDk9SJykONV3o=; b=qqvtMh6nsj50nzdXGfqD3fVx+Htv9u46k
+        GwNMbWpaaCiyBhDVucpwBZmitdUYh/oz4IgqjaAuKEyhzOnJMQUtMZojnAq5L8i8
+        gfFNJKc9thZuYN9iSJmEKn/3+tZTCYMdm3GB+5bpXf0WCEf6Us88+UQg2VdUnWda
+        8b19+7JcH2/4xXbxYPUbQ1zcniPbtGNnpVw2KRliNoiGLrRRBFTzvsooRyd5oZFN
+        RKG39xF9nRP2OTOsmsOdc1oaZBIbMoyjnPWzz/e2VzZhMVj/bnLb98AmVD/sy6Nb
+        pw61S5c7GS14/f5cyDxgupTn7FXVy3IQetmov0qnssB8ygFK/QlGQ==
+X-ME-Sender: <xms:VaWIYHH1-jeruQ5GXuSdAuGxMl3xHnvAvMGtV21_WhOdeFaLBfUg7w>
+    <xme:VaWIYEUjgNhEsNfcT1phDrNKmOb8tUyNXa3ioBhUvnlyE6QQPj5jC0sPabqNJXKhk
+    OD-l971P-cgpCbsEA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvuddgvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:VaWIYJJaO58Aze0aM263LgZsomfJwYC9CjUpQbJmEmjzk15kEqsQXA>
+    <xmx:VaWIYFEoIH_ikPZzcwa_tZ1u2VjZk0DySzTjvJPWb-McrFcwGkqbfg>
+    <xmx:VaWIYNW02amKquTY7_pa3l9SPSlmOyRxzuVtb7q4UfJs05hXHk95Ag>
+    <xmx:VqWIYLf4OPlCizNYcB1LnvW-1Ac9RoLTp7z9MU8FVVGyP2AX4j5U6g>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 27 Apr 2021 19:59:16 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Adam Radford <aradford@gmail.com>, linux-scsi@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v5 0/3] 3w-9xxx: Endianness fixes
+Date:   Tue, 27 Apr 2021 18:59:12 -0500
+Message-Id: <20210427235915.39211-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619394440-30646-2-git-send-email-LinoSanfilippo@gmx.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 01:47:17AM +0200, Lino Sanfilippo wrote:
-> Interrupt handling at least includes reading and writing the interrupt
-> status register from the interrupt routine. However over SPI those accesses
-> require a sleepable context, since a mutex is used in the concerning
-> functions.
-> For this reason request a threaded interrupt handler which is running in
-> (sleepable) process context.
-> 
-> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> ---
->  drivers/char/tpm/tpm_tis_core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-> index e7d1eab..0959559 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -781,8 +781,10 @@ static int tpm_tis_probe_irq_single(struct tpm_chip *chip, u32 intmask,
->  	int rc;
->  	u32 int_status;
->  
-> -	if (devm_request_irq(chip->dev.parent, irq, tis_int_handler, flags,
-> -			     dev_name(&chip->dev), chip) != 0) {
-> +
-> +	if (devm_request_threaded_irq(chip->dev.parent, irq, NULL,
-> +				      tis_int_handler, IRQF_ONESHOT | flags,
-> +				      dev_name(&chip->dev), chip) != 0) {
->  		dev_info(&chip->dev, "Unable to request irq: %d for probe\n",
->  			 irq);
->  		return -1;
-> -- 
-> 2.7.4
-> 
+This series fixes the 3w-9xxx driver in a big-endian configuration.
 
-Why?
+I received no comments on v4, but it no longer applies cleanly.
 
-https://elixir.bootlin.com/linux/v5.12/source/drivers/char/tpm/tpm_tis_core.c#L670
+Changes from v4 to v5:
+  - Rebased on v5.12
+Changes from v3 to v4:
+  - Changed order of parameters to dma_alloc_coherent()
+Changes from v2 to v3:
+  - Add additional patches reducing the use of structure packing
+Changes from v1 to v2:
+  - Include missed header changes
+  - Use local variable instead of byte swapping multiple times
 
-I don't see anything that sleeps there.
+Samuel Holland (3):
+  scsi: 3w-9xxx: Use flexible array members to avoid struct padding
+  scsi: 3w-9xxx: Reduce scope of structure packing
+  scsi: 3w-9xxx: Fix endianness issues in command packets
 
-/Jarkko1
+ drivers/scsi/3w-9xxx.c |  72 ++++++++++++-------------
+ drivers/scsi/3w-9xxx.h | 119 +++++++++++++++++++++--------------------
+ 2 files changed, 96 insertions(+), 95 deletions(-)
+
+-- 
+2.26.3
+
