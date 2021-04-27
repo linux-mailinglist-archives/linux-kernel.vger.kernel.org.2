@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5335936C8F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B5E36C8F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237938AbhD0P5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhD0P5W (ORCPT
+        id S238081AbhD0P6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:58:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234932AbhD0P6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:57:22 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC6FC061574;
-        Tue, 27 Apr 2021 08:56:37 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso7484888pjn.3;
-        Tue, 27 Apr 2021 08:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=g4D6mo9ANGWmNDKoakg3uqUKRnf9rNH4O+OR6Lx34oY=;
-        b=DrJKE/IevpqN9opxieOYTY8lBVF/GEC+fcHmGMHGO943kt4GgnW1WmSM4H0n9iuLVr
-         BGD+jNHRqml1q/B8mXon2CaVdwyQxJyaLW23iFtft6ucBTr0sE6nGioas6WFq85wfZbI
-         D8cF0LAko1AYtYdlTF96o529pnvbkt2YOhgrW6796XebG8ZjvPFVEG9e1NTgAIPJlphq
-         zmEObWX3mxvfCZdIl150VAAPlYXNM1vaehhzL2pms993xqkOEtU16yRSEAKjfq9CMEnS
-         mlSskzk23REfv1lwuUFlI63Xpo4d5Dw1x3CVgUVseUWIXvsk3flToKhrbQX/TwpFHxzr
-         wxCQ==
+        Tue, 27 Apr 2021 11:58:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619539038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UeRAYJi3jVz2RcJA5cfm9/ZZeziOqivA1BEyk0ctB+8=;
+        b=cPw5KuU5YKX57TvUkrq0W/Bm1Zp2yUw19CrCFDBBWUqu0InCoXXYyHPmCB7U4z3hTqjVb/
+        jJIDvQMPlki2zShs2iuAJm81/wRHJBrZev6SBDZYVo879CqQPJXgrsugNhkOXGp6U/KjKc
+        QYmQkK4MA7xKhhZl65RZhyDexxCjqV0=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-XAHGXNG5MBKa3o_3KR_qHg-1; Tue, 27 Apr 2021 11:57:16 -0400
+X-MC-Unique: XAHGXNG5MBKa3o_3KR_qHg-1
+Received: by mail-qt1-f198.google.com with SMTP id z5-20020a05622a0285b02901b943be06b5so15493693qtw.17
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:57:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g4D6mo9ANGWmNDKoakg3uqUKRnf9rNH4O+OR6Lx34oY=;
-        b=Zjj803MIGi1Y2TkEnK8mur8ghtGKojqUTFaK2OCunD+YlU+P4PnvFIjUQPDltqejfN
-         jfFQaJr1fqGgGeisfdnMTHhGujkqQLp0Nsf3+kJOX3Y7N9GLB4wY0J2k4TvVDbj5q0lq
-         /JkMY4YToJ2hX+j3ctmGUjOjPSxSAAlFm7xgg32LBLHLq/LdctdXMOyLRBCi3S5TokmX
-         EH3i3CBOCvx7MyJBeLZzCTdXtfiHCkegLXTkTcYXptCozZstPsExA9fR102RM5XY3tYC
-         E23anbcWrch0kt9qBSNIF/7Gip5+6qeTSxddJQ0xLalS9z+WCDB4L66OIyNV37EMDs3+
-         TqNA==
-X-Gm-Message-State: AOAM531RQxIUoPOBJzR/dQj56r4cNAmHFD+4sZC+XzFWn73BWxWFHB8r
-        O62N9PVrl3xm8HipW35WQyQ=
-X-Google-Smtp-Source: ABdhPJxaMh4UoeGrf1LxxjVrpqFOptZksFCOhKl5mEUU8kqooUk8wJDHWwSUysFFleCxh8Be9zj4AQ==
-X-Received: by 2002:a17:90a:dd45:: with SMTP id u5mr5875428pjv.15.1619538997142;
-        Tue, 27 Apr 2021 08:56:37 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id ca6sm1959338pjb.48.2021.04.27.08.56.35
+         :mime-version:content-disposition:in-reply-to;
+        bh=UeRAYJi3jVz2RcJA5cfm9/ZZeziOqivA1BEyk0ctB+8=;
+        b=ZHETwTSYDoE0VuVYASehpVZ69tg9v0arnOYNLMA1qJlTNdHekupcHxWIN52ZGYE/4R
+         xNMD/M7LVv1MNdcPAj6JE4eQe/lILGgviwnkok0PpyvUjoIr0/gfSE+Pn2clFwmTx0cA
+         BSlWd7DKv9u4IMRQIaVoZpWE0hEcU5N5Sm37WSeb0mu50BYprnXUp+QCr1gRUeIb7tAn
+         PtpVGFqyoLV1j7Gfutvid93OJhCDPat3jIrdZUQWajUIfxAmrdLxFFO1IFVNfvMr2+zM
+         PzgGEmXHBGIbE5mw2sZOzkzFggMIppIAeb6QXrXtFNBX8coTZZ1MXN89CSf1PtPTaFeQ
+         GjsA==
+X-Gm-Message-State: AOAM532cijVSNLM4uX/kMPJ4qNyi0h2J76s1fJYap0t4BrEbR27u8612
+        ZhxjQBLJR/hS9gHEsoXUND3LWKBSEfgpJjlSZU3z9LuiqiZU/mEwfmeNkEWzRFAgxW93NKWv6uB
+        a2nJV/5rGtKCnKVCc8r+kzHMs
+X-Received: by 2002:a37:9305:: with SMTP id v5mr23224456qkd.223.1619539036073;
+        Tue, 27 Apr 2021 08:57:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwt9C9yyPCKjs/11oWJ2ljp8cgvSKc3nf/K+fOGkHMK5svdKo+b6nP8QjYAWsUrtuDALqrP7A==
+X-Received: by 2002:a37:9305:: with SMTP id v5mr23224422qkd.223.1619539035849;
+        Tue, 27 Apr 2021 08:57:15 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
+        by smtp.gmail.com with ESMTPSA id h62sm2925543qkf.116.2021.04.27.08.57.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 08:56:36 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 08:56:33 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next, v2, 3/7] net: dsa: free skb->cb usage in core driver
-Message-ID: <20210427155633.GB14187@hoboy.vegasvil.org>
-References: <20210426093802.38652-1-yangbo.lu@nxp.com>
- <20210426093802.38652-4-yangbo.lu@nxp.com>
- <20210426133846.GA22518@hoboy.vegasvil.org>
- <20210426183944.4djc5dep62xz4gh6@skbuf>
+        Tue, 27 Apr 2021 08:57:15 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 11:57:13 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4 04/10] userfaultfd/shmem: support minor fault
+ registration for shmem
+Message-ID: <20210427155713.GC6820@xz-x1>
+References: <20210420220804.486803-1-axelrasmussen@google.com>
+ <20210420220804.486803-5-axelrasmussen@google.com>
+ <alpine.LSU.2.11.2104261920110.2998@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210426183944.4djc5dep62xz4gh6@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.LSU.2.11.2104261920110.2998@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 09:39:44PM +0300, Vladimir Oltean wrote:
-> On Mon, Apr 26, 2021 at 06:38:46AM -0700, Richard Cochran wrote:
-> > On Mon, Apr 26, 2021 at 05:37:58PM +0800, Yangbo Lu wrote:
-> > > @@ -624,7 +623,7 @@ static netdev_tx_t dsa_slave_xmit(struct sk_buff *skb, struct net_device *dev)
-> > >  
-> > >  	dev_sw_netstats_tx_add(dev, 1, skb->len);
-> > >  
-> > > -	DSA_SKB_CB(skb)->clone = NULL;
-> > > +	memset(skb->cb, 0, 48);
+On Mon, Apr 26, 2021 at 07:23:57PM -0700, Hugh Dickins wrote:
+> On Tue, 20 Apr 2021, Axel Rasmussen wrote:
+> 
+> > This patch allows shmem-backed VMAs to be registered for minor faults.
+> > Minor faults are appropriately relayed to userspace in the fault path,
+> > for VMAs with the relevant flag.
 > > 
-> > Replace hard coded 48 with sizeof() please.
+> > This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
+> > minor faults, though, so userspace doesn't yet have a way to resolve
+> > such faults.
+> > 
+> > Acked-by: Peter Xu <peterx@redhat.com>
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 > 
-> You mean just a trivial change like this, right?
+> And if this "04/10" had been numbered 03/10, I would have said
+> Acked-by: Hugh Dickins <hughd@google.com>
 > 
-> 	memset(skb->cb, 0, sizeof(skb->cb));
+> Just read the comment above: "so userspace doesn't yet have a way to
+> resolve such faults" - if it doesn't by this stage, we're in trouble.
 
-Yes.
+Right, so merging the two patches might be easier.  Even if we don't merge
+them, we'll need to touch up the commit message since at least above paragraph
+is not true anymore as we've already have UFFDIO_CONTINUE.  Thanks,
 
-Thanks,
-Richard
+-- 
+Peter Xu
+
