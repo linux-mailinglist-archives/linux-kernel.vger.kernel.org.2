@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7637936C0A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB2236C0AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbhD0IKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:10:11 -0400
-Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:55231 "EHLO
-        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234775AbhD0IKJ (ORCPT
+        id S235032AbhD0IMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhD0IMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:10:09 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id AAFE42E73
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 09:09:23 +0100 (IST)
-Received: (qmail 32322 invoked from network); 27 Apr 2021 08:09:23 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.248])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Apr 2021 08:09:23 -0000
-Date:   Tue, 27 Apr 2021 09:09:22 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Charan Teja Reddy <charante@codeaurora.org>
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, bhe@redhat.com,
-        nigupta@nvidia.com, khalid.aziz@oracle.com,
-        mateusznosek0@gmail.com, sh_def@163.com, iamjoonsoo.kim@lge.com,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        mhocko@suse.com, rientjes@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        vinmenon@codeaurora.org
-Subject: Re: [PATCH] mm: compaction: improve /proc trigger for full node
- memory compaction
-Message-ID: <20210427080921.GG4239@techsingularity.net>
-References: <1619098678-8501-1-git-send-email-charante@codeaurora.org>
+        Tue, 27 Apr 2021 04:12:42 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A561C061756;
+        Tue, 27 Apr 2021 01:11:58 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id d15so15955655ljo.12;
+        Tue, 27 Apr 2021 01:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RgSnRCCB0oWiFs/rtIr8SFKxBQ6FoIGyq2ye1qyRRhI=;
+        b=QauDzMQAQTlryaZUvpR/GoI2mcmGwFCy2eQW2fN1O1JHTMNTJowKHMO8xz3wkIYshN
+         8nzeSEIYZ+qAikz8/mqgXyfs7vMfEffh07+wSxafRBd5Ogq21nGbpcRM7bwhXbH/rpsC
+         qm64gBAo4GeOhP4t2Hi6OlhS+EVzfSzk5IfVSj9MGXVfMDbYtHcr21l7IXafsfBz7B8W
+         t+uSD+aKhjFUc0yT4xpcun/mjSO13AIvksLaQD/Xsz9QqsoHKReqK7UWDViI8KBHlXCX
+         r2ErV4y5n9FgRcIrnnN+kYnLc+37BFtmGJfl8mi2ZO5eum/bAsllf4fD1TbMfN0rR9kc
+         cd8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=RgSnRCCB0oWiFs/rtIr8SFKxBQ6FoIGyq2ye1qyRRhI=;
+        b=T9Ip16ig+iZ0pioM5KZ5FlmgsjHgc5fgoypfjo4I1nMKe0ItBWojGgzl8zkUO44CIl
+         QIo5dfpfz2+0Vye3E3OqLT13gyCF/CeV5EvhgHagZdwsJEjMC3j1YQLPdehIojQ72WxO
+         Erj9eK2+RRgTmlEhWRQ5f47sFKpsOiEMgFsqrafOqDgbZukDOHLvaL4VwdC1/1gNOniZ
+         mOedCGeY0UMk5cKLPrKz2jop4nrFwJ0D9Hbw+lwO2f4XJSIXJ/r5rL0i8R+7Dlk45lSv
+         RhSTwiHyH4c3hb5UTw0nKw6HcQGeqKsBQtQKMUW5ptO/RaI3MQbf+xrhG6ErriU98KaW
+         TOTg==
+X-Gm-Message-State: AOAM532GlP2nZonWPHZN0zqG6Eq/W2G2CtxxDd3VGJV3aCHQ68EDjmcO
+        D035UnzdgGNpUk116FcoeW1EJQnZpLw=
+X-Google-Smtp-Source: ABdhPJz+020pec5DE+Einn89O0r3qDi8hxGFWTJEOsfoujaGfzVS2fJzjlCK4wMiTS3p081CiqteKw==
+X-Received: by 2002:a2e:b8d2:: with SMTP id s18mr15587741ljp.148.1619511116760;
+        Tue, 27 Apr 2021 01:11:56 -0700 (PDT)
+Received: from [192.168.1.100] ([31.173.82.40])
+        by smtp.gmail.com with ESMTPSA id r14sm1656734lfi.198.2021.04.27.01.11.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 01:11:56 -0700 (PDT)
+Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
+ driver
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        Finn Thain <fthain@fastmail.com.au>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Joshua Thompson <funaho@jurai.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org
+References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
+ <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
+ <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
+ <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <dbd5ddaa-c0ee-5aad-20d9-7fae5e2618af@gmail.com>
+Date:   Tue, 27 Apr 2021 11:11:47 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1619098678-8501-1-git-send-email-charante@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 07:07:58PM +0530, Charan Teja Reddy wrote:
-> The existing /proc/sys/vm/compact_memory interface do the full node
-> compaction when user writes an arbitrary value to it and is targeted for
-> the usecases like an app launcher prepares the system before the target
-> application runs.
+On 27.04.2021 4:51, Michael Schmitz wrote:
 
-The intent behind compact_memory was a debugging interface to tell
-the difference between an application failing to allocate a huge page
-prematurely and the inability of compaction to find a free page.
+>> Was macide the only IDE driver in Debian/m68k kernels without a libata
+>> alternative? If so, this patch would allow you to finally drop CONFIG_IDE.
+>>
+> There's still q40ide.c (ISA IDE interface, byte-swapped, so would need 
+> treatment similar to Falcon IDE). Hasn't been updated to a platform device yet.
 
-> The downside of it is that even if there are
-> sufficient higher order pages left in the system for the targeted
-> application to run, full node compaction will still be triggered thus
-> wasting few CPU cycles. This problem can be solved if it is known when
-> the sufficient higher order pages are available in the system thus full
-> node compaction can be stopped in the middle. The proactive
-> compaction[1] can give these details about the availability of higher
-> order pages in the system(it checks for COMPACTION_HPAGE_ORDER pages,
-> which usually be order-9) thus can be used to trigger for full node
-> compaction.
+    ISA drivers shouldn't be "updated" to the platform drivers. But I don't 
+see 'struct isa_driver' there either...
+
+> Cheers,
 > 
-> This patch adds a new /proc interface,
-> /proc/sys/vm/proactive_compact_memory, and on write of an arbitrary
-> value triggers the full node compaction but can be stopped in the middle
-> if sufficient higher order(COMPACTION_HPAGE_ORDER) pages available in
-> the system. The availability of pages that a user looking for can be
-> given as input through /proc/sys/vm/compaction_proactiveness.
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
-> 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+>      Michael
 
-Hence, while I do not object to the patch as-such, I'm wary of the trend
-towards improving explicit out-of-band compaction via proc interfaces. I
-would have preferred if the focus was on reducing the cost of compaction
-so that direct allocation requests succeed quickly or improving background
-compaction via kcompactd when there has been recent failures.
-
--- 
-Mel Gorman
-SUSE Labs
+MBR, Sergei
