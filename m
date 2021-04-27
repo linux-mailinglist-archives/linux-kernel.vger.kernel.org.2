@@ -2,257 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF08036C73E
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC7136C73D
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238257AbhD0NtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:49:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237105AbhD0NtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:49:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E51613DD;
-        Tue, 27 Apr 2021 13:48:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619531299;
-        bh=arZpyGkKTxsqqfpzWoktMt05ZPIZSfDGxgm4BT8YC+g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DoCEW9oMieN8/M9qkDs1P8T/BoyfuegQMozZpouwq6EDsVlOOmvA5bPk4DFPicKPk
-         UB+NIp2fHVfIbimeGajXx01f5o8RfST3/Iz5eqs4pyJvqhW/fbIiV/SLOwOYJEcrxv
-         +GDneH/6qtF+/ZqlIcf5VwPGqeftwfnbbhsk4vJUoHp5CX6kT49YwJXidt1nFoBEc9
-         uYw4TloTdBJ33Qd7Y5lC+6SCalWS9RjmoKlxGDMfWp5G78D0HuSqxk0Mzv50vPLPXq
-         zZ9txl3eUMxf/74A8RvCcxjhrCU7osfUjxyP0ZvnvtfdIXXp1DJNjdHnoY5uVSDNW1
-         UiYKQ7xJemBLQ==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lbO4X-000rvv-6C; Tue, 27 Apr 2021 15:48:17 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] iio: Documentation: move incompatible ABI to obsolete
+        id S238174AbhD0NtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:49:16 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:60306 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236441AbhD0NtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:49:02 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210427134817euoutp02197b8a3e2ff1c5f05b9906f9374ee7d8~5uyJi3CGU1093410934euoutp02r
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:48:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210427134817euoutp02197b8a3e2ff1c5f05b9906f9374ee7d8~5uyJi3CGU1093410934euoutp02r
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619531297;
+        bh=+aMkihQAegdyYigDg5mTKEVlkZ0cCX26e295FbA7/c4=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=luzNfxdmq97U7KOg8p8w5ASR/axvNyf2feBt95AhaJ6OhgTcMj8g9ok+WcY5hXAfx
+         soEyeW7EbX4TAAKFrWHdkVIxOBUvbA5Wqy9jbw8z85KFyfS36araVVSnJVA4uKRI2u
+         YhftITChGSOkGxFqnqRKGL9Z8ZXWQ66T/v+o71Yk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210427134817eucas1p14b7bfd014b63c7b594cace4fa0ee0cef~5uyJbN-xJ1269612696eucas1p1_;
+        Tue, 27 Apr 2021 13:48:17 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 8D.3A.09452.12618806; Tue, 27
+        Apr 2021 14:48:17 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210427134816eucas1p124e5a78b5beb7a70ca8090cdc6fdae5d~5uyI8tOvA1709117091eucas1p1j;
+        Tue, 27 Apr 2021 13:48:16 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210427134816eusmtrp14b957a6c7bef52e5fb24cd7239c97fe5~5uyI8Ap2B0501305013eusmtrp17;
+        Tue, 27 Apr 2021 13:48:16 +0000 (GMT)
+X-AuditID: cbfec7f2-a9fff700000024ec-b6-608816212bb8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id F7.2C.08705.02618806; Tue, 27
+        Apr 2021 14:48:16 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210427134816eusmtip12b5181d017d7d87d37fdb46567de99be~5uyITggT02529925299eusmtip1Q;
+        Tue, 27 Apr 2021 13:48:15 +0000 (GMT)
+Subject: Re: [PATCH v3] media:exynos4-is: Fix a use after free in
+ isp_video_release
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, krzk@kernel.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <ed80a3f0-048a-17df-4dff-e9d52b777699@samsung.com>
 Date:   Tue, 27 Apr 2021 15:48:15 +0200
-Message-Id: <46ba2895ffeae0dc86a8570e1b2c28a8c33cb20a.1619531276.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <20210427132734.5212-1-lyl2019@mail.ustc.edu.cn>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBKsWRmVeSWpSXmKPExsWy7djPc7qKYh0JBntfclmcP7+B3WLT42us
+        Fpd3zWGz6NmwldVixvl9TBb737ezWCzb9IfJgd1j06pONo/NS+o93i/4zezxeZNcAEsUl01K
+        ak5mWWqRvl0CV8aanxtZCg6yVixq2cncwHiVpYuRk0NCwERi9fPHzF2MXBxCAisYJU5N2cII
+        4XxhlPgy6zMbhPOZUeLl3busXYwcYC2fljhCxJczSjz6NBWq4yOjRO+R2WBzhQVCJfbM2MkI
+        YosIaEpM+drJBFLELLCeUaLp8GQmkASbgKFE79E+sCJeATuJe8+fgNksAqoSM7ZdZwWxRQWS
+        Jc4/vsoOUSMocXLmE7AFnAK2EhdefAezmQXEJW49mc8EYctLbH87B+whCYEbHBJ7Hr9ghDjb
+        RaL5cjDE08ISr45vYYewZSROT+5hgahvZpTo2X2bHcKZwChx//gCRogqa4k7536xgQxiBnpn
+        /S59iLCjxJnusywQ8/kkbrwVhLiBT2LStunMEGFeiY42IYhqFYnfq6YzQdhSEt1P/rNMYFSa
+        heSzWUi+mYXkm1kIexcwsqxiFE8tLc5NTy02zEst1ytOzC0uzUvXS87P3cQITDyn/x3/tINx
+        7quPeocYmTgYDzFKcDArifCy7WpNEOJNSaysSi3Kjy8qzUktPsQozcGiJM67avaaeCGB9MSS
+        1OzU1ILUIpgsEwenVANTUub0Ys1X/OtebvkQUyjOcOz0ztOMBgvcFKI/PKhtmpRn/qJL3z5j
+        +h+mv3uOei67XaLx+mnyq+YDO87p+xxuzKvNuCUo75h4RYCrOuLUIwXplwHvo5PiWk5eK1nx
+        wD/5peWrAqG5S/IqnVw3ZGsy+3zW/SukYiqkNbmiQnzFrM1Ht+85tpNp6vHtip/OzVzRdKHu
+        6LcJSy7t//Dm9Tbe7dseMpnqen823JBe+SFfc2deSdFaue+xjZ78XrzrbbMiXny9ciatbb+v
+        5Plj1+YLzX20Jt31kkEDSxqfEqfmH+Ofjmd8POc72TL5FnBXyXDNLz+4XSH7ysyvlTa7uTc2
+        xv48aFy01/5CFBN/YuU5JZbijERDLeai4kQAruGl0qsDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsVy+t/xu7oKYh0JBh9XqFicP7+B3WLT42us
+        Fpd3zWGz6NmwldVixvl9TBb737ezWCzb9IfJgd1j06pONo/NS+o93i/4zezxeZNcAEuUnk1R
+        fmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsaanxtZCg6y
+        Vixq2cncwHiVpYuRg0NCwETi0xLHLkYuDiGBpYwSD3t/sELEpSTmtyh1MXICmcISf651sUHU
+        vGeUeNW1gQUkISwQKrFnxk5GEFtEQFNiytdOJpAiZoH1jBL9O44xgySEBCYwSix8LQliswkY
+        SvQe7QNr4BWwk7j3/AmYzSKgKjFj23VWEFtUIFli9e/NrBA1ghInZz4BW8YpYCtx4cV3MJtZ
+        QF3iz7xLzBC2uMStJ/OZIGx5ie1v5zBPYBSahaR9FpKWWUhaZiFpWcDIsopRJLW0ODc9t9hQ
+        rzgxt7g0L10vOT93EyMwzrYd+7l5B+O8Vx/1DjEycTAeYpTgYFYS4WXb1ZogxJuSWFmVWpQf
+        X1Sak1p8iNEU6J+JzFKiyfnASM8riTc0MzA1NDGzNDC1NDNWEufdOndNvJBAemJJanZqakFq
+        EUwfEwenVAMT4wGBRoZSEctbN3LbC8sN3Xy99V2/3/YU9wgSPlr7e8GkqhyWbXHRcx4f//uo
+        b/fzD5q1B95cDJze6LldoHxlgLjL28/7lWcUXpjT32nSLjhnSdmzSL9VIutLSi6bLSkOvHu7
+        wPa7/Y4KruyAr5FWwrKemhfiF9w+8shZ8OZqG+2E7bZVlwodXCNueWwP4lNmdLleJLbS/uu/
+        jM/Z0kzGKml35X5HH5nHHlmbb3QpPPGnU5hs5rLdjxc/tf0fZWd1uL+Arf7H7RnTLfKnaGus
+        ma60/Fmlxyu7X2/komwYX32N+7D64AedgOSpi+d8mmRqGynvmxi+WX77YbMGQ3EP5u+l7id2
+        51T1lsr4piqxFGckGmoxFxUnAgCSgdzLPAMAAA==
+X-CMS-MailID: 20210427134816eucas1p124e5a78b5beb7a70ca8090cdc6fdae5d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210427132754eucas1p21042e4e176135e7b3f7b540dc9aadfbb
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210427132754eucas1p21042e4e176135e7b3f7b540dc9aadfbb
+References: <CGME20210427132754eucas1p21042e4e176135e7b3f7b540dc9aadfbb@eucas1p2.samsung.com>
+        <20210427132734.5212-1-lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 63cd35f34d2e ("iio: Documentation: update definitions for bufferY and scan_elements")
-updated iio documentation in order to point to the newly
-per-buffer API, as it is now possible to support multi buffers.
+On 27.04.2021 15:27, Lv Yunlong wrote:
+> In isp_video_release, file->private_data is freed via
+> _vb2_fop_release()->v4l2_fh_release(). But the freed
+> file->private_data is still used in v4l2_fh_is_singular_file()
+> ->v4l2_fh_is_singular(file->private_data), which is a use
+> after free bug.
+> 
+> My patch sets file->private_data to NULL after _vb2_fop_release()
+> to avoid the use after free, and uses a variable 'is_singular_file'
+> to keep the original function unchanged.
+> 
+> Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-While the previous ABI will be kept forever, the best is
-for applications to use the 5.11+ ABI. So, move the
-legacy one ABI/obsolete.
+Thanks,
 
-This fixes an issue with scripts/get_abi.pl, that doesn't
-accept two different Kernel version support for the same
-API set.
-
-Fixes: 63cd35f34d2e ("iio: Documentation: update definitions for bufferY and scan_elements")
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/ABI/obsolete/sysfs-bus-iio | 98 ++++++++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-iio  | 38 ---------
- 2 files changed, 98 insertions(+), 38 deletions(-)
- create mode 100644 Documentation/ABI/obsolete/sysfs-bus-iio
-
-diff --git a/Documentation/ABI/obsolete/sysfs-bus-iio b/Documentation/ABI/obsolete/sysfs-bus-iio
-new file mode 100644
-index 000000000000..e1ca7e7b1c4b
---- /dev/null
-+++ b/Documentation/ABI/obsolete/sysfs-bus-iio
-@@ -0,0 +1,98 @@
-+What:		/sys/bus/iio/devices/iio:deviceX/buffer/length
-+KernelVersion:	2.6.35
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Number of scans contained by the buffer.
-+
-+		Since Kernel 5.11, multiple buffers are supported.
-+		so, it is better to use, instead:
-+			/sys/bus/iio/devices/iio:deviceX/bufferY/length
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/buffer/enable
-+KernelVersion:	2.6.35
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Actually start the buffer capture up.  Will start trigger
-+		if first device and appropriate.
-+
-+		Since Kernel 5.11, multiple buffers are supported.
-+		so, it is better to use, instead:
-+			/sys/bus/iio/devices/iio:deviceX/bufferY/enable
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/scan_elements
-+KernelVersion:	2.6.37
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Directory containing interfaces for elements that will be
-+		captured for a single triggered sample set in the buffer.
-+
-+		Since kernel 5.11 the scan_elements attributes are merged into
-+		the bufferY directory, to be configurable per buffer.
-+
-+What:		/sys/.../iio:deviceX/scan_elements/in_accel_x_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_accel_y_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_accel_z_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_anglvel_x_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_anglvel_y_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_anglvel_z_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_magn_x_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_magn_y_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_magn_z_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_magnetic_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_true_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_magnetic_tilt_comp_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_true_tilt_comp_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_timestamp_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_supply_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltageY-voltageZ_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_i_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_q_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltage_i_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_voltage_q_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_incli_x_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_incli_y_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_pressureY_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_pressure_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_rot_quaternion_en
-+What:		/sys/.../iio:deviceX/scan_elements/in_proximity_en
-+KernelVersion:	2.6.37
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Scan element control for triggered data capture.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/buffer/watermark
-+KernelVersion:	4.2
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		A single positive integer specifying the maximum number of scan
-+		elements to wait for.
-+
-+		Poll will block until the watermark is reached.
-+
-+		Blocking read will wait until the minimum between the requested
-+		read amount or the low water mark is available.
-+
-+		Non-blocking read will retrieve the available samples from the
-+		buffer even if there are less samples then watermark level. This
-+		allows the application to block on poll with a timeout and read
-+		the available samples after the timeout expires and thus have a
-+		maximum delay guarantee.
-+
-+		Since Kernel 5.11, multiple buffers are supported.
-+		so, it is better to use, instead:
-+			/sys/bus/iio/devices/iio:deviceX/bufferY/watermark
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/buffer/data_available
-+KernelVersion: 4.16
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		A read-only value indicating the bytes of data available in the
-+		buffer. In the case of an output buffer, this indicates the
-+		amount of empty space available to write data to. In the case of
-+		an input buffer, this indicates the amount of data available for
-+		reading.
-+
-+		Since Kernel 5.11, multiple buffers are supported.
-+		so, it is better to use, instead:
-+			/sys/bus/iio/devices/iio:deviceX/bufferY/data_available
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index 433fe0ab74be..03a09eda896f 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1195,16 +1195,12 @@ Description:
- 		The name of the trigger source being used, as per string given
- 		in /sys/class/iio/triggerY/name.
- 
--What:		/sys/bus/iio/devices/iio:deviceX/buffer/length
--KernelVersion:	2.6.35
- What:		/sys/bus/iio/devices/iio:deviceX/bufferY/length
- KernelVersion:	5.11
- Contact:	linux-iio@vger.kernel.org
- Description:
- 		Number of scans contained by the buffer.
- 
--What:		/sys/bus/iio/devices/iio:deviceX/buffer/enable
--KernelVersion:	2.6.35
- What:		/sys/bus/iio/devices/iio:deviceX/bufferY/enable
- KernelVersion:	5.11
- Contact:	linux-iio@vger.kernel.org
-@@ -1212,8 +1208,6 @@ Description:
- 		Actually start the buffer capture up.  Will start trigger
- 		if first device and appropriate.
- 
--What:		/sys/bus/iio/devices/iio:deviceX/scan_elements
--KernelVersion:	2.6.37
- What:		/sys/bus/iio/devices/iio:deviceX/bufferY
- KernelVersion:	5.11
- Contact:	linux-iio@vger.kernel.org
-@@ -1224,34 +1218,6 @@ Description:
- 		Since kernel 5.11 the scan_elements attributes are merged into
- 		the bufferY directory, to be configurable per buffer.
- 
--What:		/sys/.../iio:deviceX/scan_elements/in_accel_x_en
--What:		/sys/.../iio:deviceX/scan_elements/in_accel_y_en
--What:		/sys/.../iio:deviceX/scan_elements/in_accel_z_en
--What:		/sys/.../iio:deviceX/scan_elements/in_anglvel_x_en
--What:		/sys/.../iio:deviceX/scan_elements/in_anglvel_y_en
--What:		/sys/.../iio:deviceX/scan_elements/in_anglvel_z_en
--What:		/sys/.../iio:deviceX/scan_elements/in_magn_x_en
--What:		/sys/.../iio:deviceX/scan_elements/in_magn_y_en
--What:		/sys/.../iio:deviceX/scan_elements/in_magn_z_en
--What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_magnetic_en
--What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_true_en
--What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_magnetic_tilt_comp_en
--What:		/sys/.../iio:deviceX/scan_elements/in_rot_from_north_true_tilt_comp_en
--What:		/sys/.../iio:deviceX/scan_elements/in_timestamp_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_supply_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltageY-voltageZ_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_i_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltageY_q_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltage_i_en
--What:		/sys/.../iio:deviceX/scan_elements/in_voltage_q_en
--What:		/sys/.../iio:deviceX/scan_elements/in_incli_x_en
--What:		/sys/.../iio:deviceX/scan_elements/in_incli_y_en
--What:		/sys/.../iio:deviceX/scan_elements/in_pressureY_en
--What:		/sys/.../iio:deviceX/scan_elements/in_pressure_en
--What:		/sys/.../iio:deviceX/scan_elements/in_rot_quaternion_en
--What:		/sys/.../iio:deviceX/scan_elements/in_proximity_en
--KernelVersion:	2.6.37
- What:		/sys/.../iio:deviceX/bufferY/in_accel_x_en
- What:		/sys/.../iio:deviceX/bufferY/in_accel_y_en
- What:		/sys/.../iio:deviceX/bufferY/in_accel_z_en
-@@ -1613,8 +1579,6 @@ Description:
- 		Specifies number of seconds in which we compute the steps
- 		that occur in order to decide if the consumer is making steps.
- 
--What:		/sys/bus/iio/devices/iio:deviceX/buffer/watermark
--KernelVersion:	4.2
- What:		/sys/bus/iio/devices/iio:deviceX/bufferY/watermark
- KernelVersion:	5.11
- Contact:	linux-iio@vger.kernel.org
-@@ -1633,8 +1597,6 @@ Description:
- 		the available samples after the timeout expires and thus have a
- 		maximum delay guarantee.
- 
--What:		/sys/bus/iio/devices/iio:deviceX/buffer/data_available
--KernelVersion: 4.16
- What:		/sys/bus/iio/devices/iio:deviceX/bufferY/data_available
- KernelVersion:	5.11
- Contact:	linux-iio@vger.kernel.org
--- 
-2.30.2
-
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
