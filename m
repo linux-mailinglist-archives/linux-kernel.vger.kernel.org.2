@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88E336BE7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4A836BE8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhD0E1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 00:27:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhD0E1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:27:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D102610FC;
-        Tue, 27 Apr 2021 04:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619497591;
-        bh=wHCRw8CK2beE0XTdU4DqF5r/0eO3m0TBvLp8G/39lrI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QsgLQA802lRgQG41+JTT7YNXDkeeVTjyUWUoiBHddmrFQK7OU1MM9TL1s+ah1Ssvq
-         tdQUAKqojAuagZZTD/nKIByfgaDnfHgR1TS63rfZCkjYK7wDWB+6+L1M69iLsDLLpC
-         3Ppw4036l+a6FFp4SQCnmqPoAso2SocCXh9t9EGM2+Ir/NN2wdR/0QMc9QLMKaBWqW
-         Pbu6zhmwq//QnbF8xiONVZq8CoQgLjWAyF5ygz4ANAerARxXvDTc/6q9pZVfbprbAl
-         8moIqQGd08X+Ib1ynjh2XPnIG3NRHm1I4ejmjCCbsbGMHEwi3Jdw8RDcRzcMjo54vb
-         UB+BIiQe5FHPQ==
-Date:   Tue, 27 Apr 2021 07:26:27 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     bkkarthik <bkkarthik@pesu.pes.edu>
-Cc:     Anupama K Patil <anupamakpatil123@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching
- devices
-Message-ID: <YIeSc1qePhuQ1XRK@unreal>
-References: <20210424194301.jmsqpycvsm7izbk3@ubuntu>
- <YIZJwkux0ghJ8k9d@unreal>
- <20210426175031.w26ovnffjiow346h@burgerking>
+        id S232618AbhD0EnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 00:43:16 -0400
+Received: from mail-m121145.qiye.163.com ([115.236.121.145]:11316 "EHLO
+        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhD0EnQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 00:43:16 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 99AA58001ED;
+        Tue, 27 Apr 2021 12:42:31 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] hwmon: Remove unneeded semicolons
+Date:   Tue, 27 Apr 2021 12:42:19 +0800
+Message-Id: <20210427044219.7799-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210426175031.w26ovnffjiow346h@burgerking>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQxhMSlZCHh4YQx0dGEkdTElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQg6URw4KT8XKFZDDD8LKj0e
+        OhdPCU9VSlVKTUpCT0JDTk5JSk5CVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0lINwY+
+X-HM-Tid: 0a7911a2c9e1b03akuuu99aa58001ed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:20:32PM +0530, bkkarthik wrote:
-> On 21/04/26 08:04AM, Leon Romanovsky wrote:
-> > On Sun, Apr 25, 2021 at 01:13:01AM +0530, Anupama K Patil wrote:
-> > > isapnp_proc_init() does not look at the return value from
-> > > isapnp_proc_attach_device(). Check for this return value in
-> > > isapnp_proc_detach_device().
-> > >=20
-> > > Cleanup in isapnp_proc_detach_device and
-> > > isapnp_proc_detach_bus() for cleanup.
-> > >=20
-> > > Changed sprintf() to the kernel-space function scnprintf() as it retu=
-rns
-> > > the actual number of bytes written.
-> > >=20
-> > > Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
-> > > save memory.
+Fix the following coccicheck warning:
 
-<...>
+./drivers/hwmon/corsair-psu.c:379:2-3: Unneeded semicolon
 
-> > > +static int isapnp_proc_detach_device(struct pnp_dev *dev)
-> > > +{
-> > > +	proc_remove(dev->procent);
-> > > +	dev->procent =3D NULL;
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int isapnp_proc_detach_bus(struct pnp_card *bus)
-> > > +{
-> > > +	proc_remove(bus->procdir);
-> > > +	return 0;
-> > > +}
-> >=20
-> > Please don't add one line functions that are called only once and have
-> > return value that no one care about it.
->=20
-> These were only intended for a clean-up job, the idea of this function ca=
-me from how PCI handles procfs.
-> Maybe those should be changed?
+Remove unneeded semicolons.
 
-Probably, the CONFIG_PROC_FS around pci_proc_*() is not needed too.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/hwmon/corsair-psu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks
+diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+index 3a5807e4a2ef..02298b86b57b 100644
+--- a/drivers/hwmon/corsair-psu.c
++++ b/drivers/hwmon/corsair-psu.c
+@@ -355,7 +355,7 @@ static umode_t corsairpsu_hwmon_power_is_visible(const struct corsairpsu_data *p
+ 		return 0444;
+ 	default:
+ 		return 0;
+-	};
++	}
+ }
+ 
+ static umode_t corsairpsu_hwmon_in_is_visible(const struct corsairpsu_data *priv, u32 attr,
+@@ -376,7 +376,7 @@ static umode_t corsairpsu_hwmon_in_is_visible(const struct corsairpsu_data *priv
+ 		break;
+ 	default:
+ 		break;
+-	};
++	}
+ 
+ 	return res;
+ }
+-- 
+2.25.1
+
