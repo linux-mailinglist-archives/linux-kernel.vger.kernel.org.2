@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2D936CA87
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1E836CA85
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238530AbhD0RoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S238441AbhD0RoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238305AbhD0RoE (ORCPT
+        with ESMTP id S238408AbhD0RoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Apr 2021 13:44:04 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B48C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:43:20 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x5so10041575wrv.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:43:20 -0700 (PDT)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3F0C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:43:21 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id x5so10041624wrv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sTVXYIke2mYhPaPQQebsNo0GgJ6tL2u6qjrM5GFCGyE=;
-        b=SgDEyqUOq79z0oEavubQe+urM8+uc+iQ68gURUc8gqUQmmXMno35OpYPSWfy5OygSm
-         jdmKup8DCZues81DvSAkxE0AXNZDKhStMoMLeIyBf9kGOgscP0yQjYk1BCRQgWO01mRt
-         C0qE6aU/juhBV+s/iSgi0oxjaIV7aiTh8z/ZI=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=H2iyahBHzOh1s1/2DDrTt76XfDUplpwYz1B02Q5JMG8=;
+        b=mysCojt0MioxpHafBfv/sMcLsXkCwbfT4eQGXLjI4fkKnt3alpXOsl3fpJWZaB7v35
+         SPug/nlN+xo+bArG6bmxLociAxaq5KAqumSFLT8BeAfsaWbn8epBnbqp704IauQy6Q+B
+         JoJKMBOyGYdGk2DBA15lwFMDX/P7rOnIe6wMA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sTVXYIke2mYhPaPQQebsNo0GgJ6tL2u6qjrM5GFCGyE=;
-        b=oOanBupj3WRxLe9bZ8VnqZozmV03WkVINHfeQoZ4UbdWhOz8rNaXg1Th7QKcwOmO1O
-         croW6nqVXnKedbXysCx0M5sRIVNsdHe90V5D3RXT/g3fym8rgduoPWzI6tZVUW2gnkSx
-         OFvDRkGEXyVxIUOs+ULhwhhwJnGI09pALTENtvUhW42A5a2df3THlSGVnL8Mu4SFtfqX
-         m++4oQ033yeAbosAwFUp2P8R3Bgx/iWny172YPUKnysHhOnIkqV2UpadrctzwojD70/c
-         55RQ1rOcQoHM6hm8q/hiuojY+rFZHwKP4GAeMzf3Z8FkUC6BgmY4N3Qdx79meYxH4Eid
-         oCxA==
-X-Gm-Message-State: AOAM532derekw/ATZhkOGn4N3mi0e5kbTY2ChnPdHZa3gXGdF6he+ndA
-        A4vc6vVr1iyIF1Jsri7Pzf89FC5yoXFvKA==
-X-Google-Smtp-Source: ABdhPJyPyLIg5qhWknNn7WU7xxi+4li4Ym7+YJ12lijz0KXXfEPj9mSQNzgJNAjLQKtF79YXd8bhnA==
-X-Received: by 2002:a5d:6352:: with SMTP id b18mr9017312wrw.76.1619545399112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=H2iyahBHzOh1s1/2DDrTt76XfDUplpwYz1B02Q5JMG8=;
+        b=Ks/++8AgJgVOcepeUVdBLWKmKpD/nHebxJZVYsPg7UFOb73vf0ZaIqHCZWtEXTMwj1
+         z8wpi/FICkgdxfRHVWkySKL0Ncu1LUVrBTChUOSGoQRUlplUhV+Igc19E4Rt2xl/ZtXj
+         HtsXnjJiqJT1PMJvgXrz/EZSU1iIf/gA8Tfo4JEp05kGPnKEM9owrf53e+OvtNYtuqXB
+         zmW70+NgM1zm5shz0ae0A052//ATBDpqZdVCCya4UQPetjxbVodu0ND4sQw72CUu5Uz+
+         /8nMVH7bujjcq2xzr+45xXbhkkhjjgDTKR4juLRA5SmdwXK9KpCbbYxnRhsXWfuh+JW/
+         9ewg==
+X-Gm-Message-State: AOAM531LV6ex7vzGstNrFKfP0gHs5rSPii/weEf79MgrkZ4ekzYIWHqB
+        5RsQOuI5TggHFGIENMYzvxjOmw==
+X-Google-Smtp-Source: ABdhPJxk7Y7PPiLmiNLUe+eXN6jgNarEJ2pfaNG2m38VN3A0mtQZXdMxmgrDDrsHZJdTf+iy+JjUQw==
+X-Received: by 2002:adf:e901:: with SMTP id f1mr29454653wrm.44.1619545399844;
         Tue, 27 Apr 2021 10:43:19 -0700 (PDT)
 Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:14c3:1569:da7a:4763])
-        by smtp.gmail.com with ESMTPSA id h8sm647302wmq.19.2021.04.27.10.43.18
+        by smtp.gmail.com with ESMTPSA id h8sm647302wmq.19.2021.04.27.10.43.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 10:43:18 -0700 (PDT)
+        Tue, 27 Apr 2021 10:43:19 -0700 (PDT)
 From:   Florent Revest <revest@chromium.org>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kpsingh@kernel.org, jackmanb@google.com, linux@rasmusvillemoes.dk,
         rostedt@goodmis.org, linux-kernel@vger.kernel.org,
         Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v2 0/2] Implement formatted output helpers with bstr_printf
-Date:   Tue, 27 Apr 2021 19:43:11 +0200
-Message-Id: <20210427174313.860948-1-revest@chromium.org>
+Subject: [PATCH bpf-next v2 1/2] seq_file: Add a seq_bprintf function
+Date:   Tue, 27 Apr 2021 19:43:12 +0200
+Message-Id: <20210427174313.860948-2-revest@chromium.org>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+In-Reply-To: <20210427174313.860948-1-revest@chromium.org>
+References: <20210427174313.860948-1-revest@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPF's formatted output helpers are currently implemented with
-snprintf-like functions which use variadic arguments. The types of all
-arguments need to be known at compilation time. BPF_CAST_FMT_ARG casts
-all arguments to the size they should be (known at runtime), but the C
-type promotion rules cast them back to u64s. On 32 bit architectures,
-this can cause misaligned va_lists and generate mangled output.
+Similarly to seq_buf_bprintf in lib/seq_buf.c, this function writes a
+printf formatted string with arguments provided in a "binary
+representation" built by functions such as vbin_printf.
 
-This series refactors these helpers to avoid variadic arguments. It uses
-a "binary printf" instead, where arguments are passed in a buffer
-constructed at runtime.
-
+Signed-off-by: Florent Revest <revest@chromium.org>
 ---
-Changes in v2:
-- Reworded the second patch's description to better describe how
-  arguments get mangled on 32 bit architectures
+ fs/seq_file.c            | 18 ++++++++++++++++++
+ include/linux/seq_file.h |  4 ++++
+ 2 files changed, 22 insertions(+)
 
-Florent Revest (2):
-  seq_file: Add a seq_bprintf function
-  bpf: Implement formatted output helpers with bstr_printf
-
- fs/seq_file.c            |  18 ++++
- include/linux/bpf.h      |  22 +----
- include/linux/seq_file.h |   4 +
- init/Kconfig             |   1 +
- kernel/bpf/helpers.c     | 188 +++++++++++++++++++++------------------
- kernel/bpf/verifier.c    |   2 +-
- kernel/trace/bpf_trace.c |  34 +++----
- 7 files changed, 137 insertions(+), 132 deletions(-)
-
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index cb11a34fb871..5059248f2d64 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -412,6 +412,24 @@ void seq_printf(struct seq_file *m, const char *f, ...)
+ }
+ EXPORT_SYMBOL(seq_printf);
+ 
++#ifdef CONFIG_BINARY_PRINTF
++void seq_bprintf(struct seq_file *m, const char *f, const u32 *binary)
++{
++	int len;
++
++	if (m->count < m->size) {
++		len = bstr_printf(m->buf + m->count, m->size - m->count, f,
++				  binary);
++		if (m->count + len < m->size) {
++			m->count += len;
++			return;
++		}
++	}
++	seq_set_overflow(m);
++}
++EXPORT_SYMBOL(seq_bprintf);
++#endif /* CONFIG_BINARY_PRINTF */
++
+ /**
+  *	mangle_path -	mangle and copy path to buffer beginning
+  *	@s: buffer start
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index b83b3ae3c877..723b1fa1177e 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -146,6 +146,10 @@ void *__seq_open_private(struct file *, const struct seq_operations *, int);
+ int seq_open_private(struct file *, const struct seq_operations *, int);
+ int seq_release_private(struct inode *, struct file *);
+ 
++#ifdef CONFIG_BINARY_PRINTF
++void seq_bprintf(struct seq_file *m, const char *f, const u32 *binary);
++#endif
++
+ #define DEFINE_SEQ_ATTRIBUTE(__name)					\
+ static int __name ## _open(struct inode *inode, struct file *file)	\
+ {									\
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
