@@ -2,98 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB2236C0AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C8836C0B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235032AbhD0IMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhD0IMm (ORCPT
+        id S234922AbhD0IS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:18:59 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:15502 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230325AbhD0IS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:12:42 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A561C061756;
-        Tue, 27 Apr 2021 01:11:58 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id d15so15955655ljo.12;
-        Tue, 27 Apr 2021 01:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RgSnRCCB0oWiFs/rtIr8SFKxBQ6FoIGyq2ye1qyRRhI=;
-        b=QauDzMQAQTlryaZUvpR/GoI2mcmGwFCy2eQW2fN1O1JHTMNTJowKHMO8xz3wkIYshN
-         8nzeSEIYZ+qAikz8/mqgXyfs7vMfEffh07+wSxafRBd5Ogq21nGbpcRM7bwhXbH/rpsC
-         qm64gBAo4GeOhP4t2Hi6OlhS+EVzfSzk5IfVSj9MGXVfMDbYtHcr21l7IXafsfBz7B8W
-         t+uSD+aKhjFUc0yT4xpcun/mjSO13AIvksLaQD/Xsz9QqsoHKReqK7UWDViI8KBHlXCX
-         r2ErV4y5n9FgRcIrnnN+kYnLc+37BFtmGJfl8mi2ZO5eum/bAsllf4fD1TbMfN0rR9kc
-         cd8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RgSnRCCB0oWiFs/rtIr8SFKxBQ6FoIGyq2ye1qyRRhI=;
-        b=T9Ip16ig+iZ0pioM5KZ5FlmgsjHgc5fgoypfjo4I1nMKe0ItBWojGgzl8zkUO44CIl
-         QIo5dfpfz2+0Vye3E3OqLT13gyCF/CeV5EvhgHagZdwsJEjMC3j1YQLPdehIojQ72WxO
-         Erj9eK2+RRgTmlEhWRQ5f47sFKpsOiEMgFsqrafOqDgbZukDOHLvaL4VwdC1/1gNOniZ
-         mOedCGeY0UMk5cKLPrKz2jop4nrFwJ0D9Hbw+lwO2f4XJSIXJ/r5rL0i8R+7Dlk45lSv
-         RhSTwiHyH4c3hb5UTw0nKw6HcQGeqKsBQtQKMUW5ptO/RaI3MQbf+xrhG6ErriU98KaW
-         TOTg==
-X-Gm-Message-State: AOAM532GlP2nZonWPHZN0zqG6Eq/W2G2CtxxDd3VGJV3aCHQ68EDjmcO
-        D035UnzdgGNpUk116FcoeW1EJQnZpLw=
-X-Google-Smtp-Source: ABdhPJz+020pec5DE+Einn89O0r3qDi8hxGFWTJEOsfoujaGfzVS2fJzjlCK4wMiTS3p081CiqteKw==
-X-Received: by 2002:a2e:b8d2:: with SMTP id s18mr15587741ljp.148.1619511116760;
-        Tue, 27 Apr 2021 01:11:56 -0700 (PDT)
-Received: from [192.168.1.100] ([31.173.82.40])
-        by smtp.gmail.com with ESMTPSA id r14sm1656734lfi.198.2021.04.27.01.11.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 01:11:56 -0700 (PDT)
-Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
- driver
-To:     Michael Schmitz <schmitzmic@gmail.com>,
-        Finn Thain <fthain@fastmail.com.au>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Joshua Thompson <funaho@jurai.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
- <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
- <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
- <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <dbd5ddaa-c0ee-5aad-20d9-7fae5e2618af@gmail.com>
-Date:   Tue, 27 Apr 2021 11:11:47 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 27 Apr 2021 04:18:58 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210427081814euoutp0133bd83cd174d3c494ccfd4dda407f2c8~5qR_yp6942859828598euoutp01Y
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:18:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210427081814euoutp0133bd83cd174d3c494ccfd4dda407f2c8~5qR_yp6942859828598euoutp01Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619511494;
+        bh=rWw6Tw10qSxMP/aYL1ato5GIYt+P77hpHOeiD6gAOe0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=WBlFiPsl90XGq/EExu3kHadXmEuXUGwrVAUU/EdvxowaLecr0SfHuia68ZPGw0h+3
+         sxElwlXMw15tY01FA8T6Z8CHT9Bdi25YW1e/J7eYQG5zs0A+nRO+uss1XN26DZudCY
+         es5LXtmiRiqOk5fOj991AwO1+c2u4ueHIXzdg6kE=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210427081814eucas1p1526248e463d4151ba0e4fa71e0ecbc75~5qR_XmA1X0352703527eucas1p1J;
+        Tue, 27 Apr 2021 08:18:14 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id DF.56.09444.6C8C7806; Tue, 27
+        Apr 2021 09:18:14 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210427081813eucas1p2a3ca16a3a6cdddbf50276d28b4211489~5qR94-q731032210322eucas1p2V;
+        Tue, 27 Apr 2021 08:18:13 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210427081813eusmtrp21a8ebea2b2405264cc341f90c17f54ae~5qR94Ou0X2209022090eusmtrp2X;
+        Tue, 27 Apr 2021 08:18:13 +0000 (GMT)
+X-AuditID: cbfec7f4-dbdff700000024e4-64-6087c8c69b9e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 61.96.08705.5C8C7806; Tue, 27
+        Apr 2021 09:18:13 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210427081812eusmtip133f6b58731c3349de435b0e00a91b1ee~5qR9Fq63m1809918099eusmtip1Q;
+        Tue, 27 Apr 2021 08:18:12 +0000 (GMT)
+Subject: Re: [PATCH 58/78] media: exynos-gsc: use
+ pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <ee7b580a-d5bc-bdbf-3efc-c9d8f43316db@samsung.com>
+Date:   Tue, 27 Apr 2021 10:18:12 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <9c7d683907b9f9cf4a99f57f978671ec7f5a1dbc.1619191723.git.mchehab+huawei@kernel.org>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djP87rHTrQnGMw9y2qxc8MXdouLM++y
+        WJw/v4HdYtPja6wWl3fNYbPo2bCV1WLG+X1MFoc3nmGyaFtwmc3i4eyrjBbLNv1hcuD22HF3
+        CaNHy5G3rB6bVnWyeWxeUu/xeZOcx6mvn9kD2KK4bFJSczLLUov07RK4Mr5fbmQsaOWrmLPl
+        DlMD41vuLkZODgkBE4nd536xdTFycQgJrGCUmPLrDDuE84VRYv3Ue1DOZ0aJWZMesMO0nDq/
+        hBkisZxRom/yGkYI5yOjxIwNx1hAqoQF/CU2PX7GCmKLCJhK3HzVyQRiMws8YpI4O0EWxGYT
+        MJToPdrHCGLzCthJ/P3+D6yXRUBV4tzB3cwgtqhAssT5x1fZIWoEJU7OfAJWwymQIHFz8kIW
+        iJniEreezIeaLy+x/e0csOskBNo5JWZ8O8wGcbaLxKmumUwQtrDEq+NboN6Rkfi/E6QZpKGZ
+        UaJn9212CGcCo8T94wsYIaqsJe6Aw4kDaIWmxPpd+hBhR4m2CZPZQcISAnwSN94KQhzBJzFp
+        23RmiDCvREebEES1isTvVdOhTpCS6H7yn2UCo9IsJK/NQvLOLCTvzELYu4CRZRWjeGppcW56
+        arFRXmq5XnFibnFpXrpecn7uJkZg2jr97/iXHYzLX33UO8TIxMF4iFGCg1lJhJdtV2uCEG9K
+        YmVValF+fFFpTmrxIUZpDhYlcd6kLWvihQTSE0tSs1NTC1KLYLJMHJxSDUzCnLPWfn2mXHNn
+        TtqGAzelQ8LzNO6oTvHZHvlj8mS7Lf8vLD/rJM96gFlkH0fp38VrUqSKV197W3f9/b6dL6pM
+        Ay9yFVjd2DNr188565ev+KDNzsf3tuC5W9LT1xuMFAVOfKu+uKL/q3/PbteFWlVxRpYJnN/m
+        rRGR+3vf+8rOxumFk2X2TT693/ZqSc4tgwMCQSw+F3o3zi+fxvqllb+bR9GbbX1QyqMTyeuX
+        7VpcPkli9oG25kS7d7LRTedCLT0P3/swU8JE/75f6MaHK4xPdvzhyjAxmZSapV7Mynt3+gKt
+        1T+adNYvV5a/3nzl7u9bDV6SM7bI9Lta65v7v9pzWtlQVjo1Zo+gnU/HS8FIJZbijERDLeai
+        4kQAH+1cY8oDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7pHT7QnGNw/Lm+xc8MXdouLM++y
+        WJw/v4HdYtPja6wWl3fNYbPo2bCV1WLG+X1MFoc3nmGyaFtwmc3i4eyrjBbLNv1hcuD22HF3
+        CaNHy5G3rB6bVnWyeWxeUu/xeZOcx6mvn9kD2KL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxM
+        LPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mr5fbmQsaOWrmLPlDlMD41vuLkZODgkBE4lT55cw
+        g9hCAksZJdZ8FOhi5ACKS0nMb1GCKBGW+HOti62LkQuo5D2jxMr2T2D1wgK+Eh9bf7CC2CIC
+        phI3X3UygRQxCzxjklh0cQdUxzNGiRn7bzOBVLEJGEr0Hu1jBLF5Bewk/n7/xwJiswioSpw7
+        uBtsqqhAssTq35tZIWoEJU7OfAJWwymQIHFz8kIwm1lAXeLPvEvMELa4xK0n85kgbHmJ7W/n
+        ME9gFJqFpH0WkpZZSFpmIWlZwMiyilEktbQ4Nz232FCvODG3uDQvXS85P3cTIzBKtx37uXkH
+        47xXH/UOMTJxMB5ilOBgVhLhZdvVmiDEm5JYWZValB9fVJqTWnyI0RTon4nMUqLJ+cA0kVcS
+        b2hmYGpoYmZpYGppZqwkzrt17pp4IYH0xJLU7NTUgtQimD4mDk6pBqY9we33zzHyFC5eYrQl
+        95R+Zq9pjO6Gv62dghLHp1gf78yudzc6vJPHTuTY/El6789M3FZc9o/nzz3Oh0zqpUanb518
+        fKG3on2Bx8u6Y/K8qxhezre4vv/Gl44Dd546pH3aIZ9muaf7jXJ07iarmyqtSd6hHx/FVbJY
+        zbD837L90OYdvKfbLJm9bD2Cua//fuEqLMjvvvpz4nldnj0z5rxuV2xosog+2y3MlPmm/tHn
+        Gc8zu6JLJr+5dlrgXe/q9ZVn3jwTvKIzSXGS2vrufaxL+JzmhP+4W7LB6d+zBRuXc2jJGlnt
+        PxJ26eLi+9yPOxbXzVorJ5O855HW0fYbXAyO+keKZx6zr865t25R3eVUJZbijERDLeai4kQA
+        5ySSN1sDAAA=
+X-CMS-MailID: 20210427081813eucas1p2a3ca16a3a6cdddbf50276d28b4211489
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210424064556eucas1p1e89378837c377168c9782b4172e70482
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210424064556eucas1p1e89378837c377168c9782b4172e70482
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <CGME20210424064556eucas1p1e89378837c377168c9782b4172e70482@eucas1p1.samsung.com>
+        <9c7d683907b9f9cf4a99f57f978671ec7f5a1dbc.1619191723.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.04.2021 4:51, Michael Schmitz wrote:
-
->> Was macide the only IDE driver in Debian/m68k kernels without a libata
->> alternative? If so, this patch would allow you to finally drop CONFIG_IDE.
->>
-> There's still q40ide.c (ISA IDE interface, byte-swapped, so would need 
-> treatment similar to Falcon IDE). Hasn't been updated to a platform device yet.
-
-    ISA drivers shouldn't be "updated" to the platform drivers. But I don't 
-see 'struct isa_driver' there either...
-
-> Cheers,
+On 24.04.2021 08:45, Mauro Carvalho Chehab wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
 > 
->      Michael
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/exynos-gsc/gsc-core.c | 3 +--
+>  drivers/media/platform/exynos-gsc/gsc-m2m.c  | 2 +-
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
+> index 9f41c2e7097a..9d5841194f6b 100644
+> --- a/drivers/media/platform/exynos-gsc/gsc-core.c
+> +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
+> @@ -1210,7 +1210,7 @@ static int gsc_remove(struct platform_device *pdev)
+>  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
+>  	int i;
+>  
+> -	pm_runtime_get_sync(&pdev->dev);
+> +	pm_runtime_resume_and_get(&pdev->dev);
+>  
+>  	gsc_unregister_m2m_device(gsc);
+>  	v4l2_device_unregister(&gsc->v4l2_dev);
+> @@ -1219,7 +1219,6 @@ static int gsc_remove(struct platform_device *pdev)
+>  	for (i = 0; i < gsc->num_clocks; i++)
+>  		clk_disable_unprepare(gsc->clock[i]);
+>  
+> -	pm_runtime_put_noidle(&pdev->dev);
 
-MBR, Sergei
+If we do this then the device usage count will not get decremented
+after the pm_runtime_resume_and_get() call above and after driver
+unload/load cycle it will not be possible to suspend the device.
+I wouldn't be changing anything in gsc_remove(), pm_runtime_get_sync()
+works better in that case.
+
+Regards,
+Sylwester
+
+>  	pm_runtime_disable(&pdev->dev);
+>  
+>  	dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name
