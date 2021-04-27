@@ -2,144 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CA036CDD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 23:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A17536CDE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 23:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239064AbhD0V3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 17:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
+        id S239041AbhD0VfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 17:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236965AbhD0V3R (ORCPT
+        with ESMTP id S236965AbhD0VfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 17:29:17 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05872C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:28:32 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id s20so15775045plr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:28:32 -0700 (PDT)
+        Tue, 27 Apr 2021 17:35:07 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A9AC061574;
+        Tue, 27 Apr 2021 14:34:22 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id g38so71173977ybi.12;
+        Tue, 27 Apr 2021 14:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=9PSp2PSXQIcRqg9fX25LBpn6iZGmTPQHxkfgD+jcFR0=;
-        b=hStEy6KasMCXpT5gm1CTnwE/5YQtK7hyk7TCgK28eSrEMs5ygdB07wIn0er4I+ygVI
-         gTLqZnSTZZt/PNRo6h+vFjx8vbD6Kv84iMc6QkSVWIGK6RS6nudOG6FaMega8bUB+0IA
-         i9/sRR9e+1aC27nE1Qje0ZKlYoIW8ZbsKmb3a2qN0jZid094lhR0RzoMRJXD49c75iCv
-         FSiRCApp3c6z7FFsu5DDbWUsGESU4HNQ1aPXpbfvDktXvqHGYSPA5vSSepEecO0fTdeb
-         tlSHM473hPw5BlfjKrlV6RhF5ZpQY2b6XtJPE0U5EvY8ev0osJyv0rxneAwUCS4mFZFY
-         dj7A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xsQ19BQZ7BYI6oxOmcTVL+nfuau2yGAWJogNYnlPUJA=;
+        b=ZKCZoqaL8Y58veyVy1diVyoL4KWEQe2UG2r5xTR3zujDOTNNg9lq2KADdJDoM3jYOs
+         wTQ55gOe/wvEm1sXFVrg0tRCL3Y/7vyrvTAM2an9+YAGedSjYK66CNgD1jJO04zaoKhb
+         3MLzEfvMINJFzwmfvVVvm3FXPsgqpwKsGfgU4lzKsrvoG3aUZ9HA7kuYAnE8smvtqrWY
+         JGxCmp7GGXk+TXPfgZHrbCfyj/5V4+BCtrvdUIX8P2w+/AWL5M5NiCTZiJq4BQIt4xRQ
+         fpyImymHcF7YT8OzkN0W2guplscdeqArz05qp3ZyWig+Z6cD/UARp3ne5lQMJDlJYROI
+         9xcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=9PSp2PSXQIcRqg9fX25LBpn6iZGmTPQHxkfgD+jcFR0=;
-        b=b2CZWwS2ZlqkHrt50GJC1SIDe0R3I8VSipRMHJ6zNnIHjrmHXNCg1kvKUQ/nha+gA6
-         RztL2BQSuRFjWOMYqITGSRIhdBq0HvzI8y8muLoR0cetqaKsVnX0qUWvHHJi7IsfP4aZ
-         eJqD9SdRcVRNDDeywiEugZgsXusJzJteUDl9hhN5KwB52CSBAfmFu9RUl2muNRViWWWb
-         IWcHp5/JKfcw2ggsaekRcv3yi9vZzYWtDVouWkqWxaxU+6zQVlhSDamqhvL8Sbk8dHyL
-         dklKHtL2ICydpzKp0CBH96gAE66K7zU4a22/eBV/gX9MgBTZ94rY/okcj0yc7myAs+4d
-         BWdQ==
-X-Gm-Message-State: AOAM532ft3rKhpSY7vwa41YXBWHP8AjcdL66QbBhFTCcyAkFVdTCqDiC
-        qMl5m8hAHbfFwGhcbnJBMth4uQ==
-X-Google-Smtp-Source: ABdhPJxHbf8moCJr91r6MD2891LGyW0z5cVpk9kYgRhh+AWiLx/XdWOlvEeIEMjw5JPDvqCK9RcThg==
-X-Received: by 2002:a17:902:8a8a:b029:ec:857a:4d51 with SMTP id p10-20020a1709028a8ab02900ec857a4d51mr26042778plo.68.1619558911548;
-        Tue, 27 Apr 2021 14:28:31 -0700 (PDT)
-Received: from smtpclient.apple (2603-8001-6500-2faf-38d4-ff31-0f64-ab02.res6.spectrum.com. [2603:8001:6500:2faf:38d4:ff31:f64:ab02])
-        by smtp.gmail.com with ESMTPSA id bf3sm2582177pjb.16.2021.04.27.14.28.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 14:28:30 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: pt_regs->ax == -ENOSYS
-Date:   Tue, 27 Apr 2021 14:28:29 -0700
-Message-Id: <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net>
-References: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        oleg@redhat.com, Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>
-In-Reply-To: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-X-Mailer: iPhone Mail (18E199)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xsQ19BQZ7BYI6oxOmcTVL+nfuau2yGAWJogNYnlPUJA=;
+        b=jAqueK5v58Tsmb1bIKCPKP3fbzL0uJmJ3KWDmXqmkFR5JmL/gEWr+Nd6EH0U+DPi3Q
+         ugEAN24jCsCrHLwvTZINdlUjnK4ODjKLIw5WKPfYfilEI1MkTHu+aq+MdKFurTMeSN4Z
+         kkPsZJFB56c003QeY0Pfrf9ChRIf01SQ6axGBKzcJAsmvDcc3Y5dg6BVIvYNQ2xASVIe
+         NVHjF2DBARpX3W26N75DdhtEAoBMJuh93stjuTpbNpP/SoYJ0Y+am7xj7cbCqFIN+wst
+         g5aOcO+WhlmX9r1KrwzROqgwsRPif13nlK0PWYcKpDuJydm+uzo9uCkUt5NKcEHuFnbm
+         LS6A==
+X-Gm-Message-State: AOAM531mXdsVZvpl7rpQITIDLH6mk05DJF7ahylGc7VNh2TJMSHoK4z3
+        IAqnBdftTXMfKugs1b9ywMZcEysqguxcOkuviZo=
+X-Google-Smtp-Source: ABdhPJxBlSyJL2+xE2UXkyPjIK7DmBFlqEqKixhRYFli9RtlAQlK3/WMuGjEzra5efgJBgMnQjEUzrOOWKIOl3BwT9E=
+X-Received: by 2002:a25:7507:: with SMTP id q7mr15048566ybc.27.1619559261570;
+ Tue, 27 Apr 2021 14:34:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210427170859.579924-1-jackmanb@google.com>
+In-Reply-To: <20210427170859.579924-1-jackmanb@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 27 Apr 2021 14:34:10 -0700
+Message-ID: <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27, 2021 at 10:09 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> One of our benchmarks running in (Google-internal) CI pushes data
+> through the ringbuf faster than userspace is able to consume
+> it. In this case it seems we're actually able to get >INT_MAX entries
+> in a single ringbuf_buffer__consume call. ASAN detected that cnt
+> overflows in this case.
+>
+> Fix by just setting a limit on the number of entries that can be
+> consumed.
+>
+> Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>  tools/lib/bpf/ringbuf.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index e7a8d847161f..445a21df0934 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
+>         do {
+>                 got_new_data = false;
+>                 prod_pos = smp_load_acquire(r->producer_pos);
+> -               while (cons_pos < prod_pos) {
+> +               /* Don't read more than INT_MAX, or the return vale won't make sense. */
+> +               while (cons_pos < prod_pos && cnt < INT_MAX) {
 
-> On Apr 27, 2021, at 2:15 PM, H. Peter Anvin <hpa@zytor.com> wrote:
->=20
-> =EF=BB=BFTrying to stomp out some possible cargo cult programming?
->=20
-> In the process of going through the various entry code paths, I have to ad=
-mit to being a bit confused why pt_regs->ax is set to -ENOSYS very early in t=
-he system call path.
->=20
+ring_buffer__pool() is assumed to not return until all the enqueued
+messages are consumed. That's the requirement for the "adaptive"
+notification scheme to work properly. So this will break that and
+cause the next ring_buffer__pool() to never wake up.
 
-It has to get set to _something_, and copying orig_ax seems perhaps silly.  T=
-here could also be code that relies on ptrace poking -1 into the nr resultin=
-g in -ENOSYS.
+We could use __u64 internally and then cap it to INT_MAX on return
+maybe? But honestly, this sounds like an artificial corner case, if
+you are producing data faster than you can consume it and it goes
+beyond INT_MAX, something is seriously broken in your application and
+you have more important things to handle :)
 
-> What is perhaps even more confusing is:
->=20
-> __visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned long n=
-r)
-> {
->        nr =3D syscall_enter_from_user_mode(regs, nr);
->=20
->        instrumentation_begin();
->        if (likely(nr < NR_syscalls)) {
->                nr =3D array_index_nospec(nr, NR_syscalls);
->                regs->ax =3D sys_call_table[nr](regs);
-> #ifdef CONFIG_X86_X32_ABI
->        } else if (likely((nr & __X32_SYSCALL_BIT) &&
->                          (nr & ~__X32_SYSCALL_BIT) < X32_NR_syscalls)) {
->                nr =3D array_index_nospec(nr & ~__X32_SYSCALL_BIT,
->                                        X32_NR_syscalls);
->                regs->ax =3D x32_sys_call_table[nr](regs);
-> #endif
->        }
->        instrumentation_end();
->        syscall_exit_to_user_mode(regs);
-> }
-> #endif
->=20
-> Now, unless I'm completely out to sea, it seems to me that if syscall_ente=
-r_from_user_mode() changes the system call number to an invalid number and p=
-t_regs->ax to !-ENOSYS then the system call will return a different value(!)=
- depending on if it is out of range for the table (whatever was poked into p=
-t_regs->ax) or if it corresponds to a hole in the table. This seems to me at=
- least to be The Wrong Thing.
-
-I think you=E2=80=99re right.
-
->=20
-> Calling regs->ax =3D sys_ni_syscall() in an else clause would arguably be t=
-he right thing here, except possibly in the case where nr (or (int)nr, see b=
-elow) =3D=3D -1 or < 0.
-
-I think the check should be -1 for 64 bit but (u32)nr =3D=3D (u32)-1 for the=
- 32-bit path. Does that seem reasonable?
-
->=20
-> Now, syscall_get_nr() returns the low 32 bits of the system call number un=
-conditionally. There are places where we look at the sign of this number, wh=
-ich means that 0xffffffff7fffffff is "positive" and 0x7fffffffffffffff is "n=
-egative". We have gone back and forth more than once on if we should look at=
- %rax or just %eax on a system call... I have to admit that the current desi=
-gn makes me a bit nervous.
->=20
-> Finally, can anything bad happen in some weird corner case inside one of t=
-he syscall_*_mode() calls or after an interrupt if someone tries to call sys=
-call(-1) or another negative number?
->=20
-> Food for thought or just my not being up to date?
->=20
-> Thanks,
->=20
->    -hpa
->=20
+>                         len_ptr = r->data + (cons_pos & r->mask);
+>                         len = smp_load_acquire(len_ptr);
+>
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
