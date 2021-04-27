@@ -2,127 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68D636CA43
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7822936CA4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238064AbhD0RXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:23:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235777AbhD0RW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:22:59 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1F7660FF3;
-        Tue, 27 Apr 2021 17:22:14 +0000 (UTC)
-Date:   Tue, 27 Apr 2021 18:23:00 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Frank Zago <frank@zago.net>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Meerwald <pmeerw@pmeerw.net>
-Subject: Re: [PATCH 2/2] iio: light: tcs3472: do not free unallocated IRQ
-Message-ID: <20210427182300.331bda00@jic23-huawei>
-In-Reply-To: <20210427022017.19314-2-frank@zago.net>
-References: <20210427022017.19314-1-frank@zago.net>
-        <20210427022017.19314-2-frank@zago.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236664AbhD0RZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:25:20 -0400
+Received: from mail-eopbgr760078.outbound.protection.outlook.com ([40.107.76.78]:36768
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235593AbhD0RZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:25:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R5gs4OghKz9b/pDqR8XJxZMa4clFL3tvghNqQWWfYxcOd2fuecUNjxT7vCM6NnyJuQ5pBJPEGo3lIoibxvxEwWFVpQlsYfPQmeO0sukE/DANmqUhdDNxHKEacZP/wOGrJmBMRBDsg7drsrbz9o8ynNOnbb8wxgvW37enHceCKmTpV4oXCy1mQzl7yZJMIKyYB5JbJCjin84zMqWhnxHFPb9AJVQzZGziALszks3Za3L7FfAioiSszQAsAq+07ui+v/ztwbk2o7b14qr0kd8oFx6gECnOfKWYwE9xHbpEB+5pPQ8BQUCQscdaxQqV1Nw4t/9Zw6s8pmsqsdTpyXmA5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPaU/gpgmZzFAGpL9QsBTvaL85w1xdy8IEqqRSYM6j8=;
+ b=WSK5DLSU+/jgHRLy5hX2Ft0yBeIKD2CU0U+pUsRdpK4KLxLx8kOMPntwmkh8WbgKc0GJjWTx1hYmMMYvKFYvY9MB9vOwW5BYu9kwj3pg3UAY7rKmsS4NzhCbDj9WXY1gQvY3og+nKRfbZ6mxxJlNrtfYXvdkvsuiHG5LbdstNz7dLeAV/e6KMOU2LNaxNTffgfAhsaw29JRlR2bwyHC6rRlaD4T6TwEzZx7wVkDZ880vWvwAqyVJ2YwWrFMgb0xeZuwgnaI9oCzk1xwwOJbjYsCFdfSZWm5WMqlDtnFBMR3jmWtylEPFdM45tJUCxBxk0hg0BAPgiGwPJe2cT99V4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPaU/gpgmZzFAGpL9QsBTvaL85w1xdy8IEqqRSYM6j8=;
+ b=LunouMo1pzQL2MTKE5ZycHEfdkmgY0GM8+259xkP/6k0J4m0FUnw3h+uJTpontZFwmGIQioCTlgMlj9pYUj57+bRsm5mqjZhUS1Kk2EoqkDQepcVUcogzD1cuRuxyIYvL3iCCLrfZrvsjCnXdDlBEv/lnS1BTNR0s0nZIXUhfgId/BvHP77dPvf7rojLs3RgDKqE/XaWdA3K/1Mn6RlwTHQ9GJOIkT21Yd5IFqyD2bvYETj8peyHjz6R5Q4XfG89EvzO0t3+UcPDKLsS8DPigBCz686H2mYOJ3T3neyysRpS+E4tEJIX4b2WDNvUDPm5PemzuBXZssNsepbdOpHoLw==
+Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0204.namprd12.prod.outlook.com (2603:10b6:4:51::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Tue, 27 Apr
+ 2021 17:24:33 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Tue, 27 Apr 2021
+ 17:24:33 +0000
+Date:   Tue, 27 Apr 2021 14:24:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210427172432.GE1370958@nvidia.com>
+References: <20210416061258.325e762e@jacob-builder>
+ <20210416094547.1774e1a3@redhat.com>
+ <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210421162307.GM1370958@nvidia.com>
+ <20210421105451.56d3670a@redhat.com>
+ <20210421175203.GN1370958@nvidia.com>
+ <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <20210422111337.6ac3624d@redhat.com>
+ <YIeYJZOdgMN/orl0@yekko.fritz.box>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIeYJZOdgMN/orl0@yekko.fritz.box>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH2PR02CA0010.namprd02.prod.outlook.com
+ (2603:10b6:610:4e::20) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR02CA0010.namprd02.prod.outlook.com (2603:10b6:610:4e::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Tue, 27 Apr 2021 17:24:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lbRRo-00DaBI-3J; Tue, 27 Apr 2021 14:24:32 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: be1d354d-6995-42f8-fdbe-08d909a152d2
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0204:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0204CA058C9BD0A0FB35AA73C2419@DM5PR1201MB0204.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /+d8mDSberz+e+JVcecNXFUAv9CPMYewJA1ftXZYBaa0u6qkmS21WvPeYkj5tYYTsqsYEwZi3S71tbxtb6RexJVZ+qwoxiyKEkaHVyvCCbU1FKCN7ag8RHZOk1oE6hxFeGvsV26wxWsLgedD1DOMROqa+7Y8M+/sQdxtxp+MYtcrL8vg78A+m3YrnNvnaia3ww1ugovxHpjTIDsQaCEBwJvjq80AQCC1lFZuBPCm0f41vMmQXOUj4Fg6PSpgMI3y0uewvur7QXjIW/dABQVGeGm7Zi36e37JBEvBmU2dgtICYSjfhhdgL4LqcIyuJlhnX5AIwaOCCmWxkumqR6HKtKXKBTGik5Ue+0fjpWpMfQDbUHIZLcVIAjR4f7LctK8tlQ/728NCKCFeNefrisD/03NQdcCn7navB+Ofcg7ztFLEGEUUpc4xD14RYB2z/M2V2Rkqg99Ha8OBdtRMb0LFK3WJaiNpRF1dnTgRmvj1UW/G2MqLw9kHQarJtkvv+oppJoLWE8WbieXBkbJw7h2BZ321jxaDeWZK1NeQ3Zf8ZK9KsbVKAbyXxgUpzPsyGShZnLPc7HSC/kCI7EoF+6szncI22owCMO9kX2npzNcrV0I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(396003)(346002)(136003)(186003)(316002)(1076003)(33656002)(9746002)(5660300002)(2616005)(2906002)(9786002)(478600001)(66946007)(86362001)(26005)(38100700002)(7416002)(83380400001)(8676002)(54906003)(426003)(8936002)(66556008)(6916009)(66476007)(36756003)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XO840h0DzJ9S14IwkTj6OEz9HhbHAstOVshwYTiZ8edIBSX+wTfFy1yfhM39?=
+ =?us-ascii?Q?ZIhAphn+IBaFBGcqrGEhyFDMXJmJlL73wbcdrAAM8FTWU3OfUyMERrCP5S/Q?=
+ =?us-ascii?Q?U+3fAnK6eA0/1oPXw0OIzJ+SWD1mrjU9c+YY0SMAmYYOexu/7y3C+yKR8nD6?=
+ =?us-ascii?Q?hgJlQHDg9FQ2s3/Zc3jJClMn8Te4Aqq7GdErFdqXEPchVwuXBLRscZzGnupa?=
+ =?us-ascii?Q?rNb7l7cV9bO53Yq7vnG3O2Q/D7df7IAsxM3IR1h6aR8uutkipo7lu8DJtl/j?=
+ =?us-ascii?Q?Rh0uZXn+QoHfv39LAhf5W4lVUtjPvQgdjBNOQA0EfWhIMXqdZvQEJHC8gc8N?=
+ =?us-ascii?Q?7U8OOx2U4tkUQv55GAoAclalbt1ZB6vVzkW7qLy18WAS4ReynWJEae5wBKfU?=
+ =?us-ascii?Q?cjodmmfo5XMEKxRIcVFNdP14jeX6ozNzBFLxiXJvnDiFC7LWDeX1OAQx4Zyk?=
+ =?us-ascii?Q?WiO46zM9ZiFAQiDw/CfEk39nikNiJ+KkX4PDzekbhc0gFQPFXd8U1ZCbXjs3?=
+ =?us-ascii?Q?juDwxnjQ78awQovVOmdKrVnoxcSaU5QOrPQ5YyKqhC3TKwShCi6eEfCREf1d?=
+ =?us-ascii?Q?N4CnwPeyxf8gySc5xGmzzYSnVpbQgrs3G83mFV2vImX6laNcxI/P7tubPcLQ?=
+ =?us-ascii?Q?VmsfkPBr08r8u5aFdZ7ctEyPX0MGNA7Y/1UtMFehZRDcSbFM0O9/kYn6YksQ?=
+ =?us-ascii?Q?GNm9ExTd4ZRiqMBfdi5Zet1NbzgfP14I5IQaK+VXBxPrWKvtaQmlsp4bg1oq?=
+ =?us-ascii?Q?Lgh7m3Qk7lSzdF/5YMsmXWZ3HWBOZ47GRfniPFGYQ0Cav0lpWsPjJAtt3Jwb?=
+ =?us-ascii?Q?2OHMtkj54hctR3Iu31tNG/nma7ycZM1RlmWP+JBebP6x2C2OTqP2SejTtYdu?=
+ =?us-ascii?Q?6tNQu2KMjwoxvhka8/48yAYnlDdALw29OQtviBRzcGC3eNqhc0GJfAVbbcwm?=
+ =?us-ascii?Q?+AEHSVgSf5Uf9qgH5TQMGqJIRp2P7oBLxF+ec5UeJgkNwdik/D/X9gOFCmLM?=
+ =?us-ascii?Q?71SyZdNPaJT+eZXNRcxwBK+YTxNY5LtoCMYrBaBFNE3mGRoFqTetqnK+TS+P?=
+ =?us-ascii?Q?ymDAI95MoOJ/QonGKeVzyP6aEPlYHVnkGteMRVdNf1vngKXHRcvWVpW1jqx7?=
+ =?us-ascii?Q?GEQlT1jQMNDAGmh8/8AduZLJ5ZyHsq051pkIJlCorZPmbv7dfaitb7sNcG2n?=
+ =?us-ascii?Q?6jPMMyJPquaSL0VefvVj+b0QUPiccGBO83FmuO9ycBZlKMEISWkhCm46Ij6Z?=
+ =?us-ascii?Q?SI7eRe0TmH/aBi0AEa8JZ11SEBAVjecIifJC7BuV/APbXVf4WGyfMo03hjjX?=
+ =?us-ascii?Q?PuDrXLFp+Lb4XH4FsvIsmzmF?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be1d354d-6995-42f8-fdbe-08d909a152d2
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 17:24:33.6498
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OOQc4XJzH5uFjaH7Bpc92D3HfyzIV4onGoX7m/8687OGVjmBaPj4eim2IX3mn0Fw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0204
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 21:20:17 -0500
-Frank Zago <frank@zago.net> wrote:
+On Tue, Apr 27, 2021 at 02:50:45PM +1000, David Gibson wrote:
 
-> From: frank zago <frank@zago.net>
+> > > I say this because the SPAPR looks quite a lot like PASID when it has
+> > > APIs for allocating multiple tables and other things. I would be
+> > > interested to hear someone from IBM talk about what it is doing and
+> > > how it doesn't fit into today's IOMMU API.
 > 
-> Allocating an IRQ is conditional to the IRQ existence, but freeing it
-> was not. If no IRQ was allocate, the driver would still try to free
-> IRQ 0. Add the missing checks.
-> 
-> This fixes the following trace when the driver is removed:
-> 
-> [  100.667788] Trying to free already-free IRQ 0
-> [  100.667793] WARNING: CPU: 0 PID: 2315 at kernel/irq/manage.c:1826 free_irq+0x1fd/0x370
-> [  100.667804] Modules linked in: tcs3472(-) industrialio_triggered_buffer kfifo_buf industrialio ch341_buses binfmt_misc snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core wmi_bmof snd_pcm snd_seq rapl input_leds snd_timer snd_seq_device snd k10temp ccp soundcore wmi mac_hid sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 dm_crypt hid_generic usbhid hid radeon i2c_algo_bit drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core drm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel crypto_simd r8169 cryptd ahci i2c_piix4 xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic
-> [  100.667874] CPU: 0 PID: 2315 Comm: rmmod Not tainted 5.12.0+ #29
-> [  100.667878] ...
-> [  100.667881] RIP: 0010:free_irq+0x1fd/0x370
-> [  100.667887] Code: e8 c8 d8 1b 00 48 83 c4 10 4c 89 f8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 8b 75 d0 48 c7 c7 40 8b 36 93 4c 89 4d c8 e8 d1 2c a2 00 <0f> 0b 4c 8b 4d c8 4c 89 f7 4c 89 ce e8 72 c7 a8 00 49 8b 47 40 48
-> [  100.667891] RSP: 0018:ffff9f44813b7d88 EFLAGS: 00010082
-> [  100.667895] RAX: 0000000000000000 RBX: ffff8e50caf47800 RCX: ffff8e53cea185c8
-> [  100.667897] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff8e53cea185c0
-> [  100.667900] RBP: ffff9f44813b7dc0 R08: 0000000000000000 R09: ffff9f44813b7b50
-> [  100.667902] R10: ffff9f44813b7b48 R11: ffffffff93b53848 R12: ffff8e50c0125080
-> [  100.667903] R13: ffff8e50c0136f60 R14: ffff8e50c0136ea4 R15: ffff8e50c0136e00
-> [  100.667906] FS:  00007fa28b899540(0000) GS:ffff8e53cea00000(0000) knlGS:0000000000000000
-> [  100.667909] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  100.667911] CR2: 0000561851777818 CR3: 000000010633a000 CR4: 00000000003506f0
-> [  100.667914] Call Trace:
-> [  100.667920]  tcs3472_remove+0x3a/0x90 [tcs3472]
-> [  100.667927]  i2c_device_remove+0x2b/0xa0
-> [  100.667934]  __device_release_driver+0x181/0x240
-> [  100.667940]  driver_detach+0xd5/0x120
-> [  100.667944]  bus_remove_driver+0x5c/0xe0
-> [  100.667947]  driver_unregister+0x31/0x50
-> [  100.667951]  i2c_del_driver+0x46/0x70
-> [  100.667955]  tcs3472_driver_exit+0x10/0x5dd [tcs3472]
-> [  100.667960]  __do_sys_delete_module.constprop.0+0x183/0x290
-> [  100.667965]  ? exit_to_user_mode_prepare+0x37/0x1c0
-> [  100.667971]  __x64_sys_delete_module+0x12/0x20
-> [  100.667974]  do_syscall_64+0x40/0xb0
-> [  100.667981]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  100.667985] RIP: 0033:0x7fa28b9dbceb
-> [  100.667989] Code: 73 01 c3 48 8b 0d 7d 91 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4d 91 0c 00 f7 d8 64 89 01 48
-> [  100.667992] RSP: 002b:00007ffe02ea7068 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-> [  100.667995] RAX: ffffffffffffffda RBX: 000056185176d750 RCX: 00007fa28b9dbceb
-> [  100.667997] RDX: 000000000000000a RSI: 0000000000000800 RDI: 000056185176d7b8
-> [  100.667999] RBP: 00007ffe02ea70c8 R08: 0000000000000000 R09: 0000000000000000
-> [  100.668001] R10: 00007fa28ba56ac0 R11: 0000000000000206 R12: 00007ffe02ea72a0
-> [  100.668003] R13: 00007ffe02ea8807 R14: 000056185176d2a0 R15: 000056185176d750
-> [  100.668007] ---[ end trace b21b0811931d933c ]---
-> 
-> Signed-off-by: frank zago <frank@zago.net>
+> Hm.  I don't think it's really like PASID.  Just like Type1, the TCE
+> backend represents a single DMA address space which all devices in the
+> container will see at all times.  The difference is that there can be
+> multiple (well, 2) "windows" of valid IOVAs within that address space.
+> Each window can have a different TCE (page table) layout.  For kernel
+> drivers, a smallish translated window at IOVA 0 is used for 32-bit
+> devices, and a large direct mapped (no page table) window is created
+> at a high IOVA for better performance with 64-bit DMA capable devices.
+>
+> With the VFIO backend we create (but don't populate) a similar
+> smallish 32-bit window, userspace can create its own secondary window
+> if it likes, though obvious for userspace use there will always be a
+> page table.  Userspace can choose the total size (but not address),
+> page size and to an extent the page table format of the created
+> window.  Note that the TCE page table format is *not* the same as the
+> POWER CPU core's page table format.  Userspace can also remove the
+> default small window and create its own.
 
-Looks correct to me. +CC Peter in case he wants to take a look.
+So what do you need from the generic API? I'd suggest if userspace
+passes in the required IOVA range it would benefit all the IOMMU
+drivers to setup properly sized page tables and PPC could use that to
+drive a single window. I notice this is all DPDK did to support TCE.
 
-This is going to wait for a week or so anyway because next lot of fixes
-will only go out towards the end of the merge window or just after rc1.
+> The second wrinkle is pre-registration.  That lets userspace register
+> certain userspace VA ranges (*not* IOVA ranges) as being the only ones
+> allowed to be mapped into the IOMMU.  This is a performance
+> optimization, because on pre-registration we also pre-account memory
+> that will be effectively locked by DMA mappings, rather than doing it
+> at DMA map and unmap time.
 
-Thanks
+This feels like nesting IOASIDs to me, much like a vPASID.
 
-Jonathan
-> ---
->  drivers/iio/light/tcs3472.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/light/tcs3472.c b/drivers/iio/light/tcs3472.c
-> index a0dc447aeb68..b41068492338 100644
-> --- a/drivers/iio/light/tcs3472.c
-> +++ b/drivers/iio/light/tcs3472.c
-> @@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_client *client,
->  	return 0;
->  
->  free_irq:
-> -	free_irq(client->irq, indio_dev);
-> +	if (client->irq)
-> +		free_irq(client->irq, indio_dev);
->  buffer_cleanup:
->  	iio_triggered_buffer_cleanup(indio_dev);
->  	return ret;
-> @@ -559,7 +560,8 @@ static int tcs3472_remove(struct i2c_client *client)
->  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
->  
->  	iio_device_unregister(indio_dev);
-> -	free_irq(client->irq, indio_dev);
-> +	if (client->irq)
-> +		free_irq(client->irq, indio_dev);
->  	iio_triggered_buffer_cleanup(indio_dev);
->  	tcs3472_powerdown(iio_priv(indio_dev));
->  
+The pre-registered VA range would be the root of the tree and the
+vIOMMU created ones would be children of the tree. This could allow
+the map operations of the child to refer to already prepped physical
+memory held in the root IOASID avoiding the GUP/etc cost.
+
+Seems fairly genericish, though I'm not sure about the kvm linkage..
+
+> I like the idea of a common DMA/IOMMU handling system across
+> platforms.  However in order to be efficiently usable for POWER it
+> will need to include multiple windows, allowing the user to change
+> those windows and something like pre-registration to amortize
+> accounting costs for heavy vIOMMU load.
+
+I have a feeling /dev/ioasid is going to end up with some HW specific
+escape hatch to create some HW specific IOASID types and operate on
+them in a HW specific way.
+
+However, what I would like to see is that something simple like DPDK
+can have a single implementation - POWER should implement the standard
+operations and map them to something that will work for it.
+
+As an ideal, only things like the HW specific qemu vIOMMU driver
+should be reaching for all the special stuff.
+
+In this way the kernel IOMMU driver and the qemu user vIOMMU driver
+would form something of a classical split user/kernel driver pattern.
+
+Jason
 
