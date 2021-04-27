@@ -2,211 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0D036C034
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C8936C03C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbhD0Hh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbhD0HhY (ORCPT
+        id S234955AbhD0Hib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:38:31 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:49828 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbhD0Hi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:37:24 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D066BC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 00:36:39 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id r20so38412168ejo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 00:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lXsEOswDY9Cprrt7+KPG1IVk34xEGEwkulyAI2cnbJU=;
-        b=d//H4Jpooy/haV6dF4neT7pCklUZgWKdCMggkQdc7d3BB5+WAbx+mvClyYo0mYWLdt
-         15rL+zgsP4kKGynKSMoDSm+4XfAfus0KWRx1GtSTD/diMOZuwB+cMg0rq4P/dgonQTyj
-         Lx9zWNRU0HoOtdIqAs6mnQze2fy3iTIzVK/XIQSk9TuU7HqA5TyRHTEjLagmX20aXpXB
-         w0IbnLljMIDrwKwDehOw1dIxuoxESo7i2mx5uYSErTHCUifiRSKqhrYqMBlCXW1a+HRK
-         Km4/uyr2zRmoDdJxc4k+sJQmGavqJHy8O2Gf255L/glXsxNk/HDNE5LsSHHKWKNVnNHm
-         SrjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lXsEOswDY9Cprrt7+KPG1IVk34xEGEwkulyAI2cnbJU=;
-        b=HTEd7dPr3oC/egS19PzM/eb0K23y7Y94iKjwQlDj11+BIAkWmr2xhDY0NMCBci7wjp
-         99632fqFpf/bnA5jwG+drtvlERv1OkchFcX+mNg4O4MgZYkTKLmQqYbOlHAzvpw4wKkx
-         wh/LlSRl0To3+xHBoL2cqnEFQ1ZVQuV+hCClkK6vS2y14wYyKiWrieOGrIyWRaf40JJh
-         zkuPylOty7R7Iny1e9EPcJDABtSNsLZ/dr/vuVpYUFIhVSH9eYEUstwvs+ujJp8k9yCz
-         Ko8bU6Q9zP25SugvX68SWZ3FS3FnbLahRqpKdD30NhN21t34XUCSpPr2LYMRiCUFma/A
-         G23Q==
-X-Gm-Message-State: AOAM533yK+iq5mqXUwx2Q+9UT1E5d4daR3LyIVLAR3EsHX6vurt8O9yn
-        1BnCBfxbiMIRp72Q6x07iIfo6/vhp+3TpAlgv7xocBmuyItIP0LR
-X-Google-Smtp-Source: ABdhPJxlvzbX3NyS38DOVp16YdtWz/KF88EIQr1t3ZO7oGWWu3WTBrEJFw7rHBfIIrypAq0kKkW9lH3z2O6DnQzc6dw=
-X-Received: by 2002:a17:906:c04:: with SMTP id s4mr1593653ejf.170.1619508998418;
- Tue, 27 Apr 2021 00:36:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210426072817.245304364@linuxfoundation.org>
-In-Reply-To: <20210426072817.245304364@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 27 Apr 2021 13:06:26 +0530
-Message-ID: <CA+G9fYsu9RekqXWAY16ZnYoQ62Op5e3vjC22zNfdJKO9O+3E-g@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/37] 4.9.268-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 27 Apr 2021 03:38:27 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id C2753F39DC;
+        Tue, 27 Apr 2021 15:37:36 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P2750T140648996910848S1619509055243892_;
+        Tue, 27 Apr 2021 15:37:36 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f0a9583a3d3d3cde6d2d70a5018492a6>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: broonie@kernel.org
+X-RCPT-COUNT: 8
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     broonie@kernel.org
+Cc:     heiko@sntech.de, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@esmil.dk, Jon Lin <jon.lin@rock-chips.com>
+Subject: [PATCH v2 1/8] spi: rockchip: Set rx_fifo interrupt waterline base on transfer item
+Date:   Tue, 27 Apr 2021 15:37:26 +0800
+Message-Id: <20210427073733.31419-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 at 13:03, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.268 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.268-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The error here is to calculate the width as 8 bits. In fact, 16 bits
+should be considered.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+---
+ drivers/spi/spi-rockchip.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+index 52d6259d96ed..406ea3c6abd9 100644
+--- a/drivers/spi/spi-rockchip.c
++++ b/drivers/spi/spi-rockchip.c
+@@ -540,8 +540,8 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
+ 	 * interrupt exactly when the fifo is full doesn't seem to work,
+ 	 * so we need the strict inequality here
+ 	 */
+-	if (xfer->len < rs->fifo_len)
+-		writel_relaxed(xfer->len - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
++	if ((xfer->len / rs->n_bytes) < rs->fifo_len)
++		writel_relaxed(xfer->len / rs->n_bytes - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
+ 	else
+ 		writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
+ 
+-- 
+2.17.1
 
-## Build
-* kernel: 4.9.268-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.9.y
-* git commit: 0f9e08cfadcbaa4b26690c14336e41e014e4a1da
-* git describe: v4.9.267-38-g0f9e08cfadcb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-67-38-g0f9e08cfadcb
 
-## No regressions (compared to v4.9.267-25-g5a84577f34c1)
 
-## No fixes (compared to v4.9.267-25-g5a84577f34c1)
-
-## Test result summary
- total: 60436, pass: 48766, fail: 1600, skip: 9758, xfail: 312,
-
-## Build Summary
-* arm: 97 total, 96 passed, 1 failed
-* arm64: 24 total, 23 passed, 1 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 13 passed, 1 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 13 passed, 1 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
