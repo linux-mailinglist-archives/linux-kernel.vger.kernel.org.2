@@ -2,652 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC7336BDFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A9236BDD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 05:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhD0Duf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 23:50:35 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:26039 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhD0Due (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 23:50:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1619495392; x=1651031392;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bVjVhvt97rSgBD/srGKyKhulnrG7y8P1LKVEYemst1Y=;
-  b=He3hLDmddjxRVLEzXvkM1BAH198WOwNMDaucxEyNJVgmHrVaK+O/CB+Y
-   t2xCBOTPy66Vrsoy89qKmnRJXHEgPyEa5iVYu9OeEAyyF/bKzn63xTWUj
-   KdOV7EHvzwl6FxKEMDcE0z1BULiAuI1U3tUiTTUFRgrrGn/KZ4zAhQ7k8
-   8=;
-X-IronPort-AV: E=Sophos;i="5.82,254,1613433600"; 
-   d="scan'208";a="130980092"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 27 Apr 2021 03:49:51 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id 3C62BC04F6;
-        Tue, 27 Apr 2021 03:49:47 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 27 Apr 2021 03:49:47 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.162.93) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 27 Apr 2021 03:49:42 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 bpf-next 11/11] bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-Date:   Tue, 27 Apr 2021 12:46:23 +0900
-Message-ID: <20210427034623.46528-12-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210427034623.46528-1-kuniyu@amazon.co.jp>
-References: <20210427034623.46528-1-kuniyu@amazon.co.jp>
+        id S234308AbhD0DrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 23:47:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhD0DrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 23:47:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B925661104;
+        Tue, 27 Apr 2021 03:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619495200;
+        bh=RTQhbHh3ORjUxwWm+ZJsLGqrlFy+8ohbRZ2BknnL+IY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mYV9FrClxsn3fy/e2FIhX53SWq5h45qxaahaUBlViJhnpGDQjN9SunXJrAWRJAWRi
+         D7clajKGsxEuveKc3br/tSznc/rIinUB7Zz1eYPmlEHE89K0XzbsALDtgzOvBx/iP6
+         /DnguOzrbrozpea/k6/TTXdBncfxKpR21nY9bcSHeOBy2OFaFMDfA1lmwlvH5wc4WM
+         nmlFZqEOTPoKYG7ZOmmbVhDTjbFLQyXOfG+0tmR0BYnow5RoLdtep+PCAEnNfn0CYx
+         VqdfouEiz1t4ULaXsdGLIyVjLMQEWDvhOV3GZjik5wdDCWdpbo/+nIXdr3BqL73s4F
+         TPZmgyqw7F/Rw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7798B5C08D8; Mon, 26 Apr 2021 20:46:40 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 20:46:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early
+ pre-calibration drift
+Message-ID: <20210427034640.GF975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-6-paulmck@kernel.org>
+ <20210426150127.GB23119@shbuild999.sh.intel.com>
+ <20210426152529.GX975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210426153605.GB89018@shbuild999.sh.intel.com>
+ <20210426182652.GE975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210427011355.GC89018@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.93]
-X-ClientProxiedBy: EX13D18UWC002.ant.amazon.com (10.43.162.88) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427011355.GC89018@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a test for BPF_SK_REUSEPORT_SELECT_OR_MIGRATE and
-removes 'static' from settimeo() in network_helpers.c.
+On Tue, Apr 27, 2021 at 09:13:55AM +0800, Feng Tang wrote:
+> On Mon, Apr 26, 2021 at 11:26:52AM -0700, Paul E. McKenney wrote:
+> > On Mon, Apr 26, 2021 at 11:36:05PM +0800, Feng Tang wrote:
+> > > On Mon, Apr 26, 2021 at 08:25:29AM -0700, Paul E. McKenney wrote:
+> > > > On Mon, Apr 26, 2021 at 11:01:27PM +0800, Feng Tang wrote:
+> > > > > Hi Paul,
+> > > > > 
+> > > > > On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> > > > > > Because the x86 tsc_early clocksource is given a quick and semi-accurate
+> > > > > > calibration (by design!), it might have drift rates well in excess of
+> > > > > > the 0.1% limit that is in the process of being adopted.
+> > > > > > 
+> > > > > > Therefore, add a max_drift field to the clocksource structure that, when
+> > > > > > non-zero, specifies the maximum allowable drift rate in nanoseconds over
+> > > > > > a half-second period.  The tsc_early clocksource initializes this to five
+> > > > > > miliseconds, which corresponds to the 1% drift rate limit suggested by
+> > > > > > Xing Zhengjun.  This max_drift field is intended only for early boot,
+> > > > > > so clocksource_watchdog() splats if it encounters a non-zero value in
+> > > > > > this field more than 60 seconds after boot, inspired by a suggestion by
+> > > > > > Thomas Gleixner.
+> > > > > > 
+> > > > > > This was tested by setting the clocksource_tsc ->max_drift field to 1,
+> > > > > > which, as expected, resulted in a clock-skew event.
+> > > > > 
+> > > > > We've run the same last for this v10, and those 'unstable' thing [1] can
+> > > > > not be reproduced!
+> > > > 
+> > > > Good to hear!  ;-)
+> > > > 
+> > > > > We've reported one case that tsc can be wrongly judged as 'unstable'
+> > > > > by 'refined-jiffies' watchdog [1], while reducing the threshold could
+> > > > > make it easier to be triggered.
+> > > > > 
+> > > > > It could be reproduced on the a plaform with a 115200 serial console,
+> > > > > and hpet been disabled (several x86 platforms has this), add 
+> > > > > 'initcall_debug' cmdline parameter to get more debug message, we can
+> > > > > see:
+> > > > > 
+> > > > > [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
+> > > > > [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+> > > > > [    1.134217] clocksource:                       'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+> > > > > [    1.134220] clocksource:                       No current clocksource.
+> > > > > [    1.134222] tsc: Marking TSC unstable due to clocksource watchdog
+> > > > 
+> > > > Just to make sure I understand: "could be reproduced" as in this is the
+> > > > result from v9, and v10 avoids this, correct?
+> > > 
+> > > Sorry I didn't make it clear. This is a rarely happened case, and can
+> > > be reproduced with upstream kerenl, which has 62.5 ms threshold. 6/7 &
+> > > 7/7 patch of reducing the threshold can make it easier to be triggered.
+> > 
+> > Ah, OK, so this could be considered to be a benefit of this series, then.
+> > 
+> > Does this happen only for tsc-early, or for tsc as well?
+> > 
+> > Has it already been triggered on v10 of this series?  (I understand that
+> > it certainly should be easier to trigger, just curious whether this has
+> > already happened.)
+> 
+> Yes, it has. The upper log is from v10 (actually it's the 'dev' branch
+> of your linux-rcu git, which I didn't find obvious difference) on a
+> client platform 
+> 
+>  [    1.134214] clocksource:    'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
+>  [    1.134217] clocksource:    'tsc-early' cs_nsec: 507537855 cs_now: 4e63c9d09 cs_last: 4bebd81f5 mask: ffffffffffffffff
+> 
+> The deviation is 7537855 ns (7.5 ms). And as said before, it needs many
+> pre-conditions to be triggered.
+> 
+> Also I found the debug patch is useful, which prints out the direct
+> nanoseconds info when 'unstable' is detected.
 
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
----
- tools/testing/selftests/bpf/network_helpers.c |   2 +-
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../bpf/prog_tests/migrate_reuseport.c        | 484 ++++++++++++++++++
- .../bpf/progs/test_migrate_reuseport.c        |  51 ++
- 4 files changed, 537 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+Looks good to me!
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 12ee40284da0..2060bc122c53 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -40,7 +40,7 @@ struct ipv6_packet pkt_v6 = {
- 	.tcp.doff = 5,
- };
- 
--static int settimeo(int fd, int timeout_ms)
-+int settimeo(int fd, int timeout_ms)
- {
- 	struct timeval timeout = { .tv_sec = 3 };
- 
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 7205f8afdba1..5e0d51c07b63 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -33,6 +33,7 @@ struct ipv6_packet {
- } __packed;
- extern struct ipv6_packet pkt_v6;
- 
-+int settimeo(int fd, int timeout_ms);
- int start_server(int family, int type, const char *addr, __u16 port,
- 		 int timeout_ms);
- int connect_to_fd(int server_fd, int timeout_ms);
-diff --git a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-new file mode 100644
-index 000000000000..1b33df1902fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-@@ -0,0 +1,484 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Check if we can migrate child sockets.
-+ *
-+ *   1. call listen() for 5 server sockets.
-+ *   2. update a map to migrate all child sockets
-+ *        to the last server socket (migrate_map[cookie] = 4)
-+ *   3. call connect() for 25 client sockets.
-+ *   4. call shutdown() for first 4 server sockets
-+ *        and migrate the requests in the accept queue
-+ *        to the last server socket.
-+ *   5. call listen() for the second server socket.
-+ *   6. call shutdown() for the last server
-+ *        and migrate the requests in the accept queue
-+ *        to the second server socket.
-+ *   7. call listen() for the last server.
-+ *   8. call shutdown() for the second server
-+ *        and migrate the requests in the accept queue
-+ *        to the last server socket.
-+ *   9. call accept() for the last server socket.
-+ *
-+ * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-+ */
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include "test_progs.h"
-+#include "test_migrate_reuseport.skel.h"
-+#include "network_helpers.h"
-+
-+#define NR_SERVERS 5
-+#define NR_CLIENTS (NR_SERVERS * 5)
-+#define MIGRATED_TO (NR_SERVERS - 1)
-+
-+/* fastopenq->max_qlen and sk->sk_max_ack_backlog */
-+#define QLEN (NR_CLIENTS * 5)
-+
-+#define MSG "Hello World\0"
-+#define MSGLEN 12
-+
-+static struct migrate_reuseport_test_case {
-+	const char *name;
-+	__s64 servers[NR_SERVERS];
-+	__s64 clients[NR_CLIENTS];
-+	struct sockaddr_storage addr;
-+	socklen_t addrlen;
-+	int family;
-+	bool drop_ack;
-+	bool expire_synack_timer;
-+	bool fastopen;
-+} test_cases[] = {
-+	{
-+		.name = "IPv4 - TCP_ESTABLISHED - inet_csk_listen_stop",
-+		.family = AF_INET,
-+		.drop_ack = false,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv4 - TCP_SYN_RECV - inet_csk_listen_stop",
-+		.family = AF_INET,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = true,
-+	},
-+	{
-+		.name = "IPv4 - TCP_NEW_SYN_RECV - inet_csk_complete_hashdance",
-+		.family = AF_INET,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv4 - TCP_NEW_SYN_RECV - reqsk_timer_handler",
-+		.family = AF_INET,
-+		.drop_ack = true,
-+		.expire_synack_timer = true,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 - TCP_ESTABLISHED - inet_csk_listen_stop",
-+		.family = AF_INET6,
-+		.drop_ack = false,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 - TCP_SYN_RECV - inet_csk_listen_stop",
-+		.family = AF_INET6,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = true,
-+	},
-+	{
-+		.name = "IPv6 - TCP_NEW_SYN_RECV - inet_csk_complete_hashdance",
-+		.family = AF_INET6,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 - TCP_NEW_SYN_RECV - reqsk_timer_handler",
-+		.family = AF_INET6,
-+		.drop_ack = true,
-+		.expire_synack_timer = true,
-+		.fastopen = false,
-+	}
-+};
-+
-+static void init_fds(__s64 fds[], int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		fds[i] = -1;
-+}
-+
-+static void close_fds(__s64 fds[], int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (fds[i] != -1) {
-+			close(fds[i]);
-+			fds[i] = -1;
-+		}
-+	}
-+}
-+
-+static int setup_fastopen(char *buf, int size, int *saved_len, bool restore)
-+{
-+	int err = 0, fd, len;
-+
-+	fd = open("/proc/sys/net/ipv4/tcp_fastopen", O_RDWR);
-+	if (!ASSERT_NEQ(fd, -1, "open"))
-+		return -1;
-+
-+	if (restore) {
-+		len = write(fd, buf, *saved_len);
-+		if (!ASSERT_EQ(len, *saved_len, "write - restore"))
-+			err = -1;
-+	} else {
-+		*saved_len = read(fd, buf, size);
-+		if (!ASSERT_LT(1, *saved_len, "read")) {
-+			err = -1;
-+			goto close;
-+		}
-+
-+		err = lseek(fd, 0, SEEK_SET);
-+		if (!ASSERT_OK(err, "lseek"))
-+			goto close;
-+
-+		/* (TFO_CLIENT_ENABLE | TFO_SERVER_ENABLE) */
-+		len = write(fd, "3", 1);
-+		if (!ASSERT_EQ(len, 1, "write - setup"))
-+			err = -1;
-+	}
-+
-+close:
-+	close(fd);
-+
-+	return err;
-+}
-+
-+static int run_iptables(struct migrate_reuseport_test_case *test_case,
-+			bool add_rule)
-+{
-+	char buf[128];
-+	int err;
-+
-+	sprintf(buf, "%s -%c OUTPUT -o lo -p tcp --dport %d --tcp-flags SYN,ACK ACK -j DROP",
-+		test_case->family == AF_INET ? "iptables" : "ip6tables",
-+		add_rule ? 'A' : 'D',
-+		ntohs(test_case->family == AF_INET ?
-+		      ((struct sockaddr_in *)&test_case->addr)->sin_port :
-+		      ((struct sockaddr_in6 *)&test_case->addr)->sin6_port));
-+
-+	err = system(buf);
-+
-+	return err == -1 ? err : WEXITSTATUS(err);
-+}
-+
-+static int start_servers(struct migrate_reuseport_test_case *test_case,
-+			 struct test_migrate_reuseport *skel)
-+{
-+	int reuseport = 1, qlen = QLEN, migrated_to = MIGRATED_TO;
-+	int i, err, prog_fd, reuseport_map_fd, migrate_map_fd;
-+	__u64 value;
-+
-+	prog_fd = bpf_program__fd(skel->progs.prog_migrate_reuseport);
-+	reuseport_map_fd = bpf_map__fd(skel->maps.reuseport_map);
-+	migrate_map_fd = bpf_map__fd(skel->maps.migrate_map);
-+
-+	make_sockaddr(test_case->family,
-+		      test_case->family == AF_INET ? "127.0.0.1" : "::1", 0,
-+		      &test_case->addr, &test_case->addrlen);
-+
-+	for (i = 0; i < NR_SERVERS; i++) {
-+		test_case->servers[i] = socket(test_case->family, SOCK_STREAM,
-+					       IPPROTO_TCP);
-+		if (!ASSERT_NEQ(test_case->servers[i], -1, "socket"))
-+			return -1;
-+
-+		err = setsockopt(test_case->servers[i], SOL_SOCKET,
-+				 SO_REUSEPORT, &reuseport, sizeof(reuseport));
-+		if (!ASSERT_OK(err, "setsockopt - SO_REUSEPORT"))
-+			return -1;
-+
-+		err = bind(test_case->servers[i],
-+			   (struct sockaddr *)&test_case->addr,
-+			   test_case->addrlen);
-+		if (!ASSERT_OK(err, "bind"))
-+			return -1;
-+
-+		if (i == 0) {
-+			err = setsockopt(test_case->servers[i], SOL_SOCKET,
-+					 SO_ATTACH_REUSEPORT_EBPF,
-+					 &prog_fd, sizeof(prog_fd));
-+			if (!ASSERT_OK(err,
-+				       "setsockopt - SO_ATTACH_REUSEPORT_EBPF"))
-+				return -1;
-+
-+			err = getsockname(test_case->servers[i],
-+					  (struct sockaddr *)&test_case->addr,
-+					  &test_case->addrlen);
-+			if (!ASSERT_OK(err, "getsockname"))
-+				return -1;
-+		}
-+
-+		if (test_case->fastopen) {
-+			err = setsockopt(test_case->servers[i],
-+					 SOL_TCP, TCP_FASTOPEN,
-+					 &qlen, sizeof(qlen));
-+			if (!ASSERT_OK(err, "setsockopt - TCP_FASTOPEN"))
-+				return -1;
-+		}
-+
-+		err = listen(test_case->servers[i], qlen);
-+		if (!ASSERT_OK(err, "listen"))
-+			return -1;
-+
-+		value = (__u64)test_case->servers[i];
-+		err = bpf_map_update_elem(reuseport_map_fd, &i, &value,
-+					  BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem - reuseport_map"))
-+			return -1;
-+
-+		err = bpf_map_lookup_elem(reuseport_map_fd, &i, &value);
-+		if (!ASSERT_OK(err, "bpf_map_lookup_elem - reuseport_map"))
-+			return -1;
-+
-+		err = bpf_map_update_elem(migrate_map_fd, &value, &migrated_to,
-+					  BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem - migrate_map"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int start_clients(struct migrate_reuseport_test_case *test_case)
-+{
-+	char buf[MSGLEN] = MSG;
-+	int i, err;
-+
-+	for (i = 0; i < NR_CLIENTS; i++) {
-+		test_case->clients[i] = socket(test_case->family, SOCK_STREAM,
-+					       IPPROTO_TCP);
-+		if (!ASSERT_NEQ(test_case->clients[i], -1, "socket"))
-+			return -1;
-+
-+		/* iptables only drops the final ACK, so clients will
-+		 * transition to TCP_ESTABLISHED immediately.
-+		 */
-+		err = settimeo(test_case->clients[i], 100);
-+		if (!ASSERT_OK(err, "settimeo"))
-+			return -1;
-+
-+		if (test_case->fastopen) {
-+			int fastopen = 1;
-+
-+			err = setsockopt(test_case->clients[i], IPPROTO_TCP,
-+					 TCP_FASTOPEN_CONNECT, &fastopen,
-+					 sizeof(fastopen));
-+			if (!ASSERT_OK(err,
-+				       "setsockopt - TCP_FASTOPEN_CONNECT"))
-+				return -1;
-+		}
-+
-+		err = connect(test_case->clients[i],
-+			      (struct sockaddr *)&test_case->addr,
-+			      test_case->addrlen);
-+		if (!ASSERT_OK(err, "connect"))
-+			return -1;
-+
-+		err = write(test_case->clients[i], buf, MSGLEN);
-+		if (!ASSERT_EQ(err, MSGLEN, "write"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int migrate_dance(struct migrate_reuseport_test_case *test_case)
-+{
-+	int i, err;
-+
-+	/* Migrate TCP_ESTABLISHED and TCP_SYN_RECV requests
-+	 * to the last listener based on eBPF.
-+	 */
-+	for (i = 0; i < MIGRATED_TO; i++) {
-+		err = shutdown(test_case->servers[i], SHUT_RDWR);
-+		if (!ASSERT_OK(err, "shutdown"))
-+			return -1;
-+	}
-+
-+	/* No dance for TCP_NEW_SYN_RECV to migrate based on eBPF */
-+	if (!test_case->fastopen && test_case->drop_ack)
-+		return 0;
-+
-+	/* Note that we use the second listener instead of the
-+	 * first one here.
-+	 *
-+	 * The fist listener is bind()ed with port 0 and,
-+	 * SOCK_BINDPORT_LOCK is not set to sk_userlocks, so
-+	 * calling listen() again will bind() the first listener
-+	 * on a new ephemeral port and detach it from the existing
-+	 * reuseport group.  (See: __inet_bind(), tcp_set_state())
-+	 *
-+	 * OTOH, the second one is bind()ed with a specific port,
-+	 * and SOCK_BINDPORT_LOCK is set. Thus, re-listen() will
-+	 * resurrect the listener on the existing reuseport group.
-+	 */
-+	err = listen(test_case->servers[1], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		return -1;
-+
-+	/* Migrate from the last listener to the second one.
-+	 *
-+	 * All listeners were detached out of the reuseport_map,
-+	 * so migration will be done by kernel random pick from here.
-+	 */
-+	err = shutdown(test_case->servers[MIGRATED_TO], SHUT_RDWR);
-+	if (!ASSERT_OK(err, "shutdown"))
-+		return -1;
-+
-+	/* Back to the existing reuseport group */
-+	err = listen(test_case->servers[MIGRATED_TO], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		return -1;
-+
-+	/* Migrate back to the last one from the second one */
-+	err = shutdown(test_case->servers[1], SHUT_RDWR);
-+	if (!ASSERT_OK(err, "shutdown"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int count_requests(struct migrate_reuseport_test_case *test_case)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	char buf[MSGLEN];
-+	int cnt, client;
-+
-+	settimeo(test_case->servers[MIGRATED_TO], 2000);
-+
-+	for (cnt = 0; cnt < NR_CLIENTS; cnt++) {
-+		client = accept(test_case->servers[MIGRATED_TO],
-+				(struct sockaddr *)&addr, &len);
-+		if (!ASSERT_NEQ(client, -1, "accept"))
-+			goto out;
-+
-+		memset(buf, 0, MSGLEN);
-+
-+		read(client, &buf, MSGLEN);
-+		if (!ASSERT_STREQ(buf, MSG, "read")) {
-+			close(client);
-+			goto out;
-+		}
-+
-+		close(client);
-+	}
-+
-+out:
-+	return cnt;
-+}
-+
-+static void run_test(struct migrate_reuseport_test_case *test_case,
-+		     struct test_migrate_reuseport *skel)
-+{
-+	bool added_rule = false;
-+	int err, saved_len;
-+	char buf[16];
-+
-+	init_fds(test_case->servers, NR_SERVERS);
-+	init_fds(test_case->clients, NR_CLIENTS);
-+
-+	if (test_case->fastopen) {
-+		memset(buf, 0, sizeof(buf));
-+
-+		err = setup_fastopen(buf, sizeof(buf), &saved_len, false);
-+		if (!ASSERT_OK(err, "setup_fastopen - setup"))
-+			return;
-+	}
-+
-+	err = start_servers(test_case, skel);
-+	if (!ASSERT_OK(err, "start_servers"))
-+		goto close_servers;
-+
-+	if (test_case->drop_ack) {
-+		/* Drop the final ACK of the 3-way handshake and stick the
-+		 * in-flight requests on TCP_SYN_RECV or TCP_NEW_SYN_RECV.
-+		 */
-+		err = run_iptables(test_case, true);
-+		if (!ASSERT_OK(err, "run_iptables - add rule"))
-+			goto close_servers;
-+
-+		added_rule = true;
-+	}
-+
-+	err = start_clients(test_case);
-+	if (!ASSERT_OK(err, "start_clients"))
-+		goto close_clients;
-+
-+	/* Migrate the requests in the accept queue only.
-+	 * TCP_NEW_SYN_RECV requests are not migrated at this point.
-+	 */
-+	err = migrate_dance(test_case);
-+	if (!ASSERT_OK(err, "migrate_dance"))
-+		goto close_clients;
-+
-+	if (test_case->expire_synack_timer) {
-+		/* Wait for SYN+ACK timer to expire so that
-+		 * reqsk_timer_handler() migrates TCP_NEW_SYN_RECV requests.
-+		 */
-+		sleep(1);
-+	}
-+
-+	if (test_case->drop_ack) {
-+		/* Resume 3WHS and migrate TCP_NEW_SYN_RECV requests */
-+		err = run_iptables(test_case, false);
-+		if (!ASSERT_OK(err, "run_iptables - delete rule"))
-+			goto close_clients;
-+
-+		added_rule = false;
-+	}
-+
-+	err = count_requests(test_case);
-+	ASSERT_EQ(err, NR_CLIENTS, test_case->name);
-+
-+close_clients:
-+	close_fds(test_case->clients, NR_CLIENTS);
-+
-+	if (added_rule) {
-+		err = run_iptables(test_case, false);
-+		ASSERT_OK(err, "run_iptables - clean up rule");
-+	}
-+
-+close_servers:
-+	close_fds(test_case->servers, NR_SERVERS);
-+
-+	if (test_case->fastopen) {
-+		err = setup_fastopen(buf, sizeof(buf), &saved_len, true);
-+		ASSERT_OK(err, "setup_fastopen - restore");
-+	}
-+}
-+
-+void test_migrate_reuseport(void)
-+{
-+	struct test_migrate_reuseport *skel;
-+	int i;
-+
-+	skel = test_migrate_reuseport__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_cases); i++)
-+		run_test(&test_cases[i], skel);
-+
-+	test_migrate_reuseport__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-new file mode 100644
-index 000000000000..d7136dc29fa2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Check if we can migrate child sockets.
-+ *
-+ *   1. If reuse_md->migrating_sk is NULL (SYN packet),
-+ *        return SK_PASS without selecting a listener.
-+ *   2. If reuse_md->migrating_sk is not NULL (socket migration),
-+ *        select a listener (reuseport_map[migrate_map[cookie]])
-+ *
-+ * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-+ */
-+
-+#include <stddef.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-+	__uint(max_entries, 256);
-+	__type(key, int);
-+	__type(value, __u64);
-+} reuseport_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 256);
-+	__type(key, __u64);
-+	__type(value, int);
-+} migrate_map SEC(".maps");
-+
-+SEC("sk_reuseport/migrate")
-+int prog_migrate_reuseport(struct sk_reuseport_md *reuse_md)
-+{
-+	int *key, flags = 0;
-+	__u64 cookie;
-+
-+	if (!reuse_md->migrating_sk)
-+		return SK_PASS;
-+
-+	cookie = bpf_get_socket_cookie(reuse_md->sk);
-+
-+	key = bpf_map_lookup_elem(&migrate_map, &cookie);
-+	if (!key)
-+		return SK_DROP;
-+
-+	bpf_sk_select_reuseport(reuse_md, &reuseport_map, key, flags);
-+
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+If you give me a Signed-off-by, I would be happy to queue it.
 
+							Thanx, Paul
+
+> kernel/time/clocksource.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index a374cf7b6336..5370f0c84981 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -443,10 +443,10 @@ static void clocksource_watchdog(struct timer_list *unused)
+>  		if (abs(cs_nsec - wd_nsec) > md) {
+>  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+>  				smp_processor_id(), cs->name);
+> -			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+> -				watchdog->name, wdnow, wdlast, watchdog->mask);
+> -			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
+> -				cs->name, csnow, cslast, cs->mask);
+> +			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
+> +				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
+> +			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
+> +				cs->name, cs_nsec, csnow, cslast, cs->mask);
+>  			if (curr_clocksource == cs)
+>  				pr_warn("                      '%s' is current clocksource.\n", cs->name);
+>  			else if (curr_clocksource)
+> -- 
+> 2.27.0
+> 
+> Thanks,
+> Feng
+> 
+> 
+> 
+> > 
+> > 							Thanx, Paul
