@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CDD36C750
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC92236C759
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhD0NyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:54:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46714 "EHLO mail.kernel.org"
+        id S238293AbhD0Nyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:54:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53344 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236074AbhD0NyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:54:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 131AD6101E;
-        Tue, 27 Apr 2021 13:53:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619531611;
-        bh=bdayeZlGT44icqqNC/aLu4vVwYiNwhseSegnyWX2UOY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KdVtLwhNpZXI1ycVOnSzgSu3T+JJs0Rj+T5Ae/CbCRthXGn5y1U3O6pBTS/l+BpVm
-         KWO5nTJqSMLWq0qPl4fKrzqVdttM5Ye1QKE85sODQa2gO79prlMIubHEEB3jnJLme8
-         l7POCNtw9ExtogGh9gItFSoI1QUZcY/TCo/fY3Rg=
-Date:   Tue, 27 Apr 2021 15:53:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
-Subject: Re: [PATCH 130/190] Revert "ALSA: usx2y: Fix potential NULL pointer
- dereference"
-Message-ID: <YIgXWbaWi3dYlK2Y@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-131-gregkh@linuxfoundation.org>
- <s5ha6pra9oo.wl-tiwai@suse.de>
+        id S236516AbhD0Nyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:54:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619531627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=i9xQmDCeivVgWpnOYZBsW4xYs30EqI+Ven3RmapyFIo=;
+        b=SHDSC5PP1QhaySFNnBycmnembRGUG+RoG5jqnlNQWDQuaspcyHXeWCfFHyxQdSqYhYhA0f
+        cRrfj82CeJQm4HgLS6VaRvLsfIQOyO5oUsmaI11d0Enpj04PN2yTB7ssw0nx6ye6OiB5Pw
+        hFwS0Gf+PnmIN05oS/EUTbcos8/xbXA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5EB12B1A5;
+        Tue, 27 Apr 2021 13:53:47 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 15:53:46 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] printk for 5.13
+Message-ID: <YIgXasI86BwJvQ0Z@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s5ha6pra9oo.wl-tiwai@suse.de>
+User-Agent: NeoMutt/20170912 (1.9.0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 06:23:19PM +0200, Takashi Iwai wrote:
-> On Wed, 21 Apr 2021 15:00:05 +0200,
-> Greg Kroah-Hartman wrote:
-> > 
-> > This reverts commit a2c6433ee5a35a8de6d563f6512a26f87835ea0f.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: Aditya Pakki <pakki001@umn.edu>
-> > Cc: Takashi Iwai <tiwai@suse.de>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is same like the revert#80, the code change itself seems correct,
-> but it's a pretty minor error path, probably no one would hit.
-> So, feel free to revert if it's in doubt.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > ---
-> >  sound/usb/usx2y/usb_stream.c | 5 -----
-> >  1 file changed, 5 deletions(-)
-> > 
-> > diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-> > index 091c071b270a..6bba17bf689a 100644
-> > --- a/sound/usb/usx2y/usb_stream.c
-> > +++ b/sound/usb/usx2y/usb_stream.c
-> > @@ -91,12 +91,7 @@ static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
-> >  
-> >  	for (u = 0; u < USB_STREAM_NURBS; ++u) {
-> >  		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
-> > -		if (!sk->inurb[u])
-> > -			return -ENOMEM;
-> > -
-> >  		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
-> > -		if (!sk->outurb[u])
-> > -			return -ENOMEM;
+Linus,
 
-This leaks memory if the error path is hit, so I'm going to keep this
-revert as it it needs to be handled properly.  And really, this code
-path is impossible to hit...
+please pull the latest printk changes from
 
-thanks,
+  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.13
 
-greg k-h
+==============================
+
+- Stop synchronizing kernel log buffer readers by logbuf_lock.
+  As a result, the access to the buffer is fully lockless now.
+
+  Note that printk() itself still uses locks because it tries to
+  flush the messages to the console immediately. Also the per-CPU
+  temporary buffers are still there because they prevent infinite
+  recursion and serialize backtraces from NMI. All this is going
+  to change in the future.
+
+- kmsg_dump API rework and cleanup as a side effect of
+  the logbuf_lock removal.
+
+- Make bstr_printf() aware that %pf and %pF formats could
+  deference the given pointer.
+
+- Show also page flags by %pGp format.
+
+- Clarify the documentation for plain pointer printing.
+
+- Do not show no_hash_pointers warning multiple times.
+
+- Update Senozhatsky email address.
+
+- Some clean up.
+
+----------------------------------------------------------------
+Bhaskar Chowdhury (1):
+      kernel/printk.c: Fixed mundane typos
+
+John Ogness (15):
+      um: synchronize kmsg_dumper
+      mtd: mtdoops: synchronize kmsg_dumper
+      printk: limit second loop of syslog_print_all
+      printk: kmsg_dump: remove unused fields
+      printk: refactor kmsg_dump_get_buffer()
+      printk: consolidate kmsg_dump_get_buffer/syslog_print_all code
+      printk: introduce CONSOLE_LOG_MAX
+      printk: use seqcount_latch for clear_seq
+      printk: use atomic64_t for devkmsg_user.seq
+      printk: add syslog_lock
+      printk: kmsg_dumper: remove @active field
+      printk: introduce a kmsg_dump iterator
+      printk: remove logbuf_lock
+      printk: kmsg_dump: remove _nolock() variants
+      printk: console: remove unnecessary safe buffer usage
+
+Marco Elver (1):
+      lib/vsprintf: do not show no_hash_pointers message multiple times
+
+Petr Mladek (2):
+      Merge branch 'for-5.13-vsprintf-pgp' into for-linus
+      Merge branch 'printk-rework' into for-linus
+
+Rasmus Villemoes (2):
+      printk: rename vprintk_func to vprintk
+      lib/vsprintf.c: remove leftover 'f' and 'F' cases from bstr_printf()
+
+Sergey Senozhatsky (1):
+      MAINTAINERS: update Senozhatsky email address
+
+Vlastimil Babka (1):
+      printk: clarify the documentation for plain pointer printing
+
+Yafang Shao (3):
+      mm, slub: use pGp to print page flags
+      mm, slub: don't combine pr_err with INFO
+      vsprintf: dump full information of page flags in pGp
+
+ Documentation/core-api/printk-formats.rst |  28 +-
+ MAINTAINERS                               |   8 +-
+ arch/powerpc/kernel/nvram_64.c            |   8 +-
+ arch/powerpc/xmon/xmon.c                  |   6 +-
+ arch/um/kernel/kmsg_dump.c                |  13 +-
+ drivers/hv/vmbus_drv.c                    |   4 +-
+ drivers/mtd/mtdoops.c                     |  17 +-
+ fs/pstore/platform.c                      |   5 +-
+ include/linux/kmsg_dump.h                 |  47 ++-
+ kernel/debug/kdb/kdb_main.c               |  10 +-
+ kernel/printk/internal.h                  |   7 +-
+ kernel/printk/printk.c                    | 478 +++++++++++++++---------------
+ kernel/printk/printk_safe.c               |  30 +-
+ lib/test_printf.c                         |  90 +++++-
+ lib/vsprintf.c                            |  78 ++++-
+ mm/slub.c                                 |  13 +-
+ 16 files changed, 502 insertions(+), 340 deletions(-)
