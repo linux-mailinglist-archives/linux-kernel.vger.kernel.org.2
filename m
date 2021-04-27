@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8180636C604
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090D836C601
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236216AbhD0MXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236075AbhD0MXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:23:52 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252C6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:23:08 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so6985591wmq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0pMESe1z+MsjbhBRHvTQHk6SqcR4Ic+PigvgIgSdX4w=;
-        b=j/YIAhHVG51+GO+y7bT1Sg35jUm9Uat83QdrpCqSHZyO3K8wq0n5c9o5EQ3kGNTexF
-         XU8SgXOq2P4fvbzGgQmiob6iCbBr2/q6gXd0BPDNeoZ8jgN3Wm0VqAwM5vOq15uWXToW
-         GMyTTxbn08cGD8eEAS40PmSaVz8PREoA6FAOw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=0pMESe1z+MsjbhBRHvTQHk6SqcR4Ic+PigvgIgSdX4w=;
-        b=nV2sBetvhItD4x7/Kfx4DkQDyeymVgCO/u2L3u9/MUjKm1At+Es69I/jSqyLPvpeJi
-         qRU9ycfyYJrO0A+0L942C22bC4WPrbeh72GhbSAjYetK2wUzAox0K+gK2bPyPt1JCjPB
-         WYNYYKkw1sGNMDxnpTu9fAEma1bAEOX8Iql+H5pR2iXSkgSlz66+CcCAxejmHKRvIc6l
-         fioCUKbsa5AcnqstzOK5+V0bkyRf3qw19ieUGyU+bXaCz15Mig6lgABxaPAJ2jZT2Lr+
-         uyXrNGOAoayN/oNztp3Dv00hlRX1H7azriVz2U5R5X5qIEGFcsaI/vEh8I1WpU72QfK1
-         0B1g==
-X-Gm-Message-State: AOAM532RJkTOqtEWsx6IuXtmhxaNwGreoFFjzJmecGIvDc577afF3KCA
-        Jz2GnwFOQ3l9SA5Ezsj0D3nNJw==
-X-Google-Smtp-Source: ABdhPJwmWvSYs4zi3tUhhsyr3/eaD9g6PjtdpY/LhVc/Bh9wuH/cDkbysx+IzGT6qsUoBJgNjHkJkg==
-X-Received: by 2002:a1c:1d91:: with SMTP id d139mr16655610wmd.101.1619526186919;
-        Tue, 27 Apr 2021 05:23:06 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b202sm2585727wmb.5.2021.04.27.05.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 05:23:06 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 14:23:04 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm/drm_file.c: Define drm_send_event_helper() as
- 'static'
-Message-ID: <YIgCKOSIyc1rMkrt@phenom.ffwll.local>
-Mail-Followup-To: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        outreachy-kernel@googlegroups.com, dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
-References: <20210427105503.10765-1-fmdefrancesco@gmail.com>
+        id S236157AbhD0MXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:23:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236149AbhD0MXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:23:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48C3061006;
+        Tue, 27 Apr 2021 12:23:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619526187;
+        bh=AJLtzyEqMg1MI8ZSuMF/zVWlFVjrxqfNK/tQEDyfMbk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BRk8hDPlHytn1Y79GNXQuaBA8Js6HoFcIs8Q94Io5o2fytD503tZk7wjFfrtpAEFZ
+         qY44Km74RyW6r3P/QklOzLUevzWUpwNkdwakIyUlEtQdw8RDE+IB7xkwQr1wwbI7l6
+         Luc7wfOwcKiw9Rmx/4aukAJXfC5vJ5T6uN+CUJIBZ4J0GY4wKTmaG3Kr6uKg4CJnoe
+         CN4o1vW3NLMdUrjpVOqqG3EBT4Aeipbby0uzokUGLnvlrhSiItBz7HyzVtpf8RjOzN
+         Fqw6ZfXdaQ5PG73lkIfc7LLVCqQA+4qS0OLbQOAyIIGgjO9v6DRH7sUPbdqBMQ5fai
+         op8prupQyaitg==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lbMkK-0002VL-S4; Tue, 27 Apr 2021 14:23:20 +0200
+Date:   Tue, 27 Apr 2021 14:23:20 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
+ pm_runtime_resume_and_get()
+Message-ID: <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
+ <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
+ <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
+ <20210426163840.67ea8af9@coco.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210427105503.10765-1-fmdefrancesco@gmail.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+In-Reply-To: <20210426163840.67ea8af9@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 12:55:03PM +0200, Fabio M. De Francesco wrote:
-> drm_send_event_helper() has not prototype, it has internal linkage and
-> therefore it should be defined with storage class 'static'.
+On Mon, Apr 26, 2021 at 04:38:40PM +0200, Mauro Carvalho Chehab wrote:
+> Em Sat, 24 Apr 2021 12:00:46 +0200
+> Johan Hovold <johan@kernel.org> escreveu:
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > On Sat, Apr 24, 2021 at 10:24:54AM +0200, Jacopo Mondi wrote:
+> > > Hi Mauro,
+> > > 
+> > > On Sat, Apr 24, 2021 at 08:44:48AM +0200, Mauro Carvalho Chehab wrote:  
+> > > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > > added pm_runtime_resume_and_get() in order to automatically handle
+> > > > dev->power.usage_count decrement on errors.
+> > > >
+> > > > Use the new API, in order to cleanup the error check logic.
+> > > >
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
 
-Applied to drm-misc-next for 5.14, thanks for your patch.
--Daniel
+> > I'd say this kind of mass-conversion is of questionable worth as
+> > pm_runtime_resume_and_get() isn't necessarily an improvement (even if it
+> > may have its use in some places).
+> 
+> The main problem is that other parts of the driver's core APIs
+> assume that get object methods will only increment the usage
+> counter if no errors. The pm_runtime_get_sync() is an exception.
+> 
+> Its name doesn't help at all: A function like that should, IMHO,
+> be called, instead:
+> 
+> 	pm_runtime_inc_usage_count_and_try_to_resume().
+> 
+> Or something similar, in order to make clearer that it always
+> increment the usage count, no matter what. If possible, all drivers
+> should get rid of it too (or alternatively add comments warning
+> people that keeping the usage_count incremented is desired on the
+> very specific places where it is really needed), as it is risky
+> to use something that has a different usage_count increement behavior
+> than other more usual *_get() functions.
 
-> ---
-> 
-> Changes from v2: Removed all the other lines in function comment.
-> Changes from v1: As suggested by Daniel Vetter, removed unnecessary
-> kernel-doc comments.
-> 
->  drivers/gpu/drm/drm_file.c | 14 +-------------
->  1 file changed, 1 insertion(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-> index 7efbccffc2ea..d4f0bac6f8f8 100644
-> --- a/drivers/gpu/drm/drm_file.c
-> +++ b/drivers/gpu/drm/drm_file.c
-> @@ -774,19 +774,7 @@ void drm_event_cancel_free(struct drm_device *dev,
->  }
->  EXPORT_SYMBOL(drm_event_cancel_free);
->  
-> -/**
-> - * drm_send_event_helper - send DRM event to file descriptor
-> - * @dev: DRM device
-> - * @e: DRM event to deliver
-> - * @timestamp: timestamp to set for the fence event in kernel's CLOCK_MONOTONIC
-> - * time domain
-> - *
-> - * This helper function sends the event @e, initialized with
-> - * drm_event_reserve_init(), to its associated userspace DRM file.
-> - * The timestamp variant of dma_fence_signal is used when the caller
-> - * sends a valid timestamp.
-> - */
-> -void drm_send_event_helper(struct drm_device *dev,
-> +static void drm_send_event_helper(struct drm_device *dev,
->  			   struct drm_pending_event *e, ktime_t timestamp)
->  {
->  	assert_spin_locked(&dev->event_lock);
-> -- 
-> 2.31.1
-> 
+pm_runtime_get_sync() has worked this way since it was merged 12 years
+ago, and for someone who's used to this interface this is not such a big
+deal as you seem to think. Sure, you need to remember to put the usage
+counter on errors, but that's it (and the other side of that is that you
+don't need to worry about error handling where it doesn't matter).
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Also note all the pm_runtime_get functions *always* increment the usage
+count even if an async resume may later fail so there is consistency
+here.
+
+And regarding naming, the new pm_resume_and_get() looks completely out
+of place to me since it uses a different naming scheme than the other
+helpers (including the ones that are used to balance the new call).
+
+> With regards to mass-fixing it, I've seen several patches seen
+> to media fixing bugs due to the bad usage_count decrement logic.
+> So, the best is to solve them all at once, and stop using
+> pm_runtime_get_sync() inside the subsystem.
+
+Sure, having the script kiddies patch drivers without understanding what
+they're are really doing is bound to introduce bugs unless it can be
+caught in review.
+
+You're call, but converting functioning drivers where the authors knew
+what they were doing just because you're not used to the API and risk
+introducing new bugs in the process isn't necessarily a good idea.
+Especially since the pm_runtime_get_sync() will continue to be used
+elsewhere, and possibly even in media in cases where you don't need to
+check for errors (e.g. remove()).
+
+Johan
