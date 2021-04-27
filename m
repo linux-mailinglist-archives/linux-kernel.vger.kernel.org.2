@@ -2,282 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7146136C19D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C749836C1A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbhD0JVZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Apr 2021 05:21:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3534 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhD0JVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 05:21:19 -0400
-Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FTx531mlkzRgYl;
-        Tue, 27 Apr 2021 17:18:15 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggeml765-chm.china.huawei.com (10.1.199.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Apr 2021 17:20:31 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Apr 2021 17:20:31 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Tue, 27 Apr 2021 17:20:31 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     kernel test robot <oliver.sang@intel.com>
-CC:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: RE: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2%
- regression
-Thread-Topic: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2%
- regression
-Thread-Index: AQHXO0FhMjEcPgOF502NS90b4qVMhqrIFBXg
-Date:   Tue, 27 Apr 2021 09:20:31 +0000
-Message-ID: <de61a3b5b6b1467ea7d377377c443572@hisilicon.com>
-References: <20210427090013.GG32408@xsang-OptiPlex-9020>
-In-Reply-To: <20210427090013.GG32408@xsang-OptiPlex-9020>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.183]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S235209AbhD0JXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 05:23:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229938AbhD0JXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 05:23:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C6B6100B;
+        Tue, 27 Apr 2021 09:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619515377;
+        bh=mETsHWHJFjweReeiHIdDntI2gC9ErHyRmi7GGdO1Me8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cCzcG+yb+hGg8qBGDRs+1VUHDqPZWt84Wx3wIMLNN4e0Y/95F2zGyAdCJX4EBlwRU
+         NjVBGuXtj41ZElmpkJpOtNVvnPehF73RRe0iGmVFmI6CXi29U7I3KraBMCWxNF+rJx
+         gEeTwq+6ju13/7vdihq99/9UyzBpZCejElDhn5CiGCFTN13keERSMerkUIqETHMt3y
+         wm8OlWzfcUM460bpVHHnSm2f4Zdtt83M6GfpMdlWa0SyuI+8LhVxSsxq1xW3Wt+JhI
+         gFWtcWcFDgpseYiymNIOFHZZifrvbrmndQsOJkks7YTUszynMX90v+WeUV+D6AEDII
+         baYjgQAH12f2A==
+Date:   Tue, 27 Apr 2021 11:22:50 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 17/78] staging: media: vde: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210427112250.5d40c4f4@coco.lan>
+In-Reply-To: <2349831b-e7cd-d38d-fc19-5fabf06f773e@gmail.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <0eeb886803679cd908cb4576d35b2314993abd2c.1619191723.git.mchehab+huawei@kernel.org>
+        <2349831b-e7cd-d38d-fc19-5fabf06f773e@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dmitry,
 
+Em Sat, 24 Apr 2021 10:35:22 +0300
+Dmitry Osipenko <digetx@gmail.com> escreveu:
 
-> -----Original Message-----
-> From: kernel test robot [mailto:oliver.sang@intel.com]
-> Sent: Tuesday, April 27, 2021 9:00 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: Ingo Molnar <mingo@kernel.org>; Thomas Gleixner <tglx@linutronix.de>; LKML
-> <linux-kernel@vger.kernel.org>; lkp@lists.01.org; lkp@intel.com;
-> ying.huang@intel.com; feng.tang@intel.com; zhengjun.xing@intel.com
-> Subject: [genirq] cbe16f35be: will-it-scale.per_thread_ops -5.2% regression
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed a -5.2% regression of will-it-scale.per_thread_ops due to
-> commit:
-> 
-> 
-> commit: cbe16f35bee6880becca6f20d2ebf6b457148552 ("genirq: Add IRQF_NO_AUTOEN
-> for request_irq/nmi()")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
+> 24.04.2021 09:44, Mauro Carvalho Chehab =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to dea=
+l with usage counter")
+> > added pm_runtime_resume_and_get() in order to automatically handle
+> > dev->power.usage_count decrement on errors.
+> >=20
+> > Use the new API, in order to cleanup the error check logic.
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/staging/media/tegra-vde/vde.c | 16 ++++++++++------
+> >  1 file changed, 10 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/me=
+dia/tegra-vde/vde.c
+> > index 28845b5bafaf..8936f140a246 100644
+> > --- a/drivers/staging/media/tegra-vde/vde.c
+> > +++ b/drivers/staging/media/tegra-vde/vde.c
+> > @@ -775,9 +775,9 @@ static int tegra_vde_ioctl_decode_h264(struct tegra=
+_vde *vde,
+> >  	if (ret)
+> >  		goto release_dpb_frames;
+> > =20
+> > -	ret =3D pm_runtime_get_sync(dev);
+> > +	ret =3D pm_runtime_resume_and_get(dev);
+> >  	if (ret < 0)
+> > -		goto put_runtime_pm;
+> > +		goto unlock;
+> > =20
+> >  	/*
+> >  	 * We rely on the VDE registers reset value, otherwise VDE
+> > @@ -843,6 +843,8 @@ static int tegra_vde_ioctl_decode_h264(struct tegra=
+_vde *vde,
+> >  put_runtime_pm:
+> >  	pm_runtime_mark_last_busy(dev);
+> >  	pm_runtime_put_autosuspend(dev);
+> > +
+> > +unlock:
+> >  	mutex_unlock(&vde->lock);
+> > =20
+> >  release_dpb_frames:
+> > @@ -1069,8 +1071,8 @@ static int tegra_vde_probe(struct platform_device=
+ *pdev)
+> >  	 * power-cycle it in order to put hardware into a predictable lower
+> >  	 * power state.
+> >  	 */
+> > -	pm_runtime_get_sync(dev);
+> > -	pm_runtime_put(dev);
+> > +	if (pm_runtime_resume_and_get(dev) >=3D 0)
+> > +		pm_runtime_put(dev);
+> > =20
+> >  	return 0;
+> > =20
+> > @@ -1088,8 +1090,9 @@ static int tegra_vde_remove(struct platform_devic=
+e *pdev)
+> >  {
+> >  	struct tegra_vde *vde =3D platform_get_drvdata(pdev);
+> >  	struct device *dev =3D &pdev->dev;
+> > +	int ret;
+> > =20
+> > -	pm_runtime_get_sync(dev);
+> > +	ret =3D pm_runtime_resume_and_get(dev);
+> >  	pm_runtime_dont_use_autosuspend(dev);
+> >  	pm_runtime_disable(dev);
+> > =20
+> > @@ -1097,7 +1100,8 @@ static int tegra_vde_remove(struct platform_devic=
+e *pdev)
+> >  	 * Balance RPM state, the VDE power domain is left ON and hardware
+> >  	 * is clock-gated. It's safe to reboot machine now.
+> >  	 */
+> > -	pm_runtime_put_noidle(dev);
+> > +	if (ret >=3D 0)
+> > +		pm_runtime_put_noidle(dev);
+> >  	clk_disable_unprepare(vde->clk);
+> > =20
+> >  	misc_deregister(&vde->miscdev);
+> >  =20
+>=20
+> Hello Mauro,
+>=20
+> Thank you very much for the patch. It looks to me that the original
+> variant was a bit simpler, this patch adds more code lines without
+> changing the previous behaviour. Or am I missing something?
 
-Might be relevant. Can't figure out the relation between getppid and
-request_irq().
+While on several places the newer code is simpler, the end goal here is
+to replace all occurrences of pm_runtime_get_sync() from the media=20
+subsystem, due to the number of problems we're having with this:
 
-Thanks
-Barry
+1. despite its name, this is actually a PM runtime resume call,
+   but some developers didn't seem to realize that, as I got this
+   pattern on some drivers:
 
-> 
-> in testcase: will-it-scale
-> on test machine: 88 threads Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz with 128G
-> memory
-> with following parameters:
-> 
-> 	nr_task: 100%
-> 	mode: thread
-> 	test: getppid1
-> 	cpufreq_governor: performance
-> 	ucode: 0x5003006
-> 
-> test-description: Will It Scale takes a testcase and runs it from 1 through
-> to n parallel copies to see if the testcase will scale. It builds both a process
-> and threads based test in order to see any differences between the two.
-> test-url: https://github.com/antonblanchard/will-it-scale
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> Details are as below:
-> --------------------------------------------------------------------------
-> ------------------------>
-> 
-> 
-> To reproduce:
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp install                job.yaml  # job file is attached in this
-> email
->         bin/lkp split-job --compatible job.yaml
->         bin/lkp run                    compatible-job.yaml
-> 
-> ==========================================================================
-> ===============
-> compiler/cpufreq_governor/kconfig/mode/nr_task/rootfs/tbox_group/test/test
-> case/ucode:
-> 
-> gcc-9/performance/x86_64-rhel-8.3/thread/100%/debian-10.4-x86_64-20200603.
-> cgz/lkp-csl-2sp9/getppid1/will-it-scale/0x5003006
-> 
-> commit:
->   v5.12-rc2
->   cbe16f35be ("genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()")
-> 
->        v5.12-rc2 cbe16f35bee6880becca6f20d2e
-> ---------------- ---------------------------
->          %stddev     %change         %stddev
->              \          |                \
->  7.408e+08            -5.2%  7.021e+08        will-it-scale.88.threads
->    8417726            -5.2%    7978644        will-it-scale.per_thread_ops
->  7.408e+08            -5.2%  7.021e+08        will-it-scale.workload
->  3.851e+10            -5.2%   3.65e+10        perf-stat.i.branch-instructions
->  1.839e+08            -4.2%  1.763e+08        perf-stat.i.branch-misses
->       1.39            +5.3%       1.46        perf-stat.i.cpi
->  5.988e+10            -5.2%  5.674e+10        perf-stat.i.dTLB-loads
->  4.139e+10            -5.2%  3.922e+10        perf-stat.i.dTLB-stores
->  2.239e+08 ±  3%     -14.6%  1.913e+08 ±  4%  perf-stat.i.iTLB-load-misses
->  1.741e+11            -5.2%   1.65e+11        perf-stat.i.instructions
->     794.20 ±  2%     +10.7%     879.14 ±  4%
-> perf-stat.i.instructions-per-iTLB-miss
->       0.72            -5.0%       0.68        perf-stat.i.ipc
->       1588            -5.2%       1505        perf-stat.i.metric.M/sec
->       1.39            +5.4%       1.47        perf-stat.overall.cpi
->       0.00            +0.0        0.00
-> perf-stat.overall.dTLB-store-miss-rate%
->     778.31 ±  3%     +11.1%     864.35 ±  4%
-> perf-stat.overall.instructions-per-iTLB-miss
->       0.72            -5.1%       0.68        perf-stat.overall.ipc
->  3.838e+10            -5.2%  3.638e+10        perf-stat.ps.branch-instructions
->  1.833e+08            -4.2%  1.757e+08        perf-stat.ps.branch-misses
->  5.968e+10            -5.2%  5.655e+10        perf-stat.ps.dTLB-loads
->  4.125e+10            -5.2%  3.909e+10        perf-stat.ps.dTLB-stores
->  2.231e+08 ±  3%     -14.6%  1.907e+08 ±  4%  perf-stat.ps.iTLB-load-misses
->  1.735e+11            -5.2%  1.645e+11        perf-stat.ps.instructions
->  5.243e+13            -5.2%  4.971e+13        perf-stat.total.instructions
->      43.20            -2.3       40.87
-> perf-profile.calltrace.cycles-pp.__entry_text_start.getppid
->       9.09            -0.4        8.65 ±  2%
-> perf-profile.calltrace.cycles-pp.testcase
->       8.01            -0.3        7.66
-> perf-profile.calltrace.cycles-pp.syscall_return_via_sysret.getppid
->       2.93            -0.2        2.73
-> perf-profile.calltrace.cycles-pp.syscall_enter_from_user_mode.do_syscall_6
-> 4.entry_SYSCALL_64_after_hwframe.getppid
->       3.02            -0.2        2.83
-> perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_safe_stack.getppid
->       2.52 ±  3%      +0.7        3.23 ±  9%
-> perf-profile.calltrace.cycles-pp.syscall_exit_to_user_mode_prepare.syscall
-> _exit_to_user_mode.entry_SYSCALL_64_after_hwframe.getppid
->      18.24            +1.1       19.29
-> perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwfr
-> ame.getppid
->      13.33            +1.1       14.46 ±  2%
-> perf-profile.calltrace.cycles-pp.__x64_sys_getppid.do_syscall_64.entry_SYS
-> CALL_64_after_hwframe.getppid
->       1.94 ±  2%      +1.7        3.62 ±  3%
-> perf-profile.calltrace.cycles-pp.rcu_nocb_flush_deferred_wakeup.exit_to_us
-> er_mode_prepare.syscall_exit_to_user_mode.entry_SYSCALL_64_after_hwframe.g
-> etppid
->       7.47 ±  2%      +1.8        9.25
-> perf-profile.calltrace.cycles-pp.exit_to_user_mode_prepare.syscall_exit_to
-> _user_mode.entry_SYSCALL_64_after_hwframe.getppid
->      11.51 ±  2%      +2.3       13.81 ±  2%
-> perf-profile.calltrace.cycles-pp.syscall_exit_to_user_mode.entry_SYSCALL_6
-> 4_after_hwframe.getppid
->      39.05            +3.1       42.17
-> perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe.getppid
->      27.84            -1.5       26.36
-> perf-profile.children.cycles-pp.__entry_text_start
->      23.40            -1.2       22.22
-> perf-profile.children.cycles-pp.syscall_return_via_sysret
->       2.97            -0.2        2.76
-> perf-profile.children.cycles-pp.syscall_enter_from_user_mode
->       3.23            -0.2        3.03
-> perf-profile.children.cycles-pp.entry_SYSCALL_64_safe_stack
->       0.41 ±  2%      -0.0        0.37 ±  2%
-> perf-profile.children.cycles-pp.__x86_indirect_thunk_rax
->       2.56 ±  3%      +0.7        3.25 ±  7%
-> perf-profile.children.cycles-pp.syscall_exit_to_user_mode_prepare
->      13.88            +1.2       15.05 ±  2%
-> perf-profile.children.cycles-pp.__x64_sys_getppid
->       2.02 ±  2%      +1.6        3.67 ±  3%
-> perf-profile.children.cycles-pp.rcu_nocb_flush_deferred_wakeup
->       7.86            +1.7        9.60
-> perf-profile.children.cycles-pp.exit_to_user_mode_prepare
->      12.71            +2.3       15.04 ±  2%
-> perf-profile.children.cycles-pp.syscall_exit_to_user_mode
->      39.65            +3.1       42.77
-> perf-profile.children.cycles-pp.entry_SYSCALL_64_after_hwframe
->      23.19            -1.2       22.01
-> perf-profile.self.cycles-pp.syscall_return_via_sysret
->      19.57            -1.1       18.50        perf-profile.self.cycles-pp.getppid
->      12.47            -0.6       11.83
-> perf-profile.self.cycles-pp.__entry_text_start
->       8.60            -0.2        8.36
-> perf-profile.self.cycles-pp.entry_SYSCALL_64_after_hwframe
->       3.22            -0.2        3.02
-> perf-profile.self.cycles-pp.entry_SYSCALL_64_safe_stack
->       2.52            -0.2        2.35
-> perf-profile.self.cycles-pp.syscall_enter_from_user_mode
->       3.58            +0.4        3.95
-> perf-profile.self.cycles-pp.__x64_sys_getppid
->       2.12 ±  3%      +0.6        2.74 ±  8%
-> perf-profile.self.cycles-pp.syscall_exit_to_user_mode_prepare
->       1.72 ±  2%      +1.7        3.41 ±  3%
-> perf-profile.self.cycles-pp.rcu_nocb_flush_deferred_wakeup
-> 
-> 
-> 
->                              will-it-scale.per_thread_ops
-> 
->   8.8e+06
-> +-----------------------------------------------------------------+
->   8.7e+06 |-+        .+.                                                    |
->           |        .+   +                                                   |
->   8.6e+06 |.+.+.+.+      +  .+. .+.+. .+.+. .+.+.+.+.                       |
->   8.5e+06 |-+             ++   +     +     +         +.                     |
->           |                                            +.+.++.+.+.+.+.+.+.+.|
->   8.4e+06 |-+                                                               |
->   8.3e+06 |-O O O O O O   OO                                                |
->   8.2e+06 |-+           O    O                                              |
->           |                                                                 |
->   8.1e+06 |-+                                                               |
->     8e+06 |-+                  O O O O O O O O O O   O      O       O O     |
->           |                                        O          O O O         |
->   7.9e+06 |-+                                          O O O                |
->   7.8e+06
-> +-----------------------------------------------------------------+
-> 
-> 
-> [*] bisect-good sample
-> [O] bisect-bad  sample
-> 
-> 
-> 
-> Disclaimer:
-> Results have been estimated based on internal Intel analysis and are provided
-> for informational purposes only. Any difference in system hardware or software
-> design or configuration may affect actual performance.
-> 
-> 
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel
-> Corporation
-> 
-> Thanks,
-> Oliver Sang
+        pm_runtime_get_sync(&client->dev);
+        pm_runtime_disable(&client->dev);
+        pm_runtime_set_suspended(&client->dev);
+        pm_runtime_put_noidle(&client->dev);
 
+   It makes no sense to resume PM just to suspend it again ;-)
+
+   The name of the new variant is a lot clearer:
+	pm_runtime_resume_and_get()
+
+2. Usual *_get() methods only increment their use count on success,
+   but pm_runtime_get_sync() increments it unconditionally. Due to
+   that, several drivers were mistakenly not calling
+   pm_runtime_put_noidle() when it fails;
+
+3. Consistency: we did similar changes subsystem wide with
+   for instance strlcpy() and strcpy() that got replaced by
+   strscpy(). Having all drivers using the same known-to-be-safe
+   methods is a good thing;
+
+4. Prevent newer drivers to copy-and-paste a code that it would
+   be easier to break if they don't truly understand what's behind
+   the scenes.
+
+Thanks,
+Mauro
