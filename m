@@ -2,186 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C61336C132
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC87C36C134
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhD0Itu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhD0Itt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:49:49 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AEDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 01:49:06 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lbJOw-000d2e-62; Tue, 27 Apr 2021 10:49:02 +0200
-Message-ID: <3d89a88fc9ed2a98aeab34dec8770653579ace53.camel@sipsolutions.net>
-Subject: Re: [BISECTED] 5.12 hangs at reboot
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Harald Arnesen <harald@skogtun.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Tue, 27 Apr 2021 10:49:01 +0200
-In-Reply-To: <CAHk-=wjjBEkOdj=C2HxjFu0zaKT46Yw52t7PyCCYFRaFdu57Sw@mail.gmail.com> (sfid-20210427_004952_690267_E7A79256)
-References: <09464e67-f3de-ac09-28a3-e27b7914ee7d@skogtun.org>
-         <CAHk-=wgA1Ma6e5qZO1EP9oMveLPJFbj=SC1R0ZewCmC-u0_r=A@mail.gmail.com>
-         <34d778fa-343f-912f-2fd7-a8ba49bd1b95@skogtun.org>
-         <54debab9a79df628cff86a637dde13c281001578.camel@sipsolutions.net>
-         <151b7e41-a415-e780-eb90-6ca16c113066@skogtun.org>
-         <CAHk-=wjjBEkOdj=C2HxjFu0zaKT46Yw52t7PyCCYFRaFdu57Sw@mail.gmail.com>
-         (sfid-20210427_004952_690267_E7A79256)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
+        id S235041AbhD0IwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:52:08 -0400
+Received: from mail-eopbgr150085.outbound.protection.outlook.com ([40.107.15.85]:53860
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229487AbhD0IwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 04:52:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QIe32HcKNKs0VMqsuYUJ9amWos5rQ8WkWdmJdf2OiqJzSgrcN/xHGHSo/LH3cJ+ILbpbuT9pqrr5NTgUrkGH9Lc+1uQi9PpYVYPznOWNAsPuwPJ5cVk50SzkIPz1nwWuQEQstYAE0a+ou2hx+kf5tMNtei9r/+0+ceLXWgTWG8WSIAjdLeJt3lcWf/Hh9I5P8xX6I2yXQb0T5r4/tPIKiLZh9vk6MD7Ut/TnE9VpZd0ZU5pexLbwlJ+WCVf5PgH0B3X0l2UHd1g4dgICG76RdjU2RrTHCSx6oQflajj5dT3PimBt6GyBapHuraq4S5ImOx1W7raGVyJ6p9lU0HOsAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xbf87D7zu5HLIj2mVAx+mNkpZgK977JmClXpPclMlKw=;
+ b=ln+PLfYSuFYvpnxViuAjW8iN9+WYIkBwoTdyGpmFOxpevsldBr/BBzF2zQDpRwRlBJ2ZS7RXyWDRrhXGtz2M3xz7x9hWTUOEXEALK/J3Z1ty/XPkokT8gnp6EgEVX8K8olw34SDHyhlMhPKFbsxNBbFZ9sLwfAy48CjgPhymO6FxLgXuKsM86p5180UPjusZUzs0cRGmuD0qkVsjkEcehELh4crg61Ftp21CPcdNunQtkMZRT54J0IQgfOAroJhS0q+Ftl1UDEEQFCSotkHYHWC1HHIt7C6bfosgmZIwjTsNXQS/XaNjlCrXMQDIPxebcVr3JXXK2sL1Peuut/cYpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xbf87D7zu5HLIj2mVAx+mNkpZgK977JmClXpPclMlKw=;
+ b=jBSc9xUJ4/opIYDkcIyPI9fZLdC41cPBu+hjdDOfXJmPw0khg2SzIYAMmv4a2Q/5Mwm03lrDO4fUVfO69Bmm7vGM9Ihw6ECyy4vyEzV9U0UWBY/wbkzRRktCBNaC6karVqa+L3xaCumuyEg1/ccUmjwd9DV2fIB2+tkT6515SCE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
+ by AM6PR04MB6277.eurprd04.prod.outlook.com (2603:10a6:20b:bd::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.24; Tue, 27 Apr
+ 2021 08:51:22 +0000
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::e9eb:9619:1265:de3a]) by AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::e9eb:9619:1265:de3a%5]) with mapi id 15.20.4065.027; Tue, 27 Apr 2021
+ 08:51:22 +0000
+From:   Clark Wang <xiaoning.wang@nxp.com>
+To:     broonie@kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: imx: remove CLK calculation and divider in slave mode
+Date:   Tue, 27 Apr 2021 16:52:11 +0800
+Message-Id: <20210427085211.299756-1-xiaoning.wang@nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: HK2PR0401CA0014.apcprd04.prod.outlook.com
+ (2603:1096:202:2::24) To AM6PR04MB5623.eurprd04.prod.outlook.com
+ (2603:10a6:20b:a9::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by HK2PR0401CA0014.apcprd04.prod.outlook.com (2603:1096:202:2::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Tue, 27 Apr 2021 08:51:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e2eab1eb-cf14-43f0-5c96-08d90959a1d8
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6277:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB6277B6BFB038CB9C48DF23FCF3419@AM6PR04MB6277.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hyn2/sX9C5cNqS25YyC+Pa0ekSniwxxQRWh4pWgFeLKL34ZGsuDJMNHrAil3CQGCY/D++oeLPtjHEdyALEUbYLM5uZij28toCStFQijk7/rujk9lev2qxXsXAxnwKyS7+lbuVlsDiZDwu6Skp8k5gmbM4/qCoFFL0KCrwCdXR+c9T4wFO1CiYF+toBYtKj8NzIemNAE1iG3/Yg/EIUs1FnCutOH8JCrTp82rR8GKGlM2MHFG+7EDB0FSMOm/dq0WVorZGusHiadqRM3IoMHK6kQ1IpbXnEkuOzuQvQVj42QdUYtFbPP15g0wNLSca2KFYqWMPDs2pEuxkvJvHZ3+04wmMkgRu4/WK3348n+QmgC/biclvmUAiciCuKSFA08vtQYdphTtInrnWKNFtP4oZNN/7oB4ll9PLyaXf6jwylaL4ExUK1NsdG0XS2XBhpo8tfVxbiBcTjlKRNyhpxYGos19DUFga2SDe997XdeAKd7FOs+2KeQWLLpiRdTYOz+cQLRRkFqXKmLSHBvjseMyPfaWJW9bHMGWsrDr95sMTGxWa/ifVRQvpWL0XhAQQbae2zdp4y5FvuuMno5V5IIqNLegRDM6zL1doU2rWFZFf5ioxxFM1yey9LzMRoWZ2fkWg4zXR6dgu8FmfdeeCZON12+TpZWWmP22hj+VtU0xoDjGBa13zCXX3wPJrcCvMwVf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(38350700002)(36756003)(52116002)(83380400001)(26005)(5660300002)(498600001)(66476007)(6486002)(956004)(2616005)(1076003)(4326008)(86362001)(6916009)(66946007)(6506007)(8676002)(8936002)(6666004)(16526019)(186003)(6512007)(38100700002)(2906002)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?qJeVJngsQA9/qFoOOPx96+vxXGgETJ2+rldFs+fBJFjXhR8XNTvHRR+ir07A?=
+ =?us-ascii?Q?DhRjS2tg0k+nFhTVPmGZ01MoRKsYko+dDJFv8epWDBZ0cPJJdtDahDT4Cd63?=
+ =?us-ascii?Q?geEFU6N+E3RTdTg935woAAR5lR7hefSTG6lJVSg9ETKozEUahvQm4sTdxa50?=
+ =?us-ascii?Q?pX+41oIDo3UA3czmuXRYf4O5eVsn6U/GF9pfyglozeoiuYZ+JZxGPEiamdY8?=
+ =?us-ascii?Q?amKMPGFlyz+3EwWctpSL3WvVEBk60I93E8Pd+mZvAG/YjlSR0HPBVMMWJznE?=
+ =?us-ascii?Q?hFa6HWRB3CthqJ9575geGXnZ1ANC6V77oWswtexkzZ/bNXVUFzBIyMDeRAwo?=
+ =?us-ascii?Q?dyRY6uH48VIgqIu+UQjYJdEQad98MVW88OUA69qmclpfO5PQvO+VOhfqMi+b?=
+ =?us-ascii?Q?8O2RCe5aG+yFLcsjsz+Qx9RCUwV8Ddt0WmklALU6/jeBAPNP+sIxz/mjTMBY?=
+ =?us-ascii?Q?RrTqskaTNnCcS/L6fqmpwRaRo1QK4lGjlulSEXFdMffk8Z0fYQUMDEhTFrbn?=
+ =?us-ascii?Q?S22/OYo/R6dNSogPtkINqhFY1KRswDaPkmgSRiNZyD8gRMWMwTJEjUoydbTu?=
+ =?us-ascii?Q?qPqUdzrcZQmawq2jo1fnaBMrPHTPtxVgF/LeaI1CRdu4W93mOHQDWtUOAtQg?=
+ =?us-ascii?Q?GzCmLVtssG8ph0DNz1NdjIzBu2uuBS7n1DaZekdZel+GMT1qLHl0lamDTwS4?=
+ =?us-ascii?Q?j+o2d7HN6/AX6qRVU/iTIWyYdcnX55WdameAmZc5FksUkqy+O2p0SU49PxYt?=
+ =?us-ascii?Q?x8JV4DWDrPjLfZX0Hr42w6ZR6Bl/JYrDCLYCOWJ3mYo+griRHaUv5adZ+uwL?=
+ =?us-ascii?Q?G7Wbk6tGD3zluzlJhg0X1Qe4lmaBjHAauZxzHTKgVhQMPisRziYFJs4okkgI?=
+ =?us-ascii?Q?OiCM0ldJRxnftOJcjCbtqkYyNco480i6PKXxX41582ZlOLXhZ/7eroIuNBX0?=
+ =?us-ascii?Q?QlmLWvbfeg/Bg8LtevJ/5yHbA9d/dEvMETj24stTEKxcp6J7GvqYNbHQW4u9?=
+ =?us-ascii?Q?Dnh2NYauRc/NHTxJeeoEbNWibHKejXusa71ns1E8g/d02G1bqmHE5Tv+fuDU?=
+ =?us-ascii?Q?q0lH7hQHTY4FJua+4SKN5p9D2TsnMAHj8FEyWcuVmIm8BPZY868HV2WLPBxz?=
+ =?us-ascii?Q?7S/b9/UOs4RBSHwPN8iCyJtvBXMqPmAEE1L+rJVc09LOyRHp7os0jcqg2frN?=
+ =?us-ascii?Q?TibdrekEdgsdmL8b8C8ZwcfmeexcQ/IsARxZdOLJTH+9Si6/oQ/5g5nnpHJZ?=
+ =?us-ascii?Q?Fqyf84ZtWyvAEJXhxO1tkkoyQeIQL48LR+3qykLUt1/Rz5LkefYRRkBBJKDs?=
+ =?us-ascii?Q?EPNqWmjIACRA34UeRs3log1o?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2eab1eb-cf14-43f0-5c96-08d90959a1d8
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 08:51:22.3115
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e57M5m+a7rw4qIVEeh752oJjY+o2dbgi8DfAaib94Fnbe3PrYp1WNpGofUqv2JmYgclrux+H9PHYpsZUE2Ta3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6277
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In the slave mode, the clock signal is controlled by the master.
+The slave does not need to calculate and configure the clock
+frequency division. The slave can directly use the root clock
+to sample the SCL signal.
+Therefore, remove the calculation and frequency division
+function of the clock in the slave mode.
 
-On Mon, 2021-04-26 at 15:49 -0700, Linus Torvalds wrote:
-> 
-> cfg80211_destroy_iface_wk() takes wiphy_lock
->  -> cfg80211_destroy_ifaces()
->   ->ieee80211_del_iface
->     ->ieeee80211_if_remove
->       ->cfg80211_unregister_wdev
->         ->unregister_netdevice_queue
->           ->dev_close_many
->             ->__dev_close_many
->               ->raw_notifier_call_chain
->                 ->cfg80211_netdev_notifier_call
-> 
-> and that wants the rtnl lock. Which it won't get, because something
-> else is holding on to it.
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+---
+Please remove the patch(4df2f5e1372e spi: imx: add a check for speed_hz before
+calculating the clock) first and then apply this patch.
+Sorry about this. Thank you!
+---
+ drivers/spi/spi-imx.c | 36 +++++++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
 
-Thanks. I don't think your conclusion is quite right - it doesn't want
-the RTNL, it wants the "wiphy->mtx" mutex, otherwise the revert wouldn't
-help anyway since the RTNL is held, and also the code in
-cfg80211_netdev_notifier_call() never acquires the RTNL in the first
-place since it always assumes it's called with it held.
-
-> At a guess, there is some other sequence that takes the rtnl lock, and
-> then takes the wiphy_lock inside of it, and we have a ABBA deadlock.
-
-I think we just have "AA" deadlock, but we don't have the full lockdep
-report if there was one, the 'task stuck' obliterated it.
-
-> <insert-shocked-pikachu face>
-> 
-> I _hate_ that stupid rtnl lock. It's come up before. Several times.
-> It's probably the most broken lock in the kernel.
-
-Well, it's also _everywhere_, kind of like the "NBKL". In fact, in many
-cases it has become a de-facto BLK again since there's basically no
-(desktop) userspace that won't do _anything_ at all related to
-networking, and thus it gets hit all the time. I've had things like a
-crash with the RTNL held, and then I couldn't open new shell windows
-anymore...
-
-The sad thing is that the original commit that caused all this was meant
-to alleviate problems with the RTNL, if you look at commit a05829a7222e
-("cfg80211: avoid holding the RTNL when calling the driver"). The only
-problem with that is of course that the RTNL is still required for all
-the netdev management, and as such we need to be really careful around
-it.
-
-
-
-Anyway, back to the topic. This problem was supposed to be avoided by
-the fact that cfg80211_unregister_wdev() sets
-
-	wdev->registered = false;
-
-and then in the notifier call we check
-
-static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
-                                         unsigned long state, void *ptr)
-{
-...
-        case NETDEV_UNREGISTER:
-                /*
-                 * It is possible to get NETDEV_UNREGISTER multiple
-times,
-                 * so check wdev->registered.
-                 */
-                if (wdev->registered && !wdev->registering) {
-
-
-
-But, looking carefully at the stack trace, that's not what we see - we
-see in there "dev_close_many()", so that means we got here with IFF_UP
-still set on the netdev.
-
-You could confirm this by taking gdb, this:
-
-$ gdb vmlinux
-(gdb) l *cfg80211_netdev_notifier_call+0xe5
-
-
-should show you that that's actually line 1415.
-
-
-This means that 'iwd' is actually just getting killed without ever
-having set the interface down (removing IFF_UP, the equivalent of what
-"ip link set wlan0 down" would do).
-
-Which - yeah, that's a special case with iwd.
-
-A trivial fix for this special case would be to close the interface(s)
-first, such as:
-
---- a/net/wireless/core.c
-+++ b/net/wireless/core.c
-@@ -345,11 +345,18 @@ ...
- static void cfg80211_destroy_iface_wk(struct work_struct *work)
- {
- 	struct cfg80211_registered_device *rdev;
-+	struct wireless_dev *wdev;
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 24ba7ab1b05d..68cdd87404f6 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -33,6 +33,7 @@ module_param(use_dma, bool, 0644);
+ MODULE_PARM_DESC(use_dma, "Enable usage of DMA when available (default)");
  
- 	rdev = container_of(work, struct cfg80211_registered_device,
- 			    destroy_work);
+ #define MXC_RPM_TIMEOUT		2000 /* 2000ms */
++#define MXC_DEFAULT_SPEED	500000 /* 500KHz */
  
- 	rtnl_lock();
-+
-+	list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
-+		if (wdev->nl_owner_dead && wdev->netdev)
-+			dev_close(wdev->netdev);
+ #define MXC_CSPIRXDATA		0x00
+ #define MXC_CSPITXDATA		0x04
+@@ -599,8 +600,10 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	/* set clock speed */
+ 	ctrl &= ~(0xf << MX51_ECSPI_CTRL_POSTDIV_OFFSET |
+ 		  0xf << MX51_ECSPI_CTRL_PREDIV_OFFSET);
+-	ctrl |= mx51_ecspi_clkdiv(spi_imx, t->speed_hz, &clk);
+-	spi_imx->spi_bus_clk = clk;
++	if (!spi_imx->slave_mode) {
++		ctrl |= mx51_ecspi_clkdiv(spi_imx, t->speed_hz, &clk);
++		spi_imx->spi_bus_clk = clk;
 +	}
+ 
+ 	if (spi_imx->usedma)
+ 		ctrl |= MX51_ECSPI_CTRL_SMC;
+@@ -717,9 +720,11 @@ static int mx31_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	unsigned int reg = MX31_CSPICTRL_ENABLE | MX31_CSPICTRL_MASTER;
+ 	unsigned int clk;
+ 
+-	reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, t->speed_hz, &clk) <<
+-		MX31_CSPICTRL_DR_SHIFT;
+-	spi_imx->spi_bus_clk = clk;
++	if (!spi_imx->slave_mode) {
++		reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, t->speed_hz, &clk) <<
++			MX31_CSPICTRL_DR_SHIFT;
++		spi_imx->spi_bus_clk = clk;
++	}
+ 
+ 	if (is_imx35_cspi(spi_imx)) {
+ 		reg |= (spi_imx->bits_per_word - 1) << MX35_CSPICTRL_BL_SHIFT;
+@@ -823,9 +828,11 @@ static int mx21_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	unsigned int max = is_imx27_cspi(spi_imx) ? 16 : 18;
+ 	unsigned int clk;
+ 
+-	reg |= spi_imx_clkdiv_1(spi_imx->spi_clk, t->speed_hz, max, &clk)
+-		<< MX21_CSPICTRL_DR_SHIFT;
+-	spi_imx->spi_bus_clk = clk;
++	if (!spi_imx->slave_mode) {
++		reg |= spi_imx_clkdiv_1(spi_imx->spi_clk, t->speed_hz, max, &clk)
++			<< MX21_CSPICTRL_DR_SHIFT;
++		spi_imx->spi_bus_clk = clk;
++	}
+ 
+ 	reg |= spi_imx->bits_per_word - 1;
+ 
+@@ -898,9 +905,11 @@ static int mx1_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	unsigned int reg = MX1_CSPICTRL_ENABLE | MX1_CSPICTRL_MASTER;
+ 	unsigned int clk;
+ 
+-	reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, t->speed_hz, &clk) <<
+-		MX1_CSPICTRL_DR_SHIFT;
+-	spi_imx->spi_bus_clk = clk;
++	if (!spi_imx->slave_mode) {
++		reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, t->speed_hz, &clk) <<
++			MX1_CSPICTRL_DR_SHIFT;
++		spi_imx->spi_bus_clk = clk;
++	}
+ 
+ 	reg |= spi_imx->bits_per_word - 1;
+ 
+@@ -1485,8 +1494,6 @@ static int spi_imx_transfer(struct spi_device *spi,
+ {
+ 	struct spi_imx_data *spi_imx = spi_master_get_devdata(spi->master);
+ 
+-	transfer->effective_speed_hz = spi_imx->spi_bus_clk;
+-
+ 	/* flush rxfifo before transfer */
+ 	while (spi_imx->devtype_data->rx_available(spi_imx))
+ 		readl(spi_imx->base + MXC_CSPIRXDATA);
+@@ -1494,6 +1501,8 @@ static int spi_imx_transfer(struct spi_device *spi,
+ 	if (spi_imx->slave_mode)
+ 		return spi_imx_pio_transfer_slave(spi, transfer);
+ 
++	transfer->effective_speed_hz = spi_imx->spi_bus_clk;
 +
- 	wiphy_lock(&rdev->wiphy);
- 	cfg80211_destroy_ifaces(rdev);
- 	wiphy_unlock(&rdev->wiphy);
-
-
-But while that will almost certainly fix all the issues you're seeing,
-it's not sufficient in general because it leaves a race if the other
-caller of cfg80211_destroy_ifaces() ever needs to do anything (which
-relatively unlikely), since it would still run into the same deadlock.
-
-
-Looking at this more carefully, even the original commit that added this
-code missed something in this case, however. Basically, it relied on the
-driver unregistering the netdev, this causing the notifier, and this
-would actually stop operation (e.g. disconnect from the AP) before
-actually removing the interface etc. However, there are some virtual
-interfaces that do not have a netdev at all, and in those cases the
-operations would never be stopped appropriately. Most drivers will
-probably kind of obviously do that ("if you tell me to remove the thing
-I better stop using it first") but I wouldn't be surprised if there are
-bugs in this area in the drivers.
-
-In any case, I'll test it now/soon, but this should fix the issues:
-
-https://p.sipsolutions.net/d458baf9b04f2c8f.txt
-
-I'll test it and send a proper patch.
-
-johannes
+ 	if (spi_imx->usedma)
+ 		return spi_imx_dma_transfer(spi_imx, transfer);
+ 
+@@ -1593,6 +1602,7 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 	spi_imx->bitbang.master = master;
+ 	spi_imx->dev = &pdev->dev;
+ 	spi_imx->slave_mode = slave_mode;
++	spi_imx->spi_bus_clk = MXC_DEFAULT_SPEED;
+ 
+ 	spi_imx->devtype_data = devtype_data;
+ 
+-- 
+2.25.1
 
