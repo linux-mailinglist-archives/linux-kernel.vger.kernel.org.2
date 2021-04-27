@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD6A36C8C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471A736C8B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237856AbhD0Pgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:36:33 -0400
-Received: from mx0.infotecs.ru ([91.244.183.115]:56210 "EHLO mx0.infotecs.ru"
+        id S237465AbhD0Pe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236254AbhD0Pgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:36:31 -0400
-Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-        by mx0.infotecs.ru (Postfix) with ESMTP id 67595108A04B;
-        Tue, 27 Apr 2021 18:35:43 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 67595108A04B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-        t=1619537743; bh=KxbNYGfPwQJcQ49DgL87484lXfDTpag3H+aJRE9b52A=;
-        h=Date:From:To:CC:Subject:From;
-        b=i8CVO9rhOWeVh49XeEzit6nvpzMcwRong51cFMxFHl6ieEKJnVh4YpJIhpxmAIob0
-         nx3DnpvxwEqzgiHPsRAh3LFwQbuB3txPz4t7LC4qdVbeKheniNNL1iC3WOhQvq+SKB
-         OB61Bzcs3E8wer6D85LNFa59UDI/nkAYnO7DP0Oo=
-Received: from msk-exch-02.infotecs-nt (autodiscover.iitrust.ru [10.0.7.192])
-        by mx0.infotecs-nt (Postfix) with ESMTP id 647D4316F917;
-        Tue, 27 Apr 2021 18:35:43 +0300 (MSK)
-Date:   Tue, 27 Apr 2021 18:33:54 +0300
-From:   Pavel Balaev <balaevpa@infotecs.ru>
-To:     <netdev@vger.kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>
-Subject: [PATCH v5 net-next 0/3] net: multipath routing: configurable seed
-Message-ID: <YIgu4hLNSa69/oFZ@rnd>
+        id S229571AbhD0Pe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:34:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB75560FE3;
+        Tue, 27 Apr 2021 15:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619537653;
+        bh=nRjupLfRtOC1jx4QARvFWp92/DopAWZE+CYvOd1QYs4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Xf7xrFh15+85qDBGqvjtGZcA6XAk5idTyN4iVWB48cXzrK1wlXyVc9fouKZpB7AjH
+         Jju0aYIUHCE1wy6WooMwCPVUeU0XUTFgWWc2B6rxq66IPYL0EjamfS70sXohNoCjQu
+         NnnZvlExEMa0rr0Gn+7tchsamcn0byq8AZWrmucpVvK6eA+nRoQriSQi2F5cDM7ZSD
+         WRrLRplQZVpE/CgPnxzjtuGINBoM4Kj4DmyYSlEj2Fphte4bBeR/TcFlnXQ17+WxLD
+         LZYSucpWRR0mxfQQWuN/FQm/zphGSBo/NYdKMb7+S+x6RRgGZwtIsbY9qUJpjY3tTI
+         1eeJ5KyxyiIFg==
+Received: by mail-ej1-f42.google.com with SMTP id u3so11436171eja.12;
+        Tue, 27 Apr 2021 08:34:13 -0700 (PDT)
+X-Gm-Message-State: AOAM532iqrXoapJsBe9LuTEK2lEATrhXWyQUQYo0tbP9hDbzIo07FJ+e
+        aVIBv1zFZJwVuvdHeNKBNsuaVikVrBvrkNcgDw==
+X-Google-Smtp-Source: ABdhPJwN/fh94a1wvQ0KAftdjjUovYxqjRpSBzYoykWjVdlI+hza7uurmQ86UUDbKXyp07MoytDPBVCc0xoBWlV1ncY=
+X-Received: by 2002:a17:906:b0cb:: with SMTP id bk11mr2818134ejb.310.1619537652286;
+ Tue, 27 Apr 2021 08:34:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-X-Originating-IP: [11.0.8.107]
-X-EXCLAIMER-MD-CONFIG: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 163354 [Apr 27 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: BalaevPA@infotecs.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 443 443 d64ad0ad6f66abd85f8fb55fe5d831fdcc4c44a0, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/04/27 12:22:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/27 11:47:00 #16580367
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210427044948.12596-1-hsinyi@chromium.org> <20210427044948.12596-2-hsinyi@chromium.org>
+In-Reply-To: <20210427044948.12596-2-hsinyi@chromium.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 27 Apr 2021 23:34:01 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__6agGjApVEkAyhPdV46qTjWdHODBGD_VQcYf5PRhF-hA@mail.gmail.com>
+Message-ID: <CAAOTY__6agGjApVEkAyhPdV46qTjWdHODBGD_VQcYf5PRhF-hA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] drm/mediatek: init panel orientation property
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the fifth version of the mpath seed series.
+Hi, Hsin-Yi:
 
-This patch series adds ability for a user to assign seed value
-to multipath route hashes.
+Hsin-Yi Wang <hsinyi@chromium.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=8827=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8812:49=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Init panel orientation property after connector is initialized. Let the
+> panel driver decides the orientation value later.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index ae403c67cbd9..0bd27872f2a4 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -964,6 +964,7 @@ static int mtk_dsi_encoder_init(struct drm_device *dr=
+m, struct mtk_dsi *dsi)
+>                 ret =3D PTR_ERR(dsi->connector);
+>                 goto err_cleanup_encoder;
+>         }
+> +       drm_connector_init_panel_orientation_property(dsi->connector);
 
-changes v4:
-- patch was splited to patch series
-- remove CONFIG_IP_ROUTE_MULTIPATH define from flow_multipath_hash_from_keys(),
-  it used in both IPv4/IPv6 protos.
+Process the return value.
 
-The mainlining discussion history of this branch:
-v4: https://lore.kernel.org/netdev/21a2fb1925b215cc48ab8e2f783a7de7@void.so
+Regards,
+Chun-Kuang.
 
-Balaev Pavel (3):
-      net/ipv4: multipath routing: configurable seed
-      net/ipv6: multipath routing: configurable seed
-      selftests/net/forwarding: configurable seed tests
-
- Documentation/networking/ip-sysctl.rst             |  14 +
- include/net/flow_dissector.h                       |   2 +
- include/net/netns/ipv4.h                           |   2 +
- include/net/netns/ipv6.h                           |   3 +
- net/core/flow_dissector.c                          |   7 +
- net/ipv4/route.c                                   |  10 +-
- net/ipv4/sysctl_net_ipv4.c                         |  97 ++++++
- net/ipv6/route.c                                   |  10 +-
- net/ipv6/sysctl_net_ipv6.c                         |  96 ++++++
- tools/testing/selftests/net/forwarding/Makefile    |   1 +
- tools/testing/selftests/net/forwarding/lib.sh      |  28 ++
- .../net/forwarding/router_mpath_seed.sh (new +x)   | 347 +++++++++++++++++++++
- 12 files changed, 615 insertions(+), 2 deletions(-)
+>         drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
+>
+>         return 0;
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
