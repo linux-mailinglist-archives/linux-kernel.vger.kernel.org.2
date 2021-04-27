@@ -2,173 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6FA36C47C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B4236C489
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhD0K4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhD0K4m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:56:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4896CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 03:55:58 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id w9so9158490lfr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 03:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S82r8jx5k9d+bfs4UuyuPxKItqibi9UQtep8XqfhYv4=;
-        b=itJy1ugZD6GY7AOr/xYufPZq/gR/mFIsdnZCRMF2UuJWl3j1THE6ki08H1rvM3F8k8
-         kICTmi5ZBp2qejTvXlH0E1JXk2Iq/cfq2gxxNpi+z5wJv5921gi9KOW76tTdRtAEPvF1
-         rn4oA7GFo0V35hCDqX7kJAOmoCZFm2MFhLsd4wrRVEGgzOlecF949Ra0KBCu1H7t5mOj
-         wB4u2jFf+IK0PfUus2BmkY19uLh1692l35TpMOoUpfjpPmemUXgOXORzVyA+zxVTxP0u
-         isvH4NXN0vwrLbiosZ8dkd7cU5oekLBc+U44FXf9TuK57DxT/lGI3SMif0vke0zMzrYz
-         WB9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S82r8jx5k9d+bfs4UuyuPxKItqibi9UQtep8XqfhYv4=;
-        b=o+/1wHZoDWd/M7vKKBWIDJVklsCzGlVHWt2dc6JmiIbR55sKUQJoRPksV5AZzoxJjG
-         N/tCEhfWGyqaaxjqzigYY5B5JqY6KIpDjxKsy5mVpWsdULwMfxSaV4pNQ2JqJw+CPp2N
-         aDGKkE8LlYR6TNVshSzsjDvDpwhKdspW9Duu6eRU/n7AOOVmuLcRbxQrSmz9ETIBLjMR
-         IEx2y80bRz5Re6FAGGt13tAfigoDoI4e+U3g6gJAxRlMIZAhc/kSSnKelwVdS1Yr71aX
-         8hAFvxmVc+DQo69oK47cmKyl29A/gnQ+cuR78W13rd4m7jqlRbyrF2chvDFBLbf5IRN4
-         pjDA==
-X-Gm-Message-State: AOAM532orfpYQ7wpIC5eaagg+0odX3RgE+mHQZilusZS0igzFmH7OWIE
-        fpCPZ39WRqgDxYMWpWQB9Ur6OWf+HFYNe+WPUKmcKg==
-X-Google-Smtp-Source: ABdhPJy1OgH7ZkxunTAt28u2pjXUE4N0zNDmIVUFMOjN79bwdZmVv0DLNynh2GcU5P2J806/LqZRktUS1ZTywQDGqkM=
-X-Received: by 2002:a19:4f1a:: with SMTP id d26mr16477813lfb.277.1619520955821;
- Tue, 27 Apr 2021 03:55:55 -0700 (PDT)
+        id S235723AbhD0LAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:00:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230365AbhD0LA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 07:00:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E166112F;
+        Tue, 27 Apr 2021 10:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619521186;
+        bh=Xu8yXTNTdsGCIO+l+ExBtuapFY7i/dpS3ImNxVf+HGY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CUK0fGcHEhy+5ocazwb3eIFVzBs0TWdr0PYwFHtSYyhZotC/ytZcSVml7oUETcSJu
+         R0i3uOSQKgeDtsmP/h0xvy7U+Fs2Yun8g2Qc2I5k9e0O7/TSM0hUReukg+7Dy+5kfi
+         wLCYrfopyaqid5krcRrlDXSkHaGIi8+fUptdeQIocg6yFBmCuTaeEa07NX7sh96qty
+         RkUb0mW23oQDvwKqimiUMhCI64KIy4rvS/GBIsPWUc3xrhCS0HvKWeB8iWjHC4aVcN
+         4zVpUZEHGDkJBxH3mfedcAgdohamC6oeosqSPb1AcBeqOe0ZIaMfK+biCwcqm+bT27
+         3VcotZh7cB/yg==
+Subject: Re: [PATCH v3 71/79] media: s3c-camif: use
+ pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+ <a002bcaa2096cac125469b0188e5967d0e1892a0.1619519080.git.mchehab+huawei@kernel.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <0b394ffa-e201-6f49-22c6-eac40a9e034c@kernel.org>
+Date:   Tue, 27 Apr 2021 12:59:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
- <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com>
-In-Reply-To: <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 27 Apr 2021 12:55:44 +0200
-Message-ID: <CAKfTPtCdJC2-jxJn82Z4GSsHu0e49pKL4DT0GWk5vKXnyn1Gog@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Odin Ugedal <odin@ugedal.com>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a002bcaa2096cac125469b0188e5967d0e1892a0.1619519080.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 at 18:33, Odin Ugedal <odin@ugedal.com> wrote:
->
-> Hi,
->
->
-> > Have you been able to reproduce this on mainline ?
->
-> Yes. I have been debugging and testing with v5.12-rc8. After I found
-> the suspected
-> commit in ~v4.8, I compiled both the v4.4.267 and v4.9.267, and was able to
-> successfully reproduce it on v4.9.267 and not on v4.4.267. It is also
-> reproducible
-> on 5.11.16-arch1-1 that my distro ships, and it is reproducible on all
-> the machines
-> I have tested.
->
-> > When running the script below on v5.12, I'm not able to reproduce your problem
->
-> v5.12 is pretty fresh, so I have not tested on anything before v5.12-rc8. I did
-> compile v5.12.0 now, and I am able to reproduce it there as well.
+On 27.04.2021 12:27, Mauro Carvalho Chehab wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-I wanted to say one v5.12-rcX version to make sure this is still a
-valid problem on latest version
-
->
-> Which version did you try (the one for cgroup v1 or v2)? And/or did you try
-> to run the inspection bpftrace script? If you tested the cg v1
-> version, it will often
-> end up at 50/50, 51/49 etc., and sometimes 60/40+-, making it hard to
-> verify without inspection.
-
-I tried cgroup v1 and v2 but not the bpf script
-
->
-> I have attached a version of the "sub cgroup" example for cgroup v1,
-> that also force
-> the process to start on cpu 1 (CPU_ME), and sends it over to cpu 0
-> (CPU) after attaching
-> to the new cgroup. That will make it evident each time. This example should also
-> always end up with 50/50 per stress process, but "always" ends up more
-> like 99/1.
->
-> Can you confirm if you are able to reproduce with this version?
-
-I confirm that I can see a ratio of 4ms vs 204ms running time with the
-patch below. But when I look more deeply in my trace (I have
-instrumented the code), it seems that the 2 stress-ng don't belong to
-the same cgroup but remained in cg-1 and cg-2 which explains such
-running time difference. So your script doesn't reproduce the bug you
-want to highlight. That being said, I can also see a diff between the
-contrib of the cpu0 in the tg_load. I'm going to look further
-
->
-> --- bash start
-> CGROUP_CPU=/sys/fs/cgroup/cpu/slice
-> CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
-> CGROUP_CPUSET_ME=/sys/fs/cgroup/cpuset/me
-> CPU=0
-> CPU_ME=1
->
-> function run_sandbox {
->   local CG_CPUSET="$1"
->   local CG_CPU="$2"
->   local INNER_SHARES="$3"
->   local CMD="$4"
->
->   local PIPE="$(mktemp -u)"
->   mkfifo "$PIPE"
->   sh -c "read < $PIPE ; exec $CMD" &
->   local TASK="$!"
->   sleep .1
->   mkdir -p "$CG_CPUSET"
->   mkdir -p "$CG_CPU"/sub
->   tee "$CG_CPU"/sub/cgroup.procs <<< "$TASK"
->   tee "$CG_CPU"/sub/cpu.shares <<< "$INNER_SHARES"
->
->   tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
->
->   tee "$PIPE" <<< sandox_done
->   rm "$PIPE"
-> }
->
-> mkdir -p "$CGROUP_CPU"
-> mkdir -p "$CGROUP_CPUSET"
-> mkdir -p "$CGROUP_CPUSET_ME"
->
-> tee "$CGROUP_CPUSET"/cpuset.cpus <<< "$CPU"
-> tee "$CGROUP_CPUSET"/cpuset.mems <<< "$CPU"
->
-> tee "$CGROUP_CPUSET_ME"/cpuset.cpus <<< "$CPU_ME"
-> echo $$ | tee "$CGROUP_CPUSET_ME"/cgroup.procs
->
-> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" 50000 "stress --cpu 1"
-> run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" 2     "stress --cpu 1"
->
-> read # click enter to cleanup and stop all stress procs
-> killall stress
-> sleep .2
-> rmdir /sys/fs/cgroup/cpuset/slice/
-> rmdir /sys/fs/cgroup/cpu/slice/{cg-{1,2}{/sub,},}
-> --- bash end
->
->
-> Thanks
-> Odin
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
