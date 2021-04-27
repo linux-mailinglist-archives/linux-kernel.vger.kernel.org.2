@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CDA36BFA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C8336BFA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbhD0HEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:04:32 -0400
-Received: from mga09.intel.com ([134.134.136.24]:54923 "EHLO mga09.intel.com"
+        id S236256AbhD0HEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:04:38 -0400
+Received: from mga09.intel.com ([134.134.136.24]:54937 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234988AbhD0HE1 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        id S234996AbhD0HE1 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
         Tue, 27 Apr 2021 03:04:27 -0400
-IronPort-SDR: YCdAyzQa7953S0YugbkEnXiahMzfHEHU6eSEPkSNEQPqCVyhCNYGdoR0jmnfKkPwZWwLgMQxLj
- amHPp2Vw74RA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196572994"
+IronPort-SDR: a+pCUc6HJJnnklXFx/Cth7JvvqXZVfzXIPeWbQbQGXYJZDXGqYN3MikVQ/8xUBJawcC2AEHcyC
+ MsbuS7ROgNQQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196573001"
 X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="196572994"
+   d="scan'208";a="196573001"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 00:03:41 -0700
-IronPort-SDR: Qgvq+ACQpxzFwf335nIluRNqUP3Huj8+OxHcE8SMCVhKwxbnkOSK4giNhLAyGr0EqdCaOBvJ2N
- zw7lqg2bR4kg==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 00:03:44 -0700
+IronPort-SDR: H2s5it0P3gFu93p5dqZyExNykfJkF78hipCfxbaFZSq4VE8zVlcrlQWswhivPIMdduk6bQGNjI
+ 24O5er4laelw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="447506798"
+   d="scan'208";a="447506826"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2021 00:03:39 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2021 00:03:42 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v6 12/26] perf parse-events: Support event inside hybrid pmu
-Date:   Tue, 27 Apr 2021 15:01:25 +0800
-Message-Id: <20210427070139.25256-13-yao.jin@linux.intel.com>
+Subject: [PATCH v6 13/26] perf record: Create two hybrid 'cycles' events by default
+Date:   Tue, 27 Apr 2021 15:01:26 +0800
+Message-Id: <20210427070139.25256-14-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210427070139.25256-1-yao.jin@linux.intel.com>
 References: <20210427070139.25256-1-yao.jin@linux.intel.com>
@@ -41,161 +41,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On hybrid platform, user may want to enable events on one pmu.
+When evlist is empty, for example no '-e' specified in perf record,
+one default 'cycles' event is added to evlist.
 
-Following syntax are supported:
+While on hybrid platform, it needs to create two default 'cycles'
+events. One is for cpu_core, the other is for cpu_atom.
 
-cpu_core/<event>/
-cpu_atom/<event>/
+This patch actually calls evsel__new_cycles() two times to create
+two 'cycles' events.
 
-But the syntax doesn't work for cache event.
+  # ./perf record -vv -a -- sleep 1
+  ...
+  ------------------------------------------------------------
+  perf_event_attr:
+    size                             120
+    config                           0x400000000
+    { sample_period, sample_freq }   4000
+    sample_type                      IP|TID|TIME|ID|CPU|PERIOD
+    read_format                      ID
+    disabled                         1
+    inherit                          1
+    freq                             1
+    precise_ip                       3
+    sample_id_all                    1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 5
+  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 6
+  sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 7
+  sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 9
+  sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 10
+  sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 11
+  sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 12
+  sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 13
+  sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 14
+  sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 15
+  sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 16
+  sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 17
+  sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 18
+  sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 19
+  sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 20
+  sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 21
+  ------------------------------------------------------------
+  perf_event_attr:
+    size                             120
+    config                           0x800000000
+    { sample_period, sample_freq }   4000
+    sample_type                      IP|TID|TIME|ID|CPU|PERIOD
+    read_format                      ID
+    disabled                         1
+    inherit                          1
+    freq                             1
+    precise_ip                       3
+    sample_id_all                    1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 22
+  sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 23
+  sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 24
+  sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 25
+  sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 26
+  sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 27
+  sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 28
+  sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 29
+  ------------------------------------------------------------
 
-Before:
-
-  # perf stat -e cpu_core/LLC-loads/ -a -- sleep 1
-  event syntax error: 'cpu_core/LLC-loads/'
-                                \___ unknown term 'LLC-loads' for pmu 'cpu_core'
-
-Cache events are a bit complex. We can't create aliases for them.
-We use another solution. For example, if we use "cpu_core/LLC-loads/",
-in parse_events_add_pmu(), term->config is "LLC-loads".
-
-Then we create a new parser to scan "LLC-loads". The
-parse_events_add_cache() would be called during parsing.
-The parse_state->hybrid_pmu_name is used to identify the pmu
-where the event should be enabled on.
-
-After:
-
-  # perf stat -e cpu_core/LLC-loads/ -a -- sleep 1
-
-   Performance counter stats for 'system wide':
-
-              24,593      cpu_core/LLC-loads/
-
-         1.003911601 seconds time elapsed
+We have to create evlist-hybrid.c otherwise due to the symbol
+dependency the perf test python would be failed.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
-v6:
+v5 - v6:
  - No change.
 
-v5:
- - Check the head_config list has only one term and if yes then
-   do the second parsing. We drop the 'parsed' param and make
-   parse_events__with_hybrid_pmu return 0 when we find some event.
-
-   Move 'evsel->use_config_name = true;' to the patch
-   '[PATCH v5 07/26] perf stat: Uniquify hybrid event name'.
-
 v4:
- - New in v4.
+ - Use PERF_TYPE_HARDWARE (v3 uses PERF_TYPE_HARDWARE_PMU).
 
- tools/perf/util/parse-events.c | 63 ++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+v3:
+ - Move the major code to new created evlist-hybrid.c.
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 6236513e6369..4dad14265b81 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -38,6 +38,7 @@
- #include "util/event.h"
+ tools/perf/builtin-record.c     | 19 +++++++++++----
+ tools/perf/util/Build           |  1 +
+ tools/perf/util/evlist-hybrid.c | 41 +++++++++++++++++++++++++++++++++
+ tools/perf/util/evlist-hybrid.h | 12 ++++++++++
+ tools/perf/util/evlist.c        |  5 +++-
+ tools/perf/util/evsel.c         |  6 ++---
+ tools/perf/util/evsel.h         |  2 +-
+ 7 files changed, 77 insertions(+), 9 deletions(-)
+ create mode 100644 tools/perf/util/evlist-hybrid.c
+ create mode 100644 tools/perf/util/evlist-hybrid.h
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 5fb9665a2ec2..6af46c6a4fd8 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -47,6 +47,8 @@
+ #include "util/util.h"
  #include "util/pfm.h"
- #include "util/parse-events-hybrid.h"
+ #include "util/clockid.h"
 +#include "util/pmu-hybrid.h"
++#include "util/evlist-hybrid.h"
+ #include "asm/bug.h"
  #include "perf.h"
  
- #define MAX_NAME_LEN 100
-@@ -48,6 +49,9 @@ extern int parse_events_debug;
- int parse_events_parse(void *parse_state, void *scanner);
- static int get_config_terms(struct list_head *head_config,
- 			    struct list_head *head_terms __maybe_unused);
-+static int parse_events__with_hybrid_pmu(struct parse_events_state *parse_state,
-+					 const char *str, char *pmu_name,
-+					 struct list_head *list);
+@@ -2790,10 +2792,19 @@ int cmd_record(int argc, const char **argv)
+ 	if (record.opts.overwrite)
+ 		record.opts.tail_synthesize = true;
  
- static struct perf_pmu_event_symbol *perf_pmu_events_list;
- /*
-@@ -1474,6 +1478,33 @@ static bool config_term_percore(struct list_head *config_terms)
- 	return false;
- }
+-	if (rec->evlist->core.nr_entries == 0 &&
+-	    __evlist__add_default(rec->evlist, !record.opts.no_samples) < 0) {
+-		pr_err("Not enough memory for event selector list\n");
+-		goto out;
++	if (rec->evlist->core.nr_entries == 0) {
++		if (perf_pmu__has_hybrid()) {
++			err = evlist__add_default_hybrid(rec->evlist,
++							 !record.opts.no_samples);
++		} else {
++			err = __evlist__add_default(rec->evlist,
++						    !record.opts.no_samples);
++		}
++
++		if (err < 0) {
++			pr_err("Not enough memory for event selector list\n");
++			goto out;
++		}
+ 	}
  
-+static int parse_events__inside_hybrid_pmu(struct parse_events_state *parse_state,
-+					   struct list_head *list, char *name,
-+					   struct list_head *head_config)
+ 	if (rec->opts.target.tid && !rec->opts.no_inherit_set)
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 34fcbf3c3bce..8c0d9f368ebc 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -10,6 +10,7 @@ perf-y += db-export.o
+ perf-y += env.o
+ perf-y += event.o
+ perf-y += evlist.o
++perf-y += evlist-hybrid.o
+ perf-y += sideband_evlist.o
+ perf-y += evsel.o
+ perf-y += evsel_fprintf.o
+diff --git a/tools/perf/util/evlist-hybrid.c b/tools/perf/util/evlist-hybrid.c
+new file mode 100644
+index 000000000000..e11998526f2e
+--- /dev/null
++++ b/tools/perf/util/evlist-hybrid.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <errno.h>
++#include <inttypes.h>
++#include "cpumap.h"
++#include "evlist.h"
++#include "evsel.h"
++#include "../perf.h"
++#include "util/pmu-hybrid.h"
++#include "util/evlist-hybrid.h"
++#include <unistd.h>
++#include <stdlib.h>
++#include <linux/err.h>
++#include <linux/string.h>
++#include <perf/evlist.h>
++#include <perf/evsel.h>
++#include <perf/cpumap.h>
++
++int evlist__add_default_hybrid(struct evlist *evlist, bool precise)
 +{
-+	struct parse_events_term *term;
-+	int ret = -1;
++	struct evsel *evsel;
++	struct perf_pmu *pmu;
++	__u64 config;
++	struct perf_cpu_map *cpus;
 +
-+	if (parse_state->fake_pmu || !head_config || list_empty(head_config) ||
-+	    !perf_pmu__is_hybrid(name)) {
-+		return -1;
++	perf_pmu__for_each_hybrid_pmu(pmu) {
++		config = PERF_COUNT_HW_CPU_CYCLES |
++			 ((__u64)pmu->type << PERF_PMU_TYPE_SHIFT);
++		evsel = evsel__new_cycles(precise, PERF_TYPE_HARDWARE,
++					  config);
++		if (!evsel)
++			return -ENOMEM;
++
++		cpus = perf_cpu_map__get(pmu->cpus);
++		evsel->core.cpus = cpus;
++		evsel->core.own_cpus = perf_cpu_map__get(cpus);
++		evsel->pmu_name = strdup(pmu->name);
++		evlist__add(evlist, evsel);
 +	}
 +
-+	/*
-+	 * More than one term in list.
-+	 */
-+	if (head_config->next && head_config->next->next != head_config)
-+		return -1;
-+
-+	term = list_first_entry(head_config, struct parse_events_term, list);
-+	if (term && term->config && strcmp(term->config, "event")) {
-+		ret = parse_events__with_hybrid_pmu(parse_state, term->config,
-+						    name, list);
-+	}
-+
-+	return ret;
++	return 0;
 +}
+diff --git a/tools/perf/util/evlist-hybrid.h b/tools/perf/util/evlist-hybrid.h
+new file mode 100644
+index 000000000000..e25861649d8f
+--- /dev/null
++++ b/tools/perf/util/evlist-hybrid.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __PERF_EVLIST_HYBRID_H
++#define __PERF_EVLIST_HYBRID_H
 +
- int parse_events_add_pmu(struct parse_events_state *parse_state,
- 			 struct list_head *list, char *name,
- 			 struct list_head *head_config,
-@@ -1567,6 +1598,11 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 	if (pmu->default_config && get_config_chgs(pmu, head_config, &config_terms))
++#include <linux/compiler.h>
++#include <linux/kernel.h>
++#include "evlist.h"
++#include <unistd.h>
++
++int evlist__add_default_hybrid(struct evlist *evlist, bool precise);
++
++#endif /* __PERF_EVLIST_HYBRID_H */
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index e71041c89010..6e5c41528c7d 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -26,6 +26,7 @@
+ #include "util/string2.h"
+ #include "util/perf_api_probe.h"
+ #include "util/evsel_fprintf.h"
++#include "util/evlist-hybrid.h"
+ #include <signal.h>
+ #include <unistd.h>
+ #include <sched.h>
+@@ -248,8 +249,10 @@ void evlist__set_leader(struct evlist *evlist)
+ 
+ int __evlist__add_default(struct evlist *evlist, bool precise)
+ {
+-	struct evsel *evsel = evsel__new_cycles(precise);
++	struct evsel *evsel;
+ 
++	evsel = evsel__new_cycles(precise, PERF_TYPE_HARDWARE,
++				  PERF_COUNT_HW_CPU_CYCLES);
+ 	if (evsel == NULL)
  		return -ENOMEM;
  
-+	if (!parse_events__inside_hybrid_pmu(parse_state, list, name,
-+					     head_config)) {
-+		return 0;
-+	}
-+
- 	if (!parse_state->fake_pmu && perf_pmu__config(pmu, &attr, head_config, parse_state->error)) {
- 		struct evsel_config_term *pos, *tmp;
- 
-@@ -2189,6 +2225,33 @@ int parse_events_terms(struct list_head *terms, const char *str)
- 	return ret;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 080ddcfefbcd..0fc9555a2ac4 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -295,11 +295,11 @@ static bool perf_event_can_profile_kernel(void)
+ 	return perf_event_paranoid_check(1);
  }
  
-+static int parse_events__with_hybrid_pmu(struct parse_events_state *parse_state,
-+					 const char *str, char *pmu_name,
-+					 struct list_head *list)
-+{
-+	struct parse_events_state ps = {
-+		.list            = LIST_HEAD_INIT(ps.list),
-+		.stoken          = PE_START_EVENTS,
-+		.hybrid_pmu_name = pmu_name,
-+		.idx             = parse_state->idx,
-+	};
-+	int ret;
-+
-+	ret = parse_events__scanner(str, &ps);
-+	perf_pmu__parse_cleanup();
-+
-+	if (!ret) {
-+		if (!list_empty(&ps.list)) {
-+			list_splice(&ps.list, list);
-+			parse_state->idx = ps.idx;
-+			return 0;
-+		} else
-+			return -1;
-+	}
-+
-+	return ret;
-+}
-+
- int __parse_events(struct evlist *evlist, const char *str,
- 		   struct parse_events_error *err, struct perf_pmu *fake_pmu)
+-struct evsel *evsel__new_cycles(bool precise)
++struct evsel *evsel__new_cycles(bool precise, __u32 type, __u64 config)
  {
+ 	struct perf_event_attr attr = {
+-		.type	= PERF_TYPE_HARDWARE,
+-		.config	= PERF_COUNT_HW_CPU_CYCLES,
++		.type	= type,
++		.config	= config,
+ 		.exclude_kernel	= !perf_event_can_profile_kernel(),
+ 	};
+ 	struct evsel *evsel;
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index ad74c83bd35b..a9cc9563ac59 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -221,7 +221,7 @@ static inline struct evsel *evsel__newtp(const char *sys, const char *name)
+ 	return evsel__newtp_idx(sys, name, 0);
+ }
+ 
+-struct evsel *evsel__new_cycles(bool precise);
++struct evsel *evsel__new_cycles(bool precise, __u32 type, __u64 config);
+ 
+ struct tep_event *event_format__new(const char *sys, const char *name);
+ 
 -- 
 2.17.1
 
