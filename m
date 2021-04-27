@@ -2,59 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A4636CB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC7036CB33
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238912AbhD0SiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:38:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53904 "EHLO mail.kernel.org"
+        id S238949AbhD0Sii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:38:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236834AbhD0SiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:38:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 818CA613EA;
-        Tue, 27 Apr 2021 18:37:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619548659;
-        bh=dU7CVh0jkwj4jlP204GlVPXcyoEYQf9hgop/xZaQcUU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aSrREZFBdbKB/iMbw9UdLWgXL+Ctit5rGjBiXJiVPQtS1DB8R0tZc1bcxoRkq8qjV
-         BQCOLfNFTYT716WIIBdQv0vwYcG8RROVq1dnAZhZbhKgxwQ4OYhHw7f7tbt7aqnbOj
-         MlQiLGTcwENygI51zulurJrcn80XaCvzQpZ84HVyqI8s71KJl/nM6H+R4Q9pAxkqoi
-         1cZduZ1jlyyUOdBRx+IzxOcN/yR4+4RuXQ1stfXcIGPDpnbgGc913ASI/TlPAnaerk
-         iRratTDutU1a97H+jBBzzPQbEd1VUoPFegL5ej5Xy2rrDIgatDttL+kwsRbsldKK1M
-         HxkR3tpWdaf3w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 74D9D609B0;
-        Tue, 27 Apr 2021 18:37:39 +0000 (UTC)
-Subject: Re: [git pull] vfs.git inode type handling fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIc+orIAyfwUHGFo@zeniv-ca.linux.org.uk>
-References: <YIc+orIAyfwUHGFo@zeniv-ca.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YIc+orIAyfwUHGFo@zeniv-ca.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.inode-type-fixes
-X-PR-Tracked-Commit-Id: c4ab036a2f41184ba969f86dda73be361c9ab39d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d1466bc583a81830cef2399a4b8a514398351b40
-Message-Id: <161954865941.8916.12725024391833001750.pr-tracker-bot@kernel.org>
-Date:   Tue, 27 Apr 2021 18:37:39 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        id S238463AbhD0Sii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:38:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 443D6613F5;
+        Tue, 27 Apr 2021 18:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619548674;
+        bh=HRjW9uUXGYuBGL+XR5YIza9yUm6OYYZgRxTN7MRt0S0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZxUe9u4UdA1/IGMECbjyvo/ziikehrdMJvREXEw3MsNfEiSXCeqZQRfuCk710piev
+         y7j+Q7UFgYyXNaW9vCATHFoYT/OHpjOZCi1nr90PnBkXfQ0D+YpSkHjlTgXyrhzUzI
+         Jz+KYaAeu5oHt3PFSbs0V6OrMsXu6hNB0QzdHAwE=
+Date:   Tue, 27 Apr 2021 20:37:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 001/190] Revert "net/rds: Avoid potential use after free
+ in rds_send_remove_from_sock"
+Message-ID: <YIhaAEsa+92ipKuU@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-2-gregkh@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-2-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Apr 2021 22:28:50 +0000:
+On Wed, Apr 21, 2021 at 02:57:56PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  net/rds/message.c | 1 -
+>  net/rds/send.c    | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/net/rds/message.c b/net/rds/message.c
+> index 4fc66ff0f1ec..799034e0f513 100644
+> --- a/net/rds/message.c
+> +++ b/net/rds/message.c
+> @@ -180,7 +180,6 @@ void rds_message_put(struct rds_message *rm)
+>  		rds_message_purge(rm);
+>  
+>  		kfree(rm);
+> -		rm = NULL;
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(rds_message_put);
+> diff --git a/net/rds/send.c b/net/rds/send.c
+> index fe5264b9d4b3..985d0b7713ac 100644
+> --- a/net/rds/send.c
+> +++ b/net/rds/send.c
+> @@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
+>  unlock_and_drop:
+>  		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
+>  		rds_message_put(rm);
+> -		if (was_on_sock && rm)
+> +		if (was_on_sock)
+>  			rds_message_put(rm);
+>  	}
+>  
+> -- 
+> 2.31.1
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.inode-type-fixes
+The original, while again messy, looks ok, so I'll drop this revert.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d1466bc583a81830cef2399a4b8a514398351b40
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+greg k-h
