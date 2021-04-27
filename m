@@ -2,87 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F2236C1F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C506B36C230
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 11:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhD0JnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 05:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhD0JnN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 05:43:13 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA43C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 02:42:30 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id x14so5350004qvr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 02:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xZp+omIfpjqx0dOZjT8YOPOoTGLrVGaiXPBJR5pJjuM=;
-        b=TNxknECt4W/zYw9tFnsMVcw53SpOaMiuMBNjLnRaB3s4VR2BcWbXiey7UpRFMnziG2
-         Pnx75BRSOcxMeQfBB05Q1OSfty1M+ZcSQml7RON27tpl2dWSk1N9Y3hbKSSqJkZ4N750
-         kO50D46i8NzCQenZg3IAFeGAMdBWp/gIa68A0FTLmbS3nTQzz5p3XJi/br6zXugC9YYC
-         tHIKDr/8VDTud1fLMTiNLQfdpdgadYLxTbOtCTjzkWzoJXEjUBxqWhbf4+Zm9CPNW5yG
-         6ZiFKXXqE9liPfYp4W+2k0N/5XJ07c3lmDzMeflN9LiMvDIuP7bYZjoDEYY7x63bhXe8
-         9WmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xZp+omIfpjqx0dOZjT8YOPOoTGLrVGaiXPBJR5pJjuM=;
-        b=qRt7XuA2UvV/GjMrxHN+sX2mKfNBx6YjftxOrU4zA6En0Np6Hl2gkjyO7p2tMKnElO
-         uikgUPju6cpGoth0X9sfZpyAHYYArMiHlIzZWcYAwa4G/QkDIf+z7cT/N1rXa5PY9dsl
-         exRGFiEmxo1KIjqgcsU7fDmRe/PREnHnyWK0ioJIZirPQZdql4tFxo4WkOs3AzRUgk9/
-         ic0n454PEA6L+4LrOAJ3Npjge2KDGj8i3r43xiThf2HKBLgLp0NLSm7StZSRIllLY9TG
-         7Q1nOeVg6pH/YC9MYZF6D6AtbUAMroA7pXLNPA90OQvUr2RG6BVkPsEtx4asVBD8Wzz4
-         wOXQ==
-X-Gm-Message-State: AOAM530/JFJ4CWGV+PEDYXjABGnw+iog06YY3OWKPE1ho3+B/LJNGD6w
-        CpW6RdTD2fZAl3LvwkeIMoRHGbf/kDX2hn/i5I0=
-X-Google-Smtp-Source: ABdhPJw1i5Ej085FKx+9AZJe13/YmFRyDry5nNqfqusksuz2dBIfZ+nFvKDw46T8C00sEUQkZUoeAJQAVGRBxNjms2Q=
-X-Received: by 2002:a05:6214:da7:: with SMTP id h7mr22459682qvh.48.1619516549875;
- Tue, 27 Apr 2021 02:42:29 -0700 (PDT)
+        id S235267AbhD0JzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 05:55:00 -0400
+Received: from void.so ([95.85.17.176]:22813 "EHLO void.so"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230341AbhD0Jy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 05:54:59 -0400
+X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Apr 2021 05:54:58 EDT
+Received: from void.so (localhost [127.0.0.1])
+        by void.so (Postfix) with ESMTP id 09D262B2FBA;
+        Tue, 27 Apr 2021 12:44:16 +0300 (MSK)
+Received: from void.so ([127.0.0.1])
+        by void.so (void.so [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+        id Oi39z_JHYqM4; Tue, 27 Apr 2021 12:44:11 +0300 (MSK)
+Received: from rnd (unknown [91.244.183.205])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by void.so (Postfix) with ESMTPSA id 1F42D2B2FB9;
+        Tue, 27 Apr 2021 12:44:10 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=void.so; s=mail;
+        t=1619516651; bh=udsMXhoCPIqP09TaGi8Jjej4w+1ijnRhTTeyhYR6ZMc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=VYt/9ZQIhAJBl2nAa1cgTOHPDqShBi5Ei+cvze9QbyTQiJKhr0ByCRKo2sytBdrZr
+         SHrcV5aGliuiLisT9gMLxqXOjvSOhRdftMyNahoCo+8A1fVkPqF/Bcw9ITPq8yT11e
+         Qq0hWeYR3q0b+PseMIWH8ixQKdvyFcZRQDT77A0A=
+Date:   Tue, 27 Apr 2021 12:42:20 +0300
+From:   Pavel Balaev <mail@void.so>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ido Schimmel <idosch@nvidia.com>
+Subject: Re: [PATCH v4 net-next] net: multipath routing: configurable seed
+Message-ID: <YIfcfEiym5PKAe0w@rnd>
+References: <YILPPCyMjlnhPmEN@rnd>
+ <93ca6644-fc5a-0977-db7d-16779ebd320c@gmail.com>
 MIME-Version: 1.0
-References: <20210426124340.4238-1-lyl2019@mail.ustc.edu.cn>
-In-Reply-To: <20210426124340.4238-1-lyl2019@mail.ustc.edu.cn>
-From:   Matthew Auld <matthew.william.auld@gmail.com>
-Date:   Tue, 27 Apr 2021 10:42:03 +0100
-Message-ID: <CAM0jSHN3niCs2bQ6bsP1YmdmWcQS17wt-Yo=730q9f_zES=dBQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/i9i5/gt: Fix a double free in gen8_preallocate_top_level_pdp
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <93ca6644-fc5a-0977-db7d-16779ebd320c@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 at 13:44, Lv Yunlong <lyl2019@mail.ustc.edu.cn> wrote:
->
-> Our code analyzer reported a double free bug.
->
-> In gen8_preallocate_top_level_pdp, pde and pde->pt.base are allocated
-> via alloc_pd(vm) with one reference. If pin_pt_dma() failed, pde->pt.base
-> is freed by i915_gem_object_put() with a reference dropped. Then free_pd
-> calls free_px() defined in intel_ppgtt.c, which calls i915_gem_object_put()
-> to put pde->pt.base again.
->
-> As pde->pt.base is protected by refcount, so the second put will not free
-> pde->pt.base actually. But, maybe it is better to remove the first put?
->
-> Fixes: 82adf901138cc ("drm/i915/gt: Shrink i915_page_directory's slab bucket")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+On Mon, Apr 26, 2021 at 09:21:53PM -0600, David Ahern wrote:
+> On 4/23/21 6:44 AM, Balaev Pavel wrote:
+> > Ability for a user to assign seed value to multipath route hashes.
+> > Now kernel uses random seed value to prevent hash-flooding DoS attacks;
+> > however, it disables some use cases, f.e:
+> > 
+> > +-------+        +------+        +--------+
+> > |       |-eth0---| FW0  |---eth0-|        |
+> > |       |        +------+        |        |
+> > |  GW0  |ECMP                ECMP|  GW1   |
+> > |       |        +------+        |        |
+> > |       |-eth1---| FW1  |---eth1-|        |
+> > +-------+        +------+        +--------+
+> > 
+> > In this use case, two ECMP routers balance traffic between two firewalls.
+> > If some flow transmits a response over a different channel than request,
+> > such flow will be dropped, because keep-state rules are created on
+> > the other firewall.
+> > 
+> > This patch adds sysctl variable: net.ipv4|ipv6.fib_multipath_hash_seed.
+> > User can set the same seed value on GW0 and GW1 for traffic to be
+> > mirror-balanced. By default, random value is used.
+> > 
+> > Signed-off-by: Balaev Pavel <balaevpa@infotecs.ru>
+> > ---
+> >  Documentation/networking/ip-sysctl.rst        |  14 +
+> >  include/net/flow_dissector.h                  |   4 +
+> >  include/net/netns/ipv4.h                      |   2 +
+> >  include/net/netns/ipv6.h                      |   3 +
+> >  net/core/flow_dissector.c                     |   9 +
+> >  net/ipv4/route.c                              |  10 +-
+> >  net/ipv4/sysctl_net_ipv4.c                    |  97 +++++
+> >  net/ipv6/route.c                              |  10 +-
+> >  net/ipv6/sysctl_net_ipv6.c                    |  96 +++++
+> >  .../testing/selftests/net/forwarding/Makefile |   1 +
+> >  tools/testing/selftests/net/forwarding/lib.sh |  41 +++
+> >  .../net/forwarding/router_mpath_seed.sh       | 347 ++++++++++++++++++
+> >  12 files changed, 632 insertions(+), 2 deletions(-)
+> >  create mode 100755 tools/testing/selftests/net/forwarding/router_mpath_seed.sh
+> 
+> this really needs to be multiple patches. At a minimum 1 for ipv4, 1 for
+> ipv6 and 1 for the test script (thank you for adding that).
+> 
+> [ cc'ed Ido since most of the tests under
+> tools/testing/selftests/net/forwarding come from him and team ]
 
-Yes, it looks like this fixes a potential use-after-free. Thanks for the patch,
-Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+OK, I will create 3 patches. Thanks for the advice.
 
-Pushed to drm-intel-gt-next.
+> > 
+> > diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+> > index 9701906f6..d1a67e6fe 100644
+> > --- a/Documentation/networking/ip-sysctl.rst
+> > +++ b/Documentation/networking/ip-sysctl.rst
+> > @@ -100,6 +100,20 @@ fib_multipath_hash_policy - INTEGER
+> >  	- 1 - Layer 4
+> >  	- 2 - Layer 3 or inner Layer 3 if present
+> >  
+> > +fib_multipath_hash_seed - STRING
+> > +	Controls seed value for multipath route hashes. By default
+> > +	random value is used. Only valid for kernels built with
+> > +	CONFIG_IP_ROUTE_MULTIPATH enabled.
+> > +
+> > +	Valid format: two hex values set off with comma or "random"
+> > +	keyword.
+> > +
+> > +	Example to generate the seed value::
+> > +
+> > +		RAND=$(openssl rand -hex 16) && echo "${RAND:0:16},${RAND:16:16}"
+> > +
+> > +	Default: "random"
+> > +
+> >  fib_sync_mem - UNSIGNED INTEGER
+> >  	Amount of dirty memory from fib entries that can be backlogged before
+> >  	synchronize_rcu is forced.
+> > diff --git a/include/net/flow_dissector.h b/include/net/flow_dissector.h
+> > index ffd386ea0..2bd4e28de 100644
+> > --- a/include/net/flow_dissector.h
+> > +++ b/include/net/flow_dissector.h
+> > @@ -348,6 +348,10 @@ static inline bool flow_keys_have_l4(const struct flow_keys *keys)
+> >  }
+> >  
+> >  u32 flow_hash_from_keys(struct flow_keys *keys);
+> > +#ifdef CONFIG_IP_ROUTE_MULTIPATH
+> > +u32 flow_multipath_hash_from_keys(struct flow_keys *keys,
+> > +			   const siphash_key_t *seed);
+> 
+> column alignment looks off here ^^^^ and a few other places; please
+> correct in the next version.
+> 
+After running "scripts/checkpatch.pl" I got warnings about alignment.
+So I run checkpatch.pl --fix and fixed alignment as a script did.
+So warnings goes away. I don't get the rules of alignment, can you 
+tell me the right way?
