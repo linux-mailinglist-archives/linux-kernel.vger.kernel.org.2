@@ -2,159 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1901D36CEED
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3A936CEFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237144AbhD0WyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239458AbhD0Wxv (ORCPT
+        id S237135AbhD0W46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:56:58 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:42710 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235703AbhD0W4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:53:51 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92588C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:53:07 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so17671187ybp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=RRWLcA4U8+e/XOHvkZswRCx0YI32rbruxBRpXWbXmCs=;
-        b=okG18pV2cHje7Vas2xHrgpMSRzPJeLI9iRNJPNE0FPrPp6Klcqy7/1Swk9FhXFy3Qb
-         tJpEyh/CfyzSMCfu+ZiCoWyeiRSKT3APXIJisybUxKCfMpzvt07y/CRA5np6G5JapEpB
-         IUI6hMM0aN7/n1yjIYUXs9pj5LHPpMC/9gDy2s4fGjKSH94J6JXZvHYcGTjVJ0ktYWkq
-         1gR8Oy0hwQTr9EXyrrp0TO9YsOE8GFBDMrUmb73xr9K7a7VeRuC2Vo+NbSMC+Jz2Elej
-         wemHAx8m2OCf16Mzand+AzUNOPgoC4hkLUjk9Kez5uNslnMgycE0zkqOGfIF4GhASWCT
-         0Yvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RRWLcA4U8+e/XOHvkZswRCx0YI32rbruxBRpXWbXmCs=;
-        b=fcAVfVGKCUICvvR7D65wCI0fcIHCdDKzTxnikkK//cofCeEHhcH+SeXPYfFAJ5TQK9
-         Nt2Cp6fpkQttebV7kjfqvxb9rm20Ejav5rwj4AugHDzdOaWP3DZseUklbYRQAH+6BYRX
-         zH/GfJA9Z1ruoeoBs5ugoSuGZ7McPfJXvrkGP3MsDzejdTrCSkwRcpS8+ZsZE2d2l9sg
-         SLXu+VZWhbrHmdZ/7q1cYp1zQHYGMgWfAEhxGvqDzsWCy5LQUU98mIUv9K/0lpgkZ18Q
-         H//G3S5nuenf75PHYaI0utMlHp5y5a2Bl9HlHN0WvigWc/U/vGUY9dB1DA7D9zfnU+Yu
-         /BOQ==
-X-Gm-Message-State: AOAM531WsBFEJwRMWiXNguN6Xy+mTpe/yJz0JI1/DpibpzgH1Vuk5Drd
-        GO8aikQfXm37QD4/7MNdMIze4yl1G/6AcVqFZlJN
-X-Google-Smtp-Source: ABdhPJzDsCZYem6SJI6F68LBLgPVRrD7LYUqb4Kv0yx1mHkS1m/coZ3723JWgl0BgYOQPFBBRglbFBkLq324+VmTx7i4
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:c423:570b:b823:c33e])
- (user=axelrasmussen job=sendgmr) by 2002:a25:8682:: with SMTP id
- z2mr12874549ybk.325.1619563986815; Tue, 27 Apr 2021 15:53:06 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 15:52:44 -0700
-In-Reply-To: <20210427225244.4326-1-axelrasmussen@google.com>
-Message-Id: <20210427225244.4326-11-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210427225244.4326-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v5 10/10] userfaultfd/selftests: exercise minor fault handling
- shmem support
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 27 Apr 2021 18:56:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=9cMqKeVqpV09cXzdKEdeF1wGWj3NSvz6cLLXzNXUCD8=; b=bZ0qGVskfkWJrx7xQzfuMkoJWn
+        uXsbXCfWUy5H+XPJj218MIPSekFTaV56i4dZC9FFheUYyXLbwiAPhK3Bq+k3tBDvz0B7hbOVfR/Pw
+        rU0TsIsdHTeMVZuRSJHe4unPK2tJx/470PpEKYmwqqNM5SMKswk4DlpwIILF3MrN0C47OMfdXi5S2
+        BmumlWMKxYppg3kVyzDdH2wUlAdUddF9ynHCOu6+qhXaeoKWzLwiJNa8Oc5YWsvB9LSQXNNpokW3c
+        /UfXKIphBb3KBrtAfzVBu1rR4lQSws2cuqBfu3uWRWvY4NniZl2lxAPi8Nr5LTxNRFv7wpixJqrf/
+        2mQpmzmw==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lbWcM-0002ln-Cs; Tue, 27 Apr 2021 16:55:47 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-6-logang@deltatee.com>
+ <20210427193157.GQ2047089@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <3c9ba6df-750a-3847-f1fc-8e41f533d1a2@deltatee.com>
+Date:   Tue, 27 Apr 2021 16:55:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210427193157.GQ2047089@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH 05/16] dma-mapping: Introduce dma_map_sg_p2pdma()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable test_uffdio_minor for test_type == TEST_SHMEM, and modify the
-test slightly to pass in / check for the right feature flags.
 
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 29 ++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 3fbc69f513dc..a7ecc9993439 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -474,6 +474,7 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
- static void continue_range(int ufd, __u64 start, __u64 len)
- {
- 	struct uffdio_continue req;
-+	int ret;
- 
- 	req.range.start = start;
- 	req.range.len = len;
-@@ -482,6 +483,17 @@ static void continue_range(int ufd, __u64 start, __u64 len)
- 	if (ioctl(ufd, UFFDIO_CONTINUE, &req))
- 		err("UFFDIO_CONTINUE failed for address 0x%" PRIx64,
- 		    (uint64_t)start);
-+
-+	/*
-+	 * Error handling within the kernel for continue is subtly different
-+	 * from copy or zeropage, so it may be a source of bugs. Trigger an
-+	 * error (-EEXIST) on purpose, to verify doing so doesn't cause a BUG.
-+	 */
-+	req.mapped = 0;
-+	ret = ioctl(ufd, UFFDIO_CONTINUE, &req);
-+	if (ret >= 0 || req.mapped != -EEXIST)
-+		err("failed to exercise UFFDIO_CONTINUE error handling, ret=%d, mapped=%" PRId64,
-+		    ret, (int64_t) req.mapped);
- }
- 
- static void *locking_thread(void *arg)
-@@ -1182,7 +1194,7 @@ static int userfaultfd_minor_test(void)
- 	void *expected_page;
- 	char c;
- 	struct uffd_stats stats = { 0 };
--	uint64_t features = UFFD_FEATURE_MINOR_HUGETLBFS;
-+	uint64_t req_features, features_out;
- 
- 	if (!test_uffdio_minor)
- 		return 0;
-@@ -1190,9 +1202,17 @@ static int userfaultfd_minor_test(void)
- 	printf("testing minor faults: ");
- 	fflush(stdout);
- 
--	uffd_test_ctx_init_ext(&features);
--	/* If kernel reports the feature isn't supported, skip the test. */
--	if (!(features & UFFD_FEATURE_MINOR_HUGETLBFS)) {
-+	if (test_type == TEST_HUGETLB)
-+		req_features = UFFD_FEATURE_MINOR_HUGETLBFS;
-+	else if (test_type == TEST_SHMEM)
-+		req_features = UFFD_FEATURE_MINOR_SHMEM;
-+	else
-+		return 1;
-+
-+	features_out = req_features;
-+	uffd_test_ctx_init_ext(&features_out);
-+	/* If kernel reports required features aren't supported, skip test. */
-+	if ((features_out & req_features) != req_features) {
- 		printf("skipping test due to lack of feature support\n");
- 		fflush(stdout);
- 		return 0;
-@@ -1426,6 +1446,7 @@ static void set_test_type(const char *type)
- 		map_shared = true;
- 		test_type = TEST_SHMEM;
- 		uffd_test_ops = &shmem_uffd_test_ops;
-+		test_uffdio_minor = true;
- 	} else {
- 		err("Unknown test type: %s", type);
- 	}
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+On 2021-04-27 1:31 p.m., Jason Gunthorpe wrote:
+> On Thu, Apr 08, 2021 at 11:01:12AM -0600, Logan Gunthorpe wrote:
+>> +/*
+>> + * dma_maps_sg_attrs returns 0 on error and > 0 on success.
+>> + * It should never return a value < 0.
+>> + */
+> 
+> Also it is weird a function that can't return 0 is returning an int type
 
+Yes, Christoph mentioned in the last series that this should probably
+change to an unsigned but I wasn't really sure if that change should be
+a part of the P2PDMA series.
+
+>> +int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
+>> +		enum dma_data_direction dir, unsigned long attrs)
+>> +{
+>> +	int ents;
+>> +
+>> +	ents = __dma_map_sg_attrs(dev, sg, nents, dir, attrs);
+>>  	BUG_ON(ents < 0);
+> 
+> if (WARN_ON(ents < 0))
+>      return 0;
+> 
+> instead of bug on?
+
+It was BUG_ON in the original code. So I felt I should leave it.
+
+> Also, I see only 8 users of this function. How about just fix them all
+> to support negative returns and use this as the p2p API instead of
+> adding new API?
+
+Well there might be 8 users of dma_map_sg_attrs() but there are a very
+large number of dma_map_sg(). Seems odd to me to single out the first as
+requiring these changes, but leave the latter.
+
+> Add the opposite logic flag, 'DMA_ATTRS_NO_ERROR' and pass it through
+> the other api entry callers that can't handle it?
+
+I'm not that opposed to this. But it will make this series a fair bit
+longer to change the 8 map_sg_attrs() usages.
+
+Logan
