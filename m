@@ -2,149 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAD436BC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5AF36BC82
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 02:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhD0AKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 20:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhD0AKH (ORCPT
+        id S235178AbhD0AOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 20:14:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232235AbhD0AOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 20:10:07 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC49AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 17:09:23 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id f12so43026602qtf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 17:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ASbelm9S4yPS4xWMqCvASfjkulblCpeK5M5qQRrljEU=;
-        b=Je/gY+2BmbAhU/jLay+7xG82NGKtAaAgFNfic53VapjebG9Xc/WaSOrs9ay8U/NhWn
-         0iQe5DLr4mVuBW/4Hk30sq3KTqNnZyOwmZ35s3t+FrNJEXzY0idFtjmzMpINq99iF0f7
-         1hHxAcQC1gNvZSSzgEtp/xobDG4TvzFw0vtlY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ASbelm9S4yPS4xWMqCvASfjkulblCpeK5M5qQRrljEU=;
-        b=HNWciplyW5cm1DuXd31ImD4xTUiiqjX9QXc5fQzc2lysswBL5eulo7G/LI67khZpax
-         X+mD64aMQFJQMmawGlLfmjGJ96fT3ffIrtGp2gTBO7TCPLCXAtX85EqcM5RKnGQezKXA
-         76sg+UGAnsEURF0M8lFv2DMmSzzoI3mkZamqlccUFURjYucH9ZtjW0qS19rwemHtLoVP
-         YM+16yYDWAUp3ccqCQZ7RYtBAy1R+SXvIj1BiTYwJWDHqzxv9HFtfwDFSreOS6reRXer
-         GRZFe+GHP9uYrEUg08SK7cAuI8A8NVc9xX+OJchsPXBC//9wc7fTaMKia+4mq1XOliaP
-         qL5A==
-X-Gm-Message-State: AOAM531fUiNIMPz5pSMCI54FeX9eSqBgIpIx6l4cxtTlPqDcC7vptvL2
-        ZyYjUf/RP93eTNSa4ho9Dh8XtIzBlEDPL7H45rI=
-X-Google-Smtp-Source: ABdhPJzYYVbDzkwP1j64JRJ4JesWIj9Np4hK4nua2AtVgg1J8wHVBnhbJLqB3hi8ainUdcLmAURe8w==
-X-Received: by 2002:ac8:4e53:: with SMTP id e19mr19131950qtw.248.1619482162958;
-        Mon, 26 Apr 2021 17:09:22 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:1d8c])
-        by smtp.gmail.com with ESMTPSA id f2sm1629076qkm.84.2021.04.26.17.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 17:09:22 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 01:09:20 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Alexander Sosna <alexander@sosna.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Prevent OOM casualties by enforcing memcg limits
-Message-ID: <YIdWMC/iAdanDjLh@chrisdown.name>
-References: <ea6db5cc-f862-7c4b-d872-acb29c2d8193@sosna.de>
+        Mon, 26 Apr 2021 20:14:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619482446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U3rMIJssX1d2huVmRZulEKHtd5HxdDz+2MIzkHFnJbI=;
+        b=Aiso00+AsULLnvtrDOj2VwSvW+Y1kG/uEXBbsgx1YQoAUZZRdbn+jyM8rIcbIyWsMKF+IG
+        TlAulyEtbX5CU/NlQbzMbtOIgT+YONn+29PBj5z8v36qoK6yHsbo10cmE2RR7Jpjl5KCQN
+        EJNnX4RtTeDRap2zhCoySz6hzt1kXQA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-aGAgAgXLNhO-fNW1VoCbsA-1; Mon, 26 Apr 2021 20:14:04 -0400
+X-MC-Unique: aGAgAgXLNhO-fNW1VoCbsA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E76DF18397A4;
+        Tue, 27 Apr 2021 00:14:01 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-20.rdu2.redhat.com [10.10.112.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD9C260C4A;
+        Tue, 27 Apr 2021 00:13:50 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <3779937.1619478404@warthog.procyon.org.uk>
+References: <3779937.1619478404@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, linux-cifs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net
+Subject: [GIT PULL] afs: Preparation for fscache overhaul
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <ea6db5cc-f862-7c4b-d872-acb29c2d8193@sosna.de>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3785062.1619482429.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 27 Apr 2021 01:13:49 +0100
+Message-ID: <3785063.1619482429@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+Hi Linus,
 
-Alexander Sosna writes:
->Before this commit memory cgroup limits were not enforced during
->allocation.  If a process within a cgroup tries to allocates more
->memory than allowed, the kernel will not prevent the allocation even if
->OVERCOMMIT_NEVER is set.  Than the OOM killer is activated to kill
->processes in the corresponding cgroup.
+Here's a set of patches for the AFS filesystem for 5.13 to begin the
+process of overhauling the use of the fscache API by AFS and the
+introduction of support for features such as Transparent Huge Pages (THPs)=
+.
 
-Unresolvable cgroup overages are indifferent to vm.overcommit_memory, since 
-exceeding memory.max is not overcommitment, it's just a natural consequence of 
-the fact that allocation and reclaim are not atomic processes. Overcommitment, 
-on the other hand, is about the bounds of available memory at the global 
-resource level.
+ (1) Add some support for THPs, including using core VM helper functions t=
+o
+     find details of pages.
 
->This behavior is not to be expected
->when setting OVERCOMMIT_NEVER (vm.overcommit_memory = 2) and it is a huge
->problem for applications assuming that the kernel will deny an allocation
->if not enough memory is available, like PostgreSQL.  To prevent this a
->check is implemented to not allow a process to allocate more memory than
->limited by it's cgroup.  This means a process will not be killed while
->accessing pages but will receive errors on memory allocation as
->appropriate.  This gives programs a chance to handle memory allocation
->failures gracefully instead of being reaped.
+ (2) Use the ITER_XARRAY I/O iterator to mediate access to the pagecache a=
+s
+     this handles THPs and doesn't require allocation of large bvec arrays=
+.
 
-We don't guarantee that vm.overcommit_memory 2 means "no OOM killer". It can 
-still happen for a bunch of reasons, so I really hope PostgreSQL isn't relying 
-on that.
+ (3) Delegate address_space read/pre-write I/O methods for AFS to the netf=
+s
+     helper library.  A method is provided to the library that allows it t=
+o
+     issue a read against the server.
 
-Could you please be more clear about the "huge problem" being solved here? I'm 
-not seeing it.
+     This includes a change in use for PG_fscache (it now indicates a DIO
+     write in progress from the marked page), so a number of waits need to
+     be deployed for it.
 
->Signed-off-by: Alexander Sosna <alexander@sosna.de>
->
->diff --git a/mm/util.c b/mm/util.c
->index a8bf17f18a81..c84b83c532c6 100644
->--- a/mm/util.c
->+++ b/mm/util.c
->@@ -853,6 +853,7 @@ EXPORT_SYMBOL_GPL(vm_memory_committed);
->  *
->  * Strict overcommit modes added 2002 Feb 26 by Alan Cox.
->  * Additional code 2002 Jul 20 by Robert Love.
->+ * Code to enforce memory cgroup limits added 2021 by Alexander Sosna.
->  *
->  * cap_sys_admin is 1 if the process has admin privileges, 0 otherwise.
->  *
->@@ -891,6 +892,34 @@ int __vm_enough_memory(struct mm_struct *mm, long
->pages, int cap_sys_admin)
-> 		long reserve = sysctl_user_reserve_kbytes >> (PAGE_SHIFT - 10);
->
-> 		allowed -= min_t(long, mm->total_vm / 32, reserve);
->+
->+#ifdef CONFIG_MEMCG
->+		/*
->+		 * If we are in a memory cgroup we also evaluate if the cgroup
->+		 * has enough memory to allocate a new virtual mapping.
+ (4) Split the core AFS writeback function to make it easier to modify in
+     future patches to handle writing to the cache.  [This might feasibly
+     make more sense moved out into my fscache-iter branch].
 
-This comment confuses me further, I'm afraid. You're talking about virtual 
-mappings, but then checking memory.max, which is about allocated pages.
+I've tested these with "xfstests -g quick" against an AFS volume (xfstests
+needs patching to make it work).  With this, AFS without a cache passes al=
+l
+expected xfstests; with a cache, there's an extra failure, but that's also
+there before these patches.  Fixing that probably requires a greater
+overhaul (as can be found on my fscache-iter branch, but that's for a late=
+r
+time).
 
->+		 * This is how we can keep processes from exceeding their
->+		 * limits and also prevent that the OOM killer must be
->+		 * awakened.  This gives programs a chance to handle memory
->+		 * allocation failures gracefully and not being reaped.
->+		 * In the current version mem_cgroup_get_max() is used which
->+		 * allows the processes to exceeded their memory limits if
->+		 * enough SWAP is available.  If this is not intended we could
->+		 * use READ_ONCE(memcg->memory.max) instead.
->+		 *
->+		 * This code is only reached if sysctl_overcommit_memory equals
->+		 * OVERCOMMIT_NEVER, both other options are handled above.
->+		 */
->+		{
->+			struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
->+
->+			if (memcg) {
->+				long available = mem_cgroup_get_max(memcg)
->+						- mem_cgroup_size(memcg);
->+
->+				allowed = min_t(long, available, allowed);
->+			}
->+		}
->+#endif
-> 	}
->
-> 	if (percpu_counter_read_positive(&vm_committed_as) < allowed)
->
+Thanks should go to Marc Dionne and Jeff Altman of AuriStor for exercising
+the patches in their test farm also.
+
+
+Changes
+=3D=3D=3D=3D=3D=3D=3D
+
+These patches are dependent on the netfs-lib branch and have been posted i=
+n
+association with them.  The changes relevant to these patches are:
+
+ver #6:
+      Split the afs patches out into their own branch.
+
+ver #5:
+      Fixed some review comments from Matthew Wilcox:
+
+      - Better names for wrangling functions for PG_private_2 and
+        PG_fscache wrangling functions[3].  Came up with
+        {set,end,wait_for}_page_private_2() and aliased these for fscache.
+
+      Moved the taking of/dropping a page ref for the PG_private_2 flag
+      into the set and end functions.
+
+ver #4:
+      Rebased to v5.12-rc2 and added a bunch of references into individual
+      commits.
+
+ver #3:
+      Adjusted the functions that unlock and wait for PG_fscache according
+      to Linus's suggestion[1].
+
+      Hold a ref on a page when PG_fscache is set as per Linus's
+      suggestion[2].
+
+Link: https://lore.kernel.org/r/CAHk-=3Dwh+2gbF7XEjYc=3DHV9w_2uVzVf7vs60BP=
+z0gFA=3D+pUm3ww@mail.gmail.com/ [1]
+Link: https://lore.kernel.org/r/CAHk-=3DwjgA-74ddehziVk=3DXAEMTKswPu1Yw4ua=
+ro1R3ibs27ztw@mail.gmail.com/ [2]
+Link: https://lore.kernel.org/r/20210321105309.GG3420@casper.infradead.org=
+/ [3]
+
+References
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+These patches have been published for review before, firstly as part of a
+larger set:
+
+Link: https://lore.kernel.org/r/158861203563.340223.7585359869938129395.st=
+git@warthog.procyon.org.uk/
+
+Link: https://lore.kernel.org/r/159465766378.1376105.11619976251039287525.=
+stgit@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/159465784033.1376674.18106463693989811037.=
+stgit@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/159465821598.1377938.2046362270225008168.s=
+tgit@warthog.procyon.org.uk/
+
+Link: https://lore.kernel.org/r/160588455242.3465195.3214733858273019178.s=
+tgit@warthog.procyon.org.uk/
+
+Then as a cut-down set:
+
+Link: https://lore.kernel.org/r/161118128472.1232039.11746799833066425131.=
+stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/161161025063.2537118.2009249444682241405.s=
+tgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/161340385320.1303470.2392622971006879777.s=
+tgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/161539526152.286939.8589700175877370401.st=
+git@warthog.procyon.org.uk/ # v4
+Link: https://lore.kernel.org/r/161653784755.2770958.11820491619308713741.=
+stgit@warthog.procyon.org.uk/ # v5
+Link: https://lore.kernel.org/r/161789062190.6155.12711584466338493050.stg=
+it@warthog.procyon.org.uk/ # v6
+Link: https://lore.kernel.org/r/161918446704.3145707.14418606303992174310.=
+stgit@warthog.procyon.org.uk # v7
+
+David
+---
+The following changes since commit 26aaeffcafe6cbb7c3978fa6ed7555122f8c9f8=
+c:
+
+  fscache, cachefiles: Add alternate API to use kiocb for read/write to ca=
+che (2021-04-23 10:14:32 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-netfs-lib-20210426
+
+for you to fetch changes up to 3003bbd0697b659944237f3459489cb596ba196c:
+
+  afs: Use the netfs_write_begin() helper (2021-04-23 10:17:28 +0100)
+
+----------------------------------------------------------------
+AFS: Use the new netfs lib
+
+----------------------------------------------------------------
+David Howells (14):
+      afs: Disable use of the fscache I/O routines
+      afs: Pass page into dirty region helpers to provide THP size
+      afs: Print the operation debug_id when logging an unexpected data ve=
+rsion
+      afs: Move key to afs_read struct
+      afs: Don't truncate iter during data fetch
+      afs: Log remote unmarshalling errors
+      afs: Set up the iov_iter before calling afs_extract_data()
+      afs: Use ITER_XARRAY for writing
+      afs: Wait on PG_fscache before modifying/releasing a page
+      afs: Extract writeback extension into its own function
+      afs: Prepare for use of THPs
+      afs: Use the fs operation ops to handle FetchData completion
+      afs: Use new netfs lib read helper API
+      afs: Use the netfs_write_begin() helper
+
+ fs/afs/Kconfig             |   1 +
+ fs/afs/dir.c               | 225 +++++++++++-----
+ fs/afs/file.c              | 483 +++++++++------------------------
+ fs/afs/fs_operation.c      |   4 +-
+ fs/afs/fsclient.c          | 108 +++-----
+ fs/afs/inode.c             |   7 +-
+ fs/afs/internal.h          |  59 ++--
+ fs/afs/rxrpc.c             | 150 ++++-------
+ fs/afs/write.c             | 657 +++++++++++++++++++++++-----------------=
+-----
+ fs/afs/yfsclient.c         |  82 ++----
+ include/net/af_rxrpc.h     |   2 +-
+ include/trace/events/afs.h |  74 +++--
+ net/rxrpc/recvmsg.c        |   9 +-
+ 13 files changed, 805 insertions(+), 1056 deletions(-)
+
