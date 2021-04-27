@@ -2,139 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1738136BF66
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDBE36BF68
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhD0GpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 02:45:01 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:46381 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhD0Go7 (ORCPT
+        id S234015AbhD0Gp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhD0Gp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:44:59 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4272660007;
-        Tue, 27 Apr 2021 06:44:11 +0000 (UTC)
-Subject: Re: [PATCH v8] RISC-V: enable XIP
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, vitaly.wool@konsulko.com
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org
-References: <CAM4kBBJChiqkarKwn3roe+BLotsGDptfmYKKDxE45AnFZNUoPw@mail.gmail.com>
- <mhng-08bcf932-3a06-43cf-b0b0-9614d09aa17d@palmerdabbelt-glaptop>
- <CA+G9fYv4y+n6PoYf1jOPZbjPxY7rTi+Ajc89zsNzTS0_uL+RJw@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <3b6ff653-f29f-3230-201d-8ca756346792@ghiti.fr>
-Date:   Tue, 27 Apr 2021 02:44:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 27 Apr 2021 02:45:28 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91C7C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:44:44 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id u3so9281877eja.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=beVnvv3fpjAijDUKHOzdEO5d+t6max0lfbKi6YhHc3o=;
+        b=Sh+1mNElMZpfxlD8S1nbdxxWcStFZaiUudpF4XOCnrzj9rdHZa0nc+DSeAsct0NyO1
+         mMYnhSiLw+JQB7DXpX2pNdp289WQrow0VxiMYfHYHtUtqi9vAjcNYSSRGwryOcHnf5Px
+         WfU47lmiEZzVKzaV6Ff01tL8bQMSIDR/bsdm+uAlSZNy+t1QXkhDFPwNUtzIrnl/b79y
+         yuQM0L8g3b8MweyqMM39OuJFVjbLdBD42i7KsQQjgstypWEDwP7ttNcabDJom2f8A7GW
+         +AkPyOP7NpFOuTUgX4A9NNOJuWpCCIh+gqubLv24ee8qcXyzgjD0OwwRLqmi3Jf7n1K/
+         PwjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=beVnvv3fpjAijDUKHOzdEO5d+t6max0lfbKi6YhHc3o=;
+        b=O90apajrQi6JMLAqhUC+NpjQYSQdQBqUgaQuQgKXb/y99Sj6orbvU5Au2ls7bSm1Ce
+         35f9AUhuVf7EsK19RWMF/ojX8GGqZAwrSkO5t0cBCEkXqLa/IHxs6qpnB/Gum1On7GaJ
+         oPQ+AnUh+q5kYuGH/se1zm8AI2vdiPTKaSHWfxdlnOwNH4JCCEWI8lEzVHpozmvqWrnf
+         tvLhuj1hFKkIztpepO+QxmNKqYE4dVP8imfdamxUTvYhuYRfHdXoBiFA+mgyXvunt+4K
+         RwV72G64j++ar4ssQs32yHEyW/HFHahD8H4voXaSnL2cnqpriGGRaOdPXy8WnBTaneFs
+         jjHg==
+X-Gm-Message-State: AOAM5325zLQN/6LmDLrHBGjYT2SrunzAO9PtwqmgLC6QaD6LiY0Eaj8U
+        qABiZnCFFtuNgsc3rqiuDDDh5LDmHCXT5O/3JgSUaQ==
+X-Google-Smtp-Source: ABdhPJw/Z8qx5TGdrUnWuHNwEi+0Idt1kGmFEmjXmNbt2JnYYcztr3o9pMisPRVTq8NsqwbcNDbn/9y+ROCSa0XE+t0=
+X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr21790698eju.503.1619505883483;
+ Mon, 26 Apr 2021 23:44:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYv4y+n6PoYf1jOPZbjPxY7rTi+Ajc89zsNzTS0_uL+RJw@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210426072820.568997499@linuxfoundation.org>
+In-Reply-To: <20210426072820.568997499@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Apr 2021 12:14:32 +0530
+Message-ID: <CA+G9fYvVNMyZmDM0ocdiWYvf_3sySqSumGUtHM-Mj-3J=1ZQng@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/57] 4.19.189-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 4/26/21 à 12:46 PM, Naresh Kamboju a écrit :
-> my two cents,
-> 
-> The riscv build failed on Linux -next 20210426 tag kernel due to
-> below warnings / errors.
-> Following builds failed.
->   - riscv (tinyconfig) with gcc-8
->   - riscv (allnoconfig) with gcc-8
->   - riscv (tinyconfig) with gcc-9
->   - riscv (allnoconfig) with gcc-9
->   - riscv (tinyconfig) with gcc-10
->   - riscv (allnoconfig) with gcc-10
-> 
->>>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->>>>> index 30e4af0fd50c..2ddf654c72bb 100644
->>>>> --- a/arch/riscv/kernel/setup.c
->>>>> +++ b/arch/riscv/kernel/setup.c
->>>>> @@ -50,7 +50,11 @@ struct screen_info screen_info __section(".data") = {
->>>>>    * This is used before the kernel initializes the BSS so it can't be in the
->>>>>    * BSS.
->>>>>    */
->>>>> -atomic_t hart_lottery __section(".sdata");
->>>>> +atomic_t hart_lottery __section(".sdata")
->>>>> +#ifdef CONFIG_XIP_KERNEL
->>>>> += ATOMIC_INIT(0xC001BEEF)
->>>>> +#endif
->>>>> +;
->>>>>   unsigned long boot_cpu_hartid;
->>>>>   static DEFINE_PER_CPU(struct cpu, cpu_devices);
->>>>>
->>>>> @@ -254,7 +258,7 @@ void __init setup_arch(char **cmdline_p)
->>>>>   #if IS_ENABLED(CONFIG_BUILTIN_DTB)
->>>>>        unflatten_and_copy_device_tree();
->>>>>   #else
->>>>> -     if (early_init_dt_verify(__va(dtb_early_pa)))
->>>>> +     if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
-> 
-> arch/riscv/kernel/setup.c: In function 'setup_arch':
-> arch/riscv/kernel/setup.c:284:32: error: implicit declaration of
-> function 'XIP_FIXUP' [-Werror=implicit-function-declaration]
->    if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
->                                  ^~~~~~~~~
-> arch/riscv/include/asm/page.h:112:62: note: in definition of macro
-> 'linear_mapping_pa_to_va'
->   #define linear_mapping_pa_to_va(x) ((void *)((unsigned long)(x) +
-> va_pa_offset))
->                                                                ^
-> arch/riscv/include/asm/page.h:156:27: note: in expansion of macro
-> '__pa_to_va_nodebug'
->   #define __va(x)  ((void *)__pa_to_va_nodebug((phys_addr_t)(x)))
->                             ^~~~~~~~~~~~~~~~~~
-> arch/riscv/kernel/setup.c:284:27: note: in expansion of macro '__va'
->    if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
->                             ^~~~
-> cc1: some warnings being treated as errors
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> 
-> 
-> steps to reproduce:
-> ---------------------------
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
-> 
-> 
-> tuxmake --runtime podman --target-arch riscv --toolchain gcc-8
-> --kconfig allnoconfig
+On Mon, 26 Apr 2021 at 13:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
+> This is the start of the stable review cycle for the 4.19.189 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.189-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Thank you Naresh for the report, I will fix that today.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks again,
+## Build
+* kernel: 4.19.189-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: 6eafc8cc1bd738ad08d0ea63ff9ea73c492b295f
+* git describe: v4.19.188-58-g6eafc8cc1bd7
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.188-58-g6eafc8cc1bd7
 
-Alex
+## No regressions (compared to v4.19.188-45-gb0e11de9a516)
 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+## No fixes (compared to v4.19.188-45-gb0e11de9a516)
+
+## Test result summary
+ total: 68591, pass: 54673, fail: 2708, skip: 10962, xfail: 248,
+
+## Build Summary
+* arm: 97 total, 96 passed, 1 failed
+* arm64: 25 total, 24 passed, 1 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 13 passed, 1 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 15 total, 14 passed, 1 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
