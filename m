@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C8336BFA8
+	by mail.lfdr.de (Postfix) with ESMTP id 96EF136BFA9
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236256AbhD0HEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:04:38 -0400
+        id S234867AbhD0HEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:04:42 -0400
 Received: from mga09.intel.com ([134.134.136.24]:54937 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234996AbhD0HE1 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:04:27 -0400
-IronPort-SDR: a+pCUc6HJJnnklXFx/Cth7JvvqXZVfzXIPeWbQbQGXYJZDXGqYN3MikVQ/8xUBJawcC2AEHcyC
- MsbuS7ROgNQQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196573001"
+        id S235173AbhD0HE3 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 03:04:29 -0400
+IronPort-SDR: Wj47eyO8WZggYpxB8TyychVRA94+O+1NoVnxQKahW87kDhVZw0hOZsUY76UiIDEhL23aT5xiww
+ vIQbKDtk5dJQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196573015"
 X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="196573001"
+   d="scan'208";a="196573015"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 00:03:44 -0700
-IronPort-SDR: H2s5it0P3gFu93p5dqZyExNykfJkF78hipCfxbaFZSq4VE8zVlcrlQWswhivPIMdduk6bQGNjI
- 24O5er4laelw==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 00:03:46 -0700
+IronPort-SDR: 0MJQXcbM0TAXVCF0ZvphpPdmWdUUdaslNOdbN3BH9EBaXHVBFnKqA8XMgvJBW2axC53dPDTLja
+ Fdg7+OqAiXoA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="447506826"
+   d="scan'208";a="447506859"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2021 00:03:42 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2021 00:03:44 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v6 13/26] perf record: Create two hybrid 'cycles' events by default
-Date:   Tue, 27 Apr 2021 15:01:26 +0800
-Message-Id: <20210427070139.25256-14-yao.jin@linux.intel.com>
+Subject: [PATCH v6 14/26] perf stat: Add default hybrid events
+Date:   Tue, 27 Apr 2021 15:01:27 +0800
+Message-Id: <20210427070139.25256-15-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210427070139.25256-1-yao.jin@linux.intel.com>
 References: <20210427070139.25256-1-yao.jin@linux.intel.com>
@@ -41,265 +41,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When evlist is empty, for example no '-e' specified in perf record,
-one default 'cycles' event is added to evlist.
+Previously if '-e' is not specified in perf stat, some software events
+and hardware events are added to evlist by default.
 
-While on hybrid platform, it needs to create two default 'cycles'
-events. One is for cpu_core, the other is for cpu_atom.
+Before:
 
-This patch actually calls evsel__new_cycles() two times to create
-two 'cycles' events.
+  # perf stat -a -- sleep 1
 
-  # ./perf record -vv -a -- sleep 1
-  ...
-  ------------------------------------------------------------
-  perf_event_attr:
-    size                             120
-    config                           0x400000000
-    { sample_period, sample_freq }   4000
-    sample_type                      IP|TID|TIME|ID|CPU|PERIOD
-    read_format                      ID
-    disabled                         1
-    inherit                          1
-    freq                             1
-    precise_ip                       3
-    sample_id_all                    1
-    exclude_guest                    1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 5
-  sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 6
-  sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 7
-  sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 9
-  sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 10
-  sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 11
-  sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 12
-  sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 13
-  sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 14
-  sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 15
-  sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 16
-  sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 17
-  sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 18
-  sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 19
-  sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 20
-  sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 21
-  ------------------------------------------------------------
-  perf_event_attr:
-    size                             120
-    config                           0x800000000
-    { sample_period, sample_freq }   4000
-    sample_type                      IP|TID|TIME|ID|CPU|PERIOD
-    read_format                      ID
-    disabled                         1
-    inherit                          1
-    freq                             1
-    precise_ip                       3
-    sample_id_all                    1
-    exclude_guest                    1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 22
-  sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 23
-  sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 24
-  sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 25
-  sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 26
-  sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 27
-  sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 28
-  sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 29
-  ------------------------------------------------------------
+   Performance counter stats for 'system wide':
 
-We have to create evlist-hybrid.c otherwise due to the symbol
-dependency the perf test python would be failed.
+           24,044.40 msec cpu-clock                 #   23.946 CPUs utilized
+                  99      context-switches          #    4.117 /sec
+                  24      cpu-migrations            #    0.998 /sec
+                   3      page-faults               #    0.125 /sec
+           7,000,244      cycles                    #    0.000 GHz
+           2,955,024      instructions              #    0.42  insn per cycle
+             608,941      branches                  #   25.326 K/sec
+              31,991      branch-misses             #    5.25% of all branches
+
+         1.004106859 seconds time elapsed
+
+Among the events, cycles, instructions, branches and branch-misses
+are hardware events.
+
+One hybrid platform, two hardware events are created for one
+hardware event.
+
+cpu_core/cycles/,
+cpu_atom/cycles/,
+cpu_core/instructions/,
+cpu_atom/instructions/,
+cpu_core/branches/,
+cpu_atom/branches/,
+cpu_core/branch-misses/,
+cpu_atom/branch-misses/
+
+These events would be added to evlist on hybrid platform.
+
+Since parse_events() has been supported to create two hardware events
+for one event on hybrid platform, so we just use parse_events(evlist,
+"cycles,instructions,branches,branch-misses") to create the default
+events and add them to evlist.
+
+After:
+
+  # perf stat -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+           24,043.99 msec cpu-clock                 #   23.991 CPUs utilized
+                 139      context-switches          #    5.781 /sec
+                  25      cpu-migrations            #    1.040 /sec
+                   6      page-faults               #    0.250 /sec
+          10,381,751      cpu_core/cycles/          #  431.782 K/sec
+           1,264,216      cpu_atom/cycles/          #   52.579 K/sec
+           3,406,958      cpu_core/instructions/    #  141.697 K/sec
+             414,588      cpu_atom/instructions/    #   17.243 K/sec
+             705,149      cpu_core/branches/        #   29.327 K/sec
+              82,358      cpu_atom/branches/        #    3.425 K/sec
+              40,821      cpu_core/branch-misses/   #    1.698 K/sec
+               9,086      cpu_atom/branch-misses/   #  377.891 /sec
+
+         1.002228863 seconds time elapsed
+
+We can see two events are created for one hardware event.
+
+One TODO is, the shadow stats looks a bit different, now it's just
+'M/sec'.
+
+The perf_stat__update_shadow_stats and perf_stat__print_shadow_stats
+need to be improved in future if we want to get the original shadow
+stats.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
-v5 - v6:
+v6:
  - No change.
 
+v5:
+ - Do the same way like when topdown calls parse events for checking
+   result and displayt the error.
+
 v4:
- - Use PERF_TYPE_HARDWARE (v3 uses PERF_TYPE_HARDWARE_PMU).
+ - No change.
 
-v3:
- - Move the major code to new created evlist-hybrid.c.
+ tools/perf/builtin-stat.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
- tools/perf/builtin-record.c     | 19 +++++++++++----
- tools/perf/util/Build           |  1 +
- tools/perf/util/evlist-hybrid.c | 41 +++++++++++++++++++++++++++++++++
- tools/perf/util/evlist-hybrid.h | 12 ++++++++++
- tools/perf/util/evlist.c        |  5 +++-
- tools/perf/util/evsel.c         |  6 ++---
- tools/perf/util/evsel.h         |  2 +-
- 7 files changed, 77 insertions(+), 9 deletions(-)
- create mode 100644 tools/perf/util/evlist-hybrid.c
- create mode 100644 tools/perf/util/evlist-hybrid.h
-
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 5fb9665a2ec2..6af46c6a4fd8 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -47,6 +47,8 @@
- #include "util/util.h"
- #include "util/pfm.h"
- #include "util/clockid.h"
-+#include "util/pmu-hybrid.h"
-+#include "util/evlist-hybrid.h"
- #include "asm/bug.h"
- #include "perf.h"
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 835e3696b9ce..42e60764ad8d 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1639,6 +1639,12 @@ static int add_default_attributes(void)
+   { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_INSTRUCTIONS	},
+   { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_MISSES		},
  
-@@ -2790,10 +2792,19 @@ int cmd_record(int argc, const char **argv)
- 	if (record.opts.overwrite)
- 		record.opts.tail_synthesize = true;
++};
++	struct perf_event_attr default_sw_attrs[] = {
++  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_TASK_CLOCK		},
++  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CONTEXT_SWITCHES	},
++  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CPU_MIGRATIONS		},
++  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_PAGE_FAULTS		},
+ };
  
--	if (rec->evlist->core.nr_entries == 0 &&
--	    __evlist__add_default(rec->evlist, !record.opts.no_samples) < 0) {
--		pr_err("Not enough memory for event selector list\n");
--		goto out;
-+	if (rec->evlist->core.nr_entries == 0) {
-+		if (perf_pmu__has_hybrid()) {
-+			err = evlist__add_default_hybrid(rec->evlist,
-+							 !record.opts.no_samples);
-+		} else {
-+			err = __evlist__add_default(rec->evlist,
-+						    !record.opts.no_samples);
-+		}
-+
-+		if (err < 0) {
-+			pr_err("Not enough memory for event selector list\n");
-+			goto out;
-+		}
+ /*
+@@ -1876,6 +1882,28 @@ static int add_default_attributes(void)
  	}
  
- 	if (rec->opts.target.tid && !rec->opts.no_inherit_set)
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 34fcbf3c3bce..8c0d9f368ebc 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -10,6 +10,7 @@ perf-y += db-export.o
- perf-y += env.o
- perf-y += event.o
- perf-y += evlist.o
-+perf-y += evlist-hybrid.o
- perf-y += sideband_evlist.o
- perf-y += evsel.o
- perf-y += evsel_fprintf.o
-diff --git a/tools/perf/util/evlist-hybrid.c b/tools/perf/util/evlist-hybrid.c
-new file mode 100644
-index 000000000000..e11998526f2e
---- /dev/null
-+++ b/tools/perf/util/evlist-hybrid.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <errno.h>
-+#include <inttypes.h>
-+#include "cpumap.h"
-+#include "evlist.h"
-+#include "evsel.h"
-+#include "../perf.h"
-+#include "util/pmu-hybrid.h"
-+#include "util/evlist-hybrid.h"
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <linux/err.h>
-+#include <linux/string.h>
-+#include <perf/evlist.h>
-+#include <perf/evsel.h>
-+#include <perf/cpumap.h>
+ 	if (!evsel_list->core.nr_entries) {
++		if (perf_pmu__has_hybrid()) {
++			const char *hybrid_str = "cycles,instructions,branches,branch-misses";
 +
-+int evlist__add_default_hybrid(struct evlist *evlist, bool precise)
-+{
-+	struct evsel *evsel;
-+	struct perf_pmu *pmu;
-+	__u64 config;
-+	struct perf_cpu_map *cpus;
++			if (target__has_cpu(&target))
++				default_sw_attrs[0].config = PERF_COUNT_SW_CPU_CLOCK;
 +
-+	perf_pmu__for_each_hybrid_pmu(pmu) {
-+		config = PERF_COUNT_HW_CPU_CYCLES |
-+			 ((__u64)pmu->type << PERF_PMU_TYPE_SHIFT);
-+		evsel = evsel__new_cycles(precise, PERF_TYPE_HARDWARE,
-+					  config);
-+		if (!evsel)
-+			return -ENOMEM;
++			if (evlist__add_default_attrs(evsel_list,
++						      default_sw_attrs) < 0) {
++				return -1;
++			}
 +
-+		cpus = perf_cpu_map__get(pmu->cpus);
-+		evsel->core.cpus = cpus;
-+		evsel->core.own_cpus = perf_cpu_map__get(cpus);
-+		evsel->pmu_name = strdup(pmu->name);
-+		evlist__add(evlist, evsel);
-+	}
++			err = parse_events(evsel_list, hybrid_str, &errinfo);
++			if (err) {
++				fprintf(stderr,
++					"Cannot set up hybrid events %s: %d\n",
++					hybrid_str, err);
++				parse_events_print_error(&errinfo, hybrid_str);
++				return -1;
++			}
++			return err;
++		}
 +
-+	return 0;
-+}
-diff --git a/tools/perf/util/evlist-hybrid.h b/tools/perf/util/evlist-hybrid.h
-new file mode 100644
-index 000000000000..e25861649d8f
---- /dev/null
-+++ b/tools/perf/util/evlist-hybrid.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __PERF_EVLIST_HYBRID_H
-+#define __PERF_EVLIST_HYBRID_H
-+
-+#include <linux/compiler.h>
-+#include <linux/kernel.h>
-+#include "evlist.h"
-+#include <unistd.h>
-+
-+int evlist__add_default_hybrid(struct evlist *evlist, bool precise);
-+
-+#endif /* __PERF_EVLIST_HYBRID_H */
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index e71041c89010..6e5c41528c7d 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -26,6 +26,7 @@
- #include "util/string2.h"
- #include "util/perf_api_probe.h"
- #include "util/evsel_fprintf.h"
-+#include "util/evlist-hybrid.h"
- #include <signal.h>
- #include <unistd.h>
- #include <sched.h>
-@@ -248,8 +249,10 @@ void evlist__set_leader(struct evlist *evlist)
- 
- int __evlist__add_default(struct evlist *evlist, bool precise)
- {
--	struct evsel *evsel = evsel__new_cycles(precise);
-+	struct evsel *evsel;
- 
-+	evsel = evsel__new_cycles(precise, PERF_TYPE_HARDWARE,
-+				  PERF_COUNT_HW_CPU_CYCLES);
- 	if (evsel == NULL)
- 		return -ENOMEM;
- 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 080ddcfefbcd..0fc9555a2ac4 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -295,11 +295,11 @@ static bool perf_event_can_profile_kernel(void)
- 	return perf_event_paranoid_check(1);
- }
- 
--struct evsel *evsel__new_cycles(bool precise)
-+struct evsel *evsel__new_cycles(bool precise, __u32 type, __u64 config)
- {
- 	struct perf_event_attr attr = {
--		.type	= PERF_TYPE_HARDWARE,
--		.config	= PERF_COUNT_HW_CPU_CYCLES,
-+		.type	= type,
-+		.config	= config,
- 		.exclude_kernel	= !perf_event_can_profile_kernel(),
- 	};
- 	struct evsel *evsel;
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index ad74c83bd35b..a9cc9563ac59 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -221,7 +221,7 @@ static inline struct evsel *evsel__newtp(const char *sys, const char *name)
- 	return evsel__newtp_idx(sys, name, 0);
- }
- 
--struct evsel *evsel__new_cycles(bool precise);
-+struct evsel *evsel__new_cycles(bool precise, __u32 type, __u64 config);
- 
- struct tep_event *event_format__new(const char *sys, const char *name);
+ 		if (target__has_cpu(&target))
+ 			default_attrs0[0].config = PERF_COUNT_SW_CPU_CLOCK;
  
 -- 
 2.17.1
