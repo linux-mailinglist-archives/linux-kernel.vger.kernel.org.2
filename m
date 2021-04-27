@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F51136BD5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AEF36BD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbhD0CeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhD0CeN (ORCPT
+        id S234394AbhD0CgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:36:02 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:60037 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230516AbhD0CgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:34:13 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC62EC061574;
-        Mon, 26 Apr 2021 19:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=Igzk5PmTAU
-        DER6EmI3hYvYH4ERMb9GrQy7aidDxiQFs=; b=FA6GD9/9E2kcl9yj0RPl1R/6sn
-        sSinb3yQKUVmUL6H+C0tj5+MFgP5oTPuYqqmVc8PmJE9iWXmaQZXLjLCJg1HIzma
-        eavNyJB6NjvCJkgV6hkyCHjtfIZY4dZQ/8Dl0ZL26B37BaH3I4zaTD/cX7NcTvtb
-        unEPr/axciZ49WqfA=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnL6_ud4dgFftOAA--.758S4;
-        Tue, 27 Apr 2021 10:33:18 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] media:exynos4-is: Fix a use after free in isp_video_release
-Date:   Mon, 26 Apr 2021 19:33:15 -0700
-Message-Id: <20210427023315.4537-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygAnL6_ud4dgFftOAA--.758S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw1UXFWfZF4rtF13tr4ktFb_yoWkCFc_u3
-        48KFnrWrZ5tw4jy3WqyFn5ZrWFyrZ8Xa93CanagFW2y34UAF4xtF4qkrWI93ZrGa17GFZ8
-        Jrs8XF1UCr93CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUbBMKJUUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+        Mon, 26 Apr 2021 22:36:00 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id EAAC85C01A4;
+        Mon, 26 Apr 2021 22:35:17 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute4.internal (MEProxy); Mon, 26 Apr 2021 22:35:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hmh.eng.br; h=
+        mime-version:message-id:in-reply-to:references:date:from:to
+        :subject:content-type; s=fm2; bh=vBVTQ1sbBsQfPYqIXqCK4Jv/CFy4Gq4
+        uQLWVxvxQRJU=; b=VIuBHyCvI32XasUXpVQ+THVqFZg6Z12Z5UAbWKR/SVWGtWI
+        YmW3qVMEuIiwK3g7+ApWYMsrbyPWw2/G7Cnb4d9zfevz92aef025s2LIVXHkjcc+
+        sbJPrgYryt4lVOzbD6fc2SC5Rm49Sfe1RpKuB6BUc5hNFlGdVRi8Eg4RSN/lOFwT
+        AtXGEUZnuNMxMF7eUopmQngveZ5XHQm/PxJZ3z30dW5slm5Qu1cqa+X3oQx5bU3d
+        kVCvzCN4HLhXyO36ewzuijVab7XG2ny2RqGCfr7Z8YFalH3aqwutv2BUsLSNsSGv
+        QaFF3iomaZL9irfgIAkZWSqQS1BA6Dzfre8kZrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=vBVTQ1
+        sbBsQfPYqIXqCK4Jv/CFy4Gq4uQLWVxvxQRJU=; b=ZW0TAQ915dsNWarhUYBMg4
+        OBL3oERjAy5Zu+MOdhPWWkRWCwpBuD7Rqligp1piFzc7xbGfa+95Tif3/2nIG23V
+        DjYG7jHJSWaWbc473CRDDiIJ+j1rRlOL1KSpV2A1FdheLhVlt+OkufX9/8XzhJPv
+        YzDhCvgeRx5ZrGogkbL7RBJt5E9oyRmMWZwsBMJjLokp5brFNlnXSY4bTv0Cloj8
+        OFuU70nT3ja14f4Wj+Eocpae0EN31IUpEpQdHs6Jn8gV5BCC6p64a5HZh7s1GO6q
+        Xtr2RBXlrT1ZceZNlzpJ61dPRVT4MTXrm9hnEEytDy9oFSLVXRmUTIDZkTBxJurA
+        ==
+X-ME-Sender: <xms:ZXiHYDzcCKdyG6wwObQHf3Vrl16r4FXSl8eindaaf3b_siZG52sIig>
+    <xme:ZXiHYLTJ6WvIfqFPWxG9Xo2SFFXsqCOqwFY3beCx-QEoaFEqVS_akHfU_AcJHqXvV
+    8DfBkXXsnV3WA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduledgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfjvghn
+    rhhiqhhuvgcuuggvucfoohhrrggvshcujfholhhstghhuhhhfdcuoehhmhhhsehhmhhhrd
+    gvnhhgrdgsrheqnecuggftrfgrthhtvghrnhepuddvgfeikefgieehkeevveduhfevteeu
+    heevtdduueduffekuddtffelkefftddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhephhhmhheshhhmhhdrvghnghdrsghr
+X-ME-Proxy: <xmx:ZXiHYNXxEv-pKlPC4LgdMHpZeJA3-vb8lhAzE0-5qu4ZHDuRPa_1Uw>
+    <xmx:ZXiHYNjBlYtlmtB-OoSyAWWDrijk3AAzMMtm7rIM-cvSvCAmvfQDeg>
+    <xmx:ZXiHYFBdTzrp00SpjuemViLXege_ysLAg3tzG9xuAelUSX7Q6W0aKQ>
+    <xmx:ZXiHYA__MYA7GaaUR_7utYgJCNAIHRD65Y4v29jIdKOhCgzJ1S265Q>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 75CCE51C005F; Mon, 26 Apr 2021 22:35:17 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
+Mime-Version: 1.0
+Message-Id: <52f1b7a1-ff3b-41d3-a84b-badcda8a6ad6@www.fastmail.com>
+In-Reply-To: <8e0aa5a6-0457-ccd0-8984-9c9aaeab2228@gmail.com>
+References: <d3a4afd7-a448-4310-930d-063b39bde86e@www.fastmail.com>
+ <8e0aa5a6-0457-ccd0-8984-9c9aaeab2228@gmail.com>
+Date:   Mon, 26 Apr 2021 23:34:55 -0300
+From:   "Henrique de Moraes Holschuh" <hmh@hmh.eng.br>
+To:     "Eric Dumazet" <eric.dumazet@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: Unexpected timestamps in tcpdump with veth + tc qdisc netem delay
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In isp_video_release, file->private_data is freed via
-_vb2_fop_release()->v4l2_fh_release(). But the freed
-file->private_data is still used in v4l2_fh_is_singular_file()
-->v4l2_fh_is_singular(filp->private_data), which is a use
-after free bug.
+On Mon, Apr 26, 2021, at 14:07, Eric Dumazet wrote:
+> On 4/26/21 4:35 PM, Henrique de Moraes Holschuh wrote:
+[...]
+> > [root netns]: tcpdump -i vec0 -s0 -n -p net 192.168.233.0/30
+> > listening on vec0, link-type EN10MB (Ethernet), capture size 262144 bytes
+> > 17:09:09.740681 IP 192.168.233.1 > 192.168.233.2: ICMP echo request, id 9327, seq 1, length 64
+> 
+> Here you see the packet _after_ the 250ms delay
+> > 17:09:09.990891 IP 192.168.233.2 > 192.168.233.1: ICMP echo reply, id 9327, seq 1, length 64
+> Same here.
+[...]
+> > Adding more namespaces and VETH pairs + routing "in a row" so that the packet "exits" one veth tunnel and enters another one (after trivial routing) doesn't fix the tcpdump timestamps in the capture at the other end of the veth-veth->routing->veth-veth->routing->... chain.
+> > 
+> > It looks like some sort of bug to me, but maybe I am missing something, in which case I would greatly appreciate an explanation of where I went wrong... 
+> 
+> That is only because you expect to see something, but you forgot that tcpdump captures TX packet _after_ netem.
 
-My patch set file->private_data to NULL after _vb2_fop_release()
-to avoid the use after free.
+That was it!  Thank you very much for the quick reply, and direct, precise explanation.
 
-Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/media/platform/exynos4-is/fimc-isp-video.c | 1 +
- 1 file changed, 1 insertion(+)
+I had completely forgotten about the qdisc running before interface timestamping, and I overlooked the fact that I did not try three netns in-a-chain with the qdiscs *in the middle netns*: I tried them in the two opposite edge netns, only.
 
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index 612b9872afc8..f414493258ad 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-@@ -315,6 +315,7 @@ static int isp_video_release(struct file *file)
- 	}
- 
- 	_vb2_fop_release(file, NULL);
-+	filp->private_data = NULL;
- 
- 	if (v4l2_fh_is_singular_file(file)) {
- 		fimc_pipeline_call(&ivc->ve, close);
+Again, thank you!
+
 -- 
-2.25.1
-
-
+  Henrique Holschuh
