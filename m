@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5846736C742
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092E236C74A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238287AbhD0NuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
+        id S238243AbhD0NwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235652AbhD0NuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8A956101C;
-        Tue, 27 Apr 2021 13:49:29 +0000 (UTC)
+        id S236074AbhD0NwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:52:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 753E5613DE;
+        Tue, 27 Apr 2021 13:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619531370;
-        bh=8NJBq5u9dPfD+l/DcWGIoZcpJqpM43/cqhPQGmIRgXo=;
+        s=korg; t=1619531488;
+        bh=LsKG6phfVxtit0ggx289nutFu1Nb6sD54qLzAi2d8u8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pcx/wXcri8+iffH/IcvAz8Isb522YtRnBbSXimO/oWJ2gwSlyCPhWwwZ6SBbpy5Ds
-         v/h7KdCp8j2P3ofI4/Xqiyv/XTgZhxDrFD9bAUYwbTX7JV2JuY2vUayPyyAY8lyVZN
-         UyuN+2a22GysFfihWsvUzAGdhq6Vp0CdYT0PUuMY=
-Date:   Tue, 27 Apr 2021 15:49:27 +0200
+        b=J6cU7s7Ei0FoqPW71mE5jbL2S8y4jUpzKTM3hcly11np9HvJS1LUV8nJ40XUnJKKM
+         v5DyveS5J11wBKYDPbn0PRf2vaLtftuBUs4jk0HHDMleFFvJDTem6ub08qZefxX5rn
+         a4GzeGRfHiSn6qjuNS/ybREM1QfkV9NQySPrTvf8=
+Date:   Tue, 27 Apr 2021 15:51:25 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>
-Subject: Re: [PATCH 080/190] Revert "ALSA: usx2y: fix a double free bug"
-Message-ID: <YIgWZ2fSLKPT4GGw@kroah.com>
+Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>
+Subject: Re: [PATCH 127/190] Revert "ALSA: sb8: add a check for
+ request_region"
+Message-ID: <YIgW3cupx+Qo2jNT@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-81-gregkh@linuxfoundation.org>
- <s5hczunaa54.wl-tiwai@suse.de>
+ <20210421130105.1226686-128-gregkh@linuxfoundation.org>
+ <s5hbla7a9rt.wl-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s5hczunaa54.wl-tiwai@suse.de>
+In-Reply-To: <s5hbla7a9rt.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 06:13:27PM +0200, Takashi Iwai wrote:
-> On Wed, 21 Apr 2021 14:59:15 +0200,
+On Wed, Apr 21, 2021 at 06:21:26PM +0200, Takashi Iwai wrote:
+> On Wed, 21 Apr 2021 15:00:02 +0200,
 > Greg Kroah-Hartman wrote:
 > > 
-> > This reverts commit cbb88db76a1536e02e93e5bd37ebbfbb6c4043a9.
+> > This reverts commit dcd0feac9bab901d5739de51b3f69840851f8919.
 > > 
 > > Commits from @umn.edu addresses have been found to be submitted in "bad
 > > faith" to try to test the kernel community's ability to review "known
@@ -57,16 +58,15 @@ On Wed, Apr 21, 2021 at 06:13:27PM +0200, Takashi Iwai wrote:
 > > change to ensure that no problems are being introduced into the
 > > codebase.
 > > 
-> > Cc: Wenwen Wang <wang6495@umn.edu>
+> > Cc: Kangjie Lu <kjlu@umn.edu>
 > > Cc: Takashi Iwai <tiwai@suse.de>
 > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> I examined the change again, and confirmed that this code change
-> itself is correct, so it's not necessary to revert.
-> 
-> OTOH, it's just a tip of iceberg in this driver, and maybe it's better
-> to cover all in a better way.  So it's fine to revert this, either.
+> This code change itself looks OK, OTOH, the original commit message is
+> slightly wrong: the code path can never result in NULL deference in
+> this case, as it's just an optional resource reservation.  So, it's
+> safe to revert this.
 
-I'll drop the revert, many thanks for the review.
+Thanks for the review!
 
 greg k-h
