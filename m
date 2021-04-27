@@ -2,139 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857F836C9C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F125C36C9C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237997AbhD0Qtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
+        id S237379AbhD0QvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:51:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:55028 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237714AbhD0QtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:49:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC65061027;
-        Tue, 27 Apr 2021 16:48:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619542109;
-        bh=Zf4nW1uoa9/CCo7LdD1TpEcDkI4hFISg6GkZnsY5BV8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q67kPTJKUzb2HQWu6Y0JX9C1mdjLVFOnlVLflS1oENwLmIY/oon2kjdwvkKglhQVn
-         LnH+tfnlWs5RzIZu2NmXQabFwB+C5cappjR5u2Fhm5080MDjZyYkkGoVmYeHl5ZNEa
-         e2UdvjZoWmZhRkgeYilIwRvE6BdLxWNdfizlNxkc=
-Date:   Tue, 27 Apr 2021 18:48:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joe Stringer <joe@ovn.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>, Kangjie Lu <kjlu@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH 126/190] Revert "net: openvswitch: fix a NULL pointer
- dereference"
-Message-ID: <YIhAW9retWHN+D4i@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-127-gregkh@linuxfoundation.org>
- <20210422015957.4f6d4dfa@linux.microsoft.com>
- <CAOftzPioU8h9b=isMPZtE8AYF=+qh_nNEp3rFEyQmb6Fi7QZ2g@mail.gmail.com>
+        id S236405AbhD0Quu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:50:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FBCCD6E;
+        Tue, 27 Apr 2021 09:50:06 -0700 (PDT)
+Received: from [10.57.61.101] (unknown [10.57.61.101])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5790D3F694;
+        Tue, 27 Apr 2021 09:50:05 -0700 (PDT)
+Subject: Re: [PATCH] arm64:align function __arch_clear_user
+To:     Kai Shen <shenkai8@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, xuwei5@hisilicon.com,
+        hewenliang4@huawei.com, wuxu.wu@huawei.com
+References: <58fecb22-f932-cb6e-d996-ca75fe26a75d@huawei.com>
+ <20210414104144.GB8320@arm.com>
+ <6829062c-a2d4-57da-4037-269fb7508993@huawei.com>
+ <20210423153701.GP18757@arm.com>
+ <b7ed22f7-2c89-c67d-5e06-380964371150@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3fde204b-5dfd-f7dd-cdc9-37c2fabdd723@arm.com>
+Date:   Tue, 27 Apr 2021 17:50:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOftzPioU8h9b=isMPZtE8AYF=+qh_nNEp3rFEyQmb6Fi7QZ2g@mail.gmail.com>
+In-Reply-To: <b7ed22f7-2c89-c67d-5e06-380964371150@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:09:56PM -0700, Joe Stringer wrote:
-> On Wed, Apr 21, 2021 at 5:01 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> >
-> > On Wed, 21 Apr 2021 15:00:01 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >
-> > > This reverts commit 6f19893b644a9454d85e593b5e90914e7a72b7dd.
-> > >
-> > > Commits from @umn.edu addresses have been found to be submitted in
-> > > "bad faith" to try to test the kernel community's ability to review
-> > > "known malicious" changes.  The result of these submissions can be
-> > > found in a paper published at the 42nd IEEE Symposium on Security and
-> > > Privacy entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu
-> > > (University of Minnesota) and Kangjie Lu (University of Minnesota).
-> > >
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove
-> > > this change to ensure that no problems are being introduced into the
-> > > codebase.
-> > >
-> > > Cc: Kangjie Lu <kjlu@umn.edu>
-> > > Cc: David S. Miller <davem@davemloft.net>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >  net/openvswitch/datapath.c | 4 ----
-> > >  1 file changed, 4 deletions(-)
-> > >
-> > > diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
-> > > index 9d6ef6cb9b26..99e63f4bbcaf 100644
-> > > --- a/net/openvswitch/datapath.c
-> > > +++ b/net/openvswitch/datapath.c
-> > > @@ -443,10 +443,6 @@ static int queue_userspace_packet(struct
-> > > datapath *dp, struct sk_buff *skb,
-> > >       upcall = genlmsg_put(user_skb, 0, 0, &dp_packet_genl_family,
-> > >                            0, upcall_info->cmd);
-> > > -     if (!upcall) {
-> > > -             err = -EINVAL;
-> > > -             goto out;
-> > > -     }
-> > >       upcall->dp_ifindex = dp_ifindex;
-> > >
-> > >       err = ovs_nla_put_key(key, key, OVS_PACKET_ATTR_KEY, false,
-> > > user_skb);
-> >
-> > This patch seems good to me, but given the situation I'd like another
-> > pair of eyes on it, at least.
-> 
-> The revert LGTM.
-> 
-> A few lines above:
-> 
->         len = upcall_msg_size(upcall_info, hlen - cutlen,
->                               OVS_CB(skb)->acts_origlen);
->         user_skb = genlmsg_new(len, GFP_ATOMIC);
->         if (!user_skb) {
->                 err = -ENOMEM;
->                 goto out;
->         }
-> 
-> upcall_msg_size() calculates the expected size of the buffer,
-> including at the very least a nlmsg-aligned sizeof(struct ovs_header),
-> plus other constants and also potential (likely) variable lengths
-> based on the current flow context.
-> 
-> genlmsg_new() adds the (nlmsg-aligned) nlmsg header length to the
-> calculated length when allocating the buffer, and if the memory
-> allocation fails here then the error is already returned.
-> 
-> I don't then see a way for genlmsg_put() to fail per the hunk in the
-> commit here given that its buffer reservation is calculated based on:
-> 
->         nlh = nlmsg_put(skb, portid, seq, family->id, GENL_HDRLEN +
->                         family->hdrsize, flags);
-> 
-> Where family->hdrsize would be sizeof(struct ovs_header) since
-> dp_packet_genl_family is the family passed into the genlmsg_put()
-> call:
-> 
-> static struct genl_family dp_packet_genl_family __ro_after_init = {
->         .hdrsize = sizeof(struct ovs_header),
-> 
-> Even if there were some allocation bug here to be fixed (due to
-> miscalculating the buffer size in the first place), I don't see how
-> the extra error path in the included patch could catch such an error.
-> The original patch doesn't seem necessarily problematic, but it
-> doesn't seem like it adds anything of value either (or at least,
-> nothing a comment couldn't clearly explain).
-> 
-> Cheers,
-> Joe
+On 2021-04-25 03:07, Kai Shen wrote:
+> On 2021/4/23 23:37, Catalin Marinas wrote:
+>> On Mon, Apr 19, 2021 at 10:05:16AM +0800, Kai Shen wrote:
+>>> On 2021/4/14 18:41, Catalin Marinas wrote:
+>>>> On Wed, Apr 14, 2021 at 05:25:43PM +0800, Kai Shen wrote:
+>>>>> Performance decreases happen in __arch_clear_user when this
+>>>>> function is not correctly aligned on HISI-HIP08 arm64 SOC which
+>>>>> fetches 32 bytes (8 instructions) from icache with a 32-bytes
+>>>>> aligned end address. As a result, if the hot loop is not 32-bytes
+>>>>> aligned, it may take more icache fetches which leads to decrease
+>>>>> in performance.
+>>>>> Dump of assembler code for function __arch_clear_user:
+>>>>>          0xffff0000809e3f10 :    nop
+>>>>>          0xffff0000809e3f14 :    mov x2, x1
+>>>>>          0xffff0000809e3f18 :    subs x1, x1, #0x8
+>>>>>          0xffff0000809e3f1c :    b.mi 0xffff0000809e3f30 
+>>>>> <__arch_clear_user+3
+>>>>> -----  0xffff0000809e3f20 :    str    xzr, [x0],#8
+>>>>> hot    0xffff0000809e3f24 :    nop
+>>>>> loop   0xffff0000809e3f28 :    subs x1, x1, #0x8
+>>>>> -----  0xffff0000809e3f2c :    b.pl  0xffff0000809e3f20 
+>>>>> <__arch_clear_user+1
+>>>>> The hot loop above takes one icache fetch as the code is in one
+>>>>> 32-bytes aligned area and the loop takes one more icache fetch
+>>>>> when it is not aligned like below.
+>>>>>          0xffff0000809e4178 :   str    xzr, [x0],#8
+>>>>>          0xffff0000809e417c :   nop
+>>>>>          0xffff0000809e4180 :   subs x1, x1, #0x8
+>>>>>          0xffff0000809e4184 :   b.pl  0xffff0000809e4178 
+>>>>> <__arch_clear_user+
+>>>>> Data collected by perf:
+>>>>>                            aligned   not aligned
+>>>>>             instructions   57733790     57739065
+>>>>>          L1-dcache-store   14938070     13718242
+>>>>> L1-dcache-store-misses     349280       349869
+>>>>>          L1-icache-loads   15380895     28500665
+>>>>> As we can see, L1-icache-loads almost double when the loop is not
+>>>>> aligned.
 
-Many thanks for the review, now dropping this revert from my tree.
+Sure, if the function spans two cache lines, and I$ pressure is so high 
+that it gets evicted between each call, then indeed one would expect 
+about twice as many fetches in total compared to if the function fits in 
+a single line. However, that's not necessarily indicative of visible 
+performance - if the predictors and prefetchers can do their jobs well 
+enough there could still be little to no impact on actual execution latency.
 
-greg k-h
+If you want to use perf to try to justify this, at least drill down into 
+more specific events to show that you're really stalling on I$ misses. 
+The most convincing argument, though, would be a measured difference in 
+actual user-memory-zeroing bandwidth - the fact that you haven't shared 
+that, even for your synthetic test, makes me suspect that it's probably 
+not as significant and exciting as a supposed "2x" figure... ;)
+
+>>>>> This problem is found in linux 4.19 on HISI-HIP08 arm64 SOC.
+>>>>> Not sure what the case is on other arm64 SOC, but it should do
+>>>>> no harm.
+>>>>> Signed-off-by: Kai Shen <shenkai8@huawei.com>
+>>>>
+>>>> Do you have a real world workload that's affected by this function?
+>>>>
+>>>> I'm against adding alignments and nops for specific hardware
+>>>> implementations. What about lots of other loops that the compiler may
+>>>> generate or that we wrote in asm?
+>>>
+>>> The benchmark we used which suffer performance decrease:
+>>>      https://github.com/redhat-performance/libMicro
+>>>      pread $OPTS -N "pread_z1k"    -s 1k    -I 300  -f /dev/zero
+>>>      pread $OPTS -N "pread_z10k"    -s 10k    -I 1000 -f /dev/zero
+>>>      pread $OPTS -N "pread_z100k"    -s 100k    -I 2000 -f /dev/zero
+>>
+>> Is there any real world use-case that would benefit from this
+>> optimisation? Reading /dev/zero in a loop hardly counts as a practical
+>> workload.
+>>
+> Operations like "dd if=/dev/zero of=/dev/sda1" ?
+
+Surely the write() side of that operation is still going to dominate 
+either way? What kind of device would sda be for the whole operation to 
+be significantly bottlenecked on *instruction fetch bandwidth* in read()!?
+
+FWIW I'm currently playing about with some changes to this code anyway - 
+I'll make sure to check whether function alignment has any noticeable 
+impact on the microarchitectures I have to hand.
+
+Robin.
