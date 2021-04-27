@@ -2,91 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB5936C709
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB07D36C749
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 15:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237738AbhD0NcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 09:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235875AbhD0NcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:32:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 790EE613D0;
-        Tue, 27 Apr 2021 13:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619530277;
-        bh=x+00Plx6W6j0IA1acBr6uFRCu9IXD7Pjj4h7HJsIohg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vQvhgvlqC57ChI4A4w8gBs4tpF48H2tr3sL3jkMT9mQJ6cW3YzibXarKfsD2AOOOa
-         yHrH2+ILxtCtRVh+9jIZt4irF5jgp7wf0vwE3wRmjvMCjyFggh5StoOKhA+Ey+3mgF
-         I6uLaECHrX5+vQrtrAanvWMEvJCy0oxlSmvsU4WI=
-Date:   Tue, 27 Apr 2021 15:31:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: Re: [PATCH 146/190] Revert "media: dvb: Add check on sp8870_readreg"
-Message-ID: <YIgSIoBZ7pW78u2d@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-147-gregkh@linuxfoundation.org>
+        id S236556AbhD0NwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 09:52:18 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:59636
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234429AbhD0NwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 09:52:12 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A7gB5OK+jPivzqTsXsfBuk+ATI+orLtY04lQ7?=
+ =?us-ascii?q?vn1ZYxY9SKGlvuqpm+kW0gKxtS0YX2sulcvFFK6LR37d8pAd2/hzAZ6OVBTr0V?=
+ =?us-ascii?q?HGEKhM9o3nqgeKJwTb1spwkZhtaLJ/DtqYNzhHpOL3+hOxHdpl4NTvys6VrNzT?=
+ =?us-ascii?q?xXtsUg1mApsIhztRMBqREUF9WWB9aaYRKZz03KB6jgvlXXwWa8ihb0NlY9T+?=
+X-IronPort-AV: E=Sophos;i="5.82,254,1613430000"; 
+   d="scan'208";a="379816306"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 27 Apr 2021 15:51:26 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v3] coccinelle: api: semantic patch to use pm_runtime_resume_and_get
+Date:   Tue, 27 Apr 2021 14:58:34 +0200
+Message-Id: <20210427125834.2477467-1-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-147-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:21PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 467a37fba93f2b4fe3ab597ff6a517b22b566882.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Sean Young <sean@mess.org>
-> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/media/dvb-frontends/sp8870.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
-> index 655db8272268..ee893a2f2261 100644
-> --- a/drivers/media/dvb-frontends/sp8870.c
-> +++ b/drivers/media/dvb-frontends/sp8870.c
-> @@ -280,9 +280,7 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
->  	sp8870_writereg(state, 0xc05, reg0xc05);
->  
->  	// read status reg in order to clear pending irqs
-> -	err = sp8870_readreg(state, 0x200);
-> -	if (err)
-> -		return err;
-> +	sp8870_readreg(state, 0x200);
->  
->  	// system controller start
->  	sp8870_microcontroller_start(state);
-> -- 
-> 2.31.1
-> 
+pm_runtime_get_sync keeps a reference count on failure, which can lead
+to leaks.  pm_runtime_resume_and_get drops the reference count in the
+failure case.  This rule very conservatively follows the definition of
+pm_runtime_resume_and_get to address the cases where the reference
+count is unlikely to be needed in the failure case.  Specifically, the
+change is only done when pm_runtime_get_sync is followed immediately
+by an if and when the branch of the if is immediately a call to
+pm_runtime_put_noidle (like in the definition of
+pm_runtime_resume_and_get) or something that is likely a print
+statement followed by a pm_runtime_resume_and_get call.  The patch
+case appears somewhat more complicated, because it also deals with the
+cases where {}s need to be removed.
 
-This change looks to break the driver entirely, I guess no one uses it
-anymore.  It should have checked for < 0 if it actually cared about the
-result.
+pm_runtime_resume_and_get was introduced in
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
+deal with usage counter")
 
-I'll keep this as it is not correct.
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-thanks,
+---
+v3: add the people who signed off on commit dd8088d5a896, expand the log message
+v2: better keyword
 
-greg k-h
+ scripts/coccinelle/api/pm_runtime_resume_and_get.cocci |  153 +++++++++++++++++
+ 1 file changed, 153 insertions(+)
+
+diff --git a/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
+new file mode 100644
+index 000000000000..3387cb606f9b
+--- /dev/null
++++ b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Use pm_runtime_resume_and_get.
++/// pm_runtime_get_sync keeps a reference count on failure,
++/// which can lead to leaks.  pm_runtime_resume_and_get
++/// drops the reference count in the failure case.
++/// This rule addresses the cases where the reference count
++/// is unlikely to be needed in the failure case.
++///
++// Confidence: High
++// Copyright: (C) 2021 Julia Lawall, Inria
++// URL: https://coccinelle.gitlabpages.inria.fr/website
++// Options: --include-headers --no-includes
++// Keywords: pm_runtime_get_sync
++
++virtual patch
++virtual context
++virtual org
++virtual report
++
++@r0 depends on patch && !context && !org && !report@
++expression ret,e;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++-     if (ret < 0)
++-             pm_runtime_put_noidle(e);
++
++@r1 depends on patch && !context && !org && !report@
++expression ret,e;
++statement S1,S2;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0)
++-     {
++-             pm_runtime_put_noidle(e);
++	      S1
++-     }
++      else S2
++
++@r2 depends on patch && !context && !org && !report@
++expression ret,e;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0) {
++-             pm_runtime_put_noidle(e);
++	      ...
++      } else S
++
++@r3 depends on patch && !context && !org && !report@
++expression ret,e;
++identifier f;
++constant char[] c;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0)
++-     {
++              f(...,c,...);
++-             pm_runtime_put_noidle(e);
++-     }
++      else S
++
++@r4 depends on patch && !context && !org && !report@
++expression ret,e;
++identifier f;
++constant char[] c;
++statement S;
++@@
++
++-     ret = pm_runtime_get_sync(e);
+++     ret = pm_runtime_resume_and_get(e);
++      if (ret < 0) {
++              f(...,c,...);
++-             pm_runtime_put_noidle(e);
++	      ...
++      } else S
++
++// ----------------------------------------------------------------------------
++
++@r2_context depends on !patch && (context || org || report)@
++statement S;
++expression e, ret;
++position j0, j1;
++@@
++
++*     ret@j0 = pm_runtime_get_sync(e);
++      if (ret < 0) {
++*             pm_runtime_put_noidle@j1(e);
++	      ...
++      } else S
++
++@r3_context depends on !patch && (context || org || report)@
++identifier f;
++statement S;
++constant char []c;
++expression e, ret;
++position j0, j1;
++@@
++
++*     ret@j0 = pm_runtime_get_sync(e);
++      if (ret < 0) {
++              f(...,c,...);
++*             pm_runtime_put_noidle@j1(e);
++	      ...
++      } else S
++
++// ----------------------------------------------------------------------------
++
++@script:python r2_org depends on org@
++j0 << r2_context.j0;
++j1 << r2_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync"
++coccilib.org.print_todo(j0[0], msg)
++coccilib.org.print_link(j1[0], "")
++
++@script:python r3_org depends on org@
++j0 << r3_context.j0;
++j1 << r3_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync"
++coccilib.org.print_todo(j0[0], msg)
++coccilib.org.print_link(j1[0], "")
++
++// ----------------------------------------------------------------------------
++
++@script:python r2_report depends on report@
++j0 << r2_context.j0;
++j1 << r2_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync on line %s." % (j0[0].line)
++coccilib.report.print_report(j0[0], msg)
++
++@script:python r3_report depends on report@
++j0 << r3_context.j0;
++j1 << r3_context.j1;
++@@
++
++msg = "WARNING: opportunity for pm_runtime_get_sync on %s." % (j0[0].line)
++coccilib.report.print_report(j0[0], msg)
++
+
