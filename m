@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA49B36C018
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AD336C025
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhD0HcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhD0HcJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:32:09 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6667BC061574;
-        Tue, 27 Apr 2021 00:31:25 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id p2so26299830pgh.4;
-        Tue, 27 Apr 2021 00:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZRsAQBwaVtOeQuiCURYjxNIiawoMtQZfxAzfdpKtFr4=;
-        b=j8BsQyL0c8nXm6YTAS7z6k/pmvanlVVJOPZa2SQNFNizaaebLmJjzFIDqs3Uol6Swe
-         W//AuexoyW6812z2jW0UZqI7ySwSG4I2JMK99lljNqMr0rUIbM8YlLZr8QI/oOov2nho
-         x64ouzmN36PpovJnffdm3t98S5P4bMiuEjLNCqGHseZl1i0190TMnS/NXmtaJPMKx4uW
-         ASUSJAPULl/OfyGf9ornLEMzOHgGXvaYeka2iGR0XfE53ioeqT5W8nyC5/v/kIGh+k5y
-         uRkbDp5dsb4AlFNbgTG1oD3Mf+J/ENEf01a8K3sSV8Z/eGfsH1laFLWQAvudQnqzdJ67
-         Lr6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZRsAQBwaVtOeQuiCURYjxNIiawoMtQZfxAzfdpKtFr4=;
-        b=QSbDanxYJT0Wm6A3Asv1kTiYwJ3c4iUDNvJUkL2uFWmatC2oQ9D41WjSjGBNwLQ1vX
-         ptXx+PA+aq2InVcpgFQ5LTeZh2oMVUITfzpOUQl0O7NRnssuVPcdCxEIoqHIKOsNM9tt
-         P3B+eZdjx7GmLI5eJVlAxFi3Uyr7ho0BzMPz1mtNFZeOMgBypipbCMQSZYO0axBoD56D
-         5GogZ8tJWgLbmILq9UTK2TECtZeDn3QYGBJbNdjiMPjHluuDTEcnqEkYYqh986g3apV/
-         FFTEztG0nc4+dwvE61hml/oLj61lpphfdTona1sKBbmJ5TxKzA0y3hpr3x98zTS3SG3B
-         mIqg==
-X-Gm-Message-State: AOAM531k6AVVb8w2AlGn1vg01yWWgfvOQiRrIYu3RF5uixRzGIK30Lxh
-        MI00DNz8gwHqPxsxwoYttTdqy53jgorAXJ3aLLm1G2ZQB+ztvQ==
-X-Google-Smtp-Source: ABdhPJzz7djoy2WMQJFo+ExhkFaFHwl9vGr9ivmCPuyKnRLkpp4pOSVDsO+Fku6CAgkedkrDz0IWwLziqD0zEvHlVAg=
-X-Received: by 2002:a62:5c6:0:b029:24d:e97f:1b1d with SMTP id
- 189-20020a6205c60000b029024de97f1b1dmr22066247pff.40.1619508684923; Tue, 27
- Apr 2021 00:31:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <1619080202-31924-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1619080202-31924-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <CAHp75VfCbbnN-TBJiYFb=6Rhf30jA-Hz1p1UORsubF7UG6-ATw@mail.gmail.com>
- <DM5PR02MB3877B234F85F3B4887DF3A95BD429@DM5PR02MB3877.namprd02.prod.outlook.com>
- <CAHp75VfugGqLNU8LKJ_K3dPr=-eh6LHx75eV=33jH9OnryBoGA@mail.gmail.com> <d1220d39-4be4-a375-042f-e7bb0264ed35@xilinx.com>
-In-Reply-To: <d1220d39-4be4-a375-042f-e7bb0264ed35@xilinx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Apr 2021 10:31:08 +0300
-Message-ID: <CAHp75Vejqe3r6s5eoOfza0DjXEwN-hK73FWkxx6VNpx0y1ms2w@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Sai Krishna Potthuri <lakshmis@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        git <git@xilinx.com>,
-        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234935AbhD0HfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:35:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37615 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234894AbhD0HfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 03:35:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619508863; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=/vb+5nJPnsVeqHtcAtJmc21hr+Vdx5Dj9AfSQkrVT4s=; b=s1TgfsBJQ0eSR16YtjimTY96ffomIhT77J5nKUAjd1kwpY73lbTZ4srQqw3PFccadox9jxho
+ CV6Hx3auvy35xYFQVrASXGBQ6Jdq/UYbhJTERHkfqo4AV7BTTbGWmv09gdPwZV9oTsny7T3O
+ /RcZG+CsVm6Vp4W3W+Wd2GCPJy4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6087be68215b831afbf70a5a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Apr 2021 07:34:00
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3BDA7C43217; Tue, 27 Apr 2021 07:34:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9311C433D3;
+        Tue, 27 Apr 2021 07:33:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C9311C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        bjorn.andersson@linaro.org, sboyd@kernel.org
+Cc:     agross@kernel.org, mani@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 0/5] Enable miscellaneous hardware blocks to boot WPSS
+Date:   Tue, 27 Apr 2021 13:03:39 +0530
+Message-Id: <1619508824-14413-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 10:23 AM Michal Simek <michal.simek@xilinx.com> wrote:
->
-> Hi Andy,
->
-> On 4/26/21 4:04 PM, Andy Shevchenko wrote:
-> > On Mon, Apr 26, 2021 at 4:20 PM Sai Krishna Potthuri
-> > <lakshmis@xilinx.com> wrote:
-> >>> From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >>> Sent: Friday, April 23, 2021 9:24 PM
-> >>> On Thu, Apr 22, 2021 at 11:31 AM Sai Krishna Potthuri
-> >>> <lakshmi.sai.krishna.potthuri@xilinx.com> wrote:
-> >
-> > ...
-> >
-> >>>> +config PINCTRL_ZYNQMP
-> >>>> +       tristate "Pinctrl driver for Xilinx ZynqMP"
-> >>>> +       depends on ZYNQMP_FIRMWARE
-> >>>> +       select PINMUX
-> >>>> +       select GENERIC_PINCONF
-> >>>> +       default ZYNQMP_FIRMWARE
-> >>>> +       help
-> >>>> +         This selects the pinctrl driver for Xilinx ZynqMP platform.
-> >>>> +         This driver will query the pin information from the firmware
-> >>>> +         and allow configuring the pins.
-> >>>> +         Configuration can include the mux function to select on those
-> >>>> +         pin(s)/group(s), and various pin configuration parameters
-> >>>> +         such as pull-up, slew rate, etc.
-> >>>
-> >>> Missed module name.
-> >> Is this (module name) a configuration option in Kconfig?
-> >
-> > It's a text in a free form that sheds light on how the module will be
-> > named in case the user will choose "m".
->
-> Is this described somewhere in documentation that module name should be
-> the part of symbol description? I was looking at pinctrl Kconfig and I
-> can't see any description like this there that's why I want to double
-> check.
+This series enables miscellaneous hardware blocks to boot Wireless
+Processor Subsystem (WPSS) on SC7280 SoC.
 
-I dunno if it is described, the group of maintainers require that for some time.
-I personally found this as a good practice.
+V2:
+ * place resets and num_resets adjacent to each other [Stephen]
+ * drop incorrect useage of tcsr_mutex_regs [Bjorn]
+ * Qualcomm is expected to drop master/slave naming from its mproc nodes
+   in future SoCs.
 
-> Also if this is a rule checkpatch should be extended to checking this.
+Sibi Sankar (5):
+  dt-bindings: mailbox: Add WPSS client index to IPCC
+  dt-bindings: reset: aoss: Add AOSS reset controller binding
+  dt-bindings: reset: pdc: Add PDC Global bindings
+  reset: qcom: Add PDC Global reset signals for WPSS
+  arm64: dts: qcom: sc7280: Add nodes to boot WPSS
 
-There was a discussion at some point to add a check that help
-description shouldn't be less than 3 lines. Not sure what the outcome
-of it.
+ .../devicetree/bindings/reset/qcom,aoss-reset.yaml |   5 +
+ .../devicetree/bindings/reset/qcom,pdc-global.yaml |   4 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 138 +++++++++++++++++++++
+ drivers/reset/reset-qcom-pdc.c                     |  62 +++++++--
+ include/dt-bindings/mailbox/qcom-ipcc.h            |   1 +
+ include/dt-bindings/reset/qcom,sdm845-pdc.h        |   2 +
+ 6 files changed, 201 insertions(+), 11 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
