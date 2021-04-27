@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DFA36C83A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6E036C83F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238631AbhD0PDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236566AbhD0PDv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:03:51 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D912C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:03:08 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id q192so16064562ybg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H92+N+prJ9eTKHDD8/4/0qtkC/Zf8dyWoXvBvNJ5DRs=;
-        b=vVnbqNgEIZtU8E6xziLFqgV85Oogu5BdWdOwAm8qGkxtx8wOzu2YOwHj0PL+AeyZ3L
-         gn6Z6WCH9gNaa4YXZQTO5JKTg5DIU0h3cmOb6FFTd6wA/FWn2rg4Ek20OWCvorx8FeyS
-         9O2Aj/5AdZ+B3GzAT2s9SijS23+QuVx/txBZtx/ASgzer3VcF4uDZvq5xp9j1pHX9Nq+
-         aHtF1mEcNRY0gBtzX5DoV2uxc41XAp8y4d5RoyGCRGsqSv3Oalq+7U6yAvPWoL3HGL6p
-         sqaB2fcO07rHwkMcuoZl9qONd2Vbf9Y+X8AGNQBtuLgVOjvXRAJeT/9bBkOhaYE5HBH/
-         MQ2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H92+N+prJ9eTKHDD8/4/0qtkC/Zf8dyWoXvBvNJ5DRs=;
-        b=fUc93EEJ8AERJvZaJ0rupTY0PQX5cTcKqFzhmfAtysl7sI96VL9WMVW/O2QdXN2yti
-         AoxkLoKmLIK7iYN1KfsIH7+gkdceQ+83T/l/rs261RIHav8tqkQyenoYrlshNQi9AEvk
-         I/rv59LdloYKitc+WQ1ZfgwgT2rSXNwm82pl3qadXNjDFPitMIufTjUrjs3Km75bU88R
-         wtwNa3iCF34AGVo5OjqYg7rS2bYgtmRdAmgOfpNwX6GR++1KReGOwgcNIdt/eZmxL4rq
-         TCpsdjiGXHiG1YEoYeCAiPbbDXXUpuSW9uzrN/r1IdewvYfxbhAc+jJb/9HEmcSVJLh9
-         BbUQ==
-X-Gm-Message-State: AOAM531ABXXM2JaHeXjL1/O8CLIgasGw8kc6SEDisp0G9lG9heGrH5Dv
-        sSMI3qj84M9G5bQXnNtzbv3SSajUjeY51U/HPaezzQ==
-X-Google-Smtp-Source: ABdhPJyIROyxKNvuE/+7uO/JoiIaM5ehPc0h5Yl/Gl73ZhnszNHmoiHXSxaVLScqh1Osu64hDmC7ufhvQ+tJc3ceBkA=
-X-Received: by 2002:a25:6003:: with SMTP id u3mr35067710ybb.96.1619535787277;
- Tue, 27 Apr 2021 08:03:07 -0700 (PDT)
+        id S238527AbhD0PFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235659AbhD0PFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:05:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21BC3613D1;
+        Tue, 27 Apr 2021 15:04:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619535894;
+        bh=hSotAaqAZEUkK3K313WT/Wuuov23kIEHcYOW9tPoG4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IHAKaZjS+P0wwbNDNVqjo7N6rX+D6dJd97wCdIJ7bvKCPpdt22gpTJkaa1Gv5sxpm
+         9muw4XFcVhzq9hK6p2qBZ/1pyIxP7ylE53vYKZLlH/AuwcxMCEC9L2MLV5FkpQidpk
+         zo1IRZRlu3xqb3/CAzWpcskJVqU+XZDw8GC/dvF0=
+Date:   Tue, 27 Apr 2021 17:04:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
+        Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 098/190] Revert "video: hgafb: fix potential NULL pointer
+ dereference"
+Message-ID: <YIgoFFGLbNZTwPvI@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-99-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210426235638.1285530-1-saravanak@google.com>
- <CAHp75VeNZ4-TgkevNF5tgmB1eU9E77RNsPWRABp6PvC6eGpQrQ@mail.gmail.com>
- <20210427104851.GC4605@sirena.org.uk> <CAHp75VdpC687cHezCy5nP6BRYo-dS8COYvBBvu02f6W_dS6JEg@mail.gmail.com>
- <YIf6WeFCJaj404xT@kroah.com>
-In-Reply-To: <YIf6WeFCJaj404xT@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 27 Apr 2021 08:02:30 -0700
-Message-ID: <CAGETcx-eyP4vLn+qMN4nxMJg_0uAjP1YJqko86CivizSEf817Q@mail.gmail.com>
-Subject: Re: [PATCH] spi: Fix spi device unregister flow
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-99-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 4:49 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Apr 27, 2021 at 02:42:19PM +0300, Andy Shevchenko wrote:
-> > On Tue, Apr 27, 2021 at 1:49 PM Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > On Tue, Apr 27, 2021 at 09:52:48AM +0300, Andy Shevchenko wrote:
-> > > > +Cc Lukas
-> > >
-> > > The cleanup callback has been in release() since the framework was
-> > > merged AFAICT.
-> >
-> > Yep.
-> >
-> > Personally it feels to me wrong to require device_release() being
-> > atomic. It might be that I missed something in documentation or
-> > somewhere else that suggests the opposite.
-> > But let's wait for other comments if any.
->
-> There is no requirement from the driver core to have the release
-> callback be "atomic", you should be able to sleep just fine in there.
->
-> If not, something is wrong and has changed...
+On Wed, Apr 21, 2021 at 02:59:33PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit ec7f6aad57ad29e4e66cc2e18e1e1599ddb02542.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/video/fbdev/hgafb.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/hgafb.c b/drivers/video/fbdev/hgafb.c
+> index 8bbac7182ad3..fca29f219f8b 100644
+> --- a/drivers/video/fbdev/hgafb.c
+> +++ b/drivers/video/fbdev/hgafb.c
+> @@ -285,8 +285,6 @@ static int hga_card_detect(void)
+>  	hga_vram_len  = 0x08000;
+>  
+>  	hga_vram = ioremap(0xb0000, hga_vram_len);
+> -	if (!hga_vram)
+> -		goto error;
+>  
+>  	if (request_region(0x3b0, 12, "hgafb"))
+>  		release_io_ports = 1;
+> -- 
+> 2.31.1
+> 
 
-This patch is not just about the atomic thing though. I can drop that
-from the commit text and I think this still fixes a real issue.
-Calling code from another driver (not even the device's own driver)
-during a device's release is not guaranteed to work at all (what if
-the module gets unloaded?). And this patch also fixes some mismatched
-setup/cleanup calls. Using device release for the cleanup() isn't
-necessary and we can avoid this bug. This patch tries to fix that too.
+This patch "looks" correct, but the driver keeps on running and will
+fail horribly right afterward if this error condition ever trips.
 
-As for the atomic thing, that seems to be a generic device link SRCU
-implementation issue. It does a put_device() in an atomic context. I'm
-not too familiar with the SRCU implementation or why it was needed.
-Rafael would have a better idea on that. I can drop that part from the
-commit text and move the atomic discussion back to Andy's "atomic
-context" thread[1].
+So points for trying to resolve an issue, but a huge NEGATIVE value for
+providing a "fake" fix for the problem as nothing actually got resolved
+at all.  I'll go fix this up properly...
 
--Saravana
+{sigh}
+
+greg k-h
