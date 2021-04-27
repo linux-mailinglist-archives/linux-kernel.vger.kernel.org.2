@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BF936CA34
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD8736CA3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbhD0RRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhD0RRq (ORCPT
+        id S237471AbhD0RU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:20:57 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:45815 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236019AbhD0RUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:17:46 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ED2C061574;
-        Tue, 27 Apr 2021 10:17:03 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id k14so10343497wrv.5;
-        Tue, 27 Apr 2021 10:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JAwJWD2K/z4NOs4JYYmy89+KMQq66aqzk+TmY4WqcLE=;
-        b=LzfBipELGPmofL7v1VcLOuCmchjuoEP73ix5Ryj7QBqGAzKznB0YO0FH67waGAH3UY
-         1HWiajpCaB9Co015BJhMsPTBLLvOkj7X4E2TX1V3/F1NyCaDL648anYVAVPXEq5gfKPd
-         vp9jzqpsDf+8jGmGxwo/vJB2PGMOcH6Skg0aoXjPSM9XY6Z47E3Cx9g/InAFI68Gec5L
-         yGEmfJv9ermo8oVfeZmSYmEB+C7418GoEpYEE+88x9W2gf46yEdbZYTUQbzkneknpOc3
-         Yvm9ubPS1qhchxJ8DSucxxGskSJf3HHGpm6rVnSbqdglXe527Z/8AUO/57hqhVA9zThm
-         owQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JAwJWD2K/z4NOs4JYYmy89+KMQq66aqzk+TmY4WqcLE=;
-        b=L2rlhkARqVhKUy4B5X6YSSBzHor0Q9swfPpMpw3lymnkYo4WEuoyQb9cGbtgNkC6zg
-         ll0oEAjYVu7OH6ULsXt2mHSoda4OuuPhZs9czyAQXpvJm/21DDqh8jWb5/6l5673XGt7
-         8iQb0P5P56q90kEslHp7P4JhbwqjgUiR/jM8iDRa0DM2DlxjZogQ9tGuA4DG7q7T8uxt
-         3zQEzxJjJV7BcMnIIR/ZPseaJjQtWa6JmD6J104yTYDP6QEjqqBINxEQE2+KWij1emPY
-         Hk3+KYXYYOwPun5Yt31ZwDdyQxOZt6BSz7wHy3s1uM/eHtCbumVNia97GwXbQp2nIqsf
-         prvQ==
-X-Gm-Message-State: AOAM5324bykkxnN+vspKCdXnz/QGDmJ38nOvb7h5XTFPeFwS41YfNVcN
-        0lmE/gGlVSsbc1YYW8WXYMI=
-X-Google-Smtp-Source: ABdhPJzacnrR9JNatuLHXu/ndsPFiFTeB+6UXuJTuEtETjLwu/N1OnOSM4j1dKoGJXEStz+FUxsvCA==
-X-Received: by 2002:adf:ed4b:: with SMTP id u11mr22030727wro.293.1619543821896;
-        Tue, 27 Apr 2021 10:17:01 -0700 (PDT)
-Received: from localhost.localdomain ([41.62.108.163])
-        by smtp.gmail.com with ESMTPSA id l25sm544998wmi.17.2021.04.27.10.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 10:17:01 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH-V2] fs/btrfs: Fix uninitialized variable
-Date:   Tue, 27 Apr 2021 18:16:27 +0100
-Message-Id: <20210427171627.32356-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 27 Apr 2021 13:20:54 -0400
+Received: from [192.168.100.1] ([82.142.25.254]) by mrelayeu.kundenserver.de
+ (mreue107 [213.165.67.119]) with ESMTPSA (Nemesis) id
+ 1M734j-1lfaFZ2MSF-008WxH; Tue, 27 Apr 2021 19:20:02 +0200
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20210323221430.3735147-1-laurent@vivier.eu>
+ <20210323221430.3735147-3-laurent@vivier.eu>
+From:   Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
+Message-ID: <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
+Date:   Tue, 27 Apr 2021 19:20:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210323221430.3735147-3-laurent@vivier.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:sX/rtXIi5HFyO2slzgGBdwOV7llxl+jRhOcOSfVR/K7V+VwTuh2
+ LA58ztWttzkC7r2JvDXEVGtGXL1ohfdKM60o8U8qodVdzvPyxw8zOc3V3CZgCbTRVGPH6D9
+ hFGX1RQ+o9dMEUaoyzUNqHRsjQPE41l91WR57IIjQekH+RI6S/6ODdhzfNYiHIa36wWczkf
+ SCzPppAA/Yh+EGOlceaSQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yUxnXIozo6I=:p0EVhQjNOZDnM482R7yLcD
+ bXyTB6w1Ic4udfkVni3NQhO96qucqDWGHT65AEKlHS8digfPxaNTI1PXjQ7sXvovydXz/zgZF
+ 72VuT8Xd6MQid4LcImTWG28Po73Z/mjFaS9EowGp2l9pzdXMqJJR9Gh9oX1cxPtaw4KLSq2ra
+ Zjf7lRWoe9zG02Enopq6yARGC1yJ2V9XtOw2T1bMEukgwwxBCIjFwGJ42UIrmChGL/ZqMzOVI
+ D+ejKvU7ICKBCtkri4OHu9s5GNN9iG9jE30xQJSiUC65EADzc65nxmAnbir5FSMidvPBxkplZ
+ 1I9a0+/6pkV3npxBNcVOkIS8VElEDXKUBWUwlMIdaE6LvsWcP91C4hALWeJxhtzVnYUX42JYl
+ Q7oRI1BNPPh2JguG1hRwFih3F9zY5kEJbZia0Lu/k+ivcJf+wM9HPI6tm1Rk7uKfBP2NDW1xy
+ lPTI5REihWKrFRzUOR4uCM1jzNcLjGg6lEKyeqt09jBrLikeTVTK8oW2vqoVfbiU6Z0VrUaZz
+ sUrxvmbAKFBu6nrOdQqKF8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'zone' is uninitialized which
-introduce some build warning.
+Hi,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
-v2: catch the init as an assertion
----
- fs/btrfs/zoned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Le 23/03/2021 à 23:14, Laurent Vivier a écrit :
+> This machine allows to have up to 3.2 GiB and 128 Virtio devices.
+> 
+> It is based on android goldfish devices.
+> 
+> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> ---
+>  arch/m68k/Kbuild                           |   1 +
+>  arch/m68k/Kconfig.machine                  |  17 +++
+>  arch/m68k/configs/virt_defconfig           |  93 ++++++++++++++++
+>  arch/m68k/include/asm/irq.h                |   3 +-
+>  arch/m68k/include/asm/pgtable_mm.h         |   7 ++
+>  arch/m68k/include/asm/setup.h              |  44 ++++++--
+>  arch/m68k/include/asm/virt.h               |  26 +++++
+>  arch/m68k/include/uapi/asm/bootinfo-virt.h |  18 ++++
+>  arch/m68k/include/uapi/asm/bootinfo.h      |   1 +
+>  arch/m68k/kernel/Makefile                  |   1 +
+>  arch/m68k/kernel/head.S                    |  30 ++++++
+>  arch/m68k/kernel/setup_mm.c                |   9 ++
+>  arch/m68k/mm/kmap.c                        |  20 ++--
+>  arch/m68k/virt/Makefile                    |   6 ++
+>  arch/m68k/virt/config.c                    | 118 +++++++++++++++++++++
+>  arch/m68k/virt/ints.c                      | 110 +++++++++++++++++++
+>  arch/m68k/virt/platform.c                  |  80 ++++++++++++++
+>  arch/m68k/virt/timer.c                     |  91 ++++++++++++++++
+>  18 files changed, 658 insertions(+), 17 deletions(-)
+>  create mode 100644 arch/m68k/configs/virt_defconfig
+>  create mode 100644 arch/m68k/include/asm/virt.h
+>  create mode 100644 arch/m68k/include/uapi/asm/bootinfo-virt.h
+>  create mode 100644 arch/m68k/virt/Makefile
+>  create mode 100644 arch/m68k/virt/config.c
+>  create mode 100644 arch/m68k/virt/ints.c
+>  create mode 100644 arch/m68k/virt/platform.c
+>  create mode 100644 arch/m68k/virt/timer.c
+> 
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 432509f4b3ac..70c0b1b2ff04 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
- 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
- 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
- 	default:
--		ASSERT(zone);
-+		ASSERT(zone = 0);
- 		break;
- 	}
- 
+As 5.12 has been released, is this possible to consider having this new machine in the next release?
 
-base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
--- 
-2.17.1
+All changes are contained under arch/m68k and protected by the CONFIG_VIRT flag. This should not
+have any impact on the other m68k machines. In any case, I'll be able to maintain the machine and
+fix any problem.
 
+Thanks,
+Laurent
