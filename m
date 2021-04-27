@@ -2,161 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A1536C11C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF9D36C107
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 10:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhD0IjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 04:39:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39616 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235198AbhD0Iiq (ORCPT
+        id S235296AbhD0Ieb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 04:34:31 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17043 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234975AbhD0Iea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 04:38:46 -0400
-Message-Id: <20210427083724.840364566@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619512683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XVZYJbAotayFIl1hGiY8jQKHKUn22N09L0dqKXvU0Xo=;
-        b=IgQB1hL7taws5N3M1NauyjKQEkvcj/z5T1nE2qdO8htNzXSmORkDP8AxiHEEVYdoKskaI4
-        jAmPZ4ubS7Mbuswjgqj5AK+jnFMm+K4TFUDH795FD8itLnXBrebmhKCiQEu2fyEzwtFbjM
-        xI1FBg3JPNEPn+slLXYvbOgxys/KzH10OMOYvkmOWR6c+03fTT0Spk6LrsfIYHmakm2YI8
-        4Iw87Ua9v7BVkSQLcpcDc4BBjaae297Wwt88j5Mpu/Isi2hmpPST69Mt6rn0B6DX5mYo+e
-        3WHx13Ef79iLYs/mJjk0FfFKUltv3Fd25b6h4aM898dcrxcPsTbwmKjucHzBUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619512683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XVZYJbAotayFIl1hGiY8jQKHKUn22N09L0dqKXvU0Xo=;
-        b=lbfnB3vP22t1thNBiHjKLBR9OEtvSDV9/yvBpf/2DZfgGhdyMfdP/TbSzo6cPj8g5Hfgxg
-        d3EXg0EFjMlAsnCw==
-Date:   Tue, 27 Apr 2021 10:25:45 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        John Stultz <john.stultz@linaro.org>
-Subject: [patch 8/8] hrtimer: Avoid more SMP function calls in clock_was_set()
-References: <20210427082537.611978720@linutronix.de>
+        Tue, 27 Apr 2021 04:34:30 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FTw2701V6zPrfX;
+        Tue, 27 Apr 2021 16:30:39 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Tue, 27 Apr 2021
+ 16:33:38 +0800
+From:   Wang Wensheng <wangwensheng4@huawei.com>
+To:     <akpm@linux-foundation.org>, <osalvador@suse.de>,
+        <dan.j.williams@intel.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <rui.xiang@huawei.com>
+Subject: [PATCH] mm/sparse: Fix flags overlap in section_mem_map
+Date:   Tue, 27 Apr 2021 08:30:19 +0000
+Message-ID: <20210427083019.110184-1-wangwensheng4@huawei.com>
+X-Mailer: git-send-email 2.9.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are more indicators whether the SMP function calls on clock_was_set()
-can be avoided:
+The section_mem_map member of struct mem_section stores some flags and
+the address of struct page array of the mem_section.
 
-    - When the remote CPU is currently handling hrtimer_interrupt(). In
-      that case the remote CPU will update offsets and reevaluate the timer
-      bases before reprogramming anyway, so nothing to do.
+Additionally the node id of the mem_section is stored during early boot,
+where the struct page array has not been allocated. In other words, the
+higher bits of section_mem_map are used for two purpose, and the node id
+should be clear properly after the early boot.
 
-By unconditionally updating the offsets the following checks are possible:
+Currently the node id field is overlapped with the flag field and cannot
+be clear properly. That overlapped bits would then be treated as
+mem_section flags and may lead to unexpected side effects.
 
-    - When the offset update already happened on the remote CPU then the
-      remote update attempt will yield the same seqeuence number and no
-      IPI is required.
+Define SECTION_NID_SHIFT using order_base_2 to ensure that the node id
+field always locates after flags field. That's why the overlap occurs -
+forgetting to increase SECTION_NID_SHIFT when adding new mem_section
+flag.
 
-    - After updating it can be checked whether the first expiring timer in
-      the affected clock bases moves before the first expiring (softirq)
-      timer of the CPU. If that's not the case then sending the IPI is not
-      required.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 326e1b8f83a4 ("mm/sparsemem: introduce a SECTION_IS_EARLY flag")
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
 ---
- kernel/time/hrtimer.c |   66 +++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 57 insertions(+), 9 deletions(-)
+ include/linux/mmzone.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -880,6 +880,60 @@ static void hrtimer_reprogram(struct hrt
- 	tick_program_event(expires, 1);
- }
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 47946ce..b01694d 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1325,7 +1325,7 @@ extern size_t mem_section_usage_size(void);
+ #define SECTION_TAINT_ZONE_DEVICE	(1UL<<4)
+ #define SECTION_MAP_LAST_BIT		(1UL<<5)
+ #define SECTION_MAP_MASK		(~(SECTION_MAP_LAST_BIT-1))
+-#define SECTION_NID_SHIFT		3
++#define SECTION_NID_SHIFT		order_base_2(SECTION_MAP_LAST_BIT)
  
-+static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
-+			     unsigned int active)
-+{
-+	struct hrtimer_clock_base *base;
-+	unsigned int seq;
-+	ktime_t expires;
-+
-+	/*
-+	 * If the remote CPU is currently handling an hrtimer interrupt, it
-+	 * will update and reevaluate the first expiring timer of all clock
-+	 * bases before reprogramming. Nothing to do here.
-+	 */
-+	if (cpu_base->in_hrtirq)
-+		return false;
-+
-+	/*
-+	 * Update the base offsets unconditionally so the following quick
-+	 * check whether the SMP function call is required works.
-+	 */
-+	seq = cpu_base->clock_was_set_seq;
-+	hrtimer_update_base(cpu_base);
-+
-+	/*
-+	 * If the sequence did not change over the update then the
-+	 * remote CPU already handled it.
-+	 */
-+	if (seq == cpu_base->clock_was_set_seq)
-+		return false;
-+
-+	/*
-+	 * Walk the affected clock bases and check whether the first expiring
-+	 * timer in a clock base is moving ahead of the first expiring timer of
-+	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
-+	 * event devices cannot be remotely reprogrammed.
-+	 */
-+	for_each_active_base(base, cpu_base, active) {
-+		struct timerqueue_node *next;
-+
-+		next = timerqueue_getnext(&base->active);
-+		expires = ktime_sub(next->expires, base->offset);
-+		if (expires < cpu_base->expires_next)
-+			return true;
-+
-+		/* Extra check for softirq clock bases */
-+		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
-+			continue;
-+		if (cpu_base->softirq_activated)
-+			continue;
-+		if (expires < cpu_base->softirq_expires_next)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /*
-  * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
-  * CLOCK_BOOTTIME (for late sleep time injection).
-@@ -914,16 +968,10 @@ void clock_was_set(unsigned int bases)
- 		unsigned long flags;
- 
- 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
--		/*
--		 * Only send the IPI when there are timers queued in one of
--		 * the affected clock bases. Otherwise update the base
--		 * remote to ensure that the next enqueue of a timer on
--		 * such a clock base will see the correct offsets.
--		 */
--		if (cpu_base->active_bases & bases)
-+
-+		if (update_needs_ipi(cpu_base, bases))
- 			cpumask_set_cpu(cpu, mask);
--		else
--			hrtimer_update_base(cpu_base);
-+
- 		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
- 	}
- 
+ static inline struct page *__section_mem_map_addr(struct mem_section *section)
+ {
+-- 
+2.9.4
 
