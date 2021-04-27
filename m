@@ -2,111 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B617936C8B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4CD36C8AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbhD0Pdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhD0Pdl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:33:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAE9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=LQWA5Vj4/vDTbjcIAJB1lIQbwCbGR7wOkwAKtHeU/fo=; b=LiBcd29YiOroBKZ3tf8wjAoMRx
-        R7P9hHXyjzfRMPScN8KiVdQh1Fl4P/Vb3LNki7eNFchPrLYs+pAB/s8J5J7cghN5CQ2K1PCHOyryG
-        D7TmrFM1yuBYk9EP7bZhOB7MsQb/qMaICJfzYsVRMMu034YNqKBmOiR2xCt9tkWv685bDt2JE1HLF
-        H8TXCSrueLo9mxh8BJhmYc48h+ftoLHfd0EWmhjRpKo4HxuTymO/z6XzF8KF6kKKKQua7Pvs3RF5I
-        Ng7kmJ2apAX9UOSaeY6AIAH2UXD1GcUNt24K55lxson17SN2gxeRKRbHPSNTZ+K5qnrIiJg+7y96q
-        qLUHFS4Q==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lbPgt-0074eB-GM; Tue, 27 Apr 2021 15:32:10 +0000
-Subject: Re: [PATCH] drm: i915: fix build when ACPI is disabled and
- BACKLIGHT=m
-To:     Jani Nikula <jani.nikula@intel.com>, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Damien Lespiau <damien.lespiau@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-References: <20210426183516.18957-1-rdunlap@infradead.org>
- <874kfs5f3d.fsf@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <866940af-bbbf-a1cd-b1e3-aafe94686a22@infradead.org>
-Date:   Tue, 27 Apr 2021 08:31:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S238013AbhD0Pcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236721AbhD0Pcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:32:53 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01B1760BBB;
+        Tue, 27 Apr 2021 15:32:08 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 11:32:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: [PATCH] tracing: Map all PIDs to command lines
+Message-ID: <20210427113207.3c601884@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <874kfs5f3d.fsf@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 1:03 AM, Jani Nikula wrote:
-> On Mon, 26 Apr 2021, Randy Dunlap <rdunlap@infradead.org> wrote:
->> When CONFIG_DRM_I915=y, CONFIG_ACPI is not set, and
->> CONFIG_BACKLIGHT_CLASS_DEVICE=m, not due to I915 config,
->> there are build errors trying to reference backlight_device_{un}register().
->>
->> Changing the use of IS_ENABLED() to IS_REACHABLE() in intel_panel.[ch]
->> fixes this.
-> 
-> I feel like a broken record...
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Thanks! :)
+The default max PID is set by PID_MAX_DEFAULT, and the tracing
+infrastructure uses this number to map PIDs to the comm names of the
+tasks, such output of the trace can show names from the recorded PIDs in
+the ring buffer. This mapping is also exported to user space via the
+"saved_cmdlines" file in the tracefs directory.
 
-I'll leave it b0rken as well.
+But currently the mapping expects the PIDs to be less than
+PID_MAX_DEFAULT, which is the default maximum and not the real maximum.
+Recently, systemd will increases the maximum value of a PID on the system,
+and when tasks are traced that have a PID higher than PID_MAX_DEFAULT, its
+comm is not recorded. This leads to the entire trace to have "<...>" as
+the comm name, which is pretty useless.
 
+Instead, keep the array mapping the size of PID_MAX_DEFAULT, but instead
+of just mapping the index to the comm, map a mask of the PID
+(PID_MAX_DEFAULT - 1) to the comm, and find the full PID from the
+map_cmdline_to_pid array (that already exists).
 
-> CONFIG_DRM_I915=y and CONFIG_BACKLIGHT_CLASS_DEVICE=m is an invalid
-> configuration. The patch at hand just silently hides the problem,
-> leaving you without backlight.
-> 
-> i915 should *depend* on backlight, not select it. It would express the
-> dependency without chances for invalid configuration.
-> 
-> However, i915 alone can't depend on backlight, all users of backlight
-> should depend on backlight, not select it. Otherwise, you end up with
-> other configuration problems, circular dependencies and
-> whatnot. Everyone should change. See also (*) why select is not a good
-> idea here.
-> 
-> I've sent patches to this effect before, got rejected, and the same
-> thing gets repeated ad infinitum.
-> 
-> Accepting this patch would stop the inflow of these reports and similar
-> patches, but it does not fix the root cause. It just sweeps the problem
-> under the rug.
-> 
-> 
-> BR,
-> Jani.
-> 
-> (*) Documentation/kbuild/kconfig-language.rst:
-> 
-> 	select should be used with care. select will force
-> 	a symbol to a value without visiting the dependencies.
-> 	By abusing select you are able to select a symbol FOO even
-> 	if FOO depends on BAR that is not set.
-> 	In general use select only for non-visible symbols
-> 	(no prompts anywhere) and for symbols with no dependencies.
-> 	That will limit the usefulness but on the other hand avoid
-> 	the illegal configurations all over.
+This bug goes back to the beginning of ftrace, but hasn't been an issue
+until user space started increasing the maximum value of PIDs.
 
-Yes, I'm well aware of that.
+Cc: stable@vger.kernel.org
+Fixes: bc0c38d139ec7 ("ftrace: latency tracer infrastructure")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace.c | 41 +++++++++++++++--------------------------
+ 1 file changed, 15 insertions(+), 26 deletions(-)
 
-ta.
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index c0c9aa5cd8e2..67c01dc5cdeb 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2390,14 +2390,13 @@ static void tracing_stop_tr(struct trace_array *tr)
+ 
+ static int trace_save_cmdline(struct task_struct *tsk)
+ {
+-	unsigned pid, idx;
++	unsigned tpid, idx;
+ 
+ 	/* treat recording of idle task as a success */
+ 	if (!tsk->pid)
+ 		return 1;
+ 
+-	if (unlikely(tsk->pid > PID_MAX_DEFAULT))
+-		return 0;
++	tpid = tsk->pid & (PID_MAX_DEFAULT - 1);
+ 
+ 	/*
+ 	 * It's not the end of the world if we don't get
+@@ -2408,26 +2407,15 @@ static int trace_save_cmdline(struct task_struct *tsk)
+ 	if (!arch_spin_trylock(&trace_cmdline_lock))
+ 		return 0;
+ 
+-	idx = savedcmd->map_pid_to_cmdline[tsk->pid];
++	idx = savedcmd->map_pid_to_cmdline[tpid];
+ 	if (idx == NO_CMDLINE_MAP) {
+ 		idx = (savedcmd->cmdline_idx + 1) % savedcmd->cmdline_num;
+ 
+-		/*
+-		 * Check whether the cmdline buffer at idx has a pid
+-		 * mapped. We are going to overwrite that entry so we
+-		 * need to clear the map_pid_to_cmdline. Otherwise we
+-		 * would read the new comm for the old pid.
+-		 */
+-		pid = savedcmd->map_cmdline_to_pid[idx];
+-		if (pid != NO_CMDLINE_MAP)
+-			savedcmd->map_pid_to_cmdline[pid] = NO_CMDLINE_MAP;
+-
+-		savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
+-		savedcmd->map_pid_to_cmdline[tsk->pid] = idx;
+-
++		savedcmd->map_pid_to_cmdline[tpid] = idx;
+ 		savedcmd->cmdline_idx = idx;
+ 	}
+ 
++	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
+ 	set_cmdline(idx, tsk->comm);
+ 
+ 	arch_spin_unlock(&trace_cmdline_lock);
+@@ -2438,6 +2426,7 @@ static int trace_save_cmdline(struct task_struct *tsk)
+ static void __trace_find_cmdline(int pid, char comm[])
+ {
+ 	unsigned map;
++	int tpid;
+ 
+ 	if (!pid) {
+ 		strcpy(comm, "<idle>");
+@@ -2449,16 +2438,16 @@ static void __trace_find_cmdline(int pid, char comm[])
+ 		return;
+ 	}
+ 
+-	if (pid > PID_MAX_DEFAULT) {
+-		strcpy(comm, "<...>");
+-		return;
++	tpid = pid & (PID_MAX_DEFAULT - 1);
++	map = savedcmd->map_pid_to_cmdline[tpid];
++	if (map != NO_CMDLINE_MAP) {
++		tpid = savedcmd->map_cmdline_to_pid[map];
++		if (tpid == pid) {
++			strlcpy(comm, get_saved_cmdlines(map), TASK_COMM_LEN);
++			return;
++		}
+ 	}
+-
+-	map = savedcmd->map_pid_to_cmdline[pid];
+-	if (map != NO_CMDLINE_MAP)
+-		strlcpy(comm, get_saved_cmdlines(map), TASK_COMM_LEN);
+-	else
+-		strcpy(comm, "<...>");
++	strcpy(comm, "<...>");
+ }
+ 
+ void trace_find_cmdline(int pid, char comm[])
 -- 
-~Randy
+2.29.2
 
