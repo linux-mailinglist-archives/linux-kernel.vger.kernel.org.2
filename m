@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B923236BCF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE3936BCFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbhD0BiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 21:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S234612AbhD0Bma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 21:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236233AbhD0BiO (ORCPT
+        with ESMTP id S233361AbhD0Bm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 21:38:14 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1279DC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 18:37:32 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id dm16so3441248qvb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 18:37:32 -0700 (PDT)
+        Mon, 26 Apr 2021 21:42:28 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70B51C061574;
+        Mon, 26 Apr 2021 18:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QB800rHYAeL0/mLOu6ht7g88VM3imoEr4I1ah0eoM3w=;
-        b=AFV0EFC3lMxMy0npzHQLmeKh5sg6p+6xOSY8r4n3vU8cZC31dVsePzNarYd6U7HPT2
-         USDYVyiZd/gJozmfuh/vSkkGrpGX682BWq/T3JdRyADaA4hqDFEsTMDOODZ+mkUty+0m
-         gEPS7FaKDDAjKIt6F+chaB4bqAf+Y8GGFK6W0gui/qH7BT9BVmtGP8AZM9jHWsU4wT1D
-         yKLblJ8dC8ZoiJDfaNA99FILJZjiKGMot4cSJ0/hZBN8/IH11PHJaioiWezM5Dy9JO+/
-         hwTUnz8RIsx1pOvPi5mt2MRp5egXj+SktN9kzCRzamUwQ/WO+fBkjqAzCXGXBGEqWmgG
-         Npgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=QB800rHYAeL0/mLOu6ht7g88VM3imoEr4I1ah0eoM3w=;
-        b=b6e32ej3ljX/v+WcxjuR9lGphxZKt18H0MGLUG5E6veSBzMQGcZcng/GfRnFBYmoGh
-         CljjTHsaoKYYJxgwzboL61Ni3NMqAraVnryCaEcctFwdYg/XLhkhhALf8SEnSmT/3nwg
-         EcIcrvo4C/tr8kXR32qsaGHdshkwyvG2ADOgODBVyLscfJpPQPMvbxg+rt54nemlCmNh
-         u2fGOjlTUhZ7mikihwNsgyfbCyNWk3vdox0jXber6jJD5aJPa7RXapXhz6sEK4yTz1FX
-         w8pTSTk+j4PBpuqirshRyn7oNN4P+MjzEVqO+yaHD132yuCybPTX0huQNdP38Zltr+E7
-         M/lg==
-X-Gm-Message-State: AOAM533ObSkHL8qcPCVymEV+S/5HyvmHXGVZROOpNU9uMKnbdNPk/MXq
-        EcFH+DpxrHSBkGFFsn6I3Nk=
-X-Google-Smtp-Source: ABdhPJx4RjAb6cTop0FPSjfmGyF2sN3M38cxEUBNSgoFfHyH8YMl+FzLxtzj0F3B/bQ+2npNfV0v5w==
-X-Received: by 2002:a0c:d786:: with SMTP id z6mr21041012qvi.18.1619487451043;
-        Mon, 26 Apr 2021 18:37:31 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([50.238.223.130])
-        by smtp.gmail.com with ESMTPSA id q67sm1858622qkb.89.2021.04.26.18.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 18:37:30 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH v2 6/6] perf report: Print percentage of each event statistics
-Date:   Mon, 26 Apr 2021 18:37:17 -0700
-Message-Id: <20210427013717.1651674-7-namhyung@kernel.org>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-In-Reply-To: <20210427013717.1651674-1-namhyung@kernel.org>
-References: <20210427013717.1651674-1-namhyung@kernel.org>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=RNKcazazG5
+        hbxjr+fd3/Dgnsb37D/vx3vsCQ/sLh6hE=; b=oVFUJryol8JZtLoBR/825afMG9
+        +N9RkNAK8c/6NEAzbPQYdwjmkWUhtRWSDlbQ/lV5zet/lKOYKIbBAwGv/eis4nph
+        Lghled2vAeMm3klwlo7DpcahsDHrwOZ2jtVT2gjHueitYBIGBPkZ3o3GNXSCNghw
+        cH4vy9fpocyFgunrw=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3vq7Qa4dgTqZOAA--.291S4;
+        Tue, 27 Apr 2021 09:41:36 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     robert.moore@intel.com, erik.kaneda@intel.com,
+        rafael.j.wysocki@intel.com, lenb@kernel.org
+Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] ACPICA:dbnames: Fix a error free in acpi_db_walk_for_fields
+Date:   Mon, 26 Apr 2021 18:41:34 -0700
+Message-Id: <20210427014134.3568-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygC3vq7Qa4dgTqZOAA--.291S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFyUtF4rGrW7JrW8Xr1rtFb_yoWkKrX_ua
+        s5GF48W3WYkr1xAF17A3s3ZFy0vw43Zrn7Gr4kKr1I9rZ5Zr1rAwn7Zwn0q3s7GF90grsx
+        ua4Utrn5uw1akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWlnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUmNtcUUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's sometimes useful to see how many samples vs other events in the
-data file with percent values.
+In acpi_db_walk_for_fields, buffer.pointer is freed in the first
+time via ACPI_FREE() after acpi_os_printf("%s ", (char *)buffer.pointer).
+But later, buffer.pointer is assigned to ret_value, and the freed
+pointer is dereferenced by ret_value, which is use after free.
 
-  $ perf report --stat
+In addition, buffer.pointer is freed by ACPI_FREE() again after
+acpi_os_printf("}\n"), which is a double free.
 
-  Aggregated stats:
-             TOTAL events:      20064
-              MMAP events:        239  ( 1.2%)
-              COMM events:       1518  ( 7.6%)
-              EXIT events:          1  ( 0.0%)
-              FORK events:       1517  ( 7.6%)
-            SAMPLE events:       4015  (20.0%)
-             MMAP2 events:      12769  (63.6%)
-    FINISHED_ROUND events:          2  ( 0.0%)
-        THREAD_MAP events:          1  ( 0.0%)
-           CPU_MAP events:          1  ( 0.0%)
-         TIME_CONV events:          1  ( 0.0%)
-  cycles stats:
-            SAMPLE events:       2475
-  instructions stats:
-            SAMPLE events:       1540
+My patch removes the first ACPI_FREE() to avoid the uaf and double
+free bugs.
 
-Suggested-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Fixes: 5fd033288a866 ("ACPICA: debugger: add command to dump all fields of particular subtype")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 ---
- tools/perf/ui/stdio/hist.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/acpi/acpica/dbnames.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/tools/perf/ui/stdio/hist.c b/tools/perf/ui/stdio/hist.c
-index d9e634406175..f36270485168 100644
---- a/tools/perf/ui/stdio/hist.c
-+++ b/tools/perf/ui/stdio/hist.c
-@@ -902,6 +902,7 @@ size_t events_stats__fprintf(struct events_stats *stats, FILE *fp,
- {
- 	int i;
- 	size_t ret = 0;
-+	u32 total = stats->nr_events[0];
- 
- 	for (i = 0; i < PERF_RECORD_HEADER_MAX; ++i) {
- 		const char *name;
-@@ -912,7 +913,14 @@ size_t events_stats__fprintf(struct events_stats *stats, FILE *fp,
- 		if (skip_empty && !stats->nr_events[i])
- 			continue;
- 
--		ret += fprintf(fp, "%16s events: %10d\n", name, stats->nr_events[i]);
-+		if (i && total) {
-+			ret += fprintf(fp, "%16s events: %10d  (%4.1f%%)\n",
-+				       name, stats->nr_events[i],
-+				       100.0 * stats->nr_events[i] / total);
-+		} else {
-+			ret += fprintf(fp, "%16s events: %10d\n",
-+				       name, stats->nr_events[i]);
-+		}
+diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
+index 3615e1a6efd8..dabd76df15ec 100644
+--- a/drivers/acpi/acpica/dbnames.c
++++ b/drivers/acpi/acpica/dbnames.c
+@@ -547,7 +547,6 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
  	}
  
- 	return ret;
+ 	acpi_os_printf("%s ", (char *)buffer.pointer);
+-	ACPI_FREE(buffer.pointer);
+ 
+ 	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+ 	acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
 -- 
-2.31.1.527.g47e6f16901-goog
+2.25.1
+
 
