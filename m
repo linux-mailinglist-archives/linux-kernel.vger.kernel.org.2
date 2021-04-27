@@ -2,129 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B9436CA1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFCE36CA25
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238163AbhD0RLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:11:40 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:41832 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236392AbhD0RLi (ORCPT
+        id S238053AbhD0RND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:13:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50224 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235762AbhD0RMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:11:38 -0400
-Received: by mail-ua1-f48.google.com with SMTP id x22so698019uav.8
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:10:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JpGZFjzRW/p3RHl0B+aF4dHbQd+A5fGdxZYu9M6J2yA=;
-        b=TAKB0jf1fV+Sd5vy4YnnFqn/VjoAsO+z6gE+97nvzZITUTbRkF6hN0haDzr7X6wqix
-         hDL163zG+wS5soaPsF6ADgAT9h9wNUo9Gj6wTdd3atBYn5SlQmOOFIsPI37JRrfnlq2p
-         GOMXq/cMDUa3olnE3gRPKdQMwt9kB7aDAJCIBvBKPk32p/0HOYpf28NLtto94m0D7siT
-         UlFs9sJie3pTGjHJlasW6OAc//EeL+mvCPN0b8G2GsLhwnC0CJ3xEUI8i9LgbBn8Q7ks
-         LIHOIPmvyqATk2ty0D4M4XkdeaqJ5V6wFUn+Blc/hnRAbj5rfdv1ZXI31GA1O68Nosap
-         yV+A==
-X-Gm-Message-State: AOAM533nrKGMqnOPFIRhxou35ElZYi8Z34wRZ/rACw0/61B16dfZyihL
-        UkgwqnTxHtNl4zJRkEortyOp5uUc0/kbERyvmwY=
-X-Google-Smtp-Source: ABdhPJxmYZvWw4iFRCiICLEtgluxP0y711XlnbtT9zNpkC2keBJqt8AuoHXaew9t26dhAksBszaB4vQOXxuV+PASdmQ=
-X-Received: by 2002:a9f:262c:: with SMTP id 41mr18657209uag.4.1619543453199;
- Tue, 27 Apr 2021 10:10:53 -0700 (PDT)
+        Tue, 27 Apr 2021 13:12:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619543530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q5VotXzwzULTsEKcuKaXK6CIlCbj0EuIydSPvYrjm/o=;
+        b=Q6Dtr5CKc4rU+JI9zOidtcOlULsUzxVp9q+58ZL1tR3EVnE7ftrTFsWJ1GnzItDv1L7QQi
+        THRoGWrXIEwKYdrQEQPUby7nv5KI9VOZqlh1mtLMBohSzPIci+VTj7TEdPVrYDNRfbCcjX
+        V4SqM0Qxt1LncOJqbxzn15+vO3rYq08=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-POCC_mPhOmakedK8QEL2FA-1; Tue, 27 Apr 2021 13:12:08 -0400
+X-MC-Unique: POCC_mPhOmakedK8QEL2FA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D572F10AAEA3;
+        Tue, 27 Apr 2021 17:12:06 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-117-178.rdu2.redhat.com [10.10.117.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96C7E60C0F;
+        Tue, 27 Apr 2021 17:12:06 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 22F20220BCF; Tue, 27 Apr 2021 13:12:06 -0400 (EDT)
+Date:   Tue, 27 Apr 2021 13:12:06 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, Robert Krawitz <rlk@redhat.com>
+Subject: Re: [PATCH v2] virtiofs: propagate sync() to file server
+Message-ID: <20210427171206.GA1805363@redhat.com>
+References: <20210426151011.840459-1-groug@kaod.org>
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
- <20210302211133.2244281-4-saravanak@google.com> <60989b90-7f8a-5306-e7d7-c5461bc9ac68@gmail.com>
- <CAGETcx_ayXd1uDR6WHWxLmskYwOSjyynNi3Rt8irRUrfnr266w@mail.gmail.com>
- <23ab7a11-330c-4d3d-00c1-984c5248464e@gmail.com> <20210427074807.GI43717@e120937-lin>
- <CA+-6iNz_kL0DnbRb0A=WSSLK0mnqw35S47TDXq5rhwXL_VWdPg@mail.gmail.com>
- <20210427141116.GJ43717@e120937-lin> <20210427151042.j7hku7pxqz56uyt6@bogus>
- <0887ce92-e9d8-47ec-0077-4c1f2fd46f87@gmail.com> <20210427163913.svx2w2mxo4w3is32@bogus>
- <1e4b602d-5ed8-19a3-2cd1-b3fe27e7ff8d@gmail.com>
-In-Reply-To: <1e4b602d-5ed8-19a3-2cd1-b3fe27e7ff8d@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Apr 2021 19:10:41 +0200
-Message-ID: <CAMuHMdWHRb0+BS=s0OU_JBMtEuc4=tFkrZhb=3Wjm2AUxL-ryQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by default""
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426151011.840459-1-groug@kaod.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On Mon, Apr 26, 2021 at 05:10:11PM +0200, Greg Kurz wrote:
+> Even if POSIX doesn't mandate it, linux users legitimately expect
+> sync() to flush all data and metadata to physical storage when it
+> is located on the same system. This isn't happening with virtiofs
+> though : sync() inside the guest returns right away even though
+> data still needs to be flushed from the host page cache.
+> 
+> This is easily demonstrated by doing the following in the guest:
+> 
+> $ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
+> 5120+0 records in
+> 5120+0 records out
+> 5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
+> sync()                                  = 0 <0.024068>
+> +++ exited with 0 +++
+> 
+> and start the following in the host when the 'dd' command completes
+> in the guest:
+> 
+> $ strace -T -e fsync /usr/bin/sync virtiofs/foo
+> fsync(3)                                = 0 <10.371640>
+> +++ exited with 0 +++
+> 
+> There are no good reasons not to honor the expected behavior of
+> sync() actually : it gives an unrealistic impression that virtiofs
+> is super fast and that data has safely landed on HW, which isn't
+> the case obviously.
+> 
+> Implement a ->sync_fs() superblock operation that sends a new
+> FUSE_SYNC request type for this purpose. Provision a 64-bit
+> flags field for possible future extensions. Since the file
+> server cannot handle the wait == 0 case, we skip it to avoid a
+> gratuitous roundtrip.
+> 
+> Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for
+> FUSE_SYNC in the file server is treated as permanent success.
+> This ensures compatibility with older file servers : the client
+> will get the current behavior of sync() not being propagated to
+> the file server.
+> 
+> Note that such an operation allows the file server to DoS sync().
+> Since a typical FUSE file server is an untrusted piece of software
+> running in userspace, this is disabled by default.  Only enable it
+> with virtiofs for now since virtiofsd is supposedly trusted by the
+> guest kernel.
+> 
+> Reported-by: Robert Krawitz <rlk@redhat.com>
+> Signed-off-by: Greg Kurz <groug@kaod.org>
+> ---
+> 
+> v2: - clarify compatibility with older servers in changelog (Vivek)
+>     - ignore the wait == 0 case (Miklos)
+>     - 64-bit aligned argument structure (Vivek, Miklos)
+> 
+>  fs/fuse/fuse_i.h          |  3 +++
+>  fs/fuse/inode.c           | 35 +++++++++++++++++++++++++++++++++++
+>  fs/fuse/virtio_fs.c       |  1 +
+>  include/uapi/linux/fuse.h | 10 +++++++++-
+>  4 files changed, 48 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> index 63d97a15ffde..68e9ae96cbd4 100644
+> --- a/fs/fuse/fuse_i.h
+> +++ b/fs/fuse/fuse_i.h
+> @@ -755,6 +755,9 @@ struct fuse_conn {
+>  	/* Auto-mount submounts announced by the server */
+>  	unsigned int auto_submounts:1;
+>  
+> +	/* Propagate syncfs() to server */
+> +	unsigned int sync_fs:1;
+> +
+>  	/** The number of requests waiting for completion */
+>  	atomic_t num_waiting;
+>  
+> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> index b0e18b470e91..ac184069b40f 100644
+> --- a/fs/fuse/inode.c
+> +++ b/fs/fuse/inode.c
+> @@ -506,6 +506,40 @@ static int fuse_statfs(struct dentry *dentry, struct kstatfs *buf)
+>  	return err;
+>  }
+>  
+> +static int fuse_sync_fs(struct super_block *sb, int wait)
+> +{
+> +	struct fuse_mount *fm = get_fuse_mount_super(sb);
+> +	struct fuse_conn *fc = fm->fc;
+> +	struct fuse_syncfs_in inarg;
+> +	FUSE_ARGS(args);
+> +	int err;
+> +
+> +	/*
+> +	 * Userspace cannot handle the wait == 0 case. Avoid a
+> +	 * gratuitous roundtrip.
+> +	 */
+> +	if (!wait)
+> +		return 0;
+> +
+> +	if (!fc->sync_fs)
+> +		return 0;
+> +
+> +	memset(&inarg, 0, sizeof(inarg));
+> +	args.in_numargs = 1;
+> +	args.in_args[0].size = sizeof(inarg);
+> +	args.in_args[0].value = &inarg;
+> +	args.opcode = FUSE_SYNCFS;
+> +	args.out_numargs = 0;
+> +
+> +	err = fuse_simple_request(fm, &args);
+> +	if (err == -ENOSYS) {
+> +		fc->sync_fs = 0;
+> +		err = 0;
+> +	}
+> +
+> +	return err;
+> +}
+> +
+>  enum {
+>  	OPT_SOURCE,
+>  	OPT_SUBTYPE,
+> @@ -909,6 +943,7 @@ static const struct super_operations fuse_super_operations = {
+>  	.put_super	= fuse_put_super,
+>  	.umount_begin	= fuse_umount_begin,
+>  	.statfs		= fuse_statfs,
+> +	.sync_fs	= fuse_sync_fs,
+>  	.show_options	= fuse_show_options,
+>  };
+>  
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 4ee6f734ba83..a3c025308743 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -1441,6 +1441,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>  	fc->release = fuse_free_conn;
+>  	fc->delete_stale = true;
+>  	fc->auto_submounts = true;
+> +	fc->sync_fs = true;
+>  
+>  	fsc->s_fs_info = fm;
+>  	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
+> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> index 54442612c48b..1265ca17620c 100644
+> --- a/include/uapi/linux/fuse.h
+> +++ b/include/uapi/linux/fuse.h
+> @@ -179,6 +179,9 @@
+>   *  7.33
+>   *  - add FUSE_HANDLE_KILLPRIV_V2, FUSE_WRITE_KILL_SUIDGID, FATTR_KILL_SUIDGID
+>   *  - add FUSE_OPEN_KILL_SUIDGID
+> + *
+> + *  7.34
+> + *  - add FUSE_SYNCFS
+>   */
+>  
+>  #ifndef _LINUX_FUSE_H
+> @@ -214,7 +217,7 @@
+>  #define FUSE_KERNEL_VERSION 7
+>  
+>  /** Minor version number of this interface */
+> -#define FUSE_KERNEL_MINOR_VERSION 33
+> +#define FUSE_KERNEL_MINOR_VERSION 34
+>  
+>  /** The node ID of the root inode */
+>  #define FUSE_ROOT_ID 1
+> @@ -499,6 +502,7 @@ enum fuse_opcode {
+>  	FUSE_COPY_FILE_RANGE	= 47,
+>  	FUSE_SETUPMAPPING	= 48,
+>  	FUSE_REMOVEMAPPING	= 49,
+> +	FUSE_SYNCFS		= 50,
+>  
+>  	/* CUSE specific operations */
+>  	CUSE_INIT		= 4096,
+> @@ -957,4 +961,8 @@ struct fuse_removemapping_one {
+>  #define FUSE_REMOVEMAPPING_MAX_ENTRY   \
+>  		(PAGE_SIZE / sizeof(struct fuse_removemapping_one))
+>  
+> +struct fuse_syncfs_in {
+> +	uint64_t flags;
+> +};
+> +
 
-On Tue, Apr 27, 2021 at 6:50 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> On 4/27/2021 9:39 AM, Sudeep Holla wrote:
-> > On Tue, Apr 27, 2021 at 09:24:55AM -0700, Florian Fainelli wrote:
-> >
-> > [...]
-> >
-> >> This is a self inflicted problem that we have in that the bootloader
-> >> provides a Device Tree to the kernel which is massaged in different ways
-> >> and intends to stay backwards compatible as much as possible. And indeed
-> >> after removing the 'mboxes' property gets us going with fw_devlink=on.
-> >>
-> >
-> > I assume the bootloader checks the presence of SMC support and modifies
-> > the DT node accordingly. Can't it remove the mbox properties as it make
-> > no sense with SMC compatible ? However ...
->
-> The bootloader has always assumed the SMC support was there from the day
-> we introduced it because it was. What changed is the way we advertised
-> to Linux that support. We used to have a custom mailbox driver that
-> would be pretty much what the ARM SMC transport eventually came to be.
->
-> Since we still support earlier kernels that were deployed with the old
-> mailbox we cannot arbitrarily break that setup, especially as our
-> customers tend to be slow in picking up new kernel versions, fortunately
-> before they get to 5.13 we can mandate a new bootloader that may not be
-> compatible with their 4.1 kernel anymore, or at least not without some
-> backporting of the ARM SMC transport, that's all fair IMHO.
->
-> >>> 2. IIUC, the fw_devlink might use information from DT to establish the
-> >>>    dependency and having mailbox information in this context may be
-> >>>    considered wrong as there is no dependency if it is using SMC.
-> >>
-> >> Right, unfortunately, short of having some special casing for SCMI and
-> >> checking that if we have both an "arm,smc-id" and "mboxes" phandle we
-> >> should prefer the former, there is not probably much that can be done
-> >> here. Do we want to do that?
-> >
-> > I *think* we could do that in the SCMI drivers, but:
-> > 1. I am not sure if that helps fw_devlinks if they are deriving the info
-> >    purely based on DT
-> > 2. I am also afraid that someone might come up with exactly opposite
-> >    requirement that let us prefer mailbox over SMC as they would use
-> >    SMC only if h/w lacks proper mailbox support. I fear that we will get
-> >    into rabbit hole trying to do something like that.
->
-> That is true, and to get to the SCMI driver, even the base protocol you
-> must have been probed, so we have a nice chicken and egg problem. I
-> highly appreciate your time understanding the context and trying to find
-> a solution it is pretty clear that we must fix our FDT now.
+Hi Greg,
 
-Alternatively, you can have a quirk in the kernel that removes the
-phandle from the FDT during early boot.
+Will it be better if 32bits are for flags and reset 32 are
+padding and can be used in whatever manner.
 
-Gr{oetje,eeting}s,
+struct fuse_syncfs_in {
+	uint32_t flags;
+	uint32_t padding;
+};
 
-                        Geert
+This will increase the flexibility if we were to send more information
+in future.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I already see bunch of structures where flags are 32 bit and reset
+are padding bits. fuse_read_in, fuse_write_in, fuse_rename2_in etc.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks
+Vivek
+
+>  #endif /* _LINUX_FUSE_H */
+> -- 
+> 2.26.3
+> 
+
