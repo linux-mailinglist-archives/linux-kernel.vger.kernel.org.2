@@ -2,312 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64E236BEB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D38736BEB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 07:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhD0FEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 01:04:47 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17819 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhD0FEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 01:04:45 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FTqNr2hB5zBsGN;
-        Tue, 27 Apr 2021 13:01:32 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 27 Apr 2021 13:03:48 +0800
-Subject: Re: [RFC PATCH v2 2/2] KVM: x86: Not wr-protect huge page with
- init_all_set dirty log
-To:     Ben Gardon <bgardon@google.com>
-References: <20210416082511.2856-1-zhukeqian1@huawei.com>
- <20210416082511.2856-3-zhukeqian1@huawei.com>
- <CANgfPd_WzX6Fm7BiMoBoehuLL8tjh4WEqehUhF8biPyL8vS4XQ@mail.gmail.com>
- <49e6bf4f-0142-c9ea-a8c1-7cfe211c8d7b@huawei.com>
- <CANgfPd840MmH5zKRHb4p1Rk0QEDu8iJoMJZGxWF6fhqxANrptg@mail.gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        "Paolo Bonzini" <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        <wanghaibin.wang@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <f0651fce-3b39-3ca7-6681-9fbc6edf8480@huawei.com>
-Date:   Tue, 27 Apr 2021 13:03:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S229861AbhD0FF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 01:05:59 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40189 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229541AbhD0FF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 01:05:58 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FTqT63mM3z4gf;
+        Tue, 27 Apr 2021 07:05:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id e4PMjbRIQiGt; Tue, 27 Apr 2021 07:05:14 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FTqT62gmzz4jM;
+        Tue, 27 Apr 2021 07:05:14 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 125F38B77C;
+        Tue, 27 Apr 2021 07:05:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id je4m3tj14JOn; Tue, 27 Apr 2021 07:05:14 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9BD808B777;
+        Tue, 27 Apr 2021 07:05:12 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: Avoid clang uninitialized warning in
+ __get_user_size_allowed
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210426203518.981550-1-nathan@kernel.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <32a0f305-031b-e4da-345d-0f03b2b42189@csgroup.eu>
+Date:   Tue, 27 Apr 2021 07:05:12 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd840MmH5zKRHb4p1Rk0QEDu8iJoMJZGxWF6fhqxANrptg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210426203518.981550-1-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
 
-Sorry for the delay reply!
 
-On 2021/4/21 0:30, Ben Gardon wrote:
-> On Tue, Apr 20, 2021 at 12:49 AM Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>
->> Hi Ben,
->>
->> On 2021/4/20 3:20, Ben Gardon wrote:
->>> On Fri, Apr 16, 2021 at 1:25 AM Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>>>
->>>> Currently during start dirty logging, if we're with init-all-set,
->>>> we write protect huge pages and leave normal pages untouched, for
->>>> that we can enable dirty logging for these pages lazily.
->>>>
->>>> Actually enable dirty logging lazily for huge pages is feasible
->>>> too, which not only reduces the time of start dirty logging, also
->>>> greatly reduces side-effect on guest when there is high dirty rate.
->>>>
->>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->>>> ---
->>>>  arch/x86/kvm/mmu/mmu.c | 48 ++++++++++++++++++++++++++++++++++++++----
->>>>  arch/x86/kvm/x86.c     | 37 +++++++++-----------------------
->>>>  2 files changed, 54 insertions(+), 31 deletions(-)
->>>>
->>>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->>>> index 2ce5bc2ea46d..98fa25172b9a 100644
->>>> --- a/arch/x86/kvm/mmu/mmu.c
->>>> +++ b/arch/x86/kvm/mmu/mmu.c
->>>> @@ -1188,8 +1188,7 @@ static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->>>>   * @gfn_offset: start of the BITS_PER_LONG pages we care about
->>>>   * @mask: indicates which pages we should protect
->>>>   *
->>>> - * Used when we do not need to care about huge page mappings: e.g. during dirty
->>>> - * logging we do not have any such mappings.
->>>> + * Used when we do not need to care about huge page mappings.
->>>>   */
->>>>  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
->>>>                                      struct kvm_memory_slot *slot,
->>>> @@ -1246,13 +1245,54 @@ static void kvm_mmu_clear_dirty_pt_masked(struct kvm *kvm,
->>>>   * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
->>>>   * enable dirty logging for them.
->>>>   *
->>>> - * Used when we do not need to care about huge page mappings: e.g. during dirty
->>>> - * logging we do not have any such mappings.
->>>> + * We need to care about huge page mappings: e.g. during dirty logging we may
->>>> + * have any such mappings.
->>>>   */
->>>>  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
->>>>                                 struct kvm_memory_slot *slot,
->>>>                                 gfn_t gfn_offset, unsigned long mask)
->>>>  {
->>>> +       gfn_t start, end;
->>>> +
->>>> +       /*
->>>> +        * Huge pages are NOT write protected when we start dirty log with
->>>> +        * init-all-set, so we must write protect them at here.
->>>> +        *
->>>> +        * The gfn_offset is guaranteed to be aligned to 64, but the base_gfn
->>>> +        * of memslot has no such restriction, so the range can cross two large
->>>> +        * pages.
->>>> +        */
->>>> +       if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
->>>> +               start = slot->base_gfn + gfn_offset + __ffs(mask);
->>>> +               end = slot->base_gfn + gfn_offset + __fls(mask);
->>>> +               kvm_mmu_slot_gfn_write_protect(kvm, slot, start, PG_LEVEL_2M);
->>>> +
->>>> +               /* Cross two large pages? */
->>>> +               if (ALIGN(start << PAGE_SHIFT, PMD_SIZE) !=
->>>> +                   ALIGN(end << PAGE_SHIFT, PMD_SIZE))
->>>> +                       kvm_mmu_slot_gfn_write_protect(kvm, slot, end,
->>>> +                                                      PG_LEVEL_2M);
->>>> +       }
->>>> +
->>>> +       /*
->>>> +        * RFC:
->>>> +        *
->>>> +        * 1. I don't return early when kvm_mmu_slot_gfn_write_protect() returns
->>>> +        * true, because I am not very clear about the relationship between
->>>> +        * legacy mmu and tdp mmu. AFAICS, the code logic is NOT an if/else
->>>> +        * manner.
->>>> +        *
->>>> +        * The kvm_mmu_slot_gfn_write_protect() returns true when we hit a
->>>> +        * writable large page mapping in legacy mmu mapping or tdp mmu mapping.
->>>> +        * Do we still have normal mapping in that case? (e.g. We have large
->>>> +        * mapping in legacy mmu and normal mapping in tdp mmu).
->>>
->>> Right, we can't return early because the two MMUs could map the page
->>> in different ways, but each MMU could also map the page in multiple
->>> ways independently.
->>> For example, if the legacy MMU was being used and we were running a
->>> nested VM, a page could be mapped 2M in EPT01 and 4K in EPT02, so we'd
->>> still need kvm_mmu_slot_gfn_write_protect  calls for both levels.
->>> I don't think there's a case where we can return early here with the
->>> information that the first calls to kvm_mmu_slot_gfn_write_protect
->>> access.
->> Thanks for the detailed explanation.
->>
->>>
->>>> +        *
->>>> +        * 2. kvm_mmu_slot_gfn_write_protect() doesn't tell us whether the large
->>>> +        * page mapping exist. If it exists but is clean, we can return early.
->>>> +        * However, we have to do invasive change.
->>>
->>> What do you mean by invasive change?
->> We need the kvm_mmu_slot_gfn_write_protect to report whether all mapping are large
->> and clean, so we can return early. However it's not a part of semantics of this function.
->>
->> If this is the final code, compared to old code, we have an extra gfn_write_protect(),
->> I don't whether it's acceptable?
+Le 26/04/2021 à 22:35, Nathan Chancellor a écrit :
+> Commit 9975f852ce1b ("powerpc/uaccess: Remove calls to __get_user_bad()
+> and __put_user_bad()") switch to BUILD_BUG() in the default case, which
+> leaves x uninitialized. This will not be an issue because the build will
+> be broken in that case but clang does static analysis before it realizes
+> the default case will be done so it warns about x being uninitialized
+> (trimmed for brevity):
 > 
-> Ah, I see. Please correct me if I'm wrong, but I think that in order
-> to check that the only mappings on the GFN range are large, we'd still
-> have to go over the rmap for the 4k mappings, at least for the legacy
-> MMU. In that case, we're doing about as much work as the extra
-> gfn_write_protect and I don't think that we'd get any efficiency gain
-> for the change in semantics.
+>   In file included from mm/mprotect.c:13:
+>   In file included from ./include/linux/hugetlb.h:28:
+>   In file included from ./include/linux/mempolicy.h:16:
+>   ./include/linux/pagemap.h:772:16: warning: variable '__gu_val' is used
+>   uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+>                   if (unlikely(__get_user(c, uaddr) != 0))
+>                                ^~~~~~~~~~~~~~~~~~~~
+>   ./arch/powerpc/include/asm/uaccess.h:266:2: note: expanded from macro '__get_user'
+>           __get_user_size_allowed(__gu_val, __gu_addr, __gu_size, __gu_err);      \
+>           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   ./arch/powerpc/include/asm/uaccess.h:235:2: note: expanded from macro
+>   '__get_user_size_allowed'
+>          default: BUILD_BUG();                                   \
+>          ^~~~~~~
 > 
-> Likewise for the TDP MMU, if the GFN range is mapped both large and
-> 4k, it would have to be in different TDP structures, so the efficiency
-> gains would again not be very big.
-I am not familiar with the MMU virtualization of x86 arch, but I think
-you are right.
+> Commit 5cd29b1fd3e8 ("powerpc/uaccess: Use asm goto for get_user when
+> compiler supports it") added an initialization for x because of the same
+> reason. Do the same thing here so there is no warning across all
+> versions of clang.
+
+Ah yes, I tested with Clang 11 which has CONFIG_CC_HAS_ASM_GOTO_OUTPUT, that's the reason why I hit 
+that warning only in the CONFIG_CC_HAS_ASM_GOTO_OUTPUT branch.
+
+But regardless, is that normal that Clang warns that on a never taken branch ? That's puzzling.
 
 > 
-> I'm really just guessing about those performance characteristics
-> though. It would definitely help to have some performance data to back
-> all this up. Even just a few runs of the dirty_log_perf_test (in
-> selftests) could provide some interesting results, and I'd be happy to
-> help review any improvements you might make to that test.
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1359
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+Acked-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+> ---
+>   arch/powerpc/include/asm/uaccess.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Regardless, I'd be inclined to keep this change as simple as possible
-> for now and the early return optimization could happen in a follow-up
-> patch. I think the extra gfn_write_protect is acceptable, especially
-> if you can show that it doesn't cause a big hit in performance when
-> running the dirty_log_perf_test with 4k and 2m backing memory.
-I tested it using dirty_log_perf_test, the result shows that performance
-of clear_dirty_log different within 2%.
-
-*Without this patch*
-
-./dirty_log_perf_test -i 5 -v 16 -s anonymous
-
-Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
-guest physical test memory offset: 0xffbfffff000
-Populate memory time: 3.105203579s
-Enabling dirty logging time: 0.000323444s
-[...]
-Get dirty log over 5 iterations took 0.000595033s. (Avg 0.000119006s/iteration)
-Clear dirty log over 5 iterations took 0.713212922s. (Avg 0.142642584s/iteration)
-
-./dirty_log_perf_test -i 5 -v 16 -s anonymous_hugetlb
-
-Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
-guest physical test memory offset: 0xffbfffff000
-Populate memory time: 3.922764235s
-Enabling dirty logging time: 0.000316473s
-[...]
-Get dirty log over 5 iterations took 0.000485459s. (Avg 0.000097091s/iteration)
-Clear dirty log over 5 iterations took 0.603749670s. (Avg 0.120749934s/iteration)
-
-
-*With this patch*
-
-./dirty_log_perf_test -i 5 -v 16 -s anonymous
-
-Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
-guest physical test memory offset: 0xffbfffff000
-Populate memory time: 3.244515198s
-Enabling dirty logging time: 0.000280207s
-[...]
-Get dirty log over 5 iterations took 0.000484953s. (Avg 0.000096990s/iteration)
-Clear dirty log over 5 iterations took 0.727620114s. (Avg 0.145524022s/iteration)
-
-./dirty_log_perf_test -i 5 -v 16 -s anonymous_hugetlb
-
-Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
-guest physical test memory offset: 0xffbfffff000
-Populate memory time: 3.244294061s
-Enabling dirty logging time: 0.000273590s
-[...]
-Get dirty log over 5 iterations took 0.000474244s. (Avg 0.000094848s/iteration)
-Clear dirty log over 5 iterations took 0.600593672s. (Avg 0.120118734s/iteration)
-
-
-I faced a problem that there is no huge page mapping when test with
-"-s anonymous_hugetlb", both for TDP enabled or disabled.
-
-However, these tests above can tell the fact that our optimization does little effect
-on clear_dirty_log performance.
-
-Thanks,
-Keqian
-
+> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+> index a4e791bcd3fe..a09e4240c5b1 100644
+> --- a/arch/powerpc/include/asm/uaccess.h
+> +++ b/arch/powerpc/include/asm/uaccess.h
+> @@ -232,7 +232,7 @@ do {								\
+>   	case 2: __get_user_asm(x, (u16 __user *)ptr, retval, "lhz"); break;	\
+>   	case 4: __get_user_asm(x, (u32 __user *)ptr, retval, "lwz"); break;	\
+>   	case 8: __get_user_asm2(x, (u64 __user *)ptr, retval);  break;	\
+> -	default: BUILD_BUG();					\
+> +	default: x = 0; BUILD_BUG();				\
+>   	}							\
+>   } while (0)
+>   
 > 
->>
->> Thanks,
->> Keqian
->>
->>
->>>
->>>> +        */
->>>> +
->>>> +       /* Then we can handle the PT level pages */
->>>>         if (kvm_x86_ops.cpu_dirty_log_size)
->>>>                 kvm_mmu_clear_dirty_pt_masked(kvm, slot, gfn_offset, mask);
->>>>         else
->>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>>> index eca63625aee4..dfd676ffa7da 100644
->>>> --- a/arch/x86/kvm/x86.c
->>>> +++ b/arch/x86/kvm/x86.c
->>>> @@ -10888,36 +10888,19 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
->>>>                  */
->>>>                 kvm_mmu_zap_collapsible_sptes(kvm, new);
->>>>         } else {
->>>> -               /* By default, write-protect everything to log writes. */
->>>> -               int level = PG_LEVEL_4K;
->>>> +               /*
->>>> +                * If we're with initial-all-set, we don't need to write protect
->>>> +                * any page because they're reported as dirty already.
->>>> +                */
->>>> +               if (kvm_dirty_log_manual_protect_and_init_set(kvm))
->>>> +                       return;
->>>>
->>>>                 if (kvm_x86_ops.cpu_dirty_log_size) {
->>>> -                       /*
->>>> -                        * Clear all dirty bits, unless pages are treated as
->>>> -                        * dirty from the get-go.
->>>> -                        */
->>>> -                       if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
->>>> -                               kvm_mmu_slot_leaf_clear_dirty(kvm, new);
->>>> -
->>>> -                       /*
->>>> -                        * Write-protect large pages on write so that dirty
->>>> -                        * logging happens at 4k granularity.  No need to
->>>> -                        * write-protect small SPTEs since write accesses are
->>>> -                        * logged by the CPU via dirty bits.
->>>> -                        */
->>>> -                       level = PG_LEVEL_2M;
->>>> -               } else if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
->>>> -                       /*
->>>> -                        * If we're with initial-all-set, we don't need
->>>> -                        * to write protect any small page because
->>>> -                        * they're reported as dirty already.  However
->>>> -                        * we still need to write-protect huge pages
->>>> -                        * so that the page split can happen lazily on
->>>> -                        * the first write to the huge page.
->>>> -                        */
->>>> -                       level = PG_LEVEL_2M;
->>>> +                       kvm_mmu_slot_leaf_clear_dirty(kvm, new);
->>>> +                       kvm_mmu_slot_remove_write_access(kvm, new, PG_LEVEL_2M);
->>>> +               } else {
->>>> +                       kvm_mmu_slot_remove_write_access(kvm, new, PG_LEVEL_4K);
->>>>                 }
->>>> -               kvm_mmu_slot_remove_write_access(kvm, new, level);
->>>>         }
->>>>  }
->>>>
->>>> --
->>>> 2.23.0
->>>>
->>> .
->>>
-> .
+> base-commit: ee6b25fa7c037e42cc5f3b5c024b2a779edab6dd
 > 
