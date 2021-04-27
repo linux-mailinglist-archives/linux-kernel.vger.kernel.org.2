@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE0436CA05
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA6036CA07
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 19:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhD0RFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 13:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235512AbhD0RFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:05:01 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D823DC061574;
-        Tue, 27 Apr 2021 10:04:17 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t18so2636278wry.1;
-        Tue, 27 Apr 2021 10:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EVsEChLdWoFL+wsmaTrHSUndg2V44Glyh6M+8T9aF4I=;
-        b=aV6PPsqxSMZoNx0kbAB2N60Ob182OJmGe8Q8ldE6uo3LbB4Lj4UOIyxl9hCgQJqLZF
-         A7Pi4QwjqxCoNZe/zOglV/yTStKP7m4Grv3v1We2NnhdV8E1K9fDuVfa796D65Z4uajN
-         IJ7+DXz+4Y4eKFuolh2XNOuVJk2mV+JCNKDrvxQwrrhgPDmRPo8k95iXBg8o9W7NTLA+
-         31iwzJObIalGxyXvKba9rn3HzFfxL5AbRBN8CxF2/JNMYsm8jjuFDCKpqWr3x9TKXxdS
-         tnYry4VBkWQejhJVicqPjIaMZF0ffMSObs5Xga3A005Ef14gazAfu3VW5vQ4IHwBDvE7
-         +FCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EVsEChLdWoFL+wsmaTrHSUndg2V44Glyh6M+8T9aF4I=;
-        b=fGWLpPqnRJxW93CIeZpctuEiah4UWQABAOs6ZEn6s9bxeedD9nNJsxj9qAJeO5Ak3I
-         F5Qks9oms3IGMJAlIme6HkFfuTZn2MMJmqOZgWCNgM6W8xJTD8fK3ygNLBwurhLpanl1
-         LI2jVHmRGUQIgF+ye7z6jB5kkisSugLgWH+qWbdpzdu0dXrDFG99UOnouPkPfwqiqTRv
-         rq0TuBciiVYp6SvIdSmpzsNYEeborinTcW3d1SLwAww3HZIGIC38uQjXzaADj1D9eELD
-         vvDrM/4IgqW0e1oG0t/W26RUZPghVpL8MDfEpxWnCWRap3zMnMkNhbrfCRf4Gb4vOKBX
-         udAQ==
-X-Gm-Message-State: AOAM531A0bHLCmyWM9MtCsOl1wDKAQw4rMl/8W5c3HFYY0svioG/rzY1
-        gTZhMcJcf4Lc7fRvXeZYQxA0uRjwx/A=
-X-Google-Smtp-Source: ABdhPJyHJS/OFuTk0fO4l/8cp+BwLNfYXXfTjhBGPNX3i3SKZHy9c7Xp9zSVcywoOMWzB2E9zIkZVQ==
-X-Received: by 2002:adf:fdcd:: with SMTP id i13mr29934671wrs.185.1619543056463;
-        Tue, 27 Apr 2021 10:04:16 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.129.131])
-        by smtp.gmail.com with ESMTPSA id i11sm4986224wrx.47.2021.04.27.10.04.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 10:04:16 -0700 (PDT)
-Subject: Re: [PATCH 5.13] io_uring: Check current->io_uring in
- io_uring_cancel_sqpoll
-To:     Jens Axboe <axboe@kernel.dk>, Palash Oswal <hello@oswalpalash.com>
-Cc:     dvyukov@google.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oswalpalash@gmail.com,
-        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, stable@vger.kernel.org
-References: <e67b2f55-dd0a-1e1f-e34b-87e8613cd701@gmail.com>
- <20210427125148.21816-1-hello@oswalpalash.com>
- <decd444f-701d-6960-0648-b145b6fcccfb@kernel.dk>
- <8204f859-7249-580e-9cb1-7e255dbcb982@gmail.com>
- <de97e0f0-1c47-1a96-eb24-e62c37d2a06b@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <964956e9-e75a-257c-ac9e-4365b2be0020@gmail.com>
-Date:   Tue, 27 Apr 2021 18:04:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S237816AbhD0RF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 13:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236169AbhD0RFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:05:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF3D61177;
+        Tue, 27 Apr 2021 17:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619543081;
+        bh=bDhGZGKzReNUbTyG1hR+JHWjRGrBy35sBAmxQVkNJKk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pqPpOETXZy3Ne2Hi7XU4A7XGzqREah/tYFCCliMt7fYQWGJzkPvdzqRYt6HEf7/tq
+         5b6swoPwstEY3CWdJKpCdL020KYhCZgoKdWB6QJjrUMbfnfRmi+WsWk76ISuiFHSD9
+         JL0LiEnU6kg0AnBw5/XN3QrVEoKTq93BAv45Q+zg=
+Date:   Tue, 27 Apr 2021 19:04:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH 145/190] Revert "leds: lp5523: fix a missing check of
+ return value of lp55xx_read"
+Message-ID: <YIhEJxEbOSzCm1+Z@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-146-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <de97e0f0-1c47-1a96-eb24-e62c37d2a06b@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-146-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 6:00 PM, Jens Axboe wrote:
-> On 4/27/21 11:00 AM, Pavel Begunkov wrote:
->> On 4/27/21 2:37 PM, Jens Axboe wrote:
->>> On 4/27/21 6:51 AM, Palash Oswal wrote:
->>>> syzkaller identified KASAN: null-ptr-deref Write in
->>>> io_uring_cancel_sqpoll on v5.12
->>>>
->>>> io_uring_cancel_sqpoll is called by io_sq_thread before calling
->>>> io_uring_alloc_task_context. This leads to current->io_uring being
->>>> NULL. io_uring_cancel_sqpoll should not have to deal with threads
->>>> where current->io_uring is NULL.
->>>>
->>>> In order to cast a wider safety net, perform input sanitisation
->>>> directly in io_uring_cancel_sqpoll and return for NULL value of
->>>> current->io_uring.
->>>
->>> Thanks applied - I augmented the commit message a bit.
->>
->> btw, does it fixes the replied before syz report? Should 
->> syz fix or tag it if so.
->> Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
+On Wed, Apr 21, 2021 at 03:00:20PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
 > 
-> That tag was already there.
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/leds/leds-lp5523.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
+> index fc433e63b1dc..5036d7d5f3d4 100644
+> --- a/drivers/leds/leds-lp5523.c
+> +++ b/drivers/leds/leds-lp5523.c
+> @@ -305,9 +305,7 @@ static int lp5523_init_program_engine(struct lp55xx_chip *chip)
+>  
+>  	/* Let the programs run for couple of ms and check the engine status */
+>  	usleep_range(3000, 6000);
+> -	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
+> -	if (ret)
+> -		return ret;
+> +	lp55xx_read(chip, LP5523_REG_STATUS, &status);
+>  	status &= LP5523_ENG_STATUS_MASK;
+>  
+>  	if (status != LP5523_ENG_STATUS_MASK) {
+> -- 
+> 2.31.1
+> 
 
-Oh, right, missed it
+The original commit here did not unwind things properly, so I'll keep
+the revert and create a correct fix for this later.
 
--- 
-Pavel Begunkov
+thanks,
+
+greg k-h
