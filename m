@@ -2,155 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF7936C63F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DDB36C64B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236183AbhD0Mpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235489AbhD0Mps (ORCPT
+        id S236469AbhD0Mqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:46:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236332AbhD0Mqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:45:48 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34DBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:45:03 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id a13so14174141ljp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TEm1bQ6boYn9sgOS7se993fi5zEhbGrHhlvchnybY1c=;
-        b=ZOP3CuV9lm4JC9hbdhoneZV5TmJGTQ20+43Fum9sENKQjXmwR45lPpH2pS1VdEgW7o
-         jpZjGn7f6hNmHXEGsPxFEcrI+Y4UpG/MVFzS3FkghOgUfFKhlPnOIsMYO18LFBwUD4Fp
-         14CfnLN14sIuqpuACpr1uktBNYBKpxjmYVBVY/pNncs3TVldalChwmNE37FEbDej5/1W
-         Fwd8OM6ZV/jt2UT69cN7Rc/hJcq5zzLXxxgTjz+1dnF+XqSB9ZKLG/Xmbbqore5sXSQe
-         i/xsR0lNzZk1pXpDCzwNZIzuzkXjnCdyV6JtQFgjfZzSG6hHVYAtXaO6xcevQYlpxdFr
-         cGfA==
+        Tue, 27 Apr 2021 08:46:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619527570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hksqsg/+fYJgnfwVftoEYR0ZtkMbPnUNSSTSXlz+2vM=;
+        b=NyTeJHKpeej95zDrlczlKwiy0eq38NE+ykWj61JlGPdxdMciRnFXszJdt5mb0GtlnBHpuz
+        65R60AkOn499uCAvbWUcjItOOalgwjidlzjnNzoeCuLByRhMgvj9FQdbMi6zv8O7PCcXCs
+        eZ9EZ3nCOePdvftzU9vHi2/kYRFs15s=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-ceOFgnhLMnWNJF9fFI5OVw-1; Tue, 27 Apr 2021 08:46:08 -0400
+X-MC-Unique: ceOFgnhLMnWNJF9fFI5OVw-1
+Received: by mail-wm1-f72.google.com with SMTP id o18-20020a1ca5120000b02901333a56d46eso4007479wme.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:46:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TEm1bQ6boYn9sgOS7se993fi5zEhbGrHhlvchnybY1c=;
-        b=WEZjmlUpFhsDAGjIoLJkgsUs1zoSxDppgEIk5I+Vz0zj2QSI3z0ozmB2vfGkv9h/X3
-         5hRM29R42d7H2Y+14BtESPS2kxF1fzQhHI6h3AsLwo8SpLuQwfMPrUtynfuydNBeuYSG
-         CZbd/NN52lv7u6tkM5j0+cQsycmV8Z9Pq2WP9/wlsiniogM+5udpxE1iYn2iGe3txx2h
-         hzOUdZNcZenYzIUNo7C4UdsirFTHSijrqPISnE6i6xwFFp0yah0wupLDrwXeAzMXl0Qw
-         /WQvjlAlTSWSzNY21E9K6huNjYS5XzyjFbsW1nqNu+buJ/vGTHDnxVkMTIYQVRxdQy+m
-         tsWQ==
-X-Gm-Message-State: AOAM533/k1j5DGc36P0n7kJh2MerRnNsskEGTClYnievPYa0OSvAR8nm
-        946gTFGOR5ssM8BIwMnLsTtgGGOIS2prMm4h9xs1vQ==
-X-Google-Smtp-Source: ABdhPJz4nD06WqG22LxTr5qqg6p1P9JYn7CA/1voVL9vrgN0Btux1M/e7ILM8YZP4PIcV0hwNpEM2KhJQaT3yf78xbM=
-X-Received: by 2002:a05:651c:612:: with SMTP id k18mr16523306lje.445.1619527502059;
- Tue, 27 Apr 2021 05:45:02 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Hksqsg/+fYJgnfwVftoEYR0ZtkMbPnUNSSTSXlz+2vM=;
+        b=e2kibCJajaE0G2Ng9hojnzhgVA+73SgBRndgvJDmPs9iucsR8a1uLVknifAzU7OPLr
+         0SBxuMDSv/Rk53T2WfMa82qef8Qr9y6S3oKwllFg9LGit1ooyNzM2LVbet8ZpHYZy9B6
+         BPS7323FVJmsjrpe5jfLGoAEQH7I1iR5O7MpJSzVZh80eHjeTwk+Wx6qLW19Pf0/ELsE
+         0z9MXfjTxZ/uLBiD3u17ctXZkQocKFQRp0Iofyk5HETn5BSibI5bUos0gcPweP8gA/Xv
+         JLrXCEmLfWuGobW8ra2obrrvANFN8iuWEXAB6YN4GUrCnSoo6zcYMfRq6X9486XNCTBv
+         kTyw==
+X-Gm-Message-State: AOAM533beBIon296ulPeVmhtiCythEc1cTRyAh2ysVinSWkx5qqLi86C
+        sJwc5smblXATKmzpwVZVlGjMJtaQf3zD/t1bYIGsmoLc+edq7Aqvkt1cwFdyGaG9DJ2vuvszK4j
+        q7qk5foS0/OWDde1KmT+dbt6/
+X-Received: by 2002:a5d:4cc1:: with SMTP id c1mr29737346wrt.291.1619527567634;
+        Tue, 27 Apr 2021 05:46:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXAByV9LoODF4QKZww/QfS7aasYO7weAeY5ZC9MriJsvGwv3uvieCWGjXfIy5U9hskI4MSNg==
+X-Received: by 2002:a5d:4cc1:: with SMTP id c1mr29737320wrt.291.1619527567408;
+        Tue, 27 Apr 2021 05:46:07 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
+        by smtp.gmail.com with ESMTPSA id g5sm3841603wrq.30.2021.04.27.05.46.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Apr 2021 05:46:06 -0700 (PDT)
+To:     "lipeifeng@oppo.com" <lipeifeng@oppo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        peifengl55 <peifengl55@gmail.com>,
+        schwidefsky <schwidefsky@de.ibm.com>,
+        "heiko.carstens" <heiko.carstens@de.ibm.com>,
+        zhangshiming <zhangshiming@oppo.com>,
+        zhouhuacai <zhouhuacai@oppo.com>,
+        guoweichao <guoweichao@oppo.com>, guojian <guojian@oppo.com>
+Cc:     linux-s390 <linux-s390@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+References: <20210414023803.937-1-lipeifeng@oppo.com>
+ <a7bb16c0-31b2-6aa5-2186-8c957955649e@suse.cz>
+ <c289b9dc-1259-c829-8ee4-1bee94d7d73d@redhat.com>
+ <2021042611194631963076@oppo.com>
+ <7dcc87f5-9ae5-613a-0cf4-820334592b90@redhat.com>
+ <20210426181947189100132@oppo.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC] mm: support multi_freearea to the reduction of external
+ fragmentation
+Message-ID: <9808e36a-9e4e-d1e2-da49-beb567681a8b@redhat.com>
+Date:   Tue, 27 Apr 2021 14:46:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
- <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com>
- <CAKfTPtCdJC2-jxJn82Z4GSsHu0e49pKL4DT0GWk5vKXnyn1Gog@mail.gmail.com> <CAFpoUr2PmOzOfE4+zBP5HGzEypj-7BhStjUoCVChPt-yT_s2EA@mail.gmail.com>
-In-Reply-To: <CAFpoUr2PmOzOfE4+zBP5HGzEypj-7BhStjUoCVChPt-yT_s2EA@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 27 Apr 2021 14:44:50 +0200
-Message-ID: <CAKfTPtBnDsRcQNz3pA13KwakODYHBiS8XkAQMepOog1h5ocECA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Odin Ugedal <odin@ugedal.com>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210426181947189100132@oppo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Apr 2021 at 13:24, Odin Ugedal <odin@ugedal.com> wrote:
->
-> Hi,
->
-> > I wanted to say one v5.12-rcX version to make sure this is still a
-> > valid problem on latest version
->
-> Ahh, I see. No problem. :) Thank you so much for taking the time to
-> look at this!
->
-> > I confirm that I can see a ratio of 4ms vs 204ms running time with the
-> > patch below.
->
-> (I assume you talk about the bash code for reproducing, not the actual
-> sched patch.)
+On 26.04.21 12:19, lipeifeng@oppo.com wrote:
+> Hi David Hildenbrand <mailto:david@redhat.com>：
+> 
+>  >> And you don't mention what the baseline configuration was. For example,
+>  >> how was compaction configured?
+>  >> Just to clarify, what is monkey?
+>  >> Monkey HTTP server? MonkeyTest disk benchmark? UI/Application Exerciser
+>  >> Monkey?
+> -------------------------------------------------------------------------------------
+> I am sorry that i didn't  give a clear explanation about Monkey.
+> It meant  "UI/Application Exerciser Monkey" from google.
+> 
+> Excuse me, let me introduce our test:
+> 
 
-yes sorry
+Thanks for more details on the test.
 
->
-> > But when I look more deeply in my trace (I have
-> > instrumented the code), it seems that the 2 stress-ng don't belong to
-> > the same cgroup but remained in cg-1 and cg-2 which explains such
-> > running time difference.
->
-> (mail reply number two to your previous mail might also help surface it)
->
-> Not sure if I have stated it correctly, or if we are talking about the
-> same thing. It _is_ the intention that the two procs should not be in the
-> same cgroup. In the same way as people create "containers", each proc runs
-> in a separate cgroup in the example. The issue is not the balancing
-> between the procs
-> themselves, but rather cgroups/sched_entities inside the cgroup hierarchy.
-> (due to the fact that the vruntime of those sched_entities end up
-> being calculated with more load than they are supposed to).
->
-> If you have any thought about the phrasing of the patch itself to make it
-> easier to understand, feel free to suggest.
->
-> Given the last cgroup v1 script, I get this:
->
-> - cat /proc/<stress-pid-1>/cgroup | grep cpu
-> 11:cpu,cpuacct:/slice/cg-1/sub
-> 3:cpuset:/slice
->
-> - cat /proc/<stress-pid-2>/cgroup | grep cpu
-> 11:cpu,cpuacct:/slice/cg-2/sub
-> 3:cpuset:/slice
->
->
-> The cgroup hierarchy will then roughly be like this (using cgroup v2 terms,
-> becuase I find them easier to reason about):
->
-> slice/
->   cg-1/
->     cpu.shares: 100
->     sub/
->       cpu.weight: 1
->       cpuset.cpus: 1
->       cgroup.procs - stress process 1 here
->   cg-2/
->     cpu.weight: 100
->     sub/
->       cpu.weight: 10000
->       cpuset.cpus: 1
->       cgroup.procs - stress process 2 here
->
-> This should result in 50/50 due to the fact that cg-1 and cg-2 both have a
-> weight of 100, and "live" inside the /slice cgroup. The inner weight should not
-> matter, since there is only one cgroup at that level.
->
-> > So your script doesn't reproduce the bug you
-> > want to highlight. That being said, I can also see a diff between the
-> > contrib of the cpu0 in the tg_load. I'm going to look further
->
-> There can definitely be some other issues involved, and I am pretty sure
-> you have way more knowledge about the scheduler than me... :) However,
-> I am pretty sure that it is in fact showing the issue I am talking about,
-> and applying the patch does indeed make it impossible to reproduce it
-> on my systems.
+> 1. record COMPACT_STALL
+> We tested the patch on linux-4.4/linux-4.9/linux-4.14/linux-4.19 and the
+> results shows that the patch is effective in reducing COMPACTSTALL.
+>      - monkey for 12 hours.
+>      - record COMPACTSTALL after test.
+> 
+> Test-result: reduced COMPACTSTALL by 95.6% with the patch.
+> (the machine with 4 gigabytes of physical memery and in linux-4.19.)
+> ---------------------------------
+>                       |   COMPACTSTALL
+> ---------------------------------
+>     ori              |     2189
+> ---------------------------------
+> optimization |      95
+> ---------------------------------
+> 
+> I fully agree with the value of compaction, but compaction also bring cpu
+> consumption and will increase the time of alloc_stall. So if we can let more
+> free high-orders-pages in buddy instead of signal pages, it will decrease
+> COMPACT_STALL and speed up memory allocation.
 
-Your script is correct. I was wrongly interpreting my trace. I have
-been able to reproduce your problem and your analysis is correct. Let
-me continue on the patch itself
+Okay, but then I assume the target goal of your patch set is to minimize 
+CPU consumption/allocation stall time when allocating larger order pages.
 
->
-> Odin
+Currently you state "the probablity of high-order-pages allocation would 
+be increased significantly", but I assume that's then not 100% correct. 
+What you measure is the stall time to allocate higher order pages, not 
+that you can allocate them.
+
+> 
+> 2. record the speed of the high-orders-pages allocation(order=4 and 
+> order = 8)
+> Before and after optimization, we tested the speed of the 
+> high-orders-pages allocation
+> after 120-hours-Monkey in 10 Android mobile phones. and the result show that
+> the speed has been increased by more than 18%.
+> 
+> Also, we do some test designed by us:
+> (the machine with 4 gigabytes of physical memery and in linux-4.19.)
+> model the usage of users, and constantly start and
+> operate the diffrent application for 120h, and we record COMPACT_STALL 
+> is decreased by
+> 90+% and speed of the high-orders-pages is increaed by 15+%.
+
+Okay, again, this is then some optimization for allocation speed; which 
+makes it less attractive IMHO (at least for more invasive changes), 
+because I suspect this mostly helps in corner cases (Monkey benchmarks 
+corner cases AFAIU).
+
+> 
+> and I have some question, i hope you can guide me if when you are free.
+> 1) What is the compaction configured?
+>      Dost it meant the members in zone? like as follows:
+>      unsigned int compact_considered;
+>      unsigned int compact_defer_shift;
+>      int compact_order_failed;
+>      bool compact_blockskip_failed;
+>      Or the some Macro variable? like as follows:
+>      PAGE_ALLOC_COSTLY_ORDER = 3
+>      MIN_COMPACT_PRIORITY = 1
+>      MAX_COMPACT_RETRIES = 16
+> 
+
+Rather if you have proactive compaction 
+(/proc/sys/vm/compaction_proactiveness). But I assume because you're 
+messing with older kernels, that you didn't compare against that yet. 
+Would be worth a comparison.
+
+>>> 1) multi freearea (which might
+>  >> be problematic with sparcity)
+> 2) Can you pls tell me what is soarcity and what is the impact of this?
+>      and whether there are some documents about it?
+
+Essentially CONFIG_SPARSEMEM, whereby we can have huge holes in physical 
+memory layout and memory areas coming/going with memory hot(un)plug. 
+Usually we manage all metadata per section. For example, pageblocks are 
+allocated per section. We avoid arrays that depend on the 
+initial/maximum physical memory size.
+
+-- 
+Thanks,
+
+David / dhildenb
+
