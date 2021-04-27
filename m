@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4A836BE8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCFA36BE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 06:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbhD0EnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 00:43:16 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:11316 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhD0EnQ (ORCPT
+        id S234678AbhD0Enw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 00:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhD0Enu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:43:16 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 99AA58001ED;
-        Tue, 27 Apr 2021 12:42:31 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] hwmon: Remove unneeded semicolons
-Date:   Tue, 27 Apr 2021 12:42:19 +0800
-Message-Id: <20210427044219.7799-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 27 Apr 2021 00:43:50 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E8FC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 21:43:07 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id b21so1671673plz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 21:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L/KHE0b9yQxhmyIXZE35ERgi0XKeQwuyEqiuqSbm+MM=;
+        b=hffZSpoCi3KBvwODP+2t/DdtmbubisXWP0vnNWLRWS4Y/Cp0n9d0WpV6sq3QbgYxTt
+         v04oTjIB7J5TO/GSu15NOFMLDsSwfiKYjzpbyaOsvBmjEHgVkOqQF5i2dBUDZeX0y9EW
+         VxVvpQ7Bfg5S5DathfiHWZJpH7cwdeI2VJ4/E5C0fzhTj3uLoECi+A6New3KuKzxdksc
+         zh6Ve1N+SZS75XoEiNKEQxAvI7IP/NiFdw5C4E3okszmEUzfivA/upj/nDLNi73Rs1Pl
+         lekPrYW/SgMVlu3IpvYype2JS4iIOV5tSaN936p/YyXn0fCFNx2wFzaVfzT4XHTrex/k
+         ZfIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L/KHE0b9yQxhmyIXZE35ERgi0XKeQwuyEqiuqSbm+MM=;
+        b=PEMr3msLv0Hxz8GhEs4cO7+vJLXgPjfPI1LHQTIBGrICKNDwU2P3LbY2dCUG8hcTby
+         votwPbXkLJ9gewc27i+58RbK5YoP+nC16gbeYTT6QqToqweAjOr23vP05ws7wo7n6a0X
+         JD56e5nqnL5QP1PcgpnXifgo60mj5rAw4WU/nj3x3URPAmMek6eVvkgBOh8znHjq74MY
+         7beBjGqMA0GvsvTDS+scocIisgVnfafOI6kvBfIsf9H9Y587HzT8EqkLp/7vaYeXSb7C
+         XIDQ+kVTOKkcuTbRg0AJ0ocF3vcKTBxdhQrJ/8pqy9uAqKnlbu1nGQS3lsfi0Hri3LhM
+         19ww==
+X-Gm-Message-State: AOAM533sLAxgOxq7tB6BL/OtN8vK69spswX4OxIHMTDNEVPxY5cIaS5u
+        f8vfh5LKGaXzRBqhbFjAUCGf09XmGX47TaLAlCeamg==
+X-Google-Smtp-Source: ABdhPJzlYEz8sQBUvV3rf/9X99n4H6YdHBdvYc8i2an4oSSdUGuNcOJET6+rM2jmO4S1D9sfNFjzfQmSui3IwTaoq2g=
+X-Received: by 2002:a17:902:654b:b029:ec:a435:5b5c with SMTP id
+ d11-20020a170902654bb02900eca4355b5cmr23318742pln.42.1619498587057; Mon, 26
+ Apr 2021 21:43:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQxhMSlZCHh4YQx0dGEkdTElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQg6URw4KT8XKFZDDD8LKj0e
-        OhdPCU9VSlVKTUpCT0JDTk5JSk5CVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0lINwY+
-X-HM-Tid: 0a7911a2c9e1b03akuuu99aa58001ed
+References: <20210423223404.3860547-1-seanjc@google.com> <20210423223404.3860547-4-seanjc@google.com>
+ <CAAeT=FxhkRhwysd4mQa=iqEaje7R5nHew8ougtoyDEhL2sYxGA@mail.gmail.com> <YIcWvcneHWA9OPxv@google.com>
+In-Reply-To: <YIcWvcneHWA9OPxv@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Mon, 26 Apr 2021 21:42:51 -0700
+Message-ID: <CAAeT=FzVDFVCjYAZyc+QXwtLeOW5UR6AsYZwNT6kFbOwnn=xFQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] KVM: x86: Tie Intel and AMD behavior for
+ MSR_TSC_AUX to guest CPU model
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+> > It looks Table 2-2 of the Intel SDM Vol4 (April 2021) says
+> > TSC_AUX is supported:
+> >
+> >    If CPUID.80000001H:EDX[27] = 1 or CPUID.(EAX=7,ECX=0):ECX[22] = 1
+> >
+> > Should we also check X86_FEATURE_RDPID before returning 1
+> > due to no RDTSCP support ?
+>
+> Yep.  VMX should also clear RDPID if the ENABLE_RDTSCP control isn't supported.
+> That bug isn't fatal because KVM emulates RDPID on #UD, but it would be a
+> notieable performance hit for the guest.
 
-./drivers/hwmon/corsair-psu.c:379:2-3: Unneeded semicolon
+Thank you so much for the confirmation and the information.
+Understood.
 
-Remove unneeded semicolons.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/hwmon/corsair-psu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> There is also a kernel bug lurking; vgetcpu_cpu_init() doesn't check
+> X86_FEATURE_RDPID and will fail to initialize MSR_TSC_AUX if RDPID is supported
+> but RDTSCP is not, and __getcpu() uses RDPID.  I'll verify that's broken and
+> send a patch for that one too.
 
-diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
-index 3a5807e4a2ef..02298b86b57b 100644
---- a/drivers/hwmon/corsair-psu.c
-+++ b/drivers/hwmon/corsair-psu.c
-@@ -355,7 +355,7 @@ static umode_t corsairpsu_hwmon_power_is_visible(const struct corsairpsu_data *p
- 		return 0444;
- 	default:
- 		return 0;
--	};
-+	}
- }
- 
- static umode_t corsairpsu_hwmon_in_is_visible(const struct corsairpsu_data *priv, u32 attr,
-@@ -376,7 +376,7 @@ static umode_t corsairpsu_hwmon_in_is_visible(const struct corsairpsu_data *priv
- 		break;
- 	default:
- 		break;
--	};
-+	}
- 
- 	return res;
- }
--- 
-2.25.1
+I don't find vgetcpu_cpu_init() or __getcpu() in
+https://github.com/torvalds/linux.
+I would assume you meant setup_getcpu() and vdso_read_cpunode() instead (?).
 
+
+> AMD also documents this in Appendix E:
+>
+>   CPUID Fn0000_0007_EBX_x0 Structured Extended Feature Identifiers (ECX=0)
+>   Bits   Field   Name
+>   ...
+>   22     RDPID   RDPID instruction and TSC_AUX MSR support.
+
+Thank you.  I overlooked that...
+
+
+Regards,
+Reiji
