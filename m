@@ -2,144 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7204636C501
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65C336C508
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbhD0LZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        id S235879AbhD0L1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhD0LZS (ORCPT
+        with ESMTP id S235811AbhD0L1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:25:18 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D013C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:24:34 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id z5so5695392qts.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:24:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ugedal.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/+zgbtU1vOwhB3SBIed2el/86CyL2G7RXLQCFx+dXdg=;
-        b=HlpVAXsGwPwleAUn5ptrQGwKr3io8B11Ggf5oOOFF/81PXRpzhU1BycPn7o/Jt6S2g
-         nv/RFiCmYAREjuFLohn5tc3Ph5xIJF73FSXqTuYWAZ0H8ahvcbSLqjCJyJf+1zAaKyp1
-         313H9G30Y4gMvZnhEis/kECBcqIGerF7dKuyyPVLXUe9gOizLeCoO7uaonnh2SayjBtQ
-         ysQoQYoXuyE6PCWMeBMwEJzM/nIokfX0pKBmZMBH6RaoRHr2b2NQRV95mKW4iAtt5Ja1
-         9ge5M8wjBHy8+wdmhfhtpbixsu/ynWL/M5lmCQnDRIDrQHtRAG4l8/D13PrnsZgGuJ+6
-         YTuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/+zgbtU1vOwhB3SBIed2el/86CyL2G7RXLQCFx+dXdg=;
-        b=egrZI6ILmSz+V3+llpj7tn6VkXRH+XW9G+HdZ/KMjrxX4LVuMSERuCydB6iEdMtSYR
-         Jodr8HmsUoZWKjyAsk1Mcy11syPw+jtABgkCWedoVfAZsYEa7k5EH5OlEIibAZFsBCLS
-         w7G4fPUdy/rFNEI20t0mLc4l8/KbuDkJmaJ220RIIThE/4tE/BcB7bpcwq5k8Yyku+3g
-         ovX1ZT+NbY0I3BJ6xdT8T+Ua55+7eCqfyQ8BazPL27P3MVt3y8EMKltzdSqI5+InM1M4
-         PHeMcQmT3EENpdcopby1lUHHbbK5Y60ax1WifqI2z6aiXlvXwLnndnCtK69oRzAEaUqf
-         zzsA==
-X-Gm-Message-State: AOAM531q188qufHFhDcz8cDEhgaTAjFksOentuT9/CYFub+0lEtURyrA
-        mm8ixnassCKB6YIXnBFXzNah2d/RJlqwn7qkSlVRKA==
-X-Google-Smtp-Source: ABdhPJwBp8bSnKxWI3RkUgNFimAZlKr4aCyPU3Y9n7PtYxqMyq9/sn8mJqQMBylFSS2K6fb1X5lcyNFW+EZdZQMY1JI=
-X-Received: by 2002:ac8:6f7b:: with SMTP id u27mr20961714qtv.209.1619522673525;
- Tue, 27 Apr 2021 04:24:33 -0700 (PDT)
+        Tue, 27 Apr 2021 07:27:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B3AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7jRpqar9SQV8YDRO6fEObuydnQktt3oGyEBIeNr8C2Y=; b=uft5BnsdR+cxu63relHri/o/dC
+        1oydk+1v/Xa0mTUxScG5CEcyKOUSD3+QP7yjBdd4jYiTdp78lreavZPffw1BPuXiP+i/VcLV9LfMF
+        rJiebDefsRamz8Ok/eVZSuzBiaIaauXGwOfzDcTc1+JduO5QRWaJPZeJYaSksb+fy5YRudomSa3By
+        Xs8UcBfZPboxhyV1scpQn7icBKVSJ/nihbM/FAy6+ojmpvg3T0TUADPHGUYUOWaD7Uwr85GJnN9zm
+        D+7jWZcNZJlFbn1XPB34u3ULf+nhnbd2QrQizfRw2MeUZ8VYsZXV37HRRjcGNgQkGQM+CCvZXvAeR
+        /FAqr1LA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbLqJ-006qFz-SO; Tue, 27 Apr 2021 11:25:33 +0000
+Date:   Tue, 27 Apr 2021 12:25:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Xiongwei Song <sxwjean@gmail.com>
+Cc:     Xiongwei Song <sxwjean@me.com>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
+Message-ID: <20210427112527.GX235567@casper.infradead.org>
+References: <1619491400-1904-1-git-send-email-sxwjean@me.com>
+ <20210427025358.GV235567@casper.infradead.org>
+ <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
+ <20210427033632.GW235567@casper.infradead.org>
+ <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
+ <CAEVVKH-7qRVRKsFmzc9NnhS8Lae5Yq=WhSparOmR3dZmD3PkAw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
- <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com> <CAKfTPtCdJC2-jxJn82Z4GSsHu0e49pKL4DT0GWk5vKXnyn1Gog@mail.gmail.com>
-In-Reply-To: <CAKfTPtCdJC2-jxJn82Z4GSsHu0e49pKL4DT0GWk5vKXnyn1Gog@mail.gmail.com>
-From:   Odin Ugedal <odin@ugedal.com>
-Date:   Tue, 27 Apr 2021 13:24:00 +0200
-Message-ID: <CAFpoUr2PmOzOfE4+zBP5HGzEypj-7BhStjUoCVChPt-yT_s2EA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEVVKH-7qRVRKsFmzc9NnhS8Lae5Yq=WhSparOmR3dZmD3PkAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Apr 27, 2021 at 01:30:48PM +0800, Xiongwei Song wrote:
+> Hi Mattew,
+> 
+> One more thing I should explain, the kmalloc_order() appends the
+> __GFP_COMP flags,
+> not by the caller.
+> 
+> void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
+> {
+> ...........................................................
+> 
+> flags |= __GFP_COMP;
+> page = alloc_pages(flags, order);
+> ...........................................................
+> return ret;
+> }
+> EXPORT_SYMBOL(kmalloc_order);
+> 
+> #ifdef CONFIG_TRACING
+> void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
+> {
+> void *ret = kmalloc_order(size, flags, order);
+> trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
+> return ret;
+> }
+> EXPORT_SYMBOL(kmalloc_order_trace);
+> #endif
 
-> I wanted to say one v5.12-rcX version to make sure this is still a
-> valid problem on latest version
+Yes, I understood that.  What I don't understand is why appending the
+__GFP_COMP to the trace would have been less confusing for you.
 
-Ahh, I see. No problem. :) Thank you so much for taking the time to
-look at this!
+Suppose I have some code which calls:
 
-> I confirm that I can see a ratio of 4ms vs 204ms running time with the
-> patch below.
+	kmalloc(10 * 1024, GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC);
 
-(I assume you talk about the bash code for reproducing, not the actual
-sched patch.)
+and I see in my logs 
 
-> But when I look more deeply in my trace (I have
-> instrumented the code), it seems that the 2 stress-ng don't belong to
-> the same cgroup but remained in cg-1 and cg-2 which explains such
-> running time difference.
+     0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000 bytes_req=10176 bytes_alloc=16384 gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC|__GFP_COMP
 
-(mail reply number two to your previous mail might also help surface it)
+That seems to me _more_ confusing because I would wonder "Where did that
+__GFP_COMP come from?"
 
-Not sure if I have stated it correctly, or if we are talking about the
-same thing. It _is_ the intention that the two procs should not be in the
-same cgroup. In the same way as people create "containers", each proc runs
-in a separate cgroup in the example. The issue is not the balancing
-between the procs
-themselves, but rather cgroups/sched_entities inside the cgroup hierarchy.
-(due to the fact that the vruntime of those sched_entities end up
-being calculated with more load than they are supposed to).
-
-If you have any thought about the phrasing of the patch itself to make it
-easier to understand, feel free to suggest.
-
-Given the last cgroup v1 script, I get this:
-
-- cat /proc/<stress-pid-1>/cgroup | grep cpu
-11:cpu,cpuacct:/slice/cg-1/sub
-3:cpuset:/slice
-
-- cat /proc/<stress-pid-2>/cgroup | grep cpu
-11:cpu,cpuacct:/slice/cg-2/sub
-3:cpuset:/slice
-
-
-The cgroup hierarchy will then roughly be like this (using cgroup v2 terms,
-becuase I find them easier to reason about):
-
-slice/
-  cg-1/
-    cpu.shares: 100
-    sub/
-      cpu.weight: 1
-      cpuset.cpus: 1
-      cgroup.procs - stress process 1 here
-  cg-2/
-    cpu.weight: 100
-    sub/
-      cpu.weight: 10000
-      cpuset.cpus: 1
-      cgroup.procs - stress process 2 here
-
-This should result in 50/50 due to the fact that cg-1 and cg-2 both have a
-weight of 100, and "live" inside the /slice cgroup. The inner weight should not
-matter, since there is only one cgroup at that level.
-
-> So your script doesn't reproduce the bug you
-> want to highlight. That being said, I can also see a diff between the
-> contrib of the cpu0 in the tg_load. I'm going to look further
-
-There can definitely be some other issues involved, and I am pretty sure
-you have way more knowledge about the scheduler than me... :) However,
-I am pretty sure that it is in fact showing the issue I am talking about,
-and applying the patch does indeed make it impossible to reproduce it
-on my systems.
-
-Odin
+> 
+> Regards,
+> Xiongwei
+> 
+> On Tue, Apr 27, 2021 at 12:11 PM Xiongwei Song <sxwjean@gmail.com> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 11:36 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Tue, Apr 27, 2021 at 11:29:32AM +0800, Xiongwei Song wrote:
+> > > > On Tue, Apr 27, 2021 at 10:54 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > >
+> > > > > On Tue, Apr 27, 2021 at 10:43:20AM +0800, Xiongwei Song wrote:
+> > > > > > From: Xiongwei Song <sxwjean@gmail.com>
+> > > > > >
+> > > > > > When calling kmalloc_order, the flags should include __GFP_COMP here,
+> > > > > > so that trace_malloc can trace the precise flags.
+> > > > >
+> > > > > I suppose that depends on your point of view.
+> > > > Correct.
+> > > >
+> > > > Should we report the
+> > > > > flags used by the caller, or the flags that we used to allocate memory?
+> > > > > And why does it matter?
+> > > > When I capture kmem:kmalloc events on my env with perf:
+> > > > (perf record -p my_pid -e kmem:kmalloc)
+> > > > I got the result below:
+> > > >      0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000
+> > > > bytes_req=10176 bytes_alloc=16384
+> > > > gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC
+> > >
+> > > Hmm ... if you have a lot of allocations about this size, that would
+> > > argue in favour of adding a kmem_cache of 10880 [*] bytes.  That way,
+> > > we'd get 3 allocations per 32kB instead of 2.
+> > I understand you. But I don't think our process needs this size. This size
+> > may be a bug in our code or somewhere, I don't know the RC for now.
+> >
+> > > [*] 32768 / 3, rounded down to a 64 byte cacheline
+> > >
+> > > But I don't understand why this confused you.  Your caller at
+> > > ffffffff851d0cb0 didn't specify __GFP_COMP.  I'd be more confused if
+> > > this did report __GFP_COMP.
+> > >
+> > I just wanted to save some time when debugging.
+> >
+> > Regards
