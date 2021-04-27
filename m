@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89C136CB56
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9641436CB62
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238434AbhD0SzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
+        id S236942AbhD0S7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236889AbhD0SzQ (ORCPT
+        with ESMTP id S235974AbhD0S7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:55:16 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2FCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:54:30 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id d15so18143140ljo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:54:30 -0700 (PDT)
+        Tue, 27 Apr 2021 14:59:33 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6ACC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:58:50 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id c3so23252169pfo.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 11:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yPFimr3gWw7Jb8pUUshKa57KI8HC4i9N5TDaJMgan8c=;
-        b=Vxhki8lggKUqdFDQ6eIME/t1w216q7NYR8YXdlh83bNCmievHFJ2KZzm1xLcUbOzvX
-         e5EFqL3S3XC/ku0z5FV7YGwMQe+gmv6mXWY6NK9A8SLs4L3CgMn7lanF369p5IvX/wP+
-         cVELa+9rHfODxiUiv6vwOq3AFIDnelHyK+zAKiyhNh1rEhcd0XRiEBV6uCg3CfRgnwrT
-         IGzwKlMhSvON8Fls70IESsAel3rAffgnqhwEiBaYZarsi2ZqqdjojMD1pvwTBCQleLJM
-         WjnaDedTcdOnnTZV4Gq9PdWwWsu8dhGu/FCHve5kn8fKUnCkjTvzcamU7L50DG/cI9Rl
-         uYRA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tMWM9I3Cqm0UbXLUuFE6H4LTCjDc7K1QIsPCzwEpt5s=;
+        b=Be+txuaRCQeqEAio5roWaNQghxHAgkuzwtUdNbRP5FHhQhryxSiGmth1NVN11QD9MW
+         3itWzJbZSfxU7zlSMEMIQX2q9MBaU6GHDeMyYZVKU1tS+8JxthzMp0yapogpsPNdvnDb
+         E9OsIQHhAKuV6X6D9rSJyWeeyvhetkTtvbz7smHMQWf3Vf3gIQDUcq6Zaojqfivko7JT
+         7tIVHH4YtoUi7d0WNhCC7z5TsVSmKALYZfGFfGbMLlKtiUkm30pfPgWDacb0woxiKfm1
+         xWzKAwklKZq4FaMBCEWYDSZVbkyF8ocwI8PnrzZCi5aMhKuxCLX9ZvcdeZOt1pCgwSM/
+         584A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yPFimr3gWw7Jb8pUUshKa57KI8HC4i9N5TDaJMgan8c=;
-        b=WUYeMKDOBTKY5KYgqXOSVvXwWipzGimwBHnzO4cyaXmVMwiXsPpW4PW9jlhCZVvEVH
-         pescflY/FLCNbczBDvwSc4Nr2uBbvPk8jroi9Kjmk77+D/RU/Xm/B3aL27hy3nXfiQLr
-         a/oaftcBynA3BF7+j7T6Y8RXCMciEi1f31ROOPekS/3UpV/vedSOagp+Ak+ZXdVxbvmo
-         a88alXx6VqWvWlaxLVtqdgYWiFoBN4LsUI9GU/3DuZDuKo3j3pB0F7ASBVGIPVyS3XMe
-         xnFJhi0o/taKt4cF/8mZ3l2XRSGA5k37KUfw85owWI9lNiS+KpE4zrAYfbQxwEPEAtYV
-         Z/mQ==
-X-Gm-Message-State: AOAM5301nEpB01M6S2zmBd4HGCZ502II2cokGSXlnjJ3imEZEFVPtEpS
-        hrP3aBF81QWSWMURMwjN8uTiptUFXMQQubTvvfzlrw==
-X-Google-Smtp-Source: ABdhPJzHoLqRICL71ALIa24JJ1ebX1XyXWU9+ppH6h0if4Nj6EWpZQVUCgVq195FmPDCVGbBfP91SypPMgyjoKhxDIk=
-X-Received: by 2002:a2e:9015:: with SMTP id h21mr17225853ljg.233.1619549668748;
- Tue, 27 Apr 2021 11:54:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tMWM9I3Cqm0UbXLUuFE6H4LTCjDc7K1QIsPCzwEpt5s=;
+        b=SbKeIgrq0r/sQ2iAWsc4sM7SCKdf5Vp761IBn33vSnVot7KoC+z2cjkyZd8bdQruNB
+         78j/LNmIL/sA5PYOQFKxmSTBUwcVczWvyjqkW4M6M/gn5RwCWoOhaALPxIN+ApRAu4eI
+         +ot5TSZv92HWjH+W6qEk45sLz0bU5NAf39VH16e3ZVxlAjTcw5SJU4BRR9MZHLsR+LLa
+         yBZa3ByA1Vny+bJdZQrACBO9ayVOHxy7eV3fxBC2X8B0sqHMU4KHlY0FNsXSEKbkAJJx
+         Nf1AgzhsHK0Bhn5TS9ydKHpPibAUmKtsYKU4aJGCT2pdTz/c1wkdu/9mIxszzGnimUAI
+         uj5A==
+X-Gm-Message-State: AOAM530pTCTf6oaDgHPyWJT+DvWZAOyVx6re/K6GbupvnSAS1qdtl2LF
+        dlWa6328gkcX9ozZoN1TBAIrOD5K+w2VvBla
+X-Google-Smtp-Source: ABdhPJy7bHFDkFDynD/WKdI5uugcpU5ERH/XnIaRcCZz3PRt/YczzXrzPcf3ZKirKnB3D8Kgm8BDSg==
+X-Received: by 2002:a63:4c63:: with SMTP id m35mr22732185pgl.105.1619549929517;
+        Tue, 27 Apr 2021 11:58:49 -0700 (PDT)
+Received: from gmail.com ([103.52.209.34])
+        by smtp.gmail.com with ESMTPSA id n203sm2242343pfd.31.2021.04.27.11.58.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 27 Apr 2021 11:58:48 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 00:28:44 +0530
+From:   Jitendra <jkhasdev@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: fix array of flexible structures
+Message-ID: <20210427185844.GA1030@gmail.com>
+References: <20210427174945.1323-1-jkhasdev@gmail.com>
+ <YIhTjGpmLSYKuCi3@kroah.com>
 MIME-Version: 1.0
-References: <1619345754-32875-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1619345754-32875-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Apr 2021 11:54:17 -0700
-Message-ID: <CAKwvOd=-NdUHevj9eBtKmihL8D0BSVyiOr9pMUNMYTWm1Y=KGg@mail.gmail.com>
-Subject: Re: [PATCH] fs/ntfs: drop unneeded assignment in ntfs_perform_write()
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Anton Altaparmakov <anton@tuxera.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Huckleberry <nhuck15@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YIhTjGpmLSYKuCi3@kroah.com>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 3:16 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+On Tue, Apr 27, 2021 at 08:10:20PM +0200, Greg KH wrote:
+>On Tue, Apr 27, 2021 at 11:19:45PM +0530, Jitendra Khasdev wrote:
+>> This patch fixes sparse warning "array of flexible structures"
+>> for rtllib.h.
+>>
+>> eg. drivers/staging/rtl8192e/rtllib.h:832:48: warning: array of
+>> flexible structures
+>>
+>> Signed-off-by: Jitendra Khasdev <jkhasdev@gmail.com>
+>> ---
+>>  drivers/staging/rtl8192e/rtllib.h | 10 +++++-----
+>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+>> index 4cabaf2..c7cb318 100644
+>> --- a/drivers/staging/rtl8192e/rtllib.h
+>> +++ b/drivers/staging/rtl8192e/rtllib.h
+>> @@ -802,7 +802,7 @@ struct rtllib_authentication {
+>>  	__le16 transaction;
+>>  	__le16 status;
+>>  	/*challenge*/
+>> -	struct rtllib_info_element info_element[];
+>> +	struct rtllib_info_element *info_element;
 >
-> It is not required to initialize the local variable idx in
-> ntfs_perform_write(), the value is never actually read from
-> it.
+>You just changed the definition of this structure, and the other
+>structures here.  Are you sure this is working properly?
 >
-> make clang-analyzer on x86_64 allyesconfig reports:
->
-> fs/ntfs/file.c:1781:15: warning: Although the value stored to 'idx' is
-> used in the enclosing expression, the value is never actually read from
-> 'idx'
->
-> Simplify the code and remove unneeded assignment to make clang-analyzer
-> happy.
 
-Thank you for the patch.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Is there someplace where I can learn more about "Abaci Robot?"  I'm
-happy to see it running clang-analyzer. :)
+I have compiled the driver and install it on my vm, but I don't this specific
+hardware, so couldn't test it.
 
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  fs/ntfs/file.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ntfs/file.c b/fs/ntfs/file.c
-> index e5aab26..e39a26f 100644
-> --- a/fs/ntfs/file.c
-> +++ b/fs/ntfs/file.c
-> @@ -1774,11 +1774,11 @@ static ssize_t ntfs_perform_write(struct file *file, struct iov_iter *i,
->         last_vcn = -1;
->         do {
->                 VCN vcn;
-> -               pgoff_t idx, start_idx;
-> +               pgoff_t start_idx;
->                 unsigned ofs, do_pages, u;
->                 size_t copied;
->
-> -               start_idx = idx = pos >> PAGE_SHIFT;
-> +               start_idx = pos >> PAGE_SHIFT;
->                 ofs = pos & ~PAGE_MASK;
->                 bytes = PAGE_SIZE - ofs;
->                 do_pages = 1;
-> --
-> 1.8.3.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/1619345754-32875-1-git-send-email-yang.lee%40linux.alibaba.com.
+I fixed in context of sparse.
 
-
-
--- 
-Thanks,
-~Nick Desaulniers
+---
+Jitendra
