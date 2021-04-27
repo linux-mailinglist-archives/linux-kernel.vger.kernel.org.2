@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE9636CEA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D7736CEA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 00:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239160AbhD0Whi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 18:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        id S239286AbhD0Whk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 18:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238797AbhD0Whe (ORCPT
+        with ESMTP id S239075AbhD0Whg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 18:37:34 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54522C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:49 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id a7-20020a62bd070000b029025434d5ead4so21548933pff.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:49 -0700 (PDT)
+        Tue, 27 Apr 2021 18:37:36 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8713C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:51 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id t123-20020a632d810000b02901fcdcf045c3so20403020pgt.17
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 15:36:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=dtfxclLFIBm6xVbo9OSqpPdh4KZCVh7xSZdF1u0sKXc=;
-        b=eTO7SN1Gt4G354q/wrJKcHjRQS9pdTQywJzItPU2gesfRRbz0NV1NLuLguHnL54ljX
-         VQwKBJ+WMYwKFZz7quFU1558YIGkHdw+ODQ/LAWrSNlxbd8Txsg5FR+Cjad3SoSM2WbV
-         lpjXQDRYn6oDIKe1hfvdcxhqFkQjeCWmid8tS7oqOxqEZhbv8UFvEi2sHouTLgm9dHSq
-         aoXTY/wxRPoi3Vin2stzZkptZC6pAZRHfwODV1YNU0U/Um2nYcUnDZjFoVA0T7Corg9W
-         LYwoKgPdKmaUZ18xF5XsOMzPW5qSTetg4CbYD3iuN9tkMkl79iuVXq1va9vho25oVFmI
-         mnoA==
+        bh=IwwNOUpk3ODt0Lpl9liH9pYZxU/VRIgyeYGkiNpqM5w=;
+        b=quk1wa4rWp3dK12YcQjVsfLL4dyW+yOEEHY2AkcN8Th/bxv3sbWM1lvSvRwKnfLOxa
+         /moY5aE6K+FxsgqjgVKMNKpnjPr21k/yCKTrP7CDPSKW9orDE2OCEU6qQn6uMhVmWbCo
+         CNq75iQGnqGEbsRa9VW9xKjU3b+t2mUmNoGwuGwJLdk4Tkq2QxoFF5w0Vb98nHBB+EqI
+         NUKEgqems7QkfFNFE5BVWibioB0nQ96IYP9IZPcXgTFrjuWVdvGHCvxh5owl3y9A9/+4
+         9IwuW0asFBNSrTA5RIsLFienCUhU0z3PR9HkYWyI6GLHFYc9AwJidTs/z/pb/e34vVVU
+         wJvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=dtfxclLFIBm6xVbo9OSqpPdh4KZCVh7xSZdF1u0sKXc=;
-        b=Fu6ZmoX49qn+Y1tJXYBRtU15e07utBdqdVXO7nECHJGLRb6WCL9fxkDzBnZpx/k0Eo
-         cmMhGvS4JNQzA7gBdA8bE8j2wRK41kyLDJnp9E+2FGHLWqh/DtueFGyIzupbIJ1E2PaI
-         nAaz8lmnIQDKbVeC1F0D6TpY6Mji5B3QDkjeqlHOb/PS7ch9prq3Btw0YsrzHOkjgEEH
-         4EVX6iVViHawrqyL3Y3Na7qhF/GWYXllV0F0hCIvfEmIwz90bm9CDsC4TLqrOWlAITh6
-         tcJ9vf+Z2//EMZxO9LBCNCVbRXfW/142ZkC6cH5DkApqqk5gc2Pqqj1vWqoCsIeiTg6O
-         C9sA==
-X-Gm-Message-State: AOAM532jKWfsNzHNErBu5LbmTCxWb/+OPYGWts9aL2GHRprnFKtptkEr
-        SqpI6iUD1v8koQmTX3GbWW6XVg5jKE5bQIo+eSYtM9HicpVhg+dURSo+vRm4IwlH/5d04pml92M
-        3rpMXP8QF3fgTtldxNaQ9Xb7ooHutiAM5YG7L4mQeRIwE3JWSlxF0Z1/1G3nyeg8SzT89bx9O
-X-Google-Smtp-Source: ABdhPJwkKEJR2YImyKXGXiLxtnPy1zYqJmYxDX+MkuJ+PbPovvbvJVTuQikpN4iWhxlo+YFxHFyUrNaLNAhF
+        bh=IwwNOUpk3ODt0Lpl9liH9pYZxU/VRIgyeYGkiNpqM5w=;
+        b=aXaqR0Ba50hC4EUdl2JgNl0ESo4PGOWMpbCUojMbeo485mAyuiqMGnYYXEZ7RQAzt3
+         Lvsahz/2JopF1c/yu5bRWzzjTTqhcw2/wE8IVZgm987rjQfGahlrh75LZZv6PLvUuWib
+         dyaeqehoBBfhHtpUceVdqUzQgQQbODF6cVpWdra1mZNy27em1G+kY6ASS5q1rxkOHrVm
+         gQ+Agi3zf9k0wWl+iIbTnKIYh2MiINmj5/r2HCByADd7Zq51jMUNFZ7hghDxjU5XKM7H
+         Z52Ie0BBLxbkjQeHpQ3CmhrdFQSLoU7XWgKR8IiRSqR6k6E5lJR9cQ5S2wqUv9haZT8Q
+         KnFg==
+X-Gm-Message-State: AOAM531Juex0s4rxfvTww5blqvJamQxXjgUMNMTv50xv8EejYqRqd7Jw
+        h11vCn4eiOFdaY6p7jg0SM29unE1QBmqWRfXuRHgBMk3tRHaPngTL2eXA3M/O3D+OK/TyJ3oSzP
+        L2eo6huttJifgkwiNM9aL5tUsM5DJfUhDl7TDCDsmiDh0hJCg97VhOsy81Jby3K28pe0pxevG
+X-Google-Smtp-Source: ABdhPJyMHAuPSNTcfcChXZ0AEdBIMZGH8gDHz8umzXTm5wXnsKIryUAQ15jVdQlGkvBM9jddFf3/ZyLKcP+X
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:d0b5:c590:c6b:bd9c])
- (user=bgardon job=sendgmr) by 2002:a62:1b4d:0:b029:253:ccef:409d with SMTP id
- b74-20020a621b4d0000b0290253ccef409dmr25212067pfb.4.1619563008656; Tue, 27
- Apr 2021 15:36:48 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 15:36:33 -0700
+ (user=bgardon job=sendgmr) by 2002:aa7:9571:0:b029:259:1f95:27db with SMTP id
+ x17-20020aa795710000b02902591f9527dbmr25833597pfq.54.1619563011250; Tue, 27
+ Apr 2021 15:36:51 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 15:36:34 -0700
 In-Reply-To: <20210427223635.2711774-1-bgardon@google.com>
-Message-Id: <20210427223635.2711774-5-bgardon@google.com>
+Message-Id: <20210427223635.2711774-6-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210427223635.2711774-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH 4/6] KVM: x86/mmu: Factor out allocating memslot rmap
+Subject: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -71,85 +71,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Small refactor to facilitate allocating rmaps for all memslots at once.
-
-No functional change expected.
+Adds a lock around memslots changes. Currently this lock does not have
+any effect on the syncronization model, but it will be used in a future
+commit to facilitate lazy rmap allocation.
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/x86.c | 41 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 32 insertions(+), 9 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  5 +++++
+ arch/x86/kvm/x86.c              | 11 +++++++++++
+ include/linux/kvm_host.h        |  2 ++
+ virt/kvm/kvm_main.c             |  9 ++++++++-
+ 4 files changed, 26 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 3900dcf2439e..bce7fa152473 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1124,6 +1124,11 @@ struct kvm_arch {
+ #endif /* CONFIG_X86_64 */
+ 
+ 	bool shadow_mmu_active;
++
++	/*
++	 * Protects kvm->memslots.
++	 */
++	struct mutex memslot_assignment_lock;
+ };
+ 
+ struct kvm_vm_stat {
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 5bcf07465c47..fc32a7dbe4c4 100644
+index fc32a7dbe4c4..30234fe96f48 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -10842,10 +10842,37 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
- 	kvm_page_track_free_memslot(slot);
+@@ -10649,6 +10649,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	raw_spin_lock_init(&kvm->arch.tsc_write_lock);
+ 	mutex_init(&kvm->arch.apic_map_lock);
+ 	spin_lock_init(&kvm->arch.pvclock_gtod_sync_lock);
++	mutex_init(&kvm->arch.memslot_assignment_lock);
+ 
+ 	kvm->arch.kvmclock_offset = -get_kvmclock_base_ns();
+ 	pvclock_update_vm_gtod_copy(kvm);
+@@ -10868,6 +10869,16 @@ static int alloc_memslot_rmap(struct kvm_memory_slot *slot,
+ 	return -ENOMEM;
  }
  
-+static int alloc_memslot_rmap(struct kvm_memory_slot *slot,
-+			      unsigned long npages)
++
++void kvm_arch_assign_memslots(struct kvm *kvm, int as_id,
++			     struct kvm_memslots *slots)
 +{
-+	int i;
-+
-+	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-+		int lpages;
-+		int level = i + 1;
-+
-+		lpages = gfn_to_index(slot->base_gfn + npages - 1,
-+				      slot->base_gfn, level) + 1;
-+
-+		slot->arch.rmap[i] =
-+			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-+				 GFP_KERNEL_ACCOUNT);
-+		if (!slot->arch.rmap[i])
-+			goto out_free;
-+	}
-+
-+	return 0;
-+
-+out_free:
-+	free_memslot_rmap(slot);
-+	return -ENOMEM;
++	mutex_lock(&kvm->arch.memslot_assignment_lock);
++	rcu_assign_pointer(kvm->memslots[as_id], slots);
++	mutex_unlock(&kvm->arch.memslot_assignment_lock);
 +}
++
 +
  static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
  				      unsigned long npages)
  {
- 	int i;
-+	int r;
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 8895b95b6a22..146bb839c754 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -720,6 +720,8 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				struct kvm_memory_slot *memslot,
+ 				const struct kvm_userspace_memory_region *mem,
+ 				enum kvm_mr_change change);
++void kvm_arch_assign_memslots(struct kvm *kvm, int as_id,
++			     struct kvm_memslots *slots);
+ void kvm_arch_commit_memory_region(struct kvm *kvm,
+ 				const struct kvm_userspace_memory_region *mem,
+ 				struct kvm_memory_slot *old,
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2799c6660cce..e62a37bc5b90 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1270,6 +1270,12 @@ static int check_memory_region_flags(const struct kvm_userspace_memory_region *m
+ 	return 0;
+ }
+ 
++__weak void kvm_arch_assign_memslots(struct kvm *kvm, int as_id,
++				    struct kvm_memslots *slots)
++{
++	rcu_assign_pointer(kvm->memslots[as_id], slots);
++}
++
+ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+ 		int as_id, struct kvm_memslots *slots)
+ {
+@@ -1279,7 +1285,8 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+ 	WARN_ON(gen & KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS);
+ 	slots->generation = gen | KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS;
+ 
+-	rcu_assign_pointer(kvm->memslots[as_id], slots);
++	kvm_arch_assign_memslots(kvm, as_id, slots);
++
+ 	synchronize_srcu_expedited(&kvm->srcu);
  
  	/*
- 	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
-@@ -10854,7 +10881,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 	 */
- 	memset(&slot->arch, 0, sizeof(slot->arch));
- 
--	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-+	r = alloc_memslot_rmap(slot, npages);
-+	if (r)
-+		return r;
-+
-+	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
- 		struct kvm_lpage_info *linfo;
- 		unsigned long ugfn;
- 		int lpages;
-@@ -10863,14 +10894,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 		lpages = gfn_to_index(slot->base_gfn + npages - 1,
- 				      slot->base_gfn, level) + 1;
- 
--		slot->arch.rmap[i] =
--			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
--				 GFP_KERNEL_ACCOUNT);
--		if (!slot->arch.rmap[i])
--			goto out_free;
--		if (i == 0)
--			continue;
--
- 		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
- 		if (!linfo)
- 			goto out_free;
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
