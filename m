@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBC536C962
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB2836C963
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238839AbhD0QZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237318AbhD0QYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:24:02 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 59DE9C061761;
-        Tue, 27 Apr 2021 09:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=cfxSOlFwnn
-        rOTK/psYKVOQ45UMrR8a6TIti9bqc6ZJM=; b=gwPLPrGsn0XXUYwSRV9CSlH1pj
-        fZIPbgSlXELzASLWv/RWVLXvxpElqxT4Zo4UYbAg6H30e6vMoy0pBaLcPNLLcs+4
-        dkpctqZH6miLhhLqpZ39FiEFeR3NgE3BHlTf6FsCl2esXtgaMITC8NsaVS7A1Wsf
-        GHfINNJEDKKyLZCg8=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXn5tlOohg5Y5UAA--.119S4;
-        Wed, 28 Apr 2021 00:23:01 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] net:nfc:digital: Fix a double free in digital_tg_recv_dep_req
-Date:   Tue, 27 Apr 2021 09:22:58 -0700
-Message-Id: <20210427162258.7238-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S238955AbhD0Q0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238822AbhD0QYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:24:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07482613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 16:23:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619540636;
+        bh=l/R2qtxCn2ERJyPjYguJ0k39jAGXWUp2uQC+JMs9fuA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O2KYc3CKaic0+kVdqHwz6NUbKNzh+h1LwX/U5B7DAk2n9gfQUarAKKBG4byLutmxL
+         CSiAa3kK5T4m0Pq0fUraRZdHUxk2p7CCwxbMdfPvpeI78OhHjYslxmWBVyh0Xi0Fx5
+         1PYiI5MSKNTTlp9a/CA9VHEVYNwsY45CaWfegLBTYN8mNgYz+VeQU9zinXSTaJjyyV
+         ailQ8+ttWae1DHFXF3xtR4iF/Ql8jTI+lF+2osJe3z7MpJeDbu0uyHXFjoftaPqmS9
+         bpHtLU1GnntvAu98y9TYtOmpBOrJTJco12W4rXovHJhYHTfegUgSrEdiEtKDjzikkS
+         i5CE7iwNyyigw==
+Received: by mail-ej1-f42.google.com with SMTP id ja3so14462454ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 09:23:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532fUgTHMa+qu1oNvtKaThrbxklXYGm7z1Jhp8UXXTme1m7KhHtW
+        elpStmtGxr2D6H229CgYrcPzigQyNz38KwTjoENCMQ==
+X-Google-Smtp-Source: ABdhPJxy9HL2ysFtlcSqWMWsv6cwp5/qFMPBPyFAP9+p+Zf66TnmOU2k4NUG/ma1/9pG/95JQLjY1P5Iln/2Bz8TT8E=
+X-Received: by 2002:a17:906:e096:: with SMTP id gh22mr2231171ejb.101.1619540634457;
+ Tue, 27 Apr 2021 09:23:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygCXn5tlOohg5Y5UAA--.119S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr13AFyrJFW7CFy5KryDZFb_yoWfZrgEvF
-        W3AF1jvr1UX3W3Cw47Aa1rGw43Zw1DZr4kAryS9F97u340yr4DZr4xtFyrWwnxWF9rCF98
-        G347ur10k3WrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI2
-        0VAGYxC7MxkIecxEwVAFwVWUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JU0_M3UUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <20210426180610.2363-1-sargun@sargun.me> <20210426180610.2363-3-sargun@sargun.me>
+ <20210426190229.GB1605795@cisco> <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
+ <20210427134853.GA1746081@cisco>
+In-Reply-To: <20210427134853.GA1746081@cisco>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 27 Apr 2021 09:23:42 -0700
+X-Gmail-Original-Message-ID: <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+Message-ID: <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to seccomp
+ user notifier
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In digital_tg_recv_dep_req, it calls nfc_tm_data_received(..,resp).
-If nfc_tm_data_received() failed, the callee will free the resp via
-kfree_skb() and return error. But in the exit branch, the resp
-will be freed again.
+On Tue, Apr 27, 2021 at 6:48 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+>
+> On Mon, Apr 26, 2021 at 10:15:28PM +0000, Sargun Dhillon wrote:
+> > On Mon, Apr 26, 2021 at 01:02:29PM -0600, Tycho Andersen wrote:
+> > > On Mon, Apr 26, 2021 at 11:06:07AM -0700, Sargun Dhillon wrote:
+> > > > @@ -1103,11 +1111,31 @@ static int seccomp_do_user_notification(int this_syscall,
+> > > >    * This is where we wait for a reply from userspace.
+> > > >    */
+> > > >   do {
+> > > > +         interruptible = notification_interruptible(&n);
+> > > > +
+> > > >           mutex_unlock(&match->notify_lock);
+> > > > -         err = wait_for_completion_interruptible(&n.ready);
+> > > > +         if (interruptible)
+> > > > +                 err = wait_for_completion_interruptible(&n.ready);
+> > > > +         else
+> > > > +                 err = wait_for_completion_killable(&n.ready);
+> > > >           mutex_lock(&match->notify_lock);
+> > > > -         if (err != 0)
+> > > > +
+> > > > +         if (err != 0) {
+> > > > +                 /*
+> > > > +                  * There is a race condition here where if the
+> > > > +                  * notification was received with the
+> > > > +                  * SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE flag, but a
+> > > > +                  * non-fatal signal was received before we could
+> > > > +                  * transition we could erroneously end our wait early.
+> > > > +                  *
+> > > > +                  * The next wait for completion will ensure the signal
+> > > > +                  * was not fatal.
+> > > > +                  */
+> > > > +                 if (interruptible && !notification_interruptible(&n))
+> > > > +                         continue;
+> > >
+> > > I'm trying to understand how one would hit this race,
+> > >
+> >
+> > I'm thinking:
+> > P: Process that "generates" notification
+> > S: Supervisor
+> > U: User
+> >
+> > P: Generated notification
+> > S: ioctl(RECV...) // With wait_killable flag.
+> > ...complete is called in the supervisor, but the P may not be woken up...
+> > U: kill -SIGTERM $P
+> > ...signal gets delivered to p and causes wakeup and
+> > wait_for_completion_interruptible returns 1...
+> >
+> > Then you need to check the race
+>
+> I see, thanks. This seems like a consequence of having the flag be
+> per-RECV-call vs. per-filter. Seems like it might be simpler to have
+> it be per-filter?
+>
 
-My patch sets resp to NULL if nfc_tm_data_received() failed, to
-avoid the double free.
+Backing up a minute, how is the current behavior not a serious
+correctness issue?  I can think of two scenarios that seem entirely
+broken right now:
 
-Fixes: 1c7a4c24fbfd9 ("NFC Digital: Add target NFC-DEP support")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- net/nfc/digital_dep.c | 2 ++
- 1 file changed, 2 insertions(+)
+1. Process makes a syscall that is not permitted to return -EINTR.  It
+gets a signal and returns -EINTR when user notifiers are in use.
 
-diff --git a/net/nfc/digital_dep.c b/net/nfc/digital_dep.c
-index 5971fb6f51cc..dc21b4141b0a 100644
---- a/net/nfc/digital_dep.c
-+++ b/net/nfc/digital_dep.c
-@@ -1273,6 +1273,8 @@ static void digital_tg_recv_dep_req(struct nfc_digital_dev *ddev, void *arg,
- 	}
- 
- 	rc = nfc_tm_data_received(ddev->nfc_dev, resp);
-+	if (rc)
-+		resp = NULL;
- 
- exit:
- 	kfree_skb(ddev->chaining_skb);
--- 
-2.25.1
+2. Process makes a syscall that is permitted to return -EINTR.  But
+-EINTR for IO means "I got interrupted and *did not do the IO*".
+Nevertheless, the syscall returns -EINTR and the IO is done.
 
+ISTM the current behavior is severely broken, and the new behavior
+isn't *that* much better since it simply ignores signals and can't
+emulate -EINTR (or all the various restart modes, sigh).  Surely the
+right behavior is to have the seccomped process notice that it got a
+signal and inform the monitor of that fact so that the monitor can
+take appropriate action.
 
+IOW, I don't think that the current behavior *or* the patched opt-in
+behavior is great.  I think we would do better to have the filter
+indicate that it is signal-aware and to document that non-signal-aware
+filters cannot behave correctly with respect to signals.
+
+--Andy
