@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F6436C522
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD7836C51B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235981AbhD0LdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhD0LdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:33:02 -0400
-Received: from smtp-good-out-4.t-2.net (smtp-good-out-4.t-2.net [IPv6:2a01:260:1:4::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B349AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 04:32:18 -0700 (PDT)
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [84.255.208.30])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FV03h0vX3z2Tf6;
-        Tue, 27 Apr 2021 13:32:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1619523136;
-        bh=alqpYjPSfwcLhvYfFxu1f1GHEI7BbIhIMLsPyKZU6NM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=ddE1vrJQCbpcdoEqBLgm9klGsRx2naLM+lQPqYq44zwBMH+2DbHN7SUbmvGU4X7Rm
-         XbbtZhrcLTWQd0vFX6+/gz0hv0wjc71d+Y4DORbQt6tBerG9IlXnZsSpze5d1HdmW2
-         PAouCvtgRHG95PJoToNuQpNoUTSBmrO6UodBU1/E=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FV03h0khCzTpmnP;
-        Tue, 27 Apr 2021 13:32:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1DyX3xO1zzm1; Tue, 27 Apr 2021 13:32:15 +0200 (CEST)
-Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Tue, 27 Apr 2021 13:31:30 +0200 (CEST)
-Message-ID: <625994732c8eda9f36320192fb991cf89b5c1fa9.camel@t-2.net>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Tue, 27 Apr 2021 13:31:30 +0200
-In-Reply-To: <YIfiiGVJqkWV/IDa@alley>
-References: <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-         <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-         <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-         <ba5907e12a30ed8eb3e52a72ea84bf4f72a4c801.camel@t-2.net>
-         <33461bad-ef57-9036-135d-95a60a8c88d5@i-love.sakura.ne.jp>
-         <07c3c9015491ca9b42362098d5e90ca7480cf5ed.camel@t-2.net>
-         <e7010c9e-1ac2-55a7-b505-802e03f13362@i-love.sakura.ne.jp>
-         <9e8805a98d6c0d0f20e563c8e4db98b595826c13.camel@t-2.net>
-         <YIaPQzktArmoWbLr@alley>
-         <d4d0603716e5cb99a7a9a93d4f767278ac318557.camel@t-2.net>
-         <YIfiiGVJqkWV/IDa@alley>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S235491AbhD0Lcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:32:39 -0400
+Received: from mail-dm6nam11on2089.outbound.protection.outlook.com ([40.107.223.89]:6183
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230270AbhD0Lci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 07:32:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iwtYwdiXNClbzn0B2Im1dKatnfuQT6x/iJY1Suj0JN/np6WmRHiFtI/CMC+yRIzKlYX+AwEmIq2o+qOVLXUH9vwZ4Ln1raqMx6zYBd7g9U45LP9r3cqWWM2miO3wMWW1TwsmWl/ZDqn+dOPA2K6iPN70tyIxRAx2ZcbuyqKw7AG2WdixxYZh/OKKx0jVY3QiVx/D3uMArLtZUrPQvjuXGX9mQzld/+SpiAIWJvybzJLW1U18sj2kI0zxobKUG4jpeBTPCNCGfFd9qgUxKpQY4qIeKFCFzqwWAT/H4nxihf35ZXu0If239LTY98smhhMNr+fPOWkbREfidA++VyxTew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QrQC78/CI1ZBgR72EXNNPwMtmo8f+9EiIoM+yE4yt6M=;
+ b=KK4Dtoy7hgxwWRwPvQqCYCKB2+PjyUGXKPBG7kH+QOl3hK82fM3RYlNsh49+Wejx2GiRV7sEWGFzwHFw8zNoAsscsMP0ceou3PhmA2tRCCw3qjmPCAsHvChMBQ2aCdz/8VZCve9vLU8edLNUxMWVnRhilFpXgOit673+ZxC2IJmS6Vvq3A8qIQ0N2KjJLjX8VHaylO/mbEzfBU0SGFTY9WjD1iboXqTWWIqykQVdL/8DERj+9Ashz8t4gKIE2UhyDAx5zVU7AHy8qyAhS9HstXHEYo8rPJwq/zZ4Tkljg2yyWzxo/AwfJB/rXaOhjjMxi/Zw5zG4vCFc0daWq3Ov8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QrQC78/CI1ZBgR72EXNNPwMtmo8f+9EiIoM+yE4yt6M=;
+ b=AdLp5nFwFJYwU3OMjJuiK+xnwck+8yd4ZFsq1NSCxdm7/giaI3Q7+z29Gzu4FQBCLwJxbk1wxPYT4KPJZfnZVrhcxhvdlA2xdrJiyyuYL2PZNntxiKiElXVFcCHiT+aHCk6WopFQfKANGqWyVsYDqGj5MPVO+Gl2QldwMsKFdoA=
+Received: from CY4PR13CA0004.namprd13.prod.outlook.com (2603:10b6:903:32::14)
+ by BN7PR02MB4115.namprd02.prod.outlook.com (2603:10b6:406:f1::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Tue, 27 Apr
+ 2021 11:31:53 +0000
+Received: from CY1NAM02FT028.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:32:cafe::41) by CY4PR13CA0004.outlook.office365.com
+ (2603:10b6:903:32::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.17 via Frontend
+ Transport; Tue, 27 Apr 2021 11:31:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT028.mail.protection.outlook.com (10.152.75.132) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4065.21 via Frontend Transport; Tue, 27 Apr 2021 11:31:53 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 27 Apr 2021 04:31:50 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 27 Apr 2021 04:31:50 -0700
+Envelope-to: git@xilinx.com,
+ maz@kernel.org,
+ tglx@linutronix.de,
+ valentin.schneider@arm.com,
+ dianders@chromium.org,
+ hdegoede@redhat.com,
+ mkshah@codeaurora.org,
+ thunder.leizhen@huawei.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ robh+dt@kernel.org,
+ frowand.list@gmail.com,
+ devicetree@vger.kernel.org
+Received: from [10.140.6.2] (port=33778 helo=xhdanirudh40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <anirudha.sarangi@xilinx.com>)
+        id 1lbLwS-000328-Th; Tue, 27 Apr 2021 04:31:49 -0700
+From:   Anirudha Sarangi <anirudha.sarangi@xilinx.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        <devicetree@vger.kernel.org>, <git@xilinx.com>,
+        Anirudha Sarangi <anirudha.sarangi@xilinx.com>
+Subject: [PATCH 0/3] Updates in irqchip framework to remove irqchip
+Date:   Tue, 27 Apr 2021 17:01:33 +0530
+Message-ID: <20210427113136.12469-1-anirudha.sarangi@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6d1c5827-da3d-40ed-9355-08d909700e65
+X-MS-TrafficTypeDiagnostic: BN7PR02MB4115:
+X-Microsoft-Antispam-PRVS: <BN7PR02MB41159B2B4F152A99977A6719DA419@BN7PR02MB4115.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vLOLDHKuAFyS0CIzwi6ePrNUuPHCHs6L8Hm36SiTgCPL9ZRDOgPhcM/oxkIj2NAEZmty+8GR97jsVQGBpemWJnSYN7+rX7j1WGiLHhtjL2v5c7lj0qG/FD8YM408d0t5AuZtlcGU0sFC9KUwmspFEKGfZhCS4i1uoXj/6awYmr3jIfIfntuI2dcKe5qQQGRA7gVEV5DBtfWBlfvYxvZ56JVccznLQ+eU9tdoejQVOz72ym8tsw7MgwEhtnDGr7Oup/REI0urhBMpHhsCKpmTw940wktiR1WQnUloCMso/fee5f4dZDrTRwXHETHSzbL9zhFhEAD8uo3nkhHvGDnaiU7zbMJQCilP4iX/WMDGc9Mbc1KX/NWQLmC8hKbOZwzWfMbg8GntrpIKYAs73ouQcNYovwzidzQTtsKEMFSJcCd7n5AqeyETYaauTPRmxMh//iaf81bv1kP2nKOUtdkdODyU7WB2C4YArszKzv0bVxmBmJ44B99XiYjkDjI9fQGF/GlJ6sRBMFKGDDQiR1r6hbmlRu09ckORisCDAuUlM2brBddJ7plXNDMNsAdum25oVxBZR0PAOgwt2uSVZLnwJkF6qXInU3FHov/NWSRzHOPsxIdZGV+SS6IB4jLxsGldQz7E11KPqyK+dFAgbvhznDcyZojmdQvzu+yekk66VWsTg3RvpXOmjh9Byea5TgwX
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(39840400004)(46966006)(36840700001)(107886003)(7416002)(36860700001)(26005)(5660300002)(186003)(7696005)(1076003)(316002)(54906003)(8676002)(82310400003)(44832011)(70586007)(70206006)(2616005)(36906005)(83380400001)(6666004)(8936002)(9786002)(36756003)(4744005)(4326008)(426003)(47076005)(356005)(6916009)(478600001)(2906002)(336012)(7636003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 11:31:53.1531
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d1c5827-da3d-40ed-9355-08d909700e65
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT028.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR02MB4115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 27.04.2021 (tor) ob 12:08 +0200 je Petr Mladek napisal(a):
-> 
-> I guess that you mean TPK_PREFIX + "[U] ".
-yes
+Available irqchip framework does not fully support use cases where an
+irqchip driver has to be loaded and unloaded as a module. 
+Existing Xilinx INTC driver does not have a remove path which means the
+INTC IP cannot be removed from a removable partition.
 
-> 
-> But you could do this already in tpk_write(). I mean that you could
-> parse the given buffer, copy each line to a temporary buffer,
-> and call printk(TPK_PREFIX "[U] %s\n", tmp_buf).
-> 
-> Why is it postponed to tpk_close()?
-> 
-> IMHO, the printk() in tpk_write() might simplify the logic a bit.
-The string received in tpk_write() has no guaranties, that it represents a
-complete output line. It has to be treated as a sub-string of a potentially
-multi-line massage produced by the userspace code/process. 
+Anirudha Sarangi (3):
+  irqchip: xilinx: Avoid __init macro usage for xilinx_intc_of_init
+  irqchip: Add support to remove irqchip driver modules.
+  irqchip: xilinx: Add support to remove the Xilinx INTC driver module.
 
-The tpk_close() only produces additional output (flush), if the last tpk_write()
-string does not end with some end-of-line indication.
+ drivers/irqchip/irq-xilinx-intc.c | 53 ++++++++++++++++++++++++++++---
+ drivers/irqchip/irqchip.c         | 38 ++++++++++++++++++++--
+ include/linux/irq.h               | 15 ++++++++-
+ include/linux/of_irq.h            |  1 +
+ kernel/irq/handle.c               |  2 +-
+ 5 files changed, 100 insertions(+), 9 deletions(-)
 
-> 
-> 
-> > > 
-> > > If you call printk() directly, the caller_id would be from the process
-> > > that really wrote the data/message.
-> > 
-> > It can be a kernel-code originating message printk-ed on behalf of a user
-> > task
-> > or a kernel-code originating message on behalf of a kernel task. Or it may
-> > be a
-> > user-code originating message on behalf of its task, when printk-ed via
-> > ttyprintk.
-> 
-> Exactly. Now, I am not sure if you think that this good or bad.
-> 
-> IMHO, it is much better to use caller_id of the process/context that
-> wrote the data/message instead of the process that caused the final
-> tpk_close().
-> 
-IMHO, it is good that output provides info about all the above cases and
-especially that particular output is not produced by the kernel code itself.
-
-best regards, samo
+-- 
+2.17.1
 
