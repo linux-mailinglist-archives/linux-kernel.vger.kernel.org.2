@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C70836C81B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E13736C81C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 16:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238443AbhD0O5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 10:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        id S238623AbhD0O5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 10:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236368AbhD0O5C (ORCPT
+        with ESMTP id S236368AbhD0O5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 10:57:02 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20A9C061574;
-        Tue, 27 Apr 2021 07:56:17 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id h15so19295806qvu.4;
-        Tue, 27 Apr 2021 07:56:17 -0700 (PDT)
+        Tue, 27 Apr 2021 10:57:43 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AA7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:56:58 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v23-20020a9d60570000b02902a53bac99a3so769710otj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 07:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=NnSA+nWh0rBNTmeoPOnQ0TPq2BsER9tVNRP8Acu7TPc=;
-        b=Klrrv9sBhGLpydc+azHgNuqL7vDvN9teKG9RkVbuqgJP81giP/YgVK3DmRnWBNIADw
-         5GOMNf36NeA2qawEPgt8o45VsQWr6zSvGT/aaYp4OqykAkIigQvg+0ATahCfX16sVQ+e
-         Eqr+URa6kXlw95BD8T3qhZ0qk9+eSwH1VkGzDb5tyRWqMUzNQtdTGLmnCf/d/W3EP3y2
-         lwrE5hh1kaZ3UqDUSfG2pbXI8OZmRTnDjWpqAE9CYpWBfvIzfSwg2niE8dCgOVv2egVs
-         dzhnipYLxB0wIb5m0u16xgwvHXnG0oq6bszm9UOulXC20pu+0mp2u6uZgazMHgQSBZAu
-         zurQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=sxIw207vjpiOCjOgPr5uUSzfNq+U1gC/C8Vp4pzal4A=;
+        b=Vca3BZig30f1Jwni99sY1FcHbw6xq09fZc2TWamBcYPxYtBPs9bmGZRLEZvxGO3JwG
+         Txw1FyNTvx5WG8w0SSthZVU7Y5imyCXRAyL8HVFZwtl82RlYVVKz1/NExmEuZY6QyTqE
+         MOnwOCEczq+DMheagQDVdo3S3+mWx8C7eJw7j1v+uGc39ndnZZ7AZAbVsY0MtBU+3hjS
+         C22UOWjZ5tu+t0CJ2uTICpAwoUTt3ykikz9WAN02zuVwSJSEVANefAlYa5ho7DyXO6j0
+         vd6FgH502/9Tfva3Xbk0/27e6OL9PPnAsL9bawvRnAtK/dVlSlp1xcSqLgznPrGyrphi
+         BS6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=NnSA+nWh0rBNTmeoPOnQ0TPq2BsER9tVNRP8Acu7TPc=;
-        b=M79s+snhtJNhDsyFQqIRRjgwAU5lSv22QtWoHdacBaVA4xrJuDPz6AYeqAPzD9nTus
-         ID932fW9RN0pxIyiSUG+aXyQS/vw4TDnPDPdJ5kVqqCXN29XY6FOojFaIkistzFEAGfM
-         GXX+qEXXxWOh/lZPy9CgaBhxzUC4I7aeWoDkdWJVhoHq3FY4b2i3vnakvQsykIcdTv10
-         SEdtwkWW8VY4piYAFW3iOSwLm9TsMUBcuVleSHeWshKriu4MDX6BvE4urJTQIXBQYlro
-         acWofBW6PQFKJTUbhoaBWXs4QtTjqGvqpJmGTqXCEWfQAmAy4srHWbsIIN/lIPENJdky
-         /0aA==
-X-Gm-Message-State: AOAM5305LTYEg7fbjpqIX/i8UUpnWJIIJDou5hgLPN4UFksQH+VNRRxE
-        0DLBGCYTcSpyObkXfSNLHbc7mP7mBCoB2w==
-X-Google-Smtp-Source: ABdhPJw/M8byKTnJ9HCLhU0XXdVTBPHJW8/t6v/ZebyN5zTM6qB6dPBKiRhoWokp5kqcDscBfJPBDA==
-X-Received: by 2002:a0c:f78e:: with SMTP id s14mr23686861qvn.46.1619535376852;
-        Tue, 27 Apr 2021 07:56:16 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id k11sm56146qth.34.2021.04.27.07.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 07:56:16 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 27 Apr 2021 10:56:15 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: [GIT PULL] cgroup changes for v5.13-rc1
-Message-ID: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=sxIw207vjpiOCjOgPr5uUSzfNq+U1gC/C8Vp4pzal4A=;
+        b=ZbZa14rnH+qNzEJvlw5Zm+9SLr8qn4OpKeuVvLNqS1zR5aNq5TYoIKy+wme3e5+lqN
+         lbrHXRDGxPti6Jo5lx+FEp+ApXqnYFhvZGSSELav/9e3Ehapo4boKZWLgEEtQJcchYVX
+         9871z6YREUgkw6i5eBgvGhagyJ+NiJZXyXVMuOA5VYQHPtv0vua+d4PNd3ldiyY1Mvne
+         j0daV1wvAEuIsjS7CZ1e36SynzKoo4EWHTm6RP/uHuSwXXUdFqYJKYxPvB9F/6EsY/Dq
+         lPFCogGH+t4qzzNNa0mC0rO7O9N5upqzvFHqX/b7kNnqFUagE3X3S2jtviS4FNv+8DJO
+         pI1w==
+X-Gm-Message-State: AOAM532RnPqBmuVAmJGng/FovUdc3xuvxLjcmODfszmgbagiD4Zxj9Ln
+        z4+SYK/Z0YQq0xOquMDoRgqJg4sAIr8EDUxYPR4=
+X-Google-Smtp-Source: ABdhPJzv/QNrNbFn9um7MA6ZTzp/GO56dT0j6iefdr5E7uqD646Kj1UC8JohoSRvcTElkG4XpIf45H/L6U/xW1LYBZE=
+X-Received: by 2002:a05:6830:1af7:: with SMTP id c23mr20383186otd.3.1619535418242;
+ Tue, 27 Apr 2021 07:56:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: by 2002:a05:6838:fb52:0:0:0:0 with HTTP; Tue, 27 Apr 2021 07:56:57
+ -0700 (PDT)
+Reply-To: Bill.Chantal.Lawrence@gmx.us
+From:   mrs bill chantal <kaborzongo03@gmail.com>
+Date:   Tue, 27 Apr 2021 14:56:57 +0000
+Message-ID: <CAM5pQCXKGOX7EfvrWKCKjUPAoUoJPq=LbfgwZGqiWLLiWzB8yw@mail.gmail.com>
+Subject: =?UTF-8?Q?Informaci=C3=B3n_del_contacto?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus.
+Dear Friend
 
-The only notable change is Vipin's new misc cgroup controller. This
-implements generic support for resources which can be controlled by simply
-counting and limiting the number of resource instances - ie. there's X
-number of these on the system and this cgroup subtree can have upto Y of
-those. The first user is the address space IDs used for virtual machine
-memory encryption and expected future usages are similar - niche hardware
-features with concrete resource limits and simple usage models.
+You have been compensated with the sum of 4.4 million dollars in this
+bunited nation the payment will be Issue into atm visa card and send
+to you from the Santander bank we need your address passport and your
+whatsapp number
+thanks
 
-Thanks.
-
-The following changes since commit 2023a53bdf41b7646b1d384b6816af06309f73a5:
-
-  Merge tag 'for-linus' of git://github.com/openrisc/linux (2021-04-03 15:42:45 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13
-
-for you to fetch changes up to ffeee417d97f9171bce9f43c22c9f477e4c84f54:
-
-  cgroup: use tsk->in_iowait instead of delayacct_is_task_waiting_on_io() (2021-04-16 16:49:37 -0400)
-
-----------------------------------------------------------------
-Chunguang Xu (1):
-      cgroup: use tsk->in_iowait instead of delayacct_is_task_waiting_on_io()
-
-Lu Jialin (1):
-      cgroup/cpuset: fix typos in comments
-
-Tejun Heo (1):
-      cgroup: misc: mark dummy misc_cg_res_total_usage() static inline
-
-Vipin Sharma (3):
-      cgroup: Add misc cgroup controller
-      cgroup: Miscellaneous cgroup documentation.
-      svm/sev: Register SEV and SEV-ES ASIDs to the misc controller
-
- Documentation/admin-guide/cgroup-v1/index.rst |   1 +
- Documentation/admin-guide/cgroup-v1/misc.rst  |   4 +
- Documentation/admin-guide/cgroup-v2.rst       |  73 ++++-
- arch/x86/kvm/svm/sev.c                        |  70 ++++-
- arch/x86/kvm/svm/svm.h                        |   1 +
- include/linux/cgroup_subsys.h                 |   4 +
- include/linux/misc_cgroup.h                   | 132 +++++++++
- init/Kconfig                                  |  14 +
- kernel/cgroup/Makefile                        |   1 +
- kernel/cgroup/cgroup-v1.c                     |   2 +-
- kernel/cgroup/cpuset.c                        |   6 +-
- kernel/cgroup/misc.c                          | 407 ++++++++++++++++++++++++++
- 12 files changed, 699 insertions(+), 16 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
- create mode 100644 include/linux/misc_cgroup.h
- create mode 100644 kernel/cgroup/misc.c
-
--- 
-tejun
+Mrs. bill Chantal
