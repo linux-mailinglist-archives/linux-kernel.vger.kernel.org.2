@@ -2,92 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE3936BCFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062C036BCFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 03:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234612AbhD0Bma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 21:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhD0Bm2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 21:42:28 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70B51C061574;
-        Mon, 26 Apr 2021 18:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=RNKcazazG5
-        hbxjr+fd3/Dgnsb37D/vx3vsCQ/sLh6hE=; b=oVFUJryol8JZtLoBR/825afMG9
-        +N9RkNAK8c/6NEAzbPQYdwjmkWUhtRWSDlbQ/lV5zet/lKOYKIbBAwGv/eis4nph
-        Lghled2vAeMm3klwlo7DpcahsDHrwOZ2jtVT2gjHueitYBIGBPkZ3o3GNXSCNghw
-        cH4vy9fpocyFgunrw=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3vq7Qa4dgTqZOAA--.291S4;
-        Tue, 27 Apr 2021 09:41:36 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     robert.moore@intel.com, erik.kaneda@intel.com,
-        rafael.j.wysocki@intel.com, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] ACPICA:dbnames: Fix a error free in acpi_db_walk_for_fields
-Date:   Mon, 26 Apr 2021 18:41:34 -0700
-Message-Id: <20210427014134.3568-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S235383AbhD0Bpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 21:45:45 -0400
+Received: from mga03.intel.com ([134.134.136.65]:19481 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232295AbhD0Bpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 21:45:44 -0400
+IronPort-SDR: j/YlA/hh+RXXp9keLcCDxxts+aEylB/V5Ipwx2dZVfHtvi/deG9IEfAL+gIMxmmaGX9Rf/g884
+ jEFmzc6MnTCQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196492304"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="196492304"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 18:45:00 -0700
+IronPort-SDR: MOp/4ktbWsbAsLpIgmlev+gWto9RmxGhPEOPlr31Q8Z87FlzrLdOJsB8UcsCsHWk6wxqh59oCG
+ VblXyEvnBm7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="429613745"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga008.jf.intel.com with ESMTP; 26 Apr 2021 18:44:56 -0700
+Date:   Tue, 27 Apr 2021 09:44:55 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v10 clocksource 2/7] clocksource: Retry clock read if
+ long delays detected
+Message-ID: <20210427014455.GD89018@shbuild999.sh.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
+ <20210425224709.1312655-2-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygC3vq7Qa4dgTqZOAA--.291S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFyUtF4rGrW7JrW8Xr1rtFb_yoWkKrX_ua
-        s5GF48W3WYkr1xAF17A3s3ZFy0vw43Zrn7Gr4kKr1I9rZ5Zr1rAwn7Zwn0q3s7GF90grsx
-        ua4Utrn5uw1akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWlnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUmNtcUUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210425224709.1312655-2-paulmck@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In acpi_db_walk_for_fields, buffer.pointer is freed in the first
-time via ACPI_FREE() after acpi_os_printf("%s ", (char *)buffer.pointer).
-But later, buffer.pointer is assigned to ret_value, and the freed
-pointer is dereferenced by ret_value, which is use after free.
-
-In addition, buffer.pointer is freed by ACPI_FREE() again after
-acpi_os_printf("}\n"), which is a double free.
-
-My patch removes the first ACPI_FREE() to avoid the uaf and double
-free bugs.
-
-Fixes: 5fd033288a866 ("ACPICA: debugger: add command to dump all fields of particular subtype")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/acpi/acpica/dbnames.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
-index 3615e1a6efd8..dabd76df15ec 100644
---- a/drivers/acpi/acpica/dbnames.c
-+++ b/drivers/acpi/acpica/dbnames.c
-@@ -547,7 +547,6 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
- 	}
+On Sun, Apr 25, 2021 at 03:47:03PM -0700, Paul E. McKenney wrote:
+> When the clocksource watchdog marks a clock as unstable, this might
+> be due to that clock being unstable or it might be due to delays that
+> happen to occur between the reads of the two clocks.  Yes, interrupts are
+> disabled across those two reads, but there are no shortage of things that
+> can delay interrupts-disabled regions of code ranging from SMI handlers
+> to vCPU preemption.  It would be good to have some indication as to why
+> the clock was marked unstable.
+> 
+> Therefore, re-read the watchdog clock on either side of the read
+> from the clock under test.  If the watchdog clock shows an excessive
+> time delta between its pair of reads, the reads are retried.  The
+> maximum number of retries is specified by a new kernel boot parameter
+> clocksource.max_read_retries, which defaults to three, that is, up to four
+> reads, one initial and up to three retries.  If more than one retry was
+> required, a message is printed on the console (the occasional single retry
+> is expected behavior, especially in guest OSes).  If the maximum number
+> of retries is exceeded, the clock under test will be marked unstable.
+> However, the probability of this happening due to various sorts of
+> delays is quite small.  In addition, the reason (clock-read delays)
+> for the unstable marking will be apparent.
  
- 	acpi_os_printf("%s ", (char *)buffer.pointer);
--	ACPI_FREE(buffer.pointer);
- 
- 	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
- 	acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
--- 
-2.25.1
+I think this will help to filter some false alarms of unstable
+cases, thanks!
 
+Acked-by: Feng Tang <feng.tang@intel.com>
 
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Mark Rutland <Mark.Rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Reported-by: Chris Mason <clm@fb.com>
+> [ paulmck: Per-clocksource retries per Neeraj Upadhyay feedback. ]
+> [ paulmck: Don't reset injectfail per Neeraj Upadhyay feedback. ]
+> [ paulmck: Apply Thomas Gleixner feedback. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  6 +++
+>  kernel/time/clocksource.c                     | 53 ++++++++++++++++---
+>  2 files changed, 52 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 4a372037b49f..7fff95bd5504 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -599,6 +599,12 @@
+>  			will be five delay-free reads followed by three
+>  			delayed reads.
+>  
+> +	clocksource.max_read_retries= [KNL]
+> +			Number of clocksource_watchdog() retries due to
+> +			external delays before the clock will be marked
+> +			unstable.  Defaults to three retries, that is,
+> +			four attempts to read the clock under test.
+> +
+>  	clearcpuid=BITNUM[,BITNUM...] [X86]
+>  			Disable CPUID feature X for the kernel. See
+>  			arch/x86/include/asm/cpufeatures.h for the valid bit
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index f1e1e6e4b387..94bfdb53f2f4 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -125,6 +125,13 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
+>  #define WATCHDOG_INTERVAL (HZ >> 1)
+>  #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
+>  
+> +/*
+> + * Maximum permissible delay between two readouts of the watchdog
+> + * clocksource surrounding a read of the clocksource being validated.
+> + * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
+> + */
+> +#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
+> +
+>  static void clocksource_watchdog_work(struct work_struct *work)
+>  {
+>  	/*
+> @@ -189,6 +196,8 @@ static ulong inject_delay_period;
+>  module_param(inject_delay_period, ulong, 0644);
+>  static ulong inject_delay_repeat = 1;
+>  module_param(inject_delay_repeat, ulong, 0644);
+> +static ulong max_read_retries = 3;
+> +module_param(max_read_retries, ulong, 0644);
+>  
+>  static void clocksource_watchdog_inject_delay(void)
+>  {
+> @@ -206,12 +215,42 @@ static void clocksource_watchdog_inject_delay(void)
+>  	invocations++;
+>  }
+>  
+> +static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> +{
+> +	unsigned int nretries;
+> +	u64 wd_end, wd_delta;
+> +	int64_t wd_delay;
+> +
+> +	for (nretries = 0; nretries <= max_read_retries; nretries++) {
+> +		local_irq_disable();
+> +		*wdnow = watchdog->read(watchdog);
+> +		clocksource_watchdog_inject_delay();
+> +		*csnow = cs->read(cs);
+> +		wd_end = watchdog->read(watchdog);
+> +		local_irq_enable();
+> +
+> +		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
+> +		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
+> +		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+> +			if (nretries > 1 || nretries >= max_read_retries) {
+> +				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+> +					smp_processor_id(), watchdog->name, nretries);
+> +			}
+> +			return true;
+> +		}
+> +	}
+> +
+> +	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
+> +		smp_processor_id(), watchdog->name, wd_delay, nretries);
+> +	return false;
+> +}
+> +
+>  static void clocksource_watchdog(struct timer_list *unused)
+>  {
+> -	struct clocksource *cs;
+>  	u64 csnow, wdnow, cslast, wdlast, delta;
+> -	int64_t wd_nsec, cs_nsec;
+>  	int next_cpu, reset_pending;
+> +	int64_t wd_nsec, cs_nsec;
+> +	struct clocksource *cs;
+>  
+>  	spin_lock(&watchdog_lock);
+>  	if (!watchdog_running)
+> @@ -228,11 +267,11 @@ static void clocksource_watchdog(struct timer_list *unused)
+>  			continue;
+>  		}
+>  
+> -		local_irq_disable();
+> -		csnow = cs->read(cs);
+> -		clocksource_watchdog_inject_delay();
+> -		wdnow = watchdog->read(watchdog);
+> -		local_irq_enable();
+> +		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
+> +			/* Clock readout unreliable, so give it up. */
+> +			__clocksource_unstable(cs);
+> +			continue;
+> +		}
+>  
+>  		/* Clocksource initialized ? */
+>  		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+> -- 
+> 2.31.1.189.g2e36527f23
