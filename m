@@ -2,54 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EA136BF23
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6152336BF26
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 08:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbhD0GL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 02:11:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhD0GL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:11:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35F51613B4;
-        Tue, 27 Apr 2021 06:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619503874;
-        bh=+uKxx7pcWNI1KVq9j120Buam3AqeRoA/M5qay05sy6c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O27G2KCDFMyTbKa5QdyfFAD1hFoGuALd39WkENjKHvEbQnGZ7UHx3dfFxBj4zsOif
-         vkc1vJEk74jQqaPFQVVJcls1V/2kj00OnKIeqCJpRn+uzFocJ63UYib37xezJJoHQZ
-         TK3cTz7A6M71yT5ATejpwuJ6NSrebuPCdUmYf5Eg=
-Date:   Tue, 27 Apr 2021 08:11:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     johan@kernel.org, leoanto@aruba.it, linux-usb@vger.kernel.org,
-        kuba@kernel.org, mail@anirudhrb.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: hso: fix NULL-deref on disconnect regression
-Message-ID: <YIeq/fjbzqJkjVaH@kroah.com>
-References: <20210426112911.fb3593c3a9ecbabf98a13313@aruba.it>
- <YIaJcgmiJFERvbEF@hovoldconsulting.com>
- <YIaM9B/UZ1qHAC9+@kroah.com>
- <20210426.130919.1291678249925211750.davem@davemloft.net>
+        id S231694AbhD0GPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 02:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhD0GPW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 02:15:22 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5BCC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:14:39 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id zl7so8202020ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Apr 2021 23:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=La/3BQxbnvCJHJDcLFbnMhXadMg8RfndgFkFC1hCKQ4=;
+        b=Hx45LnW71hgN35E3kp/9jD1q9Uq32bYEy3veIlBFlg3fYYcJm9W/85fGIUysHjbcFH
+         LRPz7hyafwuwv9PZvRCARzp59l/m0yZdhURt3kv3GbPBPveKnRmODftX35hSpPHPS9uS
+         +blEiKue6x5EFvVTe1vygTJ+NXGgBlVkwCTQmBClfoM++ZwxFBMvk7quKpUb/LyNnFiR
+         GUkW9YxihItYToVTMAI8WExF1OAf+fMZdV+nm5Vub7iC8VgDpvjmtjEggUziC0xVyzUZ
+         tRXVFm21/mieVd9Lzmc86rUtMrXVESfRYfJa9J9CPHNkPTI3SxsRwtCB06UL+j7fDqIc
+         STVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=La/3BQxbnvCJHJDcLFbnMhXadMg8RfndgFkFC1hCKQ4=;
+        b=iCo1nmg4Q1UBxa5SjZoiRiVbK10vS7UChZh9SeFFArQzdhsrwRKZk7+6i9f6akg0+x
+         gmf1Y4fXpQ7ucSRwgYOSfFFKguUStSwZSMyLEs9Q9U0ukcon6hso6Kar1TnWyJ1b/4Fo
+         RTxTgLRLXeMLVyIy2rhNVd/XUlyVhS03gsnG2KSxgyezFuD0EzdX05cwm1ChiPUqQgfj
+         LS4r1z8G3N0TcPeTLEZJkuDhiZayC/qLJgH77dRb9mWdfSVM6mc7MiYycTgXZXvFRExG
+         j9eef0Ucx4N+rz08lL8yBKlBAY823uSeMRBrHWYfXmR2WNyEi+P6bLDz+XoMy+R+n4RH
+         iygA==
+X-Gm-Message-State: AOAM532pvSVFNObnhVuh+0kWCR0kaCiC3etXgQhPQF8xdgjUJlzGGswb
+        gBNiS+bhV9Telt03tIvNruD58z4+Rg25Q7q1tO2G3A==
+X-Google-Smtp-Source: ABdhPJw1TkhSQ4hzcWCf3ikBmHDAfJbzXarfGpIu8o/HWiPqwOAwFopBW+AMP3wwSFAvXVXlOzXMHpY6i6234u39kD4=
+X-Received: by 2002:a17:906:c04:: with SMTP id s4mr1354191ejf.170.1619504077681;
+ Mon, 26 Apr 2021 23:14:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426.130919.1291678249925211750.davem@davemloft.net>
+References: <20210426072818.777662399@linuxfoundation.org>
+In-Reply-To: <20210426072818.777662399@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Apr 2021 11:44:26 +0530
+Message-ID: <CA+G9fYvJpSARiTX+4O3Z-znn2inP6++oVOM6MSPaRN3VAAa64g@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/36] 5.10.33-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 01:09:19PM -0700, David Miller wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Date: Mon, 26 Apr 2021 11:50:44 +0200
-> 
-> > netdev maintainers, mind if I take this fix through my tree to Linus
-> > this week, or can you all get it to him before -rc1 through the
-> > networking tree?
-> 
-> I tossed this into net-next so Linus will see it later this week.
+On Mon, 26 Apr 2021 at 13:10, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.33 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 28 Apr 2021 07:28:08 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.33-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Wonderful, thanks!
 
-greg k-h
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.10.33-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: f52b4f86deb4f6bcd54159dfce2303f4928de80c
+* git describe: v5.10.32-37-gf52b4f86deb4
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.32-37-gf52b4f86deb4
+
+## No regressions (compared to v5.10.32)
+
+## No fixes (compared to v5.10.32)
+
+
+## Test result summary
+ total: 81811, pass: 66606, fail: 2889, skip: 12062, xfail: 254,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
