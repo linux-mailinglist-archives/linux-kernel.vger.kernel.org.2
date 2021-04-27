@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C57A36C44B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B25636C454
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235819AbhD0Kk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235755AbhD0Kk5 (ORCPT
+        id S235743AbhD0Kpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:45:52 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:27496 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235385AbhD0Kpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:40:57 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B684AC061574;
-        Tue, 27 Apr 2021 03:40:12 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 12so92685578lfq.13;
-        Tue, 27 Apr 2021 03:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xvhwewPL3C0UjcOHd+QXOzMItbY0AkXlRWPtFoN6OHY=;
-        b=ibIOQAeGtqcrfPKVr8TVA50kIyzQZdD6xNy8AsaxOZ84egAcbeTj0TghFbEwctr6NI
-         uhEWtLwyOWsYJ4/O2t4jwLDL3FSQeYtn1/y0I7H721fFkQG6pk9JVYpoXAevyLpdtAGJ
-         yzslufotAM5sbtYYsZVgG4u6e89N3vNRsgHUAiUNqdTTnoDq2wrIGgdtVP5OjfU+bZ0G
-         d7c/4rAyJRyl5kXFwvjjSeohNbwLVYHFnltRpjPkzcW3mYLBBXlj9DJ10yHT2CMTAsA2
-         e4iq8Ho8RdrEHeRDBd9K0Cg5wd/EEFBMPlB1gbGrZhY7aTCf0XBAQGWMXHF8Hi/EE+jl
-         dZmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xvhwewPL3C0UjcOHd+QXOzMItbY0AkXlRWPtFoN6OHY=;
-        b=qf90eio8HowOFl0AKaYqkRcsIUDtj/pBk2o4kWx3aMmvlae3tBKyXbUGAAkNFw8xoS
-         hKzQZPtqdnh539HXD0gIkQtlS1wxBdVSAxome2oPFxr71YXxK6jvlSSs1ankTZQz8Nat
-         PC3DDdNEYaYRVTJZSrbEx3JSKRxnWuf3QaW5qReJOZimQWOzVLic1T+aOTNzaxh0nWtU
-         ebbKSGKOOd0CWinAgOwCS23lctY4qBFL4x5hl3fYkPh2jf8l4r3rX/eI5QL9jGkrfHtl
-         M03jx4ozXBE+Myx9TWHolxKxQU8COBVVpjLll9tBvEENSJo6rKD81PQmQ6hxk/sdaEo4
-         QhWg==
-X-Gm-Message-State: AOAM5338TOp3xUY5EDuzbLQtHr5iWD8IutTXtmvjmmQ6r04tp9T5+3fA
-        WuFmCqhgrMsSt0FjfkaoPjNufEGAzgwtUDMbsqQ=
-X-Google-Smtp-Source: ABdhPJw5pW1PN4nky3oRnaLB5fO2j7LNViEhBqi3B3M37v6X45Fm7nlvuurm1/cbr3PnK03igGM8Gitq9GoTdgVOoTs=
-X-Received: by 2002:a05:6512:3b89:: with SMTP id g9mr15453703lfv.499.1619520011115;
- Tue, 27 Apr 2021 03:40:11 -0700 (PDT)
+        Tue, 27 Apr 2021 06:45:47 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210427104502euoutp01c794a698bf7b87fa78b53bb51b1c41e6~5sSKMasMb2721427214euoutp01W
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 10:45:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210427104502euoutp01c794a698bf7b87fa78b53bb51b1c41e6~5sSKMasMb2721427214euoutp01W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619520303;
+        bh=V622SrPPFmIy1V6bcn7pkxIde3kMy91ETgSjyHGa6Cw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=l4sGz9gINEf1gotMF5ZXkYHkt5u6DqLl3nhuRy8l+LTj3O+nbm0MpgKp2M+Mn5FOd
+         k1Rs5bw7yclH26aH6XqYD9bRHJT+NAvGuplG2y74s8LAiMJzwVroStU5PTenwTsa5D
+         mSC7WOmbrI4qPxvB3a+llEMq7KwHbanbIraCfbEw=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210427104502eucas1p268cfcf4790cf35fc77c8bf92f7be2a64~5sSJ8Skpf0429904299eucas1p2M;
+        Tue, 27 Apr 2021 10:45:02 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 70.69.09452.E2BE7806; Tue, 27
+        Apr 2021 11:45:02 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210427104501eucas1p14642dca05ea6627afa84173b89bbff58~5sSJShVZq1646916469eucas1p1B;
+        Tue, 27 Apr 2021 10:45:01 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210427104501eusmtrp2143801aadf5bd52ec8635882417b8e55~5sSJRyrwf0230802308eusmtrp2s;
+        Tue, 27 Apr 2021 10:45:01 +0000 (GMT)
+X-AuditID: cbfec7f2-ab7ff700000024ec-0e-6087eb2e395a
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 26.6B.08696.D2BE7806; Tue, 27
+        Apr 2021 11:45:01 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210427104501eusmtip2c1aaacea69fdfa9ad989cb83885d1b96~5sSIqSE_S0122901229eusmtip2t;
+        Tue, 27 Apr 2021 10:45:01 +0000 (GMT)
+Subject: Re: [PATCH v3 62/79] media: exynos4-is: use
+ pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <be384ba7-c657-ff3b-b21a-f8d2be96edaa@samsung.com>
+Date:   Tue, 27 Apr 2021 12:45:00 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <00000000000022ebeb05bc39f582@google.com> <e939af11-7ce8-46af-8c76-651add0ae56bn@googlegroups.com>
- <CACT4Y+aPRCZcLvkuWgK=A_rR0PqdEAM+xssWU4N7hNRSm9=mSA@mail.gmail.com>
- <CAGyP=7fBRPc+qH9UvhGhid9j-B2PeYhQ4bbde_Vg72Mnx9z75Q@mail.gmail.com> <dba3f0a9-cb5d-a162-b696-864295259581@gmail.com>
-In-Reply-To: <dba3f0a9-cb5d-a162-b696-864295259581@gmail.com>
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Tue, 27 Apr 2021 16:09:59 +0530
-Message-ID: <CAGyP=7e6xiNVEV6Bc21i0v+e9GWmm2UdTbhDzyNTmMY4Pa=_ng@mail.gmail.com>
-Subject: Re: KASAN: null-ptr-deref Write in io_uring_cancel_sqpoll
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, Jens Axboe <axboe@kernel.dk>,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <834b16534ae8e18a29c734956e3eda671d455451.1619519080.git.mchehab+huawei@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAKsWRmVeSWpSXmKPExsWy7djPc7p6r9sTDPo3KFicP7+B3WLT42us
+        Fpd3zWGz6NmwldVixvl9TBaHN55hsmhbcJnN4uHsq4wWyzb9YXLg9Gg58pbVY9OqTjaPzUvq
+        PT5vkgtgieKySUnNySxLLdK3S+DK2HDxNmvBBeaKg9dfsDUwdjF3MXJySAiYSHw+8oG1i5GL
+        Q0hgBaPE++5ONpCEkMAXRonGT1EQic+MEqePX2KH6VjTCGELCSxnlDg0QwSi6COjxNO2LUAJ
+        Dg5hgSCJpRdtQGpEBEwlbr7qZAKpYRboZZLYf+QlC0iCTcBQovdoHyOIzStgJ3F5+V6wzSwC
+        qhLTfmxkBbFFBZIlzj++yg5RIyhxcuYTFpD5nAIJEv0fgkDCzALiEreezGeCsOUltr+dwwyy
+        S0LgCYdE5+YGFoijXSTmTZvCCGELS7w6vgXqGRmJ/zvnM0E0NDNK9Oy+zQ7hTGCUuH98AVSH
+        tcSdc7/YQDYzC2hKrN+lDxF2lFh0axtYWEKAT+LGW0GII/gkJm2bzgwR5pXoaBOCqFaR+L1q
+        OhOELSXR/eQ/ywRGpVlIPpuF5J1ZSN6ZhbB3ASPLKkbx1NLi3PTUYsO81HK94sTc4tK8dL3k
+        /NxNjMBEdPrf8U87GOe++qh3iJGJg/EQowQHs5IIL9uu1gQh3pTEyqrUovz4otKc1OJDjNIc
+        LErivKtmr4kXEkhPLEnNTk0tSC2CyTJxcEo1MAXlu6zKUrhrGL9556yflS3cShb+u6es9lwn
+        nvgh9oqtyOH3fjwPlp6eEykUtfzoqW0nBd4/YXs7/ci2zqMZGzsDTW+9eMEfkM9Q8t82fpbO
+        5KCjj4PyD87w4Ng8z2jHt/J7D5qeKL/RcqlINf30u/+wZmDE49RFe5fzXRNQ+/gpa/Ol1Cx9
+        sbce6VO5L874aynQ98x4Q7iyQpZAROaji8kLs+0SrdpmrJ3CKHmnf9Xxa4qRsSlr8vtL/Xkf
+        7bxt7KQoYhj9nivKNko22W2de9nXG6UTHrmyh/jscWQ5a+ra/sLn6QN/14fFus4Xow6t0lJi
+        LE2okXzIyWP8dMUbPpbvvp+c+LyORb2T+1ltocRSnJFoqMVcVJwIAIg0sGmzAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEIsWRmVeSWpSXmKPExsVy+t/xe7q6r9sTDP7tM7c4f34Du8Wmx9dY
+        LS7vmsNm0bNhK6vFjPP7mCwObzzDZNG24DKbxcPZVxktlm36w+TA6dFy5C2rx6ZVnWwem5fU
+        e3zeJBfAEqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRv
+        l6CXseHibdaCC8wVB6+/YGtg7GLuYuTkkBAwkVjTeIm9i5GLQ0hgKaPEtsWL2LoYOYASUhLz
+        W5QgaoQl/lzrYoOoec8ocfz+JUaQGmGBIImlF21AakQETCVuvupkArGZBfqZJE50BELUP2OU
+        mDsVZAEnB5uAoUTv0T5GEJtXwE7i8vK9bCA2i4CqxLQfG1lBbFGBZInVvzezQtQISpyc+YQF
+        ZBenQIJE/4cgiPnqEn/mXWKGsMUlbj2ZD7VXXmL72znMExiFZiHpnoWkZRaSlllIWhYwsqxi
+        FEktLc5Nzy020itOzC0uzUvXS87P3cQIjLxtx35u2cG48tVHvUOMTByMhxglOJiVRHjZdrUm
+        CPGmJFZWpRblxxeV5qQWH2I0BXpnIrOUaHI+MPbzSuINzQxMDU3MLA1MLc2MlcR5TY6siRcS
+        SE8sSc1OTS1ILYLpY+LglGpgiultXc3ZeYXpoX3/ixevdi54vNzi4J+N0xyMTFVVvUp8As56
+        WZ06r2PUGP9SX+TgHVOp3qjspd/jfhg/+dTgflQkwWK6QntTN4/S3VnZvpN94ndVdJ2ezgN0
+        2+97yUk1T6q3Ldm8K7Tu059/HVcbGe0arkkVaa6wniqX3zPd3+V39U+ZlVMcQxffcv/+r93X
+        6GXr+kKn/AqdR38/y9jlGUr0fN5bI9XOqvptinh8xK6kczP1oz9mB/wubrPUfCfQ+LShXebl
+        lYvzrl3+cK9sqcoujuwcRrEf0dKb0rWU3fZrnF9iELRw7rVQuW6bH9bHlLKtrkqddrA3e/2d
+        fcMnZ1GuN4KHIs5lSYXc51ZiKc5INNRiLipOBACshdKpRQMAAA==
+X-CMS-MailID: 20210427104501eucas1p14642dca05ea6627afa84173b89bbff58
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210427102817eucas1p189868733a2485301909918a76f56bed9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210427102817eucas1p189868733a2485301909918a76f56bed9
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+        <CGME20210427102817eucas1p189868733a2485301909918a76f56bed9@eucas1p1.samsung.com>
+        <834b16534ae8e18a29c734956e3eda671d455451.1619519080.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 2:07 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> io_sq_offload_create() {
->     ...
->     ret = io_uring_alloc_task_context(tsk, ctx);
->     wake_up_new_task(tsk);
->     if (ret)
->         goto err;
-> }
->
-> Shouldn't happen unless offload create has failed. Just add
-> a return in *cancel_sqpoll() for this case. It's failing
-> so no requests has been submitted and no cancellation is needed.
+On 27.04.2021 12:26, Mauro Carvalho Chehab wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-io_uring_cancel_sqpoll can be called by two flows:
-1. io_uring_task_cancel() -> io_sqpoll_cancel_sync() ->
-io_uring_cancel_sqpoll ;  which properly sanitises current->io_uring
-to be non NULL. (
-https://elixir.bootlin.com/linux/v5.12/source/include/linux/io_uring.h#L21
-)
-2. io_sq_offload_create -> io_sq_thread -> io_uring_cancel_sqpoll ;
-which does not check the value of current->io_uring
-
-In the second flow,
-https://elixir.bootlin.com/linux/v5.12/source/fs/io_uring.c#L7970
-The initialization of current->io_uring (i.e
-io_uring_alloc_task_context() ) happens after calling io_sq_thread.
-And, therefore io_uring_cancel_sqpoll receives a NULL value for
-current->io_uring.
-
-The backtrace from the crash confirms the second scenario:
-[   70.661551] ==================================================================
-[   70.662764] BUG: KASAN: null-ptr-deref in io_uring_cancel_sqpoll+0x203/0x350
-[   70.663834] Write of size 4 at addr 0000000000000060 by task iou-sqp-750/755
-[   70.664025]
-[   70.664025] CPU: 1 PID: 755 Comm: iou-sqp-750 Not tainted 5.12.0 #101
-[   70.664025] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.14.0-1 04/01/2014
-[   70.664025] Call Trace:
-[   70.664025]  dump_stack+0xe9/0x168
-[   70.664025]  ? io_uring_cancel_sqpoll+0x203/0x350
-[   70.664025]  __kasan_report+0x166/0x1c0
-[   70.664025]  ? io_uring_cancel_sqpoll+0x203/0x350
-[   70.664025]  kasan_report+0x4f/0x70
-[   70.664025]  kasan_check_range+0x2f3/0x340
-[   70.664025]  __kasan_check_write+0x14/0x20
-[   70.664025]  io_uring_cancel_sqpoll+0x203/0x350
-[   70.664025]  ? io_sq_thread_unpark+0xd0/0xd0
-[   70.664025]  ? mutex_lock+0xbb/0x130
-[   70.664025]  ? init_wait_entry+0xe0/0xe0
-[   70.664025]  ? wait_for_completion_killable_timeout+0x20/0x20
-[   70.664025]  io_sq_thread+0x174c/0x18c0
-[   70.664025]  ? io_rsrc_put_work+0x380/0x380
-[   70.664025]  ? init_wait_entry+0xe0/0xe0
-[   70.664025]  ? _raw_spin_lock_irq+0xa5/0x180
-[   70.664025]  ? _raw_spin_lock_irqsave+0x190/0x190
-[   70.664025]  ? calculate_sigpending+0x6b/0xa0
-[   70.664025]  ? io_rsrc_put_work+0x380/0x380
-[   70.664025]  ret_from_fork+0x22/0x30
-
-We might want to add additional validation before calling
-io_uring_cancel_sqpoll. I did verify that the reproducer stopped
-producing the bug after the following change.
----
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index dff34975d86b..36fc9abe8022 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6832,8 +6832,10 @@ static int io_sq_thread(void *data)
-                timeout = jiffies + sqd->sq_thread_idle;
-        }
-
--       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
--               io_uring_cancel_sqpoll(ctx);
-+       list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
-+               if (current->io_uring)
-+                       io_uring_cancel_sqpoll(ctx);
-+       }
-        sqd->thread = NULL;
-        list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
-                io_ring_set_wakeup_flag(ctx);
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
