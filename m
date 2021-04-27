@@ -2,166 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E6B36CFA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372F236CFA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239400AbhD0XrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 19:47:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236015AbhD0XrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:47:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 336D9613F8;
-        Tue, 27 Apr 2021 23:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619567191;
-        bh=/4zboaigQcqYojznpGGzY09/dRMU6IDja/PWMwP5n+M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y9iA/XRswGCDCKC50UbwA8lkm7lfebRYhGls2FTXo9CylIQZNfFg25xJwg+CEk30w
-         soy4BsrPWTvRf6njOcMTGe1Ms3/L1RWyDhjVzbRpvl9bL+lrc5fZL84EUGF92Xtwvz
-         +NI3j6/1khzFlEIihSje6VFwyhobBd1C+jGcf9qzOeZNVSkoUxfSiNGQyVl2Yir+Qt
-         bVlau2kfmPkr8DEZmm6BioIX48TOZwDmuGqXlPEMxRspEmSIslMzqj3mVkOEU1xtat
-         r26hiTZB+uZOqyvAGhrjOAcwBaw1LFjdkF0+oAB1T+YQ3bWX3CvKo2SJd9RYMiELfL
-         0DdYqlWggKXng==
-Date:   Wed, 28 Apr 2021 02:46:29 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
-        zohar@linux.ibm.com, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] certs: Add support for using elliptic curve keys
- for signing modules
-Message-ID: <YIiiVVNWrtMqardm@kernel.org>
-References: <20210421194319.1489291-1-stefanb@linux.ibm.com>
- <20210421194319.1489291-3-stefanb@linux.ibm.com>
+        id S239512AbhD0Xrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 19:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236015AbhD0Xre (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:47:34 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C326C061574;
+        Tue, 27 Apr 2021 16:46:50 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h36so42117635lfv.7;
+        Tue, 27 Apr 2021 16:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B4EfuXadedAI5OOJEbOozmGvcL48B3b8Lsu25+BolLQ=;
+        b=IBIjrv0b40KrnIR8zJSk8PYHxxPvKDHJfmdH2yFvSMcnBsd4qWi9VCeI+l28sjIZHw
+         0l/lbLYXZ/O0oodn+aaLU0hPLAub/RPMfpl55fDpSBtf1ngOKEs1r/Y6hzydPV32woUn
+         0jC7BKS+ozHgKIV+ugSJnptJY9tc+O0qhTYRBgQ0+sO1zH9w2tf0xkdhsr6OIKIh2FkX
+         Jdw/LQTTPHAkdCvVSWoreCdHPYmCSvDsrcrUopkF+IenrfQRoOzW0q7TSgHapuB6nlWh
+         dw+M+zVj0rCmcg7T5nWT4UjiA49M9aWeet4mCfo/ZmR0L2ywiCFy98WhiYV5NzN7tonx
+         SELA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B4EfuXadedAI5OOJEbOozmGvcL48B3b8Lsu25+BolLQ=;
+        b=dwydKLYffRAycH4zCx2aMqF/t5V+D4Bx9HuQv68riYNQgMb6AMyjl/jBzqZMxDCpvb
+         4UlqdqGQkMPDdrhkdq2imNSr53gHiWDMvwK5MZUeayFJp+cbWTHvm6goETkllkQSu2iz
+         0IsdGVAvaAZaV8tRc24FtXpmx+h8R57aUKuaIenes4nhiwrSajM9z9BfKSC6mD5SjPYK
+         Vh/aUrAoQmSKTpLweR2b2NhsjD/m93FEpbiTLd9xI0SoC+nsmaMG4i/mfDEwqlZAkBj2
+         i2QWQVkkZwqwnilP8iyyYH/TvCBpT1vQklEFQKlyZ8IN/0oPv5UNPVsvbgHh7d7MhSMv
+         Nvlg==
+X-Gm-Message-State: AOAM533xYSQ+cVLnvCfbP6LJCpRUXz0E7V1P62oewxGrYj5ciKKYMskJ
+        PDGxLikJzaFF84vcRvj8bJ6lUKI44qC7rZf9Ntw=
+X-Google-Smtp-Source: ABdhPJxqkpsCVjkxn9UyzNt1BR0ab9wgPdXenUswScfwV+OUsgxaOLQfXPqBcms8IH1teKJ6Wq0WGxFALVWMDy2xFEs=
+X-Received: by 2002:a05:6512:3984:: with SMTP id j4mr18858318lfu.38.1619567208718;
+ Tue, 27 Apr 2021 16:46:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421194319.1489291-3-stefanb@linux.ibm.com>
+References: <20210427174313.860948-1-revest@chromium.org> <20210427174313.860948-3-revest@chromium.org>
+In-Reply-To: <20210427174313.860948-3-revest@chromium.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 27 Apr 2021 16:46:37 -0700
+Message-ID: <CAADnVQLQmt0-D_e=boXoK=FLRoXv9xzkCwM24zpbZERrEexLCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Implement formatted output helpers
+ with bstr_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:43:19PM -0400, Stefan Berger wrote:
-> Add support for using elliptic curve keys for signing modules. It uses
-> a NIST P384 (secp384r1) key if the user chooses an elliptic curve key
-> and will have ECDSA support built into the kernel.
-> 
-> Note: A developer choosing an ECDSA key for signing modules should still
-> delete the signing key (rm certs/signing_key.*) when building an older
-> version of a kernel that only supports RSA keys. Unless kbuild automati-
-> cally detects and generates a new kernel module key, ECDSA-signed kernel
-> modules will fail signature verification.
-> 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+On Tue, Apr 27, 2021 at 10:43 AM Florent Revest <revest@chromium.org> wrote:
+> +                       if (fmt[i + 1] == 'B') {
+> +                               if (tmp_buf)  {
+> +                                       err = snprintf(tmp_buf,
+> +                                                      (tmp_buf_end - tmp_buf),
+> +                                                      "%pB",
+...
+> +                       if ((tmp_buf_end - tmp_buf) < sizeof_cur_ip) {
 
-Looks good to me.
+I removed a few redundant () like above and applied.
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+>                 if (fmt[i] == 'l') {
+> -                       cur_mod = BPF_PRINTF_LONG;
+> +                       sizeof_cur_arg = sizeof(long);
+>                         i++;
+>                 }
+>                 if (fmt[i] == 'l') {
+> -                       cur_mod = BPF_PRINTF_LONG_LONG;
+> +                       sizeof_cur_arg = sizeof(long long);
+>                         i++;
+>                 }
 
-/Jarkko
-
-> 
-> ---
-> v3:
->   - added missing OIDs for ECDSA signed hashes to pkcs7_sig_note_pkey_algo
->   - added recommendation to use string hash to Kconfig help text
-> 
-> v2:
->   - check for ECDSA key by id-ecPublicKey from output line
->     'Public Key Algorithm: id-ecPublicKey'.
-> ---
->  certs/Kconfig                         | 26 ++++++++++++++++++++++++++
->  certs/Makefile                        |  9 +++++++++
->  crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
->  3 files changed, 43 insertions(+)
-> 
-> diff --git a/certs/Kconfig b/certs/Kconfig
-> index 48675ad319db..d58f16c9f2d9 100644
-> --- a/certs/Kconfig
-> +++ b/certs/Kconfig
-> @@ -15,6 +15,32 @@ config MODULE_SIG_KEY
->           then the kernel will automatically generate the private key and
->           certificate as described in Documentation/admin-guide/module-signing.rst
->  
-> +choice
-> +	prompt "Type of module signing key to be generated"
-> +	default MODULE_SIG_KEY_TYPE_RSA
-> +	help
-> +	 The type of module signing key type to generate. This option
-> +	 does not apply if a #PKCS11 URI is used.
-> +
-> +config MODULE_SIG_KEY_TYPE_RSA
-> +	bool "RSA"
-> +	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-> +	help
-> +	 Use an RSA key for module signing.
-> +
-> +config MODULE_SIG_KEY_TYPE_ECDSA
-> +	bool "ECDSA"
-> +	select CRYPTO_ECDSA
-> +	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-> +	help
-> +	 Use an elliptic curve key (NIST P384) for module signing. Consider
-> +	 using a strong hash like sha256 or sha384 for hashing modules.
-> +
-> +	 Note: Remove all ECDSA signing keys, e.g. certs/signing_key.pem,
-> +	 when falling back to building Linux 5.11 and older kernels.
-> +
-> +endchoice
-> +
->  config SYSTEM_TRUSTED_KEYRING
->  	bool "Provide system-wide ring of trusted keys"
->  	depends on KEYS
-> diff --git a/certs/Makefile b/certs/Makefile
-> index f64bc89ccbf1..c2fabc288550 100644
-> --- a/certs/Makefile
-> +++ b/certs/Makefile
-> @@ -62,7 +62,15 @@ ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
->  
->  X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
->  
-> +# Support user changing key type
-> +ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-> +keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-> +$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-> +endif
-> +
-> +ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
->  $(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-> +endif
->  
->  $(obj)/signing_key.pem: $(obj)/x509.genkey
->  	@$(kecho) "###"
-> @@ -77,6 +85,7 @@ $(obj)/signing_key.pem: $(obj)/x509.genkey
->  		-batch -x509 -config $(obj)/x509.genkey \
->  		-outform PEM -out $(obj)/signing_key.pem \
->  		-keyout $(obj)/signing_key.pem \
-> +		$(keytype_openssl) \
->  		$($(quiet)redirect_openssl)
->  	@$(kecho) "###"
->  	@$(kecho) "### Key pair generated."
-> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-> index 967329e0a07b..6592279d839a 100644
-> --- a/crypto/asymmetric_keys/pkcs7_parser.c
-> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
-> @@ -269,6 +269,14 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
->  		ctx->sinfo->sig->pkey_algo = "rsa";
->  		ctx->sinfo->sig->encoding = "pkcs1";
->  		break;
-> +	case OID_id_ecdsa_with_sha1:
-> +	case OID_id_ecdsa_with_sha224:
-> +	case OID_id_ecdsa_with_sha256:
-> +	case OID_id_ecdsa_with_sha384:
-> +	case OID_id_ecdsa_with_sha512:
-> +		ctx->sinfo->sig->pkey_algo = "ecdsa";
-> +		ctx->sinfo->sig->encoding = "x962";
-> +		break;
->  	default:
->  		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
->  		return -ENOPKG;
-> -- 
-> 2.29.2
-> 
-> 
+This bit got me thinking.
+I understand that this is how bpf_trace_printk behaved
+and the sprintf continued the tradition, but I think it will
+surprise bpf users.
+The bpf progs are always 64-bit. The sizeof(long) == 8
+inside any bpf program. So printf("%ld") matches that long.
+The clang could even do type checking to make sure the prog
+is passing the right type into printf() if we add
+__attribute__ ((format (printf))) to bpf_helper_defs.h
+But this sprintf() implementation will trim the value to 32-bit
+to satisfy 'fmt' string on 32-bit archs.
+So bpf program behavior would be different on 32 and 64-bit archs.
+I think that would be confusing, since the rest of bpf prog is
+portable. The progs work the same way on all archs
+(except endianess, of course).
+I'm not sure how to fix it though.
+The sprintf cannot just pass 64-bit unconditionally, since
+bstr_printf on 32-bit archs will process %ld incorrectly.
+The verifier could replace %ld with %Ld.
+The fmt string is a read only string for bpf_snprintf,
+but for bpf_trace_printk it's not and messing with it at run-time
+is not good. Copying the fmt string is not great either.
+Messing with internals of bstr_printf is ugly too.
+Maybe we just have to live with this quirk ?
+Just add a doc to uapi/bpf.h to discourage %ld and be done?
