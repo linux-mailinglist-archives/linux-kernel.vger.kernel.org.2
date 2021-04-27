@@ -2,136 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA4B36BD52
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C998B36BD55
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhD0C3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:29:12 -0400
-Received: from mail-bn8nam12on2063.outbound.protection.outlook.com ([40.107.237.63]:62049
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231958AbhD0C3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:29:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=maGEdpFFUMvACFn7QHtq1NqSyPueOtWClc+PmZ/TtbnvL+q7/ONY4gdiSZ0pUklgZRvhbCGhXaJFLNoB6boXdH+5mOLwHkQTfcVG4YGmxUPh0GFMRDNXoD6KidFTi1CoZCXB3KNZcwX+wcXmALRMaYxmzU+3XkPt73rPGfsINovKxduICcD+HAojx/5K4MwKZJAHvaZk9hAofGvx1QAJn/ig1a4/TclmivaF7C9N6Ua29JouF2NLeRsFjn58pZkQ3XtJfSN1hqZZHU8rlFwwRUk9Q01EG/BwB9rN/zBj+p0+4hZOI09+S/URPtJtgThsK2p3FftL3yZNkDbJE8qqaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RNm2ODLdbWIlzfCihzUgQ7QJjbWZbrti0ZEUhppWpFQ=;
- b=jCbGhq9zl78GfMRvN1J4rUTIOhX6Zr1gC0zBgC82b6CHy2CQ+EBIljdwlku05q1dDZoOIE22M/KTdrsX/SWRDIO3GUw1r/xTdduCtQe/DUVkixy9M9A1U2wmsMOengyjsmOuSYybrVcY11K1mv2F5t4Epyc22eh/oz7lAOCuXwAAdydr5GKFpZ11kd4/SCBRZdGxADvl0aJpTB3zRM1wiNV0x7HoUZvLzMbCOW8VBzRmSiKX0Y31pVtSqn3+mDON5L3d3pjJNpPg7tQZxn9qejHKqov+LZ8I28oCe7pLYaByiDbSqjzpVG+07nwxRJ8lUHA0RvLQz35WZLUF8e7iAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RNm2ODLdbWIlzfCihzUgQ7QJjbWZbrti0ZEUhppWpFQ=;
- b=l6rvlVVxNqHx4cIlDTOl57Je/sNWFaWewajemzHPY02GGXcOpq6D5pNhX4aFeY6qNqErdOio5UOtGCevcuVw0MrA6thkuFR0pMYfl4Dk7FxUAkbtvCeC6Y/7b688N0Z6K0Ewa8FlTCQRF32tz1p4BRrXBUgpbbRplAfe+8RvRYwpgZCubN2VhhP9IvVc1OhjRLs97uERfE8eT45vH/P9HVpEfT5GFgqHZ2sO4Ezec7c1LKSYBVeN6vTt3I5ZpC39cDaOimrJPVGhrHclHSFCto/EJEgLk1/+qmGnnpcEj+KdoA1qYPr28JDdLS5XDVUK3V7nNbuMvx5nxpaffixXJA==
-Received: from MW4PR04CA0132.namprd04.prod.outlook.com (2603:10b6:303:84::17)
- by SN1PR12MB2381.namprd12.prod.outlook.com (2603:10b6:802:2f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Tue, 27 Apr
- 2021 02:28:23 +0000
-Received: from CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:84:cafe::7c) by MW4PR04CA0132.outlook.office365.com
- (2603:10b6:303:84::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
- Transport; Tue, 27 Apr 2021 02:28:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT056.mail.protection.outlook.com (10.13.175.107) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4065.21 via Frontend Transport; Tue, 27 Apr 2021 02:28:23 +0000
-Received: from SDONTHINENI-DESKTOP.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 27 Apr 2021 02:28:21 +0000
-From:   Shanker Donthineni <sdonthineni@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sinan Kaya <okaya@kernel.org>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Shanker Donthineni <sdonthineni@nvidia.com>
-Subject: [PATCH v2 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
-Date:   Mon, 26 Apr 2021 21:28:02 -0500
-Message-ID: <20210427022802.21458-2-sdonthineni@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210427022802.21458-1-sdonthineni@nvidia.com>
-References: <20210427022802.21458-1-sdonthineni@nvidia.com>
+        id S232442AbhD0Cab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:30:31 -0400
+Received: from mga05.intel.com ([192.55.52.43]:42793 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231450AbhD0Caa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Apr 2021 22:30:30 -0400
+IronPort-SDR: FTYzi75SH6/XF8JV41r794KzpiDC8BoTpViFYTOcYzjV/xqmxL6/UnyBJxnxXeEAkuDqKvll44
+ ZYCVijesmuBQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="281767946"
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="281767946"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 19:29:48 -0700
+IronPort-SDR: OpKQQIrYFfzS64RTHKrOfGI72F+rh+z4dmjaR76W5vW5M9E3cazkEi8Lqn4jaodqvkiggBhuOX
+ WpPrG7JRIsSw==
+X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
+   d="scan'208";a="465322084"
+Received: from ssumanpx-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.34.197])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 19:29:46 -0700
+Subject: Re: [RFC v2 05/32] x86/tdx: Add __tdcall() and __tdvmcall() helper
+ functions
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <2f81f67efdf8c68838cdfbb2314e98747cf70120.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <c2edea0c-8de7-3bd3-1dbe-66b585d78e03@intel.com>
+ <f310c626-5fd9-7fd3-23fa-e319c0f2aa98@linux.intel.com>
+ <33af5bd4-7ada-8450-5a86-90023145d481@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <849d8039-b43c-0790-be1c-aaac8c06608a@linux.intel.com>
+Date:   Mon, 26 Apr 2021 19:29:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 240aada0-ead6-48b5-7f4a-08d909242169
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2381:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2381D3BD9F1E083782512E3FC7419@SN1PR12MB2381.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D03KJY9DW+FWJOmaz9JPwn+S3weWBj88R6uPLcENXEFCrFDMEVttZ0cMZnW5TBYnhf20H6S9X4BS8Go27lS6bPUgwFPI2U1XJST1b+5GozwD5FqbOLaCe8RU+DI68hEsoG6TlSF2x/tqk91AMwZjO7Zo6FV361N5l+aiU43wOr27y5GD15TZsgK18a5CTQk1s7HiLdoUHTKpT3YmroNgltMMyVkQ1kmAx/DVB2xTw0NHqHBezggfASa9hnfdziyEVYRE95qdkVl/7FxosEJTX+M7FIQS++oxfswFCUFCikzS9HQoipGPfPe7BknF39JvFeXR3+PzSLJZa1/A+S6b/5i/YuqScpihfMYUUu+zAiQXw18nDSKBtJEoroB8MANDQKLNF71V6jEbYhpAddMmClwtLXy4gVyPJqtcDu5Uwl4TdaCyL08pY8XK1jmFJmrr79d/aG7s8DjCDcge406ll4x7SkoJIeJ1p3mNazvRk3QkMREBjntB6gb/L0GHoRk1q9WVGB+Zos/rlC1+tt6yO5Yqi5ujTzi+vHH5HStTJpaf19hmm5KVzZW1SkL7KLu9Sox9JetogKay0YwqjorjF4pJpWccdljUvFKTLV1siImKjP4QE3/bOBqBnFD17fg6yyrlIojDGMyK/oBwEsrAHVEicUZMT+B7D23bnG88EiM=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(46966006)(36840700001)(70206006)(336012)(47076005)(70586007)(86362001)(1076003)(82310400003)(2906002)(82740400003)(7636003)(26005)(8936002)(8676002)(426003)(316002)(356005)(36860700001)(2616005)(186003)(36756003)(16526019)(7696005)(6916009)(54906003)(4326008)(107886003)(36906005)(5660300002)(478600001)(6666004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 02:28:23.2601
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 240aada0-ead6-48b5-7f4a-08d909242169
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2381
+In-Reply-To: <33af5bd4-7ada-8450-5a86-90023145d481@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On select platforms, some Nvidia GPU devices do not work with SBR.
-Triggering SBR would leave the device inoperable for the current
-system boot. It requires a system hard-reboot to get the GPU device
-back to normal operating condition post-SBR. For the affected
-devices, enable NO_BUS_RESET quirk to fix the issue.
 
-This issue will be fixed in the next generation of hardware.
 
-Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
----
-Changes since v1:
- - Split patch into 2, code for handling _RST and SBR specific quirk
- - The RST based reset is called as a first-class mechanism in the reset code path
+On 4/26/21 4:17 PM, Dave Hansen wrote:
+> On 4/26/21 3:31 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>>> +#define tdcall .byte 0x66,0x0f,0x01,0xcc
+>>>> +
+>>>> +/*
+>>>> + * __tdcall()  - Used to communicate with the TDX module
+>>>
+>>> Why is this function here?  What does it do?  Why do we need it?
+>>
+>> __tdcall() function is used to request services from the TDX Module.
+>> Example use cases are, TDREPORT, VEINFO, TDINFO, etc.
+> 
+> I think there might be some misinterpretation of my question.  What you
+> are describing is what *TDCALL* does.  Why do we need a wrapper
+> function?  What purpose does this wrapper function serve?  Why do we
+> need this wrapper function?
+> 
 
- drivers/pci/quirks.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+How about following explanation?
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 653660e3ba9e..1da80e772ee1 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3913,6 +3913,18 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
- 	return 0;
- }
- 
-+/*
-+ * Some Nvidia GPU devices do not work with bus reset, SBR needs to be
-+ * prevented for those affected devices.
-+ */
-+static void quirk_nvidia_no_bus_reset(struct pci_dev *dev)
-+{
-+	if ((dev->device & 0xffc0) == 0x2340)
-+		dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET;
-+}
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
-+			 quirk_nvidia_no_bus_reset);
-+
- static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
- 	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
- 		 reset_intel_82599_sfp_virtfn },
+Helper function for "tdcall" instruction, which can be used to request
+services from the TDX module (does not include VMM). Few examples of
+valid TDX module services are, "TDREPORT", "MEM PAGE ACCEPT", "VEINFO",
+etc.
+
+This function serves as a wrapper to move user call arguments to
+the correct registers as specified by "tdcall" ABI and shares it with
+the TDX module.  If the "tdcall" operation is successful and a
+valid "struct tdcall_out" pointer is available (in "out" argument),
+output from the TDX module (RCX, RDX, R8-R11) is saved to the memory
+specified in the "out" pointer. Also the status of the "tdcall"
+operation is returned back to the user as a function return value.
+
+>>> Why do we have to save these?  Because they might be clobbered?  If so,
+>>> let's say *THAT* instead of just "exposed".  "Exposed" could mean "VMM
+>>> can read".
+>>>
+>>> Also, this just told me that this function can't be used to talk to the
+>>> VMM.  Why is this talking about exposure to the VMM?
+>>
+>> Although __tdcall() is only used to communicate with the TDX module and the
+>> TDX module is not supposed to touch these registers, just to be on the safe
+>> side, I have tried to save the context of registers R12-R15. Anyway cycles
+>> used by instructions are less compared to tdcall.
+> 
+> Why are you talking about the VMM if this is a call to the SEAM module?
+> 
+> Let's say someone is reading the TDCALL architecture spec.  It will say
+> something like, "blah blah, in this case TDCALL will not modify
+> %r12->%r15".  Then someone goes and looks at this code that basically
+> says (or implies) "save these before the SEAM module modifies them".
+> What is a coder to do?
+> 
+> Please remove the ambiguity, either by removing this superfluous
+> (according to the spec) code, or documenting why it is not superfluous.
+
+Agree. I will remove the save/restore context code.
+
+> 
+>>>> +    /* Move TDCALL Leaf ID to RAX */
+>>>> +    mov %rdi, %rax
+>>>> +    /* Move output pointer to R12 */
+>>>> +    mov %r9, %r12
+>>>
+>>> I thought 'struct tdcall_output' was a purely software construct.  Why
+>>> are we passing a pointer to it into TDCALL?
+>>
+>> Its used to store the TDCALL result (RCX, RDX, R8-R11). As far as this
+>> function is concerned, its just a block of memory (accessed using
+>> base address + TDCALL_r* offsets).
+> 
+> Is 'struct tdcall_output' a hardware architectural structure or a
+> software structure?
+> 
+> If it's a software structure, then why are we passing a pointer to a
+> software structure into a hardware ABI?
+> 
+> If it's a hardware architecture structure, where is the documentation
+> for it?
+> 
+
+I think there is a misunderstanding here. We don't share the tdcall_output
+pointer with the TDX module. Current use cases of TDCALL (other than TDVMCALL)
+do not use registers from R12-R15. Since the registers R12-R15 are free and
+available, we are using R12 as temporary storage to hold the tdcall_output
+pointer.
+
+I will include some comment about using it as temporary storage.
+
+
+> 
+> I prefer that the code be understandable and be written for a clear
+> purpose.  If you're using r12 for temporary storage, I expect to see at
+> least one reference *SOMEWHERE* to its use as temporary storage.  Right
+> now.... nothing.
+> 
+
+I will include some reference to it.
+
+>>>> +    /* Copy TDCALL result registers to output struct: */
+>>>> +    movq %rcx, TDCALL_rcx(%r12)
+>>>> +    movq %rdx, TDCALL_rdx(%r12)
+>>>> +    movq %r8,  TDCALL_r8(%r12)
+>>>> +    movq %r9,  TDCALL_r9(%r12)
+>>>> +    movq %r10, TDCALL_r10(%r12)
+>>>> +    movq %r11, TDCALL_r11(%r12)
+>>>> +1:
+>>>> +    /* Zero out registers exposed to the TDX Module. */
+>>>> +    xor %rcx,  %rcx
+>>>> +    xor %rdx,  %rdx
+>>>> +    xor %r8d,  %r8d
+>>>> +    xor %r9d,  %r9d
+>>>> +    xor %r10d, %r10d
+>>>> +    xor %r11d, %r11d
+>>>
+>>> ... why?
+>>
+>> These registers are used by the TDX Module. Why pass the stale values
+>> back to the user? So we clear them here.
+> 
+> Please go look at some other assembly code in the kernel called from C.
+>   Do those functions do this?  Why?  Why not?  Do they care about
+> "passing stale values back up"?
+> 
+
+Maybe I am being overly cautious here. Since TDX module is the trusted
+code, speculation attack is not a consideration here. I will remove this
+block of code.
+
+>>>> +SYM_CODE_START_LOCAL(do_tdvmcall)
+>>>> +    FRAME_BEGIN
+>>>> +
+>>>> +    /* Save non-volatile GPRs that are exposed to the VMM. */
+>>>> +    push %r15
+>>>> +    push %r14
+>>>> +    push %r13
+>>>> +    push %r12
+>>>> +
+>>>> +    /* Set TDCALL leaf ID to TDVMCALL (0) in RAX */
+>>>
+>>> I think there needs to be some discussion of what TDCALL and TDVMCALL
+>>> are.  They are named too similarly not to do so.
+>>
+>> TDVMCALL is the sub function of TDCALL (selected by setting RAX register
+>> to 0). TDVMCALL is used to request services from VMM.
+> 
+> Actually, I think these functions are horribly misnamed.
+> 
+> I think we should make them
+> 
+> 	__tdx_seam_call()
+> or	__tdx_module_call()
+> 
+> and
+> 
+> 	__tdx_hypercall()
+> 
+> 
+> 	__tdcall()
+> and
+> 	__tdvmcall()
+> 
+> are really nonsensical in this context, especially since TDVMCALL is
+> implemented with the TDCALL instruction, but not the __tdcall() function.
+> 
+
+TDVMCALL is a short form of "TDG.VP.VMCALL". This term usage came from
+GHCI document. We can read it as "Trusted Domain VMCALL". Maybe
+because we are used to GHCI spec, we don't find it confusing. I agree
+that if you consider the "tdcall" instruction usage, it is confusing.
+
+But if it's confusing for new readers and rename is preferred,
+
+Do we need to rename the helper functions ?
+
+tdvmcall(), tdvmcall_out_r11()
+
+Also what about output structs?
+
+struct tdcall_output
+struct tdvmcall_output
+
+>>>> +/* Helper function for standard type of TDVMCALL */
+>>>> +SYM_FUNC_START(__tdvmcall)
+>>>> +    /* Set TDVMCALL type info (0 - Standard, > 0 - vendor) in R10 */
+>>>> +    xor %r10, %r10
+>>>> +    call do_tdvmcall
+>>>> +    retq
+>>>> +SYM_FUNC_END(__tdvmcall)
+>>>
+>>> Why do we need this helper?  Why does it need to be in assembly?
+>>
+>> Its simpler to do it in assembly. Also, grouping all register updates
+>> in the same file will make it easier for us to read or debug issues.
+>> Another
+>> reason is, we also call do_tdvmcall() from in/out instruction use case.
+> 
+> Sathya, I seem to have to reverse-engineer what you are doing for all
+> this stuff.  Your answers to my questions are almost entirely orthogonal
+> to the things I really want to know.  I guess I need to be more precise
+> with the questions I'm asking.  But, this is yet another case where I
+> think the burden for this series continues to fall on the reviewer
+> rather than the submitter.  Not the way I think it is best.
+
+I have assumed that you are aware of reason for the existence of
+do_tdvmcall() helper function. It is mainly created to hold common
+code between vendor specific and standard type of tdvmcall's.
+
+But it is a mistake from my end. I will try to be elaborate in my
+future replies.
+
+> 
+> So, trying to reverse-engineer what you are doing here... it seems that
+> you can't *practically* call do_tdvmcall() directly because %r10 would
+> be garbage.  That makes this (or a wrapper like it) required for every
+> practical call to do_tdvmcall().
+> 
+> But, even if that's the case, you need to *DOCUMENT* that up in
+> do_tdvmcall(): Hey, this function is worthless without something that
+> sets up %r10 before calling it.
+
+Agree. This needs to be documented. I will add it in next version.
+
+> 
+> I'm also not *SURE* this is simpler to do in assembly.
+> 
+>>>> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+>>>> index 6a7193fead08..29c52128b9c0 100644
+>>>> --- a/arch/x86/kernel/tdx.c
+>>>> +++ b/arch/x86/kernel/tdx.c
+>>>> @@ -1,8 +1,44 @@
+>>>>    // SPDX-License-Identifier: GPL-2.0
+>>>>    /* Copyright (C) 2020 Intel Corporation */
+>>>>    +#define pr_fmt(fmt) "TDX: " fmt
+>>>> +
+>>>>    #include <asm/tdx.h>
+>>>>    +/*
+>>>> + * Wrapper for use case that checks for error code and print warning
+>>>> message.
+>>>> + */
+>>>
+>>> This comment isn't very useful.  I can see the error check and warning
+>>> by reading the code.
+>>
+>> Its just a helper function that covers common case of checking for error
+>> and print the warning message. If this comment is superfluous, I can remove
+>> it.
+> 
+> I'd prefer that you actually write a comment about what the function is
+> doing, maybe:
+> 
+> /*
+>   * Wrapper for simple hypercalls that only return a success/error code.
+>   */
+> 
+> ... or *SOMETHING* that tells what its purpose in life is.
+
+I will fix it in next version.
+
+> 
+>>>> +static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
+>>>> +{
+>>>> +    u64 err;
+>>>> +
+>>>> +    err = __tdvmcall(fn, r12, r13, r14, r15, NULL);
+>>>> +
+>>>> +    if (err)
+>>>> +        pr_warn_ratelimited("TDVMCALL fn:%llx failed with err:%llx\n",
+>>>> +                    fn, err);
+>>>> +
+>>>> +    return err;
+>>>> +}
+>>>> +
+>>>> +/*
+>>>> + * Wrapper for the semi-common case where we need single output
+>>>> value (R11).
+>>>> + */
+>>>> +static inline u64 tdvmcall_out_r11(u64 fn, u64 r12, u64 r13, u64
+>>>> r14, u64 r15)
+>>>> +{
+>>>> +
+>>>> +    struct tdvmcall_output out = {0};
+>>>> +    u64 err;
+>>>> +
+>>>> +    err = __tdvmcall(fn, r12, r13, r14, r15, &out);
+>>>> +
+>>>> +    if (err)
+>>>> +        pr_warn_ratelimited("TDVMCALL fn:%llx failed with err:%llx\n",
+>>>> +                    fn, err);
+>>>> +
+>>>> +    return out.r11;
+>>>> +}
+>>>
+>>> How do callers check for errors?  Is the error value superfluously
+>>> returned in r11 and another output register?
+>>
+>> We already check for error in this helper function. User of this function
+>> only cares about output value (R11). Mainly for in/out use case.
+> 
+> That's pretty valuable information.
+
+I will include this note in the function comment.
+
+> 
+
 -- 
-2.17.1
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
