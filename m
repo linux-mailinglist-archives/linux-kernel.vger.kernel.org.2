@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090D836C601
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD49136C606
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236157AbhD0MXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:23:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhD0MXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:23:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48C3061006;
-        Tue, 27 Apr 2021 12:23:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619526187;
-        bh=AJLtzyEqMg1MI8ZSuMF/zVWlFVjrxqfNK/tQEDyfMbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BRk8hDPlHytn1Y79GNXQuaBA8Js6HoFcIs8Q94Io5o2fytD503tZk7wjFfrtpAEFZ
-         qY44Km74RyW6r3P/QklOzLUevzWUpwNkdwakIyUlEtQdw8RDE+IB7xkwQr1wwbI7l6
-         Luc7wfOwcKiw9Rmx/4aukAJXfC5vJ5T6uN+CUJIBZ4J0GY4wKTmaG3Kr6uKg4CJnoe
-         CN4o1vW3NLMdUrjpVOqqG3EBT4Aeipbby0uzokUGLnvlrhSiItBz7HyzVtpf8RjOzN
-         Fqw6ZfXdaQ5PG73lkIfc7LLVCqQA+4qS0OLbQOAyIIGgjO9v6DRH7sUPbdqBMQ5fai
-         op8prupQyaitg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lbMkK-0002VL-S4; Tue, 27 Apr 2021 14:23:20 +0200
-Date:   Tue, 27 Apr 2021 14:23:20 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
- pm_runtime_resume_and_get()
-Message-ID: <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
-References: <cover.1619191723.git.mchehab+huawei@kernel.org>
- <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
- <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
- <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
- <20210426163840.67ea8af9@coco.lan>
+        id S236165AbhD0MY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235426AbhD0MYW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 08:24:22 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13018C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:23:39 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w6so611242pfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=oIH8WYIkB/ztyv6SBr4INOuz26sOP+Zv7q5JUrWt5S8=;
+        b=vh8IqGRq8Sq5pPjUyHXRnecANmNmrskCeP5WRIHL8932dVb8+07Vfg+D8d6+gS9Br5
+         WSuLY6wi16zCyeba0dAwEnQzEO4Vexq4RFxiq6lELPEmfHHC3yooTUFzG3tCjn0kvVry
+         PcWuG7OyqHnSWAn8X3iHnuyLc4tcEI2Riz7+kkaFUFz5DnqqCJKkGO1mZHWpgTxfaxYe
+         1ke+gztJKXZKnjzmAOor/Nob/X8j2t9D2zDVRMVEf5zXukVH+WF9N//8A7+uvXNWgcKu
+         8YI6xb2CaMZ6rqA8cRGIW549UzkP3FfKFKg2Ad4NgRBRlqi7GOcUwh+VXroFbLHh/Nqn
+         vYuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=oIH8WYIkB/ztyv6SBr4INOuz26sOP+Zv7q5JUrWt5S8=;
+        b=HPAZdOEVeLgAt9rn6AUTvnGkyfUAItxvNq5pKb1d48ow32CHSysdH12Lqjoupo7y+x
+         42xWCnNK2Cbr9B7PZ7+JETtEWyugUUnNewmZ1k5ZMuuZyw3Kaz9LjqFmMrbvYxq2rNbH
+         yDrzn9NppZqFszNF1wxytm98R08SQvDEfL6srNrW+S5/lAXQyfl4aMCT0c/CVxiUZo/g
+         VH3i8DwGdDQnTO4RyPq7XvoUx9rGr0vcKCN0ocKCQbs1X0qX2ihPBRoX8DksVX3aX2Gm
+         GkzsLGjzInp1LM5oB589dowUwglwabY/UmQw5WQHS8LG+28BNdTQxityrx/9F3lqRSW9
+         OrFg==
+X-Gm-Message-State: AOAM533TpAEa/fqS71XDy/wN+o/sLqxWqD8rBYXNhvZhiwiJCKLeMhJ1
+        ESNktKbGLBgStgcg/CClZaI=
+X-Google-Smtp-Source: ABdhPJx20lR4SNDF+cm5Avx5zJyQMAHpmnv+dL6KMGctS63n9+BFqdat8Zmwu3RXnlq4jMvuMrvHfA==
+X-Received: by 2002:a63:540b:: with SMTP id i11mr4719813pgb.44.1619526218307;
+        Tue, 27 Apr 2021 05:23:38 -0700 (PDT)
+Received: from ashish-NUC8i5BEH ([182.77.14.23])
+        by smtp.gmail.com with ESMTPSA id b21sm2576751pji.39.2021.04.27.05.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 05:23:37 -0700 (PDT)
+From:   ashish <eashishkalra@gmail.com>
+X-Google-Original-From: ashish <ashish@ashish-nuc8i5beh>
+Date:   Tue, 27 Apr 2021 17:53:30 +0530
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ashish Kalra <eashishkalra@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wlan-ng: silence incorrect type in argument 1
+ (different address spaces) warning
+Message-ID: <YIgCQtwK8tpGSOQ5@ashish-NUC8i5BEH>
+References: <20210420090142.GA4086@ashish-NUC8i5BEH>
+ <YIE3IffGcjrkz4ZE@kroah.com>
+ <20210423152619.GA2469@ashish-NUC8i5BEH>
+ <YIOz6o8gwHv+cAN7@kroah.com>
+ <bc8873a274bf489ad856386a9d9ee1110de4c4d3.camel@perches.com>
+ <20210424081529.GA1731@ubuntu>
+ <YIPWq6rp246rg9D0@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210426163840.67ea8af9@coco.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YIPWq6rp246rg9D0@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 04:38:40PM +0200, Mauro Carvalho Chehab wrote:
-> Em Sat, 24 Apr 2021 12:00:46 +0200
-> Johan Hovold <johan@kernel.org> escreveu:
-> 
-> > On Sat, Apr 24, 2021 at 10:24:54AM +0200, Jacopo Mondi wrote:
-> > > Hi Mauro,
+On Sat, Apr 24, 2021 at 10:28:27AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Apr 24, 2021 at 01:45:29PM +0530, Ashish Kalra wrote:
+> > On Fri, Apr 23, 2021 at 11:11:05PM -0700, Joe Perches wrote:
+> > > On Sat, 2021-04-24 at 08:00 +0200, Greg Kroah-Hartman wrote:
+> > > > On Fri, Apr 23, 2021 at 08:56:19PM +0530, Ashish Kalra wrote:
+> > > > > On Thu, Apr 22, 2021 at 10:43:13AM +0200, Greg Kroah-Hartman wrote:
+> > > > > > On Tue, Apr 20, 2021 at 02:31:42PM +0530, Ashish Kalra wrote:
+> > > > > > > Upon running sparse, "warning: incorrect type in argument 1 (different address spaces)
+> > > > > > > is brought to notice for this file.let's add correct typecast to make it cleaner and
+> > > > > > > silence the Sparse warning.
+> > > []
+> > > > >  struct p80211ioctl_req {
+> > > > >         char name[WLAN_DEVNAMELEN_MAX];
+> > > > > -       caddr_t data;
+> > > > > +       void __user *data;
+> > > > > 
+> > > > > Does this looks ok to you and is there any other check possible if this is ok?
+> > > > 
+> > > > Wait, what is "caddr_t"?  Try unwinding that mess first...
 > > > 
-> > > On Sat, Apr 24, 2021 at 08:44:48AM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > > added pm_runtime_resume_and_get() in order to automatically handle
-> > > > dev->power.usage_count decrement on errors.
-> > > >
-> > > > Use the new API, in order to cleanup the error check logic.
-> > > >
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-
-> > I'd say this kind of mass-conversion is of questionable worth as
-> > pm_runtime_resume_and_get() isn't necessarily an improvement (even if it
-> > may have its use in some places).
+> > > Might not be that simple.
+> > > 
+> > > include/linux/types.h:typedef __kernel_caddr_t  caddr_t;
+> > > include/uapi/linux/coda.h:typedef void * caddr_t;
+> > > include/uapi/asm-generic/posix_types.h:typedef char *           __kernel_caddr_t;
+> > > 
+> > > 
+> > data is part of p80211ioctl_req and is used at two places only inside p80211knetdev_do_ioctl
+> > it seems both places it will be used as void __user* only
+> > 
+> > 	msgbuf = memdup_user(req->data, req->len);
+> >         
+> > 	if (result == 0) {
+> >                 if (copy_to_user
+> >                     ((void __user *)req->data, msgbuf, req->len)) {
+> >                         result = -EFAULT;
+> >                 }
+> >         }
+> > 
+> > Will it still be problem if we change it from char * to void *.?
 > 
-> The main problem is that other parts of the driver's core APIs
-> assume that get object methods will only increment the usage
-> counter if no errors. The pm_runtime_get_sync() is an exception.
+> Why do you want to change it to void *?  Never use a void * unless it
+> has to point to unknown data.  That does not seem the case here.
 > 
-> Its name doesn't help at all: A function like that should, IMHO,
-> be called, instead:
+> > is there any way to check how caller of this function will be using it?
 > 
-> 	pm_runtime_inc_usage_count_and_try_to_resume().
+> Look at the code to determine this...
 > 
-> Or something similar, in order to make clearer that it always
-> increment the usage count, no matter what. If possible, all drivers
-> should get rid of it too (or alternatively add comments warning
-> people that keeping the usage_count incremented is desired on the
-> very specific places where it is really needed), as it is risky
-> to use something that has a different usage_count increement behavior
-> than other more usual *_get() functions.
+> thanks,
+> 
+> greg k-h
+Thanks Greg and Joe
+I have found that adding __user to data is also fixing this warning, 
+It should be fine logically to make this change
+Please share your opinion and will post v2 for this patch
 
-pm_runtime_get_sync() has worked this way since it was merged 12 years
-ago, and for someone who's used to this interface this is not such a big
-deal as you seem to think. Sure, you need to remember to put the usage
-counter on errors, but that's it (and the other side of that is that you
-don't need to worry about error handling where it doesn't matter).
+--- a/drivers/staging/wlan-ng/p80211ioctl.h
++++ b/drivers/staging/wlan-ng/p80211ioctl.h
+@@ -81,7 +81,7 @@
 
-Also note all the pm_runtime_get functions *always* increment the usage
-count even if an async resume may later fail so there is consistency
-here.
+ struct p80211ioctl_req {
+        char name[WLAN_DEVNAMELEN_MAX];
+-       caddr_t data;
++       char __user *data;
+        u32 magic;
+        u16 len;
+        u32 result;
+-- 
+2.30.2
 
-And regarding naming, the new pm_resume_and_get() looks completely out
-of place to me since it uses a different naming scheme than the other
-helpers (including the ones that are used to balance the new call).
 
-> With regards to mass-fixing it, I've seen several patches seen
-> to media fixing bugs due to the bad usage_count decrement logic.
-> So, the best is to solve them all at once, and stop using
-> pm_runtime_get_sync() inside the subsystem.
-
-Sure, having the script kiddies patch drivers without understanding what
-they're are really doing is bound to introduce bugs unless it can be
-caught in review.
-
-You're call, but converting functioning drivers where the authors knew
-what they were doing just because you're not used to the API and risk
-introducing new bugs in the process isn't necessarily a good idea.
-Especially since the pm_runtime_get_sync() will continue to be used
-elsewhere, and possibly even in media in cases where you don't need to
-check for errors (e.g. remove()).
-
-Johan
