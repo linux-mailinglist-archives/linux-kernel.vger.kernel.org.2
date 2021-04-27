@@ -2,110 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECA836C97B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D13236C90A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 18:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236578AbhD0Qb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 12:31:27 -0400
-Received: from 9.mo68.mail-out.ovh.net ([46.105.78.111]:55268 "EHLO
-        9.mo68.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhD0QbX (ORCPT
+        id S236589AbhD0QFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 12:05:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23148 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233501AbhD0QFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:31:23 -0400
-X-Greylist: delayed 12001 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Apr 2021 12:31:22 EDT
-Received: from player698.ha.ovh.net (unknown [10.108.1.146])
-        by mo68.mail-out.ovh.net (Postfix) with ESMTP id 866C8198026
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:54:10 +0200 (CEST)
-Received: from tesio.it (host-194-184-20-4.business.telecomitalia.it [194.184.20.4])
-        (Authenticated sender: giacomo@tesio.it)
-        by player698.ha.ovh.net (Postfix) with ESMTPSA id 740D11D8562B1;
-        Tue, 27 Apr 2021 12:54:06 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-98R00270579b63-6873-45f2-9431-021d1c68bde6,
-                    54EAC219E4CEC59A37184C2AE5F075AA160B4036) smtp.auth=giacomo@tesio.it
-X-OVh-ClientIp: 194.184.20.4
-Date:   Tue, 27 Apr 2021 14:53:47 +0200
-From:   Giacomo Tesio <giacomo@tesio.it>
-To:     Kangjie Lu <kjlu@umn.edu>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Qiushi Wu <wu000273@umn.edu>, Aditya Pakki <pakki001@umn.edu>
-Subject: Re: An open letter to the Linux community
-Message-ID: <20210427145347.00003846@tesio.it>
-In-Reply-To: <CAK8KejpUVLxmqp026JY7x5GzHU2YJLPU8SzTZUNXU2OXC70ZQQ@mail.gmail.com>
-References: <CAK8KejpUVLxmqp026JY7x5GzHU2YJLPU8SzTZUNXU2OXC70ZQQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Tue, 27 Apr 2021 12:05:12 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13RG4CQq175561;
+        Tue, 27 Apr 2021 12:04:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=t8cu/X/KuqBNRzGyfh9KZctMfN6zLY5UWrMch/NUD84=;
+ b=bSbtLy+wWDtEzM2chjsg2FXTbh28p9b4BQJBZvEm6IsnzMdslgJLXim48PJzjZCRYEjE
+ 5fvjSO1d+Pwc4M46zDNdaJmXhsTkFQLC7R2Hyu3+Ot2rLTzxTC4/q2cGOjZS6rzn+AcU
+ GXKN03LOyC4+GxH0+ChzDR8iboEcfMCTdpd783zMemWY85xzTpl8/8aWdf1IC7MeAPmE
+ kZVEPmN54wOZEgUaekT0GyIzMB547ZwfFNECfwGaXEvE4As5PXW+1h0XYy5xMVtsALse
+ ivW2bXkrtTFfUWU8bLYc8Aj3/X/y5hVYikGF58NOTqtS6FALJterraZ1HV6ZXQozfwLQ /w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 386nqxg5tp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 12:04:24 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13RG4EQJ175939;
+        Tue, 27 Apr 2021 12:04:24 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 386nqxg5sf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 12:04:23 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13RG0iZb016038;
+        Tue, 27 Apr 2021 16:04:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma01fra.de.ibm.com with ESMTP id 384ay80tab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Apr 2021 16:04:21 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13RG3s4122610304
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Apr 2021 16:03:54 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4D2FF52059;
+        Tue, 27 Apr 2021 16:04:18 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.36.231])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 58EF05204E;
+        Tue, 27 Apr 2021 16:04:16 +0000 (GMT)
+Message-ID: <821796ff548c58138be547e0e5f4d7ba432356a7.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 27 Apr 2021 12:03:58 -0400
+In-Reply-To: <d783e2703248463f9af68e155ee65c38@huawei.com>
+References: <20210305151923.29039-1-roberto.sassu@huawei.com>
+         <20210305151923.29039-5-roberto.sassu@huawei.com>
+         <c3bb1069-c732-d3cf-0dde-7a83b3f31871@schaufler-ca.com>
+         <93858a47a29831ca782c8388faaa43c8ffc3f5cd.camel@linux.ibm.com>
+         <7a39600c24a740838dca24c20af92c1a@huawei.com>
+         <d047d1347e7104162e0e36eb57ade6bba914ea2d.camel@linux.ibm.com>
+         <d783e2703248463f9af68e155ee65c38@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: q2A686-wULx0MY3SMC_bBSa1UowCxs90
+X-Proofpoint-GUID: 4pXHFRmb25tcfpBkd3m_6AB-cPVgXi-5
 Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 680325021023334066
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddvtddgheejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhggtgfgsehtjeeftddttddvnecuhfhrohhmpefiihgrtghomhhoucfvvghsihhouceoghhirggtohhmohesthgvshhiohdrihhtqeenucggtffrrghtthgvrhhnpeeljeejgedvgeetleejgeejffffiefggffhuedtudefgeeggfduieegvdejudeltdenucffohhmrghinhepphhhrhgrtghkrdhorhhgnecukfhppedtrddtrddtrddtpdduleegrddukeegrddvtddrgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheileekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhirggtohhmohesthgvshhiohdrihhtpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-27_08:2021-04-27,2021-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=982 suspectscore=0 clxscore=1015
+ bulkscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104270111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Damn kids, they're all alike"
-http://phrack.org/issues/7/3.html
+On Tue, 2021-04-27 at 15:57 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Tuesday, April 27, 2021 5:35 PM
+> > On Tue, 2021-04-27 at 09:25 +0000, Roberto Sassu wrote:
+> > > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > > Sent: Monday, April 26, 2021 9:49 PM
+> > > > On Fri, 2021-03-05 at 09:30 -0800, Casey Schaufler wrote:
+> > 
+> > > > > However ...
+> > > > >
+> > > > > The special casing of IMA and EVM in security.c is getting out of
+> > > > > hand, and appears to be unnecessary. By my count there are 9 IMA
+> > > > > hooks and 5 EVM hooks that have been hard coded. Adding this IMA
+> > > > > hook makes 10. It would be really easy to register IMA and EVM as
+> > > > > security modules. That would remove the dependency they currently
+> > > > > have on security sub-system approval for changes like this one.
+> > > > > I know there has been resistance to "IMA as an LSM" in the past,
+> > > > > but it's pretty hard to see how it wouldn't be a win.
+> > 
+> > It sholdn't be one way.  Are you willing to also make the existing
+> > IMA/EVM hooks that are not currently security hooks, security hooks
+> > too?   And accept any new IMA/EVM hooks would result in new security
+> > hooks?  Are you also willing to add dependency tracking between LSMs?
+> 
+> I already have a preliminary branch where IMA/EVM are full LSMs.
+> 
+> Indeed, the biggest problem would be to have the new hooks
+> accepted. I can send the patch set for evaluation to see what
+> people think.
+
+Defining new security hooks is pretty straight forward.   Perhaps at
+least wait until Casey responds before posting the patches.
+
+> 
+> > > > Somehow I missed the new "lsm=" boot command line option, which
+> > > > dynamically allows enabling/disabling LSMs, being upstreamed.  This
+> > > > would be one of the reasons for not making IMA/EVM full LSMs.
+> > >
+> > > Hi Mimi
+> > >
+> > > one could argue why IMA/EVM should receive a special
+> > > treatment. I understand that this was a necessity without
+> > > LSM stacking. Now that LSM stacking is available, I don't
+> > > see any valid reason why IMA/EVM should not be managed
+> > > by the LSM infrastructure.
+> > >
+> > > > Both IMA and EVM file data/metadata is persistent across boots.  If
+> > > > either one or the other is not enabled the file data hash or file
+> > > > metadata HMAC will not properly be updated, potentially preventing the
+> > > > system from booting when re-enabled.  Re-enabling IMA and EVM would
+> > > > require "fixing" the mutable file data hash and HMAC, without any
+> > > > knowledge of what the "fixed" values should be.  Dave Safford referred
+> > > > to this as "blessing" the newly calculated values.
+> > >
+> > > IMA/EVM can be easily disabled in other ways, for example
+> > > by moving the IMA policy or the EVM keys elsewhere.
+> > 
+> > Dynamically disabling IMA/EVM is very different than removing keys and
+> > preventing the system from booting.  Restoring the keys should result
+> > in being able to re-boot the system.  Re-enabling IMA/EVM, requires re-
+> > labeling the filesystem in "fix" mode, which "blesses" any changes made
+> > when IMA/EVM were not enabled.
+> 
+> Uhm, I thought that if you move the HMAC key for example
+> and you boot the system, you invalidate all files that change,
+> because the HMAC is not updated.
+
+More likely you wouldn't be able to boot the system without the HMAC
+key.
+
+Mimi
+
+> 
+> > > Also other LSMs rely on a dynamic and persistent state
+> > > (for example for file transitions in SELinux), which cannot be
+> > > trusted anymore if LSMs are even temporarily disabled.
+> > 
+> > Your argument is because this is a problem for SELinux, make it also a
+> > problem for IMA/EVM too?!   ("Two wrongs make a right")
+> 
+> To me it seems reasonable to give the ability to people to
+> disable the LSMs if they want to do so, and at the same time
+> to try to prevent accidental disable when the LSMs should be
+> enabled.
+> 
+> > > If IMA/EVM have to be enabled to prevent misconfiguration,
+> > > I think the same can be achieved if they are full LSMs, for
+> > > example by preventing that the list of enabled LSMs changes
+> > > at run-time.
+> > 
+> > That ship sailed when "security=" was deprecated in favor of "lsm="
+> > support, which dynamically enables/disables LSMs at runtime.
+> 
+> Maybe this possibility can be disabled with a new kernel option.
+> I will think a more concrete solution.
+> 
+> Roberto
+> 
+> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+> Managing Director: Li Peng, Li Jian, Shi Yanli
 
 
-Dear Kangjie Lu, Qiushi Wu, and Aditya Pakki,
-
-Since nobody is doing so, I want to thank you for your hacks.
-
-
-All the livor and drama that followed your research proves that
-the Linux Foundation failed to learn the lessons of Heartbleed.
-
-At the end of the day, this is a valuable discovery for all of us.
-
-
-You are the kids laughing loud that "the emperor has no clothes".
-More precisely, that the emperor STILL has no clothes.
-Ten year later.
-
-The corporations behind the Linux kernel didn't take it well
-(you wasted their time and money! you outsmarted them! how dare!),
-but the hypocrisy in your commits is not the one you revealed.
-
-
-Pretending that such kind of attack didn't succeded before, 
-pretending that the problem is you, is way worse.
-
-
-I've read that 
-
-> The Linux Foundation's Technical Advisory Board submitted a letter 
-> on Friday to your University outlining the specific actions which
-> need to happen in order for your group, and your University, to 
-> be able to work to regain the trust of the Linux kernel community.
-
-But any programmer with a grain of salt, knows that they are just
-tring to distract everybody from their own operational failures.
-
-They blame you and your University just to avoid to be held accountable.
-
-It's neither you nor your University that need to regain trust.
-It's not you that proved to not deserve it.
-
-Your crime is that of curiosity.
-
-
-How sad it is to see a project born "just for fun", turned into this!
-
-
-But since I care more about cyber-security than about OSS marketing,
-I thank you for what you did. I hope that more of such kind of hacks
-and experiments will happen in the future, both in the Linux Kernel
-and in many other projects.
-
-All without ANYBODY aware of them, because otherwise they would 
-prevent such epic failures to be discovered and publicly exposed,
-again and again.
-
-
-What you did was not just ethical, but noble and brave.
-
-
-Thanks.
-
-
-Giacomo
