@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5509736C412
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3740036C3FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 12:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238824AbhD0KeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 06:34:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48146 "EHLO mail.kernel.org"
+        id S238592AbhD0Kci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 06:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238099AbhD0K2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:28:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0383361481;
-        Tue, 27 Apr 2021 10:27:17 +0000 (UTC)
+        id S237505AbhD0K2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C88961405;
+        Tue, 27 Apr 2021 10:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619519237;
-        bh=v3oOn6uPHJX4lDQc2LG+Rn/44BbALYGNkVgzHn1PdbQ=;
+        s=k20201202; t=1619519236;
+        bh=U3xPtY+HT1GPqKz+iC8qw5pPuPioh4afaqfdd0R7SD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JEckz/fuxi4Yvs858mBbDa/aqLRqDtn9bj58CCmGAwK+QlqI37NtGR/Y+J/OXjsBP
-         PNc65TsKhuzdT/yReKJQSOyQBpdMzZ3HgVk459MlonuhUKxN06+tIgvNT9Jaz3QfE/
-         trGOaUWCkBkAAj8suBC9dpgUQjA3PnqAsf9lWiAqueppxgWDLid18DETKQP8NS5sUJ
-         vX1DuVJFZrSRH+Pnwv+Ne0PkrDqGtAXPQHQRPQtlzPUbAiiFx4ilBStNbtSSQrgyhW
-         /Sio56g1+Bv5UGnVUQL38bXFwNA+Ws2vC8338NGikS7/6p8sHMdeRjAOuJjko4MMG1
-         pbDKV4IBvXrOg==
+        b=iXMAigZdnmTu5DSfhVBGfcBPGN3QF6ScmmR9U0f5Im+LPTYBWoyF4ySDewljMfoBD
+         DuxyJAJ1gMLQ6p55STB+KKwr+WrJSR7g3hnugClyn/E78d90b8STIoDxT3xQBiV/n6
+         uL9M9bbEpXbNuIQnbmAm5E6JIWT6+V0tJ8evbx22wxlqQiTfw0l7nXGaV0I87B1VBa
+         XKR/bd4QEFA1Zsi6T9nSKagVK4WUpXZx+4aEhq9gXp+buv8+jKMExd9Xs9e8eBkQTf
+         giDONGAEmXjeisYXz5b0fJau6kz4cBUwC005YzBRs308oiacNrkhIZWR3w4YC0Vp3Y
+         mLWQ5E/mVhnYQ==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1lbKvv-000nzt-JM; Tue, 27 Apr 2021 12:27:11 +0200
+        id 1lbKvv-000o05-RL; Tue, 27 Apr 2021 12:27:11 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v3 14/79] media: am437x: fix pm_runtime_get_sync() usage count
-Date:   Tue, 27 Apr 2021 12:26:04 +0200
-Message-Id: <657bba55e6afbb321b0f0c612d0b8f900e365594.1619519080.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 18/79] media: delta-v4l2: fix pm_runtime_get_sync() usage count
+Date:   Tue, 27 Apr 2021 12:26:08 +0200
+Message-Id: <364e0a87973ec4676f1aa16b3373a0c95f0366f0.1619519080.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1619519080.git.mchehab+huawei@kernel.org>
 References: <cover.1619519080.git.mchehab+huawei@kernel.org>
@@ -53,88 +53,27 @@ commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with us
 in order to properly decrement the usage counter and avoid memory
 leaks.
 
-While here, ensure that the driver will check if PM runtime
-resumed at vpfe_initialize_device().
-
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/media/platform/am437x/am437x-vpfe.c | 22 +++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ drivers/media/platform/sti/delta/delta-v4l2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/am437x/am437x-vpfe.c b/drivers/media/platform/am437x/am437x-vpfe.c
-index 6cdc77dda0e4..bced526f30f2 100644
---- a/drivers/media/platform/am437x/am437x-vpfe.c
-+++ b/drivers/media/platform/am437x/am437x-vpfe.c
-@@ -1021,7 +1021,9 @@ static int vpfe_initialize_device(struct vpfe_device *vpfe)
- 	if (ret)
+diff --git a/drivers/media/platform/sti/delta/delta-v4l2.c b/drivers/media/platform/sti/delta/delta-v4l2.c
+index c691b3d81549..9928b7c46a41 100644
+--- a/drivers/media/platform/sti/delta/delta-v4l2.c
++++ b/drivers/media/platform/sti/delta/delta-v4l2.c
+@@ -1277,9 +1277,9 @@ int delta_get_sync(struct delta_ctx *ctx)
+ 	int ret = 0;
+ 
+ 	/* enable the hardware */
+-	ret = pm_runtime_get_sync(delta->dev);
++	ret = pm_runtime_resume_and_get(delta->dev);
+ 	if (ret < 0) {
+-		dev_err(delta->dev, "%s pm_runtime_get_sync failed (%d)\n",
++		dev_err(delta->dev, "%s pm_runtime_resume_and_get failed (%d)\n",
+ 			__func__, ret);
  		return ret;
- 
--	pm_runtime_get_sync(vpfe->pdev);
-+	ret = pm_runtime_resume_and_get(vpfe->pdev);
-+	if (ret < 0)
-+		return ret;
- 
- 	vpfe_config_enable(&vpfe->ccdc, 1);
- 
-@@ -2443,7 +2445,11 @@ static int vpfe_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 
- 	/* for now just enable it here instead of waiting for the open */
--	pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
-+	if (ret < 0) {
-+		vpfe_err(vpfe, "Unable to resume device.\n");
-+		goto probe_out_v4l2_unregister;
-+	}
- 
- 	vpfe_ccdc_config_defaults(ccdc);
- 
-@@ -2527,10 +2533,11 @@ static int vpfe_suspend(struct device *dev)
- {
- 	struct vpfe_device *vpfe = dev_get_drvdata(dev);
- 	struct vpfe_ccdc *ccdc = &vpfe->ccdc;
-+	int ret;
- 
- 	/* only do full suspend if streaming has started */
- 	if (vb2_start_streaming_called(&vpfe->buffer_queue)) {
--		pm_runtime_get_sync(dev);
-+		ret = pm_runtime_resume_and_get(dev);
- 		vpfe_config_enable(ccdc, 1);
- 
- 		/* Save VPFE context */
-@@ -2541,7 +2548,8 @@ static int vpfe_suspend(struct device *dev)
- 		vpfe_config_enable(ccdc, 0);
- 
- 		/* Disable both master and slave clock */
--		pm_runtime_put_sync(dev);
-+		if (ret >= 0)
-+			pm_runtime_put_sync(dev);
  	}
- 
- 	/* Select sleep pin state */
-@@ -2583,18 +2591,20 @@ static int vpfe_resume(struct device *dev)
- {
- 	struct vpfe_device *vpfe = dev_get_drvdata(dev);
- 	struct vpfe_ccdc *ccdc = &vpfe->ccdc;
-+	int ret;
- 
- 	/* only do full resume if streaming has started */
- 	if (vb2_start_streaming_called(&vpfe->buffer_queue)) {
- 		/* Enable both master and slave clock */
--		pm_runtime_get_sync(dev);
-+		ret = pm_runtime_resume_and_get(dev);
- 		vpfe_config_enable(ccdc, 1);
- 
- 		/* Restore VPFE context */
- 		vpfe_restore_context(ccdc);
- 
- 		vpfe_config_enable(ccdc, 0);
--		pm_runtime_put_sync(dev);
-+		if (ret >= 0)
-+			pm_runtime_put_sync(dev);
- 	}
- 
- 	/* Select default pin state */
 -- 
 2.30.2
 
