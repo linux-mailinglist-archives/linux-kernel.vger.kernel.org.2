@@ -2,206 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C08536BFED
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BF436BFF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbhD0HQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbhD0HQC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:16:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374F3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 00:15:20 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lbHwA-0002PF-Gi; Tue, 27 Apr 2021 09:15:14 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lbHw8-0007nc-NG; Tue, 27 Apr 2021 09:15:12 +0200
-Date:   Tue, 27 Apr 2021 09:15:12 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH net-next v3 0/6] provide generic net selftest support
-Message-ID: <20210427071512.vprrsajwwhmmb3ch@pengutronix.de>
-References: <20210419130106.6707-1-o.rempel@pengutronix.de>
- <DB8PR04MB67951B9C6AB1620E807205F2E6459@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <20210423043729.tup7nntmmyv6vurm@pengutronix.de>
- <DB8PR04MB6795479FBF086751D16080E2E6419@DB8PR04MB6795.eurprd04.prod.outlook.com>
+        id S234841AbhD0HQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:16:49 -0400
+Received: from mailoutvs4.siol.net ([185.57.226.195]:52826 "EHLO mail.siol.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229988AbhD0HQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 03:16:46 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id C89C9522CEF;
+        Tue, 27 Apr 2021 09:16:01 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id CxEoLfVWkIxP; Tue, 27 Apr 2021 09:16:01 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 43406524694;
+        Tue, 27 Apr 2021 09:16:01 +0200 (CEST)
+Received: from kista.localdomain (cpe-86-58-17-133.cable.triera.net [86.58.17.133])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id 45BCD522CEF;
+        Tue, 27 Apr 2021 09:16:00 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc:     mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        ezequiel@collabora.com, benjamin.gaignard@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH] media: hevc: Fix dependent slice segment flags
+Date:   Tue, 27 Apr 2021 09:15:54 +0200
+Message-Id: <20210427071554.2222625-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DB8PR04MB6795479FBF086751D16080E2E6419@DB8PR04MB6795.eurprd04.prod.outlook.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:10:33 up 145 days, 21:16, 42 users,  load average: 0.30, 0.09,
- 0.02
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
+Dependent slice segment flag for PPS control is misnamed. It should have
+"enabled" at the end. It only tells if this flag is present in slice
+header or not and not the actual value.
 
-On Tue, Apr 27, 2021 at 04:48:42AM +0000, Joakim Zhang wrote:
-> > Hi Joakim,
-> > 
-> > On Fri, Apr 23, 2021 at 03:18:32AM +0000, Joakim Zhang wrote:
-> > >
-> > > Hi Oleksij,
-> > >
-> > > I look both stmmac selftest code and this patch set. For stmmac, if PHY
-> > doesn't support loopback, it will fallthrough to MAC loopback.
-> > > You provide this generic net selftest support based on PHY loopback, I have a
-> > question, is it possible to extend it also support MAC loopback later?
-> > 
-> > Yes. If you have interest and time to implement it, please do.
-> > It should be some kind of generic callback as phy_loopback() and if PHY and
-> > MAC loopbacks are supported we need to tests both variants.
-> Hi Oleksij,
-> 
-> Yes, I can try to implement it when I am free, but I still have some questions:
-> 1. Where we place the generic function? Such as mac_loopback().
-> 2. MAC is different from PHY, need program different registers to enable loopback on different SoCs, that means we need get MAC private data from "struct net_device".
+Fix this by renaming the PPS flag and introduce another flag for slice
+control which tells actual value.
 
-ACK
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
+ drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
+ include/media/hevc-ctrls.h                                | 3 ++-
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-> So we need a callback for MAC drivers, where we extend this callback? Could be "struct net_device_ops"? Such as ndo_set_loopback?
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/=
+Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index 7b90cb939e9d..5ed343ddd1ea 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -3059,7 +3059,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+     :stub-columns: 0
+     :widths:       1 1 2
+=20
+-    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
++    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
+       - 0x00000001
+       -
+     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
+@@ -3274,6 +3274,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+     * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_EN=
+ABLED``
+       - 0x00000100
+       -
++    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
++      - 0x00000200
++      -
+=20
+ .. raw:: latex
+=20
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/s=
+taging/media/sunxi/cedrus/cedrus_h265.c
+index 397a4ba5df4c..6821e3d05d34 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+@@ -479,8 +479,8 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
+ 				slice_params->flags);
+=20
+ 	reg |=3D VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDEN=
+T_SLICE_SEGMENT,
+-				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
+-				pps->flags);
++				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
++				slice_params->flags);
+=20
+ 	/* FIXME: For multi-slice support. */
+ 	reg |=3D VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PI=
+C;
+diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+index b713eeed1915..dc964ff7cd29 100644
+--- a/include/media/hevc-ctrls.h
++++ b/include/media/hevc-ctrls.h
+@@ -83,7 +83,7 @@ struct v4l2_ctrl_hevc_sps {
+ 	__u64	flags;
+ };
+=20
+-#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
++#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
+ #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
+ #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
+ #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
+@@ -166,6 +166,7 @@ struct v4l2_hevc_pred_weight_table {
+ #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
+ #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED (1U=
+LL << 7)
+ #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENAB=
+LED (1ULL << 8)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
+=20
+ struct v4l2_ctrl_hevc_slice_params {
+ 	__u32	bit_size;
+--=20
+2.31.1
 
-yes. Sounds good for me. ndo_set_loopback could be implemented for
-ethernet controllers, DSA and even CAN. 
-
-Regards,
-Oleksij
-
-> > > > -----Original Message-----
-> > > > From: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > > Sent: 2021年4月19日 21:01
-> > > > To: Shawn Guo <shawnguo@kernel.org>; Sascha Hauer
-> > > > <s.hauer@pengutronix.de>; Andrew Lunn <andrew@lunn.ch>; Florian
-> > > > Fainelli <f.fainelli@gmail.com>; Heiner Kallweit
-> > > > <hkallweit1@gmail.com>; Fugang Duan <fugang.duan@nxp.com>
-> > > > Cc: Oleksij Rempel <o.rempel@pengutronix.de>; kernel@pengutronix.de;
-> > > > netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> > > > linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
-> > > > Fabio Estevam <festevam@gmail.com>; David Jander
-> > > > <david@protonic.nl>; Russell King <linux@armlinux.org.uk>; Philippe
-> > > > Schenker <philippe.schenker@toradex.com>
-> > > > Subject: [PATCH net-next v3 0/6] provide generic net selftest
-> > > > support
-> > > >
-> > > > changes v3:
-> > > > - make more granular tests
-> > > > - enable loopback for all PHYs by default
-> > > > - fix allmodconfig build errors
-> > > > - poll for link status update after switching to the loopback mode
-> > > >
-> > > > changes v2:
-> > > > - make generic selftests available for all networking devices.
-> > > > - make use of net_selftest* on FEC, ag71xx and all DSA switches.
-> > > > - add loopback support on more PHYs.
-> > > >
-> > > > This patch set provides diagnostic capabilities for some iMX, ag71xx
-> > > > or any DSA based devices. For proper functionality, PHY loopback support is
-> > needed.
-> > > > So far there is only initial infrastructure with basic tests.
-> > > >
-> > > > Oleksij Rempel (6):
-> > > >   net: phy: execute genphy_loopback() per default on all PHYs
-> > > >   net: phy: genphy_loopback: add link speed configuration
-> > > >   net: add generic selftest support
-> > > >   net: fec: make use of generic NET_SELFTESTS library
-> > > >   net: ag71xx: make use of generic NET_SELFTESTS library
-> > > >   net: dsa: enable selftest support for all switches by default
-> > > >
-> > > >  drivers/net/ethernet/atheros/Kconfig      |   1 +
-> > > >  drivers/net/ethernet/atheros/ag71xx.c     |  20 +-
-> > > >  drivers/net/ethernet/freescale/Kconfig    |   1 +
-> > > >  drivers/net/ethernet/freescale/fec_main.c |   7 +
-> > > >  drivers/net/phy/phy.c                     |   3 +-
-> > > >  drivers/net/phy/phy_device.c              |  35 +-
-> > > >  include/linux/phy.h                       |   1 +
-> > > >  include/net/dsa.h                         |   2 +
-> > > >  include/net/selftests.h                   |  12 +
-> > > >  net/Kconfig                               |   4 +
-> > > >  net/core/Makefile                         |   1 +
-> > > >  net/core/selftests.c                      | 400
-> > > > ++++++++++++++++++++++
-> > > >  net/dsa/Kconfig                           |   1 +
-> > > >  net/dsa/slave.c                           |  21 ++
-> > > >  14 files changed, 500 insertions(+), 9 deletions(-)  create mode
-> > > > 100644 include/net/selftests.h  create mode 100644
-> > > > net/core/selftests.c
-> > > >
-> > > > --
-> > > > 2.29.2
-> > >
-> > > _______________________________________________
-> > > linux-arm-kernel mailing list
-> > > linux-arm-kernel@lists.infradead.org
-> > > https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Flists
-> > > .infradead.org%2Fmailman%2Flistinfo%2Flinux-arm-kernel&amp;data=04%7
-> > C0
-> > >
-> > 1%7Cqiangqing.zhang%40nxp.com%7C8796bf53e46b4b1be92b08d9061186f9
-> > %7C686
-> > >
-> > ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637547494614753358%7CU
-> > nknown%7
-> > >
-> > CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiL
-> > CJXV
-> > >
-> > CI6Mn0%3D%7C1000&amp;sdata=x%2BUFB%2B1Xp0zbR1mG5HDGvqBUvKhX
-> > VJn337T%2BB
-> > > D7cO6g%3D&amp;reserved=0
-> > 
-> > --
-> > Pengutronix e.K.                           |
-> > |
-> > Steuerwalder Str. 21                       |
-> > https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.pe
-> > ngutronix.de%2F&amp;data=04%7C01%7Cqiangqing.zhang%40nxp.com%7C87
-> > 96bf53e46b4b1be92b08d9061186f9%7C686ea1d3bc2b4c6fa92cd99c5c301635
-> > %7C0%7C0%7C637547494614753358%7CUnknown%7CTWFpbGZsb3d8eyJWIj
-> > oiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C10
-> > 00&amp;sdata=K2dsGVxEXv%2FtC7p0l4TFlLlaqzzTa6ktrbSdcCJ10J0%3D&amp;
-> > reserved=0  |
-> > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0
-> > |
-> > Amtsgericht Hildesheim, HRA 2686           | Fax:
-> > +49-5121-206917-5555 |
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
