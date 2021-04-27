@@ -2,56 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E071A36C4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB9E36C4A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 13:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235748AbhD0LI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 07:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235592AbhD0LIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:08:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14609613BF;
-        Tue, 27 Apr 2021 11:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619521642;
-        bh=BRo/eDbvQlGm4UOtynp97IJmtV6Q9jckxoge1aD3P8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jh9JnGp093zCnvaYasdWoryRUgj3/L5MRDmtQuQg+BjWAOQ5OEKlzlzlPzObTz7JH
-         VbDJ1wAQrKlzmrXhiU8SgoM45udYfooPBeyhxbiU1X+pP71xcuOFSxzRHtud+Rj1Yz
-         hgjA3Lg0mDE/PVEvfTG0zXZmwOvFuEt3V2SijFM0=
-Date:   Tue, 27 Apr 2021 13:07:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] fbtft: Replace custom ->reset() with generic one
-Message-ID: <YIfwZ/oPVB9splQq@kroah.com>
-References: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
+        id S235370AbhD0LJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 07:09:53 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17044 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhD0LJu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 07:09:50 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FTzTL22q8zPsMn;
+        Tue, 27 Apr 2021 19:05:58 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 27 Apr 2021 19:09:00 +0800
+Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
+ pfn_valid_within() and simplify pfn_valid())
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Will Deacon" <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210421065108.1987-1-rppt@kernel.org>
+ <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
+ <YIEl8aKr8Ly0Zd3O@kernel.org>
+ <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
+ <2a1592ad-bc9d-4664-fd19-f7448a37edc0@huawei.com>
+ <YIUYG8N9T3/C/tSG@kernel.org>
+ <52f7d03b-7219-46bc-c62d-b976bc31ebd5@huawei.com>
+ <YIZNq5HMfJ1rWytv@kernel.org>
+ <2d879629-3059-fd42-428f-4b7c2a73d698@huawei.com>
+ <YIet5X7lgygD9rpZ@kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
+Date:   Tue, 27 Apr 2021 19:08:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <YIet5X7lgygD9rpZ@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 05:20:41PM +0300, Andy Shevchenko wrote:
-> The custom ->reset() repeats the generic one, replace it.
-> 
-> Note, in newer kernels the context of the function is a sleeping one,
-> it's fine to switch over to the sleeping functions. Keeping the reset
-> line asserted longer than 20 microseconds is also okay, it's an idling
-> state of the hardware.
-> 
-> Fixes: b2ebd4be6fa1 ("staging: fbtft: add fb_agm1264k-fl driver")
 
-What does this "fix"?  A bug or just a "it shouldn't have been done this
-way"?
+On 2021/4/27 14:23, Mike Rapoport wrote:
+> On Mon, Apr 26, 2021 at 11:26:38PM +0800, Kefeng Wang wrote:
+>> On 2021/4/26 13:20, Mike Rapoport wrote:
+>>> On Sun, Apr 25, 2021 at 03:51:56PM +0800, Kefeng Wang wrote:
+>>>> On 2021/4/25 15:19, Mike Rapoport wrote:
+>>>>
+>>>>       On Fri, Apr 23, 2021 at 04:11:16PM +0800, Kefeng Wang wrote:
+>>>>
+>>>>           I tested this patchset(plus arm32 change, like arm64 does)
+>>>>           based on lts 5.10，add some debug log, the useful info shows
+>>>>           below, if we enable HOLES_IN_ZONE, no panic, any idea,
+>>>>           thanks.
+>>>>
+>>>>       Are there any changes on top of 5.10 except for pfn_valid() patch?
+>>>>       Do you see this panic on 5.10 without the changes?
+>>>>
+>>>> Yes, there are some BSP support for arm board based on 5.10,
+> Is it possible to test 5.12?
+>
+>>>> with or without your patch will get same panic, the panic pfn=de600
+>>>> in the range of [dcc00,de00] which is freed by free_memmap, start_pfn
+>>>> = dcc00,  dcc00000 end_pfn = de700, de700000
+>>>>
+>>>> we see the PC is at PageLRU, same reason like arm64 panic log,
+>>>>
+>>>>      "PageBuddy in move_freepages returns false
+>>>>       Then we call PageLRU, the macro calls PF_HEAD which is compound_page()
+>>>>       compound_page reads page->compound_head, it is 0xffffffffffffffff, so it
+>>>>       resturns 0xfffffffffffffffe - and accessing this address causes crash"
+>>>>
+>>>>       Can you see stack backtrace beyond move_freepages_block?
+>>>>
+>>>> I do some oom test, so the log is about memory allocate,
+>>>>
+>>>> [<c02383c8>] (move_freepages_block) from [<c0238668>]
+>>>> (steal_suitable_fallback+0x174/0x1f4)
+>>>>
+>>>> [<c0238668>] (steal_suitable_fallback) from [<c023999c>] (get_page_from_freelist+0x490/0x9a4)
+>>> Hmm, this is called with a page from free list, having a page from a freed
+>>> part of the memory map passed to steal_suitable_fallback() means that there
+>>> is an issue with creation of the free list.
+>>>
+>>> Can you please add "memblock=debug" to the kernel command line and post the
+>>> log?
+>> Here is the log,
+>>
+>> CPU: ARMv7 Processor [413fc090] revision 0 (ARMv7), cr=1ac5387d
+>>
+>> CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+>> OF: fdt: Machine model: HISI-CA9
+>> memblock_add: [0x80a00000-0x855fffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0x86a00000-0x87dfffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0x8bd00000-0x8c4fffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0x8e300000-0x8ecfffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0x90d00000-0xbfffffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xcc000000-0xdc9fffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xe0800000-0xe0bfffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xf5300000-0xf5bfffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xf5c00000-0xf6ffffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xfe100000-0xfebfffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xfec00000-0xffffffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xde700000-0xde9fffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xf4b00000-0xf52fffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_add: [0xfda00000-0xfe0fffff] early_init_dt_scan_memory+0x11c/0x188
+>> memblock_reserve: [0x80a01000-0x80a02d2e] setup_arch+0x68/0x5c4
+>> Malformed early option 'vecpage_wrprotect'
+>> Memory policy: Data cache writealloc
+>> memblock_reserve: [0x80b00000-0x812e8057] arm_memblock_init+0x34/0x14c
+>> memblock_reserve: [0x83000000-0x84ffffff] arm_memblock_init+0x100/0x14c
+>> memblock_reserve: [0x80a04000-0x80a07fff] arm_memblock_init+0xa0/0x14c
+>> memblock_reserve: [0x80a00000-0x80a02fff] hisi_mem_reserve+0x14/0x30
+>> MEMBLOCK configuration:
+>>   memory size = 0x4c0fffff reserved size = 0x027ef058
+>>   memory.cnt  = 0xa
+>>   memory[0x0]    [0x80a00000-0x855fffff], 0x04c00000 bytes flags: 0x0
+>>   memory[0x1]    [0x86a00000-0x87dfffff], 0x01400000 bytes flags: 0x0
+>>   memory[0x2]    [0x8bd00000-0x8c4fffff], 0x00800000 bytes flags: 0x0
+>>   memory[0x3]    [0x8e300000-0x8ecfffff], 0x00a00000 bytes flags: 0x0
+>>   memory[0x4]    [0x90d00000-0xbfffffff], 0x2f300000 bytes flags: 0x0
+>>   memory[0x5]    [0xcc000000-0xdc9fffff], 0x10a00000 bytes flags: 0x0
+>>   memory[0x6]    [0xde700000-0xde9fffff], 0x00300000 bytes flags: 0x0
+>>   memory[0x7]    [0xe0800000-0xe0bfffff], 0x00400000 bytes flags: 0x0
+>>   memory[0x8]    [0xf4b00000-0xf6ffffff], 0x02500000 bytes flags: 0x0
+>>   memory[0x9]    [0xfda00000-0xfffffffe], 0x025fffff bytes flags: 0x0
+>>   reserved.cnt  = 0x4
+>>   reserved[0x0]    [0x80a00000-0x80a02fff], 0x00003000 bytes flags: 0x0
+>>   reserved[0x1]    [0x80a04000-0x80a07fff], 0x00004000 bytes flags: 0x0
+>>   reserved[0x2]    [0x80b00000-0x812e8057], 0x007e8058 bytes flags: 0x0
+>>   reserved[0x3]    [0x83000000-0x84ffffff], 0x02000000 bytes flags: 0x0
+> ...
+>> Zone ranges:
+>>    Normal   [mem 0x0000000080a00000-0x00000000b01fffff]
+>>    HighMem  [mem 0x00000000b0200000-0x00000000ffffefff]
+>> Movable zone start for each node
+>> Early memory node ranges
+>>    node   0: [mem 0x0000000080a00000-0x00000000855fffff]
+>>    node   0: [mem 0x0000000086a00000-0x0000000087dfffff]
+>>    node   0: [mem 0x000000008bd00000-0x000000008c4fffff]
+>>    node   0: [mem 0x000000008e300000-0x000000008ecfffff]
+>>    node   0: [mem 0x0000000090d00000-0x00000000bfffffff]
+>>    node   0: [mem 0x00000000cc000000-0x00000000dc9fffff]
+>>    node   0: [mem 0x00000000de700000-0x00000000de9fffff]
+>>    node   0: [mem 0x00000000e0800000-0x00000000e0bfffff]
+>>    node   0: [mem 0x00000000f4b00000-0x00000000f6ffffff]
+>>    node   0: [mem 0x00000000fda00000-0x00000000ffffefff]
+>> Zeroed struct page in unavailable ranges: 513 pages
+>> Initmem setup node 0 [mem 0x0000000080a00000-0x00000000ffffefff]
+>> On node 0 totalpages: 311551
+>>    Normal zone: 1230 pages used for memmap
+>>    Normal zone: 0 pages reserved
+>>    Normal zone: 157440 pages, LIFO batch:31
+>>    HighMem zone: 154111 pages, LIFO batch:31
+> AFAICT the range [de600000, de7ff000] should not be added to the free
+> lists.
+>
+> Can you try with the below patch:
+>
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index afaefa8fc6ab..7f3c33d53f87 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -1994,6 +1994,8 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
+>   	unsigned long end_pfn = min_t(unsigned long,
+>   				      PFN_DOWN(end), max_low_pfn);
+>   
+> +	pr_info("%s: range: %pa - %pa, pfn: %lx - %lx\n", __func__, &start, &end, start_pfn, end_pfn);
+> +
+>   	if (start_pfn >= end_pfn)
+>   		return 0;
+>   
+__free_memory_core, range: 0x80a03000 - 0x80a04000, pfn: 80a03 - 80a04
+__free_memory_core, range: 0x80a08000 - 0x80b00000, pfn: 80a08 - 80b00
+__free_memory_core, range: 0x812e8058 - 0x83000000, pfn: 812e9 - 83000
+__free_memory_core, range: 0x85000000 - 0x85600000, pfn: 85000 - 85600
+__free_memory_core, range: 0x86a00000 - 0x87e00000, pfn: 86a00 - 87e00
+__free_memory_core, range: 0x8bd00000 - 0x8c500000, pfn: 8bd00 - 8c500
+__free_memory_core, range: 0x8e300000 - 0x8ed00000, pfn: 8e300 - 8ed00
+__free_memory_core, range: 0x90d00000 - 0xaf2c0000, pfn: 90d00 - af2c0
+__free_memory_core, range: 0xaf430000 - 0xaf454000, pfn: af430 - af454
+__free_memory_core, range: 0xaf510000 - 0xaf546000, pfn: af510 - af546
+__free_memory_core, range: 0xaf560000 - 0xaf580000, pfn: af560 - af580
+__free_memory_core, range: 0xafd98000 - 0xafdce000, pfn: afd98 - afdce
+__free_memory_core, range: 0xafdd8000 - 0xafe00000, pfn: afdd8 - afe00
+__free_memory_core, range: 0xafe18000 - 0xafe80000, pfn: afe18 - afe80
+__free_memory_core, range: 0xafee0000 - 0xaff00000, pfn: afee0 - aff00
+__free_memory_core, range: 0xaff80000 - 0xaff8d000, pfn: aff80 - aff8d
+__free_memory_core, range: 0xafff2000 - 0xafff4580, pfn: afff2 - afff4
+__free_memory_core, range: 0xafffe000 - 0xafffe0e0, pfn: afffe - afffe
+__free_memory_core, range: 0xafffe4fc - 0xafffe500, pfn: affff - afffe
+__free_memory_core, range: 0xafffe6e4 - 0xafffe700, pfn: affff - afffe
+__free_memory_core, range: 0xafffe8dc - 0xafffe8e0, pfn: affff - afffe
+__free_memory_core, range: 0xafffe970 - 0xafffe980, pfn: affff - afffe
+__free_memory_core, range: 0xafffe990 - 0xafffe9a0, pfn: affff - afffe
+__free_memory_core, range: 0xafffe9a4 - 0xafffe9c0, pfn: affff - afffe
+__free_memory_core, range: 0xafffeb54 - 0xafffeb60, pfn: affff - afffe
+__free_memory_core, range: 0xafffecf4 - 0xafffed00, pfn: affff - afffe
+__free_memory_core, range: 0xafffefc4 - 0xafffefd8, pfn: affff - afffe
+__free_memory_core, range: 0xb0200000 - 0xc0000000, pfn: b0200 - b0200
+__free_memory_core, range: 0xcc000000 - 0xdca00000, pfn: cc000 - b0200
+__free_memory_core, range: 0xde700000 - 0xdea00000, pfn: de700 - b0200
+__free_memory_core, range: 0xe0800000 - 0xe0c00000, pfn: e0800 - b0200
+__free_memory_core, range: 0xf4b00000 - 0xf7000000, pfn: f4b00 - b0200
+__free_memory_core, range: 0xfda00000 - 0xffffffff, pfn: fda00 - b0200
 
-And as others pointed out, if you could put "staging: fbtft:" as a
-prefix here, that would be much better.
-
-thanks,
-
-greg k-h
+>   
+>>>> [<c023999c>] (get_page_from_freelist) from [<c023a4dc>] (__alloc_pages_nodemask+0x188/0xc08)
+>>>> [<c023a4dc>] (__alloc_pages_nodemask) from [<c0223078>] (alloc_zeroed_user_highpage_movable+0x14/0x3c)
+>>>> [<c0223078>] (alloc_zeroed_user_highpage_movable) from [<c0226768>] (handle_mm_fault+0x254/0xac8)
+>>>> [<c0226768>] (handle_mm_fault) from [<c04ba09c>] (do_page_fault+0x228/0x2f4)
+>>>> [<c04ba09c>] (do_page_fault) from [<c0111d80>] (do_DataAbort+0x48/0xd0)
+>>>> [<c0111d80>] (do_DataAbort) from [<c0100e00>] (__dabt_usr+0x40/0x60)
+>>>>
+>>>>           Zone ranges:
+>>>>             Normal   [mem 0x0000000080a00000-0x00000000b01fffff]
+>>>>             HighMem  [mem 0x00000000b0200000-0x00000000ffffefff]
+>>>>           Movable zone start for each node
+>>>>           Early memory node ranges
+>>>>             node   0: [mem 0x0000000080a00000-0x00000000855fffff]
+>>>>             node   0: [mem 0x0000000086a00000-0x0000000087dfffff]
+>>>>             node   0: [mem 0x000000008bd00000-0x000000008c4fffff]
+>>>>             node   0: [mem 0x000000008e300000-0x000000008ecfffff]
+>>>>             node   0: [mem 0x0000000090d00000-0x00000000bfffffff]
+>>>>             node   0: [mem 0x00000000cc000000-0x00000000dc9fffff]
+>>>>             node   0: [mem 0x00000000de700000-0x00000000de9fffff]
+>>>>             node   0: [mem 0x00000000e0800000-0x00000000e0bfffff]
+>>>>             node   0: [mem 0x00000000f4b00000-0x00000000f6ffffff]
+>>>>             node   0: [mem 0x00000000fda00000-0x00000000ffffefff]
+>>>>
+>>>>           ----> free_memmap, start_pfn = 85800,  85800000 end_pfn = 86a00, 86a00000
+>>>>           ----> free_memmap, start_pfn = 8c800,  8c800000 end_pfn = 8e300, 8e300000
+>>>>           ----> free_memmap, start_pfn = 8f000,  8f000000 end_pfn = 90000, 90000000
+>>>>           ----> free_memmap, start_pfn = dcc00,  dcc00000 end_pfn = de700, de700000
+>>>>           ----> free_memmap, start_pfn = dec00,  dec00000 end_pfn = e0000, e0000000
+>>>>           ----> free_memmap, start_pfn = e0c00,  e0c00000 end_pfn = e4000, e4000000
+>>>>           ----> free_memmap, start_pfn = f7000,  f7000000 end_pfn = f8000, f8000000
+>>>>           === >move_freepages: start_pfn/end_pfn [de601, de7ff], [de600000, de7ff000]
+>>>>           :  pfn =de600 pfn2phy = de600000 , page = ef3cc000, page-flags = ffffffff
+>>>>           8<--- cut here ---
+>>>>           Unable to handle kernel paging request at virtual address fffffffe
+>>>>           pgd = 5dd50df5
+>>>>           [fffffffe] *pgd=affff861, *pte=00000000, *ppte=00000000
+>>>>           Internal error: Oops: 37 [#1] SMP ARM
+>>>>           Modules linked in: gmac(O)
+>>>>           CPU: 2 PID: 635 Comm: test-oom Tainted: G           O      5.10.0+ #31
+>>>>           Hardware name: Hisilicon A9
+>>>>           PC is at move_freepages_block+0x150/0x278
+>>>>           LR is at move_freepages_block+0x150/0x278
+>>>>           pc : [<c02383a4>]    lr : [<c02383a4>]    psr: 200e0393
+>>>>           sp : c4179cf8  ip : 00000000  fp : 00000001
+>>>>           r10: c4179d58  r9 : 000de7ff  r8 : 00000000
+>>>>           r7 : c0863280  r6 : 000de600  r5 : 000de600  r4 : ef3cc000
+>>>>           r3 : ffffffff  r2 : 00000000  r1 : ef5d069c  r0 : fffffffe
+>>>>           Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+>>>>           Control: 1ac5387d  Table: 83b0c04a  DAC: 55555555
+>>>>           Process test-oom (pid: 635, stack limit = 0x25d667df)
+>>>>
+>>>>
