@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6A936BD38
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763B336BD3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 04:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhD0CVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Apr 2021 22:21:13 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:58485 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbhD0CVJ (ORCPT
+        id S233982AbhD0CXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Apr 2021 22:23:52 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43599 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232680AbhD0CXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:21:09 -0400
-X-Originating-IP: 68.203.5.165
-Received: from tacos.lan (cpe-68-203-5-165.austin.res.rr.com [68.203.5.165])
-        (Authenticated sender: frank@zago.net)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id C751B1C0005;
-        Tue, 27 Apr 2021 02:20:24 +0000 (UTC)
-From:   Frank Zago <frank@zago.net>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        frank zago <frank@zago.net>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] iio: light: tcs3472: do not free unallocated IRQ
-Date:   Mon, 26 Apr 2021 21:20:17 -0500
-Message-Id: <20210427022017.19314-2-frank@zago.net>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210427022017.19314-1-frank@zago.net>
-References: <20210427022017.19314-1-frank@zago.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 26 Apr 2021 22:23:48 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 39081580493;
+        Mon, 26 Apr 2021 22:23:05 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 26 Apr 2021 22:23:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=wrMlmdamjsm6ICSrAXC+epu0/cW9QhG
+        KJrdRhGJ+ItA=; b=urK9NpgqzzUKvit8H8SNBKWG5tIlGLCM67BMahNNhErXZOR
+        5P06UHKMU+fbwfzowrghd5D0K6bF5pwzNYPWf7LFCcDDZpLA5uLJAcWULIIb1xoG
+        +JzM0JnGMG08vOvPAwvHEifMYMIu+OpwfdcAyEegPphRwc921SUbTyL1efOhur++
+        vinJNFJF2AjRk6A2e/QxgyVc3KDRrZjiYM6jcvj3WkO+hGCo7U9k268wI5wj0+Ge
+        DAoI2RN4FDjTssSp2uAb3GBBQhJ0ORY1yZWsByvs947L1+PD1sIKL+2Sa9zn47PY
+        J/ohd+ylsDVdWNBZqTdOZWpcWZyF8ivuvfmlnvA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wrMlmd
+        amjsm6ICSrAXC+epu0/cW9QhGKJrdRhGJ+ItA=; b=FCQvKHNuLK7uxaOV1ITjLI
+        bahAtvx+rK/IORmdZRjfRpChnu1ysmixmtU0sAwIVx2gpkf9Vzd1qztA+MN6PJtX
+        ha9hSOSTG16Z+TSUlX03D62AItNswSpZgbzLfHZzOWWdXiO8WU6XqjacQfJV2bbB
+        GguGJHIrZWpNQa7a/24W4IOBSIjl+m6Z0gE5nOEiVN3caIMw642OQmpOnuoJ8ebb
+        SSClrdxfjgTbAdkCJIz1+/UaC4r0IrjW7nC1TU/KyDGGSAuxOs3Vh9gs+TaN9txy
+        uVsXqEML/ZPG/3x6PqmReK9edOUTx9Ir+yjePphInAJH3leLR7JlU5PimO2dyHfQ
+        ==
+X-ME-Sender: <xms:hnWHYBBB9WYlIQ61BEFE3GcRafvZj-JRiMZ9PSBOJTvv3pSuzDjUpg>
+    <xme:hnWHYPgvl1Faql7KMbS3MayWRoikNE1aQtFJdcAximt6owpAjdKQbWpV392z-CHoE
+    S_GiAy6-pVA0hShhQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduledgkeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:hnWHYMmUeNKeh56DmE7DUuK3G9BJ00YGxHLuq4lEpIpn4XrEf4NQBg>
+    <xmx:hnWHYLxbM68hFL9O2TZplGIQc0t5vCF1uua5RNSiez-y-_2XJnTvmw>
+    <xmx:hnWHYGS73JJdFEChCFIYj069L9ZZZEiWH-rRQmMI0zhfcIz8JjkJpQ>
+    <xmx:iXWHYADyirFufMoXNX0TYqWYKNW_rCHOY0UctE8GtBn19aDpixm3EQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8ACE6A00079; Mon, 26 Apr 2021 22:23:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
+Mime-Version: 1.0
+Message-Id: <dd4286c6-c856-40c4-b1f8-060f76258d57@www.fastmail.com>
+In-Reply-To: <20210421135500.3518661-1-arnd@kernel.org>
+References: <20210421135500.3518661-1-arnd@kernel.org>
+Date:   Tue, 27 Apr 2021 11:52:41 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Arnd Bergmann" <arnd@kernel.org>,
+        "Stefan M Schaeckeler" <sschaeck@cisco.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Tony Luck" <tony.luck@intel.com>, "Joel Stanley" <joel@jms.id.au>,
+        "Troy Lee" <troy_lee@aspeedtech.com>
+Cc:     "Arnd Bergmann" <arnd@arndb.de>,
+        "James Morse" <james.morse@arm.com>,
+        "Robert Richter" <rric@kernel.org>,
+        "Krzysztof Kozlowski" <krzk@kernel.org>,
+        "Liu Shixin" <liushixin2@huawei.com>, linux-edac@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH]_EDAC/aspeed:_use_proper_format_string_for_printing?=
+ =?UTF-8?Q?_resource?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: frank zago <frank@zago.net>
 
-Allocating an IRQ is conditional to the IRQ existence, but freeing it
-was not. If no IRQ was allocate, the driver would still try to free
-IRQ 0. Add the missing checks.
 
-This fixes the following trace when the driver is removed:
+On Wed, 21 Apr 2021, at 23:24, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> On ARMv7, resource_size_t can be 64-bit, which breaks printing
+> it as %x:
+> 
+> drivers/edac/aspeed_edac.c: In function 'init_csrows':
+> drivers/edac/aspeed_edac.c:257:28: error: format '%x' expects argument 
+> of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 
+> 'long long unsigned int'} [-Werror=format=]
+>   257 |         dev_dbg(mci->pdev, "dt: /memory node resources: first 
+> page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> 
+> Use the special %pR format string to pretty-print the entire
+> resource instead.
+> 
+> Fixes: edfc2d73ca45 ("EDAC/aspeed: Add support for AST2400 and AST2600")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/edac/aspeed_edac.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
+> index a46da56d6d54..6bd5f8815919 100644
+> --- a/drivers/edac/aspeed_edac.c
+> +++ b/drivers/edac/aspeed_edac.c
+> @@ -254,8 +254,8 @@ static int init_csrows(struct mem_ctl_info *mci)
+>  		return rc;
+>  	}
+>  
+> -	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> -		r.start, resource_size(&r), PAGE_SHIFT);
+> +	dev_dbg(mci->pdev, "dt: /memory node resources: first page %pR, PAGE_SHIFT macro=0x%x\n",
 
-[  100.667788] Trying to free already-free IRQ 0
-[  100.667793] WARNING: CPU: 0 PID: 2315 at kernel/irq/manage.c:1826 free_irq+0x1fd/0x370
-[  100.667804] Modules linked in: tcs3472(-) industrialio_triggered_buffer kfifo_buf industrialio ch341_buses binfmt_misc snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core wmi_bmof snd_pcm snd_seq rapl input_leds snd_timer snd_seq_device snd k10temp ccp soundcore wmi mac_hid sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 dm_crypt hid_generic usbhid hid radeon i2c_algo_bit drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core drm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel crypto_simd r8169 cryptd ahci i2c_piix4 xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic
-[  100.667874] CPU: 0 PID: 2315 Comm: rmmod Not tainted 5.12.0+ #29
-[  100.667878] ...
-[  100.667881] RIP: 0010:free_irq+0x1fd/0x370
-[  100.667887] Code: e8 c8 d8 1b 00 48 83 c4 10 4c 89 f8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 8b 75 d0 48 c7 c7 40 8b 36 93 4c 89 4d c8 e8 d1 2c a2 00 <0f> 0b 4c 8b 4d c8 4c 89 f7 4c 89 ce e8 72 c7 a8 00 49 8b 47 40 48
-[  100.667891] RSP: 0018:ffff9f44813b7d88 EFLAGS: 00010082
-[  100.667895] RAX: 0000000000000000 RBX: ffff8e50caf47800 RCX: ffff8e53cea185c8
-[  100.667897] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff8e53cea185c0
-[  100.667900] RBP: ffff9f44813b7dc0 R08: 0000000000000000 R09: ffff9f44813b7b50
-[  100.667902] R10: ffff9f44813b7b48 R11: ffffffff93b53848 R12: ffff8e50c0125080
-[  100.667903] R13: ffff8e50c0136f60 R14: ffff8e50c0136ea4 R15: ffff8e50c0136e00
-[  100.667906] FS:  00007fa28b899540(0000) GS:ffff8e53cea00000(0000) knlGS:0000000000000000
-[  100.667909] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  100.667911] CR2: 0000561851777818 CR3: 000000010633a000 CR4: 00000000003506f0
-[  100.667914] Call Trace:
-[  100.667920]  tcs3472_remove+0x3a/0x90 [tcs3472]
-[  100.667927]  i2c_device_remove+0x2b/0xa0
-[  100.667934]  __device_release_driver+0x181/0x240
-[  100.667940]  driver_detach+0xd5/0x120
-[  100.667944]  bus_remove_driver+0x5c/0xe0
-[  100.667947]  driver_unregister+0x31/0x50
-[  100.667951]  i2c_del_driver+0x46/0x70
-[  100.667955]  tcs3472_driver_exit+0x10/0x5dd [tcs3472]
-[  100.667960]  __do_sys_delete_module.constprop.0+0x183/0x290
-[  100.667965]  ? exit_to_user_mode_prepare+0x37/0x1c0
-[  100.667971]  __x64_sys_delete_module+0x12/0x20
-[  100.667974]  do_syscall_64+0x40/0xb0
-[  100.667981]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  100.667985] RIP: 0033:0x7fa28b9dbceb
-[  100.667989] Code: 73 01 c3 48 8b 0d 7d 91 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4d 91 0c 00 f7 d8 64 89 01 48
-[  100.667992] RSP: 002b:00007ffe02ea7068 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-[  100.667995] RAX: ffffffffffffffda RBX: 000056185176d750 RCX: 00007fa28b9dbceb
-[  100.667997] RDX: 000000000000000a RSI: 0000000000000800 RDI: 000056185176d7b8
-[  100.667999] RBP: 00007ffe02ea70c8 R08: 0000000000000000 R09: 0000000000000000
-[  100.668001] R10: 00007fa28ba56ac0 R11: 0000000000000206 R12: 00007ffe02ea72a0
-[  100.668003] R13: 00007ffe02ea8807 R14: 000056185176d2a0 R15: 000056185176d750
-[  100.668007] ---[ end trace b21b0811931d933c ]---
+Could probably drop the "first page " as well, but it's a dev_dbg() and not a big deal.
 
-Signed-off-by: frank zago <frank@zago.net>
----
- drivers/iio/light/tcs3472.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iio/light/tcs3472.c b/drivers/iio/light/tcs3472.c
-index a0dc447aeb68..b41068492338 100644
---- a/drivers/iio/light/tcs3472.c
-+++ b/drivers/iio/light/tcs3472.c
-@@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_client *client,
- 	return 0;
- 
- free_irq:
--	free_irq(client->irq, indio_dev);
-+	if (client->irq)
-+		free_irq(client->irq, indio_dev);
- buffer_cleanup:
- 	iio_triggered_buffer_cleanup(indio_dev);
- 	return ret;
-@@ -559,7 +560,8 @@ static int tcs3472_remove(struct i2c_client *client)
- 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
- 
- 	iio_device_unregister(indio_dev);
--	free_irq(client->irq, indio_dev);
-+	if (client->irq)
-+		free_irq(client->irq, indio_dev);
- 	iio_triggered_buffer_cleanup(indio_dev);
- 	tcs3472_powerdown(iio_priv(indio_dev));
- 
--- 
-2.27.0
-
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
