@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5200E36CB93
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A2436CB95
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238116AbhD0TVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:21:07 -0400
-Received: from mga06.intel.com ([134.134.136.31]:21388 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235563AbhD0TVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:21:02 -0400
-IronPort-SDR: T7eNHeGzOk34aySvSE5sm9AylAdbkKs0vFLcNd0CBosNYN8M58AkcB7OIh3IxxTg1RGNnm4+9a
- sFZl9sMya7Zw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="257879553"
-X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="257879553"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:20:16 -0700
-IronPort-SDR: bqoTuU7mCW7j0HQquS41AWdTDBgHrP+j1Kfddj99AbSghVK/T8CsBuUstpKc5TlkwdDqr4PJI8
- W8KSZN93Yw4Q==
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="526207138"
-Received: from westbren-mobl2.amr.corp.intel.com (HELO [10.254.36.49]) ([10.254.36.49])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 12:20:14 -0700
-Subject: Re: [RFC v2 05/32] x86/tdx: Add __tdcall() and __tdvmcall() helper
- functions
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <2f81f67efdf8c68838cdfbb2314e98747cf70120.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <c2edea0c-8de7-3bd3-1dbe-66b585d78e03@intel.com>
- <f310c626-5fd9-7fd3-23fa-e319c0f2aa98@linux.intel.com>
- <33af5bd4-7ada-8450-5a86-90023145d481@intel.com>
- <849d8039-b43c-0790-be1c-aaac8c06608a@linux.intel.com>
- <2f26e352-99e4-8531-221a-eb9641c67ec0@intel.com>
- <95444e56-a674-1152-3039-4e425e5f5a72@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3a7c0bba-cc43-e4ba-f7fe-43c8627c2fc2@intel.com>
-Date:   Tue, 27 Apr 2021 12:20:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S238239AbhD0TXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235563AbhD0TXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 15:23:01 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB86C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:17 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id b17so6038928pgh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LY3gFeU1q8iFKq/jC5H7kixgFmtS9nXWZUQKza2+nQs=;
+        b=ejLPFi54AqigD8xCtEcI/bn70WATJRYG2As1qBC+YuXQm1SWv9m/hdgTmS4XanEjDa
+         HETTiVSvoPYLGmWkamYz8vD2hCsgq6UA08Quwf3V4hfiqAAFKfczCF5Q4cLDB7I0uJok
+         4QZgWpSJFOMS3zB+nE7AkDBWoirqoJka4Zhg7FYqrkU+Xp/ymomR10ZcbzEsdbdxkqwH
+         RQPJUPC63PiEOAeeh+Du2ean63zb8FaKjsHoE2hfuZothOtvyZMOIMa+Ofi17rq8Nraf
+         PdgSyfF5M6Xu4E2ZXQDga2ZCjH8TmPzoAnQ/aQWJ9OtfZTR6+GLV0dt45U8SgGzn6Rl2
+         GYuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LY3gFeU1q8iFKq/jC5H7kixgFmtS9nXWZUQKza2+nQs=;
+        b=TOilWPBQUe4sYFp25ZLIsfdnlWSpWf/q/K8yDFEVAbu9CvxscgnjD2gbGj+vYmtrr2
+         ZtVa0q2KX4TafBw4Emyl9+4pykMCxwfIVYYqqgqRZ8D2bkR7y3fdG8aCHRi0aiSBsskD
+         FCju/rLe9usZzhk3OQSR/QKaHtIEEZW8OjnwomCJ9UvJ1gKs+aUDS42G43lM4512c3ZC
+         zNlz9Nz4kVdmoBGlpn9jND3iMFfrtgZAwOYtHrub3+kttRY1jugCmklBEZ25zBCrrfsg
+         vs9dLFzdVXAZnyA+p3cuTcK/4+NrRLknOgHPCNHR52l57PoQgXCLx4K/BU7jKmXMxCoi
+         AEkw==
+X-Gm-Message-State: AOAM5317/wYmGOt5eHFGRGzhUtKtuR4kM46ZfJhYfgYDK9MoRROKTNl8
+        r9RafQXS6x+pFgEAU9KzbU4=
+X-Google-Smtp-Source: ABdhPJwaL7+AZ4DCM1AlZRGBZKnB963269r6QYz20bya8l+XEOVQPhiKTwF8Nzzoxn6QFE093IBHbw==
+X-Received: by 2002:a63:e509:: with SMTP id r9mr23769212pgh.384.1619551336543;
+        Tue, 27 Apr 2021 12:22:16 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:c54e:55f9:7bf8:7932])
+        by smtp.gmail.com with ESMTPSA id f15sm461778pgv.5.2021.04.27.12.22.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 12:22:14 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 12:22:12 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH 157/190] Revert "Input: ad7879 - add check for read
+ errors in interrupt"
+Message-ID: <YIhkZOWJiOlDJCYS@google.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-158-gregkh@linuxfoundation.org>
+ <YIBa5X+5g/qNL+N8@google.com>
+ <YIhB7rvHlFDew00z@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <95444e56-a674-1152-3039-4e425e5f5a72@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIhB7rvHlFDew00z@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/21 12:18 PM, Kuppuswamy, Sathyanarayanan wrote:
-> Following is the rename diff. Please let me know if you agree with the
-> names used.
+On Tue, Apr 27, 2021 at 06:55:10PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 21, 2021 at 10:03:33AM -0700, Dmitry Torokhov wrote:
+> > Hi Greg,
+> > 
+> > On Wed, Apr 21, 2021 at 03:00:32PM +0200, Greg Kroah-Hartman wrote:
+> > > This reverts commit e85bb0beb6498c0dffe18a2f1f16d575bc175c32.
+> > > 
+> > > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > > faith" to try to test the kernel community's ability to review "known
+> > > malicious" changes.  The result of these submissions can be found in a
+> > > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > > entitled, "Open Source Insecurity: Stealthily Introducing
+> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > > 
+> > > Because of this, all submissions from this group must be reverted from
+> > > the kernel tree and will need to be re-reviewed again to determine if
+> > > they actually are a valid fix.  Until that work is complete, remove this
+> > > change to ensure that no problems are being introduced into the
+> > > codebase.
+> > 
+> > This one looks really OK to me and does not have to be reverted (unless
+> > Aditya will come clean and show the error introduced?).
+> 
+> I'll drop this revert, but it isn't usually good to be calling printk()
+> from an irq.
 
-Look fine at a glance, but the real key is how they look when they get used.
+How else do you suggest we tell that something is wrong when
+communicating with the device? For these types of devices the
+communication is essentially unsolicited so we can't pass failure to a
+caller to deal with it (i.e. unlike USB there is no URB posted that we
+could fail and use as a mechanism to signal error to some other layer)
+and while we could invent "something went wrong" input event so far
+there was no interest in having anything like that.
+
+I'd suggest sending KOBJ_ERROR uevent when a device driver detects
+anomaly in the device it controls, but I wonder how systemd would react
+given past experiences with KOBJ_BIND/KOBJ_UNBIND.
+
+The message is ratelimited so it will not overfill the logs...
+
+Thanks.
+
+-- 
+Dmitry
