@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC4D36BFAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB8136BFA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 09:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237036AbhD0HEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 03:04:49 -0400
+        id S234941AbhD0HEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 03:04:14 -0400
 Received: from mga12.intel.com ([192.55.52.136]:3195 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234856AbhD0HEG (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 03:04:06 -0400
-IronPort-SDR: K332+4QnUYfNFJUQVxeH0QeabWRFzYkS+vohU5o3+hEnpJASnHeyosYxb01UVl0DqM04ysZzLb
- Hzqxeixt/kFg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175944178"
+        id S234898AbhD0HEL (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 03:04:11 -0400
+IronPort-SDR: VRuIkhUpZKUN3DN1AxYsapYgdcJ2d49haioAnEAFAhv4iMPQHQNxvIPak4QTXheCsg7kj0azI0
+ knkdBUOY1dgQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="175944191"
 X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="175944178"
+   d="scan'208";a="175944191"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 00:03:24 -0700
-IronPort-SDR: LSrvPHjpYn1lPy0NdGixTQXZ1d6e9IDRx/xPb+qLPMzRL7IxKTDwKyaVJ/JthnbT87+x+DHu2E
- qnmofxblKyMg==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 00:03:28 -0700
+IronPort-SDR: IsFeZPUrtCqepgQRLIlBUa7+PaUYT/yKKZIx4VMIFG9rjiWTkwZ4BqCnE0zjzScXG5al3qQg4M
+ t0wId+wZEsQQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
-   d="scan'208";a="447506635"
+   d="scan'208";a="447506656"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2021 00:03:21 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2021 00:03:24 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v6 06/26] perf pmu: Add hybrid helper functions
-Date:   Tue, 27 Apr 2021 15:01:19 +0800
-Message-Id: <20210427070139.25256-7-yao.jin@linux.intel.com>
+Subject: [PATCH v6 07/26] perf stat: Uniquify hybrid event name
+Date:   Tue, 27 Apr 2021 15:01:20 +0800
+Message-Id: <20210427070139.25256-8-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210427070139.25256-1-yao.jin@linux.intel.com>
 References: <20210427070139.25256-1-yao.jin@linux.intel.com>
@@ -41,135 +41,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The functions perf_pmu__is_hybrid and perf_pmu__find_hybrid_pmu
-can be used to identify the hybrid platform and return the found
-hybrid cpu pmu. All the detected hybrid pmus have been saved in
-'perf_pmu__hybrid_pmus' list. So we just need to search this list.
+It would be useful to let user know the pmu which the event belongs to.
+perf-stat has supported '--no-merge' option and it can print the pmu
+name after the event name, such as:
 
-perf_pmu__hybrid_type_to_pmu converts the user specified string
-to hybrid pmu name. This is used to support the '--cputype' option
-in next patches.
+"cycles [cpu_core]"
 
-perf_pmu__has_hybrid checks the existing of hybrid pmu. Note that,
-we have to define it in pmu.c (make pmu-hybrid.c no more symbol
-dependency), otherwise perf test python would be failed.
+Now this option is enabled by default for hybrid platform but change
+the format to:
+
+"cpu_core/cycles/"
+
+If user configs the name, we still use the user specified name.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
-v4 - v6:
- - No change.
+v6:
+ - Rebase to tmp.perf/core branch.
+
+v5:
+ - Move 'evsel->use_config_name = true;' from
+   '[PATCH v5 12/26] perf parse-events: Support event inside hybrid pmu'
+   to the patch.
+
+v4:
+ - If user configs the name, we still use the user specified name.
 
 v3:
- - Move perf_pmu__has_hybrid from pmu-hybrid.c to pmu.c. We have to
-   add pmu-hybrid.c to python-ext-sources to solve symbol dependency
-   issue found in perf test python. For perf_pmu__has_hybrid, it calls
-   perf_pmu__scan, which is defined in pmu.c. It's very hard to add
-   pmu.c to python-ext-sources, too much symbol dependency here.
+ - No change.
 
- tools/perf/util/pmu-hybrid.c | 40 ++++++++++++++++++++++++++++++++++++
- tools/perf/util/pmu-hybrid.h |  4 ++++
- tools/perf/util/pmu.c        | 11 ++++++++++
- tools/perf/util/pmu.h        |  2 ++
- 4 files changed, 57 insertions(+)
+ tools/perf/builtin-stat.c      |  4 ++++
+ tools/perf/util/evsel.h        |  1 +
+ tools/perf/util/parse-events.c |  3 +++
+ tools/perf/util/stat-display.c | 15 +++++++++++++--
+ 4 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/pmu-hybrid.c b/tools/perf/util/pmu-hybrid.c
-index 8ed0e6e1776d..f51ccaac60ee 100644
---- a/tools/perf/util/pmu-hybrid.c
-+++ b/tools/perf/util/pmu-hybrid.c
-@@ -47,3 +47,43 @@ bool perf_pmu__hybrid_mounted(const char *name)
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 5ec2190e45cd..835e3696b9ce 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -69,6 +69,7 @@
+ #include "util/pfm.h"
+ #include "util/bpf_counter.h"
+ #include "util/iostat.h"
++#include "util/pmu-hybrid.h"
+ #include "asm/bug.h"
  
- 	return true;
- }
-+
-+struct perf_pmu *perf_pmu__find_hybrid_pmu(const char *name)
-+{
-+	struct perf_pmu *pmu;
-+
-+	if (!name)
-+		return NULL;
-+
-+	perf_pmu__for_each_hybrid_pmu(pmu) {
-+		if (!strcmp(name, pmu->name))
-+			return pmu;
-+	}
-+
-+	return NULL;
-+}
-+
-+bool perf_pmu__is_hybrid(const char *name)
-+{
-+	return perf_pmu__find_hybrid_pmu(name) != NULL;
-+}
-+
-+char *perf_pmu__hybrid_type_to_pmu(const char *type)
-+{
-+	char *pmu_name = NULL;
-+
-+	if (asprintf(&pmu_name, "cpu_%s", type) < 0)
-+		return NULL;
-+
-+	if (perf_pmu__is_hybrid(pmu_name))
-+		return pmu_name;
-+
-+	/*
-+	 * pmu may be not scanned, check the sysfs.
-+	 */
-+	if (perf_pmu__hybrid_mounted(pmu_name))
-+		return pmu_name;
-+
-+	free(pmu_name);
-+	return NULL;
-+}
-diff --git a/tools/perf/util/pmu-hybrid.h b/tools/perf/util/pmu-hybrid.h
-index 35bed3714438..d0fa7bc50a76 100644
---- a/tools/perf/util/pmu-hybrid.h
-+++ b/tools/perf/util/pmu-hybrid.h
-@@ -15,4 +15,8 @@ extern struct list_head perf_pmu__hybrid_pmus;
+ #include <linux/time64.h>
+@@ -2402,6 +2403,9 @@ int cmd_stat(int argc, const char **argv)
  
- bool perf_pmu__hybrid_mounted(const char *name);
+ 	evlist__check_cpu_maps(evsel_list);
  
-+struct perf_pmu *perf_pmu__find_hybrid_pmu(const char *name);
-+bool perf_pmu__is_hybrid(const char *name);
-+char *perf_pmu__hybrid_type_to_pmu(const char *type);
++	if (perf_pmu__has_hybrid())
++		stat_config.no_merge = true;
 +
- #endif /* __PMU_HYBRID_H */
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 6e49c7b8ad71..88c8ecdc60b0 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -40,6 +40,7 @@ int perf_pmu_parse(struct list_head *list, char *name);
- extern FILE *perf_pmu_in;
+ 	/*
+ 	 * Initialize thread_map with comm names,
+ 	 * so we could print it out on output.
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 8f66cdcb338d..ad74c83bd35b 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -116,6 +116,7 @@ struct evsel {
+ 	bool			merged_stat;
+ 	bool			reset_group;
+ 	bool			errored;
++	bool			use_config_name;
+ 	struct hashmap		*per_pkg_mask;
+ 	struct evsel		*leader;
+ 	struct list_head	config_terms;
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 46ebd269a98d..f4628c886e30 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1567,6 +1567,9 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+ 	if (!evsel)
+ 		return -ENOMEM;
  
- static LIST_HEAD(pmus);
-+static bool hybrid_scanned;
++	if (evsel->name)
++		evsel->use_config_name = true;
++
+ 	evsel->pmu_name = name ? strdup(name) : NULL;
+ 	evsel->use_uncore_alias = use_uncore_alias;
+ 	evsel->percore = config_term_percore(&evsel->config_terms);
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index 98664caef6af..0679129ad05e 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -18,6 +18,7 @@
+ #include <api/fs/fs.h>
+ #include "util.h"
+ #include "iostat.h"
++#include "pmu-hybrid.h"
  
- /*
-  * Parse & process all the sysfs attributes located under
-@@ -1861,3 +1862,13 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
- 		   "'%llx' not supported by kernel)!\n",
- 		   name ?: "N/A", buf, config);
- }
-+
-+bool perf_pmu__has_hybrid(void)
-+{
-+	if (!hybrid_scanned) {
-+		hybrid_scanned = true;
-+		perf_pmu__scan(NULL);
-+	}
-+
-+	return !list_empty(&perf_pmu__hybrid_pmus);
-+}
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 9a2f89eeab6f..a790ef758171 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -132,4 +132,6 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu);
- void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
- 				   char *name);
+ #define CNTR_NOT_SUPPORTED	"<not supported>"
+ #define CNTR_NOT_COUNTED	"<not counted>"
+@@ -538,6 +539,7 @@ static void uniquify_event_name(struct evsel *counter)
+ {
+ 	char *new_name;
+ 	char *config;
++	int ret = 0;
  
-+bool perf_pmu__has_hybrid(void);
+ 	if (counter->uniquified_name ||
+ 	    !counter->pmu_name || !strncmp(counter->name, counter->pmu_name,
+@@ -552,8 +554,17 @@ static void uniquify_event_name(struct evsel *counter)
+ 			counter->name = new_name;
+ 		}
+ 	} else {
+-		if (asprintf(&new_name,
+-			     "%s [%s]", counter->name, counter->pmu_name) > 0) {
++		if (perf_pmu__has_hybrid()) {
++			if (!counter->use_config_name) {
++				ret = asprintf(&new_name, "%s/%s/",
++					       counter->pmu_name, counter->name);
++			}
++		} else {
++			ret = asprintf(&new_name, "%s [%s]",
++				       counter->name, counter->pmu_name);
++		}
 +
- #endif /* __PMU_H */
++		if (ret) {
+ 			free(counter->name);
+ 			counter->name = new_name;
+ 		}
 -- 
 2.17.1
 
