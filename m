@@ -2,153 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD49136C606
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D7236C609
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 14:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236165AbhD0MY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 08:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        id S235639AbhD0M1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 08:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbhD0MYW (ORCPT
+        with ESMTP id S235410AbhD0M1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 08:24:22 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13018C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:23:39 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id w6so611242pfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:23:39 -0700 (PDT)
+        Tue, 27 Apr 2021 08:27:38 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AB8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:26:54 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id k127so4076427qkc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 05:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oIH8WYIkB/ztyv6SBr4INOuz26sOP+Zv7q5JUrWt5S8=;
-        b=vh8IqGRq8Sq5pPjUyHXRnecANmNmrskCeP5WRIHL8932dVb8+07Vfg+D8d6+gS9Br5
-         WSuLY6wi16zCyeba0dAwEnQzEO4Vexq4RFxiq6lELPEmfHHC3yooTUFzG3tCjn0kvVry
-         PcWuG7OyqHnSWAn8X3iHnuyLc4tcEI2Riz7+kkaFUFz5DnqqCJKkGO1mZHWpgTxfaxYe
-         1ke+gztJKXZKnjzmAOor/Nob/X8j2t9D2zDVRMVEf5zXukVH+WF9N//8A7+uvXNWgcKu
-         8YI6xb2CaMZ6rqA8cRGIW549UzkP3FfKFKg2Ad4NgRBRlqi7GOcUwh+VXroFbLHh/Nqn
-         vYuQ==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PYcA31V7XskJPAxgNF4CCjQEn63i1T7UnsYeovcLOww=;
+        b=wE8L40gRP2X+ZjTns24WQMUjmZfSeQjLlkB1/7IpD++TK6FqvLS74oOV3Tp9xYGLof
+         703xKXkcNEgVGBvQ7rq+yk2kbrCBR/X1zzQnRMfia8LmvT4bGO9a9pt5akosYClAep/1
+         AQnR/fLUYER9dUM3g+RnLSOlDyI4EltIPfn9s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oIH8WYIkB/ztyv6SBr4INOuz26sOP+Zv7q5JUrWt5S8=;
-        b=HPAZdOEVeLgAt9rn6AUTvnGkyfUAItxvNq5pKb1d48ow32CHSysdH12Lqjoupo7y+x
-         42xWCnNK2Cbr9B7PZ7+JETtEWyugUUnNewmZ1k5ZMuuZyw3Kaz9LjqFmMrbvYxq2rNbH
-         yDrzn9NppZqFszNF1wxytm98R08SQvDEfL6srNrW+S5/lAXQyfl4aMCT0c/CVxiUZo/g
-         VH3i8DwGdDQnTO4RyPq7XvoUx9rGr0vcKCN0ocKCQbs1X0qX2ihPBRoX8DksVX3aX2Gm
-         GkzsLGjzInp1LM5oB589dowUwglwabY/UmQw5WQHS8LG+28BNdTQxityrx/9F3lqRSW9
-         OrFg==
-X-Gm-Message-State: AOAM533TpAEa/fqS71XDy/wN+o/sLqxWqD8rBYXNhvZhiwiJCKLeMhJ1
-        ESNktKbGLBgStgcg/CClZaI=
-X-Google-Smtp-Source: ABdhPJx20lR4SNDF+cm5Avx5zJyQMAHpmnv+dL6KMGctS63n9+BFqdat8Zmwu3RXnlq4jMvuMrvHfA==
-X-Received: by 2002:a63:540b:: with SMTP id i11mr4719813pgb.44.1619526218307;
-        Tue, 27 Apr 2021 05:23:38 -0700 (PDT)
-Received: from ashish-NUC8i5BEH ([182.77.14.23])
-        by smtp.gmail.com with ESMTPSA id b21sm2576751pji.39.2021.04.27.05.23.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PYcA31V7XskJPAxgNF4CCjQEn63i1T7UnsYeovcLOww=;
+        b=lbTfwB9PqO+3fO/d2ga+1AeDvk9YvZdHc95fkbrDIYZ1YbZlpDgcvw23Urcede75QM
+         ORlJP8SMgrYf40YFFugKz7JOIWVunKJlVlkt0V8CPuXzcKicZ2/3W/OmK7KTW7Fh24z9
+         RwGfLR5RWrwA0peMLiMUVNXGd3B+1RTdbzdj9XQZnn6INdax73qMhkAK9hITiQj+yKYH
+         COYam1Fq6gHC5Eh+Lu+/s7yv2iejtog0nwCxwsjkxqtMNa3jN1zyP8lGffDwkvplDXBE
+         rVEihvN9WECT+iasgk8poHxJc3Q1Tgo6Tv+8eNhFX7RE9FBUW81LehUC57sB6eaft96p
+         CG1w==
+X-Gm-Message-State: AOAM533yXyHZ77kWTGmkZLrrHlDngFJ/rEN2hUIgEFYHWHy40Dps84PO
+        ofSXiOmhvEeFvjcWKAt1oBgDdVFFMMY/hHCxha0=
+X-Google-Smtp-Source: ABdhPJzuY7SH7RUTnunb+VrRU2bwW0MMi9/TNKXd6WqhnTFo2DNjf6p1o04C9UJ17f0ObbNY0lXhVQ==
+X-Received: by 2002:a37:9d0b:: with SMTP id g11mr7695158qke.355.1619526413441;
+        Tue, 27 Apr 2021 05:26:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:5d5f])
+        by smtp.gmail.com with ESMTPSA id b17sm13394562qto.88.2021.04.27.05.26.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 05:23:37 -0700 (PDT)
-From:   ashish <eashishkalra@gmail.com>
-X-Google-Original-From: ashish <ashish@ashish-nuc8i5beh>
-Date:   Tue, 27 Apr 2021 17:53:30 +0530
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ashish Kalra <eashishkalra@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Abheek Dhawan <adawesomeguy222@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Waiman Long <longman@redhat.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wlan-ng: silence incorrect type in argument 1
- (different address spaces) warning
-Message-ID: <YIgCQtwK8tpGSOQ5@ashish-NUC8i5BEH>
-References: <20210420090142.GA4086@ashish-NUC8i5BEH>
- <YIE3IffGcjrkz4ZE@kroah.com>
- <20210423152619.GA2469@ashish-NUC8i5BEH>
- <YIOz6o8gwHv+cAN7@kroah.com>
- <bc8873a274bf489ad856386a9d9ee1110de4c4d3.camel@perches.com>
- <20210424081529.GA1731@ubuntu>
- <YIPWq6rp246rg9D0@kroah.com>
+        Tue, 27 Apr 2021 05:26:53 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 13:26:51 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Alexander Sosna <alexander@sosna.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Prevent OOM casualties by enforcing memcg limits
+Message-ID: <YIgDCzmKaesjl8aU@chrisdown.name>
+References: <ea6db5cc-f862-7c4b-d872-acb29c2d8193@sosna.de>
+ <YIdWMC/iAdanDjLh@chrisdown.name>
+ <410a58ba-d746-4ed6-a660-98b5f99258c3@sosna.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIPWq6rp246rg9D0@kroah.com>
+In-Reply-To: <410a58ba-d746-4ed6-a660-98b5f99258c3@sosna.de>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 10:28:27AM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Apr 24, 2021 at 01:45:29PM +0530, Ashish Kalra wrote:
-> > On Fri, Apr 23, 2021 at 11:11:05PM -0700, Joe Perches wrote:
-> > > On Sat, 2021-04-24 at 08:00 +0200, Greg Kroah-Hartman wrote:
-> > > > On Fri, Apr 23, 2021 at 08:56:19PM +0530, Ashish Kalra wrote:
-> > > > > On Thu, Apr 22, 2021 at 10:43:13AM +0200, Greg Kroah-Hartman wrote:
-> > > > > > On Tue, Apr 20, 2021 at 02:31:42PM +0530, Ashish Kalra wrote:
-> > > > > > > Upon running sparse, "warning: incorrect type in argument 1 (different address spaces)
-> > > > > > > is brought to notice for this file.let's add correct typecast to make it cleaner and
-> > > > > > > silence the Sparse warning.
-> > > []
-> > > > >  struct p80211ioctl_req {
-> > > > >         char name[WLAN_DEVNAMELEN_MAX];
-> > > > > -       caddr_t data;
-> > > > > +       void __user *data;
-> > > > > 
-> > > > > Does this looks ok to you and is there any other check possible if this is ok?
-> > > > 
-> > > > Wait, what is "caddr_t"?  Try unwinding that mess first...
-> > > 
-> > > Might not be that simple.
-> > > 
-> > > include/linux/types.h:typedef __kernel_caddr_t  caddr_t;
-> > > include/uapi/linux/coda.h:typedef void * caddr_t;
-> > > include/uapi/asm-generic/posix_types.h:typedef char *           __kernel_caddr_t;
-> > > 
-> > > 
-> > data is part of p80211ioctl_req and is used at two places only inside p80211knetdev_do_ioctl
-> > it seems both places it will be used as void __user* only
-> > 
-> > 	msgbuf = memdup_user(req->data, req->len);
-> >         
-> > 	if (result == 0) {
-> >                 if (copy_to_user
-> >                     ((void __user *)req->data, msgbuf, req->len)) {
-> >                         result = -EFAULT;
-> >                 }
-> >         }
-> > 
-> > Will it still be problem if we change it from char * to void *.?
-> 
-> Why do you want to change it to void *?  Never use a void * unless it
-> has to point to unknown data.  That does not seem the case here.
-> 
-> > is there any way to check how caller of this function will be using it?
-> 
-> Look at the code to determine this...
-> 
-> thanks,
-> 
-> greg k-h
-Thanks Greg and Joe
-I have found that adding __user to data is also fixing this warning, 
-It should be fine logically to make this change
-Please share your opinion and will post v2 for this patch
+Alexander Sosna writes:
+>> We don't guarantee that vm.overcommit_memory 2 means "no OOM killer". It
+>> can still happen for a bunch of reasons, so I really hope PostgreSQL
+>> isn't relying on that.
+>>
+>> Could you please be more clear about the "huge problem" being solved
+>> here? I'm not seeing it.
+>
+>let me explain the problem I encounter and why I fell down the mm rabbit
+>hole.  It is not a PostgreSQL specific problem but that's where I run
+>into it.  PostgreSQL forks a backend for each client connection.  All
+>backends have shared memory as well as local work memory.  When a
+>backend needs more dynamic work_mem to execute a query, new memory
+>is allocated.  It is normal that such an allocation can fail.  If the
+>backend gets an ENOMEM the current query is rolled back an all dynamic
+>work_mem is freed. The RDBMS stays operational an no other query is
+>disturbed.
+>
+>When running in a memory cgroup - for example via systemd or on k8s -
+>the kernel will not return ENOMEM even if the cgroup's memory limit is
+>exceeded.  Instead the OOM killer is awakened and kills processes in the
+>violating cgroup.  If any backend is killed with SIGKILL the shared
+>memory of the whole cluster is deemed potentially corrupted and
+>PostgreSQL needs to do an emergency restart.  This cancels all operation
+>on all backends and it entails a potentially lengthy recovery process.
+>Therefore the behavior is quite "costly".
 
---- a/drivers/staging/wlan-ng/p80211ioctl.h
-+++ b/drivers/staging/wlan-ng/p80211ioctl.h
-@@ -81,7 +81,7 @@
+My point that memory cgroups are completely overcommit agnostic isn't just a 
+question of abstract semantics, but a practical one. Exceeding memory.max is 
+not overcommitment, because overages are physical, not virtual, and that has 
+vastly different ramifications in terms of what managing that overage means.
 
- struct p80211ioctl_req {
-        char name[WLAN_DEVNAMELEN_MAX];
--       caddr_t data;
-+       char __user *data;
-        u32 magic;
-        u16 len;
-        u32 result;
--- 
-2.30.2
+For example, if we aggressively ENOMEM at the memory.max bounds, there's no 
+provision provided for the natural bounds of memory reclaim to occur. Now maybe 
+your application likes that (which I find highly dubious), but from a memory 
+balancing perspective it's just nonsensical: we need to ensure that we're 
+assisting forward progress of the system at the cgroup level, especially with 
+the huge amounts of slack generated.
 
+>I totally understand that vm.overcommit_memory 2 does not mean "no OOM
+>killer". IMHO it should mean "no OOM killer if we can avoid it" and I
+>would highly appreciate if the kernel would use a less invasive means
+>whenever possible.  I guess this might also be the expectation by many
+>other users.  In my described case - which is a real pain for me - it is
+>quite easy to tweak the kernel behavior in order to handle this and
+>other similar situations with less casualties.  This is why I send a
+>patch instead of starting a theoretical discussion.
 
+vm.overcommit_memory=2 means "don't overcommit", nothing less, nothing more. 
+Adding more semantics is a very good way to make an extremely confusing and 
+overloaded API.
+
+This commit reminds me of the comments on cosmetic products that say "no 
+parabens". Ok, so there's no parabens -- great, parabens are terrible -- but 
+are you now using a much more dangerous preservative instead?
+
+Likewise, this commit claims that it reduces the likelihood of invoking the OOM 
+killer -- great, nobody wants their processes to be OOM killed. What do we have 
+instead? Code that calls off memory allocations way, way before it's needed to 
+do so, and prevents the system from even getting into a state where it can 
+efficiently evaluate how it should rebalance memory. That's really not a good 
+tradeoff.
+
+>What do you think is necessary to get this to an approvable quality?
+
+The problem is not the code, it's the concept and the way it interacts with the 
+rest of the mm subsystem. It asks the mm subsystem to deny memory allocations 
+long before it has even had a chance to reliably rebalance (just as one 
+example, to punt anon pages to swap) based on the new allocations, which 
+doesn't make very much sense. It may not break in some highly trivial setups, 
+but it certainly will not work well with stacking or machines with high 
+volatility of the anon/file LRUs. You're also likely to see random ENOMEM 
+failures from kernelspace when operating under this memcg context long before 
+such a response was necessary, which doesn't make much sense.
+
+If you want to know when to back off allocations, use memory.high with PSI 
+pressure metrics.
+
+I also would strongly suggest that vm.overcommit_memory=2 is the equivalent of 
+using a bucket of ignited thermite to warm one's house.
