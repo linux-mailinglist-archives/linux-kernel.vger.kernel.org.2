@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5C136CDA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 23:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DB136CDA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 23:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239021AbhD0VEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 17:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238960AbhD0VED (ORCPT
+        id S239044AbhD0VE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 17:04:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43686 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239245AbhD0VEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 17:04:03 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D487C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:03:18 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id r12so91433114ejr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 14:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IVCjFm7QV+VqFMh+TVJiLEQ0dbasaVs/3/fcUDprAlc=;
-        b=Wggutq2xOVkODR7nsL4N1fYAFB5PApJOT8TpfgWcuPoYVGAp/LREhg+ynfMGRcz7id
-         tSIlWmNaxBhuLorY6ZRJz+qrRbY5mCWnrUmk3dmn79YolSfHOZ7hyzqU1Dg9r1JVr9zu
-         yNrw5eZ54MCLPoPtMxIZgHbefwNvfxqyTaECD/rqBCUm/Roeg7AmzviKns10Ey5xt32P
-         sxYRT6GkVC/qiEn1ZSHGgTL2XGvYGK+l+nvIi6rdmroPlHGzO8AeLF2Myik2dICBGab2
-         OxOSzPx1JGsf38bOUki0yDv/hMMDNpV30+QkaR5/6AVX4spO+xpXH6ETL2OtnuLtGkH3
-         gx/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IVCjFm7QV+VqFMh+TVJiLEQ0dbasaVs/3/fcUDprAlc=;
-        b=nndXeSYGaNuZl09tANMyDfvGXqlklSE6FdAUF6cXbvKN6YJNUzCR1Kz+xErsuopx/I
-         NqwaKt7I5hciaarscTZMKhP1CUJxNQLgXUm5PikKix7hrDJgalRc/e9kaNvtILwsAxy9
-         IYCETwsoa3K6NF14s5QKQvUeCXiiBVEj/6Fm0pSCtgFK9jiE7byrUxVoMiPBssFog320
-         SCmbG6d+BIe4DlatuqLz/vHwFrwrgKJO9VJqflQldaqv/u2wPS2di/mx7N92Nlw7YC2p
-         pxr4Dio/hTdVEdHTV2Q5QUQzcZ45T65wWuHyeGML23mAXXsrlslrejjrjm5E0mxHbScE
-         gIYQ==
-X-Gm-Message-State: AOAM533bLl9xkoW40MmW3LARHPfHyn89ApXZ9grKO1hmVAXBJpEyAuUI
-        alisRC+dmzlkNkv42fzoYDMOzRzMbqVe67+IiFA=
-X-Google-Smtp-Source: ABdhPJx/00l72TILd6o0PsEVlLXRNJLrr6CnjbrSc7BkiSs2DiNtINQRuM84mhfwDOc0OQuy1zfxbp2YRN0+PyIbBRU=
-X-Received: by 2002:a17:906:4881:: with SMTP id v1mr24404083ejq.383.1619557396934;
- Tue, 27 Apr 2021 14:03:16 -0700 (PDT)
+        Tue, 27 Apr 2021 17:04:07 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619557402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SYoy2+HeogbYh4Q+jYD6A2aGrOUVl93Nospt2/SE0Sg=;
+        b=LMrzudB/OdjcTxl99GtPq47WvCdtj9dZg1VAB0qVui6dFfSvFsa4nn3LdtFm5wbpux12Xv
+        PW0QZWRmX2+wAud7QpF9Ug9GW+2Ina0Vx+ajMy40MjGnOGwDKlVzLh3ylzx/DPLD6ZMiAE
+        HHOfSx8BluVRMqiVMXzstqaOO1hafjyx6gkX0EQgl5j7Tx5SqDtssaQjruF1Db2ugsE0gK
+        eAt4TyngqXFHnqQapvTfCww4VIhPxHIKp6neaRR+O6qQjhZaaITG3cHBMr8QQW3kkmt8tJ
+        5v7Sq56nTMl0wGy34h5kaoUKVeWV2oUr7WSuOri6qvs0rZ+PSdvZGjeGHO+27g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619557402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SYoy2+HeogbYh4Q+jYD6A2aGrOUVl93Nospt2/SE0Sg=;
+        b=gFAUhPGt+liELWXY/YZe3hfTIwuHKGbih7Gnu7I792OPeM1/9kURApO05adg45M7dvmWdV
+        Ydwnv8ebn2NNnwDQ==
+To:     Feng Tang <feng.tang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v10 clocksource 6/7] clocksource: Forgive tsc_early pre-calibration drift
+In-Reply-To: <20210426150127.GB23119@shbuild999.sh.intel.com>
+References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1> <20210425224709.1312655-6-paulmck@kernel.org> <20210426150127.GB23119@shbuild999.sh.intel.com>
+Date:   Tue, 27 Apr 2021 23:03:22 +0200
+Message-ID: <871ravo2xx.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210427133214.2270207-1-linmiaohe@huawei.com> <20210427133214.2270207-4-linmiaohe@huawei.com>
-In-Reply-To: <20210427133214.2270207-4-linmiaohe@huawei.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 27 Apr 2021 14:03:05 -0700
-Message-ID: <CAHbLzkrBAtTM8aE_pM4ASQ6cGyfPcs7_7HPJLCd9T24VyqU5wQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mm/huge_memory.c: add missing read-only THP checking
- in transparent_hugepage_enabled()
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        william.kucharski@oracle.com, Matthew Wilcox <willy@infradead.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        aneesh.kumar@linux.ibm.com, Ralph Campbell <rcampbell@nvidia.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 6:32 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Mon, Apr 26 2021 at 23:01, Feng Tang wrote:
+> On Sun, Apr 25, 2021 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> We've reported one case that tsc can be wrongly judged as 'unstable'
+> by 'refined-jiffies' watchdog [1], while reducing the threshold could
+> make it easier to be triggered.
 >
-> Since commit 99cb0dbd47a1 ("mm,thp: add read-only THP support for
-> (non-shmem) FS"), read-only THP file mapping is supported. But it
-> forgot to add checking for it in transparent_hugepage_enabled().
+> It could be reproduced on the a plaform with a 115200 serial console,
+> and hpet been disabled (several x86 platforms has this), add 
+> 'initcall_debug' cmdline parameter to get more debug message, we can
+> see:
 >
-> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/huge_memory.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 76ca1eb2a223..aa22a0ae9894 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -74,6 +74,9 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
->                 return __transparent_hugepage_enabled(vma);
->         if (vma_is_shmem(vma))
->                 return shmem_huge_enabled(vma);
-> +       if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
-> +           (vma->vm_flags & VM_DENYWRITE))
-> +               return true;
+> [    1.134197] clocksource: timekeeping watchdog on CPU1: Marking clocksource 'tsc-early' as unstable because the skew is too large:
+> [    1.134214] clocksource:                       'refined-jiffies' wd_nesc: 500000000 wd_now: ffff8b35 wd_last: ffff8b03 mask: ffffffff
 
-I don't think this change is correct. This function is used to
-indicate if allocating THP is eligible for the VMAs or not showed by
-smap. And currently readonly FS THP is collapsed by khugepaged only.
+refined-jiffies is the worst of all watchdogs and this obviously cannot
+be fixed at all simply because we can lose ticks in that mode. And no,
+we cannot compensate for lost ticks via TSC which we in turn "monitor"
+via ticks.
 
-So, you need check if the vma is suitable for khugepaged. Take a look
-at what hugepage_vma_check() does.
+Even if we hack around it and make it "work" then the TSC will never
+become fully trusted because refined-jiffies cannot support NOHZ/HIGHRES
+mode for obvious reasons either. So the system stays in periodic mode
+forever.
 
-And, the new patch
-(https://lore.kernel.org/linux-mm/20210406000930.3455850-1-cfijalkovich@google.com/)
-relax the constraints for readonly FS THP, it might be already in -mm
-tree, so you need adopt the new condition as well.
+If there is no independent timer to validate against then the TSC is
+better stable and the BIOS/SMM code has to be trusted not to wreckage
+TSC. There are no other options.
 
->
->         return false;
->  }
+So TBH, I do not care about this case at all. It's pointless to even
+think about it. Either the TSC works on these systems or it doesn't. If
+it doesn't, then you have to keep the pieces.
 
-> --
-> 2.23.0
->
->
+I'm so dead tired of this especially since this is known forever. But
+it's obviously better to waste our time than to fix the damned hardware.
+
+Thanks,
+
+        tglx
