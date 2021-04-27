@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E39036C8AC
+	by mail.lfdr.de (Postfix) with ESMTP id 0207236C8AB
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 17:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237925AbhD0Pcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 11:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237668AbhD0Pc2 (ORCPT
+        id S237735AbhD0Pca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 11:32:30 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:48545 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237592AbhD0Pc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:32:28 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2A3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:31:42 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id h36so40184616lfv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wRPmVW+l8hNmuKSneUNYdhg6EPkPkT9qOMTPIVf8vaQ=;
-        b=WvECQx1Lb6QUA9eLy2mj3gWKTvRi2qlDxWJvxkBthHBDfZ1k6fJ+CL1hGO00/dVrWw
-         wPIWvoBw+wlYADN0Me7iKLqFSjyRkWlX93t/vKXur51a404hExsx0Fi9/arh1Zx8jWgw
-         RyXZ+PeJ9wrOnOw1TFy8SXg+p4uruoka+RSxg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wRPmVW+l8hNmuKSneUNYdhg6EPkPkT9qOMTPIVf8vaQ=;
-        b=I6eZBEcMPFEACc9TmAtcwUYloVlfR/Z0dRbdyg6vpOQW41CVziFnkxC0HjQZAzZVLq
-         LA0x+vDojCitobYJMbKmV/BthylsndGU7VS2+mIvPcnUge3YcB9ebnlWZks0FDlfJn2o
-         T48zPKGrybcAAidjIJzlwdU+1HdkX31V8Rk065p3GcbDFtzyTB0dslpUjAnoBs49QB9b
-         NEIKwD3WWo74ll7YQYL+o7zCgv0cc1u+AvjM0lZcHigB7PiWrpb6w+79HP5C8BmFbsMv
-         5rdJVrcuHqXdBGbF1YKgPlKxYzsKDHgJKKnbF6Fcy/Y0U+HpqXlPXofY6rLEw25dupNQ
-         MH9Q==
-X-Gm-Message-State: AOAM530MV0vJAXnwheOlGyqnCdvIn5eiuPQ0TnpEUDNyjNzk4G0Hh4Ea
-        IszeD73+xRE06wH91e5HaznwwJtEAp8DsHpF
-X-Google-Smtp-Source: ABdhPJwQRYGGT43GxbqJRURU7T5HZCcj0hBA8gfIa2he/LZ2T0rIoCit1wbCqmy3WIwTrjJWwyOsRw==
-X-Received: by 2002:a05:6512:1022:: with SMTP id r2mr17095102lfr.191.1619537501158;
-        Tue, 27 Apr 2021 08:31:41 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id n3sm53383lfe.77.2021.04.27.08.31.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 08:31:40 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id y4so54125554lfl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 08:31:40 -0700 (PDT)
-X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr16619989lfu.201.1619537500295;
- Tue, 27 Apr 2021 08:31:40 -0700 (PDT)
+        Tue, 27 Apr 2021 11:32:27 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9198422258;
+        Tue, 27 Apr 2021 17:31:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619537501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WHwDMyfzVmnvQzR1/tI/7RjBBvNQ6LnB9q7jyFx1J8o=;
+        b=bPMQzAgHV12u+SCs3Mxl8E8oHZI3RoQzl+RRgr2mOo9HKzVavVV4yPN9BYY/eqYSYD4bUD
+        u/RzqvBK7rdh865OI+axJGD6U1Q0iEJXNMO2lPF3ibTLxlIU3LLpr1zweQykHIOFIxzrDn
+        iYpe26l96CrGpZKgZ/VF61Jg2D3AGqw=
 MIME-Version: 1.0
-References: <20210427114946.aa0879857e8f.I846942fa5fc6ec92cda98f663df323240c49893a@changeid>
- <4ae9835c535db4f9c0c78f1615f16d56c7083640.camel@sipsolutions.net>
-In-Reply-To: <4ae9835c535db4f9c0c78f1615f16d56c7083640.camel@sipsolutions.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 27 Apr 2021 08:31:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whsCHfM2XY_0sbXjFKwS5Zzi76w_cErQHg=yAyPKZYuLA@mail.gmail.com>
-Message-ID: <CAHk-=whsCHfM2XY_0sbXjFKwS5Zzi76w_cErQHg=yAyPKZYuLA@mail.gmail.com>
-Subject: Re: [PATCH] cfg80211: fix locking in netlink owner interface destruction
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        Harald Arnesen <harald@skogtun.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Apr 2021 17:31:41 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+In-Reply-To: <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+ <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+ <20210427101926.GA4605@sirena.org.uk>
+ <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
+ <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
+ <20210427135703.GH4605@sirena.org.uk>
+ <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
+ <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <1aa3a8716d2416f0cc127737dcff092a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 2:59 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> Though then again, I'm not sure I have a good pathway into the tree
-> right now (pre rc1), so if you want to throw it in sooner that's fine
-> too.
+Am 2021-04-27 17:29, schrieb Michael Walle:
 
-Ok, applied with Harald's tested-by added.
+> freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts. The codec name is
+This should read "CPU name" of course.
 
-Thanks,
-           Linus
+-michael
