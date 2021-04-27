@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD6436CF7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A51836CF83
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 01:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238219AbhD0XUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 19:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbhD0XUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:20:13 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A908C061574;
-        Tue, 27 Apr 2021 16:19:28 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id p202so27810772ybg.8;
-        Tue, 27 Apr 2021 16:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5FfFOfy+ipYphXgdKrdbLv2yDmO7+UBL+r3kaZKExys=;
-        b=BqunpMpUdebAz3Oqv7/e76j2n6S3wAmHDZAiBOtrNLeZHtlAQM80yoLE3peA1naDp9
-         EKmDMv04qo2kXwSACbacX1tLsqsKigafLGdQX5cGR0WNHIinY92//mAQd740DhKNNy0p
-         CdSLYgVPOm8NJeNH+w6tPmr9j7fV+BfHU+JGPuH0nY5Z/qFIEEXfk/wkmiikMwv9gvd5
-         3/ny/NA5dm6Ah6mGoiyExexBDrbdPUq6SfgpbBLrR3an5W52jIoMkQGxOn6Y+I3I2rH/
-         IwYSzd+EU2CZmTS/MIyfOdiiM7jQrDAl3buakEkIIa2kD2MCSnkHT6UYpPScZLCsi5B4
-         8sNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5FfFOfy+ipYphXgdKrdbLv2yDmO7+UBL+r3kaZKExys=;
-        b=pv5rlq7Ubugyp8/P4bUReFFpYH1c8pffWrQLVqyCLAoyt8Bj0Al/HwFUq+F/NEBw7U
-         Ar6l+GpYKhpSdlb3ZnApKiHf61LesgMn9bxg1tgQtDqil1LNYjIVr81rDQqhmmjEM1su
-         JpZTbOceLc/jsZ1M5yBRBdl+xVcChuPWLr4nnKswafcZdyuj6wc6IaCeFhq6kw6qCg3y
-         +87NARFfAienXh/4TiINFAtET7mtcECjBmYTP5WYtAMbjjcSFaWKXdcEenBh8bgFE4n8
-         pOWh+kFfdSGnk0rfcA8x9L9UC52ZYSwAZaZg3u2gUh9R0uUOiAtZrFXhhviwi7bq8Pt1
-         I/gg==
-X-Gm-Message-State: AOAM530IL692x1xkB1Uxk8/ACjj92Lc6++ouPZJmfBu5QeyJyItdyjcF
-        Q5O+ih1j0KXqLYZ3aSBM6nEtSaF7drI4WdV+dm4=
-X-Google-Smtp-Source: ABdhPJxWaRis+6CDZk0WoubzO6mVsrmCgwWXwf9YZ7QhUng27ECRea07WG0f8A9aSvzBQnc/tpEOkXZeLoW1ltUwDDk=
-X-Received: by 2002:a25:ba06:: with SMTP id t6mr33806610ybg.459.1619565567743;
- Tue, 27 Apr 2021 16:19:27 -0700 (PDT)
+        id S239127AbhD0XUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 19:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235423AbhD0XUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:20:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D59B6101E
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 23:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619565607;
+        bh=b7cCUl+pInAQSCdSLxxEHiqgrpafGjB6QGUrbgdSdW8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gAuNoOnb+TzAJvulRvremrjCXTJbOCGZYpInY2oOOsEIs+tdL4VmZ5jTpik/udDQc
+         F8H7zqvRFv7SzXLaRD6ePgyw1lNn27v6BArxAvWqkOqCMvIwqWl7BlvhCuIMlZo7MG
+         +clPD40WB5yAeAqQIigAvDAWasc8a4xdiUvFNGYaD0SiFadHsK6QFwCvJ3JieIY4hI
+         PdT5m98NgbcJP/jVKGpIZg1T227V5ACxVb57fbkHXLKXtmazjFvoYWW/eXLnsKt2DV
+         d5/xdqZuX9bBC2vAFavPKJ/q+YYa31aHk5dFUAWk/2vA3hXmbXQhhJMymVETpzdk6j
+         nkJ1Nt1aTjERA==
+Received: by mail-ej1-f48.google.com with SMTP id ja3so15931145ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 16:20:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5317du94M+j4Gd+dQSF6rAEgw/skzyN+astcNf/wDK6gXqVUuyqW
+        h5FZ6MoGlcT8scOvkpNkV6dgkYCNsGDFWAsalM4w9A==
+X-Google-Smtp-Source: ABdhPJydjs/9Sc1dOAsRhil4oUfvv7Cs/7PhNOIxi+US/eV1CjEpGrInfcbeag8xKQA0HLeXEuHwxlD6Fl7qa8Th9zE=
+X-Received: by 2002:a17:906:f742:: with SMTP id jp2mr9066184ejb.199.1619565606053;
+ Tue, 27 Apr 2021 16:20:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
- <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
-In-Reply-To: <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Apr 2021 16:19:16 -0700
-Message-ID: <CAEf4Bzb+OGZrvmgLk3C1bGtmyLU9JiJKp2WfgGkWq0nW0Tq32g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210426180610.2363-1-sargun@sargun.me> <20210426180610.2363-3-sargun@sargun.me>
+ <20210426190229.GB1605795@cisco> <20210426221527.GA30835@ircssh-2.c.rugged-nimbus-611.internal>
+ <20210427134853.GA1746081@cisco> <CALCETrVrfBtQPh=YeDEK4P9+QHQvNxHbn8ZT3fdQNznpSeS5oQ@mail.gmail.com>
+ <20210427170753.GA1786245@cisco> <20210427221028.GA16602@ircssh-2.c.rugged-nimbus-611.internal>
+In-Reply-To: <20210427221028.GA16602@ircssh-2.c.rugged-nimbus-611.internal>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 27 Apr 2021 16:19:54 -0700
+X-Gmail-Original-Message-ID: <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
+Message-ID: <CALCETrX9JnHE9BOhRxCc1bCvEBfbOY8bb2rxeKTsDNxfMruntQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND 2/5] seccomp: Add wait_killable semantic to seccomp
+ user notifier
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, Alban Crequy <alban@kinvolk.io>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 4:05 PM KP Singh <kpsingh@kernel.org> wrote:
+On Tue, Apr 27, 2021 at 3:10 PM Sargun Dhillon <sargun@sargun.me> wrote:
 >
-> On Tue, Apr 27, 2021 at 11:34 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Tue, Apr 27, 2021 at 11:07:53AM -0600, Tycho Andersen wrote:
+> > On Tue, Apr 27, 2021 at 09:23:42AM -0700, Andy Lutomirski wrote:
+> > > On Tue, Apr 27, 2021 at 6:48 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> > > >
+> > > > On Mon, Apr 26, 2021 at 10:15:28PM +0000, Sargun Dhillon wrote:
+> > >
+> > > ISTM the current behavior is severely broken, and the new behavior
+> > > isn't *that* much better since it simply ignores signals and can't
+> > > emulate -EINTR (or all the various restart modes, sigh).  Surely the
+> > > right behavior is to have the seccomped process notice that it got a
+> > > signal and inform the monitor of that fact so that the monitor can
+> > > take appropriate action.
 > >
-> > On Tue, Apr 27, 2021 at 10:09 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > >
-> > > One of our benchmarks running in (Google-internal) CI pushes data
-> > > through the ringbuf faster than userspace is able to consume
-> > > it. In this case it seems we're actually able to get >INT_MAX entries
-> > > in a single ringbuf_buffer__consume call. ASAN detected that cnt
-> > > overflows in this case.
-> > >
-> > > Fix by just setting a limit on the number of entries that can be
-> > > consumed.
-> > >
-> > > Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
-> > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > > ---
-> > >  tools/lib/bpf/ringbuf.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> > > index e7a8d847161f..445a21df0934 100644
-> > > --- a/tools/lib/bpf/ringbuf.c
-> > > +++ b/tools/lib/bpf/ringbuf.c
-> > > @@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
-> > >         do {
-> > >                 got_new_data = false;
-> > >                 prod_pos = smp_load_acquire(r->producer_pos);
-> > > -               while (cons_pos < prod_pos) {
-> > > +               /* Don't read more than INT_MAX, or the return vale won't make sense. */
-> > > +               while (cons_pos < prod_pos && cnt < INT_MAX) {
+> > This doesn't help your case (2) though, since the IO could be done
+> > before the supervisor gets the notification.
+
+Tycho, I disagree.  Here's how native syscalls work:
+
+1. Entry work is done and the syscall hander does whatever it does at
+the beginning of the function.  This is entirely non-interruptible.
+
+2. The syscall handler decides it wants to wait, interruptibly,
+killably or otherwise.
+
+3. It gets signaled.  It takes appropriate action.  Appropriate action
+does *not* mean -EINTR.  It means that something that is correct *for
+that syscall* happens.  For nanosleep(), this involves the restart
+block (and I don't think we need to support the restart block).  For
+accept(), it mostly seems to mean that the syscall completes as usual.
+For write(2), it means that, depending on file type and whether any IO
+has occured, either -EINTR is returned and no IO happens, or fewer
+bytes than requested are transferred, or the syscall completes.  (Or,
+if it's a KILL, the process dies early and partial IO is ignored.)
+For some syscalls (some AF_UNIX writes, for example, or ptrace()), the
+syscall indeed gets interrupted, but it uses one of the -ERESTART
+mecahnisms.
+
+User notifiers should allow correct emulation.  Right now, it doesn't,
+but there is no reason it can't.
+
 > >
-> > ring_buffer__pool() is assumed to not return until all the enqueued
-> > messages are consumed. That's the requirement for the "adaptive"
-> > notification scheme to work properly. So this will break that and
-> > cause the next ring_buffer__pool() to never wake up.
-> >
-> > We could use __u64 internally and then cap it to INT_MAX on return
-> > maybe? But honestly, this sounds like an artificial corner case, if
-> > you are producing data faster than you can consume it and it goes
-> > beyond INT_MAX, something is seriously broken in your application and
->
-> Disclaimer: I don't know what Brendan's benchmark is actually doing
->
-> That said, I have seen similar boundaries being reached when
-> doing process monitoring and then a kernel gets compiled (esp. with ccache)
-> and generates a large amount of process events in a very short span of time.
-> Another example is when someone runs a short process in a tight while loop.
->
-> I agree it's a matter of tuning, but since these corner cases can be
-> easily triggered
-> even on real (non CI) systems no matter how much one tunes, I wouldn't
-> really call it artificial :)
+> I think for something like mount, if it fails (gets interrupted) via a
+> fatal signal, that's grounds for terminating the container.
 
-Well of course, given sufficiently active kernel sample producer and
-sufficiently slow consumer you can keep consuming forever.
-
-I think we have two alternatives here:
-1) consume all but cap return to INT_MAX
-2) consume all but return long long as return result
-
-Third alternative is to have another API with maximum number of
-samples to consume. But then user needs to know what they are doing
-(e.g., they do FORCE on BPF side, or they do their own epoll_wait, or
-they do ring_buffer__poll with timeout = 0, etc).
-
-I'm just not sure anyone would want to understand all the
-implications. And it's easy to miss those implications. So maybe let's
-do long long (or __s64) return type instead?
-
+That would be quite obnoxious if it happens after the container
+starts.  Ctrl-C-ing a fusermount call should not be grounds for
+outright destruction.
 >
-> - KP
+> I see a handful of paths forward:
 >
-> > you have more important things to handle :)
-> >
-> > >                         len_ptr = r->data + (cons_pos & r->mask);
-> > >                         len = smp_load_acquire(len_ptr);
-> > >
-> > > --
-> > > 2.31.1.498.g6c1eba8ee3d-goog
-> > >
+> * We add a new action USER_NOTIF_KILLABLE which requires a fatal signal
+>   in order to be interrupted
+> * We add a chunk of data to the USER_NOTIF return code (say, WAIT_KILLABLE)
+>   from the BPF filter that indicates what kind of wait should happen
+> * (what is happening now) An ioctl flag to say pickup the notification
+>   and put it into a wait_killable state
+> * An ioctl "command" that puts an existing notifcation in progress into
+>   the wait killable state.
+
+In the simplest correct API, I think that kills should always kill the
+task.  Non-kill signals should not kill the syscall but the user
+notifier should be informed that a signal happened.  (Whether this
+requires POLLPRI or some other handshaking mechanism is an open
+question.)
+
+The only real downside I see is that genuinely interruptible syscalls
+will end up with higher than necessary signal latency if they occur
+during the interruptible period.  An extended API could allow the
+filter to return an indication that an interrupt should result in a
+specified error code (-EINTR, ERESTARTxyz, etc), and the monitor could
+do a new ioctl() to tell the kernel that the syscall should stop being
+interruptible.  That ioctl() itself would return a status saying
+whether the syscall was already interrupted.  One nice feature of this
+approach is that the existing model is equivalent to the filter saying
+"interruptible with EINTR" and the monitor simply forgetting to do the
+new ioctl.
+
+--Andy
