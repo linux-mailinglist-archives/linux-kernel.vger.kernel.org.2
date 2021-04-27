@@ -2,108 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6191736CBFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBC836CBCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 21:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238962AbhD0Tq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 15:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
+        id S238779AbhD0TlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 15:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235661AbhD0Tqz (ORCPT
+        with ESMTP id S238676AbhD0TlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 15:46:55 -0400
-X-Greylist: delayed 331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 27 Apr 2021 12:46:12 PDT
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D936C061574;
-        Tue, 27 Apr 2021 12:46:12 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 5AD575726; Tue, 27 Apr 2021 21:40:30 +0200 (CEST)
+        Tue, 27 Apr 2021 15:41:00 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A32C061761
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:40:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id q136so40249418qka.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 12:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1619552430;
-        bh=l0jf3je7Taq6bjLlRaBk8R2JjLc/aoQA0pAo1/ZWMFg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JWI/hwNGbVtZ9vXHXZUDL94f3QGd/JcWsUyJxn/0M5uR6KyCiQaToVR9t+NnZxvR8
-         aLcGJleyCchUcdVdMi1JFgseJ9hJMvCFFQZZmZiN+mavJJi2jmVL7XkBbGNPm+xY3a
-         UnFbbAxu3SsDpHgHTUz7Xfqz+YZ339UG4CxDnyzKM21UD6k6+dNzH18l5CaHKhIcIJ
-         nuxyLgTBLXJi2N8gcLHlvjEkTCTLlpl84Ma3xjP16vRvABx4sa17F5zPmG1u94fIYL
-         RsVwZx66sBv8eKAiiHFMTVGDoLb0c8unXyBwCchQYFrVVIIklTM+riJ8fCNCKsc4Hz
-         1PohB0Bp65yHCTnS0bYzmfx9YO0n84ToEiZyzYgzfnpU2s5rUdfypKH5sKn6Otz/mN
-         ZwF4OdJ9nq7WoqlaPid828qgrEK0D7vtLAv2mrNtVtS826zSRop99d5K+koRT2FLWO
-         MCYVMaOhBfHFTeWBTG1KysEwCr9LMrkqVASnwv6FdM7jwhtGtY6/Zod5lT4lHtRntq
-         nFbpvV4XrLMkN7EZTaVMSR5FCJRUpu5P6n1BGgw6wDXEF+Y2rIP4yLigb3pP0LV4tv
-         h4Y2dxaf0Bcc4HajUeTTpZgj5lnuXD21t3KsWtRtX1AnBTHxG/OpA3ZyRvAEtJXKi4
-         DCiJ2eoFZie7cA1IKsaMG254=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
-        Benjamin Zimmermann <dave@oss.volkswagen.com>,
-        debian-s390@lists.debian.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Subject: [PATCH v2] s390/sclp_vt220: Fix console name to match device
-Date:   Tue, 27 Apr 2021 21:40:10 +0200
-Message-Id: <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
-References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qjlzws9tOjfG2kgF5PSaus20BHkak4AbpiykyhDCpWc=;
+        b=FgJgWNr62C5ZYe5v1vnbBayAlBas9KMfjlI+laH23uWCOINrv2HqPW9/a2+lK1+qpn
+         Zdr+bMJ3dVh1M82cRSTI4JbQADrXanZ5JfGjdWIrOPB62lKoHfvu6nr6Gx+k2tmRlxI9
+         VnIPeqy1NjUABHuJSDWeU4As9HayrnVGiZr56daurC5uY37+XvT8TZlGM0+FK9uB/Zvv
+         YTKfdf8OvZo8ENhSomjWbrDXc8AvVOdpQ72iroWjNxj+tV6CHjB8W81hADxRNQW+tUQ7
+         dB77SYRDbWj7e5FkrYJA2fixQk601M0tulsmdtPUJHEnm9ZHX5SNJW5GF5Co+YjnesqM
+         4DUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qjlzws9tOjfG2kgF5PSaus20BHkak4AbpiykyhDCpWc=;
+        b=IbiivVSOyxv3GgW2CA2GuhvWgP/guRIe83N5zsB7xbpV4KA298HbbUZNfgsAOg7P/s
+         eHyckm0YvFIdY1CDcp14eBo2by9JnglJrznDSnKhGivVHhltuIci/CdlXAjJ4dyBZBtZ
+         8kK7E5NjYBev75oKDzF0EbG/I454rgBEA2QD+ZqLu8z4zeTKz2k9/88KEJ+HruLwU/TS
+         wZPVKIGXb+uig58U4GcFEBRZAtHg0LCjzXU/T52dTmI8CR+NowJdrrEkO/9t59mZi2+0
+         FciVsqdtT6ROfzva70sVP9ra6w3P4lpQcBXQVogrNznIiKCLbVHp3LUqCEm3ZWGWktX+
+         KitA==
+X-Gm-Message-State: AOAM5300q+ou8L/DFS4yN3nf5nnCGXc9x28M5ozSLW9AjReppqQCxu+r
+        hOPlCvedpUlfY0Pt8KT4Ep4dMw==
+X-Google-Smtp-Source: ABdhPJzTB/kVzpwj6kXVp9NJ/SmSPf5xftMaBkmkgU98M9PRxB8v4F4XSKjG3yTN0WaJic3//dLNPQ==
+X-Received: by 2002:a37:ccb:: with SMTP id 194mr7861132qkm.45.1619552415304;
+        Tue, 27 Apr 2021 12:40:15 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d3sm605486qtm.56.2021.04.27.12.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 12:40:14 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lbTZ7-00Dh3g-Sk; Tue, 27 Apr 2021 16:40:13 -0300
+Date:   Tue, 27 Apr 2021 16:40:13 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 09/16] dma-direct: Support PCI P2PDMA pages in dma-direct
+ map_sg
+Message-ID: <20210427194013.GS2047089@ziepe.ca>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-10-logang@deltatee.com>
+ <20210427193351.GR2047089@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427193351.GR2047089@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Console name reported in /proc/consoles:
+On Tue, Apr 27, 2021 at 04:33:51PM -0300, Jason Gunthorpe wrote:
+> On Thu, Apr 08, 2021 at 11:01:16AM -0600, Logan Gunthorpe wrote:
+> > Add PCI P2PDMA support for dma_direct_map_sg() so that it can map
+> > PCI P2PDMA pages directly without a hack in the callers. This allows
+> > for heterogeneous SGLs that contain both P2PDMA and regular pages.
+> > 
+> > SGL segments that contain PCI bus addresses are marked with
+> > sg_mark_pci_p2pdma() and are ignored when unmapped.
+> > 
+> > Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> >  kernel/dma/direct.c | 25 ++++++++++++++++++++++---
+> >  1 file changed, 22 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> > index 002268262c9a..108dfb4ecbd5 100644
+> > +++ b/kernel/dma/direct.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/set_memory.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/pci-p2pdma.h>
+> >  #include "direct.h"
+> >  
+> >  /*
+> > @@ -387,19 +388,37 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+> >  	struct scatterlist *sg;
+> >  	int i;
+> >  
+> > -	for_each_sg(sgl, sg, nents, i)
+> > +	for_each_sg(sgl, sg, nents, i) {
+> > +		if (sg_is_pci_p2pdma(sg)) {
+> > +			sg_unmark_pci_p2pdma(sg);
+> 
+> This doesn't seem nice, the DMA layer should only alter the DMA
+> portion of the SG, not the other portions. Is it necessary?
 
-  ttyS1                -W- (EC p  )    4:65
+Oh, I got it completely wrong what this is for.
 
-does not match the char device name:
+This should be named sg_dma_mark_pci_p2p() and similar for other
+functions to make it clear it is part of the DMA side of the SG
+interface (eg it is like sg_dma_address, sg_dma_len, etc)
 
-  crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
-
-so debian-installer inside a QEMU s390x instance gets confused and fails
-to start with the following error:
-
-  steal-ctty: No such file or directory
-
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
----
- v2: also update preferred console for VT220 case
-
- arch/s390/kernel/setup.c       | 2 +-
- drivers/s390/char/sclp_vt220.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 72134f9f6ff5..3ec6ca9c26c0 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -165,7 +165,7 @@ static void __init set_preferred_console(void)
- 	else if (CONSOLE_IS_3270)
- 		add_preferred_console("tty3270", 0, NULL);
- 	else if (CONSOLE_IS_VT220)
--		add_preferred_console("ttyS", 1, NULL);
-+		add_preferred_console("ttysclp", 0, NULL);
- 	else if (CONSOLE_IS_HVC)
- 		add_preferred_console("hvc", 0, NULL);
- }
-diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
-index 047f812d1a1c..71ed1bf15598 100644
---- a/drivers/s390/char/sclp_vt220.c
-+++ b/drivers/s390/char/sclp_vt220.c
-@@ -35,8 +35,8 @@
- #define SCLP_VT220_MINOR		65
- #define SCLP_VT220_DRIVER_NAME		"sclp_vt220"
- #define SCLP_VT220_DEVICE_NAME		"ttysclp"
--#define SCLP_VT220_CONSOLE_NAME		"ttyS"
--#define SCLP_VT220_CONSOLE_INDEX	1	/* console=ttyS1 */
-+#define SCLP_VT220_CONSOLE_NAME		"ttysclp"
-+#define SCLP_VT220_CONSOLE_INDEX	0	/* console=ttysclp0 */
- 
- /* Representation of a single write request */
- struct sclp_vt220_request {
--- 
-2.20.1
-
+Jason
