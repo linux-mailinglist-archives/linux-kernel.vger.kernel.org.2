@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA0A36CB0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D7236CB0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 20:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhD0SVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 14:21:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42820 "EHLO mail.kernel.org"
+        id S238665AbhD0SWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 14:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhD0SVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:21:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04D656023B;
-        Tue, 27 Apr 2021 18:20:17 +0000 (UTC)
+        id S235647AbhD0SWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:22:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C7E6610A5;
+        Tue, 27 Apr 2021 18:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619547618;
-        bh=AxUanLW4jzPwM3/Z7KtMr5gt0zYahv7afgq0nwvZEsM=;
+        s=korg; t=1619547711;
+        bh=W/lR0B3B/jG31hu8CSs1S2F5UKwfxbYKEgGBGRZCgH0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZCktBRrRFKlSstUHgMmDnSA9nITEly+EuLrEEo7bzotDU6WBVMHJrvagQSMydJG9s
-         wpgnxf1ffm0nGy4WG8UMMB5CqtpwbUhbiTPLV1rQqj8UfAi4JNoRt2gKEoH+m3xrhX
-         8H4yv55H/5nAQW+x3G2cIq0+iOekZay0Vt57f6rk=
-Date:   Tue, 27 Apr 2021 20:20:15 +0200
+        b=CQtTtNzSBNbGTcAG+wzKWNkFEEJ+bDwqDIxlhxkNul6Cdge21LkceU1QTa17ufT8H
+         cXXNHowXH85yDMqrVfqgO4ijCTh8zbLaehcebsnMq+hAoBnBzcgeNBG8BiLskM7W06
+         pF/pVVHuQE4mgV3KrJGlG672SzxUxa8DlKOnVsm8=
+Date:   Tue, 27 Apr 2021 20:21:49 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 135/190] Revert "net: rocker: fix a potential NULL
+Subject: Re: [PATCH 133/190] Revert "net: qlogic: fix a potential NULL
  pointer dereference"
-Message-ID: <YIhV37ufgcw8bpEj@kroah.com>
+Message-ID: <YIhWPUJgRoh7ENjU@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-136-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-134-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-136-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-134-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:10PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 5c149314d91876f743ee43efd75b6287ec55480e.
+On Wed, Apr 21, 2021 at 03:00:08PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit eb32cfcdef2305dc0e44a65d42801315669bb27e.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -58,30 +58,32 @@ On Wed, Apr 21, 2021 at 03:00:10PM +0200, Greg Kroah-Hartman wrote:
 > Cc: David S. Miller <davem@davemloft.net>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/net/ethernet/rocker/rocker_main.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  drivers/net/ethernet/qlogic/qla3xxx.c | 6 ------
+>  1 file changed, 6 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
-> index 3473d296b2e2..a9c654b885de 100644
-> --- a/drivers/net/ethernet/rocker/rocker_main.c
-> +++ b/drivers/net/ethernet/rocker/rocker_main.c
-> @@ -2791,11 +2791,6 @@ static int rocker_switchdev_event(struct notifier_block *unused,
->  		memcpy(&switchdev_work->fdb_info, ptr,
->  		       sizeof(switchdev_work->fdb_info));
->  		switchdev_work->fdb_info.addr = kzalloc(ETH_ALEN, GFP_ATOMIC);
-> -		if (unlikely(!switchdev_work->fdb_info.addr)) {
-> -			kfree(switchdev_work);
-> -			return NOTIFY_BAD;
-> -		}
+> diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
+> index 214e347097a7..50dbb8205e6c 100644
+> --- a/drivers/net/ethernet/qlogic/qla3xxx.c
+> +++ b/drivers/net/ethernet/qlogic/qla3xxx.c
+> @@ -3863,12 +3863,6 @@ static int ql3xxx_probe(struct pci_dev *pdev,
+>  	netif_stop_queue(ndev);
+>  
+>  	qdev->workqueue = create_singlethread_workqueue(ndev->name);
+> -	if (!qdev->workqueue) {
+> -		unregister_netdev(ndev);
+> -		err = -ENOMEM;
+> -		goto err_out_iounmap;
+> -	}
 > -
->  		ether_addr_copy((u8 *)switchdev_work->fdb_info.addr,
->  				fdb_info->addr);
->  		/* Take a reference on the rocker device */
+>  	INIT_DELAYED_WORK(&qdev->reset_work, ql_reset_work);
+>  	INIT_DELAYED_WORK(&qdev->tx_timeout_work, ql_tx_timeout_work);
+>  	INIT_DELAYED_WORK(&qdev->link_state_work, ql_link_state_machine_work);
 > -- 
 > 2.31.1
 > 
 
-The unlikely() here is not needed at all, but the logic in the cleanup
-looks correct so I'll drop this revert.
+Ideally you would have added a new goto tag and put the
+unregister_netdev() call in that, but the logic here still seems to be
+correct, so I'll drop this revert.
 
 greg k-h
