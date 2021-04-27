@@ -2,167 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2C836CC2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00F736CC32
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Apr 2021 22:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237028AbhD0ULf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 16:11:35 -0400
-Received: from mail.savoirfairelinux.com ([208.88.110.44]:48822 "EHLO
-        mail.savoirfairelinux.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235412AbhD0ULe (ORCPT
+        id S237909AbhD0UNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 16:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235401AbhD0UNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:11:34 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id EF7369C02D0;
-        Tue, 27 Apr 2021 16:10:49 -0400 (EDT)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id PINCznNH0R6Y; Tue, 27 Apr 2021 16:10:49 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.savoirfairelinux.com (Postfix) with ESMTP id 670A29C0D2A;
-        Tue, 27 Apr 2021 16:10:49 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
-        by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6pLUmLbSCXfx; Tue, 27 Apr 2021 16:10:49 -0400 (EDT)
-Received: from barbarian.mtl.sfl (unknown [192.168.51.254])
-        by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 3DA1E9C02D0;
-        Tue, 27 Apr 2021 16:10:49 -0400 (EDT)
-From:   Firas Ashkar <firas.ashkar@savoirfairelinux.com>
-To:     gregkh@linuxfoundation.org, mst@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Firas Ashkar <firas.ashkar@savoirfairelinux.com>
-Subject: [PATCH v2] uio: uio_pci_generic: add memory resource mappings
-Date:   Tue, 27 Apr 2021 16:10:46 -0400
-Message-Id: <20210427201046.4005820-1-firas.ashkar@savoirfairelinux.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 27 Apr 2021 16:13:19 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941C7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:12:35 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x20so65288952lfu.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 13:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=SY5mTC8vXKhJGwgY8a17iTcKGGwfNUSrB5/cauq2jqY=;
+        b=u6vd4Kkii6lXYSZh+HCehIixhQiYhIkSnOuFRoeujJoZ5raj/As+RHLppluq1kGmz8
+         lKcm9vMQkSsjShinIYU9iPVlqifGhVtt01I6okKR3Y2sKtns/QksnL5gKKPpZpT14U+U
+         8EXZ4ZLlPFMfV2REQPaJUmgwLdRNCMiv9Q9a6CCZvQlpNceVdNoevbeHi2Vpdg5k9Lks
+         byH2Bb8ICj0O4/zd0BRJYQ0qS949JuH2KsPmJKSr2swGtTn7fOloaZsuB3+x+o15Xs0b
+         D2PJ2a286hdYnkvVc8o/X4pYFY0thtUhrq3ov8KjIn7ntG+LKhFuKNxCrsk91d9Evt7J
+         P7kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=SY5mTC8vXKhJGwgY8a17iTcKGGwfNUSrB5/cauq2jqY=;
+        b=VChiBFcAh21JpRLuamyp0JE7p9m1nTBNZJwoxs0vY6dpuj38CZKwvCh3awrSG6pCLD
+         yBBp8HJ4gGF8v73VGZMhFckCK4iwpLmTXOOIIEKRuPxYyySE7UVKgwgy1t3bYiYqCURb
+         nHMvsaYDcw6lLT59QJgNxCUZCr89r1l1c5aeF/INKVqrsyYpzFJr2onSHqmx2XqMmWML
+         XrnrOVanbBrLA2AsQJ4ztH0B/5A8gqVdMqWdwAAr1hI+zLVP/E65AircdDLBEyNttVUO
+         ClOZLoYpNZtSGc/y5zAzTeqw/v4Aj6nJip5UxLH3jkWZsloZQbgxxb9rp88r4gap2ezS
+         nSkQ==
+X-Gm-Message-State: AOAM530F6rqfNdm1PZjyKhBnfEk82iMxFjFQCS5Kpe4tZMsgSDMOG33K
+        lJMg6RcY/gTEuKNot/PKPRRe6g==
+X-Google-Smtp-Source: ABdhPJxRptHCvRujl3ipBD3jYJx1B1R+o4jvk8O9es83Qg19Ucak4kadsDMxs3ViZtpF+JNi3e6MFA==
+X-Received: by 2002:ac2:57c8:: with SMTP id k8mr4461677lfo.659.1619554354158;
+        Tue, 27 Apr 2021 13:12:34 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id w14sm192868lfp.147.2021.04.27.13.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 13:12:31 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 22:12:30 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v3 78/79] media: rcar-vin: use pm_runtime_resume_and_get()
+Message-ID: <YIhwLhJSNyKPbzu9@oden.dyn.berto.se>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+ <85d92ba9e709ef00673a3e0e11769b121745e9cb.1619519080.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <85d92ba9e709ef00673a3e0e11769b121745e9cb.1619519080.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-import memory resources from underlying pci device, thus allowing
-userspace applications to memory map those resources.
+Hi Mauro,
 
-without this change, current implementation, does not populate the
-memory maps and are not shown under the corresponding sysfs uio entry:
+On 2021-04-27 12:27:08 +0200, Mauro Carvalho Chehab wrote:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/rcar-vin/rcar-csi2.c | 6 ++++++
+>  drivers/media/platform/rcar-vin/rcar-dma.c  | 6 ++----
+>  drivers/media/platform/rcar-vin/rcar-v4l2.c | 6 ++----
+>  3 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> index e06cd512aba2..ce8e84f9e3d9 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> @@ -408,6 +408,12 @@ static void rcsi2_enter_standby(struct rcar_csi2 *priv)
+>  
+>  static void rcsi2_exit_standby(struct rcar_csi2 *priv)
+>  {
+> +	/*
+> +	 * The code at rcsi2_enter_standby() assumes
+> +	 * inconditionally that PM runtime usage count was
+> +	 * incremented. So, it shouldn't use pm_runtime_resume_and_get()
+> +	 * here.
+> +	 */
 
-root@apalis-imx8:~# echo "ad00 0122" > \
-			/sys/bus/pci/drivers/uio_pci_generic/new_id
-[   55.736433] uio_pci_generic 0000:01:00.0: enabling device (0000 -> 000=
-2)
-root@apalis-imx8:~# ls -lsrt /sys/class/uio/uio0/
-     0 -rw-r--r--    1 root     root          4096 Apr 27 18:52 uevent
-     0 -r--r--r--    1 root     root          4096 Apr 27 18:52 version
-     0 -r--r--r--    1 root     root          4096 Apr 27 18:52 suppliers
-     0 lrwxrwxrwx    1 root     root             0 Apr 27 18:52 subsystem
--> ../../../../../../../../../class/uio
-     0 drwxr-xr-x    2 root     root             0 Apr 27 18:52 power
-     0 -r--r--r--    1 root     root          4096 Apr 27 18:52 name
-     0 -r--r--r--    1 root     root          4096 Apr 27 18:52 event
-     0 lrwxrwxrwx    1 root     root             0 Apr 27 18:52 device
--> ../../../0000:01:00.0
-     0 -r--r--r--    1 root     root          4096 Apr 27 18:52 dev
-     0 -r--r--r--    1 root     root          4096 Apr 27 18:52 consumers
-root@apalis-imx8:~#
+I think this comment is a bit much. I won't object if you really want to 
+keep it but my preference would be to drop it.
 
-with the proposed changed, have following instead:
-root@apalis-imx8:~# ls -lsrt /sys/class/uio/uio0/
-     0 -rw-r--r--    1 root     root          4096 Apr 27 19:06 uevent
-     0 -r--r--r--    1 root     root          4096 Apr 27 19:06 version
-     0 -r--r--r--    1 root     root          4096 Apr 27 19:06 suppliers
-     0 lrwxrwxrwx    1 root     root             0 Apr 27 19:06 subsystem
--> ../../../../../../../../../class/uio
-     0 drwxr-xr-x    2 root     root             0 Apr 27 19:06 power
-     0 -r--r--r--    1 root     root          4096 Apr 27 19:06 name
-     0 drwxr-xr-x    4 root     root             0 Apr 27 19:06 maps
-     0 -r--r--r--    1 root     root          4096 Apr 27 19:06 event
-     0 lrwxrwxrwx    1 root     root             0 Apr 27 19:06 device
--> ../../../0000:01:00.0
-     0 -r--r--r--    1 root     root          4096 Apr 27 19:06 dev
-     0 -r--r--r--    1 root     root          4096 Apr 27 19:06 consumers
-root@apalis-imx8:~#
+>  	pm_runtime_get_sync(priv->dev);
+>  	reset_control_deassert(priv->rstc);
+>  }
+> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+> index f30dafbdf61c..f5f722ab1d4e 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+> @@ -1458,11 +1458,9 @@ int rvin_set_channel_routing(struct rvin_dev *vin, u8 chsel)
+>  	u32 vnmc;
+>  	int ret;
+>  
+> -	ret = pm_runtime_get_sync(vin->dev);
+> -	if (ret < 0) {
+> -		pm_runtime_put_noidle(vin->dev);
+> +	ret = pm_runtime_resume_and_get(vin->dev);
+> +	if (ret < 0)
+>  		return ret;
+> -	}
+>  
+>  	/* Make register writes take effect immediately. */
+>  	vnmc = rvin_read(vin, VNMC_REG);
+> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> index 457a65bf6b66..b1e9f86caa5c 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> @@ -870,11 +870,9 @@ static int rvin_open(struct file *file)
+>  	struct rvin_dev *vin = video_drvdata(file);
+>  	int ret;
+>  
+> -	ret = pm_runtime_get_sync(vin->dev);
+> -	if (ret < 0) {
+> -		pm_runtime_put_noidle(vin->dev);
+> +	ret = pm_runtime_resume_and_get(vin->dev);
+> +	if (ret < 0)
+>  		return ret;
+> -	}
+>  
+>  	ret = mutex_lock_interruptible(&vin->lock);
+>  	if (ret)
+> -- 
+> 2.30.2
+> 
 
-root@apalis-imx8:~# ls -lsrt /sys/class/uio/uio0/maps/
-     0 drwxr-xr-x    2 root     root             0 Apr 27 19:07 map1
-     0 drwxr-xr-x    2 root     root             0 Apr 27 19:07 map0
-root@apalis-imx8:~#
-
-root@apalis-imx8:~# cat /sys/class/uio/uio0/maps/map1/addr
-0x0000000062000000
-root@apalis-imx8:~#
-
-root@apalis-imx8:~# cat /sys/class/uio/uio0/maps/map1/size
-0x0000000000200000
-root@apalis-imx8:~#
-
-tested on AltaData ARINC 429 MiniPCIE module on imx8qm-apalis-ixora-v1.2
-
-Signed-off-by: Firas Ashkar <firas.ashkar@savoirfairelinux.com>
----
-
-Notes:
-    Changes in V2
-    * add detailed description why this change is needed
-    * add test hardware name and version
-
-:100644 100644 c7d681fef198 efc43869131d M	drivers/uio/uio_pci_generic.c
- drivers/uio/uio_pci_generic.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.=
-c
-index c7d681fef198..efc43869131d 100644
---- a/drivers/uio/uio_pci_generic.c
-+++ b/drivers/uio/uio_pci_generic.c
-@@ -72,7 +72,9 @@ static int probe(struct pci_dev *pdev,
- 			   const struct pci_device_id *id)
- {
- 	struct uio_pci_generic_dev *gdev;
-+	struct uio_mem *uiomem;
- 	int err;
-+	int i;
-=20
- 	err =3D pcim_enable_device(pdev);
- 	if (err) {
-@@ -101,6 +103,36 @@ static int probe(struct pci_dev *pdev,
- 			 "no support for interrupts?\n");
- 	}
-=20
-+	uiomem =3D &gdev->info.mem[0];
-+	for (i =3D 0; i < MAX_UIO_MAPS; ++i) {
-+		struct resource *r =3D &pdev->resource[i];
-+
-+		if (r->flags !=3D (IORESOURCE_SIZEALIGN | IORESOURCE_MEM))
-+			continue;
-+
-+		if (uiomem >=3D &gdev->info.mem[MAX_UIO_MAPS]) {
-+			dev_warn(
-+				&pdev->dev,
-+				"device has more than " __stringify(
-+					MAX_UIO_MAPS) " I/O memory resources.\n");
-+			break;
-+		}
-+
-+		uiomem->memtype =3D UIO_MEM_PHYS;
-+		uiomem->addr =3D r->start & PAGE_MASK;
-+		uiomem->offs =3D r->start & ~PAGE_MASK;
-+		uiomem->size =3D
-+			(uiomem->offs + resource_size(r) + PAGE_SIZE - 1) &
-+			PAGE_MASK;
-+		uiomem->name =3D r->name;
-+		++uiomem;
-+	}
-+
-+	while (uiomem < &gdev->info.mem[MAX_UIO_MAPS]) {
-+		uiomem->size =3D 0;
-+		++uiomem;
-+	}
-+
- 	return devm_uio_register_device(&pdev->dev, &gdev->info);
- }
-=20
---=20
-2.25.1
-
+-- 
+Regards,
+Niklas Söderlund
