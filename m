@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE86D36E122
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0453C36E154
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 00:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhD1Vrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 17:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhD1Vrd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 17:47:33 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F65C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:46:46 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v23-20020a9d60570000b02902a53bac99a3so4949091otj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jE1E10cGmiSxQu3rQMfcH0+7CTwQjkmgUeVjmmNpp6c=;
-        b=l/8TzlssY3PiJZtW54q7AoA6lZZauP2ipudz7fax18/n36l3wFP+NFeJKcr0NQGpzs
-         LttGshZngyDW4v/9Fp6Nx+O43NfXC86dgxGG7lHkn/23tMgWxXL4f6M4Q2nshTc/tiB+
-         YKzGBqlbYPPhYjSaFEI0M+5FEjwt86AcDMfbzGBhcAk2yOyLOTswO6BnywhSQnCz7CXG
-         8kyU/OYuzsaybobtl2O71BpVIJip5teIk80KgZG8JDT471+CGpMr3Qzq94WiE4YfqWt0
-         E5G+2HIw95CualvAqUfzl1+FzNnPTozfKWGaolIp+edUiwtcyBs3hZQWScbh3GEDX2J0
-         dt6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jE1E10cGmiSxQu3rQMfcH0+7CTwQjkmgUeVjmmNpp6c=;
-        b=RPnWxjHyNGgiI+Kt8B/ETNb28NpCtnnuF5Gwued9O6z769UmJ9mh/UacS69FIFP0fD
-         5p1r+CMWstvRBl7xJHP5T2BXyr19EYscjaS/Wv7G5ikWL92NsaQSbeEXWFoukUfaFQuR
-         2n+rjawEcrfW0i3kyjxzEy8au1PtC8X7o0uavMKehDRCphZD0u3Bgg5PFXPxv2CqZZXh
-         BCkUmL02r3VApBSJO/VW7IWOD8kFgVCCJ2by74UkeNPdZKjsGfPZt9jFUP2p+p2zLzAO
-         gEmFGCMQykZCAac1sl1xs2UnZc/A5l/U0se67HYeeVNdATcuS5K9AmxgIc/Po0jir5nv
-         wqyg==
-X-Gm-Message-State: AOAM53239WxFudkHn9hClQJ8BFf38wOsSXSQzueLpmI30AkTfehK+Tl1
-        Pjfr2ert7vMUGkqdq+mC4FbPmXMMP9DUW0526taZ8avO4ac=
-X-Google-Smtp-Source: ABdhPJyVeEMpGccCeYGNaaZT+WV/zN9QlttdEHQB/v6dvzGpqw+lSuV7EjrlOrp+iX2mwJthQfOdbdlbhCatSgwH0/M=
-X-Received: by 2002:a05:6830:2159:: with SMTP id r25mr25458409otd.313.1619646406176;
- Wed, 28 Apr 2021 14:46:46 -0700 (PDT)
+        id S231218AbhD1WBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:01:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:57180 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhD1WBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 18:01:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC4E7ED1;
+        Wed, 28 Apr 2021 15:00:16 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ACC63F694;
+        Wed, 28 Apr 2021 15:00:14 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
+        yu.c.chen@intel.com, Mel Gorman <mgorman@suse.de>
+Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8% regression
+In-Reply-To: <87mttqt5jc.mognet@arm.com>
+References: <20210414052151.GB21236@xsang-OptiPlex-9020> <87im4on5u5.mognet@arm.com> <20210421032022.GA13430@xsang-OptiPlex-9020> <87bla8ue3e.mognet@arm.com> <20210422074742.GE31382@xsang-OptiPlex-9020> <87wnsutzi9.mognet@arm.com> <87mttqt5jc.mognet@arm.com>
+Date:   Wed, 28 Apr 2021 23:00:07 +0100
+Message-ID: <87k0omxe6w.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210427223635.2711774-1-bgardon@google.com> <20210427223635.2711774-6-bgardon@google.com>
- <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com> <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
- <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com> <CANgfPd9kVJOAR_uq+oh9kE2gr00EUAGSPiJ9jMR9BdG2CAC+BA@mail.gmail.com>
- <5b4a0c30-118c-da1f-281c-130438a1c833@redhat.com>
-In-Reply-To: <5b4a0c30-118c-da1f-281c-130438a1c833@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 28 Apr 2021 14:46:35 -0700
-Message-ID: <CANgfPd_S=LjEs+s2UzcHZKfUHf+n498eSbfidpXNFXjJT8kxzw@mail.gmail.com>
-Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 2:41 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On 22/04/21 21:42, Valentin Schneider wrote:
+> On 22/04/21 10:55, Valentin Schneider wrote:
+>> I'll go find myself some other x86 box and dig into it;
+>> I'd rather not leave this hanging for too long.
 >
-> On 28/04/21 22:40, Ben Gardon wrote:
-> > ... However with the locking you propose below, we might still run
-> > into issues on a move or delete, which would mean we'd still need the
-> > separate memory allocation for the rmaps array. Or we do some
-> > shenanigans where we try to copy the rmap pointers from the other set
-> > of memslots.
+> So I found myself a dual-socket Xeon Gold 5120 @ 2.20GHz (64 CPUs) and
+> *there* I get a somewhat consistent ~-6% regression. As I'm suspecting
+> cacheline shenanigans, I also ran that with Peter's recent
+> kthread_is_per_cpu() change, and that brings it down to ~-3%
 >
-> If that's (almost) as easy as passing old to
-> kvm_arch_prepare_memory_region, that would be totally okay.
 
-Unfortunately it's not quite that easy because it's all the slots
-_besides_ the one being modified where we'd need to copy the rmaps.
+Ha ha ho ho, so that was a red herring. My statistical paranoia somewhat
+paid off, and the kthread_is_per_cpu() thing doesn't really change anything
+when you stare at 20+ iterations of that vm-segv thing.
 
->
-> > My only worry is the latency this could add to a nested VM launch, but
-> > it seems pretty unlikely that that would be frequently coinciding with
-> > a memslot change in practice.
->
-> Right, memslot changes in practice occur only at boot and on hotplug.
-> If that was a problem we could always make the allocation state
-> off/in-progress/on, allowing to check the allocation state out of the
-> lock.  This would only potentially slow down the first nested VM launch.
->
-> Paolo
->
+As far as I can tell, the culprit is the loss of LBF_SOME_PINNED. By some
+happy accident, the load balancer repeatedly iterates over PCPU kthreads,
+sets LBF_SOME_PINNED and causes a group to be classified as group_imbalanced
+in a later load-balance. This, in turn, forces a 1-task pull, and repeating
+this pattern ~25 times a sec ends up increasing CPU utilization by ~5% over the
+span of the benchmark.
+
+schedstats are somewhat noisy but seem to indicate the baseline had many
+more migrations at the NUMA level (test machine has SMT, MC, NUMA). Because
+of that I suspected
+
+  b396f52326de ("sched/fair: Allow a small load imbalance between low utilisation SD_NUMA domains")
+
+but reverting that actually makes things worse. I'm still digging, though
+I'm slowly heading towards:
+
+  https://www.youtube.com/watch?v=3L6i5AwVAbs
