@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A1936D078
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 04:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EBC36D082
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 04:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239622AbhD1CKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 22:10:08 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49994 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239569AbhD1CKG (ORCPT
+        id S239577AbhD1CWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 22:22:48 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40121 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235422AbhD1CWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 22:10:06 -0400
-X-UUID: 9fa0b76c15864f8b970f993b43f7549c-20210428
-X-UUID: 9fa0b76c15864f8b970f993b43f7549c-20210428
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1778448146; Wed, 28 Apr 2021 10:08:58 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 28 Apr 2021 10:08:56 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 28 Apr 2021 10:08:55 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v1] soc: mediatek: MTK_MMSYS tristrate support
-Date:   Wed, 28 Apr 2021 10:08:51 +0800
-Message-ID: <1619575731-23388-2-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1619575731-23388-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1619575731-23388-1-git-send-email-yongqiang.niu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Tue, 27 Apr 2021 22:22:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=zelin.deng@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UX10nnq_1619576521;
+Received: from localhost(mailfrom:zelin.deng@linux.alibaba.com fp:SMTPD_---0UX10nnq_1619576521)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Apr 2021 10:22:01 +0800
+From:   Zelin Deng <zelin.deng@linux.alibaba.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Subject: [PATCH] Guest system time jumps when new vCPUs is hot-added
+Date:   Wed, 28 Apr 2021 10:22:00 +0800
+Message-Id: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chun-Hung Wu <chun-hung.wu@mediatek.com>
+Hello,
+I have below VM configuration:
+...
+    <vcpu placement='static' current='1'>2</vcpu>
+    <cpu mode='host-passthrough'>
+    </cpu>
+    <clock offset='utc'>
+        <timer name='tsc' frequency='3000000000'/>
+    </clock>
+...
+After VM has been up for a few minutes, I use "virsh setvcpus" to hot-add
+second vCPU into VM, below dmesg is observed:
+[   53.273484] CPU1 has been hot-added
+[   85.067135] SMP alternatives: switching to SMP code
+[   85.078409] x86: Booting SMP configuration:
+[   85.079027] smpboot: Booting Node 0 Processor 1 APIC 0x1
+[   85.080240] kvm-clock: cpu 1, msr 77601041, secondary cpu clock
+[   85.080450] smpboot: CPU 1 Converting physical 0 to logical die 1
+[   85.101228] TSC ADJUST compensate: CPU1 observed 169175101528 warp. Adjust: 169175101528
+[  141.513496] TSC ADJUST compensate: CPU1 observed 166 warp. Adjust: 169175101694
+[  141.513496] TSC synchronization [CPU#0 -> CPU#1]:
+[  141.513496] Measured 235 cycles TSC warp between CPUs, turning off TSC clock.
+[  141.513496] tsc: Marking TSC unstable due to check_tsc_sync_source failed
+[  141.543996] KVM setup async PF for cpu 1
+[  141.544281] kvm-stealtime: cpu 1, msr 13bd2c080
+[  141.549381] Will online and init hotplugged CPU: 1
 
-MTK_MMSYS driver tristrate support.
+System time jumps from 85.101228 to 141.51.3496.
 
-Signed-off-by: Chun-Hung Wu <chun-hung.wu@mediatek.com>
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+Guest:                                   KVM
+-----                                    ------
+check_tsc_sync_target()
+wrmsrl(MSR_IA32_TSC_ADJUST,...)
+                                         kvm_set_msr_common(vcpu,...)
+                                         adjust_tsc_offset_guest(vcpu,...) //tsc_offset jumped
+                                         vcpu_enter_guest(vcpu) //tsc_timestamp was not changed
+...
+rdtsc() jumped, system time jumped
+
+tsc_timestamp must be updated before go back to guest.
+
 ---
- drivers/soc/mediatek/Kconfig     | 2 +-
- drivers/soc/mediatek/mtk-mmsys.c | 7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Zelin Deng (1):
+  KVM: x86: Update vCPU's hv_clock before back to guest when tsc_offset
+    is adjusted
 
-diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
-index fdd8bc0..1437ed0 100644
---- a/drivers/soc/mediatek/Kconfig
-+++ b/drivers/soc/mediatek/Kconfig
-@@ -66,7 +66,7 @@ config MTK_SCPSYS_PM_DOMAINS
- 	  tasks in the system.
- 
- config MTK_MMSYS
--	bool "MediaTek MMSYS Support"
-+	tristate "MediaTek MMSYS Support"
- 	default ARCH_MEDIATEK
- 	depends on HAS_IOMEM
- 	help
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index 18f9397..55a104e 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/device.h>
- #include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/soc/mediatek/mtk-mmsys.h>
-@@ -370,4 +371,8 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
- 	.probe = mtk_mmsys_probe,
- };
- 
--builtin_platform_driver(mtk_mmsys_drv);
-+module_platform_driver(mtk_mmsys_drv);
-+
-+MODULE_AUTHOR("Yongqiang Niu, MediaTek");
-+MODULE_DESCRIPTION("MediaTek MMSYS Driver");
-+MODULE_LICENSE("GPL v2");
+ arch/x86/kvm/x86.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
 -- 
-1.8.1.1.dirty
+1.8.3.1
 
