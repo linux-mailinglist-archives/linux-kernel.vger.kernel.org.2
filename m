@@ -2,92 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DC336D958
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6225836D95E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhD1OOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229961AbhD1OOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:14:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D74EE61424;
-        Wed, 28 Apr 2021 14:14:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619619243;
-        bh=LrI9EyriTNzlF19LSDUJcI9lL1R/vtRwbqVxLduTtIA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aUuQDDlV5/Weo5NpINpcpgbKVC3oTwegSq+1ZGp+9bav91ppzXIUL+jJKMZQvI7ZC
-         LEmcSQBcyP6vQ6HR3cUREPha/3TQTiqyb4Y1qNlrsjq7MX35xc1XxySN1EI5DH35Lm
-         VLXt+35DsqVRNuu0+mumLlWuIIHBDHsRUpaae9x8=
-Date:   Wed, 28 Apr 2021 16:14:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
-Subject: Re: [PATCH 157/190] Revert "Input: ad7879 - add check for read
- errors in interrupt"
-Message-ID: <YIltqNnVfBZ4F1kY@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-158-gregkh@linuxfoundation.org>
- <YIBa5X+5g/qNL+N8@google.com>
- <YIhB7rvHlFDew00z@kroah.com>
- <YIhkZOWJiOlDJCYS@google.com>
+        id S240204AbhD1OPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239223AbhD1OPk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:15:40 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B39C061573;
+        Wed, 28 Apr 2021 07:14:55 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id B54DD1F42AFA
+Message-ID: <b92eb32b84dd7a69a47bf78b17f49d4ba500739c.camel@collabora.com>
+Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
+ pm_runtime_get_sync()
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Date:   Wed, 28 Apr 2021 11:14:44 -0300
+In-Reply-To: <20210428084431.0c2d505b@coco.lan>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+         <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
+         <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
+         <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
+         <20210428082742.20d54db1@coco.lan> <20210428084431.0c2d505b@coco.lan>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIhkZOWJiOlDJCYS@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 12:22:12PM -0700, Dmitry Torokhov wrote:
-> On Tue, Apr 27, 2021 at 06:55:10PM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Apr 21, 2021 at 10:03:33AM -0700, Dmitry Torokhov wrote:
-> > > Hi Greg,
-> > > 
-> > > On Wed, Apr 21, 2021 at 03:00:32PM +0200, Greg Kroah-Hartman wrote:
-> > > > This reverts commit e85bb0beb6498c0dffe18a2f1f16d575bc175c32.
-> > > > 
-> > > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > > faith" to try to test the kernel community's ability to review "known
-> > > > malicious" changes.  The result of these submissions can be found in a
-> > > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > > > 
-> > > > Because of this, all submissions from this group must be reverted from
-> > > > the kernel tree and will need to be re-reviewed again to determine if
-> > > > they actually are a valid fix.  Until that work is complete, remove this
-> > > > change to ensure that no problems are being introduced into the
-> > > > codebase.
-> > > 
-> > > This one looks really OK to me and does not have to be reverted (unless
-> > > Aditya will come clean and show the error introduced?).
+Hi Mauro,
+
+On Wed, 2021-04-28 at 08:44 +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 28 Apr 2021 08:27:42 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> 
+> > Em Tue, 27 Apr 2021 12:18:32 -0300
+> > Ezequiel Garcia <ezequiel@collabora.com> escreveu:
 > > 
-> > I'll drop this revert, but it isn't usually good to be calling printk()
-> > from an irq.
+> > > On Tue, 2021-04-27 at 16:08 +0100, Robin Murphy wrote:  
+> > > > On 2021-04-27 11:27, Mauro Carvalho Chehab wrote:    
+> > > > > Despite other *_get()/*_put() functions, where usage count is
+> > > > > incremented only if not errors, the pm_runtime_get_sync() has
+> > > > > a different behavior, incrementing the counter *even* on
+> > > > > errors.
+> > > > > 
+> > > > > That's an error prone behavior, as people often forget to
+> > > > > decrement the usage counter.
+> > > > > 
+> > > > > However, the hantro driver depends on this behavior, as it
+> > > > > will decrement the usage_count unconditionally at the m2m
+> > > > > job finish time, which makes sense.
+> > > > > 
+> > > > > So, intead of using the pm_runtime_resume_and_get() that
+> > > > > would decrement the counter on error, keep the current
+> > > > > API, but add a documentation explaining the rationale for
+> > > > > keep using pm_runtime_get_sync().
+> > > > > 
+> > > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > > ---
+> > > > >   drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
+> > > > >   1 file changed, 7 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> > > > > index 595e82a82728..96f940c1c85c 100644
+> > > > > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > > > > @@ -155,6 +155,13 @@ static void device_run(void *priv)
+> > > > >         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> > > > >         if (ret)
+> > > > >                 goto err_cancel_job;    
+> > > > 
+> > > > ..except this can also cause the same pm_runtime_put_autosuspend() call 
+> > > > without even reaching the "matching" get below, so rather than some kind 
+> > > > of cleverness it seems more like it's just broken :/
+> > > >     
+> > > 
+> > > Indeed, I was trying to find time to cook a quick patch, but kept
+> > > getting preempted.
+> > > 
+> > > Feel free to submit a fix for this, otherwise, I'll try to find
+> > > time later this week.  
+> > 
+> > What about doing this instead:
+> > 
+> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> > index 595e82a82728..67de6b15236d 100644
+> > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > @@ -56,14 +56,12 @@ dma_addr_t hantro_get_ref(struct hantro_ctx *ctx, u64 ts)
+> >         return hantro_get_dec_buf_addr(ctx, buf);
+> >  }
+> >  
+> > -static void hantro_job_finish(struct hantro_dev *vpu,
+> > -                             struct hantro_ctx *ctx,
+> > -                             enum vb2_buffer_state result)
+> > +static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
+> > +                                   struct hantro_ctx *ctx,
+> > +                                   enum vb2_buffer_state result)
+> >  {
+> >         struct vb2_v4l2_buffer *src, *dst;
+> >  
+> > -       pm_runtime_mark_last_busy(vpu->dev);
+> > -       pm_runtime_put_autosuspend(vpu->dev);
+> >         clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
+> >  
+> >         src = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+> > @@ -81,6 +79,16 @@ static void hantro_job_finish(struct hantro_dev *vpu,
+> >                                          result);
+> >  }
+> >  
+> > +static void hantro_job_finish(struct hantro_dev *vpu,
+> > +                             struct hantro_ctx *ctx,
+> > +                             enum vb2_buffer_state result)
+> > +{
+> > +       pm_runtime_mark_last_busy(vpu->dev);
+> > +       pm_runtime_put_autosuspend(vpu->dev);
+> > +
+> > +       hantro_job_finish_no_pm(vpu, ctx, result);
+> > +}
+> > +
+> >  void hantro_irq_done(struct hantro_dev *vpu,
+> >                      enum vb2_buffer_state result)
+> >  {
+> > @@ -152,12 +160,13 @@ static void device_run(void *priv)
+> >         src = hantro_get_src_buf(ctx);
+> >         dst = hantro_get_dst_buf(ctx);
+> >  
+> > +       ret = pm_runtime_resume_and_get(ctx->dev->dev);
+> > +       if (ret < 0)
+> > +               goto err_cancel_job;
+> > +
+> >         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> >         if (ret)
+> >                 goto err_cancel_job;
+> > -       ret = pm_runtime_get_sync(ctx->dev->dev);
+> > -       if (ret < 0)
+> > -               goto err_cancel_job;
+> >  
+> >         v4l2_m2m_buf_copy_metadata(src, dst, true);
+> >  
+> > @@ -165,7 +174,7 @@ static void device_run(void *priv)
+> >         return;
+> >  
+> >  err_cancel_job:
+> > -       hantro_job_finish(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
+> > +       hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
+> >  }
+> >  
+> >  static struct v4l2_m2m_ops vpu_m2m_ops = {
+> > 
+> > Thanks,
+> > Mauro
 > 
-> How else do you suggest we tell that something is wrong when
-> communicating with the device? For these types of devices the
-> communication is essentially unsolicited so we can't pass failure to a
-> caller to deal with it (i.e. unlike USB there is no URB posted that we
-> could fail and use as a mechanism to signal error to some other layer)
-> and while we could invent "something went wrong" input event so far
-> there was no interest in having anything like that.
+> Actually, the order at the finish logic should change as well.
+> Maybe like this:
 > 
-> I'd suggest sending KOBJ_ERROR uevent when a device driver detects
-> anomaly in the device it controls, but I wonder how systemd would react
-> given past experiences with KOBJ_BIND/KOBJ_UNBIND.
+
+This one looks good.
+
+Thanks!
+Ezequiel
+
+> <snip>
+> static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
+>                                     struct hantro_ctx *ctx,
+>                                     enum vb2_buffer_state result)
+> {
+>         struct vb2_v4l2_buffer *src, *dst;
 > 
-> The message is ratelimited so it will not overfill the logs...
+>         src = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+>         dst = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+> 
+>         if (WARN_ON(!src))
+>                 return;
+>         if (WARN_ON(!dst))
+>                 return;
+> 
+>         src->sequence = ctx->sequence_out++;
+>         dst->sequence = ctx->sequence_cap++;
+> 
+>         v4l2_m2m_buf_done_and_job_finish(ctx->dev->m2m_dev, ctx->fh.m2m_ctx,
+>                                          result);
+> }
+> 
+> static void hantro_job_finish(struct hantro_dev *vpu,
+>                               struct hantro_ctx *ctx,
+>                               enum vb2_buffer_state result)
+> {
+> 
+>         hantro_job_finish_no_pm(vpu, ctx, result);
+> 
+>         clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
+> 
+>         pm_runtime_mark_last_busy(vpu->dev);
+>         pm_runtime_put_autosuspend(vpu->dev);
+> }
+> 
+> static void device_run(void *priv)
+> {
+>         struct hantro_ctx *ctx = priv;
+>         struct vb2_v4l2_buffer *src, *dst;
+>         int ret;
+> 
+>         src = hantro_get_src_buf(ctx);
+>         dst = hantro_get_dst_buf(ctx);
+> 
+>         ret = pm_runtime_resume_and_get(ctx->dev->dev);
+>         if (ret < 0)
+>                 goto err_cancel_job;
+> 
+>         ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+>         if (ret)
+>                 goto err_cancel_job;
+> 
+>         v4l2_m2m_buf_copy_metadata(src, dst, true);
+> 
+>         ctx->codec_ops->run(ctx);
+>         return;
+> 
+> err_cancel_job:
+>         hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
+> }
+> </snip>
+> 
+> 
+> Thanks,
+> Mauro
 
-Sending uevents from an irq is not a good idea, as you say :)
 
-I don't know what the best way to "fail" this is, a ratelimited printk()
-seems to be about all you can do.  Luckily hardware doesn't fail that
-often in this manner.
-
-thanks,
-
-greg k-h
