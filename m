@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A0136D926
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBA436D930
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240178AbhD1OB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:01:27 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44896 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240171AbhD1OBE (ORCPT
+        id S240150AbhD1ODQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:03:16 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:43624 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238380AbhD1OCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:01:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UX52TuL_1619618418;
-Received: from localhost(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UX52TuL_1619618418)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 28 Apr 2021 22:00:18 +0800
-From:   Xu Yu <xuyu@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org
-Subject: [PATCH] mm, compaction: avoid isolating pinned tmpfs pages
-Date:   Wed, 28 Apr 2021 22:00:14 +0800
-Message-Id: <e2f0689e00cce7ac73716da14a971a4f1ab88359.1619618267.git.xuyu@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.2432.ga663e714
+        Wed, 28 Apr 2021 10:02:44 -0400
+Received: by mail-wr1-f47.google.com with SMTP id x7so63152674wrw.10;
+        Wed, 28 Apr 2021 07:01:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Uheu8s26iW3ko1XKinftj7CiwtVhVkhr//K4W010x+g=;
+        b=MKy3Kq2BVhQG9g3ncrRkK2jYiFZKB8NepwFyhtZ7wcio0uUUosnue5H8Sqvo9DqKAQ
+         LO6tS9Bf0q3jgPz2OjQzEJ56c0TSBU8uAo867FfLjBidj0yw7SjVDyFxgATIL03w3MqL
+         ZxZMndHxq2wNHmx5N9hFn6ITqCJWV3uWcbXfaR0KssqdtHpw1BSn6FHYb52hr9Q0lwtp
+         kCzWCsIGfkfT5ismQ+1Mf7sJBC3ifXjJqAhq5+cadYtHMdi8cHrSzen3H+5UxPWlQdWD
+         TJRklLWs1IRvoomxjx1uh5AYyV8hh8804md2jfL2Pg3tTxpaHp4ilO1S2rqEs/YTWY7f
+         ownw==
+X-Gm-Message-State: AOAM532VtWf+/A6zEemLZZWpM4pnJhnHluB1XlcbOAlqIKW0yvPdv+KR
+        duBT9oeq4VB9ZBli7jl7zfA=
+X-Google-Smtp-Source: ABdhPJxivxFyQJiOiApbgYKWy7pGxc/X9ieVDkn9eHOL7wL9k5J3eH/h4E+cAhTd8gYUx4EopFk0PA==
+X-Received: by 2002:a5d:638f:: with SMTP id p15mr23588927wru.255.1619618518894;
+        Wed, 28 Apr 2021 07:01:58 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n12sm3882943wmq.29.2021.04.28.07.01.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 07:01:58 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:01:56 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v4 1/7] hyperv: Detect Nested virtualization support for
+ SVM
+Message-ID: <20210428140156.flf5ie6r2j7os5ch@liuwe-devbox-debian-v2>
+References: <cover.1619556430.git.viremana@linux.microsoft.com>
+ <8ffa88e6ceb55d283c76b4c5fd9ad0fb1a2cf667.1619556430.git.viremana@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ffa88e6ceb55d283c76b4c5fd9ad0fb1a2cf667.1619556430.git.viremana@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes pinned tmpfs pages bail out early in the process of page
-migration, like what pinned anonymous pages do.
+On Tue, Apr 27, 2021 at 08:54:50PM +0000, Vineeth Pillai wrote:
+> Previously, to detect nested virtualization enlightenment support,
+> we were using HV_X64_ENLIGHTENED_VMCS_RECOMMENDED feature bit of
+> HYPERV_CPUID_ENLIGHTMENT_INFO.EAX CPUID as docuemented in TLFS:
+>  "Bit 14: Recommend a nested hypervisor using the enlightened VMCS
+>   interface. Also indicates that additional nested enlightenments
+>   may be available (see leaf 0x4000000A)".
+> 
+> Enlightened VMCS, however, is an Intel only feature so the above
+> detection method doesn't work for AMD. So, use the
+> HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.EAX CPUID information ("The
+> maximum input value for hypervisor CPUID information.") and this
+> works for both AMD and Intel.
+> 
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
----
- mm/compaction.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index e04f4476e68e..78c3b992a1c9 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -964,11 +964,11 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		}
- 
- 		/*
--		 * Migration will fail if an anonymous page is pinned in memory,
--		 * so avoid taking lru_lock and isolating it unnecessarily in an
--		 * admittedly racy check.
-+		 * Migration will fail if an anonymous or tmpfs page is pinned
-+		 * in memory, so avoid taking lru_lock and isolating it
-+		 * unnecessarily in an admittedly racy check.
- 		 */
--		if (!page_mapping(page) &&
-+		if (!page_is_file_lru(page) &&
- 		    page_count(page) > page_mapcount(page))
- 			goto isolate_fail;
- 
--- 
-2.20.1.2432.ga663e714
-
+Acked-by: Wei Liu <wei.liu@kernel.org>
