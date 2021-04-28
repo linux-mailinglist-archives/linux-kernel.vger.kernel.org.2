@@ -2,139 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D81C36DD30
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8D636DD1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240995AbhD1Qjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
+        id S241053AbhD1Qeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbhD1Qjb (ORCPT
+        with ESMTP id S241054AbhD1Qea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:39:31 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5ADC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:38:45 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id b4so27843vst.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:38:45 -0700 (PDT)
+        Wed, 28 Apr 2021 12:34:30 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C786FC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:33:44 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id z1so74659756ybf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+bqujsD1CEh1BMsQ6Vfhu0Dtl9EKMPvmnj/WQm5NOQY=;
-        b=X5QjYOktKo0SOMzzXCGGEhJ1B+vtKaNQV8NPxuiFMVZI1s8N5Hsv83Svtsg50rgxqV
-         Wme5k2pnWmXoL95EzEKY4g5itbI+wPpjl1gJvv8E9H6g6iahugJUDWBiswRZjV0HuMRk
-         UKmaoLRN5K1bRs4417u9LHMJfv8sfU53FKwfI=
+        bh=aTy9+SvPIGV5lFvSWx3LUU1Noi5i+O1/6N3XRc6Yp+s=;
+        b=U4cWdJbnMYockksal5W0qWJ2/o3nLv4Lpk4cU+XKGbqMzFEDbp2Bx5blybQ6IenHy/
+         JCNxwlpGYWOUVPfdYVzj/m4OnSC4V7s5jz8MmW2I6akFZKirqRk8ups8VD9olaeIqMTC
+         w50SxBvWF4kkuIsqyKSuw7Kf0MS552kN6OaZgPxsKL5QNsMn7dlMZSbRBW3isDSraZyz
+         3COqcLh12yU4ZJiwgAEhEidLiRAtdm9+6MQzTeRCl0ePVeSnNQaCRLoo2hhKahQ/qczq
+         v5VpyIc/F/X6QHkzATVBJgptzCxjSsO0Me0zur5U//06nWHYkFhxuKazsfyigLDdfXPM
+         pdEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+bqujsD1CEh1BMsQ6Vfhu0Dtl9EKMPvmnj/WQm5NOQY=;
-        b=AhwB35vgilVrK+EaNgrcI0lO14109iiwgTL78WZrIgpjGZqavGFJt1p6Wmzerq5YVQ
-         gZCHpFWc4VEZTTLXiQZ06iPJkwrrHIN/Geh7HVAwkBgx1d05rcT06ogdlkYWU+9UetOU
-         OzprTX9fpgsZ0hfsCIKvP2K+im6r1z9KEhmS6bhdahsbD8QiBut9PxlPY2K9tpLap6I4
-         cTRDXJnDpmpWkCAik1YN81CxEbjWXF9QrIoF3Z3txbHxeXZMr3+odoq+cRwA37f75RAC
-         WBndTXBGkSNKKOO/wnkw6nODIwtvgLrPKhRwRvw6rHZ0SeAJ5HsalrZlX6UKihjUp7l9
-         lwpQ==
-X-Gm-Message-State: AOAM532yX2o1aOg+Culv/H7LbtkyzSbnySLVX7EFJAFRTtzLRQ+J2o0e
-        jiqT7aSoUlumed7754trCq5Totegoa1Zbw==
-X-Google-Smtp-Source: ABdhPJy0UxdurI9aErbvEpjVVohnDeP6g8LpbU8KiRw+f5YUQ2c6BCQ+67wVCzqLSoonHItM6BPRzA==
-X-Received: by 2002:a05:6102:2089:: with SMTP id h9mr18624380vsr.45.1619627924630;
-        Wed, 28 Apr 2021 09:38:44 -0700 (PDT)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id u65sm25888vkb.13.2021.04.28.09.38.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 09:38:44 -0700 (PDT)
-Received: by mail-ua1-f48.google.com with SMTP id n61so3145922uan.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:38:44 -0700 (PDT)
-X-Received: by 2002:a25:382:: with SMTP id 124mr19702977ybd.25.1619627606430;
- Wed, 28 Apr 2021 09:33:26 -0700 (PDT)
+        bh=aTy9+SvPIGV5lFvSWx3LUU1Noi5i+O1/6N3XRc6Yp+s=;
+        b=rddimfstN4uJyrPoag85JlX28k3qhRJIhreVhNg9h9nMVY4sAPLBJWpgDh/lzWaH/q
+         /Ln86fEXnCVoBh6cdZtuJmcxTcAtIxxI67n++Mto+/P0DX766G24gjiu++Gveht1/n6v
+         b0oLCn2xQq6KT5/LH3laVmcQWk9ZNfAqmQqu2E2QT7ezwD9pHjLHSWAJtUOsxvkvQ5jX
+         1bvil6NOo4Do7F+DfvtrPSq5UYDev9AsKQ+280pkJNwxycvhowKuHENiFtEZApBTPdX/
+         DQ6li2J5Y3Jzj2vb0US6d9dUdzjOn99dcbtRQLOHX/tXiORqo8V01R1uSXoCtEHnja8+
+         w5VA==
+X-Gm-Message-State: AOAM530cqbRYMF/ow8xI66jwT1Ax3jMUbce1Fp6g1cP3Aw9htBTM0NX3
+        o6YJqP97AWKHEAMZX/GvMGDiiOsbGO2XYngz/gduxw==
+X-Google-Smtp-Source: ABdhPJyXU6+c2wQUbkUCk7vbS8NF7UX3oML1F9qyhFbsvHN7HWAaB4kvmEzqKL7yK1wJlDeicuytO5opWykcIG4u9sw=
+X-Received: by 2002:a5b:906:: with SMTP id a6mr33493576ybq.446.1619627623685;
+ Wed, 28 Apr 2021 09:33:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423165906.2504169-1-dianders@chromium.org> <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid>
-In-Reply-To: <20210423095743.v5.1.I9e6af2529d6c61e5daf86a15a1211121c5223b9a@changeid>
-From:   Sean Paul <seanpaul@chromium.org>
-Date:   Wed, 28 Apr 2021 12:32:48 -0400
-X-Gmail-Original-Message-ID: <CAOw6vb+wgVZVf_uRZCXhHoa+y-dJmd4u4JX2wHjO0jiB5bfujw@mail.gmail.com>
-Message-ID: <CAOw6vb+wgVZVf_uRZCXhHoa+y-dJmd4u4JX2wHjO0jiB5bfujw@mail.gmail.com>
-Subject: Re: [PATCH v5 01/20] drm/panel: panel-simple: Add missing
- pm_runtime_disable() calls
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        robdclark@chromium.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-i2c@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <fabd0598-c62e-ea88-f340-050136bb8266@akamai.com> <20210428155203.39974-1-kuniyu@amazon.co.jp>
+In-Reply-To: <20210428155203.39974-1-kuniyu@amazon.co.jp>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 28 Apr 2021 18:33:32 +0200
+Message-ID: <CANn89iK2Wy5WJB+57Y9JU24boy=bb4YQCk6DWD4BvhsM3ZVSdQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     Jason Baron <jbaron@akamai.com>, andrii@kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:59 PM Douglas Anderson <dianders@chromium.org> wrote:
+On Wed, Apr 28, 2021 at 5:52 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
 >
-> In commit 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to
-> avoid excessive unprepare / prepare") we started using pm_runtime, but
-> my patch neglected to add the proper pm_runtime_disable(). Doh! Add
-> them now.
+> From:   Jason Baron <jbaron@akamai.com>
+> Date:   Wed, 28 Apr 2021 10:44:12 -0400
+> > On 4/28/21 4:13 AM, Kuniyuki Iwashima wrote:
+> > > From:   Jason Baron <jbaron@akamai.com>
+> > > Date:   Tue, 27 Apr 2021 12:38:58 -0400
+> > >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
+> > >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > >>> accept connections evenly. However, there is a defect in the current
+> > >>> implementation [1]. When a SYN packet is received, the connection is tied
+> > >>> to a listening socket. Accordingly, when the listener is closed, in-flight
+> > >>> requests during the three-way handshake and child sockets in the accept
+> > >>> queue are dropped even if other listeners on the same port could accept
+> > >>> such connections.
+> > >>>
+> > >>> This situation can happen when various server management tools restart
+> > >>> server (such as nginx) processes. For instance, when we change nginx
+> > >>> configurations and restart it, it spins up new workers that respect the new
+> > >>> configuration and closes all listeners on the old workers, resulting in the
+> > >>> in-flight ACK of 3WHS is responded by RST.
+> > >>
+> > >> Hi Kuniyuki,
+> > >>
+> > >> I had implemented a different approach to this that I wanted to get your
+> > >> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
+> > >> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
+> > >> that you want to replace with a 'new' webserver, you would need a separate
+> > >> process to receive the listen fd and then have that process send the fd to
+> > >> the new webserver, if they are not running con-currently. So instead what
+> > >> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
+> > >>
+> > >> 1) bind unix socket with path '/sockets'
+> > >> 2) sendmsg() the listen fd via the unix socket
+> > >> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
+> > >> 3) exit/close the old webserver and the listen socket
+> > >> 4) start the new webserver
+> > >> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
+> > >> 6) recvmsg() the listen fd
+> > >>
+> > >> So the idea is that we set a timeout on the unix socket. If the new process
+> > >> does not start and bind to the unix socket, it simply closes, thus releasing
+> > >> the listen socket. However, if it does bind it can now call recvmsg() and
+> > >> use the listen fd as normal. It can then simply continue to use the old listen
+> > >> fds and/or create new ones and drain the old ones.
+> > >>
+> > >> Thus, the old and new webservers do not have to run concurrently. This doesn't
+> > >> involve any changes to the tcp layer and can be used to pass any type of fd.
+> > >> not sure if it's actually useful for anything else though.
+> > >>
+> > >> I'm not sure if this solves your use-case or not but I thought I'd share it.
+> > >> One can also inherit the fds like in systemd's socket activation model, but
+> > >> that again requires another process to hold open the listen fd.
+> > >
+> > > Thank you for sharing code.
+> > >
+> > > It seems bit more crash-tolerant than normal fd passing, but it can still
+> > > suffer if the process dies before passing fds. With this patch set, we can
+> > > migrate children sockets even if the process dies.
+> > >
+> >
+> > I don't think crashing should be much of an issue. The old server can setup the
+> > unix socket patch '/sockets' when it starts up and queue the listen sockets
+> > there from the start. When it dies it will close all its fds, and the new
+> > server can pick anything up any fds that are in the '/sockets' queue.
+> >
+> >
+> > > Also, as Martin said, fd passing tends to make application complicated.
+> > >
+> >
+> > It may be but perhaps its more flexible? It gives the new server the
+> > chance to re-use the existing listen fds, close, drain and/or start new
+> > ones. It also addresses the non-REUSEPORT case where you can't bind right
+> > away.
 >
-> Fixes: 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare / prepare")
-> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> If the flexibility is really worth the complexity, we do not care about it.
+> But, SO_REUSEPORT can give enough flexibility we want.
+>
+> With socket migration, there is no need to reuse listener (fd passing),
+> drain children (incoming connections are automatically migrated if there is
+> already another listener bind()ed), and of course another listener can
+> close itself and migrated children.
+>
+> If two different approaches resolves the same issue and one does not need
+> complexity in userspace, we select the simpler one.
 
-Reviewed-by: Sean Paul <seanpaul@chromium.org>
+Kernel bloat and complexity is _not_ the simplest choice.
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
-> Changes in v5:
-> - Missing pm_runtime_disable() patch new for v5.
->
->  drivers/gpu/drm/panel/panel-simple.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 6b22872b3281..9746eda6f675 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -797,12 +797,14 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
->
->         err = drm_panel_of_backlight(&panel->base);
->         if (err)
-> -               goto free_ddc;
-> +               goto disable_pm_runtime;
->
->         drm_panel_add(&panel->base);
->
->         return 0;
->
-> +disable_pm_runtime:
-> +       pm_runtime_disable(dev);
->  free_ddc:
->         if (panel->ddc)
->                 put_device(&panel->ddc->dev);
-> @@ -818,6 +820,7 @@ static int panel_simple_remove(struct device *dev)
->         drm_panel_disable(&panel->base);
->         drm_panel_unprepare(&panel->base);
->
-> +       pm_runtime_disable(dev);
->         if (panel->ddc)
->                 put_device(&panel->ddc->dev);
->
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Touching a complex part of TCP stack is quite risky.
