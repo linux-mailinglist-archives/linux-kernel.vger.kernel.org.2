@@ -2,80 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C832736D0BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD9136D0BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhD1DEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 23:04:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:59550 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhD1DEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 23:04:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBC521FB;
-        Tue, 27 Apr 2021 20:03:19 -0700 (PDT)
-Received: from [10.163.76.81] (unknown [10.163.76.81])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6B423F694;
-        Tue, 27 Apr 2021 20:03:14 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 1/5] mm/huge_memory.c: remove dedicated macro
- HPAGE_CACHE_INDEX_MASK
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     ziy@nvidia.com, william.kucharski@oracle.com, willy@infradead.org,
-        yang.shi@linux.alibaba.com, aneesh.kumar@linux.ibm.com,
-        rcampbell@nvidia.com, songliubraving@fb.com,
-        kirill.shutemov@linux.intel.com, riel@surriel.com,
-        hannes@cmpxchg.org, minchan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210427133214.2270207-1-linmiaohe@huawei.com>
- <20210427133214.2270207-2-linmiaohe@huawei.com>
-Message-ID: <b2cf99f9-bf6e-e87f-30a8-44aceed7ca03@arm.com>
-Date:   Wed, 28 Apr 2021 08:34:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235411AbhD1DGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 23:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230285AbhD1DGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 23:06:36 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02584C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 20:05:51 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id m7so59723624ljp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 20:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V7mo3cbfs0/nbqRuNxTuOd0tFgN99mJ+mVJmHvq4QgM=;
+        b=IsoWwKy04IZcM7ZiXZK2wMxIKKYXWODj2QfPfFJ6H++i11iyqoBTUOAK5MdZkp7XT0
+         4p6t6XMWmccCi8/kqiLQiqXnj5mLXSfmvrwivJ51WaeW7JZxH8xgWCHsuyZxZRe+EAym
+         dhqWRJPfpgXOAS0cEuXZaNXRHze2NAOgKN3zFKmAK78GAeYXlKgOQPCLJs/em5OGyPbX
+         Okjs9muuYzsGLd+1SHyRtK3KXhUwmdokP/lZiFOJ6Z69laZh0sq+xpaFnxHzwyNXHajv
+         J1vrWHhd3WufsTOcGssFQft0KoE9bgzO3iZw48isweiHUOwHdvBhQaaLhXmRtcMJcyOZ
+         upeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V7mo3cbfs0/nbqRuNxTuOd0tFgN99mJ+mVJmHvq4QgM=;
+        b=N8ufTJIuo47qKN6GNiX4/Rn73EUS4Ji2DwxBnIC52TZMhKJzj5NDMraBAZTZx5jaAY
+         SJRPBKmWZAWOCQoFoHmPe8MkS8VRX7bFnEhRciH93zxclsv8hwt1nYxm64O/v/BDRr8P
+         BSTV6nRUe75gPryLQf3qhqLkr6iPs175sMQMTjWH97O8pfuqazT4PfiCzReMgLJU6MNG
+         fr6ylysRVt/VE5ZFITCt3kzOx8kiprkOBwh5njcQH0rXf90EbMfhYjzBbx5RX/ZwlB7J
+         dhEmsKboD3ac2x6lGPP/r6YIBFHyiTk+2Gtr0UezTxxotuq3nj4KUjob0KXTh13irE07
+         vsZw==
+X-Gm-Message-State: AOAM531/0rzU7wbXOxOR8Qbx20X1y0aI/NZk9+gSVjsCZOFfTkx00ruf
+        HnEWifPjVAVMqVIZDxwOKAHXHfvRwqm1hXP12Zc=
+X-Google-Smtp-Source: ABdhPJxstYbonXua48xMw6fE3OUm7rGM+t6V4Pthc7kWFYVz94TWzKfW1TBFD5e/rCFgb3R4rW/Z6MYE9zAvvkhc2kY=
+X-Received: by 2002:a2e:bb8f:: with SMTP id y15mr19085886lje.86.1619579144266;
+ Tue, 27 Apr 2021 20:05:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210427133214.2270207-2-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1619491400-1904-1-git-send-email-sxwjean@me.com>
+ <20210427025358.GV235567@casper.infradead.org> <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
+ <20210427033632.GW235567@casper.infradead.org> <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
+ <CAEVVKH-7qRVRKsFmzc9NnhS8Lae5Yq=WhSparOmR3dZmD3PkAw@mail.gmail.com> <20210427112527.GX235567@casper.infradead.org>
+In-Reply-To: <20210427112527.GX235567@casper.infradead.org>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Wed, 28 Apr 2021 11:05:18 +0800
+Message-ID: <CAEVVKH8AFMqwEcpp=7h7k-_BYqwU+gutoUMNM93pnGPiW=u+gg@mail.gmail.com>
+Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Xiongwei Song <sxwjean@me.com>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27, 2021 at 7:26 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Apr 27, 2021 at 01:30:48PM +0800, Xiongwei Song wrote:
+> > Hi Mattew,
+> >
+> > One more thing I should explain, the kmalloc_order() appends the
+> > __GFP_COMP flags,
+> > not by the caller.
+> >
+> > void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
+> > {
+> > ...........................................................
+> >
+> > flags |= __GFP_COMP;
+> > page = alloc_pages(flags, order);
+> > ...........................................................
+> > return ret;
+> > }
+> > EXPORT_SYMBOL(kmalloc_order);
+> >
+> > #ifdef CONFIG_TRACING
+> > void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
+> > {
+> > void *ret = kmalloc_order(size, flags, order);
+> > trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
+> > return ret;
+> > }
+> > EXPORT_SYMBOL(kmalloc_order_trace);
+> > #endif
+>
+> Yes, I understood that.  What I don't understand is why appending the
+> __GFP_COMP to the trace would have been less confusing for you.
+>
+> Suppose I have some code which calls:
+>
+>         kmalloc(10 * 1024, GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC);
+>
+> and I see in my logs
+>
+>      0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000 bytes_req=10176 bytes_alloc=16384 gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC|__GFP_COMP
+>
+> That seems to me _more_ confusing because I would wonder "Where did that
+> __GFP_COMP come from?"
 
-On 4/27/21 7:02 PM, Miaohe Lin wrote:
-> Rewrite the pgoff checking logic to remove macro HPAGE_CACHE_INDEX_MASK
-> which is only used here to simplify the code.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/huge_mm.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index 9626fda5efce..0a526f211fec 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -152,15 +152,13 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
->  
->  bool transparent_hugepage_enabled(struct vm_area_struct *vma);
->  
-> -#define HPAGE_CACHE_INDEX_MASK (HPAGE_PMD_NR - 1)
-> -
->  static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
->  		unsigned long haddr)
->  {
->  	/* Don't have to check pgoff for anonymous vma */
->  	if (!vma_is_anonymous(vma)) {
-> -		if (((vma->vm_start >> PAGE_SHIFT) & HPAGE_CACHE_INDEX_MASK) !=
-> -			(vma->vm_pgoff & HPAGE_CACHE_INDEX_MASK))
-> +		if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-> +				HPAGE_PMD_NR))
->  			return false;
->  	}
->  
-> 
+Thank you for the comments. But I disagree.
 
-LGTM
+When I use trace, I hope I can get the precise data rather than something
+changed that I don't know , then I can get the correct conclusion or
+direction on my issue.
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Here my question is what the trace events are for if they don't provide the
+real situation? I think that's not graceful and friendly.
+
+From my perspective, it'd be better to know my flags changed before checking
+code lines one by one. In other words, I need a warning to reminder me on this,
+then I can know quickly my process might do some incorrect things.
+
+Regards,
+Xiongwei
