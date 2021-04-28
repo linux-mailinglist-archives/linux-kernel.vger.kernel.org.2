@@ -2,64 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49A336D66D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8386B36D671
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238709AbhD1L2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:28:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33800 "EHLO mail.skyhub.de"
+        id S238997AbhD1L3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:29:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230420AbhD1L2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:28:44 -0400
-Received: from zn.tnic (p200300ec2f0c1700f2e32bd17c928af7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1700:f2e3:2bd1:7c92:8af7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 868B61EC01A8;
-        Wed, 28 Apr 2021 13:27:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619609278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=wX0F+YaUrQZGJ7PeYw9w/V7McHBNPDBXSLDgSyYC7J0=;
-        b=ZYf/SAZqE+aSmtpLJSFVWkaTmQ05yy0NKNXpwJgpmxxGUxOhpubhMst0d8XuV9RnNwkJ/p
-        RJI5buJf0DqMmBHzk0OYqgrpxVeXpA7k5emgBYoFTH3qFRmK+vSMnY+TGWuLGk7qoIEmlM
-        ZOjGoDexB+s7ejNsxmDbKwrfumLfDEc=
-Date:   Wed, 28 Apr 2021 13:27:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 3/3] x86/msr: Rename MSR_K8_SYSCFG to MSR_AMD64_SYSCFG
-Message-ID: <YIlGvdxZVa0kiJf4@zn.tnic>
-References: <20210427111636.1207-1-brijesh.singh@amd.com>
- <20210427111636.1207-4-brijesh.singh@amd.com>
- <YIk8c+/Vwf30Fh6G@zn.tnic>
- <9e687194-5b68-9b4c-bf7f-0914e656d08f@redhat.com>
+        id S230420AbhD1L3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 07:29:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9319613D9;
+        Wed, 28 Apr 2021 11:28:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619609339;
+        bh=Iic85jAgXlML0nAoIg9PqnUZHUYCqj/YyqkkB9K1oEE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MNxqDVQfnvBIpHFIFHBl/6oVJ7gcZD9mAcnkRI/7m0WU7CX1BqeOpcgKrojv0AHFl
+         rRHCcUIBND+jR20sDGzuk9/00UJKepztXsWAL9Q1Ovl1qy3POX8l7wnVEKyLP/jHxr
+         bFwj6SYYHCEo7VU93QqPz0p3JxjUoHZDghkDv+chLVK9vrMsO9m3dyUSkyHv/7/SQZ
+         rFQ08ezLUtLJ9OihZm+000+rsR2YHdmcC4FaodhaPYM1aGvNCcLS0TMjSEgjeKZ/QI
+         hM00RPB9LfC4V+HvfG2E9EdA1OOkQ8EOqs8AFoGTr6v4H6dFDaX+8n+kgQ9S0oD7zU
+         LQWHbeAQyDfow==
+Date:   Wed, 28 Apr 2021 13:28:53 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210428132853.65b162a0@coco.lan>
+In-Reply-To: <YIkzZs8t0lMWVjzt@hovoldconsulting.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+        <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
+        <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
+        <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
+        <20210426163840.67ea8af9@coco.lan>
+        <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
+        <20210428103148.590191ac@coco.lan>
+        <YIkzZs8t0lMWVjzt@hovoldconsulting.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9e687194-5b68-9b4c-bf7f-0914e656d08f@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 12:55:26PM +0200, Paolo Bonzini wrote:
-> There shouldn't be any conflicts right now, but perhaps it's easiest to
-> merge the whole series for -rc2.
+Em Wed, 28 Apr 2021 12:05:26 +0200
+Johan Hovold <johan@kernel.org> escreveu:
 
-You mean, merge it upstream or into tip? I think you mean upstream
-because then it would be easy for everyone to base new stuff ontop.
-
-> In any case,
+> On Wed, Apr 28, 2021 at 10:31:48AM +0200, Mauro Carvalho Chehab wrote:
+> > Em Tue, 27 Apr 2021 14:23:20 +0200
+> > Johan Hovold <johan@kernel.org> escreveu:  
 > 
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Thx.
+> > > You're call, but converting functioning drivers where the authors knew
+> > > what they were doing just because you're not used to the API and risk
+> > > introducing new bugs in the process isn't necessarily a good idea.  
+> > 
+> > The problem is that the above assumption is not necessarily true:
+> > based on the number of drivers that pm_runtime_get_sync() weren't
+> > decrementing usage_count on errors, several driver authors were not 
+> > familiar enough with the PM runtime behavior by the time the drivers
+> > were written or converted to use the PM runtime, instead of the
+> > media .s_power()/.s_stream() callbacks.  
+> 
+> That may very well be the case. My point is just that this work needs to
+> be done carefully and by people familiar with the code (and runtime pm)
+> or you risk introducing new issues.
 
--- 
-Regards/Gruss,
-    Boris.
+Yeah, that's for sure.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> I really don't want the bot-warning-suppression crew to start with this
+> for example.
+> 
+> > > Especially since the pm_runtime_get_sync() will continue to be used
+> > > elsewhere, and possibly even in media in cases where you don't need to
+> > > check for errors (e.g. remove()).  
+> > 
+> > Talking about the remove(), I'm not sure if just ignoring errors
+> > there would do the right thing. I mean, if pm_runtime_get_sync()
+> > fails, probably any attempts to disable clocks and other things
+> > that depend on PM runtime will also (silently) fail.
+> > 
+> > This may put the device on an unknown PM and keep clock lines enabled
+> > after its removal.  
+> 
+> Right, a resume failure is a pretty big issue and it's not really clear
+> how to to even handle that generally. But at remove() time you don't
+> have much choice but to go on and release resource anyway. 
+> 
+> So unless actually implementing some error handling too, using
+> pm_runtime_sync_get() without checking for errors is still preferred
+> over pm_runtime_resume_and_get(). That is 
+> 
+> 	pm_runtime_get_sync();
+> 	/* cleanup */
+> 	pm_runtime_disable()
+> 	pm_runtime_put_noidle();
+> 
+> is better than:
+> 
+> 	ret = pm_runtime_resume_and_get();
+> 	/* cleanup */
+> 	pm_runtime_disable();
+> 	if (ret == 0)
+> 		pm_runtime_put_noidle();
+> 
+> unless you also start doing something ret.
+
+Perhaps the best would be to use, instead:
+
+	pm_runtime_get_noresume();
+ 	/* cleanup */
+ 	pm_runtime_disable()
+ 	pm_runtime_put_noidle();
+	pm_runtime_set_suspended();
+
+I mean, at least for my eyes, it doesn't make sense to do a PM
+resume during driver's removal/unbind time.
+
+Regards,
+Mauro
+
+
+> 
+> Johan
+
+
+
+Thanks,
+Mauro
