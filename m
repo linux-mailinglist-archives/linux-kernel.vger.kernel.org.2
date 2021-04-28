@@ -2,179 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA95F36D784
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EF936D78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239263AbhD1Mjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:39:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236857AbhD1Mjq (ORCPT
+        id S239398AbhD1MlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:41:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44818 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235630AbhD1MlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:39:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619613541;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Adfym8klH+5tYEalET56TZJSSzxtb4r5UMa5Cv/WfQY=;
-        b=IRuU2N15QlXIcB7k3kkpPFdmVgcU8pTylDMGx4TzDQjFmel3v0UOY2HIiahVLnNXXyJ9k+
-        yoBAlsgUCqRSJzWryQxLqukzLyVR6KFwb12BPKllw98EZQXytLCYZpon58f3J3RgE6gBTf
-        gMAeMBX2vaDPNmkdgIuVfdVJ2L+EzUU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-z0KXcxQuOpi0zJYvZYVSsg-1; Wed, 28 Apr 2021 08:38:59 -0400
-X-MC-Unique: z0KXcxQuOpi0zJYvZYVSsg-1
-Received: by mail-ed1-f72.google.com with SMTP id v20-20020aa7cd540000b0290387928042f8so5859429edw.19
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:38:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Adfym8klH+5tYEalET56TZJSSzxtb4r5UMa5Cv/WfQY=;
-        b=Eqe2dedR1kE3uA/uwO7iQMS+i8eBdYhEESIGEzHLJLyi/4UWPlIOLmHlsK8YkkLAfs
-         7A5Fk8z/E54V90I2a41CBNbvWflR2igsUY8+6B3lfhTOLDys6UAnvTQgee6H6fROlJkR
-         w0TVg4f7xA3qY3P/7bTVJ7bWpZt7Hy77YEbzzuVHQTEa/86LfelXlLB3n1EGFOyUZp7s
-         n06lAqlIMJViZJD3LxBaelf27lAPtcgXjWG5B0czSKdFKb61XuhG463BJG7JaYypCsMR
-         cfYTsypHSEtxtM+Oy/ayc2vnbCPesSXzEzvq2//J/cwqU07Jl6LPjsfw0wwX0zQ01sqf
-         01Xg==
-X-Gm-Message-State: AOAM531zl+aKbzCCgcZ3ZW95eAmIkUqByPx1C1ve0Vf3ZnKjnySFrxVP
-        /2h5jouMUT4wDokYPYEIwfTIySUGEKd+qf/0Oq9FC9LLgWl3DqzJqrpEcKr5YH5IGqgzWXtaIhz
-        VOjzF7hxeNomNNFaHzHVMhRIB
-X-Received: by 2002:a17:906:6a41:: with SMTP id n1mr29126509ejs.401.1619613538769;
-        Wed, 28 Apr 2021 05:38:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzM7yUm1BKlNC1iK3OfUA70Fr0wQFbfb2WyKUUYOLARDyyEnrh62rWqtS9ykhJkwSv1JTJIIg==
-X-Received: by 2002:a17:906:6a41:: with SMTP id n1mr29126479ejs.401.1619613538594;
-        Wed, 28 Apr 2021 05:38:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id u1sm4785519edv.90.2021.04.28.05.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 05:38:58 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Denis Lunev <den@openvz.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Oliver Upton <oupton@google.com>,
-        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
- entries count
-In-Reply-To: <20210428113655.26282-1-valeriy.vdovin@virtuozzo.com>
-References: <20210428113655.26282-1-valeriy.vdovin@virtuozzo.com>
-Date:   Wed, 28 Apr 2021 14:38:57 +0200
-Message-ID: <871raueg7y.fsf@vitty.brq.redhat.com>
+        Wed, 28 Apr 2021 08:41:20 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SCYFff187264;
+        Wed, 28 Apr 2021 08:39:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=etEjbbGKn2hpHf6c3/y+kKqdCCQNX90zvsHG3RWd7B4=;
+ b=cNsffSVEnFkc++NJQIp0dmvC1K9nwT9t17sHp9OLjTZbZU0CS0BvN8Lo/BbqG7QSLkvh
+ rIAqirmiTC88/bimrVzHe3R0XqL3QqGJ1AVcJVsawbeuw1ZzLLKAB0sO0zupPKvLzx/s
+ JgrylGIY/kGn9AXJ8sdnXO53kHv5dHDYkcnvq040iOsKF3S1RK9buRlld1nCI3aXYrgp
+ ddrOqUF2H9vqiChnuK2c/V0Ycu7C0Ml13j1wFN13ESiwv954sOxssJ8jQDw7PJHgP37v
+ EDE19Hj+pSd3c+zNTNLsbbIFkKfRZuIp5P+/uSk6TqO529gSaTLfjk5doSReQoKleezZ Xw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38767tu925-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 08:39:30 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SCReCO032532;
+        Wed, 28 Apr 2021 12:39:28 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akh9vpa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 12:39:28 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SCdOGx37093778
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 12:39:24 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1A8AA4040;
+        Wed, 28 Apr 2021 12:39:24 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CD21A4053;
+        Wed, 28 Apr 2021 12:39:24 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 12:39:24 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/sclp_vt220: Fix console name to match device
+To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
+        Benjamin Zimmermann <dave@oss.volkswagen.com>,
+        debian-s390@lists.debian.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
+ <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <3bfd4202-5c04-8ec7-94dc-8b60e7d73bca@de.ibm.com>
+Date:   Wed, 28 Apr 2021 14:39:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sit4_sRX9MqvpxcdYTSGjmn0-fay0Nui
+X-Proofpoint-ORIG-GUID: sit4_sRX9MqvpxcdYTSGjmn0-fay0Nui
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_06:2021-04-27,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ spamscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valeriy Vdovin <valeriy.vdovin@virtuozzo.com> writes:
 
-> KVM_GET_CPUID2 kvm ioctl is not very well documented, but the way it is
-> implemented in function kvm_vcpu_ioctl_get_cpuid2 suggests that even at
-> error path it will try to return number of entries to the caller. But
-> The dispatcher kvm vcpu ioctl dispatcher code in kvm_arch_vcpu_ioctl
-> ignores any output from this function if it sees the error return code.
->
-> It's very explicit by the code that it was designed to receive some
-> small number of entries to return E2BIG along with the corrected number.
->
-> This lost logic in the dispatcher code has been restored by removing the
-> lines that check for function return code and skip if error is found.
-> Without it, the ioctl caller will see both the number of entries and the
-> correct error.
->
-> In selftests relevant function vcpu_get_cpuid has also been modified to
-> utilize the number of cpuid entries returned along with errno E2BIG.
->
-> Signed-off-by: Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
+
+On 27.04.21 21:40, Valentin Vidic wrote:
+> Console name reported in /proc/consoles:
+> 
+>    ttyS1                -W- (EC p  )    4:65
+> 
+> does not match the char device name:
+> 
+>    crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
+> 
+> so debian-installer inside a QEMU s390x instance gets confused and fails
+> to start with the following error:
+> 
+>    steal-ctty: No such file or directory
+> 
+> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+
+Ok, I will apply this internally for a while to give it some test coverage.
+I also think that I found a potential statement for the documentation issue.
+
+The tty will simply continue to work (as tty and console are not connected),
+but for the console on LPAR you usually do things like
+"console=ttyS0 console=ttyS1" to get console output on both (sclp line mode and
+sclp full screen AKA ascii console).
+
+When we now change the documentation to
+"console=ttyS0 console=ttyS1 console=ttysclp0" the kernel will ignore the missing
+console.
+
+
 > ---
->  arch/x86/kvm/x86.c                            | 10 +++++-----
->  .../selftests/kvm/lib/x86_64/processor.c      | 20 +++++++++++--------
->  2 files changed, 17 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index efc7a82ab140..df8a3e44e722 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4773,14 +4773,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  		r = -EFAULT;
->  		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
->  			goto out;
-> +
->  		r = kvm_vcpu_ioctl_get_cpuid2(vcpu, &cpuid,
->  					      cpuid_arg->entries);
-> -		if (r)
-> -			goto out;
-> -		r = -EFAULT;
-> -		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid)))
-
-It may make sense to check that 'r == -E2BIG' before trying to write
-anything back. I don't think it is correct/expected to modify nent in
-other cases (e.g. when kvm_vcpu_ioctl_get_cpuid2() returns -EFAULT)
-
-> +
-> +		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid))) {
-> +			r = -EFAULT;
->  			goto out;
-> -		r = 0;
-> +		}
->  		break;
-
-How is KVM userspace supposed to know if it can trust the 'nent' value
-(KVM is fixed case) or not (KVM is not fixed case)? This can probably be
-resolved with adding a new capability (but then I'm not sure the change
-is worth it to be honest). Also, if making such a change, API
-documentation in virt/kvm/api.rst needs updating.
-
->  	}
->  	case KVM_GET_MSRS: {
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> index a8906e60a108..a412b39ad791 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> @@ -727,17 +727,21 @@ struct kvm_cpuid2 *vcpu_get_cpuid(struct kvm_vm *vm, uint32_t vcpuid)
->  
->  	cpuid = allocate_kvm_cpuid2();
->  	max_ent = cpuid->nent;
-> +	cpuid->nent = 0;
->  
-> -	for (cpuid->nent = 1; cpuid->nent <= max_ent; cpuid->nent++) {
-> -		rc = ioctl(vcpu->fd, KVM_GET_CPUID2, cpuid);
-> -		if (!rc)
-> -			break;
-> +	rc = ioctl(vcpu->fd, KVM_GET_CPUID2, cpuid);
-> +	TEST_ASSERT(rc == -1 && errno == E2BIG,
-> +		    "KVM_GET_CPUID2 should return E2BIG: %d %d",
-> +		    rc, errno);
->  
-> -		TEST_ASSERT(rc == -1 && errno == E2BIG,
-> -			    "KVM_GET_CPUID2 should either succeed or give E2BIG: %d %d",
-> -			    rc, errno);
-> -	}
-> +	TEST_ASSERT(cpuid->nent,
-> +		    "KVM_GET_CPUID2 failed to set cpuid->nent with E2BIG");
-> +
-> +	TEST_ASSERT(cpuid->nent < max_ent,
-> +		"KVM_GET_CPUID2 has %d entries, expected maximum: %d",
-> +		cpuid->nent, max_ent);
->  
-> +	rc = ioctl(vcpu->fd, KVM_GET_CPUID2, cpuid);
->  	TEST_ASSERT(rc == 0, "KVM_GET_CPUID2 failed, rc: %i errno: %i",
->  		    rc, errno);
-
--- 
-Vitaly
-
+>   v2: also update preferred console for VT220 case
+> 
+>   arch/s390/kernel/setup.c       | 2 +-
+>   drivers/s390/char/sclp_vt220.c | 4 ++--
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+> index 72134f9f6ff5..3ec6ca9c26c0 100644
+> --- a/arch/s390/kernel/setup.c
+> +++ b/arch/s390/kernel/setup.c
+> @@ -165,7 +165,7 @@ static void __init set_preferred_console(void)
+>   	else if (CONSOLE_IS_3270)
+>   		add_preferred_console("tty3270", 0, NULL);
+>   	else if (CONSOLE_IS_VT220)
+> -		add_preferred_console("ttyS", 1, NULL);
+> +		add_preferred_console("ttysclp", 0, NULL);
+>   	else if (CONSOLE_IS_HVC)
+>   		add_preferred_console("hvc", 0, NULL);
+>   }
+> diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
+> index 047f812d1a1c..71ed1bf15598 100644
+> --- a/drivers/s390/char/sclp_vt220.c
+> +++ b/drivers/s390/char/sclp_vt220.c
+> @@ -35,8 +35,8 @@
+>   #define SCLP_VT220_MINOR		65
+>   #define SCLP_VT220_DRIVER_NAME		"sclp_vt220"
+>   #define SCLP_VT220_DEVICE_NAME		"ttysclp"
+> -#define SCLP_VT220_CONSOLE_NAME		"ttyS"
+> -#define SCLP_VT220_CONSOLE_INDEX	1	/* console=ttyS1 */
+> +#define SCLP_VT220_CONSOLE_NAME		"ttysclp"
+> +#define SCLP_VT220_CONSOLE_INDEX	0	/* console=ttysclp0 */
+>   
+>   /* Representation of a single write request */
+>   struct sclp_vt220_request {
+> 
