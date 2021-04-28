@@ -2,165 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C1736DD8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39EE36DD86
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241343AbhD1QwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241344AbhD1Qv6 (ORCPT
+        id S241328AbhD1Qvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:51:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22155 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241260AbhD1Qvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:51:58 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68D2C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:11 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id n22so7583315qtk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i7bjsRegze0J8KMBLsd6S1kBXzifIu76DMKQBA84MfE=;
-        b=H6GvR/jJOzxy5yvUfCUkF+EMKldJel4VTzuxpNzjmhRH8YjlZLt2EzcmEoB9kuRTpp
-         J+S1tttlyYfNfXCYv1VnThpaRAKe35vjhUfbxu7lWEsG6xkD6fpttoWrTCDJyaB4s1yh
-         qpsFpp1ULXf6O5GRNrGy8VZodsPVr2ptimptY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i7bjsRegze0J8KMBLsd6S1kBXzifIu76DMKQBA84MfE=;
-        b=aMI0z+rBrnElqiZLsJAQDf8VTVxEOii8wdHvgA7jg4qJn6GqT4JZhcSneq0+xPbv00
-         ww67pElS3DfkWx0t3BoZtuCPfnrPbo2cKTtNBqJ/oR3+npUzZEBOmLCLRx57d4AKuwRK
-         4GJ5Uuw0xApxbyq9BAddG9vRvPecvR8bLmN5JdXWbaJo8trUN4COciVLE/a10e6DyxPJ
-         23cVv47z9/napcalbSDedErcpuJey6562g5qG5v1iAkzs4PRbqRMB0ZaamdmCMyySamt
-         LtWHCb1ST6pnYW1k9yLeMZZjvHjdw+tSGGcgh2p6GB41pF6XH/CrW1GFNRsciebLH02Q
-         ha1A==
-X-Gm-Message-State: AOAM532c2HlpZiOHV+iMFDdajPdJb3EeGhFDMAcz1Rc+PBOOK7YrSg1E
-        KdANBMPf10SnkKFArN7N0dF+VVplvzYQdQ==
-X-Google-Smtp-Source: ABdhPJzfuxLxyxbsHUpJLGyuJs9pata7Jmhtn/RDK2bRr2TTY43mO+4EDoUmEzarrE3r8i0fq6pd4w==
-X-Received: by 2002:ac8:4e24:: with SMTP id d4mr27577305qtw.213.1619628670939;
-        Wed, 28 Apr 2021 09:51:10 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id d6sm391547qtn.52.2021.04.28.09.51.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 09:51:10 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id g38so74745454ybi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:09 -0700 (PDT)
-X-Received: by 2002:a25:778d:: with SMTP id s135mr31447093ybc.21.1619628668908;
- Wed, 28 Apr 2021 09:51:08 -0700 (PDT)
+        Wed, 28 Apr 2021 12:51:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619628661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E/fqWNE7LQ7FhXknXyJchDB3GzeF4lW6wfnQ7hJxAE0=;
+        b=Jrra77pJwDeHosjadApfF3izkQTS6WJgyyxts3Gae4g71xe0pOfTO5VS8jFdnQdPOjCGMH
+        7B2KSDgCjIQZuczFdLjHfNcd5y9tK8VQkY1xjpYkhstg6fYk+n+xDsXft7U6MSCS5uSG90
+        3rQ67ZIQ6Vmvxh0/0SsjY+3SK4hp910=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171--qo-T9cBO96lHXeEvi4-qw-1; Wed, 28 Apr 2021 12:50:57 -0400
+X-MC-Unique: -qo-T9cBO96lHXeEvi4-qw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F32A8031FA;
+        Wed, 28 Apr 2021 16:50:50 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-128.rdu2.redhat.com [10.10.116.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C74981007610;
+        Wed, 28 Apr 2021 16:50:49 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 50E2C220BCF; Wed, 28 Apr 2021 12:50:49 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, virtio-fs@redhat.com,
+        dan.j.williams@intel.com
+Cc:     vgoyal@redhat.com, miklos@szeredi.hu, jack@suse.cz,
+        willy@infradead.org, slp@redhat.com
+Subject: [PATCH v5 0/3] dax: Fix missed wakeup in put_unlocked_entry()
+Date:   Wed, 28 Apr 2021 12:50:37 -0400
+Message-Id: <20210428165040.1856202-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-References: <20210423165906.2504169-1-dianders@chromium.org> <20210423095743.v5.18.If050957eaa85cf45b10bcf61e6f7fa61c9750ebf@changeid>
-In-Reply-To: <20210423095743.v5.18.If050957eaa85cf45b10bcf61e6f7fa61c9750ebf@changeid>
-From:   Sean Paul <seanpaul@chromium.org>
-Date:   Wed, 28 Apr 2021 12:50:30 -0400
-X-Gmail-Original-Message-ID: <CAOw6vbLtEF4VbhOPEJGNj2PnEE4Jk-BBtpLF_CrxFEhzF4f+Rg@mail.gmail.com>
-Message-ID: <CAOw6vbLtEF4VbhOPEJGNj2PnEE4Jk-BBtpLF_CrxFEhzF4f+Rg@mail.gmail.com>
-Subject: Re: [PATCH v5 18/20] drm/panel: panel-simple: Cache the EDID as long
- as we retain power
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        robdclark@chromium.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-i2c@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 1:00 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> It doesn't make sense to go out to the bus and read the EDID over and
-> over again. Let's cache it and throw away the cache when we turn power
-> off from the panel. Autosuspend means that even if there are several
-> calls to read the EDID before we officially turn the power on then we
-> should get good use out of this cache.
->
+Hi,
 
-I think i915 caches the edid once on init and never refreshes it
-(assuming no hotplugs). That said, I think it makes sense for a more
-conservative approach in panel-simple.
+This is V5 of patches. Posted V4 here.
 
+https://lore.kernel.org/linux-fsdevel/20210423130723.1673919-1-vgoyal@redhat.com/
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> (no changes since v1)
->
->  drivers/gpu/drm/panel/panel-simple.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index a12dfe8b8d90..9be050ab372f 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -189,6 +189,8 @@ struct panel_simple {
->         struct gpio_desc *enable_gpio;
->         struct gpio_desc *hpd_gpio;
->
-> +       struct edid *edid;
-> +
->         struct drm_display_mode override_mode;
->
->         enum drm_panel_orientation orientation;
-> @@ -345,6 +347,9 @@ static int panel_simple_suspend(struct device *dev)
->         regulator_disable(p->supply);
->         p->unprepared_time = ktime_get();
->
-> +       kfree(p->edid);
-> +       p->edid = NULL;
-> +
->         return 0;
->  }
->
-> @@ -510,15 +515,13 @@ static int panel_simple_get_modes(struct drm_panel *panel,
->
->         /* probe EDID if a DDC bus is available */
->         if (p->ddc) {
-> -               struct edid *edid;
-> -
->                 pm_runtime_get_sync(panel->dev);
->
-> -               edid = drm_get_edid(connector, p->ddc);
-> -               if (edid) {
-> -                       num += drm_add_edid_modes(connector, edid);
-> -                       kfree(edid);
-> -               }
-> +               if (!p->edid)
-> +                       p->edid = drm_get_edid(connector, p->ddc);
-> +
-> +               if (p->edid)
-> +                       num += drm_add_edid_modes(connector, p->edid);
+Changes since V4:
 
-I suppose this would keep banging on the ddc if drm_get_edid()
-continuously returns NULL, but maybe that's desireable (it'll succeed
-sometime in the future)? At any rate, this is an improvement on
-current behavior so it has my vote.
+- Changed order of WAKE_NEXT and WAKE_ALL entries in enum. (Matthew Wilcox).
 
-Reviewed-by: Sean Paul <seanpaul@chromium.org>
+Thanks
+Vivek
 
->
->                 pm_runtime_mark_last_busy(panel->dev);
->                 pm_runtime_put_autosuspend(panel->dev);
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Vivek Goyal (3):
+  dax: Add an enum for specifying dax wakup mode
+  dax: Add a wakeup mode parameter to put_unlocked_entry()
+  dax: Wake up all waiters after invalidating dax entry
+
+ fs/dax.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
+
+-- 
+2.25.4
+
