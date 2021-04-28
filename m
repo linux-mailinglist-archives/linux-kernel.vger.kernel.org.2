@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5BD36D4BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FEE36D4BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237897AbhD1J04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:26:56 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:59843 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhD1J0w (ORCPT
+        id S238090AbhD1J1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230113AbhD1J1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:26:52 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MOAFl-1lvHoB26UD-00OUoI; Wed, 28 Apr 2021 11:26:02 +0200
-Received: by mail-wr1-f49.google.com with SMTP id x7so62217476wrw.10;
-        Wed, 28 Apr 2021 02:26:02 -0700 (PDT)
-X-Gm-Message-State: AOAM533HU1/LLmBGGP6a1RJetUZzoHYWCP7m4jB6v+bH5VvlSPJI72cr
-        +03fKEnflIUTiW/r0htcB6Deh28Fs5GtUbd3AEM=
-X-Google-Smtp-Source: ABdhPJwqIEeAs49Ao+vk5t61GKQ1/IZbmkhWZLdVEWOkwYxoYwXqZWYW6kaGHsuUixb/ZxTFjbOagwXoBrU8Ona83SM=
-X-Received: by 2002:adf:d223:: with SMTP id k3mr1211581wrh.99.1619601962128;
- Wed, 28 Apr 2021 02:26:02 -0700 (PDT)
+        Wed, 28 Apr 2021 05:27:33 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC92CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:26:48 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s22so23192564pgk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=HdBXAeW9ho79sbyDSekS4yet6htvB8OKbQECD3STw9g=;
+        b=jkVromoQu4MIvHxNxzjt6BTZYcg0ej3QJP/jMLiFq/+9P/og+Sn79uD7ulFAtyomLD
+         w3z7Q1HFewI7wwA5EfDyFfwimsz3zYurtxJnPh8DKTIsFSiDVcJFvvFzTCyoi/FH5eVN
+         oqwTTOsyTFT4aW8h/IC55BnG9baY2wkJEeqba78+DIJNuqnUssSESVMsCsfs6HEOXBYS
+         DRa+labNc5d194sLzRhzpY5+CA4OxHomBRunlNv/jiETZNyNvHrJIvF9J4d/upFNZ6nN
+         dOfie9wM3aY2QYMj23dhe4vHVI372C3k2+rqGIioQilSiHeyUfoqKFYQQAS2x+YvK2+7
+         J2kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=HdBXAeW9ho79sbyDSekS4yet6htvB8OKbQECD3STw9g=;
+        b=MzCFdmMHfGRbzO2ZU519V2hY4hsPUnPQIz0QbU30zDaqLHiu04IDOsgs75sSksEfgp
+         P8iUeoHREPMEoM1kXh9Qvl3qMlnURnmJWegx94lWlVU6W+pAQkUVjg+1/m/TK3N2wMJ0
+         6hudApEptBDOTahXzw5ZSYN8hfaOzNjsh2oB+aFYTKmvuHe4fOYj+RPaziSlsdaCO/jj
+         tuQkNU1sgjP/YfyPcwgd4UFN0WvpLZKVH3lvVltZOtPx9h+BrfJyHTZmNzrRPxXoM/5K
+         p0nHPKYT/+PvwOTWllvU7YqFeE8kdngqrfYaW48P1kxMxK9/memWlcnzfgRnddyirn2u
+         2GHg==
+X-Gm-Message-State: AOAM5310Eqi6nWQkCYxsYuM5+/5B7MjyVlcewF1rr0lm8dvjO6krF6lZ
+        PNg7EuKXg4Ix/LoCrQKYElE=
+X-Google-Smtp-Source: ABdhPJw7I0R9nrycMGShtYmIay08lbgPBXI0Aahfaxd0Pcm0k6t0qup20D1I2bQR2lT7PjLsEH1RGw==
+X-Received: by 2002:a65:48c5:: with SMTP id o5mr25873562pgs.101.1619602008433;
+        Wed, 28 Apr 2021 02:26:48 -0700 (PDT)
+Received: from localhost ([115.99.221.24])
+        by smtp.gmail.com with ESMTPSA id c26sm4686373pfo.67.2021.04.28.02.26.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 02:26:48 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:56:43 +0530
+From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com
+Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Add blank line after declarations
+Message-ID: <20210428092643.y2z2bezd2evu5kak@sanjana-VirtualBox>
 MIME-Version: 1.0
-References: <1618995255-91499-1-git-send-email-guoren@kernel.org>
- <20210428031807.GA27619@roeck-us.net> <CAJF2gTTSMC947zisNs+j_2rMoBqoOy-j1jvVBk2DNrf0Xt6sWA@mail.gmail.com>
-In-Reply-To: <CAJF2gTTSMC947zisNs+j_2rMoBqoOy-j1jvVBk2DNrf0Xt6sWA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 28 Apr 2021 11:25:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1DvsXSEDoovLk11hzNHyJi7vqNoToU+n5aFi2viZO_Uw@mail.gmail.com>
-Message-ID: <CAK8P3a1DvsXSEDoovLk11hzNHyJi7vqNoToU+n5aFi2viZO_Uw@mail.gmail.com>
-Subject: Re: [PATCH] csky: uaccess.h: Coding convention with asm generic
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:v2RyX7rStH4uWRbq/3VqWyCFTKJgyjFQT1ugf/3GvLy6vI6BHWZ
- 3mOb+gAaVf9thL2/d7jCW5vVT7GOQeSIyQS2G7tiMwLcRfdOYsdlv21p1M5oQdz+o5GH731
- 6tko/z1P2a6s27uDMSwD0XsaGmxGX0HeHtjUVt8DXHpFdjvMFQiwUccyX4KKw4WBiqELI0D
- uZHMcv5a9pitk+uI9t/uw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T+csEsx+EhA=:IsAdw5yRb1btdaH8Gdy5cM
- BK0ZMTUYWaXqt1PJeYeMzXjf30DvJphocaqVmwm9rrZwgp+cfE8FaklQ4Stq8qNk/YfWGiqpB
- l00i1BJ1glrq0gMpDHsg3kWQcgwzg0aW7HlRYL1hgjH3VPooFJ1uH2wK90ewF3adBNG/6KwsR
- 8pMhDhEo+nrHBP1PF7aext+bWiIXnFhowYamf2niXAMM/rAJqGtS3sdRLMCkkkx9KQGcSM7kH
- hKi2gmE+gprBN6i2+37Utze32og5n7qtQ3USC0L7T2kc0pJLpcSz5U+qLOjiP7ikpNhPfYmU7
- lnfuO2PMCCZQrsfB4gGYtIwuaGDgTtLcxVPiiFuzlB3if+kXIx5Q4coyASmBU6stMKRMLOG1G
- 53uAGGopQlWp7lBGfkq8OzbQHvEy8ScDTmRSWe8tdmMKU1SXTpGGnlOeoPiIQ9S1jYKqBjo30
- /72FaKdzwLlJ11vs0o2aB6dZy+a0jfvLoDPA8+KJpAxQ/eZfBu2ssASEOtM8Eq9WLB6r6KNzb
- bxNlluL6DHnVcbrOKIzf98=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 10:30 AM Guo Ren <guoren@kernel.org> wrote:
-> On Wed, Apr 28, 2021 at 11:18 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On Wed, Apr 21, 2021 at 08:54:15AM +0000, guoren@kernel.org wrote:
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > Using asm-generic/uaccess.h to prevent duplicated code:
-> > >  - Add user_addr_max which mentioned in generic uaccess.h
-> > >  - Remove custom definitions of KERNEL/USER_DS, get/set_fs,
-> > >    uaccess_kerenl
-> > >  - Using generic extable.h instead of custom definitions in
-> > >    uaccess.h
-> > >
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Cc: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Building csky:tinyconfig ... failed
-> > --------------
-> > Error log:
-> > csky-linux-ld: fs/readdir.o: in function `__put_user_fn':
-> > readdir.c:(.text+0x7c): undefined reference to `__put_user_bad'
-> > csky-linux-ld: fs/readdir.o: in function `$d':
-> > readdir.c:(.text+0x1bc): undefined reference to `__put_user_bad'
-> > make[1]: *** [Makefile:1277: vmlinux] Error 1
-> > make: *** [Makefile:222: __sub-make] Error 2
-> It's a bug, I can't put __put_user_bad in __put_user_fn, and
-> __put_user has done that:
->
-> /*
->  * These are the main single-value transfer routines.  They automatically
->  * use the right size if we just have the right pointer type.
->  * This version just falls back to copy_{from,to}_user, which should
->  * provide a fast-path for small values.
->  */
-> #define __put_user(x, ptr) \
-> ({                                                              \
->         __typeof__(*(ptr)) __x = (x);                           \
->         int __pu_err = -EFAULT;                                 \
->         __chk_user_ptr(ptr);                                    \
->         switch (sizeof (*(ptr))) {                              \
->         case 1:                                                 \
->         case 2:                                                 \
->         case 4:                                                 \
->         case 8:                                                 \
->                 __pu_err = __put_user_fn(sizeof (*(ptr)),       \
->                                          ptr, &__x);            \
->                 break;                                          \
->         default:                                                \
->                 __put_user_bad();                               \
->                 break;                                          \
->          }                                                      \
->         __pu_err;                                               \
-> })
+Blank line is added after declarations to maintain code uniformity.
 
-Actually, please don't use the asm-generic __put_user version based
-on copy_to_user, we probably have killed it off long ago.
+Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+---
+ drivers/dax/super.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-We might want to come up with a new version of asm-generic/uaccess.h
-that actually makes it easier to have a sane per-architecture
-implementation of the low-level accessors without set_fs().
+diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+index 5fa6ae9dbc8b..1f7cd75e379f 100644
+--- a/drivers/dax/super.c
++++ b/drivers/dax/super.c
+@@ -477,6 +477,7 @@ static struct dax_device *to_dax_dev(struct inode *inode)
+ static void dax_free_inode(struct inode *inode)
+ {
+ 	struct dax_device *dax_dev = to_dax_dev(inode);
++
+ 	kfree(dax_dev->host);
+ 	dax_dev->host = NULL;
+ 	if (inode->i_rdev)
+@@ -487,6 +488,7 @@ static void dax_free_inode(struct inode *inode)
+ static void dax_destroy_inode(struct inode *inode)
+ {
+ 	struct dax_device *dax_dev = to_dax_dev(inode);
++
+ 	WARN_ONCE(test_bit(DAXDEV_ALIVE, &dax_dev->flags),
+ 			"kill_dax() must be called before final iput()\n");
+ }
+@@ -502,6 +504,7 @@ static const struct super_operations dax_sops = {
+ static int dax_init_fs_context(struct fs_context *fc)
+ {
+ 	struct pseudo_fs_context *ctx = init_pseudo(fc, DAXFS_MAGIC);
++
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 	ctx->ops = &dax_sops;
+-- 
+2.25.1
 
-I've added Christoph to Cc here, he probably has some ideas
-on where we should be heading.
-
-One noteworthy aspect is that almost nothing users the low-level
-__get_user()/__put_user() helpers any more outside of architecture
-specific code, so we may not need to have separate versions
-for much longer.
-
-      Arnd
