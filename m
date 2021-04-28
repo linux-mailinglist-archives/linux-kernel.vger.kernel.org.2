@@ -2,155 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0082836D2BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DE836D2C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhD1HCY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 03:02:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3093 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1HCX (ORCPT
+        id S236303AbhD1HIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhD1HIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:02:23 -0400
-Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FVTwL6RFxzWZJP;
-        Wed, 28 Apr 2021 14:57:38 +0800 (CST)
-Received: from dggemi709-chm.china.huawei.com (10.3.20.108) by
- dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 28 Apr 2021 15:01:35 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi709-chm.china.huawei.com (10.3.20.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 28 Apr 2021 15:01:35 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Wed, 28 Apr 2021 15:01:35 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Feng Tang <feng.tang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     kernel test robot <oliver.sang@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2%
- regression
-Thread-Topic: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2%
- regression
-Thread-Index: AQHXO0FhMjEcPgOF502NS90b4qVMhqrHuBoAgAEkLwCAAKN1wA==
-Date:   Wed, 28 Apr 2021 07:01:35 +0000
-Message-ID: <d392cc91241641df865217d82368eba8@hisilicon.com>
-References: <20210427090013.GG32408@xsang-OptiPlex-9020>
- <87fszcnecr.ffs@nanos.tec.linutronix.de>
- <20210428050758.GB52098@shbuild999.sh.intel.com>
-In-Reply-To: <20210428050758.GB52098@shbuild999.sh.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.171]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 28 Apr 2021 03:08:35 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546D8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:07:49 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id h4so52768230wrt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ePLPOp5H+0aF2LuqZ4lYuqUerlVt+njfmTxese7LhY=;
+        b=OP4mXI4jjEoHoY29ERXrwS+GN54cc7kw+RjLLxk3LXHyetIfxpfFLjXZKPgu+690Rh
+         glkTr6oapoKRje3Em4EMhVPdR6R8HMpKI3KfwfBk0U94sSiEGVNarG+MTnJcks3WSNWL
+         gB2gnhcsMTpTkHeM5f6fNZng7TOxuOuFl6FhF4oHPFf4MdPYLRJGWXM5QXWP+ckJc6Ov
+         UYIrAhUwJ3F/fY2qhSqZHbegDeuWxnWOUaGgbEbuf2W03LTsRXZgzzzmkmhLWi5dgYCG
+         Su1s3TEagHdybmkhZWfgzCfn0GEuMCcHQ/VsMP07KN1QARxdWj3+9yYY6I/aaJ4nrIws
+         knvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ePLPOp5H+0aF2LuqZ4lYuqUerlVt+njfmTxese7LhY=;
+        b=U8nLuGspuohQ+xmRTcleLYOp2XhwN1RwkOaaC1adX2GQXV65mKWKKSL42XUQZ5sqoz
+         DJiBwYcFaxq/3h2ybZDoe5ssLQlBgb4UdKxp4yDDuzYiNfIzrfaud9YBApyES0Ksi7ca
+         /gkF3Ed+mJQeOpg2exm2TI8BgNzgxKfrIjZABOrhVipUlpn+J6hiubOFqh5vz4ucyzuy
+         8CiOOlE9ZC43/Pw3bTaBliKWjkaYqZS8HwRzLIYk1LLzbP/QUHyqSjf7nE619qzhDWEM
+         tYOCRBUy0YY+QzrjqMG2vZ097aelIUqluxKvTyuOcfaAa2bFGtGVZGyIKcdaod1RENye
+         Vlag==
+X-Gm-Message-State: AOAM53198wOUsYVDhnyy2ilfVVHucMUv93QgGxNxEktTs9edYq8bgsM8
+        SLGBnHrpkLRQImVqkN3jTdAo33Fwjd/2h7N2DAo6FA==
+X-Google-Smtp-Source: ABdhPJz4qnl6RSSFskgOfFvyG++QMnht2mgJkG97O1L2rp+YCN+OC2F2vDr/zAZ0zYJu71bovqsMjIrdqkTivs+EoQQ=
+X-Received: by 2002:adf:e846:: with SMTP id d6mr14148118wrn.356.1619593667902;
+ Wed, 28 Apr 2021 00:07:47 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop>
+ <5b988c4e-25e9-f2b9-b08d-35bc37a245e4@sifive.com> <CAAhSdy2g13XkeiG4-=0pHVw9Oq5zAeseM2LgxHf6daXD+qnc1Q@mail.gmail.com>
+ <d6e2b882-ae97-1984-fc03-2ac595ee56b4@redhat.com>
+In-Reply-To: <d6e2b882-ae97-1984-fc03-2ac595ee56b4@redhat.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 28 Apr 2021 12:37:25 +0530
+Message-ID: <CAAhSdy3V-8H8rLrGedfSPa1vFCSxcXCqaa0wA518JJstD9kPeg@mail.gmail.com>
+Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Feng Tang [mailto:feng.tang@intel.com]
-> Sent: Wednesday, April 28, 2021 5:08 PM
-> To: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kernel test robot <oliver.sang@intel.com>; Song Bao Hua (Barry Song)
-> <song.bao.hua@hisilicon.com>; Ingo Molnar <mingo@kernel.org>; LKML
-> <linux-kernel@vger.kernel.org>; lkp@lists.01.org; lkp@intel.com;
-> ying.huang@intel.com; zhengjun.xing@intel.com; x86@kernel.org
-> Subject: Re: [genirq] cbe16f35be: will-it-scale.per_thread_ops -5.2%
-> regression
-> 
-> Hi Thomas,
-> 
-> On Tue, Apr 27, 2021 at 01:42:12PM +0200, Thomas Gleixner wrote:
-> > Folks,
+On Tue, Apr 27, 2021 at 12:34 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 27/04/21 08:01, Anup Patel wrote:
+> > Hi Paolo,
 > >
-> > On Tue, Apr 27 2021 at 17:00, kernel test robot wrote:
+> > Looks like it will take more time for KVM RISC-V to be merged under arch/riscv.
 > >
-> > > Greeting,
-> > >
-> > > FYI, we noticed a -5.2% regression of will-it-scale.per_thread_ops due to
-> commit:
-> > >
-> > > commit: cbe16f35bee6880becca6f20d2ebf6b457148552 ("genirq: Add
-> > > IRQF_NO_AUTOEN for request_irq/nmi()")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git
-> > > master
+> > Let's go ahead with your suggestion of having KVM RISC-V under drivers/staging
+> > so that development is not blocked.
 > >
-> > this is the second report in the last week which makes not a lot of sense.
-> > And this oneis makes absolutely no sense at all.
+> > I will send-out v18 series which will add KVM RISC-V under the staging
+> > directory.
 > >
-> > This commit affects request_irq() and the related variants and has
-> > exactly ZERO influence on anything related to that test case simply
-> > because.
+> > Should we target Linux-5.14 ?
+>
+> Yes, 5.14 is reasonable.  You'll have to adjust the MMU notifiers for
+> the new API introduced in 5.13.
+
+Sure, I will rebase on the new API introduced in 5.13
+
+Regards,
+Anup
+
+>
+> Paolo
+>
+> > Regards,
+> > Anup
 > >
-> > I seriously have to ask the question whether this test infrastructure
-> > is actually measuring what it claims to measure.
+> > On Tue, Apr 27, 2021 at 11:13 AM Paul Walmsley <paul.walmsley@sifive.com> wrote:
+> >>
+> >> On Fri, 9 Apr 2021, Palmer Dabbelt wrote:
+> >>
+> >>> On Wed, 31 Mar 2021 02:21:58 PDT (-0700), pbonzini@redhat.com wrote:
+> >>>
+> >>>> Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
+> >>>> drivers/staging/riscv/kvm?
+> >>>
+> >>> I'm certainly ready to drop my objections to merging the code based on
+> >>> it targeting a draft extension, but at a bare minimum I want to get a
+> >>> new policy in place that everyone can agree to for merging code.  I've
+> >>> tried to draft up a new policy a handful of times this week, but I'm not
+> >>> really quite sure how to go about this: ultimately trying to build
+> >>> stable interfaces around an unstable ISA is just a losing battle.  I've
+> >>> got a bunch of stuff going on right now, but I'll try to find some time
+> >>> to actually sit down and finish one.
+> >>>
+> >>> I know it might seem odd to complain about how slowly things are going
+> >>> and then throw up another roadblock, but I really do think this is a
+> >>> very important thing to get right.  I'm just not sure how we're going to
+> >>> get anywhere with RISC-V without someone providing stability, so I want
+> >>> to make sure that whatever we do here can be done reliably.  If we don't
+> >>> I'm worried the vendors are just going to go off and do their own
+> >>> software stacks, which will make getting everyone back on the same page
+> >>> very difficult.
+> >>
+> >> I sympathize with Paolo, Anup, and others also.  Especially Anup, who has
+> >> been updating and carrying the hypervisor patches for a long time now.
+> >> And also Greentime, who has been carrying the V extension patches.  The
+> >> RISC-V hypervisor specification, like several other RISC-V draft
+> >> specifications, is taking longer to transition to the officially "frozen"
+> >> stage than almost anyone in the RISC-V community would like.
+> >>
+> >> Since we share this frustration, the next questions are:
+> >>
+> >> - What are the root causes of the problem?
+> >>
+> >> - What's the right forum to address the root causes?
+> >>
+> >> To me, the root causes of the problems described in this thread aren't
+> >> with the arch/riscv kernel maintenance guidelines, but rather with the
+> >> RISC-V specification process itself.  And the right forum to address
+> >> issues with the RISC-V specification process is with RISC-V International
+> >> itself: the mailing lists, the participants, and the board of directors.
+> >> Part of the challenge -- not simply with RISC-V, but with the Linux kernel
+> >> or any other community -- is to ensure that incentives (and disincentives)
+> >> are aligned with the appropriately responsible parts of the community.
+> >> And when it comes to specification development, the right focus to align
+> >> those incentives and disincentives is on RISC-V International.
+> >>
+> >> The arch/riscv patch acceptance guidelines are simply intended to ensure
+> >> that the definition of what is and isn't RISC-V remains clear and
+> >> unambiguous.  Even though the guidelines can result in short-term pain,
+> >> the intention is to promote long-term stability and sustainable
+> >> maintainability - particularly since the specifications get baked into
+> >> hardware.  We've observed that attempting to chase draft specifications
+> >> can cause significant churn: for example, the history of the RISC-V vector
+> >> specification illustrates how a draft extension can undergo major,
+> >> unexpected revisions throughout its journey towards ratification.  One of
+> >> our responsibilities as kernel developers is to minimize that churn - not
+> >> simply for our own sanity, or for the usability of RISC-V, but to ensure
+> >> that we remain members in good standing of the broader kernel community.
+> >> Those of us who were around for the ARM32 and ARM SoC kernel accelerando
+> >> absorbed strong lessons in maintainability, and I doubt anyone here is
+> >> interested in re-learning those the hard way.
+> >>
+> >> RVI states that the association is open to community participation.  The
+> >> organizations that have joined RVI, I believe, have a strong stake in the
+> >> health of the RISC-V ecosystem, just as the folks have here in this
+> >> discussion.  If the goal really is to get quality specifications out the
+> >> door faster, then let's focus the energy towards building consensus
+> >> towards improving the process at RISC-V International.  If that's
+> >> possible, the benefits won't only accrue to Linux developers, but to the
+> >> entire RISC-V hardware and software development community at large.  If
+> >> nothing else, it will be an interesting test of whether RISC-V
+> >> International can take action to address these concerns and balance them
+> >> with those of other stakeholders in the process.
+> >>
+> >>
+> >> - Paul
 > >
-> > As this commit clearly _cannot_ have the 'measured' side effect, this
-> > points to some serious issue in the tests or the test infrastructure
-> > itself.
-> 
-> 0day has reported about 20 similar cases that the bisected commit has nothing
-> to do with the benchmark case, and we were very confused too back then. And
-> our debug showed many of them changed the code alignment of kernel data or text
-> of other modules which is relevant with the benchmark, though some cases are
-> not well explained yet. Following are links of some explained cases.
-> 
-> https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
-> https://lore.kernel.org/lkml/20200330011254.GA14393@feng-iot/
-> https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
-> 
-> And to debug code alignment case, one debug patch to force all function address
-> aligned to 32 bytes was merged in v5.9
-> 
-> 09c60546f04f ./Makefile: add debug option to enable function aligned on 32 bytes
-> 
-> 
-> For this particular case, the commit changes the code size of
-> request_threaded_irq(), and many following functions' alignment are changed.
-> 
-
-If so, the performance impact of code change would be random.
-
-> So I extended the debug patch to force 64 bytes aligned, then this commit will
-> cause _no_ performance change for the same test case on same platform.
-> 
-> diff --git a/Makefile b/Makefile
-> 
->  ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B
-> -KBUILD_CFLAGS += -falign-functions=32
-> +KBUILD_CFLAGS += -falign-functions=64
->  endif
-> 
-> Though I don't know the detail of how exactly this code alignment affects the
-> case.
-
-Guess it is related with icache.
-But it is still an irrelevant problem.
-
-> 
-> Thanks,
-> Feng
-> 
-> > Thanks,
-> >
-> >         tglx
-
-Thanks
-Barry
-
+>
