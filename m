@@ -2,139 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8C136DFBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CBE36DFC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhD1Tj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241927AbhD1Tjv (ORCPT
+        id S236059AbhD1TlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:41:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31436 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230382AbhD1Tk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:39:51 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0985C0613ED;
-        Wed, 28 Apr 2021 12:39:05 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id p17so5455008pjz.3;
-        Wed, 28 Apr 2021 12:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=5M8EnYURBjzX8y0h+Dz4U0bf8pObQR33VCrys3oNTlE=;
-        b=d0XPd+jYEgmFF3VoLFl6T1C2ZDiJ5qv6Dun4f3p0GrKheIcSwMuHxv6cMKpiJunMCg
-         1Wy45ZzKygnRNbfChf6/sUS73LXKyafp0ud4/nWIKTddlTGoswxh30qtaoKeyadhVzxU
-         rcP5X+2+zLVLsoApHXwuCh7z6+tdU1YXZTu7Gwd0WE7PRi9RzarDhd8yH4V9f/QYlb6i
-         Kk9qI0udU/g9rPRP9K/wIsk0tGlvfkja04Vb85VkylCZi8nS/epH2ugQOfgwuLuq9Xg4
-         BjOQA8srcwz1Z1G6jAqGUw46j8sIck3XT3DizGrWxikHBwhlgwCafRDQuRJ6oYHAdx9Y
-         EcIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=5M8EnYURBjzX8y0h+Dz4U0bf8pObQR33VCrys3oNTlE=;
-        b=NHaRSWZZuvI0RcRuT7BB0kBsg50ESCNQRLrVmvRVjaOWRb57LtwiZrugHu8ZGdBhgB
-         cgTes/tLYf4oI1XTKN1ZDlEsCOmZsGh8iuBTitdgCFVjcOd3qI7RcRcskcjqyJXic6Rv
-         QZKY9cOGxvIWO2+3Wg7iLmWCUVit0PLobVQbpFTtjFp1OUzoYoeYCMoXTEY7OX35zHdd
-         qDUGz2CwTQAuspPVRRiBDjztqBSriXxI+THbFcNPHbQFZZoVLjZyW91hzyhXyVAymkv0
-         GcU+p1p8Boj2CtRnybPxMmzEE2Np08CHas16pgzSYXILX17VFrx2hXjLE993Fe3qufHI
-         bHqg==
-X-Gm-Message-State: AOAM532bacb0YeCYvkBSZHhK3kYSWkRalhb+rUb+PQewYaR3LZtyFGXG
-        SU5BwizhAAJQk3Hv95wBLtymthpGIKCiaqf2
-X-Google-Smtp-Source: ABdhPJzlegbErhljiRWH13MlTC4GxzfIYkNHi3YjnWLfx86OTyc6cXHrHDcd0GcR/2F3H/dwa7v/aA==
-X-Received: by 2002:a17:902:ff09:b029:ed:3b29:ff43 with SMTP id f9-20020a170902ff09b02900ed3b29ff43mr15444309plj.14.1619638745292;
-        Wed, 28 Apr 2021 12:39:05 -0700 (PDT)
-Received: from localhost ([122.172.37.94])
-        by smtp.gmail.com with ESMTPSA id e1sm450177pgl.25.2021.04.28.12.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 12:39:04 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 01:09:01 +0530
-From:   Anupama K Patil <anupamakpatil123@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        B K Karthik <bkkarthik@pesu.pes.edu>
-Subject: [PATCH v2] drivers: pnp: proc.c: Removed unnecessary variables
-Message-ID: <20210428193901.rqs64di4g2svpaeg@ubuntu>
+        Wed, 28 Apr 2021 15:40:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619638813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aNKxH/tYvIoxwT8T/p02EbXbtq/qDBC33gmsPEeKMqA=;
+        b=gjDqRrAysJnbFTqNPN35Ssab9h+n0MGVZ/AuNi523Q29w/+V6KNFG1UJqBGA/vjX+3XkNr
+        GaZgzcIF+0fzIWRIm6K0ddV56RX0gplExcsdhOB6bCsHskWxHwgO7CR8pmdJ6NleJDZYE2
+        RRBCG0SbgKBq7t/YSV/X01nbp1BjzT0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-ToNQa1A6Pf2g_QfUKgHEQw-1; Wed, 28 Apr 2021 15:40:10 -0400
+X-MC-Unique: ToNQa1A6Pf2g_QfUKgHEQw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84FAF107F97F;
+        Wed, 28 Apr 2021 19:39:19 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EAA2410A33C4;
+        Wed, 28 Apr 2021 19:39:17 +0000 (UTC)
+Date:   Wed, 28 Apr 2021 13:39:17 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: [GIT PULL] VFIO updates for v5.13-rc1
+Message-ID: <20210428133917.1c039eac@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wpqdbbx7thmklwzk"
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---wpqdbbx7thmklwzk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There's a conflict versus Dave's drm tree that was just merged in this
+one.  Stephen noted the resolution vs linux-next here[1], essentially
+dropping the function contents from HEAD and using the new body.  Thanks,
 
-de, e are two variables of the type 'struct proc_dir_entry'
-which can be removed to save memory. This also fixes a coding style
-issue reported by checkpatch where we are suggested to make assignment
-outside the if statement.
+Alex
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
----
-v2: Added Reviewed-by: tag
+[1] https://lore.kernel.org/lkml/20210415164734.1143f20d@canb.auug.org.au/
 
- drivers/pnp/isapnp/proc.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
-diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
-index 785a796430fa..1ae458c02656 100644
---- a/drivers/pnp/isapnp/proc.c
-+++ b/drivers/pnp/isapnp/proc.c
-@@ -57,21 +57,20 @@ static const struct proc_ops isapnp_proc_bus_proc_ops =
-=3D {
- static int isapnp_proc_attach_device(struct pnp_dev *dev)
- {
- 	struct pnp_card *bus =3D dev->card;
--	struct proc_dir_entry *de, *e;
- 	char name[16];
-=20
--	if (!(de =3D bus->procdir)) {
-+	if (!bus->procdir) {
- 		sprintf(name, "%02x", bus->number);
--		de =3D bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
--		if (!de)
-+		bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-+		if (!bus->procdir)
- 			return -ENOMEM;
- 	}
- 	sprintf(name, "%02x", dev->number);
--	e =3D dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, de,
-+	dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, bus->procdir,
- 					    &isapnp_proc_bus_proc_ops, dev);
--	if (!e)
-+	if (!dev->procent)
- 		return -ENOMEM;
--	proc_set_size(e, 256);
-+	proc_set_size(dev->procent, 256);
- 	return 0;
- }
-=20
---=20
-2.25.1
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
+are available in the Git repository at:
 
---wpqdbbx7thmklwzk
-Content-Type: application/pgp-signature; name="signature.asc"
+  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc1
 
------BEGIN PGP SIGNATURE-----
+for you to fetch changes up to adaeb718d46f6b42a3fc1dffd4f946f26b33779a:
 
-iQGzBAEBCgAdFiEEDSQZGCDcREXgcOjQtGmOOZV75b4FAmCJudUACgkQtGmOOZV7
-5b7ZGQv+OsD9HAhDMBbsq6Ute4rDohSUul6M4rW7LUnq+WnRUnvrNCr2LmgavQCT
-2t6y8PDlb2lREPK3/I8bbIky5uX5d+/sC83qNpoKzhvYbepC/fptg/33OFIe3hbR
-gbPrRmkDkqM8yhE/fOkQYSLGBnvFSzjSulh3VhcQlLkLsG5MmOHFzuyMsO0ANp58
-0JzH181yuYUF9A+Q7+xoizF570q4Q9vmi88N5u7TEey3JLOwqMa9bu0ynGYHpzIn
-DLFMfpZQNsOLX6Fy/mztzx0FZLb8H9xoHv7g0ypQExfIA/BPWcpPjs88AC0lhgTL
-QxquiBbR6s37zM4ktMjwxOzu1bCHJK0SdmkXxWi1hlFuylxaDMbZI4tjfNjq3KsC
-FZRuD31uKt7XQ/Q+8UZwoq2Bo4M3KIU8LaPy238Ef5p9L6QKS56+DKiu/LCEMCSV
-6g8ASBxTB7mg3sxJiumP+xe9KKYEGETfwqLyC1hJ5cDvTtGvMkBS4glM0X8Dp3W5
-fbekUmGL
-=csKr
------END PGP SIGNATURE-----
+  vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV (2021-04-27 13:36:54 -0600)
 
---wpqdbbx7thmklwzk--
+----------------------------------------------------------------
+VFIO updates for v5.13-rc1
+
+ - Embed struct vfio_device into vfio driver structures (Jason Gunthorpe)
+
+ - Make vfio_mdev type safe (Jason Gunthorpe)
+
+ - Remove vfio-pci NVLink2 extensions for POWER9 (Christoph Hellwig)
+
+ - Update vfio-pci IGD extensions for OpRegion 2.1+ (Fred Gao)
+
+ - Various spelling/blank line fixes (Zhen Lei, Zhou Wang, Bhaskar Chowdhury)
+
+ - Simplify unpin_pages error handling (Shenming Lu)
+
+ - Fix i915 mdev Kconfig dependency (Arnd Bergmann)
+
+ - Remove unused structure member (Keqian Zhu)
+
+----------------------------------------------------------------
+Alex Williamson (1):
+      Merge branches 'v5.13/vfio/embed-vfio_device', 'v5.13/vfio/misc' and 'v5.13/vfio/nvlink' into v5.13/vfio/next
+
+Arnd Bergmann (1):
+      vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV
+
+Bhaskar Chowdhury (1):
+      vfio: pci: Spello fix in the file vfio_pci.c
+
+Christoph Hellwig (1):
+      vfio/pci: remove vfio_pci_nvlink2
+
+Fred Gao (1):
+      vfio/pci: Add support for opregion v2.1+
+
+Jason Gunthorpe (32):
+      vfio: Remove extra put/gets around vfio_device->group
+      vfio: Simplify the lifetime logic for vfio_device
+      vfio: Split creation of a vfio_device into init and register ops
+      vfio/platform: Use vfio_init/register/unregister_group_dev
+      vfio/fsl-mc: Re-order vfio_fsl_mc_probe()
+      vfio/fsl-mc: Use vfio_init/register/unregister_group_dev
+      vfio/pci: Move VGA and VF initialization to functions
+      vfio/pci: Re-order vfio_pci_probe()
+      vfio/pci: Use vfio_init/register/unregister_group_dev
+      vfio/mdev: Use vfio_init/register/unregister_group_dev
+      vfio/mdev: Make to_mdev_device() into a static inline
+      vfio: Make vfio_device_ops pass a 'struct vfio_device *' instead of 'void *'
+      vfio/pci: Replace uses of vfio_device_data() with container_of
+      vfio: Remove device_data from the vfio bus driver API
+      vfio/mdev: Fix missing static's on MDEV_TYPE_ATTR's
+      vfio/mdev: Do not allow a mdev_type to have a NULL parent pointer
+      vfio/mdev: Add missing typesafety around mdev_device
+      vfio/mdev: Simplify driver registration
+      vfio/mdev: Use struct mdev_type in struct mdev_device
+      vfio/mdev: Expose mdev_get/put_parent to mdev_private.h
+      vfio/mdev: Add missing reference counting to mdev_type
+      vfio/mdev: Reorganize mdev_device_create()
+      vfio/mdev: Add missing error handling to dev_set_name()
+      vfio/mdev: Remove duplicate storage of parent in mdev_device
+      vfio/mdev: Add mdev/mtype_get_type_group_id()
+      vfio/mtty: Use mdev_get_type_group_id()
+      vfio/mdpy: Use mdev_get_type_group_id()
+      vfio/mbochs: Use mdev_get_type_group_id()
+      vfio/gvt: Make DRM_I915_GVT depend on VFIO_MDEV
+      vfio/gvt: Use mdev_get_type_group_id()
+      vfio/mdev: Remove kobj from mdev_parent_ops->create()
+      vfio/mdev: Correct the function signatures for the mdev_type_attributes
+
+Keqian Zhu (1):
+      vfio/iommu_type1: Remove unused pinned_page_dirty_scope in vfio_iommu
+
+Shenming Lu (1):
+      vfio/type1: Remove the almost unused check in vfio_iommu_type1_unpin_pages
+
+Zhen Lei (4):
+      vfio/type1: fix a couple of spelling mistakes
+      vfio/mdev: Fix spelling mistake "interal" -> "internal"
+      vfio/pci: fix a couple of spelling mistakes
+      vfio/platform: Fix spelling mistake "registe" -> "register"
+
+Zhou Wang (1):
+      vfio/pci: Remove an unnecessary blank line in vfio_pci_enable
+
+ Documentation/driver-api/vfio-mediated-device.rst  |   9 +-
+ Documentation/driver-api/vfio.rst                  |  48 +-
+ drivers/gpu/drm/i915/Kconfig                       |   1 +
+ drivers/gpu/drm/i915/gvt/gvt.c                     |  41 +-
+ drivers/gpu/drm/i915/gvt/gvt.h                     |   4 +-
+ drivers/gpu/drm/i915/gvt/kvmgt.c                   |   7 +-
+ drivers/s390/cio/vfio_ccw_ops.c                    |  17 +-
+ drivers/s390/crypto/vfio_ap_ops.c                  |  14 +-
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c                  | 127 ++++--
+ drivers/vfio/fsl-mc/vfio_fsl_mc_private.h          |   1 +
+ drivers/vfio/mdev/mdev_core.c                      | 174 +++-----
+ drivers/vfio/mdev/mdev_driver.c                    |  19 +-
+ drivers/vfio/mdev/mdev_private.h                   |  39 +-
+ drivers/vfio/mdev/mdev_sysfs.c                     |  59 ++-
+ drivers/vfio/mdev/vfio_mdev.c                      |  80 ++--
+ drivers/vfio/pci/Kconfig                           |   6 -
+ drivers/vfio/pci/Makefile                          |   1 -
+ drivers/vfio/pci/vfio_pci.c                        | 274 ++++++------
+ drivers/vfio/pci/vfio_pci_config.c                 |   2 +-
+ drivers/vfio/pci/vfio_pci_igd.c                    |  53 +++
+ drivers/vfio/pci/vfio_pci_nvlink2.c                | 490 ---------------------
+ drivers/vfio/pci/vfio_pci_private.h                |  15 +-
+ .../platform/reset/vfio_platform_calxedaxgmac.c    |   2 +-
+ drivers/vfio/platform/vfio_amba.c                  |   8 +-
+ drivers/vfio/platform/vfio_platform.c              |  20 +-
+ drivers/vfio/platform/vfio_platform_common.c       |  56 +--
+ drivers/vfio/platform/vfio_platform_private.h      |   5 +-
+ drivers/vfio/vfio.c                                | 210 +++------
+ drivers/vfio/vfio_iommu_type1.c                    |  40 +-
+ include/linux/mdev.h                               |  80 +++-
+ include/linux/vfio.h                               |  37 +-
+ include/uapi/linux/vfio.h                          |  38 +-
+ samples/vfio-mdev/mbochs.c                         |  55 ++-
+ samples/vfio-mdev/mdpy.c                           |  56 ++-
+ samples/vfio-mdev/mtty.c                           |  66 +--
+ 35 files changed, 793 insertions(+), 1361 deletions(-)
+ delete mode 100644 drivers/vfio/pci/vfio_pci_nvlink2.c
+
