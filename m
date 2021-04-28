@@ -2,59 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F6F36D019
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF3936D020
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236677AbhD1A5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhD1A5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:57:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 633DC600CC;
-        Wed, 28 Apr 2021 00:56:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619571411;
-        bh=X+e7zy05LxSbcHcAKwcMWdDqvqFZpukpl01J/ymnbQs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=f+rRFwdiraNJhmpd9WPI0K3Vpjw46ONb5uW3cKOisdjTfuxAQC0yacqc5A3Fne8Vj
-         pQR3V10l6RHFEVqPsFhbgg9TUhWqSLRr3BozAqBX0x2OALBvXtmg/sTwFms8/fdUlm
-         cKLqdccmBWtgw2QFdLQbBwPaou5nhewlodhTQP92K+BBDhDptC+hVklbS/r7k2inkU
-         bNYGcP34BIo4nUSDWZhO+V56n/IxCpoB/oWPihqtGTtIfpW7SWJZfhuJnwtbDNIjJB
-         YQ7SGgfAdeXbc2kLZo8dQqEQn92jPzJLg1Uj43pDyqKoqRK/9woVoPfwSXhm9Y5IVs
-         kNsVdgiZhQmPQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5C960609B0;
-        Wed, 28 Apr 2021 00:56:51 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/core for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIfKEkC2lghJJHda@zn.tnic>
-References: <YIfKEkC2lghJJHda@zn.tnic>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YIfKEkC2lghJJHda@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.13
-X-PR-Tracked-Commit-Id: 2c88d45edbb89029c1190bb3b136d2602f057c98
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c6536676c7fe3f572ba55842e59c3c71c01e7fb3
-Message-Id: <161957141137.22806.5507357274217202072.pr-tracker-bot@kernel.org>
-Date:   Wed, 28 Apr 2021 00:56:51 +0000
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        id S239636AbhD1A7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235691AbhD1A7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:59:04 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DFAC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:58:20 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id n22so6056530qtk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:58:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=nnLhfKmay2hfrNFLJmZvY1slfDRvS1kILjvcSIZf/mg=;
+        b=Hn5od4nTNCw0oO2WqwOMMft1NWsukPMlQRMrmwYFStQpXM9w0sZauP31fIdtDH/T7P
+         h6jPwZVotyfrbiIrXeMGZ62TkyK6QIwX67ES+gfMl8OiTSmYJuZ52V6nA3KhnyVv4rVw
+         CLhPSfyg0imxrZGzoaYi+sS4g6tNMPJ3cwXA+NwRZiLQFrWWez+EUg+fChxjLjtbljLC
+         SuLpDsBsgIf4kUuDkMscPgXmS7pVdl1eULZREb5iRO8DH7rXP1kkBNdf923GNq8j4Vhg
+         X/HUjp7hcqGBtAi6hqMpCMgABRm2cYcM1xijPrP0MlS4UfszukBRzBa7mfHZOl0IkXsI
+         KAow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=nnLhfKmay2hfrNFLJmZvY1slfDRvS1kILjvcSIZf/mg=;
+        b=nSUcbOuo7RO0DeMUTOKLQmeAq393MMLbxhiUsCu13VpiY1vxxy8o/SaMwrq9S9XsLp
+         81QvUZi02bfdlsz/YliXCaMymKBsKnjKzMb1Pdh/4nxs/wHEv0zKEQZzbdpJHBMomtdG
+         2ao8MNpCuiSPuTWo4RnPz3zczoLAW+mjJ+i6+SkkkSZ7XiRsPM7i2GxiH7aByaLnpFK3
+         Ie6lBRNvUTV16HXaE7lWL6AZcVf59G/g1L2pXIzD3+FD4cQmZhJSd/Abo0O3TqP9i81q
+         prlwpDaBlM6o7zPo2xE/9UzbXbNNrev1Wpm3HK9MWiyobBTSfFREJ86V7eBOaMl1BTVX
+         Qqiw==
+X-Gm-Message-State: AOAM5333bXiVQtUbj/wjfUivZRiDWArjj1akiBrLh9Bqpca2uFBtulJG
+        06efwdIxIjhHRt5ytW3Zy14Uvg==
+X-Google-Smtp-Source: ABdhPJxU7KyEA/ZmtPQITj+z73ELbtvuZj0UGvuPkYy8R3FVU9mHK9Cn432IolPH4dFuamCDIcAmLA==
+X-Received: by 2002:ac8:6e89:: with SMTP id c9mr24352036qtv.268.1619571499536;
+        Tue, 27 Apr 2021 17:58:19 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 3sm3869819qko.120.2021.04.27.17.58.17
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 27 Apr 2021 17:58:19 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:58:16 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v5 06/10] userfaultfd/shmem: modify shmem_mcopy_atomic_pte
+ to use install_pte()
+In-Reply-To: <20210427225244.4326-7-axelrasmussen@google.com>
+Message-ID: <alpine.LSU.2.11.2104271704110.7111@eggly.anvils>
+References: <20210427225244.4326-1-axelrasmussen@google.com> <20210427225244.4326-7-axelrasmussen@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 27 Apr 2021 10:23:46 +0200:
+On Tue, 27 Apr 2021, Axel Rasmussen wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.13
+> In a previous commit, we added the mcopy_atomic_install_pte() helper.
+> This helper does the job of setting up PTEs for an existing page, to map
+> it into a given VMA. It deals with both the anon and shmem cases, as
+> well as the shared and private cases.
+> 
+> In other words, shmem_mcopy_atomic_pte() duplicates a case it already
+> handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
+> directly, to reduce code duplication.
+> 
+> This requires that we refactor shmem_mcopy_atomic_pte() a bit:
+> 
+> Instead of doing accounting (shmem_recalc_inode() et al) part-way
+> through the PTE setup, do it afterward. This frees up
+> mcopy_atomic_install_pte() from having to care about this accounting,
+> and means we don't need to e.g. shmem_uncharge() in the error path.
+> 
+> A side effect is this switches shmem_mcopy_atomic_pte() to use
+> lru_cache_add_inactive_or_unevictable() instead of just lru_cache_add().
+> This wrapper does some extra accounting in an exceptional case, if
+> appropriate, so it's actually the more correct thing to use.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c6536676c7fe3f572ba55842e59c3c71c01e7fb3
+Not quite. Two things.
 
-Thank you!
+One, in this version, delete_from_page_cache(page) has vanished
+from the particular error path which needs it.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Two, and I think this predates your changes (so needs a separate
+fix patch first, for backport to stable? a user with bad intentions
+might be able to trigger the BUG), in pondering the new error paths
+and that /* don't free the page */ one in particular, isn't it the
+case that the shmem_inode_acct_block() on entry might succeed the
+first time, but atomic copy fail so -ENOENT, then something else
+fill up the tmpfs before the retry comes in, so that retry then
+fail with -ENOMEM, and hit the BUG_ON(page) in __mcopy_atomic()?
+
+(As I understand it, the shmem_inode_unacct_blocks() has to be
+done before returning, because the caller may be unable to retry.)
+
+What the right fix is rather depends on other uses of __mcopy_atomic():
+if they obviously cannot hit that BUG_ON(page), you may prefer to leave
+it in, and fix it here where shmem_inode_acct_block() fails. Or you may
+prefer instead to delete that "else BUG_ON(page);" - looks as if that
+would end up doing the right thing.  Peter may have a preference.
+
+(Or, we could consider doing the shmem_inode_acct_block() only after
+the page has been copied in: its current placing reflects how shmem.c
+does it elsewhere, and there's reason for that, but it doesn't always
+work out right. Don't be surprised if I change the ordering in future,
+but it's probably best not to mess with that ordering now.)
+
+Sorry, if this is a pre-existing issue, then we are taking advantage
+of you, in asking you to fix it: but I hope that while you're in there,
+it will make sense to do so.
+
+Thanks,
+Hugh
+
+> ---
+>  include/linux/userfaultfd_k.h |  5 ++++
+>  mm/shmem.c                    | 48 +++++------------------------------
+>  mm/userfaultfd.c              | 17 +++++--------
+>  3 files changed, 18 insertions(+), 52 deletions(-)
