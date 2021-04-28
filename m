@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D4F36D6DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059EE36D6E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhD1L67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
+        id S232501AbhD1L7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhD1L65 (ORCPT
+        with ESMTP id S231760AbhD1L7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:58:57 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A079FC06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:58:12 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id j7so35127641pgi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:58:12 -0700 (PDT)
+        Wed, 28 Apr 2021 07:59:01 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8B8C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:58:16 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id f11-20020a17090a638bb02901524d3a3d48so8896432pjj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mkMbPMNc8FrnP1KGwkLDeuVNNhulyW7sGFTZ5AZrIsI=;
-        b=ZLckhhCpN9pyq4UEm0Ez/r/KXh8xRLpXup/VBIVgEsRqD98hdgMxzWzr7olhSXOp2E
-         po1SKCue0Fd2QRSyGk1k7r1aA1C7kVwAHPRvQL+H909rxysQmmbzGlHh3RpN9D3cGURT
-         HfROCIylDpoxmuDlQYO7MSfWYW6jDJ0UomFFEYhubHFMcqmzo5/4xx9MJPjmvWdG07zw
-         lb2ohJugNDyEZ7fBrjWTylpHkT4QtdTlctkqp1dUYM8cfjxykog0kNLQ6CQgpzlsBi4F
-         TLtauOtH2Nc2gjyn522V5o6uQH95rToghX421exiZJ8vdKggAxp7ZJnNm4owgUQMeoYe
-         kvCA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kGpAm2p7nVFSJJsJKeJMpjJThBwUlAbTNq+bU/9Fn3Q=;
+        b=FL7BAZQmkr4jiQ4maVnPoFh1fLwvYAfaVbHWWEyw0ZePg/D2kOwEtTwL/W/kHKNTF4
+         BA2l/O3IyWRGV54A3zBJyabNUKaxv6tvnvFwVnWRIbWIyp1pTT5MLQPg+az0Vm5U31sY
+         onMW25R5fPBY3wZyKEDoquRYMmN/Nq8f2GPPJqwzd2OcmCiEkFQwXkVnbdeZsTAe1qN5
+         ZV7kyNl9aWqDYtZVkjdrOmYEdxsj7A0j28nGjmsom9B2deyOlGhpxiRFWVhJT1sLr8N+
+         k9PCDCr0ggT/mWMssYPGL+6LXXyrKiR5eFFvQ1IGYwYKS4vl/XrcruHLtaW+gWY8fLur
+         QilA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mkMbPMNc8FrnP1KGwkLDeuVNNhulyW7sGFTZ5AZrIsI=;
-        b=ip4IqxuxOjPwsxWyPP0EmMsUkoU0B7vtAIs90WrNPx4mt6uevqC9TxoAs6FhpVDsac
-         1w5QdH6NR6or25gRIqBpR12sMpfc1KBHU92FfnyO50Jl0+Cfbrsu1kJzghGKc3KuygtP
-         qYdeElk8gBk43iiMPlRMh1QeAM0rtz0vp/yzkWg97+Q9SmMVwgNVOuTDXj3SQxIppRHi
-         tOhcsn9VEco1RexieCYEZEiZZhMfUYzUy+8DEnBl3zL5LOvBvmxxD51q/kHUjgfpA3OT
-         IcPMaZAe4eAi/wTy4fYbs9rR4p3MPc6NWNY0fCgP41A0sc6xcQYz8QEBaKLgZK70aFhw
-         RU7g==
-X-Gm-Message-State: AOAM531KoxZRCaBi56Fgr0PBg0+cEgj9O8ATVplfXELCvUoOtKC0oIRD
-        eXGi70X8EoG7V5/RbSs5tCqfsQ==
-X-Google-Smtp-Source: ABdhPJzjKP3SaW1skFaXQk2w6oVlp46c3Ap84jbXg1gAv9zIf11TRLHkDu14Qi6IKiq+sVnBPAIPqw==
-X-Received: by 2002:a05:6a00:2283:b029:261:abae:917e with SMTP id f3-20020a056a002283b0290261abae917emr27308366pfe.78.1619611092089;
-        Wed, 28 Apr 2021 04:58:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kGpAm2p7nVFSJJsJKeJMpjJThBwUlAbTNq+bU/9Fn3Q=;
+        b=KvJQ9K/aKoz240j3j+11xtcOeqDTerW6B/hWswtgN2LQouiRjYNTaon4HzG6MqBtc7
+         ZM6c/cxIi+EaXyXLlJeamXtWWAA8F2KD8n6AfuCa9nHoHvo3BZ7DFf60Fg/Wt1lCaGwd
+         nAEJCPrE0mMYETuNAQTQVgF6b3HaJoYEzi1PabDd0tYbM6BppbpJtO2i9V6YqEAreAV8
+         fbyeu/3zTv5owwH1U9EvJa6IPZJQILxr6IWGdNNxRDHkQ4ttar3fKCVkRA+mtHIqN+su
+         Z/5KtKEFbSkW9cOSdpQy5w+o9W2QNSjWk1B/INgfK1n2TXxcLWCVX2h9MjZElS9AVAYk
+         U5TA==
+X-Gm-Message-State: AOAM531+h4yQEULevNSRDGbX49rXLPlPTvD1PDXKNzc593sZxGENUWNm
+        JcnCwNAIKjfdvUsdPhmIp7WjKA==
+X-Google-Smtp-Source: ABdhPJygA3+wJlqq/7i4ARv3CsflKFlPPEWz+QnFqwuzRmBpzcCDeEkLvXXazoHvBOFkCy4fOso2uA==
+X-Received: by 2002:a17:90a:5911:: with SMTP id k17mr32248046pji.73.1619611095619;
+        Wed, 28 Apr 2021 04:58:15 -0700 (PDT)
 Received: from localhost (ec2-18-166-74-158.ap-east-1.compute.amazonaws.com. [18.166.74.158])
-        by smtp.gmail.com with ESMTPSA id pc17sm5010138pjb.19.2021.04.28.04.58.11
+        by smtp.gmail.com with ESMTPSA id j11sm4770222pfj.182.2021.04.28.04.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 04:58:11 -0700 (PDT)
+        Wed, 28 Apr 2021 04:58:15 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
@@ -64,50 +64,50 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Kan Liang <kan.liang@linux.intel.com>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 0/4] perf: Allow TIME_CONV to be backwards-compatible and dump it
-Date:   Wed, 28 Apr 2021 19:57:45 +0800
-Message-Id: <20210428115749.5229-1-leo.yan@linaro.org>
+Subject: [PATCH v2 1/4] perf tool: Change fields type in cap_user_time_short
+Date:   Wed, 28 Apr 2021 19:57:46 +0800
+Message-Id: <20210428115749.5229-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210428115749.5229-1-leo.yan@linaro.org>
+References: <20210428115749.5229-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The event PERF_RECORD_TIME_CONV was extended for clock parameters, but
-the tool fails to be backwards-compatible for the old event format.
+C standard claims "An object declared as type _Bool is large enough to
+store the values 0 and 1", bool type size can be 1 byte or larger than
+1 byte.  Thus it's uncertian for bool type size with different
+compilers.
 
-Based on checking the event size, this patch series can decide if the
-extended clock parameters are contained in the perf event or not.  This
-allows the event PERF_RECORD_TIME_CONV to be backwards-compatible.
+This patch changes the bool type in structure cap_user_time_short to
+__u8 type, and pads extra bytes for 8-byte alignment; this can give
+reliable structure size.
 
-The last patch also is introduced for dumping the event, for both the
-old and latest event formats.
+Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: d110162cafc8 ("perf tsc: Support cap_user_time_short for event TIME_CONV")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ tools/lib/perf/include/perf/event.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The patch set has been rebased on perf/core branch with:
-
-  commit 4c391ea001cb ("perf beauty: Fix fsconfig generator")
-
-And the patches have been tested on Arm64 HiSilicon D06 platform.
-
-Changes from v1:
-* Changed from bool to __u8 for perf_record_time_conv (Adrain);
-* Added helper event_contains() and used it (Adrian).
-
-
-Leo Yan (4):
-  perf tool: Change fields type in cap_user_time_short
-  perf jit: Let convert_timestamp() to be backwards-compatible
-  perf session: Add swap operation for event TIME_CONV
-  perf session: Dump PERF_RECORD_TIME_CONV event
-
- tools/lib/perf/include/perf/event.h |  7 +++++--
- tools/perf/util/jitdump.c           | 30 +++++++++++++++++++----------
- tools/perf/util/session.c           | 28 +++++++++++++++++++++++++--
- tools/perf/util/tsc.c               | 30 +++++++++++++++++++++++++++++
- tools/perf/util/tsc.h               |  4 ++++
- 5 files changed, 85 insertions(+), 14 deletions(-)
-
+diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+index d82054225fcc..48583e441d9b 100644
+--- a/tools/lib/perf/include/perf/event.h
++++ b/tools/lib/perf/include/perf/event.h
+@@ -346,8 +346,9 @@ struct perf_record_time_conv {
+ 	__u64			 time_zero;
+ 	__u64			 time_cycles;
+ 	__u64			 time_mask;
+-	bool			 cap_user_time_zero;
+-	bool			 cap_user_time_short;
++	__u8			 cap_user_time_zero;
++	__u8			 cap_user_time_short;
++	__u8			 reserved[6];	/* For alignment */
+ };
+ 
+ struct perf_record_header_feature {
 -- 
 2.25.1
 
