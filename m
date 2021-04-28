@@ -2,190 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1015436D79D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BE736D7AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239568AbhD1Mq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:46:28 -0400
-Received: from mail-vi1eur05on2083.outbound.protection.outlook.com ([40.107.21.83]:35137
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237717AbhD1Mq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:46:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l7HJk3duwbIhN6yxSamhhPO6B2kncJ2acPISZ9L9IWaNjpUrmQIRvrfhsfnUbU6Efoa2VwnbjfGWmaYR9prOqSb07+4MZY2/SCYdDJoNoTu7O2aD04uZfK+H5Rm9v3nVjRA32JTRDySbAyJ5gEWqYPUc4OnxjO7b9UimQuIVnPJf1R9nlJa1hBdJCnPNolTw4R7Wm4Fg8Z7jTd/l3ldYOBvFb0eiaJKmgaaeRwUlaPM+HRHnU8oFd1pUb/EM8k5g/Gj3XiE9EPAiVG40iV02BilmOc5ZoASq6mRQATyeUzQEzFi4ybuL7qk06bHDB1qtg5xLPo/odnbFsGC1S97ggw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R0IX8xIzgAMlnkMvOHmgOQkBdPq0S/Mu39eg6JopCII=;
- b=EYsUBv9Lp6v5ykL+SXURJS4l3ZCarMRY6YJqiUo0xVEedemISgf+CgHuJr7aTCf6wsItdGoOPgYx4S2dtxMFN/pF8i0Shwr4OCsOSyV2YdJRBNGr/FBBvXaWt+OGSEFTblkq4+yPcjtZ3x2allpMS8VYdD0+ZmbhBFa80Pusk4mHEKkW5EI9w0txeigdujQ0+8IwwNbLS7voOeAK9Bu29UpbnqHpVfHvHmZoF9PetaT/M0CnWQ2xp9IUp0KdP+0APAXjKukdVgkFHByZ/A1uZZ6lPHHPYpLaBcVQmHODnz/SHD0u04Y8MDN32aDAtG+cB6RV+zJizhni3Ci8PSnVbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=orolia.com; dmarc=pass action=none header.from=orolia.com;
- dkim=pass header.d=orolia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orolia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R0IX8xIzgAMlnkMvOHmgOQkBdPq0S/Mu39eg6JopCII=;
- b=IEGEYDlG3mf5HdeZhMz9fkggfgrS0nIbPD6lsAJH/LKlMJbv4D3uS6VI5w+uXtULY8234xrqFhvdYTTrmRjPUiUhSE1qEFyMSGImTGrQZyHJkCPwts7SeFE/GifFavqF5u2wk/YYjuSgLnUCripIdn0BDdPmYbAkxMYNiy/YTR0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=orolia.com;
-Received: from PR1PR06MB4746.eurprd06.prod.outlook.com (2603:10a6:102:11::28)
- by PAXPR06MB7805.eurprd06.prod.outlook.com (2603:10a6:102:12e::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Wed, 28 Apr
- 2021 12:45:39 +0000
-Received: from PR1PR06MB4746.eurprd06.prod.outlook.com
- ([fe80::246f:58b2:79d6:6aba]) by PR1PR06MB4746.eurprd06.prod.outlook.com
- ([fe80::246f:58b2:79d6:6aba%5]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
- 12:45:39 +0000
-Date:   Wed, 28 Apr 2021 14:45:26 +0200
-From:   Olivier Dautricourt <olivier.dautricourt@orolia.com>
-To:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Stefan Roese <sr@denx.de>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drivers: dma: altera-msgdma: add OF support
-Message-ID: <YIlY5pPg1Zuxy56F@orolia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Originating-IP: [2a01:e34:ec42:fd70:167:681b:bc47:e8b1]
-X-ClientProxiedBy: PR3P193CA0020.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:102:50::25) To PR1PR06MB4746.eurprd06.prod.outlook.com
- (2603:10a6:102:11::28)
+        id S239608AbhD1Mu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:50:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30102 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239585AbhD1Mut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:50:49 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SCXH8k157896;
+        Wed, 28 Apr 2021 08:49:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=IDjg4GaukE4TS0CR+66TfofNd5gjbr0y7g4QfU5cIn4=;
+ b=Tsra2k9C8Z8NyR22sHpVOsLYQ7/xF1Rh7UNTWFHpWPZkMFYZ4efipoKhjLjxp8RC9ivD
+ nZ3TtsVowhG2fvTgwll/W/xBvTo/zXyI+16W3jVfA3kEKJnOeuO1WpQzjTATKLkikrEx
+ xa8vwEaxIaVgYNec/rHULY/vBLDUK9Nxz1vFNzJOe8sKqDwyPyqxEEV7GkGZjtV8mpGE
+ RWek/x0OKE1LDsXLg8/9FFZQH7C1Br2QtURffJQQ7s5uMzcS8ETosHhIpM/Xfw+YFY0D
+ qu2SYAmrhxuLYHBcdj0Ju31yIc1YfjWefIjOiGGU2VxaUI+8c9QmLCIfwsKeOqgUcEtQ pQ== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3877hds1dj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 08:49:34 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SCSR7d000326;
+        Wed, 28 Apr 2021 12:49:32 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 384akh9vxc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 12:49:31 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SCnT4X33030630
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 12:49:29 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 123554203F;
+        Wed, 28 Apr 2021 12:49:29 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6EE942041;
+        Wed, 28 Apr 2021 12:49:26 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 28 Apr 2021 12:49:26 +0000 (GMT)
+Date:   Wed, 28 Apr 2021 18:19:25 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH 00/10] sched/fair: wake_affine improvements
+Message-ID: <20210428124925.GM2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
+ <CAKfTPtAuFpr05-ZBNjB9OiNNQnmgPSX3S4=Sz-A8sOnFAkr7Tg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from orolia.com (2a01:e34:ec42:fd70:167:681b:bc47:e8b1) by PR3P193CA0020.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:50::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Wed, 28 Apr 2021 12:45:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: baf644ee-4529-4d10-e1b9-08d90a438712
-X-MS-TrafficTypeDiagnostic: PAXPR06MB7805:
-X-Microsoft-Antispam-PRVS: <PAXPR06MB7805A17B7AC52364D7449D768F409@PAXPR06MB7805.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:669;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wFHNw9+vTrkfc3VSn1jugpmG2uiXcI3hMRZTT4rVFo+Z6VVJAFKkveb6TH+cwM6Bbf+YdZbiBNXCrNt94KxKnZTtf0TvtXlgW1MKw2J/BMNofORa8FDk5f1MSdfd6cdrw0OhN3msReaIOBXb/UsWa+Tz9bRSQHSpeqbfZEnvZfcQ8Jb3rJaKV/hqZKwO2PVPN0wmtUZOmQ0jTM4PE8E/xxfAQVSvQ5IuZ+8CMgQZJdsTnY1KYZeWzXPGnQ+jwgZavJkEm+9yBl5WGxo5DKojjVjDw4SNiSaAiYNLgoajrCtkJHVxVKWFGPSeEd+BTC24ME4QZ8LyIMfw9DipTBxkXmOgX6IrqiIMtztQq6WGVwN4wESzoUIyYylMaJ187JhRH2BslaXc9ZPcPhavawG5szpe9fuygqut2A3O/vrjRsehtwhLxXhppQ0e5+5lJ5iUriZRkFFIhibDW+pip255Zu5BrCCaKns1hyCQRujbrYtJzQUVqgVoPhvR4F1F5JDDIlNwIYK43RAJrxBpBL1lAu1jdINa1jO1lj8x6BfkKbVTLtU6srftH45LpBtJKg3zR1J+AzLeb2toPhsusKuDbpf4KYiD3WcWM4WgE3bG5fk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR1PR06MB4746.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39850400004)(366004)(346002)(376002)(110136005)(4326008)(478600001)(186003)(8936002)(8676002)(7696005)(83380400001)(38100700002)(44832011)(36756003)(316002)(2906002)(16526019)(86362001)(8886007)(2616005)(5660300002)(66556008)(66946007)(66476007)(6666004)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WkR3b005YnFyTjhQTXFUVk1BR3ZEa0JXM21BVEtJSW1CakkxWVFxT2dWZkhr?=
- =?utf-8?B?dUN2QWpkY1ExTUE4RCtHVVJxR1AwcXBKbU1wcWpuaDM4NjlXbUovRzQ5b0lX?=
- =?utf-8?B?S2gvRlBiVVptYnpPYWxQSDRMUzV0MjAyY3FQaDlpLzRkU21wVWltUS80enVq?=
- =?utf-8?B?b1AvNEFzWjJVb1FLejMvN2hRUmwwOWt5TlM4TG1vcDJBYVFjRkZ6VlN3TTkx?=
- =?utf-8?B?NUdBWTdadjExT0traTBPV1pLUjhTUFdSYlhoRkFnNnYrRmM0QnM5RllUeW9G?=
- =?utf-8?B?RWRBNFRvL0NLYlk5b2lhbld5ZlBnUi9ObVVzMGszbzlRU01rSWJSbVNXaTFV?=
- =?utf-8?B?aThSc3M3R2VaZ3VLQzkvL3dYcGlmLzJzMXV2UkNyVVJSYmNoVE1qcEl5d3FS?=
- =?utf-8?B?eUY3Z05NN2ZuOHB2dlU4RzFqNkg1Yjg0NENpL2VXTk5qYjh3UWVyeWhSTUww?=
- =?utf-8?B?V1AzOGlNcm5sZUlnZzNuOHpQSHV6SGdtcmVRcU5NdUhvV2k3MjVjNWlCQ1k0?=
- =?utf-8?B?dk85U2ptbDBxZUZoeFNIVWhJL3c3VVQ3c216V3E1MkhUNlN0ZnBDOXI2cGFU?=
- =?utf-8?B?RStra2VLK00zOEZiOWM3WFgwb3duUVJSaEpiUm13TEthSUt5WnlGZFpsa3d2?=
- =?utf-8?B?NzdZSGRjRStINFRBdUlsNzFaR2g3ODdpOUlFZHhWUElSTDU5Yk41Zjd3VG5j?=
- =?utf-8?B?ZWRzOHp6bU4zemp5czRDTFdIRzdMNmp3THBoWU5vZEdGZS95RzNCdEJLY1ll?=
- =?utf-8?B?NGFPUno4S1ROR21kTm44M0NUSkdHNHdiR2lDTDdPRW4yUjlUNlVMV01ybkc2?=
- =?utf-8?B?MXQzSmZhdmoxRmJnRjdSaHBIUnJCbUtKdlF5NXZDMkk4cGZKUUZLTXA3Z1Bw?=
- =?utf-8?B?SGxObWYwRThTUm8wc0d4U2RMUGw4di9WeXJwR2tocEdqVGkzbEsvdmdzSlFn?=
- =?utf-8?B?bEhEVnYyVG5uU095UG9YU3FjN3Q1bWNDcEwwWjZrNFA3NG1lb1R5QnlzVCs2?=
- =?utf-8?B?WXg0NEsvWnQzY09jbWZQZ3lpRHBMeXcxTjJWUnNxTGgzSDFWbldBTW9DaTB1?=
- =?utf-8?B?ZE5KU1NiU0dqM2xXSitqTVpRa0trNlJHbHVNRlJQR2FyR1E3TWRWTXM3R05k?=
- =?utf-8?B?WG10enYzQkpObEZUbVMxaUdwd3FLdUN5MDIxdzRoZUlhMHN0bllzTXd4NXp5?=
- =?utf-8?B?OVk4eTdqTWE3RHRTMzZyS0lydFJ6S0VKWnY2ZlV3SENMb2ZzbmRKM053Y2Js?=
- =?utf-8?B?allWSVRPei9sYlF5SUFGeEZKVDdxS1ozWVNJR1JDRkVZWFNtcWsxa3lzcXJu?=
- =?utf-8?B?aTJhV2l3MVBRc20vMWhmakdTL1gwaUo3RWtYY2tmeVJMYktHSEZ0NmJxdVV1?=
- =?utf-8?B?b01yall5bGc5ektFblBXVHpNK0NGbzRlSFFjdjg4aHJ6OTRSaFRJdkNEeTZ1?=
- =?utf-8?B?anhaWjduSnJFMlMyanlWd05hem14SXk0c2hBVkpzOUcrd1Fia2FSSnBDL0pS?=
- =?utf-8?B?MFdjN2NHWk56VW1vZTFjaWorL1ZmRUxhbndTbVNna1FYU0g5YitIRkRkUndH?=
- =?utf-8?B?WEZMUkxxZExyRjNMS3FpdWxGNmZCUnBWOHY3SHV3OXdLOXY1OWVmVDBZZFh3?=
- =?utf-8?B?YlhzejdRdm5OWmxNT3FsWkI0TS82RGFwNWpjclBpc2RtQUozTXJIRTVjRWRy?=
- =?utf-8?B?RWFjd0VtSGh3eGx0QUR1SWNQaStHWGlzMkVwaFJMakJXaTJXdTkwbEtyU05m?=
- =?utf-8?B?MnRGWjFQcUhPRkNZTkJ0QTNZK2dwbC9ONmdkTDZ4UGExdDRXY0pjNzNaVjNs?=
- =?utf-8?B?K0U2b085bDFwc3A5UmRhN0ZsVFVvYmZwODRiRjR3WnhITC9MaWQyc2JvVzVs?=
- =?utf-8?Q?gdfftpBoUppsE?=
-X-OriginatorOrg: orolia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: baf644ee-4529-4d10-e1b9-08d90a438712
-X-MS-Exchange-CrossTenant-AuthSource: PR1PR06MB4746.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 12:45:39.5773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a263030c-9c1b-421f-9471-1dec0b29c664
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BfPuM5MaDyZbofub8siVlHv0HJpby79U98HiiMD5WNHmKMV1VwujIUKyp5FdN1DK8/lI5TBX2IWUx7isATwT0SEkuxUfZ6p4zeuPagavwHA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR06MB7805
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtAuFpr05-ZBNjB9OiNNQnmgPSX3S4=Sz-A8sOnFAkr7Tg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: A-U07s19itrnCdzBqc1gUKaVyDEl01Zt
+X-Proofpoint-ORIG-GUID: A-U07s19itrnCdzBqc1gUKaVyDEl01Zt
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_06:2021-04-27,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=545 mlxscore=0 suspectscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver had no device tree support.
+* Vincent Guittot <vincent.guittot@linaro.org> [2021-04-27 16:52:30]:
 
-- add compatible field "altr,msgdma"
-- define msgdma_of_xlate, with no argument
-- register dma controller with of_dma_controller_register
+> Hi Srikar,
 
-Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
----
- drivers/dma/altera-msgdma.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Hi Vincent, 
 
-diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
-index 9a841ce5f0c5..2b062d5aa636 100644
---- a/drivers/dma/altera-msgdma.c
-+++ b/drivers/dma/altera-msgdma.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/of_dma.h>
+> On Thu, 22 Apr 2021 at 12:23, Srikar Dronamraju
+> <srikar@linux.vnet.ibm.com> wrote:
+> >
+> > Recently we found that some of the benchmark numbers on Power10 were lesser
+> > than expected. Some analysis showed that the problem lies in the fact that
+> > L2-Cache on Power10 is at core level i.e only 4 threads share the L2-cache.
+> >
+> >
+> > Summary:
+> > mc-llc outperforms, this patchset and upstream almost give similar performance.
+> 
+> So mc-llc patch seems to be the best approach IMHO. Although the
+> hemisphere don't share cache, they share enough resources so
+> cache-snooping is as efficient as sharing cache
+> 
 
- #include "dmaengine.h"
+Yes, mc-llc helps just specific systems like Power10 but its shows better
+numbers than my posted patchset.
 
-@@ -784,6 +785,16 @@ static int request_and_map(struct platform_device *pdev, const char *name,
- 	return 0;
- }
+However in this patchset, we are looking at areas in wakeup (aka idler llcs)
+we could optimize which can help other archs too. + the fallback mechanism
+is generic enough that we could use it for other Systems too.
 
-+#ifdef CONFIG_OF
-+static struct dma_chan *msgdma_of_xlate(struct of_phandle_args *dma_spec,
-+					struct of_dma *ofdma)
-+{
-+	struct msgdma_device *d = ofdma->of_dma_data;
-+
-+	return dma_get_any_slave_channel(&d->dmadev);
-+}
-+#endif
-+
- /**
-  * msgdma_probe - Driver probe function
-  * @pdev: Pointer to the platform_device structure
-@@ -888,6 +899,14 @@ static int msgdma_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto fail;
+I know that there are valid concerns raised by Mel and I working to resolve
+them. Some of them are.
+- How hot is idle-core
+- Crashes when running tbench (I was able to reproduce with kernbench on x86)
 
-+#ifdef CONFIG_OF
-+	ret = of_dma_controller_register(pdev->dev.of_node, msgdma_of_xlate,
-+					 mdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register dma controller");
-+		goto fail;
-+	}
-+#endif
- 	dev_notice(&pdev->dev, "Altera mSGDMA driver probe success\n");
+Also I am adding some more changes with which we are getting similar
+performance as mc-llc.
 
- 	return 0;
-@@ -916,9 +935,19 @@ static int msgdma_remove(struct platform_device *pdev)
- 	return 0;
- }
+> > Cc: LKML <linux-kernel@vger.kernel.org>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> > Cc: Parth Shah <parth@linux.ibm.com>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Valentin Schneider <valentin.schneider@arm.com>
+> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > Cc: Mel Gorman <mgorman@techsingularity.net>
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Cc: Rik van Riel <riel@surriel.com>
+> >
+> > Srikar Dronamraju (10):
+> >   sched/fair: Update affine statistics when needed
+> >   sched/fair: Maintain the identity of idle-core
+> >   sched/fair: Update idle-core more often
+> >   sched/fair: Prefer idle CPU to cache affinity
+> >   sched/fair: Call wake_affine only if necessary
+> >   sched/idle: Move busy_cpu accounting to idle callback
+> >   sched/fair: Remove ifdefs in waker_affine_idler_llc
+> >   sched/fair: Dont iterate if no idle CPUs
+> >   sched/topology: Introduce fallback LLC
+> >   powerpc/smp: Add fallback flag to powerpc MC domain
+> >
+> >  arch/powerpc/kernel/smp.c      |   7 +-
+> >  include/linux/sched/sd_flags.h |   7 +
+> >  include/linux/sched/topology.h |   3 +-
+> >  kernel/sched/fair.c            | 229 +++++++++++++++++++++++++++------
+> >  kernel/sched/features.h        |   1 +
+> >  kernel/sched/idle.c            |  33 ++++-
+> >  kernel/sched/sched.h           |   6 +
+> >  kernel/sched/topology.c        |  54 +++++++-
+> >  8 files changed, 296 insertions(+), 44 deletions(-)
+> >
+> > --
+> > 2.18.2
+> >
 
-+#ifdef CONFIG_OF
-+static const struct of_device_id msgdma_match[] = {
-+	{ .compatible = "altr,msgdma",},
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, msgdma_match);
-+#endif
-+
- static struct platform_driver msgdma_driver = {
- 	.driver = {
- 		.name = "altera-msgdma",
-+		.of_match_table = of_match_ptr(msgdma_match),
- 	},
- 	.probe = msgdma_probe,
- 	.remove = msgdma_remove,
---
-2.31.0.rc2
-
+-- 
+Thanks and Regards
+Srikar Dronamraju
