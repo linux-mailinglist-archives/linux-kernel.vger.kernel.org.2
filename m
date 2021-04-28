@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33B736D33A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2301236D344
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236695AbhD1He2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:34:28 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:39966 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbhD1HeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:34:24 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d41 with ME
-        id y7Zf2400A21Fzsu037ZfFS; Wed, 28 Apr 2021 09:33:39 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 28 Apr 2021 09:33:39 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     gcherian@marvell.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] crypto: cavium - Use 'hlist_for_each_entry' to simplify code
-Date:   Wed, 28 Apr 2021 09:33:37 +0200
-Message-Id: <5a7692aa1d2ffb81e981fdf87b060db7e55956b8.1619593010.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S236921AbhD1Hf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:35:56 -0400
+Received: from relay.sw.ru ([185.231.240.75]:45718 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhD1Hfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 03:35:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=rt9hMUShGGdTkFhHM9nn7jw5xlKeoUNDnqLfS9j0MZU=; b=oN0VbyebvbVj4UP7nYI
+        0e6DEFhmpt1zjLehASYxqZh/T/RalZFrj1ifVvRu99O+mr+3PYe3frgOTzIHgfq4AIg8k8rtNzrBX
+        bEX+PjVxzIl8PsbhpZleCbmHsl//U9BjP5xvGI2PHstUqwVcJtZdyTV6xuhl6ucCPZPQJwjiQ4w=
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1lbeiw-001VrE-7M; Wed, 28 Apr 2021 10:35:06 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH v2 0/2] ipc: allocations cleanup
+To:     Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+References: <ebc3ac79-3190-520d-81ce-22ad194986ec@virtuozzo.com>
+Message-ID: <d98fca4d-f2ef-edfe-e075-bad1ec6557ee@virtuozzo.com>
+Date:   Wed, 28 Apr 2021 10:35:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ebc3ac79-3190-520d-81ce-22ad194986ec@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'hlist_for_each_entry' instead of hand writing it.
-This saves a few lines of code.
+Some ipc objects use the wrong allocation functions: small objects can use kmalloc(),
+and vice versa, potentially large objects can use kmalloc().
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested only
----
- drivers/crypto/cavium/cpt/cptvf_reqmanager.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+I think it's better to handle these patches via cgroups@ to avoid merge conflicts
+with "memcg: enable accounting of ipc resources" patch included to 
+"memcg accounting from OpenVZ" patch set.
 
-diff --git a/drivers/crypto/cavium/cpt/cptvf_reqmanager.c b/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
-index 4fe7898c8561..feb0f76783dd 100644
---- a/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
-+++ b/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
-@@ -244,11 +244,7 @@ static int send_cpt_command(struct cpt_vf *cptvf, union cpt_inst_s *cmd,
- 	memcpy(ent, (void *)cmd, qinfo->cmd_size);
- 
- 	if (++queue->idx >= queue->qhead->size / 64) {
--		struct hlist_node *node;
--
--		hlist_for_each(node, &queue->chead) {
--			chunk = hlist_entry(node, struct command_chunk,
--					    nextchunk);
-+		hlist_for_each_entry(chunk, &queue->chead, nextchunk) {
- 			if (chunk == queue->qhead) {
- 				continue;
- 			} else {
+v2:
+- improved patch description
+
+Vasily Averin (2):
+  ipc sem: use kvmalloc for sem_undo allocation
+  ipc: use kmalloc for msg_queue and shmid_kernel
+
+ ipc/msg.c |  6 +++---
+ ipc/sem.c | 10 +++++-----
+ ipc/shm.c |  6 +++---
+ 3 files changed, 11 insertions(+), 11 deletions(-)
+
 -- 
-2.30.2
+1.8.3.1
 
