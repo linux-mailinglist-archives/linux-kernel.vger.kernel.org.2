@@ -2,245 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5239836D800
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F035F36D807
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239746AbhD1NGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:06:14 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43000 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239737AbhD1NGL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:06:11 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SD0j1f020977;
-        Wed, 28 Apr 2021 15:05:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=eVG3v1lNK3BXxdqTip+oyLR1+X82jhyNevCxSbpxH+E=;
- b=3dlIO9+Oshqkwmw+9VEIpjnuaax+TOlu3qUw838yVD7R1hhvpXJvuQirqC511+ByiqEr
- 5Wh3sCxTTDapgtXZW4IaTj4I1ULReLwAADx7L4e4hEAk08hQu5dtl5Vxa+GcJSeS/eu0
- /oXJ+oSJop6N2+29FLAtxYWyJbHh6YM0Hn7oYNWCJmWqFnZIlSaNrqnbFPa5KeQ5AVdU
- Wf1c4eEnedbVh6DTWgtmragIddZ2udmLX1uqu+4fyTKYSgVvRJmppDFFC8k67PYXi99p
- Y4g6cgi7x8OrQe3PuKYUaYelcqe+9g7KGrn/HVRUWiL30ERGZlkyxptj85I31LS7ZzOQ EA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 386ea8gghc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 15:05:23 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3022510002A;
-        Wed, 28 Apr 2021 15:05:23 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1BE06210895;
-        Wed, 28 Apr 2021 15:05:23 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Apr
- 2021 15:05:22 +0200
-Subject: Re: [PATCH v2 5/7] rpmsg: char: Introduce a rpmsg driver for the
- rpmsg char device
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
- <20210413134458.17912-6-arnaud.pouliquen@foss.st.com>
- <20210421174053.GA1223348@xps15>
- <47015357-b006-1c32-f63f-d4fcac054d6f@foss.st.com>
- <20210422163622.GC1256950@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <14998d88-b27b-3548-e52f-eb0365caa96f@foss.st.com>
-Date:   Wed, 28 Apr 2021 15:05:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239723AbhD1NIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:08:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239600AbhD1NIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:08:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ADA96141B;
+        Wed, 28 Apr 2021 13:07:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619615242;
+        bh=8/STA7bGiSjXSDV4A6R9tGC/6aPDB16dVaxkyZxGoGk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bf0T+ByNax+99vYSpD7zdcAHPg6qYJIjVDlIa0VUKkYfcD00MV93+sLjI7YBVpGpF
+         aurg7sg9/TKYUP8avmnZgAaZEfSaH3F+No5GmAzP7LbVEv/Txf+ltjVnh0jD7gBBtH
+         ZZpWCMaYvsSRcgS3HvMxvPthb5pminu0Y0375XEaoeZzCNNI3Sp0DG0QJ8C7brAlp5
+         lRY9D3SuWLq3Ln86AfiJnXRUW2IJKWl7IG1NucxGPfki9ppYkTSnSWD9EHU/zH7TjG
+         MyjMIt4gBC+bBvRUn2QikPGX9FkpvbD1lTPl5i7gYHzw/23QsrDRnNK49uhTW2XfHB
+         htCwdOx1BR9/A==
+Received: by mail-lf1-f50.google.com with SMTP id y4so58907967lfl.10;
+        Wed, 28 Apr 2021 06:07:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531W7s41rREuysoQU3dWOKuDkKZZceHhbippIA/pP3VgTQcPAmgN
+        u2lrhQgDv3cqFvUtebKAmzYM4BSJ6/MTGZkqBDo=
+X-Google-Smtp-Source: ABdhPJzg7CZ/H+IwoHlzbqtk1Ck8bLUOLPuNwWOnqjfXDfp7yV+ahc6SMkQr2DK1tVW6xM14eIkU3IQ3WgMytns6Ios=
+X-Received: by 2002:a19:711b:: with SMTP id m27mr21117190lfc.346.1619615240721;
+ Wed, 28 Apr 2021 06:07:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210422163622.GC1256950@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_06:2021-04-27,2021-04-28 signatures=0
+References: <1618995255-91499-1-git-send-email-guoren@kernel.org>
+ <20210428031807.GA27619@roeck-us.net> <CAJF2gTTSMC947zisNs+j_2rMoBqoOy-j1jvVBk2DNrf0Xt6sWA@mail.gmail.com>
+ <CAK8P3a1DvsXSEDoovLk11hzNHyJi7vqNoToU+n5aFi2viZO_Uw@mail.gmail.com> <20210428124946.GA1976154@infradead.org>
+In-Reply-To: <20210428124946.GA1976154@infradead.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 28 Apr 2021 21:07:09 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTQysMLESzoGsUgGy=sgFkkocmCiv-vAV9a6U2m6bRC2g@mail.gmail.com>
+Message-ID: <CAJF2gTTQysMLESzoGsUgGy=sgFkkocmCiv-vAV9a6U2m6bRC2g@mail.gmail.com>
+Subject: Re: [PATCH] csky: uaccess.h: Coding convention with asm generic
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Apr 28, 2021 at 8:50 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Apr 28, 2021 at 11:25:29AM +0200, Arnd Bergmann wrote:
+> > Actually, please don't use the asm-generic __put_user version based
+> > on copy_to_user, we probably have killed it off long ago.
+>
+> Yes, they are horrible.
+>
+> > We might want to come up with a new version of asm-generic/uaccess.h
+> > that actually makes it easier to have a sane per-architecture
+> > implementation of the low-level accessors without set_fs().
+> >
+> > I've added Christoph to Cc here, he probably has some ideas
+> > on where we should be heading.
+>
+> I think asm-generic/uaccess.h pretty much only makes sense for
+> nommu.  For that case we can just kill the __{get,put}_user_fn
+> indirection.  I actually have work for that in an old branch.
+>
+> Trying to use any of asm-generic/uaccess.h for MMU based kernel is
+> just asking for trouble.
+I still think the arch should base on asm-generic/uaccess.h, not abandon it.
 
-On 4/22/21 6:36 PM, Mathieu Poirier wrote:
-> On Thu, Apr 22, 2021 at 09:58:27AM +0200, Arnaud POULIQUEN wrote:
->> On 4/21/21 7:40 PM, Mathieu Poirier wrote:
->>> Good day Arnaud,
->>>
->>> On Tue, Apr 13, 2021 at 03:44:56PM +0200, Arnaud Pouliquen wrote:
->>>> A rpmsg char device allows to probe the endpoint device on a remote name
->>>> service announcement.
->>>>
->>>> With this patch the /dev/rpmsgX interface is created either by a user
->>>> application or by the remote firmware.
->>>>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>>
->>>> ---
->>>> update from V1:
->>>>  - add missing unregister_rpmsg_driver call on module exit.
->>>>
->>>> ---
->>>>  drivers/rpmsg/rpmsg_char.c | 59 +++++++++++++++++++++++++++++++++++++-
->>>>  1 file changed, 58 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->>>> index a64249d83172..4606787b7011 100644
->>>> --- a/drivers/rpmsg/rpmsg_char.c
->>>> +++ b/drivers/rpmsg/rpmsg_char.c
->>>> @@ -26,6 +26,8 @@
->>>>  #include "rpmsg_char.h"
->>>>  #include "rpmsg_internal.h"
->>>>  
->>>> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
->>>> +
->>>
->>> Why not simply call it rpmsg-char?
->>
->> I would avoid to link the rpmsg name service to the Linux Kernel device.
-> 
-> To me that's exactly what we want to do...  Am I missing something?
-> 
->>
->>>
->>>>  static dev_t rpmsg_major;
->>>>  
->>>>  static DEFINE_IDA(rpmsg_ept_ida);
->>>> @@ -403,13 +405,67 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->>>>  }
->>>>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->>>>  
->>>> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->>>> +{
->>>> +	struct rpmsg_channel_info chinfo;
->>>> +	struct rpmsg_eptdev *eptdev;
->>>> +
->>>> +	if (!rpdev->ept)
->>>> +		return -EINVAL;
->>>> +
->>>> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
->>>> +	chinfo.src = rpdev->src;
->>>> +	chinfo.dst = rpdev->dst;
->>>> +
->>>> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo, NULL);
->>>> +	if (IS_ERR(eptdev))
->>>> +		return PTR_ERR(eptdev);
->>>> +
->>>> +	/* Set the private field of the default endpoint to retrieve context on callback. */
->>>> +	rpdev->ept->priv = eptdev;
->>>
->>> This is already done in rpmsg_create_ept() when rpmsg_eptdev_open() is called.
->>>
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
->>>> +	if (ret)
->>>> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
->>>> +}
->>>> +
->>>> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
->>>> +	{ .name	= RPMSG_CHAR_DEVNAME },
->>>> +	{ },
->>>> +};
->>>> +
->>>> +static struct rpmsg_driver rpmsg_chrdev_driver = {
->>>> +	.probe = rpmsg_chrdev_probe,
->>>> +	.remove = rpmsg_chrdev_remove,
->>>> +	.id_table = rpmsg_chrdev_id_table,
->>>> +	.callback = rpmsg_ept_cb,
->>>
->>> Not sure why we need a callback associated to this driver when
->>> rpmsg_eptdev_open() already creates and rpmsg_endpoint.  To me the only thing
->>> having a callback provides is the association between the rpmsg_device and the
->>> rpmsg_endpoint[1] that happens in rpmsg_dev_probe().  The QC folks already do
->>> this association in their platform code[2].  Since this is not done in
->>> __rpmsg_create_ept() a check for rpdev->ept == NULL could be done in
->>> rpmsg_eptdev_open() and do the assignment there. 
->>>
->>> [1]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/rpmsg_core.c#L513  
->>> [2]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/qcom_glink_native.c#L1623
->>>
->>
->> That's a good point! When I started the redesign, I faced some issues with the
->> approach you propose. But as I can not remember the reason and because the code
->> has evolved, i need to re-think about this.
->>
-> 
-> Glad to see we're on the same page.  I stared at this code for a very long time,
-> thinking there was some kind of bigger picture I wasn't getting.
+Thx for reviewing.
 
-I finally found the time to investigate this. If I remember now why I used this
-approach, I also saw that my patchset does not work with the QCOM platform driver.
+>
+> > One noteworthy aspect is that almost nothing users the low-level
+> > __get_user()/__put_user() helpers any more outside of architecture
+> > specific code, so we may not need to have separate versions
+> > for much longer.
+>
+> Al has been trying to kill them off entirely for a while, and I hope
+> he'll eventually succeed.  That being said the difference should be
+> that the __ versions just skip the access_ok, so having both is
+> fairly trivial to implement.
 
-As a first step of explanation, let's ignore the QC platform.
-rpdev->ept is null for the rpmsg ctrldev device created by the virtio rpmsg bus.
-If no default endpoint is created on rpmsg_chrdev_probe, it is not possible to
-differentiate the two in rpmsg_eptdev_open based on rpdev->ept == NULL.
 
-Now let's add the QC implementation
-As you mentioned, QC sets the rpdev->ept to a default endpoint before
-registering the rpmsg ctrldev. This shows that it is not reasonable to expect to
-handle all use cases based on the rpdev->ept value.
 
-So, to summarize, I need to rework this, probably by adding a new field in the
-rpmsg_eptdev structure, to properly handle the endpoint creation in the
-rpmsg_eptdev_open function.
+-- 
+Best Regards
+ Guo Ren
 
-Regards,
-Arnaud
-
-> 
-> 
->> Thanks,
->> Arnaud
->>
->>
->>>> +	.drv = {
->>>> +		.name = "rpmsg_chrdev",
->>>> +	},
->>>> +};
->>>> +
->>>>  static int rpmsg_chrdev_init(void)
->>>>  {
->>>>  	int ret;
->>>>  
->>>>  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_char");
->>>> -	if (ret < 0)
->>>> +	if (ret < 0) {
->>>>  		pr_err("rpmsg: failed to allocate char dev region\n");
->>>> +		return ret;
->>>> +	}
->>>> +
->>>> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
->>>> +	if (ret < 0) {
->>>> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
->>>> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>> +	}
->>>>  
->>>>  	return ret;
->>>>  }
->>>> @@ -417,6 +473,7 @@ postcore_initcall(rpmsg_chrdev_init);
->>>>  
->>>>  static void rpmsg_chrdev_exit(void)
->>>>  {
->>>> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->>>>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>>  }
->>>>  module_exit(rpmsg_chrdev_exit);
->>>> -- 
->>>> 2.17.1
->>>>
+ML: https://lore.kernel.org/linux-csky/
