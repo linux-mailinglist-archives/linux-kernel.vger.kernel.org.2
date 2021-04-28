@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7910C36D48F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A8836D491
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238087AbhD1JKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:10:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46684 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1JKg (ORCPT
+        id S238092AbhD1JLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1JLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:10:36 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619600991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OL8ns1Jd0hYAa1/76ixHBO3gJQaqokoqzKMxkacoGTE=;
-        b=DwNcWU6lhZFEca3EY3gAqfjY2lRbJSUHSb1OsiRUKECkfftfyEBNZ1AfJRMGniV5oo6lZX
-        yRiuAUlN1dEWRSXLyBnIRk9r2ppIsfDhPFd1Zu1MnwtqNC+rDLrHJKAxelczyjDMVJexk0
-        +hq7TVo/kWozpIyMrK8EHEcNwLgsRknxxnSs9qlGURCLio/NfcDx5ZOJME17Et9MmyMv2/
-        zWdP25xz97wAHuAHfp28cirB3AkfQK5/1FKA8xwQ16zkNwK9ZeHf1rZLuWI6j/kFj//ZUE
-        YaIspFwEh6ag1M5ei+3HuTmdeVckSueB3Gdt7wamxlQOLOiMXaT2WOBpkciPug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619600991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OL8ns1Jd0hYAa1/76ixHBO3gJQaqokoqzKMxkacoGTE=;
-        b=xHWiM2KmX/UuADNH1lowDKhszNxBh1Jhm1rk1imi8/f9QvbB5AcHEVw/c14GoKsoBXnLOW
-        GDHoFE3m+CiuDxCw==
-To:     Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH] Guest system time jumps when new vCPUs is hot-added
-In-Reply-To: <87lf92n5r1.ffs@nanos.tec.linutronix.de>
-References: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com> <87lf92n5r1.ffs@nanos.tec.linutronix.de>
-Date:   Wed, 28 Apr 2021 11:09:50 +0200
-Message-ID: <87im46n5b5.ffs@nanos.tec.linutronix.de>
+        Wed, 28 Apr 2021 05:11:44 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6914FC061574;
+        Wed, 28 Apr 2021 02:10:59 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id p12so44268682pgj.10;
+        Wed, 28 Apr 2021 02:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=O85XFdsg7r8NEHhiBBrs/ubTFhw8JUhWaRtVRmWSkLs=;
+        b=PSDF6tnsZtA1yXC2axThlCFTdJdEObYbsDIuM9MCmt5thMC+wq/SQGNoj5zKdXNxRy
+         8bSFqX2Ic2mJ2Baipp49sIQFW8PcX3G1aJGq/wlrt2+KlIKvDQN8hOsy0yfb3+YyXbHn
+         Dsxf4xbcFSeKu3tolQlAE6UMrI96vkurG5Q1v21V3mnRgHS2d76f0bh0j33PCU3Bp2lc
+         YcQ5/CvfuXkc8LvWXhmTFFvFhl20rGi2dMu/8miAPrys97lpid5/KqzDiKEEeuv2h6Vl
+         7T27hSMFPotsZDCw9c/7caJ9jsStCHO8ZIEU6J/sECKDEgZvCA3flz8Doc6zbzgnzphs
+         qHbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=O85XFdsg7r8NEHhiBBrs/ubTFhw8JUhWaRtVRmWSkLs=;
+        b=OO48EHTmTHCE2D5Hf+qxjmx5P7/jr9bjnllFnacJHrr8Z93jWwnrTmU2CwWUSfoj5c
+         A2RC++IOIYhZOl3kk/0qrDHT7LRRTf8110mE0bhSvQ81acn+L948LFzPKzoJ1pbVDfnp
+         1oAbzF6PeO1nkAjKQXPEy2WJhDs5rz9d7ZsEUCQLft+N6k/pZ91ns44MeRfbZZALlMb9
+         ErJ61nPBlMqSiLHmaf3BYwVkFpOZ81gP5aHdyy7ynfXLEeil9pU3MDavs8thXJxJyZQh
+         HZd/nZ0GOdPt/c8LrdtidKtZ+1j+Q7u1IDTIc/vJMv6Xg/cS612RJGiQdKHEjCJiMU6F
+         ax5A==
+X-Gm-Message-State: AOAM530VahwkrcJqMGD6FcLhqnT7zts5q8N/Yg0uoEbH1VvSBbqaKm13
+        f0Cv/9Kg22MEbBmfZXBZkUo=
+X-Google-Smtp-Source: ABdhPJy1lgD7dYF7XzFsJb2YQwv50F6TNHuKsbGtiX37gk3W4qraGlVjGBQoPnTPqk0N1GgTz7uoLA==
+X-Received: by 2002:a63:da55:: with SMTP id l21mr7223636pgj.188.1619601058856;
+        Wed, 28 Apr 2021 02:10:58 -0700 (PDT)
+Received: from localhost ([223.237.176.217])
+        by smtp.gmail.com with ESMTPSA id a20sm4731761pfk.46.2021.04.28.02.10.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Apr 2021 02:10:58 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:40:50 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     dmitry.torokhov@gmail.com
+Cc:     shubhankarvk@gmail.com, colin.king@canonical.com,
+        dan.carpenter@oracle.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] drivers: input: misc: ims-pcu.c: Fix usage of spaces
+Message-ID: <20210428091050.ryr7kxlxre7uhye4@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28 2021 at 11:00, Thomas Gleixner wrote:
+Unnecessary spaces have been replaced with tab space
+This is done to maintain code uniformity.
 
-> On Wed, Apr 28 2021 at 10:22, Zelin Deng wrote:
->
->> Hello,
->> I have below VM configuration:
->> ...
->>     <vcpu placement='static' current='1'>2</vcpu>
->>     <cpu mode='host-passthrough'>
->>     </cpu>
->>     <clock offset='utc'>
->>         <timer name='tsc' frequency='3000000000'/>
->>     </clock>
->> ...
->> After VM has been up for a few minutes, I use "virsh setvcpus" to hot-add
->> second vCPU into VM, below dmesg is observed:
->> [   53.273484] CPU1 has been hot-added
->> [   85.067135] SMP alternatives: switching to SMP code
->> [   85.078409] x86: Booting SMP configuration:
->> [   85.079027] smpboot: Booting Node 0 Processor 1 APIC 0x1
->> [   85.080240] kvm-clock: cpu 1, msr 77601041, secondary cpu clock
->> [   85.080450] smpboot: CPU 1 Converting physical 0 to logical die 1
->> [   85.101228] TSC ADJUST compensate: CPU1 observed 169175101528 warp. Adjust: 169175101528
->> [  141.513496] TSC ADJUST compensate: CPU1 observed 166 warp. Adjust: 169175101694
->
-> Why is TSC_ADJUST on CPU1 different from CPU0 in the first place?
->
-> That's broken.
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ drivers/input/misc/ims-pcu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Aside of that the TSC synchronization check in guests cannot work
-reliably at all. Simply because there is no guarantee that vCPU0 and
-vCPU1 are running in parallel.
+diff --git a/drivers/input/misc/ims-pcu.c b/drivers/input/misc/ims-pcu.c
+index 08b9b5cdb943..1e1b71166e12 100644
+--- a/drivers/input/misc/ims-pcu.c
++++ b/drivers/input/misc/ims-pcu.c
+@@ -647,8 +647,8 @@ static int __ims_pcu_execute_command(struct ims_pcu *pcu,
+ #define IMS_PCU_BL_DATA_OFFSET		3
+ 
+ static int __ims_pcu_execute_bl_command(struct ims_pcu *pcu,
+-				        u8 command, const void *data, size_t len,
+-				        u8 expected_response, int response_time)
++					u8 command, const void *data, size_t len,
++					u8 expected_response, int response_time)
+ {
+ 	int error;
+ 
+-- 
+2.17.1
 
-Thanks,
-
-        tglx
