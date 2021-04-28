@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6827E36E018
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D8536E019
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241834AbhD1UIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S241848AbhD1UJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238991AbhD1UHx (ORCPT
+        with ESMTP id S241753AbhD1UIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:07:53 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B535CC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:06:53 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id r3so10856724oic.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:06:53 -0700 (PDT)
+        Wed, 28 Apr 2021 16:08:54 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CC8C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:08:08 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id i14so1041704pgk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=vl7A1Bucz63bZ2sNuRyc6lFBD6YydDSFIrYy2XAFbW4=;
-        b=V+PDi+r9lcfd6nKjXBqXO7T4yGd0umuQaXFT35w2tV6DrX6On7FxjGWqdF3tS5MSE+
-         P+pX2ad6Mtyzf1c4KfvG0i9/O0LgZYK3O1gQjWOZFZDe3UpiaL5jPZ9HtwormPpB9AqP
-         Dd9pzkECFx19XuqHapvjUsFVxbCALKkus+6Gzmt7riMQJfy5QbldfUgIEg9y+93qAKO7
-         aO8sixH0nO+n5uEt3E9LaBcbDaEjV6aJfCQv0vtFQFhV2YscJemZjO4eIvOQ3Fhm0L6d
-         QLRpdqFumHBAi1ZJ98WtnZC4awoXEe8bu2/KJG5+VkeNdS0mEWyELY5ebkIwaupWcxxw
-         pZkQ==
+        bh=TvZXpxzUPr9ug6LqegfgGSaBKevdWw5NXJhgRMNXZU4=;
+        b=XAyOcldawoNp4xxZKaCFJwhaVKU7aarB5d7FOUD4MFxkEcx0vWDw76h6mc3oWxEhe4
+         zb+Stz42JWDgk2Rd01bB9thXHKLVnPGZR7LfYd2ARwpkCKZkPAgd5nKsXVw2/JEDFqIz
+         GqJ8OFl/tkRk8TbRWm05ROiYQzTQbZ6R1qFis=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vl7A1Bucz63bZ2sNuRyc6lFBD6YydDSFIrYy2XAFbW4=;
-        b=i3pIn5FXuJaucbbUEbHVOpSt4zYh8J1BFZiTXMU+e3pVozE8JgfaN9iSIgkvSMC7Nc
-         GIrRf01nCDjetGaWbspvHsXCr5O1ZH71xFFfrjJlR4ZWLVZlgzzedy27zVTgPvFwbBjC
-         Cn4bRQ9QgXxk7Dqq1tGxLiK1/SzefwOr65x3PJ2/S4tjvE+eTb0KysE3biy9EE1NK+b+
-         LdfsbrLS5hOpmM2iitsmG14+TEf7T5Bw3XP/pUtnrV5Aj4VNf0ppn2igmm5JUz5pxd7X
-         g05lx9lJG0LvdGBdvAAqrc2JjDVgymMt0HDldwk2emMP9doUkXIFV1n848rlMsH84VYc
-         4jMg==
-X-Gm-Message-State: AOAM532CAHEFPdEV3mKtv9z8z9/Zs1OWAp35IcNt+DJ/VH50JkdeJHGK
-        SZxrvhQv6CI+kANYaN9kEMpV6g==
-X-Google-Smtp-Source: ABdhPJzAsbDFCLgX6C6JhjCevrUavXR+5G/d1FZkQZ2elBaaEKg8pKvEarGLagSh2TswjmnxMNfDZw==
-X-Received: by 2002:a05:6808:18e:: with SMTP id w14mr21763329oic.159.1619640413040;
-        Wed, 28 Apr 2021 13:06:53 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x45sm195564otr.35.2021.04.28.13.06.52
+        bh=TvZXpxzUPr9ug6LqegfgGSaBKevdWw5NXJhgRMNXZU4=;
+        b=pjcrXzobUEG67je4k9nVrXtfCPapVbI3oImPupEyuYM2v6S3kL7lJ1E9KXXMZb8Fu0
+         457Nu2LokHEnzMMMZYHi+nLqAaECccysmlULJsD5S8MjFIYxDiwE64HPde1gEReXNew6
+         6kgoRHrIWEG7mtDpupb06XFDA0QOSF63UZd/H33WYLO2jbaaCMCqPQb6v0CTPWqNjJqX
+         vyYKY65hjUY/sakGm8iEZvHDUhIQH2fe46nhECvzdeBjLjuNbIYAcJ87oYBpQM5zXgwW
+         7zkd/9ZVa4onNfq8QC6Om8BO2ADpx0VjedvQo3MLvKZ58yNfi+fHmd1LBgPODln3H1GC
+         5JYA==
+X-Gm-Message-State: AOAM532vdfDB4f42aeJt2MN6+VAc7z6g0yPScCqGfjO/wI/WS4SvH1Vp
+        iZNj/kkie0nwU8ROQ//uJJ72AHjvmJ+z7g==
+X-Google-Smtp-Source: ABdhPJymuryoOIzSsUYW/mEdqS2ZeTIOacznUj2T1axeJaT8m3GIu+b1jLrnLkQhShwEafAZbFkppA==
+X-Received: by 2002:a62:2904:0:b029:25c:13f2:47d4 with SMTP id p4-20020a6229040000b029025c13f247d4mr29929702pfp.4.1619640487586;
+        Wed, 28 Apr 2021 13:08:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a20sm446928pfi.138.2021.04.28.13.08.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 13:06:52 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 15:06:50 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Cc:     aghayal@codeaurora.org, collinsd@codeaurora.org,
-        fenglinw@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Add QCOM PMIC PWM driver
-Message-ID: <20210428200650.GM1908499@yoga>
-References: <20210428155422.GL1908499@yoga>
- <1619635777-2872-1-git-send-email-subbaram@codeaurora.org>
+        Wed, 28 Apr 2021 13:08:06 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 13:08:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     bsingharora@gmail.com, "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] Next revision of the L1D flush patches
+Message-ID: <202104281307.F9FCF660@keescook>
+References: <20210108121056.21940-1-sblbir@amazon.com>
+ <cf89f0389379daaaff0cbce9c5f1550866e55e91.camel@amazon.com>
+ <202104081319.DAB1D817@keescook>
+ <87y2d5tpjh.ffs@nanos.tec.linutronix.de>
+ <87tunsofan.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619635777-2872-1-git-send-email-subbaram@codeaurora.org>
+In-Reply-To: <87tunsofan.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28 Apr 13:49 CDT 2021, Subbaraman Narayanamurthy wrote:
+On Tue, Apr 27, 2021 at 12:24:16AM +0200, Thomas Gleixner wrote:
+> On Mon, Apr 26 2021 at 10:31, Thomas Gleixner wrote:
+> > On Thu, Apr 08 2021 at 13:23, Kees Cook wrote:
+> >>
+> >> I'd still really like to see this -- it's a big hammer, but that's the
+> >> point for cases where some new flaw appears and we can point to the
+> >> toolbox and say "you can mitigate it with this while you wait for new
+> >> kernel/CPU."
+> >>
+> >> Any further thoughts from x86 maintainers? This seems like it addressed
+> >> all of tglx's review comments.
+> >
+> > Sorry for dropping the ball on this. It's in my list of things to deal
+> > with. Starting to look at it now.
+> 
+> So I went through the pile and for remorse I sat down and made the
+> tweaks I think are necessary myself.
+> 
+> I've pushed out the result to
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/l1dflush
 
-> >> Add PWM driver to support PWM modules inside QCOM PMIC chips which are accessed
-> >> through SPMI bus. Normally, there would be multiple PWM modules with adjacent
-> >> address spaces present in one PMIC chip, and each PWM module has 0x100 size of
-> >> address space. With this driver, a pwm_chip with multiple pwm_device individuals
-> >> is created, and each pwm_device individual is corresponding to one PWM module.
-> >> 
-> 
-> > Exposing this as individual pwm_chips will prevent us from enabling the
-> > LED related use cases (patterns and multicolor) that most versions of
-> > the hardware support.
-> 
-> > I proposed [1] a while ago and think this is a better approach. I'll
-> > take some time to respin this and send out the next version.
-> 
-> > [1] https://lore.kernel.org/linux-arm-msm/20201021201224.3430546-1-bjorn.andersson@linaro.org/
-> 
-> Hi Bjorn,
-> Yes, we came across this patch series but this driver (leds-qcom-lpg) is a
-> combo one which provides support only for RGB LEDs (or TRI_LED module) along
-> with PWM/LPG channels allocated for it. Say, if we've additional PWM channels
-> on the same PMIC (that provides user-interface support) or another PMIC
-> (non user-interface) that has multiple PWM channels that are not used for LED
-> notifications, it would be good to have a separate PWM driver to support such
-> channels IMHO. There are couple of use cases we've come across recently.
-> 
-> 1. Using a PWM channel for controlling external LCD backlight controller
-> 2. Using a PWM channel for controlling a haptics actuator
-> 
+Oh excellent; thank you for doing this!
 
-The LPG driver, as it's currently written, support using each channel as
-a LED, part of a multicolor LED or as a pwm_chip. It's been tested on
-pm8916 (which doesn't have triled or the lut), pm*8994, pmi8996 and
-pm8150* in various combinations.
-
-In particular the PWM-only modes that you describe here is how the
-driver has been used on db410c, for driving the "backlight GPIO" in the
-low-speed connector.
-
-Regards,
-Bjorn
+-- 
+Kees Cook
