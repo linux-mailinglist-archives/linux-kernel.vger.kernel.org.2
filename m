@@ -2,70 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FF236DF64
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F273036DF66
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243453AbhD1TON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhD1TOM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:14:12 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEEAC061573;
-        Wed, 28 Apr 2021 12:13:26 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id D98DB3723; Wed, 28 Apr 2021 15:13:25 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org D98DB3723
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1619637205;
-        bh=dK+/Sk39NdF6I9xPBcXsj2vaM5G7nrMH39n1B8fuYT4=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=LBqrNQ83RGiejWRj6Q7+3Ddq0L/cSPz7wTGgAoRbWiYL93w7TY0HmgResWNnyCu46
-         emtghxopIrGSnrJ0BkMF/8orD8xshNW2h7lF9gq6PyIFbQqLHdqiDjNvFcT0TpDQmT
-         nSCPbghhv4dXAIhwGNR3qglEpBGmRt5N35t8a2T0=
-Date:   Wed, 28 Apr 2021 15:13:25 -0400
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        smfrench@gmail.com, senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
-        colin.king@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org
-Subject: Re: [PATCH v2 00/10] cifsd: introduce new SMB3 kernel server
-Message-ID: <20210428191325.GA7400@fieldses.org>
-References: <CGME20210422003835epcas1p246c40c6a6bbc0e9f5d4ccf9b69bef0d7@epcas1p2.samsung.com>
- <20210422002824.12677-1-namjae.jeon@samsung.com>
+        id S243657AbhD1TOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232310AbhD1TOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 15:14:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A6E6613F1;
+        Wed, 28 Apr 2021 19:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619637231;
+        bh=tT66t63JdIpz5yQPVhQuv9m4JujetKOEC9l42sV1tMo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gKJmJvCd/7xSOjayOgxjgKRuPikxnm25lQlzziciFQZALjJ2l7UIp6LQVe611ruzv
+         SlFxm4DRSB0yL27OJCHGHItTEkE9Q28VCTxXZZuzV3WXLNQ74JG+7Rkag2QdAO0kDS
+         nmV1nRxKbv/ExLd/6HTNg3LOTJ2mQjTugQtJMSqU5rpwjotlLbdKnmkwqHLDnN9nfb
+         kw32jnw3m+MW7H7Wwh53EPlJt3uQiPccIxhwM2pnPNN0hSwzAeOBkxlKHOTbMsDevD
+         7d42YayW0q3SEUfa31+IDN7o6ml1R3du+MWDAsU+5ZfJca7P3vp9qEcmDnBfMRog4X
+         43vncnfASWyGA==
+Date:   Wed, 28 Apr 2021 12:13:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     simon.horman@netronome.com, davem@davemloft.net,
+        oss-drivers@netronome.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfp: flower: Remove redundant assignment to mask
+Message-ID: <20210428121350.20d10dcf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1619604330-122462-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1619604330-122462-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422002824.12677-1-namjae.jeon@samsung.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:28:14AM +0900, Namjae Jeon wrote:
-> ACLs                           Partially Supported. only DACLs available, SACLs
->                                (auditing) is planned for the future. For
->                                ownership (SIDs) ksmbd generates random subauth
->                                values(then store it to disk) and use uid/gid
->                                get from inode as RID for local domain SID.
->                                The current acl implementation is limited to
->                                standalone server, not a domain member.
->                                Integration with Samba tools is being worked on to
->                                allow future support for running as a domain member.
+On Wed, 28 Apr 2021 18:05:30 +0800 Jiapeng Chong wrote:
+> The value stored to mask in the calculations this patch removes is
+> not used, so the calculation and the assignment can be removed.
+> 
+> Cleans up the following clang-analyzer warning:
+> 
+> drivers/net/ethernet/netronome/nfp/flower/offload.c:1230:3: warning:
+> Value stored to 'mask' is never read
+> [clang-analyzer-deadcode.DeadStores].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-How exactly is this implementing ACLs?  I grepped through the code a bit
-and couldn't quite figure it out--it looked like maybe it's both
-converting to a POSIX ACL and storing the full SBM ACL in an xattr, is
-that correct?  When you read an ACL, and both are present, which do you
-use?
-
-Also it looked like there's some code from fs/nfsd/nfs4acl.c, could we
-share that somehow instead of copying?
-
---b.
+Seems cleaner to always move ext and mask, in case some code 
+is added later in the function and starts accessing mask.
