@@ -2,77 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0453C36E154
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 00:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECEA36E15A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 00:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhD1WBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:01:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:57180 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhD1WBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:01:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC4E7ED1;
-        Wed, 28 Apr 2021 15:00:16 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ACC63F694;
-        Wed, 28 Apr 2021 15:00:14 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
-        yu.c.chen@intel.com, Mel Gorman <mgorman@suse.de>
-Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8% regression
-In-Reply-To: <87mttqt5jc.mognet@arm.com>
-References: <20210414052151.GB21236@xsang-OptiPlex-9020> <87im4on5u5.mognet@arm.com> <20210421032022.GA13430@xsang-OptiPlex-9020> <87bla8ue3e.mognet@arm.com> <20210422074742.GE31382@xsang-OptiPlex-9020> <87wnsutzi9.mognet@arm.com> <87mttqt5jc.mognet@arm.com>
-Date:   Wed, 28 Apr 2021 23:00:07 +0100
-Message-ID: <87k0omxe6w.mognet@arm.com>
+        id S231587AbhD1WCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhD1WCh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 18:02:37 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B224DC06138B;
+        Wed, 28 Apr 2021 15:01:51 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 97B2F88C;
+        Thu, 29 Apr 2021 00:01:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1619647307;
+        bh=Nz/QCYzL43LScDYgeQKxcDJY4uD2js/djdZrQQeHo84=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H84+64d1WUnNometHHZSbNj+0vMMhDpdJRCDGnCXU550CmVlpVVMmjnj3AbiZnvuc
+         ZS9RH7owFxNKuJr1MUkWb13DJP3q3IZkw1WFNXzPC+RCKDnB2qrM8Hl+J3kBAZmje6
+         IRipDvI/njnNnIM4VjIEq6RaDLk6Aa37IgmuJ1Nw=
+Date:   Thu, 29 Apr 2021 01:01:41 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Nelson Costa <Nelson.Costa@synopsys.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [RFC 1/8] dt-bindings: media: Document Synopsys DesignWare HDMI
+ RX
+Message-ID: <YInbRfg14YVyeuEB@pendragon.ideasonboard.com>
+References: <cover.1618937288.git.nelson.costa@synopsys.com>
+ <21bdecce9dd0a8035d906af2242bc7e3495cc1b0.1618937288.git.nelson.costa@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <21bdecce9dd0a8035d906af2242bc7e3495cc1b0.1618937288.git.nelson.costa@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 21:42, Valentin Schneider wrote:
-> On 22/04/21 10:55, Valentin Schneider wrote:
->> I'll go find myself some other x86 box and dig into it;
->> I'd rather not leave this hanging for too long.
->
-> So I found myself a dual-socket Xeon Gold 5120 @ 2.20GHz (64 CPUs) and
-> *there* I get a somewhat consistent ~-6% regression. As I'm suspecting
-> cacheline shenanigans, I also ran that with Peter's recent
-> kthread_is_per_cpu() change, and that brings it down to ~-3%
->
+Hi Nelson and Jose,
 
-Ha ha ho ho, so that was a red herring. My statistical paranoia somewhat
-paid off, and the kthread_is_per_cpu() thing doesn't really change anything
-when you stare at 20+ iterations of that vm-segv thing.
+Thank you for the patch.
 
-As far as I can tell, the culprit is the loss of LBF_SOME_PINNED. By some
-happy accident, the load balancer repeatedly iterates over PCPU kthreads,
-sets LBF_SOME_PINNED and causes a group to be classified as group_imbalanced
-in a later load-balance. This, in turn, forces a 1-task pull, and repeating
-this pattern ~25 times a sec ends up increasing CPU utilization by ~5% over the
-span of the benchmark.
+On Wed, Apr 28, 2021 at 05:25:04PM +0200, Nelson Costa wrote:
+> Document the bindings for the Synopsys DesignWare HDMI RX.
+> 
+> Signed-off-by: Jose Abreu <jose.abreu@synopsys.com>
+> Signed-off-by: Nelson Costa <nelson.costa@synopsys.com>
+> ---
+>  .../devicetree/bindings/media/snps,dw-hdmi-rx.yaml | 149 +++++++++++++++++++++
+>  1 file changed, 149 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml b/Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+> new file mode 100644
+> index 0000000..19c7dd4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+> @@ -0,0 +1,149 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/snps,dw-hdmi-rx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare HDMI RX Controller and PHYs e405/e406 Device Tree Bindings
+> +
+> +maintainers:
+> +  - Jose Abreu <jose.abreu@synopsys.com>
+> +  - Nelson Costa <nelson.costa@synopsys.com>
+> +
+> +description: |
+> +  The Synopsys DesignWare HDMI RX Controller and PHYs e405/e406 is an HDMI 2.0
+> +  Receiver solution that is able to decode video and audio.
+> +
+> +properties:
+> +  compatible:
+> +    const: snps,dw-hdmi-rx
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: phandle to the configuration clock
+> +
+> +  clock-names:
+> +    const: cfg
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  phys:
+> +    maxItems: 1
+> +    description: phandle for the HDMI RX PHY
+> +
+> +  phy-names:
+> +    const: hdmi-phy
+> +
+> +  hdmi-phy@fc:
+> +    type: object
+> +    description: connection point for HDMI PHY
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      compatible:
+> +        oneOf:
+> +          - const: snps,dw-hdmi-phy-e405
+> +          - const: snps,dw-hdmi-phy-e406
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +        description: phandle to the configuration clock
+> +
+> +      clock-names:
+> +        const: cfg
+> +
+> +      "#phy-cells":
+> +        const: 0
+> +
+> +      input-count:
+> +        description: Number of PHY input ports
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [1, 2, 3, 4]
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - clocks
+> +      - clock-names
+> +      - "#phy-cells"
+> +      - input-count
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - phys
+> +  - phy-names
 
-schedstats are somewhat noisy but seem to indicate the baseline had many
-more migrations at the NUMA level (test machine has SMT, MC, NUMA). Because
-of that I suspected
+THe bindings should be using OF graph (ports) to model the connection
+between the HDMI source (usually a connector) and the HDMI RX, and
+between the HDMI RX and the downstream IP core in the pipeline.
 
-  b396f52326de ("sched/fair: Allow a small load imbalance between low utilisation SD_NUMA domains")
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    hdmi_rx0: hdmi-rx@0 {
+> +        compatible = "snps,dw-hdmi-rx";
+> +        reg = <0x0 0x10000>;
+> +        interrupts = <1 2>;
+> +
+> +        clocks = <&dw_hdmi_refclk>;
+> +        clock-names = "cfg";
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        phys = <&hdmi_e405_phy>;
+> +        phy-names = "hdmi-phy";
+> +
+> +        hdmi_e405_phy: hdmi-phy@fc {
+> +                compatible = "snps,dw-hdmi-phy-e405";
+> +                reg = <0xfc>;
+> +
+> +                clocks = <&dw_hdmi_refclk>;
+> +                clock-names = "cfg";
+> +
+> +                #phy-cells = <0>;
+> +                input-count = <4>;
+> +        };
+> +    };
+> +  - |
+> +    hdmi_rx1: hdmi-rx@1 {
+> +        compatible = "snps,dw-hdmi-rx";
+> +        reg = <0x0 0x10000>;
+> +        interrupts = <1 2>;
+> +
+> +        clocks = <&dw_hdmi_refclk>;
+> +        clock-names = "cfg";
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        phys = <&hdmi_e406_phy>;
+> +        phy-names = "hdmi-phy";
+> +
+> +        hdmi_e406_phy: hdmi-phy@fc {
+> +                compatible = "snps,dw-hdmi-phy-e406";
+> +                reg = <0xfc>;
+> +
+> +                clocks = <&dw_hdmi_refclk>;
+> +                clock-names = "cfg";
+> +
+> +                #phy-cells = <0>;
+> +                input-count = <4>;
+> +        };
+> +    };
 
-but reverting that actually makes things worse. I'm still digging, though
-I'm slowly heading towards:
+-- 
+Regards,
 
-  https://www.youtube.com/watch?v=3L6i5AwVAbs
+Laurent Pinchart
