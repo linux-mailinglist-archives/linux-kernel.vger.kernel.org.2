@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A0436DEBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF14F36DEC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243395AbhD1SFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:05:19 -0400
-Received: from smtp-bc0b.mail.infomaniak.ch ([45.157.188.11]:43615 "EHLO
-        smtp-bc0b.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241704AbhD1SFR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:05:17 -0400
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FVmjn5c3FzMqHN0;
-        Wed, 28 Apr 2021 20:04:29 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4FVmjm5KbLzlh8T6;
-        Wed, 28 Apr 2021 20:04:28 +0200 (CEST)
-Subject: Re: [PATCH] samples/landlock: fix path_list memory leak
-To:     Tom Rix <trix@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        linux-security-module@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        James Morris <jmorris@namei.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210427183755.2790654-1-trix@redhat.com>
- <CAKwvOdmj5YvWZZWwcq1G7JgRALwPbqwiROiedMeEbBst2sGeiQ@mail.gmail.com>
- <6108e69b-0470-cd71-e477-ba64641cbf58@digikod.net>
- <4ece80d4-16fe-1938-7eba-2046840881f6@redhat.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <fb03aba8-8556-804f-72b8-c7cbf7155226@digikod.net>
-Date:   Wed, 28 Apr 2021 20:04:57 +0200
-User-Agent: 
+        id S243474AbhD1SIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:08:54 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:55442 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231966AbhD1SIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:08:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619633147; bh=brOaZ74L5IQCdhe8Ng+gvJInozKmDRxmXQBpvP5SpFQ=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=hr5eJctyVMWE0Y1WQTxzDmtjGbNLwiHqVvMqpytPLWIwHZEYzKKTSCpvOIUEaKlzC
+         HpukD/KGqwruQFJXrisggFAc/eKYnaSX6cMFXBMWcEh3Xkiw9JzVNH8ycZiYxOfokJ
+         IqmUqZTbj97JKbTp57j7cDGG/QklzO+vg7DWGC/s=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 28 Apr 2021 20:05:46 +0200 (CEST)
+X-EA-Auth: K/99XHxJdKp2dF3e8sydn4pVeY8Xh2mVd15q7MyPaG4YplnoQFH8O2Nxc2Sl95pHGIoMLO5mhw3jJFT/411HxoszK3KjqiFV
+Date:   Wed, 28 Apr 2021 23:35:41 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, drv@mailo.com
+Subject: [PATCH v4 2/9] staging: media: atomisp: balance braces around
+ if...else block
+Message-ID: <b5e1eacf1a3ec2d317e68b1747e92240dedfb160.1619628317.git.drv@mailo.com>
+References: <cover.1619628317.git.drv@mailo.com>
 MIME-Version: 1.0
-In-Reply-To: <4ece80d4-16fe-1938-7eba-2046840881f6@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619628317.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Balance braces around the if else blocks as per the code style guidelines.
+Add braces to branches where it is missing. Resolves checkpatch script
+CHECK / WARNING feedback messages.
 
-On 28/04/2021 17:36, Tom Rix wrote:
-> 
-> On 4/28/21 2:58 AM, Mickaël Salaün wrote:
->> On 27/04/2021 21:13, Nick Desaulniers wrote:
->>> On Tue, Apr 27, 2021 at 11:38 AM <trix@redhat.com> wrote:
->>>> From: Tom Rix <trix@redhat.com>
->>>>
->>>> Clang static analysis reports this error
->>>>
->>>> sandboxer.c:134:8: warning: Potential leak of memory
->>>>    pointed to by 'path_list'
->>>>          ret = 0;
->>>>                ^
->>>> path_list is allocated in parse_path() but never freed.
->>>>
->>>> Signed-off-by: Tom Rix <trix@redhat.com>
->>>> ---
->>>>   samples/landlock/sandboxer.c | 2 ++
->>>>   1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/samples/landlock/sandboxer.c
->>>> b/samples/landlock/sandboxer.c
->>>> index 7a15910d2171..4629d011ed61 100644
->>>> --- a/samples/landlock/sandboxer.c
->>>> +++ b/samples/landlock/sandboxer.c
->>>> @@ -134,6 +134,8 @@ static int populate_ruleset(
->>>>          ret = 0;
->>>>
->>>>   out_free_name:
->>>> +       if (path_list)
->>>> +               free(path_list);
->>> I don't think the conditional is even necessary? By our first `goto
->>> out_free_name;`, `parse_path` has already been called/memory for
->>> `path_list` has already been allocated. `parse_path` doesn't check
->>> whether `malloc` has failed.
->> Indeed, no need for the path_list check. In practice, this memory leak
->> doesn't stay long because of the execve, but I missed this free anyway.
->> Thanks!
-> 
-> Ok, the general problem of not checking if malloc and friends succeeds
-> is a different problem.
-> 
-> So remove the check and keep the free ?
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
 
-Yes please.
+Changes since v3:
+   - Split this patch into patch 2 and 3.
+   - patch 2 now only adds missing braces.
+   - Removing unwanted braces is moved into patch 3 
+Changes since v2:
+   - None.
+Changes since v1:
+   - None.
 
-> 
-> Tom
-> 
->> Reviewed-by: Mickaël Salaün <mic@linux.microsoft.com>
->>
->>>>          free(env_path_name);
->>>>          return ret;
->>>>   }
->>>> -- 
->>>> 2.26.3
->>>>
->>>
-> 
+
+ drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index 6be3ee1d93a5..d68a2bcc9ae1 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			return gc0310_init(sd);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index 6ba4a8adff7c..e722c639b60d 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		ret = power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			ret = __gc2235_init(sd);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..465fc4468442 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
+ 
+ static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
+ {
+-	if (power == 0)
++	if (power == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		if (power_up(sd))
+ 			return -EINVAL;
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index aec7392fd1de..d046a9804f63 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			return ov2722_init(sd);
+-- 
+2.31.1
+
+
+
