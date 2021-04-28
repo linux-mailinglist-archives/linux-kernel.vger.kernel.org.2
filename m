@@ -2,107 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EFE36D8DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CC336D8CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236552AbhD1NvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:51:15 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:43936 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232211AbhD1NvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:51:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619617802; bh=ZPs87O1n7Rs/FVtu7HFdEuudG0Tivg2EA2GXHVtcliI=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=otMphzDJWyG52ZJy7k0k86mo95Z3lYnyIYucaEAObvqTvzZBNdACO/Ta8jJ+dgMLq
-         H+n6HPHAeoDJFHTH2BjoXu/CFgGmrhFSYArkYg1b5kzXdztvgohKHmlQcDP4zJBBgg
-         qsfN/eeaiyxMxlgxiCdYtM+pQYwfSYbc3s9C76Qg=
-Received: by 192.168.90.16 [192.168.90.16] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Wed, 28 Apr 2021 15:50:01 +0200 (CEST)
-X-EA-Auth: bXkCzuHGuhGacUeC5FPCllNutghnTzfxiQwSGipTFrOvV821Mse6zHDinLc0dKcKA2Ndxh4gj0Y2B1wQExvVPNMaypzVT9Ll
-Date:   Wed, 28 Apr 2021 19:19:50 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v3 3/6] staging: media: atomisp: use __func__ over
- function names
-Message-ID: <YIln/vE6dbX5NZun@192.168.1.8>
-References: <cover.1619199344.git.drv@mailo.com>
- <2cb42846abb7cab5e64bc29d5e496766f5df169b.1619199344.git.drv@mailo.com>
- <20210428102717.GT1981@kadam>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428102717.GT1981@kadam>
+        id S240010AbhD1Nux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:50:53 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:42572 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhD1Nur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:50:47 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 942A1C85F0;
+        Wed, 28 Apr 2021 21:49:56 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31919T139684229392128S1619617793135049_;
+        Wed, 28 Apr 2021 21:49:55 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d7f84823073c5f4106f9708ffb762837>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 30
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: [PATCH v3 08/10] arm64: dts: rockchip: add generic pinconfig settings used by most Rockchip socs
+Date:   Wed, 28 Apr 2021 21:49:51 +0800
+Message-Id: <20210428134951.22457-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210428134759.22076-1-cl@rock-chips.com>
+References: <20210428134759.22076-1-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 01:27:17PM +0300, Dan Carpenter wrote:
-> On Sun, Apr 25, 2021 at 02:13:15PM +0530, Deepak R Varma wrote:
-> > Replace hard coded function names from the debug print strings by
-> > standard __func__ predefined identifier. This resolves following
-> > checkpatch script WARNING:
-> > Prefer using '"%s...", __func__' to using function's name, in a string.
-> > 
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > ---
-> > 
-> > Changes since v2:
-> >    - None.
-> > Changes since v1:
-> >    - None.
-> > 
-> >  .../staging/media/atomisp/i2c/atomisp-gc0310.c   |  2 +-
-> >  .../staging/media/atomisp/i2c/atomisp-gc2235.c   |  2 +-
-> >  .../staging/media/atomisp/i2c/atomisp-lm3554.c   |  2 +-
-> >  .../staging/media/atomisp/i2c/atomisp-ov2680.c   | 16 ++++++++--------
-> >  .../staging/media/atomisp/i2c/atomisp-ov2722.c   |  2 +-
-> >  5 files changed, 12 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > index d68a2bcc9ae1..b572551f1a0d 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > @@ -1292,7 +1292,7 @@ static int gc0310_remove(struct i2c_client *client)
-> >  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> >  	struct gc0310_device *dev = to_gc0310_sensor(sd);
-> >  
-> > -	dev_dbg(&client->dev, "gc0310_remove...\n");
-> > +	dev_dbg(&client->dev, "%s...\n", __func__);
-> >  
-> >  	dev->platform_data->csi_cfg(sd, 0);
-> >  
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > index e722c639b60d..548c572d3b57 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > @@ -1034,7 +1034,7 @@ static int gc2235_remove(struct i2c_client *client)
-> >  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> >  	struct gc2235_device *dev = to_gc2235_sensor(sd);
-> >  
-> > -	dev_dbg(&client->dev, "gc2235_remove...\n");
-> > +	dev_dbg(&client->dev, "%s...\n", __func__);
-> 
-> Just delete printks that only print the function name.  We have ftrace
-> for that.  There are several others below.
+From: Liang Chen <cl@rock-chips.com>
 
-Thank you Dan, Hans, Fabio, Sakari and everyone for your review and comments.
-I have received feedback and suggestions on the patch set.
-I am going to rebuild the patch set according to the feedback and send as v4.
+The pinconfig settings for Rockchip SoCs are pretty similar on all socs,
+so move them to a shared dtsi to be included, instead of redefining them
+for each soc.
 
-Appreciate your comments and time,
-deepak.
+Signed-off-by: Liang Chen <cl@rock-chips.com>
+---
+ .../boot/dts/rockchip/rockchip-pinconf.dtsi   | 344 ++++++++++++++++++
+ 1 file changed, 344 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
 
-> 
-> regards,
-> dan carpenter
-> 
+diff --git a/arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi b/arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
+new file mode 100644
+index 000000000000..5c645437b507
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
+@@ -0,0 +1,344 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
++ */
++
++&pinctrl {
++	/omit-if-no-ref/
++	pcfg_pull_up: pcfg-pull-up {
++		bias-pull-up;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down: pcfg-pull-down {
++		bias-pull-down;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none: pcfg-pull-none {
++		bias-disable;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_0: pcfg-pull-none-drv-level-0 {
++		bias-disable;
++		drive-strength = <0>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_1: pcfg-pull-none-drv-level-1 {
++		bias-disable;
++		drive-strength = <1>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_2: pcfg-pull-none-drv-level-2 {
++		bias-disable;
++		drive-strength = <2>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_3: pcfg-pull-none-drv-level-3 {
++		bias-disable;
++		drive-strength = <3>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_4: pcfg-pull-none-drv-level-4 {
++		bias-disable;
++		drive-strength = <4>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_5: pcfg-pull-none-drv-level-5 {
++		bias-disable;
++		drive-strength = <5>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_6: pcfg-pull-none-drv-level-6 {
++		bias-disable;
++		drive-strength = <6>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_7: pcfg-pull-none-drv-level-7 {
++		bias-disable;
++		drive-strength = <7>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_8: pcfg-pull-none-drv-level-8 {
++		bias-disable;
++		drive-strength = <8>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_9: pcfg-pull-none-drv-level-9 {
++		bias-disable;
++		drive-strength = <9>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_10: pcfg-pull-none-drv-level-10 {
++		bias-disable;
++		drive-strength = <10>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_11: pcfg-pull-none-drv-level-11 {
++		bias-disable;
++		drive-strength = <11>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_12: pcfg-pull-none-drv-level-12 {
++		bias-disable;
++		drive-strength = <12>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_13: pcfg-pull-none-drv-level-13 {
++		bias-disable;
++		drive-strength = <13>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_14: pcfg-pull-none-drv-level-14 {
++		bias-disable;
++		drive-strength = <14>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_15: pcfg-pull-none-drv-level-15 {
++		bias-disable;
++		drive-strength = <15>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_0: pcfg-pull-up-drv-level-0 {
++		bias-pull-up;
++		drive-strength = <0>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_1: pcfg-pull-up-drv-level-1 {
++		bias-pull-up;
++		drive-strength = <1>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_2: pcfg-pull-up-drv-level-2 {
++		bias-pull-up;
++		drive-strength = <2>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_3: pcfg-pull-up-drv-level-3 {
++		bias-pull-up;
++		drive-strength = <3>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_4: pcfg-pull-up-drv-level-4 {
++		bias-pull-up;
++		drive-strength = <4>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_5: pcfg-pull-up-drv-level-5 {
++		bias-pull-up;
++		drive-strength = <5>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_6: pcfg-pull-up-drv-level-6 {
++		bias-pull-up;
++		drive-strength = <6>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_7: pcfg-pull-up-drv-level-7 {
++		bias-pull-up;
++		drive-strength = <7>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_8: pcfg-pull-up-drv-level-8 {
++		bias-pull-up;
++		drive-strength = <8>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_9: pcfg-pull-up-drv-level-9 {
++		bias-pull-up;
++		drive-strength = <9>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_10: pcfg-pull-up-drv-level-10 {
++		bias-pull-up;
++		drive-strength = <10>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_11: pcfg-pull-up-drv-level-11 {
++		bias-pull-up;
++		drive-strength = <11>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_12: pcfg-pull-up-drv-level-12 {
++		bias-pull-up;
++		drive-strength = <12>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_13: pcfg-pull-up-drv-level-13 {
++		bias-pull-up;
++		drive-strength = <13>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_14: pcfg-pull-up-drv-level-14 {
++		bias-pull-up;
++		drive-strength = <14>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_drv_level_15: pcfg-pull-up-drv-level-15 {
++		bias-pull-up;
++		drive-strength = <15>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_0: pcfg-pull-down-drv-level-0 {
++		bias-pull-down;
++		drive-strength = <0>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_1: pcfg-pull-down-drv-level-1 {
++		bias-pull-down;
++		drive-strength = <1>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_2: pcfg-pull-down-drv-level-2 {
++		bias-pull-down;
++		drive-strength = <2>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_3: pcfg-pull-down-drv-level-3 {
++		bias-pull-down;
++		drive-strength = <3>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_4: pcfg-pull-down-drv-level-4 {
++		bias-pull-down;
++		drive-strength = <4>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_5: pcfg-pull-down-drv-level-5 {
++		bias-pull-down;
++		drive-strength = <5>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_6: pcfg-pull-down-drv-level-6 {
++		bias-pull-down;
++		drive-strength = <6>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_7: pcfg-pull-down-drv-level-7 {
++		bias-pull-down;
++		drive-strength = <7>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_8: pcfg-pull-down-drv-level-8 {
++		bias-pull-down;
++		drive-strength = <8>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_9: pcfg-pull-down-drv-level-9 {
++		bias-pull-down;
++		drive-strength = <9>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_10: pcfg-pull-down-drv-level-10 {
++		bias-pull-down;
++		drive-strength = <10>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_11: pcfg-pull-down-drv-level-11 {
++		bias-pull-down;
++		drive-strength = <11>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_12: pcfg-pull-down-drv-level-12 {
++		bias-pull-down;
++		drive-strength = <12>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_13: pcfg-pull-down-drv-level-13 {
++		bias-pull-down;
++		drive-strength = <13>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_14: pcfg-pull-down-drv-level-14 {
++		bias-pull-down;
++		drive-strength = <14>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_drv_level_15: pcfg-pull-down-drv-level-15 {
++		bias-pull-down;
++		drive-strength = <15>;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_up_smt: pcfg-pull-up-smt {
++		bias-pull-up;
++		input-schmitt-enable;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_down_smt: pcfg-pull-down-smt {
++		bias-pull-down;
++		input-schmitt-enable;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_smt: pcfg-pull-none-smt {
++		bias-disable;
++		input-schmitt-enable;
++	};
++
++	/omit-if-no-ref/
++	pcfg_pull_none_drv_level_0_smt: pcfg-pull-none-drv-level-0-smt {
++		bias-disable;
++		drive-strength = <0>;
++		input-schmitt-enable;
++	};
++
++	/omit-if-no-ref/
++	pcfg_output_high: pcfg-output-high {
++		output-high;
++	};
++
++	/omit-if-no-ref/
++	pcfg_output_low: pcfg-output-low {
++		output-low;
++	};
++};
+-- 
+2.17.1
+
 
 
