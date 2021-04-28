@@ -2,189 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6980036DACC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3445E36DACE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239497AbhD1PD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
+        id S236071AbhD1PDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbhD1PCy (ORCPT
+        with ESMTP id S239509AbhD1PD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:02:54 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0E7C061264
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:05 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id p17so5046322pjz.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:05 -0700 (PDT)
+        Wed, 28 Apr 2021 11:03:27 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC890C061374
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:53 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id p8so10324324iol.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jz7qPymMOFiVOAXZnP4Er6B1ezJAfu0fq5a7KpaKKQU=;
-        b=tJmUpYMlpVzCzA6fjWQAPQT8pJlmuQQJyP65wBc4SobpHYKgSjjw7PSOs+hrWxJfWb
-         S9/I6rpyxY795lojvfRjKS8iIGjOqOPQnaDnZyI4sEPHgMus7cVRTId5sUXOxvDhxRY7
-         iD1+csPryZ0Fl35FqzelVEtp4n0cGxmW4B8jH/E5CQvHsNNMEJrap/+TLT18S2DLjp4Y
-         bdSoURtwbRKMeuPqDU42hhNoOZ4vj6bhzAQ6Q4VUEQqs318Ap4H3mb/WLGn/prWKCQFS
-         NM+9JEldMbdZ6jDZql84b0qH51bF0B8CuYB0Qtd5GOfy2CtygMzKAMEC0wBSgzj8iGL2
-         UahQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iabn/7TldLlLe4ct1XbBE3tIHi0bNFX+HoKTspy+Zd8=;
+        b=W8J8yxp2ijkdH07hhcmJoTch4+ds+RpR3uJrFyC0n+ijzmDDAkR7Wa2g/1NMRtci5F
+         XGfLuh8mdCRY1S3icexBaEMHztAzbCBe+wx+rqRERgmLQBZGxhCp2gvvUlj8IFXHI0Iy
+         TwtKi5pO89ycJaUT+bcI/pkLkI/z/p05oaD3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jz7qPymMOFiVOAXZnP4Er6B1ezJAfu0fq5a7KpaKKQU=;
-        b=IQS0NMdY1tjsqa9sVu9Td/5JRpRxB1P1WSvnn1sQqWjb2hivgkHyEOgC3VIqEHukG8
-         UEI9RckTCwMxB929jCaN6kxxc8aqelVuhnpLf12zXfcjFhZ6JtjeS+ySyPBDAw3Qdo3L
-         l2eMRmkr9R1idpeMKqUtZzclIgUR7kCi76WsR4+/QV2j6Za9cfSDE9bZDferbOefhAhv
-         DFY2mZodhbSOZpZ9ZOMMLssc/uVahifiLNLjvkYAEg9cpht0jJL3elhe982Ya1hGjWSU
-         VaG4ETebATqfCdRjx7p5ZxZqXfOKS5xUHGAVBNn2wq2fTBDGBnYOnmKdqRr0jUXhaseh
-         0jfQ==
-X-Gm-Message-State: AOAM531FKqYltfQnP7ljwegdffaIQxcNXWZfXgliOUSyxffYWM8bbsOq
-        S6s3B7dWLY5r5Jyjbk2P8Bch5wAlB/PE0w==
-X-Google-Smtp-Source: ABdhPJyqXFkfR+iBHk8ipYJO7e2td0DCaeMFxvdNTPxJZHuA4UqEQCca9eBPOjtc0ufvhqon6y+8hw==
-X-Received: by 2002:a17:902:10b:b029:ed:2b3e:beb4 with SMTP id 11-20020a170902010bb02900ed2b3ebeb4mr17868694plb.64.1619621944318;
-        Wed, 28 Apr 2021 07:59:04 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id mn22sm4501399pjb.24.2021.04.28.07.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 07:59:03 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:58:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Denis Lunev <den@openvz.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Oliver Upton <oupton@google.com>,
-        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
- entries count
-Message-ID: <YIl4M/GgaYvwNuXv@google.com>
-References: <20210428113655.26282-1-valeriy.vdovin@virtuozzo.com>
- <871raueg7y.fsf@vitty.brq.redhat.com>
- <20210428134657.GA515794@dhcp-172-16-24-191.sw.ru>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iabn/7TldLlLe4ct1XbBE3tIHi0bNFX+HoKTspy+Zd8=;
+        b=HX/vbMuc4N2T2pC9IYrLwDRlgsrvuejoKDfawMGjXlO3bP1en6x7ZkUGNMjH5TE48e
+         cPPCryEiZSgc8b6VlZKnvMqRhDhfDwhvXw3euwa3gau5MXqEqzTEkgCUGe1Co9YXKvr6
+         1ObEvPYUXjDt1jJbpKk1Fo+xQUuQhroB/Ph2L0egvZiSpaLzozwZNLQG1Dy3OED4bWK7
+         PzON71lSFeXg1fOdlqmZmuhjuub8z+UTKq3CgxDmp0eZuR9mb+oDNjvTfiBbN0M3yKLz
+         ozsfTDSzQ4e+KbDVlrNqMz9IJXvXQUnUWSWt69hJdMmxpi24SIGcIh0Kn0Oa6LYp/e6e
+         YNbg==
+X-Gm-Message-State: AOAM533seDr/da6aNMaBeZ6funuKXuVLiMfSXL1GSrEGz1ZR2KcGbvu6
+        gHIxG9nXVpx0+04j9hQQ0NL2+gHvRBpMTCmTbhjltQ==
+X-Google-Smtp-Source: ABdhPJw7OhNOQmqPMxNZRZjEipI1SzvGVR7FqSWDt4x1WF2C2QZ9V9DVTVNQUH8IVON5Fb672kMK94cmky6MFHihP6A=
+X-Received: by 2002:a05:6638:2515:: with SMTP id v21mr27686360jat.110.1619621993352;
+ Wed, 28 Apr 2021 07:59:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428134657.GA515794@dhcp-172-16-24-191.sw.ru>
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
+ <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
+ <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
+ <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
+ <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com>
+ <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk> <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
+ <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 28 Apr 2021 16:59:42 +0200
+Message-ID: <CABRcYm+pO94dFW83SZCtKQE8x6PkRicr+exGD3CNwGwQUYmFcw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021, Valeriy Vdovin wrote:
-> On Wed, Apr 28, 2021 at 02:38:57PM +0200, Vitaly Kuznetsov wrote:
-> > Valeriy Vdovin <valeriy.vdovin@virtuozzo.com> writes:
-> > 
-> > > KVM_GET_CPUID2 kvm ioctl is not very well documented, but the way it is
-> > > implemented in function kvm_vcpu_ioctl_get_cpuid2 suggests that even at
-> > > error path it will try to return number of entries to the caller. But
-> > > The dispatcher kvm vcpu ioctl dispatcher code in kvm_arch_vcpu_ioctl
-> > > ignores any output from this function if it sees the error return code.
+On Tue, Apr 27, 2021 at 8:03 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Apr 27, 2021 at 2:51 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
+> > <linux@rasmusvillemoes.dk> wrote:
+> > >         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
+> > > -       enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
+> > > +       u32 *bin_args;
+> > >         static char buf[BPF_TRACE_PRINTK_SIZE];
+> > >         unsigned long flags;
+> > >         int ret;
 > > >
-> > > It's very explicit by the code that it was designed to receive some
-> > > small number of entries to return E2BIG along with the corrected number.
+> > > -       ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
+> > > -                                MAX_TRACE_PRINTK_VARARGS);
+> > > +       ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
+> > > +                                 MAX_TRACE_PRINTK_VARARGS);
+> > >         if (ret < 0)
+> > >                 return ret;
 > > >
-> > > This lost logic in the dispatcher code has been restored by removing the
-> > > lines that check for function return code and skip if error is found.
-> > > Without it, the ioctl caller will see both the number of entries and the
-> > > correct error.
+> > > -       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
+> > > -               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
+> > > -       /* snprintf() will not append null for zero-length strings */
+> > > -       if (ret == 0)
+> > > -               buf[0] = '\0';
+> > > +       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
 > > >
-> > > In selftests relevant function vcpu_get_cpuid has also been modified to
-> > > utilize the number of cpuid entries returned along with errno E2BIG.
+> > >         raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> > >         trace_bpf_trace_printk(buf);
+> > >         raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
 > > >
-> > > Signed-off-by: Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
-> > > ---
-> > >  arch/x86/kvm/x86.c                            | 10 +++++-----
-> > >  .../selftests/kvm/lib/x86_64/processor.c      | 20 +++++++++++--------
-> > >  2 files changed, 17 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index efc7a82ab140..df8a3e44e722 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -4773,14 +4773,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
-> > >  		r = -EFAULT;
-> > >  		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
-> > >  			goto out;
-> > > +
-> > >  		r = kvm_vcpu_ioctl_get_cpuid2(vcpu, &cpuid,
-> > >  					      cpuid_arg->entries);
-> > > -		if (r)
-> > > -			goto out;
-> > > -		r = -EFAULT;
-> > > -		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid)))
-> > 
-> > It may make sense to check that 'r == -E2BIG' before trying to write
-> > anything back. I don't think it is correct/expected to modify nent in
-> > other cases (e.g. when kvm_vcpu_ioctl_get_cpuid2() returns -EFAULT)
-> > 
-> That's a good point. The caller could expect and rely on the fact that nent
-> is unmodified in any error case except E2BIG. I will add this in the next
-> version.
-> > > +
-> > > +		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid))) {
-> > > +			r = -EFAULT;
-> > >  			goto out;
-> > > -		r = 0;
-> > > +		}
-> > >  		break;
-> > 
-> > How is KVM userspace supposed to know if it can trust the 'nent' value
-> > (KVM is fixed case) or not (KVM is not fixed case)? This can probably be
-> > resolved with adding a new capability (but then I'm not sure the change
-> > is worth it to be honest).
-> 
-> As I see it KVM userspace should set nent to 0, and then expect any non-zero
-> value in return along with E2BIG. This is the same approach I've used in the
-> modified test code in the same patch.
+> > > Why isn't the write to buf[] protected by that spinlock? Or put another
+> > > way, what protects buf[] from concurrent writes?
+> >
+> > You're right, that is a bug, I missed that buf was static and thought
+> > it was just on the stack. That snprintf call should be after the
+> > raw_spin_lock_irqsave. I'll send a patch. Thank you Rasmus. (before my
+> > snprintf series, there was a vsprintf after the raw_spin_lock_irqsave)
 
-IMO, the current code is correct (well, least awful), albeit misleading.
-Copying back the number of entries but not the entries themselves would be a bug.
-That can obviously be remedied, but it adds even more complexity for no known
-benefit, and training userspace to go spelunking on -E2BIG would likely yield
-more bugs in the future.
+Solved now
 
-I also think we should keep the -E2BIG behavior of KVM_GET_CPUID2 and
-KVM_GET_{SUPPORTED,EMULATED,SUPPORTED_HV}_CPUID consistent.  Returning partial
-information would make KVM_GET_CPUID2 an anomaly.
+> Can you please also clean up unnecessary ()s you added in at least a
+> few places. Thanks.
 
+Alexei said he took care of this .:)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index c96f79c9fff2..c4dbc7c47b17 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -348,20 +348,15 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
-                              struct kvm_cpuid2 *cpuid,
-                              struct kvm_cpuid_entry2 __user *entries)
- {
--       int r;
--
--       r = -E2BIG;
-        if (cpuid->nent < vcpu->arch.cpuid_nent)
--               goto out;
--       r = -EFAULT;
-+               return -E2BIG;
-+
-        if (copy_to_user(entries, vcpu->arch.cpuid_entries,
-                         vcpu->arch.cpuid_nent * sizeof(struct kvm_cpuid_entry2)))
--               goto out;
--       return 0;
-+               return -EFAULT;
+> > > Probably the test cases are not run in parallel, but this is the kind of
+> > > thing that would give those symptoms.
+> >
+> > I think it's a separate issue from what Andrii reported though because
+> > the flaky test exercises the bpf_snprintf helper and this buf spinlock
+> > bug you just found only affects the bpf_trace_printk helper.
+> >
+> > That being said, it does smell a little bit like a concurrency issue
+> > too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
+> > attaches to all syscall entries and most likely gets executed many
+> > more times than necessary and probably on parallel CPUs. The "pad_out"
+> > buffer they write to is unique and not locked so maybe the test's
+> > userspace reads pad_out while another CPU is writing on it and if the
+> > string output goes through a stage where it is "    4 0000" before
+> > being "    4 000", we might read at the wrong time. That being said, I
+> > would find it weird that this happens as much as 50% of the time and
+> > always specifically on that test case.
+> >
+> > Andrii could you maybe try changing the prog type to
+> > "tp/syscalls/sys_enter_nanosleep" on the machine where you can
+> > reproduce this bug ?
+>
+> Yes, it helps. I can't repro it easily anymore.
 
--out:
-        cpuid->nent = vcpu->arch.cpuid_nent;
--       return r;
-+       return 0;
- }
+Good, so it does sound like a concurrency issue indeed
 
- /* Mask kvm_cpu_caps for @leaf with the raw CPUID capabilities of this CPU. */
+> I think the right fix, though, should be to filter by tid, not change the tracepoint.
+
+Agreed, I'll send a patch for that today. :)
+
+> I think what's happening is we see the string right before bstr_printf
+> does zero-termination with end[-1] = '\0'; So in some cases we see
+> truncated string, in others we see untruncated one.
+
+Makes sense but I still wonder why it happens so often (50% of the
+time is really a lot) and why it is consistently that one test case
+that fails and not the "overflow" case for example. But I'm confident
+that this is not a bug in the helper now and that the tid filter will
+fix the test.
