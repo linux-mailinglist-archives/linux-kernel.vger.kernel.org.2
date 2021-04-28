@@ -2,134 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8ED36D360
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C9E36D364
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhD1Hp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1Hp0 (ORCPT
+        id S236879AbhD1Hqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:46:42 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:26228 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1Hqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:45:26 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A689DC061574;
-        Wed, 28 Apr 2021 00:44:40 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so6441517pjz.0;
-        Wed, 28 Apr 2021 00:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=hgRf+WY3My77y9MGaOayXQDhKbTAR0DxBOTc0y4LwQ4=;
-        b=KqwWZkWiWZv2dJz+SYjb6uB0Fbq3FKHWMaN5zanPYFIHQ+qo1m4K9xbzCyffMLC3W/
-         lTPRexHGNaBpThWC/VQXupVpLUMQGPBZ8DZfV5QEhWv7tRQ0KCgv+xqq5SmceWhyrCuO
-         q7AkvOgKKTGauJuqTO1IrzoPBgIOmoOCsTDFrzaXY3Wvk37l+E/StJJJ2n+TtselAiB4
-         ZhssSI6/dIUFxP8gweob9dPilbGhXGVotBRuU9igkiOo2tH0dH3v2Ds/Rqa8fXlOoHVX
-         Sc9p/tWZ82/IKSm8KBrcgbDzSd3TPCszG+f7pULzoLLlmfadqhinl0PXmIfaYA2MpujC
-         xk7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=hgRf+WY3My77y9MGaOayXQDhKbTAR0DxBOTc0y4LwQ4=;
-        b=qhmaETH30SRcpJ550xmIEOWk9zIbjOmA1i1ZRR7uG3ZR06x/jx7gAajxtF8CUrcnIr
-         8DjGgnZ9WNLaDt6X5GIDEwyYq9nS3Fa06i5XgKW+VN7jth7QfKvt/eOp8/pxlulMaLwn
-         PtbxYvWbu8lfRRqLqfQfyMMAiOPVKWwjl5+6nL7iVnPRb5cl+scV6gR56voLr2SyuAgm
-         l24ucpTrTAt8YzEBvvOTgsktL5rVbWyEUNk9OXDBqSPeugqg2Mch5bU8K0o7W5eLrth3
-         jOdDH3yCqIA+iWCu3TL99nCTmD4XVRgHmQSuc5xy4xm5NrElQ8iSoj7bp4xEfSzllT1j
-         KEXg==
-X-Gm-Message-State: AOAM533WA09QXYz3309UbscIEja/9ce0mT0qVzbOOkGmx674AgDubjZb
-        UQNYkjDus6T55rEtfpGJ9kc=
-X-Google-Smtp-Source: ABdhPJxQivr8przk/O7Nfn1Rhgo7tH9OnYpCvEnkYw1vXmfxseWl5v/8b84jdkSgjxWbGQwMbovLhg==
-X-Received: by 2002:a17:90a:e649:: with SMTP id ep9mr742579pjb.8.1619595880059;
-        Wed, 28 Apr 2021 00:44:40 -0700 (PDT)
-Received: from localhost ([157.45.190.127])
-        by smtp.gmail.com with ESMTPSA id w1sm4133269pfu.153.2021.04.28.00.44.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 28 Apr 2021 00:44:39 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 13:14:32 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     m@bues.ch
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: ssb: driver_pcicore.c: Fix indentation of comment
-Message-ID: <20210428074432.rhw4zq2vbdemglbr@kewl-virtual-machine>
+        Wed, 28 Apr 2021 03:46:40 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210428074554epoutp01c2501d9aca4115ff47ea498d2f0f011e~59fCE5m9n0859808598epoutp01I
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:45:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210428074554epoutp01c2501d9aca4115ff47ea498d2f0f011e~59fCE5m9n0859808598epoutp01I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619595954;
+        bh=HqbiJJEEgs5jUMz5TJpWMAnCbdchKGywZl4ZPqvG1WQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=qoFsIi+bIPG9gXA4YyHN8FIjUXha7ayws1JU2u0PZqu4nS+dqq/AOQD9zwSiM0xSl
+         3INAqchhQ//mRaiOtnA9ZHqljqICvr+dzETf0SZDQJCm6sWgyR0dExxy0yRqtksAIu
+         HjcQDvWHF1/GelKxMOyajHA2XO/oLjtJbWaTDYv4=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210428074553epcas1p32092991ea803af0d28c1ba24224a6b24~59fBtvkxH2771127711epcas1p36;
+        Wed, 28 Apr 2021 07:45:53 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FVW004fBCz4x9Py; Wed, 28 Apr
+        2021 07:45:52 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A8.C1.09701.EA219806; Wed, 28 Apr 2021 16:45:50 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210428074549epcas1p33641467e86ad0d0e3915d8ba0b936f90~59e976hZE2771127711epcas1p3w;
+        Wed, 28 Apr 2021 07:45:49 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210428074549epsmtrp1362eb50950fa0366d19adbc3bd9a9bff~59e96taEd2454224542epsmtrp1x;
+        Wed, 28 Apr 2021 07:45:49 +0000 (GMT)
+X-AuditID: b6c32a36-631ff700000025e5-cf-608912ae1891
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        89.A9.08637.DA219806; Wed, 28 Apr 2021 16:45:49 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210428074549epsmtip12374f6a3c214dfd9bfc74950ead80061~59e9uX4rW1914219142epsmtip1M;
+        Wed, 28 Apr 2021 07:45:49 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Linus Torvalds'" <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "'Sungjong Seo'" <sj1557.seo@samsung.com>
+Subject: [GIT PULL] exfat update for 5.13-rc1
+Date:   Wed, 28 Apr 2021 16:45:49 +0900
+Message-ID: <003c01d73c02$81e6b2a0$85b417e0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: Adc7x/brfov9na/wQX6hlyFfV4gC/w==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBKsWRmVeSWpSXmKPExsWy7bCmvu46oc4EgztHpC0u75rDZrHl3xFW
+        i0d9b9kdmD1OzPjN4tG3ZRWjx+dNcgHMUTk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6
+        hpYW5koKeYm5qbZKLj4Bum6ZOUCLlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkF
+        hgYFesWJucWleel6yfm5VoYGBkamQJUJORnrJzczFazlrfi6ex9TA+MXri5GTg4JAROJ35Nf
+        s3QxcnEICexglLj+5Dg7SEJI4BOjxMneHIjEN0aJZR962WA6zq3sZ4VI7GWUWNAM0/6CUWLy
+        710sIFVsAroS//7sB+rg4BARMJP4tsQRJMws4C/RdvUwE4gtDFTy7fYysHIWAVWJV+92gC3g
+        FbCUOD//HyOELShxcuYTFoheeYntb+cwQxyhIPHz6TJWEFtEQE9izY33rBA1IhKzO9uYQe6R
+        EDjFLtFxeAnU1S4Spzr+M0LYwhKvjm9hh7ClJF72t7GD3CkhUC3xcT/U/A5GiRffbSFsY4mb
+        6zewgpQwC2hKrN+lDxFWlNj5ey4jxFo+iXdfe1ghpvBKdLQJQZSoSvRdgvhWQkBaoqv9A9RS
+        D4kNp36zT2BUnIXkyVlInpyF5JlZCIsXMLKsYhRLLSjOTU8tNiwwQo7qTYzgJKhltoNx0tsP
+        eocYmTgYDzFKcDArifCy7WpNEOJNSaysSi3Kjy8qzUktPsRoCgz2icxSosn5wDScVxJvaGpk
+        bGxsYWJmbmZqrCTOm+5cnSAkkJ5YkpqdmlqQWgTTx8TBKdXAtKK7uCOswjHM5WPOV7H0S0Hr
+        /KfPk7i12XjLSR0Wb9/Sfzz9E+uFdB8tsYw/9fGL+S4x5RlucqlJDkefvX2k8ftE9slp4aUK
+        uZVbLnZoi0mVicuw/73I3qXpIFfb8Vy54NuMn1+5uFmFBLn+KvE0COxeLH7TKn3W9eWvD7U3
+        lx6YzTVl+cNDDAYuh0XTkl6kL1r9Vi7n/NGWmTVzj+z4fH93+wdvmTP6ey/yCypEZTw8zvRX
+        UOftQ6fsJyf9zJZ2LokrbZ0yI+8x05c9h2qfsj/yyvLbNTkrN3ji/NfrN/icX27/p+TGqgNS
+        qnorT0+8v7zpwOFLO/XED4XYGz8VtN7D1Gaf88SFRf5vgVOymRJLcUaioRZzUXEiAGleLcML
+        BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBLMWRmVeSWpSXmKPExsWy7bCSnO5aoc4Eg/dXDCwu75rDZrHl3xFW
+        i0d9b9kdmD1OzPjN4tG3ZRWjx+dNcgHMUVw2Kak5mWWpRfp2CVwZ6yc3MxWs5a34unsfUwPj
+        F64uRk4OCQETiXMr+1m7GLk4hAR2M0rcXvGSGSIhLXHsxBkgmwPIFpY4fLgYouYZo8TJNa/B
+        atgEdCX+/dnPBlIjImAm8W2JI4jJLOAvcf+yO0iFMFDFt9vLWEBsFgFViVfvdrCB2LwClhLn
+        5/9jhLAFJU7OfMIC0aon0bYRLMwsIC+x/e0cqGMUJH4+XcYKYosAlay58Z4VokZEYnZnG/ME
+        RsFZSCbNQpg0C8mkWUg6FjCyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECA5sLc0d
+        jNtXfdA7xMjEwXiIUYKDWUmEl21Xa4IQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OFBNIT
+        S1KzU1MLUotgskwcnFINTAtfytsL3StqOLE4LHT+xr8zLC6cTxXaNelxbcychM6y9lc/152b
+        5HhYeZGdvPnzBxK3LNZZKSpr2B+uSWs967s44Pc9/4RTnUfF1b/WzlQQ/HhtueOszRYP85PP
+        md0xZpLgPzhZ3PRgvFrm4dKu/cpfY7f3Tb7sx/PWuMJin2X1cck9k/ULzurOPZ9tvHEZw+2l
+        HsskOFYdbal+l/Tdquif13LThVqxgreWXDrNeM/Xpk1EdnJl0t+MGccW7ZV5Wndv7blVci6F
+        Sr/F85dflXy16di0OE7/NUaqofEPXKuD/nX1Z763KGWr+eCr+NDzQHBI/aVddkwxqvbTctsE
+        OIN8H7izOLM6rRUwTdlqpsRSnJFoqMVcVJwIAMHQnJ/bAgAA
+X-CMS-MailID: 20210428074549epcas1p33641467e86ad0d0e3915d8ba0b936f90
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210428074549epcas1p33641467e86ad0d0e3915d8ba0b936f90
+References: <CGME20210428074549epcas1p33641467e86ad0d0e3915d8ba0b936f90@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shifted the closing */ to the next line
-This is done to maintain code uniformity.
+Hi Linus,
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
----
- drivers/ssb/driver_pcicore.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+This is exfat update pull request for v5.13-rc1. I add description of
+this pull request on below. Please pull exfat with following ones.
 
-diff --git a/drivers/ssb/driver_pcicore.c b/drivers/ssb/driver_pcicore.c
-index c1186415896b..d11b4242b6d2 100644
---- a/drivers/ssb/driver_pcicore.c
-+++ b/drivers/ssb/driver_pcicore.c
-@@ -55,7 +55,8 @@ void pcicore_write16(struct ssb_pcicore *pc, u16 offset, u16 value)
- #include <asm/paccess.h>
- /* Probe a 32bit value on the bus and catch bus exceptions.
-  * Returns nonzero on a bus exception.
-- * This is MIPS specific */
-+ * This is MIPS specific
-+ */
- #define mips_busprobe32(val, addr)	get_dbe((val), ((u32 *)(addr)))
- 
- /* Assume one-hot slot wiring */
-@@ -255,7 +256,8 @@ static struct pci_controller ssb_pcicore_controller = {
- };
- 
- /* This function is called when doing a pci_enable_device().
-- * We must first check if the device is a device on the PCI-core bridge. */
-+ * We must first check if the device is a device on the PCI-core bridge.
-+ */
- int ssb_pcicore_plat_dev_init(struct pci_dev *d)
- {
- 	if (d->bus->ops != &ssb_pcicore_pciops) {
-@@ -381,11 +383,13 @@ static void ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
- 
- 	/* Ok, ready to run, register it to the system.
- 	 * The following needs change, if we want to port hostmode
--	 * to non-MIPS platform. */
-+	 * to non-MIPS platform.
-+	 */
- 	ssb_pcicore_controller.io_map_base = (unsigned long)ioremap(SSB_PCI_MEM, 0x04000000);
- 	set_io_port_base(ssb_pcicore_controller.io_map_base);
- 	/* Give some time to the PCI controller to configure itself with the new
--	 * values. Not waiting at this point causes crashes of the machine. */
-+	 * values. Not waiting at this point causes crashes of the machine.
-+	 */
- 	mdelay(10);
- 	register_pci_controller(&ssb_pcicore_controller);
- }
-@@ -405,7 +409,8 @@ static int pcicore_is_in_hostmode(struct ssb_pcicore *pc)
- 		return 0;
- 
- 	/* The 200-pin BCM4712 package does not bond out PCI. Even when
--	 * PCI is bonded out, some boards may leave the pins floating. */
-+	 * PCI is bonded out, some boards may leave the pins floating.
-+	 */
- 	if (bus->chip_id == 0x4712) {
- 		if (bus->chip_package == SSB_CHIPPACK_BCM4712S)
- 			return 0;
-@@ -685,7 +690,8 @@ int ssb_pcicore_dev_irqvecs_enable(struct ssb_pcicore *pc,
- 	if (dev->bus->bustype != SSB_BUSTYPE_PCI) {
- 		/* This SSB device is not on a PCI host-bus. So the IRQs are
- 		 * not routed through the PCI core.
--		 * So we must not enable routing through the PCI core. */
-+		 * So we must not enable routing through the PCI core.
-+		 */
- 		goto out;
- 	}
- 
--- 
-2.17.1
+Thanks!
+
+The following changes since commit 9f4ad9e425a1d3b6a34617b8ea226d56a119a717:
+
+  Linux 5.12 (2021-04-25 13:49:08 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git tags/exfat-for-5.13-rc1
+
+for you to fetch changes up to c6e2f52e3051e8d898d38840104638ca8bbcdec2:
+
+  exfat: speed up iterate/lookup by fixing start point of traversing cluster chain (2021-04-27 20:45:07 +0900)
+
+----------------------------------------------------------------
+Description for this pull request:
+ - Improve write performance with dirsync mount option.
+ - Improve lookup performance.
+ - Add support for FITRIM ioctl.
+ - Fix a bug with discard option.
+
+----------------------------------------------------------------
+Hyeongseok Kim (5):
+      exfat: fix erroneous discard when clear cluster bit
+      exfat: introduce bitmap_lock for cluster bitmap access
+      exfat: add support ioctl and FITRIM function
+      exfat: improve write performance when dirsync enabled
+      exfat: speed up iterate/lookup by fixing start point of traversing cluster chain
+
+ fs/exfat/balloc.c   | 95 ++++++++++++++++++++++++++++++++++++++++++++++-------
+ fs/exfat/dir.c      | 26 +++++++++++----
+ fs/exfat/exfat_fs.h | 11 +++++--
+ fs/exfat/fatent.c   | 41 +++++++++++++++++------
+ fs/exfat/file.c     | 53 ++++++++++++++++++++++++++++++
+ fs/exfat/inode.c    |  3 +-
+ fs/exfat/namei.c    | 11 +++++--
+ fs/exfat/super.c    |  1 +
+ 8 files changed, 206 insertions(+), 35 deletions(-)
 
