@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C736936CFCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E268C36CFD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236218AbhD1ABg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S237153AbhD1AD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235653AbhD1ABf (ORCPT
+        with ESMTP id S235653AbhD1AD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:01:35 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509F8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:00:51 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id i3-20020a4ad3830000b02901ef20f8cae8so6150978oos.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:00:51 -0700 (PDT)
+        Tue, 27 Apr 2021 20:03:28 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA44C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:02:43 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 5-20020a9d09050000b029029432d8d8c5so30966168otp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=4Obf/VhcHMC/s7ut1qxAeuquFWikXplkAVq56/wcC+Q=;
-        b=L1jvMavzSKgEbkxWU0B7FE0fs8+hysy4W4ESPKY7Xw2JDG8HjSQfFaujI9XvkPeC15
-         jusdZuhJJ1/X9Hbk0QT/dq6D63zM5V3UFyArwMhhK+dhLSQp43ZJYHM3wUyZUUh94+yX
-         +MkhiViWH6ks4o1FGh+L0pCjQFIixGw+bN2BA=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=6p+JC3rKVjYrYlLA8QianvKVOFGkYhcWLY47LZagLL0=;
+        b=QG2EIYp+HC97NQun7wDIY0YwlOSn1mnmnxpu3OvXDOY3mR4wRvei0y53o8fYQr5kTV
+         8oDkBNSoqmkyXMHAwBO0cmXYQgr5+9vGeBJ/0riXwQt8lIi7PmcgOAJ52+kiL4jLit1L
+         iOGMBNecyxBH0usH0DNCUpLcwyQbR1kz6FnIaEXAYwcxtDyt9i5EDkI0LmU3ZIod5MDv
+         gA6TozSWFZVS0SXEnj1kfysquTzkeq9DfWE+8JAZIZ8kkrGTq3IYs1sSJElWSQA3MnPr
+         JLEx6WZ4dcSnczVjd1SgNKsmoUO5ngTfmw34QUGn9VvgnfOwgMEhsBUt/ioMW4IINC4j
+         Mmuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=4Obf/VhcHMC/s7ut1qxAeuquFWikXplkAVq56/wcC+Q=;
-        b=X2F7r9DoVq1Skeqv0dKf5qizF7zEn4PiXz1j9Ljp/x1UzdOEe2Yp9oIuMQXIk6krGi
-         Hje2iuAgveGXNT6t/Bub84euVYcEPtzEsUcGkgHNpTIPsf49sPznPqkyFvmfAaLl2hv0
-         3VykA6Bt/427UjPF8whblUmkX7CfaCG+2TqvuaM6xOkbVDDK+tWQ+MC077qAGGjX6ix9
-         0cUVZTDMmc14BoTo/J8xJAcqcaUoSBo7BVCc9BHjkrXe9+hoyKWnJRyQnTEY2D+kgIFs
-         ZGRaQk4wqWG+B4FdI21V1fRTUJ0PG92iTyjzfig7w7+9LXOztKDoeUeKk+KywHrlPB+i
-         dsgg==
-X-Gm-Message-State: AOAM5325KqC8NZXs6wRJj3KivvfUGuedtPzT5GTpBU8zGXXlVf8Vv4Il
-        +50HKi7D/U5t8fxLU6zp+THnMh7W/AxX4mZPAahtB8u5Q/k=
-X-Google-Smtp-Source: ABdhPJxZ/xayODb65B6TGi1x/D/08+OMUde7MGVwhOypaY+FO8rLDYgXzftNprJXZXTSM2cjylJY0nwXjNBXBdRKUXg=
-X-Received: by 2002:a05:6820:381:: with SMTP id r1mr19990436ooj.79.1619568050218;
- Tue, 27 Apr 2021 17:00:50 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 27 Apr 2021 17:00:49 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=6p+JC3rKVjYrYlLA8QianvKVOFGkYhcWLY47LZagLL0=;
+        b=UUJUUSrom8wuVD1tpAlE7i3nmN1TeUn4jfT5YnsbOSmzpP1EMXhnyiWrcl2OE3wWgD
+         kVNxq81F5M04+bOPj/ZF+lUUPWKuHw42fv9DZqH+Py3Fmqn6XeTSNzoAKc+82241aYjH
+         +Dwx0+G3k2F84lOKqyy0+okZuzA5fR5d414YqpGrTD35kS3EnK4a1Ede0FINS9buMx+i
+         YzczDe8OTrWthXU9YWMDB4OCov3zKwBgiFBWoWkJzGN2jhq9c+4MkMTjpyiH3djmxmz2
+         U3/PPQJC8j50jqav/dF2MTSwQ/jW4oyszi22nYjOB54oLRn9QR1H5WT0Yq5SEjBiBVWX
+         Tsdg==
+X-Gm-Message-State: AOAM531fepHUoYrC9o27jPDjrP2sZLUj4odNq6EcI7ic4kP8UsZk7Z35
+        Lx5QaFOVrgcbhWpZ8+TP7VEYpQ==
+X-Google-Smtp-Source: ABdhPJwX+Lblum7o2eVDbKoe89/QxHjJmiEd80w3XLF7Lh4KSMp8fjmUEoWUdcfv02tMyqPsSx7AAA==
+X-Received: by 2002:a05:6830:2418:: with SMTP id j24mr1782028ots.87.1619568162507;
+        Tue, 27 Apr 2021 17:02:42 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id a21sm981529oop.20.2021.04.27.17.02.40
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 27 Apr 2021 17:02:42 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:02:25 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v5 03/10] userfaultfd/shmem: support minor fault registration
+ for shmem
+In-Reply-To: <20210427225244.4326-4-axelrasmussen@google.com>
+Message-ID: <alpine.LSU.2.11.2104271701500.7111@eggly.anvils>
+References: <20210427225244.4326-1-axelrasmussen@google.com> <20210427225244.4326-4-axelrasmussen@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <ddc1e372c5f864cd62c4e056ef2e6404@codeaurora.org>
-References: <1618604877-28297-1-git-send-email-khsieh@codeaurora.org>
- <161895606268.46595.2841353121480638642@swboyd.mtv.corp.google.com>
- <e3c3ef96ac507da6f138106f70c78ed2@codeaurora.org> <ddc1e372c5f864cd62c4e056ef2e6404@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 27 Apr 2021 17:00:49 -0700
-Message-ID: <CAE-0n53JNCc3JdONogGNArnsYLDr9E2fXZ2ODKBy7Jy3yVMr6g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/msm/dp: service only one irq_hpd if there are
- multiple irq_hpd pending
-To:     aravindh@codeaurora.org, khsieh@codeaurora.org
-Cc:     robdclark@gmail.com, sean@poorly.run, abhinavk@codeaurora.org,
-        airlied@linux.ie, daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting aravindh@codeaurora.org (2021-04-21 11:55:21)
-> On 2021-04-21 10:26, khsieh@codeaurora.org wrote:
-> >>
-> >>> +
-> >>>         mutex_unlock(&dp->event_mutex);
-> >>>
-> >>>         return 0;
-> >>> @@ -1496,6 +1502,9 @@ int msm_dp_display_disable(struct msm_dp *dp,
-> >>> struct drm_encoder *encoder)
-> >>>         /* stop sentinel checking */
-> >>>         dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
-> >>>
-> >>> +       /* link is down, delete pending irq_hdps */
-> >>> +       dp_del_event(dp_display, EV_IRQ_HPD_INT);
-> >>> +
-> >>
-> >> I'm becoming convinced that the whole kthread design and event queue
-> >> is
-> >> broken. These sorts of patches are working around the larger problem
-> >> that the kthread is running independently of the driver and irqs can
-> >> come in at any time but the event queue is not checked from the irq
-> >> handler to debounce the irq event. Is the event queue necessary at
-> >> all?
-> >> I wonder if it would be simpler to just use an irq thread and process
-> >> the hpd signal from there. Then we're guaranteed to not get an irq
-> >> again
-> >> until the irq thread is done processing the event. This would
-> >> naturally
-> >> debounce the irq hpd event that way.
-> > event q just like bottom half of irq handler. it turns irq into event
-> > and handle them sequentially.
-> > irq_hpd is asynchronous event from panel to bring up attention of hsot
-> > during run time of operation.
-> > Here, the dongle is unplugged and main link had teared down so that no
-> > need to service pending irq_hpd if any.
-> >
->
-> As Kuogee mentioned, IRQ_HPD is a message received from the panel and is
-> not like your typical HW generated IRQ. There is no guarantee that we
-> will not receive an IRQ_HPD until we are finished with processing of an
-> earlier HPD message or an IRQ_HPD message. For example - when you run
-> the protocol compliance, when we get a HPD from the sink, we are
-> expected to start reading DPCD, EDID and proceed with link training. As
-> soon as link training is finished (which is marked by a specific DPCD
-> register write), the sink is going to issue an IRQ_HPD. At this point,
-> we may not done with processing the HPD high as after link training we
-> would typically notify the user mode of the newly connected display,
-> etc.
+On Tue, 27 Apr 2021, Axel Rasmussen wrote:
 
-Given that the irq comes in and is then forked off to processing at a
-later time implies that IRQ_HPD can come in at practically anytime. Case
-in point, this patch, which is trying to selectively search through the
-"event queue" and then remove the event that is no longer relevant
-because the display is being turned off either by userspace or because
-HPD has gone away. If we got rid of the queue and kthread and processed
-irqs in a threaded irq handler I suspect the code would be simpler and
-not have to search through an event queue when we disable the display.
-Instead while disabling the display we would make sure that the irq
-thread isn't running anymore with synchronize_irq() or even disable the
-irq entirely, but really it would be better to just disable the irq in
-the hardware with a register write to some irq mask register.
+> This patch allows shmem-backed VMAs to be registered for minor faults.
+> Minor faults are appropriately relayed to userspace in the fault path,
+> for VMAs with the relevant flag.
+> 
+> This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
+> minor faults, though, so userspace doesn't yet have a way to resolve
+> such faults.
+> 
+> Because of this, we also don't yet advertise this as a supported
+> feature. That will be done in a separate commit when the feature is
+> fully implemented.
+> 
+> Acked-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-This pushes more of the logic for HPD and connect/disconnect into the
-hardware and avoids reimplementing that in software: searching through
-the queue, checking for duplicate events, etc.
+Acked-by: Hugh Dickins <hughd@google.com>
+
+> ---
+>  fs/userfaultfd.c |  3 +--
+>  mm/memory.c      |  8 +++++---
+>  mm/shmem.c       | 12 +++++++++++-
+>  3 files changed, 17 insertions(+), 6 deletions(-)
