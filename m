@@ -2,220 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2232736DD62
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD6036DD6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbhD1QrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:47:08 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:50432 "EHLO pegase1.c-s.fr"
+        id S241288AbhD1QsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:48:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:47970 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241228AbhD1QrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:47:02 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4FVkzW5bBHz9tcd;
-        Wed, 28 Apr 2021 18:46:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ignT_pQ-z5aE; Wed, 28 Apr 2021 18:46:15 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FVkzW4fqhz9tcV;
-        Wed, 28 Apr 2021 18:46:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 555F78B837;
-        Wed, 28 Apr 2021 18:46:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id z1HHXWlZ7xmI; Wed, 28 Apr 2021 18:46:15 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0AD2A8B831;
-        Wed, 28 Apr 2021 18:46:15 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id DF8946428C; Wed, 28 Apr 2021 16:46:14 +0000 (UTC)
-Message-Id: <15cea17065678a4e9019a20b7d011ca6eb205de6.1619628001.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1619628001.git.christophe.leroy@csgroup.eu>
-References: <cover.1619628001.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RFC PATCH v1 4/4] mm/vmalloc: Add support for huge pages on VMAP and
- VMALLOC for powerpc 8xx
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org
-Date:   Wed, 28 Apr 2021 16:46:14 +0000 (UTC)
+        id S241219AbhD1QsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 12:48:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E2BDED1;
+        Wed, 28 Apr 2021 09:47:33 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA11F3F694;
+        Wed, 28 Apr 2021 09:47:27 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 3/4] scheduler: scan idle cpu in cluster for tasks
+ within one LLC
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+References: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
+ <20210420001844.9116-4-song.bao.hua@hisilicon.com>
+ <80f489f9-8c88-95d8-8241-f0cfd2c2ac66@arm.com>
+ <b42c762a287b4360bfa3179a5c7c3e8c@hisilicon.com>
+ <CAKfTPtC51eO2mAuW6mHQ-SdznAtfDL3D4UOs4HmnXaPOOCN_cA@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <8b5277d9-e367-566d-6bd1-44ac78d21d3f@arm.com>
+Date:   Wed, 28 Apr 2021 18:47:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAKfTPtC51eO2mAuW6mHQ-SdznAtfDL3D4UOs4HmnXaPOOCN_cA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-powerpc 8xx has 4 page sizes:
-- 4k
-- 16k
-- 512k
-- 8M
+On 28/04/2021 15:04, Vincent Guittot wrote:
+> On Wed, 28 Apr 2021 at 11:51, Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com> wrote:
+>>
+>>> -----Original Message-----
+>>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
 
-At the time being, vmalloc and vmap only support huge pages which are
-leaf at PMD level.
+[...]
 
-Here the PMD level is 4M, it doesn't correspond to any supported
-page size.
+>>> On 20/04/2021 02:18, Barry Song wrote:
 
-For the time being, implement use of 16k and 512k pages which is done
-at PTE level.
+[...]
 
-Support of 8M pages will be implemented later, it requires use of
-hugepd tables.
+>> I am really confused. The whole code has only checked if wake_flags
+>> has WF_TTWU, it has never checked if sd_domain has SD_BALANCE_WAKE flag.
+> 
+> look at :
+> #define WF_TTWU     0x08 /* Wakeup;            maps to SD_BALANCE_WAKE */
+> 
+> so  when wake_wide return false, we use the wake_affine mecanism but
+> if it's false then we fllback to default mode which looks for:
+> if (tmp->flags & sd_flag)
+> 
+> This means looking for SD_BALANCE_WAKE which is never set
+> 
+> so sd will stay NULL and you will end up calling select_idle_sibling anyway
+> 
+>>
+>> static int
+>> select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+>> {
+>>         ...
+>>
+>>         if (wake_flags & WF_TTWU) {
+>>                 record_wakee(p);
+>>
+>>                 if (sched_energy_enabled()) {
+>>                         new_cpu = find_energy_efficient_cpu(p, prev_cpu);
+>>                         if (new_cpu >= 0)
+>>                                 return new_cpu;
+>>                         new_cpu = prev_cpu;
+>>                 }
+>>
+>>                 want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
+>>         }
+>> }
+>>
+>> And try_to_wake_up() has always set WF_TTWU:
+>> static int
+>> try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+>> {
+>>         cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
+>>         ...
+>> }
+>>
+>> So the change in wake_wide will actually affect the value of want_affine.
+>> And I did also see code entered slow path during my benchmark.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/Kconfig |  3 +-
- mm/vmalloc.c         | 74 ++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 66 insertions(+), 11 deletions(-)
+Yes, this is happening but IMHO not for wakeups. Check wake_flags for
+the tasks which go through `slow path` on your machine. They should have
+WF_EXEC or WF_FORK, not WF_TTWU (& WF_SYNC).
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 27e88c38fdf7..b443716f7413 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -188,7 +188,8 @@ config PPC
- 	select GENERIC_TIME_VSYSCALL
- 	select GENERIC_VDSO_TIME_NS
- 	select HAVE_ARCH_AUDITSYSCALL
--	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
-+	select HAVE_ARCH_HUGE_VMAP		if (PPC_BOOK3S_64 && PPC_RADIX_MMU) || PPC_8xx
-+	select HAVE_ARCH_HUGE_VMALLOC		if PPC_8xx
- 	select HAVE_ARCH_JUMP_LABEL
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 5d96fee17226..1f9f9be8ec01 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -36,6 +36,7 @@
- #include <linux/overflow.h>
- #include <linux/pgtable.h>
- #include <linux/uaccess.h>
-+#include <linux/hugetlb.h>
- #include <asm/tlbflush.h>
- #include <asm/shmparam.h>
- 
-@@ -81,12 +82,55 @@ static void free_work(struct work_struct *w)
- }
- 
- /*** Page table manipulation functions ***/
-+static int vmap_try_huge_pte(pte_t *ptep, unsigned long addr, unsigned long end,
-+			     u64 pfn, pgprot_t prot, unsigned int max_page_shift)
-+{
-+	unsigned long size = end - addr;
-+	pte_t pte;
-+
-+	if (!IS_ENABLED(CONFIG_PPC_8xx))
-+		return 0;
-+
-+	if (PAGE_SIZE == SZ_16K && size < SZ_512K)
-+		return 0;
-+
-+	if (size < SZ_16K)
-+		return 0;
-+
-+	if (max_page_shift < 14)
-+		return 0;
-+
-+	if (size > SZ_512K)
-+		size = SZ_512K;
-+
-+	if (max_page_shift < 19 && size > SZ_16K)
-+		size = SZ_16K;
-+
-+	if (!IS_ALIGNED(addr, size))
-+		return 0;
-+
-+	if (!IS_ALIGNED(PFN_PHYS(pfn), size))
-+		return 0;
-+
-+	if (pte_present(*ptep))
-+		return 0;
-+
-+	pte = pfn_pte(pfn, prot);
-+	pte = pte_mkhuge(pte);
-+	pte = arch_make_huge_pte(pte, ilog2(size), 0);
-+
-+	set_huge_pte_at(&init_mm, addr, ptep, pte);
-+
-+	return PFN_DOWN(size);
-+}
-+
- static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
- 			phys_addr_t phys_addr, pgprot_t prot,
--			pgtbl_mod_mask *mask)
-+			unsigned int max_page_shift, pgtbl_mod_mask *mask)
- {
- 	pte_t *pte;
- 	u64 pfn;
-+	int npages;
- 
- 	pfn = phys_addr >> PAGE_SHIFT;
- 	pte = pte_alloc_kernel_track(pmd, addr, mask);
-@@ -94,9 +138,14 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
- 		return -ENOMEM;
- 	do {
- 		BUG_ON(!pte_none(*pte));
--		set_pte_at(&init_mm, addr, pte, pfn_pte(pfn, prot));
--		pfn++;
--	} while (pte++, addr += PAGE_SIZE, addr != end);
-+
-+		npages = vmap_try_huge_pte(pte, addr, end, pfn, prot, max_page_shift);
-+		if (!npages) {
-+			set_pte_at(&init_mm, addr, pte, pfn_pte(pfn, prot));
-+			npages = 1;
-+		}
-+		pfn += npages;
-+	} while (pte += npages, addr += PAGE_SIZE * npages, addr != end);
- 	*mask |= PGTBL_PTE_MODIFIED;
- 	return 0;
- }
-@@ -145,7 +194,7 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
- 			continue;
- 		}
- 
--		if (vmap_pte_range(pmd, addr, next, phys_addr, prot, mask))
-+		if (vmap_pte_range(pmd, addr, next, phys_addr, prot, max_page_shift, mask))
- 			return -ENOMEM;
- 	} while (pmd++, phys_addr += (next - addr), addr = next, addr != end);
- 	return 0;
-@@ -2881,8 +2930,7 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 		return NULL;
- 	}
- 
--	if (vmap_allow_huge && !(vm_flags & VM_NO_HUGE_VMAP) &&
--			arch_vmap_pmd_supported(prot)) {
-+	if (vmap_allow_huge && !(vm_flags & VM_NO_HUGE_VMAP)) {
- 		unsigned long size_per_node;
- 
- 		/*
-@@ -2895,11 +2943,17 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 		size_per_node = size;
- 		if (node == NUMA_NO_NODE)
- 			size_per_node /= num_online_nodes();
--		if (size_per_node >= PMD_SIZE) {
-+		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE) {
- 			shift = PMD_SHIFT;
--			align = max(real_align, 1UL << shift);
--			size = ALIGN(real_size, 1UL << shift);
-+		} else if (IS_ENABLED(CONFIG_PPC_8xx)) {
-+			if (size_per_node >= SZ_512K) {
-+				shift = 19;
-+			} else if (size_per_node >= SZ_16K) {
-+				shift = 14;
-+			}
- 		}
-+		align = max(real_align, 1UL << shift);
-+		size = ALIGN(real_size, 1UL << shift);
- 	}
- 
- again:
--- 
-2.25.0
+>> One issue I mentioned during linaro open discussion is that
+>> since I have moved to use cluster size to decide the value
+>> of wake_wide, relatively less tasks will make wake_wide()
+>> decide to go to slow path, thus, tasks begin to spread to
+>> other NUMA,  but actually llc_size might be able to contain
+>> those tasks. So a possible model might be:
+>> static int wake_wide(struct task_struct *p)
+>> {
+>>         tasksize < cluster : scan cluster
+>>         tasksize > llc      : slow path
+>>         tasksize > cluster && tasksize < llc: scan llc
+>> }
+>>
+>> thoughts?
 
+Like Vincent explained, the return value of wake_wide() doesn't matter.
+For wakeups you always end up in sis().
+
+[...]
