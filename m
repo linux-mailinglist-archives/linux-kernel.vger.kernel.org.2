@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7490A36D4F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7865E36D50F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238307AbhD1JtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:49:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40535 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230032AbhD1JtS (ORCPT
+        id S238440AbhD1Jyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238070AbhD1Jyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:49:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619603312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y04zd6fW1Eb2Q5W4r93j3/pSOFEh/Z5A0rPT+2bNFSY=;
-        b=MeCgCcBAkXybHaNTyElL4EJ7WLDLg8HBIBkBeqFxpWikJRjkmmTt8G+qcnLivuvQS4WHJa
-        8uMGAgVRKov+gcDpjCIy+VsYAceQmmIv/l4ZiMJFTAT9Lyl5n2G4xiQ1oYpk9eIm9AXuZ2
-        mN7WBekPWH+X5Pkxlf6K9Z6ohDYr0u0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-yB9gVyDBOFGTyjPHqPgZFQ-1; Wed, 28 Apr 2021 05:48:29 -0400
-X-MC-Unique: yB9gVyDBOFGTyjPHqPgZFQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80B2B803620;
-        Wed, 28 Apr 2021 09:48:25 +0000 (UTC)
-Received: from gator.redhat.com (unknown [10.40.192.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C2D4D5D6D5;
-        Wed, 28 Apr 2021 09:48:12 +0000 (UTC)
-From:   Andrew Jones <drjones@redhat.com>
-To:     song.bao.hua@hisilicon.com
-Cc:     aubrey.li@linux.intel.com, bp@alien8.de, bsegall@google.com,
-        catalin.marinas@arm.com, dietmar.eggemann@arm.com,
-        gregkh@linuxfoundation.org, guodong.xu@linaro.org, hpa@zytor.com,
-        jonathan.cameron@huawei.com, juri.lelli@redhat.com,
-        lenb@kernel.org, liguozhu@hisilicon.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mark.rutland@arm.com, mgorman@suse.de, mingo@redhat.com,
-        msys.mizuma@gmail.com, peterz@infradead.org,
-        prime.zeng@hisilicon.com, rjw@rjwysocki.net, rostedt@goodmis.org,
-        sudeep.holla@arm.com, tglx@linutronix.de,
-        tim.c.chen@linux.intel.com, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org, will@kernel.org, x86@kernel.org,
-        xuwei5@huawei.com, yangyicong@huawei.com
-Subject: Re: [RFC PATCH v6 1/4] topology: Represent clusters of CPUs within a die
-Date:   Wed, 28 Apr 2021 11:48:11 +0200
-Message-Id: <20210428094811.159245-1-drjones@redhat.com>
-In-Reply-To: <20210420001844.9116-2-song.bao.hua@hisilicon.com>
-References: <20210420001844.9116-2-song.bao.hua@hisilicon.com>
+        Wed, 28 Apr 2021 05:54:46 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B22C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:54:00 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id h11so3731576pfn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0XVjixsLTLJGSFLESUPSKkiw4I4YXcT+TC9FDzs+gCA=;
+        b=blgKr4FouT87ImEPqykKfSgJEIDTXvFoVNhAWBB5zIo8uOISObsgHvReBYKdv5GCtv
+         rib0aeZCZbvNKbiQx9ldgpPQ5QerZp199KxpeuB5dFpzGi1r4Z6lLwDppS0Fx0qPnvTS
+         DIRgGVBL1EOlxF73vE45CEmcYRrmBYnu/XBwkKMC5nDm4XRfwrgUz3yMfx11RbaYNq5s
+         BkJhr+hZd9jZhn4bqig1cd9lgRo3AqlH27H1UlTHdF6upDQZnMkfTyVG1SHoalkzHFno
+         vE3U7HIQ0R67RpYBZScYZCAd87Au3FEmQxeJkCPwiw4ZWzAUuGM8BucDwrraxHqoDIzI
+         o8qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0XVjixsLTLJGSFLESUPSKkiw4I4YXcT+TC9FDzs+gCA=;
+        b=hotjykggZJMlIEIYIIoqlOOE6Pk/Sg5i8q1ULZNv5gpLuoXqLQewNUe/xEFl0pTser
+         z3210SOw9xD2vZcb3oKdYJQX1P8I9Ji4tWGEofGPD/iXBxSHnxGEgPCavezQj2D9gXD0
+         W6YGBv+jVifQwRg/wmXD3WmEtJ9PD4bH4Kkm/tcs9AabKaft6hzq6Wt9b2JzBe9KK9ji
+         jexGjOX14j8dCqRbnjAZFaZntyEpmHsuBxGHRinlOYNajnShhT0qOmVj7tgOIAuO5k6K
+         J7EokxGy6JI3DbqJ+qdAHTLge1lNndHTWpyz2rfSgIG+0pt2dP1He6CrGS+i2qvhCtP0
+         XK+Q==
+X-Gm-Message-State: AOAM5312UUisu/LmVwlV4L5IFKuCjU1TNsyTmNnkXixktN6xngEuyy4x
+        XNdf/DejegjPXLVNPehaH3lFRQ==
+X-Google-Smtp-Source: ABdhPJy7eMSsqpg9mqBYwGXKqweBIOvNTR20P0fg58PUahgtl2RvSFLbuwlpkiW9nkThOcGpuD+u/w==
+X-Received: by 2002:a63:6387:: with SMTP id x129mr2578387pgb.58.1619603639829;
+        Wed, 28 Apr 2021 02:53:59 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.233])
+        by smtp.gmail.com with ESMTPSA id x77sm4902365pfc.19.2021.04.28.02.53.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Apr 2021 02:53:59 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
+        guro@fb.com, shy828301@gmail.com, alexs@kernel.org,
+        alexander.h.duyck@linux.intel.com, richard.weiyang@gmail.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH 0/9] Shrink the list lru size on memory cgroup removal
+Date:   Wed, 28 Apr 2021 17:49:40 +0800
+Message-Id: <20210428094949.43579-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 12:18, Barry Song wrote:
-...
-> Currently the ID provided is the offset of the Processor
-> Hierarchy Nodes Structure within PPTT.  Whilst this is unique
-> it is not terribly elegant so alternative suggestions welcome.
-> 
+In our server, we found a suspected memory leak problem. The kmalloc-32
+consumes more than 6GB of memory. Other kmem_caches consume less than 2GB
+memory.
 
-The ACPI table offsets are consistent with how other topology IDs are
-generated. I once tried to make them a little more human friendly with
-[1], but it was nacked.
+After our in-depth analysis, the memory consumption of kmalloc-32 slab
+cache is the cause of list_lru_one allocation.
 
-[1] https://lore.kernel.org/lkml/20180629132934.GA16282@e107155-lin/t/
+  crash> p memcg_nr_cache_ids
+  memcg_nr_cache_ids = $2 = 24574
 
-Thanks,
-drew
+memcg_nr_cache_ids is very large and memory consumption of each list_lru
+can be calculated with the following formula.
+
+  num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
+
+There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
+
+  crash> list super_blocks | wc -l
+  952
+
+Every mount will register 2 list lrus, one is for inode, another is for
+dentry. There are 952 super_blocks. So the total memory is 952 * 2 * 3
+MB (~5.6GB). But the number of memory cgroup is less than 500. So I
+guess more than 12286 containers have been deployed on this machine (I
+do not know why there are so many containers, it may be a user's bug or
+the user really want to do that). But now there are less than 500
+containers in the system. And memcg_nr_cache_ids has not been reduced
+to a suitable value. This can waste a lot of memory. If we want to reduce
+memcg_nr_cache_ids, we have to reboot the server. This is not what we
+want.
+
+So this patchset will dynamically adjust the value of memcg_nr_cache_ids
+to keep healthy memory consumption. In this case, we may be able to restore
+a healthy environment even if the users have created tens of thousands of
+memory cgroups and then destroyed those memory cgroups. This patchset also
+contains some code simplification.
+
+Muchun Song (9):
+  mm: list_lru: fix list_lru_count_one() return value
+  mm: memcontrol: remove kmemcg_id reparenting
+  mm: list_lru: rename memcg_drain_all_list_lrus to
+    memcg_reparent_list_lrus
+  mm: memcontrol: remove the kmem states
+  mm: memcontrol: move memcg_online_kmem() to mem_cgroup_css_online()
+  mm: list_lru: support for shrinking list lru
+  ida: introduce ida_max() to return the maximum allocated ID
+  mm: memcontrol: shrink the list lru size
+  mm: memcontrol: rename memcg_{get,put}_cache_ids to
+    memcg_list_lru_resize_{lock,unlock}
+
+ include/linux/idr.h        |   1 +
+ include/linux/list_lru.h   |   2 +-
+ include/linux/memcontrol.h |  15 ++----
+ lib/idr.c                  |  40 +++++++++++++++
+ mm/list_lru.c              |  89 +++++++++++++++++++++++++--------
+ mm/memcontrol.c            | 121 +++++++++++++++++++++++++--------------------
+ 6 files changed, 183 insertions(+), 85 deletions(-)
+
+-- 
+2.11.0
 
