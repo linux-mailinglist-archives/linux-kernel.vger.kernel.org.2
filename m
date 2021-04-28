@@ -2,379 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4708436D976
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0905236D96B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240243AbhD1OTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:19:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56546 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229845AbhD1OTl (ORCPT
+        id S240239AbhD1OTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230050AbhD1OTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:19:41 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SE4Pi9100350;
-        Wed, 28 Apr 2021 10:18:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=B1ueZsAoxf+WOv7JV3G3yr/eySa29U4BZNE4SVFEBdE=;
- b=oBdjrfPUe4VBQaoAfap6oGxx1HRY5DNZdlPiPngjR0ZNiv48tyHbgxCf/8xJ8hF006uT
- 3TN4jE4IpjYpXrOxrybCX6JszO1g3eaGJuozkzS5QvWPHZTkDIIpRVhmtoWWlD2ZsjNa
- ogcVxfDV1E74GADqa09fIM2sSteyPpjvaeuPnJEV8AXtUWDQIFzipMdTADQnE2i8hNhc
- 4O3xHrkZDRLiwDjLP3TOdlJJ2adQy4s8ClVCfD4dkWhg8XpoWIRLo0jLD8dMygR9IYxT
- lpi4ozLoswsdR/88Ku0cpdDi2JjSXHUA2XPU3OxjKZMjaT8azoSIw5HeyvhkODUsk4Q8 9Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38790g8w2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 10:18:27 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SE554R105192;
-        Wed, 28 Apr 2021 10:18:27 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38790g8w2n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 10:18:27 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SEHA6e020762;
-        Wed, 28 Apr 2021 14:18:26 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 384ay9ngce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 14:18:26 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SEIPNE25756142
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 14:18:25 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 997A87805E;
-        Wed, 28 Apr 2021 14:18:25 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2EDD778063;
-        Wed, 28 Apr 2021 14:18:25 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.38.222])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Apr 2021 14:18:25 +0000 (GMT)
-Message-ID: <745fce2ca4bac4cd768ced999954ea827357d235.camel@linux.ibm.com>
-Subject: Re: PPC476 hangs during tlb flush after calling /init in crash
- kernel with linux 5.4+
-From:   Eddie James <eajames@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, npiggin@gmail.com,
-        miltonm@us.ibm.com
-Date:   Wed, 28 Apr 2021 09:18:24 -0500
-In-Reply-To: <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
-References: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
-         <a24e9e0d-1d4f-506b-9303-4b995815d3c4@csgroup.eu>
-         <2f7587b1986d597a63169567124438325cbedfd7.camel@linux.ibm.com>
-         <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zqUtghhgLmZih4QwfufZ2z3CYOVhNzle
-X-Proofpoint-GUID: HH03YEPPoBeuxVGMBQX4MtBzm27pHsa8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_06:2021-04-28,2021-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 phishscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 priorityscore=1501
- adultscore=0 malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104280096
+        Wed, 28 Apr 2021 10:19:19 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950B8C061573;
+        Wed, 28 Apr 2021 07:18:33 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id n127so22108544wmb.5;
+        Wed, 28 Apr 2021 07:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sA44iSBVTRPE1/+y8eq3P54Y7wYSKijWIbljnB3TKwo=;
+        b=WJ1sA+C+IeMDOgw3O7uaHmSvOd/BNDKf7ULbdIZ+JyfxDdJvzDuN4Ulpo3WKHUGYsD
+         mLLePGcuFSLRm0HoScTdwxL0iRkSGr47TjzwojSmUzUm+9WT9er9KATD9UF01VRSTzHn
+         a91kqkWAu0ulcYjUj2h19HIuxrE5u/3fDApdepMmScAGia+OsgwhuraIyS5qo5LbAqU/
+         DfGSvMnBhI0KYLQZwb6qXFWIhxblKGlu3yJALsXvkQ2oRA3zacEa9Y9VCERzwQd049rB
+         HP+h5S6U/T+FhLRZqkzTb0/ZsBoOVX1WKT87AVMmZKK5BMSeKe3QWENknEmzDhmOpXvQ
+         e2cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sA44iSBVTRPE1/+y8eq3P54Y7wYSKijWIbljnB3TKwo=;
+        b=YfJ2TOhWvbHgo1SGtQS7EvP+OiyrjjKb0giMUIL+cMVfqav0bcSX5uSM7wt39Kb5ve
+         juQ8MUcaUL22//IiijStk0a9oqUlt2m7SZD1iqxosbILM6hCXSI8++Wmc6ZJ11Shculp
+         4k0t5ygHtTb3teqEP9OX7WcyP7g1coEdtOWPGVl4knRRZJVu49nr7WH/pgm7o6ibtIAb
+         uuT4L8gWWb3g4d29ilMx9CFbKaYGgr1a/NbWAQ3Q1zRKSnn8pAmKSyzhJtPDhJz1iey6
+         VYzQXsQzSuJVv/XKBL59hbf415iWKSOyjuMS6pnoymmtPRnDA9bENowosOLEqcLabMvU
+         XqpQ==
+X-Gm-Message-State: AOAM5327dSr5OW0cV36U2du3Br0ZvxCuQsRZVXo6KcwXejqw3PLcKZjZ
+        mhs+kYHiQJhaoON5wo9DzmWVD5QSJxM=
+X-Google-Smtp-Source: ABdhPJyGVF4Ulrt4rBUjS5QW2tkc8y29t9BdZsE78bdd56ms63rAN06zlX9oGR97cNsFGxaEvUpJew==
+X-Received: by 2002:a05:600c:4fd4:: with SMTP id o20mr4951276wmq.166.1619619512068;
+        Wed, 28 Apr 2021 07:18:32 -0700 (PDT)
+Received: from [192.168.1.102] ([37.168.62.78])
+        by smtp.gmail.com with ESMTPSA id p10sm93896wre.84.2021.04.28.07.18.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 07:18:31 -0700 (PDT)
+Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+To:     Martin KaFai Lau <kafai@fb.com>, Jason Baron <jbaron@akamai.com>
+Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210427034623.46528-1-kuniyu@amazon.co.jp>
+ <a10fdca5-7772-6edb-cbe6-c3fe66f57391@akamai.com>
+ <20210428012734.cbzie3ihf6fbx5kp@kafai-mbp.dhcp.thefacebook.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <2f4b2039-1144-f26f-4ee7-2fbec7eb415b@gmail.com>
+Date:   Wed, 28 Apr 2021 16:18:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210428012734.cbzie3ihf6fbx5kp@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-28 at 08:08 +0200, Christophe Leroy wrote:
-> 
-> Le 28/04/2021 à 00:42, Eddie James a écrit :
-> > On Tue, 2021-04-27 at 19:26 +0200, Christophe Leroy wrote:
-> > > Hi Eddies,
-> > > 
-> > > Le 27/04/2021 à 19:03, Eddie James a écrit :
-> > > > Hi all,
-> > > > 
-> > > > I'm having a problem in simulation and hardware where my PPC476
-> > > > processor stops executing instructions after callling /init. In
-> > > > my
-> > > > case
-> > > > this is a bash script. The code descends to flush the TLB, and
-> > > > somewhere in the loop in _tlbil_pid, the PC goes to
-> > > > InstructionTLBError47x but does not go any further. This only
-> > > > occurs in
-> > > > the crash kernel environment, which is using the same kernel,
-> > > > initramfs, and init script as the main kernel, which executed
-> > > > fine.
-> > > > I
-> > > > do not see this problem with linux 4.19 or 3.10. I do see it
-> > > > with
-> > > > 5.4
-> > > > and 5.10. I see a fair amount of refactoring in the PPC memory
-> > > > management area between 4.19 and 5.4. Can anyone point me in a
-> > > > direction to debug this further? My stack trace is below as I
-> > > > can
-> > > > run
-> > > > gdb in simulation.
-> > > 
-> > > Can you bisect to pin point the culprit commit ?
-> > 
-> > Hi, thanks for your prompt reply.
-> > 
-> > Good idea! I have bisected to:
-> > 
-> > commit 9e849f231c3c72d4c3c1b07c9cd19ae789da0420 (b8-bad,
-> > refs/bisect/bad)
-> > Author: Christophe Leroy <christophe.leroy@c-s.fr>
-> > Date:   Thu Feb 21 19:08:40 2019 +0000
-> > 
-> >      powerpc/mm/32s: use generic mmu_mapin_ram() for all blocks.
-> >      
-> >      Now that mmu_mapin_ram() is able to handle other blocks
-> >      than the one starting at 0, the WII can use it for all
-> >      its blocks.
-> >      
-> >      Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> >      Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> > 
-> > I also confirmed that reverting this commit resolves the issue in
-> > 5.4+.
-> > 
-> > Now, I don't understand why this is problematic or what is really
-> > happening... Reverting is probably not the desired solution.
-> > 
-> 
-> Can you provide the 'dmesg' or a dump of the logs printed by the
-> kernel at boottime ?
-> 
-> The difference with this commit is that if there are several
-> memblocks, all get mapped. Maybe your 
-> target doesn't like it.
-> 
-> You are talking about simulation, are you using QEMU ? If yes can you
-> provide details so that I can 
-> try and reproduce the issue ?
 
-Milton mentioned the kexec debug output might be useful:
 
-lzma_decompress_file: read on uImage of 65536 
-bytes failed
-kernel: 0xb75b3010 kernel_size: 0x4f1231
-0000000000000000-0000000040000000 : 0
-get base memory ranges:1
-usable memory rgns size:1 base:0 size:10000000
-exclude_range sorted exclude_range[0] start:0, end:bb7000
-setup_memory_ranges memory_range[0] start:bb7001, end:30000000
-CRASH MEMORY RANGES
-0000000000000000-0000000000010000
-0000000000010000-000000000c000000
-0000000010000000-000000002d600000
-get_crash_notes_per_cpu: crash_notes addr = 2ce84e00, size = 300
-Elf header: p_type = 4, p_offset = 0x2ce84e00 p_paddr = 0x2ce84e00
-p_vaddr = 0x0
- p_filesz = 0x12c p_memsz = 0x12c
-vmcoreinfo header: p_type = 4, p_offset = 0x2c8d4000 p_paddr =
-0x2c8d4000 p_vadd
-r = 0x0 p_filesz = 0x1024 p_memsz = 0x1024
-Elf header: p_type = 1, p_offset = 0xcc7e000 p_paddr = 0x0 p_vaddr =
-0xc0000000 
-p_filesz = 0x10000 p_memsz = 0x10000
-Elf header: p_type = 1, p_offset = 0x10000 p_paddr = 0x10000 p_vaddr =
-0xc001000
-0 p_filesz = 0xbff0000 p_memsz = 0xbff0000
-Elf header: p_type = 1, p_offset = 0x10000000 p_paddr = 0x10000000
-p_vaddr = 0xd
-0000000 p_filesz = 0x1d600000 p_memsz = 0x1d600000
-Command line after adding elfcorehdr:  elfcorehdr=209464K
-sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
-sym: .data value: ffffbf0 addr: fffc032
-sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
-sym: .data value: ffffbf0 addr: fffc03a
-sym: sha256_starts info: 12 other: 00 shndx: 2 value: 92c size: 70
-sym: sha256_starts value: fffc950 addr: fffc044
-sym: sha256_update info: 12 other: 00 shndx: 2 value: 36c4 size: c
-sym: sha256_update value: ffff6e8 addr: fffc058
-sym: sha256_finish info: 12 other: 00 shndx: 2 value: 36d0 size: 1a4
-sym: sha256_finish value: ffff6f4 addr: fffc070
-sym:     memcmp info: 12 other: 00 shndx: 2 value: 5fc size: 38
-sym: memcmp value: fffc620 addr: fffc080
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff898 addr: fffc08e
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8c8 addr: fffc092
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff898 addr: fffc096
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc09c
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8b8 addr: fffc0a2
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8b8 addr: fffc0a6
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8c8 addr: fffc0aa
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc0ac
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc0b8
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8ce addr: fffc0ca
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8ce addr: fffc0d2
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc0d8
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8d0 addr: fffc0de
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8d0 addr: fffc0e2
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc0e4
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc0f0
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc104
-sym: _restgpr_28_x info: 12 other: 00 shndx: 2 value: 888 size: 0
-sym: _restgpr_28_x value: fffc8ac addr: fffc110
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8e0 addr: fffc11a
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8e0 addr: fffc122
-sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
-sym: printf value: fffc548 addr: fffc128
-sym: setup_arch info: 12 other: 00 shndx: 2 value: 91c size: 4
-sym: setup_arch value: fffc940 addr: fffc12c
-sym: skip_checks info: 11 other: 00 shndx: 8 value: 0 size: 4
-sym: skip_checks value: ffffd50 addr: fffc132
-sym: skip_checks info: 11 other: 00 shndx: 8 value: 0 size: 4
-sym: skip_checks value: ffffd50 addr: fffc136
-sym: verify_sha256_digest info: 12 other: 00 shndx: 2 value: 0 size: f0
-sym: verify_sha256_digest value: fffc024 addr: fffc140
-sym: post_verification_setup_arch info: 12 other: 00 shndx: 2 value:
-920 size: 4
-sym: post_verification_setup_arch value: fffc944 addr: fffc15c
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8f2 addr: fffc16e
-sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
-sym: .rodata.str1.1 value: ffff8f2 addr: fffc18a
-sym: _restgpr_20_x info: 12 other: 00 shndx: 2 value: 868 size: 0
-sym: _restgpr_20_x value: fffc88c addr: fffc1a8
-sym:    putchar info: 12 other: 00 shndx: 2 value: 928 size: 4
-sym: putchar value: fffc94c addr: fffc1cc
-sym:    putchar info: 12 other: 00 shndx: 2 value: 928 size: 4
-sym: putchar value: fffc94c addr: fffc244
-sym:  __lshrdi3 info: 10 other: 00 shndx: 2 value: 8f8 size: 0
-sym: __lshrdi3 value: fffc91c addr: fffc2c4
-sym:    putchar info: 12 other: 00 shndx: 2 value: 928 size: 4
-sym: putchar value: fffc94c addr: fffc4e4
-sym:   vsprintf info: 12 other: 00 shndx: 2 value: 13c size: 38c
-sym: vsprintf value: fffc160 addr: fffc534
-sym:   vsprintf info: 12 other: 00 shndx: 2 value: 13c size: 38c
-sym: vsprintf value: fffc160 addr: fffc59c
-sym: my_thread_ptr info: 11 other: 00 shndx: 8 value: 8 size: 4
-sym: my_thread_ptr value: ffffd58 addr: fffc76a
-sym: my_thread_ptr info: 11 other: 00 shndx: 8 value: 8 size: 4
-sym: my_thread_ptr value: ffffd58 addr: fffc76e
-sym:      stack info: 11 other: 00 shndx: 8 value: 10 size: 4
-sym: stack value: ffffd60 addr: fffc776
-sym:      stack info: 11 other: 00 shndx: 8 value: 10 size: 4
-sym: stack value: ffffd60 addr: fffc77a
-sym:  purgatory info: 12 other: 00 shndx: 2 value: f0 size: 4c
-sym: purgatory value: fffc114 addr: fffc784
-sym:  dt_offset info: 11 other: 00 shndx: 8 value: c size: 4
-sym: dt_offset value: ffffd5c addr: fffc79e
-sym:  dt_offset info: 11 other: 00 shndx: 8 value: c size: 4
-sym: dt_offset value: ffffd5c addr: fffc7a2
-sym:     kernel info: 11 other: 00 shndx: 8 value: 4 size: 4
-sym: kernel value: ffffd54 addr: fffc7ba
-sym:     kernel info: 11 other: 00 shndx: 8 value: 4 size: 4
-sym: kernel value: ffffd54 addr: fffc7be
-sym:     memcpy info: 12 other: 00 shndx: 2 value: 5d8 size: 24
-sym: memcpy value: fffc5fc addr: ffff648
-sym:     memcpy info: 12 other: 00 shndx: 2 value: 5d8 size: 24
-sym: memcpy value: fffc5fc addr: ffff65c
-sym: sha256_process info: 12 other: 00 shndx: 2 value: 99c size: 2be0
-sym: sha256_process value: fffc9c0 addr: ffff66c
-sym: sha256_process info: 12 other: 00 shndx: 2 value: 99c size: 2be0
-sym: sha256_process value: fffc9c0 addr: ffff6a8
-sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
-sym: .data value: ffffd10 addr: ffff742
-sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
-sym: .data value: ffffd10 addr: ffff74a
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc024 addr: ffff920
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc114 addr: ffff94c
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc160 addr: ffff980
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc4ec addr: ffff9c8
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc548 addr: ffff9e8
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc5b0 addr: ffffa1c
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc5dc addr: ffffa30
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc5fc addr: ffffa44
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc620 addr: ffffa58
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc940 addr: ffffa80
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc944 addr: ffffa94
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc948 addr: ffffaa8
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc94c addr: ffffad0
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc950 addr: ffffaf8
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: fffc9c0 addr: ffffb0c
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: ffff5a0 addr: ffffb68
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: ffff6e8 addr: ffffbbc
-sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
-sym: .text value: ffff6f4 addr: ffffbd0
-Modified cmdline:console=ttyS0,115200 loglevel=9 rootwait
-root=/dev/mmcblk0p2 el
-fcorehdr=209464K maxcpus=1 
-reserve regions: 4
-0: offset: e3fc000, size: 4000
-1: offset: c000000, size: c8f000
-2: offset: fffc000, size: 4000
-3: offset: f6a7000, size: 955000
-debug.dtb written
-kexec_load: entry = 0xfffc658 flags = 0x1
-nr_segments = 6
-segment[0].buf   = 0xb5cb1010
-segment[0].bufsz = 0xb7d568
-segment[0].mem   = 0xc000000
-segment[0].memsz = 0xc7e000
-segment[1].buf   = 0x100997b0
-segment[1].bufsz = 0x10000
-segment[1].mem   = 0xcc7e000
-segment[1].memsz = 0x10000
-segment[2].buf   = 0x100a97f0
-segment[2].bufsz = 0x400
-segment[2].mem   = 0xcc8e000
-segment[2].memsz = 0x1000
-segment[3].buf   = 0x100ae670
-segment[3].bufsz = 0x3c5f
-segment[3].mem   = 0xe3fc000
-segment[3].memsz = 0x4000
-segment[4].buf   = 0xb6c5e050
-segment[4].bufsz = 0x95409f
-segment[4].mem   = 0xf6a7000
-segment[4].memsz = 0x955000
-segment[5].buf   = 0x100aa8a0
-segment[5].bufsz = 0x3d6c
-segment[5].mem   = 0xfffc000
-segment[5].memsz = 0x4000
-
+On 4/28/21 3:27 AM, Martin KaFai Lau wrote:
+> On Tue, Apr 27, 2021 at 12:38:58PM -0400, Jason Baron wrote:
+>>
+>>
+>> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
+>>> The SO_REUSEPORT option allows sockets to listen on the same port and to
+>>> accept connections evenly. However, there is a defect in the current
+>>> implementation [1]. When a SYN packet is received, the connection is tied
+>>> to a listening socket. Accordingly, when the listener is closed, in-flight
+>>> requests during the three-way handshake and child sockets in the accept
+>>> queue are dropped even if other listeners on the same port could accept
+>>> such connections.
+>>>
+>>> This situation can happen when various server management tools restart
+>>> server (such as nginx) processes. For instance, when we change nginx
+>>> configurations and restart it, it spins up new workers that respect the new
+>>> configuration and closes all listeners on the old workers, resulting in the
+>>> in-flight ACK of 3WHS is responded by RST.
+>>
+>> Hi Kuniyuki,
+>>
+>> I had implemented a different approach to this that I wanted to get your
+>> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
+>> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
+>> that you want to replace with a 'new' webserver, you would need a separate
+>> process to receive the listen fd and then have that process send the fd to
+>> the new webserver, if they are not running con-currently. So instead what
+>> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
+>>
+>> 1) bind unix socket with path '/sockets'
+>> 2) sendmsg() the listen fd via the unix socket
+>> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
+>> 3) exit/close the old webserver and the listen socket
+>> 4) start the new webserver
+>> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
+>> 6) recvmsg() the listen fd
+>>
+>> So the idea is that we set a timeout on the unix socket. If the new process
+>> does not start and bind to the unix socket, it simply closes, thus releasing
+>> the listen socket. However, if it does bind it can now call recvmsg() and
+>> use the listen fd as normal. It can then simply continue to use the old listen
+>> fds and/or create new ones and drain the old ones.
+>>
+>> Thus, the old and new webservers do not have to run concurrently. This doesn't
+>> involve any changes to the tcp layer and can be used to pass any type of fd.
+>> not sure if it's actually useful for anything else though.
+> We also used to do tcp-listen(/udp) fd transfer because the new process can not
+> bind to the same IP:PORT in the old kernel without SO_REUSEPORT.  Some of the
+> services listen to many different IP:PORT(s).  Transferring all of them
+> was ok-ish but the old and new process do not necessary listen to the same set
+> of IP:PORT(s) (e.g. the config may have changed during restart) and it further
+> complicates the fd transfer logic in the userspace.
 > 
-> Thanks
-> Christophe
+> It was then moved to SO_REUSEPORT.  The new process can create its listen fds
+> without depending on the old process.  It pretty much starts as if there is
+> no old process.  There is no need to transfer the fds, simplified the userspace
+> logic.  The old and new process can work independently.  The old and new process
+> still run concurrently for a brief time period to avoid service disruption.
+> 
+
+
+Note that another technique is to force syncookies during the switch of old/new servers.
+
+echo 2 >/proc/sys/net/ipv4/tcp_syncookies
+
+If there is interest, we could add a socket option to override the sysctl on a per-socket basis.
 
