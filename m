@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2C736D6FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512F036D700
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhD1MHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:07:37 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:37774 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229645AbhD1MHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:07:36 -0400
-Received: from localhost.localdomain (unknown [58.249.121.165])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxCcrST4lgjv8OAA--.2615S2;
-        Wed, 28 Apr 2021 20:06:43 +0800 (CST)
-From:   Xiaochuan Mao <maoxiaochuan@loongson.cn>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Qing Zhang <zhangqing@loongson.cn>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiaochuan Mao <maoxiaochuan@loongson.cn>
-Subject: [PATCH v2] MIPS:DTS:Correct device id of pcie for Loongnon-2K
-Date:   Wed, 28 Apr 2021 20:06:28 +0800
-Message-Id: <20210428120628.21041-1-maoxiaochuan@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAf9CxCcrST4lgjv8OAA--.2615S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF18KrWfXFWDuFy7Jw4DCFg_yoW8XFWxpF
-        1akayDKr1ruF1S9w4rCFyv9F47GFZxJa98tF47tryjyFWqqayUur1fJFZ3JF45XF4rJayF
-        vry0gFy8GFs7CrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjsjjDUUUUU==
-X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
+        id S232607AbhD1MIs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 08:08:48 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:34462 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231602AbhD1MIr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:08:47 -0400
+Received: by mail-vs1-f45.google.com with SMTP id d25so25063766vsp.1;
+        Wed, 28 Apr 2021 05:08:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J5mBs5jaQh3wtMQmRUFFXymD4w0OFf894XaJ7i3Natc=;
+        b=kjjM4UiyKtUjaPSPuq9mkwGyC4s0EH6s/udSCpBfLL6wh3VVT+iU7NrIMRx2uCf/Zg
+         MWMspfVf0n9RavshI4UczMl0vktf0QXVyYrjwOq1JierNEx+t8aR4Jmq66TaA1U2blJB
+         +x9A71oPpHrvCy7/OplKQT550gnylWT4zhCtgY0Dm3cICmGRhJb4uSIJJbKMv0jCP1Or
+         psF4/AIxKDT1RTGyZf1GXO1632oodd7WUTB2okRKSlOUL0mlR8xbLoy77k+xyDpiyU+d
+         baYQuThI5iMT/VqzFIfJLNW2BL3io0ADYNaDBWaofKy/0z10syQO/12PNxlm7b7M68y3
+         9avw==
+X-Gm-Message-State: AOAM531JwloVCh39t0a9BDFyaje9Dcwdkm/R6UJK0PjFxHFwwt3Jj4m4
+        ZwdQEgo+sCOe5RerSovv8AgF3GVaPnZEFIPHlGI=
+X-Google-Smtp-Source: ABdhPJyt7LPnKkg4RokoJwXilgPmqlDDD/Bu5PTcYsE2WO63a5OjnRGES3axOm0jQe9YJGZ21DkJc+/8VBf1Z2ktDK0=
+X-Received: by 2002:a67:8745:: with SMTP id j66mr24878487vsd.18.1619611682536;
+ Wed, 28 Apr 2021 05:08:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210323221430.3735147-1-laurent@vivier.eu> <20210323221430.3735147-3-laurent@vivier.eu>
+ <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
+In-Reply-To: <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 28 Apr 2021 14:07:51 +0200
+Message-ID: <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-from Loongson-2K user manual know that Loongson-2K have two
-pcie controller pcie0 and pcie1, pcie0 have four port named port0~port3
-and pcie1 have 2 port named port0~port1. the device id of port0 is 7a19
-in each pcie controller and others are 7a09.
+Hi Laurent,
 
-Signed-off-by: Xiaochuan Mao <maoxiaochuan@loongson.cn>
----
-v1:
-revert class code
----
- .../boot/dts/loongson/loongson64-2k1000.dtsi     | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+On Tue, Apr 27, 2021 at 7:20 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> Le 23/03/2021 à 23:14, Laurent Vivier a écrit :
+> > This machine allows to have up to 3.2 GiB and 128 Virtio devices.
+> >
+> > It is based on android goldfish devices.
+> >
+> > Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 569e814def83..912dcad361ef 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -163,8 +163,8 @@
- 			};
- 
- 			pci_bridge@a,0 {
--				compatible = "pci0014,7a19.0",
--						   "pci0014,7a19",
-+				compatible = "pci0014,7a09.0",
-+						   "pci0014,7a09",
- 						   "pciclass060400",
- 						   "pciclass0604";
- 
-@@ -178,8 +178,8 @@
- 			};
- 
- 			pci_bridge@b,0 {
--				compatible = "pci0014,7a19.0",
--						   "pci0014,7a19",
-+				compatible = "pci0014,7a09.0",
-+						   "pci0014,7a09",
- 						   "pciclass060400",
- 						   "pciclass0604";
- 
-@@ -193,8 +193,8 @@
- 			};
- 
- 			pci_bridge@c,0 {
--				compatible = "pci0014,7a19.0",
--						   "pci0014,7a19",
-+				compatible = "pci0014,7a09.0",
-+						   "pci0014,7a09",
- 						   "pciclass060400",
- 						   "pciclass0604";
- 
-@@ -223,8 +223,8 @@
- 			};
- 
- 			pci_bridge@e,0 {
--				compatible = "pci0014,7a19.0",
--						   "pci0014,7a19",
-+				compatible = "pci0014,7a09.0",
-+						   "pci0014,7a09",
- 						   "pciclass060400",
- 						   "pciclass0604";
- 
--- 
-2.17.1
+> As 5.12 has been released, is this possible to consider having this new machine in the next release?
+>
+> All changes are contained under arch/m68k and protected by the CONFIG_VIRT flag. This should not
+> have any impact on the other m68k machines. In any case, I'll be able to maintain the machine and
+> fix any problem.
 
+Thanks for the reminder!
+
+Please accept my apologies: I had completely forgotten about your patch.
+By the time it reappeared on my radar (due to Alexandre's reply), it was
+already too late for v5.13.
+
+I have tested and reviewed your patch, great work!
+I'm confident this can make v5.14, with the small nits fixed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
