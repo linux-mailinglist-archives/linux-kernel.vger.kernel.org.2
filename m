@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106A736D880
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731EB36D87A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239877AbhD1NqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239836AbhD1Npz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:45:55 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A1EC06138A;
-        Wed, 28 Apr 2021 06:45:10 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id s22so23634152pgk.6;
-        Wed, 28 Apr 2021 06:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tW6Jg1hPCefeE4+Q5b9EX/MI8Wk9Qn2Twj5sMLql1/0=;
-        b=MnimyphcYUdXSnck5cSXyKGtFL3svaYYHKqt4u4CHuyRoU1LONISHmgfLbIuy3Jx8D
-         U10C91iCKgNrJxVKH1s3HL1lN/l4dC0MgqGEhtQNBljcPrZNUfEQwmS/npH3orn2lYbs
-         dLeQC3lu4RvXRLUO1whrYSHwY/DUVbF5akWwPq8IzOMBEI9gHDL4j+qz5cp8GYfjaMsn
-         81YTsmeNNCl3gWi+ff2s0pQFfHU3rC5CqmekKZMACLzOnBwQA/uF8nWJFDBQ/d4Hb89c
-         vhTZiw/9G2y1yqP6FcotT2L3Bs49IodoDp8i0Z+ws2TLyl84937at/5wWnY65eznFktM
-         fEaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tW6Jg1hPCefeE4+Q5b9EX/MI8Wk9Qn2Twj5sMLql1/0=;
-        b=lItoHtIkc0Z1eF/Bdnvsrs7BXed1t+kEPVJH22E8teS7RAIBm/Efu7k0R4r0YsSebd
-         j7JDVxAmD9Sqb4x8l+AVKUhLEuJZXg3rkKks3McswK+0fjsP1P4lcr0mRie2enYZ3VrF
-         mFNE5OLGjIPQwupYe8EMEuKzaa5q1df+gG44smUBussJuPNQnG3faE9Zc3QvUyTzI75g
-         xSE13+b64tramD+bBUFOGCTRG8xfT/kdFO4BOH/BgxvmCVUTbKTaHyQ1XG4KWum6kZ65
-         sq0JBzVTh0/7CFjYEnkQifW5pdKIKivkWzU7eg3RGtMDAjY+PpEvdikM4uprHvI97RNZ
-         u1Pw==
-X-Gm-Message-State: AOAM5307z5ia1XWNqCJ8ejSHqVWx2TA/v7PschnsPvBakKVDf6UIU5wn
-        ZTGxOPELXSHJyfhD1abGiXkTDYeZYq3s9teieM+EiA8HqXA=
-X-Google-Smtp-Source: ABdhPJyh2zXRbuOdrBqVu7Frq1itIC3qKiVh/qPj4l8gEEzGAANFyUmIw6ldH+/FexEe3bG730Ffn+dolOGZxJJkfmE=
-X-Received: by 2002:a63:cd11:: with SMTP id i17mr26641169pgg.74.1619617510313;
- Wed, 28 Apr 2021 06:45:10 -0700 (PDT)
+        id S238934AbhD1Npu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:45:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229891AbhD1Nps (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:45:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0070561433;
+        Wed, 28 Apr 2021 13:45:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619617503;
+        bh=Hs3ZClUqB3asF54S3IbgfS608uzXZ368c3MxWozNzGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J8pEbMJsZAkEw7E5jJPSSr7qzUoWso5BsReOctFTjuSQcrpLPilEGp2RJQxyjnksb
+         LE9cmxRzCiFlcrmzQVVHiUvFJZwPKyq+xd+g/QyLULPZfn5C16CAkOr6dT/i7G7GAj
+         NgqKybEuCpj4IK2dbs576tgOoe97pvaiS9BAMtP3rGeTqrhcUVhf+RZOmDNIBCfaKl
+         Beu7XV+mK+houofC6vKdK139GouAuy3NnqCCAiP4CD82mFJt/SBok9/tmD6zX0hVWA
+         zDb45W48pYKacR82JUYRkaoI9ORgJgTTeU/4hnxw+shkVCZZ4sc9RS5lV67ysL88Wo
+         nJG/b6lDRzCDQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BFE4440647; Wed, 28 Apr 2021 10:44:58 -0300 (-03)
+Date:   Wed, 28 Apr 2021 10:44:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     "Jin, Yao" <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v6 00/26] perf tool: AlderLake hybrid support series 1
+Message-ID: <YIlm2k6ok3Gey3FU@kernel.org>
+References: <20210427070139.25256-1-yao.jin@linux.intel.com>
+ <YIgIiZVxOWdYTwef@krava>
+ <d5309468-d6d6-ab8d-2f06-22b4f6e98917@linux.intel.com>
+ <YIkOn9ZaTv87Kmjw@krava>
 MIME-Version: 1.0
-References: <20210426095426.118356-1-tsbogend@alpha.franken.de>
- <CAHp75VdRfPPj2pu4GOBVG4+bGUsCRLXYPsFjMwFOYfUTZuvJaQ@mail.gmail.com>
- <6f6bce2f070998db49acca2f6611727b@walle.cc> <CAHp75VdmTxvQBU4X8s-6csYgwM8ACth9Ao0GYjUH7+0Q0tyFyg@mail.gmail.com>
- <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc>
-In-Reply-To: <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Apr 2021 16:44:54 +0300
-Message-ID: <CAHp75VcXEu2YGOoL70zueEgARCe8D+Q=CFsN62-vFK5svjJAQA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
-To:     Michael Walle <michael@walle.cc>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIkOn9ZaTv87Kmjw@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 2:57 PM Michael Walle <michael@walle.cc> wrote:
->
-> Am 2021-04-28 13:07, schrieb Andy Shevchenko:
-> > On Wed, Apr 28, 2021 at 1:51 AM Michael Walle <michael@walle.cc> wrote:
-> >> Am 2021-04-26 12:29, schrieb Andy Shevchenko:
-> >> > On Mon, Apr 26, 2021 at 12:55 PM Thomas Bogendoerfer
-> >> > <tsbogend@alpha.franken.de> wrote:
-> >> >
-> >> > 2) there is gpio-regmap generic code, that may be worth
-> >> > considering.
-> >>
-> >> This driver uses memory mapped registers. While that is
-> >> also possible with gpio-regmap, there is one drawback:
-> >> it assumes gpiochip->can_sleep = true for now, see [1].
-> >> Unfortunately, there is no easy way to ask the regmap
-> >> if its mmio/fastio.
-> >
-> > I don't see how it is an impediment.
->
-> You'd have to use the *_cansleep() variants with the gpios,
-> which cannot be used everywhere, no?
+Em Wed, Apr 28, 2021 at 09:28:31AM +0200, Jiri Olsa escreveu:
+> On Wed, Apr 28, 2021 at 09:57:40AM +0800, Jin, Yao wrote:
+> 
+> SNIP
+> 
+> > > >           1.003959036 seconds time elapsed
+> > > > 
+> > > > Note that, since the whole patchset for AlderLake hybrid support is very
+> > > > large (40+ patches). For simplicity, it's splitted into several patch
+> > > > series.
+> > > > 
+> > > > The patch series 1 only supports the basic functionality. The advanced
+> > > > supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
+> > > > will be added in follow-up patch series.
+> > > > 
+> > > > The perf tool codes can also be found at:
+> > > > https://github.com/yaoj/perf.git
+> > > 
+> > > hi,
+> > > did you update the branch for v6? I think I can't see
+> > > the new update there
+> > > 
+> > > thanks,
+> > > jirka
+> > > 
+> > 
+> > I just pushed the latest updates to https://github.com/yaoj/perf.git. Sorry it's getting late.
+> > 
+> > Actually it's Arnaldo's tmp.perf/core branch. Arnaldo has applied the patch
+> > series on tmp.perf/core and with an update on "[PATCH v6 01/26] tools
+> > headers uapi: Update tools's copy of
+> >  linux/perf_event.h".
+> 
+> np, I used Arnaldo's branch for review
+> 
+> > 
+> > If there are more comments which need to be addressed, we will start from tmp.perf/core for v7.
+> > 
+> > Thanks
+> > Jin Yao
+> > 
+> > > > 
+> > > > Note that, this patch series is based on tmp.perf/core branch.
+> > > > 
+> > > > v6:
+> > > > ---
+> > > > - Rebase to tmp.perf/core branch.
+> > > > 
+> > > > - A minor update in v6 patch series.
+> > > > 
+> > > >    In '[PATCH v6 18/26] perf tests: Add hybrid cases for 'Parse event
+> > > >    definition strings' test', we add a test case for cache events with
+> > > >    pmu prefix.
+> > > > 
+> > > >    No other updates.
+> 
+> I can't test the functionality, but apart from that all seems fine
+> and non-hybrid stuff keeps working ;-)
+> 
+> Reviewed-by: Jiri Olsa <jolsa@kernel.org>
 
-*can* sleep means that it requires a sleeping context to run, if your
-controller is fine with that, there are no worries. OTOH if you want
-to run this in an atomic context, then consumers can't do with that
-kind of controller. What I meant above (and you stripped it here) is
-to add a patch that will fix that and set it based on
-gpio_regmap_config.
+Thanks, added it to the series.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+- Arnaldo
