@@ -2,151 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F76736D012
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D68F36D018
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236224AbhD1Awp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhD1Awo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:52:44 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E080CC061574;
-        Tue, 27 Apr 2021 17:51:58 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 4so36568527lfp.11;
-        Tue, 27 Apr 2021 17:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UBG7XS9thzjZcMvWkPqDMf/eiNI69sVC30py45fCdXE=;
-        b=JM1K2BEPc84C9uenaUaHtI3qRtkTe4U0B85lbrMxvrg1MMEIFDxXtLzsjICYtqvYKE
-         3ooPpj7sIHGwNfLHWav6hEg0WCbBuvFwHcoa8mlh7aqoXCpZqqy7vnmST95GUpoIg+eq
-         PvrSdyjHx0tClpZgo12DU5m/PigWYPEAHIvfAXFQmT4rPBgPo6aGBpC29loG6ka+ViTO
-         D/8cq1qJM/hdC78dYWR/KmqnmzBbHngIySIa7jGI5g7OCrkLOHJPnkGpDBE+jZr0Hrur
-         WAwIOdEsLYCT2p+pEAGgABfLYo45rVasO8+dmvivw6QQJ3Yw90TWJ2B4jtpucbx8VdUt
-         M1sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UBG7XS9thzjZcMvWkPqDMf/eiNI69sVC30py45fCdXE=;
-        b=CIQRaimee0F80CNixhgfQ+wVum/zmyuYHaN5sheQY9SkAr7DXn0TyOxP2BTnaRwOdA
-         7xrTqm/RyijQCssSzCrW1IWEHXFefABTK2oevXDInd86G26KL4PruQC3Sbx3Ne01ntRl
-         wxphQ6emw4wu/W3Tyrshc0pgeazXMNKdiAwlytI5OMYXCxOqXorgiWW8d1wFLP/EteAa
-         3i7YdBOhyGNk6E7HFQ8htfRZXGJ8s3SnkCrrTVk/GBIjdXcfvkYhtqGxHcXbrtLP46Gb
-         HEuVA37IkWfQ5LLxmOcU1NwjQHohTwxltvdoqDhqeX3TshmLEyYx+CcOe00ryPP37BCR
-         MdZA==
-X-Gm-Message-State: AOAM531bAOsWKJ1hiyTWSmKa98P4cN0Ydv+oA7V+dXQr7UU369bq4mA8
-        Q7OR8C57l/tbgKkpP5ECp8LGCOS4kg23sqNSBejHcJ8V
-X-Google-Smtp-Source: ABdhPJxXcTmwg2f3Q0Foh7P6DoA1RfUjRqMgNdjwOixjjSncCf4Lq2Td6TCdUTqYFR0ykKs+uPdQYndnoyQ3zFu3ZEM=
-X-Received: by 2002:a05:6512:3f93:: with SMTP id x19mr18568740lfa.182.1619571117078;
- Tue, 27 Apr 2021 17:51:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427174313.860948-1-revest@chromium.org> <20210427174313.860948-3-revest@chromium.org>
- <CAADnVQLQmt0-D_e=boXoK=FLRoXv9xzkCwM24zpbZERrEexLCw@mail.gmail.com> <CABRcYm+eWh5=eM9mgOsCU6-TACi-y5kviCf9Kbqxfzvgq9u5BA@mail.gmail.com>
-In-Reply-To: <CABRcYm+eWh5=eM9mgOsCU6-TACi-y5kviCf9Kbqxfzvgq9u5BA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 27 Apr 2021 17:51:45 -0700
-Message-ID: <CAADnVQK=K2hcrZ7=d=voQ=gxdmC_oqSWodLpck54UncSSgsLuQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: Implement formatted output helpers
- with bstr_printf
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S235812AbhD1A5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:57:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhD1A5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B302861029;
+        Wed, 28 Apr 2021 00:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619571400;
+        bh=HZ7DZLKT36j38pjeGea1Kmh+RuWiTCVsIBo4m9p41pI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=tJDKj6BizTY1gl9jrfBkkNNK0fkbCKoLqIsZkCtzGgo1RIE09Qr4gLHtR/pUzVBwW
+         5wUN0A3ZYm6eHDFbF05gpDohFuCzemys8hsRr9B3YOkUy5PBThJf6vj7O5rGo+rife
+         Trn0GI0vUG/GG9Wf4z7aTDH3lOjQ/pfE+3XBCbIXVDObfNKd+H5VK74m0MzP3pYJ0H
+         uxoR0p7jQTQVrEpuAvAZKQPIx078nOQ4q2tyWNFcLuDJ1Zx3V7qHpwV9shpdJ1jikQ
+         dK4K5hbFTtlzekqUBPqF1zQggZrD/H3PdbF6WNK7dQLE+MIlaWcs0csFa5Pi91bYR0
+         eXGez74EOrsoQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A79EE60A24;
+        Wed, 28 Apr 2021 00:56:40 +0000 (UTC)
+Subject: Re: [GIT PULL] s390 updates for 5.13 merge window
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YIgVewka8KeZn5F9@osiris.fritz.box>
+References: <YIgVewka8KeZn5F9@osiris.fritz.box>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YIgVewka8KeZn5F9@osiris.fritz.box>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-1
+X-PR-Tracked-Commit-Id: 6f3353c2d2b3eb4de52e9704cb962712033db181
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6daa755f813e6aa0bcc97e352666e072b1baac25
+Message-Id: <161957140062.22806.14487702478556896084.pr-tracker-bot@kernel.org>
+Date:   Wed, 28 Apr 2021 00:56:40 +0000
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 5:20 PM Florent Revest <revest@chromium.org> wrote:
->
-> On Wed, Apr 28, 2021 at 1:46 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 10:43 AM Florent Revest <revest@chromium.org> wrote:
-> > > +                       if (fmt[i + 1] == 'B') {
-> > > +                               if (tmp_buf)  {
-> > > +                                       err = snprintf(tmp_buf,
-> > > +                                                      (tmp_buf_end - tmp_buf),
-> > > +                                                      "%pB",
-> > ...
-> > > +                       if ((tmp_buf_end - tmp_buf) < sizeof_cur_ip) {
-> >
-> > I removed a few redundant () like above
->
-> Oh, sorry about that.
->
-> > and applied.
->
-> Nice! :)
->
-> > >                 if (fmt[i] == 'l') {
-> > > -                       cur_mod = BPF_PRINTF_LONG;
-> > > +                       sizeof_cur_arg = sizeof(long);
-> > >                         i++;
-> > >                 }
-> > >                 if (fmt[i] == 'l') {
-> > > -                       cur_mod = BPF_PRINTF_LONG_LONG;
-> > > +                       sizeof_cur_arg = sizeof(long long);
-> > >                         i++;
-> > >                 }
-> >
-> > This bit got me thinking.
-> > I understand that this is how bpf_trace_printk behaved
-> > and the sprintf continued the tradition, but I think it will
-> > surprise bpf users.
-> > The bpf progs are always 64-bit. The sizeof(long) == 8
-> > inside any bpf program. So printf("%ld") matches that long.
->
-> Yes, this also surprised me.
->
-> > The clang could even do type checking to make sure the prog
-> > is passing the right type into printf() if we add
-> > __attribute__ ((format (printf))) to bpf_helper_defs.h
-> > But this sprintf() implementation will trim the value to 32-bit
-> > to satisfy 'fmt' string on 32-bit archs.
-> > So bpf program behavior would be different on 32 and 64-bit archs.
-> > I think that would be confusing, since the rest of bpf prog is
-> > portable. The progs work the same way on all archs
-> > (except endianess, of course).
-> > I'm not sure how to fix it though.
-> > The sprintf cannot just pass 64-bit unconditionally, since
-> > bstr_printf on 32-bit archs will process %ld incorrectly.
-> > The verifier could replace %ld with %Ld.
-> > The fmt string is a read only string for bpf_snprintf,
-> > but for bpf_trace_printk it's not and messing with it at run-time
-> > is not good. Copying the fmt string is not great either.
-> > Messing with internals of bstr_printf is ugly too.
->
-> Indeed, none of these solutions are satisfying.
+The pull request you sent on Tue, 27 Apr 2021 15:45:31 +0200:
 
-Maybe Daniel has other ideas?
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-1
 
-> > Maybe we just have to live with this quirk ?
->
-> If we were starting from scratch, maybe just banning %ld could have
-> been an option, but now that bpf_trace_printk has been behaving like
-> this for a while, I think it might be best to just keep the behavior
-> as it is.
->
-> > Just add a doc to uapi/bpf.h to discourage %ld and be done?
->
-> More doc is always good. Something like "Note: %ld behaves differently
-> depending on the host architecture, it is recommended to avoid it and
-> use %d or %lld instead" in the helper description of the three
-> helpers? If you don't have the time to do it today, I can send a patch
-> tomorrow.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6daa755f813e6aa0bcc97e352666e072b1baac25
 
-bpf_trace_printk was like this for a long time, so there is no rush.
-Pls wait until everything comes back to bpf tree and send a patch against it.
-bpf_trace_printk comment in uapi/bpf.h is outdated too. Would be good
-to document the latest behavior for them all.
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
