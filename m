@@ -2,99 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCEC36D55A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A59736D55B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239016AbhD1KES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 06:04:18 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:50005 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238516AbhD1KEC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 06:04:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UX3II3M_1619604189;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UX3II3M_1619604189)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 28 Apr 2021 18:03:16 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     nicolas.ferre@microchip.com
-Cc:     claudiu.beznea@microchip.com, davem@davemloft.net, kuba@kernel.org,
-        linux@armlinux.org.uk, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] net: macb: Remove redundant assignment to w0 and queue
-Date:   Wed, 28 Apr 2021 18:03:08 +0800
-Message-Id: <1619604188-120341-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S238984AbhD1KE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:04:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:38716 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238991AbhD1KET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 06:04:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77F1C1FB;
+        Wed, 28 Apr 2021 03:03:34 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 85E3C3F70D;
+        Wed, 28 Apr 2021 03:03:33 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-kernel@vger.kernel.org, Wan Jiabing <wanjiabing@vivo.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, kael_w@yeah.net
+Subject: Re: [PATCH] firmware: arm_scmi: Remove repeated struct declaration
+Date:   Wed, 28 Apr 2021 11:03:29 +0100
+Message-Id: <161960405992.396847.7773596762858834965.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210427033031.4580-1-wanjiabing@vivo.com>
+References: <20210427033031.4580-1-wanjiabing@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable w0 and queue is set to zero and bp->queues but these
-values is not used as it is overwritten later on, hence
-redundant assignment  can be removed.
+On Tue, 27 Apr 2021 11:30:31 +0800, Wan Jiabing wrote:
+> struct scmi_protocol_handle is declared at 34th line.
+> The declaration here is duplicate. Remove it.
 
-Cleans up the following clang-analyzer warning:
+Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
-drivers/net/ethernet/cadence/macb_main.c:4919:21: warning: Value stored
-to 'queue' during its initialization is never read
-[clang-analyzer-deadcode.DeadStores].
+[1/1] firmware: arm_scmi: Remove repeated struct declaration
+      https://git.kernel.org/sudeep.holla/c/03f840c492
 
-drivers/net/ethernet/cadence/macb_main.c:4832:21: warning: Value stored
-to 'queue' during its initialization is never read
-[clang-analyzer-deadcode.DeadStores].
-
-drivers/net/ethernet/cadence/macb_main.c:3265:3: warning: Value stored
-to 'w0' is never read [clang-analyzer-deadcode.DeadStores].
-
-drivers/net/ethernet/cadence/macb_main.c:3251:3: warning: Value stored
-to 'w0' is never read [clang-analyzer-deadcode.DeadStores].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/net/ethernet/cadence/macb_main.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 0f6a6cb..5f1dbc2 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -3248,7 +3248,6 @@ static void gem_prog_cmp_regs(struct macb *bp, struct ethtool_rx_flow_spec *fs)
- 	/* ignore field if any masking set */
- 	if (tp4sp_m->ip4src == 0xFFFFFFFF) {
- 		/* 1st compare reg - IP source address */
--		w0 = 0;
- 		w1 = 0;
- 		w0 = tp4sp_v->ip4src;
- 		w1 = GEM_BFINS(T2DISMSK, 1, w1); /* 32-bit compare */
-@@ -3262,7 +3261,6 @@ static void gem_prog_cmp_regs(struct macb *bp, struct ethtool_rx_flow_spec *fs)
- 	/* ignore field if any masking set */
- 	if (tp4sp_m->ip4dst == 0xFFFFFFFF) {
- 		/* 2nd compare reg - IP destination address */
--		w0 = 0;
- 		w1 = 0;
- 		w0 = tp4sp_v->ip4dst;
- 		w1 = GEM_BFINS(T2DISMSK, 1, w1); /* 32-bit compare */
-@@ -4829,7 +4827,7 @@ static int __maybe_unused macb_suspend(struct device *dev)
- {
- 	struct net_device *netdev = dev_get_drvdata(dev);
- 	struct macb *bp = netdev_priv(netdev);
--	struct macb_queue *queue = bp->queues;
-+	struct macb_queue *queue;
- 	unsigned long flags;
- 	unsigned int q;
- 	int err;
-@@ -4916,7 +4914,7 @@ static int __maybe_unused macb_resume(struct device *dev)
- {
- 	struct net_device *netdev = dev_get_drvdata(dev);
- 	struct macb *bp = netdev_priv(netdev);
--	struct macb_queue *queue = bp->queues;
-+	struct macb_queue *queue;
- 	unsigned long flags;
- 	unsigned int q;
- 	int err;
--- 
-1.8.3.1
+--
+Regards,
+Sudeep
 
