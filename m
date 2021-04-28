@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408AF36D1C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 07:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BE036D1C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 07:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235901AbhD1Fhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 01:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53220 "EHLO mail.kernel.org"
+        id S232242AbhD1Fjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 01:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhD1Fhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 01:37:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43EAC610F7;
-        Wed, 28 Apr 2021 05:36:49 +0000 (UTC)
+        id S229639AbhD1Fjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 01:39:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9DFA6141E;
+        Wed, 28 Apr 2021 05:38:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619588209;
-        bh=KLHnbqvrleAFRjOYtz5uhyR8in1guRzkYvwMfNQtME0=;
+        s=korg; t=1619588337;
+        bh=dE3JHheqpzu0M4uVBE2XWAmvbHnX6vL8crhqJ1/UoXg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zdImTRXy6bryeYaBmd2RL67d+vPH/pgKBNnHMuKFmbjeu1NUZCCs/u010psSSnB/K
-         D7iKH4uzUyM8X4UR+bZvXsvpyJkbxhPpdjzPavgIYowXDyVcf/H39JTS2dN36GycJ+
-         yoAB2uqrdYfsp3olXigXVlISW8ht8zjTXC55i2CU=
-Date:   Wed, 28 Apr 2021 07:36:47 +0200
+        b=G7wW/YsI9pOEdMNa5EmGtdNRks9EgQbFQSbKnhKv4pyozfjiMpeSFDbWHq7rsEvxr
+         vgSDb4BbyQWrs+AnhN/DmJkgLNZAfMmD3+2nFVV8RLDUIfLOzNLk3W6avCEhA3rZWn
+         c/iUH1jEVTUePbvHKJeE990X3tbHM9r61hcNTsYw=
+Date:   Wed, 28 Apr 2021 07:38:54 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 067/190] Revert "net: caif: replace BUG_ON with recovery
- code"
-Message-ID: <YIj0b9AFaDY8prNO@kroah.com>
+Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 125/190] Revert "net: tipc: fix a missing check of
+ nla_nest_start"
+Message-ID: <YIj07o8cprfikoHR@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-68-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-126-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-68-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-126-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:02PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit c5dea815834c7d2e9fc633785455bc428b7a1956.
+On Wed, Apr 21, 2021 at 03:00:00PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 4589e28db46ee4961edfd794c5bb43887d38c8e5.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -55,36 +54,31 @@ On Wed, Apr 21, 2021 at 02:59:02PM +0200, Greg Kroah-Hartman wrote:
 > change to ensure that no problems are being introduced into the
 > codebase.
 > 
-> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Kangjie Lu <kjlu@umn.edu>
 > Cc: David S. Miller <davem@davemloft.net>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/net/caif/caif_serial.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  net/tipc/group.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
-> index 8215cd77301f..4720a7bac4fb 100644
-> --- a/drivers/net/caif/caif_serial.c
-> +++ b/drivers/net/caif/caif_serial.c
-> @@ -269,9 +269,7 @@ static netdev_tx_t caif_xmit(struct sk_buff *skb, struct net_device *dev)
+> diff --git a/net/tipc/group.c b/net/tipc/group.c
+> index 3e137d8c9d2f..d18d497af4de 100644
+> --- a/net/tipc/group.c
+> +++ b/net/tipc/group.c
+> @@ -927,9 +927,6 @@ int tipc_group_fill_sock_diag(struct tipc_group *grp, struct sk_buff *skb)
 >  {
->  	struct ser_device *ser;
+>  	struct nlattr *group = nla_nest_start_noflag(skb, TIPC_NLA_SOCK_GROUP);
 >  
-> -	if (WARN_ON(!dev))
-> -		return -EINVAL;
+> -	if (!group)
+> -		return -EMSGSIZE;
 > -
-> +	BUG_ON(dev == NULL);
->  	ser = netdev_priv(dev);
->  
->  	/* Send flow off once, on high water mark */
+>  	if (nla_put_u32(skb, TIPC_NLA_SOCK_GROUP_ID,
+>  			grp->type) ||
+>  	    nla_put_u32(skb, TIPC_NLA_SOCK_GROUP_INSTANCE,
 > -- 
 > 2.31.1
 > 
 
-This commit was pointless, the check should just be removed entirely as
-it is impossible to hit.  I'll keep the revert and fix it up properly in
-a follow-on patch.
-
-thanks,
+The original commit here was fine, I'll drop this revert.
 
 greg k-h
