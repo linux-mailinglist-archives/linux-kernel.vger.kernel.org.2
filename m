@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB6436E440
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4399936E44B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 06:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbhD2E3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Apr 2021 00:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        id S232619AbhD2EoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Apr 2021 00:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235095AbhD2E3a (ORCPT
+        with ESMTP id S229814AbhD2EoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Apr 2021 00:29:30 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150E3C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:28:45 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id y1so18422045plg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:28:45 -0700 (PDT)
+        Thu, 29 Apr 2021 00:44:05 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D76AC06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:43:19 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id y1so18437762plg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 21:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gt4pb5bT5mW/MToENIuo4Jt8VqUlSnyGRgKvmw6yKp0=;
-        b=m2YPwqx7aeh6V4lUo0oHObJCqs1T+6ImiIjbJPb/XrFOXsS88GT0/U1TDgdJ1tlgtf
-         vjjBBMfm1Eh2YmwOe5/fcnlTizd+eytKYuLtVI0Gxm72V5zal5FgLmjsqqeYmBs89pTu
-         fubvjuXh/iVeU7gxgntYYq/wNSGAnKMhvhb1Y=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=dYuU5G7Tok7W7dteeCw6ZMzwcEHLOIU+TkutgZ/lpVQ=;
+        b=oZYFFE+Bkk/IeFoxxL5IEGMza6qcQMtcphBKKgOPvFRBJ/A/UxQOUgWqXISyL47oq0
+         QJxhycOwaHu3xPeTTTnxbH5il2GAr+OGBa3hZDXqRTZJKuyvMZCP9h64a+zTQVM0YuLj
+         f7kuAgnv3Z9xrKYYPdHKxM3PVXKG0brumHKSaL1EiSRfjJFZ31hqb97KLubg17FnRb+j
+         JW5sQBv/5TdAEf17pYJ2LHxb9IaR9B3PfncY4vjzjFa7tjRhoHUYsz3uiTHIA5NeZFT+
+         ijyhmjmPzJyl320tohcGYOvmLZ2n7FHXUpHQdMH7GuyeLU9AmP3bKlOtgWJeYNAABdwC
+         2ubA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gt4pb5bT5mW/MToENIuo4Jt8VqUlSnyGRgKvmw6yKp0=;
-        b=Pa+5yFjgCHMKvT5YYA4l1t/Bnrthq8/fXX1LLcZOMvcUov9rEHz6XhsJUleWCltjvN
-         QRCP/7ass88FInmmS29XfYNOLYNFOOUtwkRu09C+N65mvk7CBX36ox+odrT1nMJ+kHlO
-         DCk9PsmQMsDwZgpp1FTChSoNt5gL52MaZHN0Ky3cTIhWnXpVKtPUK9Bf5Kh4gaf+ARPu
-         tBc35PQQfM0SXV5Z7AicoSmDtOM5ADekNSLa+ydLn8M3Id1SRbiNfBThqfWf6WSdtYGf
-         +0dRBT70Dvw5F2enzVZP+lx2tnhfWb+mLiN4J+4xTmaQs+CTqCX7ULxPmPoxWJ7LU8/B
-         TdTQ==
-X-Gm-Message-State: AOAM530f1kJfF/P3CUs+sEEi/jzX5XlzeUPuxKNG3dCRNNdn0kTn2VBG
-        V4SSFWpEntfGZ2G/7jX7+jwhBw==
-X-Google-Smtp-Source: ABdhPJx0CF0XSmcRjIoO/yWcAnjTe7hR6m9+xUw2Ts97CHJGvHusZESHQqWarI1X5miU9uUBrAavWQ==
-X-Received: by 2002:a17:90a:dd45:: with SMTP id u5mr7845750pjv.15.1619670524616;
-        Wed, 28 Apr 2021 21:28:44 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:f701:2ca2:56ba:8e83])
-        by smtp.gmail.com with ESMTPSA id w124sm1069390pfb.73.2021.04.28.21.28.42
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=dYuU5G7Tok7W7dteeCw6ZMzwcEHLOIU+TkutgZ/lpVQ=;
+        b=a6d8i+iinGM+p99T5feeczTuwysLb+bK89ItjYBPpqf/anYqzRGhmbgatgzjqCYpnT
+         0H0GVHPIH2Wrn55IR4pqcM+DXBWqYDYda7Lr3GrmGQCf51UMmbKW6oKZwXyPrqJla0Cz
+         3t3I8ua9BYv88xIjKpaQ45G4Y1AUnFrVWQ20A0HLu26roTPlyEkdqH/2bIne73O1Ge3G
+         taD6gK6TAJG1O+sUywVnoo0v38F76sq9lnPXzq2M3KQ2/wcQ9iUUQ1WQiJuPC3Ldtbc1
+         rre9DiK2D3o23nyQog/uaJ65Q+5kpKuMu0ajobFLBSNkrB7KV8i0LG2qtz6oF6/jV2gw
+         01EA==
+X-Gm-Message-State: AOAM531SiiAXrjbblN3vqLSDpBChYgXjZTywObmJ7a9S+zVfrm7aqLaH
+        DvfBMjnZIvXVt2/3hHDuPLyVlA==
+X-Google-Smtp-Source: ABdhPJzbBoKq0CWXBqDbKoCDFpbY3JZr/Wxs75/h7bIUGoyXzgdWJ2Tu4Dj6t0ZUrWhVEID5QI3Sxg==
+X-Received: by 2002:a17:90b:78d:: with SMTP id l13mr7789191pjz.182.1619671398668;
+        Wed, 28 Apr 2021 21:43:18 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id gm17sm898788pjb.11.2021.04.28.21.43.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 21:28:44 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Sean Paul <sean@poorly.run>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v6 3/3] arm64: dts: mt8183: Add panel rotation
-Date:   Thu, 29 Apr 2021 12:28:34 +0800
-Message-Id: <20210429042834.1127456-3-hsinyi@chromium.org>
+        Wed, 28 Apr 2021 21:43:18 -0700 (PDT)
+Subject: [PATCH v2] RISC-V: Always define XIP_FIXUP
+Date:   Wed, 28 Apr 2021 14:45:12 -0700
+Message-Id: <20210428214512.551153-1-palmer@dabbelt.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-In-Reply-To: <20210429042834.1127456-1-hsinyi@chromium.org>
-References: <20210429042834.1127456-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+        Atish Patra <Atish.Patra@wdc.com>, akpm@linux-foundation.org,
+        rppt@kernel.org, Anup Patel <Anup.Patel@wdc.com>,
+        wangkefeng.wang@huawei.com, vitaly.wool@konsulko.com,
+        alex@ghiti.fr, greentime.hu@sifive.com, 0x7f454c46@gmail.com,
+        chenhuang5@huawei.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Guenter Roeck <linux@roeck-us.net>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:         linux-riscv@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-krane, kakadu, and kodama boards have a default panel rotation.
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+XIP depends on MMU, but XIP_FIXUP is used throughout the kernel in
+order to avoid excessive ifdefs.  This just makes sure to always define
+XIP_FIXUP, which will fix MMU=n builds.  XIP_OFFSET is used by assembly
+but XIP_FIXUP is C-only, so they're split.
+
+Fixes: 44c922572952 ("RISC-V: enable XIP")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Changes since v1:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index ff56bcfa3370..793cc9501337 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -263,6 +263,7 @@ panel: panel@0 {
- 		avee-supply = <&ppvarp_lcd>;
- 		pp1800-supply = <&pp1800_lcd>;
- 		backlight = <&backlight_lcd0>;
-+		rotation = <270>;
- 		port {
- 			panel_in: endpoint {
- 				remote-endpoint = <&dsi_out>;
+* Clean up the commit text.
+* Define XIP_OFFSET for assembly.
+---
+ arch/riscv/include/asm/pgtable.h | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 2f1384e14e31..9469f464e71a 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -73,18 +73,10 @@
+ #endif
+ #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+ 
++#endif
++
+ #ifdef CONFIG_XIP_KERNEL
+ #define XIP_OFFSET		SZ_8M
+-#define XIP_FIXUP(addr) ({							\
+-	uintptr_t __a = (uintptr_t)(addr);					\
+-	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
+-		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
+-		__a;								\
+-	})
+-#else
+-#define XIP_FIXUP(addr)		(addr)
+-#endif /* CONFIG_XIP_KERNEL */
+-
+ #endif
+ 
+ #ifndef __ASSEMBLY__
+@@ -101,6 +93,17 @@
+ #include <asm/pgtable-32.h>
+ #endif /* CONFIG_64BIT */
+ 
++#ifdef CONFIG_XIP_KERNEL
++#define XIP_FIXUP(addr) ({							\
++	uintptr_t __a = (uintptr_t)(addr);					\
++	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
++		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
++		__a;								\
++	})
++#else
++#define XIP_FIXUP(addr)		(addr)
++#endif /* CONFIG_XIP_KERNEL */
++
+ #ifdef CONFIG_MMU
+ /* Number of entries in the page global directory */
+ #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
