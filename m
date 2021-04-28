@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A8836D491
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFA236D495
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238092AbhD1JLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        id S238104AbhD1JMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1JLo (ORCPT
+        with ESMTP id S229643AbhD1JMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:11:44 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6914FC061574;
-        Wed, 28 Apr 2021 02:10:59 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id p12so44268682pgj.10;
-        Wed, 28 Apr 2021 02:10:59 -0700 (PDT)
+        Wed, 28 Apr 2021 05:12:42 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAF3C061574;
+        Wed, 28 Apr 2021 02:11:56 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id lp8so2386129pjb.1;
+        Wed, 28 Apr 2021 02:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=O85XFdsg7r8NEHhiBBrs/ubTFhw8JUhWaRtVRmWSkLs=;
-        b=PSDF6tnsZtA1yXC2axThlCFTdJdEObYbsDIuM9MCmt5thMC+wq/SQGNoj5zKdXNxRy
-         8bSFqX2Ic2mJ2Baipp49sIQFW8PcX3G1aJGq/wlrt2+KlIKvDQN8hOsy0yfb3+YyXbHn
-         Dsxf4xbcFSeKu3tolQlAE6UMrI96vkurG5Q1v21V3mnRgHS2d76f0bh0j33PCU3Bp2lc
-         YcQ5/CvfuXkc8LvWXhmTFFvFhl20rGi2dMu/8miAPrys97lpid5/KqzDiKEEeuv2h6Vl
-         7T27hSMFPotsZDCw9c/7caJ9jsStCHO8ZIEU6J/sECKDEgZvCA3flz8Doc6zbzgnzphs
-         qHbg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=iQOGR/2YT8/Z7BrRyEx1F0d6zkucK73DKDrSJaYPxMs=;
+        b=AnZhkOW2tSH7XfBDl4GA1Ao6XimYSjF7ybfvw62NWSwrQvNZyEBuyQiRO6vaK9eoLJ
+         hmmruyTB71wQDCJY8HSYHbs7O3oWkoXGL13x9peZCv8Bfy+rYtgiWFjx763AZ0927z46
+         g2dUsOyz/O76R8aGbnr1vGsXkVJwlLrFSCeJbQFxdp1qCaLvu5bi4bRJB9G9WQeSZ1CO
+         d1JAow+qIKwGrNoPxfG9bCkxdRyhUGDiqm33zTfJFkt0SqHqoiC0jnqIrmNzw4HV3/jN
+         D5NGYK+0ZeRtlzyD7ejLSjmIQFOK5J69vWAzTri/fwcrzp5sWkL4eqRv+We87Hfc+eyL
+         4VLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=O85XFdsg7r8NEHhiBBrs/ubTFhw8JUhWaRtVRmWSkLs=;
-        b=OO48EHTmTHCE2D5Hf+qxjmx5P7/jr9bjnllFnacJHrr8Z93jWwnrTmU2CwWUSfoj5c
-         A2RC++IOIYhZOl3kk/0qrDHT7LRRTf8110mE0bhSvQ81acn+L948LFzPKzoJ1pbVDfnp
-         1oAbzF6PeO1nkAjKQXPEy2WJhDs5rz9d7ZsEUCQLft+N6k/pZ91ns44MeRfbZZALlMb9
-         ErJ61nPBlMqSiLHmaf3BYwVkFpOZ81gP5aHdyy7ynfXLEeil9pU3MDavs8thXJxJyZQh
-         HZd/nZ0GOdPt/c8LrdtidKtZ+1j+Q7u1IDTIc/vJMv6Xg/cS612RJGiQdKHEjCJiMU6F
-         ax5A==
-X-Gm-Message-State: AOAM530VahwkrcJqMGD6FcLhqnT7zts5q8N/Yg0uoEbH1VvSBbqaKm13
-        f0Cv/9Kg22MEbBmfZXBZkUo=
-X-Google-Smtp-Source: ABdhPJy1lgD7dYF7XzFsJb2YQwv50F6TNHuKsbGtiX37gk3W4qraGlVjGBQoPnTPqk0N1GgTz7uoLA==
-X-Received: by 2002:a63:da55:: with SMTP id l21mr7223636pgj.188.1619601058856;
-        Wed, 28 Apr 2021 02:10:58 -0700 (PDT)
-Received: from localhost ([223.237.176.217])
-        by smtp.gmail.com with ESMTPSA id a20sm4731761pfk.46.2021.04.28.02.10.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 28 Apr 2021 02:10:58 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:40:50 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     dmitry.torokhov@gmail.com
-Cc:     shubhankarvk@gmail.com, colin.king@canonical.com,
-        dan.carpenter@oracle.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sanjanasrinidhi1810@gmail.com
-Subject: [PATCH] drivers: input: misc: ims-pcu.c: Fix usage of spaces
-Message-ID: <20210428091050.ryr7kxlxre7uhye4@kewl-virtual-machine>
+         :content-disposition;
+        bh=iQOGR/2YT8/Z7BrRyEx1F0d6zkucK73DKDrSJaYPxMs=;
+        b=LYeZV9IyRSjFSqpGay4LW6/aUExcoh9cy1/mpxZMEZ0F1kjsaamTTHA2VBZl1ivHKj
+         FHyhSHGvzDsP2qQzKt7MHfTgtRStiNUZtnc25eJXg8duVKyVuW7y/0JzGr8I8AIssPXq
+         Euq6ynrIu9Ds3I4/MFUDQ2gD0gygQeoalVaxCIITL8xbvZCEfMSqHW+h4d8iGtZOUo1n
+         mevWBh4tZP+0fihYfwQJ83KNzpU3yyOzFleQQWGN8YYL5D6uD2S7vmAANm2Il2C1LxGw
+         W+b89Rs2rsADp0cv/oUYXU/wJTQiNw7ZCacYoMsaD6pg02VOS9C8l4bzdEK0l2e5hXkV
+         UcFg==
+X-Gm-Message-State: AOAM532iivJrqoCrCKwY9zD3vUnD2ORj4qKmaWF+AN32EPTtdKP/8EQJ
+        B/1+H/qbQZ+AKrdocEGL67o=
+X-Google-Smtp-Source: ABdhPJxUV1Ev49YYlRiPWsk1AT7k99z/mOXMbC0yaPajecidZAO3bOgJOWRHOKJ3eOawQSpTf1L6JA==
+X-Received: by 2002:a17:90a:f283:: with SMTP id fs3mr3105955pjb.122.1619601116074;
+        Wed, 28 Apr 2021 02:11:56 -0700 (PDT)
+Received: from localhost ([115.99.221.24])
+        by smtp.gmail.com with ESMTPSA id g14sm4408848pjh.28.2021.04.28.02.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 02:11:55 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:41:50 +0530
+From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+To:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
+        james.morse@arm.com, rric@kernel.org
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Remove space before tabs
+Message-ID: <20210428091150.2c4qymxaxe2k4wqo@sanjana-VirtualBox>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unnecessary spaces have been replaced with tab space
-This is done to maintain code uniformity.
+Spaces are removed before tabs to maintain code uniformity.
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
 ---
- drivers/input/misc/ims-pcu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/edac/edac_pci.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/input/misc/ims-pcu.c b/drivers/input/misc/ims-pcu.c
-index 08b9b5cdb943..1e1b71166e12 100644
---- a/drivers/input/misc/ims-pcu.c
-+++ b/drivers/input/misc/ims-pcu.c
-@@ -647,8 +647,8 @@ static int __ims_pcu_execute_command(struct ims_pcu *pcu,
- #define IMS_PCU_BL_DATA_OFFSET		3
+diff --git a/drivers/edac/edac_pci.c b/drivers/edac/edac_pci.c
+index 48c844a72a27..46a68a70d30a 100644
+--- a/drivers/edac/edac_pci.c
++++ b/drivers/edac/edac_pci.c
+@@ -68,7 +68,7 @@ EXPORT_SYMBOL_GPL(edac_pci_free_ctl_info);
  
- static int __ims_pcu_execute_bl_command(struct ims_pcu *pcu,
--				        u8 command, const void *data, size_t len,
--				        u8 expected_response, int response_time)
-+					u8 command, const void *data, size_t len,
-+					u8 expected_response, int response_time)
+ /*
+  * find_edac_pci_by_dev()
+- * 	scans the edac_pci list for a specific 'struct device *'
++ *	scans the edac_pci list for a specific 'struct device *'
+  *
+  *	return NULL if not found, or return control struct pointer
+  */
+@@ -91,11 +91,11 @@ static struct edac_pci_ctl_info *find_edac_pci_by_dev(struct device *dev)
+ 
+ /*
+  * add_edac_pci_to_global_list
+- * 	Before calling this function, caller must assign a unique value to
+- * 	edac_dev->pci_idx.
+- * 	Return:
+- * 		0 on success
+- * 		1 on failure
++ *	Before calling this function, caller must assign a unique value to
++ *	edac_dev->pci_idx.
++ *	Return:
++ *		0 on success
++ *		1 on failure
+  */
+ static int add_edac_pci_to_global_list(struct edac_pci_ctl_info *pci)
  {
- 	int error;
- 
+@@ -161,7 +161,7 @@ static void del_edac_pci_from_global_list(struct edac_pci_ctl_info *pci)
+ /*
+  * edac_pci_workq_function()
+  *
+- * 	periodic function that performs the operation
++ *	periodic function that performs the operation
+  *	scheduled by a workq request, for a given PCI control struct
+  */
+ static void edac_pci_workq_function(struct work_struct *work_req)
 -- 
-2.17.1
+2.25.1
 
