@@ -2,92 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800BF36DF7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B4236DF82
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239033AbhD1TWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 15:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S243751AbhD1TYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhD1TWg (ORCPT
+        with ESMTP id S239116AbhD1TYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:22:36 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E1CC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:21:51 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id n2so96264642ejy.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:21:51 -0700 (PDT)
+        Wed, 28 Apr 2021 15:24:36 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126B7C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:23:51 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id z1so1535108qvo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 12:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bcj8vNPDk3FDhQ6clAy/SNYeBodSqFbI83mzXpZ8R+c=;
-        b=ZCAnPCt1x6Rv2yKO1xiKn4fveq4YaByb553kQuEjX5P6ohkXQk1exlrpNXu4/uaRDb
-         5DRR35ghiC2+rkENnSiAlnmVEImxq0wZEIO68vyDgnCm63JOFsbaDuGqdU6jaR/Xkfrb
-         4ZqLogKE07dRK6kPaYOed7VoQnd57iRDqZL8oQLX0KfM4JesY7NfJeDHyVc+Ii3cdCua
-         pTG7Ur7e05b70UK6IQo7rDf9h5SO88BiUCTpteQTLkHeR4C2IjWsaeAv6N6asbaqjviz
-         R7bPVm0yNoyQPjiIdyJ6oxSQJHzhKAMSE4e3Zaptxkw8sn2fbiw3X+R5+1Wbng4OpJbl
-         /+NQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JUAxi53YLYxSALiXtiLsnMW2CLLKIGzodtsYi+jAxQ4=;
+        b=IGjbPNUKRQu3oFtUEG6u9EyCTfywe/U0H+J9gcOR9TwCttcNkkV+WRMJWqiofkgXi0
+         CvcC2WuSZNIodAQre8WBjIPo4WkrbTxMg0HRdQioWsXpkb284LmKx4/9yzqv/SONhoOC
+         0t/ADrZSwdR3y1H3cBIGeySQT8MtmZxA6mvhczbhxeskTOlWJn9vkb2hM7U76V872OTm
+         XZwKRdjTZNCmepwU03QKLBU/RLWZZLRktbbCRxdLdQ5ilH3QI3w24daErEk4FvE/Awi8
+         lvAe4pR85pdbvFttyfHvdrhKMZ1q3RY5KAqslfNNDe89cL1RIuW44STpUCZJFSPUKmTC
+         jryA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bcj8vNPDk3FDhQ6clAy/SNYeBodSqFbI83mzXpZ8R+c=;
-        b=Lzf1FUvGglnhwEE/ZctNkywXQIe5seWA1njC31+bdqiByu9dArUnlyDU0uQGTONRj1
-         FuMQD8IgamedXv+6bmwnFmdPYLQXGw9BqWVgVIGzDCahgr01fnMD/c5418ZMwst4B+bE
-         2IJ6aM3k1hDDvucV2wCK1KphSfkcFZL+Fzqb4pKLG525QbLouKtfYrnZuKYhZWnyeQH6
-         FN3Jub0diN1mIgUw9/JxC4QL8At3t37OjPlwPdPZMTqpTE+f4TozGbUUviNdbshUdbbM
-         b5P9iayXDoFIQFE42oKCK7lkZzf8IyLFc25a+bYGN2DshvtRPA3S2xQpdnhV45cakCbU
-         /yfA==
-X-Gm-Message-State: AOAM532Us3iFXwgYrzPsD4qL7/hCm0zJZQuSgzTOL0c+fLXs1lmKHdlc
-        5aSmcgQtrdX0DL+kExTbN/9+wOV9dD0ysPThTmBV
-X-Google-Smtp-Source: ABdhPJzGpEOneJaVW4PIyyqelG6nvAwMa8da598rUXH8ftOLZAFN9iAIYRbhdJM5ZeOpO7jspXxQ/DgEv0RXPxSF8Bw=
-X-Received: by 2002:a17:906:b2cd:: with SMTP id cf13mr31564448ejb.419.1619637709726;
- Wed, 28 Apr 2021 12:21:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JUAxi53YLYxSALiXtiLsnMW2CLLKIGzodtsYi+jAxQ4=;
+        b=QtOYr3aJFvNrnH1Z7YsBXyEyPErHhPamnSYHJ18mxyrAqq0GordRC+a+LxS0n2Gay1
+         wzM/gWtZfeeZKvP6TpzeaZ0v6Ix6OMdJyOBWwqcKqDX4l8c1bbQ1GayF6zCsqbAJHTS3
+         XyA1l4nPpJsDRwxubZHJYsovcIUjijc+DwcUHMkEB1FxzXvIxLN/JBo1GmnwUZq/HBG7
+         /J8ipKvIMSDc/VnBejODEjKwxES2uFeREWpaJleDmL6Ctsp/NjU6aIknokm7ChGkkBsU
+         RfDJSMNh0gg/MnrfB1dgfEMe5sHT/IvDv0Y/XefNxM4CFzS1Hv465GZ2pBaHGtJf2ASz
+         83+g==
+X-Gm-Message-State: AOAM530Ik6xs9VgiRyM13J3tP1uxTAhOL1xx3u5DRNjp0JGMrjOMtHit
+        oqJMvNUL/TJzDQlNxi2M5iSuOuQ41SVwlYtV
+X-Google-Smtp-Source: ABdhPJwlRyhl8UB1WQj42h4IlzJWlZPJXrdj37LSHTReHnqRnbXVQ4iFZdJRYWqpopmHIucWGcN3Dw==
+X-Received: by 2002:ad4:4eaa:: with SMTP id ed10mr2850782qvb.22.1619637829659;
+        Wed, 28 Apr 2021 12:23:49 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id d204sm531847qke.3.2021.04.28.12.23.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 12:23:49 -0700 (PDT)
+Subject: Re: [thermal-next PATCH 2/2] thermal: qcom: tsens: simplify debugfs
+ init function
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210419012930.7727-1-ansuelsmth@gmail.com>
+ <20210419012930.7727-2-ansuelsmth@gmail.com>
+ <8e679407-07e7-244a-48fa-0d4d451d744d@linaro.org>
+ <YImuFixa0iWtsU3k@Ansuel-xps.localdomain>
+ <fe7dff6b-0079-7fba-4982-a3422add83b5@linaro.org>
+ <YIm1MdsOm754WtgD@Ansuel-xps.localdomain>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <fe9fb953-c98c-b53c-6020-3652e9f47e75@linaro.org>
+Date:   Wed, 28 Apr 2021 15:23:47 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210423205159.830854-1-morbo@google.com> <20210428172847.GC4022@arm.com>
- <20210428174010.GA4593@sirena.org.uk>
-In-Reply-To: <20210428174010.GA4593@sirena.org.uk>
-From:   Bill Wendling <morbo@google.com>
-Date:   Wed, 28 Apr 2021 12:21:38 -0700
-Message-ID: <CAGG=3QUATefn9AG+HvnCfEOBv3iRu4fzFwfmA7Djrh2CmP_weA@mail.gmail.com>
-Subject: Re: [PATCH] arm64/vdso: Discard .note.gnu.property sections in vDSO
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Daniel Kiss <Daniel.Kiss@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YIm1MdsOm754WtgD@Ansuel-xps.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 10:40 AM Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Apr 28, 2021 at 06:28:47PM +0100, Catalin Marinas wrote:
-> > On Fri, Apr 23, 2021 at 01:51:59PM -0700, Bill Wendling wrote:
->
-> > > Since the note.gnu.property section in the vDSO is not checked by the
-> > > dynamic linker, discard the .note.gnu.property sections in the vDSO.
->
-> > Can we not instead fix the linker script to preserve the
-> > .note.gnu.property, correctly aligned? It doesn't take much space and
-> > while we don't use it now, it has the BTI information about the binary.
->
-> > Cc'ing a few others who were involved in the BTI support.
->
-> Not just BTI, we also flag PAC usage in there too and could add other
-> extensions going forwards.  While the note isn't actively used by
-> anything right now due to the kernel mapping the vDSO prior to userspace
-> starting it is part of the ABI and something could end up wanting to use
-> it and getting confused if it's not there.  It would be much better to
-> fix the alignment issue.
 
-If there's only one of the 8-byte aligned sections guaranteed, we
-could place it first in the note. Otherwise, we will have to change
-the alignment of the note (or somehow merge multiple notes).
 
--bw
+On 4/28/21 3:19 PM, Ansuel Smith wrote:
+> On Wed, Apr 28, 2021 at 03:14:31PM -0400, Thara Gopinath wrote:
+>>
+>>
+>> On 4/28/21 2:48 PM, Ansuel Smith wrote:
+>>> On Wed, Apr 28, 2021 at 12:47:30PM -0400, Thara Gopinath wrote:
+>>>> Hi,
+>>>>
+>>>> Please include a cover letter next time describing the patch series.
+>>>>
+>>>
+>>> Yes sorry, I tought that for a small series (2 patch) it wasn't needed.
+>>>
+>>>> On 4/18/21 9:29 PM, Ansuel Smith wrote:
+>>>>> Simplify debugfs init function.
+>>>>> - Drop useless variables
+>>>>> - Add check for existing dev directory.
+>>>>> - Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
+>>>>>      incorrectly reported)
+>>>>>
+>>>>> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+>>>>> ---
+>>>>>     drivers/thermal/qcom/tsens.c | 16 +++++++---------
+>>>>>     1 file changed, 7 insertions(+), 9 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+>>>>> index f9d50a67e..b086d1496 100644
+>>>>> --- a/drivers/thermal/qcom/tsens.c
+>>>>> +++ b/drivers/thermal/qcom/tsens.c
+>>>>> @@ -692,7 +692,7 @@ static int dbg_version_show(struct seq_file *s, void *data)
+>>>>>     			return ret;
+>>>>>     		seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
+>>>>>     	} else {
+>>>>> -		seq_puts(s, "0.1.0\n");
+>>>>> +		seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
+>>>>>     	}
+>>>>>     	return 0;
+>>>>> @@ -704,21 +704,19 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
+>>>>>     static void tsens_debug_init(struct platform_device *pdev)
+>>>>>     {
+>>>>>     	struct tsens_priv *priv = platform_get_drvdata(pdev);
+>>>>> -	struct dentry *root, *file;
+>>>>> -	root = debugfs_lookup("tsens", NULL);
+>>>>> -	if (!root)
+>>>>> +	priv->debug_root = debugfs_lookup("tsens", NULL);
+>>>>> +	if (!priv->debug_root)
+>>>>>     		priv->debug_root = debugfs_create_dir("tsens", NULL);
+>>>>> -	else
+>>>>> -		priv->debug_root = root;
+>>>>> -	file = debugfs_lookup("version", priv->debug_root);
+>>>>> -	if (!file)
+>>>>> +	if (!debugfs_lookup("version", priv->debug_root))
+>>>>>     		debugfs_create_file("version", 0444, priv->debug_root,
+>>>>>     				    pdev, &dbg_version_fops);
+>>>>>     	/* A directory for each instance of the TSENS IP */
+>>>>> -	priv->debug = debugfs_create_dir(dev_name(&pdev->dev), priv->debug_root);
+>>>>
+>>>> Unconditionally creating priv->debug here is correct. The below if
+>>>> (!priv->debug) will never be true because as per your patch 1, we call
+>>>> tsens_debug_init once per instance of tsens.
+>>>>
+>>>
+>>> You are right, will send a v2 if everything else is good. What do you
+>>> think?
+>>
+>> I have not tested this yet. The clean up itself looks okay to me.
+>> My question is have you tried this with 8960 tsens ? That is the only
+>> version of tsens that does not use init_common and hence looks to me that a
+>> debug interface is not created. I don't think this should be a problem
+>> though. So if you can fix the above, it is a go ahead from me.
+>>
+> 
+> Recent commits should have switched 8960 to init_common. Actually I
+> pushed this cause while testing 8960 I notice the warning about
+> double debugfs. Anyway thx for the review. Will send v2 ASAP.
+
+Sounds good. Thanks.
+
+> 
+>>
+>> -- 
+>> Warm Regards
+>> Thara
+
+-- 
+Warm Regards
+Thara
