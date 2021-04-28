@@ -2,153 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7DC36D3D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5842936D3CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237204AbhD1IU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:20:29 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:39094 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237012AbhD1IU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:20:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1619597982; x=1651133982;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=j9QWlAsK1jnUHugihgPpWh5yTZzPwnYSGQNZKz7LMek=;
-  b=B0G9aWgpcXbc/bt2hMA2eewi3S8ZhBPwdgphMLlSU0DmygEwCj2R1Pcw
-   Z60cFyfYLW4Cd80uLQdeo3eExGG79KJ5hRx3b1nTbhsR+Qx1h/50Nj9bD
-   3igZCPjE0GLgkb7bN04xnUJctiJrRx5uHoNGfJZdvYTDV2W9ycLA7d5cq
-   s=;
-X-IronPort-AV: E=Sophos;i="5.82,257,1613433600"; 
-   d="scan'208";a="104432491"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 28 Apr 2021 08:18:42 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 2EBAEA2242;
-        Wed, 28 Apr 2021 08:18:40 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 28 Apr 2021 08:18:39 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.209) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 28 Apr 2021 08:18:34 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <zenczykowski@gmail.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
-        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Date:   Wed, 28 Apr 2021 17:18:30 +0900
-Message-ID: <20210428081830.2292-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAHo-Ooz252rnWZ=9k6nO0vjGKFkQDoaLxZ1jxiTomtckq9DbYA@mail.gmail.com>
-References: <CAHo-Ooz252rnWZ=9k6nO0vjGKFkQDoaLxZ1jxiTomtckq9DbYA@mail.gmail.com>
+        id S237165AbhD1IUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:20:00 -0400
+Received: from 8bytes.org ([81.169.241.247]:36524 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237166AbhD1IT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:19:59 -0400
+Received: from cap.home.8bytes.org (p5b0069de.dip0.t-ipconnect.de [91.0.105.222])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 6287C295;
+        Wed, 28 Apr 2021 10:18:59 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>, rjw@rjwysocki.net,
+        Len Brown <lenb@kernel.org>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Subject: [RFC PATCH] PCI/APCI: Move acpi_pci_osc_support() check to negotiation phase
+Date:   Wed, 28 Apr 2021 10:18:57 +0200
+Message-Id: <20210428081857.10322-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.209]
-X-ClientProxiedBy: EX13D23UWA001.ant.amazon.com (10.43.160.68) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Maciej Żenczykowski <zenczykowski@gmail.com>
-Date:   Tue, 27 Apr 2021 15:00:12 -0700
-> On Tue, Apr 27, 2021 at 2:55 PM Maciej Żenczykowski
-> <zenczykowski@gmail.com> wrote:
-> > On Mon, Apr 26, 2021 at 8:47 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > > accept connections evenly. However, there is a defect in the current
-> > > implementation [1]. When a SYN packet is received, the connection is tied
-> > > to a listening socket. Accordingly, when the listener is closed, in-flight
-> > > requests during the three-way handshake and child sockets in the accept
-> > > queue are dropped even if other listeners on the same port could accept
-> > > such connections.
-> > >
-> > > This situation can happen when various server management tools restart
-> > > server (such as nginx) processes. For instance, when we change nginx
-> > > configurations and restart it, it spins up new workers that respect the new
-> > > configuration and closes all listeners on the old workers, resulting in the
-> > > in-flight ACK of 3WHS is responded by RST.
-> >
-> > This is IMHO a userspace bug.
+From: Joerg Roedel <jroedel@suse.de>
 
-I do not think so.
+The acpi_pci_osc_support() does an _OSC query with _OSC supported set
+to what the OS supports but a zero _OSC control value. This is
+problematic on some platforms where the firmware allows to configure
+whether DPC is under OS or Firmware control.
 
-If the kernel selected another listener for incoming connections, they
-could be accept()ed. There is no room for usersapce to change the behaviour
-without an in-kernel tool, eBPF. A feature that can cause failure
-stochastically due to kernel behaviour cannot be a userspace bug.
+When DPC is configured to be under OS control these platforms will
+issue a warning in the firmware log that the OS does not support DPC.
 
+Avoid an _OSC query with _OSC control set to zero by moving the
+supported check into the acpi_pci_osc_control_set() path. This is
+still early enough to fail as nothing before that depends on the
+results of acpi_pci_osc_support().
 
-> >
-> > You should never be closing or creating new SO_REUSEPORT sockets on a
-> > running server (listening port).
-> >
-> > There's at least 3 ways to accomplish this.
-> >
-> > One involves a shim parent process that takes care of creating the
-> > sockets (without close-on-exec),
-> > then fork-exec's the actual server process[es] (which will use the
-> > already opened listening fds),
-> > and can thus re-fork-exec a new child while using the same set of sockets.
-> > Here the old server can terminate before the new one starts.
-> >
-> > (one could even envision systemd being modified to support this...)
-> >
-> > The second involves the old running server fork-execing the new server
-> > and handing off the non-CLOEXEC sockets that way.
-> 
-> (this doesn't even need to be fork-exec -- can just be exec -- and is
-> potentially easier)
-> 
-> > The third approach involves unix fd passing of sockets to hand off the
-> > listening sockets from the old process/thread(s) to the new
-> > process/thread(s).  Once handed off the old server can stop accept'ing
-> > on the listening sockets and close them (the real copies are in the
-> > child), finish processing any still active connections (or time them
-> 
-> (this doesn't actually need to be a child, in can be an entirely new
-> parallel instance of the server,
-> potentially running in an entirely new container/cgroup setup, though
-> in the same network namespace)
-> 
-> > out) and terminate.
-> >
-> > Either way you're never creating new SO_REUSEPORT sockets (dup doesn't
-> > count), nor closing the final copy of a given socket.
+As a result the acpi_pci_osc_support() function can be removed and
+acpi_pci_query_osc() be simplified because it no longer called with a
+NULL pointer for *control.
 
-Indeed each approach can be an option, but it makes application more
-complicated. Also what if the process holding the listener fd died, there
-could be down time.
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ drivers/acpi/pci_root.c | 50 ++++++++++++++++-------------------------
+ 1 file changed, 19 insertions(+), 31 deletions(-)
 
-I do not think every approach works well in everywhere for everyone.
+diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+index dcd593766a64..530ecf4970b1 100644
+--- a/drivers/acpi/pci_root.c
++++ b/drivers/acpi/pci_root.c
+@@ -199,16 +199,11 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
+ 
+ 	support &= OSC_PCI_SUPPORT_MASKS;
+ 	support |= root->osc_support_set;
++	*control &= OSC_PCI_CONTROL_MASKS;
+ 
+ 	capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
+ 	capbuf[OSC_SUPPORT_DWORD] = support;
+-	if (control) {
+-		*control &= OSC_PCI_CONTROL_MASKS;
+-		capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
+-	} else {
+-		/* Run _OSC query only with existing controls. */
+-		capbuf[OSC_CONTROL_DWORD] = root->osc_control_set;
+-	}
++	capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
+ 
+ 	status = acpi_pci_run_osc(root->device->handle, capbuf, &result);
+ 	if (ACPI_SUCCESS(status)) {
+@@ -219,11 +214,6 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
+ 	return status;
+ }
+ 
+-static acpi_status acpi_pci_osc_support(struct acpi_pci_root *root, u32 flags)
+-{
+-	return acpi_pci_query_osc(root, flags, NULL);
+-}
+-
+ struct acpi_pci_root *acpi_pci_find_root(acpi_handle handle)
+ {
+ 	struct acpi_pci_root *root;
+@@ -346,7 +336,8 @@ EXPORT_SYMBOL_GPL(acpi_get_pci_dev);
+  * _OSC bits the BIOS has granted control of, but its contents are meaningless
+  * on failure.
+  **/
+-static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 req)
++static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32
++					    *mask, u32 req, u32 support)
+ {
+ 	struct acpi_pci_root *root;
+ 	acpi_status status;
+@@ -370,7 +361,7 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
+ 
+ 	/* Need to check the available controls bits before requesting them. */
+ 	while (*mask) {
+-		status = acpi_pci_query_osc(root, root->osc_support_set, mask);
++		status = acpi_pci_query_osc(root, support, mask);
+ 		if (ACPI_FAILURE(status))
+ 			return status;
+ 		if (ctrl == *mask)
+@@ -433,18 +424,6 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+ 		support |= OSC_PCI_EDR_SUPPORT;
+ 
+ 	decode_osc_support(root, "OS supports", support);
+-	status = acpi_pci_osc_support(root, support);
+-	if (ACPI_FAILURE(status)) {
+-		*no_aspm = 1;
+-
+-		/* _OSC is optional for PCI host bridges */
+-		if ((status == AE_NOT_FOUND) && !is_pcie)
+-			return;
+-
+-		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
+-			 acpi_format_exception(status));
+-		return;
+-	}
+ 
+ 	if (pcie_ports_disabled) {
+ 		dev_info(&device->dev, "PCIe port services disabled; not requesting _OSC control\n");
+@@ -483,7 +462,8 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+ 
+ 	requested = control;
+ 	status = acpi_pci_osc_control_set(handle, &control,
+-					  OSC_PCI_EXPRESS_CAPABILITY_CONTROL);
++					  OSC_PCI_EXPRESS_CAPABILITY_CONTROL,
++					  support);
+ 	if (ACPI_SUCCESS(status)) {
+ 		decode_osc_control(root, "OS now controls", control);
+ 		if (acpi_gbl_FADT.boot_flags & ACPI_FADT_NO_ASPM) {
+@@ -496,10 +476,8 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+ 			*no_aspm = 1;
+ 		}
+ 	} else {
+-		decode_osc_control(root, "OS requested", requested);
+-		decode_osc_control(root, "platform willing to grant", control);
+-		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
+-			acpi_format_exception(status));
++		/* Platform wants to control PCIe features */
++		root->osc_support_set = 0;
+ 
+ 		/*
+ 		 * We want to disable ASPM here, but aspm_disabled
+@@ -509,6 +487,16 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+ 		 * root scan.
+ 		 */
+ 		*no_aspm = 1;
++
++		/* _OSC is optional for PCI host bridges */
++		if ((status == AE_NOT_FOUND) && !is_pcie)
++			return;
++
++		decode_osc_control(root, "OS requested", requested);
++		decode_osc_control(root, "platform willing to grant", control);
++		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
++			acpi_format_exception(status));
++
+ 	}
+ }
+ 
+-- 
+2.31.1
 
-
-> >
-> > This is basically the same thing that was needed not to lose incoming
-> > connections in a pre-SO_REUSEPORT world.
-> > (no SO_REUSEADDR by itself doesn't prevent an incoming SYN from
-> > triggering a RST during the server restart, it just makes the window
-> > when RSTs happen shorter)
-
-SO_REUSEPORT makes each process/listener independent, and we need not pass
-fds. So, it makes application much simpler. Even with SO_REUSEPORT, one
-listener might crash, but it is more tolerant than losing all connections
-at once.
-
-To enjoy such merits, isn't it natural to improve the existing feature in
-this post-SO_REUSEPORT world?
-
-
-> >
-> > This was from day one (I reported to Tom and worked with him on the
-> > very initial distribution function) envisioned to work like this,
-> > and we (Google) have always used it with unix fd handoff to support
-> > transparent restart.
