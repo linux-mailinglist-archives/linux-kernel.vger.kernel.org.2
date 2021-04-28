@@ -2,129 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EE236DBBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C799736DBCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239793AbhD1PeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:34:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:56366 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239791AbhD1PeU (ORCPT
+        id S240033AbhD1PgX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Apr 2021 11:36:23 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2944 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231169AbhD1PgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:34:20 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-90-SNanzEVoNu2IAa9tKQxnuw-1; Wed, 28 Apr 2021 16:33:32 +0100
-X-MC-Unique: SNanzEVoNu2IAa9tKQxnuw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 28 Apr 2021 16:33:29 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 28 Apr 2021 16:33:29 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Lutomirski' <luto@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>
-CC:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>,
+        Wed, 28 Apr 2021 11:36:16 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FVjHL5d7mz6wkLW;
+        Wed, 28 Apr 2021 23:29:50 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Apr 2021 17:35:28 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Wed, 28 Apr 2021 17:35:28 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "Weijiang Yang" <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        "Haitao Huang" <haitao.huang@intel.com>
-Subject: RE: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch
- Tracking
-Thread-Topic: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch
- Tracking
-Thread-Index: AQHXO6ae1Nsozyj+DkCGokhshY0p/arKAkvwgAAI5giAAAIBgA==
-Date:   Wed, 28 Apr 2021 15:33:29 +0000
-Message-ID: <0c6e1c922bc54326b1121194759565f5@AcuMS.aculab.com>
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com>
- <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
- <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
- <CAMe9rOp7FauoqQ0vx+ZVPGOE9+ABspheuGLc++Chj_goE5HvWA@mail.gmail.com>
- <CALCETrVHUP9=2kX3aJJugcagsf26W0sLEPsDvVCZNnBmbWrOLQ@mail.gmail.com>
-In-Reply-To: <CALCETrVHUP9=2kX3aJJugcagsf26W0sLEPsDvVCZNnBmbWrOLQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: RE: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+Thread-Topic: [PATCH v4 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+Thread-Index: AQHXEdMA2oN9D131skWV9JJ8Z5VEUarKXeAg
+Date:   Wed, 28 Apr 2021 15:35:28 +0000
+Message-ID: <8e62ae3f8cf94c798fc1b7ffd69cbdc4@huawei.com>
+References: <20210305151923.29039-1-roberto.sassu@huawei.com>
+ <20210305151923.29039-5-roberto.sassu@huawei.com>
+In-Reply-To: <20210305151923.29039-5-roberto.sassu@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW5keSBMdXRvbWlyc2tpDQo+IFNlbnQ6IDI4IEFwcmlsIDIwMjEgMTY6MTUNCj4gDQo+
-IE9uIFdlZCwgQXByIDI4LCAyMDIxIGF0IDc6NTcgQU0gSC5KLiBMdSA8aGpsLnRvb2xzQGdtYWls
-LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBPbiBXZWQsIEFwciAyOCwgMjAyMSBhdCA3OjUyIEFNIEFu
-ZHkgTHV0b21pcnNraSA8bHV0b0BrZXJuZWwub3JnPiB3cm90ZToNCj4gPiA+DQo+ID4gPiBPbiBX
-ZWQsIEFwciAyOCwgMjAyMSBhdCA3OjQ4IEFNIERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0QGFj
-dWxhYi5jb20+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBGcm9tOiBZdS1jaGVuZyBZdQ0KPiA+
-ID4gPiA+IFNlbnQ6IDI3IEFwcmlsIDIwMjEgMjE6NDcNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IENv
-bnRyb2wtZmxvdyBFbmZvcmNlbWVudCAoQ0VUKSBpcyBhIG5ldyBJbnRlbCBwcm9jZXNzb3IgZmVh
-dHVyZSB0aGF0IGJsb2Nrcw0KPiA+ID4gPiA+IHJldHVybi9qdW1wLW9yaWVudGVkIHByb2dyYW1t
-aW5nIGF0dGFja3MuICBEZXRhaWxzIGFyZSBpbiAiSW50ZWwgNjQgYW5kDQo+ID4gPiA+ID4gSUEt
-MzIgQXJjaGl0ZWN0dXJlcyBTb2Z0d2FyZSBEZXZlbG9wZXIncyBNYW51YWwiIFsxXS4NCj4gPiA+
-ID4gLi4uDQo+ID4gPiA+DQo+ID4gPiA+IERvZXMgdGhpcyBmZWF0dXJlIHJlcXVpcmUgdGhhdCAn
-YmluYXJ5IGJsb2JzJyBmb3Igb3V0IG9mIHRyZWUgZHJpdmVycw0KPiA+ID4gPiBiZSBjb21waWxl
-ZCBieSBhIHZlcnNpb24gb2YgZ2NjIHRoYXQgYWRkcyB0aGUgRU5EQlJBIGluc3RydWN0aW9ucz8N
-Cj4gPiA+ID4NCj4gPiA+ID4gSWYgZW5hYmxlZCBmb3IgdXNlcnNwYWNlLCB3aGF0IGhhcHBlbnMg
-aWYgYW4gb2xkIC5zbyBpcyBkeW5hbWljYWxseQ0KPiA+ID4gPiBsb2FkZWQ/DQo+ID4NCj4gPiBD
-RVQgd2lsbCBiZSBkaXNhYmxlZCBieSBsZC5zbyBpbiB0aGlzIGNhc2UuDQo+IA0KPiBXaGF0IGlm
-IGEgcHJvZ3JhbSBzdGFydHMgYSB0aHJlYWQgYW5kIHRoZW4gZGxvcGVucyBhIGxlZ2FjeSAuc28/
-DQoNCk9yIGhhcyBzaGFkb3cgc3RhY2sgZW5hYmxlZCBhbmQgb3BlbnMgYSAuc28gdGhhdCB1c2Vz
-IHJldHBvbGluZXM/DQoNCj4gPiA+ID4gT3IgZG8gYWxsIHVzZXJzcGFjZSBwcm9ncmFtcyBhbmQg
-bGlicmFyaWVzIGhhdmUgdG8gaGF2ZSBiZWVuIGNvbXBpbGVkDQo+ID4gPiA+IHdpdGggdGhlIEVO
-REJSQSBpbnN0cnVjdGlvbnM/DQo+ID4NCj4gPiBDb3JyZWN0LiAgbGQgYW5kIGxkLnNvIGNoZWNr
-IHRoaXMuDQo+ID4NCj4gPiA+IElmIHlvdSBiZWxpZXZlIHRoYXQgdGhlIHVzZXJzcGFjZSB0b29s
-aW5nIGZvciB0aGUgbGVnYWN5IElCVCB0YWJsZQ0KPiA+ID4gYWN0dWFsbHkgd29ya3MsIHRoZW4g
-aXQgc2hvdWxkIGp1c3Qgd29yay4gIFl1LWNoZW5nLCBldGM6IGhvdyB3ZWxsDQo+ID4gPiB0ZXN0
-ZWQgaXMgaXQ/DQo+ID4gPg0KPiA+DQo+ID4gTGVnYWN5IElCVCBiaXRtYXAgaXNuJ3QgdW51c2Vk
-IHNpbmNlIGl0IGRvZXNuJ3QgY292ZXIgbGVnYWN5IGNvZGVzDQo+ID4gZ2VuZXJhdGVkIGJ5IGxl
-Z2FjeSBKSVRzLg0KPiA+DQo+IA0KPiBIb3cgZG9lcyBsZC5zbyBkZWNpZGUgd2hldGhlciBhIGxl
-Z2FjeSBKSVQgaXMgaW4gdXNlPw0KDQpXaGF0IGlmIHlvdXIgbWFsd2FyZSBqdXN0IHByZWNlZGVz
-IGl0cyAnanVtcCBpbnRvIHRoZSBtaWRkbGUgb2YgYSBmdW5jdGlvbicNCndpdGggYSAlZHMgc2Vn
-bWVudCBvdmVycmlkZT8NCg0KSSBtYXkgaGF2ZSBhIHJlYWwgcHJvYmxlbSBoZXJlLg0KV2UgY3Vy
-cmVudGx5IHJlbGVhc2UgcHJvZ3JhbS9saWJyYXJ5IGJpbmFyaWVzIHRoYXQgcnVuIG9uIExpbnV4
-DQpkaXN0cmlidXRpb25zIHRoYXQgZ28gYmFjayBhcyBmYXIgYXMgUkhFTDYgKDIuNi4zMiBrZXJu
-ZWwgZXJhKS4NClRvIGRvIHRoaXMgZXZlcnl0aGluZyBpcyBjb21waWxlZCBvbiBhIHVzZXJzcGFj
-ZSBvZiB0aGUgc2FtZSB2aW50YWdlLg0KSSdtIG5vdCBhdCBhbGwgc3VyZSBhIG5ldyBlbm91Z2gg
-Z2NjIHRvIGdlbmVyYXRlIHRoZSBFTkRCUjY0IGluc3RydWN0aW9ucw0Kd2lsbCBydW4gb24gdGhl
-IHJlbGV2YW50IHN5c3RlbSAtIGFuZCBtYXkgYmFyZiBvbiB0aGUgc3lzdGVtIGhlYWRlcnMNCmV2
-ZW4gaWYgd2UgZ290IGl0IHRvIHJ1bi4NCkkgcmVhbGx5IGRvbid0IHdhbnQgdG8gaGF2ZSB0byBi
-dWlsZCBtdWx0aXBsZSBjb3BpZXMgb2YgZXZlcnl0aGluZy4NCg0KCURhdmlkDQoNCi0NClJlZ2lz
-dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
-S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+> From: Roberto Sassu
+> Sent: Friday, March 5, 2021 4:19 PM
+> ima_inode_setxattr() and ima_inode_removexattr() hooks are called before
+> an
+> operation is performed. Thus, ima_reset_appraise_flags() should not be
+> called there, as flags might be unnecessarily reset if the operation is
+> denied.
+> 
+> This patch introduces the post hooks ima_inode_post_setxattr() and
+> ima_inode_post_removexattr(), and adds the call to
+> ima_reset_appraise_flags() in the new functions.
+> 
+> Cc: Casey Schaufler <casey@schaufler-ca.com>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  fs/xattr.c                            |  2 ++
+>  include/linux/ima.h                   | 18 ++++++++++++++++++
+>  security/integrity/ima/ima_appraise.c | 25 ++++++++++++++++++++++---
+>  security/security.c                   |  1 +
+>  4 files changed, 43 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/xattr.c b/fs/xattr.c
+> index b3444e06cded..81847f132d26 100644
+> --- a/fs/xattr.c
+> +++ b/fs/xattr.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/namei.h>
+>  #include <linux/security.h>
+>  #include <linux/evm.h>
+> +#include <linux/ima.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/export.h>
+>  #include <linux/fsnotify.h>
+> @@ -502,6 +503,7 @@ __vfs_removexattr_locked(struct user_namespace
+> *mnt_userns,
+> 
+>  	if (!error) {
+>  		fsnotify_xattr(dentry);
+> +		ima_inode_post_removexattr(dentry, name);
+>  		evm_inode_post_removexattr(dentry, name);
+>  	}
+> 
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 61d5723ec303..5e059da43857 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -171,7 +171,13 @@ extern void ima_inode_post_setattr(struct
+> user_namespace *mnt_userns,
+>  				   struct dentry *dentry);
+>  extern int ima_inode_setxattr(struct dentry *dentry, const char *xattr_name,
+>  		       const void *xattr_value, size_t xattr_value_len);
+> +extern void ima_inode_post_setxattr(struct dentry *dentry,
+> +				    const char *xattr_name,
+> +				    const void *xattr_value,
+> +				    size_t xattr_value_len);
+>  extern int ima_inode_removexattr(struct dentry *dentry, const char
+> *xattr_name);
+> +extern void ima_inode_post_removexattr(struct dentry *dentry,
+> +				       const char *xattr_name);
+>  #else
+>  static inline bool is_ima_appraise_enabled(void)
+>  {
+> @@ -192,11 +198,23 @@ static inline int ima_inode_setxattr(struct dentry
+> *dentry,
+>  	return 0;
+>  }
+> 
+> +static inline void ima_inode_post_setxattr(struct dentry *dentry,
+> +					   const char *xattr_name,
+> +					   const void *xattr_value,
+> +					   size_t xattr_value_len)
+> +{
+> +}
+> +
+>  static inline int ima_inode_removexattr(struct dentry *dentry,
+>  					const char *xattr_name)
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline void ima_inode_post_removexattr(struct dentry *dentry,
+> +					      const char *xattr_name)
+> +{
+> +}
+>  #endif /* CONFIG_IMA_APPRAISE */
+> 
+>  #if defined(CONFIG_IMA_APPRAISE) &&
+> defined(CONFIG_INTEGRITY_TRUSTED_KEYRING)
+> diff --git a/security/integrity/ima/ima_appraise.c
+> b/security/integrity/ima/ima_appraise.c
+> index 565e33ff19d0..1f029e4c8d7f 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -577,21 +577,40 @@ int ima_inode_setxattr(struct dentry *dentry, const
+> char *xattr_name,
+>  	if (result == 1) {
+>  		if (!xattr_value_len || (xvalue->type >= IMA_XATTR_LAST))
+>  			return -EINVAL;
+> -		ima_reset_appraise_flags(d_backing_inode(dentry),
+> -			xvalue->type == EVM_IMA_XATTR_DIGSIG);
+>  		result = 0;
+>  	}
+>  	return result;
+>  }
+> 
+> +void ima_inode_post_setxattr(struct dentry *dentry, const char
+> *xattr_name,
+> +			     const void *xattr_value, size_t xattr_value_len)
+> +{
+> +	const struct evm_ima_xattr_data *xvalue = xattr_value;
+> +	int result;
+> +
+> +	result = ima_protect_xattr(dentry, xattr_name, xattr_value,
+> +				   xattr_value_len);
+> +	if (result == 1)
+> +		ima_reset_appraise_flags(d_backing_inode(dentry),
+
+I found an issue in this patch.
+
+Moving ima_reset_appraise_flags() to the post hook causes this
+function to be executed also when __vfs_setxattr_noperm() is
+called.
+
+The problem is that at the end of a write IMA calls
+ima_collect_measurement() to recalculate the file digest and
+update security.ima. ima_collect_measurement() sets
+IMA_COLLECTED.
+
+However, after that __vfs_setxattr_noperm() causes
+IMA_COLLECTED to be reset, and to unnecessarily recalculate
+the file digest. This wouldn't happen if ima_reset_appraise_flags()
+is in the pre hook.
+
+I solved by replacing:
+	iint->flags &= ~IMA_DONE_MASK;
+with:
+	iint->flags &= ~(IMA_DONE_MASK & ~IMA_COLLECTED);
+
+just when the IMA_CHANGE_XATTR bit is set. It should
+not be a problem since setting an xattr does not influence
+the file content.
+
+Mimi, what do you think?
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> +			xvalue->type == EVM_IMA_XATTR_DIGSIG);
+> +}
+> +
+>  int ima_inode_removexattr(struct dentry *dentry, const char *xattr_name)
+>  {
+>  	int result;
+> 
+>  	result = ima_protect_xattr(dentry, xattr_name, NULL, 0);
+>  	if (result == 1) {
+> -		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
+>  		result = 0;
+>  	}
+>  	return result;
+>  }
+> +
+> +void ima_inode_post_removexattr(struct dentry *dentry, const char
+> *xattr_name)
+> +{
+> +	int result;
+> +
+> +	result = ima_protect_xattr(dentry, xattr_name, NULL, 0);
+> +	if (result == 1)
+> +		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
+> +}
+> diff --git a/security/security.c b/security/security.c
+> index 5ac96b16f8fa..efb1f874dc41 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1319,6 +1319,7 @@ void security_inode_post_setxattr(struct dentry
+> *dentry, const char *name,
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return;
+>  	call_void_hook(inode_post_setxattr, dentry, name, value, size, flags);
+> +	ima_inode_post_setxattr(dentry, name, value, size);
+>  	evm_inode_post_setxattr(dentry, name, value, size);
+>  }
+> 
+> --
+> 2.26.2
 
