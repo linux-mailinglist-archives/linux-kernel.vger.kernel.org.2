@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79FA36D68D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B2536D68F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239405AbhD1LeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239295AbhD1LeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:34:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A9E61429;
-        Wed, 28 Apr 2021 11:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619609613;
-        bh=MXD7bLe+1IwlfuG1c++mqw3R4Z2zJgsWia+Av/A6IGY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m5ZL3xwke5a6kx2XwKd77P3VmRZi7I/Rqd+JeXPvBU/LgmbGQ+yk18TxkDXKdQTIF
-         zy/yl9m7RMEp+1xGq/R6AlFPzf1Gx9wytD6gAF3Figj6XJCppiWY4WXwf1Bd3UEUys
-         wMlMKtEJzOe366QgZbdJM+FClLXRjFTu1diuFS8/VhPqUN2ZpC6tnXUF+HM3bWXvZW
-         emCH2zKLZbAuEOn0NojDgRatYL3+nj/igNHVgUp0sjLsgqmlxyauQgzpVdyNHo6Cpy
-         x5GqEmyYDfvkGt/9jMRgYNbdulq14jDrB7iSfR8dkK9uy1jLtULp8ZGDi5zDsXNCJF
-         bfr3YSutSBYfQ==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 5/5] habanalabs: give FW a grace time for configuring iATU
-Date:   Wed, 28 Apr 2021 14:33:23 +0300
-Message-Id: <20210428113323.17222-5-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210428113323.17222-1-ogabbay@kernel.org>
-References: <20210428113323.17222-1-ogabbay@kernel.org>
+        id S239448AbhD1Lek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238384AbhD1Leg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 07:34:36 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2109C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:33:51 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i24so14183371edy.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 04:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SRL7LAkBzsLUShMKaYemtSvs+IVP4TH25c50jQgyGbc=;
+        b=H22f8cenNNUgyJ6uU1FRqxyvANwieddNRC0SaSE9AWvvRIu/qY9xgul+uvp/EZ1jab
+         6OxfuFXHEtQvscV9yZTCaK3gyXP3Us4OXlyRDmnPwCPvj3+jonhU78rdVHGuSY78FyIH
+         icOWJ0nSmxenTalBCqaBaft4/j3eLuqK44WiMwPcIgCpX7qXVAhO8q8xkGk2vu1PjqJU
+         Jl7YRdTUbtnxjLgAKXfYt7EuvXU/+qImrFu32lNNe4HYl/BtGIsPibtE5lU2Wc1EhTBA
+         dJcgQ+XtQaHnsCPGbzk6N0fesutFyOHwAOUOhZqnt4WjgRPp1citkMhU5TgFHeNtXyFo
+         2FrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SRL7LAkBzsLUShMKaYemtSvs+IVP4TH25c50jQgyGbc=;
+        b=K4K7cMY6Z9iH2lc7zXIgwF8nO5xs2lB/TRcx58Vi6RZRXvqU6Lt7iiH/RYoA1mrZEI
+         dYMbK4ADMQzTLZ/btn/luHIWfoYSgETScbRZFVDAGk9ITnTI/CYcvKLrgBYyqA3YvZtT
+         fTm+izAMF0bK+IseFO6rWsYex3qtqwSimuYZHBm/n1bFDJmF0YcQEVKWXTZODFN/QmTk
+         51T/VoTK52SFe+RFhp8wufifsEexq+e/YjKkQRC/j0qnkrMl37LHi0G8qUY9SYECKMNW
+         HVHa1kpYAwJnKhfkWVATFMqb3VVUi4QYKcUuStVGB9eFZp6OpriDx9gdq6D4iQv3ZfA3
+         BYMQ==
+X-Gm-Message-State: AOAM532dY0dch72voUE6ZtUX656amO+kM3ABuPanEXkd4HaHegc/XA4j
+        bgR2/HkQX6nIgprZh0Ef8wQ=
+X-Google-Smtp-Source: ABdhPJzYnYVJv0HaNf5CJzsCVTYjnZ6cQLmgLajSsTiPi+o3b8ZVk3e+EHb2xL0Yu+Z4JXatJuuM0Q==
+X-Received: by 2002:a50:fc99:: with SMTP id f25mr10711029edq.147.1619609630443;
+        Wed, 28 Apr 2021 04:33:50 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id u19sm4677187edy.23.2021.04.28.04.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 04:33:49 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH 0/2] Removed set but unused variables
+Date:   Wed, 28 Apr 2021 13:33:44 +0200
+Message-Id: <20210428113346.28305-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+Removed set but unused variables. Issue detected by gcc.
 
-iATU (internal Address Translation Unit of the PCI controller)
-configuration is being done by FW right after driver enables
-the PCI device. Hence, driver must add a minor sleep afterwards
-in order to make sure FW finishes configuring iATU regions.
+Fabio M. De Francesco (2):
+  staging: rtl8723bs: hal: Remove set but unused variables.
+  staging: rtl8723bs: core: Removed set but unused variable.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/pci/pci.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c     | 4 +---
+ drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 5 -----
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/pci/pci.c b/drivers/misc/habanalabs/common/pci/pci.c
-index 9ef6c46a3146..8e7982be6191 100644
---- a/drivers/misc/habanalabs/common/pci/pci.c
-+++ b/drivers/misc/habanalabs/common/pci/pci.c
-@@ -430,6 +430,10 @@ int hl_pci_init(struct hl_device *hdev)
- 		goto unmap_pci_bars;
- 	}
- 
-+	/* Driver must sleep in order for FW to finish the iATU configuration */
-+	if (hdev->asic_prop.iatu_done_by_fw)
-+		usleep_range(2000, 3000);
-+
- 	return 0;
- 
- unmap_pci_bars:
 -- 
-2.25.1
+2.31.1
 
