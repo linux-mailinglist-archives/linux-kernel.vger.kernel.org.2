@@ -2,179 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3607736D311
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D5636D316
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhD1HZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhD1HZp (ORCPT
+        id S236425AbhD1H05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:26:57 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:57461 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1H0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:25:45 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2A0C061574;
-        Wed, 28 Apr 2021 00:25:01 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id p17so6401385plf.12;
-        Wed, 28 Apr 2021 00:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=xQY7nvOaiG9v/WUqozQwxPw+zWAFowJJ3OP9IATo7gs=;
-        b=Eg6nmcnI/wnQ3WwW9sQ08P/ECUinji/qPkNhavXMmXA3879sS/wcxKAOXpRslPp8e2
-         HefZ52KeP4jefvtruI8bMHwkTgxUHqqnldYf9qaB5pR/Q39gnWKLKr8B6fkbfCl3nDp2
-         0Xijh/43gqvZAGZJAxecMluL+xzQ95XP+fwQnvSf9IuezTsmkxUqubOOLB9Nv0zMMC8k
-         haJnNLAiboRwK5RN+c3/HewmCuA0StIEEjKD+o+BvADCagzK5nU9cdxAtsHC3Rw54CNK
-         iUoLfxauZR8PUPUVgOGt4LKoq6sAwvB+rtzoAdKcUl6RUUP0zhHNlzkzDvo+HGViY/XL
-         3xUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=xQY7nvOaiG9v/WUqozQwxPw+zWAFowJJ3OP9IATo7gs=;
-        b=gWBn+2q3QKIJVvKIePB+16rXPRIqEZPtVenQc9r7EJQa2Ap43QyNj4x88PHxQQXQWb
-         vQX/KjGiVN9Dy4elDZX0GdxBZwZtZ2irDGDYDlbu+N/+NXgq7pbVKK9Tm3IbF9brFRWx
-         FvFbEWOE2i8bRwQwL3q8+mQd+AkcdczRagBTfHQwAoChZGNdSIJpAQk96V8xGwMAC2qu
-         pSuYZwtmYickPiZR1/qmMRZOz9b0Oj+h0EJFpUe3SSHNDf8CjZLvI7r/b7C0yKy9ttPV
-         tep3cE0AVooFlACH8MkaS1llpS++EGzKqJWzv4UlO+vMvjpaGNncTsoqlCp2rdhYuXEu
-         +UIw==
-X-Gm-Message-State: AOAM533qXtaqFbqfOwcdvhSBMY9S0KsV+3RXzfzcs4ZX4PAMwggzPk2E
-        rHhUKtmTxZwcVXdu+sU7Npk=
-X-Google-Smtp-Source: ABdhPJz0HUnvgQ6xALDLF8dqETWfykTHExSQkMKbJatqMLIDKRjkpNAspveM6kF4ZAuHdRDut/p7GA==
-X-Received: by 2002:a17:902:da8c:b029:ec:f02d:fcce with SMTP id j12-20020a170902da8cb02900ecf02dfccemr22899747plx.0.1619594701029;
-        Wed, 28 Apr 2021 00:25:01 -0700 (PDT)
-Received: from localhost ([157.45.190.127])
-        by smtp.gmail.com with ESMTPSA id h9sm4265298pfv.14.2021.04.28.00.25.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 28 Apr 2021 00:25:00 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 12:54:53 +0530
-From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-To:     m@bues.ch
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanjanasrinidhi1810@gmail.com, shubhankar.vk@gmail.com
-Subject: [PATCH] drivers: ssb: main.c: Fix indentation of comment
-Message-ID: <20210428072453.obrjwxus3u2ytpgn@kewl-virtual-machine>
+        Wed, 28 Apr 2021 03:26:53 -0400
+Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 90F6624000F;
+        Wed, 28 Apr 2021 07:26:03 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Remove 32b kernel mapping from page table dump
+To:     Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        kasan-dev@googlegroups.com,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210418112856.15078-1-alex@ghiti.fr>
+ <CAAhSdy3csxeTiXgf8eKnRYhD7BM1LDLPddrn527AkA_-fiEGkw@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <16cd2359-2453-8184-cf96-2c02800abe8a@ghiti.fr>
+Date:   Wed, 28 Apr 2021 03:26:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
+In-Reply-To: <CAAhSdy3csxeTiXgf8eKnRYhD7BM1LDLPddrn527AkA_-fiEGkw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shifted the closing */ to the next line
-This is done to maintain code uniformity.
+Hi Palmer,
 
-Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
----
- drivers/ssb/main.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+Le 4/20/21 à 12:19 AM, Anup Patel a écrit :
+> On Sun, Apr 18, 2021 at 4:59 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>
+>> The 32b kernel mapping lies in the linear mapping, there is no point in
+>> printing its address in page table dump, so remove this leftover that
+>> comes from moving the kernel mapping outside the linear mapping for 64b
+>> kernel.
+>>
+>> Fixes: e9efb21fe352 ("riscv: Prepare ptdump for vm layout dynamic addresses")
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> 
+> Looks good to me.
+> 
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> 
+> Regards,
+> Anup
+> 
+>> ---
+>>   arch/riscv/mm/ptdump.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
+>> index 0aba4421115c..a4ed4bdbbfde 100644
+>> --- a/arch/riscv/mm/ptdump.c
+>> +++ b/arch/riscv/mm/ptdump.c
+>> @@ -76,8 +76,8 @@ enum address_markers_idx {
+>>          PAGE_OFFSET_NR,
+>>   #ifdef CONFIG_64BIT
+>>          MODULES_MAPPING_NR,
+>> -#endif
+>>          KERNEL_MAPPING_NR,
+>> +#endif
+>>          END_OF_SPACE_NR
+>>   };
+>>
+>> @@ -99,8 +99,8 @@ static struct addr_marker address_markers[] = {
+>>          {0, "Linear mapping"},
+>>   #ifdef CONFIG_64BIT
+>>          {0, "Modules mapping"},
+>> -#endif
+>>          {0, "Kernel mapping (kernel, BPF)"},
+>> +#endif
+>>          {-1, NULL},
+>>   };
+>>
+>> @@ -379,8 +379,8 @@ static int ptdump_init(void)
+>>          address_markers[PAGE_OFFSET_NR].start_address = PAGE_OFFSET;
+>>   #ifdef CONFIG_64BIT
+>>          address_markers[MODULES_MAPPING_NR].start_address = MODULES_VADDR;
+>> -#endif
+>>          address_markers[KERNEL_MAPPING_NR].start_address = kernel_virt_addr;
+>> +#endif
+>>
+>>          kernel_ptd_info.base_addr = KERN_VIRT_START;
+>>
+>> --
+>> 2.20.1
+>>
 
-diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
-index 0a26984acb2c..0e180c36daa4 100644
---- a/drivers/ssb/main.c
-+++ b/drivers/ssb/main.c
-@@ -37,7 +37,8 @@ static LIST_HEAD(buses);
- /* Software ID counter */
- static unsigned int next_busnumber;
- /* buses_mutes locks the two buslists and the next_busnumber.
-- * Don't lock this directly, but use ssb_buses_[un]lock() below. */
-+ * Don't lock this directly, but use ssb_buses_[un]lock() below.
-+ */
- static DEFINE_MUTEX(buses_mutex);
- 
- /* There are differences in the codeflow, if the bus is
-@@ -45,7 +46,8 @@ static DEFINE_MUTEX(buses_mutex);
-  * are not available early. This is a mechanism to delay
-  * these initializations to after early boot has finished.
-  * It's also used to avoid mutex locking, as that's not
-- * available and needed early. */
-+ * available and needed early.
-+ */
- static bool ssb_is_early_boot = 1;
- 
- static void ssb_buses_lock(void);
-@@ -161,7 +163,8 @@ int ssb_bus_resume(struct ssb_bus *bus)
- 	int err;
- 
- 	/* Reset HW state information in memory, so that HW is
--	 * completely reinitialized. */
-+	 * completely reinitialized.
-+	 */
- 	bus->mapped_device = NULL;
- #ifdef CONFIG_SSB_DRIVER_PCICORE
- 	bus->pcicore.setup_done = 0;
-@@ -467,7 +470,8 @@ static int ssb_devices_register(struct ssb_bus *bus)
- 		sdev = &(bus->devices[i]);
- 
- 		/* We don't register SSB-system devices to the kernel,
--		 * as the drivers for them are built into SSB. */
-+		 * as the drivers for them are built into SSB.
-+		 */
- 		switch (sdev->id.coreid) {
- 		case SSB_DEV_CHIPCOMMON:
- 		case SSB_DEV_PCI:
-@@ -521,7 +525,8 @@ static int ssb_devices_register(struct ssb_bus *bus)
- 		if (err) {
- 			pr_err("Could not register %s\n", dev_name(dev));
- 			/* Set dev to NULL to not unregister
--			 * dev on error unwinding. */
-+			 * dev on error unwinding.
-+			 */
- 			sdev->dev = NULL;
- 			put_device(dev);
- 			goto error;
-@@ -667,7 +672,8 @@ ssb_bus_register(struct ssb_bus *bus,
- 	ssb_bus_may_powerdown(bus);
- 
- 	/* Queue it for attach.
--	 * See the comment at the ssb_is_early_boot definition. */
-+	 * See the comment at the ssb_is_early_boot definition.
-+	 */
- 	list_add_tail(&bus->list, &attach_queue);
- 	if (!ssb_is_early_boot) {
- 		/* This is not early boot, so we must attach the bus now */
-@@ -1007,7 +1013,8 @@ static void ssb_flush_tmslow(struct ssb_device *dev)
- 	 * a machine check exception otherwise.
- 	 * Do this by reading the register back to commit the
- 	 * PCI write and delay an additional usec for the device
--	 * to react to the change. */
-+	 * to react to the change.
-+	 */
- 	ssb_read32(dev, SSB_TMSLOW);
- 	udelay(1);
- }
-@@ -1044,7 +1051,8 @@ void ssb_device_enable(struct ssb_device *dev, u32 core_specific_flags)
- EXPORT_SYMBOL(ssb_device_enable);
- 
- /* Wait for bitmask in a register to get set or cleared.
-- * timeout is in units of ten-microseconds */
-+ * timeout is in units of ten-microseconds
-+ */
- static int ssb_wait_bits(struct ssb_device *dev, u16 reg, u32 bitmask,
- 			 int timeout, int set)
- {
-@@ -1153,7 +1161,8 @@ int ssb_bus_may_powerdown(struct ssb_bus *bus)
- 
- 	/* On buses where more than one core may be working
- 	 * at a time, we must not powerdown stuff if there are
--	 * still cores that may want to run. */
-+	 * still cores that may want to run.
-+	 */
- 	if (bus->bustype == SSB_BUSTYPE_SSB)
- 		goto out;
- 
-@@ -1322,7 +1331,8 @@ static int __init ssb_modinit(void)
- }
- /* ssb must be initialized after PCI but before the ssb drivers.
-  * That means we must use some initcall between subsys_initcall
-- * and device_initcall. */
-+ * and device_initcall.
-+ */
- fs_initcall(ssb_modinit);
- 
- static void __exit ssb_modexit(void)
--- 
-2.17.1
+Do you think you can take this patch too on for-next?
 
+Thanks,
+
+Alex
