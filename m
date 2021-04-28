@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9D436DE48
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A083036DE4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241630AbhD1R3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
+        id S241645AbhD1R32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239542AbhD1R3I (ORCPT
+        with ESMTP id S241631AbhD1R30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:29:08 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3EEC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:28:23 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id j6so7184932ybh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:28:23 -0700 (PDT)
+        Wed, 28 Apr 2021 13:29:26 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFBBC061573;
+        Wed, 28 Apr 2021 10:28:41 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id u25so34837726ljg.7;
+        Wed, 28 Apr 2021 10:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nGZv/hgPQ6a1thzvfyFJbXRoiHEcaDvdCEGYQc0FjoE=;
-        b=o4tWt6X6AmhzUShVPeltTrxmtrRtYGxgW5r5wS7uLQPByA5ytvZy+j2GfFU42lD9OB
-         XGxtsgvkynDztHuEeif8zH4ptUpYJeC4h3BYrGEX4jwswnPBhb2zW9ravthLY8VkWtTv
-         KH/OdILeS79POCYq4W/9eyjJdpWuxHCAhqOgB+bG04eOjWSUIuvCz3LlFsxamGN5yOlx
-         yiqYdh0HDKdrE4JRfDSnXzSutOmDd9E9LzIM5TR7Yc45D+uM+5KJkHiqo6dmlSO9VrAU
-         yc4Ff24SpMLWlKBv1znEquuNiqCONlVoT7luTllkgSXre366dHTD676xRGIBsXFacqFj
-         QHzg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1XiDkDGEE4btr09JaX3wGmRBxeV6dNzC/hyl0FxehK8=;
+        b=GZpmsCncjuprG6+asstSsX5oepVjz0xOWymnDCshF00N2Rw+nfY7cBxb+FvB9BJYfC
+         qLg+aT6NgphyS7FPAVkomnO8r3tsQw/cEBtBRigNgQh6tPBEdAPlkRCAJWUDGSVm2dFT
+         I4kgQSE1hD84pX/vSvoaEKkXChXxtaOl3D3I+r22AI2eoHxqvUAj/ej43NBolSLR3JoT
+         NUr5ZUWkrGF+7IzWmFFjbb0ouDY0D3+cEmOENGDnVBFJ5LZcRb+fSPL34baHZCy+M0VJ
+         auDF9Buu8HDPqM0MLh9xenjA0LxkliaGfkSivJS/J+kaY91zWv00+Rmm/SEF2BtDEKdD
+         T2mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nGZv/hgPQ6a1thzvfyFJbXRoiHEcaDvdCEGYQc0FjoE=;
-        b=mdfgnOv86kIc7wH6KzjPqBshKI6CE/Iqya2i2xVTJf6jkoLjTL6ThvSoNdHHHy0ftF
-         OQU9wfbeYS+PLUZVJ92pWABMRvmncszAoEbgW/Q3thUjEC192dR/aMay9GAv0YkKc0Av
-         x9Lvkd3oI14eYig5Hd2CM7RqByX5pmsO1IpqOB6sDnIPK5+a+EjRpf5cDY22vx3ezdim
-         fs0IF58RJ1TCtWFFvFFeqr6W8DvfTd2vXbVbUBtvk03vKbojLAU0S1TV+J0L4byfsqrJ
-         2MIb/qhLXeHQcditNZM8XJMRPyZPadaqAU3rl4CGLoBX+RcvCZxUtJZtpjHUsqR9GjVg
-         nmLQ==
-X-Gm-Message-State: AOAM531A6X54IYb0wk5EsRAGWacBLkS5pmDgXBkM6AlQ3RCUnk8GzA8i
-        G4xmUxYTHJpaLFhG3Xk1g/zg/Z0kZLurgk0PVUMAnA==
-X-Google-Smtp-Source: ABdhPJz6JipmuVX5HEgnGZwyoYd0momnTEFDV3DOBlqm1VkMkmbPMfVvTYEf6tb/xPbrgiktAPM6NhR+a41iBXtSI+w=
-X-Received: by 2002:a25:d98a:: with SMTP id q132mr23157373ybg.310.1619630902140;
- Wed, 28 Apr 2021 10:28:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1XiDkDGEE4btr09JaX3wGmRBxeV6dNzC/hyl0FxehK8=;
+        b=tamR+SnwWIytnh9+Aia8+AxDyR7exILwDb7+VdLyQo2YGFIbaW6jCRoNj0Us3C4JMR
+         Aaz0oqm7VlTZgkCdq2X4mBsbgeaM/ormi96aIvqFKtPy4u5c/roSlj+traUHv7bC7Oon
+         wblHmvo5mmVGX56ZpQB4fcKiiyLI2UesiWRtRGuTiy+JWurbHmb5FYetKbSaeCVR54NZ
+         rTaKDvoJM/gJransp0vxl/DAVPgor4lR53LHe/gda7x890bxm2HJ7aYotr8tGoMTi8Vz
+         IA2z7I9mcZ57S8aNEjESlAQVFPOnQWlho2ctK862LYWRnzkEAgqE9mWrjTL3QYYce7Lz
+         Zsag==
+X-Gm-Message-State: AOAM533uvB2Zs0BBCrrC1ELQxIOtjCuZEu0kSInHccaXpImfbTXkPUHa
+        LWTpb2rdzuiPfFbEk/X+m40=
+X-Google-Smtp-Source: ABdhPJwHjkl+4vki37PhnFjR3qt2TUXGaKWKn/Wg0boY1wzE5b2i+2ZmEvZax2nb4xAhe3YoIjG3qQ==
+X-Received: by 2002:a05:651c:513:: with SMTP id o19mr21519090ljp.291.1619630919562;
+        Wed, 28 Apr 2021 10:28:39 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.147])
+        by smtp.gmail.com with ESMTPSA id z145sm108539lfc.169.2021.04.28.10.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 10:28:38 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: fix memory leak in ext4_fill_super
+Date:   Wed, 28 Apr 2021 20:28:28 +0300
+Message-Id: <20210428172828.12589-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vc=FCGcUyS0v6fnxme2YJ+qD+Y-hQDQLa2JhWNON9VmsQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 28 Apr 2021 10:27:46 -0700
-Message-ID: <CAGETcx80xSZ8d4JbZqiSz4L0VNtL+HCnFCS2u3F9aNC0QQoQjg@mail.gmail.com>
-Subject: Re: Sleeping in atomic context on device release due to device links
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 10:08 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> Hi!
->
-> Is the below already fixed somewhere (v5.12 seems still has it)?
-> Or I missed something?
->
-> [  186.439095] BUG: sleeping function called from invalid context at
-> drivers/gpio/gpiolib.c:1952
-> [  186.451666] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
-> 119, name: kworker/0:2
-> [  186.463885] 2 locks held by kworker/0:2/119:
-> [  186.470831]  #0: ffff985d8110d338
-> ((wq_completion)rcu_gp){....}-{0:0}, at: process_one_work+0x1bc/0x4b0
-> [  186.484458]  #1: ffffb1a2c0367e70
-> ((work_completion)(&sdp->work)){....}-{0:0}, at:
-> process_one_work+0x1bc/0x4b
-> 0
-> [  186.498732] CPU: 0 PID: 119 Comm: kworker/0:2 Not tainted 5.12.0-rc8+ #168
-> [  186.508301] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
-> BIOS 542 2015.01.21:18.19.48
-> [  186.521000] Workqueue: rcu_gp srcu_invoke_callbacks
-> [  186.528515] Call Trace:
-> [  186.532288]  dump_stack+0x69/0x8e
-> [  186.536964]  ___might_sleep.cold+0x95/0xa2
-> [  186.543606]  gpiod_free_commit+0x25/0x170
-> [  186.550163]  gpiod_put+0x19/0x40
-> [  186.554728]  cleanup+0x1b/0x30 [spi_pxa2xx_platform]
-> [  186.562246]  spidev_release+0x24/0x50
-> [  186.567243]  device_release+0x34/0x90
-> [  186.572228]  kobject_put+0x86/0x1d0
-> [  186.577035]  __device_link_free_srcu+0x47/0x70
-> [  186.583942]  srcu_invoke_callbacks+0xc8/0x170
+syzbot reported memory leak in ext4 subsyetem.
+The problem appears, when thread_stop() call happens
+before wake_up_process().
 
-Hi Rafael,
+Normally, this data will be freed by
+created thread, but if kthread_stop()
+returned -EINTR, this data should be freed manually
 
-So it looks like put_device() is not guaranteed to be atomic and
-srcu_invoke_callbacks() runs in atomic context. I haven't dug into why
-the SRCU implementation is needed for device links and what needs to
-be in the srcu callback vs be done earlier in the actual caller
-context.
+Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Tested-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ fs/ext4/super.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Can you please look into this and give your thoughts?
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b9693680463a..9c33e97bd5c5 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5156,8 +5156,10 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ failed_mount3:
+ 	flush_work(&sbi->s_error_work);
+ 	del_timer_sync(&sbi->s_err_report);
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	if (sbi->s_mmp_tsk) {
++		if (kthread_stop(sbi->s_mmp_tsk) == -EINTR)
++			kfree(kthread_data(sbi->s_mmp_tsk));
++	}
+ failed_mount2:
+ 	rcu_read_lock();
+ 	group_desc = rcu_dereference(sbi->s_group_desc);
+-- 
+2.31.1
 
--Saravana
-
-> [  186.590720]  process_one_work+0x24d/0x4b0
-> [  186.597118]  worker_thread+0x55/0x3c0
-> [  186.602030]  ? rescuer_thread+0x390/0x390
-> [  186.608373]  kthread+0x137/0x150
-> [  186.612834]  ? __kthread_bind_mask+0x60/0x60
-> [  186.619446]  ret_from_fork+0x22/0x30
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
