@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF5436E170
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 00:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4098336E164
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 00:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhD1WQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:16:13 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:45001 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbhD1WQD (ORCPT
+        id S231767AbhD1WQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:16:00 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:36811 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhD1WP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:16:03 -0400
-Received: by mail-ot1-f42.google.com with SMTP id z25-20020a9d65d90000b02902a560806ca7so1069909oth.11;
-        Wed, 28 Apr 2021 15:15:18 -0700 (PDT)
+        Wed, 28 Apr 2021 18:15:59 -0400
+Received: by mail-ot1-f44.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso4760907otn.3;
+        Wed, 28 Apr 2021 15:15:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=Xi7TAHlcVoeB5Rz0Y7svi8AIt7JTNDAlk3MLO/FLse4=;
-        b=KoX3e68IqP8pwLy5woJIYoKM+46AIsIFU36ss6TBIzexWxAGHWwyLF0d2FjzFQx08W
-         +7keT4Y2vvY/rdQGx2H+0PbuUcIGs1LYoHka66Gn2BWBfZtE8Z+Pxmn67cvQjftgIOBH
-         E4XRkjd4CEoz2K203BH8WFd8tQUgLBZi8KEsLQZUGLxjjMqTFJ8gnl7UZwObxs0UGktI
-         V60nrC7IAWxdH6uayv+EZQLeCkMR0bFR4myqCRhIBiEXzj8gUBOL3fHQDn7Vwf4sDzGB
-         4o4YY7tCoIq61/I0Bl0a6Qc9p1jtxFGFMEmYfKIhZnHqAbjkNLf2zI33KXCpqovsTE9F
-         TllQ==
-X-Gm-Message-State: AOAM530Kbi16K3snco9lAKDkJPZM+RfGqvwbABfkIbO96Ff0rWTf/IKB
-        wniHxahrQXh5F6h465NO8AV7wFCQ6Q==
-X-Google-Smtp-Source: ABdhPJxN8d1OtBBDvnGQdL0lWNDlwQyUcPicQ1sLOA+xdTC1f2+voBJBuP8wAq1LRIufjwKh64CQ9w==
-X-Received: by 2002:a05:6830:1416:: with SMTP id v22mr8692970otp.120.1619648117518;
-        Wed, 28 Apr 2021 15:15:17 -0700 (PDT)
+        bh=zAF2toXP87sFaO/+ZlCZr0PxBU8uD3XenCS7obOMCiU=;
+        b=D1xsbvMX197MMIu3n89ynUm9ryufvnZ136iMSuf/2ByUY6TfGFm659oOfalnZMYXkk
+         p2Gimu4M37dFp1xHdt5flgQr8rM/0Y7o6Glb5vvxc0Z4WvpicSClYtrLU29MeM0/tLB2
+         vYjFvm93J0+V5GALV224irBJ/OCTF9ndpVmOIgbMeEyvhZZlvl42+l2ZW3CYvUNLwJe3
+         NP7kPx9T+B2/5vknrm/WPaHmhrOI18sBK8C/a7OHS/moPn44Wyu4v37fWzc4fuo9qznd
+         10KRELSOO81mC+T4XqqkhmxIP7dsB/eW2q1bzoIP8X7YYVm0o152fGbW79i00KEes9P6
+         IxwQ==
+X-Gm-Message-State: AOAM5308CU/WjFg/dPzEvXOSPXH/Bn1120MXuc+R+fr4qzLYdOECeYXQ
+        zCFAx1MCmF9yXaz3+uk+FFQHoPWmuQ==
+X-Google-Smtp-Source: ABdhPJwdPNXNSpudUFX5xImDtn8XEwOZU/5rOoBkiWPuMoZQH9BChGgxsWK8gHDGHj/eAt4JRncnWw==
+X-Received: by 2002:a05:6830:149a:: with SMTP id s26mr26474841otq.349.1619648112129;
+        Wed, 28 Apr 2021 15:15:12 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i13sm257851otp.41.2021.04.28.15.15.16
+        by smtp.gmail.com with ESMTPSA id j8sm268455otj.49.2021.04.28.15.15.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 15:15:16 -0700 (PDT)
-Received: (nullmailer pid 4061031 invoked by uid 1000);
+        Wed, 28 Apr 2021 15:15:11 -0700 (PDT)
+Received: (nullmailer pid 4061026 invoked by uid 1000);
         Wed, 28 Apr 2021 22:15:09 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>
-Cc:     Stefan Roese <sr@denx.de>, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <YIlYnDBVn0fggMe3@orolia.com>
-References: <YIlYnDBVn0fggMe3@orolia.com>
-Subject: Re: [PATCH 1/2] dt-bindings: dma: add schema for altr,msgdma
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20210427224201.32285-1-tsbogend@alpha.franken.de>
+References: <20210427224201.32285-1-tsbogend@alpha.franken.de>
+Subject: Re: [PATCH] dt-binding: interrupt-controller: Add missing interrupts property
 Date:   Wed, 28 Apr 2021 17:15:09 -0500
-Message-Id: <1619648109.778776.4061030.nullmailer@robh.at.kernel.org>
+Message-Id: <1619648109.762240.4061025.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Apr 2021 14:44:12 +0200, Olivier Dautricourt wrote:
-> - add schema for Altera mSGDMA bindings in devicetree.
-> - add myself as 'Odd fixes' maintainer for this driver
+On Wed, 28 Apr 2021 00:42:00 +0200, Thomas Bogendoerfer wrote:
+> Interrupts property is required, so add it.
 > 
-> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > ---
->  .../devicetree/bindings/dma/altr,msgdma.yaml  | 62 +++++++++++++++++++
->  MAINTAINERS                                   |  6 ++
->  2 files changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/altr,msgdma.yaml
+>  .../bindings/interrupt-controller/idt,32434-pic.yaml          | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -68,11 +65,12 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/dma/altr,msgdma.example.dts:21.54-27.11: Warning (unit_address_format): /example-0/dma-controller@0xff200b00: unit name should not have leading "0x"
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/altr,msgdma.example.dt.yaml: example-0: 'dma-controller@0xff200b00' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/dt-core.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun4i-a10-ic.example.dt.yaml: interrupt-controller@1c20400: 'oneOf' conditional failed, one must be fixed:
+	'interrupts' is a required property
+	'interrupts-extended' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun4i-a10-ic.yaml
 
-See https://patchwork.ozlabs.org/patch/1471123
+See https://patchwork.ozlabs.org/patch/1470883
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
