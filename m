@@ -2,139 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B02036D574
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0635C36D576
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhD1KKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 06:10:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238887AbhD1KKH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239124AbhD1KKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:10:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:38870 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239013AbhD1KKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Apr 2021 06:10:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619604563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tCmCVcCGcXEgbhMIg1rIIz1DwzlDEOvC3LtivSI+s+8=;
-        b=hggymZVpCod+ACRltlLPs/rjIL7ydesC/d47da6ZfghJxS0o7G9uhGF/2uknHKAkKOjzVV
-        9RA37X97xmuWMgkAM22almWn6Vs+6vGosjGYGCLEAkiG4JsLyhfY25B05gFU+WstdQVxCK
-        v5xe5xVjBHXMx9j+0VbFZ2pXpcNPQMs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-mXh6x8uYMpOqAsImOovtJw-1; Wed, 28 Apr 2021 06:09:19 -0400
-X-MC-Unique: mXh6x8uYMpOqAsImOovtJw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F34CF801106;
-        Wed, 28 Apr 2021 10:09:17 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-25.pek2.redhat.com [10.72.12.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5A021001B2C;
-        Wed, 28 Apr 2021 10:09:12 +0000 (UTC)
-Subject: Re: [PATCH 1/2] vDPA/ifcvf: record virtio notify base
-To:     "Zhu, Lingshan" <lingshan.zhu@intel.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428082133.6766-1-lingshan.zhu@intel.com>
- <20210428082133.6766-2-lingshan.zhu@intel.com>
- <55217869-b456-f3bc-0b5a-6beaf34c19f8@redhat.com>
- <3243eeef-2891-5b79-29cb-bc969802c5dc@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <4cee04f1-a3fc-eaf0-747a-004ca09b06c0@redhat.com>
-Date:   Wed, 28 Apr 2021 18:09:11 +0800
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 119281FB;
+        Wed, 28 Apr 2021 03:09:23 -0700 (PDT)
+Received: from [10.57.67.189] (unknown [10.57.67.189])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EF143F70D;
+        Wed, 28 Apr 2021 03:09:20 -0700 (PDT)
+Subject: Re: [PATCH v1] coresight: add node to reset all coresight devices
+To:     taozha@codeaurora.org
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
+References: <1619166578-28690-1-git-send-email-taozha@codeaurora.org>
+ <e753898c-0334-cf84-620e-d9b9f18d87e7@arm.com>
+ <4036d63a8759ac67a26fd8798b9adf6b@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <38865567-8557-e48d-779b-ca257e318c19@arm.com>
+Date:   Wed, 28 Apr 2021 11:09:19 +0100
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <3243eeef-2891-5b79-29cb-bc969802c5dc@intel.com>
+In-Reply-To: <4036d63a8759ac67a26fd8798b9adf6b@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/4/28 下午6:00, Zhu, Lingshan 写道:
->
->
-> On 4/28/2021 4:39 PM, Jason Wang wrote:
->>
->> 在 2021/4/28 下午4:21, Zhu Lingshan 写道:
->>> This commit records virtio notify base addr to implemente
->>> doorbell mapping feature
+On 28/04/2021 10:57, taozha@codeaurora.org wrote:
+> On 2021-04-23 21:20, Suzuki K Poulose wrote:
+>> On 23/04/2021 09:29, Tao Zhang wrote:
+>>> Add new reset_source_sink node to be able to disable all active
+>>> coresight devices.
+>>> In this way, we no longer need to manually disable all active
+>>> coresight devices one by one. After enabling multiple coresight
+>>> paths, users can reset their status more conveniently by this
+>>> node.
 >>>
->>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>> ---
->>>   drivers/vdpa/ifcvf/ifcvf_base.c | 1 +
->>>   drivers/vdpa/ifcvf/ifcvf_base.h | 1 +
->>>   2 files changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c 
->>> b/drivers/vdpa/ifcvf/ifcvf_base.c
->>> index 1a661ab45af5..cc61a5bfc5b1 100644
->>> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
->>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
->>> @@ -133,6 +133,7 @@ int ifcvf_init_hw(struct ifcvf_hw *hw, struct 
->>> pci_dev *pdev)
->>> &hw->notify_off_multiplier);
->>>               hw->notify_bar = cap.bar;
->>>               hw->notify_base = get_cap_addr(hw, &cap);
->>> +            hw->notify_pa = pci_resource_start(pdev, cap.bar) + 
->>> cap.offset;
 >>
+>> What is the use case here ? Why would you trigger a reset for all the
+>> sources/sink without gracefully completing any on-going sessions
+>> (including the perf ones, which are driven by the kernel perf layer)
 >>
->> To be more generic and avoid future changes, let's use the math 
->> defined in the virtio spec.
->>
->> You may refer how it is implemented in virtio_pci vdpa driver[1].
-> Are you suggesting every vq keep its own notify_pa? In this case, we 
-> still need to record notify_pa in hw when init_hw, then initialize 
-> vq->notify_pa accrediting to hw->notify_pa.
+> We have a tool needs a command that could reset all active devices.
+> Since the tool cannot what dvices are activated, we add this new node
+> to sysFS for our tool could reset all active device by one command.
+> We hope that this patch can also provide a more convenient option
+> for the other users with the same needs.
 
+There is sysfs handles to do this already. See the testcase under perf, 
+e.g, that can walk the sysfs and figure out the source devices and the 
+"sinks" that can be reached from the given device.
 
-I meant you need to follow how virtio spec did to calculate the doorbell 
-address per vq:
+If some information is missing, to achieve this. we could provide that. 
+But simply because a tool wants to do something without bothering to use 
+the provided ABI, is not a justification to add something to the kernel.
 
-         cap.offset + queue_notify_off * notify_off_multiplier
-
-Obviously, you ignore queue_notify_off and notify_off_multiplier here. 
-This may bring troubles for the existing device IFCVF and future devices.
-
-If I understand correctly, this device can be probed by virtio-pci 
-driver which use the above math. There's no reason for using ad-hoc hack.
-
-Thanks
-
-
->
-> Thanks
-> Zhu Lingshan
->>
->> Thanks
->>
->> [1] 
->> https://lore.kernel.org/virtualization/20210415073147.19331-5-jasowang@redhat.com/T/
->>
->>
->>> IFCVF_DBG(pdev, "hw->notify_base = %p\n",
->>>                     hw->notify_base);
->>>               break;
->>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>> index 0111bfdeb342..bcca7c1669dd 100644
->>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>> @@ -98,6 +98,7 @@ struct ifcvf_hw {
->>>       char config_msix_name[256];
->>>       struct vdpa_callback config_cb;
->>>       unsigned int config_irq;
->>> +    phys_addr_t  notify_pa;
->>>   };
->>>     struct ifcvf_adapter {
->>
->
+Suzuki
 
