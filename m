@@ -2,103 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD1236DC80
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC6636DC88
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240492AbhD1PzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhD1PzL (ORCPT
+        id S240619AbhD1P5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:57:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45407 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240419AbhD1P53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:55:11 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6241FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:54:25 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id m13so63477783oiw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jMQtTg/Qey8vosI3ctdEwkLH1ZsdlWl+A5B8mm+7iRw=;
-        b=IupsyiuP045vvmV1BbexYgQQXK2Gpz+06JS8Ja3O5KK8RzP+SK7eMIM9vvizRgd79S
-         SdzbPdsq/BAoxHEsgU0Vhwb/f6hgSj0Efi34V3x1xzdFOwF7P14oG+5sBi4+75K+GMWG
-         NO+NVQf9fTWZIDlLkUQ5TPTVstnoK/rLD6Q8e7/4d1ANfDqzsXmRKobaE/mAVK05SCK5
-         b+CcPcdnuu7FCkTL5wW5YkqznwOjrQ1kjzctNlDldqNowhrWEPQUnvlPIzIx0JNveoL4
-         9y0qkhHjfDnbowwBKeq67n5ZSvlBD7bPCLtBjzLy6q9emMtlA80baoNlnckjV/hjfnLL
-         DxMw==
+        Wed, 28 Apr 2021 11:57:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619625404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NAIQJbaFQ/18mbKkoum13vKuadvSUXUDgwqjg93SH3A=;
+        b=GBlHVrPSHTaGu7Zi4fPyIqCCC2RIctCNLKUYXyAY5E2ULh2slgM1YMZuhuTIjdw8tNjCSU
+        18hV74JgAEoYPdnjsDaDUpXRIbTZBsINwaWOFGpd5Kys/ye6b0lhZ7J4C0iL9yExA+YEz6
+        h7N5wP8X6KrOLqw+8jfEmGKD7KNjXpU=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-OErfzvoFNnakiUV5GV1RNQ-1; Wed, 28 Apr 2021 11:56:41 -0400
+X-MC-Unique: OErfzvoFNnakiUV5GV1RNQ-1
+Received: by mail-qt1-f197.google.com with SMTP id h14-20020ac846ce0000b02901ba21d99130so17542340qto.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:56:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jMQtTg/Qey8vosI3ctdEwkLH1ZsdlWl+A5B8mm+7iRw=;
-        b=PdfhW77WlGXMERIdPYdThZhAdQj4HbkQ3bdTvAYIIQfXXoJRiJgV5EvZ2XBLYnBjCz
-         CpchhZ5BU9wxp1sABVJqtdScKKm8TceSd8ZfkJHYqSLGDhDgbquPmBSnxM4YhGiaPBvF
-         Y3l2IObdyD9NZJ1R6KSzDNFoy04zOulhynjIdG236kllWo4Rkgj1uuvXJ0c7HGWfd5Xb
-         uNR8d5J8szzxl42MTM8dtJnAT29952BRHQ7zLG7RN536kO2oV3gPQZWWmPgwOn3XCJXy
-         hvTknL+brooxcrf8jBofqhhBbMnuY0uCQ3j9biNhbZfk8CHHarP04TF7hVDbe4lmMqpu
-         RW7A==
-X-Gm-Message-State: AOAM532+txlpV2Lq8bLT6MxOB/sOvlo85y/ZShyXwgzMvfp6cVESaE8y
-        t5GLBW4IJQNJB8yhT85eR1CM+g==
-X-Google-Smtp-Source: ABdhPJwGoy7UDtxPJsjVy9R8T2dHpVasKNLNGorcsJta6vLvWYicqdr/Y9z3z93Ark9Gy1pHWnYdGA==
-X-Received: by 2002:aca:5b04:: with SMTP id p4mr20973171oib.109.1619625264638;
-        Wed, 28 Apr 2021 08:54:24 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j7sm65507otk.65.2021.04.28.08.54.23
+        bh=NAIQJbaFQ/18mbKkoum13vKuadvSUXUDgwqjg93SH3A=;
+        b=RN2vHW90ighwTA3f/t6eOrs/HEP9h9wvAISNLAs4ZfwcglGjsN73PvJJv1r+njbxh8
+         yvq+cl+pBEWW6MDqDw+Tgg3VlV56q4MUXhatiyqxucSae8AJ40bfrDett0bsbDtcVOpH
+         UuI5cVyiCTXiO59IyvG+pKrcEWytGOTTwnGrqBgSjosBx4rDWOTd39YxhMgG6UpGgJc1
+         AoN7JdlZX9nBo8x1RiSVLChVE4bNNguFTsi+9Fo5wjj5Hl/t5gbKozwfitelMKEZObvn
+         RPdamVXNapUSYo5fgEzQQnBmX2AUQp5u3WJJ92G6j68H4VvsqRozlMfaC7LPN3HGW2Cp
+         747Q==
+X-Gm-Message-State: AOAM533b4E6t3JVoHv5Hdv4jRv5j5FZGEE0YYjCh50VYJCS4z8uqSG6N
+        oTeijbQCrNDU5kLX2Pkoq/8XN1v9SONn9GIsNSUhL1Y3mKtU3L/cqaY0IgqwqIDsoUwtG3dg6UU
+        UF3ZmhTh4umKoSp/69mwuJ2Hr
+X-Received: by 2002:a05:622a:1186:: with SMTP id m6mr26871401qtk.319.1619625400931;
+        Wed, 28 Apr 2021 08:56:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8q5uYN6y3jHP6JWTobRGbCN9ooFKd/mXamvT7dYQYBwarL/ZsSzBJJw8wuAZWoA83r9zr4A==
+X-Received: by 2002:a05:622a:1186:: with SMTP id m6mr26871356qtk.319.1619625400589;
+        Wed, 28 Apr 2021 08:56:40 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
+        by smtp.gmail.com with ESMTPSA id e10sm83701qka.56.2021.04.28.08.56.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 08:54:24 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 10:54:22 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Fenglin Wu <fenglinw@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        subbaram@codeaurora.org, collinsd@codeaurora.org,
-        aghayal@codeaurora.org
-Subject: Re: [PATCH 0/2] Add QCOM PMIC PWM driver
-Message-ID: <20210428155422.GL1908499@yoga>
-References: <20210427102247.822-1-fenglinw@codeaurora.org>
+        Wed, 28 Apr 2021 08:56:39 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 11:56:38 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v5 06/10] userfaultfd/shmem: modify
+ shmem_mcopy_atomic_pte to use install_pte()
+Message-ID: <20210428155638.GD6584@xz-x1>
+References: <20210427225244.4326-1-axelrasmussen@google.com>
+ <20210427225244.4326-7-axelrasmussen@google.com>
+ <alpine.LSU.2.11.2104271704110.7111@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210427102247.822-1-fenglinw@codeaurora.org>
+In-Reply-To: <alpine.LSU.2.11.2104271704110.7111@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 27 Apr 05:22 CDT 2021, Fenglin Wu wrote:
-
-> Add PWM driver to support PWM modules inside QCOM PMIC chips which are accessed
-> through SPMI bus. Normally, there would be multiple PWM modules with adjacent
-> address spaces present in one PMIC chip, and each PWM module has 0x100 size of
-> address space. With this driver, a pwm_chip with multiple pwm_device individuals
-> is created, and each pwm_device individual is corresponding to one PWM module.
+On Tue, Apr 27, 2021 at 05:58:16PM -0700, Hugh Dickins wrote:
+> On Tue, 27 Apr 2021, Axel Rasmussen wrote:
 > 
-
-Exposing this as individual pwm_chips will prevent us from enabling the
-LED related use cases (patterns and multicolor) that most versions of
-the hardware support.
-
-I proposed [1] a while ago and think this is a better approach. I'll
-take some time to respin this and send out the next version.
-
-[1] https://lore.kernel.org/linux-arm-msm/20201021201224.3430546-1-bjorn.andersson@linaro.org/
-
-Regards,
-Bjorn
-
-> Fenglin Wu (2):
->   dt-bindings: pwm: add bindings for PWM modules inside QCOM PMICs
->   pwm: pwm-qcom: add driver for PWM modules in QCOM PMICs
+> > In a previous commit, we added the mcopy_atomic_install_pte() helper.
+> > This helper does the job of setting up PTEs for an existing page, to map
+> > it into a given VMA. It deals with both the anon and shmem cases, as
+> > well as the shared and private cases.
+> > 
+> > In other words, shmem_mcopy_atomic_pte() duplicates a case it already
+> > handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
+> > directly, to reduce code duplication.
+> > 
+> > This requires that we refactor shmem_mcopy_atomic_pte() a bit:
+> > 
+> > Instead of doing accounting (shmem_recalc_inode() et al) part-way
+> > through the PTE setup, do it afterward. This frees up
+> > mcopy_atomic_install_pte() from having to care about this accounting,
+> > and means we don't need to e.g. shmem_uncharge() in the error path.
+> > 
+> > A side effect is this switches shmem_mcopy_atomic_pte() to use
+> > lru_cache_add_inactive_or_unevictable() instead of just lru_cache_add().
+> > This wrapper does some extra accounting in an exceptional case, if
+> > appropriate, so it's actually the more correct thing to use.
+> > 
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 > 
->  .../devicetree/bindings/pwm/pwm-qcom.yaml          |  51 ++
->  drivers/pwm/Kconfig                                |   9 +
->  drivers/pwm/Makefile                               |   1 +
->  drivers/pwm/pwm-qcom.c                             | 585 +++++++++++++++++++++
->  4 files changed, 646 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-qcom.yaml
->  create mode 100644 drivers/pwm/pwm-qcom.c
+> Not quite. Two things.
 > 
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project.
+> One, in this version, delete_from_page_cache(page) has vanished
+> from the particular error path which needs it.
+
+Agreed.  I also spotted that the set_page_dirty() seems to have been overlooked
+when reusing mcopy_atomic_install_pte(), which afaiu should be move into the
+helper.
+
 > 
+> Two, and I think this predates your changes (so needs a separate
+> fix patch first, for backport to stable? a user with bad intentions
+> might be able to trigger the BUG), in pondering the new error paths
+> and that /* don't free the page */ one in particular, isn't it the
+> case that the shmem_inode_acct_block() on entry might succeed the
+> first time, but atomic copy fail so -ENOENT, then something else
+> fill up the tmpfs before the retry comes in, so that retry then
+> fail with -ENOMEM, and hit the BUG_ON(page) in __mcopy_atomic()?
+> 
+> (As I understand it, the shmem_inode_unacct_blocks() has to be
+> done before returning, because the caller may be unable to retry.)
+> 
+> What the right fix is rather depends on other uses of __mcopy_atomic():
+> if they obviously cannot hit that BUG_ON(page), you may prefer to leave
+> it in, and fix it here where shmem_inode_acct_block() fails. Or you may
+> prefer instead to delete that "else BUG_ON(page);" - looks as if that
+> would end up doing the right thing.  Peter may have a preference.
+
+To me, the BUG_ON(page) wanted to guarantee mfill_atomic_pte() should have
+consumed the page properly when possible.  Removing the BUG_ON() looks good
+already, it will just stop covering the case when e.g. ret==0.
+
+So maybe slightly better to release the page when shmem_inode_acct_block()
+fails (so as to still keep some guard on the page)?
+
+Thanks,
+
+-- 
+Peter Xu
+
