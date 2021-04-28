@@ -2,154 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3445E36DACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2628336DAD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbhD1PDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
+        id S237002AbhD1PEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239509AbhD1PD1 (ORCPT
+        with ESMTP id S231628AbhD1PD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:03:27 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC890C061374
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:53 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id p8so10324324iol.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:53 -0700 (PDT)
+        Wed, 28 Apr 2021 11:03:57 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A427C061352;
+        Wed, 28 Apr 2021 08:02:48 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id x5so13143292wrv.13;
+        Wed, 28 Apr 2021 08:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Iabn/7TldLlLe4ct1XbBE3tIHi0bNFX+HoKTspy+Zd8=;
-        b=W8J8yxp2ijkdH07hhcmJoTch4+ds+RpR3uJrFyC0n+ijzmDDAkR7Wa2g/1NMRtci5F
-         XGfLuh8mdCRY1S3icexBaEMHztAzbCBe+wx+rqRERgmLQBZGxhCp2gvvUlj8IFXHI0Iy
-         TwtKi5pO89ycJaUT+bcI/pkLkI/z/p05oaD3A=
+        bh=ZFEhJ4EAuP9YoeDXAP6FyIrsbINyeDS35gLbA/9242U=;
+        b=tSdq8BIskex/7GSoqC84F4OD4VVoT6fI6YdkyBQ3XH0MzNciz7zjJMODzK66aEqGLL
+         lFcinPue6YmuUudUfeiG61Y1Oh0aV13SDjpYo6gi9FsaevwPXdmNWmarNv/5MF0F8lP+
+         cZSZiGrpLJ5RlNHS/lJ1XbkqlddpYQqtrX4Az4ilnAvEoXC06kPpSepC0DV5bvyNmYpN
+         Xk3De+Ni+VacEDV1+ziNXv8MnfRbnTV24cdXW8gcz+WwPxPqbAH0D5YpZVOYwdL/jVUH
+         G7ZcScqxMjQSiSHeAH3f9sdeSX84Le01DquxaKG3IEX6+3EFbLGP648bCFif8ugAEoxb
+         0oRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Iabn/7TldLlLe4ct1XbBE3tIHi0bNFX+HoKTspy+Zd8=;
-        b=HX/vbMuc4N2T2pC9IYrLwDRlgsrvuejoKDfawMGjXlO3bP1en6x7ZkUGNMjH5TE48e
-         cPPCryEiZSgc8b6VlZKnvMqRhDhfDwhvXw3euwa3gau5MXqEqzTEkgCUGe1Co9YXKvr6
-         1ObEvPYUXjDt1jJbpKk1Fo+xQUuQhroB/Ph2L0egvZiSpaLzozwZNLQG1Dy3OED4bWK7
-         PzON71lSFeXg1fOdlqmZmuhjuub8z+UTKq3CgxDmp0eZuR9mb+oDNjvTfiBbN0M3yKLz
-         ozsfTDSzQ4e+KbDVlrNqMz9IJXvXQUnUWSWt69hJdMmxpi24SIGcIh0Kn0Oa6LYp/e6e
-         YNbg==
-X-Gm-Message-State: AOAM533seDr/da6aNMaBeZ6funuKXuVLiMfSXL1GSrEGz1ZR2KcGbvu6
-        gHIxG9nXVpx0+04j9hQQ0NL2+gHvRBpMTCmTbhjltQ==
-X-Google-Smtp-Source: ABdhPJw7OhNOQmqPMxNZRZjEipI1SzvGVR7FqSWDt4x1WF2C2QZ9V9DVTVNQUH8IVON5Fb672kMK94cmky6MFHihP6A=
-X-Received: by 2002:a05:6638:2515:: with SMTP id v21mr27686360jat.110.1619621993352;
- Wed, 28 Apr 2021 07:59:53 -0700 (PDT)
+        bh=ZFEhJ4EAuP9YoeDXAP6FyIrsbINyeDS35gLbA/9242U=;
+        b=QzG7S2OesftMsXTuGKHNxVqUhZlsLhNoK1po6b+muE/9EQM0hU08Xe3Fg8Hi6htpqV
+         tUNF4Tjvlsvsod82dgeQ2Wq106zxbwJC3z0xTJd/TSbtIyKKUGWQIHyhj6IgNTCA9Rg8
+         Be3CzlM8eoqLve0kbaArRupWion2LW8pnJSBssq8G5XhEy47G9HzkJ8DtqeGWaUbWlvf
+         rzha+c/yPevd+ZV/txdwjqL652pb61qN0RPfnAq/SG0XXlIU4hLUoBSBNSqyZ2vihteQ
+         4phOeX7zi8UV67rydeqQDrtHpJSjagv0ULsy9LjoT+qCS9piXrdfLVVato3ZmwI9pk+E
+         2OsQ==
+X-Gm-Message-State: AOAM53371aCZvq/hw7Kwbsg7g9aqzvmn2KDJFaqS6c7sFtk2vDa/xmuP
+        zi/gNJFUuDrUVhrv/Vdok33xSb7hgS1mN8wu4eY=
+X-Google-Smtp-Source: ABdhPJzVcatsTGlvKrTbsMMiczlcQBg9MBh5A6cu6eTqlVfSRY/xQE1OSHdqrq0jB1360tdMwAZZG+mANeZhHnfJczM=
+X-Received: by 2002:a5d:590b:: with SMTP id v11mr27215074wrd.415.1619622167243;
+ Wed, 28 Apr 2021 08:02:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
- <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
- <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
- <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
- <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com>
- <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk> <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
- <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 28 Apr 2021 16:59:42 +0200
-Message-ID: <CABRcYm+pO94dFW83SZCtKQE8x6PkRicr+exGD3CNwGwQUYmFcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210426095426.118356-1-tsbogend@alpha.franken.de>
+ <CAHp75VdRfPPj2pu4GOBVG4+bGUsCRLXYPsFjMwFOYfUTZuvJaQ@mail.gmail.com>
+ <6f6bce2f070998db49acca2f6611727b@walle.cc> <CAHp75VdmTxvQBU4X8s-6csYgwM8ACth9Ao0GYjUH7+0Q0tyFyg@mail.gmail.com>
+ <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc> <CAHp75VcXEu2YGOoL70zueEgARCe8D+Q=CFsN62-vFK5svjJAQA@mail.gmail.com>
+ <880011ffd80ae7d1a32e7a17d405b987@walle.cc> <CAHp75Vd41C8K9pNbNF6RYXUiASb1RYdUneoqqRp2f8sJCOAZog@mail.gmail.com>
+ <3a23d7e901ac72630aadbd274517f8ec@walle.cc>
+In-Reply-To: <3a23d7e901ac72630aadbd274517f8ec@walle.cc>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Apr 2021 18:02:29 +0300
+Message-ID: <CAHp75Vef9xMB=boEJitxG5TOanuGLFktj5Pxf8L7et+6BHx00Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+To:     Michael Walle <michael@walle.cc>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 8:03 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Apr 28, 2021 at 5:48 PM Michael Walle <michael@walle.cc> wrote:
 >
-> On Tue, Apr 27, 2021 at 2:51 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk> wrote:
-> > >         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
-> > > -       enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
-> > > +       u32 *bin_args;
-> > >         static char buf[BPF_TRACE_PRINTK_SIZE];
-> > >         unsigned long flags;
-> > >         int ret;
-> > >
-> > > -       ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
-> > > -                                MAX_TRACE_PRINTK_VARARGS);
-> > > +       ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
-> > > +                                 MAX_TRACE_PRINTK_VARARGS);
-> > >         if (ret < 0)
-> > >                 return ret;
-> > >
-> > > -       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
-> > > -               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
-> > > -       /* snprintf() will not append null for zero-length strings */
-> > > -       if (ret == 0)
-> > > -               buf[0] = '\0';
-> > > +       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> > >
-> > >         raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> > >         trace_bpf_trace_printk(buf);
-> > >         raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
-> > >
-> > > Why isn't the write to buf[] protected by that spinlock? Or put another
-> > > way, what protects buf[] from concurrent writes?
-> >
-> > You're right, that is a bug, I missed that buf was static and thought
-> > it was just on the stack. That snprintf call should be after the
-> > raw_spin_lock_irqsave. I'll send a patch. Thank you Rasmus. (before my
-> > snprintf series, there was a vsprintf after the raw_spin_lock_irqsave)
-
-Solved now
-
-> Can you please also clean up unnecessary ()s you added in at least a
-> few places. Thanks.
-
-Alexei said he took care of this .:)
-
-> > > Probably the test cases are not run in parallel, but this is the kind of
-> > > thing that would give those symptoms.
-> >
-> > I think it's a separate issue from what Andrii reported though because
-> > the flaky test exercises the bpf_snprintf helper and this buf spinlock
-> > bug you just found only affects the bpf_trace_printk helper.
-> >
-> > That being said, it does smell a little bit like a concurrency issue
-> > too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
-> > attaches to all syscall entries and most likely gets executed many
-> > more times than necessary and probably on parallel CPUs. The "pad_out"
-> > buffer they write to is unique and not locked so maybe the test's
-> > userspace reads pad_out while another CPU is writing on it and if the
-> > string output goes through a stage where it is "    4 0000" before
-> > being "    4 000", we might read at the wrong time. That being said, I
-> > would find it weird that this happens as much as 50% of the time and
-> > always specifically on that test case.
-> >
-> > Andrii could you maybe try changing the prog type to
-> > "tp/syscalls/sys_enter_nanosleep" on the machine where you can
-> > reproduce this bug ?
+> [Adding Mark here, too]
 >
-> Yes, it helps. I can't repro it easily anymore.
+> Am 2021-04-28 16:32, schrieb Andy Shevchenko:
+> > On Wed, Apr 28, 2021 at 5:04 PM Michael Walle <michael@walle.cc> wrote:
+> >> Am 2021-04-28 15:44, schrieb Andy Shevchenko:
+> >> > On Wed, Apr 28, 2021 at 2:57 PM Michael Walle <michael@walle.cc> wrote:
+> >> >>
+> >> >> Am 2021-04-28 13:07, schrieb Andy Shevchenko:
+> >> >> > On Wed, Apr 28, 2021 at 1:51 AM Michael Walle <michael@walle.cc> wrote:
+> >> >> >> Am 2021-04-26 12:29, schrieb Andy Shevchenko:
+> >> >> >> > On Mon, Apr 26, 2021 at 12:55 PM Thomas Bogendoerfer
+> >> >> >> > <tsbogend@alpha.franken.de> wrote:
+> >> >> >> >
+> >> >> >> > 2) there is gpio-regmap generic code, that may be worth
+> >> >> >> > considering.
+> >> >> >>
+> >> >> >> This driver uses memory mapped registers. While that is
+> >> >> >> also possible with gpio-regmap, there is one drawback:
+> >> >> >> it assumes gpiochip->can_sleep = true for now, see [1].
+> >> >> >> Unfortunately, there is no easy way to ask the regmap
+> >> >> >> if its mmio/fastio.
+> >> >> >
+> >> >> > I don't see how it is an impediment.
+> >> >>
+> >> >> You'd have to use the *_cansleep() variants with the gpios,
+> >> >> which cannot be used everywhere, no?
+> >> >
+> >> > *can* sleep means that it requires a sleeping context to run, if your
+> >> > controller is fine with that, there are no worries. OTOH if you want
+> >> > to run this in an atomic context, then consumers can't do with that
+> >> > kind of controller.
+> >>
+> >> Ok, then we are on the same track.
+> >>
+> >> > What I meant above (and you stripped it here) is
+> >> > to add a patch that will fix that and set it based on
+> >> > gpio_regmap_config.
+> >>
+> >> Yes, but ideally, it would ask the regmap. Otherwise that
+> >> information is redundant and might mismatch, i.e. gpio_regmap_config
+> >> tell can_sleep=false but the regmap is an I2C type for example. Also
+> >> if a driver wants to support both regmap types, we are no step
+> >> further.
+> >
+> > Yeah, I agree that is a band aid, but you are free to fix it actually
+> > on regmap level.
+> > I don't think it will require an enormous amount of work there.
+>
+> I'd love to fix that, but Mark was against exposing that property
+> outside of regmap. So it it what it is for now ;) Maybe he'll change
+> his mind or someone has another idea.
 
-Good, so it does sound like a concurrency issue indeed
+Then let's go to ugly variant with duplicating it in gpio-regmap
+config. with a FIXME note or so. I don't think we should allow new
+drivers be based on bgpio_init().
 
-> I think the right fix, though, should be to filter by tid, not change the tracepoint.
-
-Agreed, I'll send a patch for that today. :)
-
-> I think what's happening is we see the string right before bstr_printf
-> does zero-termination with end[-1] = '\0'; So in some cases we see
-> truncated string, in others we see untruncated one.
-
-Makes sense but I still wonder why it happens so often (50% of the
-time is really a lot) and why it is consistently that one test case
-that fails and not the "overflow" case for example. But I'm confident
-that this is not a bug in the helper now and that the tid filter will
-fix the test.
+-- 
+With Best Regards,
+Andy Shevchenko
