@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B33936D535
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2154336D53A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238789AbhD1J70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238683AbhD1J7W (ORCPT
+        id S238797AbhD1KAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:00:01 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:44001 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238070AbhD1J7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:59:22 -0400
-Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fac])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD57C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:58:37 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FVYx4442NzMq3YP;
-        Wed, 28 Apr 2021 11:58:32 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FVYx344c0zlmrrs;
-        Wed, 28 Apr 2021 11:58:31 +0200 (CEST)
-Subject: Re: [PATCH] samples/landlock: fix path_list memory leak
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        linux-security-module@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        James Morris <jmorris@namei.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210427183755.2790654-1-trix@redhat.com>
- <CAKwvOdmj5YvWZZWwcq1G7JgRALwPbqwiROiedMeEbBst2sGeiQ@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <6108e69b-0470-cd71-e477-ba64641cbf58@digikod.net>
-Date:   Wed, 28 Apr 2021 11:58:59 +0200
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <CAKwvOdmj5YvWZZWwcq1G7JgRALwPbqwiROiedMeEbBst2sGeiQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 28 Apr 2021 05:59:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UX3sbtO_1619603946;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UX3sbtO_1619603946)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Apr 2021 17:59:08 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     johannes@sipsolutions.net
+Cc:     davem@davemloft.net, kuba@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] net: wireless: wext_compat.c: Remove redundant assignment to ps
+Date:   Wed, 28 Apr 2021 17:59:05 +0800
+Message-Id: <1619603945-116891-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Variable 'ps' is set to wdev->ps but this value is never read as it is
+overwritten with a new value later on, hence it is a redundant
+assignment and can be removed.
 
-On 27/04/2021 21:13, Nick Desaulniers wrote:
-> On Tue, Apr 27, 2021 at 11:38 AM <trix@redhat.com> wrote:
->>
->> From: Tom Rix <trix@redhat.com>
->>
->> Clang static analysis reports this error
->>
->> sandboxer.c:134:8: warning: Potential leak of memory
->>   pointed to by 'path_list'
->>         ret = 0;
->>               ^
->> path_list is allocated in parse_path() but never freed.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  samples/landlock/sandboxer.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/samples/landlock/sandboxer.c b/samples/landlock/sandboxer.c
->> index 7a15910d2171..4629d011ed61 100644
->> --- a/samples/landlock/sandboxer.c
->> +++ b/samples/landlock/sandboxer.c
->> @@ -134,6 +134,8 @@ static int populate_ruleset(
->>         ret = 0;
->>
->>  out_free_name:
->> +       if (path_list)
->> +               free(path_list);
-> 
-> I don't think the conditional is even necessary? By our first `goto
-> out_free_name;`, `parse_path` has already been called/memory for
-> `path_list` has already been allocated. `parse_path` doesn't check
-> whether `malloc` has failed.
+Cleans up the following clang-analyzer warning:
 
-Indeed, no need for the path_list check. In practice, this memory leak
-doesn't stay long because of the execve, but I missed this free anyway.
-Thanks!
+net/wireless/wext-compat.c:1170:7: warning: Value stored to 'ps' during
+its initialization is never read [clang-analyzer-deadcode.DeadStores]
 
-Reviewed-by: Mickaël Salaün <mic@linux.microsoft.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ net/wireless/wext-compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
->>         free(env_path_name);
->>         return ret;
->>  }
->> --
->> 2.26.3
->>
-> 
-> 
+diff --git a/net/wireless/wext-compat.c b/net/wireless/wext-compat.c
+index a8320dc..50a2330 100644
+--- a/net/wireless/wext-compat.c
++++ b/net/wireless/wext-compat.c
+@@ -1167,7 +1167,7 @@ static int cfg80211_wext_siwpower(struct net_device *dev,
+ {
+ 	struct wireless_dev *wdev = dev->ieee80211_ptr;
+ 	struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
+-	bool ps = wdev->ps;
++	bool ps;
+ 	int timeout = wdev->ps_timeout;
+ 	int err;
+ 
+-- 
+1.8.3.1
+
