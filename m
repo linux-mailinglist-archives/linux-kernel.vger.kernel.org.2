@@ -2,168 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D385836DB9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA1E36DBAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240141AbhD1P0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:26:49 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:58451 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240135AbhD1P0k (ORCPT
+        id S231723AbhD1Pbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:31:51 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:23198 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229624AbhD1Pbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:26:40 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210428152553euoutp025e58ed22bd90db7b3aa969e29d171e73~6Dwp5uA7w2038920389euoutp028
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:25:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210428152553euoutp025e58ed22bd90db7b3aa969e29d171e73~6Dwp5uA7w2038920389euoutp028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619623553;
-        bh=uM5vYpEohT1V4vZDFlN6eZEsDfMmLVomPhIFhi3kBjI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=NvhSXJQx0p+aJonaLf7ky66cqGP+hpIiXDFzkm92GHAOLuwjK3wymYmcIfpUClxa8
-         5RLP/93/cwMK3yhEVwaE11JpiFPoKvSeKbg8+4C6c4r1X7VC9TJ+BzqITTf6K+gvM3
-         YUbjyEDmZN3A/RjYKo38qWdE6PkkyYz4G4gcBxs4=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210428152553eucas1p20ecc0af5c40ee3fb363ec3b9131c32cd~6DwpTz98S0230502305eucas1p2I;
-        Wed, 28 Apr 2021 15:25:53 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 44.42.09444.08E79806; Wed, 28
-        Apr 2021 16:25:52 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210428152552eucas1p25dceb5c828e242297a923d7342641cdc~6Dwo8VnFh1470014700eucas1p2I;
-        Wed, 28 Apr 2021 15:25:52 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210428152552eusmtrp20c963d7cbee84f3ec835741e75be56d4~6Dwo7mZsX2817228172eusmtrp2B;
-        Wed, 28 Apr 2021 15:25:52 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-f4-60897e80b533
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id DB.C8.08696.08E79806; Wed, 28
-        Apr 2021 16:25:52 +0100 (BST)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210428152551eusmtip1fa5b70a57b9b14d372b2630a8cee0ef3~6DwoQAkle0977209772eusmtip1u;
-        Wed, 28 Apr 2021 15:25:51 +0000 (GMT)
-Subject: Re: [PATCH v4 07/79] media: exynos-gsc: don't resume at remove time
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <138de070-a06c-654e-4912-d41f0cd658c2@samsung.com>
-Date:   Wed, 28 Apr 2021 17:25:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <210a2eee928d2ae7aee65e177f20cfb3f00e29ee.1619621413.git.mchehab+huawei@kernel.org>
+        Wed, 28 Apr 2021 11:31:50 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SFQEw3025051;
+        Wed, 28 Apr 2021 11:30:46 -0400
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2057.outbound.protection.outlook.com [104.47.36.57])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3865r9pnma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 11:30:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I9ODnsdov8PBuJPajEJn8byYtfVSkQFmEyGglz6oAtk8VSKaTpIrfeqdJqfC9N3+Er2g/LzqJp0J0nJLQc1yoh9Jj/sTSsX74Q5JwV21m+4cidA+PlwybwGioga0PQtv9Own642GRDRx38SkY+D2sx0Lq6FUpqXYZZ0+FPOGq+Nj5GBIKkN6lvTSJGVkrHY8WDKj5fOX2Aupo30B56ppwCEF2Y6AFykqOxlKB9+WVJTthDKi4t6jMZaMIB1+rjiMIYXxF6/hAPmDVqHZRjUwWKKlzzMPj8JuL04F0oUnSfywIxlbihPBmt+1CQSY378rqpEQ/mkSQOE2f3JxGIVkmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EdbtMFCIiSW7IE+hoAFbLOyEB/rR9rN8GAAmhNvGmA4=;
+ b=mZ9oXXnVt/qIgiyqC5fb51p9RDGO9fwPCwYyWnvLLLUoXYKzza/QhAn2qdHNWpr45BJPfi8Tnud0W94JoBcjSP+sM9hSY43/Ucp1FdZyFOOjsrYN9oCR/oDx17+feuWzB2DR5y9bzXHc4NXhsLQDFhW82PlSmy84GxQmEF27rj4w/hX5hgfpDa/azXHKWchWXvXh6ZNTNDoqgrgG4tkPq3caJQwiKhB8ozUmFtiqKwwnq75zsxkVPpODExghRay1Z839mDSZoQYaJz/GknvSytGoth9o4MjMVtLHo+Fxb2zhLpduUq3fNRmiIt5yxLcDPx639c0gnp8NuD56iabm0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EdbtMFCIiSW7IE+hoAFbLOyEB/rR9rN8GAAmhNvGmA4=;
+ b=r9jNdvAaGM4aCEds6hahtmj761D/55aXRmtYN5cCBWH966YvMw5BkWH8lQ2izF4pnzVT7+A5CNnM4DyVMB5aVBnTvlRhH0tlFE9GNDNxZGeQaEoGtT4VOl36Y/WllQwA+qBtXKe2Ax2T+Jlu8PAVxI5Q8vHuDiVkEdAuSLY9/zY=
+Received: from CY4PR03MB3112.namprd03.prod.outlook.com (2603:10b6:910:53::25)
+ by CY4PR03MB2743.namprd03.prod.outlook.com (2603:10b6:903:6b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Wed, 28 Apr
+ 2021 15:30:43 +0000
+Received: from CY4PR03MB3112.namprd03.prod.outlook.com
+ ([fe80::4da5:ed3c:b627:2a24]) by CY4PR03MB3112.namprd03.prod.outlook.com
+ ([fe80::4da5:ed3c:b627:2a24%6]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
+ 15:30:43 +0000
+From:   "Sa, Nuno" <Nuno.Sa@analog.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+CC:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] tools/iio: iio_event_monitor: Fix ioctl error check
+Thread-Topic: [PATCH] tools/iio: iio_event_monitor: Fix ioctl error check
+Thread-Index: AQHXPEBt7lP4jf8Fa0q9Q53QuBs0oarKDhSA
+Date:   Wed, 28 Apr 2021 15:30:43 +0000
+Message-ID: <CY4PR03MB3112198E9789BF3D95959E6F99409@CY4PR03MB3112.namprd03.prod.outlook.com>
+References: <20210428150815.136150-1-paul@crapouillou.net>
+In-Reply-To: <20210428150815.136150-1-paul@crapouillou.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGKsWRmVeSWpSXmKPExsWy7djP87oNdZ0JBm3rLS12bvjCbnFx5l0W
-        i/PnN7BbbHp8jdXi8q45bBY9G7ayWsw4v4/J4vDGM0wWbQsus1k8nH2V0WLZpj9MDtweO+4u
-        YfRoOfKW1WPTqk42j81L6j0+b5LzOPX1M3sAWxSXTUpqTmZZapG+XQJXxt3/G5kLvvBWTL29
-        lK2B8Rh3FyMnh4SAicSi6d8Yuxi5OIQEVjBK9Ow8xQLhfGGUaHxzkx3C+cwosf/MehaYlvV3
-        +6FaljNKnDx7kBXC+cgocfl+BxNIlbCAj8ScowcYQWwRAVOJm686weLMAo+YJM5OkAWx2QQM
-        JXqP9oHV8ArYSSw6+R1oEAcHi4CqxPELUiBhUYFkifOPr7JDlAhKnJz5BOwIToEEiWWtS1kh
-        RopL3HoyH2q8vMT2t3OYQe6REGjnlGjqamOFuNpFYvG9c4wQtrDEq+Nb2CFsGYn/O0GaQRqa
-        gQGw+zY7hDOBUeL+8QVQHdYSd879YgO5jllAU2L9Ln2IsKPElX1fwY6WEOCTuPFWEOIIPolJ
-        26YzQ4R5JTrahCCqVSR+r5rOBGFLSXQ/+c8ygVFpFpLXZiF5ZxaSd2Yh7F3AyLKKUTy1tDg3
-        PbXYKC+1XK84Mbe4NC9dLzk/dxMjMGmd/nf8yw7G5a8+6h1iZOJgPMQowcGsJMLLtqs1QYg3
-        JbGyKrUoP76oNCe1+BCjNAeLkjhv0pY18UIC6YklqdmpqQWpRTBZJg5OqQamwFf5XAdeh2vs
-        49n99izz18ypBzpyni2xXR/xTdWzSSxm0irjU1pHLrFMF4pvU1644fuMR55Zhl0OwjEhCveX
-        sPQs2LOpZYX/dKVP11vrZig8WrOb4Z3meQbNY6fWrWU+V+omM5M5f6KT78Xrpk8+tcrwV3k9
-        OjnBeS3frMYJzXx9bT1d0sf29zvPrzu7OEik4MvvSZJip3ecTvld1V9Tdj9A6O4J7TKmd5qR
-        k1t0k8tYBDzLDa+cvfEmU3rZwgUcpb+9pjySFFmafMAtO/1HiZydYrzjizkLov9kP15zTGfO
-        nMzXlj6cUQwSnMcuveFoiUsJCPN+O7t30ztWpy8iH7m21d79UeBxMk3I5WOIEktxRqKhFnNR
-        cSIA0fcLeskDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7oNdZ0JBstuKFrs3PCF3eLizLss
-        FufPb2C32PT4GqvF5V1z2Cx6NmxltZhxfh+TxeGNZ5gs2hZcZrN4OPsqo8WyTX+YHLg9dtxd
-        wujRcuQtq8emVZ1sHpuX1Ht83iTncerrZ/YAtig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMT
-        Sz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jLv/NzIXfOGtmHp7KVsD4zHuLkZODgkBE4n1d/sZ
-        uxi5OIQEljJKzLp8lb2LkQMoISUxv0UJokZY4s+1LjaImveMEot+/GYCSQgL+EjMOXqAEcQW
-        ETCVuPmqkwmkiFngGZPEoos7oDqeMUq8XXiBFaSKTcBQovdoH1gHr4CdxKKT31lBtrEIqEoc
-        vyAFEhYVSJZY/XszK0SJoMTJmU9YQGxOgQSJZa1LweLMAuoSf+ZdYoawxSVuPZnPBGHLS2x/
-        O4d5AqPQLCTts5C0zELSMgtJywJGllWMIqmlxbnpucVGesWJucWleel6yfm5mxiBUbrt2M8t
-        OxhXvvqod4iRiYPxEKMEB7OSCC/brtYEId6UxMqq1KL8+KLSnNTiQ4ymQO9MZJYSTc4Hpom8
-        knhDMwNTQxMzSwNTSzNjJXFekyNr4oUE0hNLUrNTUwtSi2D6mDg4pRqYjNMa20NzWhexb+0+
-        vatG58E+QfZtUyQ+ffEreXT89s4/vDyePXV/94d9XRNikHp9S/2u1F7T8GV6v7j0M97lcu1o
-        kLpR/iFnSsHEMkafLQvPneHUWN/4tPKjVabAmzq5jEd7OK5qtRo+5upQbQ47Ou3DIt3pRb6/
-        cn7e+pztz70sSPX2u73VW79ZypuseXMge4HWsmPmske2bWpw26t6O9n+YeJDN+saT6l1h9kL
-        pT/M4WR7cmunHbPEpvUCvLnTLxboXN3moHD0msWUjM85Te7cHD85b79/YX93Y5SoIFex/Rdd
-        7knmPOXbQ6UsexZu/yq2kKlroWPVxFfPN16runeo75N1oIESH+P0HbOzlViKMxINtZiLihMB
-        Qd+oQFsDAAA=
-X-CMS-MailID: 20210428152552eucas1p25dceb5c828e242297a923d7342641cdc
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210428145257eucas1p2152894daee2534dd26ced8df46456d72
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210428145257eucas1p2152894daee2534dd26ced8df46456d72
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <CGME20210428145257eucas1p2152894daee2534dd26ced8df46456d72@eucas1p2.samsung.com>
-        <210a2eee928d2ae7aee65e177f20cfb3f00e29ee.1619621413.git.mchehab+huawei@kernel.org>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbnNhXGFwcGRh?=
+ =?us-ascii?Q?dGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUz?=
+ =?us-ascii?Q?NWJcbXNnc1xtc2ctYjA4MmE0ODEtYTgzNi0xMWViLThiNDMtZmM3Nzc0MjFm?=
+ =?us-ascii?Q?Y2FlXGFtZS10ZXN0XGIwODJhNDgzLWE4MzYtMTFlYi04YjQzLWZjNzc3NDIx?=
+ =?us-ascii?Q?ZmNhZWJvZHkudHh0IiBzej0iMTM1NCIgdD0iMTMyNjQwOTc0NDE4MTkxMDA0?=
+ =?us-ascii?Q?IiBoPSJsdmFSRVFCcWcyMTFuR2tsdGtnTHBQYmtheXc9IiBpZD0iIiBibD0i?=
+ =?us-ascii?Q?MCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFJWURBQUNjb3R0?=
+ =?us-ascii?Q?eVF6elhBZXhDY1B0NFpvMUQ3RUp3KzNobWpVTUZBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBSEFBQUFBV0F3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?UUFCQUFBQWJKUFNkUUFBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBYVFCZkFI?=
+ =?us-ascii?Q?TUFaUUJqQUhVQWNnQmxBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQnpBRjhBWmdC?=
+ =?us-ascii?Q?aEFHd0Fjd0JsQUY4QVpnQnZBSE1BYVFCMEFHa0FkZ0JsQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
+ =?us-ascii?Q?QUFBQUFBQWdBQUFBQUFuZ0FBQUdFQVpBQnBBRjhBY3dCbEFHTUFkUUJ5QUdV?=
+ =?us-ascii?Q?QVh3QndBSElBYndCcUFHVUFZd0IwQUhNQVh3QjBBR2tBWlFCeUFERUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFD?=
+ =?us-ascii?Q?ZUFBQUFZUUJrQUdrQVh3QnpBR1VBWXdCMUFISUFaUUJmQUhBQWNnQnZBR29B?=
+ =?us-ascii?Q?WlFCakFIUUFjd0JmQUhRQWFRQmxBSElBTWdBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCaEFISUFhUUJo?=
+ =?us-ascii?Q?QUY4QVpBQnBBR01BZEFCcEFHOEFiZ0JoQUhJQWVRQmZBSFFBYVFCbEFISUFN?=
+ =?us-ascii?Q?UUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBY2dCcEFHRUFYd0JrQUdrQVl3QjBB?=
+ =?us-ascii?Q?R2tBYndCdUFHRUFjZ0I1QUY4QWRBQnBBR1VBY2dBeUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUE9Ii8+PC9tZXRhPg=3D=3D?=
+x-dg-rorf: true
+authentication-results: crapouillou.net; dkim=none (message not signed)
+ header.d=none;crapouillou.net; dmarc=none action=none header.from=analog.com;
+x-originating-ip: [2001:a61:25a4:df01:5c98:212a:483b:818e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 55e16f12-e14d-4325-34ec-08d90a5a9646
+x-ms-traffictypediagnostic: CY4PR03MB2743:
+x-microsoft-antispam-prvs: <CY4PR03MB27433E4FF70D704CA305D8BE99409@CY4PR03MB2743.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:497;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vLOOHD1VQ7cTg9ioigxMD3ZVIN2HIXFCWipUBsq5gdiJcSc1Z1oIZhFuwh0a+kESg9miEC+ACFWGQofKvouRT3hcHdyJo4zACH+f56O3v4Lwh5/Ncg/0ftLp0pytTrNuqzdz16bljUWON3z9l6vcNZzaRkj/QDY8jDnD/BWlxOnBpKsI+56MG1JwAnShtLdnUuR14NI317AViNjCDyMfBw8xGrdIurpaHWzDvbi7z1lyrzHVIFYSeDFWhloNxnn4UVZbD7Mrd9jtRTCfR3lzODCI/4pzW5N314c7X2BgFtVLKLwgamWvCSEiPuZNAX2mtZNVj+cs4CKBvbL7HVjj3UVIjBlwzah1M+gEAN/qq+z8cy0mTtyNze634K6zlC7vJSglFnzasrZ4CqkoPzJt4JUjfBlMoh/RHVQ7uQtSAXnSwN4NDds2WCmnbN/o6hQHORujgelizg5Xx6z20Di7c2xlBComBkGFNJCggnxPX5+YZ/LkzSM0gXmrHTmvggn12hPQadDV3Pei+ahY0c7uJLiD2IBtneUNm7gfdUpy6dg9fYiYzTXPy34HsDCMI0oQJn7onkXK37ctUJymPZxyPxqWKghpFLfYa88J9tjzOI8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR03MB3112.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(366004)(71200400001)(76116006)(4326008)(83380400001)(33656002)(54906003)(110136005)(478600001)(122000001)(186003)(64756008)(66476007)(86362001)(6506007)(7696005)(2906002)(9686003)(52536014)(8936002)(55016002)(5660300002)(66446008)(8676002)(66946007)(53546011)(316002)(38100700002)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?oskVjZPn3wBhYWhWLY1O4t7HV06nnBnHEfB2BCwxhxJSQxqIJUGSpKv/AFwt?=
+ =?us-ascii?Q?1jSZbMl3GLJq+wFaUSA4d5Zt7l5Ui8SEJALUHsUkqX8bTf0VpgckpUxNq/Wk?=
+ =?us-ascii?Q?hK3CFV/rhJRyWW2DTYHW5Dy1Lj7us1/IaKpvT6mLGFNeiLzAxnrfzPnf/ogC?=
+ =?us-ascii?Q?AjQEFSxla053JGLOJyJ/2qTM4RaObCNO6E7mK0YgQOxNTKyXJgQgVUBzcol6?=
+ =?us-ascii?Q?ZUVR1geTARkpY625xUs8LwrmgXf4F61mdpY4r5eGWEVNf9eJZtj+QrvdUHM4?=
+ =?us-ascii?Q?jJKKKnNrUv+hVjb1UNm1ra+InjKCDprYmbqMWK3P+7SvaAK2S6enu3MJbG2Y?=
+ =?us-ascii?Q?0AJSNLsw1wButWNO4FggYWdT9/A32Tak1wq6aJx1rRfP9WL87i78+UCwHdZV?=
+ =?us-ascii?Q?j/tQp9oC07BUIzU9Nn/LDLJargYBvnk8KQG557QKx+Y32eozOAjvjdpSzqr5?=
+ =?us-ascii?Q?UhCcJOtHtdAoh2+CjWYmk6VvTZdShYQXMNhPIeOIVMARQy9cnuu3KY0my+0A?=
+ =?us-ascii?Q?a7kpWFWKkCj/87ZZ3dhlBOFCZ8n3KwHKlAku95aP96hTM7OR92aEyybmHb3H?=
+ =?us-ascii?Q?rJzlA1tEEaKguKe16gyUxZz0uIrpiJlrHXDa0kPNzNNvmTJWbKHwFzdMTBWx?=
+ =?us-ascii?Q?Raej4o8yUszDPwHl+DPoDlcyvHesKe5ZSITILrwSkSf+m0TI+1EekE45Y/xd?=
+ =?us-ascii?Q?vVEhPv6ggBFmI20Lw9gTm17Pc7SVtfiQVH3ywW9AInNJvnnC8CEodrD0uFf1?=
+ =?us-ascii?Q?OxQak+tbQjWkjlK9VYId1cHp0fiCzkXpvuiqAGf9/kEiNZhXWLUjVl5JdwkU?=
+ =?us-ascii?Q?L/pgfVm9KkalXvK2KBeQt9g9X4i+4xNEygE6xYQAmMerybu/wIrJU3wy3xpr?=
+ =?us-ascii?Q?zcufZRLMSSEB83jb9zvjltjYpxxuP4diB6ua6jMufTiBg0oimftBemvlcZfu?=
+ =?us-ascii?Q?NCGfWCYzqdjDWGJ8Sbudkks+YjzebbBMbhnTKEpEaQBID8gUPT/cRcV4HRaw?=
+ =?us-ascii?Q?hhS3AZE/ZZHDV9b+nlmL5li/MCmjhL45YMgqy45DF90sNLO1mrkGd5246KTN?=
+ =?us-ascii?Q?aTSqLStZs4pKDuvkQ8tRmX1Gh0768L0tCUihlggjRFlor405McyZ+767NakQ?=
+ =?us-ascii?Q?kPufF/YGVPOY3XHqLedcNFjveCtbNCMRmLTEkOKqMAXKR6b2ANTFPQGX3AzR?=
+ =?us-ascii?Q?tlYr9JWd4krQwqF8Od3ulfyX9aUulKUhJ8N9V0q91dF3Mhq9sOrwbp0nsnKc?=
+ =?us-ascii?Q?9R12+gR5EZawf/NtMICxpIYQAZ5MxAo5xi0ElCG48SfCMguPx4J5S87q8E4S?=
+ =?us-ascii?Q?HdE0e1K4mxBjB+ASbn1mKGQiNzSvoJhs0hzfH8yf+/drdxnUrzXB3wtmKlSN?=
+ =?us-ascii?Q?j5di5tRpVvVYgkKs1vQU2AvwAjQq?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR03MB3112.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55e16f12-e14d-4325-34ec-08d90a5a9646
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2021 15:30:43.3194
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X54tSeX+k3kK/iHtiHTIRYPpdUC1Pjk3xwMwT+9XDbP8849bWutMBNNBGty9X8/1KugqPePH1r4ss7NnM4JTew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR03MB2743
+X-Proofpoint-ORIG-GUID: 5mi0tGPcxwm2yp-1yIvY5bxFK5KdqaOQ
+X-Proofpoint-GUID: 5mi0tGPcxwm2yp-1yIvY5bxFK5KdqaOQ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_09:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.04.2021 16:51, Mauro Carvalho Chehab wrote:
-> Calling pm_runtime_get_sync() at driver's removal time is not
-> needed, as this will resume PM runtime. Also, the PM runtime
-> code at pm_runtime_disable() already calls it, if it detects
-> the need.
-> 
-> So, change the logic in order to disable PM runtime earlier.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> From: Paul Cercueil <paul@crapouillou.net>
+> Sent: Wednesday, April 28, 2021 5:08 PM
+> To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> <lars@metafoo.de>; Peter Meerwald-Stadler
+> <pmeerw@pmeerw.net>
+> Cc: linux-iio@vger.kernel.org; linux-kernel@vger.kernel.org; Paul
+> Cercueil <paul@crapouillou.net>
+> Subject: [PATCH] tools/iio: iio_event_monitor: Fix ioctl error check
+>=20
+>=20
+> The ioctrl() call will return errno=3DEINVAL if the device does not
+> support the events interface, and not ENODEV.
+>=20
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-Thank you for correcting that.
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
 > ---
->  drivers/media/platform/exynos-gsc/gsc-core.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/platform/exynos-gsc/gsc-core.c b/drivers/media/platform/exynos-gsc/gsc-core.c
-> index 9f41c2e7097a..8b943075c503 100644
-> --- a/drivers/media/platform/exynos-gsc/gsc-core.c
-> +++ b/drivers/media/platform/exynos-gsc/gsc-core.c
-> @@ -1210,18 +1210,19 @@ static int gsc_remove(struct platform_device *pdev)
->  	struct gsc_dev *gsc = platform_get_drvdata(pdev);
->  	int i;
->  
-> -	pm_runtime_get_sync(&pdev->dev);
-> -
->  	gsc_unregister_m2m_device(gsc);
->  	v4l2_device_unregister(&gsc->v4l2_dev);
->  
->  	vb2_dma_contig_clear_max_seg_size(&pdev->dev);
-> -	for (i = 0; i < gsc->num_clocks; i++)
-> -		clk_disable_unprepare(gsc->clock[i]);
->  
-> -	pm_runtime_put_noidle(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
-> +	if (!pm_runtime_status_suspended(dev)) {
+>  tools/iio/iio_event_monitor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/tools/iio/iio_event_monitor.c
+> b/tools/iio/iio_event_monitor.c
+> index bb03859db89d..cdd9a84f18fa 100644
+> --- a/tools/iio/iio_event_monitor.c
+> +++ b/tools/iio/iio_event_monitor.c
+> @@ -323,7 +323,7 @@ int main(int argc, char **argv)
+>  	ret =3D ioctl(fd, IIO_GET_EVENT_FD_IOCTL, &event_fd);
+>  	if (ret =3D=3D -1 || event_fd =3D=3D -1) {
+>  		ret =3D -errno;
+> -		if (ret =3D=3D -ENODEV)
+> +		if (ret =3D=3D -EINVAL)
+>  			fprintf(stderr,
+>  				"This device does not support
+> events\n");
+>  		else
+> --
+> 2.30.2
 
-It should be &pdev->dev here rather than dev...
-
-> +		for (i = 0; i < gsc->num_clocks; i++)
-> +			clk_disable_unprepare(gsc->clock[i]);
-> +	}
-> +	pm_runtime_set_suspended(dev);
-
-and here s/dev/&pdev->dev.
-
-With above issues fixed,
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-
->  	dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
->  	return 0;
->  }
- 
-
-Thanks,
-Sylwester
