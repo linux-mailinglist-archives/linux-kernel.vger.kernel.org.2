@@ -2,194 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D5C36D051
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 03:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F0636D055
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 03:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbhD1BiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 21:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhD1BiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 21:38:01 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAD3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 18:37:14 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id s22so22512582pgk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 18:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SzD+/k6rA+JOUB658aiLpUQHhdrlTF2H7tv6i/bGzhs=;
-        b=LKO9ybR3WXZpW4l4K5jLqcfgE3Fjk4wMHf3VJOD8ONXQ/Q3Nr9RwaOBBbicxNyJi4r
-         ZM7AkBLEGz5Lt2S68WUPHYOILVnpPumeOpZi7g2bL1r06nPuBWE5kIENYONRvwr5TqN+
-         W5mhrGFgnWiwz2ZsRQh5/W1hGtzbnZ6Tn22RYmQf4FTJ8FOLxnIf9tn7pykHihFMmGju
-         zcL3Wdl1na+Mhs1HxYqAM/UC77mePeHRWN0j9lcro4jh+0Ypt6tm0jyaRW5I38kALFLF
-         oeVwJwOIQDKWSPdCW34m2H1WzG0Qp4zSBFbEg7p8Gm+l6o3cNSlJWf64JjECTuOfWyO/
-         t6Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SzD+/k6rA+JOUB658aiLpUQHhdrlTF2H7tv6i/bGzhs=;
-        b=VW1xnaFPSkcyUDDjADffCZ1MfjYH4qYf2eE1Fhc65cNf9rX/nJ7YWw4fhDW2QadlgJ
-         bUKzXqmVV4WMZhRA+bdHg9/B1I4MLu2CjrLhrXDyIPlUYfw+uyFQ0n+mLIz9VmdA1FIb
-         5sh4x1jKN03sYQ4Ncgs6LdYFZsLd/YXo0Kl8fn06wZX2aieZnHcBl6iEqxeWJ6wjN1EB
-         DSOCdQYLqlGoi3unVL7ZtEtcM/9axcmb7R0NM+h30hsViD6pfjRilq/ZEJDqqDMyO/kf
-         OcWQX48nmVoidWMo8kw8yPcmxNV5f0WNdBCEixL3Pv8Yl28KCm5yf/KZJJh9JLLANKst
-         qeZQ==
-X-Gm-Message-State: AOAM532MosFvAsi8t7zm2CXMxTaU7Ob7wu+TTiYlJ0/5HXpEkjf376eC
-        50tafsvBdJ+IzFfeoC52ReItyQ==
-X-Google-Smtp-Source: ABdhPJwHh287a2xHsz+3p+Lqn4sw53twlNkguGUX9tnRKAqE4Yhnk5riqtyW0/z90DQhrs82Wo7lwQ==
-X-Received: by 2002:a63:f30b:: with SMTP id l11mr24157262pgh.129.1619573834032;
-        Tue, 27 Apr 2021 18:37:14 -0700 (PDT)
-Received: from localhost (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
-        by smtp.gmail.com with ESMTPSA id p22sm3216538pjg.39.2021.04.27.18.37.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 18:37:13 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [RFC PATCH] coresight: etm-perf: Correct buffer syncing for snapshot
-Date:   Wed, 28 Apr 2021 09:36:59 +0800
-Message-Id: <20210428013659.324230-1-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S237495AbhD1Bji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 21:39:38 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:46758 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230425AbhD1Bjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 21:39:37 -0400
+Received: from BC-Mail-Ex20.internal.baidu.com (unknown [172.31.51.14])
+        by Forcepoint Email with ESMTPS id 7DB5FDCC1AE290A6DCB4;
+        Wed, 28 Apr 2021 09:38:50 +0800 (CST)
+Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
+ BC-Mail-Ex20.internal.baidu.com (172.31.51.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.4; Wed, 28 Apr 2021 09:38:50 +0800
+Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
+ BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2242.008;
+ Wed, 28 Apr 2021 09:38:50 +0800
+From:   "Chu,Kaiping" <chukaiping@baidu.com>
+To:     David Rientjes <rientjes@google.com>
+CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "nigupta@nvidia.com" <nigupta@nvidia.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "khalid.aziz@oracle.com" <khalid.aziz@oracle.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
+        "sh_def@163.com" <sh_def@163.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: =?gb2312?B?tPC4tDogtPC4tDogW1BBVENIIHYzXSBtbS9jb21wYWN0aW9uOmxldCBwcm9h?=
+ =?gb2312?Q?ctive_compaction_order_configurable?=
+Thread-Topic: =?gb2312?B?tPC4tDogW1BBVENIIHYzXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUg?=
+ =?gb2312?Q?compaction_order_configurable?=
+Thread-Index: AQHXOjmoEYLrBaldBU+yjbigXZxebarGAdYw//+AFACAA6a8cA==
+Date:   Wed, 28 Apr 2021 01:38:49 +0000
+Message-ID: <eca28ae50fb6408db8081dcb9089c181@baidu.com>
+References: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
+ <f941268c-b91-594b-5de3-05fc418fbd0@google.com>
+ <14f6897b3dfd4314b85c5865a2f2b5d0@baidu.com>
+ <8ba0751b-8310-dcb8-5f74-97b9cb65a199@google.com>
+In-Reply-To: <8ba0751b-8310-dcb8-5f74-97b9cb65a199@google.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.194.26]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The perf tool records the Arm CoreSight trace data with snapshot mode
-with the option '-S', when receiving USR2 signal, it is observed the
-captured trace data size is very varied: from several MBs to ~20MBs.
-This can be reproduced with the command:
-
-  perf record -e cs_etm// -S \
-	-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
-  PERFPID=$!
-  sleep 1
-  kill -USR2 $PERFPID
-
-It's different for only specifying option '-S' than options '-a -S'.  If
-without option '-a', perf tool creates separate AUX buffers for every
-CPU, but the tracer will be enabled only when the profiled program is
-scheduled onto the corresponding CPU, this might lead to record very
-old trace data when snapshot.
-
-Let's see below diagram:
-                                                            snapshot
-  CPU0: ______###P1###__________________________________________|
-  CPU1: __________________________###P3###____________###P5###__|
-  CPU2: ____________________________________###P4###____________|
-  CPU3: ________________###P2###________________________________V
-
-In this diagram, the program runs for 5 periods (from P1 to P5), these 5
-periods show the task run on different CPUs, e.g. during P1 period the
-program runs on CPU0, and during P2 period the program is migrated to
-CPU1, and so on.  At the end of P1 period when the program is switched
-out from CPU0, the ETR trace data is saved into AUX trace buffer, this
-AUX buffer is a dedicated buffer for CPU0's tracer.  With the same
-logic, P2's trace data is saved into CPU3's tracer buffer, P4's trace
-data is saved into CPU2's buffer, P3 and P5's trace data is saved into
-CPU1's.  Therefore, when snapshot, it saves the trace data from all AUX
-ring buffers (in this case, it have total 4 AUX ring buffers) into perf
-data file.
-
-This is why we can see varied trace data size, it's quite dependent on
-the task scheduling on CPUs, if the task is spinned to only one CPU and
-without scheduling out, it will only record trace data from only one
-AUX trace buffer.  If the task is frequently scheduled in and out, then
-it gives more chance to fill trace data into the AUX buffer.
-
-In this example, it also causes the discontinuous trace data.  If P3's
-trace data is lost after P5's trace data overwrites the AUX trace data,
-thus perf tool fails to record continuous trace data if only have
-trace data for P1/P2/P4/P5.
-
-For snapshot mode, usually the user only wants to capture the trace data
-for the specific time point and prior to the that point the tracer
-should work with free run mode.  This means it's not necessary to
-capture trace data for task's scheduling in and out until the perf tool
-explicitly disables tracers for snapshot.  This can be fulfilled by
-checking the variable "event->ctx->is_active", when the task is
-scheduled out this variable is set to zero, and when snapshot this
-variable is still non-zero value.  So the driver can only record trace
-data only when "event->ctx->is_active" is non-zero.
-
-After applying this change, the perf tool can record the consistent
-trace data size for snapshot.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- .../hwtracing/coresight/coresight-etm-perf.c  | 21 ++++++++++++++++---
- .../hwtracing/coresight/coresight-etm-perf.h  |  2 ++
- 2 files changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 0f603b4094f2..5fceefe9513c 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -245,6 +245,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
- 	if (!event_data)
- 		return NULL;
- 	INIT_WORK(&event_data->work, free_event_data);
-+	event_data->overwrite = overwrite;
- 
- 	/* First get the selected sink from user space. */
- 	if (event->attr.config2) {
-@@ -424,9 +425,23 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 		if (!sink_ops(sink)->update_buffer)
- 			return;
- 
--		size = sink_ops(sink)->update_buffer(sink, handle,
--					      event_data->snk_config);
--		perf_aux_output_end(handle, size);
-+		/*
-+		 * In the snapshot mode, here should avoid to record trace data
-+		 * when the profiled program is scheduled out and only capture
-+		 * trace data when the perf tool receives USR2 signal.
-+		 *
-+		 * This is distinguished by variable "event->ctx->is_active",
-+		 * its value is zero for profiled task scheduling out, and it
-+		 * is a non-zero value when perf tool invokes ioctl
-+		 * PERF_EVENT_IOC_DISABLE.
-+		 */
-+		if (!event_data->overwrite || event->ctx->is_active) {
-+			size = sink_ops(sink)->update_buffer(sink, handle,
-+						      event_data->snk_config);
-+			perf_aux_output_end(handle, size);
-+		} else {
-+			perf_aux_output_end(handle, 0);
-+		}
- 	}
- 
- 	/* Disabling the path make its elements available to other sessions */
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
-index 3e4f2ad5e193..2cc3af05495f 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.h
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
-@@ -49,12 +49,14 @@ struct etm_filters {
-  * @mask:		Hold the CPU(s) this event was set for.
-  * @snk_config:		The sink configuration.
-  * @path:		An array of path, each slot for one CPU.
-+ * @overwrite:		Flag for snapshot mode.
-  */
- struct etm_event_data {
- 	struct work_struct work;
- 	cpumask_t mask;
- 	void *snk_config;
- 	struct list_head * __percpu *path;
-+	bool overwrite;
- };
- 
- #if IS_ENABLED(CONFIG_CORESIGHT)
--- 
-2.25.1
-
+UGxlYXNlIHNlZSBteSBhbnN3ZXIgaW5saW5lLg0KDQotLS0tLdPKvP7Urbz+LS0tLS0NCreivP7I
+yzogRGF2aWQgUmllbnRqZXMgPHJpZW50amVzQGdvb2dsZS5jb20+IA0Kt6LLzcqxvOQ6IDIwMjHE
+6jTUwjI2yNUgOTo0OA0KytW8/sjLOiBDaHUsS2FpcGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+
+DQqzrcvNOiBtY2dyb2ZAa2VybmVsLm9yZzsga2Vlc2Nvb2tAY2hyb21pdW0ub3JnOyB5emFpa2lu
+QGdvb2dsZS5jb207IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7IHZiYWJrYUBzdXNlLmN6OyBu
+aWd1cHRhQG52aWRpYS5jb207IGJoZUByZWRoYXQuY29tOyBraGFsaWQuYXppekBvcmFjbGUuY29t
+OyBpYW1qb29uc29vLmtpbUBsZ2UuY29tOyBtYXRldXN6bm9zZWswQGdtYWlsLmNvbTsgc2hfZGVm
+QDE2My5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWZzZGV2ZWxAdmdl
+ci5rZXJuZWwub3JnOyBsaW51eC1tbUBrdmFjay5vcmcNCtb3zOI6IFJlOiC08Li0OiBbUEFUQ0gg
+djNdIG1tL2NvbXBhY3Rpb246bGV0IHByb2FjdGl2ZSBjb21wYWN0aW9uIG9yZGVyIGNvbmZpZ3Vy
+YWJsZQ0KDQpPbiBNb24sIDI2IEFwciAyMDIxLCBDaHUsS2FpcGluZyB3cm90ZToNCg0KPiBIaSBS
+aWVudGplcw0KPiBJIGFscmVhZHkgYW5zd2VyZWQgeW91ciBxdWVzdGlvbiBpbiA0LjE5Lg0KPiAi
+IFdlIHR1cm4gb2ZmIHRoZSB0cmFuc3BhcmVudCBodWdlIHBhZ2UgaW4gb3VyIG1hY2hpbmVzLCBz
+byB3ZSBkb24ndCBjYXJlIGFib3V0IHRoZSBvcmRlciA5Lg0KPiBUaGVyZSBhcmUgbWFueSB1c2Vy
+IHNwYWNlIGFwcGxpY2F0aW9ucywgZGlmZmVyZW50IGFwcGxpY2F0aW9uIG1heWJlIGFsbG9jYXRl
+IGRpZmZlcmVudCBvcmRlciBvZiBtZW1vcnksIHdlIGNhbid0IGtub3cgdGhlICJrbm93biBvcmRl
+ciBvZiBpbnRlcmVzdCIgaW4gYWR2YW5jZS4gT3VyIHB1cnBvc2UgaXMgdG8ga2VlcCB0aGUgb3Zl
+cmFsbCBmcmFnbWVudCBpbmRleCBhcyBsb3cgYXMgcG9zc2libGUsIG5vdCBjYXJlIGFib3V0IHRo
+ZSBzcGVjaWZpYyBvcmRlci4gDQoNCk9rLCBzbyB5b3UgZG9uJ3QgY2FyZSBhYm91dCBhIHNwZWNp
+ZmljIG9yZGVyIGJ1dCB5b3UgYXJlIGFkZGluZyBhIHZtLmNvbXBhY3Rpb25fb3JkZXIgc3lzY3Rs
+Pw0KDQpJIHRoaW5rIHdoYXQgeW91J3JlIHRyeWluZyB0byBkbyBpcyBpbnZva2UgZnVsbCBjb21w
+YWN0aW9uIChjYy5vcmRlciA9IC0xKSBhdCBzb21lIHBvaW50IGluIHRpbWUgdGhhdCB3aWxsICgx
+KSBrZWVwIG5vZGUtd2lkZSBmcmFnbWVudGF0aW9uIGxvdyBvdmVyIHRoZSBsb25nIHJ1biBhbmQg
+KDIpIGJlIHJlbGF0aXZlbHkgbGlnaHR3ZWlnaHQgYXQgdGhlIHRpbWUgaXQgaXMgZG9uZS4NCg0K
+SSBjYW4gY2VydGFpbmx5IHVuZGVyc3RhbmQgKDEpIG9uIHlvdXIgY29uZmlndXJhdGlvbiB0aGF0
+IGlzIG1vc3RseSBjb25zdW1lZCBieSAxR0IgZ2lnYW50aWMgcGFnZXMsIHlvdSBhcmUgbGlrZWx5
+IGRlYWxpbmcgd2l0aCBzaWduaWZpY2FudCBtZW1vcnkgcHJlc3N1cmUgdGhhdCBjYXVzZXMgZnJh
+Z21lbnRhdGlvbiB0byBpbmNyZWFzZSBvdmVyIHRpbWUgYW5kIGV2ZW50dWFsbHkgYmVjb21lIHVu
+cmVjb3ZlcmFibGUgZm9yIHRoZSBtb3N0IHBhcnQuDQoNCkFuZCBmb3IgKDIpLCB5ZXMsIHVzaW5n
+IHZtLmNvbXBhY3RfbWVtb3J5IHdpbGwgYmVjb21lIHZlcnkgaGVhdnl3ZWlnaHQgaWYgaXQncyBk
+b25lIHRvbyBsYXRlLg0KDQpTbyBzaW5jZSBwcm9hY3RpdmUgY29tcGFjdGlvbiB1c2VzIGNjLm9y
+ZGVyID0gMSwgc2FtZSBhcyB2bS5jb21wYWN0X21lbW9yeSwgaXQgc2hvdWxkIGJlIHBvc3NpYmxl
+IHRvIG1vbml0b3IgZXh0ZnJhZ19pbmRleCB1bmRlciBkZWJ1Z2ZzIGFuZCBtYW51YWxseSB0cmln
+Z2VyIGNvbXBhY3Rpb24gd2hlbiBuZWNlc3Nhcnkgd2l0aG91dCBpbnRlcnZlbnRpb24gb2YgdGhl
+IGtlcm5lbC4NCi0tPiBBZGRpbmcgdXNlcnNwYWNlIG1vbml0b3Igd2lsbCBicmluZyBleHRyYSBs
+b2FkIHRvIG1hY2hpbmVzLiBXZSBjYW4gdGFrZSB1c2Ugb2YgY3VycmVudCBwcm9hY3RpdmUgY29t
+cGFjdGlvbiBtZWNoYW5pc20gaW4ga2VybmVsLCBvbmx5IG5lZWQgdG8gZG8gc29tZSBzbWFsbCBt
+b2RpZmljYXRpb24uDQoNCkkgdGhpbmsgd2UgY2FuIGJvdGggYWdyZWUgdGhhdCB3ZSB3b3VsZG4n
+dCB3YW50IHRvIGFkZCBvYnNjdXJlIGFuZCB1bmRvY3VtZW50ZWQgc3lzY3RscyB0aGF0IHRoYXQg
+Y2FuIGVhc2lseSBiZSByZXBsYWNlZCBieSBhIHVzZXJzcGFjZSBpbXBsZW1lbnRhdGlvbi4NCg0K
+PiBBbHRob3VnaCBjdXJyZW50IHByb2FjdGl2ZSBjb21wYWN0aW9uIG1lY2hhbmlzbSBvbmx5IGNo
+ZWNrIHRoZSBmcmFnbWVudCBpbmRleCBvZiBzcGVjaWZpYyBvcmRlciwgYnV0IGl0IGNhbiBkbyBt
+ZW1vcnkgY29tcGFjdGlvbiBmb3IgYWxsIG9yZGVyKC5vcmRlciA9IC0xIGluIHByb2FjdGl2ZV9j
+b21wYWN0X25vZGUpLCBzbyBpdCdzIHN0aWxsIHVzZWZ1bCBmb3IgdXMuIA0KPiBXZSBzZXQgdGhl
+IGNvbXBhY3Rpb25fb3JkZXIgYWNjb3JkaW5nIHRvIHRoZSBhdmVyYWdlIGZyYWdtZW50IGluZGV4
+IG9mIGFsbCBvdXIgbWFjaGluZXMsIGl0J3MgYW4gZXhwZXJpZW5jZSB2YWx1ZSwgaXQncyBhIGNv
+bXByb21pc2Ugb2Yga2VlcCBtZW1vcnkgZnJhZ21lbnQgaW5kZXggbG93IGFuZCBub3QgdHJpZ2dl
+ciBiYWNrZ3JvdW5kIGNvbXBhY3Rpb24gdG9vIG11Y2gsIHRoaXMgdmFsdWUgY2FuIGJlIGNoYW5n
+ZWQgaW4gZnV0dXJlLg0KPiBXZSBkaWQgcGVyaW9kaWNhbGx5IG1lbW9yeSBjb21wYWN0aW9uIGJ5
+IGNvbW1hbmQgImVjaG8gMSA+IC9wcm9jL3N5cy92bS9jb21wYWN0X21lbW9yeSAiIHByZXZpb3Vz
+bHksIGJ1dCBpdCdzIG5vdCBnb29kIGVub3VnaCwgaXQncyB3aWxsIGNvbXBhY3QgYWxsIG1lbW9y
+eSBmb3JjaWJseSwgaXQgbWF5IGxlYWQgdG8gbG90cyBvZiBtZW1vcnkgbW92ZSBpbiBzaG9ydCB0
+aW1lLCBhbmQgYWZmZWN0IHRoZSBwZXJmb3JtYW5jZSBvZiBhcHBsaWNhdGlvbi4iDQo+IA0KPiAN
+Cj4gQlIsDQo+IENodSBLYWlwaW5nDQo+IA0KPiAtLS0tLdPKvP7Urbz+LS0tLS0NCj4gt6K8/sjL
+OiBEYXZpZCBSaWVudGplcyA8cmllbnRqZXNAZ29vZ2xlLmNvbT4NCj4gt6LLzcqxvOQ6IDIwMjHE
+6jTUwjI2yNUgOToxNQ0KPiDK1bz+yMs6IENodSxLYWlwaW5nIDxjaHVrYWlwaW5nQGJhaWR1LmNv
+bT4NCj4gs63LzTogbWNncm9mQGtlcm5lbC5vcmc7IGtlZXNjb29rQGNocm9taXVtLm9yZzsgeXph
+aWtpbkBnb29nbGUuY29tOyANCj4gYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgdmJhYmthQHN1
+c2UuY3o7IG5pZ3VwdGFAbnZpZGlhLmNvbTsgDQo+IGJoZUByZWRoYXQuY29tOyBraGFsaWQuYXpp
+ekBvcmFjbGUuY29tOyBpYW1qb29uc29vLmtpbUBsZ2UuY29tOyANCj4gbWF0ZXVzem5vc2VrMEBn
+bWFpbC5jb207IHNoX2RlZkAxNjMuY29tOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyAN
+Cj4gbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW1tQGt2YWNrLm9yZw0KPiDW
+98ziOiBSZTogW1BBVENIIHYzXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUgY29tcGFjdGlv
+biBvcmRlciANCj4gY29uZmlndXJhYmxlDQo+IA0KPiBPbiBTdW4sIDI1IEFwciAyMDIxLCBjaHVr
+YWlwaW5nIHdyb3RlOg0KPiANCj4gPiBDdXJyZW50bHkgdGhlIHByb2FjdGl2ZSBjb21wYWN0aW9u
+IG9yZGVyIGlzIGZpeGVkIHRvIA0KPiA+IENPTVBBQ1RJT05fSFBBR0VfT1JERVIoOSksIGl0J3Mg
+T0sgaW4gbW9zdCBtYWNoaW5lcyB3aXRoIGxvdHMgb2YgDQo+ID4gbm9ybWFsIDRLQiBtZW1vcnks
+IGJ1dCBpdCdzIHRvbyBoaWdoIGZvciB0aGUgbWFjaGluZXMgd2l0aCBzbWFsbCANCj4gPiBub3Jt
+YWwgbWVtb3J5LCBmb3IgZXhhbXBsZSB0aGUgbWFjaGluZXMgd2l0aCBtb3N0IG1lbW9yeSBjb25m
+aWd1cmVkIA0KPiA+IGFzIDFHQiBodWdldGxiZnMgaHVnZSBwYWdlcy4gSW4gdGhlc2UgbWFjaGlu
+ZXMgdGhlIG1heCBvcmRlciBvZiBmcmVlIA0KPiA+IHBhZ2VzIGlzIG9mdGVuIGJlbG93IDksIGFu
+ZCBpdCdzIGFsd2F5cyBiZWxvdyA5IGV2ZW4gd2l0aCBoYXJkIA0KPiA+IGNvbXBhY3Rpb24uIFRo
+aXMgd2lsbCBsZWFkIHRvIHByb2FjdGl2ZSBjb21wYWN0aW9uIGJlIHRyaWdnZXJlZCB2ZXJ5IA0K
+PiA+IGZyZXF1ZW50bHkuIEluIHRoZXNlIG1hY2hpbmVzIHdlIG9ubHkgY2FyZSBhYm91dCBvcmRl
+ciBvZiAzIG9yIDQuDQo+ID4gVGhpcyBwYXRjaCBleHBvcnQgdGhlIG9kZXIgdG8gcHJvYyBhbmQg
+bGV0IGl0IGNvbmZpZ3VyYWJsZSBieSB1c2VyLCANCj4gPiBhbmQgdGhlIGRlZmF1bHQgdmFsdWUg
+aXMgc3RpbGwgQ09NUEFDVElPTl9IUEFHRV9PUkRFUi4NCj4gPiANCj4gDQo+IEFzIGFza2VkIGlu
+IHRoZSByZXZpZXcgb2YgdGhlIHYxIG9mIHRoZSBwYXRjaCwgd2h5IGlzIHRoaXMgbm90IGEgdXNl
+cnNwYWNlIHBvbGljeSBkZWNpc2lvbj8gIElmIHlvdSBhcmUgaW50ZXJlc3RlZCBpbiBvcmRlci0z
+IG9yIG9yZGVyLTQgZnJhZ21lbnRhdGlvbiwgZm9yIHdoYXRldmVyIHJlYXNvbiwgeW91IGNvdWxk
+IHBlcmlvZGljYWxseSBjaGVjayAvcHJvYy9idWRkeWluZm8gYW5kIG1hbnVhbGx5IGludm9rZSBj
+b21wYWN0aW9uIG9uIHRoZSBzeXN0ZW0uDQo+IA0KPiBJbiBvdGhlciB3b3Jkcywgd2h5IGRvZXMg
+dGhpcyBuZWVkIHRvIGxpdmUgaW4gdGhlIGtlcm5lbD8NCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTog
+Y2h1a2FpcGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+DQo+ID4gUmVwb3J0ZWQtYnk6IGtlcm5l
+bCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPiA+IC0tLQ0KPiA+IA0KPiA+IENoYW5nZXMg
+aW4gdjM6DQo+ID4gICAgIC0gY2hhbmdlIHRoZSBtaW4gdmFsdWUgb2YgY29tcGFjdGlvbl9vcmRl
+ciB0byAxIGJlY2F1c2UgdGhlIGZyYWdtZW50YXRpb24NCj4gPiAgICAgICBpbmRleCBvZiBvcmRl
+ciAwIGlzIGFsd2F5cyAwDQo+ID4gICAgIC0gbW92ZSB0aGUgZGVmaW5pdGlvbiBvZiBtYXhfYnVk
+ZHlfem9uZSBpbnRvICNpZmRlZiANCj4gPiBDT05GSUdfQ09NUEFDVElPTg0KPiA+IA0KPiA+IENo
+YW5nZXMgaW4gdjI6DQo+ID4gICAgIC0gZml4IHRoZSBjb21waWxlIGVycm9yIGluIGlhNjQgYW5k
+IHBvd2VycGMsIG1vdmUgdGhlIGluaXRpYWxpemF0aW9uDQo+ID4gICAgICAgb2Ygc3lzY3RsX2Nv
+bXBhY3Rpb25fb3JkZXIgdG8ga2NvbXBhY3RkX2luaXQgYmVjYXVzZSANCj4gPiAgICAgICBDT01Q
+QUNUSU9OX0hQQUdFX09SREVSIGlzIGEgdmFyaWFibGUgaW4gdGhlc2UgYXJjaGl0ZWN0dXJlcw0K
+PiA+ICAgICAtIGNoYW5nZSB0aGUgaGFyZCBjb2RlZCBtYXggb3JkZXIgbnVtYmVyIGZyb20gMTAg
+dG8gTUFYX09SREVSIC0gDQo+ID4gMQ0KPiA+IA0KPiA+ICBpbmNsdWRlL2xpbnV4L2NvbXBhY3Rp
+b24uaCB8ICAgIDEgKw0KPiA+ICBrZXJuZWwvc3lzY3RsLmMgICAgICAgICAgICB8ICAgMTAgKysr
+KysrKysrKw0KPiA+ICBtbS9jb21wYWN0aW9uLmMgICAgICAgICAgICB8ICAgIDkgKysrKysrLS0t
+DQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
+Cj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9jb21wYWN0aW9uLmggYi9pbmNs
+dWRlL2xpbnV4L2NvbXBhY3Rpb24uaCANCj4gPiBpbmRleCBlZDQwNzBlLi4xNTFjY2QxIDEwMDY0
+NA0KPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvY29tcGFjdGlvbi5oDQo+ID4gKysrIGIvaW5jbHVk
+ZS9saW51eC9jb21wYWN0aW9uLmgNCj4gPiBAQCAtODMsNiArODMsNyBAQCBzdGF0aWMgaW5saW5l
+IHVuc2lnbmVkIGxvbmcgY29tcGFjdF9nYXAodW5zaWduZWQgDQo+ID4gaW50DQo+ID4gb3JkZXIp
+ICAjaWZkZWYgQ09ORklHX0NPTVBBQ1RJT04gIGV4dGVybiBpbnQgc3lzY3RsX2NvbXBhY3RfbWVt
+b3J5OyANCj4gPiBleHRlcm4gdW5zaWduZWQgaW50IHN5c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2
+ZW5lc3M7DQo+ID4gK2V4dGVybiB1bnNpZ25lZCBpbnQgc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXI7
+DQo+ID4gIGV4dGVybiBpbnQgc3lzY3RsX2NvbXBhY3Rpb25faGFuZGxlcihzdHJ1Y3QgY3RsX3Rh
+YmxlICp0YWJsZSwgaW50IHdyaXRlLA0KPiA+ICAJCQl2b2lkICpidWZmZXIsIHNpemVfdCAqbGVu
+Z3RoLCBsb2ZmX3QgKnBwb3MpOyAgZXh0ZXJuIGludCANCj4gPiBzeXNjdGxfZXh0ZnJhZ190aHJl
+c2hvbGQ7IGRpZmYgLS1naXQgYS9rZXJuZWwvc3lzY3RsLmMgDQo+ID4gYi9rZXJuZWwvc3lzY3Rs
+LmMgaW5kZXggNjJmYmQwOS4uZTUwZjdkMiAxMDA2NDQNCj4gPiAtLS0gYS9rZXJuZWwvc3lzY3Rs
+LmMNCj4gPiArKysgYi9rZXJuZWwvc3lzY3RsLmMNCj4gPiBAQCAtMTk2LDYgKzE5Niw3IEBAIGVu
+dW0gc3lzY3RsX3dyaXRlc19tb2RlIHsgICNlbmRpZiAvKiANCj4gPiBDT05GSUdfU0NIRURfREVC
+VUcgKi8NCj4gPiAgDQo+ID4gICNpZmRlZiBDT05GSUdfQ09NUEFDVElPTg0KPiA+ICtzdGF0aWMg
+aW50IG1heF9idWRkeV96b25lID0gTUFYX09SREVSIC0gMTsNCj4gPiAgc3RhdGljIGludCBtaW5f
+ZXh0ZnJhZ190aHJlc2hvbGQ7DQo+ID4gIHN0YXRpYyBpbnQgbWF4X2V4dGZyYWdfdGhyZXNob2xk
+ID0gMTAwMDsgICNlbmRpZiBAQCAtMjg3MSw2IA0KPiA+ICsyODcyLDE1IEBAIGludCBwcm9jX2Rv
+X3N0YXRpY19rZXkoc3RydWN0IGN0bF90YWJsZSAqdGFibGUsIGludCB3cml0ZSwNCj4gPiAgCQku
+ZXh0cmEyCQk9ICZvbmVfaHVuZHJlZCwNCj4gPiAgCX0sDQo+ID4gIAl7DQo+ID4gKwkJLnByb2Nu
+YW1lICAgICAgID0gImNvbXBhY3Rpb25fb3JkZXIiLA0KPiA+ICsJCS5kYXRhICAgICAgICAgICA9
+ICZzeXNjdGxfY29tcGFjdGlvbl9vcmRlciwNCj4gPiArCQkubWF4bGVuICAgICAgICAgPSBzaXpl
+b2Yoc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIpLA0KPiA+ICsJCS5tb2RlICAgICAgICAgICA9IDA2
+NDQsDQo+ID4gKwkJLnByb2NfaGFuZGxlciAgID0gcHJvY19kb2ludHZlY19taW5tYXgsDQo+ID4g
+KwkJLmV4dHJhMSAgICAgICAgID0gU1lTQ1RMX09ORSwNCj4gPiArCQkuZXh0cmEyICAgICAgICAg
+PSAmbWF4X2J1ZGR5X3pvbmUsDQo+ID4gKwl9LA0KPiA+ICsJew0KPiA+ICAJCS5wcm9jbmFtZQk9
+ICJleHRmcmFnX3RocmVzaG9sZCIsDQo+ID4gIAkJLmRhdGEJCT0gJnN5c2N0bF9leHRmcmFnX3Ro
+cmVzaG9sZCwNCj4gPiAgCQkubWF4bGVuCQk9IHNpemVvZihpbnQpLA0KPiA+IGRpZmYgLS1naXQg
+YS9tbS9jb21wYWN0aW9uLmMgYi9tbS9jb21wYWN0aW9uLmMgaW5kZXggDQo+ID4gZTA0ZjQ0Ny4u
+NzBjMGFjZA0KPiA+IDEwMDY0NA0KPiA+IC0tLSBhL21tL2NvbXBhY3Rpb24uYw0KPiA+ICsrKyBi
+L21tL2NvbXBhY3Rpb24uYw0KPiA+IEBAIC0xOTI1LDE2ICsxOTI1LDE2IEBAIHN0YXRpYyBib29s
+IGtzd2FwZF9pc19ydW5uaW5nKHBnX2RhdGFfdA0KPiA+ICpwZ2RhdCkNCj4gPiAgDQo+ID4gIC8q
+DQo+ID4gICAqIEEgem9uZSdzIGZyYWdtZW50YXRpb24gc2NvcmUgaXMgdGhlIGV4dGVybmFsIGZy
+YWdtZW50YXRpb24gd3J0IA0KPiA+IHRvIHRoZQ0KPiA+IC0gKiBDT01QQUNUSU9OX0hQQUdFX09S
+REVSLiBJdCByZXR1cm5zIGEgdmFsdWUgaW4gdGhlIHJhbmdlIFswLCAxMDBdLg0KPiA+ICsgKiBz
+eXNjdGxfY29tcGFjdGlvbl9vcmRlci4gSXQgcmV0dXJucyBhIHZhbHVlIGluIHRoZSByYW5nZSBb
+MCwgMTAwXS4NCj4gPiAgICovDQo+ID4gIHN0YXRpYyB1bnNpZ25lZCBpbnQgZnJhZ21lbnRhdGlv
+bl9zY29yZV96b25lKHN0cnVjdCB6b25lICp6b25lKSAgew0KPiA+IC0JcmV0dXJuIGV4dGZyYWdf
+Zm9yX29yZGVyKHpvbmUsIENPTVBBQ1RJT05fSFBBR0VfT1JERVIpOw0KPiA+ICsJcmV0dXJuIGV4
+dGZyYWdfZm9yX29yZGVyKHpvbmUsIHN5c2N0bF9jb21wYWN0aW9uX29yZGVyKTsNCj4gPiAgfQ0K
+PiA+ICANCj4gPiAgLyoNCj4gPiAgICogQSB3ZWlnaHRlZCB6b25lJ3MgZnJhZ21lbnRhdGlvbiBz
+Y29yZSBpcyB0aGUgZXh0ZXJuYWwgDQo+ID4gZnJhZ21lbnRhdGlvbg0KPiA+IC0gKiB3cnQgdG8g
+dGhlIENPTVBBQ1RJT05fSFBBR0VfT1JERVIgc2NhbGVkIGJ5IHRoZSB6b25lJ3Mgc2l6ZS4gSXQN
+Cj4gPiArICogd3J0IHRvIHRoZSBzeXNjdGxfY29tcGFjdGlvbl9vcmRlciBzY2FsZWQgYnkgdGhl
+IHpvbmUncyBzaXplLiBJdA0KPiA+ICAgKiByZXR1cm5zIGEgdmFsdWUgaW4gdGhlIHJhbmdlIFsw
+LCAxMDBdLg0KPiA+ICAgKg0KPiA+ICAgKiBUaGUgc2NhbGluZyBmYWN0b3IgZW5zdXJlcyB0aGF0
+IHByb2FjdGl2ZSBjb21wYWN0aW9uIGZvY3VzZXMgb24gDQo+ID4gbGFyZ2VyIEBAIC0yNjY2LDYg
+KzI2NjYsNyBAQCBzdGF0aWMgdm9pZCBjb21wYWN0X25vZGVzKHZvaWQpDQo+ID4gICAqIGJhY2tn
+cm91bmQuIEl0IHRha2VzIHZhbHVlcyBpbiB0aGUgcmFuZ2UgWzAsIDEwMF0uDQo+ID4gICAqLw0K
+PiA+ICB1bnNpZ25lZCBpbnQgX19yZWFkX21vc3RseSBzeXNjdGxfY29tcGFjdGlvbl9wcm9hY3Rp
+dmVuZXNzID0gMjA7DQo+ID4gK3Vuc2lnbmVkIGludCBfX3JlYWRfbW9zdGx5IHN5c2N0bF9jb21w
+YWN0aW9uX29yZGVyOw0KPiA+ICANCj4gPiAgLyoNCj4gPiAgICogVGhpcyBpcyB0aGUgZW50cnkg
+cG9pbnQgZm9yIGNvbXBhY3RpbmcgYWxsIG5vZGVzIHZpYSBAQCAtMjk1OCw2DQo+ID4gKzI5NTks
+OCBAQCBzdGF0aWMgaW50IF9faW5pdCBrY29tcGFjdGRfaW5pdCh2b2lkKQ0KPiA+ICAJaW50IG5p
+ZDsNCj4gPiAgCWludCByZXQ7DQo+ID4gIA0KPiA+ICsJc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIg
+PSBDT01QQUNUSU9OX0hQQUdFX09SREVSOw0KPiA+ICsNCj4gPiAgCXJldCA9IGNwdWhwX3NldHVw
+X3N0YXRlX25vY2FsbHMoQ1BVSFBfQVBfT05MSU5FX0RZTiwNCj4gPiAgCQkJCQkibW0vY29tcGFj
+dGlvbjpvbmxpbmUiLA0KPiA+ICAJCQkJCWtjb21wYWN0ZF9jcHVfb25saW5lLCBOVUxMKTsNCj4g
+PiAtLQ0KPiA+IDEuNy4xDQo+ID4gDQo+ID4gDQo+IA0K
