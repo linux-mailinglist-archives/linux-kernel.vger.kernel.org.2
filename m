@@ -2,219 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574C236DEAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BD436DEAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243207AbhD1Rx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
+        id S243361AbhD1Rz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243187AbhD1Rx0 (ORCPT
+        with ESMTP id S243349AbhD1Rz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:53:26 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DB2C061573;
-        Wed, 28 Apr 2021 10:52:40 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c1700f2769e812f937597.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1700:f276:9e81:2f93:7597])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2BB431EC0242;
-        Wed, 28 Apr 2021 19:52:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619632359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uNuSRpt+Nn8E1Ie1R3utO4unCBUpAQGFbeK/Hl3lbwA=;
-        b=f66CoGete6UVNGpfGs/Fm2JVHxdlkjHe22uMROZcu8rr0x2vEvFY/1wCWVsC5/+qsG2d20
-        OC+P3YZqbuPB/ykR8uGOFeBXsaI3T1EXVnAIl5+CHOile1nSbGtjmvFoWjfMD3TKeplfm3
-        J6jPvXnOnMA5cMOUbp3RdC1kckLGAZU=
-Date:   Wed, 28 Apr 2021 19:52:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v26 22/30] x86/cet/shstk: Add user-mode shadow stack
- support
-Message-ID: <YImg5hmBnTZTkYIp@zn.tnic>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-23-yu-cheng.yu@intel.com>
+        Wed, 28 Apr 2021 13:55:56 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330ADC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:55:11 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t18so6408043wry.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ccJ5CKh5Fm2jcqyeUGgDKmg/mfobdGyfWxQa0j/XJgY=;
+        b=jo3w+WThsU+itLe68rxjwmCfIa0oZ5elmUOfF/KpYZ8pmbrIsshEpkCEaShcIa0B+L
+         pTwkM08whlEM5I4QLNGvdjx6szEhmWKInp6WjfTDyD2eNQSVh74u1SiPjLotpvgkJJKy
+         /l7a7uFlKzdKW1mTxXnHcF5o0gHh+B8oQ/hNrQCOybtxgvTFDxT50IUrMZDZjmXsO6PB
+         eaPhbfliU5QNlcmnLPLmFWm4KDOp3fjiw/o0VlyzStrKbs4BWdY9UNrC9rBPf9nuObPO
+         pM/J1iolzYdHrJpkUY4wn/6kJM99tRSVWOOGpihvgtEDFckEwVdS04/jHjMPGuQzo8ac
+         z6+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ccJ5CKh5Fm2jcqyeUGgDKmg/mfobdGyfWxQa0j/XJgY=;
+        b=iv8F7vRJ//MgBbaW8OnDoIhGyev0V6okzno9HEglaz7CprCrSGoZtFFdm9teDd2HLm
+         LDM5k1o6CMoyYjDL1uV1bOfVZA8e5M7TpOkqvZphDjmBXtduPxQ8lU2DUBP/M2NS3hCe
+         g06GLXkbSsVdxHhCu2s/2juRDfmF+/sABWoZA3Elz1avayiYrTmP8O1gyE4EjKe0nS/X
+         f/hu/Ia5je6LhAeFl+1aQ1WgZXHiWGrprJqXKzuPtCrZMahsaGi0+t9IzAfCQJV/wjkU
+         MnronnpKWdIUA4eW7F+UQWzGrLsuYtI5bbD/dEYQEIHSP5IfXH7sfhpolxsmNil0DXEe
+         ddTg==
+X-Gm-Message-State: AOAM5327GXRz9mgTCGKd4hr2upWGttaRVDOop0LBwBA51BQM6mXoNdtb
+        qeKr7qeQUrfO7dM7szydxFQEWg==
+X-Google-Smtp-Source: ABdhPJyStKAHRYiMqqdwTQdM6FHQZW5EDJ82J7Avnp9VngvDTL9jiKJU0CHc4/9XO8r0jjBx6v1s2Q==
+X-Received: by 2002:a5d:590b:: with SMTP id v11mr28163078wrd.415.1619632509812;
+        Wed, 28 Apr 2021 10:55:09 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id o10sm616526wrx.35.2021.04.28.10.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 10:55:09 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        ulli.kroll@googlemail.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] ARM: dts: gemini: rename to nand-controller
+Date:   Wed, 28 Apr 2021 17:55:03 +0000
+Message-Id: <20210428175503.3692090-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210427204315.24153-23-yu-cheng.yu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:43:07PM -0700, Yu-cheng Yu wrote:
-> @@ -535,6 +536,10 @@ struct thread_struct {
->  
->  	unsigned int		sig_on_uaccess_err:1;
->  
-> +#ifdef CONFIG_X86_SHADOW_STACK
-> +	struct cet_status	cet;
+We must use nand-controller instead of flash.
 
-A couple of versions ago I said:
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ arch/arm/boot/dts/gemini-dlink-dir-685.dts | 2 +-
+ arch/arm/boot/dts/gemini-nas4220b.dts      | 2 +-
+ arch/arm/boot/dts/gemini-rut1xx.dts        | 3 +--
+ arch/arm/boot/dts/gemini-sl93512r.dts      | 2 +-
+ arch/arm/boot/dts/gemini-sq201.dts         | 2 +-
+ arch/arm/boot/dts/gemini-wbd111.dts        | 2 +-
+ arch/arm/boot/dts/gemini-wbd222.dts        | 2 +-
+ arch/arm/boot/dts/gemini.dtsi              | 2 +-
+ 8 files changed, 8 insertions(+), 9 deletions(-)
 
-"	struct shstk_desc       shstk;
-
-or so"
-
-but no movement here. That thing is still called cet_status even though
-there's nothing status-related with it.
-
-So what's up?
-
-> +static unsigned long alloc_shstk(unsigned long size)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	unsigned long addr, populate;
-> +	int flags = MAP_ANONYMOUS | MAP_PRIVATE;
-
-The tip-tree preferred ordering of variable declarations at the
-beginning of a function is reverse fir tree order::
-
-	struct long_struct_name *descriptive_name;
-	unsigned long foo, bar;
-	unsigned int tmp;
-	int ret;
-
-The above is faster to parse than the reverse ordering::
-
-	int ret;
-	unsigned int tmp;
-	unsigned long foo, bar;
-	struct long_struct_name *descriptive_name;
-
-And even more so than random ordering::
-
-	unsigned long foo, bar;
-	int ret;
-	struct long_struct_name *descriptive_name;
-	unsigned int tmp;
-
-Please fix it up everywhere.
-
-> +	mmap_write_lock(mm);
-> +	addr = do_mmap(NULL, 0, size, PROT_READ, flags, VM_SHADOW_STACK, 0,
-> +		       &populate, NULL);
-> +	mmap_write_unlock(mm);
-> +
-> +	return addr;
-> +}
-> +
-> +int shstk_setup(void)
-> +{
-> +	unsigned long addr, size;
-> +	struct cet_status *cet = &current->thread.cet;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK))
-> +		return -EOPNOTSUPP;
-> +
-> +	size = round_up(min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G), PAGE_SIZE);
-> +	addr = alloc_shstk(size);
-> +	if (IS_ERR_VALUE(addr))
-> +		return PTR_ERR((void *)addr);
-> +
-> +	cet->shstk_base = addr;
-> +	cet->shstk_size = size;
-> +
-> +	start_update_msrs();
-> +	wrmsrl(MSR_IA32_PL3_SSP, addr + size);
-> +	wrmsrl(MSR_IA32_U_CET, CET_SHSTK_EN);
-> +	end_update_msrs();
-
-<---- newline here.
-
-> +	return 0;
-> +}
-> +
-> +void shstk_free(struct task_struct *tsk)
-> +{
-> +	struct cet_status *cet = &tsk->thread.cet;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
-> +	    !cet->shstk_size ||
-> +	    !cet->shstk_base)
-> +		return;
-> +
-> +	if (!tsk->mm)
-> +		return;
-
-Where are the comments you said you wanna add:
-
-https://lkml.kernel.org/r/b05ee7eb-1b5d-f84f-c8f3-bfe9426e8a7d@intel.com
-
-?
-
-> +
-> +	while (1) {
-> +		int r;
-> +
-> +		r = vm_munmap(cet->shstk_base, cet->shstk_size);
-
-		int r = vm_munmap...
-
-> +
-> +		/*
-> +		 * vm_munmap() returns -EINTR when mmap_lock is held by
-> +		 * something else, and that lock should not be held for a
-> +		 * long time.  Retry it for the case.
-> +		 */
-> +		if (r == -EINTR) {
-> +			cond_resched();
-> +			continue;
-> +		}
-> +		break;
-> +	}
-
-vm_munmap() can return other negative error values, where are you
-handling those?
-
-> +
-> +	cet->shstk_base = 0;
-> +	cet->shstk_size = 0;
-> +}
-> +
-> +void shstk_disable(void)
-> +{
-> +	struct cet_status *cet = &current->thread.cet;
-
-Same question as before: what guarantees that current doesn't change
-from under you here?
-
-One of the worst thing to do is to ignore review comments. I'd strongly
-suggest you pay more attention and avoid that in the future.
-
-Thx.
-
+diff --git a/arch/arm/boot/dts/gemini-dlink-dir-685.dts b/arch/arm/boot/dts/gemini-dlink-dir-685.dts
+index cc39289e99dd..5e205bb53e5a 100644
+--- a/arch/arm/boot/dts/gemini-dlink-dir-685.dts
++++ b/arch/arm/boot/dts/gemini-dlink-dir-685.dts
+@@ -281,7 +281,7 @@ phy4: phy@4 {
+ 	};
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			/*
+ 			 * Flash access collides with the Chip Enable signal for
+ 			 * the display panel, that reuse the parallel flash Chip
+diff --git a/arch/arm/boot/dts/gemini-nas4220b.dts b/arch/arm/boot/dts/gemini-nas4220b.dts
+index 43c45f7e1e0a..1e2d3162d9c1 100644
+--- a/arch/arm/boot/dts/gemini-nas4220b.dts
++++ b/arch/arm/boot/dts/gemini-nas4220b.dts
+@@ -76,7 +76,7 @@ phy0: ethernet-phy@1 {
+ 	};
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			status = "okay";
+ 			/* 16MB of flash */
+ 			reg = <0x30000000 0x01000000>;
+diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
+index 08091d2a64e1..f8826a3b774f 100644
+--- a/arch/arm/boot/dts/gemini-rut1xx.dts
++++ b/arch/arm/boot/dts/gemini-rut1xx.dts
+@@ -70,7 +70,7 @@ phy0: ethernet-phy@1 {
+ 	};
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			status = "okay";
+ 			/* 8MB of flash */
+ 			reg = <0x30000000 0x00800000>;
+@@ -124,7 +124,6 @@ ethernet-port@1 {
+ 				/* Not used in this platform */
+ 			};
+ 		};
+-
+ 		usb@68000000 {
+ 			status = "okay";
+ 		};
+diff --git a/arch/arm/boot/dts/gemini-sl93512r.dts b/arch/arm/boot/dts/gemini-sl93512r.dts
+index a0916d3c1059..995be04425b7 100644
+--- a/arch/arm/boot/dts/gemini-sl93512r.dts
++++ b/arch/arm/boot/dts/gemini-sl93512r.dts
+@@ -138,7 +138,7 @@ fixed-link {
+ 
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			status = "okay";
+ 			/* 16MB of flash */
+ 			reg = <0x30000000 0x01000000>;
+diff --git a/arch/arm/boot/dts/gemini-sq201.dts b/arch/arm/boot/dts/gemini-sq201.dts
+index 0c6e6d35bfaa..df6146aaff4b 100644
+--- a/arch/arm/boot/dts/gemini-sq201.dts
++++ b/arch/arm/boot/dts/gemini-sq201.dts
+@@ -123,7 +123,7 @@ fixed-link {
+ 
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			status = "okay";
+ 			pinctrl-names = "enabled", "disabled";
+ 			pinctrl-0 = <&pflash_default_pins>;
+diff --git a/arch/arm/boot/dts/gemini-wbd111.dts b/arch/arm/boot/dts/gemini-wbd111.dts
+index 0c47b2b9811c..f253743b1c55 100644
+--- a/arch/arm/boot/dts/gemini-wbd111.dts
++++ b/arch/arm/boot/dts/gemini-wbd111.dts
+@@ -82,7 +82,7 @@ phy0: ethernet-phy@1 {
+ 	};
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			status = "okay";
+ 			/* 8MB of flash */
+ 			reg = <0x30000000 0x00800000>;
+diff --git a/arch/arm/boot/dts/gemini-wbd222.dts b/arch/arm/boot/dts/gemini-wbd222.dts
+index 52b4dbc0c072..76b6faaf806e 100644
+--- a/arch/arm/boot/dts/gemini-wbd222.dts
++++ b/arch/arm/boot/dts/gemini-wbd222.dts
+@@ -86,7 +86,7 @@ phy1: ethernet-phy@3 {
+ 	};
+ 
+ 	soc {
+-		flash@30000000 {
++		nand-controller@30000000 {
+ 			status = "okay";
+ 			/* 8MB of flash */
+ 			reg = <0x30000000 0x00800000>;
+diff --git a/arch/arm/boot/dts/gemini.dtsi b/arch/arm/boot/dts/gemini.dtsi
+index 38671523dec5..5c8c5179c944 100644
+--- a/arch/arm/boot/dts/gemini.dtsi
++++ b/arch/arm/boot/dts/gemini.dtsi
+@@ -16,7 +16,7 @@ soc {
+ 		compatible = "simple-bus";
+ 		interrupt-parent = <&intcon>;
+ 
+-		flash@30000000 {
++		nand: nand-controller@30000000 {
+ 			compatible = "cortina,gemini-flash", "cfi-flash";
+ 			syscon = <&syscon>;
+ 			pinctrl-names = "default";
 -- 
-Regards/Gruss,
-    Boris.
+2.26.3
 
-https://people.kernel.org/tglx/notes-about-netiquette
