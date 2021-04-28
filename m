@@ -2,177 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF4436D3FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F56836D402
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237490AbhD1Ick (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:32:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236961AbhD1Ici (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8553F6141F;
-        Wed, 28 Apr 2021 08:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619598714;
-        bh=8q8seLvWtMALwDRZ39mid0YWnYDGfBmHECWjMoz1lq0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s7qJ3e7DskhEutLmfwsUuD32czlpqWLeGFX9js6vhnpCPZDB8Nvlr7LUTtD+5NQCD
-         ZgrQQ7aBwJEM8vdfO9EpIO7wX+Nbznf/iAwBM/4sfddeYptKUv6KWuvd/0QaA/q1hZ
-         Od9X3METL1DUGc3ttLlNUD6vfc9yBLy25o8oZ/kGpvk+fi9vHQoYCclFWw0/DYbBWg
-         bD/3ERMlPtqzdlgC+9o3PwE9GdcfnhLjQBMGVb4TMrHTeXjpc4lel9ZhWH/psLWliw
-         AsLZ+lq4Csm3WKHsGrDNw1ZqDERjia7xLBrgiCXDBHQk4UuXkCRnXM9v9EWOWna8R4
-         ceOq4ULS89/eg==
-Date:   Wed, 28 Apr 2021 10:31:48 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
- pm_runtime_resume_and_get()
-Message-ID: <20210428103148.590191ac@coco.lan>
-In-Reply-To: <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
-References: <cover.1619191723.git.mchehab+huawei@kernel.org>
-        <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
-        <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
-        <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
-        <20210426163840.67ea8af9@coco.lan>
-        <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S237591AbhD1Ict (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:32:49 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39942 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237513AbhD1Icq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:32:46 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13S8E8tU061098;
+        Wed, 28 Apr 2021 04:32:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=kmjMErMBHeBNL2bcbe2uefJYtZjeT6aqWNd0NuLNPyY=;
+ b=HxmxAyTBZMh3/x7/CjwqtbLnJsGw3N38EJwQ78c/0qW3/ufOMaM+a8fPRNMIpUPI+iiN
+ XejLIDYkm+Q28THkI/c88c7e8lZk/WZa3p3Ntni+j1ZEKLqh4c+llyNkI/PS2WwgddPq
+ /Wn3dX//DDYVg/7RAba0vWMVaELISvzA+KAajIMW/lbk08YmlSKtAPjdy/ma8U29tHE6
+ MSkx2dME/RFQ3vQD3ne00pKTIsU425bOZBAMazqti6eU5Sg3fJwbqJ9q0Ia3HP4nX1JS
+ hr+9MHaX5R8cVTrRt8Bk7jS9ON1MBoYzmQOmQxcfiFTU+lIeei+cFgJSDldHYrmpjc9K wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38740t8euu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 04:32:01 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13S8FjcA066976;
+        Wed, 28 Apr 2021 04:32:01 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38740t8eu6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 04:32:01 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13S8NSbj028649;
+        Wed, 28 Apr 2021 08:31:59 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 384ay8hrsn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 08:31:59 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13S8Vtc229753828
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 08:31:55 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45A1DA405C;
+        Wed, 28 Apr 2021 08:31:55 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE4D5A405B;
+        Wed, 28 Apr 2021 08:31:54 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 08:31:54 +0000 (GMT)
+Subject: Re: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+To:     Thomas Huth <thuth@redhat.com>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, cohuck@redhat.com
+References: <20210428082442.321327-1-thuth@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <c015ef3f-ff88-113b-a089-e2af9202399a@de.ibm.com>
+Date:   Wed, 28 Apr 2021 10:31:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210428082442.321327-1-thuth@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ogGB98aZagDvQsl3heFp72alFwTow7FH
+X-Proofpoint-ORIG-GUID: rF2pyNc-wbqrMTt0cQIPd54tnRiYGOYA
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_03:2021-04-27,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ spamscore=0 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 27 Apr 2021 14:23:20 +0200
-Johan Hovold <johan@kernel.org> escreveu:
+On 28.04.21 10:24, Thomas Huth wrote:
+> In former times, the virtio-console code had to be compiled into
+> the kernel since the old guest virtio transport had some hard de-
+> pendencies. But since the old virtio transport has been removed in
+> commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+> we do not have this limitation anymore.
+> Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+> Kconfig") then also lifted the hard setting in the Kconfig system, so
+> we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+> driver as a module now, making it more flexible for the user to only
+> load it if it is really required.
 
-> On Mon, Apr 26, 2021 at 04:38:40PM +0200, Mauro Carvalho Chehab wrote:
-> > Em Sat, 24 Apr 2021 12:00:46 +0200
-> > Johan Hovold <johan@kernel.org> escreveu:
-> >   
-> > > On Sat, Apr 24, 2021 at 10:24:54AM +0200, Jacopo Mondi wrote:  
-> > > > Hi Mauro,
-> > > > 
-> > > > On Sat, Apr 24, 2021 at 08:44:48AM +0200, Mauro Carvalho Chehab wrote:    
-> > > > > Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > > > added pm_runtime_resume_and_get() in order to automatically handle
-> > > > > dev->power.usage_count decrement on errors.
-> > > > >
-> > > > > Use the new API, in order to cleanup the error check logic.
-> > > > >
-> > > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>    
+Isnt that a distro specific decision? I would be perfectly fine to have
+this change in Fedora, Redhat and co. Not so sure about defconfig.
+We often use the defconfig in our CI and development things to have a
+kernel config that boots up fine, even without a ramdisk. I agree that
+virtio console is no longer really the most important console but does
+it really hurt? Is any distro using the defconfig unmodified?
+
 > 
-> > > I'd say this kind of mass-conversion is of questionable worth as
-> > > pm_runtime_resume_and_get() isn't necessarily an improvement (even if it
-> > > may have its use in some places).  
-> > 
-> > The main problem is that other parts of the driver's core APIs
-> > assume that get object methods will only increment the usage
-> > counter if no errors. The pm_runtime_get_sync() is an exception.
-> > 
-> > Its name doesn't help at all: A function like that should, IMHO,
-> > be called, instead:
-> > 
-> > 	pm_runtime_inc_usage_count_and_try_to_resume().
-> > 
-> > Or something similar, in order to make clearer that it always
-> > increment the usage count, no matter what. If possible, all drivers
-> > should get rid of it too (or alternatively add comments warning
-> > people that keeping the usage_count incremented is desired on the
-> > very specific places where it is really needed), as it is risky
-> > to use something that has a different usage_count increement behavior
-> > than other more usual *_get() functions.  
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>   arch/s390/configs/debug_defconfig | 2 +-
+>   arch/s390/configs/defconfig       | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> pm_runtime_get_sync() has worked this way since it was merged 12 years
-> ago, and for someone who's used to this interface this is not such a big
-> deal as you seem to think. Sure, you need to remember to put the usage
-> counter on errors, but that's it (and the other side of that is that you
-> don't need to worry about error handling where it doesn't matter).
-
-Before we have those at PM subsystem, the media had its own way to
-set/disable power for their sub-devices. The PCI and USB drivers 
-still use it, instead of pm_runtime, mostly due to historic reasons.
-
-So, basically, its usage at the media subsystem is restricted to
-drivers for embedded systems. The vast majority of drivers supporting
-PM runtime are the I2C camera drivers. The camera drivers can be used 
-interchangeable. So, in practice, the same bridge driver can work 
-with a lot of different camera models, depending on the hardware
-vendors' personal preferences and the desired max resolution.
-
-So, in thesis, all such drivers should behave exactly the same 
-with regards to PM.
-
-However, on most existing drivers, the pm_runtime was added a
-couple of years ago, and by people that are not too familiar
-with the PM subsystem.
-
-That probably explains why there were/are several places that 
-do things like this[1]:
-
-	ret = pm_runtime_get_sync(dev);
-	if (ret < 0)
-		return ret;
-
-without taking care of calling a pm_runtime_put*() function.
-
-[1] besides the 13 patches made by UCN addressing it on
-    existing code, I discovered the same pattern on a 
-    couple of other drivers with current upstream code.
-
-That shows a pattern: several media developers are not familiar
-with the usage_count behavior for pm_runtime_get functions.
-
-So, doing this work is not only helping to make the PM support
-more uniform, but it is also helping to solve existing issues.
-
-> Also note all the pm_runtime_get functions *always* increment the usage
-> count even if an async resume may later fail so there is consistency
-> here.
+> diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+> index dc0b69058ac4..04ce0edd0b31 100644
+> --- a/arch/s390/configs/debug_defconfig
+> +++ b/arch/s390/configs/debug_defconfig
+> @@ -548,7 +548,7 @@ CONFIG_INPUT_EVDEV=y
+>   # CONFIG_INPUT_MOUSE is not set
+>   # CONFIG_SERIO is not set
+>   CONFIG_LEGACY_PTY_COUNT=0
+> -CONFIG_VIRTIO_CONSOLE=y
+> +CONFIG_VIRTIO_CONSOLE=m
+>   CONFIG_HW_RANDOM_VIRTIO=m
+>   CONFIG_RAW_DRIVER=m
+>   CONFIG_HANGCHECK_TIMER=m
+> diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+> index 320379da96d9..e448711eff8d 100644
+> --- a/arch/s390/configs/defconfig
+> +++ b/arch/s390/configs/defconfig
+> @@ -540,7 +540,7 @@ CONFIG_INPUT_EVDEV=y
+>   # CONFIG_INPUT_MOUSE is not set
+>   # CONFIG_SERIO is not set
+>   CONFIG_LEGACY_PTY_COUNT=0
+> -CONFIG_VIRTIO_CONSOLE=y
+> +CONFIG_VIRTIO_CONSOLE=m
+>   CONFIG_HW_RANDOM_VIRTIO=m
+>   CONFIG_RAW_DRIVER=m
+>   CONFIG_HANGCHECK_TIMER=m
 > 
-> And regarding naming, the new pm_resume_and_get() looks completely out
-> of place to me since it uses a different naming scheme than the other
-> helpers (including the ones that are used to balance the new call).
-> 
-> > With regards to mass-fixing it, I've seen several patches seen
-> > to media fixing bugs due to the bad usage_count decrement logic.
-> > So, the best is to solve them all at once, and stop using
-> > pm_runtime_get_sync() inside the subsystem.  
-> 
-> Sure, having the script kiddies patch drivers without understanding what
-> they're are really doing is bound to introduce bugs unless it can be
-> caught in review.
-
-Yes, but as I pointed, the current code has bugs already.
-
-> You're call, but converting functioning drivers where the authors knew
-> what they were doing just because you're not used to the API and risk
-> introducing new bugs in the process isn't necessarily a good idea.
-
-The problem is that the above assumption is not necessarily true:
-based on the number of drivers that pm_runtime_get_sync() weren't
-decrementing usage_count on errors, several driver authors were not 
-familiar enough with the PM runtime behavior by the time the drivers
-were written or converted to use the PM runtime, instead of the
-media .s_power()/.s_stream() callbacks.
-
-> Especially since the pm_runtime_get_sync() will continue to be used
-> elsewhere, and possibly even in media in cases where you don't need to
-> check for errors (e.g. remove()).
-
-Talking about the remove(), I'm not sure if just ignoring errors
-there would do the right thing. I mean, if pm_runtime_get_sync()
-fails, probably any attempts to disable clocks and other things
-that depend on PM runtime will also (silently) fail.
-
-This may put the device on an unknown PM and keep clock lines enabled
-after its removal.
-
-Thanks,
-Mauro
