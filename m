@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E6736D2DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B63536D2E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236553AbhD1HPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        id S236702AbhD1HQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhD1HP3 (ORCPT
+        with ESMTP id S233399AbhD1HQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:15:29 -0400
-X-Greylist: delayed 69 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 28 Apr 2021 00:14:43 PDT
-Received: from smtp11.infineon.com (smtp11.infineon.com [IPv6:2a00:18f0:1e00:4::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376E5C061574;
-        Wed, 28 Apr 2021 00:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1619594085; x=1651130085;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=l9eaKaAkKR85Pux4sCFUFK41gcRTkGYct4KwrCQWxYc=;
-  b=AByk0VvsIxkrbnixWOeSBW4y81xJ1wQBoY8sd2LWXj/Ap5v1+uXonRuB
-   6dMObIeAOeGBqD0GImoDra0ziJdWcDlIiQsgSaK7K4BGgVmASo9k441Sq
-   +mRMNxOh2uNJxWoto/7Up6BAPUc+QXQhCKZGNZ6mvYDURO0kUS3vsYw9Y
-   M=;
-IronPort-SDR: 4sf6OteSAV6FD49hPuQvp2GBFiPKVTejBbCl2BBp9Hx8JUg3P3bTZFn6Lr36AVCsrbDff2S+Nz
- SDoDDdAN8LVtD5xE+lZvfA71NBcnVcNw0VYRyC6/3lMWjuk4/PTUVAipzUuRsTrvl8wYrZoUfc
- saF39nM5I4T6PRZ4tPmwTU/u8XhmucV+rrq0+ZbHDb+47Kkhk6rU449dHkT17MbUXIk/+vWtbC
- 0FXtX4szdajLHvIRSH/EMVp0ANxzVJjxx6uvsd8HWaH/OAZttEaZ3ZLccyeGV8dz9E6oFX1xOe
- pIY=
-X-SBRS: None
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="231035086"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613430000"; 
-   d="scan'208";a="231035086"
-Received: from unknown (HELO mucxv001.muc.infineon.com) ([172.23.11.16])
-  by smtp11.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 09:13:29 +0200
-Received: from MUCSE718.infineon.com (MUCSE718.infineon.com [172.23.7.101])
-        by mucxv001.muc.infineon.com (Postfix) with ESMTPS;
-        Wed, 28 Apr 2021 09:13:28 +0200 (CEST)
-Received: from MUCSE711.infineon.com (172.23.7.83) by MUCSE718.infineon.com
- (172.23.7.101) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256) id 15.1.2106.2; Wed, 28
- Apr 2021 09:13:28 +0200
-Received: from MUCSE711.infineon.com ([fe80::cc45:4d1a:3881:a6e5]) by
- MUCSE711.infineon.com ([fe80::cc45:4d1a:3881:a6e5%20]) with mapi id
- 15.01.2106.013; Wed, 28 Apr 2021 09:13:28 +0200
-From:   <Peter.Huewe@infineon.com>
-To:     <jarkko@kernel.org>, <LinoSanfilippo@gmx.de>
-CC:     <peterhuewe@gmx.de>, <jgg@ziepe.ca>, <stefanb@linux.vnet.ibm.com>,
-        <James.Bottomley@hansenpartnership.com>, <keescook@chromium.org>,
-        <jsnitsel@redhat.com>, <ml.linux@elloe.vision>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/4] tpm: Simplify locality handling
-Thread-Topic: [PATCH v2 2/4] tpm: Simplify locality handling
-Thread-Index: AQHXOi2MFFLqon71SkOYPqoVcMwIWKrI6e6AgACci5A=
-Date:   Wed, 28 Apr 2021 07:13:28 +0000
-Message-ID: <42097d7cc31c4cf495d1f8b46b3587af@infineon.com>
-References: <1619394440-30646-1-git-send-email-LinoSanfilippo@gmx.de>
- <1619394440-30646-3-git-send-email-LinoSanfilippo@gmx.de>
- <YIii8RQR/Mcc7PKJ@kernel.org>
-In-Reply-To: <YIii8RQR/Mcc7PKJ@kernel.org>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.23.8.247]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 28 Apr 2021 03:16:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EF1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YAx1czeZMGTOngYcTaYGWSs9XW5iqQk2Rryh4aE/lZA=; b=JHGcuwZvy3sGa0Vl51dbGMcCTU
+        kEkaCT8S5SuSaINe07eQ3iWSMqhOxYqWXHFt2vTWBmjS3b0nMd1JP+600AhdNmVsY5KKNskun2B68
+        KF8/Ie6Mob1I/Eq/d/QjzBX3unmicHdmy0K0jd+IZWz/j+/EVnOxSOkI6c86s85aI5r/1MPq+qM2o
+        +OmBfZgb2hi7X5c+Hj+LUqmVFBMxllJ1NRiLgqxAZPyys82HWBAgs3aLtT70yA3Hy+w0O3ooU6aoL
+        +S4Ti/d2EXeE9B93RhXoE+NTFPjb1zDUYgfqGmW4UKPTy2DtIBGsEOb4UQ0mPPiDRQhPa+C1Wh/7t
+        ilm5yANA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbeOI-007y9Y-Rh; Wed, 28 Apr 2021 07:13:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 362B030003A;
+        Wed, 28 Apr 2021 09:13:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0F5F32D3DF417; Wed, 28 Apr 2021 09:13:44 +0200 (CEST)
+Date:   Wed, 28 Apr 2021 09:13:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+Message-ID: <YIkLKNdr8Zld+0u4@hirez.programming.kicks-ass.net>
+References: <20210422120459.447350175@infradead.org>
+ <20210422123308.196692074@infradead.org>
+ <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
+ <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net>
+ <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 01:47:18AM +0200, Lino Sanfilippo wrote:
-> Currently the TPM (default) locality is claimed and released for each=20
-> access to the TPM registers which require a claimed locality. This=20
-> results in locality claim/release combos at various code places. For=20
-> interrupt handling we also need such a combo in the interrupt handler=20
-> (for clearing the interrupts) which makes the locality handling even=20
-> more complicated since now we also have to synchronize concurrent=20
-> accesses in process and in interrupt context.
->
-> Since currently the driver uses only one locality anyway, avoid the=20
-> increasing complexity by claiming it once at driver startup and only=20
-> releasing it at driver shutdown.
->
-> Due to the simplifications the functions tpm_request_locality() and
-> tpm_relinquish_locality() are not needed any more an can be removed.
->
+On Mon, Apr 26, 2021 at 03:21:36PM -0700, Josh Don wrote:
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index f732642e3e09..1a81e9cc9e5d 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -290,6 +290,10 @@ static void sched_core_assert_empty(void)
+> >  static void __sched_core_enable(void)
+> >  {
+> >         static_branch_enable(&__sched_core_enabled);
+> > +       /*
+> > +        * Ensure raw_spin_rq_*lock*() have completed before flipping.
+> > +        */
+> > +       synchronize_sched();
+> 
+> synchronize_rcu()
 
-+1
-I like the idea, as it also improves performance a bit.
-Peter
+Moo, I actually like synchronize_sched() because it indicates it matches
+a preempt disabled region.
+
+> >         __sched_core_flip(true);
+> >         sched_core_assert_empty();
+> >  }
+> > @@ -449,16 +453,22 @@ void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
+> >  {
+> >         raw_spinlock_t *lock;
+> >
+> > +       preempt_disable();
+> >         if (sched_core_disabled()) {
+> >                 raw_spin_lock_nested(&rq->__lock, subclass);
+> > +               /* preempt *MUST* still be disabled here */
+> > +               preempt_enable_no_resched();
+> >                 return;
+> >         }
+> 
+> This approach looks good to me. I'm guessing you went this route
+> instead of doing the re-check after locking in order to optimize the
+> disabled case?
+
+Exactly.
+
+> Recommend a comment that the preempt_disable() here pairs with the
+> synchronize_rcu() in __sched_core_enable().
+
+Fair enough.
