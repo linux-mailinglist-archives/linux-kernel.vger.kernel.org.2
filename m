@@ -2,182 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A53F36D244
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40B236D248
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhD1Ggm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhD1Ggk (ORCPT
+        id S236214AbhD1GhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:37:24 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:41538 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhD1Ggz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:36:40 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D16CC061574;
-        Tue, 27 Apr 2021 23:35:55 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lbdnb-0008G2-L1; Wed, 28 Apr 2021 08:35:51 +0200
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info>
-Subject: Re: [PATCH v1] docs: reporting-issues.rst: CC subsystem and
- maintainers on regressions
-Message-ID: <e1d2e16a-60b8-0a55-20d4-53db11e6821c@leemhuis.info>
-Date:   Wed, 28 Apr 2021 08:35:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 28 Apr 2021 02:36:55 -0400
+Received: by mail-io1-f71.google.com with SMTP id e18-20020a5d92520000b02903c332995d1eso21308889iol.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 23:36:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Evc5bVwxwemryzvGzpgDZhtuvWcPA3UvDTqhrxcKzWY=;
+        b=Yt7T5pTzUvflr0tEGdztosFB0c9YY0uNPnDNJtEYNGd9rNSZYsZ83eqvkoykKiJiM6
+         ZcFdqJh27q7P1z6McXbPqurvJprV5E41K4LKnNhnLKEhUZzeE0Ou6j7A1MNUxapm3XtO
+         vcQNHGKMmWTu7naxDJEFCcKnmncI0GQWHCN/d1B5NY/V+adxIGvaPGR1ame2y/aA3iv3
+         8AIAdjVYSfUuudAjE44KUwcTlTVrrUCgxDqYiQPQ/c0umbk3BARWX19UumRcB35v2jgE
+         Qte7cc3j6rIuEuTDY0ehG+r+PGsaIyK2JvJmLckqZ2V19JZ15Kt5XMWHjcHLcfq0hHF2
+         pKXQ==
+X-Gm-Message-State: AOAM531/Dwqb3fZEsJBh/Y5f5vuJCn/hsOX7oVR/+Vgg5d6KKmp1c4JH
+        GA//D9iRcpSVMy3gnlm+/e+3EB1qEDWfZTo9BVZvrbu50mT5
+X-Google-Smtp-Source: ABdhPJzJ9o/2K/Iwil0D0KZ4LzyhjGgnGbzsZ02qlcomO6jJoyngCwt3sCUb8/TPKgfNWTguq0sfEzO3AFLDKsXfSJIq0vyTEP3G
 MIME-Version: 1.0
-In-Reply-To: <dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1619591755;6346ec0d;
-X-HE-SMSGID: 1lbdnb-0008G2-L1
+X-Received: by 2002:a05:6e02:1bc3:: with SMTP id x3mr21450057ilv.47.1619591769638;
+ Tue, 27 Apr 2021 23:36:09 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 23:36:09 -0700
+In-Reply-To: <e3617587-7ff1-720c-00ab-434608705652@oracle.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001c4f1e05c102989f@google.com>
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in mem16_serial_out
+From:   syzbot <syzbot+4c7f1a69dfe24c6b3aeb@syzkaller.appspotmail.com>
+To:     caleb@connolly.tech, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        peter@hurleysoftware.com, syzkaller-bugs@googlegroups.com,
+        syzkaller-lts-bugs@googlegroups.com, vegard.nossum@oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan. Wondering if this slipped through the cracks, as I haven't
-heart anything (or did I miss it?). Would IMHO have been nice to have in
-5.13 as well, but it's not crucial.
+Hello,
 
-On 15.04.21 12:29, Thorsten Leemhuis wrote:
-> When reporting a regression, users ideally should CC the subsystem and
-> its maintainers, as that will ensure they get aware of the regression
-> quickly. And if the culprit is known, they should also CC everyone who
-> signed if off; the text mentioned the latter in once place already, but
+syzbot tried to test the proposed patch but the build/boot failed:
 
-Side note (just spotted this from a corner of my eye): s/once/one/ in
-that line.
+failed to checkout kernel repo git://repo/address.git/commit-hash: failed to run ["git" "fetch" "--force" "b7cf8f2fbfc36c709a08e0b9c77990e491473738" "commit-hash"]: exit status 128
+fatal: unable to look up repo (port 9418) (Name or service not known)
 
-Ciao, Thorsten
 
-> forgot to do so in two other areas where it's relevant.
-> 
-> While fixing this also remind readers to check the mailing list archives
-> for issues that need to be reported to a bug tracker, as someone might
-> have reported it by mail only.
-> 
-> All of this got triggered by a recent report where these changes would
-> have made a difference.
-> 
-> Link: https://lore.kernel.org/lkml/dff6badf-58f5-98c8-871c-94d901ac6919@leemhuis.info/
-> Link: https://lore.kernel.org/lkml/CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com/
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
->  .../admin-guide/reporting-issues.rst          | 49 ++++++++++++-------
->  1 file changed, 30 insertions(+), 19 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-> index 48b4d0ef2b09..18d8e25ba9df 100644
-> --- a/Documentation/admin-guide/reporting-issues.rst
-> +++ b/Documentation/admin-guide/reporting-issues.rst
-> @@ -24,7 +24,8 @@ longterm series? One still supported? Then search the `LKML
->  you don't find any, install `the latest release from that series
->  <https://kernel.org/>`_. If it still shows the issue, report it to the stable
->  mailing list (stable@vger.kernel.org) and CC the regressions list
-> -(regressions@lists.linux.dev).
-> +(regressions@lists.linux.dev); ideally also CC the maintainer and the mailing
-> +list for the subsystem in question.
->  
->  In all other cases try your best guess which kernel part might be causing the
->  issue. Check the :ref:`MAINTAINERS <maintainers>` file for how its developers
-> @@ -48,8 +49,9 @@ before the issue occurs.
->  If you are facing multiple issues with the Linux kernel at once, report each
->  separately. While writing your report, include all information relevant to the
->  issue, like the kernel and the distro used. In case of a regression, CC the
-> -regressions mailing list (regressions@lists.linux.dev) to your report; also try
-> -to include the commit-id of the change causing it, which a bisection can find.
-> +regressions mailing list (regressions@lists.linux.dev) to your report. Also try
-> +to pin-point the culprit with a bisection; if you succeed, include its
-> +commit-id and CC everyone in the sign-off-by chain.
->  
->  Once the report is out, answer any questions that come up and help where you
->  can. That includes keeping the ball rolling by occasionally retesting with newer
-> @@ -198,10 +200,11 @@ report them:
->  
->   * Send a short problem report to the Linux stable mailing list
->     (stable@vger.kernel.org) and CC the Linux regressions mailing list
-> -   (regressions@lists.linux.dev). Roughly describe the issue and ideally
-> -   explain how to reproduce it. Mention the first version that shows the
-> -   problem and the last version that's working fine. Then wait for further
-> -   instructions.
-> +   (regressions@lists.linux.dev); if you suspect the cause in a particular
-> +   subsystem, CC its maintainer and its mailing list. Roughly describe the
-> +   issue and ideally explain how to reproduce it. Mention the first version
-> +   that shows the problem and the last version that's working fine. Then
-> +   wait for further instructions.
->  
->  The reference section below explains each of these steps in more detail.
->  
-> @@ -768,7 +771,9 @@ regular internet search engine and add something like
->  the results to the archives at that URL.
->  
->  It's also wise to check the internet, LKML and maybe bugzilla.kernel.org again
-> -at this point.
-> +at this point. If your report needs to be filed in a bug tracker, you may want
-> +to check the mailing list archives for the subsystem as well, as someone might
-> +have reported it only there.
->  
->  For details how to search and what to do if you find matching reports see
->  "Search for existing reports, first run" above.
-> @@ -1249,9 +1254,10 @@ and the oldest where the issue occurs (say 5.8-rc1).
->  
->  When sending the report by mail, CC the Linux regressions mailing list
->  (regressions@lists.linux.dev). In case the report needs to be filed to some web
-> -tracker, proceed to do so; once filed, forward the report by mail to the
-> -regressions list. Make sure to inline the forwarded report, hence do not attach
-> -it. Also add a short note at the top where you mention the URL to the ticket.
-> +tracker, proceed to do so. Once filed, forward the report by mail to the
-> +regressions list; CC the maintainer and the mailing list for the subsystem in
-> +question. Make sure to inline the forwarded report, hence do not attach it.
-> +Also add a short note at the top where you mention the URL to the ticket.
->  
->  When mailing or forwarding the report, in case of a successful bisection add the
->  author of the culprit to the recipients; also CC everyone in the signed-off-by
-> @@ -1536,17 +1542,20 @@ Report the regression
->  
->      *Send a short problem report to the Linux stable mailing list
->      (stable@vger.kernel.org) and CC the Linux regressions mailing list
-> -    (regressions@lists.linux.dev). Roughly describe the issue and ideally
-> -    explain how to reproduce it.  Mention the first version that shows the
-> -    problem and the last version that's working fine. Then wait for further
-> -    instructions.*
-> +    (regressions@lists.linux.dev); if you suspect the cause in a particular
-> +    subsystem, CC its maintainer and its mailing list. Roughly describe the
-> +    issue and ideally explain how to reproduce it. Mention the first version
-> +    that shows the problem and the last version that's working fine. Then
-> +    wait for further instructions.*
->  
->  When reporting a regression that happens within a stable or longterm kernel
->  line (say when updating from 5.10.4 to 5.10.5) a brief report is enough for
-> -the start to get the issue reported quickly. Hence a rough description is all
-> -it takes.
-> +the start to get the issue reported quickly. Hence a rough description to the
-> +stable and regressions mailing list is all it takes; but in case you suspect
-> +the cause in a particular subsystem, CC its maintainers and its mailing list
-> +as well, because that will speed things up.
->  
-> -But note, it helps developers a great deal if you can specify the exact version
-> +And note, it helps developers a great deal if you can specify the exact version
->  that introduced the problem. Hence if possible within a reasonable time frame,
->  try to find that version using vanilla kernels. Lets assume something broke when
->  your distributor released a update from Linux kernel 5.10.5 to 5.10.8. Then as
-> @@ -1563,7 +1572,9 @@ pinpoint the exact change that causes the issue (which then can easily get
->  reverted to fix the issue quickly). Hence consider to do a proper bisection
->  right away if time permits. See the section 'Special care for regressions' and
->  the document 'Documentation/admin-guide/bug-bisect.rst' for details how to
-> -perform one.
-> +perform one. In case of a successful bisection add the author of the culprit to
-> +the recipients; also CC everyone in the signed-off-by chain, which you find at
-> +the end of its commit message.
->  
->  
->  Reference for "Reporting issues only occurring in older kernel version lines"
-> 
-> base-commit: 6161a4b18a66746c3f5afa72c054d7e58e49c847
-> 
 
+Tested on:
+
+commit:         [unknown 
+git tree:       git://repo/address.git commit-hash
+dashboard link: https://syzkaller.appspot.com/bug?extid=4c7f1a69dfe24c6b3aeb
+compiler:       
 
