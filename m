@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAF036E034
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44A136E039
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241876AbhD1UWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        id S241887AbhD1U01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240497AbhD1UWS (ORCPT
+        with ESMTP id S235229AbhD1U0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:22:18 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD99C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:21:33 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id v13so3923639ilj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:21:33 -0700 (PDT)
+        Wed, 28 Apr 2021 16:26:25 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B936CC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:25:38 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 124so20265369lff.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:25:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3FlfJuCO/i0lHXz9Yi8JuX0LHEp/FCSt5EvXf/XQhbw=;
-        b=Twe/v+kPHslIBdnujIpFoTmjqKiXz3Qw86igYBt6JKw9MRVlLASnJezyH+2HX0D5/y
-         1S+ZoIf/DhA5jzqOmWyOdNWhi372TPnKzo2U1odOVbpIh9peetD1cWRUTXNOuHiur8RF
-         CTAf8QNFFktBK+T6i7jMTFhiGslZ/9XyFimZ73V5HSutx9tH2bKP85o42syoYOj9MinU
-         N7vUUXLASROmijnkzZEYDKhs1CIZcc88YyxWOpDVZ46m4dn3JJAqyEJPLohCA9ebVbju
-         OYL1e2aCMN1Gi1lP9HTfavKkJuXnOqd3N6Tdd5CHP0iPUiI120LMpSdC1aXMgJjhs6dD
-         oW4Q==
+        bh=24dqn/+FEtUll0rSYOdRnvFq6DTtKXVWdo2aK61CiNw=;
+        b=dRDRaAX9ayALovqfgdL291l0lKLnc5uDr0fCOZ4yRUgugmE5ggRX0Wv8tfjce1adSn
+         IyhtE55ZvnES7iabYqiKOupAbZzDmu5pHHIDFouMFkZ4cwHG1LUrLKne5no1F6ew8n3w
+         mZ5NxKOhAsoeJPOQcsoN1olaEIQ5JCs3rZkFWAEHjCYT017Ox8VuCnlp0yQEdE6j8cWt
+         9AhI9K8VgO67u5s7bf/Y0+qdwr/o6i/+ICgsJU7AUFmo0okdlQmxEc6a6q3VQStI3gsI
+         mNlPs61YWci3Bpd0MNUyeFYZLv14/jWleoekAnomnmMJ+d706RjUukVJzfLeBi+P6wHl
+         42yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3FlfJuCO/i0lHXz9Yi8JuX0LHEp/FCSt5EvXf/XQhbw=;
-        b=aWFzxEuaqQcvbIB+5ygUk5PtyBD52h86ywydnBgCtTVgh2LgqnP685bUKOVvIZV259
-         fXkakC8tLTjjJDkPfgeH64ISDtTBxZZzsnDoTQyNOvrGaWpTtOH5eBy2KqYM3g/S0Sjf
-         Kv8kibsQQpCXI3LiefXD9aJiUpV/JVmhzZFc9s8bvbi19xSpCurrak/n2LfA/yrlmSdt
-         /x8dCEVe6OWcbtPDgvws2mFvTXPBn0VayqoPiibIUupcfLMdt0xS1ZvcemsYR5XNMiGV
-         qofzOvB/TPMbR0NFo+BCfHegJPbKzvC7xVs9U71hl/NnQ40CEVl7DFfaZRbPR/Kpw/VJ
-         tiAA==
-X-Gm-Message-State: AOAM530KwEpTh5U5/pKg91MOgWsCpEwGNX6uUx/fELClEBMELV2PeNyK
-        Tn6xWosEzC/023vxJTSJ87AOFe+zpMiCjoTDTWhNGpRBUbI=
-X-Google-Smtp-Source: ABdhPJxW0HbA94ewF7F3weEGbYhyR1USNUWGh56KyTn6uWBkUkN9dCEH3OgkE9YeiRwCBSERhbC4leLYiC4JNncqOlo=
-X-Received: by 2002:a05:6e02:1d06:: with SMTP id i6mr24290849ila.165.1619641292908;
- Wed, 28 Apr 2021 13:21:32 -0700 (PDT)
+        bh=24dqn/+FEtUll0rSYOdRnvFq6DTtKXVWdo2aK61CiNw=;
+        b=iSVD8rEBEIJS73+1ZFknuoSAuFzFj62We0qKSLxFxeS1g0jwYN1bt0p/2cYC6CLCnE
+         FyM0R+gh178Hk72yOzdY0mC4AotKmZRJ35RL4OIWTEs/ytV9ofndDi94Ht3lUcPgjnIq
+         BdFQfYXDhCwU7zqP+jMWI1znDxeGR8CjCBNzFN6+F2wYPNuIj16ENsyezqgM7GnkrnIe
+         39VLdyzFQDZijOaNjp7ChkOBZjsRWRzOeCndxHtK5v+xezVTDQYK0y3/JR3aC3Ee1Prr
+         01A6n7p0WQ84lv4eN59y/uQgnfJYNCxMsC75A/6hIqmaInP8GQ2ojVYk1yJCYI9LwFah
+         cL1Q==
+X-Gm-Message-State: AOAM531QDww5Q+x9ApbNIA0k5kP4FycptkZHBV7S3qyhlMrk2q3iADJs
+        aWYBqIWlI5+LbhsG/SocHl/TvyQlaV9uiIFBIgqQyg==
+X-Google-Smtp-Source: ABdhPJyLKfJiWtybsYLfzFW3x4KBfvZ1SNTdYHGgqEIxXyky1SVISrVnvlf8ahz8T3/oFlzGumQIh1DxPIl79sIZXaU=
+X-Received: by 2002:a19:ac09:: with SMTP id g9mr22162307lfc.547.1619641536929;
+ Wed, 28 Apr 2021 13:25:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428170416.1027484-1-hsinyi@chromium.org> <20210428170416.1027484-3-hsinyi@chromium.org>
-In-Reply-To: <20210428170416.1027484-3-hsinyi@chromium.org>
-From:   Sean Paul <sean@poorly.run>
-Date:   Wed, 28 Apr 2021 16:20:56 -0400
-Message-ID: <CAMavQK+RJATzOVfgRhpU5i3kGsYM2-y4whgZMTdwNnK=z63nYA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/4] drm/i915: init panel orientation property
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20210414184604.23473-1-ojeda@kernel.org> <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+In-Reply-To: <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 28 Apr 2021 13:25:25 -0700
+Message-ID: <CAKwvOdmxYoNu1uD9DnSB_hLvnHM5W5rJf_KLOLkwgxAVQjz3pQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     mceier+kernel@gmail.com
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 1:04 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+On Wed, Apr 28, 2021 at 11:34 AM Mariusz Ceier <mceier+kernel@gmail.com> wrote:
 >
-> Creating the panel orientation property first since we separate the
-> property creating and value setting.
+> Maybe it would also be worthwhile to make the requirement that the
+> kernel must be buildable with free software (not just open source
+> software) explicit ?
 
-This should probably be included in patch 1 so you don't regress i915
-in between patches.
-
-Sean
-
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/i915/display/icl_dsi.c  | 1 +
->  drivers/gpu/drm/i915/display/intel_dp.c | 1 +
->  drivers/gpu/drm/i915/display/vlv_dsi.c  | 1 +
->  3 files changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
-> index 9282978060b0..162fb3cf0f5a 100644
-> --- a/drivers/gpu/drm/i915/display/icl_dsi.c
-> +++ b/drivers/gpu/drm/i915/display/icl_dsi.c
-> @@ -1903,6 +1903,7 @@ static void icl_dsi_add_properties(struct intel_connector *connector)
->
->         connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
->
-> +       drm_connector_attach_scaling_mode_property(&connector->base);
->         drm_connector_set_panel_orientation_with_quirk(&connector->base,
->                                 intel_dsi_get_panel_orientation(connector),
->                                 connector->panel.fixed_mode->hdisplay,
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index a5231ac3443a..f1d664e5abb2 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -5263,6 +5263,7 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
->         intel_panel_setup_backlight(connector, pipe);
->
->         if (fixed_mode) {
-> +               drm_connector_init_panel_orientation_property(connector);
->                 drm_connector_set_panel_orientation_with_quirk(connector,
->                                 dev_priv->vbt.orientation,
->                                 fixed_mode->hdisplay, fixed_mode->vdisplay);
-> diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
-> index 9bee99fe5495..853855482af1 100644
-> --- a/drivers/gpu/drm/i915/display/vlv_dsi.c
-> +++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
-> @@ -1632,6 +1632,7 @@ static void vlv_dsi_add_properties(struct intel_connector *connector)
->
->                 connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
->
-> +               drm_connector_init_panel_orientation_property(&connector->base);
->                 drm_connector_set_panel_orientation_with_quirk(
->                                 &connector->base,
->                                 intel_dsi_get_panel_orientation(connector),
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+The kernel is already buildable by LLVM (and clang); in fact Android,
+CrOS, and Google's production servers already do so.
+https://clangbuiltlinux.github.io/
+-- 
+Thanks,
+~Nick Desaulniers
