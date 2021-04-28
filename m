@@ -2,73 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963CB36D85F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28C736D86F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238660AbhD1Ng4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhD1Ngy (ORCPT
+        id S239822AbhD1Nkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:40:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63078 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229891AbhD1Nkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:36:54 -0400
-Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4278C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 06:36:09 -0700 (PDT)
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4FVfm52xT0zPlDh;
-        Wed, 28 Apr 2021 15:36:05 +0200 (CEST)
-Authentication-Results: mx-rz-2.rrze.uni-erlangen.de; dkim=none;
-        dkim-atps=neutral
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2003:ca:a725:dc00:6ce5:3887:ad87:1dc5
-Received: from uni-erlangen.de (p200300caa725dc006ce53887ad871dc5.dip0.t-ipconnect.de [IPv6:2003:ca:a725:dc00:6ce5:3887:ad87:1dc5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX19Z3az2CUOw4sz1J5s4sgTGfcb5Q7xzIn0=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4FVfm30bFFzPjln;
-        Wed, 28 Apr 2021 15:36:03 +0200 (CEST)
-From:   Jonas Rabenstein <jonas.rabenstein@studium.uni-erlangen.de>
-To:     Russel King <linux@armlinux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jonas Rabenstein <jonas.rabenstein@studium.uni-erlangen.de>
-Subject: [PATCH RESEND] ARM: vfp: fix misspelled identifier in documentation
-Date:   Wed, 28 Apr 2021 15:35:26 +0200
-Message-Id: <20210428133525.7932-1-jonas.rabenstein@studium.uni-erlangen.de>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210415103955.38983-1-jonas.rabenstein@studium.uni-erlangen.de>
-References: <20210415103955.38983-1-jonas.rabenstein@studium.uni-erlangen.de>
+        Wed, 28 Apr 2021 09:40:35 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SDXrZB045116;
+        Wed, 28 Apr 2021 09:38:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Yzm4WxpneRJAjka6d6u6hB5NqVPyZheXRjCRS8mJPq8=;
+ b=thnUPFnUaWiyUOIAGuygCLOuxYSz16DuyN44IiskwaW8QEVlwVC4eu1+bMfLw2UqaMuF
+ Crjn6za41iT8Jw90DkTcMNtJv3TdL+YGV9xzfnAGORs7PXhqA6oMQnr9HdXvclis3no/
+ +YlHe+9TAJLSAlM2Mf3zXPOe91l0LcljFoI6wk1gGvl9Fiqh1Lr2ceq94Lq3WA+u4ADB
+ exLWns7+IQPaJ2ZpWRajKSI4GsWO9BDKahE/12TpuSjicwoF5vpOZsNDBrzsckzykOj1
+ ieQwCGhzBHkqorAP7W91/d/+TiT+ZAe7N5ILHuYsFzLSSn7fdTj+C+qm1h8IV9UVHLU5 7A== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3877t5j45v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 09:38:43 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SDcfIB032418;
+        Wed, 28 Apr 2021 13:38:41 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 384ay8h2qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 13:38:41 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SDcb4g28311988
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 13:38:37 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A96252052;
+        Wed, 28 Apr 2021 13:38:37 +0000 (GMT)
+Received: from lynx.boeblingen.de.ibm.com (unknown [9.145.41.187])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 75C9E5204F;
+        Wed, 28 Apr 2021 13:38:37 +0000 (GMT)
+Received: from brueckh by lynx.boeblingen.de.ibm.com with local (Exim 4.90_1)
+        (envelope-from <brueckner@linux.ibm.com>)
+        id 1lbkOi-0003Xu-Ee; Wed, 28 Apr 2021 15:38:36 +0200
+Date:   Wed, 28 Apr 2021 15:38:36 +0200
+From:   Hendrik Brueckner <brueckner@linux.ibm.com>
+To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
+        Benjamin Zimmermann <dave@oss.volkswagen.com>,
+        debian-s390@lists.debian.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Subject: Re: [PATCH v2] s390/sclp_vt220: Fix console name to match device
+Message-ID: <20210428133836.GD21939@linux.ibm.com>
+References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
+ <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DcekuhYotr_7hh_F4YXh-sdz3NMOpZbU
+X-Proofpoint-GUID: DcekuhYotr_7hh_F4YXh-sdz3NMOpZbU
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_06:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 suspectscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 clxscore=1011 spamscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation comment for vfp_notifier misspelled
-THREAD_NOTIFY_SWITCH as THREAD_NOFTIFY_SWTICH.
+Hi Valentin,
 
-Signed-off-by: Jonas Rabenstein <jonas.rabenstein@studium.uni-erlangen.de>
----
- arch/arm/vfp/vfpmodule.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I just had the chance to look into this console topic yesterday.
 
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index 2cb355c1b5b7..4f8c6f583b79 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -140,7 +140,7 @@ static void vfp_thread_copy(struct thread_info *thread)
- /*
-  * When this function is called with the following 'cmd's, the following
-  * is true while this function is being run:
-- *  THREAD_NOFTIFY_SWTICH:
-+ *  THREAD_NOTIFY_SWITCH:
-  *   - the previously running thread will not be scheduled onto another CPU.
-  *   - the next thread to be run (v) will not be running on another CPU.
-  *   - thread->cpu is the local CPU number
+On Tue, Apr 27, 2021 at 09:40:10PM +0200, Valentin Vidic wrote:
+> Console name reported in /proc/consoles:
+> 
+>   ttyS1                -W- (EC p  )    4:65
+
+It is been a while ago when working on consoles. However, consoles are
+typically devices without having a device node associated. There is special
+handling for /dev/console wrt. to the preferred console in the tty layer.
+
+A console device might be associated with a tty device but this is not a
+requirement. For example, consider the net console that streams console
+messages thru UDP and is not associated with a tty.
+
+Because console and tty are different devices, names can also be different
+which is, unfortunately, the case on s390.
+
+Therefore my suggestion here is not derive the tty device from the name
+of the console, but rather looking at the associated tty being reported
+as major minor number in /proc/console.
+
+> 
+> does not match the char device name:
+> 
+>   crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
+
+In the example above, 4:65 excactly ends up in /dev/ttysclp0.
+
+I am also in contact with Christian and thanks to him to try this out
+internally.  At least, there are options to bring this forward and let's
+figure out what the best solution will be.
+
+Thanks and kind regards,
+  Hendrik
+
 -- 
-2.26.3
-
+Hendrik Brueckner
+brueckner@linux.ibm.com           | IBM Deutschland Research & Development GmbH
+                                  | Schoenaicher Str. 220, 71032 Boeblingen
