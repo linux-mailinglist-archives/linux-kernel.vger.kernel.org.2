@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C489736D42B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB75D36D448
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237872AbhD1Io6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:44:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17404 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1Io5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:44:57 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FVXDx45ggzlZFH;
-        Wed, 28 Apr 2021 16:42:09 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Wed, 28 Apr 2021
- 16:44:01 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
-Date:   Wed, 28 Apr 2021 16:51:58 +0800
-Message-ID: <20210428085158.3728201-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S237110AbhD1Iyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229643AbhD1Iyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:54:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D3D61407;
+        Wed, 28 Apr 2021 08:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619600035;
+        bh=hIpoZCyQYqJ1W4QWID6HiWD7AXuql4uvapgp7+4BJbg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IsbfUnhUi56l/pW+1emnqKZ+vju/MM6AynrMhbYN8Fogi2aHyTE4O4bhtRlZXBPz3
+         4ghzvY5aOY9Z6toKZs+9igsxyRdHHls4XpsIynOn9rjxEtAmDr/45JkNDNElsDgakB
+         lkR4AkQfuopt7objZwosN7+XiuAxai33dxyoCJa8=
+Date:   Wed, 28 Apr 2021 10:53:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: Re: [PATCH 102/190] Revert "media: video-mux: fix null pointer
+ dereferences"
+Message-ID: <YIkioKY+sTEWSv5M@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-103-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-103-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We got follow bug_on when run fsstress with injecting IO fault:
-[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-......
-[130747.334329] Call trace:
-[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-[130747.337359]  generic_file_buffered_read+0x410/0xae8
-[130747.337767]  generic_file_read_iter+0x114/0x190
-[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-[130747.338556]  __vfs_read+0x11c/0x188
-[130747.338851]  vfs_read+0x94/0x150
-[130747.339110]  ksys_read+0x74/0xf0
+On Wed, Apr 21, 2021 at 02:59:37PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit aeb0d0f581e2079868e64a2e5ee346d340376eae.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/media/platform/video-mux.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/drivers/media/platform/video-mux.c b/drivers/media/platform/video-mux.c
+> index 133122e38515..a754e20850c2 100644
+> --- a/drivers/media/platform/video-mux.c
+> +++ b/drivers/media/platform/video-mux.c
+> @@ -442,14 +442,9 @@ static int video_mux_probe(struct platform_device *pdev)
+>  	vmux->active = -1;
+>  	vmux->pads = devm_kcalloc(dev, num_pads, sizeof(*vmux->pads),
+>  				  GFP_KERNEL);
+> -	if (!vmux->pads)
+> -		return -ENOMEM;
+> -
+>  	vmux->format_mbus = devm_kcalloc(dev, num_pads,
+>  					 sizeof(*vmux->format_mbus),
+>  					 GFP_KERNEL);
+> -	if (!vmux->format_mbus)
+> -		return -ENOMEM;
+>  
+>  	for (i = 0; i < num_pads; i++) {
+>  		vmux->pads[i].flags = (i < num_pads - 1) ? MEDIA_PAD_FL_SINK
+> -- 
+> 2.31.1
+> 
 
-If call ext4_ext_insert_extent failed but new extent already inserted, we just
-update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-cause bug on when cache extent.
-If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
-Maybe there will lead to block leak, but it can be fixed by fsck later.
+This looks correct, dropping from revert list.
 
-After we fixed above issue with v2 patch, but we got the same issue.
-ext4_split_extent_at:
-{
-        ......
-        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-        if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-            ......
-            ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
-            err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
-            if (err)
-                goto fix_extent_len;
-        ......
-        }
-        ......
-fix_extent_len:
-        ex->ee_len = orig_ex.ee_len; ->step(3)
-        ......
-}
-If step(1) have been merged, but step(2) dirty extent failed, then go to
-fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
-old one, will cause overwritten. Then will trigger the same issue as previous.
-If step(2) failed, just return error, don't fix ex->ee_len with old value.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/extents.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 77c84d6f1af6..d4aa24a09d8b 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3238,15 +3238,12 @@ static int ext4_split_extent_at(handle_t *handle,
- 		ex->ee_len = cpu_to_le16(ee_len);
- 		ext4_ext_try_to_merge(handle, inode, path, ex);
- 		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
--		if (err)
--			goto fix_extent_len;
--
--		/* update extent status tree */
--		err = ext4_zeroout_es(inode, &zero_ex);
--
--		goto out;
--	} else if (err)
-+		if (!err)
-+		        /* update extent status tree */
-+		        err = ext4_zeroout_es(inode, &zero_ex);
-+	} else if (err && err != -EROFS) {
- 		goto fix_extent_len;
-+	}
- 
- out:
- 	ext4_ext_show_leaf(inode, path);
--- 
-2.25.4
-
+greg k-h
