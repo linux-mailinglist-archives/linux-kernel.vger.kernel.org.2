@@ -2,111 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CC436DD77
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C1736DD8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241223AbhD1QvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        id S241343AbhD1QwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240643AbhD1QvG (ORCPT
+        with ESMTP id S241344AbhD1Qv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:51:06 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB504C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:50:19 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id z13so19308332lft.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:50:19 -0700 (PDT)
+        Wed, 28 Apr 2021 12:51:58 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68D2C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:11 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id n22so7583315qtk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0uZJAIRFioTiHNk4LTl3GPgwLpvR/tqMtufSg3nWhNk=;
-        b=MkEAqmIhebjBuyB/bFWJkeNmQq6+31Os4ltso3CHWcE/z6HMUwlD9kGKr75X1dcJZN
-         nhAkq4TFetgPc3bclHi1B1uRcqtiTIb2JBFDflUDC+XnR14QbDiaFEnR1UXNn7Agvs3p
-         CZs19Op5jQnv+sJsmNTa3kkHt1Kq8UyRB4q18=
+        bh=i7bjsRegze0J8KMBLsd6S1kBXzifIu76DMKQBA84MfE=;
+        b=H6GvR/jJOzxy5yvUfCUkF+EMKldJel4VTzuxpNzjmhRH8YjlZLt2EzcmEoB9kuRTpp
+         J+S1tttlyYfNfXCYv1VnThpaRAKe35vjhUfbxu7lWEsG6xkD6fpttoWrTCDJyaB4s1yh
+         qpsFpp1ULXf6O5GRNrGy8VZodsPVr2ptimptY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0uZJAIRFioTiHNk4LTl3GPgwLpvR/tqMtufSg3nWhNk=;
-        b=W4Y1eHPUGQK3oLY5M7b+GpxxrCXlO/ehycXHAp6orhLTSIRGGvyq+tVviCsQsX/uGf
-         FwQjC2VGSUD2jius3/OKNI/lcRWuXt2c1svxauPboGEwz9pf6fHHB2yqrYJPpG7eHGnx
-         rvywYt0JcWbF54yxUCGJNmvnqIsblv+Xl8zpNc/orpAG32tmvVQ63siEkNzTlT7RI36B
-         GrjWnUXoJsHd9wnpWb3mHfdLHx4FkU+XIMmP2gXBMpJHkvbRiFz7dQn8qnhn0gkQF8yF
-         vH2Ut5o6Jrbek1d364Ak7S/2rkOnWmqDbfW/7CbxeeGASNSsLb7VYCswriCkwyT4UerA
-         SVhg==
-X-Gm-Message-State: AOAM530+fC/qzwaZ88EsBhGMJfn88JQ4qBzTmXc3lOR2RiG/C+i9rtvA
-        5Bm1R1hudlud5eDENGo+6jOUAZwbKj0xIdbM
-X-Google-Smtp-Source: ABdhPJwpC8Lt/74OFGYL6WVy560yyoXh1AZJvfBEBt6JwafgKihvAYFx8Tv6kCyXlld5amds8Bwtrw==
-X-Received: by 2002:a05:6512:b90:: with SMTP id b16mr22098890lfv.37.1619628618141;
-        Wed, 28 Apr 2021 09:50:18 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id m28sm88188lfq.180.2021.04.28.09.50.17
+        bh=i7bjsRegze0J8KMBLsd6S1kBXzifIu76DMKQBA84MfE=;
+        b=aMI0z+rBrnElqiZLsJAQDf8VTVxEOii8wdHvgA7jg4qJn6GqT4JZhcSneq0+xPbv00
+         ww67pElS3DfkWx0t3BoZtuCPfnrPbo2cKTtNBqJ/oR3+npUzZEBOmLCLRx57d4AKuwRK
+         4GJ5Uuw0xApxbyq9BAddG9vRvPecvR8bLmN5JdXWbaJo8trUN4COciVLE/a10e6DyxPJ
+         23cVv47z9/napcalbSDedErcpuJey6562g5qG5v1iAkzs4PRbqRMB0ZaamdmCMyySamt
+         LtWHCb1ST6pnYW1k9yLeMZZjvHjdw+tSGGcgh2p6GB41pF6XH/CrW1GFNRsciebLH02Q
+         ha1A==
+X-Gm-Message-State: AOAM532c2HlpZiOHV+iMFDdajPdJb3EeGhFDMAcz1Rc+PBOOK7YrSg1E
+        KdANBMPf10SnkKFArN7N0dF+VVplvzYQdQ==
+X-Google-Smtp-Source: ABdhPJzfuxLxyxbsHUpJLGyuJs9pata7Jmhtn/RDK2bRr2TTY43mO+4EDoUmEzarrE3r8i0fq6pd4w==
+X-Received: by 2002:ac8:4e24:: with SMTP id d4mr27577305qtw.213.1619628670939;
+        Wed, 28 Apr 2021 09:51:10 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id d6sm391547qtn.52.2021.04.28.09.51.09
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 09:50:17 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id 124so19275152lff.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:50:17 -0700 (PDT)
-X-Received: by 2002:ac2:5f92:: with SMTP id r18mr7706166lfe.253.1619628617003;
- Wed, 28 Apr 2021 09:50:17 -0700 (PDT)
+        Wed, 28 Apr 2021 09:51:10 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id g38so74745454ybi.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:51:09 -0700 (PDT)
+X-Received: by 2002:a25:778d:: with SMTP id s135mr31447093ybc.21.1619628668908;
+ Wed, 28 Apr 2021 09:51:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210427025805.GD3122264@magnolia> <CAHk-=wj6XUGJCgsr+hx3rz=4KvBP-kspn3dqG5v-cKMzzMktUw@mail.gmail.com>
- <20210427195727.GA9661@lst.de> <CAHk-=wjrpinf=8gAjxyPoXT0jbK6-U3Urawiykh-zpxeo47Vhg@mail.gmail.com>
- <20210428061706.GC5084@lst.de> <CAHk-=whWnFu4wztnOtySjFVYXmBR4Mb2wxrp6OayZqnpKeQw0g@mail.gmail.com>
- <20210428064110.GA5883@lst.de> <CAHk-=wjeUhrznxM95ni4z+ynMqhgKGsJUDU8g0vrDLc+fDtYWg@mail.gmail.com>
- <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk>
-In-Reply-To: <1de23de2-12a9-2b13-3b86-9fe4102fdc0c@rasmusvillemoes.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 28 Apr 2021 09:50:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
-Message-ID: <CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com>
-Subject: Re: [GIT PULL] iomap: new code for 5.13-rc1
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jia He <justin.he@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20210423165906.2504169-1-dianders@chromium.org> <20210423095743.v5.18.If050957eaa85cf45b10bcf61e6f7fa61c9750ebf@changeid>
+In-Reply-To: <20210423095743.v5.18.If050957eaa85cf45b10bcf61e6f7fa61c9750ebf@changeid>
+From:   Sean Paul <seanpaul@chromium.org>
+Date:   Wed, 28 Apr 2021 12:50:30 -0400
+X-Gmail-Original-Message-ID: <CAOw6vbLtEF4VbhOPEJGNj2PnEE4Jk-BBtpLF_CrxFEhzF4f+Rg@mail.gmail.com>
+Message-ID: <CAOw6vbLtEF4VbhOPEJGNj2PnEE4Jk-BBtpLF_CrxFEhzF4f+Rg@mail.gmail.com>
+Subject: Re: [PATCH v5 18/20] drm/panel: panel-simple: Cache the EDID as long
+ as we retain power
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        robdclark@chromium.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-i2c@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Added Andy, who replied to the separate thread where Jia already
-posted the patch ]
-
-On Wed, Apr 28, 2021 at 12:38 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
+On Fri, Apr 23, 2021 at 1:00 PM Douglas Anderson <dianders@chromium.org> wrote:
 >
-> So the patch makes sense to me. If somebody says '%pD5', it would get
-> capped at 4 instead of being forced down to 1. But note that while that
-> grep only produces ~36 hits, it also affects %pd, of which there are
-> ~200 without a 2-4 following (including some vsprintf test cases that
-> would break). So I think one would first have to explicitly support '1',
-> switch over some users by adding that 1 in their format string
-> (test_vsprintf in particular), then flip the default for 'no digit
-> following %p[dD]'.
+> It doesn't make sense to go out to the bus and read the EDID over and
+> over again. Let's cache it and throw away the cache when we turn power
+> off from the panel. Autosuspend means that even if there are several
+> calls to read the EDID before we officially turn the power on then we
+> should get good use out of this cache.
+>
 
-Yeah, and the "show one name" actually makes sense for "%pd", because
-that's about the *dentry*.
+I think i915 caches the edid once on init and never refreshes it
+(assuming no hotplugs). That said, I think it makes sense for a more
+conservative approach in panel-simple.
 
-A dentry has a parent, yes, but at the same time, a dentry really does
-inherently have "one name" (and given just the dentry pointers, you
-can't show mount-related parenthood, so in many ways the "show just
-one name" makes sense for "%pd" in ways it doesn't necessarily for
-"%pD"). But while a dentry arguably has that "one primary component",
-a _file_ is certainly not exclusively about that last component.
 
-So you're right - my "how about something like this" patch is too
-simplistic. The default number of components to show should be about
-whether it's %pd or %pD.
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> (no changes since v1)
+>
+>  drivers/gpu/drm/panel/panel-simple.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index a12dfe8b8d90..9be050ab372f 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -189,6 +189,8 @@ struct panel_simple {
+>         struct gpio_desc *enable_gpio;
+>         struct gpio_desc *hpd_gpio;
+>
+> +       struct edid *edid;
+> +
+>         struct drm_display_mode override_mode;
+>
+>         enum drm_panel_orientation orientation;
+> @@ -345,6 +347,9 @@ static int panel_simple_suspend(struct device *dev)
+>         regulator_disable(p->supply);
+>         p->unprepared_time = ktime_get();
+>
+> +       kfree(p->edid);
+> +       p->edid = NULL;
+> +
+>         return 0;
+>  }
+>
+> @@ -510,15 +515,13 @@ static int panel_simple_get_modes(struct drm_panel *panel,
+>
+>         /* probe EDID if a DDC bus is available */
+>         if (p->ddc) {
+> -               struct edid *edid;
+> -
+>                 pm_runtime_get_sync(panel->dev);
+>
+> -               edid = drm_get_edid(connector, p->ddc);
+> -               if (edid) {
+> -                       num += drm_add_edid_modes(connector, edid);
+> -                       kfree(edid);
+> -               }
+> +               if (!p->edid)
+> +                       p->edid = drm_get_edid(connector, p->ddc);
+> +
+> +               if (p->edid)
+> +                       num += drm_add_edid_modes(connector, p->edid);
 
-That also does explain the arguably odd %pD defaults: %pd came first,
-and then %pD came afterwards.
+I suppose this would keep banging on the ddc if drm_get_edid()
+continuously returns NULL, but maybe that's desireable (it'll succeed
+sometime in the future)? At any rate, this is an improvement on
+current behavior so it has my vote.
 
-              Linus
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
+
+>
+>                 pm_runtime_mark_last_busy(panel->dev);
+>                 pm_runtime_put_autosuspend(panel->dev);
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
