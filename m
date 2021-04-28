@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E0C36D9FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD1D36DA8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240268AbhD1OxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:53:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34952 "EHLO mail.kernel.org"
+        id S240516AbhD1O4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240259AbhD1OxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:53:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3322161440
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:52:33 +0000 (UTC)
+        id S240379AbhD1Oxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:53:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE3886193E;
+        Wed, 28 Apr 2021 14:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619621553;
-        bh=v9MXjcMFDkwGRxGtKjG0QxDDhk6y4//cm0KjKwV14/0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KRG/4bXmqOpbEk2St/DRgo26OHKoEpvaJMcORuhBhJnAKSJO0hf22cyOzkqsqg7XJ
-         NMBdrJ7AZp2Ifo59fj4Vk9u7RorERhLrwUapTwJLqqzV3IGaWJL5G06xIuGiogYHET
-         b532Nv7EFUmxnIklw4vgXoHXRvRp5YuXx5u/MrA917KjaLWZ05kn65qG+o8QD3hwhg
-         x0luXKQvpp1LpHfDmnvy1qm4DrsITXKKm6eRWgnsFuWGt4lA/Uv4+4Igr+o7FGb+Tg
-         fN6BEMDxbs2tA9WFGcVPAO/4Qop+TNJjVaW3vlEdo0PmXfueeKeiWGCaWw9b1sbzHz
-         kmbBpzDOXP1LQ==
-Received: by mail-ed1-f47.google.com with SMTP id g14so14898577edy.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:52:33 -0700 (PDT)
-X-Gm-Message-State: AOAM532mM5v3J1cXkTmpI+rrUwajL1E4liSa438EGicM1/pMIhhp1+Eu
-        TlX5Ufv109aEr7B40nzq9GZQDAF36GyHxvqlCwaGBA==
-X-Google-Smtp-Source: ABdhPJz+QIzKaPnT4DT6hm809Ge+488Ygp48T6Uu+3gaGnaUVYy9et+z5f3TMrjkz6M7tyk1lUqB4cQlJnvVlzDNxh4=
-X-Received: by 2002:a05:6402:cbb:: with SMTP id cn27mr12113500edb.222.1619621551563;
- Wed, 28 Apr 2021 07:52:31 -0700 (PDT)
+        s=k20201202; t=1619621564;
+        bh=AWaRUuBTKGjvblFCBeNGn4e+vA3INJOtepNAWbdP4RE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EwtR+tsN0HQBebe/CPPjvxfR8onZkkjQYA10z1LI+v8T5eQtZqCACBIGAVPffcsGD
+         CxUDYbAC8xMbbCuF3qHcX1SEmOVBYDORkS75a4zrudJoH1WLkTuqiQPcytjnwdmHc3
+         7RqrVk7cVQ3mUiYlbvYbxjvWwJRCojK4NkKAQhyXESC9vbnPq9nqYSrSav/ciLLtlZ
+         yA0Kur+5wASD+Ba/IrM1QonmI4mfBMBbn8O8xCFRg+2BLQd0SuSob/BiLcJQWVVBCB
+         Y+J/H90U9aFBcKVz9/5RZ937Vq6JsY3Y57DgPWLQiE0cwjEedEWMWxMlDzFGQZY/Kg
+         FP6PGZCPwywMQ==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lblYR-001DsO-8L; Wed, 28 Apr 2021 16:52:43 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jean-Christophe Trotin <jean-christophe.trotin@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v4 58/79] media: sti/hva: use pm_runtime_resume_and_get()
+Date:   Wed, 28 Apr 2021 16:52:19 +0200
+Message-Id: <58543e7897c8700b5529182343e189a6345ff5d2.1619621413.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1619621413.git.mchehab+huawei@kernel.org>
+References: <cover.1619621413.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com> <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
-In-Reply-To: <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 28 Apr 2021 07:52:19 -0700
-X-Gmail-Original-Message-ID: <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
-Message-ID: <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
-Subject: Re: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch Tracking
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 7:48 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Yu-cheng Yu
-> > Sent: 27 April 2021 21:47
-> >
-> > Control-flow Enforcement (CET) is a new Intel processor feature that blocks
-> > return/jump-oriented programming attacks.  Details are in "Intel 64 and
-> > IA-32 Architectures Software Developer's Manual" [1].
-> ...
->
-> Does this feature require that 'binary blobs' for out of tree drivers
-> be compiled by a version of gcc that adds the ENDBRA instructions?
->
-> If enabled for userspace, what happens if an old .so is dynamically
-> loaded?
-> Or do all userspace programs and libraries have to have been compiled
-> with the ENDBRA instructions?
+Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+added pm_runtime_resume_and_get() in order to automatically handle
+dev->power.usage_count decrement on errors.
 
-If you believe that the userspace tooling for the legacy IBT table
-actually works, then it should just work.  Yu-cheng, etc: how well
-tested is it?
+While the hva driver does it right, there are lots of errors
+on other drivers due to its misusage. So, let's change
+this driver to also use pm_runtime_resume_and_get(), as we're
+doing similar changes all over the media subsystem.
 
---Andy
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/platform/sti/hva/hva-hw.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index f59811e27f51..77b8bfa5e0c5 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -270,9 +270,8 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
+ 	struct device *dev = hva_to_dev(hva);
+ 	unsigned long int version;
+ 
+-	if (pm_runtime_get_sync(dev) < 0) {
++	if (pm_runtime_resume_and_get(dev) < 0) {
+ 		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
+-		pm_runtime_put_noidle(dev);
+ 		mutex_unlock(&hva->protect_mutex);
+ 		return -EFAULT;
+ 	}
+@@ -386,10 +385,10 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
+ 	pm_runtime_set_suspended(dev);
+ 	pm_runtime_enable(dev);
+ 
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s     failed to set PM\n", HVA_PREFIX);
+-		goto err_pm;
++		goto err_clk;
+ 	}
+ 
+ 	/* check IP hardware version */
+@@ -462,6 +461,7 @@ int hva_hw_execute_task(struct hva_ctx *ctx, enum hva_hw_cmd_type cmd,
+ 	u8 client_id = ctx->id;
+ 	int ret;
+ 	u32 reg = 0;
++	bool got_pm = false;
+ 
+ 	mutex_lock(&hva->protect_mutex);
+ 
+@@ -469,12 +469,13 @@ int hva_hw_execute_task(struct hva_ctx *ctx, enum hva_hw_cmd_type cmd,
+ 	enable_irq(hva->irq_its);
+ 	enable_irq(hva->irq_err);
+ 
+-	if (pm_runtime_get_sync(dev) < 0) {
++	if (pm_runtime_resume_and_get(dev) < 0) {
+ 		dev_err(dev, "%s     failed to get pm_runtime\n", ctx->name);
+ 		ctx->sys_errors++;
+ 		ret = -EFAULT;
+ 		goto out;
+ 	}
++	got_pm = true;
+ 
+ 	reg = readl_relaxed(hva->regs + HVA_HIF_REG_CLK_GATING);
+ 	switch (cmd) {
+@@ -537,7 +538,8 @@ int hva_hw_execute_task(struct hva_ctx *ctx, enum hva_hw_cmd_type cmd,
+ 		dev_dbg(dev, "%s     unknown command 0x%x\n", ctx->name, cmd);
+ 	}
+ 
+-	pm_runtime_put_autosuspend(dev);
++	if (got_pm)
++		pm_runtime_put_autosuspend(dev);
+ 	mutex_unlock(&hva->protect_mutex);
+ 
+ 	return ret;
+@@ -553,9 +555,8 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
+ 
+ 	mutex_lock(&hva->protect_mutex);
+ 
+-	if (pm_runtime_get_sync(dev) < 0) {
++	if (pm_runtime_resume_and_get(dev) < 0) {
+ 		seq_puts(s, "Cannot wake up IP\n");
+-		pm_runtime_put_noidle(dev);
+ 		mutex_unlock(&hva->protect_mutex);
+ 		return;
+ 	}
+-- 
+2.30.2
+
