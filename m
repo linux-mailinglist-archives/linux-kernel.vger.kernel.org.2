@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E4636DEFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB20836DEFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243598AbhD1Sc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232390AbhD1Sc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76E5361418;
-        Wed, 28 Apr 2021 18:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619634702;
-        bh=0Wm21LceUjTljj/ENED+DzPxqQXXE08eG6FFpKDL4aI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NJDTAfJLcQm4ytPxoDzdA4wNnmdDPw0hrGI8cD3LFBbdwTtnR/MEbLyK+0g1CCsEF
-         SFFykNziKVSvScfSVnejE2l/ZKkQDGw22K6CVtug3DXoV6BWqeZPNq1ZmYMOhpTW+G
-         Hp/AXK/3zoWEtH3oQ23WfrRaViB6YGxaKuXN6Ff6tPxlN1tiUah9pJNk5nIA6R4DwR
-         khtTrbfG9/U0igm/JWvpPDDXxOqhHdKeofHcZMY7gjlC8GF78A2y26rHJFliOa7OCB
-         oBkzF+KhJ/QuPGO+5ttpbBsZeUxGCm409ny6qd9ku8GR94klbntgU1EOVwSkxkSnwx
-         OWIMw+kHC9csw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EFBDD5C00FE; Wed, 28 Apr 2021 11:31:41 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 11:31:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel-team@fb.com, neeraju@codeaurora.org, zhengjun.xing@intel.com
-Subject: Re: [clocksource]  8c30ace35d:
- WARNING:at_kernel/time/clocksource.c:#clocksource_watchdog
-Message-ID: <20210428183141.GS975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210427175027.GA945820@paulmck-ThinkPad-P17-Gen-1>
- <87y2d3mo2q.ffs@nanos.tec.linutronix.de>
- <20210428014819.GA965980@paulmck-ThinkPad-P17-Gen-1>
- <87czuen2au.ffs@nanos.tec.linutronix.de>
+        id S243611AbhD1SfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232390AbhD1SfE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:35:04 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38EFC061573;
+        Wed, 28 Apr 2021 11:34:19 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id z1so75140982ybf.6;
+        Wed, 28 Apr 2021 11:34:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=IpwMZWX9MMsh2XzRMAHNnBtuqO5Gz5Ebo8LaLSW9Frs=;
+        b=bvgQyBXggfPL9PXPDfc4k6JiPuuR23ONCaADQxIpPw/GkcNPql7NWRxhRDyx1b9rkw
+         ot+pr/abV7T1IAEEOSp7zKZqDhik+f4WSZyYDwevPszbi5kkV9HwE7BvAlNO6/Fle+o2
+         2LkdrEsu4DPGrbZBqre1JeqxNVIfICWLZOsIIng17gipwhFMZSTBibXLTUlT6cGBPc1D
+         tCMrd65ixfIJWJAwoB5MUuFmn5ebkbDld7Ln2GI6+0DqVaIHueL0Ezj3VItBTwt+yybh
+         tV5TZE7LSkM6fUqNf5+LtP2bh2mMRB6yHYfg8DifZxXlTQYEzpj/v19uAswUJukWqI2b
+         0FJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=IpwMZWX9MMsh2XzRMAHNnBtuqO5Gz5Ebo8LaLSW9Frs=;
+        b=LOXmFeW9e0eDpyesgZGTnttW3NGohkOEDRXkSbrVPMVqblgzTXlQbx1hR+pTO+e5fy
+         5a8Ft41eetmKfOBlJc5OCsmr2mEQmKyPaoyQnW6sLpBzZik4EHL/BqbT7+N+wlmLl0Jd
+         2DwyU/cb20bmPcnLF3yfFAT6hqnyO9g+icI7UCv7rWkEqBpJGc79okFVNLsGkHnuzQ/5
+         g4/HMa14ppEdZN+N53oKqKIHOtSKgSzYjy3Lm0eG0WJP9rPS4SaIBWXOXsnjMwX3mmKP
+         /V+kEMI+QyIHKKH9jsSMNK/XJJWZ08jAZ4QBwcMDl82Bkv7CKfhdCs76E+zURm8ridqg
+         uW9Q==
+X-Gm-Message-State: AOAM531EBHShT3XccTOMBQJx/M4CiI4u2b7FvBZbyErUd3wIHAGVAD53
+        iYeqI3h4kVhVko0IRIjcSD5GgHHhd4WGmOzJnIo=
+X-Google-Smtp-Source: ABdhPJwf3NV+/9n1wPI5jRTOuJtRASDvQIfToSaSJiBU9Z3yKngNiIQ6FAtr30VsUqSnxo05g0Ac2WWGJBjXP8vj3Bs=
+X-Received: by 2002:a5b:303:: with SMTP id j3mr39601718ybp.433.1619634858689;
+ Wed, 28 Apr 2021 11:34:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czuen2au.ffs@nanos.tec.linutronix.de>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+In-Reply-To: <20210414184604.23473-1-ojeda@kernel.org>
+Reply-To: mceier+kernel@gmail.com
+From:   Mariusz Ceier <mceier+kernel@gmail.com>
+Date:   Wed, 28 Apr 2021 18:34:07 +0000
+Message-ID: <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 12:14:49PM +0200, Thomas Gleixner wrote:
-> On Tue, Apr 27 2021 at 18:48, Paul E. McKenney wrote:
-> > On Tue, Apr 27, 2021 at 11:09:49PM +0200, Thomas Gleixner wrote:
-> >> Paul,
-> >> 
-> >> On Tue, Apr 27 2021 at 10:50, Paul E. McKenney wrote:
-> >> > On Tue, Apr 27, 2021 at 06:37:46AM -0700, Paul E. McKenney wrote:
-> >> >> I suppose that I give it (say) 120 seconds instead of the current 60,
-> >> >> which might be the right thing to do, but it does feel like papering
-> >> >> over a very real initramfs problem.  Alternatively, I could provide a
-> >> >> boot parameter allowing those with slow systems to adjust as needed.
-> >> >
-> >> > OK, it turns out that there are systems for which boot times in excess
-> >> > of one minute are expected behavior.  They are a bit rare, though.
-> >> > So what I will do is keep the 60-second default, add a boot parameter,
-> >> > and also add a comment by the warning pointing out the boot parameter.
-> >> 
-> >> Oh, no. This starts to become yet another duct tape horror show.
-> >> 
-> >> I'm not at all against a more robust and resilent watchdog mechanism,
-> >> but having a dozen knobs to tune and heuristics which are doomed to fail
-> >> is not a solution at all.
-> >
-> > One problem is that I did the .max_drift patch backwards.  I tightened
-> > the skew requirements on all clocks except those specially marked, and
-> > I should have done the reverse.  With that change, all of the clocks
-> > except for clocksource_tsc would work (or as the case might be, fail to
-> > work) in exactly the same way that they do today, but still rejecting
-> > false-positive skew events due to NMIs, SMIs, vCPU preemption, and so on.
-> >
-> > Then patch v10 7/7 can go away completely, and patch 6/7 becomes much
-> > smaller (and gets renamed), for example, as shown below.
-> >
-> > Does that help?
-> 
-> No. Because the problem is on both ends. We have TSC early which has
-> inaccurate frequency and we have watchdogs which are inaccurate,
-> i.e. refined jiffies.
-> 
-> So the threshold has to take both into account.
+Hello,
+  First of all IANAL, so I might be wrong regarding the issue below.
 
-Got it, and will fix.
+On 14/04/2021, ojeda@kernel.org <ojeda@kernel.org> wrote:
+>
+> ## Why not?
+>
+> Rust also has disadvantages compared to C in the context of
+> the Linux kernel:
+>
+>
+>   - Single implementation based on LLVM. There are third-party
+>     efforts underway to fix this, such as a GCC frontend,
+>     a `rustc` backend based on Cranelift and `mrustc`,
+>     a compiler intended to reduce the bootstrapping chain.
+>     Any help for those projects would be very welcome!
+>
+>   - Not standardized. While it is not clear whether standardization
+>     would be beneficial for the kernel, several points minimize
+>     this issue in any case: the Rust stability promise, the extensive
+>     documentation, the WIP reference, the detailed RFCs...
+>
 
-							Thanx, Paul
+After reading the interview referenced by https://lwn.net/Articles/854740/
+I think there might be issue with licensing - few quotes from the interview=
+:
+
+> And on the other hand, I've seen a lot of BSD (or MIT or similar) license=
+d open source projects that just fragment when they become big enough to be=
+ commercially important, and the involved companies inevitably decide to tu=
+rn their own parts proprietary.
+
+> So I think the GPLv2 is pretty much the perfect balance of "everybody wor=
+ks under the same rules", and still requires that people give back to the c=
+ommunity ("tit-for-tat")
+
+> So forking isn't a problem, as long as you can then merge back the good p=
+arts. And that's where the GPLv2 comes in. The right to fork and do your ow=
+n thing is important, but the other side of the coin is equally important -=
+ the right to then always join back together when a fork was shown to be su=
+ccessful.
+
+Rust compiler license doesn't require for people to give back to the
+community - corporation can create their own version of rust compiler
+adding some proprietary extensions, develop drivers with it and even
+if the drivers code will be GPL'd they won't be buildable by anyone
+but that corporation. The rust compiler license doesn't require
+sharing changes when you modify it. The similar problem has flex and
+openssl required to build the kernel, but so far no one thought about
+abusing them afaik.
+
+That "single implementation based on LLVM" uses a mix of MIT, Apache,
+BSD-compatible and other licenses. It doesn't use strong copyleft
+license in contrast to almost every tool required to build the kernel,
+except for flex (BSD, no (L)GPL alternative afaik) and openssl (Apache
+license, gnutls could be used instead).
+
+I suggest to wait until featureful GPL implementation of rust language
+is made (assuming GNU Rust is on the way) before merging any rust code
+in the kernel and when that implementation is done make a requirement
+that all rust code must be buildable by at least GPL implementation.
+
+Maybe it would also be worthwhile to make the requirement that the
+kernel must be buildable with free software (not just open source
+software) explicit ?
+
+Best Regards,
+Mariusz Ceier
