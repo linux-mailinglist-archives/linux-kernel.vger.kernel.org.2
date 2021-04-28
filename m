@@ -2,150 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EF936D78B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F79536D78F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239398AbhD1MlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:41:21 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44818 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235630AbhD1MlU (ORCPT
+        id S239480AbhD1Mmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239438AbhD1Mms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:41:20 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SCYFff187264;
-        Wed, 28 Apr 2021 08:39:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=etEjbbGKn2hpHf6c3/y+kKqdCCQNX90zvsHG3RWd7B4=;
- b=cNsffSVEnFkc++NJQIp0dmvC1K9nwT9t17sHp9OLjTZbZU0CS0BvN8Lo/BbqG7QSLkvh
- rIAqirmiTC88/bimrVzHe3R0XqL3QqGJ1AVcJVsawbeuw1ZzLLKAB0sO0zupPKvLzx/s
- JgrylGIY/kGn9AXJ8sdnXO53kHv5dHDYkcnvq040iOsKF3S1RK9buRlld1nCI3aXYrgp
- ddrOqUF2H9vqiChnuK2c/V0Ycu7C0Ml13j1wFN13ESiwv954sOxssJ8jQDw7PJHgP37v
- EDE19Hj+pSd3c+zNTNLsbbIFkKfRZuIp5P+/uSk6TqO529gSaTLfjk5doSReQoKleezZ Xw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38767tu925-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 08:39:30 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SCReCO032532;
-        Wed, 28 Apr 2021 12:39:28 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 384akh9vpa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 12:39:28 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SCdOGx37093778
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 12:39:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C1A8AA4040;
-        Wed, 28 Apr 2021 12:39:24 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CD21A4053;
-        Wed, 28 Apr 2021 12:39:24 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Apr 2021 12:39:24 +0000 (GMT)
-Subject: Re: [PATCH v2] s390/sclp_vt220: Fix console name to match device
-To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
-        Benjamin Zimmermann <dave@oss.volkswagen.com>,
-        debian-s390@lists.debian.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
- <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <3bfd4202-5c04-8ec7-94dc-8b60e7d73bca@de.ibm.com>
-Date:   Wed, 28 Apr 2021 14:39:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Wed, 28 Apr 2021 08:42:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAB3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 05:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ahYsnLotKTcvKL9mNUCMS2hcD/NVR1RLqacIcmuWDu0=; b=vcJvoG4EETaeCmRfy6Hn5WL1Hx
+        Z47j3zEAIz5rxmh0DYRg2zmJaQgl2KGokE/t2yA7NO765WT1OUboWgCAQOjGPNMjG2Y9IZ+LFyXDk
+        kJVeTb2hjWHYyeUipqT0bPcSs57fDv+IYBtkIVbkQjbGZWU1VMCNNQS+YGZMDyAzrypuIwJ6p/KGd
+        5Qf1wQsGRm6YZ+J/32gHWfn5WtWqVrxzR4bNc6NDVzRgcgcSxZZh2MbetXRIq4NY6y/tcpAhZEW/w
+        5u0dIigytlhY5JEH/1+2XLwLZ0Z6kw464u1wNSoMmqWfpnQC2SH1AFWjFMjXcVvFo6hhekteMEsxY
+        LxoA5D1A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lbjVQ-008Hzp-9Q; Wed, 28 Apr 2021 12:41:31 +0000
+Date:   Wed, 28 Apr 2021 13:41:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Rolf Eike Beer <eb@emlix.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove argument from mem_init_print_info()
+Message-ID: <20210428124128.GA1847222@casper.infradead.org>
+References: <1846777.ZUqDs8pn68@mobilepool36.emlix.com>
 MIME-Version: 1.0
-In-Reply-To: <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sit4_sRX9MqvpxcdYTSGjmn0-fay0Nui
-X-Proofpoint-ORIG-GUID: sit4_sRX9MqvpxcdYTSGjmn0-fay0Nui
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_06:2021-04-27,2021-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- spamscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0 mlxscore=0
- phishscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104280084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1846777.ZUqDs8pn68@mobilepool36.emlix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 28, 2021 at 12:20:51PM +0200, Rolf Eike Beer wrote:
+> All callers passed NULL there, and I have not found anything in git history that
+> shows this has been any different in the last 15 years.
 
+You aren't trying hard enough ;-)
 
-On 27.04.21 21:40, Valentin Vidic wrote:
-> Console name reported in /proc/consoles:
-> 
->    ttyS1                -W- (EC p  )    4:65
-> 
-> does not match the char device name:
-> 
->    crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
-> 
-> so debian-installer inside a QEMU s390x instance gets confused and fails
-> to start with the following error:
-> 
->    steal-ctty: No such file or directory
-> 
-> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Used in d9d7e769815c9cb66c8a4b144f066bb957ebd98e (blackfin)
+Deleted in 4ba66a9760722ccbb691b8f7116cad2f791cca7b (removal of blackfin port)
 
-Ok, I will apply this internally for a while to give it some test coverage.
-I also think that I found a potential statement for the documentation issue.
-
-The tty will simply continue to work (as tty and console are not connected),
-but for the console on LPAR you usually do things like
-"console=ttyS0 console=ttyS1" to get console output on both (sclp line mode and
-sclp full screen AKA ascii console).
-
-When we now change the documentation to
-"console=ttyS0 console=ttyS1 console=ttysclp0" the kernel will ignore the missing
-console.
-
-
-> ---
->   v2: also update preferred console for VT220 case
-> 
->   arch/s390/kernel/setup.c       | 2 +-
->   drivers/s390/char/sclp_vt220.c | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-> index 72134f9f6ff5..3ec6ca9c26c0 100644
-> --- a/arch/s390/kernel/setup.c
-> +++ b/arch/s390/kernel/setup.c
-> @@ -165,7 +165,7 @@ static void __init set_preferred_console(void)
->   	else if (CONSOLE_IS_3270)
->   		add_preferred_console("tty3270", 0, NULL);
->   	else if (CONSOLE_IS_VT220)
-> -		add_preferred_console("ttyS", 1, NULL);
-> +		add_preferred_console("ttysclp", 0, NULL);
->   	else if (CONSOLE_IS_HVC)
->   		add_preferred_console("hvc", 0, NULL);
->   }
-> diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
-> index 047f812d1a1c..71ed1bf15598 100644
-> --- a/drivers/s390/char/sclp_vt220.c
-> +++ b/drivers/s390/char/sclp_vt220.c
-> @@ -35,8 +35,8 @@
->   #define SCLP_VT220_MINOR		65
->   #define SCLP_VT220_DRIVER_NAME		"sclp_vt220"
->   #define SCLP_VT220_DEVICE_NAME		"ttysclp"
-> -#define SCLP_VT220_CONSOLE_NAME		"ttyS"
-> -#define SCLP_VT220_CONSOLE_INDEX	1	/* console=ttyS1 */
-> +#define SCLP_VT220_CONSOLE_NAME		"ttysclp"
-> +#define SCLP_VT220_CONSOLE_INDEX	0	/* console=ttysclp0 */
->   
->   /* Representation of a single write request */
->   struct sclp_vt220_request {
-> 
+It can be removed now.
