@@ -2,63 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57AE36D0C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9F536D0C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbhD1DJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 23:09:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:59868 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhD1DJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 23:09:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47FE41FB;
-        Tue, 27 Apr 2021 20:09:13 -0700 (PDT)
-Received: from [10.163.76.81] (unknown [10.163.76.81])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E3E03F694;
-        Tue, 27 Apr 2021 20:09:08 -0700 (PDT)
-Subject: Re: [PATCH 0/5] Cleanup and fixup for huge_memory
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     ziy@nvidia.com, william.kucharski@oracle.com, willy@infradead.org,
-        yang.shi@linux.alibaba.com, aneesh.kumar@linux.ibm.com,
-        rcampbell@nvidia.com, songliubraving@fb.com,
-        kirill.shutemov@linux.intel.com, riel@surriel.com,
-        hannes@cmpxchg.org, minchan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210427133214.2270207-1-linmiaohe@huawei.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1d86c821-89f6-cc46-ceb4-fac7748212e5@arm.com>
-Date:   Wed, 28 Apr 2021 08:40:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235547AbhD1DLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 23:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhD1DLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 23:11:05 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ABFC061574;
+        Tue, 27 Apr 2021 20:10:21 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id q192so18352709ybg.4;
+        Tue, 27 Apr 2021 20:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rRuk3LXxZffE/YX5087tARIXQX+VPzj1e3QOp6q3WkI=;
+        b=YrTxrQyl/0O8RuK469UHGDQmdPy30gkpj/QVi1D87zFB2s4PNcs4aIwYgy3myjrgAS
+         CWcmXoQaTuYcWfVixySmMkPl+9j/ENrB9qwfELtYVxC4yHHvd4iHqrnx02+ZXIYkA4YX
+         1tMcz5dnS4nRk06FjdEGU5Me1fdZ4S3xG8o7RXiE9N6uMIJtnxMLDXAE4LnbE5+t5uyg
+         PLqUgZHw3EERuwzRx+9p641e7ZHXtQZEZB/VLbUUgT0NPhpVjZvjAG00eUoz2gwsWAtZ
+         PL+yWMeAVHoELF14fqTbwRoSlIqCFJessFZb6bUWAcTcnBDncH5ijG0KEC24wtdSOWG6
+         1Cig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rRuk3LXxZffE/YX5087tARIXQX+VPzj1e3QOp6q3WkI=;
+        b=cU0Tp+B4znBKQxtnnOJIZkoSlWI6COKXMPN+3AlnvzB8NHKvOzl3XGvGMzZjCV498v
+         4A8XfwTCtJTPW482+ZXoksUZQelKMeeJ4DEuHBcKHc/GXxjqwCixJuBIKkumBE6/yhOI
+         w4YUavQQsSxFwlYWebn51bydVtX9lQiJtoOribFWTcVvyX/GPj+YGPM6HrZzjsYhTHRQ
+         QAOUTGvv9CDNVX+23BedkIF9sHrkW6AhEviROJIlkNP6L2tzWSPWfNVnxISibzXCyfrT
+         rGC/8HKUSQFiQ0trNcaXTdxy2Zo5RpI7E8BMSRFrprTIWJJYaLMXbPRRvavIBDTLgcVZ
+         iQWA==
+X-Gm-Message-State: AOAM531HFs1GPH8mJrr3BUeXCWGwT7WQmQ44Cw1Zm/mlPaL9O2UAY6SA
+        /BOPD9zxxg40f25MGongZNu/WkKX+a+YRAIn4CI=
+X-Google-Smtp-Source: ABdhPJxJTXxlHGTfIoVgADZf3q5v15IcdYP2/e/o4lr6MmWgGzC87uZ4XdePgx4ghhzctxm0Ta5iK+NOUPFxd/V6q/4=
+X-Received: by 2002:a25:bc8b:: with SMTP id e11mr38000740ybk.115.1619579420788;
+ Tue, 27 Apr 2021 20:10:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210427133214.2270207-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
+ <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
+ <CANiq72=VA_cH9yw_LZr3P+n1AsQEEhtY4xdk76jHgimTufHRsQ@mail.gmail.com> <CACRpkdYodGnURuaYMBwVAY=8bU0PQoPAvTp34uYksPFmxBsT2A@mail.gmail.com>
+In-Reply-To: <CACRpkdYodGnURuaYMBwVAY=8bU0PQoPAvTp34uYksPFmxBsT2A@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 28 Apr 2021 05:10:09 +0200
+Message-ID: <CANiq72m9V3dVG59jAoR-OM+7QtJauQgrix3DZkw=oCuaaf3H5w@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27, 2021 at 1:13 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> Actually my reply to Wedson brought up a new issue, which is the
+> quality of learning resources and the lack of an equivalent to
+> The C Programming Language book.
 
+I recall having a similar feeling when initially jumping into
+individual chapters of The Rust Programming Language book. I think it
+is intended to be read from cover to cover instead.
 
-On 4/27/21 7:02 PM, Miaohe Lin wrote:
-> Hi all,
-> This series contains cleanups to remove dedicated macro and remove
-> unnecessary tlb_remove_page_size() for huge zero pmd. Also this adds
-> missing read-only THP checking for transparent_hugepage_enabled() and
-> avoids discarding hugepage if other processes are mapping it. More
-> details can be found in the respective changelogs. Thanks!
-> 
-> Miaohe Lin (5):
->   mm/huge_memory.c: remove dedicated macro HPAGE_CACHE_INDEX_MASK
->   mm/huge_memory.c: use page->deferred_list
->   mm/huge_memory.c: add missing read-only THP checking in
->     transparent_hugepage_enabled()
->   mm/huge_memory.c: remove unnecessary tlb_remove_page_size() for huge
->     zero pmd
->   mm/huge_memory.c: don't discard hugepage if other processes are
->     mapping it
+There are other resources, see [1]. For instance, there is The
+Embedded Rust Book [2]. Some of those are a WIP, but perhaps others
+can recommend better finished/published books.
 
-I guess it might be just better to split the series into cleans-ups
-without functional change and then fixes separately.
+In any case, Rust has more features than C, some of them quite unique,
+and they are routinely used, so it does take some time to learn.
+
+[1] https://www.rust-lang.org/learn
+[2] https://docs.rust-embedded.org/book/
+
+> I think a good starting point would be to either fix Rust support in
+> GCC or implement some more important ISAs in LLVM,
+> whichever is easiest. I don't mind having just *one* compiler but
+> I mind having *a* compiler for every arch we support.
+>
+> [...]
+>
+> Portability to old systems and ISAs is a virtue in itself
+> because of the effect it has on code quality, not necessarily
+> for the support itself.
+
+I agree that there are benefits of keeping compiler technology
+flexible, but one cannot force or expect any project (including the
+Linux kernel) to maintain all code forever.
+
+In the end, we need to balance that adaptability against the benefits
+of adding Rust. In particular because nowadays LLVM is able to cover
+the majority of devices that want to run the very latest Linux
+kernels. Thus those benefits apply to most users. If LLVM only
+supported, say, x86_64, I would agree that it would not be enough.
+
+By contrast, compiler flexibility only matters indirectly to users,
+and at some point there are diminishing returns to keeping all
+architectures around.
+
+In any case, adding Rust (in particular for "leaf" modules) does not
+imply that we will lose those architectures any time soon. That would
+take at least several years, and would require quite a few things to
+happen at the same time:
+
+  - That Rust got so widely used in the kernel (because the benefits
+turned out to be important) that maintainers went as far as wanting to
+drop C drivers from mainline for Rust equivalents.
+
+  - That GCC did not get any way to compile Rust (no Rust frontend for
+GCC, no GCC backend for `rustc`, etc.) and, moreover, that the plans
+for that had been dropped.
+
+  - That LLVM did not add support for the missing architectures.
+
+The first point is unlikely any time soon. The second point is
+unlikely, too, given there is funding for that now (and I assume those
+projects will receive more support if Rust lands in the kernel). The
+third point is likely, though.
+
+Cheers,
+Miguel
