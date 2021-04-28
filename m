@@ -2,144 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A368F36D4F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A933036D4F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238220AbhD1JsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhD1JsX (ORCPT
+        id S238270AbhD1JtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:49:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28598 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230032AbhD1JtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:48:23 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C955FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:47:38 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so8416189wmi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=kCEJkDjUldkGqpI2Ey6ungf76uryF6iJHDXmu3GitbA=;
-        b=V488IdhAmD7JJk26f2oLEFm5EDhW/yMdOp5MGvjrv8vSXbLvV0uUVxRmvTBEA/ZzK/
-         BuQ5pyb07laXNxWGyuyxXNYqr0XBxghg1iP+3WsvaGqEj9nZ0/mbhTr9qNr2rPNw0WsE
-         m6i8/hNY0iyDu9MT/2oandgCKiK09Bw8dcB39RvymMINFM3BiGsHKx1EnUickpRyptb1
-         BDHakCr5h3yvJkrRqvEMUiVJPZ5iKsS/x89hdgkt1zGuRIHIrQdmoPZo64JucMGZOpWV
-         C4qfwskeT85Gcfif1LhyOFc7qdXkV2n2GOfjoKqZaZQTwDDWe0lsuLs9PiE5kR3Je/la
-         hdvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=kCEJkDjUldkGqpI2Ey6ungf76uryF6iJHDXmu3GitbA=;
-        b=Fq7KGFgPkCT8wpZVWd+CRUWLoHMGQFhgGnokt5MWRBsdL8ofyRMm/4mjRqIDjO3z5w
-         YciD5XsuyqqPXNOSBTUsM1yRFnWZFzBlR6KlAKG+Ux8F/tMLppCPamacR2i0+1BsxnFE
-         OHOwZgedn+yDTP8PHQJj0hhXZcEkCHxcjAR+RDRNgwC6oB7B7B2QhSUX1PIQjPi3cILw
-         Tc+OATCvHOM6LwixVcN8ek/zArsko79yjHWSWaFWnmv5W1cPxPS0DxNEKSX+/1ij/OHs
-         zdBujM4R4Hy/ZKCh0Py+0H/Zp0xdp/qdF7dZ1vdM3u8QeL9vdiS7ZJR6r1l8bbt4rp5a
-         NiJw==
-X-Gm-Message-State: AOAM532fNp6X51QnpIGeyIlvmpMUXbqDGmbKPKhBuvfgQ4hRu4nzt3uq
-        rks15uIRpWnZBJZ2qKGAYRQrF9iFXeCAfg==
-X-Google-Smtp-Source: ABdhPJzh7DMabp5UV8qga875WMkAqhF4SIchYnA/7/qnzV8GDCDZa8XIhpZs+qS11n5mR7seS7CnmA==
-X-Received: by 2002:a7b:c047:: with SMTP id u7mr3494159wmc.98.1619603257592;
-        Wed, 28 Apr 2021 02:47:37 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.119])
-        by smtp.gmail.com with ESMTPSA id m11sm7609619wri.44.2021.04.28.02.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 02:47:37 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 11:47:34 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Joe Perches <joe@perches.com>, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/49] staging: rtl8723bs: replace DBG_871X_SEL log macro
- with netdev_dbg()
-Message-ID: <20210428094733.GA1427@agape.jhs>
-References: <cover.1619189489.git.fabioaiuto83@gmail.com>
- <9e6a1e4dc8962bfd58375be98619c76e8e28febe.1619189489.git.fabioaiuto83@gmail.com>
- <0a68fbfffba4cc801814e3af1e3a7571928c1921.camel@perches.com>
- <20210423165249.GA1419@agape.jhs>
- <20210428092842.GQ1981@kadam>
+        Wed, 28 Apr 2021 05:49:10 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13S9XRc9161159;
+        Wed, 28 Apr 2021 05:48:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=tit3hb7m3zYdZhFI0+cPTFP8j/KlEFlZwtxvK/e1Wfs=;
+ b=FbI1FSjmKE9U8xsoMiKMSgSkpCwiKLa1Er03TRRSqggmgU4epDp02B1sq1xSScvI86LJ
+ +Bw2F+/CLznTAWylUUoiW7EtBgV/bvB1kL6n4pVsC663TDX8joixa3uBER2Z8d3ZAiRY
+ n4EfVXO/AwL9O/Nj9m8NjIZ521B9Hv1luq6nmS53siqhbpIsQCT+0javLEZA6o2OUmhu
+ reZV8brfDD9vovp6k7sgDvsplfCBsOQMs0gndO72k7rgZ0R94/8ASvBNsOeIVDD/iblo
+ 0LenE+EeXqldLGLurInaiEX8H2JZfUbTx3VohtDl2O0c4i9t3vK4GNAIsQ43qo3J2z0J 5A== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38740tahvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 05:48:05 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13S9m3kj018635;
+        Wed, 28 Apr 2021 09:48:03 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 384ay8s0sh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 09:48:03 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13S9lxx318809090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 09:47:59 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9BCA6A405C;
+        Wed, 28 Apr 2021 09:47:59 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B582A405B;
+        Wed, 28 Apr 2021 09:47:59 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.14.58])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 09:47:59 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v3] pseries/drmem: update LMBs after LPM
+Date:   Wed, 28 Apr 2021 11:47:58 +0200
+Message-Id: <20210428094758.28665-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210428092842.GQ1981@kadam>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: exmDS7dCltIpB86W1CWWoY5aWuRA-z_F
+X-Proofpoint-ORIG-GUID: exmDS7dCltIpB86W1CWWoY5aWuRA-z_F
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_03:2021-04-27,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ spamscore=0 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 12:28:42PM +0300, Dan Carpenter wrote:
-> On Fri, Apr 23, 2021 at 06:52:49PM +0200, Fabio Aiuto wrote:
-> > On Fri, Apr 23, 2021 at 08:27:58AM -0700, Joe Perches wrote:
-> > > On Fri, 2021-04-23 at 16:57 +0200, Fabio Aiuto wrote:
-> > > > replace DBG_871X_SEL log macro with the net device driver
-> > > > recommended netdev_dbg().
-> > > > 
-> > > > This macro by default does a raw printk, and the alternative
-> > > > behaviour, never triggered is a seq_print() call.
-> > > []
-> > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_debug.c b/drivers/staging/rtl8723bs/core/rtw_debug.c
-> > > []
-> > > > @@ -23,9 +23,10 @@ void mac_reg_dump(void *sel, struct adapter *adapter)
-> > > >  	for (i = 0x0; i < 0x800; i += 4) {
-> > > >  		if (j%4 == 1)
-> > > >  			netdev_dbg(adapter->pnetdev, "0x%03x", i);
-> > > > -		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
-> > > > +		netdev_dbg(adapter->pnetdev, " 0x%08x ",
-> > > > +			   rtw_read32(adapter, i));
-> > > >  		if ((j++)%4 == 0)
-> > > > -			DBG_871X_SEL(sel, "\n");
-> > > > +			netdev_dbg(adapter->pnetdev, "\n");
-> > > >  	}
-> > > 
-> > > This makes a mess of the output as each netdev_dbg call
-> > > is a separate line.
-> > > 
-> > > Dumping 1000 register lines into output logs seems impolite
-> > > at best, even for debugging.
-> > > 
-> > > This _might_ be rewritten to something like:
-> > > 
-> > > void dump_4_regs(struct adapter *adapter, int offset)
-> > > {
-> > > 	u32 reg[4];
-> > > 	int i;
-> > > 
-> > > 	for (i = 0; i < 4; i++)
-> > > 		reg[i] = rtw_read32(adapter, offset + i);
-> > > 
-> > > 	netdev_dbg(adapter->pnetdev, "0x%03x 0x%08x 0x%08x 0x%08x 0x%08x\n",
-> > > 		   i, reg[0], reg[1], reg[2], reg[3]);
-> > > }
-> > > 
-> > > void mac_reg_dump(...)
-> > > {
-> > > 	...
-> > > 
-> > > 	for (i = 0; i < 0x800; i += 4)
-> > > 		dump_4_regs(adapter, i);
-> > > 
-> > > 
-> > > 
-> > 
-> > interesting, sure that will be matter of another patch series,
-> > the ugly output was already there, old macro used to wrap a raw
-> > printk...
-> 
-> The raw printk doesn't automatically add a new line at the end but a
-> netdev_dbg() does.  (You're still supposed to add a manual \n to those
-> but if you don't the lower layers will do it automatically.)
-> 
-> regards,
-> dan carpenter
+After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
+updated by the hypervisor in the case the NUMA topology of the LPAR's
+memory is updated.
 
-got it,
+This is caught by the kernel, but the memory's node is updated because
+there is no way to move a memory block between nodes.
 
-thank you,
+If later a memory block is added or removed, drmem_update_dt() is called
+and it is overwriting the DT node to match the added or removed LMB. But
+the LMB's associativity node has not been updated after the DT node update
+and thus the node is overwritten by the Linux's topology instead of the
+hypervisor one.
 
-fabio
+Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
+updated to force an update of the LMB's associativity.
+
+Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+
+V3:
+ - Check rd->dn->name instead of rd->dn->full_name
+V2:
+ - Take Tyrel's idea to rely on OF_RECONFIG_UPDATE_PROPERTY instead of
+ introducing a new hook mechanism.
+---
+ arch/powerpc/include/asm/drmem.h              |  1 +
+ arch/powerpc/mm/drmem.c                       | 35 +++++++++++++++++++
+ .../platforms/pseries/hotplug-memory.c        |  4 +++
+ 3 files changed, 40 insertions(+)
+
+diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
+index bf2402fed3e0..4265d5e95c2c 100644
+--- a/arch/powerpc/include/asm/drmem.h
++++ b/arch/powerpc/include/asm/drmem.h
+@@ -111,6 +111,7 @@ int drmem_update_dt(void);
+ int __init
+ walk_drmem_lmbs_early(unsigned long node, void *data,
+ 		      int (*func)(struct drmem_lmb *, const __be32 **, void *));
++void drmem_update_lmbs(struct property *prop);
+ #endif
+ 
+ static inline void invalidate_lmb_associativity_index(struct drmem_lmb *lmb)
+diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
+index 9af3832c9d8d..f0a6633132af 100644
+--- a/arch/powerpc/mm/drmem.c
++++ b/arch/powerpc/mm/drmem.c
+@@ -307,6 +307,41 @@ int __init walk_drmem_lmbs_early(unsigned long node, void *data,
+ 	return ret;
+ }
+ 
++/*
++ * Update the LMB associativity index.
++ */
++static int update_lmb(struct drmem_lmb *updated_lmb,
++		      __maybe_unused const __be32 **usm,
++		      __maybe_unused void *data)
++{
++	struct drmem_lmb *lmb;
++
++	/*
++	 * Brut force there may be better way to fetch the LMB
++	 */
++	for_each_drmem_lmb(lmb) {
++		if (lmb->drc_index != updated_lmb->drc_index)
++			continue;
++
++		lmb->aa_index = updated_lmb->aa_index;
++		break;
++	}
++	return 0;
++}
++
++/*
++ * Update the LMB associativity index.
++ *
++ * This needs to be called when the hypervisor is updating the
++ * dynamic-reconfiguration-memory node property.
++ */
++void drmem_update_lmbs(struct property *prop)
++{
++	if (!strcmp(prop->name, "ibm,dynamic-memory"))
++		__walk_drmem_v1_lmbs(prop->value, NULL, NULL, update_lmb);
++	else if (!strcmp(prop->name, "ibm,dynamic-memory-v2"))
++		__walk_drmem_v2_lmbs(prop->value, NULL, NULL, update_lmb);
++}
+ #endif
+ 
+ static int init_drmem_lmb_size(struct device_node *dn)
+diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
+index 8377f1f7c78e..672ffbee2e78 100644
+--- a/arch/powerpc/platforms/pseries/hotplug-memory.c
++++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+@@ -949,6 +949,10 @@ static int pseries_memory_notifier(struct notifier_block *nb,
+ 	case OF_RECONFIG_DETACH_NODE:
+ 		err = pseries_remove_mem_node(rd->dn);
+ 		break;
++	case OF_RECONFIG_UPDATE_PROPERTY:
++		if (!strcmp(rd->dn->name,
++			    "ibm,dynamic-reconfiguration-memory"))
++			drmem_update_lmbs(rd->prop);
+ 	}
+ 	return notifier_from_errno(err);
+ }
+-- 
+2.31.1
+
