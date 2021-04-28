@@ -2,99 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F264436D6D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B7636D6D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhD1L4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhD1L4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:56:07 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B2CC061574;
-        Wed, 28 Apr 2021 04:55:20 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id e5so34071780wrg.7;
-        Wed, 28 Apr 2021 04:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wFVlZsZ+heSlhDiUDM4jdsWEkeRvPBP/0Wu0oaYtrFc=;
-        b=hdH6GYWdfmHqxZz/sXPZXlHlyWXrxY3Qp1PlYjPmRYXfyT+TPE5zVwsEP1N5E9hayN
-         bz+Y2ohnj+urGYHpcsJqHVCdLm0sEX0bqpM50uzK09EtLBKC1uzWGtPwJqo3vyV0uXu3
-         iFCzJe6+kFO3pFVQ2Ns8Ix25yW2/80IkCwDZrviKqwXQE0IvyO0/RP5hiSbIwDcHr7VG
-         T5JlmibjhcLRhPbGTIpcRLEG8TI3BQs8AMD9QKqtoEKxUT47RtF9qFz8VEY4vetWj+z+
-         bNtAuR24nw4aJt1ZAHyjikiVgvfFcNFMfnaIinVw79KGSUAAVnPQ/VWN9NOc+C243xRY
-         ug4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wFVlZsZ+heSlhDiUDM4jdsWEkeRvPBP/0Wu0oaYtrFc=;
-        b=jfakcI9P14fT/dZYBQR3r/G5xRy0ZBorBc8EtSZXGtANCc49dh4ZP3G4HmVC+BcVmy
-         XsBfFk8ZA1f6cK0Dhxw2/W+STtVMGbpEw/lowUAR3yqQCQMoLVG66Ioul8+j4USTlug5
-         bQUxTqRmjGd7vJQkt9h/i01g83IFN+8Q1lkqow90yvpSm3yfcEm6Rbw2kugvokje3TIa
-         42/zd93mC37w82qgN0mlGdtaFItoO0c3I6jtrMfNkqWUxeB02pwOeEvefKh+D4dIkyCE
-         PA9YtFvmqb9pxgyq+bpqwBNMxIfzVYtEU109u7PfvtbVV4vJMSE0RnXSu4V01hUMIJpE
-         pd4Q==
-X-Gm-Message-State: AOAM530ImlJ7CAlndYKE5oUmTJru0qgbE3ku0Y8vTosDcWFG1mWuCwve
-        p6/tsZetwLWXXUpN5FAEceLVsPmKWBWDnZRH
-X-Google-Smtp-Source: ABdhPJyc4U4H2WokTiue7gy0nKH8mHu+ubb+IDt/e+SUp9eiqkUU4zQNZlUv3pYA7+h8y2FKXlzSYQ==
-X-Received: by 2002:adf:9d88:: with SMTP id p8mr35435030wre.138.1619610919503;
-        Wed, 28 Apr 2021 04:55:19 -0700 (PDT)
-Received: from ubuntudesktop.lan (210.53.7.51.dyn.plus.net. [51.7.53.210])
-        by smtp.gmail.com with ESMTPSA id c2sm3493626wmr.22.2021.04.28.04.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 04:55:18 -0700 (PDT)
-From:   Lee Gibson <leegib@gmail.com>
-To:     kvalo@codeaurora.org
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
-Subject: [PATCH v2] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
-Date:   Wed, 28 Apr 2021 12:55:08 +0100
-Message-Id: <20210428115508.25624-1-leegib@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210317121807.389169-1-leegib@gmail.com>
-References: <20210317121807.389169-1-leegib@gmail.com>
+        id S231472AbhD1L4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:56:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhD1L4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 07:56:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619610922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mVaAE5j4PRgNVtKYb1xi0JNMS/yIGUD1+Zz/inuGnBA=;
+        b=ZRf3ph+TnessjTvvtr/DsOTmTdjfYuifQx85GKSChPclLGlKVU+Tca39Ojkq6mbumeZ8+f
+        SeIRObEy8skWFL6/2edyJO7a/ZAN4uDpVLyQjbnrZ2gNIkGY8QiG+hDPcU3xnhUoKyyTws
+        JjS4uZnkl+VychQrxBVVx35+pAxq010=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23ABBB155;
+        Wed, 28 Apr 2021 11:55:22 +0000 (UTC)
+Date:   Wed, 28 Apr 2021 13:55:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ying.huang@intel.com,
+        tim.c.chen@linux.intel.com, Shakeel Butt <shakeelb@google.com>,
+        wfg@mail.ustc.edu.cn, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
+ too_many_isolated()
+Message-ID: <YIlNKds8klSiOalo@dhcp22.suse.cz>
+References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
+ <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com>
+ <YIGuvh70JbE1Cx4U@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YIGuvh70JbE1Cx4U@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function wl1251_cmd_scan calls memcpy without checking the length.
-Harden by checking the length is within the maximum allowed size.
+[Cc Rik and Andrea]
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
----
-v2: use clamp_val() instead of min_t()
+On Thu 22-04-21 11:13:34, Yu Zhao wrote:
+> On Thu, Apr 22, 2021 at 04:36:19PM +0800, Xing Zhengjun wrote:
+> > Hi,
+> > 
+> >    In the system with very few file pages (nr_active_file + nr_inactive_file
+> > < 100), it is easy to reproduce "nr_isolated_file > nr_inactive_file",  then
+> > too_many_isolated return true, shrink_inactive_list enter "msleep(100)", the
+> > long latency will happen.
+> > 
+> > The test case to reproduce it is very simple: allocate many huge pages(near
+> > the DRAM size), then do free, repeat the same operation many times.
+> > In the test case, the system with very few file pages (nr_active_file +
+> > nr_inactive_file < 100), I have dumpped the numbers of
+> > active/inactive/isolated file pages during the whole test(see in the
+> > attachments) , in shrink_inactive_list "too_many_isolated" is very easy to
+> > return true, then enter "msleep(100)",in "too_many_isolated" sc->gfp_mask is
+> > 0x342cca ("_GFP_IO" and "__GFP_FS" is masked) , it is also very easy to
+> > enter “inactive >>=3”, then “isolated > inactive” will be true.
+> > 
+> > So I  have a proposal to set a threshold number for the total file pages to
+> > ignore the system with very few file pages, and then bypass the 100ms sleep.
+> > It is hard to set a perfect number for the threshold, so I just give an
+> > example of "256" for it.
+> > 
+> > I appreciate it if you can give me your suggestion/comments. Thanks.
+> 
+> Hi Zhengjun,
+> 
+> It seems to me using the number of isolated pages to keep a lid on
+> direct reclaimers is not a good solution. We shouldn't keep going
+> that direction if we really want to fix the problem because migration
+> can isolate many pages too, which in turn blocks page reclaim.
+> 
+> Here is something works a lot better. Please give it a try. Thanks.
 
- drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+O do have a very vague recollection that number of reclaimers used to be
+a criterion in very old days and it has proven to be quite bad in the
+end. I am sorry but I do not have an reference at hands and do not have
+time to crawl git history. Maybe Rik/Andrea will remember details.
 
-diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
-index 498c8db2eb48..d7a869106782 100644
---- a/drivers/net/wireless/ti/wl1251/cmd.c
-+++ b/drivers/net/wireless/ti/wl1251/cmd.c
-@@ -454,9 +454,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
- 		cmd->channels[i].channel = channels[i]->hw_value;
- 	}
- 
--	cmd->params.ssid_len = ssid_len;
--	if (ssid)
--		memcpy(cmd->params.ssid, ssid, ssid_len);
-+	if (ssid) {
-+		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
-+
-+		cmd->params.ssid_len = len;
-+		memcpy(cmd->params.ssid, ssid, len);
-+	}
- 
- 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
- 	if (ret < 0) {
+The existing throttling mechanism is quite far from optimal but it aims
+at handling close to OOM situations where effectivelly a large part of
+the existing LRUs can be already isolated. We already have a retry
+logic which is LRU aware in the page allocator
+(should_reclaim_retry). The logic would have to be extended but that
+sounds like a better fit for the back off to me.
+
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 507d216610bf2..9a09f7e76f6b8 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -951,6 +951,8 @@ typedef struct pglist_data {
+>  
+>  	/* Fields commonly accessed by the page reclaim scanner */
+>  
+> +	atomic_t nr_reclaimers;
+> +
+>  	/*
+>  	 * NOTE: THIS IS UNUSED IF MEMCG IS ENABLED.
+>  	 *
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 1c080fafec396..f7278642290a6 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1786,43 +1786,6 @@ int isolate_lru_page(struct page *page)
+>  	return ret;
+>  }
+>  
+> -/*
+> - * A direct reclaimer may isolate SWAP_CLUSTER_MAX pages from the LRU list and
+> - * then get rescheduled. When there are massive number of tasks doing page
+> - * allocation, such sleeping direct reclaimers may keep piling up on each CPU,
+> - * the LRU list will go small and be scanned faster than necessary, leading to
+> - * unnecessary swapping, thrashing and OOM.
+> - */
+> -static int too_many_isolated(struct pglist_data *pgdat, int file,
+> -		struct scan_control *sc)
+> -{
+> -	unsigned long inactive, isolated;
+> -
+> -	if (current_is_kswapd())
+> -		return 0;
+> -
+> -	if (!writeback_throttling_sane(sc))
+> -		return 0;
+> -
+> -	if (file) {
+> -		inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
+> -		isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
+> -	} else {
+> -		inactive = node_page_state(pgdat, NR_INACTIVE_ANON);
+> -		isolated = node_page_state(pgdat, NR_ISOLATED_ANON);
+> -	}
+> -
+> -	/*
+> -	 * GFP_NOIO/GFP_NOFS callers are allowed to isolate more pages, so they
+> -	 * won't get blocked by normal direct-reclaimers, forming a circular
+> -	 * deadlock.
+> -	 */
+> -	if ((sc->gfp_mask & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS))
+> -		inactive >>= 3;
+> -
+> -	return isolated > inactive;
+> -}
+> -
+>  /*
+>   * move_pages_to_lru() moves pages from private @list to appropriate LRU list.
+>   * On return, @list is reused as a list of pages to be freed by the caller.
+> @@ -1924,19 +1887,6 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>  	bool stalled = false;
+>  
+> -	while (unlikely(too_many_isolated(pgdat, file, sc))) {
+> -		if (stalled)
+> -			return 0;
+> -
+> -		/* wait a bit for the reclaimer. */
+> -		msleep(100);
+> -		stalled = true;
+> -
+> -		/* We are about to die and free our memory. Return now. */
+> -		if (fatal_signal_pending(current))
+> -			return SWAP_CLUSTER_MAX;
+> -	}
+> -
+>  	lru_add_drain();
+>  
+>  	spin_lock_irq(&lruvec->lru_lock);
+> @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
+>  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  				gfp_t gfp_mask, nodemask_t *nodemask)
+>  {
+> +	int nr_cpus;
+>  	unsigned long nr_reclaimed;
+>  	struct scan_control sc = {
+>  		.nr_to_reclaim = SWAP_CLUSTER_MAX,
+> @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  	set_task_reclaim_state(current, &sc.reclaim_state);
+>  	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
+>  
+> +	nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
+> +	while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
+> +		if (schedule_timeout_killable(HZ / 10))
+> +			return SWAP_CLUSTER_MAX;
+> +	}
+> +
+>  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
+>  
+> +	if (nr_cpus)
+> +		atomic_dec(&pgdat->nr_reclaimers);
+> +
+>  	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
+>  	set_task_reclaim_state(current, NULL);
+
+This will surely break any memcg direct reclaim.
+
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
