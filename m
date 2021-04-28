@@ -2,106 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1902036E070
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD35236E074
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242029AbhD1UkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        id S239938AbhD1UlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242013AbhD1UkN (ORCPT
+        with ESMTP id S240387AbhD1UlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:40:13 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E27C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:39:28 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id q2so12615744pfk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:39:28 -0700 (PDT)
+        Wed, 28 Apr 2021 16:41:11 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7A0C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:40:24 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id g4-20020a9d6b040000b029029debbbb3ecso26594647otp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bP0jsyLUeBZMcia9mVsWBqP6zFcasRiNfS5tk4kM0rM=;
-        b=A8+FVi1mPar4WLP24ObFpp1Q218abKlV0OQrmnoXUgmmTraergbRvRIY1olI2H8FM5
-         Zs2ESIBKBScQGKK1e8f+Sa1YgkVnUJgNUswDh4G4ZG1eWdx+7ssZlBxd43RQhC93UIcT
-         UKYW2k8b4p/NrYoP+17PCBkBmkSnwJZS6FulQ=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=boJVxwbv68E6kptb+hUE8SCZnY8IWI5+k6h0gATVG5s=;
+        b=orJkPDsfa5lZi/6zpkbPvXlfg/BVXbKDIOI7OTHXRq5Gw/E/R0N641zTdghwPhjV8f
+         LrWDyoIy4cVfOasbxP7IWq/D5I0XZtgtaXO6pezzbJtoNjLJFPpL8na/c/wdtkrjSdnE
+         4llSC8oMV0IkeSrNbqIa/hmdfS9kvTQz+batkn1Sc7pa8cny0atjTyz5EeXNjcu/qjhw
+         osssih9cGo5h1gOYEItD/sxjO9VAdG7UaxEbLQPesnoh3pakuxA9A3fujt+F0F62AYUh
+         CNCdfK8Rnov9YlR4IV3GjuaNy40OxD+A0owphEN/tlgODsaAGOQdggqUDzgNWKP1kBX5
+         M3AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bP0jsyLUeBZMcia9mVsWBqP6zFcasRiNfS5tk4kM0rM=;
-        b=sPhtzlWdgq6/G4lJRsJN5AUIBcUsFm1aHPNwbpMd+qjzaKIdXc58hI0FTGYvqi2AQN
-         2Zu814m1U4VWBijhz8sfjcTxU6yVAjolAqk6qKlP0Uz1O94kp09tKjcJE8RMwRJooSPR
-         xO7nO5DvmAAYEhnbxNFiUcuGR7ietq1xduN3UCWtSAta1R4+bqYt731n1niO60T9mMQ3
-         5N6UqZowSoD8BXUteQivslBXXXvVETFg6g3khqCw9At7C789/oGQJr4Ad7eZq4Rtoa/T
-         5dY9C0wxjb98mEg/IsEgStZKyslGnE3t3m6RBB0bWjWbN+pbqzAg5Cp3TW3REMFNZ98/
-         nZzQ==
-X-Gm-Message-State: AOAM531HWgYO9qUYTFeLPeiPr0Fn/uZ7/pO1p3hDbUpwWblT5OgSWLy4
-        GzZlTbJ6Rnj5IVYiKj5cDadmIg==
-X-Google-Smtp-Source: ABdhPJz7TORt5UPUxQHJtcwUy7DLeU9h16cX0ZufDjJxSEVTidsxEub3MlR7oNmOUCLjsAVtm6Bv+w==
-X-Received: by 2002:a62:cd83:0:b029:275:d87e:612e with SMTP id o125-20020a62cd830000b0290275d87e612emr18839700pfg.49.1619642368304;
-        Wed, 28 Apr 2021 13:39:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l18sm5405576pjq.33.2021.04.28.13.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 13:39:27 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 13:39:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: Re: [PATCH v26 9/9] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
-Message-ID: <202104281339.E21514F9D@keescook>
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com>
- <20210427204720.25007-10-yu-cheng.yu@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=boJVxwbv68E6kptb+hUE8SCZnY8IWI5+k6h0gATVG5s=;
+        b=BoqbgQtpumIy3ZIyY1a9nninpXW8RIeiMqqvxJfn9mhr0t4b5p9YdJaNpM95GO0D/l
+         K7GqFu242vIldDC1G+rMmxrE/HrtB3VJmlH8gePuqz7PcUet0FdNLLpG7ecZtmgBjX6D
+         auzAk9vyTl6QwsN3NA/tiuqkGe8EeMjVf64EruJ2d/2fptmXCgqsc3/hQUlsIxltmKE3
+         WEpsvnihI8quo4ZShcIubiUdSoVh/r1cIdcKd7/wkTos5Pw/o0OWfsMEMTU9roIZrpam
+         V0r1voj4OeFqUokH9YKQRni9ZcIqmjGarQ9+NkLIydHLYjUXAKtn1VJHcJ+ni/gr6+9r
+         e14g==
+X-Gm-Message-State: AOAM532SXv5hvlYdDB1l7sOtI10ERy4ICy0RZVHjMJaFxuTpNNnoXDTo
+        +dFVmNiDSU4v3D4Z+leC7b4msaaFfCC/Y3+0QK8NPQ==
+X-Google-Smtp-Source: ABdhPJyoDNDBlFi1TSJkZIkZiY7c+FPvb3Qs8POW6cfJgX78Nf6/KSvgrbMPGWt6KQOa+5YxwuZwQHEQzBul3kyfaEc=
+X-Received: by 2002:a9d:7857:: with SMTP id c23mr15776680otm.208.1619642423910;
+ Wed, 28 Apr 2021 13:40:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427204720.25007-10-yu-cheng.yu@intel.com>
+References: <20210427223635.2711774-1-bgardon@google.com> <20210427223635.2711774-6-bgardon@google.com>
+ <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com> <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
+ <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com>
+In-Reply-To: <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 28 Apr 2021 13:40:12 -0700
+Message-ID: <CANgfPd9kVJOAR_uq+oh9kE2gr00EUAGSPiJ9jMR9BdG2CAC+BA@mail.gmail.com>
+Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:47:20PM -0700, Yu-cheng Yu wrote:
-> ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
-> component of CET.  IBT prevents attacks by ensuring that (most) indirect
-> branches and function calls may only land at ENDBR instructions.  Branches
-> that don't follow the rules will result in control flow (#CF) exceptions.
-> 
-> ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
-> instructions are inserted automatically by the compiler, but branch
-> targets written in assembly must have ENDBR added manually.
-> 
-> Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+On Wed, Apr 28, 2021 at 10:46 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 28/04/21 18:40, Ben Gardon wrote:
+> > On Tue, Apr 27, 2021 at 11:25 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >>
+> >> On 28/04/21 00:36, Ben Gardon wrote:
+> >>> +void kvm_arch_assign_memslots(struct kvm *kvm, int as_id,
+> >>> +                          struct kvm_memslots *slots)
+> >>> +{
+> >>> +     mutex_lock(&kvm->arch.memslot_assignment_lock);
+> >>> +     rcu_assign_pointer(kvm->memslots[as_id], slots);
+> >>> +     mutex_unlock(&kvm->arch.memslot_assignment_lock);
+> >>> +}
+> >>
+> >> Does the assignment also needs the lock, or only the rmap allocation?  I
+> >> would prefer the hook to be something like kvm_arch_setup_new_memslots.
+> >
+> > The assignment does need to be under the lock to prevent the following race:
+> > 1. Thread 1 (installing a new memslot): Acquires memslot assignment
+> > lock (or perhaps in this case rmap_allocation_lock would be more apt.)
+> > 2. Thread 1: Check alloc_memslot_rmaps (it is false)
+> > 3. Thread 1: doesn't allocate memslot rmaps for new slot
+> > 4. Thread 1: Releases memslot assignment lock
+> > 5. Thread 2 (allocating a shadow root): Acquires memslot assignment lock
+> > 6. Thread 2: Sets alloc_memslot_rmaps = true
+> > 7. Thread 2: Allocates rmaps for all existing slots
+> > 8. Thread 2: Releases memslot assignment lock
+> > 9. Thread 2: Sets shadow_mmu_active = true
+> > 10. Thread 1: Installs the new memslots
+> > 11. Thread 3: Null pointer dereference when trying to access rmaps on
+> > the new slot.
+>
+> ... because thread 3 would be under mmu_lock and therefore cannot
+> allocate the rmap itself (you have to do it in mmu_alloc_shadow_roots,
+> as in patch 6).
+>
+> Related to this, your solution does not have to protect kvm_dup_memslots
+> with the new lock, because the first update of the memslots will not go
+> through kvm_arch_prepare_memory_region but it _will_ go through
+> install_new_memslots and therefore through the new hook.  But overall I
+> think I'd prefer to have a kvm->slots_arch_lock mutex in generic code,
+> and place the call to kvm_dup_memslots and
+> kvm_arch_prepare_memory_region inside that mutex.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+That makes sense, and I think it also avoids a bug in this series.
+Currently, if the rmaps are allocated between kvm_dup_memslots and and
+install_new_memslots, we run into a problem where the copied slots
+will have new rmaps allocated for them before installation.
+Potentially creating all sorts of problems. I had fixed that issue in
+the past by allocating the array of per-level rmaps at memslot
+creation, seperate from the memslot. That meant that the copy would
+get the newly allocated rmaps as well, but I thought that was obsolete
+after some memslot refactors went in.
 
--- 
-Kees Cook
+I hoped we could get away without that change, but I was probably
+wrong. However, with this enlarged critical section, that should not
+be an issue for creating memslots since kvm_dup_memslots will either
+copy memslots with the rmaps already allocated, or the whole thing
+will happen before the rmaps are allocated.
+
+... However with the locking you propose below, we might still run
+into issues on a move or delete, which would mean we'd still need the
+separate memory allocation for the rmaps array. Or we do some
+shenanigans where we try to copy the rmap pointers from the other set
+of memslots.
+
+I can put together a v2 with the seperate rmap memory and more generic
+locking and see how that looks.
+
+>
+> That makes the new lock decently intuitive, and easily documented as
+> "Architecture code can use slots_arch_lock if the contents of struct
+> kvm_arch_memory_slot needs to be written outside
+> kvm_arch_prepare_memory_region.  Unlike slots_lock, slots_arch_lock can
+> be taken inside a ``kvm->srcu`` read-side critical section".
+>
+> I admit I haven't thought about it very thoroughly, but if something
+> like this is enough, it is relatively pretty:
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 9b8e30dd5b9b..6e5106365597 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1333,6 +1333,7 @@ static struct kvm_memslots
+> *install_new_memslots(struct kvm *kvm,
+>
+>         rcu_assign_pointer(kvm->memslots[as_id], slots);
+>
+> +       mutex_unlock(&kvm->slots_arch_lock);
+>         synchronize_srcu_expedited(&kvm->srcu);
+>
+>         /*
+> @@ -1399,6 +1398,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+>         struct kvm_memslots *slots;
+>         int r;
+>
+> +       mutex_lock(&kvm->slots_arch_lock);
+>         slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
+>         if (!slots)
+>                 return -ENOMEM;
+> @@ -1427,6 +1427,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+>                  *      - kvm_is_visible_gfn (mmu_check_root)
+>                  */
+>                 kvm_arch_flush_shadow_memslot(kvm, slot);
+> +               mutex_lock(&kvm->slots_arch_lock);
+>         }
+>
+>         r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
+>
+> It does make the critical section a bit larger, so that the
+> initialization of the shadow page (which is in KVM_RUN context) contends
+> with slightly more code than necessary.  However it's all but a
+> performance critical situation, as it will only happen just once per VM.
+
+I agree performance is not a huge concern here. Excluding
+kvm_arch_flush_shadow_memslot from the critical section also helps a
+lot because that's where most of the work could be if we're deleting /
+moving a slot.
+My only worry is the latency this could add to a nested VM launch, but
+it seems pretty unlikely that that would be frequently coinciding with
+a memslot change in practice.
+
+>
+> WDYT?
+>
+> Paolo
+>
+> > Putting the assignment under the lock prevents 5-8 from happening
+> > between 2 and 10.
+> >
+> > I'm open to other ideas as far as how to prevent this race though. I
+> > admit this solution is not the most elegant looking.
+>
+>
