@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A61A36D4D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFE536D4D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhD1JdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:33:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26970 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230113AbhD1JdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:33:05 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13S93vxX124524;
-        Wed, 28 Apr 2021 05:31:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=btYEloHK0BDOl3YUFoyRHSZiZbjGJtxaduAuivbpMcU=;
- b=eVlM5mAVHXMbm/jgMUW7UqzwqPDtZsjUyFkTdBkXkUVvQzzptWuy327CbbvWcxC1mM+U
- wS2m+lsiLPIsB4ZQa5YqKQiL00x34EHnHP4Cj6Sc3PeDAJ2pcoXJQOkMEKOIwD4nB0ce
- tB8gm+w/QaTVyEjWw1SgbwffdYh4UqSvtJ321aeCUHB7eRrGLFqz09Fp5p+1yQXEqcvC
- RNvWxATi7n76tPhsqO/J4MvEq7TDWCOGM1tEWndx/SQb4mqWXSvX3vp+QwZhPP3vpAeM
- QieiIy3dCFwmaykwZnmLrUnSNhHBUEqjK8PuQ+KF+cDhU5U70iVwW1VnRoKA4a86TcEM og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3874mx8y47-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 05:31:41 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13S95BUG134079;
-        Wed, 28 Apr 2021 05:31:41 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3874mx8y3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 05:31:41 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13S9Rhat014735;
-        Wed, 28 Apr 2021 09:31:39 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 384akh9su5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 09:31:38 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13S9VZj528311830
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 09:31:36 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D75BCA405C;
-        Wed, 28 Apr 2021 09:31:35 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E8059A4054;
-        Wed, 28 Apr 2021 09:31:34 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.77.184])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Apr 2021 09:31:34 +0000 (GMT)
-Subject: Re: sched: Move SCHED_DEBUG sysctl to debugfs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        greg@kroah.com, gregkh@linuxfoundation.org, joshdon@google.com,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20210412102001.287610138@infradead.org>
- <20210427145925.5246-1-borntraeger@de.ibm.com>
- <YIkgzUWEPaXQTCOv@hirez.programming.kicks-ass.net>
- <cf2a6c6c-21ea-df7b-94d1-940a344b8d26@de.ibm.com>
- <YIkp/6/NDL7KsvpY@hirez.programming.kicks-ass.net>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <2326ce94-3707-b099-4fe8-c79547bd8e25@de.ibm.com>
-Date:   Wed, 28 Apr 2021 11:31:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <YIkp/6/NDL7KsvpY@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rcj_GYXrVcyKoaoaSbUMxbF98QFld4ox
-X-Proofpoint-GUID: XAA5ieffU6naM4zQX3nA2hP0P-aUZIKs
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_03:2021-04-27,2021-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 bulkscore=0 mlxscore=0 spamscore=0
- mlxlogscore=992 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104280062
+        id S238207AbhD1Jdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:33:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:37972 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238126AbhD1Jdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 05:33:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F2B9ED1;
+        Wed, 28 Apr 2021 02:32:54 -0700 (PDT)
+Received: from e113131-lin.cambridge.arm.com (e113131-lin.cambridge.arm.com [10.1.195.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 051893F70D;
+        Wed, 28 Apr 2021 02:32:52 -0700 (PDT)
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        dietmar.eggemann@arm.com, corbet@lwn.net, linux-doc@vger.kernel.org
+Subject: [RFC PATCH v2 0/3] Rework CPU capacity asymmetry detection
+Date:   Wed, 28 Apr 2021 10:32:40 +0100
+Message-Id: <1619602363-1305-1-git-send-email-beata.michalska@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As of now, the asym_cpu_capacity_level will try to locate the lowest
+topology level where the highest available CPU capacity is being
+visible to all CPUs. This works perfectly fine for most of existing
+asymmetric designs out there, though for some possible and completely
+valid setups, combining different cpu microarchitectures within
+clusters, this might not be the best approach, resulting in pointing
+at a level, at which some of the domains might not see any asymmetry
+at all. This could be problematic for misfit migration and/or energy
+aware placement. And as such, for affected platforms it might result
+in custom changes to wake-up and CPU selection paths.
+
+As mentioned in the previous version, based on the available sources out there,
+one of the potentially affected (by original approach) platforms might be
+Exynos 9820/990 with it's 'sliced' LLC divided between the two custom (big)
+cores and the remaining A75/A55 cores, which seems to be reflected in the
+made available dt entries for those platforms.
+
+The following patches rework how the asymmetric detection is being
+carried out, pinning the asymmetric topology level to the lowest one,
+where full range of CPU capacities is visible to all CPUs within given
+sched domain. The asym_cpu_capacity_level will also keep track of those
+levels where any scope of asymmetry is being observed, to denote
+corresponding sched domains with the SD_ASYM_CPUCAPACITY flag
+and to enable misfit migration for those.
+
+In order to distinguish the sched domains with partial vs full range
+of CPU capacity asymmetry, new sched domain flag has been introduced:
+SD_ASYM_CPUCAPACITY_FULL.
+
+The overall idea of changing the asymmetry detection has been suggested
+earlier by Valentin Schneider <valentin.schneider@arm.com>
+
+Verified on (mostly):
+    - QEMU (version 4.2.1) with variants of possible asymmetric topologies
+	- machine: virt
+	- modifying the device-tree 'cpus' node for virt machine:
+
+	qemu-system-aarch64 -kernel $KERNEL_IMG
+	    -drive format=qcow2,file=$IMAGE
+	    -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
+	     loglevel=15 kmemleak=on' -m 2G  --nographic  -cpu cortex-a57
+	    -machine virt -smp cores=6 -machine dumpdtb=$CUSTOM_DTB.dtb
+
+	$KERNEL_PATH/scripts/dtc/dtc -I dtb -O dts $CUSTOM_DTB.dts >
+	$CUSTOM_DTB.dtb
+
+	(modify the dts)
+
+	$KERNEL_PATH/scripts/dtc/dtc -I dts -O dtb $CUSTOM_DTB.dts >
+	$CUSTOM_DTB.dtb
+
+	qemu-system-aarch64 -kernel $KERNEL_IMG
+	    -drive format=qcow2,file=$IMAGE
+	    -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
+	     loglevel=15 kmemleak=on' -m 2G  --nographic  -cpu cortex-a57
+	    -machine virt -smp cores=6 -machine dtb=$CUSTOM_DTB.dtb
 
 
-On 28.04.21 11:25, Peter Zijlstra wrote:
-> On Wed, Apr 28, 2021 at 10:54:37AM +0200, Christian Borntraeger wrote:
->>
->>
->> On 28.04.21 10:46, Peter Zijlstra wrote:
->>> On Tue, Apr 27, 2021 at 04:59:25PM +0200, Christian Borntraeger wrote:
->>>> Peter,
->>>>
->>>> I just realized that we moved away sysctl tunabled to debugfs in next.
->>>> We have seen several cases where it was benefitial to set
->>>> sched_migration_cost_ns to a lower value. For example with KVM I can
->>>> easily get 50% more transactions with 50000 instead of 500000.
->>>> Until now it was possible to use tuned or /etc/sysctl.conf to set
->>>> these things permanently.
->>>>
->>>> Given that some people do not want to have debugfs mounted all the time
->>>> I would consider this a regression. The sysctl tunable was always
->>>> available.
->>>>
->>>> I am ok with the "informational" things being in debugfs, but not
->>>> the tunables. So how do we proceed here?
->>>
->>> It's all SCHED_DEBUG; IOW you're relying on DEBUG infrastructure for
->>> production performance, and that's your fail.
->>
->> No its not. sched_migration_cost_ns was NEVER protected by CONFIG_SCHED_DEBUG.
->> It was available on all kernels with CONFIG_SMP.
-> 
-> The relevant section from origin/master:kernel/sysctl.c:
+v2:
+ - Fixed style issues
+ - Reworked accessing the cached topology data as suggested by Valentin
 
-[...]
-> How is migration_cost not under SCHED_DEBUG? The bigger problem is that
-> world+dog has SCHED_DEBUG=y in their .config.
+Beata Michalska (3):
+  sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL sched_domain flag
+  sched/topology: Rework CPU capacity asymmetry detection
+  sched/doc: Update the CPU capacity asymmetry bits
 
-Hmm, yes my bad. I disabled it but it was silently reenabled due to a
-dependency. So yes you are right, it is under SCHED_DEBUG.
+ Documentation/scheduler/sched-capacity.rst |   6 +-
+ Documentation/scheduler/sched-energy.rst   |   2 +-
+ include/linux/sched/sd_flags.h             |  10 +
+ kernel/sched/topology.c                    | 327 +++++++++++++++++++++++++----
+ 4 files changed, 302 insertions(+), 43 deletions(-)
+
+-- 
+2.7.4
+
