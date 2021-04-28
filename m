@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC8D36DD52
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E29F36DD59
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241168AbhD1Qqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241126AbhD1Qqx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:46:53 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FC6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:46:08 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso3925062otn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DmiskXVVNt5ciuwEiKHO8o/4wceYpi0Zcrr9JiPcz+4=;
-        b=tKlQZLtx45gwtX02vXG4am95yPgB8gzjVWGEGzkBK5rHSLQtuz5IZ04D40M7aqZ8UA
-         SQrj2s883sseBmwH71ouOzMNI+nk8lJvYORtMOX1fHSPdSmTYM4FgiLNSmREZxAzSaR3
-         MqJ+Vk3vjL9lIS0E0F6NJ0j9VzeXhtVyH+fTVmgE83MhD/Gb3dVdfpD84wFeBMAb2PWR
-         AuJlum8cNObwRmHDfiuGAdA93msryBFu9PTQ1F8YBTwzkIBJh/Yf4Rh98+8ks4HQ7g6K
-         6FiQfzCzyaDxawWQPgKOnVJLKo/6MvQ+R9VGPKwgB7hs4v5qkwXjiJJgkP2K9kczPgWP
-         x2wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DmiskXVVNt5ciuwEiKHO8o/4wceYpi0Zcrr9JiPcz+4=;
-        b=p01hLU+1R9s8l13WyZow6Q/WE/KoJXkGNEs+X9cCZpsu+dLg7VOSXxaWBIPrdh7czv
-         04sk8DQuEREvv7OJQSFCR/x67cKfIQphvoyhI/qNtzxMj2BqgMT3yTARx/nZJ0xUiRN2
-         hhxMOhCjQFhHTYcFFQftnlWSeIqDpQ6aFvOAJFmpZssklwQFOOjv75nljE0VY22Wsimi
-         k/3el+5rQSbk70bCTqRd1GygSRjE47wCcQ2yeweDok/kKaVmvoK+7hTDF9fINgdjyGFi
-         FFPcYfaV8kxhXkbLGg05wg2j+E+Lrs2RYEOf5A15cxy6F8YvgjbvGN1WaLl+OYGfXoYI
-         bpiA==
-X-Gm-Message-State: AOAM533jZp5B+xn9zLMsSjspJNR+rK88dG2qgf1QhN+HY38aMDhiYzdf
-        R/9mAU5TnzbuEIziKIJGhhDrMY/KGh8ZPZ4wYv26Iw==
-X-Google-Smtp-Source: ABdhPJxm9/4vsmoaNUh37g6GSvioejnyYo2lL7TUff8Bnx5tp58+g23lXhmGQX5QBlQ6T0GCLeWBILuDhGRYFHMfqSo=
-X-Received: by 2002:a9d:7857:: with SMTP id c23mr15021583otm.208.1619628367968;
- Wed, 28 Apr 2021 09:46:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427223635.2711774-1-bgardon@google.com> <20210427223635.2711774-7-bgardon@google.com>
- <1b598516-4478-4de2-4241-d4b517ec03fa@redhat.com>
-In-Reply-To: <1b598516-4478-4de2-4241-d4b517ec03fa@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 28 Apr 2021 09:45:56 -0700
-Message-ID: <CANgfPd_o+UA4ry7Kpw3WbcPZYm32r+1o=hQmZdazsrZvO4aynA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] KVM: x86/mmu: Lazily allocate memslot rmaps
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S241232AbhD1QrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:47:01 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:36618 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241139AbhD1Qq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 12:46:58 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FVkzS05MQz9tcb;
+        Wed, 28 Apr 2021 18:46:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0mBuk7O_7kHk; Wed, 28 Apr 2021 18:46:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FVkzR6Cxgz9tcY;
+        Wed, 28 Apr 2021 18:46:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 720158B839;
+        Wed, 28 Apr 2021 18:46:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ikFClZJogkW5; Wed, 28 Apr 2021 18:46:11 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EDB278B831;
+        Wed, 28 Apr 2021 18:46:10 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id B90C16428C; Wed, 28 Apr 2021 16:46:10 +0000 (UTC)
+Message-Id: <cover.1619628001.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [RFC PATCH v1 0/4] Implement huge VMAP and VMALLOC on powerpc 8xx
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 28 Apr 2021 16:46:10 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 3:04 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 28/04/21 00:36, Ben Gardon wrote:
-> > -static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
-> > +static int kvm_alloc_memslot_metadata(struct kvm *kvm,
-> > +                                   struct kvm_memory_slot *slot,
-> >                                     unsigned long npages)
-> >   {
-> >       int i;
-> > @@ -10892,7 +10950,7 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
-> >        */
-> >       memset(&slot->arch, 0, sizeof(slot->arch));
-> >
-> > -     r = alloc_memslot_rmap(slot, npages);
-> > +     r = alloc_memslot_rmap(kvm, slot, npages);
-> >       if (r)
-> >               return r;
-> >
->
-> I wonder why you need alloc_memslot_rmap at all here in
-> kvm_alloc_memslot_metadata, or alternatively why you need to do it in
-> kvm_arch_assign_memslots.  It seems like only one of those would be
-> necessary.
+This series is a first tentative to implement huge VMAP and VMALLOC
+on powerpc 8xx. This series applies on Linux next.
+For the time being the 8xx specificities are plugged directly into
+generic mm functions. I have no real idea on how to make it a nice
+beautiful generic implementation for the time being, hence this RFC
+in order to get suggestions.
 
-Oh, that's a good point. We need it in kvm_arch_assign_memslots
-because of the race I identified in the thread for patch 5 of this
-series, but we could remove it from kvm_alloc_memslot_metadata with
-this patch.
+powerpc 8xx has 4 page sizes:
+- 4k
+- 16k
+- 512k
+- 8M
 
-Of course, it would be much nicer if we could just keep it in
-kvm_alloc_memslot_metadata and find some other way to stop memslots
-without rmaps from being inappropriately installed, if anyone has a
-simpler way to accomplish that.
+At the time being, vmalloc and vmap only support huge pages which are
+leaf at PMD level.
 
->
-> Paolo
->
+Here the PMD level is 4M, it doesn't correspond to any supported
+page size.
+
+For the time being, implement use of 16k and 512k pages which is done
+at PTE level.
+
+Support of 8M pages will be implemented later, it requires use of
+hugepd tables.
+
+Christophe Leroy (4):
+  mm/ioremap: Fix iomap_max_page_shift
+  mm/hugetlb: Change parameters of arch_make_huge_pte()
+  mm/pgtable: Add stubs for {pmd/pub}_{set/clear}_huge
+  mm/vmalloc: Add support for huge pages on VMAP and VMALLOC for powerpc
+    8xx
+
+ arch/arm64/include/asm/hugetlb.h              |  3 +-
+ arch/arm64/mm/hugetlbpage.c                   |  5 +-
+ arch/powerpc/Kconfig                          |  3 +-
+ .../include/asm/nohash/32/hugetlb-8xx.h       |  5 +-
+ arch/sparc/include/asm/pgtable_64.h           |  3 +-
+ arch/sparc/mm/hugetlbpage.c                   |  6 +-
+ include/linux/hugetlb.h                       |  4 +-
+ include/linux/pgtable.h                       | 26 ++++++-
+ mm/hugetlb.c                                  |  6 +-
+ mm/ioremap.c                                  |  6 +-
+ mm/migrate.c                                  |  4 +-
+ mm/vmalloc.c                                  | 74 ++++++++++++++++---
+ 12 files changed, 111 insertions(+), 34 deletions(-)
+
+-- 
+2.25.0
+
