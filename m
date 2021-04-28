@@ -2,74 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B15936E0C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5234936E0D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhD1VLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 17:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232064AbhD1VK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 17:10:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1DB72613CE;
-        Wed, 28 Apr 2021 21:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619644210;
-        bh=vEC5okH+Mq4hQI/b1zyZKruGp1G5tHXLo7WdYFdAUNA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NTLaWAvt5A8TP0T0xw2OXyB9bfK/88ZOsocYKbqvOtHDcG5WBpwV/Lo2AgBk2TXiT
-         6HFMItzCKC+TE4+YpLzjiBWQpEi9x26cev96Ln1aN4+f7jFnH+QKqk9TmBtlkyGPhO
-         Exd7uLbZsMY3jWj1gFFFVSQCjmUpGxhmciK1sVOq0bN5ezmP91DyyZ3Svu8pI9LFiD
-         JfIhOgabNsTyjrPZFCoW6hWmAJXZqPmK0vkDFMdhbKsUfQbG4klrTFUcd3MMftOLxE
-         P1rJqHHCNSV1FEkbkFNUs0I4nr9dzEmlMbeL7mAK38NbMpV6M6cftOgGlb8OaotrHq
-         jeiD9CNxrRS8A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1128960A3A;
-        Wed, 28 Apr 2021 21:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230036AbhD1VNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 17:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhD1VNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 17:13:17 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF6CC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:12:32 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id y14-20020a056830208eb02902a1c9fa4c64so23139502otq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6XU5TqBnwnYkFFfBZmHfV+hocGp4E/+zJAvsfnEXySw=;
+        b=UEvWG2H4M5sx14vlbmVSleox1eEjQw+3YaiVNov2QtMyh3sO4ZBC3Tx81G+gmURyLk
+         KHP6SOlWWq0SCdw4J77Xq7flfHxfIyLEnCMHmzzztaV2hYU1Y6+znQ4o4Wff77E2WPD5
+         AHr5jlgQgtVadv43SsbZodxbOhgirC9aFlzrbpDAT+34x2c6rF80Ru8jvZ5ACANyczDp
+         IquWTUEvzDhkIFugCSi1kQ7OztvuyEuo2WX2Qj5r26Z213HefdRf5jT1nCQvODq1t/Nk
+         EofhvSmGWGkmRjRhgB08kYLYv5AICx3UblqJH4W4ZZfmCywCGeuXThiCwZbSS3piBPMQ
+         2eNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6XU5TqBnwnYkFFfBZmHfV+hocGp4E/+zJAvsfnEXySw=;
+        b=lIW3HuQZNByCtCIf1VkY2To1RD6bcQt1vlrEmrPJna+ymAs/LXEbGtxXZTnrcexgBY
+         NmOLQrKtOcA7QZTWuKuXVLPPjMHbpmQhXfZCu47qYNrV2HbL4UM2UaJdcwq2qNVd/EAp
+         Hhy1KTQULfaUDSxFFVc9r0YpealgDRYeglqZsKPi6C+kgSs2kMVIuSBKvtZhAcl2ndAR
+         uL9bpXCLgneDbLIh8NS3QQd4X47Za8uQA+ikF2pSYsAyIyDNyb/qPJPTVtRcd00+I+oT
+         54MHefUkUgM4LYuXqj/rVg9iSzXOwrtSpnKIUSDgVnByCdr1hxhiIDDQt8QJhauDwVz2
+         4BSw==
+X-Gm-Message-State: AOAM5325UIHTXm03JVKx3CkpuU0cCQCNEREKGBOIsxZi78TT4i1/62EC
+        4mI3VoJihat0Y20Np1bEdspf+CL5DU0it/SwvKY=
+X-Google-Smtp-Source: ABdhPJw8IHCW+SvKtLYTe0mFP+jS7ieH+m64iNY23YQxYGvsJQAmRWkpLpVSvVdKSt71RkLqgs0FMIyq9+ASvUTIzgI=
+X-Received: by 2002:a9d:8d1:: with SMTP id 75mr7786542otf.23.1619644351452;
+ Wed, 28 Apr 2021 14:12:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] net: dsa: ksz: Make reg_mib_cnt a u8 as it never
- exceeds 255
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161964421006.17892.589586233736680474.git-patchwork-notify@kernel.org>
-Date:   Wed, 28 Apr 2021 21:10:10 +0000
-References: <20210428120010.337959-1-colin.king@canonical.com>
-In-Reply-To: <20210428120010.337959-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        marex@denx.de, Tristram.Ha@microchip.com, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210421161802.175639-1-linux@roeck-us.net>
+In-Reply-To: <20210421161802.175639-1-linux@roeck-us.net>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 28 Apr 2021 17:12:20 -0400
+Message-ID: <CADnq5_MQoqjYO8-UPWZeg-F98kRH46a0J+AgN2hEho0Qn=FMMA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix build warnings
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Apr 21, 2021 at 12:18 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Fix the following build warnings.
+>
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:
+>         In function =E2=80=98dm_update_mst_vcpi_slots_for_dsc=E2=80=99:
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:6242:46:
+>         warning: variable =E2=80=98old_con_state=E2=80=99 set but not use=
+d
+>
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:
+>         In function =E2=80=98amdgpu_dm_commit_cursors=E2=80=99:
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:7709:44:
+>         warning: variable =E2=80=98new_plane_state=E2=80=99 set but not u=
+sed
+>
+> The variables were introduced to be used in iterators, but not used.
+> Use other iterators which don't require the unused variables.
+>
+> Fixes: 8ad278062de4e ("drm/amd/display: Disable cursors before disabling =
+planes")
+> Fixes: 29b9ba74f6384 ("drm/amd/display: Recalculate VCPI slots for new DS=
+C connectors")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Applied.  Thanks!
 
-On Wed, 28 Apr 2021 13:00:10 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the for-loop in ksz8_port_init_cnt is causing a static
-> analysis infinite loop warning with the comparison of
-> mib->cnt_ptr < dev->reg_mib_cnt. This occurs because mib->cnt_ptr
-> is a u8 and dev->reg_mib_cnt is an int and the analyzer determines
-> that mib->cnt_ptr potentially can wrap around to zero if the value
-> in dev->reg_mib_cnt is > 255. However, this value is never this
-> large, it is always less than 256 so make reg_mib_cnt a u8.
-> 
-> [...]
+Alex
 
-Here is the summary with links:
-  - [next] net: dsa: ksz: Make reg_mib_cnt a u8 as it never exceeds 255
-    https://git.kernel.org/netdev/net-next/c/12c2bb96c3f1
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
+gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 573cf17262da..f9b87f1f424b 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6239,13 +6239,13 @@ static int dm_update_mst_vcpi_slots_for_dsc(struc=
+t drm_atomic_state *state,
+>  {
+>         struct dc_stream_state *stream =3D NULL;
+>         struct drm_connector *connector;
+> -       struct drm_connector_state *new_con_state, *old_con_state;
+> +       struct drm_connector_state *new_con_state;
+>         struct amdgpu_dm_connector *aconnector;
+>         struct dm_connector_state *dm_conn_state;
+>         int i, j, clock, bpp;
+>         int vcpi, pbn_div, pbn =3D 0;
+>
+> -       for_each_oldnew_connector_in_state(state, connector, old_con_stat=
+e, new_con_state, i) {
+> +       for_each_new_connector_in_state(state, connector, new_con_state, =
+i) {
+>
+>                 aconnector =3D to_amdgpu_dm_connector(connector);
+>
+> @@ -7706,15 +7706,14 @@ static void amdgpu_dm_handle_vrr_transition(struc=
+t dm_crtc_state *old_state,
+>  static void amdgpu_dm_commit_cursors(struct drm_atomic_state *state)
+>  {
+>         struct drm_plane *plane;
+> -       struct drm_plane_state *old_plane_state, *new_plane_state;
+> +       struct drm_plane_state *old_plane_state;
+>         int i;
+>
+>         /*
+>          * TODO: Make this per-stream so we don't issue redundant updates=
+ for
+>          * commits with multiple streams.
+>          */
+> -       for_each_oldnew_plane_in_state(state, plane, old_plane_state,
+> -                                      new_plane_state, i)
+> +       for_each_old_plane_in_state(state, plane, old_plane_state, i)
+>                 if (plane->type =3D=3D DRM_PLANE_TYPE_CURSOR)
+>                         handle_cursor_update(plane, old_plane_state);
+>  }
+> --
+> 2.17.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
