@@ -2,142 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB3936DC7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE2536DC99
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240696AbhD1Pxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:53:42 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:63948 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240737AbhD1Pxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:53:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1619625174; x=1651161174;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FnCAkov60OO7Dxf0WEMBA9HQ3rKhJnjcWSSFi9gB2V8=;
-  b=t+vRPr8+sM854VmJM24YqiBkqCEB8HL8sxQIGENvrNeQlmgqn7s9QIsy
-   ZFuOVcK5QE9+bdzGthjaiMrsl2trIjLjKo4nJy5OPjtn+zjGoaT7+zpPW
-   arzWfI4daSkF8N+wIRFfPSYpLFo3lecb5tuSrtckP2IczDXz+40R2VsCM
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.82,258,1613433600"; 
-   d="scan'208";a="104526758"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 28 Apr 2021 15:52:16 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com (Postfix) with ESMTPS id 66924A1CD9;
-        Wed, 28 Apr 2021 15:52:13 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 28 Apr 2021 15:52:12 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.26) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 28 Apr 2021 15:52:07 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <jbaron@akamai.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
-        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Date:   Thu, 29 Apr 2021 00:52:03 +0900
-Message-ID: <20210428155203.39974-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <fabd0598-c62e-ea88-f340-050136bb8266@akamai.com>
-References: <fabd0598-c62e-ea88-f340-050136bb8266@akamai.com>
+        id S240907AbhD1QBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:01:22 -0400
+Received: from air.basealt.ru ([194.107.17.39]:40696 "EHLO air.basealt.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240643AbhD1QBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 12:01:21 -0400
+X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Apr 2021 12:01:20 EDT
+Received: by air.basealt.ru (Postfix, from userid 490)
+        id 1B7A1589849; Wed, 28 Apr 2021 15:54:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on
+        sa.local.altlinux.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.1
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+        by air.basealt.ru (Postfix) with ESMTPSA id 655CD589885;
+        Wed, 28 Apr 2021 15:53:59 +0000 (UTC)
+Received: by mail-lf1-f48.google.com with SMTP id y4so59799698lfl.10;
+        Wed, 28 Apr 2021 08:53:59 -0700 (PDT)
+X-Gm-Message-State: AOAM530WI49Iq8rSB32KplMH3YIamXHO58HgPvlCKFt34uZdM8DIkKBL
+        KcDKTauFlF52J4xPdX2J2gC78+Fi0dbJLp9bAj0=
+X-Google-Smtp-Source: ABdhPJx5vGyFCavDZ0bGTHpchNBpFKoMmtZo4e8mFWs9KS+BByQzfj0cVI1vx+buY8ZWti7UPQn6YpWavDEjfHbuDVM=
+X-Received: by 2002:a05:6512:10cb:: with SMTP id k11mr21304043lfg.84.1619625239082;
+ Wed, 28 Apr 2021 08:53:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.26]
-X-ClientProxiedBy: EX13D38UWC002.ant.amazon.com (10.43.162.46) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <20210427120607.2646166-1-arei@altlinux.org> <CAMj1kXGm9d7SdBoozEoOP4G6ETmNiZR8kum91RVc_4eUTroE2w@mail.gmail.com>
+In-Reply-To: <CAMj1kXGm9d7SdBoozEoOP4G6ETmNiZR8kum91RVc_4eUTroE2w@mail.gmail.com>
+From:   Nikita Ermakov <arei@altlinux.org>
+Date:   Wed, 28 Apr 2021 18:53:23 +0300
+X-Gmail-Original-Message-ID: <CANA1cBL0AiJBbZX6x3LjTLYJ7z2ueaDWDKJrM50Xd2AxNPO14g@mail.gmail.com>
+Message-ID: <CANA1cBL0AiJBbZX6x3LjTLYJ7z2ueaDWDKJrM50Xd2AxNPO14g@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Relocate the kernel relative to a DRAM base.
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nikita Ermakov <arei@altlinux.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Jason Baron <jbaron@akamai.com>
-Date:   Wed, 28 Apr 2021 10:44:12 -0400
-> On 4/28/21 4:13 AM, Kuniyuki Iwashima wrote:
-> > From:   Jason Baron <jbaron@akamai.com>
-> > Date:   Tue, 27 Apr 2021 12:38:58 -0400
-> >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
-> >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
-> >>> accept connections evenly. However, there is a defect in the current
-> >>> implementation [1]. When a SYN packet is received, the connection is tied
-> >>> to a listening socket. Accordingly, when the listener is closed, in-flight
-> >>> requests during the three-way handshake and child sockets in the accept
-> >>> queue are dropped even if other listeners on the same port could accept
-> >>> such connections.
-> >>>
-> >>> This situation can happen when various server management tools restart
-> >>> server (such as nginx) processes. For instance, when we change nginx
-> >>> configurations and restart it, it spins up new workers that respect the new
-> >>> configuration and closes all listeners on the old workers, resulting in the
-> >>> in-flight ACK of 3WHS is responded by RST.
-> >>
-> >> Hi Kuniyuki,
-> >>
-> >> I had implemented a different approach to this that I wanted to get your
-> >> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
-> >> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
-> >> that you want to replace with a 'new' webserver, you would need a separate
-> >> process to receive the listen fd and then have that process send the fd to
-> >> the new webserver, if they are not running con-currently. So instead what
-> >> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
-> >>
-> >> 1) bind unix socket with path '/sockets'
-> >> 2) sendmsg() the listen fd via the unix socket
-> >> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
-> >> 3) exit/close the old webserver and the listen socket
-> >> 4) start the new webserver
-> >> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
-> >> 6) recvmsg() the listen fd
-> >>
-> >> So the idea is that we set a timeout on the unix socket. If the new process
-> >> does not start and bind to the unix socket, it simply closes, thus releasing
-> >> the listen socket. However, if it does bind it can now call recvmsg() and
-> >> use the listen fd as normal. It can then simply continue to use the old listen
-> >> fds and/or create new ones and drain the old ones.
-> >>
-> >> Thus, the old and new webservers do not have to run concurrently. This doesn't
-> >> involve any changes to the tcp layer and can be used to pass any type of fd.
-> >> not sure if it's actually useful for anything else though.
-> >>
-> >> I'm not sure if this solves your use-case or not but I thought I'd share it.
-> >> One can also inherit the fds like in systemd's socket activation model, but
-> >> that again requires another process to hold open the listen fd.
-> > 
-> > Thank you for sharing code.
-> > 
-> > It seems bit more crash-tolerant than normal fd passing, but it can still
-> > suffer if the process dies before passing fds. With this patch set, we can
-> > migrate children sockets even if the process dies.
-> > 
-> 
-> I don't think crashing should be much of an issue. The old server can setup the
-> unix socket patch '/sockets' when it starts up and queue the listen sockets
-> there from the start. When it dies it will close all its fds, and the new
-> server can pick anything up any fds that are in the '/sockets' queue.
-> 
-> 
-> > Also, as Martin said, fd passing tends to make application complicated.
-> > 
-> 
-> It may be but perhaps its more flexible? It gives the new server the
-> chance to re-use the existing listen fds, close, drain and/or start new
-> ones. It also addresses the non-REUSEPORT case where you can't bind right
-> away.
+On Tue, 27 Apr 2021 at 15:43, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Tue, 27 Apr 2021 at 14:07, Nikita Ermakov <arei@altlinux.org> wrote:
+> >
+> > Try to get the base of the DRAM from a DTB to use it as a lowest address
+> > in physical memory to relocate the kernel. If it is not possible to
+> > obtain the base from a /memory node of the DTB let's make an assumption
+> > that the DRAM base at the beginning of the memory.
+> >
+>
+> Why?
+>
 
-If the flexibility is really worth the complexity, we do not care about it.
-But, SO_REUSEPORT can give enough flexibility we want.
+You right, this patch is useless. I made it because I overlooked
+efi_low_alloc_above() in libstub/relocate.c
+Sorry for bothering.
 
-With socket migration, there is no need to reuse listener (fd passing),
-drain children (incoming connections are automatically migrated if there is
-already another listener bind()ed), and of course another listener can
-close itself and migrated children.
+I had an issue with booting a Linux kernel with EFI stub on a HiFive
+Unleashed board.
+My boot chain was as follows: ZSBL -> FSBL -> OpenSBI -> U-Boot
+(bootefi) -> Linux
+When I tried to boot the kernel, U-Boot throws an Store/AMO access
+fault exception.
+I checked the riscv-stub.c and libstub/relocate.c and I thought that
+it tries to relocate the kernel at the 2 MiB.
+With this patch the kernel started to boot and I thought that the
+theory was right.
+But, after further investigation I found out that U-Boot EFI does not
+mark the first 4 KiB page of DRAM as EFI_BOOT_SERVICE_DATA on the
+board and efi_low_alloc_above() allocates this region as conventional
+memory. The lowest region of DRAM is protected and that is why I got
+the exception when the kernel tries to relocate to the 0x80000000. The
+reason why U-Boot EFI does not mark the first 4 KiB of DRAM as
+EFI_BOOT_SERVICE_DATA was that there wasn't /reserved-memory node in a
+DTB. I had the FSBL with a patch which enables an entire L2 cache and
+it does not preserve a0, a1 registers before a jump to the OpenSBI.
+So, OpenSBI didn't fixup the DTB where it adds the /reserved-memory
+node.
 
-If two different approaches resolves the same issue and one does not need
-complexity in userspace, we select the simpler one.
+> > Signed-off-by: Nikita Ermakov <arei@altlinux.org>
+> > ---
+> >  drivers/firmware/efi/libstub/riscv-stub.c | 39 ++++++++++++++++++++++-
+> >  1 file changed, 38 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/firmware/efi/libstub/riscv-stub.c b/drivers/firmware/efi/libstub/riscv-stub.c
+> > index 380e4e251399..1b5944276e1a 100644
+> > --- a/drivers/firmware/efi/libstub/riscv-stub.c
+> > +++ b/drivers/firmware/efi/libstub/riscv-stub.c
+> > @@ -46,6 +46,39 @@ static u32 get_boot_hartid_from_fdt(void)
+> >         return fdt32_to_cpu(*prop);
+> >  }
+> >
+> > +static unsigned long get_dram_base_from_fdt(void)
+> > +{
+> > +       const void *fdt;
+> > +       int node, len;
+> > +       const fdt32_t *addr_cells;
+> > +       const void *prop;
+> > +
+> > +       fdt = get_efi_config_table(DEVICE_TREE_GUID);
+> > +       if (!fdt)
+> > +               return ULONG_MAX;
+> > +
+> > +       node = fdt_path_offset(fdt, "/");
+> > +       if (node < 0)
+> > +               return ULONG_MAX;
+> > +
+> > +       addr_cells = fdt_getprop((void *)fdt, node, "#address-cells", &len);
+> > +       if (!addr_cells)
+> > +               return ULONG_MAX;
+> > +
+> > +       node = fdt_path_offset(fdt, "/memory");
+> > +       if (node < 0)
+> > +               return ULONG_MAX;
+> > +
+> > +       prop = fdt_getprop((void *)fdt, node, "reg", &len);
+> > +       if (!prop)
+> > +               return ULONG_MAX;
+> > +
+> > +       if (fdt32_to_cpu(*addr_cells) > 1)
+> > +               return fdt64_to_cpu(*((fdt64_t *)prop));
+> > +       else
+> > +               return fdt32_to_cpu(*((fdt32_t *)prop));
+> > +}
+> > +
+> >  efi_status_t check_platform_features(void)
+> >  {
+> >         hartid = get_boot_hartid_from_fdt();
+> > @@ -97,7 +130,11 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+> >          * lowest possible memory region as long as the address and size meets
+> >          * the alignment constraints.
+> >          */
+> > -       preferred_addr = MIN_KIMG_ALIGN;
+> > +       preferred_addr = get_dram_base_from_fdt();
+> > +       if (preferred_addr == ULONG_MAX)
+> > +               preferred_addr = MIN_KIMG_ALIGN;
+> > +       else
+> > +               preferred_addr += MIN_KIMG_ALIGN;
+> >         status = efi_relocate_kernel(image_addr, kernel_size, *image_size,
+> >                                      preferred_addr, MIN_KIMG_ALIGN, 0x0);
+> >
+> > --
+> > 2.29.3
+> >
+
+
+
+-- 
+Thanks,
+Nikita
+B8 00 4C CD 21
