@@ -2,153 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD6036DD6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838A536DD6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241288AbhD1QsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:48:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:47970 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241219AbhD1QsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241271AbhD1QsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241210AbhD1QsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Apr 2021 12:48:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E2BDED1;
-        Wed, 28 Apr 2021 09:47:33 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA11F3F694;
-        Wed, 28 Apr 2021 09:47:27 -0700 (PDT)
-Subject: Re: [RFC PATCH v6 3/4] scheduler: scan idle cpu in cluster for tasks
- within one LLC
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-References: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
- <20210420001844.9116-4-song.bao.hua@hisilicon.com>
- <80f489f9-8c88-95d8-8241-f0cfd2c2ac66@arm.com>
- <b42c762a287b4360bfa3179a5c7c3e8c@hisilicon.com>
- <CAKfTPtC51eO2mAuW6mHQ-SdznAtfDL3D4UOs4HmnXaPOOCN_cA@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <8b5277d9-e367-566d-6bd1-44ac78d21d3f@arm.com>
-Date:   Wed, 28 Apr 2021 18:47:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3229BC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:47:33 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id q136so43248110qka.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 09:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d5gcaLFkHTsHl3fSpK+mJvUIAigQB4OGxVY2NlUdHS4=;
+        b=lhlZvSJJsG9coISuaIljcJxg7ev6vBymOQm+7m1cfIRbaclhHHNe5Xsiy7TU7mtLAp
+         tW/EVQK+AWFdZ3fp9xF/i9t9OIV8pdGSqY4vdf04yp0O7L1Eq6sMAsNzDlfJVz6EQuwu
+         1ED2eQ8twnk4oJZuYdgJMyHRSBQFDUcY+SEZB2/vzN6wMzWBVymqA3MXJZTnvj+/fRTQ
+         d8sMzExvkZgLB2tYG/ObJTrvdo0BwXjcsOcARP5fcGuEZHztKPX2YvLd6D4T7WoZvCTi
+         FJmuDTwHwfE1tyPWk5d/9vNf3AaArOu/QZumDCCMs3ZutQ610xI998Lff5qzkZ3ET/4w
+         iH2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d5gcaLFkHTsHl3fSpK+mJvUIAigQB4OGxVY2NlUdHS4=;
+        b=hsq8ytE8w1COQqC6GxQrcYz5SJrEkvRILTPUOp8lKMvezIDDc9mGMmZSXH4wrXKDH1
+         MwRJYvtUAs/o7fO3KflS2J3uR5P9Cm9iOBSHUkndjzkogRoi+f/CYLHAeiJkSmHK1Iw1
+         +4E5uAgeqGVNHbM/GcJ+xHwnKepF80PCrLc9Gdl16imuxv5qxqWqVgLO4MF7c10nWXxJ
+         rm/JoNEhu6yQ8eW84TQXDXSGONbfBlBH8eZ4a8S0/xtZZRWy72Asl7o9JOt+24Ju0Ix8
+         RFUFbvrGbS9001lSBMw90cVuuZ0eVvwK8e+52OB+XFNcsNJMoQ0AwcufnUvQJimGDXFT
+         nBig==
+X-Gm-Message-State: AOAM533T2ylu4gmmJe5d1D5cdqiYG714cpJcmRmRjcoHZmXZDHliAURe
+        /Wvc9Vtj5SlNgk15pk4MwOKZ+SBL3cLxpl9b
+X-Google-Smtp-Source: ABdhPJwrZ/ARz760EsoZkEI7kPgF2Hv5R9DjyVFzafhWupMWPoCp5/6i7qZtp8Tys4gJ+GayIAslKw==
+X-Received: by 2002:a05:620a:49c:: with SMTP id 28mr30266953qkr.39.1619628452055;
+        Wed, 28 Apr 2021 09:47:32 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id d2sm397426qtg.85.2021.04.28.09.47.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 09:47:31 -0700 (PDT)
+Subject: Re: [thermal-next PATCH 2/2] thermal: qcom: tsens: simplify debugfs
+ init function
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210419012930.7727-1-ansuelsmth@gmail.com>
+ <20210419012930.7727-2-ansuelsmth@gmail.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <8e679407-07e7-244a-48fa-0d4d451d744d@linaro.org>
+Date:   Wed, 28 Apr 2021 12:47:30 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtC51eO2mAuW6mHQ-SdznAtfDL3D4UOs4HmnXaPOOCN_cA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210419012930.7727-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/2021 15:04, Vincent Guittot wrote:
-> On Wed, 28 Apr 2021 at 11:51, Song Bao Hua (Barry Song)
-> <song.bao.hua@hisilicon.com> wrote:
->>
->>> -----Original Message-----
->>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
+Hi,
 
-[...]
+Please include a cover letter next time describing the patch series.
 
->>> On 20/04/2021 02:18, Barry Song wrote:
-
-[...]
-
->> I am really confused. The whole code has only checked if wake_flags
->> has WF_TTWU, it has never checked if sd_domain has SD_BALANCE_WAKE flag.
+On 4/18/21 9:29 PM, Ansuel Smith wrote:
+> Simplify debugfs init function.
+> - Drop useless variables
+> - Add check for existing dev directory.
+> - Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
+>    incorrectly reported)
 > 
-> look at :
-> #define WF_TTWU     0x08 /* Wakeup;            maps to SD_BALANCE_WAKE */
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>   drivers/thermal/qcom/tsens.c | 16 +++++++---------
+>   1 file changed, 7 insertions(+), 9 deletions(-)
 > 
-> so  when wake_wide return false, we use the wake_affine mecanism but
-> if it's false then we fllback to default mode which looks for:
-> if (tmp->flags & sd_flag)
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index f9d50a67e..b086d1496 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -692,7 +692,7 @@ static int dbg_version_show(struct seq_file *s, void *data)
+>   			return ret;
+>   		seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
+>   	} else {
+> -		seq_puts(s, "0.1.0\n");
+> +		seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
+>   	}
+>   
+>   	return 0;
+> @@ -704,21 +704,19 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
+>   static void tsens_debug_init(struct platform_device *pdev)
+>   {
+>   	struct tsens_priv *priv = platform_get_drvdata(pdev);
+> -	struct dentry *root, *file;
+>   
+> -	root = debugfs_lookup("tsens", NULL);
+> -	if (!root)
+> +	priv->debug_root = debugfs_lookup("tsens", NULL);
+> +	if (!priv->debug_root)
+>   		priv->debug_root = debugfs_create_dir("tsens", NULL);
+> -	else
+> -		priv->debug_root = root;
+>   
+> -	file = debugfs_lookup("version", priv->debug_root);
+> -	if (!file)
+> +	if (!debugfs_lookup("version", priv->debug_root))
+>   		debugfs_create_file("version", 0444, priv->debug_root,
+>   				    pdev, &dbg_version_fops);
+>   
+>   	/* A directory for each instance of the TSENS IP */
+> -	priv->debug = debugfs_create_dir(dev_name(&pdev->dev), priv->debug_root);
+
+Unconditionally creating priv->debug here is correct. The below if 
+(!priv->debug) will never be true because as per your patch 1, we call 
+tsens_debug_init once per instance of tsens.
+
+> +	priv->debug = debugfs_lookup(dev_name(&pdev->dev), priv->debug_root);
+> +	if (!priv->debug)
+> +		priv->debug = debugfs_create_dir(dev_name(&pdev->dev), priv->debug_root);
+>   	debugfs_create_file("sensors", 0444, priv->debug, pdev, &dbg_sensors_fops);
+>   }
+>   #else
 > 
-> This means looking for SD_BALANCE_WAKE which is never set
-> 
-> so sd will stay NULL and you will end up calling select_idle_sibling anyway
-> 
->>
->> static int
->> select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->> {
->>         ...
->>
->>         if (wake_flags & WF_TTWU) {
->>                 record_wakee(p);
->>
->>                 if (sched_energy_enabled()) {
->>                         new_cpu = find_energy_efficient_cpu(p, prev_cpu);
->>                         if (new_cpu >= 0)
->>                                 return new_cpu;
->>                         new_cpu = prev_cpu;
->>                 }
->>
->>                 want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
->>         }
->> }
->>
->> And try_to_wake_up() has always set WF_TTWU:
->> static int
->> try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
->> {
->>         cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
->>         ...
->> }
->>
->> So the change in wake_wide will actually affect the value of want_affine.
->> And I did also see code entered slow path during my benchmark.
 
-Yes, this is happening but IMHO not for wakeups. Check wake_flags for
-the tasks which go through `slow path` on your machine. They should have
-WF_EXEC or WF_FORK, not WF_TTWU (& WF_SYNC).
-
->> One issue I mentioned during linaro open discussion is that
->> since I have moved to use cluster size to decide the value
->> of wake_wide, relatively less tasks will make wake_wide()
->> decide to go to slow path, thus, tasks begin to spread to
->> other NUMA,  but actually llc_size might be able to contain
->> those tasks. So a possible model might be:
->> static int wake_wide(struct task_struct *p)
->> {
->>         tasksize < cluster : scan cluster
->>         tasksize > llc      : slow path
->>         tasksize > cluster && tasksize < llc: scan llc
->> }
->>
->> thoughts?
-
-Like Vincent explained, the return value of wake_wide() doesn't matter.
-For wakeups you always end up in sis().
-
-[...]
+-- 
+Warm Regards
+Thara
