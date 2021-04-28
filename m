@@ -2,241 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10CA36D100
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 05:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B9B36D115
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 06:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235690AbhD1DxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 23:53:17 -0400
-Received: from regular1.263xmail.com ([211.150.70.195]:33620 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhD1DxK (ORCPT
+        id S231279AbhD1EI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 00:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhD1EI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 23:53:10 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by regular1.263xmail.com (Postfix) with ESMTP id BBCA01D0D;
-        Wed, 28 Apr 2021 11:51:57 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.151] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31921T139684281841408S1619581915530662_;
-        Wed, 28 Apr 2021 11:51:57 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <688f917f3d5249d5a3fcc18c8a4f120d>
-X-RL-SENDER: cl@rock-chips.com
-X-SENDER: cl@rock-chips.com
-X-LOGIN-NAME: cl@rock-chips.com
-X-FST-TO: linux-watchdog@vger.kernel.org
-X-RCPT-COUNT: 29
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Cc:     cl@rock-chips.com, robh+dt@kernel.org, jagan@amarulasolutions.com,
-        wens@csie.org, uwe@kleine-koenig.org, mail@david-bauer.net,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] arm64: dts: rockchip: add core dtsi for RK3568 SoC
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>
-References: <20210425094216.25724-1-cl@rock-chips.com>
- <20210425094439.25895-1-cl@rock-chips.com>
- <16908f63-4e20-ba1b-3b5c-39b4c4db242b@gmail.com> <6618564.gtipl9YmvM@diego>
-From:   =?UTF-8?B?6ZmI5Lqu?= <cl@rock-chips.com>
-Message-ID: <12c486c7-f9ce-5ddc-c5db-97e4855f38d6@rock-chips.com>
-Date:   Wed, 28 Apr 2021 11:51:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Apr 2021 00:08:56 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDBDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 21:08:11 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d124so51780pfa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 21:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=49Tw5cUJuX6oeFz3PRwhMmj9KjPAeUSyIE1t+N81mMw=;
+        b=mezUmNSD/qK2Y7plx/lic4P4bFXVROSkMcyEz603lJAYpVY+GHgCiZiaExnV0yLT2t
+         KkVe+AkOJO7UAjvckTN9mg+kGPYDVAL3QvWnK4P7lqE2L1GCQnikA4p/VXNYY78ysh1R
+         Ake87yCYofQOsJvSNuGwk+RAwneOl8ZJcwUvs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=49Tw5cUJuX6oeFz3PRwhMmj9KjPAeUSyIE1t+N81mMw=;
+        b=nfTpa0tyjodXDmV7HqrtQ6pPSzO8GWlgocoBib2sJpkG0vKk7AaW0v9QyVHw4biQ5A
+         288dq2NDItXXAs7hkFlm0GU542yxFyDVvYRfg8NGKclhwT02llQRxGDhatvy2eBTDRJo
+         Hi6oTN1rHk9hWloDma75gOJeIndD+OQHwh6vr+02NYMEE8xKH6VYPwuog2o4O6LPI4BD
+         QjWwN4z91XCfH+jo/Y2HVFK5DAkh4UIthpw8x9vkO/+SzgEbcubKG0/6RiWkoLw0lzKQ
+         qCskXNXAaC61vE21AsdxNXMNL4FKYQnrmeXvdshU0Va7U7YDZ3dbmj891A2TJMk6Td9N
+         N+Ug==
+X-Gm-Message-State: AOAM5328ZbZMpwroiyjY+yxwZAsHfSIcjgu2IS2kTxjJLQyXXZeVARzJ
+        XVwjV/oIFl2rUQAqyThCt5OFlQ==
+X-Google-Smtp-Source: ABdhPJwsPXokv0v7xVnwkd4bBIwSyXspCw2a8jEgXWEBmznSz6rNWnrSxWbDyroy2mAe1pwaPpNsyw==
+X-Received: by 2002:a62:8f4a:0:b029:241:fc67:d425 with SMTP id n71-20020a628f4a0000b0290241fc67d425mr27207113pfd.21.1619582890582;
+        Tue, 27 Apr 2021 21:08:10 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:4cea:d9a4:e0be:d3f6])
+        by smtp.gmail.com with ESMTPSA id f1sm3456803pjt.50.2021.04.27.21.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 21:08:10 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>
+Cc:     Hsinyi Wang <hsinyi@chromium.org>, Ikjoon Jang <ikjn@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] power: supply: sbs-battery: cache constant string properties
+Date:   Wed, 28 Apr 2021 12:08:02 +0800
+Message-Id: <20210428040802.3266187-1-ikjn@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+In-Reply-To: <20210427093754.3000087-1-ikjn@chromium.org>
+References: <20210427093754.3000087-1-ikjn@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <6618564.gtipl9YmvM@diego>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi heiko,
+Currently sbs-battery supports three string properties -
+manufacturer, model_name, and chemistry. Buffers for those
+properties are currently defined as global variables.
 
-         I plan to drop grf stuff in next version, and make a new submit 
-for grf and document later, thanks.
+This patch moves those global variables into struct sbs_info
+and cache/reuse them as they are all constant values.
 
-在 2021/4/27 下午4:07, Heiko Stübner 写道:
-> Am Dienstag, 27. April 2021, 09:41:40 CEST schrieb Johan Jonker:
->> On 4/25/21 11:44 AM, cl@rock-chips.com wrote:
->>> From: Liang Chen <cl@rock-chips.com>
->>>
->>> RK3568 is a high-performance and low power quad-core application processor
->>> designed for personal mobile internet device and AIoT equipments. This patch
->>> add basic core dtsi file for it.
->>>
->>> We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
->>> kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
->>> enalbe a special high-performacne PLL when high frequency is required. The
->>> smci_clk code is in ATF, and clkid for cpu is 0, as below:
->>>
->>>      cpu0: cpu@0 {
->>>          device_type = "cpu";
->>>          compatible = "arm,cortex-a55";
->>>          reg = <0x0 0x0>;
->>>          clocks = <&scmi_clk 0>;
->>>      };
->>>
->>> Signed-off-by: Liang Chen <cl@rock-chips.com>
->>> ---
->>>   .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3119 +++++++++++++++++
->>>   arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  812 +++++
->>>   2 files changed, 3931 insertions(+)
->>>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
->>>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
->>>
->>> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
->>> new file mode 100644
->>> index 000000000000..94ee3c2c38af
->>> --- /dev/null
->> [..]
->>
->>> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
->>> new file mode 100644
->>> index 000000000000..66cb50218ca1
->>> --- /dev/null
->>> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
->>> @@ -0,0 +1,812 @@
->> [..]
->>
->>> +
->>> +	pmugrf: syscon@fdc20000 {
->>> +		compatible = "rockchip,rk3568-pmugrf", "syscon", "simple-mfd";
->> TODO:
->>
->>> +		reg = <0x0 0xfdc20000 0x0 0x10000>;
->>> +
->>> +		reboot_mode: reboot-mode {
->>> +			compatible = "syscon-reboot-mode";
->>> +			mode-bootloader = <BOOT_BL_DOWNLOAD>;
->>> +			mode-fastboot = <BOOT_FASTBOOT>;
->>> +			mode-loader = <BOOT_BL_DOWNLOAD>;
->>> +			mode-normal = <BOOT_NORMAL>;
->>> +			mode-recovery = <BOOT_RECOVERY>;
->>> +			offset = <0x200>;
->>> +		};
->>> +	};
->>> +
->>> +	grf: syscon@fdc60000 {
->>> +		compatible = "rockchip,rk3568-grf", "syscon", "simple-mfd";
->> TODO:
->>
->>> +		reg = <0x0 0xfdc60000 0x0 0x10000>;
->>> +	};
->>> +
->>> +	pmucru: clock-controller@fdd00000 {
->>> +		compatible = "rockchip,rk3568-pmucru";
->>> +		reg = <0x0 0xfdd00000 0x0 0x1000>;
->>> +		rockchip,grf = <&grf>;
->>> +		rockchip,pmugrf = <&pmugrf>;
->> clock-controller@fdd00000: 'rockchip,grf', 'rockchip,pmugrf' do not
->> match any of the regexes: 'pinctrl-[0-9]+'
->>
->> Currently clk.c has only support for:
->>
->> 	ctx->grf = syscon_regmap_lookup_by_phandle(ctx->cru_node,
->> 						   "rockchip,grf");
->>
->> Manufacturer tree:
->>
->> 	ctx->pmugrf = syscon_regmap_lookup_by_phandle(ctx->cru_node,
->> 						   "rockchip,pmugrf");
->> 		case branch_muxpmugrf:
->> 			clk = rockchip_clk_register_muxgrf(list->name,
->> 				list->parent_names, list->num_parents,
->> 				flags, ctx->pmugrf, list->muxdiv_offset,
->> 				list->mux_shift, list->mux_width,
->> 				list->mux_flags);
->> 			break;
->>
->>
->> 	MUXPMUGRF(SCLK_32K_IOE, "clk_32k_ioe", clk_32k_ioe_p,  0,
->> 			RK3568_PMU_GRF_SOC_CON0, 0, 1, MFLAGS)
-> (1) drop the rockchip,pmugrf property please
-> (2) as I see it, we will only need the rockchip,grf property.
->
-> For main clock controller grf points to main grf
-> For pmu clock controller grf points to pmugrf
->
-> Each clock controller has its own associated grf.
->
-> I really see no case where main-clk would need to access the pmugrf
-> same as pmu-clk would should not need to access the main grf, as the
-> split into main-{clk,grf} + pmu-{clk,grf} is probably a for power-management
-> reasons to separate different power-areas, the driver should also not
-> cross this barrier anyway ;-) .
->
-> Same as, if a clk uses the pmugrf it is a pmu-based clock, if it uses the
-> main grf, it should live in the main clock driver.
->
-> And as expected the clk_32k_ioe is already defined in the pmuclk
-> part of the driver ;-)
->
->
-> Heiko
->
->
->>> +		#clock-cells = <1>;
->>> +		#reset-cells = <1>;
->>> +	};
->>> +
->>> +	cru: clock-controller@fdd20000 {
->>> +		compatible = "rockchip,rk3568-cru";
->>> +		reg = <0x0 0xfdd20000 0x0 0x1000>;
->>> +		rockchip,grf = <&grf>;
->> clock-controller@fdd20000: 'assigned-clock-parents',
->> 'assigned-clock-rates', 'assigned-clocks', 'rockchip,grf' do not match
->> any of the regexes:
->>
->> Add more properties to rockchip,rk3568-cru.yaml
->>
->>> +		#clock-cells = <1>;
->>> +		#reset-cells = <1>;
->>> +
->>> +		assigned-clocks =
->>> +			<&pmucru CLK_RTC_32K>, <&pmucru PLL_PPLL>,
->>> +			<&pmucru PCLK_PMU>, <&cru PLL_CPLL>,
->>> +			<&cru PLL_GPLL>, <&cru ACLK_BUS>,
->>> +			<&cru PCLK_BUS>, <&cru ACLK_TOP_HIGH>,
->>> +			<&cru ACLK_TOP_LOW>, <&cru HCLK_TOP>,
->>> +			<&cru PCLK_TOP>, <&cru ACLK_PERIMID>,
->>> +			<&cru HCLK_PERIMID>, <&cru PLL_NPLL>,
->>> +			<&cru ACLK_PIPE>, <&cru PCLK_PIPE>,
->>> +			<&cru ACLK_VOP>;
->>> +		assigned-clock-rates =
->>> +			<32768>, <200000000>,
->>> +			<100000000>, <1000000000>,
->>> +			<1188000000>, <150000000>,
->>> +			<100000000>, <500000000>,
->>> +			<400000000>, <150000000>,
->>> +			<100000000>, <300000000>,
->>> +			<150000000>, <1200000000>,
->>> +			<400000000>, <100000000>,
->>> +			<500000000>;
->>> +		assigned-clock-parents =
->>> +			<&pmucru CLK_RTC32K_FRAC>;
->>> +	};
->
->
->
->
->
->
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
 
+---
+
+Changes in v2:
+- change function name of sbs_get_battery_string_property()
+  to sbs_get_constant_string()
+- use cached string properties
+- use cached technology integer value in sbs_get_chemistry()
+
+ drivers/power/supply/sbs-battery.c | 140 +++++++++++++++++------------
+ 1 file changed, 82 insertions(+), 58 deletions(-)
+
+diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
+index 4bf92831cb06..414de9bc47bf 100644
+--- a/drivers/power/supply/sbs-battery.c
++++ b/drivers/power/supply/sbs-battery.c
+@@ -188,6 +188,14 @@ static const enum power_supply_property sbs_properties[] = {
+ /* Supports special manufacturer commands from TI BQ20Z65 and BQ20Z75 IC. */
+ #define SBS_FLAGS_TI_BQ20ZX5		BIT(0)
+ 
++static const enum power_supply_property string_properties[] = {
++	POWER_SUPPLY_PROP_TECHNOLOGY,
++	POWER_SUPPLY_PROP_MANUFACTURER,
++	POWER_SUPPLY_PROP_MODEL_NAME,
++};
++
++#define NR_STRING_BUFFERS	ARRAY_SIZE(string_properties)
++
+ struct sbs_info {
+ 	struct i2c_client		*client;
+ 	struct power_supply		*power_supply;
+@@ -201,11 +209,22 @@ struct sbs_info {
+ 	struct delayed_work		work;
+ 	struct mutex			mode_lock;
+ 	u32				flags;
++	int				technology;
++	char				strings[NR_STRING_BUFFERS][I2C_SMBUS_BLOCK_MAX + 1];
+ };
+ 
+-static char model_name[I2C_SMBUS_BLOCK_MAX + 1];
+-static char manufacturer[I2C_SMBUS_BLOCK_MAX + 1];
+-static char chemistry[I2C_SMBUS_BLOCK_MAX + 1];
++static char *sbs_get_string_buf(struct sbs_info *chip,
++				enum power_supply_property psp)
++{
++	int i = 0;
++
++	for (i = 0; i < NR_STRING_BUFFERS; i++)
++		if (string_properties[i] == psp)
++			return chip->strings[i];
++
++	return ERR_PTR(-EINVAL);
++}
++
+ static bool force_load;
+ 
+ static int sbs_read_word_data(struct i2c_client *client, u8 address);
+@@ -639,17 +658,45 @@ static int sbs_get_battery_property(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int sbs_get_battery_string_property(struct i2c_client *client,
+-	int reg_offset, enum power_supply_property psp, char *val)
++static int sbs_get_property_index(struct i2c_client *client,
++	enum power_supply_property psp)
+ {
+-	s32 ret;
++	int count;
++
++	for (count = 0; count < ARRAY_SIZE(sbs_data); count++)
++		if (psp == sbs_data[count].psp)
++			return count;
+ 
+-	ret = sbs_read_string_data(client, sbs_data[reg_offset].addr, val);
++	dev_warn(&client->dev,
++		"%s: Invalid Property - %d\n", __func__, psp);
+ 
+-	if (ret < 0)
+-		return ret;
++	return -EINVAL;
++}
+ 
+-	return 0;
++static const char *sbs_get_constant_string(struct sbs_info *chip,
++			enum power_supply_property psp)
++{
++	int ret;
++	char *buf;
++	u8 addr;
++
++	buf = sbs_get_string_buf(chip, psp);
++	if (IS_ERR(buf))
++		return buf;
++
++	if (!buf[0]) {
++		ret = sbs_get_property_index(chip->client, psp);
++		if (ret < 0)
++			return ERR_PTR(ret);
++
++		addr = sbs_data[ret].addr;
++
++		ret = sbs_read_string_data(chip->client, addr, buf);
++		if (ret < 0)
++			return ERR_PTR(ret);
++	}
++
++	return buf;
+ }
+ 
+ static void  sbs_unit_adjustment(struct i2c_client *client,
+@@ -772,48 +819,34 @@ static int sbs_get_battery_serial_number(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int sbs_get_property_index(struct i2c_client *client,
+-	enum power_supply_property psp)
+-{
+-	int count;
+-	for (count = 0; count < ARRAY_SIZE(sbs_data); count++)
+-		if (psp == sbs_data[count].psp)
+-			return count;
+-
+-	dev_warn(&client->dev,
+-		"%s: Invalid Property - %d\n", __func__, psp);
+-
+-	return -EINVAL;
+-}
+-
+-static int sbs_get_chemistry(struct i2c_client *client,
++static int sbs_get_chemistry(struct sbs_info *chip,
+ 		union power_supply_propval *val)
+ {
+-	enum power_supply_property psp = POWER_SUPPLY_PROP_TECHNOLOGY;
+-	int ret;
++	const char *chemistry;
+ 
+-	ret = sbs_get_property_index(client, psp);
+-	if (ret < 0)
+-		return ret;
++	if (chip->technology >= POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
++		return chip->technology;
+ 
+-	ret = sbs_get_battery_string_property(client, ret, psp,
+-					      chemistry);
+-	if (ret < 0)
+-		return ret;
++	chemistry = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_TECHNOLOGY);
++
++	if (IS_ERR(chemistry))
++		return PTR_ERR(chemistry);
+ 
+ 	if (!strncasecmp(chemistry, "LION", 4))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_LION;
+ 	else if (!strncasecmp(chemistry, "LiP", 3))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_LIPO;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_LIPO;
+ 	else if (!strncasecmp(chemistry, "NiCd", 4))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_NiCd;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_NiCd;
+ 	else if (!strncasecmp(chemistry, "NiMH", 4))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_NiMH;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_NiMH;
+ 	else
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
+ 
+-	if (val->intval == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
+-		dev_warn(&client->dev, "Unknown chemistry: %s\n", chemistry);
++	if (chip->technology == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
++		dev_warn(&chip->client->dev, "Unknown chemistry: %s\n", chemistry);
++
++	val->intval = chip->technology;
+ 
+ 	return 0;
+ }
+@@ -857,6 +890,7 @@ static int sbs_get_property(struct power_supply *psy,
+ 	int ret = 0;
+ 	struct sbs_info *chip = power_supply_get_drvdata(psy);
+ 	struct i2c_client *client = chip->client;
++	const char *str;
+ 
+ 	if (chip->gpio_detect) {
+ 		ret = gpiod_get_value_cansleep(chip->gpio_detect);
+@@ -882,7 +916,7 @@ static int sbs_get_property(struct power_supply *psy,
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_TECHNOLOGY:
+-		ret = sbs_get_chemistry(client, val);
++		ret = sbs_get_chemistry(chip, val);
+ 		if (ret < 0)
+ 			break;
+ 
+@@ -934,23 +968,12 @@ static int sbs_get_property(struct power_supply *psy,
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_MODEL_NAME:
+-		ret = sbs_get_property_index(client, psp);
+-		if (ret < 0)
+-			break;
+-
+-		ret = sbs_get_battery_string_property(client, ret, psp,
+-						      model_name);
+-		val->strval = model_name;
+-		break;
+-
+ 	case POWER_SUPPLY_PROP_MANUFACTURER:
+-		ret = sbs_get_property_index(client, psp);
+-		if (ret < 0)
+-			break;
+-
+-		ret = sbs_get_battery_string_property(client, ret, psp,
+-						      manufacturer);
+-		val->strval = manufacturer;
++		str = sbs_get_constant_string(chip, psp);
++		if (IS_ERR(str))
++			ret = PTR_ERR(str);
++		else
++			val->strval = str;
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_MANUFACTURE_YEAR:
+@@ -1097,6 +1120,7 @@ static int sbs_probe(struct i2c_client *client)
+ 	psy_cfg.of_node = client->dev.of_node;
+ 	psy_cfg.drv_data = chip;
+ 	chip->last_state = POWER_SUPPLY_STATUS_UNKNOWN;
++	chip->technology = -1;
+ 	mutex_init(&chip->mode_lock);
+ 
+ 	/* use pdata if available, fall back to DT properties,
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
