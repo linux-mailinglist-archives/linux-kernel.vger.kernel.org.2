@@ -2,180 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B329036DE9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F24A36DE96
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242487AbhD1Rrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:47:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56145 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242449AbhD1Rrb (ORCPT
+        id S241701AbhD1Rqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239646AbhD1Rqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:47:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619632005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8BOun1ZYibCbIwXIrMmv7Pl4kSj5RYq+jSho1dRkNPA=;
-        b=jJ9eozzaD5WeSd0mgY7tQQJE0WdZTh/qd4n8w37YZ+p/Dr4E7A325KGJVlE1a9bBMJrLuP
-        dfiM6LjoYGEosWCNZN/iDd5gG75gLoBvUY824loD5Hm4EfSwIroKgsF//iSxpXBLuK+RBF
-        B0LvA0lw1146deGlRWvJc6X4jT2YFTw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-idS5XV-SOiyXJwJPBEyU9g-1; Wed, 28 Apr 2021 13:46:43 -0400
-X-MC-Unique: idS5XV-SOiyXJwJPBEyU9g-1
-Received: by mail-ej1-f71.google.com with SMTP id s23-20020a1709069617b02903907023c7c0so2338865ejx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:46:43 -0700 (PDT)
+        Wed, 28 Apr 2021 13:46:49 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2E6C061573;
+        Wed, 28 Apr 2021 10:46:03 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id t4so12593504ejo.0;
+        Wed, 28 Apr 2021 10:46:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=h2RE4z+Jxtp7vOs8Qo9qwYEL+D6JsSPYOLMcr5K3PqA=;
+        b=uVpqX8puNdiIdw1gMqYody+9FTlK1hnaS76gg44ZhYHfAVz7BmbE1oYwX7k/M9N2hp
+         E7RL/YAqKtMdbE2o39PDbulDQkN950fqevw12uqpymPXgPzYwcXTU5RN0lQcZAL9CeLu
+         dpXhB5F8z8EABCBGmtDKqhmnTwY0U2XrVA5K1Dg9aJQLnMrqOKo5koe2lNOF4Aelgegx
+         9FSzTNleAIhxoVRkzNmEltpdGkaWLLKrsakwW/y5twBmKB/Y9uSWmZ24wNpOEMl5a0Sx
+         kWA8YGRaAG+erWXPKsI2Ub1DNauDhS/towmCcHDgD05RCXEsNV2U+qVKg4h5d6wOv/CI
+         I13Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8BOun1ZYibCbIwXIrMmv7Pl4kSj5RYq+jSho1dRkNPA=;
-        b=c0NFiQmyR8ECBxq7REoNfPDzbrPfMv57mtI9FUsFEd2rIa5l9sh3I1WqGk1kM1ttbt
-         98BfuXpZomiLvFHxjEVl3TatEjxTAf1yXrjsVfb4+27LfBuwM+b9S/WZCZlp4s8pK/nC
-         VqIh2cNHwddzpVo9ar+FizPIWbmotNI0cmBh8C12AJpuIZgL5bQZhZiXk+JkplY9HBUa
-         P1H94gCeBgxeADyPAl0vhKNNeTVd5rYPjNQUUhjxfUO0X1Gen+X09w+6L6CgrdhWHMVA
-         vGFADem6PJX+2RNy/GwweIIjOJjX9SCmeYANYcMTBfUQHu95MsmExTjXjxkSCFFUdZyi
-         OLbQ==
-X-Gm-Message-State: AOAM530Jwa9mci3NdceoqaoRPm8VCAi8ZOYkyA35If0vo+vnu23G3b7j
-        5Sql/fF7mR5Ds+6cQNTiEOPaa58OLx3HqL+KlwXRg9dytK2T4Gy+dmwyB0JqD9mDpYdnpOQdM1/
-        kRGLaNgcLdRIu9HrKzslSZTRn
-X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr13060596eds.166.1619632001802;
-        Wed, 28 Apr 2021 10:46:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjDsV9NGJUW50rDTXrCtAkYz85juYbP1wtFF5LgyE9uXZiwIK4vbpBeyZwXwTfivQpZPGnog==
-X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr13060570eds.166.1619632001620;
-        Wed, 28 Apr 2021 10:46:41 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id u24sm361329edt.85.2021.04.28.10.46.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 10:46:41 -0700 (PDT)
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210427223635.2711774-1-bgardon@google.com>
- <20210427223635.2711774-6-bgardon@google.com>
- <997f9fe3-847b-8216-c629-1ad5fdd2ffae@redhat.com>
- <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 5/6] KVM: x86/mmu: Protect kvm->memslots with a mutex
-Message-ID: <d936b13b-bb00-fc93-de3b-adc59fa32a7b@redhat.com>
-Date:   Wed, 28 Apr 2021 19:46:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=h2RE4z+Jxtp7vOs8Qo9qwYEL+D6JsSPYOLMcr5K3PqA=;
+        b=VashcTguOTXq43c752d5oUfUP6AA/SB585al6wglLyoyLjpDLSWRiyXV1nCUgIMKmJ
+         uNrXkUO8CGuxvnOAqdJu3hZIIPDs7wfub7ziaxkK0GS++F3p6PtjN3wS892sgtiDHtg+
+         JqOqxb+aXZAbKT+kcl1nnr2IM8KHk8dLP1uPA/rNH8kSwfuO9Z4WCYA7e5wMbG02bQkH
+         HFkw00rnNKLIDoYT5+kU49KZVwpoEyzXRaVJav5QtjJ08M2jGXEcpJho5gYjwndYTLcP
+         +lCD0WN8axH3tU+dP/UAUxAeCteLq+LYBPFxTiIU5KDvSk1c94p0QxMuWZFs108ZrEnN
+         03ew==
+X-Gm-Message-State: AOAM532rVqH+fna8n8rLM59gFSCLy6hx+TfVlJ/f4CZz37tZuhBIYcLS
+        ILAkBe/MfO+AgVsYKinCdW8=
+X-Google-Smtp-Source: ABdhPJwYo0SY80J8JTTNQgWf2m8xt4bJDqc1YPG86vMVA00UJV/8WFUy5ba53ToD7pnyToo25DK9nA==
+X-Received: by 2002:a17:906:13d1:: with SMTP id g17mr2925366ejc.92.1619631961966;
+        Wed, 28 Apr 2021 10:46:01 -0700 (PDT)
+Received: from localhost (p2e5be10e.dip0.t-ipconnect.de. [46.91.225.14])
+        by smtp.gmail.com with ESMTPSA id v8sm370882edc.30.2021.04.28.10.46.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 10:46:00 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 19:46:56 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        subbaram@codeaurora.org, collinsd@codeaurora.org,
+        aghayal@codeaurora.org
+Subject: Re: [PATCH 2/2] pwm: pwm-qcom: add driver for PWM modules in QCOM
+ PMICs
+Message-ID: <YImfkM/ll1nCmopq@orome.fritz.box>
+References: <20210427102247.822-1-fenglinw@codeaurora.org>
+ <20210427102247.822-3-fenglinw@codeaurora.org>
+ <20210427170748.wglupc6zwrndalxs@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd8RZXQ-BamwQPS66Q5hLRZaDFhi0WaA=ZvCP4BbofiUhg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ecWP3/I3yNFzHkoj"
+Content-Disposition: inline
+In-Reply-To: <20210427170748.wglupc6zwrndalxs@pengutronix.de>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/21 18:40, Ben Gardon wrote:
-> On Tue, Apr 27, 2021 at 11:25 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 28/04/21 00:36, Ben Gardon wrote:
->>> +void kvm_arch_assign_memslots(struct kvm *kvm, int as_id,
->>> +                          struct kvm_memslots *slots)
->>> +{
->>> +     mutex_lock(&kvm->arch.memslot_assignment_lock);
->>> +     rcu_assign_pointer(kvm->memslots[as_id], slots);
->>> +     mutex_unlock(&kvm->arch.memslot_assignment_lock);
->>> +}
->>
->> Does the assignment also needs the lock, or only the rmap allocation?  I
->> would prefer the hook to be something like kvm_arch_setup_new_memslots.
-> 
-> The assignment does need to be under the lock to prevent the following race:
-> 1. Thread 1 (installing a new memslot): Acquires memslot assignment
-> lock (or perhaps in this case rmap_allocation_lock would be more apt.)
-> 2. Thread 1: Check alloc_memslot_rmaps (it is false)
-> 3. Thread 1: doesn't allocate memslot rmaps for new slot
-> 4. Thread 1: Releases memslot assignment lock
-> 5. Thread 2 (allocating a shadow root): Acquires memslot assignment lock
-> 6. Thread 2: Sets alloc_memslot_rmaps = true
-> 7. Thread 2: Allocates rmaps for all existing slots
-> 8. Thread 2: Releases memslot assignment lock
-> 9. Thread 2: Sets shadow_mmu_active = true
-> 10. Thread 1: Installs the new memslots
-> 11. Thread 3: Null pointer dereference when trying to access rmaps on
-> the new slot.
 
-... because thread 3 would be under mmu_lock and therefore cannot 
-allocate the rmap itself (you have to do it in mmu_alloc_shadow_roots, 
-as in patch 6).
+--ecWP3/I3yNFzHkoj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Related to this, your solution does not have to protect kvm_dup_memslots 
-with the new lock, because the first update of the memslots will not go 
-through kvm_arch_prepare_memory_region but it _will_ go through 
-install_new_memslots and therefore through the new hook.  But overall I 
-think I'd prefer to have a kvm->slots_arch_lock mutex in generic code, 
-and place the call to kvm_dup_memslots and 
-kvm_arch_prepare_memory_region inside that mutex.
+On Tue, Apr 27, 2021 at 07:07:48PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> Hello,
+>=20
+> On Tue, Apr 27, 2021 at 06:22:10PM +0800, Fenglin Wu wrote:
+[...]
+> > diff --git a/drivers/pwm/pwm-qcom.c b/drivers/pwm/pwm-qcom.c
+[...]
+> > +#define PWM_FREQ_EXPONENT_MASK		GENMASK(2, 0)
+> > +
+> > +/* REG_PWM_TYPE_CONFIG */
+> > +#define PWM_EN_GLITCH_REMOVAL_MASK	BIT(5)
+> > +
+> > +/* REG_PWM_VALUE */
+> > +#define PWM_VALUE_LSB_MASK		GENMASK(7, 0)
+> > +#define PWM_VALUE_MSB_MASK		BIT(0)
+> > +
+> > +/* REG_ENABLE_CONTROL */
+> > +#define EN_MODULE_BIT			BIT(7)
+> > +
+> > +/* REG_PWM_SYNC */
+> > +#define PWM_VALUE_SYNC			BIT(0)
+>=20
+> I would like to see the register definition to use a common prefix (like
+> QCOM_PWM_) and that the names of bit fields include the register name.
+> So something like:
+>=20
+> 	#define QCOM_PWM_PWM_SIZE_CLK		0x41
+> 	#define QCOM_PWM_PWM_SIZE_CLK_FREQ_SEL 		GENMASK(1, 0)
+>=20
+> even if the names are quite long, its usage is less error prone. Maybe
+> it makes sense to drop the duplicated PWM (but only if all or no
+> register contains PWM in its name according to the reference manual).
+> Also maybe QCOM_PWM_PWMSIZECLK_FREQSEL might be a good choice. I let you
+> judge about the details.
 
-That makes the new lock decently intuitive, and easily documented as 
-"Architecture code can use slots_arch_lock if the contents of struct 
-kvm_arch_memory_slot needs to be written outside 
-kvm_arch_prepare_memory_region.  Unlike slots_lock, slots_arch_lock can 
-be taken inside a ``kvm->srcu`` read-side critical section".
+Please stop requesting this. A common prefix is good for namespacing
+symbols, but these defines are used only within this file, so there's no
+need to namespace them. Forcing everyone to use a specific prefix is
+just going to add a bunch of characters but doesn't actually add any
+value.
 
-I admit I haven't thought about it very thoroughly, but if something 
-like this is enough, it is relatively pretty:
+> > +/* constant definitions */
+> > +#define REG_SIZE_PER_CHANN		0x100
+> > +#define NUM_PWM_SIZE			2
+> > +#define NUM_PWM_CLK			3
+> > +#define NUM_CLK_PREDIV			4
+> > +#define NUM_PWM_EXP			8
+> > +
+> > +static const int pwm_size[NUM_PWM_SIZE] =3D {6, 9};
+> > +static const int clk_freq_hz[NUM_PWM_CLK] =3D {1024, 32768, 19200000};
+> > +static const int clk_prediv[NUM_CLK_PREDIV] =3D {1, 3, 5, 6};
+> > +static const int pwm_exponent[NUM_PWM_EXP] =3D {0, 1, 2, 3, 4, 5, 6, 7=
+};
+>=20
+> Please also use a driver specific prefix for variables and function
+> names.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 9b8e30dd5b9b..6e5106365597 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1333,6 +1333,7 @@ static struct kvm_memslots 
-*install_new_memslots(struct kvm *kvm,
+Again, these are local symbols and there's no need for namespacing. The
+only case where this would need to change is if the symbols started
+conflicting with global ones, but until that happens, let's just keep
+the names short and concise.
 
-  	rcu_assign_pointer(kvm->memslots[as_id], slots);
+Thierry
 
-+	mutex_unlock(&kvm->slots_arch_lock);
-  	synchronize_srcu_expedited(&kvm->srcu);
+--ecWP3/I3yNFzHkoj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  	/*
-@@ -1399,6 +1398,7 @@ static int kvm_set_memslot(struct kvm *kvm,
-  	struct kvm_memslots *slots;
-  	int r;
+-----BEGIN PGP SIGNATURE-----
 
-+	mutex_lock(&kvm->slots_arch_lock);
-  	slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
-  	if (!slots)
-  		return -ENOMEM;
-@@ -1427,6 +1427,7 @@ static int kvm_set_memslot(struct kvm *kvm,
-  		 *	- kvm_is_visible_gfn (mmu_check_root)
-  		 */
-  		kvm_arch_flush_shadow_memslot(kvm, slot);
-+		mutex_lock(&kvm->slots_arch_lock);
-  	}
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCJn5AACgkQ3SOs138+
+s6EanA/+KxtrprYC/29QQIirySzAAgLCoW++tjUw/uvLAB0/mCqC0u0XGHuDf1co
+WO2yw8nD9RWkOLdVzLbCiw/NVxjg3O9VDdPq+XMHc6mqwmRApt4i7Sq4zmYex4AR
+ldflsnuV6wp5ZJcHrT9UPR6Sd/UGBWzAindxVPvqpCwQJwJ6seHc1U7PaM7dVLdh
+7Ee0GYgA5HjmT6Xa/jfn6OBieoJT2VWfN3mdrYCXHCiEnjUjyiRKX50jwKxWiERI
+l2+HiKrQ46vumvQqV1+HJrUGxLYZfCGjYGvHc2sd0uWTMxaH9LteNByFFjDPrLl9
+QY6Ox95dWp6qys1fIkqPp5NWJyqNB8v6XCTcqx7TlxTe/KmZcywnKmFK+jnHfOWw
+aFl7m7ylYQjtsbCl1OnWs48G6dH6LfcReHKCaCxeVywu6+3SfRSfebryC7B3Vfxs
+oB0PTlkr7sy3EiPUwfRQa72xn/NFqzPCn9XzwM9oGmOFmFBHyn2olCPqzAcu23cY
+6T+YOtD2QYa7W0PYYJ/kjMTXalgoMfLRaC4bhNkaVhwzd3iStBrIcrJJrGeAOAlo
+26NH7f2gODb3sGqANRGC7905EV2goOCLVKQh5FstZeFqMiXqqSyBEcYU8QLXYUVt
+BK97V+s7RtVIr8wgDV7HqiUlAJmVQvUEj1M0U1TqxaZs5IQJVpo=
+=PQGL
+-----END PGP SIGNATURE-----
 
-  	r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
-
-It does make the critical section a bit larger, so that the 
-initialization of the shadow page (which is in KVM_RUN context) contends 
-with slightly more code than necessary.  However it's all but a 
-performance critical situation, as it will only happen just once per VM.
-
-WDYT?
-
-Paolo
-
-> Putting the assignment under the lock prevents 5-8 from happening
-> between 2 and 10.
-> 
-> I'm open to other ideas as far as how to prevent this race though. I
-> admit this solution is not the most elegant looking.
-
-
+--ecWP3/I3yNFzHkoj--
