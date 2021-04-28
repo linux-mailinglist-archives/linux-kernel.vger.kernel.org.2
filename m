@@ -2,230 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4B536D25D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6648E36D260
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236060AbhD1GpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhD1GpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:45:15 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13001C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 23:44:30 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id m12so3298328pgr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 23:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=15uylzY/6G4QGzIetCjgcwa71pGsoemaoMMUbOf1OF8=;
-        b=Rya3B8hVJWCqcQXCncB39QBMqTfyIiJg1ox5Ro+8u80KE6ueEIhfOrnhD64M8YYIGX
-         kPwrWMni+mSOXWzsn+G0Q7w/3YG4SGS+fuN/uGJJ2RG0a5/TEDbwVMZy2Oxh49AesoTa
-         6k7jr9D7VLmhurqHyJ4hYPoGyltOQRGPvVwtY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=15uylzY/6G4QGzIetCjgcwa71pGsoemaoMMUbOf1OF8=;
-        b=ZweAF2VBtPz2e0CsVPAGYmk3Lla8Qa6WbMUx92MkamqiMlEd+BmJTo3jmxOlCj/y8C
-         KOtzUoYmqXWHyTI3IJl5vSXLbSlSkYkMgZhaQ950KBqYCeyrCihJQ6XpgX8A3TVTe004
-         21AG/7FoxifOV7yfkHTeqxg8Qcke77gmE04kFCmzlQ4Zb0VYH/rwNEiFZwpPy40Xl/Va
-         P7ZCsibxD+pFCAS9OIDwTmBUaWN9Y6sMMz4s678jHrT4D7T0qPlwXWzVNAJV1eUIxwTS
-         o3TUnthdFvSV+xg/88e2WcOsS26Ux1h5RcKltn/+JMvd0TeZX6sM+P/bWfBbf/DcdULQ
-         G51A==
-X-Gm-Message-State: AOAM530vP/nLv13qGKi/XD8yg+rNM/m5d+mkpOZ2alDNkk1Q52ue7cSd
-        bnmwcMJ4od6pzCzMG0G2ewWyBIb2LVXefvgdi7qquw==
-X-Google-Smtp-Source: ABdhPJyy+OG4HCYkDm5Rra9kCy+bdP0DLqG38XpNmu1j3/4nOvQXGEeSdduJj8VENN8KoYgthEUkX2vNb7xIVNqw4DQ=
-X-Received: by 2002:a63:8149:: with SMTP id t70mr5744917pgd.299.1619592269389;
- Tue, 27 Apr 2021 23:44:29 -0700 (PDT)
+        id S236151AbhD1GpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:45:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236145AbhD1GpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:45:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF33661422;
+        Wed, 28 Apr 2021 06:44:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619592277;
+        bh=S5Mcku9BqGbqEVzg3DUAzz6HUqoWQEP/3bQrKYHAHMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r9ycOZc92ZLGH/GJuCv8MF7WWLmvTEaREagiqxoz+xK7lS7SbaUOHTzN1PMuj8UjJ
+         QWyI3+JkOZA8z6EGW4Xme+vGCTDqcmo8OO3306UV3aURYRQfW8z9n1Tzk2keHc64cr
+         IW0HJL4lG2zKVRksW0AYgU+vUWvmgLgnqR1U34mPnXxf5bZOWnbqKvibhO4rFeW37+
+         i7RHXl9HsZxwdH3hCS2lrTprfoZ5B2YkeM3E/1oDy+JQsJ7ahj5CXImovf4/Ev87eF
+         5dZUBedqinMq/KJ+5wDpfTmXenF6H8psD75QQq4WY4FpCXiL11BTb+jkI422CRl7hh
+         HUMdUbdPFl1wg==
+Date:   Wed, 28 Apr 2021 08:44:31 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
+ pm_runtime_get_sync()
+Message-ID: <20210428084431.0c2d505b@coco.lan>
+In-Reply-To: <20210428082742.20d54db1@coco.lan>
+References: <cover.1619519080.git.mchehab+huawei@kernel.org>
+        <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
+        <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
+        <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
+        <20210428082742.20d54db1@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210324104110.13383-1-chun-jie.chen@mediatek.com> <1617881329.6756.3.camel@mtksdccf07>
-In-Reply-To: <1617881329.6756.3.camel@mtksdccf07>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 28 Apr 2021 14:44:18 +0800
-Message-ID: <CAATdQgBkY0Gc+WpGkvf9CuRF_WpJTymzi+j2whQ13pfCoxBWmg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v7 00/22] Mediatek MT8192 clock support
-To:     20181221120906 created <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping again.
+Em Wed, 28 Apr 2021 08:27:42 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-On Thu, Apr 8, 2021 at 7:29 PM 20181221120906 created
-<chun-jie.chen@mediatek.com> wrote:
->
-> On Wed, 2021-03-24 at 18:40 +0800, Chun-Jie Chen (=E9=99=B3=E6=B5=9A=E6=
-=A1=80) wrote:
->
-> Hi Maintainers,
->
-> Gentle pin for this patch series.
->
-> Thanks
->
-> > reason for resending v7:
-> > - add review history from series below
-> > [1] https://urldefense.com/v3/__https://patchwork.kernel.org/project/li=
-nux-mediatek/list/?series=3D405295__;!!CTRNKA9wMg0ARbw!yiC4Bd7Av9itRUTEQeBU=
-WbH_wX08o2rIYTH0BJ_BljLXWzCPb2sYdGLjFLwWBXEY4iHa$
-> >
-> > change since v6:
-> > - update from series below
-> > [1] https://urldefense.com/v3/__https://patchwork.kernel.org/project/li=
-nux-mediatek/list/?series=3D405295__;!!CTRNKA9wMg0ARbw!yiC4Bd7Av9itRUTEQeBU=
-WbH_wX08o2rIYTH0BJ_BljLXWzCPb2sYdGLjFLwWBXEY4iHa$
-> > - fix DT bindings fail
-> > - fix checkpatch warning
-> > - update mux ops without gate control
-> >
-> > change since v5:
-> > - remove unused clocks by rolling Tinghan's patches[1][2] into series
-> > [1] https://urldefense.com/v3/__https://patchwork.kernel.org/project/li=
-nux-mediatek/list/?series=3D398781__;!!CTRNKA9wMg0ARbw!yiC4Bd7Av9itRUTEQeBU=
-WbH_wX08o2rIYTH0BJ_BljLXWzCPb2sYdGLjFLwWBS6llsNi$
-> > [2] https://urldefense.com/v3/__https://patchwork.kernel.org/project/li=
-nux-mediatek/list/?series=3D405143__;!!CTRNKA9wMg0ARbw!yiC4Bd7Av9itRUTEQeBU=
-WbH_wX08o2rIYTH0BJ_BljLXWzCPb2sYdGLjFLwWBfBntgEt$
-> > - remove dts related patches from series
-> >
-> > change since v4:
-> > - merge some subsystem into same driver
-> > - add a generic probe function to reduce duplicated code
-> >
-> > changes since v3:
-> > - add critical clocks
-> > - split large patches into small ones
-> >
-> > changes since v2:
-> > - update and split dt-binding documents by functionalities
-> > - add error checking in probe() function
-> > - fix incorrect clock relation and add critical clocks
-> > - update license identifier and minor fix of coding style
-> >
-> > changes since v1:
-> > - fix asymmetrical control of PLL
-> > - have en_mask used as divider enable mask on all MediaTek SoC
-> >
-> > chun-jie.chen (22):
-> >   dt-bindings: ARM: Mediatek: Add new document bindings of imp i2c
-> >     wrapper controller
-> >   dt-bindings: ARM: Mediatek: Add new document bindings of mdpsys
-> >     controller
-> >   dt-bindings: ARM: Mediatek: Add new document bindings of msdc
-> >     controller
-> >   dt-bindings: ARM: Mediatek: Add new document bindings of scp adsp
-> >     controller
-> >   dt-bindings: ARM: Mediatek: Document bindings of MT8192 clock
-> >     controllers
-> >   clk: mediatek: Add dt-bindings of MT8192 clocks
-> >   clk: mediatek: Fix asymmetrical PLL enable and disable control
-> >   clk: mediatek: Add configurable enable control to mtk_pll_data
-> >   clk: mediatek: Add mtk_clk_simple_probe() to simplify clock providers
-> >   clk: mediatek: Add MT8192 basic clocks support
-> >   clk: mediatek: Add MT8192 audio clock support
-> >   clk: mediatek: Add MT8192 camsys clock support
-> >   clk: mediatek: Add MT8192 imgsys clock support
-> >   clk: mediatek: Add MT8192 imp i2c wrapper clock support
-> >   clk: mediatek: Add MT8192 ipesys clock support
-> >   clk: mediatek: Add MT8192 mdpsys clock support
-> >   clk: mediatek: Add MT8192 mfgcfg clock support
-> >   clk: mediatek: Add MT8192 mmsys clock support
-> >   clk: mediatek: Add MT8192 msdc clock support
-> >   clk: mediatek: Add MT8192 scp adsp clock support
-> >   clk: mediatek: Add MT8192 vdecsys clock support
-> >   clk: mediatek: Add MT8192 vencsys clock support
-> >
-> >  .../arm/mediatek/mediatek,apmixedsys.txt      |    1 +
-> >  .../bindings/arm/mediatek/mediatek,audsys.txt |    1 +
-> >  .../bindings/arm/mediatek/mediatek,camsys.txt |   22 +
-> >  .../bindings/arm/mediatek/mediatek,imgsys.txt |    2 +
-> >  .../arm/mediatek/mediatek,imp_iic_wrap.yaml   |   80 +
-> >  .../arm/mediatek/mediatek,infracfg.txt        |    1 +
-> >  .../bindings/arm/mediatek/mediatek,ipesys.txt |    1 +
-> >  .../arm/mediatek/mediatek,mdpsys.yaml         |   40 +
-> >  .../bindings/arm/mediatek/mediatek,mfgcfg.txt |    1 +
-> >  .../bindings/arm/mediatek/mediatek,mmsys.txt  |    1 +
-> >  .../bindings/arm/mediatek/mediatek,msdc.yaml  |   48 +
-> >  .../arm/mediatek/mediatek,pericfg.yaml        |    1 +
-> >  .../arm/mediatek/mediatek,scp-adsp.yaml       |   40 +
-> >  .../arm/mediatek/mediatek,topckgen.txt        |    1 +
-> >  .../arm/mediatek/mediatek,vdecsys.txt         |    8 +
-> >  .../arm/mediatek/mediatek,vencsys.txt         |    1 +
-> >  drivers/clk/mediatek/Kconfig                  |   80 +
-> >  drivers/clk/mediatek/Makefile                 |   13 +
-> >  drivers/clk/mediatek/clk-mt8192-aud.c         |  118 ++
-> >  drivers/clk/mediatek/clk-mt8192-cam.c         |  107 ++
-> >  drivers/clk/mediatek/clk-mt8192-img.c         |   70 +
-> >  .../clk/mediatek/clk-mt8192-imp_iic_wrap.c    |  119 ++
-> >  drivers/clk/mediatek/clk-mt8192-ipe.c         |   57 +
-> >  drivers/clk/mediatek/clk-mt8192-mdp.c         |   82 +
-> >  drivers/clk/mediatek/clk-mt8192-mfg.c         |   50 +
-> >  drivers/clk/mediatek/clk-mt8192-mm.c          |  108 ++
-> >  drivers/clk/mediatek/clk-mt8192-msdc.c        |   85 ++
-> >  drivers/clk/mediatek/clk-mt8192-scp_adsp.c    |   50 +
-> >  drivers/clk/mediatek/clk-mt8192-vdec.c        |   94 ++
-> >  drivers/clk/mediatek/clk-mt8192-venc.c        |   53 +
-> >  drivers/clk/mediatek/clk-mt8192.c             | 1326 +++++++++++++++++
-> >  drivers/clk/mediatek/clk-mtk.c                |   23 +
-> >  drivers/clk/mediatek/clk-mtk.h                |   28 +-
-> >  drivers/clk/mediatek/clk-mux.c                |    9 +-
-> >  drivers/clk/mediatek/clk-mux.h                |   18 +-
-> >  drivers/clk/mediatek/clk-pll.c                |   31 +-
-> >  include/dt-bindings/clock/mt8192-clk.h        |  585 ++++++++
-> >  37 files changed, 3335 insertions(+), 20 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/medi=
-atek,imp_iic_wrap.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/medi=
-atek,mdpsys.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/medi=
-atek,msdc.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/medi=
-atek,scp-adsp.yaml
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-aud.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-cam.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-img.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-ipe.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-mdp.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-mfg.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-mm.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-msdc.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-scp_adsp.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-vdec.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
-> >  create mode 100644 drivers/clk/mediatek/clk-mt8192.c
-> >  create mode 100644 include/dt-bindings/clock/mt8192-clk.h
-> >
-> > --
-> > 2.18.0
-> >
-> >
-> > _______________________________________________
-> > Linux-mediatek mailing list
-> > Linux-mediatek@lists.infradead.org
-> > https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo=
-/linux-mediatek__;!!CTRNKA9wMg0ARbw!yiC4Bd7Av9itRUTEQeBUWbH_wX08o2rIYTH0BJ_=
-BljLXWzCPb2sYdGLjFLwWBdxKKU1e$
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> Em Tue, 27 Apr 2021 12:18:32 -0300
+> Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+>=20
+> > On Tue, 2021-04-27 at 16:08 +0100, Robin Murphy wrote: =20
+> > > On 2021-04-27 11:27, Mauro Carvalho Chehab wrote:   =20
+> > > > Despite other *_get()/*_put() functions, where usage count is
+> > > > incremented only if not errors, the pm_runtime_get_sync() has
+> > > > a different behavior, incrementing the counter *even* on
+> > > > errors.
+> > > >=20
+> > > > That's an error prone behavior, as people often forget to
+> > > > decrement the usage counter.
+> > > >=20
+> > > > However, the hantro driver depends on this behavior, as it
+> > > > will decrement the usage_count unconditionally at the m2m
+> > > > job finish time, which makes sense.
+> > > >=20
+> > > > So, intead of using the pm_runtime_resume_and_get() that
+> > > > would decrement the counter on error, keep the current
+> > > > API, but add a documentation explaining the rationale for
+> > > > keep using pm_runtime_get_sync().
+> > > >=20
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > ---
+> > > > =C2=A0 drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
+> > > > =C2=A0 1 file changed, 7 insertions(+)
+> > > >=20
+> > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/st=
+aging/media/hantro/hantro_drv.c
+> > > > index 595e82a82728..96f940c1c85c 100644
+> > > > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > > > @@ -155,6 +155,13 @@ static void device_run(void *priv)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D clk_bulk_en=
+able(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;   =20
+> > >=20
+> > > ..except this can also cause the same pm_runtime_put_autosuspend() ca=
+ll=20
+> > > without even reaching the "matching" get below, so rather than some k=
+ind=20
+> > > of cleverness it seems more like it's just broken :/
+> > >    =20
+> >=20
+> > Indeed, I was trying to find time to cook a quick patch, but kept
+> > getting preempted.
+> >=20
+> > Feel free to submit a fix for this, otherwise, I'll try to find
+> > time later this week. =20
+>=20
+> What about doing this instead:
+>=20
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/=
+media/hantro/hantro_drv.c
+> index 595e82a82728..67de6b15236d 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -56,14 +56,12 @@ dma_addr_t hantro_get_ref(struct hantro_ctx *ctx, u64=
+ ts)
+>  	return hantro_get_dec_buf_addr(ctx, buf);
+>  }
+> =20
+> -static void hantro_job_finish(struct hantro_dev *vpu,
+> -			      struct hantro_ctx *ctx,
+> -			      enum vb2_buffer_state result)
+> +static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
+> +				    struct hantro_ctx *ctx,
+> +				    enum vb2_buffer_state result)
+>  {
+>  	struct vb2_v4l2_buffer *src, *dst;
+> =20
+> -	pm_runtime_mark_last_busy(vpu->dev);
+> -	pm_runtime_put_autosuspend(vpu->dev);
+>  	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
+> =20
+>  	src =3D v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+> @@ -81,6 +79,16 @@ static void hantro_job_finish(struct hantro_dev *vpu,
+>  					 result);
+>  }
+> =20
+> +static void hantro_job_finish(struct hantro_dev *vpu,
+> +			      struct hantro_ctx *ctx,
+> +			      enum vb2_buffer_state result)
+> +{
+> +	pm_runtime_mark_last_busy(vpu->dev);
+> +	pm_runtime_put_autosuspend(vpu->dev);
+> +
+> +	hantro_job_finish_no_pm(vpu, ctx, result);
+> +}
+> +
+>  void hantro_irq_done(struct hantro_dev *vpu,
+>  		     enum vb2_buffer_state result)
+>  {
+> @@ -152,12 +160,13 @@ static void device_run(void *priv)
+>  	src =3D hantro_get_src_buf(ctx);
+>  	dst =3D hantro_get_dst_buf(ctx);
+> =20
+> +	ret =3D pm_runtime_resume_and_get(ctx->dev->dev);
+> +	if (ret < 0)
+> +		goto err_cancel_job;
+> +
+>  	ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks=
+);
+>  	if (ret)
+>  		goto err_cancel_job;
+> -	ret =3D pm_runtime_get_sync(ctx->dev->dev);
+> -	if (ret < 0)
+> -		goto err_cancel_job;
+> =20
+>  	v4l2_m2m_buf_copy_metadata(src, dst, true);
+> =20
+> @@ -165,7 +174,7 @@ static void device_run(void *priv)
+>  	return;
+> =20
+>  err_cancel_job:
+> -	hantro_job_finish(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
+> +	hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
+>  }
+> =20
+>  static struct v4l2_m2m_ops vpu_m2m_ops =3D {
+>=20
+> Thanks,
+> Mauro
+
+Actually, the order at the finish logic should change as well.
+Maybe like this:
+
+<snip>
+static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
+				    struct hantro_ctx *ctx,
+				    enum vb2_buffer_state result)
+{
+	struct vb2_v4l2_buffer *src, *dst;
+
+	src =3D v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+	dst =3D v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+
+	if (WARN_ON(!src))
+		return;
+	if (WARN_ON(!dst))
+		return;
+
+	src->sequence =3D ctx->sequence_out++;
+	dst->sequence =3D ctx->sequence_cap++;
+
+	v4l2_m2m_buf_done_and_job_finish(ctx->dev->m2m_dev, ctx->fh.m2m_ctx,
+					 result);
+}
+
+static void hantro_job_finish(struct hantro_dev *vpu,
+			      struct hantro_ctx *ctx,
+			      enum vb2_buffer_state result)
+{
+
+	hantro_job_finish_no_pm(vpu, ctx, result);
+
+	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
+
+	pm_runtime_mark_last_busy(vpu->dev);
+	pm_runtime_put_autosuspend(vpu->dev);
+}
+
+static void device_run(void *priv)
+{
+	struct hantro_ctx *ctx =3D priv;
+	struct vb2_v4l2_buffer *src, *dst;
+	int ret;
+
+	src =3D hantro_get_src_buf(ctx);
+	dst =3D hantro_get_dst_buf(ctx);
+
+	ret =3D pm_runtime_resume_and_get(ctx->dev->dev);
+	if (ret < 0)
+		goto err_cancel_job;
+
+	ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+	if (ret)
+		goto err_cancel_job;
+
+	v4l2_m2m_buf_copy_metadata(src, dst, true);
+
+	ctx->codec_ops->run(ctx);
+	return;
+
+err_cancel_job:
+	hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
+}
+</snip>
+
+
+Thanks,
+Mauro
