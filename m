@@ -2,211 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4E336D8C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EFE36D8DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240012AbhD1Nud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:50:33 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:55074 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233738AbhD1Nub (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:50:31 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 3F48BF39F2;
-        Wed, 28 Apr 2021 21:49:43 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31919T139684250371840S1619617781122888_;
-        Wed, 28 Apr 2021 21:49:43 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <ad199528e5dbea354ea097c5ee717f31>
-X-RL-SENDER: cl@rock-chips.com
-X-SENDER: cl@rock-chips.com
-X-LOGIN-NAME: cl@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 30
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   <cl@rock-chips.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
-        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
-Subject: [PATCH v3 07/10] dt-bindings: soc: rockchip: Convert grf.txt to YAML
-Date:   Wed, 28 Apr 2021 21:49:38 +0800
-Message-Id: <20210428134938.22383-1-cl@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210428134759.22076-1-cl@rock-chips.com>
-References: <20210428134759.22076-1-cl@rock-chips.com>
+        id S236552AbhD1NvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:51:15 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:43936 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232211AbhD1NvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:51:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619617802; bh=ZPs87O1n7Rs/FVtu7HFdEuudG0Tivg2EA2GXHVtcliI=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=otMphzDJWyG52ZJy7k0k86mo95Z3lYnyIYucaEAObvqTvzZBNdACO/Ta8jJ+dgMLq
+         H+n6HPHAeoDJFHTH2BjoXu/CFgGmrhFSYArkYg1b5kzXdztvgohKHmlQcDP4zJBBgg
+         qsfN/eeaiyxMxlgxiCdYtM+pQYwfSYbc3s9C76Qg=
+Received: by 192.168.90.16 [192.168.90.16] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 28 Apr 2021 15:50:01 +0200 (CEST)
+X-EA-Auth: bXkCzuHGuhGacUeC5FPCllNutghnTzfxiQwSGipTFrOvV821Mse6zHDinLc0dKcKA2Ndxh4gj0Y2B1wQExvVPNMaypzVT9Ll
+Date:   Wed, 28 Apr 2021 19:19:50 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v3 3/6] staging: media: atomisp: use __func__ over
+ function names
+Message-ID: <YIln/vE6dbX5NZun@192.168.1.8>
+References: <cover.1619199344.git.drv@mailo.com>
+ <2cb42846abb7cab5e64bc29d5e496766f5df169b.1619199344.git.drv@mailo.com>
+ <20210428102717.GT1981@kadam>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428102717.GT1981@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liang Chen <cl@rock-chips.com>
+On Wed, Apr 28, 2021 at 01:27:17PM +0300, Dan Carpenter wrote:
+> On Sun, Apr 25, 2021 at 02:13:15PM +0530, Deepak R Varma wrote:
+> > Replace hard coded function names from the debug print strings by
+> > standard __func__ predefined identifier. This resolves following
+> > checkpatch script WARNING:
+> > Prefer using '"%s...", __func__' to using function's name, in a string.
+> > 
+> > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > ---
+> > 
+> > Changes since v2:
+> >    - None.
+> > Changes since v1:
+> >    - None.
+> > 
+> >  .../staging/media/atomisp/i2c/atomisp-gc0310.c   |  2 +-
+> >  .../staging/media/atomisp/i2c/atomisp-gc2235.c   |  2 +-
+> >  .../staging/media/atomisp/i2c/atomisp-lm3554.c   |  2 +-
+> >  .../staging/media/atomisp/i2c/atomisp-ov2680.c   | 16 ++++++++--------
+> >  .../staging/media/atomisp/i2c/atomisp-ov2722.c   |  2 +-
+> >  5 files changed, 12 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > index d68a2bcc9ae1..b572551f1a0d 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> > @@ -1292,7 +1292,7 @@ static int gc0310_remove(struct i2c_client *client)
+> >  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> >  	struct gc0310_device *dev = to_gc0310_sensor(sd);
+> >  
+> > -	dev_dbg(&client->dev, "gc0310_remove...\n");
+> > +	dev_dbg(&client->dev, "%s...\n", __func__);
+> >  
+> >  	dev->platform_data->csi_cfg(sd, 0);
+> >  
+> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > index e722c639b60d..548c572d3b57 100644
+> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > @@ -1034,7 +1034,7 @@ static int gc2235_remove(struct i2c_client *client)
+> >  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> >  	struct gc2235_device *dev = to_gc2235_sensor(sd);
+> >  
+> > -	dev_dbg(&client->dev, "gc2235_remove...\n");
+> > +	dev_dbg(&client->dev, "%s...\n", __func__);
+> 
+> Just delete printks that only print the function name.  We have ftrace
+> for that.  There are several others below.
 
-Current dts files with 'grf' nodes are manually verified. In order to
-automate this process grf.txt has to be converted to YAML.
+Thank you Dan, Hans, Fabio, Sakari and everyone for your review and comments.
+I have received feedback and suggestions on the patch set.
+I am going to rebuild the patch set according to the feedback and send as v4.
 
-Signed-off-by: Liang Chen <cl@rock-chips.com>
----
- .../devicetree/bindings/soc/rockchip/grf.txt  | 61 -------------------
- .../devicetree/bindings/soc/rockchip/grf.yaml | 61 +++++++++++++++++++
- 2 files changed, 61 insertions(+), 61 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
- create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+Appreciate your comments and time,
+deepak.
 
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.txt b/Documentation/devicetree/bindings/soc/rockchip/grf.txt
-deleted file mode 100644
-index f96511aa3897..000000000000
---- a/Documentation/devicetree/bindings/soc/rockchip/grf.txt
-+++ /dev/null
-@@ -1,61 +0,0 @@
--* Rockchip General Register Files (GRF)
--
--The general register file will be used to do static set by software, which
--is composed of many registers for system control.
--
--From RK3368 SoCs, the GRF is divided into two sections,
--- GRF, used for general non-secure system,
--- SGRF, used for general secure system,
--- PMUGRF, used for always on system
--
--On RK3328 SoCs, the GRF adds a section for USB2PHYGRF,
--
--ON RK3308 SoC, the GRF is divided into four sections:
--- GRF, used for general non-secure system,
--- SGRF, used for general secure system,
--- DETECTGRF, used for audio codec system,
--- COREGRF, used for pvtm,
--
--Required Properties:
--
--- compatible: GRF should be one of the following:
--   - "rockchip,px30-grf", "syscon": for px30
--   - "rockchip,rk3036-grf", "syscon": for rk3036
--   - "rockchip,rk3066-grf", "syscon": for rk3066
--   - "rockchip,rk3188-grf", "syscon": for rk3188
--   - "rockchip,rk3228-grf", "syscon": for rk3228
--   - "rockchip,rk3288-grf", "syscon": for rk3288
--   - "rockchip,rk3308-grf", "syscon": for rk3308
--   - "rockchip,rk3328-grf", "syscon": for rk3328
--   - "rockchip,rk3368-grf", "syscon": for rk3368
--   - "rockchip,rk3399-grf", "syscon": for rk3399
--   - "rockchip,rv1108-grf", "syscon": for rv1108
--- compatible: DETECTGRF should be one of the following:
--   - "rockchip,rk3308-detect-grf", "syscon": for rk3308
--- compatilbe: COREGRF should be one of the following:
--   - "rockchip,rk3308-core-grf", "syscon": for rk3308
--- compatible: PMUGRF should be one of the following:
--   - "rockchip,px30-pmugrf", "syscon": for px30
--   - "rockchip,rk3368-pmugrf", "syscon": for rk3368
--   - "rockchip,rk3399-pmugrf", "syscon": for rk3399
--- compatible: SGRF should be one of the following:
--   - "rockchip,rk3288-sgrf", "syscon": for rk3288
--- compatible: USB2PHYGRF should be one of the following:
--   - "rockchip,px30-usb2phy-grf", "syscon": for px30
--   - "rockchip,rk3328-usb2phy-grf", "syscon": for rk3328
--- compatible: USBGRF should be one of the following:
--   - "rockchip,rv1108-usbgrf", "syscon": for rv1108
--- reg: physical base address of the controller and length of memory mapped
--  region.
--
--Example: GRF and PMUGRF of RK3399 SoCs
--
--	pmugrf: syscon@ff320000 {
--		compatible = "rockchip,rk3399-pmugrf", "syscon";
--		reg = <0x0 0xff320000 0x0 0x1000>;
--	};
--
--	grf: syscon@ff770000 {
--		compatible = "rockchip,rk3399-grf", "syscon";
--		reg = <0x0 0xff770000 0x0 0x10000>;
--	};
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-new file mode 100644
-index 000000000000..61ce5b4c9ed0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/soc/rockchip/grf.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip General Register Files
-+
-+maintainers:
-+  - Heiko Stuebner <heiko@sntech.de>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - rockchip,px30-grf
-+              - rockchip,px30-pmugrf
-+              - rockchip,px30-usb2phy-grf
-+              - rockchip,rk3036-grf
-+              - rockchip,rk3066-grf
-+              - rockchip,rk3188-grf
-+              - rockchip,rk3228-grf
-+              - rockchip,rk3288-grf
-+              - rockchip,rk3288-sgrf
-+              - rockchip,rk3308-core-grf
-+              - rockchip,rk3308-detect-grf
-+              - rockchip,rk3308-grf
-+              - rockchip,rk3328-grf
-+              - rockchip,rk3328-usb2phy-grf
-+              - rockchip,rk3368-grf
-+              - rockchip,rk3368-pmugrf
-+              - rockchip,rk3399-grf
-+              - rockchip,rk3399-pmugrf
-+              - rockchip,rk3568-grf
-+              - rockchip,rk3568-pmugrf
-+              - rockchip,rv1108-grf
-+              - rockchip,rv1108-usbgrf
-+          - const: syscon
-+          - const: simple-mfd
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pmugrf: syscon@ff320000 {
-+       compatible = "rockchip,rk3399-pmugrf", "syscon";
-+       reg = <0x0 0xff320000 0x0 0x1000>;
-+    };
-+
-+    grf: syscon@ff770000 {
-+       compatible = "rockchip,rk3399-grf", "syscon";
-+       reg = <0x0 0xff770000 0x0 0x10000>;
-+    };
--- 
-2.17.1
-
+> 
+> regards,
+> dan carpenter
+> 
 
 
