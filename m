@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102DE36CFDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028C336CFDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238536AbhD1AEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238399AbhD1AEu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:04:50 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06BCC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:04:06 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id k25so61389097oic.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 17:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=oAsXSdHV4QEHuWs1CZyCI+yqX4rqMIruOm/fgXYjaRM=;
-        b=HWYZM3KyeyimNvegZZQjUm8uQj1OWj5yhq5CWXhgxbKYhQoR30IFdz9niNiKZRg3cz
-         4ekDbd28rEMNtS1MUoHtX71oBm71IZfihg2lunPU07LayCLGWQ78GFv5qUuDgW8JYAqS
-         jhG1xgILzczsJKqq4q9lU8dPJwu9eQCs5BbWCfOgls83uOzsOqFww735tC6Ekm08MeMO
-         fCvL2/mUZWe62n+N1gr95Ek0FNeWOFn6xlh2qIw+MoOPg3RM4UN6UqyFp1lxjLhNg6XS
-         jCjDzhzIqAsRs/Um0A42rwoZr+cMJ9c3RQlffD8kEfDp7pL3VLO3RY1Nb8aXKKqU4mTc
-         HJVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=oAsXSdHV4QEHuWs1CZyCI+yqX4rqMIruOm/fgXYjaRM=;
-        b=W91eowS0M8FyYm3I5YrEstHOQUOWLHc9f4FDVhbCJqcuB+tNIB0yn2ou2Hyy4JsdCK
-         6XZFHitPOinZuY6Pq6F0AQJLofRKvs5sZlCWVWCRrjyAu3pScZw9+wlaakTpTGUaKQYy
-         YV04hXvmGZJdw7kTYxLqy1nwnlFheR/BaESqetyQp2uLmjC4NB6zrCfinHkOHE5gsNjW
-         nsKcOTZTv5rhU3x+RL7AezFQ41Q2KB2wec3eWkAKV1Z9wc1qXNlCbgTLvKFkl2uRHW0v
-         DCL48aeFrl6h30xFywQTQJyHuEU5c6qjx1HQAWUaAMItO3lFmLtGyihdMDsjeB8vqGZy
-         q9tg==
-X-Gm-Message-State: AOAM530J/HFjV858pS2qp9xEGFyBJegZgVHfQFGskcEeyehvcj8sEekE
-        KNfW6HQQQPSYw8wgGal87+0cFg==
-X-Google-Smtp-Source: ABdhPJyLpZfOVebc2s1q9XaKLov1Xm63RPYTSU9kHdX4wvftNcLKJkGcOjT+vbUOmiL1m62W9wQAyQ==
-X-Received: by 2002:aca:3bc4:: with SMTP id i187mr624500oia.174.1619568246166;
-        Tue, 27 Apr 2021 17:04:06 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n37sm336776otn.9.2021.04.27.17.04.04
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 27 Apr 2021 17:04:05 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 17:04:03 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5 05/10] userfaultfd/shmem: advertise shmem minor fault
- support
-In-Reply-To: <20210427225244.4326-6-axelrasmussen@google.com>
-Message-ID: <alpine.LSU.2.11.2104271703260.7111@eggly.anvils>
-References: <20210427225244.4326-1-axelrasmussen@google.com> <20210427225244.4326-6-axelrasmussen@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S236782AbhD1AGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:06:24 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:41307 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235653AbhD1AGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:06:23 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13S05LvS952011
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 27 Apr 2021 17:05:23 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13S05LvS952011
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021032801; t=1619568327;
+        bh=tNUNXGHMIILCFNhZ+vmwXye4RudA6BzWEic674v0qHE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=FUD2HzcYBwpmlty4glmomzJ8xM6793gFMKME7usQFqRBakyDxw+rZ5sNNgKzHDm4E
+         GqBvSM45OzjPdNXP8jfybkz1w/vZYZgWZLzsDQzxZsj3HUmbj7SN08RWQJGzN465b5
+         TeBR1jg9iwuktfvsHT+WQXY+1ZF+8aHE/bD8H2vhpc+7HzD6wbOHFJbjBhV40mzqms
+         BY0vJZaY1skIOkPXXju/3mOwJZEsbWl82E3bLoodKXs0EtVTyWyxcOKmynvkALNQj4
+         JgE4DQUkT4jfaAdB9mc7yj5DI0wFR+tideeTuzr815pFs2hRfAKFBBAHZosdxLvXyQ
+         MjuobgbD3PeJQ==
+Subject: Re: pt_regs->ax == -ENOSYS
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>
+References: <f0240e15-223a-7600-4494-7a0a75155bdb@zytor.com>
+ <F9F5E9D4-C1EE-455A-A6B1-4DF9D349BBAA@amacapital.net>
+ <06a5e088-b0e6-c65e-73e6-edc740aa4256@zytor.com>
+ <CALCETrW7Vu5ZU-Lv4RRG5DSGxMBJmDMqpvP7kqO16DwajproBQ@mail.gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <3626eea3-524e-4dbd-78dd-9ade5a346a08@zytor.com>
+Date:   Tue, 27 Apr 2021 17:05:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <CALCETrW7Vu5ZU-Lv4RRG5DSGxMBJmDMqpvP7kqO16DwajproBQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Apr 2021, Axel Rasmussen wrote:
-
-> Now that the feature is fully implemented (the faulting path hooks exist
-> so userspace is notified, and the ioctl to resolve such faults is
-> available), advertise this as a supported feature.
+On 4/27/21 4:23 PM, Andy Lutomirski wrote:
 > 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> I much prefer the model of saying that the bits that make sense for
+> the syscall type (all 64 for 64-bit SYSCALL and the low 32 for
+> everything else) are all valid.  This way there are no weird reserved
+> bits, no weird ptrace() interactions, etc.  I'm a tiny bit concerned
+> that this would result in a backwards compatibility issue, but not
+> very.  This would involve changing syscall_get_nr(), but that doesn't
+> seem so bad.  The biggest problem is that seccomp hardcoded syscall
+> nrs to 32 bit.
+> 
+> An alternative would be to declare that we always truncate to 32 bits,
+> except that 64-bit SYSCALL with high bits set is an error and results
+> in ENOSYS. The ptrace interaction there is potentially nasty.
+> 
+> Basically, all choices here kind of suck, and I haven't done a real
+> analysis of all the issues...
+> 
 
-Acked-by: Hugh Dickins <hughd@google.com>
+OK, I really don't understand this. The *current* way of doing it causes 
+a bunch of ugly corner conditions, including in ptrace, which this would 
+get rid of. It isn't any different than passing any other argument which 
+is an int -- in fact we have this whole machinery to deal with that subcase.
 
-> ---
->  Documentation/admin-guide/mm/userfaultfd.rst | 3 ++-
->  fs/userfaultfd.c                             | 3 ++-
->  include/uapi/linux/userfaultfd.h             | 7 ++++++-
->  3 files changed, 10 insertions(+), 3 deletions(-)
+If it makes you feel better, we could even sign-extend the value in 
+orig_ax, but that seems unnecessary and a bit broken to me.
+
+	-hpa
+
