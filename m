@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00C236D9C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725A636D9CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237601AbhD1OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:47:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:44400 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232569AbhD1Oq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:46:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2766DED1;
-        Wed, 28 Apr 2021 07:46:14 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E442F3F694;
-        Wed, 28 Apr 2021 07:46:12 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 15:46:10 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
-Message-ID: <20210428144609.GB71893@e120877-lin.cambridge.arm.com>
-References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
- <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
- <YHg7pfGKhzlMrXqC@google.com>
- <20210422153644.GA316798@e124901.cambridge.arm.com>
- <YILydL1QDxvuiFde@google.com>
+        id S238094AbhD1OtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232569AbhD1OtL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:49:11 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2ACC061573;
+        Wed, 28 Apr 2021 07:48:26 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id B1CB42224D;
+        Wed, 28 Apr 2021 16:48:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1619621303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qOjw/W9iHbCH+auAwK67+0lrcJOV1+e5IdkBIE6HY9s=;
+        b=eED+hgpdmV1x/gcf1G6u/pInBwmVMUq7EmE6v+HyiPCnyW82nLTnTB9Z5lmMWNxHXKVHQV
+        89TTW9BsAp1z2kRPp4zeQwKSbMcet4icxNcJM1mz2o1Va3d+3PZkpNNFjPydX5fQJKJP3b
+        JCr4+3tIRzCZxQLCcJ76jdqmoDaEUdg=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YILydL1QDxvuiFde@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Apr 2021 16:48:23 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/2] gpio: Add support for IDT 79RC3243x GPIO
+ controller
+In-Reply-To: <CAHp75Vd41C8K9pNbNF6RYXUiASb1RYdUneoqqRp2f8sJCOAZog@mail.gmail.com>
+References: <20210426095426.118356-1-tsbogend@alpha.franken.de>
+ <CAHp75VdRfPPj2pu4GOBVG4+bGUsCRLXYPsFjMwFOYfUTZuvJaQ@mail.gmail.com>
+ <6f6bce2f070998db49acca2f6611727b@walle.cc>
+ <CAHp75VdmTxvQBU4X8s-6csYgwM8ACth9Ao0GYjUH7+0Q0tyFyg@mail.gmail.com>
+ <ebbbe74fe638e1a6ab7c1547870f4b31@walle.cc>
+ <CAHp75VcXEu2YGOoL70zueEgARCe8D+Q=CFsN62-vFK5svjJAQA@mail.gmail.com>
+ <880011ffd80ae7d1a32e7a17d405b987@walle.cc>
+ <CAHp75Vd41C8K9pNbNF6RYXUiASb1RYdUneoqqRp2f8sJCOAZog@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <3a23d7e901ac72630aadbd274517f8ec@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > 
-> > On the Pixel4, I used rt-app to generate a task whom duty cycle is getting
-> > higher for each phase. Then for each rt-app task placement, I measured how long
-> > find_energy_efficient_cpu() took to run. I repeated the operation several
-> > times to increase the count. Here's what I've got: 
-> > 
-> > ┌────────┬─────────────┬───────┬────────────────┬───────────────┬───────────────┐
-> > │ Phase  │ duty-cycle  │  CPU  │     w/o LUT    │    w/  LUT    │               │
-> > │        │             │       ├────────┬───────┼───────┬───────┤      Diff     │
-> > │        │             │       │ Mean   │ count │ Mean  │ count │               │
-> > ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │   0    │    12.5%    │ Little│ 10791  │ 3124  │ 10657 │ 3741  │  -1.2% -134ns │
-> > ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │   1    │    25%      │  Mid  │ 2924   │ 3097  │ 2894  │ 3740  │  -1%  -30ns   │
-> > ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │   2    │    37.5%    │  Mid  │ 2207   │ 3104  │ 2162  │ 3740  │  -2%  -45ns   │
-> > ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │   3    │    50%      │  Mid  │ 1897   │ 3119  │ 1864  │ 3717  │  -1.7% -33ns  │
-> > ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │        │             │  Mid  │ 1700   │  396  │ 1609  │ 1232  │  -5.4% -91ns  │
-> > │   4    │    62.5%    ├───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │        │             │  Big  │ 1187   │ 2729  │ 1129  │ 2518  │  -4.9% -58ns  │
-> > ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> > │   5    │    75%      │  Big  │  984   │ 3124  │  900  │ 3693  │  -8.5% -84ns  │
-> > └────────┴─────────────┴───────┴────────┴───────┴───────┴───────┴───────────────┘
+[Adding Mark here, too]
+
+Am 2021-04-28 16:32, schrieb Andy Shevchenko:
+> On Wed, Apr 28, 2021 at 5:04 PM Michael Walle <michael@walle.cc> wrote:
+>> Am 2021-04-28 15:44, schrieb Andy Shevchenko:
+>> > On Wed, Apr 28, 2021 at 2:57 PM Michael Walle <michael@walle.cc> wrote:
+>> >>
+>> >> Am 2021-04-28 13:07, schrieb Andy Shevchenko:
+>> >> > On Wed, Apr 28, 2021 at 1:51 AM Michael Walle <michael@walle.cc> wrote:
+>> >> >> Am 2021-04-26 12:29, schrieb Andy Shevchenko:
+>> >> >> > On Mon, Apr 26, 2021 at 12:55 PM Thomas Bogendoerfer
+>> >> >> > <tsbogend@alpha.franken.de> wrote:
+>> >> >> >
+>> >> >> > 2) there is gpio-regmap generic code, that may be worth
+>> >> >> > considering.
+>> >> >>
+>> >> >> This driver uses memory mapped registers. While that is
+>> >> >> also possible with gpio-regmap, there is one drawback:
+>> >> >> it assumes gpiochip->can_sleep = true for now, see [1].
+>> >> >> Unfortunately, there is no easy way to ask the regmap
+>> >> >> if its mmio/fastio.
+>> >> >
+>> >> > I don't see how it is an impediment.
+>> >>
+>> >> You'd have to use the *_cansleep() variants with the gpios,
+>> >> which cannot be used everywhere, no?
+>> >
+>> > *can* sleep means that it requires a sleeping context to run, if your
+>> > controller is fine with that, there are no worries. OTOH if you want
+>> > to run this in an atomic context, then consumers can't do with that
+>> > kind of controller.
+>> 
+>> Ok, then we are on the same track.
+>> 
+>> > What I meant above (and you stripped it here) is
+>> > to add a patch that will fix that and set it based on
+>> > gpio_regmap_config.
+>> 
+>> Yes, but ideally, it would ask the regmap. Otherwise that
+>> information is redundant and might mismatch, i.e. gpio_regmap_config
+>> tell can_sleep=false but the regmap is an I2C type for example. Also
+>> if a driver wants to support both regmap types, we are no step
+>> further.
 > 
-> Thanks for that. Do you have the stddev handy?
+> Yeah, I agree that is a band aid, but you are free to fix it actually
+> on regmap level.
+> I don't think it will require an enormous amount of work there.
 
-I do, it shows that the distribution is quite wide. I also have a 95% confidence
-interval, as follow:
-                            w/o LUT               W/ LUT
+I'd love to fix that, but Mark was against exposing that property
+outside of regmap. So it it what it is for now ;) Maybe he'll change
+his mind or someone has another idea.
 
-	               Mean        std         Mean         std
-
-Phase0:            10791+/-79      2262      10657+/-71     2240   [1]
-Phase1:            2924 +/-19      529       2894 +/-16     513    [1]
-Phase2:            2207 +/-19      535       2162 +/-17     515
-Phase3:            1897 +/-18      504       1864 +/-17     515    [1]
-Phase4:   Mid CPU  1700 +/-46      463       1609 +/-26     458
-Phase4:   Big CPU  1187 +/-15      407       1129 +/-15     385
-Phase5:            987  +/-14      395       900  +/-12     365 
-
-
-[1] I included these results originally as the p-value for the test I used
-showed we can reject confidently the null hypothesis that the 2 samples are
-coming from the same distribution... However, the confidence intervals for
-the mean overlaps. It is then complicated to conclude for those phases.
-
-Interestingly it shows the distribution is slightly more narrow with the LUT. I
-suppose due to the fact the LUT is less relying on caches than the original table
-walk is.
-
-> 
-> > Notice:
-> > 
-> >   * The CPU column describes which CPU ran the find_energy_efficient()
-> >     function.
-> > 
-> >   * I modified my patch so that no inefficient OPPs are reported. This is to
-> >     have a fairer comparison between the original table walk and the lookup
-> >     table.
-> 
-> You mean to avoid the impact of the frequency selection itself? Maybe
-> pinning the frequencies in the cpufreq policy could do?
-
-Yes, it could have worked too, maybe it would have even been better, as it
-would have removed the running frequency variations.
-
-> 
-> > 
-> >   * I removed from the table results that didn't have enough count to be
-> >     statistically significant.
-> 
-> 
-> Anyways, this looks like a small but consistent gain throughout, so it's a
-> win for the LUT :)
-> 
-> Thanks,
-> Quentin
+-michael
