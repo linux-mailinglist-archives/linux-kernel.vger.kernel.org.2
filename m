@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEB636D8DF
+	by mail.lfdr.de (Postfix) with ESMTP id EA80036D8E0
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhD1Nvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:51:39 -0400
+        id S240056AbhD1Nvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:51:40 -0400
 Received: from mail-eopbgr70049.outbound.protection.outlook.com ([40.107.7.49]:34482
         "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230225AbhD1Nvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:51:37 -0400
+        id S235096AbhD1Nvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:51:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MdpNKl7adIvKqNmsi6v3bCNomjAdBJTLiUhHteoqJm0QGItUY3aFs1rMmKDyl92gmhW9tpkqJuVaNdI1vtJ07TW2Z8CjSF7OyQyx7Zgh5XI4iSivNPOobMYvhZjq/1s7gQaQa1oR6bzTmNH80WyxcS73FfEADxW6XtNKvqXZgfGlN2/RuO/WEiik5sPBSxcwPKi3aV+WLMwDy0zFvxP3UdfewEoDikVn8DWrVKZCV7uB3GwS7OaU1oAlWaJtR0ueVjdYudL46CK3P1OqgMPgXWFDliccR+a3mucTX3BEny8GUCh9h4tLS8pR4w9kAEyei8fPDcf5Hkp6cE6qvxO+YQ==
+ b=ju5y6SwFnVuOJ0Mg4DftNS4XyH6+JC11RuaD0q36lAQnLKlZNyChf4GKx4/YwWj0L0QL0OVz8RdfKktNXe3S99j4KLkCFPHr87FW8JOCOybNS66Cxw2kqmkV/D3MB6C4i7mlGqAl53U/onFFvW5Zr+btdHFsDhZoGyaVkoqGPv0FuDBlNDUtQgMKIu4EGHpJY7Wyd5ODCmLgRu5TK5pi1yeho9fM0VyLvLxsBObUU2TtN6xju+p8JG/mZTB01+/IWL+CzNsxDQsst4u0pnmQx0KaFwcEjJxxCCxliEivH2IAkiQv3gmOWQc43W+y+O4z5uTF2apBO+GUmw2DIBHsrw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TH7yvaA2kEWcH8FdDuJ1d/cfcQQ+fWVFSiwmisQyi5A=;
- b=MvB9CHDu/ClFHK8Pkeesdo55NjF4xX9NHwFSsv7bjsDmfOtmThxy+Tlh9DmuzHAFrvZM7wSNJP9iVvFK50G+ZYfG6fSCDjZnsI+U7ezgBHpJUmN24wCM1icl7/PCHWgOrqUjPk+E8o13tuYinVJQnjVdTaHr1tN4d6Rx1cvl0QuDc6Z2z3mDg66lnu8pCG/cknsqEo2SZhYO5aDPQ8dhRxTGpbH4LePjqDTyDeyVF5+tGQ03VzT2VUOltyhxgItc/u9nDWTq09Az0GwD0+M+SRe9peE2RF78bsu43RhqGa/xwMNdiixc9OCBTjrf/wROSWzGCwEwjejx9G1zWKteSg==
+ bh=VV7QI55NATf9Qurv7uuoXWsktldXYo67+eIWtguw+fg=;
+ b=hNPHnVASHks6Wv4Ake5PCtyrVmBKBNBwgnVs+o1tDnZic7qrNNHiV9veBO+v8uoe2V58UNHpxFblc3Dq8p7F9q2OCRGoApsNm0kxXsazyP9DPglduTIKAEvzwETcMbNRTViH3dX6bYk84q1MpMdpMaexNXJ86dNNT7gZcsQj7Y93hJvSdZ1NdhPK8o+hxLCik+OpvtwvWlhIgoZjwpq63iTLR46SynndJ7sWZaG5s503DhKPtiO376THHOW1hGhiC+viL8Ohs025JskbuW07vbMCcb1XHyQiWSvxvDOFr+blsDnr/fbfpgdJHTNomvYVdBjItgJXp8uViuz6JqmmkA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
  dkim=pass header.d=vaisala.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TH7yvaA2kEWcH8FdDuJ1d/cfcQQ+fWVFSiwmisQyi5A=;
- b=yDKekvmRJpICZ1vUrNaDHtLng6U/niueOhgKPmvrQRLBOEX6rgz0nvSGSbM6X29jBIjfReIe3IwNSnjWt7Dqk4T4Se4VDfEPEhI7YarQX1QrTvKX5EpzK396NhX9ZKnDAcNGa9B8Y7KZQ4Lky5TsmrYYD9DqZLLfrn8FHoGBaYkW+oiRTQLwPj+wtqm0BRVq6OXJmpz+G5aOFNyy0/ohDCw3GfgRjRJUhxlHyPWzPicf8pF0kzu1WLghkDqoaBa1GJZt3bYKsLyGmSWwAi8v/EZkUHTjJmX8M2TJ5qn6d3hXjGndtsZrYeeeUD8Wn2fwsYDvM/v/HMY9hZNOLX5V3g==
+ bh=VV7QI55NATf9Qurv7uuoXWsktldXYo67+eIWtguw+fg=;
+ b=MGVHjd/tyWlqsgrE/855motsUWGy+Tr2nMkALe1bk5xAxApTk/K75cv5dNwOWwuIXQrgC11GSKh1M4BioQFDbfbV5xWqWzdK0iTg4IJTq4ANgJNjBT9kbgzLrsFn6UEri4ZQoIB6mMs6TJETZ8Q4Xy+3gMXLe0mbLaSTrRY/ykfl9nMRBoHfekIlWTl+DFfc21nP+kLmFcfj8LBaiVvqOkXlhh6Lvb1IdR+NPoXvU6v6kY28QIN/2WNo2v+O9j4nPw1MnJQsKK6E/wkD57ePMzqJSxiVPjiG0suCW8Fuks33yhPYQJzAOWKRwGYQdjqJe0teCAU99bOTX2Ox4stZRw==
 Authentication-Results: linaro.org; dkim=none (message not signed)
  header.d=none;linaro.org; dmarc=none action=none header.from=vaisala.com;
 Received: from HE1PR0602MB3449.eurprd06.prod.outlook.com (2603:10a6:7:8a::22)
  by HE1PR0601MB2361.eurprd06.prod.outlook.com (2603:10a6:3:97::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.24; Wed, 28 Apr
- 2021 13:50:49 +0000
+ 2021 13:50:50 +0000
 Received: from HE1PR0602MB3449.eurprd06.prod.outlook.com
  ([fe80::3969:c39b:252e:ae3d]) by HE1PR0602MB3449.eurprd06.prod.outlook.com
  ([fe80::3969:c39b:252e:ae3d%5]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
- 13:50:49 +0000
+ 13:50:50 +0000
 From:   Nandor Han <nandor.han@vaisala.com>
 To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Cc:     Nandor Han <nandor.han@vaisala.com>
-Subject: [PATCH v2 0/4] Bootcount driver using NVMEM cell as backend.
-Date:   Wed, 28 Apr 2021 16:50:37 +0300
-Message-Id: <cover.1619617498.git.nandor.han@vaisala.com>
+Subject: [PATCH v2 1/4] dt-bindings: nvmem: Add bootcount-nvmem
+Date:   Wed, 28 Apr 2021 16:50:38 +0300
+Message-Id: <e0f9c2629ad651817a4726cd4f2d8e1775201595.1619617498.git.nandor.han@vaisala.com>
 X-Mailer: git-send-email 2.26.3
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <cover.1619617498.git.nandor.han@vaisala.com>
+References: <cover.1619617498.git.nandor.han@vaisala.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [37.136.150.171]
 X-ClientProxiedBy: HE1PR0701CA0067.eurprd07.prod.outlook.com
  (2603:10a6:3:64::11) To HE1PR0602MB3449.eurprd06.prod.outlook.com
@@ -56,141 +58,133 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from localhost.vaisala.com (37.136.150.171) by HE1PR0701CA0067.eurprd07.prod.outlook.com (2603:10a6:3:64::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.17 via Frontend Transport; Wed, 28 Apr 2021 13:50:49 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e7c16b3b-2137-4b65-4096-08d90a4ca19c
+X-MS-Office365-Filtering-Correlation-Id: 885c7171-522a-4c80-e8eb-08d90a4ca1e5
 X-MS-TrafficTypeDiagnostic: HE1PR0601MB2361:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0601MB236151DC5F8138A8E6B4B1A685409@HE1PR0601MB2361.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <HE1PR0601MB23613DEBDEDEBB2D3DFFA57085409@HE1PR0601MB2361.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XtYPBHgGN5n1M1fIrQ5uoEVbPwP6Xe61kEVNPz7F6TOqv/y7BNAcJLW/A3U67NouEnZRgHY4yQhmrNE2jwAGLrsXUODT2i61aUA6VCa5znI0xqx0Qw6ZcouQeVGGMs+ov0EJOZOYO/3Uh4vtYvlZCD5+bdjAlD1J0FeHfViFNL1bRZlM5xVd3YV63XWh6hlMYCqTwj1h+9UeKWSxIWmmyEyHlJBlnXFzGBPr7GoN6kedeW/0R1nIu9+usa3iqngflehKRxI3yBYrh5UgFrNgxr3Z/uPE6Bnz/kSmh8UazBNxYS2r2oRqJoLQlV2S112Pf5OthwnB1UFZMAmW4tdt9sCz8qSH99OoGyN78DFc2lEeMWg8kbvYMd0z4X9oAygFqRlu3K2JTUZZPR99lnUB+kVQy5e6fCZvFx+DQlc1pPq+b1/K4vRp92Ea+BkqyQdQ0hhJHioHkJl9/aaW2htdBRIRDoOieSRy900Q4GmE0oos2+5afsFDI9G/bGyeXhpZp7jQfpst+PzNvDlCDUk46LI5YEZoV5kOhikKXNuWPFXrqJ8mZG5XNVMgirunbyUyGUI3BEKtlBiv+cefUy1Yl65wp2iFuwMbXUaUHRGatEzK6GQpvC8EJMEcTNIG8aoiq/OVPk2IO38AVlscNgmdWTU6CE7HX1Q5VFEcGnz5TbT21DSR0T7bXNMVtO8IfxPmGibA8+pFYm/xXlqDeSRrBURxPw9nXoPgDWwkNwI1wgk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0602MB3449.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(346002)(396003)(376002)(136003)(5660300002)(2616005)(86362001)(6486002)(66556008)(26005)(2906002)(107886003)(66476007)(44832011)(8676002)(956004)(83380400001)(8936002)(4326008)(186003)(966005)(52116002)(316002)(38100700002)(66946007)(36756003)(7696005)(6666004)(16526019)(478600001)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UzZ4WDVQak16VnlhTWF5VE1iVFZsMlJxN0NGWkhxYXhyeHlNT3NMeUlKMGhM?=
- =?utf-8?B?c1l1NEpHNkFFbWVCdlNmUkIyN1A5VHdzbC9oVEtMM2RVVjU4TGhYaHQ3K2Zk?=
- =?utf-8?B?aGM2M0tZVW5RdHkxbW1rQVROOEJweGl1bWsra3hFN1YrVnR4dVhGUjdMUnBF?=
- =?utf-8?B?cTNGY1lTYmwrZGtqQlk4M1RlY0dhRHNFVUlRcDgxVkVZVmVGTHBEbFVHQ3NJ?=
- =?utf-8?B?TjZsbUpGekdCWXd0aklsdWFRRndkZ1o3cnZ2Qnp1ck5HdXEwS1JOU2hIMHFI?=
- =?utf-8?B?MzNOYitqaDZ2TDlaYU9Cd1FmOEIzTDlrWlJ0Qnppa2hldzNGd0h2VGtmK21E?=
- =?utf-8?B?VFBZSld5U1dKbStuZWQzSHpqYWhqWkZXZ3l5QjYweXIrSWxnV3NMV2cwUVJN?=
- =?utf-8?B?MFlsQ0ovNXQwTVdna0lNZ0NiOWdnWm5jSnVXdzNTajhldGYyUXR4aTBzSUhr?=
- =?utf-8?B?T3ltM0poZ2NyamJ6bHdic2lOVEd5eXYyempsTmxmZFBtT1MzTlFJaS84K2FK?=
- =?utf-8?B?NHRtUHcwVitVZGlaWUsrdThoY3hQeGIwdnBnUytHYU1SZGtxeVJ0RUdFU2ly?=
- =?utf-8?B?ZTRQbmFjTkhuQkZXLyttTnZ3SENUazY0UmhmZDBhc2tPZ205ckhjSXFWK2lW?=
- =?utf-8?B?RWs1WXA5QnRXdElrcmYrWndsQ29mUEVPUWxNbG9oWjYvSmFVQTkvd1hjNFMz?=
- =?utf-8?B?em4rOGhKazU1c0VTVDhEWmZzUEZlQnVPcVpFY2YyTFNaeVlRTE1yb1BEejhy?=
- =?utf-8?B?WGpzc2NQRnRydi84YWZrcTJGQkJRbExxanR1dStZSmhxek83c2FrUlkvRTRi?=
- =?utf-8?B?YUxSVkU3eDRBeXNpOGlxYkdDV3VpOVBlZ3dBT1VBem9iZFBTYTZ3QS81VGVs?=
- =?utf-8?B?WDFZMG1idzIvVXN5NXlHRytnWnBodTA1alRNS1BnS3JwdG1NaUNaSzVTb1Fa?=
- =?utf-8?B?eHBMTStVbUFLeHlINHJ2blFKM3gwZFJLZWM3Q3ltWkl3RFZNTll0djl5R1dr?=
- =?utf-8?B?Mno3VkZPTm1lTkVUQ1hRcW9PclM1VkZXSytqdmlRK1p4VmNDeFBZL0phc0M3?=
- =?utf-8?B?VTZ5bGxlTzlVL2hsTEFwKzhuWDdtOWU3ZVNkZE9pcWM5MFN5RVpoVGlEL2RR?=
- =?utf-8?B?NGZxeTlCSUNmUWY2bGpib2hyaGJtUXduOSttRFFVa1ROTnRjMVpMY2NTL3h5?=
- =?utf-8?B?Qnp0WGI3MXBsQ2x4QkxSUmJtQU5FZ3ovL1d4SlFJYzljWFlqWVlBeFM1ZFc4?=
- =?utf-8?B?R3U4YUtZT1ZPZFN5dlo3NHg1WU83Zm9oWEhabHNNUVNIdU5rVUdEdEtQRDBZ?=
- =?utf-8?B?aHBPajllMHhzcGx2bmRNVVhXdng5aTFZK0UxWWp3dStTOHpKOEpjdzVwTnV1?=
- =?utf-8?B?WXhuVUp6cjdvUkJnb1lRRGpWRTZyU0x6R252a1QzRkdHSHlycFVRMXFGMDla?=
- =?utf-8?B?Rm9KZ1lvdHZlQlJrcEV1UkhEQ1cvdzdLSCsrcTJoamorSVNueDRiMG0yZTk1?=
- =?utf-8?B?TE5mdXI5UEwwM3h1dGxLNTVaTHg5UCtmZGhiMFZJU3JJMGpBL2xyM0FhWkJk?=
- =?utf-8?B?VW13WmcxU1ZvY3lIQkVqWDFhNWFCdFFqUVRYTy84VGNKUXJRMlFJejN0ZnA3?=
- =?utf-8?B?S3YwbzhmV3BSUWsvZjRuUTlYN0FZZFhzbUJkTzRJWlVCZVM5dExUbXl6aEUy?=
- =?utf-8?B?bUp0eFQ5RGV1bStxRXNsTThKZU5yYkNsenhSYjFHeTdCUldJcEJGN1R0eVAv?=
- =?utf-8?Q?SCQLerMdMfTMKe6lmx8IvDUDNewyXbQKatstj2C?=
+X-Microsoft-Antispam-Message-Info: opddtT7a5SFhMpk4GCQQGSxKQLVDWhjWDw7n2pSqoIWTIP87usbLJmpGqkhMFAtpdn55oaaHTnn8udH1eWwHVI9fl8ZUwochOiGQmXo3FDs9XJDdi5z3Gd67FO/mCRIEYcn8Gsi5m3PEi/Mw1eE8zvnFSuRZ3Xmq21/UIy/ogNzgM+X+Abm3N3CLj4uh51/n9+CVwtvI/N+gfnl+Cs0+1hBDBL14B/C8d0Mw4qaidGMzBgU9sHlkMuSuo7JD25b1Alkix0pt3kjI0Bes1nPrAy9hNDr+1LkrosaHO7WvClnmTBXlP3JVqItWu29bYrDFgYm3i6Wm05rDrIDyhIzzanStelGFzzrcriB5OlIJEld7JSH8y6HZyUnqtoBNj7xf3Q5U+nSh7UeKxb0PzrprNWlnybWx4h1NQeO7Mt4BEQjrgo8Uu9yJlRVJ4P+d6o5m82h0hyrewGsdq5+UqasWKVS8E9zyh6aV48zu3PZQxpm/zNGpS1W0WkJbXtU2GknsVQbcLQPYD/JjLQrGi9iQUbr+72BlhyRjz7qinHLdUER0X3AvAfnEgPvHDhLeaRBkDuueIjzvtGXuaioS+ngGQP7nItTxAUMg8CfDspXZxw3P8OGMWWdZGVTaRhlvxHYKM3rE00wjmEIRHeK45gMxJb6da5xcTyP4eEyNOD3Ge3ESdqSwLfXx8Tm3pHZ/92lXches4+0sfmTpL/YsqI9qC26BgPdGSE2ePEr2GTuCVbk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0602MB3449.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(346002)(396003)(376002)(136003)(5660300002)(2616005)(86362001)(6486002)(66556008)(26005)(2906002)(107886003)(66476007)(44832011)(8676002)(956004)(8936002)(4326008)(186003)(966005)(52116002)(316002)(38100700002)(66946007)(36756003)(7696005)(6666004)(16526019)(478600001)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?L0OFOqqBWOlXQHJ18fKZm8XdecwB73KGp85Rj35zSQL7l55TrjX1qnSPj9Gm?=
+ =?us-ascii?Q?dP/VFToX3/Nqpo8etTo9b5am6GBfdYUBwj9dhXKNS3utfePEEeB6cTPNv/1n?=
+ =?us-ascii?Q?Acnng7iF8HEzBvjTyY/pLE7X1ZlapSAHuur8s+oG0Ljk5dpc+KK59kkbm65n?=
+ =?us-ascii?Q?HFYidMrgCnu3pNiC1Mo1DJ0QuExN4fldcnLzShPnBXnS6+bvUHJRSK2t88fm?=
+ =?us-ascii?Q?NNh5168c2JrdOm+p/rtZZgAY7l1r6xpaW/+FwbP1GQk14xohSHlroqDvRU+L?=
+ =?us-ascii?Q?ScWHXOKy0DTTXLgQHLys4MmA0xlImOe3i6fdUxoHtHLojMswA5O/JdfymPj5?=
+ =?us-ascii?Q?C+osY13p+fqeO7NDym1U2N+e9v/cKRd03d3y+b41O70azpjgxhawzYnaoHZj?=
+ =?us-ascii?Q?46s7EKG4GM17CJz5XUr7cR8hLc9R3dhPR5GiAI8uyIe7pRD+ri+4yVHj6pmB?=
+ =?us-ascii?Q?vzHs9gjkuIlX1zDRa2iav45U9QVijH9gPVxC0S4XdBk9IW3zRaEI2/PhMZov?=
+ =?us-ascii?Q?ySYDGQ6DEcrG+mB+Ocjoh6/z2EbRbLmuonbqku+cIab2NaZRGt4S7cOn1zLu?=
+ =?us-ascii?Q?5VUCphs0vIul9zIXEkW5fEp50NSwsbD7Vaf9Ja0KJuTBa+ULAS0+c3GSrjcu?=
+ =?us-ascii?Q?nKz68T45nKxpXhC4eLyfCBD8ue4bg8Om9d2/mErWojz2osLld4fo7Emkez/2?=
+ =?us-ascii?Q?rDGVnov1roddXy/dttlo+aEhhTxIav1iGtnVpt5/Q5WmZoOnM5QFFhtEd8n3?=
+ =?us-ascii?Q?fvAsCEzs+gMxP7mJJ0rk8A7ziSkzX4gAJ+hMmic1PxJZiKNg7kLCazC2SOs8?=
+ =?us-ascii?Q?SUy2MhyihJbo9EJ6+cvY5SOaLYn2V8ff6N6LjtButXtkWqi+XVp91Rfdbqkv?=
+ =?us-ascii?Q?UPwPDPJKTFY0dUIkU5TT4RE6/2NpXkXG1TqRdKaziKXZyYOnyVdP6ZnFWuHt?=
+ =?us-ascii?Q?a6dhMqdt7DQ3EdeWfZ5KRXIH1USfV8jjq+Opo24AKUBMmFyhcuc8+2RBbYcz?=
+ =?us-ascii?Q?bSxdkSpdSAlebBLaUHOose+0nXAJbsdHxSmRSCRaBAOsofA0YWDh4xrmtqFN?=
+ =?us-ascii?Q?ZoWJO4Vgrqt5WsO0HymEGhlh7DG2aogVEb0pywl8pFHx3ZOIxwC/08p6WLl+?=
+ =?us-ascii?Q?vwBhqeWq9+OEZYtW30jS2NTVOj0GwYwquRuIZO85HIcZzCNu2G23Ig/fCPiH?=
+ =?us-ascii?Q?S6AnRq0d1kQW4XjspurqtAacGF2orJQKLX//Dw7E1Dvu2k2sI8aqCXe4mR2/?=
+ =?us-ascii?Q?m+KSDbjXSloJdi0HbV49exWvDbHqplUs7lUmWf4b2IvWD2qb64m3soUm1vHU?=
+ =?us-ascii?Q?NIAVX+rEaTTkGj6AOx5+aBga?=
 X-OriginatorOrg: vaisala.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7c16b3b-2137-4b65-4096-08d90a4ca19c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 885c7171-522a-4c80-e8eb-08d90a4ca1e5
 X-MS-Exchange-CrossTenant-AuthSource: HE1PR0602MB3449.eurprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 13:50:49.6499
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 13:50:50.1496
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s0mKtrwtxnb9KFvc1F2p3xTpMYlgIsQSgNvaP+Ch5FSbLipJOxGgro07YFxCnFI5i6M7Dw80q77MdnqYYRSZ6w==
+X-MS-Exchange-CrossTenant-UserPrincipalName: U6SkwNtYkGYH1pB26EL2UQf6UamOyBr6JlHXVC39wjhuGMnee1m/QTlPm1PfHhNW3co/HkmAwnBmlO/7MFeg5A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0601MB2361
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Description
------------
-Implement a bootcount (1) related driver that uses
-NVMEM as a backend. The patchset will also update the
-`snvs_lpgpr` driver to support 2 bytes NVMEM cells.
+Documents the device tree bindings for `bootcount-nvmem` driver.
 
-1. https://www.denx.de/wiki/view/DULG/UBootBootCountLimit
-
-Testing
--------
-Hardware: i.MX6sx evaluation board
-Kernel: linux-imx-5.4.24
-
-1. Configure the bootcount hardware in DT to use a NVMEM cell provided
-by `snvs_lpgpr` driver as backend.
-e.g. This will configure a 4 bytes long NVMEM cell
-```
-  bootcount_regs: bootcount-snvs-regs@0 {
-      reg = <0x0 0x04>;
-  };
-```
-
-2. Record the current NVMEM cell content:
-```
-~ # hexdump -C
-/sys/devices/soc0/soc/2000000.aips-bus/20cc000.snvs/20cc000.snvs:snvs-lpgpr/20cc000.snvs:snvs-lpgpr0/nvmem
-00000000  00 00 01 b0                                       |....|
-00000004
-```
-
-3. Write the bootcount and check that is successful: PASS
-```
-~ # echo 1 > /sys/bus/platform/drivers/bootcount-nvmem/bootcount/value
-bootcount: Write regval: 0xb0010001
-~ # hexdump -C
-/sys/devices/soc0/soc/2000000.aips-bus/20cc000.snvs/20cc000.snvs:snvs-lpgpr/20cc000.snvs:snvs-lpgpr0/nvmem
-00000000  01 00 01 b0                                       |....|
-00000004
-``` 
-
-Note: similar tests were done also for 2 bytes NVMEM cell size.
-
-Kernel: linux-next, tag: next-20210322
-1. Enable bootcount and snvs_lpgpr drivers
-2. Verify that they compile succesfully: PASS
-```
-kernel-master> make -j2 drivers/nvmem/
-  DESCEND  objtool
-  CALL    scripts/atomic/check-atomics.sh
-  CC      arch/x86/kernel/asm-offsets.s
-  CALL    scripts/checksyscalls.sh
-  CC      drivers/nvmem/core.o
-  CC      drivers/nvmem/bootcount-nvmem.o
-  CC      drivers/nvmem/snvs_lpgpr.o
-  AR      drivers/nvmem/built-in.
-```
-
-Testing the bootcount YAML document:
-1. Check the document by running the command:
-`make DT_CHECKER_FLAGS=-m dt_binding_check`
-2. Verify that is successful: PASS
-
-Changes since v1
-----------------
-- Fix the dt-bindings YAML document.
-
-Nandor Han (4):
-  dt-bindings: nvmem: Add bootcount-nvmem
-  nvmem: bootcount: add bootcount driver
-  nvmem: snvs_lpgpr: use cell stride for regmap size calculation
-  nvmem: snvs_lpgpr: support two bytes NVMEM cell size
-
- .../bindings/nvmem/bootcount-nvmem.yaml       |  66 ++++++
- drivers/nvmem/Kconfig                         |  10 +
- drivers/nvmem/Makefile                        |   1 +
- drivers/nvmem/bootcount-nvmem.c               | 195 ++++++++++++++++++
- drivers/nvmem/snvs_lpgpr.c                    |  67 +++++-
- 5 files changed, 333 insertions(+), 6 deletions(-)
+Signed-off-by: Nandor Han <nandor.han@vaisala.com>
+---
+ .../bindings/nvmem/bootcount-nvmem.yaml       | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
- create mode 100644 drivers/nvmem/bootcount-nvmem.c
 
+diff --git a/Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml b/Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
+new file mode 100644
+index 000000000000..cc673452fe0f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/nvmem/bootcount-nvmem.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++# Copyright (c) Vaisala Oyj. All rights reserved.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/nvmem/bootcount-nvmem.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bootcount NVMEM bindings
++
++maintainers:
++  - Nandor Han <nandor.han@vaisala.com>
++
++description: |
++  This binding is intendent to describe the hardware location for
++  storing the bootcount value and magic combo.
++
++  The NVMEM cell size should be 2 or 4 bytes.
++
++allOf:
++  - $ref: "nvmem-consumer.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - linux,bootcount-nvmem
++
++  nvmem-cells:
++    description: Phandle to reboot mode nvmem data cell.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++
++  nvmem-cell-names:
++    description: Name of the NVMEM cell.
++    $ref: /schemas/types.yaml#/definitions/string-array
++    enum:
++      - bootcount-regs
++
++  linux,bootcount-magic:
++    description: Override default mask value.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++dependencies:
++  nvmem-cell-names: [ nvmem-cells ]
++
++required:
++  - compatible
++  - nvmem-cells
++  - nvmem-cell-names
++
++additionalProperties: false
++
++examples:
++  # example with 16 bit nvram cell:
++  - |
++    bootcount {
++        compatible = "linux,bootcount-nvmem";
++        nvmem-cells = <&bootcount_regs>;
++        nvmem-cell-names = "bootcount-regs";
++    };
++
++    rtc: rtc@68 {
++        bootcount_regs: bootcount_nvmem_regs@e {
++            reg = <0x0e 0x2>;
++        };
++    };
++
++...
 -- 
 2.26.3
 
