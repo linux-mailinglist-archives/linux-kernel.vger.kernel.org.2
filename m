@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71AB36DCBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE25036DCC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 18:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240384AbhD1QOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 12:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
+        id S240503AbhD1QP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 12:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240442AbhD1QOP (ORCPT
+        with ESMTP id S239915AbhD1QPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 12:14:15 -0400
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CE5C061573;
-        Wed, 28 Apr 2021 09:13:29 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 517E85C15; Wed, 28 Apr 2021 18:13:18 +0200 (CEST)
+        Wed, 28 Apr 2021 12:15:25 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD9C061573;
+        Wed, 28 Apr 2021 09:14:40 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id y124-20020a1c32820000b029010c93864955so9600085wmy.5;
+        Wed, 28 Apr 2021 09:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1619626398;
-        bh=/lA99jJWibpe5bvPiHlWkky33Jv0Kq+2qr2RiYH1/Ys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2CL4fRBsjojjoP9FfYt0RHIW5vde/X/hiDSzq2Haax14TiKhzqhafCu2UKWIH8qbk
-         Mu7Etn6zix1oDvT1QztIkSrRJbHpBN+VQ7hMvXWuGMMm82cWRdVlAcSVIxJobi/Fkx
-         J4oiT6ll/RSCspkvg4VaMOb9qgKzze4zDQTy0lhyI/flyTnCBHMzMrXeOQBzchAT7h
-         vn4uJat08ACxoBInk4uoL698HydQkI/DDD4byUfHf6UlbUtz47zEaQ4lLnb/t7ymBa
-         6NsJ4VDBgurd7F7LNmfdedoAn6AFX223pUDQ7aMmVkFAKJW8MhEtH+DdwddLCa/7ea
-         8kXPG130Xm6fCrPRAkfa86ERczcdMit5vVnNOYb7LwkyYFdu++LIssCiKzsw2iyaTQ
-         Kcq6Q+tpCKFo82p30V5cZBVXaDcMS6nvjeJpl7qYmRzz71hSYB2GfsJqsAH7/3cVZt
-         Bcxtr6siyjPepIYw7uQCkioDC7wTuswMhvMd0YDhCASNsJtOEygXcNqG9b/8Xeo82T
-         eiEcHPu79egTQEH+92HgWVd3ka10/5KWTkmHTGFkA8l92W3Apm2IWxyY5iS0dfieO+
-         qDo9HJ7CfQy55JNHimu5BjaNmTkgQynE3WTSgZCEVt2CuK9l8aaA5JiReoosyGc+J+
-         0Fm/GpKUjqRrTXcDZEebTJdc=
-Date:   Wed, 28 Apr 2021 18:13:18 +0200
-From:   Valentin =?utf-8?B?VmlkacSH?= <vvidic@valentin-vidic.from.hr>
-To:     Hendrik Brueckner <brueckner@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Philipp Kern <pkern@debian.org>,
-        Benjamin Zimmermann <dave@oss.volkswagen.com>,
-        debian-s390@lists.debian.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-Subject: Re: [PATCH v2] s390/sclp_vt220: Fix console name to match device
-Message-ID: <20210428161318.GX4672@valentin-vidic.from.hr>
-References: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
- <20210427194010.9330-1-vvidic@valentin-vidic.from.hr>
- <20210428133836.GD21939@linux.ibm.com>
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=aYKVWAKIY2SVLc5Zm+ilU7xifRJwW77SW1HqG8x0JaA=;
+        b=SbSdFVW1uVaKGxNMdvb2zSIxE+zfnIBM1DfXdsREMf2yzLTG9aTam/opWJt6FAR0FO
+         IAE2wArZ+XAhqUb/xgr/uPuJnr04OS0Qdgax29qEP1ROdkNK/pAM88TXXuLEKZikbJXC
+         uC0GOE6Hg6xdlrN5ZI5FXtrozhpi+ytgPyFouiLIdtCEl30o5gFnW2vMkC/JDNwOhlMb
+         C/PAfls4zqUYynpdiP/KEQZmDcHTLpeymfv5e23dTl5Otx3ArQsDvGB/u4wYRRxxc34t
+         0xpfBUcexuPemMENQaFf0aTemJQs4UT7OdCKtpw9X8Ol5jQ7Rz52aTDbRw7jKkleMwW2
+         AwpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=aYKVWAKIY2SVLc5Zm+ilU7xifRJwW77SW1HqG8x0JaA=;
+        b=jKpWpI5MLno76ukz7wXZLRdJBdhDbVAL4WA8BM05k536VZgJZeKqvNWeLcuGRg1dQX
+         05g9MHcnxjbFQvhkMI4xdA+QC5z/oUN/WW1vTMWsw9PhQYvIEPGAeXDexcUBXSRoLyJB
+         DzCLpJWo9if0iqNhTXFEKzUpwscQ76+VcyjDmbmT9pqwYMUh/cL4RHWdE5GdphXe0ZqM
+         myOpgVSui5GwfnCQX+l+Ct5ybPdrhI4MH0kuj24meA2nobiAv+72W8v+F6zdW+JAY5+f
+         ybanH3RuEE1cJZifyrmYO9rWLYTHTfZGr3beSrHLMR2yY5tKVdIL3itWYWnlRXldjg1h
+         G1qw==
+X-Gm-Message-State: AOAM530SdM8+uGexZcnxRD02oHYp3ffYhbwDD3HwrUBdeHUL1e5dqgMP
+        zlXJwjlJ+AUj9OVhFSewN1mn9BWzAlH8iesh
+X-Google-Smtp-Source: ABdhPJwVj5FDMqGLOFFmQahABCgh5yKpcSSFoypgvL/bqC3d1eLkEXCrKRmL9dNVkzTLXDaBCynX0g==
+X-Received: by 2002:a05:600c:4f45:: with SMTP id m5mr5399854wmq.132.1619626479138;
+        Wed, 28 Apr 2021 09:14:39 -0700 (PDT)
+Received: from 192.168.10.5 ([39.46.118.120])
+        by smtp.gmail.com with ESMTPSA id p7sm280375wrt.24.2021.04.28.09.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 09:14:38 -0700 (PDT)
+Message-ID: <2b5365025e7a9162aae111b1c5134430a37e6ff8.camel@gmail.com>
+Subject: Re: [PATCH] media: siano: use DEFINE_MUTEX() for mutex lock
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:SIANO DVB DRIVER" <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        zhengyongjun3@huawei.com, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com, dan.carpenter@oracle.com
+Cc:     musamaanjum@gmail.com
+Date:   Wed, 28 Apr 2021 21:14:34 +0500
+In-Reply-To: <20210405205219.GA687366@LEGION>
+References: <20210405205219.GA687366@LEGION>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428133836.GD21939@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 03:38:36PM +0200, Hendrik Brueckner wrote:
-> It is been a while ago when working on consoles. However, consoles are
-> typically devices without having a device node associated. There is special
-> handling for /dev/console wrt. to the preferred console in the tty layer.
+Reminder!
+
+On Tue, 2021-04-06 at 01:52 +0500, Muhammad Usama Anjum wrote:
+> mutex lock can be initialized with DEFINE_MUTEX() rather than
+> explicitly calling mutex_init().
 > 
-> A console device might be associated with a tty device but this is not a
-> requirement. For example, consider the net console that streams console
-> messages thru UDP and is not associated with a tty.
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> ---
+>  drivers/media/common/siano/smscoreapi.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
 > 
-> Because console and tty are different devices, names can also be different
-> which is, unfortunately, the case on s390.
-> 
-> Therefore my suggestion here is not derive the tty device from the name
-> of the console, but rather looking at the associated tty being reported
-> as major minor number in /proc/console.
+> diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+> index 410cc3ac6f94..7f5b638d2458 100644
+> --- a/drivers/media/common/siano/smscoreapi.c
+> +++ b/drivers/media/common/siano/smscoreapi.c
+> @@ -414,10 +414,10 @@ struct smscore_registry_entry_t {
+>  
+>  static struct list_head g_smscore_notifyees;
+>  static struct list_head g_smscore_devices;
+> -static struct mutex g_smscore_deviceslock;
+> +static DEFINE_MUTEX(g_smscore_deviceslock);
+>  
+>  static struct list_head g_smscore_registry;
+> -static struct mutex g_smscore_registrylock;
+> +static DEFINE_MUTEX(g_smscore_registrylock);
+>  
+>  static int default_mode = DEVICE_MODE_NONE;
+>  
+> @@ -2123,10 +2123,7 @@ static int __init smscore_module_init(void)
+>  {
+>  	INIT_LIST_HEAD(&g_smscore_notifyees);
+>  	INIT_LIST_HEAD(&g_smscore_devices);
+> -	mutex_init(&g_smscore_deviceslock);
+> -
+>  	INIT_LIST_HEAD(&g_smscore_registry);
+> -	mutex_init(&g_smscore_registrylock);
+>  
+>  	return 0;
+>  }
 
-Yes, I see what you mean. Loading netconsole produces a line in
-/proc/consoles without the major:minor numbers:
-
-  tty0                 -WU (EC p  )    4:7
-  netcon0              -W- (E  p  )
-
-On the other hand /proc/consoles documentation seems to suggest these
-are character device names:
-https://www.kernel.org/doc/html/latest/filesystems/proc.html#proc-consoles
-
-Since sclp_vt220 seems to be the only know exception we are trying
-to solve in that direction now.
-
-If this does not work out, the alternative is as you suggested to take
-the major:minor numbers and read the char device name from the symlink:
-
-lrwxrwxrwx 1 root root 0 Apr 28 17:00 /sys/dev/char/4:7 -> ../../devices/virtual/tty/tty7
-
--- 
-Valentin
