@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB5D36D711
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FF636D725
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234219AbhD1MOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhD1MO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:14:29 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591D2C061574;
-        Wed, 28 Apr 2021 05:13:43 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id i14so64062pgk.5;
-        Wed, 28 Apr 2021 05:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m/t105WtwDDOLhmhL5s6Z3Yp7TxO2rZsqoLK7mthyoY=;
-        b=GtCNQZ9eYrdYKapifMY+XhOpeYAoy6nhCd+pkIprTdP2PwPi48ChX85cCpUX1nLCnE
-         jrm2ypKsh9NgTa6WQmuvwS+X7k5BwrCexL982FZVvEQ29hWb9FbFRuoK8E+m7KItvyuE
-         K7rGTZQ0JTAOd8wqgM1ngYPEHffmv0xpbDHgaszGxHV0X7nOFLStkFjtNgUmHgpzGN4v
-         7KUjV/3N6BQiNq5NvORtDnZGsZ4u8n1B0k0sLbEZJ4h+/566ZDcYJ4F8RoAJDL4SjDie
-         DOZIyi04Goq3xR8o9W/7qa799DIrAcjYkBUgKQCJqapnvLgeq/eHh/xOPw5aqhucScfA
-         so3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m/t105WtwDDOLhmhL5s6Z3Yp7TxO2rZsqoLK7mthyoY=;
-        b=bFI/iEaxEsY+sMiMrHjkDhzzEJA758CwQHQ/Qx1Oy2RP55GHFxIp9E0g71WvSGrkrQ
-         tMIlVMpFv4i28DhgOQvnjy/WoxgeF+3tMCIP4UH0nzJIx3u9JeigLfXGuftt+meo4hUM
-         8frdJQYxcR5RmB9vt5euhvRdw3bgzMmF2nxlK+v0DvPiNNt0T+2IzYJ5JXuumzqff77J
-         vPmNcwEikoCDgvEgWAsEOFf9woV/bCsfNwoSr7joVbiQ0iKWfuWqNzD0aoTQHnVwUTXP
-         vQ9Gb0tw3j7LtG9k/TqodZ7e79LuZYV0fQP8pUeXajfzl0Hsy1r6EG/pm+SMXHgSVOAV
-         4NdQ==
-X-Gm-Message-State: AOAM530LN4A1SQsH4tSZSuL1QlnDBz/7q0yELfaALJRU5ulVU2A0J7lp
-        HCe3kX9WtQRNB8O/uJPV5Tc=
-X-Google-Smtp-Source: ABdhPJxkasbYaZ+a3xYQTQtl3b614xZu5AU+TRrkjjMthcIa76eKDQRlfjo34JwWMPAuYr+jNHVSsw==
-X-Received: by 2002:a63:ce07:: with SMTP id y7mr13472683pgf.293.1619612022764;
-        Wed, 28 Apr 2021 05:13:42 -0700 (PDT)
-Received: from localhost ([122.172.37.94])
-        by smtp.gmail.com with ESMTPSA id f3sm4567201pjo.3.2021.04.28.05.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 05:13:42 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 17:43:29 +0530
-From:   Anupama K Patil <anupamakpatil123@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, B K Karthik <bkkarthik@pesu.pes.edu>,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [PATCH] MAINTAINERS: mark isapnp as obsolete
-Message-ID: <20210428121329.o4jlx76klmzlzl5n@ubuntu>
-References: <20210428110536.edy74gsobkgtd6al@ubuntu>
- <YIlCzOl/rkYeOWVW@kroah.com>
- <20210428114057.tlc53ie7crvkqqhj@ubuntu>
- <YIlLk00Wzd6Lf660@unreal>
+        id S234411AbhD1MVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:21:19 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62319 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230245AbhD1MVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:21:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619612432; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=itp3bO0rSXlRMnGotgyM/EUgRDm0AtM7sGQbojFcAGA=;
+ b=ivV4lE3NLb/JBXzekDnZUnGew8hJpThRbJgLRknsKSl+r4bkqgvjMlkYMcxtPBR4Qhp3Moqn
+ VSXEGqe68MMuTXqXXJRtiNiOwoUrW4G5FZeyiWgJgUQGBz1vPI3Sh2jrqHrpMCzfyT1WngYB
+ GD5FVHgajvgLLpEYKl5XYTFG9ws=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6089517c74f773a664ac27ef (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Apr 2021 12:13:48
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BED7DC43460; Wed, 28 Apr 2021 12:13:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6ED9FC433F1;
+        Wed, 28 Apr 2021 12:13:46 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIlLk00Wzd6Lf660@unreal>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Apr 2021 17:43:46 +0530
+From:   dikshita@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     andy.gross@linaro.org, vgarodia@codeaurora.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, stanimir.varbanov@linaro.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, david.brown@linaro.org
+Subject: Re: [PATCH] dt-bindings: media: venus: Add sc7280 dt schema
+In-Reply-To: <1619471083.458228.4086059.nullmailer@robh.at.kernel.org>
+References: <1619432515-9060-1-git-send-email-dikshita@codeaurora.org>
+ <1619471083.458228.4086059.nullmailer@robh.at.kernel.org>
+Message-ID: <d41482571e1ec6326d3f3ad665f18c81@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/28 02:48PM, Leon Romanovsky wrote:
-> On Wed, Apr 28, 2021 at 05:10:57PM +0530, Anupama K Patil wrote:
-> > On 21/04/28 01:11PM, Greg KH wrote:
-> > > On Wed, Apr 28, 2021 at 04:35:36PM +0530, Anupama K Patil wrote:
-> > > > isapnp code is very old and according to this link
-> > > > https://en.wikipedia.org/wiki/Legacy_Plug_and_Play#Specifications
-> > > > from Wikipedia, even Windows Vista disabled ISA PnP by default.
-> > > > 
-> > > > This change is in follow up to
-> > > > https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#u
-> > > > and https://lore.kernel.org/lkml/20210424194301.jmsqpycvsm7izbk3@ubuntu/T/#u
-> > > > 
-> > > > Suggested-by: B K Karthik <bkkarthik@pesu.pes.edu>
-> > > > Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
-> > > 
-> > > Has the maintainer said this is unsupported?
-> > > 
-> > > That's who you should take suggestions from :)
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Leon said he thinks it is unsupported (I've also cc'd him). So, I've sent this patch
-> > to get the feedback from the maintainer.
+Hi Rob,
+Thanks for your comment.
+
+Actually, this change depends on 
+https://patchwork.kernel.org/project/linux-arm-msm/list/?series=473809
+which adds the file dt-bindings/clock/qcom,videocc-sc7280.h (v2 5/6)
+Missed adding the dependency in commit text.
+
+Thanks,
+Dikshita
+
+On 2021-04-27 02:34, Rob Herring wrote:
+> On Mon, 26 Apr 2021 15:51:55 +0530, Dikshita Agarwal wrote:
+>> Add a schema description for the venus video encoder/decoder on the 
+>> sc7280.
+>> 
+>> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+>> ---
+>>  .../bindings/media/qcom,sc7280-venus.yaml          | 158 
+>> +++++++++++++++++++++
+>>  1 file changed, 158 insertions(+)
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+>> 
 > 
-> Leon said something different.
-> https://lore.kernel.org/lkml/20210422180322.7wlyg63kv3n2k6id@ubuntu/T/#m6c837180c8d6496d5bcbb8526e274c4239844be0
-> ------
-> > If changes to ISA code aren't welcomed, should these be marked obsolete in the MAINTIANERS file?
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> I think so, but think that "Odd Fixes" better describes that Rafael wrote.
-> ------
-Sorry about that! but does checkpatch tell people not to send patches if it's 'Odd fixes'?
-Should I wait for the maintainer's reply before doing anything else?
+> yamllint warnings/errors:
 > 
-> > 
-> > Thanks,
-> > Anupama
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dts:19:18:
+> fatal error: dt-bindings/clock/qcom,videocc-sc7280.h: No such file or
+> directory
+>    19 |         #include <dt-bindings/clock/qcom,videocc-sc7280.h>
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> compilation terminated.
+> make[1]: *** [scripts/Makefile.lib:377:
+> Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dt.yaml]
+> Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1414: dt_binding_check] Error 2
+> 
+> See https://patchwork.ozlabs.org/patch/1470241
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
