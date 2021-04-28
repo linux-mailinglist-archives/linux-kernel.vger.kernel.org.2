@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB90436DE10
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C4736DDC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241554AbhD1RT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:19:29 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:51288 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229931AbhD1RT2 (ORCPT
+        id S241444AbhD1RE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:04:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46702 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241336AbhD1RE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:19:28 -0400
-Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SGSoOD027118;
-        Wed, 28 Apr 2021 16:31:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pps0720; bh=FuywRiAvN6X4+WNwga978/a8H8a51VQ003aih6ECUsg=;
- b=hbhMajzKyVgFQ2yCoCX2cRm4QHe8+NaPsEy0hPYhDVVw1HtD6805dBXotO3ZvblMseCZ
- KOip45qWIdWUcjpvJnz/8E3cPqU19vr3cjuT/uyW5Lqmrl/qPoS/AlVUG3YfNlzplhHp
- dENaxKNas6IlpUcDN8CLXUamtRt3EM7v/WRzMVTBbDKuwhdThX1nzNQLnxERB/epereK
- IHfhr1TeCQgm1snqLhGTjBd3LpNFzuUoJmzpFQehn+Nnq4Tgxhvle16TZsz4MzDtQXys
- V5/vgIJ3V0jTn3tbzSNKlt1o1yXieuH5pAOKmAiOZboLfSz7bleEjX2sWkC2jMZJQ9Je zA== 
-Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
-        by mx0b-002e3701.pphosted.com with ESMTP id 387a27rt3w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 16:31:26 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3426.houston.hpe.com (Postfix) with ESMTP id EC1BA4E;
-        Wed, 28 Apr 2021 16:31:25 +0000 (UTC)
-Received: from bougret.labs.hpecorp.net (bougret.labs.hpecorp.net [10.93.238.30])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 51F3C4A;
-        Wed, 28 Apr 2021 16:31:25 +0000 (UTC)
-Received: from jt by bougret.labs.hpecorp.net with local (Exim 4.92)
-        (envelope-from <jt@labs.hpe.com>)
-        id 1lbn5w-0007ZI-Jt; Wed, 28 Apr 2021 09:31:24 -0700
-Date:   Wed, 28 Apr 2021 09:31:24 -0700
-From:   Jean Tourrilhes <jean.tourrilhes@hpe.com>
-To:     Ilya Maximets <i.maximets@ovn.org>
-Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andy Zhou <azhou@ovn.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ovs dev <dev@openvswitch.org>, William Tu <u9012063@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Davide Caratti <dcaratti@redhat.com>
-Subject: Re: [PATCH net] openvswitch: meter: remove rate from the bucket size
- calculation
-Message-ID: <20210428163124.GA28950@labs.hpe.com>
-Reply-To: jean.tourrilhes@hpe.com
-References: <20210421135747.312095-1-i.maximets@ovn.org>
- <CAMDZJNVQ64NEhdfu3Z_EtnVkA2D1DshPzfur2541wA+jZgX+9Q@mail.gmail.com>
- <20210428064553.GA19023@labs.hpe.com>
- <04bd0073-6eb7-6747-a0b1-3c25cca7873a@ovn.org>
+        Wed, 28 Apr 2021 13:04:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619629423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CjDGbDf+FlwoYQPnj5RXe7XBw9FtNTs+krtCG4E8T5c=;
+        b=PRGwVwW+dt5IP5r85f1yIpFJb3epad1BL+cAaFJXS9/l8umY69kLiFp/ir3n3mklB2wrPA
+        tjbzobh/DFVTG/3ywpIs4KhiVGigWzv2I45oBi1q1Oo1cSUg7qxTkEecte+80ESNg8CZPK
+        u9AzKqDsKHmn1hKl3h0I7se0cWOFy3E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-seSeOOSvMY6ySr8ScifKYA-1; Wed, 28 Apr 2021 13:03:39 -0400
+X-MC-Unique: seSeOOSvMY6ySr8ScifKYA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 796B2804030;
+        Wed, 28 Apr 2021 17:03:37 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-128.rdu2.redhat.com [10.10.116.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A633510190A7;
+        Wed, 28 Apr 2021 17:03:30 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id CB27B220BCF; Wed, 28 Apr 2021 13:03:29 -0400 (EDT)
+Date:   Wed, 28 Apr 2021 13:03:29 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, virtio-fs@redhat.com,
+        dan.j.williams@intel.com
+Cc:     miklos@szeredi.hu, jack@suse.cz, willy@infradead.org,
+        slp@redhat.com, Greg Kurz <groug@kaod.org>
+Subject: Re: [PATCH v5 1/3] dax: Add an enum for specifying dax wakup mode
+Message-ID: <20210428170329.GB1840673@redhat.com>
+References: <20210428165040.1856202-1-vgoyal@redhat.com>
+ <20210428165040.1856202-2-vgoyal@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <04bd0073-6eb7-6747-a0b1-3c25cca7873a@ovn.org>
-Organisation: HP Labs Palo Alto
-Address: HP Labs, MS1184, 1501 Page Mill road, Palo Alto, CA 94304, USA.
-E-mail: jean.tourrilhes@hpe.com
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-GUID: -gplV4EL_BNJiJzH-OpYrkM02K7xErJB
-X-Proofpoint-ORIG-GUID: -gplV4EL_BNJiJzH-OpYrkM02K7xErJB
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-28_10:2021-04-28,2021-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- phishscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 impostorscore=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104280106
+In-Reply-To: <20210428165040.1856202-2-vgoyal@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 01:22:12PM +0200, Ilya Maximets wrote:
+On Wed, Apr 28, 2021 at 12:50:38PM -0400, Vivek Goyal wrote:
+> Dan mentioned that he is not very fond of passing around a boolean true/false
+> to specify if only next waiter should be woken up or all waiters should be
+> woken up. He instead prefers that we introduce an enum and make it very
+> explicity at the callsite itself. Easier to read code.
 > 
-> I didn't test it, but I looked at the implementation in
-> net/sched/act_police.c and net/sched/sch_tbf.c, and they should work
-> in a same way as this patch, i.e. it's a classic token bucket where
-> burst is a burst and nothing else.
+> This patch should not introduce any change of behavior.
+> 
+> Reviewed-by: Greg Kurz <groug@kaod.org>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> ---
+>  fs/dax.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index b3d27fdc6775..c8cd2ae4440b 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
+>  	struct exceptional_entry_key key;
+>  };
+>  
+> +/**
+> + * enum dax_wake_mode: waitqueue wakeup behaviour
+> + * @WAKE_NEXT: wake only the first waiter in the waitqueue
+> + * @WAKE_ALL: wake all waiters in the waitqueue
+> + */
 
-	Actually, act_police.c and sch_tbf.c will behave completely
-differently, even if they are both based on the token bucket
-algorithm.
-	The reason is that sch_tbf.c is applied to a queue, and the
-queue will smooth out traffic and avoid drops. The token bucket is
-used to dequeue the queue, this is sometime called leaky bucket. I've
-personally used sch_tbf.c with burst size barely bigger than the MTU,
-and it works fine.
-	This is why I was suggesting to compare to act_police.c, which
-does not have a queue to smooth out traffic and can only drop
-packets.
-	I believe OVS meters are similar to policers, so that's why
-they are suprising for people used to queues such as TBF and HTB.
+I just noticed that I did not change order in comments. Will post
+another version. Sorry about the noise.
 
-	Regards,
+Vivek
 
-	Jean
+> +enum dax_wake_mode {
+> +	WAKE_ALL,
+> +	WAKE_NEXT,
+> +};
+> +
+>  static wait_queue_head_t *dax_entry_waitqueue(struct xa_state *xas,
+>  		void *entry, struct exceptional_entry_key *key)
+>  {
+> @@ -182,7 +192,8 @@ static int wake_exceptional_entry_func(wait_queue_entry_t *wait,
+>   * The important information it's conveying is whether the entry at
+>   * this index used to be a PMD entry.
+>   */
+> -static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
+> +static void dax_wake_entry(struct xa_state *xas, void *entry,
+> +			   enum dax_wake_mode mode)
+>  {
+>  	struct exceptional_entry_key key;
+>  	wait_queue_head_t *wq;
+> @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
+>  	 * must be in the waitqueue and the following check will see them.
+>  	 */
+>  	if (waitqueue_active(wq))
+> -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
+> +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
+>  }
+>  
+>  /*
+> @@ -268,7 +279,7 @@ static void put_unlocked_entry(struct xa_state *xas, void *entry)
+>  {
+>  	/* If we were the only waiter woken, wake the next one */
+>  	if (entry && !dax_is_conflict(entry))
+> -		dax_wake_entry(xas, entry, false);
+> +		dax_wake_entry(xas, entry, WAKE_NEXT);
+>  }
+>  
+>  /*
+> @@ -286,7 +297,7 @@ static void dax_unlock_entry(struct xa_state *xas, void *entry)
+>  	old = xas_store(xas, entry);
+>  	xas_unlock_irq(xas);
+>  	BUG_ON(!dax_is_locked(old));
+> -	dax_wake_entry(xas, entry, false);
+> +	dax_wake_entry(xas, entry, WAKE_NEXT);
+>  }
+>  
+>  /*
+> @@ -524,7 +535,7 @@ static void *grab_mapping_entry(struct xa_state *xas,
+>  
+>  		dax_disassociate_entry(entry, mapping, false);
+>  		xas_store(xas, NULL);	/* undo the PMD join */
+> -		dax_wake_entry(xas, entry, true);
+> +		dax_wake_entry(xas, entry, WAKE_ALL);
+>  		mapping->nrexceptional--;
+>  		entry = NULL;
+>  		xas_set(xas, index);
+> @@ -937,7 +948,7 @@ static int dax_writeback_one(struct xa_state *xas, struct dax_device *dax_dev,
+>  	xas_lock_irq(xas);
+>  	xas_store(xas, entry);
+>  	xas_clear_mark(xas, PAGECACHE_TAG_DIRTY);
+> -	dax_wake_entry(xas, entry, false);
+> +	dax_wake_entry(xas, entry, WAKE_NEXT);
+>  
+>  	trace_dax_writeback_one(mapping->host, index, count);
+>  	return ret;
+> -- 
+> 2.25.4
+> 
+
