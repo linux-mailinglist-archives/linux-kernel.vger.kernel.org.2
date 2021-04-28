@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FF636D725
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777AA36D716
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhD1MVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:21:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62319 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230245AbhD1MVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:21:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619612432; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=itp3bO0rSXlRMnGotgyM/EUgRDm0AtM7sGQbojFcAGA=;
- b=ivV4lE3NLb/JBXzekDnZUnGew8hJpThRbJgLRknsKSl+r4bkqgvjMlkYMcxtPBR4Qhp3Moqn
- VSXEGqe68MMuTXqXXJRtiNiOwoUrW4G5FZeyiWgJgUQGBz1vPI3Sh2jrqHrpMCzfyT1WngYB
- GD5FVHgajvgLLpEYKl5XYTFG9ws=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6089517c74f773a664ac27ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Apr 2021 12:13:48
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BED7DC43460; Wed, 28 Apr 2021 12:13:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6ED9FC433F1;
-        Wed, 28 Apr 2021 12:13:46 +0000 (UTC)
+        id S234243AbhD1MQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:16:30 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:39593 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229645AbhD1MQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:16:28 -0400
+Received: from [192.168.100.1] ([82.142.25.254]) by mrelayeu.kundenserver.de
+ (mreue106 [213.165.67.119]) with ESMTPSA (Nemesis) id
+ 1M3UEW-1lcHKj0ad0-000aaE; Wed, 28 Apr 2021 14:15:39 +0200
+Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20210323221430.3735147-1-laurent@vivier.eu>
+ <20210323221430.3735147-3-laurent@vivier.eu>
+ <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
+ <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
+From:   Laurent Vivier <laurent@vivier.eu>
+Message-ID: <c28b0c92-a997-6978-890f-4222f4bb8cc6@vivier.eu>
+Date:   Wed, 28 Apr 2021 14:15:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 28 Apr 2021 17:43:46 +0530
-From:   dikshita@codeaurora.org
-To:     Rob Herring <robh@kernel.org>
-Cc:     andy.gross@linaro.org, vgarodia@codeaurora.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, stanimir.varbanov@linaro.org,
-        robh+dt@kernel.org, mark.rutland@arm.com, david.brown@linaro.org
-Subject: Re: [PATCH] dt-bindings: media: venus: Add sc7280 dt schema
-In-Reply-To: <1619471083.458228.4086059.nullmailer@robh.at.kernel.org>
-References: <1619432515-9060-1-git-send-email-dikshita@codeaurora.org>
- <1619471083.458228.4086059.nullmailer@robh.at.kernel.org>
-Message-ID: <d41482571e1ec6326d3f3ad665f18c81@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:sb/qgeeflS+pkAWZpgXZMoYCtHFwbrXG1VGnq/LMuaMRSKu6LDS
+ vB3YfIAphfsGexO647UzjvqLPG+lpt1Vj8Kq4nw9IFT3KJn/rkCp9N3dAuMfqfdHojTYxs3
+ QFSA91fRtqe9e7ZQDnJbNRWlciwU25IphJQlILztMW6ljT3mgOE1LIExxKYIYwi4929VYnT
+ 2bFQhIUdvOQ86a3/8GqJA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OHRpabYt+ao=:9GVzQ2AQGBqqENIxAjteiS
+ 2MBXnYCy4XEZodknBLzXIuwhQLKt4t8xcB5CXhnNTARcduAEE4BONYMzeg4C+LaKYDiR1nTCs
+ g3hFCeRcedOUFjKW71XXTo3L17q/BKSVhRuCbwchBPQsSU9xxncXaXzULgBiePckx302+yjBa
+ qdwwGDJlPdJnn0fR6WxeUQ0u5AzJbw0jFq6a+yONkUNMxUabWiaZObtymGO7NMDGX3F9q9XBr
+ RlcxqDhGxscQwJwaCaEHiHUHVsG6NMs905hkvo9gYsggO5JWWpQjhGhHanJzSy7tBGGdmhE3W
+ MSA0RLCn9iy7NGDcgrbH7Ahzd4f6cXpfm/M9ddP0l1CeuJXDfZaYyTBMfOO5F8NHe+B00CDeZ
+ zs36zsbolOfCREuWDHcCdPdxy4x8K29m1q1V/zflsYuxFVKrWTa0gqOtamw4ZsQyRVsCeN1z5
+ 5FFg3feccoXRRg+6/25r6X5OlZ8O7m2ud0JL6Dgc3wyiA7D7CBli2Yd8oIANNFy+SUduTPFgK
+ LfMTonS7kuVeaOQgWGK970=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-Thanks for your comment.
+Le 28/04/2021 à 14:07, Geert Uytterhoeven a écrit :
+> Hi Laurent,
+> 
+> On Tue, Apr 27, 2021 at 7:20 PM Laurent Vivier <laurent@vivier.eu> wrote:
+>> Le 23/03/2021 à 23:14, Laurent Vivier a écrit :
+>>> This machine allows to have up to 3.2 GiB and 128 Virtio devices.
+>>>
+>>> It is based on android goldfish devices.
+>>>
+>>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> 
+>> As 5.12 has been released, is this possible to consider having this new machine in the next release?
+>>
+>> All changes are contained under arch/m68k and protected by the CONFIG_VIRT flag. This should not
+>> have any impact on the other m68k machines. In any case, I'll be able to maintain the machine and
+>> fix any problem.
+> 
+> Thanks for the reminder!
+> 
+> Please accept my apologies: I had completely forgotten about your patch.
+> By the time it reappeared on my radar (due to Alexandre's reply), it was
+> already too late for v5.13.
 
-Actually, this change depends on 
-https://patchwork.kernel.org/project/linux-arm-msm/list/?series=473809
-which adds the file dt-bindings/clock/qcom,videocc-sc7280.h (v2 5/6)
-Missed adding the dependency in commit text.
+No problem.
+
+> I have tested and reviewed your patch, great work!
+> I'm confident this can make v5.14, with the small nits fixed.
+
+Thank you for your review.
+
+I will answer to some of your comments and update accordingly my patch.
 
 Thanks,
-Dikshita
-
-On 2021-04-27 02:34, Rob Herring wrote:
-> On Mon, 26 Apr 2021 15:51:55 +0530, Dikshita Agarwal wrote:
->> Add a schema description for the venus video encoder/decoder on the 
->> sc7280.
->> 
->> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
->> ---
->>  .../bindings/media/qcom,sc7280-venus.yaml          | 158 
->> +++++++++++++++++++++
->>  1 file changed, 158 insertions(+)
->>  create mode 100644 
->> Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
->> 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dts:19:18:
-> fatal error: dt-bindings/clock/qcom,videocc-sc7280.h: No such file or
-> directory
->    19 |         #include <dt-bindings/clock/qcom,videocc-sc7280.h>
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> compilation terminated.
-> make[1]: *** [scripts/Makefile.lib:377:
-> Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dt.yaml]
-> Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1414: dt_binding_check] Error 2
-> 
-> See https://patchwork.ozlabs.org/patch/1470241
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
+Laurent
