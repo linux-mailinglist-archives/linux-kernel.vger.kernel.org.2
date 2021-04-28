@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B13E36E201
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0286D36E202
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhD1XNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 19:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhD1XNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 19:13:19 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D64C06138B;
-        Wed, 28 Apr 2021 16:12:32 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id l189-20020a1cbbc60000b0290140319ad207so7754736wmf.2;
-        Wed, 28 Apr 2021 16:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=73UMy4DJugiy03MSOWMHfDfMtGqM/h/aAW2Ff60I6w4=;
-        b=gse3lND6vmPWXDuLOR5ehuwQ0XBR83ulX3rGOrORaeEULAeWZqgRCmfJQ4JjAL0hLf
-         NCm81SgUNuyTxbQ88jymxZWHu4fQJordnglru2dnb5QcGWJH3YBReaAe3KoqpTsIqU+X
-         zbX2g0uZBY7kquDVSM6kmijVff0Y2iO7AhI5V1ZyMJu8AaqqwvXDY+Tt84vychD/dcbx
-         yN9R6CF90mEvHbQVwkOpzbOOFSLBx0IiNmiX3aeFn8DPSU/xO3NiWHJDwiy61BfD9HXC
-         Ch3YFsfyJeLs1vrCtFlX6IecsGcd9aEbBahdT0ZetOyP5BVJIpJfQN10EmWyhETht8pI
-         w8mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=73UMy4DJugiy03MSOWMHfDfMtGqM/h/aAW2Ff60I6w4=;
-        b=Iybu6/XiB00GDBj4uv9BEaySN0FqWPQUB0xKS+MTpWoaZGbS2QEttmy6/iOtu/WHfO
-         w/e8q+MqaI19DZGuKfvawaXPn5dQomZXY9hCO1U8zRp1zxhPcDJ5UA+eJm9/1Uu6IPam
-         FqF2bXw7ipIwFdWCi/dk3JiQ6MtWKh0ZGaclLP1lqvw49nfO3ZctLBboY/dpM8hkh6Yq
-         2Zzy4uoRWeuQbXw311XnGrW5vMCPJJx87bQUMt6jzWxrcyEg1dpG6Ur1hcLZehYxgs7W
-         iWiPAtrZhpybNu0azKBG1/G8DJFh7lxwwkQ+kYRr1lAH0HLfC/dc1vnPU2KYs0BFWZcc
-         JS2Q==
-X-Gm-Message-State: AOAM530Wh4sQCesXrPxZz8velupwI8vZ8kaF9Bp7K0A+dGuXEdRY8dKC
-        6WR0WsDEohR4cm7ZwzVgT3te9cN5jbjaikI=
-X-Google-Smtp-Source: ABdhPJw7cwYkLxKN62xnunPPs5vhtnfKLl4A+GLB3wsvQY0fPMOLggkWX4DldwT8Hqo2R9rEPq/9cg==
-X-Received: by 2002:a05:600c:3796:: with SMTP id o22mr6988775wmr.139.1619651550930;
-        Wed, 28 Apr 2021 16:12:30 -0700 (PDT)
-Received: from fedora.. (cpc101300-bagu16-2-0-cust350.1-3.cable.virginm.net. [86.21.41.95])
-        by smtp.gmail.com with ESMTPSA id m18sm1756238wrn.69.2021.04.28.16.12.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 16:12:30 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     joel@joelfernandes.org, jiangshanlai@gmail.com,
-        mathieu.desnoyers@efficios.com, rostedt@goodmis.org,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        Jules Irenge <jbi.octave@gmail.com>
-Subject: [PATCH] rcu: Add missing __releases() annotation
-Date:   Thu, 29 Apr 2021 00:12:19 +0100
-Message-Id: <20210428231219.48109-1-jbi.octave@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230286AbhD1XNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 19:13:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229805AbhD1XNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 19:13:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4189961448;
+        Wed, 28 Apr 2021 23:13:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619651584;
+        bh=90ka7s7/C2TIJhmQgY2tDcPJZNJzWj4aAMDVmUW8AhQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=dF9+I7/ezrD46An2bAwzXoomhwyL8X5P+GCPoUOoTruzoo4v7OmlT6zCPCFjALQsc
+         va+JjquM7ZKPND3KhRKfrhoTYEBvrg3cwVTCyDTISelHf8gXviMHdvGQ+EbfqGnasC
+         DfpE7YVbq+tlOXY4tpBKUPqkhea4zLr77izteWm60zRZaANvyBNDj5ghA9HwWHRjDo
+         Bdty3Zrs1rH2LsNxVmKfzeEX2EQbLTgkN9nq0XpdJuERMgGrhkJj0YYdOJUM4id2nr
+         zN7s/Ojg0592QP9NFwg4pPO/h9WBtWfjpd8ujTmSU3zqXMplKk4ySjjuUQOBBZ7RRv
+         B5tG0cvxdP6bQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2E35960A23;
+        Wed, 28 Apr 2021 23:13:04 +0000 (UTC)
+Subject: Re: [GIT PULL] Mailbox changes for v5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CABb+yY0j+ENA=z40pCEZxGYJM-hXVxiYK0CU-OB4aA24SmV5nw@mail.gmail.com>
+References: <CABb+yY0j+ENA=z40pCEZxGYJM-hXVxiYK0CU-OB4aA24SmV5nw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <CABb+yY0j+ENA=z40pCEZxGYJM-hXVxiYK0CU-OB4aA24SmV5nw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.linaro.org/landing-teams/working/fujitsu/integration.git tags/mailbox-v5.13
+X-PR-Tracked-Commit-Id: 2335f556b3afadbee6548456f543f53ac3d1af42
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d8201efe75e13146ebde433745c7920e15593baf
+Message-Id: <161965158412.11634.6190199962132336537.pr-tracker-bot@kernel.org>
+Date:   Wed, 28 Apr 2021 23:13:04 +0000
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse report a warning at rcu_print_task_stall()
+The pull request you sent on Wed, 28 Apr 2021 11:02:24 -0500:
 
-"warning: context imbalance in rcu_print_task_stall - unexpected unlock"
+> git://git.linaro.org/landing-teams/working/fujitsu/integration.git tags/mailbox-v5.13
 
-The root cause is a missing annotation at  rcu_print_task_stall() function
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d8201efe75e13146ebde433745c7920e15593baf
 
-Add the missing __releases(rnp->lock) annotation
+Thank you!
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- kernel/rcu/tree_stall.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 59b95cc5cbdf..18b2d5274d65 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -314,6 +314,7 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  * tasks blocked within RCU read-side critical sections.
-  */
- static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
-+	__releases(rnp->lock)
- {
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	return 0;
 -- 
-2.31.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
