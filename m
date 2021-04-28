@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA5636DB44
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7421836DB48
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhD1PLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhD1PLR (ORCPT
+        id S237192AbhD1PLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:11:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231524AbhD1PLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:11:17 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BAEC061573;
-        Wed, 28 Apr 2021 08:10:30 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x7so63410142wrw.10;
-        Wed, 28 Apr 2021 08:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=caPcWX0HvCbUGxoKUybXsnQMiEeBgCwT/cgikCWDkpc=;
-        b=ZTYFlakBWBp2Opq/jD01M4nUgx0ti9JQ4aFD9Q+GvDNrPY6zj6++mTcAniLmsOC6p3
-         n3ZxHDzViQ1KclzV2l64XWnJooQN+CqlOSot0SwWzQwkczNOg4ujcabw/Y/Q7exfiHYy
-         IUcm65kebe92ZvH4PLQ9tukBAmZSrm52uEUoiAVyHlEDKf90TSlDbMFGrQRVCEomxUdN
-         0+0HgeOrajuXqr/Xbda3LkvUKjm/9/OT2jdoRtNoMCCEBUx4YgN/HzUeFztmUnWiRtsr
-         gPmTeMAB2S6A0aiJvtoOipgwQK7TFt7Ow9i8l6crZLd4fBdshk4uQzOVN+b8xpRuujrC
-         bHrg==
+        Wed, 28 Apr 2021 11:11:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619622667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T807XqCTr78fh+zT3Qv4di+WLGWcFE6R3h9u02iLdq0=;
+        b=OZ2Z7psUTHyhXPnamxMkJa7+0M5XQddubzY18T/sJG3h0Ze+iQAvKUbpuz3qR3pu5pASiM
+        ZxTeNO8OikSVwzo6bJuEkkewuJWyILJPFtcea4WjisMPSHUPn/CtcW5btv7gcpVZ33bE85
+        pGtM6+nntapuujEE3g0X/ghQ5xYLCIw=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-txxEQ9AcPAKViy8fmUzv5w-1; Wed, 28 Apr 2021 11:11:05 -0400
+X-MC-Unique: txxEQ9AcPAKViy8fmUzv5w-1
+Received: by mail-qt1-f200.google.com with SMTP id h12-20020ac8744c0000b02901ba644d864fso15377796qtr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:11:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=caPcWX0HvCbUGxoKUybXsnQMiEeBgCwT/cgikCWDkpc=;
-        b=lgF4p3uKfwq03VeWVWlDowtUFin0K8fQd0ATxlHUSBdR8Lt+BUu2LsBrvzGuzi8xVO
-         hll+d4oBsxT/bSgoz2cQbCSzFMZA4TsyjuWSiDFfdpZoDUy73FBUu2jTpta7oesDs5EQ
-         FWBZcGCE4PRoJX40JhjCj1d23oCS0u4xys/U79jx+8MayL9MiVnwq/idhootZlIa44t2
-         9K4bfUIt0rTBN7T6PRSBq38bDM3b5iOcsx3IDoWAo2mt14EtyvB4N1AJFDSYwVdGlPuj
-         DUSPvLsnkrPVApEsZsgoG0S2sLQkpG3Dby8K93j2ST7I4ercpau1TKN1URsdCEQ5Q4kE
-         xvyg==
-X-Gm-Message-State: AOAM532KAgodls0egq8jcAtOWmEiQVOPNxJjGqG9Nkf3m2WSr2bVyzEh
-        lT7BcVpLWKFFKkq124HXlKmsDL60t0SqGJEEmvY=
-X-Google-Smtp-Source: ABdhPJxVN5btpbhyyFI3SSpFSYUJhcM6me5+lef8qqcMI92e90PN00NzDC1AMx2HcHRG/qI8ZSgbTRstZBP73rH4vZs=
-X-Received: by 2002:adf:f190:: with SMTP id h16mr22688829wro.393.1619622629615;
- Wed, 28 Apr 2021 08:10:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T807XqCTr78fh+zT3Qv4di+WLGWcFE6R3h9u02iLdq0=;
+        b=uE2LiL+fBPgukQt4NTYatQDSPjunmSSaP/BU7e/fhF0CBu+2Qk2QruKW/kLjN5ue+s
+         0PENHUcOKSskP7mvB7iLC5x6QMEfeZF5oofWGPQyQhtcE4fbtdvat0f+euttVMydk6+M
+         pm9tKf6yAOMHNI0iXzrz8oWI5kurl2kcjwY+fRHiu0Ti1LDtV+j6TvAXcQPW3GpuwxR1
+         lqpk5KdcOOYG83cTBaJ5g1K9e+FEdEfPAms4cokrd+y25ZzC8MiaUTBcOlX6Sf7w7ir2
+         BUNGMDqS3JFGA3WyI990lPWSGQNZuKR9t6SbgNyxkMy3IaHvIv3Ceec6qO4UBcamwWfo
+         3bEg==
+X-Gm-Message-State: AOAM532xQOC9ZgJCm5NvKnUtneYye2QEqRCpSZvAXZFhUlknQf/OJB4s
+        AKYvrCBxSVFTCSz/HJ94kROPjrBIz/5HVp0PyLfH8ccwD+oGtAuliDSf5BvErUlcA1LdieBhiTp
+        SY0weD6al9qBOfohknEokSPOM
+X-Received: by 2002:ac8:7a6f:: with SMTP id w15mr27072605qtt.153.1619622664721;
+        Wed, 28 Apr 2021 08:11:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmlz6i+k8GL+CodVGGb/U/hb9IU3h8zgSIAJf+VwEX/cqDhpeMEGloDjVttPcXhjj2HOgzLg==
+X-Received: by 2002:ac8:7a6f:: with SMTP id w15mr27072578qtt.153.1619622664510;
+        Wed, 28 Apr 2021 08:11:04 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
+        by smtp.gmail.com with ESMTPSA id b17sm194720qto.88.2021.04.28.08.11.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 08:11:04 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 11:11:01 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v5 05/10] userfaultfd/shmem: advertise shmem minor fault
+ support
+Message-ID: <20210428151101.GC6584@xz-x1>
+References: <20210427225244.4326-1-axelrasmussen@google.com>
+ <20210427225244.4326-6-axelrasmussen@google.com>
 MIME-Version: 1.0
-References: <20210428135929.27011-1-justin.he@arm.com> <20210428135929.27011-2-justin.he@arm.com>
-In-Reply-To: <20210428135929.27011-2-justin.he@arm.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Apr 2021 18:10:13 +0300
-Message-ID: <CAHp75Vfx8aGQGJR58o49t2bOtu5adkrSRfWW9bb63OBoePcj1g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] lib/vsprintf.c: Make %p{D,d} mean as much components
- as possible
-To:     Jia He <justin.he@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210427225244.4326-6-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 5:56 PM Jia He <justin.he@arm.com> wrote:
->
-> From: Linus Torvalds <torvalds@linux-foundation.org>
+On Tue, Apr 27, 2021 at 03:52:39PM -0700, Axel Rasmussen wrote:
+> Now that the feature is fully implemented (the faulting path hooks exist
+> so userspace is notified, and the ioctl to resolve such faults is
+> available), advertise this as a supported feature.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Hmm... Okay.
-
-> We have '%pD'(no digit following) for printing a filename. It may not be
-> perfect (by default it only prints one component.
->
-> %pD4 should be more than good enough, but we should make plain "%pD" mean
-> "as much of the path that is reasonable" rather than "as few components as
-> possible" (ie 1).
-
-Sorry, but from above I didn't get why.
-
-The commit message tells only about %pD, but patch changes behaviour
-of the ~100 or so users of "%pd" without any explanation.
-
-Besides that the patch is prepended only by one change (which is also
-not related to %pD), while we have ~30 users which behaviour got
-changed.
-
+Acked-by: Peter Xu <peterx@redhat.com>
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Peter Xu
+
