@@ -2,181 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0997C36DE3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A9C36DE41
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241612AbhD1R1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:27:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47217 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241602AbhD1R1K (ORCPT
+        id S241603AbhD1R2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232057AbhD1R2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:27:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619630784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gG7pVgMu1dn0fnwqtPsC3vyUDfxQRZUfZPSBpjAVrzc=;
-        b=GWfdqDfnvH9tDGe9ldzevIZcM6OHLJLwsAKW3AaTCCuLZ1UUV9dgbuZ5W/bojJPahVvigh
-        936LOkvRP8NtSLj5kmqarDs/UNKPe3rcP2LrShLcYd3AsrXisCxP6K4FmrFUDxrb6q7G22
-        alO66e7WYR//epDZqDhy2/0BI/cKmMU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-vGzJbsVYMvm_Nyj534Hrtw-1; Wed, 28 Apr 2021 13:26:23 -0400
-X-MC-Unique: vGzJbsVYMvm_Nyj534Hrtw-1
-Received: by mail-qv1-f69.google.com with SMTP id f17-20020a05621400d1b029019a6fc802f7so28630243qvs.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:26:20 -0700 (PDT)
+        Wed, 28 Apr 2021 13:28:16 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76499C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:27:29 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id 93-20020adf83660000b029010d6b1e0949so2139772wrd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=fOcUtl0F4jF4M8hpSc7lJv+2aC5W42lSCrpVyPBZlj4=;
+        b=Lw4h45m6Kl3SUh3Yh7+RRQVaQorf0sDKIRMPTZw5D/NaFpmbNopX+/85rIXJWMoyO2
+         JOCQlUiPrmbxFFR70InDEEzhhUWAhosDAvtBbidPBYZ/VwTRnkM6V8Lmvd56J9PG7B19
+         umdu2R44oCA0LhodR2U5/KC+SWkHmb56441h1TAiw3Cnex//A4IHDwYfroq/Jma/w/li
+         mTsCMr0q6yFJBUtHLjznJnyxV7UxgK69tVhOkehSheK31Gjw7K0ZdKwP9O4KVhsEPFnN
+         v4r0Tv5f5mXjSBoqogorTFnCgu0NPnHeSDX9Fv0X6lxXb50ITqt8Y2kW0x4VH787p4B5
+         Q/Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gG7pVgMu1dn0fnwqtPsC3vyUDfxQRZUfZPSBpjAVrzc=;
-        b=naVQrqYNwAyU5UpUq94m5FHAe05U/XJnHOB4+xLTKmcTZ750WbnW9uFR85LUDqiDvd
-         /co0jXYpYpCB6OmLuEt3d7/+473okY9gUd1Oa3E2vG1elbjGFnIIgllBag06abO5KtwY
-         KejG5cV9yy1tYNAjPhlx3Crio1tZzWg6gkBZxlTyZU/zQBhyw+BmUJbybbrciGrNYvsI
-         UEx1DBMHNKLTBPP7T925JJge3peOOPvbPsVhZzw1FeU9KCk5RFs3UUwVmq51KL3NXYXx
-         H6xPcYUtUX3pfZoiSgfhSjN/KzzMl2ZcsLvGHE7DIserUUDgDeLeUu7MZtLxspp7Uh77
-         VAlA==
-X-Gm-Message-State: AOAM532p4uw6wSZkKD5nGbm/tLIyM06DUehlll7jmg+UtrEsypmFL92K
-        d7LLzEMHPTThOuebJTnnNPwWaTFgA9i1gsaXZ9EBBoaev4yRxurxw/NJ2t/9WGXHYmtMhYTXMj4
-        N15M4mX20EPlcd+6/IhvY3cv+
-X-Received: by 2002:ac8:490c:: with SMTP id e12mr27530984qtq.351.1619630779648;
-        Wed, 28 Apr 2021 10:26:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwu2q1hIZae88kkzy/WSBPDkP1/cW/HkadfScxYQv9g52d1g+ZXvDeMNI33o6wcG2j8+Yaqzg==
-X-Received: by 2002:ac8:490c:: with SMTP id e12mr27530954qtq.351.1619630779252;
-        Wed, 28 Apr 2021 10:26:19 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id m14sm426385qtq.59.2021.04.28.10.26.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 10:26:18 -0700 (PDT)
-Subject: Re: [PATCH] bus: fsl-mc: fix improper free of mc_dev
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     stuyoder@gmail.com, laurentiu.tudor@nxp.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <20210427183624.2790305-1-trix@redhat.com>
- <CAKwvOd=LSs6gdGj-FAuCTrPrH6ik6PVxYX+_tFK9G1OW0vdMAA@mail.gmail.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <975e8af4-d1b6-0440-7447-1e06e514ca8a@redhat.com>
-Date:   Wed, 28 Apr 2021 10:26:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CAKwvOd=LSs6gdGj-FAuCTrPrH6ik6PVxYX+_tFK9G1OW0vdMAA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=fOcUtl0F4jF4M8hpSc7lJv+2aC5W42lSCrpVyPBZlj4=;
+        b=LDX4XcTZNfdEgN46588DklREz5gOMpMHer2hsE4AlVpfYwhX1e6VP/0ALcCAyGmsTQ
+         AYh50WhBSja2nNdmb/1T5WQvqoXXNtUOINXVn8POn7EibTDAjPnMzfkxun/nQN2u7Ghg
+         0MNtPCyGZpHZNT5945Qr4o5khf4cjuRbYTvFNWBGTvFYDR0l5mRYuuH3nadkEADdNTFu
+         VPEVFh6sOQUf8YFgiAe6AOcUsQ4d/z9XEuoJkzde4dZyWFTFdcMtkcsZnL0JDLo4g/ZN
+         aGuTDggwf+ymgTvooDzvL3wOJ/0vOyEYqt+CsUoWuy4GcHNCLsXDzVAi8uIyqbQer6BF
+         VL+g==
+X-Gm-Message-State: AOAM533XHrt9svilDV2+Ge88D/kOTl5Lr289s/FHZmho3tcTlSjwB3Np
+        2iv+mYAmRI/EWBOhbov+FzC9hWMDijlR
+X-Google-Smtp-Source: ABdhPJzKoo3nM4B4x3dY3Iq7TaRwxKn5S/3BZ9a6T/xmzwCIVP1mr8CLkCzNXLL9WTd8hjtlISzH/eFNfm15
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a1c:c915:: with SMTP id
+ f21mr630389wmb.0.1619630846173; Wed, 28 Apr 2021 10:27:26 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 17:27:22 +0000
+Message-Id: <20210428172722.3908735-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH] sched: Fix out-of-bound access in uclamp
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        juri.lelli@redhat.com
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, qais.yousef@arm.com,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Util-clamp places tasks in different buckets based on their clamp values
+for performance reasons. However, the size of buckets is currently
+computed using a rounding division, which can lead to an off-by-one
+error in some configurations.
 
-On 4/27/21 12:19 PM, Nick Desaulniers wrote:
-> On Tue, Apr 27, 2021 at 11:36 AM <trix@redhat.com> wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> Clang static analysis reports this error
->>
->> fsl-mc-bus.c:891:2: warning: Attempt to free released memory
->>          kfree(mc_dev);
->>          ^~~~~~~~~~~~~
->>
->> In this block of code
->>
->> if (strcmp(obj_desc->type, "dprc") == 0) {
->> ..
->>    mc_bus = kzalloc(..)
->>    mc_dev = &mc_bus->mc_dev;
-> Thanks for the patch.
->
-> Aren't the allocations for mc_bus and mc_dev mutually exclusive based
-> on that conditional? If so...
->
->> mc_dev is not alloc-ed, so it should not be freed.
->> Old handler triggers a false positive from checkpatch, so add a
->> comment and change logic a bit.
->>
->> Fixes: a042fbed0290 ("staging: fsl-mc: simplify couple of deallocations")
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>   drivers/bus/fsl-mc/fsl-mc-bus.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
->> index 380ad1fdb745..fb3e1d8a7f63 100644
->> --- a/drivers/bus/fsl-mc/fsl-mc-bus.c
->> +++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
->> @@ -887,8 +887,10 @@ int fsl_mc_device_add(struct fsl_mc_obj_desc *obj_desc,
->>
->>   error_cleanup_dev:
->>          kfree(mc_dev->regions);
->> +       /* mc_dev is only allocated when it is not part of mc_bus */
->> +       if (!mc_bus)
->> +               kfree(mc_dev);
->>          kfree(mc_bus);
->> -       kfree(mc_dev);
-> The error handling here seems quite wrong (regardless of your patch).
-> mc_dev->regions is allocated by fsl_mc_device_get_mmio_regions() IIUC.
-> Wouldn't the first `goto error_cleanup_dev;` taken end up passing an
-> uninitialized pointer to kfree()?
+For instance, with 20 buckets, the bucket size will be 1024/20=51.2,
+rounded to the closest value: 51. Now, a task with a clamp of 1024 (as
+is the default for the min clamp of RT tasks) will be mapped to bucket
+id 1024/51=20 as we're now using a standard integer division. Sadly,
+correct indexes are in range [0,19], hence leading to an out of bound
+memory access.
 
-On the first goto, mc_dev->regions, because of the kzalloc, the value 
-would be
+Fix this by using a rounding-up division when computing the bucket size.
 
-mc_bus->mc_dev.regions , should be 0 or
+Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+Suggested-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
 
-mc_dev->regions, which also should be 0
+---
 
-and kfree handles 0.
+This was found thanks to the SCHED_WARN_ON() in uclamp_rq_dec_id() which
+indicated a broken state while running with 20 buckets on Android.
 
->
-> what if `strcmp(obj_desc->type, "dprc") == 0` is false? We allocate
-> `mc_dev`, but then call kfree on `mc_bus`?
+Big thanks to Qais for the help with this one.
+---
+ kernel/sched/core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-mc_bus is initialized to NULL, which makes the call to kfree safe.
-
-The original handler was
-
-if (mc_bus)
-
-   kfree(mc_bus)
-
-else
-
-   kfree(mc_dev)
-
-I tried this first, which works, but checkpatch throw a warning for 
-kfree(mc_bus).
-
-This change makes the 'else' with the !mc_bus
-
-> I think it would be safer to locally save the result of
-> `strcmp(obj_desc->type, "dprc") == 0`, then check that throughout this
-the local mc_bus is only set in this block, so I don't think another 
-local is needed.
-> function, including the error handling at the end, or use multiple
-> labels to unwind the allocations correctly.
-
-The goto's could be finer grained because some of the mc_dev->regions 
-are known to be unallocated.
-
-Changing these would not be a fix and it could be argued the simpler, 
-less efficent error handling works as designed.
-
-Tom
-
->
->>          return error;
->>   }
->> --
->
-> --
-> Thanks,
-> ~Nick Desaulniers
->
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 98191218d891..ec175909e8b0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -920,8 +920,7 @@ static struct uclamp_se uclamp_default[UCLAMP_CNT];
+  */
+ DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+ 
+-/* Integer rounded range for each bucket */
+-#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
++#define UCLAMP_BUCKET_DELTA DIV_ROUND_UP(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+ 
+ #define for_each_clamp_id(clamp_id) \
+ 	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
