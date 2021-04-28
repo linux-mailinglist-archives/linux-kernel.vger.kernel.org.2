@@ -2,78 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85EA36DBA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E03C36DB7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhD1P2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:28:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2893 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhD1P2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:28:43 -0400
-IronPort-SDR: lBaNVByv1EdhK4rWg/WoN5iS2JUjTREr9FrY+g1EUP6A7yQ48/8q0xg9Jt1XpHib+xhIi/3vPs
- 7W1A8YHISBeA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="176246352"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="176246352"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 08:27:51 -0700
-IronPort-SDR: S9Sico2+xdjLqJbZr8Rrxja1peIv+AHCGNigg/J9F/+P7epHYuQ2uWp+UVdqVxCv2pHJBUw1Tf
- VO7oj+gq6UzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="430353047"
-Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
-  by orsmga008.jf.intel.com with ESMTP; 28 Apr 2021 08:27:48 -0700
-Date:   Wed, 28 Apr 2021 23:23:39 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [LKP] Re: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops
- -5.2% regression
-Message-ID: <20210428152339.GA2282261@pl-dbox>
-References: <20210427090013.GG32408@xsang-OptiPlex-9020>
- <87fszcnecr.ffs@nanos.tec.linutronix.de>
- <20210428050758.GB52098@shbuild999.sh.intel.com>
- <d392cc91241641df865217d82368eba8@hisilicon.com>
- <20210428080819.GB53821@shbuild999.sh.intel.com>
- <87o8dyn5xr.ffs@nanos.tec.linutronix.de>
+        id S234974AbhD1PZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhD1PZ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:25:56 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE0EC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:25:10 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so4940747wmb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/AVZoGgHHG5L2/L0aYz6MwosCvu+AQ1gWRwjr/PIhwY=;
+        b=dMRxeJPOeBuBiCyg+Tzyqg4F48X2Pcri1aTdKqz6Fm4a2q7C75mzKuobgRNLBh2Llb
+         vTjjSJLMRwFXXI+eID6fLhCFc8lz7NOkesvdTrWITUofipbRUZKSqKjzCSow5HqPbM2W
+         aUlbXxZuI16x4lZyXi+ndH2l+qxnNoipaR0Rs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/AVZoGgHHG5L2/L0aYz6MwosCvu+AQ1gWRwjr/PIhwY=;
+        b=jy7Crtpfh4T4F4GVVzlVTB5uOmD4T+GYtHNekGDCnlo1IqVAbycVtaIsEKqDeuUXk2
+         P7Dd/LH5tXJJBZgri0PyC8QDs/K2dmcIalxSIPLHSqxsfdEZOaT+Y+5EZLGtMMCDDwsp
+         TlYmoQ6kA4T3h3VS1tjlA+fChyMidUM9UgdyEmmVWsPIfvuPdly6jtFMSmz+WTHYCq2b
+         PU+rCG37/FJu3oxsZ5Ews+ftHOUkkuH6BtyYQ6u63XyJsYWdMhdbc01o1UWUKrmzUM3/
+         iHWslp5+INJzJpDzGsTonDK2lVlUVIQ7Qf+a18GXfo1HCr5AYTfKVHmx3siBM/1Ajb0H
+         Hpsg==
+X-Gm-Message-State: AOAM530nqG+RZIYOx/cDD9XL5MnTFavK9Ej3AxRr7FvAiP92jd7X+KSm
+        RYKm+E6uPP/jGC1wtp57Gp+N/A==
+X-Google-Smtp-Source: ABdhPJxxtzzldycl1Z+eZPKNnM8aZoaDbV3OSCdmjz83Qp+UE83ke43vSEURLyyLxbRsKhrbBn6DtA==
+X-Received: by 2002:a1c:1bcc:: with SMTP id b195mr18849024wmb.108.1619623508762;
+        Wed, 28 Apr 2021 08:25:08 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:e04e:f47f:2641:7707])
+        by smtp.gmail.com with ESMTPSA id d2sm91471wrs.10.2021.04.28.08.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 08:25:08 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix the snprintf test
+Date:   Wed, 28 Apr 2021 17:25:01 +0200
+Message-Id: <20210428152501.1024509-1-revest@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8dyn5xr.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 10:56:16AM +0200, Thomas Gleixner wrote:
-> On Wed, Apr 28 2021 at 16:08, Feng Tang wrote:
-> > On Wed, Apr 28, 2021 at 07:01:35AM +0000, Song Bao Hua (Barry Song) wrote:
-> >
-> >> But it is still an irrelevant problem.
-> > Yes, the commit itself has no problem. And my personal thought
-> > is no further action is needed. 
-> 
-> The commit does not need any further action, but this testing stuff
-Sorry Thomas for confusion and trouble caused by this. We will take it
-seriously to refine the report process for this category (alignment or
-cache behavior) of performance change, to avoid meaningless ones.
+The BPF program for the snprintf selftest runs on all syscall entries.
+On busy multicore systems this can cause concurrency issues.
 
-Thanks
+For example it was observed that sometimes the userspace part of the
+test reads "    4 0000" instead of "    4 000" (extra '0' at the end)
+which seems to happen just before snprintf on another core sets
+end[-1] = '\0'.
 
-> really needs further action because we can't differentiate between real
-> regressions and these bogus reports anymore.
-> 
-> Thanks,
-> 
->         tglx
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+This patch adds a pid filter to the test to ensure that no
+bpf_snprintf() will write over the test's output buffers while the
+userspace reads the values.
+
+Fixes: c2e39c6bdc7e ("selftests/bpf: Add a series of tests for bpf_snprintf")
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ tools/testing/selftests/bpf/prog_tests/snprintf.c | 2 ++
+ tools/testing/selftests/bpf/progs/test_snprintf.c | 5 +++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+index a958c22aec75..dffbcaa1ec98 100644
+--- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
++++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+@@ -43,6 +43,8 @@ void test_snprintf_positive(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 		return;
+ 
++	skel->bss->pid = getpid();
++
+ 	if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
+ 		goto cleanup;
+ 
+diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
+index 951a0301c553..e35129bea0a0 100644
+--- a/tools/testing/selftests/bpf/progs/test_snprintf.c
++++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
+@@ -5,6 +5,8 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
++__u32 pid = 0;
++
+ char num_out[64] = {};
+ long num_ret = 0;
+ 
+@@ -42,6 +44,9 @@ int handler(const void *ctx)
+ 	static const char str1[] = "str1";
+ 	static const char longstr[] = "longstr";
+ 
++	if ((int)bpf_get_current_pid_tgid() != pid)
++		return 0;
++
+ 	/* Integer types */
+ 	num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
+ 				"%d %u %x %li %llu %lX",
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
