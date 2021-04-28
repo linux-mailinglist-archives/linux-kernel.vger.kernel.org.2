@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9769336D757
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54FC36D761
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236539AbhD1MbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:31:13 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:57374 "EHLO mail1.perex.cz"
+        id S237650AbhD1Mci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:32:38 -0400
+Received: from mx0.infotecs.ru ([91.244.183.115]:53404 "EHLO mx0.infotecs.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232569AbhD1MbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:31:11 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0401CA003F;
-        Wed, 28 Apr 2021 14:30:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0401CA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1619613024; bh=YWEISeRM4UBax5S8lMOST4XvaXkUT5rzuNDl05TS+BY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YyK4ZOSn/yoZwRuXvj8Uq51Ln8y8L4PRvWUzvaFM0/ykRp8QjYxGcR7+MFO5ROee2
-         DNbCsS5rQx078QHFIg4MbL3l/mfbHJwnrwFpzEBobUn7fWrvnzbwZRiLNce/2kMBFI
-         nSmnXvqrDuTa3rEcq82O4/wRnXsuFEI1/+dBj7rM=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed, 28 Apr 2021 14:30:14 +0200 (CEST)
-Subject: Re: [PATCH] drivers: pnp: proc.c: Handle errors while attaching
- devices
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     bkkarthik <bkkarthik@pesu.pes.edu>,
-        Anupama K Patil <anupamakpatil123@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        kernelnewbies@kernelnewbies.org
-References: <20210424194301.jmsqpycvsm7izbk3@ubuntu> <YIZJwkux0ghJ8k9d@unreal>
- <20210426175031.w26ovnffjiow346h@burgerking>
- <59a5d631-6658-2034-06c4-467520b5b9f7@perex.cz> <YIlTY8p4kpkORPfl@unreal>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <19e8bd56-e24d-551e-9de2-57675541ee3f@perex.cz>
-Date:   Wed, 28 Apr 2021 14:30:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235956AbhD1Mcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:32:36 -0400
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+        by mx0.infotecs.ru (Postfix) with ESMTP id 46D101395850;
+        Wed, 28 Apr 2021 15:31:50 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 46D101395850
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+        t=1619613110; bh=FmBlWo8T/7J6U7RhItShLxG8m/sdraW8iuK14mDW0FI=;
+        h=Date:From:To:CC:Subject:From;
+        b=N/iybFB8kfovTg+AAzNuDZDbrU7Qr4QYC/u2wAiU2GLwwXbCg0H3t+LW9BmsFvnYY
+         Bs68O62xBYWc1JD7Q7hxnZTo98mD9lCquE97EwBZSmPyM8iZrWyrzQJvisQ9H0fs+t
+         rLFgWYr+B66F9ORjXrZY4PypFhDPBklasuey6EbU=
+Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
+        by mx0.infotecs-nt (Postfix) with ESMTP id 447D63029CD2;
+        Wed, 28 Apr 2021 15:31:50 +0300 (MSK)
+Date:   Wed, 28 Apr 2021 15:30:00 +0300
+From:   Pavel Balaev <balaevpa@infotecs.ru>
+To:     <netdev@vger.kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>
+Subject: [PATCH v6 net-next 0/3] net: multipath routing: configurable seed
+Message-ID: <YIlVSJaqB1ChYG92@rnd>
 MIME-Version: 1.0
-In-Reply-To: <YIlTY8p4kpkORPfl@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+X-Originating-IP: [11.0.8.107]
+X-EXCLAIMER-MD-CONFIG: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 163368 [Apr 28 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: BalaevPA@infotecs.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 444 444 810d227eb39db4b6b1b4a1d2ddb57b8d8d084f93, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/04/28 11:08:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/28 07:03:00 #16582427
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 28. 04. 21 v 14:21 Leon Romanovsky napsal(a):
-> On Wed, Apr 28, 2021 at 02:04:49PM +0200, Jaroslav Kysela wrote:
->> Dne 26. 04. 21 v 19:50 bkkarthik napsal(a):
->>> On 21/04/26 08:04AM, Leon Romanovsky wrote:
->>>> On Sun, Apr 25, 2021 at 01:13:01AM +0530, Anupama K Patil wrote:
->>>>> isapnp_proc_init() does not look at the return value from
->>>>> isapnp_proc_attach_device(). Check for this return value in
->>>>> isapnp_proc_detach_device().
->>>>>
->>>>> Cleanup in isapnp_proc_detach_device and
->>>>> isapnp_proc_detach_bus() for cleanup.
->>>>>
->>>>> Changed sprintf() to the kernel-space function scnprintf() as it returns
->>>>> the actual number of bytes written.
->>>>>
->>>>> Removed unnecessary variables de, e of type 'struct proc_dir_entry' to
->>>>> save memory.
->>>>
->>>> What exactly do you fix for such an old code?
->>>
->>> I was not aware that this code is so old. This fix was made after checkpatch reported assignment inside an if-statement.
->>> Please ignore this patch if th change is not necessary as the code is probably not being used anywhere :)
->>>
->>> Maybe the code has to be marked as obsolete in the MAINTAINERS file to prevent patches being sent?
->>>
->>>>
->>>>>
->>>>> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
->>>>> Co-developed-by: B K Karthik <bkkarthik@pesu.pes.edu>
->>>>> Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
->>>>> Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
->>>>> ---
->>>>>  drivers/pnp/isapnp/proc.c | 40 +++++++++++++++++++++++++++++----------
->>>>>  1 file changed, 30 insertions(+), 10 deletions(-)
->>>>>
->>>>> diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
->>>>> index 785a796430fa..46ebc24175b7 100644
->>>>> --- a/drivers/pnp/isapnp/proc.c
->>>>> +++ b/drivers/pnp/isapnp/proc.c
->>>>> @@ -54,34 +54,54 @@ static const struct proc_ops isapnp_proc_bus_proc_ops = {
->>>>>  	.proc_read	= isapnp_proc_bus_read,
->>>>>  };
->>>>>  
->>>>> +static int isapnp_proc_detach_device(struct pnp_dev *dev)
->>>>> +{
->>>>> +	proc_remove(dev->procent);
->>>>> +	dev->procent = NULL;
->>>>> +	return 0;
->>>>> +}
->>>>> +
->>>>> +static int isapnp_proc_detach_bus(struct pnp_card *bus)
->>>>> +{
->>>>> +	proc_remove(bus->procdir);
->>>>> +	return 0;
->>>>> +}
->>>>
->>>> Please don't add one line functions that are called only once and have
->>>> return value that no one care about it.
->>>
->>> These were only intended for a clean-up job, the idea of this function came from how PCI handles procfs.
->>> Maybe those should be changed?
->>
->> Which code you refer? I see:
->>
->>        for_each_pci_dev(dev)
->>                 pci_proc_attach_device(dev);
-> 
-> He talks about isapnp_proc_detach_*() functions.
+This is the sixth version of the mpath seed series.
 
-But only this patch introduced those functions. The pci_proc_init() code does
-not call pci_proc_detach_*() functions and ignores the allocation errors, too.
-I don't think that this cleanup code is required.
+This patch series adds ability for a user to assign seed value
+to multipath route hashes.
 
-					Jaroslav
+changes v6:
+- Fix author name and surname position
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+changes v5:
+- patch was splited to patch series
+- remove CONFIG_IP_ROUTE_MULTIPATH define from flow_multipath_hash_from_keys(),
+  it used in both IPv4/IPv6 protos.
+
+The mainlining discussion history of this branch:
+v5: https://lore.kernel.org/netdev/YIgu4hLNSa69%2FoFZ@rnd/
+v4: https://lore.kernel.org/netdev/YILPPCyMjlnhPmEN@rnd/
+
+Pavel Balaev (3):
+      net/ipv4: multipath routing: configurable seed
+      net/ipv6: multipath routing: configurable seed
+      selftests/net/forwarding: configurable seed tests
+
+ Documentation/networking/ip-sysctl.rst             |  14 +
+ include/net/flow_dissector.h                       |   2 +
+ include/net/netns/ipv4.h                           |   2 +
+ include/net/netns/ipv6.h                           |   3 +
+ net/core/flow_dissector.c                          |   7 +
+ net/ipv4/route.c                                   |  10 +-
+ net/ipv4/sysctl_net_ipv4.c                         |  97 ++++++
+ net/ipv6/route.c                                   |  10 +-
+ net/ipv6/sysctl_net_ipv6.c                         |  96 ++++++
+ tools/testing/selftests/net/forwarding/Makefile    |   1 +
+ tools/testing/selftests/net/forwarding/lib.sh      |  28 ++
+ .../net/forwarding/router_mpath_seed.sh (new +x)   | 347 +++++++++++++++++++++
+ 12 files changed, 615 insertions(+), 2 deletions(-)
+
