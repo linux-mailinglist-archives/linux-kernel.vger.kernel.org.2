@@ -2,55 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D192236E030
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAF036E034
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 22:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241866AbhD1UU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 16:20:56 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:60653 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241851AbhD1UUz (ORCPT
+        id S241876AbhD1UWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 16:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240497AbhD1UWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:20:55 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 3B541240008;
-        Wed, 28 Apr 2021 20:20:07 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 22:20:06 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     youling257 <youling257@gmail.com>
-Cc:     hdegoede@redhat.com, a.zummo@towertech.it,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 04/17] rtc: cmos: remove cmos_rtc_ops_no_alarm
-Message-ID: <YInDdgd2r1SDdv4k@piout.net>
-References: <20210110231752.1418816-5-alexandre.belloni@bootlin.com>
- <20210428184946.23999-1-youling257@gmail.com>
+        Wed, 28 Apr 2021 16:22:18 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD99C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:21:33 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id v13so3923639ilj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 13:21:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3FlfJuCO/i0lHXz9Yi8JuX0LHEp/FCSt5EvXf/XQhbw=;
+        b=Twe/v+kPHslIBdnujIpFoTmjqKiXz3Qw86igYBt6JKw9MRVlLASnJezyH+2HX0D5/y
+         1S+ZoIf/DhA5jzqOmWyOdNWhi372TPnKzo2U1odOVbpIh9peetD1cWRUTXNOuHiur8RF
+         CTAf8QNFFktBK+T6i7jMTFhiGslZ/9XyFimZ73V5HSutx9tH2bKP85o42syoYOj9MinU
+         N7vUUXLASROmijnkzZEYDKhs1CIZcc88YyxWOpDVZ46m4dn3JJAqyEJPLohCA9ebVbju
+         OYL1e2aCMN1Gi1lP9HTfavKkJuXnOqd3N6Tdd5CHP0iPUiI120LMpSdC1aXMgJjhs6dD
+         oW4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3FlfJuCO/i0lHXz9Yi8JuX0LHEp/FCSt5EvXf/XQhbw=;
+        b=aWFzxEuaqQcvbIB+5ygUk5PtyBD52h86ywydnBgCtTVgh2LgqnP685bUKOVvIZV259
+         fXkakC8tLTjjJDkPfgeH64ISDtTBxZZzsnDoTQyNOvrGaWpTtOH5eBy2KqYM3g/S0Sjf
+         Kv8kibsQQpCXI3LiefXD9aJiUpV/JVmhzZFc9s8bvbi19xSpCurrak/n2LfA/yrlmSdt
+         /x8dCEVe6OWcbtPDgvws2mFvTXPBn0VayqoPiibIUupcfLMdt0xS1ZvcemsYR5XNMiGV
+         qofzOvB/TPMbR0NFo+BCfHegJPbKzvC7xVs9U71hl/NnQ40CEVl7DFfaZRbPR/Kpw/VJ
+         tiAA==
+X-Gm-Message-State: AOAM530KwEpTh5U5/pKg91MOgWsCpEwGNX6uUx/fELClEBMELV2PeNyK
+        Tn6xWosEzC/023vxJTSJ87AOFe+zpMiCjoTDTWhNGpRBUbI=
+X-Google-Smtp-Source: ABdhPJxW0HbA94ewF7F3weEGbYhyR1USNUWGh56KyTn6uWBkUkN9dCEH3OgkE9YeiRwCBSERhbC4leLYiC4JNncqOlo=
+X-Received: by 2002:a05:6e02:1d06:: with SMTP id i6mr24290849ila.165.1619641292908;
+ Wed, 28 Apr 2021 13:21:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428184946.23999-1-youling257@gmail.com>
+References: <20210428170416.1027484-1-hsinyi@chromium.org> <20210428170416.1027484-3-hsinyi@chromium.org>
+In-Reply-To: <20210428170416.1027484-3-hsinyi@chromium.org>
+From:   Sean Paul <sean@poorly.run>
+Date:   Wed, 28 Apr 2021 16:20:56 -0400
+Message-ID: <CAMavQK+RJATzOVfgRhpU5i3kGsYM2-y4whgZMTdwNnK=z63nYA@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] drm/i915: init panel orientation property
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Apr 28, 2021 at 1:04 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Creating the panel orientation property first since we separate the
+> property creating and value setting.
 
-On 29/04/2021 02:49:46+0800, youling257 wrote:
-> this patch cause suspend failed on my Bay trail z3735f tablet.
-> 
-> [  162.038713] PM: dpm_run_callback(): platform_pm_suspend+0x0/0x40 returns -22
-> [  162.038760] alarmtimer alarmtimer.0.auto: PM: failed to suspend: error -22
+This should probably be included in patch 1 so you don't regress i915
+in between patches.
 
-I think I know what is happening, there is one patch I wanted to send
-this cycle but didn't, can you test it?
+Sean
 
-https://github.com/alexandrebelloni/linux/commit/50641a5a19cedf7561410d7db614da46c228bacc
-
-Thanks for the report!
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/gpu/drm/i915/display/icl_dsi.c  | 1 +
+>  drivers/gpu/drm/i915/display/intel_dp.c | 1 +
+>  drivers/gpu/drm/i915/display/vlv_dsi.c  | 1 +
+>  3 files changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
+> index 9282978060b0..162fb3cf0f5a 100644
+> --- a/drivers/gpu/drm/i915/display/icl_dsi.c
+> +++ b/drivers/gpu/drm/i915/display/icl_dsi.c
+> @@ -1903,6 +1903,7 @@ static void icl_dsi_add_properties(struct intel_connector *connector)
+>
+>         connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+>
+> +       drm_connector_attach_scaling_mode_property(&connector->base);
+>         drm_connector_set_panel_orientation_with_quirk(&connector->base,
+>                                 intel_dsi_get_panel_orientation(connector),
+>                                 connector->panel.fixed_mode->hdisplay,
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index a5231ac3443a..f1d664e5abb2 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -5263,6 +5263,7 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
+>         intel_panel_setup_backlight(connector, pipe);
+>
+>         if (fixed_mode) {
+> +               drm_connector_init_panel_orientation_property(connector);
+>                 drm_connector_set_panel_orientation_with_quirk(connector,
+>                                 dev_priv->vbt.orientation,
+>                                 fixed_mode->hdisplay, fixed_mode->vdisplay);
+> diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
+> index 9bee99fe5495..853855482af1 100644
+> --- a/drivers/gpu/drm/i915/display/vlv_dsi.c
+> +++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
+> @@ -1632,6 +1632,7 @@ static void vlv_dsi_add_properties(struct intel_connector *connector)
+>
+>                 connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+>
+> +               drm_connector_init_panel_orientation_property(&connector->base);
+>                 drm_connector_set_panel_orientation_with_quirk(
+>                                 &connector->base,
+>                                 intel_dsi_get_panel_orientation(connector),
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
