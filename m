@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD6236D1F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0968C36D1FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhD1GEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:04:49 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:35482 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhD1GEs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:04:48 -0400
-Received: by mail-lf1-f44.google.com with SMTP id x19so66929172lfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 23:04:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cvKqJAsDp0hVwDeBdNNZxr3x2/ARRj4tE0SxrkqqX3k=;
-        b=nIjabArMB6IQ6gwCjX3sYL/WQ8BG84kcQwJgXYpz5kYQMevtX0jWUth4D1o4OS4VBJ
-         OPF7ZIZhnTsZV5n6TUR1ERBCmEzSWhLxKZElmjlI6qOJW05WxZdNz/Cih71EqklhXBju
-         KVKegl6vvBntrZGfqMoNFJVMou/CXIr5qpPRJZb4ldF50q+a9qKi/gmGPcDS0hFyzwz/
-         flvvLWKF0+7TR/MMq913L7OkuiM9IT3zx8O/gwngo955t7j0Wgv1N8qDHDL97oRUFGlJ
-         Eh2x3QXl2wCzR7FGol35R7+S/PGwLAmFg2G+xObMTdZ5k8Be4LnT3qtma+XBSz2YQWgt
-         Itbg==
-X-Gm-Message-State: AOAM532tWj+vaN0in6rRJSkKbWmxZQba6apIfT03/f8O2FJL1gHoUOmv
-        M/Z9E8yzXT64appu90IdfitA83mUjlY=
-X-Google-Smtp-Source: ABdhPJw/nA6FH2uObm/AiJzOWE/0qdvWWBNoTXCn5Zk44FXeMnRESfOreomZJGLVLPz2Os3MNmty8w==
-X-Received: by 2002:a05:6512:717:: with SMTP id b23mr6357504lfs.210.1619589841375;
-        Tue, 27 Apr 2021 23:04:01 -0700 (PDT)
-Received: from black.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.googlemail.com with ESMTPSA id b29sm943745ljf.87.2021.04.27.23.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 23:04:00 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <Julia.Lawall@lip6.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] coccinelle: misc: minmax: suppress patch generation for err returns
-Date:   Wed, 28 Apr 2021 09:03:50 +0300
-Message-Id: <20210428060350.57661-1-efremov@linux.com>
-X-Mailer: git-send-email 2.30.2
+        id S235851AbhD1GFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:05:03 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:11733 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236106AbhD1GFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:05:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619589858; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bx8J2U/YCTnNf7agVEpn/+hCnhROmQM6fBoT0Bn6L04=;
+ b=oTtSfw+nQnaMrNqdq/Y5zhABgRfy/i6X9cecITi2CSVitcTnDsuqm1Qf9UqnRASLMe+/vCSn
+ z1T3gArvY4Rsg/AU7gczU9Ps2de9HtJ3iuQdpCGXPhZ/BsPibsoATkfic6o6UtJNw7FMEzUA
+ pWC39/JAtYEAZ9j/WoAie2ZoOB8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6088fae02cc44d3aeae56823 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Apr 2021 06:04:16
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C5B95C43460; Wed, 28 Apr 2021 06:04:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 79399C4338A;
+        Wed, 28 Apr 2021 06:04:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Apr 2021 11:34:16 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V3 5/5] arm64: dts: qcom: sc7280: Include PMIC DT
+ files for sc7280
+In-Reply-To: <YH8XIyp/l4C0JPvc@google.com>
+References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
+ <1618398783-7834-6-git-send-email-skakit@codeaurora.org>
+ <YH8XIyp/l4C0JPvc@google.com>
+Message-ID: <62b11bc7706d4d9e335f9f1cc09c98bc@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a standard idiom for "if 'ret' holds an error, return it":
-	return ret < 0 ? ret : 0;
+On 2021-04-20 23:32, Matthias Kaehlcke wrote:
+> On Wed, Apr 14, 2021 at 04:43:03PM +0530, satya priya wrote:
+> 
+>> Subject: arm64: dts: qcom: sc7280: Include PMIC DT files for sc7280
+> 
+> Please make sure to distinguish between the SoC (sc7280) and the
+> board (sc7280-idp), this patch primarily adds stuff to the board not
+> the SoC, this should be clear from the subject.
+> 
 
-Developers prefer to keep the things as they are because stylistic
-change to "return min(ret, 0);" breaks readability.
+Sure, will mention sc7280-idp in the subject.
 
-Let's suppress automatic generation for this type of patches.
+>> Include pm7325, pm8350c, pmk8350 and pmr735a DT files.
+> 
+> How about something like 'The sc7280-idp has four PMICs, include their
+> .dtsi files'?
+> 
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- scripts/coccinelle/misc/minmax.cocci | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+Okay.
 
-diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
-index eccdd3eb3452..fcf908b34f27 100644
---- a/scripts/coccinelle/misc/minmax.cocci
-+++ b/scripts/coccinelle/misc/minmax.cocci
-@@ -116,16 +116,32 @@ func(...)
- 	...>
- }
- 
-+// Don't generate patches for errcode returns.
-+@errcode depends on patch@
-+position p;
-+identifier func;
-+expression x;
-+binary operator cmp = {<, <=};
-+@@
-+
-+func(...)
-+{
-+	<...
-+	return ((x) cmp@p 0 ? (x) : 0);
-+	...>
-+}
-+
- @pmin depends on patch@
- identifier func;
- expression x, y;
- binary operator cmp = {<=, <};
-+position p != errcode.p;
- @@
- 
- func(...)
- {
- 	<...
---	((x) cmp (y) ? (x) : (y))
-+-	((x) cmp@p (y) ? (x) : (y))
- +	min(x, y)
- 	...>
- }
--- 
-2.30.2
+>> Add channel nodes for pmk8350_vadc.
+> 
+> It's not super important, but I don't like it when things like this get
+> sneaked in with a commit message saying 'Include PMIC DT files for
+> sc7280'. I would suggest a separate patch. And please mention that
+> the channels are for the on die temperatures of the PMICs.
+> 
 
+Okay, will make a separate patch for adding channel nodes.
+
+>> Also, add the thermal_zones node in dtsi.
+> 
+> This is not the right patch to add it. This patch is about the 
+> sc7280-board
+> and doesn't do anything (directly) with thermal zones. However other
+> patches further down in the stack of in this series require the
+> 'thermal-zones' to exist, hence the node should exist before these 
+> patches
+> reference it. A dedicated patch adding the node seems like the best 
+> option
+> to me.
+
+Okay, I will add a separate patch for adding thermal-zones node and 
+place it in the beginning of the series.
+
+Thanks,
+Satya Priya
