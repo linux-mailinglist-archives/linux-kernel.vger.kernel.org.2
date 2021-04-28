@@ -2,237 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EE636DF06
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A65D36DF09
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243639AbhD1Sju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:39:50 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17775 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235613AbhD1Sjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:39:47 -0400
-IronPort-SDR: 1VMV8Mi3lof0WrrsPldix/Ja96EQtJUJ3T7/VLwsfD62M+NFGNx/BDKOOnQbWyi+vV6r5VDhbt
- 4afjvueP7zWw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="196876300"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="196876300"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 11:39:01 -0700
-IronPort-SDR: Eyij2/3/xueqhv26etxQzIXzQtPT5rX0f6zloVm+HZBYnABguCl1d9tC0mRZyqw7zQkgL6+fMb
- nfTvUehN8Wgg==
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="458322752"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.133.34]) ([10.209.133.34])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 11:39:00 -0700
-Subject: Re: [PATCH v26 22/30] x86/cet/shstk: Add user-mode shadow stack
- support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-23-yu-cheng.yu@intel.com> <YImg5hmBnTZTkYIp@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <3a0ed2e3-b13d-0db6-87af-fecd394ddd2e@intel.com>
-Date:   Wed, 28 Apr 2021 11:39:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S243668AbhD1Skg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:40:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243508AbhD1Skf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:40:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619635190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W3wbIZp6Y1eJURenlypAKMNuDhi204EdAx8I9omgFTU=;
+        b=NjnVlpw8Zp4FpFYM7RFv5R3b7wO2A7bvybPwREIBBAMCpCNapjAXNYDnj10T1whDN1Qyvc
+        pe8Vfs7o9PLY6UZ7zlNIrPi78ZMgLHotxsunuSff1ApbnXa8gPBbxI/5AhU0Wps2DabiJt
+        KJ+fCS+ovQY/UJA9fOz3ge/xF+HyJuM=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-UYu39LRtOI-wgKlECk8pHg-1; Wed, 28 Apr 2021 14:39:46 -0400
+X-MC-Unique: UYu39LRtOI-wgKlECk8pHg-1
+Received: by mail-qk1-f199.google.com with SMTP id y9-20020ae9f4090000b02902e4caf24229so5569997qkl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 11:39:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W3wbIZp6Y1eJURenlypAKMNuDhi204EdAx8I9omgFTU=;
+        b=I3hN29qbDVZT3m2lsvwLyShy2JEUUvaY/g+3+1aQ087f0D3qIzPsEq0w/PdWZRcQI5
+         jQNhO/xTZA9j1L8cUw76kPPliLnc9MFRu9tPRL25uYr1WKZ5T5LLlUdCn2nkSFXllz9F
+         OANoUw0sigGCuNwjjuP3LAtICimo5q4xlSRtWmO18RiA7S7Kt4KHJtcEMrKJBYfcyuAQ
+         4knfP0agoKnPT4Lb31dnVNqbhKb5tTCPNNvZV8mwc42Lpu6/rYu8sV6ttk4cNqHyh0Ju
+         ahgvJ4KyhhFCT/N5UJD27Y3JeE6r3r4C59B0J4JunvFE6bmgwWO/5V85D5TWC1LIP7tj
+         tKyA==
+X-Gm-Message-State: AOAM532UsUTtSzKH/4BdpXI8TS0I5/TFGVFuypBkqlY+rW6KF37quzCb
+        qif75fPTEzqIoVJMrcSLyfwMwp3CBcUJgs1DVizm5iUGDtYjhGo4kszt6p7bs6152agGkDTqTkq
+        uUGzw9J9CbrQ+Skjcg946aLth
+X-Received: by 2002:a05:6214:16c6:: with SMTP id d6mr15125099qvz.38.1619635184988;
+        Wed, 28 Apr 2021 11:39:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuMFuED/Mm8JulpnIPP8sBXWY2fAghB7wF9q4paYGwuUcrWv0KzEKhVm3yQr+bGWf6x6cHjg==
+X-Received: by 2002:a05:6214:16c6:: with SMTP id d6mr15125064qvz.38.1619635184705;
+        Wed, 28 Apr 2021 11:39:44 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
+        by smtp.gmail.com with ESMTPSA id j191sm393241qke.131.2021.04.28.11.39.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 11:39:44 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:39:43 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] userfaultfd: release page in error path to avoid BUG_ON
+Message-ID: <20210428183943.GH6584@xz-x1>
+References: <20210428180109.293606-1-axelrasmussen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YImg5hmBnTZTkYIp@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210428180109.293606-1-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/2021 10:52 AM, Borislav Petkov wrote:
-> On Tue, Apr 27, 2021 at 01:43:07PM -0700, Yu-cheng Yu wrote:
->> @@ -535,6 +536,10 @@ struct thread_struct {
->>   
->>   	unsigned int		sig_on_uaccess_err:1;
->>   
->> +#ifdef CONFIG_X86_SHADOW_STACK
->> +	struct cet_status	cet;
+On Wed, Apr 28, 2021 at 11:01:09AM -0700, Axel Rasmussen wrote:
+> Consider the following sequence of events (described from the point of
+> view of the commit that introduced the bug - see "Fixes:" below):
 > 
-> A couple of versions ago I said:
+> 1. Userspace issues a UFFD ioctl, which ends up calling into
+>    shmem_mcopy_atomic_pte(). We successfully account the blocks, we
+>    shmem_alloc_page(), but then the copy_from_user() fails. We return
+>    -EFAULT. We don't release the page we allocated.
+> 2. Our caller detects this error code, tries the copy_from_user() after
+>    dropping the mmap_sem, and retries, calling back into
+>    shmem_mcopy_atomic_pte().
+> 3. Meanwhile, let's say another process filled up the tmpfs being used.
+> 4. So shmem_mcopy_atomic_pte() fails to account blocks this time, and
+>    immediately returns - without releasing the page. This triggers a
+>    BUG_ON in our caller, which asserts that the page should always be
+>    consumed, unless -EFAULT is returned.
 > 
-> "	struct shstk_desc       shstk;
-> 
-> or so"
-> 
-> but no movement here. That thing is still called cet_status even though
-> there's nothing status-related with it.
-> 
-> So what's up?
-> 
+> (Later on in the commit history, -EFAULT became -ENOENT, mmap_sem became
+> mmap_lock, and shmem_inode_acct_block() was added.)
 
-Sorry about that.  After that email thread, we went ahead to separate 
-shadow stack and ibt into different files.  I thought about the struct, 
-the file names cet.h, etc.  The struct still needs to include ibt 
-status, and if it is shstk_desc, the name is not entirely true.  One 
-possible approach is, we don't make it a struct here, and put every item 
-directly in thread_struct.  However, the benefit of putting all in a 
-struct is understandable (you might argue the opposite :-)).  Please 
-make the call, and I will do the change.
-
->> +static unsigned long alloc_shstk(unsigned long size)
->> +{
->> +	struct mm_struct *mm = current->mm;
->> +	unsigned long addr, populate;
->> +	int flags = MAP_ANONYMOUS | MAP_PRIVATE;
-> 
-> The tip-tree preferred ordering of variable declarations at the
-> beginning of a function is reverse fir tree order::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned long foo, bar;
-> 	unsigned int tmp;
-> 	int ret;
-> 
-> The above is faster to parse than the reverse ordering::
-> 
-> 	int ret;
-> 	unsigned int tmp;
-> 	unsigned long foo, bar;
-> 	struct long_struct_name *descriptive_name;
-> 
-> And even more so than random ordering::
-> 
-> 	unsigned long foo, bar;
-> 	int ret;
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned int tmp;
-> 
-> Please fix it up everywhere.
-> 
-
-Ok!
-
->> +	mmap_write_lock(mm);
->> +	addr = do_mmap(NULL, 0, size, PROT_READ, flags, VM_SHADOW_STACK, 0,
->> +		       &populate, NULL);
->> +	mmap_write_unlock(mm);
->> +
->> +	return addr;
->> +}
->> +
->> +int shstk_setup(void)
->> +{
->> +	unsigned long addr, size;
->> +	struct cet_status *cet = &current->thread.cet;
->> +
->> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK))
->> +		return -EOPNOTSUPP;
->> +
->> +	size = round_up(min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G), PAGE_SIZE);
->> +	addr = alloc_shstk(size);
->> +	if (IS_ERR_VALUE(addr))
->> +		return PTR_ERR((void *)addr);
->> +
->> +	cet->shstk_base = addr;
->> +	cet->shstk_size = size;
->> +
->> +	start_update_msrs();
->> +	wrmsrl(MSR_IA32_PL3_SSP, addr + size);
->> +	wrmsrl(MSR_IA32_U_CET, CET_SHSTK_EN);
->> +	end_update_msrs();
-> 
-> <---- newline here.
-> 
->> +	return 0;
->> +}
->> +
->> +void shstk_free(struct task_struct *tsk)
->> +{
->> +	struct cet_status *cet = &tsk->thread.cet;
->> +
->> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
->> +	    !cet->shstk_size ||
->> +	    !cet->shstk_base)
->> +		return;
->> +
->> +	if (!tsk->mm)
->> +		return;
-> 
-> Where are the comments you said you wanna add:
-> 
-> https://lkml.kernel.org/r/b05ee7eb-1b5d-f84f-c8f3-bfe9426e8a7d@intel.com
-> 
-> ?
-> 
-
-Yes, the comments are in patch #23: Handle thread shadow stack.  I 
-wanted to add that in the patch that takes the path.
-
->> +
->> +	while (1) {
->> +		int r;
->> +
->> +		r = vm_munmap(cet->shstk_base, cet->shstk_size);
-> 
-> 		int r = vm_munmap...
-> 
->> +
->> +		/*
->> +		 * vm_munmap() returns -EINTR when mmap_lock is held by
->> +		 * something else, and that lock should not be held for a
->> +		 * long time.  Retry it for the case.
->> +		 */
->> +		if (r == -EINTR) {
->> +			cond_resched();
->> +			continue;
->> +		}
->> +		break;
->> +	}
-> 
-> vm_munmap() can return other negative error values, where are you
-> handling those?
-> 
-
-For other error values, the loop stops.
-
->> +
->> +	cet->shstk_base = 0;
->> +	cet->shstk_size = 0;
->> +}
->> +
->> +void shstk_disable(void)
->> +{
->> +	struct cet_status *cet = &current->thread.cet;
-> 
-> Same question as before: what guarantees that current doesn't change
-> from under you here?
-
-The actual reading/writing MSRs are protected by fpregs_lock().
+I suggest you do s/EFAULT/ENOENT/ directly in above.
 
 > 
-> One of the worst thing to do is to ignore review comments. I'd strongly
-> suggest you pay more attention and avoid that in the future.
+> A malicious user (even an unprivileged one) could trigger this
+> intentionally without too much trouble.
 > 
-> Thx.
+> To fix this, detect if we have a "dangling" page when accounting fails,
+> and if so, release it before returning.
 > 
+> Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  mm/shmem.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 26c76b13ad23..46766c9d7151 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2375,8 +2375,19 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+>  	pgoff_t offset, max_off;
+>  
+>  	ret = -ENOMEM;
+> -	if (!shmem_inode_acct_block(inode, 1))
+> +	if (!shmem_inode_acct_block(inode, 1)) {
+> +		/*
+> +		 * We may have got a page, returned -ENOENT triggering a retry,
+> +		 * and now we find ourselves with -ENOMEM. Release the page, to
+> +		 * avoid a BUG_ON in our caller.
+> +		 */
+> +		if (unlikely(*pagep)) {
+> +			unlock_page(*pagep);
+
+Not necessary?
+
+> +			put_page(*pagep);
+> +			*pagep = NULL;
+> +		}
+>  		goto out;
+
+All "goto out" in this functions looks weird as it returns directly... so if
+you're touching this after all, I suggest we do "return -ENOMEM" directly and
+drop the "ret = -ENOMEM".
+
+Thanks,
+
+> +	}
+>  
+>  	if (!*pagep) {
+>  		page = shmem_alloc_page(gfp, info, pgoff);
+> -- 
+> 2.31.1.498.g6c1eba8ee3d-goog
+> 
+
+-- 
+Peter Xu
 
