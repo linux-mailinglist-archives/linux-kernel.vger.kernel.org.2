@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DC136DEC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A0436DEBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243441AbhD1SHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:07:53 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:35236 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239935AbhD1SHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:07:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619633077; bh=7hlgpWxI8RDOAaTiJXMHJmjusAlSxGAIvuavLSm+NJs=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
-         Content-Type;
-        b=M6BMEs62PGRC8fOjrqKiYPGjER2VRGY69XZKigMrh9r3fzSIiEYBMkGyjtUN4yHBv
-         RyX8DqGRtz2RJbDzWSpSlSPYWTY1cki+0rTzZ+0q0kpK3Sl9AxuMZpew+UVNMO/opt
-         ++oFNJPw8cXjmYX26gQSIu97WaVOXHi1BjA6KqE0=
-Received: by 192.168.90.11 [192.168.90.11] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Wed, 28 Apr 2021 20:04:37 +0200 (CEST)
-X-EA-Auth: D9acU+5VrOCUhvF5ajQTKCNpZFfSNXGn1i367EQfYqGFv32RsQo9pSqkrlja6tz07PCkVuXSgVy+sorgw26MzkxjFXcamVCk
-Date:   Wed, 28 Apr 2021 23:34:29 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, drv@mailo.com
-Subject: [PATCH v4 0/9] staging: media: atomisp: code cleanup fixes
-Message-ID: <cover.1619628317.git.drv@mailo.com>
+        id S243395AbhD1SFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:05:19 -0400
+Received: from smtp-bc0b.mail.infomaniak.ch ([45.157.188.11]:43615 "EHLO
+        smtp-bc0b.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241704AbhD1SFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:05:17 -0400
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FVmjn5c3FzMqHN0;
+        Wed, 28 Apr 2021 20:04:29 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4FVmjm5KbLzlh8T6;
+        Wed, 28 Apr 2021 20:04:28 +0200 (CEST)
+Subject: Re: [PATCH] samples/landlock: fix path_list memory leak
+To:     Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        linux-security-module@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        James Morris <jmorris@namei.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210427183755.2790654-1-trix@redhat.com>
+ <CAKwvOdmj5YvWZZWwcq1G7JgRALwPbqwiROiedMeEbBst2sGeiQ@mail.gmail.com>
+ <6108e69b-0470-cd71-e477-ba64641cbf58@digikod.net>
+ <4ece80d4-16fe-1938-7eba-2046840881f6@redhat.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <fb03aba8-8556-804f-72b8-c7cbf7155226@digikod.net>
+Date:   Wed, 28 Apr 2021 20:04:57 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <4ece80d4-16fe-1938-7eba-2046840881f6@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set addresses multiple issues reported by  of checkpatch script as
-WARNING and CHECK complaints. Other feedback received from the
-maintainers is incorporated as well.
 
-Note:
-   - The patches should be applied in the ascending order.
-   - Patch count revised to 9 from 6
-   - patch 1/9 is not being sent since it was already submitted by
-     another developer.
+On 28/04/2021 17:36, Tom Rix wrote:
+> 
+> On 4/28/21 2:58 AM, Mickaël Salaün wrote:
+>> On 27/04/2021 21:13, Nick Desaulniers wrote:
+>>> On Tue, Apr 27, 2021 at 11:38 AM <trix@redhat.com> wrote:
+>>>> From: Tom Rix <trix@redhat.com>
+>>>>
+>>>> Clang static analysis reports this error
+>>>>
+>>>> sandboxer.c:134:8: warning: Potential leak of memory
+>>>>    pointed to by 'path_list'
+>>>>          ret = 0;
+>>>>                ^
+>>>> path_list is allocated in parse_path() but never freed.
+>>>>
+>>>> Signed-off-by: Tom Rix <trix@redhat.com>
+>>>> ---
+>>>>   samples/landlock/sandboxer.c | 2 ++
+>>>>   1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/samples/landlock/sandboxer.c
+>>>> b/samples/landlock/sandboxer.c
+>>>> index 7a15910d2171..4629d011ed61 100644
+>>>> --- a/samples/landlock/sandboxer.c
+>>>> +++ b/samples/landlock/sandboxer.c
+>>>> @@ -134,6 +134,8 @@ static int populate_ruleset(
+>>>>          ret = 0;
+>>>>
+>>>>   out_free_name:
+>>>> +       if (path_list)
+>>>> +               free(path_list);
+>>> I don't think the conditional is even necessary? By our first `goto
+>>> out_free_name;`, `parse_path` has already been called/memory for
+>>> `path_list` has already been allocated. `parse_path` doesn't check
+>>> whether `malloc` has failed.
+>> Indeed, no need for the path_list check. In practice, this memory leak
+>> doesn't stay long because of the execve, but I missed this free anyway.
+>> Thanks!
+> 
+> Ok, the general problem of not checking if malloc and friends succeeds
+> is a different problem.
+> 
+> So remove the check and keep the free ?
 
-Changes since v3:
-   Generic change:
-   1. Dropped patch 1/9 since it was already submitted to Hans by
-      another developer.
-   2. Split patch 2 into patch 2 & 3 since they are doing two different
-      things.
-   3. Added patch 8 & 9 for extended clean up based on patch set feedback
-      received.
+Yes please.
 
-   Patch Specific change:
-   1. patch 1/9 : dropped
-   2. patch 2/9 : split into patch 2 & 3
-   3. patch 3/9 : introduced
-   4. patch 4/9 : none
-   5. patch 5/9 : include header file in the clean up
-   6. patch 6/9 : none 
-   7. patch 7/9 : include dev_info() for replacements 
-   8. patch 8/9 : introduced 
-   9. patch 9/9 : introduced
-
-Changes since v2:
-   Generic change:
-   1. Correct patch versioning in patch subject
-
-   Patch Specific change:
-   1. patch 1/6 : none
-   2. patch 2/6 : none
-   3. patch 3/6 : none
-   4. patch 4/6 :
-        a. Tag Fabio Auito for the patch suggestion
-
-   5. patch 5/6 : none
-   6. patch 6/6:
-        a. Tag Fabio Auito for the patch suggestion
-
-Changes since v1:
-   Generic change:
-   1. The patch set is being resent from an email account that matches with
-      the patch signed-of-by tag. Issue highlighted by Hans Verkuil.
-
-   Patch specific changes:
-   1. patch 1/6 : none
-   2. patch 2/6 : none
-   3. patch 3/6 : none
-   4. patch 4/6 : implement following changes suggested by Fabio Aiuto
-        a. Corrected commenting style
-        b. Similar style implemented for other comment blocks in
-           the same files.
-   5. patch 5/6 : none
-   6. patch 6/6: implement following changes suggested by Fabio Aiuto
-        a. use dev_info instead of pr_info
-        b. update patch log message accordingly
-
-
-Deepak R Varma (9):
-  staging: media: atomisp: improve function argument alignment
-  staging: media: atomisp: balance braces around if...else block
-  staging: media: atomisp: remove unnecessary braces
-  staging: media: atomisp: use __func__ over function names
-  staging: media: atomisp: reformat code comment blocks
-  staging: media: atomisp: fix CamelCase variable naming
-  staging: media: atomisp: replace raw pr_*() by dev_dbg()
-  staging: media: atomisp: remove unnecessary pr_info calls
-  staging: media: atomisp: remove unwanted dev_*() calls
-
- .../media/atomisp/i2c/atomisp-gc0310.c        |  57 +++------
- .../media/atomisp/i2c/atomisp-gc2235.c        |  29 ++---
- .../atomisp/i2c/atomisp-libmsrlisthelper.c    |   6 +-
- .../media/atomisp/i2c/atomisp-lm3554.c        |   2 +-
- .../media/atomisp/i2c/atomisp-mt9m114.c       | 108 ++++++++++--------
- .../media/atomisp/i2c/atomisp-ov2680.c        |  41 ++++---
- .../media/atomisp/i2c/atomisp-ov2722.c        |  10 +-
- drivers/staging/media/atomisp/i2c/mt9m114.h   |   3 +-
- drivers/staging/media/atomisp/i2c/ov2680.h    |  10 +-
- 9 files changed, 130 insertions(+), 136 deletions(-)
-
--- 
-2.31.1
-
-
-
+> 
+> Tom
+> 
+>> Reviewed-by: Mickaël Salaün <mic@linux.microsoft.com>
+>>
+>>>>          free(env_path_name);
+>>>>          return ret;
+>>>>   }
+>>>> -- 
+>>>> 2.26.3
+>>>>
+>>>
+> 
