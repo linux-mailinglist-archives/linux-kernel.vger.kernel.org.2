@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B633B36DAC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8302236DAC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239931AbhD1PCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236071AbhD1PBu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:01:50 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E605C0612AD;
-        Wed, 28 Apr 2021 07:57:15 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id d25so25800294oij.5;
-        Wed, 28 Apr 2021 07:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xU26eKhAat6ZuGhDgaDU4lA3EkxCkgm/s81rka2sejI=;
-        b=k5jI8e0y1SuWfZ34di/qkLtVolNK2FRYo26+wf8LY5DibGsrSHDxJYhS8RKM0i+O43
-         0/dIqE+x2A+/sK3y3/wHosMr3rOsYPkD/ZOTo6CHe+FUahRCYdho1Yt6Jkz+s9b0Nys0
-         Vv8t5Q+QJjN8/RyO+vs75phCLTS1RZ6DphJ5UUZaGOHIHfYHssGHPTu0rCZ12vnOJzkj
-         VJ5Mt9IG28Bn9w5NSRdMJXXBD8um5qj+gZHPKbC10bgfUBJCvWEIxArkOiO2RDPT32k/
-         rZJx18sosR84PdHF7v3OHSjmMTDb07Ud7Hjw4g3QpWhzbZRpWZQqYoXJpzQvy1AiOkJH
-         9oqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xU26eKhAat6ZuGhDgaDU4lA3EkxCkgm/s81rka2sejI=;
-        b=tATLSXcjOfx0zWs7c92BBmT5KedZcKziKeTsYjNBk8dcXl72kFbHjzC+Iz1ax1hlji
-         2+8/Qu7naBH118HJ+8LXmeE5lYBQd78xzAsAtfwmZ07idvUUTdBLM6RxUmVVSdv1gLNi
-         P7IDTUkUjSV53aIJkQzzxL8l5TZZy+NvrswBb7Kn/rS03FD/KOcGsbjCDe10dSveKnFv
-         lcZ/x1ciLjfLHEHY1j336MkfW/FS4iEPIOZhTtlEAmXkIukQkZ9e0OtwjIIg1Nl+Uais
-         2g6cASj/ZJLbbZhVAA6wgBVLRmW28EUs8peA9HLDVveurGeyFTJKorHBcRYNwHBXIHfC
-         KJ6g==
-X-Gm-Message-State: AOAM5307pA7RHRTmvVoZ1ysMN93i4UvTSJP4f1FnjGj/PA7/hWD35fK+
-        oaDIoP5yqRjwsFUb1YLlOn4PevocCFyaQtybAck=
-X-Google-Smtp-Source: ABdhPJwBNAOYLNSRfUtYzVTxF2AYiX9nqQGGM+fJ+rtx+rAaaxqanQIebBFJnPrd9GA9ddLcf6+KFh8vSnkc+g05TdA=
-X-Received: by 2002:a05:6808:2d0:: with SMTP id a16mr12208850oid.116.1619621835014;
- Wed, 28 Apr 2021 07:57:15 -0700 (PDT)
+        id S239304AbhD1PCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:02:48 -0400
+Received: from mga05.intel.com ([192.55.52.43]:9545 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236545AbhD1PCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:02:13 -0400
+IronPort-SDR: zWJsv+pPFoLVbp4NFHFHzuSMhU05jK8B/uXA1e3RRvt19cZxzoon16CeIQZwO0JY+2DLTTbliN
+ z/jBlRMlAfow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="282097142"
+X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
+   d="scan'208";a="282097142"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 07:57:38 -0700
+IronPort-SDR: z6Fw6mL6Mhk2EwL1TurbzTPFO8wLTVrQ0KaTyuWpG8njT+0ExV9zsNwBe5sjtvxyTm23G1gitS
+ RdvhG7uSuZmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
+   d="scan'208";a="616059694"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 28 Apr 2021 07:57:36 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 8C7593C8; Wed, 28 Apr 2021 17:57:55 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] i2c: core: Make debug message even more debuggish
+Date:   Wed, 28 Apr 2021 17:57:51 +0300
+Message-Id: <20210428145751.4934-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210427204720.25007-1-yu-cheng.yu@intel.com> <0e03c50ea05440209d620971b9db4f29@AcuMS.aculab.com>
- <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
-In-Reply-To: <CALCETrUpZfznXzN3Ld33DMvQcHD2ACnhYf9KdP+5-xXuX_pVpA@mail.gmail.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Wed, 28 Apr 2021 07:56:38 -0700
-Message-ID: <CAMe9rOp7FauoqQ0vx+ZVPGOE9+ABspheuGLc++Chj_goE5HvWA@mail.gmail.com>
-Subject: Re: [PATCH v26 0/9] Control-flow Enforcement: Indirect Branch Tracking
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 7:52 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Wed, Apr 28, 2021 at 7:48 AM David Laight <David.Laight@aculab.com> wrote:
-> >
-> > From: Yu-cheng Yu
-> > > Sent: 27 April 2021 21:47
-> > >
-> > > Control-flow Enforcement (CET) is a new Intel processor feature that blocks
-> > > return/jump-oriented programming attacks.  Details are in "Intel 64 and
-> > > IA-32 Architectures Software Developer's Manual" [1].
-> > ...
-> >
-> > Does this feature require that 'binary blobs' for out of tree drivers
-> > be compiled by a version of gcc that adds the ENDBRA instructions?
-> >
-> > If enabled for userspace, what happens if an old .so is dynamically
-> > loaded?
+One may notice that dev_printk(KERN_DEBUG ...) is *not* an equivalent
+to dev_dbg(). It will be printed whenever loglevel is high enough.
+And currently it will be the only message in the I²C core in some
+configurations that got printed under above conditions.
 
-CET will be disabled by ld.so in this case.
+Moving to dev_dbg() will hide it in the configurations where Dynamic Debug
+is enabled and hence align with all other debug messages in the I²C core..
 
-> > Or do all userspace programs and libraries have to have been compiled
-> > with the ENDBRA instructions?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/i2c/i2c-core-base.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Correct.  ld and ld.so check this.
-
-> If you believe that the userspace tooling for the legacy IBT table
-> actually works, then it should just work.  Yu-cheng, etc: how well
-> tested is it?
->
-
-Legacy IBT bitmap isn't unused since it doesn't cover legacy codes
-generated by legacy JITs.
-
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 5a97e4a02fa2..7f711853d464 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -399,7 +399,8 @@ static int i2c_gpio_init_recovery(struct i2c_adapter *adap)
+ static int i2c_init_recovery(struct i2c_adapter *adap)
+ {
+ 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
+-	char *err_str, *err_level = KERN_ERR;
++	bool error_or_debug = true;
++	char *err_str;
+ 
+ 	if (!bri)
+ 		return 0;
+@@ -409,7 +410,7 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
+ 
+ 	if (!bri->recover_bus) {
+ 		err_str = "no suitable method provided";
+-		err_level = KERN_DEBUG;
++		error_or_debug = false;
+ 		goto err;
+ 	}
+ 
+@@ -436,7 +437,10 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
+ 
+ 	return 0;
+  err:
+-	dev_printk(err_level, &adap->dev, "Not using recovery: %s\n", err_str);
++	if (error_or_debug)
++		dev_err(&adap->dev, "Not using recovery: %s\n", err_str);
++	else
++		dev_dbg(&adap->dev, "Not using recovery: %s\n", err_str);
+ 	adap->bus_recovery_info = NULL;
+ 
+ 	return -EINVAL;
 -- 
-H.J.
+2.30.2
+
