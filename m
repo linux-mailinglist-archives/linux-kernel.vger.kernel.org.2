@@ -2,157 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0387D36D529
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0CE36D52A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238798AbhD1J4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:56:53 -0400
-Received: from mga14.intel.com ([192.55.52.115]:55726 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhD1J4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:56:51 -0400
-IronPort-SDR: lkpQhPGSx0IMmKw/ZN1ed+cFC4CR+3ZZ8AtRfWaBXYjalaIgIWaKG/wiOj4bRp/OahK2hApr6t
- WBgNLex10XEw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="196258062"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="196258062"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 02:56:06 -0700
-IronPort-SDR: /jvroPBN/VZ3UMZDpzwauVfbEJ4mVOZswAFhEHEX1XPOpFgJu1IRQRcQk2hz5CEP7DN3NMMPi1
- MUtnimI6c2Vg==
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="423452748"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.209.93]) ([10.254.209.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 02:56:04 -0700
-Subject: Re: [PATCH 2/2] vDPA/ifcvf: implement doorbell mapping for ifcvf
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428082133.6766-1-lingshan.zhu@intel.com>
- <20210428082133.6766-3-lingshan.zhu@intel.com>
- <f6d9a424-9025-3eb5-1cb4-0ff22f7bec63@redhat.com>
- <5052fced-cd9a-e453-5cb2-39cdde60a208@intel.com>
- <1984491f-cd5e-d4bc-b328-41e2f2e935fd@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <ef510c97-1f1c-a121-99db-b659a5f9518c@intel.com>
-Date:   Wed, 28 Apr 2021 17:56:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S238447AbhD1J6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:58:14 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:28864 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhD1J6M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 05:58:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619603848; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=LoONnR30t2Hr+RE96I57WFMUSUtEPMniqDlWtwTrUlc=;
+ b=KAv162EMuGlPkLJiz4sGF6qBfhaUryzlRqsXgjVCEj7hrPT4Z+C5JsZezesS0YbxjJ1JhJ1K
+ 7/9RJ5ecDmBFEVY/dqm20cuwC915UaX12mYhc2i0kRD6HRHIJpHYHQ25qcud/IR+4l+d6wNs
+ B69iu8RSyRoTJXpYNNfIo/z4ThY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6089317b853c0a2c46c60a22 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Apr 2021 09:57:15
+ GMT
+Sender: taozha=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D50BEC43217; Wed, 28 Apr 2021 09:57:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: taozha)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8E1B9C433D3;
+        Wed, 28 Apr 2021 09:57:13 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <1984491f-cd5e-d4bc-b328-41e2f2e935fd@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Apr 2021 17:57:13 +0800
+From:   taozha@codeaurora.org
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
+Subject: Re: [PATCH v1] coresight: add node to reset all coresight devices
+In-Reply-To: <e753898c-0334-cf84-620e-d9b9f18d87e7@arm.com>
+References: <1619166578-28690-1-git-send-email-taozha@codeaurora.org>
+ <e753898c-0334-cf84-620e-d9b9f18d87e7@arm.com>
+Message-ID: <4036d63a8759ac67a26fd8798b9adf6b@codeaurora.org>
+X-Sender: taozha@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-04-23 21:20, Suzuki K Poulose wrote:
+> On 23/04/2021 09:29, Tao Zhang wrote:
+>> Add new reset_source_sink node to be able to disable all active
+>> coresight devices.
+>> In this way, we no longer need to manually disable all active
+>> coresight devices one by one. After enabling multiple coresight
+>> paths, users can reset their status more conveniently by this
+>> node.
+>> 
+> 
+> What is the use case here ? Why would you trigger a reset for all the
+> sources/sink without gracefully completing any on-going sessions
+> (including the perf ones, which are driven by the kernel perf layer)
+> 
+We have a tool needs a command that could reset all active devices.
+Since the tool cannot what dvices are activated, we add this new node
+to sysFS for our tool could reset all active device by one command.
+We hope that this patch can also provide a more convenient option
+for the other users with the same needs.
+>> This patch base on coresight-next repo
+>> http://git.linaro.org/kernel/coresight.git/log/?h=next
+>> 
+>> And this patch depends on the following patch
+>> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2551216.html
+> 
+> Please post related patches as a series, possibly describing the 
+> overall
+> problem that you are trying to solve, in the cover letter.
+> 
+Sure, I will post related patches as a series in patch v2.
+>> 
+>> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+>> Signed-off-by: Mao Jinlong <jinlmao@codeaurora.org>
+>> Signed-off-by: Tao Zhang <taozha@codeaurora.org>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-core.c | 72 
+>> ++++++++++++++++++++++++----
+>>   1 file changed, 64 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c 
+>> b/drivers/hwtracing/coresight/coresight-core.c
+>> index 7dfadb6..0001b6c 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -107,6 +107,23 @@ static int coresight_source_is_unique(struct 
+>> coresight_device *csdev)
+>>   				 csdev, coresight_id_match);
+>>   }
+>>   +static int coresight_reset_sink(struct device *dev, void *data)
+>> +{
+>> +	struct coresight_device *csdev = to_coresight_device(dev);
+>> +
+>> +	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+>> +	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
+>> +	     csdev->activated)
+>> +		csdev->activated = false;
+> 
+> Why is this needed, when the disabl_path() should have taken care of 
+> this ?
+> 
+coresight_disable_patch will be called before this part of code.
+The aim of this patch is to disable all active coresight devices. Reset 
+all
+sinks and disable the sysFS "enable_sink" flag is a part of the aim.
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void coresight_reset_all_sink(void)
+>> +{
+>> +	bus_for_each_dev(&coresight_bustype, NULL, NULL, 
+>> coresight_reset_sink);
+>> +}
+>> +
+> 
+> How can you disable all the active sinks when some of the sinks could
+> be driven by perf ?
+> 
+This function will only be called when users need to reset all source 
+and
+sinks. I see that other functions will also disable the active sink, and
+then it may also cause all active sinks to be disabled.
+Is it possible to provide users with a reminder that it may affect some
+sinks could be driven by perf by adding a description of this function?
+>>   static int coresight_find_link_inport(struct coresight_device 
+>> *csdev,
+>>   				      struct coresight_device *parent)
+>>   {
+>> @@ -1137,7 +1154,7 @@ int coresight_enable(struct coresight_device 
+>> *csdev)
+>>   }
+>>   EXPORT_SYMBOL_GPL(coresight_enable);
+>>   -void coresight_disable(struct coresight_device *csdev)
+>> +static void __coresight_disable(struct coresight_device *csdev)
+>>   {
+>>   	int  ret;
+>>   	struct list_head *path = NULL;
+>> @@ -1145,14 +1162,12 @@ void coresight_disable(struct coresight_device 
+>> *csdev)
+>>   	struct coresight_path *cspath_next = NULL;
+>>   	struct coresight_device *src_csdev = NULL;
+>>   -	mutex_lock(&coresight_mutex);
+>> -
+>>   	ret = coresight_validate_source(csdev, __func__);
+>>   	if (ret)
+>> -		goto out;
+>> +		return;
+>>     	if (!csdev->enable || !coresight_disable_source(csdev))
+>> -		goto out;
+>> +		return;
+>>     	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, 
+>> link) {
+>>   		src_csdev = coresight_get_source(cspath->path);
+>> @@ -1165,12 +1180,16 @@ void coresight_disable(struct coresight_device 
+>> *csdev)
+>>   		}
+>>   	}
+>>   	if (path == NULL)
+>> -		goto out;
+>> +		return;
+>>     	coresight_disable_path(path);
+>>   	coresight_release_path(path);
+>> +}
+>>   -out:
+>> +void coresight_disable(struct coresight_device *csdev)
+>> +{
+>> +	mutex_lock(&coresight_mutex);
+>> +	__coresight_disable(csdev);
+>>   	mutex_unlock(&coresight_mutex);
+>>   }
+>>   EXPORT_SYMBOL_GPL(coresight_disable);
+>> @@ -1467,7 +1486,43 @@ int coresight_timeout(void __iomem *addr, u32 
+>> offset, int position, int value)
+>>     	return -EAGAIN;
+>>   }
+>> -EXPORT_SYMBOL_GPL(coresight_timeout);
+> 
+> Why ?
+> 
+I will restore this part of code in patch v2.
+>> +
+>> +static ssize_t reset_source_sink_store(struct bus_type *bus,
+>> +				       const char *buf, size_t size)
+>> +{
+>> +	int ret = 0;
+>> +	unsigned long val;
+>> +	struct coresight_path *cspath = NULL;
+>> +	struct coresight_path *cspath_next = NULL;
+>> +	struct coresight_device *csdev;
+>> +
+>> +	ret = kstrtoul(buf, 10, &val);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	mutex_lock(&coresight_mutex);
+>> +
+>> +	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, 
+>> link) {
+>> +		csdev = coresight_get_source(cspath->path);
+>> +		if (!csdev)
+>> +			continue;
+>> +		atomic_set(csdev->refcnt, 1);
+> 
+> Is this safe ?
+> 
+I think so.
+This code "atomic_set(csdev->refcnt, 1);" will be called only
+finding source coresight device. We could refer to the function
+enable_source_store, it will also set refcnt to 1 before disable
+source coresight device.
 
-
-On 4/28/2021 5:21 PM, Jason Wang wrote:
->
-> 在 2021/4/28 下午4:59, Zhu, Lingshan 写道:
->>
->>
->> On 4/28/2021 4:42 PM, Jason Wang wrote:
->>>
->>> 在 2021/4/28 下午4:21, Zhu Lingshan 写道:
->>>> This commit implements doorbell mapping feature for ifcvf.
->>>> This feature maps the notify page to userspace, to eliminate
->>>> vmexit when kick a vq.
->>>>
->>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>> ---
->>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 18 ++++++++++++++++++
->>>>   1 file changed, 18 insertions(+)
->>>>
->>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> index e48e6b74fe2e..afcb71bc0f51 100644
->>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> @@ -413,6 +413,23 @@ static int ifcvf_vdpa_get_vq_irq(struct 
->>>> vdpa_device *vdpa_dev,
->>>>       return vf->vring[qid].irq;
->>>>   }
->>>>   +static struct vdpa_notification_area 
->>>> ifcvf_get_vq_notification(struct vdpa_device *vdpa_dev,
->>>> +                                   u16 idx)
->>>> +{
->>>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->>>> +    struct vdpa_notification_area area;
->>>> +
->>>> +    if (vf->notify_pa % PAGE_SIZE) {
->>>> +        area.addr = 0;
->>>> +        area.size = 0;
->>>
->>>
->>> We don't need this since:
->>>
->>> 1) there's a check in the vhost vDPA
->> I think you mean this code block in vdpa.c
->>         notify = ops->get_vq_notification(vdpa, index);
->>         if (notify.addr & (PAGE_SIZE - 1))
->>                 return -EINVAL;
->>
->> This should work, however, I think the parent driver should ensure it 
->> passes a PAGE_SIZE aligned address to userspace, to be robust, to be 
->> reliable.
->
->
-> The point is parent is unaware of whether or not there's a userspace.
-when calling this, I think it targets a usersapce program, why kernel 
-space need it, so IMHO no harm if we check this to keep the parent 
-driver robust.
->
->
->>> 2) device is unaware of the bound driver, non page aligned doorbell 
->>> doesn't necessarily meant it can be used
->> Yes, non page aligned doorbell can not be used, so there is a check.
->
->
-> Typo, what I meant is "it can't be used". That is to say, we should 
-> let the vDPA bus driver to decide whether or not it can be used.
-If it is not page aligned, there would be extra complexities for 
-vhost/qemu, I see it as a hardware defect, why adapt to this kind of 
-defects?
-
-Thanks
-Zhu Lingshan
->
-> Thanks
->
->
->>
->> Thanks
->> Zhu Lingshan
->>>
->>> Let's leave those polices to the driver.
->>>
->>> Thanks
->>>
->>>
->>>> +    } else {
->>>> +        area.addr = vf->notify_pa;
->>>> +        area.size = PAGE_SIZE;
->>>> +    }
->>>> +
->>>> +    return area;
->>>> +}
->>>> +
->>>>   /*
->>>>    * IFCVF currently does't have on-chip IOMMU, so not
->>>>    * implemented set_map()/dma_map()/dma_unmap()
->>>> @@ -440,6 +457,7 @@ static const struct vdpa_config_ops 
->>>> ifc_vdpa_ops ={
->>>>       .get_config    = ifcvf_vdpa_get_config,
->>>>       .set_config    = ifcvf_vdpa_set_config,
->>>>       .set_config_cb  = ifcvf_vdpa_set_config_cb,
->>>> +    .get_vq_notification = ifcvf_get_vq_notification,
->>>>   };
->>>>     static int ifcvf_probe(struct pci_dev *pdev, const struct 
->>>> pci_device_id *id)
->>>
->>
->
-
+Best,
+Tao
+>> +		__coresight_disable(csdev);
+>> +	}
+>> +
+>> +	/* Reset all activated sinks */
+>> +	coresight_reset_all_sink();
+>> +
+>> +	mutex_unlock(&coresight_mutex);
+>> +	return size;
+>> +}
+>> +static BUS_ATTR_WO(reset_source_sink);
+>> +
+>> +static struct attribute *coresight_reset_source_sink_attrs[] = {
+>> +	&bus_attr_reset_source_sink.attr,
+>> +	NULL,
+>> +};
+>> +ATTRIBUTE_GROUPS(coresight_reset_source_sink);
+>>     /*
+>>    * coresight_release_platform_data: Release references to the 
+>> devices connected
+>> @@ -1680,6 +1735,7 @@ EXPORT_SYMBOL_GPL(coresight_alloc_device_name);
+>>     struct bus_type coresight_bustype = {
+>>   	.name	= "coresight",
+>> +	.bus_groups	= coresight_reset_source_sink_groups,
+>>   };
+>>     static int __init coresight_init(void)
+>> 
