@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D68F36D018
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F6F36D019
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbhD1A5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41798 "EHLO mail.kernel.org"
+        id S236677AbhD1A5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhD1A5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B302861029;
-        Wed, 28 Apr 2021 00:56:40 +0000 (UTC)
+        id S230368AbhD1A5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:57:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 633DC600CC;
+        Wed, 28 Apr 2021 00:56:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619571400;
-        bh=HZ7DZLKT36j38pjeGea1Kmh+RuWiTCVsIBo4m9p41pI=;
+        s=k20201202; t=1619571411;
+        bh=X+e7zy05LxSbcHcAKwcMWdDqvqFZpukpl01J/ymnbQs=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=tJDKj6BizTY1gl9jrfBkkNNK0fkbCKoLqIsZkCtzGgo1RIE09Qr4gLHtR/pUzVBwW
-         5wUN0A3ZYm6eHDFbF05gpDohFuCzemys8hsRr9B3YOkUy5PBThJf6vj7O5rGo+rife
-         Trn0GI0vUG/GG9Wf4z7aTDH3lOjQ/pfE+3XBCbIXVDObfNKd+H5VK74m0MzP3pYJ0H
-         uxoR0p7jQTQVrEpuAvAZKQPIx078nOQ4q2tyWNFcLuDJ1Zx3V7qHpwV9shpdJ1jikQ
-         dK4K5hbFTtlzekqUBPqF1zQggZrD/H3PdbF6WNK7dQLE+MIlaWcs0csFa5Pi91bYR0
-         eXGez74EOrsoQ==
+        b=f+rRFwdiraNJhmpd9WPI0K3Vpjw46ONb5uW3cKOisdjTfuxAQC0yacqc5A3Fne8Vj
+         pQR3V10l6RHFEVqPsFhbgg9TUhWqSLRr3BozAqBX0x2OALBvXtmg/sTwFms8/fdUlm
+         cKLqdccmBWtgw2QFdLQbBwPaou5nhewlodhTQP92K+BBDhDptC+hVklbS/r7k2inkU
+         bNYGcP34BIo4nUSDWZhO+V56n/IxCpoB/oWPihqtGTtIfpW7SWJZfhuJnwtbDNIjJB
+         YQ7SGgfAdeXbc2kLZo8dQqEQn92jPzJLg1Uj43pDyqKoqRK/9woVoPfwSXhm9Y5IVs
+         kNsVdgiZhQmPQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A79EE60A24;
-        Wed, 28 Apr 2021 00:56:40 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 updates for 5.13 merge window
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5C960609B0;
+        Wed, 28 Apr 2021 00:56:51 +0000 (UTC)
+Subject: Re: [GIT PULL] x86/core for v5.13
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIgVewka8KeZn5F9@osiris.fritz.box>
-References: <YIgVewka8KeZn5F9@osiris.fritz.box>
-X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YIgVewka8KeZn5F9@osiris.fritz.box>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-1
-X-PR-Tracked-Commit-Id: 6f3353c2d2b3eb4de52e9704cb962712033db181
+In-Reply-To: <YIfKEkC2lghJJHda@zn.tnic>
+References: <YIfKEkC2lghJJHda@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YIfKEkC2lghJJHda@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.13
+X-PR-Tracked-Commit-Id: 2c88d45edbb89029c1190bb3b136d2602f057c98
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6daa755f813e6aa0bcc97e352666e072b1baac25
-Message-Id: <161957140062.22806.14487702478556896084.pr-tracker-bot@kernel.org>
-Date:   Wed, 28 Apr 2021 00:56:40 +0000
-To:     Heiko Carstens <hca@linux.ibm.com>
+X-PR-Merge-Commit-Id: c6536676c7fe3f572ba55842e59c3c71c01e7fb3
+Message-Id: <161957141137.22806.5507357274217202072.pr-tracker-bot@kernel.org>
+Date:   Wed, 28 Apr 2021 00:56:51 +0000
+To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 27 Apr 2021 15:45:31 +0200:
+The pull request you sent on Tue, 27 Apr 2021 10:23:46 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_core_for_v5.13
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6daa755f813e6aa0bcc97e352666e072b1baac25
+https://git.kernel.org/torvalds/c/c6536676c7fe3f572ba55842e59c3c71c01e7fb3
 
 Thank you!
 
