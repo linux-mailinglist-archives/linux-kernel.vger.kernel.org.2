@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF63A36DB3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA5636DB44
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhD1PLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:11:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233738AbhD1PKy (ORCPT
+        id S236969AbhD1PLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229454AbhD1PLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:10:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619622609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kk0GXyWrV+tplXlipzE2jcmQ3JfsCy9V2iMdjdCt+G0=;
-        b=eF+dxnYIs+ZLj9HBWAJwe0vwC2LlBWGcYDuRVttOYjqcHZrouKAjh3lq5kdcN4IdwojG3e
-        Xh4ne1eTDdd97Fqgp7P5E89TeM+uo1dRcvRCjHeCeL2l28aCReW53gS8ev7X4ilEe3rAV2
-        GotZzFwCuvf+3Y6oly+PsmYZ+qRh+C4=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-qnvFvSKUMruJjw1kh2tfaA-1; Wed, 28 Apr 2021 11:10:07 -0400
-X-MC-Unique: qnvFvSKUMruJjw1kh2tfaA-1
-Received: by mail-qt1-f199.google.com with SMTP id 10-20020ac8594a0000b02901b9f6ae286fso17481253qtz.23
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:10:07 -0700 (PDT)
+        Wed, 28 Apr 2021 11:11:17 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BAEC061573;
+        Wed, 28 Apr 2021 08:10:30 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x7so63410142wrw.10;
+        Wed, 28 Apr 2021 08:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=caPcWX0HvCbUGxoKUybXsnQMiEeBgCwT/cgikCWDkpc=;
+        b=ZTYFlakBWBp2Opq/jD01M4nUgx0ti9JQ4aFD9Q+GvDNrPY6zj6++mTcAniLmsOC6p3
+         n3ZxHDzViQ1KclzV2l64XWnJooQN+CqlOSot0SwWzQwkczNOg4ujcabw/Y/Q7exfiHYy
+         IUcm65kebe92ZvH4PLQ9tukBAmZSrm52uEUoiAVyHlEDKf90TSlDbMFGrQRVCEomxUdN
+         0+0HgeOrajuXqr/Xbda3LkvUKjm/9/OT2jdoRtNoMCCEBUx4YgN/HzUeFztmUnWiRtsr
+         gPmTeMAB2S6A0aiJvtoOipgwQK7TFt7Ow9i8l6crZLd4fBdshk4uQzOVN+b8xpRuujrC
+         bHrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kk0GXyWrV+tplXlipzE2jcmQ3JfsCy9V2iMdjdCt+G0=;
-        b=U06wLNMEUbsdjCM4VSicLbq+04gCoG/2k+JEeZLZBhcff/J4WFbyPJyrjZf53DdEFB
-         nFMguxMdGbERYAtJBKkWY7HqGUqyS9lLtM6drUOZEdwsnKvpqjmkKQRUL40Zcg0DkU+J
-         r3CnLCkHayMYuDUk2ps8N7Bz1bkev4Ay5EdhGTtjXgxud1JazzTXOjGGtxYd5jCtu0bh
-         hfR7uaPi0+4wokxVGMQVEoYQ0NZMO4PqpVCtjaGQGBDsY/FRW+LhzWBQ2Bjkgdy2SDj6
-         4mLkKUWpGYCAgR8Y+I3csdjvi/Qcz0NkfsQzb1ctoI2+UmGbhdv3sbK2hW9NQiGw1BXV
-         g7qA==
-X-Gm-Message-State: AOAM530t60RwOS/w6NFi8geGt7yGfR2M4vRxQzPHbkgb9RjGbvUZ2rYN
-        sULAo1f2A0vE1M3ZRKxZuGuj2kIMav7MHjRvL+UwUZ6GzEvOwdgxUrBDtm6jI9NIMxvi929Gqgt
-        cMbwRbARttuEhA8GvPolOcgQA
-X-Received: by 2002:a05:622a:58d:: with SMTP id c13mr5772736qtb.44.1619622606822;
-        Wed, 28 Apr 2021 08:10:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDOIhz717CICdyQ7QFBw3/HvW1s7fJ9E22xX4/FLRWsnY9Iqpo03jJIJ0dPF8+ttjVIu4urg==
-X-Received: by 2002:a05:622a:58d:: with SMTP id c13mr5772702qtb.44.1619622606467;
-        Wed, 28 Apr 2021 08:10:06 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id f2sm5333165qkh.76.2021.04.28.08.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 08:10:05 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 11:10:03 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5 04/10] userfaultfd/shmem: support UFFDIO_CONTINUE for
- shmem
-Message-ID: <20210428151003.GB6584@xz-x1>
-References: <20210427225244.4326-1-axelrasmussen@google.com>
- <20210427225244.4326-5-axelrasmussen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=caPcWX0HvCbUGxoKUybXsnQMiEeBgCwT/cgikCWDkpc=;
+        b=lgF4p3uKfwq03VeWVWlDowtUFin0K8fQd0ATxlHUSBdR8Lt+BUu2LsBrvzGuzi8xVO
+         hll+d4oBsxT/bSgoz2cQbCSzFMZA4TsyjuWSiDFfdpZoDUy73FBUu2jTpta7oesDs5EQ
+         FWBZcGCE4PRoJX40JhjCj1d23oCS0u4xys/U79jx+8MayL9MiVnwq/idhootZlIa44t2
+         9K4bfUIt0rTBN7T6PRSBq38bDM3b5iOcsx3IDoWAo2mt14EtyvB4N1AJFDSYwVdGlPuj
+         DUSPvLsnkrPVApEsZsgoG0S2sLQkpG3Dby8K93j2ST7I4ercpau1TKN1URsdCEQ5Q4kE
+         xvyg==
+X-Gm-Message-State: AOAM532KAgodls0egq8jcAtOWmEiQVOPNxJjGqG9Nkf3m2WSr2bVyzEh
+        lT7BcVpLWKFFKkq124HXlKmsDL60t0SqGJEEmvY=
+X-Google-Smtp-Source: ABdhPJxVN5btpbhyyFI3SSpFSYUJhcM6me5+lef8qqcMI92e90PN00NzDC1AMx2HcHRG/qI8ZSgbTRstZBP73rH4vZs=
+X-Received: by 2002:adf:f190:: with SMTP id h16mr22688829wro.393.1619622629615;
+ Wed, 28 Apr 2021 08:10:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210427225244.4326-5-axelrasmussen@google.com>
+References: <20210428135929.27011-1-justin.he@arm.com> <20210428135929.27011-2-justin.he@arm.com>
+In-Reply-To: <20210428135929.27011-2-justin.he@arm.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Apr 2021 18:10:13 +0300
+Message-ID: <CAHp75Vfx8aGQGJR58o49t2bOtu5adkrSRfWW9bb63OBoePcj1g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] lib/vsprintf.c: Make %p{D,d} mean as much components
+ as possible
+To:     Jia He <justin.he@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-s390@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 03:52:38PM -0700, Axel Rasmussen wrote:
-> With this change, userspace can resolve a minor fault within a
-> shmem-backed area with a UFFDIO_CONTINUE ioctl. The semantics for this
-> match those for hugetlbfs - we look up the existing page in the page
-> cache, and install a PTE for it.
-> 
-> This commit introduces a new helper: mcopy_atomic_install_pte.
-> 
-> Why handle UFFDIO_CONTINUE for shmem in mm/userfaultfd.c, instead of in
-> shmem.c? The existing userfault implementation only relies on shmem.c
-> for VM_SHARED VMAs. However, minor fault handling / CONTINUE work just
-> fine for !VM_SHARED VMAs as well. We'd prefer to handle CONTINUE for
-> shmem in one place, regardless of shared/private (to reduce code
-> duplication).
-> 
-> Why add a new mcopy_atomic_install_pte helper? A problem we have with
-> continue is that shmem_mcopy_atomic_pte() and mcopy_atomic_pte() are
-> *close* to what we want, but not exactly. We do want to setup the PTEs
-> in a CONTINUE operation, but we don't want to e.g. allocate a new page,
-> charge it (e.g. to the shmem inode), manipulate various flags, etc. Also
-> we have the problem stated above: shmem_mcopy_atomic_pte() and
-> mcopy_atomic_pte() both handle one-half of the problem (shared /
-> private) continue cares about. So, introduce mcontinue_atomic_pte(), to
-> handle all of the shmem continue cases. Introduce the helper so it
-> doesn't duplicate code with mcopy_atomic_pte().
-> 
-> In a future commit, shmem_mcopy_atomic_pte() will also be modified to
-> use this new helper. However, since this is a bigger refactor, it seems
-> most clear to do it as a separate change.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+On Wed, Apr 28, 2021 at 5:56 PM Jia He <justin.he@arm.com> wrote:
+>
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 
-Acked-by: Peter Xu <peterx@redhat.com>
+Hmm... Okay.
+
+> We have '%pD'(no digit following) for printing a filename. It may not be
+> perfect (by default it only prints one component.
+>
+> %pD4 should be more than good enough, but we should make plain "%pD" mean
+> "as much of the path that is reasonable" rather than "as few components as
+> possible" (ie 1).
+
+Sorry, but from above I didn't get why.
+
+The commit message tells only about %pD, but patch changes behaviour
+of the ~100 or so users of "%pd" without any explanation.
+
+Besides that the patch is prepended only by one change (which is also
+not related to %pD), while we have ~30 users which behaviour got
+changed.
+
 
 -- 
-Peter Xu
-
+With Best Regards,
+Andy Shevchenko
