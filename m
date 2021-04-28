@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0C036D47D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7910C36D48F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237934AbhD1JGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:06:37 -0400
-Received: from mga12.intel.com ([192.55.52.136]:37426 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237995AbhD1JGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:06:17 -0400
-IronPort-SDR: YvRvMJjQP9sSqg3CASik2pSG8ZHHPyBVLJ/uag0x21Ktb5vqQ2Cnwxxc4gUgBbl6ogMZMhhxl6
- OzDuaC8BowwQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="176176420"
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="176176420"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 02:05:32 -0700
-IronPort-SDR: PwIgUXmzgjn8bi3GeVIzjJ1gcB0DhsL8DJ8zLPSXYIL5SNVovySYeXVz/ejif7dW8aCXdtuP2E
- xbjoQr41t/bQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,257,1613462400"; 
-   d="scan'208";a="458084311"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.173])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Apr 2021 02:05:30 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     youling257 <youling257@gmail.com>, Kurt Garloff <kurt@garloff.de>,
-        Bingsong Si <owen.si@ucloud.cn>,
-        "Artem S . Tashkinov" <aros@gmx.com>
-Cc:     Terry Bowman <terry.bowman@amd.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        Calvin Walton <calvin.walton@kepstin.ca>,
-        Borislav Petkov <bp@suse.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] tools/power turbostat: Fix offset overflow issue in index converting
-Date:   Wed, 28 Apr 2021 17:09:16 +0800
-Message-Id: <8167875a1d688b92b0ec707b95855a604afacf01.1619600637.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1619600637.git.yu.c.chen@intel.com>
-References: <cover.1619600637.git.yu.c.chen@intel.com>
+        id S238087AbhD1JKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:10:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46684 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1JKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 05:10:36 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619600991;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OL8ns1Jd0hYAa1/76ixHBO3gJQaqokoqzKMxkacoGTE=;
+        b=DwNcWU6lhZFEca3EY3gAqfjY2lRbJSUHSb1OsiRUKECkfftfyEBNZ1AfJRMGniV5oo6lZX
+        yRiuAUlN1dEWRSXLyBnIRk9r2ppIsfDhPFd1Zu1MnwtqNC+rDLrHJKAxelczyjDMVJexk0
+        +hq7TVo/kWozpIyMrK8EHEcNwLgsRknxxnSs9qlGURCLio/NfcDx5ZOJME17Et9MmyMv2/
+        zWdP25xz97wAHuAHfp28cirB3AkfQK5/1FKA8xwQ16zkNwK9ZeHf1rZLuWI6j/kFj//ZUE
+        YaIspFwEh6ag1M5ei+3HuTmdeVckSueB3Gdt7wamxlQOLOiMXaT2WOBpkciPug==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619600991;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OL8ns1Jd0hYAa1/76ixHBO3gJQaqokoqzKMxkacoGTE=;
+        b=xHWiM2KmX/UuADNH1lowDKhszNxBh1Jhm1rk1imi8/f9QvbB5AcHEVw/c14GoKsoBXnLOW
+        GDHoFE3m+CiuDxCw==
+To:     Zelin Deng <zelin.deng@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH] Guest system time jumps when new vCPUs is hot-added
+In-Reply-To: <87lf92n5r1.ffs@nanos.tec.linutronix.de>
+References: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com> <87lf92n5r1.ffs@nanos.tec.linutronix.de>
+Date:   Wed, 28 Apr 2021 11:09:50 +0200
+Message-ID: <87im46n5b5.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Calvin Walton <calvin.walton@kepstin.ca>
+On Wed, Apr 28 2021 at 11:00, Thomas Gleixner wrote:
 
-The idx_to_offset() function returns type int (32-bit signed), but
-MSR_PKG_ENERGY_STAT is u32 and would be interpreted as a negative number.
-The end result is that it hits the if (offset < 0) check in update_msr_sum()
-which prevents the timer callback from updating the stat in the background when
-long durations are used. The similar issue exists in offset_to_idx() and
-update_msr_sum(). Fix this issue by converting the 'int' to 'off_t' accordingly.
+> On Wed, Apr 28 2021 at 10:22, Zelin Deng wrote:
+>
+>> Hello,
+>> I have below VM configuration:
+>> ...
+>>     <vcpu placement='static' current='1'>2</vcpu>
+>>     <cpu mode='host-passthrough'>
+>>     </cpu>
+>>     <clock offset='utc'>
+>>         <timer name='tsc' frequency='3000000000'/>
+>>     </clock>
+>> ...
+>> After VM has been up for a few minutes, I use "virsh setvcpus" to hot-add
+>> second vCPU into VM, below dmesg is observed:
+>> [   53.273484] CPU1 has been hot-added
+>> [   85.067135] SMP alternatives: switching to SMP code
+>> [   85.078409] x86: Booting SMP configuration:
+>> [   85.079027] smpboot: Booting Node 0 Processor 1 APIC 0x1
+>> [   85.080240] kvm-clock: cpu 1, msr 77601041, secondary cpu clock
+>> [   85.080450] smpboot: CPU 1 Converting physical 0 to logical die 1
+>> [   85.101228] TSC ADJUST compensate: CPU1 observed 169175101528 warp. Adjust: 169175101528
+>> [  141.513496] TSC ADJUST compensate: CPU1 observed 166 warp. Adjust: 169175101694
+>
+> Why is TSC_ADJUST on CPU1 different from CPU0 in the first place?
+>
+> That's broken.
 
-Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-Signed-off-by: Calvin Walton <calvin.walton@kepstin.ca>
----
- tools/power/x86/turbostat/turbostat.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Aside of that the TSC synchronization check in guests cannot work
+reliably at all. Simply because there is no guarantee that vCPU0 and
+vCPU1 are running in parallel.
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 37759d6c463d..085057daef86 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -291,9 +291,9 @@ struct msr_sum_array {
- /* The percpu MSR sum array.*/
- struct msr_sum_array *per_cpu_msr_sum;
- 
--int idx_to_offset(int idx)
-+off_t idx_to_offset(int idx)
- {
--	int offset;
-+	off_t offset;
- 
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
-@@ -323,7 +323,7 @@ int idx_to_offset(int idx)
- 	return offset;
- }
- 
--int offset_to_idx(int offset)
-+int offset_to_idx(off_t offset)
- {
- 	int idx;
- 
-@@ -3276,7 +3276,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
- 
- 	for (i = IDX_PKG_ENERGY; i < IDX_COUNT; i++) {
- 		unsigned long long msr_cur, msr_last;
--		int offset;
-+		off_t offset;
- 
- 		if (!idx_valid(i))
- 			continue;
-@@ -3285,7 +3285,8 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
- 			continue;
- 		ret = get_msr(cpu, offset, &msr_cur);
- 		if (ret) {
--			fprintf(outf, "Can not update msr(0x%x)\n", offset);
-+			fprintf(outf, "Can not update msr(0x%llx)\n",
-+				(unsigned long long)offset);
- 			continue;
- 		}
- 
--- 
-2.25.1
+Thanks,
 
+        tglx
