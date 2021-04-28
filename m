@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD46C36D3F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1FA36D404
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237254AbhD1Iaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
+        id S237684AbhD1IdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbhD1Iap (ORCPT
+        with ESMTP id S237213AbhD1Ic7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:30:45 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2B0C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:30:01 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 10so690332pfl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:30:01 -0700 (PDT)
+        Wed, 28 Apr 2021 04:32:59 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4704C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:32:14 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g10so5212321edb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X3yT5TmoSLSmrok+Crx8M3QcwMZEOV/qAXHZ0pyFZQQ=;
-        b=NmFsFFy4JyKRlWwG4SAGhGeyQ2DH/Sw3keP+7sjtOe1hFGk0zSokCAtxFiVKqQYuiY
-         R+vdts7oxhszAeMpNiYcY8IFwqoeHJ87M8qLs3zimY83kZRtsVQcW/BrX4FISaKLg6nz
-         CFil30c3r6NcjtKzFjtYYIfFFc0IYQhZNU7UgSxwC1eoxneA2BqilDwmSv72Y98Bfk6u
-         Fh87cmHE4/wMyVG8KtcdMkHe5+x8m6NHk2V+IMeONpBIcW/NzkOMy/WRkkHGNfrFnkd/
-         6C88XHDmUGmYmBTcXbmSukAnyE/qF42eBVi6cTyzi7T54amFd9uZndBILpH2cKLy9FJy
-         ePwQ==
+         :cc:content-transfer-encoding;
+        bh=OpS26+rIWsvKvlcNvrtF9Fam5LIDf0slh+zm+iPFbAo=;
+        b=hUd0Gc8e7zxXydgUujYAYWkhWSajJcbgWY5JbrtcWZ2gO/z5uqB4aI5vy54oV4AP/f
+         +fsF03GeaXinN8GJy0cNhvEhdvdrK+dldZ5F61fNU36NJknA2+LJtkWJQiWLgu90mogG
+         879KxR4Resfx0jRhuRusrBLYX80iVnx5fgm4+ROnKvQ6zSczzuTSOsFpoF6uJ8j9GyRn
+         RuJu8oqOO+t1IWzpYkuBdxq5F1pFxHmwZfgTYG0AstxHYQkjZ1UUljCmBghJEw9OiF5M
+         TfwBglP4M1ZLn9kccgdeUFQLSs4hdtqMz8/eS7/ejAzDWa3NrnsqW9hSbhgRVlFpn9z0
+         oSog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X3yT5TmoSLSmrok+Crx8M3QcwMZEOV/qAXHZ0pyFZQQ=;
-        b=OsPewGWrwCKrOX9h/g8uFqoGAqZKjhGw0vG3nFBa+ldjxwVhY3IqrC6pSSVLRvkRZD
-         MYgb8dwST5s9qFroThP1PxHMv2zQyinz+LIHRSsECE7ogPxh/JHJ6PG798sdCrPW8F0W
-         D4oEoBhlNPlw6Us9pPRXbxt9zY4NOlBj52/BcaShtU0e8U7PZcLEXez5exV2OkQslMHZ
-         BKpNAFhS42hIVDSryKB5zoYQrwmT5Q8eN2qTvJxbzoi1/GuzCeBQhfPV7/Lhs1j36jzF
-         o6r4ttt7fPEyZD+LRNCfSdu1VmeRIvDKr7+0u2R2yULEuGN5i+B+6Q31VODFCIzcYszI
-         o26Q==
-X-Gm-Message-State: AOAM531myStlNN212QuGAPagDUmb4T6SzQme6AjhE4FZEf9VGVIcXdw5
-        iLq8Il4/YwOIYsH/K71O2esva4/iiNkoiZh2bZ3EWKSIT+BWPQ==
-X-Google-Smtp-Source: ABdhPJzq32Kno41WvgEanKSTTJoP0HEse+GrqDt/mhwqt9SZ5cKbFQ8pOxTX89szqlPplDovLezTX8z1ZwCw4OEgCXk=
-X-Received: by 2002:a05:6a00:1494:b029:278:a4bc:957f with SMTP id
- v20-20020a056a001494b0290278a4bc957fmr10769930pfu.55.1619598600279; Wed, 28
- Apr 2021 01:30:00 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OpS26+rIWsvKvlcNvrtF9Fam5LIDf0slh+zm+iPFbAo=;
+        b=KpxXzXB44Rzlpr6iL52AT0VA/FxURb8s5ug3Zq5ZjV92tL9ztJ5wiKEE2L3dexVO9w
+         QzrJ2eJIY+NRlZfSgazfksw0W0INUlInEfbegfX2RfZBtiO78X+e9ms3uvK0SBrS6xA1
+         hFch32+3S5ichQdw6UBxDzvdDe2q4zR/Pc2nRDFJbw2q8PG8UC8Mm0eytmFjwe2e1ejg
+         cwpIYjkh3K1U9jFQDJTcVe/tgrzHKPw4jwK5drfndj8y5ED3mL7/8+vGXHRLKSsX8zrf
+         tVu+KwdHd1OALe8khTu06oiN0wAqHDltWP5o6dA2Dd6p4lFJ3EH4uUfp3300C4EQSa1x
+         ffYQ==
+X-Gm-Message-State: AOAM532Ad7JBds94rnmGFEqZGsvdJhacn8p9mKSBQIvFS+girTE6QaLs
+        e2GRL39wWPTjDOFkN4sB/uhMqtZPWRhdhgr5UvzJlS4nwi9qNw==
+X-Google-Smtp-Source: ABdhPJy6ZMkZyqcGq+tqe6oZ6D24Yj9qh5Usb6d/CqyQTQGPj6mneDpHWMJJ88DgDaK4upMB5tO5mjoIErHmWGTC+c0=
+X-Received: by 2002:aa7:c40b:: with SMTP id j11mr9652021edq.219.1619598733619;
+ Wed, 28 Apr 2021 01:32:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210421065501.3134-1-jarvis.w.jiang@gmail.com>
-In-Reply-To: <20210421065501.3134-1-jarvis.w.jiang@gmail.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 28 Apr 2021 10:38:40 +0200
-Message-ID: <CAMZdPi-H=mnH9SFQZ7XQ8fjb0VtYbaWKGFhoXYyurDAB+RpQ5w@mail.gmail.com>
-Subject: Re: [PATCH v1] bus: mhi: pci_generic: T99W175: update channel name
- from AT to DUN
-To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Chi-Wei Chen50 <cchen50@lenovo.com>,
-        Mark Pearson <mpearson@lenovo.com>
+References: <20210412113315.91700-1-gi-oh.kim@ionos.com> <CAJX1YtbXnPVbkpddXQf4MZ3sopoidr0fZ8OkrQegoLoCevaNwQ@mail.gmail.com>
+ <CAHp75Vf2yJ5=zdxRcPKmKGCKeF8As=Nv2S9fm0ciVXL5HGbWDg@mail.gmail.com>
+ <CAJX1YtYRK=_X8+mvva2S35-K4kpwXSAGctUJ01TEDFRhS0y5LA@mail.gmail.com> <650dc1b8-d801-2263-2e5c-eb833f2c4534@rasmusvillemoes.dk>
+In-Reply-To: <650dc1b8-d801-2263-2e5c-eb833f2c4534@rasmusvillemoes.dk>
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+Date:   Wed, 28 Apr 2021 10:31:37 +0200
+Message-ID: <CAJX1YtaRAgg3oZ6X2cDtj0yASQ27XujDys97vbB0MWnN9vXakQ@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: sysfs_streq works case insensitively
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 at 08:56, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
+On Wed, Apr 28, 2021 at 9:47 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
 >
-> According to MHI v1.1 specification, change the channel name of T99W175
-> from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
-> so that the channels can be bound to the Qcom WWAN control driver, and
-> device node such as /dev/wwan0p3AT will be generated, which is very useful
-> for debugging modem
+> On 28/04/2021 09.31, Gioh Kim wrote:
+> > On Wed, Apr 28, 2021 at 8:42 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> >>
 >
-> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
-
-Ok, it seems the spec claims it's a DUN channel, but all vendors use
-it for AT protocol, so it's fine (and correctly handled by the
-mhi_wwan_ctrl driver).
-
-Could you please add a Fixes tag since it fixes your previous commit?
-
-with that
-
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
-
-
-
-> ---
->  drivers/bus/mhi/pci_generic.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> Are you sure it=E2=80=99s good change? Sysfs is used for an ABI and yo=
+u are opening a can of worms. From me NAK to this change without a very goo=
+d background description that tells why it is safe to do.
+> >
+> > https://www.spinics.net/lists/kernel/msg3898123.html
+> > My initial idea was making a new function: sysfs_streqcase.
+> > Andrew and Greg suggested making sysfs_streq to be case-insensitive.
+> > I would like to have a discussion about it.
 >
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 7c810f02a2ef..8c7f6576e421 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
->         MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
->         MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
->         MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
-> -       MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
-> -       MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
-> +       MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
-> +       MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
->         MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
->         MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
->  };
-> --
-> 2.25.1
+> 1. That information should be in the commit log, not some random
+> babbling about case sensitivity of file systems.
+
+I don't think it is a good idea to write who suggested the concept of the p=
+atch.
+
 >
+> 2. So as Andy says, this is changing ABI for a whole lot of users in one
+> go. While it's _probably_ true that nobody would care (because it just
+> ends up accepting more strings, not fewer), your motivation seems to be
+> to replace uses of strncasecmp() to prevent "disableGARBAGE@#$@#@" to be
+> accepted as equivalent to "disable". I.e., those potential new users of
+> sysfs_streq() would have their ABI changed towards being less
+> permissive. That's a bigger change, with a higher chance of breaking
+> something. Do you even know if the maintainers of those drivers would
+> accept a switch to a case-insensitive sysfs_streq()?
+
+I don't know what all maintainers would think about the patch.
+I thought sending a patch to the mailing list is asking for it, isn't it?
+I am asking with this email.
+
+And Andrew and Greg are maintainers.
+I am sending this patch because I accepted their feedback.
+I don't know other maintainers personally,
+so I cannot contact them to ask what they think about my idea before
+sending this email.
+
+
+>
+> Sorry, I really think you need a lot stronger motivation for introducing
+> either this change or a sysfs_strcaseeq().
+
+I found out a problem of sysfs_streq when I tried to use it for
+modules I am working on (RTRS/RNBD).
+Then I thought it would be better if there is something like sysfs_streqcas=
+e.
+That's why I sent the path.
+If nobody needs the change, it is ok for me to ignore the patch.
+
+Maybe I misunderstand when I can send a patch to Linux kernel community.
+But the only motivation of me is sharing my idea just in case there is
+someone who also needs it.
+I am sorry if I misunderstand how Linux kernel community works
+but I thought I could suggest something good to me.
+
+>
+> Rasmus
