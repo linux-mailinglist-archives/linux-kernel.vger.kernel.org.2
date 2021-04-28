@@ -2,99 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53C336D968
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4708436D976
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240231AbhD1OTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:19:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhD1OTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:19:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35540613FA;
-        Wed, 28 Apr 2021 14:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619619505;
-        bh=JTcNelOy4HAuItSK2ze/+Or0nI5YTpnu0GNDaGzLqls=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Czi8oX52i7bBsEfkDWA2Y5ymTLuS7tVdJ58hp470mTFwrulxWWS1dBcAJiO6LHIbH
-         EEy0sbbOKmMqR2A4FACOtp6AOV+LWrUoUX17bjaGoThRT+hkX0XyGKxxxKNle2FIWU
-         rtd+Bf7r2JUU9vGK2z6UdWFy7nbcEirX0biCpRxzeCCywP+zFtXWzb+nJEizq6oAcA
-         /iuB0KVzWqNT9+tkKLOdNJcEAcgMXHlOyrOQ/Im0QxJVzAlgTwaJjMPfraO0T6uL9T
-         9Xx5JS9cN/LJQeGVqP8nMzJ4IaSBK87/9xIv92IOcNg49s0shk3/njm7TJHNmaQY00
-         RdIWeZWm2iGLw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B0EBA5C0163; Wed, 28 Apr 2021 07:18:24 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 07:18:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Aubrey Li <aubrey.intel@gmail.com>, Josh Don <joshdon@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Don Hiatt <dhiatt@digitalocean.com>
-Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
-Message-ID: <20210428141824.GO975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210422120459.447350175@infradead.org>
- <20210422123308.196692074@infradead.org>
- <CABk29Ntop2nX+z1bV7giG8ToR_w3f_+GYGAw+hFQ6g9rCZunmw@mail.gmail.com>
- <YIZ6ZpkrMGQ9A9x2@hirez.programming.kicks-ass.net>
- <CABk29NvicqM_c2ssYnDrEy_FPsfD5GH38rB_XHooErALOabe5g@mail.gmail.com>
- <CABk29NvaH687GfOm_b5_hJF6HBQ6fu+1hzc0GFNEMv5mj3DrUw@mail.gmail.com>
- <YIknPXxwZvq0qmId@hirez.programming.kicks-ass.net>
- <CAERHkrttLutB1yUHS=i_syQZjqWmttm8PfQeH4WkcCLQvaR64A@mail.gmail.com>
- <YIlBASJRMHlLBivL@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIlBASJRMHlLBivL@hirez.programming.kicks-ass.net>
+        id S240243AbhD1OTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:19:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56546 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229845AbhD1OTl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:19:41 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SE4Pi9100350;
+        Wed, 28 Apr 2021 10:18:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=B1ueZsAoxf+WOv7JV3G3yr/eySa29U4BZNE4SVFEBdE=;
+ b=oBdjrfPUe4VBQaoAfap6oGxx1HRY5DNZdlPiPngjR0ZNiv48tyHbgxCf/8xJ8hF006uT
+ 3TN4jE4IpjYpXrOxrybCX6JszO1g3eaGJuozkzS5QvWPHZTkDIIpRVhmtoWWlD2ZsjNa
+ ogcVxfDV1E74GADqa09fIM2sSteyPpjvaeuPnJEV8AXtUWDQIFzipMdTADQnE2i8hNhc
+ 4O3xHrkZDRLiwDjLP3TOdlJJ2adQy4s8ClVCfD4dkWhg8XpoWIRLo0jLD8dMygR9IYxT
+ lpi4ozLoswsdR/88Ku0cpdDi2JjSXHUA2XPU3OxjKZMjaT8azoSIw5HeyvhkODUsk4Q8 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38790g8w2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 10:18:27 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13SE554R105192;
+        Wed, 28 Apr 2021 10:18:27 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38790g8w2n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 10:18:27 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13SEHA6e020762;
+        Wed, 28 Apr 2021 14:18:26 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04wdc.us.ibm.com with ESMTP id 384ay9ngce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 14:18:26 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13SEIPNE25756142
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Apr 2021 14:18:25 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 997A87805E;
+        Wed, 28 Apr 2021 14:18:25 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EDD778063;
+        Wed, 28 Apr 2021 14:18:25 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.38.222])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Apr 2021 14:18:25 +0000 (GMT)
+Message-ID: <745fce2ca4bac4cd768ced999954ea827357d235.camel@linux.ibm.com>
+Subject: Re: PPC476 hangs during tlb flush after calling /init in crash
+ kernel with linux 5.4+
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, npiggin@gmail.com,
+        miltonm@us.ibm.com
+Date:   Wed, 28 Apr 2021 09:18:24 -0500
+In-Reply-To: <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
+References: <b973fa4768140021719e7cc3123ee873d8b2a3f1.camel@linux.ibm.com>
+         <a24e9e0d-1d4f-506b-9303-4b995815d3c4@csgroup.eu>
+         <2f7587b1986d597a63169567124438325cbedfd7.camel@linux.ibm.com>
+         <711a9a60-264b-9b86-6772-6585622a5bd4@csgroup.eu>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zqUtghhgLmZih4QwfufZ2z3CYOVhNzle
+X-Proofpoint-GUID: HH03YEPPoBeuxVGMBQX4MtBzm27pHsa8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_06:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 phishscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 priorityscore=1501
+ adultscore=0 malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104280096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 01:03:29PM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 28, 2021 at 06:35:36PM +0800, Aubrey Li wrote:
-> > On Wed, Apr 28, 2021 at 5:14 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, 2021-04-28 at 08:08 +0200, Christophe Leroy wrote:
 > 
-> > > Ah, indeed so.. rq_lockp() could do with an assertion, not sure how to
-> > > sanely do that. Anyway, double_rq_unlock() is simple enough to fix, we
-> > > can simply flip the unlock()s.
-> > >
-> > > ( I'm suffering a cold and am really quite slow atm )
-> > >
-> > > How's this then?
-> > >
-> > > ---
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index f732642e3e09..3a534c0c1c46 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -290,6 +290,10 @@ static void sched_core_assert_empty(void)
-> > >  static void __sched_core_enable(void)
-> > >  {
-> > >         static_branch_enable(&__sched_core_enabled);
-> > > +       /*
-> > > +        * Ensure raw_spin_rq_*lock*() have completed before flipping.
-> > > +        */
-> > > +       synchronize_sched();
+> Le 28/04/2021 à 00:42, Eddie James a écrit :
+> > On Tue, 2021-04-27 at 19:26 +0200, Christophe Leroy wrote:
+> > > Hi Eddies,
+> > > 
+> > > Le 27/04/2021 à 19:03, Eddie James a écrit :
+> > > > Hi all,
+> > > > 
+> > > > I'm having a problem in simulation and hardware where my PPC476
+> > > > processor stops executing instructions after callling /init. In
+> > > > my
+> > > > case
+> > > > this is a bash script. The code descends to flush the TLB, and
+> > > > somewhere in the loop in _tlbil_pid, the PC goes to
+> > > > InstructionTLBError47x but does not go any further. This only
+> > > > occurs in
+> > > > the crash kernel environment, which is using the same kernel,
+> > > > initramfs, and init script as the main kernel, which executed
+> > > > fine.
+> > > > I
+> > > > do not see this problem with linux 4.19 or 3.10. I do see it
+> > > > with
+> > > > 5.4
+> > > > and 5.10. I see a fair amount of refactoring in the PPC memory
+> > > > management area between 4.19 and 5.4. Can anyone point me in a
+> > > > direction to debug this further? My stack trace is below as I
+> > > > can
+> > > > run
+> > > > gdb in simulation.
+> > > 
+> > > Can you bisect to pin point the culprit commit ?
 > > 
-> > synchronize_sched() seems no longer exist...
+> > Hi, thanks for your prompt reply.
+> > 
+> > Good idea! I have bisected to:
+> > 
+> > commit 9e849f231c3c72d4c3c1b07c9cd19ae789da0420 (b8-bad,
+> > refs/bisect/bad)
+> > Author: Christophe Leroy <christophe.leroy@c-s.fr>
+> > Date:   Thu Feb 21 19:08:40 2019 +0000
+> > 
+> >      powerpc/mm/32s: use generic mmu_mapin_ram() for all blocks.
+> >      
+> >      Now that mmu_mapin_ram() is able to handle other blocks
+> >      than the one starting at 0, the WII can use it for all
+> >      its blocks.
+> >      
+> >      Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> >      Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> > 
+> > I also confirmed that reverting this commit resolves the issue in
+> > 5.4+.
+> > 
+> > Now, I don't understand why this is problematic or what is really
+> > happening... Reverting is probably not the desired solution.
+> > 
 > 
-> Bah.. Paul, why did that go away? I realize RCU merged in the sched and
-> bh flavours, but I still find it expressive to use sync_sched() vs
-> preempt_disable().
+> Can you provide the 'dmesg' or a dump of the logs printed by the
+> kernel at boottime ?
+> 
+> The difference with this commit is that if there are several
+> memblocks, all get mapped. Maybe your 
+> target doesn't like it.
+> 
+> You are talking about simulation, are you using QEMU ? If yes can you
+> provide details so that I can 
+> try and reproduce the issue ?
 
-I could have made synchronize_sched() a synonym for synchronize_rcu(),
-but that would be more likely to mislead than to help.
+Milton mentioned the kexec debug output might be useful:
 
-> Anyway, just use sync_rcu().
+lzma_decompress_file: read on uImage of 65536 
+bytes failed
+kernel: 0xb75b3010 kernel_size: 0x4f1231
+0000000000000000-0000000040000000 : 0
+get base memory ranges:1
+usable memory rgns size:1 base:0 size:10000000
+exclude_range sorted exclude_range[0] start:0, end:bb7000
+setup_memory_ranges memory_range[0] start:bb7001, end:30000000
+CRASH MEMORY RANGES
+0000000000000000-0000000000010000
+0000000000010000-000000000c000000
+0000000010000000-000000002d600000
+get_crash_notes_per_cpu: crash_notes addr = 2ce84e00, size = 300
+Elf header: p_type = 4, p_offset = 0x2ce84e00 p_paddr = 0x2ce84e00
+p_vaddr = 0x0
+ p_filesz = 0x12c p_memsz = 0x12c
+vmcoreinfo header: p_type = 4, p_offset = 0x2c8d4000 p_paddr =
+0x2c8d4000 p_vadd
+r = 0x0 p_filesz = 0x1024 p_memsz = 0x1024
+Elf header: p_type = 1, p_offset = 0xcc7e000 p_paddr = 0x0 p_vaddr =
+0xc0000000 
+p_filesz = 0x10000 p_memsz = 0x10000
+Elf header: p_type = 1, p_offset = 0x10000 p_paddr = 0x10000 p_vaddr =
+0xc001000
+0 p_filesz = 0xbff0000 p_memsz = 0xbff0000
+Elf header: p_type = 1, p_offset = 0x10000000 p_paddr = 0x10000000
+p_vaddr = 0xd
+0000000 p_filesz = 0x1d600000 p_memsz = 0x1d600000
+Command line after adding elfcorehdr:  elfcorehdr=209464K
+sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
+sym: .data value: ffffbf0 addr: fffc032
+sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
+sym: .data value: ffffbf0 addr: fffc03a
+sym: sha256_starts info: 12 other: 00 shndx: 2 value: 92c size: 70
+sym: sha256_starts value: fffc950 addr: fffc044
+sym: sha256_update info: 12 other: 00 shndx: 2 value: 36c4 size: c
+sym: sha256_update value: ffff6e8 addr: fffc058
+sym: sha256_finish info: 12 other: 00 shndx: 2 value: 36d0 size: 1a4
+sym: sha256_finish value: ffff6f4 addr: fffc070
+sym:     memcmp info: 12 other: 00 shndx: 2 value: 5fc size: 38
+sym: memcmp value: fffc620 addr: fffc080
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff898 addr: fffc08e
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8c8 addr: fffc092
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff898 addr: fffc096
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc09c
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8b8 addr: fffc0a2
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8b8 addr: fffc0a6
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8c8 addr: fffc0aa
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc0ac
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc0b8
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8ce addr: fffc0ca
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8ce addr: fffc0d2
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc0d8
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8d0 addr: fffc0de
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8d0 addr: fffc0e2
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc0e4
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc0f0
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc104
+sym: _restgpr_28_x info: 12 other: 00 shndx: 2 value: 888 size: 0
+sym: _restgpr_28_x value: fffc8ac addr: fffc110
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8e0 addr: fffc11a
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8e0 addr: fffc122
+sym:     printf info: 12 other: 00 shndx: 2 value: 524 size: 68
+sym: printf value: fffc548 addr: fffc128
+sym: setup_arch info: 12 other: 00 shndx: 2 value: 91c size: 4
+sym: setup_arch value: fffc940 addr: fffc12c
+sym: skip_checks info: 11 other: 00 shndx: 8 value: 0 size: 4
+sym: skip_checks value: ffffd50 addr: fffc132
+sym: skip_checks info: 11 other: 00 shndx: 8 value: 0 size: 4
+sym: skip_checks value: ffffd50 addr: fffc136
+sym: verify_sha256_digest info: 12 other: 00 shndx: 2 value: 0 size: f0
+sym: verify_sha256_digest value: fffc024 addr: fffc140
+sym: post_verification_setup_arch info: 12 other: 00 shndx: 2 value:
+920 size: 4
+sym: post_verification_setup_arch value: fffc944 addr: fffc15c
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8f2 addr: fffc16e
+sym: .rodata.str1.1 info: 03 other: 00 shndx: 4 value: 0 size: 0
+sym: .rodata.str1.1 value: ffff8f2 addr: fffc18a
+sym: _restgpr_20_x info: 12 other: 00 shndx: 2 value: 868 size: 0
+sym: _restgpr_20_x value: fffc88c addr: fffc1a8
+sym:    putchar info: 12 other: 00 shndx: 2 value: 928 size: 4
+sym: putchar value: fffc94c addr: fffc1cc
+sym:    putchar info: 12 other: 00 shndx: 2 value: 928 size: 4
+sym: putchar value: fffc94c addr: fffc244
+sym:  __lshrdi3 info: 10 other: 00 shndx: 2 value: 8f8 size: 0
+sym: __lshrdi3 value: fffc91c addr: fffc2c4
+sym:    putchar info: 12 other: 00 shndx: 2 value: 928 size: 4
+sym: putchar value: fffc94c addr: fffc4e4
+sym:   vsprintf info: 12 other: 00 shndx: 2 value: 13c size: 38c
+sym: vsprintf value: fffc160 addr: fffc534
+sym:   vsprintf info: 12 other: 00 shndx: 2 value: 13c size: 38c
+sym: vsprintf value: fffc160 addr: fffc59c
+sym: my_thread_ptr info: 11 other: 00 shndx: 8 value: 8 size: 4
+sym: my_thread_ptr value: ffffd58 addr: fffc76a
+sym: my_thread_ptr info: 11 other: 00 shndx: 8 value: 8 size: 4
+sym: my_thread_ptr value: ffffd58 addr: fffc76e
+sym:      stack info: 11 other: 00 shndx: 8 value: 10 size: 4
+sym: stack value: ffffd60 addr: fffc776
+sym:      stack info: 11 other: 00 shndx: 8 value: 10 size: 4
+sym: stack value: ffffd60 addr: fffc77a
+sym:  purgatory info: 12 other: 00 shndx: 2 value: f0 size: 4c
+sym: purgatory value: fffc114 addr: fffc784
+sym:  dt_offset info: 11 other: 00 shndx: 8 value: c size: 4
+sym: dt_offset value: ffffd5c addr: fffc79e
+sym:  dt_offset info: 11 other: 00 shndx: 8 value: c size: 4
+sym: dt_offset value: ffffd5c addr: fffc7a2
+sym:     kernel info: 11 other: 00 shndx: 8 value: 4 size: 4
+sym: kernel value: ffffd54 addr: fffc7ba
+sym:     kernel info: 11 other: 00 shndx: 8 value: 4 size: 4
+sym: kernel value: ffffd54 addr: fffc7be
+sym:     memcpy info: 12 other: 00 shndx: 2 value: 5d8 size: 24
+sym: memcpy value: fffc5fc addr: ffff648
+sym:     memcpy info: 12 other: 00 shndx: 2 value: 5d8 size: 24
+sym: memcpy value: fffc5fc addr: ffff65c
+sym: sha256_process info: 12 other: 00 shndx: 2 value: 99c size: 2be0
+sym: sha256_process value: fffc9c0 addr: ffff66c
+sym: sha256_process info: 12 other: 00 shndx: 2 value: 99c size: 2be0
+sym: sha256_process value: fffc9c0 addr: ffff6a8
+sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
+sym: .data value: ffffd10 addr: ffff742
+sym:      .data info: 03 other: 00 shndx: 7 value: 0 size: 0
+sym: .data value: ffffd10 addr: ffff74a
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc024 addr: ffff920
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc114 addr: ffff94c
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc160 addr: ffff980
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc4ec addr: ffff9c8
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc548 addr: ffff9e8
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc5b0 addr: ffffa1c
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc5dc addr: ffffa30
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc5fc addr: ffffa44
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc620 addr: ffffa58
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc940 addr: ffffa80
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc944 addr: ffffa94
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc948 addr: ffffaa8
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc94c addr: ffffad0
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc950 addr: ffffaf8
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: fffc9c0 addr: ffffb0c
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: ffff5a0 addr: ffffb68
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: ffff6e8 addr: ffffbbc
+sym:      .text info: 03 other: 00 shndx: 2 value: 0 size: 0
+sym: .text value: ffff6f4 addr: ffffbd0
+Modified cmdline:console=ttyS0,115200 loglevel=9 rootwait
+root=/dev/mmcblk0p2 el
+fcorehdr=209464K maxcpus=1 
+reserve regions: 4
+0: offset: e3fc000, size: 4000
+1: offset: c000000, size: c8f000
+2: offset: fffc000, size: 4000
+3: offset: f6a7000, size: 955000
+debug.dtb written
+kexec_load: entry = 0xfffc658 flags = 0x1
+nr_segments = 6
+segment[0].buf   = 0xb5cb1010
+segment[0].bufsz = 0xb7d568
+segment[0].mem   = 0xc000000
+segment[0].memsz = 0xc7e000
+segment[1].buf   = 0x100997b0
+segment[1].bufsz = 0x10000
+segment[1].mem   = 0xcc7e000
+segment[1].memsz = 0x10000
+segment[2].buf   = 0x100a97f0
+segment[2].bufsz = 0x400
+segment[2].mem   = 0xcc8e000
+segment[2].memsz = 0x1000
+segment[3].buf   = 0x100ae670
+segment[3].bufsz = 0x3c5f
+segment[3].mem   = 0xe3fc000
+segment[3].memsz = 0x4000
+segment[4].buf   = 0xb6c5e050
+segment[4].bufsz = 0x95409f
+segment[4].mem   = 0xf6a7000
+segment[4].memsz = 0x955000
+segment[5].buf   = 0x100aa8a0
+segment[5].bufsz = 0x3d6c
+segment[5].mem   = 0xfffc000
+segment[5].memsz = 0x4000
 
-And yes, just use synchronize_rcu().
+> 
+> Thanks
+> Christophe
 
-							Thanx, Paul
