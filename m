@@ -2,137 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B1136E1CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5F036E1CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238616AbhD1Win (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:38:43 -0400
-Received: from mout.gmx.net ([212.227.17.22]:33045 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231400AbhD1Wim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:38:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619649462;
-        bh=7lUAX4Vgd7j9+ARRccRvC/EruImvMWRCxOk8mt6CLi8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=IRGNDKwKJ/X4fNK+GOWqz9oXsA/DgGCL2v8y4W5+ma6rpadPt+QFcUkJBHqHBlo0D
-         gXDwK7x5r2MFK2NaDBnTeIIoAIVnqjsGMTKOi/Z5PY22kYP8xk6/j41GcpiJjl28vC
-         5cJ+tTeTLwwlKMvqKLWm6fFn1jf12vuOqc5Kt5NM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXXyJ-1m5mQ51BYV-00YvKK; Thu, 29
- Apr 2021 00:37:42 +0200
-Subject: Re: [PATCH v2 1/4] tpm: Use a threaded interrupt handler
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
-        jsnitsel@redhat.com, ml.linux@elloe.vision,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1619394440-30646-1-git-send-email-LinoSanfilippo@gmx.de>
- <1619394440-30646-2-git-send-email-LinoSanfilippo@gmx.de>
- <YIikDCTBcMMxjots@kernel.org>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <495e816a-afba-4ea0-560c-bc748df26337@gmx.de>
-Date:   Thu, 29 Apr 2021 00:37:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240130AbhD1Wjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232947AbhD1Wjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 18:39:36 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDD6C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:38:51 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso9911892pjn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=40mvDvEqW9Ck6kXUyy+OdsmQH7a8B6aLXhlL5FWmJuM=;
+        b=J5iAoCMPLGAbUrLxrJOkHQjozfbLQ4i8a1MCBD1nju7qsziZGaHIQlEO90RvN4sYwC
+         on3bzxKOmtiPcK+Z3RKtcmHiabsgeY3xUN+OufCZ50Hh9mma9vuzJ4L4OX/lxLlGjBuA
+         jyiltB2KNjrOCrjK49wDpCNkUDe0ii5gNSFUxsizZ9ZXRIhuZCj8GEWmzjG7hyXQa26z
+         Col68vtxqCTOPCPWY5WxaDjt8BCloymnV0Mx5a76O8clVLhfGYY8fHKfyg7E3QCjeQ4S
+         ggtXtG284l8i6itUzk7NUMRB/+d3uwPMQgYezzh55k/zZX2WN9VyoO3e+KciP/ewG4s0
+         IxoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=40mvDvEqW9Ck6kXUyy+OdsmQH7a8B6aLXhlL5FWmJuM=;
+        b=KdDooOIsJBQG7P3lGGW6m6vBwRNd43PRT0HZmmFx/aUuxG0l7rWlgWExIyjijoiDPK
+         KlnmV5uHVlVsUTPeDVJc5n5rO3JrTqwGPiLyskuvf8RKvUNq2b6U535V+1Oi1R8xDTMy
+         qqUoxykiYmGGrmUS3GPpsEBQhE3+smKErNH6BLyqcnL8b8oKMRuoE9D8A+neHvtGhr+J
+         4gIZ6UiSneiSS5kHZUAylwdQPxNJHVkNqMgk26cMRLbJJ91zCzHMCsENnvAh4keeZHrT
+         lfQc38rv0355R6TFj85gvjz8Q65/gacBNvJXv0FPXysOL7xOi28gfZVs5qywBQ82D/B5
+         H3XQ==
+X-Gm-Message-State: AOAM532MOYzh3SvQ3NNeutYW5B33726XDRkmD1+KYbwWxdzQ0ruF9cD4
+        EUJjtaiZaZyMIv2qBnaFfgnL8Q==
+X-Google-Smtp-Source: ABdhPJxxyerV2sLaJmaReymvIjG1ou0vnWrNIz7CdomcPKHywlk+yQp1i+7gM5oynqmH//eLr0TFXA==
+X-Received: by 2002:a17:90a:a58f:: with SMTP id b15mr34064584pjq.135.1619649530360;
+        Wed, 28 Apr 2021 15:38:50 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t4sm578754pfq.165.2021.04.28.15.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 15:38:49 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 22:38:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Michael Tokarev <mjt@tls.msk.ru>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v3 3/9] KVM: x86: Defer tick-based accounting 'til after
+ IRQ handling
+Message-ID: <YInj9QtUFdAlKqr3@google.com>
+References: <20210415222106.1643837-1-seanjc@google.com>
+ <20210415222106.1643837-4-seanjc@google.com>
+ <20210420231402.GA8720@lothringen>
+ <YH9jKpeviZtMKxt8@google.com>
+ <20210421121940.GD16580@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <YIikDCTBcMMxjots@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VRjLLgx1jMPG5HHqpGMzBJHdHG6JdqBiP+7diHvO2FfohPbpOyv
- zLzpt1Y9FKbY3S0DHIKZyO7qsY6Vbdt08wfJON7VltJFJCZ40fwPWOPPcmRXGbpHEwS8vbh
- 1t3/s27OouD/qQdlFk4Y4R9S0omxbgnV8qhtNtXPlKDeTLSSAKGCm+OSZh1OibCQcYgc7DL
- 1X3I/zD1Y5cV9GUxzc1cw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JMTQeTgh6nA=:/1JolsotzXliCXPpmkxh9b
- H7g4STFEX5ZioVWP6VvNt4BbxwIQPbDh9vQrwBmYNg+N+aRv7GMZrFCRkRDuPZZuOGC98/+i3
- uQErDulMpjVptdGzOQhtvCgNRKrBs1VQQ3a4nF+LKZ3WDF2AdmYbrXr3wbmkwulUQEy1wzKYj
- mq41kverx0Wg3xTF5OF3oWOpxS8CACvdDrWXI4yZuP9rdwSmG0TFzrZekBWUuh+7xYHCtY/M7
- rGOz4pYCANnPMtCHLRNyzfu2G9kIQmUxMVgG66hwZY1VFQJX5aXBsj4rpYIhKSH8QJEqQFM55
- JACJehG4dCRfpMlcX3XXjWUFXVvTE+tJ+c/S3jzRFKfWvKB5NdkyFVcZGsZFjFdidYo2Qx6c/
- R+LkUudMb9295awf7L0oIES7HwuhjMnL5MoqaNR0ympdu8TFHM1ZNCA4Yy17PJLKIwh0+3f7U
- CdGmzQDzWU4Q4U3txeYEZ9dJPtypXGcdbPGNqww7NEiBrNVevQgn+1aX/BTR1UxXxvUUUCGJL
- zOD4HK744YE3zD48CapWnxUofdhJ04CrufBloWXqFGjADUJr6rqQgeEvPURW+Xuc6PlC6Irry
- 2GS/gDJAtglcMF9sc5ULiF9B7Kk31xr+la+WqdGk8Tz3wesWZBNfBKn4JRVvZeHmblevAoZoF
- 2OP4EUjKeLjaQSzRE4vglUT+RH27ti5LtFgbLtlata6vx4K2/Iz5FH2V3xojKcDMXsqWr6UDh
- 35k1GffRx05w8VRQEF3y00TAiDK4Nze/b1IrGz+76351j5qOLF8UByPX0Ua3nHBifybWtEglE
- m1+vOCcJ1DNFiNdCqpZhF46FGLNCji4gc9G7ZWUvlNPsbmL4vVslZ25lGemH9i+IQ5xees9IO
- 3UWBNnLHHbzLOPssAn29KnVliTiDLkl66n8NWQoHFL7r6Y2i+LOn16ZJ3W7fpMud4wR2HjGL9
- eTzs9DPDu0EyP2z0R+ZwQY2Mi5tPmgBQQZbhv/fxIcbFuctvYhtQMakSGzDv9miTsfMJ+qcj1
- znSDfSCngnXfLW3jWMlHTcSCZoXrp+ZZm4T5nUJiR4O/Hhe5UykE17l4HPVB0qDIT6Wq+Pex2
- IMX1fkY8a4bswO0cgp7pHetFBSLuCG9XzkM355h/xtX295LwGmLUgn4h/cOgrUFia49lRRWhw
- Lg0wFdQcBbTTN+XkOIGUFVpVJt491YGyEMVKqrBuG3E+7e7GYUiKW3mjVvy5aS9hWNkXCgnYp
- Kdy7GpiVXu2XcZBV4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421121940.GD16580@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Apologies for the slow response.
 
-Hi,
+On Wed, Apr 21, 2021, Frederic Weisbecker wrote:
+> On Tue, Apr 20, 2021 at 11:26:34PM +0000, Sean Christopherson wrote:
+> > On Wed, Apr 21, 2021, Frederic Weisbecker wrote:
+> > > On Thu, Apr 15, 2021 at 03:21:00PM -0700, Sean Christopherson wrote:
+> > > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > > index 16fb39503296..e4d475df1d4a 100644
+> > > > --- a/arch/x86/kvm/x86.c
+> > > > +++ b/arch/x86/kvm/x86.c
+> > > > @@ -9230,6 +9230,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+> > > >  	local_irq_disable();
+> > > >  	kvm_after_interrupt(vcpu);
+> > > >  
+> > > > +	/*
+> > > > +	 * When using tick-based accounting, wait until after servicing IRQs to
+> > > > +	 * account guest time so that any ticks that occurred while running the
+> > > > +	 * guest are properly accounted to the guest.
+> > > > +	 */
+> > > > +	if (!vtime_accounting_enabled_this_cpu())
+> > > > +		vtime_account_guest_exit();
+> > > 
+> > > Can we rather have instead:
+> > > 
+> > > static inline void tick_account_guest_exit(void)
+> > > {
+> > > 	if (!vtime_accounting_enabled_this_cpu())
+> > > 		current->flags &= ~PF_VCPU;
+> > > }
+> > > 
+> > > It duplicates a bit of code but I think this will read less confusing.
+> > 
+> > Either way works for me.  I used vtime_account_guest_exit() to try to keep as
+> > many details as possible inside vtime, e.g. in case the implemenation is tweaked
+> > in the future.  But I agree that pretending KVM isn't already deeply intertwined
+> > with the details is a lie.
+> 
+> Ah I see, before 87fa7f3e98a131 the vtime was accounted after interrupts get
+> processed. So it used to work until then. I see that ARM64 waits for IRQs to
+> be enabled too.
+> 
+> PPC/book3s_hv, MIPS, s390 do it before IRQs get re-enabled (weird, how does that
+> work?)
 
-On 28.04.21 at 01:53, Jarkko Sakkinen wrote:
-> On Mon, Apr 26, 2021 at 01:47:17AM +0200, Lino Sanfilippo wrote:
->> Interrupt handling at least includes reading and writing the interrupt
->> status register from the interrupt routine. However over SPI those acce=
-sses
->> require a sleepable context, since a mutex is used in the concerning
->> functions.
->> For this reason request a threaded interrupt handler which is running i=
-n
->> (sleepable) process context.
->>
->> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
->> ---
->>  drivers/char/tpm/tpm_tis_core.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis=
-_core.c
->> index e7d1eab..0959559 100644
->> --- a/drivers/char/tpm/tpm_tis_core.c
->> +++ b/drivers/char/tpm/tpm_tis_core.c
->> @@ -781,8 +781,10 @@ static int tpm_tis_probe_irq_single(struct tpm_chi=
-p *chip, u32 intmask,
->>  	int rc;
->>  	u32 int_status;
->>
->> -	if (devm_request_irq(chip->dev.parent, irq, tis_int_handler, flags,
->> -			     dev_name(&chip->dev), chip) !=3D 0) {
->> +
->> +	if (devm_request_threaded_irq(chip->dev.parent, irq, NULL,
->> +				      tis_int_handler, IRQF_ONESHOT | flags,
->> +				      dev_name(&chip->dev), chip) !=3D 0) {
->>  		dev_info(&chip->dev, "Unable to request irq: %d for probe\n",
->>  			 irq);
->>  		return -1;
->> --
->> 2.7.4
->>
->
-> Why?
->
-> https://elixir.bootlin.com/linux/v5.12/source/drivers/char/tpm/tpm_tis_c=
-ore.c#L670
->
-> I don't see anything that sleeps there.
->
-> /Jarkko1
->
+No idea.  It's entirely possible it doesn't work on one or more of those
+architectures.
 
-The problem are the register read/write functions which we use to access t=
-he status register in
-the interrupt handler. In case of SPI they result in taking the spi_bus_lo=
-ck which is a mutex.
+Based on init/Kconfig, s390 doesn't support tick-based accounting, so I assume
+s390 is ok.
 
-E.g tpm_tis_spi_read32: tpm_tis_spi_read_bytes->tpm_tis_spi_transfer->spi_=
-bus_lock->mutex_lock
+  config TICK_CPU_ACCOUNTING
+	bool "Simple tick based cputime accounting"
+	depends on !S390 && !NO_HZ_FULL
 
-Using a threaded interrupt handler seemed to me the easiest way to avoid t=
-his issue.
+> And PPC/book3s_pr calls guest_exit() so I guess it has interrupts enabled.
+> 
+> The point is: does it matter to call vtime_account_guest_exit() before or
+> after interrupts? If it doesn't matter, we can simply call
+> vtime_account_guest_exit() once and for all once IRQs are re-enabled.
+> 
+> If it does matter because we don't want to account the host IRQs firing at the
+> end of vcpu exit, then probably we should standardize that behaviour and have
+> guest_exit_vtime() called before interrupts get enabled and guest_exit_tick()
+> called after interrupts get enabled. It's probably then beyond the scope of this
+> patchset but I would like to poke your opinion on that.
+> 
+> Thanks.
 
-Regards,
-Lino
+I don't know.  For x86, I would be ok with simply moving the call to
+vtime_account_guest_exit() to after IRQs are enabled.  It would bug me a little
+bit that KVM _could_ be more precise when running with
+CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, and KVM would still be poking into the details
+of vtime_account_guest_exit() to some extent, but overall it would be an
+improvement from a code cleanliness perspective.
 
+The problem is I have no clue who, if anyone, deploys KVM on x86 with
+CONFIG_VIRT_CPU_ACCOUNTING_GEN=y.  On the other hand, AMD/SVM has always had the
+"inaccurate" accounting, and Intel/VMX has been inaccurate since commit
+d7a08882a0a4 ("KVM: x86: Unconditionally enable irqs in guest context"), which
+amusingly was a fix for an edge case in tick-based accounting.
 
+Anyone have an opinion either way?  I'm very tempted to go with Frederic's
+suggestion of moving the time accounting back to where it was, it makes KVM just
+a little less ugly.
