@@ -2,210 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B7636D6D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7281236D6DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 13:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhD1L4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 07:56:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44544 "EHLO mx2.suse.de"
+        id S231569AbhD1L46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 07:56:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhD1L4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:56:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619610922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mVaAE5j4PRgNVtKYb1xi0JNMS/yIGUD1+Zz/inuGnBA=;
-        b=ZRf3ph+TnessjTvvtr/DsOTmTdjfYuifQx85GKSChPclLGlKVU+Tca39Ojkq6mbumeZ8+f
-        SeIRObEy8skWFL6/2edyJO7a/ZAN4uDpVLyQjbnrZ2gNIkGY8QiG+hDPcU3xnhUoKyyTws
-        JjS4uZnkl+VychQrxBVVx35+pAxq010=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 23ABBB155;
-        Wed, 28 Apr 2021 11:55:22 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 13:55:21 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        tim.c.chen@linux.intel.com, Shakeel Butt <shakeelb@google.com>,
-        wfg@mail.ustc.edu.cn, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
- too_many_isolated()
-Message-ID: <YIlNKds8klSiOalo@dhcp22.suse.cz>
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com>
- <YIGuvh70JbE1Cx4U@google.com>
+        id S229790AbhD1L4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 07:56:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E04A613FB;
+        Wed, 28 Apr 2021 11:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619610966;
+        bh=MPbO7Ro5DqSGjMw1tQeHEY4DPlsgICBS9RIhgwkXLJE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YqWqoncwxC2+RzwVL5lys29C5dRQBinWO5AZPEi/c+524vWHDvbR3vQnMTa33xkwR
+         U9Ymm0VAcopS6Jq3Jnkgtbxh3XfOeLV4BA7gtDb/najNNz7PVOaU5kjy7xKSv7TLhU
+         5XVHqodws0DuThMQJUIl1hz+9fZexQK6vD0B179vrMpwWAbVO2BkInjF5AMDGqkdvs
+         bFR9Ln+/KLQCyiSDoIN7yswW4nYKQjZR4QLWhUGrupQ6iorbK1J/Cj5DwUyH3B5FU7
+         fANH1WFVGXilFVVDJyzscsMuAKsdKbEEOHEWxmu0VTt6etQMeZOPbHtJwIpBVOba5U
+         mnpeBGITL6T7w==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lbinj-0004DT-Ak; Wed, 28 Apr 2021 13:56:20 +0200
+Date:   Wed, 28 Apr 2021 13:56:19 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
+ pm_runtime_resume_and_get()
+Message-ID: <YIlNY7xJYmqtxVOe@hovoldconsulting.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
+ <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
+ <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
+ <20210426163840.67ea8af9@coco.lan>
+ <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
+ <20210428103148.590191ac@coco.lan>
+ <YIkzZs8t0lMWVjzt@hovoldconsulting.com>
+ <20210428132853.65b162a0@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIGuvh70JbE1Cx4U@google.com>
+In-Reply-To: <20210428132853.65b162a0@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc Rik and Andrea]
+On Wed, Apr 28, 2021 at 01:28:53PM +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 28 Apr 2021 12:05:26 +0200
+> Johan Hovold <johan@kernel.org> escreveu:
 
-On Thu 22-04-21 11:13:34, Yu Zhao wrote:
-> On Thu, Apr 22, 2021 at 04:36:19PM +0800, Xing Zhengjun wrote:
-> > Hi,
+> > Right, a resume failure is a pretty big issue and it's not really clear
+> > how to to even handle that generally. But at remove() time you don't
+> > have much choice but to go on and release resource anyway. 
 > > 
-> >    In the system with very few file pages (nr_active_file + nr_inactive_file
-> > < 100), it is easy to reproduce "nr_isolated_file > nr_inactive_file",  then
-> > too_many_isolated return true, shrink_inactive_list enter "msleep(100)", the
-> > long latency will happen.
+> > So unless actually implementing some error handling too, using
+> > pm_runtime_sync_get() without checking for errors is still preferred
+> > over pm_runtime_resume_and_get(). That is 
 > > 
-> > The test case to reproduce it is very simple: allocate many huge pages(near
-> > the DRAM size), then do free, repeat the same operation many times.
-> > In the test case, the system with very few file pages (nr_active_file +
-> > nr_inactive_file < 100), I have dumpped the numbers of
-> > active/inactive/isolated file pages during the whole test(see in the
-> > attachments) , in shrink_inactive_list "too_many_isolated" is very easy to
-> > return true, then enter "msleep(100)",in "too_many_isolated" sc->gfp_mask is
-> > 0x342cca ("_GFP_IO" and "__GFP_FS" is masked) , it is also very easy to
-> > enter “inactive >>=3”, then “isolated > inactive” will be true.
+> > 	pm_runtime_get_sync();
+> > 	/* cleanup */
+> > 	pm_runtime_disable()
+> > 	pm_runtime_put_noidle();
 > > 
-> > So I  have a proposal to set a threshold number for the total file pages to
-> > ignore the system with very few file pages, and then bypass the 100ms sleep.
-> > It is hard to set a perfect number for the threshold, so I just give an
-> > example of "256" for it.
+> > is better than:
 > > 
-> > I appreciate it if you can give me your suggestion/comments. Thanks.
+> > 	ret = pm_runtime_resume_and_get();
+> > 	/* cleanup */
+> > 	pm_runtime_disable();
+> > 	if (ret == 0)
+> > 		pm_runtime_put_noidle();
+> > 
+> > unless you also start doing something ret.
 > 
-> Hi Zhengjun,
+> Perhaps the best would be to use, instead:
 > 
-> It seems to me using the number of isolated pages to keep a lid on
-> direct reclaimers is not a good solution. We shouldn't keep going
-> that direction if we really want to fix the problem because migration
-> can isolate many pages too, which in turn blocks page reclaim.
+> 	pm_runtime_get_noresume();
+>  	/* cleanup */
+>  	pm_runtime_disable()
+>  	pm_runtime_put_noidle();
+> 	pm_runtime_set_suspended();
 > 
-> Here is something works a lot better. Please give it a try. Thanks.
+> I mean, at least for my eyes, it doesn't make sense to do a PM
+> resume during driver's removal/unbind time.
 
-O do have a very vague recollection that number of reclaimers used to be
-a criterion in very old days and it has proven to be quite bad in the
-end. I am sorry but I do not have an reference at hands and do not have
-time to crawl git history. Maybe Rik/Andrea will remember details.
+The cleanup bit above would depend on the device being resumed so using
+pm_runtime_get_noresume() makes little sense.
 
-The existing throttling mechanism is quite far from optimal but it aims
-at handling close to OOM situations where effectivelly a large part of
-the existing LRUs can be already isolated. We already have a retry
-logic which is LRU aware in the page allocator
-(should_reclaim_retry). The logic would have to be extended but that
-sounds like a better fit for the back off to me.
+Some drivers disable clocks etc explicitly at remove instead of relying
+on pm runtime for that and then they'd use the above scheme (plus
+explicit pm_runtime_set_suspended()).
 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 507d216610bf2..9a09f7e76f6b8 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -951,6 +951,8 @@ typedef struct pglist_data {
->  
->  	/* Fields commonly accessed by the page reclaim scanner */
->  
-> +	atomic_t nr_reclaimers;
-> +
->  	/*
->  	 * NOTE: THIS IS UNUSED IF MEMCG IS ENABLED.
->  	 *
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 1c080fafec396..f7278642290a6 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1786,43 +1786,6 @@ int isolate_lru_page(struct page *page)
->  	return ret;
->  }
->  
-> -/*
-> - * A direct reclaimer may isolate SWAP_CLUSTER_MAX pages from the LRU list and
-> - * then get rescheduled. When there are massive number of tasks doing page
-> - * allocation, such sleeping direct reclaimers may keep piling up on each CPU,
-> - * the LRU list will go small and be scanned faster than necessary, leading to
-> - * unnecessary swapping, thrashing and OOM.
-> - */
-> -static int too_many_isolated(struct pglist_data *pgdat, int file,
-> -		struct scan_control *sc)
-> -{
-> -	unsigned long inactive, isolated;
-> -
-> -	if (current_is_kswapd())
-> -		return 0;
-> -
-> -	if (!writeback_throttling_sane(sc))
-> -		return 0;
-> -
-> -	if (file) {
-> -		inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
-> -		isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
-> -	} else {
-> -		inactive = node_page_state(pgdat, NR_INACTIVE_ANON);
-> -		isolated = node_page_state(pgdat, NR_ISOLATED_ANON);
-> -	}
-> -
-> -	/*
-> -	 * GFP_NOIO/GFP_NOFS callers are allowed to isolate more pages, so they
-> -	 * won't get blocked by normal direct-reclaimers, forming a circular
-> -	 * deadlock.
-> -	 */
-> -	if ((sc->gfp_mask & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS))
-> -		inactive >>= 3;
-> -
-> -	return isolated > inactive;
-> -}
-> -
->  /*
->   * move_pages_to_lru() moves pages from private @list to appropriate LRU list.
->   * On return, @list is reused as a list of pages to be freed by the caller.
-> @@ -1924,19 +1887,6 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	bool stalled = false;
->  
-> -	while (unlikely(too_many_isolated(pgdat, file, sc))) {
-> -		if (stalled)
-> -			return 0;
-> -
-> -		/* wait a bit for the reclaimer. */
-> -		msleep(100);
-> -		stalled = true;
-> -
-> -		/* We are about to die and free our memory. Return now. */
-> -		if (fatal_signal_pending(current))
-> -			return SWAP_CLUSTER_MAX;
-> -	}
-> -
->  	lru_add_drain();
->  
->  	spin_lock_irq(&lruvec->lru_lock);
-> @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
->  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  				gfp_t gfp_mask, nodemask_t *nodemask)
->  {
-> +	int nr_cpus;
->  	unsigned long nr_reclaimed;
->  	struct scan_control sc = {
->  		.nr_to_reclaim = SWAP_CLUSTER_MAX,
-> @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  	set_task_reclaim_state(current, &sc.reclaim_state);
->  	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
->  
-> +	nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
-> +	while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
-> +		if (schedule_timeout_killable(HZ / 10))
-> +			return SWAP_CLUSTER_MAX;
-> +	}
-> +
->  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
->  
-> +	if (nr_cpus)
-> +		atomic_dec(&pgdat->nr_reclaimers);
-> +
->  	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
->  	set_task_reclaim_state(current, NULL);
-
-This will surely break any memcg direct reclaim.
-
--- 
-Michal Hocko
-SUSE Labs
+Johan
