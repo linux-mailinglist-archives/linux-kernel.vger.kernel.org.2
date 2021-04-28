@@ -2,151 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC93136D004
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FA636D007
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 02:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238310AbhD1AiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Apr 2021 20:38:01 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:16377 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhD1Ah7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Apr 2021 20:37:59 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210428003713epoutp010c0b256e3409c5a442026431b62ce02a~53ov4OrLc2542325423epoutp01M
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 00:37:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210428003713epoutp010c0b256e3409c5a442026431b62ce02a~53ov4OrLc2542325423epoutp01M
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619570233;
-        bh=MyzbAvy2TEp0LhpPA5JdGl6Gnb8RzdSt8fE8YmMeFh0=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=iOwyY8d/uIJTI6hdjweUCDhBU0nlNaJ8cjPsxe9L7JFa8yFFxJA9gatxJfjevEdAg
-         fAE0QWJEs6pGgqy8l+g2ynWEORlD+buSuQbv69/sMcMOGmks8PqCij/O8A3cepdkBN
-         jb3yUE4eM77ha2wUXBXKdRWOCpNs15J0h0NP/b+Y=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210428003712epcas2p329b19bde528f1ec0ed8ae4fbb4313dce~53ou4AsRF3033430334epcas2p3X;
-        Wed, 28 Apr 2021 00:37:12 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4FVKTK6tPzz4x9Q1; Wed, 28 Apr
-        2021 00:37:09 +0000 (GMT)
-X-AuditID: b6c32a46-e17ff700000025de-1e-6088ae350fc1
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6C.7A.09694.53EA8806; Wed, 28 Apr 2021 09:37:09 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v32 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <BL0PR04MB6564B4E309188E320AB258E6FC479@BL0PR04MB6564.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210428003709epcms2p2e183e74e64b388d5feb5dd45396393dc@epcms2p2>
-Date:   Wed, 28 Apr 2021 09:37:09 +0900
-X-CMS-MailID: 20210428003709epcms2p2e183e74e64b388d5feb5dd45396393dc
-Content-Transfer-Encoding: 7bit
+        id S238589AbhD1Aiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Apr 2021 20:38:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhD1Aiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Apr 2021 20:38:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B0961059;
+        Wed, 28 Apr 2021 00:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619570286;
+        bh=CMfqp2ysuA3/D1+ryUnOiQl7FNrAM41qVmw5/edbOug=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=l2lV0b14X26qEd1HY1IrJldUvviWVRsUx7emUc9OSSzsoAebev0EZxHHX7CVG55Nt
+         VO9dKSQrrYIZYU9+AXyAtcte+5pp713PARYKBdcbwrzQnUTDfhqWj7d6chT9EiSHrL
+         v74841cOMn1zyrmQKHZwOk2LEheBRTcLyyW1jW5dqsb7TWK1XimkNihoVy1l/r0mY6
+         Rs0sEiGm5yu5N1e3gZCNAowYuPW0yrib+bpFrlvYDX4Vo/lli8KKqYxv6cr4LnN+T5
+         RnyWmJtwIixPDc99HtS39ejY+jSEZZZvIK2fVnlYId7eZMRtu6RVLGUh8N7aecFAf4
+         L6IFVcRCWR/og==
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOJsWRmVeSWpSXmKPExsWy7bCmqa7puo4EgzPNZhYP5m1js9jbdoLd
-        4uXPq2wW0z78ZLb4tH4Zq8XLQ5oWuw4eZLNY9SDconnxejaLOWcbmCx6+7eyWWw+uIHZ4vGd
-        z+wWi25sY7Lo/9fOYrHts6DF8ZPvGC0u75rDZtF9fQebxfLj/5gslm69yWjROX0Ni4OYx+Ur
-        3h6X+3qZPHbOusvuMWHRAUaP/XPXsHu0nNzP4vHx6S0Wj74tqxg9Pm+S82g/0M0UwBWVY5OR
-        mpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkD9KaSQlliTilQ
-        KCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQsECvODG3uDQvXS85P9fK0MDAyBSoMiEnY0nn
-        E+aCTu6KuVv2sjYwfmHvYuTkkBAwkXj69gxbFyMXh5DADkaJxqUPgRwODl4BQYm/O4RBTGEB
-        e4kTC8xAyoUElCTWX5wF1iosoCdx6+EaRhCbTUBHYvqJ++wgY0QEfjNLXHw7jRXEYRY4zyyx
-        50Y7I8QyXokZ7U9ZIGxpie3Lt4LFOQViJT7PeAUV15D4sayXGcIWlbi5+i07jP3+2HyoOSIS
-        rffOQtUISjz4uRsqLilxbPcHJgi7XmLrnV+MIEdICPQwShzeeYsVIqEvca1jI9gyXgFfie7e
-        BjCbRUBV4vbjiewgH0sIuEjs+1gIEmYWkJfY/nYOM0iYWUBTYv0ufYgKZYkjt1hgvmrY+Jsd
-        nc0swCfRcfgvXHzHvCdQl6lJrPu5nmkCo/IsREDPQrJrFsKuBYzMqxjFUguKc9NTi40KjJDj
-        dhMjOMVrue1gnPL2g94hRiYOxkOMEhzMSiK8bLtaE4R4UxIrq1KL8uOLSnNSiw8xmgI9OZFZ
-        SjQ5H5hl8kriDU2NzMwMLE0tTM2MLJTEeX+m1iUICaQnlqRmp6YWpBbB9DFxcEo1MG3UcOB6
-        fqTxyi+LrUqPHu6wu/a+Y1OL4VJxu6UPzh8qUDtmk3zDc0lw7LlDStxGH3fv9qk4f39TnYj5
-        ipM8T148i1g6+UBywc1JKc2Ls5/9XmygmP41pSTjOseWzuCntau8eoOc+1/WB2orKC8NOOe1
-        g99GVMejsXrnTLaNDuwueyYXfDxx6NLGBFYFFtGgDtVZjrc0F5pqRNSrWi+w0pOOPCu+YrtT
-        p5VE1sruNYxXLFeFc8utMTt/kPcb541TgdPe9p4JfNgd+JfT5NATz5VJmf84Z5dvnScwuSFT
-        Za5yfMfqWIMn51PcnlysOvX8esa5yfysIhyaWfOVWr/7PWvz7frAd7jqZ0TluQW72pVYijMS
-        DbWYi4oTAaDebnJ6BAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217
-References: <BL0PR04MB6564B4E309188E320AB258E6FC479@BL0PR04MB6564.namprd04.prod.outlook.com>
-        <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
-        <20210331011839epcms2p45d3d059fcd9e85a548014a79c3f388bc@epcms2p4>
-        <CGME20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p2>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210426155457.21221-1-nm@ti.com>
+References: <20210426155457.21221-1-nm@ti.com>
+Subject: Re: [PATCH V2 0/4] dt-bindings: soc/arm: Convert pending ti, sci* bindings to json format
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Nishanth Menon <nm@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>
+Date:   Tue, 27 Apr 2021 17:38:04 -0700
+Message-ID: <161957028464.177949.14790878722521589025@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
+Quoting Nishanth Menon (2021-04-26 08:54:53)
+> Hi,
+>=20
+> V2 of the series posted in [1] to convert the remaining ti,sci bindings
+> to json schema format. V2 is mostly review comments being incorporated -
+> details in each of the patches and in applicable patches, I have picked
+> up Rob's and Tero's reviewed bys.
+>=20
+> There are also dts fixups that this series exposes, which is good, but
+> I chose to hold them back for now pending binding review at least. The
+> complete series is available in [2] if folks are curious - to be posted
+> once v5.13-rc1 is available for fixes.
 
->> @@ -1653,6 +2148,7 @@ void ufshpb_destroy_lu(struct ufs_hba *hba, struct
->> scsi_device *sdev)
->> 
->>         ufshpb_cancel_jobs(hpb);
->> 
->> +       ufshpb_pre_req_mempool_destroy(hpb);
->>         ufshpb_destroy_region_tbl(hpb);
->> 
->>         kmem_cache_destroy(hpb->map_req_cache);
->> @@ -1692,6 +2188,7 @@ static void ufshpb_hpb_lu_prepared(struct ufs_hba
->> *hba)
->>                         ufshpb_set_state(hpb, HPB_PRESENT);
->>                         if ((hpb->lu_pinned_end - hpb->lu_pinned_start) > 0)
->>                                 queue_work(ufshpb_wq, &hpb->map_work);
->> +                       ufshpb_issue_umap_all_req(hpb);
->>                 } else {
->>                         dev_err(hba->dev, "destroy HPB lu %d\n", hpb->lun);
->>                         ufshpb_destroy_lu(hba, sdev);
->Here in lu_prepare, ufshpb_remove can be called without destroy_lu,
->and while there are jobs running.
+Is Rob going to pick this up? If so
 
-If init_success is false, ufshpb_destroy_lu and ufshpb_remove are called.
-If init_success is true, ufshpb_destroy_lu and ufshpb_remove are not called
-in this function.
-
-So I think it is not problem.
-
-Thanks,
-Daejun
-
->How about calling destroy_lu as part of ufshpb_remove?
->Calling it again when __scsi_remove_device, hostdata is already null so it won't matter.
-> 
->Again, only after we know where all this is going to.
-> 
->Thanks,
->Avri
-> 
-> 
->  
+Acked-by: Stephen Boyd <sboyd@kernel.org>
