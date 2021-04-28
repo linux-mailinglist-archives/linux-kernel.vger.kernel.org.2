@@ -2,181 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDDB36E1A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CA636E1B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhD1WYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:24:04 -0400
-Received: from mga09.intel.com ([134.134.136.24]:64028 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232310AbhD1WYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:24:03 -0400
-IronPort-SDR: THUWRL8s2cRdysCe/qHiTkjVE1lhX8lVVeuzw6AOxwOdZbXVtJld98BBBnNQKtx5UlCjIxrn9j
- inORt2NiApXQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="196975479"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="196975479"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 15:23:17 -0700
-IronPort-SDR: nwryRTKNLV+dk9dH427XcYxgnZClrDC7ta6qMUFJtJAYLGFY2SGbn5RdGJjhDQiN2NxZS1vRtv
- KqhrV1+sAuTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="537137059"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 28 Apr 2021 15:23:16 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lbsaR-0007KJ-PP; Wed, 28 Apr 2021 22:23:15 +0000
-Date:   Thu, 29 Apr 2021 06:23:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 24b57391e41080c72ee7d927672c2a0727e71387
-Message-ID: <6089e04a.tutsoxmc+4P9z38i%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S238743AbhD1W0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:26:48 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:48802 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238401AbhD1W0r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 18:26:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1619648760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3rYC7KmDvHXFkRsiOmWr3nRu/K5AZ0auJBMGf4Lh6VY=;
+        b=ga+rvY23WqALt21xKB1qXITm658olPRLdVu9fsnVet7g0WwVZW70V8rww163oefW8Nt3gS
+        vET7deeBcNaIIiJ/AtTpEPJLIy77Z04shD4BUkXiLQMM/TUxrMmoG5PvjZzQjd75xCeWIP
+        G1hPKENpLQqYkFBaHxdhV7T8En4OOnE=
+Received: from EUR02-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur02lp2051.outbound.protection.outlook.com [104.47.5.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-4-f4BhXrVHPQqjY7zPMPmmkQ-1;
+ Thu, 29 Apr 2021 00:24:23 +0200
+X-MC-Unique: f4BhXrVHPQqjY7zPMPmmkQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fZhEar6unph+jB+0KRWmWmWzItvSOM/EGvWGWQvtFEcRporRSVN2xmq2OG+f0YslcTi5Vq32GH3dAFB4FN3CftwKZrrqJQgxMbZHnZENP9S0ehTkpMTko3ez8Gtacop3SwO8T7LyDO0Yc1mrJjCktNAW4wXmOSZiw86ZvPM/0nSaItbauGnRIz/EPPrw37a3/2z2VRBC7tVQZkVXih/xyH9TY623IAJukp5Cb2kcRjwZEcuYMlbFJa0lBhimc/KoxhAHxb7MZCyi92DRn1qLAQkeU5OxLTg7wNjrJsujiCSJ2EzwBy2NNzYldJmIfEI5Yc3dFRtvIVXQpNUmEjyI4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3rYC7KmDvHXFkRsiOmWr3nRu/K5AZ0auJBMGf4Lh6VY=;
+ b=d93LBhMHEVxUIxZxe19vLBPT27rZ9DQ5v9/ZEoCDbeQN3BY404U89nRbS3yViIM7u6mF36DluH33PtbsgC5DD59gek7cgZC4P6HAWELEIL4f8HG1QDLp5+j0OXft4lic0xjv/IqcHoq68JlbNSLbFvdPUvh9xuEJnv/ANEaJLrgobFn9ugsfEoxDMCcEi4MlcVU97hQhinP7nrBgcRkwakVHeVdsxqhdrrlO3yjtKmNGkuHYY5I9wTjcpfay3Eq0VUA1GqeXpqqq5QCO5C2dq131sXgjRa9lFXwPdJgRfUPVV1gPxyBLiJ2srng/xuoXzd92itRsUzRrrs18Zpb0Bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: fieldses.org; dkim=none (message not signed)
+ header.d=none;fieldses.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
+ by VI1PR0402MB2909.eurprd04.prod.outlook.com (2603:10a6:800:b0::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Wed, 28 Apr
+ 2021 22:24:20 +0000
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::3c87:7c9e:2597:4d94]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::3c87:7c9e:2597:4d94%5]) with mapi id 15.20.4065.029; Wed, 28 Apr 2021
+ 22:24:19 +0000
+From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        smfrench@gmail.com, senozhatsky@chromium.org, hyc.lee@gmail.com,
+        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
+        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
+        sandeen@sandeen.net, dan.carpenter@oracle.com,
+        colin.king@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org
+Subject: Re: [PATCH v2 00/10] cifsd: introduce new SMB3 kernel server
+In-Reply-To: <20210428204035.GD7400@fieldses.org>
+References: <CGME20210422003835epcas1p246c40c6a6bbc0e9f5d4ccf9b69bef0d7@epcas1p2.samsung.com>
+ <20210422002824.12677-1-namjae.jeon@samsung.com>
+ <20210428191829.GB7400@fieldses.org> <878s52w49d.fsf@suse.com>
+ <20210428204035.GD7400@fieldses.org>
+Date:   Thu, 29 Apr 2021 00:24:17 +0200
+Message-ID: <875z06vyi6.fsf@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [2003:fa:705:3898:6337:f59e:f055:d0d]
+X-ClientProxiedBy: ZR0P278CA0132.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::11) To VI1PR0402MB3359.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2003:fa:705:3898:6337:f59e:f055:d0d) by ZR0P278CA0132.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:40::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Wed, 28 Apr 2021 22:24:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cff0f4c9-df27-4f55-1777-08d90a945ded
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB2909:
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB290985FBEB8F27A753CD0366A8409@VI1PR0402MB2909.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xk8dYlRD0dKbrNVBsgNAUlgTG3KXItf5S5OqZ+1t5tJIVpPnEIV8zQoPqTdo8yn5kIAmF/HOP8yrrVlECvKNOn4pC4ubr4ijdNRcaytxkjM51U75CmUeQAcrc+SeyqecTRytCLzfOhan0zF85yb4cHut+iI32YD3JAu9NWnrWDeE5fICUXameM4SkdfA9ugFw8LG62H6n3fxYFxSDmK94Fgg1XToL1/eayBnFFJ0rmXtBVTDyCmOR3Sd9TldoJelBhgsu94HGXHsxP+paDqhJxAMQ6S7FQsjKcez0ZrvKmUpYvStTJJtpRBRv7GsfqybybsZvDzhUEZEUvMX+AFubWktxZvngpT6GZdjbb7zmFqhRqzRLPdxK4TTn37JawKUhhAhnIvVSxHrIGlQz10TPcXUbcNWczvEfHduA8x/in8JMRMTlvhnC1CKUIQzLE7W8GqMN480125inLGusgGS+V3L9Wcu7S9JQfSRD1z85fL/ZjhTznakTkkigfa3bqbA8R6SgURRgrWiy0skHssuLWQ4UInav4erwA4pXqqsEDkQgvAlHW4Rf1vLSGQkF3yRcar2IhvZDiemtFYhup3iyA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(346002)(39860400002)(16526019)(4744005)(7416002)(186003)(6496006)(2906002)(52116002)(36756003)(38100700002)(5660300002)(478600001)(6916009)(2616005)(316002)(66556008)(6486002)(66476007)(4326008)(8676002)(86362001)(66946007)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: fzV7vC3c+yooFOHvuK9HccQwL9nqJ0uiYySihKbJRm7ICbkTHg465OrLgPPOAI5Phyejh04hL1l9ixnNgS8yWFXRAuaCtI6ZC1dc71l2nmmpuwe7HncILDDiSUakACdK6yburgPsdwy768L6Bwa/mHeApGwh3QAxCHkaOxxCR1wG2v8SEjsJ33wxnbDZu+W+ubjva1DSkqhHMPEESpj70uS0xXh3j6NSjwGpX36QVlfdPHGSfPdKAqda1cPCNJDTRZxZA+NZ1ABtwony08cMnMRZXLgyGVDVnoTsUFTh+XWxc9bA5rc/iiBKz7b7cCs95EG9QcOfghZGTFN1bUl3T9XBHLJAFeRq7L4cm1zkU5fLizgO6yO/guV1gvcU2HjTkEy8jvCq0VUuhI2HtYlaJ6JqsL1MRZGFhv+Cog5p/5LvctdnjJ17gxA11ZZXSPJj+klSh0FPQ3M6gqhQI88PzoukMzzoZPIl203086mRmM7yRdrsl55z7i4jjW0kCVBpTpMswX1wibCWwVlmy1xCMdYNZGDkI/Va58DN3gnQR4Lw8tMg0ZMwDkAEy631XQnjtsrSZXwyndXaMdzmGEztXVodowdkxSxwEIah4IYzqjOIY+sd+eD3yENJjGhxGN1lgyaY0EpsJvnP53jixr9kaVYmiruAkHOSKIoKR1ia0OcnmJlMmbXaJAVsOMfdvspNFtX1MioNhAloBRASA4Lrfh3E+M0jOM/O0w4lJybZeIhnIX+/FsWYf4b0sDKoVIaXQzRbK1lKcEWzj2cVgU/gOFDTOqkrkaAqsEU/8rXSxT4=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cff0f4c9-df27-4f55-1777-08d90a945ded
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 22:24:19.8261
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XxBqFVP3dpYOw0N0cinAh1pJMM0OcL7pMotH+Ws0bA9G3zn/kyhG/O+PEYIofoaQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2909
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 24b57391e41080c72ee7d927672c2a0727e71387  Merge branch 'core/rcu'
+"J. Bruce Fields" <bfields@fieldses.org> writes:
+> I'd rather see multiple patches that were actually functional at each
+> stage: e.g., start with a server that responds to some sort of rpc-level
+> ping but does nothing else, then add basic file IO, etc.
+>
+> I don't know if that's practical.
 
-elapsed time: 725m
+Although it would certainly be nice I don't think it's realistic to
+expect this kind of retro-logical-rewriting. AFAIK the other new
+fs-related addition (ntfs patchset) is using the same trick of adding
+the Makefile at the end after it was suggested on the mailing list. So
+there's a precedent.
 
-configs tested: 119
-configs skipped: 3
+Cheers,
+--=20
+Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
+E
+GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
+nchen)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                      pcm030_defconfig
-arm                     eseries_pxa_defconfig
-mips                          ath25_defconfig
-m68k                           sun3_defconfig
-ia64                      gensparse_defconfig
-mips                       lemote2f_defconfig
-powerpc                      ep88xc_defconfig
-arm                         bcm2835_defconfig
-mips                       rbtx49xx_defconfig
-arm                           h5000_defconfig
-arm                            mps2_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                      arches_defconfig
-arm                       aspeed_g4_defconfig
-m68k                        mvme16x_defconfig
-arm                           sama5_defconfig
-arm                             rpc_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7780_defconfig
-parisc                           alldefconfig
-sh                          sdk7780_defconfig
-mips                         tb0226_defconfig
-arm                         orion5x_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arc                      axs103_smp_defconfig
-mips                      pic32mzda_defconfig
-mips                       bmips_be_defconfig
-arm                          pxa168_defconfig
-openrisc                    or1ksim_defconfig
-um                                allnoconfig
-powerpc                      walnut_defconfig
-m68k                          atari_defconfig
-i386                                defconfig
-powerpc                     mpc83xx_defconfig
-arm                       spear13xx_defconfig
-arm                       omap2plus_defconfig
-mips                        jmr3927_defconfig
-arm                      pxa255-idp_defconfig
-s390                          debug_defconfig
-sh                                  defconfig
-arm                            qcom_defconfig
-arm                            dove_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210428
-i386                 randconfig-a002-20210428
-i386                 randconfig-a001-20210428
-i386                 randconfig-a006-20210428
-i386                 randconfig-a003-20210428
-i386                 randconfig-a004-20210428
-x86_64               randconfig-a015-20210428
-x86_64               randconfig-a016-20210428
-x86_64               randconfig-a011-20210428
-x86_64               randconfig-a014-20210428
-x86_64               randconfig-a013-20210428
-x86_64               randconfig-a012-20210428
-i386                 randconfig-a012-20210428
-i386                 randconfig-a014-20210428
-i386                 randconfig-a013-20210428
-i386                 randconfig-a011-20210428
-i386                 randconfig-a015-20210428
-i386                 randconfig-a016-20210428
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20210428
-x86_64               randconfig-a002-20210428
-x86_64               randconfig-a005-20210428
-x86_64               randconfig-a006-20210428
-x86_64               randconfig-a001-20210428
-x86_64               randconfig-a003-20210428
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
