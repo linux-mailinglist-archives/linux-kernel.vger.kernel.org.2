@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BAA36D16C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 06:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A79A36D170
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 06:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhD1EuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 00:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        id S232409AbhD1Ezt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 00:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhD1EuM (ORCPT
+        with ESMTP id S229437AbhD1Ezr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 00:50:12 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA46C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 21:49:27 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id z25so23168158qtn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Apr 2021 21:49:27 -0700 (PDT)
+        Wed, 28 Apr 2021 00:55:47 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EC9C061574;
+        Tue, 27 Apr 2021 21:55:03 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id h7so3559261plt.1;
+        Tue, 27 Apr 2021 21:55:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K6kmrNF9udEXSxesCkSapcMJ7JhEAtkqSYssV2y3Ckw=;
-        b=pUVYaauGLuf8JDa34aZdIwoATTdicbQcB2C/pUcrNtjwujuZ7YsMLIsb2GfhNvFASs
-         HI3SipJumPzcw26Kpl1djxBE9ivqvVe0rywZF/Rhg8szejGnZ6xhAy45BnqQKXXvWx/x
-         rCiFZBWOhkdeuJKxOgU8MChKy8nkTvTVrUvD0J+cwjTHYgmGutEoicHbKEg6Ir4JCEd0
-         lC3cWD40NwldI1824rQhBDnjxuZYnGa4oJeewFbFgewYf9A3FOJ+c5qj1qsDR8dsRoI9
-         wXvrxCUtiy5UxlbuUk/ekLvBdTyohrnMds4GutJ/LdPNfhO08Feo+hD7ETGCBrY/gz2N
-         7sMA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZqQhFHRMnmMXoEihqnFM23lMTpYQSELleFFBsJcFYD4=;
+        b=Mn0g2d6TBQgvNBBugzJ12Rd8D2+Da73PlHED8xTrQDst2DdIAdoTo5V+zNTbbvcuKa
+         h007sxdALGnSpvlCLQfOKVuY0udIEE1eHvoEZhJj6WmwTW4JDUUaqgei01i1qNDtjv+S
+         Zt2saGW5VbQL91wYWFfzmYwbUd7JszCGM4H/+gg+Ck27iOWQIhRaNNSXDkvPrghBcgEr
+         1sdhlx8oR0ChMKiuUbTm3jxYi/dGcjd1y9TSugQrO67+Oyaz9AeuLFckWLMa8VFA9vzK
+         j1aujKebpFlYSmBEjB9uOytL5uuYTVvxMCYIeguy/d3jeRswbDzJ2KNT+QS3ir/rYKSr
+         hFXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K6kmrNF9udEXSxesCkSapcMJ7JhEAtkqSYssV2y3Ckw=;
-        b=Wa8dEIHKOCyPQrIorNj9Wv1gHU1q9BBdN6xuzfCX1imYTrNnd260daESSfSkf+JhkF
-         0NRM/pCIRo2M7RIHboTQCyR4BTJFtQOQd7dllGwOwc0c3HAepuURtmD/LXpUBmWjLXHc
-         eTiM0n0bxva++gd0C5r4ESz5zupmtlbjUa80sjTZUbfC6YPEMoEDZtZkjGSMdBi/Nb3P
-         vmC0KIUoXlbJHum90Re88wPAd7jqcPwRBUYmkSug51Cyx6h3HAMV8C+h1clkg8QjA6MS
-         DaAoh0r/loTHefJlmSI0tf6vNgheMpIeXKgEkZHw275Ic4r34jPg0f4+QlSuqEwPqTHS
-         U8PA==
-X-Gm-Message-State: AOAM532MqviXpPN5CqWBA34sfEVTTE7WdMFrnXczuI+MvM1qP/voLWRA
-        MWoOP1WVCIrBR6UERgBqHuP83+BuoAb+k0ZvES9kMmwZgC0=
-X-Google-Smtp-Source: ABdhPJwcyyCtzn7vHK9D5Yv4kA31SBBHY/zxKoRRlqYrjMRMl1GM4HrfxRZHzz/c11BbE6N2uobU8ww2bfXNIRteT/k=
-X-Received: by 2002:ac8:730c:: with SMTP id x12mr24602407qto.275.1619585366171;
- Tue, 27 Apr 2021 21:49:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZqQhFHRMnmMXoEihqnFM23lMTpYQSELleFFBsJcFYD4=;
+        b=B1Ku0W3Z7X6WLQ0TV2T9bTv0j1V8/9UWIpiimqcGL2C0yPJpiNrfv4JMccu9himdwE
+         Wj8/89TLXTrSJ0g9xcGN7LBMv7tbjVqvzzHaK5Jo9520m+2UHOW22UybaIh4uJGVdZKb
+         24yJxlp0a5WZToV5/ZQnnBA9OaiuPTHdTzctdmyUn6XQQdIzfk5TwFp317pipxk/d1R/
+         22mIyYDur7FZ+UNCpzzmyQfuo0VQgMDZ7QwPbVYyaia/Jwfm4+p8hnL4KVMZKcSxKJCc
+         AsOH3rmJlJ83w8a2SFWgdM6jKD7byAYluENSUKRtr4IyZvbk4BYjSPtnhBynged6DpnN
+         eNkA==
+X-Gm-Message-State: AOAM531rtDaodQ1lXBuUP40seKFM2bSI/ah05bRvMHTWV3T+iZ/pNA1U
+        rpxLusvuT8KAYfbp4nkOCWg=
+X-Google-Smtp-Source: ABdhPJz8oJFhCYn5LUB6Qaby3t57HY4RYtUP5dfQtRFujwTzA4n2v+vGhY8p9o6GKiOJe1ItGhiPLQ==
+X-Received: by 2002:a17:90a:ad84:: with SMTP id s4mr2004969pjq.162.1619585703052;
+        Tue, 27 Apr 2021 21:55:03 -0700 (PDT)
+Received: from user ([2001:4490:4409:14a:1c7f:16a3:e48a:fdc2])
+        by smtp.gmail.com with ESMTPSA id o127sm3973433pfd.147.2021.04.27.21.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 21:55:02 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 10:24:54 +0530
+From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, saurav.girepunje@gmail.com,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] media: atomisp: pci: remove unneeded variable
+ 'err'akari.ailus@linux.intel.com,
+Message-ID: <20210428045454.GA20682@user>
+References: <20210418144323.GA54920@user>
+ <20210418150708.GA1402@agape.jhs>
 MIME-Version: 1.0
-References: <20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1>
- <20210425224709.1312655-1-paulmck@kernel.org> <20210426040736.GS1401198@tassilo.jf.intel.com>
- <20210426152801.GY975577@paulmck-ThinkPad-P17-Gen-1> <20210426160008.GY1401198@tassilo.jf.intel.com>
- <20210426161425.GC975577@paulmck-ThinkPad-P17-Gen-1> <20210426175627.GZ1401198@tassilo.jf.intel.com>
- <20210426182433.GD975577@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210426182433.GD975577@paulmck-ThinkPad-P17-Gen-1>
-From:   Luming Yu <luming.yu@gmail.com>
-Date:   Wed, 28 Apr 2021 12:49:12 +0800
-Message-ID: <CAJRGBZxgJuc2OJfvT_k3Xmk_qsxzm=xX5wm4NqeRo7vkTcZk6w@mail.gmail.com>
-Subject: Re: [PATCH v10 clocksource 1/7] clocksource: Provide module
- parameters to inject delays in watchdog
-To:     paulmck@kernel.org
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        feng.tang@intel.com, zhengjun.xing@intel.com,
-        Chris Mason <clm@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210418150708.GA1402@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We 'd expect to see clock_source watchdog can avoid to do wrong thing
-due to the injected delay or
-in real life delay by doing tsc sync-re-check by applying the patch-set.
-However , the noise is still cause wrong actions and the patch doesn't
-defeat the injected's delay
-please correct me if  I'm wrong.
+On Sun, Apr 18, 2021 at 05:07:09PM +0200, Fabio Aiuto wrote:
+> On Sun, Apr 18, 2021 at 08:13:23PM +0530, Saurav Girepunje wrote:
+> > Fix the following coccicheck warning:
+> > 
+> > drivers/staging/media/atomisp/pci/sh_css_mipi.c:39:5-8:
+> > Unneeded variable: "err". Return "0" on line 44
+> > 
+> > Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
+> > ---
+> >  drivers/staging/media/atomisp/pci/sh_css_mipi.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > index d5ae7f0b5864..708903a31b08 100644
+> > --- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > +++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > @@ -36,12 +36,11 @@ ref_count_mipi_allocation[N_CSI_PORTS]; /* Initialized in mipi_init */
+> >  int
+> >  ia_css_mipi_frame_specify(const unsigned int size_mem_words,
+> >  			  const bool contiguous) {
+> > -	int err = 0;
+> >  
+> >  	my_css.size_mem_words = size_mem_words;
+> >  	(void)contiguous;
+> >  
+> > -	return err;
+> > +	return 0;
+> >  }
+> >  
+> >  /*
+> > -- 
+> > 2.25.1
+> > 
+> > 
+> 
+> Hi Saurav,
+> 
+> this ia_css_mipi_frame_specify seems to be unused. On
+> header file, before the prototype it is said that it could
+> be removed only when all drivers moved to a new API.
+> 
+> Is that comment obsolete?
+> 
+> thank you,
+> 
+> fabio
 
-parameters]# cat *
-1
-1
--1
-3
-8
+yes this ia_css_mipi_frame_specify is unused. On header file 
 
-[62939.809615] clocksource: clocksource_watchdog_inject_delay():
-Injecting delay.
-[62939.816867] clocksource: clocksource_watchdog_inject_delay():
-Injecting delay.
-[62939.824094] clocksource: clocksource_watchdog_inject_delay():
-Injecting delay.
-[62939.831314] clocksource: clocksource_watchdog_inject_delay():
-Injecting delay.
-[62939.838536] clocksource: timekeeping watchdog on CPU26: hpet
-read-back delay of 7220833ns, attempt 4, marking unstable
-[62939.849230] tsc: Marking TSC unstable due to clocksource watchdog
-[62939.855340] TSC found unstable after boot, most likely due to
-broken BIOS. Use 'tsc=unstable'.
-[62939.863972] sched_clock: Marking unstable (62943398530130,
--3543150114)<-(62941186607503, -1331276112)
-[62939.875104] clocksource: Checking clocksource tsc synchronization
-from CPU 123 to CPUs 0,6,26,62,78,97-98,137.
-[62939.886518] clocksource: Switched to clocksource hpet
+/* Backward compatible for CSS API 2.0 only
+ * TO BE REMOVED when all drivers move to CSS API 2.1.
+ */
 
-On Tue, Apr 27, 2021 at 2:27 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Apr 26, 2021 at 10:56:27AM -0700, Andi Kleen wrote:
-> > > ------------------------------------------------------------------------
-> > >
-> > > - module parameters
-> > >
-> > >   If the scope of the fault injection capability is limited to a
-> > >   single kernel module, it is better to provide module parameters to
-> > >   configure the fault attributes.
-> > >
-> > > ------------------------------------------------------------------------
-> > >
-> > > And in this case, the fault injection capability is in fact limited to
-> > > kernel/clocksource.c.
-> >
-> >
-> > I disagree with this recommendation because it prevents fuzzer coverage.
-> >
-> > Much better to have an uniform interface that can be automatically
-> > explored.
->
-> The permissions for these module parameters is 0644, so there is no
-> reason why the fuzzers cannot use them via sysfs.
->
->                                                         Thanx, Paul
+ deprecated{Use ia_css_mipi_buffer_config instead.}
+
+new api also suggested on comment.
+
+saurav
