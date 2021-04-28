@@ -2,101 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6939736D37A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A381536D380
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 09:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhD1Hya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 03:54:30 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59886 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229643AbhD1Hy2 (ORCPT
+        id S236816AbhD1H5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 03:57:09 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:33829 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhD1H5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:54:28 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13S7rL8e002509;
-        Wed, 28 Apr 2021 07:53:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=AKjr5Mo/adx/g8/qcHycfBQ5/KxoVEwsWbF6MXeqaAY=;
- b=GC+7KIp40xm5AzbROZ8bEHHNTSgU+5byZl9+xLkFtXSL5nMpjIC1zIzYnLbuuMc3cCDq
- RzbB73PtCZisn9hRiVf4OtrpMCV2v0ZBoM69EGFk5YM6YJ2XK/6OsauCgtuH4fEL8rZQ
- bZEd/xH77HzllDFsnzzJVb0bMhBL8fs5ecRMG4kboXQ9vaIGGa5HE5SEov6eFvyvFWOl
- C4S+eLvpheT5yJXdovaVNxjxw8RHqZCj02nGT4qZaq3YKCe5PQyoAuamolJlXa8eB278
- 01GNiQnzvzKwO5k/Gma97C4X5BUllF1mGlofJ2k3vBNOE2G7OK6MDKAUB4LvF92CILIE vQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 385sgq91tf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 07:53:33 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13S7p1qf156396;
-        Wed, 28 Apr 2021 07:53:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 384b58238h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 07:53:32 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13S7rW2R166987;
-        Wed, 28 Apr 2021 07:53:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 384b582384-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Apr 2021 07:53:32 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13S7rUdk023886;
-        Wed, 28 Apr 2021 07:53:31 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 28 Apr 2021 00:53:30 -0700
-Date:   Wed, 28 Apr 2021 10:53:23 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Deepak R Varma <mh12gx2825@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] staging: media: atomisp: reformat code comment blocks
-Message-ID: <20210428075323.GP1981@kadam>
-References: <cover.1618859059.git.drv@mailo.com>
- <7cf7b8253550460e7273c94bae005939000679fd.1618859059.git.drv@mailo.com>
- <20210420084448.GC1411@agape.jhs>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420084448.GC1411@agape.jhs>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: d1KBNGNDMsVudIB_tINeTfsVoRLkojPf
-X-Proofpoint-ORIG-GUID: d1KBNGNDMsVudIB_tINeTfsVoRLkojPf
+        Wed, 28 Apr 2021 03:57:04 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210428075617epoutp045e742b76a243d3221d9b0123705c12f5~59oGxQZEj0705007050epoutp04d
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:56:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210428075617epoutp045e742b76a243d3221d9b0123705c12f5~59oGxQZEj0705007050epoutp04d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619596577;
+        bh=8ASycIZArFUrl2+o6dZweDl05pQ/ddbHVG9y+5hlVVc=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=bfLPf5yxb40n12SWgjtWZzIYhteirXkCOKt5hEUKkdEiOZqPAAUCqMuPJerHYS9H8
+         SOr328Z4U8mGTojgBVltF/V6GZlWD0OeLgG9cpQkUb4jHedHszXEvzJYQq9a/K2W9U
+         GOfqSWxXOXFFKwd6eUUx22bDv74UmB3MUQ3vrtgc=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210428075617epcas2p301035892e78d92bf55d560f26da266e9~59oGDTknH2623126231epcas2p3S;
+        Wed, 28 Apr 2021 07:56:17 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4FVWCy4vxHz4x9QN; Wed, 28 Apr
+        2021 07:56:14 +0000 (GMT)
+X-AuditID: b6c32a46-e01ff700000025de-2a-6089151e06c3
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7D.12.09694.E1519806; Wed, 28 Apr 2021 16:56:14 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH v33 0/4] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman" <avri.altman@wdc.com>, jejb <jejb@linux.ibm.com>,
+        "martin.petersen" <martin.petersen@oracle.com>,
+        asutoshd <asutoshd@codeaurora.org>,
+        "stanley.chu" <stanley.chu@mediatek.com>,
+        cang <cang@codeaurora.org>, bvanassche <bvanassche@acm.org>,
+        huobean <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210428075614epcms2p40136d775b9c43190ae70095811c84741@epcms2p4>
+Date:   Wed, 28 Apr 2021 16:56:14 +0900
+X-CMS-MailID: 20210428075614epcms2p40136d775b9c43190ae70095811c84741
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te0ybVRjGd3rK14Lp/GgBz3CZ8E3lEi5tseXghrIrn5s6jKlE/xAqfCmE
+        3tKvLA4Th0PGzW6MLIMBgtkmZKWjg61QwI1LlYsGHJZdQFS2iRsmDDbYtO4mpcUt/vfLc57z
+        vu9zLnwonCaC+dlaI2PQKtUU4cdtc0TER68LLEkXtzWF4qm6NgKf2z/IwzOuiwQ+Mu+C+I61
+        wQfP9EXgzt5eApunUnHBcSuBa4fzOdh00EbgM72nIb4+ucDDx660cfDBR0Vc3LbgjweGbgHs
+        7KwlcNllO4EbBx5x8Ne2cYBLKi3cpCDaObaTdh4wceiO6l94dPmxHkB3f2nh0Z8PdXPp29MT
+        XPrAWTOgF1rX0UU9ZZwUvw/UG7MYZSZjCGG0GbrMbK0qkdr5btqWNJlcLImWJOB4KkSr1DCJ
+        1NY3U6K3Z6uXYlIhu5Xq3CUpRcmyVOxrGw26XCMTkqVjjYkUo89U6yUSfQyr1LC5WlVMhk7z
+        qkQslsqWnOnqrHuH7Ty9Wf6xqesvkA/mIkuBLx+RryC77TwsBX58IWkHqKKqhCgFfL6A9EcP
+        7SI3ikgaNV2h3HYhSSHraDXPzSIyBk1ctQA3E2QUqhz8bVkPII9CNHou2V0Skk0QtdSf4Xh6
+        CVBV0TTXw8+j9kYb8HA4+rvBBD0ciMabZnkrPNdf7/UEoMJfh70efzTl6vLqa1B/17y3/l5k
+        m/wHuBsj8guAHB0TPp6FWHSpuIXryfUW+u7+chgu+RK6dNfptWxFN7qbl2eD5AuofbYWuu2Q
+        jEDWzlg3InI9+naCu5Ikv+U+7/8MydWo2PHwP91e97t3spdRs8vK8ZRZiybqQDmgqp8cc/VT
+        bauftP0KQDMIYvSsRsWwUr306ZttBcvvPXK7HRyenY/pAxw+6AOID6kAAdFZmC4UZCr35DEG
+        XZohV82wfUC2FPgQDA7M0C19GK0xTSKTyuXiBBmWyaWYek7gYj5NF5IqpZHJYRg9Y1jZx+H7
+        Budz8lSy73eoR8avFS12PHgMr0bFbYP1q/L22Rs179T8ofrh5/7h14NP73P0xuWEr8nUlgtm
+        LInP6FfVzEe8DaeCfbAM/Rl288fborGFgdQNZgYaT4oELjQTsXlSfsuslhZfvJymqr2X9MbI
+        3QJ279jQSIVj5BNi7abQHclOV+rqroI4RMq3hG1TlF1LtZ8Q3tnzze4jpxT7m9eP22Z6ji5W
+        to/rD6XqXky4YNpliaqSJsxpyxQ5cw+SNKNBjdcbSpxQ8bg13Zbo22v7LKz0/fLQG8OmsZFw
+        cvEnReuzhRdq6pBUKx7cFAfVqpz3kqfiT566mXLesWsWMsIPgywfVZzdQHHZLKUkEhpY5b86
+        q7NPeAQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210428075614epcms2p40136d775b9c43190ae70095811c84741
+References: <CGME20210428075614epcms2p40136d775b9c43190ae70095811c84741@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:44:48AM +0200, Fabio Aiuto wrote:
-> On Tue, Apr 20, 2021 at 12:45:04AM +0530, Deepak R Varma wrote:
-> >  	switch(AnalogGain)
-> >  	{
-> >  	case 0:
-> > @@ -1069,8 +1071,9 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
-> >  	*/
-> >  	if (DigitalGain >= 16 || DigitalGain <= 1)
-> >  		DigitalGain = 1;
-> > -	/* AnalogGainToWrite =
-> > -		(u16)((DigitalGain << 12) | AnalogGainToWrite); */
-> > +
-> > +	/* AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite);
-> > +	 */
-> 
-> this is best recommended for one line comment:
-> 
-> /* AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite); */
-> 
+Changelog:
 
-I'm going through old emails...
+v32 -> v33
+1. Fix wrong usage of scsi_command_normalize_sense.
+2. Addressed Bart's comments (func. name, type casting, parentheses)
 
-Just delete all commented out code.
+v31 -> v32
+Delete unused parameter of unmap API.
 
-regards,
-dan carpenter
+v30 -> v31
+Delete unnecessary debug message.
+
+v29 -> v30
+1. Add support to reuse bio of pre-request.
+2. Delete unreached code in the ufshpb_issue_map_req.
+
+v28 -> v29
+1. Remove unused variable that reported by kernel test robot.
+
+v27 -> v28
+1. Fix wrong return value of ufshpb_prep.
+
+v26 -> v27
+1. Fix wrong refernce of sense buffer in pre_req complete function.
+2. Fix read_id error.
+3. Fix chunk size checking for HPB 1.0.
+4. Mute unnecessary messages before HPB initialization.
+
+v25 -> v26
+1. Fix wrong chunk size checking for HPB 1.0.
+2. Fix wrong max data size for HPB single command.
+3. Fix typo error.
+
+v24 -> v25
+1. Change write buffer API for unmap region.
+2. Add checking hpb_enable for avoiding unnecessary memory allocation.
+3. Change pr_info to dev_info.
+4. Change default requeue timeout value for HPB read.
+5. Fix wrong offset manipulation on ufshpb_prep_entry.
+
+v23 -> v24
+1. Fix build error reported by kernel test robot.
+
+v22 -> v23
+1. Add support compatibility of HPB 1.0.
+2. Fix read id for single HPB read command.
+3. Fix number of pre-allocated requests for write buffer.
+4. Add fast path for response UPIU that has same LUN in sense data.
+5. Remove WARN_ON for preventing kernel crash.
+7. Fix wrong argument for read buffer command.
+
+v21 -> v22
+1. Add support processing response UPIU in suspend state.
+2. Add support HPB hint from other LU.
+3. Add sending write buffer with 0x03 after HPB init.
+
+v20 -> v21
+1. Add bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD attr. and fHPBen flag support.
+
+v19 -> v20
+1. Add documentation for sysfs entries of hpb->stat.
+2. Fix read buffer command for under-sized sub-region.
+3. Fix wrong condition checking for kick map work.
+4. Delete redundant response UPIU checking.
+5. Add LUN checking in response UPIU.
+6. Fix possible deadlock problem due to runtime PM.
+7. Add instant changing of sub-region state from response UPIU.
+8. Fix endian problem in prefetched PPN.
+9. Add JESD220-3A (HPB v2.0) support.
+
+v18 -> 19
+1. Fix null pointer error when printing sysfs from non-HPB LU.
+2. Apply HPB read opcode in lrbp->cmd->cmnd (from Can Guo's review).
+3. Rebase the patch on 5.12/scsi-queue.
+
+v17 -> v18
+Fix build error which reported by kernel test robot.
+
+v16 -> v17
+1. Rename hpb_state_lock to rgn_state_lock and move it to corresponding
+patch.
+2. Remove redundant information messages.
+
+v15 -> v16
+1. Add missed sysfs ABI documentation.
+
+v14 -> v15
+1. Remove duplicated sysfs ABI entries in documentation.
+2. Add experiment result of HPB performance testing with iozone.
+
+v13 -> v14
+1. Cleanup codes by commentted in Greg's review.
+2. Add documentation for sysfs entries (from Greg's review).
+3. Add experiment result of HPB performance testing.
+
+v12 -> v13
+1. Cleanup codes by comments from Can Guo.
+2. Add HPB related descriptor/flag/attributes in sysfs.
+3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
+
+v11 -> v12
+1. Fixed to return error value when HPB fails to initialize pinned active 
+region.
+2. Fixed to disable HPB feature if HPB fails to allocate essential memory
+and workqueue.
+3. Fixed to change proper sub-region state when region is already evicted.
+
+v10 -> v11
+Add a newline at end the last line on Kconfig file.
+
+v9 -> v10
+1. Fixed 64-bit division error
+2. Fixed problems commentted in Bart's review.
+
+v8 -> v9
+1. Change sysfs initialization.
+2. Change reading descriptor during HPB initialization
+3. Fixed problems commentted in Bart's review.
+4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
+
+v7 -> v8
+Remove wrongly added tags.
+
+v6 -> v7
+1. Remove UFS feature layer.
+2. Cleanup for sparse error.
+
+v5 -> v6
+Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+
+v4 -> v5
+Delete unused macro define.
+
+v3 -> v4
+1. Cleanup.
+
+v2 -> v3
+1. Add checking input module parameter value.
+2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+3. Cleanup for unused variables and label.
+
+v1 -> v2
+1. Change the full boilerplate text to SPDX style.
+2. Adopt dynamic allocation for sub-region data structure.
+3. Cleanup.
+
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
+
+To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+(Host Performance Booster) which uses host system memory as a cache for the
+FTL mapping table. By using HPB, FTL data can be read from host memory
+faster than from NAND flash memory. 
+
+The current version only supports the DCM (device control mode).
+This patch consists of 3 parts to support HPB feature.
+
+1) HPB probe and initialization process
+2) READ -> HPB READ using cached map information
+3) L2P (logical to physical) map management
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB.
+
+The HPB manages the L2P map using information received from the
+device. For active sub-region, the HPB caches through ufshpb_map
+request. For the in-active region, the HPB discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Daejun Park (4):
+  scsi: ufs: Introduce HPB feature
+  scsi: ufs: L2P map management for HPB read
+  scsi: ufs: Prepare HPB read for cached sub-region
+  scsi: ufs: Add HPB 2.0 support
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  162 ++
+ drivers/scsi/ufs/Kconfig                   |    9 +
+ drivers/scsi/ufs/Makefile                  |    1 +
+ drivers/scsi/ufs/ufs-sysfs.c               |   22 +
+ drivers/scsi/ufs/ufs.h                     |   54 +-
+ drivers/scsi/ufs/ufshcd.c                  |   74 +-
+ drivers/scsi/ufs/ufshcd.h                  |   29 +
+ drivers/scsi/ufs/ufshpb.c                  | 2386 ++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h                  |  277 +++
+ 9 files changed, 3012 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/scsi/ufs/ufshpb.c
+ create mode 100644 drivers/scsi/ufs/ufshpb.h
+
+-- 
+2.25.1
 
