@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904BF36DE2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FC536DE3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241573AbhD1RYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:24:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23414 "EHLO
+        id S241595AbhD1R1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:27:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20969 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231844AbhD1RYc (ORCPT
+        by vger.kernel.org with ESMTP id S239686AbhD1R07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:24:32 -0400
+        Wed, 28 Apr 2021 13:26:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619630626;
+        s=mimecast20190719; t=1619630774;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6QmxbNDcfkmoT4snx6gLW6zB0uLTOmzBgWbCGZ43h/M=;
-        b=ZzCrrHdOP4mJDOUxSO+4Q35NSCs/UVzEYL0+E6A4nwVXZlJ3jlcbDT7BXrCRtifO+UwYBe
-        oUzyQIbHta8wd7OyV16gwsMtsOREU/xhaIFfPvaCeQHes5mm/mb0i8gCVQ0rHTXmzV/i8l
-        I7VqYah1c3/+dw0KoR+yIYo+LJG8uTU=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-17-OpMk-K7jMoWnZ6P6slb7SQ-1; Wed, 28 Apr 2021 13:23:44 -0400
-X-MC-Unique: OpMk-K7jMoWnZ6P6slb7SQ-1
-Received: by mail-qv1-f70.google.com with SMTP id h88-20020a0c82610000b02901b70a2884e8so8828994qva.20
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:23:44 -0700 (PDT)
+        bh=V7cB2m4EIXAgvJljHcfW/KYIdaLcxCsoC95kMJhMDAQ=;
+        b=Iwi/VBr1bJVSiIAAiHHs4TG2GUCgrZMN0gSi7v+AKau5wP72tH/fH4S4OqPqRVlFP53lob
+        k7tpWo739Jbl30sR/1ZgmDDHiXC2Mn5IIxkzOzYV/wFq8YIDdacuYFhYQIlY6RH5bWZkm6
+        oT7x7l0TRASMI5Bh8wRcLPlXPrWEg44=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-MdT3kie5MueSIk34ogRLBA-1; Wed, 28 Apr 2021 13:26:12 -0400
+X-MC-Unique: MdT3kie5MueSIk34ogRLBA-1
+Received: by mail-qk1-f200.google.com with SMTP id l19-20020a37f5130000b02902e3dc23dc92so22054272qkk.15
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:26:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6QmxbNDcfkmoT4snx6gLW6zB0uLTOmzBgWbCGZ43h/M=;
-        b=ALhgSBi1M5Rbu+sWlK1yRXEYSLGWt+iDMuGtAjE3JSP3AYfvRf86XmdyvQFXN9Yzxd
-         n1yJpSFamqvYnGczAFm3WGM5bWJ5UsSvmPqxZylohu7LNwTw94XNyshRZx3vSmVAJ0+E
-         aRLcnWyPVmvPW76cp3v1fO7JRivP0mVm4Z7ELxmApDNsAVTRND980dT/56Wbf/et8mIv
-         aIlAE5DnPFR6AcNfvdNq0qbn4RhEUW+PH5fv1uSB+Mer1p3m5y9r5Lxm6Ex0GmN7P0p1
-         7CAz/m/WPdNgQIqZBHEmknI7YsFfwcgY/laXPLTCX3YdTU1Uq1FT1w1SLMVymThk5jub
-         Dl1w==
-X-Gm-Message-State: AOAM533W9nv+jOwnZrIDDCKEDyR5seLWe8nCp+W+ACtTrli54H8tmfdS
-        scgwfJqqILe+czKufUPMS8pIecrp4G8S4uhZhRU3naxTFLhFh/SvR8RnAk2r5TB9V20ycq39KBb
-        wob2Bk0ExVDjan6D6VZ3oCO2Y
-X-Received: by 2002:ae9:f310:: with SMTP id p16mr29914959qkg.123.1619630624372;
-        Wed, 28 Apr 2021 10:23:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweTpfhxOs2+FE7b/y38FVRdocxBBDoCy0Saro4x4l/ivnG64cNuM5i6194baTUbY8T8h2pWw==
-X-Received: by 2002:ae9:f310:: with SMTP id p16mr29914911qkg.123.1619630624022;
-        Wed, 28 Apr 2021 10:23:44 -0700 (PDT)
+        bh=V7cB2m4EIXAgvJljHcfW/KYIdaLcxCsoC95kMJhMDAQ=;
+        b=BOe4pTXrbUo+K4I+BwyE0OeY2GjBXplAnOS59VRI5xq8zM0908LZGlRE60hLb7q6F2
+         xPDpA8pK1zrvWbnsV9Ro591uQpACPQYjZqVU4L3PUm5kSGktMDjaUFwJmNFl/Bnug748
+         4NNDO2NT7OyBl5rRLw43rPVGL1dUqDFKagauj2Up5VaJzkWSphA9QkLfo2cUAm9sO6HY
+         Lc5d57BHF0a+KixVFXiEQ67Z8sgxaIxIj9fE/7H7sl2BI1f2z+yWZVOJdtGi+fSxzNlG
+         VBSxeCIFKY6PFNDIOBxxQnZrzFYkVYCouW96JSbJ97a/DRVsOAoct4vgk7JGdx4BV2Dk
+         ktMA==
+X-Gm-Message-State: AOAM533aVx9yq9fXNOAnGSqD+pEyQr+/9yGcBuUAvpOKe0oAwbxWMDLN
+        3fpeh2PA9lvJ8qLMztDR2TDU3JqOIY6eCheQP6c6npsVFnKkZ2XXJwJZjaLjpiywA+GTM3yeEdL
+        u27DjN0Vkbv9RXf4tWsYrrRVe
+X-Received: by 2002:ac8:424d:: with SMTP id r13mr20702071qtm.270.1619630771736;
+        Wed, 28 Apr 2021 10:26:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3Ithvw9uBEYJkRPtrVgmU9QKB0KQvBzCX+GB/l0kdWjFNNddPM4OsiueyR8oPGxwkUx7/sg==
+X-Received: by 2002:ac8:424d:: with SMTP id r13mr20702038qtm.270.1619630771527;
+        Wed, 28 Apr 2021 10:26:11 -0700 (PDT)
 Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id 198sm275365qkf.20.2021.04.28.10.23.42
+        by smtp.gmail.com with ESMTPSA id 191sm280259qkk.31.2021.04.28.10.26.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 10:23:43 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 13:23:41 -0400
+        Wed, 28 Apr 2021 10:26:11 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 13:26:09 -0400
 From:   Peter Xu <peterx@redhat.com>
 To:     Axel Rasmussen <axelrasmussen@google.com>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -71,38 +71,22 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
         Mina Almasry <almasrymina@google.com>,
         Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5 09/10] userfaultfd/selftests: reinitialize test
- context in each test
-Message-ID: <20210428172341.GF6584@xz-x1>
+Subject: Re: [PATCH v5 10/10] userfaultfd/selftests: exercise minor fault
+ handling shmem support
+Message-ID: <20210428172609.GG6584@xz-x1>
 References: <20210427225244.4326-1-axelrasmussen@google.com>
- <20210427225244.4326-10-axelrasmussen@google.com>
+ <20210427225244.4326-11-axelrasmussen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210427225244.4326-10-axelrasmussen@google.com>
+In-Reply-To: <20210427225244.4326-11-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 03:52:43PM -0700, Axel Rasmussen wrote:
-> Currently, the context (fds, mmap-ed areas, etc.) are global. Each test
-> mutates this state in some way, in some cases really "clobbering it"
-> (e.g., the events test mremap-ing area_dst over the top of area_src, or
-> the minor faults tests overwriting the count_verify values in the test
-> areas). We run the tests in a particular order, each test is careful to
-> make the right assumptions about its starting state, etc.
-> 
-> But, this is fragile. It's better for a test's success or failure to not
-> depend on what some other prior test case did to the global state.
-> 
-> To that end, clear and reinitialize the test context at the start of
-> each test case, so whatever prior test cases did doesn't affect future
-> tests.
-> 
-> This is particularly relevant to this series because the events test's
-> mremap of area_dst screws up assumptions the minor fault test was
-> relying on. This wasn't a problem for hugetlb, as we don't mremap in
-> that case.
+On Tue, Apr 27, 2021 at 03:52:44PM -0700, Axel Rasmussen wrote:
+> Enable test_uffdio_minor for test_type == TEST_SHMEM, and modify the
+> test slightly to pass in / check for the right feature flags.
 > 
 > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
