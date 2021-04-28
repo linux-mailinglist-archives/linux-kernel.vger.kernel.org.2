@@ -2,107 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C7F36DAC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6980036DACC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240397AbhD1PBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:01:13 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:57569 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240496AbhD1O7K (ORCPT
+        id S239497AbhD1PD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhD1PCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:59:10 -0400
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-13-ed;
- t=1619621903; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=QydOVvpj2OAyZRQLFyThi3nH5+pcZsNgV/K3JPyDtNY=;
- b=v0pzT2ftLbgMGbGTh60i1QNqjD03znuBtiCVjyDA+AlHGKjxRg095hn5nSntHwdJwW5G2
- 6ieNuTl11n2gIsIBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-13-rsa; t=1619621903; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=QydOVvpj2OAyZRQLFyThi3nH5+pcZsNgV/K3JPyDtNY=;
- b=x/TTWv4tQOnLutEIDbG9cc6Wu1R2lL73vSbCsE8Edvz0ZzakWl8TXCdqzHPoB4q7KtApc
- PS63BgYRDrK2I9sJbFt8w5Wb3W+YiKEv+O7IVJm/IPQEJcRmH4oiDN7wOBl8+KmMEdOzMEQ
- Bcqg/QcQ7qk+RP6dkeEYE8bVyfEwJQb/LLVgCmYr3sTVHLG47D8GgPAA+ceHeEVOMaND8ZV
- qyRoeiMdhcU7ZcbsIrXL3tRexMT8znCDwT/Zv+I8e3V07y3OlHEWb2uXB4NrwjqkimLqeku
- dwPEpKGb8yQQBd/CPngXo6zar+9JaHutiDx2DHNR1JpZkjMwl9RU4K4kL2ag==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id B1B4816026E; Wed, 28 Apr 2021 07:58:23 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 07:58:23 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     Andy Lutomirski <luto@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Rom Lemarchand <romlem@google.com>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
- __handle_mm_fault().
-Message-ID: <20210428145823.GA856@lespinasse.org>
-References: <20210407014502.24091-1-michel@lespinasse.org>
- <20210407014502.24091-14-michel@lespinasse.org>
- <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
+        Wed, 28 Apr 2021 11:02:54 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0E7C061264
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:05 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id p17so5046322pjz.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 07:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jz7qPymMOFiVOAXZnP4Er6B1ezJAfu0fq5a7KpaKKQU=;
+        b=tJmUpYMlpVzCzA6fjWQAPQT8pJlmuQQJyP65wBc4SobpHYKgSjjw7PSOs+hrWxJfWb
+         S9/I6rpyxY795lojvfRjKS8iIGjOqOPQnaDnZyI4sEPHgMus7cVRTId5sUXOxvDhxRY7
+         iD1+csPryZ0Fl35FqzelVEtp4n0cGxmW4B8jH/E5CQvHsNNMEJrap/+TLT18S2DLjp4Y
+         bdSoURtwbRKMeuPqDU42hhNoOZ4vj6bhzAQ6Q4VUEQqs318Ap4H3mb/WLGn/prWKCQFS
+         NM+9JEldMbdZ6jDZql84b0qH51bF0B8CuYB0Qtd5GOfy2CtygMzKAMEC0wBSgzj8iGL2
+         UahQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jz7qPymMOFiVOAXZnP4Er6B1ezJAfu0fq5a7KpaKKQU=;
+        b=IQS0NMdY1tjsqa9sVu9Td/5JRpRxB1P1WSvnn1sQqWjb2hivgkHyEOgC3VIqEHukG8
+         UEI9RckTCwMxB929jCaN6kxxc8aqelVuhnpLf12zXfcjFhZ6JtjeS+ySyPBDAw3Qdo3L
+         l2eMRmkr9R1idpeMKqUtZzclIgUR7kCi76WsR4+/QV2j6Za9cfSDE9bZDferbOefhAhv
+         DFY2mZodhbSOZpZ9ZOMMLssc/uVahifiLNLjvkYAEg9cpht0jJL3elhe982Ya1hGjWSU
+         VaG4ETebATqfCdRjx7p5ZxZqXfOKS5xUHGAVBNn2wq2fTBDGBnYOnmKdqRr0jUXhaseh
+         0jfQ==
+X-Gm-Message-State: AOAM531FKqYltfQnP7ljwegdffaIQxcNXWZfXgliOUSyxffYWM8bbsOq
+        S6s3B7dWLY5r5Jyjbk2P8Bch5wAlB/PE0w==
+X-Google-Smtp-Source: ABdhPJyqXFkfR+iBHk8ipYJO7e2td0DCaeMFxvdNTPxJZHuA4UqEQCca9eBPOjtc0ufvhqon6y+8hw==
+X-Received: by 2002:a17:902:10b:b029:ed:2b3e:beb4 with SMTP id 11-20020a170902010bb02900ed2b3ebeb4mr17868694plb.64.1619621944318;
+        Wed, 28 Apr 2021 07:59:04 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id mn22sm4501399pjb.24.2021.04.28.07.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 07:59:03 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 14:58:59 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, Denis Lunev <den@openvz.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        Oliver Upton <oupton@google.com>,
+        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
+ entries count
+Message-ID: <YIl4M/GgaYvwNuXv@google.com>
+References: <20210428113655.26282-1-valeriy.vdovin@virtuozzo.com>
+ <871raueg7y.fsf@vitty.brq.redhat.com>
+ <20210428134657.GA515794@dhcp-172-16-24-191.sw.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210428134657.GA515794@dhcp-172-16-24-191.sw.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:36:01AM -0700, Andy Lutomirski wrote:
-> On 4/6/21 6:44 PM, Michel Lespinasse wrote:
-> > The page table tree is walked with local irqs disabled, which prevents
-> > page table reclamation (similarly to what fast GUP does). The logic is
-> > otherwise similar to the non-speculative path, but with additional
-> > restrictions: in the speculative path, we do not handle huge pages or
-> > wiring new pages tables.
+On Wed, Apr 28, 2021, Valeriy Vdovin wrote:
+> On Wed, Apr 28, 2021 at 02:38:57PM +0200, Vitaly Kuznetsov wrote:
+> > Valeriy Vdovin <valeriy.vdovin@virtuozzo.com> writes:
+> > 
+> > > KVM_GET_CPUID2 kvm ioctl is not very well documented, but the way it is
+> > > implemented in function kvm_vcpu_ioctl_get_cpuid2 suggests that even at
+> > > error path it will try to return number of entries to the caller. But
+> > > The dispatcher kvm vcpu ioctl dispatcher code in kvm_arch_vcpu_ioctl
+> > > ignores any output from this function if it sees the error return code.
+> > >
+> > > It's very explicit by the code that it was designed to receive some
+> > > small number of entries to return E2BIG along with the corrected number.
+> > >
+> > > This lost logic in the dispatcher code has been restored by removing the
+> > > lines that check for function return code and skip if error is found.
+> > > Without it, the ioctl caller will see both the number of entries and the
+> > > correct error.
+> > >
+> > > In selftests relevant function vcpu_get_cpuid has also been modified to
+> > > utilize the number of cpuid entries returned along with errno E2BIG.
+> > >
+> > > Signed-off-by: Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
+> > > ---
+> > >  arch/x86/kvm/x86.c                            | 10 +++++-----
+> > >  .../selftests/kvm/lib/x86_64/processor.c      | 20 +++++++++++--------
+> > >  2 files changed, 17 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index efc7a82ab140..df8a3e44e722 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -4773,14 +4773,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+> > >  		r = -EFAULT;
+> > >  		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
+> > >  			goto out;
+> > > +
+> > >  		r = kvm_vcpu_ioctl_get_cpuid2(vcpu, &cpuid,
+> > >  					      cpuid_arg->entries);
+> > > -		if (r)
+> > > -			goto out;
+> > > -		r = -EFAULT;
+> > > -		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid)))
+> > 
+> > It may make sense to check that 'r == -E2BIG' before trying to write
+> > anything back. I don't think it is correct/expected to modify nent in
+> > other cases (e.g. when kvm_vcpu_ioctl_get_cpuid2() returns -EFAULT)
+> > 
+> That's a good point. The caller could expect and rely on the fact that nent
+> is unmodified in any error case except E2BIG. I will add this in the next
+> version.
+> > > +
+> > > +		if (copy_to_user(cpuid_arg, &cpuid, sizeof(cpuid))) {
+> > > +			r = -EFAULT;
+> > >  			goto out;
+> > > -		r = 0;
+> > > +		}
+> > >  		break;
+> > 
+> > How is KVM userspace supposed to know if it can trust the 'nent' value
+> > (KVM is fixed case) or not (KVM is not fixed case)? This can probably be
+> > resolved with adding a new capability (but then I'm not sure the change
+> > is worth it to be honest).
 > 
-> Not on most architectures.  Quoting the actual comment in mm/gup.c:
-> 
-> >  * Before activating this code, please be aware that the following assumptions
-> >  * are currently made:
-> >  *
-> >  *  *) Either MMU_GATHER_RCU_TABLE_FREE is enabled, and tlb_remove_table() is used to
-> >  *  free pages containing page tables or TLB flushing requires IPI broadcast.
-> 
-> On MMU_GATHER_RCU_TABLE_FREE architectures, you cannot make the
-> assumption that it is safe to dereference a pointer in a page table just
-> because irqs are off.  You need RCU protection, too.
-> 
-> You have the same error in the cover letter.
+> As I see it KVM userspace should set nent to 0, and then expect any non-zero
+> value in return along with E2BIG. This is the same approach I've used in the
+> modified test code in the same patch.
 
-Hi Andy,
+IMO, the current code is correct (well, least awful), albeit misleading.
+Copying back the number of entries but not the entries themselves would be a bug.
+That can obviously be remedied, but it adds even more complexity for no known
+benefit, and training userspace to go spelunking on -E2BIG would likely yield
+more bugs in the future.
 
-Thanks for your comment. At first I thought did not matter, because we
-only enable ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT on selected
-architectures, and I thought MMU_GATHER_RCU_TABLE_FREE is not set on
-these. But I was wrong - MMU_GATHER_RCU_TABLE_FREE is enabled on X86
-with paravirt. So I took another look at fast GUP to make sure I
-actually understand it.
+I also think we should keep the -E2BIG behavior of KVM_GET_CPUID2 and
+KVM_GET_{SUPPORTED,EMULATED,SUPPORTED_HV}_CPUID consistent.  Returning partial
+information would make KVM_GET_CPUID2 an anomaly.
 
-This brings a question about lockless_pages_from_mm() - I see it
-disabling interrupts, which it explains is necessary for disabling THP
-splitting IPIs, but I do not see it taking an RCU read lock as would
-be necessary for preventing paga table freeing on
-MMU_GATHER_RCU_TABLE_FREE configs. I figure local_irq_save()
-indirectly takes an rcu read lock somehow ? I think this is something
-I should also mention in my explanation, and I have not seen a good
-description of this on the fast GUP side...
 
-Thanks,
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index c96f79c9fff2..c4dbc7c47b17 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -348,20 +348,15 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
+                              struct kvm_cpuid2 *cpuid,
+                              struct kvm_cpuid_entry2 __user *entries)
+ {
+-       int r;
+-
+-       r = -E2BIG;
+        if (cpuid->nent < vcpu->arch.cpuid_nent)
+-               goto out;
+-       r = -EFAULT;
++               return -E2BIG;
++
+        if (copy_to_user(entries, vcpu->arch.cpuid_entries,
+                         vcpu->arch.cpuid_nent * sizeof(struct kvm_cpuid_entry2)))
+-               goto out;
+-       return 0;
++               return -EFAULT;
 
---
-Michel "walken" Lespinasse
+-out:
+        cpuid->nent = vcpu->arch.cpuid_nent;
+-       return r;
++       return 0;
+ }
+
+ /* Mask kvm_cpu_caps for @leaf with the raw CPUID capabilities of this CPU. */
