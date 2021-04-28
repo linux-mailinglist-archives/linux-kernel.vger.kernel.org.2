@@ -2,97 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7421836DB48
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926E236DB61
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbhD1PLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:11:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53886 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231524AbhD1PLw (ORCPT
+        id S239246AbhD1POW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239882AbhD1POS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:11:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619622667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T807XqCTr78fh+zT3Qv4di+WLGWcFE6R3h9u02iLdq0=;
-        b=OZ2Z7psUTHyhXPnamxMkJa7+0M5XQddubzY18T/sJG3h0Ze+iQAvKUbpuz3qR3pu5pASiM
-        ZxTeNO8OikSVwzo6bJuEkkewuJWyILJPFtcea4WjisMPSHUPn/CtcW5btv7gcpVZ33bE85
-        pGtM6+nntapuujEE3g0X/ghQ5xYLCIw=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-txxEQ9AcPAKViy8fmUzv5w-1; Wed, 28 Apr 2021 11:11:05 -0400
-X-MC-Unique: txxEQ9AcPAKViy8fmUzv5w-1
-Received: by mail-qt1-f200.google.com with SMTP id h12-20020ac8744c0000b02901ba644d864fso15377796qtr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:11:05 -0700 (PDT)
+        Wed, 28 Apr 2021 11:14:18 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27087C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:13:32 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id s66so2168779vss.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 08:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=va17hEIN1gMI5572/Bu5U8n1TthGJNzz9MlZ0qjXfQ8=;
+        b=FOvCAHtdrpa64fWJjd2v8zhbrkxe2XjDlU8BFhSO+gr1TeRV8kbnzathFB0byuVTmR
+         JcfKaygmgp4SXfmNo5T2JVNViCAbS9k9C9RtAmufWpKDeqh6BVZiuGN2tic9W1V19bbr
+         7b+j3+4IRbOolxOeedhwnIa/VVQd2Z6KjHe4ePfGt8QJc6/VvxWcDG4jeOvQP/UDSe+2
+         sDbIZ4wdD+I0mfhb4ZKVUQ5tO4E8LpPspFniSY2oxEPqWmlfebUm+bj+J1vsXrSnp31S
+         IDWTMIuOOnjbs/l3MRn0x5I2u6x+LlCmdw341+JLwNzvmcdz8NXz5jMDYG/fIQMj+HuW
+         qdCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T807XqCTr78fh+zT3Qv4di+WLGWcFE6R3h9u02iLdq0=;
-        b=uE2LiL+fBPgukQt4NTYatQDSPjunmSSaP/BU7e/fhF0CBu+2Qk2QruKW/kLjN5ue+s
-         0PENHUcOKSskP7mvB7iLC5x6QMEfeZF5oofWGPQyQhtcE4fbtdvat0f+euttVMydk6+M
-         pm9tKf6yAOMHNI0iXzrz8oWI5kurl2kcjwY+fRHiu0Ti1LDtV+j6TvAXcQPW3GpuwxR1
-         lqpk5KdcOOYG83cTBaJ5g1K9e+FEdEfPAms4cokrd+y25ZzC8MiaUTBcOlX6Sf7w7ir2
-         BUNGMDqS3JFGA3WyI990lPWSGQNZuKR9t6SbgNyxkMy3IaHvIv3Ceec6qO4UBcamwWfo
-         3bEg==
-X-Gm-Message-State: AOAM532xQOC9ZgJCm5NvKnUtneYye2QEqRCpSZvAXZFhUlknQf/OJB4s
-        AKYvrCBxSVFTCSz/HJ94kROPjrBIz/5HVp0PyLfH8ccwD+oGtAuliDSf5BvErUlcA1LdieBhiTp
-        SY0weD6al9qBOfohknEokSPOM
-X-Received: by 2002:ac8:7a6f:: with SMTP id w15mr27072605qtt.153.1619622664721;
-        Wed, 28 Apr 2021 08:11:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmlz6i+k8GL+CodVGGb/U/hb9IU3h8zgSIAJf+VwEX/cqDhpeMEGloDjVttPcXhjj2HOgzLg==
-X-Received: by 2002:ac8:7a6f:: with SMTP id w15mr27072578qtt.153.1619622664510;
-        Wed, 28 Apr 2021 08:11:04 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id b17sm194720qto.88.2021.04.28.08.11.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 08:11:04 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 11:11:01 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5 05/10] userfaultfd/shmem: advertise shmem minor fault
- support
-Message-ID: <20210428151101.GC6584@xz-x1>
-References: <20210427225244.4326-1-axelrasmussen@google.com>
- <20210427225244.4326-6-axelrasmussen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=va17hEIN1gMI5572/Bu5U8n1TthGJNzz9MlZ0qjXfQ8=;
+        b=HQQFIB6iCNMG6E8Mga0tYu9F/w7QIRY0z+lLc6OUC4abuv8bGNNejdLMDErnaB3a9T
+         T67migVBb5vnUQhVoSjuuqQyPBtqaXZXdhyXVRk5HrNM8Wh/74GI07K/XkzDBT1KxKAE
+         IK87iBpjkmyihQ4bQHvityi8BFhqqMUmX031N2ZkF5Q/wBqPypnXuoC/XusUTvULtU//
+         3nU/DprUuV2BsSkpu3NjE0VEALJtdeLIai0Dc9VeEgySR6o3cV3bQsvVZ4mnjERKmDGk
+         v3YH8eKAHas3Vhh1doPl1NjVOVG2r8xh754MxrJJ5rp2AczYT/KJHXAe26DEF0dF5JbH
+         DeWQ==
+X-Gm-Message-State: AOAM531vbC1daW47FLgpgtolfWdJb3dkh2JqFUNEYPHwus3tq8MrpT4A
+        oaGq1mzKmAA8YSnYRcWSyBQPnQ09OCzrCBW3lyPiFQ==
+X-Google-Smtp-Source: ABdhPJzWCsSOiCbEfusfgq4XxUrrYUu6eiejQ1dbIOPGeJVq5NDbusaXUpTSUd+FBBrrZ7R4t66BAiFanTN3I3naU+o=
+X-Received: by 2002:a67:bb0f:: with SMTP id m15mr24995139vsn.43.1619622810897;
+ Wed, 28 Apr 2021 08:13:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210427225244.4326-6-axelrasmussen@google.com>
+References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
+ <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
+ <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org> <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
+ <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
+ <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org> <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
+ <32096a375966e1fcc149016df012c445@codeaurora.org> <CAD=FV=U0zEDi1Xn3OmVFA3h3maVWS_o2FXOW9qDEzTf1Moja=A@mail.gmail.com>
+ <7c6805abf9c1f590bc4d66d625152f22@codeaurora.org>
+In-Reply-To: <7c6805abf9c1f590bc4d66d625152f22@codeaurora.org>
+From:   Doug Anderson <dianders@google.com>
+Date:   Wed, 28 Apr 2021 08:13:18 -0700
+Message-ID: <CAD=FV=W8z2VgbP6mepVNXJ8ZO_Enb+ftwG1HQhq8HtEyG1ppOA@mail.gmail.com>
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Evan Green <evgreen@chromium.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 03:52:39PM -0700, Axel Rasmussen wrote:
-> Now that the feature is fully implemented (the faulting path hooks exist
-> so userspace is notified, and the ioctl to resolve such faults is
-> available), advertise this as a supported feature.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+Hi,
 
-Acked-by: Peter Xu <peterx@redhat.com>
+On Wed, Apr 28, 2021 at 3:47 AM <sbhanu@codeaurora.org> wrote:
+>
+> On 2021-04-21 01:44, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Tue, Apr 20, 2021 at 10:21 AM <sbhanu@codeaurora.org> wrote:
+> >>
+> >> On 2021-04-15 01:55, Doug Anderson wrote:
+> >> > Hi,
+> >> >
+> >> > On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
+> >> >>
+> >> >> >> >>> +                                       required-opps =
+> >> >> >> >>> <&rpmhpd_opp_low_svs>;
+> >> >> >> >>> +                                       opp-peak-kBps = <1200000
+> >> >> >> >>> 76000>;
+> >> >> >> >>> +                                       opp-avg-kBps = <1200000
+> >> >> >> >>> 50000>;
+> >> >> >> >> Why are the kBps numbers so vastly different than the ones on sc7180
+> >> >> >> >> for the same OPP point. That implies:
+> >> >> >> >>
+> >> >> >> >> a) sc7180 is wrong.
+> >> >> >> >>
+> >> >> >> >> b) This patch is wrong.
+> >> >> >> >>
+> >> >> >> >> c) The numbers are essentially random and don't really matter.
+> >> >> >> >>
+> >> >> >> >> Can you identify which of a), b), or c) is correct, or propose an
+> >> >> >> >> alternate explanation of the difference?
+> >> >> >> >>
+> >> >> >>
+> >> >> >> We calculated bus votes values for both sc7180 and sc7280 with ICB
+> >> >> >> tool,
+> >> >> >> above mentioned values we got for sc7280.
+> >> >> >
+> >> >> > I don't know what an ICB tool is. Please clarify.
+> >> >> >
+> >> >> > Also: just because a tool spits out numbers that doesn't mean it's
+> >> >> > correct. Presumably the tool could be wrong or incorrectly configured.
+> >> >> > We need to understand why these numbers are different.
+> >> >> >
+> >> >> we checked with ICB tool team on this they conformed as Rennell &
+> >> >> Kodiak
+> >> >> are different chipsets,
+> >> >> we might see delta in ib/ab values due to delta in scaling factors.
+> >> >
+> >> > ...but these numbers are in kbps, aren't they? As I understand it
+> >> > these aren't supposed to be random numbers spit out by a tool but are
+> >> > supposed to be understandable by how much bandwidth an IP block (like
+> >> > MMC) needs from the busses it's connected to. Since the MMC IP block
+> >> > on sc7180 and sc7280 is roughly the same there shouldn't be a big
+> >> > difference in numbers.
+> >> >
+> >> > Something smells wrong.
+> >> >
+> >> > Adding a few people who understand interconnects better than I do,
+> >> > though.
+> >> >
+> >>
+> >> ICB team has re-checked the Rennell ICB tool and they confirmed that
+> >> some configs were wrong in Rennell ICB tool and they corrected it.With
+> >> the new updated Rennell ICB tool below are the values :
+> >>
+> >>
+> >> Rennell LC:(Sc7180)
+> >>
+> >> opp-384000000 {
+> >>               opp-hz = /bits/ 64 <384000000>;
+> >>               required-opps = <&rpmhpd_opp_nom>;
+> >>               opp-peak-kBps = <5400000 490000>;
+> >>               opp-avg-kBps = <6600000 300000>;
+> >> };
+> >>
+> >>
+> >> And now, these values are near to Kodaik LC values:
+> >>
+> >> Kodaik LC:(SC7280)
+> >>
+> >> opp-384000000 {
+> >>             opp-hz = /bits/ 64 <384000000>;
+> >>             required-opps = <&rpmhpd_opp_nom>;
+> >>             opp-peak-kBps = <5400000 399000>;
+> >>             opp-avg-kBps = <6000000 300000>;
+> >> };
+> >
+> > This still isn't making sense to me.
+> >
+> > * sc7180 and sc7280 are running at the same speed. I'm glad the
+> > numbers are closer now, but I would have thought they'd be exactly the
+> > same.
+> >
+> > * Aren't these supposed to be sensible? This is eMMC that does max
+> > transfer rates of 400 megabytes / second to the external device. You
+> > have bandwidths listed here of 5,400,000 kBps = 5,400,000 kilobytes /
+> > second = 5400 megabytes / second. I can imagine there being some
+> > overhead where an internal bus might need to be faster but that seems
+> > excessive. This is 13.5x!
+> >
+>
+> These numbers are not related to SDCC bandwidth, these are the values
+> needed for the NOC's to run in nominal voltage corners (internal to
+> hardware) and
+> thus it helps SDCC to run in nominal to get required through put
+> (384MBps).So above calculation mentioned by you is not applicable here.
 
--- 
-Peter Xu
+OK. I guess if everyone else understands this and it's just me that
+doesn't then I won't stand in the way. In general, though, the device
+tree is supposed to be describing the hardware in a way that makes
+sense on its own. It's not a place to just dump in magic numbers.
+These numbers must be somehow related to the transfer rate of the SD
+card since otherwise they wouldn't scale up with faster card clocks.
+Given that these numbers are expressed in "kBps" (since you're storing
+them in a property that has "kBps" in the name), I would expect that
+these numbers are expressing some type of bandwidth. I still haven't
+really understood why you have to scale some bandwidth at over 10x the
+card clock speed.
 
+Said another way: you're saying that you need these numbers because
+they make a whole bunch of math work out. I'm saying that these aren't
+just supposed to be magic numbers. They're supposed to make sense on
+their own and you should be able to describe to me how you arrived at
+these numbers in a way that I could do the math on my own. Saying "we
+plugged this into some program and it spit out these numbers" isn't
+good enough.
+
+
+> > * I can't see how it can make sense that "average" values are higher
+> > than "peak" values.
+>
+>
+> Here actual peak = peak number * 2
+> actual average = average number
+>
+> and this multiplication is taken care by ICC driver, so technically
+> actual peak is still high than average.
+
+Sorry, but that is really counter-intuitive. Georgi: is that how this
+is normally expected to work?
+
+-Doug
