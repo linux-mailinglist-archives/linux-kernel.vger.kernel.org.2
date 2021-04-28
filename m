@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8637D36E0B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B5736E0B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 23:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhD1VI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 17:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S232010AbhD1VJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 17:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhD1VI1 (ORCPT
+        with ESMTP id S229691AbhD1VJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 17:08:27 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FA6C06138A;
-        Wed, 28 Apr 2021 14:07:41 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id z7so12193434oix.9;
-        Wed, 28 Apr 2021 14:07:41 -0700 (PDT)
+        Wed, 28 Apr 2021 17:09:16 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C853C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:08:31 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id q6so16714935edr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 14:08:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=afGdW1IegFhA3S/ZCkNtm7XrIKzqvmxIjHYY2ZANXy8=;
-        b=j9k8nqkBdnuGNgOj+Rh3eCch737NivoSBjCBKqwSjeKk35/Iab5yY6IULHN7fin/DF
-         q0HClLqrQFlegmr0lbsMQyLcbn/hDM3SbyLkv4PohpL1LZf6CfaNM4XUGGEGjvqtsdSx
-         bg0pjSaS63r7Jj87jHvHreCTBlwwWqMpcW7XTX2zoAns70/hU0vPw8Dy+l6/L0lAeUzj
-         IiQZX7bQaP0qeRM7l35eX2fB2wNkmjCH+tSMG3F3JXJqjQG6zwQ5kmPrZ4zkL2L+YyFO
-         OyR5GvEdAptwUdxZe8OeohXHe23YEeMMoxlt81fIlckuPyXnrdrX7pZijaE8YccYTK+E
-         0gHg==
+        bh=oVM+iCdaFxsIfPwq2nMLDZ6TqTYet379ZeoHbJGRbTQ=;
+        b=xgecX1li+vZtq3cln0N6XPWA+P7KKlGO+QkJHeToGBYOk+pJGm7UzU6xHUtWnxUoUd
+         k4SObdNEzxatSE1/axJ3GHwN9LyypcfNVyIiyyduihy/LYRAlkQ9kK09QkqhmtGDaquq
+         ZKT8sZz/ERBbzZ8USiHw1BsnjPcRwSD8s47+G+R1CHXkx+Rnu6EWxm5pZre87qVZZdME
+         Lg4qoLDGAKY2bs87DtmBn1Vghi97JwG+cuMHs7QBI4q6aynW9zyBY9rxnZ3NmxOujD5U
+         Zr1x1W0WpgejANg2Szdhoe0QlIDP2pmNTJNK9HBrZA+0u0xsEWoPK/FMGt4Mzc0kx1Wm
+         FvbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=afGdW1IegFhA3S/ZCkNtm7XrIKzqvmxIjHYY2ZANXy8=;
-        b=sxLbstzb2jYdJKvu9p/uOC6xC5YF4KYeZU9o+Xrp8u67PkOTn8i36FCOOcPrE3RzxJ
-         ky51HOB3eaV80+VplZ1VU6dnGjgdEe/Ag/v/8EAdMnsCEgUQrtbyXqPMSGMKdYB5QDyk
-         j1pBBTJ6KEOFGC0KRZX8LvfCn+wiVHe9hCU9upfVEwO1cc20lOPVqYN895hnStTOFpZZ
-         JrUOUaZfsi80tGNsZaUqLK3ga14S0ujFPfTN3TjFIqRNAltQ5F/ILebWB2E2sNO/oHgK
-         W3/04CFEMO4eSdpvbtqAH1JmloRY8XHvU50TpR8cEAb6Cp4os4F37hyzqGj5TZA+Ah3C
-         2fag==
-X-Gm-Message-State: AOAM531Bil/zSZ5wRHEBTOjEMzLvFR8XHMQN1TRcLom3TZ+jc5MBlrgt
-        c5J7+0uf/cQoNyT730aYhYp8A151XzB5NCfirCQ=
-X-Google-Smtp-Source: ABdhPJz3hDhinOWSyOY7CmIXZ4pP5mqTg5SpsT+T8+gCAX93KMLvIxceeL73x9ixEeHY5VlbMG/zE9bVlBaMUBjNIls=
-X-Received: by 2002:aca:3e05:: with SMTP id l5mr2353627oia.39.1619644060566;
- Wed, 28 Apr 2021 14:07:40 -0700 (PDT)
+        bh=oVM+iCdaFxsIfPwq2nMLDZ6TqTYet379ZeoHbJGRbTQ=;
+        b=WAP3e9d8q4nR2yGXJiqa+p/sfT1fXL/AwlwGE+OrQ4QBqmtwbwGXJ/gUuGma9TGZIy
+         ObajdXoJCgPk8ZitCCnX9+hZWXEVXR/B3V1GPdN9CXtguKVjWOx2YNdl7I1jdILeuZpB
+         rDYpDtZqWR+zwdySgdGm8tkemEYvuk3KWERaf9O/Nd0/Dp61Wn68xtvb8IlZGb1hwDiH
+         3iO/+VycJGqLCSkz5hrm0XUaDpkP4M0gTHmHQdK4o2nZjpO2WrxOYHshKfSaGuqXO6vO
+         nK3FcAUyVDcrLjGI1FrbvgAWzTglmNMQX7gcZpTdGNkzeisRw8eh0GH0h4pqUikkCeIY
+         8eWA==
+X-Gm-Message-State: AOAM533E6ZdhjUKk6UIZyDlLXgX5IN7t4mNEZXtOYlJiHvAyu8MB1LMx
+        hAgRra101ubRP7Mrjh1INJxc3dZghvjtn+iY6LhjnA==
+X-Google-Smtp-Source: ABdhPJxstAbCjBnNHZqdoBSMGGEklrAQj49GAceBkw0Svq0mJzmb0vA0NIyg451Fm4fflP37wNtdmIBaLeg1Zk8giQc=
+X-Received: by 2002:a05:6402:12d3:: with SMTP id k19mr2830019edx.52.1619644110204;
+ Wed, 28 Apr 2021 14:08:30 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6830:2103:0:0:0:0 with HTTP; Wed, 28 Apr 2021 14:07:39
- -0700 (PDT)
-In-Reply-To: <YInDdgd2r1SDdv4k@piout.net>
-References: <20210110231752.1418816-5-alexandre.belloni@bootlin.com>
- <20210428184946.23999-1-youling257@gmail.com> <YInDdgd2r1SDdv4k@piout.net>
-From:   youling 257 <youling257@gmail.com>
-Date:   Thu, 29 Apr 2021 05:07:39 +0800
-Message-ID: <CAOzgRdbWKDxAHjUZLemsNBZsctYssyEdfMiF5YpC=nTbjsoSLg@mail.gmail.com>
-Subject: Re: [PATCH 04/17] rtc: cmos: remove cmos_rtc_ops_no_alarm
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     hdegoede@redhat.com, a.zummo@towertech.it,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20210428190314.1865312-1-vgoyal@redhat.com>
+In-Reply-To: <20210428190314.1865312-1-vgoyal@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 28 Apr 2021 14:08:28 -0700
+Message-ID: <CAPcyv4jYyYOXyZLv1Pz3Vy1U7B7BzNrp4TO1MzANkYOMA0u_4A@mail.gmail.com>
+Subject: Re: [PATCH v6 0/3] dax: Fix missed wakeup in put_unlocked_entry()
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, virtio-fs@redhat.com,
+        willy@infradead.org, jack@suse.cz, groug@kaod.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-test this patch can fix my problem.
+On Wed, Apr 28, 2021 at 12:03 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> Hi,
+>
+> This is V6. Only change since V5 is that I changed order of WAKE_NEXT
+> and WAKE_ALL in comments too.
+>
+> Vivek
+>
+> Vivek Goyal (3):
+>   dax: Add an enum for specifying dax wakup mode
+>   dax: Add a wakeup mode parameter to put_unlocked_entry()
+>   dax: Wake up all waiters after invalidating dax entry
 
-2021-04-29 4:20 GMT+08:00, Alexandre Belloni <alexandre.belloni@bootlin.com>:
-> Hello,
->
-> On 29/04/2021 02:49:46+0800, youling257 wrote:
->> this patch cause suspend failed on my Bay trail z3735f tablet.
->>
->> [  162.038713] PM: dpm_run_callback(): platform_pm_suspend+0x0/0x40
->> returns -22
->> [  162.038760] alarmtimer alarmtimer.0.auto: PM: failed to suspend: error
->> -22
->
-> I think I know what is happening, there is one patch I wanted to send
-> this cycle but didn't, can you test it?
->
-> https://github.com/alexandrebelloni/linux/commit/50641a5a19cedf7561410d7db614da46c228bacc
->
-> Thanks for the report!
->
-> --
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
->
+Thanks Vivek, looks good.
