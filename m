@@ -2,157 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E011636D4DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F4A36D4DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238179AbhD1Jfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:35:46 -0400
-Received: from mx01-sz.bfs.de ([194.94.69.67]:3006 "EHLO mx01-sz.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhD1Jfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:35:45 -0400
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-sz.bfs.de (Postfix) with ESMTPS id 6622F203D5;
-        Wed, 28 Apr 2021 11:34:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1619602499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1OcoJeGI7nIYUxcB+eIkJLyMMk/GmpnqsmPK09oEq1w=;
-        b=mUczqE5cBKIRx2O7+Eb2zXqfdF42gYdXHP/a+1AjxY9iHQo2qmaYZ/wVrmhFZTcJV2bqnt
-        Uk0hPQvo8zxY2m3JA8i54+VoQ1QRx1om/VpTqcjU3mB+nLPqUtnfKBHpaj0IvTT1YWf/AI
-        lvCCvqvKk1K2iB/m4y3UUN6ktGmXdi0H1tuNHJTOljxXN5qqpHu1iSuOlAn7RPe11xkOPn
-        48LJFU4iixP8QZEilcNmMnRoxkxcqJexTEOh4KiUBglg5FyDzVTc88Oa/oG9Fsqvwp9NMG
-        u4pDy4E7g7ERIVauNFwf9Xxk0Hf4nWWoJUCd4glwAvBVUP1kwgjqh4H9tCkfyg==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2242.4; Wed, 28 Apr
- 2021 11:34:58 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
- 15.01.2242.008; Wed, 28 Apr 2021 11:34:58 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "gcherian@marvell.com" <gcherian@marvell.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: AW: [PATCH] crypto: cavium - Use 'hlist_for_each_entry' to simplify
- code
-Thread-Topic: [PATCH] crypto: cavium - Use 'hlist_for_each_entry' to simplify
- code
-Thread-Index: AQHXPADcKh3hPUi810mckHZ+wU3y0arJqq9s
-Date:   Wed, 28 Apr 2021 09:34:58 +0000
-Message-ID: <c621542318e644239008eea5f670390e@bfs.de>
-References: <5a7692aa1d2ffb81e981fdf87b060db7e55956b8.1619593010.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <5a7692aa1d2ffb81e981fdf87b060db7e55956b8.1619593010.git.christophe.jaillet@wanadoo.fr>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.40]
-x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-26118.006
-x-tm-as-result: No-10-0.361300-5.000000
-x-tmase-matchedrid: RlE/Xlx8wK/RubRCcrbc5grcxrzwsv5u3dCmvEa6IiGoLZarzrrPmfKD
-        H4hGq6yQhNJdnjCqAbpwE0Mkl9ZaE+7GBH+sbvN4iVJZi91I9JixT02+VRUpqdjV3pEXvjHeN4I
-        xix1zvwXnHqJEtsM2g7xFpZGWIKcrzECxVOnBRA4eTAX99VElYA8JAnaMw0RV/q/20XcvFJXbJM
-        bTT9K/Ta3aC25avUua2v4PzRk1tzIiK/gF68FTSd9JA2lmQRNU64sVlliWKx+/WXZS/HqJ2gtuK
-        BGekqUpOlxBO2IcOBYV7A+VLWfZ75BpzoYEbvl0AhlLvxrd1HzvccRqRr5Z11y6CNNIEVIcDwKe
-        tZp3SdfIZNGNZy4hjo7cZpYhy9Ubftrw6OBuv3EorPY7HEKSnM0bQv3yPxsy+toqr+8ptZ9j6l0
-        ihn9/So9BUbIZioG5lExlQIQeRG0=
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10-0.361300-5.000000
-x-tmase-version: SMEX-14.0.0.3080-8.6.1012-26118.006
-x-tm-snts-smtp: A2C9A7A1459D92F427AF30AC9FD10232DCC8B7EF4CAC08BF6D38DAE5C248ADCC2000:9
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S238170AbhD1JgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhD1JgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 05:36:17 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7509C061574;
+        Wed, 28 Apr 2021 02:35:31 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id q2so11390956pfk.9;
+        Wed, 28 Apr 2021 02:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=b/2x7D1/Ub2HBQrxQiDyoGrWCjSGVAtAx2/pdoUp6P8=;
+        b=mXnjX8/gBTxl5HIKUkdwzbvFXvr2zfKCeu4Q4EvN74VXceRhptAu7MxkRDLb0wONKl
+         d7Rp7mGgBx6OARS9daCZVtmN6H67taZfKlZSSv/YqXpyVto+KyqTejVB526zKecSvfga
+         LDxGCGc+wQZGgqxvth8yKslMx4vezUmvZ98mJhPv6EtRvfbgPgGPypvDxNiClocPTal3
+         gJEB2sORJ3909UqS+iK4HX8gzjj4+JZsMCi5n0V5daOkOp7XRU2SlbcEn97bE8gWM2Vd
+         bP0c7r6Gbbv0ZuwLD+Pr7YJkwXdZbpw9fbnp+yavkwps+l1cX9ibzb8ODxBvpY/FtDta
+         q5sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=b/2x7D1/Ub2HBQrxQiDyoGrWCjSGVAtAx2/pdoUp6P8=;
+        b=Ux+kBMd3Uu2+r4SCxpPkFeN8AKCZXUiVH/KleINvvKP4OQt4PQuiqaI1khoBdG7F76
+         spA6Ha1heqayBRz0xHQOk8iB8WoAo0WxMsz9gEdzWDCfNsbzwM+zlDyWjKDB9dUidLD6
+         0nRAyiKm8EjhOyOm0OMLPRoMbhQG4XMtEVHR2l0AICV+s7DPMS03hxZP5pYC6O/YDgAb
+         ILrYmitIKt8QVur2SAeHDubjA/EZuYvRE1U3BGguOIIQCPOprM8IcAIOI5u8NHpJsutm
+         R8aKihccknfpicFOi7gNVmiG/IH1teSKoOD9WB5e6zBRFJTODJC1Z+de7sGL4mTF+2NN
+         jMcw==
+X-Gm-Message-State: AOAM533ci8VwQsqi7vklYc6yT29a7jMdcwV6zJ/qECusxF+GmOojiMhn
+        nxVvPMSfGZQrNoG9vwEFwBw=
+X-Google-Smtp-Source: ABdhPJyb35Bba8lxBxGh6yYULWql+QOfgmw1NT1OkG3645iU5WMpK7+Laoq99znKLtA0QWw/SIVQvQ==
+X-Received: by 2002:aa7:948b:0:b029:25c:f974:e0b4 with SMTP id z11-20020aa7948b0000b029025cf974e0b4mr27229413pfk.81.1619602531242;
+        Wed, 28 Apr 2021 02:35:31 -0700 (PDT)
+Received: from localhost ([115.99.221.24])
+        by smtp.gmail.com with ESMTPSA id x9sm4116749pfd.66.2021.04.28.02.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 02:35:30 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 15:05:28 +0530
+From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Remove space before tabs
+Message-ID: <20210428093528.cxbaukdjhvhh6lmc@sanjana-VirtualBox>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-15.43 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
-         WHITELIST_LOCAL_IP(-15.00)[10.129.90.31];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         NEURAL_HAM(-0.00)[-1.000];
-         FREEMAIL_TO(0.00)[wanadoo.fr,marvell.com,gondor.apana.org.au,davemloft.net];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-0.43)[78.39%]
-Authentication-Results: mx01-sz.bfs.de;
-        none
-X-Spam-Status: No, score=-15.43
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is also possible to drop the else and simplify
-further.
+Space before tabs is removed to maintain code uniformity.
 
-hlist_for_each_entry(chunk, &queue->chead, nextchunk)
-if (chunk !=3D queue->qhead) {
-                                queue->qhead =3D chunk;
-                                break;
-                        }
-
-re,
- wh
-________________________________________
-Von: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Gesendet: Mittwoch, 28. April 2021 09:33:37
-An: gcherian@marvell.com; herbert@gondor.apana.org.au; davem@davemloft.net
-Cc: linux-crypto@vger.kernel.org; linux-kernel@vger.kernel.org; kernel-jani=
-tors@vger.kernel.org; Christophe JAILLET
-Betreff: [PATCH] crypto: cavium - Use 'hlist_for_each_entry' to simplify co=
-de
-
-WARNUNG: Diese E-Mail kam von au=DFerhalb der Organisation. Klicken Sie nic=
-ht auf Links oder =F6ffnen Sie keine Anh=E4nge, es sei denn, Sie kennen den=
-/die Absender*in und wissen, dass der Inhalt sicher ist.
-
-
-Use 'hlist_for_each_entry' instead of hand writing it.
-This saves a few lines of code.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
 ---
-Compile tested only
----
- drivers/crypto/cavium/cpt/cptvf_reqmanager.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/hv/vmbus_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/cavium/cpt/cptvf_reqmanager.c b/drivers/crypto/=
-cavium/cpt/cptvf_reqmanager.c
-index 4fe7898c8561..feb0f76783dd 100644
---- a/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
-+++ b/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
-@@ -244,11 +244,7 @@ static int send_cpt_command(struct cpt_vf *cptvf, unio=
-n cpt_inst_s *cmd,
-        memcpy(ent, (void *)cmd, qinfo->cmd_size);
-
-        if (++queue->idx >=3D queue->qhead->size / 64) {
--               struct hlist_node *node;
--
--               hlist_for_each(node, &queue->chead) {
--                       chunk =3D hlist_entry(node, struct command_chunk,
--                                           nextchunk);
-+               hlist_for_each_entry(chunk, &queue->chead, nextchunk) {
-                        if (chunk =3D=3D queue->qhead) {
-                                continue;
-                        } else {
---
-2.30.2
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index 10dce9f91216..f01db0837f75 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -1782,7 +1782,7 @@ static ssize_t target_cpu_store(struct vmbus_channel *channel,
+ 	 * UNLOCK channel_mutex		UNLOCK channel_mutex
+ 	 *
+ 	 * Forbids: r1 == r2 == CHANNEL_OPENED (i.e., CPU1's LOCK precedes
+-	 * 		CPU2's LOCK) && CPU2's SEND precedes CPU1's SEND
++	 *		CPU2's LOCK) && CPU2's SEND precedes CPU1's SEND
+ 	 *
+ 	 * Note.  The host processes the channel messages "sequentially", in
+ 	 * the order in which they are received on a per-partition basis.
+-- 
+2.25.1
 
