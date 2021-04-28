@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DB936D412
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06A336D416
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237463AbhD1Ikt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:40:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39749 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237148AbhD1Ikq (ORCPT
+        id S237510AbhD1Ilo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhD1Ill (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:40:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619599201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A4Dnz/Lf18H3ZKwSnBLQNLUl5d7cF3q99QAsHoXknb0=;
-        b=QY5zqVXbgzme8Ac7LV87mg7GfDtgYS8+blFsPAxhrPEHMh/pKmhJJvYNokUaSt7SpZwYKk
-        g4lKmeCt8kHsCEnD3uh16X05jgu1/cTeH56CCeqBwF1Qt2vHkpkooJk2hyqEyJEykjL1tg
-        LbROTtrK7ai14adfDmCfmFF1XkYLkes=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-uwjuNaFVNZq6ZBOFYppThQ-1; Wed, 28 Apr 2021 04:39:57 -0400
-X-MC-Unique: uwjuNaFVNZq6ZBOFYppThQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42C241008062;
-        Wed, 28 Apr 2021 08:39:56 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-52.pek2.redhat.com [10.72.13.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 64BC560CC6;
-        Wed, 28 Apr 2021 08:39:49 +0000 (UTC)
-Subject: Re: [PATCH 1/2] vDPA/ifcvf: record virtio notify base
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428082133.6766-1-lingshan.zhu@intel.com>
- <20210428082133.6766-2-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <55217869-b456-f3bc-0b5a-6beaf34c19f8@redhat.com>
-Date:   Wed, 28 Apr 2021 16:39:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        Wed, 28 Apr 2021 04:41:41 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88779C061574;
+        Wed, 28 Apr 2021 01:40:56 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2so5173677lft.4;
+        Wed, 28 Apr 2021 01:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oVYoHb0j5VFpSmctH5aR8XGJ4ktZiFaaq0zVF+LId6M=;
+        b=VmsGeVNhBij6WOHJ1eY4hSlEkPPsps8a7tFi36TLwEKoHl8nZdwE1/LgTd1Zscl3lS
+         l5JyzVZKh4Uoiawv1bs2Qwho0siLbLViBIhfa147ATHN8KIECJHBlDS5zM5F2efuzjg+
+         4yXj3IYXKVfY4P61gl5P7cdnbFfqGpd7nYy9bLtBPi8VPYqRLmP+xRT6TaynchVkqVHc
+         +zFjKDvG4BFm+y0hOAmutAKije5e8uslKiP64BJvnaYvHFe+iI9rMxVNzIUvWiY0JpWx
+         EvUJ+7BYCtxK9Aw/+xyZOgqc/u98NqF3QnVE37EQPbWtUY+2ilLhnpQHnDN4zHfAvA4K
+         ke0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=oVYoHb0j5VFpSmctH5aR8XGJ4ktZiFaaq0zVF+LId6M=;
+        b=WAf6VL/uuDWlLH/j7SPApNObmMhT0EXfUwri7QXJ7/E23HwxN6LrEMKNEE3tiRFuhp
+         GySKlguqXvmLq9BWrvfOAAdijcRPdt6i4u7cVFEH0Y/+qZcScckpxgedECKurnfjCUgi
+         UfW5YX9gjIvpbezvIkYYrEeDiiiF995L3WPYDtIGN1DeaAklHFsgW5PCzEKnE05qf0+F
+         7N6bVRZAEDogi9hBCVVm+3fxYYCg5bp6IoK30ZIR/H0VhQhBnarNsjap7ff8T9cKqZNE
+         rZCexsrpd7kbKXEtetvMwJ8qsBqHSA0nT8L2ztCk88lWv0Ism/rvJc9mk2b37VyCSj2n
+         qTPw==
+X-Gm-Message-State: AOAM530f92RG+qSGUaB8VQAEbgfEmOjDcXhf0E5jQT2n9GjK4MeJ1X49
+        DBxH4OJfJFnAzCPipeolh2xXPkaF4ME=
+X-Google-Smtp-Source: ABdhPJyoXlMRwGItruwsciGuyz3DA7HhF4EfUhAvxkd5DHvXOkbFQAE5LlaG+9S92qRtX/BA+PDpFQ==
+X-Received: by 2002:a05:6512:3c8c:: with SMTP id h12mr19976447lfv.388.1619599254899;
+        Wed, 28 Apr 2021 01:40:54 -0700 (PDT)
+Received: from [192.168.1.100] ([31.173.87.27])
+        by smtp.gmail.com with ESMTPSA id a20sm1005787ljd.105.2021.04.28.01.40.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 01:40:54 -0700 (PDT)
+Subject: Re: [PATCH] ata: ahci_sunxi: Disable DIPM
+To:     Timo Sigurdsson <public_timo.s@silentcreek.de>, axboe@kernel.dk,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        linux-ide@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     oliver@schinagl.nl, stable@vger.kernel.org
+References: <20210427230537.21423-1-public_timo.s@silentcreek.de>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <24eb672c-9772-4e3f-e3de-0fe3390c659f@gmail.com>
+Date:   Wed, 28 Apr 2021 11:40:44 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210428082133.6766-2-lingshan.zhu@intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210427230537.21423-1-public_timo.s@silentcreek.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-ÔÚ 2021/4/28 ÏÂÎç4:21, Zhu Lingshan Ð´µÀ:
-> This commit records virtio notify base addr to implemente
-> doorbell mapping feature
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> ---
->   drivers/vdpa/ifcvf/ifcvf_base.c | 1 +
->   drivers/vdpa/ifcvf/ifcvf_base.h | 1 +
->   2 files changed, 2 insertions(+)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c b/drivers/vdpa/ifcvf/ifcvf_base.c
-> index 1a661ab45af5..cc61a5bfc5b1 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
-> @@ -133,6 +133,7 @@ int ifcvf_init_hw(struct ifcvf_hw *hw, struct pci_dev *pdev)
->   					      &hw->notify_off_multiplier);
->   			hw->notify_bar = cap.bar;
->   			hw->notify_base = get_cap_addr(hw, &cap);
-> +			hw->notify_pa = pci_resource_start(pdev, cap.bar) + cap.offset;
+On 28.04.2021 2:05, Timo Sigurdsson wrote:
 
+> DIPM is unsupported or broken on sunxi. Trying to enable the power
+> management policy med_power_with_dipm on an Allwinner A20 SoC based board
+> leads to immediate I/O errors and the attached SATA disk disappears from
+> the /dev filesystem. A reset (power cycle) is required to make the SATA
+> controller or disk work again. The A10 and A20 SoC data sheets and manuals
+> don't mention DIPM at all [1], so it's fair to assume that it's simply not
+> supported. But even if it were, it should be considered broken and best be
+                             ^ was
 
-To be more generic and avoid future changes, let's use the math defined 
-in the virtio spec.
+> disabled in the ahci_sunxi driver.
+> 
+> Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
 
-You may refer how it is implemented in virtio_pci vdpa driver[1].
+    The "Fixes:" tag should immediately precede the signoff tag...
 
-Thanks
+> [1] https://github.com/allwinner-zh/documents/tree/master/
 
-[1] 
-https://lore.kernel.org/virtualization/20210415073147.19331-5-jasowang@redhat.com/T/
+    And this line should be immediately after the patch description.
 
+> Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+> Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+[...]
 
->   			IFCVF_DBG(pdev, "hw->notify_base = %p\n",
->   				  hw->notify_base);
->   			break;
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-> index 0111bfdeb342..bcca7c1669dd 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
-> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-> @@ -98,6 +98,7 @@ struct ifcvf_hw {
->   	char config_msix_name[256];
->   	struct vdpa_callback config_cb;
->   	unsigned int config_irq;
-> +	phys_addr_t  notify_pa;
->   };
->   
->   struct ifcvf_adapter {
-
+MBR, Sergei
