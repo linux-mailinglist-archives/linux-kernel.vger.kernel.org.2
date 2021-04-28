@@ -2,106 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA4736D1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 07:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8325436D1D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 07:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbhD1Fq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 01:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59662 "EHLO mail.kernel.org"
+        id S232529AbhD1Fxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 01:53:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhD1Fqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 01:46:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C27F961418;
-        Wed, 28 Apr 2021 05:46:08 +0000 (UTC)
+        id S229464AbhD1Fxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 01:53:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DBEF60E0B;
+        Wed, 28 Apr 2021 05:53:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619588769;
-        bh=/VDtvHwhFQST8D9LLrhTmvCvHyw6KwHubG1UREeHc5c=;
+        s=korg; t=1619589182;
+        bh=pvFyP4U4yhRgxSZajdzI402m+lQIKufgQTOmom2kc9c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oe9Q7A0rcssdeczaKRBxU3+g3xro5V2ZdQreJ6gLsWlIsPSBLzMV43YEag19m7Ygx
-         X8f/pRNct0DmMh9UGsxOyKMBB6TAX/DO81Y9O1p5VQMAv3AeXz3GIKH1J0/Ay/THS4
-         gmtf7aSGbLiwcoXQW9eQ80vvAjYWRD5ZohSoeb98=
-Date:   Wed, 28 Apr 2021 07:46:06 +0200
+        b=jgJbv9U8VY7nGkMv8CkUWD1c7gp+Fea3TH42wmoWL0PIPZY55vwazK9JvKzpy0HLz
+         ElWBEZNfM9l2INqqO4XW55KgGUtty3IzM6F6vAPef0FW4JXCJQqS1ge+jhUVC6elhm
+         6qc0YKgpvuWRbb6EFbwAtyKyrw9XIf8fooqk1gWY=
+Date:   Wed, 28 Apr 2021 07:52:55 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Guoqing Jiang <gqjiang@suse.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH 134/190] Revert "md: Fix failed allocation of
- md_register_thread"
-Message-ID: <YIj2nsovH/+ujHL0@kroah.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH 066/190] Revert "bpf: Remove unnecessary assertion on
+ fp_old"
+Message-ID: <YIj4N0KBSCw7DuN0@kroah.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-135-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-67-gregkh@linuxfoundation.org>
+ <YIhQsRZ9LgZKlkPw@kroah.com>
+ <56b8a42d-261e-1fc0-f572-8c3c1a98701d@iogearbox.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-135-gregkh@linuxfoundation.org>
+In-Reply-To: <56b8a42d-261e-1fc0-f572-8c3c1a98701d@iogearbox.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:00:09PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit e406f12dde1a8375d77ea02d91f313fb1a9c6aec.
+On Tue, Apr 27, 2021 at 09:28:31PM +0200, Daniel Borkmann wrote:
+> On 4/27/21 7:58 PM, Greg Kroah-Hartman wrote:
+> > On Wed, Apr 21, 2021 at 02:59:01PM +0200, Greg Kroah-Hartman wrote:
+> [...]
+> > >   kernel/bpf/core.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > > index 75244ecb2389..da29211ea5d8 100644
+> > > --- a/kernel/bpf/core.c
+> > > +++ b/kernel/bpf/core.c
+> > > @@ -230,6 +230,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
+> > >   	struct bpf_prog *fp;
+> > >   	u32 pages;
+> > > +	BUG_ON(fp_old == NULL);
+> > > +
+> > >   	size = round_up(size, PAGE_SIZE);
+> > >   	pages = size / PAGE_SIZE;
+> > >   	if (pages <= fp_old->pages)
+> > 
+> > The original commit here is correct, I'll drop this revert.
 > 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: stable@vger.kernel.org # v3.16+
-> Cc: Guoqing Jiang <gqjiang@suse.com>
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/md/raid10.c | 2 --
->  drivers/md/raid5.c  | 2 --
->  2 files changed, 4 deletions(-)
-> 
-> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-> index a9ae7d113492..4fec1cdd4207 100644
-> --- a/drivers/md/raid10.c
-> +++ b/drivers/md/raid10.c
-> @@ -3896,8 +3896,6 @@ static int raid10_run(struct mddev *mddev)
->  		set_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
->  		mddev->sync_thread = md_register_thread(md_do_sync, mddev,
->  							"reshape");
-> -		if (!mddev->sync_thread)
-> -			goto out_free_conf;
->  	}
->  
->  	return 0;
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index 5d57a5bd171f..9b2bd50beee7 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -7677,8 +7677,6 @@ static int raid5_run(struct mddev *mddev)
->  		set_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
->  		mddev->sync_thread = md_register_thread(md_do_sync, mddev,
->  							"reshape");
-> -		if (!mddev->sync_thread)
-> -			goto abort;
->  	}
->  
->  	/* Ok, everything is just fine now */
-> -- 
-> 2.31.1
-> 
+> Ok, sounds good to me, thanks! (If there would ever be an incorrect fp_old with NULL, then at
+> latest we crash in fp_old->pages anyway, so the BUG_ON() was not needed.)
 
-These changes look ok, but the error handling logic seems to be freeing
-the incorrect thread, not the one that these functions create.  That's
-independant of this change, but seems odd.  If someone cares about it,
-it should probably be looked at, or if correct, a comment would be nice
-as it's really confusing.
-
-Dropping this revert.
+Thanks for the re-review, much appreciated.
 
 greg k-h
