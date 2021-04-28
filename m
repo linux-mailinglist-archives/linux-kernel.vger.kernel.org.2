@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8302236DAC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C7F36DAC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 17:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239304AbhD1PCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 11:02:48 -0400
-Received: from mga05.intel.com ([192.55.52.43]:9545 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236545AbhD1PCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:02:13 -0400
-IronPort-SDR: zWJsv+pPFoLVbp4NFHFHzuSMhU05jK8B/uXA1e3RRvt19cZxzoon16CeIQZwO0JY+2DLTTbliN
- z/jBlRMlAfow==
-X-IronPort-AV: E=McAfee;i="6200,9189,9968"; a="282097142"
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="282097142"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2021 07:57:38 -0700
-IronPort-SDR: z6Fw6mL6Mhk2EwL1TurbzTPFO8wLTVrQ0KaTyuWpG8njT+0ExV9zsNwBe5sjtvxyTm23G1gitS
- RdvhG7uSuZmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,258,1613462400"; 
-   d="scan'208";a="616059694"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Apr 2021 07:57:36 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 8C7593C8; Wed, 28 Apr 2021 17:57:55 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] i2c: core: Make debug message even more debuggish
-Date:   Wed, 28 Apr 2021 17:57:51 +0300
-Message-Id: <20210428145751.4934-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S240397AbhD1PBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 11:01:13 -0400
+Received: from server.lespinasse.org ([63.205.204.226]:57569 "EHLO
+        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240496AbhD1O7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:59:10 -0400
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-13-ed;
+ t=1619621903; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=QydOVvpj2OAyZRQLFyThi3nH5+pcZsNgV/K3JPyDtNY=;
+ b=v0pzT2ftLbgMGbGTh60i1QNqjD03znuBtiCVjyDA+AlHGKjxRg095hn5nSntHwdJwW5G2
+ 6ieNuTl11n2gIsIBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-13-rsa; t=1619621903; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=QydOVvpj2OAyZRQLFyThi3nH5+pcZsNgV/K3JPyDtNY=;
+ b=x/TTWv4tQOnLutEIDbG9cc6Wu1R2lL73vSbCsE8Edvz0ZzakWl8TXCdqzHPoB4q7KtApc
+ PS63BgYRDrK2I9sJbFt8w5Wb3W+YiKEv+O7IVJm/IPQEJcRmH4oiDN7wOBl8+KmMEdOzMEQ
+ Bcqg/QcQ7qk+RP6dkeEYE8bVyfEwJQb/LLVgCmYr3sTVHLG47D8GgPAA+ceHeEVOMaND8ZV
+ qyRoeiMdhcU7ZcbsIrXL3tRexMT8znCDwT/Zv+I8e3V07y3OlHEWb2uXB4NrwjqkimLqeku
+ dwPEpKGb8yQQBd/CPngXo6zar+9JaHutiDx2DHNR1JpZkjMwl9RU4K4kL2ag==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id B1B4816026E; Wed, 28 Apr 2021 07:58:23 -0700 (PDT)
+Date:   Wed, 28 Apr 2021 07:58:23 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Andy Lutomirski <luto@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 13/37] mm: implement speculative handling in
+ __handle_mm_fault().
+Message-ID: <20210428145823.GA856@lespinasse.org>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-14-michel@lespinasse.org>
+ <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eee7431c-3dc8-ca3c-02fb-9e059d30e951@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One may notice that dev_printk(KERN_DEBUG ...) is *not* an equivalent
-to dev_dbg(). It will be printed whenever loglevel is high enough.
-And currently it will be the only message in the I²C core in some
-configurations that got printed under above conditions.
+On Wed, Apr 07, 2021 at 08:36:01AM -0700, Andy Lutomirski wrote:
+> On 4/6/21 6:44 PM, Michel Lespinasse wrote:
+> > The page table tree is walked with local irqs disabled, which prevents
+> > page table reclamation (similarly to what fast GUP does). The logic is
+> > otherwise similar to the non-speculative path, but with additional
+> > restrictions: in the speculative path, we do not handle huge pages or
+> > wiring new pages tables.
+> 
+> Not on most architectures.  Quoting the actual comment in mm/gup.c:
+> 
+> >  * Before activating this code, please be aware that the following assumptions
+> >  * are currently made:
+> >  *
+> >  *  *) Either MMU_GATHER_RCU_TABLE_FREE is enabled, and tlb_remove_table() is used to
+> >  *  free pages containing page tables or TLB flushing requires IPI broadcast.
+> 
+> On MMU_GATHER_RCU_TABLE_FREE architectures, you cannot make the
+> assumption that it is safe to dereference a pointer in a page table just
+> because irqs are off.  You need RCU protection, too.
+> 
+> You have the same error in the cover letter.
 
-Moving to dev_dbg() will hide it in the configurations where Dynamic Debug
-is enabled and hence align with all other debug messages in the I²C core..
+Hi Andy,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/i2c/i2c-core-base.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+Thanks for your comment. At first I thought did not matter, because we
+only enable ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT on selected
+architectures, and I thought MMU_GATHER_RCU_TABLE_FREE is not set on
+these. But I was wrong - MMU_GATHER_RCU_TABLE_FREE is enabled on X86
+with paravirt. So I took another look at fast GUP to make sure I
+actually understand it.
 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index 5a97e4a02fa2..7f711853d464 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -399,7 +399,8 @@ static int i2c_gpio_init_recovery(struct i2c_adapter *adap)
- static int i2c_init_recovery(struct i2c_adapter *adap)
- {
- 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
--	char *err_str, *err_level = KERN_ERR;
-+	bool error_or_debug = true;
-+	char *err_str;
- 
- 	if (!bri)
- 		return 0;
-@@ -409,7 +410,7 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
- 
- 	if (!bri->recover_bus) {
- 		err_str = "no suitable method provided";
--		err_level = KERN_DEBUG;
-+		error_or_debug = false;
- 		goto err;
- 	}
- 
-@@ -436,7 +437,10 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
- 
- 	return 0;
-  err:
--	dev_printk(err_level, &adap->dev, "Not using recovery: %s\n", err_str);
-+	if (error_or_debug)
-+		dev_err(&adap->dev, "Not using recovery: %s\n", err_str);
-+	else
-+		dev_dbg(&adap->dev, "Not using recovery: %s\n", err_str);
- 	adap->bus_recovery_info = NULL;
- 
- 	return -EINVAL;
--- 
-2.30.2
+This brings a question about lockless_pages_from_mm() - I see it
+disabling interrupts, which it explains is necessary for disabling THP
+splitting IPIs, but I do not see it taking an RCU read lock as would
+be necessary for preventing paga table freeing on
+MMU_GATHER_RCU_TABLE_FREE configs. I figure local_irq_save()
+indirectly takes an rcu read lock somehow ? I think this is something
+I should also mention in my explanation, and I have not seen a good
+description of this on the fast GUP side...
 
+Thanks,
+
+--
+Michel "walken" Lespinasse
