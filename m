@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A7636D454
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CFF36D451
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238078AbhD1I5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:57:19 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:54951 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237781AbhD1I5I (ORCPT
+        id S237879AbhD1I5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237685AbhD1I5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:57:08 -0400
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 569D822258;
-        Wed, 28 Apr 2021 10:56:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1619600180;
+        Wed, 28 Apr 2021 04:57:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE79C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:56:19 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619600176;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WcLBw+PUeYywj+WWxtOGbEGLOKsKoAKsCiaukzdxIbk=;
-        b=jDdO3ZebQwHBi0Pbb0OOa+bMFdOWAhcEprk4KDLi5f3TQyQRyUplchsjXfL8lFkIBDUIOu
-        6Ea8uklTLl673jq2h3c/P+OCtc3gmaEMkvkpGRkQO6Cc9dQF2yGdMxpfsx+QVRgGi5KnFE
-        z47Jb2K/aMoyr0uO6tsmx4HqajM9/nI=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Michael Walle <michael@walle.cc>
-Subject: [PATCH 2/2] MAINTAINERS: move Murali Karicheri to credits
-Date:   Wed, 28 Apr 2021 10:56:07 +0200
-Message-Id: <20210428085607.32075-2-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210428085607.32075-1-michael@walle.cc>
-References: <20210428085607.32075-1-michael@walle.cc>
+        bh=Yw4zbZWnM1LPmPQXkz7A/is9cLSvX597px5tqOEQQo4=;
+        b=AiEgCe9joO/m2F6pUIhcwtKgxeL/sY62GHtALfVn31G/PWeqRrxS+3kbIgeh7mAy1qwhE0
+        LW4qfv1WPj62xCG0mSctGzVAOE+elPvHxrm8NxIfsyP7evRb/g/K89Hd7vvPT8IASMUPRj
+        82d/EjeKuoEJ6t7NBLb0ylSmyphZiTFmYHXrhKrLw+UyF70+r0z18bEkZnQkxhEedBo76z
+        mKkuKQQ04Jg++gUYb+ejlSVifsXePzOM7T04jsxuQwg4nLzRCP085AooHuUBDa0gcAIHRD
+        T1A+nbQcShdIpKZHS+bQjJbjLarI2Yf+x1ww/zAbvA4GC24hSIt9uI3IV+RagQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619600176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yw4zbZWnM1LPmPQXkz7A/is9cLSvX597px5tqOEQQo4=;
+        b=c3tXF+ERXAz6Zf+7+lv7on7FahKKJsDK7aaF8GJ+kqy6l8Xa6zaOnjWV/984sHRXG2hP+L
+        OpZbepHN73Yu9tDw==
+To:     Feng Tang <feng.tang@intel.com>,
+        "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp\@lists.01.org" <lkp@lists.01.org>,
+        "lkp\@intel.com" <lkp@intel.com>,
+        "ying.huang\@intel.com" <ying.huang@intel.com>,
+        "zhengjun.xing\@intel.com" <zhengjun.xing@intel.com>,
+        "x86\@kernel.org" <x86@kernel.org>
+Subject: Re: [genirq]  cbe16f35be:  will-it-scale.per_thread_ops -5.2% regression
+In-Reply-To: <20210428080819.GB53821@shbuild999.sh.intel.com>
+References: <20210427090013.GG32408@xsang-OptiPlex-9020> <87fszcnecr.ffs@nanos.tec.linutronix.de> <20210428050758.GB52098@shbuild999.sh.intel.com> <d392cc91241641df865217d82368eba8@hisilicon.com> <20210428080819.GB53821@shbuild999.sh.intel.com>
+Date:   Wed, 28 Apr 2021 10:56:16 +0200
+Message-ID: <87o8dyn5xr.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-His email bounces with permanent error "550 Invalid recipient". His last
-email on the LKML was from 2020-09-09 and he seems to have left TI.
+On Wed, Apr 28 2021 at 16:08, Feng Tang wrote:
+> On Wed, Apr 28, 2021 at 07:01:35AM +0000, Song Bao Hua (Barry Song) wrote:
+>
+>> But it is still an irrelevant problem.
+> Yes, the commit itself has no problem. And my personal thought
+> is no further action is needed. 
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-His linked in profiles says that, but I guess that shouldn't be in the
-commit message.
+The commit does not need any further action, but this testing stuff
+really needs further action because we can't differentiate between real
+regressions and these bogus reports anymore.
 
- CREDITS     |  5 +++++
- MAINTAINERS | 13 -------------
- 2 files changed, 5 insertions(+), 13 deletions(-)
+Thanks,
 
-diff --git a/CREDITS b/CREDITS
-index b06760f09c66..7ef7b136e71d 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -1874,6 +1874,11 @@ S: Krosenska' 543
- S: 181 00 Praha 8
- S: Czech Republic
- 
-+N: Murali Karicheri
-+E: m-karicheri2@ti.com
-+D: Keystone NetCP driver
-+D: Keystone PCIe host controller driver
-+
- N: Jan "Yenya" Kasprzak
- E: kas@fi.muni.cz
- D: Author of the COSA/SRP sync serial board driver.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 981413f41bf3..2cd7b40bb15f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14096,13 +14096,6 @@ F:	Documentation/devicetree/bindings/pci/ti-pci.txt
- F:	drivers/pci/controller/cadence/pci-j721e.c
- F:	drivers/pci/controller/dwc/pci-dra7xx.c
- 
--PCI DRIVER FOR TI KEYSTONE
--M:	Murali Karicheri <m-karicheri2@ti.com>
--L:	linux-pci@vger.kernel.org
--L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--S:	Maintained
--F:	drivers/pci/controller/dwc/pci-keystone.c
--
- PCI DRIVER FOR V3 SEMICONDUCTOR V360EPC
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-pci@vger.kernel.org
-@@ -18323,12 +18316,6 @@ S:	Maintained
- F:	sound/soc/codecs/isabelle*
- F:	sound/soc/codecs/lm49453*
- 
--TI NETCP ETHERNET DRIVER
--M:	Murali Karicheri <m-karicheri2@ti.com>
--L:	netdev@vger.kernel.org
--S:	Maintained
--F:	drivers/net/ethernet/ti/netcp*
--
- TI PCM3060 ASoC CODEC DRIVER
- M:	Kirill Marinushkin <kmarinushkin@birdec.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
--- 
-2.20.1
-
+        tglx
