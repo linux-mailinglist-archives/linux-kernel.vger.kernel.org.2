@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C3336E1E2
+	by mail.lfdr.de (Postfix) with ESMTP id 7E47936E1E3
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Apr 2021 01:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240166AbhD1WwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 18:52:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37100 "EHLO
+        id S240200AbhD1Ww0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 18:52:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45789 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240075AbhD1WwJ (ORCPT
+        by vger.kernel.org with ESMTP id S240090AbhD1WwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:52:09 -0400
+        Wed, 28 Apr 2021 18:52:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619650284;
+        s=mimecast20190719; t=1619650286;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mX5tB3J49H84VgNhuzdVmDuPOZ+GeLNjOa4r3iSgeg4=;
-        b=Jt6OXs0RMK8kEOPshcdLvuIJ4303oiRaL3gcIQ4ahP//AKMWHU0D0E18upY00j7HsZc083
-        qJAkikPhkr0TFmjEUmNgmRo3gIicZGcrEOOWiXgmJ2bbpQAmaOpHolwdpPXSvkHlkTIOst
-        6bZQAsuYRicp6JTZU8OLguGnl7DVH2k=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-P-42Xd2nPq2u9kPq6vgl-A-1; Wed, 28 Apr 2021 18:51:22 -0400
-X-MC-Unique: P-42Xd2nPq2u9kPq6vgl-A-1
-Received: by mail-qt1-f200.google.com with SMTP id u16-20020ac86f700000b02901baa6e2dbfcso7380536qtv.20
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:51:22 -0700 (PDT)
+        bh=pvGdUvHXhr1/W39+miDgJTu6lUz1WoLUPPok+oPerLQ=;
+        b=XlTb4m4FKeMtamtqxwhqt1mcW/97ruDqfrfqXnboehVLiecmy84q+/uM53Y/QGS/2EDZix
+        Qit4cCtTnMvJywuoSukqJLnSeVzpTqVDO5GqRel5q3jwKJCk5QWkGvV1zMJHx8tYVOATxB
+        jbafAd+NU4HZ/BONiJKOoIlnFH6hCkg=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-ExzIh0WxMF6RRc4WD0P_zA-1; Wed, 28 Apr 2021 18:51:24 -0400
+X-MC-Unique: ExzIh0WxMF6RRc4WD0P_zA-1
+Received: by mail-qv1-f72.google.com with SMTP id el4-20020ad459c40000b029019a47ec7a9dso25549915qvb.21
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 15:51:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mX5tB3J49H84VgNhuzdVmDuPOZ+GeLNjOa4r3iSgeg4=;
-        b=LC/ae/3j9wOlSsod/Sy2KAvJC3gcwEMlxk9eotr4S0ZFkkk+f+jUi+pUrktsoUAz4h
-         tO0MArnfQ/STQqkM5E5ehmjv/wZmVDaovek+5VdUQgAQo1zmwtha4B6x9SksLy8k4OqS
-         GuDABdvg4H/UfNjqCzwIWukEBbEpY5cBdLIOZ6YBOS+kPuJd18GaPJN5ky6IWgUsKBWp
-         fdbmqRnRC59aHobZHShVyh/PkZdrNP6GFwtA4Nkfluu9q6XuEPR7yOkOYfxDqRFYVnk5
-         5QkLW3IK3DjHsyIPKiijmOvm8UE+gL3xwRFDSwxXt88+CbI/y+eGJHGjuz6FR9QSfjCe
-         rdUw==
-X-Gm-Message-State: AOAM532tLyddCYMkMrwDEfMtUUGboiCBy5IplnQQbh/cbv2PQaOomysi
-        IQwqgpobbm/1sGMM71JpdB9StjNGidbKleCpEtsTPPfK2lSttOB1WqpQ7GYr65L3RNZv8/oNkLb
-        Sb4MrlQU36aZ/97VHr7yYAOLf
-X-Received: by 2002:a0c:fb4e:: with SMTP id b14mr31673236qvq.28.1619650282101;
-        Wed, 28 Apr 2021 15:51:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4HCkJm81ksUeMlHST386Jw+apuC8iK/I7PR3SG4syb6rigMTQEREtHbkFfHxe1EdAh2hbFg==
-X-Received: by 2002:a0c:fb4e:: with SMTP id b14mr31673214qvq.28.1619650281917;
-        Wed, 28 Apr 2021 15:51:21 -0700 (PDT)
+        bh=pvGdUvHXhr1/W39+miDgJTu6lUz1WoLUPPok+oPerLQ=;
+        b=oxulFFFC/7K/tfl2VeqokTz/FgSGeG3AstMNiF1boKtAD8kSloPxONmU4CxDApwKq5
+         mma/Xmry/kKIWCRFSwm5CsRtXv+fQKkmaRylHRI7mpU/x6WGlnGMe/PDVSWtCSGv4Abs
+         wiLGRpZ4w6RnE1C8ABj+kQXJ1dHzbUAJR0QkvbbODmA9sj8olsCKMp8Rzk9T9LLUocG+
+         LvSQqhgdfldOqjaShkXdROESHqUYC2pib/mSUE4ht2U8AGgM1TxDr0CRsWUnB3u0Ns5t
+         ZfYY3pPsLNJYMMFctGgg9t2gpAVaQtLg6ywt+uFl7BTlp/J05QEA5G9zdEtUWrZlbfCe
+         K/6g==
+X-Gm-Message-State: AOAM533AyxDiUX3Xtag2wTD4XBB6LyTF6Pm5owDb1zDN4JyQOQcEomCK
+        oyxSJJ42KS/RB30kTiuNIRONguy92qP4l+5V/kRbXY1sVVXwCcP2AqPcFhYiLvusqEmOYrUFmAg
+        nqFqq4th/HRo7vxIDDHVq/MtL
+X-Received: by 2002:a05:620a:74b:: with SMTP id i11mr22108318qki.445.1619650284093;
+        Wed, 28 Apr 2021 15:51:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwEgCtCU64i2kK9aQbDrUJjCGfyCMRzR2OuJxyRzNOzWF+EO1/lGcK/SKkGiPz+jvxPbchFA==
+X-Received: by 2002:a05:620a:74b:: with SMTP id i11mr22108292qki.445.1619650283835;
+        Wed, 28 Apr 2021 15:51:23 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id 191sm897459qkk.31.2021.04.28.15.51.20
+        by smtp.gmail.com with ESMTPSA id 191sm897459qkk.31.2021.04.28.15.51.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 15:51:21 -0700 (PDT)
+        Wed, 28 Apr 2021 15:51:23 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com,
@@ -61,9 +61,9 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jerome Glisse <jglisse@redhat.com>
-Subject: [PATCH 5/6] mm/pagemap: Export uffd-wp protection information
-Date:   Wed, 28 Apr 2021 18:50:29 -0400
-Message-Id: <20210428225030.9708-6-peterx@redhat.com>
+Subject: [PATCH 6/6] userfaultfd/selftests: Add pagemap uffd-wp test
+Date:   Wed, 28 Apr 2021 18:50:30 -0400
+Message-Id: <20210428225030.9708-7-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210428225030.9708-1-peterx@redhat.com>
 References: <20210428225030.9708-1-peterx@redhat.com>
@@ -73,72 +73,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export the PTE/PMD status of uffd-wp to pagemap too.
+Add one anonymous specific test to start using pagemap.  With pagemap support,
+we can directly read the uffd-wp bit from pgtable without triggering any fault,
+so it's easier to do sanity checks in unit tests.
+
+Meanwhile this test also leverages the newly introduced MADV_PAGEOUT madvise
+function to test swap ptes with uffd-wp bit set, and across fork()s.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- Documentation/admin-guide/mm/pagemap.rst | 2 ++
- fs/proc/task_mmu.c                       | 9 +++++++++
- 2 files changed, 11 insertions(+)
+ tools/testing/selftests/vm/userfaultfd.c | 154 +++++++++++++++++++++++
+ 1 file changed, 154 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-index 340a5aee9b802..fb578fbbb76ca 100644
---- a/Documentation/admin-guide/mm/pagemap.rst
-+++ b/Documentation/admin-guide/mm/pagemap.rst
-@@ -21,6 +21,8 @@ There are four components to pagemap:
-     * Bit  55    pte is soft-dirty (see
-       :ref:`Documentation/admin-guide/mm/soft-dirty.rst <soft_dirty>`)
-     * Bit  56    page exclusively mapped (since 4.2)
-+    * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
-+      :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
-     * Bits 57-60 zero
-     * Bit  61    page is file-page or shared-anon (since 3.5)
-     * Bit  62    page swapped
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index fc9784544b241..ce3b5f33b44c4 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1302,6 +1302,7 @@ struct pagemapread {
- #define PM_PFRAME_MASK		GENMASK_ULL(PM_PFRAME_BITS - 1, 0)
- #define PM_SOFT_DIRTY		BIT_ULL(55)
- #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
-+#define PM_UFFD_WP		BIT_ULL(57)
- #define PM_FILE			BIT_ULL(61)
- #define PM_SWAP			BIT_ULL(62)
- #define PM_PRESENT		BIT_ULL(63)
-@@ -1375,10 +1376,14 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
- 		page = vm_normal_page(vma, addr, pte);
- 		if (pte_soft_dirty(pte))
- 			flags |= PM_SOFT_DIRTY;
-+		if (pte_uffd_wp(pte))
-+			flags |= PM_UFFD_WP;
- 	} else if (is_swap_pte(pte)) {
- 		swp_entry_t entry;
- 		if (pte_swp_soft_dirty(pte))
- 			flags |= PM_SOFT_DIRTY;
-+		if (pte_swp_uffd_wp(pte))
-+			flags |= PM_UFFD_WP;
- 		entry = pte_to_swp_entry(pte);
- 		if (pm->show_pfn)
- 			frame = swp_type(entry) |
-@@ -1426,6 +1431,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 			flags |= PM_PRESENT;
- 			if (pmd_soft_dirty(pmd))
- 				flags |= PM_SOFT_DIRTY;
-+			if (pmd_uffd_wp(pmd))
-+				flags |= PM_UFFD_WP;
- 			if (pm->show_pfn)
- 				frame = pmd_pfn(pmd) +
- 					((addr & ~PMD_MASK) >> PAGE_SHIFT);
-@@ -1444,6 +1451,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 			flags |= PM_SWAP;
- 			if (pmd_swp_soft_dirty(pmd))
- 				flags |= PM_SOFT_DIRTY;
-+			if (pmd_swp_uffd_wp(pmd))
-+				flags |= PM_UFFD_WP;
- 			VM_BUG_ON(!is_pmd_migration_entry(pmd));
- 			page = migration_entry_to_page(entry);
- 		}
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index 6339aeaeeff8b..93eae095b61e6 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -1170,6 +1170,144 @@ static int userfaultfd_minor_test(void)
+ 	return stats.missing_faults != 0 || stats.minor_faults != nr_pages;
+ }
+ 
++#define BIT_ULL(nr)                   (1ULL << (nr))
++#define PM_SOFT_DIRTY                 BIT_ULL(55)
++#define PM_MMAP_EXCLUSIVE             BIT_ULL(56)
++#define PM_UFFD_WP                    BIT_ULL(57)
++#define PM_FILE                       BIT_ULL(61)
++#define PM_SWAP                       BIT_ULL(62)
++#define PM_PRESENT                    BIT_ULL(63)
++
++static int pagemap_open(void)
++{
++	int fd = open("/proc/self/pagemap", O_RDONLY);
++
++	if (fd < 0)
++		err("open pagemap");
++
++	return fd;
++}
++
++static uint64_t pagemap_read_vaddr(int fd, void *vaddr)
++{
++	uint64_t value;
++	int ret;
++
++	ret = pread(fd, &value, sizeof(uint64_t),
++		    ((uint64_t)vaddr >> 12) * sizeof(uint64_t));
++	if (ret != sizeof(uint64_t))
++		err("pread() on pagemap failed");
++
++	return value;
++}
++
++/* This macro let __LINE__ works in err() */
++#define  pagemap_check_wp(value, wp) do {				\
++		if (!!(value & PM_UFFD_WP) != wp)			\
++			err("pagemap uffd-wp bit error: 0x%"PRIx64, value); \
++	} while (0)
++
++static int pagemap_test_fork(bool present)
++{
++	pid_t child = fork();
++	uint64_t value;
++	int fd, result;
++
++	if (!child) {
++		/* Open the pagemap fd of the child itself */
++		fd = pagemap_open();
++		value = pagemap_read_vaddr(fd, area_dst);
++		/*
++		 * After fork() uffd-wp bit should be gone as long as we're
++		 * without UFFD_FEATURE_EVENT_FORK
++		 */
++		pagemap_check_wp(value, false);
++		/* Succeed */
++		exit(0);
++	}
++	waitpid(child, &result, 0);
++	return result;
++}
++
++static void userfaultfd_pagemap_test(unsigned int test_pgsize)
++{
++	struct uffdio_register uffdio_register;
++	int pagemap_fd;
++	uint64_t value;
++
++	/* Pagemap tests uffd-wp only */
++	if (!test_uffdio_wp)
++		return;
++
++	/* Not enough memory to test this page size */
++	if (test_pgsize > nr_pages * page_size)
++		return;
++
++	printf("testing uffd-wp with pagemap (pgsize=%u): ", test_pgsize);
++	/* Flush so it doesn't flush twice in parent/child later */
++	fflush(stdout);
++
++	uffd_test_ops->release_pages(area_dst);
++
++	if (test_pgsize > page_size) {
++		/* This is a thp test */
++		if (madvise(area_dst, nr_pages * page_size, MADV_HUGEPAGE))
++			err("madvise(MADV_HUGEPAGE) failed");
++	} else if (test_pgsize == page_size) {
++		/* This is normal page test; force no thp */
++		if (madvise(area_dst, nr_pages * page_size, MADV_NOHUGEPAGE))
++			err("madvise(MADV_NOHUGEPAGE) failed");
++	}
++
++	if (userfaultfd_open(0))
++		err("userfaultfd_open");
++
++	uffdio_register.range.start = (unsigned long) area_dst;
++	uffdio_register.range.len = nr_pages * page_size;
++	uffdio_register.mode = UFFDIO_REGISTER_MODE_WP;
++	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register))
++		err("register failed");
++
++	pagemap_fd = pagemap_open();
++
++	/* Touch the page */
++	*area_dst = 1;
++	wp_range(uffd, (uint64_t)area_dst, test_pgsize, true);
++	value = pagemap_read_vaddr(pagemap_fd, area_dst);
++	pagemap_check_wp(value, true);
++	/* Make sure uffd-wp bit dropped when fork */
++	if (pagemap_test_fork(true))
++		err("Detected stall uffd-wp bit in child");
++
++	/* Exclusive required or PAGEOUT won't work */
++	if (!(value & PM_MMAP_EXCLUSIVE))
++		err("multiple mapping detected: 0x%"PRIx64, value);
++
++	if (madvise(area_dst, test_pgsize, MADV_PAGEOUT))
++		err("madvise(MADV_PAGEOUT) failed");
++
++	/* Uffd-wp should persist even swapped out */
++	value = pagemap_read_vaddr(pagemap_fd, area_dst);
++	pagemap_check_wp(value, true);
++	/* Make sure uffd-wp bit dropped when fork */
++	if (pagemap_test_fork(false))
++		err("Detected stall uffd-wp bit in child");
++
++	/* Unprotect; this tests swap pte modifications */
++	wp_range(uffd, (uint64_t)area_dst, page_size, false);
++	value = pagemap_read_vaddr(pagemap_fd, area_dst);
++	pagemap_check_wp(value, false);
++
++	/* Fault in the page from disk */
++	*area_dst = 2;
++	value = pagemap_read_vaddr(pagemap_fd, area_dst);
++	pagemap_check_wp(value, false);
++
++	close(pagemap_fd);
++	close(uffd);
++	printf("done\n");
++}
++
+ static int userfaultfd_stress(void)
+ {
+ 	void *area;
+@@ -1341,6 +1479,22 @@ static int userfaultfd_stress(void)
+ 	}
+ 
+ 	close(uffd);
++
++	if (test_type == TEST_ANON) {
++		/*
++		 * shmem/hugetlb won't be able to run since they have different
++		 * behavior on fork() (file-backed memory normally drops ptes
++		 * directly when fork), meanwhile the pagemap test will verify
++		 * pgtable entry of fork()ed child.
++		 */
++		userfaultfd_pagemap_test(page_size);
++		/*
++		 * Hard-code for x86_64 for now for 2M THP, as x86_64 is
++		 * currently the only one that supports uffd-wp
++		 */
++		userfaultfd_pagemap_test(page_size * 512);
++	}
++
+ 	return userfaultfd_zeropage_test() || userfaultfd_sig_test()
+ 		|| userfaultfd_events_test() || userfaultfd_minor_test();
+ }
 -- 
 2.26.2
 
