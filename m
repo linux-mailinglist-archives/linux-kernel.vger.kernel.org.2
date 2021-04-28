@@ -2,148 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A65D36DF09
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD9D36DF0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243668AbhD1Skg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:40:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58528 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243508AbhD1Skf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:40:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619635190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W3wbIZp6Y1eJURenlypAKMNuDhi204EdAx8I9omgFTU=;
-        b=NjnVlpw8Zp4FpFYM7RFv5R3b7wO2A7bvybPwREIBBAMCpCNapjAXNYDnj10T1whDN1Qyvc
-        pe8Vfs7o9PLY6UZ7zlNIrPi78ZMgLHotxsunuSff1ApbnXa8gPBbxI/5AhU0Wps2DabiJt
-        KJ+fCS+ovQY/UJA9fOz3ge/xF+HyJuM=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-277-UYu39LRtOI-wgKlECk8pHg-1; Wed, 28 Apr 2021 14:39:46 -0400
-X-MC-Unique: UYu39LRtOI-wgKlECk8pHg-1
-Received: by mail-qk1-f199.google.com with SMTP id y9-20020ae9f4090000b02902e4caf24229so5569997qkl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 11:39:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W3wbIZp6Y1eJURenlypAKMNuDhi204EdAx8I9omgFTU=;
-        b=I3hN29qbDVZT3m2lsvwLyShy2JEUUvaY/g+3+1aQ087f0D3qIzPsEq0w/PdWZRcQI5
-         jQNhO/xTZA9j1L8cUw76kPPliLnc9MFRu9tPRL25uYr1WKZ5T5LLlUdCn2nkSFXllz9F
-         OANoUw0sigGCuNwjjuP3LAtICimo5q4xlSRtWmO18RiA7S7Kt4KHJtcEMrKJBYfcyuAQ
-         4knfP0agoKnPT4Lb31dnVNqbhKb5tTCPNNvZV8mwc42Lpu6/rYu8sV6ttk4cNqHyh0Ju
-         ahgvJ4KyhhFCT/N5UJD27Y3JeE6r3r4C59B0J4JunvFE6bmgwWO/5V85D5TWC1LIP7tj
-         tKyA==
-X-Gm-Message-State: AOAM532UsUTtSzKH/4BdpXI8TS0I5/TFGVFuypBkqlY+rW6KF37quzCb
-        qif75fPTEzqIoVJMrcSLyfwMwp3CBcUJgs1DVizm5iUGDtYjhGo4kszt6p7bs6152agGkDTqTkq
-        uUGzw9J9CbrQ+Skjcg946aLth
-X-Received: by 2002:a05:6214:16c6:: with SMTP id d6mr15125099qvz.38.1619635184988;
-        Wed, 28 Apr 2021 11:39:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyuMFuED/Mm8JulpnIPP8sBXWY2fAghB7wF9q4paYGwuUcrWv0KzEKhVm3yQr+bGWf6x6cHjg==
-X-Received: by 2002:a05:6214:16c6:: with SMTP id d6mr15125064qvz.38.1619635184705;
-        Wed, 28 Apr 2021 11:39:44 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id j191sm393241qke.131.2021.04.28.11.39.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 11:39:44 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 14:39:43 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] userfaultfd: release page in error path to avoid BUG_ON
-Message-ID: <20210428183943.GH6584@xz-x1>
-References: <20210428180109.293606-1-axelrasmussen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S243649AbhD1SmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 14:42:16 -0400
+Received: from mail-dm6nam12on2068.outbound.protection.outlook.com ([40.107.243.68]:28256
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236337AbhD1SmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:42:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CvI3kjB8WvK/3b+OGAwHn1l3D0Ykp9/JUZME6qGMNeHgdTNhAvyFQ1ySFbhRTAXHIInkggivwB3Mhae1ncFqoHd++DVTzbBAFQ1yxAVkqm/RdizvT1PWDBOMcUf7vzjqlqVKs64VABl/xFAV2No9xTtZfDUa5LxXpRsaowdLSqM6wBH2AfppXEE+ChmX66f8x6UQg/ceckxlUVzqtopfG50yU+MVNfAOK5ZUGuNxs6X4F0r81qtZQGJtixIP5ohuhpnjoPHu1VEMQWFhesy9AJZrB+Be2Ds3zo0A9Z/MtHv3og+IeKgxyoEdcS8mH2hL7bkGxA08ZkNQ+pb0pCIG0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gMfmm1azbuIlsXCXTeGTugB3LpP6zMt1PjDKaXST7PA=;
+ b=Fm3gVWL3WyMaptnbZHFPE+NPuuQae0GDmX5a0Ce0kiMvCpslSnLSzNvK9lMfu1Uq7ZM9QoLkxr170fYNxcJS0/sKbkiV3of5lzGizm9c8mC1RjT+ieU1V5WVcGu+sJwRvrCworGp7g6osvV011n6e4n0I9Fose2Pr5VO7+1c/RvO95o8rDvLaRawZl4F6DQXJGB6i9PsTUDQuZXvKyEGeKfwfp1LS2IuQ2HXuq8/B52xwkK2raUKxEaP0Z2UtwWZg0hVHRJ8Ty5jLY0TpColLM3tzoF1s0RsT0aHpfxL7JNQZ+i0NUDi9KQsqkEE772fhMxJMVTdS9NYK7yzEqDEMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gMfmm1azbuIlsXCXTeGTugB3LpP6zMt1PjDKaXST7PA=;
+ b=fMLBMOkBCvSgDFRgfCWPqAajG2U53d/nIUY6+cMmNLyrlDufyCB/TY07W6ymzNif6+wi7IylHN3zujuMF2gpAqdI9eILAmQroCQY3mRz37R0oHhymyy4JKNN5DFkyAmkwMg+95G+SGe2bZNV6oTdidK3sbagmyNWAwSK0s91q303Evnl7SRyBbvyGvCxBQtXJlRCMgJ7Nn75npWsst5eirZhlIxzGXiNGu466W1s7s+BFueb7165gvf42/gNnrPBwN86lEHrp56Cf4IBhJWgNivxH7Jmvtys+VGhuIzz606WstV8I/IO9oSp7+wQbNjSX8IFiM6S8dQO0/WK8/vo8w==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2602.namprd12.prod.outlook.com (2603:10b6:5:4a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.25; Wed, 28 Apr
+ 2021 18:41:26 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.027; Wed, 28 Apr 2021
+ 18:41:26 +0000
+Date:   Wed, 28 Apr 2021 15:41:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     David Gibson <david@gibson.dropbear.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210428184123.GW1370958@nvidia.com>
+References: <20210421230301.GP1370958@nvidia.com>
+ <20210422111337.6ac3624d@redhat.com>
+ <20210422175715.GA1370958@nvidia.com>
+ <20210422133747.23322269@redhat.com>
+ <20210422200024.GC1370958@nvidia.com>
+ <20210422163808.2d173225@redhat.com>
+ <20210422233950.GD1370958@nvidia.com>
+ <YIecXkaEGNgICePO@yekko.fritz.box>
+ <20210427171212.GD1370958@nvidia.com>
+ <MWHPR11MB1886C9199AA3F00FF72ACB508C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210428180109.293606-1-axelrasmussen@google.com>
+In-Reply-To: <MWHPR11MB1886C9199AA3F00FF72ACB508C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH2PR15CA0008.namprd15.prod.outlook.com
+ (2603:10b6:610:51::18) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR15CA0008.namprd15.prod.outlook.com (2603:10b6:610:51::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Wed, 28 Apr 2021 18:41:25 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lbp7k-00E5zm-07; Wed, 28 Apr 2021 15:41:24 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dea0b7b7-920e-4788-1a49-08d90a753a50
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2602:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2602A96402D13A2E34653919C2409@DM6PR12MB2602.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zmH32CcLjRO7nReGyhd4RyiSvA3UpDfz7sZClz7zqjDkNcOTzO5/PyZFggCEUK4WqzuMqmI+SR+65QWa+EUIgqb5tGa2gbWShL0oyYHkL14Z2aadRzfh7iNMG8U20T1dacoVDxJjd1dAZWjEeNMq3Su1Fri83NuiSu1F3aWA6aT1qEBO8t5U48Ue+8XDZJYBe5oPtbiLRXjr0062602i+2tn3sIymWGoAjacOAVFkOVpKimm8gpxNH1w7YeeH7lp68tbKy0Ju9GDmg55G9h1FHtOHa7W1Z0pGxTRafLoSO5Pe6eeKgpb5kZJHf7cED8XUOX+Z0EcWJeTH9CTv0lHxYwHWSjTpUzzpO8EnUilw+GGP5IEa1GSNDgYL8lnDXIFZKl72cFyGabbeE61MNa1I/RVFSC8ip7MbmIeZXKYFJ8DQvVlKzQw8ZBxFzOLf8HF5I5w5u/C40EaPFrpdb1hs6QeXSiv+qOXEXxb0WTmzU4KclbkXZNCGMMTLmSZUawiDBvgy24MqREnlh0D9ECACopg1IT3vie6NyKK2NnypId/vq7RGUuQ6ZhMoaCtq2+KVJ0SEGJ2qg1F3vGB9y7cLAC6WffowBAmgf94ogKNoAE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(2906002)(316002)(7416002)(36756003)(9746002)(54906003)(186003)(6916009)(9786002)(2616005)(1076003)(33656002)(4326008)(426003)(8936002)(8676002)(5660300002)(478600001)(66556008)(86362001)(38100700002)(66476007)(83380400001)(66946007)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?wYFR0UItFGTDOLMqbqqVVySTcwfGBHku3Nd82pjcCIEtl4bPHqQJcdWiYhw4?=
+ =?us-ascii?Q?rv2gaPZtqmszAdzCg56Qu6rkRhvRQY0wqbXZxMFyInhfABat/tYR9+FNMDoK?=
+ =?us-ascii?Q?5LhqWf9bsKQ/dPpcOKMSLi1ucR3YWNe3MgU0s9eT+C4iMmAvjVOq4WgkKnuH?=
+ =?us-ascii?Q?7tyP/8dpK5x2/o2sFpbCl1IjVR42y+ybdpkZKfpNxXeg+x/tqHLK1d8mZ0SY?=
+ =?us-ascii?Q?jv1zLfQ6xMbTN12P/og3mc6T0LSliqiBRMu3r8QyR+H/OnoajmuXU6QY+BZC?=
+ =?us-ascii?Q?djrHo5+mjMEnAwOs9MuLzkYPTfT7ZZamjAQNU/vDUIOA4pekXpHtqC3Zx3RQ?=
+ =?us-ascii?Q?wtie45qw4KtbRajD/xRrOahhdt/jBIyjEkE0BdtnxaRpC57DbU9eyuuwCYLL?=
+ =?us-ascii?Q?0fc5f1MYAeT2/bkcphe3XX3jVSHeTpfW1TobDaxyrBYJAWd6G3rwRMOT74xr?=
+ =?us-ascii?Q?IPqrUGBSfKeGk7VCiHAGkqc2WXr8GC+4QSi1+FUL3MYy+ML/Q93x6u1JbSK2?=
+ =?us-ascii?Q?ZBTBu+FZSe9nz4Z+bcPFN4AyHQpB2BijprMoRpZ2/Xg2f7Ponm7V1EiNjFaJ?=
+ =?us-ascii?Q?4cCtx+bUK/qVJzAOiesD8Sjw5Z3o7E6KXUT7QwOCZyA2jXr+JTu1XWjbjEu8?=
+ =?us-ascii?Q?ahF1fuPQ6rhQf4AuECyTz+xTsoW9R/SfQOQbs2Bz2cbSDaF69BnxU+hb4AME?=
+ =?us-ascii?Q?rOJvGcsqDNINEQO0X1sWYRy/pVzvlLzTNd3MKB5+HYFjnQhy6dJVv0Dqp5u9?=
+ =?us-ascii?Q?oX4M169UzJwAFNGaGcoA9NjlHrHdogHsxB0RHNaPBl5I6pbpnFCVxumUbehn?=
+ =?us-ascii?Q?En1oNOQjmD1EmIQ0mcEk8u0kwW5HRdRZn8t1N63/X33DtDOPRBVTv2kWh1F3?=
+ =?us-ascii?Q?VWdFTrcsU1GqVrPeSCd97xs3lKM8gajEDG7e/dPwBfl+wj4eJ40lFyZEz0vH?=
+ =?us-ascii?Q?sqJRXvKhJ9L+ZKispC0GBCs+V2BT4yrmPjriYMemt0nTT5QKfdSjxGPXnUmQ?=
+ =?us-ascii?Q?BL0Fzbzlnmxj0Pj050IcQZuN+vO/Gcsd2p2tjx3BBSA6meUV+0vNVHKFCLqR?=
+ =?us-ascii?Q?UTvQlDAN52rrLlLWPvsT9Pfjtw6jCbkrNfiNkhJbIPlVfLrHXFAM1xGcozzu?=
+ =?us-ascii?Q?kxrXxGpTAvPMi+vTyyybPlHMV+bmDiJDIk87QgX/GL8Bm0riaTAHL/gCd9Ss?=
+ =?us-ascii?Q?GtR7tGPw6U+zTBdeo31zQFKby3crTKQQOBdTah1/2k62ORUeQftSjim7k/Zs?=
+ =?us-ascii?Q?nG92J4qYQCyi11W+RbuWE0lPUiF3FxVd7ojHbCoi0mHhRciE1He2fgspD/02?=
+ =?us-ascii?Q?KRxTJYxEToH/FuLeEsZhIpqY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dea0b7b7-920e-4788-1a49-08d90a753a50
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2021 18:41:25.9203
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f24ts17V4dFoRDA5xeY5lKYk9Z8qiHjqJb9JSIIW6nex7tcqy97V5MUpCXO8DxV9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2602
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 11:01:09AM -0700, Axel Rasmussen wrote:
-> Consider the following sequence of events (described from the point of
-> view of the commit that introduced the bug - see "Fixes:" below):
+On Wed, Apr 28, 2021 at 07:47:56AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Wednesday, April 28, 2021 1:12 AM
+> > 
+> [...]
+> > One option is VFIO can keep its group FD but nothing else will have
+> > anthing like it. However I don't much like the idea that VFIO will
+> > have a special and unique programming model to do that same things
+> > other subsystem will do. That will make it harder for userspace to
+> > implement.
 > 
-> 1. Userspace issues a UFFD ioctl, which ends up calling into
->    shmem_mcopy_atomic_pte(). We successfully account the blocks, we
->    shmem_alloc_page(), but then the copy_from_user() fails. We return
->    -EFAULT. We don't release the page we allocated.
-> 2. Our caller detects this error code, tries the copy_from_user() after
->    dropping the mmap_sem, and retries, calling back into
->    shmem_mcopy_atomic_pte().
-> 3. Meanwhile, let's say another process filled up the tmpfs being used.
-> 4. So shmem_mcopy_atomic_pte() fails to account blocks this time, and
->    immediately returns - without releasing the page. This triggers a
->    BUG_ON in our caller, which asserts that the page should always be
->    consumed, unless -EFAULT is returned.
+> Hi, Jason,
 > 
-> (Later on in the commit history, -EFAULT became -ENOENT, mmap_sem became
-> mmap_lock, and shmem_inode_acct_block() was added.)
+> I have a question here. Based on discussions so far, it's clearly that the
+> new ioasid uAPI will differ from existing VFIO uAPI a lot, e.g. ioasid-
+> centric operations, no group fd, no incompatible domains, etc. Then 
+> I wonder how we plan to support legacy VFIO applications in this 
+> transition phase. 
 
-I suggest you do s/EFAULT/ENOENT/ directly in above.
+I suspect the VFIO group fd will have to be registered with
+/dev/ioasid in addition to each device if we are to retain the same
+model.
 
-> 
-> A malicious user (even an unprivileged one) could trigger this
-> intentionally without too much trouble.
-> 
-> To fix this, detect if we have a "dangling" page when accounting fails,
-> and if so, release it before returning.
-> 
-> Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
-> Reported-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  mm/shmem.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 26c76b13ad23..46766c9d7151 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2375,8 +2375,19 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
->  	pgoff_t offset, max_off;
->  
->  	ret = -ENOMEM;
-> -	if (!shmem_inode_acct_block(inode, 1))
-> +	if (!shmem_inode_acct_block(inode, 1)) {
-> +		/*
-> +		 * We may have got a page, returned -ENOENT triggering a retry,
-> +		 * and now we find ourselves with -ENOMEM. Release the page, to
-> +		 * avoid a BUG_ON in our caller.
-> +		 */
-> +		if (unlikely(*pagep)) {
-> +			unlock_page(*pagep);
+> Earlier you ever mentioned the desire of directly replacing
+> /dev/vfio/vfio with /dev/ioasid and having ioasid to present both
+> VFIO and new uAPI. Doesn't it imply that we have to copy the VFIO
+> container/group semantics into /dev/ioasid although it's a special
+> programming model only for VFIO?
 
-Not necessary?
+I gave that as a something to think about, if it doesn't work out then
+it is just a bad idea to discard.
 
-> +			put_page(*pagep);
-> +			*pagep = NULL;
-> +		}
->  		goto out;
+> Alternatively we could keep all the container/group legacy within VFIO
+> and having /dev/ioasid support only the new uAPI semantics. In this case
+> VFIO will include a shim iommu backend to connect its legacy uAPI into 
+> drivers/ioasid backend functions for backward compatibility. Then VFIO
+> will also support a new model which only uses its device uAPI to bind
+> to new ioasid fd w/o using any legacy container/group/iommu uAPI.
+> Does this sound a plan? 
 
-All "goto out" in this functions looks weird as it returns directly... so if
-you're touching this after all, I suggest we do "return -ENOMEM" directly and
-drop the "ret = -ENOMEM".
+It may be where we end up.. Though I fear it will make it overly
+complex inside VFIO to access the new stuff. It would be very nice if
+we could see a path where VFIO insides could only deal with the
+in-kernel ioasid handles, whatever they are.
 
-Thanks,
-
-> +	}
->  
->  	if (!*pagep) {
->  		page = shmem_alloc_page(gfp, info, pgoff);
-> -- 
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
-
--- 
-Peter Xu
-
+Jason
