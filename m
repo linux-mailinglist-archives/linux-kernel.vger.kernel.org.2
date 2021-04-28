@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F6436D955
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DC336D958
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240180AbhD1OO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:14:27 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36931 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229807AbhD1OO0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:14:26 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13SECx3x023455
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Apr 2021 10:13:00 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A932815C3C3D; Wed, 28 Apr 2021 10:12:59 -0400 (EDT)
-Date:   Wed, 28 Apr 2021 10:12:59 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-        ebiggers@google.com, drosen@google.com, ebiggers@kernel.org,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v8 4/4] fs: unicode: Add utf8 module and a unicode layer
-Message-ID: <YIlta1Saw7dEBpfs@mit.edu>
-References: <20210423205136.1015456-1-shreeya.patel@collabora.com>
- <20210423205136.1015456-5-shreeya.patel@collabora.com>
- <20210427062907.GA1564326@infradead.org>
- <61d85255-d23e-7016-7fb5-7ab0a6b4b39f@collabora.com>
- <YIgkvjdrJPjeoJH7@mit.edu>
- <87bl9z937q.fsf@collabora.com>
+        id S229807AbhD1OOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:14:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhD1OOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:14:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D74EE61424;
+        Wed, 28 Apr 2021 14:14:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619619243;
+        bh=LrI9EyriTNzlF19LSDUJcI9lL1R/vtRwbqVxLduTtIA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aUuQDDlV5/Weo5NpINpcpgbKVC3oTwegSq+1ZGp+9bav91ppzXIUL+jJKMZQvI7ZC
+         LEmcSQBcyP6vQ6HR3cUREPha/3TQTiqyb4Y1qNlrsjq7MX35xc1XxySN1EI5DH35Lm
+         VLXt+35DsqVRNuu0+mumLlWuIIHBDHsRUpaae9x8=
+Date:   Wed, 28 Apr 2021 16:14:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH 157/190] Revert "Input: ad7879 - add check for read
+ errors in interrupt"
+Message-ID: <YIltqNnVfBZ4F1kY@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-158-gregkh@linuxfoundation.org>
+ <YIBa5X+5g/qNL+N8@google.com>
+ <YIhB7rvHlFDew00z@kroah.com>
+ <YIhkZOWJiOlDJCYS@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87bl9z937q.fsf@collabora.com>
+In-Reply-To: <YIhkZOWJiOlDJCYS@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:06:33AM -0400, Gabriel Krisman Bertazi wrote:
-> > I think the better argument to make is just one of simplicity;
-> > separating the Unicode data table from the kernel adds complexity.  It
-> > also reduces flexibility, since for use cases where it's actually
-> > _preferable_ to have Unicode functionality permanently built-in the
-> > kernel, we now force the use of some kind of initial ramdisk to load a
-> > module before the root file system (which might require Unicode
-> > support) could even be mounted.
+On Tue, Apr 27, 2021 at 12:22:12PM -0700, Dmitry Torokhov wrote:
+> On Tue, Apr 27, 2021 at 06:55:10PM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Apr 21, 2021 at 10:03:33AM -0700, Dmitry Torokhov wrote:
+> > > Hi Greg,
+> > > 
+> > > On Wed, Apr 21, 2021 at 03:00:32PM +0200, Greg Kroah-Hartman wrote:
+> > > > This reverts commit e85bb0beb6498c0dffe18a2f1f16d575bc175c32.
+> > > > 
+> > > > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > > > faith" to try to test the kernel community's ability to review "known
+> > > > malicious" changes.  The result of these submissions can be found in a
+> > > > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > > > entitled, "Open Source Insecurity: Stealthily Introducing
+> > > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > > > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > > > 
+> > > > Because of this, all submissions from this group must be reverted from
+> > > > the kernel tree and will need to be re-reviewed again to determine if
+> > > > they actually are a valid fix.  Until that work is complete, remove this
+> > > > change to ensure that no problems are being introduced into the
+> > > > codebase.
+> > > 
+> > > This one looks really OK to me and does not have to be reverted (unless
+> > > Aditya will come clean and show the error introduced?).
+> > 
+> > I'll drop this revert, but it isn't usually good to be calling printk()
+> > from an irq.
 > 
-> FWIW, embedding FW images to the kernel is also well supported.  Making
-> the data trie a firmware doesn't make a ramdisk more of a requirement
-> than the module solution, I think.
+> How else do you suggest we tell that something is wrong when
+> communicating with the device? For these types of devices the
+> communication is essentially unsolicited so we can't pass failure to a
+> caller to deal with it (i.e. unlike USB there is no URB posted that we
+> could fail and use as a mechanism to signal error to some other layer)
+> and while we could invent "something went wrong" input event so far
+> there was no interest in having anything like that.
+> 
+> I'd suggest sending KOBJ_ERROR uevent when a device driver detects
+> anomaly in the device it controls, but I wonder how systemd would react
+> given past experiences with KOBJ_BIND/KOBJ_UNBIND.
+> 
+> The message is ratelimited so it will not overfill the logs...
 
-I don't think we support building firmware directly into the kernel
-any more.  We used to, but IIRC, there was the feeling that 99.99% of
-the time, firmware modules were not GPL compliant, and so we ripped
-out that support.
+Sending uevents from an irq is not a good idea, as you say :)
 
-So my point was with the module support, it's *optional* that it be
-compiled as a module, which is convenient for those use cases, such as
-for example a mobile handset --- where there is no need for modules
-since the hardware doesn't change, and so modules and an initrd is
-just unnecessary complexity --- and firmware, which would make an
-initial ramdisk mandatory if you wanted to use the casefold feature.
+I don't know what the best way to "fail" this is, a ratelimited printk()
+seems to be about all you can do.  Luckily hardware doesn't fail that
+often in this manner.
 
-Put another way, the only reason why putting the unicode tables in a
-module is to make life easier for desktop distros.  For mobile
-handsets, modules are an anti-feature, which is why there was no call
-for supporting this initially, given the initial use case for the
-casefold feature.
+thanks,
 
-Cheers,
-
-					- Ted
+greg k-h
