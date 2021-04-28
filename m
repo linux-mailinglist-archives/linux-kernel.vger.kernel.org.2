@@ -2,337 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85D336D440
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D141936D445
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237975AbhD1It0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
+        id S237513AbhD1IwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237745AbhD1ItX (ORCPT
+        with ESMTP id S230301AbhD1IwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:49:23 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B83C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:48:37 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j10so4778266lfb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xo1DQZgkZFuQ8qcL0iDQe+mzarmHAfHBfy6FMT32uN8=;
-        b=ZCe24t63LrE2Zt7czAXkPoibg/ftyHq4H8W31NN7UtYST0kZApMBtb7vB18kAQTruQ
-         8OmHSCzUlgI4dzJwlNDrvBUFZv2RFWdnACZ7E+0GtWuSgvkrjxpGImkgisGcV2QoTfOu
-         6f8Y99vzub4bDqqgIi2pT+7CNg96bDvmd+VGWfauYmiREru9Qk92rhn4kndVOcxKtAWE
-         P9xAnW78/aJAhgZeBf9dUYWnOUHaEEkKISwLQ5+PKmb8hdfwODS4V6QzQ1T+Z8BYMbOf
-         QUbPGEcd2vybyjgzlZklFmpX1PSJSupGmMvqVeplskHQK3ooFdae5uTy4cLTnxdcaDZW
-         ZBVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xo1DQZgkZFuQ8qcL0iDQe+mzarmHAfHBfy6FMT32uN8=;
-        b=q7/1PW88LEA06AVAwbIiJR0fLfQk1g6EtsVCA1gsLw5gwI/VOSkzLKkUijUPe/+oC3
-         TB9hs6TQUsTmY6Pvt46TM1ERGeTSfz7dUMu5dMjqGoU/YKBRTback6DE6prIE2FnExcs
-         8UYSXTytMjHY7BPW738a1BHjWr+GcbiU7/MlPtwslJULvgo5ce6sauyXwdRi+bHdejvC
-         siaprZSWNyPxTtMbgReVOl/PjtlFtYqHUM2Z1GSvPUZTwUfBZbMWnAtAoOFfII0zHpru
-         khffdxDXfNT8UuF5d+7Ln3ba4GWwrgf2JAl9s+cbHsjiyYz2fLc1fsi4tS9J8FeNIoUP
-         XJ7g==
-X-Gm-Message-State: AOAM5329R/8CflwwIWma4HIUk+LW0os3NC5DTMAFURuLFLjuQnMtpY/V
-        VLK0ESeKTdBmoWVlyB8dI4QfHTYPhos9YBam
-X-Google-Smtp-Source: ABdhPJxN0rtLcbEMFpBx84Gdm7fr+i47C4h5Ue2THwSeUqFEhB+yGLy8TJxAPNJQHixLeClbU9jTXQ==
-X-Received: by 2002:a05:6512:12c3:: with SMTP id p3mr20234712lfg.595.1619599715737;
-        Wed, 28 Apr 2021 01:48:35 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-180-197.NA.cust.bahnhof.se. [98.128.180.197])
-        by smtp.gmail.com with ESMTPSA id p23sm564702lfc.210.2021.04.28.01.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 01:48:34 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC and MEMSTICK updates for v5.13
-Date:   Wed, 28 Apr 2021 10:48:33 +0200
-Message-Id: <20210428084833.72831-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 28 Apr 2021 04:52:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1721C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 01:51:19 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lbfuf-0003Qd-8A; Wed, 28 Apr 2021 10:51:17 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lbfud-00013v-7s; Wed, 28 Apr 2021 10:51:15 +0200
+Date:   Wed, 28 Apr 2021 10:51:15 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Fabio Estevam <festevam@gmail.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH net-next v3 0/6] provide generic net selftest support
+Message-ID: <20210428085115.mehvsj2vlqmbmib5@pengutronix.de>
+References: <20210419130106.6707-1-o.rempel@pengutronix.de>
+ <DB8PR04MB67951B9C6AB1620E807205F2E6459@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <20210423043729.tup7nntmmyv6vurm@pengutronix.de>
+ <DB8PR04MB6795479FBF086751D16080E2E6419@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <6416c580-0df9-7d36-c42d-65293c40aa25@gmail.com>
+ <DB8PR04MB6795AD745C2B27B6AC68497EE6409@DB8PR04MB6795.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB8PR04MB6795AD745C2B27B6AC68497EE6409@DB8PR04MB6795.eurprd04.prod.outlook.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:45:15 up 146 days, 22:51, 47 users,  load average: 0.08, 0.06,
+ 0.07
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Apr 28, 2021 at 08:06:05AM +0000, Joakim Zhang wrote:
+> 
+> Hi Florian,
+> 
+> > -----Original Message-----
+> > From: Florian Fainelli <f.fainelli@gmail.com>
+> > Sent: 2021年4月28日 0:41
+> > To: Joakim Zhang <qiangqing.zhang@nxp.com>; Oleksij Rempel
+> > <o.rempel@pengutronix.de>
+> > Cc: Shawn Guo <shawnguo@kernel.org>; Sascha Hauer
+> > <s.hauer@pengutronix.de>; Andrew Lunn <andrew@lunn.ch>; Heiner Kallweit
+> > <hkallweit1@gmail.com>; Fugang Duan <fugang.duan@nxp.com>;
+> > kernel@pengutronix.de; netdev@vger.kernel.org;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> > dl-linux-imx <linux-imx@nxp.com>; Fabio Estevam <festevam@gmail.com>;
+> > David Jander <david@protonic.nl>; Russell King <linux@armlinux.org.uk>;
+> > Philippe Schenker <philippe.schenker@toradex.com>
+> > Subject: Re: [PATCH net-next v3 0/6] provide generic net selftest support
+> > 
+> > 
+> > 
+> > On 4/26/2021 9:48 PM, Joakim Zhang wrote:
+> > >
+> > >> -----Original Message-----
+> > >> From: Oleksij Rempel <o.rempel@pengutronix.de>
+> > >> Sent: 2021年4月23日 12:37
+> > >> To: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > >> Cc: Shawn Guo <shawnguo@kernel.org>; Sascha Hauer
+> > >> <s.hauer@pengutronix.de>; Andrew Lunn <andrew@lunn.ch>; Florian
+> > >> Fainelli <f.fainelli@gmail.com>; Heiner Kallweit
+> > >> <hkallweit1@gmail.com>; Fugang Duan <fugang.duan@nxp.com>;
+> > >> kernel@pengutronix.de; netdev@vger.kernel.org;
+> > >> linux-arm-kernel@lists.infradead.org;
+> > >> linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>; Fabio
+> > >> Estevam <festevam@gmail.com>; David Jander <david@protonic.nl>;
+> > >> Russell King <linux@armlinux.org.uk>; Philippe Schenker
+> > >> <philippe.schenker@toradex.com>
+> > >> Subject: Re: [PATCH net-next v3 0/6] provide generic net selftest
+> > >> support
+> > >>
+> > >> Hi Joakim,
+> > >>
+> > >> On Fri, Apr 23, 2021 at 03:18:32AM +0000, Joakim Zhang wrote:
+> > >>>
+> > >>> Hi Oleksij,
+> > >>>
+> > >>> I look both stmmac selftest code and this patch set. For stmmac, if
+> > >>> PHY
+> > >> doesn't support loopback, it will fallthrough to MAC loopback.
+> > >>> You provide this generic net selftest support based on PHY loopback,
+> > >>> I have a
+> > >> question, is it possible to extend it also support MAC loopback later?
+> > >>
+> > >> Yes. If you have interest and time to implement it, please do.
+> > >> It should be some kind of generic callback as phy_loopback() and if
+> > >> PHY and MAC loopbacks are supported we need to tests both variants.
+> > > Hi Oleksij,
+> > >
+> > > Yes, I can try to implement it when I am free, but I still have some questions:
+> > > 1. Where we place the generic function? Such as mac_loopback().
+> > > 2. MAC is different from PHY, need program different registers to enable
+> > loopback on different SoCs, that means we need get MAC private data from
+> > "struct net_device".
+> > > So we need a callback for MAC drivers, where we extend this callback? Could
+> > be "struct net_device_ops"? Such as ndo_set_loopback?
+> > 
+> > Even for PHY devices, if we implemented external PHY loopback in the future,
+> > the programming would be different from one vendor to another. I am starting
+> > to wonder if the existing ethtool self-tests are the best API to expose the ability
+> > for an user to perform PHY and MAC loopback testing.
+> > 
+> > From an Ethernet MAC and PHY driver perspective, what I would imagine we
+> > could have for a driver API is:
+> > 
+> > enum ethtool_loopback_mode {
+> > 	ETHTOOL_LOOPBACK_OFF,
+> > 	ETHTOOL_LOOPBACK_PHY_INTERNAL,
+> > 	ETHTOOL_LOOPBACK_PHY_EXTERNAL,
+> > 	ETHTOOL_LOOPBACK_MAC_INTERNAL,
+> > 	ETHTOOL_LOOPBACK_MAC_EXTERNAL,
+> > 	ETHTOOL_LOOPBACK_FIXTURE,
+> > 	__ETHTOOL_LOOPBACK_MAX
+> > };
+> 
+> What's the difference between internal and external loopback for both PHY and MAC? I am not familiar with these concepts. Thanks.
 
-Here's the PR with updates for MMC and MEMSTICK for v5.13. Details about the
-highlights are as usual found in the signed tag.
+For example KSZ9031 PHY. It supports two loopback modes. See page 23:
+https://ww1.microchip.com/downloads/en/DeviceDoc/00002096E.pdf
 
-Please pull this in!
-
-Kind regards
-Ulf Hansson
+TI DP83TC811R-Q1 PHY supports 4 modes. See page 27:
+https://www.ti.com/lit/ds/symlink/dp83tc811r-q1.pdf
 
 
-The following changes since commit 7412dee9f1fd3e224202b633fdfa6eeaebe0307e:
+> Best Regards,
+> Joakim Zhang
+> > 	int (*ndo_set_loopback_mode)(struct net_device *dev, enum
+> > ethtool_loopback_mode mode);
+> > 
+> > and within the Ethernet MAC driver you would do something like this:
+> > 
+> > 	switch (mode) {
+> > 	case ETHTOOL_LOOPBACK_PHY_INTERNAL:
+> > 	case ETHTOOL_LOOPBACK_PHY_EXTERNAL:
+> > 	case ETHTOOL_LOOPBACK_OFF:
+> > 		ret = phy_loopback(ndev->phydev, mode);
+> > 		break;
+> > 	/* Other case statements implemented in driver */
+> > 
+> > we would need to change the signature of phy_loopback() to accept being
+> > passed ethtool_loopback_mode so we can support different modes.
+> > 
+> > Whether we want to continue using the self-tests API, or if we implement a
+> > new ethtool command in order to request a loopback operation is up for
+> > discussion.
+> > --
+> > Florian
 
-  mmc: meson-gx: replace WARN_ONCE with dev_warn_once about scatterlist size alignment in block mode (2021-04-19 09:49:27 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.13
-
-for you to fetch changes up to 97fce126e279690105ee15be652b465fd96f9997:
-
-  mmc: block: Issue a cache flush only when it's enabled (2021-04-26 11:37:23 +0200)
-
-----------------------------------------------------------------
-MMC core:
- - Fix hanging on I/O during system suspend for removable cards
- - Set read only for SD cards with permanent write protect bit
- - Power cycle the SD/SDIO card if CMD11 fails for UHS voltage
- - Issue a cache flush for eMMC only when it's enabled
- - Adopt to updated cache ctrl settings for eMMC from MMC ioctls
- - Use use device property API when parsing voltages
- - Don't retry eMMC sanitize cmds
- - Use the timeout from the MMC ioctl for eMMC santize cmds
-
-MMC host:
- - mmc_spi: Make of_mmc_spi.c resource provider agnostic
- - mmc_spi: Use polling for card detect even without voltage-ranges
- - sdhci: Check for reset prior to DMA address unmap
- - sdhci-acpi: Add support for the AMDI0041 eMMC controller variant
- - sdhci-esdhc-imx: Depending on OF Kconfig and cleanup code
- - sdhci-pci: Add PCI IDs for Intel LKF
- - sdhci-pci: Fix initialization of some SD cards for Intel BYT
- - sdhci-pci-gli: Various improvements for GL97xx variants
- - sdhci-of-dwcmshc: Enable support for MMC_CAP_WAIT_WHILE_BUSY
- - sdhci-of-dwcmshc: Add ACPI support for BlueField-3 SoC
- - sdhci-of-dwcmshc: Add Rockchip platform support
- - tmio/renesas_sdhi: Extend support for reset and use a reset controller
- - tmio/renesas_sdhi: Enable support for MMC_CAP_WAIT_WHILE_BUSY
- - tmio/renesas_sdhi: Various improvements
-
-MEMSTICK:
- - Minor improvements/cleanups.
-
-----------------------------------------------------------------
-Adrian Hunter (2):
-      mmc: sdhci-pci: Add PCI IDs for Intel LKF
-      mmc: sdhci-pci: Fix initialization of some SD cards for Intel BYT-based controllers
-
-Al Cooper (1):
-      mmc: sdhci-brcmstb: Remove CQE quirk
-
-Andy Shevchenko (6):
-      mmc: core: Correct descriptions in mmc_of_parse()
-      mmc: core: Convert mmc_of_parse_voltage() to use device property API
-      mmc: mmc_spi: Set up polling even if voltage-ranges is not present
-      mmc: mmc_spi: Drop unused NO_IRQ definition
-      mmc: mmc_spi: Use already parsed IRQ
-      mmc: mmc_spi: Make of_mmc_spi.c resource provider agnostic
-
-Aniruddha Tvs Rao (1):
-      mmc: sdhci-tegra: Add required callbacks to set/clear CQE_EN bit
-
-Arnd Bergmann (1):
-      memstick: r592: ignore kfifo_out() return code again
-
-Avri Altman (2):
-      mmc: block: Update ext_csd.cache_ctrl if it was written
-      mmc: block: Issue a cache flush only when it's enabled
-
-Bean Huo (4):
-      mmc: cavium: Use '"%s...", __func__' to print function name
-      mmc: core: Use userland specified timeout value for eMMC sanitize
-      mmc: core: Add a retries parameter to __mmc_switch function
-      mmc: core: Let eMMC sanitize not retry in case of timeout/failure
-
-Ben Chuang (2):
-      mmc: sdhci-pci-gli: Improve GL9763E L1 entry delay to increase battery life
-      mmc: sdhci-pci-gli: Enlarge ASPM L1 entry delay of GL975x
-
-Christophe JAILLET (2):
-      mmc: uniphier-sd: Fix an error handling path in uniphier_sd_probe()
-      mmc: uniphier-sd: Fix a resource leak in the remove function
-
-Dinghao Liu (1):
-      mmc: sdhci-pci-o2micro: Add missing checks in sdhci_pci_o2_probe
-
-DooHyun Hwang (1):
-      mmc: core: Do a power cycle when the CMD11 fails
-
-Fabio Estevam (2):
-      mmc: sdhci-esdhc-imx: Remove non-DT stub
-      mmc: sdhci-esdhc-imx: Use device_get_match_data()
-
-Hao Fang (1):
-      mmc: dw_mmc-k3: use the correct HiSilicon copyright
-
-James Young (1):
-      mmc: sdhci-acpi: Add device ID for the AMDI0041 variant of the AMD eMMC controller.
-
-Jia Yang (1):
-      mmc: sdhci-msm: Remove unnecessary error log
-
-Jia-Ju Bai (1):
-      memstick: core: Assign error code of mspro_block_resume()
-
-Jiapeng Chong (1):
-      memstick: r592: remove unused variable
-
-Jisheng Zhang (5):
-      mmc: sdhci-pci: Avoid comma separated statements
-      mmc: sdhci: Use "mmc" directly rather than "host->mmc"
-      mmc: sdio: fix a typo in the comment of SDIO_SD_REV_3_00
-      mmc: sdhci-of-dwcmshc: set MMC_CAP_WAIT_WHILE_BUSY
-      mmc: sdhci: replace mmc->parent with mmc_dev() for consistency
-
-Joey Pabalan (1):
-      memstick: Remove useless else branch
-
-Krzysztof Kozlowski (3):
-      mmc: sdhci-s3c: simplify getting of_device_id match data
-      mmc: sdhci-s3c: correct kerneldoc of sdhci_s3c_drv_data
-      mmc: sdhci-s3c: constify uses of driver/match data
-
-Laibin Qiu (2):
-      mmc: owl-mmc: Remove unnecessary error log
-      mmc: sdhci-st: Remove unnecessary error log
-
-Liming Sun (1):
-      mmc: sdhci-of-dwcmshc: add ACPI support for BlueField-3 SoC
-
-Luca Porzio (1):
-      mmc: core: Remove mq->use_cqe from the struct mmc_queue
-
-Nicolas Saenz Julienne (1):
-      dt-bindings: mmc: iproc-sdhci: Convert to json-schema
-
-Peng Fan (3):
-      dt-bindings: mmc: fsl-imx-esdhc: add pinctrl bindings
-      dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
-      mmc: sdhci-esdhc-imx: validate pinctrl before use it
-
-Philipp Zabel (2):
-      mmc: sdhci-st: simplify optional reset handling
-      mmc: dw_mmc: simplify optional reset handling
-
-Pradeep P V K (1):
-      mmc: sdhci: Check for reset prior to DMA address unmap
-
-Renius Chen (1):
-      mmc: sdhci-pci-gli: Enable short circuit protection mechanism of GL9755
-
-Seiya Wang (1):
-      dt-bindings: mmc: Add compatible for Mediatek MT8195
-
-Seunghui Lee (1):
-      mmc: core: Set read only for SD cards with permanent write protect bit
-
-Shawn Guo (1):
-      mmc: sdhci-esdhc-imx: separate 100/200 MHz pinctrl states check
-
-Shawn Lin (4):
-      dt-bindings: mmc: sdhci-of-dwcmhsc: Convert to yaml file
-      dt-bindings: mmc: sdhci-of-dwcmhsc: Add rockchip support
-      mmc: sdhci-of-dwcmshc: add rockchip platform support
-      mmc: dw_mmc-rockchip: Just set default sample value for legacy mode
-
-Takeshi Saito (1):
-      mmc: tmio: restore bus width when resetting
-
-Ulf Hansson (8):
-      mmc: core: Drop superfluous validations in mmc_hw|sw_reset()
-      mmc: core: Drop reference counting of the bus_ops
-      mmc: dw_mmc: Drop redundant call to ->card_event callback
-      mmc: block: Drop use of unlikely() in mmc_blk_probe()
-      mmc: block: Simplify logging during probe about added partitions
-      mmc: block: Fix error path in mmc_blk_probe()
-      mmc: core: Fix hanging on I/O during system suspend for removable cards
-      Merge branch 'fixes' into next
-
-Wei Yongjun (1):
-      mmc: sdhci-of-dwcmshc: fix error return code in dwcmshc_probe()
-
-Wolfram Sang (9):
-      mmc: tmio: remove workaround for NON_REMOVABLE
-      mmc: tmio: support custom irq masks
-      mmc: renesas_sdhi: use custom mask for TMIO_MASK_ALL
-      mmc: tmio: abort DMA before reset
-      mmc: renesas_sdhi: break SCC reset into own function
-      mmc: renesas_sdhi: do hard reset if possible
-      mmc: tmio: always flag retune when resetting and a card is present
-      mmc: renesas_sdhi: enable WAIT_WHILE_BUSY
-      mmc: tmio: always restore irq register
-
-Yang Li (2):
-      mmc: via-sdmmc: remove unneeded variable 'ret'
-      mmc: moxart: Remove unused variable 'dma_time' and 'pio_time'
-
-Yue Hu (1):
-      mmc: core: Reduce code duplication to mmc_spi_send_{csd|cid}
-
- .../devicetree/bindings/mmc/brcm,iproc-sdhci.yaml  |  63 +++++
- .../devicetree/bindings/mmc/brcm,sdhci-iproc.txt   |  37 ---
- .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     |  20 ++
- .../devicetree/bindings/mmc/mmc-spi-slot.txt       |   6 +-
- Documentation/devicetree/bindings/mmc/mtk-sd.yaml  |   1 +
- .../devicetree/bindings/mmc/sdhci-of-dwcmshc.txt   |  20 --
- .../bindings/mmc/snps,dwcmshc-sdhci.yaml           |  87 ++++++
- drivers/memstick/core/memstick.c                   |  21 +-
- drivers/memstick/core/mspro_block.c                |   3 +-
- drivers/memstick/host/r592.c                       |   6 +-
- drivers/mmc/core/block.c                           |  76 +++--
- drivers/mmc/core/core.c                            | 186 +-----------
- drivers/mmc/core/core.h                            |  17 +-
- drivers/mmc/core/host.c                            |  90 ++++--
- drivers/mmc/core/mmc.c                             |  29 +-
- drivers/mmc/core/mmc_ops.c                         |  59 ++--
- drivers/mmc/core/mmc_ops.h                         |   4 +-
- drivers/mmc/core/queue.c                           |  11 +-
- drivers/mmc/core/queue.h                           |   1 -
- drivers/mmc/core/sd.c                              |   6 +
- drivers/mmc/core/sdio.c                            |  28 +-
- drivers/mmc/host/Kconfig                           |   2 +
- drivers/mmc/host/Makefile                          |   2 -
- drivers/mmc/host/cavium.c                          |   3 +-
- drivers/mmc/host/dw_mmc-k3.c                       |   2 +-
- drivers/mmc/host/dw_mmc-rockchip.c                 |   2 +-
- drivers/mmc/host/dw_mmc.c                          |  16 +-
- drivers/mmc/host/mmc_spi.c                         |   8 +-
- drivers/mmc/host/moxart-mmc.c                      |  10 +-
- drivers/mmc/host/of_mmc_spi.c                      |  18 +-
- drivers/mmc/host/owl-mmc.c                         |   1 -
- drivers/mmc/host/renesas_sdhi.h                    |   2 +
- drivers/mmc/host/renesas_sdhi_core.c               |  38 ++-
- drivers/mmc/host/renesas_sdhi_internal_dmac.c      |   4 +-
- drivers/mmc/host/renesas_sdhi_sys_dmac.c           |   8 +-
- drivers/mmc/host/sdhci-acpi.c                      |   2 +
- drivers/mmc/host/sdhci-brcmstb.c                   |   1 -
- drivers/mmc/host/sdhci-esdhc-imx.c                 |  26 +-
- drivers/mmc/host/sdhci-esdhc-mcf.c                 |   8 +-
- drivers/mmc/host/sdhci-msm.c                       |   8 +-
- drivers/mmc/host/sdhci-of-aspeed.c                 |   2 +-
- drivers/mmc/host/sdhci-of-dwcmshc.c                | 313 +++++++++++++++++++--
- drivers/mmc/host/sdhci-of-esdhc.c                  |   2 +-
- drivers/mmc/host/sdhci-pci-core.c                  |  31 +-
- drivers/mmc/host/sdhci-pci-gli.c                   |  46 ++-
- drivers/mmc/host/sdhci-pci-o2micro.c               |   8 +
- drivers/mmc/host/sdhci-pci.h                       |   2 +
- drivers/mmc/host/sdhci-s3c.c                       |  22 +-
- drivers/mmc/host/sdhci-st.c                        |  23 +-
- drivers/mmc/host/sdhci-tegra.c                     |  66 +++--
- drivers/mmc/host/sdhci.c                           | 113 ++++----
- drivers/mmc/host/sdhci_am654.c                     |   2 +-
- drivers/mmc/host/tmio_mmc.h                        |   3 +-
- drivers/mmc/host/tmio_mmc_core.c                   |  61 ++--
- drivers/mmc/host/uniphier-sd.c                     |   5 +-
- drivers/mmc/host/via-sdmmc.c                       |   3 +-
- include/linux/mmc/host.h                           |   7 +-
- include/linux/mmc/sdio.h                           |   2 +-
- include/linux/spi/mmc_spi.h                        |   9 -
- 59 files changed, 1010 insertions(+), 642 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
- delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdhci-iproc.txt
- delete mode 100644 Documentation/devicetree/bindings/mmc/sdhci-of-dwcmshc.txt
- create mode 100644 Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
