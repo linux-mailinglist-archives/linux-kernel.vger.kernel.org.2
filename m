@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299B036DF48
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 20:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C5B36DF55
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 21:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243561AbhD1S75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 14:59:57 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:30633 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhD1S74 (ORCPT
+        id S243771AbhD1TEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 15:04:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30348 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230323AbhD1TER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 14:59:56 -0400
-X-Originating-IP: 78.45.89.65
-Received: from [192.168.1.23] (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
-        (Authenticated sender: i.maximets@ovn.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C656C240003;
-        Wed, 28 Apr 2021 18:59:07 +0000 (UTC)
-To:     jean.tourrilhes@hpe.com, Ilya Maximets <i.maximets@ovn.org>
-Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andy Zhou <azhou@ovn.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ovs dev <dev@openvswitch.org>, William Tu <u9012063@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Davide Caratti <dcaratti@redhat.com>
-References: <20210421135747.312095-1-i.maximets@ovn.org>
- <CAMDZJNVQ64NEhdfu3Z_EtnVkA2D1DshPzfur2541wA+jZgX+9Q@mail.gmail.com>
- <20210428064553.GA19023@labs.hpe.com>
- <04bd0073-6eb7-6747-a0b1-3c25cca7873a@ovn.org>
- <20210428163124.GA28950@labs.hpe.com>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Subject: Re: [PATCH net] openvswitch: meter: remove rate from the bucket size
- calculation
-Message-ID: <22e48984-e0f3-b7d7-9f65-68e93c846c73@ovn.org>
-Date:   Wed, 28 Apr 2021 20:59:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 28 Apr 2021 15:04:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619636611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MLrGc/XGIkKevghVxu7iMDBjiIgG5ql+h/MHMCYHiOM=;
+        b=dzIH/BRl/EUR2citQ4FHxERWN/YIpYwZwcLuZICd1C2bjACdjpF27mLwL+mpcC0L1rCx/+
+        FtnEDBFPWOr/xoA30Oxs8XohcRlMv7nhLQGag37pcNFygY7Cvys0XjgpdtWaV7R5nKuSqi
+        DJ6B9Gjzi3+PSuxAmhwLK7b9WAKbhy8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-rjo6gzNJMYSjlXBdKxL2Rg-1; Wed, 28 Apr 2021 15:03:29 -0400
+X-MC-Unique: rjo6gzNJMYSjlXBdKxL2Rg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 924BD106BB3B;
+        Wed, 28 Apr 2021 19:03:28 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-128.rdu2.redhat.com [10.10.116.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DCEC10027A5;
+        Wed, 28 Apr 2021 19:03:24 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 2A155220BCF; Wed, 28 Apr 2021 15:03:24 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, virtio-fs@redhat.com,
+        dan.j.williams@intel.com
+Cc:     vgoyal@redhat.com, willy@infradead.org, jack@suse.cz,
+        groug@kaod.org
+Subject: [PATCH v6 0/3] dax: Fix missed wakeup in put_unlocked_entry()
+Date:   Wed, 28 Apr 2021 15:03:11 -0400
+Message-Id: <20210428190314.1865312-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210428163124.GA28950@labs.hpe.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/28/21 6:31 PM, Jean Tourrilhes wrote:
-> On Wed, Apr 28, 2021 at 01:22:12PM +0200, Ilya Maximets wrote:
->>
->> I didn't test it, but I looked at the implementation in
->> net/sched/act_police.c and net/sched/sch_tbf.c, and they should work
->> in a same way as this patch, i.e. it's a classic token bucket where
->> burst is a burst and nothing else.
-> 
-> 	Actually, act_police.c and sch_tbf.c will behave completely
-> differently, even if they are both based on the token bucket
-> algorithm.
-> 	The reason is that sch_tbf.c is applied to a queue, and the
-> queue will smooth out traffic and avoid drops. The token bucket is
-> used to dequeue the queue, this is sometime called leaky bucket. I've
-> personally used sch_tbf.c with burst size barely bigger than the MTU,
-> and it works fine.
+Hi,
 
-Makes sense.  Thanks for the clarification!
+This is V6. Only change since V5 is that I changed order of WAKE_NEXT
+and WAKE_ALL in comments too.
 
-> 	This is why I was suggesting to compare to act_police.c, which
-> does not have a queue to smooth out traffic and can only drop
-> packets.
+Vivek
 
-I see.  Unfortunately, due to the fact that act_police.c uses time
-instead of bytes as a measure for tokens, we will still see a difference
-in behavior.  Probably, not so big, but it will be there and it will
-depend on a line rate.
+Vivek Goyal (3):
+  dax: Add an enum for specifying dax wakup mode
+  dax: Add a wakeup mode parameter to put_unlocked_entry()
+  dax: Wake up all waiters after invalidating dax entry
 
-> 	I believe OVS meters are similar to policers, so that's why
-> they are suprising for people used to queues such as TBF and HTB.
-> 
-> 	Regards,
-> 
-> 	Jean
-> 
+ fs/dax.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
+
+-- 
+2.25.4
+
