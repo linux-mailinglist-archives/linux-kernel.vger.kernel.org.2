@@ -2,248 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6648E36D260
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D27E36D273
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 08:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbhD1GpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 02:45:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
+        id S236275AbhD1Gwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 02:52:30 -0400
+Received: from relay.sw.ru ([185.231.240.75]:47978 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236145AbhD1GpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 02:45:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF33661422;
-        Wed, 28 Apr 2021 06:44:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619592277;
-        bh=S5Mcku9BqGbqEVzg3DUAzz6HUqoWQEP/3bQrKYHAHMc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r9ycOZc92ZLGH/GJuCv8MF7WWLmvTEaREagiqxoz+xK7lS7SbaUOHTzN1PMuj8UjJ
-         QWyI3+JkOZA8z6EGW4Xme+vGCTDqcmo8OO3306UV3aURYRQfW8z9n1Tzk2keHc64cr
-         IW0HJL4lG2zKVRksW0AYgU+vUWvmgLgnqR1U34mPnXxf5bZOWnbqKvibhO4rFeW37+
-         i7RHXl9HsZxwdH3hCS2lrTprfoZ5B2YkeM3E/1oDy+JQsJ7ahj5CXImovf4/Ev87eF
-         5dZUBedqinMq/KJ+5wDpfTmXenF6H8psD75QQq4WY4FpCXiL11BTb+jkI422CRl7hh
-         HUMdUbdPFl1wg==
-Date:   Wed, 28 Apr 2021 08:44:31 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
+        id S235862AbhD1Gw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 02:52:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=KTD35s/nHfCSk6/PgPqfKYIfKq0x8DQzazWEXJN1KRo=; b=rXUBgfHT8MgnGqt3WCc
+        Kqvw4geSxc9qALHae2pUgRznRB3nXe7wQqNaZwYpMsKAseG55UbmdbSFV66vQDQB0Rd1b5PQceQJJ
+        PNMHoQwWgB+Ao5ap32YKhH9RF+TR8iNDCK5dYTisrqfd8FWu1ohhen2OA9vd+k7yl46yt9XbqCU=
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1lbe2l-001Vi5-VS; Wed, 28 Apr 2021 09:51:31 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH v4 00/16] memcg accounting from OpenVZ
+To:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v3 79/79] media: hantro: document the usage of
- pm_runtime_get_sync()
-Message-ID: <20210428084431.0c2d505b@coco.lan>
-In-Reply-To: <20210428082742.20d54db1@coco.lan>
-References: <cover.1619519080.git.mchehab+huawei@kernel.org>
-        <230f22170db7fa57b49cff4570cef15bf11b2ad5.1619519080.git.mchehab+huawei@kernel.org>
-        <02948673-9572-a570-d28e-03a7208f39e1@arm.com>
-        <95ea572e201545b27ff9f48313f7aaea157d4764.camel@collabora.com>
-        <20210428082742.20d54db1@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zefan Li <lizefan.x@bytedance.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
+Message-ID: <919bd022-075e-98a7-cefb-89b5dee80ae8@virtuozzo.com>
+Date:   Wed, 28 Apr 2021 09:51:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 28 Apr 2021 08:27:42 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+OpenVZ uses memory accounting 20+ years since v2.2.x linux kernels. 
+Initially we used our own accounting subsystem, then partially committed
+it to upstream, and a few years ago switched to cgroups v1.
+Now we're rebasing again, revising our old patches and trying to push
+them upstream.
 
-> Em Tue, 27 Apr 2021 12:18:32 -0300
-> Ezequiel Garcia <ezequiel@collabora.com> escreveu:
->=20
-> > On Tue, 2021-04-27 at 16:08 +0100, Robin Murphy wrote: =20
-> > > On 2021-04-27 11:27, Mauro Carvalho Chehab wrote:   =20
-> > > > Despite other *_get()/*_put() functions, where usage count is
-> > > > incremented only if not errors, the pm_runtime_get_sync() has
-> > > > a different behavior, incrementing the counter *even* on
-> > > > errors.
-> > > >=20
-> > > > That's an error prone behavior, as people often forget to
-> > > > decrement the usage counter.
-> > > >=20
-> > > > However, the hantro driver depends on this behavior, as it
-> > > > will decrement the usage_count unconditionally at the m2m
-> > > > job finish time, which makes sense.
-> > > >=20
-> > > > So, intead of using the pm_runtime_resume_and_get() that
-> > > > would decrement the counter on error, keep the current
-> > > > API, but add a documentation explaining the rationale for
-> > > > keep using pm_runtime_get_sync().
-> > > >=20
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > > ---
-> > > > =C2=A0 drivers/staging/media/hantro/hantro_drv.c | 7 +++++++
-> > > > =C2=A0 1 file changed, 7 insertions(+)
-> > > >=20
-> > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/st=
-aging/media/hantro/hantro_drv.c
-> > > > index 595e82a82728..96f940c1c85c 100644
-> > > > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > > > @@ -155,6 +155,13 @@ static void device_run(void *priv)
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D clk_bulk_en=
-able(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret)
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_cancel_job;   =20
-> > >=20
-> > > ..except this can also cause the same pm_runtime_put_autosuspend() ca=
-ll=20
-> > > without even reaching the "matching" get below, so rather than some k=
-ind=20
-> > > of cleverness it seems more like it's just broken :/
-> > >    =20
-> >=20
-> > Indeed, I was trying to find time to cook a quick patch, but kept
-> > getting preempted.
-> >=20
-> > Feel free to submit a fix for this, otherwise, I'll try to find
-> > time later this week. =20
->=20
-> What about doing this instead:
->=20
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/=
-media/hantro/hantro_drv.c
-> index 595e82a82728..67de6b15236d 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -56,14 +56,12 @@ dma_addr_t hantro_get_ref(struct hantro_ctx *ctx, u64=
- ts)
->  	return hantro_get_dec_buf_addr(ctx, buf);
->  }
-> =20
-> -static void hantro_job_finish(struct hantro_dev *vpu,
-> -			      struct hantro_ctx *ctx,
-> -			      enum vb2_buffer_state result)
-> +static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
-> +				    struct hantro_ctx *ctx,
-> +				    enum vb2_buffer_state result)
->  {
->  	struct vb2_v4l2_buffer *src, *dst;
-> =20
-> -	pm_runtime_mark_last_busy(vpu->dev);
-> -	pm_runtime_put_autosuspend(vpu->dev);
->  	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
-> =20
->  	src =3D v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-> @@ -81,6 +79,16 @@ static void hantro_job_finish(struct hantro_dev *vpu,
->  					 result);
->  }
-> =20
-> +static void hantro_job_finish(struct hantro_dev *vpu,
-> +			      struct hantro_ctx *ctx,
-> +			      enum vb2_buffer_state result)
-> +{
-> +	pm_runtime_mark_last_busy(vpu->dev);
-> +	pm_runtime_put_autosuspend(vpu->dev);
-> +
-> +	hantro_job_finish_no_pm(vpu, ctx, result);
-> +}
-> +
->  void hantro_irq_done(struct hantro_dev *vpu,
->  		     enum vb2_buffer_state result)
->  {
-> @@ -152,12 +160,13 @@ static void device_run(void *priv)
->  	src =3D hantro_get_src_buf(ctx);
->  	dst =3D hantro_get_dst_buf(ctx);
-> =20
-> +	ret =3D pm_runtime_resume_and_get(ctx->dev->dev);
-> +	if (ret < 0)
-> +		goto err_cancel_job;
-> +
->  	ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks=
-);
->  	if (ret)
->  		goto err_cancel_job;
-> -	ret =3D pm_runtime_get_sync(ctx->dev->dev);
-> -	if (ret < 0)
-> -		goto err_cancel_job;
-> =20
->  	v4l2_m2m_buf_copy_metadata(src, dst, true);
-> =20
-> @@ -165,7 +174,7 @@ static void device_run(void *priv)
->  	return;
-> =20
->  err_cancel_job:
-> -	hantro_job_finish(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-> +	hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
->  }
-> =20
->  static struct v4l2_m2m_ops vpu_m2m_ops =3D {
->=20
-> Thanks,
-> Mauro
+We try to protect the host system from any misuse of kernel memory 
+allocation triggered by untrusted users inside the containers.
 
-Actually, the order at the finish logic should change as well.
-Maybe like this:
+Patch-set is addressed mostly to cgroups maintainers and cgroups@ mailing
+list, though I would be very grateful for any comments from maintainersi
+of affected subsystems or other people added in cc:
 
-<snip>
-static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
-				    struct hantro_ctx *ctx,
-				    enum vb2_buffer_state result)
-{
-	struct vb2_v4l2_buffer *src, *dst;
+Compared to the upstream, we additionally account the following kernel objects:
+- network devices and its Tx/Rx queues
+- ipv4/v6 addresses and routing-related objects
+- inet_bind_bucket cache objects
+- VLAN group arrays
+- ipv6/sit: ip_tunnel_prl
+- scm_fp_list objects used by SCM_RIGHTS messages of Unix sockets 
+- nsproxy and namespace objects itself
+- IPC objects: semaphores, message queues and share memory segments
+- mounts
+- pollfd and select bits arrays
+- signals and posix timers
+- file lock
+- fasync_struct used by the file lease code and driver's fasync queues 
+- tty objects
+- per-mm LDT
 
-	src =3D v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-	dst =3D v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+We have an incorrect/incomplete/obsoleted accounting for few other kernel
+objects: sk_filter, af_packets, netlink and xt_counters for iptables.
+They require rework and probably will be dropped at all.
 
-	if (WARN_ON(!src))
-		return;
-	if (WARN_ON(!dst))
-		return;
+Also we're going to add an accounting for nft, however it is not ready yet.
 
-	src->sequence =3D ctx->sequence_out++;
-	dst->sequence =3D ctx->sequence_cap++;
+We have not tested performance on upstream, however, our performance team
+compares our current RHEL7-based production kernel and reports that
+they are at least not worse as the according original RHEL7 kernel.
 
-	v4l2_m2m_buf_done_and_job_finish(ctx->dev->m2m_dev, ctx->fh.m2m_ctx,
-					 result);
-}
+v4:
+- improved description for tty patch
+- minor cleanup in LDT patch
+- rebased to v5.12
+- resent to lkml@
 
-static void hantro_job_finish(struct hantro_dev *vpu,
-			      struct hantro_ctx *ctx,
-			      enum vb2_buffer_state result)
-{
+v3:
+- added new patches for other kind of accounted objects
+- combined patches for ip address/routing-related objects
+- improved description
+- re-ordered and rebased for linux 5.12-rc8
 
-	hantro_job_finish_no_pm(vpu, ctx, result);
+v2:
+- squashed old patch 1 "accounting for allocations called with disabled BH"
+   with old patch 2 "accounting for fib6_nodes cache" used such kind of memory allocation 
+- improved patch description
+- subsystem maintainers added to cc:
 
-	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
+Vasily Averin (16):
+  memcg: enable accounting for net_device and Tx/Rx queues
+  memcg: enable accounting for IP address and routing-related objects
+  memcg: enable accounting for inet_bin_bucket cache
+  memcg: enable accounting for VLAN group array
+  memcg: ipv6/sit: account and don't WARN on ip_tunnel_prl structs
+    allocation
+  memcg: enable accounting for scm_fp_list objects
+  memcg: enable accounting for new namesapces and struct nsproxy
+  memcg: enable accounting of ipc resources
+  memcg: enable accounting for mnt_cache entries
+  memcg: enable accounting for pollfd and select bits arrays
+  memcg: enable accounting for signals
+  memcg: enable accounting for posix_timers_cache slab
+  memcg: enable accounting for file lock caches
+  memcg: enable accounting for fasync_cache
+  memcg: enable accounting for tty-related objects
+  memcg: enable accounting for ldt_struct objects
 
-	pm_runtime_mark_last_busy(vpu->dev);
-	pm_runtime_put_autosuspend(vpu->dev);
-}
+ arch/x86/kernel/ldt.c      |  6 +++---
+ drivers/tty/tty_io.c       |  4 ++--
+ fs/fcntl.c                 |  3 ++-
+ fs/locks.c                 |  6 ++++--
+ fs/namespace.c             |  7 ++++---
+ fs/select.c                |  4 ++--
+ ipc/msg.c                  |  2 +-
+ ipc/namespace.c            |  2 +-
+ ipc/sem.c                  | 10 ++++++----
+ ipc/shm.c                  |  2 +-
+ kernel/cgroup/namespace.c  |  2 +-
+ kernel/nsproxy.c           |  2 +-
+ kernel/pid_namespace.c     |  2 +-
+ kernel/signal.c            |  2 +-
+ kernel/time/namespace.c    |  4 ++--
+ kernel/time/posix-timers.c |  4 ++--
+ kernel/user_namespace.c    |  2 +-
+ mm/memcontrol.c            |  2 +-
+ net/8021q/vlan.c           |  2 +-
+ net/core/dev.c             |  6 +++---
+ net/core/fib_rules.c       |  4 ++--
+ net/core/scm.c             |  4 ++--
+ net/dccp/proto.c           |  2 +-
+ net/ipv4/devinet.c         |  2 +-
+ net/ipv4/fib_trie.c        |  4 ++--
+ net/ipv4/tcp.c             |  4 +++-
+ net/ipv6/addrconf.c        |  2 +-
+ net/ipv6/ip6_fib.c         |  4 ++--
+ net/ipv6/route.c           |  2 +-
+ net/ipv6/sit.c             |  5 +++--
+ 30 files changed, 58 insertions(+), 49 deletions(-)
 
-static void device_run(void *priv)
-{
-	struct hantro_ctx *ctx =3D priv;
-	struct vb2_v4l2_buffer *src, *dst;
-	int ret;
+-- 
+1.8.3.1
 
-	src =3D hantro_get_src_buf(ctx);
-	dst =3D hantro_get_dst_buf(ctx);
-
-	ret =3D pm_runtime_resume_and_get(ctx->dev->dev);
-	if (ret < 0)
-		goto err_cancel_job;
-
-	ret =3D clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-	if (ret)
-		goto err_cancel_job;
-
-	v4l2_m2m_buf_copy_metadata(src, dst, true);
-
-	ctx->codec_ops->run(ctx);
-	return;
-
-err_cancel_job:
-	hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-}
-</snip>
-
-
-Thanks,
-Mauro
