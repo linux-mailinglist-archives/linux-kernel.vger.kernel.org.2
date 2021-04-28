@@ -2,489 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380EF36D77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D538836D773
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239098AbhD1Mhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:37:33 -0400
-Received: from mx0.infotecs.ru ([91.244.183.115]:34866 "EHLO mx0.infotecs.ru"
+        id S237699AbhD1MgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:36:23 -0400
+Received: from ni.piap.pl ([195.187.100.5]:48998 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237785AbhD1Mhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:37:32 -0400
-Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-        by mx0.infotecs.ru (Postfix) with ESMTP id D87F0138252B;
-        Wed, 28 Apr 2021 15:36:44 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru D87F0138252B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-        t=1619613405; bh=Kq9Krt5H+chEYjHPPBBWDeh4kni4tXTY3A+q7mTaPfs=;
-        h=Date:From:To:CC:Subject:From;
-        b=Ktas5b6rYUg9ZOWuPk8dMCyhKXxBtb32TwiNSbG+ck9SrnA7tQ1coSgl0j48P6kj5
-         rVjXn+yjsmG10ADN6YoXEOXOYtvCGHD299/tyBA0vaAGmr59zoJ2BAHEonuk5D7vWD
-         Z4jO6tBfzdRqfe0+C1XoG4ipDyhvoS/qeQ43ILuw=
-Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
-        by mx0.infotecs-nt (Postfix) with ESMTP id D6A143170B5F;
-        Wed, 28 Apr 2021 15:36:44 +0300 (MSK)
-Date:   Wed, 28 Apr 2021 15:34:55 +0300
-From:   Pavel Balaev <balaevpa@infotecs.ru>
-To:     <netdev@vger.kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>
-Subject: [PATCH v6 net-next 3/3] selftests/net/forwarding: configurable seed
- tests
-Message-ID: <YIlWbxO+AFZAFww7@rnd>
+        id S234439AbhD1MgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:36:21 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 9E831444032;
+        Wed, 28 Apr 2021 14:35:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 9E831444032
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1619613332; bh=QG+dsPO25iZIXCJg6jPdT+oPy9Rb1+B7Kg31/40cdVM=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=BzBX6c2UJyS4SVAp2e8hVYI0I8O3B+bIcpTKZg6z1etSX4U41uetBv210EYWv5pgj
+         6J3M21+t5QWuaC6aaFxNbCE7GN9i3JUFbbPc+aXxUAfb61pQcZANyZmFM9+S4a7XOg
+         Xu0Krjr8zl5d/0s8HPXqhmDLsZjojwbcP5TkzJFs=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: RFC: MEDIA: Driver for ON Semi AR0521 camera sensor
+References: <m3mtv3s01z.fsf@t19.piap.pl>
+        <YFEE3WYdECCQRYxl@pendragon.ideasonboard.com>
+Sender: khalasa@piap.pl
+Date:   Wed, 28 Apr 2021 14:35:32 +0200
+In-Reply-To: <YFEE3WYdECCQRYxl@pendragon.ideasonboard.com> (Laurent Pinchart's
+        message of "Tue, 16 Mar 2021 21:19:57 +0200")
+Message-ID: <m3k0om8u3v.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-X-Originating-IP: [11.0.8.107]
-X-EXCLAIMER-MD-CONFIG: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 163368 [Apr 28 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: BalaevPA@infotecs.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 444 444 810d227eb39db4b6b1b4a1d2ddb57b8d8d084f93, {Tracking_from_domain_doesnt_match_to}
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/04/28 11:08:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/28 07:03:00 #16582427
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test equal and different seed values for IPv4/IPv6
-multipath routing.
+Hi,
 
-Signed-off-by: Pavel Balaev <balaevpa@infotecs.ru>
----
- .../testing/selftests/net/forwarding/Makefile |   1 +
- tools/testing/selftests/net/forwarding/lib.sh |  28 ++
- .../net/forwarding/router_mpath_seed.sh       | 347 ++++++++++++++++++
- 3 files changed, 376 insertions(+)
- create mode 100755 tools/testing/selftests/net/forwarding/router_mpath_seed.sh
+I'm working on AR0521 MIPI camera sensor driver update and I'm still not
+sure how the timings should be programmed. V4L2 has:
 
-diff --git a/tools/testing/selftests/net/forwarding/Makefile b/tools/testing/selftests/net/forwarding/Makefile
-index d97bd6889..080af970c 100644
---- a/tools/testing/selftests/net/forwarding/Makefile
-+++ b/tools/testing/selftests/net/forwarding/Makefile
-@@ -38,6 +38,7 @@ TEST_PROGS = bridge_igmp.sh \
- 	router_mpath_nh.sh \
- 	router_multicast.sh \
- 	router_multipath.sh \
-+	router_mpath_seed.sh \
- 	router.sh \
- 	router_vid_1.sh \
- 	sch_ets.sh \
-diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-index 42e28c983..b7445b1c5 100644
---- a/tools/testing/selftests/net/forwarding/lib.sh
-+++ b/tools/testing/selftests/net/forwarding/lib.sh
-@@ -10,6 +10,7 @@ PING6=${PING6:=ping6}
- MZ=${MZ:=mausezahn}
- ARPING=${ARPING:=arping}
- TEAMD=${TEAMD:=teamd}
-+OPENSSL=${OPENSSL:=openssl}
- WAIT_TIME=${WAIT_TIME:=5}
- PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
- PAUSE_ON_CLEANUP=${PAUSE_ON_CLEANUP:=no}
-@@ -698,6 +699,33 @@ link_stats_rx_errors_get()
- 	link_stats_get $1 rx errors
- }
- 
-+ns_link_stats_get()
-+{
-+	local netns=$1; shift
-+	local if_name=$1; shift
-+	local dir=$1; shift
-+	local stat=$1; shift
-+
-+	ip netns exec $netns ip -j -s link show dev $if_name \
-+		| jq '.[]["stats64"]["'$dir'"]["'$stat'"]'
-+}
-+
-+ns_link_stats_tx_packets_get()
-+{
-+	local netns=$1; shift
-+	local if_name=$1; shift
-+
-+	ns_link_stats_get $netns $if_name tx packets
-+}
-+
-+ns_link_stats_rx_errors_get()
-+{
-+	local netns=$1; shift
-+	local if_name=$1; shift
-+
-+	ns_link_stats_get $netns $if_name rx errors
-+}
-+
- tc_rule_stats_get()
- {
- 	local dev=$1; shift
-diff --git a/tools/testing/selftests/net/forwarding/router_mpath_seed.sh b/tools/testing/selftests/net/forwarding/router_mpath_seed.sh
-new file mode 100755
-index 000000000..b2f99f428
---- /dev/null
-+++ b/tools/testing/selftests/net/forwarding/router_mpath_seed.sh
-@@ -0,0 +1,347 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+ALL_TESTS="multipath_seed_test"
-+NUM_NETIFS=8
-+source lib.sh
-+
-+veth_prepare()
-+{
-+	ip link add ecmp1l type veth peer name ecmp1r
-+	ip link add ecmp2l type veth peer name ecmp2r
-+	ip link add ecmphost1l type veth peer name ecmphost1r
-+	ip link add ecmphost2l type veth peer name ecmphost2r
-+}
-+
-+cl1_create()
-+{
-+	local ns_exec="ip netns exec ecmp_cl1"
-+
-+	ip netns add ecmp_cl1
-+	ip l set dev ecmphost1l netns ecmp_cl1
-+	$ns_exec ip l set dev ecmphost1l up
-+	$ns_exec ip a a 10.100.0.2/30 dev ecmphost1l
-+	$ns_exec ip a a 2001:db8:3::2/64 dev ecmphost1l
-+	$ns_exec ip r add default via 10.100.0.1
-+	$ns_exec ip r add default via 2001:db8:3::1
-+}
-+
-+cl2_create()
-+{
-+	local ns_exec="ip netns exec ecmp_cl2"
-+
-+	ip netns add ecmp_cl2
-+	ip l set dev ecmphost2l netns ecmp_cl2
-+	$ns_exec ip l set dev ecmphost2l up
-+	$ns_exec ip a a 10.200.0.2/30 dev ecmphost2l
-+	$ns_exec ip a a 2001:db8:4::2/64 dev ecmphost2l
-+	$ns_exec ip r add default via 10.200.0.1
-+	$ns_exec ip r add default via 2001:db8:4::1
-+}
-+
-+r1_create()
-+{
-+	local ns_exec="ip netns exec ecmp1"
-+
-+	ip netns add ecmp1
-+	ip l set dev ecmp1l netns ecmp1
-+	ip l set dev ecmp2l netns ecmp1
-+	ip l set dev ecmphost1r netns ecmp1
-+	$ns_exec ip l set dev ecmphost1r up
-+	$ns_exec ip l set dev ecmp1l up
-+	$ns_exec ip l set dev ecmp2l up
-+	$ns_exec ip a a 10.100.0.1/30 dev ecmphost1r
-+	$ns_exec ip a a 10.10.0.1/30 dev ecmp1l
-+	$ns_exec ip a a 10.20.0.1/30 dev ecmp2l
-+	$ns_exec ip a a 2001:db8:3::1/64 dev ecmphost1r
-+	$ns_exec ip a a 2001:db8:1::1/64 dev ecmp1l
-+	$ns_exec ip a a 2001:db8:2::1/64 dev ecmp2l
-+	$ns_exec sysctl -q net.ipv4.ip_forward=1
-+	$ns_exec sysctl -q net.ipv6.conf.all.forwarding=1
-+	$ns_exec sysctl -q net.ipv4.fib_multipath_hash_policy=1
-+	$ns_exec sysctl -q net.ipv6.fib_multipath_hash_policy=1
-+	$ns_exec ip route add 10.200.0.0/30 nexthop via 10.10.0.2 \
-+		  weight 1 nexthop via 10.20.0.2 weight 1
-+	$ns_exec ip route add 2001:db8:4::/64 nexthop via 2001:db8:1::2 \
-+		  weight 1 nexthop via 2001:db8:2::2 weight 1
-+}
-+
-+r2_create()
-+{
-+	local ns_exec="ip netns exec ecmp2"
-+
-+	ip netns add ecmp2
-+	ip l set dev ecmp1r netns ecmp2
-+	ip l set dev ecmp2r netns ecmp2
-+	ip l set dev ecmphost2r netns ecmp2
-+	$ns_exec ip l set dev ecmphost2r up
-+	$ns_exec ip l set dev ecmp1r up
-+	$ns_exec ip l set dev ecmp2r up
-+	$ns_exec ip a a 10.200.0.1/30 dev ecmphost2r
-+	$ns_exec ip a a 10.10.0.2/30 dev ecmp1r
-+	$ns_exec ip a a 10.20.0.2/30 dev ecmp2r
-+	$ns_exec ip a a 2001:db8:4::1/64 dev ecmphost2r
-+	$ns_exec ip a a 2001:db8:1::2/64 dev ecmp1r
-+	$ns_exec ip a a 2001:db8:2::2/64 dev ecmp2r
-+	$ns_exec sysctl -q net.ipv4.ip_forward=1
-+	$ns_exec sysctl -q net.ipv6.conf.all.forwarding=1
-+	$ns_exec sysctl -q net.ipv4.fib_multipath_hash_policy=1
-+	$ns_exec sysctl -q net.ipv6.fib_multipath_hash_policy=1
-+	$ns_exec ip route add 10.100.0.0/30 nexthop via 10.10.0.1 \
-+		  weight 1 nexthop via 10.20.0.1 weight 1
-+	$ns_exec ip route add 2001:db8:3::/64 nexthop via 2001:db8:1::1 \
-+		  weight 1 nexthop via 2001:db8:2::1 weight 1
-+}
-+
-+cl1_destroy()
-+{
-+	ip netns del ecmp_cl1
-+}
-+
-+cl2_destroy()
-+{
-+	ip netns del ecmp_cl2
-+}
-+
-+r1_destroy()
-+{
-+	ip netns del ecmp1
-+}
-+
-+r2_destroy()
-+{
-+	ip netns del ecmp2
-+}
-+
-+gen_udp4()
-+{
-+	local sp=$1; shift
-+	local dp=$1; shift
-+	local tx1_1_start tx1_2_start tx2_1_start tx2_2_start
-+	local tx1_1_end tx1_2_end tx2_1_end tx2_2_end
-+	local tx1_1 tx1_2 tx2_1 tx2_2
-+	local tx1_1_res tx1_2_res tx2_1_res tx2_2_res
-+	local chan1 chan2
-+	local cl1_exec="ip netns exec ecmp_cl1"
-+	local cl2_exec="ip netns exec ecmp_cl2"
-+
-+	tx1_1_start=$(ns_link_stats_tx_packets_get ecmp1 ecmp1l)
-+	tx1_2_start=$(ns_link_stats_tx_packets_get ecmp1 ecmp2l)
-+	tx2_1_start=$(ns_link_stats_tx_packets_get ecmp2 ecmp1r)
-+	tx2_2_start=$(ns_link_stats_tx_packets_get ecmp2 ecmp2r)
-+
-+	$cl1_exec $MZ ecmphost1l -q -c 20 -p 64 -A 10.100.0.2 -B 10.200.0.2 \
-+		-t udp "sp=${sp},dp=${dp}"
-+
-+	$cl2_exec $MZ ecmphost2l -q -c 20 -p 64 -A 10.200.0.2 -B 10.100.0.2 \
-+		-t udp "sp=${dp},dp=${sp}"
-+
-+	tx1_1_end=$(ns_link_stats_tx_packets_get ecmp1 ecmp1l)
-+	tx1_2_end=$(ns_link_stats_tx_packets_get ecmp1 ecmp2l)
-+	tx2_1_end=$(ns_link_stats_tx_packets_get ecmp2 ecmp1r)
-+	tx2_2_end=$(ns_link_stats_tx_packets_get ecmp2 ecmp2r)
-+
-+	let "tx1_1 = $tx1_1_end - $tx1_1_start"
-+	let "tx1_2 = $tx1_2_end - $tx1_2_start"
-+	let "tx2_1 = $tx2_1_end - $tx2_1_start"
-+	let "tx2_2 = $tx2_2_end - $tx2_2_start"
-+
-+	[ "$tx1_1" -ge 20 ] && tx1_1_res=1 || tx1_1_res=0
-+	[ "$tx1_2" -ge 20 ] && tx1_2_res=1 || tx1_2_res=0
-+	[ "$tx2_1" -ge 20 ] && tx2_1_res=1 || tx2_1_res=0
-+	[ "$tx2_2" -ge 20 ] && tx2_2_res=1 || tx2_2_res=0
-+
-+	let "chan1 = $tx1_1_res + $tx2_1_res"
-+	let "chan2 = $tx1_2_res + $tx2_2_res"
-+
-+	if [ $chan1 -eq 2 ] || [ $chan2 -eq 2 ]; then
-+		return 0
-+	fi
-+
-+	return 1;
-+}
-+
-+gen_udp6()
-+{
-+	local sp=$1; shift
-+	local dp=$1; shift
-+	local tx1_1_start tx1_2_start tx2_1_start tx2_2_start
-+	local tx1_1_end tx1_2_end tx2_1_end tx2_2_end
-+	local tx1_1 tx1_2 tx2_1 tx2_2
-+	local tx1_1_res tx1_2_res tx2_1_res tx2_2_res
-+	local chan1 chan2
-+	local cl1_exec="ip netns exec ecmp_cl1"
-+	local cl2_exec="ip netns exec ecmp_cl2"
-+
-+	tx1_1_start=$(ns_link_stats_tx_packets_get ecmp1 ecmp1l)
-+	tx1_2_start=$(ns_link_stats_tx_packets_get ecmp1 ecmp2l)
-+	tx2_1_start=$(ns_link_stats_tx_packets_get ecmp2 ecmp1r)
-+	tx2_2_start=$(ns_link_stats_tx_packets_get ecmp2 ecmp2r)
-+
-+	$cl1_exec $MZ ecmphost1l -6 -q -c 20 -p 64 -A 2001:db8:3::2 -B 2001:db8:4::2 \
-+		-t udp "sp=${sp},dp=${dp}"
-+
-+	$cl2_exec $MZ ecmphost2l -6 -q -c 20 -p 64 -A 2001:db8:4::2 -B 2001:db8:3::2 \
-+		-t udp "sp=${dp},dp=${sp}"
-+
-+	tx1_1_end=$(ns_link_stats_tx_packets_get ecmp1 ecmp1l)
-+	tx1_2_end=$(ns_link_stats_tx_packets_get ecmp1 ecmp2l)
-+	tx2_1_end=$(ns_link_stats_tx_packets_get ecmp2 ecmp1r)
-+	tx2_2_end=$(ns_link_stats_tx_packets_get ecmp2 ecmp2r)
-+
-+	let "tx1_1 = $tx1_1_end - $tx1_1_start"
-+	let "tx1_2 = $tx1_2_end - $tx1_2_start"
-+	let "tx2_1 = $tx2_1_end - $tx2_1_start"
-+	let "tx2_2 = $tx2_2_end - $tx2_2_start"
-+
-+	[ "$tx1_1" -ge 20 ] && tx1_1_res=1 || tx1_1_res=0
-+	[ "$tx1_2" -ge 20 ] && tx1_2_res=1 || tx1_2_res=0
-+	[ "$tx2_1" -ge 20 ] && tx2_1_res=1 || tx2_1_res=0
-+	[ "$tx2_2" -ge 20 ] && tx2_2_res=1 || tx2_2_res=0
-+
-+	let "chan1 = $tx1_1_res + $tx2_1_res"
-+	let "chan2 = $tx1_2_res + $tx2_2_res"
-+
-+	if [ $chan1 -eq 2 ] || [ $chan2 -eq 2 ]; then
-+		return 0
-+	fi
-+
-+	return 1;
-+}
-+
-+
-+seed4_test_equal()
-+{
-+	RET=0
-+	local sp
-+	local dp
-+	local i
-+	local res=0
-+	local seed=$(${OPENSSL} rand -hex 16)
-+
-+	seed=${seed:0:16},${seed:16:16}
-+
-+	ip netns exec ecmp1 sysctl -q \
-+		net.ipv4.fib_multipath_hash_seed=${seed}
-+	ip netns exec ecmp2 sysctl -q \
-+		net.ipv4.fib_multipath_hash_seed=${seed}
-+
-+	for i in {1..30}; do
-+		sp=$(shuf -i 1024-65000 -n 1)
-+		dp=$(shuf -i 1024-65000 -n 1)
-+		gen_udp4 $sp $dp && let res++
-+	done
-+
-+	[ $res != 30 ] && RET=1
-+	log_test "IPv4 multipath seed tests [equal seed]"
-+}
-+
-+seed4_test_diff()
-+{
-+	RET=0
-+	local sp
-+	local dp
-+	local i
-+	local res=0
-+	local seed1=$(${OPENSSL} rand -hex 16)
-+	local seed2=$(${OPENSSL} rand -hex 16)
-+
-+	seed1=${seed1:0:16},${seed1:16:16}
-+	seed2=${seed2:0:16},${seed2:16:16}
-+
-+	ip netns exec ecmp1 sysctl -q \
-+		net.ipv4.fib_multipath_hash_seed=${seed1}
-+	ip netns exec ecmp2 sysctl -q \
-+		net.ipv4.fib_multipath_hash_seed=${seed2}
-+
-+	for i in {1..30}; do
-+		sp=$(shuf -i 1024-65000 -n 1)
-+		dp=$(shuf -i 1024-65000 -n 1)
-+		gen_udp4 $sp $dp && let res++
-+	done
-+
-+	[ $res -eq 30 ] && RET=1
-+	log_test "IPv4 multipath seed tests [different seed]"
-+}
-+
-+seed6_test_equal()
-+{
-+	RET=0
-+	local sp
-+	local dp
-+	local i
-+	local res=0
-+	local seed=$(${OPENSSL} rand -hex 16)
-+
-+	seed=${seed:0:16},${seed:16:16}
-+
-+	ip netns exec ecmp1 sysctl -q \
-+		net.ipv6.fib_multipath_hash_seed=${seed}
-+	ip netns exec ecmp2 sysctl -q \
-+		net.ipv6.fib_multipath_hash_seed=${seed}
-+
-+	for i in {1..30}; do
-+		sp=$(shuf -i 1024-65000 -n 1)
-+		dp=$(shuf -i 1024-65000 -n 1)
-+		gen_udp6 $sp $dp && let res++
-+	done
-+
-+	[ $res != 30 ] && RET=1
-+	log_test "IPv6 multipath seed tests [equal seed]"
-+}
-+
-+seed6_test_diff()
-+{
-+	RET=0
-+	local sp
-+	local dp
-+	local i
-+	local res=0
-+	local seed1=$(${OPENSSL} rand -hex 16)
-+	local seed2=$(${OPENSSL} rand -hex 16)
-+
-+	seed1=${seed1:0:16},${seed1:16:16}
-+	seed2=${seed2:0:16},${seed2:16:16}
-+
-+	ip netns exec ecmp1 sysctl -q \
-+		net.ipv6.fib_multipath_hash_seed=${seed1}
-+	ip netns exec ecmp2 sysctl -q \
-+		net.ipv6.fib_multipath_hash_seed=${seed2}
-+
-+	for i in {1..30}; do
-+		sp=$(shuf -i 1024-65000 -n 1)
-+		dp=$(shuf -i 1024-65000 -n 1)
-+		gen_udp4 $sp $dp && let res++
-+	done
-+
-+	[ $res -eq 30 ] && RET=1
-+	log_test "IPv6 multipath seed tests [different seed]"
-+}
-+
-+multipath_seed_test()
-+{
-+	require_command $OPENSSL
-+	veth_prepare
-+	cl1_create
-+	cl2_create
-+	r1_create
-+	r2_create
-+
-+	log_info "Running IPv4 multipath seed tests [equal seed]"
-+	seed4_test_equal
-+	log_info "Running IPv4 multipath seed tests [different seed]"
-+	seed4_test_diff
-+	log_info "Running IPv6 multipath seed tests [equal seed]"
-+	seed6_test_equal
-+	log_info "Running IPv6 multipath seed tests [different seed]"
-+	seed6_test_diff
-+
-+	cl1_destroy
-+	cl2_destroy
-+	r1_destroy
-+	r2_destroy
-+}
-+
-+tests_run
-+
-+exit $EXIT_STATUS
--- 
-2.31.1
+- V4L2_CID_LINK_FREQ
+  I understand it's a menu with fixed integers (frequencies in Hz).
+Documentation/driver-api/media/camera-sensor.rst:
+"For camera sensors that are connected to a bus where transmitter and recei=
+ver
+require common configuration set by drivers, such as CSI-2 or parallel (BT.=
+601
+or BT.656) bus, the ``V4L2_CID_LINK_FREQ`` control is mandatory on transmit=
+ter
+drivers. Receiver drivers can use the ``V4L2_CID_LINK_FREQ`` to query the
+frequency used on the bus."
 
+How (and if) do I use the above when the sensor in question uses PLLs
+and can generate arbitrary link frequencies?
+
+- V4L2_CID_VBLANK and V4L2_CID_HBLANK
+These are fine for setting the timings (and the AR0521 can use them).
+There is, however, another value needed for precise timing control, the
+so called "extra" timing (a hw register), specified in pixels.
+The calculated frame rate is thus:
+fr =3D pixel_clock / (width + hblank) * (height + vblank) + extra.
+
+How do I specify the "extra"?
+
+Currently, I'm using the [sg]_frame_interval() functions, should it stay
+this way (so there are [HV]BLANK controls AND [sg]_frame_interval() in
+parallel on the same device)?
+
+It appears the userspace should be able to set, in addition to *BLANK,
+the pixel clock. How do I do that? The V4L2_CID_PIXEL_RATE appears to be
+a good candidate, but v4l2_ctrl_fill() sets a read-only flag on it.
+
+Any ideas?
+
+At present I'm about to use two (orthogonal) interfaces (frame interval
+based and the - incomplete - [hv]blank-based) - but perhaps I'm missing
+something important?
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
