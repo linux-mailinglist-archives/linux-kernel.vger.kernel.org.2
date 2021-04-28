@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD38C36D3E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BF236D3E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 10:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237376AbhD1IYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 04:24:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231635AbhD1IYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:24:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 31E57AF9C;
-        Wed, 28 Apr 2021 08:23:53 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 10:23:49 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>
-Subject: Re: [PATCH] mm,hwpoison: fix race with compound page allocation
-Message-ID: <20210428082344.GA29213@linux>
-References: <20210423080153.GA78658@hori.linux.bs1.fc.nec.co.jp>
- <20210428074654.GA2093897@u2004>
+        id S237188AbhD1IZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 04:25:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49079 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231635AbhD1IZh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:25:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619598292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ae0nzINFLhJdV7eTcKhyVQl+oJwWog7lYQNdVgvDreg=;
+        b=HEXY437jvaBg0R7FVc62bKKV/tpbouI7Ot7y8bRRyxcM5fW3xVqyQYjahKQWnj5j8Aelk9
+        yfz1lc4XCKiVX64/UOm7Nahy+HgujwsNIRhBlMbgxBL8c0fFfPvlztgTYnBA9VY7mp6Asu
+        5KPx6eKoGBJJSXhlHM3gr1LD6F1lmi0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-xVb-s7QMNTqHbArBM3o1YQ-1; Wed, 28 Apr 2021 04:24:49 -0400
+X-MC-Unique: xVb-s7QMNTqHbArBM3o1YQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A32B1107ACE3;
+        Wed, 28 Apr 2021 08:24:47 +0000 (UTC)
+Received: from thuth.com (ovpn-112-95.ams2.redhat.com [10.36.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9ED0F772E1;
+        Wed, 28 Apr 2021 08:24:45 +0000 (UTC)
+From:   Thomas Huth <thuth@redhat.com>
+To:     linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>, cohuck@redhat.com
+Subject: [PATCH] arch/s390/configs: Change CONFIG_VIRTIO_CONSOLE to "m"
+Date:   Wed, 28 Apr 2021 10:24:42 +0200
+Message-Id: <20210428082442.321327-1-thuth@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428074654.GA2093897@u2004>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 04:46:54PM +0900, Naoya Horiguchi wrote:
-> ---
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Date: Wed, 28 Apr 2021 15:55:47 +0900
-> Subject: [PATCH] mm,hwpoison: fix race with compound page allocation
-> 
-> When hugetlb page fault (under overcommiting situation) and memory_failure()
-> race, VM_BUG_ON_PAGE() is triggered by the following race:
-> 
->     CPU0:                           CPU1:
-> 
->                                     gather_surplus_pages()
->                                       page = alloc_surplus_huge_page()
->     memory_failure_hugetlb()
->       get_hwpoison_page(page)
->         __get_hwpoison_page(page)
->           get_page_unless_zero(page)
->                                       zero = put_page_testzero(page)
->                                       VM_BUG_ON_PAGE(!zero, page)
->                                       enqueue_huge_page(h, page)
->       put_page(page)
-> 
-> __get_hwpoison_page() only checks page refcount before taking additional
-> one for memory error handling, which is wrong because there's time
-> windows where compound pages have non-zero refcount during initialization.
-> 
-> So makes __get_hwpoison_page() check more page status for a few types
-> of compound pages. PageSlab() check is added because otherwise
-> "non anonymous thp" path is wrongly chosen for slab pages.
+In former times, the virtio-console code had to be compiled into
+the kernel since the old guest virtio transport had some hard de-
+pendencies. But since the old virtio transport has been removed in
+commit 7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport"),
+we do not have this limitation anymore.
+Commit bb533ec8bacd ("s390/config: do not select VIRTIO_CONSOLE via
+Kconfig") then also lifted the hard setting in the Kconfig system, so
+we can finally switch the CONFIG_VIRTIO_CONSOLE knob to compile this
+driver as a module now, making it more flexible for the user to only
+load it if it is really required.
 
-Was it wrongly chosen even before? If so, maybe a Fix tag is warranted.
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ arch/s390/configs/debug_defconfig | 2 +-
+ arch/s390/configs/defconfig       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Reported-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/memory-failure.c | 48 +++++++++++++++++++++++++--------------------
->  1 file changed, 27 insertions(+), 21 deletions(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index a3659619d293..61988e332712 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1095,30 +1095,36 @@ static int __get_hwpoison_page(struct page *page)
-
-> +	if (PageCompound(page)) {
-> +		if (PageSlab(page)) {
-> +			return get_page_unless_zero(page);
-> +		} else if (PageHuge(head)) {
-> +			if (HPageFreed(head) || HPageMigratable(head))
-> +				return get_page_unless_zero(head);
-
-There were concerns raised wrt. memory-failure should not be fiddling with page's
-refcount without holding a hugetlb lock.
-So, if we really want to make this more stable, we might want to hold the lock
-here.
-
-The clearing and setting of HPageFreed happens under the lock, and for HPageMigratable
-that is also true for the clearing part, so I think it would be more sane to do
-this under the lock to close any possible race.
-
-Does it make sense?
-
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index dc0b69058ac4..04ce0edd0b31 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -548,7 +548,7 @@ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_MOUSE is not set
+ # CONFIG_SERIO is not set
+ CONFIG_LEGACY_PTY_COUNT=0
+-CONFIG_VIRTIO_CONSOLE=y
++CONFIG_VIRTIO_CONSOLE=m
+ CONFIG_HW_RANDOM_VIRTIO=m
+ CONFIG_RAW_DRIVER=m
+ CONFIG_HANGCHECK_TIMER=m
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index 320379da96d9..e448711eff8d 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -540,7 +540,7 @@ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_MOUSE is not set
+ # CONFIG_SERIO is not set
+ CONFIG_LEGACY_PTY_COUNT=0
+-CONFIG_VIRTIO_CONSOLE=y
++CONFIG_VIRTIO_CONSOLE=m
+ CONFIG_HW_RANDOM_VIRTIO=m
+ CONFIG_RAW_DRIVER=m
+ CONFIG_HANGCHECK_TIMER=m
 -- 
-Oscar Salvador
-SUSE L3
+2.27.0
+
