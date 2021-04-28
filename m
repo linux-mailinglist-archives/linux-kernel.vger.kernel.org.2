@@ -2,67 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171E436D7D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56A036D7D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 14:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239659AbhD1M7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 08:59:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36176 "EHLO mx2.suse.de"
+        id S239664AbhD1M7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 08:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239201AbhD1M7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:59:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6429B170;
-        Wed, 28 Apr 2021 12:58:19 +0000 (UTC)
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>
-Subject: [PATCH] arm64: dts: ls208xa: remove bus-num from dspi node
-Date:   Wed, 28 Apr 2021 14:58:07 +0200
-Message-Id: <20210428125807.29553-1-ykaukab@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S235630AbhD1M7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 08:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 178636141B;
+        Wed, 28 Apr 2021 12:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619614728;
+        bh=DI2qfz1qyfUTp90qn7RPYRF92PMfG9NKVtm2bLmBgFE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UqHQcXwvBE8u0NmQMyV3MhYzhal5tCPaOaySj0PULuuV5pO9kwTJfbXb/gAtRQb4t
+         ozXF9ld8ud/GsJWcy2d1hpvxPC6w74VlAfTW9ZEPJHHiQwxDCwjwYv5R/tdjgsqCEY
+         K91kn9MknCJ0peLqJl1o9EUR/s5v6QC1telYzfigZAiGjlsAFlVvZbVoD+23fneUoq
+         +MLI0xWANEKIV1j7y5sBaoWlgFclifz7Vh7EPhvDp17QAAh3snQgN9Ujj99DAVc465
+         yaAC6RVAVHEwdwowDuc8iGT3Qdg+6ut7UPQn4KesXfU+je6d3+Xz5/AVeT6mkaxwqT
+         xNwlc/m1vLWrA==
+Date:   Wed, 28 Apr 2021 14:58:44 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Modules updates for v5.13
+Message-ID: <YIlcBHhuR9LvKZ7q@gunter>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+X-OS:   Linux gunter 5.11.12-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On LS2088A-RDB board, if the spi-fsl-dspi driver is built as module
-then its probe fails with the following warning:
+Hi Linus,
 
-[   10.471363] couldn't get idr
-[   10.471381] WARNING: CPU: 4 PID: 488 at drivers/spi/spi.c:2689 spi_register_controller+0x73c/0x8d0
-...
-[   10.471651] fsl-dspi 2100000.spi: Problem registering DSPI ctlr
-[   10.471708] fsl-dspi: probe of 2100000.spi failed with error -16
+Please pull below to receive modules updates for the v5.13 merge window.
+A summary can be found in the signed tag.
 
-Reason for the failure is that bus-num property is set for dspi node.
-However, bus-num property is not set for the qspi node. If probe for
-spi-fsl-qspi happens first then id 0 is dynamically allocated to it.
-Call to spi_register_controller() from spi-fsl-dspi driver then fails.
-Since commit 29d2daf2c33c ("spi: spi-fsl-dspi: Make bus-num property
-optional") bus-num property is optional. Remove bus-num property from
-dspi node to fix the issue.
+Thank you,
 
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
----
- arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+Jessica
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 135ac8210871..801ba9612d36 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -929,7 +929,6 @@ dspi: spi@2100000 {
- 					    QORIQ_CLK_PLL_DIV(4)>;
- 			clock-names = "dspi";
- 			spi-num-chipselects = <5>;
--			bus-num = <0>;
- 		};
- 
- 		esdhc: esdhc@2140000 {
--- 
-2.26.2
+--
+The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
 
+   Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git tags/modules-for-v5.13
+
+for you to fetch changes up to 33121347fb1c359bd6e3e680b9f2c6ced5734a81:
+
+   module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD (2021-03-29 13:08:53 +0200)
+
+----------------------------------------------------------------
+Modules updates for v5.13
+
+Summary of modules changes for the 5.13 merge window:
+
+- Fix an age old bug involving jump_calls and static_labels when
+   CONFIG_MODULE_UNLOAD=n. When CONFIG_MODULE_UNLOAD=n, it means you
+   can't unload modules, so normally the __exit sections of a module are
+   not loaded at all. However, dynamic code patching (jump_label,
+   static_call, alternatives) can have sites in __exit sections even if
+   __exit is never executed.
+
+   Reported by Peter Zijlstra: "Alternatives, jump_labels and static_call
+   all can have relocations into __exit code.  Not loading it at all would
+   be BAD." Therefore, load the __exit sections even when
+   CONFIG_MODULE_UNLOAD=n, and discard them after init.
+
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+
+----------------------------------------------------------------
+Jessica Yu (1):
+       module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD
+
+  kernel/module.c | 9 ++++-----
+  1 file changed, 4 insertions(+), 5 deletions(-)
