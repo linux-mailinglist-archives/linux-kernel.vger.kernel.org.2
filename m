@@ -2,131 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DC736D564
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB1B36D566
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 12:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239069AbhD1KFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 06:05:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60914 "EHLO mail.kernel.org"
+        id S239110AbhD1KF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 06:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238345AbhD1KFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 06:05:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7AAC61026;
-        Wed, 28 Apr 2021 10:04:48 +0000 (UTC)
+        id S238345AbhD1KF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 06:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 942BE61026;
+        Wed, 28 Apr 2021 10:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619604291;
-        bh=iFzCYsS6n50BVnPR76KE9p0OrirQuVhmOtuaCqfj4yk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=E9PeTrMoeMTDdLMyEnrU5fJPiUmw8hEBRdhdxX6zsYeFu1lM+6MY5SbnNECCRNqHi
-         94UEFs9Vy5aokmh5e8WjCrz2A2fVVb393kl7mej6YkWZibHRhDkbbznLzr4cc9zy+n
-         7ZxSauru2kO1VjEVGjb1gqnGzl8jHBJ5tbU5TwBQnHnlAhAuuOd5US1GKycT7pJFug
-         pDDxTEnSera3KDkSqaGwiqya8SqOFFt8cDuRUjcTDcCYI9VtwCUiHsJU/74310T4+7
-         tBnpnAzAnP2b/8wZiwXh6l+py/VKl92jOJaNsqGzxH6OI4RjVm+nnseXnjmFPKnrZa
-         SOBqSsio6LnaA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: Re: [PATCH v7 5/5] usb: dwc3: qcom: Keep power domain on to support
- wakeup
-In-Reply-To: <1619586716-8687-6-git-send-email-sanm@codeaurora.org>
-References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
- <1619586716-8687-6-git-send-email-sanm@codeaurora.org>
-Date:   Wed, 28 Apr 2021 13:04:43 +0300
-Message-ID: <87lf92k9ms.fsf@kernel.org>
+        s=k20201202; t=1619604313;
+        bh=MyeSwjuWDkzwkgFnTJD3WNHelmDMb1YG6N+hdAddu3g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jsg5uBYN0tqjOsXJoDGuhGzUgumrzePDIHuFSW+c8aeNPs5+ayoQ4bXXomBh6mwVZ
+         NeWmNhQB4KslN0JoubOPJRNj6e6XuY3Z+2D3XrgrGl8tr62HPWL0zFpUHOPlWJNUPS
+         j6+1PjcmN8VTI2NDtO/pKOKymfmPHQLKHNmRZ7EY3+rjudM3vi/9PZJKQb+wjXaBR5
+         Rer55BJBxx9YMHsw8YkSmg0q9PF0bjx+cOOkXyK0UibOkSMuGRNBKfaJqxF1uIlEtk
+         hnqgCLTCdGVaeK8J+n7RObpHWJrM4lrE+SA3Dt+VJq4AzJ3RfyPqaba0gM4+q4vtrx
+         XLmMhMYPWQ7Tw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lbh4Q-0003ws-5z; Wed, 28 Apr 2021 12:05:26 +0200
+Date:   Wed, 28 Apr 2021 12:05:26 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 38/78] media: i2c: mt9m001: use
+ pm_runtime_resume_and_get()
+Message-ID: <YIkzZs8t0lMWVjzt@hovoldconsulting.com>
+References: <cover.1619191723.git.mchehab+huawei@kernel.org>
+ <beddb7295807f43a190f2add6c1665b7475cb154.1619191723.git.mchehab+huawei@kernel.org>
+ <20210424082454.2ciold3j3h2jw47m@uno.localdomain>
+ <YIPsTsEA/F+o7fhQ@hovoldconsulting.com>
+ <20210426163840.67ea8af9@coco.lan>
+ <YIgCOA1kSd/lzLFc@hovoldconsulting.com>
+ <20210428103148.590191ac@coco.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428103148.590191ac@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Wed, Apr 28, 2021 at 10:31:48AM +0200, Mauro Carvalho Chehab wrote:
+> Em Tue, 27 Apr 2021 14:23:20 +0200
+> Johan Hovold <johan@kernel.org> escreveu:
 
+> > pm_runtime_get_sync() has worked this way since it was merged 12 years
+> > ago, and for someone who's used to this interface this is not such a big
+> > deal as you seem to think. Sure, you need to remember to put the usage
+> > counter on errors, but that's it (and the other side of that is that you
+> > don't need to worry about error handling where it doesn't matter).
+> 
+> Before we have those at PM subsystem, the media had its own way to
+> set/disable power for their sub-devices. The PCI and USB drivers 
+> still use it, instead of pm_runtime, mostly due to historic reasons.
+> 
+> So, basically, its usage at the media subsystem is restricted to
+> drivers for embedded systems. The vast majority of drivers supporting
+> PM runtime are the I2C camera drivers. The camera drivers can be used 
+> interchangeable. So, in practice, the same bridge driver can work 
+> with a lot of different camera models, depending on the hardware
+> vendors' personal preferences and the desired max resolution.
+> 
+> So, in thesis, all such drivers should behave exactly the same 
+> with regards to PM.
+> 
+> However, on most existing drivers, the pm_runtime was added a
+> couple of years ago, and by people that are not too familiar
+> with the PM subsystem.
+> 
+> That probably explains why there were/are several places that 
+> do things like this[1]:
+> 
+> 	ret = pm_runtime_get_sync(dev);
+> 	if (ret < 0)
+> 		return ret;
+> 
+> without taking care of calling a pm_runtime_put*() function.
+> 
+> [1] besides the 13 patches made by UCN addressing it on
+>     existing code, I discovered the same pattern on a 
+>     couple of other drivers with current upstream code.
+> 
+> That shows a pattern: several media developers are not familiar
+> with the usage_count behavior for pm_runtime_get functions.
+> 
+> So, doing this work is not only helping to make the PM support
+> more uniform, but it is also helping to solve existing issues.
 
-Hi,
+Sure, I don't doubt that there are issues with the current code too.
 
-Sandeep Maheswaram <sanm@codeaurora.org> writes:
-> If wakeup capable devices are connected to the controller (directly
-> or through hubs) at suspend time keep the power domain on in order
-> to support wakeup from these devices.
->
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 82125bc..1e220af 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -17,9 +17,11 @@
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/phy.h>
-> +#include <linux/pm_domain.h>
->  #include <linux/usb/of.h>
->  #include <linux/reset.h>
->  #include <linux/iopoll.h>
-> +#include <linux/usb/hcd.h>
->=20=20
->  #include "core.h"
->=20=20
-> @@ -354,10 +356,19 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
->  {
->  	u32 val;
->  	int i, ret;
-> +	struct dwc3 *dwc =3D platform_get_drvdata(qcom->dwc3);
-> +	struct usb_hcd  *hcd;
-> +	struct generic_pm_domain *genpd =3D pd_to_genpd(qcom->dev->pm_domain);
->=20=20
->  	if (qcom->is_suspended)
->  		return 0;
->=20=20
-> +	if (dwc->xhci) {
-> +		hcd =3D platform_get_drvdata(dwc->xhci);
-> +		if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
-> +			genpd->flags |=3D GENPD_FLAG_ACTIVE_WAKEUP;
-> +	}
+> > You're call, but converting functioning drivers where the authors knew
+> > what they were doing just because you're not used to the API and risk
+> > introducing new bugs in the process isn't necessarily a good idea.
+> 
+> The problem is that the above assumption is not necessarily true:
+> based on the number of drivers that pm_runtime_get_sync() weren't
+> decrementing usage_count on errors, several driver authors were not 
+> familiar enough with the PM runtime behavior by the time the drivers
+> were written or converted to use the PM runtime, instead of the
+> media .s_power()/.s_stream() callbacks.
 
-wow, you really need to find a way to do these things generically
-instead of bypassing a bunch of layers and access stuff $this doesn't
-directly own.
+That may very well be the case. My point is just that this work needs to
+be done carefully and by people familiar with the code (and runtime pm)
+or you risk introducing new issues.
 
-I'm gonna say 'no' to this, sorry. It looks like xhci should, directly,
-learn about much of this instead of hiding it 3-layers deep into the
-dwc3 glue layer for your specific SoC.
+I really don't want the bot-warning-suppression crew to start with this
+for example.
 
-=2D-=20
-balbi
+> > Especially since the pm_runtime_get_sync() will continue to be used
+> > elsewhere, and possibly even in media in cases where you don't need to
+> > check for errors (e.g. remove()).
+> 
+> Talking about the remove(), I'm not sure if just ignoring errors
+> there would do the right thing. I mean, if pm_runtime_get_sync()
+> fails, probably any attempts to disable clocks and other things
+> that depend on PM runtime will also (silently) fail.
+> 
+> This may put the device on an unknown PM and keep clock lines enabled
+> after its removal.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Right, a resume failure is a pretty big issue and it's not really clear
+how to to even handle that generally. But at remove() time you don't
+have much choice but to go on and release resource anyway. 
 
------BEGIN PGP SIGNATURE-----
+So unless actually implementing some error handling too, using
+pm_runtime_sync_get() without checking for errors is still preferred
+over pm_runtime_resume_and_get(). That is 
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmCJMzsRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYs/RAAo7Ph+w0Vcph7Me0lGNlH8SvYkjZx+0EU
-f9OM80JJTE5q+n/MvoyEXLY6b8Yab0lvMR4hhe+f6tvzGtqCUH6M2eA70RQGCVNu
-EJ35fOMJqtf0s8ZpswqGZti9S5anyvCJOW+hV95VqMgpFZeepSomHJjYWx7i8F2b
-rv7aiKDdxTkcx6zVpcqQCHOwpb5KFX5Lz4ZxqWuULqtS98VLfLvgY8o/UmYqMwW1
-QFPZ+ocgQNWUkM00kGEl3SI78ldOjvH1zQ8IELtadDMWwoSdz3ZqvkuBSq+nzg+E
-hNkbULcYrxDkI6E+ZR8HVNkKo07sRITrOw3UgOmjYPkdMYoRUcw5mnck4/KXmTE6
-gPOzVU3+8op5j9DbNbAcHJhsUypOMuB+hUFqOH5NW3DjAXLaefwEIE57bYWs11eV
-EuFSSWjbbAExEO0wCK0zBaZLnytOlwbmsdroyOthjETzX+K8or65JOZ/Sdb9Wvy5
-2y7en/vGvntFvMM2CEtThxzuGN9rfPtx5UO2+1V+WxIC7v5olbVCzCyEHdt74M2p
-0YZq+RtZqM40hgtFCmBes/A4aP92nwy7pjDiCRzHEQWULo0E05dWYSzgHDZGOuMv
-ydLgOWMpeR49uSkpn3ngxae6tvF3LPgyWvOFfsh31Tq+ALRfqQpI5ibIqO723tWd
-+5L06YxxMLA=
-=lX8L
------END PGP SIGNATURE-----
---=-=-=--
+	pm_runtime_get_sync();
+	/* cleanup */
+	pm_runtime_disable()
+	pm_runtime_put_noidle();
+
+is better than:
+
+	ret = pm_runtime_resume_and_get();
+	/* cleanup */
+	pm_runtime_disable();
+	if (ret == 0)
+		pm_runtime_put_noidle();
+
+unless you also start doing something ret.
+
+Johan
