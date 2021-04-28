@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0487836D51C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5738036D51E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 11:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhD1JzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 05:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        id S238646AbhD1JzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 05:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238614AbhD1JzS (ORCPT
+        with ESMTP id S238637AbhD1JzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:55:18 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A56EC06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:54:32 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id p12so44337394pgj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:54:32 -0700 (PDT)
+        Wed, 28 Apr 2021 05:55:22 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AABC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:54:37 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id h20so32521624plr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 02:54:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tsZpxnSCiHU3yOSRKuQ5Nn0zsBnruhO0+WHjObzR7x8=;
-        b=CVN6j6GWu+63QHDHliyf2AZ1WZ20KwHrSvk5XqYiXCO7XP6C3pKHdUDBT4SxVeMhrP
-         L7tMKIH47RxVvddI2lTDpeJ8zoSoyEYMuQ45LVFeb5DXE+Fh6X6ChHpirl3PFzwWAMLR
-         Mq16ofgtQ7FlNKOSAT4pY+afeqGjvzzZCTuj0MZdV7TOq3YnjHw7tiV/vRs6qP2M2Xgm
-         th2Wnk7lULXJi9N8kST37AJ0xLNcyrFfwLaX9ZH7VPC/rOXuYy0wadwRq00TeBP8sxq3
-         UWfh5WsU99QG0r6ObL1e/F7tLvVLs7RbR4LYSVxhVou+9gePD8fjRXBe3VlMtaRlw2Xe
-         LMlQ==
+        bh=tOlUteNHINhRpZtpztBeELGSpydzeET01dFGAMvcB9w=;
+        b=LEEZH5u64AUh+ynJYV212VHcTTq3jo7SOak1Z80frSXjEr35j/gMZeBApZgIac5EtK
+         oyQLEU220WgDEPzQQt937Zemxc7veTiPvTy2Rem1vxKR5EMp3d0T0RkE6upT1Nx13pd3
+         ct69tBbCAl5PkeCcTgc9IYO1AqQ4C5KPm82xwGXsp+4PGuex1H2KlazxCnxlGyVZwc5j
+         Fs3/VxauZ9qh06JmV+1Po+DoXkgn8GDqHvtx/snioyeBACqoFzuMhU4SBVX7lh2/yQ8s
+         hU0c7U9jmWxlmiUBhSuIaccnhBlEYqFEurNWm6cRlhEbmb8D8OXWCCXdL2sH6LGIxV++
+         yNOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tsZpxnSCiHU3yOSRKuQ5Nn0zsBnruhO0+WHjObzR7x8=;
-        b=jnQYzfndaupNs6ld/pXY2TgtsLo2F70XMYtdR49cz50PRQYbIMwWCjxWLROyeNlvC6
-         fL5o5KELaC1TdsKO64Jz57jSZmqmVJkDXBVZ3jtNxdeBlazq+gLHGIyvYVwRUstpUUxh
-         wri4l7mbKbw1xobys69Vol6976g5KWddO82dIEE2q1xNI1xbLfilWqxqGycj68/nGG7C
-         6dE8RGi58Wj5nwcV7gZdgv/VYvOhwQlhKUItpgY+WWjEzFjGTwOjtN92WsuGleeVmVyr
-         oyq/eWqG9LlQorFCSkFKJfxudExKEcyxO5XVHcPSSr5fF90Sn/Evl3DbTHrozj0fjFDo
-         mXgQ==
-X-Gm-Message-State: AOAM532c0lzFWN9st2h2ZNW/W4aQlxksGtuvjh2i8LD0Rl9f9+jZWhW8
-        VvHgGwU1lweWG7XA4il4WlNG7w==
-X-Google-Smtp-Source: ABdhPJxeJwwMM87CerPEYoMJbuNWzwWZUAqJ1LCPLGY2k3lesIokTfkNVrUPpW+Jem/IzuHxzll8pA==
-X-Received: by 2002:a63:570b:: with SMTP id l11mr26184726pgb.193.1619603672214;
-        Wed, 28 Apr 2021 02:54:32 -0700 (PDT)
+        bh=tOlUteNHINhRpZtpztBeELGSpydzeET01dFGAMvcB9w=;
+        b=tTuxEepIUKKxQknfSHokOk0v3kjJUKJhCOYexT13ceoKeuEhK6xbAYCAXEY9ue8KMa
+         mREfaX+m05tSQMeE7UGU6lHo/SIUwvAJjYXyfT6dp3a8eCXrppkHGPfspudi7jiTfeIu
+         QawcBtRrnbsGLVhZBNwPXR+kIen70lbbVb4SljSlY3qVmM1lkQiEg+Pr+bBppGmo14wo
+         hwMLiq5tM3eY9kkuXA4ufHp7WRPzK8pE3lilIzqvHFOAENOwFIneAxXi2mkoZzCrUduL
+         lOxZcgui0EztJCSa4tbKDiWpjaOiOcKb46cVpxjHTx5TcenA3qKHAeWsVHD82afre7Yy
+         zWIQ==
+X-Gm-Message-State: AOAM532kXfakpbrHVghr1EvxyQvI8yOSePoc+avytli8DQnQBPPcqr/A
+        Xj6j7bWkIF8CbHz0k8cepZj6Ug==
+X-Google-Smtp-Source: ABdhPJyrBDmZk/mG3JBVhVPM7uIF8K2OuTdn8hm9YJpozguzJZ16PR0+D5tUGPQdGb8zskw4RSE7hg==
+X-Received: by 2002:a17:90b:1bc1:: with SMTP id oa1mr30557077pjb.46.1619603677248;
+        Wed, 28 Apr 2021 02:54:37 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.233])
-        by smtp.gmail.com with ESMTPSA id x77sm4902365pfc.19.2021.04.28.02.54.27
+        by smtp.gmail.com with ESMTPSA id x77sm4902365pfc.19.2021.04.28.02.54.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Apr 2021 02:54:31 -0700 (PDT)
+        Wed, 28 Apr 2021 02:54:36 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
         mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
@@ -55,9 +55,9 @@ To:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
         alexander.h.duyck@linux.intel.com, richard.weiyang@gmail.com
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 6/9] mm: list_lru: support for shrinking list lru
-Date:   Wed, 28 Apr 2021 17:49:46 +0800
-Message-Id: <20210428094949.43579-7-songmuchun@bytedance.com>
+Subject: [PATCH 7/9] ida: introduce ida_max() to return the maximum allocated ID
+Date:   Wed, 28 Apr 2021 17:49:47 +0800
+Message-Id: <20210428094949.43579-8-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210428094949.43579-1-songmuchun@bytedance.com>
 References: <20210428094949.43579-1-songmuchun@bytedance.com>
@@ -67,95 +67,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now memcg_update_all_list_lrus() only can increase the size of all the
-list lrus. This patch adds an ability to make it can shrink the size
-of all the list lrus. This can help us save memory when the user want
-to shrink the size.
+Introduce ida_max() to return the maximum allocated ID. This will be
+used by memory cgroup in the later patch.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- mm/list_lru.c | 53 +++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 49 insertions(+), 4 deletions(-)
+ include/linux/idr.h |  1 +
+ lib/idr.c           | 40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index d78dba5a6dab..3ee5239922c9 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -383,13 +383,11 @@ static void memcg_destroy_list_lru_node(struct list_lru_node *nlru)
- 	kvfree(memcg_lrus);
+diff --git a/include/linux/idr.h b/include/linux/idr.h
+index a0dce14090a9..c3968a6348d1 100644
+--- a/include/linux/idr.h
++++ b/include/linux/idr.h
+@@ -255,6 +255,7 @@ struct ida {
+ int ida_alloc_range(struct ida *, unsigned int min, unsigned int max, gfp_t);
+ void ida_free(struct ida *, unsigned int id);
+ void ida_destroy(struct ida *ida);
++int ida_max(struct ida *ida);
+ 
+ /**
+  * ida_alloc() - Allocate an unused ID.
+diff --git a/lib/idr.c b/lib/idr.c
+index f4ab4f4aa3c7..bcfcaae89aa7 100644
+--- a/lib/idr.c
++++ b/lib/idr.c
+@@ -553,6 +553,46 @@ void ida_destroy(struct ida *ida)
  }
+ EXPORT_SYMBOL(ida_destroy);
  
--static int memcg_update_list_lru_node(struct list_lru_node *nlru,
--				      int old_size, int new_size)
-+static int memcg_list_lru_node_inc(struct list_lru_node *nlru,
-+				   int old_size, int new_size)
- {
- 	struct list_lru_memcg *old, *new;
- 
--	BUG_ON(old_size > new_size);
--
- 	old = rcu_dereference_protected(nlru->memcg_lrus,
- 					lockdep_is_held(&list_lrus_mutex));
- 	new = kvmalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
-@@ -418,11 +416,58 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
- 	return 0;
- }
- 
-+/* This function always returns 0. */
-+static int memcg_list_lru_node_dec(struct list_lru_node *nlru,
-+				   int old_size, int new_size)
++/**
++ * ida_max() - Return the maximum allocated ID.
++ * @ida: IDA handle.
++ *
++ * Context: Any context. It is safe to call this function without
++ * locking in your code.
++ *
++ * Return: The maximum allocated ID, or %-ENOSPC if the @ida is empty
++ */
++int ida_max(struct ida *ida)
 +{
-+	struct list_lru_memcg *old, *new;
++	XA_STATE(xas, &ida->xa, 0);
++	struct ida_bitmap *curr, *prev;
++	unsigned long flags;
++	unsigned int bit, index;
 +
-+	old = rcu_dereference_protected(nlru->memcg_lrus,
-+					lockdep_is_held(&list_lrus_mutex));
-+	__memcg_destroy_list_lru_node(old, new_size, old_size);
++	xas_lock_irqsave(&xas, flags);
++	if (ida_is_empty(ida)) {
++		xas_unlock_irqrestore(&xas, flags);
++		return -ENOSPC;
++	}
 +
-+	/* Reuse the old array if the allocation failures here. */
-+	new = kvmalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
-+	if (!new)
-+		return 0;
++	xas_for_each(&xas, curr, ULONG_MAX) {
++		prev = curr;
++		index = xas.xa_index;
++	}
 +
-+	memcpy(&new->lru, &old->lru, new_size * sizeof(void *));
++	if (xa_is_value(prev)) {
++		unsigned long val = xa_to_value(prev);
 +
-+	/*
-+	 * The locking below allows readers that hold nlru->lock avoid taking
-+	 * rcu_read_lock (see list_lru_from_memcg_idx).
-+	 *
-+	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
-+	 * we have to use IRQ-safe primitives here to avoid deadlock.
-+	 */
-+	spin_lock_irq(&nlru->lock);
-+	rcu_assign_pointer(nlru->memcg_lrus, new);
-+	spin_unlock_irq(&nlru->lock);
++		bit = find_last_bit(&val, BITS_PER_XA_VALUE);
++	} else {
++		bit = find_last_bit(prev->bitmap, IDA_BITMAP_BITS);
++	}
 +
-+	kvfree_rcu(old, rcu);
-+	return 0;
++	xas_unlock_irqrestore(&xas, flags);
++
++	return index * IDA_BITMAP_BITS + bit;
 +}
 +
-+static int memcg_update_list_lru_node(struct list_lru_node *nlru,
-+				      int old_size, int new_size)
-+{
-+	if (new_size > old_size)
-+		return memcg_list_lru_node_inc(nlru, old_size, new_size);
-+	else if (new_size < old_size)
-+		return memcg_list_lru_node_dec(nlru, old_size, new_size);
-+
-+	return 0;
-+}
-+
- static void memcg_cancel_update_list_lru_node(struct list_lru_node *nlru,
- 					      int old_size, int new_size)
- {
- 	struct list_lru_memcg *memcg_lrus;
- 
-+	/* Nothing to do for the shrinking case. */
-+	if (old_size >= new_size)
-+		return;
-+
- 	memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus,
- 					       lockdep_is_held(&list_lrus_mutex));
- 	/* do not bother shrinking the array back to the old size, because we
+ #ifndef __KERNEL__
+ extern void xa_dump_index(unsigned long index, unsigned int shift);
+ #define IDA_CHUNK_SHIFT		ilog2(IDA_BITMAP_BITS)
 -- 
 2.11.0
 
