@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A4D36D891
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1D436D8B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 15:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239907AbhD1NsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 09:48:22 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:44743 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239888AbhD1NsQ (ORCPT
+        id S239979AbhD1Ntg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 09:49:36 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:41978 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239304AbhD1Nta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:48:16 -0400
-Received: by mail-wr1-f50.google.com with SMTP id h15so10888609wre.11;
-        Wed, 28 Apr 2021 06:47:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iGL4C5pisQWePSYbT1yoPzAALGDCskG6Y8klDr3F6nM=;
-        b=PmRSIZxDKcE8Th/T03mo9M+jroj+CMvtCwp8KOQclXwdRAe3yZpel91m5Nqgdznp8k
-         n9JYbatuAeR0IOKTOKxkT+l2m+Qb7JhQbpQblQpKcLzYq0JfGuecMXOIxyJL251kDcFL
-         DqGz90WaKftdHliRnDnAlpc0U3kmhGGeJNWih/QU1P3MJIhauQnNyA7g8SSMqaxcRA/9
-         U44Ym30iibN9Pitdy8KVB9ioqgINpfXpwwzw+vHR1aPonDTsqFIKjT/APo6NgamaYLvO
-         HkMeFIhSuvAzm1eMKaVEJXNw+YhyVKOFSiDOV/esfH8zFm1VjD8RMdg0ZqEYm/kiGNAJ
-         UCRA==
-X-Gm-Message-State: AOAM532Z4z0zqDnoktt61k5h2cKp3bv7sOb0ezLocyJUwqm2ESCnvYXM
-        3WmUPfRgBWDD4L1WtmN3lls=
-X-Google-Smtp-Source: ABdhPJw4Dkn+Z9URbKoQsbJhddTdNOfjqh5vsI4fkVhJPc8IJJJpiLV1ZYkAWFDulJlSfBchlrrv8g==
-X-Received: by 2002:adf:de8b:: with SMTP id w11mr20658775wrl.315.1619617650238;
-        Wed, 28 Apr 2021 06:47:30 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id u9sm3674051wmc.38.2021.04.28.06.47.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 06:47:29 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 13:47:28 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v4 2/7] hyperv: SVM enlightened TLB flush support flag
-Message-ID: <20210428134728.jmu6bnjemhid3up7@liuwe-devbox-debian-v2>
-References: <cover.1619556430.git.viremana@linux.microsoft.com>
- <cce3e52fde732ccdc7a34d2eb1e2d59917e4e5e0.1619556430.git.viremana@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cce3e52fde732ccdc7a34d2eb1e2d59917e4e5e0.1619556430.git.viremana@linux.microsoft.com>
+        Wed, 28 Apr 2021 09:49:30 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id EDA42B9FF2;
+        Wed, 28 Apr 2021 21:48:03 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P2750T140649007400704S1619617681633012_;
+        Wed, 28 Apr 2021 21:48:03 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <9f4b7bf97fe250e292465ec654eab734>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 30
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: [PATCH v3 00/10] arm64: dts: rockchip: add basic dtsi/dts files for RK3568 SoC
+Date:   Wed, 28 Apr 2021 21:47:49 +0800
+Message-Id: <20210428134759.22076-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 08:54:51PM +0000, Vineeth Pillai wrote:
-> Bit 22 of HYPERV_CPUID_FEATURES.EDX is specific to SVM and specifies
-> support for enlightened TLB flush. With this enlightenment enabled,
-> ASID invalidations flushes only gva->hpa entries. To flush TLB entries
-> derived from NPT, hypercalls should be used
-> (HvFlushGuestPhysicalAddressSpace or HvFlushGuestPhysicalAddressList)
-> 
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+From: Liang Chen <cl@rock-chips.com>
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+v1:
+1. add some dt-bindings for RK3568 devices.
+2. add core dtsi for RK3568 SoC.
+3. add basic dts for RK3568 EVB
+
+v2:
+1. sort device nodes by some rules.
+
+v3:
+1. make ARCH=arm64 dtbs_check, then fix some errors and add some documents.
+
+Liang Chen (10):
+  dt-bindings: i2c: i2c-rk3x: add description for rk3568
+  dt-bindings: serial: snps-dw-apb-uart: add description for rk3568
+  dt-bindings: mmc: rockchip-dw-mshc: add description for rk3568
+  dt-bindings: watchdog: dw-wdt: add description for rk3568
+  dt-bindings: pwm: rockchip: add description for rk3568
+  dt-bindings: gpio: change items restriction of clock for
+    rockchip,gpio-bank
+  dt-bindings: soc: rockchip: Convert grf.txt to YAML
+  arm64: dts: rockchip: add generic pinconfig settings used by most
+    Rockchip socs
+  arm64: dts: rockchip: add core dtsi for RK3568 SoC
+  arm64: dts: rockchip: add basic dts for RK3568 EVB
+
+ .../devicetree/bindings/arm/rockchip.yaml     |    5 +
+ .../bindings/gpio/rockchip,gpio-bank.yaml     |    3 +-
+ .../devicetree/bindings/i2c/i2c-rk3x.yaml     |    1 +
+ .../bindings/mmc/rockchip-dw-mshc.yaml        |    9 +-
+ .../devicetree/bindings/pwm/pwm-rockchip.yaml |    1 +
+ .../bindings/serial/snps-dw-apb-uart.yaml     |    1 +
+ .../devicetree/bindings/soc/rockchip/grf.txt  |   61 -
+ .../devicetree/bindings/soc/rockchip/grf.yaml |   58 +
+ .../bindings/watchdog/snps,dw-wdt.yaml        |    1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |    1 +
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     |   80 +
+ .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  789 +++++
+ .../boot/dts/rockchip/rockchip-pinconf.dtsi   |  344 ++
+ 14 files changed, 4395 insertions(+), 70 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
+
+-- 
+2.17.1
+
+
+
