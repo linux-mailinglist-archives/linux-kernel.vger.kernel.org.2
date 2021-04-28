@@ -2,125 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D621236DE5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E123D36DE64
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 19:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241940AbhD1RgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 13:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241924AbhD1RgL (ORCPT
+        id S242180AbhD1Rhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 13:37:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44744 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230382AbhD1Rh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:36:11 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9753CC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:35:26 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u16so46512283oiu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=Bch1oq78dAKG4OuGE0cpushN9U1V2L83n1Hncb6KNXs=;
-        b=CKZmEMvLLQPT2T4K/7ACKFBrXF7Dhdf380FQNA5cqQe2irjZ403gMdDlBX+1W1xC9k
-         +VOkxWalv8VgGr2ROCyoY8e3Fh6wGVkbIl5wUhoKy2BUfl77SzXazI9cTUDh/4lx9FBx
-         NhNHj8hpxlEVoyIAK1PkDcGUdomELhUJffyng2SPlDZsWUew8rVgpV1sedEuEBSOBhE5
-         gJnsYf6awNVs5XIqjjxh7FF+gD7fHuD1oOeOx/p4mBSBl/SRUqokGX6QwJuluRRJ3+TR
-         vby1TYffahtl48jVCMGdyjUD6g+ecCRIJLRhy0GXJPEC931CMqGu4O//P7iWw3l6ilaE
-         OJdg==
+        Wed, 28 Apr 2021 13:37:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619631402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HK7++I1nhxfDG0XsoHKwoAOEamcD6GInXSZD7ed2Qzw=;
+        b=Qo/F7MXsZc/9tcP0pzppW4tm3JkRTIkcQ6Btm6PORi4kYIep0VgJdK53UEGMWAF+C86rWc
+        d2o8qUGCsIOZ5gnQ/jR+DlxCdvBFMHT6xTP7o+ep7WO39wRMaQqHzN+267x1MnSNcv85BF
+        yvDsyrW+0wagTpJcISngPNZ2NXfk7+M=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-nWJiscd0MQ2uxUGR5UOv2Q-1; Wed, 28 Apr 2021 13:36:40 -0400
+X-MC-Unique: nWJiscd0MQ2uxUGR5UOv2Q-1
+Received: by mail-qv1-f69.google.com with SMTP id c5-20020a0ca9c50000b02901aede9b5061so16610779qvb.14
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Apr 2021 10:36:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=Bch1oq78dAKG4OuGE0cpushN9U1V2L83n1Hncb6KNXs=;
-        b=CjuyYWvo7yL9/e15TE/uhcaol97rRpFwzQBPLcdzvUwsOSyAby1xd1rqwtma8t49Gx
-         aHBJlTT5OBA6omxPUo8wX8MhAr29xbTCwtdN2n3rNpp9SiWlD7auDvQtNyGhDdBiZIBk
-         v5B1B0l+k3Ur4HvCRUpiXa+aEI10xxh1m1dLwntYp0WAztUI95eLobDmrNtGzzC0ruD2
-         aKQZc786592FwZTDFCd0K6UZFqy9ld6LZEFDH6q3qOiqSITiYQIjTr75Y7eZEymdjG5q
-         1dMW4CHNKP0c4EzHI9JWId/UamqUV50g6w6QBBirUB7i76HsnuVrmpQ9MZ677MWrD4N3
-         7lMQ==
-X-Gm-Message-State: AOAM533FmsjxDsO5elh0tqKh4rL5aFnIFIa3fMST4EP2BsMLWaypr3on
-        jR3yt+7976vzZNx0fibeNFk=
-X-Google-Smtp-Source: ABdhPJw0Z1soQrHdhdkaW+wEPDLB2epqNABhfB/3YssWKPvMAlY7jlCBUvm5+BDwJlbJ0Qv/t98yvA==
-X-Received: by 2002:a05:6808:1393:: with SMTP id c19mr8850865oiw.149.1619631326062;
-        Wed, 28 Apr 2021 10:35:26 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a11sm107487oif.52.2021.04.28.10.35.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 28 Apr 2021 10:35:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] staging: rtl8712: Use list iterators and helpers
-Date:   Wed, 28 Apr 2021 10:35:23 -0700
-Message-Id: <20210428173523.149958-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HK7++I1nhxfDG0XsoHKwoAOEamcD6GInXSZD7ed2Qzw=;
+        b=TcrP0t4YOWyWflyyI3ADVtB+IJWKluePhG0k2nmHN33Mxapj+74JsSbOsdUhmlLXEM
+         JK1EpXrdVJgX/y8JvJqQLMrFUHxnESlLBh5mdev8vTdtnOq76V1BbS7KEYp3BWu6ILLQ
+         vDOaBReaRx+xppYOCw5/aBQDXMmhSjtkc0xBNzb9FQrVxOtp0Ww+0EeljodjFX9qT9YT
+         zO6fpPVpyLwinGEfT8zp/Q2c+ENWaejzo7gqqzCECd9JjmW/EmMEYNilWrRYehZJl0F/
+         u50MAfCGv8GhRyHekaoIS9B0YC2djSC80nbrYjYSE5JVoA/XDNRuk3S/5QqpoB+uksRM
+         MANQ==
+X-Gm-Message-State: AOAM531ExwLZ4JGECBwJYCPuGjh23ZAvK0mlWzgrFQ8IFvo40v8Q88ae
+        NmPIQiuAdpWqKv6sTB9weY+5tBy7sDN8ZUUFqjjzgynhng5SDrbFfnQa9Xahx3yJ5skN8SUc15+
+        hY/lgZkRINZyWaQonFcuwsMgb
+X-Received: by 2002:ac8:51d3:: with SMTP id d19mr27034155qtn.358.1619631399507;
+        Wed, 28 Apr 2021 10:36:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsTj0GTAReH+cHND+E0jX8G5x1A7SGplkei2ilbtVRFxxXyyqa5MMp3q7gkqfVnwG4QdGX5g==
+X-Received: by 2002:ac8:51d3:: with SMTP id d19mr27034137qtn.358.1619631399214;
+        Wed, 28 Apr 2021 10:36:39 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s25sm282019qkj.34.2021.04.28.10.36.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 10:36:38 -0700 (PDT)
+Subject: Re: [PATCH V5 XRT Alveo 00/20] XRT Alveo driver overview
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org
+References: <20210427205431.23896-1-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <e80ecdca-1033-7619-1436-14603d785a71@redhat.com>
+Date:   Wed, 28 Apr 2021 10:36:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210427205431.23896-1-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use existing list iterators and helper functions.
 
-The following coccinelle script was used to convert the code.
+On 4/27/21 1:54 PM, Lizhi Hou wrote:
+> Hello,
+>
+> This is V5 of patch series which adds management physical function driver
+> for Xilinx Alveo PCIe accelerator cards.
+>      https://www.xilinx.com/products/boards-and-kits/alveo.html
+>
+> This driver is part of Xilinx Runtime (XRT) open source stack.
+>
+> XILINX ALVEO PLATFORM ARCHITECTURE
+>
+> Alveo PCIe FPGA based platforms have a static *shell* partition and a
+> partial re-configurable *user* partition. The shell partition is
+> automatically loaded from flash when host is booted and PCIe is enumerated
+> by BIOS. Shell cannot be changed till the next cold reboot. The shell
+> exposes two PCIe physical functions:
+>
+> 1. management physical function
+> 2. user physical function
+>
+> The patch series includes Documentation/xrt.rst which describes Alveo
+> platform, XRT driver architecture and deployment model in more detail.
+>
+> Users compile their high level design in C/C++/OpenCL or RTL into FPGA
+> image using Vitis tools.
+>      https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html
+>
+> The compiled image is packaged as xclbin which contains partial bitstream
+> for the user partition and necessary metadata. Users can dynamically swap
+> the image running on the user partition in order to switch between
+> different workloads by loading different xclbins.
+>
+> XRT DRIVERS FOR XILINX ALVEO
+>
+> XRT Linux kernel driver *xrt-mgnt* binds to management physical function of
+> Alveo platform. The modular driver framework is organized into several
+> platform drivers which primarily handle the following functionality:
+>
+> 1.  Loading firmware container also called xsabin at driver attach time
+> 2.  Loading of user compiled xclbin with FPGA Manager integration
+> 3.  Clock scaling of image running on user partition
+> 4.  In-band sensors: temp, voltage, power, etc.
+> 5.  Device reset and rescan
+>
+> The platform drivers are packaged into *xrt-lib* helper module with well
+> defined interfaces. The module provides a pseudo-bus implementation for the
+> platform drivers. More details on the driver model can be found in
+> Documentation/xrt.rst.
+>
+> User physical function driver is not included in this patch series.
+>
+> LIBFDT REQUIREMENT
+>
+> XRT driver infrastructure uses Device Tree as a metadata format to discover
+> HW subsystems in the Alveo PCIe device. The Device Tree schema used by XRT
+> is documented in Documentation/xrt.rst.
+>
+> TESTING AND VALIDATION
+>
+> xrt-mgnt driver can be tested with full XRT open source stack which
+> includes user space libraries, board utilities and (out of tree) first
+> generation user physical function driver xocl. XRT open source runtime
+> stack is available at https://github.com/Xilinx/XRT
+>
+> Complete documentation for XRT open source stack including sections on
+> Alveo/XRT security and platform architecture can be found here:
+>
+> https://xilinx.github.io/XRT/master/html/index.html
+> https://xilinx.github.io/XRT/master/html/security.html
+> https://xilinx.github.io/XRT/master/html/platforms_partitions.html
+>
+> Changes since v4:
+> - Added xrt_bus_type and xrt_device. All sub devices were changed from
+>    platform_bus_type/platform_device to xrt_bus_type/xrt_device.
+> - Renamed xrt-mgmt driver to xrt-mgnt driver.
+> - Replaced 'MGMT' with 'MGNT' and 'mgmt' with 'mgnt' in code and file names
+> - Moved pci function calls from infrastructure to xrt-mgnt driver.
+> - Renamed files: mgmt/main.c -> mgnt/xmgnt-main.c
+>                   mgmt/main-region.c -> mgnt/xmgnt-main-region.c
+>                   include/xmgmt-main.h -> include/xmgnt-main.h
+>                   mgmt/fmgr-drv.c -> mgnt/xrt-mgr.c
+>                   mgmt/fmgr.h -> mgnt/xrt-mgr.h
+> - Updated code base to include v4 code review comments.
 
-@@
-identifier v1, v2, v3, v4;
-symbol next;
-expression e;
-iterator name list_for_each;
-statement S;
-@@
 
-<+...
-(
-- e = v1->next;
-|
-- e = get_next(v1);
-)
-  ... when != e
-- while ( \( v1 != e \| e != v1 \) )
-+ list_for_each (e, v1)
-  {
-    ...
--   v2 = container_of(e, struct v3, v4);
-+   v2 = list_entry(e, struct v3, v4);
-?-  if (!v2) S
-    ...
-(
--   e = e->next;
-|
-- e = get_next(e);
-)
-    ... when != e
-  }
-...+>
+An early run through with checkpatch complains about MAINTAINERS not 
+being modified for new content.
 
-Compile tested only.
+This likely could be resolved by moving your MAINTAINERS change from 
+patch 20 to patch 1.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/staging/rtl8712/rtl871x_mlme.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+And of course fixes to make the test robot happy :)
 
-diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
-index ba4a71e91ae0..92b7c9c07df6 100644
---- a/drivers/staging/rtl8712/rtl871x_mlme.c
-+++ b/drivers/staging/rtl8712/rtl871x_mlme.c
-@@ -139,10 +139,8 @@ static struct wlan_network *r8712_find_network(struct  __queue *scanned_queue,
- 		return NULL;
- 	spin_lock_irqsave(&scanned_queue->lock, irqL);
- 	phead = &scanned_queue->queue;
--	plist = phead->next;
--	while (plist != phead) {
--		pnetwork = container_of(plist, struct wlan_network, list);
--		plist = plist->next;
-+	list_for_each(plist, phead) {
-+		pnetwork = list_entry(plist, struct wlan_network, list);
- 		if (!memcmp(addr, pnetwork->network.MacAddress, ETH_ALEN))
- 			break;
- 	}
--- 
-2.17.1
+
+Thanks for the refactor to the xrt_bus!
+
+I will start taking a look.
+
+Tom
+
+
+>
+> Changes since v3:
+> - Leaf drivers use regmap-mmio to access hardware registers.
+> - Renamed driver module: xmgmt.ko -> xrt-mgmt.ko
+> - Renamed files: calib.[c|h] -> ddr_calibration.[c|h],
+>                   lib/main.[c|h] -> lib/lib-drv.[c|h],
+>                   mgmt/main-impl.h - > mgmt/xmgnt.h
+> - Updated code base to include v3 code review comments.
+>
+> Changes since v2:
+> - Streamlined the driver framework into *xleaf*, *group* and *xroot*
+> - Updated documentation to show the driver model with examples
+> - Addressed kernel test robot errors
+> - Added a selftest for basic driver framework
+> - Documented device tree schema
+> - Removed need to export libfdt symbols
+>
+> Changes since v1:
+> - Updated the driver to use fpga_region and fpga_bridge for FPGA
+>    programming
+> - Dropped platform drivers not related to PR programming to focus on XRT
+>    core framework
+> - Updated Documentation/fpga/xrt.rst with information on XRT core framework
+> - Addressed checkpatch issues
+> - Dropped xrt- prefix from some header files
+>
+> For reference V4 version of patch series can be found here:
+>
+> https://lore.kernel.org/lkml/20210324052947.27889-1-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-2-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-3-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-4-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-5-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-6-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-7-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-8-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-9-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-10-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-11-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-12-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-13-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-14-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-15-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-16-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-17-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-18-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-19-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-20-lizhi.hou@xilinx.com
+> https://lore.kernel.org/lkml/20210324052947.27889-21-lizhi.hou@xilinx.com/
+>
+> Lizhi Hou (20):
+>    Documentation: fpga: Add a document describing XRT Alveo drivers
+>    fpga: xrt: driver metadata helper functions
+>    fpga: xrt: xclbin file helper functions
+>    fpga: xrt: xrt-lib driver manager
+>    fpga: xrt: group driver
+>    fpga: xrt: char dev node helper functions
+>    fpga: xrt: root driver infrastructure
+>    fpga: xrt: driver infrastructure
+>    fpga: xrt: management physical function driver (root)
+>    fpga: xrt: main driver for management function device
+>    fpga: xrt: fpga-mgr and region implementation for xclbin download
+>    fpga: xrt: VSEC driver
+>    fpga: xrt: User Clock Subsystem driver
+>    fpga: xrt: ICAP driver
+>    fpga: xrt: devctl xrt driver
+>    fpga: xrt: clock driver
+>    fpga: xrt: clock frequency counter driver
+>    fpga: xrt: DDR calibration driver
+>    fpga: xrt: partition isolation driver
+>    fpga: xrt: Kconfig and Makefile updates for XRT drivers
+>
+>   Documentation/fpga/index.rst                  |   1 +
+>   Documentation/fpga/xrt.rst                    | 844 +++++++++++++++++
+>   MAINTAINERS                                   |  11 +
+>   drivers/Makefile                              |   1 +
+>   drivers/fpga/Kconfig                          |   2 +
+>   drivers/fpga/Makefile                         |   5 +
+>   drivers/fpga/xrt/Kconfig                      |   8 +
+>   drivers/fpga/xrt/include/events.h             |  45 +
+>   drivers/fpga/xrt/include/group.h              |  25 +
+>   drivers/fpga/xrt/include/metadata.h           | 236 +++++
+>   drivers/fpga/xrt/include/subdev_id.h          |  38 +
+>   drivers/fpga/xrt/include/xclbin-helper.h      |  48 +
+>   drivers/fpga/xrt/include/xdevice.h            | 131 +++
+>   drivers/fpga/xrt/include/xleaf.h              | 205 +++++
+>   drivers/fpga/xrt/include/xleaf/axigate.h      |  23 +
+>   drivers/fpga/xrt/include/xleaf/clkfreq.h      |  21 +
+>   drivers/fpga/xrt/include/xleaf/clock.h        |  29 +
+>   .../fpga/xrt/include/xleaf/ddr_calibration.h  |  28 +
+>   drivers/fpga/xrt/include/xleaf/devctl.h       |  40 +
+>   drivers/fpga/xrt/include/xleaf/icap.h         |  27 +
+>   drivers/fpga/xrt/include/xmgnt-main.h         |  34 +
+>   drivers/fpga/xrt/include/xroot.h              | 117 +++
+>   drivers/fpga/xrt/lib/Kconfig                  |  17 +
+>   drivers/fpga/xrt/lib/Makefile                 |  30 +
+>   drivers/fpga/xrt/lib/cdev.c                   | 210 +++++
+>   drivers/fpga/xrt/lib/group.c                  | 278 ++++++
+>   drivers/fpga/xrt/lib/lib-drv.c                | 328 +++++++
+>   drivers/fpga/xrt/lib/lib-drv.h                |  15 +
+>   drivers/fpga/xrt/lib/subdev.c                 | 847 ++++++++++++++++++
+>   drivers/fpga/xrt/lib/subdev_pool.h            |  53 ++
+>   drivers/fpga/xrt/lib/xclbin.c                 | 369 ++++++++
+>   drivers/fpga/xrt/lib/xleaf/axigate.c          | 325 +++++++
+>   drivers/fpga/xrt/lib/xleaf/clkfreq.c          | 223 +++++
+>   drivers/fpga/xrt/lib/xleaf/clock.c            | 652 ++++++++++++++
+>   drivers/fpga/xrt/lib/xleaf/ddr_calibration.c  | 210 +++++
+>   drivers/fpga/xrt/lib/xleaf/devctl.c           | 169 ++++
+>   drivers/fpga/xrt/lib/xleaf/icap.c             | 328 +++++++
+>   drivers/fpga/xrt/lib/xleaf/ucs.c              | 152 ++++
+>   drivers/fpga/xrt/lib/xleaf/vsec.c             | 372 ++++++++
+>   drivers/fpga/xrt/lib/xroot.c                  | 536 +++++++++++
+>   drivers/fpga/xrt/metadata/Kconfig             |  12 +
+>   drivers/fpga/xrt/metadata/Makefile            |  16 +
+>   drivers/fpga/xrt/metadata/metadata.c          | 578 ++++++++++++
+>   drivers/fpga/xrt/mgnt/Kconfig                 |  15 +
+>   drivers/fpga/xrt/mgnt/Makefile                |  19 +
+>   drivers/fpga/xrt/mgnt/root.c                  | 419 +++++++++
+>   drivers/fpga/xrt/mgnt/xmgnt-main-region.c     | 485 ++++++++++
+>   drivers/fpga/xrt/mgnt/xmgnt-main.c            | 660 ++++++++++++++
+>   drivers/fpga/xrt/mgnt/xmgnt.h                 |  33 +
+>   drivers/fpga/xrt/mgnt/xrt-mgr.c               | 190 ++++
+>   drivers/fpga/xrt/mgnt/xrt-mgr.h               |  16 +
+>   include/uapi/linux/xrt/xclbin.h               | 409 +++++++++
+>   include/uapi/linux/xrt/xmgnt-ioctl.h          |  46 +
+>   53 files changed, 9931 insertions(+)
+>   create mode 100644 Documentation/fpga/xrt.rst
+>   create mode 100644 drivers/fpga/xrt/Kconfig
+>   create mode 100644 drivers/fpga/xrt/include/events.h
+>   create mode 100644 drivers/fpga/xrt/include/group.h
+>   create mode 100644 drivers/fpga/xrt/include/metadata.h
+>   create mode 100644 drivers/fpga/xrt/include/subdev_id.h
+>   create mode 100644 drivers/fpga/xrt/include/xclbin-helper.h
+>   create mode 100644 drivers/fpga/xrt/include/xdevice.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/axigate.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/clkfreq.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/clock.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/ddr_calibration.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/devctl.h
+>   create mode 100644 drivers/fpga/xrt/include/xleaf/icap.h
+>   create mode 100644 drivers/fpga/xrt/include/xmgnt-main.h
+>   create mode 100644 drivers/fpga/xrt/include/xroot.h
+>   create mode 100644 drivers/fpga/xrt/lib/Kconfig
+>   create mode 100644 drivers/fpga/xrt/lib/Makefile
+>   create mode 100644 drivers/fpga/xrt/lib/cdev.c
+>   create mode 100644 drivers/fpga/xrt/lib/group.c
+>   create mode 100644 drivers/fpga/xrt/lib/lib-drv.c
+>   create mode 100644 drivers/fpga/xrt/lib/lib-drv.h
+>   create mode 100644 drivers/fpga/xrt/lib/subdev.c
+>   create mode 100644 drivers/fpga/xrt/lib/subdev_pool.h
+>   create mode 100644 drivers/fpga/xrt/lib/xclbin.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/axigate.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/clkfreq.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/clock.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/ddr_calibration.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/devctl.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/icap.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/ucs.c
+>   create mode 100644 drivers/fpga/xrt/lib/xleaf/vsec.c
+>   create mode 100644 drivers/fpga/xrt/lib/xroot.c
+>   create mode 100644 drivers/fpga/xrt/metadata/Kconfig
+>   create mode 100644 drivers/fpga/xrt/metadata/Makefile
+>   create mode 100644 drivers/fpga/xrt/metadata/metadata.c
+>   create mode 100644 drivers/fpga/xrt/mgnt/Kconfig
+>   create mode 100644 drivers/fpga/xrt/mgnt/Makefile
+>   create mode 100644 drivers/fpga/xrt/mgnt/root.c
+>   create mode 100644 drivers/fpga/xrt/mgnt/xmgnt-main-region.c
+>   create mode 100644 drivers/fpga/xrt/mgnt/xmgnt-main.c
+>   create mode 100644 drivers/fpga/xrt/mgnt/xmgnt.h
+>   create mode 100644 drivers/fpga/xrt/mgnt/xrt-mgr.c
+>   create mode 100644 drivers/fpga/xrt/mgnt/xrt-mgr.h
+>   create mode 100644 include/uapi/linux/xrt/xclbin.h
+>   create mode 100644 include/uapi/linux/xrt/xmgnt-ioctl.h
+>
 
