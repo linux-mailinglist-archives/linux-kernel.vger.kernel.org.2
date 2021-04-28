@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7250336D924
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A0136D926
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Apr 2021 16:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240147AbhD1OAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Apr 2021 10:00:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:43014 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240119AbhD1OAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:00:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5961211B3;
-        Wed, 28 Apr 2021 07:00:02 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.110])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 65F353F694;
-        Wed, 28 Apr 2021 06:59:56 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, Jia He <justin.he@arm.com>
-Subject: [PATCH 4/4] lib/test_printf: Explicitly add components number to %pD and %pd
-Date:   Wed, 28 Apr 2021 21:59:29 +0800
-Message-Id: <20210428135929.27011-4-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210428135929.27011-1-justin.he@arm.com>
-References: <20210428135929.27011-1-justin.he@arm.com>
+        id S240178AbhD1OB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Apr 2021 10:01:27 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44896 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240171AbhD1OBE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:01:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UX52TuL_1619618418;
+Received: from localhost(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UX52TuL_1619618418)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Apr 2021 22:00:18 +0800
+From:   Xu Yu <xuyu@linux.alibaba.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org
+Subject: [PATCH] mm, compaction: avoid isolating pinned tmpfs pages
+Date:   Wed, 28 Apr 2021 22:00:14 +0800
+Message-Id: <e2f0689e00cce7ac73716da14a971a4f1ab88359.1619618267.git.xuyu@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.2432.ga663e714
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After changing the default components number from 1 to 4 for %pD
-and %pd, it would be better to explicitly add the number in test_printf
-cases.
+This makes pinned tmpfs pages bail out early in the process of page
+migration, like what pinned anonymous pages do.
 
-Add a test case of %pd5 to verify if it can be capped by 4 components.
-
-Signed-off-by: Jia He <justin.he@arm.com>
+Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
 ---
- lib/test_printf.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ mm/compaction.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 27b964ec723d..899cd55d1c90 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -478,18 +478,20 @@ static struct dentry test_dentry[4] __initdata = {
- static void __init
- dentry(void)
- {
--	test("foo", "%pd", &test_dentry[0]);
-+	test("foo", "%pd1", &test_dentry[0]);
- 	test("foo", "%pd2", &test_dentry[0]);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index e04f4476e68e..78c3b992a1c9 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -964,11 +964,11 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		}
  
--	test("(null)", "%pd", NULL);
--	test("(efault)", "%pd", PTR_INVALID);
--	test("(null)", "%pD", NULL);
--	test("(efault)", "%pD", PTR_INVALID);
-+	test("(null)", "%pd1", NULL);
-+	test("(efault)", "%pd1", PTR_INVALID);
-+	test("(null)", "%pD1", NULL);
-+	test("(efault)", "%pD1", PTR_INVALID);
+ 		/*
+-		 * Migration will fail if an anonymous page is pinned in memory,
+-		 * so avoid taking lru_lock and isolating it unnecessarily in an
+-		 * admittedly racy check.
++		 * Migration will fail if an anonymous or tmpfs page is pinned
++		 * in memory, so avoid taking lru_lock and isolating it
++		 * unnecessarily in an admittedly racy check.
+ 		 */
+-		if (!page_mapping(page) &&
++		if (!page_is_file_lru(page) &&
+ 		    page_count(page) > page_mapcount(page))
+ 			goto isolate_fail;
  
--	test("romeo", "%pd", &test_dentry[3]);
-+	test("romeo", "%pd1", &test_dentry[3]);
- 	test("alfa/romeo", "%pd2", &test_dentry[3]);
- 	test("bravo/alfa/romeo", "%pd3", &test_dentry[3]);
- 	test("/bravo/alfa/romeo", "%pd4", &test_dentry[3]);
-+	test("/bravo/alfa/romeo", "%pd", &test_dentry[3]);
-+	test("/bravo/alfa/romeo", "%pd5", &test_dentry[3]);
- 	test("/bravo/alfa", "%pd4", &test_dentry[2]);
- 
- 	test("bravo/alfa  |bravo/alfa  ", "%-12pd2|%*pd2", &test_dentry[2], -12, &test_dentry[2]);
 -- 
-2.17.1
+2.20.1.2432.ga663e714
 
